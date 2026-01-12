@@ -5,6 +5,7 @@
 import { IconAlertCircle, IconCheck, IconClock, IconX } from '@tabler/icons-react';
 import { RideAcceptanceStatus } from '@tmlmobilidade/types';
 import { Tag, TagProps } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,25 +15,27 @@ interface AcceptanceStatusTagProps {
 
 /* * */
 
+const { t } = useTranslation();
+
 export const AcceptanceStatusProps = Object.freeze({
 	accepted: {
 		icon: <IconCheck />,
-		label: 'Aceite',
+		label: t('controller:rides.detail.AcceptanceStatusTag.accepted'),
 		variant: 'success',
 	},
 	justification_required: {
 		icon: <IconAlertCircle />,
-		label: 'Justificação Necessária',
+		label: t('controller:rides.detail.AcceptanceStatusTag.justification_required'),
 		variant: 'warning',
 	},
 	rejected: {
 		icon: <IconX />,
-		label: 'Rejeitada',
+		label: t('controller:rides.detail.AcceptanceStatusTag.rejected'),
 		variant: 'danger',
 	},
 	under_review: {
 		icon: <IconClock />,
-		label: 'Em Revisão',
+		label: t('controller:rides.detail.AcceptanceStatusTag.under_review'),
 		variant: 'secondary',
 	},
 });

@@ -21,66 +21,66 @@ export function RideAnalysisApexOnBoardRefunds() {
 	// A. Setup variables
 
 	const RideAnalysisContext = useRideAnalysisContext();
-	const { t } = useTranslation('controller');
+	const { t } = useTranslation();
 
 	const columns: DataTableColumn<SimplifiedApexOnBoardRefund>[] = [
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
-			title: t('rides.analysis.OnBoardRefunds.Table.columns.created_at.label'),
+			title: t('controller:rides.analysis.OnBoardRefunds.Table.columns.created_at.label'),
 			width: 280,
 		},
 		{
 			accessor: 'stop_id',
-			title: t('rides.analysis.OnBoardRefunds.Table.columns.stop_id.label'),
+			title: t('controller:rides.analysis.OnBoardRefunds.Table.columns.stop_id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'card_serial_number',
-			title: t('rides.analysis.OnBoardRefunds.Table.columns.card_serial_number.label'),
+			title: t('controller:rides.analysis.OnBoardRefunds.Table.columns.card_serial_number.label'),
 			width: 220,
 		},
 		{
 			accessor: 'product_long_id',
-			title: t('rides.analysis.OnBoardRefunds.Table.columns.product_id.label'),
+			title: t('controller:rides.analysis.OnBoardRefunds.Table.columns.product_id.label'),
 			width: 250,
 		},
 		{
 			accessor: 'product_quantity',
-			title: t('rides.analysis.OnBoardRefunds.Table.columns.product_quantity.label'),
+			title: t('controller:rides.analysis.OnBoardRefunds.Table.columns.product_quantity.label'),
 			width: 80,
 		},
 		{
 			accessor: 'price',
 			render: item => <CurrencyTag value={item.price} />,
-			title: t('rides.analysis.OnBoardRefunds.Table.columns.price.label'),
+			title: t('controller:rides.analysis.OnBoardRefunds.Table.columns.price.label'),
 			width: 120,
 		},
 		{
 			accessor: 'payment_method',
 			render: item => <ApexPaymentMethodTag value={item.payment_method} />,
-			title: t('rides.analysis.OnBoardRefunds.Table.columns.payment_method.label'),
+			title: t('controller:rides.analysis.OnBoardRefunds.Table.columns.payment_method.label'),
 			width: 180,
 		},
 		{
 			accessor: 'card_physical_type',
 			render: item => <ApexCardTypeTag value={item.card_physical_type} />,
-			title: t('rides.analysis.OnBoardRefunds.Table.columns.card_type.label'),
+			title: t('controller:rides.analysis.OnBoardRefunds.Table.columns.card_type.label'),
 			width: 220,
 		},
 		{
 			accessor: 'validation_id',
-			title: t('rides.analysis.OnBoardRefunds.Table.columns.id_validation.label'),
+			title: t('controller:rides.analysis.OnBoardRefunds.Table.columns.id_validation.label'),
 			width: 400,
 		},
 		{
 			accessor: 'on_board_sale_id',
-			title: t('rides.analysis.OnBoardRefunds.Table.columns.id_on_board_sale.label'),
+			title: t('controller:rides.analysis.OnBoardRefunds.Table.columns.id_on_board_sale.label'),
 			width: 400,
 		},
 		{
 			accessor: '_id',
-			title: t('rides.analysis.OnBoardRefunds.Table.columns.id_on_board_refund.label'),
+			title: t('controller:rides.analysis.OnBoardRefunds.Table.columns.id_on_board_refund.label'),
 			width: 400,
 		},
 	];
@@ -96,7 +96,7 @@ export function RideAnalysisApexOnBoardRefunds() {
 	// C. Render components
 
 	return (
-		<Collapsible description={t('rides.analysis.OnBoardRefunds.description')} title={t('rides.analysis.OnBoardRefunds.title')}>
+		<Collapsible description={t('controller:rides.analysis.OnBoardRefunds.description')} title={t('controller:rides.analysis.OnBoardRefunds.title')}>
 			{sortedSimplifiedApexOnBoardRefunds?.length > 0 ? (
 				<DataTable
 					columns={columns}
@@ -105,7 +105,7 @@ export function RideAnalysisApexOnBoardRefunds() {
 				/>
 			) : (
 				<Section padding="md">
-					<NoDataLabel text={t('rides.analysis.OnBoardRefunds.no_data')} />
+					<NoDataLabel text={t('controller:rides.analysis.OnBoardRefunds.no_data')} />
 				</Section>
 			)}
 

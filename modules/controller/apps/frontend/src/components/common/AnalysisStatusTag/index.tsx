@@ -21,7 +21,7 @@ export function AnalysisStatusTag({ grade }: AnalysisStatusTagProps) {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('controller');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -31,11 +31,11 @@ export function AnalysisStatusTag({ grade }: AnalysisStatusTagProps) {
 	}
 
 	if (grade === 'pass') {
-		return <Tag icon={<IconCheck />} label={t('rides.detail.AnalysisStatusTag.pass')} variant="success" />;
+		return <Tag icon={<IconCheck />} label={t('controller:rides.detail.AnalysisStatusTag.pass')} variant="success" />;
 	}
 
 	if (grade === 'fail') {
-		return <Tag icon={<IconX stroke={4} />} label={t('rides.detail.AnalysisStatusTag.fail')} variant="danger" />;
+		return <Tag icon={<IconX stroke={4} />} label={t('controller:rides.detail.AnalysisStatusTag.fail')} variant="danger" />;
 	}
 
 	//

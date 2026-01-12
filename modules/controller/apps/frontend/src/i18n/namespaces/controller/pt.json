@@ -443,6 +443,12 @@
 			}
 		},
 		"detail": {
+			"AcceptanceStatusTag": {
+				"accepted": "Aceite",
+				"justification_required": "Justificação Necessária",
+				"rejected": "Rejeitada",
+				"under_review": "Em Revisão"
+			},
 			"AnalysisStatusTag": {
 				"fail": "Fail",
 				"pass": "Pass"

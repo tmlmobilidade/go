@@ -18,53 +18,53 @@ export function RideAnalysisVehicleEvents() {
 	// A. Setup variables
 
 	const RideAnalysisContext = useRideAnalysisContext();
-	const { t } = useTranslation('controller');
+	const { t } = useTranslation();
 
 	const columns: DataTableColumn<SimplifiedVehicleEvent>[] = [
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
-			title: t('rides.analysis.VehicleEvents.Table.columns.created_at.label'),
+			title: t('controller:rides.analysis.VehicleEvents.Table.columns.created_at.label'),
 			width: 280,
 		},
 		{
 			accessor: 'trigger_activity',
-			title: t('rides.analysis.VehicleEvents.Table.columns.activity.label'),
+			title: t('controller:rides.analysis.VehicleEvents.Table.columns.activity.label'),
 			width: 150,
 		},
 		{
 			accessor: 'stop_id',
-			title: t('rides.analysis.VehicleEvents.Table.columns.stop_id.label'),
+			title: t('controller:rides.analysis.VehicleEvents.Table.columns.stop_id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'vehicle_id',
-			title: t('rides.analysis.VehicleEvents.Table.columns.vehicle_id.label'),
+			title: t('controller:rides.analysis.VehicleEvents.Table.columns.vehicle_id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'driver_id',
-			title: t('rides.analysis.VehicleEvents.Table.columns.driver_id.label'),
+			title: t('controller:rides.analysis.VehicleEvents.Table.columns.driver_id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'odometer',
-			title: t('rides.analysis.VehicleEvents.Table.columns.odometer.label'),
+			title: t('controller:rides.analysis.VehicleEvents.Table.columns.odometer.label'),
 			width: 150,
 		},
 		{
 			accessor: 'trigger_door',
-			title: t('rides.analysis.VehicleEvents.Table.columns.door.label'),
+			title: t('controller:rides.analysis.VehicleEvents.Table.columns.door.label'),
 			width: 150,
 		},
 		{
 			accessor: 'latitude',
-			title: t('rides.analysis.VehicleEvents.Table.columns.latitude.label'),
+			title: t('controller:rides.analysis.VehicleEvents.Table.columns.latitude.label'),
 			width: 220,
 		},
 		{
 			accessor: 'longitude',
-			title: t('rides.analysis.VehicleEvents.Table.columns.longitude.label'),
+			title: t('controller:rides.analysis.VehicleEvents.Table.columns.longitude.label'),
 			width: 220,
 		},
 	];
@@ -80,7 +80,7 @@ export function RideAnalysisVehicleEvents() {
 	// C. Render components
 
 	return (
-		<Collapsible description={t('rides.analysis.VehicleEvents.description')} title={t('rides.analysis.VehicleEvents.title')}>
+		<Collapsible description={t('controller:rides.analysis.VehicleEvents.description')} title={t('controller:rides.analysis.VehicleEvents.title')}>
 			<DataTable
 				columns={columns}
 				records={sortedVehicleEvents}

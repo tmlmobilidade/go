@@ -19,33 +19,33 @@ export function RideAnalysisApexLocations() {
 	// A. Setup variables
 
 	const rideAnalysisContext = useRideAnalysisContext();
-	const { t } = useTranslation('controller');
+	const { t } = useTranslation();
 
 	const columns: DataTableColumn<SimplifiedApexLocation>[] = [
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
-			title: t('rides.analysis.ApexLocations.Table.columns.created_at.label'),
+			title: t('controller:rides.analysis.ApexLocations.Table.columns.created_at.label'),
 			width: 280,
 		},
 		{
 			accessor: 'stop_id',
-			title: t('rides.analysis.ApexLocations.Table.columns.stop_id.label'),
+			title: t('controller:rides.analysis.ApexLocations.Table.columns.stop_id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'vehicle_id',
-			title: t('rides.analysis.ApexLocations.Table.columns.vehicle_id.label'),
+			title: t('controller:rides.analysis.ApexLocations.Table.columns.vehicle_id.label'),
 			width: 120,
 		},
 		{
 			accessor: 'mac_sam_serial_number',
-			title: t('rides.analysis.ApexLocations.Table.columns.mac_sam_serial_number.label'),
+			title: t('controller:rides.analysis.ApexLocations.Table.columns.mac_sam_serial_number.label'),
 			width: 160,
 		},
 		{
 			accessor: '_id',
-			title: t('rides.analysis.ApexLocations.Table.columns.id_apex_location.label'),
+			title: t('controller:rides.analysis.ApexLocations.Table.columns.id_apex_location.label'),
 			width: 400,
 		},
 	];
@@ -61,7 +61,7 @@ export function RideAnalysisApexLocations() {
 	// C. Render components
 
 	return (
-		<Collapsible description={t('rides.analysis.ApexLocations.description')} title={t('rides.analysis.ApexLocations.title')}>
+		<Collapsible description={t('controller:rides.analysis.ApexLocations.description')} title={t('controller:rides.analysis.ApexLocations.title')}>
 			{sortedSimplifiedApexLocations.length > 0 ? (
 				<DataTable
 					columns={columns}
@@ -70,7 +70,7 @@ export function RideAnalysisApexLocations() {
 				/>
 			) : (
 				<Section padding="md">
-					<NoDataLabel text={t('rides.analysis.ApexLocations.no_data')} />
+					<NoDataLabel text={t('controller:rides.analysis.ApexLocations.no_data')} />
 				</Section>
 			)}
 		</Collapsible>

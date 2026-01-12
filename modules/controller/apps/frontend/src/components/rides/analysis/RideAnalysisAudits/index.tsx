@@ -13,15 +13,15 @@ export function RideAnalysisAudits() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('controller');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	return (
-		<Collapsible description={t('rides.analysis.Audits.description')} title={t('rides.analysis.Audits.title')}>
+		<Collapsible description={t('controller:rides.analysis.Audits.description')} title={t('controller:rides.analysis.Audits.title')}>
 			<Section>
-				<Label size="lg" caps>{t('rides.analysis.Audits.no_data')}</Label>
+				<Label size="lg" caps>{t('controller:rides.analysis.Audits.no_data')}</Label>
 			</Section>
 		</Collapsible>
 	);
