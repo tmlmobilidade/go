@@ -26,7 +26,7 @@ export default function Page() {
 			<ol>
 				<li>
 					<h3>{t('plans:approved.Page.step_1')}</h3>
-					<span dangerouslySetInnerHTML={{ __html: t('plans:approved.Page.step_1_description') + ' ' + { link: PAGE_ROUTES.plans.VALIDATIONS_LIST } }} />
+					<span dangerouslySetInnerHTML={{ __html: t('plans:approved.Page.step_1_description', { link: PAGE_ROUTES.plans.VALIDATIONS_LIST }) }} />
 				</li>
 				<li>
 					<h3>{t('plans:approved.Page.step_2')}</h3>

@@ -36,7 +36,7 @@ export default function Page() {
 				</li>
 				<li>
 					<h3>{t('plans:validations.Page.step_3')}</h3>
-					<span dangerouslySetInnerHTML={{ __html: t('plans:validations.Page.step_3_description') + ' ' + { link: PAGE_ROUTES.plans.APPROVED_LIST } }} />
+					<span dangerouslySetInnerHTML={{ __html: t('plans:validations.Page.step_3_description', { link: String(PAGE_ROUTES.plans.APPROVED_LIST) }) }} />
 				</li>
 			</ol>
 		</div>
