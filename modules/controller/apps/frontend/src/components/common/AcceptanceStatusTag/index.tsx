@@ -15,52 +15,58 @@ interface AcceptanceStatusTagProps {
 
 /* * */
 
-const { t } = useTranslation();
-
 export const AcceptanceStatusProps = Object.freeze({
 	accepted: {
 		icon: <IconCheck />,
-		label: t('controller:rides.detail.AcceptanceStatusTag.accepted'),
+		label: 'controller:rides.detail.AcceptanceStatusTag.accepted',
 		variant: 'success',
 	},
 	justification_required: {
 		icon: <IconAlertCircle />,
-		label: t('controller:rides.detail.AcceptanceStatusTag.justification_required'),
+		label: 'controller:rides.detail.AcceptanceStatusTag.justification_required',
 		variant: 'warning',
 	},
 	rejected: {
 		icon: <IconX />,
-		label: t('controller:rides.detail.AcceptanceStatusTag.rejected'),
+		label: 'controller:rides.detail.AcceptanceStatusTag.rejected',
 		variant: 'danger',
 	},
 	under_review: {
 		icon: <IconClock />,
-		label: t('controller:rides.detail.AcceptanceStatusTag.under_review'),
+		label: 'controller:rides.detail.AcceptanceStatusTag.under_review',
 		variant: 'secondary',
 	},
-});
+} as const);
 
 export function AcceptanceStatusTag({ grade }: AcceptanceStatusTagProps) {
 	//
+
+	//
+	// A. Setup variables
+
+	const { t } = useTranslation();
+
+	//
+	// B. Render components
 
 	if (grade === 'none') {
 		return null;
 	}
 
 	if (grade === 'accepted') {
-		return <Tag icon={AcceptanceStatusProps.accepted.icon} label={AcceptanceStatusProps.accepted.label} variant={AcceptanceStatusProps.accepted.variant as TagProps['variant']} />;
+		return <Tag icon={AcceptanceStatusProps.accepted.icon} label={t(AcceptanceStatusProps.accepted.label)} variant={AcceptanceStatusProps.accepted.variant as TagProps['variant']} />;
 	}
 
 	if (grade === 'under_review') {
-		return <Tag icon={AcceptanceStatusProps.under_review.icon} label={AcceptanceStatusProps.under_review.label} variant={AcceptanceStatusProps.under_review.variant as TagProps['variant']} />;
+		return <Tag icon={AcceptanceStatusProps.under_review.icon} label={t(AcceptanceStatusProps.under_review.label)} variant={AcceptanceStatusProps.under_review.variant as TagProps['variant']} />;
 	}
 
 	if (grade === 'justification_required') {
-		return <Tag icon={AcceptanceStatusProps.justification_required.icon} label={AcceptanceStatusProps.justification_required.label} variant={AcceptanceStatusProps.justification_required.variant as TagProps['variant']} />;
+		return <Tag icon={AcceptanceStatusProps.justification_required.icon} label={t(AcceptanceStatusProps.justification_required.label)} variant={AcceptanceStatusProps.justification_required.variant as TagProps['variant']} />;
 	}
 
 	if (grade === 'rejected') {
-		return <Tag icon={AcceptanceStatusProps.rejected.icon} label={AcceptanceStatusProps.rejected.label} variant={AcceptanceStatusProps.rejected.variant as TagProps['variant']} />;
+		return <Tag icon={AcceptanceStatusProps.rejected.icon} label={t(AcceptanceStatusProps.rejected.label)} variant={AcceptanceStatusProps.rejected.variant as TagProps['variant']} />;
 	}
 
 	//

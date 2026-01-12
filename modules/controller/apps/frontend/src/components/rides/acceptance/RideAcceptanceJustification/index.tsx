@@ -20,7 +20,7 @@ function JustificationReadOnly({ cause, manualTripId, message }: { cause?: strin
 			<Label size="lg" caps>{t('controller:rides.acceptance.Justification.title')}</Label>
 			<Section gap="xs" padding="none">
 				<Label>{t('controller:rides.acceptance.Justification.readonly.cause.label')}</Label>
-				<Text>{cause ? t(`controller:rides.acceptance.cause.${cause}`) : '—'}</Text>
+				<Text>{cause ? t(`controller:rides.acceptance.cause.${cause}` as never) : '—'}</Text>
 			</Section>
 			<Section gap="xs" padding="none">
 				<Label>{t('controller:rides.acceptance.Justification.readonly.message.label')}</Label>
