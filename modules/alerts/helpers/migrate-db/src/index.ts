@@ -19,6 +19,7 @@ import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 	const migratedAlerts = existingAlerts.map((alert) => {
 		const formattedAlert: Alert = {
 			...alert,
+			auto_texts: false,
 			created_by: 'system',
 			publish_status: parsePublishStatus(alert.publish_status),
 			reference_type: parseReferenceType(alert.reference_type),
@@ -41,7 +42,7 @@ import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 		return {
 			updateOne: {
 				filter: { _id: alert._id },
-				update: { $set: alert, $unset: { modified_by: 1 } },
+				update: { $set: alert, $unset: { modified_by: 1, type: 1 } },
 			},
 		};
 	});

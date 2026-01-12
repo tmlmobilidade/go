@@ -32,6 +32,8 @@ export function ChangePasswordForm() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [tokenValue] = useQueryState('token');
@@ -40,7 +42,6 @@ export function ChangePasswordForm() {
 	const [passwordValue, setPasswordValue] = useState('');
 	const [confirmPasswordValue, setConfirmPasswordValue] = useState('');
 
-	const { i18n, t } = useTranslation('authenticationForm');
 	//
 	// B. Transform data
 
@@ -66,8 +67,6 @@ export function ChangePasswordForm() {
 		return validationErrors.some(error => !error.valid);
 	}, [validationErrors]);
 
-	console.log(i18n.options.resources);
-
 	//
 	// B. Handle actions
 
@@ -88,11 +87,11 @@ export function ChangePasswordForm() {
 		setIsLoading(false);
 		// Handle response error
 		if (!response.isOk) {
-			useToast.error({ message: response.error ?? t('ChangePasswordForm.error_message.description'), title: t('authentication.ChangePasswordForm.error_message.title') });
+			useToast.error({ message: response.error ?? t('unauthenticated:ChangePasswordForm.error_message.description'), title: t('unauthenticated:ChangePasswordForm.error_message.title') });
 			return;
 		}
 		// Show success message and redirect to login page
-		useToast.success({ message: t('ChangePasswordForm.success.description'), title: t('ChangePasswordForm.success.title') });
+		useToast.success({ message: t('unauthenticated:ChangePasswordForm.success.description'), title: t('unauthenticated:ChangePasswordForm.success.title') });
 		window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
 	};
 
@@ -101,28 +100,28 @@ export function ChangePasswordForm() {
 
 	return (
 		<AuthenticationForm
-			description={t('ChangePasswordForm.description')}
-			footerLabel={t('ChangePasswordForm.footer.label')}
+			description={t('unauthenticated:ChangePasswordForm.description')}
+			footerLabel={t('unauthenticated:ChangePasswordForm.footer.label')}
 			footerUrl={PAGE_ROUTES.auth.LOGIN_LIST}
 			loading={isLoading}
 			onSubmit={handleSubmit}
 			submitDisabled={isDisabled}
-			submitLabel={t('ChangePasswordForm.submit.label')}
-			title={t('ChangePasswordForm.title')}
+			submitLabel={t('unauthenticated:ChangePasswordForm.submit.label')}
+			title={t('unauthenticated:ChangePasswordForm.title')}
 		>
 			<input defaultValue={emailValue} name="email" type="email" readOnly />
 			<PasswordInput
 				key="password"
 				disabled={isLoading}
 				onChange={e => setPasswordValue(e.target.value)}
-				placeholder={t('ChangePasswordForm.fields.password.placeholder')}
+				placeholder={t('unauthenticated:ChangePasswordForm.fields.password.placeholder')}
 				value={passwordValue}
 			/>
 			<PasswordInput
 				key="password-confirm"
 				disabled={isLoading}
 				onChange={e => setConfirmPasswordValue(e.target.value)}
-				placeholder={t('ChangePasswordForm.fields.confirm_password.placeholder')}
+				placeholder={t('unauthenticated:ChangePasswordForm.fields.confirm_password.placeholder')}
 				value={confirmPasswordValue}
 			/>
 			<div className={styles.passwordRequirements}>

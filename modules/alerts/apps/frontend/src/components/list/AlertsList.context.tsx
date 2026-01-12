@@ -113,7 +113,7 @@ export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
 			// Filter by effect
 			if (!filterEffect.value.includes(alert.effect)) return false;
 			// Filter by municipality IDs
-			if (!alert.municipality_ids.some((mId: string) => filterMunicipality.value.includes(mId))) return false;
+			// if (!alert.municipality_ids.some((mId: string) => filterMunicipality.value.includes(mId))) return false;
 			// Return true if all filters pass
 			return true;
 		});
