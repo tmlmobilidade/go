@@ -84,6 +84,54 @@
 			}
 		}
 	},
+	"detail": {
+		"RideAnalysisAnalysisResult": {
+			"AT_MOST_TWO_DRIVER_IDS": {
+				"description": "Uma circulação pode ter no máximo dois IDs de motorista diferentes.",
+				"title": "No máximo dois motoristas"
+			},
+			"AT_MOST_TWO_VEHICLE_IDS": {
+				"description": "Uma circulação pode ter no máximo dois IDs de veículo diferentes.",
+				"title": "No máximo dois veículos"
+			},
+			"AVG_INTERVAL_VEHICLE_EVENTS": {
+				"description": "",
+				"title": "AVG_INTERVAL_VEHICLE_EVENTS"
+			},
+			"EXCESSIVE_VEHICLE_EVENT_DELAY": {
+				"description": "",
+				"title": "EXCESSIVE_VEHICLE_EVENT_DELAY"
+			},
+			"HIGHEST_VEHICLE_EVENT_DELAY": {
+				"description": "",
+				"title": "HIGHEST_VEHICLE_EVENT_DELAY"
+			},
+			"LESS_THAN_TEN_VEHICLE_EVENTS": {
+				"description": "",
+				"title": "LESS_THAN_TEN_VEHICLE_EVENTS"
+			},
+			"MATCHING_LOCATION_TRANSACTIONS": {
+				"description": "",
+				"title": "MATCHING_LOCATION_TRANSACTIONS"
+			},
+			"ONTIME_START": {
+				"description": "",
+				"title": "ONTIME_START"
+			},
+			"SIMPLE_ONE_VALIDATION_TRANSACTION": {
+				"description": "",
+				"title": "SIMPLE_ONE_VALIDATION_TRANSACTION"
+			},
+			"SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION": {
+				"description": "",
+				"title": "SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION"
+			},
+			"SIMPLE_THREE_VEHICLE_EVENTS": {
+				"description": "",
+				"title": "SIMPLE_THREE_VEHICLE_EVENTS"
+			}
+		}
+	},
 	"periods": {
 		"calendar": {
 			"AssignContent": {
