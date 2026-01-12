@@ -29,7 +29,7 @@ export function LineBarChart({ data, endDate, height, startDate, timeView, yAxis
 
 	// A. Setup variables
 
-	const { t } = useTranslation('performance');
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data

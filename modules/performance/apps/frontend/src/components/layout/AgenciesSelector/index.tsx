@@ -22,7 +22,7 @@ export function AgenciesSelector({ defaultToAll = true, isMultiple = true, onCha
 	// A. Setup variables
 
 	const agenciesContext = useAgenciesContext();
-	const { t } = useTranslation('performance');
+	const { t } = useTranslation();
 
 	// Initialize with all agencies if selectedAgencies is empty and defaultToAll is true
 	useEffect(() => {
@@ -68,7 +68,7 @@ export function AgenciesSelector({ defaultToAll = true, isMultiple = true, onCha
 		<FilterTypeList
 			active={isActive}
 			isMultiple={isMultiple}
-			label={t('AgenciesSelector.label')}
+			label={t('performance:AgenciesSelector.label')}
 			onChange={onChange}
 			options={parsedOptions}
 			withToggleAll

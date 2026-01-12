@@ -13,7 +13,7 @@ export default function AreasHome({ agency }: { agency: AgencyType }) {
 
 	// A. Setup variables
 
-	const { t } = useTranslation('performance');
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -24,7 +24,7 @@ export default function AreasHome({ agency }: { agency: AgencyType }) {
 		<div className={styles.container}>
 			<div className={styles.topContainer}>
 				<div className={styles.headerContainer}>
-					<h2 className={styles.title}>{t(`agencies.${agency}`)}</h2>
+					<h2 className={styles.title}>{t(`performance:agencies.${agency}`)}</h2>
 					<SystemStatus agency={agency} />
 				</div>
 

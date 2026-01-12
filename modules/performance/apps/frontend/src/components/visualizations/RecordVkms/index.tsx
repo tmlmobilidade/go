@@ -28,7 +28,7 @@ export default function RecordSupply({ filters, timeView }: { filters: Filters, 
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('performance');
+	const { t } = useTranslation();
 	const agenciesContext = useAgenciesContext();
 
 	//
@@ -98,7 +98,7 @@ export default function RecordSupply({ filters, timeView }: { filters: Filters, 
 			<Surface overflow="visible">
 				<Section gap="lg">
 					<Section alignItems="center" flexDirection="row" justifyContent="space-between" padding="none">
-						<h3>{t('RecordVkms.title')}</h3>
+						<h3>{t('performance:RecordVkms.title')}</h3>
 					</Section>
 					<Grid columns="abc" gap="lg">
 						{[1, 2, 3].map(index => (
@@ -120,23 +120,23 @@ export default function RecordSupply({ filters, timeView }: { filters: Filters, 
 		<Surface overflow="visible">
 			<Section gap="lg">
 				<Section alignItems="center" flexDirection="row" justifyContent="space-between" padding="none">
-					<h3>{t('RecordVkms.title')}</h3>
+					<h3>{t('performance:RecordVkms.title')}</h3>
 				</Section>
 				<Grid columns="abc" gap="lg">
 					<RecordCard
-						description={t('RecordVkms.Cards.reference.description')}
-						title={t('RecordVkms.Cards.reference.title')}
+						description={t('performance:RecordVkms.Cards.reference.description')}
+						title={t('performance:RecordVkms.Cards.reference.title')}
 						value={vkmsContracted}
 					/>
 					<RecordCard
-						description={t('RecordVkms.Cards.scheduled.description', { count: transformedRecordData.scheduledRides })}
-						title={t('RecordVkms.Cards.scheduled.title')}
+						description={t('performance:RecordVkms.Cards.scheduled.description', { count: transformedRecordData.scheduledRides })}
+						title={t('performance:RecordVkms.Cards.scheduled.title')}
 						totalValue={vkmsContracted}
 						value={transformedRecordData.vmksScheduled}
 					/>
 					<RecordCard
-						description={t('RecordVkms.Cards.executed.description', { count: transformedRecordData.accomplishedRides })}
-						title={t('RecordVkms.Cards.executed.title')}
+						description={t('performance:RecordVkms.Cards.executed.description', { count: transformedRecordData.accomplishedRides })}
+						title={t('performance:RecordVkms.Cards.executed.title')}
 						totalValue={vkmsContracted}
 						value={transformedRecordData.vkmsObserved}
 					/>

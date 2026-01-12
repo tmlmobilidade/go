@@ -51,7 +51,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup state and translations
 
-	const { t } = useTranslation('performance');
+	const { t } = useTranslation();
 	const [systemStatuses, setSystemStatuses] = useState<Record<string, StatusInfo>>({});
 	const targetAgencies = [AGENCIES.AREA_1, AGENCIES.AREA_2, AGENCIES.AREA_3, AGENCIES.AREA_4, 'all'] as const;
 
@@ -117,7 +117,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 			.map(agency => ({
 				...agency,
 				id: agency._id as AgencyType,
-				label: t(`agencies.${agency._id}`),
+				label: t(`performance:agencies.${agency._id}`),
 			}));
 	}, [allAgenciesData, t, targetAgencies]);
 
@@ -135,7 +135,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 		if (systemStatuses['all']) {
 			result.push({
 				id: 'all' as AgencyType,
-				label: t('auth:agencies.all'),
+				label: t('performance:agencies.all'),
 			} as Agency);
 		}
 

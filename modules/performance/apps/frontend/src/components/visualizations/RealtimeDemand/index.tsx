@@ -25,7 +25,7 @@ export function RealtimeDemand({ agency }: { agency?: AgencyType }) {
 
 	const homeContext = useHomeContext();
 	const selectedAgency = agency || homeContext.data.selected_agency;
-	const { t } = useTranslation('performance');
+	const { t } = useTranslation();
 
 	//
 	// B. Fetch data
@@ -74,7 +74,7 @@ export function RealtimeDemand({ agency }: { agency?: AgencyType }) {
 					icon={<IconUser />}
 					isLoading={isLoading}
 					previousValue={formattedData.lastWeek}
-					title={t('RealtimeDemand.title')}
+					title={t('performance:RealtimeDemand.title')}
 					updatedAt={new Date(formattedData.lastUpdated)}
 					value={formattedData.now}
 				>

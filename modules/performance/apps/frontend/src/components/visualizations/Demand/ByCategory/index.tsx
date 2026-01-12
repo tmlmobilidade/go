@@ -9,7 +9,6 @@ import { buildMetricUrl, PieResult, RawMetricData, StackedResult, transformDeman
 import { Dates } from '@tmlmobilidade/dates';
 import { PieChart } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 import styles from './styles.module.css';
@@ -41,9 +40,6 @@ export function DemandByCategoryVisualization({ filters, groupBy, height, isInsi
 	//
 
 	// A. Setup variables
-
-	const { t } = useTranslation('performance');
-
 	const startDate = filters?.dateRange?.startDate || Dates.now('Europe/Lisbon').minus({ days: 7 });
 	const endDate = filters?.dateRange?.endDate || Dates.now('Europe/Lisbon');
 	const selectedAgencies = filters?.agencyIds;
@@ -79,10 +75,9 @@ export function DemandByCategoryVisualization({ filters, groupBy, height, isInsi
 			agencyIds: groupBy === 'agency' ? selectedAgencies : [],
 			breakdownKey: 'category',
 			chartType: 'stacked' as const,
-			t,
 			timeView,
 		});
-	}, [data, groupBy, filters, selectedAgencies, startDate, endDate, t, timeView]);
+	}, [data, groupBy, filters, selectedAgencies, startDate, endDate, timeView]);
 
 	const formattedPieData = useMemo(() => {
 		if (!data) return { all: { chart: [] }, lastUpdated: null };
@@ -91,10 +86,9 @@ export function DemandByCategoryVisualization({ filters, groupBy, height, isInsi
 			agencyIds: groupBy === 'agency' ? selectedAgencies : [],
 			breakdownKey: 'category',
 			chartType: 'pie' as const,
-			t,
 			timeView,
 		});
-	}, [data, groupBy, selectedAgencies, startDate, endDate, t, timeView]);
+	}, [data, groupBy, selectedAgencies, startDate, endDate, timeView]);
 
 	const pieChartData = formattedPieData.all.chart as PieResult['chart'];
 

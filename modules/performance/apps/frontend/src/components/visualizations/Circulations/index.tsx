@@ -42,13 +42,13 @@ export function Circulations({
 	height,
 	isInsideFrame = true,
 	timeView,
-	title = 'Circulações planeadas vs executadas',
+	title = 'performance:Circulations.default_title',
 }: DemandVisualizationProps) {
 	//
 
 	// A. Setup variables
 
-	const { t } = useTranslation('performance');
+	const { t } = useTranslation();
 
 	const startDate = filters?.dateRange?.startDate || Dates.now('Europe/Lisbon').minus({ days: 7 });
 	const endDate = filters?.dateRange?.endDate || Dates.now('Europe/Lisbon');
@@ -89,11 +89,10 @@ export function Circulations({
 			agencyIds: groupBy === 'agency' ? selectedAgencies : [],
 			chartType: 'bar-progress' as const,
 			quantityKey: 'accomplished_rides',
-			t,
 			timeView,
 			totalKey: 'scheduled_rides',
 		});
-	}, [data, groupBy, filters, selectedAgencies, startDate, endDate, t]);
+	}, [data, groupBy, filters, selectedAgencies, startDate, endDate]);
 
 	const chartData = formattedData.all as ProgressBarResult;
 
@@ -101,7 +100,7 @@ export function Circulations({
 	// D. Render components
 
 	return (
-		<VisualizationWrapper border={isInsideFrame ? '' : 'none'} lastUpdated={formattedData.lastUpdated} padding={isInsideFrame ? '' : '0'} title={title}>
+		<VisualizationWrapper border={isInsideFrame ? '' : 'none'} lastUpdated={formattedData.lastUpdated} padding={isInsideFrame ? '' : '0'} title={t(`${title}`)}>
 			<ProgressBarChart data={chartData} endDate={endDate} height={height} startDate={startDate} timeView={timeView} yAxisLabel="Nº circulações" />
 		</VisualizationWrapper>
 	);

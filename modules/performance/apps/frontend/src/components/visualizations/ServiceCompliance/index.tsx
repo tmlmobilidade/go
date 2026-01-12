@@ -27,7 +27,7 @@ export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 
 	const homeContext = useHomeContext();
 	const selectedAgency = agency || homeContext.data.selected_agency;
-	const { t } = useTranslation('performance');
+	const { t } = useTranslation();
 
 	// B. Fetch data
 
@@ -78,28 +78,28 @@ export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 		{
 			goal: 'increase' as const,
 			targetRange: [90, 95] as [number, number],
-			title: t('ServiceCompliance.Metrics.with_sales'),
+			title: t('performance:ServiceCompliance.Metrics.with_sales'),
 			totalValue: formattedData.scheduledRides,
 			value: formattedData.ridesWithSales,
 		},
 		{
 			goal: 'decrease' as const,
 			targetRange: [2, 5] as [number, number],
-			title: t('ServiceCompliance.Metrics.no_passengers'),
+			title: t('performance:ServiceCompliance.Metrics.no_passengers'),
 			totalValue: formattedData.scheduledRides,
 			value: formattedData.noPassengerRides,
 		},
 		{
 			goal: 'decrease' as const,
 			targetRange: [5, 10] as [number, number],
-			title: t('ServiceCompliance.Metrics.delayed'),
+			title: t('performance:ServiceCompliance.Metrics.delayed'),
 			totalValue: formattedData.scheduledRides,
 			value: formattedData.delayedRides,
 		},
 		{
 			goal: 'decrease' as const,
 			targetRange: [0, 2] as [number, number],
-			title: t('ServiceCompliance.Metrics.advanced'),
+			title: t('performance:ServiceCompliance.Metrics.advanced'),
 			totalValue: formattedData.scheduledRides,
 			value: formattedData.advancedRides,
 		},
@@ -109,7 +109,7 @@ export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 	// D. Render components
 
 	return (
-		<MetricCard goal="increase" icon={<IconBus />} isLoading={isLoading} previousValue={formattedData.accomplishedRides.last_week} title={t('ServiceCompliance.title')} updatedAt={formattedData.lastUpdated} value={formattedData.accomplishedRides.now}>
+		<MetricCard goal="increase" icon={<IconBus />} isLoading={isLoading} previousValue={formattedData.accomplishedRides.last_week} title={t('performance:ServiceCompliance.title')} updatedAt={formattedData.lastUpdated} value={formattedData.accomplishedRides.now}>
 			<div className={styles.cardsContainer}>
 
 				<div style={{ alignItems: 'center', display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -125,7 +125,7 @@ export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 							label: { fontSize: 30, fontWeight: 700 },
 						}}
 					/>
-					<p style={{ textAlign: 'center', width: '250px' }}>{t('ServiceCompliance.valid_pct_label')}</p>
+					<p style={{ textAlign: 'center', width: '250px' }}>{t('performance:ServiceCompliance.valid_pct_label')}</p>
 				</div>
 
 				<Grid columns="ab" gap="md">

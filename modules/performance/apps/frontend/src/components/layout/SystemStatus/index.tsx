@@ -16,7 +16,7 @@ export default function SystemStatus({ agency }: { agency?: string }) {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('performance');
+	const { t } = useTranslation();
 	const homeContext = useHomeContext();
 	const agenciesContext = useAgenciesContext();
 
@@ -28,9 +28,9 @@ export default function SystemStatus({ agency }: { agency?: string }) {
 	const systemStatus = agenciesContext.data.systemStatuses[selectedAgency] as StatusInfo | undefined;
 
 	const translationsMap = {
-		negative: t('SystemStatus.negative'),
-		positive: t('SystemStatus.positive'),
-		warning: t('SystemStatus.warning'),
+		negative: t('performance:SystemStatus.negative'),
+		positive: t('performance:SystemStatus.positive'),
+		warning: t('performance:SystemStatus.warning'),
 	};
 
 	// C. Render components
@@ -46,7 +46,7 @@ export default function SystemStatus({ agency }: { agency?: string }) {
 		<div className={styles.container}>
 			<span>
 				{parts[0]}
-				<Tooltip label={t('SystemStatus.tooltip')} w={400} multiline>
+				<Tooltip label={t('performance:SystemStatus.tooltip')} w={400} multiline>
 					<span className={styles.statusValue} style={{ color: systemStatus.color }}>
 						{systemStatus.value.toFixed(0)}%
 					</span>

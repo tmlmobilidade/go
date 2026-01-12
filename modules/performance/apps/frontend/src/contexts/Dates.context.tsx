@@ -63,7 +63,7 @@ export const DatesContextProvider = ({ children }: { children: React.ReactNode }
 	//
 	// A. Setup state
 
-	const { t } = useTranslation('performance');
+	const { t } = useTranslation();
 	const [calendar, setCalendar] = useState<CalendarEntry[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [isError, setIsError] = useState<boolean>(false);
@@ -156,7 +156,7 @@ export const DatesContextProvider = ({ children }: { children: React.ReactNode }
 		const base = parseAndFormatDate(info.day_group);
 
 		if (withDetails && info.holiday === '1') {
-			const holidayText = info.notes?.length ? info.notes : t('dates.holiday');
+			const holidayText = info.notes?.length ? info.notes : t('performance:dates.holiday');
 			return `${base} (${holidayText})`;
 		}
 
@@ -201,7 +201,7 @@ export const DatesContextProvider = ({ children }: { children: React.ReactNode }
 		data: { calendar },
 		flags: { is_error: isError, is_loading: isLoading },
 		utils: { getDayLabel, getDayShort, getShortLabelFromDetailed },
-	}), [calendar, isLoading, isError, t]);
+	}), [calendar, isLoading, isError]);
 
 	//
 	// E. Render provider

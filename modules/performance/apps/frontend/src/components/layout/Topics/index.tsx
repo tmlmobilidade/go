@@ -16,7 +16,7 @@ export default function Topics() {
 
 	// A. Setup variables
 	const router = useRouter();
-	const { t } = useTranslation('performance');
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -29,13 +29,13 @@ export default function Topics() {
 
 	return (
 		<>
-			<h2>{t('Topics.title')}</h2>
+			<h2>{t('performance:Topics.title')}</h2>
 			<Grid columns="abcd" gap="lg">
 				{TOPICS_REGISTRY.filter(topic => topic.visible).map(topic => (
 					<ContainerWrapper key={topic.key} onClick={() => handleTopicClick(topic)}>
 						<div className={styles.topicCard}>
 							{topic.icon && <topic.icon />}
-							<p className={styles.topicCardTitle}>{t(`Topics.topics.${toSnakeCase(topic.key)}`)}</p>
+							<p className={styles.topicCardTitle}>{t(`performance:Topics.topics.${toSnakeCase(topic.key)}`)}</p>
 						</div>
 					</ContainerWrapper>
 				))}

@@ -19,7 +19,7 @@ export default function RecordDemandByDayType() {
 
 	// A. Setup variables
 
-	const { t } = useTranslation('performance');
+	const { t } = useTranslation();
 	const { utils } = useDatesContext();
 	const { data: { agencies } } = useAgenciesContext();
 	const [selectedAgencies, setSelectedAgencies] = useState<AgencyType[]>([]);
@@ -89,7 +89,7 @@ export default function RecordDemandByDayType() {
 			<Surface overflow="visible">
 				<Section gap="lg">
 					<Section alignItems="center" flexDirection="row" justifyContent="space-between" padding="none">
-						<h3>Recordes por dia tipo</h3>
+						<h3>{t('performance:RecordDemandByDayType.title')}</h3>
 						<div style={{ width: 150 }}>
 							<Skeleton height={25} radius="sm" />
 						</div>
@@ -116,7 +116,7 @@ export default function RecordDemandByDayType() {
 
 			<Section alignItems="center" flexDirection="row" justifyContent="space-between" padding="none">
 				<Section alignItems="center" flexDirection="row" gap="xs" padding="none">
-					<h3>Recordes por dia tipo</h3>
+					<h3>{t('performance:RecordDemandByDayType.title')}</h3>
 					<LiveIcon updatedAt={recordDemandByDayType?.[0]?.generated_at} />
 				</Section>
 
@@ -139,7 +139,7 @@ export default function RecordDemandByDayType() {
 						<Section key={dayTypeKey} flexDirection="column" gap="lg" padding="none">
 							<RecordCard
 								description={utils.getDayLabel(topDay.date, false)}
-								title={t(`dates.day_types.${dayTypeKey}`)}
+								title={t(`performance:dates.day_types.${dayTypeKey}`)}
 								value={topDay.qty}
 							/>
 
@@ -153,7 +153,7 @@ export default function RecordDemandByDayType() {
 								series={[
 									{
 										color: 'var(--color-primary)',
-										label: 'Nº de passageiros',
+										label: t('performance:RecordDemandByDayType.Chart.passengers_label'),
 										name: 'qty',
 									},
 								]}

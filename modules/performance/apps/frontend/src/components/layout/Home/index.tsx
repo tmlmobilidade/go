@@ -18,7 +18,7 @@ export default function Home() {
 
 	const me = useMeContext();
 	const userName = me.data.user.first_name;
-	const { t } = useTranslation('performance');
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -30,7 +30,7 @@ export default function Home() {
 
 			<div className={styles.topContainer}>
 				<div className={styles.headerContainer}>
-					<h1 className={styles.headerTitle}>{t('Home.greeting', { name: userName })}</h1>
+					<h1 className={styles.headerTitle}>{t('performance:Home.greeting', { name: userName })}</h1>
 					<SystemStatus />
 					<AgenciesStatus />
 				</div>

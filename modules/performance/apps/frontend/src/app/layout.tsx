@@ -4,8 +4,8 @@ import { AgenciesContextProvider } from '@/contexts/Agencies.context';
 import { DatesContextProvider } from '@/contexts/Dates.context';
 import { HomeContextProvider } from '@/contexts/Home.context';
 import { NetworkContextProvider } from '@/contexts/Network.context';
+import { i18nNamespaces } from '@/i18n/resources';
 import { ThemeProviders } from '@/providers/theme-providers';
-import ptTranslations from '@/translations/pt.json';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next';
@@ -22,9 +22,9 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider>
+		<BaseProvider i18n={i18nNamespaces}>
 			<NuqsAdapter>
-				<AppProvider i18n={[{ namespace: 'performance', pt: ptTranslations }]}>
+				<AppProvider>
 					<AppWrapper>
 						<ThemeProviders>
 							<NetworkContextProvider>
