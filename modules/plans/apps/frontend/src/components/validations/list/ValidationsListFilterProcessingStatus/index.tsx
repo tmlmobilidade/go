@@ -13,7 +13,7 @@ export function ValidationsListFilterProcessingStatus() {
 	// A. Setup variables
 
 	const validationsListContext = useValidationsListContext();
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -21,7 +21,7 @@ export function ValidationsListFilterProcessingStatus() {
 	return (
 		<FilterTypeList
 			active={validationsListContext.filters.processing_status.isActive}
-			label={t('validations.list.FilterBar.FilterProcessingStatus.label')}
+			label={t('plans:validations.list.FilterBar.FilterProcessingStatus.label')}
 			onChange={validationsListContext.filters.processing_status.set}
 			options={validationsListContext.filters.processing_status.options}
 			isMultiple

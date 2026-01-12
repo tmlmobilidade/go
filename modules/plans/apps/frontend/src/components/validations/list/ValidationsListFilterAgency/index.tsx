@@ -13,7 +13,7 @@ export function ValidationsListFilterAgency() {
 	// A. Setup variables
 
 	const validationsListContext = useValidationsListContext();
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -21,7 +21,7 @@ export function ValidationsListFilterAgency() {
 	return (
 		<FilterTypeList
 			active={validationsListContext.filters.agency.isActive}
-			label={t('validations.list.FilterBar.FilterAgency.label')}
+			label={t('plans:validations.list.FilterBar.FilterAgency.label')}
 			onChange={validationsListContext.filters.agency.set}
 			options={validationsListContext.filters.agency.options}
 			isMultiple

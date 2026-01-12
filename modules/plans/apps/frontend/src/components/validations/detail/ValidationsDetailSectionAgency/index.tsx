@@ -14,7 +14,7 @@ export function ValidationsDetailSectionAgency() {
 	// A. Setup variables
 
 	const validationsDetailContext = useValidationsDetailContext();
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -25,8 +25,8 @@ export function ValidationsDetailSectionAgency() {
 
 	return (
 		<Collapsible
-			description={t('validations.detail.SectionAgency.description')}
-			title={t('validations.detail.SectionAgency.title')}
+			description={t('plans:validations.detail.SectionAgency.description')}
+			title={t('plans:validations.detail.SectionAgency.title')}
 		>
 			<Section gap="sm">
 				<AgencyDisplay data={validationsDetailContext.data.validation.gtfs_agency} />

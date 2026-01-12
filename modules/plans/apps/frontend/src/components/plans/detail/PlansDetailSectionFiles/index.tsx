@@ -16,22 +16,22 @@ export function PlanDetailSectionFiles() {
 	// A. Setup variables
 
 	const planDetailContext = usePlanDetailContext();
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	return (
 		<Collapsible
-			description={t('plans.detail.SectionFiles.description')}
-			title={t('plans.detail.SectionFiles.title')}
+			description={t('plans:plans.detail.SectionFiles.description')}
+			title={t('plans:plans.detail.SectionFiles.title')}
 		>
 
 			<Section gap="sm">
 				{planDetailContext.data.operation_file ? (
 					<FileComponent file={planDetailContext.data.operation_file} />
 				) : (
-					<Label>{t('plans.detail.SectionFiles.no_file_selected')}</Label>
+					<Label>{t('plans:plans.detail.SectionFiles.no_file_selected')}</Label>
 				)}
 			</Section>
 

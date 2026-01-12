@@ -16,18 +16,18 @@ export function ValidationsListHeader() {
 	// A. Setup variables
 
 	const validationsListContext = useValidationsListContext();
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>{t('validations.list.Header.title')}</Label>
+			<Label size="lg" caps singleLine>{t('plans:validations.list.Header.title')}</Label>
 			<Spacer />
 			<SearchInput onChange={validationsListContext.filters.search.set} value={validationsListContext.filters.search.value} />
 			<HasPermission action={PermissionCatalog.all.gtfs_validations.actions.create} scope={PermissionCatalog.all.gtfs_validations.scope}>
-				<Button label={t('validations.list.Header.new_validation_button')} leftSection={<IconPlus />} onClick={openCreateValidationModal} />
+				<Button label={t('plans:validations.list.Header.new_validation_button')} leftSection={<IconPlus />} onClick={openCreateValidationModal} />
 			</HasPermission>
 		</Toolbar>
 	);

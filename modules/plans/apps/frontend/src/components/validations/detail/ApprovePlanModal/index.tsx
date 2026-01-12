@@ -38,7 +38,7 @@ export default function ApprovePlanModal() {
 	// A. Setup variables
 
 	const plansCreateContext = usePlansCreateContext();
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -78,13 +78,13 @@ export default function ApprovePlanModal() {
 				<Grid columns="ab" gap="md">
 					<Button
 						disabled={plansCreateContext.flags.loading}
-						label={t('validations.detail.ApprovePlanModal.cancel_button')}
+						label={t('plans:validations.detail.ApprovePlanModal.cancel_button')}
 						onClick={() => closeModal(CREATE_PLAN_MODAL_ID)}
 						variant="secondary"
 					/>
 					<Button
 						icon={<IconRosetteDiscountCheckFilled />}
-						label={t('validations.detail.ApprovePlanModal.approve_plan_button')}
+						label={t('plans:validations.detail.ApprovePlanModal.approve_plan_button')}
 						loading={plansCreateContext.flags.loading}
 						onClick={plansCreateContext.actions.createPlan}
 					/>

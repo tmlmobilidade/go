@@ -18,21 +18,21 @@ export function SeverityTag({ label, severity }: SeverityTagProps) {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	if (severity === 'error') {
-		return <Tag label={label ?? t('common.SeverityTag.error')} variant="danger" filled />;
+		return <Tag label={label ?? t('plans:common.SeverityTag.error')} variant="danger" filled />;
 	}
 
 	if (severity === 'forbidden') {
-		return <Tag label={label ?? t('common.SeverityTag.forbidden')} variant="danger" filled />;
+		return <Tag label={label ?? t('plans:common.SeverityTag.forbidden')} variant="danger" filled />;
 	}
 
 	if (severity === 'warning') {
-		return <Tag label={label ?? t('common.SeverityTag.warning')} variant="warning" filled />;
+		return <Tag label={label ?? t('plans:common.SeverityTag.warning')} variant="warning" filled />;
 	}
 
 	//

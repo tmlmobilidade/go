@@ -16,15 +16,15 @@ export function PlanDetailSectionController() {
 	// A. Setup variables
 
 	const planDetailContext = usePlanDetailContext();
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	return (
 		<Collapsible
-			description={t('plans.detail.SectionController.description')}
-			title={t('plans.detail.SectionController.title')}
+			description={t('plans:plans.detail.SectionController.description')}
+			title={t('plans:plans.detail.SectionController.title')}
 		>
 			<Section gap="sm">
 
@@ -35,7 +35,7 @@ export function PlanDetailSectionController() {
 
 				<Button
 					disabled={planDetailContext.flags.isReadOnly}
-					label={t('plans.detail.SectionController.reprocess_plan_button')}
+					label={t('plans:plans.detail.SectionController.reprocess_plan_button')}
 					loading={planDetailContext.flags.isSaving}
 					onClick={planDetailContext.actions.controllerReprocessPlan}
 				/>

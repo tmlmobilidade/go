@@ -18,28 +18,28 @@ export function ValidationStatusTag({ status }: ValidationStatusTagProps) {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	if (status === 'waiting') {
-		return <Tag label={t('common.ValidationStatusTag.waiting')} variant="secondary" />;
+		return <Tag label={t('plans:common.ValidationStatusTag.waiting')} variant="secondary" />;
 	}
 
 	if (status === 'processing') {
-		return <Tag label={t('common.ValidationStatusTag.processing')} variant="primary" filled />;
+		return <Tag label={t('plans:common.ValidationStatusTag.processing')} variant="primary" filled />;
 	}
 
 	if (status === 'complete') {
-		return <Tag label={t('common.ValidationStatusTag.complete')} variant="success" filled />;
+		return <Tag label={t('plans:common.ValidationStatusTag.complete')} variant="success" filled />;
 	}
 
 	if (status === 'error') {
-		return <Tag label={t('common.ValidationStatusTag.error')} variant="danger" filled />;
+		return <Tag label={t('plans:common.ValidationStatusTag.error')} variant="danger" filled />;
 	}
 
-	return <Tag label={t('common.ValidationStatusTag.default')} variant="muted" />;
+	return <Tag label={t('plans:common.ValidationStatusTag.default')} variant="muted" />;
 
 	//
 }

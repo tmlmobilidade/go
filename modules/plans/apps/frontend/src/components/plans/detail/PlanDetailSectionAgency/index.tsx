@@ -14,7 +14,7 @@ export function PlanDetailSectionAgency() {
 	// A. Setup variables
 
 	const planDetailContext = usePlanDetailContext();
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -25,8 +25,8 @@ export function PlanDetailSectionAgency() {
 
 	return (
 		<Collapsible
-			description={t('plans.detail.SectionAgency.description')}
-			title={t('plans.detail.SectionAgency.title')}
+			description={t('plans:plans.detail.SectionAgency.description')}
+			title={t('plans:plans.detail.SectionAgency.title')}
 		>
 			<Section gap="sm">
 				<AgencyDisplay data={planDetailContext.data.plan.gtfs_agency} />

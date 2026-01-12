@@ -13,14 +13,14 @@ export function PlansListHeader() {
 	// A. Setup variables
 
 	const plansListContext = usePlansListContext();
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>{t('plans.list.Header.title')}</Label>
+			<Label size="lg" caps singleLine>{t('plans:plans.list.Header.title')}</Label>
 			<Spacer />
 			<SearchInput onChange={plansListContext.filters.search.set} value={plansListContext.filters.search.value} />
 		</Toolbar>

@@ -17,7 +17,7 @@ export function PlanDetailSectionPcgiLegacy() {
 
 	const meContext = useMeContext();
 	const planDetailContext = usePlanDetailContext();
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -34,15 +34,15 @@ export function PlanDetailSectionPcgiLegacy() {
 
 	return (
 		<Collapsible
-			description={t('plans.detail.SectionPcgiLegacy.description')}
-			title={t('plans.detail.SectionPcgiLegacy.title')}
+			description={t('plans:plans.detail.SectionPcgiLegacy.description')}
+			title={t('plans:plans.detail.SectionPcgiLegacy.title')}
 		>
 			<Section gap="sm">
 				<TextInput
 					key={planDetailContext.data.form.key('pcgi_legacy.operation_plan_id')}
-					label={t('plans.detail.SectionPcgiLegacy.operation_plan_id_label')}
+					label={t('plans:plans.detail.SectionPcgiLegacy.operation_plan_id_label')}
 					miw="50%"
-					placeholder={t('plans.detail.SectionPcgiLegacy.operation_plan_id_placeholder')}
+					placeholder={t('plans:plans.detail.SectionPcgiLegacy.operation_plan_id_placeholder')}
 					{...planDetailContext.data.form.getInputProps('pcgi_legacy.operation_plan_id')}
 					readOnly={planDetailContext.flags.isReadOnly || !canEdit}
 				/>

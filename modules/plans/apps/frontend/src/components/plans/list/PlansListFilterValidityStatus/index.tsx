@@ -13,7 +13,7 @@ export function PlansListFilterValidityStatus() {
 	// A. Setup variables
 
 	const plansListContext = usePlansListContext();
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -21,7 +21,7 @@ export function PlansListFilterValidityStatus() {
 	return (
 		<FilterTypeList
 			active={plansListContext.filters.validity_status.isActive}
-			label={t('plans.list.FilterBar.FilterValidityStatus.label')}
+			label={t('plans:plans.list.FilterBar.FilterValidityStatus.label')}
 			onChange={plansListContext.filters.validity_status.set}
 			options={plansListContext.filters.validity_status.options}
 			withToggleAll

@@ -37,7 +37,7 @@ export default function RequestApprovalModal() {
 	// A. Setup variables
 
 	const plansCreateContext = usePlansCreateContext();
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -77,12 +77,12 @@ export default function RequestApprovalModal() {
 				<Grid columns="ab" gap="md">
 					<Button
 						disabled={plansCreateContext.flags.loading}
-						label={t('validations.detail.RequestApprovalModal.cancel_button')}
+						label={t('plans:validations.detail.RequestApprovalModal.cancel_button')}
 						onClick={() => closeModal(REQUEST_APPROVAL_MODAL_ID)}
 						variant="secondary"
 					/>
 					<Button
-						label={t('validations.detail.RequestApprovalModal.request_approval_button')}
+						label={t('plans:validations.detail.RequestApprovalModal.request_approval_button')}
 						loading={plansCreateContext.flags.loading}
 						onClick={plansCreateContext.actions.requestApproval}
 					/>

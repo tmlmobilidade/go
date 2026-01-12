@@ -16,7 +16,7 @@ export function PlanDetailSectionFeedInfo() {
 
 	const meContext = useMeContext();
 	const planDetailContext = usePlanDetailContext();
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -33,8 +33,8 @@ export function PlanDetailSectionFeedInfo() {
 
 	return (
 		<Collapsible
-			description={t('plans.detail.SectionFeedInfo.description')}
-			title={t('plans.detail.SectionFeedInfo.title')}
+			description={t('plans:plans.detail.SectionFeedInfo.description')}
+			title={t('plans:plans.detail.SectionFeedInfo.title')}
 		>
 
 			<Section gap="sm">

@@ -23,7 +23,7 @@ export function ValidationsDetailHeader() {
 
 	const router = useRouter();
 	const validationsDetailContext = useValidationsDetailContext();
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// C. Handle actions
@@ -63,7 +63,7 @@ export function ValidationsDetailHeader() {
 				>
 					<Button
 						disabled={validationsDetailContext.flags.loading || validationsDetailContext.data.validation.notification_sent}
-						label={t('validations.detail.Header.request_approval_button')}
+						label={t('plans:validations.detail.Header.request_approval_button')}
 						onClick={handleRequestApproval}
 						variant="secondary"
 					/>
@@ -79,7 +79,7 @@ export function ValidationsDetailHeader() {
 				>
 					<Button
 						disabled={validationsDetailContext.flags.loading}
-						label={t('validations.detail.Header.approve_plan_button')}
+						label={t('plans:validations.detail.Header.approve_plan_button')}
 						loading={validationsDetailContext.flags.loading}
 						onClick={handleApprovePlan}
 					/>

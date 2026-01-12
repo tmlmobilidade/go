@@ -19,34 +19,34 @@ export function ValidationsDetailSectionResult() {
 	// A. Setup variables
 
 	const validationsDetailContext = useValidationsDetailContext();
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	const columns: DataTableColumn<GTFSValidatorMessage>[] = [
 		{
 			accessor: 'file_name',
-			title: t('validations.detail.SectionResult.Table.columns.file_name'),
+			title: t('plans:validations.detail.SectionResult.Table.columns.file_name'),
 			width: 180,
 		},
 		{
 			accessor: 'field',
-			title: t('validations.detail.SectionResult.Table.columns.field'),
+			title: t('plans:validations.detail.SectionResult.Table.columns.field'),
 			width: 250,
 		},
 		{
 			accessor: 'severity',
 			render: item => <SeverityTag severity={item.severity} />,
-			title: t('validations.detail.SectionResult.Table.columns.severity'),
+			title: t('plans:validations.detail.SectionResult.Table.columns.severity'),
 			width: 100,
 		},
 		{
 			accessor: 'message',
-			title: t('validations.detail.SectionResult.Table.columns.message'),
+			title: t('plans:validations.detail.SectionResult.Table.columns.message'),
 			width: 500,
 		},
 		{
 			accessor: 'rows',
 			render: item => <ValidationsDetailSectionResultCellRows rows={item.rows} />,
-			title: t('validations.detail.SectionResult.Table.columns.rows'),
+			title: t('plans:validations.detail.SectionResult.Table.columns.rows'),
 			width: 600,
 		},
 	];
@@ -79,8 +79,8 @@ export function ValidationsDetailSectionResult() {
 	return (
 		<Collapsible
 			defaultOpen={true}
-			description={t('validations.detail.SectionResult.description')}
-			title={t('validations.detail.SectionResult.title')}
+			description={t('plans:validations.detail.SectionResult.description')}
+			title={t('plans:validations.detail.SectionResult.title')}
 		>
 			<Section flexDirection="row" gap="md">
 				<SeverityTag label={errorCountLabel} severity="error" />

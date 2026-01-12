@@ -15,15 +15,15 @@ export function ValidationsDetailSectionFeedInfo() {
 	// A. Setup variables
 
 	const validationsDetailContext = useValidationsDetailContext();
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	return (
 		<Collapsible
-			description={t('validations.detail.SectionFeedInfo.description')}
-			title={t('validations.detail.SectionFeedInfo.title')}
+			description={t('plans:validations.detail.SectionFeedInfo.description')}
+			title={t('plans:validations.detail.SectionFeedInfo.title')}
 		>
 
 			<Section gap="sm">
@@ -34,7 +34,7 @@ export function ValidationsDetailSectionFeedInfo() {
 				{validationsDetailContext.data.file ? (
 					<FileComponent file={validationsDetailContext.data.file} />
 				) : (
-					<Label>{t('validations.detail.SectionFeedInfo.no_file_selected')}</Label>
+					<Label>{t('plans:validations.detail.SectionFeedInfo.no_file_selected')}</Label>
 				)}
 			</Section>
 

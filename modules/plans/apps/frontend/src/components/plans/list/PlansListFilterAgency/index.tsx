@@ -13,7 +13,7 @@ export function PlansListFilterAgency() {
 	// A. Setup variables
 
 	const plansListContext = usePlansListContext();
-	const { t } = useTranslation('plans');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -21,7 +21,7 @@ export function PlansListFilterAgency() {
 	return (
 		<FilterTypeList
 			active={plansListContext.filters.agency.isActive}
-			label={t('plans.list.FilterBar.FilterAgency.label')}
+			label={t('plans:plans.list.FilterBar.FilterAgency.label')}
 			onChange={plansListContext.filters.agency.set}
 			options={plansListContext.filters.agency.options}
 			isMultiple
