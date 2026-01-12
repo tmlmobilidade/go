@@ -462,6 +462,18 @@
 				"agency": {
 					"label": "Operador"
 				},
+				"analysis_ended_at_last_stop": {
+					"label": "Fim na Última Paragem"
+				},
+				"analysis_expected_apex_validation_interval": {
+					"label": "Intervalo Validações"
+				},
+				"analysis_simple_three_vehicle_events": {
+					"label": "3 Momentos"
+				},
+				"analysis_transaction_sequentiality": {
+					"label": "Sequencialidade APEX"
+				},
 				"date_range": {
 					"label": "Intervalo de datas"
 				},

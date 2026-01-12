@@ -4,6 +4,7 @@ import { useRidesListContext } from '@/contexts/RidesList.context';
 import { RIDE_ANALYSIS_GRADE_OPTIONS } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,6 +15,7 @@ export function RidesListFilterAnalysisExpectedApexValidationInterval() {
 	// A. Setup variables
 
 	const ridesListContext = useRidesListContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -44,7 +46,7 @@ export function RidesListFilterAnalysisExpectedApexValidationInterval() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Intervalo Validações"
+			label={t('controller:rides.list.FilterBar.analysis_expected_apex_validation_interval.label')}
 			onChange={ridesListContext.actions.setFilterAnalysisExpectedApexValidationInterval}
 			options={parsedOptions}
 			withToggleAll

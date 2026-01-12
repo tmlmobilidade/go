@@ -16,7 +16,7 @@ export function RidesListFilterAgency() {
 
 	const agenciesContext = useAgenciesContext();
 	const ridesListContext = useRidesListContext();
-	const { t } = useTranslation('controller');
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -49,7 +49,7 @@ export function RidesListFilterAgency() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('rides.list.FilterBar.agency.label')}
+			label={t('controller:rides.list.FilterBar.agency.label')}
 			onChange={ridesListContext.actions.setFilterAgency}
 			options={parsedOptions}
 			withToggleAll

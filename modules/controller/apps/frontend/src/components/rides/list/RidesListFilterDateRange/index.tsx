@@ -14,7 +14,7 @@ export function RidesListFilterDateRange() {
 	// A. Setup variables
 
 	const ridesListContext = useRidesListContext();
-	const { t } = useTranslation('controller');
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -34,7 +34,7 @@ export function RidesListFilterDateRange() {
 		<FilterTypeDateRange
 			active={true}
 			endDate={ridesListContext.filters.date_end as UnixTimestamp}
-			label={t('rides.list.FilterBar.date_range.label')}
+			label={t('controller:rides.list.FilterBar.date_range.label')}
 			onEndDateChange={handleEndDateChange}
 			onStartDateChange={handleStartDateChange}
 			startDate={ridesListContext.filters.date_start as UnixTimestamp}

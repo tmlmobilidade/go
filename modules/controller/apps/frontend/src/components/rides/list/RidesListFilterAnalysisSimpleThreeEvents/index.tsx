@@ -4,6 +4,7 @@ import { useRidesListContext } from '@/contexts/RidesList.context';
 import { RIDE_ANALYSIS_GRADE_OPTIONS } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,6 +15,7 @@ export function RidesListFilterAnalysisSimpleThreeEvents() {
 	// A. Setup variables
 
 	const ridesListContext = useRidesListContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -44,7 +46,7 @@ export function RidesListFilterAnalysisSimpleThreeEvents() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="3 Momentos"
+			label={t('controller:rides.list.FilterBar.analysis_simple_three_vehicle_events.label')}
 			onChange={ridesListContext.actions.setFilterAnalysisSimpleThreeVehicleEvents}
 			options={parsedOptions}
 			withToggleAll

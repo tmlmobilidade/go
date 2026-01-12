@@ -15,7 +15,7 @@ export function RidesListFilterDelayStatus() {
 	// A. Setup variables
 
 	const ridesListContext = useRidesListContext();
-	const { t } = useTranslation('controller');
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -46,7 +46,7 @@ export function RidesListFilterDelayStatus() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('rides.list.FilterBar.delay_status.label')}
+			label={t('controller:rides.list.FilterBar.delay_status.label')}
 			onChange={ridesListContext.actions.setFilterDelayStatus}
 			options={parsedOptions}
 			withToggleAll

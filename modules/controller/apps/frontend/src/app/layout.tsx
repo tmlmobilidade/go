@@ -1,12 +1,11 @@
 /* * */
 
+import ptTranslations from '@/i18n/namespaces/controller/pt.json';
 import { DataProviders } from '@/providers/data-providers';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next';
 import { type PropsWithChildren } from 'react';
-
-import ptTranslations from '../translations/pt.json';
 
 /* * */
 
@@ -19,8 +18,8 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider>
-			<AppProvider i18n={[{ namespace: 'controller', pt: ptTranslations }]}>
+		<BaseProvider i18n={[{ namespace: 'controller', pt: ptTranslations }]}>
+			<AppProvider>
 				<NuqsAdapter>
 					<DataProviders>
 						<AppWrapper>

@@ -15,7 +15,7 @@ export function RidesListFilterAcceptanceStatus() {
 	// A. Setup variables
 
 	const ridesListContext = useRidesListContext();
-	const { t } = useTranslation('controller');
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -46,7 +46,7 @@ export function RidesListFilterAcceptanceStatus() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('rides.list.FilterBar.acceptance_status.label')}
+			label={t('controller:rides.list.FilterBar.acceptance_status.label')}
 			onChange={ridesListContext.actions.setFilterAcceptanceStatus}
 			options={parsedOptions}
 			withToggleAll
