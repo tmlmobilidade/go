@@ -4,6 +4,7 @@
 
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { Collapsible, Divider, Grid, NumberInput, Section, Text, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,6 +15,7 @@ export function AgencySectionFinacial() {
 	// A. Setup variables
 
 	const agencyDetailContext = useAgencyDetailContext();
+	const { t } = useTranslation();
 
 	const months = [
 		'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -30,23 +32,23 @@ export function AgencySectionFinacial() {
 
 	return (
 		<Collapsible
-			description="Informação financeira da agência"
-			title="Informação Financeira"
+			description={t('auth:agencies.detail.SectionFinancial.description')}
+			title={t('auth:agencies.detail.SectionFinancial.title')}
 		>
 			<Section gap="lg">
 				<Grid columns="ab" gap="lg">
 					<NumberInput
 						key={agencyDetailContext.data.form.key('financials.price_per_km')}
-						label="Preço por km"
-						placeholder="1.50"
+						label={t('auth:agencies.detail.SectionFinancial.fields.price_per_km.label')}
+						placeholder={t('auth:agencies.detail.SectionFinancial.fields.price_per_km.placeholder')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						step={0.01}
 						{...agencyDetailContext.data.form.getInputProps('financials.price_per_km')}
 					/>
 					<TextInput
 						defaultValue={totalVkmsPerYear.toLocaleString('pt-PT', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}
-						label="Total de km por ano"
-						placeholder="1000000"
+						label={t('auth:agencies.detail.SectionFinancial.fields.total_vkm_per_year.label')}
+						placeholder={t('auth:agencies.detail.SectionFinancial.fields.total_vkm_per_year.placeholder')}
 						readOnly
 					/>
 				</Grid>

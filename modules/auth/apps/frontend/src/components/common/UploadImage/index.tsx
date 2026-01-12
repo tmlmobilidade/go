@@ -1,6 +1,7 @@
 import { DeleteButton, FileButton, Label, useToast } from '@tmlmobilidade/ui';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -30,6 +31,8 @@ export function UploadImage({
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const [preview, setPreview] = useState<null | string>(imageUrl ?? null);
 
 	useEffect(() => {
@@ -42,8 +45,8 @@ export function UploadImage({
 	const handleFileChange = (file: File) => {
 		if (file.size > maxFileSize) {
 			useToast.error({
-				message: 'O tamanho do ficheiro excede o limite permitido.',
-				title: 'Erro ao carregar imagem',
+				message: t('auth:common.UploadImage.Error.message'),
+				title: t('auth:common.UploadImage.Error.title'),
 			});
 			return;
 		}
@@ -71,8 +74,8 @@ export function UploadImage({
 					{onDelete && (
 						<div className={styles.deleteContainer}>
 							<DeleteButton
-								confirmMessage="Tem certeza que deseja apagar a imagem?"
-								confirmTitle="Apagar imagem"
+								confirmMessage={t('auth:common.UploadImage.DeleteButton.confirm.message')}
+								confirmTitle={t('auth:common.UploadImage.DeleteButton.confirm.title')}
 								onDelete={handleDelete}
 								showConfirmation
 							/>
@@ -82,7 +85,7 @@ export function UploadImage({
 			) : (
 				<FileButton
 					accept="image/png,image/jpeg,image/jpg"
-					label="Carregar imagem"
+					label={t('auth:common.UploadImage.FileButton.label')}
 					onFileChange={handleFileChange}
 				/>
 			)}

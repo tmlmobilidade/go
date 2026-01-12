@@ -8,6 +8,7 @@ import { HomeLink } from '@tmlmobilidade/types';
 import { Button, Collapsible, DataTable, DataTableColumn, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { openOrganizationQuickLinksModal } from '../OrganizationDetailQuickLinksModal';
 import { OrganizationDetailQuickLinksActions } from '../OrganizationSectionQuickLinksActions';
@@ -22,27 +23,29 @@ export function OrganizationDetailQuickLinks() {
 
 	const organizationDetailContext = useOrganizationsDetailContext();
 
+	const { t } = useTranslation();
+
 	const columns: DataTableColumn<HomeLink & { actions: React.ReactNode }>[] = [
 		{
 			accessor: 'title',
-			title: 'Nome',
+			title: t('auth:organizations.detail.QuickLinks.table.columns.name.label'),
 			width: 250,
 		},
 		{
 			accessor: 'href',
-			title: 'Link',
+			title: t('auth:organizations.detail.QuickLinks.table.columns.link.label'),
 			width: 400,
 		},
 		{
 			accessor: 'icon',
 			render: item => iconMap[item.icon],
-			title: 'Ícone',
+			title: t('auth:organizations.detail.QuickLinks.table.columns.icon.label'),
 			width: 300,
 		},
 		{
 			accessor: 'actions',
 			render: item => item.actions,
-			title: 'Ações',
+			title: t('auth:organizations.detail.QuickLinks.table.columns.actions.label'),
 			width: 300,
 		},
 	];
@@ -91,18 +94,18 @@ export function OrganizationDetailQuickLinks() {
 
 	return (
 		<Collapsible
-			description="Links rápidos que aparecem na página inicial."
-			title="Links rápidos"
+			description={t('auth:organizations.detail.QuickLinks.description')}
+			title={t('auth:organizations.detail.QuickLinks.title')}
 		>
 			<Section gap="lg">
 				<Button
 					disabled={!organizationDetailContext.data.id}
-					label="Adicionar link rápido"
+					label={t('auth:organizations.detail.QuickLinks.AddQuickLinkButton.label')}
 					onClick={() => openOrganizationQuickLinksModal({ handleSubmit: handleSubmit })}
 					variant="primary"
 				/>
 				{!organizationDetailContext.data.id && (
-					<p>Crie primeiro a organização para adicionar links rápidos.</p>
+					<p>{t('auth:organizations.detail.QuickLinks.NoOrganizationLabel.label')}</p>
 				)}
 				{organizationDetailContext.data.id && (
 					<DataTable
