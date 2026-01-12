@@ -6,6 +6,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type WikiArticle } from '@tmlmobilidade/types';
 import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, TagGroup } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 /* * */
@@ -16,18 +17,20 @@ export function WikiList() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const router = useRouter();
 
 	const columns: DataTableColumn<WikiArticle>[] = [
 		{
 			accessor: 'title',
-			title: 'Título',
+			title: t('auth:home.Wiki.list.columns.title.label'),
 			width: 600,
 		},
 		{
 			accessor: 'tags',
 			render: item => <TagGroup limit={10} tags={item.tags.map(tag => ({ label: tag, variant: 'secondary' }))} />,
-			title: 'Categorias',
+			title: t('auth:home.Wiki.list.columns.category.label'),
 			width: 500,
 		},
 	];

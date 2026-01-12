@@ -3,6 +3,7 @@
 import { type OriginalStopType } from '@/original-stop.type.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { stops } from '@tmlmobilidade/interfaces';
+import { generateRandomString } from '@tmlmobilidade/strings';
 import { type Stop, StopSchema } from '@tmlmobilidade/types';
 
 /* * */
@@ -18,7 +19,7 @@ export async function seedFromGoV1() {
 		const originalStopsData = await originalStopsResponse.json() as OriginalStopType[];
 
 		const preparedStops = originalStopsData.map(originalStop => StopSchema.parse({
-			_id: originalStop.code,
+			_id: generateRandomString(),
 			created_at: Dates.now('Europe/Lisbon').unix_timestamp,
 			created_by: 'system',
 			district_id: '',
@@ -46,32 +47,32 @@ export async function seedFromGoV1() {
 		const deletedStopsResponse = await fetch('https://go.carrismetropolitana.pt/api/stops/public-deleted');
 		const deletedStopsData = await deletedStopsResponse.json() as OriginalStopType[];
 
-		const preparedDeletedStops = deletedStopsData.map(deletedStop => StopSchema.parse({
-			_id: deletedStop.code,
-			created_at: Dates.now('Europe/Lisbon').unix_timestamp,
-			created_by: 'system',
-			district_id: '',
-			is_deleted: true,
-			is_locked: false,
-			latitude: deletedStop.latitude,
-			legacy_id: deletedStop.code,
-			lifecycle_status: 'voided',
-			longitude: deletedStop.longitude,
-			municipality_id: '',
-			name: deletedStop.name,
-			new_name: null,
-			short_name: '-----',
-			tts_name: '',
-			updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
-			updated_by: 'system',
-		}));
+		// const preparedDeletedStops = deletedStopsData.map(deletedStop => StopSchema.parse({
+		// 	_id: deletedStop.code,
+		// 	created_at: Dates.now('Europe/Lisbon').unix_timestamp,
+		// 	created_by: 'system',
+		// 	district_id: '',
+		// 	is_deleted: true,
+		// 	is_locked: false,
+		// 	latitude: deletedStop.latitude,
+		// 	legacy_id: deletedStop.code,
+		// 	lifecycle_status: 'voided',
+		// 	longitude: deletedStop.longitude,
+		// 	municipality_id: '',
+		// 	name: deletedStop.name,
+		// 	new_name: null,
+		// 	short_name: '-----',
+		// 	tts_name: '',
+		// 	updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+		// 	updated_by: 'system',
+		// }));
 
 		//
 		// Insert stops into DB
 
-		await stops.insertMany([...preparedStops, ...preparedDeletedStops]);
+		await stops.insertMany([...preparedStops], { unsafe: true });
 		console.log(`Inserted ${preparedStops.length} stops`);
-		console.log(`Inserted ${preparedDeletedStops.length} deleted stops`);
+		// console.log(`Inserted ${preparedDeletedStops.length} deleted stops`);
 
 		//
 	}

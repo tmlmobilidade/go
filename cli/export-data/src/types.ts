@@ -5,7 +5,9 @@ import { type OperationalDate } from '@tmlmobilidade/types';
 /* * */
 
 export const exportTypeLabels = {
+	'hashed-shapes-geojson': '4.0. HashedShapes para GeoJSON',
 	'rides-raw': '2.0. Rides em bruto (SLAs)',
+	'sams-raw': '5.0. SAMs em bruto (Sequencialidade)',
 	'validations-by-line': '1.5. Validações por Line ID',
 	'validations-by-pattern': '1.4. Validações por Pattern ID',
 	'validations-by-stop': '1.3. Validações por Stop ID',
@@ -17,10 +19,19 @@ export const exportTypeLabels = {
 
 export type ExportType = keyof typeof exportTypeLabels;
 
+/**
+ * Export types that don't require filters or dates.
+ * These exports use their own specific input methods (e.g., IDs).
+ */
+export const exportTypesWithoutFilters: ExportType[] = [
+	'hashed-shapes-geojson',
+];
+
 /* * */
 
 export interface ExportContext {
 	_id: string
+	app_version: string
 	dates: {
 		end: OperationalDate
 		start: OperationalDate

@@ -8,6 +8,7 @@ import { type OrganizationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -22,16 +23,18 @@ export function OrganizationsList() {
 
 	const organizationsListContext = useOrganizationsListContext();
 
+	const { t } = useTranslation();
+
 	const columns: DataTableColumn<OrganizationNormalized>[] = [
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: '#ID',
+			title: t('auth:organizations.list.table.columns.id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'long_name',
-			title: 'Nome',
+			title: t('auth:organizations.list.table.columns.name.label'),
 			width: 600,
 		},
 	];

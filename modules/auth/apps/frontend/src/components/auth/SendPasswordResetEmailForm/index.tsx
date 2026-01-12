@@ -19,11 +19,11 @@ export function SendPasswordResetEmailForm() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const [emailValue, setEmailValue] = useQueryState('email', { clearOnDefault: true, defaultValue: '' });
-
-	const { t } = useTranslation('authenticationForm');
 
 	//
 	// B. Handle actions
@@ -43,11 +43,11 @@ export function SendPasswordResetEmailForm() {
 		setIsLoading(false);
 		// Handle response error
 		if (!response.isOk) {
-			useToast.error({ message: response.error ?? t('SendPasswordResetEmailForm.error.description'), title: t('SendPasswordResetEmailForm.error.title') });
+			useToast.error({ message: response.error ?? t('unauthenticated:SendPasswordResetEmailForm.error.description'), title: t('unauthenticated:SendPasswordResetEmailForm.error.title') });
 			return;
 		}
 		// Show success message and redirect to login page
-		useToast.success({ message: t('SendPasswordResetEmailForm.success.description'), title: t('SendPasswordResetEmailForm.success.title') });
+		useToast.success({ message: t('unauthenticated:SendPasswordResetEmailForm.success.description'), title: t('unauthenticated:SendPasswordResetEmailForm.success.title') });
 		window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
 	};
 
@@ -56,20 +56,20 @@ export function SendPasswordResetEmailForm() {
 
 	return (
 		<AuthenticationForm
-			description={t('SendPasswordResetEmailForm.description')}
-			footerLabel={t('SendPasswordResetEmailForm.footer.label')}
+			description={t('unauthenticated:SendPasswordResetEmailForm.description')}
+			footerLabel={t('unauthenticated:SendPasswordResetEmailForm.footer.label')}
 			footerUrl={PAGE_ROUTES.auth.LOGIN_LIST}
 			loading={isLoading}
 			onSubmit={handleSubmit}
 			submitDisabled={emailValue.length === 0}
-			submitLabel={t('SendPasswordResetEmailForm.submit.label')}
-			title={t('SendPasswordResetEmailForm.title')}
+			submitLabel={t('unauthenticated:SendPasswordResetEmailForm.submit.label')}
+			title={t('unauthenticated:SendPasswordResetEmailForm.title')}
 		>
 			<TextInput
 				key="email"
 				disabled={isLoading}
 				onChange={e => setEmailValue(e.target.value)}
-				placeholder={t('SendPasswordResetEmailForm.fields.email.placeholder')}
+				placeholder={t('unauthenticated:SendPasswordResetEmailForm.fields.email.placeholder')}
 				value={emailValue}
 			/>
 		</AuthenticationForm>
