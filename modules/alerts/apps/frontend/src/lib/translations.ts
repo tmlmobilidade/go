@@ -178,48 +178,48 @@ export const CauseEffectPairingDefaultAlert = {
 	},
 	DRIVER_ABSENCE: {
 		ACCESSIBILITY_ISSUE: {
-			message: 'Devido à ausência de motoristas, as linhas {lines} poderão sofrer um impacto na acessibilidade. Os passageiros com mobilidade reduzida deverão contactar a linha de apoio.',
-			title: '{lines} | Impacto na Acessibilidade - Ausência de Motoristas',
+			message: 'Devido a constrangimentos na operação, as linhas {lines} poderão sofrer um impacto na acessibilidade. Os passageiros com mobilidade reduzida deverão contactar a linha de apoio.',
+			title: '{lines} | Impacto na Acessibilidade - Constrangimentos na Operação',
 		},
 		ADDITIONAL_SERVICE: {
-			message: 'Devido à ausência de motoristas, foram implementados serviços adicionais nas linhas {lines}.',
-			title: '{lines} | Serviço Adicional - Ausência de Motoristas',
+			message: 'Devido a constrangimentos na operação, foram implementados serviços adicionais nas linhas {lines}.',
+			title: '{lines} | Serviço Adicional - Constrangimentos na Operação',
 		},
 		DETOUR: {
-			message: 'Devido à ausência de motoristas, as linhas {lines} realizam desvio de percurso.',
-			title: '{lines} | Desvio de Percurso - Ausência de Motoristas',
+			message: 'Devido a constrangimentos na operação, as linhas {lines} realizam desvio de percurso.',
+			title: '{lines} | Desvio de Percurso - Constrangimentos na Operação',
 		},
 		MODIFIED_SERVICE: {
-			message: 'Devido à ausência de motoristas, o serviço das linhas {lines} foi temporariamente modificado.',
-			title: '{lines} | Serviço Modificado - Ausência de Motoristas',
+			message: 'Devido a constrangimentos na operação, o serviço das linhas {lines} foi temporariamente modificado.',
+			title: '{lines} | Serviço Modificado - Constrangimentos na Operação',
 		},
 		NO_EFFECT: {
-			message: 'Apesar da ausência de motoristas, as linhas {lines} mantêm o seu funcionamento normal. Consulte os horários em tempo real na app ou site Carris Metropolitana.',
-			title: '{lines} | Sem Impacto no Serviço - Ausência de Motoristas',
+			message: 'Apesar dos constrangimentos na operação, as linhas {lines} mantêm o seu funcionamento normal. Consulte os horários em tempo real na app ou site Carris Metropolitana.',
+			title: '{lines} | Sem Impacto no Serviço - Constrangimentos na Operação',
 		},
 		NO_SERVICE: {
-			message: 'Devido à ausência de motoristas, as linhas {lines} encontram-se temporariamente fora de serviço. Pedimos a compreensão de todos.',
-			title: '{lines} | Serviço Suspenso - Ausência de Motoristas',
+			message: 'Devido a constrangimentos na operação, as linhas {lines} encontram-se temporariamente fora de serviço. Pedimos a compreensão de todos.',
+			title: '{lines} | Serviço Suspenso - Constrangimentos na Operação',
 		},
 		OTHER_EFFECT: {
-			message: 'Devido à ausência de motoristas, o funcionamento das linhas {lines} pode estar a ser afetado. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
-			title: '{lines} | Perturbação no Serviço - Ausência de Motoristas',
+			message: 'Devido a constrangimentos na operação, o funcionamento das linhas {lines} pode estar a ser afetado. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
+			title: '{lines} | Perturbação no Serviço - Constrangimentos na Operação',
 		},
 		REDUCED_SERVICE: {
-			message: 'Devido à ausência de motoristas, as linhas {lines} estão a funcionar de forma reduzida. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
-			title: '{lines} | Serviço Reduzido - Ausência de Motoristas',
+			message: 'Devido a constrangimentos na operação, as linhas {lines} estão a funcionar de forma reduzida. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
+			title: '{lines} | Serviço Reduzido - Constrangimentos na Operação',
 		},
 		SIGNIFICANT_DELAYS: {
-			message: 'Devido à ausência de motoristas, as linhas {lines} estão a sofrer atrasos significativos. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos',
-			title: '{lines} | Atrasos Significativos - Ausência de Motoristas',
+			message: 'Devido a constrangimentos na operação, as linhas {lines} estão a sofrer atrasos significativos. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos',
+			title: '{lines} | Atrasos Significativos - Constrangimentos na Operação',
 		},
 		STOP_MOVED: {
-			message: 'Devido à ausência de motoristas, uma paragem das linhas {lines} foi temporariamente relocalizada.',
-			title: '{lines} | Paragem Relocalizada - Ausência de Motoristas',
+			message: 'Devido a constrangimentos na operação, uma paragem das linhas {lines} foi temporariamente relocalizada.',
+			title: '{lines} | Paragem Relocalizada - Constrangimentos na Operação',
 		},
 		UNKNOWN_EFFECT: {
-			message: 'Devido à ausência de motoristas, o funcionamento das linhas {lines} poderá ser afetado. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
-			title: '{lines} | Impacto incerto - Ausência de Motoristas',
+			message: 'Devido a constrangimentos na operação, o funcionamento das linhas {lines} poderá ser afetado. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
+			title: '{lines} | Impacto incerto - Constrangimentos na Operação',
 		},
 	},
 	DRIVER_ISSUE: {
