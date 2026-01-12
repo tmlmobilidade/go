@@ -23,7 +23,7 @@ export function StopDetailsSectionPublicInformation() {
 	// B. Transform data
 
 	const availabilityStatusOptions = AvailabilityStatusSchema.options.map(value => ({
-		label: Translations.AVAILABILITY_STATUS[value],
+		label: t(`${Translations.AVAILABILITY_STATUS}.${value}`),
 		value: value,
 	}));
 

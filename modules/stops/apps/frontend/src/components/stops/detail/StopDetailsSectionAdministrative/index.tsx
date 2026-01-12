@@ -26,7 +26,7 @@ export function StopDetailsSectionAdministrative() {
 	// B. Transform data
 
 	const stopJurisdictionOptions = StopJurisdictionSchema.options.map(value => ({
-		label: Translations.JURISDICTION[value],
+		label: t(`${Translations.JURISDICTION}.${value}`),
 		value: value,
 	}));
 

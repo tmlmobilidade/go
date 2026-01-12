@@ -23,7 +23,7 @@ export function StopDetailsSectionGeneral() {
 	// B. Transform data
 
 	const lifecycleStatusItems = LifecycleStatusSchema.options.map(value => ({
-		label: t(Translations.LIFECYCLE_STATUS[value]),
+		label: t(`${Translations.LIFECYCLE_STATUS}.${value}`),
 		value: value,
 	}));
 

@@ -23,12 +23,12 @@ export function StopDetailsSectionInfrastructure() {
 	// B. Transform data
 
 	const availabilityStatusOptions = AvailabilityStatusSchema.options.map(value => ({
-		label: Translations.AVAILABILITY_STATUS[value],
+		label: t(`${Translations.AVAILABILITY_STATUS}.${value}`),
 		value: value,
 	}));
 
 	const roadTypeOptions = StopRoadTypeSchema.options.map(value => ({
-		label: Translations.ROAD_TYPE[value],
+		label: t(`${Translations.ROAD_TYPE}.${value}`),
 		value: value,
 	}));
 

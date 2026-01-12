@@ -23,7 +23,7 @@ export function StopDetailsSectionEquipment() {
 					{StopFacilitySchema.options.map(value => (
 						<StopDetailFacilityCheckbox
 							key={value}
-							label={t(Translations.FACILITIES[value])}
+							label={t(`${Translations.FACILITIES}.${value}`)}
 							value={value}
 							proposeable
 						/>
