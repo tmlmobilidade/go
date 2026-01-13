@@ -20,7 +20,7 @@ export function AnnotationsDetailHeader() {
 
 	const router = useRouter();
 	const annotationsDetailContext = useAnnotationsDetailContext();
-	const { t } = useTranslation('dates');
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -50,15 +50,15 @@ export function AnnotationsDetailHeader() {
 			<Button
 				disabled={!annotationsDetailContext.flags.canSave}
 				icon={<IconUpload size={28} />}
-				label={t('annotations.detail.Header.SaveButton.label')}
+				label={t('dates:annotations.detail.AnnotationsDetailHeader.SaveButton.label')}
 				loading={annotationsDetailContext.flags.isSaving}
 				onClick={annotationsDetailContext.actions.save}
 				variant="primary"
 			/>
 
 			<DeleteButton
-				confirmMessage={t('annotations.detail.Header.DeleteButton.confirm.message')}
-				confirmTitle={t('annotations.detail.Header.DeleteButton.confirm.title')}
+				confirmMessage={t('dates:annotations.detail.AnnotationsDetailHeader.DeleteButton.confirm.message')}
+				confirmTitle={t('dates:annotations.detail.AnnotationsDetailHeader.DeleteButton.confirm.title')}
 				isDisabled={!annotationsDetailContext.flags.canDelete}
 				onDelete={annotationsDetailContext.actions.delete}
 				showConfirmation

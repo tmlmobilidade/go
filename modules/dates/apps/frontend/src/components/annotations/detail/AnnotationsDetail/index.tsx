@@ -19,7 +19,7 @@ export function AnnotationsDetail() {
 	// A. Setup variables
 
 	const annotationsDetailContext = useAnnotationsDetailContext();
-	const { t } = useTranslation('dates');
+	const { t } = useTranslation();
 
 	// Bypass permissions to show all agency labels in read-only mode
 	// When editable, filter agencies based on user permissions
@@ -45,8 +45,8 @@ export function AnnotationsDetail() {
 				<Grid columns="a" gap="lg">
 
 					<TextInput
-						label={t('annotations.detail.BasicInfo.fields.title.label')}
-						placeholder={t('annotations.detail.BasicInfo.fields.title.placeholder')}
+						label={t('dates:annotations.detail.AnnotationCreateBasicInfo.fields.title.label')}
+						placeholder={t('dates:annotations.detail.AnnotationCreateBasicInfo.fields.title.placeholder')}
 						readOnly={annotationsDetailContext.flags.isReadOnly}
 						required={!AnnotationSchema.shape.title.isOptional()}
 						w="100%"
@@ -54,8 +54,8 @@ export function AnnotationsDetail() {
 					/>
 
 					<Textarea
-						label={t('annotations.detail.BasicInfo.fields.description.label')}
-						placeholder={t('annotations.detail.BasicInfo.fields.description.placeholder')}
+						label={t('dates:annotations.detail.AnnotationCreateBasicInfo.fields.description.label')}
+						placeholder={t('dates:annotations.detail.AnnotationCreateBasicInfo.fields.description.placeholder')}
 						readOnly={annotationsDetailContext.flags.isReadOnly}
 						required={!AnnotationSchema.shape.description.isOptional()}
 						w="100%"
@@ -65,7 +65,7 @@ export function AnnotationsDetail() {
 					<MultiSelect
 						data={agencyOptions}
 						disabled={annotationsDetailContext.flags.isReadOnly}
-						label={t('annotations.detail.BasicInfo.fields.agency_ids.label')}
+						label={t('dates:annotations.detail.AnnotationCreateBasicInfo.fields.agency_ids.label')}
 						value={annotationsDetailContext.data.form.values.agency_ids || []}
 						{...annotationsDetailContext.data.form.getInputProps('agency_ids')}
 					/>

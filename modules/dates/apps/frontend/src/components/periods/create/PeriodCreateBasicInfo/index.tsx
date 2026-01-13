@@ -17,7 +17,7 @@ export function PeriodCreateBasicInfo() {
 	// A. Setup variables
 
 	const periodCreateContext = usePeriodCreateContext();
-	const { t } = useTranslation('dates');
+	const { t } = useTranslation();
 
 	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.periods.actions.create],
@@ -30,8 +30,8 @@ export function PeriodCreateBasicInfo() {
 	return (
 		<Section gap="md">
 			<TextInput
-				label={t('periods.create.BasicInfo.fields.name.label')}
-				placeholder={t('periods.create.BasicInfo.fields.name.placeholder')}
+				label={t('dates:periods.create.PeriodCreateBasicInfo.fields.name.label')}
+				placeholder={t('dates:periods.create.PeriodCreateBasicInfo.fields.name.placeholder')}
 				required={!PeriodSchema.shape.name.isOptional()}
 				w="100%"
 				{...periodCreateContext.data.form.getInputProps('name')}
@@ -39,13 +39,13 @@ export function PeriodCreateBasicInfo() {
 
 			<Select
 				data={allAgencyOptions}
-				label={t('periods.create.BasicInfo.fields.agency_id.label')}
+				label={t('dates:periods.create.PeriodCreateBasicInfo.fields.agency_id.label')}
 				w="100%"
 				{...periodCreateContext.data.form.getInputProps('agency_id')}
 			/>
 
 			<ColorInput
-				label={t('periods.create.BasicInfo.fields.color.label')}
+				label={t('dates:periods.create.PeriodCreateBasicInfo.fields.color.label')}
 				required={!PeriodSchema.shape.color.isOptional()}
 				withEyeDropper={false}
 				{...periodCreateContext.data.form.getInputProps('color')}

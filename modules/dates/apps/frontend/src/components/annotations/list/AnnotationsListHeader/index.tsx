@@ -16,18 +16,18 @@ export function AnnotationsListHeader() {
 	// A. Setup variables
 
 	const annotationsListContext = useAnnotationsListContext();
-	const { t } = useTranslation('dates');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>{t('annotations.list.Header.title')}</Label>
+			<Label size="lg" caps singleLine>{t('dates:annotations.list.AnnotationsListHeader.title')}</Label>
 			<Spacer />
 			<SearchInput onChange={annotationsListContext.filters.search.set} value={annotationsListContext.filters.search.value} />
 			<HasPermission action={PermissionCatalog.all.annotations.actions.create} scope={PermissionCatalog.all.annotations.scope}>
-				<Button label={t('annotations.list.Header.NewButton.label')} leftSection={<IconPlus />} onClick={openCreateAnnotationModal} />
+				<Button label={t('dates:annotations.list.AnnotationsListHeader.NewButton.label')} leftSection={<IconPlus />} onClick={openCreateAnnotationModal} />
 			</HasPermission>
 		</Toolbar>
 	);

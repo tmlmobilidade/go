@@ -24,13 +24,13 @@ export function PeriodsList() {
 
 	const router = useRouter();
 	const periodsListContext = usePeriodsListContext();
-	const { t } = useTranslation('dates');
+	const { t } = useTranslation();
 
 	const columns: DataTableColumn<PeriodNormalized>[] = [
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: t('periods.list.Table.columns.id.label'),
+			title: t('dates:periods.list.PeriodsListTable.columns.id.label'),
 			width: 100,
 		},
 		{
@@ -41,13 +41,13 @@ export function PeriodsList() {
 					<Text>{item.name}</Text>
 				</div>
 			),
-			title: t('periods.list.Table.columns.name.label'),
+			title: t('dates:periods.list.PeriodsListTable.columns.name.label'),
 			width: 400,
 		},
 		{
 			accessor: 'agency_id_normalized',
 			render: item => <PeriodsListCellAgency agencyId={item.agency_id} />,
-			title: t('periods.list.Table.columns.agency_id.label'),
+			title: t('dates:periods.list.PeriodsListTable.columns.agency_id.label'),
 			width: 300,
 		},
 	];

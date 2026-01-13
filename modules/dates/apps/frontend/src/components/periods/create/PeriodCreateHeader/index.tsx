@@ -17,7 +17,7 @@ export function PeriodCreateHeader() {
 	// A. Setup variables
 
 	const periodCreateContext = usePeriodCreateContext();
-	const { t } = useTranslation('dates');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -25,13 +25,13 @@ export function PeriodCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreatePeriodModal} type="close" />
-			<Tag label={t('periods.create.Header.tag')} variant="muted" />
+			<Tag label={t('dates:periods.create.PeriodCreateHeader.tag')} variant="muted" />
 			<Label size="lg" singleLine>{periodCreateContext.data.form.values.name}</Label>
 			<Spacer />
 			<Button
 				disabled={!periodCreateContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
-				label={t('periods.create.Header.PublishButton.label')}
+				label={t('dates:periods.create.PeriodCreateHeader.PublishButton.label')}
 				loading={periodCreateContext.flags.isSaving}
 				onClick={periodCreateContext.actions.createPeriod}
 				variant="primary"

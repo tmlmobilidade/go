@@ -13,7 +13,7 @@ export function AnnotationsListFilterAgencies() {
 	// A. Setup variables
 
 	const annotationsListContext = useAnnotationsListContext();
-	const { t } = useTranslation('dates');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -21,7 +21,7 @@ export function AnnotationsListFilterAgencies() {
 	return (
 		<FilterTypeList
 			active={annotationsListContext.filters.agency.isActive}
-			label={t('annotations.list.FilterBar.agency.label')}
+			label={t('dates:annotations.list.AnnotationsListFilterAgencies.agency.label')}
 			onChange={annotationsListContext.filters.agency.set}
 			options={annotationsListContext.filters.agency.options}
 			isMultiple

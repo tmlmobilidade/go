@@ -17,7 +17,7 @@ export function PeriodAssignHeader() {
 	// A. Setup variables
 
 	const periodAssignContext = usePeriodAssignContext();
-	const { t } = useTranslation('dates');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -25,12 +25,12 @@ export function PeriodAssignHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeAsignPeriodModal} type="close" />
-			<Tag label={t('periods.calendar.AssignHeader.tag')} variant="muted" />
+			<Tag label={t('dates:periods.calendar.PeriodAssignHeader.tag')} variant="muted" />
 			<Spacer />
 			<Button
 				disabled={!periodAssignContext.flags.canSubmit}
 				icon={<IconUpload size={28} />}
-				label={t('periods.calendar.AssignHeader.AssignButton.label')}
+				label={t('dates:periods.calendar.PeriodAssignHeader.AssignButton.label')}
 				loading={periodAssignContext.flags.isSaving}
 				onClick={periodAssignContext.actions.handleAssign}
 				variant="primary"

@@ -16,18 +16,18 @@ export function PeriodsListHeader() {
 	// A. Setup variables
 
 	const periodsListContext = usePeriodsListContext();
-	const { t } = useTranslation('dates');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>{t('periods.list.Header.title')}</Label>
+			<Label size="lg" caps singleLine>{t('dates:periods.list.PeriodsListHeader.title')}</Label>
 			<Spacer />
 			<SearchInput onChange={periodsListContext.filters.search.set} value={periodsListContext.filters.search.value} />
 			<HasPermission action={PermissionCatalog.all.periods.actions.create} scope={PermissionCatalog.all.periods.scope}>
-				<Button label={t('periods.list.Header.NewButton.label')} leftSection={<IconPlus />} onClick={openCreatePeriodModal} />
+				<Button label={t('dates:periods.list.PeriodsListHeader.NewButton.label')} leftSection={<IconPlus />} onClick={openCreatePeriodModal} />
 			</HasPermission>
 		</Toolbar>
 	);

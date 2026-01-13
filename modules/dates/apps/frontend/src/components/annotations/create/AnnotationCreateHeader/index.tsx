@@ -17,7 +17,7 @@ export function AnnotationCreateHeader() {
 	// A. Setup variables
 
 	const annotationCreateContext = useAnnotationCreateContext();
-	const { t } = useTranslation('dates');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -25,13 +25,13 @@ export function AnnotationCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateAnnotationModal} type="close" />
-			<Tag label={t('annotations.create.Header.tag')} variant="muted" />
+			<Tag label={t('dates:annotations.create.AnnotationCreateHeader.tag')} variant="muted" />
 			<Label size="lg" singleLine>{annotationCreateContext.data.form.values.title}</Label>
 			<Spacer />
 			<Button
 				disabled={!annotationCreateContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
-				label={t('annotations.create.Header.PublishButton.label')}
+				label={t('dates:annotations.create.AnnotationCreateHeader.PublishButton.label')}
 				loading={annotationCreateContext.flags.isSaving}
 				onClick={annotationCreateContext.actions.createAnnotation}
 				variant="primary"

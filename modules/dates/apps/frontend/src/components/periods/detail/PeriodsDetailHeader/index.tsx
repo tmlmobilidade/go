@@ -20,7 +20,7 @@ export function PeriodsDetailHeader() {
 
 	const router = useRouter();
 	const periodsDetailContext = usePeriodsDetailContext();
-	const { t } = useTranslation('dates');
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -52,15 +52,15 @@ export function PeriodsDetailHeader() {
 			<Button
 				disabled={!periodsDetailContext.flags.canSave}
 				icon={<IconUpload size={28} />}
-				label={t('periods.detail.Header.SaveButton.label')}
+				label={t('dates:periods.detail.PeriodsDetailHeader.SaveButton.label')}
 				loading={periodsDetailContext.flags.isSaving}
 				onClick={periodsDetailContext.actions.save}
 				variant="primary"
 			/>
 
 			<DeleteButton
-				confirmMessage={t('periods.detail.Header.DeleteButton.confirm.message')}
-				confirmTitle={t('periods.detail.Header.DeleteButton.confirm.title')}
+				confirmMessage={t('dates:periods.detail.PeriodsDetailHeader.DeleteButton.confirm.message')}
+				confirmTitle={t('dates:periods.detail.PeriodsDetailHeader.DeleteButton.confirm.title')}
 				isDisabled={!periodsDetailContext.flags.canDelete}
 				isLoading={periodsDetailContext.flags.isDeleting}
 				onDelete={periodsDetailContext.actions.delete}

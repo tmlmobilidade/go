@@ -19,7 +19,7 @@ export function DatesSelector() {
 
 	const annotationsDetailContext = useAnnotationsDetailContext();
 	const isDisabled = !annotationsDetailContext.flags.canSave;
-	const { t } = useTranslation('dates');
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -50,7 +50,7 @@ export function DatesSelector() {
 
 	return (
 		<Section gap="md">
-			<Text>{t('annotations.detail.DatesSelector.title')}</Text>
+			<Text>{t('dates:annotations.detail.AnnotationsDatesSelector.title')}</Text>
 
 			<Calendar
 				getDayProps={date => ({

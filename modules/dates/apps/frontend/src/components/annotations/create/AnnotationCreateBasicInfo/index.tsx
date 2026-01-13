@@ -17,7 +17,7 @@ export function AnnotationCreateBasicInfo() {
 	// A. Setup variables
 
 	const annotationCreateContext = useAnnotationCreateContext();
-	const { t } = useTranslation('dates');
+	const { t } = useTranslation();
 
 	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.annotations.actions.create],
@@ -30,17 +30,17 @@ export function AnnotationCreateBasicInfo() {
 	return (
 		<Section gap="md">
 			<TextInput
-				label={t('annotations.create.BasicInfo.fields.title.label')}
-				placeholder={t('annotations.create.BasicInfo.fields.title.placeholder')}
+				label={t('dates:annotations.create.AnnotationCreateBasicInfo.fields.title.label')}
+				placeholder={t('dates:annotations.create.AnnotationCreateBasicInfo.fields.title.placeholder')}
 				required={!AnnotationSchema.shape.title.isOptional()}
 				w="100%"
 				{...annotationCreateContext.data.form.getInputProps('title')}
 			/>
 
 			<Textarea
-				label={t('annotations.create.BasicInfo.fields.description.label')}
+				label={t('dates:annotations.create.AnnotationCreateBasicInfo.fields.description.label')}
 				minRows={2}
-				placeholder={t('annotations.create.BasicInfo.fields.description.placeholder')}
+				placeholder={t('dates:annotations.create.AnnotationCreateBasicInfo.fields.description.placeholder')}
 				required={!AnnotationSchema.shape.description.isOptional()}
 				w="100%"
 				{...annotationCreateContext.data.form.getInputProps('description')}
@@ -48,7 +48,7 @@ export function AnnotationCreateBasicInfo() {
 
 			<MultiSelect
 				data={allAgencyOptions}
-				label={t('annotations.create.BasicInfo.fields.agency_ids.label')}
+				label={t('dates:annotations.create.AnnotationCreateBasicInfo.fields.agency_ids.label')}
 				value={annotationCreateContext.data.form.values.agency_ids || []}
 				w="100%"
 				{...annotationCreateContext.data.form.getInputProps('agency_ids')}

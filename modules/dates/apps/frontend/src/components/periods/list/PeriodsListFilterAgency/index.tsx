@@ -13,7 +13,7 @@ export function PeriodsListFilterAgency() {
 	// A. Setup variables
 
 	const periodsListContext = usePeriodsListContext();
-	const { t } = useTranslation('dates');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -21,7 +21,7 @@ export function PeriodsListFilterAgency() {
 	return (
 		<FilterTypeList
 			active={periodsListContext.filters.agency.isActive}
-			label={t('periods.list.FilterBar.agency.label')}
+			label={t('dates:periods.list.PeriodsListFilterAgencies.agency.label')}
 			onChange={periodsListContext.filters.agency.set}
 			options={periodsListContext.filters.agency.options}
 			withToggleAll

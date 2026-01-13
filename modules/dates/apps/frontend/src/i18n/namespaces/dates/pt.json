@@ -1,7 +1,7 @@
 {
 	"annotations": {
 		"create": {
-			"BasicInfo": {
+			"AnnotationCreateBasicInfo": {
 				"fields": {
 					"agency_ids": {
 						"label": "Operadores afetados"
@@ -16,7 +16,7 @@
 					}
 				}
 			},
-			"Header": {
+			"AnnotationCreateHeader": {
 				"PublishButton": {
 					"label": "Publicar"
 				},
@@ -24,7 +24,7 @@
 			}
 		},
 		"detail": {
-			"BasicInfo": {
+			"AnnotationCreateBasicInfo": {
 				"fields": {
 					"agency_ids": {
 						"label": "Operadores afetados"
@@ -39,10 +39,10 @@
 					}
 				}
 			},
-			"DatesSelector": {
+			"AnnotationsDatesSelector": {
 				"title": "Selecione as datas da ocorrência"
 			},
-			"Header": {
+			"AnnotationsDetailHeader": {
 				"DeleteButton": {
 					"confirm": {
 						"message": "Tem a certeza que deseja apagar esta ocorrência? Esta ação não pode ser revertida.",
@@ -55,18 +55,18 @@
 			}
 		},
 		"list": {
-			"FilterBar": {
+			"AnnotationsListFilterAgencies": {
 				"agency": {
 					"label": "Operadores"
 				}
 			},
-			"Header": {
+			"AnnotationsListHeader": {
 				"NewButton": {
 					"label": "Nova anotação"
 				},
 				"title": "Anotações"
 			},
-			"Table": {
+			"AnnotationsListTable": {
 				"columns": {
 					"agency_ids": {
 						"label": "Operadores"
@@ -134,7 +134,7 @@
 	},
 	"periods": {
 		"calendar": {
-			"AssignContent": {
+			"PeriodAssignContent": {
 				"AssignmentMode": {
 					"create": {
 						"label": "Criar Novo Período"
@@ -178,7 +178,7 @@
 					"title": "Selecionar Período"
 				}
 			},
-			"AssignHeader": {
+			"PeriodAssignHeader": {
 				"AssignButton": {
 					"label": "Atribuir Período"
 				},
@@ -186,7 +186,7 @@
 			}
 		},
 		"create": {
-			"BasicInfo": {
+			"PeriodCreateBasicInfo": {
 				"fields": {
 					"agency_id": {
 						"label": "Operador"
@@ -200,7 +200,7 @@
 					}
 				}
 			},
-			"Header": {
+			"PeriodCreateHeader": {
 				"PublishButton": {
 					"label": "Publicar"
 				},
@@ -208,7 +208,7 @@
 			}
 		},
 		"detail": {
-			"BasicInfo": {
+			"PeriodsDetailBasicInfo": {
 				"AssignDatesButton": {
 					"label": "Atribuir Datas"
 				},
@@ -225,7 +225,7 @@
 					}
 				}
 			},
-			"Header": {
+			"PeriodsDetailHeader": {
 				"DeleteButton": {
 					"confirm": {
 						"message": "Tem a certeza que deseja apagar este período? Esta ação não pode ser revertida.",
@@ -238,18 +238,18 @@
 			}
 		},
 		"list": {
-			"FilterBar": {
+			"PeriodsListFilterAgencies": {
 				"agency": {
 					"label": "Operador"
 				}
 			},
-			"Header": {
+			"PeriodsListHeader": {
 				"NewButton": {
 					"label": "Novo período"
 				},
 				"title": "Períodos"
 			},
-			"Table": {
+			"PeriodsListTable": {
 				"columns": {
 					"agency_id": {
 						"label": "Operador"

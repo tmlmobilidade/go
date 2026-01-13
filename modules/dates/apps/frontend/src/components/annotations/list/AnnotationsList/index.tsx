@@ -26,30 +26,30 @@ export function AnnotationsList() {
 	const params = useParams<{ id?: string }>();
 
 	const annotationsListContext = useAnnotationsListContext();
-	const { t } = useTranslation('dates');
+	const { t } = useTranslation();
 
 	const columns: DataTableColumn<AnnotationNormalized>[] = [
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: t('annotations.list.Table.columns.id.label'),
+			title: t('dates:annotations.list.AnnotationsListTable.columns.id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'title',
-			title: t('annotations.list.Table.columns.title.label'),
+			title: t('dates:annotations.list.AnnotationsListTable.columns.title.label'),
 			width: 400,
 		},
 		{
 			accessor: 'agency_ids_normalized',
 			render: item => <AnnotationsListCellAgencies agencyIds={item.agency_ids} />,
-			title: t('annotations.list.Table.columns.agency_ids.label'),
+			title: t('dates:annotations.list.AnnotationsListTable.columns.agency_ids.label'),
 			width: 200,
 		},
 		{
 			accessor: 'dates',
 			render: item => <AnnotationsListCellDates dates={item.dates} />,
-			title: t('annotations.list.Table.columns.dates.label'),
+			title: t('dates:annotations.list.AnnotationsListTable.columns.dates.label'),
 			width: 500,
 		},
 	];
