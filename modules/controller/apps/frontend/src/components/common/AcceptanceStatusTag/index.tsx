@@ -18,22 +18,22 @@ interface AcceptanceStatusTagProps {
 export const AcceptanceStatusProps = Object.freeze({
 	accepted: {
 		icon: <IconCheck />,
-		label: 'controller:rides.detail.RidesDetailAcceptanceStatusTag.details.accepted',
+		label: 'controller:rides.detail.RidesDetailAcceptanceStatusTag.accepted',
 		variant: 'success',
 	},
 	justification_required: {
 		icon: <IconAlertCircle />,
-		label: 'controller:rides.detail.RidesDetailAcceptanceStatusTag.details.justification_required',
+		label: 'controller:rides.detail.RidesDetailAcceptanceStatusTag.justification_required',
 		variant: 'warning',
 	},
 	rejected: {
 		icon: <IconX />,
-		label: 'controller:rides.detail.RidesDetailAcceptanceStatusTag.details.rejected',
+		label: 'controller:rides.detail.RidesDetailAcceptanceStatusTag.rejected',
 		variant: 'danger',
 	},
 	under_review: {
 		icon: <IconClock />,
-		label: 'controller:rides.detail.RidesDetailAcceptanceStatusTag.details.under_review',
+		label: 'controller:rides.detail.RidesDetailAcceptanceStatusTag.under_review',
 		variant: 'secondary',
 	},
 } as const);
