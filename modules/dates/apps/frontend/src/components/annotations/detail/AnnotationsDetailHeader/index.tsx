@@ -8,6 +8,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Button, CloseButton, DeleteButton, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -19,6 +20,7 @@ export function AnnotationsDetailHeader() {
 
 	const router = useRouter();
 	const annotationsDetailContext = useAnnotationsDetailContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -48,15 +50,15 @@ export function AnnotationsDetailHeader() {
 			<Button
 				disabled={!annotationsDetailContext.flags.canSave}
 				icon={<IconUpload size={28} />}
-				label="Guardar"
+				label={t('dates:annotations.detail.AnnotationsDetailHeader.SaveButton.label')}
 				loading={annotationsDetailContext.flags.isSaving}
 				onClick={annotationsDetailContext.actions.save}
 				variant="primary"
 			/>
 
 			<DeleteButton
-				confirmMessage="Tem a certeza que deseja apagar esta ocorrência? Esta ação não pode ser revertida."
-				confirmTitle="Apagar Anotação"
+				confirmMessage={t('dates:annotations.detail.AnnotationsDetailHeader.DeleteButton.confirm.message')}
+				confirmTitle={t('dates:annotations.detail.AnnotationsDetailHeader.DeleteButton.confirm.title')}
 				isDisabled={!annotationsDetailContext.flags.canDelete}
 				onDelete={annotationsDetailContext.actions.delete}
 				showConfirmation

@@ -1,0 +1,267 @@
+{
+	"annotations": {
+		"create": {
+			"AnnotationCreateBasicInfo": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores afetados"
+					},
+					"description": {
+						"label": "Descrição",
+						"placeholder": "Descreva o evento ou observação..."
+					},
+					"title": {
+						"label": "Título",
+						"placeholder": "Ex: Greve de transportes"
+					}
+				}
+			},
+			"AnnotationCreateHeader": {
+				"PublishButton": {
+					"label": "Publicar"
+				},
+				"tag": "Nova Anotação"
+			}
+		},
+		"detail": {
+			"AnnotationCreateBasicInfo": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores afetados"
+					},
+					"description": {
+						"label": "Descrição",
+						"placeholder": "Descrição da ocorrência"
+					},
+					"title": {
+						"label": "Título",
+						"placeholder": "Ex: Greve de transportes"
+					}
+				}
+			},
+			"AnnotationsDatesSelector": {
+				"title": "Selecione as datas da ocorrência"
+			},
+			"AnnotationsDetailHeader": {
+				"DeleteButton": {
+					"confirm": {
+						"message": "Tem a certeza que deseja apagar esta ocorrência? Esta ação não pode ser revertida.",
+						"title": "Apagar Anotação"
+					}
+				},
+				"SaveButton": {
+					"label": "Guardar"
+				}
+			}
+		},
+		"list": {
+			"AnnotationsListFilterAgencies": {
+				"agency": {
+					"label": "Operadores"
+				}
+			},
+			"AnnotationsListHeader": {
+				"NewButton": {
+					"label": "Nova anotação"
+				},
+				"title": "Anotações"
+			},
+			"AnnotationsListTable": {
+				"columns": {
+					"agency_ids": {
+						"label": "Operadores"
+					},
+					"dates": {
+						"label": "Datas"
+					},
+					"id": {
+						"label": "#ID"
+					},
+					"title": {
+						"label": "Título"
+					}
+				}
+			}
+		}
+	},
+	"detail": {
+		"RideAnalysisAnalysisResult": {
+			"AT_MOST_TWO_DRIVER_IDS": {
+				"description": "Uma circulação pode ter no máximo dois IDs de motorista diferentes.",
+				"title": "No máximo dois motoristas"
+			},
+			"AT_MOST_TWO_VEHICLE_IDS": {
+				"description": "Uma circulação pode ter no máximo dois IDs de veículo diferentes.",
+				"title": "No máximo dois veículos"
+			},
+			"AVG_INTERVAL_VEHICLE_EVENTS": {
+				"description": "",
+				"title": "AVG_INTERVAL_VEHICLE_EVENTS"
+			},
+			"EXCESSIVE_VEHICLE_EVENT_DELAY": {
+				"description": "",
+				"title": "EXCESSIVE_VEHICLE_EVENT_DELAY"
+			},
+			"HIGHEST_VEHICLE_EVENT_DELAY": {
+				"description": "",
+				"title": "HIGHEST_VEHICLE_EVENT_DELAY"
+			},
+			"LESS_THAN_TEN_VEHICLE_EVENTS": {
+				"description": "",
+				"title": "LESS_THAN_TEN_VEHICLE_EVENTS"
+			},
+			"MATCHING_LOCATION_TRANSACTIONS": {
+				"description": "",
+				"title": "MATCHING_LOCATION_TRANSACTIONS"
+			},
+			"ONTIME_START": {
+				"description": "",
+				"title": "ONTIME_START"
+			},
+			"SIMPLE_ONE_VALIDATION_TRANSACTION": {
+				"description": "",
+				"title": "SIMPLE_ONE_VALIDATION_TRANSACTION"
+			},
+			"SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION": {
+				"description": "",
+				"title": "SIMPLE_ONE_VEHICLE_EVENT_OR_VALIDATION_TRANSACTION"
+			},
+			"SIMPLE_THREE_VEHICLE_EVENTS": {
+				"description": "",
+				"title": "SIMPLE_THREE_VEHICLE_EVENTS"
+			}
+		}
+	},
+	"periods": {
+		"calendar": {
+			"PeriodAssignContent": {
+				"AssignmentMode": {
+					"create": {
+						"label": "Criar Novo Período"
+					},
+					"existing": {
+						"label": "Atribuir a Período Existente"
+					},
+					"title": "Atribuir"
+				},
+				"ConflictWarning": {
+					"acknowledge_button": "Compreendo e quero continuar",
+					"title": "Aviso de Conflito"
+				},
+				"CreatePeriod": {
+					"fields": {
+						"color": {
+							"label": "Cor"
+						},
+						"name": {
+							"label": "Nome",
+							"placeholder": "Ex: Período Escolar 2025"
+						}
+					}
+				},
+				"DateRange": {
+					"day": "dia",
+					"days": "dias",
+					"title": "Intervalo de Datas Selecionado"
+				},
+				"SelectAgency": {
+					"fields": {
+						"agency_id": {
+							"label": "Operador",
+							"placeholder": "Selecione o operador"
+						}
+					}
+				},
+				"SelectPeriod": {
+					"no_periods_warning": "Não há períodos disponíveis para este operador. Por favor, crie um novo período.",
+					"placeholder": "Procurar...",
+					"title": "Selecionar Período"
+				}
+			},
+			"PeriodAssignHeader": {
+				"AssignButton": {
+					"label": "Atribuir Período"
+				},
+				"tag": "Atribuir datas"
+			}
+		},
+		"create": {
+			"PeriodCreateBasicInfo": {
+				"fields": {
+					"agency_id": {
+						"label": "Operador"
+					},
+					"color": {
+						"label": "Cor"
+					},
+					"name": {
+						"label": "Nome",
+						"placeholder": "Ex: Período Escolar 2024/2025"
+					}
+				}
+			},
+			"PeriodCreateHeader": {
+				"PublishButton": {
+					"label": "Publicar"
+				},
+				"tag": "Novo Período"
+			}
+		},
+		"detail": {
+			"PeriodsDetailBasicInfo": {
+				"AssignDatesButton": {
+					"label": "Atribuir Datas"
+				},
+				"fields": {
+					"agency_id": {
+						"label": "Operador"
+					},
+					"color": {
+						"label": "Cor"
+					},
+					"name": {
+						"label": "Nome",
+						"placeholder": "Ex: Período Escolar 2024/2025"
+					}
+				}
+			},
+			"PeriodsDetailHeader": {
+				"DeleteButton": {
+					"confirm": {
+						"message": "Tem a certeza que deseja apagar este período? Esta ação não pode ser revertida.",
+						"title": "Apagar Período"
+					}
+				},
+				"SaveButton": {
+					"label": "Guardar"
+				}
+			}
+		},
+		"list": {
+			"PeriodsListFilterAgencies": {
+				"agency": {
+					"label": "Operador"
+				}
+			},
+			"PeriodsListHeader": {
+				"NewButton": {
+					"label": "Novo período"
+				},
+				"title": "Períodos"
+			},
+			"PeriodsListTable": {
+				"columns": {
+					"agency_id": {
+						"label": "Operador"
+					},
+					"id": {
+						"label": "#ID"
+					},
+					"name": {
+						"label": "Nome"
+					}
+				}
+			}
+		}
+	}
+}

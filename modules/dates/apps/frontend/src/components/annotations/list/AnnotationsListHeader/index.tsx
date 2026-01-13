@@ -5,6 +5,7 @@ import { useAnnotationsListContext } from '@/components/annotations/list/Annotat
 import { IconPlus } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Button, HasPermission, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,17 +16,18 @@ export function AnnotationsListHeader() {
 	// A. Setup variables
 
 	const annotationsListContext = useAnnotationsListContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>Anotações</Label>
+			<Label size="lg" caps singleLine>{t('dates:annotations.list.AnnotationsListHeader.title')}</Label>
 			<Spacer />
 			<SearchInput onChange={annotationsListContext.filters.search.set} value={annotationsListContext.filters.search.value} />
 			<HasPermission action={PermissionCatalog.all.annotations.actions.create} scope={PermissionCatalog.all.annotations.scope}>
-				<Button label="Nova anotação" leftSection={<IconPlus />} onClick={openCreateAnnotationModal} />
+				<Button label={t('dates:annotations.list.AnnotationsListHeader.NewButton.label')} leftSection={<IconPlus />} onClick={openCreateAnnotationModal} />
 			</HasPermission>
 		</Toolbar>
 	);

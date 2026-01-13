@@ -8,6 +8,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Button, CloseButton, DeleteButton, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -19,6 +20,7 @@ export function PeriodsDetailHeader() {
 
 	const router = useRouter();
 	const periodsDetailContext = usePeriodsDetailContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -50,15 +52,15 @@ export function PeriodsDetailHeader() {
 			<Button
 				disabled={!periodsDetailContext.flags.canSave}
 				icon={<IconUpload size={28} />}
-				label="Guardar"
+				label={t('dates:periods.detail.PeriodsDetailHeader.SaveButton.label')}
 				loading={periodsDetailContext.flags.isSaving}
 				onClick={periodsDetailContext.actions.save}
 				variant="primary"
 			/>
 
 			<DeleteButton
-				confirmMessage="Tem a certeza que deseja apagar este período? Esta ação não pode ser revertida."
-				confirmTitle="Apagar Período"
+				confirmMessage={t('dates:periods.detail.PeriodsDetailHeader.DeleteButton.confirm.message')}
+				confirmTitle={t('dates:periods.detail.PeriodsDetailHeader.DeleteButton.confirm.title')}
 				isDisabled={!periodsDetailContext.flags.canDelete}
 				isLoading={periodsDetailContext.flags.isDeleting}
 				onDelete={periodsDetailContext.actions.delete}

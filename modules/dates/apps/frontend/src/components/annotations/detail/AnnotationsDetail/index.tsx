@@ -8,6 +8,7 @@ import { AnnotationsDetailHeader } from '@/components/annotations/detail/Annotat
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { AnnotationSchema, PermissionCatalog } from '@tmlmobilidade/types';
 import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, Pane, Section, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -18,6 +19,7 @@ export function AnnotationsDetail() {
 	// A. Setup variables
 
 	const annotationsDetailContext = useAnnotationsDetailContext();
+	const { t } = useTranslation();
 
 	// Bypass permissions to show all agency labels in read-only mode
 	// When editable, filter agencies based on user permissions
@@ -43,8 +45,8 @@ export function AnnotationsDetail() {
 				<Grid columns="a" gap="lg">
 
 					<TextInput
-						label="Título"
-						placeholder="Ex: Greve de transportes"
+						label={t('dates:annotations.detail.AnnotationCreateBasicInfo.fields.title.label')}
+						placeholder={t('dates:annotations.detail.AnnotationCreateBasicInfo.fields.title.placeholder')}
 						readOnly={annotationsDetailContext.flags.isReadOnly}
 						required={!AnnotationSchema.shape.title.isOptional()}
 						w="100%"
@@ -52,8 +54,8 @@ export function AnnotationsDetail() {
 					/>
 
 					<Textarea
-						label="Descrição"
-						placeholder="Descrição da ocorrência"
+						label={t('dates:annotations.detail.AnnotationCreateBasicInfo.fields.description.label')}
+						placeholder={t('dates:annotations.detail.AnnotationCreateBasicInfo.fields.description.placeholder')}
 						readOnly={annotationsDetailContext.flags.isReadOnly}
 						required={!AnnotationSchema.shape.description.isOptional()}
 						w="100%"
@@ -63,7 +65,7 @@ export function AnnotationsDetail() {
 					<MultiSelect
 						data={agencyOptions}
 						disabled={annotationsDetailContext.flags.isReadOnly}
-						label="Operadores afetados"
+						label={t('dates:annotations.detail.AnnotationCreateBasicInfo.fields.agency_ids.label')}
 						value={annotationsDetailContext.data.form.values.agency_ids || []}
 						{...annotationsDetailContext.data.form.getInputProps('agency_ids')}
 					/>

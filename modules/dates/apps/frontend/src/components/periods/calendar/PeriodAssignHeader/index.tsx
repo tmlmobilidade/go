@@ -6,6 +6,7 @@ import { usePeriodAssignContext } from '@/components/periods/calendar/PeriodAssi
 import { closeAsignPeriodModal } from '@/components/periods/calendar/PeriodAssign.modal';
 import { IconUpload } from '@tabler/icons-react';
 import { Button, CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -16,6 +17,7 @@ export function PeriodAssignHeader() {
 	// A. Setup variables
 
 	const periodAssignContext = usePeriodAssignContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -23,12 +25,12 @@ export function PeriodAssignHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeAsignPeriodModal} type="close" />
-			<Tag label="Atribuir datas" variant="muted" />
+			<Tag label={t('dates:periods.calendar.PeriodAssignHeader.tag')} variant="muted" />
 			<Spacer />
 			<Button
 				disabled={!periodAssignContext.flags.canSubmit}
 				icon={<IconUpload size={28} />}
-				label="Atribuir Período"
+				label={t('dates:periods.calendar.PeriodAssignHeader.AssignButton.label')}
 				loading={periodAssignContext.flags.isSaving}
 				onClick={periodAssignContext.actions.handleAssign}
 				variant="primary"

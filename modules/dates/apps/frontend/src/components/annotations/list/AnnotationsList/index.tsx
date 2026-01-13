@@ -12,6 +12,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -25,29 +26,30 @@ export function AnnotationsList() {
 	const params = useParams<{ id?: string }>();
 
 	const annotationsListContext = useAnnotationsListContext();
+	const { t } = useTranslation();
 
 	const columns: DataTableColumn<AnnotationNormalized>[] = [
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: '#ID',
+			title: t('dates:annotations.list.AnnotationsListTable.columns.id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'title',
-			title: 'Título',
+			title: t('dates:annotations.list.AnnotationsListTable.columns.title.label'),
 			width: 400,
 		},
 		{
 			accessor: 'agency_ids_normalized',
 			render: item => <AnnotationsListCellAgencies agencyIds={item.agency_ids} />,
-			title: 'Operadores',
+			title: t('dates:annotations.list.AnnotationsListTable.columns.agency_ids.label'),
 			width: 200,
 		},
 		{
 			accessor: 'dates',
 			render: item => <AnnotationsListCellDates dates={item.dates} />,
-			title: 'Datas',
+			title: t('dates:annotations.list.AnnotationsListTable.columns.dates.label'),
 			width: 500,
 		},
 	];

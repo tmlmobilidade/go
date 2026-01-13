@@ -5,7 +5,8 @@
 import { useAnnotationCreateContext } from '@/components/annotations/create/AnnotationCreate.context';
 import { closeCreateAnnotationModal } from '@/components/annotations/create/AnnotationCreate.modal';
 import { IconUpload } from '@tabler/icons-react';
-import { CloseButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -16,6 +17,7 @@ export function AnnotationCreateHeader() {
 	// A. Setup variables
 
 	const annotationCreateContext = useAnnotationCreateContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -23,13 +25,13 @@ export function AnnotationCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateAnnotationModal} type="close" />
-			<Tag label="Nova Anotação" variant="muted" />
+			<Tag label={t('dates:annotations.create.AnnotationCreateHeader.tag')} variant="muted" />
 			<Label size="lg" singleLine>{annotationCreateContext.data.form.values.title}</Label>
 			<Spacer />
 			<Button
 				disabled={!annotationCreateContext.data.form.isValid()}
 				icon={<IconUpload size={28} />}
-				label="Publicar"
+				label={t('dates:annotations.create.AnnotationCreateHeader.PublishButton.label')}
 				loading={annotationCreateContext.flags.isSaving}
 				onClick={annotationCreateContext.actions.createAnnotation}
 				variant="primary"

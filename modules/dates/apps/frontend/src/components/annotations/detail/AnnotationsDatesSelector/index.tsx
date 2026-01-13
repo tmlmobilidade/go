@@ -7,6 +7,7 @@ import { Calendar } from '@mantine/dates';
 import { type OperationalDate } from '@tmlmobilidade/types';
 import { Section, Text } from '@tmlmobilidade/ui';
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -18,6 +19,7 @@ export function DatesSelector() {
 
 	const annotationsDetailContext = useAnnotationsDetailContext();
 	const isDisabled = !annotationsDetailContext.flags.canSave;
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -48,7 +50,7 @@ export function DatesSelector() {
 
 	return (
 		<Section gap="md">
-			<Text>Selecione as datas da ocorrência</Text>
+			<Text>{t('dates:annotations.detail.AnnotationsDatesSelector.title')}</Text>
 
 			<Calendar
 				getDayProps={date => ({
