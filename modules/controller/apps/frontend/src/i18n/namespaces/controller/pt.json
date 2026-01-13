@@ -1,25 +1,31 @@
 {
 	"rides": {
-		"ExportModal": {
-			"CancelButton": {
-				"label": "Cancelar"
-			},
-			"ExportButton": {
-				"label": "Exportar Circulações"
-			},
-			"description": "Selecione o intervalo de datas para a exportação das circulações.",
-			"fields": {
-				"end_date": {
-					"placeholder": "Data Fim"
-				},
-				"start_date": {
-					"placeholder": "Data Início"
-				}
-			},
-			"title": "Exportar Circulações"
-		},
 		"acceptance": {
-			"CommentList": {
+			"RideAcceptance": {
+				"cause": {
+					"ACCIDENT": "Acidente",
+					"CONSTRUCTION": "Obras",
+					"DEMONSTRATION": "Evento / Manifestação",
+					"DRIVER_ABSENCE": "Condutor Ausente",
+					"DRIVER_ISSUE": "Condutor com Problema",
+					"HIGH_PASSENGER_LOAD": "Elevado Volume de Passageiros",
+					"HOLIDAY": "Feriado",
+					"MAINTENANCE": "Manutenção",
+					"MEDICAL_EMERGENCY": "Emergência Médica",
+					"OTHER_CAUSE": "Outras Causas",
+					"POLICE_ACTIVITY": "Atividade Policial",
+					"ROAD_INCIDENT": "Incidente na Estrada",
+					"STRIKE": "Greve",
+					"SYSTEM_FAILURE": "Falha do Sistema",
+					"TECHNICAL_PROBLEM": "Problema Técnico",
+					"TRAFFIC_JAM": "Congestão de Trânsito",
+					"UNKNOWN_CAUSE": "Causa Desconhecida",
+					"VEHICLE_ISSUE": "Veículo com Problema",
+					"WEATHER": "Mau Tempo"
+				},
+				"title": "Atividade"
+			},
+			"RideAcceptanceCommentList": {
 				"acceptance_status": {
 					"accepted": "A aceitação está aceite",
 					"justification_required": "É necessário justificar a circulação",
@@ -47,7 +53,7 @@
 					"performed": "Foi realizada uma nova análise da viagem"
 				}
 			},
-			"Justification": {
+			"RideAcceptanceJustification": {
 				"SubmitButton": {
 					"label": "Justificar"
 				},
@@ -75,32 +81,10 @@
 					}
 				},
 				"title": "Justificação"
-			},
-			"cause": {
-				"ACCIDENT": "Acidente",
-				"CONSTRUCTION": "Obras",
-				"DEMONSTRATION": "Evento / Manifestação",
-				"DRIVER_ABSENCE": "Condutor Ausente",
-				"DRIVER_ISSUE": "Condutor com Problema",
-				"HIGH_PASSENGER_LOAD": "Elevado Volume de Passageiros",
-				"HOLIDAY": "Feriado",
-				"MAINTENANCE": "Manutenção",
-				"MEDICAL_EMERGENCY": "Emergência Médica",
-				"OTHER_CAUSE": "Outras Causas",
-				"POLICE_ACTIVITY": "Atividade Policial",
-				"ROAD_INCIDENT": "Incidente na Estrada",
-				"STRIKE": "Greve",
-				"SYSTEM_FAILURE": "Falha do Sistema",
-				"TECHNICAL_PROBLEM": "Problema Técnico",
-				"TRAFFIC_JAM": "Congestão de Trânsito",
-				"UNKNOWN_CAUSE": "Causa Desconhecida",
-				"VEHICLE_ISSUE": "Veículo com Problema",
-				"WEATHER": "Mau Tempo"
-			},
-			"title": "Atividade"
+			}
 		},
 		"analysis": {
-			"ApexLocations": {
+			"RideAnalysisApexLocations": {
 				"Table": {
 					"columns": {
 						"created_at": {
@@ -124,12 +108,136 @@
 				"no_data": "Nenhuma Localização APEX Registada",
 				"title": "APEX Locations"
 			},
-			"Audits": {
-				"description": "Observações em terreno",
-				"no_data": "Sem Dados",
-				"title": "Auditoria"
+			"RideAnalysisApexOnBoardRefunds": {
+				"Table": {
+					"columns": {
+						"card_serial_number": {
+							"label": "Card SN"
+						},
+						"card_type": {
+							"label": "Card Type"
+						},
+						"created_at": {
+							"label": "Timestamp"
+						},
+						"id_on_board_refund": {
+							"label": "ID On Board Refund"
+						},
+						"id_on_board_sale": {
+							"label": "ID On Board Sale"
+						},
+						"id_validation": {
+							"label": "ID Validation"
+						},
+						"payment_method": {
+							"label": "Payment Method"
+						},
+						"price": {
+							"label": "Price"
+						},
+						"product_id": {
+							"label": "Product ID"
+						},
+						"product_quantity": {
+							"label": "Qtd"
+						},
+						"stop_id": {
+							"label": "Stop ID"
+						}
+					}
+				},
+				"description": "Reembolsos APEX associados a esta Ride.",
+				"no_data": "Nenhum Reembolso Registado",
+				"title": "APEX On Board Refunds"
 			},
-			"Map": {
+			"RideAnalysisApexOnBoardSales": {
+				"Table": {
+					"columns": {
+						"card_serial_number": {
+							"label": "Card SN"
+						},
+						"card_type": {
+							"label": "Card Type"
+						},
+						"created_at": {
+							"label": "Timestamp"
+						},
+						"id_on_board_refund": {
+							"label": "ID On Board Refund"
+						},
+						"id_on_board_sale": {
+							"label": "ID On Board Sale"
+						},
+						"id_validation": {
+							"label": "ID Validation"
+						},
+						"payment_method": {
+							"label": "Payment Method"
+						},
+						"price": {
+							"label": "Price"
+						},
+						"product_id": {
+							"label": "Product ID"
+						},
+						"product_quantity": {
+							"label": "Qtd"
+						},
+						"stop_id": {
+							"label": "Stop ID"
+						}
+					}
+				},
+				"description": "Vendas APEX associadas a esta Ride.",
+				"no_data": "Nenhuma Venda Registada",
+				"title": "APEX On Board Sales"
+			},
+			"RideAnalysisApexValidations": {
+				"Table": {
+					"columns": {
+						"card_serial_number": {
+							"label": "Card SN"
+						},
+						"created_at": {
+							"label": "Timestamp"
+						},
+						"event_type": {
+							"label": "Event Type"
+						},
+						"id_on_board_refund": {
+							"label": "ID On Board Refund"
+						},
+						"id_on_board_sale": {
+							"label": "ID On Board Sale"
+						},
+						"id_validation": {
+							"label": "ID Validation"
+						},
+						"mac_sam_serial_number": {
+							"label": "SAM SN"
+						},
+						"product_id": {
+							"label": "Product ID"
+						},
+						"status": {
+							"label": "Status"
+						},
+						"stop_id": {
+							"label": "Stop ID"
+						},
+						"tx_valid": {
+							"label": "Tx Valid"
+						},
+						"vehicle_id": {
+							"label": "Vehicle ID"
+						}
+					}
+				},
+				"description": "Validações APEX associadas a esta Ride.",
+				"no_data": "Nenhuma Validação Registada",
+				"title": "Validações APEX"
+			},
+			"RideAnalysisMap": {
 				"description": "Eventos dos veículos mapeados",
 				"switches": {
 					"geofences": {
@@ -144,7 +252,7 @@
 				},
 				"title": "Visão Geográfica"
 			},
-			"Metadata": {
+			"RideAnalysisMetadata": {
 				"description": "Informações gerais sobre esta circulação",
 				"fields": {
 					"apex_validations_qty": {
@@ -198,96 +306,12 @@
 				},
 				"title": "Metadados"
 			},
-			"OnBoardRefunds": {
-				"Table": {
-					"columns": {
-						"card_serial_number": {
-							"label": "Card SN"
-						},
-						"card_type": {
-							"label": "Card Type"
-						},
-						"created_at": {
-							"label": "Timestamp"
-						},
-						"id_on_board_refund": {
-							"label": "ID On Board Refund"
-						},
-						"id_on_board_sale": {
-							"label": "ID On Board Sale"
-						},
-						"id_validation": {
-							"label": "ID Validation"
-						},
-						"payment_method": {
-							"label": "Payment Method"
-						},
-						"price": {
-							"label": "Price"
-						},
-						"product_id": {
-							"label": "Product ID"
-						},
-						"product_quantity": {
-							"label": "Qtd"
-						},
-						"stop_id": {
-							"label": "Stop ID"
-						}
-					}
-				},
-				"description": "Reembolsos APEX associados a esta Ride.",
-				"no_data": "Nenhum Reembolso Registado",
-				"title": "APEX On Board Refunds"
-			},
-			"OnBoardSales": {
-				"Table": {
-					"columns": {
-						"card_serial_number": {
-							"label": "Card SN"
-						},
-						"card_type": {
-							"label": "Card Type"
-						},
-						"created_at": {
-							"label": "Timestamp"
-						},
-						"id_on_board_refund": {
-							"label": "ID On Board Refund"
-						},
-						"id_on_board_sale": {
-							"label": "ID On Board Sale"
-						},
-						"id_validation": {
-							"label": "ID Validation"
-						},
-						"payment_method": {
-							"label": "Payment Method"
-						},
-						"price": {
-							"label": "Price"
-						},
-						"product_id": {
-							"label": "Product ID"
-						},
-						"product_quantity": {
-							"label": "Qtd"
-						},
-						"stop_id": {
-							"label": "Stop ID"
-						}
-					}
-				},
-				"description": "Vendas APEX associadas a esta Ride.",
-				"no_data": "Nenhuma Venda Registada",
-				"title": "APEX On Board Sales"
-			},
-			"Performance": {
+			"RideAnalysisPerformance": {
 				"description": "Dados de desempenho da circulação",
 				"no_data": "Sem Dados",
 				"title": "Performance"
 			},
-			"Result": {
+			"RideAnalysisResult": {
 				"description": "Eventos dos veículos mapeados",
 				"labels": {
 					"AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP": {
@@ -354,59 +378,14 @@
 				"no_data": "Sem Dados",
 				"title": "Resultados das Análises"
 			},
-			"ResultItem": {
+			"RideAnalysisResultItem": {
 				"statuses": {
 					"fail": "Fail",
 					"failed": "Erro",
 					"pass": "Pass"
 				}
 			},
-			"Validations": {
-				"Table": {
-					"columns": {
-						"card_serial_number": {
-							"label": "Card SN"
-						},
-						"created_at": {
-							"label": "Timestamp"
-						},
-						"event_type": {
-							"label": "Event Type"
-						},
-						"id_on_board_refund": {
-							"label": "ID On Board Refund"
-						},
-						"id_on_board_sale": {
-							"label": "ID On Board Sale"
-						},
-						"id_validation": {
-							"label": "ID Validation"
-						},
-						"mac_sam_serial_number": {
-							"label": "SAM SN"
-						},
-						"product_id": {
-							"label": "Product ID"
-						},
-						"status": {
-							"label": "Status"
-						},
-						"stop_id": {
-							"label": "Stop ID"
-						},
-						"tx_valid": {
-							"label": "Tx Valid"
-						},
-						"vehicle_id": {
-							"label": "Vehicle ID"
-						}
-					}
-				},
-				"description": "Validações APEX associadas a esta Ride.",
-				"no_data": "Nenhuma Validação Registada",
-				"title": "Validações APEX"
-			},
-			"VehicleEvents": {
+			"RideAnalysisVehicleEvents": {
 				"Table": {
 					"columns": {
 						"activity": {
@@ -443,60 +422,96 @@
 			}
 		},
 		"detail": {
-			"AcceptanceStatusTag": {
+			"RidesDetailAcceptanceStatusTag": {
 				"accepted": "Aceite",
 				"justification_required": "Justificação Necessária",
 				"rejected": "Rejeitada",
 				"under_review": "Em Revisão"
 			},
-			"AnalysisStatusTag": {
+			"RidesDetailAnalysisStatusTag": {
 				"fail": "Fail",
 				"pass": "Pass"
 			},
-			"OperationalStatusTag": {
+			"RidesDetailOperationalStatusTag": {
 				"ended": "Finalizada",
 				"missed": "Não realizada",
 				"running": "Em execução",
 				"scheduled": "Agendada"
 			}
 		},
+		"export": {
+			"RidesExportModal": {
+				"CancelButton": {
+					"label": "Cancelar"
+				},
+				"ExportButton": {
+					"label": "Exportar Circulações"
+				},
+				"description": "Selecione o intervalo de datas para a exportação das circulações.",
+				"fields": {
+					"end_date": {
+						"placeholder": "Data Fim"
+					},
+					"start_date": {
+						"placeholder": "Data Início"
+					}
+				},
+				"title": "Exportar Circulações"
+			}
+		},
 		"list": {
-			"FilterBar": {
+			"RidesListFilterAcceptanceStatus": {
 				"acceptance_status": {
 					"label": "Aceitação"
-				},
+				}
+			},
+			"RidesListFilterAgency": {
 				"agency": {
 					"label": "Operador"
-				},
+				}
+			},
+			"RidesListFilterAnalysisEndedAtLastStop": {
 				"analysis_ended_at_last_stop": {
 					"label": "Fim na Última Paragem"
-				},
+				}
+			},
+			"RidesListFilterAnalysisExpectedApexValidationInterval": {
 				"analysis_expected_apex_validation_interval": {
 					"label": "Intervalo Validações"
-				},
+				}
+			},
+			"RidesListFilterAnalysisSimpleThreeEvents": {
 				"analysis_simple_three_vehicle_events": {
 					"label": "3 Momentos"
-				},
+				}
+			},
+			"RidesListFilterAnalysisTransactionSequentiality": {
 				"analysis_transaction_sequentiality": {
 					"label": "Sequencialidade APEX"
-				},
+				}
+			},
+			"RidesListFilterDateRange": {
 				"date_range": {
 					"label": "Intervalo de datas"
-				},
+				}
+			},
+			"RidesListFilterDelayStatus": {
 				"delay_status": {
 					"label": "Atraso"
-				},
+				}
+			},
+			"RidesListFilterOperationalStatus": {
 				"operational_status": {
 					"label": "Estado"
 				}
 			},
-			"Header": {
+			"RidesListHeader": {
 				"ExportButton": {
 					"tooltip": "Exportar circulações"
 				},
 				"title": "Circulações"
 			},
-			"Table": {
+			"RidesListTable": {
 				"columns": {
 					"analysis_ended_at_last_stop_grade": {
 						"label": "Last Stop"

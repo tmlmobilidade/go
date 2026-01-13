@@ -49,7 +49,7 @@ export function RidesListFilterAgency() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('controller:rides.list.FilterBar.agency.label')}
+			label={t('controller:rides.list.RidesListFilterAgency.agency.label')}
 			onChange={ridesListContext.actions.setFilterAgency}
 			options={parsedOptions}
 			withToggleAll

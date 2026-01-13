@@ -80,8 +80,8 @@ export default function RidesExportModal() {
 	return (
 		<div style={{ minHeight: '200px' }}>
 			<Section>
-				<Label size="lg" caps>{t('controller:rides.ExportModal.title')}</Label>
-				<Text>{t('controller:rides.ExportModal.description')}</Text>
+				<Label size="lg" caps>{t('controller:rides.export.RidesExportModal.title')}</Label>
+				<Text>{t('controller:rides.export.RidesExportModal.description')}</Text>
 			</Section>
 
 			<Divider />
@@ -89,13 +89,13 @@ export default function RidesExportModal() {
 				<Grid columns="ab" gap="md">
 					<DateTimePicker
 						onChange={value => context.actions.setFilterDateStart(value)}
-						placeholder={t('controller:rides.ExportModal.fields.start_date.placeholder')}
+						placeholder={t('controller:rides.export.RidesExportModal.fields.start_date.placeholder')}
 						value={context.filters.date_start as UnixTimestamp}
 						fullWidth
 					/>
 					<DateTimePicker
 						onChange={value => context.actions.setFilterDateEnd(value)}
-						placeholder={t('controller:rides.ExportModal.fields.end_date.placeholder')}
+						placeholder={t('controller:rides.export.RidesExportModal.fields.end_date.placeholder')}
 						value={context.filters.date_end as UnixTimestamp}
 						fullWidth
 					/>
@@ -121,14 +121,14 @@ export default function RidesExportModal() {
 				<Grid columns="ab" gap="md">
 					<Button
 						disabled={context.flags.loading}
-						label={t('controller:rides.ExportModal.CancelButton.label')}
+						label={t('controller:rides.export.RidesExportModal.CancelButton.label')}
 						onClick={() => closeModal(RIDES_EXPORT_MODAL_ID)}
 						variant="danger"
 					/>
 					<Button
 						disabled={!context.flags.canSave}
 						icon={<IconFileDownload />}
-						label={t('controller:rides.ExportModal.ExportButton.label')}
+						label={t('controller:rides.export.RidesExportModal.ExportButton.label')}
 						loading={context.flags.loading}
 						onClick={context.actions.exportRides}
 					/>

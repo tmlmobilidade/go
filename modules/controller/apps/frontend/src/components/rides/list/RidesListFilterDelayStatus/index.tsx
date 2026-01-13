@@ -46,7 +46,7 @@ export function RidesListFilterDelayStatus() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('controller:rides.list.FilterBar.delay_status.label')}
+			label={t('controller:rides.list.RidesListFilterDelayStatus.delay_status.label')}
 			onChange={ridesListContext.actions.setFilterDelayStatus}
 			options={parsedOptions}
 			withToggleAll

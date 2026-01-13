@@ -24,19 +24,19 @@ export function OperationalStatusTag({ value }: OperationalStatusTagProps) {
 	// B. Render components
 
 	if (value === 'scheduled') {
-		return <Tag icon={<IconPlayerTrackNextFilled />} label={t('controller:rides.detail.OperationalStatusTag.scheduled')} variant="muted" />;
+		return <Tag icon={<IconPlayerTrackNextFilled />} label={t('controller:rides.detail.RidesDetailOperationalStatusTag.scheduled')} variant="muted" />;
 	}
 
 	if (value === 'missed') {
-		return <Tag icon={<IconX stroke={4} />} label={t('controller:rides.detail.OperationalStatusTag.missed')} variant="danger" filled />;
+		return <Tag icon={<IconX stroke={4} />} label={t('controller:rides.detail.RidesDetailOperationalStatusTag.missed')} variant="danger" filled />;
 	}
 
 	if (value === 'running') {
-		return <Tag icon={<IconPlayerPlayFilled />} label={t('controller:rides.detail.OperationalStatusTag.running')} variant="primary" filled />;
+		return <Tag icon={<IconPlayerPlayFilled />} label={t('controller:rides.detail.RidesDetailOperationalStatusTag.running')} variant="primary" filled />;
 	}
 
 	if (value === 'ended') {
-		return <Tag icon={<IconFlag3Filled />} label={t('controller:rides.detail.OperationalStatusTag.ended')} variant="secondary" />;
+		return <Tag icon={<IconFlag3Filled />} label={t('controller:rides.detail.RidesDetailOperationalStatusTag.ended')} variant="secondary" />;
 	}
 
 	//

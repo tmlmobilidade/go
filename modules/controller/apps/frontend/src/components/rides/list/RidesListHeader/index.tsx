@@ -25,13 +25,13 @@ export function RidesListHeader() {
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps>{t('controller:rides.list.Header.title')}</Label>
+			<Label size="lg" caps>{t('controller:rides.list.RidesListHeader.title')}</Label>
 			{ridesListContext.flags.loading && <Loader size="sm" />}
 			<Spacer shrink />
 			<RidesListUpdatedAt />
 			<Tag label={`Total ${ridesListContext.data.filtered.length}`} variant="muted" />
 			<SearchInput onChange={ridesListContext.actions.setFilterSearch} value={ridesListContext.filters.search} />
-			<IconButton icon={<IconFileDownload />} onClick={() => openRideExportModal(ridesListContext.filters)} tooltip={t('controller:rides.ExportModal.ExportButton.label')} variant="secondary" />
+			<IconButton icon={<IconFileDownload />} onClick={() => openRideExportModal(ridesListContext.filters)} tooltip={t('controller:rides.list.RidesListHeader.ExportButton.tooltip')} variant="secondary" />
 		</Toolbar>
 	);
 

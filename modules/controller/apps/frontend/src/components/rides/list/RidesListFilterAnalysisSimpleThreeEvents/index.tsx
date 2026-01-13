@@ -46,7 +46,7 @@ export function RidesListFilterAnalysisSimpleThreeEvents() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('controller:rides.list.FilterBar.analysis_simple_three_vehicle_events.label')}
+			label={t('controller:rides.list.RidesListFilterAnalysisSimpleThreeEvents.analysis_simple_three_vehicle_events.label')}
 			onChange={ridesListContext.actions.setFilterAnalysisSimpleThreeVehicleEvents}
 			options={parsedOptions}
 			withToggleAll

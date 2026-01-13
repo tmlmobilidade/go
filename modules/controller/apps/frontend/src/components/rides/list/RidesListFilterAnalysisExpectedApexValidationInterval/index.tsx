@@ -46,7 +46,7 @@ export function RidesListFilterAnalysisExpectedApexValidationInterval() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('controller:rides.list.FilterBar.analysis_expected_apex_validation_interval.label')}
+			label={t('controller:rides.list.RidesListFilterAnalysisExpectedApexValidationInterval.analysis_expected_apex_validation_interval.label')}
 			onChange={ridesListContext.actions.setFilterAnalysisExpectedApexValidationInterval}
 			options={parsedOptions}
 			withToggleAll

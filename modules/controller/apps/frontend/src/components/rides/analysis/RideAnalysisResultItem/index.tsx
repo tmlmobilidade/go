@@ -34,13 +34,13 @@ export function RideAnalysisAnalysisResultItem({ grade, id }: RideAnalysisAnalys
 				<div>
 					{id && <Label size="sm">{id}</Label>}
 					<div>
-						{rideAnalysisLabels[id]?.title && <Label>{t(`controller:rides.analysis.Result.labels.${id}.title` as never)}</Label>}
-						{rideAnalysisLabels[id]?.description && <Text size="sm">{t(`controller:rides.analysis.Result.labels.${id}.description` as never)}</Text>}
+						{rideAnalysisLabels[id]?.title && <Label>{t(`controller:rides.analysis.RideAnalysisResult.labels.${id}.title` as never)}</Label>}
+						{rideAnalysisLabels[id]?.description && <Text size="sm">{t(`controller:rides.analysis.RideAnalysisResult.labels.${id}.description` as never)}</Text>}
 					</div>
 				</div>
-				{grade === 'error' && <Tag label={t('controller:rides.analysis.ResultItem.statuses.failed')} variant="danger" filled />}
-				{grade === 'fail' && <Tag label={t('controller:rides.analysis.ResultItem.statuses.fail')} variant="danger" />}
-				{grade === 'pass' && <Tag label={t('controller:rides.analysis.ResultItem.statuses.pass')} variant="success" />}
+				{grade === 'error' && <Tag label={t('controller:rides.analysis.RideAnalysisResultItem.statuses.failed')} variant="danger" filled />}
+				{grade === 'fail' && <Tag label={t('controller:rides.analysis.RideAnalysisResultItem.statuses.fail')} variant="danger" />}
+				{grade === 'pass' && <Tag label={t('controller:rides.analysis.RideAnalysisResultItem.statuses.pass')} variant="success" />}
 			</Section>
 		</Surface>
 	);

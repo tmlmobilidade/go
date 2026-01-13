@@ -26,89 +26,89 @@ export function RideAnalysisApexValidations() {
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
-			title: t('controller:rides.analysis.Validations.Table.columns.created_at.label'),
-			width: 280,
-		},
-		{
-			accessor: 'event_type',
-			title: t('controller:rides.analysis.Validations.Table.columns.event_type.label'),
-			width: 100,
-		},
-		{
-			accessor: 'stop_id',
-			title: t('controller:rides.analysis.Validations.Table.columns.stop_id.label'),
-			width: 100,
-		},
-		{
-			accessor: 'card_serial_number',
-			title: t('controller:rides.analysis.Validations.Table.columns.card_serial_number.label'),
-			width: 220,
-		},
-		{
-			accessor: 'product_id',
-			title: t('controller:rides.analysis.Validations.Table.columns.product_id.label'),
-			width: 450,
-		},
-		{
-			accessor: 'validation_status',
-			render: item => <ApexValidationStatusTag value={item.validation_status} />,
-			title: t('controller:rides.analysis.Validations.Table.columns.status.label'),
-			width: 250,
-		},
-		{
-			accessor: 'is_passenger',
-			render: item => <ApexValidationIsPassengerTag value={item.is_passenger} />,
-			title: t('controller:rides.analysis.Validations.Table.columns.tx_valid.label'),
-			width: 150,
-		},
-		{
-			accessor: 'vehicle_id',
-			title: t('controller:rides.analysis.Validations.Table.columns.vehicle_id.label'),
-			width: 120,
-		},
-		{
-			accessor: 'mac_sam_serial_number',
-			title: t('controller:rides.analysis.Validations.Table.columns.mac_sam_serial_number.label'),
-			width: 160,
-		},
-		{
-			accessor: '_id',
-			title: t('controller:rides.analysis.Validations.Table.columns.id_validation.label'),
-			width: 400,
-		},
-		{
-			accessor: 'on_board_sale_id',
-			title: t('controller:rides.analysis.Validations.Table.columns.id_on_board_sale.label'),
-			width: 400,
-		},
-		{
-			accessor: 'on_board_refund_id',
-			title: t('controller:rides.analysis.Validations.Table.columns.id_on_board_refund.label'),
-			width: 400,
-		},
-	];
+		title: t('controller:rides.analysis.RideAnalysisApexValidations.Table.columns.created_at.label'),
+		width: 280,
+	},
+	{
+		accessor: 'event_type',
+		title: t('controller:rides.analysis.RideAnalysisApexValidations.Table.columns.event_type.label'),
+		width: 100,
+	},
+	{
+		accessor: 'stop_id',
+		title: t('controller:rides.analysis.RideAnalysisApexValidations.Table.columns.stop_id.label'),
+		width: 100,
+	},
+	{
+		accessor: 'card_serial_number',
+		title: t('controller:rides.analysis.RideAnalysisApexValidations.Table.columns.card_serial_number.label'),
+		width: 220,
+	},
+	{
+		accessor: 'product_id',
+		title: t('controller:rides.analysis.RideAnalysisApexValidations.Table.columns.product_id.label'),
+		width: 450,
+	},
+	{
+		accessor: 'validation_status',
+		render: item => <ApexValidationStatusTag value={item.validation_status} />,
+		title: t('controller:rides.analysis.RideAnalysisApexValidations.Table.columns.status.label'),
+		width: 250,
+	},
+	{
+		accessor: 'is_passenger',
+		render: item => <ApexValidationIsPassengerTag value={item.is_passenger} />,
+		title: t('controller:rides.analysis.RideAnalysisApexValidations.Table.columns.tx_valid.label'),
+		width: 150,
+	},
+	{
+		accessor: 'vehicle_id',
+		title: t('controller:rides.analysis.RideAnalysisApexValidations.Table.columns.vehicle_id.label'),
+		width: 120,
+	},
+	{
+		accessor: 'mac_sam_serial_number',
+		title: t('controller:rides.analysis.RideAnalysisApexValidations.Table.columns.mac_sam_serial_number.label'),
+		width: 160,
+	},
+	{
+		accessor: '_id',
+		title: t('controller:rides.analysis.RideAnalysisApexValidations.Table.columns.id_validation.label'),
+		width: 400,
+	},
+	{
+		accessor: 'on_board_sale_id',
+		title: t('controller:rides.analysis.RideAnalysisApexValidations.Table.columns.id_on_board_sale.label'),
+		width: 400,
+	},
+	{
+		accessor: 'on_board_refund_id',
+		title: t('controller:rides.analysis.RideAnalysisApexValidations.Table.columns.id_on_board_refund.label'),
+		width: 400,
+	},
+];
 
-	//
-	// B. Transform data
+//
+// B. Transform data
 
-	const sortedSimplifiedApexValidations = useMemo(() => {
-		return RideAnalysisContext.data.simplified_apex_validations.sort((a, b) => a.created_at - b.created_at);
-	}, [RideAnalysisContext.data.simplified_apex_validations]);
+const sortedSimplifiedApexValidations = useMemo(() => {
+	return RideAnalysisContext.data.simplified_apex_validations.sort((a, b) => a.created_at - b.created_at);
+}, [RideAnalysisContext.data.simplified_apex_validations]);
 
-	//
-	// C. Render components
+//
+// C. Render components
 
-	return (
-		<Collapsible description={t('controller:rides.analysis.Validations.description')} title={t('controller:rides.analysis.Validations.title')}>
-			{sortedSimplifiedApexValidations.length > 0 ? (
-				<DataTable
-					columns={columns}
-					records={sortedSimplifiedApexValidations}
-					rowIdAccessor="_id"
-				/>
-			) : (
-				<Section padding="md">
-					<NoDataLabel text={t('controller:rides.analysis.Validations.no_data')} />
+return (
+	<Collapsible description={t('controller:rides.analysis.RideAnalysisApexValidations.description')} title={t('controller:rides.analysis.RideAnalysisApexValidations.title')}>
+		{sortedSimplifiedApexValidations.length > 0 ? (
+			<DataTable
+				columns={columns}
+				records={sortedSimplifiedApexValidations}
+				rowIdAccessor="_id"
+			/>
+		) : (
+			<Section padding="md">
+				<NoDataLabel text={t('controller:rides.analysis.RideAnalysisApexValidations.no_data')} />
 				</Section>
 			)}
 		</Collapsible>

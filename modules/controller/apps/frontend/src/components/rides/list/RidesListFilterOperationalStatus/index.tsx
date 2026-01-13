@@ -46,7 +46,7 @@ export function RidesListFilterOperationalStatus() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('controller:rides.list.FilterBar.operational_status.label')}
+			label={t('controller:rides.list.RidesListFilterOperationalStatus.operational_status.label')}
 			onChange={ridesListContext.actions.setFilterOperationalStatus}
 			options={parsedOptions}
 			withToggleAll

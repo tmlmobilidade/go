@@ -46,7 +46,7 @@ export function RidesListFilterAnalysisEndedAtLastStop() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('controller:rides.list.FilterBar.analysis_ended_at_last_stop.label')}
+			label={t('controller:rides.list.RidesListFilterAnalysisEndedAtLastStop.analysis_ended_at_last_stop.label')}
 			onChange={ridesListContext.actions.setFilterAnalysisEndedAtLastStop}
 			options={parsedOptions}
 			withToggleAll

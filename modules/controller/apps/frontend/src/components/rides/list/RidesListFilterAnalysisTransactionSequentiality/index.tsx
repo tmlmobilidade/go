@@ -46,7 +46,7 @@ export function RidesListFilterAnalysisTransactionSequentiality() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('controller:rides.list.FilterBar.analysis_transaction_sequentiality.label')}
+			label={t('controller:rides.list.RidesListFilterAnalysisTransactionSequentiality.analysis_transaction_sequentiality.label')}
 			onChange={ridesListContext.actions.setFilterAnalysisTransactionSequentiality}
 			options={parsedOptions}
 			withToggleAll

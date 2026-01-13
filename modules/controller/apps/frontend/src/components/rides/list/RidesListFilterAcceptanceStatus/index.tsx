@@ -46,7 +46,7 @@ export function RidesListFilterAcceptanceStatus() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('controller:rides.list.FilterBar.acceptance_status.label')}
+			label={t('controller:rides.list.RidesListFilterAcceptanceStatus.acceptance_status.label')}
 			onChange={ridesListContext.actions.setFilterAcceptanceStatus}
 			options={parsedOptions}
 			withToggleAll
