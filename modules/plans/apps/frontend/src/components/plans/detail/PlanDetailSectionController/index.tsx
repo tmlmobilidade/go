@@ -23,8 +23,8 @@ export function PlanDetailSectionController() {
 
 	return (
 		<Collapsible
-			description={t('plans:plans.detail.SectionController.description')}
-			title={t('plans:plans.detail.SectionController.title')}
+			description={t('plans:plans.detail.PlanDetailSectionController.description')}
+			title={t('plans:plans.detail.PlanDetailSectionController.title')}
 		>
 			<Section gap="sm">
 
@@ -35,7 +35,7 @@ export function PlanDetailSectionController() {
 
 				<Button
 					disabled={planDetailContext.flags.isReadOnly}
-					label={t('plans:plans.detail.SectionController.reprocess_plan_button')}
+					label={t('plans:plans.detail.PlanDetailSectionController.actions.reprocess.label')}
 					loading={planDetailContext.flags.isSaving}
 					onClick={planDetailContext.actions.controllerReprocessPlan}
 				/>

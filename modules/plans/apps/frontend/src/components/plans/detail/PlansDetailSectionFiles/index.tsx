@@ -23,15 +23,15 @@ export function PlanDetailSectionFiles() {
 
 	return (
 		<Collapsible
-			description={t('plans:plans.detail.SectionFiles.description')}
-			title={t('plans:plans.detail.SectionFiles.title')}
+			description={t('plans:plans.detail.PlansDetailSectionFiles.description')}
+			title={t('plans:plans.detail.PlansDetailSectionFiles.title')}
 		>
 
 			<Section gap="sm">
 				{planDetailContext.data.operation_file ? (
 					<FileComponent file={planDetailContext.data.operation_file} />
 				) : (
-					<Label>{t('plans:plans.detail.SectionFiles.no_file_selected')}</Label>
+					<Label>{t('plans:plans.detail.PlansDetailSectionFiles.empty_state.label')}</Label>
 				)}
 			</Section>
 

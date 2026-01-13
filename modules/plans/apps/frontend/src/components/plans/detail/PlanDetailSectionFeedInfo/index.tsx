@@ -33,8 +33,8 @@ export function PlanDetailSectionFeedInfo() {
 
 	return (
 		<Collapsible
-			description={t('plans:plans.detail.SectionFeedInfo.description')}
-			title={t('plans:plans.detail.SectionFeedInfo.title')}
+			description={t('plans:plans.detail.PlanDetailSectionFeedInfo.description')}
+			title={t('plans:plans.detail.PlanDetailSectionFeedInfo.title')}
 		>
 
 			<Section gap="sm">

@@ -63,7 +63,7 @@ export function ValidationsDetailHeader() {
 				>
 					<Button
 						disabled={validationsDetailContext.flags.loading || validationsDetailContext.data.validation.notification_sent}
-						label={t('plans:validations.detail.Header.request_approval_button')}
+						label={t('plans:validations.detail.ValidationsDetailHeader.actions.request_approval.label')}
 						onClick={handleRequestApproval}
 						variant="secondary"
 					/>
@@ -79,7 +79,7 @@ export function ValidationsDetailHeader() {
 				>
 					<Button
 						disabled={validationsDetailContext.flags.loading}
-						label={t('plans:validations.detail.Header.approve_plan_button')}
+						label={t('plans:validations.detail.ValidationsDetailHeader.actions.approve.label')}
 						loading={validationsDetailContext.flags.loading}
 						onClick={handleApprovePlan}
 					/>

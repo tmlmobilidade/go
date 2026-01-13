@@ -24,29 +24,29 @@ export function ValidationsDetailSectionResult() {
 	const columns: DataTableColumn<GTFSValidatorMessage>[] = [
 		{
 			accessor: 'file_name',
-			title: t('plans:validations.detail.SectionResult.Table.columns.file_name'),
+			title: t('plans:validations.detail.ValidationsDetailSectionResult.table.columns.file_name.label'),
 			width: 180,
 		},
 		{
 			accessor: 'field',
-			title: t('plans:validations.detail.SectionResult.Table.columns.field'),
+			title: t('plans:validations.detail.ValidationsDetailSectionResult.table.columns.field.label'),
 			width: 250,
 		},
 		{
 			accessor: 'severity',
 			render: item => <SeverityTag severity={item.severity} />,
-			title: t('plans:validations.detail.SectionResult.Table.columns.severity'),
+			title: t('plans:validations.detail.ValidationsDetailSectionResult.table.columns.severity.label'),
 			width: 100,
 		},
 		{
 			accessor: 'message',
-			title: t('plans:validations.detail.SectionResult.Table.columns.message'),
+			title: t('plans:validations.detail.ValidationsDetailSectionResult.table.columns.message.label'),
 			width: 500,
 		},
 		{
 			accessor: 'rows',
 			render: item => <ValidationsDetailSectionResultCellRows rows={item.rows} />,
-			title: t('plans:validations.detail.SectionResult.Table.columns.rows'),
+			title: t('plans:validations.detail.ValidationsDetailSectionResult.table.columns.rows.label'),
 			width: 600,
 		},
 	];
@@ -79,8 +79,8 @@ export function ValidationsDetailSectionResult() {
 	return (
 		<Collapsible
 			defaultOpen={true}
-			description={t('plans:validations.detail.SectionResult.description')}
-			title={t('plans:validations.detail.SectionResult.title')}
+			description={t('plans:validations.detail.ValidationsDetailSectionResult.description')}
+			title={t('plans:validations.detail.ValidationsDetailSectionResult.title')}
 		>
 			<Section flexDirection="row" gap="md">
 				<SeverityTag label={errorCountLabel} severity="error" />

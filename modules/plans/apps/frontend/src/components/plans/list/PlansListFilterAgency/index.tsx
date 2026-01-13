@@ -21,7 +21,7 @@ export function PlansListFilterAgency() {
 	return (
 		<FilterTypeList
 			active={plansListContext.filters.agency.isActive}
-			label={t('plans:plans.list.FilterBar.FilterAgency.label')}
+			label={t('plans:plans.list.PlansListFilterAgency.label')}
 			onChange={plansListContext.filters.agency.set}
 			options={plansListContext.filters.agency.options}
 			isMultiple

@@ -21,7 +21,7 @@ export function ValidationsListFilterAgency() {
 	return (
 		<FilterTypeList
 			active={validationsListContext.filters.agency.isActive}
-			label={t('plans:validations.list.FilterBar.FilterAgency.label')}
+			label={t('plans:validations.list.ValidationsListFilterAgency.label')}
 			onChange={validationsListContext.filters.agency.set}
 			options={validationsListContext.filters.agency.options}
 			isMultiple

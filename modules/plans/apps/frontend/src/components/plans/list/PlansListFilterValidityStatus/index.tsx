@@ -21,7 +21,7 @@ export function PlansListFilterValidityStatus() {
 	return (
 		<FilterTypeList
 			active={plansListContext.filters.validity_status.isActive}
-			label={t('plans:plans.list.FilterBar.FilterValidityStatus.label')}
+			label={t('plans:plans.list.PlansListFilterValidityStatus.label')}
 			onChange={plansListContext.filters.validity_status.set}
 			options={plansListContext.filters.validity_status.options}
 			withToggleAll

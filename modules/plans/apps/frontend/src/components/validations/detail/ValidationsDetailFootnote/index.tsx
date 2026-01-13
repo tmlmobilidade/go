@@ -34,8 +34,8 @@ export function ValidationsDetailFootnote() {
 
 	return (
 		<Section>
-			<Label size="sm">{t('plans:validations.detail.Footnote.created_by_label', { createdBy: validationsDetailContext.data.file.created_by, formattedDateString: formattedDateString })}</Label>
-			<Label size="sm">{t('plans:validations.detail.Footnote.label')}</Label>
+			<Label size="sm">{t('plans:validations.detail.ValidationsDetailFootnote.created_by_label', { createdBy: validationsDetailContext.data.file.created_by, formattedDateString: formattedDateString })}</Label>
+			<Label size="sm">{t('plans:validations.detail.ValidationsDetailFootnote.label')}</Label>
 		</Section>
 	);
 

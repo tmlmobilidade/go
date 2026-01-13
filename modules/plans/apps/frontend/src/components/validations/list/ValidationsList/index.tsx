@@ -33,25 +33,25 @@ export function ValidationsList() {
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: t('plans:validations.list.Table.columns.id'),
+			title: t('plans:validations.list.ValidationsList.table.columns.id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'feeder_status',
 			render: item => <ValidationStatusTag status={item.feeder_status} />,
-			title: t('plans:validations.list.Table.columns.feeder_status'),
+			title: t('plans:validations.list.ValidationsList.table.columns.feeder_status.label'),
 			width: 125,
 		},
 		{
 			accessor: 'agency_id_normalized',
 			render: item => <ValidationsListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,
-			title: t('plans:validations.list.Table.columns.agency_name'),
+			title: t('plans:validations.list.ValidationsList.table.columns.agency_name.label'),
 			width: 400,
 		},
 		{
 			accessor: 'created_at',
 			render: item => <ValidationsListCellDate value={item.created_at} />,
-			title: t('plans:validations.list.Table.columns.created_at'),
+			title: t('plans:validations.list.ValidationsList.table.columns.created_at.label'),
 			width: 300,
 		},
 	];

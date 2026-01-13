@@ -25,8 +25,8 @@ export function PlanDetailSectionAgency() {
 
 	return (
 		<Collapsible
-			description={t('plans:plans.detail.SectionAgency.description')}
-			title={t('plans:plans.detail.SectionAgency.title')}
+			description={t('plans:plans.detail.PlanDetailSectionAgency.description')}
+			title={t('plans:plans.detail.PlanDetailSectionAgency.title')}
 		>
 			<Section gap="sm">
 				<AgencyDisplay data={planDetailContext.data.plan.gtfs_agency} />

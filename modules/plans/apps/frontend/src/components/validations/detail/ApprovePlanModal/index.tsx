@@ -78,13 +78,13 @@ export default function ApprovePlanModal() {
 				<Grid columns="ab" gap="md">
 					<Button
 						disabled={plansCreateContext.flags.loading}
-						label={t('plans:validations.detail.ApprovePlanModal.cancel_button')}
+						label={t('plans:validations.detail.ApprovePlanModal.actions.cancel.label')}
 						onClick={() => closeModal(CREATE_PLAN_MODAL_ID)}
 						variant="secondary"
 					/>
 					<Button
 						icon={<IconRosetteDiscountCheckFilled />}
-						label={t('plans:validations.detail.ApprovePlanModal.approve_plan_button')}
+						label={t('plans:validations.detail.ApprovePlanModal.actions.approve.label')}
 						loading={plansCreateContext.flags.loading}
 						onClick={plansCreateContext.actions.createPlan}
 					/>

@@ -34,15 +34,15 @@ export function PlanDetailSectionPcgiLegacy() {
 
 	return (
 		<Collapsible
-			description={t('plans:plans.detail.SectionPcgiLegacy.description')}
-			title={t('plans:plans.detail.SectionPcgiLegacy.title')}
+			description={t('plans:plans.detail.PlanDetailSectionPcgiLegacy.description')}
+			title={t('plans:plans.detail.PlanDetailSectionPcgiLegacy.title')}
 		>
 			<Section gap="sm">
 				<TextInput
 					key={planDetailContext.data.form.key('pcgi_legacy.operation_plan_id')}
-					label={t('plans:plans.detail.SectionPcgiLegacy.operation_plan_id_label')}
+					label={t('plans:plans.detail.PlanDetailSectionPcgiLegacy.fields.operation_plan_id.label')}
 					miw="50%"
-					placeholder={t('plans:plans.detail.SectionPcgiLegacy.operation_plan_id_placeholder')}
+					placeholder={t('plans:plans.detail.PlanDetailSectionPcgiLegacy.fields.operation_plan_id.placeholder')}
 					{...planDetailContext.data.form.getInputProps('pcgi_legacy.operation_plan_id')}
 					readOnly={planDetailContext.flags.isReadOnly || !canEdit}
 				/>

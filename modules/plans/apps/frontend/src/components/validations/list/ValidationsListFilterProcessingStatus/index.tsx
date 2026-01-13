@@ -21,7 +21,7 @@ export function ValidationsListFilterProcessingStatus() {
 	return (
 		<FilterTypeList
 			active={validationsListContext.filters.processing_status.isActive}
-			label={t('plans:validations.list.FilterBar.FilterProcessingStatus.label')}
+			label={t('plans:validations.list.ValidationsListFilterProcessingStatus.label')}
 			onChange={validationsListContext.filters.processing_status.set}
 			options={validationsListContext.filters.processing_status.options}
 			isMultiple

@@ -20,7 +20,7 @@ export function PlansListHeader() {
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>{t('plans:plans.list.Header.title')}</Label>
+			<Label size="lg" caps singleLine>{t('plans:plans.list.PlansListHeader.title')}</Label>
 			<Spacer />
 			<SearchInput onChange={plansListContext.filters.search.set} value={plansListContext.filters.search.value} />
 		</Toolbar>

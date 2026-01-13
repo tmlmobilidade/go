@@ -35,63 +35,85 @@
 	},
 	"plans": {
 		"change": {
-			"Header": {
+			"PlanChangeHeader": {
 				"title": "Alterar Plano"
 			}
 		},
 		"detail": {
-			"Header": {
-				"DeleteButton": {
-					"confirm_message": "Tem a certeza que pretende eliminar este plano? O plano ficará indisponível para utilização futura.",
-					"confirm_title": "Eliminar Plano"
+			"PlanDetailHeader": {
+				"actions": {
+					"delete": {
+						"confirm_message": "Tem a certeza que pretende eliminar este plano? O plano ficará indisponível para utilização futura.",
+						"confirm_title": "Eliminar Plano"
+					}
 				},
 				"change_plan_tooltip": "Alterar Plano"
 			},
-			"SectionAgency": {
+			"PlanDetailSectionAgency": {
 				"description": "Resumo dos dados do operador extraídos do ficheiro agency.txt",
 				"title": "Dados do Operador"
 			},
-			"SectionController": {
+			"PlanDetailSectionController": {
+				"actions": {
+					"reprocess": {
+						"label": "Reprocessar Plano"
+					}
+				},
 				"description": "Configurações relacionadas com a conversão deste plano em Rides.",
-				"reprocess_plan_button": "Reprocessar Plano",
 				"title": "Definições SLA"
 			},
-			"SectionFeedInfo": {
+			"PlanDetailSectionFeedInfo": {
 				"description": "Resumo dos dados do arquivo extraídos do ficheiro feed_info.txt",
 				"title": "Dados do Arquivo"
 			},
-			"SectionFiles": {
-				"description": "Ficheiros GTFS referentes a este plano.",
-				"no_file_selected": "Nenhum ficheiro selecionado",
-				"title": "Ficheiros GTFS"
-			},
-			"SectionPcgiLegacy": {
+			"PlanDetailSectionPcgiLegacy": {
 				"description": "Dados necessários para manter a PCGI em funcionamento.",
-				"operation_plan_id_label": "Operation Plan ID da PCGI",
-				"operation_plan_id_placeholder": "operationPlanId",
+				"fields": {
+					"operation_plan_id": {
+						"label": "Operation Plan ID da PCGI",
+						"placeholder": "operationPlanId"
+					}
+				},
 				"title": "PCGI Legacy"
+			},
+			"PlansDetailSectionFiles": {
+				"description": "Ficheiros GTFS referentes a este plano.",
+				"empty_state": {
+					"label": "Nenhum ficheiro selecionado"
+				},
+				"title": "Ficheiros GTFS"
 			}
 		},
 		"list": {
-			"FilterBar": {
-				"FilterAgency": {
-					"label": "Operador"
-				},
-				"FilterValidityStatus": {
-					"label": "Estado de Validade"
+			"PlansList": {
+				"table": {
+					"columns": {
+						"agency_id_normalized": {
+							"label": "Operador"
+						},
+						"apps_controller": {
+							"label": "SLA Status"
+						},
+						"apps_merger": {
+							"label": "Merger Status"
+						},
+						"gtfs_feed_info": {
+							"label": "Datas de Validade"
+						},
+						"id": {
+							"label": "#ID"
+						}
+					}
 				}
 			},
-			"Header": {
+			"PlansListFilterAgency": {
+				"label": "Operador"
+			},
+			"PlansListFilterValidityStatus": {
+				"label": "Estado de Validade"
+			},
+			"PlansListHeader": {
 				"title": "Planos"
-			},
-			"Table": {
-				"columns": {
-					"agency_id_normalized": "Operador",
-					"apps_controller": "SLA Status",
-					"apps_merger": "Merger Status",
-					"gtfs_feed_info": "Datas de Validade",
-					"id": "#ID"
-				}
 			}
 		}
 	},
@@ -106,74 +128,124 @@
 			"title": "Validar um plano GTFS"
 		},
 		"create": {
-			"BasicInfo": {
-				"select_file_label": "Selecionar Arquivo GTFS"
+			"ValidationCreateBasicInfo": {
+				"fields": {
+					"file": {
+						"label": "Selecionar Arquivo GTFS"
+					}
+				}
 			},
-			"Header": {
-				"create_validation_button": "Criar validação",
+			"ValidationCreateHeader": {
+				"actions": {
+					"create": {
+						"label": "Criar validação"
+					}
+				},
 				"title": "Nova Validação GTFS"
 			}
 		},
 		"detail": {
 			"ApprovePlanModal": {
-				"approve_plan_button": "Aprovar Plano",
-				"cancel_button": "Cancelar"
+				"actions": {
+					"approve": {
+						"label": "Aprovar Plano"
+					},
+					"cancel": {
+						"label": "Cancelar"
+					}
+				}
 			},
-			"Footnote": {
+			"RequestApprovalModal": {
+				"actions": {
+					"cancel": {
+						"label": "Cancelar"
+					},
+					"request": {
+						"label": "Solicitar aprovação à TML"
+					}
+				}
+			},
+			"ValidationsDetailFootnote": {
 				"created_by_label": "Validação criada por {createdBy} a {formattedDateString}",
 				"label": "As validações são eliminadas automaticamente ao fim de 30 dias após a sua data de criação. Poderão ser eliminadas mais cedo se necessário."
 			},
-			"Header": {
-				"approve_plan_button": "Aprovar Plano",
-				"request_approval_button": "Solicitar aprovação à TML"
+			"ValidationsDetailHeader": {
+				"actions": {
+					"approve": {
+						"label": "Aprovar Plano"
+					},
+					"request_approval": {
+						"label": "Solicitar aprovação à TML"
+					}
+				}
 			},
-			"RequestApprovalModal": {
-				"cancel_button": "Cancelar",
-				"request_approval_button": "Solicitar aprovação à TML"
-			},
-			"SectionAgency": {
+			"ValidationsDetailSectionAgency": {
 				"description": "Resumo dos dados do operador extraídos do ficheiro agency.txt",
 				"title": "Dados do Operador"
 			},
-			"SectionFeedInfo": {
+			"ValidationsDetailSectionFeedInfo": {
 				"description": "Resumo dos dados do arquivo extraídos do ficheiro feed_info.txt",
-				"no_file_selected": "Nenhum ficheiro selecionado",
+				"empty_state": {
+					"label": "Nenhum ficheiro selecionado"
+				},
 				"title": "Dados do Arquivo"
 			},
-			"SectionResult": {
-				"Table": {
+			"ValidationsDetailSectionResult": {
+				"description": "Informações, avisos e erros encontrados no arquivo GTFS",
+				"table": {
 					"columns": {
-						"field": "Campo",
-						"file_name": "Ficheiro",
-						"message": "Mensagem",
-						"rows": "Linhas do Ficheiro",
-						"severity": "Severidade"
+						"field": {
+							"label": "Campo"
+						},
+						"file_name": {
+							"label": "Ficheiro"
+						},
+						"message": {
+							"label": "Mensagem"
+						},
+						"rows": {
+							"label": "Linhas do Ficheiro"
+						},
+						"severity": {
+							"label": "Severidade"
+						}
 					}
 				},
-				"description": "Informações, avisos e erros encontrados no arquivo GTFS",
 				"title": "Resultado da Validação"
 			}
 		},
 		"list": {
-			"FilterBar": {
-				"FilterAgency": {
-					"label": "Operador"
+			"ValidationsList": {
+				"table": {
+					"columns": {
+						"agency_name": {
+							"label": "Operador"
+						},
+						"created_at": {
+							"label": "Data de Submissão"
+						},
+						"feeder_status": {
+							"label": "Estado"
+						},
+						"id": {
+							"label": "#ID"
+						}
+					}
+				}
+			},
+			"ValidationsListFilterAgency": {
+				"label": "Operador"
+			},
+			"ValidationsListFilterProcessingStatus": {
+				"label": "Estado"
+			},
+			"ValidationsListHeader": {
+				"actions": {
+					"new": {
+						"label": "Nova validação"
+					}
 				},
-				"FilterProcessingStatus": {
-					"label": "Estado"
-				}
-			},
-			"Header": {
-				"new_validation_button": "Nova validação",
 				"title": "Validações GTFS"
-			},
-			"Table": {
-				"columns": {
-					"agency_name": "Operador",
-					"created_at": "Data de Submissão",
-					"feeder_status": "Estado",
-					"id": "#ID"
-				}
 			}
 		}
 	}

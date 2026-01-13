@@ -25,8 +25,8 @@ export function ValidationsDetailSectionAgency() {
 
 	return (
 		<Collapsible
-			description={t('plans:validations.detail.SectionAgency.description')}
-			title={t('plans:validations.detail.SectionAgency.title')}
+			description={t('plans:validations.detail.ValidationsDetailSectionAgency.description')}
+			title={t('plans:validations.detail.ValidationsDetailSectionAgency.title')}
 		>
 			<Section gap="sm">
 				<AgencyDisplay data={validationsDetailContext.data.validation.gtfs_agency} />

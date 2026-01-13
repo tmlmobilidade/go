@@ -23,11 +23,11 @@ export function ValidationsListHeader() {
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>{t('plans:validations.list.Header.title')}</Label>
+			<Label size="lg" caps singleLine>{t('plans:validations.list.ValidationsListHeader.title')}</Label>
 			<Spacer />
 			<SearchInput onChange={validationsListContext.filters.search.set} value={validationsListContext.filters.search.value} />
 			<HasPermission action={PermissionCatalog.all.gtfs_validations.actions.create} scope={PermissionCatalog.all.gtfs_validations.scope}>
-				<Button label={t('plans:validations.list.Header.new_validation_button')} leftSection={<IconPlus />} onClick={openCreateValidationModal} />
+				<Button label={t('plans:validations.list.ValidationsListHeader.actions.new.label')} leftSection={<IconPlus />} onClick={openCreateValidationModal} />
 			</HasPermission>
 		</Toolbar>
 	);

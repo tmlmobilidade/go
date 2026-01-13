@@ -55,7 +55,7 @@ export function ValidationCreateBasicInfo() {
 			<Section>
 				<FileUpload
 					accept="application/zip"
-					label={t('plans:validations.create.BasicInfo.select_file_label')}
+					label={t('plans:validations.create.ValidationCreateBasicInfo.fields.file.label')}
 					maxFileSize={5 * 1024 * 1024 * 1024} // 5 GB
 					onFileChange={validationCreateContext.actions.setValidationFile}
 				/>

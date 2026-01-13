@@ -67,7 +67,7 @@ export function PlanDetailHeader() {
 					disabled={!planDetailContext.flags.canChangePlan}
 					icon={<IconRefresh />}
 					onClick={() => openPlanChangeModal(planDetailContext.data.plan._id)}
-					tooltip={t('plans:plans.detail.Header.change_plan_tooltip')}
+					tooltip={t('plans:plans.detail.PlanDetailHeader.change_plan_tooltip')}
 				/>
 			</HasPermission>
 
@@ -92,8 +92,8 @@ export function PlanDetailHeader() {
 				value={planDetailContext.data.plan.gtfs_agency.agency_id}
 			>
 				<DeleteButton
-					confirmMessage={t('plans:plans.detail.Header.DeleteButton.confirm_message')}
-					confirmTitle={t('plans:plans.detail.Header.DeleteButton.confirm_title')}
+					confirmMessage={t('plans:plans.detail.PlanDetailHeader.actions.delete.confirm_message')}
+					confirmTitle={t('plans:plans.detail.PlanDetailHeader.actions.delete.confirm_title')}
 					isDisabled={!planDetailContext.flags.canDelete}
 					isLoading={planDetailContext.flags.isDeleting}
 					onDelete={planDetailContext.actions.delete}

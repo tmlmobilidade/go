@@ -22,8 +22,8 @@ export function ValidationsDetailSectionFeedInfo() {
 
 	return (
 		<Collapsible
-			description={t('plans:validations.detail.SectionFeedInfo.description')}
-			title={t('plans:validations.detail.SectionFeedInfo.title')}
+			description={t('plans:validations.detail.ValidationsDetailSectionFeedInfo.description')}
+			title={t('plans:validations.detail.ValidationsDetailSectionFeedInfo.title')}
 		>
 
 			<Section gap="sm">
@@ -34,7 +34,7 @@ export function ValidationsDetailSectionFeedInfo() {
 				{validationsDetailContext.data.file ? (
 					<FileComponent file={validationsDetailContext.data.file} />
 				) : (
-					<Label>{t('plans:validations.detail.SectionFeedInfo.no_file_selected')}</Label>
+					<Label>{t('plans:validations.detail.ValidationsDetailSectionFeedInfo.empty_state.label')}</Label>
 				)}
 			</Section>
 

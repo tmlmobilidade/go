@@ -24,7 +24,7 @@ export function PlanChangeHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closePlanChangeModal} type="close" />
-			<Label size="lg" caps singleLine>{t('plans:plans.change.Header.title')}</Label>
+			<Label size="lg" caps singleLine>{t('plans:plans.change.PlanChangeHeader.title')}</Label>
 			<Spacer />
 			<SaveButton
 				isDisabled={!changePlanContext.data.selected_validation_id}

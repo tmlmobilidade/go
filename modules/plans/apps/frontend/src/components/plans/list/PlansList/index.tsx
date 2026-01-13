@@ -33,13 +33,13 @@ export function PlansList() {
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: t('plans:plans.list.Table.columns.id'),
+			title: t('plans:plans.list.PlansList.table.columns.id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'agency_id_normalized',
 			render: item => <PlansListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,
-			title: t('plans:plans.list.Table.columns.agency_id_normalized'),
+			title: t('plans:plans.list.PlansList.table.columns.agency_id_normalized.label'),
 			width: 300,
 		},
 		{
@@ -51,19 +51,19 @@ export function PlansList() {
 					validityStatus={item.validity_status}
 				/>
 			),
-			title: t('plans:plans.list.Table.columns.gtfs_feed_info'),
+			title: t('plans:plans.list.PlansList.table.columns.gtfs_feed_info.label'),
 			width: 310,
 		},
 		{
 			accessor: 'apps',
 			render: item => <PlanStatusTag status={item.apps?.controller?.status} timestamp={item.apps?.controller?.timestamp} />,
-			title: t('plans:plans.list.Table.columns.apps_controller'),
+			title: t('plans:plans.list.PlansList.table.columns.apps_controller.label'),
 			width: 220,
 		},
 		{
 			accessor: 'apps',
 			render: item => <PlanStatusTag status={item.apps?.merger?.status} timestamp={item.apps?.merger?.timestamp} />,
-			title: t('plans:plans.list.Table.columns.apps_merger'),
+			title: t('plans:plans.list.PlansList.table.columns.apps_merger.label'),
 			width: 220,
 		},
 	];

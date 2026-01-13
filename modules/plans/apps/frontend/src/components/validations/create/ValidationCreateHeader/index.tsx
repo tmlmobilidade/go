@@ -24,11 +24,11 @@ export function ValidationCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateValidationModal} type="close" />
-			<Label size="lg" caps singleLine>{t('plans:validations.create.Header.title')}</Label>
+			<Label size="lg" caps singleLine>{t('plans:validations.create.ValidationCreateHeader.title')}</Label>
 			<Spacer />
 			<Button
 				disabled={!validationCreateContext.flags.can_create}
-				label={t('plans:validations.create.Header.create_validation_button')}
+				label={t('plans:validations.create.ValidationCreateHeader.actions.create.label')}
 				loading={validationCreateContext.flags.loading}
 				onClick={validationCreateContext.actions.createValidation}
 			/>
