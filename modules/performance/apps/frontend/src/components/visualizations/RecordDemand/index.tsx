@@ -97,13 +97,10 @@ export function RecordDemand({ agency }: { agency?: AgencyTypeWithAll }) {
 			border="none"
 			padding="0"
 			title={(
-				t('performance:visualizations.RecordDemand.RecordPassengers.title') as string, {
-					'performance:visualizations.RecordDemand.RecordPassengers.title',
-					{
-						date: recordPassengers.date.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' }),
-						qty: recordPassengers.qty.toLocaleString('pt-PT'),
-					},
-				)
+				t('performance:visualizations.RecordDemand.RecordPassengers.title', { date: recordPassengers.date.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+					defaultValue: '',
+					qty: recordPassengers.qty.toLocaleString('pt-PT'),
+				})
 			)}
 		>
 			<div className={styles.progressContainer}>

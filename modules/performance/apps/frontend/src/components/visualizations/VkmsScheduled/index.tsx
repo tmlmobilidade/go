@@ -130,7 +130,7 @@ export function VmksScheduled({
 	// D. Render components
 
 	return (
-		<VisualizationWrapper border={isInsideFrame ? '' : 'none'} lastUpdated={formattedData.lastUpdated} padding={isInsideFrame ? '' : '0'} title={t(`${title}`)}>
+		<VisualizationWrapper border={isInsideFrame ? '' : 'none'} lastUpdated={formattedData.lastUpdated} padding={isInsideFrame ? '' : '0'} title={t(`${title}`, { defaultValue: '' })}>
 			<ProgressBarChart data={chartData as ProgressBarResult} endDate={endDate} height={height} referenceVariable={t('performance:visualizations.VkmsScheduled.reference_variable')} startDate={startDate} timeView={timeView} yAxisLabel={t('performance:visualizations.VkmsScheduled.y_axis_label')} />
 		</VisualizationWrapper>
 	);

@@ -30,7 +30,7 @@ export default function Home() {
 
 			<div className={styles.topContainer}>
 				<div className={styles.headerContainer}>
-					<h1 className={styles.headerTitle}>{t('performance:layout.Home.greeting', { defaultValue: '', name: userName })}</h1>
+					<h1 className={styles.headerTitle}>{t('performance:Home.greeting', { defaultValue: '', name: userName })}</h1>
 					<SystemStatus />
 					<AgenciesStatus />
 				</div>

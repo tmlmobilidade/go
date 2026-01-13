@@ -100,7 +100,7 @@ export function Circulations({
 	// D. Render components
 
 	return (
-		<VisualizationWrapper border={isInsideFrame ? '' : 'none'} lastUpdated={formattedData.lastUpdated} padding={isInsideFrame ? '' : '0'} title={t(`${title}`)}>
+		<VisualizationWrapper border={isInsideFrame ? '' : 'none'} lastUpdated={formattedData.lastUpdated} padding={isInsideFrame ? '' : '0'} title={t(`${title}`, { defaultValue: '' })}>
 			<ProgressBarChart data={chartData} endDate={endDate} height={height} startDate={startDate} timeView={timeView} yAxisLabel="Nº circulações" />
 		</VisualizationWrapper>
 	);

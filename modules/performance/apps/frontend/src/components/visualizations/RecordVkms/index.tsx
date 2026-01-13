@@ -129,13 +129,13 @@ export default function RecordSupply({ filters, timeView }: { filters: Filters, 
 						value={vkmsContracted}
 					/>
 					<RecordCard
-						description={t('performance:visualizations.RecordVkms.Cards.scheduled.description', { count: transformedRecordData.scheduledRides })}
+						description={t('performance:visualizations.RecordVkms.Cards.scheduled.description', { count: transformedRecordData.scheduledRides, defaultValue: '' })}
 						title={t('performance:visualizations.RecordVkms.Cards.scheduled.title')}
 						totalValue={vkmsContracted}
 						value={transformedRecordData.vmksScheduled}
 					/>
 					<RecordCard
-						description={t('performance:visualizations.RecordVkms.Cards.executed.description', { count: transformedRecordData.accomplishedRides })}
+						description={t('performance:visualizations.RecordVkms.Cards.executed.description', { count: transformedRecordData.accomplishedRides, defaultValue: '' })}
 						title={t('performance:visualizations.RecordVkms.Cards.executed.title')}
 						totalValue={vkmsContracted}
 						value={transformedRecordData.vkmsObserved}
