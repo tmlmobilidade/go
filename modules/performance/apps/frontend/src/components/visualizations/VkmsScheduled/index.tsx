@@ -43,7 +43,7 @@ export function VmksScheduled({
 	height,
 	isInsideFrame = true,
 	timeView,
-	title = 'performance:VkmsScheduled.default_title',
+	title = 'performance:visualizations.VkmsScheduled.default_title',
 }: DemandVisualizationProps) {
 	//
 
@@ -131,7 +131,7 @@ export function VmksScheduled({
 
 	return (
 		<VisualizationWrapper border={isInsideFrame ? '' : 'none'} lastUpdated={formattedData.lastUpdated} padding={isInsideFrame ? '' : '0'} title={t(`${title}`)}>
-			<ProgressBarChart data={chartData as ProgressBarResult} endDate={endDate} height={height} referenceVariable={t('performance:VkmsScheduled.reference_variable')} startDate={startDate} timeView={timeView} yAxisLabel={t('performance:VkmsScheduled.y_axis_label')} />
+			<ProgressBarChart data={chartData as ProgressBarResult} endDate={endDate} height={height} referenceVariable={t('performance:visualizations.VkmsScheduled.reference_variable')} startDate={startDate} timeView={timeView} yAxisLabel={t('performance:visualizations.VkmsScheduled.y_axis_label')} />
 		</VisualizationWrapper>
 	);
 }

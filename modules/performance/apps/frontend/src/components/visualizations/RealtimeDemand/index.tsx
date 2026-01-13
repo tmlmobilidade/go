@@ -74,7 +74,7 @@ export function RealtimeDemand({ agency }: { agency?: AgencyType }) {
 					icon={<IconUser />}
 					isLoading={isLoading}
 					previousValue={formattedData.lastWeek}
-					title={t('performance:RealtimeDemand.title')}
+					title={t('performance:visualizations.RealtimeDemand.title')}
 					updatedAt={new Date(formattedData.lastUpdated)}
 					value={formattedData.now}
 				>

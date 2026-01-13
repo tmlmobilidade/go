@@ -58,14 +58,14 @@ export default function SupplyTopic() {
 				<Section alignItems="center" flexDirection="row" gap="lg" height={70} padding="none">
 
 					<Section gap="xs" padding="none" width="fit-content">
-						<h3>{t('performance:SupplyTopic.filters.view.label')}</h3>
+						<h3>{t('performance:topics.Supply.filters.view.label')}</h3>
 						<SegmentedControl
 							onChange={handleChangeTimeView}
 							value={timeView}
 							data={[
-								{ label: t('performance:SupplyTopic.filters.view.options.annual'), value: 'annual' },
-								{ label: t('performance:SupplyTopic.filters.view.options.monthly'), value: 'monthly' },
-								{ label: t('performance:SupplyTopic.filters.view.options.daily'), value: 'daily' },
+								{ label: t('performance:topics.Supply.filters.view.options.annual'), value: 'annual' },
+								{ label: t('performance:topics.Supply.filters.view.options.monthly'), value: 'monthly' },
+								{ label: t('performance:topics.Supply.filters.view.options.daily'), value: 'daily' },
 							]}
 						/>
 					</Section>
@@ -73,17 +73,17 @@ export default function SupplyTopic() {
 					{timeView === 'daily' && (
 						<>
 							<DateInput
-								label={t('performance:SupplyTopic.filters.date.start_label')}
+								label={t('performance:topics.Supply.filters.date.start_label')}
 								locale="pt"
 								onChange={handleChangeStartDate}
-								placeholder={t('performance:SupplyTopic.filters.date.placeholder')}
+								placeholder={t('performance:topics.Supply.filters.date.placeholder')}
 								value={startDate.js_date}
 							/>
 							<DateInput
-								label={t('performance:SupplyTopic.filters.date.end_label')}
+								label={t('performance:topics.Supply.filters.date.end_label')}
 								locale="pt"
 								onChange={handleChangeEndDate}
-								placeholder={t('performance:SupplyTopic.filters.date.placeholder')}
+								placeholder={t('performance:topics.Supply.filters.date.placeholder')}
 								value={endDate.js_date}
 							/>
 						</>
@@ -92,17 +92,17 @@ export default function SupplyTopic() {
 					{timeView === 'monthly' && (
 						<>
 							<MonthPicker
-								label={t('performance:SupplyTopic.filters.date.start_label')}
+								label={t('performance:topics.Supply.filters.date.start_label')}
 								locale="pt"
 								onChange={handleChangeStartDate}
-								placeholder={t('performance:SupplyTopic.filters.date.placeholder')}
+								placeholder={t('performance:topics.Supply.filters.date.placeholder')}
 								value={startDate.js_date}
 							/>
 							<MonthPicker
-								label={t('performance:SupplyTopic.filters.date.end_label')}
+								label={t('performance:topics.Supply.filters.date.end_label')}
 								locale="pt"
 								onChange={handleChangeEndDate}
-								placeholder={t('performance:SupplyTopic.filters.date.placeholder')}
+								placeholder={t('performance:topics.Supply.filters.date.placeholder')}
 								value={endDate.js_date}
 							/>
 						</>
@@ -111,17 +111,17 @@ export default function SupplyTopic() {
 					{timeView === 'annual' && (
 						<>
 							<YearPicker
-								label={t('performance:SupplyTopic.filters.date.start_label')}
+								label={t('performance:topics.Supply.filters.date.start_label')}
 								locale="pt"
 								onChange={handleChangeStartDate}
-								placeholder={t('performance:SupplyTopic.filters.date.placeholder')}
+								placeholder={t('performance:topics.Supply.filters.date.placeholder')}
 								value={startDate.js_date}
 							/>
 							<YearPicker
-								label={t('performance:SupplyTopic.filters.date.end_label')}
+								label={t('performance:topics.Supply.filters.date.end_label')}
 								locale="pt"
 								onChange={handleChangeEndDate}
-								placeholder={t('performance:SupplyTopic.filters.date.placeholder')}
+								placeholder={t('performance:topics.Supply.filters.date.placeholder')}
 								value={endDate.js_date}
 							/>
 						</>

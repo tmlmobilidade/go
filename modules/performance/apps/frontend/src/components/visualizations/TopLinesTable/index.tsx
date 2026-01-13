@@ -72,20 +72,20 @@ export default function TopLinesTable() {
 						comparisonLabel={null}
 						goal="increase"
 						percentage={row.increase_pct}
-						tooltip={t('performance:TopLinesTable.tooltip')}
+						tooltip={t('performance:visualizations.TopLinesTable.tooltip')}
 					/>
 				</Table.Td>
 				<Table.Td>
 					<Text>{formatNumber(row.last_30_days_total)}</Text>
 				</Table.Td>
 				<Table.Td>
-					<Text size="sm">{formatNumber(row.last_30_days_by_day_type.day_type_1 / 30)} {t('performance:TopLinesTable.Columns.avg_weekdays')}</Text>
+					<Text size="sm">{formatNumber(row.last_30_days_by_day_type.day_type_1 / 30)} {t('performance:visualizations.TopLinesTable.Columns.avg_weekdays')}</Text>
 				</Table.Td>
 				<Table.Td>
-					<Text size="sm">{formatNumber(row.last_30_days_by_day_type.day_type_2 / 30)} {t('performance:TopLinesTable.Columns.avg_saturdays')}</Text>
+					<Text size="sm">{formatNumber(row.last_30_days_by_day_type.day_type_2 / 30)} {t('performance:visualizations.TopLinesTable.Columns.avg_saturdays')}</Text>
 				</Table.Td>
 				<Table.Td>
-					<Text size="sm">{formatNumber(row.last_30_days_by_day_type.day_type_3 / 30)} {t('performance:TopLinesTable.Columns.avg_holidays')}</Text>
+					<Text size="sm">{formatNumber(row.last_30_days_by_day_type.day_type_3 / 30)} {t('performance:visualizations.TopLinesTable.Columns.avg_holidays')}</Text>
 				</Table.Td>
 			</Table.Tr>
 		));
@@ -95,7 +95,7 @@ export default function TopLinesTable() {
 		<VisualizationWrapper>
 			<Section gap="md" padding="none">
 				<Section alignItems="center" flexDirection="row" gap="xs" padding="none">
-					<h3>{t('performance:TopLinesTable.title')}</h3>
+					<h3>{t('performance:visualizations.TopLinesTable.title')}</h3>
 					<LiveIcon updatedAt={topLinesArray?.[0]?.generated_at} />
 				</Section>
 
@@ -105,12 +105,12 @@ export default function TopLinesTable() {
 					<Table highlightOnHover striped>
 						<Table.Thead>
 							<Table.Tr>
-								<Table.Th>{t('performance:TopLinesTable.Columns.line')}</Table.Th>
-								<Table.Th>{t('performance:TopLinesTable.Columns.variation')}</Table.Th>
-								<Table.Th>{t('performance:TopLinesTable.Columns.total_30_days')}</Table.Th>
-								<Table.Th>{t('performance:TopLinesTable.Columns.avg_weekdays')}</Table.Th>
-								<Table.Th>{t('performance:TopLinesTable.Columns.avg_saturdays')}</Table.Th>
-								<Table.Th>{t('performance:TopLinesTable.Columns.avg_holidays')}</Table.Th>
+								<Table.Th>{t('performance:visualizations.TopLinesTable.Columns.line')}</Table.Th>
+								<Table.Th>{t('performance:visualizations.TopLinesTable.Columns.variation')}</Table.Th>
+								<Table.Th>{t('performance:visualizations.TopLinesTable.Columns.total_30_days')}</Table.Th>
+								<Table.Th>{t('performance:visualizations.TopLinesTable.Columns.avg_weekdays')}</Table.Th>
+								<Table.Th>{t('performance:visualizations.TopLinesTable.Columns.avg_saturdays')}</Table.Th>
+								<Table.Th>{t('performance:visualizations.TopLinesTable.Columns.avg_holidays')}</Table.Th>
 							</Table.Tr>
 						</Table.Thead>
 						<Table.Tbody>

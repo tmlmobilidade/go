@@ -35,13 +35,13 @@ export function RecordDemand({ agency }: { agency?: AgencyTypeWithAll }) {
 	// C. Transform data
 
 	function getTooltipLabel(progress: number) {
-		if (progress < 10) return t('performance:RecordDemand.RecordProgress.0_10');
-		if (progress < 25) return t('performance:RecordDemand.RecordProgress.10_25');
-		if (progress < 50) return t('performance:RecordDemand.RecordProgress.25_50');
-		if (progress < 75) return t('performance:RecordDemand.RecordProgress.50_75');
-		if (progress < 90) return t('performance:RecordDemand.RecordProgress.75_90');
-		if (progress < 100) return t('performance:RecordDemand.RecordProgress.90_99');
-		return t('performance:RecordDemand.RecordProgress.100_plus');
+		if (progress < 10) return t('performance:visualizations.RecordDemand.RecordProgress.0_10');
+		if (progress < 25) return t('performance:visualizations.RecordDemand.RecordProgress.10_25');
+		if (progress < 50) return t('performance:visualizations.RecordDemand.RecordProgress.25_50');
+		if (progress < 75) return t('performance:visualizations.RecordDemand.RecordProgress.50_75');
+		if (progress < 90) return t('performance:visualizations.RecordDemand.RecordProgress.75_90');
+		if (progress < 100) return t('performance:visualizations.RecordDemand.RecordProgress.90_99');
+		return t('performance:visualizations.RecordDemand.RecordProgress.100_plus');
 	}
 
 	const formattedData = useMemo(() => {
@@ -97,8 +97,8 @@ export function RecordDemand({ agency }: { agency?: AgencyTypeWithAll }) {
 			border="none"
 			padding="0"
 			title={(
-				t(
-					'performance:RecordDemand.RecordPassengers.title',
+				t('performance:visualizations.RecordDemand.RecordPassengers.title') as string, {
+					'performance:visualizations.RecordDemand.RecordPassengers.title',
 					{
 						date: recordPassengers.date.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' }),
 						qty: recordPassengers.qty.toLocaleString('pt-PT'),

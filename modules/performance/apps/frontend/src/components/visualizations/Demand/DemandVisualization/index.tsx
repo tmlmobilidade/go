@@ -41,7 +41,7 @@ export function DemandVisualization({
 	height,
 	isInsideFrame,
 	timeView,
-	title = 'performance:DemandVisualization.default_title',
+	title = 'performance:visualizations.Demand.DemandVisualization.default_title',
 }: DemandVisualizationProps) {
 	//
 

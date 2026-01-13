@@ -1,13 +1,117 @@
 {
-	"AgenciesSelector": {
-		"label": "Operador"
+	"agencies": {
+		"41": "Área 1",
+		"42": "Área 2",
+		"43": "Área 3",
+		"44": "Área 4",
+		"all": "Toda a CM"
 	},
-	"Circulations": {
-		"default_title": "Circulações planeadas vs executadas",
-		"y_axis_label": "Nº circulações"
+	"chart": {
+		"series": {
+			"average": {
+				"label": "Média = {value, number}"
+			},
+			"qty": {
+				"label": "Passageiros transportados / dia"
+			}
+		}
 	},
-	"DashboardWrapper": {
-		"breadcrumbs": {
+	"charts": {
+		"LineBarChart": {
+			"default_y_axis_label": "Nº de passageiros"
+		},
+		"ProgressBarChart": {
+			"series": {
+				"achieved": "Executado",
+				"planned": "Planeado"
+			}
+		}
+	},
+	"dashboards": {
+		"DemandBy": {
+			"charts": {
+				"by_category_title": "Passageiros transportados por categoria de bilhética",
+				"by_product_title": "Passageiros transportados por tipo de passe"
+			},
+			"filters": {
+				"date": {
+					"end_label": "Data de Fim",
+					"placeholder": "Selecionar data",
+					"start_label": "Data de Início"
+				},
+				"group_by": {
+					"label": "Agrupar por",
+					"options": {
+						"agency": "Operador",
+						"line": "Linha",
+						"pattern": "Pattern"
+					}
+				},
+				"line": {
+					"label": "Linha"
+				},
+				"pattern": {
+					"label": "Pattern"
+				},
+				"view": {
+					"label": "Vista",
+					"options": {
+						"annual": "Anual",
+						"daily": "Diária",
+						"monthly": "Mensal"
+					}
+				}
+			}
+		}
+	},
+	"dates": {
+		"day_types": {
+			"day_type_1": "Dias úteis",
+			"day_type_2": "Sábados",
+			"day_type_3": "Domingos e feriados"
+		},
+		"formatted": "{date, date, ::EEEE, dd MMMM yyyy}",
+		"formatted_short": "{date, date, ::dd MMMM yyyy}",
+		"holiday": "Feriado"
+	},
+	"layout": {
+		"AgenciesSelector": {
+			"label": "Operador"
+		},
+		"DashboardWrapper": {
+			"breadcrumbs": {
+				"dashboards": {
+					"advances": "Adiantamentos",
+					"cancellations": "Cancelamentos",
+					"contract_compliance": "Cumprimento do contrato",
+					"delays": "Atrasos",
+					"demand_by": "Procura por dimensão",
+					"efficiency_index": "Índice de eficiência",
+					"fare_evasion": "Fuga ao pagamento",
+					"fraud": "Fraude",
+					"occupancy_rate": "Taxa de ocupação",
+					"offer_evolution": "Evolução da oferta",
+					"oversupply_zones": "Excesso de oferta",
+					"perturbations": "Perturbações",
+					"spatial_coverage": "Cobertura espacial",
+					"supply_by": "Oferta por dimensão",
+					"supply_demand_ratio": "Rácio oferta/procura",
+					"temporal_alignment": "Alinhamento temporal",
+					"undersupply_zones": "Falta de oferta"
+				},
+				"performance": "Performance",
+				"topics": {
+					"coverage_availability": "Cobertura e disponibilidade",
+					"customer_satisfaction": "Satisfação do cliente",
+					"demand": "Procura",
+					"inspections": "Fiscalização",
+					"operational_costs": "Custos operacionais",
+					"revenue": "Receita",
+					"service_compliance": "Cumprimento de serviço",
+					"supply": "Oferta",
+					"sustainability": "Impacto ambiental"
+				}
+			},
 			"dashboards": {
 				"advances": "Adiantamentos",
 				"cancellations": "Cancelamentos",
@@ -26,8 +130,19 @@
 				"supply_demand_ratio": "Rácio oferta/procura",
 				"temporal_alignment": "Alinhamento temporal",
 				"undersupply_zones": "Falta de oferta"
-			},
-			"performance": "Performance",
+			}
+		},
+		"Home": {
+			"greeting": "🚀 Olá {name},"
+		},
+		"SystemStatus": {
+			"negative": "Atenção! A operação está a *value* da performance ideal.",
+			"positive": "Hoje a operação está a correr muito bem, com *value* de eficiência!",
+			"tooltip": "Índice global de desempenho operacional. Calculado a partir das principais métricas ponderadas do sistema (pontualidade, viagens válidas, atrasos, etc.).",
+			"warning": "Hoje a operação está a *value* da performance ideal."
+		},
+		"Topics": {
+			"title": "Explorar temas",
 			"topics": {
 				"coverage_availability": "Cobertura e disponibilidade",
 				"customer_satisfaction": "Satisfação do cliente",
@@ -39,207 +154,26 @@
 				"supply": "Oferta",
 				"sustainability": "Impacto ambiental"
 			}
-		},
-		"dashboards": {
-			"advances": "Adiantamentos",
-			"cancellations": "Cancelamentos",
-			"contract_compliance": "Cumprimento do contrato",
-			"delays": "Atrasos",
-			"demand_by": "Procura por dimensão",
-			"efficiency_index": "Índice de eficiência",
-			"fare_evasion": "Fuga ao pagamento",
-			"fraud": "Fraude",
-			"occupancy_rate": "Taxa de ocupação",
-			"offer_evolution": "Evolução da oferta",
-			"oversupply_zones": "Excesso de oferta",
-			"perturbations": "Perturbações",
-			"spatial_coverage": "Cobertura espacial",
-			"supply_by": "Oferta por dimensão",
-			"supply_demand_ratio": "Rácio oferta/procura",
-			"temporal_alignment": "Alinhamento temporal",
-			"undersupply_zones": "Falta de oferta"
 		}
 	},
-	"DemandByTopic": {
-		"charts": {
-			"by_category_title": "Passageiros transportados por categoria de bilhética",
-			"by_product_title": "Passageiros transportados por tipo de passe"
-		},
-		"filters": {
-			"date": {
-				"end_label": "Data de Fim",
-				"placeholder": "Selecionar data",
-				"start_label": "Data de Início"
-			},
-			"group_by": {
-				"label": "Agrupar por",
-				"options": {
-					"agency": "Operador",
-					"line": "Linha",
-					"pattern": "Pattern"
-				}
-			},
-			"line": {
-				"label": "Linha"
-			},
-			"pattern": {
-				"label": "Pattern"
-			},
-			"view": {
-				"label": "Vista",
-				"options": {
-					"annual": "Anual",
-					"daily": "Diária",
-					"monthly": "Mensal"
+	"topics": {
+		"Supply": {
+			"filters": {
+				"date": {
+					"end_label": "Data de Fim",
+					"placeholder": "Selecionar data",
+					"start_label": "Data de Início"
+				},
+				"view": {
+					"label": "Vista",
+					"options": {
+						"annual": "Anual",
+						"daily": "Diária",
+						"monthly": "Mensal"
+					}
 				}
 			}
 		}
-	},
-	"DemandVisualization": {
-		"default_title": "Passageiros transportados"
-	},
-	"Home": {
-		"greeting": "🚀 Olá {name},"
-	},
-	"LineBarChart": {
-		"default_y_axis_label": "Nº de passageiros"
-	},
-	"ProgressBarChart": {
-		"series": {
-			"achieved": "Executado",
-			"planned": "Planeado"
-		}
-	},
-	"RealtimeDemand": {
-		"title": "Passageiros transportados hoje"
-	},
-	"RecordDemand": {
-		"RecordPassengers": {
-			"title": "Recorde de passageiros diário: {qty} ({date})"
-		},
-		"RecordProgress": {
-			"0_10": "Acabámos de sair da garagem 🚍💨",
-			"100_plus": "Novo recorde batido! 🏆🎉",
-			"10_25": "Ainda há muito caminho pela frente 🛣️",
-			"25_50": "Aquecemos os motores! 🔥",
-			"50_75": "Meio caminho andado — bora lá! 💪",
-			"75_90": "Quase no recorde! 🚀",
-			"90_99": "Atenção! O recorde está a tremer 😏"
-		}
-	},
-	"RecordDemandByDayType": {
-		"Chart": {
-			"passengers_label": "Nº de passageiros"
-		},
-		"title": "Recordes por dia tipo"
-	},
-	"RecordVkms": {
-		"Cards": {
-			"executed": {
-				"description": "de {count, number} viagens",
-				"title": "Vkms executados"
-			},
-			"reference": {
-				"description": "no período selecionado",
-				"title": "Vkms referência"
-			},
-			"scheduled": {
-				"description": "de {count, number} viagens",
-				"title": "Vkms planeados"
-			}
-		},
-		"title": "Operação"
-	},
-	"ServiceCompliance": {
-		"Metrics": {
-			"advanced": "Circulações adiantadas à partida",
-			"delayed": "Circulações atrasadas > 5 minutos",
-			"no_passengers": "Circulações sem passageiros",
-			"with_sales": "Circulações com bilhética"
-		},
-		"title": "Total de circulações realizadas",
-		"valid_pct_label": "Percentagem de circulações válidas (3 momentos)"
-	},
-	"SupplyTopic": {
-		"filters": {
-			"date": {
-				"end_label": "Data de Fim",
-				"placeholder": "Selecionar data",
-				"start_label": "Data de Início"
-			},
-			"view": {
-				"label": "Vista",
-				"options": {
-					"annual": "Anual",
-					"daily": "Diária",
-					"monthly": "Mensal"
-				}
-			}
-		}
-	},
-	"SystemStatus": {
-		"negative": "Atenção! A operação está a *value* da performance ideal.",
-		"positive": "Hoje a operação está a correr muito bem, com *value* de eficiência!",
-		"tooltip": "Índice global de desempenho operacional. Calculado a partir das principais métricas ponderadas do sistema (pontualidade, viagens válidas, atrasos, etc.).",
-		"warning": "Hoje a operação está a *value* da performance ideal."
-	},
-	"TopLinesTable": {
-		"Columns": {
-			"avg_holidays": "Média Dom/Feriados",
-			"avg_saturdays": "Média Sábados",
-			"avg_weekdays": "Média Dias Úteis",
-			"line": "Linha",
-			"total_30_days": "Total 30 Dias",
-			"variation": "Variação (%)"
-		},
-		"title": "Performance das Linhas (Últimos 30 Dias)",
-		"tooltip": "Variação da média diária dos últimos 30 dias comparada com a média diária dos últimos 365 dias"
-	},
-	"Topics": {
-		"title": "Explorar temas",
-		"topics": {
-			"coverage_availability": "Cobertura e disponibilidade",
-			"customer_satisfaction": "Satisfação do cliente",
-			"demand": "Procura",
-			"inspections": "Fiscalização",
-			"operational_costs": "Custos operacionais",
-			"revenue": "Receita",
-			"service_compliance": "Cumprimento de serviço",
-			"supply": "Oferta",
-			"sustainability": "Impacto ambiental"
-		}
-	},
-	"VkmsScheduled": {
-		"default_title": "Vkms planeados vs executados",
-		"reference_variable": "Referência",
-		"y_axis_label": "Vkms planeados"
-	},
-	"agencies": {
-		"41": "Área 1",
-		"42": "Área 2",
-		"43": "Área 3",
-		"44": "Área 4",
-		"all": "Toda a CM"
-	},
-	"chart": {
-		"series": {
-			"average": {
-				"label": "Média = {value, number}"
-			},
-			"qty": {
-				"label": "Passageiros transportados / dia"
-			}
-		}
-	},
-	"dates": {
-		"day_types": {
-			"day_type_1": "Dias úteis",
-			"day_type_2": "Sábados",
-			"day_type_3": "Domingos e feriados"
-		},
-		"formatted": "{date, date, ::EEEE, dd MMMM yyyy}",
-		"formatted_short": "{date, date, ::dd MMMM yyyy}",
-		"holiday": "Feriado"
 	},
 	"updated_at": {
 		"days": "{count, plural, one {# dia} other {# dias}}",
@@ -247,5 +181,83 @@
 		"just_now": "instantes",
 		"minutes": "{count, plural, one {# minuto} other {# minutos}}",
 		"relative": "Atualizado há {value}"
+	},
+	"visualizations": {
+		"Circulations": {
+			"default_title": "Circulações planeadas vs executadas",
+			"y_axis_label": "Nº circulações"
+		},
+		"Demand": {
+			"DemandVisualization": {
+				"default_title": "Passageiros transportados"
+			}
+		},
+		"RealtimeDemand": {
+			"title": "Passageiros transportados hoje"
+		},
+		"RecordDemand": {
+			"RecordPassengers": {
+				"title": "Recorde de passageiros diário: {qty} ({date})"
+			},
+			"RecordProgress": {
+				"0_10": "Acabámos de sair da garagem 🚍💨",
+				"100_plus": "Novo recorde batido! 🏆🎉",
+				"10_25": "Ainda há muito caminho pela frente 🛣️",
+				"25_50": "Aquecemos os motores! 🔥",
+				"50_75": "Meio caminho andado — bora lá! 💪",
+				"75_90": "Quase no recorde! 🚀",
+				"90_99": "Atenção! O recorde está a tremer 😏"
+			}
+		},
+		"RecordDemandByDayType": {
+			"Chart": {
+				"passengers_label": "Nº de passageiros"
+			},
+			"title": "Recordes por dia tipo"
+		},
+		"RecordVkms": {
+			"Cards": {
+				"executed": {
+					"description": "de {count, number} viagens",
+					"title": "Vkms executados"
+				},
+				"reference": {
+					"description": "no período selecionado",
+					"title": "Vkms referência"
+				},
+				"scheduled": {
+					"description": "de {count, number} viagens",
+					"title": "Vkms planeados"
+				}
+			},
+			"title": "Operação"
+		},
+		"ServiceCompliance": {
+			"Metrics": {
+				"advanced": "Circulações adiantadas à partida",
+				"delayed": "Circulações atrasadas > 5 minutos",
+				"no_passengers": "Circulações sem passageiros",
+				"with_sales": "Circulações com bilhética"
+			},
+			"title": "Total de circulações realizadas",
+			"valid_pct_label": "Percentagem de circulações válidas (3 momentos)"
+		},
+		"TopLinesTable": {
+			"Columns": {
+				"avg_holidays": "Média Dom/Feriados",
+				"avg_saturdays": "Média Sábados",
+				"avg_weekdays": "Média Dias Úteis",
+				"line": "Linha",
+				"total_30_days": "Total 30 Dias",
+				"variation": "Variação (%)"
+			},
+			"title": "Performance das Linhas (Últimos 30 Dias)",
+			"tooltip": "Variação da média diária dos últimos 30 dias comparada com a média diária dos últimos 365 dias"
+		},
+		"VkmsScheduled": {
+			"default_title": "Vkms planeados vs executados",
+			"reference_variable": "Referência",
+			"y_axis_label": "Vkms planeados"
+		}
 	}
 }

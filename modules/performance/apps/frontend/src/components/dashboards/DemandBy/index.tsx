@@ -107,27 +107,27 @@ export default function DemandByTopic() {
 
 				<Section flexDirection="row" gap="lg" padding="none">
 					<Section gap="xs" padding="none" width="fit-content">
-						<h3>{t('performance:DemandByTopic.filters.view.label')}</h3>
+						<h3>{t('performance:dashboards.DemandBy.filters.view.label')}</h3>
 						<SegmentedControl
 							onChange={handleChangeTimeView}
 							value={timeView}
 							data={[
-								{ label: t('performance:DemandByTopic.filters.view.options.annual'), value: 'annual' },
-								{ label: t('performance:DemandByTopic.filters.view.options.monthly'), value: 'monthly' },
-								{ label: t('performance:DemandByTopic.filters.view.options.daily'), value: 'daily' },
+								{ label: t('performance:dashboards.DemandBy.filters.view.options.annual'), value: 'annual' },
+								{ label: t('performance:dashboards.DemandBy.filters.view.options.monthly'), value: 'monthly' },
+								{ label: t('performance:dashboards.DemandBy.filters.view.options.daily'), value: 'daily' },
 							]}
 						/>
 					</Section>
 
 					<Section gap="xs" padding="none" width="fit-content">
-						<h3>{t('performance:DemandByTopic.filters.group_by.label')}</h3>
+						<h3>{t('performance:dashboards.DemandBy.filters.group_by.label')}</h3>
 						<SegmentedControl
 							onChange={handleChangeGroupBy}
 							value={groupBy}
 							data={[
-								{ label: t('performance:DemandByTopic.filters.group_by.options.agency'), value: 'agency' },
-								{ label: t('performance:DemandByTopic.filters.group_by.options.line'), value: 'line' },
-								{ label: t('performance:DemandByTopic.filters.group_by.options.pattern'), value: 'pattern' },
+								{ label: t('performance:dashboards.DemandBy.filters.group_by.options.agency'), value: 'agency' },
+								{ label: t('performance:dashboards.DemandBy.filters.group_by.options.line'), value: 'line' },
+								{ label: t('performance:dashboards.DemandBy.filters.group_by.options.pattern'), value: 'pattern' },
 							]}
 						/>
 					</Section>
@@ -138,7 +138,7 @@ export default function DemandByTopic() {
 					{groupBy === 'line' && lineData.length > 0 && (
 						<MultiSelect
 							data={lineData}
-							label={t('performance:DemandByTopic.filters.line.label')}
+							label={t('performance:dashboards.DemandBy.filters.line.label')}
 							limit={20}
 							onChange={setLineIdsInput}
 							value={lineIdsInput}
@@ -154,7 +154,7 @@ export default function DemandByTopic() {
 					{groupBy === 'pattern' && patternsData.length > 0 && (
 						<MultiSelect
 							data={patternsData}
-							label={t('performance:DemandByTopic.filters.pattern.label')}
+							label={t('performance:dashboards.DemandBy.filters.pattern.label')}
 							limit={20}
 							onChange={setPatternIdsInput}
 							value={patternIdsInput}
@@ -165,17 +165,17 @@ export default function DemandByTopic() {
 					{timeView === 'daily' && (
 						<>
 							<DateInput
-								label={t('performance:DemandByTopic.filters.date.start_label')}
+								label={t('performance:dashboards.DemandBy.filters.date.start_label')}
 								locale="pt"
 								onChange={handleChangeStartDate}
-								placeholder={t('performance:DemandByTopic.filters.date.placeholder')}
+								placeholder={t('performance:dashboards.DemandBy.filters.date.placeholder')}
 								value={startDate.js_date}
 							/>
 							<DateInput
-								label={t('performance:DemandByTopic.filters.date.end_label')}
+								label={t('performance:dashboards.DemandBy.filters.date.end_label')}
 								locale="pt"
 								onChange={handleChangeEndDate}
-								placeholder={t('performance:DemandByTopic.filters.date.placeholder')}
+								placeholder={t('performance:dashboards.DemandBy.filters.date.placeholder')}
 								value={endDate.js_date}
 							/>
 						</>
@@ -184,17 +184,17 @@ export default function DemandByTopic() {
 					{timeView === 'monthly' && (
 						<>
 							<MonthPicker
-								label={t('performance:DemandByTopic.filters.date.start_label')}
+								label={t('performance:dashboards.DemandBy.filters.date.start_label')}
 								locale="pt"
 								onChange={handleChangeStartDate}
-								placeholder={t('performance:DemandByTopic.filters.date.placeholder')}
+								placeholder={t('performance:dashboards.DemandBy.filters.date.placeholder')}
 								value={startDate.js_date}
 							/>
 							<MonthPicker
-								label={t('performance:DemandByTopic.filters.date.end_label')}
+								label={t('performance:dashboards.DemandBy.filters.date.end_label')}
 								locale="pt"
 								onChange={handleChangeEndDate}
-								placeholder={t('performance:DemandByTopic.filters.date.placeholder')}
+								placeholder={t('performance:dashboards.DemandBy.filters.date.placeholder')}
 								value={endDate.js_date}
 							/>
 						</>
@@ -203,17 +203,17 @@ export default function DemandByTopic() {
 					{timeView === 'annual' && (
 						<>
 							<YearPicker
-								label={t('performance:DemandByTopic.filters.date.start_label')}
+								label={t('performance:dashboards.DemandBy.filters.date.start_label')}
 								locale="pt"
 								onChange={handleChangeStartDate}
-								placeholder={t('performance:DemandByTopic.filters.date.placeholder')}
+								placeholder={t('performance:dashboards.DemandBy.filters.date.placeholder')}
 								value={startDate.js_date}
 							/>
 							<YearPicker
-								label={t('performance:DemandByTopic.filters.date.end_label')}
+								label={t('performance:dashboards.DemandBy.filters.date.end_label')}
 								locale="pt"
 								onChange={handleChangeEndDate}
-								placeholder={t('performance:DemandByTopic.filters.date.placeholder')}
+								placeholder={t('performance:dashboards.DemandBy.filters.date.placeholder')}
 								value={endDate.js_date}
 							/>
 						</>
@@ -234,7 +234,7 @@ export default function DemandByTopic() {
 				groupBy={groupBy}
 				height={300}
 				timeView={timeView}
-				title={t('performance:DemandByTopic.charts.by_product_title')}
+				title={t('performance:dashboards.DemandBy.charts.by_product_title')}
 			/>
 
 			<Spacer />
@@ -244,7 +244,7 @@ export default function DemandByTopic() {
 				groupBy={groupBy}
 				height={300}
 				timeView={timeView}
-				title={t('performance:DemandByTopic.charts.by_category_title')}
+				title={t('performance:dashboards.DemandBy.charts.by_category_title')}
 			/>
 
 		</Section>

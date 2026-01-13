@@ -42,7 +42,7 @@ export function Circulations({
 	height,
 	isInsideFrame = true,
 	timeView,
-	title = 'performance:Circulations.default_title',
+	title = 'performance:visualizations.Circulations.default_title',
 }: DemandVisualizationProps) {
 	//
 

@@ -68,7 +68,7 @@ export function AgenciesSelector({ defaultToAll = true, isMultiple = true, onCha
 		<FilterTypeList
 			active={isActive}
 			isMultiple={isMultiple}
-			label={t('performance:AgenciesSelector.label')}
+			label={t('performance:layout.AgenciesSelector.label')}
 			onChange={onChange}
 			options={parsedOptions}
 			withToggleAll

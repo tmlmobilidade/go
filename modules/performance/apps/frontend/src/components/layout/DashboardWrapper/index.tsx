@@ -21,9 +21,9 @@ export default function DashboardWrapper({ children, dashboard, topic }: { child
 	const dashboardKey = toSnakeCase(dashboard.key);
 
 	const breadcrumbsData = [
-		{ href: '/performance', title: t('performance:DashboardWrapper.breadcrumbs.performance') },
-		{ href: `/performance/${topic.key}`, title: t(`performance:DashboardWrapper.breadcrumbs.topics.${topicKey}`) },
-		{ href: `/performance/${topic.key}/${dashboard.key}`, title: t(`performance:DashboardWrapper.breadcrumbs.dashboards.${dashboardKey}`) },
+		{ href: '/performance', title: t('performance:layout.DashboardWrapper.breadcrumbs.performance') },
+		{ href: `/performance/${topic.key}`, title: t(`performance:layout.DashboardWrapper.breadcrumbs.topics.${topicKey}`) },
+		{ href: `/performance/${topic.key}/${dashboard.key}`, title: t(`performance:layout.DashboardWrapper.breadcrumbs.dashboards.${dashboardKey}`) },
 	];
 
 	// B. Render components
@@ -36,7 +36,7 @@ export default function DashboardWrapper({ children, dashboard, topic }: { child
 					<Breadcrumb items={breadcrumbsData} />
 
 					<div className={styles.headerTitleContainer}>
-						<h1 className={styles.headerTitle}>{t(`performance:DashboardWrapper.dashboards.${dashboardKey}`)}</h1>
+						<h1 className={styles.headerTitle}>{t(`performance:layout.DashboardWrapper.dashboards.${dashboardKey}`)}</h1>
 					</div>
 
 				</div>
