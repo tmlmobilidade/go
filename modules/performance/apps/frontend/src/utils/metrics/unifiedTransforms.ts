@@ -1,5 +1,5 @@
 import { Dates } from '@tmlmobilidade/dates';
-import { useTranslations } from 'next-intl';
+import { TFunction } from 'i18next';
 
 import { formatDayDetailed, formatDayShort } from './formatDates';
 
@@ -92,7 +92,7 @@ export function transformDemandMetric(
 		endDate?: Dates
 		propertyFilter?: { key: string, values?: string[] } // currently this is being done by the api layer
 		startDate?: Dates
-		t?: ReturnType<typeof useTranslations>
+		t?: TFunction
 		timeView: 'annual' | 'daily' | 'monthly'
 		topN?: number
 	},
@@ -195,7 +195,7 @@ function filterData(
 /**
  * Transform to simple time series (line/bar chart)
  */
-function transformToTimeSeries(data: RawMetricData[], timeView: 'annual' | 'daily' | 'monthly', t?: ReturnType<typeof useTranslations>): TimeSeriesResult {
+function transformToTimeSeries(data: RawMetricData[], timeView: 'annual' | 'daily' | 'monthly', t?: TFunction): TimeSeriesResult {
 	const dateMap: Record<string, DailyDataPoint | MonthlyDataPoint | YearlyDataPoint> = {};
 	let totalSum = 0;
 
@@ -220,7 +220,7 @@ function transformToTimeSeries(data: RawMetricData[], timeView: 'annual' | 'dail
 								holiday: dayData.holiday,
 								notes: dayData.notes,
 							}, t),
-							day_short: formatDayShort({ day_group: date }, t),
+							day_short: formatDayShort({ day_group: date }),
 							qty: 0,
 						} as DailyDataPoint;
 						break;
@@ -248,7 +248,7 @@ function transformToTimeSeries(data: RawMetricData[], timeView: 'annual' | 'dail
 /**
  * Transform to stacked time series (product breakdown)
  */
-function transformToStacked(data: RawMetricData[], topN: number, timeView: 'annual' | 'daily' | 'monthly', t?: ReturnType<typeof useTranslations>): StackedResult {
+function transformToStacked(data: RawMetricData[], topN: number, timeView: 'annual' | 'daily' | 'monthly', t?: TFunction): StackedResult {
 	// First pass: calculate product totals for ranking
 	const productTotals = calculateProductTotals(data);
 	const { otherProducts, topProducts } = getTopNWithOthers(productTotals, topN);
@@ -279,7 +279,7 @@ function transformToStacked(data: RawMetricData[], topN: number, timeView: 'annu
 								holiday: dayData.holiday,
 								notes: dayData.notes,
 							}, t),
-							day_short: formatDayShort({ day_group: date }, t),
+							day_short: formatDayShort({ day_group: date }),
 						};
 						break;
 					case 'monthly':

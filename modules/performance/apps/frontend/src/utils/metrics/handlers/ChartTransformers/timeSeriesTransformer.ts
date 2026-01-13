@@ -3,7 +3,7 @@
 import type { DailyDataPoint, MonthlyDataPoint, RawMetricData, TimeSeriesResult, YearlyDataPoint } from '@/utils/metrics/types';
 
 import { formatDayDetailed, formatDayShort, formatMonth } from '@/utils/metrics/utils';
-import { useTranslations } from 'next-intl';
+import { TFunction } from 'i18next';
 
 /* * */
 
@@ -13,7 +13,7 @@ import { useTranslations } from 'next-intl';
 export function transformToTimeSeries(
 	data: RawMetricData[],
 	timeView: 'annual' | 'daily' | 'monthly',
-	t?: ReturnType<typeof useTranslations>,
+	t?: TFunction,
 	quantityKey = 'qty',
 ): TimeSeriesResult {
 	const dateMap: Record<string, DailyDataPoint | MonthlyDataPoint | YearlyDataPoint> = {};

@@ -4,7 +4,6 @@ import StatusCircle from '@/components/layout/StatusCircle';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useHomeContext } from '@/contexts/Home.context';
 import { Skeleton } from '@tmlmobilidade/ui';
-import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';
@@ -13,8 +12,6 @@ export default function AgenciesStatus() {
 	//
 
 	// A. Setup variables
-
-	const t = useTranslations();
 
 	const homeContext = useHomeContext();
 	const agenciesContext = useAgenciesContext();
@@ -32,7 +29,7 @@ export default function AgenciesStatus() {
 				...agency,
 			};
 		}),
-	[agenciesContext.data.systemStatuses, t]);
+	[agenciesContext.data.systemStatuses]);
 
 	// C. Render components
 
