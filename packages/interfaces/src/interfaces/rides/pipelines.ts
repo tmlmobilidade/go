@@ -336,6 +336,7 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 		const searchWithoutVehicle = filter.search.replace(/.*?(v:\d+(?:,\d+)*)(?=\s|$)/g, '').trim();
 		const keywords = searchWithoutVehicle.split(/\s+/).map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 		const pattern = keywords.map(k => `(?=.*${k})`).join('') + '.*';
+
 		pipeline.push({
 			$match: { _id: { $options: 'i', $regex: pattern } },
 		});
