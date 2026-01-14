@@ -2,7 +2,7 @@
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type CalendarEvent } from '@tmlmobilidade/types';
+import { type CalendarEvent, CalendarEventType } from '@tmlmobilidade/types';
 import { useRouter } from 'next/navigation';
 
 import { ErrorDisplay } from '../../../display/ErrorDisplay';
@@ -16,7 +16,7 @@ import { Calendar } from '../Calendar';
 export interface EventsCalendarProps {
 	initialView?: 'month' | 'year'
 	onDayClick?: (date: Dates) => void
-	onEventClick?: (eventId: string, eventType: 'annotation' | 'period') => void
+	onEventClick?: (eventId: string, eventType: CalendarEventType) => void
 	onRangeSelect?: (range: { end: Dates, start: Dates }, clearSelection: () => void) => void
 	showSidebar?: boolean
 }

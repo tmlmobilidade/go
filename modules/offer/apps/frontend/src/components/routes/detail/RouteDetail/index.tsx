@@ -5,7 +5,7 @@
 import { useRouteDetailContext } from '@/components/routes/detail/RouteDetail.context';
 import { RouteDetailHeader } from '@/components/routes/detail/RouteDetailHeader';
 import { RouteDetailSectionConfig } from '@/components/routes/detail/RouteDetailSectionConfig';
-// import { RouteDetailSectionPatterns } from '@/components/routes/detail/RouteDetailSectionPatterns';
+import { RouteDetailSectionPatterns } from '@/components/routes/detail/RouteDetailSectionPatterns';
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */
@@ -32,7 +32,7 @@ export function RouteDetail() {
 	return (
 		<Pane header={[<RouteDetailHeader />]}>
 			<RouteDetailSectionConfig />
-			{/* <RouteDetailSectionPatterns /> */}
+			<RouteDetailSectionPatterns />
 		</Pane>
 	);
 

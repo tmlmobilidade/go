@@ -23,10 +23,6 @@ export function LineDetailSectionRoutes() {
 	//
 	// B. Render components
 
-	if (!lineDetailContext.data.line?.routes || lineDetailContext.data.line.routes.length === 0) {
-		return null;
-	}
-
 	return (
 		<Collapsible description="Todas as variantes desta linha, incluindo a base." title="Rotas">
 			<Section gap="sm">

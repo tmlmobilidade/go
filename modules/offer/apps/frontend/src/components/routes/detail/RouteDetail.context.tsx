@@ -17,7 +17,7 @@ interface RouteDetailContextState {
 	data: {
 		form: UseFormReturnType<UpdateRouteDto>
 		id: string
-		lineId: string
+		line: Line | null
 		route: null | Route
 	}
 	flags: DetailContextStateTemplate['flags']
@@ -130,7 +130,7 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 		data: {
 			form,
 			id: routeId,
-			lineId,
+			line: lineData,
 			route: routeData,
 		},
 		flags: {

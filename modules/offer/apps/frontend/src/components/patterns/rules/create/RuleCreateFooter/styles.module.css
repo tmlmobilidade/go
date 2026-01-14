@@ -1,0 +1,6 @@
+.calendarSummary {
+    display: flex;
+    flex-grow: 1;
+    gap: var(--size-spacing-sm);
+    text-decoration: underline;
+}

@@ -62,7 +62,7 @@ export function DataTableRow<T = Record<string, unknown>>({ columns, isSelected,
 			{columns.map((column, colIndex) => (
 				<div
 					key={colIndex}
-					className={styles.cell}
+					className={`${styles.cell} ${column.center ? styles.center : ''}`}
 					style={{ maxWidth: column.width, minWidth: column.width, width: column.width }}
 				>
 					{column.render

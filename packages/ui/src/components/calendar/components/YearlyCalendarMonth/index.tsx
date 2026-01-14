@@ -106,9 +106,11 @@ export function YearlyCalendarMonth({
 					<div key={weekIndex} className={styles.week}>
 						{week.map((day, dayIndex) => {
 							const dayEvents = eventsByDate.get(day.date.operational_date) || [];
-							const periodEvents = dayEvents.filter(e => e.type === 'period');
-							const otherEvents = dayEvents.filter(e => e.type !== 'period');
+							const cellEvents = dayEvents.filter(e => e.display === 'cell');
+							const stripEvents = dayEvents.filter(e => e.display === 'strip' || (e.type === 'period' && !e.display));
+							const dotEvents = dayEvents.filter(e => e.display === 'dot' || (!e.display && e.type !== 'period'));
 							const hasEvents = dayEvents.length > 0;
+							const hasCellEvent = cellEvents.length > 0;
 
 							// Get range status for styling
 							const rangeStatus = rangeState
@@ -121,10 +123,13 @@ export function YearlyCalendarMonth({
 								day.isToday && styles.today,
 								day.isWeekend && styles.weekend,
 								hasEvents && styles.hasEvents,
+								hasCellEvent && styles.hasCellEvent,
 								rangeStatus.isStart && day.isCurrentMonth && styles.daySelectedStart,
 								rangeStatus.isEnd && day.isCurrentMonth && styles.daySelectedEnd,
 								rangeStatus.isInRange && styles.dayInRange,
 							].filter(Boolean).join(' ');
+
+							const cellStyle = hasCellEvent ? { backgroundColor: cellEvents[0].color } : undefined;
 
 							const tooltipDate = day.date.toFormat('cccc d \'de\' MMMM \'de\' yyyy')
 								.replace(/^./, char => char.toUpperCase());
@@ -135,10 +140,11 @@ export function YearlyCalendarMonth({
 									className={dayClassName}
 									data-date={day.date.operational_date}
 									onClick={() => handleDayClick(day)}
+									style={cellStyle}
 								>
-									{periodEvents.length > 0 && (
+									{stripEvents.length > 0 && (
 										<div className={styles.periodStrips}>
-											{periodEvents.slice(0, 2).map(event => (
+											{stripEvents.slice(0, 2).map(event => (
 												<div
 													key={event.id}
 													className={styles.periodStrip}
@@ -151,9 +157,9 @@ export function YearlyCalendarMonth({
 									<div className={styles.dayNumber}>
 										{day.dayOfMonth}
 									</div>
-									{otherEvents.length > 0 && (
+									{dotEvents.length > 0 && (
 										<div className={styles.eventIndicators}>
-											{otherEvents.slice(0, 3).map(event => (
+											{dotEvents.slice(0, 3).map(event => (
 												<div
 													key={event.id}
 													className={styles.eventDot}
@@ -161,9 +167,9 @@ export function YearlyCalendarMonth({
 													style={{ backgroundColor: event.color }}
 												/>
 											))}
-											{otherEvents.length > 3 && (
+											{dotEvents.length > 3 && (
 												<div className={styles.moreIndicator}>
-													+{otherEvents.length - 3}
+													+{dotEvents.length - 3}
 												</div>
 											)}
 										</div>

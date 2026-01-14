@@ -3,7 +3,7 @@
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, lines, routes } from '@tmlmobilidade/interfaces';
-import { CreateLineDto, type Line, PermissionCatalog, type UpdateLineDto } from '@tmlmobilidade/types';
+import { CreateLineDto, type Line, PermissionCatalog, RouteSimplified, type UpdateLineDto } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -197,7 +197,7 @@ export class LinesController {
 		const lineRoutes = await routes.findMany(
 			{ line_id: request.params.id },
 			{ projection: { _id: 1, code: 1, name: 1 }, sort: { created_at: -1 } },
-		);
+		) as RouteSimplified[];
 
 		//
 		// Return the line data with routes

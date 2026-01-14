@@ -19,10 +19,19 @@ export function centerMapView(mapObject: MapRef, features: Feature<Geometry, Geo
 	if (!features.length) return;
 
 	//
+	// Filter out invalid features (those without geometry or coordinates)
+
+	const validFeatures = features.filter(
+		feature => feature?.geometry && ('coordinates' in feature.geometry) && feature.geometry.coordinates,
+	);
+
+	if (!validFeatures.length) return;
+
+	//
 	// Create a feature collection from the given features, and get the corresponding envelope.
 	// Return if the envelope is not valid.
 
-	const featureCollection = turf.featureCollection(features);
+	const featureCollection = turf.featureCollection(validFeatures);
 	const featureCollectionEnvelope = turf.envelope(featureCollection);
 	if (!featureCollectionEnvelope || !featureCollectionEnvelope.bbox) return;
 

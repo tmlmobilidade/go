@@ -3,6 +3,8 @@
 import { DocumentSchema } from '@/_common/document.js';
 import { z } from 'zod';
 
+import { PatternSimplifiedSchema } from './pattern.js';
+
 /* * */
 
 export const PATH_TYPE = {
@@ -24,7 +26,7 @@ export const RouteSchema = DocumentSchema.extend({
 	line_id: z.string(),
 	name: z.string().trim().min(1).max(50),
 	path_type: z.nativeEnum(PATH_TYPE).default(PATH_TYPE.BASE),
-	patterns: z.array(z.string()).optional(),
+	patterns: z.array(PatternSimplifiedSchema).optional(),
 });
 
 export const RouteSimplifiedSchema = z.object({

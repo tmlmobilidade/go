@@ -143,6 +143,15 @@
 }
 
 /* Day states */
+.hasCellEvent {
+	opacity: 0.9;
+}
+
+.hasCellEvent .dayNumber {
+	font-weight: 600;
+	color: var(--color-contrast);
+}
+
 .otherMonth {
 	background: var(--color-system-background-200);
 }

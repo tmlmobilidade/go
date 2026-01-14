@@ -1,11 +1,12 @@
 'use client';
 
+import { OfferBreadcrumbs } from '@/components/common/OfferBreadcrumbs';
 /* * */
 
 import { useRouteDetailContext } from '@/components/routes/detail/RouteDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Button, CloseButton, DeleteButton, keepUrlParams, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, DeleteButton, keepUrlParams, LockButton, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -23,7 +24,7 @@ export function RouteDetailHeader() {
 	// B. Handle actions
 
 	const handleGoBack = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.offer.LINES_DETAIL(routeDetailContext.data.lineId)));
+		router.push(keepUrlParams(PAGE_ROUTES.offer.LINES_DETAIL(routeDetailContext.data.route.line_id)));
 	};
 
 	//
@@ -34,9 +35,14 @@ export function RouteDetailHeader() {
 
 			<CloseButton onClick={handleGoBack} type="back" />
 
-			<Tag label={routeDetailContext.data.route._id} variant="secondary" />
-
-			<Spacer />
+			<div style={{ width: '100%' }}>
+				<OfferBreadcrumbs
+					items={{
+						lineId: routeDetailContext.data.route.line_id,
+						routeId: routeDetailContext.data.id,
+					}}
+				/>
+			</div>
 
 			<LockButton
 				isDisabled={!routeDetailContext.flags.canLock}

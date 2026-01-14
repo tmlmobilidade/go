@@ -2,6 +2,7 @@
 
 /* * */
 
+import { LineTag } from '@/components/common/LineTag';
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { LinesListCellAgency } from '@/components/lines/list/LinesListCellAgency';
 import { LinesListFiltersBar } from '@/components/lines/list/LinesListFiltersBar';
@@ -11,8 +12,6 @@ import { Line } from '@tmlmobilidade/types';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, Text } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
-
-import { LinesListCellCode } from '../LinesListCellCode';
 
 /* * */
 
@@ -36,7 +35,7 @@ export function LinesList() {
 		},
 		{
 			accessor: 'code',
-			render: item => <LinesListCellCode code={item.code} typology_id={item.typology} />,
+			render: item => <LineTag line_id={item._id} withLabel={false} />,
 			title: 'Código',
 			width: 100,
 		},

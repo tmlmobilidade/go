@@ -2,8 +2,8 @@
 
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { routes } from '@tmlmobilidade/interfaces';
-import { CreateRouteDto, PermissionCatalog, type Route, type UpdateRouteDto } from '@tmlmobilidade/types';
+import { patterns, routes } from '@tmlmobilidade/interfaces';
+import { CreateRouteDto, PatternSimplified, PermissionCatalog, type Route, type UpdateRouteDto } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -103,10 +103,18 @@ export class RoutesController {
 		}
 
 		//
+		// Fetch routes for this line
+
+		const routePatterns = await patterns.findMany(
+			{ line_id: routeData.line_id, route_id: request.params.id },
+			{ projection: { _id: 1, code: 1, destination: 1, headsign: 1, line_id: 1, origin: 1, route_id: 1 }, sort: { created_at: -1 } },
+		) as PatternSimplified[];
+
+		//
 		// Fetch the route data
 
 		return reply.send({
-			data: routeData,
+			data: { ...routeData, patterns: routePatterns },
 			error: null,
 			statusCode: HttpStatus.OK,
 		});

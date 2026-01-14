@@ -60,6 +60,7 @@ export function useTypicalForm<T extends Record<string, unknown>>(
 		// Initialize form with API data
 		form.reset();
 		form.setValues(apiData);
+		form.validate();
 		form.resetDirty();
 		Logger.success(`[${apiData._id}] Form initialized with values from API.`);
 	}, [apiData]);
