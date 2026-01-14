@@ -58,15 +58,20 @@ export function AcceptanceStatusTag({ grade }: AcceptanceStatusTagProps) {
 	}
 
 	if (grade === 'under_review') {
-		return <Tag icon={AcceptanceStatusProps.under_review.icon} label={t(AcceptanceStatusProps.under_review.label)} variant={AcceptanceStatusProps.under_review.variant as TagProps['variant']} />;
+		return <Tag icon={AcceptanceStatusProps.under_review.icon} label={t('controller:rides.detail.RidesDetailAcceptanceStatusTag.under_review')} variant={AcceptanceStatusProps.under_review.variant as TagProps['variant']} />;
 	}
 
 	if (grade === 'justification_required') {
-		return <Tag icon={AcceptanceStatusProps.justification_required.icon} label={t(AcceptanceStatusProps.justification_required.label)} variant={AcceptanceStatusProps.justification_required.variant as TagProps['variant']} />;
+		return (
+			<div style={{ color: 'red', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+				<Tag icon={AcceptanceStatusProps.justification_required.icon} label={t(AcceptanceStatusProps.justification_required.label)} variant={AcceptanceStatusProps.justification_required.variant as TagProps['variant']} />
+				<div>{JSON.stringify(AcceptanceStatusProps.justification_required)}</div>
+			</div>
+		);
 	}
 
 	if (grade === 'rejected') {
-		return <Tag icon={AcceptanceStatusProps.rejected.icon} label={t(AcceptanceStatusProps.rejected.label)} variant={AcceptanceStatusProps.rejected.variant as TagProps['variant']} />;
+		return <Tag icon={AcceptanceStatusProps.rejected.icon} label={t('controller:rides.detail.RidesDetailAcceptanceStatusTag.rejected')} variant={AcceptanceStatusProps.rejected.variant as TagProps['variant']} />;
 	}
 
 	//
