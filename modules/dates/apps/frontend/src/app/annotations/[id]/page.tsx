@@ -1,7 +1,7 @@
 /* * */
 
 import { AnnotationsDetail } from '@/components/annotations/detail/AnnotationsDetail';
-import { AnnotationsDetailContextProvider } from '@/contexts/AnnotationsDetail.context';
+import { AnnotationsDetailContextProvider } from '@/components/annotations/detail/AnnotationsDetail.context';
 
 /* * */
 

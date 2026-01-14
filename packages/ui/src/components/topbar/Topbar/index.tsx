@@ -2,8 +2,8 @@
 
 import styles from './styles.module.css';
 
-import { EnvironmentFlag } from '../../display/EnvironmentFlag';
 import { Spacer } from '../../layout/Spacer';
+import { EnvironmentTag } from '../../tags/EnvironmentTag';
 import { TopbarExports } from '../TopbarExports';
 import { TopbarGreeting } from '../TopbarGreeting';
 import { TopbarNotifications } from '../TopbarNotifications';
@@ -16,7 +16,7 @@ export function Topbar() {
 		<div className={styles.container}>
 			<TopbarGreeting />
 			<Spacer />
-			<EnvironmentFlag />
+			<EnvironmentTag />
 			<TopbarExports />
 			<TopbarNotifications />
 			<TopbarOptions />

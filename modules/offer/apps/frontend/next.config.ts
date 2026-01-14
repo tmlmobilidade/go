@@ -1,0 +1,31 @@
+/* * */
+
+import { type NextConfig } from 'next';
+
+/* * */
+
+const nextConfig: NextConfig = {
+	basePath: '/offer',
+	env: {
+		NEXT_PUBLIC_BASE_PATH: '/offer',
+	},
+	experimental: {
+		optimizePackageImports: ['@tmlmobilidade/ui'],
+	},
+	output: 'standalone',
+	reactStrictMode: true,
+	async redirects() {
+		return [
+			{
+				basePath: false,
+				destination: '/offer',
+				permanent: true,
+				source: '/',
+			},
+		];
+	},
+};
+
+/* * */
+
+export default nextConfig;

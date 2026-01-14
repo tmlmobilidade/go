@@ -8,7 +8,7 @@ import { z } from 'zod';
 /* * */
 
 export const SimplifiedVehicleEventSchema = DocumentSchema
-	.omit({ is_locked: true })
+	.omit({ created_by: true, is_locked: true, updated_by: true })
 	.extend({
 		agency_id: z.string(),
 		current_status: z.enum(['INCOMING_AT', 'STOPPED_AT', 'IN_TRANSIT_TO']),

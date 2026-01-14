@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 /* * */
 
-const StopConnectionValues = [
+export const StopConnectionValues = [
 	'ferry',
 	'light_rail',
 	'subway',

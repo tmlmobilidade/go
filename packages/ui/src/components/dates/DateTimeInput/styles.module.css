@@ -1,0 +1,58 @@
+/* stylelint-disable selector-class-pattern */
+
+/**
+ * OVERRIDE DEFAULT INPUT STYLES
+ * Since this is a composite component, we need to override some styles
+ * from the DateInput and TimePicker components to make them look like
+ * a single input. Use of !important is necessary here to increase specificity.
+ */
+
+
+/* * */
+/* FIELDSET */
+
+.fieldset {
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	gap: 0;
+	width: 100%;
+	min-width: 200px;
+	padding: 0;
+	margin: 0;
+}
+
+/* * */
+/* DATE INPUT */
+
+.dateInput_root {
+	min-width: 0 !important;
+}
+
+.dateInput_wrapper {
+	min-width: 0 !important;
+	border-right-width: 0 !important;
+	border-top-right-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+}
+
+/* * */
+/* TIME PICKER */
+
+.timePicker_root {
+	min-width: 0 !important;
+}
+
+.timePicker_wrapper {
+	min-width: 0 !important;
+	border-left-color: var(--color-system-border-100) !important;
+	border-top-left-radius: 0 !important;
+	border-bottom-left-radius: 0 !important;
+}
+
+.fieldset:focus-within .timePicker_wrapper {
+	border-left-color: var(--color-primary) !important;
+}
+
+.timePicker_dropdown {
+	padding: 10px !important;
+}

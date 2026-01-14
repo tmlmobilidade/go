@@ -186,6 +186,7 @@ export function RideAcceptanceCommentList() {
 	function addComment(comment: string) {
 		acceptanceContext.actions.addComment({
 			created_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			created_by: 'will-be-set-by-api',
 			message: comment,
 			type: 'note',
 			updated_at: Dates.now('Europe/Lisbon').unix_timestamp,

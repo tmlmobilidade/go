@@ -319,14 +319,15 @@ interface RidesPipelineFilter {
 export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter): AggregationPipeline<Ride> {
 	const pipeline: AggregationPipeline<Ride> = [];
 
-	// Stage 1: Filter by scheduled time range
+	// Stage 1: Filter by scheduled time range (required)
 	pipeline.push({ $match: { start_time_scheduled: { $gte: filter.date_start, $lte: filter.date_end } } });
 
-	// Stage 2: Filter by line IDs if provided
-	if (filter.line_ids) pipeline.push({ $match: { line_id: { $in: filter.line_ids.map(id => Number(id)) } } });
+	// Stage 2: Filter by agency IDs (required)
+	pipeline.push({ $match: { agency_id: { $in: filter.agency_ids ?? [] } } });
 
-	// Stage 3: Filter by agency IDs if provided
-	if (filter.agency_ids) pipeline.push({ $match: { agency_id: { $in: filter.agency_ids } } });
+	// Stage 3: Filter by line IDs if provided
+	if (filter.line_ids?.length) pipeline.push({ $match: { line_id: { $in: filter.line_ids.map(id => Number(id)) } } });
+
 	// Stage 4: Search by ride ID if provided
 	// Uses regex pattern matching with case-insensitive option
 	// Also removes all vehicle IDs from the search string
@@ -404,9 +405,9 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 
 	// Stage 9: Apply status filters using dedicated pipeline functions
 	// These functions add calculated status fields and filter by them
-	pipeline.push(...ridesPipelineDelayStatus({ filter: { end_delay_status: filter.delay_statuses?.map(status => status as DelayStatus), start_delay_status: filter.delay_statuses?.map(status => status as DelayStatus) } }));
-	pipeline.push(...ridesPipelineOperationalStatus({ filter: { operational_status: filter.operational_statuses?.map(status => status as OperationalStatus) } }));
-	pipeline.push(...ridesPipelineSeenStatus({ filter: { seen_status: filter.seen_statuses?.map(status => status as SeenStatus) } }));
+	pipeline.push(...ridesPipelineDelayStatus({ filter: { end_delay_status: filter.delay_statuses, start_delay_status: filter.delay_statuses } }));
+	pipeline.push(...ridesPipelineOperationalStatus({ filter: { operational_status: filter.operational_statuses } }));
+	pipeline.push(...ridesPipelineSeenStatus({ filter: { seen_status: filter.seen_statuses } }));
 
 	return pipeline;
 }

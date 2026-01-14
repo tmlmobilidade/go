@@ -86,7 +86,7 @@ export function AgencyDetailBasicInfo() {
 					/>
 					<Select
 						key={agencyDetailContext.data.form.key('timezone')}
-						data={Dates.TIMEZONE_LIST}
+						data={Dates.TIMEZONE_LIST.map(tz => ({ label: tz, value: tz }))}
 						label="Timezone da agência"
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						{...agencyDetailContext.data.form.getInputProps('timezone')}
