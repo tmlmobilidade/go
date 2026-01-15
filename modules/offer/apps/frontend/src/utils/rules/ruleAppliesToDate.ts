@@ -1,83 +1,69 @@
-import { OperationalDate, Period, ScheduleRule, WEEKDAYS } from '@tmlmobilidade/types';
+import type { OperationalDate, Period, ScheduleRule, WEEKDAYS } from '@tmlmobilidade/types';
+
+import { calendarKey, CalendarKey, calendarWeekday, Dates, datesFromCalendarKey, keyToYYYYMMDD } from '@tmlmobilidade/dates';
 
 interface CalendarContext {
 	endDate: Date
 	events: Set<string> // yyyy-mm-dd
 	holidays: Set<string> // yyyy-mm-dd
-	periods: Period[] // Array of periods with their date ranges
+	periods: Period[]
 	startDate: Date
 }
 
-function ruleAppliesToDate(
-	rule: ScheduleRule,
-	date: Date,
-	ctx: CalendarContext,
-): boolean {
-	const iso = date.toISOString().slice(0, 10);
-	const weekday = date.getDay();
+function isInPeriod(rule: ScheduleRule, key: CalendarKey, ctx: CalendarContext): boolean {
+	if (!rule.periodIds?.length) return false;
 
-	// 1️⃣ Period - Required
-	if (!rule.periodIds || rule.periodIds.length === 0) {
-		return false;
-	}
+	// Periods are stored as OperationalDate (yyyyMMdd)
+	const op = keyToYYYYMMDD(key) as OperationalDate;
 
-	const yyyymmdd = iso.replace(/-/g, ''); // Convert yyyy-mm-dd to yyyyMMdd
-	const matchingPeriod = ctx.periods.find(period =>
-		rule.periodIds?.includes(period._id)
-		&& period.dates?.includes(yyyymmdd as OperationalDate),
+	return ctx.periods.some(p =>
+		rule.periodIds?.includes(p._id) && p.dates?.includes(op),
 	);
-	if (!matchingPeriod) {
-		return false;
-	}
+}
 
-	// 2️⃣ Holiday precedence
-	const isHoliday = rule.holidays?.mode === 'all' || (rule.holidays?.mode === 'specific') || ctx.holidays.has(iso);
+function ruleAppliesToCivilKey(rule: ScheduleRule, key: CalendarKey, ctx: CalendarContext): boolean {
+	const weekday = calendarWeekday(key);
 
-	//   || (rule.holidays?.mode === 'specific' && rule.holidays?.specific?.includes(iso)) - Check if holiday is today (iso)
+	// 1) Period required
+	if (!isInPeriod(rule, key, ctx)) return false;
 
-	if (isHoliday) {
-		const result = !!rule.holidays;
-		return result;
-	}
+	// 2) Holidays exclusion (your rule says "exceto feriados")
+	if (ctx.holidays.has(key)) return false;
 
-	// 3️⃣ Weekdays - Required
-	if (!rule.weekdays || rule.weekdays.length === 0) {
-		return false;
-	}
+	// 3) Weekdays required
+	if (!rule.weekdays?.length) return false;
+	if (!rule.weekdays.includes(weekday)) return false;
 
-	if (!rule.weekdays.includes(weekday as WEEKDAYS)) {
-		return false;
-	}
-
-	// 4️⃣ Events
-	if (rule.events && !ctx.events.has(iso)) {
-		return false;
-	}
+	// 4) Events constraint (if present)
+	if (rule.events && !ctx.events.has(key)) return false;
 
 	return true;
 }
 
-export function computeRuleImpact(
-	rule: ScheduleRule,
-	ctx: CalendarContext,
-) {
-	const affectedDates: string[] = [];
+export function computeRuleImpact(rule: ScheduleRule, ctx: CalendarContext) {
+	const affected: CalendarKey[] = [];
 
-	const currentDate = new Date(ctx.startDate);
-	currentDate.setHours(0, 0, 0, 0);
+	// Convert JS Date range into civil calendar keys
+	const startKey = calendarKey(Dates.fromJSDate(ctx.startDate));
+	const endKey = calendarKey(Dates.fromJSDate(ctx.endDate));
 
-	const endDate = new Date(ctx.endDate);
-	endDate.setHours(0, 0, 0, 0);
+	// Ensure ordering
+	const from = startKey < endKey ? startKey : endKey;
+	const to = startKey < endKey ? endKey : startKey;
 
-	while (currentDate.getTime() <= endDate.getTime()) {
-		if (ruleAppliesToDate(rule, currentDate, ctx)) {
-			affectedDates.push(currentDate.toISOString().slice(0, 10));
+	// Iterate by calendar keys using a stable Dates anchor (noon Lisbon)
+	let current = datesFromCalendarKey(from);
+	const end = datesFromCalendarKey(to);
+
+	while (current.unix_timestamp <= end.unix_timestamp) {
+		const key = calendarKey(current);
+
+		if (ruleAppliesToCivilKey(rule, key, ctx)) {
+			affected.push(key);
 		}
-		currentDate.setDate(currentDate.getDate() + 1);
+
+		current = current.plus({ days: 1 });
 	}
 
-	return {
-		count: affectedDates.length,
-		dates: affectedDates,
-	};
+	return { count: affected.length, dates: affected };
 }

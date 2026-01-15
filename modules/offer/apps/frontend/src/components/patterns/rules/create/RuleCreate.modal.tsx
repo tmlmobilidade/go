@@ -5,7 +5,8 @@
 import { RuleCreate } from '@/components/patterns/rules/create/RuleCreate';
 import { RuleCreateContextProvider } from '@/components/patterns/rules/create/RuleCreate.context';
 import { PeriodsContextProvider } from '@/contexts/Periods.context';
-import { closeModal, openModal } from '@tmlmobilidade/ui';
+import { type ScheduleRule } from '@tmlmobilidade/types';
+import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -13,14 +14,21 @@ const MODAL_ID = 'create-rule-modal';
 
 /* * */
 
-export const openCreateRuleModal = (agencyId: string) => {
+export const openCreateRuleModal = (agencyId: string, options?: { initialValues?: ScheduleRule, onSuccess?: (rule: ScheduleRule, index?: number) => void, patternId?: string, ruleIndex?: number }) => {
 	openModal({
 		children: (
-			<PeriodsContextProvider agencyId={agencyId}>
-				<RuleCreateContextProvider>
-					<RuleCreate />
-				</RuleCreateContextProvider>
-			</PeriodsContextProvider>
+			<MeContextProvider>
+				<PeriodsContextProvider agencyId={agencyId}>
+					<RuleCreateContextProvider
+						initialValues={options?.initialValues}
+						onSuccess={options?.onSuccess}
+						patternId={options?.patternId}
+						ruleIndex={options?.ruleIndex}
+					>
+						<RuleCreate />
+					</RuleCreateContextProvider>
+				</PeriodsContextProvider>
+			</MeContextProvider>
 		),
 		closeOnClickOutside: false,
 		closeOnEscape: false,

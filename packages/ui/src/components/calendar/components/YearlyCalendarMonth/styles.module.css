@@ -165,6 +165,10 @@
 	color: var(--color-status-danger-primary);
 }
 
+.hasCellEvent.weekend .dayNumber {
+	color: var(--color-system-background-100);
+}
+
 .otherMonth.weekend .dayNumber {
 	color: var(--color-system-text-300);
 }

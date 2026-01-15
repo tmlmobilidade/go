@@ -42,7 +42,7 @@ export function useRuleCreateContext() {
 
 /* * */
 
-export const RuleCreateContextProvider = ({ children }: PropsWithChildren) => {
+export const RuleCreateContextProvider = ({ children, initialValues, onSuccess, patternId, ruleIndex }: PropsWithChildren<{ initialValues?: ScheduleRule, onSuccess?: (rule: ScheduleRule, index?: number) => void, patternId?: string, ruleIndex?: number }>) => {
 	//
 
 	//
@@ -57,7 +57,7 @@ export const RuleCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// C. Setup form
 
 	const form = useForm<ScheduleRule>({
-		initialValues: {
+		initialValues: initialValues || {
 			operatingMode: OPERATING_MODE.INCLUDE,
 			periodIds: [],
 		},
@@ -77,7 +77,7 @@ export const RuleCreateContextProvider = ({ children }: PropsWithChildren) => {
 	const ruleImpact = useMemo(() => computeRuleImpact(
 		form.values,
 		{
-			endDate: Dates.now('Europe/Lisbon').plus({ months: 1 }).js_date,
+			endDate: Dates.now('Europe/Lisbon').plus({ years: 1 }).js_date,
 			events: new Set(),
 			holidays: new Set(),
 			periods: periodsContext.data.periods,
@@ -89,7 +89,22 @@ export const RuleCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// D. Handle actions
 
 	const handleCreate = async () => {
-		console.log('handleCreate');
+		// Validate form
+		const validation = form.validate();
+		if (validation.hasErrors) {
+			return;
+		}
+
+		// Get the rule values and add the generated name
+		const ruleValues = {
+			...form.getValues(),
+			name: ruleSummary,
+		};
+
+		// Call the onSuccess callback to add or update the rule
+		if (onSuccess) {
+			onSuccess(ruleValues, ruleIndex);
+		}
 	};
 
 	//

@@ -4,6 +4,8 @@ import { DocumentSchema } from '@/_common/document.js';
 import { StopSchema } from '@/stops/stop.js';
 import { z } from 'zod';
 
+import { ScheduleRuleSchema } from './scheduleRule.js';
+
 /* * */
 
 export const directionOptions = [
@@ -40,6 +42,7 @@ export const PatternSchema = DocumentSchema.extend({
 		velocity: z.number().default(20),
 	}).optional(),
 	route_id: z.string(),
+	rules: z.array(ScheduleRuleSchema).optional().default([]),
 	shape: z.object({
 		extension: z.number(),
 		geojson: z.object({

@@ -5,7 +5,7 @@
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { closeCreateRuleModal } from '@/components/patterns/rules/create/RuleCreate.modal';
 import { IconUpload } from '@tabler/icons-react';
-import { Button, CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, Spacer, Tag, Text, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -23,7 +23,8 @@ export function RuleCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateRuleModal} type="close" />
-			<Tag label="Nova Regra" variant="muted" />
+			<Tag label={ruleCreateContext.data.ruleSummary || 'Nova Regra'} variant="muted" />
+
 			{/* <Spacer />
 			<Button
 				disabled={!ruleCreateContext.data.form.isValid()}

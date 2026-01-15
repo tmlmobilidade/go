@@ -79,7 +79,7 @@ export function RuleCreate() {
 							<Section gap="sm">
 								<Text>Impacto:</Text>
 								<Divider />
-								<Text>{createRuleContext.data.ruleImpact.count} dias afetados nos próximos 6 meses</Text>
+								<Text>{createRuleContext.data.ruleImpact.count} dias afetados no próximo ano</Text>
 							</Section>
 						</Surface>
 					</Grid>

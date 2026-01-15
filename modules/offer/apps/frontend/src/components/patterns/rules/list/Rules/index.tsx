@@ -2,8 +2,8 @@
 
 /* * */
 
-import { IconCalendarCancel, IconCalendarCheck, IconEdit, IconTrash } from '@tabler/icons-react';
-import { Button, Spacer, Text } from '@tmlmobilidade/ui';
+import { IconArrowRight, IconCalendarCancel, IconCalendarCheck } from '@tabler/icons-react';
+import { Button, IconButton, Text } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -24,10 +24,9 @@ interface PatternDetailRulesProps {
 
 export default function PatternDetailRules({ onDelete, onEdit, ruleData }: PatternDetailRulesProps) {
 	const statusIcon = ruleData.isOffTime ? <IconCalendarCancel color="var(--color-status-danger-primary)" size={20} /> : <IconCalendarCheck color="var(--color-status-success-primary)" size={20} />;
-	const statusColor = ruleData.isOffTime ? '#E53935' : '#43A047'; // red / green
 
 	return (
-		<div className={styles.container}>
+		<div className={styles.container} onClick={onEdit}>
 			<div className={styles.ruleInfo}>
 				{/* Header */}
 				{statusIcon}
@@ -43,8 +42,10 @@ export default function PatternDetailRules({ onDelete, onEdit, ruleData }: Patte
 			</div>
 
 			<div className={styles.actions}>
-				<Button label="Editar" onClick={onEdit} size="sm" style={{ textDecoration: 'underline' }} />
-				<Button label="Remover" onClick={onDelete} size="sm" variant="danger" />
+				<IconButton
+					icon={<IconArrowRight size={20} />}
+					onClick={onEdit}
+				/>
 			</div>
 		</div>
 	);

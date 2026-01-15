@@ -4,7 +4,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { type CalendarEvent } from '@tmlmobilidade/types';
-import { Calendar, CalendarUIContextProvider } from '@tmlmobilidade/ui';
+import { EventsCalendar } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -18,15 +18,13 @@ export interface RulePreviewCalendarProps {
 
 /* * */
 
-// Change this to include events calendar (only holidays, periods, events)
-
 export function RulePreviewCalendar({ affectedDates }: RulePreviewCalendarProps) {
 	//
 
 	//
 	// A. Transform dates into calendar events
 
-	const calendarEvents = useMemo(() => {
+	const ruleImpactEvents = useMemo(() => {
 		// Filter out invalid dates and transform to calendar events
 		const events: CalendarEvent[] = affectedDates
 			.filter(isoDate => isoDate && typeof isoDate === 'string')
@@ -46,30 +44,14 @@ export function RulePreviewCalendar({ affectedDates }: RulePreviewCalendarProps)
 	}, [affectedDates]);
 
 	//
-	// B. Render calendar with context provider
+	// B. Render calendar with periods, annotations, and rule impacts
 
 	return (
-		<CalendarUIContextProvider
-			events={calendarEvents}
+		<EventsCalendar
+			additionalEvents={ruleImpactEvents}
+			initialView="year"
 			showSidebar={false}
-			initialEventTypeFilters={{
-				event: true,
-			}}
-		>
-			<Calendar
-				initialView="year"
-				showSidebar={false}
-				eventTypes={[
-					{
-						checked: true,
-						color: 'var(--color-primary)',
-						count: calendarEvents.length,
-						id: 'event',
-						label: 'Dias afetados',
-					},
-				]}
-			/>
-		</CalendarUIContextProvider>
+		/>
 	);
 
 	//

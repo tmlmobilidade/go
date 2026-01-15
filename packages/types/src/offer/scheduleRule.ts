@@ -15,6 +15,7 @@
 //   travelTime?: string; // optional travel info
 // }
 
+import { WEEKDAYS } from '@/dates/date.js';
 import { z } from 'zod';
 
 /* * */
@@ -23,26 +24,6 @@ export enum OPERATING_MODE {
 	EXCLUDE = 'exclude',
 	INCLUDE = 'include',
 }
-
-export enum WEEKDAYS {
-	Fri = 5,
-	Mon = 1,
-	Sat = 6,
-	Sun = 0,
-	Thu = 4,
-	Tue = 2,
-	Wed = 3,
-}
-
-export const WEEKDAY_OPTIONS = [
-	{ label: 'Seg', value: WEEKDAYS.Mon },
-	{ label: 'Ter', value: WEEKDAYS.Tue },
-	{ label: 'Qua', value: WEEKDAYS.Wed },
-	{ label: 'Qui', value: WEEKDAYS.Thu },
-	{ label: 'Sex', value: WEEKDAYS.Fri },
-	{ label: 'Sáb', value: WEEKDAYS.Sat },
-	{ label: 'Dom', value: WEEKDAYS.Sun },
-] as const;
 
 // Holidays schema
 const HolidaysSchema = z.discriminatedUnion('mode', [
@@ -61,6 +42,8 @@ const HolidaysSchema = z.discriminatedUnion('mode', [
 /* * */
 
 export const ScheduleRuleSchema = z.object({
+	name: z.string().optional(),
+
 	operatingMode: z.nativeEnum(OPERATING_MODE),
 
 	// Can reference multiple periods by ID

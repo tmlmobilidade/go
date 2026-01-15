@@ -4,7 +4,7 @@ import { usePatternDetailContext } from '@/components/patterns/detail/PatternDet
 import { IconPlus } from '@tabler/icons-react';
 import { Button, Collapsible, Section } from '@tmlmobilidade/ui';
 
-import { openCreateRuleModal } from '../../rules/create/RuleCreate.modal';
+import { closeCreateRuleModal, openCreateRuleModal } from '../../rules/create/RuleCreate.modal';
 import PatternDetailRules from '../../rules/list/Rules';
 
 /* * */
@@ -17,22 +17,44 @@ export function PatternDetailSectionOpRules() {
 
 	const patternDetailContext = usePatternDetailContext();
 
+	const rules = patternDetailContext.data.form.values.rules || [];
+
 	//
 	// B. Handle actions
 
 	const handleOpenCreateModal = () => {
-		openCreateRuleModal(patternDetailContext.data.agency_id);
+		openCreateRuleModal(patternDetailContext.data.agency_id, {
+			onSuccess: (newRule) => {
+				// Add the new rule to the form
+				const currentRules = patternDetailContext.data.form.values.rules || [];
+				patternDetailContext.data.form.setFieldValue('rules', [...currentRules, newRule]);
+				closeCreateRuleModal();
+			},
+			patternId: patternDetailContext.data.id,
+		});
 	};
 
-	const handleOpenEditModal = (rule) => {
-		// openScheduleRuleModal({
-		// 	onSuccess: () => {
-		// 		// TODO: Refresh rules list when backend is ready
-		// 		console.log('Rule updated, refreshing list...');
-		// 	},
-		// 	patternId: patternDetailContext.data.id,
-		// 	rule,
-		// });
+	const handleDeleteRule = (index: number) => {
+		const currentRules = patternDetailContext.data.form.values.rules || [];
+		patternDetailContext.data.form.setFieldValue('rules', currentRules.filter((_, i) => i !== index));
+	};
+
+	const handleOpenEditModal = (rule, index: number) => {
+		openCreateRuleModal(patternDetailContext.data.agency_id, {
+			initialValues: rule,
+			onSuccess: (updatedRule, ruleIndex) => {
+				// Update the rule at the specific index
+				const currentRules = patternDetailContext.data.form.values.rules || [];
+				const newRules = [...currentRules];
+				if (ruleIndex !== undefined) {
+					newRules[ruleIndex] = updatedRule;
+					patternDetailContext.data.form.setFieldValue('rules', newRules);
+				}
+				closeCreateRuleModal();
+			},
+			patternId: patternDetailContext.data.id,
+			ruleIndex: index,
+		});
 	};
 
 	//
@@ -41,59 +63,29 @@ export function PatternDetailSectionOpRules() {
 	return (
 		<Collapsible title="Regras de funcionamento" defaultOpen>
 			<Section gap="sm">
-				{/* Example Rules - TODO: Replace with actual data from backend */}
-				<PatternDetailRules
-					onDelete={() => console.log('Delete Rule 1')}
-					onEdit={() => handleOpenEditModal({
-						_id: 'rule1',
-						events: [],
-						holidays: undefined,
-						isOffTime: false,
-						periodIds: ['escolar'],
-						weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-					})}
-					ruleData={{
-						isOffTime: false, // Add rule
-						name: 'Dias úteis durante o período escolar',
-						times: ['06:20', '07:00', '07:45'],
-						travelTime: 'Base',
-					}}
-				/>
+				{/* Render actual rules from pattern */}
+				{rules.map((rule, index) => (
+					<PatternDetailRules
+						key={index}
+						onDelete={() => handleDeleteRule(index)}
+						onEdit={() => handleOpenEditModal(rule, index)}
+						ruleData={{
+							isOffTime: rule.operatingMode === 'exclude',
+							name: rule.name || `Regra ${index + 1}`,
+							times: rule.timePoints || [],
+							travelTime: rule.travelTime || 'Base',
+						}}
+					/>
+				))}
 
-				<PatternDetailRules
-					onDelete={() => console.log('Delete Rule 2')}
-					onEdit={() => handleOpenEditModal({
-						_id: 'rule2',
-						events: [],
-						holidays: undefined,
-						isOffTime: false,
-						periodIds: ['ferias_verao'],
-						weekdays: ['Sat', 'Sun'],
-					})}
-					ruleData={{
-						isOffTime: false, // Add rule
-						name: 'Fins de semana - Serviço da manhã',
-						times: ['08:00', '09:00', '10:00'],
-						travelTime: 'Base + 5 min',
-					}}
-				/>
-
-				<PatternDetailRules
-					onDelete={() => console.log('Delete Rule 3')}
-					onEdit={() => handleOpenEditModal({
-						_id: 'rule3',
-						events: [],
-						holidays: { all: true },
-						isOffTime: true,
-						periodIds: ['escolar', 'ferias_verao'],
-					})}
-					ruleData={{
-						isOffTime: true, // Remove rule
-						name: 'Feriados nacionais',
-						times: ['06:20', '07:45'],
-						travelTime: 'Base',
-					}}
-				/>
+				{/* Empty state */}
+				{rules.length === 0 && (
+					<Section padding="none">
+						<p style={{ color: 'var(--color-system-text-300)', textAlign: 'center' }}>
+							Nenhuma regra definida. Clique em "Nova regra" para começar.
+						</p>
+					</Section>
+				)}
 
 				{/* Create Button */}
 				<Button
