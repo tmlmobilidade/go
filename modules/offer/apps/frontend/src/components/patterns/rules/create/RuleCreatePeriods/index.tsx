@@ -2,10 +2,9 @@
 
 /* * */
 
+import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { Button, Section, Tag, Text } from '@tmlmobilidade/ui';
-
-import { useRuleCreateContext } from '../RuleCreate.context';
 
 /* * */
 
@@ -16,22 +15,12 @@ export function RuleCreatePeriods() {
 	// A. Setup variables
 
 	const createRuleContext = useRuleCreateContext();
-
 	const { data: periodsData } = usePeriodsContext();
-
-	console.log(periodsData);
 
 	const PERIOD_OPTIONS = periodsData.periods.map(period => ({
 		label: period.name,
 		value: period._id,
 	}));
-
-	// const PERIOD_OPTIONS = [
-	// 	{ label: 'Período Escolar', value: 'escolar' },
-	// 	{ label: 'Férias de Verão', value: 'ferias_verao' },
-	// 	{ label: 'Férias de Natal', value: 'ferias_natal' },
-	// 	{ label: 'Férias da Páscoa', value: 'ferias_pascoa' },
-	// ];
 
 	//
 	// B. Handle actions
@@ -67,12 +56,12 @@ export function RuleCreatePeriods() {
 		}
 	};
 
-	//
-	// C. Render components
-
 	const allPeriodsSelected = PERIOD_OPTIONS.every(period =>
 		createRuleContext.data.form.values.periodIds?.includes(period.value),
 	);
+
+	//
+	// C. Render components
 
 	return (
 		<Section gap="md">

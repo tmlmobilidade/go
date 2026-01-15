@@ -10,13 +10,18 @@ import { Dates } from '@tmlmobilidade/dates';
 import { OPERATING_MODE, ScheduleRule, ScheduleRuleSchema } from '@tmlmobilidade/types';
 import { type UseFormReturnType } from '@tmlmobilidade/ui';
 import { zodResolver } from 'mantine-form-zod-resolver';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
+
+import { closeCreateRuleModal } from './RuleCreate.modal';
 
 /* * */
 
 interface RuleCreateContextState {
 	actions: {
-		create: () => Promise<void>
+		closeDrawer: () => void
+		deleteRule?: () => void
+		openDrawer: () => void
+		submitRule: () => void
 	}
 	data: {
 		form: UseFormReturnType<ScheduleRule>
@@ -25,6 +30,10 @@ interface RuleCreateContextState {
 			dates: string[]
 		}
 		ruleSummary: string
+	}
+	flags: {
+		isDrawerOpen: boolean
+		isEditing: boolean
 	}
 }
 
@@ -42,13 +51,14 @@ export function useRuleCreateContext() {
 
 /* * */
 
-export const RuleCreateContextProvider = ({ children, initialValues, onSuccess, patternId, ruleIndex }: PropsWithChildren<{ initialValues?: ScheduleRule, onSuccess?: (rule: ScheduleRule, index?: number) => void, patternId?: string, ruleIndex?: number }>) => {
+export const RuleCreateContextProvider = ({ children, initialValues, onDelete, onSubmit }: PropsWithChildren<{ initialValues?: ScheduleRule, onDelete?: () => void, onSubmit: (rule: ScheduleRule) => void }>) => {
 	//
 
 	//
 	// A. Setup variables
 
 	const periodsContext = usePeriodsContext();
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
 	//
 	// B. Fetch data
@@ -60,6 +70,7 @@ export const RuleCreateContextProvider = ({ children, initialValues, onSuccess, 
 		initialValues: initialValues || {
 			operatingMode: OPERATING_MODE.INCLUDE,
 			periodIds: [],
+			timePoints: [],
 		},
 		mode: 'controlled',
 		validate: zodResolver(ScheduleRuleSchema),
@@ -88,7 +99,7 @@ export const RuleCreateContextProvider = ({ children, initialValues, onSuccess, 
 	//
 	// D. Handle actions
 
-	const handleCreate = async () => {
+	const handleSubmitRule = () => {
 		// Validate form
 		const validation = form.validate();
 		if (validation.hasErrors) {
@@ -101,9 +112,17 @@ export const RuleCreateContextProvider = ({ children, initialValues, onSuccess, 
 			name: ruleSummary,
 		};
 
-		// Call the onSuccess callback to add or update the rule
-		if (onSuccess) {
-			onSuccess(ruleValues, ruleIndex);
+		// Call the onSubmit callback
+		onSubmit(ruleValues);
+
+		// Close the modal
+		closeCreateRuleModal();
+	};
+
+	const handleDeleteRule = () => {
+		if (onDelete) {
+			onDelete();
+			closeCreateRuleModal();
 		}
 	};
 
@@ -112,17 +131,25 @@ export const RuleCreateContextProvider = ({ children, initialValues, onSuccess, 
 
 	const contextValue: RuleCreateContextState = useMemo(() => ({
 		actions: {
-			create: handleCreate,
+			closeDrawer: () => setIsDrawerOpen(false),
+			deleteRule: onDelete ? handleDeleteRule : undefined,
+			openDrawer: () => setIsDrawerOpen(true),
+			submitRule: handleSubmitRule,
 		},
 		data: {
 			form,
 			ruleImpact,
 			ruleSummary,
 		},
+		flags: {
+			isDrawerOpen,
+			isEditing: Boolean(initialValues),
+		},
 	}), [
 		form,
 		ruleImpact,
 		ruleSummary,
+		isDrawerOpen,
 	]);
 
 	//

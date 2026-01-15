@@ -42,6 +42,8 @@ const HolidaysSchema = z.discriminatedUnion('mode', [
 /* * */
 
 export const ScheduleRuleSchema = z.object({
+	_id: z.string().optional(), // Client-side ID for tracking
+
 	name: z.string().optional(),
 
 	operatingMode: z.nativeEnum(OPERATING_MODE),
@@ -62,7 +64,7 @@ export const ScheduleRuleSchema = z.object({
 	travelTime: z.string().optional(),
 
 	// Optional timepoints when this rule applies (HH:mm format)
-	timePoints: z.array(z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)).optional(),
+	timePoints: z.array(z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)),
 });
 
 /* * */

@@ -2,19 +2,15 @@
 
 /* * */
 
+import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { RuleCreateBasicInfo } from '@/components/patterns/rules/create/RuleCreateBasicInfo';
 import { RuleCreateFooter } from '@/components/patterns/rules/create/RuleCreateFooter';
 import { RuleCreateHeader } from '@/components/patterns/rules/create/RuleCreateHeader';
 import { RulePreviewCalendar } from '@/components/patterns/rules/create/RulePreviewCalendar';
-import { usePeriodsContext } from '@/contexts/Periods.context';
-import { buildRuleSummary } from '@/utils/rules/ruleSummary';
-import { IconArrowBarToLeft, IconArrowBarToRight, IconLayoutSidebarLeftCollapse, IconX } from '@tabler/icons-react';
-import { Button, Calendar, CloseButton, Divider, Grid, IconButton, Section, Surface, Tag, Text } from '@tmlmobilidade/ui';
-import { useState } from 'react';
+import { IconArrowBarToLeft, IconArrowBarToRight } from '@tabler/icons-react';
+import { CloseButton, Divider, Grid, Section, Surface, Tag, Text } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
-
-import { useRuleCreateContext } from '../RuleCreate.context';
 
 /* * */
 
@@ -26,19 +22,17 @@ export function RuleCreate() {
 
 	const createRuleContext = useRuleCreateContext();
 
-	const [drawerOpened, setDrawerOpened] = useState(false);
-
 	return (
 		<div className={styles.container}>
 			{/* Sidebar Toggle */}
-			<div className={styles.sidebar} onClick={() => setDrawerOpened(!drawerOpened)}>
+			<div className={styles.sidebar} onClick={() => createRuleContext.flags.isDrawerOpen ? createRuleContext.actions.closeDrawer() : createRuleContext.actions.openDrawer()}>
 				<div className={styles.sidebarContent}>
-					{drawerOpened ? <IconArrowBarToRight /> : <IconArrowBarToLeft />}
+					{createRuleContext.flags.isDrawerOpen ? <IconArrowBarToRight /> : <IconArrowBarToLeft />}
 				</div>
 			</div>
 
 			{/* Main Content */}
-			<div className={`${styles.mainContent} ${drawerOpened ? styles.mainContentShift : ''}`}>
+			<div className={styles.mainContent}>
 				{/* Header */}
 				<div className={styles.header}>
 					<RuleCreateHeader />
@@ -56,14 +50,15 @@ export function RuleCreate() {
 			</div>
 
 			{/* Backdrop Overlay */}
-			{drawerOpened && <div className={styles.backdrop} onClick={() => setDrawerOpened(false)} />}
+			{createRuleContext.flags.isDrawerOpen && <div className={styles.backdrop} onClick={() => createRuleContext.actions.closeDrawer()} />}
 
 			{/* Drawer */}
-			<div className={`${styles.drawer} ${drawerOpened ? styles.drawerOpen : ''}`}>
+			<div className={`${styles.drawer} ${createRuleContext.flags.isDrawerOpen ? styles.drawerOpen : ''}`}>
 				<div className={styles.drawerHeader}>
-					<CloseButton onClick={() => setDrawerOpened(false)} type="close" />
+					<CloseButton onClick={() => createRuleContext.actions.closeDrawer()} type="close" />
 					<Tag label="Validação da regra" variant="muted" />
 				</div>
+
 				<div className={styles.drawerContent}>
 					<Grid columns="ab" gap="md">
 						<Surface height="full">

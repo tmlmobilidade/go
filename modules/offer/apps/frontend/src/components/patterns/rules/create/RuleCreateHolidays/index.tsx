@@ -13,7 +13,6 @@ export function RuleCreateHolidays() {
 	// A. Setup variables
 
 	const { form } = useRuleCreateContext().data;
-
 	const holidays = form.values.holidays;
 
 	//

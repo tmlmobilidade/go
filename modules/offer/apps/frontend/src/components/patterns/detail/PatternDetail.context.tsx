@@ -4,7 +4,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { Line, Pattern, PermissionCatalog, Typology, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
+import { Line, Pattern, PermissionCatalog, ScheduleRule, Typology, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { type Feature, type FeatureCollection, type LineString, type Point } from 'geojson';
@@ -12,11 +12,17 @@ import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
+import { openCreateRuleModal } from '../rules/create/RuleCreate.modal';
+
 /* * */
 
 interface PatternDetailContextState {
 	actions: DetailContextStateTemplate['actions'] & {
+		addRule: (rule: ScheduleRule) => void
+		deleteRule: (ruleId: string) => void
+		editRule: (rule: ScheduleRule) => void
 		mutate: () => Promise<Pattern | undefined>
+		openRuleModal: (rule?: ScheduleRule) => void
 	}
 	data: {
 		agency_id: string
@@ -113,6 +119,45 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	//
 	// E. Handle actions
 
+	const handleAddRule = (rule: ScheduleRule) => {
+		const currentRules = form.values.rules || [];
+		const ruleWithId = { ...rule, _id: crypto.randomUUID() };
+		form.setFieldValue('rules', [...currentRules, ruleWithId]);
+	};
+
+	const handleEditRule = (rule: ScheduleRule) => {
+		if (!rule._id) {
+			console.error('Cannot edit rule without _id');
+			return;
+		}
+		const currentRules = form.values.rules || [];
+		form.setFieldValue('rules', currentRules.map(r =>
+			r._id === rule._id ? rule : r,
+		));
+	};
+
+	const handleDeleteRule = (ruleId: string) => {
+		const currentRules = form.values.rules || [];
+		form.setFieldValue('rules', currentRules.filter(r => r._id !== ruleId));
+	};
+
+	const handleOpenRuleModal = (rule?: ScheduleRule) => {
+		const onSubmit = (validatedRule: ScheduleRule) => {
+			if (rule?._id) {
+				// Editing - preserve the _id
+				handleEditRule({ ...validatedRule, _id: rule._id });
+			}
+			else {
+				// Creating new
+				handleAddRule(validatedRule);
+			}
+		};
+
+		const onDelete = rule?._id ? () => handleDeleteRule(rule._id) : undefined;
+
+		openCreateRuleModal(lineData?.agency_id || '', onSubmit, rule, onDelete);
+	};
+
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
@@ -176,9 +221,13 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 	const contextValue: PatternDetailContextState = useMemo(() => ({
 		actions: {
+			addRule: handleAddRule,
 			delete: handleDelete,
+			deleteRule: handleDeleteRule,
+			editRule: handleEditRule,
 			lock: handleLock,
 			mutate: patternMutate,
+			openRuleModal: handleOpenRuleModal,
 			save: handleSave,
 		},
 		data: {

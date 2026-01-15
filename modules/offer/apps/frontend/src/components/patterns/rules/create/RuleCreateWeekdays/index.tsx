@@ -2,10 +2,17 @@
 
 /* * */
 
+import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { WEEKDAYS } from '@tmlmobilidade/types';
 import { Section, Tag, Text, WeekdaySelector } from '@tmlmobilidade/ui';
 
-import { useRuleCreateContext } from '../RuleCreate.context';
+/* * */
+
+const WEEKDAY_PRESETS = {
+	all: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri, WEEKDAYS.Sat, WEEKDAYS.Sun],
+	business: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+	weekend: [WEEKDAYS.Sat, WEEKDAYS.Sun],
+} as const;
 
 /* * */
 
@@ -20,36 +27,22 @@ export function RuleCreateWeekdays() {
 	//
 	// B. Handle actions
 
-	const handleQuickSelectDays = (type: 'all' | 'business' | 'weekend') => {
-		const selections = {
-			all: [WEEKDAYS.Sun, WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri, WEEKDAYS.Sat],
-			business: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
-			weekend: [WEEKDAYS.Sun, WEEKDAYS.Sat],
-		};
+	const handleQuickSelectDays = (type: keyof typeof WEEKDAY_PRESETS) => {
 		const currentWeekdays = createRuleContext.data.form.values.weekdays || [];
-		const exactMatch = selections[type].every(day => currentWeekdays.includes(day)) && currentWeekdays.length === selections[type].length;
+		const preset = WEEKDAY_PRESETS[type];
+		const isExactMatch = preset.every(day => currentWeekdays.includes(day)) && currentWeekdays.length === preset.length;
 
-		if (exactMatch) {
-			// Deselect all
-			createRuleContext.data.form.setFieldValue('weekdays', undefined);
-		}
-		else {
-			// Select only this type
-			createRuleContext.data.form.setFieldValue('weekdays', selections[type]);
-		}
+		createRuleContext.data.form.setFieldValue('weekdays', isExactMatch ? undefined : [...preset]);
+	};
+
+	const isPresetSelected = (type: keyof typeof WEEKDAY_PRESETS) => {
+		const currentWeekdays = createRuleContext.data.form.values.weekdays || [];
+		const preset = WEEKDAY_PRESETS[type];
+		return preset.every(day => currentWeekdays.includes(day)) && currentWeekdays.length === preset.length;
 	};
 
 	//
 	// C. Render components
-
-	const currentWeekdays = createRuleContext.data.form.values.weekdays || [];
-	const allDays = [WEEKDAYS.Sun, WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri, WEEKDAYS.Sat];
-	const businessDays = [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri];
-	const weekendDays = [WEEKDAYS.Sun, WEEKDAYS.Sat];
-
-	const allSelected = allDays.every(day => currentWeekdays.includes(day)) && currentWeekdays.length === allDays.length;
-	const businessSelected = businessDays.every(day => currentWeekdays.includes(day)) && currentWeekdays.length === businessDays.length;
-	const weekendSelected = weekendDays.every(day => currentWeekdays.includes(day)) && currentWeekdays.length === weekendDays.length;
 
 	return (
 		<Section gap="md">
@@ -60,9 +53,9 @@ export function RuleCreateWeekdays() {
 
 			{/* Quick Select Tags */}
 			<Section flexDirection="row" gap="sm" padding="none">
-				<Tag label="Todos" onClick={() => handleQuickSelectDays('all')} variant={allSelected ? 'primary' : 'muted'} />
-				<Tag label="Dias úteis" onClick={() => handleQuickSelectDays('business')} variant={businessSelected ? 'primary' : 'muted'} />
-				<Tag label="Fim de semana" onClick={() => handleQuickSelectDays('weekend')} variant={weekendSelected ? 'primary' : 'muted'} />
+				<Tag label="Todos" onClick={() => handleQuickSelectDays('all')} variant={isPresetSelected('all') ? 'primary' : 'muted'} />
+				<Tag label="Dias úteis" onClick={() => handleQuickSelectDays('business')} variant={isPresetSelected('business') ? 'primary' : 'muted'} />
+				<Tag label="Fim de semana" onClick={() => handleQuickSelectDays('weekend')} variant={isPresetSelected('weekend') ? 'primary' : 'muted'} />
 			</Section>
 
 			<WeekdaySelector

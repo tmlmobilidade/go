@@ -14,16 +14,15 @@ const MODAL_ID = 'create-rule-modal';
 
 /* * */
 
-export const openCreateRuleModal = (agencyId: string, options?: { initialValues?: ScheduleRule, onSuccess?: (rule: ScheduleRule, index?: number) => void, patternId?: string, ruleIndex?: number }) => {
+export const openCreateRuleModal = (agencyId: string, onSubmit: (rule: ScheduleRule) => void, initialValues?: ScheduleRule, onDelete?: () => void) => {
 	openModal({
 		children: (
 			<MeContextProvider>
 				<PeriodsContextProvider agencyId={agencyId}>
 					<RuleCreateContextProvider
-						initialValues={options?.initialValues}
-						onSuccess={options?.onSuccess}
-						patternId={options?.patternId}
-						ruleIndex={options?.ruleIndex}
+						initialValues={initialValues}
+						onDelete={onDelete}
+						onSubmit={onSubmit}
 					>
 						<RuleCreate />
 					</RuleCreateContextProvider>
