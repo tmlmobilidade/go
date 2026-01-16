@@ -1,4 +1,4 @@
-import type { OperationalDate, Period, ScheduleRule, WEEKDAYS } from '@tmlmobilidade/types';
+import type { OperationalDate, Period, ScheduleRule } from '@tmlmobilidade/types';
 
 import { calendarKey, CalendarKey, calendarWeekday, Dates, datesFromCalendarKey, keyToYYYYMMDD } from '@tmlmobilidade/dates';
 
@@ -27,7 +27,7 @@ function ruleAppliesToCivilKey(rule: ScheduleRule, key: CalendarKey, ctx: Calend
 	// 1) Period required
 	if (!isInPeriod(rule, key, ctx)) return false;
 
-	// 2) Holidays exclusion (your rule says "exceto feriados")
+	// 2) Holidays exclusion (your rule says "excepto feriados")
 	if (ctx.holidays.has(key)) return false;
 
 	// 3) Weekdays required

@@ -101,7 +101,7 @@ export function buildRuleSummary(
 		}
 	}
 	else {
-		parts.push('exceto feriados');
+		parts.push('excepto feriados');
 	}
 
 	/* ---------------- Events ---------------- */
