@@ -209,7 +209,7 @@ export class PatternsController {
 				distance_delta: distanceDelta,
 				stop_id: associatedStop._id,
 				timepoint: originalPathStop?.timepoint ?? true,
-				zones: originalPathStop?.zones ?? associatedStop.zones ?? [],
+				zones: originalPathStop?.zones ?? [], // fix this later
 			});
 		}
 
