@@ -2,13 +2,14 @@
 
 /* * */
 
-import { useVehiclesListContext } from '@/components/Vehicles/list/VehiclesList.context';
 import { VehiclesListFiltersBar } from '@/components/Vehicles/list/VehiclesListFiltersBar';
 import { VehiclesListHeader } from '@/components/Vehicles/list/VehiclesListHeader';
-import { useAgenciesContext } from '@/contexts/Agencies.context';
+import { useVehiclesListContext } from '@/contexts/VehiclesList.context';
 import { VehicleNormalized } from '@/types/normalized';
+import { formatDate } from '@/utils/formatDate';
+import { FormatlLicensePlate } from '@/utils/formatLicencePlate';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, useAgenciesContext } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -26,16 +27,6 @@ export function VehiclesList() {
 	const vehiclesListContext = useVehiclesListContext();
 	const agenciesContext = useAgenciesContext();
 
-	// Create an object that maps each agency ID to a display string
-	// Format: { "agencyId": "agencyId - agencyName" }
-	const agency = agenciesContext.data.raw.reduce((acc, agency) => {
-	// Use the agency ID as the key
-		acc[agency._id] = agency._id + ' - ' + agency.name;
-
-		// Return the accumulator for the next iteration
-		return acc;
-	}, {} as Record<string, string>); // Initial value: empty object with string keys and values
-
 	const columns: DataTableColumn<VehicleNormalized>[] = [
 		{
 			accessor: '_id',
@@ -45,14 +36,20 @@ export function VehiclesList() {
 		},
 		{
 			accessor: 'agency_id',
-			render: item => <Tag label={agency[item.agency_id]} />,
+			render: item => <Tag label={agenciesContext.data.as_options.find(option => option.value === item.agency_id)?.label ?? ''} />,
 			title: 'Operador',
 			width: 350,
 		},
 		{
 			accessor: 'license_plate',
-			render: item => <Tag label={item.license_plate} />,
+			render: item => <Tag label={FormatlLicensePlate(item.license_plate)} />,
 			title: 'matrícula do veículo',
+			width: 200,
+		},
+		{
+			accessor: 'registration_date',
+			render: item => <Tag label={formatDate(item.registration_date)} />,
+			title: 'Data de registo do veíuclo',
 			width: 300,
 		},
 	];
