@@ -1,0 +1,23 @@
+.popup {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 8px;
+}
+
+.id {
+	font-family: monospace;
+	font-size: 11px;
+	color: var(--mantine-color-gray-6);
+}
+
+.name {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--mantine-color-gray-9);
+}
+
+.value {
+	font-size: 13px;
+	color: var(--mantine-color-gray-7);
+}

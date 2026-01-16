@@ -1,8 +1,8 @@
 'use client';
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
-import { type CalendarEvent } from '@tmlmobilidade/types';
+import { CalendarKey, Dates } from '@tmlmobilidade/dates';
+import { type CalendarEvent, CalendarEventType } from '@tmlmobilidade/types';
 import { useRouter } from 'next/navigation';
 
 import { ErrorDisplay } from '../../../display/ErrorDisplay';
@@ -14,16 +14,18 @@ import { Calendar } from '../Calendar';
 /* * */
 
 export interface EventsCalendarProps {
+	additionalEvents?: CalendarEvent[]
 	initialView?: 'month' | 'year'
 	onDayClick?: (date: Dates) => void
-	onEventClick?: (eventId: string, eventType: 'annotation' | 'period') => void
-	onRangeSelect?: (range: { end: Dates, start: Dates }, clearSelection: () => void) => void
+	onEventClick?: (eventId: string, eventType: CalendarEventType) => void
+	onRangeSelect?: (range: { end: CalendarKey, start: CalendarKey }, clearSelection: () => void) => void
 	showSidebar?: boolean
 }
 
 /* * */
 
 export function EventsCalendar({
+	additionalEvents = [],
 	initialView = 'month',
 	onDayClick,
 	onEventClick,
@@ -33,7 +35,7 @@ export function EventsCalendar({
 	//
 
 	return (
-		<EventsCalendarProvider>
+		<EventsCalendarProvider additionalEvents={additionalEvents}>
 			<EventsCalendarContent
 				initialView={initialView}
 				onDayClick={onDayClick}
@@ -115,6 +117,13 @@ function EventsCalendarContent({
 					id: 'annotation',
 					label: 'Anotações',
 				},
+				...(eventsContext.data.eventTypeCounts.additional > 0 ? [{
+					checked: uiContext.state.eventTypeFilters.get('event') !== false,
+					color: 'var(--color-primary)',
+					count: eventsContext.data.eventTypeCounts.additional,
+					id: 'event' as CalendarEventType,
+					label: 'Dias afetados',
+				}] : []),
 			]}
 		/>
 	);

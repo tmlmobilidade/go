@@ -28,6 +28,7 @@
 		"@mantine/charts": "8.3.11",
 		"@mantine/core": "8.3.11",
 		"@mantine/dates": "8.3.11",
+		"@mantine/dropzone": "8.3.11",
 		"@mantine/form": "8.3.11",
 		"@mantine/hooks": "8.3.11",
 		"@mantine/modals": "8.3.11",

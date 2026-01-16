@@ -1,29 +1,33 @@
 /* * */
 
-import { Dates } from '@/dates.js';
-import { type OperationalDate } from '@tmlmobilidade/types';
+import { OperationalDate } from '@tmlmobilidade/types';
+
+import { CalendarKey, calendarKey, datesFromCalendarKey, keyToYYYYMMDD } from './calendar.js';
 
 /* * */
 
 /**
- * Converts a date range into an array of operational_date strings.
- * Dates are returned in sorted order (ascending).
+ * Converts a date range into an array of CalendarKey strings (YYYY-MM-DD).
+ * Returned in sorted order (ascending).
  *
- * @param start - Start date of the range (inclusive)
- * @param end - End date of the range (inclusive)
- * @returns Array of operational_date strings in format yyyyMMdd
- *
+ * @param start - Start day (inclusive) as CalendarKey
+ * @param end - End day (inclusive) as CalendarKey
  */
-export function convertRangeToDatesArray(start: Dates, end: Dates): OperationalDate[] {
-	const dates: OperationalDate[] = [];
-	let current = Dates.fromUnixTimestamp(start.unix_timestamp);
+export function convertRangeToKeysArray(start: CalendarKey, end: CalendarKey): CalendarKey[] {
+	const keys: CalendarKey[] = [];
 
-	while (current.unix_timestamp <= end.unix_timestamp) {
-		dates.push(current.operational_date);
+	const from = start < end ? start : end;
+	const to = start < end ? end : start;
+
+	let current = datesFromCalendarKey(from);
+	const endDate = datesFromCalendarKey(to);
+
+	while (current.unix_timestamp <= endDate.unix_timestamp) {
+		keys.push(calendarKey(current));
 		current = current.plus({ days: 1 });
 	}
 
-	return dates;
+	return keys;
 }
 
 /**
@@ -66,4 +70,8 @@ export function removeDatesFromArray(array: OperationalDate[], datesToRemove: Op
 export function findCommonDates(array1: OperationalDate[], array2: OperationalDate[]): OperationalDate[] {
 	const set1 = new Set(array1);
 	return array2.filter(date => set1.has(date)).sort() as OperationalDate[];
+}
+
+export function convertKeysToOperationalDates(keys: CalendarKey[]): OperationalDate[] {
+	return keys.map(k => keyToYYYYMMDD(k) as OperationalDate);
 }

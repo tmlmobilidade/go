@@ -1,14 +1,16 @@
 'use client';
 
-import type { DateRangeState } from '../../contexts/CalendarUI.context';
+/* * */
 
 import { Tooltip } from '@mantine/core';
-import { type CalendarDay, Dates } from '@tmlmobilidade/dates';
+import { type CalendarDay } from '@tmlmobilidade/dates';
 import { type CalendarEvent } from '@tmlmobilidade/types';
 import React, { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
+import { type DateRangeState } from '../../contexts/CalendarUI.context';
+import { mapEventsToVisibleDays } from '../../utils/mapEventsToDays';
 import { getDayRangeStatus } from '../../utils/rangeSelection';
 import { DayTooltip } from '../DayTooltip';
 
@@ -27,11 +29,9 @@ export interface YearlyCalendarMonthProps {
 
 /* * */
 
-const WEEK_DAYS_SHORT = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+const WEEK_DAYS_SHORT = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D']; // Mon, Tue, Wed, Thu, Fri, Sat, Sun
 
 /* * */
-
-// MAKE DAY CELLS SQUARES (or fixed aspect ratio)
 
 // Handle date selections (adding/replacing periods, etc)
 
@@ -47,25 +47,8 @@ export function YearlyCalendarMonth({
 
 	// Map events to days
 	const eventsByDate = useMemo(() => {
-		const map = new Map<string, CalendarEvent[]>();
-
-		events.forEach((event) => {
-			const startOp = Dates.fromISO(event.startDate).operational_date;
-			const endOp = event.endDate
-				? Dates.fromISO(event.endDate).operational_date
-				: startOp;
-
-			monthGrid.weeks.flat().forEach((day) => {
-				const dateKey = day.date.operational_date;
-
-				if (dateKey >= startOp && dateKey <= endOp) {
-					const existing = map.get(dateKey) || [];
-					map.set(dateKey, [...existing, event]);
-				}
-			});
-		});
-
-		return map;
+		const visibleDays = monthGrid.weeks.flat();
+		return mapEventsToVisibleDays(events, visibleDays).eventsByDate;
 	}, [events, monthGrid.weeks]);
 
 	const handleDayClick = (day: CalendarDay) => {
@@ -105,10 +88,13 @@ export function YearlyCalendarMonth({
 				{monthGrid.weeks.map((week, weekIndex) => (
 					<div key={weekIndex} className={styles.week}>
 						{week.map((day, dayIndex) => {
-							const dayEvents = eventsByDate.get(day.date.operational_date) || [];
-							const periodEvents = dayEvents.filter(e => e.type === 'period');
-							const otherEvents = dayEvents.filter(e => e.type !== 'period');
+							const key = day.calendarKey;
+							const dayEvents = eventsByDate.get(key) || [];
+							const cellEvents = dayEvents.filter(e => e.display === 'cell');
+							const stripEvents = dayEvents.filter(e => e.display === 'strip' || (e.type === 'period' && !e.display));
+							const dotEvents = dayEvents.filter(e => e.display === 'dot' || (!e.display && e.type !== 'period'));
 							const hasEvents = dayEvents.length > 0;
+							const hasCellEvent = cellEvents.length > 0;
 
 							// Get range status for styling
 							const rangeStatus = rangeState
@@ -121,10 +107,13 @@ export function YearlyCalendarMonth({
 								day.isToday && styles.today,
 								day.isWeekend && styles.weekend,
 								hasEvents && styles.hasEvents,
+								hasCellEvent && styles.hasCellEvent,
 								rangeStatus.isStart && day.isCurrentMonth && styles.daySelectedStart,
 								rangeStatus.isEnd && day.isCurrentMonth && styles.daySelectedEnd,
 								rangeStatus.isInRange && styles.dayInRange,
 							].filter(Boolean).join(' ');
+
+							const cellStyle = hasCellEvent ? { backgroundColor: cellEvents[0].color } : undefined;
 
 							const tooltipDate = day.date.toFormat('cccc d \'de\' MMMM \'de\' yyyy')
 								.replace(/^./, char => char.toUpperCase());
@@ -133,12 +122,13 @@ export function YearlyCalendarMonth({
 								<div
 									key={dayIndex}
 									className={dayClassName}
-									data-date={day.date.operational_date}
+									data-date={key}
 									onClick={() => handleDayClick(day)}
+									style={cellStyle}
 								>
-									{periodEvents.length > 0 && (
+									{stripEvents.length > 0 && (
 										<div className={styles.periodStrips}>
-											{periodEvents.slice(0, 2).map(event => (
+											{stripEvents.slice(0, 2).map(event => (
 												<div
 													key={event.id}
 													className={styles.periodStrip}
@@ -151,9 +141,9 @@ export function YearlyCalendarMonth({
 									<div className={styles.dayNumber}>
 										{day.dayOfMonth}
 									</div>
-									{otherEvents.length > 0 && (
+									{dotEvents.length > 0 && (
 										<div className={styles.eventIndicators}>
-											{otherEvents.slice(0, 3).map(event => (
+											{dotEvents.slice(0, 3).map(event => (
 												<div
 													key={event.id}
 													className={styles.eventDot}
@@ -161,9 +151,9 @@ export function YearlyCalendarMonth({
 													style={{ backgroundColor: event.color }}
 												/>
 											))}
-											{otherEvents.length > 3 && (
+											{dotEvents.length > 3 && (
 												<div className={styles.moreIndicator}>
-													+{otherEvents.length - 3}
+													+{dotEvents.length - 3}
 												</div>
 											)}
 										</div>
