@@ -7,13 +7,14 @@ import { z } from 'zod';
 export const CalendarEventSchema = z.object({
 	color: z.string().optional(),
 	description: z.string().optional(),
+	display: z.enum(['cell', 'strip', 'dot']).optional(),
 	endDate: z.string().optional(),
 	icon: z.any().optional(),
 	id: z.string(),
 	metadata: z.record(z.unknown()).optional(),
 	startDate: z.string(),
 	title: z.string(),
-	type: z.enum(['annotation', 'period']).optional(),
+	type: z.enum(['annotation', 'period', 'event']).optional(),
 });
 
 export const CalendarEventTypeEnum = CalendarEventSchema.shape.type;

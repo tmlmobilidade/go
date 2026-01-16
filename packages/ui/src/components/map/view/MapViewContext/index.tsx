@@ -16,7 +16,7 @@ interface MapViewContextState {
 	actions: {
 		centerMapOnRegisteredSources: () => void
 		initMap: (event: MapLibreEvent) => void
-		registerOverlaySource: (sourceId: string, data: Feature<Geometry, GeoJsonProperties>[] | FeatureCollection<Geometry, GeoJsonProperties>) => void
+		registerOverlaySource: (sourceId: string, data: Feature<Geometry, GeoJsonProperties> | Feature<Geometry, GeoJsonProperties>[] | FeatureCollection<Geometry, GeoJsonProperties>) => void
 		toggleAutoZoom: (value?: boolean) => void
 		toggleCursor: (cursor: CSSProperties['cursor']) => void
 		unregisterOverlaySource: (sourceId: string) => void
@@ -74,11 +74,13 @@ export const MapViewContextProvider = ({ children }: PropsWithChildren) => {
 		setFlagLoading(false);
 	};
 
-	const registerOverlaySource = (sourceId: string, data: Feature<Geometry, GeoJsonProperties>[] | FeatureCollection<Geometry, GeoJsonProperties>) => {
+	const registerOverlaySource = (sourceId: string, data: Feature<Geometry, GeoJsonProperties> | Feature<Geometry, GeoJsonProperties>[] | FeatureCollection<Geometry, GeoJsonProperties>) => {
 		// If the data is a FeatureCollection then register the features
 		if ('features' in data) setRegisteredSources(prev => new Map(prev).set(sourceId, data.features));
 		// If the data is an array of features then register them
 		else if (Array.isArray(data)) setRegisteredSources(prev => new Map(prev).set(sourceId, data));
+		// If the data is a single feature, wrap it in an array
+		else if ('geometry' in data) setRegisteredSources(prev => new Map(prev).set(sourceId, [data]));
 	};
 
 	const unregisterOverlaySource = (sourceId: string) => {

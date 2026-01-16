@@ -1,6 +1,6 @@
 'use client';
 
-import { Dates } from '@tmlmobilidade/dates';
+import { CalendarKey, Dates, monthYearFromKey } from '@tmlmobilidade/dates';
 import { type CalendarEvent, CalendarEventType } from '@tmlmobilidade/types';
 import React, { useCallback, useEffect, useRef } from 'react';
 
@@ -27,7 +27,10 @@ export interface CalendarProps {
 	initialView?: 'month' | 'year'
 	onDayClick?: (date: Dates) => void
 	onEventClick?: (event: CalendarEvent) => void
-	onRangeSelect?: (range: { end: Dates, start: Dates }, clearSelection: () => void) => void
+	onRangeSelect?: (
+		range: { end: CalendarKey, start: CalendarKey },
+		clearSelection: () => void
+	) => void
 	showSidebar?: boolean
 }
 
@@ -64,41 +67,38 @@ export function Calendar({
 		if (view === 'year' && onRangeSelect) {
 			const { end, start } = rangeSelection;
 
+			const clickedKey = day.calendarKey; // ✅ civil key from MonthGrid
+
 			// First click: set start
 			if (!start) {
-				setRangeStart(day.date);
+				setRangeStart(day.date); // context converts Dates -> CalendarKey
 			}
 			// Second click: set end and finalize
 			else if (start && !end) {
-				let finalStart = start;
-				let finalEnd = day.date;
+				const finalStart = start < clickedKey ? start : clickedKey;
+				const finalEnd = start < clickedKey ? clickedKey : start;
 
-				// Swap if end is before start
-				if (finalEnd.operational_date < finalStart.operational_date) {
-					[finalStart, finalEnd] = [finalEnd, finalStart];
-				}
+				// Store end in state (context accepts Dates, but stores CalendarKey)
+				setRangeEnd(day.date);
 
-				setRangeEnd(finalEnd);
-
-				// Fire the callback
-				if (onRangeSelect) {
-					onRangeSelect({ end: finalEnd, start: finalStart }, clearRangeSelection);
-				}
+				// Fire callback using CalendarKeys (civil)
+				onRangeSelect({ end: finalEnd, start: finalStart }, clearRangeSelection);
 			}
 			// Third click: restart selection
 			else {
 				setRangeStart(day.date);
 			}
+
+			return;
 		}
+
 		// In month view or when onDayClick is provided
 		else if (onDayClick) {
 			onDayClick(day.date);
 		}
 		else {
 			// If no callback provided, navigate to the day's month and switch to month view
-			const jsDate = new Date(day.date.js_date);
-			const dayMonth = jsDate.getMonth() + 1;
-			const dayYear = jsDate.getFullYear();
+			const { month: dayMonth, year: dayYear } = monthYearFromKey(day.calendarKey);
 
 			if (dayMonth !== month || dayYear !== year) {
 				setMonth(dayMonth, dayYear);

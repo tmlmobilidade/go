@@ -286,6 +286,19 @@ const fleetActions: PermissionConfig = {
 	title: 'Permissões de Veículos',
 };
 
+const linesActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver linhas', label: 'Ver linhas', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar uma linha', label: 'Criar linha', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar uma linha', label: 'Editar linha', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar uma linha', label: 'Eliminar linha', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear uma linha', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de linhas.',
+	scope: PermissionCatalog.all.lines.scope,
+	title: 'Permissões de Linhas',
+};
+
 /* * */
 
 export const permissionsConfig = [
@@ -300,13 +313,13 @@ export const permissionsConfig = [
 	stopActions,
 	rideActions,
 	performanceActions,
-	datesActions,
 	fleetActions,
 	annotationsActions,
 	periodsActions,
 	faresActions,
 	zonesActions,
 	typologiesActions,
+	linesActions,
 	// topicActions,
 	// proposedChangesActions,
 ];
