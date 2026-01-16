@@ -2,7 +2,7 @@
 
 /* * */
 
-import { WEEKDAY_OPTIONS, type WEEKDAYS } from '@tmlmobilidade/types';
+import { IsoWeekday, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
 import React from 'react';
 
 import styles from './styles.module.css';
@@ -16,9 +16,9 @@ export interface WeekdaySelectorProps {
 	/** Optional additional class name */
 	className?: string
 	/** Callback when selection changes */
-	onChange?: (selectedDays: WEEKDAYS[]) => void
+	onChange?: (selectedDays: IsoWeekday[]) => void
 	/** Currently selected weekdays */
-	value?: WEEKDAYS[]
+	value?: IsoWeekday[]
 }
 
 /**
@@ -31,7 +31,7 @@ export default function WeekdaySelector({
 }: WeekdaySelectorProps) {
 	//
 
-	const handleToggle = (day: WEEKDAYS) => {
+	const handleToggle = (day: IsoWeekday) => {
 		const newValue = value.includes(day)
 			? value.filter(d => d !== day)
 			: [...value, day];

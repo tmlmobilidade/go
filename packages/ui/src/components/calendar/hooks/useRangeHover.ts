@@ -80,7 +80,7 @@ export function useRangeHover({
 			// Only update if hovered date changed
 			if (hoveredDate !== currentHoveredDateRef.current) {
 				currentHoveredDateRef.current = hoveredDate;
-				updateHoverClasses(hoveredDate, rangeSelection.start.operational_date);
+				updateHoverClasses(hoveredDate, rangeSelection.start);
 			}
 		};
 
