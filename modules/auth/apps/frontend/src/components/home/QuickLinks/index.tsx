@@ -2,11 +2,10 @@
 
 /* * */
 
-import { QuickLinkButton } from '@/components/home/QuickLinkButton';
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { iconMap } from '@/lib/icons';
 import { IconFileInfo } from '@tabler/icons-react';
-import { Grid, Section, useMeContext } from '@tmlmobilidade/ui';
+import { Grid, LargeButton, Section, useMeContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -32,7 +31,7 @@ export function QuickLinks() {
 		// Return mapped links
 		return foundOrganizationData.home_links.map(item => ({
 			href: item.href,
-			icon: iconMap[item.icon] || <IconFileInfo size={40} />,
+			icon: iconMap[item.icon] || <IconFileInfo />,
 			title: item.title,
 		}));
 	}, [organizationsContext.data.raw, meContext.data.user.organization_id]);
@@ -44,7 +43,12 @@ export function QuickLinks() {
 		<Section padding="lg">
 			<Grid columns="abcde" gap="md">
 				{quickLinks?.map(item => (
-					<QuickLinkButton key={`${item.title}-${item.href}`} item={item} />
+					<LargeButton
+						key={`${item.title}-${item.href}`}
+						href={item.href}
+						icon={item.icon}
+						title={item.title}
+					/>
 				))}
 			</Grid>
 		</Section>

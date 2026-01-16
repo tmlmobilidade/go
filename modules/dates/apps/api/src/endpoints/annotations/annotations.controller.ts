@@ -2,7 +2,7 @@
 
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { annotations } from '@tmlmobilidade/interfaces';
+import { annotations, type Filter } from '@tmlmobilidade/interfaces';
 import { type Annotation, type CreateAnnotationDto, PermissionCatalog, type UpdateAnnotationDto } from '@tmlmobilidade/types';
 
 /* * */;
@@ -19,10 +19,30 @@ export class AnnotationsController {
 		//
 
 		//
-		// Check if the user has permission to create annotations
+		// Get the resource permissions for annotations for the current user.
 
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.dates.scope, PermissionCatalog.all.dates.actions.create_annotations)) {
+		const userAnnotationPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.annotations.scope, PermissionCatalog.all.annotations.actions.create);
+
+		//
+		// If no permission found, deny access
+
+		if (!userAnnotationPermissions) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create annotations');
+		}
+
+		//
+		// Validate that user has permission for ALL the specified agencies
+
+		const hasPermissionForAllAgencies = PermissionCatalog.hasPermissionResourceAll({
+			action: PermissionCatalog.all.annotations.actions.create,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.annotations.scope,
+			value: request.body.agency_ids,
+		});
+
+		if (!hasPermissionForAllAgencies) {
+			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create annotations for these agencies. You must have permission for all agencies involved.');
 		}
 
 		//
@@ -52,10 +72,30 @@ export class AnnotationsController {
 		}
 
 		//
-		// Check if the user has permission to delete annotations
+		// Get the resource permissions for annotations for the current user.
 
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.dates.scope, PermissionCatalog.all.dates.actions.delete_annotations)) {
+		const userAnnotationPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.annotations.scope, PermissionCatalog.all.annotations.actions.delete);
+
+		//
+		// If no permission found, deny access
+
+		if (!userAnnotationPermissions) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete annotations');
+		}
+
+		//
+		// Validate that user has permission for ALL of this annotation's agencies
+
+		const hasPermissionForAllAgencies = PermissionCatalog.hasPermissionResourceAll({
+			action: PermissionCatalog.all.annotations.actions.delete,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.annotations.scope,
+			value: annotation.agency_ids,
+		});
+
+		if (!hasPermissionForAllAgencies) {
+			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete this annotation. You must have permission for all agencies involved.');
 		}
 
 		//
@@ -74,16 +114,36 @@ export class AnnotationsController {
 		//
 
 		//
-		// Check if the user has permission to read annotations
+		// Get the resource permissions for annotations for the current user.
 
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.dates.scope, PermissionCatalog.all.dates.actions.read_annotations)) {
+		const userAnnotationPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.annotations.scope, PermissionCatalog.all.annotations.actions.read);
+
+		//
+		// If no permission found, deny access
+
+		if (!userAnnotationPermissions) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read annotations');
 		}
 
 		//
-		// Fetch all annotations
+		// Build database query filters based on user permissions
 
-		const allAnnotations = await annotations.findMany({}, { sort: { created_at: -1 } });
+		const queryFilters: Filter<Annotation> = {};
+
+		//
+		// If agency IDs are specified in resources and do not include the ALLOW_ALL_FLAG,
+		// filter annotations by those agency IDs.
+
+		if ('resources' in userAnnotationPermissions && 'agency_ids' in userAnnotationPermissions.resources) {
+			if (!userAnnotationPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+				queryFilters.agency_ids = { $in: userAnnotationPermissions.resources['agency_ids'] };
+			}
+		}
+
+		//
+		// Fetch annotations based on query filters
+
+		const allAnnotations = await annotations.findMany(queryFilters, { sort: { created_at: -1 } });
 
 		return reply.send({ data: allAnnotations, error: null, statusCode: HttpStatus.OK });
 
@@ -106,10 +166,30 @@ export class AnnotationsController {
 		if (!annotationData) throw new HttpException(HttpStatus.NOT_FOUND, 'Annotation not found');
 
 		//
-		// Check if the user has permission to read annotations
+		// Get the resource permissions for annotations for the current user.
 
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.dates.scope, PermissionCatalog.all.dates.actions.read_annotations)) {
+		const userAnnotationPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.annotations.scope, PermissionCatalog.all.annotations.actions.read);
+
+		//
+		// If no permission found, deny access
+
+		if (!userAnnotationPermissions) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read annotations');
+		}
+
+		//
+		// Validate that user has permission for at least one of this annotation's agencies
+
+		const hasPermissionForAnyAgency = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.annotations.actions.read,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.annotations.scope,
+			value: annotationData.agency_ids,
+		});
+
+		if (!hasPermissionForAnyAgency) {
+			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read this annotation');
 		}
 
 		//
@@ -129,7 +209,7 @@ export class AnnotationsController {
 	 * @param request Fastify request containing annotation ID in params
 	 * @param reply Fastify reply
 	 */
-	static async toggleLockById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Annotation>) {
+	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Annotation>) {
 		//
 
 		//
@@ -140,28 +220,38 @@ export class AnnotationsController {
 		if (!annotationData) throw new HttpException(HttpStatus.NOT_FOUND, 'Annotation not found');
 
 		//
-		// Check if the user has permission to toggle lock the Annotation
+		// Get the resource permissions for annotations for the current user.
 
-		const hasPermissionToggleLockAnnotation = PermissionCatalog.hasPermissionResource({
-			action: PermissionCatalog.all.dates.actions.lock_annotations,
+		const userAnnotationPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.annotations.scope, PermissionCatalog.all.annotations.actions.lock);
+
+		//
+		// If no permission found, deny access
+
+		if (!userAnnotationPermissions) {
+			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to lock/unlock annotations');
+		}
+
+		//
+		// Validate that user has permission for ALL of this annotation's agencies
+
+		const hasPermissionForAllAgencies = PermissionCatalog.hasPermissionResourceAll({
+			action: PermissionCatalog.all.annotations.actions.lock,
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.dates.scope,
+			scope: PermissionCatalog.all.annotations.scope,
 			value: annotationData.agency_ids,
 		});
 
-		if (!hasPermissionToggleLockAnnotation) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: toggle lock annotation');
+		if (!hasPermissionForAllAgencies) {
+			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: toggle lock annotation. You must have permission for all agencies involved.');
+		}
 
-		//
-		// Toggle the lock status of the annotation
+		// If authorized, toggle the lock status of the annotation
+		await annotations.toggleLockById(request.params.id);
+		const foundAnnotation = await annotations.findById(request.params.id);
+		if (!foundAnnotation) throw new HttpException(HttpStatus.NOT_FOUND, 'Annotation not found');
 
-		const result = await annotations.updateById(annotationData._id, { is_locked: !annotationData.is_locked });
-
-		return reply.send({
-			data: result,
-			error: null,
-			statusCode: HttpStatus.OK,
-		});
+		return reply.send({ data: foundAnnotation, error: null, statusCode: HttpStatus.OK });
 
 		//
 	}
@@ -182,10 +272,30 @@ export class AnnotationsController {
 		if (!annotationData) throw new HttpException(HttpStatus.NOT_FOUND, 'Annotation not found');
 
 		//
-		// Check if the user has permission to update annotations
+		// Get the resource permissions for annotations for the current user.
 
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.dates.scope, PermissionCatalog.all.dates.actions.update_annotations)) {
+		const userAnnotationPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.annotations.scope, PermissionCatalog.all.annotations.actions.update);
+
+		//
+		// If no permission found, deny access
+
+		if (!userAnnotationPermissions) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update annotations');
+		}
+
+		//
+		// Validate that user has permission for ALL of this annotation's agencies
+
+		const hasPermissionForAllAgencies = PermissionCatalog.hasPermissionResourceAll({
+			action: PermissionCatalog.all.annotations.actions.update,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.annotations.scope,
+			value: annotationData.agency_ids,
+		});
+
+		if (!hasPermissionForAllAgencies) {
+			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update this annotation. You must have permission for all agencies involved.');
 		}
 
 		//

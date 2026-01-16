@@ -13,12 +13,11 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint .",
+		"lint": "eslint . --fix && tsc --noEmit",
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
 		"@carrismetropolitana/api-types": "20251128.1928.11",
-		"@tmlmobilidade/writers": "*",
 		"@tmlmobilidade/connectors": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",
@@ -27,6 +26,7 @@
 		"@tmlmobilidade/sqlite": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
+		"@tmlmobilidade/writers": "*",
 		"csv-parse": "6.1.0",
 		"extract-zip": "2.0.1",
 		"gtfs-types": "5.1.0",

@@ -24,20 +24,18 @@ export function VehiclesListFilterAgencies() {
 		const defaultValues = agenciesContext.data.raw.map(item => item._id);
 		const enabledValues = vehiclesListContext.filters.agency;
 		// Check if the arrays are equal by quickly comparing their lengths
-		if (defaultValues.length !== enabledValues.length) return true;
+		if (defaultValues.length !== enabledValues.value.length) return true;
 		// If the length is the same ensure they're equal by also
 		// checking if every item in one array is included in the other.
-		return !defaultValues.every(item => enabledValues.includes(item));
+		return !defaultValues.every(item => enabledValues.value.includes(item));
 	}, [vehiclesListContext.filters.agency, agenciesContext.data.raw]);
-
-	//
 
 	const parsedOptions = useMemo(() => {
 		// Skip if options are not provided or are empty.
 		if (!agenciesContext.data.raw?.length) return [];
 		// Parse options to the expected format.
 		return agenciesContext.data.raw.map(item => ({
-			checked: vehiclesListContext.filters.agency.includes(item._id),
+			checked: vehiclesListContext.filters.agency.value.includes(item._id),
 			label: item.name,
 			value: item._id,
 		}));
@@ -50,7 +48,7 @@ export function VehiclesListFilterAgencies() {
 		<FilterTypeList
 			active={isActive}
 			label="Operadores"
-			onChange={vehiclesListContext.actions.setFilterAgency}
+			onChange={vehiclesListContext.filters.agency.set}
 			options={parsedOptions}
 			withToggleAll
 		/>

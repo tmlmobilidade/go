@@ -9,7 +9,7 @@ import { z } from 'zod';
 /* * */
 
 export const SamSchema = DocumentSchema
-	.omit({ is_locked: true })
+	.omit({ created_by: true, is_locked: true, updated_by: true })
 	.extend({
 		_id: z.number(),
 		agency_id: z.string(),
@@ -25,7 +25,7 @@ export const SamSchema = DocumentSchema
 	});
 
 export const CreateSamSchema = SamSchema.omit({ created_at: true, updated_at: true });
-export const UpdateSamSchema = CreateSamSchema.omit({ created_by: true }).partial();
+export const UpdateSamSchema = CreateSamSchema.partial();
 
 /**
  * SAMs are the chips that contain the keys used to sign APEX transactions.

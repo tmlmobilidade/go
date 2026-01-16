@@ -19,12 +19,13 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint .",
+		"lint": "eslint . --fix && tsc --noEmit",
 		"lint:fix": "eslint . --fix",
 		"start": "tsc && resolve-tspaths && node dist/index.js"
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",

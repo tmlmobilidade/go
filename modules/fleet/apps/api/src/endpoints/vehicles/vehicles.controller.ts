@@ -15,40 +15,28 @@ export class VehiclesController {
 	 * @param request Fastify request containing vehicle data
 	 * @param reply Fastify reply
 	 */
-	static async create(request: FastifyRequest<{ Body: CreateVehicleDto | CreateVehicleDto[] }>, reply: FastifyReply<Vehicle>) {
-		// Permission check
-		if (
-			!PermissionCatalog.hasPermission(
-				request.permissions,
-				PermissionCatalog.all.vehicles.scope,
-				PermissionCatalog.all.vehicles.actions.create,
-			)
-		) {
+	static async create(request: FastifyRequest<{ Body: CreateVehicleDto }>, reply: FastifyReply<Vehicle>) {
+		//
+
+		//
+		// Check if the user has permission to create vehicles
+
+		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.create)) {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create vehicles');
 		}
 
-		// Normalize input to array
-		const vehiclesToInsert = Array.isArray(request.body)
-			? request.body
-			: [request.body];
+		//
+		// Create the new vehicle
 
-		// 🔥 ALWAYS use insertMany
-		const result = await vehicles.insertMany(vehiclesToInsert);
+		const newVehicle = await vehicles.insertOne(request.body);
 
-		// Mongo native → normalize response
-		const createdVehicles = vehiclesToInsert.map((v, i) => ({
-			...v,
-			_id: result.insertedIds[i],
-		}));
+		//
+		// Send the response
 
-		reply.status(HttpStatus.OK).send({
-			data: createdVehicles,
-			error: null,
-			statusCode: HttpStatus.OK,
-		});
+		reply.send({ data: newVehicle, error: null, statusCode: HttpStatus.OK });
+
+		//
 	}
-
-	//
 
 	/**
 	 * Deletes an vehicle by ID

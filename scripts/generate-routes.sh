@@ -69,14 +69,47 @@ scan_frontend_routes() {
         # Remove route groups like (authenticated) - handle them anywhere in the path
         dir_path=$(echo "$dir_path" | sed -E 's|\([^)]+\)/||g' | sed -E 's|/\([^)]+\)||g' | sed -E 's|^\([^)]+\)$||' | sed 's|^/||')
         
-        # Check if path contains [id] (detail route)
-        if [[ "$dir_path" == *"[id]"* ]]; then
-            # Extract base path before [id]
-            local base_path=$(echo "$dir_path" | sed 's|/\[id\].*||' | sed 's|\[id\].*||')
-            if [ -z "$base_path" ]; then
-                # Handle case where [id] is the directory name itself
-                base_path=$(echo "$dir_path" | sed 's|\[id\]||g' | sed 's|/$||')
+        # Check if path contains any dynamic parameters (e.g., [id], [routeId], etc.)
+        if [[ "$dir_path" =~ \[([a-zA-Z][a-zA-Z0-9]*)\] ]]; then
+            # Extract all dynamic parameters and their positions
+            local temp_path="$dir_path"
+            local base_path=""
+            local route_params=""
+            local param_names=()
+            local path_segments=()
+            
+            # Split path by dynamic parameters and reconstruct
+            while [[ "$temp_path" =~ ^([^\[]*)\[([a-zA-Z][a-zA-Z0-9]*)\](.*)$ ]]; do
+                local before="${BASH_REMATCH[1]}"
+                local param="${BASH_REMATCH[2]}"
+                local after="${BASH_REMATCH[3]}"
+                
+                # Clean up 'before' part: remove leading/trailing slashes
+                before=$(echo "$before" | sed 's|^/||' | sed 's|/$||')
+                
+                # Add the part before the parameter to path_segments if not empty
+                if [ -n "$before" ]; then
+                    path_segments+=("$before")
+                fi
+                
+                # Store parameter name
+                param_names+=("$param")
+                
+                # Continue with the rest
+                temp_path="$after"
+            done
+            
+            # Add any remaining path after last parameter
+            temp_path=$(echo "$temp_path" | sed 's|^/||' | sed 's|/$||')
+            if [ -n "$temp_path" ]; then
+                path_segments+=("$temp_path")
             fi
+            
+            # Build base_path from segments
+            if [ ${#path_segments[@]} -gt 0 ]; then
+                base_path=$(IFS=/; echo "${path_segments[*]}")
+            fi
+            
             # Remove any remaining route groups from base_path
             base_path=$(echo "$base_path" | sed -E 's|\([^)]+\)/||g' | sed -E 's|/\([^)]+\)||g' | sed -E 's|^\([^)]+\)$||')
             # Remove module name prefix if it exists (e.g., "alerts/alerts" -> "alerts", or "alerts" -> "")
@@ -85,18 +118,37 @@ scan_frontend_routes() {
             if [ "$base_path" = "$module_name" ]; then
                 base_path=""
             fi
-            # Generate route name: use module_name if base_path is empty, otherwise use base_path
-            if [ -z "$base_path" ]; then
+            
+            # Build route_params from param_names
+            for param in "${param_names[@]}"; do
+                if [ -z "$route_params" ]; then
+                    route_params="\${${param}}"
+                else
+                    route_params="${route_params}/\${${param}}"
+                fi
+            done
+            
+            # Generate route name based on base_path and parameter names
+            # For nested routes (multiple params), use the last param name to create unique route name
+            if [ ${#param_names[@]} -gt 1 ]; then
+                # Multiple params - use the last parameter name to differentiate
+                # e.g., lines/[id]/[routeId] -> use "routeId" to make ROUTES_DETAIL
+                local last_param="${param_names[${#param_names[@]}-1]}"
+                # Convert camelCase param to separate words (e.g., routeId -> route)
+                # Extract the main noun from the parameter (before 'Id' if present)
+                local param_noun=$(echo "$last_param" | sed 's/Id$//' | sed 's/\([A-Z]\)/_\1/g' | sed 's/^_//')
+                local route_name=$(to_snake_case "${param_noun}_DETAIL")
+            elif [ -z "$base_path" ]; then
                 local route_name=$(to_snake_case "${module_name}_DETAIL")
             else
                 local route_name=$(to_snake_case "${base_path}_DETAIL")
             fi
             route_name=$(sanitize_route_name "$route_name")
-            # Build route path: always remove module prefix for PAGE routes
+            # Build route path with all parameters
             if [ -z "$base_path" ]; then
-                local route_path="/\${id}"
+                local route_path="/${route_params}"
             else
-                local route_path="/${base_path}/\${id}"
+                local route_path="/${base_path}/${route_params}"
             fi
             routes+=("${route_name}:${route_path}")
         else
@@ -511,11 +563,23 @@ generate_routes_for_type() {
                 # Remove leading slash from route_path for concatenation
                 clean_frontend_path=$(echo "$route_path" | sed 's|^/||')
                 
-                # Check if it's a detail route (contains ${id})
-                if [[ "$route_path" == *"\${id}"* ]] || [[ "$route_path" == *'${id}'* ]]; then
+                # Extract all parameters from the route path (e.g., ${id}, ${routeId})
+                route_params=$(echo "$route_path" | grep -oE '\$\{[a-zA-Z][a-zA-Z0-9]*\}' | sed 's/[${}]//g' | sort -u)
+                
+                # Check if route contains any parameters
+                if [ -n "$route_params" ]; then
+                    # Build function parameters string
+                    function_params=""
+                    for param in $route_params; do
+                        if [ -z "$function_params" ]; then
+                            function_params="${param}: string"
+                        else
+                            function_params="${function_params}, ${param}: string"
+                        fi
+                    done
                     # Convert to function format with getAppConfig
-                    clean_path=$(echo "$clean_frontend_path" | sed 's|\\${id}|${id}|g' | sed "s|\${id}|\${id}|g")
-                    echo "		${route_name}: (id: string) => \`\${getAppConfig('${module_name}', 'frontend_url')}/${clean_path}\`," >> "$output_file"
+                    clean_path=$(echo "$clean_frontend_path" | sed 's|\\${\([^}]*\)}|${\1}|g')
+                    echo "		${route_name}: (${function_params}) => \`\${getAppConfig('${module_name}', 'frontend_url')}/${clean_path}\`," >> "$output_file"
                 else
                     # Regular string route with getAppConfig
                     # Handle root route (empty path) - use frontend_url directly without trailing slash

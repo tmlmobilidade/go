@@ -12,6 +12,7 @@ export type UnixTimestamp = number & {
 };
 
 export const UnixTimeStampSchema = z
+	.coerce
 	.number()
 	.transform(validateUnixTimestamp);
 

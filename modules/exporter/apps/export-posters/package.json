@@ -13,11 +13,10 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint .",
+		"lint": "eslint . --fix && tsc --noEmit",
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/writers": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/import-gtfs": "*",
 		"@tmlmobilidade/interfaces": "*",
@@ -25,6 +24,7 @@
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
+		"@tmlmobilidade/writers": "*",
 		"gtfs-types": "5.1.0",
 		"papaparse": "5.5.3"
 	},

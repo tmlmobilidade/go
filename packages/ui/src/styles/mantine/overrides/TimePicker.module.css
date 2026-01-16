@@ -1,0 +1,13 @@
+/* * */
+/* INPUT */
+
+.input {
+	overflow: hidden;
+}
+
+/* * */
+/* WRAPPER */
+
+.wrapper {
+	min-width: 0;
+}

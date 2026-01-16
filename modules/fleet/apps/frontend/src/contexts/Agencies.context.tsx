@@ -2,7 +2,6 @@
 
 /* * */
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Agency } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -45,7 +44,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<Agency[], Error>(API_ROUTES.auth.AGENCIES_LIST);
 
 	//
-	// B. Fetch data
+	// B. Define context value
 
 	const labelAgency = (agencyId: string | undefined) => {
 		if (!agencyId || !allAgenciesData || allAgenciesData.length === 0) return '-';
@@ -56,9 +55,6 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 
 		return `${agency._id} - ${agency.name}`;
 	};
-
-	//
-	// B. Define context value
 
 	const contextValue: AgenciesContextState = useMemo(() => ({
 		action: {
@@ -75,7 +71,6 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 		allAgenciesData,
 		allAgenciesError,
 		allAgenciesLoading,
-		labelAgency,
 	]);
 
 	//

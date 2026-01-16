@@ -6,5 +6,5 @@ import { redirect } from 'next/navigation';
 /* * */
 
 export default function Page() {
-	redirect(PAGE_ROUTES.dates.ANNOTATIONS_LIST);
+	redirect(PAGE_ROUTES.dates.CALENDAR_LIST);
 }

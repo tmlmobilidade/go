@@ -40,23 +40,23 @@ jobs:
           script: |
             const fs = require('fs');
             const path = require('path');
-            
+
             const packagesDir = 'packages';
             const packages = [];
-            
+
             // Get all directories in packages/
             const entries = fs.readdirSync(packagesDir, { withFileTypes: true });
-            
+
             for (const entry of entries) {
               if (!entry.isDirectory()) continue;
-              
+
               const packagePath = path.join(packagesDir, entry.name, 'package.json');
-              
+
               if (!fs.existsSync(packagePath)) continue;
-              
+
               try {
                 const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
-                
+
                 // Check if package has publishConfig (indicating it should be published)
                 if (packageJson.publishConfig) {
                   packages.push(entry.name);
@@ -65,10 +65,10 @@ jobs:
                 console.warn(`Failed to parse package.json for ${entry.name}:`, error.message);
               }
             }
-            
+
             core.setOutput('packages', JSON.stringify(packages));
             console.log('Packages to publish:', packages);
-            
+
             if (packages.length === 0) {
               console.log('No packages to publish');
             }
@@ -90,7 +90,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-          
+
       - name: Install dependencies
         run: npm install --package-lock-only
 
@@ -103,7 +103,7 @@ jobs:
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
-  
+
   version-number:
     name: 'Version Number'
     runs-on: ubuntu-latest
@@ -115,7 +115,7 @@ jobs:
           echo "version_number=$version" >> "$GITHUB_OUTPUT"
     outputs:
       version_number: ${{ steps.generate-version-number.outputs.version_number }}
-  
+
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
@@ -125,7 +125,7 @@ jobs:
     if: needs.discover-packages.outputs.packages != '[]'
     runs-on: ubuntu-latest
     concurrency:
-      group: publish-${{ matrix.package }}
+      group: publish-${{ matrix.package }}-${{ github.ref }}
       cancel-in-progress: false
     permissions:
       contents: read
@@ -172,7 +172,7 @@ jobs:
         run: |
           PACKAGE_NAME=$(node -p "require('./package.json').name")
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
-          
+
           echo "Publishing ${PACKAGE_NAME}@${PACKAGE_VERSION} to npm"
           npm publish --access public
 

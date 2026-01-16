@@ -1,16 +1,17 @@
 /* * */
 
 import { type GtfsValidation, type Plan, ProcessingStatusSchema } from '@tmlmobilidade/types';
+import { SelectDataItem } from '@tmlmobilidade/ui';
 
 /* * */
 
-export const planValidityStatus = [
+export const planValidityStatusOptions: SelectDataItem[] = [
 	{ label: 'Ativo', value: 'active' },
 	{ label: 'Expirado', value: 'expired' },
 	{ label: 'Agendado', value: 'upcoming' },
 ];
 
-export const planValidityStatusValues = planValidityStatus.map(item => item.value);
+export const planValidityStatusValues = planValidityStatusOptions.map(item => item.value);
 
 /* * */
 

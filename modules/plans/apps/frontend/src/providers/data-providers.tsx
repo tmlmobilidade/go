@@ -1,6 +1,6 @@
 /* * */
 
-import { AgenciesContextProvider } from '@/contexts/Agencies.context';
+import { AgenciesContextProvider } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 
 /* * */

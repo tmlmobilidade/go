@@ -6,7 +6,7 @@ import { PermissionCatalog } from '@tmlmobilidade/types';
 
 export const RESOURCES_OPTIONS = [
 	'AGENCIES',
-	'EMAIL_NOTIFICATIONS',
+	'ALERT_REFERENCE_TYPES',
 ] as const;
 
 export interface PermissionConfigAction {
@@ -38,30 +38,19 @@ const agencyActions: PermissionConfig = {
 	title: 'Permissões de Operadores',
 };
 
-const alertActions: PermissionConfig = {
+const alertsActions: PermissionConfig = {
 	actions: [
-		{ action: 'read', description: 'Permite ver alertas', label: 'Ver' },
-		{ action: 'create', description: 'Permite criar um alerta', label: 'Criar' },
-		{ action: 'update', description: 'Permite editar um alerta', label: 'Editar' },
-		{ action: 'delete', description: 'Permite eliminar um alerta', label: 'Eliminar' },
-		{ action: 'lock', description: 'Permite bloquear/desbloquear um alerta', label: 'Bloquear/Desbloquear' },
+		{ action: 'read', description: 'Permite ver alertas', label: 'Ver', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
+		{ action: 'create', description: 'Permite criar um alerta', label: 'Criar', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
+		{ action: 'update', description: 'Permite editar um alerta', label: 'Editar', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
+		{ action: 'delete', description: 'Permite eliminar um alerta', label: 'Eliminar', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
+		{ action: 'update_texts', description: 'Permite editar os textos de um alerta', label: 'Editar Textos', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
+		{ action: 'update_dates', description: 'Permite alterar as datas de um alerta', label: 'Alterar Datas', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
+		{ action: 'update_publish_status', description: 'Permite alterar o estado de publicação de um alerta', label: 'Alterar Estado de Publicação', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de alertas.',
-	scope: PermissionCatalog.all.alerts_scheduled.scope,
+	scope: PermissionCatalog.all.alerts.scope,
 	title: 'Permissões de Alertas',
-};
-
-const realtimeActions: PermissionConfig = {
-	actions: [
-		{ action: 'read', description: 'Permite ver alertas de tempo real', label: 'Ver', resources: ['AGENCIES'] },
-		{ action: 'create', description: 'Permite criar um alerta de tempo real', label: 'Criar', resources: ['AGENCIES'] },
-		{ action: 'update', description: 'Permite editar um alerta de tempo real', label: 'Editar', resources: ['AGENCIES'] },
-		{ action: 'delete', description: 'Permite eliminar um alerta de tempo real', label: 'Eliminar', resources: ['AGENCIES'] },
-		{ action: 'lock', description: 'Permite bloquear/desbloquear um alerta de tempo real', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
-	],
-	description: 'As ações que o utilizador pode realizar na gestão de alertas de tempo real.',
-	scope: PermissionCatalog.all.alerts_realtime.scope,
-	title: 'Permissões de Alertas de Tempo Real',
 };
 
 const homeActions: PermissionConfig = {
@@ -219,17 +208,95 @@ const performanceActions: PermissionConfig = {
 	title: 'Permissões do Performance Explorer',
 };
 
-const datesActions: PermissionConfig = {
+const annotationsActions: PermissionConfig = {
 	actions: [
-		{ action: 'read_annotations', description: 'Permite ver anotações', label: 'Ver anotações', resources: ['AGENCIES'] },
-		{ action: 'create_annotations', description: 'Permite criar uma anotação', label: 'Criar anotação', resources: ['AGENCIES'] },
-		{ action: 'update_annotations', description: 'Permite editar uma anotação', label: 'Editar anotação', resources: ['AGENCIES'] },
-		{ action: 'delete_annotations', description: 'Permite eliminar uma anotação', label: 'Eliminar anotação', resources: ['AGENCIES'] },
-		{ action: 'lock_annotations', description: 'Permite bloquear/desbloquear uma anotação', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+		{ action: 'read', description: 'Permite ver anotações', label: 'Ver anotações', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar uma anotação', label: 'Criar anotação', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar uma anotação', label: 'Editar anotação', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar uma anotação', label: 'Eliminar anotação', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear uma anotação', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
 	],
-	description: 'As ações que o utilizador pode realizar na gestão de datas.',
-	scope: PermissionCatalog.all.dates.scope,
-	title: 'Permissões de Datas',
+	description: 'As ações que o utilizador pode realizar na gestão de anotações.',
+	scope: PermissionCatalog.all.annotations.scope,
+	title: 'Permissões de Anotações',
+};
+
+const periodsActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver períodos', label: 'Ver períodos', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar um período', label: 'Criar período', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar um período', label: 'Editar período', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar um período', label: 'Eliminar período', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear um período', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de períodos.',
+	scope: PermissionCatalog.all.periods.scope,
+	title: 'Permissões de Períodos',
+};
+
+const faresActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver tarifas', label: 'Ver tarifas', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar uma tarifa', label: 'Criar tarifa', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar uma tarifa', label: 'Editar tarifa', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar uma tarifa', label: 'Eliminar tarifa', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear uma tarifa', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de tarifas.',
+	scope: PermissionCatalog.all.fares.scope,
+	title: 'Permissões de Tarifas',
+};
+
+const zonesActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver zonas', label: 'Ver zonas', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar uma zona', label: 'Criar zona', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar uma zona', label: 'Editar zona', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar uma zona', label: 'Eliminar zona', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear uma zona', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de zonas.',
+	scope: PermissionCatalog.all.zones.scope,
+	title: 'Permissões de Zonas',
+};
+
+const typologiesActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver tipologias', label: 'Ver tipologias', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar uma tipologia', label: 'Criar tipologia', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar uma tipologia', label: 'Editar tipologia', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar uma tipologia', label: 'Eliminar tipologia', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear uma tipologia', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de tipologias.',
+	scope: PermissionCatalog.all.typologies.scope,
+	title: 'Permissões de Tipologias',
+};
+
+const fleetActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver veículos', label: 'Ver veículos', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar um veículo', label: 'Criar veículo', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar um veículo', label: 'Editar veículo', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar um veículo', label: 'Eliminar veículo', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear um veículo', label: 'Bloquear/Desbloquear veículo', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de veículos.',
+	scope: PermissionCatalog.all.vehicles.scope,
+	title: 'Permissões de Veículos',
+};
+
+const linesActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver linhas', label: 'Ver linhas', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar uma linha', label: 'Criar linha', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar uma linha', label: 'Editar linha', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar uma linha', label: 'Eliminar linha', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear uma linha', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de linhas.',
+	scope: PermissionCatalog.all.lines.scope,
+	title: 'Permissões de Linhas',
 };
 
 const fleetActions: PermissionConfig = {
@@ -249,8 +316,7 @@ const fleetActions: PermissionConfig = {
 
 export const permissionsConfig = [
 	agencyActions,
-	alertActions,
-	realtimeActions,
+	alertsActions,
 	homeActions,
 	planActions,
 	userActions,
@@ -260,8 +326,14 @@ export const permissionsConfig = [
 	stopActions,
 	rideActions,
 	performanceActions,
-	datesActions,
 	fleetActions,
+	fleetActions,
+	annotationsActions,
+	periodsActions,
+	faresActions,
+	zonesActions,
+	typologiesActions,
+	linesActions,
 	// topicActions,
 	// proposedChangesActions,
 ];

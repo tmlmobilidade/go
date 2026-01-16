@@ -9,7 +9,7 @@ export function AgencySelect({ description, label, onChange, readOnly, selected 
 	const agencyListContext = useAgenciesContext();
 
 	const agencyOptions = agencyListContext.data.raw.map(agency => ({
-		label: agencyListContext.action.labelAgency(agency._id),
+		label: `${agency._id} - ${agency.name}`,
 		value: agency._id,
 	}));
 

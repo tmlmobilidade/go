@@ -2,7 +2,6 @@
 
 import { Line } from '@carrismetropolitana/api-types/network';
 import { Skeleton } from '@mantine/core';
-;
 
 import styles from './styles.module.css';
 
@@ -35,11 +34,11 @@ export function LineDisplay({ color, lineData, longName, shortName, size = 'md',
 		);
 	}
 
-	if (longName && shortName && color && textColor) {
+	if ((longName || shortName) && color && textColor) {
 		return (
 			<div className={styles.container}>
-				<LineBadge color={color} shortName={shortName} size={size} textColor={textColor} />
-				<LineName longName={longName} />
+				{shortName && <LineBadge color={color} shortName={shortName} size={size} textColor={textColor} />}
+				{longName && <LineName longName={longName} />}
 			</div>
 		);
 	}

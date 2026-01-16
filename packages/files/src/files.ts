@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-extraneous-class */
-
 /* * */
 
 import { fetchZipFromUrl, isBrowser, normalizeFileContent, readZipFromFile } from '@/utils.js';
 import { mimeTypes } from '@tmlmobilidade/consts';
 import JSZip from 'jszip';
-import papaparse, { ParseConfig } from 'papaparse';
+import papaparse, { type ParseConfig } from 'papaparse';
 
 /* * */
 
@@ -22,23 +20,32 @@ export class Files {
 	//
 
 	/**
-     * Blob to JS File
+     * Converts a Blob to a File.
+	 * @param blob The Blob object to convert.
+	 * @param fileName The name of the resulting File.
+	 * @returns The resulting File.
      */
 	static blobToFile(blob: Blob, fileName: string): File {
 		return new File([blob], fileName);
 	}
 
+	/**
+	 * Returns the file extension from a file name.
+	 * @param fileName The name of the file.
+	 * @returns The file extension.
+	 * @throws Error if the file has no extension or if the extension is not supported.
+	 */
 	static getFileExtension(fileName: string): string {
-		const extension = fileName.split('.').pop();
-		if (!extension) {
-			throw new Error('File has no extension');
-		}
-
+		// Extract the file extension from the file name.
+		const extension = fileName.split('.').pop().toLowerCase();
+		// Throw an error if the file has no extension
+		// or if the extension is not supported.
+		if (!extension) throw new Error('File has no extension');
+		// Get the MIME type for the extension.
 		const mimeType = mimeTypes[extension];
-		if (!mimeType) {
-			throw new Error(`Unsupported file extension: ${extension}`);
-		}
-
+		// Throw an error if the extension is not supported.
+		if (!mimeType) throw new Error(`Unsupported file extension: ${extension}`);
+		// Return the file extension.
 		return extension;
 	}
 
@@ -54,6 +61,11 @@ export class Files {
 		return extension;
 	}
 
+	/**
+	 * Gets the MIME type from a file extension.
+	 * @param fileName The name of the file to get the MIME type for.
+	 * @returns The MIME type.
+	 */
 	static getMimeTypeFromFileExtension(fileName: string): string {
 		const extension = Files.getFileExtension(fileName);
 		return mimeTypes[extension];
@@ -61,11 +73,11 @@ export class Files {
 
 	/**
 	 * Parses a CSV string into an array of objects using PapaParse.
-	 * @param csvString - The CSV string to parse
-	 * @param options - Parse configuration options
-	 * @param options.header - Whether to interpret first row as field names. Defaults to true.
-	 * @param options.skipEmptyLines - Whether to skip empty lines in the CSV. Defaults to true.
-	 * @param options.rest - Additional PapaParse configuration options
+	 * @param csvString The CSV string to parse
+	 * @param options Parse configuration options
+	 * @param options.header Whether to interpret first row as field names. Defaults to true.
+	 * @param options.skipEmptyLines Whether to skip empty lines in the CSV. Defaults to true.
+	 * @param options.rest Additional PapaParse configuration options
 	 * @returns Promise resolving to array of parsed objects
 	 * @throws Error if parsing fails with details of parsing errors
 	 */
@@ -81,32 +93,24 @@ export class Files {
 
 	/**
 	 * Reads and extracts a single file from a ZIP archive.
-	 * @param zipFilePath - The ZIP file to read from, can be a File object (browser), string path (Node.js), or URL
-	 * @param fileName - The name of the file to extract from the ZIP
-	 * @param encoding - The encoding to use when reading the file. See JSZip documentation for supported formats.
+	 * @param zipFilePath The zip file to read from, can be a File object (browser), string path (Node.js), or URL
+	 * @param fileName The name of the file to extract from the ZIP
+	 * @param encoding The encoding to use when reading the file. See JSZip documentation for supported formats.
 	 * @returns A Promise resolving to the file contents in the specified encoding
 	 * @throws Error if the file is not found in the ZIP
 	 */
-	static async readFileFromZip<T extends Parameters<JSZip.JSZipObject['async']>[0]>(
-		zipFilePath: File | string | URL,
-		fileName: string,
-		encoding: T,
-	): Promise<ReturnType<JSZip.JSZipObject['async']> extends Promise<infer R> ? R : never> {
+	static async readFileFromZip<T extends Parameters<JSZip.JSZipObject['async']>[0]>(zipFilePath: File | string | URL, fileName: string, encoding: T): Promise<ReturnType<JSZip.JSZipObject['async']> extends Promise<infer R> ? R : never> {
 		const zip = await Files.unzip(zipFilePath);
-
 		const file = zip.file(fileName);
-		if (!file) {
-			throw new Error(`File ${fileName} not found in ZIP`);
-		}
-
+		if (!file) throw new Error(`File ${fileName} not found in the zip archive.`);
 		return await file.async(encoding);
 	}
 
 	/**
-     * Unzips a ZIP file from a File (browser), string path (Node.js), or URL.
-     * @param zipFilePath The path, URL, or File object representing the ZIP file to extract.
-     * @returns A Promise that resolves to a JSZip instance representing the unzipped contents.
-     */
+	 * Unzips a ZIP file from a File (browser), string path (Node.js), or URL.
+	 * @param zipFilePath The path, URL, or File object representing the ZIP file to extract.
+	 * @returns A Promise that resolves to a JSZip instance representing the unzipped contents.
+	 */
 	static async unzip(zipFilePath: File | string | URL): Promise<JSZip> {
 		try {
 			let data: ArrayBuffer | null = null;
@@ -147,23 +151,19 @@ export class Files {
 	}
 
 	/**
-     * Updates a CSV string with an object.
-     * @param csvString - The CSV string to update
-     * @param column - The column name to update
-     * @param row - The row index to update
-     * @param value - The value to update the column with
-     * @returns A Promise resolving to the updated CSV string
-     */
+	 * Updates a CSV string with an object.
+	 * @param csvString The CSV string to update
+	 * @param column The column name to update
+	 * @param row The row index to update
+	 * @param value The value to update the column with
+	 * @returns A Promise resolving to the updated CSV string
+	 */
 	static async updateCsvField<T>(params: UpdateCsvFieldParams[]): Promise<string> {
 		let csv = params[0].csvString;
 
 		for (const param of params) {
-			const { column, rowIndex, value } = param;
-
 			const data = await this.parseCsv<T>(csv, { header: true });
-
-			const updatedData = data.map((row, index) => (index === rowIndex ? { ...row, [column]: value } : row));
-
+			const updatedData = data.map((row, index) => (index === param.rowIndex ? { ...row, [param.column]: param.value } : row));
 			csv = papaparse.unparse(updatedData, { header: true });
 		}
 
@@ -171,10 +171,10 @@ export class Files {
 	}
 
 	/**
-     * Zips multiple files into a ZIP archive.
-     * @param files An object where keys are filenames and values are either File (browser) or Buffer/Uint8Array (Node.js).
-     * @returns A Promise resolving to a Uint8Array representing the ZIP file content.
-     */
+	 * Zips multiple files into a ZIP archive.
+	 * @param files An object where keys are filenames and values are either File (browser) or Buffer/Uint8Array (Node.js).
+	 * @returns A Promise resolving to a Uint8Array representing the ZIP file content.
+	 */
 	static async zip(files: Record<string, Buffer | File | Uint8Array>): Promise<Uint8Array> {
 		try {
 			const zip = new JSZip();

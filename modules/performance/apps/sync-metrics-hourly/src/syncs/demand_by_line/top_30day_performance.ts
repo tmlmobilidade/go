@@ -1,7 +1,7 @@
 /* * */
 
-import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { Dates } from '@tmlmobilidade/dates';
+import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';

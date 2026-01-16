@@ -1,9 +1,8 @@
 /* * */
 
 import { openCreateVehicleModal } from '@/components/Vehicles/create/VehicleCreate.modal';
-import { openImportVehicleModal } from '@/components/Vehicles/import/VehicleImport.modal';
 import { useVehiclesListContext } from '@/components/Vehicles/list/VehiclesList.context';
-import { IconPlus, IconUpload } from '@tabler/icons-react';
+import { IconPlus } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Button, HasPermission, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 

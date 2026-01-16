@@ -2,9 +2,9 @@
 
 import { type ImportGtfsContext } from '@/types.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
-import { type GTFS_Stop_Extended_Raw, validateGtfsStopExtended } from '@tmlmobilidade/types';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { type GTFS_Stop_Extended_Raw, validateGtfsStopExtended } from '@tmlmobilidade/types';
 
 /**
  * Processes the stops.txt file from the GTFS dataset.

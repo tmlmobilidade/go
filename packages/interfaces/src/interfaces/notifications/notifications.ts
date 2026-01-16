@@ -5,7 +5,7 @@ import { roles } from '@/interfaces/auth/roles.js';
 import { users } from '@/interfaces/auth/users.js';
 import { getAppConfig } from '@tmlmobilidade/consts';
 import { sendNotificationEmail } from '@tmlmobilidade/emails';
-import { CreateNotificationDto, Notification, NotificationPermission, NotificationSchema, Permission, Role, UpdateNotificationDto, UpdateNotificationSchema, User } from '@tmlmobilidade/types';
+import { type CreateNotificationDto, CreateNotificationSchema, type Notification, NotificationPermission, Permission, Role, UpdateNotificationDto, UpdateNotificationSchema, User } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
@@ -14,7 +14,7 @@ import { z } from 'zod';
 
 class NotificationsClass extends MongoCollectionClass<Notification, CreateNotificationDto, UpdateNotificationDto> {
 	private static _instance: NotificationsClass;
-	protected override createSchema: z.ZodSchema = NotificationSchema;
+	protected override createSchema: z.ZodSchema = CreateNotificationSchema;
 	protected override updateSchema: z.ZodSchema = UpdateNotificationSchema;
 
 	private constructor() {
@@ -103,10 +103,6 @@ class NotificationsClass extends MongoCollectionClass<Notification, CreateNotifi
 		return 'notifications';
 	}
 
-	protected getCreateSchema(): z.ZodSchema {
-		return NotificationSchema;
-	}
-
 	protected getEnvName(): string {
 		return 'DATABASE_URI';
 	}
@@ -145,5 +141,7 @@ class NotificationsClass extends MongoCollectionClass<Notification, CreateNotifi
 		return (permission['resource'] as NotificationPermission)?.send_mail ?? false;
 	}
 }
+
+/* * */
 
 export const notifications = AsyncSingletonProxy(NotificationsClass);

@@ -12,13 +12,14 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"lint": "eslint .",
+		"lint": "eslint . --fix && tsc --noEmit",
 		"lint:fix": "eslint . --fix",
 		"start": "tsx watch src/index.ts"
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
 		"papaparse": "5.5.3"
 	},

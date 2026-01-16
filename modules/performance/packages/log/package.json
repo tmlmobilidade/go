@@ -14,7 +14,7 @@
 		"build": "tsc && resolve-tspaths",
 		"calculate-runtime": "node src/calculate-total-runtime.js",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint .",
+		"lint": "eslint . --fix && tsc --noEmit",
 		"lint:fix": "eslint . --fix",
 		"test": "tsx ./src/tests/index.ts"
 	}

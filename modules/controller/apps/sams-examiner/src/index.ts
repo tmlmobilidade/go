@@ -70,22 +70,22 @@ async function main() {
 
 				const aggregationTimer = new Timer();
 
-				const searchTimestampStart = Dates
+				let searchTimestampStart = Dates
 					.now('Europe/Lisbon')
 					.startOf('day')
-					.set({ day: 8, hour: 4, minute: 0, month: 12, year: 2025 });
+					.set({ day: 1, hour: 4, minute: 0, month: 1, year: 2025 });
 
-				// if (samData.agency_id === '41' || samData.agency_id === '42' || samData.agency_id === '43') {
-				// 	searchTimestampStart = Dates
-				// 		.now('Europe/Lisbon')
-				// 		.startOf('day')
-				// 		.set({ day: 22, hour: 4, minute: 0, month: 8, year: 2025 });
-				// }
+				if (samData.agency_id === '41' || samData.agency_id === '42' || samData.agency_id === '43') {
+					searchTimestampStart = Dates
+						.now('Europe/Lisbon')
+						.startOf('day')
+						.set({ day: 8, hour: 4, minute: 0, month: 12, year: 2025 });
+				}
 
 				const searchTimestampEnd = Dates
 					.now('Europe/Lisbon')
-					.startOf('day')
-					.set({ day: 1, hour: 4, minute: 0, month: 11, year: 2025 });
+					.minus({ days: 1 })
+					.set({ hour: 4, millisecond: 0, minute: 0, second: 0 });
 
 				Logger.divider(`#${counter} [${samData.agency_id}] SAM ${samData._id} | ${searchTimestampStart.iso}[${searchTimestampStart.unix_timestamp}] › ${searchTimestampEnd.iso}[${searchTimestampEnd.unix_timestamp}]`);
 
@@ -182,13 +182,13 @@ async function main() {
 				let currentGroup: SamAnalysis = {
 					apex_version: sortedTransactions[0].apex_version,
 					device_id: sortedTransactions[0].device_id,
-					end_time: sortedTransactions[0].created_at,
+					end_time: sortedTransactions[sortedTransactions.length - 1].created_at,
 					first_transaction_ase_counter_value: sortedTransactions[0].mac_ase_counter_value,
 					first_transaction_id: sortedTransactions[0]._id,
 					first_transaction_type: sortedTransactions[0].transaction_type,
-					last_transaction_ase_counter_value: sortedTransactions[0].mac_ase_counter_value,
-					last_transaction_id: sortedTransactions[0]._id,
-					last_transaction_type: sortedTransactions[0].transaction_type,
+					last_transaction_ase_counter_value: sortedTransactions[sortedTransactions.length - 1].mac_ase_counter_value,
+					last_transaction_id: sortedTransactions[sortedTransactions.length - 1]._id,
+					last_transaction_type: sortedTransactions[sortedTransactions.length - 1].transaction_type,
 					start_time: sortedTransactions[0].created_at,
 					transactions_expected: 1,
 					transactions_found: 1,

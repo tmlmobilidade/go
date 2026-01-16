@@ -1,0 +1,86 @@
+/* * */
+/* ROOT */
+
+.root {
+	width: 100%;
+	padding: 6px;
+	padding-right: 10px;
+	cursor: pointer;
+	border-radius: 3px;
+}
+
+/* * */
+/* INNER */
+
+.inner {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+}
+
+/* * */
+/* RADIO (INPUT) */
+
+.radio {
+	cursor: pointer;
+	outline: 2px solid var(--color-system-text-300);
+	background-color: var(--color-system-background-100);
+	border-radius: 50%;
+}
+
+.radio:checked {
+	outline-color: var(--color-secondary);
+	background-color: var(--color-primary);
+}
+
+/* * */
+/* ICON (checked indicator) */
+
+.icon {
+	color: var(--color-contrast);
+}
+
+/* * */
+/* LABEL */
+
+.labelWrapper {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
+	padding-left: 10px;
+}
+
+.label {
+	padding: 0;
+	padding-top: 4px;
+	margin: 0;
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-semibold);
+	line-height: 1;
+	color: var(--color-system-text-100);
+	cursor: pointer;
+}
+
+/* * */
+/* DESCRIPTION */
+
+.description {
+	margin: 0;
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+	line-height: var(--font-line-height);
+	color: var(--color-system-text-200);
+}
+
+/* * */
+/* ERROR */
+
+.error {
+	margin: 0;
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+	line-height: var(--font-line-height);
+	color: var(--color-status-danger-primary);
+}
