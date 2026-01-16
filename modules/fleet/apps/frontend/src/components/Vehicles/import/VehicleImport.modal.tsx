@@ -2,9 +2,9 @@
 
 /* * */
 
-import { VehicleImportContextProvider } from '@/components/Vehicles/import/VehicleImport.context';
+import { VehicleImportContextProvider } from '@/contexts/VehicleImport.context';
 import { DataProviders } from '@/providers/data-providers';
-import { closeModal, openModal } from '@tmlmobilidade/ui';
+import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 import { VehicleImport } from './VehicleImport';
 
@@ -17,17 +17,19 @@ const MODAL_ID = 'import-vehicle-modal';
 export const openImportVehicleModal = () => {
 	openModal({
 		children: (
-			<DataProviders>
-				<VehicleImportContextProvider>
-					<VehicleImport />
-				</VehicleImportContextProvider>
-			</DataProviders>
+			<MeContextProvider>
+				<DataProviders>
+					<VehicleImportContextProvider>
+						<VehicleImport />
+					</VehicleImportContextProvider>
+				</DataProviders>
+			</MeContextProvider>
 		),
 		closeOnClickOutside: false,
 		closeOnEscape: false,
 		modalId: MODAL_ID,
 		padding: 0,
-		size: 'auto',
+		size: 'xl',
 		withCloseButton: false,
 	});
 };

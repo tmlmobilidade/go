@@ -2,15 +2,14 @@
 
 /* * */
 
-import { useVehiclesListContext } from '@/components/Vehicles/list/VehiclesList.context';
 import { VehiclesListFiltersBar } from '@/components/Vehicles/list/VehiclesListFiltersBar';
 import { VehiclesListHeader } from '@/components/Vehicles/list/VehiclesListHeader';
-import { useAgenciesContext } from '@/contexts/Agencies.context';
+import { useVehiclesListContext } from '@/contexts/VehiclesList.context';
 import { VehicleNormalized } from '@/types/normalized';
 import { formatDate } from '@/utils/formatDate';
 import { FormatlLicensePlate } from '@/utils/formatLicencePlate';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, useAgenciesContext } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -37,7 +36,7 @@ export function VehiclesList() {
 		},
 		{
 			accessor: 'agency_id',
-			render: item => <Tag label={agenciesContext.action.labelAgency(item.agency_id)} />,
+			render: item => <Tag label={agenciesContext.data.as_options.find(option => option.value === item.agency_id)?.label ?? ''} />,
 			title: 'Operador',
 			width: 350,
 		},

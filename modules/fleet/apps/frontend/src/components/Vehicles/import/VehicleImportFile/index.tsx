@@ -4,7 +4,7 @@ import { ImportPreview } from '@/components/common/ImportPreview';
 
 /* * */
 
-import { useVehicleImportContext } from '@/components/Vehicles/import/VehicleImport.context';
+import { useVehicleImportContext } from '@/contexts/VehicleImport.context';
 import { AlertMessage, Button, closeModal, Divider, FileUpload, Grid, Label, Section } from '@tmlmobilidade/ui';
 
 /* * */

@@ -1,5 +1,5 @@
-import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { Translations } from '@/lib/translations';
+import { useAgenciesContext } from '@tmlmobilidade/ui';
 
 import { formatDate } from './formatDate';
 
@@ -15,7 +15,7 @@ export function translateFormValue(field: string, value: unknown): string {
 	switch (field) {
 		// Agency
 		case 'agency_id':
-			return AgenciesContext.action.labelAgency(stringValue);
+			return AgenciesContext.data.raw.find(agency => agency._id === stringValue)?.name ?? '-';
 
 		// Boolean fields
 		case 'bikes_allowed':

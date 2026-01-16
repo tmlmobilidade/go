@@ -1,4 +1,4 @@
-import { useVehicleImportContext } from '@/components/Vehicles/import/VehicleImport.context';
+import { useVehicleImportContext } from '@/contexts/VehicleImport.context';
 import { translateFormValue } from '@/utils/translateFormValue';
 import { Divider, Grid, Label, Section, ValueDisplay } from '@tmlmobilidade/ui';
 
