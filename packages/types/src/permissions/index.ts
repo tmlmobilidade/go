@@ -34,7 +34,6 @@ export const PermissionSchema = z.discriminatedUnion('scope', [
 	RolesPermissionSchema,
 	StopsPermissionSchema,
 	UsersPermissionSchema,
-	DatesPermissionSchema,
 	VehiclesPermissionSchema,
 	FaresPermissionSchema,
 	AnnotationsPermissionSchema,

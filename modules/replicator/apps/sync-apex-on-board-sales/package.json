@@ -17,13 +17,13 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/writers": "*",
 		"@tmlmobilidade/go-replicator-pckg-parse": "*",
 		"@tmlmobilidade/go-replicator-pckg-sync": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
+		"@tmlmobilidade/writers": "*",
 		"luxon": "3.7.2"
 	},
 	"devDependencies": {

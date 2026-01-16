@@ -1,7 +1,7 @@
 /* * */
 
-import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { useUsersListContext } from '@/components/users/list/UsersList.context';
+import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

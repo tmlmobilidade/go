@@ -2,9 +2,9 @@
 
 import { type ImportGtfsContext } from '@/types.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
-import { type GTFS_Trip_Extended_Raw, validateGtfsTripExtended } from '@tmlmobilidade/types';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { type GTFS_Trip_Extended_Raw, validateGtfsTripExtended } from '@tmlmobilidade/types';
 
 /**
  * Processes the trips.txt file from the GTFS dataset.

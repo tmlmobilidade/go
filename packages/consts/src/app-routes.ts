@@ -85,17 +85,6 @@ export const PAGE_ROUTES = Object.freeze({
 	},
 
 	/* * */
-	/* OFFER */
-	offer: {
-		// BASE
-		BASE: `${getAppConfig('offer', 'frontend_url')}`,
-
-		// TYPOLOGIES
-		TYPOLOGIES_DETAIL: (id: string) => `${getAppConfig('offer', 'frontend_url')}/typologies/${id}`,
-		TYPOLOGIES_LIST: `${getAppConfig('offer', 'frontend_url')}/typologies`,
-	},
-
-	/* * */
 	/* FLEET */
 	fleet: {
 		// BASE
@@ -104,6 +93,17 @@ export const PAGE_ROUTES = Object.freeze({
 		// VEHICLES
 		VEHICLES_DETAIL: (id: string) => `${getAppConfig('fleet', 'frontend_url')}/vehicles/${id}`,
 		VEHICLES_LIST: `${getAppConfig('fleet', 'frontend_url')}/vehicles`,
+	},
+
+	/* * */
+	/* OFFER */
+	offer: {
+		// BASE
+		BASE: `${getAppConfig('offer', 'frontend_url')}`,
+
+		// TYPOLOGIES
+		TYPOLOGIES_DETAIL: (id: string) => `${getAppConfig('offer', 'frontend_url')}/typologies/${id}`,
+		TYPOLOGIES_LIST: `${getAppConfig('offer', 'frontend_url')}/typologies`,
 	},
 
 	/* * */

@@ -5,7 +5,7 @@
 import { useOrganizationCreateContext } from '@/components/organizations/create/OrganizationCreate.context';
 import { closeCreateOrganizationModal } from '@/components/organizations/create/OrganizationCreate.modal';
 import { IconUpload } from '@tabler/icons-react';
-import { CloseButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
