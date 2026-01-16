@@ -4,6 +4,7 @@ export interface CliOptions {
 	noCleanup?: boolean
 	replicaSet?: boolean
 	storageOnly?: boolean
+	uploadArtifacts?: boolean
 	verbose?: boolean
 }
 
@@ -30,6 +31,9 @@ export function parseArgs(args: string[]): CliOptions {
 				break;
 			case '--storage-only':
 				options.storageOnly = true;
+				break;
+			case '--upload-artifacts':
+				options.uploadArtifacts = true;
 				break;
 			case '--verbose':
 			case '-v':
@@ -64,6 +68,7 @@ MongoDB Backup Strategy:
 OPTIONS
     --db-only             Sync only MongoDB database, skip file sync
     --storage-only        Sync only OCI files, skip database sync
+    --upload-artifacts    Upload backup artifacts to OCI bucket (instead of GitHub artifacts)
     --replica-set         Use replica set sync mode (overrides .env setting)
     --no-replica-set      Disable replica set sync mode (overrides .env setting)
     --no-cleanup          Skip cleanup of old backups (older than 7 days)
@@ -83,14 +88,22 @@ EXAMPLES
     # Sync with replica set mode
     env-sync --replica-set
 
+    # Upload backup artifacts to OCI bucket (for CI/CD)
+    env-sync --upload-artifacts
+
+    # Or combine with sync operations
+    env-sync --db-only --upload-artifacts
+
 CONFIGURATION
     The script reads configuration from .env file in the script directory.
     Required variables:
     - MongoDB: PROD_HOST, PROD_USERNAME, PROD_PASSWORD, PROD_AUTH_DATABASE, PROD_DB
                STAGING_HOST, STAGING_USERNAME, STAGING_PASSWORD, STAGING_AUTH_DATABASE, STAGING_DB
-    - OCI/Rclone: RCLONE_REMOTE_NAME, RCLONE_TYPE, RCLONE_COMPARTMENT, RCLONE_NAMESPACE, RCLONE_REGION
-                  OCI_USER, OCI_FINGERPRINT, OCI_KEY_FILE, OCI_TENANCY, OCI_REGION
-    - Paths: OCI_SOURCE, OCI_DEST
+    - OCI/Rclone: STORAGE_REMOTE_NAME, STORAGE_TYPE, OCI_COMPARTMENT, OCI_NAMESPACE, OCI_REGION
+                  OCI_USER, OCI_FINGERPRINT, OCI_KEY_FILE, OCI_TENANCY
+    - Paths: STORAGE_SOURCE, STORAGE_DEST
+    - Artifacts: ARTIFACTS_BUCKET (required for --upload-artifacts)
+                 ARTIFACTS_PREFIX (optional, default: "env-sync")
     - Optional: EXCLUDE_COLLECTIONS (space-separated list of collections to exclude)
                 BACKUP_RETENTION_DAYS (default: 7)
 

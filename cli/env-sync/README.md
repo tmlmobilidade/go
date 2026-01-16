@@ -42,6 +42,9 @@ env-sync --replica-set
 # Skip cleanup of old backups
 env-sync --no-cleanup
 
+# Upload backup artifacts to OCI bucket (for CI/CD, replaces GitHub artifacts)
+env-sync --db-only --upload-artifacts
+
 # Show help
 env-sync --help
 ```
@@ -78,11 +81,10 @@ BACKUP_RETENTION_DAYS=7
 
 ```env
 # RClone Configuration
-RCLONE_REMOTE_NAME=oci_storage
-RCLONE_TYPE=oracleobjectstorage
-RCLONE_COMPARTMENT=ocid1.compartment.oc1..
-RCLONE_NAMESPACE=your_namespace
-RCLONE_REGION=us-ashburn-1
+STORAGE_REMOTE_NAME=oci_storage
+STORAGE_TYPE=oracleobjectstorage
+STORAGE_SOURCE=production-bucket/path/to/source
+STORAGE_DEST=staging-bucket/path/to/dest
 
 # OCI Authentication
 OCI_USER=ocid1.user.oc1..
@@ -90,10 +92,18 @@ OCI_FINGERPRINT=aa:bb:cc:dd:ee:ff:00:11:22:33:44:55:66:77:88:99
 OCI_KEY_FILE=/path/to/private_key.pem
 OCI_TENANCY=ocid1.tenancy.oc1..
 OCI_REGION=us-ashburn-1
+OCI_COMPARTMENT=ocid1.compartment.oc1..
+OCI_NAMESPACE=your_namespace
+```
 
-# Storage Paths
-OCI_SOURCE=production_bucket:path/to/source
-OCI_DEST=staging_bucket:path/to/dest
+### Artifacts Configuration (for CI/CD)
+
+```env
+# OCI bucket for storing backup artifacts (required for --upload-artifacts)
+ARTIFACTS_BUCKET=your-artifacts-bucket
+
+# Optional: prefix/folder within the bucket (default: "env-sync")
+ARTIFACTS_PREFIX=env-sync
 ```
 
 ## MongoDB Backup Strategy

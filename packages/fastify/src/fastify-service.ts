@@ -78,6 +78,8 @@ const loggerOptions: FastifyLoggerOptions<RawServerDefault> = {
 				message: c.whiteBright,
 				method: c.greenBright,
 				methodLabel: c.gray,
+				path: c.blueBright,
+				pathLabel: c.gray,
 				pipe: c.cyanBright,
 				reqId: c.cyanBright,
 				reqIdLabel: c.gray,
@@ -122,6 +124,8 @@ const loggerOptions: FastifyLoggerOptions<RawServerDefault> = {
 
 			const method = typeof log.req === 'object' && log.req && 'method' in log.req ? formatMethod((log.req.method as string) ?? '') : '-----';
 
+			const path = typeof log.req === 'object' && log.req && 'url' in log.req ? safe(log.req.url).padEnd(10, ' ') : '-----';
+
 			// Extract error information
 			// Pino serializes errors, so log.err is an object with type, message, stack, etc.
 			const errorObj = log.err || log.error;
@@ -148,6 +152,7 @@ const loggerOptions: FastifyLoggerOptions<RawServerDefault> = {
 				palette.reqIdLabel(`reqId: ${palette.reqId(reqId)}`),
 				palette.statusLabel(`statusCode: ${palette.status(statusCode)}`),
 				palette.methodLabel(`Method: ${palette.method(method)}`),
+				palette.pathLabel(`Path: ${palette.path(path)}`),
 				message,
 			];
 

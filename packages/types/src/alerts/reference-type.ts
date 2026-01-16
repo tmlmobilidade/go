@@ -5,6 +5,7 @@ import { z } from 'zod';
 /* * */
 
 export const AlertReferenceTypeValues = [
+	'agency',
 	'lines',
 	'stops',
 	'rides',
