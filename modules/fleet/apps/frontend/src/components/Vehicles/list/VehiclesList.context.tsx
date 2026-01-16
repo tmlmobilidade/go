@@ -2,11 +2,9 @@
 
 /* * */
 
-import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Vehicle } from '@tmlmobilidade/types';
-import { parseAsArrayOfStrings, useSearch } from '@tmlmobilidade/ui';
-import { useQueryState } from 'nuqs';
+import { PermissionCatalog, type Vehicle } from '@tmlmobilidade/types';
+import { useDataAgencies, useFilterStateList, UseFilterStateListReturnType, useFilterStateString, UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -14,25 +12,18 @@ import useSWR from 'swr';
 
 interface VehicleNormalized extends Vehicle {
 	agency_id_normalized: string
-	dates_normalized: string[]
 }
 
 /* * */
 
 interface VehicleListContextState {
-	actions: {
-		setFilterAgency: (values: string[]) => void
-		setFilterDates: (values: string[]) => void
-		setFilterSearch: (values: string) => void
-	}
 	data: {
 		filtered: VehicleNormalized[]
 		raw: Vehicle[]
 	}
 	filters: {
-		agency: string[]
-		dates: string[]
-		search: string
+		agency: UseFilterStateListReturnType
+		search: UseFilterStateStringReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -60,11 +51,13 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 	//
 	// A. Setup variables
 
-	const agenciesContext = useAgenciesContext();
+	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.vehicles.actions.read],
+		scope: PermissionCatalog.all.alerts.scope,
+	});
 
-	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
-	const [filterAgency, setFilterAgency] = useQueryState<string[]>('agency', parseAsArrayOfStrings.withDefault(agenciesContext.data.raw.map(item => item._id)));
-	const [filterDates, setFilterDates] = useQueryState<string[]>('dates', parseAsArrayOfStrings.withDefault([]));
+	const filterSearch = useFilterStateString('search');
+	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
 
 	//
 	// B. Fetch data
@@ -85,59 +78,41 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 				dates_normalized: [],
 			};
 		});
-	}, [allVehicleData, agenciesContext.data.raw]);
+	}, [allVehicleData, filteredAgencyIds]);
 
 	const searchResultsData = useSearch<VehicleNormalized>({
 		accessors: ['_id', 'agency_id', 'license_plate'],
 		data: normalizedVehicleData,
-		query: filterSearch,
+		query: filterSearch.value,
 	});
 
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
 		if (!searchResultsData) return [];
-		// 1. Convert filter arrays to sets for O(1) membership checks
-		// const datesSet = new Set(filterDates);
-		//
-		// 2. Filter data based on active filters
-		const agencySet = new Set(filterAgency);
-
-		return searchResultsData.filter((item: VehicleNormalized) => {
-			// Filter by agency - check if any of the vehicle's agency match the filter
-			// If vehicle has no agencies (null or empty), show it in all results
-			// if (!agencySet.has(item.agency_id_normalized)) return false;
-
-			// Filter by dates - check if any of the vehicle's dates match the filter
-			// if (filterDates.length > 0) {
-			// 	const hasMatchingDate = item.dates_normalized.some(date => datesSet.has(date));
-			// 	if (!hasMatchingDate) return false;
-			// }
-
+		// Skip if no query filters are set
+		if (filterAgency.value.length === 0) return searchResultsData;
+		// Filter by query filters
+		return searchResultsData.filter((vehicle: VehicleNormalized) => {
+			// Filter by agency IDs
+			if (!filterAgency.value.includes(vehicle.agency_id_normalized)) return false;
 			// Return true if all filters pass
 			return true;
-		})
-			.sort((a, b) => {
-				// Sort by created_at descending (newest first)
-				return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-			});
-	}, [searchResultsData, filterAgency, filterDates]);
+		});
+	}, [
+		searchResultsData,
+		filterAgency,
+	]);
 
 	//
 	// D. Define context value
 
 	const contextValue: VehicleListContextState = useMemo(() => ({
-		actions: {
-			setFilterAgency,
-			setFilterDates,
-			setFilterSearch,
-		},
 		data: {
 			filtered: filterResultsData,
 			raw: allVehicleData || [],
 		},
 		filters: {
 			agency: filterAgency,
-			dates: filterDates,
 			search: filterSearch,
 		},
 		flags: {
@@ -148,7 +123,6 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 		allVehicleError,
 		allVehicleLoading,
 		filterResultsData,
-		filterDates,
 		allVehicleData,
 		filterAgency,
 		filterSearch,
