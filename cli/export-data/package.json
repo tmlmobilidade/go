@@ -32,7 +32,7 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx src/index.ts",
-		"lint": "eslint .",
+		"lint": "eslint . --fix && tsc --noEmit",
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {

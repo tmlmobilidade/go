@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-extraneous-class */
-
 /* * */
 
 import { OCIStorageProvider, OCIStorageProviderConfiguration } from '@/providers/storage/oci-storage.js';

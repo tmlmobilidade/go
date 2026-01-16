@@ -19,11 +19,7 @@
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
-<<<<<<< HEAD
-		"@tmlmobilidade/gtfs-validator": "20260107.1701.50",
-=======
 		"@tmlmobilidade/gtfs-validator": "20260114.2306.46",
->>>>>>> production
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",

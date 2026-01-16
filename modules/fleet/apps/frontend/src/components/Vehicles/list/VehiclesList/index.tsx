@@ -1,0 +1,95 @@
+'use client';
+
+/* * */
+
+import { useVehiclesListContext } from '@/components/Vehicles/list/VehiclesList.context';
+import { VehiclesListFiltersBar } from '@/components/Vehicles/list/VehiclesListFiltersBar';
+import { VehiclesListHeader } from '@/components/Vehicles/list/VehiclesListHeader';
+import { useAgenciesContext } from '@/contexts/Agencies.context';
+import { VehicleNormalized } from '@/types/normalized';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { keepUrlParams } from '@tmlmobilidade/ui';
+import { useParams, useRouter } from 'next/navigation';
+
+/* * */
+
+export function VehiclesList() {
+	//
+
+	//
+	// A. Setup variables
+
+	const router = useRouter();
+	const params = useParams<{ id?: string }>();
+
+	const vehiclesListContext = useVehiclesListContext();
+	const agenciesContext = useAgenciesContext();
+
+	// Create an object that maps each agency ID to a display string
+	// Format: { "agencyId": "agencyId - agencyName" }
+	const agency = agenciesContext.data.raw.reduce((acc, agency) => {
+	// Use the agency ID as the key
+		acc[agency._id] = agency._id + ' - ' + agency.name;
+
+		// Return the accumulator for the next iteration
+		return acc;
+	}, {} as Record<string, string>); // Initial value: empty object with string keys and values
+
+	const columns: DataTableColumn<VehicleNormalized>[] = [
+		{
+			accessor: '_id',
+			render: item => <Tag label={item._id} variant="secondary" />,
+			title: '#ID',
+			width: 100,
+		},
+		{
+			accessor: 'agency_id',
+			render: item => <Tag label={agency[item.agency_id]} />,
+			title: 'Operador',
+			width: 350,
+		},
+		{
+			accessor: 'license_plate',
+			render: item => <Tag label={item.license_plate} />,
+			title: 'matrícula do veículo',
+			width: 300,
+		},
+	];
+
+	//
+	// B. Handle actions
+
+	const handleRowClick = (item: VehicleNormalized) => {
+		router.push(keepUrlParams(PAGE_ROUTES.fleet.VEHICLES_DETAIL(item._id)));
+	};
+
+	//
+	// C. Render components
+
+	if (vehiclesListContext.flags.loading) {
+		return <LoadingOverlay />;
+	}
+
+	if (vehiclesListContext.flags.error) {
+		return <ErrorDisplay message={vehiclesListContext.flags.error.message} />;
+	}
+
+	return (
+		<Pane header={[
+			<VehiclesListHeader />,
+			<VehiclesListFiltersBar />,
+		]}
+		>
+			<DataTable
+				columns={columns}
+				onRowClick={handleRowClick}
+				records={vehiclesListContext.data.filtered}
+				rowIdAccessor="_id"
+				selectedId={params.id}
+			/>
+		</Pane>
+	);
+
+	//
+}

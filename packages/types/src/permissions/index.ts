@@ -16,6 +16,7 @@ import { RolesPermissionSchema } from '@/permissions/roles.js';
 import { StopsPermissionSchema } from '@/permissions/stops.js';
 import { TypologiesPermissionSchema } from '@/permissions/typologies.js';
 import { UsersPermissionSchema } from '@/permissions/users.js';
+import { VehiclesPermissionSchema } from '@/permissions/vehicles.js';
 import { ZonesPermissionSchema } from '@/permissions/zones.js';
 import { z } from 'zod';
 
@@ -34,6 +35,7 @@ export const PermissionSchema = z.discriminatedUnion('scope', [
 	RolesPermissionSchema,
 	StopsPermissionSchema,
 	UsersPermissionSchema,
+	VehiclesPermissionSchema,
 	FaresPermissionSchema,
 	AnnotationsPermissionSchema,
 	PeriodsPermissionSchema,
