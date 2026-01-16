@@ -12,7 +12,7 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"lint": "eslint ./src",
+		"lint": "eslint ./src --fix && tsc --noEmit",
 		"lint:fix": "eslint --fix ./src",
 		"start": "tsx src/index.ts"
 	},
