@@ -273,19 +273,6 @@ const typologiesActions: PermissionConfig = {
 	title: 'Permissões de Tipologias',
 };
 
-const fleetActions: PermissionConfig = {
-	actions: [
-		{ action: 'read', description: 'Permite ver veículos', label: 'Ver veículos', resources: ['AGENCIES'] },
-		{ action: 'create', description: 'Permite criar um veículo', label: 'Criar veículo', resources: ['AGENCIES'] },
-		{ action: 'update', description: 'Permite editar um veículo', label: 'Editar veículo', resources: ['AGENCIES'] },
-		{ action: 'delete', description: 'Permite eliminar um veículo', label: 'Eliminar veículo', resources: ['AGENCIES'] },
-		{ action: 'lock', description: 'Permite bloquear/desbloquear um veículo', label: 'Bloquear/Desbloquear veículo', resources: ['AGENCIES'] },
-	],
-	description: 'As ações que o utilizador pode realizar na gestão de veículos.',
-	scope: PermissionCatalog.all.vehicles.scope,
-	title: 'Permissões de Veículos',
-};
-
 const linesActions: PermissionConfig = {
 	actions: [
 		{ action: 'read', description: 'Permite ver linhas', label: 'Ver linhas', resources: ['AGENCIES'] },
