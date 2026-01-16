@@ -117,17 +117,6 @@ export const PAGE_ROUTES = Object.freeze({
 	},
 
 	/* * */
-	/* FLEET */
-	fleet: {
-		// BASE
-		BASE: `${getAppConfig('fleet', 'frontend_url')}`,
-
-		// VEHICLES
-		VEHICLES_DETAIL: (id: string) => `${getAppConfig('fleet', 'frontend_url')}/vehicles/${id}`,
-		VEHICLES_LIST: `${getAppConfig('fleet', 'frontend_url')}/vehicles`,
-	},
-
-	/* * */
 	/* PERFORMANCE */
 	performance: {
 		// BASE
