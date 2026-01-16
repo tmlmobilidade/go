@@ -6,6 +6,7 @@ import { cancel, isCancel, multiselect, outro, spinner } from '@clack/prompts';
 import { ASCII_TMLMOBILIDADE } from '@tmlmobilidade/consts';
 import chalk from 'chalk';
 
+import { uploadArtifacts } from './artifacts/upload.service.js';
 import { parseArgs, showHelp } from './cli/commands.js';
 import { loadConfig } from './config/config-loader.js';
 import { syncMongoDB } from './mongodb/sync.service.js';
@@ -31,6 +32,14 @@ interface SyncTargets {
 }
 
 async function determineSyncTargets(options: ReturnType<typeof parseArgs>): Promise<SyncTargets> {
+	// If only --upload-artifacts is provided, skip sync operations
+	if (options.uploadArtifacts && !options.dbOnly && !options.storageOnly) {
+		return {
+			syncDb: false,
+			syncStorage: false,
+		};
+	}
+
 	// If flags are provided, use them (non-interactive mode)
 	if (options.dbOnly || options.storageOnly) {
 		return {
@@ -103,6 +112,30 @@ async function runDatabaseSync(config: SyncConfig, options: ReturnType<typeof pa
 	}
 }
 
+async function runArtifactUpload(config: SyncConfig): Promise<void> {
+	const s = spinner();
+	s.start('Uploading artifacts to OCI...');
+
+	try {
+		if (!config.artifacts.bucket) {
+			throw new Error('ARTIFACTS_BUCKET is not configured. Please set it in your .env file.');
+		}
+
+		await uploadArtifacts({
+			bucket: config.artifacts.bucket,
+			localPath: config.backupDir,
+			prefix: config.artifacts.prefix,
+			storageConfig: config.storage,
+		});
+		s.stop('Artifacts uploaded successfully');
+	}
+	catch (error) {
+		s.stop('Artifact upload failed');
+		logger.error(error instanceof Error ? error.message : String(error));
+		process.exit(1);
+	}
+}
+
 async function main() {
 	const args = process.argv.slice(2);
 	const options = parseArgs(args);
@@ -135,7 +168,15 @@ async function main() {
 			await runDatabaseSync(config, options);
 		}
 
-		outro('Environment sync completed successfully!');
+		// Upload artifacts to OCI if requested (typically in CI/CD)
+		if (options.uploadArtifacts) {
+			await runArtifactUpload(config);
+		}
+
+		// Only show success message if something was actually done
+		if (syncDb || syncStorage || options.uploadArtifacts) {
+			outro('Environment sync completed successfully!');
+		}
 	}
 	catch (error) {
 		if (error instanceof Error) {
