@@ -3,6 +3,8 @@
 import type { SimplifiedApexValidation } from '@tmlmobilidade/types';
 import type { SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
+import { Dates } from '@tmlmobilidade/dates';
+
 /* * */
 
 /**
@@ -25,6 +27,7 @@ export function transformApexValidationForClickHouse(doc: SimplifiedApexValidati
 		mac_sam_serial_number: doc.mac_sam_serial_number,
 		on_board_refund_id: doc.on_board_refund_id ?? null,
 		on_board_sale_id: doc.on_board_sale_id ?? null,
+		operational_date: Dates.fromUnixTimestamp(doc.created_at).operational_date,
 		pattern_id: doc.pattern_id,
 		product_id: doc.product_id,
 		received_at: doc.received_at,
@@ -53,8 +56,8 @@ export function transformVehicleEventForClickHouse(doc: SimplifiedVehicleEvent):
 		latitude: doc.latitude,
 		longitude: doc.longitude,
 		odometer: doc.odometer,
+		operational_date: Dates.fromUnixTimestamp(doc.created_at).operational_date,
 		pattern_id: doc.pattern_id,
-		// Flatten nested position object
 		position_geohash: doc.position.geohash,
 		position_h3: doc.position.h3,
 		position_latitude: doc.position.latitude,

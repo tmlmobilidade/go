@@ -57,7 +57,8 @@ async function syncApexValidationsClickHouse() {
 				units_qty Nullable(Int32),
 				updated_at Int64,
 				validation_status Int32,
-				vehicle_id Int32
+				vehicle_id Int32,
+				operational_date String
 			`,
 			transformFn: transformApexValidationForClickHouse,
 		});

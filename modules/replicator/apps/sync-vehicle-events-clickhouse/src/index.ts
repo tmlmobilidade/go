@@ -45,6 +45,7 @@ async function syncVehicleEventsClickHouse() {
 				latitude Float64,
 				longitude Float64,
 				odometer Float64,
+				operational_date String,
 				pattern_id String,
 				position_geohash String,
 				position_h3 String,

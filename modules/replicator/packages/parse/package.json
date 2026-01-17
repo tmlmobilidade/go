@@ -15,6 +15,7 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-replicator-pckg-sync": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
