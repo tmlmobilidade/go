@@ -44,6 +44,13 @@ interface ClickHouseWriterParams<T> {
 	table: string
 
 	/**
+	 * Optional SQL schema definition for auto-creating the table.
+	 * Should be the column definitions part of a CREATE TABLE statement.
+	 * Example: "_id String, name String, created_at Int64"
+	 */
+	tableSchema?: string
+
+	/**
 	 * Optional transformation function to convert documents before writing to ClickHouse.
 	 * Use this to map MongoDB document fields to ClickHouse column names.
 	 */
@@ -76,6 +83,7 @@ export class ClickHouseWriter<T> {
 	private SESSION_TIMER = new Timer();
 
 	private TABLE: string;
+	private TABLE_SCHEMA?: string;
 	private TRANSFORM_FN?: (data: T) => Record<string, unknown>;
 
 	/* * */
@@ -90,6 +98,10 @@ export class ClickHouseWriter<T> {
 		// Setup the optional transformation function
 		if (params.transformFn) {
 			this.TRANSFORM_FN = params.transformFn;
+		}
+		// Setup the optional table schema for auto-creation
+		if (params.tableSchema) {
+			this.TABLE_SCHEMA = params.tableSchema;
 		}
 		// Setup the optional idle timeout functionality
 		if (params.idle_timeout && params.idle_timeout > 0) {
@@ -112,6 +124,40 @@ export class ClickHouseWriter<T> {
 	async close() {
 		await this.CLIENT.close();
 		Logger.info(`CLICKHOUSEWRITER [${this.TABLE}]: Connection closed.`);
+	}
+
+	/* * */
+
+	/**
+	 * Ensures the table exists in ClickHouse by creating it if it doesn't exist.
+	 * Uses the tableSchema provided in the constructor, or an optional schema parameter.
+	 *
+	 * @param schema Optional schema to use instead of the constructor-provided tableSchema
+	 * @param engine The ClickHouse table engine to use (default: MergeTree)
+	 * @param orderBy The ORDER BY clause for the table (default: tuple())
+	 */
+	async ensureTable(schema?: string, engine = 'MergeTree', orderBy = 'tuple()') {
+		const tableSchema = schema || this.TABLE_SCHEMA;
+
+		if (!tableSchema) {
+			throw new Error(`CLICKHOUSEWRITER [${this.TABLE}]: Cannot ensure table without a schema. Provide tableSchema in constructor or as parameter.`);
+		}
+
+		try {
+			const createTableQuery = `
+				CREATE TABLE IF NOT EXISTS ${this.TABLE} (
+					${tableSchema}
+				) ENGINE = ${engine}
+				ORDER BY ${orderBy}
+			`;
+
+			await this.CLIENT.command({ query: createTableQuery });
+			Logger.info(`CLICKHOUSEWRITER [${this.TABLE}]: Table ensured.`);
+		}
+		catch (error) {
+			Logger.error(`CLICKHOUSEWRITER [${this.TABLE}]: Error @ ensureTable(): ${(error as Error).message}`);
+			throw error;
+		}
 	}
 
 	/* * */
