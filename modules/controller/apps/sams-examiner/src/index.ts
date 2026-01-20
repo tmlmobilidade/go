@@ -122,16 +122,16 @@ async function main() {
 
 				const analysisTimer = new Timer();
 
-				const preparedLocationTransactions = locationTransactionsData.map(item => ({ ...item, transaction_type: 'location' })) as AggregationResultItem[];
-				const preparedOnBoardRefundsTransactions = onBoardRefundsTransactionsData.map(item => ({ ...item, transaction_type: 'on_board_refund' })) as AggregationResultItem[];
-				const preparedOnBoardSalesTransactions = onBoardSalesTransactionsData.map(item => ({ ...item, transaction_type: 'on_board_sale' })) as AggregationResultItem[];
-				const preparedValidationsTransactions = validationsTransactionsData.map(item => ({ ...item, transaction_type: 'validation' })) as AggregationResultItem[];
+				const preparedLocationTransactions: AggregationResultItem[] = locationTransactionsData.map(item => ({ _id: item._id, agency_id: item.agency_id, apex_version: item.apex_version, created_at: item.created_at, device_id: item.device_id, mac_ase_counter_value: item.mac_ase_counter_value, transaction_type: 'location', vehicle_id: item.vehicle_id }));
+				const preparedOnBoardRefundsTransactions: AggregationResultItem[] = onBoardRefundsTransactionsData.map(item => ({ _id: item._id, agency_id: item.agency_id, apex_version: item.apex_version, created_at: item.created_at, device_id: item.device_id, mac_ase_counter_value: item.mac_ase_counter_value, transaction_type: 'on_board_refund', vehicle_id: item.vehicle_id }));
+				const preparedOnBoardSalesTransactions: AggregationResultItem[] = onBoardSalesTransactionsData.map(item => ({ _id: item._id, agency_id: item.agency_id, apex_version: item.apex_version, created_at: item.created_at, device_id: item.device_id, mac_ase_counter_value: item.mac_ase_counter_value, transaction_type: 'on_board_sale', vehicle_id: item.vehicle_id }));
+				const preparedValidationTransactions: AggregationResultItem[] = validationsTransactionsData.map(item => ({ _id: item._id, agency_id: item.agency_id, apex_version: item.apex_version, created_at: item.created_at, device_id: item.device_id, mac_ase_counter_value: item.mac_ase_counter_value, transaction_type: 'validation', vehicle_id: item.vehicle_id }));
 
 				const allSimplifiedTransactions: AggregationResultItem[] = [
 					...preparedLocationTransactions,
 					...preparedOnBoardRefundsTransactions,
 					...preparedOnBoardSalesTransactions,
-					...preparedValidationsTransactions,
+					...preparedValidationTransactions,
 				];
 
 				const sortedTransactions = allSimplifiedTransactions
@@ -139,15 +139,19 @@ async function main() {
 					.sort((a, b) => a.mac_ase_counter_value - b.mac_ase_counter_value);
 
 				//
-				// Validate if all the transactions match the
-				// same Agency ID and the same Device ID.
+				// Validate if there are any transactions
+				// for the current SAM in the given time range.
 
-				if (sortedTransactions.length === 0) {
+				if (!sortedTransactions.length) {
 					Logger.error(`No transactions found for SAM "${samData._id}" for the given time range. (${analysisTimer.get()})`);
 					await sams.updateById(samData._id, { analysis: [], remarks: 'No transactions found for given time range.', system_status: 'complete' });
 					Logger.spacer(1);
 					continue;
 				}
+
+				//
+				// Validate if all the transactions match the
+				// same Agency ID and the same Device ID.
 
 				const agencyId = sortedTransactions[0].agency_id;
 
@@ -182,13 +186,13 @@ async function main() {
 				let currentGroup: SamAnalysis = {
 					apex_version: sortedTransactions[0].apex_version,
 					device_id: sortedTransactions[0].device_id,
-					end_time: sortedTransactions[sortedTransactions.length - 1].created_at,
+					end_time: sortedTransactions[0].created_at,
 					first_transaction_ase_counter_value: sortedTransactions[0].mac_ase_counter_value,
 					first_transaction_id: sortedTransactions[0]._id,
 					first_transaction_type: sortedTransactions[0].transaction_type,
-					last_transaction_ase_counter_value: sortedTransactions[sortedTransactions.length - 1].mac_ase_counter_value,
-					last_transaction_id: sortedTransactions[sortedTransactions.length - 1]._id,
-					last_transaction_type: sortedTransactions[sortedTransactions.length - 1].transaction_type,
+					last_transaction_ase_counter_value: sortedTransactions[0].mac_ase_counter_value,
+					last_transaction_id: sortedTransactions[0]._id,
+					last_transaction_type: sortedTransactions[0].transaction_type,
 					start_time: sortedTransactions[0].created_at,
 					transactions_expected: 1,
 					transactions_found: 1,
@@ -207,9 +211,9 @@ async function main() {
 					const aseCounterIsSequential = currentTx.mac_ase_counter_value === previousTx.mac_ase_counter_value + 1;
 					// If all checks pass, we can consider them part of the same group
 					if (hasSameDeviceId && hasSameVehicleId && hasSameApexVersion && aseCounterIsSequential) {
-						// Update the current group with
-						// the latest transaction details
+						// Update the current group with the latest transaction details
 						currentGroup.end_time = currentTx.created_at;
+						currentGroup.last_transaction_ase_counter_value = currentTx.mac_ase_counter_value;
 						currentGroup.last_transaction_id = currentTx._id;
 						currentGroup.last_transaction_type = currentTx.transaction_type;
 						currentGroup.transactions_expected++;
@@ -217,27 +221,31 @@ async function main() {
 					}
 					else {
 						// If any of the checks fail, we need
-						// to save the current group...
+						// to save the current group as it is terminated here.
 						samAnalysisGroups.push(currentGroup);
-						// ...create a new one with the gap...
-						samAnalysisGroups.push({
-							apex_version: null,
-							device_id: null,
-							end_time: currentTx.created_at,
-							first_transaction_ase_counter_value: null,
-							first_transaction_id: null,
-							first_transaction_type: null,
-							last_transaction_ase_counter_value: null,
-							last_transaction_id: null,
-							last_transaction_type: null,
-							start_time: previousTx.created_at,
-							transactions_expected: (currentTx.mac_ase_counter_value - previousTx.mac_ase_counter_value) - 1,
-							transactions_found: 0,
-							transactions_missing: (currentTx.mac_ase_counter_value - previousTx.mac_ase_counter_value) - 1,
-							vehicle_id: null,
-						});
-						// ...and initiate a new current group
-						// with the current transaction
+						// Then, check if there is a gap in the ASE Counter Value.
+						// There might not be a gap if, for example, the Vehicle ID changed
+						// but the ASE Counter Value continued sequentially.
+						if (!aseCounterIsSequential) {
+							samAnalysisGroups.push({
+								apex_version: null,
+								device_id: null,
+								end_time: currentTx.created_at,
+								first_transaction_ase_counter_value: null,
+								first_transaction_id: null,
+								first_transaction_type: null,
+								last_transaction_ase_counter_value: null,
+								last_transaction_id: null,
+								last_transaction_type: null,
+								start_time: previousTx.created_at,
+								transactions_expected: (currentTx.mac_ase_counter_value - previousTx.mac_ase_counter_value) - 1,
+								transactions_found: 0,
+								transactions_missing: (currentTx.mac_ase_counter_value - previousTx.mac_ase_counter_value) - 1,
+								vehicle_id: null,
+							});
+						}
+						// Now initiate a new current group
+						// with the current transaction.
 						currentGroup = {
 							apex_version: currentTx.apex_version,
 							device_id: currentTx.device_id,
@@ -280,7 +288,6 @@ async function main() {
 					_id: samData._id,
 					agency_id: agencyId,
 					analysis: samAnalysisGroups,
-					created_by: 'system',
 					latest_apex_version: latestTransaction.apex_version,
 					remarks: null,
 					seen_first_at: firstTransaction.created_at,
@@ -289,7 +296,6 @@ async function main() {
 					transactions_expected: transactionsExpected,
 					transactions_found: transactionsFound,
 					transactions_missing: transactionsMissing,
-					updated_by: 'system',
 				};
 
 				await sams.updateById(samData._id, updatedSamData);
