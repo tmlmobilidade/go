@@ -12,6 +12,10 @@ export interface DayTooltipProps {
 	events: CalendarEvent[]
 }
 
+interface RuleImpactMetadata {
+	timePoints?: string[] // "HH:mm"
+}
+
 /* * */
 
 export function DayTooltip({ date, events }: DayTooltipProps) {
@@ -24,6 +28,16 @@ export function DayTooltip({ date, events }: DayTooltipProps) {
 	// Separate periods and other events
 	const periods = events.filter(e => e.type === 'period');
 	const annotations = events.filter(e => e.type === 'annotation');
+	const ruleImpacts = events.filter(e => e.type === 'rule-impact');
+
+	const affectedTimepoints = Array
+		.from(new Set(
+			ruleImpacts.flatMap((e) => {
+				const md = e.metadata as RuleImpactMetadata | undefined;
+				return md?.timePoints ?? [];
+			}),
+		))
+		.sort();
 
 	return (
 		<div className={styles.container}>
@@ -77,6 +91,26 @@ export function DayTooltip({ date, events }: DayTooltipProps) {
 							</div>
 						);
 					})}
+				</div>
+			)}
+
+			{affectedTimepoints.length > 0 && (
+				<div className={styles.section}>
+					<div className={styles.sectionTitle}>Dias afetados</div>
+
+					<div className={styles.event}>
+						<div
+							className={styles.eventColor}
+							style={{ backgroundColor: 'var(--color-primary)' }}
+						/>
+						<div className={styles.eventContent}>
+							<div className={styles.eventTitle}>Horários</div>
+
+							<div className={styles.eventMeta}>
+								{affectedTimepoints.join(', ')}
+							</div>
+						</div>
+					</div>
 				</div>
 			)}
 		</div>

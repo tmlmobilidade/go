@@ -29,7 +29,7 @@ interface RuleCreateContextState {
 			count: number
 			dates: string[]
 		}
-		ruleSummary: string
+		ruleSummary: { long: string, short: string }
 	}
 	flags: {
 		isDrawerOpen: boolean
@@ -109,7 +109,8 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 		// Get the rule values and add the generated name
 		const ruleValues = {
 			...form.getValues(),
-			name: ruleSummary,
+			name: ruleSummary.long,
+			shortName: ruleSummary.short,
 		};
 
 		// Call the onSubmit callback

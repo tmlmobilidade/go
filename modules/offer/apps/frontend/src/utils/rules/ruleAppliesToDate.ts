@@ -4,8 +4,8 @@ import { calendarKey, CalendarKey, calendarWeekday, Dates, datesFromCalendarKey,
 
 interface CalendarContext {
 	endDate: Date
-	events: Set<string> // yyyy-mm-dd
-	holidays: Set<string> // yyyy-mm-dd
+	events: Set<CalendarKey>
+	holidays: Set<CalendarKey>
 	periods: Period[]
 	startDate: Date
 }
@@ -66,4 +66,59 @@ export function computeRuleImpact(rule: ScheduleRule, ctx: CalendarContext) {
 	}
 
 	return { count: affected.length, dates: affected };
+}
+
+export interface RulesPreview {
+	byDate: Map<CalendarKey, Set<string>>
+	dates: CalendarKey[]
+}
+
+export function computeFinalAffectedDatesAndTimepoints(
+	rules: ScheduleRule[],
+	ctx: CalendarContext,
+): RulesPreview {
+	const byDate = new Map<CalendarKey, Set<string>>();
+
+	// helper: ensure a set exists
+	const ensure = (k: CalendarKey) => {
+		let s = byDate.get(k);
+		if (!s) {
+			s = new Set<string>();
+			byDate.set(k, s);
+		}
+		return s;
+	};
+
+	for (const rule of rules) {
+		const impacted = computeRuleImpact(rule, ctx).dates;
+
+		const tps = (rule.timePoints ?? []) as string[];
+
+		if (rule.operatingMode === 'exclude') {
+			for (const k of impacted) {
+				if (tps.length === 0) {
+					// “exclude all” day semantics
+					byDate.delete(k);
+					continue;
+				}
+
+				const set = byDate.get(k);
+				if (!set) continue; // nothing included -> nothing to remove
+
+				for (const tp of tps) set.delete(tp);
+
+				if (set.size === 0) byDate.delete(k);
+			}
+		}
+		else {
+			// include
+			for (const k of impacted) {
+				const set = ensure(k);
+				for (const tp of tps) set.add(tp);
+			}
+		}
+	}
+
+	const dates = Array.from(byDate.keys()).sort();
+	return { byDate, dates };
 }

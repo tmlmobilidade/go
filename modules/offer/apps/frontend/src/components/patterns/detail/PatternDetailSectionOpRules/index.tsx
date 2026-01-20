@@ -1,39 +1,44 @@
 /* * */
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
-import PatternDetailSectionOpRuleCard from '@/components/patterns/detail/PatternDetailSectionOpRuleCard';
-import { IconCalendar, IconPlus } from '@tabler/icons-react';
-import { Button, Collapsible, Section } from '@tmlmobilidade/ui';
+import { IconEye, IconPlus } from '@tabler/icons-react';
+import { Button, Collapsible, Section, Tag } from '@tmlmobilidade/ui';
+import { useState } from 'react';
+
+import { RulesListView } from '../../rules/list/RulesListView';
+import { RulesScheduleView } from '../../rules/list/RulesScheduleView';
 
 /* * */
 
 export function PatternDetailSectionOpRules() {
 	//
-
-	//
 	// A. Setup variables
-
 	const patternDetailContext = usePatternDetailContext();
-	const rules = patternDetailContext.data.form.values.rules || [];
+	const [activeView, setActiveView] = useState<'list' | 'schedule'>('list');
 
-	//
 	// B. Render components
-
 	return (
 		<Collapsible title="Regras de funcionamento" defaultOpen>
 			<Section gap="lg">
-				{rules.map((rule, index) => (
-					<PatternDetailSectionOpRuleCard key={rule._id || index} rule={rule} />
-				))}
+				{/* Toggle Tags */}
+				<Section flexDirection="row" gap="sm" padding="none">
+					<Tag
+						label="Lista de regras"
+						onClick={() => setActiveView('list')}
+						variant={activeView === 'list' ? 'primary' : 'muted'}
+					/>
+					<Tag
+						label="Horários"
+						onClick={() => setActiveView('schedule')}
+						variant={activeView === 'schedule' ? 'primary' : 'muted'}
+					/>
+				</Section>
 
-				{rules.length === 0 && (
-					<Section padding="none">
-						<p style={{ color: 'var(--color-system-text-300)', textAlign: 'center' }}>
-							Nenhuma regra definida. Clique em "Nova regra" para começar.
-						</p>
-					</Section>
-				)}
+				{/* Conditional Views */}
+				{activeView === 'list' && <RulesListView />}
+				{activeView === 'schedule' && <RulesScheduleView />}
 
+				{/* Actions */}
 				<Section flexDirection="row" gap="sm" padding="none">
 					<Button
 						label="Nova regra"
@@ -41,20 +46,14 @@ export function PatternDetailSectionOpRules() {
 						onClick={() => patternDetailContext.actions.openRuleModal()}
 					/>
 
-					{/* TODO: Preview do calendário com o merge das regras */}
 					<Button
 						label="Prever calendário"
-						leftSection={<IconCalendar size={16} />}
+						leftSection={<IconEye size={16} />}
+						onClick={patternDetailContext.actions.openRulesCalendarPreviewModal}
 						variant="secondary"
-						onClick={() => {
-							console.log('Preview calendar clicked');
-						}}
-						disabled
 					/>
 				</Section>
 			</Section>
 		</Collapsible>
 	);
-
-	//
 }
