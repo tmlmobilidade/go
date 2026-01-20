@@ -52,12 +52,10 @@ async function main() {
 		// For each SAM, we should get all APEX transactions and validate their ASE Counter Value sequence.
 		// This will allow us to identify any missing transactions or gaps in the sequence.
 
-		let counter = 0;
+		let counter = await sams.count();
 
 		for await (const samItem of samsStream) {
 			//
-
-			counter++;
 
 			const samData: Sam = samItem;
 
@@ -307,6 +305,9 @@ async function main() {
 			catch (error) {
 				Logger.error(`Error processing SAM "${samData._id}": ${error.message}`);
 				await sams.updateById(samData._id, { remarks: `Error processing SAM "${samData._id}": ${error.message}`, system_status: 'error' });
+			}
+			finally {
+				counter--;
 			}
 		}
 
