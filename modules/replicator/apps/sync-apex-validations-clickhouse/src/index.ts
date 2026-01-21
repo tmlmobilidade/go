@@ -1,18 +1,18 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { transformApexValidationForClickHouse } from '@tmlmobilidade/go-replicator-pckg-parse';
+import { transformVehicleEventForClickHouse } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { getEarliestDate, syncToClickHouse } from '@tmlmobilidade/go-replicator-pckg-sync';
-import { Filter, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { pcgidbLegacy } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { ClickHouseVehicleEvent } from '@tmlmobilidade/types';
 import { ClickHouseWriter } from '@tmlmobilidade/writers';
 import { Interval } from 'luxon';
 
 /* * */
 
-async function syncApexValidationsClickHouse() {
+async function syncVehicleEventsClickHouse() {
 	try {
 		//
 
@@ -23,44 +23,65 @@ async function syncApexValidationsClickHouse() {
 		//
 		// Connect to databases and setup ClickHouse writer
 
-		const apexValidationsCollection = await simplifiedApexValidations.getCollection();
+		await pcgidbLegacy.connect();
 
-		const clickhouseWriter = new ClickHouseWriter<SimplifiedApexValidation>({
-			batch_size: 100000,
+		const clickhouseWriter = new ClickHouseWriter<ClickHouseVehicleEvent>({
+			batch_size: 100_000,
 			clientConfig: {
 				database: process.env.CLICKHOUSE_DATABASE,
 				password: process.env.CLICKHOUSE_PASSWORD,
 				url: `${process.env.CLICKHOUSE_TLS === 'true' ? 'https' : 'http'}://${process.env.CLICKHOUSE_HOST}:${process.env.CLICKHOUSE_PORT}`,
 				username: process.env.CLICKHOUSE_USERNAME,
 			},
-			table: 'simplified_apex_validations',
-			tableSchema: `
-				_id String,
-				agency_id String,
-				apex_version String,
-				card_serial_number String,
-				category String,
-				created_at Int64,
-				device_id String,
-				event_type Int32,
-				is_passenger UInt8,
-				line_id String,
-				mac_ase_counter_value Int64,
-				mac_sam_serial_number Int64,
-				on_board_refund_id Nullable(String),
-				on_board_sale_id Nullable(String),
-				pattern_id String,
-				product_id String,
-				received_at Int64,
-				stop_id String,
-				trip_id String,
-				units_qty Nullable(Int32),
-				updated_at Int64,
-				validation_status Int32,
-				vehicle_id Int32,
-				operational_date String
-			`,
-			transformFn: transformApexValidationForClickHouse,
+			table: 'vehicle_events',
+			tableSchema: [
+				{ name: '_id', primaryKey: true, type: 'String' },
+				{ name: 'agency_id', type: 'String' },
+				{ name: 'created_at', type: 'Int64' },
+				{ name: 'current_status', type: 'String' },
+				{ name: 'driver_id', type: 'String' },
+				{ name: 'event_id', type: 'String' },
+				{ name: 'extra_trip_id', nullable: true, type: 'String' },
+				{ name: 'hour', type: 'Int8' },
+				{ name: 'latitude', type: 'Float64' },
+				{ name: 'longitude', type: 'Float64' },
+				{ name: 'odometer', type: 'Float64' },
+				{ name: 'operational_date', type: 'String' },
+				{ name: 'plan_id', type: 'String' },
+				{ name: 'pattern_id', type: 'String' },
+				{ name: 'received_at', type: 'Int64' },
+				{ name: 'route_id', type: 'String' },
+				{ name: 'stop_id', type: 'String' },
+				{ name: 'trigger_activity', type: 'String' },
+				{ name: 'trigger_door', type: 'String' },
+				{ name: 'trip_id', type: 'String' },
+				{ name: 'updated_at', type: 'Int64' },
+				{ name: 'vehicle_id', type: 'String' },
+				{ name: 'geohash_2', type: 'String' },
+				{ name: 'geohash_3', type: 'String' },
+				{ name: 'geohash_4', type: 'String' },
+				{ name: 'geohash_5', type: 'String' },
+				{ name: 'geohash_6', type: 'String' },
+				{ name: 'geohash_7', type: 'String' },
+				{ name: 'geohash_8', type: 'String' },
+				{ name: 'geohash_9', type: 'String' },
+				{ name: 'geohash_10', type: 'String' },
+				{ name: 'geohash_11', type: 'String' },
+				{ name: 'geohash_12', type: 'String' },
+				{ name: 'h3_1', type: 'String' },
+				{ name: 'h3_2', type: 'String' },
+				{ name: 'h3_3', type: 'String' },
+				{ name: 'h3_4', type: 'String' },
+				{ name: 'h3_5', type: 'String' },
+				{ name: 'h3_6', type: 'String' },
+				{ name: 'h3_7', type: 'String' },
+				{ name: 'h3_8', type: 'String' },
+				{ name: 'h3_9', type: 'String' },
+				{ name: 'h3_10', type: 'String' },
+				{ name: 'h3_11', type: 'String' },
+				{ name: 'h3_12', type: 'String' },
+			],
+			transformFn: transformVehicleEventForClickHouse,
 		});
 
 		//
@@ -87,7 +108,7 @@ async function syncApexValidationsClickHouse() {
 			.sort((a, b) => b.start - a.start);
 
 		//
-		// Iterate over each timestamp chunk and sync the documents from MongoDB to ClickHouse.
+		// Iterate over each timestamp chunk and sync the documents from PCGI to ClickHouse.
 		// Timestamp chunks are sorted in descending order, so that more recent data is processed first.
 
 		for (const [chunkIndex, chunkData] of allTimestampChunks.entries()) {
@@ -107,22 +128,22 @@ async function syncApexValidationsClickHouse() {
 			Logger.divider(`[${allTimestampChunks.length - chunkIndex}/${allTimestampChunks.length}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
 
 			//
-			// Query to filter documents in MongoDB for this chunk
+			// Query to filter documents in PCGI for this chunk
 
-			const mongoQuery: Filter<SimplifiedApexValidation> = {
-				received_at: {
+			const pcgiQuery = {
+				millis: {
 					$gte: chunkStartDate.unix_timestamp,
 					$lte: chunkEndDate.unix_timestamp,
 				},
 			};
 
 			//
-			// Sync from MongoDB to ClickHouse
+			// Sync from PCGI to ClickHouse
 
-			await syncToClickHouse<SimplifiedApexValidation>({
+			await syncToClickHouse<ClickHouseVehicleEvent>({
 				clickhouseWriter: clickhouseWriter,
-				mongoCollection: apexValidationsCollection,
-				mongoQuery: mongoQuery,
+				mongoCollection: pcgidbLegacy.VehicleEvents,
+				mongoQuery: pcgiQuery,
 			});
 
 			//
@@ -153,7 +174,7 @@ async function syncApexValidationsClickHouse() {
 
 (async function init() {
 	const runOnInterval = async () => {
-		await syncApexValidationsClickHouse();
+		await syncVehicleEventsClickHouse();
 		setTimeout(runOnInterval, 1_800_000); // 30 minutes
 	};
 	runOnInterval();
