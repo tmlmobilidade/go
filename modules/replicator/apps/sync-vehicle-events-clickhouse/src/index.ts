@@ -3,10 +3,10 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { transformVehicleEventForClickHouse } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { getEarliestDate, syncToClickHouse } from '@tmlmobilidade/go-replicator-pckg-sync';
-import { Filter, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
+import { pcgidbLegacy } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { ClickHouseVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { ClickHouseVehicleEvent } from '@tmlmobilidade/types';
 import { ClickHouseWriter } from '@tmlmobilidade/writers';
 import { Interval } from 'luxon';
 
@@ -23,7 +23,7 @@ async function syncVehicleEventsClickHouse() {
 		//
 		// Connect to databases and setup ClickHouse writer
 
-		const vehicleEventsCollection = await simplifiedVehicleEvents.getCollection();
+		await pcgidbLegacy.connect();
 
 		const clickhouseWriter = new ClickHouseWriter<ClickHouseVehicleEvent>({
 			batch_size: 100_000,
@@ -108,7 +108,7 @@ async function syncVehicleEventsClickHouse() {
 			.sort((a, b) => b.start - a.start);
 
 		//
-		// Iterate over each timestamp chunk and sync the documents from MongoDB to ClickHouse.
+		// Iterate over each timestamp chunk and sync the documents from PCGI to ClickHouse.
 		// Timestamp chunks are sorted in descending order, so that more recent data is processed first.
 
 		for (const [chunkIndex, chunkData] of allTimestampChunks.entries()) {
@@ -128,22 +128,22 @@ async function syncVehicleEventsClickHouse() {
 			Logger.divider(`[${allTimestampChunks.length - chunkIndex}/${allTimestampChunks.length}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
 
 			//
-			// Query to filter documents in MongoDB for this chunk
+			// Query to filter documents in PCGI for this chunk
 
-			const mongoQuery: Filter<SimplifiedVehicleEvent> = {
-				received_at: {
+			const pcgiQuery = {
+				millis: {
 					$gte: chunkStartDate.unix_timestamp,
 					$lte: chunkEndDate.unix_timestamp,
 				},
 			};
 
 			//
-			// Sync from MongoDB to ClickHouse
+			// Sync from PCGI to ClickHouse
 
 			await syncToClickHouse<ClickHouseVehicleEvent>({
 				clickhouseWriter: clickhouseWriter,
-				mongoCollection: vehicleEventsCollection,
-				mongoQuery: mongoQuery,
+				mongoCollection: pcgidbLegacy.VehicleEvents,
+				mongoQuery: pcgiQuery,
 			});
 
 			//

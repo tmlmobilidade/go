@@ -72,6 +72,7 @@ export async function syncToClickHouse<T>({ clickhouseWriter, ensureTable, mongo
 
 		const documentsStream = mongoCollection
 			.find(mongoQuery)
+			.batchSize(100_000)
 			.stream();
 
 		for await (const document of documentsStream) {
