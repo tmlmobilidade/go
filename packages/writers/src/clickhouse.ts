@@ -170,7 +170,8 @@ export class ClickHouseWriter<T> {
 	 * @param orderBy The ORDER BY clause for the table (default: tuple())
 	 */
 	async ensureTable(schema?: ClickHouseColumn<T>[], engine = 'MergeTree', orderBy = 'tuple()') {
-		const tableSchema = schema?.map(column => `${column.name} ${column.type}`).join(', ');
+		const tableSchemaToUse = schema ?? this.params.tableSchema;
+		const tableSchema = tableSchemaToUse?.map(column => `${column.name} ${column.type}`).join(', ');
 
 		if (!tableSchema) {
 			throw new Error(`CLICKHOUSEWRITER [${this.params.table}]: Cannot ensure table without a schema. Provide tableSchema in constructor or as parameter.`);
