@@ -45,14 +45,14 @@ async function main() {
 		// and process them sequentially.
 
 		const samsStream = samsCollection
-			.find({ _id: { $in: [2932063333, 2932482268] } })
+			.find()
 			.stream();
 
 		//
 		// For each SAM, we should get all APEX transactions and validate their ASE Counter Value sequence.
 		// This will allow us to identify any missing transactions or gaps in the sequence.
 
-		let counter = await sams.count({ _id: { $in: [2932063333, 2932482268] } });
+		let counter = await sams.count();
 
 		for await (const samItem of samsStream) {
 			//
