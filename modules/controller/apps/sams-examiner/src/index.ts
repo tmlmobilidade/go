@@ -45,14 +45,14 @@ async function main() {
 		// and process them sequentially.
 
 		const samsStream = samsCollection
-			.find()
+			.find({ _id: { $in: [2932063333, 2932482268] } })
 			.stream();
 
 		//
 		// For each SAM, we should get all APEX transactions and validate their ASE Counter Value sequence.
 		// This will allow us to identify any missing transactions or gaps in the sequence.
 
-		let counter = await sams.count();
+		let counter = await sams.count({ _id: { $in: [2932063333, 2932482268] } });
 
 		for await (const samItem of samsStream) {
 			//
@@ -73,7 +73,14 @@ async function main() {
 					.startOf('day')
 					.set({ day: 1, hour: 4, minute: 0, month: 1, year: 2025 });
 
-				if (samData.agency_id === '41' || samData.agency_id === '42' || samData.agency_id === '43') {
+				if (samData.agency_id === '43') {
+					searchTimestampStart = Dates
+						.now('Europe/Lisbon')
+						.startOf('day')
+						.set({ day: 1, hour: 4, minute: 0, month: 10, year: 2025 });
+				}
+
+				if (samData.agency_id === '41' || samData.agency_id === '42') {
 					searchTimestampStart = Dates
 						.now('Europe/Lisbon')
 						.startOf('day')
