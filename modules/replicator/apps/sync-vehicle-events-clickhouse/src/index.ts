@@ -6,7 +6,7 @@ import { getEarliestDate, syncToClickHouse } from '@tmlmobilidade/go-replicator-
 import { Filter, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { ClickHouseVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { ClickHouseWriter } from '@tmlmobilidade/writers';
 import { Interval } from 'luxon';
 
@@ -25,40 +25,62 @@ async function syncVehicleEventsClickHouse() {
 
 		const vehicleEventsCollection = await simplifiedVehicleEvents.getCollection();
 
-		const clickhouseWriter = new ClickHouseWriter<SimplifiedVehicleEvent>({
-			batch_size: 100000,
+		const clickhouseWriter = new ClickHouseWriter<ClickHouseVehicleEvent>({
+			batch_size: 100_000,
 			clientConfig: {
 				database: process.env.CLICKHOUSE_DATABASE,
 				password: process.env.CLICKHOUSE_PASSWORD,
 				url: `${process.env.CLICKHOUSE_TLS === 'true' ? 'https' : 'http'}://${process.env.CLICKHOUSE_HOST}:${process.env.CLICKHOUSE_PORT}`,
 				username: process.env.CLICKHOUSE_USERNAME,
 			},
-			table: 'simplified_vehicle_events',
-			tableSchema: `
-				_id String,
-				agency_id String,
-				created_at Int64,
-				current_status String,
-				driver_id String,
-				event_id String,
-				extra_trip_id Nullable(String),
-				latitude Float64,
-				longitude Float64,
-				odometer Float64,
-				operational_date String,
-				pattern_id String,
-				position_geohash String,
-				position_h3 String,
-				position_latitude Float64,
-				position_longitude Float64,
-				received_at Int64,
-				stop_id String,
-				trigger_activity String,
-				trigger_door String,
-				trip_id String,
-				updated_at Int64,
-				vehicle_id String
-			`,
+			table: 'vehicle_events',
+			tableSchema: [
+				{ name: '_id', primaryKey: true, type: 'String' },
+				{ name: 'agency_id', type: 'String' },
+				{ name: 'created_at', type: 'Int64' },
+				{ name: 'current_status', type: 'String' },
+				{ name: 'driver_id', type: 'String' },
+				{ name: 'event_id', type: 'String' },
+				{ name: 'extra_trip_id', nullable: true, type: 'String' },
+				{ name: 'hour', type: 'Int8' },
+				{ name: 'latitude', type: 'Float64' },
+				{ name: 'longitude', type: 'Float64' },
+				{ name: 'odometer', type: 'Float64' },
+				{ name: 'operational_date', type: 'String' },
+				{ name: 'plan_id', type: 'String' },
+				{ name: 'pattern_id', type: 'String' },
+				{ name: 'received_at', type: 'Int64' },
+				{ name: 'route_id', type: 'String' },
+				{ name: 'stop_id', type: 'String' },
+				{ name: 'trigger_activity', type: 'String' },
+				{ name: 'trigger_door', type: 'String' },
+				{ name: 'trip_id', type: 'String' },
+				{ name: 'updated_at', type: 'Int64' },
+				{ name: 'vehicle_id', type: 'String' },
+				{ name: 'geohash_2', type: 'String' },
+				{ name: 'geohash_3', type: 'String' },
+				{ name: 'geohash_4', type: 'String' },
+				{ name: 'geohash_5', type: 'String' },
+				{ name: 'geohash_6', type: 'String' },
+				{ name: 'geohash_7', type: 'String' },
+				{ name: 'geohash_8', type: 'String' },
+				{ name: 'geohash_9', type: 'String' },
+				{ name: 'geohash_10', type: 'String' },
+				{ name: 'geohash_11', type: 'String' },
+				{ name: 'geohash_12', type: 'String' },
+				{ name: 'h3_1', type: 'String' },
+				{ name: 'h3_2', type: 'String' },
+				{ name: 'h3_3', type: 'String' },
+				{ name: 'h3_4', type: 'String' },
+				{ name: 'h3_5', type: 'String' },
+				{ name: 'h3_6', type: 'String' },
+				{ name: 'h3_7', type: 'String' },
+				{ name: 'h3_8', type: 'String' },
+				{ name: 'h3_9', type: 'String' },
+				{ name: 'h3_10', type: 'String' },
+				{ name: 'h3_11', type: 'String' },
+				{ name: 'h3_12', type: 'String' },
+			],
 			transformFn: transformVehicleEventForClickHouse,
 		});
 
@@ -118,7 +140,7 @@ async function syncVehicleEventsClickHouse() {
 			//
 			// Sync from MongoDB to ClickHouse
 
-			await syncToClickHouse<SimplifiedVehicleEvent>({
+			await syncToClickHouse<ClickHouseVehicleEvent>({
 				clickhouseWriter: clickhouseWriter,
 				mongoCollection: vehicleEventsCollection,
 				mongoQuery: mongoQuery,

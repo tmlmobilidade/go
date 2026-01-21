@@ -1,3 +1,4 @@
+/* eslint-disable perfectionist/sort-classes */
 /* * */
 
 import { type ClickHouseClient, type ClickHouseClientConfigOptions, createClient } from '@clickhouse/client';
@@ -5,6 +6,71 @@ import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
+
+/**
+ * Supported ClickHouse data types
+ */
+export type ClickHouseType =
+  | 'Bool'
+  | 'Boolean' | 'Date32' | 'Date' | 'DateTime' | 'Decimal' | 'Float32'
+  | 'Float64' | 'Int8' | 'Int16' | 'Int32' | 'Int64' | 'Int128'
+  | 'Int256' | 'String'
+  | 'UInt8' | 'UInt16'
+  | 'UInt32' | 'UInt64'
+  | 'UInt128' | 'UInt256' | 'UUID' | `Array(${string})`
+  | `DateTime64(${number})`
+  | `Decimal(${number}, ${number})`
+  | `Enum8(${string})`
+  | `Enum16(${string})`
+  | `FixedString(${number})`
+  | `LowCardinality(${string})` | `Map(${string}, ${string})`
+  | `Nullable(${string})`;
+
+export interface ClickHouseColumn<T> {
+	/** Alias expression (computed on read) */
+	alias?: string
+
+	/** Column codec for compression */
+	codec?: string
+
+	/** Comment for the column */
+	comment?: string
+
+	/** Default value expression */
+	default?: string
+
+	/** Create a secondary index (skipping index) on this column */
+	indexed?: boolean
+
+	/** Granularity for the index. Default: 4 */
+	indexGranularity?: number
+
+	/** Type of skipping index. Default: 'minmax' */
+	indexType?: 'bloom_filter' | 'minmax' | 'ngrambf_v1' | 'set' | 'tokenbf_v1'
+
+	/** Use LowCardinality wrapper for low-cardinality strings */
+	lowCardinality?: boolean
+
+	/** Materialized value expression (computed on insert) */
+	materialized?: string
+
+	name: Extract<keyof T, string>
+
+	/** Whether the column can be null (wraps type in Nullable) */
+	nullable?: boolean
+
+	/** Include this column in the ORDER BY clause (ClickHouse's primary index) */
+	primaryKey?: boolean
+
+	/** Order of this column in the primary key (lower = first). Default: 0 */
+	primaryKeyOrder?: number
+
+	/** TTL expression for this column */
+	ttl?: string
+
+	/** The ClickHouse data type */
+	type: ClickHouseType
+}
 
 interface ClickHouseWriterParams<T> {
 	/**
@@ -44,11 +110,9 @@ interface ClickHouseWriterParams<T> {
 	table: string
 
 	/**
-	 * Optional SQL schema definition for auto-creating the table.
-	 * Should be the column definitions part of a CREATE TABLE statement.
-	 * Example: "_id String, name String, created_at Int64"
+	 * Optional ClickHouse column definitions for auto-creating the table.
 	 */
-	tableSchema?: string
+	tableSchema: ClickHouseColumn<T>[]
 
 	/**
 	 * Optional transformation function to convert documents before writing to ClickHouse.
@@ -57,73 +121,42 @@ interface ClickHouseWriterParams<T> {
 	transformFn?: (data: T) => Record<string, unknown>
 }
 
-export interface ClickHouseWriterWriteOps<T> {
-	data: T
-}
-
 /* * */
 
 export class ClickHouseWriter<T> {
 	//
 
-	private BATCH_SIZE = 10000;
-	private BATCH_TIMEOUT_ENABLED = false;
-	private BATCH_TIMEOUT_TIMER: NodeJS.Timeout | null = null;
-	private BATCH_TIMEOUT_VALUE = -1;
+	//
+	private params: ClickHouseWriterParams<T>;
+	private client: ClickHouseClient;
 
-	private CLIENT: ClickHouseClient;
+	//
+	private dataBucketAlwaysAvailable: T[] = [];
+	private dataBucketFlushOps: T[] = [];
 
-	private DATA_BUCKET_ALWAYS_AVAILABLE: ClickHouseWriterWriteOps<T>[] = [];
-	private DATA_BUCKET_FLUSH_OPS: ClickHouseWriterWriteOps<T>[] = [];
-
-	private IDLE_TIMEOUT_ENABLED = false;
-	private IDLE_TIMEOUT_TIMER: NodeJS.Timeout | null = null;
-	private IDLE_TIMEOUT_VALUE = -1;
-
-	private SESSION_TIMER = new Timer();
-
-	private TABLE: string;
-	private TABLE_SCHEMA?: string;
-	private TRANSFORM_FN?: (data: T) => Record<string, unknown>;
+	//
+	private batchTimeoutTimer: NodeJS.Timeout | null = null;
+	private idleTimeoutTimer: NodeJS.Timeout | null = null;
+	private sessionTimer = new Timer();
 
 	/* * */
 
 	constructor(params: ClickHouseWriterParams<T>) {
 		// Ensure that the table name is provided
 		if (!params.table) throw new Error('CLICKHOUSEWRITER: Table name is required');
-		this.TABLE = params.table;
 		// Ensure that the client config is provided
 		if (!params.clientConfig) throw new Error('CLICKHOUSEWRITER: Client configuration is required');
-		this.CLIENT = createClient(params.clientConfig);
-		// Setup the optional transformation function
-		if (params.transformFn) {
-			this.TRANSFORM_FN = params.transformFn;
-		}
-		// Setup the optional table schema for auto-creation
-		if (params.tableSchema) {
-			this.TABLE_SCHEMA = params.tableSchema;
-		}
-		// Setup the optional idle timeout functionality
-		if (params.idle_timeout && params.idle_timeout > 0) {
-			this.IDLE_TIMEOUT_ENABLED = true;
-			this.IDLE_TIMEOUT_VALUE = params.idle_timeout;
-		}
-		// Override the default batch size
-		if (params.batch_size && params.batch_size > 0) {
-			this.BATCH_SIZE = params.batch_size;
-		}
-		// Setup the optional batch timeout functionality
-		if (params.batch_timeout && params.batch_timeout > 0) {
-			this.BATCH_TIMEOUT_ENABLED = true;
-			this.BATCH_TIMEOUT_VALUE = params.batch_timeout;
-		}
+		if (!params.clientConfig.database || !params.clientConfig.password || !params.clientConfig.url || !params.clientConfig.username) throw new Error('CLICKHOUSEWRITER: Client configuration is invalid. Ensure database, password, url and username are provided.');
+
+		this.params = params;
+		this.client = createClient(params.clientConfig);
 	}
 
 	/* * */
 
 	async close() {
-		await this.CLIENT.close();
-		Logger.info(`CLICKHOUSEWRITER [${this.TABLE}]: Connection closed.`);
+		await this.client.close();
+		Logger.info(`CLICKHOUSEWRITER [${this.params.table}]: Connection closed.`);
 	}
 
 	/* * */
@@ -136,110 +169,110 @@ export class ClickHouseWriter<T> {
 	 * @param engine The ClickHouse table engine to use (default: MergeTree)
 	 * @param orderBy The ORDER BY clause for the table (default: tuple())
 	 */
-	async ensureTable(schema?: string, engine = 'MergeTree', orderBy = 'tuple()') {
-		const tableSchema = schema || this.TABLE_SCHEMA;
+	async ensureTable(schema?: ClickHouseColumn<T>[], engine = 'MergeTree', orderBy = 'tuple()') {
+		const tableSchema = schema?.map(column => `${column.name} ${column.type}`).join(', ');
 
 		if (!tableSchema) {
-			throw new Error(`CLICKHOUSEWRITER [${this.TABLE}]: Cannot ensure table without a schema. Provide tableSchema in constructor or as parameter.`);
+			throw new Error(`CLICKHOUSEWRITER [${this.params.table}]: Cannot ensure table without a schema. Provide tableSchema in constructor or as parameter.`);
 		}
 
 		try {
 			const createTableQuery = `
-				CREATE TABLE IF NOT EXISTS ${this.TABLE} (
+				CREATE TABLE IF NOT EXISTS ${this.params.table} (
 					${tableSchema}
 				) ENGINE = ${engine}
 				ORDER BY ${orderBy}
 			`;
 
-			await this.CLIENT.command({ query: createTableQuery });
-			Logger.info(`CLICKHOUSEWRITER [${this.TABLE}]: Table ensured.`);
+			await this.client.command({ query: createTableQuery });
+			Logger.info(`CLICKHOUSEWRITER [${this.params.table}]: Table ensured.`);
 		}
 		catch (error) {
-			Logger.error(`CLICKHOUSEWRITER [${this.TABLE}]: Error @ ensureTable(): ${(error as Error).message}`);
+			Logger.error(`CLICKHOUSEWRITER [${this.params.table}]: Error @ ensureTable(): ${(error as Error).message}`);
 			throw error;
 		}
 	}
 
 	/* * */
 
-	async flush(callback?: (data?: ClickHouseWriterWriteOps<T>[]) => Promise<void>) {
+	async flush(callback?: (data?: T[]) => Promise<void>) {
 		try {
 			//
 
 			const flushTimer = new Timer();
-			const sessionTimerResult = this.SESSION_TIMER.get();
+			const sessionTimerResult = this.sessionTimer.get();
 
 			//
 			// Invalidate all timers since a flush operation is being performed
 
-			if (this.IDLE_TIMEOUT_TIMER) {
-				clearTimeout(this.IDLE_TIMEOUT_TIMER);
-				this.IDLE_TIMEOUT_TIMER = null;
+			if (this.idleTimeoutTimer) {
+				clearTimeout(this.idleTimeoutTimer);
+				this.idleTimeoutTimer = null;
 			}
 
-			if (this.BATCH_TIMEOUT_TIMER) {
-				clearTimeout(this.BATCH_TIMEOUT_TIMER);
-				this.BATCH_TIMEOUT_TIMER = null;
+			if (this.batchTimeoutTimer) {
+				clearTimeout(this.batchTimeoutTimer);
+				this.batchTimeoutTimer = null;
 			}
 
 			//
 			// Skip if there is no data to flush
 
-			if (this.DATA_BUCKET_ALWAYS_AVAILABLE.length === 0) return;
+			if (this.dataBucketAlwaysAvailable.length === 0) return;
 
 			//
-			// Copy everything in DATA_BUCKET_ALWAYS_AVAILABLE to DATA_BUCKET_FLUSH_OPS
+			// Copy everything in dataBucketAlwaysAvailable to dataBucketFlushOps
 			// to prevent any new incoming data to be added to the batch. This is to ensure
 			// that the batch is not modified while it is being processed.
 
-			this.DATA_BUCKET_FLUSH_OPS = [...this.DATA_BUCKET_FLUSH_OPS, ...this.DATA_BUCKET_ALWAYS_AVAILABLE];
+			this.dataBucketFlushOps = [...this.dataBucketFlushOps, ...this.dataBucketAlwaysAvailable];
 
-			this.DATA_BUCKET_ALWAYS_AVAILABLE = [];
+			this.dataBucketAlwaysAvailable = [];
 
 			//
 			// Process the data for ClickHouse insert
 
 			try {
 				// Transform data if a transformation function is provided
-				const insertData = this.DATA_BUCKET_FLUSH_OPS.map((item) => {
-					if (this.TRANSFORM_FN) {
-						return this.TRANSFORM_FN(item.data);
+				const insertData = this.dataBucketFlushOps.map((item) => {
+					if (this.params.transformFn) {
+						return this.params.transformFn(item);
 					}
-					return item.data as Record<string, unknown>;
+					return item as Record<string, unknown>;
 				});
 
 				// Insert data using ClickHouse client
-				await this.CLIENT.insert({
+				await this.client.insert({
 					format: 'JSONEachRow',
-					table: this.TABLE,
+					table: this.params.table,
 					values: insertData,
 				});
 
-				Logger.info(`CLICKHOUSEWRITER [${this.TABLE}]: Flush | Length: ${this.DATA_BUCKET_FLUSH_OPS.length} (session: ${sessionTimerResult}) (flush: ${flushTimer.get()})`);
+				Logger.info(`CLICKHOUSEWRITER [${this.params.table}]: Flush | Length: ${this.dataBucketFlushOps.length} (session: ${sessionTimerResult}) (flush: ${flushTimer.get()})`);
 
 				//
 				// Call the flush callback, if provided
 
 				if (callback) {
-					await callback(this.DATA_BUCKET_FLUSH_OPS);
+					await callback(this.dataBucketFlushOps);
 				}
 
 				//
 				// Reset the flush bucket
 
-				this.DATA_BUCKET_FLUSH_OPS = [];
+				this.dataBucketFlushOps = [];
 
 				//
 			}
 			catch (error) {
-				Logger.error(`CLICKHOUSEWRITER [${this.TABLE}]: Error @ flush().insert(): ${(error as Error).message}`);
+				Logger.error(`CLICKHOUSEWRITER [${this.params.table}]: Error @ flush().insert(): ${(error as Error).message}`);
 				throw error; // Re-throw to allow retry logic at higher level
 			}
 
 			//
 		}
 		catch (error) {
-			Logger.error(`CLICKHOUSEWRITER [${this.TABLE}]: Error @ flush(): ${(error as Error).message}`);
+			Logger.error(`CLICKHOUSEWRITER [${this.params.table}]: Error @ flush(): ${(error as Error).message}`);
 			throw error; // Re-throw to allow retry logic at higher level
 		}
 	}
@@ -255,42 +288,43 @@ export class ClickHouseWriter<T> {
 	 * @param flushCallback Callback function to call after the flush operation is complete
 	 */
 
-	async write(data: T | T[], writeCallback?: () => Promise<void>, flushCallback?: (data?: ClickHouseWriterWriteOps<T>[]) => Promise<void>) {
+	async write(data: T | T[], writeCallback?: () => Promise<void>, flushCallback?: (data?: T[]) => Promise<void>) {
 		//
 
 		//
 		// Invalidate the previously set idle timeout timer
 		// since we are performing a write operation again.
 
-		if (this.IDLE_TIMEOUT_TIMER) {
-			clearTimeout(this.IDLE_TIMEOUT_TIMER);
-			this.IDLE_TIMEOUT_TIMER = null;
+		if (this.idleTimeoutTimer) {
+			clearTimeout(this.idleTimeoutTimer);
+			this.idleTimeoutTimer = null;
 		}
 
 		//
 		// Check if the batch is full
 
-		if (this.DATA_BUCKET_ALWAYS_AVAILABLE.length >= this.BATCH_SIZE) {
-			Logger.info(`CLICKHOUSEWRITER [${this.TABLE}]: Batch full. Flushing data...`);
+		const batchSize = this.params.batch_size ?? 10_000;
+		if (this.dataBucketAlwaysAvailable.length >= batchSize) {
+			Logger.info(`CLICKHOUSEWRITER [${this.params.table}]: Batch full. Flushing data...`);
 			await this.flush(flushCallback);
 		}
 
 		//
 		// Reset the session timer (for logging purposes)
 
-		if (this.DATA_BUCKET_ALWAYS_AVAILABLE.length === 0) {
-			this.SESSION_TIMER.reset();
+		if (this.dataBucketAlwaysAvailable.length === 0) {
+			this.sessionTimer.reset();
 		}
 
 		//
 		// Add the current data to the batch
 
 		if (Array.isArray(data)) {
-			const combinedDataWithOptions = data.map(item => ({ data: item }));
-			this.DATA_BUCKET_ALWAYS_AVAILABLE = [...this.DATA_BUCKET_ALWAYS_AVAILABLE, ...combinedDataWithOptions];
+			const combinedDataWithOptions = data.map(item => item);
+			this.dataBucketAlwaysAvailable = [...this.dataBucketAlwaysAvailable, ...combinedDataWithOptions];
 		}
 		else {
-			this.DATA_BUCKET_ALWAYS_AVAILABLE.push({ data: data });
+			this.dataBucketAlwaysAvailable.push(data);
 		}
 
 		//
@@ -304,22 +338,22 @@ export class ClickHouseWriter<T> {
 		// Setup the idle timeout timer to flush the data if too long has passed
 		// since the last write operation. Check if this functionality is enabled.
 
-		if (this.IDLE_TIMEOUT_ENABLED && !this.IDLE_TIMEOUT_TIMER) {
-			this.IDLE_TIMEOUT_TIMER = setTimeout(async () => {
-				Logger.info(`CLICKHOUSEWRITER [${this.TABLE}]: Idle timeout reached. Flushing data...`);
+		if (this.params.idle_timeout && this.params.idle_timeout > 0 && !this.idleTimeoutTimer) {
+			this.idleTimeoutTimer = setTimeout(async () => {
+				Logger.info(`CLICKHOUSEWRITER [${this.params.table}]: Idle timeout reached. Flushing data...`);
 				await this.flush(flushCallback);
-			}, this.IDLE_TIMEOUT_VALUE);
+			}, this.params.idle_timeout);
 		}
 
 		//
 		// Setup the batch timeout timer to flush the data, if the timeout value is reached,
 		// even if the batch is not full. Check if this functionality is enabled.
 
-		if (this.BATCH_TIMEOUT_ENABLED && !this.BATCH_TIMEOUT_TIMER) {
-			this.BATCH_TIMEOUT_TIMER = setTimeout(async () => {
-				Logger.info(`CLICKHOUSEWRITER [${this.TABLE}]: Batch timeout reached. Flushing data...`);
+		if (this.params.batch_timeout && this.params.batch_timeout > 0 && !this.batchTimeoutTimer) {
+			this.batchTimeoutTimer = setTimeout(async () => {
+				Logger.info(`CLICKHOUSEWRITER [${this.params.table}]: Batch timeout reached. Flushing data...`);
 				await this.flush(flushCallback);
-			}, this.BATCH_TIMEOUT_VALUE);
+			}, this.params.batch_timeout);
 		}
 
 		//
