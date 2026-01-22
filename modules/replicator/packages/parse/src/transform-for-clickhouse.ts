@@ -15,9 +15,9 @@ import geohash from 'ngeohash';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function transformVehicleEventForClickHouse(pcgiDoc: any): ClickHouseVehicleEvent {
 	const entity = pcgiDoc.content.entity[0];
-	const operationalDate = Dates.fromUnixTimestamp(entity.vehicle.timestamp).operational_date;
+	const operationalDate = Dates.fromSeconds(entity.vehicle.timestamp).operational_date;
 	const hour = Number(
-		Dates.fromUnixTimestamp(entity.vehicle.timestamp)
+		Dates.fromSeconds(entity.vehicle.timestamp)
 			.setZone('Europe/Lisbon', 'rebase_utc')
 			.iso.split('T')[1].split(':')[0],
 	);
