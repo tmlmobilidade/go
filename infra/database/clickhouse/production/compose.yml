@@ -3,6 +3,10 @@ services:
     image: clickhouse/clickhouse-server:latest
     container_name: clickhouse
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 8gb
     ports:
       - "8123:8123"   # HTTP
       - "9000:9000"   # Native TCP
