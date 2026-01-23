@@ -1,5 +1,6 @@
 /* * */
 
+import { i18nNamespaces } from '@/i18n/resources';
 import { BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { type PropsWithChildren } from 'react';
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider>
+		<BaseProvider i18n={i18nNamespaces}>
 			{children}
 		</BaseProvider>
 	);

@@ -4,6 +4,7 @@
 
 import { Checkbox, ScrollArea } from '@mantine/core';
 import { useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { SelectDataItem } from '../../inputs/Select';
 import { FilterWrapper, FilterWrapperRef } from '../FilterWrapper';
@@ -28,6 +29,8 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
 
 	const filterWrapperRef = useRef<FilterWrapperRef>(null);
 
@@ -57,7 +60,7 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 			const allOption = {
 				checked: toggleAllActive,
 				disabled: false,
-				label: 'Selecionar Tudo',
+				label: t('global:components.filters.FilterTypeList.toggle_all'),
 				value: 'all',
 			};
 			return [allOption, ...options];
@@ -106,7 +109,7 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 					<Checkbox
 						key="toggle-all"
 						checked={toggleAllActive}
-						label="Selecionar Tudo"
+						label={t('global:components.filters.FilterTypeList.toggle_all')}
 						onChange={handleMultiToggleAll}
 						value="all"
 					/>

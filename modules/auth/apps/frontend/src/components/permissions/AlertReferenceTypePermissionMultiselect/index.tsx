@@ -2,6 +2,7 @@
 
 import { AlertReferenceTypeSchema, PermissionCatalog } from '@tmlmobilidade/types';
 import { MultiSelect } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -17,13 +18,20 @@ export function AlertReferenceTypePermissionMultiselect({ disabled, onChange, va
 	//
 
 	//
-	// A. Transform data
+
+	//
+	// A. Setup variables
+
+	const { t } = useTranslation();
+
+	//
+	// B. Transform data
 
 	const alertReferenceTypeOptionsWithAllowAll = [
-		{ label: 'Todo o tipo de referências', value: PermissionCatalog.ALLOW_ALL_FLAG },
-		{ label: 'Linhas', value: AlertReferenceTypeSchema.enum.lines },
-		{ label: 'Paragens', value: AlertReferenceTypeSchema.enum.stops },
-		{ label: 'Circulações', value: AlertReferenceTypeSchema.enum.rides },
+		{ label: t('auth:permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.all'), value: PermissionCatalog.ALLOW_ALL_FLAG },
+		{ label: t('auth:permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.lines'), value: AlertReferenceTypeSchema.enum.lines },
+		{ label: t('auth:permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.stops'), value: AlertReferenceTypeSchema.enum.stops },
+		{ label: t('auth:permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.rides'), value: AlertReferenceTypeSchema.enum.rides },
 	];
 
 	//
@@ -53,9 +61,9 @@ export function AlertReferenceTypePermissionMultiselect({ disabled, onChange, va
 	return (
 		<MultiSelect
 			data={alertReferenceTypeOptionsWithAllowAll}
-			description="Selecione os tipos de referência que este utilizador poderá utilizar."
+			description={t('auth:permissions.AlertReferenceTypePermissionMultiselect.description')}
 			disabled={disabled}
-			label="Tipos de Referência"
+			label={t('auth:permissions.AlertReferenceTypePermissionMultiselect.label')}
 			onChange={handleChange}
 			value={value}
 		/>
