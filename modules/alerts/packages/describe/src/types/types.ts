@@ -1,28 +1,7 @@
 /* * */
 
-import { type Alert, type RideNormalized } from '@tmlmobilidade/types';
-
-/**
- * List of all possible placeholders that can be used in alert description and title templates.
- */
-export type TemplatePlaceholder =
-  | '{headsign_title}'
-  | '{holiday_name}'
-  | '{line_short_name[]}'
-  | '{line_short_name}'
-  | '{lines_prose}'
-  | '{lines_title}'
-  | '{ride_description}'
-  | '{ride_short_name[]}'
-  | '{ride_short_name}'
-  | '{rides_description}'
-  | '{rides_title}'
-  | '{start_time[]}'
-  | '{start_time}'
-  | '{stop_name[]}'
-  | '{stop_name}'
-  | '{stops_prose}'
-  | '{stops_title}';
+import { type TemplatePlaceholder } from '@/types/placeholders.js';
+import { type Alert, type AlertCauseEffectPairs } from '@tmlmobilidade/types';
 
 /**
  * Structure representing a string type with its text and associated placeholders.
@@ -62,18 +41,4 @@ export interface TemplateFragment {
  * Type representing the unique key for an alert configuration,
  * composed of its cause, effect, and reference type separated by colons.
  */
-export type AlertConfigKey = `${Alert['cause']}:${Alert['effect']}:${Alert['reference_type']}`;
-
-/* * */
-
-export interface DescribeAlertProps {
-	cause: Alert['cause']
-	data: {
-		lines?: { id: string, long_name: string, short_name: string }[]
-		rides?: RideNormalized[]
-		stops?: { id: string, name: string }[]
-	}
-	effect: Alert['effect']
-	reference_type: Alert['reference_type']
-	references: Alert['references']
-}
+export type AlertConfigKey = `${AlertCauseEffectPairs}:${Alert['reference_type']}`;

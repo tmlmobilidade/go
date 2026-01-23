@@ -4,7 +4,7 @@
 
 import { alertI18nTemplates } from '@/templates/descriptions.js';
 import { templatePlaceholderReplacements } from '@/templates/placeholders.js';
-import { type AlertConfigKey, type DescribeAlertProps, type I18nCodes } from '@/types.js';
+import { type AlertConfigKey, type DescribeAlertProps, type I18nCodes } from '@/types/types.js';
 
 /* * */
 

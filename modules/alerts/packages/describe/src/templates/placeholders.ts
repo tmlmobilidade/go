@@ -2,7 +2,8 @@
 
 /* * */
 
-import { DescribeAlertProps, type TemplatePlaceholder } from '@/types.js';
+import { type DescribeAlertProps } from '@/types/describe-alert-props.js';
+import { type TemplatePlaceholder } from '@/types/placeholders.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized } from '@tmlmobilidade/types';
 
@@ -93,4 +94,10 @@ export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data:
 	'{stops_prose}': async () => '',
 
 	'{stops_title}': async () => '',
+
+	'*LINES*': async (data: DescribeAlertProps['data']) => {
+		const lineShortNames = Array.from(new Set(data.lines?.map(ht => ht.id) ?? []));
+		return lineShortNames.join(', ');
+	},
+
 };
