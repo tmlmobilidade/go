@@ -10,11 +10,8 @@ import { promptFilterByStopIds } from '@/prompts/filter-stop-ids.js';
 import { promptFilterTypes } from '@/prompts/filter-types.js';
 import { promptFilterByVehicleIds } from '@/prompts/filter-vehicle-ids.js';
 import { promptHashedShapeIds } from '@/prompts/hashedshape-ids.js';
-import { exportValidationsByLine } from '@/tasks/apex-validations/validations-by-line.js';
-import { exportValidationsByPattern } from '@/tasks/apex-validations/validations-by-pattern.js';
-import { exportValidationsByStopByPattern } from '@/tasks/apex-validations/validations-by-stop-by-pattern.js';
-import { exportValidationsByStopByTrip } from '@/tasks/apex-validations/validations-by-stop-by-trip.js';
-import { exportValidationsByStop } from '@/tasks/apex-validations/validations-by-stop.js';
+import { promptValidationGroupFields } from '@/prompts/validation-group-fields.js';
+import { exportValidationsAggregated, type ValidationGroupField } from '@/tasks/apex-validations/validations-aggregated.js';
 import { exportValidationsRaw } from '@/tasks/apex-validations/validations-raw.js';
 import { exportHashedShapesGeoJSON } from '@/tasks/hashed-shapes/hashed-shapes-geojson.js';
 import { exportRidesRaw } from '@/tasks/rides/rides-raw.js';
@@ -71,6 +68,14 @@ import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
 	}
 
 	//
+	// For validations-aggregated export, prompt for group fields
+
+	let validationGroupFields: ValidationGroupField[] = [];
+	if (exportTypes.includes('validations-aggregated')) {
+		validationGroupFields = await promptValidationGroupFields();
+	}
+
+	//
 	// Skip filters and dates if all selected export types don't require them
 
 	if (!shouldSkipFilters) {
@@ -100,33 +105,9 @@ import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
 		},
 
 		{
-			enabled: exportTypes.includes('validations-by-stop-by-trip'),
-			task: async message => await exportValidationsByStopByTrip({ context, message }),
-			title: exportTypeLabels['validations-by-stop-by-trip'],
-		},
-
-		{
-			enabled: exportTypes.includes('validations-by-stop-by-pattern'),
-			task: async message => await exportValidationsByStopByPattern({ context, message }),
-			title: exportTypeLabels['validations-by-stop-by-pattern'],
-		},
-
-		{
-			enabled: exportTypes.includes('validations-by-stop'),
-			task: async message => await exportValidationsByStop({ context, message }),
-			title: exportTypeLabels['validations-by-stop'],
-		},
-
-		{
-			enabled: exportTypes.includes('validations-by-pattern'),
-			task: async message => await exportValidationsByPattern({ context, message }),
-			title: exportTypeLabels['validations-by-pattern'],
-		},
-
-		{
-			enabled: exportTypes.includes('validations-by-line'),
-			task: async message => await exportValidationsByLine({ context, message }),
-			title: exportTypeLabels['validations-by-line'],
+			enabled: exportTypes.includes('validations-aggregated'),
+			task: async message => await exportValidationsAggregated({ context, groupFields: validationGroupFields, message }),
+			title: exportTypeLabels['validations-aggregated'],
 		},
 
 		{

@@ -13,11 +13,7 @@ export async function promptExportTypes(): Promise<ExportType[]> {
 		options: {
 			'1. Validações APEX': [
 				{ label: exportTypeLabels['validations-raw'], value: 'validations-raw' },
-				{ label: exportTypeLabels['validations-by-stop-by-trip'], value: 'validations-by-stop-by-trip' },
-				{ label: exportTypeLabels['validations-by-stop-by-pattern'], value: 'validations-by-stop-by-pattern' },
-				{ label: exportTypeLabels['validations-by-stop'], value: 'validations-by-stop' },
-				{ label: exportTypeLabels['validations-by-pattern'], value: 'validations-by-pattern' },
-				{ label: exportTypeLabels['validations-by-line'], value: 'validations-by-line' },
+				{ label: exportTypeLabels['validations-aggregated'], value: 'validations-aggregated' },
 			],
 			'2. Rides': [
 				{ label: exportTypeLabels['rides-raw'], value: 'rides-raw' },

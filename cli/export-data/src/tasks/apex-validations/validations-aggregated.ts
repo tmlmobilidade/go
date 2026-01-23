@@ -1,6 +1,6 @@
 /* * */
 
-import { type ExportType, type TaskProps } from '@/types.js';
+import { type TaskProps } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { type Filter, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
@@ -9,23 +9,42 @@ import fs from 'node:fs';
 
 /* * */
 
-const TASK_ID: ExportType = 'validations-by-stop';
+/**
+ * Available fields for grouping validations.
+ * 'date' is always included by default.
+ */
+export const validationGroupFields = ['line_id', 'pattern_id', 'product_id', 'trip_id', 'stop_id', 'agency_id', 'vehicle_id'] as const;
+
+export type ValidationGroupField = typeof validationGroupFields[number];
+
+export const validationGroupFieldLabels: Record<ValidationGroupField, string> = {
+	agency_id: 'Operador (agency_id)',
+	line_id: 'Linha (line_id)',
+	pattern_id: 'Pattern (pattern_id)',
+	product_id: 'Tipo de passe (product_id)',
+	stop_id: 'Paragem (stop_id)',
+	trip_id: 'Viagem (trip_id)',
+	vehicle_id: 'Veículo (vehicle_id)',
+};
 
 /* * */
 
-interface Result {
-	date: string
-	stop_id: string
-	validations: number
+interface ValidationAggregatedTaskProps extends TaskProps {
+	groupFields: ValidationGroupField[]
 }
 
+/* * */
+
 /**
- * Export Validations By Stop data applying the given filters.
+ * Export Validations aggregated by user-selected fields.
+ * Always groups by date, plus any additional fields selected by the user.
+ * The 'validations' count is always included.
  */
-export async function exportValidationsByStop({ context, message }: TaskProps): Promise<void> {
+export async function exportValidationsAggregated({ context, groupFields, message }: ValidationAggregatedTaskProps): Promise<void> {
 	//
 
-	message('A iniciar a exportação de Validações APEX por Paragem...');
+	const fieldsList = ['date', ...groupFields].join(', ');
+	message(`A iniciar a exportação de Validações APEX agrupadas por: ${fieldsList}...`);
 
 	//
 	// Prepare the filter params
@@ -81,7 +100,9 @@ export async function exportValidationsByStop({ context, message }: TaskProps): 
 
 	if (!fs.existsSync(context.output)) fs.mkdirSync(context.output, { recursive: true });
 
-	const csvWriter = new CsvWriter('output', `${context.output}/${TASK_ID}-${context.dates.start}-${context.dates.end}.csv`, { batch_size: 100000, logs: false });
+	// Build filename based on selected fields
+	const fieldsSlug = groupFields.length > 0 ? `by-${groupFields.join('-')}` : 'by-date';
+	const csvWriter = new CsvWriter('output', `${context.output}/validations-${fieldsSlug}-${context.dates.start}-${context.dates.end}.csv`, { batch_size: 100000, logs: false });
 
 	//
 	// Export the data
@@ -90,7 +111,7 @@ export async function exportValidationsByStop({ context, message }: TaskProps): 
 
 	message(`A aguardar o resultado da pesquisa...`);
 
-	const result: Record<string, Result> = {};
+	const result: Record<string, Record<string, number | string>> = {};
 
 	for await (const doc of stream) {
 		const document = doc as SimplifiedApexValidation;
@@ -102,20 +123,31 @@ export async function exportValidationsByStop({ context, message }: TaskProps): 
 			.fromUnixTimestamp(document.created_at)
 			.operational_date;
 
-		const resultKey = `${operationalDate}:${document.stop_id}`;
+		// Build the key from date + all selected group fields
+		const keyParts = [operationalDate, ...groupFields.map(field => String(document[field]))];
+		const resultKey = keyParts.join(':');
 
 		//
 		// Update the result with the current document
 
 		if (!result[resultKey]) {
-			result[resultKey] = {
+			// Initialize the result object with date first, then selected fields in order
+			const resultObj: Record<string, number | string> = {
 				date: operationalDate,
-				stop_id: document.stop_id,
-				validations: 0,
 			};
+
+			// Add each selected group field
+			for (const field of groupFields) {
+				resultObj[field] = document[field];
+			}
+
+			// Always add validations count at the end
+			resultObj.validations = 0;
+
+			result[resultKey] = resultObj;
 		}
 
-		result[resultKey].validations += 1;
+		result[resultKey].validations = (result[resultKey].validations as number) + 1;
 
 		if (counter % 1000 === 0) message(`Processados ${counter} documentos até agora...`);
 		counter++;
