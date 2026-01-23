@@ -330,18 +330,25 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 
 	// Stage 4: Search by ride ID if provided
 	// Uses regex pattern matching with case-insensitive option
-	// Also removes all vehicle IDs from the search string
+	// Also removes all vehicle IDs and driver IDs from the search string
 	// And adds a filter for the vehicle IDs if they are present in the search string (v:1117,1118)
+	// And adds a filter for the driver IDs if they are present in the search string (d:123,456)
 	if (filter.search) {
-		const searchWithoutVehicle = filter.search.replace(/.*?(v:\d+(?:,\d+)*)(?=\s|$)/g, '').trim();
-		const keywords = searchWithoutVehicle.split(/\s+/).map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-		const pattern = keywords.map(k => `(?=.*${k})`).join('') + '.*';
+		// Extract vehicle and driver IDs before stripping them from search
+		const vehicleMatch = filter.search.match(/v:([\d,]+)/);
+		const driverMatch = filter.search.match(/d:([\d,]+)/);
 
-		pipeline.push({
-			$match: { _id: { $options: 'i', $regex: pattern } },
-		});
+		// Remove v: and d: patterns from search string for ride ID matching
+		const searchWithoutSpecialFilters = filter.search.replace(/v:[\d,]+/g, '').replace(/d:[\d,]+/g, '').trim();
+		const keywords = searchWithoutSpecialFilters.split(/\s+/).filter(k => k.length > 0).map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 
-		const vehicleMatch = filter.search?.match(/v:([\d,]+)/);
+		if (keywords.length > 0) {
+			const pattern = keywords.map(k => `(?=.*${k})`).join('') + '.*';
+			pipeline.push({
+				$match: { _id: { $options: 'i', $regex: pattern } },
+			});
+		}
+
 		if (vehicleMatch) {
 			const vehicleIDs = vehicleMatch[1]
 				.split(',')
@@ -349,6 +356,16 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 				.filter(id => !isNaN(id));
 			if (vehicleIDs.length > 0) {
 				pipeline.push({ $match: { vehicle_ids: { $in: vehicleIDs } } });
+			}
+		}
+
+		if (driverMatch) {
+			const driverIDs = driverMatch[1]
+				.split(',')
+				.map(id => id.trim())
+				.filter(id => id.length > 0);
+			if (driverIDs.length > 0) {
+				pipeline.push({ $match: { driver_ids: { $in: driverIDs } } });
 			}
 		}
 	}
