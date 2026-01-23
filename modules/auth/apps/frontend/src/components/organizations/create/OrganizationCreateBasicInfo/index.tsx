@@ -27,18 +27,18 @@ export function OrganizationCreateBasicInfo() {
 			<Grid columns="aab" gap="lg">
 				<TextInput
 					key={organizationCreateContext.data.form.key('long_name')}
-					label={t('auth:organizations.create.SectionBasicInfo.fields.long_name.label')}
+					label={t('default:organizations.create.SectionBasicInfo.fields.long_name.label')}
 					maxLength={255}
-					placeholder={t('auth:organizations.create.SectionBasicInfo.fields.long_name.placeholder')}
+					placeholder={t('default:organizations.create.SectionBasicInfo.fields.long_name.placeholder')}
 					withAsterisk={!CreateOrganizationSchema.shape.long_name}
 					data-autofocus
 					{...organizationCreateContext.data.form.getInputProps('long_name')}
 				/>
 				<TextInput
 					key={organizationCreateContext.data.form.key('short_name')}
-					label={t('auth:organizations.create.SectionBasicInfo.fields.short_name.label')}
+					label={t('default:organizations.create.SectionBasicInfo.fields.short_name.label')}
 					maxLength={10}
-					placeholder={t('auth:organizations.create.SectionBasicInfo.fields.short_name.placeholder')}
+					placeholder={t('default:organizations.create.SectionBasicInfo.fields.short_name.placeholder')}
 					withAsterisk={!CreateOrganizationSchema.shape.short_name}
 					{...organizationCreateContext.data.form.getInputProps('short_name')}
 				/>

@@ -50,7 +50,7 @@ export function UsersListFilterOrganization() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('auth:users.list.FilterBar.organization.label')}
+			label={t('default:users.list.FilterBar.organization.label')}
 			onChange={usersListContext.actions.setFilterOrganizationIds}
 			options={parsedOptions}
 			withToggleAll

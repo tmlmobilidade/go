@@ -1,0 +1,42 @@
+{
+	"ACCESSIBILITY_ISSUE": {
+		"description": "Um acidente ocorreu na via, causando interrupções no tráfego.",
+		"title": "Acidente"
+	},
+	"ADDITIONAL_SERVICE": {
+		"description": "Trabalhos de construção estão em andamento, o que pode causar atrasos.",
+		"title": "Construção"
+	},
+	"DETOUR": {
+		"description": "A via está fechada devido a manutenção ou outros motivos.",
+		"title": "Fechamento de Via"
+	},
+	"MODIFIED_SERVICE": {
+		"description": "A via está fechada devido a manutenção ou outros motivos.",
+		"title": "Fechamento de Via"
+	},
+	"NO_SERVICE": {
+		"description": "A via está fechada devido a manutenção ou outros motivos.",
+		"title": "Fechamento de Via"
+	},
+	"ON_BOARD_SALE_ISSUE": {
+		"description": "Um problema na via está causando interrupções no tráfego.",
+		"title": "Problema na Via"
+	},
+	"REALTIME_INFO_ISSUE": {
+		"description": "Distúrbios públicos estão afetando a via.",
+		"title": "Distúrbios Públicos"
+	},
+	"REDUCED_SERVICE": {
+		"description": "O veículo está operando com alta carga de passageiros, o que pode causar atrasos.",
+		"title": "Alta Carga de Passageiros"
+	},
+	"SIGNIFICANT_DELAYS": {
+		"description": "Uma emergência médica ocorreu a bordo, causando interrupções no serviço.",
+		"title": "Emergência Médica"
+	},
+	"STOP_MOVED": {
+		"description": "Atividade policial está afetando a via.",
+		"title": "Atividade Policial"
+	}
+}

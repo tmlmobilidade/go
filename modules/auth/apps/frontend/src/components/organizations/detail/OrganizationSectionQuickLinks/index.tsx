@@ -28,24 +28,24 @@ export function OrganizationDetailQuickLinks() {
 	const columns: DataTableColumn<HomeLink & { actions: React.ReactNode }>[] = [
 		{
 			accessor: 'title',
-			title: t('auth:organizations.detail.QuickLinks.table.columns.name.label'),
+			title: t('default:organizations.detail.QuickLinks.table.columns.name.label'),
 			width: 250,
 		},
 		{
 			accessor: 'href',
-			title: t('auth:organizations.detail.QuickLinks.table.columns.link.label'),
+			title: t('default:organizations.detail.QuickLinks.table.columns.link.label'),
 			width: 400,
 		},
 		{
 			accessor: 'icon',
 			render: item => iconMap[item.icon],
-			title: t('auth:organizations.detail.QuickLinks.table.columns.icon.label'),
+			title: t('default:organizations.detail.QuickLinks.table.columns.icon.label'),
 			width: 300,
 		},
 		{
 			accessor: 'actions',
 			render: item => item.actions,
-			title: t('auth:organizations.detail.QuickLinks.table.columns.actions.label'),
+			title: t('default:organizations.detail.QuickLinks.table.columns.actions.label'),
 			width: 300,
 		},
 	];
@@ -94,18 +94,18 @@ export function OrganizationDetailQuickLinks() {
 
 	return (
 		<Collapsible
-			description={t('auth:organizations.detail.QuickLinks.description')}
-			title={t('auth:organizations.detail.QuickLinks.title')}
+			description={t('default:organizations.detail.QuickLinks.description')}
+			title={t('default:organizations.detail.QuickLinks.title')}
 		>
 			<Section gap="lg">
 				<Button
 					disabled={!organizationDetailContext.data.id}
-					label={t('auth:organizations.detail.QuickLinks.AddQuickLinkButton.label')}
+					label={t('default:organizations.detail.QuickLinks.AddQuickLinkButton.label')}
 					onClick={() => openOrganizationQuickLinksModal({ handleSubmit: handleSubmit })}
 					variant="primary"
 				/>
 				{!organizationDetailContext.data.id && (
-					<p>{t('auth:organizations.detail.QuickLinks.NoOrganizationLabel.label')}</p>
+					<p>{t('default:organizations.detail.QuickLinks.NoOrganizationLabel.label')}</p>
 				)}
 				{organizationDetailContext.data.id && (
 					<DataTable

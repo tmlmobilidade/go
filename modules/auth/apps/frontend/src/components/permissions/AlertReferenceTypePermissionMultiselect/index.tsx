@@ -28,10 +28,10 @@ export function AlertReferenceTypePermissionMultiselect({ disabled, onChange, va
 	// B. Transform data
 
 	const alertReferenceTypeOptionsWithAllowAll = [
-		{ label: t('auth:permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.all'), value: PermissionCatalog.ALLOW_ALL_FLAG },
-		{ label: t('auth:permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.lines'), value: AlertReferenceTypeSchema.enum.lines },
-		{ label: t('auth:permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.stops'), value: AlertReferenceTypeSchema.enum.stops },
-		{ label: t('auth:permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.rides'), value: AlertReferenceTypeSchema.enum.rides },
+		{ label: t('default:permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.all'), value: PermissionCatalog.ALLOW_ALL_FLAG },
+		{ label: t('default:permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.lines'), value: AlertReferenceTypeSchema.enum.lines },
+		{ label: t('default:permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.stops'), value: AlertReferenceTypeSchema.enum.stops },
+		{ label: t('default:permissions.AlertReferenceTypePermissionMultiselect.alertReferenceTypeOptionsWithAllowAll.rides'), value: AlertReferenceTypeSchema.enum.rides },
 	];
 
 	//
@@ -61,9 +61,9 @@ export function AlertReferenceTypePermissionMultiselect({ disabled, onChange, va
 	return (
 		<MultiSelect
 			data={alertReferenceTypeOptionsWithAllowAll}
-			description={t('auth:permissions.AlertReferenceTypePermissionMultiselect.description')}
+			description={t('default:permissions.AlertReferenceTypePermissionMultiselect.description')}
 			disabled={disabled}
-			label={t('auth:permissions.AlertReferenceTypePermissionMultiselect.label')}
+			label={t('default:permissions.AlertReferenceTypePermissionMultiselect.label')}
 			onChange={handleChange}
 			value={value}
 		/>

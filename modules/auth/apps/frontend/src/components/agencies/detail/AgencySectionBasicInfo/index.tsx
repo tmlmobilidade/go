@@ -24,26 +24,26 @@ export function AgencyDetailBasicInfo() {
 
 	return (
 		<Collapsible
-			description={t('auth:agencies.detail.SectionBasicInfo.description')}
-			title={t('auth:agencies.detail.SectionBasicInfo.title')}
+			description={t('default:agencies.detail.SectionBasicInfo.description')}
+			title={t('default:agencies.detail.SectionBasicInfo.title')}
 			defaultOpen
 		>
 			<Section gap="lg">
 				<Grid columns="aab" gap="lg">
 					<TextInput
 						key={agencyDetailContext.data.form.key('name')}
-						label={t('auth:agencies.detail.SectionBasicInfo.fields.name.label')}
+						label={t('default:agencies.detail.SectionBasicInfo.fields.name.label')}
 						maxLength={255}
-						placeholder={t('auth:agencies.detail.SectionBasicInfo.fields.name.placeholder')}
+						placeholder={t('default:agencies.detail.SectionBasicInfo.fields.name.placeholder')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateAgencySchema.shape.name.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('name')}
 					/>
 					<TextInput
 						key={agencyDetailContext.data.form.key('short_name')}
-						label={t('auth:agencies.detail.SectionBasicInfo.fields.short_name.label')}
+						label={t('default:agencies.detail.SectionBasicInfo.fields.short_name.label')}
 						maxLength={3}
-						placeholder={t('auth:agencies.detail.SectionBasicInfo.fields.short_name.placeholder')}
+						placeholder={t('default:agencies.detail.SectionBasicInfo.fields.short_name.placeholder')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateAgencySchema.shape.short_name.isOptional()}
 						{...agencyDetailContext.data.form.getInputProps('short_name')}
@@ -52,8 +52,8 @@ export function AgencyDetailBasicInfo() {
 				<Grid columns="abc" gap="lg">
 					<TextInput
 						key={agencyDetailContext.data.form.key('public_email')}
-						label={t('auth:agencies.detail.SectionBasicInfo.fields.email.label')}
-						placeholder={t('auth:agencies.detail.SectionBasicInfo.fields.email.placeholder')}
+						label={t('default:agencies.detail.SectionBasicInfo.fields.email.label')}
+						placeholder={t('default:agencies.detail.SectionBasicInfo.fields.email.placeholder')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						type="email"
 						withAsterisk={!CreateAgencySchema.shape.public_email.isOptional()}
@@ -61,8 +61,8 @@ export function AgencyDetailBasicInfo() {
 					/>
 					<TextInput
 						key={agencyDetailContext.data.form.key('phone')}
-						label={t('auth:agencies.detail.SectionBasicInfo.fields.phone.label')}
-						placeholder={t('auth:agencies.detail.SectionBasicInfo.fields.phone.placeholder')}
+						label={t('default:agencies.detail.SectionBasicInfo.fields.phone.label')}
+						placeholder={t('default:agencies.detail.SectionBasicInfo.fields.phone.placeholder')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						type="tel"
 						withAsterisk={!CreateAgencySchema.shape.phone.isOptional()}
@@ -70,8 +70,8 @@ export function AgencyDetailBasicInfo() {
 					/>
 					<TextInput
 						key={agencyDetailContext.data.form.key('website_url')}
-						label={t('auth:agencies.detail.SectionBasicInfo.fields.website.label')}
-						placeholder={t('auth:agencies.detail.SectionBasicInfo.fields.website.placeholder')}
+						label={t('default:agencies.detail.SectionBasicInfo.fields.website.label')}
+						placeholder={t('default:agencies.detail.SectionBasicInfo.fields.website.placeholder')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						type="url"
 						withAsterisk={!CreateAgencySchema.shape.website_url.isOptional()}
@@ -79,8 +79,8 @@ export function AgencyDetailBasicInfo() {
 					/>
 					<TextInput
 						key={agencyDetailContext.data.form.key('fareUrl')}
-						label={t('auth:agencies.detail.SectionBasicInfo.fields.fare_url.label')}
-						placeholder={t('auth:agencies.detail.SectionBasicInfo.fields.fare_url.placeholder')}
+						label={t('default:agencies.detail.SectionBasicInfo.fields.fare_url.label')}
+						placeholder={t('default:agencies.detail.SectionBasicInfo.fields.fare_url.placeholder')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						type="url"
 						withAsterisk={!CreateAgencySchema.shape.fare_url.isOptional()}
@@ -88,7 +88,7 @@ export function AgencyDetailBasicInfo() {
 					/>
 					<Select
 						key={agencyDetailContext.data.form.key('timezone')}
-						label={t('auth:agencies.detail.SectionBasicInfo.fields.timezone.label')}
+						label={t('default:agencies.detail.SectionBasicInfo.fields.timezone.label')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						data={Dates.TIMEZONE_LIST.map(tz => ({
 							label: tz,

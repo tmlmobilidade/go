@@ -2,8 +2,9 @@
 
 /* * */
 
+import ptAlertCauses from '@/i18n/namespaces/alert-causes/pt.json' with { type: 'json' };
+import ptAlertEffects from '@/i18n/namespaces/alert-effects/pt.json' with { type: 'json' };
 import ptDefault from '@/i18n/namespaces/default/pt.json' with { type: 'json' };
-import ptUnauthenticated from '@/i18n/namespaces/unauthenticated/pt.json' with { type: 'json' };
 
 /**
  * Resource keys for i18n translations.
@@ -13,8 +14,9 @@ import ptUnauthenticated from '@/i18n/namespaces/unauthenticated/pt.json' with {
  */
 export const i18nResourceKeys = {
 	pt: {
-		default: ptDefault,
-		unauthenticated: ptUnauthenticated,
+		'alert-causes': ptAlertCauses,
+		'alert-effects': ptAlertEffects,
+		'default': ptDefault,
 	},
 } as const;
 
@@ -25,5 +27,6 @@ export const i18nResourceKeys = {
  */
 export const i18nNamespaces = [
 	{ namespace: 'default', pt: ptDefault },
-	{ namespace: 'unauthenticated', pt: ptUnauthenticated },
+	{ namespace: 'alert-causes', pt: ptAlertCauses },
+	{ namespace: 'alert-effects', pt: ptAlertEffects },
 ];

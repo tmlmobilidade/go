@@ -24,43 +24,43 @@ export function UserDetailBasicInfo() {
 
 	return (
 		<Collapsible
-			description={t('auth:users.detail.BasicInfo.description')}
-			title={t('auth:users.detail.BasicInfo.title')}
+			description={t('default:users.detail.BasicInfo.description')}
+			title={t('default:users.detail.BasicInfo.title')}
 		>
 			<Section gap="md">
 				<Grid columns="ab" gap="xl">
 					<TextInput
 						key={userDetailContext.data.form.key('first_name')}
-						label={t('auth:users.detail.BasicInfo.fields.first_name.label')}
+						label={t('default:users.detail.BasicInfo.fields.first_name.label')}
 						maxLength={255}
-						placeholder={t('auth:users.detail.BasicInfo.fields.first_name.placeholder')}
+						placeholder={t('default:users.detail.BasicInfo.fields.first_name.placeholder')}
 						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.first_name.isOptional()}
 						{...userDetailContext.data.form.getInputProps('first_name')}
 					/>
 					<TextInput
 						key={userDetailContext.data.form.key('last_name')}
-						label={t('auth:users.detail.BasicInfo.fields.last_name.label')}
+						label={t('default:users.detail.BasicInfo.fields.last_name.label')}
 						maxLength={255}
-						placeholder={t('auth:users.detail.BasicInfo.fields.last_name.placeholder')}
+						placeholder={t('default:users.detail.BasicInfo.fields.last_name.placeholder')}
 						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.last_name.isOptional()}
 						{...userDetailContext.data.form.getInputProps('last_name')}
 					/>
 					<TextInput
 						key={userDetailContext.data.form.key('email')}
-						label={t('auth:users.detail.BasicInfo.fields.email.label')}
+						label={t('default:users.detail.BasicInfo.fields.email.label')}
 						leftSection={<IconMail size={22} />}
-						placeholder={t('auth:users.detail.BasicInfo.fields.email.placeholder')}
+						placeholder={t('default:users.detail.BasicInfo.fields.email.placeholder')}
 						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.email.isOptional()}
 						{...userDetailContext.data.form.getInputProps('email')}
 					/>
 					<TextInput
 						key={userDetailContext.data.form.key('phone')}
-						label={t('auth:users.detail.BasicInfo.fields.phone.label')}
+						label={t('default:users.detail.BasicInfo.fields.phone.label')}
 						leftSection={<IconPhone size={22} />}
-						placeholder={t('auth:users.detail.BasicInfo.fields.phone.placeholder')}
+						placeholder={t('default:users.detail.BasicInfo.fields.phone.placeholder')}
 						readOnly={userDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateUserSchema.shape.phone.isOptional()}
 						{...userDetailContext.data.form.getInputProps('phone')}
@@ -68,9 +68,9 @@ export function UserDetailBasicInfo() {
 					<PasswordInput
 						key={userDetailContext.data.form.key('password')}
 						autoComplete="new-password"
-						label={t('auth:users.detail.BasicInfo.fields.password.label')}
+						label={t('default:users.detail.BasicInfo.fields.password.label')}
 						onChange={event => userDetailContext.actions.handleChangePassword(event.target.value)}
-						placeholder={t('auth:users.detail.BasicInfo.fields.password.placeholder')}
+						placeholder={t('default:users.detail.BasicInfo.fields.password.placeholder')}
 						readOnly={userDetailContext.flags.isReadOnly}
 					/>
 				</Grid>

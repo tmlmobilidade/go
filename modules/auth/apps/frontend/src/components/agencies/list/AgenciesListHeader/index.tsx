@@ -20,7 +20,7 @@ export function AgenciesListHeader() {
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>{t('auth:agencies.list.Header.title')}</Label>
+			<Label size="lg" caps singleLine>{t('default:agencies.list.Header.title')}</Label>
 			<Spacer />
 			<SearchInput onChange={agenciesListContext.actions.setFilterSearch} value={agenciesListContext.filters.search} />
 		</Toolbar>

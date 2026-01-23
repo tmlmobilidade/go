@@ -22,16 +22,16 @@ export function RoleDetailBasicInfo() {
 
 	return (
 		<Collapsible
-			description={t('auth:roles.detail.BasicInfo.description')}
-			title={t('auth:roles.detail.BasicInfo.title')}
+			description={t('default:roles.detail.BasicInfo.description')}
+			title={t('default:roles.detail.BasicInfo.title')}
 		>
 			<Section gap="md">
 				<Grid columns="ab" gap="xl">
 					<TextInput
 						key={roleDetailContext.data.form.key('name')}
-						label={t('auth:roles.detail.BasicInfo.fields.name.label')}
+						label={t('default:roles.detail.BasicInfo.fields.name.label')}
 						maxLength={255}
-						placeholder={t('auth:roles.detail.BasicInfo.fields.name.placeholder')}
+						placeholder={t('default:roles.detail.BasicInfo.fields.name.placeholder')}
 						readOnly={roleDetailContext.flags.isReadOnly}
 						withAsterisk
 						{...roleDetailContext.data.form.getInputProps('name')}

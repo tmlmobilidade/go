@@ -1,0 +1,58 @@
+{
+	"ACCIDENT": {
+		"description": "Um acidente ocorreu na via, causando interrupções no tráfego.",
+		"title": "Acidente"
+	},
+	"CONSTRUCTION": {
+		"description": "Trabalhos de construção estão em andamento, o que pode causar atrasos.",
+		"title": "Construção"
+	},
+	"DEMONSTRATION": {
+		"description": "A via está fechada devido a manutenção ou outros motivos.",
+		"title": "Fechamento de Via"
+	},
+	"DRIVER_ABSENCE": {
+		"description": "A via está fechada devido a manutenção ou outros motivos.",
+		"title": "Fechamento de Via"
+	},
+	"DRIVER_ISSUE": {
+		"description": "A via está fechada devido a manutenção ou outros motivos.",
+		"title": "Fechamento de Via"
+	},
+	"HIGH_PASSENGER_LOAD": {
+		"description": "O veículo está operando com alta carga de passageiros, o que pode causar atrasos.",
+		"title": "Alta Carga de Passageiros"
+	},
+	"MEDICAL_EMERGENCY": {
+		"description": "Uma emergência médica ocorreu a bordo, causando interrupções no serviço.",
+		"title": "Emergência Médica"
+	},
+	"POLICE_ACTIVITY": {
+		"description": "Atividade policial está afetando a via.",
+		"title": "Atividade Policial"
+	},
+	"PUBLIC_DISORDER": {
+		"description": "Distúrbios públicos estão afetando a via.",
+		"title": "Distúrbios Públicos"
+	},
+	"ROAD_ISSUE": {
+		"description": "Um problema na via está causando interrupções no tráfego.",
+		"title": "Problema na Via"
+	},
+	"STRIKE": {
+		"description": "Uma greve está afetando o serviço.",
+		"title": "Greve"
+	},
+	"TECHNICAL_ISSUE": {
+		"description": "Um problema técnico está causando interrupções no serviço.",
+		"title": "Problema Técnico"
+	},
+	"TRAFFIC_JAM": {
+		"description": "Congestionamento de tráfego está causando atrasos.",
+		"title": "Congestionamento de Tráfego"
+	},
+	"WEATHER": {
+		"description": "Condições meteorológicas adversas estão afetando o tráfego.",
+		"title": "Clima"
+	}
+}

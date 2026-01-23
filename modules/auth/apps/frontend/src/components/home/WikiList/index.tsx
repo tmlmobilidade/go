@@ -24,13 +24,13 @@ export function WikiList() {
 	const columns: DataTableColumn<WikiArticle>[] = [
 		{
 			accessor: 'title',
-			title: t('auth:home.Wiki.list.columns.title.label'),
+			title: t('default:home.Wiki.list.columns.title.label'),
 			width: 600,
 		},
 		{
 			accessor: 'tags',
 			render: item => <TagGroup limit={10} tags={item.tags.map(tag => ({ label: tag, variant: 'secondary' }))} />,
-			title: t('auth:home.Wiki.list.columns.category.label'),
+			title: t('default:home.Wiki.list.columns.category.label'),
 			width: 500,
 		},
 	];

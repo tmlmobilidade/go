@@ -22,10 +22,10 @@ export function UsersListHeader() {
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>{t('auth:users.list.Header.title')}</Label>
+			<Label size="lg" caps singleLine>{t('default:users.list.Header.title')}</Label>
 			<Spacer />
 			<SearchInput onChange={usersListContext.actions.setFilterSearch} value={usersListContext.filters.search} />
-			<Button icon={<IconPlus size={20} />} label={t('auth:users.list.Header.NewUserButton.label')} onClick={openCreateUserModal} />
+			<Button icon={<IconPlus size={20} />} label={t('default:users.list.Header.NewUserButton.label')} onClick={openCreateUserModal} />
 		</Toolbar>
 	);
 

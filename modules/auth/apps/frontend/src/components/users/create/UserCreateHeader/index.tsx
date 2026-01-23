@@ -25,12 +25,12 @@ export function UserCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateUserModal} type="close" />
-			<Tag label={t('auth:users.create.Header.NewUserButton.label')} variant="secondary" />
+			<Tag label={t('default:users.create.Header.NewUserButton.label')} variant="secondary" />
 			<Spacer />
 			<Button
 				disabled={!userCreateContext.data.form.isValid()}
 				icon={<IconPlus size={28} />}
-				label={t('auth:users.create.Header.SaveButton.label')}
+				label={t('default:users.create.Header.SaveButton.label')}
 				loading={userCreateContext.flags.isSaving}
 				onClick={userCreateContext.actions.saveUser}
 				variant="primary"

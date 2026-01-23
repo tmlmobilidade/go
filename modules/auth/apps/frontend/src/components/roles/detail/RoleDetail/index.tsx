@@ -31,12 +31,12 @@ export function RoleDetail() {
 				<PermissionSection
 					key={item.scope}
 					configActions={item.actions}
-					description={t('auth:permissions.' + item.description)}
+					description={t('default:permissions.' + item.description)}
 					enabledPermissions={rolesDetailContext.data.form.values.permissions}
 					onResourceToggle={rolesDetailContext.actions.handlePermissionResourceToggle}
 					onToggle={rolesDetailContext.actions.handlePermissionToggle}
 					scope={item.scope}
-					title={t('auth:permissions.' + item.title)}
+					title={t('default:permissions.' + item.title)}
 				/>
 			))}
 		</Pane>

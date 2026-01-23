@@ -72,20 +72,20 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 	return (
 		<CheckCard
 			checked={!!currentPermissionEntry || hasPermissionFromRole}
-			description={t('auth:permissions.' + configAction.description)}
+			description={t('default:permissions.' + configAction.description)}
 			disabled={hasPermissionFromRole}
-			label={t('auth:permissions.' + configAction.label)}
+			label={t('default:permissions.' + configAction.label)}
 			onChange={handleToggle}
 		>
 			{onResourceToggle && configAction.resources?.includes('AGENCIES') && (
 				<AgencyPermissionMultiselect
-					description={t('auth:permissions.AgencyPermissionMultiselect.description')}
-					label={t('auth:permissions.AgencyPermissionMultiselect.label')}
+					description={t('default:permissions.AgencyPermissionMultiselect.description')}
+					label={t('default:permissions.AgencyPermissionMultiselect.label')}
 					onChange={handleResourceToggle}
 					selected={selectedAgencyIds}
 				/>
 			)}
-			{hasPermissionFromRole && <Label caps>{t('auth:permissions.SectionItems.label')}</Label>}
+			{hasPermissionFromRole && <Label caps>{t('default:permissions.SectionItems.label')}</Label>}
 		</CheckCard>
 	);
 
