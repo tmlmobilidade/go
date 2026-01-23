@@ -157,7 +157,19 @@ export async function exportValidationsAggregated({ context, groupFields, messag
 
 	message(`A escrever os resultados no ficheiro CSV...`);
 
-	await csvWriter.write(Object.values(result));
+	// Write results in batches to avoid stack overflow with large datasets
+	const WRITE_BATCH_SIZE = 10000;
+	const resultKeys = Object.keys(result);
+	const totalResults = resultKeys.length;
+
+	for (let i = 0; i < totalResults; i += WRITE_BATCH_SIZE) {
+		const batch = resultKeys.slice(i, i + WRITE_BATCH_SIZE).map(key => result[key]);
+		await csvWriter.write(batch);
+
+		if (i % 50000 === 0 && i > 0) {
+			message(`Escritos ${i} de ${totalResults} resultados...`);
+		}
+	}
 
 	await csvWriter.flush();
 
