@@ -22,8 +22,8 @@
 		"@tmlmobilidade/utils": "*",
 		"@vis.gl/react-maplibre": "8.1.0",
 		"clsx": "2.1.1",
-		"maplibre-gl": "5.15.0",
-		"next": "16.1.1",
+		"maplibre-gl": "5.16.0",
+		"next": "16.1.4",
 		"nuqs": "2.8.6",
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
@@ -31,8 +31,8 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.0.3",
-		"@types/react": "19.2.7",
+		"@types/node": "25.0.10",
+		"@types/react": "19.2.9",
 		"@types/react-dom": "19.2.3",
 		"typescript": "5.9.3"
 	}

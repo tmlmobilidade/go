@@ -5,7 +5,7 @@
 import { useRoleCreateContext } from '@/components/roles/create/RoleCreate.context';
 import { closeCreateRoleModal } from '@/components/roles/create/RoleCreate.modal';
 import { IconUpload } from '@tabler/icons-react';
-import { CloseButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 

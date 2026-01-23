@@ -5,7 +5,7 @@
 import { useAnnotationCreateContext } from '@/components/annotations/create/AnnotationCreate.context';
 import { closeCreateAnnotationModal } from '@/components/annotations/create/AnnotationCreate.modal';
 import { IconUpload } from '@tabler/icons-react';
-import { CloseButton, Button, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 

@@ -23,7 +23,7 @@ export function DayTooltip({ date, events }: DayTooltipProps) {
 
 	// Separate periods and other events
 	const periods = events.filter(e => e.type === 'period');
-	const otherEvents = events.filter(e => e.type !== 'period');
+	const annotations = events.filter(e => e.type === 'annotation');
 
 	return (
 		<div className={styles.container}>
@@ -54,10 +54,10 @@ export function DayTooltip({ date, events }: DayTooltipProps) {
 				</div>
 			)}
 
-			{otherEvents.length > 0 && (
+			{annotations.length > 0 && (
 				<div className={styles.section}>
 					<div className={styles.sectionTitle}>Anotações</div>
-					{otherEvents.map((event) => {
+					{annotations.map((event) => {
 						const Icon = event.icon;
 						return (
 							<div key={event.id} className={styles.event}>

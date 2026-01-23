@@ -224,48 +224,48 @@ export const CauseEffectPairingDefaultAlert = {
 	},
 	DRIVER_ISSUE: {
 		ACCESSIBILITY_ISSUE: {
-			message: 'Devido a um problema com o motorista, as linhas {lines} poderão sofrer um impacto na acessibilidade. Os passageiros com mobilidade reduzida deverão contactar a linha de apoio.',
-			title: '{lines} | Impacto na Acessibilidade - Problema com o Motorista',
+			message: 'Devido a um problema com a operação, as linhas {lines} poderão sofrer um impacto na acessibilidade. Os passageiros com mobilidade reduzida deverão contactar a linha de apoio.',
+			title: '{lines} | Impacto na Acessibilidade - Problema com a operação',
 		},
 		ADDITIONAL_SERVICE: {
-			message: 'Devido a um problema com o motorista, foram implementados serviços adicionais nas linhas {lines}.',
-			title: '{lines} | Serviço Adicional - Problema com o Motorista',
+			message: 'Devido a um problema com a operação, foram implementados serviços adicionais nas linhas {lines}.',
+			title: '{lines} | Serviço Adicional - Problema com a operação',
 		},
 		DETOUR: {
-			message: 'Devido a um problema com o motorista, as linhas {lines} realizam desvio de percurso.',
-			title: '{lines} | Desvio de Percurso - Problema com o Motorista',
+			message: 'Devido a um problema com a operação, as linhas {lines} realizam desvio de percurso.',
+			title: '{lines} | Desvio de Percurso - Problema com a operação',
 		},
 		MODIFIED_SERVICE: {
-			message: 'Devido a um problema com o motorista, o serviço das linhas {lines} foi temporariamente modificado.',
-			title: '{lines} | Serviço Modificado - Problema com o Motorista',
+			message: 'Devido a um problema com a operação, o serviço das linhas {lines} foi temporariamente modificado.',
+			title: '{lines} | Serviço Modificado - Problema com a operação',
 		},
 		NO_EFFECT: {
-			message: 'Apesar de um problema com o motorista, as linhas {lines} mantêm o seu funcionamento normal. Consulte os horários em tempo real na app ou site Carris Metropolitana.',
-			title: '{lines} | Sem Impacto no Serviço - Problema com o Motorista',
+			message: 'Apesar de um problema com a operação, as linhas {lines} mantêm o seu funcionamento normal. Consulte os horários em tempo real na app ou site Carris Metropolitana.',
+			title: '{lines} | Sem Impacto no Serviço - Problema com a operação',
 		},
 		NO_SERVICE: {
-			message: 'Devido a um problema com o motorista, as linhas {lines} encontram-se temporariamente fora de serviço. Pedimos a compreensão de todos.',
-			title: '{lines} | Serviço Suspenso - Problema com o Motorista',
+			message: 'Devido a um problema com a operação, as linhas {lines} encontram-se temporariamente fora de serviço. Pedimos a compreensão de todos.',
+			title: '{lines} | Serviço Suspenso - Problema com a operação',
 		},
 		OTHER_EFFECT: {
-			message: 'Devido a um problema com o motorista, o funcionamento das linhas {lines} pode estar a ser afetado. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
-			title: '{lines} | Perturbação no Serviço - Problema com o Motorista',
+			message: 'Devido a um problema com a operação, o funcionamento das linhas {lines} pode estar a ser afetado. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
+			title: '{lines} | Perturbação no Serviço - Problema com a operação',
 		},
 		REDUCED_SERVICE: {
-			message: 'Devido a um problema com o motorista, as linhas {lines} estão a funcionar de forma reduzida. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
-			title: '{lines} | Serviço Reduzido - Problema com o Motorista',
+			message: 'Devido a um problema com a operação, as linhas {lines} estão a funcionar de forma reduzida. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
+			title: '{lines} | Serviço Reduzido - Problema com a operação',
 		},
 		SIGNIFICANT_DELAYS: {
-			message: 'Devido a um problema com o motorista, as linhas {lines} estão a sofrer atrasos significativos. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos',
-			title: '{lines} | Atrasos Significativos - Problema com o Motorista',
+			message: 'Devido a um problema com a operação, as linhas {lines} estão a sofrer atrasos significativos. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos',
+			title: '{lines} | Atrasos Significativos - Problema com a operação',
 		},
 		STOP_MOVED: {
-			message: 'Devido àa um problema com o motorista, uma paragem das linhas {lines} foi temporariamente relocalizada.',
+			message: 'Devido àa um problema com a operação, uma paragem das linhas {lines} foi temporariamente relocalizada.',
 			title: '{lines} | Paragem Relocalizada - Problemas com o Motorista',
 		},
 		UNKNOWN_EFFECT: {
-			message: 'Devido a um problema com o motorista, o funcionamento das linhas {lines} poderá ser afetado. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
-			title: '{lines} | Impacto incerto - Problema com o Motorista',
+			message: 'Devido a um problema com a operação, o funcionamento das linhas {lines} poderá ser afetado. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
+			title: '{lines} | Impacto incerto - Problema com a operação',
 		},
 	},
 	HIGH_PASSENGER_LOAD: {
@@ -822,48 +822,48 @@ export const CauseEffectPairingDefaultAlert = {
 	},
 	VEHICLE_ISSUE: {
 		ACCESSIBILITY_ISSUE: {
-			message: 'Devido a problemas num veículo, as linhas {lines} poderão sofrer um impacto na acessibilidade. Os passageiros com mobilidade reduzida deverão contactar a linha de apoio.',
-			title: '{lines} | Impacto na Acessibilidade - Problemas num veículo',
+			message: 'Devido a problemas com a operação, as linhas {lines} poderão sofrer um impacto na acessibilidade. Os passageiros com mobilidade reduzida deverão contactar a linha de apoio.',
+			title: '{lines} | Impacto na Acessibilidade - Problemas com a operação',
 		},
 		ADDITIONAL_SERVICE: {
-			message: 'Devido a problemas num veículo, foram implementados serviços adicionais nas linhas {lines}.',
-			title: '{lines} | Serviço Adicional - Problemas num veículo',
+			message: 'Devido a problemas com a operação, foram implementados serviços adicionais nas linhas {lines}.',
+			title: '{lines} | Serviço Adicional - Problemas com a operação',
 		},
 		DETOUR: {
-			message: 'Devido problemas num veículo, as linhas {lines} realizam desvio de percurso.',
-			title: '{lines} | Desvio de Percurso - Problemas num veículo',
+			message: 'Devido problemas com a operação, as linhas {lines} realizam desvio de percurso.',
+			title: '{lines} | Desvio de Percurso - Problemas com a operação',
 		},
 		MODIFIED_SERVICE: {
-			message: 'Devido a problemas num veículo, o serviço das linhas {lines} foi temporariamente modificado.',
-			title: '{lines} | Serviço Modificado - Problemas num veículo',
+			message: 'Devido a problemas com a operação, o serviço das linhas {lines} foi temporariamente modificado.',
+			title: '{lines} | Serviço Modificado - Problemas com a operação',
 		},
 		NO_EFFECT: {
-			message: 'Apesar de problemas num veículo, as linhas {lines} mantêm o seu funcionamento normal. Consulte os horários em tempo real na app ou site Carris Metropolitana.',
-			title: '{lines} | Sem Impacto no Serviço - Problemas num veículo',
+			message: 'Apesar de problemas com a operação, as linhas {lines} mantêm o seu funcionamento normal. Consulte os horários em tempo real na app ou site Carris Metropolitana.',
+			title: '{lines} | Sem Impacto no Serviço - Problemas com a operação',
 		},
 		NO_SERVICE: {
-			message: 'Devido a problemas num veículo, as linhas {lines} encontram-se temporariamente fora de serviço. Pedimos a compreensão de todos.',
-			title: '{lines} | Serviço Suspenso - Problemas num veículo',
+			message: 'Devido a problemas com a operação, as linhas {lines} encontram-se temporariamente fora de serviço. Pedimos a compreensão de todos.',
+			title: '{lines} | Serviço Suspenso - Problemas com a operação',
 		},
 		OTHER_EFFECT: {
-			message: 'Devido a problemas num veículo, o funcionamento das linhas {lines} pode estar a ser afetado. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
-			title: '{lines} | Perturbação no Serviço - Problemas num veículo',
+			message: 'Devido a problemas com a operação, o funcionamento das linhas {lines} pode estar a ser afetado. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
+			title: '{lines} | Perturbação no Serviço - Problemas com a operação',
 		},
 		REDUCED_SERVICE: {
-			message: 'Devido a problemas num veículo, as linhas {lines} estão a funcionar de forma reduzida. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
-			title: '{lines} | Serviço Reduzido - Problemas num veículo',
+			message: 'Devido a problemas com a operação, as linhas {lines} estão a funcionar de forma reduzida. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
+			title: '{lines} | Serviço Reduzido - Problemas com a operação',
 		},
 		SIGNIFICANT_DELAYS: {
-			message: 'Devido a problemas num veículo, as linhas {lines} estão a sofrer atrasos significativos. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos',
-			title: '{lines} | Atrasos Significativos - Problemas num veículo',
+			message: 'Devido a problemas com a operação, as linhas {lines} estão a sofrer atrasos significativos. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos',
+			title: '{lines} | Atrasos Significativos - Problemas com a operação',
 		},
 		STOP_MOVED: {
-			message: 'Devido a problemas num veículo, uma paragem das linhas {lines} foi temporariamente relocalizada.',
-			title: '{lines} | Paragem Relocalizada - Problemas num veículo',
+			message: 'Devido a problemas com a operação, uma paragem das linhas {lines} foi temporariamente relocalizada.',
+			title: '{lines} | Paragem Relocalizada - Problemas com a operação',
 		},
 		UNKNOWN_EFFECT: {
-			message: 'Devido a problemas num veículo, o funcionamento das linhas {lines} poderá ser afetado. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
-			title: '{lines} | Impacto Incerto - Problemas num veículo',
+			message: 'Devido a problemas com a operação, o funcionamento das linhas {lines} poderá ser afetado. Consulte os horários em tempo real na app ou site Carris Metropolitana. Agradecemos a compreensão de todos.',
+			title: '{lines} | Impacto Incerto - Problemas com a operação',
 		},
 	},
 	WEATHER: {

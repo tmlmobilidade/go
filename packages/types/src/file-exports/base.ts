@@ -22,7 +22,8 @@ export const FileExportBaseSchema = DocumentSchema
 		type: FileExportTypeSchema,
 	});
 
-export const UpdateFileExportSchema = FileExportBaseSchema.omit({ _id: true, created_at: true, created_by: true, properties: true, type: true, updated_at: true }).partial();
+export const CreateFileExportSchema = FileExportBaseSchema.omit({ _id: true, created_at: true, updated_at: true }).partial();
+export const UpdateFileExportSchema = CreateFileExportSchema.partial();
 
 export type UpdateFileExport = z.infer<typeof UpdateFileExportSchema>;
 export type CreateFileExportDto<T extends { properties: Record<string, unknown>, type: string }> = Omit<z.infer<typeof FileExportBaseSchema>, '_id' | 'created_at' | 'file_id' | 'processing_status' | 'updated_at'> & {
