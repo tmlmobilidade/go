@@ -3137,37 +3137,373 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'PUBLIC_DISORDER:DETOUR:agency': undefined,
+	'PUBLIC_DISORDER:DETOUR:agency': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
 
-	'PUBLIC_DISORDER:DETOUR:lines': undefined,
+	'PUBLIC_DISORDER:DETOUR:lines': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
 
-	'PUBLIC_DISORDER:DETOUR:rides': undefined,
+	'PUBLIC_DISORDER:DETOUR:rides': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
 
-	'PUBLIC_DISORDER:DETOUR:stops': undefined,
+	'PUBLIC_DISORDER:DETOUR:stops': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
 
-	'PUBLIC_DISORDER:NO_SERVICE:agency': undefined,
+	'PUBLIC_DISORDER:NO_SERVICE:agency': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
 
-	'PUBLIC_DISORDER:NO_SERVICE:lines': undefined,
+	'PUBLIC_DISORDER:NO_SERVICE:lines': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
 
-	'PUBLIC_DISORDER:NO_SERVICE:rides': undefined,
+	'PUBLIC_DISORDER:NO_SERVICE:rides': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
 
-	'PUBLIC_DISORDER:NO_SERVICE:stops': undefined,
+	'PUBLIC_DISORDER:NO_SERVICE:stops': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
 
-	'PUBLIC_DISORDER:REDUCED_SERVICE:agency': undefined,
+	'PUBLIC_DISORDER:REDUCED_SERVICE:agency': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
 
-	'PUBLIC_DISORDER:REDUCED_SERVICE:lines': undefined,
+	'PUBLIC_DISORDER:REDUCED_SERVICE:lines': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
 
-	'PUBLIC_DISORDER:REDUCED_SERVICE:rides': undefined,
+	'PUBLIC_DISORDER:REDUCED_SERVICE:rides': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
 
-	'PUBLIC_DISORDER:REDUCED_SERVICE:stops': undefined,
+	'PUBLIC_DISORDER:REDUCED_SERVICE:stops': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
 
-	'PUBLIC_DISORDER:SIGNIFICANT_DELAYS:agency': undefined,
+	'PUBLIC_DISORDER:SIGNIFICANT_DELAYS:agency': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
 
-	'PUBLIC_DISORDER:SIGNIFICANT_DELAYS:lines': undefined,
+	'PUBLIC_DISORDER:SIGNIFICANT_DELAYS:lines': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
 
-	'PUBLIC_DISORDER:SIGNIFICANT_DELAYS:rides': undefined,
+	'PUBLIC_DISORDER:SIGNIFICANT_DELAYS:rides': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
 
-	'PUBLIC_DISORDER:SIGNIFICANT_DELAYS:stops': undefined,
+	'PUBLIC_DISORDER:SIGNIFICANT_DELAYS:stops': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
 
 	'ROAD_ISSUE:ACCESSIBILITY_ISSUE:agency': {
 		description: {
