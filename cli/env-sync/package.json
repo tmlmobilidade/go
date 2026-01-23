@@ -38,8 +38,8 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20251202.1817.5",
-		"@types/archiver": "6.0.2",
-		"@types/node": "25.0.3",
+		"@types/archiver": "7.0.0",
+		"@types/node": "25.0.10",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0"
 	}

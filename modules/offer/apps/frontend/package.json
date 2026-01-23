@@ -23,7 +23,7 @@
 		"@tmlmobilidade/utils": "*",
 		"clsx": "2.1.1",
 		"jszip": "3.10.1",
-		"next": "16.1.1",
+		"next": "16.1.4",
 		"nuqs": "2.8.6",
 		"papaparse": "5.5.3",
 		"react": "19.2.3",
@@ -34,9 +34,9 @@
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/luxon": "3.7.1",
-		"@types/node": "25.0.3",
+		"@types/node": "25.0.10",
 		"@types/papaparse": "5.5.2",
-		"@types/react": "19.2.7",
+		"@types/react": "19.2.9",
 		"@types/react-dom": "19.2.3",
 		"typescript": "5.9.3"
 	}
