@@ -12,6 +12,15 @@ export const DescribeAlertPropsBaseSchema = z.object({
 	references: AlertSchema.shape.references,
 });
 
+const DescribeAlertPropsAgencySchema = DescribeAlertPropsBaseSchema.extend({
+	data: z.array(z.object({
+		id: z.string(),
+		long_name: z.string(),
+		short_name: z.string(),
+	})).default([]),
+	type: z.literal('agency'),
+});
+
 const DescribeAlertPropsLinesSchema = DescribeAlertPropsBaseSchema.extend({
 	data: z.array(z.object({
 		id: z.string(),
@@ -35,6 +44,7 @@ const DescribeAlertPropsStopsSchema = DescribeAlertPropsBaseSchema.extend({
 });
 
 export const DescribeAlertPropsSchema = z.discriminatedUnion('type', [
+	DescribeAlertPropsAgencySchema,
 	DescribeAlertPropsLinesSchema,
 	DescribeAlertPropsRidesSchema,
 	DescribeAlertPropsStopsSchema,
