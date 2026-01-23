@@ -28,4 +28,5 @@ export * from '@/sams/index.js';
 export * from '@/stops/index.js';
 export * from '@/ticketing/index.js';
 export * from '@/vehicle-events/index.js';
+export * from '@/vehicle/index.js';
 export * from '@/wiki.js';

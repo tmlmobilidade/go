@@ -4,7 +4,8 @@
 
 import { alertI18nTemplates } from '@/templates/descriptions.js';
 import { templatePlaceholderReplacements } from '@/templates/placeholders.js';
-import { type AlertConfigKey, type DescribeAlertProps, type I18nCodes } from '@/types.js';
+import { DescribeAlertProps } from '@/types/describe-alert-props.js';
+import { type AlertConfigKey, type I18nCodes } from '@/types/types.js';
 
 /* * */
 
@@ -39,7 +40,7 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 	//
 	// Build the key to access the templates
 
-	const templateKey: AlertConfigKey = `${props.cause}:${props.effect}:${props.reference_type}`;
+	const templateKey = `${props.cause}:${props.effect}:${props.reference_type}` as AlertConfigKey;
 
 	//
 	// Iterate over all strings in the result object and
@@ -53,6 +54,8 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 			// Even though we might need a plural string, if it does not exist we fallback to the singular one.
 			const templateStringType = alertI18nTemplates[templateKey][resultStringKey];
 			const templateStringCountableVariation = templateStringType[isPlural ? 'plural' : 'singular'] ? templateStringType[isPlural ? 'plural' : 'singular'] : templateStringType.singular;
+			// Skip if the template string variation is not defined
+			if (!templateStringCountableVariation) continue;
 			// Set the base string from the templates in the result object
 			result[resultStringKey][i18nCode] = templateStringCountableVariation[i18nCode].text;
 			// Each translated string has several placeholders that need to be replaced with actual values.

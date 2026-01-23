@@ -5,7 +5,7 @@
 import { PeriodAssign } from '@/components/periods/calendar/PeriodAssign';
 import { PeriodAssignContextProvider } from '@/components/periods/calendar/PeriodAssign.context';
 import { DataProviders } from '@/providers/data-providers';
-import { Dates } from '@tmlmobilidade/dates';
+import { CalendarKey } from '@tmlmobilidade/dates';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 /* * */
@@ -16,8 +16,8 @@ const MODAL_ID = 'create-annotation-modal';
 
 interface AssignPeriodModalProps {
 	dateRange: {
-		end: Dates
-		start: Dates
+		end: CalendarKey
+		start: CalendarKey
 	}
 }
 

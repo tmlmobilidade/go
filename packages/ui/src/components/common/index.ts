@@ -24,4 +24,5 @@ export * from './StopSelect';
 export * from './Switch';
 export * from './Tooltip';
 export * from './Tree';
+export { default as WeekdaySelector } from './WeekdaySelector';
 export { ViewportList } from 'react-viewport-list';

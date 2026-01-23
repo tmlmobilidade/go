@@ -8,13 +8,13 @@ export const GtfsCauseValues = [
 	'ACCIDENT',
 	'CONSTRUCTION',
 	'DEMONSTRATION',
-	'HOLIDAY',
-	'MAINTENANCE',
 	'MEDICAL_EMERGENCY',
 	'POLICE_ACTIVITY',
 	'STRIKE',
-	'TECHNICAL_PROBLEM',
+	'TECHNICAL_ISSUE',
 	'WEATHER',
+	// 'HOLIDAY',
+	// 'MAINTENANCE',
 	// 'OTHER_CAUSE',
 	// 'UNKNOWN_CAUSE',
 ] as const;
@@ -30,10 +30,9 @@ export const GtfsCauseExtendedValues = [
 	'DRIVER_ABSENCE',
 	'DRIVER_ISSUE',
 	'HIGH_PASSENGER_LOAD',
-	'ROAD_INCIDENT',
-	'SYSTEM_FAILURE',
+	'ROAD_ISSUE',
 	'TRAFFIC_JAM',
-	'VEHICLE_ISSUE',
+	'PUBLIC_DISORDER',
 ] as const;
 
 export const GtfsCauseExtendedSchema = z.enum(GtfsCauseExtendedValues);

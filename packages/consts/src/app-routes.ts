@@ -85,10 +85,31 @@ export const PAGE_ROUTES = Object.freeze({
 	},
 
 	/* * */
+	/* FLEET */
+	fleet: {
+		// BASE
+		BASE: `${getAppConfig('fleet', 'frontend_url')}`,
+
+		// VEHICLES
+		VEHICLES_DETAIL: (id: string) => `${getAppConfig('fleet', 'frontend_url')}/vehicles/${id}`,
+		VEHICLES_LIST: `${getAppConfig('fleet', 'frontend_url')}/vehicles`,
+	},
+
+	/* * */
 	/* OFFER */
 	offer: {
 		// BASE
 		BASE: `${getAppConfig('offer', 'frontend_url')}`,
+
+		// LINES
+		LINES_DETAIL: (id: string) => `${getAppConfig('offer', 'frontend_url')}/lines/${id}`,
+		LINES_LIST: `${getAppConfig('offer', 'frontend_url')}/lines`,
+
+		// PATTERN
+		PATTERN_DETAIL: (id: string, patternId: string, routeId: string) => `${getAppConfig('offer', 'frontend_url')}/lines/${id}/${routeId}/${patternId}`,
+
+		// ROUTE
+		ROUTE_DETAIL: (id: string, routeId: string) => `${getAppConfig('offer', 'frontend_url')}/lines/${id}/${routeId}`,
 
 		// TYPOLOGIES
 		TYPOLOGIES_DETAIL: (id: string) => `${getAppConfig('offer', 'frontend_url')}/typologies/${id}`,
@@ -290,6 +311,18 @@ export const API_ROUTES = Object.freeze({
 	},
 
 	/* * */
+	/* FLEET */
+	fleet: {
+		// BASE
+		BASE: `${getAppConfig('fleet', 'api_url')}`,
+
+		// VEHICLES
+		VEHICLES_DETAIL_LOCK: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}/lock`,
+		VEHICLES_DETAIL: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}`,
+		VEHICLES_LIST: `${getAppConfig('fleet', 'api_url')}/vehicles`,
+	},
+
+	/* * */
 	/* LOCATIONS */
 	locations: {
 		// BASE
@@ -308,6 +341,25 @@ export const API_ROUTES = Object.freeze({
 	offer: {
 		// BASE
 		BASE: `${getAppConfig('offer', 'api_url')}`,
+
+		// GTFS
+		GTFS_PARSE: `${getAppConfig('offer', 'api_url')}/gtfs/parse`,
+
+		// LINES
+		LINES_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/lines/${id}/lock`,
+		LINES_DETAIL: (id: string) => `${getAppConfig('offer', 'api_url')}/lines/${id}`,
+		LINES_LIST: `${getAppConfig('offer', 'api_url')}/lines`,
+
+		// PATTERNS
+		PATTERNS_DETAIL_IMPORT_GTFS: (id: string) => `${getAppConfig('offer', 'api_url')}/patterns/${id}/import-gtfs`,
+		PATTERNS_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/patterns/${id}/lock`,
+		PATTERNS_DETAIL: (id: string) => `${getAppConfig('offer', 'api_url')}/patterns/${id}`,
+		PATTERNS_LIST: `${getAppConfig('offer', 'api_url')}/patterns`,
+
+		// ROUTES
+		ROUTES_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/routes/${id}/lock`,
+		ROUTES_DETAIL: (id: string) => `${getAppConfig('offer', 'api_url')}/routes/${id}`,
+		ROUTES_LIST: `${getAppConfig('offer', 'api_url')}/routes`,
 
 		// TYPOLOGIES
 		TYPOLOGIES_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/typologies/${id}/lock`,

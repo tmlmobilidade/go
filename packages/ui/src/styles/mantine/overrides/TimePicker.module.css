@@ -1,25 +1,13 @@
 /* * */
-/* WRAPPER */
+/* INPUT */
 
-.wrapper {
-	padding: 0 !important;
+.input {
+	overflow: hidden;
 }
 
 /* * */
-/* PRESETS */
+/* WRAPPER */
 
-.presetControl {
-	padding: 0 5px;
-	border: 2px solid transparent;
-}
-
-.presetControl[data-active='true'] {
-	color: var(--color-contrast);
-	background-color: var(--color-primary);
-	border-color: var(--color-secondary);
-	box-shadow: 0 1px 3px 0 var(--color-shadow);
-}
-
-.presetsGroupLabel {
-	padding: 0;
+.wrapper {
+	min-width: 0;
 }

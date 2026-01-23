@@ -1,6 +1,9 @@
-import { Dates } from '@tmlmobilidade/dates';
+/* * */
 
-import { DateRangeState } from '../contexts/CalendarUI.context';
+import type { DateRangeState } from '../contexts/CalendarUI.context';
+
+import { type CalendarKey, parseCalendarKey } from '@tmlmobilidade/dates';
+import { type Dates } from '@tmlmobilidade/dates';
 
 /* * */
 
@@ -12,46 +15,25 @@ export interface DayRangeStatus {
 
 /* * */
 
-/**
- * Determines the range status for a given day
- * This derives all visual state from the range selection state
- * Hover state is now handled via DOM manipulation for performance
- */
-export function getDayRangeStatus(
-	day: Dates,
-	range: DateRangeState,
-): DayRangeStatus {
+export function getDayRangeStatus(day: Dates, range: DateRangeState): DayRangeStatus {
 	const { end, start } = range;
 
-	// Early return if no selection
 	if (!start) {
-		return {
-			isEnd: false,
-			isInRange: false,
-			isStart: false,
-		};
+		return { isEnd: false, isInRange: false, isStart: false };
 	}
 
-	const dayOp = day.operational_date;
-	const startOp = start.operational_date;
-	const endOp = end?.operational_date;
+	const dayKey: CalendarKey = parseCalendarKey(day);
 
-	// Check if this is the start or end day
-	const isStart = dayOp === startOp;
-	const isEnd = endOp ? dayOp === endOp : false;
+	const isStart = dayKey === start;
+	const isEnd = end ? dayKey === end : false;
 
-	// Determine if day is in the confirmed range
 	let isInRange = false;
 	if (start && end) {
-		// Use min/max to handle reversed selections
-		const minOp = startOp < endOp ? startOp : endOp;
-		const maxOp = startOp > endOp ? startOp : endOp;
-		isInRange = dayOp > minOp && dayOp < maxOp;
+		const min = start < end ? start : end;
+		const max = start > end ? start : end;
+		// strictly inside (not including ends), same behavior as your old code
+		isInRange = dayKey > min && dayKey < max;
 	}
 
-	return {
-		isEnd,
-		isInRange,
-		isStart,
-	};
+	return { isEnd, isInRange, isStart };
 }

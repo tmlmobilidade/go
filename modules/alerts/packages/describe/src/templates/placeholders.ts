@@ -2,7 +2,8 @@
 
 /* * */
 
-import { DescribeAlertProps, type TemplatePlaceholder } from '@/types.js';
+import { type DescribeAlertProps } from '@/types/describe-alert-props.js';
+import { type TemplatePlaceholder } from '@/types/placeholders.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized } from '@tmlmobilidade/types';
 
@@ -20,8 +21,8 @@ export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data:
 
 	'{lines_prose}': async () => '',
 
-	'{lines_title}': async (data: DescribeAlertProps['data']) => {
-		const lineShortNames = Array.from(new Set(data.lines?.map(ht => ht.id) ?? []));
+	'{lines_title}': async (data: Extract<DescribeAlertProps, { type: 'lines' }>['data']) => {
+		const lineShortNames = Array.from(new Set(data.map(ht => ht.id) ?? []));
 		return lineShortNames.join(', ');
 	},
 
@@ -31,7 +32,7 @@ export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data:
 
 	'{ride_short_name}': async () => '',
 
-	'{rides_description}': async (data: DescribeAlertProps['data']) => {
+	'{rides_description}': async (data: Extract<DescribeAlertProps, { type: 'rides' }>['data']) => {
 		//
 
 		//
@@ -40,7 +41,7 @@ export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data:
 
 		const patternGroups: Record<RideNormalized['pattern_id'], RideNormalized[]> = {};
 
-		for (const rideData of data.rides ?? []) {
+		for (const rideData of data) {
 			if (!patternGroups[rideData.pattern_id]) {
 				patternGroups[rideData.pattern_id] = [];
 			}
@@ -77,8 +78,8 @@ export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data:
 		//
 	},
 
-	'{rides_title}': async (data: DescribeAlertProps['data']) => {
-		const lineShortNames = Array.from(new Set(data.rides?.map(ht => ht.line_id) ?? []));
+	'{rides_title}': async (data: Extract<DescribeAlertProps, { type: 'rides' }>['data']) => {
+		const lineShortNames = Array.from(new Set(data.map(ht => ht.line_id) ?? []));
 		return lineShortNames.join(', ');
 	},
 
@@ -93,4 +94,10 @@ export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data:
 	'{stops_prose}': async () => '',
 
 	'{stops_title}': async () => '',
+
+	'*LINES*': async (data: Extract<DescribeAlertProps, { type: 'lines' }>['data']) => {
+		const lineShortNames = Array.from(new Set(data.map(ht => ht.id) ?? []));
+		return lineShortNames.join(', ');
+	},
+
 };

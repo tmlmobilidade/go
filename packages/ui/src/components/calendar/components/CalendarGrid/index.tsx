@@ -1,12 +1,15 @@
 'use client';
 
+/* * */
+
 import { Tooltip } from '@mantine/core';
-import { type CalendarDay, Dates } from '@tmlmobilidade/dates';
+import { type CalendarDay } from '@tmlmobilidade/dates';
 import { type CalendarEvent } from '@tmlmobilidade/types';
 import React, { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
+import { EventPosition, mapEventsToVisibleDays } from '../../utils/mapEventsToDays';
 import { CalendarEventComponent } from '../CalendarEvent';
 import { DayTooltip } from '../DayTooltip';
 
@@ -21,16 +24,7 @@ export interface CalendarGridProps {
 
 /* * */
 
-const WEEK_DAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-
-/* * */
-
-interface EventPosition {
-	event: CalendarEvent
-	isEnd: boolean
-	isMiddle: boolean
-	isStart: boolean
-}
+const WEEK_DAYS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
 /* * */
 
@@ -38,31 +32,9 @@ export function CalendarGrid({ events = [], onDayClick, onEventClick, weeks }: C
 	//
 
 	// Map events to days with position information
-	const eventsByDate = useMemo(() => {
-		const map = new Map<string, EventPosition[]>();
-
-		events.forEach((event) => {
-			const startOp = Dates.fromISO(event.startDate).operational_date;
-			const endOp = event.endDate
-				? Dates.fromISO(event.endDate).operational_date
-				: startOp;
-
-			weeks.flat().forEach((day) => {
-				const dateKey = day.date.operational_date;
-
-				if (dateKey >= startOp && dateKey <= endOp) {
-					const existing = map.get(dateKey) || [];
-					map.set(dateKey, [...existing, {
-						event,
-						isEnd: dateKey === endOp,
-						isMiddle: dateKey !== startOp && dateKey !== endOp,
-						isStart: dateKey === startOp,
-					}]);
-				}
-			});
-		});
-
-		return map;
+	const positionsByDate = useMemo(() => {
+		const visibleDays = weeks.flat();
+		return mapEventsToVisibleDays(events, visibleDays).positionsByDate;
 	}, [events, weeks]);
 
 	return (
@@ -79,7 +51,8 @@ export function CalendarGrid({ events = [], onDayClick, onEventClick, weeks }: C
 				{weeks.map((week, weekIndex) => (
 					<div key={weekIndex} className={styles.week}>
 						{week.map((day, dayIndex) => {
-							const dayEventPositions = eventsByDate.get(day.date.operational_date) || [];
+							const dayEventPositions = (positionsByDate.get(day.calendarKey) as EventPosition[] | undefined) ?? [];
+
 							const periodEventPositions = dayEventPositions.filter(ep => ep.event.type === 'period');
 							const otherEventPositions = dayEventPositions.filter(ep => ep.event.type !== 'period');
 

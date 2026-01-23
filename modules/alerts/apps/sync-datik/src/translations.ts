@@ -1,6 +1,6 @@
-import { GtfsCauseExtended, GtfsEffect } from '@tmlmobilidade/types';
+import { type GtfsCauseExtended, type GtfsEffectExtended } from '@tmlmobilidade/types';
 
-export const Translations: { CAUSE: Record<GtfsCauseExtended, string>, EFFECT: Record<GtfsEffect, string> } = {
+export const Translations: { CAUSE: Record<GtfsCauseExtended, string>, EFFECT: Record<GtfsEffectExtended, string> } = {
 	CAUSE: {
 		ACCIDENT: 'Acidente',
 		CONSTRUCTION: 'Obras',
@@ -8,16 +8,13 @@ export const Translations: { CAUSE: Record<GtfsCauseExtended, string>, EFFECT: R
 		DRIVER_ABSENCE: 'Condutor Ausente',
 		DRIVER_ISSUE: 'Condutor com Problema',
 		HIGH_PASSENGER_LOAD: 'Elevado Volume de Passageiros',
-		HOLIDAY: 'Feriado',
-		MAINTENANCE: 'Manutenção',
 		MEDICAL_EMERGENCY: 'Emergência Médica',
 		POLICE_ACTIVITY: 'Atividade Policial',
-		ROAD_INCIDENT: 'Incidente na Estrada',
+		PUBLIC_DISORDER: 'Desacato',
+		ROAD_ISSUE: 'Problema na Via',
 		STRIKE: 'Greve',
-		SYSTEM_FAILURE: 'Falha do Sistema',
-		TECHNICAL_PROBLEM: 'Problema Técnico',
+		TECHNICAL_ISSUE: 'Problema Técnico',
 		TRAFFIC_JAM: 'Congestão de Trânsito',
-		VEHICLE_ISSUE: 'Veículo com Problema',
 		WEATHER: 'Mau Tempo',
 	},
 	EFFECT: {
@@ -26,6 +23,8 @@ export const Translations: { CAUSE: Record<GtfsCauseExtended, string>, EFFECT: R
 		DETOUR: 'Desvio',
 		MODIFIED_SERVICE: 'Alteração de Horários',
 		NO_SERVICE: 'Serviço Cancelado',
+		ON_BOARD_SALE_ISSUE: 'Problema na Venda a Bordo',
+		REALTIME_INFO_ISSUE: 'Problema na Informação em Tempo Real',
 		REDUCED_SERVICE: 'Serviço Reduzido',
 		SIGNIFICANT_DELAYS: 'Atrasos Significativos',
 		STOP_MOVED: 'Paragem Deslocada',
@@ -909,7 +908,7 @@ export const CauseEffectPairingDefaultAlert = {
 	},
 };
 
-export function getAlertTitleAndDescription(cause: GtfsCauseExtended, effect: GtfsEffect, lines: string, detour?: string) {
+export function getAlertTitleAndDescription(cause: GtfsCauseExtended, effect: GtfsEffectExtended, lines: string, detour?: string) {
 	return {
 		description: CauseEffectPairingDefaultAlert[cause][effect].message.replace('{lines}', lines).replace('{detour}', detour ?? ''),
 		title: CauseEffectPairingDefaultAlert[cause][effect].title.replace('{lines}', lines),

@@ -16,7 +16,7 @@ export async function promptFilterByDates(): Promise<{ end: OperationalDate, sta
 	);
 
 	const startDate = await text({
-		initialValue: '20250101',
+		initialValue: '',
 		message: 'Data de Início:',
 		placeholder: '20240101 ou 2024-01-01',
 		validate(value) {
@@ -39,7 +39,7 @@ export async function promptFilterByDates(): Promise<{ end: OperationalDate, sta
 	}
 
 	const endDate = await text({
-		initialValue: '20250102',
+		initialValue: '',
 		message: 'Data de Fim:',
 		placeholder: '20240101 ou 2024-01-01',
 		validate(value) {

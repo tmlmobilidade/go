@@ -3,7 +3,7 @@
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { EffectIcons } from '@/lib/icons';
 import { Translations } from '@/lib/translations';
-import { GtfsEffectSchema } from '@tmlmobilidade/types';
+import { AlertCauseEffectMap, GtfsEffectSchema } from '@tmlmobilidade/types';
 import { Grid, LargeButton, Section } from '@tmlmobilidade/ui';
 
 /* * */
@@ -19,7 +19,7 @@ export function AlertCreateStepEffect() {
 	//
 	// B. Transform data
 
-	const preparedOptions = Object.values(GtfsEffectSchema.enum)
+	const preparedOptions = AlertCauseEffectMap[alertCreateContext.data.form.getValues().cause]
 		.map(item => ({ icon: EffectIcons[item], label: Translations.EFFECT[item], value: item }))
 		.sort((a, b) => a.label.localeCompare(b.label));
 

@@ -91,6 +91,8 @@ jobs:
             STORAGE_DEST
             STORAGE_REMOTE_NAME
             STORAGE_TYPE
+            ARTIFACTS_BUCKET
+            ARTIFACTS_PREFIX
             PROD_HOST
             PROD_USERNAME
             PROD_PASSWORD
@@ -117,13 +119,11 @@ jobs:
           node dist/index.js --storage-only
 
       # # # # # # # # # # # # # # # # # # # # #
-      # Upload artifacts
+      # Upload artifacts to OCI (secure storage for public repos)
       # # # # # # # # # # # # # # # # # # # # #
-      - name: Upload backup artifacts
+      - name: Upload backup artifacts to OCI
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: backup-artifacts
-          path: cli/env-sync/backups
-          retention-days: 7
-          if-no-files-found: ignore
+        working-directory: ./cli/env-sync
+        run: |
+          echo "Uploading artifacts to OCI bucket..."
+          node dist/index.js --upload-artifacts || echo "Artifact upload failed or no artifacts to upload"

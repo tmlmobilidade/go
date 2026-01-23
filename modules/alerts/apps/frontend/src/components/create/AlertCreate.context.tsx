@@ -109,14 +109,12 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			if (!form.getValues().cause || !form.getValues().effect || !form.getValues().reference_type || !form.getValues().references?.length) return;
 			const alertTemplating = await describeAlert({
 				cause: form.getValues().cause,
-				data: {
-					lines: (selectedReferencesData as { id: string, long_name: string, short_name: string }[]),
-					rides: (selectedReferencesData as RideNormalized[]),
-					stops: (selectedReferencesData as { id: string, name: string }[]),
-				},
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				data: selectedReferencesData as any[],
 				effect: form.getValues().effect,
 				reference_type: form.getValues().reference_type,
 				references: form.getValues().references ?? [],
+				type: form.getValues().reference_type,
 			});
 			if (!alertTemplating) return;
 			form.setFieldValue('description', alertTemplating.description.pt);

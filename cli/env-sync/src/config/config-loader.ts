@@ -24,7 +24,15 @@ export interface StorageConfig {
 	user: string
 }
 
+export interface ArtifactsConfig {
+	/** OCI bucket name for storing artifacts */
+	bucket: string
+	/** Optional prefix/folder within the bucket */
+	prefix: string
+}
+
 export interface SyncConfig {
+	artifacts: ArtifactsConfig
 	backupDir: string
 	backupRetentionDays: number
 	databaseProduction: MongoConfig
@@ -89,6 +97,10 @@ export function loadConfig(): SyncConfig {
 	const backupDir = path.join(scriptDir, 'backups');
 
 	return {
+		artifacts: {
+			bucket: parseEnvValue(envVars.ARTIFACTS_BUCKET, ''),
+			prefix: parseEnvValue(envVars.ARTIFACTS_PREFIX, ''),
+		},
 		backupDir,
 		backupRetentionDays: parseEnvNumber(envVars.BACKUP_RETENTION_DAYS, 7),
 		databaseProduction: {

@@ -1,213 +1,33 @@
 /* * */
 
-import { type AlertConfigKey, type TemplateFragment } from '@/types.js';
+import { type AlertConfigKey, type TemplateFragment } from '@/types/types.js';
 
 /**
- * Alert i18n templates registry
- * Each key is formed by the combination of cause, effect and reference_type of an alert
- * in the format: 'CAUSE:EFFECT:REFERENCE_TYPE'
+ * Alert i18n templates registry.
+ * Each key is formed by the combination of cause, effect and reference_type
+ * of an alert in the format: 'CAUSE:EFFECT:REFERENCE_TYPE'
  */
 export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
-
-	'ACCIDENT:ACCESSIBILITY_ISSUE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'ACCIDENT:ACCESSIBILITY_ISSUE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'ACCIDENT:ACCESSIBILITY_ISSUE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: ['{rides_description}'], text: 'Due to a road accident, accessibility features on the rides {rides_description} are temporarily unavailable while this notice is in effect. Please consider alternative options or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{rides_description}'], text: 'Devido a um acidente rodoviário, as funcionalidades de acessibilidade {rides_description} estão temporariamente indisponíveis enquanto este aviso estiver ativo. Por favor, considere alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{rides_description}'], text: 'Due to a road accident, accessibility features on the ride {rides_description} are temporarily unavailable while this notice is in effect. Please consider alternative options or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{rides_description}'], text: 'Devido a um acidente rodoviário, as funcionalidades de acessibilidade {rides_description} estão temporariamente indisponíveis enquanto este aviso estiver ativo. Por favor, considere alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			singular: {
-				en: { placeholders: ['{rides_title}'], text: '{rides_title} | Road accident affects accessibility features' },
-				pt: { placeholders: ['{rides_title}'], text: '{rides_title} | Acidente afeta funcionalidades de acessibilidade' },
-			},
-		},
-	},
-
-	'ACCIDENT:ACCESSIBILITY_ISSUE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: ['{stop_name[]}'], text: 'Due to a road accident, accessibility features at the stops {stop_name[]} are temporarily unavailable while this notice is in effect. Please consider alternative stops or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{stop_name[]}'], text: 'Devido a um acidente rodoviário, as condições de acessibilidade nas paragens {stop_name[]} estão temporariamente indisponíveis enquanto este aviso estiver ativo. Por favor, considere paragens alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{stop_name}'], text: 'Due to a road accident, accessibility features at the stop {stop_name} are temporarily unavailable while this notice is in effect. Please consider alternative stops or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{stop_name}'], text: 'Devido a um acidente rodoviário, as condições de acessibilidade na paragem {stop_name} estão temporariamente indisponíveis enquanto este aviso estiver ativo. Por favor, considere paragens alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{stop_name[]}'], text: '{stop_name[]} | Road accident affects stop accessibility' },
-				pt: { placeholders: ['{stop_name[]}'], text: '{stop_name[]} | Acidente afeta a acessibilidade nas paragens' },
-			},
-			singular: {
-				en: { placeholders: ['{stop_name}'], text: '{stop_name} | Road accident affects stop accessibility' },
-				pt: { placeholders: ['{stop_name}'], text: '{stop_name} | Acidente afeta a acessibilidade na paragem' },
-			},
-		},
-	},
-
-	'ACCIDENT:ADDITIONAL_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'ACCIDENT:ADDITIONAL_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, additional services have been arranged on the lines {line_short_name[]} while this notice is in effect. Please check schedules or contact our customer service for more information. We appreciate your understanding as we work to manage the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, foram organizados serviços adicionais nas linhas {line_short_name[]} enquanto este aviso estiver ativo. Por favor, verifique os horários ou entre em contacto connosco para mais informações. Agradecemos a sua compreensão enquanto gerimos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, an additional service has been arranged on the line {line_short_name} while this notice is in effect. Please check schedules or contact our customer service for more information. We appreciate your understanding as we work to manage the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, foi organizado um serviço adicional na linha {line_short_name} enquanto este aviso estiver ativo. Por favor, verifique os horários ou entre em contacto connosco para mais informações. Agradecemos a sua compreensão enquanto gerimos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Additional services arranged due to road accident' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Serviços adicionais organizados devido a acidente rodoviário' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Additional service arranged due to road accident' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Serviço adicional organizado devido a acidente rodoviário' },
-			},
-		},
-	},
-
-	'ACCIDENT:ADDITIONAL_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: ['{ride_short_name[]}'], text: 'Due to a road accident, additional rides have been arranged for {ride_short_name[]} while this notice is in effect. Please check updated information or contact our customer service for further details. We appreciate your understanding as we manage the situation.' },
-				pt: { placeholders: ['{ride_short_name[]}'], text: 'Devido a um acidente rodoviário, foram organizadas viagens adicionais para {ride_short_name[]} enquanto este aviso estiver ativo. Por favor, consulte as informações atualizadas ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão enquanto gerimos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{ride_short_name}'], text: 'Due to a road accident, an additional ride has been arranged for {ride_short_name} while this notice is in effect. Please check updated information or contact our customer service for further details. We appreciate your understanding as we manage the situation.' },
-				pt: { placeholders: ['{ride_short_name}'], text: 'Devido a um acidente rodoviário, foi organizada uma viagem adicional para {ride_short_name} enquanto este aviso estiver ativo. Por favor, consulte as informações atualizadas ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão enquanto gerimos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{ride_short_name[]}'], text: '{ride_short_name[]} | Additional rides arranged due to road accident' },
-				pt: { placeholders: ['{ride_short_name[]}'], text: '{ride_short_name[]} | Viagens adicionais organizadas devido a acidente rodoviário' },
-			},
-			singular: {
-				en: { placeholders: ['{ride_short_name}'], text: '{ride_short_name} | Additional ride arranged due to road accident' },
-				pt: { placeholders: ['{ride_short_name}'], text: '{ride_short_name} | Viagem adicional organizada devido a acidente rodoviário' },
-			},
-		},
-	},
-
-	'ACCIDENT:ADDITIONAL_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: ['{stop_name[]}'], text: 'Due to a road accident, additional service has been provided at the stops {stop_name[]} while this notice is in effect. Please check updated information or contact our customer service for further details. We appreciate your understanding as we manage the situation.' },
-				pt: { placeholders: ['{stop_name[]}'], text: 'Devido a um acidente rodoviário, foi disponibilizado serviço adicional nas paragens {stop_name[]} enquanto este aviso estiver ativo. Por favor, consulte as informações atualizadas ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão enquanto gerimos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{stop_name}'], text: 'Due to a road accident, additional service has been provided at the stop {stop_name} while this notice is in effect. Please check updated information or contact our customer service for further details. We appreciate your understanding as we manage the situation.' },
-				pt: { placeholders: ['{stop_name}'], text: 'Devido a um acidente rodoviário, foi disponibilizado serviço adicional na paragem {stop_name} enquanto este aviso estiver ativo. Por favor, consulte as informações atualizadas ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão enquanto gerimos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{stop_name[]}'], text: '{stop_name[]} | Additional service provided due to road accident' },
-				pt: { placeholders: ['{stop_name[]}'], text: '{stop_name[]} | Serviço adicional disponibilizado devido a acidente rodoviário' },
-			},
-			singular: {
-				en: { placeholders: ['{stop_name}'], text: '{stop_name} | Additional service provided due to road accident' },
-				pt: { placeholders: ['{stop_name}'], text: '{stop_name} | Serviço adicional disponibilizado devido a acidente rodoviário' },
-			},
-		},
-	},
 
 	'ACCIDENT:DETOUR:agency': {
 		description: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: ['*LINES*'], text: 'Due to a road accident, *LINES* are being temporarily detoured to continue service. We appreciate your understanding.' },
+				pt: { placeholders: ['*LINES*'], text: 'Devido a um acidente rodoviário, *LINES* estão a ser temporariamente desviadas para continuar o serviço. Agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: ['*LINES*'], text: 'Due to a road accident, accessibility services on the line *LINES* have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
+				pt: { placeholders: ['*LINES*'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha *LINES* foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: ['*LINES*'], text: '*LINES* | Road accident affects accessibility services' },
+				pt: { placeholders: ['*LINES*'], text: '*LINES* | Acidente provoca impacto nos serviços de acessibilidade' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: ['*LINES*'], text: '*LINES* | Road accident affects accessibility services' },
+				pt: { placeholders: ['*LINES*'], text: '*LINES* | Acidente provoca impacto nos serviços de acessibilidade' },
 			},
 		},
 	},
@@ -215,8 +35,8 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:DETOUR:lines': {
 		description: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, the lines {line_short_name[]} are operating on a detour while this notice is in effect. Please follow posted signage or contact our customer service for guidance. We appreciate your patience as we manage the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, as linhas {line_short_name[]} estão a operar em desvio enquanto este aviso estiver ativo. Por favor, siga a sinalização ou entre em contacto connosco para orientação. Agradecemos a sua paciência enquanto gerimos a situação.' },
+				en: { placeholders: ['*LINES*'], text: 'Due to a road accident, the lines *LINES* are operating on a detour while this notice is in effect. Please follow posted signage or contact our customer service for guidance. We appreciate your patience as we manage the situation.' },
+				pt: { placeholders: ['*LINES*'], text: 'Devido a um acidente rodoviário, as linhas *LINES* estão a operar em desvio enquanto este aviso estiver ativo. Por favor, siga a sinalização ou entre em contacto connosco para orientação. Agradecemos a sua paciência enquanto gerimos a situação.' },
 			},
 			singular: {
 				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, the line {line_short_name} is operating on a detour while this notice is in effect. Please follow posted signage or contact our customer service for guidance. We appreciate your patience as we manage the situation.' },
@@ -277,98 +97,6 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			singular: {
 				en: { placeholders: ['{stop_name}'], text: '{stop_name} | Road accident causes temporary detour at stop' },
 				pt: { placeholders: ['{stop_name}'], text: '{stop_name} | Acidente provoca desvio temporário na paragem' },
-			},
-		},
-	},
-
-	'ACCIDENT:MODIFIED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'ACCIDENT:MODIFIED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, the service on the lines {line_short_name[]} has been modified while this notice is in effect. Please check updated schedules or contact our customer service for further details. We thank you for your understanding as we work to restore normal service.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, o serviço nas linhas {line_short_name[]} foi modificado enquanto este aviso estiver ativo. Por favor, verifique os horários atualizados ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão enquanto trabalhamos para restaurar o serviço normal.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, the service on the line {line_short_name} has been modified while this notice is in effect. Please check updated schedules or contact our customer service for further details. We thank you for your understanding as we work to restore normal service.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, o serviço na linha {line_short_name} foi modificado enquanto este aviso estiver ativo. Por favor, verifique os horários atualizados ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão enquanto trabalhamos para restaurar o serviço normal.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Service modified due to road accident' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Serviço modificado devido a acidente rodoviário' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Service modified due to road accident' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Serviço modificado devido a acidente rodoviário' },
-			},
-		},
-	},
-
-	'ACCIDENT:MODIFIED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: ['{ride_short_name[]}'], text: 'Due to a road accident, the rides {ride_short_name[]} are operating with a modified service while this notice is in effect. Please check updated information or contact our customer service for further details. We thank you for your understanding as we work to restore normal operations.' },
-				pt: { placeholders: ['{ride_short_name[]}'], text: 'Devido a um acidente rodoviário, as viagens {ride_short_name[]} estão a operar com serviço modificado enquanto este aviso estiver ativo. Por favor, consulte as informações atualizadas ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão enquanto trabalhamos para restaurar a operação normal.' },
-			},
-			singular: {
-				en: { placeholders: ['{ride_short_name}'], text: 'Due to a road accident, the ride {ride_short_name} is operating with a modified service while this notice is in effect. Please check updated information or contact our customer service for further details. We thank you for your understanding as we work to restore normal operations.' },
-				pt: { placeholders: ['{ride_short_name}'], text: 'Devido a um acidente rodoviário, a viagem {ride_short_name} está a operar com serviço modificado enquanto este aviso estiver ativo. Por favor, consulte as informações atualizadas ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão enquanto trabalhamos para restaurar a operação normal.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{ride_short_name[]}'], text: '{ride_short_name[]} | Service modified due to road accident' },
-				pt: { placeholders: ['{ride_short_name[]}'], text: '{ride_short_name[]} | Serviço modificado devido a acidente rodoviário' },
-			},
-			singular: {
-				en: { placeholders: ['{ride_short_name}'], text: '{ride_short_name} | Service modified due to road accident' },
-				pt: { placeholders: ['{ride_short_name}'], text: '{ride_short_name} | Serviço modificado devido a acidente rodoviário' },
-			},
-		},
-	},
-
-	'ACCIDENT:MODIFIED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: ['{stop_name[]}'], text: 'Due to a road accident, service conditions at the stops {stop_name[]} have been modified while this notice is in effect. Please follow updated information on site or contact our customer service for further details. We thank you for your understanding as we work to restore normal service.' },
-				pt: { placeholders: ['{stop_name[]}'], text: 'Devido a um acidente rodoviário, as condições de serviço nas paragens {stop_name[]} foram modificadas enquanto este aviso estiver ativo. Por favor, consulte a informação atualizada no local ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão enquanto trabalhamos para restaurar o serviço normal.' },
-			},
-			singular: {
-				en: { placeholders: ['{stop_name}'], text: 'Due to a road accident, service conditions at the stop {stop_name} have been modified while this notice is in effect. Please follow updated information on site or contact our customer service for further details. We thank you for your understanding as we work to restore normal service.' },
-				pt: { placeholders: ['{stop_name}'], text: 'Devido a um acidente rodoviário, as condições de serviço na paragem {stop_name} foram modificadas enquanto este aviso estiver ativo. Por favor, consulte a informação atualizada no local ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão enquanto trabalhamos para restaurar o serviço normal.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{stop_name[]}'], text: '{stop_name[]} | Service conditions modified due to road accident' },
-				pt: { placeholders: ['{stop_name[]}'], text: '{stop_name[]} | Condições de serviço modificadas devido a acidente rodoviário' },
-			},
-			singular: {
-				en: { placeholders: ['{stop_name}'], text: '{stop_name} | Service conditions modified due to road accident' },
-				pt: { placeholders: ['{stop_name}'], text: '{stop_name} | Condições de serviço modificadas devido a acidente rodoviário' },
 			},
 		},
 	},
@@ -649,98 +377,6 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'ACCIDENT:STOP_MOVED:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'ACCIDENT:STOP_MOVED:lines': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, stops on the lines {line_short_name[]} have been temporarily relocated while this notice is in effect. Please follow posted signage or contact our customer service for details. We appreciate your cooperation as we manage the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os pontos de paragem nas linhas {line_short_name[]} foram temporariamente relocados enquanto este aviso estiver ativo. Por favor, siga a sinalização ou entre em contacto connosco para mais detalhes. Agradecemos a sua colaboração enquanto gerimos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, the stop on the line {line_short_name} has been temporarily relocated while this notice is in effect. Please follow posted signage or contact our customer service for details. We appreciate your cooperation as we manage the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, o ponto de paragem na linha {line_short_name} foi temporariamente relocado enquanto este aviso estiver ativo. Por favor, siga a sinalização ou entre em contacto connosco para mais detalhes. Agradecemos a sua colaboração enquanto gerimos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Stops temporarily relocated due to road accident' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Pontos de paragem temporariamente relocados devido a acidente rodoviário' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Stop temporarily relocated due to road accident' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Ponto de paragem temporariamente relocados devido a acidente rodoviário' },
-			},
-		},
-	},
-
-	'ACCIDENT:STOP_MOVED:rides': {
-		description: {
-			plural: {
-				en: { placeholders: ['{ride_short_name[]}'], text: 'Due to a road accident, the rides {ride_short_name[]} are temporarily serving different stops while this notice is in effect. Please follow posted signage or contact our customer service for updated information. We thank you for your understanding as we manage the situation.' },
-				pt: { placeholders: ['{ride_short_name[]}'], text: 'Devido a um acidente rodoviário, as viagens {ride_short_name[]} estão a utilizar paragens temporárias enquanto este aviso estiver ativo. Por favor, siga a sinalização ou entre em contacto connosco para informações atualizadas. Agradecemos a sua compreensão enquanto gerimos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{ride_short_name}'], text: 'Due to a road accident, the ride {ride_short_name} is temporarily serving a different stop while this notice is in effect. Please follow posted signage or contact our customer service for updated information. We thank you for your understanding as we manage the situation.' },
-				pt: { placeholders: ['{ride_short_name}'], text: 'Devido a um acidente rodoviário, a viagem {ride_short_name} está a utilizar uma paragem temporária enquanto este aviso estiver ativo. Por favor, siga a sinalização ou entre em contacto connosco para informações atualizadas. Agradecemos a sua compreensão enquanto gerimos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{ride_short_name[]}'], text: '{ride_short_name[]} | Stops temporarily moved due to road accident' },
-				pt: { placeholders: ['{ride_short_name[]}'], text: '{ride_short_name[]} | Paragens temporariamente alteradas devido a acidente rodoviário' },
-			},
-			singular: {
-				en: { placeholders: ['{ride_short_name}'], text: '{ride_short_name} | Stop temporarily moved due to road accident' },
-				pt: { placeholders: ['{ride_short_name}'], text: '{ride_short_name} | Paragem temporariamente alterada devido a acidente rodoviário' },
-			},
-		},
-	},
-
-	'ACCIDENT:STOP_MOVED:stops': {
-		description: {
-			plural: {
-				en: { placeholders: ['{stop_name[]}'], text: 'Due to a road accident, the stops {stop_name[]} have been temporarily moved while this notice is in effect. Please follow posted signage or contact our customer service for updated information. We thank you for your understanding as we manage the situation.' },
-				pt: { placeholders: ['{stop_name[]}'], text: 'Devido a um acidente rodoviário, as paragens {stop_name[]} foram temporariamente alteradas enquanto este aviso estiver ativo. Por favor, siga a sinalização ou entre em contacto connosco para informações atualizadas. Agradecemos a sua compreensão enquanto gerimos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{stop_name}'], text: 'Due to a road accident, the stop {stop_name} has been temporarily moved while this notice is in effect. Please follow posted signage or contact our customer service for updated information. We thank you for your understanding as we manage the situation.' },
-				pt: { placeholders: ['{stop_name}'], text: 'Devido a um acidente rodoviário, a paragem {stop_name} foi temporariamente alterada enquanto este aviso estiver ativo. Por favor, siga a sinalização ou entre em contacto connosco para informações atualizadas. Agradecemos a sua compreensão enquanto gerimos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{stop_name[]}'], text: '{stop_name[]} | Stops temporarily moved due to road accident' },
-				pt: { placeholders: ['{stop_name[]}'], text: '{stop_name[]} | Paragens temporariamente alteradas devido a acidente rodoviário' },
-			},
-			singular: {
-				en: { placeholders: ['{stop_name}'], text: '{stop_name} | Stop temporarily moved due to road accident' },
-				pt: { placeholders: ['{stop_name}'], text: '{stop_name} | Paragem temporariamente alterada devido a acidente rodoviário' },
-			},
-		},
-	},
-
 	'CONSTRUCTION:ACCESSIBILITY_ISSUE:agency': {
 		description: {
 			plural: {
@@ -833,98 +469,6 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'CONSTRUCTION:ADDITIONAL_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'CONSTRUCTION:ADDITIONAL_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Additional services have been added to the lines {line_short_name[]} due to ongoing construction. Please check updated schedules or contact our customer service for details. We thank you for your understanding during this period.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Foram adicionados serviços adicionais nas linhas {line_short_name[]} devido a obras em curso. Por favor, consulte os horários atualizados ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão durante este período.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Additional services have been added to the line {line_short_name} due to ongoing construction. Please check updated schedules or contact our customer service for details. We thank you for your understanding during this period.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Foi adicionado um serviço adicional na linha {line_short_name} devido a obras em curso. Por favor, consulte os horários atualizados ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão durante este período.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Additional service due to construction' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Serviço adicional devido a obras de construção' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Additional service due to construction' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Serviço adicional devido a obras de construção' },
-			},
-		},
-	},
-
-	'CONSTRUCTION:ADDITIONAL_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: ['{ride_short_name[]}'], text: 'Additional services have been added to the rides {ride_short_name[]} due to ongoing construction. Please check updated schedules or contact our customer service for details. We thank you for your understanding during this period.' },
-				pt: { placeholders: ['{ride_short_name[]}'], text: 'Foram adicionados serviços adicionais nas viagens {ride_short_name[]} devido a obras em curso. Por favor, consulte os horários atualizados ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão durante este período.' },
-			},
-			singular: {
-				en: { placeholders: ['{ride_short_name}'], text: 'An additional service has been added to the ride {ride_short_name} due to ongoing construction. Please check updated schedules or contact our customer service for details. We thank you for your understanding during this period.' },
-				pt: { placeholders: ['{ride_short_name}'], text: 'Foi adicionado um serviço adicional na viagem {ride_short_name} devido a obras em curso. Por favor, consulte os horários atualizados ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão durante este período.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{ride_short_name[]}'], text: '{ride_short_name[]} | Additional service due to construction' },
-				pt: { placeholders: ['{ride_short_name[]}'], text: '{ride_short_name[]} | Serviço adicional devido a obras de construção' },
-			},
-			singular: {
-				en: { placeholders: ['{ride_short_name}'], text: '{ride_short_name} | Additional service due to construction' },
-				pt: { placeholders: ['{ride_short_name}'], text: '{ride_short_name} | Serviço adicional devido a obras de construção' },
-			},
-		},
-	},
-
-	'CONSTRUCTION:ADDITIONAL_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: ['{stop_name[]}'], text: 'Additional services have been added at the stops {stop_name[]} due to ongoing construction. Please check updated schedules or contact our customer service for details. We thank you for your understanding during this period.' },
-				pt: { placeholders: ['{stop_name[]}'], text: 'Foram adicionados serviços adicionais nas paragens {stop_name[]} devido a obras em curso. Por favor, consulte os horários atualizados ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão durante este período.' },
-			},
-			singular: {
-				en: { placeholders: ['{stop_name}'], text: 'An additional service has been added at the stop {stop_name} due to ongoing construction. Please check updated schedules or contact our customer service for details. We thank you for your understanding during this period.' },
-				pt: { placeholders: ['{stop_name}'], text: 'Foi adicionado um serviço adicional na paragem {stop_name} devido a obras em curso. Por favor, consulte os horários atualizados ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão durante este período.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{stop_name[]}'], text: '{stop_name[]} | Additional service due to construction' },
-				pt: { placeholders: ['{stop_name[]}'], text: '{stop_name[]} | Serviço adicional devido a obras de construção' },
-			},
-			singular: {
-				en: { placeholders: ['{stop_name}'], text: '{stop_name} | Additional service due to construction' },
-				pt: { placeholders: ['{stop_name}'], text: '{stop_name} | Serviço adicional devido a obras de construção' },
-			},
-		},
-	},
-
 	'CONSTRUCTION:DETOUR:agency': {
 		description: {
 			plural: {
@@ -1013,98 +557,6 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			singular: {
 				en: { placeholders: ['{stop_name}'], text: '{stop_name} | Stop temporarily detoured due to construction' },
 				pt: { placeholders: ['{stop_name}'], text: '{stop_name} | Paragem temporariamente desviada devido a obras de construção' },
-			},
-		},
-	},
-
-	'CONSTRUCTION:MODIFIED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'CONSTRUCTION:MODIFIED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to construction work, the service on the lines {line_short_name[]} has been modified. Please check updated schedules or contact our customer service for details. We appreciate your understanding while the works are completed.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a obras de construção, o serviço nas linhas {line_short_name[]} foi modificado. Por favor, consulte os horários atualizados ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão enquanto as obras são concluídas.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to construction work, the service on the line {line_short_name} has been modified. Please check updated schedules or contact our customer service for details. We appreciate your understanding while the works are completed.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a obras de construção, o serviço na linha {line_short_name} foi modificado. Por favor, consulte os horários atualizados ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão enquanto as obras são concluídas.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Service modified due to construction' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Serviço modificado devido a obras de construção' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Service modified due to construction' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Serviço modificado devido a obras de construção' },
-			},
-		},
-	},
-
-	'CONSTRUCTION:MODIFIED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: ['{ride_short_name[]}'], text: 'Due to construction work, the rides {ride_short_name[]} have modified service. Please check updated schedules or contact our customer service for details. We appreciate your understanding while the works are completed.' },
-				pt: { placeholders: ['{ride_short_name[]}'], text: 'Devido a obras de construção, as viagens {ride_short_name[]} têm serviço modificado. Por favor, consulte os horários atualizados ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão enquanto as obras são concluídas.' },
-			},
-			singular: {
-				en: { placeholders: ['{ride_short_name}'], text: 'Due to construction work, the ride {ride_short_name} has modified service. Please check updated schedules or contact our customer service for details. We appreciate your understanding while the works are completed.' },
-				pt: { placeholders: ['{ride_short_name}'], text: 'Devido a obras de construção, a viagem {ride_short_name} tem serviço modificado. Por favor, consulte os horários atualizados ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão enquanto as obras são concluídas.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{ride_short_name[]}'], text: '{ride_short_name[]} | Service modified due to construction' },
-				pt: { placeholders: ['{ride_short_name[]}'], text: '{ride_short_name[]} | Serviço modificado devido a obras de construção' },
-			},
-			singular: {
-				en: { placeholders: ['{ride_short_name}'], text: '{ride_short_name} | Service modified due to construction' },
-				pt: { placeholders: ['{ride_short_name}'], text: '{ride_short_name} | Serviço modificado devido a obras de construção' },
-			},
-		},
-	},
-
-	'CONSTRUCTION:MODIFIED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: ['{stop_name[]}'], text: 'Due to construction work, service at the stops {stop_name[]} has been modified. Please check updated schedules or contact our customer service for details. We appreciate your understanding while the works are completed.' },
-				pt: { placeholders: ['{stop_name[]}'], text: 'Devido a obras de construção, o serviço nas paragens {stop_name[]} foi modificado. Por favor, consulte os horários atualizados ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão enquanto as obras são concluídas.' },
-			},
-			singular: {
-				en: { placeholders: ['{stop_name}'], text: 'Due to construction work, service at the stop {stop_name} has been modified. Please check updated schedules or contact our customer service for details. We appreciate your understanding while the works are completed.' },
-				pt: { placeholders: ['{stop_name}'], text: 'Devido a obras de construção, o serviço na paragem {stop_name} foi modificado. Por favor, consulte os horários atualizados ou entre em contacto connosco para mais detalhes. Agradecemos a sua compreensão enquanto as obras são concluídas.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{stop_name[]}'], text: '{stop_name[]} | Service modified due to construction' },
-				pt: { placeholders: ['{stop_name[]}'], text: '{stop_name[]} | Serviço modificado devido a obras de construção' },
-			},
-			singular: {
-				en: { placeholders: ['{stop_name}'], text: '{stop_name} | Service modified due to construction' },
-				pt: { placeholders: ['{stop_name}'], text: '{stop_name} | Serviço modificado devido a obras de construção' },
 			},
 		},
 	},
@@ -2121,466 +1573,6 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'DEMONSTRATION:STOP_MOVED:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'DEMONSTRATION:STOP_MOVED:lines': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to ongoing demonstrations, the stops for the lines {line_short_name[]} have been temporarily relocated. Please follow local signage for updated stop locations.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido às manifestações em curso, as paragens das linhas {line_short_name[]} foram temporariamente realocadas. Por favor, siga a sinalização local para conhecer as novas localizações.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to ongoing demonstrations, the stop for the line {line_short_name} has been temporarily relocated. Please follow local signage for the updated stop location.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido às manifestações em curso, a paragem da linha {line_short_name} foi temporariamente realocada. Por favor, siga a sinalização local para conhecer a nova localização.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Stop relocated due to demonstrations' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Paragem realocada devido a manifestações' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Stop relocated due to demonstration' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Paragem realocada devido a manifestação' },
-			},
-		},
-	},
-
-	'DEMONSTRATION:STOP_MOVED:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Rides are affected by relocated stops due to demonstrations. Passengers should follow signage for the temporary stop locations.' },
-				pt: { placeholders: [], text: 'As viagens estão afetadas por paragens realocadas devido a manifestações. Os passageiros devem seguir a sinalização para localizar as paragens temporárias.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This ride is affected by a relocated stop due to demonstration. Passengers should follow signage for the temporary stop location.' },
-				pt: { placeholders: [], text: 'Esta viagem está afetada por uma paragem realocada devido a manifestação. Os passageiros devem seguir a sinalização para localizar a paragem temporária.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Rides | Stops relocated due to demonstrations' },
-				pt: { placeholders: [], text: 'Viagens | Paragens realocadas devido a manifestações' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Ride | Stop relocated due to demonstration' },
-				pt: { placeholders: [], text: 'Viagem | Paragem realocada devido a manifestação' },
-			},
-		},
-	},
-
-	'DEMONSTRATION:STOP_MOVED:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Multiple stops have been temporarily moved due to ongoing demonstrations. Passengers are advised to follow local signage for new locations.' },
-				pt: { placeholders: [], text: 'Várias paragens foram temporariamente deslocadas devido às manifestações em curso. Recomenda-se que os passageiros sigam a sinalização local para as novas localizações.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This stop has been temporarily moved due to ongoing demonstrations. Passengers are advised to follow local signage for the new location.' },
-				pt: { placeholders: [], text: 'Esta paragem foi temporariamente deslocada devido às manifestações em curso. Recomenda-se que os passageiros sigam a sinalização local para a nova localização.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Multiple Stops | Temporarily moved due to demonstrations' },
-				pt: { placeholders: [], text: 'Várias Paragens | Temporariamente deslocadas devido a manifestações' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Stop | Temporarily moved due to demonstration' },
-				pt: { placeholders: [], text: 'Paragem | Temporariamente deslocada devido a manifestação' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:ACCESSIBILITY_ISSUE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:ACCESSIBILITY_ISSUE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Service on lines {line_short_name[]} may be affected due to driver absences impacting accessibility. Passengers requiring assistance are advised to contact customer service.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'O serviço nas linhas {line_short_name[]} pode ser afetado devido à ausência de condutores, impactando a acessibilidade. Passageiros que necessitem de assistência devem contactar o serviço de apoio ao cliente.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Service on line {line_short_name} may be affected due to driver absence impacting accessibility. Passengers requiring assistance are advised to contact customer service.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'O serviço na linha {line_short_name} pode ser afetado devido à ausência de condutor, impactando a acessibilidade. Passageiros que necessitem de assistência devem contactar o serviço de apoio ao cliente.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Service affected due to driver absence' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Serviço afetado devido à ausência de condutor' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Service affected due to driver absence' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Serviço afetado devido à ausência de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:ACCESSIBILITY_ISSUE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Rides may experience disruptions due to driver absences affecting accessibility. Passengers needing assistance should contact customer service.' },
-				pt: { placeholders: [], text: 'As viagens podem sofrer interrupções devido à ausência de condutores que afeta a acessibilidade. Passageiros que necessitem de assistência devem contactar o serviço de apoio ao cliente.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This ride may experience disruption due to driver absence affecting accessibility. Passengers needing assistance should contact customer service.' },
-				pt: { placeholders: [], text: 'Esta viagem pode sofrer interrupções devido à ausência de condutor que afeta a acessibilidade. Passageiros que necessitem de assistência devem contactar o serviço de apoio ao cliente.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Rides | Disrupted due to driver absence' },
-				pt: { placeholders: [], text: 'Viagens | Interrupções devido à ausência de condutor' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Ride | Disrupted due to driver absence' },
-				pt: { placeholders: [], text: 'Viagem | Interrupção devido à ausência de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:ACCESSIBILITY_ISSUE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Stops may be impacted by driver absences affecting accessibility. Passengers requiring assistance should check with customer service.' },
-				pt: { placeholders: [], text: 'As paragens podem ser afetadas pela ausência de condutores que impacta a acessibilidade. Passageiros que necessitem de assistência devem contactar o serviço de apoio ao cliente.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This stop may be impacted by driver absence affecting accessibility. Passengers requiring assistance should check with customer service.' },
-				pt: { placeholders: [], text: 'Esta paragem pode ser afetada pela ausência de condutor que impacta a acessibilidade. Passageiros que necessitem de assistência devem contactar o serviço de apoio ao cliente.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Stops | Impacted due to driver absence' },
-				pt: { placeholders: [], text: 'Paragens | Afetadas devido à ausência de condutor' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Stop | Impacted due to driver absence' },
-				pt: { placeholders: [], text: 'Paragem | Afetada devido à ausência de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:ADDITIONAL_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:ADDITIONAL_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Additional service is being provided on lines {line_short_name[]} due to driver absences. Passengers may experience adjusted schedules.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Está a ser prestado serviço adicional nas linhas {line_short_name[]} devido à ausência de condutores. Os passageiros podem experienciar horários ajustados.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Additional service is being provided on line {line_short_name} due to driver absence. Passengers may experience adjusted schedules.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Está a ser prestado serviço adicional na linha {line_short_name} devido à ausência de condutor. Os passageiros podem experienciar horários ajustados.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Additional service due to driver absence' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Serviço adicional devido à ausência de condutor' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Additional service due to driver absence' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Serviço adicional devido à ausência de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:ADDITIONAL_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Additional rides have been scheduled due to driver absence to maintain service. Please check the timetable for details.' },
-				pt: { placeholders: [], text: 'Viagens adicionais foram programadas devido à ausência de condutores para manter o serviço. Por favor, verifique o horário para detalhes.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'An additional ride has been scheduled due to driver absence to maintain service. Please check the timetable for details.' },
-				pt: { placeholders: [], text: 'Uma viagem adicional foi programada devido à ausência de condutor para manter o serviço. Por favor, verifique o horário para detalhes.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Additional rides scheduled due to driver absence' },
-				pt: { placeholders: [], text: 'Viagens adicionais programadas devido à ausência de condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Additional ride scheduled due to driver absence' },
-				pt: { placeholders: [], text: 'Viagem adicional programada devido à ausência de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:ADDITIONAL_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Certain stops will receive additional services due to driver absence. Please consult the timetable for exact times.' },
-				pt: { placeholders: [], text: 'Algumas paragens receberão serviços adicionais devido à ausência de condutores. Por favor, consulte o horário para horários exatos.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This stop will receive an additional service due to driver absence. Please consult the timetable for the exact time.' },
-				pt: { placeholders: [], text: 'Esta paragem receberá um serviço adicional devido à ausência de condutor. Por favor, consulte o horário para o horário exato.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Additional services at selected stops due to driver absence' },
-				pt: { placeholders: [], text: 'Serviços adicionais em paragens selecionadas devido à ausência de condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Additional service at this stop due to driver absence' },
-				pt: { placeholders: [], text: 'Serviço adicional nesta paragem devido à ausência de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:DETOUR:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:DETOUR:lines': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to driver absence, the following lines {line_short_name[]} will follow a temporary detour. Please allow extra travel time.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido à ausência de condutores, as seguintes linhas {line_short_name[]} seguirão um desvio temporário. Por favor, considere tempo adicional de viagem.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to driver absence, the line {line_short_name} will follow a temporary detour. Please allow extra travel time.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido à ausência de condutor, a linha {line_short_name} seguirá um desvio temporário. Por favor, considere tempo adicional de viagem.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Temporary detour due to driver absence' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Desvio temporário devido à ausência de condutores' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Temporary detour due to driver absence' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Desvio temporário devido à ausência de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:DETOUR:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Some rides are being rerouted due to driver absence. Please consult the timetable for updated information.' },
-				pt: { placeholders: [], text: 'Algumas viagens estão sendo desviadas devido à ausência de condutores. Por favor, consulte o horário para informações atualizadas.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This ride is being rerouted due to driver absence. Please consult the timetable for updated information.' },
-				pt: { placeholders: [], text: 'Esta viagem está sendo desviada devido à ausência de condutor. Por favor, consulte o horário para informações atualizadas.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Rides rerouted due to driver absence' },
-				pt: { placeholders: [], text: 'Viagens desviadas devido à ausência de condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Ride rerouted due to driver absence' },
-				pt: { placeholders: [], text: 'Viagem desviada devido à ausência de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:DETOUR:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Certain stops are temporarily bypassed due to driver absence. Please check alternative stops nearby.' },
-				pt: { placeholders: [], text: 'Algumas paragens estão temporariamente contornadas devido à ausência de condutores. Por favor, verifique paragens alternativas próximas.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This stop is temporarily bypassed due to driver absence. Please check alternative stops nearby.' },
-				pt: { placeholders: [], text: 'Esta paragem está temporariamente contornada devido à ausência de condutor. Por favor, verifique paragens alternativas próximas.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Stops temporarily bypassed due to driver absence' },
-				pt: { placeholders: [], text: 'Paragens temporariamente contornadas devido à ausência de condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Stop temporarily bypassed due to driver absence' },
-				pt: { placeholders: [], text: 'Paragem temporariamente contornada devido à ausência de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:MODIFIED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:MODIFIED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Service on the following lines {line_short_name[]} has been modified due to driver absence. Please check updated schedules.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'O serviço nas seguintes linhas {line_short_name[]} foi modificado devido à ausência de condutores. Por favor, verifique os horários atualizados.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Service on the line {line_short_name} has been modified due to driver absence. Please check the updated schedule.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'O serviço na linha {line_short_name} foi modificado devido à ausência de condutor. Por favor, verifique o horário atualizado.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Service modifications due to driver absence' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Modificações de serviço devido à ausência de condutores' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Service modification due to driver absence' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Modificação de serviço devido à ausência de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:MODIFIED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Some rides have adjusted schedules due to driver absence. Please consult the timetable for details.' },
-				pt: { placeholders: [], text: 'Algumas viagens tiveram horários ajustados devido à ausência de condutores. Por favor, consulte o horário para detalhes.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This ride has an adjusted schedule due to driver absence. Please consult the timetable for details.' },
-				pt: { placeholders: [], text: 'Esta viagem teve o horário ajustado devido à ausência de condutor. Por favor, consulte o horário para detalhes.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Rides with modified schedules due to driver absence' },
-				pt: { placeholders: [], text: 'Viagens com horários modificados devido à ausência de condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Ride with modified schedule due to driver absence' },
-				pt: { placeholders: [], text: 'Viagem com horário modificado devido à ausência de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:MODIFIED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Certain stops have modified service schedules due to driver absence. Please check local notices for details.' },
-				pt: { placeholders: [], text: 'Algumas paragens têm horários de serviço modificados devido à ausência de condutores. Por favor, verifique avisos locais para detalhes.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This stop has a modified service schedule due to driver absence. Please check local notices for details.' },
-				pt: { placeholders: [], text: 'Esta paragem tem horário de serviço modificado devido à ausência de condutor. Por favor, verifique avisos locais para detalhes.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Stops with modified service due to driver absence' },
-				pt: { placeholders: [], text: 'Paragens com serviço modificado devido à ausência de condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Stop with modified service due to driver absence' },
-				pt: { placeholders: [], text: 'Paragem com serviço modificado devido à ausência de condutor' },
-			},
-		},
-	},
-
 	'DRIVER_ABSENCE:NO_SERVICE:agency': {
 		description: {
 			plural: {
@@ -2669,98 +1661,6 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			singular: {
 				en: { placeholders: [], text: 'Stop without service due to driver absence' },
 				pt: { placeholders: [], text: 'Paragem sem serviço devido à ausência de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:REDUCED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:REDUCED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Service on the following lines {line_short_name[]} is running at reduced frequency due to driver absence. Please plan your journey accordingly.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'O serviço nas seguintes linhas {line_short_name[]} está a operar com frequência reduzida devido à ausência de condutores. Por favor, planeie a sua viagem em conformidade.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Service on the line {line_short_name} is running at reduced frequency due to driver absence. Please plan your journey accordingly.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'O serviço na linha {line_short_name} está a operar com frequência reduzida devido à ausência de condutor. Por favor, planeie a sua viagem em conformidade.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Reduced service due to driver absence' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Serviço reduzido devido à ausência de condutores' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Reduced service due to driver absence' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Serviço reduzido devido à ausência de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:REDUCED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Some rides are operating at reduced frequency due to driver absence. Please check updated schedules.' },
-				pt: { placeholders: [], text: 'Algumas viagens estão a operar com frequência reduzida devido à ausência de condutores. Por favor, verifique os horários atualizados.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This ride is operating at reduced frequency due to driver absence. Please check the updated schedule.' },
-				pt: { placeholders: [], text: 'Esta viagem está a operar com frequência reduzida devido à ausência de condutor. Por favor, verifique o horário atualizado.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Rides operating at reduced frequency due to driver absence' },
-				pt: { placeholders: [], text: 'Viagens a operar com frequência reduzida devido à ausência de condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Ride operating at reduced frequency due to driver absence' },
-				pt: { placeholders: [], text: 'Viagem a operar com frequência reduzida devido à ausência de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:REDUCED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Service at certain stops is reduced due to a temporary driver shortage. We apologize for any inconvenience and recommend checking alternative routes or times.' },
-				pt: { placeholders: [], text: 'O serviço em algumas paragens está reduzido devido à falta temporária de condutores. Pedimos desculpa por qualquer inconveniente e recomendamos verificar rotas ou horários alternativos.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Service at this stop is reduced due to a temporary driver shortage. We apologize for any inconvenience and recommend checking alternative routes or times.' },
-				pt: { placeholders: [], text: 'O serviço nesta paragem está reduzido devido à falta temporária de condutores. Pedimos desculpa por qualquer inconveniente e recomendamos verificar rotas ou horários alternativos.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Reduced service at multiple stops due to driver absence' },
-				pt: { placeholders: [], text: 'Serviço reduzido em várias paragens devido à ausência de condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Reduced service at this stop due to driver absence' },
-				pt: { placeholders: [], text: 'Serviço reduzido nesta paragem devido à ausência de condutor' },
 			},
 		},
 	},
@@ -2857,282 +1757,6 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'DRIVER_ABSENCE:STOP_MOVED:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:STOP_MOVED:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Stops have been temporarily relocated on multiple lines due to driver shortages. Check updated stop locations before travel.' },
-				pt: { placeholders: [], text: 'As paragens foram temporariamente realocadas em várias linhas devido à falta de condutores. Verifique os locais atualizados antes de viajar.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'A stop has been temporarily relocated on this line due to driver shortages. Check the updated location before travel.' },
-				pt: { placeholders: [], text: 'Uma paragem foi temporariamente realocada nesta linha devido à falta de condutores. Verifique o local atualizado antes de viajar.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Multiple stops temporarily moved due to driver absence' },
-				pt: { placeholders: [], text: 'Várias paragens temporariamente realocadas devido à ausência de condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Stop temporarily moved due to driver absence' },
-				pt: { placeholders: [], text: 'Paragem temporariamente realocada devido à ausência de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:STOP_MOVED:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Several rides are affected by temporary stop relocations due to driver shortages. Check updated stop locations before boarding.' },
-				pt: { placeholders: [], text: 'Várias viagens são afetadas por realocações temporárias de paragens devido à falta de condutores. Verifique os locais atualizados antes de embarcar.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This ride is affected by a temporary stop relocation due to driver shortages. Verify the updated stop location before boarding.' },
-				pt: { placeholders: [], text: 'Esta viagem é afetada por uma realocação temporária de paragem devido à falta de condutores. Verifique o local atualizado antes de embarcar.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Multiple rides affected by stop relocations due to driver absence' },
-				pt: { placeholders: [], text: 'Várias viagens afetadas por realocações de paragens devido à ausência de condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Ride affected by stop relocation due to driver absence' },
-				pt: { placeholders: [], text: 'Viagem afetada por realocação de paragem devido à ausência de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ABSENCE:STOP_MOVED:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Multiple stops have been temporarily moved due to a shortage of drivers. Please check new locations before traveling.' },
-				pt: { placeholders: [], text: 'Várias paragens foram temporariamente movidas devido à falta de condutores. Verifique os novos locais antes de viajar.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This stop has been temporarily moved due to a shortage of drivers. Please check its new location before traveling.' },
-				pt: { placeholders: [], text: 'Esta paragem foi temporariamente movida devido à falta de condutores. Verifique o novo local antes de viajar.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Multiple stops temporarily moved due to driver absence' },
-				pt: { placeholders: [], text: 'Várias paragens temporariamente movidas devido à ausência de condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Stop temporarily moved due to driver absence' },
-				pt: { placeholders: [], text: 'Paragem temporariamente movida devido à ausência de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ISSUE:ACCESSIBILITY_ISSUE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'DRIVER_ISSUE:ACCESSIBILITY_ISSUE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Multiple lines are currently affected by accessibility issues due to driver-related challenges. Passengers requiring assistance should plan accordingly.' },
-				pt: { placeholders: [], text: 'Várias linhas estão atualmente afetadas por problemas de acessibilidade devido a desafios relacionados com os condutores. Passageiros que necessitam de assistência devem planear com antecedência.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This line is currently affected by accessibility issues due to driver-related challenges. Passengers requiring assistance should plan accordingly.' },
-				pt: { placeholders: [], text: 'Esta linha está atualmente afetada por problemas de acessibilidade devido a desafios relacionados com o condutor. Passageiros que necessitam de assistência devem planear com antecedência.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Accessibility issues affecting multiple lines due to driver-related problems' },
-				pt: { placeholders: [], text: 'Problemas de acessibilidade afetam várias linhas devido a questões relacionadas com condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Accessibility issues affecting this line due to driver-related problems' },
-				pt: { placeholders: [], text: 'Problemas de acessibilidade afetam esta linha devido a questões relacionadas com o condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ISSUE:ACCESSIBILITY_ISSUE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Several rides are experiencing accessibility issues due to driver-related challenges. Passengers should verify accessibility options before boarding.' },
-				pt: { placeholders: [], text: 'Várias viagens estão a ter problemas de acessibilidade devido a desafios relacionados com os condutores. Os passageiros devem verificar as opções de acessibilidade antes de embarcar.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This ride is experiencing accessibility issues due to driver-related challenges. Passengers should verify accessibility options before boarding.' },
-				pt: { placeholders: [], text: 'Esta viagem está a ter problemas de acessibilidade devido a desafios relacionados com o condutor. Os passageiros devem verificar as opções de acessibilidade antes de embarcar.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Accessibility issues affecting multiple rides due to driver-related problems' },
-				pt: { placeholders: [], text: 'Problemas de acessibilidade afetam várias viagens devido a questões relacionadas com condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Accessibility issues affecting this ride due to driver-related problems' },
-				pt: { placeholders: [], text: 'Problemas de acessibilidade afetam esta viagem devido a questões relacionadas com o condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ISSUE:ACCESSIBILITY_ISSUE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Accessibility challenges are affecting multiple stops due to driver-related issues. Passengers requiring assistance should plan alternative stops if needed.' },
-				pt: { placeholders: [], text: 'Problemas de acessibilidade estão a afetar várias paragens devido a questões relacionadas com os condutores. Passageiros que necessitam de assistência devem planear paragens alternativas se necessário.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This stop is affected by accessibility challenges due to driver-related issues. Passengers requiring assistance should check alternatives before traveling.' },
-				pt: { placeholders: [], text: 'Esta paragem está afetada por problemas de acessibilidade devido a questões relacionadas com o condutor. Passageiros que necessitam de assistência devem verificar alternativas antes de viajar.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Accessibility issues at multiple stops due to driver-related problems' },
-				pt: { placeholders: [], text: 'Problemas de acessibilidade em várias paragens devido a questões relacionadas com condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Accessibility issue at this stop due to driver-related problems' },
-				pt: { placeholders: [], text: 'Problema de acessibilidade nesta paragem devido a questões relacionadas com o condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ISSUE:ADDITIONAL_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'DRIVER_ISSUE:ADDITIONAL_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Additional services are being provided on these lines due to driver availability issues. We appreciate your patience and recommend checking schedules for updated times.' },
-				pt: { placeholders: [], text: 'Serviços adicionais estão a ser prestados nestas linhas devido a problemas de disponibilidade de condutores. Agradecemos a sua compreensão e sugerimos que consulte os horários atualizados.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'An additional service is being provided on this line due to driver availability issues. Please check schedules for updated times.' },
-				pt: { placeholders: [], text: 'Está a ser prestado um serviço adicional nesta linha devido a problemas de disponibilidade de condutor. Consulte os horários atualizados.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Additional services on selected lines due to driver availability' },
-				pt: { placeholders: [], text: 'Serviços adicionais em linhas selecionadas devido à disponibilidade de condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Additional service on this line due to driver availability' },
-				pt: { placeholders: [], text: 'Serviço adicional nesta linha devido à disponibilidade de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ISSUE:ADDITIONAL_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Extra rides are available due to temporary driver shortages. Please plan your journey accordingly and refer to updated schedules.' },
-				pt: { placeholders: [], text: 'Corridas adicionais estão disponíveis devido a uma escassez temporária de condutores. Planeie a sua viagem e consulte os horários atualizados.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'An extra ride is available due to a temporary driver shortage. Please check the updated schedule.' },
-				pt: { placeholders: [], text: 'Está disponível uma corrida adicional devido a uma escassez temporária de condutor. Consulte o horário atualizado.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Extra rides available due to driver availability issues' },
-				pt: { placeholders: [], text: 'Corridas adicionais disponíveis devido à disponibilidade de condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Extra ride available due to driver availability issues' },
-				pt: { placeholders: [], text: 'Corrida adicional disponível devido à disponibilidade de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ISSUE:ADDITIONAL_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Additional stops are being served temporarily due to driver availability. Check your local schedule for details.' },
-				pt: { placeholders: [], text: 'Paragens adicionais estão a ser atendidas temporariamente devido à disponibilidade de condutores. Consulte os horários locais para mais informações.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'An additional stop is being served temporarily due to driver availability. Check local schedules for details.' },
-				pt: { placeholders: [], text: 'Está a ser atendida uma paragem adicional temporariamente devido à disponibilidade de condutor. Consulte os horários locais.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Additional stops in service due to driver availability' },
-				pt: { placeholders: [], text: 'Paragens adicionais em serviço devido à disponibilidade de condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Additional stop in service due to driver availability' },
-				pt: { placeholders: [], text: 'Paragem adicional em serviço devido à disponibilidade de condutor' },
-			},
-		},
-	},
-
 	'DRIVER_ISSUE:DETOUR:agency': {
 		description: {
 			plural: {
@@ -3221,98 +1845,6 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			singular: {
 				en: { placeholders: [], text: 'Temporary stop detour due to driver issues' },
 				pt: { placeholders: [], text: 'Desvio temporário de paragem devido a problemas de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ISSUE:MODIFIED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'DRIVER_ISSUE:MODIFIED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Service on these lines is running with modifications due to driver-related issues. Please check schedules for adjustments.' },
-				pt: { placeholders: [], text: 'O serviço nestas linhas está a decorrer com modificações devido a problemas relacionados com condutores. Consulte os horários para alterações.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Service on this line is running with modifications due to driver-related issues. Check schedule for adjustments.' },
-				pt: { placeholders: [], text: 'O serviço nesta linha está a decorrer com modificações devido a problemas relacionados com condutor. Consulte o horário para alterações.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Modified service on selected lines due to driver issues' },
-				pt: { placeholders: [], text: 'Serviço modificado em linhas selecionadas devido a problemas de condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Modified service on this line due to driver issues' },
-				pt: { placeholders: [], text: 'Serviço modificado nesta linha devido a problemas de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ISSUE:MODIFIED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Certain rides are operating with modified schedules due to driver availability issues. Please check updated times.' },
-				pt: { placeholders: [], text: 'Algumas corridas estão a operar com horários modificados devido a problemas de disponibilidade de condutores. Consulte os horários atualizados.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This ride is operating with a modified schedule due to driver availability issues. Check updated times.' },
-				pt: { placeholders: [], text: 'Esta corrida está a operar com horário modificado devido a problemas de disponibilidade de condutor. Consulte os horários atualizados.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Rides operating with modified schedules due to driver issues' },
-				pt: { placeholders: [], text: 'Corridas com horários modificados devido a problemas de condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Ride operating with modified schedule due to driver issues' },
-				pt: { placeholders: [], text: 'Corrida com horário modificado devido a problemas de condutor' },
-			},
-		},
-	},
-
-	'DRIVER_ISSUE:MODIFIED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Stops are being served with temporary modifications due to driver availability. Check local schedules for details.' },
-				pt: { placeholders: [], text: 'As paragens estão a ser atendidas com modificações temporárias devido à disponibilidade de condutores. Consulte os horários locais para detalhes.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This stop is served with temporary modifications due to driver availability. Check local schedules for details.' },
-				pt: { placeholders: [], text: 'Esta paragem está a ser atendida com modificações temporárias devido à disponibilidade de condutor. Consulte os horários locais.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Stops served with temporary modifications due to driver issues' },
-				pt: { placeholders: [], text: 'Paragens atendidas com modificações temporárias devido a problemas de condutores' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Stop served with temporary modifications due to driver issues' },
-				pt: { placeholders: [], text: 'Paragem atendida com modificações temporárias devido a problemas de condutor' },
 			},
 		},
 	},
@@ -3593,98 +2125,6 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'DRIVER_ISSUE:STOP_MOVED:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'DRIVER_ISSUE:STOP_MOVED:lines': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Stops on the lines {line_short_name[]} have been temporarily relocated. Please follow signage or contact customer service for updated information.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Os pontos nas linhas {line_short_name[]} foram temporariamente realocados. Por favor, siga a sinalização ou entre em contato com o serviço de atendimento ao cliente para informações atualizadas.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'A stop on the line {line_short_name} has been temporarily relocated. Please follow signage or contact customer service for updated information.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Um ponto na linha {line_short_name} foi temporariamente realocado. Por favor, siga a sinalização ou entre em contato com o serviço de atendimento ao cliente para informações atualizadas.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Stop relocation in effect' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Realocação de ponto em vigor' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Stop relocation in effect' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Realocação de ponto em vigor' },
-			},
-		},
-	},
-
-	'DRIVER_ISSUE:STOP_MOVED:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Rides are affected due to temporarily relocated stops. Please check updated boarding locations or contact customer service.' },
-				pt: { placeholders: [], text: 'Viagens são afetadas devido a pontos temporariamente realocados. Verifique os locais de embarque atualizados ou entre em contato com o serviço de atendimento ao cliente.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This ride is affected due to a temporarily relocated stop. Please check the updated boarding location or contact customer service.' },
-				pt: { placeholders: [], text: 'Esta viagem é afetada devido a um ponto temporariamente realocado. Verifique o local de embarque atualizado ou entre em contato com o serviço de atendimento ao cliente.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Temporary stop relocation affects rides' },
-				pt: { placeholders: [], text: 'Realocação temporária de ponto afeta viagens' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Temporary stop relocation affects ride' },
-				pt: { placeholders: [], text: 'Realocação temporária de ponto afeta viagem' },
-			},
-		},
-	},
-
-	'DRIVER_ISSUE:STOP_MOVED:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: 'Several stops have been temporarily relocated. Please follow signage or contact customer service for updated information.' },
-				pt: { placeholders: [], text: 'Vários pontos foram temporariamente realocados. Por favor, siga a sinalização ou entre em contato com o serviço de atendimento ao cliente para informações atualizadas.' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'This stop has been temporarily relocated. Please follow signage or contact customer service for updated information.' },
-				pt: { placeholders: [], text: 'Este ponto foi temporariamente realocado. Por favor, siga a sinalização ou entre em contato com o serviço de atendimento ao cliente para informações atualizadas.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: 'Temporary stop relocation in effect' },
-				pt: { placeholders: [], text: 'Realocação temporária de ponto em vigor' },
-			},
-			singular: {
-				en: { placeholders: [], text: 'Temporary stop relocation in effect' },
-				pt: { placeholders: [], text: 'Realocação temporária de ponto em vigor' },
-			},
-		},
-	},
-
 	'HIGH_PASSENGER_LOAD:ACCESSIBILITY_ISSUE:agency': {
 		description: {
 			plural: {
@@ -3869,374 +2309,6 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'HIGH_PASSENGER_LOAD:DETOUR:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:DETOUR:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:DETOUR:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:DETOUR:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:MODIFIED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:MODIFIED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:MODIFIED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:MODIFIED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:NO_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:NO_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:NO_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:NO_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:REDUCED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:REDUCED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:REDUCED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:REDUCED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
 	'HIGH_PASSENGER_LOAD:SIGNIFICANT_DELAYS:agency': {
 		description: {
 			plural: {
@@ -4329,1754 +2401,6 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'HIGH_PASSENGER_LOAD:STOP_MOVED:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:STOP_MOVED:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:STOP_MOVED:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HIGH_PASSENGER_LOAD:STOP_MOVED:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:ACCESSIBILITY_ISSUE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'HOLIDAY:ACCESSIBILITY_ISSUE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:ACCESSIBILITY_ISSUE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:ACCESSIBILITY_ISSUE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:ADDITIONAL_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'HOLIDAY:ADDITIONAL_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:ADDITIONAL_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:ADDITIONAL_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:DETOUR:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'HOLIDAY:DETOUR:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:DETOUR:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:DETOUR:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:MODIFIED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'HOLIDAY:MODIFIED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:MODIFIED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:MODIFIED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:NO_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'HOLIDAY:NO_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:NO_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:NO_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:REDUCED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'HOLIDAY:REDUCED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:REDUCED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:REDUCED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:SIGNIFICANT_DELAYS:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'HOLIDAY:SIGNIFICANT_DELAYS:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:SIGNIFICANT_DELAYS:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:SIGNIFICANT_DELAYS:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:STOP_MOVED:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'HOLIDAY:STOP_MOVED:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:STOP_MOVED:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'HOLIDAY:STOP_MOVED:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:ACCESSIBILITY_ISSUE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'MAINTENANCE:ACCESSIBILITY_ISSUE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:ACCESSIBILITY_ISSUE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:ACCESSIBILITY_ISSUE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:ADDITIONAL_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'MAINTENANCE:ADDITIONAL_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:ADDITIONAL_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:ADDITIONAL_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:DETOUR:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'MAINTENANCE:DETOUR:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:DETOUR:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:DETOUR:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:MODIFIED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'MAINTENANCE:MODIFIED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:MODIFIED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:MODIFIED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:NO_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'MAINTENANCE:NO_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:NO_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:NO_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:REDUCED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'MAINTENANCE:REDUCED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:REDUCED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:REDUCED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:SIGNIFICANT_DELAYS:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'MAINTENANCE:SIGNIFICANT_DELAYS:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:SIGNIFICANT_DELAYS:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:SIGNIFICANT_DELAYS:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:STOP_MOVED:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'MAINTENANCE:STOP_MOVED:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:STOP_MOVED:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MAINTENANCE:STOP_MOVED:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MEDICAL_EMERGENCY:ACCESSIBILITY_ISSUE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'MEDICAL_EMERGENCY:ACCESSIBILITY_ISSUE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MEDICAL_EMERGENCY:ACCESSIBILITY_ISSUE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MEDICAL_EMERGENCY:ACCESSIBILITY_ISSUE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MEDICAL_EMERGENCY:ADDITIONAL_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'MEDICAL_EMERGENCY:ADDITIONAL_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MEDICAL_EMERGENCY:ADDITIONAL_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MEDICAL_EMERGENCY:ADDITIONAL_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
 	'MEDICAL_EMERGENCY:DETOUR:agency': {
 		description: {
 			plural: {
@@ -6147,98 +2471,6 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	},
 
 	'MEDICAL_EMERGENCY:DETOUR:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MEDICAL_EMERGENCY:MODIFIED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'MEDICAL_EMERGENCY:MODIFIED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MEDICAL_EMERGENCY:MODIFIED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MEDICAL_EMERGENCY:MODIFIED_SERVICE:stops': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -6537,282 +2769,6 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'MEDICAL_EMERGENCY:STOP_MOVED:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'MEDICAL_EMERGENCY:STOP_MOVED:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MEDICAL_EMERGENCY:STOP_MOVED:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'MEDICAL_EMERGENCY:STOP_MOVED:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'POLICE_ACTIVITY:ACCESSIBILITY_ISSUE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'POLICE_ACTIVITY:ACCESSIBILITY_ISSUE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'POLICE_ACTIVITY:ACCESSIBILITY_ISSUE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'POLICE_ACTIVITY:ACCESSIBILITY_ISSUE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'POLICE_ACTIVITY:ADDITIONAL_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'POLICE_ACTIVITY:ADDITIONAL_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'POLICE_ACTIVITY:ADDITIONAL_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'POLICE_ACTIVITY:ADDITIONAL_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
 	'POLICE_ACTIVITY:DETOUR:agency': {
 		description: {
 			plural: {
@@ -6883,98 +2839,6 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	},
 
 	'POLICE_ACTIVITY:DETOUR:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'POLICE_ACTIVITY:MODIFIED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'POLICE_ACTIVITY:MODIFIED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'POLICE_ACTIVITY:MODIFIED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'POLICE_ACTIVITY:MODIFIED_SERVICE:stops': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -7273,7 +3137,375 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'POLICE_ACTIVITY:STOP_MOVED:agency': {
+	'PUBLIC_DISORDER:DETOUR:agency': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
+
+	'PUBLIC_DISORDER:DETOUR:lines': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
+
+	'PUBLIC_DISORDER:DETOUR:rides': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
+
+	'PUBLIC_DISORDER:DETOUR:stops': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
+
+	'PUBLIC_DISORDER:NO_SERVICE:agency': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
+
+	'PUBLIC_DISORDER:NO_SERVICE:lines': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
+
+	'PUBLIC_DISORDER:NO_SERVICE:rides': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
+
+	'PUBLIC_DISORDER:NO_SERVICE:stops': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
+
+	'PUBLIC_DISORDER:REDUCED_SERVICE:agency': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
+
+	'PUBLIC_DISORDER:REDUCED_SERVICE:lines': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
+
+	'PUBLIC_DISORDER:REDUCED_SERVICE:rides': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
+
+	'PUBLIC_DISORDER:REDUCED_SERVICE:stops': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
+
+	'PUBLIC_DISORDER:SIGNIFICANT_DELAYS:agency': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
+
+	'PUBLIC_DISORDER:SIGNIFICANT_DELAYS:lines': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
+
+	'PUBLIC_DISORDER:SIGNIFICANT_DELAYS:rides': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
+
+	'PUBLIC_DISORDER:SIGNIFICANT_DELAYS:stops': {
+		description: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+		title: {
+			plural: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+			singular: {
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
+			},
+		},
+	},
+
+	'ROAD_ISSUE:ACCESSIBILITY_ISSUE:agency': {
 		description: {
 			plural: {
 				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
@@ -7296,7 +3528,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'POLICE_ACTIVITY:STOP_MOVED:lines': {
+	'ROAD_ISSUE:ACCESSIBILITY_ISSUE:lines': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -7319,7 +3551,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'POLICE_ACTIVITY:STOP_MOVED:rides': {
+	'ROAD_ISSUE:ACCESSIBILITY_ISSUE:rides': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -7342,7 +3574,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'POLICE_ACTIVITY:STOP_MOVED:stops': {
+	'ROAD_ISSUE:ACCESSIBILITY_ISSUE:stops': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -7365,99 +3597,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'ROAD_INCIDENT:ACCESSIBILITY_ISSUE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'ROAD_INCIDENT:ACCESSIBILITY_ISSUE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'ROAD_INCIDENT:ACCESSIBILITY_ISSUE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'ROAD_INCIDENT:ACCESSIBILITY_ISSUE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'ROAD_INCIDENT:ADDITIONAL_SERVICE:agency': {
+	'ROAD_ISSUE:DETOUR:agency': {
 		description: {
 			plural: {
 				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
@@ -7480,7 +3620,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'ROAD_INCIDENT:ADDITIONAL_SERVICE:lines': {
+	'ROAD_ISSUE:DETOUR:lines': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -7503,7 +3643,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'ROAD_INCIDENT:ADDITIONAL_SERVICE:rides': {
+	'ROAD_ISSUE:DETOUR:rides': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -7526,7 +3666,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'ROAD_INCIDENT:ADDITIONAL_SERVICE:stops': {
+	'ROAD_ISSUE:DETOUR:stops': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -7549,99 +3689,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'ROAD_INCIDENT:DETOUR:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'ROAD_INCIDENT:DETOUR:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'ROAD_INCIDENT:DETOUR:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'ROAD_INCIDENT:DETOUR:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'ROAD_INCIDENT:MODIFIED_SERVICE:agency': {
+	'ROAD_ISSUE:NO_SERVICE:agency': {
 		description: {
 			plural: {
 				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
@@ -7664,7 +3712,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'ROAD_INCIDENT:MODIFIED_SERVICE:lines': {
+	'ROAD_ISSUE:NO_SERVICE:lines': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -7687,7 +3735,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'ROAD_INCIDENT:MODIFIED_SERVICE:rides': {
+	'ROAD_ISSUE:NO_SERVICE:rides': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -7710,7 +3758,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'ROAD_INCIDENT:MODIFIED_SERVICE:stops': {
+	'ROAD_ISSUE:NO_SERVICE:stops': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -7733,99 +3781,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'ROAD_INCIDENT:NO_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'ROAD_INCIDENT:NO_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'ROAD_INCIDENT:NO_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'ROAD_INCIDENT:NO_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'ROAD_INCIDENT:REDUCED_SERVICE:agency': {
+	'ROAD_ISSUE:REDUCED_SERVICE:agency': {
 		description: {
 			plural: {
 				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
@@ -7848,7 +3804,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'ROAD_INCIDENT:REDUCED_SERVICE:lines': {
+	'ROAD_ISSUE:REDUCED_SERVICE:lines': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -7871,7 +3827,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'ROAD_INCIDENT:REDUCED_SERVICE:rides': {
+	'ROAD_ISSUE:REDUCED_SERVICE:rides': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -7894,7 +3850,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'ROAD_INCIDENT:REDUCED_SERVICE:stops': {
+	'ROAD_ISSUE:REDUCED_SERVICE:stops': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -7917,99 +3873,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'ROAD_INCIDENT:SIGNIFICANT_DELAYS:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'ROAD_INCIDENT:SIGNIFICANT_DELAYS:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'ROAD_INCIDENT:SIGNIFICANT_DELAYS:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'ROAD_INCIDENT:SIGNIFICANT_DELAYS:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'ROAD_INCIDENT:STOP_MOVED:agency': {
+	'ROAD_ISSUE:SIGNIFICANT_DELAYS:agency': {
 		description: {
 			plural: {
 				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
@@ -8032,7 +3896,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'ROAD_INCIDENT:STOP_MOVED:lines': {
+	'ROAD_ISSUE:SIGNIFICANT_DELAYS:lines': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -8055,7 +3919,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'ROAD_INCIDENT:STOP_MOVED:rides': {
+	'ROAD_ISSUE:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -8078,99 +3942,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'ROAD_INCIDENT:STOP_MOVED:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'STRIKE:ACCESSIBILITY_ISSUE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'STRIKE:ACCESSIBILITY_ISSUE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'STRIKE:ACCESSIBILITY_ISSUE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'STRIKE:ACCESSIBILITY_ISSUE:stops': {
+	'ROAD_ISSUE:SIGNIFICANT_DELAYS:stops': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -8196,22 +3968,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'STRIKE:ADDITIONAL_SERVICE:agency': {
 		description: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 	},
@@ -8288,22 +4060,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'STRIKE:DETOUR:agency': {
 		description: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 	},
@@ -8377,117 +4149,25 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'STRIKE:MODIFIED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'STRIKE:MODIFIED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'STRIKE:MODIFIED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
-	'STRIKE:MODIFIED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-
 	'STRIKE:NO_SERVICE:agency': {
 		description: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 	},
@@ -8564,22 +4244,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'STRIKE:REDUCED_SERVICE:agency': {
 		description: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 	},
@@ -8656,22 +4336,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'STRIKE:SIGNIFICANT_DELAYS:agency': {
 		description: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 	},
@@ -8745,30 +4425,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'STRIKE:STOP_MOVED:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'STRIKE:STOP_MOVED:lines': {
+	'TECHNICAL_ISSUE:ACCESSIBILITY_ISSUE:agency': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -8791,7 +4448,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'STRIKE:STOP_MOVED:rides': {
+	'TECHNICAL_ISSUE:ACCESSIBILITY_ISSUE:lines': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -8814,7 +4471,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'STRIKE:STOP_MOVED:stops': {
+	'TECHNICAL_ISSUE:ACCESSIBILITY_ISSUE:rides': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -8837,30 +4494,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:ACCESSIBILITY_ISSUE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'SYSTEM_FAILURE:ACCESSIBILITY_ISSUE:lines': {
+	'TECHNICAL_ISSUE:ACCESSIBILITY_ISSUE:stops': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -8883,7 +4517,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:ACCESSIBILITY_ISSUE:rides': {
+	'TECHNICAL_ISSUE:NO_SERVICE:agency': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -8906,7 +4540,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:ACCESSIBILITY_ISSUE:stops': {
+	'TECHNICAL_ISSUE:NO_SERVICE:lines': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -8929,30 +4563,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:ADDITIONAL_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'SYSTEM_FAILURE:ADDITIONAL_SERVICE:lines': {
+	'TECHNICAL_ISSUE:NO_SERVICE:rides': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -8975,7 +4586,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:ADDITIONAL_SERVICE:rides': {
+	'TECHNICAL_ISSUE:NO_SERVICE:stops': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -8998,7 +4609,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:ADDITIONAL_SERVICE:stops': {
+	'TECHNICAL_ISSUE:ON_BOARD_SALE_ISSUE:agency': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -9021,30 +4632,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:DETOUR:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'SYSTEM_FAILURE:DETOUR:lines': {
+	'TECHNICAL_ISSUE:ON_BOARD_SALE_ISSUE:lines': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -9067,7 +4655,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:DETOUR:rides': {
+	'TECHNICAL_ISSUE:ON_BOARD_SALE_ISSUE:rides': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -9090,7 +4678,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:DETOUR:stops': {
+	'TECHNICAL_ISSUE:ON_BOARD_SALE_ISSUE:stops': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -9113,30 +4701,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:MODIFIED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'SYSTEM_FAILURE:MODIFIED_SERVICE:lines': {
+	'TECHNICAL_ISSUE:REALTIME_INFO_ISSUE:agency': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -9159,7 +4724,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:MODIFIED_SERVICE:rides': {
+	'TECHNICAL_ISSUE:REALTIME_INFO_ISSUE:lines': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -9182,7 +4747,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:MODIFIED_SERVICE:stops': {
+	'TECHNICAL_ISSUE:REALTIME_INFO_ISSUE:rides': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -9205,30 +4770,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:NO_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'SYSTEM_FAILURE:NO_SERVICE:lines': {
+	'TECHNICAL_ISSUE:REALTIME_INFO_ISSUE:stops': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -9251,7 +4793,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:NO_SERVICE:rides': {
+	'TECHNICAL_ISSUE:REDUCED_SERVICE:agency': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -9274,7 +4816,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:NO_SERVICE:stops': {
+	'TECHNICAL_ISSUE:REDUCED_SERVICE:lines': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -9297,30 +4839,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:REDUCED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-
-	'SYSTEM_FAILURE:REDUCED_SERVICE:lines': {
+	'TECHNICAL_ISSUE:REDUCED_SERVICE:rides': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -9343,7 +4862,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:REDUCED_SERVICE:rides': {
+	'TECHNICAL_ISSUE:REDUCED_SERVICE:stops': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -9366,7 +4885,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		},
 	},
 
-	'SYSTEM_FAILURE:REDUCED_SERVICE:stops': {
+	'TECHNICAL_ISSUE:SIGNIFICANT_DELAYS:agency': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -9388,29 +4907,8 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
-	'SYSTEM_FAILURE:SIGNIFICANT_DELAYS:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'SYSTEM_FAILURE:SIGNIFICANT_DELAYS:lines': {
+
+	'TECHNICAL_ISSUE:SIGNIFICANT_DELAYS:lines': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -9432,7 +4930,8 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
-	'SYSTEM_FAILURE:SIGNIFICANT_DELAYS:rides': {
+
+	'TECHNICAL_ISSUE:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -9454,7 +4953,8 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
-	'SYSTEM_FAILURE:SIGNIFICANT_DELAYS:stops': {
+
+	'TECHNICAL_ISSUE:SIGNIFICANT_DELAYS:stops': {
 		description: {
 			plural: {
 				en: { placeholders: [], text: '' },
@@ -9476,996 +4976,30 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
-	'SYSTEM_FAILURE:STOP_MOVED:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'SYSTEM_FAILURE:STOP_MOVED:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'SYSTEM_FAILURE:STOP_MOVED:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'SYSTEM_FAILURE:STOP_MOVED:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:ACCESSIBILITY_ISSUE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:ACCESSIBILITY_ISSUE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:ACCESSIBILITY_ISSUE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:ACCESSIBILITY_ISSUE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:ADDITIONAL_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:ADDITIONAL_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:ADDITIONAL_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:ADDITIONAL_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:DETOUR:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:DETOUR:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:DETOUR:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:DETOUR:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:MODIFIED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:MODIFIED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:MODIFIED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:MODIFIED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:NO_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:NO_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:NO_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:NO_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:REDUCED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:REDUCED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:REDUCED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:REDUCED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:SIGNIFICANT_DELAYS:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:SIGNIFICANT_DELAYS:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:SIGNIFICANT_DELAYS:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:SIGNIFICANT_DELAYS:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:STOP_MOVED:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:STOP_MOVED:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:STOP_MOVED:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TECHNICAL_PROBLEM:STOP_MOVED:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TRAFFIC_JAM:ACCESSIBILITY_ISSUE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'TRAFFIC_JAM:ACCESSIBILITY_ISSUE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TRAFFIC_JAM:ACCESSIBILITY_ISSUE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TRAFFIC_JAM:ACCESSIBILITY_ISSUE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TRAFFIC_JAM:ADDITIONAL_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'TRAFFIC_JAM:ADDITIONAL_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TRAFFIC_JAM:ADDITIONAL_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TRAFFIC_JAM:ADDITIONAL_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
+
 	'TRAFFIC_JAM:DETOUR:agency': {
 		description: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 	},
+
 	'TRAFFIC_JAM:DETOUR:lines': {
 		description: {
 			plural: {
@@ -10488,6 +5022,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'TRAFFIC_JAM:DETOUR:rides': {
 		description: {
 			plural: {
@@ -10510,6 +5045,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'TRAFFIC_JAM:DETOUR:stops': {
 		description: {
 			plural: {
@@ -10532,116 +5068,30 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
-	'TRAFFIC_JAM:MODIFIED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'TRAFFIC_JAM:MODIFIED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TRAFFIC_JAM:MODIFIED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TRAFFIC_JAM:MODIFIED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
+
 	'TRAFFIC_JAM:NO_SERVICE:agency': {
 		description: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 	},
+
 	'TRAFFIC_JAM:NO_SERVICE:lines': {
 		description: {
 			plural: {
@@ -10664,6 +5114,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'TRAFFIC_JAM:NO_SERVICE:rides': {
 		description: {
 			plural: {
@@ -10686,6 +5137,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'TRAFFIC_JAM:NO_SERVICE:stops': {
 		description: {
 			plural: {
@@ -10708,28 +5160,30 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'TRAFFIC_JAM:REDUCED_SERVICE:agency': {
 		description: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 	},
+
 	'TRAFFIC_JAM:REDUCED_SERVICE:lines': {
 		description: {
 			plural: {
@@ -10752,6 +5206,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'TRAFFIC_JAM:REDUCED_SERVICE:rides': {
 		description: {
 			plural: {
@@ -10774,6 +5229,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'TRAFFIC_JAM:REDUCED_SERVICE:stops': {
 		description: {
 			plural: {
@@ -10796,28 +5252,30 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'TRAFFIC_JAM:SIGNIFICANT_DELAYS:agency': {
 		description: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 	},
+
 	'TRAFFIC_JAM:SIGNIFICANT_DELAYS:lines': {
 		description: {
 			plural: {
@@ -10840,6 +5298,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'TRAFFIC_JAM:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
@@ -10862,6 +5321,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'TRAFFIC_JAM:SIGNIFICANT_DELAYS:stops': {
 		description: {
 			plural: {
@@ -10884,820 +5344,30 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
-	'TRAFFIC_JAM:STOP_MOVED:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'TRAFFIC_JAM:STOP_MOVED:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TRAFFIC_JAM:STOP_MOVED:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'TRAFFIC_JAM:STOP_MOVED:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:ACCESSIBILITY_ISSUE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:ACCESSIBILITY_ISSUE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:ACCESSIBILITY_ISSUE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:ACCESSIBILITY_ISSUE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:ADDITIONAL_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:ADDITIONAL_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:ADDITIONAL_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:ADDITIONAL_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:DETOUR:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:DETOUR:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:DETOUR:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:DETOUR:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:MODIFIED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:MODIFIED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:MODIFIED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:MODIFIED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:NO_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:NO_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:NO_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:NO_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:REDUCED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:REDUCED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:REDUCED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:REDUCED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:SIGNIFICANT_DELAYS:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:SIGNIFICANT_DELAYS:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:SIGNIFICANT_DELAYS:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:SIGNIFICANT_DELAYS:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:STOP_MOVED:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:STOP_MOVED:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:STOP_MOVED:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'VEHICLE_ISSUE:STOP_MOVED:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
+
 	'WEATHER:ACCESSIBILITY_ISSUE:agency': {
 		description: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 	},
+
 	'WEATHER:ACCESSIBILITY_ISSUE:lines': {
 		description: {
 			plural: {
@@ -11720,6 +5390,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'WEATHER:ACCESSIBILITY_ISSUE:rides': {
 		description: {
 			plural: {
@@ -11742,6 +5413,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'WEATHER:ACCESSIBILITY_ISSUE:stops': {
 		description: {
 			plural: {
@@ -11764,116 +5436,30 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
-	'WEATHER:ADDITIONAL_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'WEATHER:ADDITIONAL_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'WEATHER:ADDITIONAL_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'WEATHER:ADDITIONAL_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
+
 	'WEATHER:DETOUR:agency': {
 		description: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 	},
+
 	'WEATHER:DETOUR:lines': {
 		description: {
 			plural: {
@@ -11896,6 +5482,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'WEATHER:DETOUR:rides': {
 		description: {
 			plural: {
@@ -11918,6 +5505,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'WEATHER:DETOUR:stops': {
 		description: {
 			plural: {
@@ -11940,116 +5528,30 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
-	'WEATHER:MODIFIED_SERVICE:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'WEATHER:MODIFIED_SERVICE:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'WEATHER:MODIFIED_SERVICE:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'WEATHER:MODIFIED_SERVICE:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
+
 	'WEATHER:NO_SERVICE:agency': {
 		description: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 	},
+
 	'WEATHER:NO_SERVICE:lines': {
 		description: {
 			plural: {
@@ -12072,6 +5574,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'WEATHER:NO_SERVICE:rides': {
 		description: {
 			plural: {
@@ -12094,6 +5597,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'WEATHER:NO_SERVICE:stops': {
 		description: {
 			plural: {
@@ -12116,28 +5620,30 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'WEATHER:REDUCED_SERVICE:agency': {
 		description: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 	},
+
 	'WEATHER:REDUCED_SERVICE:lines': {
 		description: {
 			plural: {
@@ -12160,6 +5666,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'WEATHER:REDUCED_SERVICE:rides': {
 		description: {
 			plural: {
@@ -12182,6 +5689,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'WEATHER:REDUCED_SERVICE:stops': {
 		description: {
 			plural: {
@@ -12204,28 +5712,30 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'WEATHER:SIGNIFICANT_DELAYS:agency': {
 		description: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
+				en: { placeholders: [], text: '' },
+				pt: { placeholders: [], text: '' },
 			},
 		},
 	},
+
 	'WEATHER:SIGNIFICANT_DELAYS:lines': {
 		description: {
 			plural: {
@@ -12248,6 +5758,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'WEATHER:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
@@ -12270,6 +5781,7 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
+
 	'WEATHER:SIGNIFICANT_DELAYS:stops': {
 		description: {
 			plural: {
@@ -12292,92 +5804,5 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 			},
 		},
 	},
-	'WEATHER:STOP_MOVED:agency': {
-		description: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: 'Due to a road accident, accessibility services on the lines {line_short_name[]} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name[]}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade nas linhas {line_short_name[]} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: 'Due to a road accident, accessibility services on the line {line_short_name} have been temporarily suspended while this notice is in effect. Please consider alternative routes or contact our customer service for assistance. We appreciate your understanding as we work to resolve the situation.' },
-				pt: { placeholders: ['{line_short_name}'], text: 'Devido a um acidente rodoviário, os serviços de acessibilidade na linha {line_short_name} foram temporariamente suspensos enquanto este aviso estiver ativo. Por favor, considere rotas alternativas ou entre em contacto connosco para assistência. Agradecemos a sua compreensão enquanto resolvemos a situação.' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name[]}'], text: '{line_short_name[]} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-			singular: {
-				en: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Road accident affects accessibility services' },
-				pt: { placeholders: ['{line_short_name}'], text: '{line_short_name} | Acidente provoca impacto nos serviços de acessibilidade' },
-			},
-		},
-	},
-	'WEATHER:STOP_MOVED:lines': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'WEATHER:STOP_MOVED:rides': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
-	'WEATHER:STOP_MOVED:stops': {
-		description: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-		title: {
-			plural: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-			singular: {
-				en: { placeholders: [], text: '' },
-				pt: { placeholders: [], text: '' },
-			},
-		},
-	},
+
 };
