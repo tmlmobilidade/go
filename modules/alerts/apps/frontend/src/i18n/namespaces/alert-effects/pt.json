@@ -1,42 +1,38 @@
 {
 	"ACCESSIBILITY_ISSUE": {
-		"description": "Um acidente ocorreu na via, causando interrupções no tráfego.",
-		"title": "Acidente"
+		"description": "Passageiros com mobilidade reduzida são especialmente afetados.",
+		"title": "Impacto na Acessibilidade"
 	},
 	"ADDITIONAL_SERVICE": {
-		"description": "Trabalhos de construção estão em andamento, o que pode causar atrasos.",
-		"title": "Construção"
+		"description": "Desdobramentos ou novos horários.",
+		"title": "Serviço Adicional"
 	},
 	"DETOUR": {
-		"description": "A via está fechada devido a manutenção ou outros motivos.",
-		"title": "Fechamento de Via"
-	},
-	"MODIFIED_SERVICE": {
-		"description": "A via está fechada devido a manutenção ou outros motivos.",
-		"title": "Fechamento de Via"
+		"description": "Alteração temporária do percurso habitual.",
+		"title": "Desvio"
 	},
 	"NO_SERVICE": {
-		"description": "A via está fechada devido a manutenção ou outros motivos.",
-		"title": "Fechamento de Via"
+		"description": "O serviço foi cancelado.",
+		"title": "Cancelamento"
 	},
 	"ON_BOARD_SALE_ISSUE": {
-		"description": "Um problema na via está causando interrupções no tráfego.",
-		"title": "Problema na Via"
+		"description": "Venda de bilhetes está indisponível ou limitada.",
+		"title": "Venda a Bordo Condicionada"
 	},
 	"REALTIME_INFO_ISSUE": {
-		"description": "Distúrbios públicos estão afetando a via.",
-		"title": "Distúrbios Públicos"
+		"description": "Problema com a informação em tempo real.",
+		"title": "Impacto na Informação ao Público"
 	},
 	"REDUCED_SERVICE": {
-		"description": "O veículo está operando com alta carga de passageiros, o que pode causar atrasos.",
-		"title": "Alta Carga de Passageiros"
+		"description": "A viagem será terminada antecipadamente.",
+		"title": "Encurtamento de Percurso"
 	},
 	"SIGNIFICANT_DELAYS": {
-		"description": "Uma emergência médica ocorreu a bordo, causando interrupções no serviço.",
-		"title": "Emergência Médica"
+		"description": "Não será possível cumprir o horário previsto.",
+		"title": "Atrasos Significativos"
 	},
 	"STOP_MOVED": {
-		"description": "Atividade policial está afetando a via.",
-		"title": "Atividade Policial"
+		"description": "A paragem foi temporariamente deslocada.",
+		"title": "Paragem Deslocada"
 	}
 }

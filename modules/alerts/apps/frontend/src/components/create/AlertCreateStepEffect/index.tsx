@@ -2,9 +2,9 @@
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { EffectIcons } from '@/lib/icons';
-import { Translations } from '@/lib/translations';
-import { AlertCauseEffectMap, GtfsEffectSchema } from '@tmlmobilidade/types';
+import { AlertCauseEffectMap, GtfsEffectExtended, GtfsEffectSchema } from '@tmlmobilidade/types';
 import { Grid, LargeButton, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,13 +14,15 @@ export function AlertCreateStepEffect() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const alertCreateContext = useAlertCreateContext();
 
 	//
 	// B. Transform data
 
 	const preparedOptions = AlertCauseEffectMap[alertCreateContext.data.form.getValues().cause]
-		.map(item => ({ icon: EffectIcons[item], label: Translations.EFFECT[item], value: item }))
+		.map(item => ({ icon: EffectIcons[item], label: t(`alert-effects:${item as GtfsEffectExtended}.title`) as string, value: item }))
 		.sort((a, b) => a.label.localeCompare(b.label));
 
 	//

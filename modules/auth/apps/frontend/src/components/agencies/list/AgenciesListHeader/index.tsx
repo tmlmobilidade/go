@@ -12,8 +12,8 @@ export function AgenciesListHeader() {
 	//
 	// A. Setup variables
 
-	const agenciesListContext = useAgenciesListContext();
 	const { t } = useTranslation();
+	const agenciesListContext = useAgenciesListContext();
 
 	//
 	// B. Render components

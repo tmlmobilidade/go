@@ -2,9 +2,9 @@
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { CauseIcons } from '@/lib/icons';
-import { Translations } from '@/lib/translations';
 import { AlertCauseEffectMap } from '@tmlmobilidade/types';
 import { Grid, LargeButton, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,13 +14,15 @@ export function AlertCreateStepCause() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const alertCreateContext = useAlertCreateContext();
 
 	//
 	// B. Transform data
 
 	const preparedOptions = (Object.keys(AlertCauseEffectMap) as (keyof typeof AlertCauseEffectMap)[])
-		.map(item => ({ icon: CauseIcons[item], label: Translations.CAUSE[item], value: item }))
+		.map(item => ({ icon: CauseIcons[item], label: t(`alert-causes:${item}.title`) as string, value: item }))
 		.sort((a, b) => a.label.localeCompare(b.label));
 
 	//
