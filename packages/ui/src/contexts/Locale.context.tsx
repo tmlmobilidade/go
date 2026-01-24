@@ -3,10 +3,11 @@
 /* * */
 
 import '@tmlmobilidade/ui';
+import { initI18n } from '@tmlmobilidade/ui';
 import i18next from 'i18next';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
-import { registerModuleTranslations } from '../i18n/utils';
+import { registerI18nResources } from '../i18n/api';
 
 /* * */
 
@@ -66,8 +67,9 @@ export const LocaleContextProvider = ({ children, i18n }: PropsWithChildren<Loca
 	useEffect(() => {
 		if (!i18n?.length) return;
 		for (const namespaceConfig of i18n) {
-			registerModuleTranslations(namespaceConfig.namespace, { pt: namespaceConfig.pt });
+			registerI18nResources('pt', { [namespaceConfig.namespace]: namespaceConfig.pt });
 		}
+		initI18n();
 	}, [i18n]);
 
 	//
