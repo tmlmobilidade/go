@@ -12,9 +12,8 @@ import { registerModuleTranslations } from '../i18n/utils';
 
 export interface LocaleContextProps {
 	i18n?: {
-		namespace: string
 		pt: object
-	}[]
+	}
 };
 
 interface LocaleContextState {
@@ -64,9 +63,9 @@ export const LocaleContextProvider = ({ children, i18n }: PropsWithChildren<Loca
 	}, [locale]);
 
 	useEffect(() => {
-		if (!i18n?.length) return;
-		for (const namespaceConfig of i18n) {
-			registerModuleTranslations(namespaceConfig.namespace, { pt: namespaceConfig.pt });
+		if (!i18n) return;
+		for (const [key, value] of Object.entries(i18n.pt)) {
+			registerModuleTranslations(key, { pt: value });
 		}
 	}, [i18n]);
 

@@ -2,16 +2,20 @@
 
 /* * */
 
-import ptGlobal from './namespaces/global/pt.json' with { type: 'json' };
-import ptOperations from './namespaces/operations/pt.json' with { type: 'json' };
-import ptStatuses from './namespaces/statuses/pt.json' with { type: 'json' };
+import namespaceComponentsPt from './namespaces/components/pt.json' with { type: 'json' };
+import namespaceOperationsPt from './namespaces/operations/pt.json' with { type: 'json' };
+import namespaceStatusesPt from './namespaces/statuses/pt.json' with { type: 'json' };
 
-/* * */
-
-export const i18nResourceKeys = {
-	pt: {
-		global: ptGlobal,
-		operations: ptOperations,
-		statuses: ptStatuses,
+/**
+ * Resource keys for i18n translations in Portuguese.
+ * These keys map to the respective translation files
+ * for each language and namespace. They are the glue that
+ * connects the i18n system to the actual translation strings.
+ */
+export const i18nResourceKeysPtShared = {
+	shared: {
+		components: namespaceComponentsPt,
+		operations: namespaceOperationsPt,
+		statuses: namespaceStatusesPt,
 	},
 } as const;

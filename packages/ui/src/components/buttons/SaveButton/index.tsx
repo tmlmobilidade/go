@@ -37,18 +37,18 @@ export function SaveButton({ isDisabled, isLoading, onClick }: SaveButtonProps) 
 	};
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<Tooltip
 			disabled={isDisabled}
-			label={t('global:components.buttons.SaveButton.tooltip')}
+			label={t('shared:components.buttons.SaveButton.tooltip')}
 			position="bottom"
 			withArrow
 		>
 			<Button
 				disabled={isDisabled}
-				label={t('global:components.buttons.SaveButton.label')}
+				label={t('shared:components.buttons.SaveButton.label')}
 				loading={isLoading}
 				onClick={handleClick}
 				variant="primary"
