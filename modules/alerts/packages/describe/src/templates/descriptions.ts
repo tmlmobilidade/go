@@ -12,22 +12,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:DETOUR:agency': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
 			},
 		},
 	},
@@ -35,22 +35,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:DETOUR:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
 			},
 		},
 	},
@@ -58,22 +58,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:DETOUR:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
 			},
 		},
 	},
@@ -81,22 +81,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:DETOUR:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
 			},
 		},
 	},
@@ -104,22 +104,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:NO_SERVICE:agency': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
 			},
 		},
 	},
@@ -127,22 +127,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:NO_SERVICE:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
 			},
 		},
 	},
@@ -150,22 +150,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:NO_SERVICE:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
 			},
 		},
 	},
@@ -173,22 +173,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:NO_SERVICE:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
 			},
 		},
 	},
@@ -196,22 +196,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:REDUCED_SERVICE:agency': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Serviço Reduzido - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Serviço Reduzido - Acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Serviço Reduzido - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Serviço Reduzido - Acidente' },
 			},
 		},
 	},
@@ -219,22 +219,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:REDUCED_SERVICE:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Serviço Reduzido - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Serviço Reduzido - Acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Serviço Reduzido - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Serviço Reduzido - Acidente' },
 			},
 		},
 	},
@@ -242,22 +242,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:REDUCED_SERVICE:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Serviço Reduzido - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Serviço Reduzido - Acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Serviço Reduzido - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Serviço Reduzido - Acidente' },
 			},
 		},
 	},
@@ -265,22 +265,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:REDUCED_SERVICE:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Serviço Reduzido - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Serviço Reduzido - Acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Serviço Reduzido - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Serviço Reduzido - Acidente' },
 			},
 		},
 	},
@@ -288,22 +288,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:SIGNIFICANT_DELAYS:agency': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Atrasos Significativos - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Atrasos Significativos - Acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Atrasos Significativos - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Atrasos Significativos - Acidente' },
 			},
 		},
 	},
@@ -311,22 +311,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:SIGNIFICANT_DELAYS:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Atrasos Significativos - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Atrasos Significativos - Acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Atrasos Significativos - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Atrasos Significativos - Acidente' },
 			},
 		},
 	},
@@ -334,22 +334,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Atrasos Significativos - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Atrasos Significativos - Acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Atrasos Significativos - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Atrasos Significativos - Acidente' },
 			},
 		},
 	},
@@ -357,22 +357,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:SIGNIFICANT_DELAYS:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
+				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Atrasos Significativos - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Atrasos Significativos - Acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: '{lines} | Atrasos Significativos - Acidente' },
+				pt: { placeholders: [], text: '{lines} | Atrasos Significativos - Acidente' },
 			},
 		},
 	},
