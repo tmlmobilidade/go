@@ -1,6 +1,6 @@
-import { type GtfsCauseExtended, type GtfsEffectExtended } from '@tmlmobilidade/types';
+import { type AlertCause, type AlertEffect } from '@tmlmobilidade/types';
 
-export const Translations: { CAUSE: Record<GtfsCauseExtended, string>, EFFECT: Record<GtfsEffectExtended, string> } = {
+export const Translations: { CAUSE: Record<AlertCause, string>, EFFECT: Record<AlertEffect, string> } = {
 	CAUSE: {
 		ACCIDENT: 'Acidente',
 		CONSTRUCTION: 'Obras',
@@ -21,7 +21,6 @@ export const Translations: { CAUSE: Record<GtfsCauseExtended, string>, EFFECT: R
 		ACCESSIBILITY_ISSUE: 'Impacto na Acessibilidade',
 		ADDITIONAL_SERVICE: 'Aumento de Serviço',
 		DETOUR: 'Desvio',
-		MODIFIED_SERVICE: 'Alteração de Horários',
 		NO_SERVICE: 'Serviço Cancelado',
 		ON_BOARD_SALE_ISSUE: 'Problema na Venda a Bordo',
 		REALTIME_INFO_ISSUE: 'Problema na Informação em Tempo Real',
@@ -908,7 +907,7 @@ export const CauseEffectPairingDefaultAlert = {
 	},
 };
 
-export function getAlertTitleAndDescription(cause: GtfsCauseExtended, effect: GtfsEffectExtended, lines: string, detour?: string) {
+export function getAlertTitleAndDescription(cause: AlertCause, effect: AlertEffect, lines: string, detour?: string) {
 	return {
 		description: CauseEffectPairingDefaultAlert[cause][effect].message.replace('{lines}', lines).replace('{detour}', detour ?? ''),
 		title: CauseEffectPairingDefaultAlert[cause][effect].title.replace('{lines}', lines),

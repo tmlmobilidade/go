@@ -1,7 +1,7 @@
 import { IconAccessible, IconAmbulance, IconArrowBigUpLines, IconBarrierBlock, IconCalendarEvent, IconCarCrash, IconCircleArrowDown, IconCircleMinus, IconClock2, IconClockExclamation, IconCloudStorm, IconFish, IconRoadOff, IconRouteAltRight, IconServerCog, IconSettings, IconShieldChevron, IconSpeakerphone, IconTool, IconTrafficCone, IconUserExclamation, IconUserOff } from '@tabler/icons-react';
-import { GtfsCauseExtended, GtfsEffect } from '@tmlmobilidade/types';
+import { AlertCause, GtfsEffect } from '@tmlmobilidade/types';
 
-export const CauseIcons: Record<GtfsCauseExtended, React.ReactNode> = {
+export const CauseIcons: Record<AlertCause, React.ReactNode> = {
 	ACCIDENT: <IconCarCrash />,
 	CONSTRUCTION: <IconBarrierBlock />,
 	DEMONSTRATION: <IconSpeakerphone />,

@@ -1,6 +1,6 @@
-import { GtfsCauseExtended, GtfsEffect } from '@tmlmobilidade/types';
+import { AlertCause, GtfsEffect } from '@tmlmobilidade/types';
 
-export const Translations: { CAUSE: Record<GtfsCauseExtended, string>, EFFECT: Record<GtfsEffect, string> } = {
+export const Translations: { CAUSE: Record<AlertCause, string>, EFFECT: Record<GtfsEffect, string> } = {
 	CAUSE: {
 		ACCIDENT: 'Acidente',
 		CONSTRUCTION: 'Obras',
