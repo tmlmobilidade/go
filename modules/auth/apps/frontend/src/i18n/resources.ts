@@ -11,7 +11,7 @@ import ptUnauthenticated from '@/i18n/namespaces/unauthenticated/pt.json' with {
  * for each language and namespace. They are the glue that
  * connects the i18n system to the actual translation strings.
  */
-export const i18nRegistry = {
+export const i18nResourceKeys = {
 	pt: {
 		default: ptDefault,
 		unauthenticated: ptUnauthenticated,

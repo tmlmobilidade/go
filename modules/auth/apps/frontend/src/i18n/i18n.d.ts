@@ -5,16 +5,10 @@
  * type checking for i18n resources.
  */
 
-import { i18nRegistry } from '@/i18n/resources';
-
-// declare module '@tmlmobilidade/ui' {
-// 	interface i18nRegistry {
-// 		pt: typeof i18nRegistry.pt
-// 	}
-// }
+import { i18nResourceKeys } from '@/i18n/resources';
 
 declare module 'i18next' {
 	interface CustomTypeOptions {
-		resources: typeof i18nRegistry.pt
+		resources: typeof i18nResourceKeys.pt
 	}
 }

@@ -13,7 +13,6 @@ export function UsersListHeader() {
 
 	//
 	// A. Setup variables
-
 	const { t } = useTranslation();
 
 	const usersListContext = useUsersListContext();

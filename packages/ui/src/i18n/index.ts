@@ -1,4 +1,4 @@
-export * from './api';
-export * from './init';
+export * from './config';
 export * from './locales';
-export * from './registry';
+export * from './resources';
+export * from './utils';

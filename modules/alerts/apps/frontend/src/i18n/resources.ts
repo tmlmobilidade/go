@@ -12,7 +12,7 @@ import ptDefault from '@/i18n/namespaces/default/pt.json' with { type: 'json' };
  * for each language and namespace. They are the glue that
  * connects the i18n system to the actual translation strings.
  */
-export const i18nRegistry = {
+export const i18nResourceKeys = {
 	pt: {
 		'alert-causes': ptAlertCauses,
 		'alert-effects': ptAlertEffects,
