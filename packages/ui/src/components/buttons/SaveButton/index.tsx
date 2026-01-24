@@ -1,7 +1,8 @@
 'use client';
 
-import { useTranslation } from 'react-i18next';
 /* * */
+
+import { useTranslation } from 'react-i18next';
 
 import { Tooltip } from '../../common/Tooltip';
 import { Button } from '../Button';

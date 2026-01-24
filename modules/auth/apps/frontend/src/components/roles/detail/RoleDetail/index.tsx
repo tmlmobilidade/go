@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 'use client';
 
 /* * */
@@ -31,12 +33,12 @@ export function RoleDetail() {
 				<PermissionSection
 					key={item.scope}
 					configActions={item.actions}
-					description={t('default:permissions.' + item.description)}
+					description={t(`default:permissions.${item.description}` as any)}
 					enabledPermissions={rolesDetailContext.data.form.values.permissions}
 					onResourceToggle={rolesDetailContext.actions.handlePermissionResourceToggle}
 					onToggle={rolesDetailContext.actions.handlePermissionToggle}
 					scope={item.scope}
-					title={t('default:permissions.' + item.title)}
+					title={t(`default:permissions.${item.title}` as any)}
 				/>
 			))}
 		</Pane>

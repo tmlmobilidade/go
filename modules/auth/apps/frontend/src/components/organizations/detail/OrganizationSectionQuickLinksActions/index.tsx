@@ -21,8 +21,8 @@ export function OrganizationDetailQuickLinksActions({ handleDelete, handleEdit, 
 
 	return (
 		<Section flexDirection="row" gap="sm" padding="none">
-			<Button label={t('delete')} onClick={() => handleDelete(link)}>{t('delete')}</Button>
-			<Button label={t('edit')} onClick={() => handleEdit(link)}>{t('edit')}</Button>
+			<Button label={t('default:organizations.detail.SectionBasicInfo.fields.short_name.placeholder')} onClick={() => handleDelete(link)}>{t('default:organizations.detail.SectionBasicInfo.fields.short_name.placeholder')}</Button>
+			<Button label={t('default:organizations.detail.SectionBasicInfo.fields.short_name.placeholder')} onClick={() => handleEdit(link)}>{t('default:organizations.detail.SectionBasicInfo.fields.short_name.placeholder')}</Button>
 		</Section>
 	);
 

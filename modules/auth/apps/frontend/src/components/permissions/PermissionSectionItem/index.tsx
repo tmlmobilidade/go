@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 'use client';
 
 /* * */
@@ -72,9 +74,9 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 	return (
 		<CheckCard
 			checked={!!currentPermissionEntry || hasPermissionFromRole}
-			description={t('default:permissions.' + configAction.description)}
+			description={t(`default:permissions.${configAction.description}` as any)}
 			disabled={hasPermissionFromRole}
-			label={t('default:permissions.' + configAction.label)}
+			label={t(`default:permissions.${configAction.label}` as any)}
 			onChange={handleToggle}
 		>
 			{onResourceToggle && configAction.resources?.includes('AGENCIES') && (

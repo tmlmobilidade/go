@@ -16,16 +16,16 @@ export function OrganizationsListHeader() {
 	//
 	// A. Setup variables
 
-	const organizationsListContext = useOrganizationsListContext();
-
 	const { t } = useTranslation();
+
+	const organizationsListContext = useOrganizationsListContext();
 
 	//
 	// B. Render components
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>{t('title')}</Label>
+			<Label size="lg" caps singleLine>{t('default:organizations.list.header.title')}</Label>
 			<Spacer />
 			<SearchInput onChange={organizationsListContext.actions.setFilterSearch} value={organizationsListContext.filters.search} />
 			<Button icon={<IconPlus size={20} />} label={t('default:organizations.list.header.NewOrganizationButton.label')} onClick={openCreateOrganizationModal} />
