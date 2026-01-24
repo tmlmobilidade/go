@@ -2,7 +2,7 @@
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { CauseIcons } from '@/lib/icons';
-import { AlertCauseEffectMap } from '@tmlmobilidade/types';
+import { AlertCauseEffectPairsMap } from '@tmlmobilidade/types';
 import { Grid, LargeButton, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -21,14 +21,14 @@ export function AlertCreateStepCause() {
 	//
 	// B. Transform data
 
-	const preparedOptions = (Object.keys(AlertCauseEffectMap) as (keyof typeof AlertCauseEffectMap)[])
+	const preparedOptions = (Object.keys(AlertCauseEffectPairsMap) as (keyof typeof AlertCauseEffectPairsMap)[])
 		.map(item => ({ icon: CauseIcons[item], label: t(`alert-causes:${item}.title`) as string, value: item }))
 		.sort((a, b) => a.label.localeCompare(b.label));
 
 	//
 	// C. Handle actions
 
-	const handleSelectCause = (value: keyof typeof AlertCauseEffectMap) => {
+	const handleSelectCause = (value: keyof typeof AlertCauseEffectPairsMap) => {
 		alertCreateContext.data.form.setFieldValue('cause', value);
 		alertCreateContext.data.multi_step.actions.next();
 	};

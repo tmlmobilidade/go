@@ -1,11 +1,11 @@
 /* * */
 
-import { type GtfsCauseExtended } from '@/gtfs/cause.js';
-import { type GtfsEffectExtended } from '@/gtfs/effect.js';
+import { type AlertCause } from '@/alerts/cause.js';
+import { type AlertEffect } from '@/alerts/effect.js';
 
 /* * */
 
-export const AlertCauseEffectMap = {
+export const AlertCauseEffectPairsMap = {
 
 	ACCIDENT: [
 		'SIGNIFICANT_DELAYS',
@@ -24,7 +24,6 @@ export const AlertCauseEffectMap = {
 	],
 
 	DEMONSTRATION: [
-		'MODIFIED_SERVICE',
 		'SIGNIFICANT_DELAYS',
 		'ADDITIONAL_SERVICE',
 		'NO_SERVICE',
@@ -112,7 +111,7 @@ export const AlertCauseEffectMap = {
 		'ACCESSIBILITY_ISSUE',
 	],
 
-} as const satisfies Record<GtfsCauseExtended, readonly GtfsEffectExtended[]>;
+} as const satisfies Record<AlertCause, readonly AlertEffect[]>;
 
 /**
  * Type representing all valid combinations of alert causes
@@ -121,5 +120,5 @@ export const AlertCauseEffectMap = {
  * specific alert configurations based on cause-effect pairs.
  */
 export type AlertCauseEffectPairs = {
-	[C in keyof typeof AlertCauseEffectMap]: `${C}:${(typeof AlertCauseEffectMap)[C][number]}`
-}[keyof typeof AlertCauseEffectMap];
+	[C in keyof typeof AlertCauseEffectPairsMap]: `${C}:${(typeof AlertCauseEffectPairsMap)[C][number]}`
+}[keyof typeof AlertCauseEffectPairsMap];

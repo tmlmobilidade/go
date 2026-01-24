@@ -8,62 +8,23 @@ export const GtfsCauseValues = [
 	'ACCIDENT',
 	'CONSTRUCTION',
 	'DEMONSTRATION',
+	'HOLIDAY',
+	'MAINTENANCE',
 	'MEDICAL_EMERGENCY',
+	'OTHER_CAUSE',
 	'POLICE_ACTIVITY',
 	'STRIKE',
 	'TECHNICAL_ISSUE',
+	'UNKNOWN_CAUSE',
 	'WEATHER',
-	// 'HOLIDAY',
-	// 'MAINTENANCE',
-	// 'OTHER_CAUSE',
-	// 'UNKNOWN_CAUSE',
 ] as const;
 
 export const GtfsCauseSchema = z.enum(GtfsCauseValues);
 
+/**
+ * The GTFS-RT standard cause types.
+ * Use this type to represent the standard causes of a service alert
+ * in GTFS-RT feeds, either when importing from standard GTFS-RT data into
+ * the application or when exporting from the application to GTFS-RT format.
+ */
 export type GtfsCause = z.infer<typeof GtfsCauseSchema>;
-
-/* * */
-
-export const GtfsCauseExtendedValues = [
-	...GtfsCauseValues,
-	'DRIVER_ABSENCE',
-	'DRIVER_ISSUE',
-	'HIGH_PASSENGER_LOAD',
-	'ROAD_ISSUE',
-	'TRAFFIC_JAM',
-	'PUBLIC_DISORDER',
-] as const;
-
-export const GtfsCauseExtendedSchema = z.enum(GtfsCauseExtendedValues);
-
-export type GtfsCauseExtended = z.infer<typeof GtfsCauseExtendedSchema>;
-
-/* * */
-
-export const GtfsExtendedCauseMap = Object.freeze({
-
-	/* --- Standard GtfsExtended Causes --- */
-	ACCIDENT: 'ACCIDENT',
-	CONSTRUCTION: 'CONSTRUCTION',
-	DEMONSTRATION: 'DEMONSTRATION',
-	HOLIDAY: 'HOLIDAY',
-	MAINTENANCE: 'MAINTENANCE',
-	MEDICAL_EMERGENCY: 'MEDICAL_EMERGENCY',
-	POLICE_ACTIVITY: 'POLICE_ACTIVITY',
-	STRIKE: 'STRIKE',
-	TECHNICAL_PROBLEM: 'TECHNICAL_PROBLEM',
-	WEATHER: 'WEATHER',
-	// OTHER_CAUSE: 'OTHER_CAUSE',
-	// UNKNOWN_CAUSE: 'UNKNOWN_CAUSE',
-
-	/* --- Extended Operational Causes --- */
-	DRIVER_ABSENCE: 'DRIVER_ABSENCE',
-	DRIVER_ISSUE: 'DRIVER_ISSUE',
-	HIGH_PASSENGER_LOAD: 'HIGH_PASSENGER_LOAD',
-	ROAD_INCIDENT: 'ROAD_INCIDENT',
-	SYSTEM_FAILURE: 'SYSTEM_FAILURE',
-	TRAFFIC_JAM: 'TRAFFIC_JAM',
-	VEHICLE_ISSUE: 'VEHICLE_ISSUE',
-
-});
