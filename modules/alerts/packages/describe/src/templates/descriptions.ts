@@ -334,12 +334,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
+				en: { placeholders: [], text: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} poderão sofrer atrasos significativos. Pedimos a compreensão de todos.' },
+				en: { placeholders: [], text: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
@@ -794,12 +794,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'CONSTRUCTION:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a obras, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a obras, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a obras, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a obras, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
@@ -1438,12 +1438,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DEMONSTRATION:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um evento, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a um evento, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um evento, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a um evento, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
@@ -1622,12 +1622,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ABSENCE:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a uma questão operacional, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a uma questão operacional, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a uma questão operacional, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a uma questão operacional, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
@@ -1990,12 +1990,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'DRIVER_ISSUE:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a uma questão operacional, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a uma questão operacional, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a uma questão operacional, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a uma questão operacional, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
@@ -2266,12 +2266,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'HIGH_PASSENGER_LOAD:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a elevado volume de passageiros, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a elevado volume de passageiros, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a elevado volume de passageiros, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a elevado volume de passageiros, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
@@ -2634,12 +2634,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'MEDICAL_EMERGENCY:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a uma emergência médica, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a uma emergência médica, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a uma emergência médica, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a uma emergência médica, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
@@ -3002,12 +3002,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'POLICE_ACTIVITY:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a atividade policial, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a atividade policial, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a atividade policial, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a atividade policial, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
@@ -3370,12 +3370,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'PUBLIC_DISORDER:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um desacato, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a um desacato, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um desacato, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a um desacato, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
@@ -3830,12 +3830,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ROAD_ISSUE:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um incidente na estrada, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a um incidente na estrada, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a um incidente na estrada, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a um incidente na estrada, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
@@ -4276,12 +4276,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'STRIKE:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a greve, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a greve, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a greve, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a greve, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
@@ -4760,12 +4760,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'TECHNICAL_ISSUE:SIGNIFICANT_DELAYS:agency': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Due to a technical issue, all lines of operator 123 are experiencing significant delays. We expect to resume normal operation soon. Thank you for your understanding.' },
-				pt: { placeholders: [], text: 'Devido a um problema técnico todas as linhas do operador 123 estão com atrasos significativos. Esperamos retomar a normalidade da operação em breve. Agradecemos a sua compreensão.' },
+				en: { placeholders: [], text: 'Due to a technical issue, operator 123 is experiencing significant delays. We expect to resume normal operation soon. Thank you for your understanding.' },
+				pt: { placeholders: [], text: 'Devido a um problema técnico o operador 123 está com atrasos significativos. Esperamos retomar a normalidade da operação em breve. Agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Due to a technical issue, all lines of operator 123 are experiencing significant delays. We expect to resume normal operation soon. Thank you for your understanding.' },
-				pt: { placeholders: [], text: 'Devido a um problema técnico todas as linhas do operador 123 estão com atrasos significativos. Esperamos retomar a normalidade da operação em breve. Agradecemos a sua compreensão.' },
+				en: { placeholders: [], text: 'Due to a technical issue, operator 123 is experiencing significant delays. We expect to resume normal operation soon. Thank you for your understanding.' },
+				pt: { placeholders: [], text: 'Devido a um problema técnico o operador 123 está com atrasos significativos. Esperamos retomar a normalidade da operação em breve. Agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
@@ -5156,12 +5156,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'TRAFFIC_JAM:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a trânsito inesperado, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a trânsito inesperado, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Devido a trânsito inesperado, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a trânsito inesperado, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
