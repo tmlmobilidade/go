@@ -4760,66 +4760,66 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'TECHNICAL_ISSUE:SIGNIFICANT_DELAYS:agency': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Due to a technical issue, all lines of operator 123 are experiencing significant delays. We expect to resume normal operation soon. Thank you for your understanding.' },
+				pt: { placeholders: [], text: 'Devido a um problema técnico todas as linhas do operador 123 estão com atrasos significativos. Esperamos retomar a normalidade da operação em breve. Agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Due to a technical issue, all lines of operator 123 are experiencing significant delays. We expect to resume normal operation soon. Thank you for your understanding.' },
+				pt: { placeholders: [], text: 'Devido a um problema técnico todas as linhas do operador 123 estão com atrasos significativos. Esperamos retomar a normalidade da operação em breve. Agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Area 1 | Technical issue causing significant delays.' },
+				pt: { placeholders: [], text: 'Área 1 | Problema técnico provoca atrasos significativos.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Area 1 | Technical issue causing significant delays.' },
+				pt: { placeholders: [], text: 'Área 1 | Problema técnico provoca atrasos significativos.' },
 			},
 		},
 	},
 	'TECHNICAL_ISSUE:SIGNIFICANT_DELAYS:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Due to a technical issue, lines 123 and 123 are experiencing significant delays. We expect to resume normal operation soon. Thank you for your understanding.' },
+				pt: { placeholders: [], text: 'Devido a um problema técnico, as linhas 123 e 123 estão a sofrer atrasos significativos. Esperamos retomar a normalidade da operação em breve. Agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Due to a technical issue, line 123 is experiencing significant delays. We expect to resume normal operation soon. Thank you for your understanding.' },
+				pt: { placeholders: [], text: 'Devido a um problema técnico, a linha 123 está a sofrer atrasos significativos. Esperamos retomar a normalidade da operação em breve. Agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Lines 123, 123 | Technical issue causing significant delays.' },
+				pt: { placeholders: [], text: 'Linhas 123, 123 | Problema técnico provoca atrasos significativos.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Line 123 | Technical issue causing significant delays.' },
+				pt: { placeholders: [], text: 'Linha 123 | Problema técnico provoca atrasos significativos.' },
 			},
 		},
 	},
 	'TECHNICAL_ISSUE:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Due to a technical issue, the 8am ride on line 123 heading to Sapaçal, and the 9am ride heading to Sapaçal, are experiencing significant delays. The rides have not been cancelled and are expected to take place as soon as the issue is resolved. We apologize for the inconvenience and thank you for your understanding.' },
+				pt: { placeholders: [], text: 'Devido a um problema técnico, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Due to a technical issue, the 8am ride on line 123 heading to Sapaçal is experiencing significant delays. The ride has not been cancelled and is expected to take place as soon as the issue is resolved. We apologize for the inconvenience and thank you for your understanding.' },
+				pt: { placeholders: [], text: 'Devido a um problema técnico, a viagem das 8h da linha 123 com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Lines 123, 123 | Significant delay' },
+				pt: { placeholders: [], text: 'Linhas 123, 123 | Atraso significativo' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: [], text: 'Line 123 | Significant delay' },
+				pt: { placeholders: [], text: 'Linha 123 | Atraso significativo' },
 			},
 		},
 	},
