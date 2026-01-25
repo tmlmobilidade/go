@@ -12,22 +12,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:DETOUR:agency': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
+				en: { placeholders: [], text: 'Um acidente rodoviário está provocar desvios de percurso para a Área 1. Agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Um acidente rodoviário está provocar desvios de percurso para a Área 1. Agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
+				en: { placeholders: [], text: 'Um acidente rodoviário está provocar desvios de percurso para a Área 1. Agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Um acidente rodoviário está provocar desvios de percurso para a Área 1. Agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
-				pt: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
+				en: { placeholders: [], text: '{agency} | Desvio de Percurso - Acidente' },
+				pt: { placeholders: [], text: '{agency} | Desvio de Percurso - Acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
-				pt: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
+				en: { placeholders: [], text: '{agency} | Desvio de Percurso - Acidente' },
+				pt: { placeholders: [], text: '{agency} | Desvio de Percurso - Acidente' },
 			},
 		},
 	},
@@ -35,12 +35,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:DETOUR:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
+				en: { placeholders: [], text: 'Um acidente rodoviário está a provocar um desvio de percurso para as linhas {lines}. Agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Um acidente rodoviário está a provocar um desvio de percurso para as linhas {lines}. Agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
+				en: { placeholders: [], text: 'Um acidente rodoviário está a provocar um desvio de percurso para as linhas {lines}. Agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Um acidente rodoviário está a provocar um desvio de percurso para as linhas {lines}. Agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
@@ -58,22 +58,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:DETOUR:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
+				en: { placeholders: [], text: 'Um acidente rodoviário está a causar um desvio de percurso na viagem das 8h da linha 123, com destino a Sapaçal. De momento, ainda não há previsão para a normalização da situação. Agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Um acidente rodoviário está a causar um desvio de percurso na viagem das 8h da linha 123, com destino a Sapaçal. De momento, ainda não há previsão para a normalização da situação. Agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
+				en: { placeholders: [], text: 'Um acidente rodoviário está a causar um desvio de percurso na viagem das 8h da linha 123, com destino a Sapaçal. De momento, ainda não há previsão para a normalização da situação. Agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Um acidente rodoviário está a causar um desvio de percurso na viagem das 8h da linha 123, com destino a Sapaçal. De momento, ainda não há previsão para a normalização da situação. Agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
-				pt: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
+				en: { placeholders: [], text: '{lines} | Desvio de Percurso devido a Acidente Rodoviário' },
+				pt: { placeholders: [], text: '{lines} | Desvio de Percurso devido a Acidente Rodoviário' },
 			},
 			singular: {
-				en: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
-				pt: { placeholders: [], text: '{lines} | Desvio de Percurso - Acidente' },
+				en: { placeholders: [], text: '{lines} | Desvio de Percurso devido a Acidente Rodoviário' },
+				pt: { placeholders: [], text: '{lines} | Desvio de Percurso devido a Acidente Rodoviário' },
 			},
 		},
 	},
@@ -81,12 +81,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:DETOUR:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
+				en: { placeholders: [], text: 'Um acidente rodoviário está a causar um desvio de percurso na viagem das 8h da linha 123, com destino a Sapaçal. De momento, ainda não há previsão para a normalização da situação. Agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Um acidente rodoviário está a causar um desvio de percurso na viagem das 8h da linha 123, com destino a Sapaçal. De momento, ainda não há previsão para a normalização da situação. Agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} farão desvio de percurso.' },
+				en: { placeholders: [], text: 'Um acidente rodoviário está a causar um desvio de percurso na viagem das 8h da linha 123, com destino a Sapaçal. De momento, ainda não há previsão para a normalização da situação. Agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Um acidente rodoviário está a causar um desvio de percurso na viagem das 8h da linha 123, com destino a Sapaçal. De momento, ainda não há previsão para a normalização da situação. Agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
@@ -150,22 +150,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:NO_SERVICE:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
+				en: { placeholders: [], text: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123, com destino a Sapaçal, encontra-se cancelada. Devido à natureza da situação não será possível encontrar uma substituição, pelo que é recomendado recorrer a percursos alternativos. Lamentamos o incómodo causado e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123, com destino a Sapaçal, encontra-se cancelada. Devido à natureza da situação não será possível encontrar uma substituição, pelo que é recomendado recorrer a percursos alternativos. Lamentamos o incómodo causado e agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
+				en: { placeholders: [], text: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123, com destino a Sapaçal, encontra-se cancelada. Devido à natureza da situação não será possível encontrar uma substituição, pelo que é recomendado recorrer a percursos alternativos. Lamentamos o incómodo causado e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123, com destino a Sapaçal, encontra-se cancelada. Devido à natureza da situação não será possível encontrar uma substituição, pelo que é recomendado recorrer a percursos alternativos. Lamentamos o incómodo causado e agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
-				pt: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
+				en: { placeholders: [], text: '{lines} | Viagem cancelada devido a acidente' },
+				pt: { placeholders: [], text: '{lines} | Viagem cancelada devido a acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
-				pt: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
+				en: { placeholders: [], text: '{lines} | Viagem cancelada devido a acidente' },
+				pt: { placeholders: [], text: '{lines} | Viagem cancelada devido a acidente' },
 			},
 		},
 	},
@@ -173,22 +173,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:NO_SERVICE:stops': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
+				en: { placeholders: [], text: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123, com destino a Sapaçal, encontra-se cancelada. Devido à natureza da situação não será possível encontrar uma substituição, pelo que é recomendado recorrer a percursos alternativos. Lamentamos o incómodo causado e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123, com destino a Sapaçal, encontra-se cancelada. Devido à natureza da situação não será possível encontrar uma substituição, pelo que é recomendado recorrer a percursos alternativos. Lamentamos o incómodo causado e agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as linhas {lines} encontram-se temporariamente suspensas. Os passageiros deverão recorrer a percursos alternativos. Consulte o site ou a app Carris Metropolitana.' },
+				en: { placeholders: [], text: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123, com destino a Sapaçal, encontra-se cancelada. Devido à natureza da situação não será possível encontrar uma substituição, pelo que é recomendado recorrer a percursos alternativos. Lamentamos o incómodo causado e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123, com destino a Sapaçal, encontra-se cancelada. Devido à natureza da situação não será possível encontrar uma substituição, pelo que é recomendado recorrer a percursos alternativos. Lamentamos o incómodo causado e agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
-				pt: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
+				en: { placeholders: [], text: '{lines} | Viagem cancelada devido a acidente' },
+				pt: { placeholders: [], text: '{lines} | Viagem cancelada devido a acidente' },
 			},
 			singular: {
-				en: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
-				pt: { placeholders: [], text: '{lines} | Serviço Suspenso - Acidente' },
+				en: { placeholders: [], text: '{lines} | Viagem cancelada devido a acidente' },
+				pt: { placeholders: [], text: '{lines} | Viagem cancelada devido a acidente' },
 			},
 		},
 	},
@@ -196,12 +196,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:REDUCED_SERVICE:agency': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
+				en: { placeholders: [], text: 'Devido a um acidente rodoviário, as  linhas {lines}  terão o seu serviço reduzido.' },
+				pt: { placeholders: [], text: 'Devido a um acidente rodoviário, as  linhas {lines}  terão o seu serviço reduzido.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
+				en: { placeholders: [], text: 'Devido a um acidente rodoviário, as  linhas {lines}  terão o seu serviço reduzido.' },
+				pt: { placeholders: [], text: 'Devido a um acidente rodoviário, as  linhas {lines}  terão o seu serviço reduzido.' },
 			},
 		},
 		title: {
@@ -219,12 +219,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:REDUCED_SERVICE:lines': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
+				en: { placeholders: [], text: 'Devido a um acidente rodoviário, as  linhas {lines}  terão o seu serviço reduzido.' },
+				pt: { placeholders: [], text: 'Devido a um acidente rodoviário, as  linhas {lines}  terão o seu serviço reduzido.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
+				en: { placeholders: [], text: 'Devido a um acidente rodoviário, as  linhas {lines}  terão o seu serviço reduzido.' },
+				pt: { placeholders: [], text: 'Devido a um acidente rodoviário, as  linhas {lines}  terão o seu serviço reduzido.' },
 			},
 		},
 		title: {
@@ -242,12 +242,12 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'ACCIDENT:REDUCED_SERVICE:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
+				en: { placeholders: [], text: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123, com destino a Sapaçal, terá o seu percurso encurtado pelo que algumas paragens ficarão sem serviço. Lamentamos o incóomodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123, com destino a Sapaçal, terá o percurso encurtado. Algumas paragens não serão efetuadas. Lamentamos o incóomodo e agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
-				pt: { placeholders: [], text: 'Devido a um acidente, as  linhas {lines}  terão o seu serviço reduzido.' },
+				en: { placeholders: [], text: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123, com destino a Sapaçal, terá o percurso encurtado. Algumas paragens não serão efetuadas. Lamentamos o incóomodo e agradecemos a sua compreensão.' },
+				pt: { placeholders: [], text: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123, com destino a Sapaçal, terá o percurso encurtado. Algumas paragens não serão efetuadas. Lamentamos o incóomodo e agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
