@@ -2,6 +2,7 @@
 
 /* * */
 
+import { templateArticlesReplacements } from '@/templates/articles.js';
 import { alertI18nTemplates } from '@/templates/descriptions.js';
 import { templatePlaceholderReplacements } from '@/templates/placeholders.js';
 import { DescribeAlertProps } from '@/types/describe-alert-props.js';
@@ -57,13 +58,20 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 			// Skip if the template string variation is not defined
 			if (!templateStringCountableVariation) continue;
 			// Set the base string from the templates in the result object
-			result[resultStringKey][i18nCode] = templateStringCountableVariation[i18nCode].text;
+			result[resultStringKey][i18nCode] = templateStringCountableVariation[i18nCode];
 			// Each translated string has several placeholders that need to be replaced with actual values.
-			for (const placeholderKey of templateStringCountableVariation[i18nCode].placeholders) {
-				// Use the templates param builders to get the actual value for each placeholder
-				const replacementValue = await templatePlaceholderReplacements[placeholderKey](props.data);
+			for (const placeholderKey of Object.keys(templatePlaceholderReplacements)) {
+			// Use the templates param builders to get the actual value for each placeholder
+				const replacementValue = templatePlaceholderReplacements[placeholderKey](props.data);
 				// Replace all occurrences of the placeholder in the string with the actual value
 				result[resultStringKey][i18nCode] = result[resultStringKey][i18nCode].replaceAll(placeholderKey, replacementValue);
+			}
+			// Each translated string has several articles that need to be replaced with actual values.
+			for (const articleKey of Object.keys(templateArticlesReplacements)) {
+				// Use the templates param builders to get the actual value for each article
+				const replacementValue = templateArticlesReplacements[articleKey];
+				// Replace all occurrences of the article in the string with the actual value
+				result[resultStringKey][i18nCode] = result[resultStringKey][i18nCode].replaceAll(articleKey, replacementValue);
 			}
 		}
 	}

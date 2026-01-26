@@ -3,36 +3,26 @@
 /* * */
 
 import { type DescribeAlertProps } from '@/types/describe-alert-props.js';
-import { type TemplatePlaceholder } from '@/types/placeholders.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized } from '@tmlmobilidade/types';
 
 /* * */
 
-export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data: DescribeAlertProps['data']) => Promise<string>> = {
+export const templatePlaceholderReplacements = {
 
-	'{headsign_title}': async () => '',
-
-	'{holiday_name}': async () => '',
-
-	'{line_short_name[]}': async () => '',
-
-	'{line_short_name}': async () => '',
-
-	'{lines_prose}': async () => '',
-
-	'{lines_title}': async (data: Extract<DescribeAlertProps, { type: 'lines' }>['data']) => {
-		const lineShortNames = Array.from(new Set(data.map(ht => ht.id) ?? []));
+	'{lines_description_pt}': (data: Extract<DescribeAlertProps, { type: 'lines' }>['data']) => {
+		const lineShortNames = Array.from(new Set(data.map(ht => ht.short_name) ?? []));
 		return lineShortNames.join(', ');
 	},
 
-	'{ride_description}': async () => '',
+	'{lines_title}': (data: Extract<DescribeAlertProps, { type: 'lines' }>['data']) => {
+		const lineShortNames = Array.from(new Set(data.map(ht => ht.short_name)));
+		return lineShortNames.length > 1
+			? `linhas ${lineShortNames.join(', ')}`
+			: `linha ${lineShortNames[0]}`;
+	},
 
-	'{ride_short_name[]}': async () => '',
-
-	'{ride_short_name}': async () => '',
-
-	'{rides_description_pt}': async (data: Extract<DescribeAlertProps, { type: 'rides' }>['data']) => {
+	'{rides_description_pt}': (data: Extract<DescribeAlertProps, { type: 'rides' }>['data']) => {
 		//
 
 		//
@@ -61,12 +51,12 @@ export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data:
 
 			const lineShortNames = Array.from(new Set(group.map(ht => ht.line_id)));
 			const linePart = lineShortNames.length > 1
-				? `das linhas ${lineShortNames.join(', ')}`
-				: `da linha ${lineShortNames[0]} com destino a ${group[0].headsign}`;
+				? `linhas ${lineShortNames.join(', ')}`
+				: `linha ${lineShortNames[0]} com destino a ${group[0].headsign}`;
 
 			const ridesPart = rideStartTimes.length > 1
-				? `as viagens das ${rideStartTimes.slice(0, -1).join(', ')} e ${rideStartTimes.slice(-1)}`
-				: `a viagem das ${rideStartTimes[0]}`;
+				? `viagens das ${rideStartTimes.slice(0, -1).join(', ')} e ${rideStartTimes.slice(-1)}`
+				: `viagem das ${rideStartTimes[0]}`;
 
 			parts.push(`${ridesPart} ${linePart}`);
 		}
@@ -78,26 +68,13 @@ export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data:
 		//
 	},
 
-	'{rides_title}': async (data: Extract<DescribeAlertProps, { type: 'rides' }>['data']) => {
+	'{rides_title}': (data: Extract<DescribeAlertProps, { type: 'rides' }>['data']) => {
 		const lineShortNames = Array.from(new Set(data.map(ht => ht.line_id) ?? [])).sort();
 		return lineShortNames.join(', ');
 	},
 
-	'{start_time[]}': async () => '',
+} as const satisfies Record<string, (data: DescribeAlertProps['data']) => string>;
 
-	'{start_time}': async () => '',
+/* * */
 
-	'{stop_name[]}': async () => '',
-
-	'{stop_name}': async () => '',
-
-	'{stops_prose}': async () => '',
-
-	'{stops_title}': async () => '',
-
-	'*LINES*': async (data: Extract<DescribeAlertProps, { type: 'lines' }>['data']) => {
-		const lineShortNames = Array.from(new Set(data.map(ht => ht.id) ?? []));
-		return lineShortNames.join(', ');
-	},
-
-};
+export type TemplatePlaceholder = keyof typeof templatePlaceholderReplacements;

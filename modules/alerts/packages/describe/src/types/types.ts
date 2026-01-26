@@ -1,6 +1,7 @@
 /* * */
 
-import { type TemplatePlaceholder } from '@/types/placeholders.js';
+import { type TemplateArticle } from '@/templates/articles.js';
+import { type TemplatePlaceholder } from '@/templates/placeholders.js';
 import { type Alert, type AlertCauseEffectPairs } from '@tmlmobilidade/types';
 
 /**
@@ -8,6 +9,7 @@ import { type Alert, type AlertCauseEffectPairs } from '@tmlmobilidade/types';
  * Used for defining alert descriptions and titles in different languages.
  */
 export interface StringType {
+	articles: TemplateArticle[]
 	placeholders: TemplatePlaceholder[]
 	text: string
 }
@@ -24,8 +26,8 @@ export type I18nCodes = 'en' | 'pt';
  * Singular form is mandatory, while plural is optional.
  */
 export interface CountableStringType {
-	plural?: Record<I18nCodes, StringType>
-	singular: Record<I18nCodes, StringType>
+	plural?: Record<I18nCodes, string>
+	singular: Record<I18nCodes, string>
 }
 
 /**
