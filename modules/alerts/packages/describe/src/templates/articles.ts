@@ -74,6 +74,30 @@ export const templateArticlesReplacements = {
 	 */
 	in_def_m_s: { en: 'in the', pt: 'no' },
 
+	/**
+	 * Preposição de com artigo definido feminino plural
+	 * @example 'das' em Português, 'of the' em Inglês
+	 */
+	of_def_f_p: { en: 'of the', pt: 'das' },
+
+	/**
+	 * Preposição de com artigo definido feminino singular
+	 * @example 'da' em Português, 'of the' em Inglês
+	 */
+	of_def_f_s: { en: 'of the', pt: 'da' },
+
+	/**
+	 * Preposição de com artigo definido masculino plural
+	 * @example 'dos' em Português, 'of the' em Inglês
+	 */
+	of_def_m_p: { en: 'of the', pt: 'dos' },
+
+	/**
+	 * Preposição de com artigo definido masculino singular
+	 * @example 'do' em Português, 'of the' em Inglês
+	 */
+	of_def_m_s: { en: 'of the', pt: 'do' },
+
 } as const satisfies Record<string, { en: string, pt: string }>;
 
 /* * */

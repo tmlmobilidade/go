@@ -60,21 +60,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123, com destino a Sapaçal, terá o percurso encurtado. Algumas paragens não serão efetuadas. Lamentamos o incóomodo e agradecemos a sua compreensão.',
+				pt: 'Um acidente obriga ao encurtamento {of_def_f_p} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido a um acidente rodoviário, a viagem das 8h da linha 123, com destino a Sapaçal, terá o percurso encurtado. Algumas paragens não serão efetuadas. Lamentamos o incóomodo e agradecemos a sua compreensão.',
+				pt: 'Um acidente obriga ao encurtamento {of_def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: '{lines} | Serviço Reduzido - Acidente',
+				pt: '{rides_title} | Viagens encurtadas',
 			},
 			singular: {
 				en: 'not-available',
-				pt: '{lines} | Serviço Reduzido - Acidente',
+				pt: '{rides_title} | Viagem encurtada',
 			},
 		},
 	},
@@ -175,21 +175,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Trabalhos de construção obrigam ao encurtamento {of_def_f_p} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Trabalhos de construção obrigam ao encurtamento {of_def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagens encurtadas',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagem encurtada',
 			},
 		},
 	},
@@ -336,21 +336,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Um evento exige o encurtamento {of_def_f_p} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Um evento exige o encurtamento {of_def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagens encurtadas',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagem encurtada',
 			},
 		},
 	},
@@ -474,21 +474,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Um imprevisto operacional exige o encurtamento {of_def_f_p} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Um imprevisto operacional exige o encurtamento {of_def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagens encurtadas',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagem encurtada',
 			},
 		},
 	},
@@ -635,21 +635,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Uma emergência médica exige o encurtamento {of_def_f_p} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Uma emergência médica exige o encurtamento {of_def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagens encurtadas',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagem encurtada',
 			},
 		},
 	},
@@ -727,21 +727,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Atividade policial exige o encurtamento {of_def_f_p} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Atividade policial exige o encurtamento {of_def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagens encurtadas',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagem encurtada',
 			},
 		},
 	},
@@ -819,21 +819,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Desacato provoca o encurtamento {of_def_f_p} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Desacato provoca o encurtamento {of_def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagens encurtadas',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagem encurtada',
 			},
 		},
 	},
@@ -934,21 +934,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário encurtar {def_f_p} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário encurtar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagens encurtadas',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagem encurtada',
 			},
 		},
 	},
@@ -1049,21 +1049,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Por motivo de greve é necessário encurtar {def_f_p} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Por motivo de greve é necessário encurtar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagens encurtadas',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagem encurtada',
 			},
 		},
 	},
@@ -1187,21 +1187,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Um problema técnico obriga a encurtar {def_f_p} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Um problema técnico obriga a encurtar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagens encurtadas',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagem encurtada',
 			},
 		},
 	},
@@ -1279,21 +1279,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Trânsito excessivo exige encurtar {def_f_p} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Trânsito excessivo exige encurtar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagens encurtadas',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagem encurtada',
 			},
 		},
 	},
@@ -1394,21 +1394,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido às condições metereológicas adversas verificadas é necessário encurtar {def_f_p} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido às condições metereológicas adversas verificadas é necessário encurtar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagens encurtadas',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Viagem encurtada',
 			},
 		},
 	},
