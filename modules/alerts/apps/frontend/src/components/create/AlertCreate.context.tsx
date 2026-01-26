@@ -143,11 +143,11 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	useEffect(() => {
 		if (!form.getValues().reference_type) {
 			const createPermission = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
-			if (createPermission.resources.reference_types.includes(PermissionCatalog.ALLOW_ALL_FLAG)) return form.setFieldValue('reference_type', 'lines');
-			if (createPermission.resources.reference_types.includes('lines')) return form.setFieldValue('reference_type', 'lines');
-			if (createPermission.resources.reference_types.includes('stops')) return form.setFieldValue('reference_type', 'stops');
-			if (createPermission.resources.reference_types.includes('rides')) return form.setFieldValue('reference_type', 'rides');
-			if (createPermission.resources.reference_types.includes('agency')) return form.setFieldValue('reference_type', 'agency');
+			if (createPermission?.resources.reference_types.includes(PermissionCatalog.ALLOW_ALL_FLAG)) return form.setFieldValue('reference_type', 'lines');
+			if (createPermission?.resources.reference_types.includes('lines')) return form.setFieldValue('reference_type', 'lines');
+			if (createPermission?.resources.reference_types.includes('stops')) return form.setFieldValue('reference_type', 'stops');
+			if (createPermission?.resources.reference_types.includes('rides')) return form.setFieldValue('reference_type', 'rides');
+			if (createPermission?.resources.reference_types.includes('agency')) return form.setFieldValue('reference_type', 'agency');
 		}
 	}, [form.getValues().reference_type]);
 

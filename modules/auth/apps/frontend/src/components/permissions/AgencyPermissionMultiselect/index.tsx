@@ -1,61 +1,54 @@
 /* * */
 
-import { useAgenciesContext } from '@/contexts/Agencies.context';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { MultiSelect } from '@tmlmobilidade/ui';
-import { useTranslation } from 'react-i18next';
+import { MultiSelect, useDataAgencies } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 
 /* * */
 
 interface AgencyPermissionMultiselectProps {
-	description: string
 	disabled?: boolean
-	label: string
 	onChange: (value: string[]) => void
-	selected: string[]
+	value: string[]
 }
 
 /* * */
 
-export function AgencyPermissionMultiselect({ description, disabled, label, onChange, selected }: AgencyPermissionMultiselectProps) {
+export function AgencyPermissionMultiselect({ disabled, onChange, value }: AgencyPermissionMultiselectProps) {
 	//
 
 	//
-	// A. Setup variables
+	// A. Fetch data
 
-	const { t } = useTranslation();
-
-	const agencyListContext = useAgenciesContext();
+	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
 
 	//
 	// B. Transform data
 
-	const agencyOptions = agencyListContext.data.raw.map(agency => ({
-		label: `${agency._id} - ${agency.name}`,
-		value: agency._id,
-	}));
-
-	agencyOptions.unshift({
-		label: t('default:permissions.AgencyPermissionMultiselect.all'),
-		value: PermissionCatalog.ALLOW_ALL_FLAG,
-	});
+	const agencyOptionsWithAllowAll = useMemo(() => {
+		const copyOfOptions = [...agencyOptions];
+		copyOfOptions.unshift({ label: 'Todas as agências', value: PermissionCatalog.ALLOW_ALL_FLAG });
+		return copyOfOptions;
+	}, [agencyOptions]);
 
 	//
 	// C. Handle actions
 
-	const handleChange = (value: string[]) => {
-		if (selected.includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-			const filteredValue = value.filter(v => v !== PermissionCatalog.ALLOW_ALL_FLAG);
+	const handleChange = (newValue: string[]) => {
+		// Handle "select all" logic
+		if (value.includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+			const filteredValue = newValue.filter(v => v !== PermissionCatalog.ALLOW_ALL_FLAG);
 			onChange(filteredValue);
 			return;
 		}
-
-		if (value.includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+		// If "select all" is chosen, set the newValue accordingly
+		if (newValue.includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
 			onChange([PermissionCatalog.ALLOW_ALL_FLAG]);
 			return;
 		}
-
-		onChange(value);
+		// Handle normal change
+		onChange(newValue);
 	};
 
 	//
@@ -63,13 +56,12 @@ export function AgencyPermissionMultiselect({ description, disabled, label, onCh
 
 	return (
 		<MultiSelect
-			key="agency-multiselect"
-			data={agencyOptions}
-			description={description}
+			data={agencyOptionsWithAllowAll}
+			description="Operadores ao qual o utilizador tem acesso para esta acção."
 			disabled={disabled}
-			label={label}
+			label="Operadores"
 			onChange={handleChange}
-			value={selected}
+			value={value}
 		/>
 	);
 

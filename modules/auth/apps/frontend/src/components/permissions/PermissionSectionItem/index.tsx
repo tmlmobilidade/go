@@ -1,18 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 'use client';
 
 /* * */
 
 import { CheckCard } from '@/components/common/CheckCard';
 import { AgencyPermissionMultiselect } from '@/components/permissions/AgencyPermissionMultiselect';
+import { AlertReferenceTypePermissionMultiselect } from '@/components/permissions/AlertReferenceTypePermissionMultiselect';
 import { useRolesContext } from '@/contexts/Roles.context';
 import { hasRolePermission } from '@/lib/permission-helpers';
 import { PermissionConfigAction } from '@/lib/permissions';
 import { type Permission } from '@tmlmobilidade/types';
-import { Label } from '@tmlmobilidade/ui';
+import { Grid } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -35,8 +33,6 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 
 	const rolesContext = useRolesContext();
 
-	const { t } = useTranslation();
-
 	//
 	// B. Transform data
 
@@ -50,7 +46,13 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 	const selectedAgencyIds = (() => {
 		if (!currentPermissionEntry) return [];
 		if (!('resources' in currentPermissionEntry)) return [];
-		return currentPermissionEntry.resources.agency_ids || [];
+		return currentPermissionEntry.resources['agency_ids'] || [];
+	})();
+
+	const selectedAlertReferenceTypeIds = (() => {
+		if (!currentPermissionEntry) return [];
+		if (!('resources' in currentPermissionEntry)) return [];
+		return currentPermissionEntry.resources['reference_types'] || [];
 	})();
 
 	//
@@ -61,33 +63,37 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 		onToggle(scope, configAction.action);
 	};
 
-	const handleResourceToggle = (inputValue: string[]) => {
-		if (hasPermissionFromRole) return;
-		if (!currentPermissionEntry) return;
-		onResourceToggle(scope, configAction.action, { agency_ids: inputValue });
-	};
-
 	//
 	// D. Render components
 
-	console.log(configAction.description);
 	return (
 		<CheckCard
 			checked={!!currentPermissionEntry || hasPermissionFromRole}
-			description={t(`default:permissions.${configAction.description}` as any)}
+			description={configAction.description}
 			disabled={hasPermissionFromRole}
-			label={t(`default:permissions.${configAction.label}` as any)}
+			footnote={hasPermissionFromRole && 'Permissão Herdada pelo grupo de permissões'}
+			label={configAction.label}
 			onChange={handleToggle}
 		>
-			{onResourceToggle && configAction.resources?.includes('AGENCIES') && (
-				<AgencyPermissionMultiselect
-					description={t('default:permissions.AgencyPermissionMultiselect.description')}
-					label={t('default:permissions.AgencyPermissionMultiselect.label')}
-					onChange={handleResourceToggle}
-					selected={selectedAgencyIds}
-				/>
-			)}
-			{hasPermissionFromRole && <Label caps>{t('default:permissions.SectionItems.label')}</Label>}
+			<Grid gap="md">
+
+				{onResourceToggle && configAction.resources?.includes('AGENCIES') && (
+					<AgencyPermissionMultiselect
+						disabled={hasPermissionFromRole}
+						onChange={(inputValue: string[]) => onResourceToggle(scope, configAction.action, { agency_ids: inputValue })}
+						value={selectedAgencyIds}
+					/>
+				)}
+
+				{onResourceToggle && configAction.resources?.includes('ALERT_REFERENCE_TYPES') && (
+					<AlertReferenceTypePermissionMultiselect
+						disabled={hasPermissionFromRole}
+						onChange={(inputValue: string[]) => onResourceToggle(scope, configAction.action, { reference_types: inputValue })}
+						value={selectedAlertReferenceTypeIds}
+					/>
+				)}
+
+			</Grid>
 		</CheckCard>
 	);
 
