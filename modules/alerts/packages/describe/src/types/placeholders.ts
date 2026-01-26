@@ -13,7 +13,7 @@ export type TemplatePlaceholder =
   | '{ride_description}'
   | '{ride_short_name[]}'
   | '{ride_short_name}'
-  | '{rides_description}'
+  | '{rides_description_pt}'
   | '{rides_title}'
   | '{start_time[]}'
   | '{start_time}'

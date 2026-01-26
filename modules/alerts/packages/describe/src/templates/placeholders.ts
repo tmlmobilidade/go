@@ -32,7 +32,7 @@ export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data:
 
 	'{ride_short_name}': async () => '',
 
-	'{rides_description}': async (data: Extract<DescribeAlertProps, { type: 'rides' }>['data']) => {
+	'{rides_description_pt}': async (data: Extract<DescribeAlertProps, { type: 'rides' }>['data']) => {
 		//
 
 		//
@@ -49,12 +49,12 @@ export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data:
 		}
 
 		//
-		// Now that we have the gropus, build the prose string
-		// in the format: "Viagem das 08h00, 09h00 e 10h00 da linha 1234 com destino a Lisboa"
+		// Now that we have the groups, build the prose string in the format:
+		// "Viagem das 08h00, 09h00 e 10h00 da linha 1234 com destino a Lisboa"
 
 		const parts: string[] = [];
 
-		for (const [, group] of Object.entries(patternGroups)) {
+		for (const [, group] of Object.entries(patternGroups).sort()) {
 			const rideStartTimes = group
 				.sort((a, b) => a.start_time_scheduled - b.start_time_scheduled)
 				.map(ride => Dates.fromUnixTimestamp(ride.start_time_scheduled).setZone('Europe/Lisbon', 'rebase_utc').toFormat('HH:mm'));
@@ -65,8 +65,8 @@ export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data:
 				: `da linha ${lineShortNames[0]} com destino a ${group[0].headsign}`;
 
 			const ridesPart = rideStartTimes.length > 1
-				? `nas viagens das ${rideStartTimes.slice(0, -1).join(', ')} e ${rideStartTimes.slice(-1)}`
-				: `na viagem das ${rideStartTimes[0]}`;
+				? `as viagens das ${rideStartTimes.slice(0, -1).join(', ')} e ${rideStartTimes.slice(-1)}`
+				: `a viagem das ${rideStartTimes[0]}`;
 
 			parts.push(`${ridesPart} ${linePart}`);
 		}
@@ -79,7 +79,7 @@ export const templatePlaceholderReplacements: Record<TemplatePlaceholder, (data:
 	},
 
 	'{rides_title}': async (data: Extract<DescribeAlertProps, { type: 'rides' }>['data']) => {
-		const lineShortNames = Array.from(new Set(data.map(ht => ht.line_id) ?? []));
+		const lineShortNames = Array.from(new Set(data.map(ht => ht.line_id) ?? [])).sort();
 		return lineShortNames.join(', ');
 	},
 

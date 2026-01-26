@@ -2266,22 +2266,22 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 	'HIGH_PASSENGER_LOAD:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
-				en: { placeholders: [], text: 'Devido a elevado volume de passageiros, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
-				pt: { placeholders: [], text: 'Devido a elevado volume de passageiros, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				en: { placeholders: ['{rides_description_pt}'], text: 'Due to high passenger volume, {rides_description_pt} is experiencing significant delays. The ride has not been canceled and is expected to proceed once the issue is resolved. We apologize for the inconvenience and appreciate your understanding.' },
+				pt: { placeholders: ['{rides_description_pt}'], text: 'Devido a elevado volume de passageiros, {rides_description_pt} estão significativamente atrasadas. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Devido a elevado volume de passageiros, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
-				pt: { placeholders: [], text: 'Devido a elevado volume de passageiros, a viagem das 8h da linha 123 com destino a Sapaçal, e a viagem das 9h com destino a Sapaçal, encontra-se com atraso significativo. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
+				en: { placeholders: ['{rides_description_pt}'], text: 'Due to high passenger volume, {rides_description_pt} is experiencing significant delays. The ride has not been canceled and is expected to proceed once the issue is resolved. We apologize for the inconvenience and appreciate your understanding.' },
+				pt: { placeholders: ['{rides_description_pt}'], text: 'Devido a elevado volume de passageiros, {rides_description_pt} está significativamente atrasada. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.' },
 			},
 		},
 		title: {
 			plural: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: ['{rides_title}'], text: '{rides_title} | Significant Delays' },
+				pt: { placeholders: ['{rides_title}'], text: '{rides_title} | Atrasos significativos' },
 			},
 			singular: {
-				en: { placeholders: [], text: 'Text not available' },
-				pt: { placeholders: [], text: 'Text not available' },
+				en: { placeholders: ['{rides_title}'], text: '{rides_title} | Significant Delays' },
+				pt: { placeholders: ['{rides_title}'], text: '{rides_title} | Atrasos significativos' },
 			},
 		},
 	},
