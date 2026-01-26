@@ -10,11 +10,17 @@ import { type RideNormalized } from '@tmlmobilidade/types';
 
 export const templatePlaceholderReplacements = {
 
+	/**
+	 * Returns a comma-separated list of line short names in Portuguese.
+	 */
 	'{lines_description_pt}': (data: Extract<DescribeAlertProps, { type: 'lines' }>['data']) => {
 		const lineShortNames = Array.from(new Set(data.map(ht => ht.short_name) ?? []));
 		return lineShortNames.join(', ');
 	},
 
+	/**
+	 * Returns a string indicating the line or lines affected in Portuguese.
+	 */
 	'{lines_title}': (data: Extract<DescribeAlertProps, { type: 'lines' }>['data']) => {
 		const lineShortNames = Array.from(new Set(data.map(ht => ht.short_name)));
 		return lineShortNames.length > 1
@@ -22,6 +28,10 @@ export const templatePlaceholderReplacements = {
 			: `linha ${lineShortNames[0]}`;
 	},
 
+	/**
+	 * Returns a descriptive string for rides in Portuguese, with details about start times and lines.
+	 * Can handle multiple rides and groups them by pattern ID.
+	 */
 	'{rides_description_pt}': (data: Extract<DescribeAlertProps, { type: 'rides' }>['data']) => {
 		//
 
@@ -68,6 +78,9 @@ export const templatePlaceholderReplacements = {
 		//
 	},
 
+	/**
+	 * Returns a comma-separated list of line IDs for rides.
+	 */
 	'{rides_title}': (data: Extract<DescribeAlertProps, { type: 'rides' }>['data']) => {
 		const lineShortNames = Array.from(new Set(data.map(ht => ht.line_id) ?? [])).sort();
 		return lineShortNames.join(', ');
