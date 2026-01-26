@@ -2,115 +2,114 @@
 
 import { type AlertCause } from '@/alerts/cause.js';
 import { type AlertEffect } from '@/alerts/effect.js';
-
-import { AlertReferenceType } from './reference-type.js';
+import { type AlertReferenceType } from '@/alerts/reference-type.js';
 
 /* * */
 
 export const alertCauseEffectReferenceTypeMap = {
 
 	ACCIDENT: {
-		DETOUR: ['agency', 'lines', 'rides', 'stops'],
-		NO_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		REDUCED_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		SIGNIFICANT_DELAYS: ['agency', 'lines', 'rides', 'stops'],
+		DETOUR: ['rides'],
+		NO_SERVICE: ['rides'],
+		REDUCED_SERVICE: ['rides'],
+		SIGNIFICANT_DELAYS: ['rides'],
 	},
 
 	CONSTRUCTION: {
-		ACCESSIBILITY_ISSUE: ['agency', 'lines', 'rides', 'stops'],
-		DETOUR: ['agency', 'lines', 'rides', 'stops'],
-		NO_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		REDUCED_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		SIGNIFICANT_DELAYS: ['agency', 'lines', 'rides', 'stops'],
-		STOP_MOVED: ['agency', 'lines', 'rides', 'stops'],
+		ACCESSIBILITY_ISSUE: ['rides'],
+		DETOUR: ['rides'],
+		NO_SERVICE: ['rides'],
+		REDUCED_SERVICE: ['rides'],
+		SIGNIFICANT_DELAYS: ['rides'],
+		STOP_MOVED: ['rides'],
 	},
 
 	DEMONSTRATION: {
-		ACCESSIBILITY_ISSUE: ['agency', 'lines', 'rides', 'stops'],
-		ADDITIONAL_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		DETOUR: ['agency', 'lines', 'rides', 'stops'],
-		NO_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		REDUCED_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		SIGNIFICANT_DELAYS: ['agency', 'lines', 'rides', 'stops'],
+		ACCESSIBILITY_ISSUE: ['rides'],
+		ADDITIONAL_SERVICE: ['rides'],
+		DETOUR: ['rides'],
+		NO_SERVICE: ['rides'],
+		REDUCED_SERVICE: ['rides'],
+		SIGNIFICANT_DELAYS: ['rides'],
 	},
 
 	DRIVER_ABSENCE: {
-		NO_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		SIGNIFICANT_DELAYS: ['agency', 'lines', 'rides', 'stops'],
+		NO_SERVICE: ['rides'],
+		SIGNIFICANT_DELAYS: ['rides'],
 	},
 
 	DRIVER_ISSUE: {
-		DETOUR: ['agency', 'lines', 'rides', 'stops'],
-		NO_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		REDUCED_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		SIGNIFICANT_DELAYS: ['agency', 'lines', 'rides', 'stops'],
+		DETOUR: ['rides'],
+		NO_SERVICE: ['rides'],
+		REDUCED_SERVICE: ['rides'],
+		SIGNIFICANT_DELAYS: ['rides'],
 	},
 
 	HIGH_PASSENGER_LOAD: {
-		ACCESSIBILITY_ISSUE: ['agency', 'lines', 'rides', 'stops'],
-		ADDITIONAL_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		SIGNIFICANT_DELAYS: ['agency', 'lines', 'rides', 'stops'],
+		ACCESSIBILITY_ISSUE: ['rides'],
+		ADDITIONAL_SERVICE: ['rides'],
+		SIGNIFICANT_DELAYS: ['rides'],
 	},
 
 	MEDICAL_EMERGENCY: {
-		DETOUR: ['agency', 'lines', 'rides', 'stops'],
-		NO_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		REDUCED_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		SIGNIFICANT_DELAYS: ['agency', 'lines', 'rides', 'stops'],
+		DETOUR: ['rides'],
+		NO_SERVICE: ['rides'],
+		REDUCED_SERVICE: ['rides'],
+		SIGNIFICANT_DELAYS: ['rides'],
 	},
 
 	POLICE_ACTIVITY: {
-		DETOUR: ['agency', 'lines', 'rides', 'stops'],
-		NO_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		REDUCED_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		SIGNIFICANT_DELAYS: ['agency', 'lines', 'rides', 'stops'],
+		DETOUR: ['rides'],
+		NO_SERVICE: ['rides'],
+		REDUCED_SERVICE: ['rides'],
+		SIGNIFICANT_DELAYS: ['rides'],
 	},
 
 	PUBLIC_DISORDER: {
-		DETOUR: ['agency', 'lines', 'rides', 'stops'],
-		NO_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		REDUCED_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		SIGNIFICANT_DELAYS: ['agency', 'lines', 'rides', 'stops'],
+		DETOUR: ['rides'],
+		NO_SERVICE: ['rides'],
+		REDUCED_SERVICE: ['rides'],
+		SIGNIFICANT_DELAYS: ['rides'],
 	},
 
 	ROAD_ISSUE: {
-		ACCESSIBILITY_ISSUE: ['agency', 'lines', 'rides', 'stops'],
-		DETOUR: ['agency', 'lines', 'rides', 'stops'],
-		NO_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		REDUCED_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		SIGNIFICANT_DELAYS: ['agency', 'lines', 'rides', 'stops'],
+		ACCESSIBILITY_ISSUE: ['rides'],
+		DETOUR: ['rides'],
+		NO_SERVICE: ['rides'],
+		REDUCED_SERVICE: ['rides'],
+		SIGNIFICANT_DELAYS: ['rides'],
 	},
 
 	STRIKE: {
-		ADDITIONAL_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		DETOUR: ['agency', 'lines', 'rides', 'stops'],
-		NO_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		REDUCED_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		SIGNIFICANT_DELAYS: ['agency', 'lines', 'rides', 'stops'],
+		ADDITIONAL_SERVICE: ['rides'],
+		DETOUR: ['rides'],
+		NO_SERVICE: ['rides'],
+		REDUCED_SERVICE: ['rides'],
+		SIGNIFICANT_DELAYS: ['rides'],
 	},
 
 	TECHNICAL_ISSUE: {
-		ACCESSIBILITY_ISSUE: ['agency', 'lines', 'rides', 'stops'],
-		NO_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		ON_BOARD_SALE_ISSUE: ['agency', 'lines', 'rides', 'stops'],
-		REALTIME_INFO_ISSUE: ['agency', 'lines', 'rides', 'stops'],
-		REDUCED_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		SIGNIFICANT_DELAYS: ['agency', 'lines', 'rides', 'stops'],
+		ACCESSIBILITY_ISSUE: ['rides'],
+		NO_SERVICE: ['rides'],
+		ON_BOARD_SALE_ISSUE: ['rides'],
+		REALTIME_INFO_ISSUE: ['rides'],
+		REDUCED_SERVICE: ['rides'],
+		SIGNIFICANT_DELAYS: ['rides'],
 	},
 
 	TRAFFIC_JAM: {
-		DETOUR: ['agency', 'lines', 'rides', 'stops'],
-		NO_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		REDUCED_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		SIGNIFICANT_DELAYS: ['agency', 'lines', 'rides', 'stops'],
+		DETOUR: ['rides'],
+		NO_SERVICE: ['rides'],
+		REDUCED_SERVICE: ['rides'],
+		SIGNIFICANT_DELAYS: ['rides'],
 	},
 
 	WEATHER: {
-		ACCESSIBILITY_ISSUE: ['agency', 'lines', 'rides', 'stops'],
-		DETOUR: ['agency', 'lines', 'rides', 'stops'],
-		NO_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		REDUCED_SERVICE: ['agency', 'lines', 'rides', 'stops'],
-		SIGNIFICANT_DELAYS: ['agency', 'lines', 'rides', 'stops'],
+		ACCESSIBILITY_ISSUE: ['rides'],
+		DETOUR: ['rides'],
+		NO_SERVICE: ['rides'],
+		REDUCED_SERVICE: ['rides'],
+		SIGNIFICANT_DELAYS: ['rides'],
 	},
 
 } as const satisfies Record<AlertCause, Partial<Record<AlertEffect, AlertReferenceType[]>>>;
