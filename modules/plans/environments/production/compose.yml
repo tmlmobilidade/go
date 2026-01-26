@@ -136,7 +136,6 @@ services:
         max-size: '1m'
         max-file: '1'
     environment:
-      # GOMAXPROCS: 2
       - GOMEMLIMIT=8GiB
     volumes:
       - ./secrets:/secrets
