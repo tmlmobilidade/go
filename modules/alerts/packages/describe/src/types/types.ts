@@ -2,7 +2,6 @@
 
 import { type TemplateArticle } from '@/templates/articles.js';
 import { type TemplatePlaceholder } from '@/templates/placeholders.js';
-import { type Alert, type AlertCauseEffectPairs } from '@tmlmobilidade/types';
 
 /**
  * Structure representing a string type with its text and associated placeholders.
@@ -38,9 +37,3 @@ export interface TemplateFragment {
 	description: CountableStringType
 	title: CountableStringType
 }
-
-/**
- * Type representing the unique key for an alert configuration,
- * composed of its cause, effect, and reference type separated by colons.
- */
-export type AlertConfigKey = `${AlertCauseEffectPairs}:${Alert['reference_type']}`;

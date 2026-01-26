@@ -5,8 +5,8 @@
 import { templateArticlesReplacements } from '@/templates/articles.js';
 import { alertI18nTemplates } from '@/templates/descriptions.js';
 import { templatePlaceholderReplacements } from '@/templates/placeholders.js';
-import { DescribeAlertProps } from '@/types/describe-alert-props.js';
-import { type AlertConfigKey, type I18nCodes } from '@/types/types.js';
+import { type DescribeAlertProps } from '@/types/describe-alert-props.js';
+import { type I18nCodes } from '@/types/types.js';
 
 /* * */
 
@@ -41,7 +41,7 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 	//
 	// Build the key to access the templates
 
-	const templateKey = `${props.cause}:${props.effect}:${props.reference_type}` as AlertConfigKey;
+	const templateKey = `${props.cause}:${props.effect}:${props.reference_type}`;
 
 	//
 	// Iterate over all strings in the result object and

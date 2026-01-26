@@ -188,9 +188,9 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getAppConfig('alerts', 'api_url')}`,
 
 		// ALERTS
+		ALERTS_DETAIL: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}`,
 		ALERTS_DETAIL_IMAGE: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/image`,
 		ALERTS_DETAIL_LOCK: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/lock`,
-		ALERTS_DETAIL: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}`,
 		ALERTS_LIST: `${getAppConfig('alerts', 'api_url')}/alerts`,
 
 		// GTFS
@@ -208,8 +208,8 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getAppConfig('auth', 'api_url')}`,
 
 		// AGENCIES
-		AGENCIES_DETAIL_LOCK: (id: string) => `${getAppConfig('auth', 'api_url')}/agencies/${id}/lock`,
 		AGENCIES_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/agencies/${id}`,
+		AGENCIES_DETAIL_LOCK: (id: string) => `${getAppConfig('auth', 'api_url')}/agencies/${id}/lock`,
 		AGENCIES_LIST: `${getAppConfig('auth', 'api_url')}/agencies`,
 
 		// AUTH
@@ -219,16 +219,16 @@ export const API_ROUTES = Object.freeze({
 		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getAppConfig('auth', 'api_url')}/auth/send-password-reset-email`,
 
 		// NOTIFICATIONS
-		NOTIFICATIONS_DETAIL_MARK_AS_READ: (id: string) => `${getAppConfig('auth', 'api_url')}/notifications/${id}/mark-as-read`,
 		NOTIFICATIONS_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/notifications/${id}`,
+		NOTIFICATIONS_DETAIL_MARK_AS_READ: (id: string) => `${getAppConfig('auth', 'api_url')}/notifications/${id}/mark-as-read`,
 		NOTIFICATIONS_LIST: `${getAppConfig('auth', 'api_url')}/notifications`,
 
 		// ORGANIZATIONS
+		ORGANIZATIONS_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}`,
 		ORGANIZATIONS_DETAIL_IMAGE: (id: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}/image`,
 		ORGANIZATIONS_DETAIL_LOCK: (id: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}/lock`,
 		ORGANIZATIONS_DETAIL_LOGO: (id: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}/logo`,
 		ORGANIZATIONS_DETAIL_VAR_IMAGE: (id: string, theme: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}/${theme}/image`,
-		ORGANIZATIONS_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}`,
 		ORGANIZATIONS_LIST: `${getAppConfig('auth', 'api_url')}/organizations`,
 
 		// PROPOSED-CHANGES
@@ -236,13 +236,13 @@ export const API_ROUTES = Object.freeze({
 		PROPOSED_CHANGES_LIST: `${getAppConfig('auth', 'api_url')}/proposed-changes`,
 
 		// ROLES
-		ROLES_DETAIL_LOCK: (id: string) => `${getAppConfig('auth', 'api_url')}/roles/${id}/lock`,
 		ROLES_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/roles/${id}`,
+		ROLES_DETAIL_LOCK: (id: string) => `${getAppConfig('auth', 'api_url')}/roles/${id}/lock`,
 		ROLES_LIST: `${getAppConfig('auth', 'api_url')}/roles`,
 
 		// USERS
-		USERS_DETAIL_LOCK: (id: string) => `${getAppConfig('auth', 'api_url')}/users/${id}/lock`,
 		USERS_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/users/${id}`,
+		USERS_DETAIL_LOCK: (id: string) => `${getAppConfig('auth', 'api_url')}/users/${id}/lock`,
 		USERS_LIST: `${getAppConfig('auth', 'api_url')}/users`,
 		USERS_ME: `${getAppConfig('auth', 'api_url')}/users/me`,
 
@@ -285,14 +285,14 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getAppConfig('dates', 'api_url')}`,
 
 		// ANNOTATIONS
-		ANNOTATIONS_DETAIL_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}/lock`,
 		ANNOTATIONS_DETAIL: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}`,
+		ANNOTATIONS_DETAIL_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}/lock`,
 		ANNOTATIONS_LIST: `${getAppConfig('dates', 'api_url')}/annotations`,
 
 		// PERIODS
 		PERIODS_CHECK_CONFLICTS: `${getAppConfig('dates', 'api_url')}/periods/check-conflicts`,
-		PERIODS_DETAIL_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/periods/${id}/lock`,
 		PERIODS_DETAIL: (id: string) => `${getAppConfig('dates', 'api_url')}/periods/${id}`,
+		PERIODS_DETAIL_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/periods/${id}/lock`,
 		PERIODS_LIST: `${getAppConfig('dates', 'api_url')}/periods`,
 	},
 
@@ -317,8 +317,8 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getAppConfig('fleet', 'api_url')}`,
 
 		// VEHICLES
-		VEHICLES_DETAIL_LOCK: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}/lock`,
 		VEHICLES_DETAIL: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}`,
+		VEHICLES_DETAIL_LOCK: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}/lock`,
 		VEHICLES_LIST: `${getAppConfig('fleet', 'api_url')}/vehicles`,
 	},
 
@@ -346,24 +346,24 @@ export const API_ROUTES = Object.freeze({
 		GTFS_PARSE: `${getAppConfig('offer', 'api_url')}/gtfs/parse`,
 
 		// LINES
-		LINES_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/lines/${id}/lock`,
 		LINES_DETAIL: (id: string) => `${getAppConfig('offer', 'api_url')}/lines/${id}`,
+		LINES_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/lines/${id}/lock`,
 		LINES_LIST: `${getAppConfig('offer', 'api_url')}/lines`,
 
 		// PATTERNS
+		PATTERNS_DETAIL: (id: string) => `${getAppConfig('offer', 'api_url')}/patterns/${id}`,
 		PATTERNS_DETAIL_IMPORT_GTFS: (id: string) => `${getAppConfig('offer', 'api_url')}/patterns/${id}/import-gtfs`,
 		PATTERNS_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/patterns/${id}/lock`,
-		PATTERNS_DETAIL: (id: string) => `${getAppConfig('offer', 'api_url')}/patterns/${id}`,
 		PATTERNS_LIST: `${getAppConfig('offer', 'api_url')}/patterns`,
 
 		// ROUTES
-		ROUTES_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/routes/${id}/lock`,
 		ROUTES_DETAIL: (id: string) => `${getAppConfig('offer', 'api_url')}/routes/${id}`,
+		ROUTES_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/routes/${id}/lock`,
 		ROUTES_LIST: `${getAppConfig('offer', 'api_url')}/routes`,
 
 		// TYPOLOGIES
-		TYPOLOGIES_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/typologies/${id}/lock`,
 		TYPOLOGIES_DETAIL: (id: string) => `${getAppConfig('offer', 'api_url')}/typologies/${id}`,
+		TYPOLOGIES_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/typologies/${id}/lock`,
 		TYPOLOGIES_LIST: `${getAppConfig('offer', 'api_url')}/typologies`,
 	},
 
@@ -392,19 +392,19 @@ export const API_ROUTES = Object.freeze({
 
 		// PLANS
 		PLANS_APPROVED: `${getAppConfig('plans', 'api_url')}/plans/approved`,
+		PLANS_DETAIL: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}`,
 		PLANS_DETAIL_CHANGE_GTFS: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/change-gtfs`,
 		PLANS_DETAIL_CONTROLLER_REPROCESS: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/controller-reprocess`,
 		PLANS_DETAIL_LOCK: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/lock`,
 		PLANS_DETAIL_OPERATION_FILE: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/operation-file`,
-		PLANS_DETAIL: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}`,
 		PLANS_DRT_MODEL_: (id: string) => `${getAppConfig('plans', 'api_url')}/ID:/plans/api/plans/drt-model/${id}`,
 		PLANS_LIST: `${getAppConfig('plans', 'api_url')}/plans`,
 
 		// VALIDATIONS
+		VALIDATIONS_DETAIL: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}`,
 		VALIDATIONS_DETAIL_FILE: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/file`,
 		VALIDATIONS_DETAIL_LOCK: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/lock`,
 		VALIDATIONS_DETAIL_REQUEST_APPROVAL: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/request-approval`,
-		VALIDATIONS_DETAIL: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}`,
 		VALIDATIONS_LIST: `${getAppConfig('plans', 'api_url')}/validations`,
 	},
 
@@ -415,8 +415,8 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getAppConfig('stops', 'api_url')}`,
 
 		// STOPS
-		STOPS_DETAIL_LOCK: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}/lock`,
 		STOPS_DETAIL: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}`,
+		STOPS_DETAIL_LOCK: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}/lock`,
 		STOPS_LIST: `${getAppConfig('stops', 'api_url')}/stops`,
 	},
 
@@ -427,13 +427,13 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getAppConfig('ticketing', 'api_url')}`,
 
 		// FARES
-		FARES_DETAIL_LOCK: (id: string) => `${getAppConfig('ticketing', 'api_url')}/fares/${id}/lock`,
 		FARES_DETAIL: (id: string) => `${getAppConfig('ticketing', 'api_url')}/fares/${id}`,
+		FARES_DETAIL_LOCK: (id: string) => `${getAppConfig('ticketing', 'api_url')}/fares/${id}/lock`,
 		FARES_LIST: `${getAppConfig('ticketing', 'api_url')}/fares`,
 
 		// ZONES
-		ZONES_DETAIL_LOCK: (id: string) => `${getAppConfig('ticketing', 'api_url')}/zones/${id}/lock`,
 		ZONES_DETAIL: (id: string) => `${getAppConfig('ticketing', 'api_url')}/zones/${id}`,
+		ZONES_DETAIL_LOCK: (id: string) => `${getAppConfig('ticketing', 'api_url')}/zones/${id}/lock`,
 		ZONES_LIST: `${getAppConfig('ticketing', 'api_url')}/zones`,
 	},
 } as const);

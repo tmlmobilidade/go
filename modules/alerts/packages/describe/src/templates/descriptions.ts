@@ -1,33 +1,34 @@
 /* * */
 
-import { type AlertConfigKey, type TemplateFragment } from '@/types/types.js';
+import { type TemplateFragment } from '@/types/types.js';
+import { type AlertCauseEffectReference } from '@tmlmobilidade/types';
 
 /**
  * Alert i18n templates registry.
  * Each key is formed by the combination of cause, effect and reference_type
  * of an alert in the format: 'CAUSE:EFFECT:REFERENCE_TYPE'
  */
-export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
+export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragment> = {
 
 	'ACCIDENT:DETOUR:agency': {
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Um acidente rodoviário está provocar desvios de percurso para a Área 1. Agradecemos a sua compreensão.',
+				pt: 'Texto indisponível',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Um acidente rodoviário está provocar desvios de percurso para a Área 1. Agradecemos a sua compreensão.',
+				pt: 'Texto indisponível',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: '{agency} | Desvio de Percurso - Acidente',
+				pt: 'Texto indisponível',
 			},
 			singular: {
 				en: 'not-available',
-				pt: '{agency} | Desvio de Percurso - Acidente',
+				pt: 'Texto indisponível',
 			},
 		},
 	},
@@ -36,21 +37,21 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Um acidente rodoviário está a provocar um desvio de percurso para as linhas {lines}. Agradecemos a sua compreensão.',
+				pt: 'Um acidente está a provocar um desvio de percurso {in_def_f_p} {lines_description_pt}. Consulte a informação em tempo real no nosso site para mais informações. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Um acidente rodoviário está a provocar um desvio de percurso para as linhas {lines}. Agradecemos a sua compreensão.',
+				pt: 'Um acidente está a provocar um desvio de percurso {in_def_f_s} {lines_description_pt}. Consulte a informação em tempo real no nosso site para mais informações. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: '{lines} | Desvio de Percurso - Acidente',
+				pt: '{lines_title} | Desvio de Percurso devido a Acidente',
 			},
 			singular: {
 				en: 'not-available',
-				pt: '{lines} | Desvio de Percurso - Acidente',
+				pt: '{lines_title} | Desvio de Percurso devido a Acidente',
 			},
 		},
 	},
@@ -59,21 +60,21 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Um acidente rodoviário está a causar um desvio de percurso na viagem das 8h da linha 123, com destino a Sapaçal. De momento, ainda não há previsão para a normalização da situação. Agradecemos a sua compreensão.',
+				pt: 'Um acidente está a provocar um desvio de percurso {in_def_f_p} {rides_description_pt}. Consulte a informação em tempo real no nosso site para mais informações. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Um acidente rodoviário está a causar um desvio de percurso na viagem das 8h da linha 123, com destino a Sapaçal. De momento, ainda não há previsão para a normalização da situação. Agradecemos a sua compreensão.',
+				pt: 'Um acidente está a provocar um desvio de percurso {in_def_f_s} {rides_description_pt}. Consulte a informação em tempo real no nosso site para mais informações. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: '{lines} | Desvio de Percurso devido a Acidente Rodoviário',
+				pt: '{rides_title} | Desvio de Percurso devido a Acidente',
 			},
 			singular: {
 				en: 'not-available',
-				pt: '{lines} | Desvio de Percurso devido a Acidente Rodoviário',
+				pt: '{rides_title} | Desvio de Percurso devido a Acidente',
 			},
 		},
 	},
@@ -82,21 +83,21 @@ export const alertI18nTemplates: Record<AlertConfigKey, TemplateFragment> = {
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Um acidente rodoviário está a causar um desvio de percurso na viagem das 8h da linha 123, com destino a Sapaçal. De momento, ainda não há previsão para a normalização da situação. Agradecemos a sua compreensão.',
+				pt: 'Um acidente está a provocar um desvio de percurso que afeta {def_f_p} {stops_description_pt}, e por isso estas encontram-se temporarimente desativadas. Consulte a informação em tempo real no nosso site para mais informações. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Um acidente rodoviário está a causar um desvio de percurso na viagem das 8h da linha 123, com destino a Sapaçal. De momento, ainda não há previsão para a normalização da situação. Agradecemos a sua compreensão.',
+				pt: 'Um acidente está a provocar um desvio de percurso {in_def_f_s} {rides_description_pt}. Consulte a informação em tempo real no nosso site para mais informações. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: '{lines} | Desvio de Percurso - Acidente',
+				pt: '{rides_title} | Desvio de Percurso devido a Acidente',
 			},
 			singular: {
 				en: 'not-available',
-				pt: '{lines} | Desvio de Percurso - Acidente',
+				pt: '{rides_title} | Desvio de Percurso devido a Acidente',
 			},
 		},
 	},
