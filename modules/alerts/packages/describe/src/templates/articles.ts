@@ -98,6 +98,30 @@ export const templateArticlesReplacements = {
 	 */
 	of_def_m_s: { en: 'of the', pt: 'do' },
 
+	/**
+	 * Preposição para com artigo definido feminino plural
+	 * @example 'para as' em Português, 'to the' em Inglês
+	 */
+	to_def_f_p: { en: 'to the', pt: 'para as' },
+
+	/**
+	 * Preposição para com artigo definido feminino singular
+	 * @example 'para a' em Português, 'to the' em Inglês
+	 */
+	to_def_f_s: { en: 'to the', pt: 'para a' },
+
+	/**
+	 * Preposição para com artigo definido masculino plural
+	 * @example 'para os' em Português, 'to the' em Inglês
+	 */
+	to_def_m_p: { en: 'to the', pt: 'para os' },
+
+	/**
+	 * Preposição para com artigo definido masculino singular
+	 * @example 'para o' em Português, 'to the' em Inglês
+	 */
+	to_def_m_s: { en: 'to the', pt: 'para o' },
+
 } as const satisfies Record<string, { en: string, pt: string }>;
 
 /* * */

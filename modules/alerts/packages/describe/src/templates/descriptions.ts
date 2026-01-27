@@ -217,25 +217,25 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'CONSTRUCTION:STOP_MOVED:rides': {
+	'CONSTRUCTION:STOP_MOVED:stops': {
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido a obras, foi necessário deslocar temporariamente {def_f_p} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido a obras, foi necessário deslocar temporariamente {def_f_s} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{stops_title} | Paragem deslocada',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{stops_title} | Paragem deslocada',
 			},
 		},
 	},
@@ -267,21 +267,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido a um evento, foram adicionados novos horários {in_def_f_p} {rides_description_pt}. Consulte o site carrismetropolitana.pt para mais informações.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido a um evento, foram adicionados novos horários {in_def_f_s} {rides_description_pt}. Consulte o site carrismetropolitana.pt para mais informações.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Horários adicionais',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Horários adicionais',
 			},
 		},
 	},
@@ -543,21 +543,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Uma vez que foi verificada alta ocupação, será realizado um desdobramento {of_def_f_p} {rides_description_pt}. Consulte o site carrismetropolitana.pt para mais informações.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Uma vez que foi verificada alta ocupação, será realizado um desdobramento {of_def_f_s} {rides_description_pt}. Consulte o site carrismetropolitana.pt para mais informações.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Horários adicionais',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Horários adicionais',
 			},
 		},
 	},
@@ -980,21 +980,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido à realização de greve, será realizado um desdobramento {of_def_f_p} {rides_description_pt}. Consulte o site carrismetropolitana.pt para mais informações.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido à realização de greve, será realizado um desdobramento {of_def_f_s} {rides_description_pt}. Consulte o site carrismetropolitana.pt para mais informações.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Horários adicionais',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Horários adicionais',
 			},
 		},
 	},
@@ -1141,21 +1141,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Um problema técnico está a impedir o funcionamento normal dos sistemas de venda a bordo {in_def_f_p} {rides_description_pt}. Lamentamos o incómodo causado enquanto restabelecemos o funcionamento normal.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Um problema técnico está a impedir o funcionamento normal dos sistemas de venda a bordo {in_def_f_s} {rides_description_pt}. Lamentamos o incómodo causado enquanto restabelecemos o funcionamento normal.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Venda a bordo indisponível',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Venda a bordo indisponível',
 			},
 		},
 	},
@@ -1164,21 +1164,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Um problema técnico está a impedir o funcionamento normal dos sistemas de localização em tempo real {in_def_f_p} {rides_description_pt}. Lamentamos o incómodo causado enquanto restabelecemos o funcionamento normal.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Um problema técnico está a impedir o funcionamento normal dos sistemas de localização em tempo real {in_def_f_s} {rides_description_pt}. Lamentamos o incómodo causado enquanto restabelecemos o funcionamento normal.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Tempo real indisponível',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Tempo real indisponível',
 			},
 		},
 	},

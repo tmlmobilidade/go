@@ -21,7 +21,7 @@ export const alertCauseEffectReferenceTypeMap = {
 		NO_SERVICE: ['rides'],
 		REDUCED_SERVICE: ['rides'],
 		SIGNIFICANT_DELAYS: ['rides'],
-		STOP_MOVED: ['rides'],
+		STOP_MOVED: ['stops'],
 	},
 
 	DEMONSTRATION: {
