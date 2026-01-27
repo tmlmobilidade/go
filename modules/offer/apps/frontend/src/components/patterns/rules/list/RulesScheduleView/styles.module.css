@@ -29,7 +29,7 @@
 
 .content {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	gap: 8px;
 	min-width: 0;
 }
@@ -44,7 +44,7 @@
 
 .pill {
 	text-transform: none;
-	font-weight: 600;
+    font-size: var(--font-size-sm);
 }
 
 .empty {
@@ -54,7 +54,8 @@
 
 .exceptLine {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
+    align-items: center;
 	gap: 6px;
 	margin-top: 2px;
 }

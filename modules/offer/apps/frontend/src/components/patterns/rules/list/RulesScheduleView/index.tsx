@@ -4,7 +4,7 @@ import { usePatternDetailContext } from '@/components/patterns/detail/PatternDet
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { buildRuleSummary } from '@/utils/rules/ruleSummary';
 import { Badge } from '@mantine/core';
-import { IconCancel, IconForbid } from '@tabler/icons-react';
+import { IconCancel } from '@tabler/icons-react';
 import { Section, Text, Tooltip } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -116,10 +116,10 @@ export function RulesScheduleView() {
 					<div className={styles.time}>{row.time}</div>
 
 					<div className={styles.content}>
-						{/* Inclui é implícito: só pills */}
+						{/* Includes */}
 						{row.includes.length > 0 && renderPills(row.includes)}
 
-						{/* Exceto só quando existe */}
+						{/* Exceptions */}
 						{row.excludes.length > 0 && (
 							<div className={styles.exceptLine}>
 								<div style={{ display: 'flex', gap: '5px' }}>

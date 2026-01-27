@@ -1,38 +1,38 @@
 /* * */
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
+import { RulesListView } from '@/components/patterns/rules/list/RulesListView';
+import { RulesScheduleView } from '@/components/patterns/rules/list/RulesScheduleView';
 import { IconEye, IconPlus } from '@tabler/icons-react';
-import { Button, Collapsible, Section, Tag } from '@tmlmobilidade/ui';
+import { Button, Collapsible, Section, SegmentedControl } from '@tmlmobilidade/ui';
 import { useState } from 'react';
-
-import { RulesListView } from '../../rules/list/RulesListView';
-import { RulesScheduleView } from '../../rules/list/RulesScheduleView';
 
 /* * */
 
 export function PatternDetailSectionOpRules() {
 	//
-	// A. Setup variables
-	const patternDetailContext = usePatternDetailContext();
-	const [activeView, setActiveView] = useState<'list' | 'schedule'>('list');
 
+	//
+	// A. Setup variables
+
+	const patternDetailContext = usePatternDetailContext();
+	const [activeView, setActiveView] = useState('list');
+
+	//
 	// B. Render components
+
 	return (
 		<Collapsible title="Regras de funcionamento" defaultOpen>
 			<Section gap="lg">
-				{/* Toggle Tags */}
-				<Section flexDirection="row" gap="sm" padding="none">
-					<Tag
-						label="Lista de regras"
-						onClick={() => setActiveView('list')}
-						variant={activeView === 'list' ? 'primary' : 'muted'}
-					/>
-					<Tag
-						label="Horários"
-						onClick={() => setActiveView('schedule')}
-						variant={activeView === 'schedule' ? 'primary' : 'muted'}
-					/>
-				</Section>
+				{/* View selection */}
+				<SegmentedControl
+					onChange={setActiveView}
+					value={activeView}
+					data={[
+						{ label: 'Lista de regras', value: 'list' },
+						{ label: 'Horários', value: 'schedule' },
+					]}
+				/>
 
 				{/* Conditional Views */}
 				{activeView === 'list' && <RulesListView />}
