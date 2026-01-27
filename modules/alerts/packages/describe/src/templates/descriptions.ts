@@ -24,11 +24,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: '{rides_title} | Desvio de Percurso devido a Acidente',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 			singular: {
 				en: 'not-available',
-				pt: '{rides_title} | Desvio de Percurso devido a Acidente',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 		},
 	},
@@ -47,11 +47,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: '{rides_title} | Viagens canceladas devido a Acidente',
+				pt: '{rides_title} | Viagens canceladas',
 			},
 			singular: {
 				en: 'not-available',
-				pt: '{rides_title} | Viagem cancelada devido a Acidente',
+				pt: '{rides_title} | Viagem cancelada',
 			},
 		},
 	},
@@ -129,21 +129,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Trabalhos de construção estão a provocar um desvio de percurso {in_def_f_p} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Trabalhos de construção estão a provocar um desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 		},
 	},
@@ -162,11 +162,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: '{rides_title} | Viagens canceladas devido a Obras',
+				pt: '{rides_title} | Viagens canceladas',
 			},
 			singular: {
 				en: 'not-available',
-				pt: '{rides_title} | Viagem cancelada devido a Obras',
+				pt: '{rides_title} | Viagem cancelada',
 			},
 		},
 	},
@@ -290,21 +290,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'A realização de um evento está a provocar um desvio de percurso {in_def_f_p} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'A realização de um evento está a provocar um desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 		},
 	},
@@ -323,11 +323,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: '{rides_title} | Viagens canceladas devido a Evento',
+				pt: '{rides_title} | Viagens canceladas',
 			},
 			singular: {
 				en: 'not-available',
-				pt: '{rides_title} | Viagem cancelada devido a Evento',
+				pt: '{rides_title} | Viagem cancelada',
 			},
 		},
 	},
@@ -428,21 +428,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Um imprevisto operacional obrigou à realização de um desvio de percurso {in_def_f_p} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Um imprevisto operacional obrigou à realização de um desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 		},
 	},
@@ -589,21 +589,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido a uma emergência médica foi necessário efetuar um desvio de percurso {in_def_f_p} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido a uma emergência médica foi necessário efetuar um desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 		},
 	},
@@ -681,21 +681,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Atividade policial exige um desvio de percurso {in_def_f_p} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Atividade policial exige um desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 		},
 	},
@@ -773,21 +773,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Desacatos provocam desvio de percurso {in_def_f_p} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Desacatos provocam desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 		},
 	},
@@ -888,21 +888,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Estacionamento abusivo obriga ao desvio de percurso {in_def_f_p} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Estacionamento abusivo obriga ao desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 		},
 	},
@@ -1003,21 +1003,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Por motivos de greve é necessário efetuar um desvio de percurso {in_def_f_p} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Por motivos de greve é necessário efetuar um desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 		},
 	},
@@ -1233,21 +1233,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Elevado volume de trânsito inesperado exige um desvio de percurso {in_def_f_p} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Elevado volume de trânsito inesperado exige um desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 		},
 	},
@@ -1348,21 +1348,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Condições metereológicas adversas exigem um desvio de percurso {in_def_f_p} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Condições metereológicas adversas exigem um desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Desvio de Percurso',
 			},
 		},
 	},
