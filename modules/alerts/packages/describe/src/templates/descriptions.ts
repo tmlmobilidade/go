@@ -14,11 +14,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Um acidente está a provocar um desvio de percurso {in_def_f_p} {rides_description_pt}. Consulte a informação em tempo real no nosso site para mais informações. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+				pt: 'Um acidente está a provocar um desvio de percurso {in_def_f_p} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Um acidente está a provocar um desvio de percurso {in_def_f_s} {rides_description_pt}. Consulte a informação em tempo real no nosso site para mais informações. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+				pt: 'Um acidente está a provocar um desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
@@ -106,21 +106,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido a obras, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido a obras, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Acessibilidade comprometida',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Acessibilidade comprometida',
 			},
 		},
 	},
@@ -244,21 +244,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido a um evento, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido a um evento, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Acessibilidade comprometida',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Acessibilidade comprometida',
 			},
 		},
 	},
@@ -520,21 +520,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido ao elevado volume de passageiros, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido ao elevado volume de passageiros, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Acessibilidade comprometida',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Acessibilidade comprometida',
 			},
 		},
 	},
@@ -865,21 +865,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Acessibilidade comprometida',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Acessibilidade comprometida',
 			},
 		},
 	},
@@ -1095,21 +1095,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido a um problema técnico, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido a um problema técnico, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Acessibilidade comprometida',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Acessibilidade comprometida',
 			},
 		},
 	},
@@ -1325,21 +1325,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido às condições metereológicas adversas, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: 'Devido às condições metereológicas adversas, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Acessibilidade comprometida',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Texto indisponível',
+				pt: '{rides_title} | Acessibilidade comprometida',
 			},
 		},
 	},
