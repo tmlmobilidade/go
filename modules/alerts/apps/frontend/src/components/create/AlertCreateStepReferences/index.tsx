@@ -46,6 +46,7 @@ export function AlertCreateStepReferences() {
 			activePeriodEndDate={alertCreateContext.data.form.getValues().active_period_end_date}
 			activePeriodStartDate={alertCreateContext.data.form.getValues().active_period_start_date}
 			availableAgenciesOptions={agenciesOptions}
+			enabledReferenceTypes={alertCreateContext.data.enabled_reference_types}
 			onChangeAgencyId={handleChangeAgencyId}
 			onChangeReferences={handleChangeReferences}
 			onChangeReferenceType={handleChangeReferenceType}

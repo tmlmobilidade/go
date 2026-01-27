@@ -17,6 +17,7 @@ export interface ReferencesEditorContextProps {
 	activePeriodEndDate: undefined | UnixTimestamp
 	activePeriodStartDate: undefined | UnixTimestamp
 	availableAgenciesOptions: SelectDataItem[]
+	enabledReferenceTypes: Alert['reference_type'][]
 	onChangeAgencyId: (type: Alert['agency_id']) => void
 	onChangeReferences: (references: Alert['references']) => void
 	onChangeReferenceType: (type: Alert['reference_type']) => void
@@ -38,6 +39,7 @@ interface ReferencesEditorContextState {
 	}
 	data: {
 		available_agencies_options: SelectDataItem[]
+		enabled_reference_types: Alert['reference_type'][]
 		filtered_rides: RideNormalized[]
 		selected_agency_id: Alert['agency_id']
 		selected_reference_type: Alert['reference_type']
@@ -69,7 +71,7 @@ export function useReferencesEditorContext() {
 
 /* * */
 
-export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePeriodStartDate, availableAgenciesOptions, children, onChangeAgencyId, onChangeReferences, onChangeReferenceType, selectedAgencyId, selectedReferences, selectedReferenceType }: PropsWithChildren<ReferencesEditorContextProps>) => {
+export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePeriodStartDate, availableAgenciesOptions, children, enabledReferenceTypes, onChangeAgencyId, onChangeReferences, onChangeReferenceType, selectedAgencyId, selectedReferences, selectedReferenceType }: PropsWithChildren<ReferencesEditorContextProps>) => {
 	//
 
 	//
@@ -243,6 +245,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 		},
 		data: {
 			available_agencies_options: availableAgenciesOptions,
+			enabled_reference_types: enabledReferenceTypes || [],
 			filtered_rides: ridesData,
 			selected_agency_id: selectedAgencyId,
 			selected_reference_type: selectedReferenceType,

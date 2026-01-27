@@ -21,6 +21,7 @@ export function ReferencesEditorControls() {
 	// B. Transform data
 
 	const availableReferenceTypeOptions = AlertReferenceTypeSchema.options
+		.filter(value => referencesEditorContext.data.enabled_reference_types.includes(value))
 		.filter(value => meContext.actions.hasPermissionResource({
 			action: PermissionCatalog.all.alerts.actions.create,
 			resource_key: 'reference_types',
@@ -60,7 +61,7 @@ export function ReferencesEditorControls() {
 							value={referencesEditorContext.data.selected_agency_id}
 						/>
 					)}
-					{availableReferenceTypeOptions.length > 1 && (
+					{referencesEditorContext.data.selected_agency_id && availableReferenceTypeOptions.length > 1 && (
 						<SegmentedControl
 							data={availableReferenceTypeOptions}
 							onChange={referencesEditorContext.actions.changeReferenceType}

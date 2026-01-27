@@ -6,17 +6,18 @@ import { type Line, type Stop } from '@carrismetropolitana/api-types/network';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
-import { type Alert, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, RideNormalized } from '@tmlmobilidade/types';
+import { type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, RideNormalized } from '@tmlmobilidade/types';
 import { type CreateContextStateTemplate, keepUrlParams, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
 interface AlertCreateContextState extends CreateContextStateTemplate {
 	data: {
+		enabled_reference_types: Alert['reference_type'][]
 		form: UseFormReturnType<CreateAlertDto>
 		multi_step: UseMultiStepReturnType
 	}
@@ -104,6 +105,15 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// D. Handle actions
 
+	const enabledReferenceTypes = useMemo(() => {
+		const selectedCause = form.getValues().cause;
+		const selectedEffect = form.getValues().effect;
+		return alertCauseEffectReferenceTypeMap[selectedCause]?.[selectedEffect] ?? [];
+	}, [
+		form.getValues().cause,
+		form.getValues().effect,
+	]);
+
 	useEffect(() => {
 		(async () => {
 			if (!form.getValues().cause || !form.getValues().effect || !form.getValues().reference_type || !form.getValues().references?.length) return;
@@ -141,15 +151,24 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	}, [form.getValues().active_period_start_date]);
 
 	useEffect(() => {
-		if (!form.getValues().reference_type) {
-			const createPermission = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
-			if (createPermission?.resources.reference_types.includes(PermissionCatalog.ALLOW_ALL_FLAG)) return form.setFieldValue('reference_type', 'lines');
-			if (createPermission?.resources.reference_types.includes('lines')) return form.setFieldValue('reference_type', 'lines');
-			if (createPermission?.resources.reference_types.includes('stops')) return form.setFieldValue('reference_type', 'stops');
-			if (createPermission?.resources.reference_types.includes('rides')) return form.setFieldValue('reference_type', 'rides');
-			if (createPermission?.resources.reference_types.includes('agency')) return form.setFieldValue('reference_type', 'agency');
+		// SKip if reference type is already set
+		if (form.getValues().reference_type) return;
+		// Get permission definition for reference types
+		const createPermission = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
+		// Set the reference type based on alert cause/effect when possible
+		if (createPermission?.resources.reference_types.includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+			if (enabledReferenceTypes.includes('lines')) return form.setFieldValue('reference_type', 'lines');
+			if (enabledReferenceTypes.includes('stops')) return form.setFieldValue('reference_type', 'stops');
+			if (enabledReferenceTypes.includes('rides')) return form.setFieldValue('reference_type', 'rides');
+			if (enabledReferenceTypes.includes('agency')) return form.setFieldValue('reference_type', 'agency');
+			return console.warn('No enabled reference types available to set as default.');
 		}
-	}, [form.getValues().reference_type]);
+		// Set the reference type based on permissions
+		if (enabledReferenceTypes.includes('lines') && createPermission?.resources.reference_types.includes('lines')) return form.setFieldValue('reference_type', 'lines');
+		if (enabledReferenceTypes.includes('stops') && createPermission?.resources.reference_types.includes('stops')) return form.setFieldValue('reference_type', 'stops');
+		if (enabledReferenceTypes.includes('rides') && createPermission?.resources.reference_types.includes('rides')) return form.setFieldValue('reference_type', 'rides');
+		if (enabledReferenceTypes.includes('agency') && createPermission?.resources.reference_types.includes('agency')) return form.setFieldValue('reference_type', 'agency');
+	}, [form.getValues().reference_type, enabledReferenceTypes]);
 
 	useEffect(() => {
 		// Skip if reference type is not agency
@@ -217,6 +236,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			create: handleCreate,
 		},
 		data: {
+			enabled_reference_types: enabledReferenceTypes,
 			form,
 			multi_step: multiStep,
 		},
