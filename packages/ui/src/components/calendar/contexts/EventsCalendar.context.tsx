@@ -2,10 +2,10 @@
 
 /* * */
 
-import { IconNote } from '@tabler/icons-react';
+import { IconBeach, IconNote } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { Agency, type Annotation, type CalendarEvent, type Period, PermissionCatalog } from '@tmlmobilidade/types';
+import { Agency, type Annotation, type CalendarEvent, EVENT_TYPE_DEFS, Holiday, type Period, PermissionCatalog } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -21,8 +21,10 @@ interface EventsCalendarContextState {
 		eventTypeCounts: {
 			additional: number
 			annotations: number
+			holidays: number
 			periods: number
 		}
+		holidays: Holiday[]
 		periods: Period[]
 	}
 	flags: {
@@ -75,6 +77,11 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 		PermissionCatalog.all.annotations.actions.read,
 	);
 
+	const canReadHolidays = meContext.actions.hasPermission(
+		PermissionCatalog.all.holidays.scope,
+		PermissionCatalog.all.holidays.actions.read,
+	);
+
 	//
 	// B. Fetch data
 
@@ -88,13 +95,18 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 		{ refreshInterval: 10000 },
 	);
 
+	const { data: holidaysData, error: holidaysError, isLoading: holidaysLoading } = useSWR<Holiday[]>(
+		canReadHolidays ? API_ROUTES.dates.HOLIDAYS_LIST : null,
+		{ refreshInterval: 10000 },
+	);
+
 	const { data: agenciesData } = useSWR<Agency[], Error>(API_ROUTES.auth.AGENCIES_LIST);
 
 	//
 	// C. Handle errors and loading states
 
-	const hasError = periodsError || annotationsError;
-	const isLoading = periodsLoading || annotationsLoading;
+	const hasError = periodsError || annotationsError || holidaysError;
+	const isLoading = periodsLoading || annotationsLoading || holidaysLoading;
 
 	//
 	// D. Transform data
@@ -174,10 +186,10 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 							: undefined;
 
 						events.push({
-							color: '#f59e0b',
+							color: EVENT_TYPE_DEFS['annotation'].color,
 							description: annotation.description,
 							endDate: endDate?.iso,
-							icon: IconNote,
+							icon: EVENT_TYPE_DEFS['annotation'].icon,
 							id: `${annotation._id}`,
 							metadata: {
 								annotation_id: annotation._id,
@@ -192,8 +204,40 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 			});
 		}
 
+		// Transform holidays
+		if (holidaysData) {
+			holidaysData.forEach((holiday) => {
+				if (holiday.dates && holiday.dates.length > 0) {
+					// Group dates into consecutive ranges
+					const dateRanges = groupConsecutiveDates(holiday.dates);
+					// Create a separate calendar event for each consecutive range
+					dateRanges.forEach((range) => {
+						const startDate = Dates.fromOperationalDate(range[0], 'Europe/Lisbon');
+						const endDate = range.length > 1
+							? Dates.fromOperationalDate(range[range.length - 1], 'Europe/Lisbon')
+							: undefined;
+
+						events.push({
+							color: EVENT_TYPE_DEFS['holiday'].color,
+							description: holiday.description,
+							endDate: endDate?.iso,
+							icon: EVENT_TYPE_DEFS['holiday'].icon,
+							id: `${holiday._id}`,
+							metadata: {
+								holiday_id: holiday._id,
+								type: 'holiday',
+							},
+							startDate: startDate.iso,
+							title: holiday.title,
+							type: 'holiday',
+						});
+					});
+				}
+			});
+		}
+
 		return events;
-	}, [periodsData, annotationsData, agenciesData]);
+	}, [periodsData, annotationsData, agenciesData, holidaysData]);
 
 	// Merge with additional events
 	const allEvents = useMemo(() => {
@@ -206,9 +250,10 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 	const eventTypeCounts = useMemo(() => {
 		const periods = periodsData?.length || 0;
 		const annotations = annotationsData?.length || 0;
+		const holidays = holidaysData?.length || 0;
 		const additional = additionalEvents.length;
-		return { additional, annotations, periods };
-	}, [periodsData, annotationsData, additionalEvents]);
+		return { additional, annotations, holidays, periods };
+	}, [periodsData, annotationsData, holidaysData, additionalEvents]);
 
 	//
 	// F. Context value
@@ -218,13 +263,14 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 			annotations: annotationsData || [],
 			events: allEvents,
 			eventTypeCounts,
+			holidays: holidaysData || [],
 			periods: periodsData || [],
 		},
 		flags: {
 			error: hasError || null,
 			loading: isLoading,
 		},
-	}), [annotationsData, allEvents, eventTypeCounts, hasError, isLoading, periodsData]);
+	}), [annotationsData, holidaysData, allEvents, eventTypeCounts, hasError, isLoading, periodsData]);
 
 	//
 	// G. Render

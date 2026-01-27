@@ -28,6 +28,7 @@ export function DayTooltip({ date, events }: DayTooltipProps) {
 	// Separate periods and other events
 	const periods = events.filter(e => e.type === 'period');
 	const annotations = events.filter(e => e.type === 'annotation');
+	const holidays = events.filter(e => e.type === 'holiday');
 	const ruleImpacts = events.filter(e => e.type === 'rule-impact');
 
 	const affectedTimepoints = Array
@@ -72,6 +73,32 @@ export function DayTooltip({ date, events }: DayTooltipProps) {
 				<div className={styles.section}>
 					<div className={styles.sectionTitle}>Anotações</div>
 					{annotations.map((event) => {
+						const Icon = event.icon;
+						return (
+							<div key={event.id} className={styles.event}>
+								{Icon && (
+									<div className={styles.eventIcon}>
+										<Icon size={14} />
+									</div>
+								)}
+								<div className={styles.eventContent}>
+									<div className={styles.eventTitle}>{event.title}</div>
+									{event.description && (
+										<div className={styles.eventMeta}>
+											{event.description}
+										</div>
+									)}
+								</div>
+							</div>
+						);
+					})}
+				</div>
+			)}
+
+			{holidays.length > 0 && (
+				<div className={styles.section}>
+					<div className={styles.sectionTitle}>Feriados</div>
+					{holidays.map((event) => {
 						const Icon = event.icon;
 						return (
 							<div key={event.id} className={styles.event}>
