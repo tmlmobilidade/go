@@ -5,9 +5,10 @@
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { DeleteButton, HasPermission, keepUrlParams, LockButton, PublishStatusTag, SaveButton } from '@tmlmobilidade/ui';
+import { DeleteButton, HasPermission, keepUrlParams, LockButton, PublishStatusTag, SaveButton, useMeContext } from '@tmlmobilidade/ui';
 import { CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -18,7 +19,33 @@ export function AlertDetailHeader() {
 	// A. Setup variables
 
 	const router = useRouter();
+	const meContext = useMeContext();
 	const alertDetailContext = useAlertDetailContext();
+
+	//
+	// B. Transform data
+
+	const hasPermissionToChangePublishStatus = useMemo(() => {
+		const canEditThisAgency = meContext.actions.hasPermissionResource({
+			action: PermissionCatalog.all.alerts.actions.update_publish_status,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.alerts.scope,
+			value: alertDetailContext.data.alert.agency_id,
+		});
+		const canEditThisReferenceType = meContext.actions.hasPermissionResource({
+			action: PermissionCatalog.all.alerts.actions.update_publish_status,
+			resource_key: 'reference_types',
+			scope: PermissionCatalog.all.alerts.scope,
+			value: alertDetailContext.data.alert.reference_type,
+		});
+		// User can change publish status if they have permission
+		// for the agency and reference type.
+		return canEditThisAgency && canEditThisReferenceType;
+	}, [
+		meContext.data.user?.permissions,
+		alertDetailContext.data.alert.agency_id,
+		alertDetailContext.data.alert.reference_type,
+	]);
 
 	//
 	// B. Handle actions
@@ -41,6 +68,7 @@ export function AlertDetailHeader() {
 			<CloseButton onClick={handleClose} type="close" />
 
 			<PublishStatusTag
+				disabled={!hasPermissionToChangePublishStatus}
 				onChange={value => alertDetailContext.data.form.setFieldValue('publish_status', value)}
 				value={alertDetailContext.data.form.values.publish_status}
 			/>

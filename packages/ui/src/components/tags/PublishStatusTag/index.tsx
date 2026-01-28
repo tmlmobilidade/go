@@ -11,6 +11,7 @@ import { Tag } from '../Tag';
 /* * */
 
 interface PublishStatusTagProps {
+	disabled?: boolean
 	onChange?: (value: PublishStatus) => void
 	onClick?: () => void
 	value: PublishStatus
@@ -18,7 +19,7 @@ interface PublishStatusTagProps {
 
 /* * */
 
-export function PublishStatusTag({ onChange, onClick, value }: PublishStatusTagProps) {
+export function PublishStatusTag({ disabled, onChange, onClick, value }: PublishStatusTagProps) {
 	//
 
 	//
@@ -38,6 +39,8 @@ export function PublishStatusTag({ onChange, onClick, value }: PublishStatusTagP
 	// C. Handle actions
 
 	const handleClick = () => {
+		// If disabled, do nothing
+		if (disabled) return;
 		// If onClick prop exists, call it and return
 		if (onClick) return onClick();
 		// Otherwise, set isEditing to true
@@ -49,25 +52,25 @@ export function PublishStatusTag({ onChange, onClick, value }: PublishStatusTagP
 
 	if (!value) return;
 
-	if (!isEditing) {
+	if (isEditing && !disabled && onChange) {
 		return (
-			<>
-				{value === 'draft' && <Tag label="Rascunho" onClick={(onClick || onChange) ? handleClick : undefined} variant="muted" />}
-				{value === 'archived' && <Tag label="Arquivado" onClick={(onClick || onChange) ? handleClick : undefined} variant="primary" />}
-				{value === 'published' && <Tag label="Publicado" onClick={(onClick || onChange) ? handleClick : undefined} variant="primary" filled />}
-			</>
+			<Select
+				clearable={false}
+				data={publishStatusOptions}
+				onChange={onChange}
+				onDropdownClose={() => setIsEditing(false)}
+				value={value}
+				autoFocus
+			/>
 		);
 	}
 
 	return (
-		<Select
-			clearable={false}
-			data={publishStatusOptions}
-			onChange={onChange}
-			onDropdownClose={() => setIsEditing(false)}
-			value={value}
-			autoFocus
-		/>
+		<>
+			{value === 'draft' && <Tag label="Rascunho" onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="muted" />}
+			{value === 'archived' && <Tag label="Arquivado" onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="primary" />}
+			{value === 'published' && <Tag label="Publicado" onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="primary" filled />}
+		</>
 	);
 
 	//
