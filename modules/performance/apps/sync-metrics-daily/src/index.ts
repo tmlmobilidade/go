@@ -1,6 +1,7 @@
 /* * */
 
 import { syncCategoryMetrics } from '@/tasks/sync-category-metrics.js';
+import { syncPassengerImpactMetrics } from '@/tasks/sync-passenger-impact.js';
 import { syncPatternHourMetrics } from '@/tasks/sync-pattern-hour-metrics.js';
 import { syncProductMetrics } from '@/tasks/sync-product-metrics.js';
 import { generatePerformanceSummary } from '@tmlmobilidade/go-performance-pckg-log';
@@ -24,6 +25,7 @@ import { Timer } from '@tmlmobilidade/timer';
 			await syncPatternHourMetrics();
 			await syncProductMetrics();
 			await syncCategoryMetrics();
+			await syncPassengerImpactMetrics();
 
 			generatePerformanceSummary();
 
