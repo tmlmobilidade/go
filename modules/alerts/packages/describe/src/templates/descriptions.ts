@@ -14,11 +14,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Um acidente está a provocar um desvio de percurso {in_def_f_p} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+				pt: 'Um acidente/incidente está a provocar um desvio de percurso {in_def_f_p} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Um acidente está a provocar um desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+				pt: 'Um acidente/incidente está a provocar um desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
@@ -32,6 +32,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'ACCIDENT:DETOUR:stops': undefined,
+
+	'ACCIDENT:NO_SERVICE:lines': undefined,
 
 	'ACCIDENT:NO_SERVICE:rides': {
 		description: {
@@ -56,15 +60,17 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'ACCIDENT:REDUCED_SERVICE:lines': undefined,
+
 	'ACCIDENT:REDUCED_SERVICE:rides': {
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Um acidente obriga ao encurtamento {of_def_f_p} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Um acidente/incidente obriga ao encurtamento {of_def_f_p} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Um acidente obriga ao encurtamento {of_def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Um acidente/incidente obriga ao encurtamento {of_def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
@@ -78,6 +84,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'ACCIDENT:SIGNIFICANT_DELAYS:agency': undefined,
+
+	'ACCIDENT:SIGNIFICANT_DELAYS:lines': undefined,
 
 	'ACCIDENT:SIGNIFICANT_DELAYS:rides': {
 		description: {
@@ -102,6 +112,8 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'CONSTRUCTION:ACCESSIBILITY_ISSUE:lines': undefined,
+
 	'CONSTRUCTION:ACCESSIBILITY_ISSUE:rides': {
 		description: {
 			plural: {
@@ -124,6 +136,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'CONSTRUCTION:ACCESSIBILITY_ISSUE:stops': undefined,
+
+	'CONSTRUCTION:DETOUR:lines': undefined,
 
 	'CONSTRUCTION:DETOUR:rides': {
 		description: {
@@ -148,6 +164,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'CONSTRUCTION:DETOUR:stops': undefined,
+
+	'CONSTRUCTION:NO_SERVICE:lines': undefined,
+
 	'CONSTRUCTION:NO_SERVICE:rides': {
 		description: {
 			plural: {
@@ -170,6 +190,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'CONSTRUCTION:NO_SERVICE:stops': undefined,
+
+	'CONSTRUCTION:REDUCED_SERVICE:lines': undefined,
 
 	'CONSTRUCTION:REDUCED_SERVICE:rides': {
 		description: {
@@ -194,6 +218,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'CONSTRUCTION:REDUCED_SERVICE:stops': undefined,
+
+	'CONSTRUCTION:SIGNIFICANT_DELAYS:lines': undefined,
+
 	'CONSTRUCTION:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
@@ -216,6 +244,8 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'CONSTRUCTION:SIGNIFICANT_DELAYS:stops': undefined,
 
 	'CONSTRUCTION:STOP_MOVED:stops': {
 		description: {
@@ -263,6 +293,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'DEMONSTRATION:ADDITIONAL_SERVICE:agency': undefined,
+
+	'DEMONSTRATION:ADDITIONAL_SERVICE:lines': undefined,
+
 	'DEMONSTRATION:ADDITIONAL_SERVICE:rides': {
 		description: {
 			plural: {
@@ -285,6 +319,8 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'DEMONSTRATION:DETOUR:lines': undefined,
 
 	'DEMONSTRATION:DETOUR:rides': {
 		description: {
@@ -309,6 +345,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'DEMONSTRATION:DETOUR:stops': undefined,
+
+	'DEMONSTRATION:NO_SERVICE:lines': undefined,
+
 	'DEMONSTRATION:NO_SERVICE:rides': {
 		description: {
 			plural: {
@@ -331,6 +371,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'DEMONSTRATION:NO_SERVICE:stops': undefined,
+
+	'DEMONSTRATION:REDUCED_SERVICE:lines': undefined,
 
 	'DEMONSTRATION:REDUCED_SERVICE:rides': {
 		description: {
@@ -355,6 +399,12 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'DEMONSTRATION:REDUCED_SERVICE:stops': undefined,
+
+	'DEMONSTRATION:SIGNIFICANT_DELAYS:agency': undefined,
+
+	'DEMONSTRATION:SIGNIFICANT_DELAYS:lines': undefined,
+
 	'DEMONSTRATION:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
@@ -377,6 +427,8 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'DEMONSTRATION:SIGNIFICANT_DELAYS:stops': undefined,
 
 	'DRIVER_ABSENCE:NO_SERVICE:rides': {
 		description: {
@@ -677,6 +729,8 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'POLICE_ACTIVITY:DETOUR:lines': undefined,
+
 	'POLICE_ACTIVITY:DETOUR:rides': {
 		description: {
 			plural: {
@@ -699,6 +753,8 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'POLICE_ACTIVITY:NO_SERVICE:lines': undefined,
 
 	'POLICE_ACTIVITY:NO_SERVICE:rides': {
 		description: {
@@ -723,6 +779,8 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'POLICE_ACTIVITY:REDUCED_SERVICE:lines': undefined,
+
 	'POLICE_ACTIVITY:REDUCED_SERVICE:rides': {
 		description: {
 			plural: {
@@ -745,6 +803,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'POLICE_ACTIVITY:SIGNIFICANT_DELAYS:agency': undefined,
+
+	'POLICE_ACTIVITY:SIGNIFICANT_DELAYS:lines': undefined,
 
 	'POLICE_ACTIVITY:SIGNIFICANT_DELAYS:rides': {
 		description: {
@@ -861,6 +923,8 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'ROAD_ISSUE:ACCESSIBILITY_ISSUE:lines': undefined,
+
 	'ROAD_ISSUE:ACCESSIBILITY_ISSUE:rides': {
 		description: {
 			plural: {
@@ -883,6 +947,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'ROAD_ISSUE:ACCESSIBILITY_ISSUE:stops': undefined,
+
+	'ROAD_ISSUE:DETOUR:lines': undefined,
 
 	'ROAD_ISSUE:DETOUR:rides': {
 		description: {
@@ -907,6 +975,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'ROAD_ISSUE:DETOUR:stops': undefined,
+
+	'ROAD_ISSUE:NO_SERVICE:lines': undefined,
+
 	'ROAD_ISSUE:NO_SERVICE:rides': {
 		description: {
 			plural: {
@@ -929,6 +1001,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'ROAD_ISSUE:NO_SERVICE:stops': undefined,
+
+	'ROAD_ISSUE:REDUCED_SERVICE:lines': undefined,
 
 	'ROAD_ISSUE:REDUCED_SERVICE:rides': {
 		description: {
@@ -953,6 +1029,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'ROAD_ISSUE:REDUCED_SERVICE:stops': undefined,
+
+	'ROAD_ISSUE:SIGNIFICANT_DELAYS:lines': undefined,
+
 	'ROAD_ISSUE:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
@@ -976,7 +1056,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'STRIKE:ADDITIONAL_SERVICE:rides': {
+	'ROAD_ISSUE:SIGNIFICANT_DELAYS:stops': undefined,
+
+	'STRIKE:ADDITIONAL_SERVICE:agency': undefined,
+
+	'STRIKE:ADDITIONAL_SERVICE:lines': {
 		description: {
 			plural: {
 				en: 'not-available',
@@ -998,6 +1082,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'STRIKE:ADDITIONAL_SERVICE:stops': undefined,
+
+	'STRIKE:DETOUR:lines': undefined,
 
 	'STRIKE:DETOUR:rides': {
 		description: {
@@ -1022,6 +1110,12 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'STRIKE:DETOUR:stops': undefined,
+
+	'STRIKE:NO_SERVICE:agency': undefined,
+
+	'STRIKE:NO_SERVICE:lines': undefined,
+
 	'STRIKE:NO_SERVICE:rides': {
 		description: {
 			plural: {
@@ -1045,6 +1139,8 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'STRIKE:REDUCED_SERVICE:lines': undefined,
+
 	'STRIKE:REDUCED_SERVICE:rides': {
 		description: {
 			plural: {
@@ -1067,6 +1163,8 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'STRIKE:SIGNIFICANT_DELAYS:agency': undefined,
 
 	'STRIKE:SIGNIFICANT_DELAYS:rides': {
 		description: {
@@ -1160,6 +1258,8 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'TECHNICAL_ISSUE:REALTIME_INFO_ISSUE:agency': undefined,
+
 	'TECHNICAL_ISSUE:REALTIME_INFO_ISSUE:rides': {
 		description: {
 			plural: {
@@ -1206,6 +1306,8 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'TECHNICAL_ISSUE:SIGNIFICANT_DELAYS:agency': undefined,
+
 	'TECHNICAL_ISSUE:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
@@ -1229,6 +1331,8 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'TRAFFIC_JAM:DETOUR:lines': undefined,
+
 	'TRAFFIC_JAM:DETOUR:rides': {
 		description: {
 			plural: {
@@ -1251,6 +1355,8 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'TRAFFIC_JAM:DETOUR:stops': undefined,
 
 	'TRAFFIC_JAM:NO_SERVICE:rides': {
 		description: {
@@ -1298,6 +1404,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'TRAFFIC_JAM:SIGNIFICANT_DELAYS:agency': undefined,
+
+	'TRAFFIC_JAM:SIGNIFICANT_DELAYS:lines': undefined,
+
 	'TRAFFIC_JAM:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
@@ -1320,6 +1430,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'TRAFFIC_JAM:SIGNIFICANT_DELAYS:stops': undefined,
+
+	'WEATHER:ACCESSIBILITY_ISSUE:lines': undefined,
 
 	'WEATHER:ACCESSIBILITY_ISSUE:rides': {
 		description: {
@@ -1344,6 +1458,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'WEATHER:ACCESSIBILITY_ISSUE:stops': undefined,
+
+	'WEATHER:DETOUR:lines': undefined,
+
 	'WEATHER:DETOUR:rides': {
 		description: {
 			plural: {
@@ -1366,6 +1484,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'WEATHER:DETOUR:stops': undefined,
+
+	'WEATHER:NO_SERVICE:lines': undefined,
 
 	'WEATHER:NO_SERVICE:rides': {
 		description: {
@@ -1390,6 +1512,10 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'WEATHER:NO_SERVICE:stops': undefined,
+
+	'WEATHER:REDUCED_SERVICE:lines': undefined,
+
 	'WEATHER:REDUCED_SERVICE:rides': {
 		description: {
 			plural: {
@@ -1413,6 +1539,12 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'WEATHER:REDUCED_SERVICE:stops': undefined,
+
+	'WEATHER:SIGNIFICANT_DELAYS:agency': undefined,
+
+	'WEATHER:SIGNIFICANT_DELAYS:lines': undefined,
+
 	'WEATHER:SIGNIFICANT_DELAYS:rides': {
 		description: {
 			plural: {
@@ -1435,5 +1567,7 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
+
+	'WEATHER:SIGNIFICANT_DELAYS:stops': undefined,
 
 };

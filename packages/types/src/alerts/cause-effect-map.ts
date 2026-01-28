@@ -9,28 +9,28 @@ import { type AlertReferenceType } from '@/alerts/reference-type.js';
 export const alertCauseEffectReferenceTypeMap = {
 
 	ACCIDENT: {
-		DETOUR: ['rides'],
-		NO_SERVICE: ['rides'],
-		REDUCED_SERVICE: ['rides'],
-		SIGNIFICANT_DELAYS: ['rides'],
+		DETOUR: ['rides', 'stops'],
+		NO_SERVICE: ['rides', 'lines'],
+		REDUCED_SERVICE: ['rides', 'lines'],
+		SIGNIFICANT_DELAYS: ['rides', 'agency', 'lines'],
 	},
 
 	CONSTRUCTION: {
-		ACCESSIBILITY_ISSUE: ['rides'],
-		DETOUR: ['rides'],
-		NO_SERVICE: ['rides'],
-		REDUCED_SERVICE: ['rides'],
-		SIGNIFICANT_DELAYS: ['rides'],
+		ACCESSIBILITY_ISSUE: ['rides', 'lines', 'stops'],
+		DETOUR: ['rides', 'lines', 'stops'],
+		NO_SERVICE: ['rides', 'lines', 'stops'],
+		REDUCED_SERVICE: ['rides', 'lines', 'stops'],
+		SIGNIFICANT_DELAYS: ['rides', 'lines', 'stops'],
 		STOP_MOVED: ['stops'],
 	},
 
 	DEMONSTRATION: {
 		ACCESSIBILITY_ISSUE: ['rides'],
-		ADDITIONAL_SERVICE: ['rides'],
-		DETOUR: ['rides'],
-		NO_SERVICE: ['rides'],
-		REDUCED_SERVICE: ['rides'],
-		SIGNIFICANT_DELAYS: ['rides'],
+		ADDITIONAL_SERVICE: ['rides', 'lines', 'agency'],
+		DETOUR: ['rides', 'lines', 'stops'],
+		NO_SERVICE: ['rides', 'lines', 'stops'],
+		REDUCED_SERVICE: ['rides', 'lines', 'stops'],
+		SIGNIFICANT_DELAYS: ['rides', 'lines', 'stops', 'agency'],
 	},
 
 	DRIVER_ABSENCE: {
@@ -59,10 +59,10 @@ export const alertCauseEffectReferenceTypeMap = {
 	},
 
 	POLICE_ACTIVITY: {
-		DETOUR: ['rides'],
-		NO_SERVICE: ['rides'],
-		REDUCED_SERVICE: ['rides'],
-		SIGNIFICANT_DELAYS: ['rides'],
+		DETOUR: ['rides', 'lines'],
+		NO_SERVICE: ['rides', 'lines'],
+		REDUCED_SERVICE: ['rides', 'lines'],
+		SIGNIFICANT_DELAYS: ['rides', 'lines', 'agency'],
 	},
 
 	PUBLIC_DISORDER: {
@@ -73,43 +73,43 @@ export const alertCauseEffectReferenceTypeMap = {
 	},
 
 	ROAD_ISSUE: {
-		ACCESSIBILITY_ISSUE: ['rides'],
-		DETOUR: ['rides'],
-		NO_SERVICE: ['rides'],
-		REDUCED_SERVICE: ['rides'],
-		SIGNIFICANT_DELAYS: ['rides'],
+		ACCESSIBILITY_ISSUE: ['rides', 'lines', 'stops'],
+		DETOUR: ['rides', 'lines', 'stops'],
+		NO_SERVICE: ['rides', 'lines', 'stops'],
+		REDUCED_SERVICE: ['rides', 'lines', 'stops'],
+		SIGNIFICANT_DELAYS: ['rides', 'lines', 'stops'],
 	},
 
 	STRIKE: {
-		ADDITIONAL_SERVICE: ['rides'],
-		DETOUR: ['rides'],
-		NO_SERVICE: ['rides'],
-		REDUCED_SERVICE: ['rides'],
-		SIGNIFICANT_DELAYS: ['rides'],
+		ADDITIONAL_SERVICE: ['lines', 'stops', 'agency'],
+		DETOUR: ['rides', 'lines', 'stops'],
+		NO_SERVICE: ['rides', 'agency', 'lines'],
+		REDUCED_SERVICE: ['rides', 'lines'],
+		SIGNIFICANT_DELAYS: ['rides', 'agency'],
 	},
 
 	TECHNICAL_ISSUE: {
 		ACCESSIBILITY_ISSUE: ['rides'],
 		NO_SERVICE: ['rides'],
 		ON_BOARD_SALE_ISSUE: ['rides'],
-		REALTIME_INFO_ISSUE: ['rides'],
+		REALTIME_INFO_ISSUE: ['rides', 'agency'],
 		REDUCED_SERVICE: ['rides'],
-		SIGNIFICANT_DELAYS: ['rides'],
+		SIGNIFICANT_DELAYS: ['rides', 'agency'],
 	},
 
 	TRAFFIC_JAM: {
-		DETOUR: ['rides'],
+		DETOUR: ['rides', 'lines', 'stops'],
 		NO_SERVICE: ['rides'],
 		REDUCED_SERVICE: ['rides'],
-		SIGNIFICANT_DELAYS: ['rides'],
+		SIGNIFICANT_DELAYS: ['rides', 'agency', 'lines', 'stops'],
 	},
 
 	WEATHER: {
-		ACCESSIBILITY_ISSUE: ['rides'],
-		DETOUR: ['rides'],
-		NO_SERVICE: ['rides'],
-		REDUCED_SERVICE: ['rides'],
-		SIGNIFICANT_DELAYS: ['rides'],
+		ACCESSIBILITY_ISSUE: ['rides', 'lines', 'stops'],
+		DETOUR: ['rides', 'lines', 'stops'],
+		NO_SERVICE: ['rides', 'lines', 'stops'],
+		REDUCED_SERVICE: ['rides', 'lines', 'stops'],
+		SIGNIFICANT_DELAYS: ['rides', 'lines', 'stops', 'agency'],
 	},
 
 } as const satisfies Record<AlertCause, Partial<Record<AlertEffect, AlertReferenceType[]>>>;
