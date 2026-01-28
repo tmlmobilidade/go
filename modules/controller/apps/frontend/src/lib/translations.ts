@@ -1,37 +1,3 @@
-import { AlertCause, GtfsEffect } from '@tmlmobilidade/types';
-
-export const Translations: { CAUSE: Record<AlertCause, string>, EFFECT: Record<GtfsEffect, string> } = {
-	CAUSE: {
-		ACCIDENT: 'Acidente',
-		CONSTRUCTION: 'Obras',
-		DEMONSTRATION: 'Evento / Manifestação',
-		DRIVER_ABSENCE: 'Condutor Ausente',
-		DRIVER_ISSUE: 'Condutor com Problema',
-		HIGH_PASSENGER_LOAD: 'Elevado Volume de Passageiros',
-		HOLIDAY: 'Feriado',
-		MAINTENANCE: 'Manutenção',
-		MEDICAL_EMERGENCY: 'Emergência Médica',
-		POLICE_ACTIVITY: 'Atividade Policial',
-		ROAD_INCIDENT: 'Incidente na Estrada',
-		STRIKE: 'Greve',
-		SYSTEM_FAILURE: 'Falha do Sistema',
-		TECHNICAL_PROBLEM: 'Problema Técnico',
-		TRAFFIC_JAM: 'Congestão de Trânsito',
-		VEHICLE_ISSUE: 'Veículo com Problema',
-		WEATHER: 'Mau Tempo',
-	},
-	EFFECT: {
-		ACCESSIBILITY_ISSUE: 'Impacto na Acessibilidade',
-		ADDITIONAL_SERVICE: 'Aumento de Serviço',
-		DETOUR: 'Desvio',
-		MODIFIED_SERVICE: 'Alteração de Horários',
-		NO_SERVICE: 'Serviço Cancelado',
-		REDUCED_SERVICE: 'Serviço Reduzido',
-		SIGNIFICANT_DELAYS: 'Atrasos Significativos',
-		STOP_MOVED: 'Paragem Deslocada',
-	},
-};
-
 /* * */
 
 import { AcceptanceStatusProps } from '@/components/common/AcceptanceStatusTag';
