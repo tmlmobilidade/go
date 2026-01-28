@@ -33,8 +33,6 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 > {
 	const agencyFilter: AgencyId[] = ['41', '42', '43', '44'];
 
-	ola
-
 	// Target interval (operational cut-off at 04:00)
 	const startDate = Dates.now('Europe/Lisbon')
 		.set({ day: 1, hour: 4, month: 1, year: 2024 })
