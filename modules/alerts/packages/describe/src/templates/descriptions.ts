@@ -41,11 +41,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido a um acidente, foi necessário cancelar {def_f_p} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a um acidente/incidente, foi necessário cancelar {def_f_p} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido a um acidente, foi necessário cancelar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a um acidente/incidente, foi necessário cancelar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
@@ -93,11 +93,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido a um acidente, verificam-se atrasos significativos {in_def_f_p} {rides_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a um acidente/incidente, verificam-se atrasos significativos {in_def_f_p} {rides_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido a um acidente, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a um acidente/incidente, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
