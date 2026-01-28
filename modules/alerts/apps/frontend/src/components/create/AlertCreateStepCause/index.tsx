@@ -22,7 +22,7 @@ export function AlertCreateStepCause() {
 	// B. Transform data
 
 	const preparedOptions = (Object.keys(alertCauseEffectReferenceTypeMap) as (keyof typeof alertCauseEffectReferenceTypeMap)[])
-		.map(item => ({ icon: CauseIcons[item], label: t(`alert-causes:${item}.title`) as string, value: item }))
+		.map(item => ({ icon: CauseIcons[item], label: t(`shared:alerts.causes.${item}.title`) as string, value: item }))
 		.sort((a, b) => a.label.localeCompare(b.label));
 
 	//

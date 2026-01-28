@@ -31,7 +31,7 @@ export function ReferencesEditorControls() {
 			scope: PermissionCatalog.all.alerts.scope,
 			value: value,
 		}))
-		.map(value => ({ label: t(`alert-reference-types:${value}.title`), value }));
+		.map(value => ({ label: t(`shared:alerts.reference-types.${value}.title`), value }));
 
 	//
 	// C. Render components

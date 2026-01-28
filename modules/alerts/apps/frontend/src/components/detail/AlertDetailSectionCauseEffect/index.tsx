@@ -25,13 +25,13 @@ export function AlertDetailSectionCauseEffect() {
 
 	const causeItems = AlertCauseSchema.options.map(cause => ({
 		icon: CauseIcons[cause],
-		label: t(`alert-causes:${cause}.title`),
+		label: t(`shared:alerts.causes.${cause}.title`),
 		value: cause,
 	}));
 
 	const effectItems = AlertEffectSchema.options.map(effect => ({
 		icon: EffectIcons[effect],
-		label: t(`alert-effects:${effect}.title`),
+		label: t(`shared:alerts.effects.${effect}.title`),
 		value: effect,
 	}));
 
