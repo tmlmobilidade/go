@@ -1,3 +1,5 @@
+'use client';
+
 /* * */
 
 import { useStopsContext } from '@/contexts/Stops.context';

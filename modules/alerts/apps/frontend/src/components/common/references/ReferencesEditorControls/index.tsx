@@ -5,6 +5,7 @@
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { AlertReferenceTypeSchema, PermissionCatalog } from '@tmlmobilidade/types';
 import { Divider, Grid, Section, SegmentedControl, Select, useMeContext } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -13,6 +14,8 @@ export function ReferencesEditorControls() {
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
 
 	const meContext = useMeContext();
 	const referencesEditorContext = useReferencesEditorContext();
@@ -28,18 +31,7 @@ export function ReferencesEditorControls() {
 			scope: PermissionCatalog.all.alerts.scope,
 			value: value,
 		}))
-		.map((value) => {
-			switch (value) {
-				case 'agency':
-					return { label: 'Operador', value };
-				case 'lines':
-					return { label: 'Linhas', value };
-				case 'rides':
-					return { label: 'Circulações', value };
-				case 'stops':
-					return { label: 'Paragens', value };
-			}
-		});
+		.map(value => ({ label: t(`alert-reference-types:${value}.title`), value }));
 
 	//
 	// C. Render components

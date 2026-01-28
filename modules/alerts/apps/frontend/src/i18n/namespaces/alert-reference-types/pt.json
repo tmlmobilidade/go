@@ -1,0 +1,14 @@
+{
+	"agency": {
+		"title": "Operador"
+	},
+	"lines": {
+		"title": "Linhas"
+	},
+	"rides": {
+		"title": "Circulações"
+	},
+	"stops": {
+		"title": "Paragens"
+	}
+}
