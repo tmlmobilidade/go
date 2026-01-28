@@ -42,10 +42,15 @@ import { municipalitiesMap } from './municipalities-map.js';
 			const agencyIds = municipalitiesMap[municipalityId];
 			if (agencyIds.length > 0) agencyIds.forEach(agencyId => detectedAgencies.add(agencyId));
 		});
+		const agenciesFromTitle = detectAlertAgencyId(originalAlert.title);
+		if (agenciesFromTitle && agenciesFromTitle.length > 0) {
+			agenciesFromTitle.forEach(agencyId => detectedAgencies.add(agencyId));
+		}
 		if (detectedAgencies.size === 0) {
 			console.log('Could not parse agency ID for Alert ID:', originalAlert._id);
 		}
 		for (const agencyId of detectedAgencies) {
+			if (!['41', '42', '43', '44'].includes(agencyId)) continue;
 			const formattedAlert: Alert = {
 				...originalAlert,
 				agency_id: agencyId,
@@ -58,12 +63,20 @@ import { municipalitiesMap } from './municipalities-map.js';
 			if (originalAlert.reference_type === 'AGENCY' as Alert['reference_type']) formattedAlert.references = [];
 			if (formattedAlert.cause === 'UNKNOWN_CAUSE' as Alert['cause']) formattedAlert.cause = 'TECHNICAL_ISSUE';
 			if (formattedAlert.cause === 'OTHER_CAUSE' as Alert['cause']) formattedAlert.cause = 'TECHNICAL_ISSUE';
+			if (formattedAlert.cause === 'MAINTENANCE' as Alert['cause']) formattedAlert.cause = 'TECHNICAL_ISSUE';
+			if (formattedAlert.cause === 'TECHNICAL_PROBLEM' as Alert['cause']) formattedAlert.cause = 'TECHNICAL_ISSUE';
+			if (formattedAlert.cause === 'ROAD_INCIDENT' as Alert['cause']) formattedAlert.cause = 'ROAD_ISSUE';
+			if (formattedAlert.cause === 'VEHICLE_ISSUE' as Alert['cause']) formattedAlert.cause = 'TECHNICAL_ISSUE';
+			if (formattedAlert.cause === 'SYSTEM_FAILURE' as Alert['cause']) formattedAlert.cause = 'TECHNICAL_ISSUE';
 			if (formattedAlert.effect === 'UNKNOWN_EFFECT' as Alert['effect']) formattedAlert.effect = 'NO_SERVICE';
 			if (formattedAlert.effect === 'OTHER_EFFECT' as Alert['effect']) formattedAlert.effect = 'NO_SERVICE';
+			if (formattedAlert.effect === 'MODIFIED_SERVICE' as Alert['effect']) formattedAlert.effect = 'SIGNIFICANT_DELAYS';
 			if (formattedAlert.effect === 'NO_EFFECT' as Alert['effect']) formattedAlert.effect = 'NO_SERVICE';
 			const result = AlertSchema.safeParse(formattedAlert);
 			if (!result.success) {
-				console.error('Validation failed for Alert ID:', originalAlert._id, 'Errors:', result.error.errors);
+				console.error('Validation failed for Alert ID:', originalAlert._id);
+				console.error(result.error.format());
+				process.exit(1);
 				continue;
 			}
 			migratedAlerts.push(result.data);
@@ -104,4 +117,17 @@ function parseReferenceType(value: string): Alert['reference_type'] {
 	if (value === 'TRIP') return 'rides';
 	if (value === 'AGENCY') return 'agency';
 	return value as Alert['reference_type'];
+}
+
+function detectAlertAgencyId(title: Alert['title']): Alert['agency_id'][] {
+	// Detect 4 digit number groups anywhere in title (ex: "Line 1234 delayed" or "Alert for 5678 and 9101")
+	const digitMatch = title.match(/\b\d{4}\b/g);
+	if (digitMatch?.length) {
+		const detectedAgencies = new Set<string>();
+		digitMatch.forEach((number) => {
+			const agencyId = Number(`4${number.substring(0, 1)}`);
+			if (!isNaN(agencyId)) detectedAgencies.add(String(agencyId));
+		});
+		if (detectedAgencies.size >= 1) return Array.from(detectedAgencies);
+	}
 }

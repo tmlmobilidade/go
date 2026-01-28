@@ -53,6 +53,6 @@
 	},
 	"WEATHER": {
 		"description": "Tempestades, chuvas fortes que provocam obstruções na via.",
-		"title": "Tempo"
+		"title": "Condições Meteorológicas Adversas"
 	}
 }
