@@ -138,6 +138,7 @@ export class PlansController {
 						timestamp: null,
 					},
 				},
+				created_by: request.me._id,
 				gtfs_agency: validationData.gtfs_agency,
 				gtfs_feed_info: validationData.gtfs_feed_info,
 				hash: '',

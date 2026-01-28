@@ -302,14 +302,15 @@ interface RidesPipelineFilter {
 /**
  * Creates MongoDB aggregation pipeline stages to filter and process ride data.
  *
- * This function generates an aggregation pipeline that:
+ * This function generates an aggregation pipeline with the following stages:
  * 1. Filters rides by scheduled time range (date_start to date_end)
- * 2. Optionally filters by line IDs and agency IDs
- * 3. Optionally searches rides by ID using regex pattern matching
- * 4. Adds acceptance status from ride_acceptances collection via lookup
- * 5. Filters by analysis grades (ended_at_last_stop, expected_apex_validation_interval, simple_three_vehicle_events)
- * 6. Filters by acceptance status (excluding 'none' if present)
- * 7. Applies delay, operational, and seen status filters using dedicated pipeline functions
+ * 2. Optionally filters by line IDs
+ * 3. Optionally filters by agency IDs
+ * 4. Optionally searches rides by ride ID using regex pattern matching and, if present, by vehicle IDs in the search string (with support for "v:1117,1118" etc.)
+ * 5. Adds acceptance status by joining from the ride_acceptances collection
+ * 6. Filters by analysis grades (ended_at_last_stop, expected_apex_validation_interval, simple_three_vehicle_events)
+ * 7. Filters by acceptance status (excluding 'none' if present)
+ * 8. Applies delay, operational, and seen status filters using dedicated pipeline functions
  *
  * @param {Object} params - Parameters object
  * @param {RidesPipelineFilter} params.filter - Filter criteria for rides
@@ -318,26 +319,62 @@ interface RidesPipelineFilter {
 export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter): AggregationPipeline<Ride> {
 	const pipeline: AggregationPipeline<Ride> = [];
 
-	// Stage 1: Filter by scheduled time range
+	// Stage 1: Filter by scheduled time range (required)
 	pipeline.push({ $match: { start_time_scheduled: { $gte: filter.date_start, $lte: filter.date_end } } });
 
-	// Stage 2: Filter by line IDs if provided
-	if (filter.line_ids) pipeline.push({ $match: { line_id: { $in: filter.line_ids.map(id => Number(id)) } } });
+	// Stage 2: Filter by agency IDs (required)
+	pipeline.push({ $match: { agency_id: { $in: filter.agency_ids ?? [] } } });
 
-	// Stage 3: Filter by agency IDs if provided
-	if (filter.agency_ids) pipeline.push({ $match: { agency_id: { $in: filter.agency_ids } } });
+	// Stage 3: Filter by line IDs if provided
+	if (filter.line_ids?.length) pipeline.push({ $match: { line_id: { $in: filter.line_ids.map(id => Number(id)) } } });
 
 	// Stage 4: Search by ride ID if provided
 	// Uses regex pattern matching with case-insensitive option
+	// Also removes all vehicle IDs and driver IDs from the search string
+	// And adds a filter for the vehicle IDs if they are present in the search string (v:1117,1118)
+	// And adds a filter for the driver IDs if they are present in the search string (d:123,456)
 	if (filter.search) {
-		const keywords = filter.search.split(/\s+/).map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-		const pattern = keywords.map(k => `(?=.*${k})`).join('') + '.*';
-		pipeline.push({
-			$match: { _id: { $options: 'i', $regex: pattern } },
-		});
+		// Extract vehicle and driver IDs before stripping them from search
+		const vehicleMatch = filter.search.match(/v:([\d,]+)/);
+		const driverMatch = filter.search.match(/d:([\d,]+)/);
+
+		// Remove v: and d: patterns from search string for ride ID matching
+		const searchWithoutSpecialFilters = filter.search.replace(/v:[\d,]+/g, '').replace(/d:[\d,]+/g, '').trim();
+		const keywords = searchWithoutSpecialFilters.split(/\s+/).filter(k => k.length > 0).map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+
+		if (keywords.length > 0) {
+			const pattern = keywords.map(k => `(?=.*${k})`).join('') + '.*';
+			pipeline.push({
+				$match: { _id: { $options: 'i', $regex: pattern } },
+			});
+		}
+
+		if (vehicleMatch) {
+			const vehicleIDs = vehicleMatch[1]
+				.split(',')
+				.map(id => Number(id.trim()))
+				.filter(id => !isNaN(id));
+			if (vehicleIDs.length > 0) {
+				pipeline.push({ $match: { vehicle_ids: { $in: vehicleIDs } } });
+			}
+		}
+
+		if (driverMatch) {
+			const driverIDs = driverMatch[1]
+				.split(',')
+				.map(id => id.trim())
+				.filter(id => id.length > 0);
+			if (driverIDs.length > 0) {
+				pipeline.push({ $match: { driver_ids: { $in: driverIDs } } });
+			}
+		}
 	}
 
-	// Stage 5: Add acceptance status from ride_acceptances collection
+	// Stage 5: Search by vehicle IDs from search field if provided (legacy support)
+	// This allows filtering via search field with "v:1117" or "v:1117,1118" format
+	// Remove literal 'v:' from the search string since it is breaking stuff
+
+	// Stage 6: Add acceptance status from ride_acceptances collection
 	// Lookup joins acceptance data, unwinds to flatten, adds status field, and removes intermediate data
 	pipeline.push(
 		{ $lookup: { as: 'acceptance', foreignField: 'ride_id', from: 'ride_acceptances', localField: '_id' } },
@@ -346,7 +383,7 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 		{ $project: { acceptance: 0 } },
 	);
 
-	// Stage 6: Filter by analysis grades
+	// Stage 7: Filter by analysis grades
 	// Maps filter fields to their corresponding analysis paths in the document
 	const analysisFilters: { field: string, path: string }[] = [
 		{ field: 'analysis_ended_at_last_stop_grade', path: 'analysis.ENDED_AT_LAST_STOP.grade' },
@@ -375,7 +412,7 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 		});
 	});
 
-	// Stage 7: Filter by acceptance status
+	// Stage 8: Filter by acceptance status
 	// Only applies filter if acceptance_status is provided and doesn't include 'none'
 	if (filter.acceptance_status && filter.acceptance_status.length > 0 && !filter.acceptance_status.includes('none')) {
 		pipeline.push(
@@ -384,11 +421,11 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 		);
 	}
 
-	// Stage 8: Apply status filters using dedicated pipeline functions
+	// Stage 9: Apply status filters using dedicated pipeline functions
 	// These functions add calculated status fields and filter by them
-	pipeline.push(...ridesPipelineDelayStatus({ filter: { end_delay_status: filter.delay_statuses?.map(status => status as DelayStatus), start_delay_status: filter.delay_statuses?.map(status => status as DelayStatus) } }));
-	pipeline.push(...ridesPipelineOperationalStatus({ filter: { operational_status: filter.operational_statuses?.map(status => status as OperationalStatus) } }));
-	pipeline.push(...ridesPipelineSeenStatus({ filter: { seen_status: filter.seen_statuses?.map(status => status as SeenStatus) } }));
+	pipeline.push(...ridesPipelineDelayStatus({ filter: { end_delay_status: filter.delay_statuses, start_delay_status: filter.delay_statuses } }));
+	pipeline.push(...ridesPipelineOperationalStatus({ filter: { operational_status: filter.operational_statuses } }));
+	pipeline.push(...ridesPipelineSeenStatus({ filter: { seen_status: filter.seen_statuses } }));
 
 	return pipeline;
 }

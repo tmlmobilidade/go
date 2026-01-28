@@ -1,0 +1,55 @@
+name: sae-db-secondary-production
+
+networks:
+  mongonet:
+
+services:
+  #
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  watchtower:
+    image: nickfedor/watchtower
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 1gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_POLL_INTERVAL=60
+      - WATCHTOWER_CLEANUP=TRUE
+      - WATCHTOWER_INCLUDE_STOPPED=TRUE
+      - WATCHTOWER_REVIVE_STOPPED=TRUE
+      - WATCHTOWER_ROLLING_RESTART=TRUE
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  database:
+    image: mongo:latest
+    restart: unless-stopped
+    volumes:
+      - ./secrets/replica.key:/data/replica.key:ro
+      - ./db-data:/data/db
+    networks:
+      - mongonet
+    ports:
+      - "27017:27017"
+    env_file:
+      - ./secrets/.env
+    command: mongod --replSet rs0 --auth --keyFile /data/replica.key --bind_ip_all
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://localhost:27017/ --quiet
+      interval: 5s
+      timeout: 30s
+      retries: 30
+      start_period: 10s

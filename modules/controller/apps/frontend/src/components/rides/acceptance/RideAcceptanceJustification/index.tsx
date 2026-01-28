@@ -5,9 +5,8 @@
 import { AcceptanceStatusProps, AcceptanceStatusTag } from '@/components/common/AcceptanceStatusTag';
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { CauseIcons } from '@/lib/icons';
-import { Translations } from '@/lib/translations';
 import { IconCheck, IconEdit } from '@tabler/icons-react';
-import { GtfsCause, gtfsCauseSchema, PermissionCatalog, RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/types';
+import { GtfsCause, GtfsCauseSchema, PermissionCatalog, RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/types';
 import { Button, Combobox, HasPermission, IconButton, Label, Section, Text, Textarea, TextInput, useToast } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
@@ -19,7 +18,7 @@ function JustificationReadOnly({ cause, manualTripId, message }: { cause?: strin
 			<Label size="lg" caps>Justificação</Label>
 			<Section gap="xs" padding="none">
 				<Label>Motivo da justificação</Label>
-				<Text>{cause ? Translations.CAUSE[cause as GtfsCause] : '—'}</Text>
+				<Text>{cause || '—'}</Text>
 			</Section>
 			<Section gap="xs" padding="none">
 				<Label>Mensagem de justificação</Label>
@@ -41,9 +40,9 @@ function JustificationEditable({ cause, manualTripId, message, onSubmit, setCaus
 				onChange={setCause}
 				placeholder="Selecione o motivo da justificação"
 				value={cause}
-				data={gtfsCauseSchema.options.map(cause => ({
+				data={GtfsCauseSchema.options.map(cause => ({
 					icon: CauseIcons[cause],
-					label: Translations.CAUSE[cause],
+					label: cause,
 					value: cause,
 				}))}
 				fullWidth

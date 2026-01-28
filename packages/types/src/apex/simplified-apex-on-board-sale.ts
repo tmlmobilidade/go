@@ -7,7 +7,7 @@ import { z } from 'zod';
 /* * */
 
 export const SimplifiedApexOnBoardSaleSchema = DocumentSchema
-	.omit({ is_locked: true })
+	.omit({ created_by: true, is_locked: true, updated_by: true })
 	.extend({
 		agency_id: z.string(),
 		apex_version: z.string(),
@@ -33,7 +33,7 @@ export const SimplifiedApexOnBoardSaleSchema = DocumentSchema
 		vehicle_id: z.number().nullable(),
 	});
 
-export const UpdateSimplifiedApexOnBoardSaleSchema = SimplifiedApexOnBoardSaleSchema.omit({ created_by: true }).partial();
+export const UpdateSimplifiedApexOnBoardSaleSchema = SimplifiedApexOnBoardSaleSchema.partial();
 
 /**
  * APEX OnBoard Sales are APEX transactions of type 3 that are generated whenever a sale

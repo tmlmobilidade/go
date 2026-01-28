@@ -1,9 +1,8 @@
 /* * */
 
 import { AlertsController } from '@/endpoints/alerts/alerts.controller.js';
-import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
-import { type GetAllAlertsQuery, GetAllAlertsQuerySchema, PermissionCatalog } from '@tmlmobilidade/types';
-import { validateQueryParams } from '@tmlmobilidade/utils';
+import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -19,87 +18,56 @@ server.register(
 
 		instance.get(
 			'/',
-			{ preHandler: async (request, reply) => {
-				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
-				if (parsedQuery.realtime === true) await authorizationMiddleware(PermissionCatalog.all.alerts_realtime.scope, [PermissionCatalog.all.alerts_realtime.actions.read])(request, reply);
-				else await authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.read])(request, reply);
-			} },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
 			AlertsController.getAll,
 		);
 
 		instance.get(
 			'/:id',
-			{ preHandler: async (request, reply) => {
-				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
-				if (parsedQuery.realtime === true) await authorizationMiddleware(PermissionCatalog.all.alerts_realtime.scope, [PermissionCatalog.all.alerts_realtime.actions.read])(request, reply);
-				else await authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.read])(request, reply);
-			} },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
 			AlertsController.getById,
 		);
 
 		instance.get(
 			'/:id/image',
-			{ preHandler: async (request, reply) => {
-				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
-				if (parsedQuery.realtime === true) await authorizationMiddleware(PermissionCatalog.all.alerts_realtime.scope, [PermissionCatalog.all.alerts_realtime.actions.read])(request, reply);
-				else await authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.read])(request, reply);
-			} },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
 			AlertsController.getImage,
 		);
 
 		instance.post(
 			'/',
-			{ preHandler: async (request, reply) => {
-				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
-				if (parsedQuery.realtime === true) await authorizationMiddleware(PermissionCatalog.all.alerts_realtime.scope, [PermissionCatalog.all.alerts_realtime.actions.create])(request, reply);
-				else await authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.create])(request, reply);
-			} },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.create]) },
 			AlertsController.create,
 		);
 
 		instance.put(
 			'/:id',
-			{ preHandler: async (request, reply) => {
-				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
-				if (parsedQuery.realtime === true) await authorizationMiddleware(PermissionCatalog.all.alerts_realtime.scope, [PermissionCatalog.all.alerts_realtime.actions.update])(request, reply);
-				else await authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.update])(request, reply);
-			} },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.update]) },
 			AlertsController.update,
 		);
 
 		instance.delete(
 			'/:id',
-			{ preHandler: async (request, reply) => {
-				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
-				if (parsedQuery.realtime === true) await authorizationMiddleware(PermissionCatalog.all.alerts_realtime.scope, [PermissionCatalog.all.alerts_realtime.actions.delete])(request, reply);
-				else await authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.delete])(request, reply);
-			} },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.delete]) },
 			AlertsController.delete,
 		);
 
 		instance.post(
 			'/:id/image',
-			{ preHandler: async (request, reply) => {
-				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
-				if (parsedQuery.realtime === true) await authorizationMiddleware(PermissionCatalog.all.alerts_realtime.scope, [PermissionCatalog.all.alerts_realtime.actions.update])(request, reply);
-				else await authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.update])(request, reply);
-			} },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.update]) },
 			AlertsController.uploadImage,
 		);
 
 		instance.delete(
 			'/:id/image',
-			{ preHandler: async (request, reply) => {
-				const parsedQuery = validateQueryParams<GetAllAlertsQuery>(request.query, GetAllAlertsQuerySchema);
-				if (parsedQuery.realtime === true) await authorizationMiddleware(PermissionCatalog.all.alerts_realtime.scope, [PermissionCatalog.all.alerts_realtime.actions.update])(request, reply);
-				else await authorizationMiddleware(PermissionCatalog.all.alerts_scheduled.scope, [PermissionCatalog.all.alerts_scheduled.actions.update])(request, reply);
-			} },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.update]) },
 			AlertsController.deleteImage,
 		);
 
 		instance.get(
-			'/gtfs',
-			AlertsController.getGtfs,
+			'/:id/lock',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.lock]) },
+			AlertsController.lock,
 		);
 
 		next();

@@ -5,6 +5,8 @@
 import { getValueAtPath } from '@tmlmobilidade/utils';
 import { ViewportList } from 'react-viewport-list';
 
+import styles from './styles.module.css';
+
 import { DataTableProps } from '../DataTable';
 import { useDataTableContext } from '../DataTableContext';
 import { DataTableHeader } from '../DataTableHeader';
@@ -16,20 +18,29 @@ type Props<T> = Omit<DataTableProps<T>, 'records'>;
 
 /* * */
 
-export function DataTableContent<T>({ columns, onRowClick, onRowContextMenu, onRowDoubleClick, rowIdAccessor, selectedId }: Props<T>) {
+export function DataTableContent<T>({ columns, onRowClick, onRowContextMenu, onRowDoubleClick, rowIdAccessor, selectedId, selectedIds, withTopBorder }: Props<T>) {
 	//
 
 	//
-	// A. Setup Variables
+	// A. Setup variables
 
 	const dataTableContext = useDataTableContext<T>();
 
 	//
-	// B. Render Components
+	// B. Transform data
+
+	const isSelected = (record: T) => {
+		if (rowIdAccessor && selectedId) return getValueAtPath(record, rowIdAccessor) === selectedId;
+		if (rowIdAccessor && selectedIds?.length) return selectedIds.includes(getValueAtPath(record, rowIdAccessor) as string);
+		return false;
+	};
+
+	//
+	// C. Render components
 
 	return (
-		<>
-			<DataTableHeader columns={columns} />
+		<div className={styles.root}>
+			<DataTableHeader columns={columns} withTopBorder={withTopBorder} />
 			<ViewportList
 				ref={dataTableContext.refs.list}
 				itemMargin={0}
@@ -39,7 +50,7 @@ export function DataTableContent<T>({ columns, onRowClick, onRowContextMenu, onR
 					<DataTableRow
 						key={rowIdAccessor ? (getValueAtPath(record, rowIdAccessor) as string) : rowIndex}
 						columns={columns}
-						isSelected={rowIdAccessor ? (getValueAtPath(record, rowIdAccessor) as string) === selectedId : false}
+						isSelected={isSelected(record)}
 						onRowClick={onRowClick}
 						onRowContextMenu={onRowContextMenu}
 						onRowDoubleClick={onRowDoubleClick}
@@ -47,7 +58,7 @@ export function DataTableContent<T>({ columns, onRowClick, onRowContextMenu, onR
 					/>
 				)}
 			</ViewportList>
-		</>
+		</div>
 	);
 
 	//

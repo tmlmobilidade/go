@@ -3,7 +3,7 @@
 /* * */
 
 import { MantineProvider } from '@mantine/core';
-import { DatesProvider, DatesProviderSettings } from '@mantine/dates';
+import { DatesProvider, type DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { swrFetcher } from '@tmlmobilidade/utils';
@@ -11,14 +11,19 @@ import { NuqsAdapter } from 'nuqs/adapters/next';
 import { type PropsWithChildren } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
+import { type LocaleContextProps, LocaleContextProvider } from '../../contexts/Locale.context';
 import { themeData } from '../../styles/theme';
+
+/* * */
+
+type BaseProviderProps = LocaleContextProps;
 
 /**
  * This is the application base provider component. The whole application should be
  * wrapped with this component, including non-authenticated parts. Set this on the Root layout,
  * without `<html>` or `<body>` HTML tags.
  */
-export function BaseProvider({ children }: PropsWithChildren) {
+export function BaseProvider({ children, i18n }: PropsWithChildren<BaseProviderProps>) {
 	//
 
 	//
@@ -47,14 +52,16 @@ export function BaseProvider({ children }: PropsWithChildren) {
 			<body>
 				<NuqsAdapter>
 					<SWRConfig value={swrSettings}>
-						<MantineProvider defaultColorScheme="auto" theme={themeData}>
-							<DatesProvider settings={mantineDatesSettings}>
-								<ModalsProvider>
-									<Notifications position="bottom-right" />
-									{children}
-								</ModalsProvider>
-							</DatesProvider>
-						</MantineProvider>
+						<LocaleContextProvider i18n={i18n}>
+							<MantineProvider defaultColorScheme="auto" theme={themeData}>
+								<DatesProvider settings={mantineDatesSettings}>
+									<ModalsProvider>
+										<Notifications position="bottom-right" />
+										{children}
+									</ModalsProvider>
+								</DatesProvider>
+							</MantineProvider>
+						</LocaleContextProvider>
 					</SWRConfig>
 				</NuqsAdapter>
 			</body>

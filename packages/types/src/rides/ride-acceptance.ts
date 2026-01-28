@@ -2,7 +2,7 @@
 
 import { CommentSchema } from '@/_common/comment.js';
 import { DocumentSchema } from '@/_common/document.js';
-import { gtfsCauseSchema } from '@/gtfs/cause-effetcs.js';
+import { GtfsCauseSchema } from '@/gtfs/cause.js';
 import { RideAnalysisSummarySchema } from '@/rides/ride-analysis.js';
 import { z } from 'zod';
 
@@ -25,7 +25,7 @@ export type RideJustificationStatusType = z.infer<typeof RideJustificationStatus
 export const RideJustificationSchema = DocumentSchema
 	.omit({ _id: true, is_locked: true })
 	.extend({
-		justification_cause: gtfsCauseSchema,
+		justification_cause: GtfsCauseSchema,
 		justification_source: RideJustificationSourceSchema,
 		manual_trip_id: z.string().optional(),
 		pto_message: z.string().min(2).max(5000).default(''),

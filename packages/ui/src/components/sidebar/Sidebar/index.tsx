@@ -2,10 +2,10 @@
 
 /* * */
 
-import { IconAlertTriangle, IconBuildings, IconBusStop, IconClockExclamation, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconListCheck, IconNote, IconRocket, IconSitemap, IconUser } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBuildings, IconBus, IconBusStop, IconCalendarEvent, IconClock, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
-import { JSX } from 'react';
+import { type JSX } from 'react';
 
 import styles from './styles.module.css';
 
@@ -62,17 +62,10 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 	},
 	{
 		_id: 'alerts',
-		href: PAGE_ROUTES.alerts.SCHEDULED_LIST,
+		href: PAGE_ROUTES.alerts.ALERTS_LIST,
 		icon: <IconAlertTriangle size={26} />,
 		label: 'Alertas',
-		permissions: [{ action: PermissionCatalog.all.alerts_scheduled.actions.read, scope: PermissionCatalog.all.alerts_scheduled.scope }],
-	},
-	{
-		_id: 'alerts_realtime',
-		href: PAGE_ROUTES.alerts.REALTIME_LIST,
-		icon: <IconClockExclamation size={26} />,
-		label: 'Alertas - Tempo Real',
-		permissions: [{ action: PermissionCatalog.all.alerts_realtime.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.alerts_realtime.scope }],
+		permissions: [{ action: PermissionCatalog.all.alerts.actions.read, resources: { agency_ids: [], reference_types: [] }, scope: PermissionCatalog.all.alerts.scope }],
 	},
 	{
 		_id: 'rides',
@@ -121,7 +114,59 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 		href: PAGE_ROUTES.dates.ANNOTATIONS_LIST,
 		icon: <IconNote size={26} />,
 		label: 'Anotações',
-		permissions: [{ action: PermissionCatalog.all.dates.actions.read_annotations, resources: { agency_ids: [] }, scope: PermissionCatalog.all.dates.scope }],
+		permissions: [{ action: PermissionCatalog.all.annotations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.annotations.scope }],
+	},
+	{
+		_id: 'periods',
+		href: PAGE_ROUTES.dates.PERIODS_LIST,
+		icon: <IconClock size={26} />,
+		label: 'Períodos',
+		permissions: [{ action: PermissionCatalog.all.periods.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.periods.scope }],
+	},
+	{
+		_id: 'dates',
+		href: PAGE_ROUTES.dates.CALENDAR_LIST,
+		icon: <IconCalendarEvent size={26} />,
+		label: 'Calendário',
+		permissions: [
+			{ action: PermissionCatalog.all.periods.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.periods.scope },
+			{ action: PermissionCatalog.all.annotations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.annotations.scope },
+		],
+	},
+	{
+		_id: 'fares',
+		href: PAGE_ROUTES.ticketing.FARES_LIST,
+		icon: <IconTicket size={26} />,
+		label: 'Tarifas',
+		permissions: [{ action: PermissionCatalog.all.fares.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.fares.scope }],
+	},
+	{
+		_id: 'zones',
+		href: PAGE_ROUTES.ticketing.ZONES_LIST,
+		icon: <IconLayoutCollage size={26} />,
+		label: 'Zonas',
+		permissions: [{ action: PermissionCatalog.all.zones.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.zones.scope }],
+	},
+	{
+		_id: 'typologies',
+		href: PAGE_ROUTES.offer.TYPOLOGIES_LIST,
+		icon: <IconTopologyStar3 size={26} />,
+		label: 'Tipologias',
+		permissions: [{ action: PermissionCatalog.all.typologies.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.typologies.scope }],
+	},
+	{
+		_id: 'vehicles',
+		href: PAGE_ROUTES.fleet.VEHICLES_LIST,
+		icon: <IconBus size={26} />,
+		label: 'Veículos',
+		permissions: [{ action: PermissionCatalog.all.vehicles.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.vehicles.scope }],
+	},
+	{
+		_id: 'lines',
+		href: PAGE_ROUTES.offer.LINES_LIST,
+		icon: <IconRoute size={26} />,
+		label: 'Linhas',
+		permissions: [{ action: PermissionCatalog.all.lines.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.lines.scope }],
 	},
 ];
 

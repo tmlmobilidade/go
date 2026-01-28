@@ -1,0 +1,112 @@
+{
+	"causes": {
+		"ACCIDENT": {
+			"description": "Interrupções de via provocadas por acidentes rodoviários.",
+			"title": "Acidente"
+		},
+		"CONSTRUCTION": {
+			"description": "Intervenções na via pública.",
+			"title": "Obras"
+		},
+		"DEMONSTRATION": {
+			"description": "Festivais, protestos ou greves de terceiros.",
+			"title": "Evento / Manifestação"
+		},
+		"DRIVER_ABSENCE": {
+			"description": "A via está fechada devido a manutenção ou outros motivos.",
+			"title": "Ausência de Motorista"
+		},
+		"DRIVER_ISSUE": {
+			"description": "A via está fechada devido a manutenção ou outros motivos.",
+			"title": "Problema com Motorista"
+		},
+		"HIGH_PASSENGER_LOAD": {
+			"description": "Elevado volume de passageiros.",
+			"title": "Elevada Lotação"
+		},
+		"MEDICAL_EMERGENCY": {
+			"description": "Incidentes com passageiros ou motoristas que requerem assistência médica.",
+			"title": "Emergência Médica"
+		},
+		"POLICE_ACTIVITY": {
+			"description": "Operações stop ou outras atividades policiais que impedem a circulação.",
+			"title": "Atividade Policial"
+		},
+		"PUBLIC_DISORDER": {
+			"description": "Conflitos, agressões ou outras perturbações no veículo.",
+			"title": "Desacatos"
+		},
+		"ROAD_ISSUE": {
+			"description": "Obstruções provocadas por estacionamento abusivo.",
+			"title": "Estacionamento Abusivo"
+		},
+		"STRIKE": {
+			"description": "Greves próprias ou de outros operadores de transporte.",
+			"title": "Greve"
+		},
+		"TECHNICAL_ISSUE": {
+			"description": "Avarias mecânicas, falhas no AVL ou indisponibilidade do validador.",
+			"title": "Problema Técnico"
+		},
+		"TRAFFIC_JAM": {
+			"description": "Anormal elevado volume de tráfego rodoviário.",
+			"title": "Trânsito"
+		},
+		"WEATHER": {
+			"description": "Tempestades, chuvas fortes que provocam obstruções na via.",
+			"title": "Condições Meteorológicas"
+		}
+	},
+	"effects": {
+		"ACCESSIBILITY_ISSUE": {
+			"description": "Passageiros com mobilidade reduzida são especialmente afetados.",
+			"title": "Impacto na Acessibilidade"
+		},
+		"ADDITIONAL_SERVICE": {
+			"description": "Desdobramentos ou novos horários.",
+			"title": "Serviço Adicional"
+		},
+		"DETOUR": {
+			"description": "Alteração temporária do percurso habitual.",
+			"title": "Desvio"
+		},
+		"NO_SERVICE": {
+			"description": "O serviço foi cancelado.",
+			"title": "Cancelamento"
+		},
+		"ON_BOARD_SALE_ISSUE": {
+			"description": "Venda de bilhetes está indisponível ou limitada.",
+			"title": "Venda a Bordo Condicionada"
+		},
+		"REALTIME_INFO_ISSUE": {
+			"description": "Problema com a informação em tempo real.",
+			"title": "Impacto na Informação ao Público"
+		},
+		"REDUCED_SERVICE": {
+			"description": "A viagem será terminada antecipadamente.",
+			"title": "Encurtamento de Percurso"
+		},
+		"SIGNIFICANT_DELAYS": {
+			"description": "Não será possível cumprir o horário previsto.",
+			"title": "Atrasos Significativos"
+		},
+		"STOP_MOVED": {
+			"description": "A paragem foi temporariamente deslocada.",
+			"title": "Paragem Deslocada"
+		}
+	},
+	"reference-types": {
+		"agency": {
+			"title": "Operador"
+		},
+		"lines": {
+			"title": "Linhas"
+		},
+		"rides": {
+			"title": "Circulações"
+		},
+		"stops": {
+			"title": "Paragens"
+		}
+	}
+}

@@ -6,9 +6,10 @@ export * from '@/_common/index.js';
 /* * */
 
 export * from '@/agency.js';
-export * from '@/alert.js';
+export * from '@/alerts/index.js';
 export * from '@/apex/index.js';
 export * from '@/auth/index.js';
+export * from '@/calendar/index.js';
 export * from '@/dates/index.js';
 export * from '@/file-exports/index.js';
 export * from '@/file.js';
@@ -16,6 +17,7 @@ export * from '@/gtfs/index.js';
 export * from '@/locations/index.js';
 export * from '@/metrics/index.js';
 export * from '@/notification.js';
+export * from '@/offer/index.js';
 export * from '@/organization.js';
 export * from '@/pcgi/index.js';
 export * from '@/permissions/index.js';
@@ -24,6 +26,7 @@ export * from '@/proposed-change.js';
 export * from '@/rides/index.js';
 export * from '@/sams/index.js';
 export * from '@/stops/index.js';
+export * from '@/ticketing/index.js';
 export * from '@/vehicle-events/index.js';
+export * from '@/vehicle/index.js';
 export * from '@/wiki.js';
-export * from '@/zone.js';

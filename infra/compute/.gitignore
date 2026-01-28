@@ -1,0 +1,6 @@
+# HashiCorp files
+*.tfvars
+*.tfstate
+*.tfstate*
+.terraform
+*.pkrvars.hcl

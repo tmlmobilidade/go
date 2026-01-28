@@ -10,14 +10,7 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 		const informed_entity: EntitySelector[] = [];
 
 		switch (alert.reference_type) {
-			case 'AGENCY':
-				alert.references.forEach((reference) => {
-					informed_entity.push({
-						agency_id: reference.parent_id,
-					});
-				});
-				break;
-			case 'LINE':
+			case 'lines':
 				alert.references.forEach((reference) => {
 					const line = lines.find(line => line.id === reference.parent_id);
 					for (const route_id of line?.route_ids ?? []) {
@@ -39,7 +32,17 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 					}
 				});
 				break;
-			case 'STOP':
+			case 'rides':
+				alert.references.forEach((reference) => {
+					informed_entity.push({
+						trip: {
+							// TODO: Should fetch from rides collection instead of regexing
+							trip_id: `[${reference.parent_id.split('-').shift() ?? ''}]${reference.parent_id.split('-').pop() ?? ''}`, // "[plan_id]-[trip_id]"
+						},
+					});
+				});
+				break;
+			case 'stops':
 				alert.references.forEach((reference) => {
 					if (reference.child_ids.length === 0) {
 						informed_entity.push({
@@ -56,16 +59,6 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 							}
 						});
 					}
-				});
-				break;
-			case 'TRIP':
-				alert.references.forEach((reference) => {
-					informed_entity.push({
-						trip: {
-							// TODO: Should fetch from rides collection instead of regexing
-							trip_id: `[${reference.parent_id.split('-').shift() ?? ''}]${reference.parent_id.split('-').pop() ?? ''}`, // "[plan_id]-[trip_id]"
-						},
-					});
 				});
 				break;
 			default:

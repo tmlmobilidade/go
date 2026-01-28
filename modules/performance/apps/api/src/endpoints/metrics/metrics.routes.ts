@@ -1,9 +1,8 @@
 /* * */
 
 import { MetricsController } from '@/endpoints/metrics/metrics.controller.js';
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
+import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { FastifyInstance } from 'fastify';
 
 /* * */
 
