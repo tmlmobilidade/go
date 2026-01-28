@@ -82,8 +82,8 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 
 	const filterLines = useFilterStateList('lines', [], linesContext.data.options);
 	const filterStops = useFilterStateList('stops', [], stopsContext.data.options);
-	const filterSearch = useFilterStateString('search');
-	const filterViewMode = useFilterStateString('view_mode', 'selected');
+	const filterSearch = useFilterStateString('rides_search');
+	const filterViewMode = useFilterStateString('view_mode', 'all');
 
 	const [startDate, setStartDate] = useState<UnixTimestamp>();
 	const [endDate, setEndDate] = useState<UnixTimestamp>();
@@ -107,6 +107,13 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 
 	//
 	// C. Handle actions
+
+	useEffect(() => {
+		// Skip if no selected references
+		if (selectedReferenceType !== 'rides') return;
+		// Set filter mode to 'selected' if there are selected references
+		if (selectedReferences?.length) filterViewMode.set('selected');
+	}, [selectedReferences, selectedReferenceType]);
 
 	const changeAgencyId = (value: Alert['agency_id']) => {
 		if (selectedReferences?.length > 0) {
