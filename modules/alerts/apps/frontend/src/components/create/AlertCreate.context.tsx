@@ -7,7 +7,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, RideNormalized } from '@tmlmobilidade/types';
-import { type CreateContextStateTemplate, keepUrlParams, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm } from '@tmlmobilidade/ui';
+import { type CreateContextStateTemplate, keepUrlParams, useDataAgencies, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
@@ -53,6 +53,11 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// B. Fetch data
 
 	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
+
+	const { options: agenciesOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.alerts.actions.create],
+		scope: PermissionCatalog.all.alerts.scope,
+	});
 
 	//
 	// C. Setup form
@@ -137,6 +142,13 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		form.getValues().reference_type,
 		form.getValues().references?.length,
 	]);
+
+	useEffect(() => {
+		// Skip if agency is already selected
+		if (form.getValues().agency_id) return;
+		// Pre-select agency if only one option is available
+		if (agenciesOptions?.length === 1) form.setFieldValue('agency_id', agenciesOptions[0].value);
+	}, [form.getValues().agency_id, agenciesOptions]);
 
 	useEffect(() => {
 		if (!form.getValues().publish_status) {

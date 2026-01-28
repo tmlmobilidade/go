@@ -199,13 +199,6 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 	};
 
 	useEffect(() => {
-		// Pre-select agency if only one option is available
-		if (!selectedAgencyId && availableAgenciesOptions?.length === 1) {
-			onChangeAgencyId(availableAgenciesOptions[0].value);
-		}
-	}, [availableAgenciesOptions, selectedAgencyId]);
-
-	useEffect(() => {
 		(async () => {
 			// Reset state if no selected references
 			if (!selectedReferences?.length) return setSelectedRidesData([]);

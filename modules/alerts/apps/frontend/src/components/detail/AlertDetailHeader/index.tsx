@@ -26,21 +26,22 @@ export function AlertDetailHeader() {
 	// B. Transform data
 
 	const hasPermissionToChangePublishStatus = useMemo(() => {
-		const canEditThisAgency = meContext.actions.hasPermissionResource({
-			action: PermissionCatalog.all.alerts.actions.update_publish_status,
-			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.alerts.scope,
-			value: alertDetailContext.data.alert.agency_id,
-		});
-		const canEditThisReferenceType = meContext.actions.hasPermissionResource({
-			action: PermissionCatalog.all.alerts.actions.update_publish_status,
-			resource_key: 'reference_types',
-			scope: PermissionCatalog.all.alerts.scope,
-			value: alertDetailContext.data.alert.reference_type,
-		});
 		// User can change publish status if they have permission
 		// for the agency and reference type.
-		return canEditThisAgency && canEditThisReferenceType;
+		return meContext.actions.hasPermissionResource([
+			{
+				action: PermissionCatalog.all.alerts.actions.update_publish_status,
+				resource_key: 'agency_ids',
+				scope: PermissionCatalog.all.alerts.scope,
+				value: alertDetailContext.data.alert.agency_id,
+			},
+			{
+				action: PermissionCatalog.all.alerts.actions.update_publish_status,
+				resource_key: 'reference_types',
+				scope: PermissionCatalog.all.alerts.scope,
+				value: alertDetailContext.data.alert.reference_type,
+			},
+		]);
 	}, [
 		meContext.data.user?.permissions,
 		alertDetailContext.data.alert.agency_id,
