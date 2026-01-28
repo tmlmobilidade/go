@@ -141,6 +141,12 @@ async function syncVehicleEventsClickHouse() {
 			// Sync from PCGI to ClickHouse
 
 			await syncToClickHouse<ClickHouseVehicleEvent>({
+				clickhouseQuery: {
+					received_at: {
+						$gte: chunkStartDate.unix_timestamp,
+						$lte: chunkEndDate.unix_timestamp,
+					},
+				},
 				clickhouseWriter: clickhouseWriter,
 				mongoCollection: pcgidbLegacy.VehicleEvents,
 				mongoQuery: pcgiQuery,

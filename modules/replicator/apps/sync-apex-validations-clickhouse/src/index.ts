@@ -140,10 +140,18 @@ async function syncVehicleEventsClickHouse() {
 				},
 			};
 
+			const clickhouseQuery = {
+				received_at: {
+					$gte: chunkStartDate.unix_timestamp,
+					$lte: chunkEndDate.unix_timestamp,
+				},
+			};
+
 			//
 			// Sync from PCGI to ClickHouse
 
 			await syncToClickHouse<ClickHouseVehicleEvent>({
+				clickhouseQuery: clickhouseQuery,
 				clickhouseWriter: clickhouseWriter,
 				mongoCollection: pcgidbLegacy.VehicleEvents,
 				mongoQuery: pcgiQuery,

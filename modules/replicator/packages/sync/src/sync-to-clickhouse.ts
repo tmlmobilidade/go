@@ -10,6 +10,12 @@ import { type ClickHouseWriter } from '@tmlmobilidade/writers';
 
 interface SyncToClickHouseOptions<T> {
 	/**
+	 * The query/filter to apply when counting documents in ClickHouse.
+	 * This should match the same time range or conditions as mongoQuery.
+	 */
+	clickhouseQuery?: Record<string, unknown>
+
+	/**
 	 * The ClickHouse writer instance to use for writing documents.
 	 */
 	clickhouseWriter: ClickHouseWriter<T>
@@ -36,9 +42,14 @@ interface SyncToClickHouseOptions<T> {
 
 /**
  * Syncs documents from MongoDB to ClickHouse.
- * Reads documents from the MongoDB collection and writes them to ClickHouse.
+ * Compares document counts between databases. If counts match, assumes sync is complete.
+ * If counts differ, syncs all documents from MongoDB for the given query.
+ *
+ * Note: This function does not use `distinct` to find specific missing documents
+ * because MongoDB has a 16MB limit on distinct results, which is easily exceeded
+ * with high-volume data like vehicle events.
  */
-export async function syncToClickHouse<T>({ clickhouseWriter, ensureTable, mongoCollection, mongoQuery }: SyncToClickHouseOptions<T>) {
+export async function syncToClickHouse<T>({ clickhouseQuery, clickhouseWriter, ensureTable, mongoCollection, mongoQuery }: SyncToClickHouseOptions<T>) {
 	try {
 		//
 
@@ -52,20 +63,26 @@ export async function syncToClickHouse<T>({ clickhouseWriter, ensureTable, mongo
 		}
 
 		//
-		// Count how many documents match the query in MongoDB
+		// Count how many documents are matched in each database
+		// for the given queries. If the document count is the same for both databases,
+		// then we assume all documents are synced, and we can skip the rest of the process.
 
 		const countQueryTimer = new Timer();
-		const mongoDocCount = await mongoCollection.countDocuments(mongoQuery);
 
-		if (mongoDocCount === 0) {
-			Logger.info(`No documents to sync to ClickHouse. (${countQueryTimer.get()})`);
+		const mongoDocCount = await mongoCollection.countDocuments(mongoQuery);
+		const clickhouseDocCount = await clickhouseWriter.countDocuments(clickhouseQuery);
+
+		if (mongoDocCount === clickhouseDocCount) {
+			Logger.success(`MATCH: Found the same number of documents in both databases: ${mongoDocCount} MongoDB = ${clickhouseDocCount} ClickHouse (${countQueryTimer.get()})`);
 			return;
 		}
 
-		Logger.info(`Found ${mongoDocCount} documents to sync to ClickHouse. (${countQueryTimer.get()})`);
+		Logger.info(`MISMATCH: Document count was different for both databases: ${mongoDocCount} MongoDB != ${clickhouseDocCount} ClickHouse (${countQueryTimer.get()})`);
 
 		//
-		// Stream documents from MongoDB and write to ClickHouse
+		// If the document count was different, sync all documents from MongoDB.
+		// We don't use `distinct` to find specific missing documents because MongoDB
+		// has a 16MB limit on distinct results, which is easily exceeded with high-volume data.
 
 		const syncTimer = new Timer();
 		let syncedCount = 0;
