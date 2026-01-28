@@ -3,6 +3,8 @@
 import { alerts } from '@tmlmobilidade/interfaces';
 import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 
+import { municipalitiesMap } from './municipalities-map.js';
+
 /* * */
 
 // Adicionar mapa de municipios por agencia
@@ -35,6 +37,10 @@ import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 		originalAlert.references.forEach((reference) => {
 			const agencyId = Number(`4${reference.parent_id.substring(0, 1)}`);
 			if (!isNaN(agencyId)) detectedAgencies.add(String(agencyId));
+		});
+		originalAlert.municipality_ids.forEach((municipalityId) => {
+			const agencyIds = municipalitiesMap[municipalityId];
+			if (agencyIds.length > 0) agencyIds.forEach(agencyId => detectedAgencies.add(agencyId));
 		});
 		if (detectedAgencies.size === 0) {
 			console.log('Could not parse agency ID for Alert ID:', originalAlert._id);
