@@ -33,9 +33,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'ACCIDENT:DETOUR:stops': undefined,
+	'ACCIDENT:DETOUR:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Um acidente/incidente está a provocar um desvio de percurso que afeta {def_f_p} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Um acidente/incidente está a provocar um desvio de percurso que afeta {def_f_s} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Desvio de Percurso',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Desvio de Percurso',
+			},
+		},
+	},
 
-	'ACCIDENT:NO_SERVICE:lines': undefined,
+	'ACCIDENT:NO_SERVICE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a um acidente, foi necessário cancelar o serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a um acidente, foi necessário cancelar o serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço cancelado',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço cancelado',
+			},
+		},
+	},
 
 	'ACCIDENT:NO_SERVICE:rides': {
 		description: {
@@ -60,7 +102,28 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'ACCIDENT:REDUCED_SERVICE:lines': undefined,
+	'ACCIDENT:REDUCED_SERVICE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Um acidente/incidente obriga à redução do serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Um acidente/incidente obriga à redução do serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço reduzido',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço reduzido',
+			},
+		},
+	},
 
 	'ACCIDENT:REDUCED_SERVICE:rides': {
 		description: {
@@ -85,9 +148,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'ACCIDENT:SIGNIFICANT_DELAYS:agency': undefined,
+	'ACCIDENT:SIGNIFICANT_DELAYS:agency': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a um acidente, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a um acidente, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: 'Toda a rede | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Toda a rede | Atrasos significativos',
+			},
+		},
+	},
 
-	'ACCIDENT:SIGNIFICANT_DELAYS:lines': undefined,
+	'ACCIDENT:SIGNIFICANT_DELAYS:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a um acidente, verificam-se atrasos significativos {in_def_f_p} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a um acidente, verificam-se atrasos significativos {in_def_f_s} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Atrasos significativos',
+			},
+		},
+	},
 
 	'ACCIDENT:SIGNIFICANT_DELAYS:rides': {
 		description: {
@@ -112,7 +217,28 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'CONSTRUCTION:ACCESSIBILITY_ISSUE:lines': undefined,
+	'CONSTRUCTION:ACCESSIBILITY_ISSUE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a obras, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {lines_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a obras, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {lines_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Acessibilidade comprometida',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Acessibilidade comprometida',
+			},
+		},
+	},
 
 	'CONSTRUCTION:ACCESSIBILITY_ISSUE:rides': {
 		description: {
@@ -137,9 +263,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'CONSTRUCTION:ACCESSIBILITY_ISSUE:stops': undefined,
+	'CONSTRUCTION:ACCESSIBILITY_ISSUE:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a obras, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a obras, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Acessibilidade comprometida',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Acessibilidade comprometida',
+			},
+		},
+	},
 
-	'CONSTRUCTION:DETOUR:lines': undefined,
+	'CONSTRUCTION:DETOUR:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Trabalhos de construção estão a provocar um desvio de percurso {in_def_f_p} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Trabalhos de construção estão a provocar um desvio de percurso {in_def_f_s} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Desvio de Percurso',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Desvio de Percurso',
+			},
+		},
+	},
 
 	'CONSTRUCTION:DETOUR:rides': {
 		description: {
@@ -164,9 +332,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'CONSTRUCTION:DETOUR:stops': undefined,
+	'CONSTRUCTION:DETOUR:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Trabalhos de construção estão a provocar um desvio de percurso que afeta {def_f_p} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Trabalhos de construção estão a provocar um desvio de percurso que afeta {def_f_s} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Desvio de Percurso',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Desvio de Percurso',
+			},
+		},
+	},
 
-	'CONSTRUCTION:NO_SERVICE:lines': undefined,
+	'CONSTRUCTION:NO_SERVICE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Por motivo de obras, foi necessário cancelar o serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Por motivo de obras, foi necessário cancelar o serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço cancelado',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço cancelado',
+			},
+		},
+	},
 
 	'CONSTRUCTION:NO_SERVICE:rides': {
 		description: {
@@ -191,9 +401,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'CONSTRUCTION:NO_SERVICE:stops': undefined,
+	'CONSTRUCTION:NO_SERVICE:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Por motivo de obras, {def_f_p} {stops_description_pt} não serão servidas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Por motivo de obras, {def_f_s} {stops_description_pt} não será servida. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Paragens não servidas',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Paragem não servida',
+			},
+		},
+	},
 
-	'CONSTRUCTION:REDUCED_SERVICE:lines': undefined,
+	'CONSTRUCTION:REDUCED_SERVICE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Trabalhos de construção obrigam à redução do serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Trabalhos de construção obrigam à redução do serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço reduzido',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço reduzido',
+			},
+		},
+	},
 
 	'CONSTRUCTION:REDUCED_SERVICE:rides': {
 		description: {
@@ -218,9 +470,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'CONSTRUCTION:REDUCED_SERVICE:stops': undefined,
+	'CONSTRUCTION:REDUCED_SERVICE:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Trabalhos de construção obrigam à redução do serviço {in_def_f_p} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Trabalhos de construção obrigam à redução do serviço {in_def_f_s} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Serviço reduzido',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Serviço reduzido',
+			},
+		},
+	},
 
-	'CONSTRUCTION:SIGNIFICANT_DELAYS:lines': undefined,
+	'CONSTRUCTION:SIGNIFICANT_DELAYS:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a obras, verificam-se atrasos significativos {in_def_f_p} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a obras, verificam-se atrasos significativos {in_def_f_s} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Atrasos significativos',
+			},
+		},
+	},
 
 	'CONSTRUCTION:SIGNIFICANT_DELAYS:rides': {
 		description: {
@@ -245,7 +539,28 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'CONSTRUCTION:SIGNIFICANT_DELAYS:stops': undefined,
+	'CONSTRUCTION:SIGNIFICANT_DELAYS:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a obras, verificam-se atrasos significativos {in_def_f_p} {stops_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a obras, verificam-se atrasos significativos {in_def_f_s} {stops_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Atrasos significativos',
+			},
+		},
+	},
 
 	'CONSTRUCTION:STOP_MOVED:stops': {
 		description: {
@@ -293,9 +608,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'DEMONSTRATION:ADDITIONAL_SERVICE:agency': undefined,
+	'DEMONSTRATION:ADDITIONAL_SERVICE:agency': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a um evento, foram adicionados novos horários em toda a rede. Consulte o site carrismetropolitana.pt para mais informações.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a um evento, foram adicionados novos horários em toda a rede. Consulte o site carrismetropolitana.pt para mais informações.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: 'Toda a rede | Horários adicionais',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Toda a rede | Horários adicionais',
+			},
+		},
+	},
 
-	'DEMONSTRATION:ADDITIONAL_SERVICE:lines': undefined,
+	'DEMONSTRATION:ADDITIONAL_SERVICE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a um evento, foram adicionados novos horários {in_def_f_p} {lines_description_pt}. Consulte o site carrismetropolitana.pt para mais informações.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a um evento, foram adicionados novos horários {in_def_f_s} {lines_description_pt}. Consulte o site carrismetropolitana.pt para mais informações.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Horários adicionais',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Horários adicionais',
+			},
+		},
+	},
 
 	'DEMONSTRATION:ADDITIONAL_SERVICE:rides': {
 		description: {
@@ -320,7 +677,28 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'DEMONSTRATION:DETOUR:lines': undefined,
+	'DEMONSTRATION:DETOUR:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'A realização de um evento está a provocar um desvio de percurso {in_def_f_p} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'A realização de um evento está a provocar um desvio de percurso {in_def_f_s} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Desvio de Percurso',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Desvio de Percurso',
+			},
+		},
+	},
 
 	'DEMONSTRATION:DETOUR:rides': {
 		description: {
@@ -345,9 +723,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'DEMONSTRATION:DETOUR:stops': undefined,
+	'DEMONSTRATION:DETOUR:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'A realização de um evento está a provocar um desvio de percurso que afeta {def_f_p} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'A realização de um evento está a provocar um desvio de percurso que afeta {def_f_s} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Desvio de Percurso',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Desvio de Percurso',
+			},
+		},
+	},
 
-	'DEMONSTRATION:NO_SERVICE:lines': undefined,
+	'DEMONSTRATION:NO_SERVICE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido à realização de um evento foi necessário cancelar o serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido à realização de um evento foi necessário cancelar o serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço cancelado',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço cancelado',
+			},
+		},
+	},
 
 	'DEMONSTRATION:NO_SERVICE:rides': {
 		description: {
@@ -372,9 +792,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'DEMONSTRATION:NO_SERVICE:stops': undefined,
+	'DEMONSTRATION:NO_SERVICE:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido à realização de um evento, {def_f_p} {stops_description_pt} não serão servidas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido à realização de um evento, {def_f_s} {stops_description_pt} não será servida. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Paragens não servidas',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Paragem não servida',
+			},
+		},
+	},
 
-	'DEMONSTRATION:REDUCED_SERVICE:lines': undefined,
+	'DEMONSTRATION:REDUCED_SERVICE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Um evento exige a redução do serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Um evento exige a redução do serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço reduzido',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço reduzido',
+			},
+		},
+	},
 
 	'DEMONSTRATION:REDUCED_SERVICE:rides': {
 		description: {
@@ -399,11 +861,74 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'DEMONSTRATION:REDUCED_SERVICE:stops': undefined,
+	'DEMONSTRATION:REDUCED_SERVICE:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Um evento exige a redução do serviço {in_def_f_p} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Um evento exige a redução do serviço {in_def_f_s} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Serviço reduzido',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Serviço reduzido',
+			},
+		},
+	},
 
-	'DEMONSTRATION:SIGNIFICANT_DELAYS:agency': undefined,
+	'DEMONSTRATION:SIGNIFICANT_DELAYS:agency': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a um evento, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a um evento, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: 'Toda a rede | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Toda a rede | Atrasos significativos',
+			},
+		},
+	},
 
-	'DEMONSTRATION:SIGNIFICANT_DELAYS:lines': undefined,
+	'DEMONSTRATION:SIGNIFICANT_DELAYS:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a um evento, verificam-se atrasos significativos {in_def_f_p} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a um evento, verificam-se atrasos significativos {in_def_f_s} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Atrasos significativos',
+			},
+		},
+	},
 
 	'DEMONSTRATION:SIGNIFICANT_DELAYS:rides': {
 		description: {
@@ -428,7 +953,28 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'DEMONSTRATION:SIGNIFICANT_DELAYS:stops': undefined,
+	'DEMONSTRATION:SIGNIFICANT_DELAYS:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a um evento, verificam-se atrasos significativos {in_def_f_p} {stops_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a um evento, verificam-se atrasos significativos {in_def_f_s} {stops_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Atrasos significativos',
+			},
+		},
+	},
 
 	'DRIVER_ABSENCE:NO_SERVICE:rides': {
 		description: {
@@ -729,7 +1275,28 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'POLICE_ACTIVITY:DETOUR:lines': undefined,
+	'POLICE_ACTIVITY:DETOUR:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Atividade policial exige um desvio de percurso {in_def_f_p} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Atividade policial exige um desvio de percurso {in_def_f_s} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Desvio de Percurso',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Desvio de Percurso',
+			},
+		},
+	},
 
 	'POLICE_ACTIVITY:DETOUR:rides': {
 		description: {
@@ -754,7 +1321,28 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'POLICE_ACTIVITY:NO_SERVICE:lines': undefined,
+	'POLICE_ACTIVITY:NO_SERVICE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a atividade policial foi necessário cancelar o serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a atividade policial foi necessário cancelar o serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço cancelado',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço cancelado',
+			},
+		},
+	},
 
 	'POLICE_ACTIVITY:NO_SERVICE:rides': {
 		description: {
@@ -779,7 +1367,28 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'POLICE_ACTIVITY:REDUCED_SERVICE:lines': undefined,
+	'POLICE_ACTIVITY:REDUCED_SERVICE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Atividade policial exige a redução do serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Atividade policial exige a redução do serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço reduzido',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço reduzido',
+			},
+		},
+	},
 
 	'POLICE_ACTIVITY:REDUCED_SERVICE:rides': {
 		description: {
@@ -804,9 +1413,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'POLICE_ACTIVITY:SIGNIFICANT_DELAYS:agency': undefined,
+	'POLICE_ACTIVITY:SIGNIFICANT_DELAYS:agency': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a atividade policial, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a atividade policial, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: 'Toda a rede | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Toda a rede | Atrasos significativos',
+			},
+		},
+	},
 
-	'POLICE_ACTIVITY:SIGNIFICANT_DELAYS:lines': undefined,
+	'POLICE_ACTIVITY:SIGNIFICANT_DELAYS:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a atividade policial, verificam-se atrasos significativos {in_def_f_p} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a atividade policial, verificam-se atrasos significativos {in_def_f_s} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Atrasos significativos',
+			},
+		},
+	},
 
 	'POLICE_ACTIVITY:SIGNIFICANT_DELAYS:rides': {
 		description: {
@@ -923,7 +1574,28 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'ROAD_ISSUE:ACCESSIBILITY_ISSUE:lines': undefined,
+	'ROAD_ISSUE:ACCESSIBILITY_ISSUE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {lines_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {lines_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Acessibilidade comprometida',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Acessibilidade comprometida',
+			},
+		},
+	},
 
 	'ROAD_ISSUE:ACCESSIBILITY_ISSUE:rides': {
 		description: {
@@ -948,9 +1620,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'ROAD_ISSUE:ACCESSIBILITY_ISSUE:stops': undefined,
+	'ROAD_ISSUE:ACCESSIBILITY_ISSUE:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Acessibilidade comprometida',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Acessibilidade comprometida',
+			},
+		},
+	},
 
-	'ROAD_ISSUE:DETOUR:lines': undefined,
+	'ROAD_ISSUE:DETOUR:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo obriga ao desvio de percurso {in_def_f_p} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo obriga ao desvio de percurso {in_def_f_s} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Desvio de Percurso',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Desvio de Percurso',
+			},
+		},
+	},
 
 	'ROAD_ISSUE:DETOUR:rides': {
 		description: {
@@ -975,9 +1689,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'ROAD_ISSUE:DETOUR:stops': undefined,
+	'ROAD_ISSUE:DETOUR:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo obriga ao desvio de percurso que afeta {def_f_p} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo obriga ao desvio de percurso que afeta {def_f_s} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Desvio de Percurso',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Desvio de Percurso',
+			},
+		},
+	},
 
-	'ROAD_ISSUE:NO_SERVICE:lines': undefined,
+	'ROAD_ISSUE:NO_SERVICE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo foi necessário cancelar o serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo foi necessário cancelar o serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço cancelado',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço cancelado',
+			},
+		},
+	},
 
 	'ROAD_ISSUE:NO_SERVICE:rides': {
 		description: {
@@ -1002,9 +1758,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'ROAD_ISSUE:NO_SERVICE:stops': undefined,
+	'ROAD_ISSUE:NO_SERVICE:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, {def_f_p} {stops_description_pt} não serão servidas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, {def_f_s} {stops_description_pt} não será servida. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Paragens não servidas',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Paragem não servida',
+			},
+		},
+	},
 
-	'ROAD_ISSUE:REDUCED_SERVICE:lines': undefined,
+	'ROAD_ISSUE:REDUCED_SERVICE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário reduzir o serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário reduzir o serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço reduzido',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço reduzido',
+			},
+		},
+	},
 
 	'ROAD_ISSUE:REDUCED_SERVICE:rides': {
 		description: {
@@ -1029,9 +1827,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'ROAD_ISSUE:REDUCED_SERVICE:stops': undefined,
+	'ROAD_ISSUE:REDUCED_SERVICE:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário reduzir o serviço {in_def_f_p} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário reduzir o serviço {in_def_f_s} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Serviço reduzido',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Serviço reduzido',
+			},
+		},
+	},
 
-	'ROAD_ISSUE:SIGNIFICANT_DELAYS:lines': undefined,
+	'ROAD_ISSUE:SIGNIFICANT_DELAYS:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, verificam-se atrasos significativos {in_def_f_p} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, verificam-se atrasos significativos {in_def_f_s} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Atrasos significativos',
+			},
+		},
+	},
 
 	'ROAD_ISSUE:SIGNIFICANT_DELAYS:rides': {
 		description: {
@@ -1056,9 +1896,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'ROAD_ISSUE:SIGNIFICANT_DELAYS:stops': undefined,
+	'ROAD_ISSUE:SIGNIFICANT_DELAYS:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, verificam-se atrasos significativos {in_def_f_p} {stops_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, verificam-se atrasos significativos {in_def_f_s} {stops_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Atrasos significativos',
+			},
+		},
+	},
 
-	'STRIKE:ADDITIONAL_SERVICE:agency': undefined,
+	'STRIKE:ADDITIONAL_SERVICE:agency': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido à realização de greve, foram adicionados novos horários em toda a rede. Consulte o site carrismetropolitana.pt para mais informações.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido à realização de greve, foram adicionados novos horários em toda a rede. Consulte o site carrismetropolitana.pt para mais informações.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: 'Toda a rede | Horários adicionais',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Toda a rede | Horários adicionais',
+			},
+		},
+	},
 
 	'STRIKE:ADDITIONAL_SERVICE:lines': {
 		description: {
@@ -1083,9 +1965,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'STRIKE:ADDITIONAL_SERVICE:stops': undefined,
+	'STRIKE:ADDITIONAL_SERVICE:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido à realização de greve, foram adicionados novos horários {in_def_f_p} {stops_description_pt}. Consulte o site carrismetropolitana.pt para mais informações.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido à realização de greve, foram adicionados novos horários {in_def_f_s} {stops_description_pt}. Consulte o site carrismetropolitana.pt para mais informações.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Horários adicionais',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Horários adicionais',
+			},
+		},
+	},
 
-	'STRIKE:DETOUR:lines': undefined,
+	'STRIKE:DETOUR:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Por motivos de greve é necessário efetuar um desvio de percurso {in_def_f_p} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Por motivos de greve é necessário efetuar um desvio de percurso {in_def_f_s} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Desvio de Percurso',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Desvio de Percurso',
+			},
+		},
+	},
 
 	'STRIKE:DETOUR:rides': {
 		description: {
@@ -1110,11 +2034,74 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'STRIKE:DETOUR:stops': undefined,
+	'STRIKE:DETOUR:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Por motivos de greve é necessário efetuar um desvio de percurso que afeta {def_f_p} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Por motivos de greve é necessário efetuar um desvio de percurso que afeta {def_f_s} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Desvio de Percurso',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Desvio de Percurso',
+			},
+		},
+	},
 
-	'STRIKE:NO_SERVICE:agency': undefined,
+	'STRIKE:NO_SERVICE:agency': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Por motivos de greve foi necessário cancelar o serviço em toda a rede. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Por motivos de greve foi necessário cancelar o serviço em toda a rede. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: 'Toda a rede | Serviço cancelado',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Toda a rede | Serviço cancelado',
+			},
+		},
+	},
 
-	'STRIKE:NO_SERVICE:lines': undefined,
+	'STRIKE:NO_SERVICE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Por motivos de greve foi necessário cancelar o serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Por motivos de greve foi necessário cancelar o serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço cancelado',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço cancelado',
+			},
+		},
+	},
 
 	'STRIKE:NO_SERVICE:rides': {
 		description: {
@@ -1139,7 +2126,28 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'STRIKE:REDUCED_SERVICE:lines': undefined,
+	'STRIKE:REDUCED_SERVICE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Por motivo de greve é necessário reduzir o serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Por motivo de greve é necessário reduzir o serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço reduzido',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço reduzido',
+			},
+		},
+	},
 
 	'STRIKE:REDUCED_SERVICE:rides': {
 		description: {
@@ -1164,7 +2172,28 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'STRIKE:SIGNIFICANT_DELAYS:agency': undefined,
+	'STRIKE:SIGNIFICANT_DELAYS:agency': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Por motivos de greve, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Por motivos de greve, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: 'Toda a rede | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Toda a rede | Atrasos significativos',
+			},
+		},
+	},
 
 	'STRIKE:SIGNIFICANT_DELAYS:rides': {
 		description: {
@@ -1258,7 +2287,28 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'TECHNICAL_ISSUE:REALTIME_INFO_ISSUE:agency': undefined,
+	'TECHNICAL_ISSUE:REALTIME_INFO_ISSUE:agency': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Um problema técnico está a impedir o funcionamento normal dos sistemas de localização em tempo real em toda a rede. Lamentamos o incómodo causado enquanto restabelecemos o funcionamento normal.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Um problema técnico está a impedir o funcionamento normal dos sistemas de localização em tempo real em toda a rede. Lamentamos o incómodo causado enquanto restabelecemos o funcionamento normal.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: 'Toda a rede | Tempo real indisponível',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Toda a rede | Tempo real indisponível',
+			},
+		},
+	},
 
 	'TECHNICAL_ISSUE:REALTIME_INFO_ISSUE:rides': {
 		description: {
@@ -1306,7 +2356,28 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'TECHNICAL_ISSUE:SIGNIFICANT_DELAYS:agency': undefined,
+	'TECHNICAL_ISSUE:SIGNIFICANT_DELAYS:agency': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a um problema técnico, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a um problema técnico, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: 'Toda a rede | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Toda a rede | Atrasos significativos',
+			},
+		},
+	},
 
 	'TECHNICAL_ISSUE:SIGNIFICANT_DELAYS:rides': {
 		description: {
@@ -1331,7 +2402,28 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'TRAFFIC_JAM:DETOUR:lines': undefined,
+	'TRAFFIC_JAM:DETOUR:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Elevado volume de trânsito inesperado exige um desvio de percurso {in_def_f_p} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Elevado volume de trânsito inesperado exige um desvio de percurso {in_def_f_s} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Desvio de Percurso',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Desvio de Percurso',
+			},
+		},
+	},
 
 	'TRAFFIC_JAM:DETOUR:rides': {
 		description: {
@@ -1356,7 +2448,28 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'TRAFFIC_JAM:DETOUR:stops': undefined,
+	'TRAFFIC_JAM:DETOUR:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Elevado volume de trânsito inesperado exige um desvio de percurso que afeta {def_f_p} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Elevado volume de trânsito inesperado exige um desvio de percurso que afeta {def_f_s} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Desvio de Percurso',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Desvio de Percurso',
+			},
+		},
+	},
 
 	'TRAFFIC_JAM:NO_SERVICE:rides': {
 		description: {
@@ -1404,9 +2517,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'TRAFFIC_JAM:SIGNIFICANT_DELAYS:agency': undefined,
+	'TRAFFIC_JAM:SIGNIFICANT_DELAYS:agency': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido ao elevado volume de trânsito, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido ao elevado volume de trânsito, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: 'Toda a rede | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Toda a rede | Atrasos significativos',
+			},
+		},
+	},
 
-	'TRAFFIC_JAM:SIGNIFICANT_DELAYS:lines': undefined,
+	'TRAFFIC_JAM:SIGNIFICANT_DELAYS:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido ao elevado volume de trânsito, verificam-se atrasos significativos {in_def_f_p} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido ao elevado volume de trânsito, verificam-se atrasos significativos {in_def_f_s} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Atrasos significativos',
+			},
+		},
+	},
 
 	'TRAFFIC_JAM:SIGNIFICANT_DELAYS:rides': {
 		description: {
@@ -1431,9 +2586,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'TRAFFIC_JAM:SIGNIFICANT_DELAYS:stops': undefined,
+	'TRAFFIC_JAM:SIGNIFICANT_DELAYS:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido ao elevado volume de trânsito, verificam-se atrasos significativos {in_def_f_p} {stops_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido ao elevado volume de trânsito, verificam-se atrasos significativos {in_def_f_s} {stops_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Atrasos significativos',
+			},
+		},
+	},
 
-	'WEATHER:ACCESSIBILITY_ISSUE:lines': undefined,
+	'WEATHER:ACCESSIBILITY_ISSUE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {lines_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {lines_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Acessibilidade comprometida',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Acessibilidade comprometida',
+			},
+		},
+	},
 
 	'WEATHER:ACCESSIBILITY_ISSUE:rides': {
 		description: {
@@ -1458,9 +2655,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'WEATHER:ACCESSIBILITY_ISSUE:stops': undefined,
+	'WEATHER:ACCESSIBILITY_ISSUE:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Acessibilidade comprometida',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Acessibilidade comprometida',
+			},
+		},
+	},
 
-	'WEATHER:DETOUR:lines': undefined,
+	'WEATHER:DETOUR:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Condições metereológicas adversas exigem um desvio de percurso {in_def_f_p} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Condições metereológicas adversas exigem um desvio de percurso {in_def_f_s} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Desvio de Percurso',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Desvio de Percurso',
+			},
+		},
+	},
 
 	'WEATHER:DETOUR:rides': {
 		description: {
@@ -1485,9 +2724,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'WEATHER:DETOUR:stops': undefined,
+	'WEATHER:DETOUR:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Condições metereológicas adversas exigem um desvio de percurso que afeta {def_f_p} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Condições metereológicas adversas exigem um desvio de percurso que afeta {def_f_s} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Desvio de Percurso',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Desvio de Percurso',
+			},
+		},
+	},
 
-	'WEATHER:NO_SERVICE:lines': undefined,
+	'WEATHER:NO_SERVICE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'As condições metereológicas adversas obrigaram ao cancelamento do serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'As condições metereológicas adversas obrigaram ao cancelamento do serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço cancelado',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço cancelado',
+			},
+		},
+	},
 
 	'WEATHER:NO_SERVICE:rides': {
 		description: {
@@ -1512,9 +2793,51 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'WEATHER:NO_SERVICE:stops': undefined,
+	'WEATHER:NO_SERVICE:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas, {def_f_p} {stops_description_pt} não serão servidas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas, {def_f_s} {stops_description_pt} não será servida. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Paragens não servidas',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Paragem não servida',
+			},
+		},
+	},
 
-	'WEATHER:REDUCED_SERVICE:lines': undefined,
+	'WEATHER:REDUCED_SERVICE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas verificadas é necessário reduzir o serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas verificadas é necessário reduzir o serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço reduzido',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço reduzido',
+			},
+		},
+	},
 
 	'WEATHER:REDUCED_SERVICE:rides': {
 		description: {
@@ -1539,11 +2862,74 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'WEATHER:REDUCED_SERVICE:stops': undefined,
+	'WEATHER:REDUCED_SERVICE:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas verificadas é necessário reduzir o serviço {in_def_f_p} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas verificadas é necessário reduzir o serviço {in_def_f_s} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Serviço reduzido',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Serviço reduzido',
+			},
+		},
+	},
 
-	'WEATHER:SIGNIFICANT_DELAYS:agency': undefined,
+	'WEATHER:SIGNIFICANT_DELAYS:agency': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: 'Toda a rede | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Toda a rede | Atrasos significativos',
+			},
+		},
+	},
 
-	'WEATHER:SIGNIFICANT_DELAYS:lines': undefined,
+	'WEATHER:SIGNIFICANT_DELAYS:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas, verificam-se atrasos significativos {in_def_f_p} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas, verificam-se atrasos significativos {in_def_f_s} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Atrasos significativos',
+			},
+		},
+	},
 
 	'WEATHER:SIGNIFICANT_DELAYS:rides': {
 		description: {
@@ -1568,6 +2954,27 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
-	'WEATHER:SIGNIFICANT_DELAYS:stops': undefined,
+	'WEATHER:SIGNIFICANT_DELAYS:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas, verificam-se atrasos significativos {in_def_f_p} {stops_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas, verificam-se atrasos significativos {in_def_f_s} {stops_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Atrasos significativos',
+			},
+		},
+	},
 
 };
