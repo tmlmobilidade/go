@@ -6,7 +6,7 @@ import { UploadImage } from '@/components/common/other/UploadImage';
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Collapsible, CoordinatesInput, Grid, HasPermission, Section, Switch, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
+import { Collapsible, CoordinatesInput, Grid, Section, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -36,15 +36,13 @@ export function AlertDetailSectionTexts() {
 			scope: PermissionCatalog.all.alerts.scope,
 			value: alertDetailContext.data.alert.reference_type,
 		});
-		const autoTextsEnabled = alertDetailContext.data.form.getValues().auto_texts;
 		// User can edit texts if they have permission for the agency
-		// and reference type, and auto texts is disabled.
-		return canEditThisAgency && canEditThisReferenceType && !autoTextsEnabled;
+		// and reference type.
+		return canEditThisAgency && canEditThisReferenceType;
 	}, [
 		meContext.data.user?.permissions,
 		alertDetailContext.data.alert.agency_id,
 		alertDetailContext.data.alert.reference_type,
-		alertDetailContext.data.form.getValues().auto_texts,
 	]);
 
 	//
@@ -56,18 +54,6 @@ export function AlertDetailSectionTexts() {
 			title="Título e Descrição"
 		>
 			<Section gap="md">
-				<HasPermission
-					action={PermissionCatalog.all.alerts.actions.update_texts}
-					resourceKey="agency_ids"
-					scope={PermissionCatalog.all.alerts.scope}
-					value={alertDetailContext.data.alert.agency_id}
-				>
-					<Switch
-						key={alertDetailContext.data.form.key('auto_texts')}
-						label="Textos Automáticos"
-						{...alertDetailContext.data.form.getInputProps('auto_texts', { type: 'checkbox' })}
-					/>
-				</HasPermission>
 				<Grid gap="md">
 					<TextInput
 						key={alertDetailContext.data.form.key('title')}

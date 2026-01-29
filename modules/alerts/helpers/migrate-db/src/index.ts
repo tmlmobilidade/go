@@ -54,7 +54,6 @@ import { municipalitiesMap } from './municipalities-map.js';
 			const formattedAlert: Alert = {
 				...originalAlert,
 				agency_id: agencyId,
-				auto_texts: false,
 				created_by: 'system',
 				publish_status: parsePublishStatus(originalAlert.publish_status),
 				reference_type: parseReferenceType(originalAlert.reference_type),
