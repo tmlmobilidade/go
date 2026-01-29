@@ -31,7 +31,7 @@ export const openOrganizationQuickLinksModal = ({ handleSubmit, link }: QuickLin
 		closeOnClickOutside: false,
 		modalId: QUICK_LINKS_MODAL_ID,
 		padding: 0,
-		size: 'auto',
+		size: 'xl',
 		styles: { content: { overflow: 'unset' } },
 		withCloseButton: false,
 	});

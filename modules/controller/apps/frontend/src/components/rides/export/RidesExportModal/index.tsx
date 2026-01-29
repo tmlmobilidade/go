@@ -32,7 +32,7 @@ export const openRideExportModal = (filters: RidesListContextState['filters']) =
 		closeOnClickOutside: false,
 		modalId: RIDES_EXPORT_MODAL_ID,
 		padding: 0,
-		size: 'auto',
+		size: 'xl',
 		styles: { content: { overflow: 'unset' } },
 		withCloseButton: false,
 	});
