@@ -37,7 +37,7 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 
 	// Target interval (operational cut-off at 04:00)
 	const startDate = Dates.now('Europe/Lisbon')
-		.set({ day: 20, hour: 4, month: 1, year: 2026 })
+		.set({ day: 1, hour: 4, month: 1, year: 2024 })
 		.unix_timestamp;
 
 	const endDate = Dates.now('Europe/Lisbon')
@@ -123,8 +123,8 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 	Logger.info('Calculating passenger impact for each day...');
 	const out = new Map<OperationalDate, Map<AgencyId, AgencyDayStats>>();
 	for (const dayChunk of allDaysChunks) {
-		const start30dTs = Dates.fromUnixTimestamp(dayChunk.start).set({ hour: 4 }).minus({ days: 30 }).unix_timestamp;
-		const endTs = Dates.fromUnixTimestamp(dayChunk.start).set({ hour: 4 }).unix_timestamp;
+		const start30dTs = Dates.fromUnixTimestamp(dayChunk.start).set({ hour: 4, minute: 0, second: 0 }).setZone('Europe/Lisbon', 'rebase_utc').minus({ days: 30 }).unix_timestamp;
+		const endTs = Dates.fromUnixTimestamp(dayChunk.start).set({ hour: 4, minute: 0, second: 0 }).setZone('Europe/Lisbon', 'rebase_utc').unix_timestamp;
 
 		Logger.info(`Calculating passenger impact for day ${Dates.fromUnixTimestamp(start30dTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}...${Dates.fromUnixTimestamp(endTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}`);
 
