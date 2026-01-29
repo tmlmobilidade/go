@@ -53,7 +53,6 @@ async function main() {
 				active_period_end_date: null,
 				active_period_start_date: undefined,
 				agency_id: '43',
-				auto_texts: true,
 				cause: serviceAlert.alert.cause as CreateAlertDto['cause'],
 				coordinates: null,
 				description: description,
