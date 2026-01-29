@@ -61,8 +61,8 @@ export const templatePlaceholderReplacements = {
 
 			const lineShortNames = Array.from(new Set(group.map(ht => ht.line_id)));
 			const linePart = lineShortNames.length > 1
-				? `linhas ${lineShortNames.join(', ')}`
-				: `linha ${lineShortNames[0]} com destino a ${group[0].headsign}`;
+				? `das linhas ${lineShortNames.join(', ')}`
+				: `da linha ${lineShortNames[0]} com destino a ${group[0].headsign}`;
 
 			const ridesPart = rideStartTimes.length > 1
 				? `viagens das ${rideStartTimes.slice(0, -1).join(', ')} e ${rideStartTimes.slice(-1)}`
