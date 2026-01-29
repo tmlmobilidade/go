@@ -152,21 +152,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido a um acidente, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a um acidente, verificam-se atrasos significativos {in_def_f_s} {agency_title}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido a um acidente, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a um acidente, verificam-se atrasos significativos {in_def_f_s} {agency_title}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Toda a rede | Atrasos significativos',
+				pt: '{agency_title} | Atrasos significativos',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Toda a rede | Atrasos significativos',
+				pt: '{agency_title} | Atrasos significativos',
 			},
 		},
 	},
@@ -612,21 +612,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido a um evento, foram adicionados novos horários em toda a rede. Consulte o site carrismetropolitana.pt para mais informações.',
+				pt: 'Devido a um evento, foram adicionados novos horários {in_def_f_s} {agency_title}. Consulte o site carrismetropolitana.pt para mais informações.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido a um evento, foram adicionados novos horários em toda a rede. Consulte o site carrismetropolitana.pt para mais informações.',
+				pt: 'Devido a um evento, foram adicionados novos horários {in_def_f_s} {agency_title}. Consulte o site carrismetropolitana.pt para mais informações.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Toda a rede | Horários adicionais',
+				pt: '{agency_title} | Horários adicionais',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Toda a rede | Horários adicionais',
+				pt: '{agency_title} | Horários adicionais',
 			},
 		},
 	},
@@ -888,21 +888,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido a um evento, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a um evento, verificam-se atrasos significativos {in_def_f_s} {agency_title}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido a um evento, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a um evento, verificam-se atrasos significativos {in_def_f_s} {agency_title}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Toda a rede | Atrasos significativos',
+				pt: '{agency_title} | Atrasos significativos',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Toda a rede | Atrasos significativos',
+				pt: '{agency_title} | Atrasos significativos',
 			},
 		},
 	},
@@ -1417,21 +1417,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido a atividade policial, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a atividade policial, verificam-se atrasos significativos {in_def_f_s} {agency_title}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido a atividade policial, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a atividade policial, verificam-se atrasos significativos {in_def_f_s} {agency_title}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Toda a rede | Atrasos significativos',
+				pt: '{agency_title} | Atrasos significativos',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Toda a rede | Atrasos significativos',
+				pt: '{agency_title} | Atrasos significativos',
 			},
 		},
 	},
@@ -1923,21 +1923,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido à realização de greve, foram adicionados novos horários em toda a rede. Consulte o site carrismetropolitana.pt para mais informações.',
+				pt: 'Devido à realização de greve, foram adicionados novos horários {in_def_f_s} {agency_title}. Consulte o site carrismetropolitana.pt para mais informações.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido à realização de greve, foram adicionados novos horários em toda a rede. Consulte o site carrismetropolitana.pt para mais informações.',
+				pt: 'Devido à realização de greve, foram adicionados novos horários {in_def_f_s} {agency_title}. Consulte o site carrismetropolitana.pt para mais informações.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Toda a rede | Horários adicionais',
+				pt: '{agency_title} | Horários adicionais',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Toda a rede | Horários adicionais',
+				pt: '{agency_title} | Horários adicionais',
 			},
 		},
 	},
@@ -2061,21 +2061,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Por motivos de greve foi necessário cancelar o serviço em toda a rede. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Por motivos de greve foi necessário cancelar o serviço {in_def_f_s} {agency_title}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Por motivos de greve foi necessário cancelar o serviço em toda a rede. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Por motivos de greve foi necessário cancelar o serviço {in_def_f_s} {agency_title}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Toda a rede | Serviço cancelado',
+				pt: '{agency_title} | Serviço cancelado',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Toda a rede | Serviço cancelado',
+				pt: '{agency_title} | Serviço cancelado',
 			},
 		},
 	},
@@ -2176,21 +2176,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Por motivos de greve, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Por motivos de greve, verificam-se atrasos significativos {in_def_f_s} {agency_title}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Por motivos de greve, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Por motivos de greve, verificam-se atrasos significativos {in_def_f_s} {agency_title}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Toda a rede | Atrasos significativos',
+				pt: '{agency_title} | Atrasos significativos',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Toda a rede | Atrasos significativos',
+				pt: '{agency_title} | Atrasos significativos',
 			},
 		},
 	},
@@ -2291,21 +2291,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Um problema técnico está a impedir o funcionamento normal dos sistemas de localização em tempo real em toda a rede. Lamentamos o incómodo causado enquanto restabelecemos o funcionamento normal.',
+				pt: 'Um problema técnico está a impedir o funcionamento normal dos sistemas de localização em tempo real {in_def_f_s} {agency_title}. Lamentamos o incómodo causado enquanto restabelecemos o funcionamento normal.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Um problema técnico está a impedir o funcionamento normal dos sistemas de localização em tempo real em toda a rede. Lamentamos o incómodo causado enquanto restabelecemos o funcionamento normal.',
+				pt: 'Um problema técnico está a impedir o funcionamento normal dos sistemas de localização em tempo real {in_def_f_s} {agency_title}. Lamentamos o incómodo causado enquanto restabelecemos o funcionamento normal.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Toda a rede | Tempo real indisponível',
+				pt: '{agency_title} | Tempo real indisponível',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Toda a rede | Tempo real indisponível',
+				pt: '{agency_title} | Tempo real indisponível',
 			},
 		},
 	},
@@ -2360,21 +2360,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido a um problema técnico, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a um problema técnico, verificam-se atrasos significativos {in_def_f_s} {agency_title}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido a um problema técnico, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a um problema técnico, verificam-se atrasos significativos {in_def_f_s} {agency_title}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Toda a rede | Atrasos significativos',
+				pt: '{agency_title} | Atrasos significativos',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Toda a rede | Atrasos significativos',
+				pt: '{agency_title} | Atrasos significativos',
 			},
 		},
 	},
@@ -2521,21 +2521,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido ao elevado volume de trânsito, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido ao elevado volume de trânsito, verificam-se atrasos significativos {in_def_f_s} {agency_title}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido ao elevado volume de trânsito, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido ao elevado volume de trânsito, verificam-se atrasos significativos {in_def_f_s} {agency_title}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Toda a rede | Atrasos significativos',
+				pt: '{agency_title} | Atrasos significativos',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Toda a rede | Atrasos significativos',
+				pt: '{agency_title} | Atrasos significativos',
 			},
 		},
 	},
@@ -2889,21 +2889,21 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido às condições metereológicas adversas, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido às condições metereológicas adversas, verificam-se atrasos significativos {in_def_f_s} {agency_title}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido às condições metereológicas adversas, verificam-se atrasos significativos em toda a rede. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido às condições metereológicas adversas, verificam-se atrasos significativos {in_def_f_s} {agency_title}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
 			plural: {
 				en: 'not-available',
-				pt: 'Toda a rede | Atrasos significativos',
+				pt: '{agency_title} | Atrasos significativos',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Toda a rede | Atrasos significativos',
+				pt: '{agency_title} | Atrasos significativos',
 			},
 		},
 	},

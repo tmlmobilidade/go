@@ -11,12 +11,8 @@ import { AlertReferenceType, type RideNormalized } from '@tmlmobilidade/types';
 export const templatePlaceholderReplacements = {
 
 	agency: {
-		'{agency_description_pt}': (data: Extract<DescribeAlertProps, { type: 'agency' }>['data']) => {
-			const agencyNames = Array.from(new Set(data.map(ht => ht.long_name) ?? []));
-			return agencyNames.join(', ');
-		},
 		'{agency_title}': (data: Extract<DescribeAlertProps, { type: 'agency' }>['data']) => {
-			const agencyNames = Array.from(new Set(data.map(ht => ht.long_name).filter(Boolean)));
+			const agencyNames = Array.from(new Set(data.map(agency => agency.display_name).filter(Boolean)));
 			return agencyNames.length > 1
 				? `agências ${agencyNames.join(', ')}`
 				: `agência ${agencyNames[0]}`;

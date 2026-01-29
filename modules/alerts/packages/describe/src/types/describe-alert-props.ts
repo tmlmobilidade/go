@@ -14,9 +14,9 @@ export const DescribeAlertPropsBaseSchema = z.object({
 
 const DescribeAlertPropsAgencySchema = DescribeAlertPropsBaseSchema.extend({
 	data: z.array(z.object({
+		display_name: z.string(),
 		id: z.string(),
-		long_name: z.string(),
-		short_name: z.string(),
+		name: z.string(),
 	})).default([]),
 	type: z.literal('agency'),
 });

@@ -6,7 +6,7 @@ import { type Line, type Stop } from '@carrismetropolitana/api-types/network';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
-import { type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, RideNormalized } from '@tmlmobilidade/types';
+import { Agency, type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, RideNormalized } from '@tmlmobilidade/types';
 import { type CreateContextStateTemplate, keepUrlParams, useDataAgencies, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -47,7 +47,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const meContext = useMeContext();
 
-	const [selectedReferencesData, setSelectedReferencesData] = useState<RideNormalized[] | { id: string, long_name: string, short_name: string }[] | { id: string, name: string }[]>([]);
+	const [selectedReferencesData, setSelectedReferencesData] = useState<RideNormalized[] | { display_name: string, id: string, name: string }[] | { id: string, long_name: string, short_name: string }[]>([]);
 
 	//
 	// B. Fetch data
@@ -120,14 +120,15 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	]);
 
 	useEffect(() => {
-		if (!form.getValues().cause || !form.getValues().effect || !form.getValues().reference_type || !form.getValues().references?.length) return;
+		if (!form.getValues().cause || !form.getValues().effect || !form.getValues().reference_type || !form.getValues().references) return;
+		const references = form.getValues().references;
 		const alertTemplating = describeAlert({
 			cause: form.getValues().cause,
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			data: selectedReferencesData as any[],
 			effect: form.getValues().effect,
 			reference_type: form.getValues().reference_type,
-			references: form.getValues().references ?? [],
+			references: references,
 			type: form.getValues().reference_type,
 		});
 		if (!alertTemplating) return;
@@ -138,7 +139,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		form.getValues().cause,
 		form.getValues().effect,
 		form.getValues().reference_type,
-		form.getValues().references?.length,
+		form.getValues().references,
 	]);
 
 	useEffect(() => {
@@ -200,6 +201,13 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			if (!form.getValues().references?.length) return setSelectedReferencesData([]);
 			// Get a list of unique parent_ids
 			const parentIds = form.getValues().references.map(reference => reference.parent_id);
+			// Fetch data for agencies
+			if (form.getValues().reference_type === 'agency') {
+				const response = await fetch('https://api.carrismetropolitana.pt/v2/agencies'); // ! THIS NEEDS TO BE REPLACED WITH THE CORRECT API URL
+				const agenciesData = await response.json() as Agency[];
+				const result: Agency[] = agenciesData.filter(agency => parentIds.includes(agency._id));
+				setSelectedReferencesData(result.map(agency => ({ display_name: agency.name, id: agency._id, name: agency.name })));
+			}
 			// Fetch data for lines
 			if (form.getValues().reference_type === 'lines') {
 				const response = await fetch('https://api.carrismetropolitana.pt/v2/lines');
@@ -227,7 +235,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		})();
 	}, [
 		form.getValues().reference_type,
-		form.getValues().references?.length,
+		form.getValues().references,
 	]);
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
