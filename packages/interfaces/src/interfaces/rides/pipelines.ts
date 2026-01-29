@@ -350,7 +350,8 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 		}
 
 		if (vehicleMatch) {
-			const vehicleIDs = vehicleMatch[1]
+			const value = vehicleMatch[1];
+			const vehicleIDs = value
 				.split(',')
 				.map(id => Number(id.trim()))
 				.filter(id => !isNaN(id));
@@ -360,10 +361,11 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 		}
 
 		if (driverMatch) {
-			const driverIDs = driverMatch[1]
+			const value = driverMatch[1];
+			const driverIDs = value
 				.split(',')
 				.map(id => id.trim())
-				.filter(id => id.length > 0);
+				.filter(id => id);
 			if (driverIDs.length > 0) {
 				pipeline.push({ $match: { driver_ids: { $in: driverIDs } } });
 			}
