@@ -4,7 +4,7 @@ import { UploadImage } from '@/components/common/other/UploadImage';
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { CoordinatesInput, Grid, HasPermission, Section, Switch, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
+import { CoordinatesInput, Grid, Section, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -50,18 +50,6 @@ export function AlertCreateStepSummary() {
 
 	return (
 		<Section gap="md">
-			<HasPermission
-				action={PermissionCatalog.all.alerts.actions.update_texts}
-				resourceKey="agency_ids"
-				scope={PermissionCatalog.all.alerts.scope}
-				value={alertCreateContext.data.form.getValues().agency_id}
-			>
-				<Switch
-					key={alertCreateContext.data.form.key('auto_texts')}
-					label="Textos Automáticos"
-					{...alertCreateContext.data.form.getInputProps('auto_texts', { type: 'checkbox' })}
-				/>
-			</HasPermission>
 			<Grid gap="md">
 				<TextInput
 					key={alertCreateContext.data.form.key('title')}
