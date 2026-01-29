@@ -36,15 +36,13 @@ export function AlertDetailSectionTexts() {
 			scope: PermissionCatalog.all.alerts.scope,
 			value: alertDetailContext.data.alert.reference_type,
 		});
-		const autoTextsEnabled = alertDetailContext.data.form.getValues().auto_texts;
 		// User can edit texts if they have permission for the agency
-		// and reference type, and auto texts is disabled.
-		return canEditThisAgency && canEditThisReferenceType && !autoTextsEnabled;
+		// and reference type.
+		return canEditThisAgency && canEditThisReferenceType;
 	}, [
 		meContext.data.user?.permissions,
 		alertDetailContext.data.alert.agency_id,
 		alertDetailContext.data.alert.reference_type,
-		alertDetailContext.data.form.getValues().auto_texts,
 	]);
 
 	//
