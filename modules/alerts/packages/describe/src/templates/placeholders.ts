@@ -51,7 +51,6 @@ export const templatePlaceholderReplacements = {
 	 */
 		'{rides_description_pt}': (data: Extract<DescribeAlertProps, { type: 'rides' }>['data']) => {
 		//
-			console.log('HERE RIDES DESCRIPTION PT =======>', data);
 
 			//
 			// Fetch ride details based on the provided ride IDs

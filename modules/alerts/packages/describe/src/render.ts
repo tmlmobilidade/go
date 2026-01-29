@@ -71,7 +71,6 @@ export function describeAlert(props: DescribeAlertProps): DescribeAlertReturnTyp
 				//
 
 				// Use the templates param builders to get the actual value for each placeholder
-				console.log('HERE PLACEHOLDER KEY =======>', props.reference_type, placeholderKey);
 				const replacementValue = templatePlaceholderReplacements[props.reference_type][placeholderKey](props.data);
 
 				// Replace all occurrences of the placeholder in the string with the actual value
