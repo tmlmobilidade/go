@@ -120,21 +120,19 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	]);
 
 	useEffect(() => {
-		(async () => {
-			if (!form.getValues().cause || !form.getValues().effect || !form.getValues().reference_type || !form.getValues().references?.length) return;
-			const alertTemplating = await describeAlert({
-				cause: form.getValues().cause,
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				data: selectedReferencesData as any[],
-				effect: form.getValues().effect,
-				reference_type: form.getValues().reference_type,
-				references: form.getValues().references ?? [],
-				type: form.getValues().reference_type,
-			});
-			if (!alertTemplating) return;
-			form.setFieldValue('description', alertTemplating.description.pt);
-			form.setFieldValue('title', alertTemplating.title.pt);
-		})();
+		if (!form.getValues().cause || !form.getValues().effect || !form.getValues().reference_type || !form.getValues().references?.length) return;
+		const alertTemplating = describeAlert({
+			cause: form.getValues().cause,
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			data: selectedReferencesData as any[],
+			effect: form.getValues().effect,
+			reference_type: form.getValues().reference_type,
+			references: form.getValues().references ?? [],
+			type: form.getValues().reference_type,
+		});
+		if (!alertTemplating) return;
+		form.setFieldValue('description', alertTemplating.description.pt);
+		form.setFieldValue('title', alertTemplating.title.pt);
 	}, [
 		selectedReferencesData,
 		form.getValues().cause,

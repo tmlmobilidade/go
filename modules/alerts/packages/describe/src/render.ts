@@ -17,7 +17,7 @@ export interface DescribeAlertReturnType {
 
 /* * */
 
-export async function describeAlert(props: DescribeAlertProps): Promise<DescribeAlertReturnType | undefined> {
+export function describeAlert(props: DescribeAlertProps): DescribeAlertReturnType | undefined {
 	//
 
 	//
