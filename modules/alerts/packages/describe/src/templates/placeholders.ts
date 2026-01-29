@@ -21,11 +21,40 @@ export const templatePlaceholderReplacements = {
 
 	lines: {
 		/**
-		 * Returns a comma-separated list of line short names in Portuguese.
+		 * Returns a descriptive string for lines in Portuguese, with details about stops when available.
+		 * Groups lines and includes stop information.
 		 */
 		'{lines_description_pt}': (data: Extract<DescribeAlertProps, { type: 'lines' }>['data']) => {
-			const lineShortNames = Array.from(new Set(data.map(ht => ht.short_name) ?? []));
-			return lineShortNames.join(', ');
+		//
+
+			//
+			// Group lines and build prose string in the format:
+			// "linha 1234 nas paragens X, Y e Z" or "linhas 1234, 5678"
+
+			const parts: string[] = [];
+
+			for (const lineData of data) {
+				const lineShortName = lineData.short_name;
+				const stops = lineData.stops ?? [];
+
+				if (stops.length > 0) {
+					const stopNames = stops.map(stop => stop.long_name).filter(Boolean);
+					const stopsPart = stopNames.length > 1
+						? `nas paragens ${stopNames.slice(0, -1).join(', ')} e ${stopNames.slice(-1)}`
+						: `na paragem ${stopNames[0]}`;
+
+					parts.push(`linha ${lineShortName} ${stopsPart}`);
+				}
+				else {
+					parts.push(`linha ${lineShortName}`);
+				}
+			}
+
+			return parts.length > 1
+				? parts.slice(0, -1).join('; ') + ' e ' + parts.slice(-1)
+				: parts[0];
+
+		//
 		},
 
 		/**
@@ -42,9 +71,9 @@ export const templatePlaceholderReplacements = {
 	rides: {
 
 		/**
-	 * Returns a descriptive string for rides in Portuguese, with details about start times and lines.
-	 * Can handle multiple rides and groups them by pattern ID.
-	 */
+		 * Returns a descriptive string for rides in Portuguese, with details about start times and lines.
+		 * Can handle multiple rides and groups them by pattern ID.
+		 */
 		'{rides_description_pt}': (data: Extract<DescribeAlertProps, { type: 'rides' }>['data']) => {
 		//
 
@@ -101,12 +130,44 @@ export const templatePlaceholderReplacements = {
 	},
 
 	stops: {
+		/**
+		 * Returns a descriptive string for stops in Portuguese, with details about lines when available.
+		 * Groups stops and includes line information.
+		 */
 		'{stops_description_pt}': (data: Extract<DescribeAlertProps, { type: 'stops' }>['data']) => {
-			const stopNames = Array.from(new Set(data.map(ht => ht.name) ?? []));
-			return stopNames.join(', ');
+		//
+
+			//
+			// Group stops and build prose string in the format:
+			// "paragem X das linhas 1234, 5678" or "paragens X, Y e Z"
+
+			const parts: string[] = [];
+
+			for (const stopData of data) {
+				const stopName = stopData.long_name;
+				const lines = stopData.lines ?? [];
+
+				if (lines.length > 0) {
+					const lineShortNames = lines.map(line => line.short_name).filter(Boolean);
+					const linesPart = lineShortNames.length > 1
+						? `das linhas ${lineShortNames.slice(0, -1).join(', ')} e ${lineShortNames.slice(-1)}`
+						: `da linha ${lineShortNames[0]}`;
+
+					parts.push(`paragem ${stopName} ${linesPart}`);
+				}
+				else {
+					parts.push(`paragem ${stopName}`);
+				}
+			}
+
+			return parts.length > 1
+				? parts.slice(0, -1).join('; ') + ' e ' + parts.slice(-1)
+				: parts[0];
+
+		//
 		},
 		'{stops_title}': (data: Extract<DescribeAlertProps, { type: 'stops' }>['data']) => {
-			const stopNames = Array.from(new Set(data.map(ht => ht.name).filter(Boolean)));
+			const stopNames = Array.from(new Set(data.map(ht => ht.long_name).filter(Boolean)));
 			return stopNames.length > 1
 				? `paragens ${stopNames.join(', ')}`
 				: `paragem ${stopNames[0]}`;

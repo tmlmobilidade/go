@@ -26,6 +26,10 @@ const DescribeAlertPropsLinesSchema = DescribeAlertPropsBaseSchema.extend({
 		id: z.string(),
 		long_name: z.string(),
 		short_name: z.string(),
+		stops: z.array(z.object({
+			id: z.string(),
+			long_name: z.string(),
+		})),
 	})).default([]),
 	type: z.literal('lines'),
 });
@@ -38,7 +42,12 @@ const DescribeAlertPropsRidesSchema = DescribeAlertPropsBaseSchema.extend({
 const DescribeAlertPropsStopsSchema = DescribeAlertPropsBaseSchema.extend({
 	data: z.array(z.object({
 		id: z.string(),
-		name: z.string(),
+		lines: z.array(z.object({
+			id: z.string(),
+			long_name: z.string(),
+			short_name: z.string(),
+		})),
+		long_name: z.string(),
 	})).default([]),
 	type: z.literal('stops'),
 });
