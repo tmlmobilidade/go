@@ -8,6 +8,14 @@ import { type AlertReferenceType } from '@/alerts/reference-type.js';
 
 export const alertCauseEffectReferenceTypeMap = {
 
+	ABUSIVE_PARKING: {
+		ACCESSIBILITY_ISSUE: ['rides', 'lines', 'stops'],
+		DETOUR: ['rides', 'lines', 'stops'],
+		NO_SERVICE: ['rides', 'lines', 'stops'],
+		REDUCED_SERVICE: ['rides', 'lines', 'stops'],
+		SIGNIFICANT_DELAYS: ['rides', 'lines', 'stops'],
+	},
+
 	ACCIDENT: {
 		DETOUR: ['rides', 'stops'],
 		NO_SERVICE: ['rides', 'lines'],
