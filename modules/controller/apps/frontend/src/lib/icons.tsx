@@ -2,6 +2,7 @@ import { IconAccessible, IconAmbulance, IconArrowBigUpLines, IconBarrierBlock, I
 import { AlertCause, GtfsEffect } from '@tmlmobilidade/types';
 
 export const CauseIcons: Record<AlertCause, React.ReactNode> = {
+	ABUSIVE_PARKING: <IconSpeakerphone />,
 	ACCIDENT: <IconCarCrash />,
 	CONSTRUCTION: <IconBarrierBlock />,
 	DEMONSTRATION: <IconSpeakerphone />,

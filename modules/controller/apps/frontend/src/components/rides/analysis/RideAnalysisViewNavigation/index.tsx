@@ -4,7 +4,7 @@
 
 import { RideAnalysisViewOptions, useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Label, Section, SegmentedControl, Spacer, Toolbar, useMeContext } from '@tmlmobilidade/ui';
+import { SegmentedControl, Spacer, Toolbar, useMeContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -40,10 +40,6 @@ export function RideAnalysisViewNavigation() {
 
 	return (
 		<Toolbar>
-			<Section alignItems="center" flexDirection="row" gap="xs" padding="none">
-				{RideAnalysisViewOptions[rideAnalysisContext.data.selected_view].icon}
-				<Label size="lg" caps>{RideAnalysisViewOptions[rideAnalysisContext.data.selected_view].label}</Label>
-			</Section>
 			<Spacer />
 			<SegmentedControl
 				data={viewOptions}
