@@ -7,7 +7,7 @@ import { type Alert, type File as FileType, PermissionCatalog, type UpdateAlertD
 import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -15,8 +15,7 @@ import useSWR from 'swr';
 interface AlertDetailContextState extends DetailContextStateTemplate {
 	actions: DetailContextStateTemplate['actions'] & {
 		deleteImage: () => void
-		fileChanged: (file: File) => void
-		uploadImage: () => void
+		setImageFile: (file: File) => void
 	}
 	data: {
 		alert: Alert | undefined
@@ -54,14 +53,14 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	const router = useRouter();
 	const meContext = useMeContext();
 
-	const [image, setImage] = useState<File | null>(null);
+	const [imageFile, setImageFile] = useState<File>();
 
 	//
 	// B. Fetch Data
 
 	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
 	const { data: alertData, error: alertError, isLoading: alertLoading, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId));
-	const { data: alertImage, isLoading: alertImageLoading, mutate: alertImageMutate } = useSWR<FileType | undefined>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
+	const { data: alertImage, isLoading: alertImageLoading, mutate: alertImageMutate } = useSWR<FileType>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
 
 	//
 	// C. Define form
@@ -78,6 +77,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			alertMutate(updatedItem);
 			alertImageMutate();
 			alertsListMutate();
+			handleUploadImage();
 		},
 	});
 
@@ -87,16 +87,6 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			form.resetDirty();
 			alertsListMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_LIST));
-		},
-	});
-
-	const { action: handleDeleteImage, isLoading: isDeletingImage } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), 'DELETE'),
-		onSuccess: () => {
-			form.resetDirty();
-			alertMutate();
-			alertImageMutate();
-			alertsListMutate();
 		},
 	});
 
@@ -111,7 +101,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	});
 
 	const { action: handleUploadImage, isLoading: isUploadingImage } = useHandleUpdate({
-		fetchFn: async () => await uploadFile(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), image),
+		fetchFn: async () => imageFile && await uploadFile(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), imageFile),
 		onSuccess: () => {
 			form.resetDirty();
 			alertMutate();
@@ -119,6 +109,22 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			alertsListMutate();
 		},
 	});
+
+	const { action: handleDeleteImage, isLoading: isDeletingImage } = useHandleUpdate({
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), 'DELETE'),
+		onSuccess: () => {
+			form.resetDirty();
+			alertMutate();
+			alertImageMutate();
+			alertsListMutate();
+		},
+	});
+
+	useEffect(() => {
+		if (!imageFile) return;
+		console.log('Uploading image file:', imageFile);
+		handleSave();
+	}, [imageFile]);
 
 	//
 	// F. Setup flags
@@ -220,10 +226,9 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		actions: {
 			delete: handleDelete,
 			deleteImage: handleDeleteImage,
-			fileChanged: setImage,
 			lock: handleLock,
 			save: handleSave,
-			uploadImage: handleUploadImage,
+			setImageFile: setImageFile,
 		},
 		data: {
 			alert: alertData,

@@ -1,6 +1,5 @@
 /* * */
 
-import { UploadImage } from '@/components/common/other/UploadImage';
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
@@ -75,12 +74,6 @@ export function AlertCreateStepSummary() {
 					leftSection={<IconLink />}
 					placeholder="https://www.cm-setubal.com/..."
 					{...alertCreateContext.data.form.getInputProps('info_url')}
-				/>
-				<UploadImage
-					// imageUrl={alertCreateContext.data.image?.url}
-					label="Imagem"
-					// onDelete={alertCreateContext.actions.deleteImage}
-					// onFileChange={alertCreateContext.actions.fileChanged}
 				/>
 			</Grid>
 		</Section>
