@@ -25,7 +25,7 @@ export function AlertsListCellReferenceType({ value }: AlertsListCellReferenceTy
 	//
 	// B. Render components
 
-	return <Tag label={t(`shared:alerts.reference-types.${value}.title`)} />;
+	return <Tag label={t(`shared:alerts.reference_types.${value}.title`)} />;
 
 	//
 }
