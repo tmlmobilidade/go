@@ -10,6 +10,351 @@ import { type AlertCauseEffectReference } from '@tmlmobilidade/types';
  */
 export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragment> = {
 
+	'ABUSIVE_PARKING:ACCESSIBILITY_ISSUE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {lines_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {lines_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Acessibilidade comprometida',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Acessibilidade comprometida',
+			},
+		},
+	},
+
+	'ABUSIVE_PARKING:ACCESSIBILITY_ISSUE:rides': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{rides_title} | Acessibilidade comprometida',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{rides_title} | Acessibilidade comprometida',
+			},
+		},
+	},
+
+	'ABUSIVE_PARKING:ACCESSIBILITY_ISSUE:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Acessibilidade comprometida',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Acessibilidade comprometida',
+			},
+		},
+	},
+
+	'ABUSIVE_PARKING:DETOUR:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo obriga ao desvio de percurso {in_def_f_p} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo obriga ao desvio de percurso {in_def_f_s} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Desvio de Percurso',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Desvio de Percurso',
+			},
+		},
+	},
+
+	'ABUSIVE_PARKING:DETOUR:rides': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo obriga ao desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo obriga ao desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{rides_title} | Desvio de Percurso',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{rides_title} | Desvio de Percurso',
+			},
+		},
+	},
+
+	'ABUSIVE_PARKING:DETOUR:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo obriga ao desvio de percurso que afeta {def_f_p} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo obriga ao desvio de percurso que afeta {def_f_s} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Desvio de Percurso',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Desvio de Percurso',
+			},
+		},
+	},
+
+	'ABUSIVE_PARKING:NO_SERVICE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo foi necessário cancelar o serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo foi necessário cancelar o serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço cancelado',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço cancelado',
+			},
+		},
+	},
+
+	'ABUSIVE_PARKING:NO_SERVICE:rides': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo foi necessário cancelar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo foi necessário cancelar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{rides_title} | Viagens canceladas',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{rides_title} | Viagem cancelada',
+			},
+		},
+	},
+
+	'ABUSIVE_PARKING:NO_SERVICE:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, {def_f_p} {stops_description_pt} não serão servidas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, {def_f_s} {stops_description_pt} não será servida. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Paragens não servidas',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Paragem não servida',
+			},
+		},
+	},
+
+	'ABUSIVE_PARKING:REDUCED_SERVICE:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário reduzir o serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário reduzir o serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço reduzido',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Serviço reduzido',
+			},
+		},
+	},
+
+	'ABUSIVE_PARKING:REDUCED_SERVICE:rides': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário encurtar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário encurtar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{rides_title} | Viagens encurtadas',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{rides_title} | Viagem encurtada',
+			},
+		},
+	},
+
+	'ABUSIVE_PARKING:REDUCED_SERVICE:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário reduzir o serviço {in_def_f_p} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário reduzir o serviço {in_def_f_s} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Serviço reduzido',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Serviço reduzido',
+			},
+		},
+	},
+
+	'ABUSIVE_PARKING:SIGNIFICANT_DELAYS:lines': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, verificam-se atrasos significativos {in_def_f_p} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, verificam-se atrasos significativos {in_def_f_s} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{lines_title} | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{lines_title} | Atrasos significativos',
+			},
+		},
+	},
+
+	'ABUSIVE_PARKING:SIGNIFICANT_DELAYS:rides': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{rides_title} | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{rides_title} | Atrasos significativos',
+			},
+		},
+	},
+
+	'ABUSIVE_PARKING:SIGNIFICANT_DELAYS:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, verificam-se atrasos significativos {in_def_f_p} {stops_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a estacionamento abusivo, verificam-se atrasos significativos {in_def_f_s} {stops_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Atrasos significativos',
+			},
+		},
+	},
+
 	'ACCIDENT:DETOUR:rides': {
 		description: {
 			plural: {
@@ -1578,11 +1923,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {lines_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {lines_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {lines_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {lines_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
@@ -1601,11 +1946,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
@@ -1624,11 +1969,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
@@ -1647,11 +1992,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Estacionamento abusivo obriga ao desvio de percurso {in_def_f_p} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+				pt: 'Uma obstrução na estrada obriga ao desvio de percurso {in_def_f_p} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Estacionamento abusivo obriga ao desvio de percurso {in_def_f_s} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+				pt: 'Uma obstrução na estrada obriga ao desvio de percurso {in_def_f_s} {lines_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
@@ -1670,11 +2015,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Estacionamento abusivo obriga ao desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+				pt: 'Uma obstrução na estrada obriga ao desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Estacionamento abusivo obriga ao desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+				pt: 'Uma obstrução na estrada obriga ao desvio de percurso {in_def_f_s} {rides_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
@@ -1693,11 +2038,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Estacionamento abusivo obriga ao desvio de percurso que afeta {def_f_p} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+				pt: 'Uma obstrução na estrada obriga ao desvio de percurso que afeta {def_f_p} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Estacionamento abusivo obriga ao desvio de percurso que afeta {def_f_s} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
+				pt: 'Uma obstrução na estrada obriga ao desvio de percurso que afeta {def_f_s} {stops_description_pt}. Agradecemos a sua compreensão enquanto a situação é normalizada.',
 			},
 		},
 		title: {
@@ -1716,11 +2061,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo foi necessário cancelar o serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada foi necessário cancelar o serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo foi necessário cancelar o serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada foi necessário cancelar o serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
@@ -1739,11 +2084,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo foi necessário cancelar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada foi necessário cancelar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo foi necessário cancelar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada foi necessário cancelar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
@@ -1762,11 +2107,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo, {def_f_p} {stops_description_pt} não serão servidas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada, {def_f_p} {stops_description_pt} não serão servidas. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo, {def_f_s} {stops_description_pt} não será servida. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada, {def_f_s} {stops_description_pt} não será servida. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
@@ -1785,11 +2130,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário reduzir o serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Uma obstrução na estrada impede a passagem e por isso é necessário reduzir o serviço {in_def_f_p} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário reduzir o serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Uma obstrução na estrada impede a passagem e por isso é necessário reduzir o serviço {in_def_f_s} {lines_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
@@ -1808,11 +2153,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário encurtar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Uma obstrução na estrada impede a passagem e por isso é necessário encurtar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário encurtar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Uma obstrução na estrada impede a passagem e por isso é necessário encurtar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
@@ -1831,11 +2176,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário reduzir o serviço {in_def_f_p} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Uma obstrução na estrada impede a passagem e por isso é necessário reduzir o serviço {in_def_f_p} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Estacionamento abusivo impede a passagem e por isso é necessário reduzir o serviço {in_def_f_s} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Uma obstrução na estrada impede a passagem e por isso é necessário reduzir o serviço {in_def_f_s} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
@@ -1854,11 +2199,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo, verificam-se atrasos significativos {in_def_f_p} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada, verificam-se atrasos significativos {in_def_f_p} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo, verificam-se atrasos significativos {in_def_f_s} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada, verificam-se atrasos significativos {in_def_f_s} {lines_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
@@ -1877,11 +2222,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
@@ -1900,11 +2245,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo, verificam-se atrasos significativos {in_def_f_p} {stops_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada, verificam-se atrasos significativos {in_def_f_p} {stops_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido a estacionamento abusivo, verificam-se atrasos significativos {in_def_f_s} {stops_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a uma obstrução na estrada, verificam-se atrasos significativos {in_def_f_s} {stops_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
