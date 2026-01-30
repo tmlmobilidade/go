@@ -171,7 +171,10 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	useEffect(() => {
 		if (!form.getValues().active_period_start_date) {
+			// Set active period start date to 5 minutes ago
 			form.setFieldValue('active_period_start_date', Dates.now('Europe/Lisbon').minus({ minutes: 5 }).set({ millisecond: 0, second: 0 }).unix_timestamp);
+			// Set publish start date to start of today to ensure alert is visible immediately
+			form.setFieldValue('publish_start_date', Dates.now('Europe/Lisbon').startOf('day').unix_timestamp);
 		}
 	}, [form.getValues().active_period_start_date]);
 
