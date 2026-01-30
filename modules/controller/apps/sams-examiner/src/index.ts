@@ -155,8 +155,8 @@ async function main() {
 				}
 
 				//
-				// Validate if all the transactions match the
-				// same Agency ID and the same Device ID.
+				// Validate if all the transactions
+				// match the same Agency ID.
 
 				const agencyId = sortedTransactions[0].agency_id;
 
