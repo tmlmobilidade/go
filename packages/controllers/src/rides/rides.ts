@@ -58,7 +58,12 @@ export class RidesSharedController {
 		// with batchSize to prevent memory issues
 
 		const pipeline = ridesBatchAggregationPipeline({
+			acceptance_status: parsedQuery.acceptance_status,
 			agency_ids: parsedQuery.agency_ids?.filter(id => allowAllAgencies || ridesPermission['resources'].agency_ids.includes(id)) ?? [],
+			analysis_ended_at_last_stop_grade: parsedQuery.analysis_ended_at_last_stop_grade,
+			analysis_expected_apex_validation_interval: parsedQuery.analysis_expected_apex_validation_interval,
+			analysis_simple_three_vehicle_events_grade: parsedQuery.analysis_simple_three_vehicle_events_grade,
+			analysis_transaction_sequentiality: parsedQuery.analysis_transaction_sequentiality,
 			date_end: parsedQuery.date_end,
 			date_start: parsedQuery.date_start,
 			delay_statuses: parsedQuery.delay_statuses,
