@@ -140,6 +140,7 @@ db.createRole({
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'annotations', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'holidays', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'periods', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'events', db: 'production' } },
 	],
 	role: 'dates',
 	roles: [{ db: 'admin', role: 'common' }],

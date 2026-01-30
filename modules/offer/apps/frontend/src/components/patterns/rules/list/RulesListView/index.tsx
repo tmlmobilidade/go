@@ -13,10 +13,9 @@ export function RulesListView() {
 	// A. Setup variables
 
 	const patternDetailContext = usePatternDetailContext();
-	const rules = patternDetailContext.data.form.values.rules || [];
-	const includeRules = rules.filter(rule => rule.operatingMode === 'include');
-	const excludeRules = rules.filter(rule => rule.operatingMode === 'exclude');
-
+	const mergedRules = patternDetailContext.data.mergedRules || [];
+	const includeRules = mergedRules.filter(rule => rule.operatingMode === 'include');
+	const excludeRules = mergedRules.filter(rule => rule.operatingMode === 'exclude');
 	//
 	// B. Render components
 

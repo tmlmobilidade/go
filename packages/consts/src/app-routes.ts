@@ -79,6 +79,10 @@ export const PAGE_ROUTES = Object.freeze({
 		// CALENDAR
 		CALENDAR_LIST: `${getAppConfig('dates', 'frontend_url')}/calendar`,
 
+		// EVENTS
+		EVENTS_DETAIL: (id: string) => `${getAppConfig('dates', 'frontend_url')}/events/${id}`,
+		EVENTS_LIST: `${getAppConfig('dates', 'frontend_url')}/events`,
+
 		// HOLIDAYS
 		HOLIDAYS_DETAIL: (id: string) => `${getAppConfig('dates', 'frontend_url')}/holidays/${id}`,
 		HOLIDAYS_LIST: `${getAppConfig('dates', 'frontend_url')}/holidays`,
@@ -292,6 +296,11 @@ export const API_ROUTES = Object.freeze({
 		ANNOTATIONS_DETAIL: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}`,
 		ANNOTATIONS_DETAIL_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/annotations/${id}/lock`,
 		ANNOTATIONS_LIST: `${getAppConfig('dates', 'api_url')}/annotations`,
+
+		// EVENTS
+		EVENTS_DETAIL: (id: string) => `${getAppConfig('dates', 'api_url')}/events/${id}`,
+		EVENTS_DETAIL_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/events/${id}/lock`,
+		EVENTS_LIST: `${getAppConfig('dates', 'api_url')}/events`,
 
 		// HOLIDAYS
 		HOLIDAYS_DETAIL: (id: string) => `${getAppConfig('dates', 'api_url')}/holidays/${id}`,

@@ -17,5 +17,5 @@ export const WEEKDAY_OPTIONS = [
 	{ label: 'Qui', value: WEEKDAYS.Thu },
 	{ label: 'Sex', value: WEEKDAYS.Fri },
 	{ label: 'Sáb', value: WEEKDAYS.Sat },
-	{ label: 'Dom', value: WEEKDAYS.Sun },
+	{ label: 'Dom e Fer', value: WEEKDAYS.Sun },
 ] as const;

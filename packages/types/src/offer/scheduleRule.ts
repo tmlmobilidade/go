@@ -1,20 +1,4 @@
-// interface Rule {
-//   operatingMode: 'include' | 'exclude'; // include = schedules operate, exclude = schedules do not operate
-
-//   periodIds: string[]; // e.g., ["escolar", "ferias"]
-
-//   weekdays?: string[]; // ["Mon", "Tue", ...], optional
-
-//   holidays?: {
-//     all?: boolean;          // applies to all holidays
-//     specific?: string[];    // holidayIds this rule applies to
-//   };
-
-//   events?: string[]; // list of event IDs or names this rule applies to
-
-//   travelTime?: string; // optional travel info
-// }
-
+import { operationalDateSchema } from '@/_common/operational-date.js';
 import { WEEKDAYS } from '@/dates/date.js';
 import { z } from 'zod';
 
@@ -25,48 +9,55 @@ export enum OPERATING_MODE {
 	INCLUDE = 'include',
 }
 
-// Holidays schema
-const HolidaysSchema = z.discriminatedUnion('mode', [
-	z.object({
-		mode: z.literal('ignore'),
-	}),
-	z.object({
-		mode: z.literal('all'),
-	}),
-	z.object({
-		ids: z.array(z.string()).min(1),
-		mode: z.literal('specific'),
-	}),
-]);
+const HHMM = z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/);
 
 /* * */
 
-export const ScheduleRuleSchema = z.object({
-	_id: z.string().optional(), // Client-side ID for tracking
+export const ManualScheduleRuleSchema = z.object({
+	// stable id for UI dedupe
+	_id: z.string().optional(),
 
+	kind: z.literal('manual'),
 	name: z.string().optional(),
 
 	operatingMode: z.nativeEnum(OPERATING_MODE),
 
-	// Can reference multiple periods by ID
 	periodIds: z.array(z.string()).optional(),
+	timePoints: z.array(HHMM),
 
-	// Optional weekdays filter
-	weekdays: z.array(z.nativeEnum(WEEKDAYS)).optional(),
-
-	// Optional holidays filter
-	holidays: HolidaysSchema.optional(),
-
-	// Optional events
-	events: z.array(z.string()).optional(),
-
-	// Optional travel time
 	travelTime: z.string().optional(),
 
-	// Optional timepoints when this rule applies (HH:mm format)
-	timePoints: z.array(z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)),
+	weekdays: z.array(z.nativeEnum(WEEKDAYS)).optional(),
+});
+
+export const EventDerivedRestrictionSchema = z.object({
+	kind: z.literal('event'),
+
+	// stable id for UI dedupe
+	_id: z.string().optional(), // e.g. `event:${event_id}`
+
+	event: z.object({
+		end_time: HHMM,
+		id: z.string(),
+		start_time: HHMM,
+		title: z.string(),
+	}),
+
+	name: z.string().optional(),
+	operatingMode: z.literal(OPERATING_MODE.EXCLUDE),
+	timePoints: z.array(HHMM),
+
+	// applies on these operational dates
+	dates: z.array(operationalDateSchema),
 });
 
 /* * */
 
+export const ScheduleRuleSchema = z.discriminatedUnion('kind', [
+	ManualScheduleRuleSchema,
+	EventDerivedRestrictionSchema,
+]);
+
 export type ScheduleRule = z.infer<typeof ScheduleRuleSchema>;
+export type ManualScheduleRule = z.infer<typeof ManualScheduleRuleSchema>;
+export type EventDerivedRestriction = z.infer<typeof EventDerivedRestrictionSchema>;

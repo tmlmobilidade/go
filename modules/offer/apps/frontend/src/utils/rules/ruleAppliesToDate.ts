@@ -1,57 +1,49 @@
-import type { OperationalDate, Period, ScheduleRule } from '@tmlmobilidade/types';
+import type { EventDerivedRestriction, ManualScheduleRule, OperationalDate, Period, ScheduleRule } from '@tmlmobilidade/types';
 
 import { calendarKey, CalendarKey, calendarWeekday, Dates, datesFromCalendarKey, keyToYYYYMMDD } from '@tmlmobilidade/dates';
 
 interface CalendarContext {
 	endDate: Date
-	events: Set<CalendarKey>
-	holidays: Set<CalendarKey>
 	periods: Period[]
 	startDate: Date
 }
 
-function isInPeriod(rule: ScheduleRule, key: CalendarKey, ctx: CalendarContext): boolean {
+/* ---------------- type guards ---------------- */
+
+const isManualRule = (r: ScheduleRule): r is ManualScheduleRule => r.kind === 'manual';
+const isEventRule = (r: ScheduleRule): r is EventDerivedRestriction => r.kind === 'event';
+
+/* ---------------- helpers ---------------- */
+
+function isInPeriod(rule: ManualScheduleRule, key: CalendarKey, ctx: CalendarContext): boolean {
 	if (!rule.periodIds?.length) return false;
 
-	// Periods are stored as OperationalDate (yyyyMMdd)
 	const op = keyToYYYYMMDD(key) as OperationalDate;
-
-	return ctx.periods.some(p =>
-		rule.periodIds?.includes(p._id) && p.dates?.includes(op),
-	);
+	return ctx.periods.some(p => rule.periodIds?.includes(p._id) && p.dates?.includes(op));
 }
 
-function ruleAppliesToCivilKey(rule: ScheduleRule, key: CalendarKey, ctx: CalendarContext): boolean {
+function ruleAppliesToCivilKey(rule: ManualScheduleRule, key: CalendarKey, ctx: CalendarContext): boolean {
 	const weekday = calendarWeekday(key);
 
 	// 1) Period required
 	if (!isInPeriod(rule, key, ctx)) return false;
 
-	// 2) Holidays exclusion (your rule says "excepto feriados")
-	if (ctx.holidays.has(key)) return false;
-
-	// 3) Weekdays required
+	// 2) Weekdays required
 	if (!rule.weekdays?.length) return false;
 	if (!rule.weekdays.includes(weekday)) return false;
-
-	// 4) Events constraint (if present)
-	if (rule.events && !ctx.events.has(key)) return false;
 
 	return true;
 }
 
-export function computeRuleImpact(rule: ScheduleRule, ctx: CalendarContext) {
+export function computeRuleImpact(rule: ManualScheduleRule, ctx: CalendarContext) {
 	const affected: CalendarKey[] = [];
 
-	// Convert JS Date range into civil calendar keys
 	const startKey = calendarKey(Dates.fromJSDate(ctx.startDate));
 	const endKey = calendarKey(Dates.fromJSDate(ctx.endDate));
 
-	// Ensure ordering
 	const from = startKey < endKey ? startKey : endKey;
 	const to = startKey < endKey ? endKey : startKey;
 
-	// Iterate by calendar keys using a stable Dates anchor (noon Lisbon)
 	let current = datesFromCalendarKey(from);
 	const end = datesFromCalendarKey(to);
 
@@ -68,10 +60,14 @@ export function computeRuleImpact(rule: ScheduleRule, ctx: CalendarContext) {
 	return { count: affected.length, dates: affected };
 }
 
+/* ---------------- output ---------------- */
+
 export interface RulesPreview {
 	byDate: Map<CalendarKey, Set<string>>
 	dates: CalendarKey[]
 }
+
+/* ---------------- main ---------------- */
 
 export function computeFinalAffectedDatesAndTimepoints(
 	rules: ScheduleRule[],
@@ -79,7 +75,6 @@ export function computeFinalAffectedDatesAndTimepoints(
 ): RulesPreview {
 	const byDate = new Map<CalendarKey, Set<string>>();
 
-	// helper: ensure a set exists
 	const ensure = (k: CalendarKey) => {
 		let s = byDate.get(k);
 		if (!s) {
@@ -89,33 +84,56 @@ export function computeFinalAffectedDatesAndTimepoints(
 		return s;
 	};
 
-	for (const rule of rules) {
-		const impacted = computeRuleImpact(rule, ctx).dates;
+	// 1) Apply MANUAL rules (include/exclude timePoints)
+	for (const r of rules) {
+		if (!isManualRule(r)) continue;
 
-		const tps = (rule.timePoints ?? []) as string[];
+		const impacted = computeRuleImpact(r, ctx).dates;
+		const tps = (r.timePoints ?? []) as string[];
 
-		if (rule.operatingMode === 'exclude') {
+		if (r.operatingMode === 'exclude') {
 			for (const k of impacted) {
 				if (tps.length === 0) {
-					// “exclude all” day semantics
 					byDate.delete(k);
 					continue;
 				}
 
 				const set = byDate.get(k);
-				if (!set) continue; // nothing included -> nothing to remove
+				if (!set) continue;
 
 				for (const tp of tps) set.delete(tp);
-
 				if (set.size === 0) byDate.delete(k);
 			}
 		}
 		else {
-			// include
 			for (const k of impacted) {
 				const set = ensure(k);
 				for (const tp of tps) set.add(tp);
 			}
+		}
+	}
+
+	// 2) Apply EVENT-derived restrictions (remove within window on explicit dates)
+	for (const r of rules) {
+		if (!isEventRule(r)) continue;
+
+		const start = r.event?.start_time;
+		const end = r.event?.end_time;
+		if (!start || !end) continue;
+
+		// build a Set for O(1) date membership checks
+		const opDates = new Set<OperationalDate>(r.dates as OperationalDate[]);
+
+		// Only iterate included days (cheap)
+		for (const [k, set] of byDate) {
+			const op = keyToYYYYMMDD(k) as OperationalDate;
+			if (!opDates.has(op)) continue;
+
+			for (const tp of Array.from(set)) {
+				if (tp >= start && tp <= end) set.delete(tp);
+			}
+
+			if (set.size === 0) byDate.delete(k);
 		}
 	}
 

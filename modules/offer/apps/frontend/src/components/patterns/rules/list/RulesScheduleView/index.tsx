@@ -30,7 +30,7 @@ interface TimeRow {
 
 export function RulesScheduleView() {
 	const patternDetailContext = usePatternDetailContext();
-	const rules = patternDetailContext.data.form.values.rules || [];
+	const rules = patternDetailContext.data.mergedRules || [];
 	const periodsContext = usePeriodsContext();
 
 	const rows = useMemo<TimeRow[]>(() => {
@@ -38,11 +38,7 @@ export function RulesScheduleView() {
 		const periods = periodsContext.data.periods || [];
 
 		for (const rule of rules) {
-			const { long, short } = buildRuleSummary(rule, {
-				eventNames: {},
-				holidayNames: {},
-				periods,
-			});
+			const { long, short } = buildRuleSummary(rule, { periods });
 
 			for (const time of rule.timePoints || []) {
 				const minutes = toMinutes(time);

@@ -4,7 +4,7 @@ import { DocumentSchema } from '@/_common/document.js';
 import { StopSchema } from '@/stops/stop.js';
 import { z } from 'zod';
 
-import { ScheduleRuleSchema } from './scheduleRule.js';
+import { ManualScheduleRuleSchema, ScheduleRuleSchema } from './scheduleRule.js';
 
 /* * */
 
@@ -68,9 +68,14 @@ export const PatternSimplifiedSchema = z.object({
 
 export const CreatePatternSchema = PatternSchema.omit({ _id: true, created_at: true, updated_at: true });
 
+export const PersistedPatternRulesSchema = z.array(ManualScheduleRuleSchema);
+
 export const UpdatePatternSchema = CreatePatternSchema
 	.omit({ created_by: true })
-	.partial();
+	.partial()
+	.extend({
+		rules: PersistedPatternRulesSchema.optional(),
+	});
 
 /* * */
 

@@ -1,5 +1,4 @@
-// calendarEventTypes.ts
-import { IconBeach, IconNote, TablerIcon } from '@tabler/icons-react';
+import { IconBeach, IconCalendarStar, IconNote, TablerIcon } from '@tabler/icons-react';
 
 import { CalendarEventType } from './event.js';
 
@@ -8,8 +7,8 @@ export const EVENT_TYPE_DEFS: Record<
 	{ color: string, icon?: TablerIcon, label: string }
 > = {
 	'annotation': { color: '#f59e0b', icon: IconNote, label: 'Anotações' },
-	'event': { color: 'var(--color-primary)', label: 'Dias afetados' },
+	'event': { color: '#00bd72ff', icon: IconCalendarStar, label: 'Dias afetados' },
 	'holiday': { color: '#8b5cf6', icon: IconBeach, label: 'Feriados' },
-	'period': { color: 'var(--color-primary)', label: 'Períodos' },
+	'period': { color: 'var(--color-system-text-200)', label: 'Períodos' },
 	'rule-impact': { color: 'var(--color-primary)', label: 'Dias afetados' },
 };

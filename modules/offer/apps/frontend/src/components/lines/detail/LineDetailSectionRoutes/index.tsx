@@ -27,7 +27,7 @@ export function LineDetailSectionRoutes() {
 		<Collapsible description="Todas as variantes desta linha, incluindo a base." title="Rotas">
 			<Section gap="sm">
 				<Section padding="none">
-					{lineDetailContext.data.line.routes.map((route, index) => (
+					{(lineDetailContext.data.line?.routes ?? []).map((route, index) => (
 						<LineDetailRoute key={route._id ?? index} lineId={lineDetailContext.data.line?._id} routeData={route} />
 					))}
 				</Section>

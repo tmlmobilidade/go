@@ -1,6 +1,6 @@
 /* * */
 
-import { Annotation, Period } from '@tmlmobilidade/types';
+import { Annotation, Event, Period } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -13,5 +13,9 @@ export interface PeriodNormalized extends Period {
 }
 
 export interface HolidayNormalized extends Annotation {
+	agency_ids_normalized: string
+}
+
+export interface EventNormalized extends Event {
 	agency_ids_normalized: string
 }

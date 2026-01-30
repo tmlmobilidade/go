@@ -2,10 +2,7 @@
 
 /* * */
 
-import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
-import { usePeriodsContext } from '@/contexts/Periods.context';
-import { computeFinalAffectedDatesAndTimepoints } from '@/utils/rules/ruleAppliesToDate';
-import { CalendarKey, Dates } from '@tmlmobilidade/dates';
+import { CalendarKey } from '@tmlmobilidade/dates';
 import { CalendarEvent } from '@tmlmobilidade/types';
 import { EventsCalendar, Pane } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';

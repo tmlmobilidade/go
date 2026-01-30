@@ -2,16 +2,14 @@
 
 import { AgenciesPermissionSchema } from '@/permissions/agencies.js';
 import { AlertsPermissionSchema } from '@/permissions/alerts.js';
-import { AnnotationsPermissionSchema } from '@/permissions/annotations.js';
 import { RidesPermissionSchema, SamsPermissionSchema } from '@/permissions/controller.js';
+import { AnnotationsPermissionSchema, EventsPermissionSchema, HolidaysPermissionSchema, PeriodsPermissionSchema } from '@/permissions/dates.js';
 import { FaresPermissionSchema } from '@/permissions/fares.js';
 import { GtfsValidationsPermissionSchema } from '@/permissions/gtfs-validations.js';
-import { HolidaysPermissionSchema } from '@/permissions/holidays.js';
 import { HomePermissionSchema } from '@/permissions/home.js';
 import { LinesPermissionSchema } from '@/permissions/lines.js';
 import { OrganizationsPermissionSchema } from '@/permissions/organizations.js';
 import { PerformancePermissionSchema } from '@/permissions/performance.js';
-import { PeriodsPermissionSchema } from '@/permissions/periods.js';
 import { PlansPermissionSchema } from '@/permissions/plans.js';
 import { RolesPermissionSchema } from '@/permissions/roles.js';
 import { StopsPermissionSchema } from '@/permissions/stops.js';
@@ -40,10 +38,11 @@ export const PermissionSchema = z.discriminatedUnion('scope', [
 	FaresPermissionSchema,
 	AnnotationsPermissionSchema,
 	PeriodsPermissionSchema,
+	HolidaysPermissionSchema,
+	EventsPermissionSchema,
 	ZonesPermissionSchema,
 	TypologiesPermissionSchema,
 	LinesPermissionSchema,
-	HolidaysPermissionSchema,
 ]);
 
 export type Permission = z.infer<typeof PermissionSchema>;

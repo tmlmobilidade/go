@@ -19,3 +19,15 @@
 .container:hover {
   background-color: var(--color-system-background-200);
 }
+
+/* * */
+/* INFERRED EVENT RULE */
+
+.inferredEventRule {
+  background-color: var(--color-system-background-300);
+  cursor: not-allowed;
+}
+
+.inferredEventRule:hover {
+  background-color: var(--color-system-background-300);
+}

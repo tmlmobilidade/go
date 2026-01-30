@@ -1,5 +1,6 @@
 /* * */
 
+import { mergePatternWithEventRules } from '@/utils/rules.js';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { patterns, stops } from '@tmlmobilidade/interfaces';
@@ -90,6 +91,8 @@ export class PatternsController {
 
 		if (!patternData) throw new HttpException(HttpStatus.NOT_FOUND, 'Pattern not found');
 
+		const merged = await mergePatternWithEventRules(patternData);
+
 		//
 		// Get the resource permissions for patterns for the current user.
 
@@ -122,7 +125,7 @@ export class PatternsController {
 
 			// Return pattern with populated path
 			return reply.send({
-				data: { ...patternData, path: populatedPath },
+				data: { ...merged, path: populatedPath },
 				error: null,
 				statusCode: HttpStatus.OK,
 			});
@@ -132,7 +135,7 @@ export class PatternsController {
 		// Fetch the pattern data
 
 		return reply.send({
-			data: patternData,
+			data: merged,
 			error: null,
 			statusCode: HttpStatus.OK,
 		});

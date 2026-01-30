@@ -7,7 +7,7 @@ import { computeRuleImpact } from '@/utils/rules/ruleAppliesToDate';
 import { buildRuleSummary } from '@/utils/rules/ruleSummary';
 import { useForm } from '@mantine/form';
 import { Dates } from '@tmlmobilidade/dates';
-import { OPERATING_MODE, ScheduleRule, ScheduleRuleSchema } from '@tmlmobilidade/types';
+import { ManualScheduleRule, ManualScheduleRuleSchema, OPERATING_MODE } from '@tmlmobilidade/types';
 import { type UseFormReturnType } from '@tmlmobilidade/ui';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
@@ -24,7 +24,7 @@ interface RuleCreateContextState {
 		submitRule: () => void
 	}
 	data: {
-		form: UseFormReturnType<ScheduleRule>
+		form: UseFormReturnType<ManualScheduleRule>
 		ruleImpact: {
 			count: number
 			dates: string[]
@@ -51,7 +51,7 @@ export function useRuleCreateContext() {
 
 /* * */
 
-export const RuleCreateContextProvider = ({ children, initialValues, onDelete, onSubmit }: PropsWithChildren<{ initialValues?: ScheduleRule, onDelete?: () => void, onSubmit: (rule: ScheduleRule) => void }>) => {
+export const RuleCreateContextProvider = ({ children, initialValues, onDelete, onSubmit }: PropsWithChildren<{ initialValues?: ManualScheduleRule, onDelete?: () => void, onSubmit: (rule: ManualScheduleRule) => void }>) => {
 	//
 
 	//
@@ -66,14 +66,15 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	//
 	// C. Setup form
 
-	const form = useForm<ScheduleRule>({
+	const form = useForm<ManualScheduleRule>({
 		initialValues: initialValues || {
+			kind: 'manual',
 			operatingMode: OPERATING_MODE.INCLUDE,
 			periodIds: [],
 			timePoints: [],
 		},
 		mode: 'controlled',
-		validate: zodResolver(ScheduleRuleSchema),
+		validate: zodResolver(ManualScheduleRuleSchema),
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
@@ -89,8 +90,6 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 		form.values,
 		{
 			endDate: Dates.now('Europe/Lisbon').plus({ years: 1 }).js_date,
-			events: new Set(),
-			holidays: new Set(),
 			periods: periodsContext.data.periods,
 			startDate: new Date(),
 		},
