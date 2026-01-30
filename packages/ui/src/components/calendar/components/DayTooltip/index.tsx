@@ -8,8 +8,8 @@ import styles from './styles.module.css';
 /* * */
 
 export interface DayTooltipProps {
+	calendarEvents: CalendarEvent[]
 	date: string
-	events: CalendarEvent[]
 }
 
 interface RuleImpactMetadata {
@@ -18,19 +18,19 @@ interface RuleImpactMetadata {
 
 /* * */
 
-export function DayTooltip({ date, events }: DayTooltipProps) {
+export function DayTooltip({ calendarEvents, date }: DayTooltipProps) {
 	//
 
-	if (events.length === 0) {
+	if (calendarEvents.length === 0) {
 		return null;
 	}
 
 	// Separate periods and other events
-	const periods = events.filter(e => e.type === 'period');
-	const annotations = events.filter(e => e.type === 'annotation');
-	const holidays = events.filter(e => e.type === 'holiday');
-	const ruleImpacts = events.filter(e => e.type === 'rule-impact');
-
+	const periods = calendarEvents.filter(e => e.type === 'period');
+	const annotations = calendarEvents.filter(e => e.type === 'annotation');
+	const holidays = calendarEvents.filter(e => e.type === 'holiday');
+	const events = calendarEvents.filter(e => e.type === 'event');
+	const ruleImpacts = calendarEvents.filter(e => e.type === 'rule-impact');
 	const affectedTimepoints = Array
 		.from(new Set(
 			ruleImpacts.flatMap((e) => {
@@ -99,6 +99,32 @@ export function DayTooltip({ date, events }: DayTooltipProps) {
 				<div className={styles.section}>
 					<div className={styles.sectionTitle}>Feriados</div>
 					{holidays.map((event) => {
+						const Icon = event.icon;
+						return (
+							<div key={event.id} className={styles.event}>
+								{Icon && (
+									<div className={styles.eventIcon}>
+										<Icon size={14} />
+									</div>
+								)}
+								<div className={styles.eventContent}>
+									<div className={styles.eventTitle}>{event.title}</div>
+									{event.description && (
+										<div className={styles.eventMeta}>
+											{event.description}
+										</div>
+									)}
+								</div>
+							</div>
+						);
+					})}
+				</div>
+			)}
+
+			{events.length > 0 && (
+				<div className={styles.section}>
+					<div className={styles.sectionTitle}>Eventos</div>
+					{events.map((event) => {
 						const Icon = event.icon;
 						return (
 							<div key={event.id} className={styles.event}>

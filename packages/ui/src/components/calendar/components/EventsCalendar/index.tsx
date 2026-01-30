@@ -78,6 +78,9 @@ function EventsCalendarContent({
 		if (event.type === 'holiday') {
 			router.push(PAGE_ROUTES.dates.HOLIDAYS_DETAIL(event.id));
 		}
+		if (event.type === 'event') {
+			router.push(PAGE_ROUTES.dates.EVENTS_DETAIL(event.id));
+		}
 	};
 
 	//
@@ -126,6 +129,13 @@ function EventsCalendarContent({
 					count: eventsContext.data.eventTypeCounts.holidays,
 					id: 'holiday',
 					label: 'Feriados',
+				},
+				{
+					checked: uiContext.state.eventTypeFilters.get('event') !== false,
+					color: EVENT_TYPE_DEFS['event'].color,
+					count: eventsContext.data.eventTypeCounts.events,
+					id: 'event',
+					label: 'Eventos',
 				},
 				...(eventsContext.data.eventTypeCounts.additional > 0 ? [{
 					checked: uiContext.state.eventTypeFilters.get('event') !== false,
