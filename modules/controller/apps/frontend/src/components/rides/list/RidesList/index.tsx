@@ -11,7 +11,7 @@ import { RidesListCellHeadsign } from '@/components/rides/list/RidesListCellHead
 import { RidesListCellPassengers } from '@/components/rides/list/RidesListCellPassengers';
 import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar';
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
-import { useRidesListContext } from '@/contexts/RidesList.context';
+import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';

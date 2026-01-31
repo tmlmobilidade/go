@@ -1,7 +1,7 @@
 /* * */
 
+import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { useRidesListContext } from '@/contexts/RidesList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

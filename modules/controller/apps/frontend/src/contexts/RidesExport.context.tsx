@@ -3,7 +3,7 @@
 /* * */
 
 import { RIDES_EXPORT_MODAL_ID } from '@/components/rides/export/RidesExportModal';
-import { RidesListContextState } from '@/contexts/RidesList.context';
+import { RidesListContextState } from '@/components/rides/list/RidesList.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { CreateFileExportDto, DelayStatus, OperationalStatus, RideAcceptanceStatus, RideAnalysisGradeWithNone, RideExportProperties, type UnixTimestamp } from '@tmlmobilidade/types';
 import { closeModal, useExportsContext, useToast } from '@tmlmobilidade/ui';

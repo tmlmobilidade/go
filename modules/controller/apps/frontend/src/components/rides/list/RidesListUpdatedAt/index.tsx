@@ -1,6 +1,6 @@
 'use client';
 
-import { useRidesListContext } from '@/contexts/RidesList.context';
+import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 /* * */
 
 import { Tag } from '@tmlmobilidade/ui';
