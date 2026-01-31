@@ -3,10 +3,10 @@
 /* * */
 
 import { openRideExportModal } from '@/components/rides/export/RidesExportModal';
-import { RidesListUpdatedAt } from '@/components/rides/list/RidesListUpdatedAt';
 import { useRidesListContext } from '@/components/rides/list/RidesList.context';
+import { RidesListLastUpdatedAt } from '@/components/rides/list/RidesListLastUpdatedAt';
 import { IconFileDownload } from '@tabler/icons-react';
-import { IconButton, Label, Loader, SearchInput, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { IconButton, Label, SearchInput, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -24,11 +24,10 @@ export function RidesListHeader() {
 	return (
 		<Toolbar>
 			<Label size="lg" caps>Circulações</Label>
-			{ridesListContext.flags.loading && <Loader size="sm" />}
+			<RidesListLastUpdatedAt isLoading={ridesListContext.flags.loading} />
 			<Spacer shrink />
-			<RidesListUpdatedAt />
 			<Tag label={`Total ${ridesListContext.data.filtered.length}`} variant="muted" />
-			<SearchInput onChange={ridesListContext.actions.setFilterSearch} value={ridesListContext.filters.search} />
+			<SearchInput onChange={ridesListContext.filters.search.set} value={ridesListContext.filters.search.value} />
 			<IconButton icon={<IconFileDownload />} onClick={() => openRideExportModal(ridesListContext.filters)} tooltip="Exportar Circulações" variant="secondary" />
 		</Toolbar>
 	);

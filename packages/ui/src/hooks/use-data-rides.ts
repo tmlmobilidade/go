@@ -1,12 +1,13 @@
 'use client';
 
+import { Dates } from '@tmlmobilidade/dates';
 /* * */
 
 import { normalizeRide } from '@tmlmobilidade/normalizers';
-import { type GetRidesBatchQuery, type RideNormalized } from '@tmlmobilidade/types';
+import { type GetRidesBatchQuery, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
 import { type SelectDataItem, useDebouncedState, useStateRef } from '@tmlmobilidade/ui';
 import { type HttpResponse } from '@tmlmobilidade/utils';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -20,6 +21,7 @@ interface UseDataRidesProps {
 interface UseDataRidesReturnType {
 	error: Error | undefined
 	isLoading: boolean
+	lastUpdatedAt: null | UnixTimestamp
 	options: SelectDataItem[]
 	raw: RideNormalized[]
 }
@@ -35,6 +37,8 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 	const webSocketRef = useRef<null | WebSocket>(null);
 
 	const [queryStringParams, setQueryStringParams] = useDebouncedState<null | string>(null, 500);
+
+	const [lastUpdatedAt, setLastUpdatedAt] = useState<null | UnixTimestamp>(null);
 
 	const ridesData = useStateRef<RideNormalized[]>([]);
 
@@ -72,8 +76,7 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 				next[index] = eventData.data;
 				// Trigger data update
 				ridesData.set(next);
-				// setLastUpdate(Dates.now('Europe/Lisbon').unix_timestamp);
-				// console.log('Received ride update via WebSocket:', eventData.data._id);
+				setLastUpdatedAt(Dates.now('Europe/Lisbon').unix_timestamp);
 			}
 			catch (error) {
 				console.error('WebSocket message parse error:', error);
@@ -108,13 +111,14 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 
 	useEffect(() => {
 		ridesData.set(fetchedRidesData ?? []);
+		setLastUpdatedAt(Dates.now('Europe/Lisbon').unix_timestamp);
 	}, [fetchedRidesData]);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
 			const normalizedRidesData = ridesData.ref.current.map(item => normalizeRide(item));
 			ridesData.set(normalizedRidesData);
-		}, 500);
+		}, 1_000);
 		return () => clearInterval(interval);
 	}, []);
 
@@ -160,6 +164,7 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 	return {
 		error: fetchedRidesError,
 		isLoading: fetchedRidesLoading,
+		lastUpdatedAt: lastUpdatedAt,
 		options: optionsData,
 		raw: ridesData.state ?? [],
 	};
