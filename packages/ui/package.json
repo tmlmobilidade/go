@@ -38,6 +38,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
