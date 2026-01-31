@@ -6,11 +6,11 @@ import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useDebouncedState, useDebouncedValue } from '@mantine/hooks';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideNormalized } from '@tmlmobilidade/types';
+import { PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
 import { DelayStatusSchema, OperationalStatusSchema } from '@tmlmobilidade/types';
 import { RIDE_ANALYSIS_GRADE_OPTIONS, RideAcceptanceStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
-import { getBasePath, parseAsArrayOfStrings } from '@tmlmobilidade/ui';
-import { type HttpResponse } from '@tmlmobilidade/utils';
+import { parseAsArrayOfStrings, useDataAgencies } from '@tmlmobilidade/ui';
+import { HttpResponse } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef } from 'react';
 import useSWR from 'swr';
@@ -76,7 +76,16 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const agenciesContext = useAgenciesContext();
 
-	const webSocketRef = useRef<null | WebSocket>(null);
+	//
+	// B. Fetch data
+
+	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.rides.actions.analysis_read],
+		scope: PermissionCatalog.all.rides.scope,
+	});
+
+	//
+	// B. Setup filters
 
 	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
 	const [debouncedFilterSearch] = useDebouncedValue(filterSearch.trim(), 500);
@@ -99,44 +108,67 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<RideNormalized[], Error>(queryStringParams && `${API_ROUTES.controller.RIDES_LIST}?${queryStringParams}`);
+	const { data: ridesData, error: ridesError, isLoading: ridesLoading, mutate: mutateRides } = useSWR<RideNormalized[], Error>(queryStringParams && `${API_ROUTES.controller.RIDES_LIST}?${queryStringParams}`, { refreshInterval: 300_000 });
+
+	const webSocketRef = useRef<null | WebSocket>(null);
 
 	useEffect(() => {
-		// This effect runs every time there is a change in the websocket reference,
-		// as the goal is to always maintain an open connection. If the connection is
-		// already open, there is no need to open a new one, so return early.
-		// If the connection is not open, then try to open a new one.
 		if (webSocketRef.current) return;
-		// Open a new WebSocket connection
+
 		console.log('Opening WebSocket connection...');
-		const wsProtocol = (window.location.hostname === 'localhost') ? 'ws' : 'wss';
-		webSocketRef.current = new WebSocket(`${wsProtocol}://${window.location.host}${getBasePath()}/api/rides/ws`);
-		webSocketRef.current.addEventListener('open', handleWebsocketInit);
-		webSocketRef.current.addEventListener('message', handleIncomingMessage);
-		// Cleanup on unmount
+		const wsUrl = new URL(API_ROUTES.controller.RIDES_WS);
+		wsUrl.protocol = wsUrl.protocol === 'https:' ? 'wss:' : 'ws:';
+		const socket = new WebSocket(wsUrl.toString());
+		webSocketRef.current = socket;
+
+		const handleWebsocketInit = () => {
+			if (!webSocketRef.current) return;
+			if (webSocketRef.current.readyState !== webSocketRef.current.OPEN) return;
+			webSocketRef.current.send('init');
+		};
+
+		const handleIncomingMessage = (event: MessageEvent<string>) => {
+			try {
+				const eventData: HttpResponse<RideNormalized> = JSON.parse(event.data);
+				console.log('eventData:', eventData.data._id);
+				// mutateRides((current) => {
+				// 	if (!current) return current;
+				// 	const index = current.findIndex(ride => ride._id === eventData.data._id);
+				// 	if (index === -1) return current;
+				// 	const next = [...current];
+				// 	next[index] = eventData.data;
+				// 	return next;
+				// });
+				// setLastUpdate(Dates.now('Europe/Lisbon').unix_timestamp);
+				// console.log('Received ride update via WebSocket:', eventData.data._id);
+			}
+			catch (error) {
+				console.error('WebSocket message parse error:', error);
+			}
+		};
+
+		const handleWebsocketError = (event: Event) => {
+			console.error('WebSocket error:', event);
+		};
+
+		const handleWebsocketClose = (event: CloseEvent) => {
+			console.warn('WebSocket closed:', event.code, event.reason);
+		};
+
+		socket.addEventListener('open', handleWebsocketInit);
+		socket.addEventListener('message', handleIncomingMessage);
+		socket.addEventListener('error', handleWebsocketError);
+		socket.addEventListener('close', handleWebsocketClose);
+
 		return () => {
-			webSocketRef.current.removeEventListener('open', handleWebsocketInit);
-			webSocketRef.current.removeEventListener('message', handleIncomingMessage);
-			// webSocketRef.current.close();
+			socket.removeEventListener('open', handleWebsocketInit);
+			socket.removeEventListener('message', handleIncomingMessage);
+			socket.removeEventListener('error', handleWebsocketError);
+			socket.removeEventListener('close', handleWebsocketClose);
+			socket.close();
 			webSocketRef.current = null;
 		};
-	}, []);
-
-	const handleWebsocketInit = () => {
-		if (!webSocketRef.current) return;
-		if (webSocketRef.current.readyState !== webSocketRef.current.OPEN) return;
-		webSocketRef.current.send('init');
-	};
-
-	const handleIncomingMessage = (event: MessageEvent<string>) => {
-		// Try to decode the message and extract the Ride data
-		const eventData: HttpResponse<RideNormalized> = JSON.parse(event.data);
-		// If the ride is not in the normalized data, return early
-		if (!ridesData?.some(ride => ride._id === eventData.data._id)) return;
-		// Normalize the ride data and update the state
-		ridesData.push(eventData.data);
-		setFlagsLastUpdateState(Dates.now('Europe/Lisbon').unix_timestamp);
-	};
+	}, [mutateRides]);
 
 	//
 	// C. Transform data

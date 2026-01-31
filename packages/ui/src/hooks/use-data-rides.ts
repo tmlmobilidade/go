@@ -4,7 +4,7 @@
 
 import { type GetRidesBatchQuery, type RideNormalized } from '@tmlmobilidade/types';
 import { type SelectDataItem, useDebouncedState } from '@tmlmobilidade/ui';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -29,6 +29,8 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 
 	//
 	// A. Setup variables
+
+	const webSocketRef = useRef<null | WebSocket>(null);
 
 	const [queryStringParams, setQueryStringParams] = useDebouncedState<null | string>(null, 500);
 

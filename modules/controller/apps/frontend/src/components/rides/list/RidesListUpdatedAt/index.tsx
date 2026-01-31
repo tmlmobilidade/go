@@ -39,7 +39,7 @@ export function RidesListUpdatedAt() {
 	//
 	// C. Render components
 
-	return <Tag label={lastUpdatedAtString} variant="muted" />;
+	return <Tag label={ridesListContext.flags.last_update} variant="muted" />;
 
 	//
 }
