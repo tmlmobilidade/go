@@ -160,8 +160,9 @@ export class RidesSharedController {
 						console.log('Undefined document:', databaseOperation);
 						return;
 					}
+					const normalizedRide = normalizeRide(databaseOperation['fullDocument']);
 					const message: HttpResponse<RideNormalized> = {
-						data: databaseOperation['fullDocument'],
+						data: normalizedRide,
 						error: null,
 						statusCode: HttpStatus.OK,
 					};
