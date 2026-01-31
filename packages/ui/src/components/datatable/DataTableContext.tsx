@@ -7,7 +7,7 @@ import { createContext, type PropsWithChildren, type RefObject, useCallback, use
 import { type ViewportListRef } from 'react-viewport-list';
 
 import { tryParseDateToTimestamp } from '../../lib/utils';
-import { DataTableColumn } from './DataTable';
+import { type DataTableColumn } from './DataTable';
 
 /* * */
 
