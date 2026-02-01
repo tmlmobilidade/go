@@ -17,6 +17,7 @@
 		"lint:fix": "eslint ./src --fix"
 	},
 	"dependencies": {
+		"@fastify/websocket": "11.2.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/emails": "*",
