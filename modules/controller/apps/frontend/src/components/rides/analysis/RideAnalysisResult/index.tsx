@@ -3,7 +3,7 @@
 /* * */
 
 import { RideAnalysisAnalysisResultItem } from '@/components/rides/analysis/RideAnalysisResultItem';
-import { RideAnalysis } from '@tmlmobilidade/types';
+import { type Ride, type RideAnalysis } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Label, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 interface RideAnalysisAnalysisResultProps {
 	defaultOpen?: boolean
-	items: (RideAnalysis & { id: string })[]
+	items: (RideAnalysis & { id: keyof Ride['analysis'] })[]
 }
 
 /* * */
