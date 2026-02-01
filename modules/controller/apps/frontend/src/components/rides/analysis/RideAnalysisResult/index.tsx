@@ -5,6 +5,7 @@
 import { RideAnalysisAnalysisResultItem } from '@/components/rides/analysis/RideAnalysisResultItem';
 import { RideAnalysis } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Label, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -19,13 +20,18 @@ export function RideAnalysisAnalysisResult({ defaultOpen = false, items }: RideA
 	//
 
 	//
-	// A. Render components
+	// A. Setup variables
+
+	const { t } = useTranslation();
+
+	//
+	// B. Render components
 
 	return (
-		<Collapsible defaultOpen={defaultOpen} description="Eventos dos veículos mapeados" title="Resultado das Análises">
+		<Collapsible defaultOpen={defaultOpen} description={t('default:rides.analysis.RideAnalysisResult.description')} title={t('default:rides.analysis.RideAnalysisResult.title')}>
 			<Section>
 				{!items.length ? (
-					<Label size="lg" caps>Sem Dados</Label>
+					<Label size="lg" caps>{t('default:rides.analysis.RideAnalysisResult.no_data')}</Label>
 				) : (
 					<Grid columns="abc" gap="md">
 						{items.map(item => (

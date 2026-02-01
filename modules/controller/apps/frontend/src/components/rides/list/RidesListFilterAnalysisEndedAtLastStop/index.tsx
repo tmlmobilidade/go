@@ -2,6 +2,7 @@
 
 import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -11,6 +12,8 @@ export function RidesListFilterAnalysisEndedAtLastStop() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const ridesListContext = useRidesListContext();
 
 	//
@@ -19,7 +22,7 @@ export function RidesListFilterAnalysisEndedAtLastStop() {
 	return (
 		<FilterTypeList
 			active={ridesListContext.filters.analysis_ended_at_last_stop.isActive}
-			label="Fim na Última Paragem"
+			label={t('default:list.RidesListFilterAnalysisEndedAtLastStop.label')}
 			onChange={ridesListContext.filters.analysis_ended_at_last_stop.set}
 			options={ridesListContext.filters.analysis_ended_at_last_stop.options}
 			withToggleAll

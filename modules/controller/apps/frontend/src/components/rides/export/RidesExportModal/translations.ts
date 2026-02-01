@@ -1,6 +1,7 @@
 /* * */
 
 import { AcceptanceStatusProps } from '@/components/common/AcceptanceStatusTag';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -56,6 +57,8 @@ export function translateFilterKey(key: string): string {
 }
 
 export function translateFilterValue(key: string, value: string): string {
+	const { t } = useTranslation();
+
 	if (key === 'operational_status') {
 		return OPERATIONAL_STATUS_TRANSLATIONS[value] || value;
 	}
@@ -63,7 +66,8 @@ export function translateFilterValue(key: string, value: string): string {
 		return DELAY_STATUS_TRANSLATIONS[value] || value;
 	}
 	if (key === 'acceptance_status') {
-		return ACCEPTANCE_STATUS_TRANSLATIONS[value] || value;
+		// @ts-expect-error - ACCEPTANCE_STATUS_TRANSLATIONS is a record of string values that are valid translation keys
+		return t(ACCEPTANCE_STATUS_TRANSLATIONS[value] || value);
 	}
 	if (key === 'analysis_simple_three_vehicle_events_grade' || key === 'analysis_ended_at_last_stop' || key === 'analysis_expected_apex_validation_interval' || key === 'analysis_transaction_sequentiality') {
 		return ANALYSIS_GRADE_TRANSLATIONS[value] || value;

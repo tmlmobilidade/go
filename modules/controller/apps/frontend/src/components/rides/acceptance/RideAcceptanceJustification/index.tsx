@@ -13,19 +13,20 @@ import { useTranslation } from 'react-i18next';
 /* * */
 
 function JustificationReadOnly({ cause, manualTripId, message }: { cause?: string, manualTripId?: string, message?: string }) {
+	const { t } = useTranslation();
 	return (
 		<>
-			<Label size="lg" caps>Justificação</Label>
+			<Label size="lg" caps>{t('default:rides.acceptance.RideAcceptanceJustification.title')}</Label>
 			<Section gap="xs" padding="none">
 				<Label>Motivo da justificação</Label>
 				<Text>{cause || '—'}</Text>
 			</Section>
 			<Section gap="xs" padding="none">
-				<Label>Mensagem de justificação</Label>
+				<Label>{t('default:rides.acceptance.RideAcceptanceJustification.readonly.message.label')}</Label>
 				<Text>{message || '—'}</Text>
 			</Section>
 			<Section gap="xs" padding="none">
-				<Label>ID da viagem manual</Label>
+				<Label>{t('default:rides.acceptance.RideAcceptanceJustification.readonly.manual_trip_id.label')}</Label>
 				<Text>{manualTripId || '—'}</Text>
 			</Section>
 		</>
@@ -42,7 +43,7 @@ function JustificationEditable({ cause, manualTripId, message, onSubmit, setCaus
 			<Select
 				label="Motivo da justificação"
 				onChange={setCause}
-				placeholder="Selecione o motivo da justificação"
+				placeholder={t('default:rides.acceptance.RideAcceptanceJustification.fields.cause.placeholder')}
 				value={cause}
 				w="100%"
 				data={AlertCauseSchema.options.map(cause => ({
@@ -51,7 +52,7 @@ function JustificationEditable({ cause, manualTripId, message, onSubmit, setCaus
 				}))}
 			/>
 			<Textarea
-				label="Mensagem de justificação"
+				label={t('default:rides.acceptance.RideAcceptanceJustification.fields.message.label')}
 				minRows={2}
 				onChange={e => setMessage(e.target.value)}
 				value={message}
@@ -59,12 +60,12 @@ function JustificationEditable({ cause, manualTripId, message, onSubmit, setCaus
 				autosize
 			/>
 			<TextInput
-				label="ID da viagem manual (opcional)"
+				label={t('default:rides.acceptance.RideAcceptanceJustification.fields.manual_trip_id.label')}
 				onChange={e => setManualTripId(e.target.value)}
 				value={manualTripId ?? ''}
 				w="100%"
 			/>
-			<Button label="Justificar" onClick={onSubmit} fullWidth />
+			<Button label={t('default:rides.acceptance.RideAcceptanceJustification.SubmitButton.label')} onClick={onSubmit} fullWidth />
 		</>
 	);
 }
@@ -140,6 +141,7 @@ export function AcceptanceStatus({ grade }: { grade: RideAcceptance['acceptance_
 
 export function RideAcceptanceJustification() {
 	const { actions, data } = useRideAcceptanceContext();
+	const { t } = useTranslation();
 	const { acceptance } = data;
 
 	if (!acceptance) return null;
@@ -156,7 +158,7 @@ export function RideAcceptanceJustification() {
 
 	return (
 		<Section gap="md" width="100%">
-			<Label size="lg" caps>Justificação</Label>
+			<Label size="lg" caps>{t('default:rides.acceptance.RideAcceptanceJustification.title')}</Label>
 			<AcceptanceStatus grade={acceptance_status} />
 			<HasPermission
 				action={acceptance_status !== RideAcceptanceStatusSchema.Values.justification_required ? 'NONE' : PermissionCatalog.all.rides.actions.acceptance_justify}
