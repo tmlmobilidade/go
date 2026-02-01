@@ -43,7 +43,7 @@ export function RidesListLastUpdatedAt({ isLoading }: RidesListLastUpdatedAtProp
 		};
 		const updateIndicatorVariant = () => {
 			const diff = DateTime.now().toMillis() - (ridesListContext.flags.last_updated_at ?? 0); // milliseconds
-			if (diff < 5_000) return setIndicatorVariant('primary');
+			if (diff < 10_000) return setIndicatorVariant('primary');
 			return setIndicatorVariant('muted');
 		};
 		updateTooltipValue();
