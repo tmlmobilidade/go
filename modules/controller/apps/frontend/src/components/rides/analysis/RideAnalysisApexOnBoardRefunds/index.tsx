@@ -27,60 +27,60 @@ export function RideAnalysisApexOnBoardRefunds() {
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
-		title: t('controller:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.created_at.label'),
+		title: t('default:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.created_at.label'),
 		width: 280,
 	},
 	{
 		accessor: 'stop_id',
-		title: t('controller:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.stop_id.label'),
+		title: t('default:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.stop_id.label'),
 		width: 100,
 	},
 	{
 		accessor: 'card_serial_number',
-		title: t('controller:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.card_serial_number.label'),
+		title: t('default:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.card_serial_number.label'),
 		width: 220,
 	},
 	{
 		accessor: 'product_long_id',
-		title: t('controller:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.product_id.label'),
+		title: t('default:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.product_id.label'),
 		width: 250,
 	},
 	{
 		accessor: 'product_quantity',
-		title: t('controller:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.product_quantity.label'),
+		title: t('default:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.product_quantity.label'),
 		width: 80,
 	},
 	{
 		accessor: 'price',
 		render: item => <CurrencyTag value={item.price} />,
-		title: t('controller:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.price.label'),
+		title: t('default:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.price.label'),
 		width: 120,
 	},
 	{
 		accessor: 'payment_method',
 		render: item => <ApexPaymentMethodTag value={item.payment_method} />,
-		title: t('controller:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.payment_method.label'),
+		title: t('default:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.payment_method.label'),
 		width: 180,
 	},
 	{
 		accessor: 'card_physical_type',
 		render: item => <ApexCardTypeTag value={item.card_physical_type} />,
-		title: t('controller:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.card_type.label'),
+		title: t('default:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.card_type.label'),
 		width: 220,
 	},
 	{
 		accessor: 'validation_id',
-		title: t('controller:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.id_validation.label'),
+		title: t('default:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.id_validation.label'),
 		width: 400,
 	},
 	{
 		accessor: 'on_board_sale_id',
-		title: t('controller:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.id_on_board_sale.label'),
+		title: t('default:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.id_on_board_sale.label'),
 		width: 400,
 	},
 	{
 		accessor: '_id',
-		title: t('controller:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.id_on_board_refund.label'),
+		title: t('default:rides.analysis.RideAnalysisApexOnBoardRefunds.Table.columns.id_on_board_refund.label'),
 		width: 400,
 	},
 ];
@@ -96,7 +96,7 @@ const sortedSimplifiedApexOnBoardRefunds = useMemo(() => {
 // C. Render components
 
 return (
-	<Collapsible description={t('controller:rides.analysis.RideAnalysisApexOnBoardRefunds.description')} title={t('controller:rides.analysis.RideAnalysisApexOnBoardRefunds.title')}>
+	<Collapsible description={t('default:rides.analysis.RideAnalysisApexOnBoardRefunds.description')} title={t('default:rides.analysis.RideAnalysisApexOnBoardRefunds.title')}>
 		{sortedSimplifiedApexOnBoardRefunds?.length > 0 ? (
 			<DataTable
 				columns={columns}
@@ -105,7 +105,7 @@ return (
 			/>
 		) : (
 			<Section padding="md">
-				<NoDataLabel text={t('controller:rides.analysis.RideAnalysisApexOnBoardRefunds.no_data')} />
+				<NoDataLabel text={t('default:rides.analysis.RideAnalysisApexOnBoardRefunds.no_data')} />
 				</Section>
 			)}
 

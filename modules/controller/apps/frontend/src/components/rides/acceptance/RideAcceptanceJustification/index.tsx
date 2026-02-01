@@ -16,17 +16,17 @@ function JustificationReadOnly({ cause, manualTripId, message }: { cause?: strin
 	const { t } = useTranslation();
 	return (
 		<>
-			<Label size="lg" caps>{t('controller:rides.acceptance.RideAcceptanceJustification.title')}</Label>
+			<Label size="lg" caps>{t('default:rides.acceptance.RideAcceptanceJustification.title')}</Label>
 			<Section gap="xs" padding="none">
 				<Label>Motivo da justificação</Label>
 				<Text>{cause || '—'}</Text>
 			</Section>
 			<Section gap="xs" padding="none">
-				<Label>{t('controller:rides.acceptance.RideAcceptanceJustification.readonly.message.label')}</Label>
+				<Label>{t('default:rides.acceptance.RideAcceptanceJustification.readonly.message.label')}</Label>
 				<Text>{message || '—'}</Text>
 			</Section>
 			<Section gap="xs" padding="none">
-				<Label>{t('controller:rides.acceptance.RideAcceptanceJustification.readonly.manual_trip_id.label')}</Label>
+				<Label>{t('default:rides.acceptance.RideAcceptanceJustification.readonly.manual_trip_id.label')}</Label>
 				<Text>{manualTripId || '—'}</Text>
 			</Section>
 		</>
@@ -43,7 +43,7 @@ function JustificationEditable({ cause, manualTripId, message, onSubmit, setCaus
 			<Select
 				label="Motivo da justificação"
 				onChange={setCause}
-				placeholder={t('controller:rides.acceptance.RideAcceptanceJustification.fields.cause.placeholder')}
+				placeholder={t('default:rides.acceptance.RideAcceptanceJustification.fields.cause.placeholder')}
 				value={cause}
 				w="100%"
 				data={AlertCauseSchema.options.map(cause => ({
@@ -52,7 +52,7 @@ function JustificationEditable({ cause, manualTripId, message, onSubmit, setCaus
 				}))}
 			/>
 			<Textarea
-				label={t('controller:rides.acceptance.RideAcceptanceJustification.fields.message.label')}
+				label={t('default:rides.acceptance.RideAcceptanceJustification.fields.message.label')}
 				minRows={2}
 				onChange={e => setMessage(e.target.value)}
 				value={message}
@@ -60,12 +60,12 @@ function JustificationEditable({ cause, manualTripId, message, onSubmit, setCaus
 				autosize
 			/>
 			<TextInput
-				label={t('controller:rides.acceptance.RideAcceptanceJustification.fields.manual_trip_id.label')}
+				label={t('default:rides.acceptance.RideAcceptanceJustification.fields.manual_trip_id.label')}
 				onChange={e => setManualTripId(e.target.value)}
 				value={manualTripId ?? ''}
 				w="100%"
 			/>
-			<Button label={t('controller:rides.acceptance.RideAcceptanceJustification.SubmitButton.label')} onClick={onSubmit} fullWidth />
+			<Button label={t('default:rides.acceptance.RideAcceptanceJustification.SubmitButton.label')} onClick={onSubmit} fullWidth />
 		</>
 	);
 }
@@ -158,7 +158,7 @@ export function RideAcceptanceJustification() {
 
 	return (
 		<Section gap="md" width="100%">
-			<Label size="lg" caps>{t('controller:rides.acceptance.RideAcceptanceJustification.title')}</Label>
+			<Label size="lg" caps>{t('default:rides.acceptance.RideAcceptanceJustification.title')}</Label>
 			<AcceptanceStatus grade={acceptance_status} />
 			<HasPermission
 				action={acceptance_status !== RideAcceptanceStatusSchema.Values.justification_required ? 'NONE' : PermissionCatalog.all.rides.actions.acceptance_justify}

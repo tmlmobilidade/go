@@ -4,7 +4,6 @@
 
 import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
 import { OperationalDateTag } from '@/components/common/OperationalDateTag';
-import { OperationalStatusTag } from '@/components/common/OperationalStatusTag';
 import { SeenStatusTag } from '@/components/common/SeenStatusTag';
 import { StartTimeStatusTag } from '@/components/common/StartTimeStatusTag';
 import { useRidesListContext } from '@/components/rides/list/RidesList.context';
@@ -15,7 +14,7 @@ import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
-import { DataTable, DataTableColumn, ErrorDisplay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, ErrorDisplay, OperationalStatusTag, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';

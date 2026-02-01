@@ -19,9 +19,9 @@ export function RideAnalysisAudits() {
 	// B. Render components
 
 	return (
-		<Collapsible description={t('controller:rides.analysis.RideAnalysisAudits.description')} title={t('controller:rides.analysis.RideAnalysisAudits.title')}>
+		<Collapsible description={t('default:rides.analysis.RideAnalysisAudits.description')} title={t('default:rides.analysis.RideAnalysisAudits.title')}>
 			<Section>
-				<Label size="lg" caps>{t('controller:rides.analysis.RideAnalysisAudits.no_data')}</Label>
+				<Label size="lg" caps>{t('default:rides.analysis.RideAnalysisAudits.no_data')}</Label>
 			</Section>
 		</Collapsible>
 	);

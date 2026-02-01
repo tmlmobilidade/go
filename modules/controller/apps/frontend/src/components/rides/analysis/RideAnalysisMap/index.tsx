@@ -29,7 +29,7 @@ export function RideAnalysisMap() {
 	// B. Render components
 
 	return (
-		<Collapsible description={t('controller:rides.analysis.RideAnalysisMap.description')} title={t('controller:rides.analysis.RideAnalysisMap.title')} defaultOpen>
+		<Collapsible description={t('default:rides.analysis.RideAnalysisMap.description')} title={t('default:rides.analysis.RideAnalysisMap.title')} defaultOpen>
 			<div className={styles.mapWrapper}>
 				<MapView id="RideAnalysisMap">
 					<MapOverlayScheduledPath
@@ -53,9 +53,9 @@ export function RideAnalysisMap() {
 			</div>
 			<Divider />
 			<Section alignItems="center" flexDirection="row" gap="md">
-				<Switch checked={showScheduledPath} label={t('controller:rides.analysis.RideAnalysisMap.switches.scheduled_path.label')} onChange={() => setShowScheduledPath(prev => !prev)} />
-				<Switch checked={showObservedPath} label={t('controller:rides.analysis.RideAnalysisMap.switches.observed_path.label')} onChange={() => setShowObservedPath(prev => !prev)} />
-				<Switch checked={showGeofences} label={t('controller:rides.analysis.RideAnalysisMap.switches.geofences.label')} onChange={() => setShowGeofences(prev => !prev)} />
+				<Switch checked={showScheduledPath} label={t('default:rides.analysis.RideAnalysisMap.switches.scheduled_path.label')} onChange={() => setShowScheduledPath(prev => !prev)} />
+				<Switch checked={showObservedPath} label={t('default:rides.analysis.RideAnalysisMap.switches.observed_path.label')} onChange={() => setShowObservedPath(prev => !prev)} />
+				<Switch checked={showGeofences} label={t('default:rides.analysis.RideAnalysisMap.switches.geofences.label')} onChange={() => setShowGeofences(prev => !prev)} />
 			</Section>
 			{/* <Divider /> */}
 			{/* <Section alignItems="center" flexDirection="row" gap="md">

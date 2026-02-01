@@ -28,10 +28,10 @@ export function RideAnalysisAnalysisResult({ defaultOpen = false, items }: RideA
 	// B. Render components
 
 	return (
-		<Collapsible defaultOpen={defaultOpen} description={t('controller:rides.analysis.RideAnalysisResult.description')} title={t('controller:rides.analysis.RideAnalysisResult.title')}>
+		<Collapsible defaultOpen={defaultOpen} description={t('default:rides.analysis.RideAnalysisResult.description')} title={t('default:rides.analysis.RideAnalysisResult.title')}>
 			<Section>
 				{!items.length ? (
-					<Label size="lg" caps>{t('controller:rides.analysis.RideAnalysisResult.no_data')}</Label>
+					<Label size="lg" caps>{t('default:rides.analysis.RideAnalysisResult.no_data')}</Label>
 				) : (
 					<Grid columns="abc" gap="md">
 						{items.map(item => (

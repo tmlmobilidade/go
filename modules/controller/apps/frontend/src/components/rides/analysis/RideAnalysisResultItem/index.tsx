@@ -38,9 +38,9 @@ export function RideAnalysisAnalysisResultItem({ grade, id }: RideAnalysisAnalys
 						{rideAnalysisLabels[id]?.description && <Text size="sm">{t(`controller:rides.analysis.RideAnalysisResult.labels.${id}.description` as never)}</Text>}
 					</div>
 				</div>
-				{grade === 'error' && <Tag label={t('controller:rides.analysis.RideAnalysisResultItem.statuses.failed')} variant="danger" filled />}
-				{grade === 'fail' && <Tag label={t('controller:rides.analysis.RideAnalysisResultItem.statuses.fail')} variant="danger" />}
-				{grade === 'pass' && <Tag label={t('controller:rides.analysis.RideAnalysisResultItem.statuses.pass')} variant="success" />}
+				{grade === 'error' && <Tag label={t('default:rides.analysis.RideAnalysisResultItem.statuses.failed')} variant="danger" filled />}
+				{grade === 'fail' && <Tag label={t('default:rides.analysis.RideAnalysisResultItem.statuses.fail')} variant="danger" />}
+				{grade === 'pass' && <Tag label={t('default:rides.analysis.RideAnalysisResultItem.statuses.pass')} variant="success" />}
 			</Section>
 		</Surface>
 	);

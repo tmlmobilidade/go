@@ -25,27 +25,27 @@ export function RideAnalysisApexLocations() {
 		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
-		title: t('controller:rides.analysis.RideAnalysisApexLocations.Table.columns.created_at.label'),
+		title: t('default:rides.analysis.RideAnalysisApexLocations.Table.columns.created_at.label'),
 		width: 280,
 	},
 	{
 		accessor: 'stop_id',
-		title: t('controller:rides.analysis.RideAnalysisApexLocations.Table.columns.stop_id.label'),
+		title: t('default:rides.analysis.RideAnalysisApexLocations.Table.columns.stop_id.label'),
 		width: 100,
 	},
 	{
 		accessor: 'vehicle_id',
-		title: t('controller:rides.analysis.RideAnalysisApexLocations.Table.columns.vehicle_id.label'),
+		title: t('default:rides.analysis.RideAnalysisApexLocations.Table.columns.vehicle_id.label'),
 		width: 120,
 	},
 	{
 		accessor: 'mac_sam_serial_number',
-		title: t('controller:rides.analysis.RideAnalysisApexLocations.Table.columns.mac_sam_serial_number.label'),
+		title: t('default:rides.analysis.RideAnalysisApexLocations.Table.columns.mac_sam_serial_number.label'),
 		width: 160,
 	},
 	{
 		accessor: '_id',
-		title: t('controller:rides.analysis.RideAnalysisApexLocations.Table.columns.id_apex_location.label'),
+		title: t('default:rides.analysis.RideAnalysisApexLocations.Table.columns.id_apex_location.label'),
 		width: 400,
 	},
 ];
@@ -61,7 +61,7 @@ const sortedSimplifiedApexLocations = useMemo(() => {
 // C. Render components
 
 return (
-	<Collapsible description={t('controller:rides.analysis.RideAnalysisApexLocations.description')} title={t('controller:rides.analysis.RideAnalysisApexLocations.title')}>
+	<Collapsible description={t('default:rides.analysis.RideAnalysisApexLocations.description')} title={t('default:rides.analysis.RideAnalysisApexLocations.title')}>
 		{sortedSimplifiedApexLocations.length > 0 ? (
 			<DataTable
 				columns={columns}
@@ -70,7 +70,7 @@ return (
 			/>
 		) : (
 			<Section padding="md">
-				<NoDataLabel text={t('controller:rides.analysis.RideAnalysisApexLocations.no_data')} />
+				<NoDataLabel text={t('default:rides.analysis.RideAnalysisApexLocations.no_data')} />
 				</Section>
 			)}
 		</Collapsible>

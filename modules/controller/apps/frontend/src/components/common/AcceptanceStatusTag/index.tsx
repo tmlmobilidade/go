@@ -18,22 +18,22 @@ interface AcceptanceStatusTagProps {
 export const AcceptanceStatusProps = Object.freeze({
 	accepted: {
 		icon: <IconCheck />,
-		label: 'controller:rides.detail.RidesDetailAcceptanceStatusTag.accepted',
+		label: 'default:rides.detail.RidesDetailAcceptanceStatusTag.accepted',
 		variant: 'success',
 	},
 	justification_required: {
 		icon: <IconAlertCircle />,
-		label: 'controller:rides.detail.RidesDetailAcceptanceStatusTag.justification_required',
+		label: 'default:rides.detail.RidesDetailAcceptanceStatusTag.justification_required',
 		variant: 'warning',
 	},
 	rejected: {
 		icon: <IconX />,
-		label: 'controller:rides.detail.RidesDetailAcceptanceStatusTag.rejected',
+		label: 'default:rides.detail.RidesDetailAcceptanceStatusTag.rejected',
 		variant: 'danger',
 	},
 	under_review: {
 		icon: <IconClock />,
-		label: 'controller:rides.detail.RidesDetailAcceptanceStatusTag.under_review',
+		label: 'default:rides.detail.RidesDetailAcceptanceStatusTag.under_review',
 		variant: 'secondary',
 	},
 } as const);
@@ -58,7 +58,7 @@ export function AcceptanceStatusTag({ grade }: AcceptanceStatusTagProps) {
 	}
 
 	if (grade === 'under_review') {
-		return <Tag icon={AcceptanceStatusProps.under_review.icon} label={t('controller:rides.detail.RidesDetailAcceptanceStatusTag.under_review')} variant={AcceptanceStatusProps.under_review.variant as TagProps['variant']} />;
+		return <Tag icon={AcceptanceStatusProps.under_review.icon} label={t('default:rides.detail.RidesDetailAcceptanceStatusTag.under_review')} variant={AcceptanceStatusProps.under_review.variant as TagProps['variant']} />;
 	}
 
 	if (grade === 'justification_required') {
@@ -71,7 +71,7 @@ export function AcceptanceStatusTag({ grade }: AcceptanceStatusTagProps) {
 	}
 
 	if (grade === 'rejected') {
-		return <Tag icon={AcceptanceStatusProps.rejected.icon} label={t('controller:rides.detail.RidesDetailAcceptanceStatusTag.rejected')} variant={AcceptanceStatusProps.rejected.variant as TagProps['variant']} />;
+		return <Tag icon={AcceptanceStatusProps.rejected.icon} label={t('default:rides.detail.RidesDetailAcceptanceStatusTag.rejected')} variant={AcceptanceStatusProps.rejected.variant as TagProps['variant']} />;
 	}
 
 	//

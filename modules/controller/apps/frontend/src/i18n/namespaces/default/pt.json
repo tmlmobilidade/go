@@ -532,12 +532,6 @@
 			"RidesDetailAnalysisStatusTag": {
 				"fail": "Fail",
 				"pass": "Pass"
-			},
-			"RidesDetailOperationalStatusTag": {
-				"ended": "Finalizada",
-				"missed": "Não realizada",
-				"running": "Em execução",
-				"scheduled": "Agendada"
 			}
 		},
 		"export": {

@@ -28,22 +28,22 @@ export function RideAcceptanceCommentList() {
 		accepted: {
 			color: 'var(--color-status-success-primary)',
 			icon: IconCircleCheck,
-			label: t('controller:rides.acceptance.RideAcceptanceCommentList.acceptance_status.accepted'),
+			label: t('default:rides.acceptance.RideAcceptanceCommentList.acceptance_status.accepted'),
 		},
 		justification_required: {
 			color: 'var(--color-status-warning-primary)',
 			icon: IconAlertCircle,
-			label: t('controller:rides.acceptance.RideAcceptanceCommentList.acceptance_status.justification_required'),
+			label: t('default:rides.acceptance.RideAcceptanceCommentList.acceptance_status.justification_required'),
 		},
 		rejected: {
 			color: 'var(--color-status-danger-primary)',
 			icon: IconCircleX,
-			label: t('controller:rides.acceptance.RideAcceptanceCommentList.acceptance_status.rejected'),
+			label: t('default:rides.acceptance.RideAcceptanceCommentList.acceptance_status.rejected'),
 		},
 		under_review: {
 			color: 'var(--color-status-warning-primary)',
 			icon: IconClock,
-			label: t('controller:rides.acceptance.RideAcceptanceCommentList.acceptance_status.under_review'),
+			label: t('default:rides.acceptance.RideAcceptanceCommentList.acceptance_status.under_review'),
 		},
 	});
 
@@ -51,27 +51,27 @@ export function RideAcceptanceCommentList() {
 		archive: {
 			color: 'var(--color-status-warning-primary)',
 			icon: IconCircleDashedMinus,
-			label: t('controller:rides.acceptance.RideAcceptanceCommentList.crud.archive'),
+			label: t('default:rides.acceptance.RideAcceptanceCommentList.crud.archive'),
 		},
 		create: {
 			color: 'var(--color-status-success-primary)',
 			icon: IconCircleDashedPlus,
-			label: t('controller:rides.acceptance.RideAcceptanceCommentList.crud.create'),
+			label: t('default:rides.acceptance.RideAcceptanceCommentList.crud.create'),
 		},
 		delete: {
 			color: 'var(--color-status-danger-primary)',
 			icon: IconCircleDashedX,
-			label: t('controller:rides.acceptance.RideAcceptanceCommentList.crud.delete'),
+			label: t('default:rides.acceptance.RideAcceptanceCommentList.crud.delete'),
 		},
 		restore: {
 			color: 'var(--color-status-success-primary)',
 			icon: IconCircleDashedLetterR,
-			label: t('controller:rides.acceptance.RideAcceptanceCommentList.crud.restore'),
+			label: t('default:rides.acceptance.RideAcceptanceCommentList.crud.restore'),
 		},
 		update: {
 			color: 'var(--color-status-warning-primary)',
 			icon: IconCircleDashedLetterU,
-			label: t('controller:rides.acceptance.RideAcceptanceCommentList.crud.update'),
+			label: t('default:rides.acceptance.RideAcceptanceCommentList.crud.update'),
 		},
 	});
 
@@ -79,31 +79,31 @@ export function RideAcceptanceCommentList() {
 		lock: {
 			color: 'var(--color-status-danger-primary)',
 			icon: IconLock,
-			label: t('controller:rides.acceptance.RideAcceptanceCommentList.lock.lock'),
+			label: t('default:rides.acceptance.RideAcceptanceCommentList.lock.lock'),
 		},
 		unlock: {
 			color: 'var(--color-status-success-primary)',
 			icon: IconLockOpen,
-			label: t('controller:rides.acceptance.RideAcceptanceCommentList.lock.unlock'),
+			label: t('default:rides.acceptance.RideAcceptanceCommentList.lock.unlock'),
 		},
 	});
 
 	const CommentNoteProps = Object.freeze({
 		color: 'var(--color-system-text-200)',
 		icon: IconCircleDashedLetterC,
-		label: t('controller:rides.acceptance.RideAcceptanceCommentList.note.created'),
+		label: t('default:rides.acceptance.RideAcceptanceCommentList.note.created'),
 	});
 
 	const CommentJustificationProps = Object.freeze({
 		color: 'var(--color-primary)',
 		icon: IconMessageCircle,
-		label: t('controller:rides.acceptance.RideAcceptanceCommentList.justification.updated'),
+		label: t('default:rides.acceptance.RideAcceptanceCommentList.justification.updated'),
 	});
 
 	const CommentAnalysisSummaryProps = Object.freeze({
 		color: 'var(--color-primary)',
 		icon: IconMathMaxMin,
-		label: t('controller:rides.acceptance.RideAcceptanceCommentList.summary.performed'),
+		label: t('default:rides.acceptance.RideAcceptanceCommentList.summary.performed'),
 	});
 
 	const commentItems = useMemo(() => {
@@ -198,7 +198,7 @@ export function RideAcceptanceCommentList() {
 
 	return (
 		<Section gap="md" width="100%">
-			<Label size="lg" caps>{t('controller:rides.acceptance.RideAcceptance.title')}</Label>
+			<Label size="lg" caps>{t('default:rides.acceptance.RideAcceptance.title')}</Label>
 			<CommentList data={commentItems} maxHeight={500} reverse />
 			<CommentInput
 				disabled={acceptanceContext.data.acceptance.is_locked}
