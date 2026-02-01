@@ -2,12 +2,10 @@
 
 /* * */
 
-import { UploadImage } from '@/components/common/other/UploadImage';
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Collapsible, CoordinatesInput, Grid, Section, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { Collapsible, CoordinatesInput, Grid, ImageUpload, Section, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -23,26 +21,19 @@ export function AlertDetailSectionTexts() {
 	//
 	// B. Transform data
 
-	const hasPermissionToEdit = useMemo(() => {
-		const canEditThisAgency = meContext.actions.hasPermissionResource({
+	const hasPermissionToEdit = meContext.actions.hasPermissionResource([
+		{
 			action: PermissionCatalog.all.alerts.actions.update_texts,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.alerts.scope,
 			value: alertDetailContext.data.alert.agency_id,
-		});
-		const canEditThisReferenceType = meContext.actions.hasPermissionResource({
+		},
+		{
 			action: PermissionCatalog.all.alerts.actions.update_texts,
 			resource_key: 'reference_types',
 			scope: PermissionCatalog.all.alerts.scope,
 			value: alertDetailContext.data.alert.reference_type,
-		});
-		// User can edit texts if they have permission for the agency
-		// and reference type.
-		return canEditThisAgency && canEditThisReferenceType;
-	}, [
-		meContext.data.user?.permissions,
-		alertDetailContext.data.alert.agency_id,
-		alertDetailContext.data.alert.reference_type,
+		},
 	]);
 
 	//
@@ -88,11 +79,11 @@ export function AlertDetailSectionTexts() {
 						placeholder="https://www.cm-setubal.com/..."
 						{...alertDetailContext.data.form.getInputProps('info_url')}
 					/>
-					<UploadImage
-						imageUrl={alertDetailContext.data.image?.url}
+					<ImageUpload
 						label="Imagem"
+						onChange={alertDetailContext.actions.setImageFile}
 						onDelete={alertDetailContext.actions.deleteImage}
-						onFileChange={alertDetailContext.actions.fileChanged}
+						value={alertDetailContext.data.image?.url}
 					/>
 				</Grid>
 			</Section>

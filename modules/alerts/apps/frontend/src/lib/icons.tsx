@@ -12,6 +12,7 @@ export const CauseIcons: Record<AlertCause, React.ReactNode> = {
 
 	/* * */
 
+	ABUSIVE_PARKING: <IconUserOff />,
 	DRIVER_ABSENCE: <IconUserOff />,
 	DRIVER_ISSUE: <IconUserExclamation />,
 	HIGH_PASSENGER_LOAD: <IconFish style={{ transform: 'rotate(90deg) ' }} />,

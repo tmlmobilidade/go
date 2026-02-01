@@ -7,11 +7,11 @@ import { OperationalDateTag } from '@/components/common/OperationalDateTag';
 import { OperationalStatusTag } from '@/components/common/OperationalStatusTag';
 import { SeenStatusTag } from '@/components/common/SeenStatusTag';
 import { StartTimeStatusTag } from '@/components/common/StartTimeStatusTag';
+import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { RidesListCellHeadsign } from '@/components/rides/list/RidesListCellHeadsign';
 import { RidesListCellPassengers } from '@/components/rides/list/RidesListCellPassengers';
 import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar';
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
-import { useRidesListContext } from '@/contexts/RidesList.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
@@ -130,7 +130,7 @@ export function RidesList() {
 				onRowClick={handleRowClick}
 				records={ridesListContext.data.filtered}
 				rowIdAccessor="_id"
-				selectedId={params.id}
+				selectedId={decodeURIComponent(params.id ?? '')}
 			/>
 		</Pane>
 	);

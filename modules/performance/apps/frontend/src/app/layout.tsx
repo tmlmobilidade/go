@@ -8,7 +8,6 @@ import { NetworkContextProvider } from '@/contexts/Network.context';
 import { ThemeProviders } from '@/providers/theme-providers';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
-import { NuqsAdapter } from 'nuqs/adapters/next';
 import { type PropsWithChildren } from 'react';
 
 /* * */
@@ -23,25 +22,23 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<BaseProvider>
-			<NuqsAdapter>
-				<AppProvider>
-					<AppWrapper>
-						<ThemeProviders>
-							<LocaleContextProvider>
-								<NetworkContextProvider>
-									<AgenciesContextProvider>
-										<DatesContextProvider>
-											<HomeContextProvider>
-												{children}
-											</HomeContextProvider>
-										</DatesContextProvider>
-									</AgenciesContextProvider>
-								</NetworkContextProvider>
-							</LocaleContextProvider>
-						</ThemeProviders>
-					</AppWrapper>
-				</AppProvider>
-			</NuqsAdapter>
+			<AppProvider>
+				<AppWrapper>
+					<ThemeProviders>
+						<LocaleContextProvider>
+							<NetworkContextProvider>
+								<AgenciesContextProvider>
+									<DatesContextProvider>
+										<HomeContextProvider>
+											{children}
+										</HomeContextProvider>
+									</DatesContextProvider>
+								</AgenciesContextProvider>
+							</NetworkContextProvider>
+						</LocaleContextProvider>
+					</ThemeProviders>
+				</AppWrapper>
+			</AppProvider>
 		</BaseProvider>
 	);
 }

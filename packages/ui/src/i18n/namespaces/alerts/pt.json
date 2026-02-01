@@ -1,5 +1,9 @@
 {
 	"causes": {
+		"ABUSIVE_PARKING": {
+			"description": "Obstruções provocadas por estacionamento abusivo.",
+			"title": "Estacionamento Abusivo"
+		},
 		"ACCIDENT": {
 			"description": "Interrupções de via provocadas por acidentes rodoviários.",
 			"title": "Acidente"
@@ -37,8 +41,8 @@
 			"title": "Desacatos"
 		},
 		"ROAD_ISSUE": {
-			"description": "Obstruções provocadas por estacionamento abusivo.",
-			"title": "Estacionamento Abusivo"
+			"description": "Impedimentos na via por queda de árvores, deslizamentos ou outros obstáculos.",
+			"title": "Incidente na Via"
 		},
 		"STRIKE": {
 			"description": "Greves próprias ou de outros operadores de transporte.",
@@ -95,7 +99,7 @@
 			"title": "Paragem Deslocada"
 		}
 	},
-	"reference-types": {
+	"reference_types": {
 		"agency": {
 			"title": "Operador"
 		},

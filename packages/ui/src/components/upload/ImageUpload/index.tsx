@@ -1,42 +1,55 @@
-import { DeleteButton, FileButton, Label, useToast } from '@tmlmobilidade/ui';
-import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+'use client';
+
+/* * */
+
+import { Image } from '@mantine/core';
+import { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
 
-import ComponentWrapper from '../ComponentWrapper';
+import { useToast } from '../../../hooks/toast';
+import { DeleteButton } from '../../buttons/DeleteButton';
+import { ComponentWrapper } from '../../common/ComponentWrapper';
+import { Label } from '../../display/Label';
+import { FileButton } from '../FileButton';
 
-interface UploadImageProps {
-	imageUrl?: string
+/* * */
+
+export interface ImageUploadProps {
 	label?: string
 	maxFileSize?: number
 	maxHeight?: number
 	maxWidth?: number
+	onChange?: (file: File) => void
 	onDelete?: () => void
-	onFileChange?: (file: File) => void
+	value?: string
 }
 
-export function UploadImage({
-	imageUrl,
+/* * */
+
+export function ImageUpload({
 	label,
 	maxFileSize = 6 * 1024 * 1024, // 5MB default
 	maxHeight = 300,
 	maxWidth = 400,
+	onChange,
 	onDelete,
-	onFileChange,
-}: UploadImageProps) {
+	value,
+}: ImageUploadProps) {
 	//
 
 	//
 	// A. Setup variables
-	const [preview, setPreview] = useState<null | string>(imageUrl ?? null);
 
-	useEffect(() => {
-		setPreview(imageUrl ?? null);
-	}, [imageUrl]);
+	const [previewImageUrl, setPreviewImageUrl] = useState<null | string>(value ?? null);
 
 	//
-	// B. Handle File Change
+	// B. Handle actions
+
+	useEffect(() => {
+		setPreviewImageUrl(value ?? null);
+	}, [value]);
+
 	const handleFileChange = (file: File) => {
 		if (file.size > maxFileSize) {
 			useToast.error({
@@ -45,27 +58,31 @@ export function UploadImage({
 			});
 			return;
 		}
-
 		const reader = new FileReader();
-		reader.onload = () => setPreview(reader.result as string);
+		reader.onload = () => setPreviewImageUrl(reader.result as string);
 		reader.readAsDataURL(file);
-
-		onFileChange?.(file);
+		if (onChange) onChange(file);
 	};
 
 	const handleDelete = () => {
-		setPreview(null);
-		if (imageUrl && onDelete) onDelete();
+		if (value && onDelete) onDelete();
 	};
 
 	//
 	// C. Render components
+
 	return (
 		<div className={styles.container} style={{ maxHeight, maxWidth }}>
 			{label && <Label>{label}</Label>}
-			{preview ? (
-				<ComponentWrapper className={styles.imageContainer}>
-					<Image alt="Preview" className={styles.image} height={300} src={preview} width={400} />
+			{previewImageUrl ? (
+				<ComponentWrapper>
+					<Image
+						alt="Preview"
+						fit="contain"
+						mih={200}
+						miw={200}
+						src={previewImageUrl}
+					/>
 					{onDelete && (
 						<div className={styles.deleteContainer}>
 							<DeleteButton

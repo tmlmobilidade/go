@@ -155,8 +155,8 @@ async function main() {
 				}
 
 				//
-				// Validate if all the transactions match the
-				// same Agency ID and the same Device ID.
+				// Validate if all the transactions
+				// match the same Agency ID.
 
 				const agencyId = sortedTransactions[0].agency_id;
 
@@ -178,6 +178,28 @@ async function main() {
 				if (!allMacAseCounterValuesValid) {
 					Logger.error(`SAM ${samData._id} has transactions with invalid mac_ase_counter_value. (${analysisTimer.get()})`);
 					await sams.updateById(samData._id, { analysis: [], remarks: 'Transactions with invalid mac_ase_counter_value found.', system_status: 'error' });
+					Logger.spacer(1);
+					continue;
+				}
+
+				//
+				// Validate if all transactions have
+				// different values for ase_counter_value.
+
+				const foundAseCounterValues: Record<number, number> = {};
+
+				sortedTransactions.forEach((transaction) => {
+					// Initialize counter if not present
+					if (!foundAseCounterValues[transaction.mac_ase_counter_value]) foundAseCounterValues[transaction.mac_ase_counter_value] = 0;
+					// Increment counter for this ASE Counter Value
+					foundAseCounterValues[transaction.mac_ase_counter_value]++;
+				});
+
+				const duplicateAseCounterValues = Object.values(foundAseCounterValues).filter(count => count > 1);
+
+				if (duplicateAseCounterValues.length > 0) {
+					Logger.error(`SAM ${samData._id} has ${duplicateAseCounterValues.length} transactions with duplicate mac_ase_counter_value. (${analysisTimer.get()})`);
+					await sams.updateById(samData._id, { analysis: [], remarks: 'Transactions with duplicate mac_ase_counter_value found.', system_status: 'error' });
 					Logger.spacer(1);
 					continue;
 				}

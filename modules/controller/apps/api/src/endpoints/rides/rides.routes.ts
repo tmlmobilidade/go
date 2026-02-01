@@ -25,17 +25,14 @@ server.register(
 
 		instance.get(
 			'/ws',
-			{
-				preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]),
-				websocket: true,
-			},
-			RidesController.websocket,
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]), websocket: true },
+			socket => RidesSharedController.websocket(socket),
 		);
 
 		instance.get(
 			'/:id/ride',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			RidesController.getRideById,
+			(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<RideNormalized>) => RidesSharedController.getRideById(request, reply, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read),
 		);
 
 		instance.get(

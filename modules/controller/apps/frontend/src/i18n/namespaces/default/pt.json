@@ -47,5 +47,10 @@
 			}
 
 		}
+	},
+	"list": {
+		"RidesListLastUpdatedAt": {
+			"just_now": "Agora mesmo"
+		}
 	}
 }

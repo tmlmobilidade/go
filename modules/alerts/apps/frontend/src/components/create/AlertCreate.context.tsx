@@ -139,6 +139,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	]);
 
 	useEffect(() => {
+		if (multiStep.progress.current?.index !== multiStep.progress.steps.length - 1) return; // Only run when on the last step | if we go back and again to last step, this will run again
 		if (!form.getValues().cause || !form.getValues().effect || !form.getValues().reference_type || !form.getValues().references) return;
 		const references = form.getValues().references;
 		const alertTemplating = describeAlert({
@@ -153,13 +154,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		if (!alertTemplating) return;
 		form.setFieldValue('description', alertTemplating.description.pt);
 		form.setFieldValue('title', alertTemplating.title.pt);
-	}, [
-		selectedReferencesData,
-		form.getValues().cause,
-		form.getValues().effect,
-		form.getValues().reference_type,
-		form.getValues().references,
-	]);
+	}, [multiStep.progress.current?.index]);
 
 	useEffect(() => {
 		// Skip if agency is already selected
@@ -176,7 +171,10 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	useEffect(() => {
 		if (!form.getValues().active_period_start_date) {
+			// Set active period start date to 5 minutes ago
 			form.setFieldValue('active_period_start_date', Dates.now('Europe/Lisbon').minus({ minutes: 5 }).set({ millisecond: 0, second: 0 }).unix_timestamp);
+			// Set publish start date to start of today to ensure alert is visible immediately
+			form.setFieldValue('publish_start_date', Dates.now('Europe/Lisbon').startOf('day').unix_timestamp);
 		}
 	}, [form.getValues().active_period_start_date]);
 

@@ -10,11 +10,11 @@ import { parseAsArrayOfStrings } from '../utils/parse-string-array';
 
 /* * */
 
-export interface UseFilterStateListReturnType {
+export interface UseFilterStateListReturnType<T extends string = string> {
 	isActive: boolean
 	options: SelectDataItem[]
-	set: (value: string[]) => void
-	value: string[]
+	set: (value: T[]) => void
+	value: T[]
 }
 
 /**
@@ -28,7 +28,7 @@ export interface UseFilterStateListReturnType {
  * @param options Optional list of options for the filter.
  * @returns The filter state management object.
  */
-export function useFilterStateList(key: string, defaults: string[], options?: SelectDataItem[]): UseFilterStateListReturnType {
+export function useFilterStateList<T extends string>(key: string, defaults: T[], options?: SelectDataItem[]): UseFilterStateListReturnType<T> {
 	//
 
 	//
@@ -41,7 +41,7 @@ export function useFilterStateList(key: string, defaults: string[], options?: Se
 
 	const effectiveValue = useMemo(() => {
 		if (!urlValue) return defaults;
-		return urlValue;
+		return urlValue as T[];
 	}, [urlValue, defaults]);
 
 	const parsedOptions = useMemo(() => {
@@ -51,7 +51,7 @@ export function useFilterStateList(key: string, defaults: string[], options?: Se
 		// Map options to include checked status
 		return options.map(item => ({
 			...item,
-			checked: effectiveValue.includes(item.value),
+			checked: effectiveValue.includes(item.value as T),
 		}));
 	}, [options, effectiveValue]);
 

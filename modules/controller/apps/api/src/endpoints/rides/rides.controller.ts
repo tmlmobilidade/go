@@ -4,9 +4,7 @@ import { HttpStatus } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
-import { type HashedShape, type HashedTrip, type Ride, type RideNormalized, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
-import { HttpResponse } from '@tmlmobilidade/utils';
-import { type WebSocket } from 'ws';
+import { type HashedShape, type HashedTrip, type Ride, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -135,61 +133,6 @@ export class RidesController {
 
 			reply.send({
 				data: hashedTripData,
-				error: null,
-				statusCode: HttpStatus.OK,
-			});
-		}
-		catch (error) {
-			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
-				.send(error);
-		}
-	}
-
-	/**
-	 * Get a Ride by ID.
-	 * @param request The Fastify request object.
-	 * @param reply The Fastify reply object.
-	 */
-	static async getRideById(request: FastifyRequest, reply: FastifyReply<Ride>) {
-		try {
-			//
-
-			//
-			// Validate the request parameters
-
-			const rideId = request.params['id'];
-
-			if (!rideId) {
-				return reply
-					.status(HttpStatus.BAD_REQUEST)
-					.send({
-						data: null,
-						error: 'Missing ride_id parameter.',
-						status: HttpStatus.BAD_REQUEST,
-					});
-			}
-
-			//
-			// Fetch the ride data from the database
-
-			const rideData = await rides.findById(rideId);
-
-			if (!rideData) {
-				return reply
-					.status(HttpStatus.NOT_FOUND)
-					.send({
-						data: null,
-						error: 'Ride not found.',
-						status: HttpStatus.NOT_FOUND,
-					});
-			}
-
-			//
-			// Send the ride data back to the client
-
-			reply.send({
-				data: rideData,
 				error: null,
 				statusCode: HttpStatus.OK,
 			});
@@ -589,42 +532,6 @@ export class RidesController {
 				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
 				.send(error);
 		}
-	}
-
-	/**
-	 * WebSocket event handler.
-	 * @param socket The WebSocket object.
-	 */
-	static websocket(socket: WebSocket) {
-		socket.on('message', async () => {
-			//
-
-			//
-			// Connect to and prepare Rides database collection.
-
-			const ridesCollection = await rides.getCollection();
-
-			//
-			// Start a watch service for the database
-			// and send updates to the client as they occur.
-
-			ridesCollection
-				.watch([], { fullDocument: 'updateLookup' })
-				.on('change', (databaseOperation) => {
-					if (typeof databaseOperation['fullDocument'] === 'undefined') {
-						console.log('Undefined document:', databaseOperation);
-						return;
-					}
-					const message: HttpResponse<RideNormalized> = {
-						data: databaseOperation['fullDocument'],
-						error: null,
-						statusCode: HttpStatus.OK,
-					};
-					socket.send(JSON.stringify(message));
-				});
-
-			//
-		});
 	}
 
 	//

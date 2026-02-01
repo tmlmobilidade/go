@@ -31,8 +31,7 @@ const TagBody = forwardRef<HTMLDivElement, TagProps>((props, ref) => (
 		{React.isValidElement<IconProps>(props.icon) && <span className={styles.icon}>{React.cloneElement(props.icon)}</span>}
 		{props.label !== null && props.label !== undefined && <span className={styles.label}>{props.label}</span>}
 	</div>
-),
-);
+));
 
 /**
  * Tag component used to display a small badge with optional icon and tooltip.

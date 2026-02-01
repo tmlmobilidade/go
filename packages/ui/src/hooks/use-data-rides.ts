@@ -1,10 +1,13 @@
 'use client';
 
+import { Dates } from '@tmlmobilidade/dates';
 /* * */
 
-import { type GetRidesBatchQuery, type RideNormalized } from '@tmlmobilidade/types';
-import { type SelectDataItem, useDebouncedState } from '@tmlmobilidade/ui';
-import { useEffect, useMemo } from 'react';
+import { normalizeRide } from '@tmlmobilidade/normalizers';
+import { type GetRidesBatchQuery, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type SelectDataItem, useDebouncedState, useStateRef } from '@tmlmobilidade/ui';
+import { type HttpResponse } from '@tmlmobilidade/utils';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -18,6 +21,7 @@ interface UseDataRidesProps {
 interface UseDataRidesReturnType {
 	error: Error | undefined
 	isLoading: boolean
+	lastUpdatedAt: null | UnixTimestamp
 	options: SelectDataItem[]
 	raw: RideNormalized[]
 }
@@ -30,15 +34,93 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 	//
 	// A. Setup variables
 
+	const webSocketRef = useRef<null | WebSocket>(null);
+
 	const [queryStringParams, setQueryStringParams] = useDebouncedState<null | string>(null, 500);
+
+	const [lastUpdatedAt, setLastUpdatedAt] = useState<null | UnixTimestamp>(null);
+
+	const ridesData = useStateRef<RideNormalized[]>([]);
 
 	//
 	// B. Fetch data
 
-	const { data: ridesData, error: ridesError, isLoading: ridesLoading } = useSWR<RideNormalized[], Error>((apiUrl && queryStringParams) && `${apiUrl}?${queryStringParams}`);
+	const { data: fetchedRidesData, error: fetchedRidesError, isLoading: fetchedRidesLoading } = useSWR<RideNormalized[], Error>((apiUrl && queryStringParams) && `${apiUrl}?${queryStringParams}`, { refreshInterval: 60_000 });
+
+	useEffect(() => {
+		// Skip if webSocket is already initialized
+		if (webSocketRef.current) return;
+		// Initialize WebSocket connection
+		console.log('Opening WebSocket connection...', `${apiUrl}/ws`);
+		const wsUrl = new URL(`${apiUrl}/ws`);
+		wsUrl.protocol = wsUrl.protocol === 'https:' ? 'wss:' : 'ws:';
+		const socket = new WebSocket(wsUrl.toString());
+		webSocketRef.current = socket;
+
+		const handleWebsocketInit = () => {
+			if (!webSocketRef.current) return;
+			if (webSocketRef.current.readyState !== webSocketRef.current.OPEN) return;
+			webSocketRef.current.send('init');
+		};
+
+		const handleIncomingMessage = (event: MessageEvent<string>) => {
+			try {
+				const eventData: HttpResponse<RideNormalized> = JSON.parse(event.data);
+				const foundRide = ridesData.ref.current.some(ride => ride._id === eventData.data._id);
+				// console.log('WebSocket message received:', foundRide, eventData.data._id);
+				if (!foundRide) return;
+				if (!ridesData.ref.current) return;
+				const index = ridesData.ref.current.findIndex(ride => ride._id === eventData.data._id);
+				if (index === -1) return ridesData.ref.current;
+				const next = [...ridesData.ref.current];
+				next[index] = eventData.data;
+				// Trigger data update
+				ridesData.set(next);
+				setLastUpdatedAt(Dates.now('Europe/Lisbon').unix_timestamp);
+			}
+			catch (error) {
+				console.error('WebSocket message parse error:', error);
+			}
+		};
+
+		const handleWebsocketError = (event: Event) => {
+			console.error('WebSocket error:', event);
+		};
+
+		const handleWebsocketClose = (event: CloseEvent) => {
+			console.warn('WebSocket closed:', event.code, event.reason);
+		};
+
+		socket.addEventListener('open', handleWebsocketInit);
+		socket.addEventListener('message', handleIncomingMessage);
+		socket.addEventListener('error', handleWebsocketError);
+		socket.addEventListener('close', handleWebsocketClose);
+
+		return () => {
+			socket.removeEventListener('open', handleWebsocketInit);
+			socket.removeEventListener('message', handleIncomingMessage);
+			socket.removeEventListener('error', handleWebsocketError);
+			socket.removeEventListener('close', handleWebsocketClose);
+			socket.close();
+			webSocketRef.current = null;
+		};
+	}, []);
 
 	//
 	// C. Transform data
+
+	useEffect(() => {
+		ridesData.set(fetchedRidesData ?? []);
+		setLastUpdatedAt(Dates.now('Europe/Lisbon').unix_timestamp);
+	}, [fetchedRidesData]);
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			const normalizedRidesData = ridesData.ref.current.map(item => normalizeRide(item));
+			ridesData.set(normalizedRidesData);
+		}, 1_000);
+		return () => clearInterval(interval);
+	}, []);
 
 	useEffect(() => {
 		// Skip if no filters are set
@@ -70,21 +152,21 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 	]);
 
 	const optionsData = useMemo(() => {
-		if (!ridesData) return [];
-		return ridesData.map(ride => ({
+		if (!ridesData.state) return [];
+		return ridesData.state.map(ride => ({
 			label: ride.headsign,
 			value: ride.trip_id,
 		}));
-	}, [ridesData]);
-
+	}, [ridesData.state]);
 	//
 	// D. Return data
 
 	return {
-		error: ridesError,
-		isLoading: ridesLoading,
+		error: fetchedRidesError,
+		isLoading: fetchedRidesLoading,
+		lastUpdatedAt: lastUpdatedAt,
 		options: optionsData,
-		raw: ridesData ?? [],
+		raw: ridesData.state ?? [],
 	};
 
 	//

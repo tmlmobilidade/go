@@ -1,6 +1,6 @@
 /* * */
 
-import { useRidesListContext } from '@/contexts/RidesList.context';
+import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { type UnixTimestamp } from '@tmlmobilidade/types';
 import { FilterTypeDateRange } from '@tmlmobilidade/ui';
 

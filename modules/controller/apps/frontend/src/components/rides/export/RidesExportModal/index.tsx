@@ -2,9 +2,9 @@
 
 /* * */
 
+import { RidesListContextState } from '@/components/rides/list/RidesList.context';
 import { AgenciesContextProvider, useAgenciesContext } from '@/contexts/Agencies.context';
 import { RidesExportModalContextProvider, useRidesExportModalContext } from '@/contexts/RidesExport.context';
-import { RidesListContextState } from '@/contexts/RidesList.context';
 import { IconFileDownload } from '@tabler/icons-react';
 import { UnixTimestamp } from '@tmlmobilidade/types';
 import { Button, closeModal, DateTimePicker, Divider, ExportsContextProvider, Grid, Label, openModal, Section, Text } from '@tmlmobilidade/ui';
@@ -108,7 +108,7 @@ export default function RidesExportModal() {
 					return (
 						<div key={key}>
 							<Label size="sm" caps>{translateFilterKey(key)}</Label>
-							<Text size="sm">{getFormattedValue(key, value)}</Text>
+							<Text size="sm">{getFormattedValue(key, value['value'])}</Text>
 						</div>
 					);
 				})}

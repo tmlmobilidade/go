@@ -1,11 +1,9 @@
 /* * */
 
-import { UploadImage } from '@/components/common/other/UploadImage';
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { CoordinatesInput, Grid, Section, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
 
 /* * */
 
@@ -21,26 +19,19 @@ export function AlertCreateStepSummary() {
 	//
 	// B. Transform data
 
-	const hasPermissionToEdit = useMemo(() => {
-		const canEditThisAgency = meContext.actions.hasPermissionResource({
+	const hasPermissionToEdit = meContext.actions.hasPermissionResource([
+		{
 			action: PermissionCatalog.all.alerts.actions.update_texts,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.alerts.scope,
 			value: alertCreateContext.data.form.getValues().agency_id,
-		});
-		const canEditThisReferenceType = meContext.actions.hasPermissionResource({
+		},
+		{
 			action: PermissionCatalog.all.alerts.actions.update_texts,
 			resource_key: 'reference_types',
 			scope: PermissionCatalog.all.alerts.scope,
 			value: alertCreateContext.data.form.getValues().reference_type,
-		});
-		// User can edit texts if they have permission for the agency
-		// and reference type.
-		return canEditThisAgency && canEditThisReferenceType;
-	}, [
-		meContext.data.user?.permissions,
-		alertCreateContext.data.form.getValues().agency_id,
-		alertCreateContext.data.form.getValues().reference_type,
+		},
 	]);
 
 	//
@@ -75,12 +66,6 @@ export function AlertCreateStepSummary() {
 					leftSection={<IconLink />}
 					placeholder="https://www.cm-setubal.com/..."
 					{...alertCreateContext.data.form.getInputProps('info_url')}
-				/>
-				<UploadImage
-					// imageUrl={alertCreateContext.data.image?.url}
-					label="Imagem"
-					// onDelete={alertCreateContext.actions.deleteImage}
-					// onFileChange={alertCreateContext.actions.fileChanged}
 				/>
 			</Grid>
 		</Section>

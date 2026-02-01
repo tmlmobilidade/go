@@ -22,6 +22,7 @@ export const AlertCauseValues = [
 	//
 	// Extended
 
+	'ABUSIVE_PARKING',
 	'DRIVER_ABSENCE',
 	'DRIVER_ISSUE',
 	'HIGH_PASSENGER_LOAD',
@@ -47,6 +48,7 @@ export type AlertCause = z.infer<typeof AlertCauseSchema>;
  * to their corresponding standard GTFS-RT cause types.
  */
 export const AlertCauseToGtfsCauseMap: Record<AlertCause, GtfsCause> = {
+	ABUSIVE_PARKING: 'OTHER_CAUSE',
 	ACCIDENT: 'ACCIDENT',
 	CONSTRUCTION: 'CONSTRUCTION',
 	DEMONSTRATION: 'DEMONSTRATION',

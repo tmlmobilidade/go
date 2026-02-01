@@ -37,13 +37,16 @@ export class AlertsController {
 	 * @param reply The reply object.
 	 */
 	static async deleteImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
+		console.log('===> Deleting image for alert ID:', request.params.id);
 		// Ensure the alert exists and has an image
 		const foundAlert = await alerts.findById(request.params.id);
 		if (!foundAlert) return reply.status(HttpStatus.NOT_FOUND).send({ message: 'Alert not found' });
 		if (!foundAlert.file_id) return reply.status(HttpStatus.NOT_FOUND).send({ message: 'Image not found' });
+		console.log('===> Found alert with image ID:', foundAlert.file_id);
 		// Delete the image file and update the alert
-		await files.deleteById(foundAlert.file_id);
-		await alerts.updateById(request.params.id, { file_id: undefined });
+		// await files.deleteById(foundAlert.file_id);
+		console.log('===> Deleted image file ID:', foundAlert.file_id);
+		await alerts.updateById(request.params.id, { file_id: null });
 		// Send the updated Alert to the client
 		const updatedAlert = await alerts.findById(request.params.id);
 		if (!updatedAlert) return reply.status(HttpStatus.NOT_FOUND).send({ message: 'Alert not found' });
@@ -92,11 +95,11 @@ export class AlertsController {
 		if (!foundAlert) throw new HttpException(HttpStatus.NOT_FOUND, 'Alert not found');
 		// Ensure the alert has an associated image file.
 		// Since it is optional, return null if not present
-		if (!foundAlert.file_id) reply.send({ data: null, error: null, statusCode: HttpStatus.OK });
+		if (!foundAlert.file_id) return reply.send({ data: null, error: null, statusCode: HttpStatus.OK });
 		// Retrieve and send the image file
 		const foundImageFile = await files.findById(foundAlert.file_id);
 		if (!foundImageFile) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
-		reply.send({ data: foundImageFile, error: null, statusCode: HttpStatus.OK });
+		return reply.send({ data: foundImageFile, error: null, statusCode: HttpStatus.OK });
 	}
 
 	/**

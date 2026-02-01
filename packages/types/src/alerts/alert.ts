@@ -20,7 +20,7 @@ export const AlertSchema = DocumentSchema.extend({
 	effect: AlertEffectSchema,
 	external_id: z.string().nullable().default(null),
 	file_id: z.string().nullable().default(null),
-	info_url: z.string().url().nullable().default(null),
+	info_url: z.union([z.string().url(), z.literal('')]).nullable().default(null),
 	municipality_ids: z.array(z.string()).default([]),
 	publish_end_date: UnixTimeStampSchema.nullable().default(null),
 	publish_start_date: UnixTimeStampSchema.nullable().default(null),
