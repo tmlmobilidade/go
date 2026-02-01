@@ -2,13 +2,13 @@
 
 /* * */
 
-import { AcceptanceStatusProps, AcceptanceStatusTag } from '@/components/common/AcceptanceStatusTag';
+import { AcceptanceStatusTag } from '@/components/common/AcceptanceStatusTag';
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
-import { CauseIcons } from '@/lib/icons';
 import { IconCheck, IconEdit } from '@tabler/icons-react';
-import { GtfsCause, GtfsCauseSchema, PermissionCatalog, RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/types';
-import { Button, Combobox, HasPermission, IconButton, Label, Section, Text, Textarea, TextInput, useToast } from '@tmlmobilidade/ui';
+import { AlertCause, AlertCauseSchema, PermissionCatalog, RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/types';
+import { Button, HasPermission, IconButton, Label, Section, Select, Text, Textarea, TextInput, useToast } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -32,20 +32,23 @@ function JustificationReadOnly({ cause, manualTripId, message }: { cause?: strin
 	);
 }
 
-function JustificationEditable({ cause, manualTripId, message, onSubmit, setCause, setManualTripId, setMessage }: { cause?: GtfsCause, manualTripId: string, message: string, onSubmit: () => void, setCause: (v: GtfsCause) => void, setManualTripId: (v: string) => void, setMessage: (v: string) => void }) {
+function JustificationEditable({ cause, manualTripId, message, onSubmit, setCause, setManualTripId, setMessage }: { cause?: AlertCause, manualTripId: string, message: string, onSubmit: () => void, setCause: (v: AlertCause) => void, setManualTripId: (v: string) => void, setMessage: (v: string) => void }) {
+	//
+
+	const { t } = useTranslation();
+
 	return (
 		<>
-			<Combobox
+			<Select
 				label="Motivo da justificação"
 				onChange={setCause}
 				placeholder="Selecione o motivo da justificação"
 				value={cause}
-				data={GtfsCauseSchema.options.map(cause => ({
-					icon: CauseIcons[cause],
-					label: cause,
+				w="100%"
+				data={AlertCauseSchema.options.map(cause => ({
+					label: t(`shared:alerts.causes.${cause}.title`),
 					value: cause,
 				}))}
-				fullWidth
 			/>
 			<Textarea
 				label="Mensagem de justificação"
@@ -69,6 +72,9 @@ function JustificationEditable({ cause, manualTripId, message, onSubmit, setCaus
 export function AcceptanceStatus({ grade }: { grade: RideAcceptance['acceptance_status'] }) {
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
+
 	const { actions } = useRideAcceptanceContext();
 	const [isEditing, setIsEditing] = useState(false);
 	const [status, setStatus] = useState<RideAcceptance['acceptance_status']>(grade);
@@ -94,16 +100,15 @@ export function AcceptanceStatus({ grade }: { grade: RideAcceptance['acceptance_
 	if (isEditing) {
 		return (
 			<Section alignItems="center" flexDirection="row" gap="xs" padding="none">
-				<Combobox
-					label="Status da justificação"
+				<Select
+					clearable={false}
 					onChange={value => setStatus(value as RideAcceptance['acceptance_status'])}
 					value={status}
+					w="100%"
 					data={RideAcceptanceStatusSchema.options.map(status => ({
-						icon: AcceptanceStatusProps[status].icon,
-						label: AcceptanceStatusProps[status].label,
+						label: t(`ride_status:acceptance_status.${status}`),
 						value: status,
 					}))}
-					fullWidth
 				/>
 				<IconButton
 					aria-label="Confirmar novo estado"
@@ -142,7 +147,7 @@ export function RideAcceptanceJustification() {
 	const { acceptance_status, justification } = acceptance;
 
 	const [message, setMessage] = useState(justification?.pto_message ?? '');
-	const [cause, setCause] = useState<GtfsCause | undefined>(justification?.justification_cause);
+	const [cause, setCause] = useState<AlertCause | undefined>(justification?.justification_cause);
 	const [manualTripId, setManualTripId] = useState(justification?.manual_trip_id ?? '');
 
 	const handleSubmit = () => actions.justify(message, cause, manualTripId);
