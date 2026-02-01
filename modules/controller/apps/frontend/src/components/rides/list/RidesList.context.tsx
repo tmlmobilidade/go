@@ -74,7 +74,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	});
 
 	//
-	// B. Setup filters
+	// C. Setup filters
 
 	const filterSearch = useFilterStateString('search');
 	const [debouncedFilterSearch] = useDebouncedValue(filterSearch.value.trim(), 500);
@@ -97,55 +97,17 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			date_end: filterDateEnd as UnixTimestamp,
 			date_start: filterDateStart as UnixTimestamp,
 			// line_ids: filterLines.value,
+			acceptance_status: filterAcceptanceStatus.value,
+			analysis_ended_at_last_stop_grade: filterAnalysisEndedAtLastStop.value,
+			analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval.value,
+			analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents.value,
+			analysis_transaction_sequentiality: filterAnalysisTransactionSequentiality.value,
+			delay_statuses: filterDelayStatus.value,
 			operational_statuses: filterOperationalStatus.value,
 			search: debouncedFilterSearch,
 			// stop_ids: filterStops.value,
 		},
 	});
-
-	//
-	// C. Transform data
-
-	// useEffect(() => {
-	// 	const params = {
-	// 		agency_ids: filterAgency.join(','),
-	// 		date_end: filterDateEnd,
-	// 		date_start: filterDateStart,
-	// 		search: debouncedFilterSearch,
-	// 		/* * */
-	// 		acceptance_status: filterAcceptanceStatus.join(','),
-	// 		analysis_ended_at_last_stop_grade: filterAnalysisEndedAtLastStop.join(','),
-	// 		analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval.join(','),
-	// 		analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents.join(','),
-	// 		analysis_transaction_sequentiality: filterAnalysisTransactionSequentiality.join(','),
-	// 		/* * */
-	// 		delay_statuses: filterDelayStatus.join(','),
-	// 		operational_statuses: filterOperationalStatus.join(','),
-	// 		/* * */
-	// 		line_ids: undefined,
-	// 		stop_ids: undefined,
-	// 	};
-	// 	const stringParams: Record<string, string> = Object.fromEntries(
-	// 		Object
-	// 			.entries(params)
-	// 			.filter(([, value]) => value !== undefined)
-	// 			.map(([key, value]) => [key, Array.isArray(value) ? value.join(',') : String(value)]),
-	// 	);
-	// 	const result = new URLSearchParams(stringParams).toString();
-	// 	setQueryStringParams(result);
-	// }, [
-	// 	debouncedFilterSearch,
-	// 	filterAgency,
-	// 	filterDateStart,
-	// 	filterDateEnd,
-	// 	filterAcceptanceStatus,
-	// 	filterAnalysisEndedAtLastStop,
-	// 	filterAnalysisExpectedApexValidationInterval,
-	// 	filterAnalysisSimpleThreeVehicleEvents,
-	// 	filterAnalysisTransactionSequentiality,
-	// 	filterDelayStatus,
-	// 	filterOperationalStatus,
-	// ]);
 
 	//
 	// D. Define context value
