@@ -2,9 +2,9 @@
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { CauseIcons } from '@/lib/icons';
-import { Translations } from '@/lib/translations';
-import { GtfsCauseExtendedSchema } from '@tmlmobilidade/types';
+import { alertCauseEffectReferenceTypeMap } from '@tmlmobilidade/types';
 import { Grid, LargeButton, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,19 +14,21 @@ export function AlertCreateStepCause() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const alertCreateContext = useAlertCreateContext();
 
 	//
 	// B. Transform data
 
-	const preparedOptions = Object.values(GtfsCauseExtendedSchema.enum)
-		.map(item => ({ icon: CauseIcons[item], label: Translations.CAUSE[item], value: item }))
+	const preparedOptions = (Object.keys(alertCauseEffectReferenceTypeMap) as (keyof typeof alertCauseEffectReferenceTypeMap)[])
+		.map(item => ({ icon: CauseIcons[item], label: t(`shared:alerts.causes.${item}.title`) as string, value: item }))
 		.sort((a, b) => a.label.localeCompare(b.label));
 
 	//
 	// C. Handle actions
 
-	const handleSelectCause = (value: keyof typeof GtfsCauseExtendedSchema.enum) => {
+	const handleSelectCause = (value: keyof typeof alertCauseEffectReferenceTypeMap) => {
 		alertCreateContext.data.form.setFieldValue('cause', value);
 		alertCreateContext.data.multi_step.actions.next();
 	};

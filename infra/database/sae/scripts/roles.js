@@ -62,7 +62,7 @@ db.createRole({
 	privileges: [
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'files', db: 'production' } },
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'alerts', db: 'production' } },
-		{ actions: ['find'], resource: { collection: 'rides', db: 'production' } },
+		{ actions: ['find', 'changeStream'], resource: { collection: 'rides', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'ride_acceptances', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
 	],
@@ -153,9 +153,12 @@ db.createRole({
 	roles: [{ db: 'admin', role: 'common' }],
 });
 
-db.createRole({
+db.updateRole({
 	privileges: [
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'typologies', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'lines', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'routes', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'patterns', db: 'production' } },
 	],
 	role: 'offer',
 	roles: [{ db: 'admin', role: 'common' }],

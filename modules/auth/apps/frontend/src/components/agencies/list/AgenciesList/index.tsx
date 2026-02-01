@@ -29,12 +29,12 @@ export function AgenciesList() {
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: t('auth:agencies.list.Table.columns.id'),
+			title: t('default:agencies.list.Table.columns.id'),
 			width: 50,
 		},
 		{
 			accessor: 'name',
-			title: t('auth:agencies.list.Table.columns.name'),
+			title: t('default:agencies.list.Table.columns.name'),
 			width: 600,
 		},
 	];

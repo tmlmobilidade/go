@@ -9,7 +9,6 @@ import { UserDetailHeader } from '@/components/users/detail/UserDetailHeader';
 import { UserDetailRolesAndOrganization } from '@/components/users/detail/UserDetailRolesAndOrganization';
 import { permissionsConfig } from '@/lib/permissions';
 import { Pane } from '@tmlmobilidade/ui';
-import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -20,7 +19,6 @@ export function UserDetail() {
 	// A. Setup variables
 
 	const userDetailContext = useUserDetailContext();
-	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -33,13 +31,13 @@ export function UserDetail() {
 				<PermissionSection
 					key={item.scope}
 					configActions={item.actions}
-					description={t('auth:permissions.' + item.description)}
+					description={item.description}
 					enabledPermissions={userDetailContext.data.form.values.permissions}
 					enabledRoleIds={userDetailContext.data.form.values.role_ids}
 					onResourceToggle={userDetailContext.actions.handlePermissionResourceToggle}
 					onToggle={userDetailContext.actions.handlePermissionToggle}
 					scope={item.scope}
-					title={t('auth:permissions.' + item.title)}
+					title={item.title}
 				/>
 			))}
 		</Pane>

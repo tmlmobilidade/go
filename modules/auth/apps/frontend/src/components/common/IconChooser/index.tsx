@@ -37,7 +37,7 @@ export function IconChooser({ selectedIcon, setSelectedIcon }: IconChooserProps)
 	return (
 		<Combobox
 			data={iconData}
-			label={t('auth:common.IconChooser.label')}
+			label={t('default:common.IconChooser.label')}
 			onChange={handleIconChange}
 			value={iconData.find(item => item.value === selectedIcon)?.value}
 			clearable

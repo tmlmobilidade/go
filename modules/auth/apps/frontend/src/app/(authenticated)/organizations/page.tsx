@@ -20,7 +20,7 @@ export default function Page() {
 
 	return (
 		<Surface align="center" justify="center" variant="transparent">
-			<NoDataLabel text={t('auth:organizations.NoDataLabel.text')} />
+			<NoDataLabel text={t('default:organizations.NoDataLabel.text')} />
 		</Surface>
 	);
 }

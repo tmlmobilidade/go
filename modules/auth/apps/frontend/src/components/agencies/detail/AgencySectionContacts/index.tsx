@@ -22,22 +22,22 @@ export function AgencySectionContacts() {
 
 	return (
 		<Collapsible
-			description={t('auth:agencies.detail.SectionContacts.description')}
-			title={t('auth:agencies.detail.SectionContacts.title')}
+			description={t('default:agencies.detail.SectionContacts.description')}
+			title={t('default:agencies.detail.SectionContacts.title')}
 		>
 			<Section gap="lg">
 				<Grid>
 					<TagsInput
 						key={agencyDetailContext.data.form.key('contact_emails_pto')}
-						description={t('auth:agencies.detail.SectionContacts.fields.contact_emails_pto.label')}
-						label={t('auth:agencies.detail.SectionContacts.fields.contact_emails_pto.title')}
+						description={t('default:agencies.detail.SectionContacts.fields.contact_emails_pto.label')}
+						label={t('default:agencies.detail.SectionContacts.fields.contact_emails_pto.title')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						{...agencyDetailContext.data.form.getInputProps('contact_emails_pto')}
 					/>
 					<TagsInput
 						key={agencyDetailContext.data.form.key('contact_emails_pta')}
-						description={t('auth:agencies.detail.SectionContacts.fields.contact_emails_pta.label')}
-						label={t('auth:agencies.detail.SectionContacts.fields.contact_emails_pta.title')}
+						description={t('default:agencies.detail.SectionContacts.fields.contact_emails_pta.label')}
+						label={t('default:agencies.detail.SectionContacts.fields.contact_emails_pta.title')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						w="100%"
 						{...agencyDetailContext.data.form.getInputProps('contact_emails_pta')}

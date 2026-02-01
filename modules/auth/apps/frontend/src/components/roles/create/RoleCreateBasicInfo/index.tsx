@@ -25,9 +25,9 @@ export function RoleCreateBasicInfo() {
 			<Grid columns="a" gap="xl">
 				<TextInput
 					key={roleCreateContext.data.form.key('name')}
-					label={t('auth:roles.create.BasicInfo.fields.name.label')}
+					label={t('default:roles.create.BasicInfo.fields.name.label')}
 					maxLength={255}
-					placeholder={t('auth:roles.create.BasicInfo.fields.name.placeholder')}
+					placeholder={t('default:roles.create.BasicInfo.fields.name.placeholder')}
 					data-autofocus
 					withAsterisk
 					{...roleCreateContext.data.form.getInputProps('name')}

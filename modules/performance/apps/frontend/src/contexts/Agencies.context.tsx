@@ -135,7 +135,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 		if (systemStatuses['all']) {
 			result.push({
 				id: 'all' as AgencyType,
-				label: t('auth:agencies.all'),
+				label: t('default:agencies.all'),
 			} as Agency);
 		}
 

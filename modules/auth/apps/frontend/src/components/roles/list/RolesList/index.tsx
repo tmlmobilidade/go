@@ -28,18 +28,18 @@ export function RolesList() {
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: t('auth:roles.list.Header.Table.columns.id'),
+			title: t('default:roles.list.Header.Table.columns.id'),
 			width: 120,
 		},
 		{
 			accessor: 'name',
-			title: t('auth:roles.list.Header.Table.columns.name'),
+			title: t('default:roles.list.Header.Table.columns.name'),
 			width: 200,
 		},
 		{
 			accessor: 'permissions',
 			render: item => <TagGroup tags={item.permissions.map(i => ({ label: `${i.scope}/${i.action}`, variant: 'secondary' }))} />,
-			title: t('auth:roles.list.Header.Table.columns.permissions'),
+			title: t('default:roles.list.Header.Table.columns.permissions'),
 			width: 500,
 		},
 	];

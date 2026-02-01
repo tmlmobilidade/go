@@ -7,7 +7,7 @@ import { type Alert, type File as FileType, PermissionCatalog, type UpdateAlertD
 import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -15,14 +15,18 @@ import useSWR from 'swr';
 interface AlertDetailContextState extends DetailContextStateTemplate {
 	actions: DetailContextStateTemplate['actions'] & {
 		deleteImage: () => void
-		fileChanged: (file: File) => void
-		publish: () => void
+		setImageFile: (file: File) => void
 	}
 	data: {
 		alert: Alert | undefined
 		form: UseFormReturnType<UpdateAlertDto>
 		id: string | undefined
 		image: FileType | undefined
+	}
+	flags: DetailContextStateTemplate['flags'] & {
+		isDeletingImage: boolean
+		isDirty: boolean
+		isUploadingImage: boolean
 	}
 }
 
@@ -49,14 +53,14 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	const router = useRouter();
 	const meContext = useMeContext();
 
-	const [image, setImage] = useState<File | null>(null);
+	const [imageFile, setImageFile] = useState<File>();
 
 	//
 	// B. Fetch Data
 
 	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
 	const { data: alertData, error: alertError, isLoading: alertLoading, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId));
-	const { data: alertImage, isLoading: alertImageLoading, mutate: alertImageMutate } = useSWR<FileType | undefined>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
+	const { data: alertImage, isLoading: alertImageLoading, mutate: alertImageMutate } = useSWR<FileType>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
 
 	//
 	// C. Define form
@@ -73,16 +77,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			alertMutate(updatedItem);
 			alertImageMutate();
 			alertsListMutate();
-		},
-	});
-
-	const { action: handlePublish, isLoading: isPublishing } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', form.getValues()),
-		onSuccess: (updatedItem) => {
-			form.resetDirty();
-			alertMutate(updatedItem);
-			alertImageMutate();
-			alertsListMutate();
+			handleUploadImage();
 		},
 	});
 
@@ -92,16 +87,6 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			form.resetDirty();
 			alertsListMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_LIST));
-		},
-	});
-
-	const { action: handleDeleteImage, isLoading: isDeletingImage } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), 'DELETE'),
-		onSuccess: () => {
-			form.resetDirty();
-			alertMutate();
-			alertImageMutate();
-			alertsListMutate();
 		},
 	});
 
@@ -116,7 +101,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	});
 
 	const { action: handleUploadImage, isLoading: isUploadingImage } = useHandleUpdate({
-		fetchFn: async () => await uploadFile(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), image),
+		fetchFn: async () => imageFile && await uploadFile(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), imageFile),
 		onSuccess: () => {
 			form.resetDirty();
 			alertMutate();
@@ -125,11 +110,40 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		},
 	});
 
+	const { action: handleDeleteImage, isLoading: isDeletingImage } = useHandleUpdate({
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), 'DELETE'),
+		onSuccess: () => {
+			form.resetDirty();
+			alertMutate();
+			alertImageMutate();
+			alertsListMutate();
+		},
+	});
+
+	useEffect(() => {
+		if (!imageFile) return;
+		console.log('Uploading image file:', imageFile);
+		handleSave();
+	}, [imageFile]);
+
 	//
 	// F. Setup flags
 
 	const { isReadOnly } = useFlagReadOnly({
-		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update),
+		hasPermission: meContext.actions.hasPermissionResource([
+			{
+				action: PermissionCatalog.all.alerts.actions.update,
+				resource_key: 'agency_ids',
+				scope: PermissionCatalog.all.alerts.scope,
+				value: alertData?.agency_id,
+			},
+			{
+				action: PermissionCatalog.all.alerts.actions.update,
+				resource_key: 'reference_types',
+				scope: PermissionCatalog.all.alerts.scope,
+				value: alertData?.reference_type,
+			},
+		]),
 		isDeleting: isDeleting,
 		isLoading: alertLoading,
 		isLocked: alertData?.is_locked,
@@ -138,7 +152,20 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	});
 
 	const { canSave } = useFlagCanSave({
-		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update),
+		hasPermission: meContext.actions.hasPermissionResource([
+			{
+				action: PermissionCatalog.all.alerts.actions.update,
+				resource_key: 'agency_ids',
+				scope: PermissionCatalog.all.alerts.scope,
+				value: alertData?.agency_id,
+			},
+			{
+				action: PermissionCatalog.all.alerts.actions.update,
+				resource_key: 'reference_types',
+				scope: PermissionCatalog.all.alerts.scope,
+				value: alertData?.reference_type,
+			},
+		]),
 		isDeleting: isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: alertLoading,
@@ -148,7 +175,20 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	});
 
 	const { canLock } = useFlagCanLock({
-		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update),
+		hasPermission: meContext.actions.hasPermissionResource([
+			{
+				action: PermissionCatalog.all.alerts.actions.lock,
+				resource_key: 'agency_ids',
+				scope: PermissionCatalog.all.alerts.scope,
+				value: alertData?.agency_id,
+			},
+			{
+				action: PermissionCatalog.all.alerts.actions.lock,
+				resource_key: 'reference_types',
+				scope: PermissionCatalog.all.alerts.scope,
+				value: alertData?.reference_type,
+			},
+		]),
 		isDeleting: isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: alertLoading,
@@ -157,7 +197,20 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	});
 
 	const { canDelete } = useFlagCanDelete({
-		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update),
+		hasPermission: meContext.actions.hasPermissionResource([
+			{
+				action: PermissionCatalog.all.alerts.actions.delete,
+				resource_key: 'agency_ids',
+				scope: PermissionCatalog.all.alerts.scope,
+				value: alertData?.agency_id,
+			},
+			{
+				action: PermissionCatalog.all.alerts.actions.delete,
+				resource_key: 'reference_types',
+				scope: PermissionCatalog.all.alerts.scope,
+				value: alertData?.reference_type,
+			},
+		]),
 		isDeleting: isDeleting,
 		isDirty: form.isDirty(),
 		isLoading: alertLoading,
@@ -169,15 +222,13 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	//
 	// E. Define context value
 
-	const contextValue: AlertDetailContextState = useMemo(() => ({
+	const contextValue: AlertDetailContextState = {
 		actions: {
 			delete: handleDelete,
 			deleteImage: handleDeleteImage,
-			fileChanged: setImage,
 			lock: handleLock,
-			publish: handlePublish,
 			save: handleSave,
-			uploadImage: handleUploadImage,
+			setImageFile: setImageFile,
 		},
 		data: {
 			alert: alertData,
@@ -199,19 +250,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			isSaving,
 			isUploadingImage: isUploadingImage,
 		},
-	}), [
-		alertId,
-		alertData,
-		alertImage,
-		alertImageLoading,
-		alertLoading,
-		isDeleting,
-		isDeletingImage,
-		isPublishing,
-		isSaving,
-		isUploadingImage,
-		form,
-	]);
+	};
 
 	//
 	// F. Render components

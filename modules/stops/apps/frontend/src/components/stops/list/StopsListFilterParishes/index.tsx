@@ -1,7 +1,7 @@
 /* * */
 
-import { useLocationsContext } from '@/contexts/Locations.context';
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
+import { useLocationsContext } from '@/contexts/Locations.context';
 import { MultiSelect } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

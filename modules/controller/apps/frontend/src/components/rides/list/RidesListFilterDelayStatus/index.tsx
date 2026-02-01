@@ -1,10 +1,7 @@
 /* * */
 
-import { useRidesListContext } from '@/contexts/RidesList.context';
-import { DelayStatusSchema } from '@tmlmobilidade/types';
+import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -18,37 +15,14 @@ export function RidesListFilterDelayStatus() {
 	const { t } = useTranslation();
 
 	//
-	// B. Transform data
-
-	const isActive = useMemo(() => {
-		// The default for this filter is to show all statuses
-		const defaultValues = DelayStatusSchema.options;
-		const enabledValues = ridesListContext.filters.delay_status;
-		// Check if the arrays are equal by quickly comparing their lengths
-		if (defaultValues.length !== enabledValues.length) return true;
-		// If the length is the same ensure they're equal by also
-		// checking if every item in one array is included in the other.
-		return !defaultValues.every(item => enabledValues.includes(item));
-	}, [ridesListContext.filters.delay_status]);
-
-	const parsedOptions = useMemo(() => {
-		// Parse options to the expected format.
-		return DelayStatusSchema.options.map(value => ({
-			checked: ridesListContext.filters.delay_status.includes(value),
-			label: value,
-			value: value,
-		}));
-	}, [ridesListContext.filters.delay_status]);
-
-	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<FilterTypeList
-			active={isActive}
-			label={t('controller:rides.list.RidesListFilterDelayStatus.delay_status.label')}
-			onChange={ridesListContext.actions.setFilterDelayStatus}
-			options={parsedOptions}
+			active={ridesListContext.filters.delay_status.isActive}
+			label="Atraso"
+			onChange={ridesListContext.filters.delay_status.set}
+			options={ridesListContext.filters.delay_status.options}
 			withToggleAll
 		/>
 	);

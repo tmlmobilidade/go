@@ -92,6 +92,7 @@ env:
     replicator:sync-apex-on-board-sales
     replicator:sync-apex-validations
     replicator:sync-vehicle-events
+    replicator:sync-vehicle-events-clickhouse
 
     stops:nginx
     stops:api
@@ -105,6 +106,10 @@ env:
     offer:nginx
     offer:api
     offer:frontend
+
+    fleet:nginx
+    fleet:api
+    fleet:frontend
 
 # # #
 

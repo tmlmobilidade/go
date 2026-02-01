@@ -29,12 +29,12 @@ export function OrganizationsList() {
 		{
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
-			title: t('auth:organizations.list.table.columns.id.label'),
+			title: t('default:organizations.list.table.columns.id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'long_name',
-			title: t('auth:organizations.list.table.columns.name.label'),
+			title: t('default:organizations.list.table.columns.name.label'),
 			width: 600,
 		},
 	];

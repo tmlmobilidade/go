@@ -46,16 +46,16 @@ export function ReferencesEditorRides() {
 			width: 150,
 		},
 		{
-			accessor: 'headsign',
-			render: item => <RidesListCellHeadsign headsign={item.headsign} patternId={item.pattern_id} />,
-			title: 'Pattern',
-			width: 500,
-		},
-		{
 			accessor: 'start_time_scheduled',
 			render: item => <Tag label={formatTimestamp(item.start_time_scheduled)} variant="muted" />,
 			title: 'Partida',
 			width: 80,
+		},
+		{
+			accessor: 'headsign',
+			render: item => <RidesListCellHeadsign headsign={item.headsign} patternId={item.pattern_id} />,
+			title: 'Pattern',
+			width: 500,
 		},
 	];
 

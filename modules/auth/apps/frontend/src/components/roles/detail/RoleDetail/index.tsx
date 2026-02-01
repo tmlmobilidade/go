@@ -8,7 +8,6 @@ import { RoleDetailBasicInfo } from '@/components/roles/detail/RoleDetailBasicIn
 import { RoleDetailHeader } from '@/components/roles/detail/RoleDetailHeader';
 import { permissionsConfig } from '@/lib/permissions';
 import { Pane } from '@tmlmobilidade/ui';
-import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -19,7 +18,6 @@ export function RoleDetail() {
 	// A. Setup variables
 
 	const rolesDetailContext = useRoleDetailContext();
-	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -31,12 +29,12 @@ export function RoleDetail() {
 				<PermissionSection
 					key={item.scope}
 					configActions={item.actions}
-					description={t('auth:permissions.' + item.description)}
+					description={item.description}
 					enabledPermissions={rolesDetailContext.data.form.values.permissions}
 					onResourceToggle={rolesDetailContext.actions.handlePermissionResourceToggle}
 					onToggle={rolesDetailContext.actions.handlePermissionToggle}
 					scope={item.scope}
-					title={t('auth:permissions.' + item.title)}
+					title={item.title}
 				/>
 			))}
 		</Pane>

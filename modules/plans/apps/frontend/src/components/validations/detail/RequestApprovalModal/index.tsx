@@ -22,7 +22,7 @@ export const openRequestApprovalModalModal = (validation_id?: string) => {
 		closeOnClickOutside: false,
 		modalId: REQUEST_APPROVAL_MODAL_ID,
 		padding: 0,
-		size: 'auto',
+		size: 'xl',
 		withCloseButton: false,
 	});
 };

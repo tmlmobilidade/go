@@ -7,11 +7,11 @@ import { OperationalDateTag } from '@/components/common/OperationalDateTag';
 import { OperationalStatusTag } from '@/components/common/OperationalStatusTag';
 import { SeenStatusTag } from '@/components/common/SeenStatusTag';
 import { StartTimeStatusTag } from '@/components/common/StartTimeStatusTag';
+import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { RidesListCellHeadsign } from '@/components/rides/list/RidesListCellHeadsign';
 import { RidesListCellPassengers } from '@/components/rides/list/RidesListCellPassengers';
 import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar';
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
-import { useRidesListContext } from '@/contexts/RidesList.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
@@ -83,26 +83,26 @@ export function RidesList() {
 		},
 		{
 			accessor: 'analysis_simple_three_vehicle_events_grade',
-			render: item => <AnalysisStatusTag grade={item.analysis_simple_three_vehicle_events_grade} />,
-			title: t('controller:rides.list.RidesListTable.columns.analysis_simple_three_vehicle_events_grade.label'),
+			render: item => <AnalysisStatusTag grade={item.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.grade} />,
+			title: '3 Eventos',
 			width: 120,
 		},
 		{
 			accessor: 'analysis_ended_at_last_stop_grade',
-			render: item => <AnalysisStatusTag grade={item.analysis_ended_at_last_stop_grade} />,
-			title: t('controller:rides.list.RidesListTable.columns.analysis_ended_at_last_stop_grade.label'),
+			render: item => <AnalysisStatusTag grade={item.analysis?.ENDED_AT_LAST_STOP?.grade} />,
+			title: 'Last Stop',
 			width: 120,
 		},
 		{
 			accessor: 'analysis_expected_apex_validation_interval',
-			render: item => <AnalysisStatusTag grade={item.analysis_expected_apex_validation_interval} />,
-			title: t('controller:rides.list.RidesListTable.columns.analysis_expected_apex_validation_interval_grade.label'),
+			render: item => <AnalysisStatusTag grade={item.analysis?.EXPECTED_APEX_VALIDATION_INTERVAL?.grade} />,
+			title: 'Int. APEX',
 			width: 120,
 		},
 		{
 			accessor: 'analysis_transaction_sequentiality',
-			render: item => <AnalysisStatusTag grade={item.analysis_transaction_sequentiality} />,
-			title: t('controller:rides.list.RidesListTable.columns.analysis_transaction_sequentiality.label'),
+			render: item => <AnalysisStatusTag grade={item.analysis?.TRANSACTION_SEQUENTIALITY?.grade} />,
+			title: 'Seq. APEX',
 			width: 120,
 		},
 	];
@@ -132,7 +132,7 @@ export function RidesList() {
 				onRowClick={handleRowClick}
 				records={ridesListContext.data.filtered}
 				rowIdAccessor="_id"
-				selectedId={params.id}
+				selectedId={decodeURIComponent(params.id ?? '')}
 			/>
 		</Pane>
 	);

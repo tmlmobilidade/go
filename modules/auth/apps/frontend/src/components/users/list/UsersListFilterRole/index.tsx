@@ -50,7 +50,7 @@ export function UsersListFilterRole() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label={t('auth:users.list.FilterBar.role.label')}
+			label={t('default:users.list.FilterBar.role.label')}
 			onChange={usersListContext.actions.setFilterRoleIds}
 			options={parsedOptions}
 			withToggleAll
