@@ -97,11 +97,11 @@ export function ridesPipelineDelayStatus({ filter }: { filter?: { end_delay_stat
 	];
 
 	// Stage 5: Filter by delay status if provided
-	if (filter && filter.end_delay_status && filter.end_delay_status.length > 0) {
+	if (filter && filter.end_delay_status) {
 		pipeline.push({ $match: { end_delay_status: { $in: filter.end_delay_status } } });
 	}
 
-	if (filter && filter.start_delay_status && filter.start_delay_status.length > 0) {
+	if (filter && filter.start_delay_status) {
 		pipeline.push({ $match: { start_delay_status: { $in: filter.start_delay_status } } });
 	}
 
@@ -201,7 +201,7 @@ export function ridesPipelineOperationalStatus({ filter }: { filter?: { operatio
 	];
 
 	// Stage 5: Filter by operational status if provided
-	if (filter && filter.operational_status && filter.operational_status.length > 0) {
+	if (filter && filter.operational_status) {
 		pipeline.push({ $match: { operational_status: { $in: filter.operational_status } } });
 	}
 
@@ -275,7 +275,7 @@ export function ridesPipelineSeenStatus({ filter }: { filter?: { seen_status?: S
 	];
 
 	// Stage 5: Filter by seen status if provided
-	if (filter && filter.seen_status && filter.seen_status.length > 0) {
+	if (filter && filter.seen_status) {
 		pipeline.push({ $match: { seen_status: { $in: filter.seen_status } } });
 	}
 
@@ -401,7 +401,13 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 			// When 'none' is included, set the field to 'none' if it doesn't exist, then match on the filter array
 			pipeline.push({
 				$addFields: {
-					[path]: { $ifNull: [`$${path}`, 'none'] },
+					[path]: {
+						$cond: {
+							else: `$${path}`,
+							if: { $in: [{ $type: `$${path}` }, ['null', 'undefined']] },
+							then: 'none',
+						},
+					},
 				},
 			});
 		}
@@ -416,7 +422,7 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 
 	// Stage 8: Filter by acceptance status
 	// Only applies filter if acceptance_status is provided and doesn't include 'none'
-	if (filter.acceptance_status && filter.acceptance_status.length > 0 && !filter.acceptance_status.includes('none')) {
+	if (filter.acceptance_status && filter.acceptance_status) {
 		pipeline.push(
 			{ $match: { acceptance_status: { $exists: true } } },
 			{ $match: { acceptance_status: { $in: filter.acceptance_status } } },
