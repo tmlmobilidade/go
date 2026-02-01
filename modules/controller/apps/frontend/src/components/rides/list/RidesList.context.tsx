@@ -5,9 +5,9 @@
 import { useDebouncedValue } from '@mantine/hooks';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type DelayStatus, type OperationalStatus, PermissionCatalog, type RideAcceptanceStatus, type RideNormalized } from '@tmlmobilidade/types';
+import { type OperationalStatus, PermissionCatalog, type RideNormalized, RideNormalizedSchema } from '@tmlmobilidade/types';
 import { DelayStatusSchema, OperationalStatusSchema } from '@tmlmobilidade/types';
-import { RIDE_ANALYSIS_GRADE_OPTIONS, RideAcceptanceStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
+import { RIDE_ANALYSIS_GRADE_OPTIONS, type UnixTimestamp } from '@tmlmobilidade/types';
 import { useDataAgencies, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -24,7 +24,7 @@ export interface RidesListContextState {
 		filtered: RideNormalized[]
 	}
 	filters: {
-		acceptance_status: UseFilterStateListReturnType<RideAcceptanceStatus>
+		acceptance_status: UseFilterStateListReturnType<RideNormalized['acceptance_status']>
 		agency: UseFilterStateListReturnType
 		analysis_ended_at_last_stop: UseFilterStateListReturnType
 		analysis_expected_apex_validation_interval: UseFilterStateListReturnType
@@ -32,7 +32,7 @@ export interface RidesListContextState {
 		analysis_transaction_sequentiality: UseFilterStateListReturnType
 		date_end: number
 		date_start: number
-		delay_status: UseFilterStateListReturnType<DelayStatus>
+		delay_status: UseFilterStateListReturnType<RideNormalized['delay_status']>
 		operational_status: UseFilterStateListReturnType<OperationalStatus>
 		search: UseFilterStateStringReturnType
 	}
@@ -89,7 +89,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const filterAnalysisEndedAtLastStop = useFilterStateList('analysis_ended_at_last_stop', [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'], [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'].map(item => ({ label: item, value: item })));
 	const filterAnalysisExpectedApexValidationInterval = useFilterStateList('analysis_expected_apex_validation_interval', [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'], [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'].map(item => ({ label: item, value: item })));
 	const filterAnalysisTransactionSequentiality = useFilterStateList('analysis_transaction_sequentiality', [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'], [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'].map(item => ({ label: item, value: item })));
-	const filterAcceptanceStatus = useFilterStateList('acceptance_status', RideAcceptanceStatusSchema.options, RideAcceptanceStatusSchema.options.map(item => ({ label: t(`ride_status:acceptance_status.${item}`), value: item })));
+	const filterAcceptanceStatus = useFilterStateList('acceptance_status', RideNormalizedSchema.shape.acceptance_status.options, RideNormalizedSchema.shape.acceptance_status.options.map(item => ({ label: t(`ride_status:acceptance_status.${item}`), value: item })));
 
 	const { error: ridesError, isLoading: ridesLoading, lastUpdatedAt: ridesLastUpdatedAt, raw: ridesData } = useDataRides(API_ROUTES.controller.RIDES_LIST, {
 		filters: {
@@ -97,7 +97,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			date_end: filterDateEnd as UnixTimestamp,
 			date_start: filterDateStart as UnixTimestamp,
 			// line_ids: filterLines.value,
-			acceptance_status: filterAcceptanceStatus.value,
+			// acceptance_status: filterAcceptanceStatus.value,
 			analysis_ended_at_last_stop_grade: filterAnalysisEndedAtLastStop.value,
 			analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval.value,
 			analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents.value,

@@ -9,11 +9,11 @@ import { z } from 'zod';
 /* * */
 
 export const RideNormalizedSchema = RideSchema.extend({
-	acceptance_status: RideAcceptanceStatusSchema,
-	analysis_ended_at_last_stop_grade: RideAnalysisGradeSchema.or(z.literal('none')),
-	analysis_expected_apex_validation_interval: RideAnalysisGradeSchema.or(z.literal('none')),
-	analysis_simple_three_vehicle_events_grade: RideAnalysisGradeSchema.or(z.literal('none')),
-	analysis_transaction_sequentiality: RideAnalysisGradeSchema.or(z.literal('none')),
+	acceptance_status: z.enum([...RideAcceptanceStatusSchema.options, 'none']),
+	analysis_ended_at_last_stop_grade: z.enum([...RideAnalysisGradeSchema.options, 'none']),
+	analysis_expected_apex_validation_interval: z.enum([...RideAnalysisGradeSchema.options, 'none']),
+	analysis_simple_three_vehicle_events_grade: z.enum([...RideAnalysisGradeSchema.options, 'none']),
+	analysis_transaction_sequentiality: z.enum([...RideAnalysisGradeSchema.options, 'none']),
 
 	/**
 	 * @deprecated use `start_time_observed_display` instead
