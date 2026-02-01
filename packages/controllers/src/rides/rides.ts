@@ -5,6 +5,8 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { type ActionsOf, type GetRidesBatchQuery, GetRidesBatchQuerySchema, type Permission, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
+import { type HttpResponse } from '@tmlmobilidade/utils';
+import { type WebSocket } from 'ws';
 
 /* * */
 
@@ -132,6 +134,43 @@ export class RidesSharedController {
 		}
 
 		//
+	}
+
+	/**
+	 * WebSocket event handler.
+	 * @param socket The WebSocket object.
+	 */
+	static websocket(socket: WebSocket) {
+		socket.on('message', async () => {
+			//
+
+			//
+			// Connect to and prepare Rides database collection.
+
+			const ridesCollection = await rides.getCollection();
+
+			//
+			// Start a watch service for the database
+			// and send updates to the client as they occur.
+
+			ridesCollection
+				.watch([], { fullDocument: 'updateLookup' })
+				.on('change', (databaseOperation) => {
+					if (typeof databaseOperation['fullDocument'] === 'undefined') {
+						console.log('Undefined document:', databaseOperation);
+						return;
+					}
+					const normalizedRide = normalizeRide(databaseOperation['fullDocument']);
+					const message: HttpResponse<RideNormalized> = {
+						data: normalizedRide,
+						error: null,
+						statusCode: HttpStatus.OK,
+					};
+					socket.send(JSON.stringify(message));
+				});
+
+			//
+		});
 	}
 
 	//

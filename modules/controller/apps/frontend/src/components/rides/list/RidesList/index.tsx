@@ -4,20 +4,20 @@
 
 import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
 import { OperationalDateTag } from '@/components/common/OperationalDateTag';
-import { OperationalStatusTag } from '@/components/common/OperationalStatusTag';
 import { SeenStatusTag } from '@/components/common/SeenStatusTag';
 import { StartTimeStatusTag } from '@/components/common/StartTimeStatusTag';
+import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { RidesListCellHeadsign } from '@/components/rides/list/RidesListCellHeadsign';
 import { RidesListCellPassengers } from '@/components/rides/list/RidesListCellPassengers';
 import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar';
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
-import { useRidesListContext } from '@/contexts/RidesList.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
-import { DataTable, DataTableColumn, ErrorDisplay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, ErrorDisplay, OperationalStatusTag, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -31,6 +31,7 @@ export function RidesList() {
 	const params = useParams<{ id?: string }>();
 
 	const ridesListContext = useRidesListContext();
+	const { t } = useTranslation();
 
 	const formatTimestamp = (timestamp: UnixTimestamp) => {
 		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;
@@ -40,43 +41,43 @@ export function RidesList() {
 		{
 			accessor: 'seen_last_at',
 			render: item => <SeenStatusTag value={item.seen_status} />,
-			title: '',
+			title: t('default:list.RidesListTable.columns.seen_last_at.label'),
 			width: 24,
 		},
 		{
 			accessor: 'operational_status',
 			render: item => <OperationalStatusTag value={item.operational_status} />,
-			title: 'Estado',
+			title: t('default:list.RidesListTable.columns.operational_status.label'),
 			width: 150,
 		},
 		{
 			accessor: 'operational_date',
 			render: item => <OperationalDateTag value={item.operational_date} />,
-			title: 'Data Operacional',
+			title: t('default:list.RidesListTable.columns.operational_date.label'),
 			width: 150,
 		},
 		{
 			accessor: 'headsign',
 			render: item => <RidesListCellHeadsign headsign={item.headsign} patternId={item.pattern_id} />,
-			title: 'Pattern',
+			title: t('default:list.RidesListTable.columns.headsign.label'),
 			width: 500,
 		},
 		{
 			accessor: 'start_time_scheduled',
 			render: item => <Tag label={formatTimestamp(item.start_time_scheduled)} variant="muted" />,
-			title: 'Partida',
+			title: t('default:list.RidesListTable.columns.start_time_scheduled.label'),
 			width: 80,
 		},
 		{
 			accessor: 'start_time_observed',
 			render: item => <StartTimeStatusTag startTimeObserved={formatTimestamp(item.start_time_observed)} status={item.start_delay_status} />,
-			title: 'Observado',
+			title: t('default:list.RidesListTable.columns.start_time_observed.label'),
 			width: 200,
 		},
 		{
 			accessor: 'passengers_observed',
 			render: item => <RidesListCellPassengers value={item.passengers_observed} />,
-			title: 'Passageiros',
+			title: t('default:list.RidesListTable.columns.passengers_observed.label'),
 			width: 120,
 		},
 		{
@@ -130,7 +131,7 @@ export function RidesList() {
 				onRowClick={handleRowClick}
 				records={ridesListContext.data.filtered}
 				rowIdAccessor="_id"
-				selectedId={params.id}
+				selectedId={decodeURIComponent(params.id ?? '')}
 			/>
 		</Pane>
 	);

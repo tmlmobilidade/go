@@ -5,6 +5,7 @@
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { Collapsible, Divider, MapOverlayGeofences, MapOverlayObservedPath, MapOverlayScheduledPath, MapView, Section, Switch } from '@tmlmobilidade/ui';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -22,11 +23,13 @@ export function RideAnalysisMap() {
 	const [showObservedPath, setShowObservedPath] = useState(true);
 	const [showGeofences, setShowGeofences] = useState(false);
 
+	const { t } = useTranslation();
+
 	//
 	// B. Render components
 
 	return (
-		<Collapsible description="Eventos dos veículos mapeados" title="Visão Geográfica" defaultOpen>
+		<Collapsible description={t('default:rides.analysis.RideAnalysisMap.description')} title={t('default:rides.analysis.RideAnalysisMap.title')} defaultOpen>
 			<div className={styles.mapWrapper}>
 				<MapView id="RideAnalysisMap">
 					<MapOverlayScheduledPath
@@ -50,9 +53,9 @@ export function RideAnalysisMap() {
 			</div>
 			<Divider />
 			<Section alignItems="center" flexDirection="row" gap="md">
-				<Switch checked={showScheduledPath} label="Percurso Planeado" onChange={() => setShowScheduledPath(prev => !prev)} />
-				<Switch checked={showObservedPath} label="Percurso Observado" onChange={() => setShowObservedPath(prev => !prev)} />
-				<Switch checked={showGeofences} label="Geofences" onChange={() => setShowGeofences(prev => !prev)} />
+				<Switch checked={showScheduledPath} label={t('default:rides.analysis.RideAnalysisMap.switches.scheduled_path.label')} onChange={() => setShowScheduledPath(prev => !prev)} />
+				<Switch checked={showObservedPath} label={t('default:rides.analysis.RideAnalysisMap.switches.observed_path.label')} onChange={() => setShowObservedPath(prev => !prev)} />
+				<Switch checked={showGeofences} label={t('default:rides.analysis.RideAnalysisMap.switches.geofences.label')} onChange={() => setShowGeofences(prev => !prev)} />
 			</Section>
 			{/* <Divider /> */}
 			{/* <Section alignItems="center" flexDirection="row" gap="md">

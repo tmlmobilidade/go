@@ -18,10 +18,10 @@
 		"unknown": "Desconhecido"
 	},
 	"delay_status": {
-		"delayed": "DELAYED",
-		"early": "EARLY",
-		"none": "NONE",
-		"ontime": "ONTIME"
+		"delayed": "Atrasada",
+		"early": "Adiantada",
+		"none": "(sem valor)",
+		"ontime": "A Horas"
 	},
 	"lifecycle_status": {
 		"active": "Ativo",
