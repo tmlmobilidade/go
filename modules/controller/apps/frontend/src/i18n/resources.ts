@@ -3,6 +3,7 @@
 /* * */
 
 import namespaceDefaultPt from '@/i18n/namespaces/default/pt.json' with { type: 'json' };
+import namespaceAnalysisPt from '@/i18n/namespaces/ride-analysis/pt.json' with { type: 'json' };
 import namespaceStatusPt from '@/i18n/namespaces/ride-status/pt.json' with { type: 'json' };
 import { i18nResourceKeysPtShared } from '@tmlmobilidade/ui';
 
@@ -16,5 +17,6 @@ import { i18nResourceKeysPtShared } from '@tmlmobilidade/ui';
 export const i18nResourceKeysPt = {
 	...i18nResourceKeysPtShared,
 	default: namespaceDefaultPt,
+	ride_analysis: namespaceAnalysisPt,
 	ride_status: namespaceStatusPt,
 } as const;
