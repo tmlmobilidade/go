@@ -34,24 +34,26 @@ export function RidesListLastUpdatedAt({ isLoading }: RidesListLastUpdatedAtProp
 
 	useEffect(() => {
 		const updateTooltipValue = () => {
-			const diff = DateTime.now().toMillis() - (ridesListContext.flags.last_updated_at ?? 0); // milliseconds
+			const diff = DateTime.now().toMillis() - (ridesListContext.flags.last_updated_at ?? 0);
 			if (diff < 1000) return setTooltipValue(t('default:list.RidesListLastUpdatedAt.just_now'));
 			if (diff < 60 * 1000) return setTooltipValue(`${Math.floor(diff / 1000)} seg`);
 			if (diff < 60 * 60 * 1000) return setTooltipValue(`${Math.floor(diff / 1000 / 60)} min`);
 			if (diff < 24 * 60 * 60 * 1000) return setTooltipValue(`${Math.floor(diff / 1000 / 60 / 60)} h`);
 			return setTooltipValue(`${Math.floor(diff / 1000 / 60 / 60 / 24)} d`);
 		};
+		updateTooltipValue();
+		const interval = setInterval(() => updateTooltipValue(), 1_000);
+		return () => clearInterval(interval);
+	}, [ridesListContext.flags.last_updated_at]);
+
+	useEffect(() => {
 		const updateIndicatorVariant = () => {
-			const diff = DateTime.now().toMillis() - (ridesListContext.flags.last_updated_at ?? 0); // milliseconds
+			const diff = DateTime.now().toMillis() - (ridesListContext.flags.last_updated_at ?? 0);
 			if (diff < 10_000) return setIndicatorVariant('primary');
 			return setIndicatorVariant('muted');
 		};
-		updateTooltipValue();
 		updateIndicatorVariant();
-		const interval = setInterval(() => {
-			updateTooltipValue();
-			updateIndicatorVariant();
-		}, 1_000);
+		const interval = setInterval(() => updateIndicatorVariant(), 1_000);
 		return () => clearInterval(interval);
 	}, [ridesListContext.flags.last_updated_at]);
 

@@ -49,34 +49,81 @@
 		}
 	},
 	"list": {
+		"RidesListFilterAcceptanceStatus": {
+			"label": "Aceitação"
+		},
+		"RidesListFilterAgency": {
+			"label": "Operador"
+		},
+		"RidesListFilterAnalysisEndedAtLastStop": {
+			"label": "Fim na Última Paragem"
+		},
+		"RidesListFilterAnalysisExpectedApexValidationInterval": {
+			"label": "Intervalo Validações"
+		},
+		"RidesListFilterAnalysisSimpleThreeEvents": {
+			"label": "3 Momentos"
+		},
+		"RidesListFilterAnalysisTransactionSequentiality": {
+			"label": "Sequencialidade APEX"
+		},
+		"RidesListFilterDateRange": {
+			"label": "Intervalo de datas"
+		},
+		"RidesListFilterDelayStatus": {
+			"label": "Atraso"
+		},
+		"RidesListFilterOperationalStatus": {
+			"label": "Estado"
+		},
+		"RidesListHeader": {
+			"export": "Exportar circulações",
+			"title": "Circulações"
+		},
 		"RidesListLastUpdatedAt": {
 			"just_now": "Agora mesmo"
+		},
+		"RidesListTable": {
+			"columns": {
+				"analysis_ended_at_last_stop_grade": {
+					"label": "Last Stop"
+				},
+				"analysis_expected_apex_validation_interval_grade": {
+					"label": "Int. APEX"
+				},
+				"analysis_simple_three_vehicle_events_grade": {
+					"label": "3 Eventos"
+				},
+				"analysis_transaction_sequentiality": {
+					"label": "Seq.APEX"
+				},
+				"headsign": {
+					"label": "Pattern"
+				},
+				"operational_date": {
+					"label": "Data Operacional"
+				},
+				"operational_status": {
+					"label": "Estado"
+				},
+				"passengers_observed": {
+					"label": "Passageiros"
+				},
+				"seen_last_at": {
+					"label": ""
+				},
+				"start_time_observed": {
+					"label": "Observado"
+				},
+				"start_time_scheduled": {
+					"label": "Partida"
+				}
+			}
 		}
 	},
 	"rides": {
 		"acceptance": {
 			"RideAcceptance": {
-				"cause": {
-					"ACCIDENT": "Acidente",
-					"CONSTRUCTION": "Obras",
-					"DEMONSTRATION": "Evento / Manifestação",
-					"DRIVER_ABSENCE": "Condutor Ausente",
-					"DRIVER_ISSUE": "Condutor com Problema",
-					"HIGH_PASSENGER_LOAD": "Elevado Volume de Passageiros",
-					"HOLIDAY": "Feriado",
-					"MAINTENANCE": "Manutenção",
-					"MEDICAL_EMERGENCY": "Emergência Médica",
-					"OTHER_CAUSE": "Outras Causas",
-					"POLICE_ACTIVITY": "Atividade Policial",
-					"ROAD_INCIDENT": "Incidente na Estrada",
-					"STRIKE": "Greve",
-					"SYSTEM_FAILURE": "Falha do Sistema",
-					"TECHNICAL_PROBLEM": "Problema Técnico",
-					"TRAFFIC_JAM": "Congestão de Trânsito",
-					"UNKNOWN_CAUSE": "Causa Desconhecida",
-					"VEHICLE_ISSUE": "Veículo com Problema",
-					"WEATHER": "Mau Tempo"
-				},
 				"title": "Atividade"
 			},
 			"RideAcceptanceCommentList": {
@@ -511,96 +558,6 @@
 					}
 				},
 				"title": "Exportar Circulações"
-			}
-		},
-		"list": {
-			"RidesListFilterAcceptanceStatus": {
-				"acceptance_status": {
-					"label": "Aceitação"
-				}
-			},
-			"RidesListFilterAgency": {
-				"agency": {
-					"label": "Operador"
-				}
-			},
-			"RidesListFilterAnalysisEndedAtLastStop": {
-				"analysis_ended_at_last_stop": {
-					"label": "Fim na Última Paragem"
-				}
-			},
-			"RidesListFilterAnalysisExpectedApexValidationInterval": {
-				"analysis_expected_apex_validation_interval": {
-					"label": "Intervalo Validações"
-				}
-			},
-			"RidesListFilterAnalysisSimpleThreeEvents": {
-				"analysis_simple_three_vehicle_events": {
-					"label": "3 Momentos"
-				}
-			},
-			"RidesListFilterAnalysisTransactionSequentiality": {
-				"analysis_transaction_sequentiality": {
-					"label": "Sequencialidade APEX"
-				}
-			},
-			"RidesListFilterDateRange": {
-				"date_range": {
-					"label": "Intervalo de datas"
-				}
-			},
-			"RidesListFilterDelayStatus": {
-				"delay_status": {
-					"label": "Atraso"
-				}
-			},
-			"RidesListFilterOperationalStatus": {
-				"operational_status": {
-					"label": "Estado"
-				}
-			},
-			"RidesListHeader": {
-				"ExportButton": {
-					"tooltip": "Exportar circulações"
-				},
-				"title": "Circulações"
-			},
-			"RidesListTable": {
-				"columns": {
-					"analysis_ended_at_last_stop_grade": {
-						"label": "Last Stop"
-					},
-					"analysis_expected_apex_validation_interval_grade": {
-						"label": "Int. APEX"
-					},
-					"analysis_simple_three_vehicle_events_grade": {
-						"label": "3 Eventos"
-					},
-					"analysis_transaction_sequentiality": {
-						"label": "Seq.APEX"
-					},
-					"headsign": {
-						"label": "Pattern"
-					},
-					"operational_date": {
-						"label": "Data Operacional"
-					},
-					"operational_status": {
-						"label": "Estado"
-					},
-					"passengers_observed": {
-						"label": "Passageiros"
-					},
-					"seen_last_at": {
-						"label": ""
-					},
-					"start_time_observed": {
-						"label": "Observado"
-					},
-					"start_time_scheduled": {
-						"label": "Partida"
-					}
-				}
 			}
 		}
 	}

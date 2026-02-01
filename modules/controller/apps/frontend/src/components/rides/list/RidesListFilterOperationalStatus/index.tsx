@@ -2,6 +2,7 @@
 
 import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -11,8 +12,9 @@ export function RidesListFilterOperationalStatus() {
 	//
 	// A. Setup variables
 
-	const ridesListContext = useRidesListContext();
 	const { t } = useTranslation();
+
+	const ridesListContext = useRidesListContext();
 
 	//
 	// B. Render components
@@ -20,7 +22,7 @@ export function RidesListFilterOperationalStatus() {
 	return (
 		<FilterTypeList
 			active={ridesListContext.filters.operational_status.isActive}
-			label="Estado"
+			label={t('default:list.RidesListFilterOperationalStatus.label')}
 			onChange={ridesListContext.filters.operational_status.set}
 			options={ridesListContext.filters.operational_status.options}
 			withToggleAll
