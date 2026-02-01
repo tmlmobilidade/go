@@ -10,6 +10,11 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 		const informed_entity: EntitySelector[] = [];
 
 		switch (alert.reference_type) {
+			case 'agency':
+				informed_entity.push({
+					agency_id: alert.references[0].parent_id,
+				});
+				break;
 			case 'lines':
 				alert.references.forEach((reference) => {
 					const line = lines.find(line => line.id === reference.parent_id);
