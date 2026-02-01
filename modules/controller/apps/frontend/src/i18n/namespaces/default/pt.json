@@ -52,5 +52,556 @@
 		"RidesListLastUpdatedAt": {
 			"just_now": "Agora mesmo"
 		}
+	},
+	"rides": {
+		"acceptance": {
+			"RideAcceptance": {
+				"cause": {
+					"ACCIDENT": "Acidente",
+					"CONSTRUCTION": "Obras",
+					"DEMONSTRATION": "Evento / Manifestação",
+					"DRIVER_ABSENCE": "Condutor Ausente",
+					"DRIVER_ISSUE": "Condutor com Problema",
+					"HIGH_PASSENGER_LOAD": "Elevado Volume de Passageiros",
+					"HOLIDAY": "Feriado",
+					"MAINTENANCE": "Manutenção",
+					"MEDICAL_EMERGENCY": "Emergência Médica",
+					"OTHER_CAUSE": "Outras Causas",
+					"POLICE_ACTIVITY": "Atividade Policial",
+					"ROAD_INCIDENT": "Incidente na Estrada",
+					"STRIKE": "Greve",
+					"SYSTEM_FAILURE": "Falha do Sistema",
+					"TECHNICAL_PROBLEM": "Problema Técnico",
+					"TRAFFIC_JAM": "Congestão de Trânsito",
+					"UNKNOWN_CAUSE": "Causa Desconhecida",
+					"VEHICLE_ISSUE": "Veículo com Problema",
+					"WEATHER": "Mau Tempo"
+				},
+				"title": "Atividade"
+			},
+			"RideAcceptanceCommentList": {
+				"acceptance_status": {
+					"accepted": "A aceitação está aceite",
+					"justification_required": "É necessário justificar a circulação",
+					"rejected": "A aceitação está rejeitada",
+					"under_review": "A aceitação está em revisão"
+				},
+				"crud": {
+					"archive": "A aceitação foi arquivada",
+					"create": "A aceitação foi criada por sistema",
+					"delete": "A aceitação foi apagada",
+					"restore": "A aceitação foi restaurada",
+					"update": "A aceitação foi atualizada"
+				},
+				"justification": {
+					"updated": "A justificação foi atualizada"
+				},
+				"lock": {
+					"lock": "A aceitação foi bloqueada",
+					"unlock": "A aceitação foi desbloqueada"
+				},
+				"note": {
+					"created": "A aceitação foi criada por sistema"
+				},
+				"summary": {
+					"performed": "Foi realizada uma nova análise da viagem"
+				}
+			},
+			"RideAcceptanceJustification": {
+				"SubmitButton": {
+					"label": "Justificar"
+				},
+				"fields": {
+					"cause": {
+						"label": "Motivo da justificação",
+						"placeholder": "Selecione o motivo da justificação"
+					},
+					"manual_trip_id": {
+						"label": "ID da viagem manual (opcional)"
+					},
+					"message": {
+						"label": "Mensagem de justificação"
+					}
+				},
+				"readonly": {
+					"cause": {
+						"label": "Motivo da justificação"
+					},
+					"manual_trip_id": {
+						"label": "ID da viagem manual"
+					},
+					"message": {
+						"label": "Mensagem de justificação"
+					}
+				},
+				"title": "Justificação"
+			}
+		},
+		"analysis": {
+			"RideAnalysisApexLocations": {
+				"Table": {
+					"columns": {
+						"created_at": {
+							"label": "Timestamp"
+						},
+						"id_apex_location": {
+							"label": "ID Apex Location"
+						},
+						"mac_sam_serial_number": {
+							"label": "SAM SN"
+						},
+						"stop_id": {
+							"label": "Stop ID"
+						},
+						"vehicle_id": {
+							"label": "Vehicle ID"
+						}
+					}
+				},
+				"description": "Localizações APEX associadas a esta Ride.",
+				"no_data": "Nenhuma Localização APEX Registada",
+				"title": "APEX Locations"
+			},
+			"RideAnalysisApexOnBoardRefunds": {
+				"Table": {
+					"columns": {
+						"card_serial_number": {
+							"label": "Card SN"
+						},
+						"card_type": {
+							"label": "Card Type"
+						},
+						"created_at": {
+							"label": "Timestamp"
+						},
+						"id_on_board_refund": {
+							"label": "ID On Board Refund"
+						},
+						"id_on_board_sale": {
+							"label": "ID On Board Sale"
+						},
+						"id_validation": {
+							"label": "ID Validation"
+						},
+						"payment_method": {
+							"label": "Payment Method"
+						},
+						"price": {
+							"label": "Price"
+						},
+						"product_id": {
+							"label": "Product ID"
+						},
+						"product_quantity": {
+							"label": "Qtd"
+						},
+						"stop_id": {
+							"label": "Stop ID"
+						}
+					}
+				},
+				"description": "Reembolsos APEX associados a esta Ride.",
+				"no_data": "Nenhum Reembolso Registado",
+				"title": "APEX On Board Refunds"
+			},
+			"RideAnalysisApexOnBoardSales": {
+				"Table": {
+					"columns": {
+						"card_serial_number": {
+							"label": "Card SN"
+						},
+						"card_type": {
+							"label": "Card Type"
+						},
+						"created_at": {
+							"label": "Timestamp"
+						},
+						"id_on_board_refund": {
+							"label": "ID On Board Refund"
+						},
+						"id_on_board_sale": {
+							"label": "ID On Board Sale"
+						},
+						"id_validation": {
+							"label": "ID Validation"
+						},
+						"payment_method": {
+							"label": "Payment Method"
+						},
+						"price": {
+							"label": "Price"
+						},
+						"product_id": {
+							"label": "Product ID"
+						},
+						"product_quantity": {
+							"label": "Qtd"
+						},
+						"stop_id": {
+							"label": "Stop ID"
+						}
+					}
+				},
+				"description": "Vendas APEX associadas a esta Ride.",
+				"no_data": "Nenhuma Venda Registada",
+				"title": "APEX On Board Sales"
+			},
+			"RideAnalysisApexValidations": {
+				"Table": {
+					"columns": {
+						"card_serial_number": {
+							"label": "Card SN"
+						},
+						"created_at": {
+							"label": "Timestamp"
+						},
+						"event_type": {
+							"label": "Event Type"
+						},
+						"id_on_board_refund": {
+							"label": "ID On Board Refund"
+						},
+						"id_on_board_sale": {
+							"label": "ID On Board Sale"
+						},
+						"id_validation": {
+							"label": "ID Validation"
+						},
+						"mac_sam_serial_number": {
+							"label": "SAM SN"
+						},
+						"product_id": {
+							"label": "Product ID"
+						},
+						"status": {
+							"label": "Status"
+						},
+						"stop_id": {
+							"label": "Stop ID"
+						},
+						"tx_valid": {
+							"label": "Tx Valid"
+						},
+						"vehicle_id": {
+							"label": "Vehicle ID"
+						}
+					}
+				},
+				"description": "Validações APEX associadas a esta Ride.",
+				"no_data": "Nenhuma Validação Registada",
+				"title": "Validações APEX"
+			},
+			"RideAnalysisMap": {
+				"description": "Eventos dos veículos mapeados",
+				"switches": {
+					"geofences": {
+						"label": "Geofences"
+					},
+					"observed_path": {
+						"label": "Percurso Observado"
+					},
+					"scheduled_path": {
+						"label": "Percurso Planeado"
+					}
+				},
+				"title": "Visão Geográfica"
+			},
+			"RideAnalysisMetadata": {
+				"description": "Informações gerais sobre esta circulação",
+				"fields": {
+					"apex_validations_qty": {
+						"label": "Validações (APEX TXs)"
+					},
+					"driver_ids": {
+						"label": "IDs dos Motoristas"
+					},
+					"end_delay": {
+						"label": "Atraso à Chegada"
+					},
+					"observed_end_time": {
+						"label": "Hora de Fim Observada"
+					},
+					"observed_start_time": {
+						"label": "Hora de Início Observada"
+					},
+					"on_board_sales": {
+						"label": "Vendas a Bordo"
+					},
+					"operational_date": {
+						"label": "Dia Operacional"
+					},
+					"passengers": {
+						"label": "Passageiros"
+					},
+					"pattern_id": {
+						"label": "ID do Padrão"
+					},
+					"prepaid_validations": {
+						"label": "Validações Pré-Pago"
+					},
+					"scheduled_end_time": {
+						"label": "Hora de Fim Planeada"
+					},
+					"scheduled_start_time": {
+						"label": "Hora de Início Planeada"
+					},
+					"start_delay": {
+						"label": "Atraso à Partida"
+					},
+					"subscription_validations_qty": {
+						"label": "Validações Passes"
+					},
+					"trip_id": {
+						"label": "ID da Viagem"
+					},
+					"vehicle_ids": {
+						"label": "IDs dos Veículos"
+					}
+				},
+				"title": "Metadados"
+			},
+			"RideAnalysisPerformance": {
+				"description": "Dados de desempenho da circulação",
+				"no_data": "Sem Dados",
+				"title": "Performance"
+			},
+			"RideAnalysisResult": {
+				"description": "Eventos dos veículos mapeados",
+				"labels": {
+					"AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP": {
+						"description": "Uma circulação deve ter pelo menos um evento na primeira paragem.",
+						"title": "Pelo menos um evento na primeira paragem"
+					},
+					"ENDED_AT_LAST_STOP": {
+						"description": "Uma circulação deve terminar na última paragem.",
+						"title": "Terminou na última paragem"
+					},
+					"EXPECTED_APEX_VALIDATION_INTERVAL": {
+						"description": "O intervalo entre validações é orgânico e representa a variação natural dos tempos de validação dos passageiros.",
+						"title": "Intervalo de validações APEX"
+					},
+					"EXPECTED_DRIVER_ID_QTY": {
+						"description": "Uma circulação pode ter no máximo dois IDs de motorista diferentes.",
+						"title": "No máximo dois motoristas"
+					},
+					"EXPECTED_START_TIME": {
+						"description": "Uma circulação deve começar depois da hora planeada e com um atraso inferior a 5 minutos.",
+						"title": "Início a horas"
+					},
+					"EXPECTED_VEHICLE_EVENT_DELAY": {
+						"description": "Os eventos não devem ser entregues com mais de 10 segundos após a sua geração.",
+						"title": "Atraso excessivo na entrega dos eventos"
+					},
+					"EXPECTED_VEHICLE_EVENT_INTERVAL": {
+						"description": "O intervalo médio entre eventos não deve exceder os 20 segundos.",
+						"title": "Intervalo médio entre eventos"
+					},
+					"EXPECTED_VEHICLE_EVENT_QTY": {
+						"description": "Uma circulação deve ter pelo menos 10 eventos de veículo.",
+						"title": "Menos de 10 eventos de veículo"
+					},
+					"EXPECTED_VEHICLE_ID_QTY": {
+						"description": "Uma circulação pode ter no máximo dois IDs de veículo diferentes.",
+						"title": "No máximo dois veículos"
+					},
+					"MATCHING_APEX_LOCATIONS": {
+						"description": "As transações de localização devem corresponder aos eventos de veículo.",
+						"title": "Transações de localização correspondentes"
+					},
+					"MATCHING_VEHICLE_IDS": {
+						"description": "Os IDs do veículos recebidos nos Eventos devem corresponder ao ID das transações APEX.",
+						"title": "Vehicle IDs correspondentes"
+					},
+					"SIMPLE_ONE_APEX_VALIDATION": {
+						"description": "Uma circulação deve ter pelo menos uma transação de validação.",
+						"title": "Pelo menos uma transação de validação"
+					},
+					"SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION": {
+						"description": "Uma circulação deve ter pelo menos um evento ou uma transação de validação.",
+						"title": "Pelo menos um evento ou uma transação de validação"
+					},
+					"SIMPLE_THREE_VEHICLE_EVENTS": {
+						"description": "Uma circulação deve ter pelo menos três eventos no início, meio e fim da viagem.",
+						"title": "Pelo menos três eventos"
+					},
+					"TRANSACTION_SEQUENTIALITY": {
+						"description": "Todas as transações geradas pelo validador foram entregues.",
+						"title": "Sequencialidade das Transações APEX"
+					}
+				},
+				"no_data": "Sem Dados",
+				"title": "Resultados das Análises"
+			},
+			"RideAnalysisResultItem": {
+				"statuses": {
+					"fail": "Fail",
+					"failed": "Erro",
+					"pass": "Pass"
+				}
+			},
+			"RideAnalysisVehicleEvents": {
+				"Table": {
+					"columns": {
+						"activity": {
+							"label": "Atividade"
+						},
+						"created_at": {
+							"label": "Timestamp"
+						},
+						"door": {
+							"label": "Porta"
+						},
+						"driver_id": {
+							"label": "ID do Motorista"
+						},
+						"latitude": {
+							"label": "Latitude"
+						},
+						"longitude": {
+							"label": "Longitude"
+						},
+						"odometer": {
+							"label": "Odómetro"
+						},
+						"stop_id": {
+							"label": "ID da Paragem"
+						},
+						"vehicle_id": {
+							"label": "ID do Veículo"
+						}
+					}
+				},
+				"description": "Eventos GTFS-RT gerados pelo veículo.",
+				"title": "Eventos do Veículo"
+			}
+		},
+		"detail": {
+			"RidesDetailAcceptanceStatusTag": {
+				"accepted": "Aceite",
+				"justification_required": "Justificação Necessária",
+				"rejected": "Rejeitada",
+				"under_review": "Em Revisão"
+			},
+			"RidesDetailAnalysisStatusTag": {
+				"fail": "Fail",
+				"pass": "Pass"
+			},
+			"RidesDetailOperationalStatusTag": {
+				"ended": "Finalizada",
+				"missed": "Não realizada",
+				"running": "Em execução",
+				"scheduled": "Agendada"
+			}
+		},
+		"export": {
+			"RidesExportModal": {
+				"CancelButton": {
+					"label": "Cancelar"
+				},
+				"ExportButton": {
+					"label": "Exportar Circulações"
+				},
+				"description": "Selecione o intervalo de datas para a exportação das circulações.",
+				"fields": {
+					"end_date": {
+						"placeholder": "Data Fim"
+					},
+					"start_date": {
+						"placeholder": "Data Início"
+					}
+				},
+				"title": "Exportar Circulações"
+			}
+		},
+		"list": {
+			"RidesListFilterAcceptanceStatus": {
+				"acceptance_status": {
+					"label": "Aceitação"
+				}
+			},
+			"RidesListFilterAgency": {
+				"agency": {
+					"label": "Operador"
+				}
+			},
+			"RidesListFilterAnalysisEndedAtLastStop": {
+				"analysis_ended_at_last_stop": {
+					"label": "Fim na Última Paragem"
+				}
+			},
+			"RidesListFilterAnalysisExpectedApexValidationInterval": {
+				"analysis_expected_apex_validation_interval": {
+					"label": "Intervalo Validações"
+				}
+			},
+			"RidesListFilterAnalysisSimpleThreeEvents": {
+				"analysis_simple_three_vehicle_events": {
+					"label": "3 Momentos"
+				}
+			},
+			"RidesListFilterAnalysisTransactionSequentiality": {
+				"analysis_transaction_sequentiality": {
+					"label": "Sequencialidade APEX"
+				}
+			},
+			"RidesListFilterDateRange": {
+				"date_range": {
+					"label": "Intervalo de datas"
+				}
+			},
+			"RidesListFilterDelayStatus": {
+				"delay_status": {
+					"label": "Atraso"
+				}
+			},
+			"RidesListFilterOperationalStatus": {
+				"operational_status": {
+					"label": "Estado"
+				}
+			},
+			"RidesListHeader": {
+				"ExportButton": {
+					"tooltip": "Exportar circulações"
+				},
+				"title": "Circulações"
+			},
+			"RidesListTable": {
+				"columns": {
+					"analysis_ended_at_last_stop_grade": {
+						"label": "Last Stop"
+					},
+					"analysis_expected_apex_validation_interval_grade": {
+						"label": "Int. APEX"
+					},
+					"analysis_simple_three_vehicle_events_grade": {
+						"label": "3 Eventos"
+					},
+					"analysis_transaction_sequentiality": {
+						"label": "Seq.APEX"
+					},
+					"headsign": {
+						"label": "Pattern"
+					},
+					"operational_date": {
+						"label": "Data Operacional"
+					},
+					"operational_status": {
+						"label": "Estado"
+					},
+					"passengers_observed": {
+						"label": "Passageiros"
+					},
+					"seen_last_at": {
+						"label": ""
+					},
+					"start_time_observed": {
+						"label": "Observado"
+					},
+					"start_time_scheduled": {
+						"label": "Partida"
+					}
+				}
+			}
+		}
 	}
 }
