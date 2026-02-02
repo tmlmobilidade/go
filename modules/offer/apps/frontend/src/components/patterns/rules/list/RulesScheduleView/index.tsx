@@ -35,7 +35,7 @@ export function RulesScheduleView() {
 
 	const rows = useMemo<TimeRow[]>(() => {
 		const byTime = new Map<string, TimeRow>();
-		const periods = periodsContext.data.periods || [];
+		const periods = periodsContext.data.raw || [];
 
 		for (const rule of rules) {
 			const { long, short } = buildRuleSummary(rule, { periods });
@@ -64,7 +64,7 @@ export function RulesScheduleView() {
 		}
 
 		return [...byTime.values()].sort((a, b) => a.minutes - b.minutes);
-	}, [rules, periodsContext.data.periods]);
+	}, [rules, periodsContext.data.raw]);
 
 	const colorMap = useMemo(() => {
 		const count = getPillCount(8);
