@@ -4,7 +4,7 @@
 
 import { IconMoon, IconPlus, IconSun, IconSunset, IconX } from '@tabler/icons-react';
 import { Button, Section, TextInput } from '@tmlmobilidade/ui';
-import { KeyboardEvent, useState } from 'react';
+import { JSX, KeyboardEvent, useState } from 'react';
 
 import styles from './styles.module.css';
 
@@ -78,19 +78,34 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 		onChange(newTimes);
 	};
 
-	// Helper: Group times by period
-	const getPeriod = (time: string) => {
+	// Helper: Group times by the business periods
+	// PPM — [06:00, 10:00[
+	// CD  — [10:00, 16:00[
+	// PPT — [16:00, 20:00[
+	// N   — [20:00, 24:00[
+	// M   — [00:00, 06:00[
+	type PeriodKey = 'cd' | 'm' | 'n' | 'ppm' | 'ppt';
+	const getPeriod = (time: string): PeriodKey => {
 		const hour = parseInt(time.split(':')[0], 10);
-		if (hour < 12) return 'morning';
-		if (hour < 18) return 'afternoon';
-		return 'night';
+		if (hour >= 6 && hour < 10) return 'ppm';
+		if (hour >= 10 && hour < 16) return 'cd';
+		if (hour >= 16 && hour < 20) return 'ppt';
+		if (hour >= 20) return 'n';
+		return 'm';
 	};
 
-	const groupedTimes = {
-		afternoon: value.filter(t => getPeriod(t) === 'afternoon'),
-		morning: value.filter(t => getPeriod(t) === 'morning'),
-		night: value.filter(t => getPeriod(t) === 'night'),
-	};
+	const periods: { icon: JSX.Element, key: PeriodKey, title: string }[] = [
+		{ icon: <IconSun size={14} />, key: 'ppm', title: 'PPM — Período de ponta da manhã (06:00 - 09:59)' },
+		{ icon: <IconSun size={14} style={{ opacity: 0.7 }} />, key: 'cd', title: 'CD — Corpo do Dia (10:00 - 15:59)' },
+		{ icon: <IconSunset size={14} style={{ opacity: 0.7 }} />, key: 'ppt', title: 'PPT — Período de ponta da tarde (16:00 - 19:59)' },
+		{ icon: <IconMoon size={14} />, key: 'n', title: 'N — Noite (20:00 - 23:59)' },
+		{ icon: <IconMoon size={14} style={{ opacity: 0.7 }} />, key: 'm', title: 'M — Madrugada (00:00 - 05:59)' },
+	];
+
+	const groupedTimes = periods.reduce<Record<PeriodKey, string[]>>((acc, p) => {
+		acc[p.key] = value.filter(t => getPeriod(t) === p.key);
+		return acc;
+	}, { cd: [], m: [], n: [], ppm: [], ppt: [] });
 
 	return (
 		<Section gap="sm">
@@ -119,44 +134,19 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 			{/* Periods Layout */}
 			{value.length > 0 && (
 				<Section gap="md" padding="none">
-					{/* Morning period */}
-					<div className={styles.periodColumn}>
-						<div className={styles.periodTitle}>
-							<IconSun size={14} /> Manhã (00:00 - 11:59)
+					{periods.map(period => (
+						<div key={period.key} className={styles.periodColumn}>
+							<div className={styles.periodTitle}>
+								{period.icon} {period.title}
+							</div>
+							<div className={styles.timeList}>
+								{groupedTimes[period.key].length === 0 && <span className={styles.emptyState}>Sem horários</span>}
+								{groupedTimes[period.key].map(time => (
+									<TimeChip key={time} onRemove={() => handleRemove(time)} time={time} />
+								))}
+							</div>
 						</div>
-						<div className={styles.timeList}>
-							{groupedTimes.morning.length === 0 && <span className={styles.emptyState}>Sem horários</span>}
-							{groupedTimes.morning.map(time => (
-								<TimeChip key={time} onRemove={() => handleRemove(time)} time={time} />
-							))}
-						</div>
-					</div>
-
-					{/* Afternoon period */}
-					<div className={styles.periodColumn}>
-						<div className={styles.periodTitle}>
-							<IconSunset size={14} style={{ opacity: 0.7 }} /> Tarde (12:00 - 17:59)
-						</div>
-						<div className={styles.timeList}>
-							{groupedTimes.afternoon.length === 0 && <span className={styles.emptyState}>Sem horários</span>}
-							{groupedTimes.afternoon.map(time => (
-								<TimeChip key={time} onRemove={() => handleRemove(time)} time={time} />
-							))}
-						</div>
-					</div>
-
-					{/* Night period */}
-					<div className={styles.periodColumn}>
-						<div className={styles.periodTitle}>
-							<IconMoon size={14} /> Noite (18:00 - 23:59)
-						</div>
-						<div className={styles.timeList}>
-							{groupedTimes.night.length === 0 && <span className={styles.emptyState}>Sem horários</span>}
-							{groupedTimes.night.map(time => (
-								<TimeChip key={time} onRemove={() => handleRemove(time)} time={time} />
-							))}
-						</div>
-					</div>
+					))}
 				</Section>
 			)}
 		</Section>
