@@ -1,6 +1,8 @@
 /* * */
 
 import { useLineDetailContext } from '@/components/lines/detail/LineDetail.context';
+import { useFaresContext } from '@/contexts/Fares.context';
+import { useTypologiesContext } from '@/contexts/Typologies.context';
 import { FARE_PAYMENT_METHOD, interchangeModeOptions, LineSchema } from '@tmlmobilidade/types';
 import { Collapsible, MultiSelect, openConfirmModal, Section, Select, Text } from '@tmlmobilidade/ui';
 import { useMemo, useRef } from 'react';
@@ -14,27 +16,29 @@ export function LineDetailSectionTypology() {
 	// A. Setup variables
 
 	const lineDetailContext = useLineDetailContext();
+	const faresContext = useFaresContext();
+	const typologiesContext = useTypologiesContext();
 
 	const typologyOptions = useMemo(() => {
-		return lineDetailContext.data.allTypologies?.map(typology => ({
+		return typologiesContext.data.raw?.map(typology => ({
 			label: typology.name,
 			value: typology._id,
 		}));
-	}, [lineDetailContext.data.allTypologies]);
+	}, [typologiesContext.data.raw]);
 
 	const prepaidFareOptions = useMemo(() => {
-		return lineDetailContext.data.allFares?.filter(fare => fare.payment_method === FARE_PAYMENT_METHOD.PREPAID).map(fare => ({
+		return faresContext.data.raw?.filter(fare => fare.payment_method === FARE_PAYMENT_METHOD.PREPAID).map(fare => ({
 			label: fare.name,
 			value: fare._id,
 		}));
-	}, [lineDetailContext.data.allFares]);
+	}, [faresContext.data.raw]);
 
 	const onboardFareOptions = useMemo(() => {
-		return lineDetailContext.data.allFares?.filter(fare => fare.payment_method === FARE_PAYMENT_METHOD.ONBOARD).map(fare => ({
+		return faresContext.data.raw?.filter(fare => fare.payment_method === FARE_PAYMENT_METHOD.ONBOARD).map(fare => ({
 			label: fare.name,
 			value: fare._id,
 		}));
-	}, [lineDetailContext.data.allFares]);
+	}, [faresContext.data.raw]);
 
 	//
 	// B. Handle actions
@@ -62,7 +66,7 @@ export function LineDetailSectionTypology() {
 			previousTypologyRef.current = currentValue ?? null;
 		}
 
-		const selectedTypologyData = lineDetailContext.data.allTypologies.find(item => item._id === typology_id);
+		const selectedTypologyData = typologiesContext.data.raw.find(item => item._id === typology_id);
 
 		if (!selectedTypologyData) return;
 

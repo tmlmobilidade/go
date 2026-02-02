@@ -11,7 +11,7 @@ import useSWR from 'swr';
 
 interface PeriodsContextState {
 	data: {
-		periods: Period[]
+		raw: Period[]
 	}
 }
 
@@ -43,7 +43,7 @@ export const PeriodsContextProvider = ({ agencyId, children }: PropsWithChildren
 	const contextValue: PeriodsContextState = useMemo(() => ({
 
 		data: {
-			periods: periodsData?.filter(period => !agencyId || period.agency_id === agencyId) || [],
+			raw: periodsData?.filter(period => !agencyId || period.agency_id === agencyId) || [],
 		},
 	}), [periodsData, agencyId]);
 

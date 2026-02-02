@@ -2,7 +2,10 @@
 
 /* * */
 
+import { openCreateRuleModal } from '@/components/patterns/rules/create/RuleCreate.modal';
+import { openRulesCalendarPreviewModal } from '@/components/patterns/rules/list/RulesCalendarPreview.modal';
 import { usePeriodsContext } from '@/contexts/Periods.context';
+import { useTypologiesContext } from '@/contexts/Typologies.context';
 import { computeFinalAffectedDatesAndTimepoints, RulesPreview } from '@/utils/rules/ruleAppliesToDate';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
@@ -14,9 +17,6 @@ import { type Feature, type FeatureCollection, type LineString, type Point } fro
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
-
-import { openCreateRuleModal } from '../rules/create/RuleCreate.modal';
-import { openRulesCalendarPreviewModal } from '../rules/list/RulesCalendarPreview.modal';
 
 /* * */
 
@@ -76,7 +76,8 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 	const { data: patternData, error: patternError, isLoading: patternLoading, mutate: patternMutate } = useSWR<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId));
 	const { data: lineData, mutate: lineMutate } = useSWR<Line>(API_ROUTES.offer.LINES_DETAIL(lineId));
-	const { data: typologyData } = useSWR<Typology>(API_ROUTES.offer.TYPOLOGIES_DETAIL(lineData?.typology || ''));
+	const typologiesContext = useTypologiesContext();
+	const typologyData = typologiesContext.data.raw.find(t => t._id === lineData?.typology);
 
 	//
 	// C. Transform data to GeoJSON
@@ -91,12 +92,12 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 				type: 'LineString' as const,
 			},
 			properties: {
-				color: typologyData?.color,
+				color: typologiesContext.data.raw.find(t => t._id === lineData?.typology)?.color,
 				id: patternData._id,
 			},
 			type: 'Feature' as const,
 		};
-	}, [patternData, typologyData]);
+	}, [patternData, typologiesContext.data.raw, lineData?.typology]);
 
 	const patternStopsFC: FeatureCollection<Point, MapOverlayPatternShapeStopsDataProps> | null = useMemo(() => {
 		const featureCollection = getBaseGeoJsonFeatureCollection<Point, MapOverlayPatternShapeStopsDataProps>();
@@ -155,19 +156,13 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		if (form.isDirty()) return;
 
 		recomputePreview(rulesForUI);
-	}, [patternData, periodsContext.data.periods, rulesForUI]);
+	}, [patternData, periodsContext.data.raw, rulesForUI]);
 
 	const recomputePreview = (rules: ScheduleRule[]) => {
-		console.log('Recompute', rules, computeFinalAffectedDatesAndTimepoints(rules, {
-			endDate: Dates.now('Europe/Lisbon').plus({ years: 1 }).js_date,
-			periods: periodsContext.data.periods,
-			startDate: new Date(),
-		}));
-
 		setRulesPreview(
 			computeFinalAffectedDatesAndTimepoints(rules, {
 				endDate: Dates.now('Europe/Lisbon').plus({ years: 1 }).js_date,
-				periods: periodsContext.data.periods,
+				periods: periodsContext.data.raw,
 				startDate: new Date(),
 			}),
 		);
@@ -336,7 +331,6 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		patternLineFC,
 		patternStopsFC,
 		lineData,
-		typologyData,
 		rulesPreview,
 		canDelete,
 		canLock,

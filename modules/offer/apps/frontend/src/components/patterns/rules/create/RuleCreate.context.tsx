@@ -83,17 +83,17 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	//
 
 	const ruleSummary = useMemo(() => buildRuleSummary(form.values, {
-		periods: periodsContext.data.periods,
-	}), [form.values, periodsContext.data.periods]);
+		periods: periodsContext.data.raw,
+	}), [form.values, periodsContext.data.raw]);
 
 	const ruleImpact = useMemo(() => computeRuleImpact(
 		form.values,
 		{
 			endDate: Dates.now('Europe/Lisbon').plus({ years: 1 }).js_date,
-			periods: periodsContext.data.periods,
+			periods: periodsContext.data.raw,
 			startDate: new Date(),
 		},
-	), [form.values, periodsContext.data.periods]);
+	), [form.values, periodsContext.data.raw]);
 
 	//
 	// D. Handle actions
@@ -150,6 +150,7 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 		ruleImpact,
 		ruleSummary,
 		isDrawerOpen,
+		periodsContext.data.raw,
 	]);
 
 	//

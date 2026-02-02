@@ -3,7 +3,7 @@
 /* * */
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Line, PermissionCatalog, Typology } from '@tmlmobilidade/types';
+import { Line, PermissionCatalog } from '@tmlmobilidade/types';
 import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -14,7 +14,6 @@ interface LinesListContextState {
 	data: {
 		filtered: Line[]
 		raw: Line[]
-		typologyData: Typology[]
 	}
 	filters: {
 		agencies: UseFilterStateListReturnType
@@ -63,7 +62,6 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	// B. Fetch data
 
 	const { data: allLinesData, error: allLinesError, isLoading: allLinesLoading } = useSWR<Line[], Error>(API_ROUTES.offer.LINES_LIST, { refreshInterval: 5000 });
-	const { data: typologyData } = useSWR<Typology[]>(API_ROUTES.offer.TYPOLOGIES_LIST);
 
 	//
 	// C. Transform data
@@ -101,7 +99,6 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 		data: {
 			filtered: filterResultsData,
 			raw: allLinesData ?? [],
-			typologyData: typologyData ?? [],
 		},
 		filters: {
 			agencies: filterAgencies,
