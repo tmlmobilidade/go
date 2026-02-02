@@ -4,7 +4,7 @@
 
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { Button, Section, SegmentedMultiSelect, SelectChipGroup, Text } from '@tmlmobilidade/ui';
+import { Section, SegmentedMultiSelect, SelectChipGroup, Text } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -32,7 +32,7 @@ export function RuleCreatePeriods() {
 	const createRuleContext = useRuleCreateContext();
 	const { data: periodsData } = usePeriodsContext();
 
-	const PERIOD_OPTIONS = periodsData.periods.map(period => ({
+	const PERIOD_OPTIONS = periodsData.raw.map(period => ({
 		label: period.name,
 		value: period._id,
 	}));
@@ -54,15 +54,6 @@ export function RuleCreatePeriods() {
 
 		// select all
 		createRuleContext.data.form.setFieldValue('periodIds', [...allPeriodIds]);
-	};
-
-	const handleTogglePeriod = (periodId: string) => {
-		const curr = createRuleContext.data.form.values.periodIds || [];
-		const next = curr.includes(periodId)
-			? curr.filter(id => id !== periodId)
-			: [...curr, periodId];
-
-		createRuleContext.data.form.setFieldValue('periodIds', next.length ? next : undefined);
 	};
 
 	//
