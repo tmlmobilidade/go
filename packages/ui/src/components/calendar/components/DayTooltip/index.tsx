@@ -149,7 +149,7 @@ export function DayTooltip({ calendarEvents, date }: DayTooltipProps) {
 
 			{affectedTimepoints.length > 0 && (
 				<div className={styles.section}>
-					<div className={styles.sectionTitle}>Dias afetados</div>
+					<div className={styles.sectionTitle}>Oferta</div>
 
 					<div className={styles.event}>
 						<div
@@ -157,11 +157,7 @@ export function DayTooltip({ calendarEvents, date }: DayTooltipProps) {
 							style={{ backgroundColor: 'var(--color-primary)' }}
 						/>
 						<div className={styles.eventContent}>
-							<div className={styles.eventTitle}>Horários</div>
-
-							<div className={styles.eventMeta}>
-								{affectedTimepoints.join(', ')}
-							</div>
+							<div className={styles.eventTitle}>{affectedTimepoints.join(', ')}</div>
 						</div>
 					</div>
 				</div>
