@@ -153,7 +153,7 @@ export class RidesSharedController {
 			// Start a watch service for the database
 			// and send updates to the client as they occur.
 
-			ridesCollection
+			const changeStream = ridesCollection
 				.watch([], { fullDocument: 'updateLookup' })
 				.on('change', (databaseOperation) => {
 					if (typeof databaseOperation['fullDocument'] === 'undefined') {
@@ -166,8 +166,18 @@ export class RidesSharedController {
 						error: null,
 						statusCode: HttpStatus.OK,
 					};
-					socket.send(JSON.stringify(message));
+
+					if (socket.readyState === socket.OPEN && socket.bufferedAmount < 1_000_000) {
+						socket.send(JSON.stringify(message));
+					}
 				});
+
+			const cleanup = async () => {
+				await changeStream.close();
+			};
+
+			socket.on('close', cleanup);
+			socket.on('error', cleanup);
 
 			//
 		});
