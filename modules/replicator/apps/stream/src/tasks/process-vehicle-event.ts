@@ -66,6 +66,11 @@ export async function processVehicleEvent(databaseOperation) {
 			//
 			// Invalidate all rides that are affected
 
+			if (!rideUpdates.length) {
+				Logger.info('Flush [simplified_vehicle_events]: No rides to mark as waiting.');
+				return;
+			}
+
 			const ridesResult = await rides.updateMany({ $or: rideUpdates }, { system_status: 'waiting' }, { returnResults: false });
 
 			Logger.info(`Flush [simplified_vehicle_events]: Marked as 'waiting': ${ridesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
