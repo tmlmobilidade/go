@@ -142,35 +142,36 @@ export class RidesSharedController {
 	 * @param socket The WebSocket object.
 	 */
 	static websocket(socket: WebSocket) {
-		socket.on('message', async () => {
-			//
+		//
 
-			//
-			// Create a listener that sends updates to this WebSocket client
+		//
+		// Create a listener that sends updates to this WebSocket client
 
-			const listener: RideChangeListener = (message) => {
-				if (socket.readyState === socket.OPEN && socket.bufferedAmount < 1_000_000) {
-					socket.send(JSON.stringify(message));
-				}
-			};
+		const listener: RideChangeListener = (message) => {
+			if (socket.readyState === socket.OPEN && socket.bufferedAmount < 1_000_000) {
+				socket.send(JSON.stringify(message));
+			}
+		};
 
-			//
-			// Subscribe to the singleton change stream
+		//
+		// Subscribe to the singleton change stream
 
+		const subscribe = () => {
 			ridesChangeStream.subscribe(listener);
+		};
 
-			//
-			// Cleanup: unsubscribe when socket closes or errors
+		//
+		// Cleanup the subscription to the singleton change stream
 
-			const cleanup = async () => {
-				ridesChangeStream.unsubscribe(listener);
-			};
+		const cleanup = () => {
+			ridesChangeStream.unsubscribe(listener);
+		};
 
-			socket.on('close', cleanup);
-			socket.on('error', cleanup);
+		socket.on('open', subscribe);
+		socket.on('close', cleanup);
+		socket.on('error', cleanup);
 
-			//
-		});
+		return cleanup;
 	}
 
 	//
