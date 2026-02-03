@@ -97,7 +97,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			date_end: filterDateEnd as UnixTimestamp,
 			date_start: filterDateStart as UnixTimestamp,
 			// line_ids: filterLines.value,
-			// acceptance_status: filterAcceptanceStatus.value,
+			acceptance_status: filterAcceptanceStatus.value,
 			analysis_ended_at_last_stop_grade: filterAnalysisEndedAtLastStop.value,
 			analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval.value,
 			analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents.value,
