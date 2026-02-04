@@ -37,6 +37,7 @@ export const EventDerivedRestrictionSchema = z.object({
 	_id: z.string().optional(), // e.g. `event:${event_id}`
 
 	event: z.object({
+		all_day: z.boolean(),
 		end_time: HHMM,
 		id: z.string(),
 		start_time: HHMM,

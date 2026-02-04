@@ -158,13 +158,18 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 					// Create individual calendar events for each date
 					period.dates.forEach((operationalDate) => {
 						const date = Dates.fromOperationalDate(operationalDate, 'Europe/Lisbon');
+						const agenciesNames = agenciesData
+							?.filter(agency => period.agency_ids?.includes(agency._id))
+							.map(agency => agency.short_name || agency.name)
+							.join(', ');
 
 						events.push({
 							color: period.color || '#3b82f6',
 							endDate: date.iso,
 							id: `${period._id}-${operationalDate}`,
 							metadata: {
-								agency_name: agenciesData?.find(agency => agency._id === period.agency_id)?.name ?? '',
+								agency_ids: period.agency_ids,
+								agency_names: agenciesNames,
 								period_id: period._id,
 							},
 							startDate: date.iso,

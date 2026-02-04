@@ -1,4 +1,4 @@
-import { events } from '@tmlmobilidade/interfaces';
+import { events, lines } from '@tmlmobilidade/interfaces';
 import { type Event, type EventDerivedRestriction, OPERATING_MODE, type Pattern, type ScheduleRule } from '@tmlmobilidade/types';
 
 // ---- helpers
@@ -18,7 +18,14 @@ function eventAffectsLine(event: Event, lineId: string): boolean {
 	}
 }
 
-const isWithin = (tp: string, start: string, end: string) => tp >= start && tp <= end; // HH:mm ok
+// TODO: Refactor these utils (they are maybe similar to utils on frontend. Logic should be unified)
+const isWithin = (tp: string, start: string, end: string) => {
+	// Check if the time window crosses midnight (e.g., 10:00 to 02:00)
+	const crossesMidnight = end < start;
+	return crossesMidnight
+		? (tp >= start || tp <= end) // Overnight: after start OR before end
+		: (tp >= start && tp <= end); // Same day: between start and end
+};
 
 function collectPatternTimePoints(pattern: Pattern): string[] {
 	const set = new Set<string>();
@@ -34,19 +41,22 @@ function buildEventDerivedRestriction(args: {
 }): EventDerivedRestriction | null {
 	const { event, pattern } = args;
 
-	if (!event.start_time || !event.end_time) return null;
 	if (!event.dates?.length) return null;
 	if (!eventAffectsLine(event, pattern.line_id)) return null;
 
 	const patternTimePoints = collectPatternTimePoints(pattern);
-	const windowTimePoints = patternTimePoints.filter(tp =>
-		isWithin(tp, event.start_time, event.end_time),
-	);
+
+	// If all_day is true OR no times provided, affect all timepoints
+	const isAllDay = event.all_day || !event.start_time || !event.end_time;
+	const windowTimePoints = isAllDay
+		? patternTimePoints
+		: patternTimePoints.filter(tp => isWithin(tp, event.start_time, event.end_time));
 
 	return {
 		_id: `event:${event._id}`,
 		dates: event.dates,
 		event: {
+			all_day: event.all_day,
 			end_time: event.end_time,
 			id: event._id,
 			start_time: event.start_time,
@@ -62,6 +72,9 @@ function buildEventDerivedRestriction(args: {
 // ---- main util
 
 export async function mergePatternWithEventRules(pattern: Pattern): Promise<Pattern> {
+	const line = await lines.findById(pattern.line_id);
+	if (!line) return pattern;
+
 	// Coarse DB filter (cheap). Precise filtering is in JS (eventAffectsLine).
 	const candidateEvents = await events.findMany({
 		$or: [
@@ -69,6 +82,7 @@ export async function mergePatternWithEventRules(pattern: Pattern): Promise<Patt
 			{ lines_mode: 'include', lines_to_include: pattern.line_id },
 			{ lines_mode: 'exclude', lines_to_exclude: { $ne: pattern.line_id } },
 		],
+		agency_ids: { $in: [line.agency_id] },
 		lines_mode: { $ne: 'none' },
 	});
 

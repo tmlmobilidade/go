@@ -11,6 +11,7 @@ export type LinesMode = z.infer<typeof LinesModeSchema>;
 
 export const EventSchema = DocumentSchema.extend({
 	agency_ids: z.array(z.string()).default([]),
+	all_day: z.boolean().default(false),
 	dates: z.array(operationalDateSchema).default([]),
 	description: z.string().default(''),
 	end_time: z.string().default(''),

@@ -43,7 +43,7 @@ export const PeriodsContextProvider = ({ agencyId, children }: PropsWithChildren
 	const contextValue: PeriodsContextState = useMemo(() => ({
 
 		data: {
-			raw: periodsData?.filter(period => !agencyId || period.agency_id === agencyId) || [],
+			raw: periodsData?.filter(period => !agencyId || period.agency_ids.includes(agencyId)) || [],
 		},
 	}), [periodsData, agencyId]);
 

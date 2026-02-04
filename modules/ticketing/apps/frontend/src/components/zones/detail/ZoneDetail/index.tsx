@@ -8,10 +8,13 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { PermissionCatalog, ZoneSchema } from '@tmlmobilidade/types';
 import { Divider, ErrorDisplay, GeoJsonInput, Grid, LoadingOverlay, MapOverlayPolygon, MapOverlayPolygonDataProps, MapView, MultiSelect, Pane, Section, TextInput, useCssVariable, useDataAgencies } from '@tmlmobilidade/ui';
-import { Feature, type FeatureCollection, type Polygon } from 'geojson';
+import { Feature, type FeatureCollection, MultiPolygon, type Polygon } from 'geojson';
 import { useEffect, useState } from 'react';
 
 /* * */
+
+type ZoneGeometry = MultiPolygon | Polygon;
+type ZoneFeature = Feature<ZoneGeometry>;
 
 export function ZoneDetail() {
 	//
@@ -34,24 +37,40 @@ export function ZoneDetail() {
 	//
 	// B. Handle actions
 
-	const updateGeoJson = (geojson: Feature<Polygon>) => {
-		if (!geojson) {
+	const updateGeoJson = (feature: null | ZoneFeature) => {
+		if (!feature || !feature.geometry) {
 			setPreviewGeoJson(null);
 			return;
 		}
-		// Prepare an empty feature collection
+
+		// Base feature collection
 		const baseGeoJson = getBaseGeoJsonFeatureCollection<Polygon, MapOverlayPolygonDataProps>();
-		// Add the features to the base GeoJSON
-		baseGeoJson.features = [{
-			geometry: {
-				coordinates: geojson.geometry.coordinates,
-				type: 'Polygon',
-			},
-			properties: {
-				id: 'selected-polygon',
-			},
-			type: 'Feature',
-		}];
+
+		// Convert MultiPolygon to multiple Polygon features
+		if (feature.geometry.type === 'MultiPolygon') {
+			baseGeoJson.features = feature.geometry.coordinates.map((polygonCoords, index) => ({
+				geometry: {
+					coordinates: polygonCoords,
+					type: 'Polygon' as const,
+				},
+				properties: {
+					id: `selected-polygon-${index}`,
+				},
+				type: 'Feature' as const,
+			}));
+		}
+		else {
+			baseGeoJson.features = [
+				{
+					geometry: feature.geometry,
+					properties: {
+						id: 'selected-polygon',
+					},
+					type: 'Feature',
+				},
+			];
+		}
+
 		setPreviewGeoJson(baseGeoJson);
 	};
 
@@ -59,14 +78,20 @@ export function ZoneDetail() {
 		if (!zoneDetailContext.data?.zone?.geojson) {
 			return;
 		}
-		updateGeoJson({ ...zoneDetailContext.data?.zone?.geojson, properties: {} });
+		const geojson = zoneDetailContext.data.zone.geojson;
+		if (geojson.type === 'Feature') {
+			updateGeoJson(geojson as ZoneFeature);
+		}
 	}, [zoneDetailContext.data?.zone?.geojson]);
 
 	const handleUpdateMap = () => {
 		if (!zoneDetailContext.data.form.values?.geojson) {
 			return;
 		}
-		updateGeoJson({ ...zoneDetailContext.data.form.values?.geojson, properties: {} });
+		const geojson = zoneDetailContext.data.form.values.geojson;
+		if (geojson.type === 'Feature') {
+			updateGeoJson(geojson as ZoneFeature);
+		}
 	};
 
 	const handleRemoveGeoJson = () => {

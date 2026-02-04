@@ -124,13 +124,20 @@ export function computeFinalAffectedDatesAndTimepoints(
 		// build a Set for O(1) date membership checks
 		const opDates = new Set<OperationalDate>(r.dates as OperationalDate[]);
 
+		// Check if the event crosses midnight (e.g., 10:00 to 02:00)
+		const crossesMidnight = end < start;
+
 		// Only iterate included days (cheap)
 		for (const [k, set] of byDate) {
 			const op = keyToYYYYMMDD(k) as OperationalDate;
 			if (!opDates.has(op)) continue;
 
 			for (const tp of Array.from(set)) {
-				if (tp >= start && tp <= end) set.delete(tp);
+				const isAffected = crossesMidnight
+					? (tp >= start || tp <= end) // Overnight: after start OR before end
+					: (tp >= start && tp <= end); // Same day: between start and end
+
+				if (isAffected) set.delete(tp);
 			}
 
 			if (set.size === 0) byDate.delete(k);

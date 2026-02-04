@@ -72,7 +72,7 @@ export default function PatternDetailSectionOpRuleCard({ rule }: PatternDetailSe
 					<Text size="lg">{name}</Text>
 					{!isEventDerived
 						? <Text size="sm">{times.join(', ')}</Text>
-						: <Text size="sm">{eventDates ? `${event.event.start_time} às ${event.event.end_time} ${eventDatesSuffix}` : ''}</Text>}
+						: <Text size="sm">{eventDates && !event.event.all_day ? `${event.event.start_time} às ${event.event.end_time} ${eventDatesSuffix}` : `Todo o dia ${eventDatesSuffix}`}</Text>}
 				</Section>
 
 			</Section>

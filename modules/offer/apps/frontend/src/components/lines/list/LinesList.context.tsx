@@ -87,8 +87,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 				return true;
 			})
 			.sort((a, b) => {
-				// Sort by created_at descending (newest first)
-				return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+				return a.code.localeCompare(b.code);
 			});
 	}, [searchResultsData, filterAgencies]);
 

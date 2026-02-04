@@ -7,7 +7,7 @@ import { z } from 'zod';
 /* * */
 
 export const PeriodSchema = DocumentSchema.extend({
-	agency_id: z.string().optional(),
+	agency_ids: z.array(z.string()).default([]),
 	color: z.string().optional(),
 	dates: z.array(operationalDateSchema).optional(),
 	is_locked: z.boolean().default(false),

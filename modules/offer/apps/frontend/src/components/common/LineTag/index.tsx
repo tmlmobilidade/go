@@ -15,7 +15,7 @@ export function LineTag({ line_id, onClick, withLabel = true }: { line_id: strin
 	const linesList = useLinesListContext();
 	const typologiesContext = useTypologiesContext();
 
-	const line = linesList.data.filtered.find(line => line._id === line_id);
+	const line = linesList.data.raw.find(line => line._id === line_id);
 	const typologyData = typologiesContext.data.raw.find(typology => typology._id === line?.typology);
 
 	//

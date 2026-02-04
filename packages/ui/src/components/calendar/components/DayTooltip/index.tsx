@@ -57,9 +57,9 @@ export function DayTooltip({ calendarEvents, date }: DayTooltipProps) {
 								/>
 								<div className={styles.eventContent}>
 									<div className={styles.eventTitle}>{period.title}</div>
-									{metadata?.agency_name && (
+									{metadata?.agency_names && (
 										<div className={styles.eventMeta}>
-											Operador: {metadata.agency_name}
+											{metadata.agency_names.length > 1 ? 'Operadores' : 'Operador'}: {metadata.agency_names}
 										</div>
 									)}
 								</div>

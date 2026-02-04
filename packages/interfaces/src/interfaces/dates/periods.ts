@@ -1,7 +1,7 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { type CreatePeriodDto, type Period, PeriodSchema, type UpdatePeriodDto, UpdatePeriodSchema } from '@tmlmobilidade/types';
+import { type CreatePeriodDto, CreatePeriodSchema, type Period, type UpdatePeriodDto, UpdatePeriodSchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
@@ -10,7 +10,7 @@ import { z } from 'zod';
 
 class PeriodsClass extends MongoCollectionClass<Period, CreatePeriodDto, UpdatePeriodDto> {
 	private static _instance: PeriodsClass;
-	protected override createSchema: z.ZodSchema = PeriodSchema;
+	protected override createSchema: z.ZodSchema = CreatePeriodSchema;
 	protected override updateSchema: z.ZodSchema = UpdatePeriodSchema;
 
 	private constructor() {
