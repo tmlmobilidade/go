@@ -5,8 +5,9 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { type ActionsOf, type GetRidesBatchQuery, GetRidesBatchQuerySchema, type Permission, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
-import { type HttpResponse } from '@tmlmobilidade/utils';
 import { type WebSocket } from 'ws';
+
+import { RideChangeListener, ridesChangeStream } from './watch.js';
 
 /* * */
 
@@ -141,36 +142,36 @@ export class RidesSharedController {
 	 * @param socket The WebSocket object.
 	 */
 	static websocket(socket: WebSocket) {
-		socket.on('message', async () => {
-			//
+		//
 
-			//
-			// Connect to and prepare Rides database collection.
+		//
+		// Create a listener that sends updates to this WebSocket client
 
-			const ridesCollection = await rides.getCollection();
+		const listener: RideChangeListener = (message) => {
+			if (socket.readyState === socket.OPEN && socket.bufferedAmount < 1_000_000) {
+				socket.send(JSON.stringify(message));
+			}
+		};
 
-			//
-			// Start a watch service for the database
-			// and send updates to the client as they occur.
+		//
+		// Subscribe to the singleton change stream
 
-			ridesCollection
-				.watch([], { fullDocument: 'updateLookup' })
-				.on('change', (databaseOperation) => {
-					if (typeof databaseOperation['fullDocument'] === 'undefined') {
-						console.log('Undefined document:', databaseOperation);
-						return;
-					}
-					const normalizedRide = normalizeRide(databaseOperation['fullDocument']);
-					const message: HttpResponse<RideNormalized> = {
-						data: normalizedRide,
-						error: null,
-						statusCode: HttpStatus.OK,
-					};
-					socket.send(JSON.stringify(message));
-				});
+		const subscribe = () => {
+			ridesChangeStream.subscribe(listener);
+		};
 
-			//
-		});
+		//
+		// Cleanup the subscription to the singleton change stream
+
+		const cleanup = () => {
+			ridesChangeStream.unsubscribe(listener);
+		};
+
+		socket.on('open', subscribe);
+		socket.on('close', cleanup);
+		socket.on('error', cleanup);
+
+		return cleanup;
 	}
 
 	//

@@ -2,6 +2,7 @@
 	"acceptance_status": {
 		"accepted": "Aceite",
 		"justification_required": "Justificação necessária",
+		"none": "(sem valor)",
 		"rejected": "Rejeitada",
 		"under_review": "Em revisão"
 	}
