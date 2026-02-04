@@ -381,7 +381,7 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 	pipeline.push(
 		{ $lookup: { as: 'acceptance', foreignField: 'ride_id', from: 'ride_acceptances', localField: '_id' } },
 		{ $unwind: { path: '$acceptance', preserveNullAndEmptyArrays: true } },
-		{ $addFields: { acceptance_status: { $ifNull: ['$acceptance.acceptance_status', 'none'] } } },
+		{ $addFields: { acceptance_status: '$acceptance.acceptance_status' } },
 		{ $project: { acceptance: 0 } },
 	);
 
@@ -398,7 +398,8 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 		if (!filter[field]) return;
 
 		if (filter[field].includes('none')) {
-			// When 'none' is included, set the field to 'none' if it doesn't exist, then match on the filter array
+			// When 'none' is included, set the field to 'none'
+			// if it doesn't exist, then match on the filter array
 			pipeline.push({
 				$addFields: {
 					[path]: { $ifNull: [`$${path}`, 'none'] },
@@ -417,6 +418,15 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 	// Stage 8: Filter by acceptance status
 	// Only applies filter if acceptance_status is provided and doesn't include 'none'
 	if (filter.acceptance_status && filter.acceptance_status) {
+		if (filter.acceptance_status.includes('none')) {
+			// When 'none' is included, set the field to 'none'
+			// if it doesn't exist, then match on the filter array
+			pipeline.push({
+				$addFields: {
+					acceptance_status: { $ifNull: [`$acceptance_status`, 'none'] },
+				},
+			});
+		}
 		pipeline.push(
 			{ $match: { acceptance_status: { $exists: true } } },
 			{ $match: { acceptance_status: { $in: filter.acceptance_status } } },
