@@ -7,7 +7,7 @@ import { usePeriodsListContext } from '@/components/periods/list/PeriodsList.con
 import { IconAlertTriangle, IconCalendar } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Alert, Button, ColorInput, ColorSwatch, Label, Radio, Section, Select, Text, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { Alert, Button, ColorInput, ColorSwatch, Label, MultiSelect, Radio, Section, Select, Text, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -31,16 +31,22 @@ export function PeriodAssignContent() {
 	});
 
 	const agencyPeriods = useMemo(() => {
-		if (!periodAssignContext.data.form.values.agency_id) return [];
+		if (!periodAssignContext.data.form.values.agency_ids || periodAssignContext.data.form.values.agency_ids.length === 0) return [];
+
+		const selectedAgenciesSet = new Set(periodAssignContext.data.form.values.agency_ids);
 
 		return periodsListContext.data.raw
-			.filter(period => period.agency_id === periodAssignContext.data.form.values.agency_id)
+			.filter((period) => {
+				// Period must have at least one matching agency
+				if (!period.agency_ids || period.agency_ids.length === 0) return false;
+				return period.agency_ids.some(agencyId => selectedAgenciesSet.has(agencyId));
+			})
 			.map(period => ({
 				icon: <ColorSwatch color={period.color || '#3b82f6'} size={14} />,
 				label: period.name,
 				value: period._id,
 			}));
-	}, [periodAssignContext.data.form.values.agency_id, periodsListContext.data.raw]);
+	}, [periodAssignContext.data.form.values.agency_ids, periodsListContext.data.raw]);
 
 	//
 	// B. Render components
@@ -66,10 +72,10 @@ export function PeriodAssignContent() {
 
 			{/* Agency Selection */}
 			<Section gap="md">
-				<Select data={agencyOptions} label="Operador" placeholder="Selecione o operador" w="100%" {...periodAssignContext.data.form.getInputProps('agency_id')} />
+				<MultiSelect data={agencyOptions} label="Operadores" placeholder="Selecione os operadores" w="100%" {...periodAssignContext.data.form.getInputProps('agency_ids')} />
 			</Section>
 
-			{periodAssignContext.data.form.values.agency_id && (
+			{periodAssignContext.data.form.values.agency_ids && periodAssignContext.data.form.values.agency_ids.length > 0 && (
 				<>
 
 					{/* Assignment Mode */}

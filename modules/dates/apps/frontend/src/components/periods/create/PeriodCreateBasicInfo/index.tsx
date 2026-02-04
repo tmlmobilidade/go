@@ -5,7 +5,7 @@
 import { usePeriodCreateContext } from '@/components/periods/create/PeriodsCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PeriodSchema, PermissionCatalog } from '@tmlmobilidade/types';
-import { ColorInput, Section, Select, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { ColorInput, MultiSelect, Section, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -35,11 +35,11 @@ export function PeriodCreateBasicInfo() {
 				{...periodCreateContext.data.form.getInputProps('name')}
 			/>
 
-			<Select
+			<MultiSelect
 				data={allAgencyOptions}
-				label="Operador"
+				label="Operadores"
 				w="100%"
-				{...periodCreateContext.data.form.getInputProps('agency_id')}
+				{...periodCreateContext.data.form.getInputProps('agency_ids')}
 			/>
 
 			<ColorInput

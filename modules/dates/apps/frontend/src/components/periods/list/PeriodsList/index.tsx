@@ -43,9 +43,9 @@ export function PeriodsList() {
 			width: 400,
 		},
 		{
-			accessor: 'agency_id_normalized',
-			render: item => <PeriodsListCellAgency agencyId={item.agency_id} />,
-			title: 'Operador',
+			accessor: 'agency_ids_normalized',
+			render: item => <PeriodsListCellAgency agencyIds={item.agency_ids} />,
+			title: 'Operadores',
 			width: 300,
 		},
 	];

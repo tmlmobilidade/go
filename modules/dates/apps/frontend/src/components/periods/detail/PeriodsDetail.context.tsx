@@ -89,17 +89,34 @@ export const PeriodsDetailContextProvider = ({ children, periodId }: PropsWithCh
 	//
 	// E. Setup permissions
 
-	// For periods, since each period has only one agency_id (not array),
-	// we use the same permission logic for both view and edit
-	const permissions = meContext.actions.getScopePermissions({
+	// For read permission, user needs access to at least ONE agency (requireAll: false)
+	const viewPermissions = meContext.actions.getScopePermissions({
 		actions: PermissionCatalog.all.periods.actions,
 		resource: {
 			key: 'agency_ids',
 			requireAll: false,
-			value: periodData?.agency_id ? [periodData.agency_id] : [],
+			value: periodData?.agency_ids ?? [],
 		},
 		scope: PermissionCatalog.all.periods.scope,
 	});
+
+	// For update/delete/lock permissions, user needs access to ALL agencies (requireAll: true)
+	const editPermissions = meContext.actions.getScopePermissions({
+		actions: PermissionCatalog.all.periods.actions,
+		resource: {
+			key: 'agency_ids',
+			requireAll: true,
+			value: periodData?.agency_ids ?? [],
+		},
+		scope: PermissionCatalog.all.periods.scope,
+	});
+
+	const permissions = useMemo(() => ({
+		delete: editPermissions.delete,
+		lock: editPermissions.lock,
+		read: viewPermissions.read,
+		update: editPermissions.update,
+	}), [editPermissions, viewPermissions]);
 
 	const { canDelete, canLock, canSave, isReadOnly } = useDetailState({
 		hasError: !!periodError,

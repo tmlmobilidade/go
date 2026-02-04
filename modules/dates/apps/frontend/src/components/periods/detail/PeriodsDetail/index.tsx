@@ -6,7 +6,7 @@ import { usePeriodsDetailContext } from '@/components/periods/detail/PeriodsDeta
 import { PeriodsDetailHeader } from '@/components/periods/detail/PeriodsDetailHeader';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PeriodSchema, PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, ColorInput, ErrorDisplay, LoadingOverlay, Pane, Section, Select, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { Button, ColorInput, ErrorDisplay, LoadingOverlay, MultiSelect, Pane, Section, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -56,13 +56,13 @@ export function PeriodsDetail() {
 					{...periodsDetailContext.data.form.getInputProps('name')}
 				/>
 
-				<Select
-					key={periodsDetailContext.data.form.key('agency_id')}
+				<MultiSelect
+					key={periodsDetailContext.data.form.key('agency_ids')}
 					data={allAgencyOptions}
 					disabled={periodsDetailContext.flags.isReadOnly}
-					label="Operador"
+					label="Operadores"
 					w="100%"
-					{...periodsDetailContext.data.form.getInputProps('agency_id')}
+					{...periodsDetailContext.data.form.getInputProps('agency_ids')}
 				/>
 
 				<ColorInput

@@ -1,27 +1,27 @@
 /* * */
 
-import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { Label, Tag } from '@tmlmobilidade/ui';
-
-import styles from './styles.module.css';
+import { TagGroup, type TagProps } from '@tmlmobilidade/ui';
 
 /* * */
 
 interface PeriodsListCellAgencyProps {
-	agencyId: string
+	agencyIds: string[]
 }
 
 /* * */
 
-export function PeriodsListCellAgency({ agencyId }: PeriodsListCellAgencyProps) {
-	const agenciesContext = useAgenciesContext();
+export function PeriodsListCellAgency({ agencyIds }: PeriodsListCellAgencyProps) {
+	//
 
-	const agencyName = agenciesContext.data.raw.find(agency => agency._id === agencyId)?.name ?? '';
+	//
+	// A. Transform data
 
-	return (
-		<div className={styles.wrapper}>
-			<Tag label={agencyId} variant="secondary" />
-			<Label>{agencyName}</Label>
-		</div>
-	);
+	const preparedTags = agencyIds.map((item): TagProps => ({ label: item, variant: 'muted' }));
+
+	//
+	// B. Render components
+
+	return <TagGroup limit={4} tags={preparedTags} />;
+
+	//
 }

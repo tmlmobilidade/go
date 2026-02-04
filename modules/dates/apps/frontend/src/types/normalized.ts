@@ -9,7 +9,7 @@ export interface AnnotationNormalized extends Annotation {
 }
 
 export interface PeriodNormalized extends Period {
-	agency_id_normalized: string
+	agency_ids_normalized: string
 }
 
 export interface HolidayNormalized extends Annotation {

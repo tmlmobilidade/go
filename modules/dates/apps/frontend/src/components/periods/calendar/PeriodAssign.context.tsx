@@ -14,7 +14,7 @@ import { mutate } from 'swr';
 /* * */
 
 interface PeriodAssignmentForm {
-	agency_id: string
+	agency_ids: string[]
 	assignmentMode: 'create' | 'existing'
 	color?: string
 	newPeriodName: string
@@ -24,7 +24,7 @@ interface PeriodAssignmentForm {
 /* * */
 
 interface AssignPeriodData {
-	agency_id: string
+	agency_ids: string[]
 	color?: string
 	dateRange: {
 		end: CalendarKey
@@ -41,7 +41,7 @@ interface PeriodAssignContextState {
 	actions: {
 		acknowledgeConflicts: () => void
 		assignExistingPeriod: (data: AssignPeriodData) => Promise<void>
-		checkConflicts: (params: { agency_id: string, assignmentMode: 'create' | 'existing', dateRange: { end: CalendarKey, start: CalendarKey }, periodId?: string }) => Promise<void>
+		checkConflicts: (params: { agency_ids: string[], assignmentMode: 'create' | 'existing', dateRange: { end: CalendarKey, start: CalendarKey }, periodId?: string }) => Promise<void>
 		createAndAssignPeriod: (data: AssignPeriodData) => Promise<void>
 		handleAssign: () => Promise<void>
 	}
@@ -89,7 +89,7 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 	// Form state
 	const form = useForm<PeriodAssignmentForm>({
 		initialValues: {
-			agency_id: '',
+			agency_ids: [],
 			assignmentMode: 'existing',
 			color: '',
 			newPeriodName: '',
@@ -104,18 +104,18 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 
 	useEffect(() => {
 		checkConflicts({
-			agency_id: form.values.agency_id,
+			agency_ids: form.values.agency_ids,
 			assignmentMode: form.values.assignmentMode,
 			dateRange,
 			periodId: form.values.periodId,
 		});
-	}, [form.values.agency_id, form.values.assignmentMode, form.values.periodId, dateRange.start, dateRange.end]);
+	}, [form.values.agency_ids, form.values.assignmentMode, form.values.periodId, dateRange.start, dateRange.end]);
 
 	//
 	// C. Check for conflicts function
 
 	const checkConflicts = useCallback(async (params: {
-		agency_id: string
+		agency_ids: string[]
 		assignmentMode: 'create' | 'existing'
 		dateRange: { end: CalendarKey, start: CalendarKey }
 		periodId?: string
@@ -124,8 +124,8 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 		setConflicts([]);
 		setConflictAcknowledged(false);
 
-		// Only check conflicts when we have agency and either period or new period name
-		if (!params.agency_id) return;
+		// Only check conflicts when we have agencies and either period or new period name
+		if (!params.agency_ids || params.agency_ids.length === 0) return;
 		if (params.assignmentMode === 'existing' && !params.periodId) return;
 
 		setCheckingConflicts(true);
@@ -137,7 +137,7 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 				API_ROUTES.dates.PERIODS_CHECK_CONFLICTS,
 				'POST',
 				{
-					agency_id: params.agency_id,
+					agency_ids: params.agency_ids,
 					dates,
 					period_id: params.assignmentMode === 'existing' && params.periodId ? params.periodId : undefined,
 				},
@@ -179,7 +179,7 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 			const datesArray = convertKeysToOperationalDates(convertRangeToKeysArray(data.dateRange.start, data.dateRange.end));
 
 			const createPeriodPayload: CreatePeriodDto = {
-				agency_id: data.agency_id,
+				agency_ids: data.agency_ids,
 				color: data.color,
 				created_by: meContext.data.user._id,
 				dates: datesArray,
@@ -337,20 +337,20 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 	// I. Compute canSubmit
 
 	const canSubmit = useMemo(() => {
-		if (!form.values.agency_id) return false;
+		if (!form.values.agency_ids || form.values.agency_ids.length === 0) return false;
 		if (form.values.assignmentMode === 'existing' && !form.values.periodId) return false;
 		if (form.values.assignmentMode === 'create' && (!form.values.newPeriodName.trim() || !form.values.color)) return false;
 		if (checkingConflicts) return false;
 		if (conflicts.length > 0 && !conflictAcknowledged) return false;
 		return true;
-	}, [form.values.agency_id, form.values.assignmentMode, form.values.newPeriodName, form.values.periodId, form.values.color, checkingConflicts, conflicts, conflictAcknowledged]);
+	}, [form.values.agency_ids, form.values.assignmentMode, form.values.newPeriodName, form.values.periodId, form.values.color, checkingConflicts, conflicts, conflictAcknowledged]);
 
 	//
 	// J. Handle assign - routes to appropriate action based on mode
 
 	const handleAssign = useCallback(async () => {
 		const assignmentData: AssignPeriodData = {
-			agency_id: form.values.agency_id,
+			agency_ids: form.values.agency_ids,
 			color: form.values.assignmentMode === 'create' ? form.values.color : undefined,
 			dateRange,
 			mode: form.values.assignmentMode,
@@ -364,7 +364,7 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 		else {
 			await assignExistingPeriod(assignmentData);
 		}
-	}, [form.values.agency_id, form.values.assignmentMode, form.values.color, form.values.newPeriodName, form.values.periodId, dateRange, createAndAssignPeriod, assignExistingPeriod]);
+	}, [form.values.agency_ids, form.values.assignmentMode, form.values.color, form.values.newPeriodName, form.values.periodId, dateRange, createAndAssignPeriod, assignExistingPeriod]);
 
 	//
 	// K. Define context value

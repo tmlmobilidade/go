@@ -2,6 +2,7 @@
 
 /* * */
 
+import { type PeriodNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type Period, PermissionCatalog } from '@tmlmobilidade/types';
@@ -10,11 +11,6 @@ import { createContext, type PropsWithChildren, useContext, useMemo } from 'reac
 import useSWR from 'swr';
 
 /* * */
-
-interface PeriodNormalized extends Period {
-	agency_id_normalized: string
-	id: string
-}
 
 /* * */
 
@@ -74,16 +70,17 @@ export const PeriodsListContextProvider = ({ children }: PropsWithChildren) => {
 		if (!allPeriodsData) return [];
 		// Normalize record fields
 		return allPeriodsData.map((item) => {
+			const agencyIds = item.agency_ids.join(', ');
+
 			return {
 				...item,
-				agency_id_normalized: normalizeString(item.agency_id),
-				id: item._id,
+				agency_ids_normalized: normalizeString(agencyIds),
 			};
 		});
 	}, [allPeriodsData]);
 
 	const searchResultsData = useSearch<PeriodNormalized>({
-		accessors: ['_id', 'name', 'agency_id_normalized'],
+		accessors: ['_id', 'name', 'agency_ids_normalized'],
 		data: normalizedPeriodsData,
 		query: filterSearch.value,
 	});
@@ -96,11 +93,12 @@ export const PeriodsListContextProvider = ({ children }: PropsWithChildren) => {
 
 		return searchResultsData
 			.filter((item: PeriodNormalized) => {
-				// Filter by agency - check if the period's agency matches the filter
-				if (!item.agency_id) {
-					return true; // Show periods with no agency in all filters
+				// Filter by agency - check if the period has ANY matching agency
+				if (!item.agency_ids || item.agency_ids.length === 0) {
+					return true; // Show periods with no agencies in all filters
 				}
-				const hasMatchingAgency = agencySet.has(item.agency_id);
+				// User can see period if they have access to at least ONE agency
+				const hasMatchingAgency = item.agency_ids.some(agencyId => agencySet.has(agencyId));
 				if (!hasMatchingAgency) return false;
 
 				// Return true if all filters pass

@@ -20,7 +20,7 @@ export class PeriodsController {
 	static async checkConflicts(
 		request: FastifyRequest<{
 			Body: {
-				agency_id: string
+				agency_ids: string[]
 				dates: OperationalDate[]
 				period_id?: string
 			}
@@ -42,26 +42,32 @@ export class PeriodsController {
 		}
 
 		//
-		// Validate that user has permission for the specified agency
+		// Validate that user has permission for ALL specified agencies
 
 		if ('resources' in userPeriodPermissions && 'agency_ids' in userPeriodPermissions.resources) {
 			const userAgencyIds = userPeriodPermissions.resources['agency_ids'];
 			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
-			if (!hasAllowAll && !userAgencyIds.includes(request.body.agency_id)) {
-				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read periods for this agency');
+			if (!hasAllowAll) {
+				// Check that user has permission for all requested agencies
+				const hasAllAgencies = request.body.agency_ids.every(agencyId => userAgencyIds.includes(agencyId));
+				if (!hasAllAgencies) {
+					throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read periods for all specified agencies');
+				}
 			}
 		}
 
 		//
 		// Get parameters
 
-		const { agency_id, dates: newDates, period_id } = request.body;
+		const { agency_ids, dates: newDates, period_id } = request.body;
 
 		//
-		// Find all periods for the same agency (excluding the current period if provided)
+		// Find all periods that have at least one matching agency (excluding the current period if provided)
 
-		const query: { _id?: { $ne: string }, agency_id: string } = { agency_id };
+		const query: Filter<Period> = {
+			agency_ids: { $in: agency_ids },
+		};
 		if (period_id) {
 			query._id = { $ne: period_id };
 		}
@@ -69,12 +75,27 @@ export class PeriodsController {
 		const agencyPeriods = await periods.findMany(query);
 
 		//
+		// Helper function to check if two agency arrays are exactly the same (regardless of order)
+
+		const areAgencySetsEqual = (set1: string[], set2: string[]) => {
+			if (set1.length !== set2.length) return false;
+			const sorted1 = [...set1].sort();
+			const sorted2 = [...set2].sort();
+			return sorted1.every((id, index) => id === sorted2[index]);
+		};
+
+		//
 		// Find conflicts
+		// A conflict only occurs when EXACTLY the same set of agencies is used
+		// Different agency combinations can coexist on the same dates
 
 		const conflicts: { dates: OperationalDate[], period: Period }[] = [];
 
 		for (const otherPeriod of agencyPeriods) {
 			if (!otherPeriod.dates || otherPeriod.dates.length === 0) continue;
+
+			// Only consider it a conflict if the agency sets are EXACTLY the same
+			if (!areAgencySetsEqual(agency_ids, otherPeriod.agency_ids)) continue;
 
 			// Find dates that conflict between the new dates and this period
 			const conflictingDates = findCommonDates(newDates, otherPeriod.dates);
@@ -121,23 +142,26 @@ export class PeriodsController {
 		}
 
 		//
-		// Validate that user has permission for the specified agency
+		// Validate that user has permission for ALL specified agencies
 
 		if ('resources' in userPeriodPermissions && 'agency_ids' in userPeriodPermissions.resources) {
 			const userAgencyIds = userPeriodPermissions.resources['agency_ids'];
 			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
-			if (!hasAllowAll && !userAgencyIds.includes(request.body.agency_id)) {
-				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create periods for this agency');
+			if (!hasAllowAll) {
+				const hasAllAgencies = request.body.agency_ids.every(agencyId => userAgencyIds.includes(agencyId));
+				if (!hasAllAgencies) {
+					throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create periods for all specified agencies');
+				}
 			}
 		}
 
 		//
-		// If dates are provided, handle conflicts with other periods of the same agency
+		// If dates are provided, handle conflicts with other periods of the same agency set
 
 		if (request.body.dates && request.body.dates.length > 0) {
 			const newDates = request.body.dates as OperationalDate[];
-			request.body.dates = await PeriodsController.handleDateAssignment(request.body.agency_id, newDates);
+			request.body.dates = await PeriodsController.handleDateAssignment(request.body.agency_ids, newDates);
 		}
 
 		//
@@ -185,8 +209,12 @@ export class PeriodsController {
 			const userAgencyIds = userPeriodPermissions.resources['agency_ids'];
 			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
-			if (!hasAllowAll && !userAgencyIds.includes(period.agency_id)) {
-				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete this period');
+			// User needs access to ALL agencies to delete
+			if (!hasAllowAll) {
+				const hasAllAgencies = period.agency_ids.every(agencyId => userAgencyIds.includes(agencyId));
+				if (!hasAllAgencies) {
+					throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete this period');
+				}
 			}
 		}
 
@@ -228,7 +256,7 @@ export class PeriodsController {
 
 		if ('resources' in userPeriodPermissions && 'agency_ids' in userPeriodPermissions.resources) {
 			if (!userPeriodPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-				queryFilters.agency_id = { $in: userPeriodPermissions.resources['agency_ids'] };
+				queryFilters.agency_ids = { $in: userPeriodPermissions.resources['agency_ids'] };
 			}
 		}
 
@@ -276,8 +304,12 @@ export class PeriodsController {
 			const userAgencyIds = userPeriodPermissions.resources['agency_ids'];
 			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
-			if (!hasAllowAll && !userAgencyIds.includes(periodData.agency_id)) {
-				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read this period');
+			// User can read if they have access to at least ONE agency
+			if (!hasAllowAll) {
+				const hasAnyAgency = periodData.agency_ids.some(agencyId => userAgencyIds.includes(agencyId));
+				if (!hasAnyAgency) {
+					throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read this period');
+				}
 			}
 		}
 
@@ -327,8 +359,12 @@ export class PeriodsController {
 			const userAgencyIds = userPeriodPermissions.resources['agency_ids'];
 			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
-			if (!hasAllowAll && !userAgencyIds.includes(periodData.agency_id)) {
-				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: toggle lock period');
+			// User needs access to ALL agencies to lock
+			if (!hasAllowAll) {
+				const hasAllAgencies = periodData.agency_ids.every(agencyId => userAgencyIds.includes(agencyId));
+				if (!hasAllAgencies) {
+					throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: toggle lock period');
+				}
 			}
 		}
 
@@ -383,8 +419,12 @@ export class PeriodsController {
 			const userAgencyIds = userPeriodPermissions.resources['agency_ids'];
 			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
-			if (!hasAllowAll && !userAgencyIds.includes(periodData.agency_id)) {
-				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update this period');
+			// User needs access to ALL agencies to lock
+			if (!hasAllowAll) {
+				const hasAllAgencies = periodData.agency_ids.every(agencyId => userAgencyIds.includes(agencyId));
+				if (!hasAllAgencies) {
+					throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to lock/unlock this period');
+				}
 			}
 		}
 
@@ -395,7 +435,7 @@ export class PeriodsController {
 			const newDates = request.body.dates as OperationalDate[];
 			const existingDates = periodData.dates || [];
 			request.body.dates = await PeriodsController.handleDateAssignment(
-				periodData.agency_id,
+				periodData.agency_ids,
 				newDates,
 				periodData._id,
 				existingDates,
@@ -421,15 +461,15 @@ export class PeriodsController {
 
 	/**
 	 * Utility function to handle date assignment with conflict resolution.
-	 * Merges new dates with existing dates and removes conflicts from other periods of the same agency.
-	 * @param agencyId - The agency ID
+	 * Merges new dates with existing dates and removes conflicts from other periods with the EXACT same agency set.
+	 * @param agencyIds - Array of agency IDs
 	 * @param newDates - Array of new dates to assign
 	 * @param periodId - Optional period ID to exclude from conflict resolution (for updates)
 	 * @param existingDates - Optional array of existing dates to merge with
 	 * @returns The merged dates array
 	 */
 	private static async handleDateAssignment(
-		agencyId: string,
+		agencyIds: string[],
 		newDates: OperationalDate[],
 		periodId?: string,
 		existingDates: OperationalDate[] = [],
@@ -442,9 +482,11 @@ export class PeriodsController {
 		const mergedDates = existingDates.length > 0 ? mergeDateArrays(existingDates, newDates) : newDates;
 
 		//
-		// Find all periods for the same agency (excluding the current period if provided)
+		// Find all periods that have at least one matching agency (excluding the current period if provided)
 
-		const query: { _id?: { $ne: string }, agency_id: string } = { agency_id: agencyId };
+		const query: Filter<Period> = {
+			agency_ids: { $in: agencyIds },
+		};
 		if (periodId) {
 			query._id = { $ne: periodId };
 		}
@@ -452,10 +494,23 @@ export class PeriodsController {
 		const agencyPeriods = await periods.findMany(query);
 
 		//
-		// For each period with overlapping dates, remove the conflicting dates
+		// Helper function to check if two agency arrays are exactly the same (regardless of order)
+
+		const areAgencySetsEqual = (set1: string[], set2: string[]) => {
+			if (set1.length !== set2.length) return false;
+			const sorted1 = [...set1].sort();
+			const sorted2 = [...set2].sort();
+			return sorted1.every((id, index) => id === sorted2[index]);
+		};
+
+		//
+		// For each period with EXACT same agency set and overlapping dates, remove the conflicting dates
 
 		for (const otherPeriod of agencyPeriods) {
 			if (!otherPeriod.dates || otherPeriod.dates.length === 0) continue;
+
+			// Only handle conflicts for periods with EXACTLY the same agency set
+			if (!areAgencySetsEqual(agencyIds, otherPeriod.agency_ids)) continue;
 
 			// Find dates that conflict between the merged dates and this period
 			const conflicts = findCommonDates(mergedDates, otherPeriod.dates);
