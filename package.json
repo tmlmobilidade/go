@@ -25,7 +25,7 @@
 		"build:stops": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-stops-*",
 		"build:ticketing": "ENVIRONMENT=development dotenv-run -f ./modules/ticketing/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-ticketing-*",
 		"build:types": "turbo build --filter=@tmlmobilidade/types",
-		"dev:alerts": "ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
+		"dev:alerts": "npm run build:alerts:packages && ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
 		"dev:auth": "ENVIRONMENT=development dotenv-run -f ./modules/auth/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-auth-*",
 		"dev:auth:prod": "ENVIRONMENT=development dotenv-run -f ./modules/auth/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-auth-*",
 		"dev:controller": "ENVIRONMENT=development dotenv-run -f ./modules/controller/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-*",
