@@ -23,7 +23,7 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"luxon": "3.7.2",
-		"p-limit": "7.2.0"
+		"p-limit": "7.3.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/interfaces": "*",

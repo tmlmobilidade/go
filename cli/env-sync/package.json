@@ -34,7 +34,7 @@
 		"archiver": "7.0.1",
 		"chalk": "5.6.2",
 		"dotenv": "17.2.3",
-		"mongodb": "7.0.0"
+		"mongodb": "7.1.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20251202.1817.5",

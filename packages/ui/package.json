@@ -44,7 +44,7 @@
 		"@tmlmobilidade/utils": "*",
 		"@vis.gl/react-maplibre": "8.1.0",
 		"clsx": "2.1.1",
-		"i18next": "25.8.0",
+		"i18next": "25.8.1",
 		"i18next-icu": "2.4.3",
 		"intl-messageformat": "11.1.2",
 		"luxon": "3.7.2",

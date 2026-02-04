@@ -44,8 +44,8 @@
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
 		"bcryptjs": "3.0.3",
-		"oci-common": "2.124.0",
-		"oci-objectstorage": "2.124.0",
+		"oci-common": "2.125.0",
+		"oci-objectstorage": "2.125.0",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
