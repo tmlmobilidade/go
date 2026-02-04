@@ -25,7 +25,9 @@ server.register(
 		instance.get(
 			'/ws',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]), websocket: true },
-			socket => RidesSharedController.websocket(socket),
+			(socket) => {
+				RidesSharedController.websocket(socket);
+			},
 		);
 
 		instance.get(
