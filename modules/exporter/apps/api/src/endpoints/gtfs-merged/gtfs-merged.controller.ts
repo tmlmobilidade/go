@@ -18,8 +18,17 @@ export class GtfsMergedController {
 		// Retrieve file data from database
 		const foundFileData = await files.findById('gtfs-merged-latest');
 		if (!foundFileData) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
-		// Redirect to the file URL
-		return reply.redirect(foundFileData.url);
+		// Stream the file in the given URL to the client
+		const storageServiceResponse = await fetch(foundFileData.url);
+		if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
+		// Set headers and pipe the response body to the client
+		reply.header('Content-Disposition', `attachment; filename="gtfs-merged-latest.zip"`);
+		reply.header('Content-Type', 'application/zip');
+		// Set content length if available
+		const contentLength = storageServiceResponse.headers.get('Content-Length');
+		if (contentLength) reply.header('Content-Length', contentLength);
+		// Pipe the response body to the client
+		return reply.send(storageServiceResponse.body);
 	}
 
 	//
