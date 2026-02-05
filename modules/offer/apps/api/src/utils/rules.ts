@@ -63,7 +63,6 @@ function buildEventDerivedRestriction(args: {
 			title: event.title,
 		},
 		kind: 'event',
-		name: `Redução da oferta derivada do evento ${event.title}`,
 		operatingMode: OPERATING_MODE.EXCLUDE,
 		timePoints: windowTimePoints,
 	};

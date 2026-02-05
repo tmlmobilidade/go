@@ -7,6 +7,7 @@ import { openRulesCalendarPreviewModal } from '@/components/patterns/rules/list/
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { useTypologiesContext } from '@/contexts/Typologies.context';
 import { computeFinalAffectedDatesAndTimepoints, RulesPreview } from '@/utils/rules/ruleAppliesToDate';
+import { buildRuleSummary } from '@/utils/rules/ruleSummary';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
@@ -144,8 +145,17 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 	// rules used for UI + preview
 	const rulesForUI = useMemo(
-		() => [...(form.values.rules ?? []), ...derivedRules] as ScheduleRule[],
-		[form.values.rules, derivedRules],
+		() => {
+			const allRules = [...(form.values.rules ?? []), ...derivedRules] as ScheduleRule[];
+			const periods = periodsContext.data.raw || [];
+
+			// Enhance each rule with generated name and short name
+			return allRules.map((rule) => {
+				const { long, short, tooltip } = buildRuleSummary(rule, { periods });
+				return { ...rule, name: long, shortName: short, tooltip };
+			});
+		},
+		[form.values.rules, derivedRules, periodsContext.data.raw],
 	);
 
 	//

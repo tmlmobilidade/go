@@ -32,6 +32,7 @@ export const ManualScheduleRuleSchema = z.object({
 
 export const EventDerivedRestrictionSchema = z.object({
 	kind: z.literal('event'),
+	name: z.string().optional(),
 
 	// stable id for UI dedupe
 	_id: z.string().optional(), // e.g. `event:${event_id}`
@@ -44,7 +45,6 @@ export const EventDerivedRestrictionSchema = z.object({
 		title: z.string(),
 	}),
 
-	name: z.string().optional(),
 	operatingMode: z.literal(OPERATING_MODE.EXCLUDE),
 	timePoints: z.array(HHMM),
 
@@ -58,6 +58,8 @@ export const ScheduleRuleSchema = z.discriminatedUnion('kind', [
 	ManualScheduleRuleSchema,
 	EventDerivedRestrictionSchema,
 ]);
+
+export const PatternUpdateRulesSchema = z.array(ManualScheduleRuleSchema.omit({ name: true })).optional();
 
 export type ScheduleRule = z.infer<typeof ScheduleRuleSchema>;
 export type ManualScheduleRule = z.infer<typeof ManualScheduleRuleSchema>;

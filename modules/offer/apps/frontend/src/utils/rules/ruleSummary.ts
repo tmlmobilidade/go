@@ -4,6 +4,7 @@ import { EventDerivedRestriction, IsoWeekday, ManualScheduleRule, Period, Schedu
 export interface RuleSummary {
 	long: string
 	short: string
+	tooltip: string
 }
 
 export function buildRuleSummary(
@@ -15,6 +16,7 @@ export function buildRuleSummary(
 	return {
 		long: buildRuleSummaryLong(rule, options),
 		short: buildRuleSummaryShort(rule, options),
+		tooltip: buildRuleSummaryTooltip(rule),
 	};
 }
 
@@ -48,6 +50,25 @@ function buildRuleSummaryLong(
 	options: { periods?: Period[] },
 ): string {
 	if (isEventRule(rule)) {
+		return `Redução da oferta derivada do evento ${rule.event?.title ?? ''}`;
+	}
+
+	// manual
+	const parts: string[] = [];
+
+	const periodPart = buildPeriodsPart(rule, options, { mode: 'long' });
+	if (periodPart) parts.push(periodPart);
+
+	const weekdayPart = buildWeekdaysPart(rule, { mode: 'long' });
+	if (weekdayPart) parts.push(weekdayPart);
+
+	return parts.join(', ');
+}
+
+function buildRuleSummaryTooltip(
+	rule: ScheduleRule,
+): string {
+	if (isEventRule(rule)) {
 		const eventDates = (rule.dates ?? [])
 			.map(d =>
 				Dates.fromOperationalDate(d, 'Europe/Lisbon')
@@ -62,19 +83,9 @@ function buildRuleSummaryLong(
 		const wEnd = rule.event?.end_time;
 		const windowString = (wStart && wEnd) ? `entre as ${wStart}h e ${wEnd}h` : '';
 
-		return `Redução da oferta derivada do evento ${rule.event?.title ?? ''}, ${windowString}, ${eventDatesString}`.trim();
+		return `Apenas em ${rule.event?.title ?? ''} ${windowString} ${eventDatesString}`.trim();
 	}
-
-	// manual
-	const parts: string[] = [];
-
-	const periodPart = buildPeriodsPart(rule, options, { mode: 'long' });
-	if (periodPart) parts.push(periodPart);
-
-	const weekdayPart = buildWeekdaysPart(rule, { mode: 'long' });
-	if (weekdayPart) parts.push(weekdayPart);
-
-	return parts.join(', ') + '.';
+	return '';
 }
 
 /* ---------------- Parts builders (manual only) ---------------- */

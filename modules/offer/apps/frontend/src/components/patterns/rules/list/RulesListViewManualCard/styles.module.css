@@ -21,13 +21,9 @@
 }
 
 /* * */
-/* INFERRED EVENT RULE */
+/* TIMES COUNT */
 
-.inferredEventRule {
-  background-color: var(--color-system-background-300);
-  cursor: not-allowed;
-}
-
-.inferredEventRule:hover {
-  background-color: var(--color-system-background-300);
+.timesCount {
+  color: var(--color-system-text-200);
+  font-size: var(--size-spacing-md);
 }

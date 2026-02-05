@@ -1,8 +1,9 @@
 /* * */
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
-import PatternDetailSectionOpRuleCard from '@/components/patterns/detail/PatternDetailSectionOpRuleCard';
-import { Section } from '@tmlmobilidade/ui';
+import RulesListViewEventCard from '@/components/patterns/rules/list/RulesListViewEventCard';
+import RulesListViewManualCard from '@/components/patterns/rules/list/RulesListViewManualCard';
+import { Section, Text } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -16,6 +17,7 @@ export function RulesListView() {
 	const mergedRules = patternDetailContext.data.mergedRules || [];
 	const includeRules = mergedRules.filter(rule => rule.operatingMode === 'include');
 	const excludeRules = mergedRules.filter(rule => rule.operatingMode === 'exclude');
+
 	//
 	// B. Render components
 
@@ -23,38 +25,33 @@ export function RulesListView() {
 		<Section gap="lg" padding="none">
 			{/* Include Rules Section */}
 			<Section gap="md" padding="none">
-				<h4 style={{ margin: 0 }}>Incluem serviço</h4>
-				{includeRules.length > 0 ? (
-					includeRules.map((rule, index) => (
-						<PatternDetailSectionOpRuleCard key={rule._id || index} rule={rule} />
+				<Text size="xl" weight="bold">Incluem serviço</Text>
+				{includeRules.length > 0
+					? includeRules.map((rule, index) => (
+						<RulesListViewManualCard key={rule._id || index} rule={rule} />
 					))
-				) : (
-					<Section padding="none">
-						<p style={{ color: 'var(--color-system-text-300)', textAlign: 'center' }}>
+					: (
+						<Text c="dimmed" style={{ textAlign: 'center' }}>
 							Nenhuma regra de inclusão.
-						</p>
-					</Section>
-				)}
+						</Text>
+					)}
 			</Section>
 
 			{/* Exclude Rules Section */}
 			<Section gap="md" padding="none">
-				<h4 style={{ margin: 0 }}>Excluem serviço</h4>
-				{excludeRules.length > 0 ? (
-					excludeRules.map((rule, index) => (
-						<PatternDetailSectionOpRuleCard key={rule._id || index} rule={rule} />
+				<Text size="xl" weight="bold">Excluem serviço</Text>
+				{excludeRules.length > 0
+					? excludeRules.map((rule, index) => (
+						rule.kind === 'event'
+							? <RulesListViewEventCard key={rule._id || index} rule={rule} />
+							: <RulesListViewManualCard key={rule._id || index} rule={rule} />
 					))
-				) : (
-					<Section padding="none">
-						<p style={{ color: 'var(--color-system-text-300)', textAlign: 'center' }}>
+					: (
+						<Text c="dimmed" style={{ textAlign: 'center' }}>
 							Nenhuma regra de exclusão.
-						</p>
-					</Section>
-				)}
+						</Text>
+					)}
 			</Section>
-
 		</Section>
 	);
-
-	//
 }

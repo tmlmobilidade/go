@@ -9,7 +9,7 @@ import { useState } from 'react';
 
 /* * */
 
-export function PatternDetailSectionOpRules() {
+export function PatternDetailSectionRules() {
 	//
 
 	//
