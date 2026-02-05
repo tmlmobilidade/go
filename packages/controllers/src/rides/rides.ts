@@ -1,13 +1,12 @@
 /* * */
 
+import { type RideChangeListener, ridesChangeStream } from '@/rides/watch.js';
 import { HttpStatus } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { type ActionsOf, type GetRidesBatchQuery, GetRidesBatchQuerySchema, type Permission, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
 import { type WebSocket } from 'ws';
-
-import { RideChangeListener, ridesChangeStream } from './watch.js';
 
 /* * */
 
@@ -154,11 +153,10 @@ export class RidesSharedController {
 		};
 
 		//
-		// Subscribe to the singleton change stream
+		// Subscribe to the singleton change stream immediately.
+		// Sockets do not emit 'open' or 'connection' events server-side.
 
-		const subscribe = () => {
-			ridesChangeStream.subscribe(listener);
-		};
+		ridesChangeStream.subscribe(listener);
 
 		//
 		// Cleanup the subscription to the singleton change stream
@@ -167,7 +165,6 @@ export class RidesSharedController {
 			ridesChangeStream.unsubscribe(listener);
 		};
 
-		socket.on('open', subscribe);
 		socket.on('close', cleanup);
 		socket.on('error', cleanup);
 
