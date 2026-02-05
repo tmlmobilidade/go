@@ -122,11 +122,22 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 
 	Logger.info('Calculating passenger impact for each day...');
 	const out = new Map<OperationalDate, Map<AgencyId, AgencyDayStats>>();
-	for (const dayChunk of allDaysChunks) {
-		const start30dTs = Dates.fromUnixTimestamp(dayChunk.start).set({ hour: 4, minute: 0, second: 0 }).setZone('Europe/Lisbon', 'rebase_utc').minus({ days: 30 }).unix_timestamp;
-		const endTs = Dates.fromUnixTimestamp(dayChunk.start).set({ hour: 4, minute: 0, second: 0 }).setZone('Europe/Lisbon', 'rebase_utc').unix_timestamp;
 
-		Logger.info(`Calculating passenger impact for day ${Dates.fromUnixTimestamp(start30dTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}...${Dates.fromUnixTimestamp(endTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}`);
+	for (const dayChunk of allDaysChunks) {
+		const start30dTs = Dates.fromUnixTimestamp(dayChunk.start)
+			.set({ hour: 4, minute: 0, second: 0 })
+			.setZone('Europe/Lisbon', 'rebase_utc')
+			.minus({ days: 30 })
+			.unix_timestamp;
+
+		const endTs = Dates.fromUnixTimestamp(dayChunk.start)
+			.set({ hour: 4, minute: 0, second: 0 })
+			.setZone('Europe/Lisbon', 'rebase_utc')
+			.unix_timestamp;
+
+		Logger.info(
+			`Calculating passenger impact for day ${Dates.fromUnixTimestamp(start30dTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}...${Dates.fromUnixTimestamp(endTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}`,
+		);
 
 		// 2) Median passengers_observed per (agency_id, patternHour) over the last 30 days
 		const passengersPipeline: AggregationPipeline<Ride> = [
@@ -192,33 +203,40 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 			medianByAgencyPH.get(agencyId).set(patternHour, median(values));
 		}
 
-		// 3) Aggregate by day and agency
+		// 3) Aggregate ONLY for the current dayChunk's operational day
+		const operationalDateForChunk: OperationalDate = Dates
+			.fromUnixTimestamp(dayChunk.start) // NOTE: assumes Dates.fromUnixTimestamp accepts ms here (same as your current usage)
+			.setZone('Europe/Lisbon', 'rebase_utc')
+			.operational_date;
 
-		for (const [operationalDate, agencyMap] of operationalDayMap) {
-			const outAgency = new Map<AgencyId, AgencyDayStats>();
+		// If there were no failed rides for this operational date, skip
+		const agencyMapForDay = operationalDayMap.get(operationalDateForChunk);
+		if (!agencyMapForDay) {
+			continue;
+		}
 
-			for (const [agencyId, phSet] of agencyMap) {
-				const failed_circulations = phSet.size;
+		const outAgency = new Map<AgencyId, AgencyDayStats>();
 
-				let estimated_affected_passengers = 0;
-				const medMap = medianByAgencyPH.get(agencyId);
+		for (const [agencyId, phSet] of agencyMapForDay) {
+			const failed_circulations = phSet.size;
 
-				for (const ph of phSet) {
-					estimated_affected_passengers += medMap?.get(ph) ?? 0;
-				}
+			let estimated_affected_passengers = 0;
+			const medMap = medianByAgencyPH.get(agencyId);
 
-				outAgency.set(agencyId, {
-					estimated_affected_passengers,
-					failed_circulations,
-				});
+			for (const ph of phSet) {
+				estimated_affected_passengers += medMap?.get(ph) ?? 0;
 			}
 
-			out.set(operationalDate, outAgency);
+			outAgency.set(agencyId, {
+				estimated_affected_passengers,
+				failed_circulations,
+			});
 		}
+
+		out.set(operationalDateForChunk, outAgency);
 	}
 
 	// 4) Export: 1 doc per agency_id with days inside `data`
-
 	const METRIC = 'demand_affected_by_failed_circulations_by_day' as const;
 
 	// dataByAgency[agency] = { [operational_day]: { ...stats } }
@@ -259,4 +277,6 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 	if (results.length > 0) {
 		await metrics.insertMany(results);
 	}
+
+	return out;
 }
