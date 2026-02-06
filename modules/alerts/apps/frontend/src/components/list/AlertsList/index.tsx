@@ -3,6 +3,7 @@
 /* * */
 
 import { useAlertsListContext } from '@/components/list/AlertsList.context';
+import { AlertsListCellCauseEffect } from '@/components/list/AlertsListCellCauseEffect';
 import { AlertsListCellDate } from '@/components/list/AlertsListCellDate';
 import { AlertsListCellLines } from '@/components/list/AlertsListCellLines';
 import { AlertsListCellMunicipalities } from '@/components/list/AlertsListCellMunicipalities';
@@ -58,6 +59,12 @@ export function AlertsList() {
 			render: item => <AlertsListCellDate value={item.publish_end_date} />,
 			title: 'Data de fim',
 			width: 225,
+		},
+		{
+			accessor: 'cause',
+			render: item => <AlertsListCellCauseEffect cause={item.cause} effect={item.effect} />,
+			title: 'Causa & Efeito',
+			width: 500,
 		},
 		{
 			accessor: 'municipality_ids',
