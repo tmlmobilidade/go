@@ -32,6 +32,10 @@
 			"description": "Incidentes com passageiros ou motoristas que requerem assistência médica.",
 			"title": "Emergência Médica"
 		},
+		"NETWORK_UPDATE": {
+			"description": "Alterações na rede de transporte, como mudanças de itinerário ou horários.",
+			"title": "Atualização de Rede"
+		},
 		"POLICE_ACTIVITY": {
 			"description": "Operações stop ou outras atividades policiais que impedem a circulação.",
 			"title": "Atividade Policial"
@@ -73,6 +77,10 @@
 		"DETOUR": {
 			"description": "Alteração temporária do percurso habitual.",
 			"title": "Desvio"
+		},
+		"MODIFIED_SERVICE": {
+			"description": "Alterações no percurso ou horários.",
+			"title": "Serviço Modificado"
 		},
 		"NO_SERVICE": {
 			"description": "O serviço foi cancelado.",
