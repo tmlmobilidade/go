@@ -38,7 +38,7 @@ export function AlertCreateStepEffect() {
 
 	return (
 		<Section padding="lg">
-			<Grid columns="abcde" gap="md">
+			<Grid columns="abc" gap="md">
 				{preparedOptions.map(item => (
 					<LargeButton
 						key={item.value}

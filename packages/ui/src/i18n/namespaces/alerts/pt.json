@@ -60,6 +60,10 @@
 			"description": "Anormal elevado volume de tráfego rodoviário.",
 			"title": "Trânsito"
 		},
+		"VEHICLE_ISSUE": {
+			"description": "Avarias mecânicas ou de sistemas a bordo do veículo.",
+			"title": "Problema com Veículo"
+		},
 		"WEATHER": {
 			"description": "Tempestades, chuvas fortes que provocam obstruções na via.",
 			"title": "Condições Meteorológicas"

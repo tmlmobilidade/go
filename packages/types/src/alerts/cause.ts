@@ -30,6 +30,7 @@ export const AlertCauseValues = [
 	'ROAD_ISSUE',
 	'TRAFFIC_JAM',
 	'PUBLIC_DISORDER',
+	'VEHICLE_ISSUE',
 
 ] as const;
 
@@ -64,5 +65,6 @@ export const AlertCauseToGtfsCauseMap: Record<AlertCause, GtfsCause> = {
 	STRIKE: 'STRIKE',
 	TECHNICAL_ISSUE: 'TECHNICAL_ISSUE',
 	TRAFFIC_JAM: 'OTHER_CAUSE',
+	VEHICLE_ISSUE: 'TECHNICAL_ISSUE',
 	WEATHER: 'WEATHER',
 };

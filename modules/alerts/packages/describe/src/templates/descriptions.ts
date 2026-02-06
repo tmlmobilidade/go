@@ -3161,6 +3161,121 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'VEHICLE_ISSUE:ACCESSIBILITY_ISSUE:rides': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a um problema com o veículo, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a um problema com o veículo, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {rides_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{rides_title} | Acessibilidade comprometida',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{rides_title} | Acessibilidade comprometida',
+			},
+		},
+	},
+
+	'VEHICLE_ISSUE:NO_SERVICE:rides': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Um problema com o veículo obrigou ao cancelamento {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Um problema com o veículo obrigou ao cancelamento {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{rides_title} | Viagens canceladas',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{rides_title} | Viagem cancelada',
+			},
+		},
+	},
+
+	'VEHICLE_ISSUE:ON_BOARD_SALE_ISSUE:rides': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Um problema com o veículo está a impedir o funcionamento normal dos sistemas de venda a bordo {in_def_f_s} {rides_description_pt}. Lamentamos o incómodo causado enquanto restabelecemos o funcionamento normal.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Um problema com o veículo está a impedir o funcionamento normal dos sistemas de venda a bordo {in_def_f_s} {rides_description_pt}. Lamentamos o incómodo causado enquanto restabelecemos o funcionamento normal.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{rides_title} | Venda a bordo indisponível',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{rides_title} | Venda a bordo indisponível',
+			},
+		},
+	},
+
+	'VEHICLE_ISSUE:REDUCED_SERVICE:rides': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Um problema com o veículo obriga a encurtar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Um problema com o veículo obriga a encurtar {def_f_s} {rides_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{rides_title} | Viagens encurtadas',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{rides_title} | Viagem encurtada',
+			},
+		},
+	},
+
+	'VEHICLE_ISSUE:SIGNIFICANT_DELAYS:rides': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a um problema com o veículo, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a um problema com o veículo, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{rides_title} | Atrasos significativos',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{rides_title} | Atrasos significativos',
+			},
+		},
+	},
+
 	'WEATHER:ACCESSIBILITY_ISSUE:lines': {
 		description: {
 			plural: {

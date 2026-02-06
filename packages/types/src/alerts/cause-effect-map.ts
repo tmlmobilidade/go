@@ -120,6 +120,14 @@ export const alertCauseEffectReferenceTypeMap = {
 		SIGNIFICANT_DELAYS: ['rides', 'agency', 'lines', 'stops'],
 	},
 
+	VEHICLE_ISSUE: {
+		ACCESSIBILITY_ISSUE: ['rides'],
+		NO_SERVICE: ['rides'],
+		ON_BOARD_SALE_ISSUE: ['rides'],
+		REDUCED_SERVICE: ['rides'],
+		SIGNIFICANT_DELAYS: ['rides'],
+	},
+
 	WEATHER: {
 		ACCESSIBILITY_ISSUE: ['rides', 'lines', 'stops'],
 		DETOUR: ['rides', 'lines', 'stops'],
