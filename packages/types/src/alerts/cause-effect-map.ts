@@ -66,6 +66,14 @@ export const alertCauseEffectReferenceTypeMap = {
 		SIGNIFICANT_DELAYS: ['rides'],
 	},
 
+	NETWORK_UPDATE: {
+		ADDITIONAL_SERVICE: ['lines', 'stops'],
+		DETOUR: ['lines', 'stops'],
+		MODIFIED_SERVICE: ['lines', 'stops'],
+		NO_SERVICE: ['lines', 'stops'],
+		STOP_MOVED: ['stops'],
+	},
+
 	POLICE_ACTIVITY: {
 		DETOUR: ['rides', 'lines'],
 		NO_SERVICE: ['rides', 'lines'],
