@@ -7,6 +7,7 @@
 	"license": "AGPL-3.0-or-later",
 	"main": "./dist/index.js",
 	"scripts": {
+
 		"build": "turbo build",
 		"build:alerts": "ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-alerts-*",
 		"build:alerts:packages": "ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-alerts-pckg-*",
@@ -25,7 +26,8 @@
 		"build:stops": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-stops-*",
 		"build:ticketing": "ENVIRONMENT=development dotenv-run -f ./modules/ticketing/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-ticketing-*",
 		"build:types": "turbo build --filter=@tmlmobilidade/types",
-		"dev:alerts": "npm run build:alerts:packages && ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
+
+    "dev:alerts": "npm run build:alerts:packages && ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
 		"dev:auth": "ENVIRONMENT=development dotenv-run -f ./modules/auth/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-auth-*",
 		"dev:auth:prod": "ENVIRONMENT=development dotenv-run -f ./modules/auth/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-auth-*",
 		"dev:controller": "ENVIRONMENT=development dotenv-run -f ./modules/controller/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-*",
@@ -45,16 +47,19 @@
 		"dev:stops": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-*",
 		"dev:stops:ui": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-api --filter=@tmlmobilidade/go-stops-frontend",
 		"dev:ticketing": "ENVIRONMENT=development dotenv-run -f ./modules/ticketing/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-ticketing-*",
+
 		"generate-routes": "bash ./scripts/generate-routes.sh && turbo lint:fix --filter=@tmlmobilidade/consts",
+
 		"helper:alerts:migrate-db": "dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-alerts-helpers-migrate-db",
 		"helper:controller:export-sams:production": "dotenv-run -f ./modules/controller/environments/production/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-controller-helpers-export-sams",
 		"helper:locations:seed-locations:production": "dotenv-run -f ./modules/locations/environments/production/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-locations-helpers-seed-locations",
 		"helper:locations:seed-locations:staging": "dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-locations-helpers-seed-locations",
 		"helper:stops:seed-stops": "dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-stops-helpers-seed-stops",
+
 		"lint": "turbo lint",
 		"lint:fix": "turbo lint:fix",
-		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
-		"watch:packages": "npm run build:packages && turbo run watch --filter=./packages/**/*"
+		"rinse": "npx --yes @tmlmobilidade/repo-rinse"
+
 	},
 	"devDependencies": {
 		"@carrismetropolitana/eslint": "20250622.1204.50",
