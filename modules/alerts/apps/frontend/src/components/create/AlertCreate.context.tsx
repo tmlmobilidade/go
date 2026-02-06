@@ -179,7 +179,16 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	}, [form.getValues().active_period_start_date]);
 
 	useEffect(() => {
-		// SKip if reference type is already set
+		if (!form.getValues().active_period_end_date) {
+			// Set active period end date to the end today
+			form.setFieldValue('active_period_end_date', Dates.now('Europe/Lisbon').endOf('day').unix_timestamp);
+			// Set publish end date to end of today
+			form.setFieldValue('publish_end_date', Dates.now('Europe/Lisbon').endOf('day').unix_timestamp);
+		}
+	}, [form.getValues().active_period_end_date]);
+
+	useEffect(() => {
+		// Skip if reference type is already set
 		if (form.getValues().reference_type) return;
 		// Get permission definition for reference types
 		const createPermission = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
