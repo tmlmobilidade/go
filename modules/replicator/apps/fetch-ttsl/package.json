@@ -18,6 +18,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-replicator-pckg-parse": "*",
+		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
