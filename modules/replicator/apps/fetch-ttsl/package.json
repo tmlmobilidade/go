@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-replicator-stream",
+	"name": "@tmlmobilidade/go-replicator-fetch-ttsl",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -22,11 +22,12 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
-		"@tmlmobilidade/writers": "*"
+		"@tmlmobilidade/writers": "*",
+		"protobufjs": "8.0.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.2.0",
+		"@types/node": "25.2.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"
