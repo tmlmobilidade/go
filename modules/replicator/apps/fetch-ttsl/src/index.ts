@@ -1,32 +1,59 @@
 /* * */
 
-import { processApexLocation } from '@/tasks/process-apex-location.js';
-import { processApexOnBoardRefund } from '@/tasks/process-apex-on-board-refund.js';
-import { processApexOnBoardSale } from '@/tasks/process-apex-on-board-sale.js';
-import { processApexValidation } from '@/tasks/process-apex-validation.js';
-import { processVehicleEvent } from '@/tasks/process-vehicle-event.js';
-import { pcgidbLegacy, pcgidbTicketing, pcgidbValidations } from '@tmlmobilidade/interfaces';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import protobufjs from 'protobufjs';
 
 /* * */
 
 (async function init() {
 	//
 
-	await pcgidbLegacy.connect();
-	await pcgidbTicketing.connect();
-	await pcgidbValidations.connect();
+	//
+	// Download the .proto definition file
+	// from the GTFS Realtime specification
+
+	const protoUrl = 'https://gtfs.org/documentation/realtime/gtfs-realtime.proto';
+	const response = await fetch(protoUrl);
+	const protoText = await response.text();
 
 	//
-	// Watch for changes to the MongoDB collections
-	// and integrate those documents immediately.
+	// Create a URL for the local .proto file
+	// and load it using protobufjs
 
-	pcgidbLegacy.VehicleEvents.watch().on('change', processVehicleEvent);
+	const __dirname = path.dirname(fileURLToPath(import.meta.url));
+	const protoPath = path.join(__dirname, 'gtfs-realtime.proto');
+	fs.writeFileSync(protoPath, protoText);
 
-	pcgidbTicketing.SalesEntity.watch().on('change', processApexOnBoardRefund);
-	pcgidbTicketing.SalesEntity.watch().on('change', processApexOnBoardSale);
+	const proto = new protobufjs.Root();
+	const gtfsRealtime = proto.loadSync(protoPath, { keepCase: true });
 
-	pcgidbValidations.LocationEntity.watch().on('change', processApexLocation);
-	pcgidbValidations.ValidationEntity.watch().on('change', processApexValidation);
+	async function fetchTTSLData() {
+		//
+
+		const response = await fetch('https://api.ttsl.pt/files/gtfs_rt_vehicles.pb');
+		const arrayBuffer = await response.arrayBuffer();
+		const buffer = Buffer.from(arrayBuffer);
+
+		const FeedMessage = gtfsRealtime.root.lookupType('transit_realtime.FeedMessage');
+
+		const message = FeedMessage.decode(buffer);
+
+		const decodedMessage = FeedMessage.toObject(message, {
+			arrays: true,
+			bytes: String,
+			defaults: true,
+			enums: String,
+			longs: String,
+			objects: true,
+			oneofs: true,
+		});
+
+		console.log(decodedMessage);
+	}
+
+	setInterval(fetchTTSLData, 5_000); // Fetch data every 5 seconds
 
 	//
 })();
