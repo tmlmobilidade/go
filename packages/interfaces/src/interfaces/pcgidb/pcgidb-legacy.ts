@@ -14,10 +14,8 @@ let GLOBAL_PCGIDB_TUNNEL_INSTANCE: SshTunnelService | undefined;
 class PCGIDBLegacyClass {
 	//
 
-	public LocationEntity: Collection;
-	public SalesEntity: Collection;
-	public ValidationEntity: Collection;
-	public VehicleEvents: Collection;
+	public VehicleEventsCore: Collection;
+	public VehicleEventsLog: Collection;
 
 	/**
 	 * Establishes a connection to the Mongo database and initializes the collection.
@@ -49,10 +47,8 @@ class PCGIDBLegacyClass {
 			const mongoConnector = new MongoConnector(pcgidbLegacyConnectionString, mongoClientOptions);
 			await mongoConnector.connect();
 			// Setup collections
-			this.LocationEntity = mongoConnector.client.db('LocationManagement').collection('locationEntity');
-			this.SalesEntity = mongoConnector.client.db('SalesManagement').collection('salesEntity');
-			this.ValidationEntity = mongoConnector.client.db('ValidationsManagement').collection('validationEntity');
-			this.VehicleEvents = mongoConnector.client.db('CoreManagement').collection('VehicleEvents');
+			this.VehicleEventsCore = mongoConnector.client.db('CoreManagement').collection('VehicleEvents');
+			this.VehicleEventsLog = mongoConnector.client.db('OfferApiLog').collection('VehicleEvents');
 			// Log success message
 			Logger.success('Connected to PCGIDB Legacy successfully.');
 		}
