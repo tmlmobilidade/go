@@ -23,7 +23,7 @@ import crypto from 'node:crypto';
 		// Transform the decoded message into a SimplifiedVehicleEvent
 
 		for (const entity of decodedMessage.entity) {
-			const simplifiedEvent: Omit<SimplifiedVehicleEvent, '_id' | 'received_at' | 'updated_at'> = {
+			const simplifiedEvent: Omit<SimplifiedVehicleEvent, '_id' | 'received_at'> = {
 				agency_id: '4',
 				created_at: Dates.fromSeconds(entity.vehicle.timestamp.low).unix_timestamp,
 				current_status: entity.vehicle.current_status,
