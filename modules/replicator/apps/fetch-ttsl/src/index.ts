@@ -1,38 +1,15 @@
 /* * */
 
+import { processTtslVehicleEvent } from '@/process-ttsl-vehicle-event.js';
 import { Dates } from '@tmlmobilidade/dates';
+import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
 import { SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import crypto from 'node:crypto';
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import protobufjs from 'protobufjs';
-
-import { processTtslVehicleEvent } from './process-ttsl-vehicle-event.js';
 
 /* * */
 
 (async function init() {
 	//
-
-	//
-	// Download the .proto definition file
-	// from the GTFS Realtime specification
-
-	const protoUrl = 'https://gtfs.org/documentation/realtime/gtfs-realtime.proto';
-	const response = await fetch(protoUrl);
-	const protoText = await response.text();
-
-	//
-	// Create a URL for the local .proto file
-	// and load it using protobufjs
-
-	const __dirname = path.dirname(fileURLToPath(import.meta.url));
-	const protoPath = path.join(__dirname, 'gtfs-realtime.proto');
-	fs.writeFileSync(protoPath, protoText);
-
-	const proto = new protobufjs.Root();
-	const gtfsRealtime = proto.loadSync(protoPath, { keepCase: true });
 
 	async function fetchTTSLData() {
 		//
@@ -41,11 +18,7 @@ import { processTtslVehicleEvent } from './process-ttsl-vehicle-event.js';
 		const arrayBuffer = await response.arrayBuffer();
 		const buffer = Buffer.from(arrayBuffer);
 
-		const FeedMessage = gtfsRealtime.root.lookupType('transit_realtime.FeedMessage');
-
-		const message = FeedMessage.decode(buffer);
-
-		const decodedMessage = FeedMessage.toObject(message);
+		const decodedMessage = await decodeGtfsRtFeed(buffer);
 
 		//
 		// Transform the decoded message into a SimplifiedVehicleEvent

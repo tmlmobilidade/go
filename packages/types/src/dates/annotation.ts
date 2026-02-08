@@ -1,14 +1,14 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { operationalDateSchema } from '@/_common/operational-date.js';
+import { OperationalDateSchema } from '@/_common/operational-date.js';
 import { z } from 'zod';
 
 /* * */
 
 export const AnnotationSchema = DocumentSchema.extend({
 	agency_ids: z.array(z.string()).default([]),
-	dates: z.array(operationalDateSchema).default([]),
+	dates: z.array(OperationalDateSchema).default([]),
 	description: z.string().optional(),
 	is_locked: z.boolean().default(false),
 	title: z.string().min(1),

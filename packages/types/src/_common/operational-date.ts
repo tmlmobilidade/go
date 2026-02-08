@@ -11,7 +11,7 @@ export type OperationalDate = string & {
 	__brand: 'OperationalDate'
 };
 
-export const operationalDateSchema = z
+export const OperationalDateSchema = z
 	.string()
 	.transform(validateOperationalDate);
 
