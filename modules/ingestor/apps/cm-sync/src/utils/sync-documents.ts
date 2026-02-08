@@ -68,14 +68,7 @@ export async function syncDocuments<T>({ dbWriter, docParser, flushCallback, goC
 
 		if (missingDocuments.length === 0) {
 			Logger.success(`Chunk complete. All document IDs matched. (${distinctQueryTimer.get()})`);
-		}
-
-		//
-		// If there are extra documents in the GO database, then we remove them.
-
-		if (extraDocuments.length > 0) {
-			await goCollection.deleteMany({ [goIdKey]: { $in: extraDocuments }, ...goQuery });
-			Logger.info(`Removed ${extraDocuments.length} extra documents in GO. (${distinctQueryTimer.get()})`);
+			return;
 		}
 
 		//

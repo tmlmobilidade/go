@@ -18,7 +18,6 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-ingestor-pckg-parse": "*",
-		"@tmlmobilidade/go-ingestor-pckg-sync": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
