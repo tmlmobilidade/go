@@ -1,5 +1,7 @@
 /* * */
 
+import { useMemo } from 'react';
+
 import styles from './styles.module.css';
 
 import { Label } from '../../display/Label';
@@ -20,8 +22,15 @@ export function TagGroup({ limit = 2, tags = [] }: TagGroupProps) {
 	//
 	// A. Transform data
 
-	const slicedTags = tags.slice(0, limit);
-	const remainingTagCount = tags.length - slicedTags.length;
+	const slicedTags = useMemo(() => {
+		if (!tags?.length) return [];
+		return tags.slice(0, limit);
+	}, [tags, limit]);
+
+	const remainingTagCount = useMemo(() => {
+		if (!tags?.length) return 0;
+		return tags.length - slicedTags.length;
+	}, [tags, slicedTags]);
 
 	//
 	// B. Render components
