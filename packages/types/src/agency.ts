@@ -1,7 +1,7 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { operationalDateSchema } from '@/_common/operational-date.js';
+import { OperationalDateSchema } from '@/_common/operational-date.js';
 import { z } from 'zod';
 
 /* * */
@@ -15,7 +15,7 @@ export const AgencySchema = DocumentSchema.extend({
 		vkm_per_month: z.array(z.coerce.number()).length(12),
 	}),
 	name: z.string(),
-	operation_start_date: operationalDateSchema.nullable().default(null),
+	operation_start_date: OperationalDateSchema.nullable().default(null),
 	phone: z.string(),
 	public_email: z.string().email(),
 	short_name: z.string(),
