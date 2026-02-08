@@ -16,9 +16,8 @@ import crypto from 'node:crypto';
 
 		const response = await fetch('https://api.ttsl.pt/files/gtfs_rt_vehicles.pb');
 		const arrayBuffer = await response.arrayBuffer();
-		const buffer = Buffer.from(arrayBuffer);
 
-		const decodedMessage = await decodeGtfsRtFeed(buffer);
+		const decodedMessage = await decodeGtfsRtFeed(arrayBuffer);
 
 		//
 		// Transform the decoded message into a SimplifiedVehicleEvent
@@ -28,22 +27,14 @@ import crypto from 'node:crypto';
 				agency_id: '4',
 				created_at: Dates.fromSeconds(entity.vehicle.timestamp.low).unix_timestamp,
 				current_status: entity.vehicle.current_status,
+				door: null,
 				driver_id: null,
-				event_id: null,
 				extra_trip_id: null,
 				latitude: entity.vehicle.position.latitude,
 				longitude: entity.vehicle.position.longitude,
 				odometer: null,
 				pattern_id: null,
-				position: {
-					geohash: null,
-					h3: null,
-					latitude: entity.vehicle.position.latitude,
-					longitude: entity.vehicle.position.longitude,
-				},
 				stop_id: entity.vehicle.stop_id,
-				trigger_activity: null,
-				trigger_door: null,
 				trip_id: entity.vehicle.trip.trip_id,
 				vehicle_id: entity.vehicle.vehicle.id,
 			};
@@ -54,10 +45,9 @@ import crypto from 'node:crypto';
 				.update(hashableSimplifiedEvent)
 				.digest('hex');
 			await processTtslVehicleEvent({
-				_id: uniqueIdValueForSimplifiedEvent,
 				...simplifiedEvent,
+				_id: uniqueIdValueForSimplifiedEvent,
 				received_at: Dates.now('Europe/Lisbon').unix_timestamp,
-				updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
 			});
 		}
 
