@@ -1,8 +1,7 @@
 /* * */
 
-import type { ClickHouseVehicleEvent, ExtendedPosition } from '@tmlmobilidade/types';
-
 import { Dates } from '@tmlmobilidade/dates';
+import { type ClickHouseVehicleEvent, type ExtendedPosition } from '@tmlmobilidade/types';
 import h3 from 'h3-js';
 import geohash from 'ngeohash';
 
@@ -41,8 +40,8 @@ export function transformVehicleEventForClickHouse(pcgiDoc: any): ClickHouseVehi
 		agency_id: entity.vehicle.agencyId,
 		created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
 		current_status: entity.vehicle.currentStatus,
+		door: entity.vehicle.trigger.door,
 		driver_id: entity.vehicle.vehicle.driverId,
-		event_id: entity._id,
 		extra_trip_id: entity.vehicle.trip?.extraTripId,
 		hour: hour,
 		latitude: entity.vehicle.position.latitude,
@@ -54,10 +53,7 @@ export function transformVehicleEventForClickHouse(pcgiDoc: any): ClickHouseVehi
 		received_at: Dates.fromUnixTimestamp(pcgiDoc.millis).unix_timestamp,
 		route_id: entity.vehicle.trip?.routeId,
 		stop_id: entity.vehicle.stopId,
-		trigger_activity: entity.vehicle.trigger.activity,
-		trigger_door: entity.vehicle.trigger.door,
 		trip_id: entity.vehicle.trip?.tripId,
-		updated_at: Dates.fromUnixTimestamp(pcgiDoc.millis).unix_timestamp,
 		vehicle_id: entity.vehicle.vehicle._id,
 		...h3Position,
 		...geohashPosition,
