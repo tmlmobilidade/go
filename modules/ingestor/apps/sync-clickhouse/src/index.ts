@@ -1,8 +1,8 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { transformVehicleEventForClickHouse } from '@tmlmobilidade/go-replicator-pckg-parse';
-import { getEarliestDate, syncToClickHouse } from '@tmlmobilidade/go-replicator-pckg-sync';
+import { transformVehicleEventForClickHouse } from '@tmlmobilidade/go-ingestor-pckg-parse';
+import { getEarliestDate, syncToClickHouse } from '@tmlmobilidade/go-ingestor-pckg-sync';
 import { pcgidbLegacy } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';

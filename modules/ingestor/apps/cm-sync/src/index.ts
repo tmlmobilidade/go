@@ -1,8 +1,8 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { parseVehicleEvent } from '@tmlmobilidade/go-replicator-pckg-parse';
-import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
+import { parseVehicleEvent } from '@tmlmobilidade/go-ingestor-pckg-parse';
+import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-ingestor-pckg-sync';
 import { pcgidbLegacy, rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
