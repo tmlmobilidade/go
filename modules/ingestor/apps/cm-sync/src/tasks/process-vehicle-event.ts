@@ -1,7 +1,7 @@
 /* * */
 
+import { parseVehicleEvent } from '@/tasks/parse-vehicle-event.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { parseVehicleEvent } from '@tmlmobilidade/go-ingestor-pckg-parse';
 import { rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';

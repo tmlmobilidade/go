@@ -13,7 +13,7 @@ import { Interval } from 'luxon';
 
 /* * */
 
-export async function syncPcgiLog() {
+export async function syncPcgiCore() {
 	try {
 		//
 
@@ -148,7 +148,7 @@ export async function syncPcgiLog() {
 
 				goQuery: goQuery,
 
-				pcgiCollection: pcgidbLegacy.VehicleEvents,
+				pcgiCollection: pcgidbLegacy.VehicleEventsCore,
 
 				pcgiIdKey: '_id',
 

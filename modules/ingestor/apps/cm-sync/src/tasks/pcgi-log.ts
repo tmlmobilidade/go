@@ -1,9 +1,9 @@
 /* * */
 
+import { parseVehicleEvent } from '@/tasks/parse-vehicle-event.js';
 import { getEarliestDate } from '@/utils/earliest-date.js';
 import { syncDocuments } from '@/utils/sync-documents.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { parseVehicleEvent } from '@tmlmobilidade/go-ingestor-pckg-parse';
 import { pcgidbLegacy, rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -13,7 +13,7 @@ import { Interval } from 'luxon';
 
 /* * */
 
-export async function syncPcgiCore() {
+export async function syncPcgiLog() {
 	try {
 		//
 
@@ -148,7 +148,7 @@ export async function syncPcgiCore() {
 
 				goQuery: goQuery,
 
-				pcgiCollection: pcgidbLegacy.VehicleEvents,
+				pcgiCollection: pcgidbLegacy.VehicleEventsLog,
 
 				pcgiIdKey: '_id',
 
