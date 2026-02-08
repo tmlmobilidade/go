@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-go-replicator-staging
+name: tmlmobilidade-go-apex-staging
 
 services:
 
@@ -36,7 +36,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   organizer:
-    image: ghcr.io/tmlmobilidade/go-replicator-organizer:staging
+    image: ghcr.io/tmlmobilidade/go-apex-organizer:staging
     deploy:
       restart_policy:
         condition: any
@@ -55,7 +55,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   stream:
-    image: ghcr.io/tmlmobilidade/go-replicator-stream:staging
+    image: ghcr.io/tmlmobilidade/go-apex-stream:staging
     deploy:
       restart_policy:
         condition: any
@@ -81,7 +81,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-apex-locations:
-    image: ghcr.io/tmlmobilidade/go-replicator-sync-apex-locations:staging
+    image: ghcr.io/tmlmobilidade/go-apex-sync-apex-locations:staging
     deploy:
       restart_policy:
         condition: any
@@ -104,7 +104,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-apex-on-board-refunds:
-    image: ghcr.io/tmlmobilidade/go-replicator-sync-apex-on-board-refunds:staging
+    image: ghcr.io/tmlmobilidade/go-apex-sync-apex-on-board-refunds:staging
     deploy:
       restart_policy:
         condition: any
@@ -127,7 +127,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-apex-on-board-sales:
-    image: ghcr.io/tmlmobilidade/go-replicator-sync-apex-on-board-sales:staging
+    image: ghcr.io/tmlmobilidade/go-apex-sync-apex-on-board-sales:staging
     deploy:
       restart_policy:
         condition: any
@@ -150,7 +150,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-apex-validations:
-    image: ghcr.io/tmlmobilidade/go-replicator-sync-apex-validations:staging
+    image: ghcr.io/tmlmobilidade/go-apex-sync-apex-validations:staging
     deploy:
       restart_policy:
         condition: any
@@ -173,7 +173,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-vehicle-events:
-    image: ghcr.io/tmlmobilidade/go-replicator-sync-vehicle-events:staging
+    image: ghcr.io/tmlmobilidade/go-apex-sync-vehicle-events:staging
     deploy:
       restart_policy:
         condition: any

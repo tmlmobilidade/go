@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-go-replicator-production
+name: tmlmobilidade-go-apex-production
 
 services:
 
@@ -36,7 +36,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   organizer:
-    image: ghcr.io/tmlmobilidade/go-replicator-organizer:production
+    image: ghcr.io/tmlmobilidade/go-apex-organizer:production
     deploy:
       restart_policy:
         condition: any
@@ -55,7 +55,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   stream:
-    image: ghcr.io/tmlmobilidade/go-replicator-stream:production
+    image: ghcr.io/tmlmobilidade/go-apex-stream:production
     deploy:
       restart_policy:
         condition: any
@@ -81,7 +81,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-apex-locations:
-    image: ghcr.io/tmlmobilidade/go-replicator-sync-apex-locations:production
+    image: ghcr.io/tmlmobilidade/go-apex-sync-apex-locations:production
     deploy:
       restart_policy:
         condition: any
@@ -104,7 +104,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-apex-on-board-refunds:
-    image: ghcr.io/tmlmobilidade/go-replicator-sync-apex-on-board-refunds:production
+    image: ghcr.io/tmlmobilidade/go-apex-sync-apex-on-board-refunds:production
     deploy:
       restart_policy:
         condition: any
@@ -127,7 +127,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-apex-on-board-sales:
-    image: ghcr.io/tmlmobilidade/go-replicator-sync-apex-on-board-sales:production
+    image: ghcr.io/tmlmobilidade/go-apex-sync-apex-on-board-sales:production
     deploy:
       restart_policy:
         condition: any
@@ -150,7 +150,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-apex-validations:
-    image: ghcr.io/tmlmobilidade/go-replicator-sync-apex-validations:production
+    image: ghcr.io/tmlmobilidade/go-apex-sync-apex-validations:production
     deploy:
       restart_policy:
         condition: any
@@ -173,7 +173,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-vehicle-events:
-    image: ghcr.io/tmlmobilidade/go-replicator-sync-vehicle-events:production
+    image: ghcr.io/tmlmobilidade/go-apex-sync-vehicle-events:production
     deploy:
       restart_policy:
         condition: any
@@ -187,12 +187,12 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
- 
+
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-vehicle-events-clickhouse:
-    image: ghcr.io/tmlmobilidade/go-replicator-sync-vehicle-events-clickhouse:production
+    image: ghcr.io/tmlmobilidade/go-apex-sync-vehicle-events-clickhouse:production
     deploy:
       restart_policy:
         condition: any

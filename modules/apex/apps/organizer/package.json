@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-replicator-organizer",
+	"name": "@tmlmobilidade/go-apex-organizer",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -18,7 +18,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-replicator-pckg-parse": "*",
+		"@tmlmobilidade/go-apex-pckg-parse": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",

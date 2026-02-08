@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { parseSimplifiedApexLocation } from '@tmlmobilidade/go-replicator-pckg-parse';
+import { parseSimplifiedApexLocation } from '@tmlmobilidade/go-apex-pckg-parse';
 import { rides, simplifiedApexLocations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';

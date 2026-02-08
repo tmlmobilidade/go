@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-replicator-pckg-parse",
+	"name": "@tmlmobilidade/go-apex-pckg-parse",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-replicator-pckg-sync": "*",
+		"@tmlmobilidade/go-apex-pckg-sync": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
 	},

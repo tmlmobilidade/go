@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-replicator-sync-apex-on-board-refunds",
+	"name": "@tmlmobilidade/go-apex-sync-apex-on-board-refunds",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -17,8 +17,8 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-replicator-pckg-parse": "*",
-		"@tmlmobilidade/go-replicator-pckg-sync": "*",
+		"@tmlmobilidade/go-apex-pckg-parse": "*",
+		"@tmlmobilidade/go-apex-pckg-sync": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",

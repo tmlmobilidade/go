@@ -1,8 +1,8 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-replicator-pckg-parse';
-import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
+import { parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-apex-pckg-parse';
+import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-apex-pckg-sync';
 import { pcgidbTicketing, rides, simplifiedApexOnBoardRefunds } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
