@@ -1,7 +1,7 @@
 /* * */
 
 import { fastifyMultipart } from '@fastify/multipart';
-import fastifyWebsocket from '@fastify/websocket';
+import { fastifyWebsocket } from '@fastify/websocket';
 import { getAppConfig } from '@tmlmobilidade/consts';
 import { FastifyService } from '@tmlmobilidade/fastify';
 

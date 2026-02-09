@@ -57,7 +57,7 @@
 		"ukkonen": "2.2.0"
 	},
 	"devDependencies": {
-		"@turf/turf": "7.3.3",
+		"@turf/turf": "7.3.4",
 		"@types/geojson": "7946.0.16",
 		"@types/luxon": "3.7.1",
 		"@types/node": "25.2.2",

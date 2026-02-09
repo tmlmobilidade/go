@@ -21,7 +21,7 @@
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/ui": "*",
-		"@turf/turf": "7.3.3",
+		"@turf/turf": "7.3.4",
 		"@vis.gl/react-maplibre": "8.1.0",
 		"lodash": "4.17.23",
 		"luxon": "3.7.2",

@@ -17,6 +17,7 @@
 		"lint:fix": "eslint ./src --fix"
 	},
 	"dependencies": {
+		"@fastify/multipart": "9.4.0",
 		"@fastify/websocket": "11.2.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/controllers": "*",

@@ -19,7 +19,7 @@
 	"dependencies": {
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@turf/turf": "7.3.3"
+		"@turf/turf": "7.3.4"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
