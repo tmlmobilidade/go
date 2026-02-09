@@ -61,7 +61,7 @@ export default function RulesListViewEventCard({ rule }: RulesListViewEventCardP
 						? <IconCalendarCancel color="var(--color-status-danger-primary)" size={20} />
 						: <IconCalendarCheck color="var(--color-status-success-primary)" size={20} />}
 					<Text size="lg">{name} · </Text>
-					<Text className={styles.timesCount}>{times.length} {times.length > 1 ? 'horários' : 'horário'}</Text>
+					<Text className={styles.timesCount}>{times.length} {times.length > 1 ? 'horários afetados' : 'horário afetado'} em {rule.dates.length} {rule.dates.length > 1 ? 'dias' : 'dia'}</Text>
 				</Section>
 
 				{/* TODO: implement date ranges */}
