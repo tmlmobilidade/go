@@ -39,8 +39,8 @@
 		"@types/geojson": "7946.0.16",
 		"@types/lodash": "4.17.23",
 		"@types/luxon": "3.7.1",
-		"@types/node": "25.2.0",
-		"@types/react": "19.2.10",
+		"@types/node": "25.2.2",
+		"@types/react": "19.2.13",
 		"@types/react-dom": "19.2.3",
 		"typescript": "5.9.3"
 	},

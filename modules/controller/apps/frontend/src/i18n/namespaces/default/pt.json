@@ -1,5 +1,54 @@
 {
 	"list": {
+		"RidesList": {
+			"columns": {
+				"analysis_ended_at_last_stop_grade": {
+					"label": "Last Stop"
+				},
+				"analysis_expected_apex_validation_interval_grade": {
+					"label": "Int. APEX"
+				},
+				"analysis_simple_three_vehicle_events_grade": {
+					"label": "3 Eventos"
+				},
+				"analysis_transaction_sequentiality": {
+					"label": "Seq.APEX"
+				},
+				"driver_ids": {
+					"label": "Driver IDs"
+				},
+				"end_time_observed": {
+					"label": "Observado"
+				},
+				"end_time_scheduled": {
+					"label": "Chegada"
+				},
+				"headsign": {
+					"label": "Pattern"
+				},
+				"operational_date": {
+					"label": "Data Operacional"
+				},
+				"operational_status": {
+					"label": "Estado"
+				},
+				"passengers_observed": {
+					"label": "Pax"
+				},
+				"seen_last_at": {
+					"label": ""
+				},
+				"start_time_observed": {
+					"label": "Observado"
+				},
+				"start_time_scheduled": {
+					"label": "Partida"
+				},
+				"vehicle_ids": {
+					"label": "Vehicle IDs"
+				}
+			}
+		},
 		"RidesListFilterAcceptanceStatus": {
 			"label": "Aceitação"
 		},
@@ -33,43 +82,6 @@
 		},
 		"RidesListLastUpdatedAt": {
 			"just_now": "Agora mesmo"
-		},
-		"RidesListTable": {
-			"columns": {
-				"analysis_ended_at_last_stop_grade": {
-					"label": "Last Stop"
-				},
-				"analysis_expected_apex_validation_interval_grade": {
-					"label": "Int. APEX"
-				},
-				"analysis_simple_three_vehicle_events_grade": {
-					"label": "3 Eventos"
-				},
-				"analysis_transaction_sequentiality": {
-					"label": "Seq.APEX"
-				},
-				"headsign": {
-					"label": "Pattern"
-				},
-				"operational_date": {
-					"label": "Data Operacional"
-				},
-				"operational_status": {
-					"label": "Estado"
-				},
-				"passengers_observed": {
-					"label": "Passageiros"
-				},
-				"seen_last_at": {
-					"label": ""
-				},
-				"start_time_observed": {
-					"label": "Observado"
-				},
-				"start_time_scheduled": {
-					"label": "Partida"
-				}
-			}
 		}
 	},
 	"rides": {

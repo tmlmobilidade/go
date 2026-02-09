@@ -10,13 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 /* * */
 
-interface RidesListLastUpdatedAtProps {
-	isLoading: boolean
-}
-
-/* * */
-
-export function RidesListLastUpdatedAt({ isLoading }: RidesListLastUpdatedAtProps) {
+export function RidesListLastUpdatedAt() {
 	//
 
 	//
@@ -60,7 +54,7 @@ export function RidesListLastUpdatedAt({ isLoading }: RidesListLastUpdatedAtProp
 	//
 	// C. Render components
 
-	if (isLoading) {
+	if (ridesListContext.flags.loading) {
 		return <Loader size="sm" />;
 	}
 

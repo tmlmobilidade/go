@@ -93,7 +93,7 @@ export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
 	}, [allScheduledData]);
 
 	const searchResultsData = useSearch<AlertNormalized>({
-		accessors: ['title_normalized', 'description_normalized'],
+		accessors: ['_id', 'title_normalized', 'description_normalized'],
 		data: normalizedAlertsData,
 		query: filterSearch.value,
 	});

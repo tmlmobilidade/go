@@ -2,6 +2,7 @@ export * from './src/components';
 export * from './src/contexts';
 export * from './src/hooks';
 export * from './src/i18n';
+export * from './src/icons';
 export * from './src/providers';
 export * from './src/types';
 export * from './src/utils';

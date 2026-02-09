@@ -1,5 +1,5 @@
 import { DocumentSchema } from '@/_common/document.js';
-import { operationalDateSchema } from '@/_common/operational-date.js';
+import { OperationalDateSchema } from '@/_common/operational-date.js';
 import { z } from 'zod';
 
 import { VehicleEmissionSchema } from './emission.js';
@@ -24,7 +24,7 @@ export const vehicleSchema = DocumentSchema.extend({
 	owner: z.string(),
 	passenger_counting: z.boolean().default(false),
 	propulsion: z.string(VehiclePropulsionSchema),
-	registration_date: z.string(operationalDateSchema),
+	registration_date: z.string(OperationalDateSchema),
 	wheelchair_acessible: z.string(VehicleWheelchairSchema),
 });
 
