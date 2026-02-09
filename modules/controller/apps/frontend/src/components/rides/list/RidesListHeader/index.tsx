@@ -27,7 +27,7 @@ export function RidesListHeader() {
 	return (
 		<Toolbar>
 			<Label size="lg" caps>{t('default:list.RidesListHeader.title')}</Label>
-			<RidesListLastUpdatedAt isLoading={ridesListContext.flags.loading} />
+			<RidesListLastUpdatedAt />
 			<Spacer shrink />
 			<Tag label={`Total ${ridesListContext.data.filtered.length}`} variant="muted" />
 			<SearchInput onChange={ridesListContext.filters.search.set} value={ridesListContext.filters.search.value} />
