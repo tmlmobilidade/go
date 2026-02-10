@@ -15,6 +15,7 @@ export const SimplifiedVehicleEventSchema = DocumentSchema
 	})
 	.extend({
 		agency_id: z.string(),
+		bearing: z.number().nullable().default(null),
 		current_status: z.enum(['INCOMING_AT', 'STOPPED_AT', 'IN_TRANSIT_TO']),
 		door: z.string().nullable().default(null),
 		driver_id: z.string().nullable().default(null),
