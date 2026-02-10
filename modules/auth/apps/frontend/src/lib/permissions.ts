@@ -327,7 +327,6 @@ export const permissionsConfig = [
 	rideActions,
 	performanceActions,
 	fleetActions,
-	fleetActions,
 	annotationsActions,
 	periodsActions,
 	faresActions,

@@ -9,6 +9,7 @@ import { PasswordInput, TextInput, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -17,6 +18,8 @@ export function LoginForm() {
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
 
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -43,11 +46,11 @@ export function LoginForm() {
 		setIsLoading(false);
 		// Handle response error
 		if (response.error) {
-			useToast.error({ message: response.error ?? 'An error occurred', title: 'Login failed' });
+			useToast.error({ message: response.error ?? t('unauthenticated:LoginForm.error.description'), title: t('unauthenticated:LoginForm.error.title') });
 			return;
 		}
 		// Handle successful login
-		useToast.success({ message: undefined, title: 'Login successful' });
+		useToast.success({ message: t('unauthenticated:LoginForm.success.description'), title: t('unauthenticated:LoginForm.success.title') });
 		// Redirect to the specified page or home
 		window.location.href = redirectToValue;
 	};
@@ -57,27 +60,27 @@ export function LoginForm() {
 
 	return (
 		<AuthenticationForm
-			description="Procuramos simplificar a gestão dos transportes públicos com ferramentas digitais estáveis e intuitivas."
-			footerLabel="Recuperar password"
+			description={t('unauthenticated:LoginForm.description')}
+			footerLabel={t('unauthenticated:LoginForm.footer.label')}
 			footerUrl={PAGE_ROUTES.auth.RESET_PASSWORD_LIST}
 			loading={isLoading}
 			onSubmit={handleSubmit}
 			submitDisabled={passwordValue.length < 8 || emailValue.length === 0}
-			submitLabel="Login"
-			title="Login no GO+"
+			submitLabel={t('unauthenticated:LoginForm.submit.label')}
+			title={t('unauthenticated:LoginForm.title')}
 		>
 			<TextInput
 				key="email"
 				disabled={isLoading}
 				onChange={e => setEmailValue(e.target.value)}
-				placeholder="Email"
+				placeholder={t('unauthenticated:LoginForm.fields.email.placeholder')}
 				value={emailValue}
 			/>
 			<PasswordInput
 				key="password"
 				disabled={isLoading}
 				onChange={e => setPasswordValue(e.target.value)}
-				placeholder="Password"
+				placeholder={t('unauthenticated:LoginForm.fields.password.placeholder')}
 				value={passwordValue}
 			/>
 		</AuthenticationForm>

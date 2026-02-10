@@ -2,11 +2,13 @@
 
 /* * */
 
-import { AlertsListCellDate } from '@/components/common/other/AlertsListCellDate';
-import { AlertsListCellLines } from '@/components/common/other/AlertsListCellLines';
-import { AlertsListCellMunicipalities } from '@/components/common/other/AlertsListCellMunicipalities';
-import { AlertsListCellStops } from '@/components/common/other/AlertsListCellStops';
 import { useAlertsListContext } from '@/components/list/AlertsList.context';
+import { AlertsListCellCauseEffect } from '@/components/list/AlertsListCellCauseEffect';
+import { AlertsListCellDate } from '@/components/list/AlertsListCellDate';
+import { AlertsListCellLines } from '@/components/list/AlertsListCellLines';
+import { AlertsListCellMunicipalities } from '@/components/list/AlertsListCellMunicipalities';
+import { AlertsListCellReferenceType } from '@/components/list/AlertsListCellReferenceType';
+import { AlertsListCellStops } from '@/components/list/AlertsListCellStops';
 import { AlertsListFiltersBar } from '@/components/list/AlertsListFiltersBar';
 import { AlertsListHeader } from '@/components/list/AlertsListHeader';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
@@ -37,8 +39,9 @@ export function AlertsList() {
 		},
 		{
 			accessor: 'reference_type',
+			render: item => <AlertsListCellReferenceType value={item.reference_type} />,
 			title: 'Tipo',
-			width: 75,
+			width: 150,
 		},
 		{
 			accessor: 'title',
@@ -56,6 +59,12 @@ export function AlertsList() {
 			render: item => <AlertsListCellDate value={item.publish_end_date} />,
 			title: 'Data de fim',
 			width: 225,
+		},
+		{
+			accessor: 'cause',
+			render: item => <AlertsListCellCauseEffect cause={item.cause} effect={item.effect} />,
+			title: 'Causa & Efeito',
+			width: 500,
 		},
 		{
 			accessor: 'municipality_ids',

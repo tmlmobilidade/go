@@ -7,6 +7,7 @@ import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { useRolesContext } from '@/contexts/Roles.context';
 import { Grid, MultiSelect, Section, Select } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -20,6 +21,8 @@ export function UserCreateOrganizationAndRoles() {
 	const organizationsContext = useOrganizationsContext();
 
 	const userCreateContext = useUserCreateContext();
+
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -50,15 +53,16 @@ export function UserCreateOrganizationAndRoles() {
 					key={userCreateContext.data.form.key('organization_id')}
 					clearable={false}
 					data={organizationItems}
-					label="Organização"
+					label={t('default:users.create.OrganizationAndRoles.fields.organization.label')}
+					placeholder={t('default:users.create.OrganizationAndRoles.fields.organization.placeholder')}
 					required
 					{...userCreateContext.data.form.getInputProps('organization_id')}
 				/>
 				<MultiSelect
 					key={userCreateContext.data.form.key('role_ids')}
 					data={availableRoles}
-					label="Roles"
-					placeholder="Selecione uma opção..."
+					label={t('default:users.create.OrganizationAndRoles.fields.roles.label')}
+					placeholder={t('default:users.create.OrganizationAndRoles.fields.roles.placeholder')}
 					{...userCreateContext.data.form.getInputProps('role_ids', { multiple: true })}
 				/>
 			</Grid>

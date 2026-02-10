@@ -5,6 +5,7 @@
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { AlertReferenceTypeSchema, PermissionCatalog } from '@tmlmobilidade/types';
 import { Divider, Grid, Section, SegmentedControl, Select, useMeContext } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,6 +15,8 @@ export function ReferencesEditorControls() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const meContext = useMeContext();
 	const referencesEditorContext = useReferencesEditorContext();
 
@@ -21,24 +24,14 @@ export function ReferencesEditorControls() {
 	// B. Transform data
 
 	const availableReferenceTypeOptions = AlertReferenceTypeSchema.options
+		.filter(value => referencesEditorContext.data.enabled_reference_types.includes(value))
 		.filter(value => meContext.actions.hasPermissionResource({
 			action: PermissionCatalog.all.alerts.actions.create,
 			resource_key: 'reference_types',
 			scope: PermissionCatalog.all.alerts.scope,
 			value: value,
 		}))
-		.map((value) => {
-			switch (value) {
-				case 'agency':
-					return { label: 'Operador', value };
-				case 'lines':
-					return { label: 'Linhas', value };
-				case 'rides':
-					return { label: 'Circulações', value };
-				case 'stops':
-					return { label: 'Paragens', value };
-			}
-		});
+		.map(value => ({ label: t(`shared:alerts.reference_types.${value}.title`), value }));
 
 	//
 	// C. Render components
@@ -60,7 +53,7 @@ export function ReferencesEditorControls() {
 							value={referencesEditorContext.data.selected_agency_id}
 						/>
 					)}
-					{availableReferenceTypeOptions.length > 1 && (
+					{referencesEditorContext.data.selected_agency_id && availableReferenceTypeOptions.length > 1 && (
 						<SegmentedControl
 							data={availableReferenceTypeOptions}
 							onChange={referencesEditorContext.actions.changeReferenceType}

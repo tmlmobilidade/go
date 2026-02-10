@@ -1,8 +1,9 @@
 /* * */
 
-import { useRidesListContext } from '@/contexts/RidesList.context';
+import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { type UnixTimestamp } from '@tmlmobilidade/types';
 import { FilterTypeDateRange } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -11,6 +12,8 @@ export function RidesListFilterDateRange() {
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
 
 	const ridesListContext = useRidesListContext();
 
@@ -32,7 +35,7 @@ export function RidesListFilterDateRange() {
 		<FilterTypeDateRange
 			active={true}
 			endDate={ridesListContext.filters.date_end as UnixTimestamp}
-			label="Intervalo de Datas"
+			label={t('default:list.RidesListFilterDateRange.label')}
 			onEndDateChange={handleEndDateChange}
 			onStartDateChange={handleStartDateChange}
 			startDate={ridesListContext.filters.date_start as UnixTimestamp}

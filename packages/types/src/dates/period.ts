@@ -1,7 +1,7 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { operationalDateSchema } from '@/_common/operational-date.js';
+import { OperationalDateSchema } from '@/_common/operational-date.js';
 import { z } from 'zod';
 
 /* * */
@@ -9,7 +9,7 @@ import { z } from 'zod';
 export const PeriodSchema = DocumentSchema.extend({
 	agency_ids: z.array(z.string()).default([]),
 	color: z.string().optional(),
-	dates: z.array(operationalDateSchema).optional(),
+	dates: z.array(OperationalDateSchema).optional(),
 	is_locked: z.boolean().default(false),
 	name: z.string().min(1),
 });

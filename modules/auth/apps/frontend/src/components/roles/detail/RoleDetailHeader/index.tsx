@@ -7,6 +7,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { CloseButton, DeleteButton, HasPermission, keepUrlParams, Label, LockButton, SaveButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -18,6 +19,8 @@ export function RoleDetailHeader() {
 
 	const router = useRouter();
 	const roleDetailContext = useRoleDetailContext();
+
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -33,7 +36,7 @@ export function RoleDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-			<Tag label={roleDetailContext.data.id || 'Novo Grupo de Permissões'} variant="secondary" />
+			<Tag label={roleDetailContext.data.id || t('default:roles.detail.header.NewRoleButton.label')} variant="secondary" />
 			<Label size="lg" singleLine>{roleDetailContext.data.form.values.name}</Label>
 
 			<Spacer />
@@ -65,8 +68,8 @@ export function RoleDetailHeader() {
 				scope={PermissionCatalog.all.roles.scope}
 			>
 				<DeleteButton
-					confirmMessage="Tem a certeza que pretende eliminar este grupo de permissões? Esta ação é irreversível."
-					confirmTitle="Eliminar Grupo de Permissões"
+					confirmMessage={t('default:roles.detail.header.DeleteButton.confirm.message')}
+					confirmTitle={t('default:roles.detail.header.DeleteButton.confirm.title')}
 					isDisabled={!roleDetailContext.flags.canDelete}
 					isLoading={roleDetailContext.flags.isDeleting}
 					onDelete={roleDetailContext.actions.delete}

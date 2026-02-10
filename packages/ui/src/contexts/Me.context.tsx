@@ -18,7 +18,7 @@ interface MeContextState {
 		getPreference: <T extends UserPreferenceValue>(scope: string, key: string) => T | undefined
 		getScopePermissions: <S extends Permission['scope']>(args: Omit<GetScopePermissionsArgs<S>, 'permissions'>) => ScopePermissions<S>
 		hasPermission: (scope: string, action: string) => boolean
-		hasPermissionResource: (args: Omit<HasPermissionResourceArgs, 'permissions'>) => boolean
+		hasPermissionResource: (args: Omit<HasPermissionResourceArgs, 'permissions'> | Omit<HasPermissionResourceArgs, 'permissions'>[]) => boolean
 		logout: () => Promise<void>
 		updatePreference: (scope: string, key: string, value: undefined | UserPreferenceValue) => Promise<void>
 	}
@@ -73,9 +73,13 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		return PermissionCatalog.hasPermission(meData.permissions, scope, action);
 	}
 
-	function hasPermissionResource(args: HasPermissionResourceArgs) {
+	function hasPermissionResource(args: HasPermissionResourceArgs | HasPermissionResourceArgs[]) {
+		// Skip if user or permissions are not available
 		if (!meData || !meData.permissions) return false;
-		return PermissionCatalog.hasPermissionResource({ ...args, permissions: meData.permissions });
+		// If args is an array, ensure all conditions are met to return true
+		if (Array.isArray(args)) return args.every(arg => PermissionCatalog.hasPermissionResource({ ...arg, permissions: meData.permissions }));
+		// Otherwise, check the single condition
+		else return PermissionCatalog.hasPermissionResource({ ...args, permissions: meData.permissions });
 	}
 
 	function getScopePermissions<S extends Permission['scope']>(args: Omit<GetScopePermissionsArgs<S>, 'permissions'>): ScopePermissions<S> {

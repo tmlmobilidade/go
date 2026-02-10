@@ -2,13 +2,14 @@
 
 /* * */
 
+import { RidesListContextState } from '@/components/rides/list/RidesList.context';
 import { AgenciesContextProvider, useAgenciesContext } from '@/contexts/Agencies.context';
 import { RidesExportModalContextProvider, useRidesExportModalContext } from '@/contexts/RidesExport.context';
-import { RidesListContextState } from '@/contexts/RidesList.context';
 import { IconFileDownload } from '@tabler/icons-react';
 import { UnixTimestamp } from '@tmlmobilidade/types';
 import { Button, closeModal, DateTimePicker, Divider, ExportsContextProvider, Grid, Label, openModal, Section, Text } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { translateFilterKey, translateFilterValue } from './translations';
 
@@ -32,7 +33,7 @@ export const openRideExportModal = (filters: RidesListContextState['filters']) =
 		closeOnClickOutside: false,
 		modalId: RIDES_EXPORT_MODAL_ID,
 		padding: 0,
-		size: 'auto',
+		size: 'xl',
 		styles: { content: { overflow: 'unset' } },
 		withCloseButton: false,
 	});
@@ -45,8 +46,10 @@ export default function RidesExportModal() {
 
 	//
 	// A. Setup variables
+
 	const context = useRidesExportModalContext();
 	const agenciesContext = useAgenciesContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -77,8 +80,8 @@ export default function RidesExportModal() {
 	return (
 		<div style={{ minHeight: '200px' }}>
 			<Section>
-				<Label size="lg" caps>Exportar Circulações</Label>
-				<Text>Selecione o intervalo de datas para a exportação das circulações.</Text>
+				<Label size="lg" caps>{t('default:rides.export.RidesExportModal.title')}</Label>
+				<Text>{t('default:rides.export.RidesExportModal.description')}</Text>
 			</Section>
 
 			<Divider />
@@ -86,13 +89,13 @@ export default function RidesExportModal() {
 				<Grid columns="ab" gap="md">
 					<DateTimePicker
 						onChange={value => context.actions.setFilterDateStart(value)}
-						placeholder="Data de Início"
+						placeholder={t('default:rides.export.RidesExportModal.fields.start_date.placeholder')}
 						value={context.filters.date_start as UnixTimestamp}
 						fullWidth
 					/>
 					<DateTimePicker
 						onChange={value => context.actions.setFilterDateEnd(value)}
-						placeholder="Data de Fim"
+						placeholder={t('default:rides.export.RidesExportModal.fields.end_date.placeholder')}
 						value={context.filters.date_end as UnixTimestamp}
 						fullWidth
 					/>
@@ -108,7 +111,7 @@ export default function RidesExportModal() {
 					return (
 						<div key={key}>
 							<Label size="sm" caps>{translateFilterKey(key)}</Label>
-							<Text size="sm">{getFormattedValue(key, value)}</Text>
+							<Text size="sm">{getFormattedValue(key, value['value'])}</Text>
 						</div>
 					);
 				})}
@@ -118,14 +121,14 @@ export default function RidesExportModal() {
 				<Grid columns="ab" gap="md">
 					<Button
 						disabled={context.flags.loading}
-						label="Cancelar"
+						label={t('default:rides.export.RidesExportModal.CancelButton.label')}
 						onClick={() => closeModal(RIDES_EXPORT_MODAL_ID)}
 						variant="danger"
 					/>
 					<Button
 						disabled={!context.flags.canSave}
 						icon={<IconFileDownload />}
-						label="Exportar Circulações"
+						label={t('default:rides.export.RidesExportModal.ExportButton.label')}
 						loading={context.flags.loading}
 						onClick={context.actions.exportRides}
 					/>

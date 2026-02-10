@@ -17,6 +17,7 @@ export * from './use-handle-update';
 export * from './use-multi-step';
 export * from './use-organization-logo';
 export * from './use-prevent-navigation';
+export * from './use-state-ref';
 export * from './use-typical-form';
 export * from './use-user-organization';
 export * from './use-user-preference';

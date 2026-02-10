@@ -4,31 +4,52 @@ import { forwardRef } from 'react';
 
 import styles from './styles.module.css';
 
+import { Tooltip } from '../../common/Tooltip';
+
 /* * */
 
-interface IndicatorProps {
+export interface IndicatorProps {
 	color?: string
 	filled?: boolean
 	size?: 'lg' | 'md' | 'sm'
+	tooltip?: string
 	variant?: 'danger' | 'muted' | 'primary' | 'secondary' | 'success' | 'warning'
 }
 
 /* * */
 
-export const Indicator = forwardRef<HTMLDivElement, IndicatorProps>(
-	({ color, filled = false, size, variant = 'primary' }, ref) => {
-		return (
-			<div ref={ref} className={styles.root} data-filled={filled} data-size={size} data-variant={variant}>
-				<div
-					className={styles.indicator}
-					style={color ? {
-						backgroundColor: filled ? color : 'transparent',
-						borderColor: color,
-					} : undefined}
-				/>
-			</div>
-		);
-	},
-);
+const IndicatorBody = forwardRef<HTMLDivElement, IndicatorProps>((props, ref) => (
+	<div
+		ref={ref}
+		className={styles.root}
+		data-filled={props.filled}
+		data-size={props.size}
+		data-variant={props.variant}
+	>
+		<div
+			className={styles.indicator}
+			style={props.color ? {
+				backgroundColor: props.filled ? props.color : 'transparent',
+				borderColor: props.color,
+			} : undefined}
+		/>
+	</div>
+));
 
-Indicator.displayName = 'Indicator';
+/* * */
+
+export function Indicator(props: IndicatorProps) {
+	//
+
+	if (props.tooltip) {
+		return (
+			<Tooltip label={props.tooltip} withArrow>
+				<IndicatorBody {...props} />
+			</Tooltip>
+		);
+	}
+
+	return <IndicatorBody {...props} />;
+
+	//
+}

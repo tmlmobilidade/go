@@ -9,7 +9,7 @@ npx @tmlmobilidade/repo-version --output=<path-to-package.json | console> --form
 ```
 
 ##### `--format`
-- "string" - Output as a formatted string (e.g. `20250101.1026.12`)
+- "default" - Output as a formatted string (e.g. `20250101.1026.12`)
 - "code" - Output as number (e.g. `20250101102612`)
 
 ##### `--prefix`

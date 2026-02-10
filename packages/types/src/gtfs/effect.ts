@@ -9,15 +9,21 @@ export const GtfsEffectValues = [
 	'ADDITIONAL_SERVICE',
 	'DETOUR',
 	'MODIFIED_SERVICE',
+	'NO_EFFECT',
 	'NO_SERVICE',
+	'OTHER_EFFECT',
 	'REDUCED_SERVICE',
 	'SIGNIFICANT_DELAYS',
 	'STOP_MOVED',
-	// 'NO_EFFECT',
-	// 'OTHER_EFFECT',
-	// 'UNKNOWN_EFFECT',
+	'UNKNOWN_EFFECT',
 ] as const;
 
 export const GtfsEffectSchema = z.enum(GtfsEffectValues);
 
+/**
+ * The GTFS-RT standard effect types.
+ * Use this type to represent the standard effects of a service alert
+ * in GTFS-RT feeds, either when importing from standard GTFS-RT data into
+ * the application or when exporting from the application to GTFS-RT format.
+ */
 export type GtfsEffect = z.infer<typeof GtfsEffectSchema>;

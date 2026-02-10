@@ -11,7 +11,7 @@ import { RideAnalysisMetadata } from '@/components/rides/analysis/RideAnalysisMe
 import { RideAnalysisAnalysisResult } from '@/components/rides/analysis/RideAnalysisResult';
 import { RideAnalysisVehicleEvents } from '@/components/rides/analysis/RideAnalysisVehicleEvents';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
-import { RideAnalysis } from '@tmlmobilidade/types';
+import { type Ride, type RideAnalysis } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
 
 /* * */
@@ -29,7 +29,7 @@ export function RideAnalysisAnalysis() {
 		// Skip if no analysis data is available
 		if (!rideAnalysisContext.data.ride?.analysis) return [];
 		// Transform the analysis data into an array of items
-		return Object.entries(rideAnalysisContext.data.ride.analysis).map(([id, item]) => ({ id, ...(item as RideAnalysis) }));
+		return Object.entries(rideAnalysisContext.data.ride.analysis).map(([id, item]) => ({ id: id as keyof Ride['analysis'], ...(item as RideAnalysis) }));
 	}, [rideAnalysisContext.data.ride?.analysis]);
 
 	//

@@ -207,6 +207,7 @@ export const API_ROUTES = Object.freeze({
 		// RIDES
 		RIDES_DETAIL_RIDE: (id: string) => `${getAppConfig('alerts', 'api_url')}/rides/${id}/ride`,
 		RIDES_LIST: `${getAppConfig('alerts', 'api_url')}/rides`,
+		RIDES_WS: `${getAppConfig('alerts', 'api_url')}/rides/ws`,
 	},
 
 	/* * */

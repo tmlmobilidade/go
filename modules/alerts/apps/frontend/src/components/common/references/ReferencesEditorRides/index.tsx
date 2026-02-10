@@ -4,12 +4,11 @@
 
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { ReferencesEditorRidesFilters } from '@/components/common/references/ReferencesEditorRidesFilters';
-import { OperationalStatusTag } from '@/components/create/OperationalStatusTag';
 import { RidesListCellHeadsign } from '@/components/create/RidesListCellHeadsign';
 import { SeenStatusTag } from '@/components/create/SeenStatusTag';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Checkbox, DataTable, DataTableColumn, NoDataLabel, Section, Surface, Tag } from '@tmlmobilidade/ui';
+import { Checkbox, DataTable, DataTableColumn, NoDataLabel, OperationalStatusTag, Section, Surface, Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -46,16 +45,16 @@ export function ReferencesEditorRides() {
 			width: 150,
 		},
 		{
-			accessor: 'headsign',
-			render: item => <RidesListCellHeadsign headsign={item.headsign} patternId={item.pattern_id} />,
-			title: 'Pattern',
-			width: 500,
-		},
-		{
 			accessor: 'start_time_scheduled',
 			render: item => <Tag label={formatTimestamp(item.start_time_scheduled)} variant="muted" />,
 			title: 'Partida',
 			width: 80,
+		},
+		{
+			accessor: 'headsign',
+			render: item => <RidesListCellHeadsign headsign={item.headsign} patternId={item.pattern_id} />,
+			title: 'Pattern',
+			width: 500,
 		},
 	];
 

@@ -2,6 +2,8 @@
 
 /* * */
 
+import { useTranslation } from 'react-i18next';
+
 import { Tooltip } from '../../common/Tooltip';
 import { Button } from '../Button';
 
@@ -19,7 +21,12 @@ export function SaveButton({ isDisabled, isLoading, onClick }: SaveButtonProps) 
 	//
 
 	//
-	// A. Handle actions
+	// A. Setup variables
+
+	const { t } = useTranslation();
+
+	//
+	// B. Handle actions
 
 	const handleClick = () => {
 		// If the button is loading or in read-only mode,
@@ -30,18 +37,18 @@ export function SaveButton({ isDisabled, isLoading, onClick }: SaveButtonProps) 
 	};
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<Tooltip
 			disabled={isDisabled}
-			label="Guardar Alterações"
+			label={t('shared:components.buttons.SaveButton.tooltip')}
 			position="bottom"
 			withArrow
 		>
 			<Button
 				disabled={isDisabled}
-				label="Guardar"
+				label={t('shared:components.buttons.SaveButton.label')}
 				loading={isLoading}
 				onClick={handleClick}
 				variant="primary"

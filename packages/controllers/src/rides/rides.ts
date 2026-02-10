@@ -1,10 +1,12 @@
 /* * */
 
+import { type RideChangeListener, ridesChangeStream } from '@/rides/watch.js';
 import { HttpStatus } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { type ActionsOf, type GetRidesBatchQuery, GetRidesBatchQuerySchema, type Permission, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
+import { type WebSocket } from 'ws';
 
 /* * */
 
@@ -58,7 +60,12 @@ export class RidesSharedController {
 		// with batchSize to prevent memory issues
 
 		const pipeline = ridesBatchAggregationPipeline({
+			acceptance_status: parsedQuery.acceptance_status,
 			agency_ids: parsedQuery.agency_ids?.filter(id => allowAllAgencies || ridesPermission['resources'].agency_ids.includes(id)) ?? [],
+			analysis_ended_at_last_stop_grade: parsedQuery.analysis_ended_at_last_stop_grade,
+			analysis_expected_apex_validation_interval: parsedQuery.analysis_expected_apex_validation_interval,
+			analysis_simple_three_vehicle_events_grade: parsedQuery.analysis_simple_three_vehicle_events_grade,
+			analysis_transaction_sequentiality: parsedQuery.analysis_transaction_sequentiality,
 			date_end: parsedQuery.date_end,
 			date_start: parsedQuery.date_start,
 			delay_statuses: parsedQuery.delay_statuses,
@@ -127,6 +134,41 @@ export class RidesSharedController {
 		}
 
 		//
+	}
+
+	/**
+	 * WebSocket event handler.
+	 * @param socket The WebSocket object.
+	 */
+	static websocket(socket: WebSocket) {
+		//
+
+		//
+		// Create a listener that sends updates to this WebSocket client
+
+		const listener: RideChangeListener = (message) => {
+			if (socket.readyState === socket.OPEN && socket.bufferedAmount < 1_000_000) {
+				socket.send(JSON.stringify(message));
+			}
+		};
+
+		//
+		// Subscribe to the singleton change stream immediately.
+		// Sockets do not emit 'open' or 'connection' events server-side.
+
+		ridesChangeStream.subscribe(listener);
+
+		//
+		// Cleanup the subscription to the singleton change stream
+
+		const cleanup = () => {
+			ridesChangeStream.unsubscribe(listener);
+		};
+
+		socket.on('close', cleanup);
+		socket.on('error', cleanup);
+
+		return cleanup;
 	}
 
 	//

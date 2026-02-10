@@ -8,6 +8,7 @@ import { normalizeString } from '@tmlmobilidade/strings';
 import { type Alert, AlertReferenceTypeSchema, AlertSchema, PermissionCatalog, PublishStatusSchema } from '@tmlmobilidade/types';
 import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 /* * */
@@ -52,6 +53,8 @@ export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const locationsContext = useLocationsContext();
 
 	//
@@ -69,10 +72,10 @@ export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const filterSearch = useFilterStateString('search');
 	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
-	const filterAlertReferenceType = useFilterStateList('reference_type', AlertReferenceTypeSchema.options, AlertReferenceTypeSchema.options.map(item => ({ label: item, value: item })));
-	const filterPublishStatus = useFilterStateList('publish_status', PublishStatusSchema.options, PublishStatusSchema.options.map(item => ({ label: item, value: item })));
-	const filterCause = useFilterStateList('cause', AlertSchema.shape.cause.options, AlertSchema.shape.cause.options.map(item => ({ label: item, value: item })));
-	const filterEffect = useFilterStateList('effect', AlertSchema.shape.effect.options, AlertSchema.shape.effect.options.map(item => ({ label: item, value: item })));
+	const filterAlertReferenceType = useFilterStateList('reference_type', AlertReferenceTypeSchema.options, AlertReferenceTypeSchema.options.map(item => ({ label: t(`shared:alerts.reference_types.${item}.title`), value: item })));
+	const filterPublishStatus = useFilterStateList('publish_status', PublishStatusSchema.options, PublishStatusSchema.options.map(item => ({ label: t(`shared:status.publish_status.${item}`), value: item })));
+	const filterCause = useFilterStateList('cause', AlertSchema.shape.cause.options, AlertSchema.shape.cause.options.map(item => ({ label: t(`shared:alerts.causes.${item}.title`), value: item })));
+	const filterEffect = useFilterStateList('effect', AlertSchema.shape.effect.options, AlertSchema.shape.effect.options.map(item => ({ label: t(`shared:alerts.effects.${item}.title`), value: item })));
 	const filterMunicipality = useFilterStateList('municipality', locationsContext.data.municipality_ids, locationsContext.data.municipalities.map(item => ({ label: item.name, value: item.id })));
 
 	//
@@ -90,7 +93,7 @@ export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
 	}, [allScheduledData]);
 
 	const searchResultsData = useSearch<AlertNormalized>({
-		accessors: ['title_normalized', 'description_normalized'],
+		accessors: ['_id', 'title_normalized', 'description_normalized'],
 		data: normalizedAlertsData,
 		query: filterSearch.value,
 	});

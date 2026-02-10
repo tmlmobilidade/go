@@ -12,7 +12,7 @@ export type ProcessingStatus = z.infer<typeof ProcessingStatusSchema>;
 /* * */
 /* DELAY STATUS */
 
-export const DelayStatusValues = ['delayed', 'early', 'ontime', 'none'] as const;
+export const DelayStatusValues = ['ontime', 'delayed', 'early', 'none'] as const;
 export const DelayStatusSchema = z.enum(DelayStatusValues);
 export type DelayStatus = z.infer<typeof DelayStatusSchema>;
 
