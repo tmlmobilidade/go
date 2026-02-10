@@ -1,15 +1,46 @@
 /* * */
 
+import { generateComments } from '@/utils/comments.js';
 import { mergePatternWithEventRules } from '@/utils/rules.js';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { patterns, stops } from '@tmlmobilidade/interfaces';
-import { CreatePatternDto, type Pattern, PermissionCatalog, type UpdatePatternDto } from '@tmlmobilidade/types';
+import { CreatePatternDto, NoteComment, type Pattern, PermissionCatalog, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 
 /* * */
 
 export class PatternsController {
 	//
+
+	/**
+	 * Adds a comment to a pattern by pattern ID
+	 */
+	static async comment(request: FastifyRequest<{ Body: NoteComment, Params: { id: string } }>, reply: FastifyReply<Pattern>) {
+		//
+
+		const patternData = await patterns.findById(request.params.id);
+
+		if (!patternData) {
+			return reply.status(HttpStatus.NOT_FOUND).send({
+				data: null,
+				error: 'Pattern not found.',
+				statusCode: HttpStatus.NOT_FOUND,
+			});
+		}
+
+		const createdBy = request.me.first_name + ' ' + request.me.last_name;
+
+		const updateResult = await patterns.updateById(
+			request.params.id,
+			{ comments: [...patternData.comments, { ...request.body, created_by: createdBy, updated_by: createdBy }], updated_by: createdBy },
+		);
+
+		return reply.send({
+			data: updateResult,
+			error: null,
+			statusCode: HttpStatus.OK,
+		});
+	}
 
 	/**
 	 * Creates a new pattern.
@@ -310,10 +341,32 @@ export class PatternsController {
 			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update patterns');
 		}
 
+		const sanitizedBody = UpdatePatternSchema.parse(request.body);
+
+		//
+		// Generate activity comments
+		const patternComments = generateComments(
+			patternData,
+			sanitizedBody,
+			{
+				excludeFields: ['comments', 'updated_at', 'updated_by'],
+				updatedBy: request.me.first_name + ' ' + request.me.last_name,
+			},
+		);
+
+		// Merge with existing comments
+		const updateData = {
+			...sanitizedBody,
+			comments: [
+				...(patternData.comments || []),
+				...patternComments,
+			],
+		};
+
 		//
 		// Update the pattern
 
-		const updatedPattern = await patterns.updateById(patternData._id, request.body);
+		const updatedPattern = await patterns.updateById(patternData._id, updateData);
 
 		//
 		// Send the updated pattern data as the response

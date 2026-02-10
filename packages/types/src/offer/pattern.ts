@@ -1,5 +1,6 @@
 /* * */
 
+import { CommentSchema } from '@/_common/comment.js';
 import { DocumentSchema } from '@/_common/document.js';
 import { StopSchema } from '@/stops/stop.js';
 import { z } from 'zod';
@@ -30,6 +31,10 @@ export const PathSchema = z.object({
 
 export const PatternSchema = DocumentSchema.extend({
 	code: z.string().trim().min(1).max(10),
+
+	// Activity (field changes and notes)
+	comments: z.array(CommentSchema).optional().default([]),
+
 	destination: z.string().trim().min(1).max(100),
 	direction: z.enum(['0', '1']).default('0'),
 	headsign: z.string().trim().min(1).max(100),

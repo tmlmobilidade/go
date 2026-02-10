@@ -12,7 +12,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { Line, ManualScheduleRule, Pattern, PermissionCatalog, ScheduleRule, Typology, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
-import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { type Feature, type FeatureCollection, type LineString, type Point } from 'geojson';
 import { useRouter } from 'next/navigation';
@@ -23,6 +23,7 @@ import useSWR from 'swr';
 
 interface PatternDetailContextState {
 	actions: DetailContextStateTemplate['actions'] & {
+		addComment: (comment: string) => void
 		addRule: (rule: ManualScheduleRule) => void
 		deleteRule: (ruleId: string) => void
 		editRule: (rule: ManualScheduleRule) => void
@@ -233,6 +234,30 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		);
 	};
 
+	async function addComment(comment: string) {
+		try {
+			const commentToAdd = {
+				created_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				created_by: 'will-be-set-by-api',
+				message: comment,
+				type: 'note',
+				updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			};
+			const res = await fetchData(API_ROUTES.offer.PATTERNS_DETAIL_COMMENT(patternId), 'POST', commentToAdd);
+
+			if (res.error) {
+				useToast.error({ message: res.error, title: 'Erro ao adicionar comentário' });
+				return;
+			}
+
+			patternMutate();
+			useToast.success({ message: 'Comentário adicionado com sucesso.', title: 'Sucesso' });
+		}
+		catch (error) {
+			useToast.error({ message: error.message, title: 'Erro ao adicionar comentário' });
+		}
+	}
+
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
@@ -296,6 +321,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 	const contextValue: PatternDetailContextState = useMemo(() => ({
 		actions: {
+			addComment,
 			addRule: handleAddRule,
 			delete: handleDelete,
 			deleteRule: handleDeleteRule,
@@ -348,6 +374,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		isReadOnly,
 		isDeleting,
 		isLocking,
+		addComment,
 	]);
 
 	//

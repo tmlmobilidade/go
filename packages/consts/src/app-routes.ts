@@ -370,6 +370,7 @@ export const API_ROUTES = Object.freeze({
 
 		// PATTERNS
 		PATTERNS_DETAIL: (id: string) => `${getAppConfig('offer', 'api_url')}/patterns/${id}`,
+		PATTERNS_DETAIL_COMMENT: (id: string) => `${getAppConfig('offer', 'api_url')}/patterns/${id}/comment`,
 		PATTERNS_DETAIL_IMPORT_GTFS: (id: string) => `${getAppConfig('offer', 'api_url')}/patterns/${id}/import-gtfs`,
 		PATTERNS_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/patterns/${id}/lock`,
 		PATTERNS_LIST: `${getAppConfig('offer', 'api_url')}/patterns`,

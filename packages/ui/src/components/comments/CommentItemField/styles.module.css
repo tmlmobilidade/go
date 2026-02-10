@@ -1,0 +1,120 @@
+.card {
+    display: flex;
+    gap: var(--size-spacing-md);
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--size-spacing-sm);
+    margin-bottom: var(--size-spacing-md);
+    background-color: var(--color-system-background-100);
+    border: 2px solid var(--color-system-border-100);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 2px 2px 5px 1px rgb(0 0 0 / 4%);
+}
+
+.item:last-child .card {
+    margin-bottom: 0;
+}
+
+.message {
+    font-size: var(--font-size-sm);
+    color: var(--color-system-text-700);
+}
+
+.fieldNames {
+    font-weight: 600;
+    color: var(--color-system-text-900);
+}
+
+.footer {
+    display: flex;
+    gap: var(--size-spacing-sm);
+    align-items: center;
+    justify-content: space-between;
+}
+
+.itemWrapper {
+    display: grid;
+    grid-template-rows: 24px 1fr;
+    align-items: center;
+}
+
+.item {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: var(--size-spacing-sm);
+    width: 100%;
+}
+
+.icon {
+    z-index: 2;
+    margin-top: 10px;
+    background-color: var(--color-system-background-100);
+}
+
+.path {
+    width: 2px;
+    height: 100%;
+    margin: auto;
+    background-color: var(--color-system-border-100);
+}
+
+.item[data-reverse="false"]:last-child .path {
+    display: none;
+}
+
+.item[data-reverse="true"]:first-child .path {
+    display: none;
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cardTitle {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-system-text-700);
+}
+
+.changes {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-spacing-xs);
+}
+
+.change {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.fieldLabel {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-system-text-500);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.valueChange {
+    display: flex;
+    gap: var(--size-spacing-xs);
+    align-items: center;
+    font-size: var(--font-size-sm);
+}
+
+.oldValue {
+    color: var(--color-system-text-400);
+    text-decoration: line-through;
+}
+
+.arrow {
+    color: var(--color-system-text-300);
+}
+
+.newValue {
+    font-weight: 500;
+    color: var(--color-system-text-900);
+}
