@@ -53,7 +53,7 @@ export const HolidaysListContextProvider = ({ children }: PropsWithChildren) => 
 		scope: PermissionCatalog.all.holidays.scope,
 	});
 
-	const { data: allHolidaysData, error: allHolidaysError, isLoading: allHolidaysLoading } = useSWR<Holiday[], Error>(API_ROUTES.dates.HOLIDAYS_LIST, { refreshInterval: 5000 });
+	const { data: allHolidaysData, error: allHolidaysError, isLoading: allHolidaysLoading } = useSWR<Holiday[], Error>(API_ROUTES.dates.HOLIDAYS_LIST);
 
 	//
 	// B. Setup filters

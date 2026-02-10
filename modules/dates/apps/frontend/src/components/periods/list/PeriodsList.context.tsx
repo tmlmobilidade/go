@@ -49,7 +49,7 @@ export const PeriodsListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { data: allPeriodsData, error: allPeriodsError, isLoading: allPeriodsLoading } = useSWR<Period[], Error>(API_ROUTES.dates.PERIODS_LIST, { refreshInterval: 5000 });
+	const { data: allPeriodsData, error: allPeriodsError, isLoading: allPeriodsLoading } = useSWR<Period[], Error>(API_ROUTES.dates.PERIODS_LIST);
 
 	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.periods.actions.read],

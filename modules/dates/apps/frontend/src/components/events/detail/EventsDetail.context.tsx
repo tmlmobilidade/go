@@ -50,7 +50,7 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 	// B. Fetch data
 
 	const { mutate: eventsListMutate } = useSWR<Event[]>(API_ROUTES.dates.EVENTS_LIST);
-	const { data: eventData, error: eventError, isLoading: eventLoading, mutate: eventMutate } = useSWR<Event>(API_ROUTES.dates.EVENTS_DETAIL(eventId), { refreshInterval: 5000 });
+	const { data: eventData, error: eventError, isLoading: eventLoading, mutate: eventMutate } = useSWR<Event>(API_ROUTES.dates.EVENTS_DETAIL(eventId));
 	const { data: allLinesData } = useSWR<Line[], Error>(API_ROUTES.offer.LINES_LIST);
 
 	//

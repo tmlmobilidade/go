@@ -61,7 +61,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: allLinesData, error: allLinesError, isLoading: allLinesLoading } = useSWR<Line[], Error>(API_ROUTES.offer.LINES_LIST, { refreshInterval: 5000 });
+	const { data: allLinesData, error: allLinesError, isLoading: allLinesLoading } = useSWR<Line[], Error>(API_ROUTES.offer.LINES_LIST);
 
 	//
 	// C. Transform data

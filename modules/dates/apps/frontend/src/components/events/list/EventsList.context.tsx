@@ -53,7 +53,7 @@ export const EventsListContextProvider = ({ children }: PropsWithChildren) => {
 		scope: PermissionCatalog.all.events.scope,
 	});
 
-	const { data: allEventsData, error: allEventsError, isLoading: allEventsLoading } = useSWR<Event[], Error>(API_ROUTES.dates.EVENTS_LIST, { refreshInterval: 5000 });
+	const { data: allEventsData, error: allEventsError, isLoading: allEventsLoading } = useSWR<Event[], Error>(API_ROUTES.dates.EVENTS_LIST);
 
 	//
 	// B. Setup filters

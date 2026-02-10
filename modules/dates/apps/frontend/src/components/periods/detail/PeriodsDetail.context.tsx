@@ -49,7 +49,7 @@ export const PeriodsDetailContextProvider = ({ children, periodId }: PropsWithCh
 	// B. Fetch data
 
 	const { mutate: periodsListMutate } = useSWR<Period[]>(API_ROUTES.dates.PERIODS_LIST);
-	const { data: periodData, error: periodError, isLoading: periodLoading, mutate: periodMutate } = useSWR<Period>(API_ROUTES.dates.PERIODS_DETAIL(periodId), { refreshInterval: 5000 });
+	const { data: periodData, error: periodError, isLoading: periodLoading, mutate: periodMutate } = useSWR<Period>(API_ROUTES.dates.PERIODS_DETAIL(periodId));
 
 	//
 	// C. Setup form

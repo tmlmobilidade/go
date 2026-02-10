@@ -49,7 +49,7 @@ export const HolidaysDetailContextProvider = ({ children, holidayId }: PropsWith
 	// B. Fetch data
 
 	const { mutate: holidaysListMutate } = useSWR<Holiday[]>(API_ROUTES.dates.HOLIDAYS_LIST);
-	const { data: holidayData, error: holidayError, isLoading: holidayLoading, mutate: holidayMutate } = useSWR<Holiday>(API_ROUTES.dates.HOLIDAYS_DETAIL(holidayId), { refreshInterval: 5000 });
+	const { data: holidayData, error: holidayError, isLoading: holidayLoading, mutate: holidayMutate } = useSWR<Holiday>(API_ROUTES.dates.HOLIDAYS_DETAIL(holidayId));
 
 	//
 	// C. Setup form
