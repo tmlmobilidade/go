@@ -1,7 +1,7 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { operationalDateSchema } from '@/_common/operational-date.js';
+import { OperationalDateSchema } from '@/_common/operational-date.js';
 import { z } from 'zod';
 
 /* * */
@@ -12,7 +12,7 @@ export type LinesMode = z.infer<typeof LinesModeSchema>;
 export const EventSchema = DocumentSchema.extend({
 	agency_ids: z.array(z.string()).default([]),
 	all_day: z.boolean().default(false),
-	dates: z.array(operationalDateSchema).default([]),
+	dates: z.array(OperationalDateSchema).default([]),
 	description: z.string().default(''),
 	end_time: z.string().default(''),
 	is_locked: z.boolean().default(false),

@@ -1,4 +1,4 @@
-import { operationalDateSchema } from '@/_common/operational-date.js';
+import { OperationalDateSchema } from '@/_common/operational-date.js';
 import { WEEKDAYS } from '@/dates/date.js';
 import { z } from 'zod';
 
@@ -49,7 +49,7 @@ export const EventDerivedRestrictionSchema = z.object({
 	timePoints: z.array(HHMM),
 
 	// applies on these operational dates
-	dates: z.array(operationalDateSchema),
+	dates: z.array(OperationalDateSchema),
 });
 
 /* * */
