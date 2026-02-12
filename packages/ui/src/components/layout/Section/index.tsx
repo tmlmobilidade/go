@@ -20,7 +20,7 @@ interface SectionProps {
 
 /* * */
 
-export function Section({ alignItems = 'flex-start', children, flexDirection = 'column', flexWrap = 'nowrap', gap, height, justifyContent = 'flex-start', maxHeight, overflow = 'hidden', padding = 'md', width = '100%' }: SectionProps) {
+export function Section({ alignItems = 'flex-start', children, flexDirection = 'column', flexWrap = 'nowrap', gap, height, justifyContent = 'flex-start', maxHeight, overflow, padding = 'md', width = '100%' }: SectionProps) {
 	return (
 		<div
 			className={styles.root}
