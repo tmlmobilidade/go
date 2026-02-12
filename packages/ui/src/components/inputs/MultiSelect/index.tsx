@@ -35,6 +35,7 @@ export function MultiSelect({ data, defaultValue, onChange, onPaste, value, ...p
 			placeholder="Selecione uma ou mais opções..."
 			value={value}
 			searchable
+			selectFirstOptionOnDropdownOpen
 			withAlignedLabels
 			{...props}
 		/>
