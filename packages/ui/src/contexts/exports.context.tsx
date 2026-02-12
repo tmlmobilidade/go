@@ -8,14 +8,12 @@ import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useToast } from '../hooks';
-
 /* * */
 
 interface ExportsContextState {
 	actions: {
 		create: <T extends { properties: Record<string, unknown>, type: FileExportType }>(dto: CreateFileExportDto<T>) => Promise<FileExport>
-		download: (id: string) => Promise<void>
+		download: (id: string) => void
 		mutate: () => void
 	}
 	data: {
@@ -66,15 +64,8 @@ export const ExportsContextProvider = ({ children }: PropsWithChildren) => {
 		return response.data;
 	}
 
-	async function download(id: string): Promise<void> {
-		const url = await fetchData<string>(API_ROUTES.exporter.EXPORTER_DETAIL_DOWNLOAD(id), 'GET');
-		if (url.error || !url.data) {
-			useToast.error({ message: url.error ?? 'Failed to download file export' });
-			return;
-		}
-
-		useToast.success({ message: 'File export downloaded successfully' });
-		window.open(url.data, '_blank');
+	function download(id: string): void {
+		window.location.href = API_ROUTES.exporter.EXPORTER_DETAIL_DOWNLOAD(id);
 	}
 
 	//
