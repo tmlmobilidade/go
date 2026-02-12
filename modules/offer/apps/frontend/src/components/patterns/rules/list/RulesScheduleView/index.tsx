@@ -13,6 +13,7 @@ import styles from './styles.module.css';
 
 interface RuleLegendItem {
 	color: string
+	isReplacement?: boolean
 	label: string
 	long: string
 	ruleId: string
@@ -23,6 +24,7 @@ interface RuleLegendItem {
 interface TimeCell {
 	excludeRuleIds: Set<string>
 	includeRuleIds: Set<string>
+	overwriteRuleIds: Set<string>
 }
 
 interface TableRow {
@@ -70,8 +72,10 @@ export function RulesScheduleView() {
 		for (const rule of rules) {
 			if (!uniqueRules.has(rule._id)) {
 				const { long, short } = buildRuleSummary(rule, { periods });
+				const isReplacement = rule.kind === 'event_replacement';
 				uniqueRules.set(rule._id, {
 					color: '',
+					isReplacement,
 					label: '',
 					long,
 					ruleId: rule._id,
@@ -109,9 +113,13 @@ export function RulesScheduleView() {
 				const cell = row.cells.get(rule._id) ?? {
 					excludeRuleIds: new Set<string>(),
 					includeRuleIds: new Set<string>(),
+					overwriteRuleIds: new Set<string>(),
 				};
 
-				if (rule.operatingMode === 'exclude') {
+				if (rule.kind === 'event_restriction') {
+					cell.excludeRuleIds.add(rule._id);
+				}
+				else if (rule.kind === 'manual' && rule.operatingMode === 'exclude') {
 					cell.excludeRuleIds.add(rule._id);
 				}
 				else {
@@ -220,7 +228,13 @@ export function RulesScheduleView() {
 										const cell = row.cells.get(item.ruleId);
 										const hasInclude = cell?.includeRuleIds.has(item.ruleId);
 										const hasExclude = cell?.excludeRuleIds.has(item.ruleId);
-										const showIndicator = hasInclude || hasExclude;
+										const hasOverwrite = cell?.overwriteRuleIds.has(item.ruleId);
+										const showIndicator = hasInclude || hasExclude || hasOverwrite;
+
+										// Use neutral color for replacement rules
+										const indicatorColor = item.isReplacement
+											? 'var(--color-neutral-400)'
+											: `var(--pill-${item.slot}-border)`;
 
 										return (
 											<td
@@ -231,8 +245,8 @@ export function RulesScheduleView() {
 												{showIndicator && (
 													<Tooltip label={item.long}>
 														<Indicator
-															color={`var(--pill-${item.slot}-border)`}
-															filled={hasInclude}
+															color={indicatorColor}
+															filled={hasInclude || hasOverwrite}
 															size="lg"
 														/>
 													</Tooltip>

@@ -11,7 +11,7 @@ import { buildRuleSummary } from '@/utils/rules/ruleSummary';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { Line, ManualScheduleRule, Pattern, PermissionCatalog, ScheduleRule, Typology, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
+import { EventDerivedReplacement, EventDerivedRestriction, Line, ManualScheduleRule, Pattern, PermissionCatalog, ScheduleRule, Typology, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { type Feature, type FeatureCollection, type LineString, type Point } from 'geojson';
@@ -133,7 +133,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	);
 
 	const derivedRules = useMemo(
-		() => (patternData?.rules ?? []).filter(r => r.kind === 'event'),
+		() => (patternData?.rules ?? []).filter(r => r.kind === 'event_restriction' || r.kind === 'event_replacement') as (EventDerivedReplacement | EventDerivedRestriction)[],
 		[patternData],
 	);
 

@@ -2,12 +2,10 @@
 
 import { DocumentSchema } from '@/_common/document.js';
 import { OperationalDateSchema } from '@/_common/operational-date.js';
+import { EventDerivedSchema } from '@/offer/rules.js';
 import { z } from 'zod';
 
 /* * */
-
-export const LinesModeSchema = z.enum(['none', 'all', 'include', 'exclude']);
-export type LinesMode = z.infer<typeof LinesModeSchema>;
 
 export const EventSchema = DocumentSchema.extend({
 	agency_ids: z.array(z.string()).default([]),
@@ -16,9 +14,7 @@ export const EventSchema = DocumentSchema.extend({
 	description: z.string().default(''),
 	end_time: z.string().default(''),
 	is_locked: z.boolean().default(false),
-	lines_mode: LinesModeSchema.default('none'),
-	lines_to_exclude: z.array(z.string()).default([]),
-	lines_to_include: z.array(z.string()).default([]),
+	rules: z.array(EventDerivedSchema).default([]),
 	start_time: z.string().default(''),
 	title: z.string().default(''),
 });

@@ -5,7 +5,7 @@ import { DocumentSchema } from '@/_common/document.js';
 import { StopSchema } from '@/stops/stop.js';
 import { z } from 'zod';
 
-import { PatternUpdateRulesSchema, ScheduleRuleSchema } from './scheduleRule.js';
+import { PatternUpdateRulesSchema, ScheduleRuleSchema } from './rules.js';
 
 /* * */
 

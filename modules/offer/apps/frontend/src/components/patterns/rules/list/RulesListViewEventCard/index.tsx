@@ -2,10 +2,11 @@
 
 /* * */
 
-import { IconCalendarCancel, IconCalendarCheck, IconEye } from '@tabler/icons-react';
+import { usePeriodsContext } from '@/contexts/Periods.context';
+import { IconCalendarCancel, IconCalendarRepeat, IconEye } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates, Formats } from '@tmlmobilidade/dates';
-import { EventDerivedRestriction } from '@tmlmobilidade/types';
+import { EventDerivedReplacement, EventDerivedRestriction, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
 import { IconButton, Section, Text } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -14,7 +15,7 @@ import styles from './styles.module.css';
 /* * */
 
 interface RulesListViewEventCardProps {
-	rule: EventDerivedRestriction
+	rule: EventDerivedReplacement | EventDerivedRestriction
 }
 
 /* * */
@@ -26,9 +27,10 @@ export default function RulesListViewEventCard({ rule }: RulesListViewEventCardP
 	// A. Setup variables
 
 	const router = useRouter();
+	const periodsContext = usePeriodsContext();
 
-	const isOffTime = rule?.operatingMode === 'exclude';
-	const times = rule?.timePoints ?? [];
+	const isRestriction = rule.kind === 'event_restriction';
+	const isReplacement = rule.kind === 'event_replacement';
 	const name = rule?.name || 'Regra sem nome';
 
 	const eventDates
@@ -41,6 +43,24 @@ export default function RulesListViewEventCard({ rule }: RulesListViewEventCardP
 		= rule && eventDates
 			? (rule.dates.length > 1 ? `(nos dias ${eventDates})` : `(no dia ${eventDates})`)
 			: '';
+
+	// For replacement rules, build description of what they replace with
+	let replacementDescription = '';
+	if (isReplacement && rule.kind === 'event_replacement') {
+		const weekdayLabels = rule.weekdays?.map(wd =>
+			WEEKDAY_OPTIONS.find(opt => opt.value === wd)?.label,
+		).filter(Boolean).join(', ') ?? '';
+
+		const periodNames = rule.periodIds?.map((periodId) => {
+			const period = periodsContext.data.raw.find(p => p._id === periodId);
+			return period?.name || periodId;
+		}).join(', ') || '';
+
+		const parts: string[] = [];
+		if (weekdayLabels) parts.push(weekdayLabels);
+		if (periodNames) parts.push(periodNames);
+		replacementDescription = parts.join(' · ');
+	}
 
 	//
 	// B. Handle actions
@@ -57,15 +77,44 @@ export default function RulesListViewEventCard({ rule }: RulesListViewEventCardP
 			<Section gap="md" justifyContent="space-between" padding="none">
 
 				<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
-					{isOffTime
-						? <IconCalendarCancel color="var(--color-status-danger-primary)" size={20} />
-						: <IconCalendarCheck color="var(--color-status-success-primary)" size={20} />}
-					<Text size="lg">{name} · </Text>
-					<Text className={styles.timesCount}>{times.length} {times.length > 1 ? 'horários afetados' : 'horário afetado'} em {rule.dates.length} {rule.dates.length > 1 ? 'dias' : 'dia'}</Text>
+					{isRestriction && (
+						<IconCalendarCancel color="var(--color-status-danger-primary)" size={20} />
+					)}
+					{isReplacement && (
+						<IconCalendarRepeat color="var(--color-primary)" size={20} />
+					)}
+					<Text size="lg">{name} ·</Text>
+					{(isRestriction || isReplacement) && (
+						<Text className={styles.timesCount}>
+							{rule.dates.length} {rule.dates.length > 1 ? 'dias' : 'dia'}
+						</Text>
+					)}
 				</Section>
 
-				{/* TODO: implement date ranges */}
-				<Text size="sm" style={{ fontFamily: 'monospace' }}>{eventDates && !rule.event.all_day ? `${rule.event.start_time} às ${rule.event.end_time} ${eventDatesSuffix}` : `Todo o dia ${eventDatesSuffix}`}</Text>
+				{/* Restriction event */}
+				{rule.kind === 'event_restriction' && (
+					<>
+						<Text>
+							Oferta será excluída {eventDates && !rule.event.all_day
+								? `das ${rule.event.start_time} às ${rule.event.end_time}`
+								: `todo o dia`}
+						</Text>
+						<Text size="sm" style={{ fontFamily: 'monospace' }}>
+							{eventDatesSuffix}
+						</Text>
+					</>
+				)}
+
+				{/* Replacement event */}
+				{isReplacement && (
+					<>
+						<Text>Funcionará como {replacementDescription}</Text>
+						<Text size="sm" style={{ fontFamily: 'monospace' }}>
+							{eventDatesSuffix}
+						</Text>
+					</>
+
+				)}
 
 			</Section>
 

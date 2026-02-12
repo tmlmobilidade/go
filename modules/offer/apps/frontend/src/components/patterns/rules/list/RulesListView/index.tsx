@@ -15,8 +15,17 @@ export function RulesListView() {
 
 	const patternDetailContext = usePatternDetailContext();
 	const mergedRules = patternDetailContext.data.mergedRules || [];
-	const includeRules = mergedRules.filter(rule => rule.operatingMode === 'include');
-	const excludeRules = mergedRules.filter(rule => rule.operatingMode === 'exclude');
+
+	const includeRules = mergedRules.filter(rule =>
+		rule.kind === 'manual' && rule.operatingMode === 'include',
+	);
+	const excludeRules = mergedRules.filter(rule =>
+		(rule.kind === 'manual' && rule.operatingMode === 'exclude')
+		|| rule.kind === 'event_restriction',
+	);
+	const overwriteRules = mergedRules.filter(rule =>
+		rule.kind === 'event_replacement',
+	);
 
 	//
 	// B. Render components
@@ -42,7 +51,7 @@ export function RulesListView() {
 				<Text size="xl" weight="bold">Excluem serviço</Text>
 				{excludeRules.length > 0
 					? excludeRules.map((rule, index) => (
-						rule.kind === 'event'
+						rule.kind === 'event_restriction'
 							? <RulesListViewEventCard key={rule._id || index} rule={rule} />
 							: <RulesListViewManualCard key={rule._id || index} rule={rule} />
 					))
@@ -52,6 +61,17 @@ export function RulesListView() {
 						</Text>
 					)}
 			</Section>
+
+			{/* Overwrite Rules Section (Event Replacements) */}
+			{overwriteRules.length > 0 && (
+				<Section gap="md" padding="none">
+					<Text size="xl" weight="bold">Substituem oferta</Text>
+					{overwriteRules.map((rule, index) => (
+						<RulesListViewEventCard key={rule._id || index} rule={rule} />
+					))}
+				</Section>
+			)}
+
 		</Section>
 	);
 }
