@@ -31,10 +31,20 @@ export class ExporterController {
 		const fileExport = await fileExports.findById(id);
 		if (!fileExport) throw new HttpException(HttpStatus.NOT_FOUND, 'File export not found');
 
-		const file = await files.findById(fileExport.file_id);
-		if (!file) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
-
-		reply.send({ data: file.url, error: null, statusCode: HttpStatus.OK });
+		// Retrieve file data from database
+		const foundFileData = await files.findById(fileExport.file_id);
+		if (!foundFileData) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
+		// Stream the file in the given URL to the client
+		const storageServiceResponse = await fetch(foundFileData.url);
+		if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
+		// Set headers and pipe the response body to the client
+		reply.header('Content-Disposition', `attachment; filename="${foundFileData.name}"`);
+		reply.header('Content-Type', foundFileData.type);
+		// Set content length if available
+		const contentLength = storageServiceResponse.headers.get('Content-Length');
+		if (contentLength) reply.header('Content-Length', contentLength);
+		// Pipe the response body to the client
+		return reply.send(storageServiceResponse.body);
 	}
 
 	/**

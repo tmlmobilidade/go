@@ -3,9 +3,8 @@
 /* * */
 
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
-import { CauseIcons, EffectIcons } from '@/lib/icons';
 import { AlertCauseSchema, AlertEffectSchema } from '@tmlmobilidade/types';
-import { Collapsible, Grid, Section, Select } from '@tmlmobilidade/ui';
+import { AlertCauseIcons, AlertEffectIcons, Collapsible, Grid, Section, Select } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -24,13 +23,13 @@ export function AlertDetailSectionCauseEffect() {
 	// B. Transform data
 
 	const causeItems = AlertCauseSchema.options.map(cause => ({
-		icon: CauseIcons[cause],
+		icon: AlertCauseIcons[cause],
 		label: t(`shared:alerts.causes.${cause}.title`),
 		value: cause,
 	}));
 
 	const effectItems = AlertEffectSchema.options.map(effect => ({
-		icon: EffectIcons[effect],
+		icon: AlertEffectIcons[effect],
 		label: t(`shared:alerts.effects.${effect}.title`),
 		value: effect,
 	}));

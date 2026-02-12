@@ -109,9 +109,9 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 				],
 			},
 			image: file ? {
-				localizedImage: [
+				localized_image: [
 					{
-						language: 'pt-PT',
+						language: 'pt',
 						media_type: file.type ?? 'image/png',
 						url: file.url ?? '',
 					},

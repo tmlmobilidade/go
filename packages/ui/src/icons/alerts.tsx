@@ -1,7 +1,12 @@
+/* * */
+
 import { IconAccessible, IconAmbulance, IconArrowBigUpLines, IconArrowsDiff, IconBarrierBlock, IconBatteryAutomotive, IconCarCrash, IconCircleArrowDown, IconCircleMinus, IconClock2, IconClockExclamation, IconCloudStorm, IconFish, IconRoadOff, IconRouteAltRight, IconServerCog, IconShieldChevron, IconSparkles, IconSpeakerphone, IconTrafficCone, IconUserExclamation, IconUserOff } from '@tabler/icons-react';
 import { type AlertCause, type AlertEffect } from '@tmlmobilidade/types';
 
-export const CauseIcons: Record<AlertCause, React.ReactNode> = {
+/**
+ * Icons representing the extended cause values of Alerts.
+ */
+export const AlertCauseIcons: Record<AlertCause, React.ReactNode> = {
 	ABUSIVE_PARKING: <IconUserOff />,
 	ACCIDENT: <IconCarCrash />,
 	CONSTRUCTION: <IconBarrierBlock />,
@@ -21,7 +26,10 @@ export const CauseIcons: Record<AlertCause, React.ReactNode> = {
 	WEATHER: <IconCloudStorm />,
 };
 
-export const EffectIcons: Record<AlertEffect, React.ReactNode> = {
+/**
+ * Icons representing the extended effect values of Alerts.
+ */
+export const AlertEffectIcons: Record<AlertEffect, React.ReactNode> = {
 	ACCESSIBILITY_ISSUE: <IconAccessible />,
 	ADDITIONAL_SERVICE: <IconArrowBigUpLines />,
 	DETOUR: <IconRouteAltRight />,

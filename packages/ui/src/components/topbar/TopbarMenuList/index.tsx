@@ -38,7 +38,7 @@ export function TopbarMenuList<T>({ data, itemComponent, maxDisplayedItems, titl
 	}
 
 	return (
-		<Section flexDirection="column" gap="sm" padding="sm" width="100%">
+		<Section flexDirection="column" gap="sm" maxHeight="300px" overflow="scroll" padding="sm" width="100%">
 			<Label size="sm">({data.length}) {title}</Label>
 			{displayData.map((item, idx) => (
 				createElement(itemComponent, { item, key: idx })
