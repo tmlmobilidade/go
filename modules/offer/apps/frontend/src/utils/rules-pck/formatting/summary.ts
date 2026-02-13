@@ -1,12 +1,42 @@
 import { Dates, Formats } from '@tmlmobilidade/dates';
-import { EventDerivedRestriction, IsoWeekday, ManualScheduleRule, Period, ScheduleRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
+import { EventReplacementRule, EventRestrictionRule, IsoWeekday, ManualRule, Period, ScheduleRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
 
+/**
+ * Human-readable summary of a rule in multiple formats.
+ * Used for displaying rule information in UI components.
+ */
 export interface RuleSummary {
+	/** Full descriptive text (e.g., "Durante o Período Escolar, nos dias úteis") */
 	long: string
+	/** Compact label (e.g., "Dias úteis · Período Escolar") */
 	short: string
+	/** Detailed tooltip with event dates/times if applicable */
 	tooltip: string
 }
 
+/**
+ * Builds human-readable summaries of a scheduling rule.
+ *
+ * Generates three text formats optimized for different UI contexts:
+ * - **short**: Compact label for badges/pills (e.g., "Dias úteis · Período Escolar")
+ * - **long**: Full description for tooltips (e.g., "Durante o Período Escolar, nos dias úteis")
+ * - **tooltip**: Detailed event information with dates and times
+ *
+ * @param rule - The scheduling rule to summarize
+ * @param options - Configuration options (periods array for name resolution)
+ * @returns RuleSummary with short, long, and tooltip text
+ *
+ * @example
+ * ```ts
+ * const rule = { kind: 'manual', weekdays: [1,2,3,4,5], periodIds: ['school'], ... };
+ * const summary = buildRuleSummary(rule, { periods });
+ * // summary = {
+ * //   short: "Dias úteis · Período Escolar",
+ * //   long: "Durante o Período Escolar, nos dias úteis",
+ * //   tooltip: ""
+ * // }
+ * ```
+ */
 export function buildRuleSummary(
 	rule: ScheduleRule,
 	options: {
@@ -20,16 +50,35 @@ export function buildRuleSummary(
 	};
 }
 
-const isEventRule = (r: ScheduleRule): r is EventDerivedRestriction => r.kind === 'event';
+/**
+ * Type guard for event restriction rules.
+ */
+const isEventRestriction = (r: ScheduleRule): r is EventRestrictionRule => r.kind === 'event_restriction';
+
+/**
+ * Type guard for event replacement rules.
+ */
+const isEventReplacement = (r: ScheduleRule): r is EventReplacementRule => r.kind === 'event_replacement';
 
 /* ---------------- helpers ---------------- */
 
+/**
+ * Builds the short summary format for a rule.
+ *
+ * Event rules: Returns event title
+ * Manual rules: Returns "Period · Weekdays" format
+ */
 function buildRuleSummaryShort(
 	rule: ScheduleRule,
 	options: { periods?: Period[] },
 ): string {
-	if (isEventRule(rule)) {
-		// Desired: pill shows just the event name
+	if (isEventRestriction(rule)) {
+		// Restriction: show event name
+		return rule.event?.title ?? '';
+	}
+
+	if (isEventReplacement(rule)) {
+		// Replacement: show event name
 		return rule.event?.title ?? '';
 	}
 
@@ -45,12 +94,18 @@ function buildRuleSummaryShort(
 	return parts.join(' · ');
 }
 
+/**
+ * Builds the long summary format for a rule.
+ *
+ * Event rules: Returns event title
+ * Manual rules: Returns "During [period], on [weekdays]" format in Portuguese
+ */
 function buildRuleSummaryLong(
 	rule: ScheduleRule,
 	options: { periods?: Period[] },
 ): string {
-	if (isEventRule(rule)) {
-		return `Redução da oferta derivada do evento ${rule.event?.title ?? ''}`;
+	if (isEventReplacement(rule) || isEventRestriction(rule)) {
+		return rule.event?.title ?? '';
 	}
 
 	// manual
@@ -65,10 +120,17 @@ function buildRuleSummaryLong(
 	return parts.join(', ');
 }
 
+/**
+ * Builds detailed tooltip text for event rules.
+ *
+ * Restriction rules: "Apenas em [event] [time window] [on dates]"
+ * Replacement rules: "Substituição por [event] [on dates]"
+ * Manual rules: Returns empty string (no tooltip needed)
+ */
 function buildRuleSummaryTooltip(
 	rule: ScheduleRule,
 ): string {
-	if (isEventRule(rule)) {
+	if (isEventRestriction(rule)) {
 		const eventDates = (rule.dates ?? [])
 			.map(d =>
 				Dates.fromOperationalDate(d, 'Europe/Lisbon')
@@ -79,19 +141,42 @@ function buildRuleSummaryTooltip(
 		const eventDatesString
 			= (rule.dates?.length ?? 0) > 1 ? `nos dias ${eventDates}` : `no dia ${eventDates}`;
 
-		const wStart = rule.event?.start_time;
-		const wEnd = rule.event?.end_time;
+		const wStart = rule?.start_time;
+		const wEnd = rule?.end_time;
 		const windowString = (wStart && wEnd) ? `entre as ${wStart}h e ${wEnd}h` : '';
 
 		return `Apenas em ${rule.event?.title ?? ''} ${windowString} ${eventDatesString}`.trim();
 	}
+
+	if (isEventReplacement(rule)) {
+		const eventDates = (rule.dates ?? [])
+			.map(d =>
+				Dates.fromOperationalDate(d, 'Europe/Lisbon')
+					.toLocaleString(Formats.DATE_SHORT, 'pt-PT'),
+			)
+			.join(', ');
+
+		const eventDatesString
+			= (rule.dates?.length ?? 0) > 1 ? `nos dias ${eventDates}` : `no dia ${eventDates}`;
+
+		return `Substituição por ${rule.event?.title ?? ''} ${eventDatesString}`.trim();
+	}
+
 	return '';
 }
 
 /* ---------------- Parts builders (manual only) ---------------- */
 
+/**
+ * Builds the period portion of a rule summary.
+ *
+ * Handles smart formatting:
+ * - All periods selected: "Todos os períodos" / "Em todos os períodos"
+ * - Single period: Shows period name
+ * - Multiple periods: "N períodos" (short) or "Durante os períodos de X e Y" (long)
+ */
 function buildPeriodsPart(
-	rule: ManualScheduleRule,
+	rule: EventReplacementRule | ManualRule,
 	options: { periods?: Period[] },
 	cfg: { mode: 'long' | 'short' },
 ): string {
@@ -116,7 +201,22 @@ function buildPeriodsPart(
 	return `Durante os períodos de ${labels.join(' e ')}`;
 }
 
-function buildWeekdaysPart(rule: ManualScheduleRule, cfg: { mode: 'long' | 'short' }): string {
+/**
+ * Builds the weekday portion of a rule summary.
+ *
+ * Handles smart grouping:
+ * - All 7 days: "Todos os dias"
+ * - Mon-Fri only: "Dias úteis"
+ * - Sat-Sun only: "Fim de semana"
+ * - Mon-Fri + extras: "Dias úteis + Sábado"
+ * - Weekend + extras: "Fim de semana + Segunda-feira"
+ * - Other combinations: Lists individual days
+ *
+ * @param rule - Rule with weekdays array
+ * @param cfg - Format mode (short or long)
+ * @returns Formatted weekday string in Portuguese
+ */
+function buildWeekdaysPart(rule: EventReplacementRule | ManualRule, cfg: { mode: 'long' | 'short' }): string {
 	if (!rule.weekdays || rule.weekdays.length === 0) {
 		return cfg.mode === 'short' ? 'Todos os dias' : 'em todos os dias';
 	}

@@ -2,10 +2,14 @@
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { buildRuleSummary } from '@/utils/rules/ruleSummary';
+import { buildRuleSummary } from '@/utils/rules-pck/formatting/summary';
+import { computeRuleImpactTimePoints } from '@/utils/rules-pck/preview';
+import { buildOperationalDateRange } from '@/utils/rules-pck/utils/date';
 import { Badge } from '@mantine/core';
-import { Indicator, Section, Text, Tooltip } from '@tmlmobilidade/ui';
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { IconCancel, IconCheck, IconSwitchHorizontal } from '@tabler/icons-react';
+import { Dates } from '@tmlmobilidade/dates';
+import { Section, Text, Tooltip } from '@tmlmobilidade/ui';
+import { useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
 
@@ -13,24 +17,13 @@ import styles from './styles.module.css';
 
 interface RuleLegendItem {
 	color: string
+	isExclude?: boolean
 	isReplacement?: boolean
 	label: string
 	long: string
 	ruleId: string
 	short: string
 	slot: number
-}
-
-interface TimeCell {
-	excludeRuleIds: Set<string>
-	includeRuleIds: Set<string>
-	overwriteRuleIds: Set<string>
-}
-
-interface TableRow {
-	cells: Map<string, TimeCell>
-	minutes: number
-	time: string
 }
 
 /* * */
@@ -43,38 +36,36 @@ export function RulesScheduleView() {
 	const [selectedRuleIds, setSelectedRuleIds] = useState<Set<string>>(new Set());
 	const [hoveredRuleId, setHoveredRuleId] = useState<null | string>(null);
 
-	const legendRef = useRef<HTMLDivElement | null>(null);
-	const containerRef = useRef<HTMLDivElement | null>(null);
+	const allRules = patternDetailContext.data.mergedRules || [];
+	const periods = periodsContext.data.raw || [];
 
-	useLayoutEffect(() => {
-		if (!legendRef.current || !containerRef.current) return;
+	const impactByRuleId = useMemo(() => {
+		const map = new Map<string, { filled: Set<string>, outlined: Set<string> }>();
 
-		const el = legendRef.current;
-		const host = containerRef.current;
+		const start = Dates.now('Europe/Lisbon').startOf('day').js_date;
+		const end = Dates.fromJSDate(start).plus({ years: 1 }).js_date;
 
-		const set = () => {
-			host.style.setProperty('--legend-h', `${el.offsetHeight}px`);
-		};
+		const dateRange = buildOperationalDateRange(start, end);
 
-		set();
-
-		const ro = new ResizeObserver(set);
-		ro.observe(el);
-
-		return () => ro.disconnect();
-	}, []);
+		for (const rule of allRules) {
+			if (!rule._id) continue;
+			map.set(rule._id, computeRuleImpactTimePoints(rule, allRules, periods, dateRange));
+		}
+		return map;
+	}, [allRules, periods]);
 
 	// Build legend items with alphabetic labels
 	const legendItems = useMemo<RuleLegendItem[]>(() => {
-		const periods = periodsContext.data.raw || [];
 		const uniqueRules = new Map<string, RuleLegendItem>();
 
 		for (const rule of rules) {
 			if (!uniqueRules.has(rule._id)) {
 				const { long, short } = buildRuleSummary(rule, { periods });
 				const isReplacement = rule.kind === 'event_replacement';
+				const isExclude = (rule.kind === 'manual' && rule.operatingMode === 'exclude') || rule.kind === 'event_restriction';
 				uniqueRules.set(rule._id, {
 					color: '',
+					isExclude,
 					isReplacement,
 					label: '',
 					long,
@@ -93,61 +84,24 @@ export function RulesScheduleView() {
 			label: String.fromCharCode(65 + idx), // A, B, C, ...
 			slot: (idx % pillCount) + 1,
 		}));
-	}, [rules, periodsContext.data.raw]);
+	}, [rules, periods]);
 
-	// Build table rows with matrix structure
-	const tableRows = useMemo<TableRow[]>(() => {
-		const byTime = new Map<string, TableRow>();
+	const timeColumns = useMemo(() => {
+		const allTimes = new Set<string>();
 
-		for (const rule of rules) {
-			for (const time of rule.timePoints || []) {
-				const minutes = toMinutes(time);
-				if (minutes === Number.POSITIVE_INFINITY) continue;
-
-				const row = byTime.get(time) ?? {
-					cells: new Map<string, TimeCell>(),
-					minutes,
-					time,
-				};
-
-				const cell = row.cells.get(rule._id) ?? {
-					excludeRuleIds: new Set<string>(),
-					includeRuleIds: new Set<string>(),
-					overwriteRuleIds: new Set<string>(),
-				};
-
-				if (rule.kind === 'event_restriction') {
-					cell.excludeRuleIds.add(rule._id);
-				}
-				else if (rule.kind === 'manual' && rule.operatingMode === 'exclude') {
-					cell.excludeRuleIds.add(rule._id);
-				}
-				else {
-					cell.includeRuleIds.add(rule._id);
-				}
-
-				row.cells.set(rule._id, cell);
-				byTime.set(time, row);
-			}
+		for (const { filled, outlined } of impactByRuleId.values()) {
+			for (const tp of filled) allTimes.add(tp);
+			for (const tp of outlined) allTimes.add(tp);
 		}
 
-		return [...byTime.values()].sort((a, b) => a.minutes - b.minutes);
-	}, [rules]);
+		return Array.from(allTimes).sort((a, b) => toMinutes(a) - toMinutes(b));
+	}, [impactByRuleId]);
 
 	// Filter visible columns based on selection
 	const visibleLegendItems = useMemo(() => {
 		if (selectedRuleIds.size === 0) return legendItems;
 		return legendItems.filter(item => selectedRuleIds.has(item.ruleId));
 	}, [legendItems, selectedRuleIds]);
-
-	// Filter visible rows based on selection
-	const visibleTableRows = useMemo(() => {
-		if (selectedRuleIds.size === 0) return tableRows;
-		return tableRows.filter((row) => {
-			// Show row if any selected rule has a timepoint here
-			return visibleLegendItems.some(item => row.cells.has(item.ruleId));
-		});
-	}, [tableRows, selectedRuleIds, visibleLegendItems]);
 
 	if (!legendItems.length) {
 		return (
@@ -183,9 +137,9 @@ export function RulesScheduleView() {
 
 	return (
 		<div className={styles.wrapper}>
-			<div ref={containerRef} className={styles.container}>
+			<div className={styles.container}>
 				{/* Legend Section */}
-				<div ref={legendRef} className={styles.legend}>
+				<div className={styles.legend}>
 					{legendItems.map(item => (
 						<Tooltip key={item.ruleId} label={item.long} withArrow>
 							<Badge
@@ -204,61 +158,72 @@ export function RulesScheduleView() {
 
 				{/* Table */}
 				<div className={styles.tableWrapper}>
-					<table className={styles.table}>
-						<thead>
-							<tr>
-								<th className={styles.headerTime}>Hora</th>
-								{visibleLegendItems.map(item => (
-									<Tooltip key={item.ruleId} label={item.long}>
-										<th
-											className={styles.headerRule}
-											style={{ ...pillStyle(item.slot), border: 'none' }}
-										>
-											{item.label}
+					<div className={styles.tableScrollX}>
+						<table className={styles.table}>
+							<thead>
+								<tr>
+									{/* sticky left header cell */}
+									<th className={styles.headerRuleSticky}>Regra</th>
+
+									{timeColumns.map(time => (
+										<th key={time} className={styles.headerTimeCol}>
+											{time}
 										</th>
-									</Tooltip>
-								))}
-							</tr>
-						</thead>
-						<tbody>
-							{visibleTableRows.map(row => (
-								<tr key={row.time}>
-									<td className={styles.cellTime}>{row.time}</td>
-									{visibleLegendItems.map((item) => {
-										const cell = row.cells.get(item.ruleId);
-										const hasInclude = cell?.includeRuleIds.has(item.ruleId);
-										const hasExclude = cell?.excludeRuleIds.has(item.ruleId);
-										const hasOverwrite = cell?.overwriteRuleIds.has(item.ruleId);
-										const showIndicator = hasInclude || hasExclude || hasOverwrite;
-
-										// Use neutral color for replacement rules
-										const indicatorColor = item.isReplacement
-											? 'var(--color-neutral-400)'
-											: `var(--pill-${item.slot}-border)`;
-
-										return (
-											<td
-												key={item.ruleId}
-												className={styles.cellRule}
-												data-active={isRuleActive(item.ruleId) ? 'true' : 'false'}
-											>
-												{showIndicator && (
-													<Tooltip label={item.long}>
-														<Indicator
-															color={indicatorColor}
-															filled={hasInclude || hasOverwrite}
-															size="lg"
-														/>
-													</Tooltip>
-												)}
-											</td>
-										);
-									})}
+									))}
 								</tr>
-							))}
-						</tbody>
-					</table>
+							</thead>
+
+							<tbody>
+								{visibleLegendItems.map((item) => {
+									const impact = impactByRuleId.get(item.ruleId);
+									const filled = impact?.filled ?? new Set<string>();
+									const outlined = impact?.outlined ?? new Set<string>();
+
+									return (
+										<tr key={item.ruleId}>
+											{/* sticky left rule cell */}
+											<td className={styles.cellRuleSticky}>
+												<Tooltip key={item.ruleId} label={item.long}>
+													<div
+														className={styles.headerRule}
+														style={{ ...pillStyle(item.slot), border: 'none' }}
+													>
+														{item.label}
+													</div>
+												</Tooltip>
+											</td>
+
+											{timeColumns.map((time) => {
+												const isFilled = filled.has(time);
+												const isOutlined = outlined.has(time);
+												const show = isFilled || isOutlined;
+
+												return (
+													<td
+														key={time}
+														className={styles.cellTimeCol}
+														data-active={isRuleActive(item.ruleId) ? 'true' : 'false'}
+													>
+														{show && (
+															<div className={styles.iconCenter}>
+																<Tooltip label={`${item.long}`}>
+																	{item.isExclude && <IconCancel color={`var(--pill-${item.slot}-text)`} size={20} />}
+																	{item.isReplacement && <IconSwitchHorizontal color={`var(--pill-${item.slot}-text)`} size={20} />}
+																	{!item.isExclude && !item.isReplacement && <IconCheck color={`var(--pill-${item.slot}-text)`} size={20} />}
+																</Tooltip>
+															</div>
+														)}
+													</td>
+												);
+											})}
+										</tr>
+									);
+								})}
+							</tbody>
+						</table>
+					</div>
 				</div>
+
 			</div>
 		</div>
 	);

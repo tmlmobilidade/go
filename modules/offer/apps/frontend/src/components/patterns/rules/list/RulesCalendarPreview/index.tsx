@@ -26,7 +26,9 @@ export function RulesCalendarPreview({ rulesPreview }) {
 				endDate: key,
 				id: `rule-impact:${key}`,
 				metadata: {
-					timePoints: Array.from(rulesPreview.byDate?.get(key) ?? []).sort(),
+					appliedRuleIds: rulesPreview.applications.get(key)?.appliedRuleIds ?? [],
+					isEventOverride: rulesPreview.applications.get(key)?.isEventOverride ?? false,
+					timePoints: rulesPreview.byDate.get(key) ?? [],
 				},
 				startDate: key,
 				title: 'Dia afetado pela regra',

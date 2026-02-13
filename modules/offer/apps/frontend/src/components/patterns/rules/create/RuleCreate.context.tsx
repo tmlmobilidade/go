@@ -3,11 +3,11 @@
 /* * */
 
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { computeRuleImpact } from '@/utils/rules/ruleAppliesToDate';
-import { buildRuleSummary } from '@/utils/rules/ruleSummary';
+import { computeRuleImpact } from '@/utils/rules-pck/calculation';
+import { buildRuleSummary } from '@/utils/rules-pck/formatting/summary';
 import { useForm } from '@mantine/form';
 import { Dates } from '@tmlmobilidade/dates';
-import { ManualScheduleRule, ManualScheduleRuleSchema, OPERATING_MODE } from '@tmlmobilidade/types';
+import { ManualRule, ManualRuleSchema, OPERATING_MODE } from '@tmlmobilidade/types';
 import { type UseFormReturnType } from '@tmlmobilidade/ui';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
@@ -24,7 +24,7 @@ interface RuleCreateContextState {
 		submitRule: () => void
 	}
 	data: {
-		form: UseFormReturnType<ManualScheduleRule>
+		form: UseFormReturnType<ManualRule>
 		ruleImpact: {
 			count: number
 			dates: string[]
@@ -51,7 +51,7 @@ export function useRuleCreateContext() {
 
 /* * */
 
-export const RuleCreateContextProvider = ({ children, initialValues, onDelete, onSubmit }: PropsWithChildren<{ initialValues?: ManualScheduleRule, onDelete?: () => void, onSubmit: (rule: ManualScheduleRule) => void }>) => {
+export const RuleCreateContextProvider = ({ children, initialValues, onDelete, onSubmit }: PropsWithChildren<{ initialValues?: ManualRule, onDelete?: () => void, onSubmit: (rule: ManualRule) => void }>) => {
 	//
 
 	//
@@ -66,15 +66,16 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	//
 	// C. Setup form
 
-	const form = useForm<ManualScheduleRule>({
+	const form = useForm<ManualRule>({
 		initialValues: initialValues || {
 			kind: 'manual',
 			operatingMode: OPERATING_MODE.INCLUDE,
 			periodIds: [],
 			timePoints: [],
+			weekdays: [],
 		},
 		mode: 'controlled',
-		validate: zodResolver(ManualScheduleRuleSchema),
+		validate: zodResolver(ManualRuleSchema),
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});

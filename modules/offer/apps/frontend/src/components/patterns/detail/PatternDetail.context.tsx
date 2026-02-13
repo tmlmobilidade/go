@@ -6,8 +6,8 @@ import { openCreateRuleModal } from '@/components/patterns/rules/create/RuleCrea
 import { openRulesCalendarPreviewModal } from '@/components/patterns/rules/list/RulesCalendarPreview.modal';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { useTypologiesContext } from '@/contexts/Typologies.context';
-import { buildRulesPreview, RulesPreview } from '@/utils/rules-pck/rulesPreview';
-import { buildRuleSummary } from '@/utils/rules-pck/ruleSummary';
+import { buildRuleSummary } from '@/utils/rules-pck/formatting/summary';
+import { buildRulesPreview, RulesPreview } from '@/utils/rules-pck/preview';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
