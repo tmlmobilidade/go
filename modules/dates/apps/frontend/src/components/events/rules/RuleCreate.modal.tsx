@@ -5,7 +5,7 @@
 import { RuleCreate } from '@/components/events/rules/RuleCreate';
 import { RuleCreateContextProvider } from '@/components/events/rules/RuleCreate.context';
 import { DataProviders } from '@/providers/data-providers';
-import { type EventDerivedRule } from '@tmlmobilidade/types';
+import { type EventRule } from '@tmlmobilidade/types';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 /* * */
@@ -19,7 +19,7 @@ interface EventData {
 	dates: string[]
 }
 
-export const openCreateRuleModal = (eventData: EventData, initialValues?: EventDerivedRule, onSubmit?: (rule: EventDerivedRule) => void, onDelete?: () => void) => {
+export const openCreateRuleModal = (eventData: EventData, initialValues?: EventRule, onSubmit?: (rule: EventRule) => void, onDelete?: () => void) => {
 	openModal({
 		children: (
 			<MeContextProvider>

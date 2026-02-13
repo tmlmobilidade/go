@@ -4,7 +4,7 @@
 
 import { usePeriodsListContext } from '@/components/periods/list/PeriodsList.context';
 import { useForm } from '@mantine/form';
-import { EventDerivedRule, EventDerivedSchema } from '@tmlmobilidade/types';
+import { EventRule, EventRuleSchema } from '@tmlmobilidade/types';
 import { type UseFormReturnType } from '@tmlmobilidade/ui';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -25,7 +25,7 @@ interface RuleCreateContextState {
 	}
 	data: {
 		eventData: EventData
-		form: UseFormReturnType<EventDerivedRule>
+		form: UseFormReturnType<EventRule>
 	}
 	flags: {
 		isEditing: boolean
@@ -46,7 +46,7 @@ export function useRuleCreateContext() {
 
 /* * */
 
-export const RuleCreateContextProvider = ({ children, eventData, initialValues, onDelete, onSubmit }: PropsWithChildren<{ eventData: EventData, initialValues?: EventDerivedRule, onDelete?: () => void, onSubmit: (rule: EventDerivedRule) => void }>) => {
+export const RuleCreateContextProvider = ({ children, eventData, initialValues, onDelete, onSubmit }: PropsWithChildren<{ eventData: EventData, initialValues?: EventRule, onDelete?: () => void, onSubmit: (rule: EventRule) => void }>) => {
 	//
 
 	//
@@ -60,21 +60,22 @@ export const RuleCreateContextProvider = ({ children, eventData, initialValues, 
 	//
 	// C. Setup form
 
-	const form = useForm<EventDerivedRule>({
+	const form = useForm<EventRule>({
 		initialValues: initialValues || {
+			all_day: false,
 			dates: [],
+			end_time: '23:59',
 			event: {
-				all_day: false,
-				end_time: '23:59',
 				id: '',
-				start_time: '00:00',
 				title: '',
 			},
+
 			kind: 'event_restriction',
 			lines_mode: 'all',
+			start_time: '00:00',
 		},
 		mode: 'controlled',
-		validate: zodResolver(EventDerivedSchema),
+		validate: zodResolver(EventRuleSchema),
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});

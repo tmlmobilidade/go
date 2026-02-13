@@ -6,7 +6,7 @@ import { usePeriodsContext } from '@/contexts/Periods.context';
 import { IconCalendarCancel, IconCalendarRepeat, IconEye } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates, Formats } from '@tmlmobilidade/dates';
-import { EventDerivedReplacement, EventDerivedRestriction, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
+import { EventReplacementRule, EventRestrictionRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
 import { IconButton, Section, Text } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -15,7 +15,7 @@ import styles from './styles.module.css';
 /* * */
 
 interface RulesListViewEventCardProps {
-	rule: EventDerivedReplacement | EventDerivedRestriction
+	rule: EventReplacementRule | EventRestrictionRule
 }
 
 /* * */
@@ -95,8 +95,8 @@ export default function RulesListViewEventCard({ rule }: RulesListViewEventCardP
 				{rule.kind === 'event_restriction' && (
 					<>
 						<Text>
-							Oferta será excluída {eventDates && !rule.event.all_day
-								? `das ${rule.event.start_time} às ${rule.event.end_time}`
+							Oferta será excluída {eventDates && !rule.all_day
+								? `das ${rule.start_time} às ${rule.end_time}`
 								: `todo o dia`}
 						</Text>
 						<Text size="sm" style={{ fontFamily: 'monospace' }}>

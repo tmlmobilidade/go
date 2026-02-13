@@ -7,7 +7,7 @@ import { useEventsDetailContext } from '@/components/events/detail/EventsDetail.
 import { EventsDetailHeader } from '@/components/events/detail/EventsDetailHeader';
 import { RuleCard } from '@/components/events/rules/RuleCard';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { EventDerivedRule, EventSchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { EventRule, EventSchema, PermissionCatalog } from '@tmlmobilidade/types';
 import { Button, Divider, ErrorDisplay, Grid, LoadingOverlay, MultiSelect, Pane, Section, Spacer, Text, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 
 /* * */
@@ -84,7 +84,7 @@ export function EventsDetail() {
 						<Spacer orientation="vertical" size="lg" />
 
 						<Section gap="md" padding="none">
-							{(eventsDetailContext.data.form.values.rules as EventDerivedRule[] | undefined)?.map(rule => (
+							{(eventsDetailContext.data.form.values.rules as EventRule[] | undefined)?.map(rule => (
 								<RuleCard key={rule._id} rule={rule} />
 							))}
 

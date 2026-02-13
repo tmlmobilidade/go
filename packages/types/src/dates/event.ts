@@ -2,20 +2,17 @@
 
 import { DocumentSchema } from '@/_common/document.js';
 import { OperationalDateSchema } from '@/_common/operational-date.js';
-import { EventDerivedSchema } from '@/offer/rules.js';
+import { EventRuleSchema } from '@/offer/rules.js';
 import { z } from 'zod';
 
 /* * */
 
 export const EventSchema = DocumentSchema.extend({
 	agency_ids: z.array(z.string()).default([]),
-	all_day: z.boolean().default(false),
 	dates: z.array(OperationalDateSchema).default([]),
 	description: z.string().default(''),
-	end_time: z.string().default(''),
 	is_locked: z.boolean().default(false),
-	rules: z.array(EventDerivedSchema).default([]),
-	start_time: z.string().default(''),
+	rules: z.array(EventRuleSchema).default([]),
 	title: z.string().default(''),
 });
 

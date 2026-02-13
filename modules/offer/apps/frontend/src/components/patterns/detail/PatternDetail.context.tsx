@@ -6,12 +6,12 @@ import { openCreateRuleModal } from '@/components/patterns/rules/create/RuleCrea
 import { openRulesCalendarPreviewModal } from '@/components/patterns/rules/list/RulesCalendarPreview.modal';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { useTypologiesContext } from '@/contexts/Typologies.context';
-import { computeFinalAffectedDatesAndTimepoints, RulesPreview } from '@/utils/rules/ruleAppliesToDate';
-import { buildRuleSummary } from '@/utils/rules/ruleSummary';
+import { buildRulesPreview, RulesPreview } from '@/utils/rules-pck/rulesPreview';
+import { buildRuleSummary } from '@/utils/rules-pck/ruleSummary';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { EventDerivedReplacement, EventDerivedRestriction, Line, ManualScheduleRule, Pattern, PermissionCatalog, ScheduleRule, Typology, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
+import { EventReplacementRule, EventRestrictionRule, Line, ManualRule, Pattern, PermissionCatalog, ScheduleRule, Typology, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { type Feature, type FeatureCollection, type LineString, type Point } from 'geojson';
@@ -24,11 +24,11 @@ import useSWR from 'swr';
 interface PatternDetailContextState {
 	actions: DetailContextStateTemplate['actions'] & {
 		addComment: (comment: string) => void
-		addRule: (rule: ManualScheduleRule) => void
+		addRule: (rule: ManualRule) => void
 		deleteRule: (ruleId: string) => void
-		editRule: (rule: ManualScheduleRule) => void
+		editRule: (rule: ManualRule) => void
 		mutate: () => Promise<Pattern | undefined>
-		openRuleModal: (rule?: ManualScheduleRule) => void
+		openRuleModal: (rule?: ManualRule) => void
 		openRulesCalendarPreviewModal: () => void
 	}
 	data: {
@@ -128,12 +128,12 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	// D. Setup form
 
 	const manualRules = useMemo(
-		() => (patternData?.rules ?? []).filter((r): r is ManualScheduleRule => r.kind === 'manual'),
+		() => (patternData?.rules ?? []).filter((r): r is ManualRule => r.kind === 'manual'),
 		[patternData],
 	);
 
 	const derivedRules = useMemo(
-		() => (patternData?.rules ?? []).filter(r => r.kind === 'event_restriction' || r.kind === 'event_replacement') as (EventDerivedReplacement | EventDerivedRestriction)[],
+		() => (patternData?.rules ?? []).filter(r => r.kind === 'event_restriction' || r.kind === 'event_replacement') as (EventReplacementRule | EventRestrictionRule)[],
 		[patternData],
 	);
 
@@ -171,16 +171,15 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 	const recomputePreview = (rules: ScheduleRule[]) => {
 		setRulesPreview(
-			computeFinalAffectedDatesAndTimepoints(rules, {
+			buildRulesPreview(rules, periodsContext.data.raw, {
 				endDate: Dates.now('Europe/Lisbon').plus({ years: 1 }).js_date,
-				periods: periodsContext.data.raw,
 				startDate: new Date(),
 			}),
 		);
 	};
 
-	const handleAddRule = (rule: ManualScheduleRule) => {
-		const currentRules = (form.getValues().rules ?? []) as ManualScheduleRule[];
+	const handleAddRule = (rule: ManualRule) => {
+		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
 		const ruleWithId = { ...rule, _id: crypto.randomUUID() };
 		const newRules = [...currentRules, ruleWithId];
 
@@ -188,12 +187,12 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		recomputePreview([...newRules, ...derivedRules] as ScheduleRule[]);
 	};
 
-	const handleEditRule = (rule: ManualScheduleRule) => {
+	const handleEditRule = (rule: ManualRule) => {
 		if (!rule._id) {
 			console.error('Cannot edit rule without _id');
 			return;
 		}
-		const currentRules = (form.getValues().rules ?? []) as ManualScheduleRule[];
+		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
 		const newRules = currentRules.map(r =>
 			r._id === rule._id ? rule : r,
 		);
@@ -203,15 +202,15 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	};
 
 	const handleDeleteRule = (ruleId: string) => {
-		const currentRules = (form.getValues().rules ?? []) as ManualScheduleRule[];
+		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
 		const newRules = currentRules.filter(r => r._id !== ruleId);
 
 		form.setFieldValue('rules', newRules);
 		recomputePreview([...newRules, ...derivedRules] as ScheduleRule[]);
 	};
 
-	const handleOpenRuleModal = (rule?: ManualScheduleRule) => {
-		const onSubmit = (validatedRule: ManualScheduleRule) => {
+	const handleOpenRuleModal = (rule?: ManualRule) => {
+		const onSubmit = (validatedRule: ManualRule) => {
 			if (rule?._id) {
 				// Editing - preserve the _id
 				handleEditRule({ ...validatedRule, _id: rule._id });

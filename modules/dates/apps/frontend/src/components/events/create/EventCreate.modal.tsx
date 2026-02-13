@@ -5,7 +5,7 @@
 import { EventCreate } from '@/components/events/create/EventCreate';
 import { EventCreateContextProvider } from '@/components/events/create/EventCreate.context';
 import { DataProviders } from '@/providers/data-providers';
-import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
+import { closeModal, openModal } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,11 +17,9 @@ export const openCreateEventModal = () => {
 	openModal({
 		children: (
 			<DataProviders>
-				<MeContextProvider>
-					<EventCreateContextProvider>
-						<EventCreate />
-					</EventCreateContextProvider>
-				</MeContextProvider>
+				<EventCreateContextProvider>
+					<EventCreate />
+				</EventCreateContextProvider>
 			</DataProviders>
 		),
 		closeOnClickOutside: false,

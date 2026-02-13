@@ -81,23 +81,23 @@ export function RuleCreateBasicInfo() {
 					<Text c="dimmed" size="sm">A oferta é suspensa durante o período definido aqui</Text>
 
 					<Checkbox
-						key={createRuleContext.data.form.key('event.all_day')}
+						key={createRuleContext.data.form.key('all_day')}
 						label="Evento de dia completo"
-						{...createRuleContext.data.form.getInputProps('event.all_day', { type: 'checkbox' })}
+						{...createRuleContext.data.form.getInputProps('all_day', { type: 'checkbox' })}
 					/>
 
-					{createRuleContext.data.form.values.kind === 'event_restriction' && !createRuleContext.data.form.values.event.all_day && (
+					{createRuleContext.data.form.values.kind === 'event_restriction' && !createRuleContext.data.form.values.all_day && (
 						<Grid columns="ab" gap="sm">
 							<TimeInput
-								key={createRuleContext.data.form.key('event.start_time')}
+								key={createRuleContext.data.form.key('start_time')}
 								label="Hora de início"
-								{...createRuleContext.data.form.getInputProps('event.start_time')}
+								{...createRuleContext.data.form.getInputProps('start_time')}
 							/>
 
 							<TimeInput
-								key={createRuleContext.data.form.key('event.end_time')}
+								key={createRuleContext.data.form.key('end_time')}
 								label="Hora de fim"
-								{...createRuleContext.data.form.getInputProps('event.end_time')}
+								{...createRuleContext.data.form.getInputProps('end_time')}
 							/>
 						</Grid>
 					)}

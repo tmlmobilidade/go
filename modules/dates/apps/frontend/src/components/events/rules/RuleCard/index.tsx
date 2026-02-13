@@ -6,7 +6,7 @@ import { useEventsDetailContext } from '@/components/events/detail/EventsDetail.
 import { usePeriodsListContext } from '@/components/periods/list/PeriodsList.context';
 import { IconArrowRight, IconCalendarCancel, IconCalendarRepeat } from '@tabler/icons-react';
 import { Dates, Formats } from '@tmlmobilidade/dates';
-import { EventDerivedRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
+import { EventRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
 import { IconButton, Section, Text } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -15,7 +15,7 @@ import styles from './styles.module.css';
 /* * */
 
 interface RuleCardProps {
-	rule: EventDerivedRule
+	rule: EventRule
 }
 
 /* * */
@@ -130,8 +130,8 @@ export function RuleCard({ rule }: RuleCardProps) {
 
 				{isRestriction && (
 					<Text size="sm" style={{ fontFamily: 'monospace' }}>
-						{!rule.event.all_day
-							? `${rule.event.start_time} às ${rule.event.end_time} ${eventDatesSuffix}`
+						{!rule.all_day
+							? `${rule.start_time} às ${rule.end_time} ${eventDatesSuffix}`
 							: `Todo o dia ${eventDatesSuffix}`}
 					</Text>
 				)}

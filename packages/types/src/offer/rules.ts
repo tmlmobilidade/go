@@ -16,7 +16,7 @@ export type LinesMode = z.infer<typeof LinesModeSchema>;
 
 /* * */
 
-export const ManualScheduleRuleSchema = z.object({
+export const ManualRuleSchema = z.object({
 	// stable id for UI dedupe
 	_id: z.string().optional(),
 
@@ -25,12 +25,12 @@ export const ManualScheduleRuleSchema = z.object({
 
 	operatingMode: z.nativeEnum(OPERATING_MODE),
 
-	periodIds: z.array(z.string()).optional(),
+	periodIds: z.array(z.string()),
 	timePoints: z.array(HHMM),
 
 	travelTime: z.string().optional(),
 
-	weekdays: z.array(z.nativeEnum(WEEKDAYS)).optional(),
+	weekdays: z.array(z.nativeEnum(WEEKDAYS)),
 });
 
 /* * */
@@ -50,19 +50,21 @@ export const EventDerivedBaseSchema = z.object({
 	timePoints: z.array(HHMM).optional(), // UI generated
 });
 
-export const EventDerivedRestrictionSchema = EventDerivedBaseSchema.extend({
+export const EventRestrictionSchema = EventDerivedBaseSchema.extend({
+	all_day: z.boolean(),
+	end_time: HHMM.default(''),
+	start_time: HHMM.default(''),
+
+	// Event info
 	event: z.object({
-		all_day: z.boolean(),
-		end_time: HHMM,
 		id: z.string(),
-		start_time: HHMM,
 		title: z.string(),
 	}),
 
 	kind: z.literal('event_restriction'),
 });
 
-export const EventDerivedReplacementSchema = EventDerivedBaseSchema.extend({
+export const EventReplacementSchema = EventDerivedBaseSchema.extend({
 	event: z.object({
 		id: z.string(),
 		title: z.string(),
@@ -74,20 +76,20 @@ export const EventDerivedReplacementSchema = EventDerivedBaseSchema.extend({
 	weekdays: z.array(z.nativeEnum(WEEKDAYS)),
 });
 
-export const EventDerivedSchema = z.discriminatedUnion('kind', [EventDerivedRestrictionSchema, EventDerivedReplacementSchema]);
+export const EventRuleSchema = z.discriminatedUnion('kind', [EventRestrictionSchema, EventReplacementSchema]);
 
 /* * */
 
 export const ScheduleRuleSchema = z.discriminatedUnion('kind', [
-	ManualScheduleRuleSchema,
-	EventDerivedRestrictionSchema,
-	EventDerivedReplacementSchema,
+	ManualRuleSchema,
+	EventRestrictionSchema,
+	EventReplacementSchema,
 ]);
 
-export const PatternUpdateRulesSchema = z.array(ManualScheduleRuleSchema.omit({ name: true })).optional();
+export const PatternUpdateRulesSchema = z.array(ManualRuleSchema.omit({ name: true })).optional();
 
 export type ScheduleRule = z.infer<typeof ScheduleRuleSchema>;
-export type ManualScheduleRule = z.infer<typeof ManualScheduleRuleSchema>;
-export type EventDerivedRestriction = z.infer<typeof EventDerivedRestrictionSchema>;
-export type EventDerivedReplacement = z.infer<typeof EventDerivedReplacementSchema>;
-export type EventDerivedRule = z.infer<typeof EventDerivedSchema>;
+export type ManualRule = z.infer<typeof ManualRuleSchema>;
+export type EventRestrictionRule = z.infer<typeof EventRestrictionSchema>;
+export type EventReplacementRule = z.infer<typeof EventReplacementSchema>;
+export type EventRule = z.infer<typeof EventRuleSchema>;

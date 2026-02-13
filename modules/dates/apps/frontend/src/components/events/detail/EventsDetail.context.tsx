@@ -3,7 +3,7 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CreateEventSchema, type Event, EventDerivedRule, Line, PermissionCatalog, type UpdateEventDto, UpdateEventSchema } from '@tmlmobilidade/types';
+import { CreateEventSchema, type Event, EventRule, Line, PermissionCatalog, type UpdateEventDto, UpdateEventSchema } from '@tmlmobilidade/types';
 import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -16,10 +16,10 @@ import { openCreateRuleModal } from '../rules/RuleCreate.modal';
 
 interface EventsDetailContextState {
 	actions: DetailContextStateTemplate['actions'] & {
-		addRule: (rule: EventDerivedRule) => void
+		addRule: (rule: EventRule) => void
 		deleteRule: (ruleId: string) => void
-		editRule: (rule: EventDerivedRule) => void
-		openRuleModal: (rule?: EventDerivedRule) => void
+		editRule: (rule: EventRule) => void
+		openRuleModal: (rule?: EventRule) => void
 	}
 	data: {
 		event: Event | null
@@ -98,20 +98,20 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 	//
 	// Rules
 
-	const handleAddRule = (rule: EventDerivedRule) => {
-		const currentRules = (form.getValues().rules ?? []) as EventDerivedRule[];
+	const handleAddRule = (rule: EventRule) => {
+		const currentRules = (form.getValues().rules ?? []) as EventRule[];
 		const ruleWithId = { ...rule, _id: crypto.randomUUID() };
 		const newRules = [...currentRules, ruleWithId];
 
 		form.setFieldValue('rules', newRules);
 	};
 
-	const handleEditRule = (rule: EventDerivedRule) => {
+	const handleEditRule = (rule: EventRule) => {
 		if (!rule._id) {
 			console.error('Cannot edit rule without _id');
 			return;
 		}
-		const currentRules = (form.getValues().rules ?? []) as EventDerivedRule[];
+		const currentRules = (form.getValues().rules ?? []) as EventRule[];
 		const newRules = currentRules.map(r =>
 			r._id === rule._id ? rule : r,
 		);
@@ -120,14 +120,14 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 	};
 
 	const handleDeleteRule = (ruleId: string) => {
-		const currentRules = (form.getValues().rules ?? []) as EventDerivedRule[];
+		const currentRules = (form.getValues().rules ?? []) as EventRule[];
 		const newRules = currentRules.filter(r => r._id !== ruleId);
 
 		form.setFieldValue('rules', newRules);
 	};
 
-	const handleOpenRuleModal = (rule?: EventDerivedRule) => {
-		const onSubmit = (validatedRule: EventDerivedRule) => {
+	const handleOpenRuleModal = (rule?: EventRule) => {
+		const onSubmit = (validatedRule: EventRule) => {
 			if (rule?._id) {
 				// Editing - preserve the _id
 				handleEditRule({ ...validatedRule, _id: rule._id });

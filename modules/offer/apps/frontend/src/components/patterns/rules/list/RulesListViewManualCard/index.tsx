@@ -6,7 +6,7 @@ import { usePatternDetailContext } from '@/components/patterns/detail/PatternDet
 import { TimeChip } from '@/components/patterns/rules/common/TimeChip';
 import { BUSINESS_PERIODS, groupTimesByPeriod } from '@/utils/businessPeriods';
 import { IconArrowRight, IconCalendarCancel, IconCalendarCheck } from '@tabler/icons-react';
-import { ManualScheduleRule, ScheduleRule } from '@tmlmobilidade/types';
+import { ManualRule, ScheduleRule } from '@tmlmobilidade/types';
 import { IconButton, Section, Text } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -27,7 +27,7 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 
 	const patternDetailContext = usePatternDetailContext();
 
-	const isOffTime = rule?.operatingMode === 'exclude';
+	const isOffTime = rule.kind === 'manual' && rule.operatingMode === 'exclude';
 	const times = rule?.timePoints ?? [];
 	const name = rule?.name || 'Regra sem nome';
 	const groupedTimes = groupTimesByPeriod(times);
@@ -36,7 +36,7 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 	// B. Handle actions
 
 	const handleEdit = () => {
-		patternDetailContext.actions.openRuleModal(rule as ManualScheduleRule);
+		patternDetailContext.actions.openRuleModal(rule as ManualRule);
 	};
 
 	//
