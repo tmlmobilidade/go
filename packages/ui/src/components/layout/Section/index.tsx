@@ -12,13 +12,15 @@ interface SectionProps {
 	gap?: 'lg' | 'md' | 'sm' | 'xs' | null
 	height?: React.CSSProperties['height']
 	justifyContent?: 'center' | 'flex-end' | 'flex-start' | 'space-between'
+	maxHeight?: React.CSSProperties['maxHeight']
+	overflow?: React.CSSProperties['overflow']
 	padding?: 'lg' | 'md' | 'none' | 'sm' | null
 	width?: React.CSSProperties['width']
 }
 
 /* * */
 
-export function Section({ alignItems = 'flex-start', children, flexDirection = 'column', flexWrap = 'nowrap', gap, height, justifyContent = 'flex-start', padding = 'md', width = '100%' }: SectionProps) {
+export function Section({ alignItems = 'flex-start', children, flexDirection = 'column', flexWrap = 'nowrap', gap, height, justifyContent = 'flex-start', maxHeight, overflow, padding = 'md', width = '100%' }: SectionProps) {
 	return (
 		<div
 			className={styles.root}
@@ -28,7 +30,7 @@ export function Section({ alignItems = 'flex-start', children, flexDirection = '
 			data-gap={gap}
 			data-justify-content={justifyContent}
 			data-padding={padding}
-			style={{ height, width }}
+			style={{ height, maxHeight, overflow, width }}
 		>
 			{children}
 		</div>

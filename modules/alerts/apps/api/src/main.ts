@@ -1,7 +1,6 @@
 /* * */
 
 import { fastifyMultipart } from '@fastify/multipart';
-import fastifyWebsocket from '@fastify/websocket';
 import { getAppConfig } from '@tmlmobilidade/consts';
 import { FastifyService } from '@tmlmobilidade/fastify';
 
@@ -14,8 +13,6 @@ import { FastifyService } from '@tmlmobilidade/fastify';
 		origin: getAppConfig('alerts', 'cors_origin'),
 		port: getAppConfig('alerts', 'api_port'),
 	});
-
-	await fastifyService.server.register(fastifyWebsocket);
 
 	await fastifyService.server.register(fastifyMultipart, {
 		limits: { fileSize: 10 * 1024 * 1024 }, // 10MB

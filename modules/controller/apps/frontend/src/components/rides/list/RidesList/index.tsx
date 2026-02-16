@@ -64,6 +64,12 @@ export function RidesList() {
 			width: 500,
 		},
 		{
+			accessor: 'passengers_observed',
+			render: item => <RidesListCellPassengers value={item.passengers_observed} />,
+			title: t('default:list.RidesList.columns.passengers_observed.label'),
+			width: 80,
+		},
+		{
 			accessor: 'start_time_scheduled',
 			render: item => <Tag label={formatTimestamp(item.start_time_scheduled)} variant="muted" />,
 			title: t('default:list.RidesList.columns.start_time_scheduled.label'),
@@ -98,12 +104,6 @@ export function RidesList() {
 			render: item => <RidesListCellVehicles value={item.vehicle_ids} />,
 			title: t('default:list.RidesList.columns.vehicle_ids.label'),
 			width: 120,
-		},
-		{
-			accessor: 'passengers_observed',
-			render: item => <RidesListCellPassengers value={item.passengers_observed} />,
-			title: t('default:list.RidesList.columns.passengers_observed.label'),
-			width: 80,
 		},
 		{
 			accessor: 'analysis_simple_three_vehicle_events_grade',

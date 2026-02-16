@@ -10,8 +10,8 @@ export interface ServiceAlertExtended extends Omit<ServiceAlert, 'cause' | 'effe
 	effect: string
 	file_id?: string
 	image?: {
-		localizedImage: {
-			language: string
+		localized_image: {
+			language?: string
 			media_type: string
 			url: string
 		}[]
