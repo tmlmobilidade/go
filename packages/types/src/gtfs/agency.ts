@@ -14,4 +14,5 @@ export const GtfsAgencySchema = z.object({
 	agency_timezone: z.string(),
 	agency_url: z.string().nullish(),
 });
+
 export type GtfsAgency = z.infer<typeof GtfsAgencySchema>;

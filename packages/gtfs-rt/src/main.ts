@@ -1,13 +1,14 @@
 /* * */
 
 import { initProto } from '@/init-proto.js';
+import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 
 /**
  * Decodes a GTFS Realtime feed from an ArrayBuffer or Buffer.
  * @param buffer The GTFS Realtime feed as an ArrayBuffer or Buffer.
  * @returns The decoded GTFS Realtime feed as a JavaScript object.
  */
-export async function decodeGtfsRtFeed(buffer: ArrayBuffer | Buffer) {
+export async function decodeGtfsRtFeed(buffer: ArrayBuffer | Buffer): Promise<GtfsRtFeedMessage> {
 	//
 
 	//
@@ -31,7 +32,7 @@ export async function decodeGtfsRtFeed(buffer: ArrayBuffer | Buffer) {
 
 	const decodedMessage = feedMessage.decode(buffer);
 
-	return feedMessage.toObject(decodedMessage);
+	return feedMessage.toObject(decodedMessage) as GtfsRtFeedMessage;
 
 	//
 }

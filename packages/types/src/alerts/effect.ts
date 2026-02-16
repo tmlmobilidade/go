@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsEffect } from '@/gtfs/effect.js';
+import { type GtfsRtEffect } from '@/gtfs-rt/effect.js';
 import z from 'zod';
 
 /* * */
@@ -38,11 +38,11 @@ export const AlertEffectSchema = z.enum(AlertEffectValues);
 export type AlertEffect = z.infer<typeof AlertEffectSchema>;
 
 /**
- * Mapping from AlertEffect to GtfsEffect.
+ * Mapping from AlertEffect to GtfsRtEffect.
  * This mapping is used to convert extended alert effects
  * to their corresponding standard GTFS-RT effect types.
  */
-export const AlertEffectToGtfsEffectMap: Record<AlertEffect, GtfsEffect> = {
+export const AlertEffectToGtfsRtEffectMap: Record<AlertEffect, GtfsRtEffect> = {
 	ACCESSIBILITY_ISSUE: 'ACCESSIBILITY_ISSUE',
 	ADDITIONAL_SERVICE: 'ADDITIONAL_SERVICE',
 	DETOUR: 'DETOUR',
