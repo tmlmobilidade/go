@@ -4,16 +4,16 @@ import { initProto } from '@/init-proto.js';
 import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 
 /**
- * Decodes a GTFS Realtime feed from an ArrayBuffer or Buffer.
- * @param buffer The GTFS Realtime feed as an ArrayBuffer or Buffer.
- * @returns The decoded GTFS Realtime feed as a JavaScript object.
+ * Decodes a GTFS-RT feed from an ArrayBuffer or Buffer.
+ * @param buffer The GTFS-RT feed as an ArrayBuffer or Buffer.
+ * @returns The decoded GTFS-RT feed as a JavaScript object.
  */
 export async function decodeGtfsRtFeed(buffer: ArrayBuffer | Buffer): Promise<GtfsRtFeedMessage> {
 	//
 
 	//
 	// Initialize the protobufjs root
-	// with the GTFS Realtime .proto file
+	// with the GTFS-RT .proto file
 
 	const protoRoot = await initProto();
 
@@ -26,13 +26,13 @@ export async function decodeGtfsRtFeed(buffer: ArrayBuffer | Buffer): Promise<Gt
 	}
 
 	//
-	// Decode the GTFS Realtime feed using the protobufjs root
+	// Decode the GTFS-RT feed using the protobufjs root
 
-	const feedMessage = protoRoot.lookupType('transit_realtime.FeedMessage');
+	const feedMessageType = protoRoot.lookupType('transit_realtime.FeedMessage');
 
-	const decodedMessage = feedMessage.decode(buffer);
+	const message = feedMessageType.decode(buffer);
 
-	return feedMessage.toObject(decodedMessage) as GtfsRtFeedMessage;
+	return feedMessageType.toObject(message) as GtfsRtFeedMessage;
 
 	//
 }

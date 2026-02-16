@@ -1,1 +1,2 @@
-export * from '@/main.js';
+export * from '@/decode.js';
+export * from '@/encode.js';
