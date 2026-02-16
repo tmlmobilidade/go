@@ -1,6 +1,7 @@
 /* * */
 
 import { RidesController } from '@/endpoints/rides/rides.controller.js';
+import { fastifyWebsocket } from '@fastify/websocket';
 import { RidesSharedController } from '@tmlmobilidade/controllers';
 import { authorizationMiddleware, type FastifyInstance, type FastifyReply, type FastifyRequest, FastifyService } from '@tmlmobilidade/fastify';
 import { type GetRidesBatchQuery, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
@@ -14,8 +15,10 @@ const server: FastifyInstance = FastifyService.getInstance().server;
 const NAMESPACE = '/rides';
 
 server.register(
-	(instance, opts, next) => {
+	async (instance) => {
 		//
+
+		await instance.register(fastifyWebsocket);
 
 		instance.get(
 			'/',
@@ -85,7 +88,7 @@ server.register(
 			RidesController.reprocessRideById,
 		);
 
-		next();
+		//
 	},
 	{ prefix: NAMESPACE },
 );

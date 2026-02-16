@@ -188,7 +188,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 
 			//
 			// C.3. Insert file record
-			result = await this.insertOne({ ...createFileDto, _id: fileId }, { options });
+			result = await this.insertOne({ ...createFileDto, _id: fileId, type: mimeType }, { options });
 			await session.commitTransaction();
 		}
 		catch (error) {
