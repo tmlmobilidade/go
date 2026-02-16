@@ -3,7 +3,7 @@
 import { getEarliestDate } from '@/utils/earliest-date.js';
 import { syncDocuments } from '@/utils/sync-documents.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { parseVehicleEvent } from '@tmlmobilidade/go-ingestor-pckg-parse';
+import { parseVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-parse';
 import { pcgidbLegacy, rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
