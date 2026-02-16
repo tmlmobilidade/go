@@ -4,7 +4,7 @@ import z from 'zod';
 
 /* * */
 
-export const GtfsEffectValues = [
+export const GtfsRtEffectValues = [
 	'ACCESSIBILITY_ISSUE',
 	'ADDITIONAL_SERVICE',
 	'DETOUR',
@@ -18,7 +18,7 @@ export const GtfsEffectValues = [
 	'UNKNOWN_EFFECT',
 ] as const;
 
-export const GtfsEffectSchema = z.enum(GtfsEffectValues);
+export const GtfsRtEffectSchema = z.enum(GtfsRtEffectValues);
 
 /**
  * The GTFS-RT standard effect types.
@@ -26,4 +26,4 @@ export const GtfsEffectSchema = z.enum(GtfsEffectValues);
  * in GTFS-RT feeds, either when importing from standard GTFS-RT data into
  * the application or when exporting from the application to GTFS-RT format.
  */
-export type GtfsEffect = z.infer<typeof GtfsEffectSchema>;
+export type GtfsRtEffect = z.infer<typeof GtfsRtEffectSchema>;
