@@ -100,17 +100,16 @@ const API_URL = 'https://api.ttsl.pt/files/gtfs_rt_vehicles.pb';
 			);
 		}
 
-		Logger.info(`[${iteration}] Fetched ${decodedMessage.entity?.length ?? 0} vehicle events from TTSL data in ${timer.get()}.`);
-		// console.log(JSON.stringify(decodedMessage['entity'], null, 2));
+		Logger.info(`[${iteration}] Saved ${decodedMessage.entity?.length ?? 0} Vehicle Events from TTSL data in ${timer.get()}.`);
 
 		iteration++;
+
+		setTimeout(runOnInterval, 1_000); // Schedule the next execution after 1 second
 
 		//
 	}
 
 	await runOnInterval();
-
-	setInterval(runOnInterval, 1_000); // Fetch data every 10 seconds
 
 	//
 })();

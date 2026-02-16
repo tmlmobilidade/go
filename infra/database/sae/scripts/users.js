@@ -35,6 +35,12 @@ db.createUser({
 });
 
 db.createUser({
+	pwd: USER_TRACKER_PASSWORD,
+	roles: [{ db: 'admin', role: 'tracker' }],
+	user: 'tracker',
+});
+
+db.createUser({
 	pwd: USER_REPLICATOR_PASSWORD,
 	roles: [{ db: 'admin', role: 'replicator' }],
 	user: 'replicator',
