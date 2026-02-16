@@ -25,3 +25,18 @@ export const RawVehicleEventSchema = z.object({
  * specific to TML's needs.
  */
 export type RawVehicleEvent = z.infer<typeof RawVehicleEventSchema>;
+
+/* * */
+
+export const HashableRawVehicleEventSchema = RawVehicleEventSchema.omit({
+	_id: true,
+	received_at: true,
+});
+
+/**
+ * A HashableRawVehicleEvent is a RawVehicleEvent without the _id and received_at fields,
+ * which are not relevant for hashing purposes. This type is used to create a unique hash
+ * for each vehicle event based on its content, allowing us to identify duplicate events
+ * and avoid storing them multiple times in the database.
+ */
+export type HashableRawVehicleEvent = z.infer<typeof HashableRawVehicleEventSchema>;

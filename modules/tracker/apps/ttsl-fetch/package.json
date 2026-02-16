@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-tracker-ttsl-sync",
+	"name": "@tmlmobilidade/go-tracker-ttsl-fetch",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -21,7 +21,6 @@
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*"
 	},
 	"devDependencies": {

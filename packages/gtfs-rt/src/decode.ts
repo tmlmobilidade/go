@@ -32,7 +32,7 @@ export async function decodeGtfsRtFeed(buffer: ArrayBuffer | Buffer): Promise<Gt
 
 	const message = feedMessageType.decode(buffer);
 
-	return feedMessageType.toObject(message) as GtfsRtFeedMessage;
+	return feedMessageType.toObject(message, { longs: Number }) as GtfsRtFeedMessage;
 
 	//
 }
