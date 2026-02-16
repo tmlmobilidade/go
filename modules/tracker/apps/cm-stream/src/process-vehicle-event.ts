@@ -1,0 +1,73 @@
+/* * */
+
+import { Dates } from '@tmlmobilidade/dates';
+import { rawVehicleEvents } from '@tmlmobilidade/interfaces';
+import { type HashableRawVehicleEvent, type PcgiVehicleEvent, type RawVehicleEvent } from '@tmlmobilidade/types';
+import { MongoDbWriter } from '@tmlmobilidade/writers';
+import crypto from 'node:crypto';
+
+/* * */
+
+const rawVehicleEventsDbWritter = new MongoDbWriter<RawVehicleEvent>({
+	batch_size: 500,
+	batch_timeout: 10_000,
+	collection: await rawVehicleEvents.getCollection(),
+	idle_timeout: 10_000,
+});
+
+/* * */
+
+export async function processPcgiVehicleEvent(pcgiVehicleEvent: PcgiVehicleEvent) {
+	//
+
+	//
+	// Transform each message into a RawVehicleEvent
+
+	for (const entity of pcgiVehicleEvent.content.entity ?? []) {
+		//
+
+		//
+		// Skip entities that do not have a vehicle field,
+		// as they are not relevant for our use case.
+
+		if (!entity.vehicle) continue;
+
+		//
+		// Hash the relevant fields of the vehicle event
+		// to create a unique identifier for the event.
+		// This allows us to identify duplicate events
+		// and avoid storing them multiple times in the database.
+
+		const hashableRawEvent: HashableRawVehicleEvent = {
+			agency_id: entity.vehicle.agencyId,
+			created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
+			entity_id: entity._id,
+			vehicle: entity.vehicle,
+		};
+
+		const hashableRawEventId = crypto
+			.createHash('sha256')
+			.update(JSON.stringify(hashableRawEvent))
+			.digest('hex');
+
+		//
+		// Write the new vehicle event document
+		// to the RawVehicleEvents collection
+
+		await rawVehicleEventsDbWritter.write(
+			{
+				...hashableRawEvent,
+				_id: hashableRawEventId,
+				received_at: Dates.fromUnixTimestamp(pcgiVehicleEvent.millis).unix_timestamp,
+			},
+			{
+				filter: { _id: hashableRawEventId },
+				upsert: true,
+			},
+		);
+
+		//
+	}
+
+	//
+};

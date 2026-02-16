@@ -24,7 +24,7 @@ const API_URL = 'https://api.ttsl.pt/files/gtfs_rt_vehicles.pb';
 	// Initialize the MongoDB writer
 	// for the RawVehicleEvents collection
 
-	const vehicleEventsDbWritter = new MongoDbWriter<RawVehicleEvent>({
+	const rawVehicleEventsDbWritter = new MongoDbWriter<RawVehicleEvent>({
 		batch_size: 500,
 		batch_timeout: 10000,
 		collection: await rawVehicleEvents.getCollection(),
@@ -71,11 +71,8 @@ const API_URL = 'https://api.ttsl.pt/files/gtfs_rt_vehicles.pb';
 			const hashableRawEvent: HashableRawVehicleEvent = {
 				agency_id: '4',
 				created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
-				data: JSON.stringify(entity),
-				latitude: entity.vehicle.position.latitude,
-				longitude: entity.vehicle.position.longitude,
-				trip_id: entity.vehicle.trip.trip_id,
-				vehicle_id: entity.vehicle.vehicle.id,
+				entity_id: entity.id,
+				vehicle: entity.vehicle,
 			};
 
 			const hashableRawEventId = crypto
@@ -87,7 +84,7 @@ const API_URL = 'https://api.ttsl.pt/files/gtfs_rt_vehicles.pb';
 			// Write the new vehicle event document
 			// to the RawVehicleEvents collection
 
-			await vehicleEventsDbWritter.write(
+			await rawVehicleEventsDbWritter.write(
 				{
 					...hashableRawEvent,
 					_id: hashableRawEventId,
