@@ -152,7 +152,9 @@ export class UsersController {
 	static async updateMe(request: FastifyRequest<{ Body: UpdateUserDto }>, reply: FastifyReply<User>) {
 		const sessionToken = request.cookies[AUTH_SESSION_COOKIE_NAME];
 		const userData = await authProvider.getUserFromSessionToken(sessionToken);
-		const updatedUser = await users.updateById(userData._id, request.body);
+
+		// For now, only the preferences field is allowed to be updated by the current user
+		const updatedUser = await users.updateById(userData._id, { preferences: request.body.preferences });
 		reply.send({ data: updatedUser, error: null, statusCode: HttpStatus.OK });
 	}
 }

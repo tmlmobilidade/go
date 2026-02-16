@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsCause } from '@/gtfs/cause.js';
+import { type GtfsRtCause } from '@/gtfs-rt/cause.js';
 import z from 'zod';
 
 /* * */
@@ -49,7 +49,7 @@ export type AlertCause = z.infer<typeof AlertCauseSchema>;
  * This mapping is used to convert extended alert causes
  * to their corresponding standard GTFS-RT cause types.
  */
-export const AlertCauseToGtfsCauseMap: Record<AlertCause, GtfsCause> = {
+export const AlertCauseToGtfsCauseMap: Record<AlertCause, GtfsRtCause> = {
 	ABUSIVE_PARKING: 'OTHER_CAUSE',
 	ACCIDENT: 'ACCIDENT',
 	CONSTRUCTION: 'CONSTRUCTION',
