@@ -51,6 +51,7 @@
 		"dev:stops:ui": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-api --filter=@tmlmobilidade/go-stops-frontend",
 		"dev:ticketing": "ENVIRONMENT=development dotenv-run -f ./modules/ticketing/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-ticketing-*",
 		"dev:tracker:cm-stream": "ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-stream",
+		"dev:tracker:cm-sync": "ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-sync",
 		"dev:tracker:ttsl-fetch": "ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-ttsl-fetch",
 
 		"generate-routes": "bash ./scripts/generate-routes.sh && turbo lint:fix --filter=@tmlmobilidade/consts",

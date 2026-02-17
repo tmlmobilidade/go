@@ -43,6 +43,7 @@
 		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
+		"@tmlmobilidade/writers": "*",
 		"bcryptjs": "3.0.3",
 		"oci-common": "2.125.0",
 		"oci-objectstorage": "2.125.0",

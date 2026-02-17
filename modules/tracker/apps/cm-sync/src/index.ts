@@ -1,8 +1,7 @@
 /* * */
 
-import { syncPcgiCore } from '@/tasks/pcgi-core.js';
-import { syncPcgiLog } from '@/tasks/pcgi-log.js';
-import { processVehicleEvent } from '@/tasks/process-vehicle-event.js';
+import { syncPcgiCore } from '@/tasks/sync-pcgi-core.js';
+import { syncPcgiLog } from '@/tasks/sync-pcgi-log.js';
 import { pcgidbLegacy } from '@tmlmobilidade/interfaces';
 
 /* * */
@@ -11,12 +10,6 @@ import { pcgidbLegacy } from '@tmlmobilidade/interfaces';
 	//
 
 	await pcgidbLegacy.connect();
-
-	//
-	// Watch for changes to the MongoDB collections
-	// and integrate those documents immediately.
-
-	pcgidbLegacy.VehicleEventsCore.watch().on('change', processVehicleEvent);
 
 	//
 	// Perform a hard sync of all documents every 30 minutes,
