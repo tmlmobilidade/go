@@ -1,12 +1,11 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert } from '@tmlmobilidade/types';
-import { type EntitySelector } from 'gtfs-types';
+import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
 
 /* * */
 
-export async function transformReferenceTypeAgency(alertData: Alert): Promise<EntitySelector[] | undefined> {
+export async function transformReferenceTypeAgency(alertData: Alert): Promise<GtfsRtEntitySelector[] | undefined> {
 	//
 
 	//

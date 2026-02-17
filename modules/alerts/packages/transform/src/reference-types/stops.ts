@@ -2,12 +2,11 @@
 
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert } from '@tmlmobilidade/types';
-import { type EntitySelector } from 'gtfs-types';
+import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
 
 /* * */
 
-export async function transformReferenceTypeStops(alertData: Alert): Promise<EntitySelector[] | undefined> {
+export async function transformReferenceTypeStops(alertData: Alert): Promise<GtfsRtEntitySelector[] | undefined> {
 	//
 
 	//
@@ -32,12 +31,12 @@ export async function transformReferenceTypeStops(alertData: Alert): Promise<Ent
 	// For each stop, add its corresponding
 	// agency_id and route_id to the result
 
-	const result: EntitySelector[] = [];
+	const result: GtfsRtEntitySelector[] = [];
 
 	for (const reference of alertData.references) {
 		//
 
-		const parsedEntitySelector: EntitySelector = {
+		const parsedEntitySelector: GtfsRtEntitySelector = {
 			agency_id: alertData.agency_id,
 			stop_id: reference.parent_id,
 		};
@@ -50,7 +49,7 @@ export async function transformReferenceTypeStops(alertData: Alert): Promise<Ent
 		//
 		// If there are child_ids, which in this context
 		// represent line IDs associated with the stop,
-		// add an EntitySelector object for each line ID.
+		// add a GtfsRtEntitySelector object for each line ID.
 
 		for (const childId of reference.child_ids) {
 			//

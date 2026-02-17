@@ -2,12 +2,11 @@
 
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert } from '@tmlmobilidade/types';
-import { type EntitySelector } from 'gtfs-types';
+import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
 
 /* * */
 
-export async function transformReferenceTypeLines(alertData: Alert): Promise<EntitySelector[] | undefined> {
+export async function transformReferenceTypeLines(alertData: Alert): Promise<GtfsRtEntitySelector[] | undefined> {
 	//
 
 	//
@@ -32,7 +31,7 @@ export async function transformReferenceTypeLines(alertData: Alert): Promise<Ent
 	// For each line, add its corresponding
 	// agency_id and route_id to the result
 
-	const result: EntitySelector[] = [];
+	const result: GtfsRtEntitySelector[] = [];
 
 	for (const reference of alertData.references) {
 		//
@@ -74,7 +73,7 @@ export async function transformReferenceTypeLines(alertData: Alert): Promise<Ent
 		for (const routeId of uniqueRouteIds) {
 			//
 
-			const parsedEntitySelector: EntitySelector = {
+			const parsedEntitySelector: GtfsRtEntitySelector = {
 				agency_id: alertData.agency_id,
 				route_id: routeId,
 			};

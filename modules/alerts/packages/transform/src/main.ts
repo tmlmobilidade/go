@@ -2,17 +2,22 @@
 
 /* * */
 
+import { transformCause } from '@/cause-effect/cause.js';
+import { transformEffect } from '@/cause-effect/effect.js';
+import { transformDescriptionText } from '@/content/description-text.js';
+import { transformHeaderText } from '@/content/header-text.js';
+import { transformImage } from '@/content/image.js';
+import { transformUrl } from '@/content/url.js';
 import { transformReferenceTypeAgency } from '@/reference-types/agency.js';
 import { transformReferenceTypeLines } from '@/reference-types/lines.js';
 import { transformReferenceTypeRides } from '@/reference-types/rides.js';
 import { transformReferenceTypeStops } from '@/reference-types/stops.js';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert } from '@tmlmobilidade/types';
-import { type EntitySelector, type Alert as ServiceAlert } from 'gtfs-types';
+import { type Alert, type GtfsRtAlert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
 
 /* * */
 
-export async function transformAlert(alertData: Alert): Promise<ServiceAlert | undefined> {
+export async function transformAlert(alertData: Alert): Promise<GtfsRtAlert | undefined> {
 	//
 
 	//
@@ -23,81 +28,89 @@ export async function transformAlert(alertData: Alert): Promise<ServiceAlert | u
 		return;
 	}
 
-	//
-	// Request individual blocks
+	if (!alertData.active_period_start_date) {
+		Logger.error(`[Alert ID: ${alertData._id}] Alert active_period_start_date is missing.`);
+		return;
+	}
 
-	let informedEntity: EntitySelector[] | undefined;
+	//
+	// Prepare the active_period value. GTFS-RT expects active_period to be
+	// an array of objects with start and end properties in seconds since the epoch.
+
+	const activePeriodValues = [{
+		end: alertData.active_period_end_date ? alertData.active_period_end_date / 1_000 : undefined,
+		start: alertData.active_period_start_date / 1_000,
+	}];
+
+	//
+	// Prepare the cause and effect values as these need to be mapped
+	// from the extended values back to the standard GTFS-RT values.
+
+	const mappedCauseValue = transformCause(alertData);
+	const mappedEffectValue = transformEffect(alertData);
+
+	//
+	// Prepare the Alert header and description texts,
+	// URL and image values as GTFS-RT objects.
+
+	const urlValue = transformUrl(alertData);
+	const headerTextValue = transformHeaderText(alertData);
+	const descriptionTextValue = transformDescriptionText(alertData);
+	const imageValue = await transformImage(alertData);
+
+	if (!headerTextValue) {
+		Logger.error(`[Alert ID: ${alertData._id}] Alert header_text is missing.`);
+		return;
+	}
+
+	if (!descriptionTextValue) {
+		Logger.error(`[Alert ID: ${alertData._id}] Alert description_text is missing.`);
+		return;
+	}
+
+	//
+	// Prepare the informed_entity value
+	// based on the reference_type
+
+	let informedEntityValues: GtfsRtEntitySelector[] | undefined;
 
 	if (alertData.reference_type === 'agency') {
-		informedEntity = await transformReferenceTypeAgency(alertData);
-		if (!informedEntity) return;
+		informedEntityValues = await transformReferenceTypeAgency(alertData);
 	}
 
 	if (alertData.reference_type === 'lines') {
-		informedEntity = await transformReferenceTypeLines(alertData);
-		if (!informedEntity) return;
+		informedEntityValues = await transformReferenceTypeLines(alertData);
 	}
 
 	if (alertData.reference_type === 'rides') {
-		informedEntity = await transformReferenceTypeRides(alertData);
-		if (!informedEntity) return;
+		informedEntityValues = await transformReferenceTypeRides(alertData);
 	}
 
 	if (alertData.reference_type === 'stops') {
-		informedEntity = await transformReferenceTypeStops(alertData);
-		if (!informedEntity) return;
+		informedEntityValues = await transformReferenceTypeStops(alertData);
+	}
+
+	if (alertData.reference_type === 'stops') {
+		informedEntityValues = await transformReferenceTypeStops(alertData);
+	}
+
+	if (!informedEntityValues) {
+		Logger.error(`[Alert ID: ${alertData._id}] Alert informed_entity values are missing.`);
+		return;
 	}
 
 	//
 	// Validate required input properties
 
 	return {
-		alert: {
-			active_period: [
-				{
-					end: alertData.active_period_end_date ? alertData.active_period_end_date / 1000 : undefined,
-					start: alertData.active_period_start_date / 1000,
-				},
-			],
-			cause: alertData.cause,
-			coordinates: alertData.coordinates?.length === 2 ? [alertData.coordinates[0], alertData.coordinates[1]] : undefined,
-			description_text: {
-				translation: [
-					{
-						language: 'pt',
-						text: alertData.description,
-					},
-				],
-			},
-			effect: alertData.effect,
-			header_text: {
-				translation: [
-					{
-						language: 'pt',
-						text: alertData.title,
-					},
-				],
-			},
-			image: file ? {
-				localizedImage: [
-					{
-						language: 'pt-PT',
-						media_type: file.type ?? 'image/png',
-						url: file.url ?? '',
-					},
-				],
-			} : undefined,
-			informed_entity: informed_entity(),
-			url: {
-				translation: [
-					{
-						language: 'pt-PT',
-						text: alertData.info_url ?? '',
-					},
-				],
-			},
-		},
-		id: alertData._id,
+		active_period: activePeriodValues,
+		cause: mappedCauseValue,
+		description_text: descriptionTextValue,
+		effect: mappedEffectValue,
+		header_text: headerTextValue,
+		image: imageValue,
+		informed_entity: informedEntityValues,
+		url: urlValue,
 	};
 
 	//
