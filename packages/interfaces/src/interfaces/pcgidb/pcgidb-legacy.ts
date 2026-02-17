@@ -36,7 +36,6 @@ class PCGIDBLegacyClass {
 
 		const mongoClientOptions: MongoClientOptions = {
 			connectTimeoutMS: 10_000,
-			directConnection: true,
 			maxPoolSize: 20,
 			minPoolSize: 2,
 			readPreference: 'secondaryPreferred',
@@ -156,7 +155,7 @@ class PCGIDBLegacyClass {
 			throw new Error('Failed to retrieve the SSH tunnel address for PCGIDB Legacy.');
 		}
 
-		return `mongodb://${process.env.PCGIDB_LEGACY_USER}:${process.env.PCGIDB_LEGACY_PASSWORD}@localhost:${localAddress.port}/`;
+		return `mongodb://${process.env.PCGIDB_LEGACY_USER}:${process.env.PCGIDB_LEGACY_PASSWORD}@localhost:${localAddress.port}/?directConnection=true`;
 
 		//
 	}
