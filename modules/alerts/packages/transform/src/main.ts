@@ -13,11 +13,20 @@ import { transformReferenceTypeLines } from '@/reference-types/lines.js';
 import { transformReferenceTypeRides } from '@/reference-types/rides.js';
 import { transformReferenceTypeStops } from '@/reference-types/stops.js';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, type GtfsRtAlert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
+import { type Alert, type GtfsRtEntitySelector, type GtfsRtFeedEntity } from '@tmlmobilidade/types';
 
-/* * */
-
-export async function transformAlert(alertData: Alert): Promise<GtfsRtAlert | undefined> {
+/**
+ * Transforms an Alert object into a GTFS-RT Feed Entity object.
+ * This function validates the required properties of the input Alert object,
+ * maps the cause and effect values to GTFS-RT standard values, transforms the
+ * header and description texts, URL and image into GTFS-RT objects, and prepares
+ * the informed_entity value based on the reference_type of the alert.
+ * The output of this function still needs to be wrapped in a GTFS-RT FeedMessage object with
+ * the appropriate header and any other feed entities before it can be served in a Protobuf feed.
+ * @param alertData The Alert object to be transformed.
+ * @returns A GTFS-RT Feed Entity object or undefined if the transformation fails.
+ */
+export async function transformAlert(alertData: Alert): Promise<GtfsRtFeedEntity | undefined> {
 	//
 
 	//
@@ -103,14 +112,17 @@ export async function transformAlert(alertData: Alert): Promise<GtfsRtAlert | un
 	// Validate required input properties
 
 	return {
-		active_period: activePeriodValues,
-		cause: mappedCauseValue,
-		description_text: descriptionTextValue,
-		effect: mappedEffectValue,
-		header_text: headerTextValue,
-		image: imageValue,
-		informed_entity: informedEntityValues,
-		url: urlValue,
+		alert: {
+			active_period: activePeriodValues,
+			cause: mappedCauseValue,
+			description_text: descriptionTextValue,
+			effect: mappedEffectValue,
+			header_text: headerTextValue,
+			image: imageValue,
+			informed_entity: informedEntityValues,
+			url: urlValue,
+		},
+		id: alertData._id,
 	};
 
 	//
