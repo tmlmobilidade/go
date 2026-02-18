@@ -4,14 +4,14 @@
 
 import type { CalendarEvent } from '@tmlmobilidade/types';
 
-import { Dates, generateMonthGrid, type MonthGrid } from '@tmlmobilidade/dates';
+import { CalendarKey, Dates, generateMonthGrid, keyToYYYYMMDD, type MonthGrid, parseCalendarKey } from '@tmlmobilidade/dates';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 /* * */
 
 export interface DateRangeState {
-	end: Dates | null
-	start: Dates | null
+	end: CalendarKey | null
+	start: CalendarKey | null
 }
 
 /* * */
@@ -148,14 +148,14 @@ export const CalendarUIContextProvider = ({
 	const setRangeStart = useCallback((date: Dates) => {
 		setRangeSelection({
 			end: null,
-			start: date,
+			start: parseCalendarKey(date),
 		});
 	}, []);
 
 	const setRangeEnd = useCallback((date: Dates) => {
 		setRangeSelection(prev => ({
 			...prev,
-			end: date,
+			end: parseCalendarKey(date),
 		}));
 	}, []);
 
@@ -201,19 +201,15 @@ export const CalendarUIContextProvider = ({
 		const map = new Map<number, CalendarEvent[]>();
 
 		filteredEvents.forEach((event) => {
-			const startOp = Dates.fromISO(event.startDate).operational_date;
-			const endOp = event.endDate
-				? Dates.fromISO(event.endDate).operational_date
-				: startOp;
+			const startKey = keyToYYYYMMDD(parseCalendarKey(event.startDate));
+			const endKey = keyToYYYYMMDD(parseCalendarKey(event.endDate ?? event.startDate));
 
-			// Add event to all months it spans
 			for (let m = 1; m <= 12; m++) {
-				const monthStartOp = `${year}${String(m).padStart(2, '0')}01`;
+				const monthStartKey = `${year}${String(m).padStart(2, '0')}01`;
 				const monthEndDay = new Date(year, m, 0).getDate();
-				const monthEndOp = `${year}${String(m).padStart(2, '0')}${String(monthEndDay).padStart(2, '0')}`;
+				const monthEndKey = `${year}${String(m).padStart(2, '0')}${String(monthEndDay).padStart(2, '0')}`;
 
-				// Check if event overlaps with this month using operational dates
-				if (startOp <= monthEndOp && endOp >= monthStartOp) {
+				if (startKey <= monthEndKey && endKey >= monthStartKey) {
 					const existing = map.get(m) || [];
 					map.set(m, [...existing, event]);
 				}

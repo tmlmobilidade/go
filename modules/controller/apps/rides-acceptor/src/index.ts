@@ -6,7 +6,7 @@ import { alerts, rideAcceptances, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { Timer } from '@tmlmobilidade/timer';
-import { GtfsCause, Ride, RideAcceptance } from '@tmlmobilidade/types';
+import { type Ride, type RideAcceptance } from '@tmlmobilidade/types';
 import { compareObjects } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
 
@@ -86,7 +86,7 @@ async function alertJustification(ride: Ride) {
 			justification: {
 				created_at: Dates.now('Europe/Lisbon').unix_timestamp,
 				created_by: foundAlert.created_by,
-				justification_cause: foundAlert.cause as GtfsCause,
+				justification_cause: foundAlert.cause,
 				justification_source: 'ALERT',
 				pto_message: foundAlert.description,
 				updated_at: Dates.now('Europe/Lisbon').unix_timestamp,

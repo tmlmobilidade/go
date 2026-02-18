@@ -60,7 +60,7 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 			const allOption = {
 				checked: toggleAllActive,
 				disabled: false,
-				label: t('global:components.filters.FilterTypeList.toggle_all'),
+				label: t('shared:components.filters.FilterTypeList.toggle_all'),
 				value: 'all',
 			};
 			return [allOption, ...options];
@@ -109,7 +109,7 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 					<Checkbox
 						key="toggle-all"
 						checked={toggleAllActive}
-						label={t('global:components.filters.FilterTypeList.toggle_all')}
+						label={t('shared:components.filters.FilterTypeList.toggle_all')}
 						onChange={handleMultiToggleAll}
 						value="all"
 					/>

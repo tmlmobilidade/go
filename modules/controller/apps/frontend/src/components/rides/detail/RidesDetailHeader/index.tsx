@@ -3,11 +3,10 @@
 /* * */
 
 import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
-import { OperationalStatusTag } from '@/components/common/OperationalStatusTag';
 import { RideAnalysisSystemStatus } from '@/components/rides/analysis/RideAnalysisSystemStatus';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, OperationalStatusTag, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 

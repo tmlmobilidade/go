@@ -3,4 +3,13 @@
 
 .dropdown {
 	padding: 3px;
+	background-color: var(--color-system-background-100);
+	border: 2px solid var(--color-primary);
+	border-radius: 6px;
+	box-shadow: 1px 1px 5px 0 var(--color-shadow);
+}
+
+.arrow {
+	background-color: var(--color-primary);
+	border: none;
 }

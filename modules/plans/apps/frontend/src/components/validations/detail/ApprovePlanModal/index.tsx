@@ -24,7 +24,7 @@ export const openApprovePlanModal = (validation_id?: string) => {
 		closeOnClickOutside: false,
 		modalId: CREATE_PLAN_MODAL_ID,
 		padding: 0,
-		size: 'auto',
+		size: 'xl',
 		withCloseButton: false,
 	});
 };

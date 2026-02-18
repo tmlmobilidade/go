@@ -4,8 +4,8 @@
 
 import { RideAnalysisViewOptions, useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Label, Section, SegmentedControl, useMeContext } from '@tmlmobilidade/ui';
-import React from 'react';
+import { SegmentedControl, Spacer, Toolbar, useMeContext } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -15,44 +15,38 @@ export function RideAnalysisViewNavigation() {
 	//
 	// A. Setup variables
 
-	const RideAnalysisContext = useRideAnalysisContext();
-	const me = useMeContext();
+	const meContext = useMeContext();
+	const rideAnalysisContext = useRideAnalysisContext();
 
 	//
-	// B. Handle actions
+	// B. Transform data
+
+	const viewOptions = useMemo(() => {
+		return Object
+			.values(RideAnalysisViewOptions)
+			.filter(option => meContext.actions.hasPermission(PermissionCatalog.all.rides.scope, option.permission))
+			.map(option => ({ label: option.label, value: option.value }));
+	}, [meContext.data.user.permissions]);
+
+	//
+	// C. Handle actions
 
 	const handleChangeView = (value: keyof typeof RideAnalysisViewOptions) => {
-		RideAnalysisContext.actions.setSelectedView(value);
+		rideAnalysisContext.actions.setSelectedView(value);
 	};
 
 	//
-	// C. Render components
-
-	const renderViewsOptions = () => {
-		return Object.values(RideAnalysisViewOptions).map(option => me.actions.hasPermission(PermissionCatalog.all.rides.scope, option.permission) && ({
-			label: (
-				<Section alignItems="center" flexDirection="row" gap="xs" padding="none">
-					{React.createElement(option.icon)}
-					{option.label}
-				</Section>
-			),
-			value: option.value,
-		})).filter(Boolean);
-	};
+	// D. Render components
 
 	return (
-		<Section alignItems="center" flexDirection="row" gap="xs" justifyContent="space-between" padding="sm">
-			<Section alignItems="center" flexDirection="row" gap="xs" padding="none">
-				{React.createElement(RideAnalysisViewOptions[RideAnalysisContext.data.selected_view].icon, { size: 32 })}
-				<Label size="lg" caps>{RideAnalysisViewOptions[RideAnalysisContext.data.selected_view].label}</Label>
-			</Section>
+		<Toolbar>
+			<Spacer />
 			<SegmentedControl
-				data={renderViewsOptions()}
+				data={viewOptions}
 				onChange={handleChangeView}
-				size="sm"
-				value={RideAnalysisContext.data.selected_view}
+				value={rideAnalysisContext.data.selected_view}
 			/>
-		</Section>
+		</Toolbar>
 	);
 
 	//

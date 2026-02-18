@@ -51,6 +51,7 @@ export function AlertDetailSectionReferences() {
 				activePeriodEndDate={alertDetailContext.data.form.getValues().active_period_end_date}
 				activePeriodStartDate={alertDetailContext.data.form.getValues().active_period_start_date}
 				availableAgenciesOptions={agenciesOptions}
+				enabledReferenceTypes={['agency', 'lines', 'rides', 'stops']}
 				onChangeAgencyId={handleChangeAgencyId}
 				onChangeReferences={handleChangeReferences}
 				onChangeReferenceType={handleChangeReferenceType}

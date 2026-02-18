@@ -143,6 +143,15 @@
 }
 
 /* Day states */
+.hasCellEvent {
+	opacity: 0.9;
+}
+
+.hasCellEvent .dayNumber {
+	font-weight: 600;
+	color: var(--color-contrast);
+}
+
 .otherMonth {
 	background: var(--color-system-background-200);
 }
@@ -154,6 +163,10 @@
 
 .weekend .dayNumber {
 	color: var(--color-status-danger-primary);
+}
+
+.hasCellEvent.weekend .dayNumber {
+	color: var(--color-system-background-100);
 }
 
 .otherMonth.weekend .dayNumber {

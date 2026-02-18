@@ -120,10 +120,10 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 		allPlansError,
 		allPlansLoading,
 		filterResultsData,
-		filterValidityStatus,
+		filterValidityStatus.value,
 		allPlansData,
-		filterAgency,
-		filterSearch,
+		filterAgency.value,
+		filterSearch.value,
 	]);
 
 	//

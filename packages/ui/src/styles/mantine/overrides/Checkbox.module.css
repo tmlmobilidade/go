@@ -46,6 +46,22 @@
 	padding-left: 10px;
 }
 
+/* .root:not([data-with-label]) .labelWrapper {
+	display: none;
+}
+
+.root:not([data-with-label]) .body {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.root:not([data-with-label]) {
+	padding: 6px;
+} */
+
+
+
 .label {
 	padding: 0;
 	padding-top: 4px;

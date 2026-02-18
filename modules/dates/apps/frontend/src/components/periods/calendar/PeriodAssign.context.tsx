@@ -4,7 +4,7 @@
 
 import { closeAsignPeriodModal } from '@/components/periods/calendar/PeriodAssign.modal';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { convertRangeToDatesArray, Dates } from '@tmlmobilidade/dates';
+import { CalendarKey, convertKeysToOperationalDates, convertRangeToKeysArray, datesFromCalendarKey } from '@tmlmobilidade/dates';
 import { type CreatePeriodDto, type OperationalDate, type Period } from '@tmlmobilidade/types';
 import { useForm, type UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -27,8 +27,8 @@ interface AssignPeriodData {
 	agency_id: string
 	color?: string
 	dateRange: {
-		end: Dates
-		start: Dates
+		end: CalendarKey
+		start: CalendarKey
 	}
 	mode: 'create' | 'existing'
 	newPeriodName?: string
@@ -41,7 +41,7 @@ interface PeriodAssignContextState {
 	actions: {
 		acknowledgeConflicts: () => void
 		assignExistingPeriod: (data: AssignPeriodData) => Promise<void>
-		checkConflicts: (params: { agency_id: string, assignmentMode: 'create' | 'existing', dateRange: { end: Dates, start: Dates }, periodId?: string }) => Promise<void>
+		checkConflicts: (params: { agency_id: string, assignmentMode: 'create' | 'existing', dateRange: { end: CalendarKey, start: CalendarKey }, periodId?: string }) => Promise<void>
 		createAndAssignPeriod: (data: AssignPeriodData) => Promise<void>
 		handleAssign: () => Promise<void>
 	}
@@ -73,7 +73,7 @@ export function usePeriodAssignContext() {
 
 /* * */
 
-export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithChildren<{ dateRange: { end: Dates, start: Dates } }>) => {
+export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithChildren<{ dateRange: { end: CalendarKey, start: CalendarKey } }>) => {
 	//
 
 	//
@@ -109,7 +109,7 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 			dateRange,
 			periodId: form.values.periodId,
 		});
-	}, [form.values.agency_id, form.values.assignmentMode, form.values.periodId, dateRange.start.operational_date, dateRange.end.operational_date]);
+	}, [form.values.agency_id, form.values.assignmentMode, form.values.periodId, dateRange.start, dateRange.end]);
 
 	//
 	// C. Check for conflicts function
@@ -117,7 +117,7 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 	const checkConflicts = useCallback(async (params: {
 		agency_id: string
 		assignmentMode: 'create' | 'existing'
-		dateRange: { end: Dates, start: Dates }
+		dateRange: { end: CalendarKey, start: CalendarKey }
 		periodId?: string
 	}) => {
 		// Reset conflicts and acknowledgment when checking
@@ -130,7 +130,9 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 
 		setCheckingConflicts(true);
 		try {
-			const dates = convertRangeToDatesArray(params.dateRange.start, params.dateRange.end);
+			const keys = convertRangeToKeysArray(params.dateRange.start, params.dateRange.end);
+			const dates = convertKeysToOperationalDates(keys);
+
 			const response = await fetchData<{ conflicts: { dates: OperationalDate[], period: Period }[] }>(
 				API_ROUTES.dates.PERIODS_CHECK_CONFLICTS,
 				'POST',
@@ -174,7 +176,7 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 
 		try {
 			// Convert the date range to an array of operational_date strings
-			const datesArray = convertRangeToDatesArray(data.dateRange.start, data.dateRange.end);
+			const datesArray = convertKeysToOperationalDates(convertRangeToKeysArray(data.dateRange.start, data.dateRange.end));
 
 			const createPeriodPayload: CreatePeriodDto = {
 				agency_id: data.agency_id,
@@ -253,7 +255,7 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 			}
 
 			// Convert the date range to an array of operational_date strings
-			const datesArray = convertRangeToDatesArray(data.dateRange.start, data.dateRange.end);
+			const datesArray = convertKeysToOperationalDates(convertRangeToKeysArray(data.dateRange.start, data.dateRange.end));
 
 			const assignResponse = await fetchData<Period>(
 				API_ROUTES.dates.PERIODS_DETAIL(data.periodId),
@@ -315,17 +317,21 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 	// H. Compute date range info
 
 	const dateRangeInfo = useMemo(() => {
-		const startDate = dateRange.start.toFormat('d \'de\' MMMM \'de\' yyyy');
-		const endDate = dateRange.end.toFormat('d \'de\' MMMM \'de\' yyyy');
-		const diffMs = dateRange.end.unix_timestamp - dateRange.start.unix_timestamp;
-		const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24)) + 1;
+		const startD = datesFromCalendarKey(dateRange.start);
+		const endD = datesFromCalendarKey(dateRange.end);
+
+		const startDate = startD.toFormat('d \'de\' MMMM \'de\' yyyy');
+		const endDate = endD.toFormat('d \'de\' MMMM \'de\' yyyy');
+
+		const diffMs = endD.unix_timestamp - startD.unix_timestamp;
+		const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1;
 
 		return {
 			dayCount: diffDays,
 			endDate,
 			startDate,
 		};
-	}, [dateRange]);
+	}, [dateRange.start, dateRange.end]);
 
 	//
 	// I. Compute canSubmit
@@ -333,7 +339,7 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 	const canSubmit = useMemo(() => {
 		if (!form.values.agency_id) return false;
 		if (form.values.assignmentMode === 'existing' && !form.values.periodId) return false;
-		if (form.values.assignmentMode === 'create' && !form.values.newPeriodName.trim() && !form.values.color) return false;
+		if (form.values.assignmentMode === 'create' && (!form.values.newPeriodName.trim() || !form.values.color)) return false;
 		if (checkingConflicts) return false;
 		if (conflicts.length > 0 && !conflictAcknowledged) return false;
 		return true;

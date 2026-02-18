@@ -5,6 +5,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { AUTH_SESSION_COOKIE_NAME, authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomToken } from '@tmlmobilidade/strings';
 import { type LoginDto, LoginDtoSchema, type Session } from '@tmlmobilidade/types';
 
@@ -29,6 +30,8 @@ export class AuthController {
 		await verificationTokens.deleteOne({ token: { $eq: request.body.token } });
 		// Send a success response
 		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		// Log the password change event
+		Logger.info(`Password changed for user ID: ${tokenResult.user_id}`);
 	}
 
 	/**
@@ -54,6 +57,8 @@ export class AuthController {
 		});
 		// Send the session data in the response
 		reply.send({ data: newSession, error: null, statusCode: HttpStatus.OK });
+		// Log the login event
+		Logger.info(`User logged in: ${newSession.user_id}`);
 	}
 
 	/**
@@ -102,6 +107,8 @@ export class AuthController {
 		});
 		// Send a success response
 		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		// Log the password reset email event
+		Logger.info(`Password reset email sent to "${request.body.email}" for User ID ${foundUser._id}`);
 	}
 
 	//

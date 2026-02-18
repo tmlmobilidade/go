@@ -19,6 +19,7 @@ interface EventsCalendarContextState {
 		annotations: Annotation[]
 		events: CalendarEvent[]
 		eventTypeCounts: {
+			additional: number
 			annotations: number
 			periods: number
 		}
@@ -44,11 +45,11 @@ export const useEventsCalendarContext = () => {
 
 /* * */
 
-export const EventsCalendarProvider = ({ children }: PropsWithChildren) => {
+export const EventsCalendarProvider = ({ additionalEvents = [], children }: PropsWithChildren<{ additionalEvents?: CalendarEvent[] }>) => {
 	//
 
 	return (
-		<EventsCalendarDataProvider>
+		<EventsCalendarDataProvider additionalEvents={additionalEvents}>
 			{children}
 		</EventsCalendarDataProvider>
 	);
@@ -56,7 +57,7 @@ export const EventsCalendarProvider = ({ children }: PropsWithChildren) => {
 
 /* * */
 
-const EventsCalendarDataProvider = ({ children }: PropsWithChildren) => {
+const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWithChildren<{ additionalEvents?: CalendarEvent[] }>) => {
 	//
 
 	//
@@ -194,14 +195,20 @@ const EventsCalendarDataProvider = ({ children }: PropsWithChildren) => {
 		return events;
 	}, [periodsData, annotationsData, agenciesData]);
 
+	// Merge with additional events
+	const allEvents = useMemo(() => {
+		return [...calendarEvents, ...additionalEvents];
+	}, [calendarEvents, additionalEvents]);
+
 	//
 	// E. Count events by type
 
 	const eventTypeCounts = useMemo(() => {
 		const periods = periodsData?.length || 0;
 		const annotations = annotationsData?.length || 0;
-		return { annotations, periods };
-	}, [periodsData, annotationsData]);
+		const additional = additionalEvents.length;
+		return { additional, annotations, periods };
+	}, [periodsData, annotationsData, additionalEvents]);
 
 	//
 	// F. Context value
@@ -209,7 +216,7 @@ const EventsCalendarDataProvider = ({ children }: PropsWithChildren) => {
 	const contextValue: EventsCalendarContextState = useMemo(() => ({
 		data: {
 			annotations: annotationsData || [],
-			events: calendarEvents,
+			events: allEvents,
 			eventTypeCounts,
 			periods: periodsData || [],
 		},
@@ -217,14 +224,14 @@ const EventsCalendarDataProvider = ({ children }: PropsWithChildren) => {
 			error: hasError || null,
 			loading: isLoading,
 		},
-	}), [annotationsData, calendarEvents, eventTypeCounts, hasError, isLoading, periodsData]);
+	}), [annotationsData, allEvents, eventTypeCounts, hasError, isLoading, periodsData]);
 
 	//
 	// G. Render
 
 	return (
 		<CalendarUIContextProvider
-			events={calendarEvents}
+			events={allEvents}
 			showSidebar={true}
 			initialEventTypeFilters={{
 				event: true,

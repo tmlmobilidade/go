@@ -8,9 +8,23 @@ import { useEffect, useMemo } from 'react';
 /* * */
 
 export interface UseFilterStateStringReturnType {
+
+	/**
+	 * Indicates if the filter is currently active.
+	 */
 	isActive: boolean
+
+	/**
+	 * Function to set the filter value.
+	 * @param value The new value for the filter.
+	 */
 	set: (value: string) => void
+
+	/**
+	 * The current value of the filter.
+	 */
 	value: string
+
 }
 
 /**

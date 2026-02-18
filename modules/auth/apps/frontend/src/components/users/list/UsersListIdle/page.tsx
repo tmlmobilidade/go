@@ -19,7 +19,7 @@ export function UsersListIdle() {
 	// B. Render Components
 	return (
 		<Surface align="center" justify="center" variant="transparent">
-			<NoDataLabel text={t('auth:users.list.Idle.text')} />
+			<NoDataLabel text={t('default:users.list.Idle.text')} />
 		</Surface>
 	);
 }

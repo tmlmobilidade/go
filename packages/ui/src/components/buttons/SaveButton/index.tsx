@@ -1,7 +1,8 @@
 'use client';
 
-import { useTranslation } from 'react-i18next';
 /* * */
+
+import { useTranslation } from 'react-i18next';
 
 import { Tooltip } from '../../common/Tooltip';
 import { Button } from '../Button';
@@ -22,7 +23,7 @@ export function SaveButton({ isDisabled, isLoading, onClick }: SaveButtonProps) 
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('global');
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -36,18 +37,18 @@ export function SaveButton({ isDisabled, isLoading, onClick }: SaveButtonProps) 
 	};
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<Tooltip
 			disabled={isDisabled}
-			label={t('components.buttons.SaveButton.tooltip')}
+			label={t('shared:components.buttons.SaveButton.tooltip')}
 			position="bottom"
 			withArrow
 		>
 			<Button
 				disabled={isDisabled}
-				label={t('components.buttons.SaveButton.label')}
+				label={t('shared:components.buttons.SaveButton.label')}
 				loading={isLoading}
 				onClick={handleClick}
 				variant="primary"

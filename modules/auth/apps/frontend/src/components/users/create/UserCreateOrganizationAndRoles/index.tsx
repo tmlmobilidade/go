@@ -53,16 +53,16 @@ export function UserCreateOrganizationAndRoles() {
 					key={userCreateContext.data.form.key('organization_id')}
 					clearable={false}
 					data={organizationItems}
-					label={t('auth:users.create.OrganizationAndRoles.fields.organization.label')}
-					placeholder={t('auth:users.create.OrganizationAndRoles.fields.organization.placeholder')}
+					label={t('default:users.create.OrganizationAndRoles.fields.organization.label')}
+					placeholder={t('default:users.create.OrganizationAndRoles.fields.organization.placeholder')}
 					required
 					{...userCreateContext.data.form.getInputProps('organization_id')}
 				/>
 				<MultiSelect
 					key={userCreateContext.data.form.key('role_ids')}
 					data={availableRoles}
-					label={t('auth:users.create.OrganizationAndRoles.fields.roles.label')}
-					placeholder={t('auth:users.create.OrganizationAndRoles.fields.roles.placeholder')}
+					label={t('default:users.create.OrganizationAndRoles.fields.roles.label')}
+					placeholder={t('default:users.create.OrganizationAndRoles.fields.roles.placeholder')}
 					{...userCreateContext.data.form.getInputProps('role_ids', { multiple: true })}
 				/>
 			</Grid>

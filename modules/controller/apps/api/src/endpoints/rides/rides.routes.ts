@@ -1,6 +1,7 @@
 /* * */
 
 import { RidesController } from '@/endpoints/rides/rides.controller.js';
+import { fastifyWebsocket } from '@fastify/websocket';
 import { RidesSharedController } from '@tmlmobilidade/controllers';
 import { authorizationMiddleware, type FastifyInstance, type FastifyReply, type FastifyRequest, FastifyService } from '@tmlmobilidade/fastify';
 import { type GetRidesBatchQuery, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
@@ -14,8 +15,10 @@ const server: FastifyInstance = FastifyService.getInstance().server;
 const NAMESPACE = '/rides';
 
 server.register(
-	(instance, opts, next) => {
+	async (instance) => {
 		//
+
+		await instance.register(fastifyWebsocket);
 
 		instance.get(
 			'/',
@@ -25,17 +28,16 @@ server.register(
 
 		instance.get(
 			'/ws',
-			{
-				preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]),
-				websocket: true,
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]), websocket: true },
+			(socket) => {
+				RidesSharedController.websocket(socket);
 			},
-			RidesController.websocket,
 		);
 
 		instance.get(
 			'/:id/ride',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			RidesController.getRideById,
+			(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<RideNormalized>) => RidesSharedController.getRideById(request, reply, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read),
 		);
 
 		instance.get(
@@ -86,7 +88,7 @@ server.register(
 			RidesController.reprocessRideById,
 		);
 
-		next();
+		//
 	},
 	{ prefix: NAMESPACE },
 );

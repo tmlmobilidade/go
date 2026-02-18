@@ -12,15 +12,15 @@ export function AgenciesListHeader() {
 	//
 	// A. Setup variables
 
-	const agenciesListContext = useAgenciesListContext();
 	const { t } = useTranslation();
+	const agenciesListContext = useAgenciesListContext();
 
 	//
 	// B. Render components
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>{t('auth:agencies.list.Header.title')}</Label>
+			<Label size="lg" caps singleLine>{t('default:agencies.list.Header.title')}</Label>
 			<Spacer />
 			<SearchInput onChange={agenciesListContext.actions.setFilterSearch} value={agenciesListContext.filters.search} />
 		</Toolbar>

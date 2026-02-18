@@ -78,18 +78,14 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 
 	/**
 	 * Deletes a file from the storage service and the database.
-	 * @param file_id - The unique identifier of the file in the database.
+	 * @param fileId - The unique identifier of the file in the database.
 	 * @returns The file that was deleted.
 	 */
-	public override async deleteById(file_id: string, options?: DeleteOptions): Promise<DeleteResult> {
-		const file = await this.findOne({ _id: file_id });
-
-		if (!file) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
-		}
-
-		await this.storageService.deleteFile(`${file.scope}/${file.resource_id}/${file._id}.${Files.getFileExtension(file.name)}`);
-		return await super.deleteById(file_id, options);
+	public override async deleteById(fileId: string, options?: DeleteOptions): Promise<DeleteResult> {
+		const foundFile = await this.findById(fileId);
+		if (!foundFile) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
+		await this.storageService.deleteFile(`${foundFile.scope}/${foundFile.resource_id}/${foundFile._id}.${Files.getFileExtensionFromMimeType(foundFile.type)}`);
+		return await super.deleteById(fileId, options);
 	}
 
 	/**
@@ -192,7 +188,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 
 			//
 			// C.3. Insert file record
-			result = await this.insertOne({ ...createFileDto, _id: fileId }, { options });
+			result = await this.insertOne({ ...createFileDto, _id: fileId, type: mimeType }, { options });
 			await session.commitTransaction();
 		}
 		catch (error) {

@@ -5,7 +5,6 @@
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { DateTimeInput, Divider, Grid, Label, Section, Text, useMeContext } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
 
 /* * */
 
@@ -21,26 +20,19 @@ export function AlertCreateStepDates() {
 	//
 	// B. Transform data
 
-	const hasPermissionToEdit = useMemo(() => {
-		const canEditThisAgency = meContext.actions.hasPermissionResource({
+	const hasPermissionToEdit = meContext.actions.hasPermissionResource([
+		{
 			action: PermissionCatalog.all.alerts.actions.update_dates,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.alerts.scope,
 			value: alertCreateContext.data.form.getValues().agency_id,
-		});
-		const canEditThisReferenceType = meContext.actions.hasPermissionResource({
+		},
+		{
 			action: PermissionCatalog.all.alerts.actions.update_dates,
 			resource_key: 'reference_types',
 			scope: PermissionCatalog.all.alerts.scope,
 			value: alertCreateContext.data.form.getValues().reference_type,
-		});
-		// User can edit dates if they have permission
-		// for the agency and reference type.
-		return canEditThisAgency && canEditThisReferenceType;
-	}, [
-		meContext.data.user?.permissions,
-		alertCreateContext.data.form.getValues().agency_id,
-		alertCreateContext.data.form.getValues().reference_type,
+		},
 	]);
 
 	//

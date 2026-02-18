@@ -3,10 +3,9 @@
 /* * */
 
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
-import { CauseIcons, EffectIcons } from '@/lib/icons';
-import { Translations } from '@/lib/translations';
-import { GtfsCauseExtendedSchema, GtfsEffectSchema } from '@tmlmobilidade/types';
-import { Collapsible, Grid, Section, Select } from '@tmlmobilidade/ui';
+import { AlertCauseSchema, AlertEffectSchema } from '@tmlmobilidade/types';
+import { AlertCauseIcons, AlertEffectIcons, Collapsible, Grid, Section, Select } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -16,20 +15,22 @@ export function AlertDetailSectionCauseEffect() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const alertDetailContext = useAlertDetailContext();
 
 	//
 	// B. Transform data
 
-	const causeItems = GtfsCauseExtendedSchema.options.map(cause => ({
-		icon: CauseIcons[cause],
-		label: Translations.CAUSE[cause],
+	const causeItems = AlertCauseSchema.options.map(cause => ({
+		icon: AlertCauseIcons[cause],
+		label: t(`shared:alerts.causes.${cause}.title`),
 		value: cause,
 	}));
 
-	const effectItems = GtfsEffectSchema.options.map(effect => ({
-		icon: EffectIcons[effect],
-		label: Translations.EFFECT[effect],
+	const effectItems = AlertEffectSchema.options.map(effect => ({
+		icon: AlertEffectIcons[effect],
+		label: t(`shared:alerts.effects.${effect}.title`),
 		value: effect,
 	}));
 

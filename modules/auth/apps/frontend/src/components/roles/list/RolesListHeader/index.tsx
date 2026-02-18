@@ -24,10 +24,10 @@ export function RolesListHeader() {
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>{t('auth:roles.list.Header.title')}</Label>
+			<Label size="lg" caps singleLine>{t('default:roles.list.Header.title')}</Label>
 			<Spacer />
 			<SearchInput onChange={roleListContext.actions.setFilterSearch} value={roleListContext.filters.search} />
-			<Button icon={<IconPlus size={20} />} label={t('auth:roles.list.Header.NewRoleButton.label')} onClick={openCreateRoleModal} />
+			<Button icon={<IconPlus size={20} />} label={t('default:roles.list.Header.NewRoleButton.label')} onClick={openCreateRoleModal} />
 		</Toolbar>
 	);
 

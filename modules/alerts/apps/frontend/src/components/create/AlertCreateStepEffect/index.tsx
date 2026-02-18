@@ -1,10 +1,9 @@
 /* * */
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
-import { EffectIcons } from '@/lib/icons';
-import { Translations } from '@/lib/translations';
-import { GtfsEffectSchema } from '@tmlmobilidade/types';
-import { Grid, LargeButton, Section } from '@tmlmobilidade/ui';
+import { alertCauseEffectReferenceTypeMap, type AlertEffect } from '@tmlmobilidade/types';
+import { AlertEffectIcons, Grid, LargeButton, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,19 +13,21 @@ export function AlertCreateStepEffect() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const alertCreateContext = useAlertCreateContext();
 
 	//
 	// B. Transform data
 
-	const preparedOptions = Object.values(GtfsEffectSchema.enum)
-		.map(item => ({ icon: EffectIcons[item], label: Translations.EFFECT[item], value: item }))
+	const preparedOptions = Object.keys(alertCauseEffectReferenceTypeMap[alertCreateContext.data.form.getValues().cause])
+		.map((item: AlertEffect) => ({ icon: AlertEffectIcons[item], label: t(`shared:alerts.effects.${item}.title`) as string, value: item }))
 		.sort((a, b) => a.label.localeCompare(b.label));
 
 	//
 	// C. Handle actions
 
-	const handleSelectEffect = (value: keyof typeof GtfsEffectSchema.enum) => {
+	const handleSelectEffect = (value: AlertEffect) => {
 		alertCreateContext.data.form.setFieldValue('effect', value);
 		alertCreateContext.data.multi_step.actions.next();
 	};
@@ -36,7 +37,7 @@ export function AlertCreateStepEffect() {
 
 	return (
 		<Section padding="lg">
-			<Grid columns="abcde" gap="md">
+			<Grid columns="abc" gap="md">
 				{preparedOptions.map(item => (
 					<LargeButton
 						key={item.value}
