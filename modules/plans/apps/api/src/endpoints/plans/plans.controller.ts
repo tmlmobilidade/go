@@ -236,6 +236,40 @@ export class PlansController {
 	}
 
 	/**
+	 * Download the operation file associated with a plan by ID.
+	 * @param request The request object.
+	 * @param reply The reply object.
+	 */
+	static async downloadPlanOperationFileById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
+		// Get the Plan from the database
+		const planData = await plans.findById(request.params.id);
+		if (!planData) throw new HttpException(HttpStatus.NOT_FOUND, 'Plan not found');
+		// Check if the user has permission to read the Plan
+		const hasPermissionReadPlan = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.plans.actions.read,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.plans.scope,
+			value: planData.gtfs_agency.agency_id,
+		});
+		if (!hasPermissionReadPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: read plan');
+		// Fetch the file associated with the plan
+		const foundFileData = await files.findById(planData.operation_file_id);
+		if (!foundFileData) throw new HttpException(HttpStatus.NOT_FOUND, 'Plan operation file not found');
+		// Stream the file in the given URL to the client
+		const storageServiceResponse = await fetch(foundFileData.url);
+		if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
+		// Set headers and pipe the response body to the client
+		reply.header('Content-Disposition', `attachment; filename="${foundFileData.name}"`);
+		reply.header('Content-Type', 'application/zip');
+		// Set content length if available
+		const contentLength = storageServiceResponse.headers.get('Content-Length');
+		if (contentLength) reply.header('Content-Length', contentLength);
+		// Pipe the response body to the client
+		return reply.send(storageServiceResponse.body);
+	}
+
+	/**
 	 * Retrieves all plans.
 	 * @param request Fastify request
 	 * @param reply Fastify reply

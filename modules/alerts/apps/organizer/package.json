@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-alerts-api",
+	"name": "@tmlmobilidade/go-alerts-organizer",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -13,27 +13,19 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint ./src --fix"
+		"lint": "eslint . --fix && tsc --noEmit",
+		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@fastify/multipart": "9.4.0",
-		"@fastify/websocket": "11.2.0",
-		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/controllers": "*",
-		"@tmlmobilidade/emails": "*",
-		"@tmlmobilidade/fastify": "*",
-		"@tmlmobilidade/go-alerts-pckg-transform": "*",
+		"@tmlmobilidade/go-alerts-pckg-organize": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/normalizers": "*",
-		"@tmlmobilidade/utils": "*"
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/api-types": "20251128.1928.11",
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/node": "25.2.2",
-		"gtfs-types": "5.1.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"

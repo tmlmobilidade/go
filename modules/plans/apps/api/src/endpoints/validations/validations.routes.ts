@@ -41,6 +41,12 @@ server.register(
 		);
 
 		instance.get(
+			'/:id/file/download',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.read]) },
+			GtfsValidationsController.downloadFile,
+		);
+
+		instance.get(
 			'/:id/request-approval',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.request_approval]) },
 			GtfsValidationsController.requestApproval,
