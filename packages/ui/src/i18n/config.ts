@@ -18,4 +18,5 @@ i18next
 		resources: {
 			pt: i18nResourceKeysPtShared,
 		},
+		showSupportNotice: false,
 	});
