@@ -73,7 +73,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
 
-	const { options: agenciesOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { options: agenciesOptions, raw: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.create],
 		scope: PermissionCatalog.all.alerts.scope,
 	});
@@ -229,8 +229,6 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			const parentIds = form.getValues().references.map(reference => reference.parent_id);
 			// Fetch data for agencies
 			if (form.getValues().reference_type === 'agency') {
-				const response = await fetch('https://api.carrismetropolitana.pt/v2/agencies'); // ! THIS NEEDS TO BE REPLACED WITH THE CORRECT API URL
-				const agenciesData = await response.json() as Agency[];
 				const result: Agency[] = agenciesData.filter(agency => parentIds.includes(agency._id));
 				setSelectedReferencesData(result.map(agency => ({ display_name: agency.name, id: agency._id, name: agency.name })));
 			}
