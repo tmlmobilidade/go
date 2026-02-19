@@ -19,7 +19,7 @@
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
-		"@tmlmobilidade/gtfs-validator": "20260219.1157.26",
+		"@tmlmobilidade/gtfs-validator": "20260219.1438.6",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
