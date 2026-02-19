@@ -1,4 +1,4 @@
-import type { DayContext } from './types';
+import type { DayContext } from './types.js';
 
 import { EventReplacementRule, ManualRule } from '@tmlmobilidade/types';
 

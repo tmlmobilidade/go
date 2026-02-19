@@ -6,17 +6,15 @@ import { openCreateRuleModal } from '@/components/patterns/rules/create/RuleCrea
 import { openRulesCalendarPreviewModal } from '@/components/patterns/rules/list/RulesCalendarPreview.modal';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { useTypologiesContext } from '@/contexts/Typologies.context';
-import { buildRuleSummary } from '@/utils/rules-pck/formatting/summary';
-import { buildRulesPreview, RulesPreview } from '@/utils/rules-pck/preview';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
+import { buildRuleSummary, Dates } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { EventReplacementRule, EventRestrictionRule, Line, ManualRule, Pattern, PermissionCatalog, ScheduleRule, Typology, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { type Feature, type FeatureCollection, type LineString, type Point } from 'geojson';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -37,7 +35,6 @@ interface PatternDetailContextState {
 		id: string
 		mergedRules: ScheduleRule[]
 		pattern: null | Pattern
-		rulesPreview?: RulesPreview
 		typologyData?: Typology
 	}
 	flags: DetailContextStateTemplate['flags']
@@ -70,8 +67,6 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	const router = useRouter();
 	const meContext = useMeContext();
 	const periodsContext = usePeriodsContext();
-
-	const [rulesPreview, setRulesPreview] = useState<RulesPreview | undefined>(undefined);
 
 	//
 	// B. Fetch data
@@ -162,29 +157,12 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	//
 	// E. Handle actions
 
-	useEffect(() => {
-		if (!patternData) return;
-		if (form.isDirty()) return;
-
-		recomputePreview(rulesForUI);
-	}, [patternData, periodsContext.data.raw, rulesForUI]);
-
-	const recomputePreview = (rules: ScheduleRule[]) => {
-		setRulesPreview(
-			buildRulesPreview(rules, periodsContext.data.raw, {
-				endDate: Dates.now('Europe/Lisbon').plus({ years: 1 }).js_date,
-				startDate: new Date(),
-			}),
-		);
-	};
-
 	const handleAddRule = (rule: ManualRule) => {
 		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
 		const ruleWithId = { ...rule, _id: crypto.randomUUID() };
 		const newRules = [...currentRules, ruleWithId];
 
 		form.setFieldValue('rules', newRules);
-		recomputePreview([...newRules, ...derivedRules] as ScheduleRule[]);
 	};
 
 	const handleEditRule = (rule: ManualRule) => {
@@ -198,7 +176,6 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		);
 
 		form.setFieldValue('rules', newRules);
-		recomputePreview([...newRules, ...derivedRules] as ScheduleRule[]);
 	};
 
 	const handleDeleteRule = (ruleId: string) => {
@@ -206,7 +183,6 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		const newRules = currentRules.filter(r => r._id !== ruleId);
 
 		form.setFieldValue('rules', newRules);
-		recomputePreview([...newRules, ...derivedRules] as ScheduleRule[]);
 	};
 
 	const handleOpenRuleModal = (rule?: ManualRule) => {
@@ -229,7 +205,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	const handleOpenRulesCalendarPreviewModal = () => {
 		openRulesCalendarPreviewModal(
 			lineData?.agency_id || '',
-			rulesPreview,
+			rulesForUI,
 		);
 	};
 
@@ -338,7 +314,6 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 			lineId,
 			mergedRules: rulesForUI,
 			pattern: patternData,
-			rulesPreview,
 			typologyData,
 		},
 		flags: {
@@ -366,7 +341,6 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		patternLineFC,
 		patternStopsFC,
 		lineData,
-		rulesPreview,
 		canDelete,
 		canLock,
 		canSave,

@@ -3,11 +3,9 @@
 /* * */
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
-import { TimeChip } from '@/components/patterns/rules/common/TimeChip';
-import { BUSINESS_PERIODS, groupTimesByPeriod } from '@/utils/businessPeriods';
 import { IconArrowRight, IconCalendarCancel, IconCalendarCheck } from '@tabler/icons-react';
 import { ManualRule, ScheduleRule } from '@tmlmobilidade/types';
-import { IconButton, Section, Text } from '@tmlmobilidade/ui';
+import { BusinessPeriodsTimepoints, IconButton, Section, Text } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -30,7 +28,6 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 	const isOffTime = rule.kind === 'manual' && rule.operatingMode === 'exclude';
 	const times = rule?.timePoints ?? [];
 	const name = rule?.name || 'Regra sem nome';
-	const groupedTimes = groupTimesByPeriod(times);
 
 	//
 	// B. Handle actions
@@ -54,20 +51,7 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 					<Text className={styles.timesCount}>{times.length} {times.length > 1 ? 'horários' : 'horário'}</Text>
 				</Section>
 
-				<Section gap="xs" padding="none">
-					{BUSINESS_PERIODS.filter(p => groupedTimes[p.key].length > 0).map(period => (
-						<Section key={period.key} alignItems="center" flexDirection="row" gap="xs" padding="none">
-							<Text size="xs" style={{ alignItems: 'center', display: 'flex', gap: '4px', minWidth: '50px' }}>
-								{period.icon} {period.key.toUpperCase()}
-							</Text>
-							<Section flexDirection="row" flexWrap="wrap" gap="sm" padding="none">
-								{groupedTimes[period.key].map(time => (
-									<TimeChip key={time} time={time} />
-								))}
-							</Section>
-						</Section>
-					))}
-				</Section>
+				<BusinessPeriodsTimepoints timepoints={times} variant="compact" />
 			</Section>
 
 			<IconButton

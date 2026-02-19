@@ -3,10 +3,8 @@
 /* * */
 
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { computeRuleImpact } from '@/utils/rules-pck/calculation';
-import { buildRuleSummary } from '@/utils/rules-pck/formatting/summary';
 import { useForm } from '@mantine/form';
-import { Dates } from '@tmlmobilidade/dates';
+import { buildRuleSummary, Dates, getManualRuleAffectedDates } from '@tmlmobilidade/dates';
 import { ManualRule, ManualRuleSchema, OPERATING_MODE } from '@tmlmobilidade/types';
 import { type UseFormReturnType } from '@tmlmobilidade/ui';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -83,18 +81,23 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	//
 	//
 
+	// Used to prevent calculations when timepoints change
+	const periodKey = form.values.periodIds.join('|');
+	const weekdayKey = form.values.weekdays.join('|');
+
 	const ruleSummary = useMemo(() => buildRuleSummary(form.values, {
 		periods: periodsContext.data.raw,
-	}), [form.values, periodsContext.data.raw]);
+	}),
+	[periodKey, weekdayKey, form.values.operatingMode, periodsContext.data.raw]);
 
-	const ruleImpact = useMemo(() => computeRuleImpact(
+	const ruleImpact = useMemo(() => getManualRuleAffectedDates(
 		form.values,
 		{
 			endDate: Dates.now('Europe/Lisbon').plus({ years: 1 }).js_date,
 			periods: periodsContext.data.raw,
 			startDate: new Date(),
 		},
-	), [form.values, periodsContext.data.raw]);
+	), [periodKey, weekdayKey, form.values.operatingMode, periodsContext.data.raw]);
 
 	//
 	// D. Handle actions

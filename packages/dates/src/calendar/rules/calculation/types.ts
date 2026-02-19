@@ -1,7 +1,5 @@
 import type { IsoWeekday } from '@tmlmobilidade/types';
 
-import { CalendarKey } from '@tmlmobilidade/dates';
-
 /**
  * Represents the result of applying rules to a specific date.
  * Contains the time points that should be active, which rules were applied,
@@ -10,17 +8,9 @@ import { CalendarKey } from '@tmlmobilidade/dates';
 export interface RuleApplication {
 	/** IDs of all rules that were applied to determine this result */
 	appliedRuleIds: string[]
-	/** True if this date is controlled by an event replacement rule */
-	isEventOverride: boolean
 	/** Array of time points (HH:MM format) that are active on this date */
 	timePoints: string[]
 }
-
-/**
- * Map from calendar date keys to their rule application results.
- * Used to efficiently look up which time points are active on any given date.
- */
-export type RuleApplicationMap = Map<CalendarKey, RuleApplication>;
 
 /**
  * Minimal context needed to determine which manual rules apply to a specific day.

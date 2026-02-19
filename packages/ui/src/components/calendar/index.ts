@@ -1,3 +1,4 @@
+export * from './components/BusinessPeriodsTimepoints';
 export * from './components/Calendar';
 export * from './components/CalendarEvent';
 export * from './components/CalendarGrid';
@@ -6,6 +7,7 @@ export * from './components/CalendarSidebar';
 export * from './components/DayTooltip';
 export * from './components/EventsCalendar';
 export * from './components/MiniCalendar';
+export * from './components/TimeChip';
 export * from './components/YearlyCalendarMonth';
 export * from './contexts/CalendarUI.context';
 export * from './contexts/EventsCalendar.context';

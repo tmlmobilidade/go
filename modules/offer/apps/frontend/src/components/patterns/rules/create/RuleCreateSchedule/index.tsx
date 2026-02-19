@@ -2,13 +2,9 @@
 
 /* * */
 
-import { TimeChip } from '@/components/patterns/rules/common/TimeChip';
-import { BUSINESS_PERIODS, groupTimesByPeriod } from '@/utils/businessPeriods';
 import { IconPlus } from '@tabler/icons-react';
-import { Button, Section, TextInput } from '@tmlmobilidade/ui';
+import { BusinessPeriodsTimepoints, Button, Section, TextInput } from '@tmlmobilidade/ui';
 import { KeyboardEvent, useState } from 'react';
-
-import styles from './styles.module.css';
 
 /* * */
 
@@ -80,8 +76,6 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 		onChange(newTimes);
 	};
 
-	const groupedTimes = groupTimesByPeriod(value);
-
 	return (
 		<Section gap="sm">
 			{/* Input Area */}
@@ -108,21 +102,7 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 
 			{/* Periods Layout */}
 			{value.length > 0 && (
-				<Section gap="md" padding="none">
-					{BUSINESS_PERIODS.map(period => (
-						<div key={period.key} className={styles.periodColumn}>
-							<div className={styles.periodTitle}>
-								{period.icon} {period.title}
-							</div>
-							<div className={styles.timeList}>
-								{groupedTimes[period.key].length === 0 && <span className={styles.emptyState}>Sem horários</span>}
-								{groupedTimes[period.key].map(time => (
-									<TimeChip key={time} onRemove={() => handleRemove(time)} time={time} />
-								))}
-							</div>
-						</div>
-					))}
-				</Section>
+				<BusinessPeriodsTimepoints onRemove={handleRemove} timepoints={value} variant="long" />
 			)}
 		</Section>
 	);

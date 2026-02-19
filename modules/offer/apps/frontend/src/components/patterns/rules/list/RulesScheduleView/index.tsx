@@ -2,12 +2,9 @@
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { buildRuleSummary } from '@/utils/rules-pck/formatting/summary';
-import { computeRuleImpactTimePoints } from '@/utils/rules-pck/preview';
-import { buildOperationalDateRange } from '@/utils/rules-pck/utils/date';
 import { Badge } from '@mantine/core';
 import { IconCancel, IconCheck, IconSwitchHorizontal } from '@tabler/icons-react';
-import { Dates } from '@tmlmobilidade/dates';
+import { buildRuleSummary, computeRuleTimePoints } from '@tmlmobilidade/dates';
 import { Section, Text, Tooltip } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
@@ -24,6 +21,7 @@ interface RuleLegendItem {
 	ruleId: string
 	short: string
 	slot: number
+	tooltip?: string
 }
 
 /* * */
@@ -39,17 +37,13 @@ export function RulesScheduleView() {
 	const allRules = patternDetailContext.data.mergedRules || [];
 	const periods = periodsContext.data.raw || [];
 
-	const impactByRuleId = useMemo(() => {
-		const map = new Map<string, { filled: Set<string>, outlined: Set<string> }>();
-
-		const start = Dates.now('Europe/Lisbon').startOf('day').js_date;
-		const end = Dates.fromJSDate(start).plus({ years: 1 }).js_date;
-
-		const dateRange = buildOperationalDateRange(start, end);
+	const timePointsByRuleId = useMemo(() => {
+		const map = new Map<string, Set<string>>();
 
 		for (const rule of allRules) {
 			if (!rule._id) continue;
-			map.set(rule._id, computeRuleImpactTimePoints(rule, allRules, periods, dateRange));
+			const timePoints = computeRuleTimePoints(rule, allRules, periods);
+			map.set(rule._id, timePoints);
 		}
 		return map;
 	}, [allRules, periods]);
@@ -60,7 +54,7 @@ export function RulesScheduleView() {
 
 		for (const rule of rules) {
 			if (!uniqueRules.has(rule._id)) {
-				const { long, short } = buildRuleSummary(rule, { periods });
+				const { long, short, tooltip } = buildRuleSummary(rule, { periods });
 				const isReplacement = rule.kind === 'event_replacement';
 				const isExclude = (rule.kind === 'manual' && rule.operatingMode === 'exclude') || rule.kind === 'event_restriction';
 				uniqueRules.set(rule._id, {
@@ -72,6 +66,7 @@ export function RulesScheduleView() {
 					ruleId: rule._id,
 					short,
 					slot: 0,
+					tooltip,
 				});
 			}
 		}
@@ -89,13 +84,12 @@ export function RulesScheduleView() {
 	const timeColumns = useMemo(() => {
 		const allTimes = new Set<string>();
 
-		for (const { filled, outlined } of impactByRuleId.values()) {
-			for (const tp of filled) allTimes.add(tp);
-			for (const tp of outlined) allTimes.add(tp);
+		for (const timePoints of timePointsByRuleId.values()) {
+			for (const tp of timePoints) allTimes.add(tp);
 		}
 
 		return Array.from(allTimes).sort((a, b) => toMinutes(a) - toMinutes(b));
-	}, [impactByRuleId]);
+	}, [timePointsByRuleId]);
 
 	// Filter visible columns based on selection
 	const visibleLegendItems = useMemo(() => {
@@ -136,95 +130,89 @@ export function RulesScheduleView() {
 	};
 
 	return (
-		<div className={styles.wrapper}>
-			<div className={styles.container}>
-				{/* Legend Section */}
-				<div className={styles.legend}>
-					{legendItems.map(item => (
-						<Tooltip key={item.ruleId} label={item.long} withArrow>
-							<Badge
-								className={styles.legendPill}
-								data-selected={selectedRuleIds.size === 0 || selectedRuleIds.has(item.ruleId) ? 'true' : 'false'}
-								onClick={() => handlePillClick(item.ruleId)}
-								onMouseEnter={() => setHoveredRuleId(item.ruleId)}
-								onMouseLeave={() => setHoveredRuleId(null)}
-								style={pillStyle(item.slot)}
-							>
-								{item.label} {item.short}
-							</Badge>
-						</Tooltip>
-					))}
-				</div>
-
-				{/* Table */}
-				<div className={styles.tableWrapper}>
-					<div className={styles.tableScrollX}>
-						<table className={styles.table}>
-							<thead>
-								<tr>
-									{/* sticky left header cell */}
-									<th className={styles.headerRuleSticky}>Regra</th>
-
-									{timeColumns.map(time => (
-										<th key={time} className={styles.headerTimeCol}>
-											{time}
-										</th>
-									))}
-								</tr>
-							</thead>
-
-							<tbody>
-								{visibleLegendItems.map((item) => {
-									const impact = impactByRuleId.get(item.ruleId);
-									const filled = impact?.filled ?? new Set<string>();
-									const outlined = impact?.outlined ?? new Set<string>();
-
-									return (
-										<tr key={item.ruleId}>
-											{/* sticky left rule cell */}
-											<td className={styles.cellRuleSticky}>
-												<Tooltip key={item.ruleId} label={item.long}>
-													<div
-														className={styles.headerRule}
-														style={{ ...pillStyle(item.slot), border: 'none' }}
-													>
-														{item.label}
-													</div>
-												</Tooltip>
-											</td>
-
-											{timeColumns.map((time) => {
-												const isFilled = filled.has(time);
-												const isOutlined = outlined.has(time);
-												const show = isFilled || isOutlined;
-
-												return (
-													<td
-														key={time}
-														className={styles.cellTimeCol}
-														data-active={isRuleActive(item.ruleId) ? 'true' : 'false'}
-													>
-														{show && (
-															<div className={styles.iconCenter}>
-																<Tooltip label={`${item.long}`}>
-																	{item.isExclude && <IconCancel color={`var(--pill-${item.slot}-text)`} size={20} />}
-																	{item.isReplacement && <IconSwitchHorizontal color={`var(--pill-${item.slot}-text)`} size={20} />}
-																	{!item.isExclude && !item.isReplacement && <IconCheck color={`var(--pill-${item.slot}-text)`} size={20} />}
-																</Tooltip>
-															</div>
-														)}
-													</td>
-												);
-											})}
-										</tr>
-									);
-								})}
-							</tbody>
-						</table>
-					</div>
-				</div>
-
+		<div className={styles.container}>
+			{/* Legend Section */}
+			<div className={styles.legend}>
+				{legendItems.map(item => (
+					<Tooltip key={item.ruleId} label={item.long} withArrow>
+						<Badge
+							className={styles.legendPill}
+							data-selected={selectedRuleIds.size === 0 || selectedRuleIds.has(item.ruleId) ? 'true' : 'false'}
+							onClick={() => handlePillClick(item.ruleId)}
+							onMouseEnter={() => setHoveredRuleId(item.ruleId)}
+							onMouseLeave={() => setHoveredRuleId(null)}
+							style={pillStyle(item.slot)}
+						>
+							{item.label} {item.short}
+						</Badge>
+					</Tooltip>
+				))}
 			</div>
+
+			{/* Table */}
+			<div className={styles.tableWrapper}>
+				<div className={styles.tableScrollX}>
+					<table className={styles.table}>
+						<thead>
+							<tr>
+								{/* sticky left header cell */}
+								<th className={styles.headerRuleSticky}>Regra</th>
+
+								{timeColumns.map(time => (
+									<th key={time} className={styles.headerTimeCol}>
+										{time}
+									</th>
+								))}
+							</tr>
+						</thead>
+
+						<tbody>
+							{visibleLegendItems.map((item) => {
+								const timePoints = timePointsByRuleId.get(item.ruleId) ?? new Set<string>();
+
+								return (
+									<tr key={item.ruleId}>
+										{/* sticky left rule cell */}
+										<td className={styles.cellRuleSticky}>
+											<Tooltip key={item.ruleId} label={item.long}>
+												<div
+													className={styles.headerRule}
+													style={{ ...pillStyle(item.slot), border: 'none' }}
+												>
+													{item.label}
+												</div>
+											</Tooltip>
+										</td>
+
+										{timeColumns.map((time) => {
+											const hasTimePoint = timePoints.has(time);
+
+											return (
+												<td
+													key={time}
+													className={styles.cellTimeCol}
+													data-active={isRuleActive(item.ruleId) ? 'true' : 'false'}
+												>
+													{hasTimePoint && (
+														<div className={styles.iconCenter}>
+															<Tooltip label={`${item.tooltip || item.long}`} withArrow>
+																{item.isExclude && <IconCancel color={`var(--pill-${item.slot}-text)`} size={20} />}
+																{item.isReplacement && <IconSwitchHorizontal color={`var(--pill-${item.slot}-text)`} size={20} />}
+																{!item.isExclude && !item.isReplacement && <IconCheck color={`var(--pill-${item.slot}-text)`} size={20} />}
+															</Tooltip>
+														</div>
+													)}
+												</td>
+											);
+										})}
+									</tr>
+								);
+							})}
+						</tbody>
+					</table>
+				</div>
+			</div>
+
 		</div>
 	);
 }

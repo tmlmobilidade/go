@@ -1,8 +1,8 @@
-import type { DayContext } from './types';
+import type { DayContext } from './types.js';
 
 import { EventReplacementRule, ManualRule, OPERATING_MODE } from '@tmlmobilidade/types';
 
-import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matchers';
+import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matchers.js';
 
 /**
  * Collects time points from manual INCLUDE rules that match a given day context.

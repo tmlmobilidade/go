@@ -1,9 +1,8 @@
 /* * */
 
 import { Dates } from '@/dates.js';
+import { TimezoneIdentified } from '@/types.js';
 import { IsoWeekday } from '@tmlmobilidade/types';
-
-import { TimezoneIdentified } from './types.js';
 
 /* * */
 

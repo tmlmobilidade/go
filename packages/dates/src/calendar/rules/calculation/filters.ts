@@ -1,8 +1,8 @@
-import type { DayContext } from './types';
+import type { DayContext } from './types.js';
 
 import { type EventReplacementRule, type ManualRule, OPERATING_MODE, type OperationalDate, type ScheduleRule } from '@tmlmobilidade/types';
 
-import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matchers';
+import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matchers.js';
 
 /**
  * Removes time points based on manual EXCLUDE rules that match a given day context.

@@ -1,4 +1,5 @@
-import { Dates, Formats } from '@tmlmobilidade/dates';
+import { Dates } from '@/dates.js';
+import { Formats } from '@/format.js';
 import { EventReplacementRule, EventRestrictionRule, IsoWeekday, ManualRule, Period, ScheduleRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
 
 /**
@@ -46,7 +47,7 @@ export function buildRuleSummary(
 	return {
 		long: buildRuleSummaryLong(rule, options),
 		short: buildRuleSummaryShort(rule, options),
-		tooltip: buildRuleSummaryTooltip(rule),
+		tooltip: buildRuleSummaryTooltip(rule, options),
 	};
 }
 
@@ -121,45 +122,54 @@ function buildRuleSummaryLong(
 }
 
 /**
+ * Formats a date with weekday indicator.
+ * Example: "20/01/2025 (Sáb)"
+ */
+function formatDateWithWeekday(date: string): string {
+	const dt = Dates.fromOperationalDate(date, 'Europe/Lisbon');
+	const formattedDate = dt.toLocaleString(Formats.DATE_SHORT, 'pt-PT');
+	const weekday = dt.js_date.getDay();
+	const weekdayShort = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][weekday];
+	return `${formattedDate} (${weekdayShort})`;
+}
+
+/**
  * Builds detailed tooltip text for event rules.
  *
- * Restriction rules: "Apenas em [event] [time window] [on dates]"
- * Replacement rules: "Substituição por [event] [on dates]"
+ * Restriction rules: "Oferta excluída [on dates] [time window]"
+ * Replacement rules: "Funcionará como [weekdays] · [periods] · [dates]"
  * Manual rules: Returns empty string (no tooltip needed)
  */
 function buildRuleSummaryTooltip(
 	rule: ScheduleRule,
+	options: { periods?: Period[] },
 ): string {
 	if (isEventRestriction(rule)) {
-		const eventDates = (rule.dates ?? [])
-			.map(d =>
-				Dates.fromOperationalDate(d, 'Europe/Lisbon')
-					.toLocaleString(Formats.DATE_SHORT, 'pt-PT'),
-			)
-			.join(', ');
+		const dates = (rule.dates ?? []).map(formatDateWithWeekday).join(', ');
+		const datesText = (rule.dates?.length ?? 0) > 1 ? `nos dias ${dates}` : `no dia ${dates}`;
 
-		const eventDatesString
-			= (rule.dates?.length ?? 0) > 1 ? `nos dias ${eventDates}` : `no dia ${eventDates}`;
+		const timeWindow = (rule?.start_time && rule?.end_time)
+			? `entre as ${rule.start_time}h e ${rule.end_time}h`
+			: '';
 
-		const wStart = rule?.start_time;
-		const wEnd = rule?.end_time;
-		const windowString = (wStart && wEnd) ? `entre as ${wStart}h e ${wEnd}h` : '';
-
-		return `Apenas em ${rule.event?.title ?? ''} ${windowString} ${eventDatesString}`.trim();
+		return `Oferta excluída ${datesText}, ${timeWindow}`.trim();
 	}
 
 	if (isEventReplacement(rule)) {
-		const eventDates = (rule.dates ?? [])
-			.map(d =>
-				Dates.fromOperationalDate(d, 'Europe/Lisbon')
-					.toLocaleString(Formats.DATE_SHORT, 'pt-PT'),
-			)
-			.join(', ');
+		const dates = (rule.dates ?? []).map(formatDateWithWeekday).join(', ');
+		const datesText = (rule.dates?.length ?? 0) > 1 ? `nos dias ${dates}` : `no dia ${dates}`;
 
-		const eventDatesString
-			= (rule.dates?.length ?? 0) > 1 ? `nos dias ${eventDates}` : `no dia ${eventDates}`;
+		const weekdays = rule.weekdays
+			?.map(wd => WEEKDAY_OPTIONS.find(opt => opt.value === wd)?.label)
+			.filter(Boolean)
+			.join(', ') ?? '';
 
-		return `Substituição por ${rule.event?.title ?? ''} ${eventDatesString}`.trim();
+		const periods = rule.periodIds
+			?.map(id => options?.periods?.find(p => p._id === id)?.name || id)
+			.join(', ') || '';
+
+		const parts = [weekdays, periods].filter(Boolean);
+		return `Funcionará como ${parts.join(' · ')}, ${datesText}`;
 	}
 
 	return '';
