@@ -2935,11 +2935,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido ao elevado volume de passageiros, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a um problema técnico, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido ao elevado volume de passageiros, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido a um problema técnico, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
@@ -3119,11 +3119,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido ao elevado volume de passageiros, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido ao elevado volume de trânsito, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido ao elevado volume de passageiros, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido ao elevado volume de trânsito, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
@@ -3594,11 +3594,11 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		description: {
 			plural: {
 				en: 'not-available',
-				pt: 'Devido ao elevado volume de passageiros, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido às condições metereológicas adversas, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 			singular: {
 				en: 'not-available',
-				pt: 'Devido ao elevado volume de passageiros, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
+				pt: 'Devido às condições metereológicas adversas, verificam-se atrasos significativos {in_def_f_s} {rides_description_pt}. A viagem não foi cancelada e deverá realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.',
 			},
 		},
 		title: {
