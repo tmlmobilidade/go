@@ -3,13 +3,16 @@
 /* * */
 
 import { Section, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
 export function StopCreateStep2Instructions() {
+	const { t } = useTranslation();
+
 	return (
 		<Section gap="sm">
-			<Text>Instruções para o passo 2 aqui</Text>
+			<Text>{t('stops:stops.create.StopCreateStep2Instructions.text')}</Text>
 		</Section>
 	);
 }

@@ -7,6 +7,7 @@ import { Translations } from '@/lib/translations';
 import { StopEquipmentSchema } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -17,6 +18,7 @@ export function StopsListFilterEquipment() {
 	// A. Setup variables
 
 	const stopsListContext = useStopsListContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -32,10 +34,10 @@ export function StopsListFilterEquipment() {
 		if (!StopEquipmentSchema.options?.length) return [];
 		return StopEquipmentSchema.options.map(item => ({
 			checked: stopsListContext.filters.equipment.includes(item),
-			label: Translations.EQUIPMENT[item],
+			label: t(`${Translations.EQUIPMENT}.${item}`),
 			value: item,
 		}));
-	}, [stopsListContext.filters.equipment]);
+	}, [stopsListContext.filters.equipment, t]);
 
 	//
 	// C. Render components
@@ -43,7 +45,7 @@ export function StopsListFilterEquipment() {
 	return (
 		<FilterTypeList
 			active={isActive}
-			label="Equipamentos"
+			label={t('stops:stops.list.StopsListFilterEquipment.label')}
 			onChange={stopsListContext.actions.setFilterEquipment}
 			options={parsedOptions}
 			withToggleAll
