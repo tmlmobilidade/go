@@ -1,8 +1,8 @@
 /* * */
 
-import css from '@/rules/css.js';
-import next from '@/rules/next.js';
-import node from '@/rules/node.js';
+import css from '@/sets/css.js';
+import next from '@/sets/next.js';
+import node from '@/sets/node.js';
 
 /* * */
 

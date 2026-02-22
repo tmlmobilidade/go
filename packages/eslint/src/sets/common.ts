@@ -1,19 +1,18 @@
-/**
- * Common ESLint configuration for TypeScript projects
- * Includes base rules, TypeScript support, code styling, and JSON configuration
- *
- */
+/* * */
 
+import { jsonConfig } from '@/rules/json.js';
+import { packageJsonConfig } from '@/rules/pjson.js';
+import { tsconfigConfig } from '@/rules/tsconfig.js';
 import eslint from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
-import eslintPluginJsonc from 'eslint-plugin-jsonc';
 import perfectionist from 'eslint-plugin-perfectionist';
+import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 /* * */
 
-export default tseslint.config(
+export default defineConfig([
 
 	// Ignore patterns
 	{
@@ -29,6 +28,7 @@ export default tseslint.config(
 
 	// Base configurations
 	eslint.configs.recommended,
+
 	...tseslint.configs.strict,
 
 	// Plugins setup
@@ -185,89 +185,10 @@ export default tseslint.config(
 		},
 	},
 
-	// Json Configuration
-	...eslintPluginJsonc.configs['flat/recommended-with-jsonc'],
+	...jsonConfig,
 
-	// Base JSON rules
-	{
-		files: ['**/*.json'],
-		rules: {
-			'@stylistic/comma-dangle': ['error', 'never'],
-			'jsonc/auto': 'error',
-			'jsonc/sort-keys': ['error', 'asc'],
-		},
-	},
+	...packageJsonConfig,
 
-	// Package.json specific rules
-	{
-		files: ['**/package.json'],
-		rules: {
-			'jsonc/sort-keys': [
-				'error',
-				{
-					order: [
-						'name',
-						'description',
-						'version',
-						'author',
-						'license',
-						'homepage',
-						'bugs',
-						'repository',
-						'keywords',
-						'private',
-						'publishConfig',
-						'type',
-						'files',
-						'main',
-						'types',
-						'scripts',
-						'dependencies',
-						'devDependencies',
-					],
-					pathPattern: '^$',
-				},
-				{
-					hasProperties: ['types', 'import'],
-					order: ['types', 'import'],
-					pathPattern: '.*',
-				},
-				{
-					hasProperties: ['types', 'default'],
-					order: ['types', 'default'],
-					pathPattern: '.*',
-				},
-				{
-					order: { type: 'asc' },
-					pathPattern: '.*',
-				},
-			],
-		},
-	},
+	...tsconfigConfig,
 
-	// TypeScript config specific rules
-	{
-		files: ['**/tsconfig.json'],
-		rules: {
-			'@stylistic/comma-dangle': ['error', 'never'],
-			'jsonc/auto': 'error',
-			'jsonc/sort-keys': [
-				'error',
-				{
-					order: [
-						'extends',
-						'compilerOptions',
-						'include',
-						'exclude',
-					],
-					pathPattern: '^$',
-				},
-				{
-					order: { type: 'asc' },
-					pathPattern: '.*',
-				},
-			],
-		},
-	},
-
-);
+]);
