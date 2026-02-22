@@ -1,5 +1,6 @@
 /* * */
 
+import { indentConfig } from '@/rules/indent.js';
 import { jsonConfig } from '@/rules/json.js';
 import { packageJsonConfig } from '@/rules/pjson.js';
 import { tsconfigConfig } from '@/rules/tsconfig.js';
@@ -142,15 +143,12 @@ export default defineConfig([
 			// Code style rules
 			'@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: true }],
 			'@stylistic/comma-dangle': ['error', 'always-multiline'],
-			'@stylistic/indent': ['error', 'tab'],
 			'@stylistic/key-spacing': ['error', {
 				afterColon: true,
 				beforeColon: false,
 				mode: 'strict',
 			}],
 			'@stylistic/multiline-ternary': 'off',
-			'@stylistic/no-mixed-spaces-and-tabs': 'error',
-			'@stylistic/no-tabs': 'off',
 			'@stylistic/semi': ['error', 'always', { omitLastInOneLineBlock: false }],
 			'@stylistic/spaced-comment': ['error', 'always', {
 				block: {
@@ -190,5 +188,7 @@ export default defineConfig([
 	...packageJsonConfig,
 
 	...tsconfigConfig,
+
+	...indentConfig,
 
 ]);
