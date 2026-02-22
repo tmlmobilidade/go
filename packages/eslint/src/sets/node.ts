@@ -1,11 +1,12 @@
 /* * */
 
-import commonRule from '@/rules/common.js';
+import commonRule from '@/sets/common.js';
 import globals from 'globals';
 
 /* * */
 
 export default [
+
 	...commonRule,
 
 	// Backend-specific configurations

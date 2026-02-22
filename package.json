@@ -14,6 +14,7 @@
 		"build:auth": "ENVIRONMENT=development dotenv-run -f ./modules/auth/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-auth-*",
 		"build:controller": "ENVIRONMENT=development dotenv-run -f ./modules/controller/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-controller-*",
 		"build:dates": "ENVIRONMENT=development dotenv-run -f ./modules/dates/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-dates-*",
+		"build:eslint": "turbo build --filter=@tmlmobilidade/eslint",
 		"build:exporter": "ENVIRONMENT=development dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-exporter-*",
 		"build:fleet": "ENVIRONMENT=development dotenv-run -f ./modules/fleet/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-fleet-*",
 		"build:locations": "ENVIRONMENT=development dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-locations-*",

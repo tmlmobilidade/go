@@ -1,6 +1,6 @@
 /* * */
 
-import commonRule from '@/rules/common.js';
+import commonRule from '@/sets/common.js';
 import nextPlugin from '@next/eslint-plugin-next';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
