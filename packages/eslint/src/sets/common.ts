@@ -77,13 +77,18 @@ export default defineConfig([
 
 	// Disable type-checked rules for JS files
 	{
-		files: ['**/*.{js,jsx}'],
+		files: ['**/*.{js,jsx,cjs,mjs}'],
 		...tseslint.configs.disableTypeChecked,
+		languageOptions: {
+			parserOptions: {
+				project: false,
+			},
+		},
 	},
 
 	// Common rules for all files
 	{
-		files: ['**/*.{js,ts,tsx,jsx}'],
+		files: ['**/*.{js,jsx,cjs,mjs,ts,tsx}'],
 		rules: {
 			// Core language rules
 			'eqeqeq': ['error', 'always', { null: 'ignore' }],
