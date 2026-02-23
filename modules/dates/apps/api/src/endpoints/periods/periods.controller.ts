@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
 import { findCommonDates, mergeDateArrays, removeDatesFromArray } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, periods } from '@tmlmobilidade/interfaces';
@@ -38,7 +38,7 @@ export class PeriodsController {
 		// If no permission found, deny access
 
 		if (!userPeriodPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read periods');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read periods');
 		}
 
 		//
@@ -49,7 +49,7 @@ export class PeriodsController {
 			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
 			if (!hasAllowAll && !userAgencyIds.includes(request.body.agency_id)) {
-				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read periods for this agency');
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read periods for this agency');
 			}
 		}
 
@@ -93,7 +93,7 @@ export class PeriodsController {
 		return reply.send({
 			data: { conflicts },
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//
@@ -117,7 +117,7 @@ export class PeriodsController {
 		// If no permission found, deny access
 
 		if (!userPeriodPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create periods');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create periods');
 		}
 
 		//
@@ -128,7 +128,7 @@ export class PeriodsController {
 			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
 			if (!hasAllowAll && !userAgencyIds.includes(request.body.agency_id)) {
-				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create periods for this agency');
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create periods for this agency');
 			}
 		}
 
@@ -148,7 +148,7 @@ export class PeriodsController {
 		//
 		// Send the response
 
-		reply.send({ data: newPeriod, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: newPeriod, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -163,7 +163,7 @@ export class PeriodsController {
 		const period = await periods.findById(id);
 
 		if (!period) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Period not found');
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Period not found');
 		}
 
 		//
@@ -175,7 +175,7 @@ export class PeriodsController {
 		// If no permission found, deny access
 
 		if (!userPeriodPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete periods');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete periods');
 		}
 
 		//
@@ -186,7 +186,7 @@ export class PeriodsController {
 			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
 			if (!hasAllowAll && !userAgencyIds.includes(period.agency_id)) {
-				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete this period');
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this period');
 			}
 		}
 
@@ -194,7 +194,7 @@ export class PeriodsController {
 
 		await periods.deleteById(id);
 
-		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -214,7 +214,7 @@ export class PeriodsController {
 		// If no permission found, deny access
 
 		if (!userPeriodPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read periods');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read periods');
 		}
 
 		//
@@ -237,7 +237,7 @@ export class PeriodsController {
 
 		const allPeriods = await periods.findMany(queryFilters, { sort: { start_date: -1 } });
 
-		return reply.send({ data: allPeriods, error: null, statusCode: HttpStatus.OK });
+		return reply.send({ data: allPeriods, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -255,7 +255,7 @@ export class PeriodsController {
 
 		const periodData = await periods.findById(request.params.id);
 
-		if (!periodData) throw new HttpException(HttpStatus.NOT_FOUND, 'Period not found');
+		if (!periodData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Period not found');
 
 		//
 		// Get the resource permissions for periods for the current user.
@@ -266,7 +266,7 @@ export class PeriodsController {
 		// If no permission found, deny access
 
 		if (!userPeriodPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read periods');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read periods');
 		}
 
 		//
@@ -277,7 +277,7 @@ export class PeriodsController {
 			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
 			if (!hasAllowAll && !userAgencyIds.includes(periodData.agency_id)) {
-				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read this period');
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this period');
 			}
 		}
 
@@ -287,7 +287,7 @@ export class PeriodsController {
 		return reply.send({
 			data: periodData,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//
@@ -306,7 +306,7 @@ export class PeriodsController {
 
 		const periodData = await periods.findById(request.params.id);
 
-		if (!periodData) throw new HttpException(HttpStatus.NOT_FOUND, 'Period not found');
+		if (!periodData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Period not found');
 
 		//
 		// Get the resource permissions for periods for the current user.
@@ -317,7 +317,7 @@ export class PeriodsController {
 		// If no permission found, deny access
 
 		if (!userPeriodPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to lock/unlock periods');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock periods');
 		}
 
 		//
@@ -328,7 +328,7 @@ export class PeriodsController {
 			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
 			if (!hasAllowAll && !userAgencyIds.includes(periodData.agency_id)) {
-				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: toggle lock period');
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock period');
 			}
 		}
 
@@ -337,12 +337,12 @@ export class PeriodsController {
 
 		await periods.toggleLockById(request.params.id);
 		const updatedPeriod = await periods.findById(request.params.id);
-		if (!updatedPeriod) throw new HttpException(HttpStatus.NOT_FOUND, 'Period not found');
+		if (!updatedPeriod) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Period not found');
 
 		return reply.send({
 			data: updatedPeriod,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//
@@ -362,7 +362,7 @@ export class PeriodsController {
 
 		const periodData = await periods.findById(request.params.id);
 
-		if (!periodData) throw new HttpException(HttpStatus.NOT_FOUND, 'Period not found');
+		if (!periodData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Period not found');
 
 		//
 		// Get the resource permissions for periods for the current user.
@@ -373,7 +373,7 @@ export class PeriodsController {
 		// If no permission found, deny access
 
 		if (!userPeriodPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update periods');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update periods');
 		}
 
 		//
@@ -384,7 +384,7 @@ export class PeriodsController {
 			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
 			if (!hasAllowAll && !userAgencyIds.includes(periodData.agency_id)) {
-				throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update this period');
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this period');
 			}
 		}
 
@@ -413,7 +413,7 @@ export class PeriodsController {
 		reply.send({
 			data: updatedPeriod,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//
