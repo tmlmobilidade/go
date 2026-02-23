@@ -1,7 +1,7 @@
 import { type GtfsV29ExportConfig } from '@/types.js';
 import { ServiceId, type ServiceRegistry, Timepoint } from '@/utils/service-registry.js';
 import { buildAffectedDaysDetails, Dates, datesFromCalendarKey } from '@tmlmobilidade/dates';
-import { type Agency, GtfsTernary, type Line, type OperationalDate, type Pattern, type Period, type Route } from '@tmlmobilidade/types';
+import { GtfsBikesAllowed, GtfsTMLTrip, GtfsWheelchairBoarding, type OperationalDate, type Pattern, type Period, type Route } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -123,16 +123,14 @@ export async function exportTripsForPattern(
 			return timepointToOperationalMinutes(a[0]) - timepointToOperationalMinutes(b[0]);
 		});
 
-		// Remove the : from this schedules start_time to use it as the identifier for this trip.
-		// Associate the pattern_code, resulting calendar_code and start_time of the current schedule.
-		// const startTimeStripped = scheduleData.start_time.split(':').join('');
-		// const thisTripCode = `${patternData.code}|${resultingCalendarCode}|${startTimeStripped}`;
-
 		for (const [timepoint, service_id] of sortedTimepoints) {
+			// Remove the : from this schedules start_time to use it as the identifier for this trip.
+			// Associate the pattern_code, resulting calendar_code and start_time of the current schedule.
 			const startTimeStripped = timepoint.split(':').join('');
 			const trip_id = `${patternData.code}|${service_id}|${startTimeStripped}`;
 
-			const tripData = {
+			const tripData: GtfsTMLTrip = {
+				bikes_allowed: 0 as GtfsBikesAllowed,
 				calendar_desc: '', // TODO: Calculate from rules/periods
 				direction_id: patternData.direction,
 				pattern_id: patternData.code,
@@ -142,7 +140,7 @@ export async function exportTripsForPattern(
 				shape_id: shapeId,
 				trip_headsign: headsign,
 				trip_id,
-				wheelchair_accessible: 0 as GtfsTernary, // TODO: Add wheelchair accessibility info to patterns and export here
+				wheelchair_accessible: 0 as GtfsWheelchairBoarding,
 			};
 
 			await exportConfig.writers.trips.write(tripData);

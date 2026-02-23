@@ -2,7 +2,7 @@
 /* * */
 
 import { type GtfsV29ExportConfig } from '@/types.js';
-import { GtfsBinary, GtfsTMLStop, Municipality, Stop } from '@tmlmobilidade/types';
+import { GtfsTMLStop, Municipality, Stop } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -17,6 +17,8 @@ export function parseStop(
 	municipalityData: Municipality,
 ): GtfsTMLStop {
 	try {
+		const availabilityToBinary = (value?: string): 0 | 1 => (value === 'available' ? 1 : 0);
+
 		return {
 			stop_id: stopData._id,
 			stop_code: stopData.legacy_id,
@@ -51,14 +53,14 @@ export function parseStop(
 			preservation_state: '',
 			slot: '',
 			zone_shift: '',
-			has_bench: (stopData.has_bench === 'available' ? 1 : 0) as GtfsBinary,
-			has_shelter: (stopData.has_shelter === 'available' ? 1 : 0) as GtfsBinary,
-			has_network_map: (stopData.has_network_map === 'available' ? 1 : 0) as GtfsBinary,
-			has_pip_real_time: (stopData.has_mupi === 'available' ? 1 : 0) as GtfsBinary, // Check if this is correct
-			has_schedules: (stopData.has_schedules === 'available' ? 1 : 0) as GtfsBinary,
-			has_stop_sign: (stopData.has_stop_sign === 'available' ? 1 : 0) as GtfsBinary,
-			// has_tariffs_information: (stopData.has_tariffs_information === 'available' ? 1 : 0) as GtfsBinary, Missing
-			// public_visible: (stopData.public_visible === 'available' ? 1 : 0) as GtfsBinary, Missing
+			has_bench: availabilityToBinary(stopData.has_bench),
+			has_shelter: availabilityToBinary(stopData.has_shelter),
+			has_network_map: availabilityToBinary(stopData.has_network_map),
+			has_pip_real_time: availabilityToBinary(stopData.has_mupi), // Check if this is correct
+			has_schedules: availabilityToBinary(stopData.has_schedules),
+			has_stop_sign: availabilityToBinary(stopData.has_stop_sign),
+			has_tariffs_information: 0,
+			public_visible: 0,
 		};
 	}
 	catch (error) {

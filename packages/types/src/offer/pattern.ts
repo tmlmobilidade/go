@@ -2,11 +2,11 @@
 
 import { CommentSchema } from '@/_common/comment.js';
 import { DocumentSchema } from '@/_common/document.js';
-import { GtfsBinarySchema } from '@/gtfs-new/common.js';
 import { StopSchema } from '@/stops/stop.js';
 import { z } from 'zod';
 
 import { PatternUpdateRulesSchema, ScheduleRuleSchema } from './rules.js';
+import { GtfsDirectionSchema } from '@/gtfs-new/trips.js';
 
 /* * */
 
@@ -51,7 +51,7 @@ export const PatternSchema = DocumentSchema.extend({
 	comments: z.array(CommentSchema).optional().default([]),
 
 	destination: z.string().trim().min(1).max(100),
-	direction: GtfsBinarySchema.default(0),
+	direction: GtfsDirectionSchema,
 	headsign: z.string().trim().min(1).max(100),
 	is_locked: z.boolean().default(false),
 	line_id: z.string(),

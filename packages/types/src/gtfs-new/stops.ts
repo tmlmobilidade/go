@@ -3,16 +3,11 @@
 import { z } from 'zod';
 
 import { GtfsLocationTypeSchema } from './location-type.js';
+import { GtfsWheelchairBoardingSchema } from './wheelchair-accessible.js';
 
 /* * */
 
-const WheelchairBoardingSchema = z.union([
-	z.literal(0), // No accessibility information
-	z.literal(1), // Wheelchair accessible
-	z.literal(2), // Not wheelchair accessible
-]);
-
-const StopAccessSchema = z.union([
+const GtfsStopAccessSchema = z.union([
 	z.literal(0), // Stop/platform cannot be directly accessed from street network.
 	z.literal(1), // Directly accessible from street network.
 ]);
@@ -27,7 +22,7 @@ export const GtfsStopSchema = z.object({
 	location_type: GtfsLocationTypeSchema.default(0),
 	parent_station: z.string().nullish(),
 	platform_code: z.string().nullish(),
-	stop_access: StopAccessSchema.nullish(),
+	stop_access: GtfsStopAccessSchema.nullish(),
 	stop_code: z.string(),
 	stop_desc: z.string().nullish(),
 	stop_id: z.string(),
@@ -37,11 +32,7 @@ export const GtfsStopSchema = z.object({
 	stop_timezone: z.string().nullish(),
 	stop_url: z.string().nullish(),
 	tts_stop_name: z.string().nullish(),
-	wheelchair_boarding: WheelchairBoardingSchema,
+	wheelchair_boarding: GtfsWheelchairBoardingSchema,
 	zone_id: z.string().nullish(),
 });
 export type GtfsStop = z.infer<typeof GtfsStopSchema>;
-
-/* * */
-
-// TODO: Important, update branch with prod

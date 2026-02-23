@@ -1,10 +1,23 @@
 /* * */
 
 import { z } from 'zod';
+import { GtfsWheelchairBoardingSchema } from './wheelchair-accessible.js';
 
-import { GtfsBinarySchema, GtfsTernarySchema } from '../gtfs/common.js';
 
 /* * */
+
+const GtfsBikesAllowedSchema = z.union([
+	z.literal(0), // No information
+	z.literal(1), // Can accommodate at least one bicycle.
+	z.literal(2), // Bikes not allowed
+]);
+export type GtfsBikesAllowed = z.infer<typeof GtfsBikesAllowedSchema>;
+
+export const GtfsDirectionSchema = z.union([
+	z.literal(0), // Travel in one direction (e.g., outbound)
+	z.literal(1), // Travel in the opposite direction (e.g., inbound)
+]);
+export type GtfsDirection = z.infer<typeof GtfsDirectionSchema>;
 
 /**
  * Represents a trip in the GTFS (General Transit Feed Specification) format.
@@ -13,26 +26,15 @@ import { GtfsBinarySchema, GtfsTernarySchema } from '../gtfs/common.js';
  * The trip can have various attributes such as headsign, direction, and accessibility options.
  */
 export const GtfsTripSchema = z.object({
-	bikes_allowed: GtfsTernarySchema.nullish(),
+	bikes_allowed: GtfsBikesAllowedSchema.default(0),
 	block_id: z.string().nullish(),
-	direction_id: GtfsBinarySchema,
+	direction_id: GtfsDirectionSchema.default(0),
 	route_id: z.string(),
 	service_id: z.string(),
 	shape_id: z.string(),
 	trip_headsign: z.string().nullish(),
 	trip_id: z.string(),
 	trip_short_name: z.string().nullish(),
-	wheelchair_accessible: GtfsTernarySchema,
+	wheelchair_accessible: GtfsWheelchairBoardingSchema.default(0),
 });
 export type GtfsTrip = z.infer<typeof GtfsTripSchema>;
-
-/* * */
-
-/**
- * Extended version of the GtfsTrip schema that
- * should be used for working with the GTFS-TML standard.
- */
-export const GtfsTripExtendedSchema = GtfsTripSchema.extend({
-	pattern_id: z.string(),
-});
-export type GtfsTripExtended = z.infer<typeof GtfsTripExtendedSchema>;
