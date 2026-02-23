@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable perfectionist/sort-objects */
 
 export const HTTP_STATUS = Object.freeze({
