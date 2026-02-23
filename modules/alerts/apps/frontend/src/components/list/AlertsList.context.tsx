@@ -104,7 +104,7 @@ export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
 		// Skip if no query filters are set
 		if (filterPublishStatus.value.length === 0 && filterCause.value.length === 0 && filterEffect.value.length === 0 && filterMunicipality.value.length === 0) return searchResultsData;
 		// Filter by query filters
-		return searchResultsData.filter((alert: AlertNormalized) => {
+		const result = searchResultsData.filter((alert: AlertNormalized) => {
 			// Filter by agency IDs
 			if (!filterAgency.value.includes(alert.agency_id)) return false;
 			// Filter by reference type
@@ -120,17 +120,17 @@ export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
 			// Return true if all filters pass
 			return true;
 		});
+
+		// Sort by creation date (newest first)
+		return result.sort((a, b) => (b.created_at ?? 0) - (a.created_at ?? 0));
 	}, [
 		searchResultsData,
-		filterPublishStatus,
-		filterCause,
-		filterEffect,
-		filterAgency,
-		filterMunicipality,
-		filterPublishStatus,
-		filterCause,
-		filterEffect,
-		filterMunicipality,
+		filterAgency.value,
+		filterAlertReferenceType.value,
+		filterPublishStatus.value,
+		filterCause.value,
+		filterEffect.value,
+		filterMunicipality.value,
 	]);
 
 	//
@@ -138,7 +138,7 @@ export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const contextValue: AlertsListContextState = useMemo(() => ({
 		data: {
-			filtered: filterResultsData,
+			filtered: filterResultsData ?? [],
 			raw: allScheduledData,
 		},
 		filters: {
