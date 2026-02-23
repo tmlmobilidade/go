@@ -1,0 +1,77 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+
+packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common
+  - gnupg
+  - lsb-release
+
+runcmd:
+  # -----------------------------------------------------------------
+  # Install Docker
+  # -----------------------------------------------------------------
+  - curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
+  - sh /tmp/get-docker.sh
+  - rm /tmp/get-docker.sh
+  - systemctl start docker
+  - systemctl enable docker
+  - usermod -aG docker ubuntu
+
+  # -----------------------------------------------------------------
+  # Create application directory
+  # -----------------------------------------------------------------
+  - mkdir -p /opt/clickhouse/clickhouse_data
+  - mkdir -p /opt/clickhouse/clickhouse_logs
+  - mkdir -p /opt/clickhouse/secrets
+  - chown -R ubuntu:ubuntu /opt/clickhouse
+  - chmod -R u+rwx /opt/clickhouse
+
+  # -----------------------------------------------------------------
+  # Write secrets (admin password)
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/secrets/.env <<'ENVEOF'
+    CLICKHOUSE_PASSWORD=${clickhouse_admin_password}
+    CLICKHOUSE_USER=admin
+    ENVEOF
+
+  # -----------------------------------------------------------------
+  # Write Docker Compose file
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/compose.yml <<'COMPOSEEOF'
+    services:
+      clickhouse:
+        image: clickhouse/clickhouse-server:latest
+        container_name: clickhouse
+        restart: unless-stopped
+        deploy:
+          resources:
+            limits:
+              memory: 8gb
+        ports:
+          - "${clickhouse_http_port}:8123"
+          - "${clickhouse_tcp_port}:9000"
+        ulimits:
+          nofile:
+            soft: 262144
+            hard: 262144
+        volumes:
+          - ./clickhouse_data:/var/lib/clickhouse
+          - ./clickhouse_logs:/var/log/clickhouse-server
+        env_file:
+          - ./secrets/.env
+        environment:
+          CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    COMPOSEEOF
+
+  # -----------------------------------------------------------------
+  # Start ClickHouse
+  # -----------------------------------------------------------------
+  - cd /opt/clickhouse && docker compose up -d
+
+final_message: "ClickHouse deployment complete on OCI instance."

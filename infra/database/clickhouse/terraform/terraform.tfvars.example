@@ -1,0 +1,34 @@
+# # #
+# OCI AUTHENTICATION
+# Copy this file to terraform.tfvars and fill in the values.
+# Never commit terraform.tfvars to source control.
+
+tenancy_ocid     = ""
+user_ocid        = ""
+fingerprint      = ""
+private_key_path = "~/.oci/oci_api_key.pem"
+
+ssh_public_key_path = "~/.ssh/id_rsa.pub"
+
+# ClickHouse admin password (will be set as CLICKHOUSE_PASSWORD env var)
+clickhouse_admin_password = ""
+
+
+# -----------------------------------------------------------------------
+# OPTIONAL OVERRIDES (uncomment to change defaults)
+# -----------------------------------------------------------------------
+
+# compartment_ocid      = ""
+# availability_domain   = "LUDo:EU-FRANKFURT-1-AD-1"
+# region                = "eu-frankfurt-1"
+
+# vm_shape              = "VM.Standard.A1.Flex"
+# vm_ocpus              = 2
+# vm_memory_in_gbs      = 12
+# boot_volume_size_in_gbs = 100
+
+# clickhouse_http_port  = 8123
+# clickhouse_tcp_port   = 9000
+
+# Restrict access to specific IPs (recommended for production)
+# allowed_ingress_cidrs = ["YOUR_IP/32"]
