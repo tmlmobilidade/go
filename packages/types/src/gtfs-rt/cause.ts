@@ -4,7 +4,7 @@ import z from 'zod';
 
 /* * */
 
-export const GtfsCauseValues = [
+export const GtfsRtCauseValues = [
 	'ACCIDENT',
 	'CONSTRUCTION',
 	'DEMONSTRATION',
@@ -19,7 +19,7 @@ export const GtfsCauseValues = [
 	'WEATHER',
 ] as const;
 
-export const GtfsCauseSchema = z.enum(GtfsCauseValues);
+export const GtfsRtCauseSchema = z.enum(GtfsRtCauseValues);
 
 /**
  * The GTFS-RT standard cause types.
@@ -27,4 +27,4 @@ export const GtfsCauseSchema = z.enum(GtfsCauseValues);
  * in GTFS-RT feeds, either when importing from standard GTFS-RT data into
  * the application or when exporting from the application to GTFS-RT format.
  */
-export type GtfsCause = z.infer<typeof GtfsCauseSchema>;
+export type GtfsRtCause = z.infer<typeof GtfsRtCauseSchema>;

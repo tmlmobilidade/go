@@ -2,6 +2,7 @@
 /* * */
 
 import { type ClickHouseClient, type ClickHouseClientConfigOptions, createClient } from '@clickhouse/client';
+import { NodeClickHouseClient } from '@clickhouse/client/dist/client.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -72,7 +73,7 @@ export interface ClickHouseColumn<T> {
 	type: ClickHouseType
 }
 
-interface ClickHouseWriterParams<T> {
+type ClickHouseWriterParams<T> = {
 	/**
 	 * The maximum number of items to hold in memory
 	 * before flushing to the database.
@@ -87,12 +88,6 @@ interface ClickHouseWriterParams<T> {
 	 * @default disabled
 	 */
 	batch_timeout?: number
-
-	/**
-	 * ClickHouse client configuration options.
-	 * @required
-	 */
-	clientConfig: ClickHouseClientConfigOptions
 
 	/**
 	 * How long to wait, in milliseconds, after the last write operation
@@ -119,7 +114,10 @@ interface ClickHouseWriterParams<T> {
 	 * Use this to map MongoDB document fields to ClickHouse column names.
 	 */
 	transformFn?: (data: T) => Record<string, unknown>
-}
+} & (
+  | { client: NodeClickHouseClient, clientConfig?: never }
+  | { client?: never, clientConfig: ClickHouseClientConfigOptions }
+);
 
 /* * */
 
@@ -142,14 +140,22 @@ export class ClickHouseWriter<T> {
 	/* * */
 
 	constructor(params: ClickHouseWriterParams<T>) {
-		// Ensure that the table name is provided
 		if (!params.table) throw new Error('CLICKHOUSEWRITER: Table name is required');
-		// Ensure that the client config is provided
-		if (!params.clientConfig) throw new Error('CLICKHOUSEWRITER: Client configuration is required');
-		if (!params.clientConfig.database || !params.clientConfig.password || !params.clientConfig.url || !params.clientConfig.username) throw new Error('CLICKHOUSEWRITER: Client configuration is invalid. Ensure database, password, url and username are provided.');
-
-		this.params = params;
-		this.client = createClient(params.clientConfig);
+		if (params.client) {
+			this.params = params;
+			this.client = params.client as ClickHouseClient;
+		}
+		else if (params.clientConfig) {
+			const { database, password, url, username } = params.clientConfig;
+			if (!database || !password || !url || !username) {
+				throw new Error('CLICKHOUSEWRITER: Client configuration is invalid. Ensure database, password, url and username are provided.');
+			}
+			this.params = params;
+			this.client = createClient(params.clientConfig);
+		}
+		else {
+			throw new Error('CLICKHOUSEWRITER: Either client or clientConfig is required.');
+		}
 	}
 
 	/* * */
