@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { IStorageProvider, StorageFactory } from '@/providers/index.js';
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
 import { Files } from '@tmlmobilidade/files';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type CreateFileDto, CreateFileSchema, type File, type UpdateFileDto, UpdateFileSchema } from '@tmlmobilidade/types';
@@ -65,7 +65,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 	public async clone(file_id: string, scope: string, resource_id: string, options?: InsertOneOptions): Promise<File> {
 		const _id = generateRandomString({ length: 5 });
 		const file = await this.findOne({ _id: file_id });
-		if (!file) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
+		if (!file) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 
 		const originalFilePath = `${file.scope}/${file.resource_id}/${file._id}.${Files.getFileExtension(file.name)}`;
 		const newFilePath = `${scope}/${resource_id}/${_id}.${Files.getFileExtension(file.name)}`;
@@ -83,7 +83,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 	 */
 	public override async deleteById(fileId: string, options?: DeleteOptions): Promise<DeleteResult> {
 		const foundFile = await this.findById(fileId);
-		if (!foundFile) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
+		if (!foundFile) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 		await this.storageService.deleteFile(`${foundFile.scope}/${foundFile.resource_id}/${foundFile._id}.${Files.getFileExtensionFromMimeType(foundFile.type)}`);
 		return await super.deleteById(fileId, options);
 	}
@@ -122,7 +122,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 		if (file_id) {
 			file = await this.findOne({ _id: file_id });
 			if (!file) {
-				throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
+				throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 			}
 			key = `${file.scope}/${file.resource_id}/${file._id}.${Files.getFileExtension(file.name)}`; // Use the file's storage key
 		}
@@ -130,7 +130,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 		// Check if key exists
 		const keyExists = await this.storageService.fileExists(key as string);
 		if (!keyExists) {
-			throw new HttpException(HttpStatus.NOT_FOUND, `Key ${key} does not exist in bucket ${this.bucketName}`);
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, `Key ${key} does not exist in bucket ${this.bucketName}`);
 		}
 
 		// At this point, `key` must exist
@@ -149,7 +149,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 		//
 		// A. Define variables
 		if (createFileDto._id && !options?.override) {
-			throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'When File ID is provided, override must be true');
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'When File ID is provided, override must be true');
 		}
 
 		const fileId = createFileDto._id || generateRandomString({ length: 5 });
@@ -175,7 +175,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 					const existingFilePath = `${existingFile.scope}/${existingFile.resource_id}/${existingFile._id}.${existingFileExtension}`;
 
 					if (existingFilePath !== filePath) {
-						throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'File ID is provided, but the file path is different from the existing file', { cause: { existingFilePath, filePath } });
+						throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'File ID is provided, but the file path is different from the existing file', { cause: { existingFilePath, filePath } });
 					}
 
 					await super.deleteById(fileId);

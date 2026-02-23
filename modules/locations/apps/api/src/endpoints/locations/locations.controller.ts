@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, type FindOptions, locations } from '@tmlmobilidade/interfaces';
 import { type District, type GetAllDistrictsQuery, GetAllDistrictsQuerySchema, type GetAllLocalitiesQuery, GetAllLocalitiesQuerySchema, type GetAllMunicipalitiesQuery, GetAllMunicipalitiesQuerySchema, type GetAllParishesQuery, GetAllParishesQuerySchema, type Locality, type Location, type Municipality, type Parish } from '@tmlmobilidade/types';
@@ -15,10 +15,10 @@ export class LocationsController {
 		console.log('Received coordinates:', { census, lat, lon });
 		try {
 			const result = await locations.findLocationByGeo(Number(lat), Number(lon), { census: Boolean(census) });
-			return reply.status(HttpStatus.OK).send({
+			return reply.status(HTTP_STATUS.OK).send({
 				data: result,
 				error: null,
-				status: HttpStatus.OK,
+				status: HTTP_STATUS.OK,
 			});
 		}
 		catch (error) {
@@ -30,10 +30,10 @@ export class LocationsController {
 					status: error.statusCode,
 				});
 			}
-			return reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: undefined,
 				error: 'Internal server error',
-				status: HttpStatus.INTERNAL_SERVER_ERROR,
+				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 			});
 		}
 	}
@@ -45,10 +45,10 @@ export class LocationsController {
 			const options: FindOptions = { projection: { geometry: query.geojson === true ? 1 : 0 } };
 			const districts = await locations.findDistricts({}, options);
 
-			return reply.status(HttpStatus.OK).send({
+			return reply.status(HTTP_STATUS.OK).send({
 				data: districts,
 				error: null,
-				status: HttpStatus.OK,
+				status: HTTP_STATUS.OK,
 			});
 		}
 		catch (error) {
@@ -60,10 +60,10 @@ export class LocationsController {
 				});
 			}
 
-			return reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: undefined,
 				error: 'Internal server error',
-				status: HttpStatus.INTERNAL_SERVER_ERROR,
+				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 			});
 		}
 	}
@@ -86,7 +86,7 @@ export class LocationsController {
 			const localities = await locations.findLocalities(filter, options);
 			const total = await locations.countLocalities(filter);
 
-			return reply.status(HttpStatus.OK).send({
+			return reply.status(HTTP_STATUS.OK).send({
 				data: localities,
 				error: null,
 				pagination: {
@@ -94,7 +94,7 @@ export class LocationsController {
 					page: query.page,
 					total,
 				},
-				status: HttpStatus.OK,
+				status: HTTP_STATUS.OK,
 			});
 		}
 		catch (error) {
@@ -106,10 +106,10 @@ export class LocationsController {
 				});
 			}
 
-			return reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: undefined,
 				error: 'Internal server error',
-				status: HttpStatus.INTERNAL_SERVER_ERROR,
+				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 			});
 		}
 	}
@@ -123,10 +123,10 @@ export class LocationsController {
 
 			const municipalities = await locations.findMunicipalities(filter, options);
 
-			return reply.status(HttpStatus.OK).send({
+			return reply.status(HTTP_STATUS.OK).send({
 				data: municipalities,
 				error: null,
-				status: HttpStatus.OK,
+				status: HTTP_STATUS.OK,
 			});
 		}
 		catch (error) {
@@ -138,10 +138,10 @@ export class LocationsController {
 				});
 			}
 
-			return reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: undefined,
 				error: 'Internal server error',
-				status: HttpStatus.INTERNAL_SERVER_ERROR,
+				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 			});
 		}
 	}
@@ -163,7 +163,7 @@ export class LocationsController {
 			const parishes = await locations.findParishes(filter, options);
 			const total = await locations.countParishes(filter);
 
-			return reply.status(HttpStatus.OK).send({
+			return reply.status(HTTP_STATUS.OK).send({
 				data: parishes,
 				error: null,
 				pagination: {
@@ -171,7 +171,7 @@ export class LocationsController {
 					page: query.page,
 					total,
 				},
-				status: HttpStatus.OK,
+				status: HTTP_STATUS.OK,
 			});
 		}
 		catch (error) {
@@ -183,10 +183,10 @@ export class LocationsController {
 				});
 			}
 
-			return reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: undefined,
 				error: 'Internal server error',
-				status: HttpStatus.INTERNAL_SERVER_ERROR,
+				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 			});
 		}
 	}

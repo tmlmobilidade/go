@@ -2,7 +2,7 @@
 
 import { fetchLines } from '@/utils/lines.js';
 import { parseServiceAlert } from '@/utils/service-alert-parser.js';
-import { HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { alerts } from '@tmlmobilidade/interfaces';
@@ -43,7 +43,7 @@ export class GtfsController {
 				header: { gtfs_realtime_version: '2.0', incrementality: 'FULL_DATASET', timestamp: Dates.now('Europe/Lisbon').unix_timestamp },
 			},
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 	}
 

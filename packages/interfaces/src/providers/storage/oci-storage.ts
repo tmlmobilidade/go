@@ -1,7 +1,7 @@
 /* * */
 
 import { IStorageProvider } from '@/providers/storage/storage.interface.js';
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
 import { mimeTypes } from '@tmlmobilidade/consts';
 import { readFileSync } from 'node:fs';
 import { Readable } from 'node:stream';
@@ -93,7 +93,7 @@ export class OCIStorageProvider implements IStorageProvider {
 
 	async getFileUrl(key: string): Promise<string> {
 		if (!await this.fileExists(key)) {
-			throw new HttpException(HttpStatus.NOT_FOUND, `File ${key} does not exist in bucket ${this.bucketName}`);
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, `File ${key} does not exist in bucket ${this.bucketName}`);
 		}
 
 		const response = await this.ociClient.createPreauthenticatedRequest({

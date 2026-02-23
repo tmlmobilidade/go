@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable perfectionist/sort-objects */
 
-export const MongoError = Object.freeze({
+export const MONGO_ERROR = Object.freeze({
 	INTERNAL_ERROR: 1,
 	BAD_VALUE: 2,
 	NO_SUCH_KEY: 4,
