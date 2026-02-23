@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable perfectionist/sort-objects */
 
 export const MongoError = Object.freeze({
