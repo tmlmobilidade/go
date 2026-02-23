@@ -189,7 +189,7 @@ export async function seedLinesFromGoV1() {
 				is_continuous_line: Boolean(originalLine.continuous),
 				is_locked: Boolean(originalLine.is_locked),
 				is_school_line: Boolean(originalLine.school),
-				name: normalizeName(originalLine.name),
+				name: originalLine.name,
 				onboard_fare_ids: newOnboardFareIds,
 				prepaid_fare_id: newPrepaidFareId,
 				routes: [],
@@ -248,11 +248,6 @@ function normalizeOidArray(value: unknown): string[] {
 function normalizeCode(value: unknown): string {
 	const code = String(value ?? '').trim();
 	return code.length > 10 ? code.slice(0, 10) : code;
-}
-
-function normalizeName(value: unknown): string {
-	const name = String(value ?? '').trim();
-	return name.length > 50 ? name.slice(0, 50) : name;
 }
 
 function normalizeInterchange(value: unknown): Line['interchange'] {
