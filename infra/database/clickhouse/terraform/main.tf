@@ -118,9 +118,8 @@ resource "oci_core_security_list" "clickhouse" {
 	}
 
 	# Allow inbound ClickHouse HTTP interface (default: 8123)
-	# Only added when ssh_tunnel_only = false — otherwise the port is invisible publicly.
 	dynamic "ingress_security_rules" {
-		for_each = var.ssh_tunnel_only ? [] : var.allowed_ingress_cidrs
+		for_each = var.allowed_ingress_cidrs
 		content {
 			protocol  = "6" # TCP
 			source    = ingress_security_rules.value
@@ -134,9 +133,8 @@ resource "oci_core_security_list" "clickhouse" {
 	}
 
 	# Allow inbound ClickHouse native TCP interface (default: 9000)
-	# Only added when ssh_tunnel_only = false.
 	dynamic "ingress_security_rules" {
-		for_each = var.ssh_tunnel_only ? [] : var.allowed_ingress_cidrs
+		for_each = var.allowed_ingress_cidrs
 		content {
 			protocol  = "6" # TCP
 			source    = ingress_security_rules.value
@@ -222,4 +220,32 @@ resource "oci_core_instance" "clickhouse" {
 			source_details,
 		]
 	}
+}
+
+
+# -----------------------------------------------------------------------
+# STORAGE — Dedicated 1TB Block Volume for ClickHouse Data
+# -----------------------------------------------------------------------
+
+resource "oci_core_volume" "clickhouse_data" {
+	display_name        = "${local.name_prefix}-data-vol"
+	compartment_id      = var.compartment_ocid
+	availability_domain = var.availability_domain
+	size_in_gbs         = var.data_volume_size_in_gbs
+	vpus_per_gb         = var.data_volume_vpus_per_gb
+
+	freeform_tags = {
+		"TerraformModule" = var.module_name
+		"ManagedBy"       = "terraform"
+	}
+}
+
+resource "oci_core_volume_attachment" "clickhouse_data" {
+	attachment_type = "paravirtualized"
+	instance_id     = oci_core_instance.clickhouse.id
+	volume_id       = oci_core_volume.clickhouse_data.id
+	display_name    = "${local.name_prefix}-data-attachment"
+	
+	# Paravirtualized is easier to manage in cloud-init than iSCSI
+	is_pv_encryption_in_transit_enabled = false
 }

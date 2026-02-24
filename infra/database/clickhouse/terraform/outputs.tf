@@ -26,11 +26,3 @@ output "ssh_command" {
 	description = "Command to SSH into the ClickHouse instance."
 	value       = "ssh ubuntu@${oci_core_instance.clickhouse.public_ip}"
 }
-
-output "ssh_tunnel_command" {
-	description = <<-EOT
-	SSH tunnel command. Run this, leave the terminal open, then connect to
-	localhost:8123 (HTTP) or localhost:9000 (TCP) as if ClickHouse were local.
-	EOT
-	value = "ssh -N -L 8123:localhost:8123 -L 9000:localhost:9000 ubuntu@${oci_core_instance.clickhouse.public_ip}"
-}

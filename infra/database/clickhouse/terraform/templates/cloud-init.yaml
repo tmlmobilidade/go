@@ -12,23 +12,114 @@ packages:
 
 runcmd:
   # -----------------------------------------------------------------
+  # Robust Disk Mounting (OCI Special Handling)
+  # -----------------------------------------------------------------
+  - |
+    # Find the 1TB disk (it might be sda or sdb depending on OCI)
+    DATA_DISK=""
+    for disk in sda sdb sdc; do
+      SIZE=$(lsblk -b -n -o SIZE /dev/$disk 2>/dev/null || echo 0)
+      if [ "$SIZE" -gt 1000000000000 ]; then
+        DATA_DISK="/dev/$disk"
+        break
+      fi
+    done
+
+    if [ -n "$DATA_DISK" ]; then
+      echo "Data disk found at $DATA_DISK"
+      # Create filesystem if it doesn't exist
+      blkid "$DATA_DISK" || mkfs.xfs -L CHDATA "$DATA_DISK"
+      
+      # Prepare mount point
+      mkdir -p /opt/clickhouse
+      
+      # Mount and add to fstab for persistency
+      mount "$DATA_DISK" /opt/clickhouse
+      echo "$DATA_DISK /opt/clickhouse xfs defaults,noatime,_netdev 0 0" >> /etc/fstab
+    else
+      echo "ERROR: 1TB Data disk not found!"
+    fi
+
+  # -----------------------------------------------------------------
+  # OS Performance Tuning & Firewall
+  # -----------------------------------------------------------------
+  - echo 'never' > /sys/kernel/mm/transparent_hugepage/enabled
+  - echo 'never' > /sys/kernel/mm/transparent_hugepage/defrag
+  - apt-get update && apt-get install -y cpufrequtils iptables-persistent
+  - echo 'GOVERNOR="performance"' > /etc/default/cpufrequtils
+  - systemctl restart cpufrequtils
+  
+  # Open OS Firewall (OCI Ubuntu default is very restrictive)
+  - iptables -I INPUT 6 -p tcp --dport ${clickhouse_http_port} -j ACCEPT
+  - iptables -I INPUT 6 -p tcp --dport ${clickhouse_tcp_port} -j ACCEPT
+  - netfilter-persistent save
+
+  # Network Tuning
+  - sysctl -w fs.file-max=2097152
+  - sysctl -w vm.overcommit_memory=1
+  - sysctl -p
+
+  # -----------------------------------------------------------------
   # Install Docker
   # -----------------------------------------------------------------
   - curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
   - sh /tmp/get-docker.sh
-  - rm /tmp/get-docker.sh
-  - systemctl start docker
-  - systemctl enable docker
   - usermod -aG docker ubuntu
 
   # -----------------------------------------------------------------
-  # Create application directory
+  # Setup ClickHouse Directories (Post-Mount)
   # -----------------------------------------------------------------
   - mkdir -p /opt/clickhouse/clickhouse_data
   - mkdir -p /opt/clickhouse/clickhouse_logs
+  - mkdir -p /opt/clickhouse/config.d
+  - mkdir -p /opt/clickhouse/users.d
   - mkdir -p /opt/clickhouse/secrets
-  - chown -R ubuntu:ubuntu /opt/clickhouse
-  - chmod -R u+rwx /opt/clickhouse
+  
+  # CLICKHOUSE-SPECIFIC PERMISSIONS (UID 101 is default for clickhouse user in Docker)
+  - chown -R 101:101 /opt/clickhouse/clickhouse_data
+  - chown -R 101:101 /opt/clickhouse/clickhouse_logs
+  - chown -R ubuntu:ubuntu /opt/clickhouse/config.d
+  - chown -R ubuntu:ubuntu /opt/clickhouse/users.d
+  - chown -R ubuntu:ubuntu /opt/clickhouse/secrets
+  - chmod -R 775 /opt/clickhouse
+
+  # -----------------------------------------------------------------
+  # Write ClickHouse Tuning Configuration
+  # -----------------------------------------------------------------
+  # Write server-level config (config.d) — only server settings here
+  - |
+    cat > /opt/clickhouse/config.d/tuning.xml <<'TUNEOEOF'
+    <clickhouse>
+        <!-- Only bind IPv4 — OCI A1 does not expose IPv6 -->
+        <listen_host>0.0.0.0</listen_host>
+
+        <!-- Server-level memory: 85% of 12GB = ~10.2GB -->
+        <max_server_memory_usage_to_ram_ratio>0.85</max_server_memory_usage_to_ram_ratio>
+        <uncompressed_cache_size>2147483648</uncompressed_cache_size>
+        <mark_cache_size>2147483648</mark_cache_size>
+        
+        <!-- Enable metrics -->
+        <prometheus>
+            <endpoint>/metrics</endpoint>
+            <port>9363</port>
+            <metrics>true</metrics>
+            <events>true</events>
+        </prometheus>
+    </clickhouse>
+    TUNEOEOF
+
+  # Write user-level config (users.d) — max_memory_usage must live here in ClickHouse 26+
+  - |
+    cat > /opt/clickhouse/users.d/tuning.xml <<'USERUEOF'
+    <clickhouse>
+        <profiles>
+            <default>
+                <!-- Per-query memory limit for the default profile -->
+                <max_memory_usage>10G</max_memory_usage>
+            </default>
+        </profiles>
+    </clickhouse>
+    USERUEOF
 
   # -----------------------------------------------------------------
   # Write secrets (admin password)
@@ -52,7 +143,7 @@ runcmd:
         deploy:
           resources:
             limits:
-              memory: 8gb
+              memory: 11gb
         ports:
           - "${clickhouse_http_port}:8123"
           - "${clickhouse_tcp_port}:9000"
@@ -63,6 +154,8 @@ runcmd:
         volumes:
           - ./clickhouse_data:/var/lib/clickhouse
           - ./clickhouse_logs:/var/log/clickhouse-server
+          - ./config.d:/etc/clickhouse-server/config.d
+          - ./users.d:/etc/clickhouse-server/users.d
         env_file:
           - ./secrets/.env
         environment:

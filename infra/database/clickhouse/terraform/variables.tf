@@ -58,7 +58,7 @@ variable "compartment_ocid" {
 	type        = string
 	description = <<-EOT
 	The OCID of the compartment where resources will be created in.
-	Current compartment is set to: cmetropolitana
+	Current compartment is set to: cmet
 	EOT
 	default     = "ocid1.compartment.oc1..aaaaaaaaqwnoahpbcxhsogpszdixlv4jnrnujst7qxyar6536oeptpwjtkna"
 }
@@ -90,8 +90,8 @@ variable "image_ocid" {
 	Defaults to Canonical Ubuntu 22.04 Minimal aarch64 in eu-frankfurt-1.
 	Update this when a newer minimal Ubuntu image is published.
 	EOT
-	# Canonical-Ubuntu-22.04-Minimal-aarch64-2024.11.30-0 in eu-frankfurt-1
-	default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaavbpjlezqlvsywwhqjt2yqozbzzn36hupg3mvmxnymfbxwjhm4ana"
+	# Canonical-Ubuntu-22.04-Minimal-aarch64-2026.01.29-0 in eu-frankfurt-1
+	default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaaehm3rohfjplxw73gzlyhp4gy2xtym33utccjawp3b5hivi7tbvlq"
 }
 
 variable "vm_shape" {
@@ -117,8 +117,23 @@ variable "vm_memory_in_gbs" {
 
 variable "boot_volume_size_in_gbs" {
 	type        = number
-	description = "The size of the boot volume in GBs. ClickHouse data is stored here."
-	default     = 100
+	description = "The size of the boot volume in GBs."
+	default     = 50
+}
+
+variable "data_volume_size_in_gbs" {
+	type        = number
+	description = "The size of the dedicated data volume in GBs."
+	default     = 1024
+}
+
+variable "data_volume_vpus_per_gb" {
+	type        = number
+	description = <<-EOT
+	The number of Volume Performance Units (VPUs) per GB.
+	0: Lower Cost, 10: Balanced (Default), 20: Higher Performance.
+	EOT
+	default     = 10
 }
 
 
@@ -142,21 +157,9 @@ variable "allowed_ingress_cidrs" {
 	type        = list(string)
 	description = <<-EOT
 	List of CIDR ranges permitted to reach the ClickHouse ports.
-	Only used when ssh_tunnel_only = false.
+	Defaults to open (0.0.0.0/0). Restrict to known IPs in production.
 	EOT
 	default     = ["0.0.0.0/0"]
-}
-
-variable "ssh_tunnel_only" {
-	type        = bool
-	description = <<-EOT
-	When true (default), ClickHouse ports (8123, 9000) are NOT open to the internet.
-	You connect by forwarding those ports over SSH:
-	  ssh -L 8123:localhost:8123 -L 9000:localhost:9000 ubuntu@<public_ip>
-	Only SSH (port 22) is open publicly — the database is invisible from the internet.
-	Set to false to open the ports (restricted to allowed_ingress_cidrs).
-	EOT
-	default     = true
 }
 
 
