@@ -66,10 +66,15 @@
 				"title": "Informação financeira da agência"
 			},
 			"SectionValidationRules": {
-				"description": "Regras de validação do GTFS",
+				"description": "Ficheiro de regras de validação do GTFS",
 				"fields": {
 					"file": {
-						"label": "Regras de validação do GTFS"
+						"button": "Upload JSON",
+						"label": "Inserir JSON com as regras de validação do GTFS"
+					},
+					"file_content": {
+						"button": "Download JSON",
+						"label": "Download JSON com as regras de validação do GTFS"
 					}
 				},
 				"title": "Regras de validação do GTFS"
