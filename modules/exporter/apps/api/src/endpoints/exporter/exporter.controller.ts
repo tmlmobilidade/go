@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { fileExports, files } from '@tmlmobilidade/interfaces';
 import { type CreateFileExportDto, type FileExport } from '@tmlmobilidade/types';
@@ -18,7 +18,7 @@ export class ExporterController {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	static async create(request: FastifyRequest<{ Body: CreateFileExportDto<any> }>, reply: FastifyReply<FileExport>) {
 		const fileExportData = await fileExports.insertOne({ ...request.body, created_by: request.me._id, updated_by: request.me._id });
-		return reply.send({ data: fileExportData, error: null, statusCode: HttpStatus.CREATED });
+		return reply.send({ data: fileExportData, error: null, statusCode: HTTP_STATUS.CREATED });
 	}
 
 	/**
@@ -29,12 +29,22 @@ export class ExporterController {
 	static async download(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
 		const { id } = request.params;
 		const fileExport = await fileExports.findById(id);
-		if (!fileExport) throw new HttpException(HttpStatus.NOT_FOUND, 'File export not found');
+		if (!fileExport) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File export not found');
 
-		const file = await files.findById(fileExport.file_id);
-		if (!file) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
-
-		reply.send({ data: file.url, error: null, statusCode: HttpStatus.OK });
+		// Retrieve file data from database
+		const foundFileData = await files.findById(fileExport.file_id);
+		if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
+		// Stream the file in the given URL to the client
+		const storageServiceResponse = await fetch(foundFileData.url);
+		if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
+		// Set headers and pipe the response body to the client
+		reply.header('Content-Disposition', `attachment; filename="${foundFileData.name}"`);
+		reply.header('Content-Type', foundFileData.type);
+		// Set content length if available
+		const contentLength = storageServiceResponse.headers.get('Content-Length');
+		if (contentLength) reply.header('Content-Length', contentLength);
+		// Pipe the response body to the client
+		return reply.send(storageServiceResponse.body);
 	}
 
 	/**
@@ -48,7 +58,7 @@ export class ExporterController {
 		};
 
 		const allFileExport = await fileExports.findMany(filters, { sort: { created_at: 1 } });
-		return reply.send({ data: allFileExport, error: null, statusCode: HttpStatus.OK });
+		return reply.send({ data: allFileExport, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	//

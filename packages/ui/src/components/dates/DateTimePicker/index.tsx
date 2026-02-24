@@ -64,8 +64,10 @@ export interface DateTimePickerProps {
 
 }
 
-/* * */
-
+/**
+ * This component is used to select a date and time.
+ * @deprecated Use DateTimeInput instead.
+ */
 export function DateTimePicker({ clearable, description, disabled, fullWidth, label, leftSection = <IconCalendar size={20} />, onChange, placeholder, value }: DateTimePickerProps) {
 	//
 

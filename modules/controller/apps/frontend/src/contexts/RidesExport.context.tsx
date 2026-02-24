@@ -3,9 +3,9 @@
 /* * */
 
 import { RIDES_EXPORT_MODAL_ID } from '@/components/rides/export/RidesExportModal';
-import { RidesListContextState } from '@/contexts/RidesList.context';
+import { RidesListContextState } from '@/components/rides/list/RidesList.context';
 import { Dates } from '@tmlmobilidade/dates';
-import { CreateFileExportDto, DelayStatus, OperationalStatus, RideAcceptanceStatus, RideAnalysisGradeWithNone, RideExportProperties, type UnixTimestamp } from '@tmlmobilidade/types';
+import { CreateFileExportDto, DelayStatus, OperationalStatus, RideAnalysisGradeWithNone, RideExportProperties, type UnixTimestamp } from '@tmlmobilidade/types';
 import { closeModal, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 
@@ -14,16 +14,8 @@ import { createContext, type PropsWithChildren, useContext, useMemo, useState } 
 interface RidesExportModalContextState {
 	actions: {
 		exportRides: () => void
-		setFilterAcceptanceStatus: (values: string[]) => void
-		setFilterAgency: (values: string[]) => void
-		setFilterAnalysisEndedAtLastStop: (values: string[]) => void
-		setFilterAnalysisExpectedApexValidationInterval: (values: string[]) => void
-		setFilterAnalysisSimpleThreeVehicleEvents: (values: string[]) => void
-		setFilterAnalysisTransactionSequentiality: (values: string[]) => void
 		setFilterDateEnd: (value: number) => void
 		setFilterDateStart: (value: number) => void
-		setFilterDelayStatus: (values: string[]) => void
-		setFilterOperationalStatus: (values: string[]) => void
 	}
 	filters: RidesListContextState['filters']
 	flags: {
@@ -52,18 +44,11 @@ export const RidesExportModalContextProvider = ({ children, initialFilters }: Pr
 
 	//
 	// A. Setup variables
-	const [filterAgency, setFilterAgency] = useState<string[]>(initialFilters.agency);
-	const [filterDateEnd, setFilterDateEnd] = useState<number>(initialFilters.date_end);
-	const [filterDateStart, setFilterDateStart] = useState<number>(initialFilters.date_start);
-	const [filterDelayStatus, setFilterDelayStatus] = useState<string[]>(initialFilters.delay_status);
-	const [filterOperationalStatus, setFilterOperationalStatus] = useState<string[]>(initialFilters.operational_status);
-	const [filterAnalysisSimpleThreeVehicleEvents, setFilterAnalysisSimpleThreeVehicleEvents] = useState<string[]>(initialFilters.analysis_simple_three_vehicle_events_grade);
-	const [filterAnalysisEndedAtLastStop, setFilterAnalysisEndedAtLastStop] = useState<string[]>(initialFilters.analysis_ended_at_last_stop);
-	const [filterAnalysisExpectedApexValidationInterval, setFilterAnalysisExpectedApexValidationInterval] = useState<string[]>(initialFilters.analysis_expected_apex_validation_interval);
-	const [filterAnalysisTransactionSequentiality, setFilterAnalysisTransactionSequentiality] = useState<string[]>(initialFilters.analysis_transaction_sequentiality);
-	const [filterAcceptanceStatus, setFilterAcceptanceStatus] = useState<string[]>(initialFilters.acceptance_status);
 
 	const exports = useExportsContext();
+
+	const [filterDateEnd, setFilterDateEnd] = useState<number>(initialFilters.date_end);
+	const [filterDateStart, setFilterDateStart] = useState<number>(initialFilters.date_start);
 
 	//
 	// B. Transform data
@@ -71,25 +56,26 @@ export const RidesExportModalContextProvider = ({ children, initialFilters }: Pr
 	//
 	// C. Handle actions
 	async function exportRides() {
-		if (!filterDateStart || !filterDateEnd) return;
+		if (!initialFilters.date_start || !initialFilters.date_end) return;
 
 		const fileName = `${Dates.fromUnixTimestamp(filterDateStart).setZone('Europe/Lisbon', 'offset_only').operational_date}_${Dates.fromUnixTimestamp(filterDateEnd).setZone('Europe/Lisbon', 'offset_only').operational_date}.csv`;
 		const createFileExportDto: CreateFileExportDto<RideExportProperties> = {
+			created_by: 'will-be-set-by-api',
 			file_id: null,
 			file_name: fileName,
 			processing_status: 'waiting',
 			properties: {
-				acceptance_status: filterAcceptanceStatus as RideAcceptanceStatus[],
-				agency_ids: filterAgency,
-				analysis_ended_at_last_stop_grade: filterAnalysisEndedAtLastStop as RideAnalysisGradeWithNone[],
-				analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval as RideAnalysisGradeWithNone[],
-				analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents as RideAnalysisGradeWithNone[],
-				analysis_transaction_sequentiality: filterAnalysisTransactionSequentiality as RideAnalysisGradeWithNone[],
+				acceptance_status: initialFilters.acceptance_status.value,
+				agency_ids: initialFilters.agency.value,
+				analysis_ended_at_last_stop_grade: initialFilters.analysis_ended_at_last_stop.value as RideAnalysisGradeWithNone[],
+				analysis_expected_apex_validation_interval: initialFilters.analysis_expected_apex_validation_interval.value as RideAnalysisGradeWithNone[],
+				analysis_simple_three_vehicle_events_grade: initialFilters.analysis_simple_three_vehicle_events_grade.value as RideAnalysisGradeWithNone[],
+				analysis_transaction_sequentiality: initialFilters.analysis_transaction_sequentiality.value as RideAnalysisGradeWithNone[],
 				date_end: filterDateEnd as UnixTimestamp,
 				date_start: filterDateStart as UnixTimestamp,
-				delay_statuses: filterDelayStatus as DelayStatus[],
-				operational_statuses: filterOperationalStatus as OperationalStatus[],
-				search: initialFilters.search || undefined,
+				delay_statuses: initialFilters.delay_status.value as DelayStatus[],
+				operational_statuses: initialFilters.operational_status.value as OperationalStatus[],
+				search: initialFilters.search.value || undefined,
 			},
 			type: 'ride',
 		};
@@ -113,47 +99,39 @@ export const RidesExportModalContextProvider = ({ children, initialFilters }: Pr
 		return {
 			actions: {
 				exportRides,
-				setFilterAcceptanceStatus,
-				setFilterAgency,
-				setFilterAnalysisEndedAtLastStop,
-				setFilterAnalysisExpectedApexValidationInterval,
-				setFilterAnalysisSimpleThreeVehicleEvents,
-				setFilterAnalysisTransactionSequentiality,
 				setFilterDateEnd,
 				setFilterDateStart,
-				setFilterDelayStatus,
-				setFilterOperationalStatus,
 			},
 			filters: {
-				acceptance_status: filterAcceptanceStatus,
-				agency: filterAgency,
-				analysis_ended_at_last_stop: filterAnalysisEndedAtLastStop,
-				analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval,
-				analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents,
-				analysis_transaction_sequentiality: filterAnalysisTransactionSequentiality,
-				date_end: filterDateEnd,
-				date_start: filterDateStart,
-				delay_status: filterDelayStatus,
-				operational_status: filterOperationalStatus,
+				acceptance_status: initialFilters.acceptance_status,
+				agency: initialFilters.agency,
+				analysis_ended_at_last_stop: initialFilters.analysis_ended_at_last_stop,
+				analysis_expected_apex_validation_interval: initialFilters.analysis_expected_apex_validation_interval,
+				analysis_simple_three_vehicle_events_grade: initialFilters.analysis_simple_three_vehicle_events_grade,
+				analysis_transaction_sequentiality: initialFilters.analysis_transaction_sequentiality,
+				date_end: initialFilters.date_end,
+				date_start: initialFilters.date_start,
+				delay_status: initialFilters.delay_status,
+				operational_status: initialFilters.operational_status,
 				search: initialFilters.search,
 			},
 			flags: {
-				canSave: !!filterDateEnd && !!filterDateStart,
+				canSave: !!initialFilters.date_end && !!initialFilters.date_start,
 				error: undefined,
 				loading: false,
 			},
 		};
 	}, [
-		filterDateEnd,
-		filterDateStart,
-		filterAcceptanceStatus,
-		filterAgency,
-		filterAnalysisEndedAtLastStop,
-		filterAnalysisExpectedApexValidationInterval,
-		filterAnalysisSimpleThreeVehicleEvents,
-		filterAnalysisTransactionSequentiality,
-		filterDelayStatus,
-		filterOperationalStatus,
+		initialFilters.date_end,
+		initialFilters.date_start,
+		initialFilters.acceptance_status,
+		initialFilters.agency,
+		initialFilters.analysis_ended_at_last_stop,
+		initialFilters.analysis_expected_apex_validation_interval,
+		initialFilters.analysis_simple_three_vehicle_events_grade,
+		initialFilters.analysis_transaction_sequentiality,
+		initialFilters.delay_status,
+		initialFilters.operational_status,
 	]);
 
 	//

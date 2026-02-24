@@ -21,5 +21,7 @@ import { stops } from '@tmlmobilidade/interfaces';
 	await seedFromGoV1();
 	await seedFromTmp();
 
+	console.log('Done');
+
 	//
 })();

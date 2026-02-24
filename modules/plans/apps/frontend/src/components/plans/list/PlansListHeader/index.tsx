@@ -20,7 +20,7 @@ export function PlansListHeader() {
 		<Toolbar>
 			<Label size="lg" caps singleLine>Planos</Label>
 			<Spacer />
-			<SearchInput onChange={plansListContext.actions.setFilterSearch} value={plansListContext.filters.search} />
+			<SearchInput onChange={plansListContext.filters.search.set} value={plansListContext.filters.search.value} />
 		</Toolbar>
 	);
 

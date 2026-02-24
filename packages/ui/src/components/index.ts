@@ -1,5 +1,6 @@
 export * from './authentication';
 export * from './buttons';
+export * from './calendar';
 export * from './comments';
 export * from './common';
 export * from './datatable';
@@ -13,5 +14,6 @@ export * from './map';
 export * from './modals';
 export * from './panes';
 export * from './proposedChanges';
+export * from './tags';
 export * from './upload';
 export * from './wrapper';

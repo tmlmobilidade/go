@@ -1,0 +1,35 @@
+/* * */
+
+import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { agencies } from '@tmlmobilidade/interfaces';
+import { type Agency } from '@tmlmobilidade/types';
+
+/* * */
+
+export class AgenciesSharedController {
+	//
+
+	/**
+	 * Returns all Agencies sorted by ID.
+	 * @param request The request object
+	 * @param reply The reply object
+	 */
+	static async getAll(request: FastifyRequest, reply: FastifyReply<Agency[]>) {
+		const allAgencies = await agencies.findMany({}, { sort: { _id: 1 } });
+		reply.send({ data: allAgencies, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
+	 * Returns an Agency by ID.
+	 * @param request The request object
+	 * @param reply The reply object
+	 */
+	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Agency>) {
+		const agencyData = await agencies.findById(request.params.id);
+		if (!agencyData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Agency not found');
+		reply.send({ data: agencyData, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	//
+}

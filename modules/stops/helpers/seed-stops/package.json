@@ -12,20 +12,21 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"lint": "eslint .",
+		"lint": "eslint . --fix && tsc --noEmit",
 		"lint:fix": "eslint . --fix",
 		"start": "tsx watch src/index.ts"
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
 		"papaparse": "5.5.3"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.0.3",
+		"@types/node": "25.3.0",
 		"@types/papaparse": "5.5.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",

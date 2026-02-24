@@ -2,37 +2,25 @@
 
 /* * */
 
-import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { type PlanNormalized, planValidityStatusValues } from '@/types/normalized';
+import { type PlanNormalized, planValidityStatusOptions, planValidityStatusValues } from '@/types/normalized';
 import { getPlanValidityStatus } from '@/utils/get-plan-validity-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { type Plan } from '@tmlmobilidade/types';
-import { parseAsArrayOfStrings, useSearch } from '@tmlmobilidade/ui';
-import { useQueryState } from 'nuqs';
+import { PermissionCatalog, type Plan } from '@tmlmobilidade/types';
+import { type ListContextStateTemplate, useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
-interface PlansListContextState {
-	actions: {
-		setFilterAgency: (values: string[]) => void
-		setFilterSearch: (values: string) => void
-		setFilterValidityStatus: (values: string[]) => void
-	}
+interface PlansListContextState extends ListContextStateTemplate {
 	data: {
 		filtered: PlanNormalized[]
 		raw: Plan[]
 	}
-	filters: {
-		agency: string[]
-		search: string
-		validity_status: string[]
-	}
-	flags: {
-		error: Error | undefined
-		loading: boolean
+	filters: ListContextStateTemplate['filters'] & {
+		agency: UseFilterStateListReturnType
+		validity_status: UseFilterStateListReturnType
 	}
 }
 
@@ -54,18 +42,21 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
-	// A. Setup variables
+	// A. Fetch data
 
-	const agenciesContext = useAgenciesContext();
+	const { data: allPlansData, error: allPlansError, isLoading: allPlansLoading } = useSWR<Plan[], Error>(API_ROUTES.plans.PLANS_LIST, { refreshInterval: 5_000 });
 
-	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
-	const [filterAgency, setFilterAgency] = useQueryState<string[]>('agency', parseAsArrayOfStrings.withDefault(agenciesContext.data.raw.map(item => item._id)));
-	const [filterValidityStatus, setFilterValidityStatus] = useQueryState<string[]>('validity_status', parseAsArrayOfStrings.withDefault(planValidityStatusValues));
+	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.plans.actions.read],
+		scope: PermissionCatalog.all.plans.scope,
+	});
 
 	//
-	// B. Fetch data
+	// B. Setup filters
 
-	const { data: allPlansData, error: allPlansError, isLoading: allPlansLoading } = useSWR<Plan[], Error>(API_ROUTES.plans.PLANS_LIST, { refreshInterval: 5000 });
+	const filterSearch = useFilterStateString('search');
+	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
+	const filterValidityStatus = useFilterStateList('validity_status', planValidityStatusValues, planValidityStatusOptions);
 
 	//
 	// C. Transform data
@@ -85,15 +76,15 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 	const searchResultsData = useSearch<PlanNormalized>({
 		accessors: ['_id', 'agency_name_normalized', 'agency_id_normalized'],
 		data: normalizedPlansData,
-		query: filterSearch,
+		query: filterSearch.value,
 	});
 
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
 		if (!searchResultsData) return [];
 		// 1. Convert filter arrays to sets for O(1) membership checks
-		const agencySet = new Set(filterAgency);
-		const validityStatusSet = new Set(filterValidityStatus);
+		const agencySet = new Set(filterAgency.value);
+		const validityStatusSet = new Set(filterValidityStatus.value);
 		return searchResultsData
 			.filter((item: PlanNormalized) => {
 				// Filter by agency
@@ -112,11 +103,6 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 	// D. Define context value
 
 	const contextValue: PlansListContextState = useMemo(() => ({
-		actions: {
-			setFilterAgency,
-			setFilterSearch,
-			setFilterValidityStatus,
-		},
 		data: {
 			filtered: filterResultsData,
 			raw: allPlansData ?? [],
@@ -128,16 +114,16 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		flags: {
 			error: allPlansError,
-			loading: allPlansLoading,
+			isLoading: allPlansLoading,
 		},
 	}), [
 		allPlansError,
 		allPlansLoading,
 		filterResultsData,
-		filterValidityStatus,
+		filterValidityStatus.value,
 		allPlansData,
-		filterAgency,
-		filterSearch,
+		filterAgency.value,
+		filterSearch.value,
 	]);
 
 	//

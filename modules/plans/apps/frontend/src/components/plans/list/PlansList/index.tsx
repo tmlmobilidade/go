@@ -76,7 +76,7 @@ export function PlansList() {
 	//
 	// C. Render components
 
-	if (plansListContext.flags.loading) {
+	if (plansListContext.flags.isLoading) {
 		return <LoadingOverlay />;
 	}
 

@@ -1,9 +1,8 @@
 /* * */
 
-import { useRidesListContext } from '@/contexts/RidesList.context';
-import { RIDE_ANALYSIS_GRADE_OPTIONS } from '@tmlmobilidade/types';
+import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -13,40 +12,19 @@ export function RidesListFilterAnalysisSimpleThreeEvents() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const ridesListContext = useRidesListContext();
 
 	//
-	// B. Transform data
-
-	const isActive = useMemo(() => {
-		// The default for this filter is to show all statuses
-		const defaultValues = [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'];
-		const enabledValues = ridesListContext.filters.analysis_simple_three_vehicle_events_grade;
-		// Check if the arrays are equal by quickly comparing their lengths
-		if (defaultValues.length !== enabledValues.length) return true;
-		// If the length is the same ensure they're equal by also
-		// checking if every item in one array is included in the other.
-		return !defaultValues.every(item => enabledValues.includes(item));
-	}, [ridesListContext.filters.analysis_simple_three_vehicle_events_grade]);
-
-	const parsedOptions = useMemo(() => {
-		// Parse options to the expected format.
-		return [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'].map(value => ({
-			checked: ridesListContext.filters.analysis_simple_three_vehicle_events_grade.includes(value),
-			label: value,
-			value: value,
-		}));
-	}, [ridesListContext.filters.analysis_simple_three_vehicle_events_grade]);
-
-	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<FilterTypeList
-			active={isActive}
-			label="3 Momentos"
-			onChange={ridesListContext.actions.setFilterAnalysisSimpleThreeVehicleEvents}
-			options={parsedOptions}
+			active={ridesListContext.filters.analysis_simple_three_vehicle_events_grade.isActive}
+			label={t('default:list.RidesListFilterAnalysisSimpleThreeEvents.label')}
+			onChange={ridesListContext.filters.analysis_simple_three_vehicle_events_grade.set}
+			options={ridesListContext.filters.analysis_simple_three_vehicle_events_grade.options}
 			withToggleAll
 		/>
 	);

@@ -1,0 +1,43 @@
+.container {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.calendar {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	height: 100%;
+	container-type: inline-size;
+	overflow: hidden;
+}
+
+.yearlyGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	grid-auto-rows: max-content;
+	gap: var(--size-spacing-md);
+	padding: var(--size-spacing-md);
+	overflow-y: auto;
+}
+
+@container (width >= 768px) {
+	.yearlyGrid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@container (width >= 960px) {
+	.yearlyGrid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@container (width >= 1400px) {
+	.yearlyGrid {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}

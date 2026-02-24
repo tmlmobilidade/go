@@ -6,6 +6,7 @@ import { useUserCreateContext } from '@/components/users/create/UserCreate.conte
 import { IconMail } from '@tabler/icons-react';
 import { CreateUserSchema } from '@tmlmobilidade/types';
 import { Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -16,6 +17,7 @@ export function UserCreateBasicInfo() {
 	// A. Setup variables
 
 	const userCreateContext = useUserCreateContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -25,16 +27,18 @@ export function UserCreateBasicInfo() {
 			<Grid columns="ab" gap="xl">
 				<TextInput
 					key={userCreateContext.data.form.key('first_name')}
-					label="Primeiro Nome"
+					label={t('default:users.create.BasicInfo.fields.first_name.label')}
 					maxLength={255}
+					placeholder={t('default:users.create.BasicInfo.fields.first_name.placeholder')}
 					withAsterisk={!CreateUserSchema.shape.first_name.isOptional()}
 					data-autofocus
 					{...userCreateContext.data.form.getInputProps('first_name')}
 				/>
 				<TextInput
 					key={userCreateContext.data.form.key('last_name')}
-					label="Último Nome"
+					label={t('default:users.create.BasicInfo.fields.last_name.label')}
 					maxLength={255}
+					placeholder={t('default:users.create.BasicInfo.fields.last_name.placeholder')}
 					withAsterisk={!CreateUserSchema.shape.last_name.isOptional()}
 					{...userCreateContext.data.form.getInputProps('last_name')}
 				/>
@@ -42,9 +46,9 @@ export function UserCreateBasicInfo() {
 			<Grid columns="a" gap="xl">
 				<TextInput
 					key={userCreateContext.data.form.key('email')}
-					label="Email"
+					label={t('default:users.create.BasicInfo.fields.email.label')}
 					leftSection={<IconMail size={22} />}
-					placeholder="user@example.com"
+					placeholder={t('default:users.create.BasicInfo.fields.email.placeholder')}
 					withAsterisk={!CreateUserSchema.shape.email.isOptional()}
 					{...userCreateContext.data.form.getInputProps('email')}
 				/>

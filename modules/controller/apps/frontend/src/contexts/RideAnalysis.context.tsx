@@ -20,20 +20,20 @@ import useSWR from 'swr';
 
 export const RideAnalysisViewOptions = {
 	ANALYSIS: {
-		icon: IconPresentationAnalytics,
+		icon: <IconPresentationAnalytics />,
 		label: 'Análise',
 		permission: PermissionCatalog.all.rides.actions.analysis_read,
 		value: 'ANALYSIS',
 	},
 	// eslint-disable-next-line perfectionist/sort-objects
 	ACCEPTANCE: {
-		icon: IconChecks,
+		icon: <IconChecks />,
 		label: 'Aceitação',
 		permission: PermissionCatalog.all.rides.actions.acceptance_read,
 		value: 'ACCEPTANCE',
 	},
 	AUDIT: {
-		icon: IconClipboardSearch,
+		icon: <IconClipboardSearch />,
 		label: 'Auditoria',
 		permission: PermissionCatalog.all.rides.actions.audit_read,
 		value: 'AUDIT',

@@ -13,6 +13,7 @@ import { fetchData } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 import { useQueryState } from 'nuqs';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -30,6 +31,8 @@ export function ChangePasswordForm() {
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -84,11 +87,11 @@ export function ChangePasswordForm() {
 		setIsLoading(false);
 		// Handle response error
 		if (!response.isOk) {
-			useToast.error({ message: response.error ?? 'Ocorreu um erro ao tentar alterar a password', title: 'Erro ao tentar alterar password' });
+			useToast.error({ message: response.error ?? t('unauthenticated:ChangePasswordForm.error_message.description'), title: t('unauthenticated:ChangePasswordForm.error_message.title') });
 			return;
 		}
 		// Show success message and redirect to login page
-		useToast.success({ message: 'Password foi alterada com sucesso', title: 'Sucesso' });
+		useToast.success({ message: t('unauthenticated:ChangePasswordForm.success.description'), title: t('unauthenticated:ChangePasswordForm.success.title') });
 		window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
 	};
 
@@ -97,28 +100,28 @@ export function ChangePasswordForm() {
 
 	return (
 		<AuthenticationForm
-			description="Introduza a sua nova password"
-			footerLabel="Voltar ao login"
+			description={t('unauthenticated:ChangePasswordForm.description')}
+			footerLabel={t('unauthenticated:ChangePasswordForm.footer.label')}
 			footerUrl={PAGE_ROUTES.auth.LOGIN_LIST}
 			loading={isLoading}
 			onSubmit={handleSubmit}
 			submitDisabled={isDisabled}
-			submitLabel="Confirmar"
-			title="Alterar password"
+			submitLabel={t('unauthenticated:ChangePasswordForm.submit.label')}
+			title={t('unauthenticated:ChangePasswordForm.title')}
 		>
 			<input defaultValue={emailValue} name="email" type="email" readOnly />
 			<PasswordInput
 				key="password"
 				disabled={isLoading}
 				onChange={e => setPasswordValue(e.target.value)}
-				placeholder="Password"
+				placeholder={t('unauthenticated:ChangePasswordForm.fields.password.placeholder')}
 				value={passwordValue}
 			/>
 			<PasswordInput
 				key="password-confirm"
 				disabled={isLoading}
 				onChange={e => setConfirmPasswordValue(e.target.value)}
-				placeholder="Confirm password"
+				placeholder={t('unauthenticated:ChangePasswordForm.fields.confirm_password.placeholder')}
 				value={confirmPasswordValue}
 			/>
 			<div className={styles.passwordRequirements}>

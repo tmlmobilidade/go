@@ -1,38 +1,42 @@
 /* * */
 
 import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema } from '@/_common/status.js';
-
-import { RideAcceptanceStatusSchema } from './ride-acceptance.js';
-import { RideAnalysis } from './ride-analysis.js';
-import { Ride } from './ride.js';
+import { RideAcceptanceStatusSchema } from '@/rides/ride-acceptance.js';
+import { RideAnalysisGradeSchema } from '@/rides/ride-analysis.js';
+import { RideSchema } from '@/rides/ride.js';
+import { z } from 'zod';
 
 /* * */
 
-export interface RideNormalized extends Ride {
-	acceptance_status: typeof RideAcceptanceStatusSchema.options[number]
-	analysis_ended_at_last_stop_grade: 'none' | RideAnalysis['grade']
-	analysis_expected_apex_validation_interval: 'none' | RideAnalysis['grade']
-	analysis_simple_three_vehicle_events_grade: 'none' | RideAnalysis['grade']
-	analysis_transaction_sequentiality: 'none' | RideAnalysis['grade']
+export const RideNormalizedSchema = RideSchema.extend({
+	acceptance_status: z.enum([...RideAcceptanceStatusSchema.options, 'none']),
+	analysis_ended_at_last_stop_grade: z.enum([...RideAnalysisGradeSchema.options, 'none']),
+	analysis_expected_apex_validation_interval: z.enum([...RideAnalysisGradeSchema.options, 'none']),
+	analysis_simple_three_vehicle_events_grade: z.enum([...RideAnalysisGradeSchema.options, 'none']),
+	analysis_transaction_sequentiality: z.enum([...RideAnalysisGradeSchema.options, 'none']),
 
 	/**
 	 * @deprecated use `start_time_observed_display` instead
 	 */
-	delay_status: typeof DelayStatusSchema.options[number]
+	delay_status: DelayStatusSchema,
 
 	/**
 	 * @deprecated use `start_time_observed_display` instead
 	 */
-	delay_value_display: null | string
+	delay_value_display: z.string().nullable(),
 
-	end_delay_status: typeof DelayStatusSchema.options[number]
-	end_delay_value_display: null | string
-	end_time_observed_display: null | string
-	end_time_scheduled_display: string
-	operational_status: typeof OperationalStatusSchema.options[number]
-	seen_status: typeof SeenStatusSchema.options[number]
-	start_delay_status: typeof DelayStatusSchema.options[number]
-	start_delay_value_display: null | string
-	start_time_observed_display: null | string
-	start_time_scheduled_display: string
-}
+	end_delay_status: DelayStatusSchema,
+	end_delay_value_display: z.string().nullable(),
+	end_time_observed_display: z.string().nullable(),
+	end_time_scheduled_display: z.string(),
+	operational_status: OperationalStatusSchema,
+	seen_status: SeenStatusSchema,
+	start_delay_status: DelayStatusSchema,
+	start_delay_value_display: z.string().nullable(),
+	start_time_observed_display: z.string().nullable(),
+	start_time_scheduled_display: z.string(),
+});
+
+/* * */
+
+export type RideNormalized = z.infer<typeof RideNormalizedSchema>;

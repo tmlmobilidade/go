@@ -2,6 +2,7 @@
 
 import { useAgenciesListContext } from '@/components/agencies/list/AgenciesList.context';
 import { Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -11,6 +12,7 @@ export function AgenciesListHeader() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const agenciesListContext = useAgenciesListContext();
 
 	//
@@ -18,7 +20,7 @@ export function AgenciesListHeader() {
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>Operadores</Label>
+			<Label size="lg" caps singleLine>{t('default:agencies.list.Header.title')}</Label>
 			<Spacer />
 			<SearchInput onChange={agenciesListContext.actions.setFilterSearch} value={agenciesListContext.filters.search} />
 		</Toolbar>

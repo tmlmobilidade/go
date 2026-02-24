@@ -1,14 +1,13 @@
 /* * */
 
+import { fetchProtobuf } from '@/protobuf.js';
+import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { alerts } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { AlertTypeSchema, CreateAlertDto, ServiceAlertResponse } from '@tmlmobilidade/types';
+import { type CreateAlertDto, type ServiceAlertResponse } from '@tmlmobilidade/types';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
-import { fetchProtobuf } from './protobuf.js';
-import { getAlertTitleAndDescription } from './translations.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -44,18 +43,26 @@ async function main() {
 			}
 
 			//
-			const { description, title } = getAlertTitleAndDescription(
-				serviceAlert.alert.cause as CreateAlertDto['cause'],
-				serviceAlert.alert.effect as CreateAlertDto['effect'],
-				serviceAlert.alert.informed_entity[0].route_id ?? '',
-			);
+			const { description, title } = describeAlert({
+				cause: serviceAlert.alert.cause as CreateAlertDto['cause'],
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				data: serviceAlert.alert as any,
+				effect: serviceAlert.alert.effect as CreateAlertDto['effect'],
+				reference_type: 'rides',
+				references: serviceAlert.alert.informed_entity.map(entity => ({
+					child_ids: [],
+					parent_id: entity.trip?.trip_id ?? '',
+				})),
+				type: 'rides',
+			});
 
 			const createAlertDto: CreateAlertDto = {
 				active_period_end_date: null,
 				active_period_start_date: undefined,
+				agency_id: '43',
 				cause: serviceAlert.alert.cause as CreateAlertDto['cause'],
 				coordinates: null,
-				description: description,
+				description: description.pt,
 				effect: serviceAlert.alert.effect as CreateAlertDto['effect'],
 				external_id: serviceAlert.id,
 				file_id: null,
@@ -64,14 +71,13 @@ async function main() {
 				municipality_ids: [],
 				publish_end_date: null,
 				publish_start_date: undefined,
-				publish_status: 'PUBLISHED',
-				reference_type: 'TRIP',
+				publish_status: 'published',
+				reference_type: 'rides',
 				references: serviceAlert.alert.informed_entity.map(entity => ({
 					child_ids: [],
 					parent_id: entity.trip?.trip_id ?? '',
 				})),
-				title: title,
-				type: AlertTypeSchema.Values.REALTIME,
+				title: title.pt,
 			};
 
 			const alertRealtime = await alerts.insertOne(createAlertDto);

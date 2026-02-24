@@ -4,17 +4,12 @@
 
 import { Checkbox, ScrollArea } from '@mantine/core';
 import { useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
+import { SelectDataItem } from '../../inputs/Select';
 import { FilterWrapper, FilterWrapperRef } from '../FilterWrapper';
 
 /* * */
-
-interface FilterTypeListOption {
-	checked?: boolean
-	disabled?: boolean
-	label: string
-	value: string
-}
 
 interface FilterTypeListProps {
 	active?: boolean
@@ -23,7 +18,7 @@ interface FilterTypeListProps {
 	label: string
 	onChange?: (values: string[]) => void
 	onClose?: () => void
-	options?: FilterTypeListOption[]
+	options?: SelectDataItem[]
 	withToggleAll?: boolean
 }
 
@@ -34,6 +29,8 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
 
 	const filterWrapperRef = useRef<FilterWrapperRef>(null);
 
@@ -63,7 +60,7 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 			const allOption = {
 				checked: toggleAllActive,
 				disabled: false,
-				label: 'Selecionar Tudo',
+				label: t('shared:components.filters.FilterTypeList.toggle_all'),
 				value: 'all',
 			};
 			return [allOption, ...options];
@@ -96,7 +93,7 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 		if (onClose) onClose();
 	};
 
-	const handleOptionSelect = (option: FilterTypeListOption) => {
+	const handleOptionSelect = (option: SelectDataItem) => {
 		if (option.value === 'all') handleSingleAllSelect();
 		else handleSingleOptionSelect(option.value);
 	};
@@ -112,7 +109,7 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 					<Checkbox
 						key="toggle-all"
 						checked={toggleAllActive}
-						label="Selecionar Tudo"
+						label={t('shared:components.filters.FilterTypeList.toggle_all')}
 						onChange={handleMultiToggleAll}
 						value="all"
 					/>

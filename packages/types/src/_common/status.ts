@@ -12,7 +12,7 @@ export type ProcessingStatus = z.infer<typeof ProcessingStatusSchema>;
 /* * */
 /* DELAY STATUS */
 
-export const DelayStatusValues = ['delayed', 'early', 'ontime', 'none'] as const;
+export const DelayStatusValues = ['ontime', 'delayed', 'early', 'none'] as const;
 export const DelayStatusSchema = z.enum(DelayStatusValues);
 export type DelayStatus = z.infer<typeof DelayStatusSchema>;
 
@@ -33,7 +33,7 @@ export type OperationalStatus = z.infer<typeof OperationalStatusSchema>;
 /* * */
 /* PUBLISH STATUS */
 
-export const PublishStatusValues = ['PUBLISHED', 'ARCHIVED', 'DRAFT'] as const;
+export const PublishStatusValues = ['published', 'archived', 'draft'] as const;
 export const PublishStatusSchema = z.enum(PublishStatusValues);
 export type PublishStatus = z.infer<typeof PublishStatusSchema>;
 

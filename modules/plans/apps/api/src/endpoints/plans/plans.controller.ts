@@ -1,7 +1,7 @@
 /* * */
 
 import { updateFeedInfoDates } from '@/utils/file-utils.js';
-import { HttpException, HttpStatus, mimeTypes } from '@tmlmobilidade/consts';
+import { HttpException, HTTP_STATUS, mimeTypes } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { files, type Filter, gtfsValidations, plans, TransactionManager } from '@tmlmobilidade/interfaces';
 import { type CreateFileDto, type CreatePlanDto, File as FileType, HashablePlanMetadata, PermissionCatalog, type Plan, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
@@ -20,7 +20,7 @@ export class PlansController {
 	static async changeGtfsPlan(request: FastifyRequest<{ Body: { validation_id: string }, Params: { id: string } }>, reply: FastifyReply<Plan>) {
 		// Get the Plan from the database
 		const planData = await plans.findById(request.params.id);
-		if (!planData) throw new HttpException(HttpStatus.NOT_FOUND, 'Plan not found');
+		if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 		// Check if the user has permission to change the GTFS of the Plan
 		const hasPermissionChangeGtfsPlan = PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.plans.actions.update_gtfs_plan,
@@ -30,10 +30,10 @@ export class PlansController {
 			value: planData.gtfs_agency.agency_id,
 		});
 		// Throw an error if the user is not authorized
-		if (!hasPermissionChangeGtfsPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to change the GTFS of the plan.');
+		if (!hasPermissionChangeGtfsPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to change the GTFS of the plan.');
 		// For a given validation ID, get the validation data
 		const validationData = await gtfsValidations.findById(request.body.validation_id);
-		if (!validationData) throw new HttpException(HttpStatus.NOT_FOUND, 'Validation not found');
+		if (!validationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
 		// Create a new MongoDB transaction to manage the GTFS change
 		// and perform all necessary operations atomically, with rollback on failure
 		const transactionManager = new TransactionManager([plans, files] as const);
@@ -75,7 +75,7 @@ export class PlansController {
 			return updatedPlanData;
 		});
 		// Send the updated plan data as the response
-		reply.send({ data: result, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -86,7 +86,7 @@ export class PlansController {
 	static async controllerReprocessPlanById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
 		const planData = await plans.findById(request.params.id);
 		const result = await plans.updateById(request.params.id, { apps: { ...planData.apps, controller: { last_hash: null, status: 'waiting', timestamp: null } } });
-		return reply.send({ data: result, error: null, statusCode: HttpStatus.OK });
+		return reply.send({ data: result, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -102,7 +102,7 @@ export class PlansController {
 
 		const validationData = await gtfsValidations.findById(request.body.validation_id);
 
-		if (!validationData) throw new HttpException(HttpStatus.NOT_FOUND, 'Plan not found');
+		if (!validationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 
 		//
 		// Start a new MongoDB transaction to duplicate the plan,
@@ -138,6 +138,7 @@ export class PlansController {
 						timestamp: null,
 					},
 				},
+				created_by: request.me._id,
 				gtfs_agency: validationData.gtfs_agency,
 				gtfs_feed_info: validationData.gtfs_feed_info,
 				hash: '',
@@ -195,7 +196,7 @@ export class PlansController {
 		//
 		// Send the transaction result as the response
 
-		reply.send({ data: result, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -210,7 +211,7 @@ export class PlansController {
 		const plan = await plans.findById(id);
 
 		if (!plan) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Plan not found');
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 		}
 
 		//
@@ -224,14 +225,14 @@ export class PlansController {
 			scope: PermissionCatalog.all.plans.scope,
 			value: plan.gtfs_agency.agency_id,
 		})) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: delete plan');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: delete plan');
 		}
 
 		//
 
 		await plans.deleteById(id);
 
-		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -271,7 +272,7 @@ export class PlansController {
 
 			const filteredPlans = await plans.findMany(filters, { sort: { created_at: -1 } });
 
-			return reply.send({ data: filteredPlans, error: null, statusCode: HttpStatus.OK });
+			return reply.send({ data: filteredPlans, error: null, statusCode: HTTP_STATUS.OK });
 		}
 
 		//
@@ -279,7 +280,7 @@ export class PlansController {
 
 		const allPlans = await plans.findMany({}, { sort: { created_at: -1 } });
 
-		return reply.send({ data: allPlans, error: null, statusCode: HttpStatus.OK });
+		return reply.send({ data: allPlans, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -302,7 +303,7 @@ export class PlansController {
 		);
 
 		// Send all plans
-		return reply.send({ data: plansWithFiles, error: null, statusCode: HttpStatus.OK });
+		return reply.send({ data: plansWithFiles, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -318,7 +319,7 @@ export class PlansController {
 
 		const planData = await plans.findById(request.params.id);
 
-		if (!planData) throw new HttpException(HttpStatus.NOT_FOUND, 'Plan not found');
+		if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 
 		//
 		// Check if the user has permission to read the Plan
@@ -331,7 +332,7 @@ export class PlansController {
 			value: planData.gtfs_agency.agency_id,
 		});
 
-		if (!hasPermissionReadPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: read plan');
+		if (!hasPermissionReadPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
 
 		//
 		// Fetch the plan data
@@ -339,7 +340,7 @@ export class PlansController {
 		return reply.send({
 			data: planData,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//
@@ -352,7 +353,7 @@ export class PlansController {
 	 */
 	static async getDrtModel(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		const file = await files.findById(`drt-model-${request.params.id}`);
-		if (!file) throw new HttpException(HttpStatus.NOT_FOUND, 'DRT model file not found');
+		if (!file) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'DRT model file not found');
 
 		// Redirect to the file download url
 		return reply.redirect(file.url);
@@ -371,7 +372,7 @@ export class PlansController {
 
 		const planData = await plans.findById(request.params.id);
 
-		if (!planData) throw new HttpException(HttpStatus.NOT_FOUND, 'Plan not found');
+		if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 
 		//
 		// Check if the user has permission to read the Plan
@@ -384,19 +385,19 @@ export class PlansController {
 			value: planData.gtfs_agency.agency_id,
 		});
 
-		if (!hasPermissionReadPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: read plan');
+		if (!hasPermissionReadPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
 
 		//
 		// Fetch the file associated with the plan
 
 		const fileData = await files.findById(planData.operation_file_id);
 
-		if (!fileData) throw new HttpException(HttpStatus.NOT_FOUND, 'Plan operation file not found');
+		if (!fileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan operation file not found');
 
 		return reply.send({
 			data: fileData,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//
@@ -410,7 +411,7 @@ export class PlansController {
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
 		// Get the Plan from the database
 		const planData = await plans.findById(request.params.id);
-		if (!planData) throw new HttpException(HttpStatus.NOT_FOUND, 'Plan not found');
+		if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 		// Check if the user has permission to toggle lock the Plan
 		const hasPermissionToggleLockPlan = PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.plans.actions.lock,
@@ -419,12 +420,12 @@ export class PlansController {
 			scope: PermissionCatalog.all.plans.scope,
 			value: planData.gtfs_agency.agency_id,
 		});
-		if (!hasPermissionToggleLockPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: toggle lock plan');
+		if (!hasPermissionToggleLockPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock plan');
 		// If authorized, toggle the lock status of the plan
 		await plans.toggleLockById(request.params.id);
 		const foundPlan = await plans.findById(request.params.id);
-		if (!foundPlan) throw new HttpException(HttpStatus.NOT_FOUND, 'Plan not found');
-		reply.send({ data: foundPlan, error: null, statusCode: HttpStatus.OK });
+		if (!foundPlan) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
+		reply.send({ data: foundPlan, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -440,7 +441,7 @@ export class PlansController {
 
 		let planData = await plans.findById(request.params.id);
 
-		if (!planData) throw new HttpException(HttpStatus.NOT_FOUND, 'Plan not found');
+		if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 
 		//
 		// Check if the user has permission to update the Plan
@@ -453,7 +454,7 @@ export class PlansController {
 			value: planData.gtfs_agency.agency_id,
 		});
 
-		if (!hasPermissionReadPlan) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update this plan.');
+		if (!hasPermissionReadPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this plan.');
 
 		//
 		// Validate the new feed info dates
@@ -462,7 +463,7 @@ export class PlansController {
 		const validatedFeedEndDate = validateOperationalDate(request.body.gtfs_feed_info?.feed_end_date);
 
 		if (validatedFeedStartDate > validatedFeedEndDate) {
-			throw new HttpException(HttpStatus.BAD_REQUEST, 'Feed start date cannot be after feed end date');
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Feed start date cannot be after feed end date');
 		}
 
 		//
@@ -483,7 +484,7 @@ export class PlansController {
 				value: planData.gtfs_agency.agency_id,
 			});
 
-			if (!hasPermissionUpdateFeedInfoDates) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update the feed info dates.');
+			if (!hasPermissionUpdateFeedInfoDates) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update the feed info dates.');
 
 			//
 			// Update the feed info dates in the operation file
@@ -564,7 +565,7 @@ export class PlansController {
 				value: planData.gtfs_agency.agency_id,
 			});
 
-			if (!hasPermissionUpdatePcgiLegacy) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update the PCGI legacy field.');
+			if (!hasPermissionUpdatePcgiLegacy) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update the PCGI legacy field.');
 
 			//
 			// Update the plan with the new data
@@ -584,7 +585,7 @@ export class PlansController {
 		reply.send({
 			data: planData,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//

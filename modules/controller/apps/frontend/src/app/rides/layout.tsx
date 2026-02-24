@@ -1,7 +1,7 @@
 /* * */
 
 import { RidesList } from '@/components/rides/list/RidesList';
-import { RidesListContextProvider } from '@/contexts/RidesList.context';
+import { RidesListContextProvider } from '@/components/rides/list/RidesList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 

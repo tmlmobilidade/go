@@ -18,7 +18,7 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"lint": "eslint .",
+		"lint": "eslint . --fix && tsc --noEmit",
 		"lint:fix": "eslint . --fix",
 		"start": "tsc && resolve-tspaths && node dist/index.js"
 	},
@@ -26,7 +26,7 @@
 		"@tmlmobilidade/dates": "*"
 	},
 	"devDependencies": {
-		"@types/node": "25.0.3",
+		"@types/node": "25.3.0",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.9.3"
 	}
