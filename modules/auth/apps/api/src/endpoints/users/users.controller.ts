@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { AUTH_SESSION_COOKIE_NAME, authProvider, users } from '@tmlmobilidade/interfaces';
@@ -84,12 +84,11 @@ export class UsersController {
 		try {
 			userData = await authProvider.getUserFromSessionToken(sessionToken);
 			if (!userData) throw new Error('User not found');
-		}
-		catch (error) {
+		} catch (error) {
 			console.error('Error retrieving user data:', error);
 			await authProvider.logout(sessionToken);
 			return reply
-				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
+				// .setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
 				.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 		}
 
@@ -107,7 +106,7 @@ export class UsersController {
 		//
 		// Add seen_last_at for this user asynchronously
 
-		users.updateById(userData._id, { seen_last_at: Dates.now('Europe/Lisbon').unix_timestamp });
+		await users.updateById(userData._id, { seen_last_at: Dates.now('Europe/Lisbon').unix_timestamp });
 
 		//
 	}
