@@ -160,3 +160,4 @@ class ClickhouseService {
 }
 
 export const clickhouseService = AsyncSingletonProxy(ClickhouseService);
+export type { ClickHouseColumn };
