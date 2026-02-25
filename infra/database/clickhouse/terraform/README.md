@@ -14,10 +14,10 @@ started automatically on first boot via Docker Compose through cloud-init.
 ### 1. Create your variables file
 
 ```bash
-cp terraform.tfvars.example terraform.tfvars
+cp terraform.tfvars.hcl.example terraform.tfvars.hcl
 ```
 
-Fill in the required values in `terraform.tfvars` (OCIDs, keys, and `clickhouse_admin_password`).
+Fill in the required values in `terraform.tfvars.hcl` (OCIDs, keys, and `clickhouse_admin_password`).
 
 ### 2. Initialise Terraform
 
@@ -28,8 +28,8 @@ terraform init
 ### 3. Review and Apply
 
 ```bash
-terraform plan
-terraform apply
+terraform plan -var-file=terraform.tfvars.hcl
+terraform apply -var-file=terraform.tfvars.hcl
 ```
 
 ---
@@ -97,8 +97,8 @@ terraform/
 ├── main.tf                    # VCN, networking, compute instance
 ├── variables.tf               # All input variables
 ├── outputs.tf                 # Post-apply outputs
-├── terraform.tfvars.example   # Template — copy to terraform.tfvars
-├── .gitignore                 # Ignores .terraform/, *.tfstate, *.tfvars
+├── terraform.tfvars.hcl.example # Template — copy to terraform.tfvars.hcl
+├── .gitignore                 # Ignores .terraform/, *.tfstate, *.tfvars, *.tfvars.hcl
 ├── README.md                  # This file
 └── templates/
     └── cloud-init.yaml        # Bootstraps Docker + ClickHouse on first boot

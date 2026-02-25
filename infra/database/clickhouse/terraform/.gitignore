@@ -7,8 +7,9 @@
 *.tfstate.backup
 *.tfstate.*.backup
 
-# Variable files with secrets — copy from terraform.tfvars.example
+# Variable files with secrets — copy from terraform.tfvars.hcl.example
 *.tfvars
+*.tfvars.hcl
 
 # Crash log files
 crash.log

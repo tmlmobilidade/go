@@ -41,6 +41,37 @@ locals {
 	})
 
 	name_prefix = "${var.project_name}-${var.module_name}"
+
+	# Resolved from the Packer-built image data source — falls back to base image if not found
+	resolved_image_ocid = length(data.oci_core_images.clickhouse_base.images) > 0 ? data.oci_core_images.clickhouse_base.images[0].id : var.base_image_ocid
+}
+
+
+# -----------------------------------------------------------------------
+# DATA SOURCE — Packer-built ClickHouse base image
+# Automatically discovers the latest image produced by Packer.
+# Run `packer build` in the packer/ directory to create/update this image.
+# -----------------------------------------------------------------------
+
+data "oci_core_images" "clickhouse_base" {
+	compartment_id = var.compartment_ocid
+
+	# Filter by the display_name pattern set in Packer: "clickhouse-base-YYYY-MM-DD"
+	filter {
+		name   = "display_name"
+		values = ["clickhouse-base-.*"]
+		regex  = true
+	}
+
+	# Only pick active images
+	filter {
+		name   = "state"
+		values = ["AVAILABLE"]
+	}
+
+	# Return the newest image first so images[0] is always the latest build
+	sort_by    = "TIMECREATED"
+	sort_order = "DESC"
 }
 
 
@@ -186,7 +217,7 @@ resource "oci_core_instance" "clickhouse" {
 
 	source_details {
 		source_type             = "image"
-		source_id               = var.image_ocid
+		source_id               = local.resolved_image_ocid
 		boot_volume_size_in_gbs = var.boot_volume_size_in_gbs
 	}
 

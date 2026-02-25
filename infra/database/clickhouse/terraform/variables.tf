@@ -49,6 +49,22 @@ variable "ssh_public_key_path" {
 	description = "The file path to the SSH public key for instance access."
 }
 
+# NOTE: The following two variables are declared here so the shared terraform.tfvars
+# can include them without causing 'undeclared variable' errors.
+# They are only consumed by Packer (packer.auto.pkrvars.hcl), not by Terraform.
+
+variable "ssh_private_key_path" {
+	type        = string
+	description = "SSH private key path. Declared here for tfvars compatibility; used only by Packer."
+	default     = ""
+}
+
+variable "packer_subnet_ocid" {
+	type        = string
+	description = "Existing subnet for Packer build instance. Declared here for tfvars compatibility; used only by Packer."
+	default     = ""
+}
+
 
 # -----------------------------------------------------------------------
 # OCI PLACEMENT
@@ -83,12 +99,12 @@ variable "region" {
 # VM SHAPE
 # -----------------------------------------------------------------------
 
-variable "image_ocid" {
+variable "base_image_ocid" {
 	type        = string
 	description = <<-EOT
-	The OCID of the base image to use for this VM.
+	The OCID of the base Ubuntu image. Used by Packer as the build source and
+	by Terraform as a fallback if no Packer-built image is found.
 	Defaults to Canonical Ubuntu 22.04 Minimal aarch64 in eu-frankfurt-1.
-	Update this when a newer minimal Ubuntu image is published.
 	EOT
 	# Canonical-Ubuntu-22.04-Minimal-aarch64-2026.01.29-0 in eu-frankfurt-1
 	default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaaehm3rohfjplxw73gzlyhp4gy2xtym33utccjawp3b5hivi7tbvlq"

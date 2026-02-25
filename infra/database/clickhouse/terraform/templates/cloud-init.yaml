@@ -1,21 +1,18 @@
 #cloud-config
-package_update: true
-package_upgrade: true
-
-packages:
-  - apt-transport-https
-  - ca-certificates
-  - curl
-  - software-properties-common
-  - gnupg
-  - lsb-release
+# -----------------------------------------------------------------------
+# cloud-init.yaml — RUNTIME ONLY
+#
+# Docker and OS tuning are pre-baked into the Packer image.
+# This file handles only runtime concerns that depend on:
+#   - The attached 1TB block volume device
+#   - Terraform template variables (ports, passwords)
+# -----------------------------------------------------------------------
 
 runcmd:
   # -----------------------------------------------------------------
-  # Robust Disk Mounting (OCI Special Handling)
+  # 1. Robust Disk Mounting (OCI Device Detection)
   # -----------------------------------------------------------------
   - |
-    # Find the 1TB disk (it might be sda or sdb depending on OCI)
     DATA_DISK=""
     for disk in sda sdb sdc; do
       SIZE=$(lsblk -b -n -o SIZE /dev/$disk 2>/dev/null || echo 0)
@@ -27,13 +24,8 @@ runcmd:
 
     if [ -n "$DATA_DISK" ]; then
       echo "Data disk found at $DATA_DISK"
-      # Create filesystem if it doesn't exist
       blkid "$DATA_DISK" || mkfs.xfs -L CHDATA "$DATA_DISK"
-      
-      # Prepare mount point
       mkdir -p /opt/clickhouse
-      
-      # Mount and add to fstab for persistency
       mount "$DATA_DISK" /opt/clickhouse
       echo "$DATA_DISK /opt/clickhouse xfs defaults,noatime,_netdev 0 0" >> /etc/fstab
     else
@@ -41,41 +33,21 @@ runcmd:
     fi
 
   # -----------------------------------------------------------------
-  # OS Performance Tuning & Firewall
+  # 2. Open OS Firewall for ClickHouse ports
+  # (Packages are pre-installed in the Packer image)
   # -----------------------------------------------------------------
-  - echo 'never' > /sys/kernel/mm/transparent_hugepage/enabled
-  - echo 'never' > /sys/kernel/mm/transparent_hugepage/defrag
-  - apt-get update && apt-get install -y cpufrequtils iptables-persistent
-  - echo 'GOVERNOR="performance"' > /etc/default/cpufrequtils
-  - systemctl restart cpufrequtils
-  
-  # Open OS Firewall (OCI Ubuntu default is very restrictive)
   - iptables -I INPUT 6 -p tcp --dport ${clickhouse_http_port} -j ACCEPT
   - iptables -I INPUT 6 -p tcp --dport ${clickhouse_tcp_port} -j ACCEPT
   - netfilter-persistent save
 
-  # Network Tuning
-  - sysctl -w fs.file-max=2097152
-  - sysctl -w vm.overcommit_memory=1
-  - sysctl -p
-
   # -----------------------------------------------------------------
-  # Install Docker
-  # -----------------------------------------------------------------
-  - curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
-  - sh /tmp/get-docker.sh
-  - usermod -aG docker ubuntu
-
-  # -----------------------------------------------------------------
-  # Setup ClickHouse Directories (Post-Mount)
+  # 3. Setup ClickHouse Directories (after mount)
   # -----------------------------------------------------------------
   - mkdir -p /opt/clickhouse/clickhouse_data
   - mkdir -p /opt/clickhouse/clickhouse_logs
   - mkdir -p /opt/clickhouse/config.d
   - mkdir -p /opt/clickhouse/users.d
   - mkdir -p /opt/clickhouse/secrets
-  
-  # CLICKHOUSE-SPECIFIC PERMISSIONS (UID 101 is default for clickhouse user in Docker)
   - chown -R 101:101 /opt/clickhouse/clickhouse_data
   - chown -R 101:101 /opt/clickhouse/clickhouse_logs
   - chown -R ubuntu:ubuntu /opt/clickhouse/config.d
@@ -84,9 +56,8 @@ runcmd:
   - chmod -R 775 /opt/clickhouse
 
   # -----------------------------------------------------------------
-  # Write ClickHouse Tuning Configuration
+  # 4. Write ClickHouse Server Config (config.d)
   # -----------------------------------------------------------------
-  # Write server-level config (config.d) — only server settings here
   - |
     cat > /opt/clickhouse/config.d/tuning.xml <<'TUNEOEOF'
     <clickhouse>
@@ -97,8 +68,8 @@ runcmd:
         <max_server_memory_usage_to_ram_ratio>0.85</max_server_memory_usage_to_ram_ratio>
         <uncompressed_cache_size>2147483648</uncompressed_cache_size>
         <mark_cache_size>2147483648</mark_cache_size>
-        
-        <!-- Enable metrics -->
+
+        <!-- Enable Prometheus metrics -->
         <prometheus>
             <endpoint>/metrics</endpoint>
             <port>9363</port>
@@ -108,13 +79,15 @@ runcmd:
     </clickhouse>
     TUNEOEOF
 
-  # Write user-level config (users.d) — max_memory_usage must live here in ClickHouse 26+
+  # -----------------------------------------------------------------
+  # 5. Write ClickHouse User Profile Config (users.d)
+  # max_memory_usage is user-level in ClickHouse 26+
+  # -----------------------------------------------------------------
   - |
     cat > /opt/clickhouse/users.d/tuning.xml <<'USERUEOF'
     <clickhouse>
         <profiles>
             <default>
-                <!-- Per-query memory limit for the default profile -->
                 <max_memory_usage>10G</max_memory_usage>
             </default>
         </profiles>
@@ -122,7 +95,7 @@ runcmd:
     USERUEOF
 
   # -----------------------------------------------------------------
-  # Write secrets (admin password)
+  # 6. Write Secrets
   # -----------------------------------------------------------------
   - |
     cat > /opt/clickhouse/secrets/.env <<'ENVEOF'
@@ -131,7 +104,7 @@ runcmd:
     ENVEOF
 
   # -----------------------------------------------------------------
-  # Write Docker Compose file
+  # 7. Write Docker Compose file
   # -----------------------------------------------------------------
   - |
     cat > /opt/clickhouse/compose.yml <<'COMPOSEEOF'
@@ -163,8 +136,8 @@ runcmd:
     COMPOSEEOF
 
   # -----------------------------------------------------------------
-  # Start ClickHouse
+  # 8. Start ClickHouse
   # -----------------------------------------------------------------
   - cd /opt/clickhouse && docker compose up -d
 
-final_message: "ClickHouse deployment complete on OCI instance."
+final_message: "ClickHouse runtime configuration complete."
