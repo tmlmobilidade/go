@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { transformAlert } from '@tmlmobilidade/go-alerts-pckg-transform';
@@ -66,7 +66,7 @@ export class GtfsController {
 				},
 			},
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 	}
 

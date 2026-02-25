@@ -25,7 +25,7 @@
  * - Reduced database load and network overhead
 */
 
-import { HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { rides } from '@tmlmobilidade/interfaces';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { RideNormalized } from '@tmlmobilidade/types';
@@ -119,7 +119,7 @@ class RidesChangeStreamManager {
 				const message: HttpResponse<RideNormalized> = {
 					data: normalizedRide,
 					error: null,
-					statusCode: HttpStatus.OK,
+					statusCode: HTTP_STATUS.OK,
 				};
 				// Publish to all subscribers via EventEmitter
 				this.emitter.emit('change', message);

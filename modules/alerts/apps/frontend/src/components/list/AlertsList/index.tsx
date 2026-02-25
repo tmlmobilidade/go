@@ -55,6 +55,12 @@ export function AlertsList() {
 			width: 500,
 		},
 		{
+			accessor: 'created_at',
+			render: item => <AlertsListCellDate value={item.created_at} />,
+			title: 'Data de criação',
+			width: 225,
+		},
+		{
 			accessor: 'publish_start_date',
 			render: item => <AlertsListCellDate value={item.publish_start_date} />,
 			title: 'Data de início',

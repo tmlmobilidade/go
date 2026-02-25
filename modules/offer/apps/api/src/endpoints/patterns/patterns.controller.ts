@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { patterns, stops } from '@tmlmobilidade/interfaces';
 import { CreatePatternDto, type Pattern, PermissionCatalog, type UpdatePatternDto } from '@tmlmobilidade/types';
@@ -27,7 +27,7 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create patterns');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create patterns');
 		}
 
 		//
@@ -38,7 +38,7 @@ export class PatternsController {
 		//
 		// Send the response
 
-		reply.send({ data: newPattern, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: newPattern, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -53,7 +53,7 @@ export class PatternsController {
 		const pattern = await patterns.findById(id);
 
 		if (!pattern) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Pattern not found');
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 		}
 
 		//
@@ -65,14 +65,14 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete patterns');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete patterns');
 		}
 
 		//
 
 		await patterns.deleteById(id);
 
-		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -88,7 +88,7 @@ export class PatternsController {
 
 		const patternData = await patterns.findById(request.params.id);
 
-		if (!patternData) throw new HttpException(HttpStatus.NOT_FOUND, 'Pattern not found');
+		if (!patternData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 
 		//
 		// Get the resource permissions for patterns for the current user.
@@ -99,7 +99,7 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read patterns');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read patterns');
 		}
 
 		//
@@ -124,7 +124,7 @@ export class PatternsController {
 			return reply.send({
 				data: { ...patternData, path: populatedPath },
 				error: null,
-				statusCode: HttpStatus.OK,
+				statusCode: HTTP_STATUS.OK,
 			});
 		}
 
@@ -134,7 +134,7 @@ export class PatternsController {
 		return reply.send({
 			data: patternData,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//
@@ -157,7 +157,7 @@ export class PatternsController {
 		// If pattern does not exist, throw error
 
 		if (!patternData) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Pattern not found');
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 		}
 
 		//
@@ -169,7 +169,7 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update patterns');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update patterns');
 		}
 
 		//
@@ -191,7 +191,7 @@ export class PatternsController {
 			const associatedStop = await stops.findOne({ legacy_id: pathItem.stop_id.trim() });
 
 			if (!associatedStop) {
-				throw new HttpException(HttpStatus.BAD_REQUEST, `The stop "${pathItem.stop_id}" does not exist`);
+				throw new HttpException(HTTP_STATUS.BAD_REQUEST, `The stop "${pathItem.stop_id}" does not exist`);
 			}
 
 			// Get original path stop to preserve user settings
@@ -237,7 +237,7 @@ export class PatternsController {
 		reply.send({
 			data: updatedPattern,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//
@@ -256,7 +256,7 @@ export class PatternsController {
 
 		const patternData = await patterns.findById(request.params.id);
 
-		if (!patternData) throw new HttpException(HttpStatus.NOT_FOUND, 'Pattern not found');
+		if (!patternData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 
 		//
 		// Get the resource permissions for patterns for the current user.
@@ -267,15 +267,15 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to lock/unlock patterns');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock patterns');
 		}
 
 		// If authorized, toggle the lock status of the pattern
 		await patterns.toggleLockById(request.params.id);
 		const foundPattern = await patterns.findById(request.params.id);
-		if (!foundPattern) throw new HttpException(HttpStatus.NOT_FOUND, 'Pattern not found');
+		if (!foundPattern) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 
-		return reply.send({ data: foundPattern, error: null, statusCode: HttpStatus.OK });
+		return reply.send({ data: foundPattern, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -293,7 +293,7 @@ export class PatternsController {
 
 		const patternData = await patterns.findById(request.params.id);
 
-		if (!patternData) throw new HttpException(HttpStatus.NOT_FOUND, 'Pattern not found');
+		if (!patternData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 
 		//
 		// Get the resource permissions for patterns for the current user.
@@ -304,7 +304,7 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update patterns');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update patterns');
 		}
 
 		//
@@ -318,7 +318,7 @@ export class PatternsController {
 		reply.send({
 			data: updatedPattern,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//

@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpStatus } from '@/http-status.js';
+import { HTTP_STATUS } from '@/http-status.js';
 
 /* * */
 
@@ -9,7 +9,7 @@ export class HttpException extends Error {
 
 	constructor(statusCode: number, message: string, cause?: unknown) {
 		super(message);
-		this.statusCode = statusCode || HttpStatus.INTERNAL_SERVER_ERROR;
+		this.statusCode = statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR;
 		this.message = message;
 		this.cause = cause;
 	}
