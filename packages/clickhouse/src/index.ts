@@ -103,6 +103,15 @@ class ClickhouseService {
 	}
 
 	/**
+	 * Gets the ClickHouse client.
+	 *
+	 * @returns The ClickHouse client
+	 */
+	public getClient(): ClickHouseClient {
+		return this.client;
+	}
+
+	/**
 	 * Gets a table in ClickHouse if it exists.
 	 *
 	 * @param table The name of the table to get
