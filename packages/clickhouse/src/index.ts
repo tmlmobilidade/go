@@ -1,24 +1,22 @@
 /* * */
 
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
 import { ClickHouseClient, createClient } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
+import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { readFile } from 'fs/promises';
+
 import { ClickHouseColumn } from './types.js';
 import { isSafeIdentifier } from './utils.js';
-import { readFile } from 'fs/promises';
 
 /* * */
 
-
 class ClickhouseService {
-
-	private client: ClickHouseClient;
 	private static _instance: ClickhouseService;
+	private client: ClickHouseClient;
 
 	private constructor() {
-
 		// Check missing environment variables
-		const missingEnvVars = [ 'CLICKHOUSE_DATABASE', 'CLICKHOUSE_URI'].filter(envVar => !process.env[envVar]);
+		const missingEnvVars = ['CLICKHOUSE_DATABASE', 'CLICKHOUSE_URI'].filter(envVar => !process.env[envVar]);
 		if (missingEnvVars.length > 0) {
 			throw new Error(`Missing ClickHouse environment variables: ${missingEnvVars.join(', ')}`);
 		}
@@ -47,7 +45,6 @@ class ClickhouseService {
 	 * @param orderBy The ORDER BY clause for the table (default: tuple())
 	 */
 	public async createTable<T>(table: string, schema: ClickHouseColumn<T>[], engine = 'MergeTree', orderBy = 'tuple()') {
-
 		// Validate the table name
 		if (!isSafeIdentifier(table)) {
 			throw new Error(`CLICKHOUSE [${table}]: Unsafe table name provided.`);
@@ -91,7 +88,6 @@ class ClickhouseService {
 	 * @param table The name of the table to delete
 	 */
 	public async deleteTable(table: string) {
-
 		// Validate the table name
 		if (!isSafeIdentifier(table)) {
 			throw new Error(`CLICKHOUSE [${table}]: Unsafe table name provided.`);
@@ -105,7 +101,6 @@ class ClickhouseService {
 			throw error;
 		}
 	}
-
 
 	/**
 	 * Gets a table in ClickHouse if it exists.
@@ -136,13 +131,12 @@ class ClickhouseService {
 	 * @param params Optional key-value substitutions applied to the query (replaces {key} placeholders)
 	 * @returns Query result rows typed as T
 	 */
-	public async queryFromFile<T>(filePath: string, params?: Record<string, string | number>): Promise<T[]> {
+	public async queryFromFile<T>(filePath: string, params?: Record<string, number | string>): Promise<T[]> {
 		let sql: string;
 
 		try {
 			sql = await readFile(filePath, { encoding: 'utf-8' });
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error(`CLICKHOUSE: Error reading SQL file "${filePath}": ${(error as Error).message}`);
 			throw error;
 		}
@@ -156,10 +150,9 @@ class ClickhouseService {
 		}
 
 		try {
-			const result = await this.client.query({ query: sql, format: 'JSONEachRow' });
+			const result = await this.client.query({ format: 'JSONEachRow', query: sql });
 			return result.json<T>();
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error(`CLICKHOUSE: Error @ queryFromFile() "${filePath}": ${(error as Error).message}`);
 			throw error;
 		}
