@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 interface FileComponentProps {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	file: any
 	label?: string
 }
@@ -60,7 +61,9 @@ export function FileComponent({ file, label }: FileComponentProps) {
 			// Create anchor and trigger download
 			const a = document.createElement('a');
 			a.href = url;
-			a.download = `${agencyDetailContext.data.agency?.short_name}-rules.json`;
+			// Get short_name from form values (more reliable) or agency data, with fallback
+			const shortName = agencyDetailContext.data.form.getValues().short_name || agencyDetailContext.data.agency?.short_name || agencyDetailContext.data.agency?.name;
+			a.download = `${shortName}-validation-rules.json`;
 			document.body.appendChild(a);
 			a.click();
 			document.body.removeChild(a);
