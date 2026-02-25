@@ -5,7 +5,7 @@ import { mergePatternWithEventRules } from '@/utils/rules.js';
 import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { patterns, stops } from '@tmlmobilidade/interfaces';
-import { CreatePatternDto, NoteComment, type Pattern, PermissionCatalog, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
+import { CreatePatternDto, NoteComment, type Pattern, PermissionCatalog, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -247,10 +247,22 @@ export class PatternsController {
 			});
 		}
 
+		// Set default values for avg_speed and dwell_time
+		const defaultParameter: StopsParameter = {
+			_id: crypto.randomUUID(),
+			kind: 'default',
+			path: patternData.path.map(p => ({
+				avg_speed: 0,
+				dwell_time: 30,
+				stop_id: p.stop_id,
+			})),
+		};
+
 		//
 		// Update the pattern with imported data
 
-		const updatedPattern = await patterns.updateById(patternData._id, {
+		const updatedPattern: Pattern = await patterns.updateById(patternData._id, {
+			parameters: [defaultParameter],
 			path: formattedPath,
 			shape: {
 				extension: Math.round(shapeExtension),

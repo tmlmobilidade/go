@@ -5,8 +5,8 @@ import { DocumentSchema } from '@/_common/document.js';
 import { StopSchema } from '@/stops/stop.js';
 import { z } from 'zod';
 
+import { StopsParametersListSchema } from './parameters.js';
 import { PatternUpdateRulesSchema, ScheduleRuleSchema } from './rules.js';
-import { GtfsDirectionSchema } from '@/gtfs-new/trips.js';
 
 /* * */
 
@@ -51,16 +51,15 @@ export const PatternSchema = DocumentSchema.extend({
 	comments: z.array(CommentSchema).optional().default([]),
 
 	destination: z.string().trim().min(1).max(100),
-	direction: GtfsDirectionSchema,
+	direction: z.enum(['0', '1']), // Change this
 	headsign: z.string().trim().min(1).max(100),
 	is_locked: z.boolean().default(false),
 	line_id: z.string(),
 	origin: z.string().trim().min(1).max(100),
+
+	parameters: StopsParametersListSchema.optional(),
+
 	path: z.array(PathSchema).optional(),
-	presets: z.object({
-		dwell_time: z.number().default(0),
-		velocity: z.number().default(20),
-	}).optional(),
 	route_id: z.string(),
 	rules: z.array(ScheduleRuleSchema).optional().default([]),
 	shape: ShapeSchema.optional(),

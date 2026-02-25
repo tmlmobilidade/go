@@ -28,8 +28,6 @@ export const ManualRuleSchema = z.object({
 	periodIds: z.array(z.string()),
 	timePoints: z.array(HHMM),
 
-	travelTime: z.string().optional(),
-
 	weekdays: z.array(z.nativeEnum(WEEKDAYS)),
 });
 

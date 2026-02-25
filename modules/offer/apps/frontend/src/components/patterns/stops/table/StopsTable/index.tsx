@@ -1,8 +1,8 @@
 /* * */
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
-import { StopsTableHeader } from '@/components/patterns/stopsTable/StopsTableHeader';
-import { StopsTableRow } from '@/components/patterns/stopsTable/StopsTableRow';
+import { StopsTableHeader } from '@/components/patterns/stops/table/StopsTableHeader';
+import { StopsTableRow } from '@/components/patterns/stops/table/StopsTableRow';
 
 import styles from '../styles.module.css';
 
@@ -18,14 +18,6 @@ export function StopsTable() {
 
 	//
 	// B. Render components
-
-	if (!patternDetailContext.data.pattern?.path?.length) {
-		return (
-			<div className={styles.container}>
-				<div className={styles.emptyState}>Nenhuma paragem associada a este pattern.</div>
-			</div>
-		);
-	}
 
 	return (
 		<div className={styles.container}>

@@ -51,20 +51,13 @@ export function StopsTableTableColumnZones({ pathItem, rowIndex }: { pathItem: P
 				rightSection={<IconTicket size={20} />}
 				w="100%"
 				leftSection={(
-					<HasPermission
-						action={PermissionCatalog.all.lines.actions.update}
-						resourceKey="agency_ids"
-						scope={PermissionCatalog.all.lines.scope}
-						value={patternsDetailContext.data.agency_id}
-					>
-						<IconButton
-							color="gray"
-							disabled={patternsDetailContext.flags.isReadOnly}
-							icon={<IconRotate2 size={20} />}
-							onClick={handleResetZones}
-							variant="subtle"
-						/>
-					</HasPermission>
+					<IconButton
+						color="gray"
+						disabled={patternsDetailContext.flags.isReadOnly}
+						icon={<IconRotate2 size={20} />}
+						onClick={handleResetZones}
+						variant="subtle"
+					/>
 				)}
 				searchable
 				{...patternsDetailContext.data.form.getInputProps(`path.${rowIndex}.zones`)}

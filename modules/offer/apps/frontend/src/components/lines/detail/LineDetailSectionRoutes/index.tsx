@@ -24,7 +24,7 @@ export function LineDetailSectionRoutes() {
 	// B. Render components
 
 	return (
-		<Collapsible description="Todas as variantes desta linha, incluindo a base." title="Rotas">
+		<Collapsible description="Todas as variantes desta linha, incluindo a base." title="Rotas" defaultOpen>
 			<Section gap="sm">
 				<Section padding="none">
 					{(lineDetailContext.data.line?.routes ?? []).map((route, index) => (

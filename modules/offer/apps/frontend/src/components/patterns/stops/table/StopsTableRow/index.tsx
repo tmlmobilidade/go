@@ -2,14 +2,14 @@
 
 /* * */
 
-import { StopsTableTableColumnDistance } from '@/components/patterns/stopsTable/StopsTableColumnDistance';
-import { PathTableColumnStop } from '@/components/patterns/stopsTable/StopsTableColumnStop';
+import { StopsTableTableColumnDistance } from '@/components/patterns/stops/table/StopsTableColumnDistance';
+import { PathTableColumnStop } from '@/components/patterns/stops/table/StopsTableColumnStop';
 import { Path } from '@tmlmobilidade/types';
 import { Checkbox, CheckboxProps, Text, Tooltip } from '@tmlmobilidade/ui';
 
 import styles from '../styles.module.css';
 
-import { usePatternDetailContext } from '../../detail/PatternDetail.context';
+import { usePatternDetailContext } from '../../../detail/PatternDetail.context';
 import { StopsTableTableColumnZones } from '../StopsTableColumnZones';
 
 /* * */

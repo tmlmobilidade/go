@@ -17,6 +17,7 @@ export function PathTableColumnStop({ pathItem }: { pathItem: Path }) {
 
 	//
 	// A. Setup variables
+
 	const locationsContext = useLocationsContext();
 	const router = useRouter();
 
