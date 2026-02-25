@@ -69,12 +69,12 @@
 				"description": "Ficheiro de regras de validação do GTFS",
 				"fields": {
 					"file": {
-						"button": "Upload JSON",
-						"label": "Inserir JSON com as regras de validação do GTFS"
+						"button": "Carregar regras",
+						"label": "Inserir regras de validação do GTFS"
 					},
 					"file_content": {
-						"button": "Download JSON",
-						"label": "Download JSON com as regras de validação do GTFS"
+						"button": "Transferir regras ",
+						"label": "Download regras de validação do GTFS"
 					}
 				},
 				"title": "Regras de validação do GTFS"
@@ -96,6 +96,12 @@
 		}
 	},
 	"common": {
+		"FileComponent": {
+			"downloadError": "Erro ao transferir ficheiro",
+			"downloadFailed": "Não foi possível gerar o ficheiro JSON.",
+			"downloadStarted": "Download iniciado com sucesso.",
+			"downloadTitle": "A transferir ficheiro"
+		},
 		"IconChooser": {
 			"label": "Ícones"
 		},

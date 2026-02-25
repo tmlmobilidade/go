@@ -1,15 +1,24 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* * */
 
+import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { IconDownload, IconFile, IconFileTypeZip } from '@tabler/icons-react';
 import { mimeTypes } from '@tmlmobilidade/consts';
-import { type File } from '@tmlmobilidade/types';
 import { Label, useToast } from '@tmlmobilidade/ui';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
+interface FileComponentProps {
+	file: any
+	label?: string
+}
 
 /* * */
 
-export function FileComponent({ file, label }: { file: File, label: string }) {
+export function FileComponent({ file, label }: FileComponentProps) {
+	//
+
 	//
 	if (!file) {
 		return null;
@@ -17,6 +26,9 @@ export function FileComponent({ file, label }: { file: File, label: string }) {
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
+	const agencyDetailContext = useAgencyDetailContext();
 
 	//
 	// B. Transform data
@@ -31,33 +43,40 @@ export function FileComponent({ file, label }: { file: File, label: string }) {
 	}
 
 	//
-	// C. Define actions
-	const handleDownload = async () => {
-		if (!file.url) {
-			return;
-		}
-
+	// C. Handle actions
+	const handleDownload = () => {
 		try {
-			// Open file.url in a new window
-			window.open(file.url, '_blank');
-			return;
-			const response = await fetch(file.url);
-			const blob = await response.blob();
-			const url = window.URL.createObjectURL(blob);
+			// Convert object to formatted JSON string
+			const jsonString = JSON.stringify(file, null, 2);
 
+			// Create blob
+			const blob = new Blob([jsonString], {
+				type: 'application/json',
+			});
+
+			// Create temporary URL
+			const url = URL.createObjectURL(blob);
+
+			// Create anchor and trigger download
 			const a = document.createElement('a');
 			a.href = url;
-			a.download = file.name;
+			a.download = `${agencyDetailContext.data.agency?.short_name}-rules.json`;
+			document.body.appendChild(a);
 			a.click();
+			document.body.removeChild(a);
+
+			// Cleanup
+			URL.revokeObjectURL(url);
 
 			useToast.info({
-				message: `A transferência do ficheiro "${file.name}" está a começar...`,
-				title: 'A transferir ficheiro',
+				message: t('default:common.FileComponent.downloadStarted'),
+				title: t('default:common.FileComponent.downloadTitle'),
 			});
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (error) {
 			useToast.error({
-				message: error instanceof Error ? error.message : 'Erro ao transferir ficheiro',
-				title: 'Erro ao transferir ficheiro',
+				message: t('default:common.FileComponent.downloadFailed'),
+				title: t('default:common.FileComponent.downloadError'),
 			});
 		}
 	};
@@ -66,18 +85,19 @@ export function FileComponent({ file, label }: { file: File, label: string }) {
 	// D. Render components
 	return (
 		<div className={styles.container}>
-			<div className={styles.content} onClick={handleDownload}>
+			<div
+				className={styles.content}
+				onClick={handleDownload}
+				role="button"
+			>
 				{icon}
-				<Label>{label ?? file.name}</Label>
+				<Label>{label ?? 'Download JSON'}</Label>
 			</div>
-			{file.url && (
-				<span className={styles.tooltip}>
-					<IconDownload size={16} />
-					Download
-				</span>
-			)}
+
+			<span className={styles.tooltip}>
+				<IconDownload size={16} />
+				Download
+			</span>
 		</div>
 	);
 }
-
-/* * */
