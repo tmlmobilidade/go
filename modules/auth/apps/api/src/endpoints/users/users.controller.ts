@@ -88,7 +88,7 @@ export class UsersController {
 			console.error('Error retrieving user data:', error);
 			await authProvider.logout(sessionToken);
 			return reply
-				// .setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
+				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
 				.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 		}
 
@@ -106,7 +106,7 @@ export class UsersController {
 		//
 		// Add seen_last_at for this user asynchronously
 
-		await users.updateById(userData._id, { seen_last_at: Dates.now('Europe/Lisbon').unix_timestamp });
+		users.updateById(userData._id, { seen_last_at: Dates.now('Europe/Lisbon').unix_timestamp });
 
 		//
 	}

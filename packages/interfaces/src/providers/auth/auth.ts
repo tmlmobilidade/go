@@ -1,7 +1,7 @@
 /* * */
 
 import { organizations, roles, sessions, users, verificationTokens } from '@/interfaces/index.js';
-import { HttpException, HTTP_STATUS, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendWelcomeEmail } from '@tmlmobilidade/emails';
 import { generateRandomString, generateRandomToken } from '@tmlmobilidade/strings';
@@ -80,8 +80,7 @@ class AuthProvider {
 				const existingPermission = permissionsMap.get(key);
 				// Merge the existing permission with the new one
 				permissionsMap.set(key, mergeObjects(existingPermission, permission));
-			}
-			else {
+			} else {
 				// Otherwise, just add the new permission
 				permissionsMap.set(key, permission);
 			}
