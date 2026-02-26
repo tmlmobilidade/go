@@ -251,7 +251,7 @@ export class PatternsController {
 		const defaultParameter: StopsParameter = {
 			_id: crypto.randomUUID(),
 			kind: 'default',
-			path: patternData.path.map(p => ({
+			path: formattedPath.map(p => ({
 				avg_speed: 0,
 				dwell_time: 30,
 				stop_id: p.stop_id,
