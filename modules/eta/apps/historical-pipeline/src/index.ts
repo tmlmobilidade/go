@@ -63,7 +63,7 @@ async function main(): Promise<void> {
 
 	//
 	// 1. Sync Vehicle Events
-	await client.command({ query: 'DROP TABLE IF EXISTS vehicle_events' });
+	await clickhouseService.deleteTable('vehicle_events');
 	const { eventsProcessed, ridesProcessed } = await syncVehicleEvents({ batchSize: BATCH_SIZE, client, ridesQuery });
 	Logger.success(`Sync completed: ${ridesProcessed} rides, ${eventsProcessed} events in ${timer.get()}`);
 
