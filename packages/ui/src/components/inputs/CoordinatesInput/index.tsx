@@ -4,7 +4,7 @@
 
 import { Fieldset, NumberInput as MantineNumberInput } from '@mantine/core';
 import { IconWorldLatitude, IconWorldLongitude } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { type ClipboardEvent, useCallback, useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
 
@@ -84,6 +84,8 @@ export function CoordinatesInput(props: CoordinatesInputProps) {
 	//
 	// A. Setup variables
 
+	const { onChange } = props;
+
 	const [latitudeValue, setLatitudeValue] = useState<number | string>();
 	const [longitudeValue, setLongitudeValue] = useState<number | string>();
 
@@ -106,17 +108,45 @@ export function CoordinatesInput(props: CoordinatesInputProps) {
 
 	useEffect(() => {
 		// Skip if onChange is not provided
-		if (!props.onChange) return;
+		if (!onChange) return;
 		// If input values are null or undefined, call onChange with null
 		if (latitudeValue === undefined || latitudeValue === null) return;
 		if (longitudeValue === undefined || longitudeValue === null) return;
 		// Try to transform the value into a valid coordinates array
 		const coordinates: [number, number] = [Number(latitudeValue), Number(longitudeValue)];
-		props.onChange(coordinates);
-	}, [latitudeValue, longitudeValue]);
+		onChange(coordinates);
+	}, [latitudeValue, longitudeValue, onChange]);
 
 	//
 	// C. Handle actions
+
+	const handlePasteCoordinates = useCallback((event: ClipboardEvent<HTMLInputElement>) => {
+		const pastedText = event.clipboardData.getData('text').trim();
+		if (!pastedText) return;
+
+		const matches = pastedText.match(/-?\d+(?:[.,]\d+)?/g);
+		if (!matches || matches.length < 2) return;
+
+		const firstValue = Number(matches[0].replace(',', '.'));
+		const secondValue = Number(matches[1].replace(',', '.'));
+		if (Number.isNaN(firstValue) || Number.isNaN(secondValue)) return;
+
+		event.preventDefault();
+
+		const isFirstLat = firstValue >= -90 && firstValue <= 90;
+		const isSecondLat = secondValue >= -90 && secondValue <= 90;
+		const isFirstLon = firstValue >= -180 && firstValue <= 180;
+		const isSecondLon = secondValue >= -180 && secondValue <= 180;
+
+		if (!isFirstLat && isFirstLon && isSecondLat && isSecondLon) {
+			setLatitudeValue(secondValue);
+			setLongitudeValue(firstValue);
+			return;
+		}
+
+		setLatitudeValue(firstValue);
+		setLongitudeValue(secondValue);
+	}, []);
 
 	// const handlePaste = useCallback(
 	// 	(event: React.ClipboardEvent<HTMLInputElement>) => {
@@ -169,6 +199,7 @@ export function CoordinatesInput(props: CoordinatesInputProps) {
 				label={props.label}
 				leftSection={<IconWorldLatitude />}
 				onChange={setLatitudeValue}
+				onPaste={handlePasteCoordinates}
 				placeholder="Latitude (-90 to 90)"
 				step={0.000001}
 				value={latitudeValue}
@@ -180,6 +211,7 @@ export function CoordinatesInput(props: CoordinatesInputProps) {
 				label={props.label ? ' ' : undefined}
 				leftSection={<IconWorldLongitude />}
 				onChange={setLongitudeValue}
+				onPaste={handlePasteCoordinates}
 				placeholder="Longitude (-180 to 180)"
 				step={0.000001}
 				style={{ flex: 1 }}
