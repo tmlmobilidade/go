@@ -8,6 +8,9 @@ import { Filter } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { Ride } from '@tmlmobilidade/types';
+import path from 'path';
+
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 /* * */
 
@@ -68,6 +71,13 @@ async function main(): Promise<void> {
 	// Sync Shape Nodes
 	const { shapeNodesProcessed } = await syncShapeNodes({ batchSize: BATCH_SIZE, chunkLength: SHAPE_NODE_CHUNK_LENGTH, client, ridesQuery });
 	Logger.success(`Sync completed: ${shapeNodesProcessed} shape nodes`);
+
+	//
+	// 3. Run Transformation Pipeline
+	Logger.info('Running transformation pipeline...');
+	const trasnformationPipelineFilePath = path.join(__dirname, '..', 'sql', 'trasnformation-pipeline.sql');
+	await clickhouseService.queryFromFile(trasnformationPipelineFilePath);
+	Logger.success('Transformation pipeline completed');
 
 	Logger.terminate(`Terminated in ${timer.get()}`);
 }
