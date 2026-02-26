@@ -32,7 +32,6 @@ export async function syncShapeNodes({ batchSize = 100_000, chunkLength = 25, cl
 
 	Logger.info(`Getting distinct hashed shape ids from rides`);
 	const distinctHashedShapeIds = await rides.distinct('hashed_shape_id', ridesQuery);
-
 	const hashedShapesCollection = await hashedShapes.getCollection();
 
 	const hashedShapesCursor = hashedShapesCollection.find(
@@ -42,12 +41,13 @@ export async function syncShapeNodes({ batchSize = 100_000, chunkLength = 25, cl
 
 	Logger.info(`Creating shape nodes for ${distinctHashedShapeIds.length} hashed shape ids`);
 
-	const totalShapeNodes = 0;
+	let shapeNodesProcessed = 0;
 	for await (const hashedShape of hashedShapesCursor) {
 		const geojson = hashedShapesToFeatureCollection(hashedShape);
 		const chunks = chunkLineByDistance(geojson.features[0].geometry, chunkLength);
 
 		for (const [idx, chunk] of chunks.coordinates.entries()) {
+			shapeNodesProcessed++;
 			await writer.write({
 				latitude: chunk[1],
 				longitude: chunk[0],
@@ -59,5 +59,5 @@ export async function syncShapeNodes({ batchSize = 100_000, chunkLength = 25, cl
 
 	await writer.flush();
 
-	return { shapeNodesProcessed: totalShapeNodes };
+	return { shapeNodesProcessed };
 }
