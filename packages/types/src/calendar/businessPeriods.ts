@@ -1,7 +1,7 @@
 import { hhmm, type HHMM } from '@/dates/common.js';
 import { z } from 'zod';
 
-export const BusinessPeriodsValues = ['CD', 'M', 'N', 'PPM', 'PPT'] as const;
+export const BusinessPeriodsValues = ['PPM', 'CD', 'PPT', 'N', 'M'] as const;
 export const BusinessPeriodSchema = z.enum(BusinessPeriodsValues);
 export type BusinessPeriod = z.infer<typeof BusinessPeriodSchema>;
 
