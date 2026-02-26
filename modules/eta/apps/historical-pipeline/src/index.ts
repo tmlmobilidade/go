@@ -56,7 +56,7 @@ async function main(): Promise<void> {
 	// Setup Rides Query
 	const ridesQuery: Filter<Ride> = {
 		agency_id: { $in: AGENCY_IDS },
-		line_id: { $in: [2652, 2708, 2711] }, // ! Development only
+		line_id: { $in: [2652, 2708, 2711, 2713, 2722, 2725, 2728, 2729, 2730, 2731, 2734] }, // ! Development only
 		start_time_observed: { $ne: null },
 		start_time_scheduled: { $gte: start.unix_timestamp, $lt: end.unix_timestamp },
 	};
