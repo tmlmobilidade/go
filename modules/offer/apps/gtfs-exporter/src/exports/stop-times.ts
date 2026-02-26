@@ -4,7 +4,7 @@ import { type GtfsV29ExportConfig } from '@/types.js';
 import { type TripSchedule } from '@/exports/trips.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
-import { Path, type GTFS_StopTime, type Pattern, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/types';
+import { HHMM, Path, type GTFS_StopTime, type Pattern, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -41,7 +41,7 @@ function resolveActiveParameter(
 	};
 }
 
-function timepointToSeconds(timepoint: string): number {
+function timepointToSeconds(timepoint: HHMM): number {
 	const [hours, minutes] = timepoint.split(':').map(Number);
 	return hours * 3600 + minutes * 60;
 }

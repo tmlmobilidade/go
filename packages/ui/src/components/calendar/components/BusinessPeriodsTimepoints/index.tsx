@@ -3,7 +3,7 @@
 /* * */
 
 import { IconMoon, IconSun, IconSunset } from '@tabler/icons-react';
-import { BusinessPeriod } from '@tmlmobilidade/types';
+import { BUSINESS_PERIOD_LABELS, BusinessPeriod, HHMM } from '@tmlmobilidade/types';
 import React, { JSX } from 'react';
 
 import styles from './styles.module.css';
@@ -22,11 +22,11 @@ interface BusinessPeriodType {
 }
 
 const BUSINESS_PERIODS: BusinessPeriodType[] = [
-	{ icon: <IconSun size={14} />, key: 'ppm', title: 'PPM — Período de ponta da manhã (06:00 - 09:59)' },
-	{ icon: <IconSun size={14} style={{ opacity: 0.7 }} />, key: 'cd', title: 'CD — Corpo do Dia (10:00 - 15:59)' },
-	{ icon: <IconSunset size={14} style={{ opacity: 0.7 }} />, key: 'ppt', title: 'PPT — Período de ponta da tarde (16:00 - 19:59)' },
-	{ icon: <IconMoon size={14} />, key: 'n', title: 'N — Noite (20:00 - 23:59)' },
-	{ icon: <IconMoon size={14} style={{ opacity: 0.7 }} />, key: 'm', title: 'M — Madrugada (00:00 - 05:59)' },
+	{ icon: <IconSun size={14} />, key: 'PPM', title: BUSINESS_PERIOD_LABELS.PPM.long_with_time },
+	{ icon: <IconSun size={14} style={{ opacity: 0.7 }} />, key: 'CD', title: BUSINESS_PERIOD_LABELS.CD.long_with_time },
+	{ icon: <IconSunset size={14} style={{ opacity: 0.7 }} />, key: 'PPT', title: BUSINESS_PERIOD_LABELS.PPT.long_with_time },
+	{ icon: <IconMoon size={14} />, key: 'N', title: BUSINESS_PERIOD_LABELS.N.long_with_time },
+	{ icon: <IconMoon size={14} style={{ opacity: 0.7 }} />, key: 'M', title: BUSINESS_PERIOD_LABELS.M.long_with_time },
 ];
 
 /* * */
@@ -34,7 +34,7 @@ const BUSINESS_PERIODS: BusinessPeriodType[] = [
 interface BusinessPeriodsTimepointsProps {
 	children?: (time: string) => React.ReactNode
 	onRemove?: (time: string) => void
-	timepoints?: string[] // "HH:mm"
+	timepoints?: HHMM[]
 	variant?: 'compact' | 'long'
 }
 
@@ -82,7 +82,7 @@ export function BusinessPeriodsTimepoints({ children, onRemove, timepoints = [],
 			{BUSINESS_PERIODS.filter(p => groupedTimePoints[p.key].length > 0).map(period => (
 				<Section key={period.key} alignItems="center" flexDirection="row" gap="xs" padding="none">
 					<Text className={styles.compactTitle} size="xs">
-						{period.icon} {period.key.toUpperCase()}
+						{period.icon} {period.key}
 					</Text>
 					<Section flexDirection="row" flexWrap="wrap" gap="sm" padding="none">
 						{groupedTimePoints[period.key].map(time => (

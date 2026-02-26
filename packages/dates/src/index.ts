@@ -1,3 +1,6 @@
+// Business periods helpers
+export * from '@/business-periods/index.js';
+
 // Calendar utilities (grid generation, day helpers, offer rules etc.)
 export * from '@/calendar/index.js';
 
@@ -7,7 +10,7 @@ export * from '@/dates.js';
 // Date formatting constants and types
 export * from '@/format.js';
 
-// Timezone types
+// Types
 export * from '@/types.js';
 
 // Utility functions

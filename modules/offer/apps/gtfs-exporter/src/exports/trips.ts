@@ -1,7 +1,7 @@
 import { type GtfsV29ExportConfig } from '@/types.js';
-import { ServiceId, type ServiceRegistry, Timepoint } from '@/utils/service-registry.js';
+import { ServiceId, type ServiceRegistry } from '@/utils/service-registry.js';
 import { buildAffectedDaysDetails, calendarWeekday, Dates, datesFromCalendarKey, getActivePeriodId, resolveBusinessPeriod, yyyymmddToKey } from '@tmlmobilidade/dates';
-import { BusinessPeriod, GtfsBikesAllowed, GtfsTMLTrip, GtfsWheelchairBoarding, type IsoWeekday, type OperationalDate, type Pattern, type Period, type Route } from '@tmlmobilidade/types';
+import { BusinessPeriod, GtfsBikesAllowed, GtfsTMLTrip, GtfsWheelchairBoarding, type HHMM, hhmm, type IsoWeekday, type OperationalDate, type Pattern, type Period, type Route } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -18,8 +18,8 @@ function buildTimepointSchedules(
 	periods: Period[],
 	startDate: Dates,
 	endDate: Dates,
-): Map<Timepoint, Set<OperationalDate>> {
-	const timepointSchedules = new Map<Timepoint, Set<OperationalDate>>();
+): Map<HHMM, Set<OperationalDate>> {
+	const timepointSchedules = new Map<HHMM, Set<OperationalDate>>();
 
 	// Get affected days (dates with active timepoints)
 	const affectedDays = buildAffectedDaysDetails(startDate, endDate, patternData.rules, periods);
@@ -29,10 +29,11 @@ function buildTimepointSchedules(
 		const date = datesFromCalendarKey(calendarKey).operational_date;
 
 		for (const timepoint of dayScheduleDetail.finalTimePoints) {
-			if (!timepointSchedules.has(timepoint)) {
-				timepointSchedules.set(timepoint, new Set());
+			const timepointHHMM = hhmm(timepoint);
+			if (!timepointSchedules.has(timepointHHMM)) {
+				timepointSchedules.set(timepointHHMM, new Set());
 			}
-			const timepointSet = timepointSchedules.get(timepoint);
+			const timepointSet = timepointSchedules.get(timepointHHMM);
 			if (timepointSet) {
 				timepointSet.add(date);
 			}
@@ -48,7 +49,7 @@ function buildTimepointSchedules(
  * @param timepoint - Time in HH:mm format
  * @returns Minutes since 04:00
  */
-function timepointToOperationalMinutes(timepoint: Timepoint): number {
+function timepointToOperationalMinutes(timepoint: HHMM): number {
 	const [hours, minutes] = timepoint.split(':').map(Number);
 	let totalMinutes = hours * 60 + minutes;
 
@@ -64,7 +65,7 @@ function timepointToOperationalMinutes(timepoint: Timepoint): number {
 export interface TripSchedule {
 	trip_id: string
 	service_id: ServiceId
-	timepoint: Timepoint
+	timepoint: HHMM
 	weekdays: IsoWeekday[]
 	period_ids: string[]
 	business_period: BusinessPeriod
@@ -77,10 +78,10 @@ export interface TripSchedule {
  * @returns Map of timepoint to service_id
  */
 function assignServiceIds(
-	timepointSchedules: Map<Timepoint, Set<OperationalDate>>,
+	timepointSchedules: Map<HHMM, Set<OperationalDate>>,
 	serviceRegistry: ServiceRegistry,
-): Map<Timepoint, ServiceId> {
-	const timepointToServiceId = new Map<Timepoint, ServiceId>();
+): Map<HHMM, ServiceId> {
+	const timepointToServiceId = new Map<HHMM, ServiceId>();
 
 	// For each timepoint, get or create a service_id based on its date set
 	for (const [timepoint, dates] of timepointSchedules) {
@@ -139,6 +140,7 @@ export async function exportTripsForPattern(
 			// Associate the pattern_code, resulting calendar_code and start_time of the current schedule.
 			const startTimeStripped = timepoint.split(':').join('');
 			const trip_id = `${patternData.code}|${service_id}|${startTimeStripped}`;
+			const timepointHHMM = hhmm(timepoint);
 
 			const timepointDates = timepointSchedules.get(timepoint) ?? new Set<OperationalDate>();
 			const weekdaysSet = new Set<IsoWeekday>();
@@ -152,10 +154,10 @@ export async function exportTripsForPattern(
 			}
 
 			tripSchedules.push({
-				business_period: resolveBusinessPeriod(timepoint),
+				business_period: resolveBusinessPeriod(timepointHHMM),
 				period_ids: Array.from(periodIdsSet),
 				service_id,
-				timepoint,
+				timepoint: timepointHHMM,
 				trip_id,
 				weekdays: Array.from(weekdaysSet),
 			});

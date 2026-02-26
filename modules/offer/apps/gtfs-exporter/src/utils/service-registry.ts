@@ -6,7 +6,6 @@ import { createHash } from 'node:crypto';
 /* * */
 
 export type ServiceId = string;
-export type Timepoint = string;
 
 export interface ServiceIdInfo {
 	dates: Set<OperationalDate>

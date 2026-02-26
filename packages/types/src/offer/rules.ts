@@ -1,5 +1,5 @@
 import { OperationalDateSchema } from '@/_common/operational-date.js';
-import { WEEKDAYS } from '@/dates/date.js';
+import { HHMMSchema, WEEKDAYS } from '@/dates/common.js';
 import { z } from 'zod';
 
 /* * */
@@ -8,8 +8,6 @@ export enum OPERATING_MODE {
 	EXCLUDE = 'exclude',
 	INCLUDE = 'include',
 }
-
-const HHMM = z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/);
 
 export const LinesModeSchema = z.enum(['all', 'include', 'exclude']);
 export type LinesMode = z.infer<typeof LinesModeSchema>;
@@ -26,7 +24,7 @@ export const ManualRuleSchema = z.object({
 	operatingMode: z.nativeEnum(OPERATING_MODE),
 
 	periodIds: z.array(z.string()),
-	timePoints: z.array(HHMM),
+	timePoints: z.array(HHMMSchema),
 
 	weekdays: z.array(z.nativeEnum(WEEKDAYS)),
 });
@@ -45,13 +43,13 @@ export const EventDerivedBaseSchema = z.object({
 	lines_to_exclude: z.array(z.string()).optional(),
 	lines_to_include: z.array(z.string()).optional(),
 
-	timePoints: z.array(HHMM).optional(), // UI generated
+	timePoints: z.array(HHMMSchema).optional(), // UI generated
 });
 
 export const EventRestrictionSchema = EventDerivedBaseSchema.extend({
 	all_day: z.boolean(),
-	end_time: HHMM.default(''),
-	start_time: HHMM.default(''),
+	end_time: HHMMSchema.default(''),
+	start_time: HHMMSchema.default(''),
 
 	// Event info
 	event: z.object({

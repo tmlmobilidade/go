@@ -1,5 +1,5 @@
 import { BusinessPeriodSchema } from '@/calendar/businessPeriods.js';
-import { WEEKDAYS } from '@/dates/date.js';
+import { WEEKDAYS } from '@/dates/common.js';
 import { z } from 'zod';
 
 /* * */

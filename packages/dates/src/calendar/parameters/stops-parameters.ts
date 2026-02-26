@@ -1,6 +1,6 @@
 /* * */
 
-import { type BusinessPeriod, type Path, type StopsParameter } from '@tmlmobilidade/types';
+import { type Path, type StopsParameter } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -109,15 +109,4 @@ export function getMergedPath(basePath: Path[], newPath: StopsParameter['path'])
 			dwell_time: edit?.dwell_time,
 		};
 	});
-}
-
-export function resolveBusinessPeriod(timepoint: string): BusinessPeriod {
-	const [hours, minutes] = timepoint.split(':').map(Number);
-	const totalMinutes = hours * 60 + minutes;
-
-	if (totalMinutes < 360) return 'M'; // 00:00 - 05:59
-	if (totalMinutes < 600) return 'PPM'; // 06:00 - 09:59
-	if (totalMinutes < 960) return 'CD'; // 10:00 - 15:59
-	if (totalMinutes < 1200) return 'PPT'; // 16:00 - 19:59
-	return 'N'; // 20:00 - 23:59
 }
