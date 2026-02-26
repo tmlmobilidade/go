@@ -1,7 +1,6 @@
 /* * */
 
 import { ClickHouseClient } from '@tmlmobilidade/clickhouse';
-import { Dates } from '@tmlmobilidade/dates';
 import { Filter, rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Ride } from '@tmlmobilidade/types';
