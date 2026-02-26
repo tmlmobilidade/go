@@ -1,12 +1,12 @@
 /* * */
 
 import { type AggregationPipeline } from '@/common/aggregation-pipeline.js';
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { MongoConnector } from '@tmlmobilidade/mongo';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type UnixTimestamp } from '@tmlmobilidade/types';
-import { type AggregateOptions, type AggregationCursor, type Collection, type DeleteOptions, type DeleteResult, type Document, type Filter, type FindOptions, type IndexDescription, type InsertManyResult, type InsertOneOptions, type InsertOneResult, type MongoClientOptions, type OptionalUnlessRequiredId, type UpdateOptions, type UpdateResult, type WithId } from 'mongodb';
+import { type AggregateOptions, type AggregationCursor, type Collection, type DeleteOptions, type DeleteResult, type Document, type Filter, type FindOptions, Flatten, type IndexDescription, type InsertManyResult, type InsertOneOptions, type InsertOneResult, type MongoClientOptions, type OptionalUnlessRequiredId, type UpdateOptions, type UpdateResult, type WithId } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
@@ -65,8 +65,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 			if (process.env.NODE_ENV === 'test' && this.getCollectionIndexes().length > 0) {
 				await this.mongoCollection.createIndexes(this.getCollectionIndexes());
 			}
-		}
-		catch (error) {
+		} catch (error) {
 			throw new Error(`Error connecting to ${this.getCollectionName()}`, { cause: error });
 		}
 	}
@@ -141,6 +140,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	 * @param key - The key to find distinct values for
 	 * @returns A promise that resolves to an array of distinct values for the given key
 	 */
+	public async distinct<Key extends keyof WithId<T>>(key: Key, filter: Filter<T>): Promise<Array<Flatten<WithId<T>[Key]>>>;
 	public async distinct<K extends keyof T>(key: K): Promise<T[K][]> {
 		return this.mongoCollection.distinct(key as string);
 	}
@@ -248,8 +248,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 						throw new Error('No schema defined for insert operation. This is either an internal interface error or you should pass unsafe=true to the insert operation.');
 					}
 					parsedDocument = this.createSchema.parse(newDocument) as OptionalUnlessRequiredId<T>;
-				}
-				catch (error) {
+				} catch (error) {
 					throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 				}
 			}
@@ -283,8 +282,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 				if (doc.created_by) parsedDocument.created_by = doc.created_by;
 				if (doc.updated_at) parsedDocument.updated_at = doc.updated_at;
 				if (doc.updated_by) parsedDocument.updated_by = doc.updated_by;
-			}
-			catch (error) {
+			} catch (error) {
 				throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 			}
 		}
@@ -394,8 +392,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		if (this.updateSchema) {
 			try {
 				parsedUpdateFields = this.updateSchema.parse(updateFields);
-			}
-			catch (error) {
+			} catch (error) {
 				throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 			}
 		}
@@ -436,8 +433,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		if (this.updateSchema) {
 			try {
 				parsedUpdateFields = this.updateSchema.parse(updateFields);
-			}
-			catch (error) {
+			} catch (error) {
 				throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 			}
 		}

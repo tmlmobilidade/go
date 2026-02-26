@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HTTP_STATUS, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';

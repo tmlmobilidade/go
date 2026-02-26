@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { AUTH_SESSION_COOKIE_NAME, authProvider, users } from '@tmlmobilidade/interfaces';
@@ -84,8 +84,7 @@ export class UsersController {
 		try {
 			userData = await authProvider.getUserFromSessionToken(sessionToken);
 			if (!userData) throw new Error('User not found');
-		}
-		catch (error) {
+		} catch (error) {
 			console.error('Error retrieving user data:', error);
 			await authProvider.logout(sessionToken);
 			return reply
