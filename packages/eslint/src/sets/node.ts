@@ -60,7 +60,12 @@ export default [
 
 			// Backend-specific rules
 			'@typescript-eslint/no-explicit-any': 'warn', // More lenient for API responses
+			'@typescript-eslint/no-extraneous-class': 'off',
 			'no-console': 'off', // Allow console in backend for logging
+
+			// Looper Scripts rules
+			'@typescript-eslint/no-floating-promises': 'off',
+			'@typescript-eslint/no-misused-promises': 'off',
 		},
 	},
 ];

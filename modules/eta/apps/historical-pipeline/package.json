@@ -17,6 +17,13 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
+		"@tmlmobilidade/clickhouse": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-eta-sync-shape-nodes": "*",
+		"@tmlmobilidade/go-eta-sync-vehicle-events": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
