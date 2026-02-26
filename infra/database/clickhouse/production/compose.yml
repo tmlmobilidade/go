@@ -6,7 +6,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 8gb
+          memory: 24gb
     ports:
       - "8123:8123"   # HTTP
       - "9000:9000"   # Native TCP
