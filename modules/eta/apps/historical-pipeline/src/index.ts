@@ -42,8 +42,7 @@ async function main(): Promise<void> {
 
 	//
 	// Setup Clickhouse
-	const client = clickhouseService.getClient();
-
+	const client = await clickhouseService.getClient();
 	//
 	// Get Date Range
 	const { end, start } = getDateRange();
