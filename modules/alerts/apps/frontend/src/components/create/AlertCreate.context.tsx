@@ -162,9 +162,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	}, [copyAlertId, multiStep.progress.current?.index]);
 
 	useEffect(() => {
-		if (!copyAlertId) return;
-		if (!copyAlertData) return;
-		if (hasAppliedCopyData) return;
+		if (!copyAlertId || !copyAlertData || hasAppliedCopyData) return;
 
 		const copyAlertAsCreateData = CreateAlertSchema.parse(copyAlertData);
 		form.reset();
@@ -173,11 +171,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		form.resetDirty();
 		multiStep.actions.goTo('summary');
 		setHasAppliedCopyData(true);
-	}, [
-		copyAlertData,
-		copyAlertId,
-		hasAppliedCopyData,
-	]);
+	}, [copyAlertData, copyAlertId, hasAppliedCopyData]);
 
 	useEffect(() => {
 		// Skip if agency is already selected
