@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable @typescript-eslint/no-floating-promises */
 /* * */
 
-// import { Dates } from '@tmlmobilidade/dates';
-// import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@tmlmobilidade/emails';
+import { Dates } from '@tmlmobilidade/dates';
+import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { GTFSValidator, GTFSValidatorError, GTFSValidatorResult } from '@tmlmobilidade/gtfs-validator';
 import { agencies, files, gtfsValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -166,39 +164,39 @@ async function processValidation(validation: GtfsValidation) {
 		});
 
 		// 6. Send email to user
-		// try {
-		// 	const latest_validation = await gtfsValidations.findById(validation._id);
-		// 	await sendGtfsValidationEmail({
-		// 		props: {
-		// 			first_name: '',
-		// 			validation: latest_validation,
-		// 		},
-		// 		to: file.created_by,
-		// 	});
-		// } catch (error) {
-		// 	Logger.error('Error sending email:', error);
-		// }
+		try {
+			const latest_validation = await gtfsValidations.findById(validation._id);
+			await sendGtfsValidationEmail({
+				props: {
+					first_name: '',
+					validation: latest_validation,
+				},
+				to: file.created_by,
+			});
+		} catch (error) {
+			Logger.error('Error sending email:', error);
+		}
 
 		Logger.success('Validation Finished Successfully');
 		Logger.divider();
 	} catch (error) {
 		Logger.error('Error processing validation:', error);
 
-		// // Send email to system
-		// try {
-		// 	if (process.env.EMAIL_TO) {
-		// 		await sendFailedBackupEmail({
-		// 			props: {
-		// 				backup_service: 'Validator',
-		// 				error_message: error instanceof Error ? error.message : JSON.stringify(error),
-		// 				failure_time: Dates.now('Europe/Lisbon').toLocaleString(Dates.FORMATS.DATETIME_FULL_WITH_SECONDS),
-		// 			},
-		// 			to: process.env.EMAIL_TO,
-		// 		});
-		// 	}
-		// } catch (emailError) {
-		// 	Logger.error('Error sending email:', emailError);
-		// }
+		// Send email to system
+		try {
+			if (process.env.EMAIL_TO) {
+				await sendFailedBackupEmail({
+					props: {
+						backup_service: 'Validator',
+						error_message: error instanceof Error ? error.message : JSON.stringify(error),
+						failure_time: Dates.now('Europe/Lisbon').toLocaleString(Dates.FORMATS.DATETIME_FULL_WITH_SECONDS),
+					},
+					to: process.env.EMAIL_TO,
+				});
+			}
+		} catch (emailError) {
+			Logger.error('Error sending email:', emailError);
+		}
 
 		// Update validation status to error
 		try {
