@@ -4,7 +4,7 @@ import { ClickHouseClient } from '@tmlmobilidade/clickhouse';
 import { Dates } from '@tmlmobilidade/dates';
 import { Filter, rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { Ride, UnixTimestamp } from '@tmlmobilidade/types';
+import { Ride } from '@tmlmobilidade/types';
 import { ClickHouseWriter } from '@tmlmobilidade/writers';
 
 import { parseToEtaVehicleEvent } from './parser.js';
@@ -15,11 +15,10 @@ import { EtaVehicleEvent, etaVehicleEventTableSchema, rideProjection } from './t
 interface SyncVehicleEventsOptions {
 	batchSize: number
 	client: ClickHouseClient
-	endDate: UnixTimestamp
-	startDate: UnixTimestamp
+	ridesQuery: Filter<Ride>
 }
 
-export async function syncVehicleEvents({ batchSize = 100_000, client, endDate, startDate }: SyncVehicleEventsOptions) {
+export async function syncVehicleEvents({ batchSize = 100_000, client, ridesQuery }: SyncVehicleEventsOptions) {
 	//
 
 	const writer = new ClickHouseWriter<EtaVehicleEvent>({
@@ -35,13 +34,8 @@ export async function syncVehicleEvents({ batchSize = 100_000, client, endDate, 
 
 	//
 	// Setup Rides Cursor
-	const ridesQuery: Filter<Ride> = {
-		end_time_scheduled: { $gte: startDate, $lt: endDate },
-		start_time_scheduled: { $gte: startDate, $lt: endDate },
-	};
-
 	const ridesCount = await ridesCollection.countDocuments(ridesQuery);
-	Logger.info(`Syncing vehicle events for ${ridesCount} rides (${Dates.fromUnixTimestamp(startDate).toFormat('yyyy-MM-dd')} → ${Dates.fromUnixTimestamp(endDate).toFormat('yyyy-MM-dd')})`);
+	Logger.info(`Syncing vehicle events for ${ridesCount} rides`);
 
 	let ridesProcessed = 0;
 	let eventsProcessed = 0;

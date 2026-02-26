@@ -2,9 +2,9 @@
 
 import { ClickHouseClient } from '@tmlmobilidade/clickhouse';
 import { chunkLineByDistance, hashedShapesToFeatureCollection } from '@tmlmobilidade/geo';
-import { hashedShapes, rides } from '@tmlmobilidade/interfaces';
+import { Filter, hashedShapes, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { UnixTimestamp } from '@tmlmobilidade/types';
+import { Ride } from '@tmlmobilidade/types';
 import { ClickHouseWriter } from '@tmlmobilidade/writers';
 
 import { ShapeNode, shapeNodeTableSchema } from './types.js';
@@ -15,11 +15,10 @@ interface SyncShapeNodesOptions {
 	batchSize: number
 	chunkLength: number // in meters
 	client: ClickHouseClient
-	endDate: UnixTimestamp
-	startDate: UnixTimestamp
+	ridesQuery: Filter<Ride>
 }
 
-export async function syncShapeNodes({ batchSize = 100_000, chunkLength = 25, client, endDate, startDate }: SyncShapeNodesOptions): Promise<{ shapeNodesProcessed: number }> {
+export async function syncShapeNodes({ batchSize = 100_000, chunkLength = 25, client, ridesQuery }: SyncShapeNodesOptions): Promise<{ shapeNodesProcessed: number }> {
 	//
 
 	const writer = new ClickHouseWriter<ShapeNode>({
@@ -32,10 +31,7 @@ export async function syncShapeNodes({ batchSize = 100_000, chunkLength = 25, cl
 	await writer.ensureTable();
 
 	Logger.info(`Getting distinct hashed shape ids from rides`);
-	const distinctHashedShapeIds = await rides.distinct('hashed_shape_id', {
-		end_time_scheduled: { $gte: startDate, $lt: endDate },
-		start_time_scheduled: { $gte: startDate, $lt: endDate },
-	});
+	const distinctHashedShapeIds = await rides.distinct('hashed_shape_id', ridesQuery);
 
 	const hashedShapesCollection = await hashedShapes.getCollection();
 

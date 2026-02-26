@@ -1,6 +1,6 @@
 /* * */
 
-import { createClient } from '@clickhouse/client';
+import { clickhouseService } from '@tmlmobilidade/clickhouse';
 import { Dates } from '@tmlmobilidade/dates';
 import { syncShapeNodes } from '@tmlmobilidade/go-eta-sync-shape-nodes';
 import { syncVehicleEvents } from '@tmlmobilidade/go-eta-sync-vehicle-events';
@@ -12,11 +12,10 @@ import { Ride } from '@tmlmobilidade/types';
 /* * */
 
 const RUN_INTERVAL_MS = 60_000 * 60 * 24; // 24 hours
-const RIDES_BATCH_SIZE = 30_000;
 const VEHICLE_EVENTS_DAYS_CUTOFF = 1;
 const AGENCY_IDS = ['41', '42', '43', '44'];
-const SHAPE_NODE_CHUNK_LENGTH = 25; // meters
 const BATCH_SIZE = 100_000;
+const SHAPE_NODE_CHUNK_LENGTH = 25; // meters
 
 /* * */
 
@@ -43,45 +42,32 @@ async function main(): Promise<void> {
 
 	//
 	// Setup Clickhouse
-	const client = createClient({
-		database: process.env.CLICKHOUSE_DATABASE,
-		password: process.env.CLICKHOUSE_PASSWORD,
-		url: `${process.env.CLICKHOUSE_TLS === 'true' ? 'https' : 'http'}://${process.env.CLICKHOUSE_HOST}:8123`,
-		username: process.env.CLICKHOUSE_USERNAME,
-	});
-
-	await client.command({ query: 'DROP TABLE IF EXISTS vehicle_events' });
+	const client = clickhouseService.getClient();
 
 	//
 	// Get Date Range
 	const { end, start } = getDateRange();
 
+	Logger.info(`Running historical pipeline for date range: ${start.iso} → ${end.iso}`);
+
 	//
 	// Setup Rides Query
 	const ridesQuery: Filter<Ride> = {
-
+		agency_id: { $in: AGENCY_IDS },
+		line_id: { $in: [2652, 2708, 2711, 2713, 2722, 2725, 2728, 2729, 2730, 2731, 2734] }, // ! Development only
 		start_time_observed: { $ne: null },
 		start_time_scheduled: { $gte: start.unix_timestamp, $lt: end.unix_timestamp },
 	};
 
 	//
 	// Sync Vehicle Events
-	const { eventsProcessed, ridesProcessed } = await syncVehicleEvents({
-		batchSize: BATCH_SIZE,
-		client,
-		endDate: end.unix_timestamp,
-		startDate: start.unix_timestamp,
-	});
+	await client.command({ query: 'DROP TABLE IF EXISTS vehicle_events' });
+	const { eventsProcessed, ridesProcessed } = await syncVehicleEvents({ batchSize: BATCH_SIZE, client, ridesQuery });
 	Logger.success(`Sync completed: ${ridesProcessed} rides, ${eventsProcessed} events in ${timer.get()}`);
 
 	//
 	// Sync Shape Nodes
-	const { shapeNodesProcessed } = await syncShapeNodes({
-		batchSize: BATCH_SIZE,
-		client,
-		endDate: end.unix_timestamp,
-		startDate: start.unix_timestamp,
-	});
+	const { shapeNodesProcessed } = await syncShapeNodes({ batchSize: BATCH_SIZE, chunkLength: SHAPE_NODE_CHUNK_LENGTH, client, ridesQuery });
 	Logger.success(`Sync completed: ${shapeNodesProcessed} shape nodes`);
 
 	Logger.terminate(`Terminated in ${timer.get()}`);
