@@ -14,22 +14,45 @@ runcmd:
   # -----------------------------------------------------------------
   - |
     DATA_DISK=""
-    for disk in sda sdb sdc; do
-      SIZE=$(lsblk -b -n -o SIZE /dev/$disk 2>/dev/null || echo 0)
-      if [ "$SIZE" -gt 1000000000000 ]; then
-        DATA_DISK="/dev/$disk"
-        break
-      fi
+    # Wait up to 30 seconds for the paravirtualized disk to appear
+    for i in {1..15}; do
+      echo "Scanning for 1TB data disk (attempt $i)..."
+      
+      # Identify the root disk to exclude it (e.g., /dev/sda)
+      ROOT_DISK=$(findmnt -n -o SOURCE / | sed 's/[0-9]*$//')
+      
+      # Iterate through all block devices
+      for disk in $(lsblk -d -n -o NAME); do
+        DEV="/dev/$disk"
+        # Skip if it's the disk containing the root partition
+        if [[ "$DEV" == "$ROOT_DISK"* ]]; then continue; fi
+        
+        SIZE=$(lsblk -b -n -o SIZE $DEV 2>/dev/null || echo 0)
+        # Check if size is roughly 1TB (binary 1024GB is ~1.1TB decimal)
+        # Range: 900GB (966367641600) to 1100GB (1181116006400)
+        if [ "$SIZE" -ge 966367641600 ] && [ "$SIZE" -le 1181116006400 ]; then
+          DATA_DISK="$DEV"
+          echo "Found 1TB data disk at $DATA_DISK"
+          break 2
+        fi
+      done
+      sleep 2
     done
 
     if [ -n "$DATA_DISK" ]; then
-      echo "Data disk found at $DATA_DISK"
+      echo "Mounting $DATA_DISK to /opt/clickhouse..."
+      # Create filesystem if not already present
       blkid "$DATA_DISK" || mkfs.xfs -L CHDATA "$DATA_DISK"
       mkdir -p /opt/clickhouse
       mount "$DATA_DISK" /opt/clickhouse
-      echo "$DATA_DISK /opt/clickhouse xfs defaults,noatime,_netdev 0 0" >> /etc/fstab
+      # Add to fstab for persistence across reboots
+      if ! grep -q "/opt/clickhouse" /etc/fstab; then
+        echo "$DATA_DISK /opt/clickhouse xfs defaults,noatime,_netdev 0 0" >> /etc/fstab
+      fi
     else
-      echo "ERROR: 1TB Data disk not found!"
+      echo "ERROR: 1TB Data disk not found after 15 attempts!"
+      # Fail explicitly so ClickHouse doesn't start on root disk
+      exit 1
     fi
 
   # -----------------------------------------------------------------
