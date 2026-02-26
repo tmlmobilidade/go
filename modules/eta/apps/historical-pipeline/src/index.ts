@@ -56,19 +56,19 @@ async function main(): Promise<void> {
 	// Setup Rides Query
 	const ridesQuery: Filter<Ride> = {
 		agency_id: { $in: AGENCY_IDS },
-		line_id: { $in: [2652, 2708, 2711, 2713, 2722, 2725, 2728, 2729, 2730, 2731, 2734] }, // ! Development only
+		line_id: { $in: [2652, 2708, 2711] }, // ! Development only
 		start_time_observed: { $ne: null },
 		start_time_scheduled: { $gte: start.unix_timestamp, $lt: end.unix_timestamp },
 	};
 
 	//
-	// Sync Vehicle Events
+	// 1. Sync Vehicle Events
 	await client.command({ query: 'DROP TABLE IF EXISTS vehicle_events' });
 	const { eventsProcessed, ridesProcessed } = await syncVehicleEvents({ batchSize: BATCH_SIZE, client, ridesQuery });
 	Logger.success(`Sync completed: ${ridesProcessed} rides, ${eventsProcessed} events in ${timer.get()}`);
 
 	//
-	// Sync Shape Nodes
+	// 2. Sync Shape Nodes
 	const { shapeNodesProcessed } = await syncShapeNodes({ batchSize: BATCH_SIZE, chunkLength: SHAPE_NODE_CHUNK_LENGTH, client, ridesQuery });
 	Logger.success(`Sync completed: ${shapeNodesProcessed} shape nodes`);
 
