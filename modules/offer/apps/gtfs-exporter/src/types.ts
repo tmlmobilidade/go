@@ -4,6 +4,7 @@
 import {
 	type GTFS_CalendarDate,
 	type GTFS_Shape,
+	type GTFS_StopTime,
 	type GTFS_Trip,
 	GtfsTMLAgency,
 	GtfsTMLFareAttributes,
@@ -108,7 +109,7 @@ export interface GtfsV29Writers {
 	feed_info: CsvWriter<GtfsTMLFeedInfo>
 	routes: CsvWriter<GtfsTMLRoute>
 	shapes: CsvWriter<GTFS_Shape>
-	stop_times: CsvWriter<ExportedStopTimesRow>
+	stop_times: CsvWriter<GTFS_StopTime>
 	stops: CsvWriter<GtfsTMLStop>
 	trips: CsvWriter<GtfsTMLTrip>
 }

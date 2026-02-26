@@ -3,9 +3,9 @@
 /* * */
 
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { computeSegmentTravelTimes, getMergedPath, StopsParameterExtended } from '@/utils/stops-parameters';
+import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { useForm } from '@mantine/form';
-import { buildParameterSummary } from '@tmlmobilidade/dates';
+import { buildParameterSummary, computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
 import { type Path, StopsParameter, StopsParameterSchema } from '@tmlmobilidade/types';
 import { type UseFormReturnType } from '@tmlmobilidade/ui';
 import { zodResolver } from 'mantine-form-zod-resolver';

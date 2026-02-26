@@ -1,7 +1,7 @@
 import { type GtfsV29ExportConfig } from '@/types.js';
 import { ServiceId, type ServiceRegistry, Timepoint } from '@/utils/service-registry.js';
-import { buildAffectedDaysDetails, Dates, datesFromCalendarKey } from '@tmlmobilidade/dates';
-import { GtfsBikesAllowed, GtfsTMLTrip, GtfsWheelchairBoarding, type OperationalDate, type Pattern, type Period, type Route } from '@tmlmobilidade/types';
+import { buildAffectedDaysDetails, calendarWeekday, Dates, datesFromCalendarKey, getActivePeriodId, resolveBusinessPeriod, yyyymmddToKey } from '@tmlmobilidade/dates';
+import { BusinessPeriod, GtfsBikesAllowed, GtfsTMLTrip, GtfsWheelchairBoarding, type IsoWeekday, type OperationalDate, type Pattern, type Period, type Route } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -61,6 +61,15 @@ function timepointToOperationalMinutes(timepoint: Timepoint): number {
 	return totalMinutes;
 }
 
+export interface TripSchedule {
+	trip_id: string
+	service_id: ServiceId
+	timepoint: Timepoint
+	weekdays: IsoWeekday[]
+	period_ids: string[]
+	business_period: BusinessPeriod
+}
+
 /**
  * Groups timepoints by their date sets and assigns service_ids
  * @param timepointSchedules - Map of timepoint to dates
@@ -102,14 +111,14 @@ export async function exportTripsForPattern(
 	endDate: Dates,
 	serviceRegistry: ServiceRegistry,
 	exportConfig: GtfsV29ExportConfig,
-) {
+): Promise<TripSchedule[]> {
 	try {
 		// Step 1: Build timepoint -> dates map
 		const timepointSchedules = buildTimepointSchedules(patternData, periods, startDate, endDate);
 
 		if (timepointSchedules.size === 0) {
 			// No timepoints for this pattern, skip
-			return;
+			return [];
 		}
 
 		// Step 2: Assign service_ids to timepoints (deduplicating by date sets)
@@ -123,16 +132,38 @@ export async function exportTripsForPattern(
 			return timepointToOperationalMinutes(a[0]) - timepointToOperationalMinutes(b[0]);
 		});
 
+		const tripSchedules: TripSchedule[] = [];
+
 		for (const [timepoint, service_id] of sortedTimepoints) {
 			// Remove the : from this schedules start_time to use it as the identifier for this trip.
 			// Associate the pattern_code, resulting calendar_code and start_time of the current schedule.
 			const startTimeStripped = timepoint.split(':').join('');
 			const trip_id = `${patternData.code}|${service_id}|${startTimeStripped}`;
 
+			const timepointDates = timepointSchedules.get(timepoint) ?? new Set<OperationalDate>();
+			const weekdaysSet = new Set<IsoWeekday>();
+			const periodIdsSet = new Set<string>();
+
+			for (const date of timepointDates) {
+				weekdaysSet.add(calendarWeekday(yyyymmddToKey(date)));
+
+				const periodId = getActivePeriodId(date, periods);
+				if (periodId) periodIdsSet.add(periodId);
+			}
+
+			tripSchedules.push({
+				business_period: resolveBusinessPeriod(timepoint),
+				period_ids: Array.from(periodIdsSet),
+				service_id,
+				timepoint,
+				trip_id,
+				weekdays: Array.from(weekdaysSet),
+			});
+
 			const tripData: GtfsTMLTrip = {
 				bikes_allowed: 0 as GtfsBikesAllowed,
 				calendar_desc: '', // TODO: Calculate from rules/periods
-				direction_id: patternData.direction,
+				direction_id: Number(patternData.direction) as 0 | 1,
 				pattern_id: patternData.code,
 				pattern_short_name: headsign,
 				route_id: routeData.code,
@@ -145,6 +176,8 @@ export async function exportTripsForPattern(
 
 			await exportConfig.writers.trips.write(tripData);
 		}
+
+		return tripSchedules;
 	}
 	catch (error) {
 		throw new Error(`Error exporting trips for pattern ${patternData.code}: ${error}`);

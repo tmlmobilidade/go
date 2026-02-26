@@ -1,6 +1,6 @@
 /* * */
 
-import { exportAgencyFile, exportCalendarDates, exportFareAttributes, exportFareForRoute, exportRoute, exportShape, exportStop, exportTripsForPattern, exportZoning } from '@/exports/index.js';
+import { exportAgencyFile, exportCalendarDates, exportFareAttributes, exportFareForRoute, exportRoute, exportShape, exportStop, exportStopTimesForPattern, exportTripsForPattern, exportZoning } from '@/exports/index.js';
 import { type ExportProgress, type GtfsV29ExportConfig } from '@/types.js';
 import { ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
@@ -253,7 +253,7 @@ export async function exportGtfsV29(
 					}
 
 					// Export trips for this pattern (will deduplicate service_ids across patterns)
-					await exportTripsForPattern(
+					const tripSchedules = await exportTripsForPattern(
 						routeData,
 						patternData,
 						shapeId,
@@ -263,6 +263,8 @@ export async function exportGtfsV29(
 						serviceRegistry,
 						exportConfig,
 					);
+
+					await exportStopTimesForPattern(patternData, tripSchedules, exportConfig);
 				}
 
 				Logger.info(`  Processed route ${routeId} with ${routePatterns.length} patterns`);
@@ -324,7 +326,7 @@ export async function exportGtfsV29(
 		await exportConfig.writers.trips.flush();
 		await exportConfig.writers.calendar_dates.flush();
 		await exportConfig.writers.feed_info.flush();
-		// Note: stop_times writer is not flushed as it's not yet implemented
+		await exportConfig.writers.stop_times.flush();
 
 		Logger.success('All files flushed successfully');
 

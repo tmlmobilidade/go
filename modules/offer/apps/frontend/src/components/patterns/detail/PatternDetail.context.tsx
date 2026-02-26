@@ -7,9 +7,9 @@ import { openRulesCalendarPreviewModal } from '@/components/patterns/rules/list/
 import { openCreateParameterModal } from '@/components/patterns/stops/parameters/create/ParameterCreate.modal';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { useTypologiesContext } from '@/contexts/Typologies.context';
-import { computeSegmentTravelTimes, getMergedPath, StopsParameterExtended } from '@/utils/stops-parameters';
+import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { buildParameterSummary, buildRuleSummary, Dates } from '@tmlmobilidade/dates';
+import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, Dates, getMergedPath } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { EventReplacementRule, EventRestrictionRule, Line, ManualRule, Pattern, PermissionCatalog, ScheduleRule, StopsParameter, Typology, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
