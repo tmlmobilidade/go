@@ -108,7 +108,7 @@ class ClickhouseService {
 	 * @returns The ClickHouse client
 	 */
 	public async getClient(): Promise<ClickHouseClient> {
-		return this.client;
+		return Promise.resolve(this.client);
 	}
 
 	/**
