@@ -3,75 +3,11 @@
 
 import { type ClickHouseClient, type ClickHouseClientConfigOptions, createClient } from '@clickhouse/client';
 import { NodeClickHouseClient } from '@clickhouse/client/dist/client.js';
+import { ClickHouseColumn } from '@tmlmobilidade/clickhouse';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
-
-/**
- * Supported ClickHouse data types
- */
-export type ClickHouseType =
-  | 'Bool'
-  | 'Boolean' | 'Date32' | 'Date' | 'DateTime' | 'Decimal' | 'Float32'
-  | 'Float64' | 'Int8' | 'Int16' | 'Int32' | 'Int64' | 'Int128'
-  | 'Int256' | 'String'
-  | 'UInt8' | 'UInt16'
-  | 'UInt32' | 'UInt64'
-  | 'UInt128' | 'UInt256' | 'UUID' | `Array(${string})`
-  | `DateTime64(${number})`
-  | `Decimal(${number}, ${number})`
-  | `Enum8(${string})`
-  | `Enum16(${string})`
-  | `FixedString(${number})`
-  | `LowCardinality(${string})` | `Map(${string}, ${string})`
-  | `Nullable(${string})`;
-
-export interface ClickHouseColumn<T> {
-	/** Alias expression (computed on read) */
-	alias?: string
-
-	/** Column codec for compression */
-	codec?: string
-
-	/** Comment for the column */
-	comment?: string
-
-	/** Default value expression */
-	default?: string
-
-	/** Create a secondary index (skipping index) on this column */
-	indexed?: boolean
-
-	/** Granularity for the index. Default: 4 */
-	indexGranularity?: number
-
-	/** Type of skipping index. Default: 'minmax' */
-	indexType?: 'bloom_filter' | 'minmax' | 'ngrambf_v1' | 'set' | 'tokenbf_v1'
-
-	/** Use LowCardinality wrapper for low-cardinality strings */
-	lowCardinality?: boolean
-
-	/** Materialized value expression (computed on insert) */
-	materialized?: string
-
-	name: Extract<keyof T, string>
-
-	/** Whether the column can be null (wraps type in Nullable) */
-	nullable?: boolean
-
-	/** Include this column in the ORDER BY clause (ClickHouse's primary index) */
-	primaryKey?: boolean
-
-	/** Order of this column in the primary key (lower = first). Default: 0 */
-	primaryKeyOrder?: number
-
-	/** TTL expression for this column */
-	ttl?: string
-
-	/** The ClickHouse data type */
-	type: ClickHouseType
-}
 
 type ClickHouseWriterParams<T> = {
 	/**
@@ -144,16 +80,14 @@ export class ClickHouseWriter<T> {
 		if (params.client) {
 			this.params = params;
 			this.client = params.client as ClickHouseClient;
-		}
-		else if (params.clientConfig) {
+		} else if (params.clientConfig) {
 			const { database, password, url, username } = params.clientConfig;
 			if (!database || !password || !url || !username) {
 				throw new Error('CLICKHOUSEWRITER: Client configuration is invalid. Ensure database, password, url and username are provided.');
 			}
 			this.params = params;
 			this.client = createClient(params.clientConfig);
-		}
-		else {
+		} else {
 			throw new Error('CLICKHOUSEWRITER: Either client or clientConfig is required.');
 		}
 	}
@@ -193,8 +127,7 @@ export class ClickHouseWriter<T> {
 
 			await this.client.command({ query: createTableQuery });
 			Logger.info(`CLICKHOUSEWRITER [${this.params.table}]: Table ensured.`);
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error(`CLICKHOUSEWRITER [${this.params.table}]: Error @ ensureTable(): ${(error as Error).message}`);
 			throw error;
 		}
@@ -246,8 +179,7 @@ export class ClickHouseWriter<T> {
 							break;
 					}
 				}
-			}
-			else {
+			} else {
 				// Simple equality
 				conditions.push(`${key} = ${this.formatValue(value)}`);
 			}
@@ -291,8 +223,7 @@ export class ClickHouseWriter<T> {
 
 			const data = await result.json() as { count: string }[];
 			return parseInt(data[0]?.count ?? '0', 10);
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error(`CLICKHOUSEWRITER [${this.params.table}]: Error @ countDocuments(): ${(error as Error).message}`);
 			throw error;
 		}
@@ -324,8 +255,7 @@ export class ClickHouseWriter<T> {
 
 			const data = await result.json() as Record<string, K>[];
 			return data.map(row => row[column]);
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error(`CLICKHOUSEWRITER [${this.params.table}]: Error @ distinct(): ${(error as Error).message}`);
 			throw error;
 		}
@@ -401,15 +331,13 @@ export class ClickHouseWriter<T> {
 				this.dataBucketFlushOps = [];
 
 				//
-			}
-			catch (error) {
+			} catch (error) {
 				Logger.error(`CLICKHOUSEWRITER [${this.params.table}]: Error @ flush().insert(): ${(error as Error).message}`);
 				throw error; // Re-throw to allow retry logic at higher level
 			}
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error(`CLICKHOUSEWRITER [${this.params.table}]: Error @ flush(): ${(error as Error).message}`);
 			throw error; // Re-throw to allow retry logic at higher level
 		}
@@ -460,8 +388,7 @@ export class ClickHouseWriter<T> {
 		if (Array.isArray(data)) {
 			const combinedDataWithOptions = data.map(item => item);
 			this.dataBucketAlwaysAvailable = [...this.dataBucketAlwaysAvailable, ...combinedDataWithOptions];
-		}
-		else {
+		} else {
 			this.dataBucketAlwaysAvailable.push(data);
 		}
 
