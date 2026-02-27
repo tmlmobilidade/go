@@ -52,9 +52,6 @@ export class PlansController {
 			const plansTransaction = transactions.get(plansCollection);
 			const filesTransaction = transactions.get(filesCollection);
 
-			// Delete the old operation file
-			await files.deleteById(planData.operation_file_id, { session: filesTransaction.getSession() });
-
 			// Make a clone of the validation GTFS file in S3
 			// to keep plan data separate from validations
 			const updateFileResult = await filesCollection.clone(
@@ -84,6 +81,13 @@ export class PlansController {
 				{ hash: hashValue, operation_file_id: updateFileResult._id },
 				{ session: plansTransaction.getSession() },
 			);
+
+			// Check if file was created successfully
+			const createdFile = await files.findById(updateFileResult._id, { session: filesTransaction.getSession() });
+			if (!createdFile) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to create operation file');
+
+			// Delete the old operation file
+			// await files.deleteById(planData.operation_file_id, { session: filesTransaction.getSession() });
 
 			// Return the updated plan data
 			return updatedPlanData;
