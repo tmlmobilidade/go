@@ -5,7 +5,6 @@ import React from 'react';
 
 /* * */
 
-import { FailedBackupEmail, FailedBackupEmailProps } from '@/emails/failed-backup.js';
 import { NotificationEmail, NotificationEmailProps } from '@/emails/notification-email.js';
 import { PlanApprovalRequestEmail, PlanApprovalRequestEmailProps } from '@/emails/plan-approval-request.js';
 import { ResetPasswordEmail, ResetPasswordEmailProps } from '@/emails/reset-password.js';
@@ -14,10 +13,6 @@ import { UnsuccessfulGtfsValidationEmail, UnsuccessfulGtfsValidationEmailProps }
 import { WelcomeEmail, WelcomeEmailProps } from '@/emails/welcome.js';
 
 /* * */
-
-export const RenderFailedBackupEmail = async (props: FailedBackupEmailProps) => {
-	return await render(<FailedBackupEmail {...props} />);
-};
 
 export const RenderResetPasswordEmail = async (props: ResetPasswordEmailProps) => {
 	return await render(<ResetPasswordEmail {...props} />);
