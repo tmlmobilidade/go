@@ -3,7 +3,7 @@
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { CoordinatesInput, Grid, Section, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
+import { CoordinatesInput, Grid, Section, Switch, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -45,6 +45,11 @@ export function AlertCreateStepSummary() {
 					label="Título"
 					readOnly={!hasPermissionToEdit}
 					{...alertCreateContext.data.form.getInputProps('title')}
+				/>
+				<Switch
+					checked={alertCreateContext.data.auto_texts}
+					label="Gerar descrição automaticamente"
+					onChange={event => alertCreateContext.data.set_auto_texts(event.currentTarget.checked)}
 				/>
 				<Textarea
 					key={alertCreateContext.data.form.key('description')}
