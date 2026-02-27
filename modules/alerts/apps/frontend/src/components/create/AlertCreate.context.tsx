@@ -17,9 +17,11 @@ import useSWR from 'swr';
 
 interface AlertCreateContextState extends CreateContextStateTemplate {
 	data: {
+		auto_texts: boolean
 		enabled_reference_types: Alert['reference_type'][]
 		form: UseFormReturnType<CreateAlertDto>
 		multi_step: UseMultiStepReturnType
+		set_auto_texts: (value: boolean) => void
 	}
 };
 
@@ -68,6 +70,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	const meContext = useMeContext();
 	const copyAlertId = searchParams.get('copy');
 
+	const [autoTexts, setAutoTexts] = useState(true);
 	const [selectedReferencesData, setSelectedReferencesData] = useState<AgencyData[] | LineData[] | RideNormalized[] | StopData[]>([]);
 	const [hasAppliedCopyData, setHasAppliedCopyData] = useState(false);
 
@@ -144,6 +147,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	useEffect(() => {
 		if (copyAlertId) return;
+		if (!autoTexts) return;
 		if (multiStep.progress.current?.index !== multiStep.progress.steps.length - 1) return; // Only run when on the last step | if we go back and again to last step, this will run again
 		if (!form.getValues().cause || !form.getValues().effect || !form.getValues().reference_type || !form.getValues().references) return;
 		const references = form.getValues().references;
@@ -159,7 +163,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		if (!alertTemplating) return;
 		form.setFieldValue('description', alertTemplating.description.pt);
 		form.setFieldValue('title', alertTemplating.title.pt);
-	}, [copyAlertId, multiStep.progress.current?.index]);
+	}, [copyAlertId, autoTexts, multiStep.progress.current?.index]);
 
 	useEffect(() => {
 		if (!copyAlertId || !copyAlertData || hasAppliedCopyData) return;
@@ -387,9 +391,11 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			create: handleCreate,
 		},
 		data: {
+			auto_texts: autoTexts,
 			enabled_reference_types: enabledReferenceTypes,
 			form,
 			multi_step: multiStep,
+			set_auto_texts: setAutoTexts,
 		},
 		flags: {
 			canCreate: true,
