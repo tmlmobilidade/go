@@ -1,5 +1,6 @@
 /* * */
 
+import { EventsContextProvider } from '@/contexts/Events.context';
 import { FaresContextProvider } from '@/contexts/Fares.context';
 import { PeriodsContextProvider } from '@/contexts/Periods.context';
 import { TypologiesContextProvider } from '@/contexts/Typologies.context';
@@ -12,7 +13,9 @@ export function DataProviders({ agency_id, children }: PropsWithChildren<{ agenc
 		<PeriodsContextProvider agencyId={agency_id}>
 			<FaresContextProvider agencyId={agency_id}>
 				<TypologiesContextProvider agencyId={agency_id}>
-					{children}
+					<EventsContextProvider agencyId={agency_id}>
+						{children}
+					</EventsContextProvider>
 				</TypologiesContextProvider>
 			</FaresContextProvider>
 		</PeriodsContextProvider>

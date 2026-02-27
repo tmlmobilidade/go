@@ -2,7 +2,7 @@
 
 import { calendarKey, CalendarKey, calendarWeekday, datesFromCalendarKey, keyToYYYYMMDD } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
-import { ManualRule, OperationalDate, Period } from '@tmlmobilidade/types';
+import { Event, ManualRule, OperationalDate, Period } from '@tmlmobilidade/types';
 
 /**
  * Context for computing which dates a manual rule affects within a calendar range.
@@ -10,6 +10,8 @@ import { ManualRule, OperationalDate, Period } from '@tmlmobilidade/types';
 interface CalendarContext {
 	/** End date of the calendar range */
 	endDate: Date
+	/** Optional events list for eventId matching */
+	events?: Event[]
 	/** Available periods for matching rule criteria */
 	periods: Period[]
 	/** Start date of the calendar range */
@@ -69,6 +71,20 @@ export function getManualRuleAffectedDates(rule: ManualRule, ctx: CalendarContex
 	// normalize direction (ensure from <= to)
 	const from = startKey < endKey ? startKey : endKey;
 	const to = startKey < endKey ? endKey : startKey;
+
+	if (rule.eventId) {
+		const event = ctx.events?.find(e => e._id === rule.eventId);
+		if (!event?.dates?.length) return { count: 0, dates: [] };
+
+		for (const opDate of event.dates) {
+			const key = calendarKey(Dates.fromOperationalDate(opDate, 'Europe/Lisbon'));
+			if (key >= from && key <= to) {
+				affected.push(key);
+			}
+		}
+
+		return { count: affected.length, dates: affected };
+	}
 
 	let current = datesFromCalendarKey(from);
 	const end = datesFromCalendarKey(to);

@@ -1,6 +1,6 @@
 import { Dates } from '@/dates.js';
 import { Formats } from '@/format.js';
-import { EventReplacementRule, EventRestrictionRule, Period, ScheduleRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
+import { Event, EventReplacementRule, EventRestrictionRule, ManualRule, Period, ScheduleRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
 
 import { buildPeriodsPart, buildWeekdaysPart } from './common.js';
 
@@ -43,6 +43,7 @@ export interface RuleSummary {
 export function buildRuleSummary(
 	rule: ScheduleRule,
 	options: {
+		events?: Event[]
 		periods?: Period[]
 	},
 ): RuleSummary {
@@ -63,6 +64,11 @@ const isEventRestriction = (r: ScheduleRule): r is EventRestrictionRule => r.kin
  */
 const isEventReplacement = (r: ScheduleRule): r is EventReplacementRule => r.kind === 'event_replacement';
 
+const getEventForManualRule = (rule: ManualRule, events?: Event[]) => {
+	if (!rule.eventId) return undefined;
+	return events?.find(event => event._id === rule.eventId);
+};
+
 /* ---------------- helpers ---------------- */
 
 /**
@@ -73,7 +79,7 @@ const isEventReplacement = (r: ScheduleRule): r is EventReplacementRule => r.kin
  */
 function buildRuleSummaryShort(
 	rule: ScheduleRule,
-	options: { periods?: Period[] },
+	options: { events?: Event[], periods?: Period[] },
 ): string {
 	if (isEventRestriction(rule)) {
 		// Restriction: show event name
@@ -83,6 +89,10 @@ function buildRuleSummaryShort(
 	if (isEventReplacement(rule)) {
 		// Replacement: show event name
 		return rule.event?.title ?? '';
+	}
+
+	if (rule.kind === 'manual' && rule.eventId) {
+		return getEventForManualRule(rule, options?.events)?.title ?? '';
 	}
 
 	// manual
@@ -105,10 +115,14 @@ function buildRuleSummaryShort(
  */
 function buildRuleSummaryLong(
 	rule: ScheduleRule,
-	options: { periods?: Period[] },
+	options: { events?: Event[], periods?: Period[] },
 ): string {
 	if (isEventReplacement(rule) || isEventRestriction(rule)) {
 		return rule.event?.title ?? '';
+	}
+
+	if (rule.kind === 'manual' && rule.eventId) {
+		return getEventForManualRule(rule, options?.events)?.title ?? '';
 	}
 
 	// manual
@@ -144,7 +158,7 @@ function formatDateWithWeekday(date: string): string {
  */
 function buildRuleSummaryTooltip(
 	rule: ScheduleRule,
-	options: { periods?: Period[] },
+	options: { events?: Event[], periods?: Period[] },
 ): string {
 	if (isEventRestriction(rule)) {
 		const dates = (rule.dates ?? []).map(formatDateWithWeekday).join(', ');
@@ -172,6 +186,14 @@ function buildRuleSummaryTooltip(
 
 		const parts = [weekdays, periods].filter(Boolean);
 		return `Funcionará como ${parts.join(' · ')}, ${datesText}`;
+	}
+
+	if (rule.kind === 'manual' && rule.eventId) {
+		const event = getEventForManualRule(rule, options?.events);
+		const dates = (event?.dates ?? []).map(formatDateWithWeekday).join(', ');
+		if (!dates) return '';
+		const datesText = (event?.dates?.length ?? 0) > 1 ? `nos dias ${dates}` : `no dia ${dates}`;
+		return `Aplicável ${datesText}`;
 	}
 
 	return '';

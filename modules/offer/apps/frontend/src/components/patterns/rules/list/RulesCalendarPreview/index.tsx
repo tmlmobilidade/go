@@ -2,6 +2,7 @@
 
 /* * */
 
+import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { IconArrowBarToLeft, IconArrowBarToRight } from '@tabler/icons-react';
 import { buildAffectedDaysDetails, calendarKey, CalendarKey, Dates, datesFromCalendarKey, Formats } from '@tmlmobilidade/dates';
@@ -32,14 +33,17 @@ export function RulesCalendarPreview({ rules }: RulesCalendarPreviewProps) {
 	const [selectedDate, setSelectedDate] = useState<CalendarKey | null>(null);
 
 	const periodsContext = usePeriodsContext();
+	const eventsContext = useEventsContext();
 	const periods = periodsContext.data.raw;
 
 	// Compute which dates are affected by rules with their details
 	const affectedDaysMap = useMemo(() => {
 		const startOfYear = Dates.now('Europe/Lisbon').startOf('year');
 		const endOfYear = startOfYear.plus({ years: 1 });
-		return buildAffectedDaysDetails(startOfYear, endOfYear, rules, periods);
-	}, [rules, periods]);
+		return buildAffectedDaysDetails(startOfYear, endOfYear, rules, periods, {
+			events: eventsContext.data.raw,
+		});
+	}, [eventsContext.data.raw, rules, periods]);
 
 	// Convert affected dates to calendar events for visualization
 	const calendarEvents = useMemo(() => {

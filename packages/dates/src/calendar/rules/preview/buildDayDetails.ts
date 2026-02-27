@@ -1,4 +1,4 @@
-import type { Period, ScheduleRule } from '@tmlmobilidade/types';
+import type { Event, Period, ScheduleRule } from '@tmlmobilidade/types';
 
 import { calendarKey, CalendarKey, datesFromCalendarKey } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
@@ -10,9 +10,10 @@ function buildDayScheduleDetail(
 	key: CalendarKey,
 	allRules: ScheduleRule[],
 	periods: Period[],
+	events?: Event[],
 ): DayScheduleDetail {
 	const date = datesFromCalendarKey(key);
-	const { appliedRuleIds, timePoints: finalTimePoints } = computeActiveRules(date.operational_date, allRules, periods);
+	const { appliedRuleIds, timePoints: finalTimePoints } = computeActiveRules(date.operational_date, allRules, periods, { events });
 
 	const appliedRules = appliedRuleIds
 		.map(id => allRules.find(r => r._id === id))
@@ -38,8 +39,7 @@ function buildDayScheduleDetail(
 
 		if (isReplacement) {
 			replacementRules.push(detail);
-		}
-		else if (isExclude) {
+		} else if (isExclude) {
 			excludeRules.push(detail);
 
 			// For manual exclude rules, add their timepoints to excludedTimePoints
@@ -48,8 +48,7 @@ function buildDayScheduleDetail(
 					excludedTimePoints.set(tp, rule);
 				}
 			}
-		}
-		else {
+		} else {
 			includeRules.push(detail);
 			// Collect all include timepoints for later comparison
 			for (const tp of rule.timePoints || []) {
@@ -71,8 +70,7 @@ function buildDayScheduleDetail(
 					if (restriction.all_day) {
 						// All day restriction removes everything
 						excludedTimePoints.set(tp, rule.rule);
-					}
-					else if (restriction.start_time && restriction.end_time) {
+					} else if (restriction.start_time && restriction.end_time) {
 						// Check if timepoint falls within the restriction window
 						if (isTimeInRange(tp, restriction.start_time, restriction.end_time)) {
 							excludedTimePoints.set(tp, rule.rule);
@@ -120,6 +118,9 @@ export function buildAffectedDaysDetails(
 	endDate: Dates,
 	allRules: ScheduleRule[],
 	periods: Period[],
+	options?: {
+		events?: Event[]
+	},
 ): Map<CalendarKey, DayScheduleDetail> {
 	const affectedDays = new Map<CalendarKey, DayScheduleDetail>();
 
@@ -127,7 +128,7 @@ export function buildAffectedDaysDetails(
 
 	while (currentDate.unix_timestamp <= endDate.unix_timestamp) {
 		const key = calendarKey(currentDate);
-		const dayDetails = buildDayScheduleDetail(key, allRules, periods);
+		const dayDetails = buildDayScheduleDetail(key, allRules, periods, options?.events);
 
 		// Only include days that are "affected" (have active timepoints or applied rules)
 		if (

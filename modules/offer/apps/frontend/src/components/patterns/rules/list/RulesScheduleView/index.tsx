@@ -1,6 +1,7 @@
 /* * */
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
+import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { Badge } from '@mantine/core';
 import { IconCancel, IconCheck, IconSwitchHorizontal } from '@tabler/icons-react';
@@ -28,33 +29,35 @@ interface RuleLegendItem {
 
 export function RulesScheduleView() {
 	const patternDetailContext = usePatternDetailContext();
-	const rules = patternDetailContext.data.mergedRules || [];
 	const periodsContext = usePeriodsContext();
+	const eventsContext = useEventsContext();
 
 	const [selectedRuleIds, setSelectedRuleIds] = useState<Set<string>>(new Set());
 	const [hoveredRuleId, setHoveredRuleId] = useState<null | string>(null);
 
-	const allRules = patternDetailContext.data.mergedRules || [];
-	const periods = periodsContext.data.raw || [];
+	const allRules = useMemo(() => patternDetailContext.data.mergedRules || [], [patternDetailContext.data.mergedRules]);
+	const periods = useMemo(() => periodsContext.data.raw || [], [periodsContext.data.raw]);
 
 	const timePointsByRuleId = useMemo(() => {
 		const map = new Map<string, Set<string>>();
 
 		for (const rule of allRules) {
 			if (!rule._id) continue;
-			const timePoints = computeRuleTimePoints(rule, allRules, periods);
+			const timePoints = computeRuleTimePoints(rule, allRules, periods, {
+				events: eventsContext.data.raw,
+			});
 			map.set(rule._id, timePoints);
 		}
 		return map;
-	}, [allRules, periods]);
+	}, [allRules, eventsContext.data.raw, periods]);
 
 	// Build legend items with alphabetic labels
 	const legendItems = useMemo<RuleLegendItem[]>(() => {
 		const uniqueRules = new Map<string, RuleLegendItem>();
 
-		for (const rule of rules) {
+		for (const rule of allRules) {
 			if (!uniqueRules.has(rule._id)) {
-				const { long, short, tooltip } = buildRuleSummary(rule, { periods });
+				const { long, short, tooltip } = buildRuleSummary(rule, { events: eventsContext.data.raw, periods });
 				const isReplacement = rule.kind === 'event_replacement';
 				const isExclude = (rule.kind === 'manual' && rule.operatingMode === 'exclude') || rule.kind === 'event_restriction';
 				uniqueRules.set(rule._id, {
@@ -79,7 +82,7 @@ export function RulesScheduleView() {
 			label: String.fromCharCode(65 + idx), // A, B, C, ...
 			slot: (idx % pillCount) + 1,
 		}));
-	}, [rules, periods]);
+	}, [allRules, eventsContext.data.raw, periods]);
 
 	const timeColumns = useMemo(() => {
 		const allTimes = new Set<string>();
@@ -116,8 +119,7 @@ export function RulesScheduleView() {
 			const next = new Set(prev);
 			if (next.has(ruleId)) {
 				next.delete(ruleId);
-			}
-			else {
+			} else {
 				next.add(ruleId);
 			}
 			return next;

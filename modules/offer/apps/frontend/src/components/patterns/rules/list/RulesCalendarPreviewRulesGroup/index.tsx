@@ -1,10 +1,11 @@
 /* * */
 
+import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { IconCalendarCancel, IconCalendarCheck } from '@tabler/icons-react';
 import { buildRuleSummary } from '@tmlmobilidade/dates';
 import { DayRuleDetail } from '@tmlmobilidade/dates/dist/calendar/rules/preview/types';
-import { ScheduleRule } from '@tmlmobilidade/types';
+import { HHMM, ScheduleRule } from '@tmlmobilidade/types';
 import { BusinessPeriodsTimepoints, Section, Text, TimeChip } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -29,6 +30,7 @@ export function RulesGroup({ excludedTimePoints, includeRules, kind, rules }: Ru
 	// A. Setup variables
 
 	const periodsContext = usePeriodsContext();
+	const eventsContext = useEventsContext();
 
 	//
 	// B. Render components
@@ -41,6 +43,7 @@ export function RulesGroup({ excludedTimePoints, includeRules, kind, rules }: Ru
 		<Section gap="md" padding="none">
 			{rules.map(({ allTimePoints, rule }) => {
 				const summary = buildRuleSummary(rule, {
+					events: eventsContext.data.raw,
 					periods: periodsContext.data.raw,
 				});
 				const isExclude = kind === 'exclude';
@@ -114,7 +117,7 @@ export function RulesGroup({ excludedTimePoints, includeRules, kind, rules }: Ru
 								</Text>
 							</Section>
 
-							<BusinessPeriodsTimepoints timepoints={allTimePoints} variant="compact">
+							<BusinessPeriodsTimepoints timepoints={allTimePoints as HHMM[]} variant="compact">
 								{(time) => {
 									// For include rules, check if this time was excluded by another rule
 									const excludedByRule = (kind === 'include' || kind === 'replacement') && excludedTimePoints?.get(time);

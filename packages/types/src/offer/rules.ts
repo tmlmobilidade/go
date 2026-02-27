@@ -18,12 +18,14 @@ export const ManualRuleSchema = z.object({
 	// stable id for UI dedupe
 	_id: z.string().optional(),
 
+	eventId: z.string().optional(),
+
 	kind: z.literal('manual'),
 	name: z.string().optional(),
 
 	operatingMode: z.nativeEnum(OPERATING_MODE),
-
 	periodIds: z.array(z.string()),
+
 	timePoints: z.array(HHMMSchema),
 
 	weekdays: z.array(z.nativeEnum(WEEKDAYS)),

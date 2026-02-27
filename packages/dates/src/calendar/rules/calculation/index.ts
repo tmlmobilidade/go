@@ -1,5 +1,5 @@
 import type { DayContext, RuleApplication } from './types.js';
-import type { EventReplacementRule, ManualRule, OperationalDate, Period, ScheduleRule } from '@tmlmobilidade/types';
+import type { Event, EventReplacementRule, ManualRule, OperationalDate, Period, ScheduleRule } from '@tmlmobilidade/types';
 
 import { calendarKey, calendarWeekday } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
@@ -50,10 +50,20 @@ export function computeActiveRules(
 	date: OperationalDate,
 	rules: ScheduleRule[],
 	periods: Period[],
+	options?: {
+		events?: Event[]
+	},
 ): RuleApplication {
 	const manualRules = rules.filter((r): r is ManualRule => r.kind === 'manual');
 	const restrictionRules = rules.filter(r => r.kind === 'event_restriction');
 	const replacementRules = rules.filter((r): r is EventReplacementRule => r.kind === 'event_replacement');
+
+	const filteredManualRules = manualRules.filter((rule) => {
+		if (!rule.eventId) return true;
+		const event = options?.events?.find(e => e._id === rule.eventId);
+		if (!event?.dates?.length) return false;
+		return event.dates.includes(date);
+	});
 
 	const key = calendarKey(Dates.fromOperationalDate(date, 'Europe/Lisbon'));
 
@@ -65,25 +75,24 @@ export function computeActiveRules(
 
 	if (replacement) {
 		// Replacement mode: match manuals by intersection (Option A)
-		const base = collectReplacementManualIncludes(replacement, manualRules);
+		const base = collectReplacementManualIncludes(replacement, filteredManualRules);
 		timePoints = base.timePoints;
 		appliedRuleIds = base.appliedRuleIds;
 
 		// Apply manual excludes *also* by intersection with replacement targets
-		applyReplacementManualExcludes(timePoints, appliedRuleIds, replacement, manualRules);
-	}
-	else {
+		applyReplacementManualExcludes(timePoints, appliedRuleIds, replacement, filteredManualRules);
+	} else {
 		// Normal mode: day resolves to a single weekday + single periodId
 		const ctx: DayContext = {
 			periodId: getActivePeriodId(date, periods),
 			weekday: calendarWeekday(key),
 		};
 
-		const base = collectManualIncludes(manualRules, ctx);
+		const base = collectManualIncludes(filteredManualRules, ctx);
 		timePoints = base.timePoints;
 		appliedRuleIds = base.appliedRuleIds;
 
-		applyManualExcludes(timePoints, appliedRuleIds, manualRules, ctx);
+		applyManualExcludes(timePoints, appliedRuleIds, filteredManualRules, ctx);
 	}
 
 	// 2) Event restrictions always apply by date

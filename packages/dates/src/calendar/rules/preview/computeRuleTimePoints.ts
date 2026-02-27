@@ -1,4 +1,4 @@
-import type { IsoWeekday, OperationalDate, Period, ScheduleRule } from '@tmlmobilidade/types';
+import type { Event, IsoWeekday, OperationalDate, Period, ScheduleRule } from '@tmlmobilidade/types';
 
 import { calendarKey, calendarWeekday } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
@@ -21,9 +21,15 @@ export function computeRuleTimePoints(
 	rule: ScheduleRule,
 	allRules: ScheduleRule[],
 	periods: Period[],
+	options?: {
+		events?: Event[]
+	},
 ): Set<string> {
 	// Manual rules: just return their timepoints
 	if (rule.kind === 'manual') {
+		if (!rule.eventId) return new Set(rule.timePoints ?? []);
+		const event = options?.events?.find(e => e._id === rule.eventId);
+		if (!event?.dates?.length) return new Set();
 		return new Set(rule.timePoints ?? []);
 	}
 
@@ -67,11 +73,12 @@ export function computeRuleTimePoints(
 	const end = Dates.fromJSDate(start).plus({ years: 1 }).js_date;
 	const dateRange = buildOperationalDateRange(start, end);
 
-	const withAll = computeScheduleMap(allRules, dateRange, periods);
+	const withAll = computeScheduleMap(allRules, dateRange, periods, options?.events);
 	const withoutRule = computeScheduleMap(
 		allRules.filter(r => r._id !== rule._id),
 		dateRange,
 		periods,
+		options?.events,
 	);
 
 	const removedTimePoints = new Set<string>();
@@ -105,12 +112,13 @@ function computeScheduleMap(
 	rules: ScheduleRule[],
 	dateRange: OperationalDate[],
 	periods: Period[],
+	events?: Event[],
 ): Map<string, { timePoints: string[] }> {
 	const result = new Map<string, { timePoints: string[] }>();
 
 	for (const date of dateRange) {
 		const key = calendarKey(Dates.fromOperationalDate(date, 'Europe/Lisbon'));
-		const application = computeActiveRules(date, rules, periods);
+		const application = computeActiveRules(date, rules, periods, { events });
 		result.set(key, { timePoints: application.timePoints });
 	}
 

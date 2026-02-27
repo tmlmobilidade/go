@@ -5,6 +5,7 @@
 import { openCreateRuleModal } from '@/components/patterns/rules/create/RuleCreate.modal';
 import { openRulesCalendarPreviewModal } from '@/components/patterns/rules/list/RulesCalendarPreview.modal';
 import { openCreateParameterModal } from '@/components/patterns/stops/parameters/create/ParameterCreate.modal';
+import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { useTypologiesContext } from '@/contexts/Typologies.context';
 import { StopsParameterExtended } from '@/utils/stops-parameters';
@@ -71,6 +72,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	const router = useRouter();
 	const meContext = useMeContext();
 	const periodsContext = usePeriodsContext();
+	const eventsContext = useEventsContext();
 
 	//
 	// B. Fetch data
@@ -151,11 +153,11 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 			// Enhance each rule with generated name and short name
 			return allRules.map((rule) => {
-				const { long, short, tooltip } = buildRuleSummary(rule, { periods });
+				const { long, short, tooltip } = buildRuleSummary(rule, { events: eventsContext.data.raw, periods });
 				return { ...rule, name: long, shortName: short, tooltip };
 			});
 		},
-		[form.values.rules, derivedRules, periodsContext.data.raw],
+		[eventsContext.data.raw, form.values.rules, derivedRules, periodsContext.data.raw],
 	);
 
 	// parameters used for UI + preview
