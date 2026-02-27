@@ -1,3 +1,0 @@
-# Packer Secrets — never commit to source control
-*.pkrvars.hcl
-packer-manifest.json
