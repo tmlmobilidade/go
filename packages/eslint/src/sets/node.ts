@@ -52,7 +52,7 @@ export default [
 				},
 				// Constants: SCREAMING_SNAKE_CASE or camelCase
 				{
-					format: ['UPPER_CASE', 'camelCase'],
+					format: ['UPPER_CASE', 'camelCase', 'PascalCase'], // Allow both for flexibility
 					modifiers: ['const', 'exported'],
 					selector: 'variable',
 				},

@@ -243,7 +243,7 @@ const periodsActions: PermissionConfig = {
 		{ action: 'lock', description: 'Permite bloquear/desbloquear um período', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de períodos.',
-	scope: PermissionCatalog.all.periods.scope,
+	scope: PermissionCatalog.all.year_periods.scope,
 	title: 'Permissões de Períodos',
 };
 

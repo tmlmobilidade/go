@@ -109,6 +109,10 @@ export const PAGE_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getAppConfig('offer', 'frontend_url')}`,
 
+		// FARES
+		FARES_DETAIL: (id: string) => `${getAppConfig('offer', 'frontend_url')}/fares/${id}`,
+		FARES_LIST: `${getAppConfig('offer', 'frontend_url')}/fares`,
+
 		// LINES
 		LINES_DETAIL: (id: string) => `${getAppConfig('offer', 'frontend_url')}/lines/${id}`,
 		LINES_LIST: `${getAppConfig('offer', 'frontend_url')}/lines`,
@@ -122,6 +126,10 @@ export const PAGE_ROUTES = Object.freeze({
 		// TYPOLOGIES
 		TYPOLOGIES_DETAIL: (id: string) => `${getAppConfig('offer', 'frontend_url')}/typologies/${id}`,
 		TYPOLOGIES_LIST: `${getAppConfig('offer', 'frontend_url')}/typologies`,
+
+		// ZONES
+		ZONES_DETAIL: (id: string) => `${getAppConfig('offer', 'frontend_url')}/zones/${id}`,
+		ZONES_LIST: `${getAppConfig('offer', 'frontend_url')}/zones`,
 	},
 
 	/* * */
@@ -170,21 +178,6 @@ export const PAGE_ROUTES = Object.freeze({
 		// STOPS
 		STOPS_DETAIL: (id: string) => `${getAppConfig('stops', 'frontend_url')}/${id}`,
 		STOPS_LIST: `${getAppConfig('stops', 'frontend_url')}`,
-	},
-
-	/* * */
-	/* TICKETING */
-	ticketing: {
-		// BASE
-		BASE: `${getAppConfig('ticketing', 'frontend_url')}`,
-
-		// FARES
-		FARES_DETAIL: (id: string) => `${getAppConfig('ticketing', 'frontend_url')}/fares/${id}`,
-		FARES_LIST: `${getAppConfig('ticketing', 'frontend_url')}/fares`,
-
-		// ZONES
-		ZONES_DETAIL: (id: string) => `${getAppConfig('ticketing', 'frontend_url')}/zones/${id}`,
-		ZONES_LIST: `${getAppConfig('ticketing', 'frontend_url')}/zones`,
 	},
 } as const);
 
@@ -361,6 +354,11 @@ export const API_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getAppConfig('offer', 'api_url')}`,
 
+		// FARES
+		FARES_DETAIL: (id: string) => `${getAppConfig('offer', 'api_url')}/fares/${id}`,
+		FARES_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/fares/${id}/lock`,
+		FARES_LIST: `${getAppConfig('offer', 'api_url')}/fares`,
+
 		// GTFS
 		GTFS_PARSE: `${getAppConfig('offer', 'api_url')}/gtfs/parse`,
 
@@ -385,6 +383,11 @@ export const API_ROUTES = Object.freeze({
 		TYPOLOGIES_DETAIL: (id: string) => `${getAppConfig('offer', 'api_url')}/typologies/${id}`,
 		TYPOLOGIES_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/typologies/${id}/lock`,
 		TYPOLOGIES_LIST: `${getAppConfig('offer', 'api_url')}/typologies`,
+
+		// ZONES
+		ZONES_DETAIL: (id: string) => `${getAppConfig('offer', 'api_url')}/zones/${id}`,
+		ZONES_DETAIL_LOCK: (id: string) => `${getAppConfig('offer', 'api_url')}/zones/${id}/lock`,
+		ZONES_LIST: `${getAppConfig('offer', 'api_url')}/zones`,
 	},
 
 	/* * */
@@ -438,22 +441,5 @@ export const API_ROUTES = Object.freeze({
 		STOPS_DETAIL: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}`,
 		STOPS_DETAIL_LOCK: (id: string) => `${getAppConfig('stops', 'api_url')}/stops/${id}/lock`,
 		STOPS_LIST: `${getAppConfig('stops', 'api_url')}/stops`,
-	},
-
-	/* * */
-	/* TICKETING */
-	ticketing: {
-		// BASE
-		BASE: `${getAppConfig('ticketing', 'api_url')}`,
-
-		// FARES
-		FARES_DETAIL: (id: string) => `${getAppConfig('ticketing', 'api_url')}/fares/${id}`,
-		FARES_DETAIL_LOCK: (id: string) => `${getAppConfig('ticketing', 'api_url')}/fares/${id}/lock`,
-		FARES_LIST: `${getAppConfig('ticketing', 'api_url')}/fares`,
-
-		// ZONES
-		ZONES_DETAIL: (id: string) => `${getAppConfig('ticketing', 'api_url')}/zones/${id}`,
-		ZONES_DETAIL_LOCK: (id: string) => `${getAppConfig('ticketing', 'api_url')}/zones/${id}/lock`,
-		ZONES_LIST: `${getAppConfig('ticketing', 'api_url')}/zones`,
 	},
 } as const);

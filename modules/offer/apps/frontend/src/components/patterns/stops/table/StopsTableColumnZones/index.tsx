@@ -23,7 +23,7 @@ export function StopsTableTableColumnZones({ pathItem, rowIndex }: { pathItem: P
 	//
 	// B. Fetch data
 
-	const { data: zonesData } = useSWR(API_ROUTES.ticketing.ZONES_LIST);
+	const { data: zonesData } = useSWR(API_ROUTES.offer.ZONES_LIST);
 
 	const zonesOptions = zonesData?.map(zone => ({
 		label: zone.name,

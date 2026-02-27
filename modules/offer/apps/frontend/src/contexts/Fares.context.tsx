@@ -35,7 +35,7 @@ export const FaresContextProvider = ({ agencyId, children }: PropsWithChildren<{
 	//
 	// A. Fetch data
 
-	const { data: faresData } = useSWR<Fare[]>(API_ROUTES.ticketing.FARES_LIST);
+	const { data: faresData } = useSWR<Fare[]>(API_ROUTES.offer.FARES_LIST);
 
 	//
 	// B. Define context value
