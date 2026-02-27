@@ -12,7 +12,7 @@ const link: React.CSSProperties = {
 };
 
 const image: React.CSSProperties = {
-	height: 60,
+	height: 70,
 	width: 'auto',
 };
 

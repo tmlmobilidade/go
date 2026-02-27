@@ -28,7 +28,7 @@ export default function WelcomeTemplate({ firstName, resetPasswordUrl }: Welcome
 		<Wrapper previewMessage="Bem-vindo ao GO - Gestor de Oferta">
 			<Greeting text={`Olá ${firstName} 👋`} />
 			<Paragraph>É um prazer dar-te as boas vindas ao GO.</Paragraph>
-			<Paragraph>Esta plataforma é o resultado de uma enorme vontade de evoluir o dia-a-dia de quem trabalha no setor dos transportes públicos, tornando-o mais simples e agradável.</Paragraph>
+			<Paragraph>Esta plataforma é o resultado de uma enorme vontade de evoluir o setor dos transportes públicos.</Paragraph>
 			<Paragraph>
 				<Anchor href={GO_HOMEPAGE_URL} spaceAfter text="Na página inicial do GO" />
 				encontras documentação útil sobre a plataforma, o GTFS e a API APEX, assim como novidades e outros conteúdos interessantes. Estes recursos são atualizados regularmente e estão disponíveis para consulta a qualquer momento.
@@ -44,7 +44,7 @@ export default function WelcomeTemplate({ firstName, resetPasswordUrl }: Welcome
 
 WelcomeTemplate.PreviewProps = {
 	firstName: 'Josué',
-	resetPasswordUrl: 'https://www.tmlmobilidade.pt/setup-password',
+	resetPasswordUrl: 'https://go.tmlmobilidade.pt/auth/reset-password',
 } satisfies WelcomeTemplateProps;
 
 /* * */

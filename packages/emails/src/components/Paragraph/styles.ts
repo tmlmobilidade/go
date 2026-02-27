@@ -8,7 +8,7 @@ const text: React.CSSProperties = {
 	fontWeight: '400',
 	lineHeight: '1.5',
 	margin: '0',
-	marginBottom: '10px',
+	marginBottom: '15px',
 	textAlign: 'left',
 };
 
