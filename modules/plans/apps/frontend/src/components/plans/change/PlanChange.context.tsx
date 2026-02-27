@@ -78,10 +78,6 @@ export const PlanChangeContextProvider = ({ children, planId }: PropsWithChildre
 	//
 	// D. Handle actions
 
-	//
-	// D. Handle actions
-	//
-
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate<Plan>({
 		fetchFn: async () => {
 			if (!selectedValidationId) {
