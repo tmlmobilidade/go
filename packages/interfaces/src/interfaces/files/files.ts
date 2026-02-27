@@ -7,7 +7,7 @@ import { Files } from '@tmlmobilidade/files';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type CreateFileDto, CreateFileSchema, type File, type UpdateFileDto, UpdateFileSchema } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy, convertObject } from '@tmlmobilidade/utils';
-import { DeleteOptions, DeleteResult, IndexDescription, InsertOneOptions, WithId } from 'mongodb';
+import { DeleteOptions, DeleteResult, FindOptions, IndexDescription, InsertOneOptions, WithId } from 'mongodb';
 import { Readable } from 'node:stream';
 import { z } from 'zod';
 
@@ -99,7 +99,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 			return null;
 		}
 
-		file.url = await this.getFileUrl({ file_id: file._id });
+		file.url = await this.getFileUrl({ file_id: file._id }, args[1]);
 		return file;
 	}
 
@@ -108,11 +108,12 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 	 * @param params - Object containing either `file_id` or `key`.
 	 * @param params.file_id - The unique identifier of the file in the database.
 	 * @param params.key - The storage key of the file.
+	 * @param options - Optional options.
 	 * @returns The signed URL of the file.
 	 * @throws {Error} If neither `file_id` nor `key` is provided.
 	 * @throws {HttpException} If `file_id` is provided but the file is not found.
 	*/
-	public async getFileUrl({ file_id, key }: { file_id?: string, key?: string }): Promise<string> {
+	public async getFileUrl({ file_id, key }: { file_id?: string, key?: string }, options?: FindOptions): Promise<string> {
 		if (!file_id && !key) {
 			throw new Error('Either "file_id" or "key" must be provided');
 		}
@@ -120,7 +121,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 		// If `file_id` is provided, fetch the file and use its key
 		let file: File | null = null;
 		if (file_id) {
-			file = await this.findOne({ _id: file_id });
+			file = await this.findOne({ _id: file_id }, options);
 			if (!file) {
 				throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 			}
