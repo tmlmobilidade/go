@@ -9,7 +9,7 @@ import { closePlanChangeModal } from '@/components/plans/change/PlanChange.modal
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { GtfsValidation, type Plan } from '@tmlmobilidade/types';
 import { useHandleUpdate, useToast } from '@tmlmobilidade/ui';
-import { fetchData, HttpResponse } from '@tmlmobilidade/utils';
+import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -85,37 +85,25 @@ export const PlanChangeContextProvider = ({ children, planId }: PropsWithChildre
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate<Plan>({
 		fetchFn: async () => {
 			if (!selectedValidationId) {
-				return new HttpResponse<Plan>({
-					data: null,
-					error: 'Selecione uma validação antes de alterar o plano.',
-					statusCode: 400,
-				});
+				useToast.error({ message: 'Selecione uma validação antes de alterar o plano.', title: 'Erro' });
+				return;
 			}
 
 			if (!planData || !allValidationsData) {
-				return new HttpResponse<Plan>({
-					data: null,
-					error: 'Dados do plano ou validações indisponíveis.',
-					statusCode: 400,
-				});
+				useToast.error({ message: 'Dados do plano ou validações indisponíveis.', title: 'Erro' });
+				return;
 			}
 
 			const selectedValidation = availableValidations.find(item => item._id === selectedValidationId) ?? allValidationsData?.find(item => item._id === selectedValidationId);
 
 			if (!selectedValidation) {
-				return new HttpResponse<Plan>({
-					data: null,
-					error: 'Validação selecionada não encontrada.',
-					statusCode: 404,
-				});
+				useToast.error({ message: 'Validação selecionada não encontrada.', title: 'Erro' });
+				return;
 			}
 
 			if (!selectedValidation.summary || selectedValidation.summary.total_errors > 0) {
-				return new HttpResponse<Plan>({
-					data: null,
-					error: 'Não é possível alterar o plano com uma validação que contém erros.',
-					statusCode: 400,
-				});
+				useToast.error({ message: 'Não é possível alterar o plano com uma validação que contém erros.', title: 'Erro' });
+				return;
 			}
 
 			return await fetchData<Plan>(
