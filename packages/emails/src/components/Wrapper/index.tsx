@@ -21,17 +21,17 @@ export function Wrapper({ children, previewMessage }: PropsWithChildren<WrapperP
 			<Head>
 				<Font
 					fallbackFontFamily="Verdana"
-					fontFamily="Lato"
+					fontFamily="Work Sans"
 					fontStyle="normal"
 					fontWeight={400}
-					webFont={{ format: 'woff2', url: 'https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/fonts/lato-normal/lato-normal.woff2' }}
+					webFont={{ format: 'woff2', url: 'https://go.tmlmobilidade.pt/auth/global/fonts/work-sans-regular.woff2' }}
 				/>
 				<Font
 					fallbackFontFamily="Verdana"
-					fontFamily="Lato"
-					fontStyle="normal"
-					fontWeight={600}
-					webFont={{ format: 'woff2', url: 'https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/fonts/lato-bold/lato-bold.woff2' }}
+					fontFamily="Work Sans"
+					fontStyle="italic"
+					fontWeight={400}
+					webFont={{ format: 'woff2', url: 'https://go.tmlmobilidade.pt/auth/global/fonts/work-sans-italic.woff2' }}
 				/>
 			</Head>
 			<Body style={styles.body}>

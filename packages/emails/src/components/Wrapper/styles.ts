@@ -18,7 +18,7 @@ const container: React.CSSProperties = {
 /* CONTENT */
 
 const content: React.CSSProperties = {
-	backgroundColor: '#EBE9E6',
+	backgroundColor: '#F6F8FA',
 	padding: '30px',
 	width: '100%',
 };

@@ -2,7 +2,7 @@
 /* IMAGE */
 
 const image: React.CSSProperties = {
-	backgroundColor: '#EBE9E6',
+	backgroundColor: '#F6F8FA',
 	borderBottom: '1px solid #FFFFFF',
 	width: '100%',
 };

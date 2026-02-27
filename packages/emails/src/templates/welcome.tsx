@@ -1,10 +1,11 @@
 /* * */
 
-import { EmailWrapper, styles } from '@/components/index.js';
+import { styles } from '@/components/index.js';
+import { Wrapper } from '@/components/Wrapper/index.js';
+import { GO_HOMEPAGE_URL } from '@/constants.js';
 import { emailProvider } from '@/email.provider.js';
 import { type SendEmailProps } from '@/types.js';
 import { Button, Hr, Link, render, Section, Text } from '@react-email/components';
-import { getAppConfig } from '@tmlmobilidade/consts';
 
 /* * */
 
@@ -20,12 +21,8 @@ export interface WelcomeTemplateProps {
 /* * */
 
 export default function WelcomeTemplate({ firstName, resetPasswordUrl }: WelcomeTemplateProps) {
-	//
-
-	const go_link = getAppConfig('auth', 'frontend_url', 'production');
-
 	return (
-		<EmailWrapper preview="Bem-vindo ao GO - Gestor de Oferta">
+		<Wrapper previewMessage="Bem-vindo ao GO - Gestor de Oferta">
 			<Section>
 				<Text style={styles.text}>
 					👋 Olá
@@ -59,7 +56,7 @@ export default function WelcomeTemplate({ firstName, resetPasswordUrl }: Welcome
 				<Text style={styles.textStyles.small}>
 					Pode aceder diretamente ao GO através do seguinte
 					{' '}
-					<Link href={go_link} style={{ color: '#0369A1', textDecoration: 'underline' }}>
+					<Link href={GO_HOMEPAGE_URL} style={{ color: '#0369A1', textDecoration: 'underline' }}>
 						link.
 					</Link>
 				</Text>
@@ -70,7 +67,7 @@ export default function WelcomeTemplate({ firstName, resetPasswordUrl }: Welcome
 					Se tiver alguma dúvida sobre como utilizar a plataforma ou encontrar qualquer dificuldade durante o processo de configuração, não hesite em contactar a nossa equipa de suporte. Estamos aqui para ajudar!
 				</Text>
 			</Section>
-		</EmailWrapper>
+		</Wrapper>
 	);
 };
 
