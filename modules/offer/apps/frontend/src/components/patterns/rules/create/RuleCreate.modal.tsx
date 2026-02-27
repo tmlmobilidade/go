@@ -4,8 +4,8 @@
 
 import { RuleCreate } from '@/components/patterns/rules/create/RuleCreate';
 import { RuleCreateContextProvider } from '@/components/patterns/rules/create/RuleCreate.context';
-import { PeriodsContextProvider } from '@/contexts/Periods.context';
-import { type ScheduleRule } from '@tmlmobilidade/types';
+import { DataProviders } from '@/providers/data-providers';
+import { type ManualRule } from '@tmlmobilidade/types';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 /* * */
@@ -14,11 +14,11 @@ const MODAL_ID = 'create-rule-modal';
 
 /* * */
 
-export const openCreateRuleModal = (agencyId: string, onSubmit: (rule: ScheduleRule) => void, initialValues?: ScheduleRule, onDelete?: () => void) => {
+export const openCreateRuleModal = (agencyId: string, onSubmit: (rule: ManualRule) => void, initialValues?: ManualRule, onDelete?: () => void) => {
 	openModal({
 		children: (
 			<MeContextProvider>
-				<PeriodsContextProvider agencyId={agencyId}>
+				<DataProviders agency_id={agencyId}>
 					<RuleCreateContextProvider
 						initialValues={initialValues}
 						onDelete={onDelete}
@@ -26,7 +26,7 @@ export const openCreateRuleModal = (agencyId: string, onSubmit: (rule: ScheduleR
 					>
 						<RuleCreate />
 					</RuleCreateContextProvider>
-				</PeriodsContextProvider>
+				</DataProviders>
 			</MeContextProvider>
 		),
 		closeOnClickOutside: false,

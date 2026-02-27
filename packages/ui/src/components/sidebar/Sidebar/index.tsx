@@ -2,7 +2,7 @@
 
 /* * */
 
-import { IconAlertTriangle, IconBuildings, IconBus, IconBusStop, IconCalendarEvent, IconClock, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBeach, IconBuildings, IconBus, IconBusStop, IconCalendarEvent, IconCalendarStar, IconClock, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 import { type JSX } from 'react';
@@ -117,11 +117,25 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 		permissions: [{ action: PermissionCatalog.all.annotations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.annotations.scope }],
 	},
 	{
-		_id: 'periods',
-		href: PAGE_ROUTES.dates.PERIODS_LIST,
+		_id: 'year_periods',
+		href: PAGE_ROUTES.dates.YEAR_PERIODS_LIST,
 		icon: <IconClock size={26} />,
 		label: 'Períodos',
-		permissions: [{ action: PermissionCatalog.all.periods.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.periods.scope }],
+		permissions: [{ action: PermissionCatalog.all.year_periods.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.year_periods.scope }],
+	},
+	{
+		_id: 'holidays',
+		href: PAGE_ROUTES.dates.HOLIDAYS_LIST,
+		icon: <IconBeach size={26} />,
+		label: 'Feriados',
+		permissions: [{ action: PermissionCatalog.all.holidays.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.holidays.scope }],
+	},
+	{
+		_id: 'events',
+		href: PAGE_ROUTES.dates.EVENTS_LIST,
+		icon: <IconCalendarStar size={26} />,
+		label: 'Eventos',
+		permissions: [{ action: PermissionCatalog.all.events.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.events.scope }],
 	},
 	{
 		_id: 'dates',
@@ -129,20 +143,20 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 		icon: <IconCalendarEvent size={26} />,
 		label: 'Calendário',
 		permissions: [
-			{ action: PermissionCatalog.all.periods.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.periods.scope },
+			{ action: PermissionCatalog.all.year_periods.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.year_periods.scope },
 			{ action: PermissionCatalog.all.annotations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.annotations.scope },
 		],
 	},
 	{
 		_id: 'fares',
-		href: PAGE_ROUTES.ticketing.FARES_LIST,
+		href: PAGE_ROUTES.offer.FARES_LIST,
 		icon: <IconTicket size={26} />,
 		label: 'Tarifas',
 		permissions: [{ action: PermissionCatalog.all.fares.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.fares.scope }],
 	},
 	{
 		_id: 'zones',
-		href: PAGE_ROUTES.ticketing.ZONES_LIST,
+		href: PAGE_ROUTES.offer.ZONES_LIST,
 		icon: <IconLayoutCollage size={26} />,
 		label: 'Zonas',
 		permissions: [{ action: PermissionCatalog.all.zones.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.zones.scope }],

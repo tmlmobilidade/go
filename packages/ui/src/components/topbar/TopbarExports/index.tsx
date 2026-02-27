@@ -25,7 +25,7 @@ export function TopbarExports() {
 	// B. Render components
 
 	return (
-		<TopbarMenu counter={fileExports.length} icon={IconCloudDown}>
+		<TopbarMenu counter={fileExports.length} icon={IconCloudDown} label="Exportações">
 			{fileExports.length === 0
 				? <TopbarMenuNoContent icon={IconCloudMinus} text="Sem exportações disponíveis" />
 				: <TopbarMenuList data={fileExports} itemComponent={({ item }) => <TopbarExportsItem fileExport={item} />} title="Exportações" />}
