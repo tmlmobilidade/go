@@ -21,6 +21,7 @@ export class PlansController {
 		// Get the Plan from the database
 
 		const planData = await plans.findById(request.params.id);
+		const originalFileId = planData.operation_file_id;
 		if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 
 		// Check if the user has permission to change the GTFS of the Plan
@@ -82,16 +83,12 @@ export class PlansController {
 				{ session: plansTransaction.getSession() },
 			);
 
-			// Check if file was created successfully
-			const createdFile = await files.findById(updateFileResult._id, { session: filesTransaction.getSession() });
-			if (!createdFile) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to create operation file');
-
-			// Delete the old operation file
-			// await files.deleteById(planData.operation_file_id, { session: filesTransaction.getSession() });
-
 			// Return the updated plan data
 			return updatedPlanData;
 		});
+
+		// Delete the old operation file
+		await files.deleteById(originalFileId);
 
 		// Send the updated plan data as the response
 		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.OK });

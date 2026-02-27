@@ -93,13 +93,13 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 	 * @param file_id - The unique identifier of the file in the database.
 	 * @returns The file with the signed URL.
 	 */
-	public override async findById(...args: Parameters<typeof MongoCollectionClass.prototype.findById>): Promise<null | WithId<File>> {
-		const file = await super.findById(...args);
+	public override async findById(id: string, options?: FindOptions): Promise<null | WithId<File>> {
+		const file = await super.findById(id, options);
 		if (!file) {
 			return null;
 		}
 
-		file.url = await this.getFileUrl({ file_id: file._id }, args[1]);
+		file.url = await this.getFileUrl({ file_id: file._id }, options);
 		return file;
 	}
 
