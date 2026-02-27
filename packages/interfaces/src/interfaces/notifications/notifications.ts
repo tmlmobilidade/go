@@ -4,7 +4,7 @@ import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { roles } from '@/interfaces/auth/roles.js';
 import { users } from '@/interfaces/auth/users.js';
 import { getAppConfig } from '@tmlmobilidade/consts';
-import { sendNotificationEmail } from '@tmlmobilidade/emails';
+import { sendGenericNotificationEmail } from '@tmlmobilidade/emails';
 import { type CreateNotificationDto, CreateNotificationSchema, type Notification, NotificationPermission, Permission, Role, UpdateNotificationDto, UpdateNotificationSchema, User } from '@tmlmobilidade/types';
 import { AsyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
@@ -76,14 +76,12 @@ class NotificationsClass extends MongoCollectionClass<Notification, CreateNotifi
 
 			// Send email if permission allows
 			if (canReceiveEmail) {
-				await sendNotificationEmail({
-					props: {
+				await sendGenericNotificationEmail({
+					data: {
 						body: baseNotification.payload.body,
 						href: baseNotification.payload.href ?? '',
 						priority: baseNotification.priority,
-						scope: baseNotification.scope,
 						title: baseNotification.payload.title,
-						topic: baseNotification.topic,
 					},
 					to: recipient.email,
 				});

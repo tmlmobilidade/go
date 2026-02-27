@@ -25,12 +25,6 @@ export default [
 		files: ['**/*.tsx', '**/*.jsx'],
 		name: 'JSX Styling for Next.js',
 		rules: {
-			// JSX Indentation and formatting
-			'@stylistic/jsx-indent': ['error', 'tab', {
-				checkAttributes: true,
-				indentLogicalExpressions: true,
-			}],
-			'@stylistic/jsx-indent-props': ['error', 'tab'],
 			'@stylistic/jsx-one-expression-per-line': 'off',
 			'@stylistic/jsx-quotes': ['error', 'prefer-double'],
 			'@stylistic/jsx-self-closing-comp': ['error', {
