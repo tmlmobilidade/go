@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { IStorageProvider, StorageFactory } from '@/providers/index.js';
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Files } from '@tmlmobilidade/files';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type CreateFileDto, CreateFileSchema, type File, type UpdateFileDto, UpdateFileSchema } from '@tmlmobilidade/types';
@@ -190,13 +190,11 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 			// C.3. Insert file record
 			result = await this.insertOne({ ...createFileDto, _id: fileId, type: mimeType }, { options });
 			await session.commitTransaction();
-		}
-		catch (error) {
+		} catch (error) {
 			await session.abortTransaction();
 			throw error;
-		}
-		finally {
-			session.endSession();
+		} finally {
+			await session.endSession();
 		}
 
 		return result;
