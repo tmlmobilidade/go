@@ -20,6 +20,7 @@ export const AgencySchema = DocumentSchema.extend({
 	public_email: z.string().email(),
 	short_name: z.string(),
 	timezone: z.string().default('Europe/Lisbon'),
+	validation_rules: z.any().nullable().default(null),
 	website_url: z.string().url(),
 });
 

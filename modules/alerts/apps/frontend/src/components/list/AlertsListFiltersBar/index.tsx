@@ -14,8 +14,8 @@ export function AlertsListFiltersBar() {
 	return (
 		<FiltersBar>
 			<AlertsListFilterAgency />
-			<AlertsListFilterReferenceType />
 			<AlertsListFilterPublishStatus />
+			<AlertsListFilterReferenceType />
 			<AlertsListFilterCause />
 			<AlertsListFilterEffect />
 			<AlertsListFilterMunicipality />

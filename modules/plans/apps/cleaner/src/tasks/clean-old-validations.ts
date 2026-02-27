@@ -84,8 +84,8 @@ export async function cleanOldValidations() {
 		const fileDeletionTimer = new Timer();
 
 		try {
-			await files.deleteById(validation.file_id);
 			await gtfsValidations.deleteById(validation._id);
+			await files.deleteById(validation.file_id);
 			Logger.success(`Deleted validation ${validation._id} and its associated file ${validation.file_id} in ${fileDeletionTimer.get()}.`);
 		}
 		catch (error) {

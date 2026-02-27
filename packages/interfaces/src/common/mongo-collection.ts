@@ -1,12 +1,12 @@
 /* * */
 
 import { type AggregationPipeline } from '@/common/aggregation-pipeline.js';
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { MongoConnector } from '@tmlmobilidade/mongo';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type UnixTimestamp } from '@tmlmobilidade/types';
-import { type AggregateOptions, type AggregationCursor, type Collection, type DeleteOptions, type DeleteResult, type Document, type Filter, type FindOptions, type IndexDescription, type InsertManyResult, type InsertOneOptions, type InsertOneResult, type MongoClientOptions, type OptionalUnlessRequiredId, type UpdateOptions, type UpdateResult, type WithId } from 'mongodb';
+import { type AggregateOptions, type AggregationCursor, type Collection, type DeleteOptions, type DeleteResult, type Document, type Filter, type FindOptions, Flatten, type IndexDescription, type InsertManyResult, type InsertOneOptions, type InsertOneResult, type MongoClientOptions, type OptionalUnlessRequiredId, type UpdateOptions, type UpdateResult, type WithId } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
@@ -65,8 +65,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 			if (process.env.NODE_ENV === 'test' && this.getCollectionIndexes().length > 0) {
 				await this.mongoCollection.createIndexes(this.getCollectionIndexes());
 			}
-		}
-		catch (error) {
+		} catch (error) {
 			throw new Error(`Error connecting to ${this.getCollectionName()}`, { cause: error });
 		}
 	}
@@ -90,12 +89,12 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		// If it is locked, then throw an error to prevent the operation.
 		if (!options?.forceIfLocked) {
 			const isLocked = await this.isLockedById(id);
-			if (isLocked) throw new HttpException(HttpStatus.FORBIDDEN, 'Document is locked and cannot be deleted');
+			if (isLocked) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'Document is locked and cannot be deleted');
 		}
 		// Perform the delete operation
 		const result = await this.deleteOne({ _id: { $eq: id } }, options);
 		// Check if the delete operation was acknowledged
-		if (!result.acknowledged) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to delete documents', result);
+		if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete documents', result);
 		// Return the result of the delete operation
 		return result;
 	}
@@ -107,7 +106,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	 */
 	public async deleteMany(filter: Filter<T>): Promise<DeleteResult> {
 		const result = await this.mongoCollection.deleteMany(filter);
-		if (!result.acknowledged) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to delete documents', result);
+		if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete documents', result);
 		return result;
 	}
 
@@ -121,11 +120,11 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		// If it is locked, then throw an error to prevent the operation.
 		if (!options?.forceIfLocked) {
 			const isLocked = await this.isLocked(filter);
-			if (isLocked) throw new HttpException(HttpStatus.FORBIDDEN, 'Document is locked and cannot be deleted');
+			if (isLocked) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'Document is locked and cannot be deleted');
 		}
 		// Perform the delete operation
 		const result = await this.mongoCollection.deleteOne(filter, options);
-		if (!result.acknowledged) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to delete document', result);
+		if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete document', result);
 		return result;
 	}
 
@@ -141,6 +140,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	 * @param key - The key to find distinct values for
 	 * @returns A promise that resolves to an array of distinct values for the given key
 	 */
+	public async distinct<Key extends keyof WithId<T>>(key: Key, filter: Filter<T>): Promise<Array<Flatten<WithId<T>[Key]>>>;
 	public async distinct<K extends keyof T>(key: K): Promise<T[K][]> {
 		return this.mongoCollection.distinct(key as string);
 	}
@@ -248,9 +248,8 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 						throw new Error('No schema defined for insert operation. This is either an internal interface error or you should pass unsafe=true to the insert operation.');
 					}
 					parsedDocument = this.createSchema.parse(newDocument) as OptionalUnlessRequiredId<T>;
-				}
-				catch (error) {
-					throw new HttpException(HttpStatus.BAD_REQUEST, error.message, { cause: error });
+				} catch (error) {
+					throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 				}
 			}
 			parsedDocuments.push(parsedDocument);
@@ -283,9 +282,8 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 				if (doc.created_by) parsedDocument.created_by = doc.created_by;
 				if (doc.updated_at) parsedDocument.updated_at = doc.updated_at;
 				if (doc.updated_by) parsedDocument.updated_by = doc.updated_by;
-			}
-			catch (error) {
-				throw new HttpException(HttpStatus.BAD_REQUEST, error.message, { cause: error });
+			} catch (error) {
+				throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 			}
 		}
 		// Add default fields if they are missing from the original document
@@ -304,12 +302,12 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		// Attempt to insert the document into the collection
 		const result = await this.mongoCollection.insertOne(parsedDocument, options);
 		// Check if the insert operation was acknowledged
-		if (!result.acknowledged) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to insert document', result);
+		if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to insert document', result);
 		// If returnResult is false, return the insert result directly
 		if (options && options.returnResult === false) return result as TReturnDocument extends true ? WithId<T> : InsertOneResult<T>;
 		// Otherwise, fetch and return the inserted document
 		const insertedDoc = await this.findOne({ _id: { $eq: result.insertedId as T['_id'] } }, options);
-		if (!insertedDoc) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to find inserted document', result);
+		if (!insertedDoc) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to find inserted document', result);
 		return insertedDoc as TReturnDocument extends true ? WithId<T> : InsertOneResult<T>;
 	}
 
@@ -371,7 +369,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		// If it is locked, then throw an error to prevent the operation.
 		if (!options?.forceIfLocked) {
 			const isLocked = await this.isLockedById(id);
-			if (isLocked) throw new HttpException(HttpStatus.FORBIDDEN, 'Document is locked and cannot be updated');
+			if (isLocked) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'Document is locked and cannot be updated');
 		}
 		// Perform the update operation
 		return this.updateOne({ _id: { $eq: id } }, updateFields, options);
@@ -394,9 +392,8 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		if (this.updateSchema) {
 			try {
 				parsedUpdateFields = this.updateSchema.parse(updateFields);
-			}
-			catch (error) {
-				throw new HttpException(HttpStatus.BAD_REQUEST, error.message, { cause: error });
+			} catch (error) {
+				throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 			}
 		}
 
@@ -405,13 +402,13 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		if (options && options.returnResults === false) return result as TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>;
 
 		if (!result.acknowledged) {
-			throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to update documents', result);
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to update documents', result);
 		}
 
 		const updated_docs = await this.findMany(filter, options);
 
 		if (!updated_docs) {
-			throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to find updated documents', result);
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to find updated documents', result);
 		}
 
 		return updated_docs as TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>;
@@ -429,16 +426,15 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		// If it is locked, then throw an error to prevent the operation.
 		if (!options?.forceIfLocked) {
 			const isLocked = await this.isLocked(filter);
-			if (isLocked) throw new HttpException(HttpStatus.FORBIDDEN, 'Document is locked and cannot be updated');
+			if (isLocked) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'Document is locked and cannot be updated');
 		}
 		// Perform the update operation
 		let parsedUpdateFields = updateFields;
 		if (this.updateSchema) {
 			try {
 				parsedUpdateFields = this.updateSchema.parse(updateFields);
-			}
-			catch (error) {
-				throw new HttpException(HttpStatus.BAD_REQUEST, error.message, { cause: error });
+			} catch (error) {
+				throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 			}
 		}
 
@@ -447,12 +443,12 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		if (options && options.returnResult === false) return result as TReturnDocument extends true ? WithId<T> : UpdateResult<T>;
 
 		if (!result.acknowledged) {
-			throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to update documents', result);
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to update documents', result);
 		}
 
 		const updated_doc = await this.findOne(filter, options);
 		if (!updated_doc) {
-			throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to find updated document', result);
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to find updated document', result);
 		}
 
 		return updated_doc as TReturnDocument extends true ? WithId<T> : UpdateResult<T>;

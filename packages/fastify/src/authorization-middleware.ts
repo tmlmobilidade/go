@@ -1,7 +1,7 @@
 /* * */
 
 import { FastifyReply, type FastifyRequest } from '@/fastify-service.js';
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/interfaces';
 import { type ActionsOf, type Organization, type Permission, PermissionCatalog, type User } from '@tmlmobilidade/types';
 
@@ -34,7 +34,7 @@ export function authorizationMiddleware<S extends Permission['scope']>(scope?: S
 		if (!sessionToken) {
 			return reply
 				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
-				.send({ data: 'Session token is missing', error: null, statusCode: HttpStatus.UNAUTHORIZED });
+				.send({ data: 'Session token is missing', error: null, statusCode: HTTP_STATUS.UNAUTHORIZED });
 		}
 
 		//
@@ -50,18 +50,17 @@ export function authorizationMiddleware<S extends Permission['scope']>(scope?: S
 			if (!userData || !permissionsData || !organizationData) {
 				return reply
 					.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
-					.send({ data: 'Session token is missing', error: null, statusCode: HttpStatus.UNAUTHORIZED });
+					.send({ data: 'Session token is missing', error: null, statusCode: HTTP_STATUS.UNAUTHORIZED });
 			}
 
 			request.me = userData;
 			request.permissions = permissionsData;
 			request.organization = organizationData;
-		}
-		catch (error) {
+		} catch (error) {
 			console.error('Authorization Middleware Error:', error);
 			return reply
 				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
-				.send({ data: 'Session token is missing', error: null, statusCode: HttpStatus.UNAUTHORIZED });
+				.send({ data: 'Session token is missing', error: null, statusCode: HTTP_STATUS.UNAUTHORIZED });
 		}
 
 		//
@@ -76,7 +75,7 @@ export function authorizationMiddleware<S extends Permission['scope']>(scope?: S
 			? permissionChecks.every(Boolean) // all must be true
 			: permissionChecks.some(Boolean); // at least one must be true
 
-		if (!isAllowed) throw new HttpException(HttpStatus.FORBIDDEN, `Insufficient permissions | User: ${request.me._id} | Scope: "${scope}" | Actions: [${actions.join(',')}]`);
+		if (!isAllowed) throw new HttpException(HTTP_STATUS.FORBIDDEN, `Insufficient permissions | User: ${request.me._id} | Scope: "${scope}" | Actions: [${actions.join(',')}]`);
 
 		//
 	};

@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { type Metric } from '@tmlmobilidade/types';
@@ -143,7 +143,7 @@ export class MetricsController {
 			const metricDocs = (await metrics.findMany(query)) as Metric[];
 
 			if (!metricDocs || metricDocs.length === 0) {
-				throw new HttpException(HttpStatus.NOT_FOUND, 'Metric not found');
+				throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Metric not found');
 			}
 
 			// Apply date filtering
@@ -156,12 +156,12 @@ export class MetricsController {
 			reply.send({
 				data: filteredDocs,
 				error: null,
-				statusCode: HttpStatus.OK,
+				statusCode: HTTP_STATUS.OK,
 			});
 		}
 		catch (error) {
 			console.error(error);
-			throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to retrieve metric');
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to retrieve metric');
 		}
 	}
 }

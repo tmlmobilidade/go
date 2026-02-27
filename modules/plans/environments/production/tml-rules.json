@@ -15,7 +15,7 @@
 			"severity": "ignore"
 		},
 		"agency_name": {
-			"options": ["Área Metropolitana de Lisboa", "Carris", "Metropolitano de Lisboa", "Comboios de Portugal", "Transtejo / Soflusa", "Transportes Sul do Tejo", "Rodoviária de Lisboa", "Soflusa", "Transportes Coletivos do Barreiro", "Vimeca Transportes", "Scotturb", "ID/JJ/HLM", "Isidoro Duarte", "Barraqueiro Transportes", "Joaquim Jerónimo", "Fertagus", "Metro Transportes do Sul", "Henrique Leonardo da Mota", "Cascais Próxima", "Portal VIVA", "Rodoviária do Tejo", "Câmara Municipal de Lisboa", "Viação Alvorada", "Alsa Todi", "Município de Oeiras", "Municipio de Setúbal"],
+			"options": ["Área Metropolitana de Lisboa", "Carris", "Metropolitano de Lisboa", "Comboios de Portugal", "TTSL - Transtejo Soflusa", "Transportes Sul do Tejo", "Rodoviária de Lisboa", "Soflusa", "Transportes Coletivos do Barreiro", "Vimeca Transportes", "Scotturb", "ID/JJ/HLM", "Isidoro Duarte", "Barraqueiro Transportes", "Joaquim Jerónimo", "Fertagus", "Metro Transportes do Sul", "Henrique Leonardo da Mota", "Cascais Próxima", "Portal VIVA", "Rodoviária do Tejo", "Câmara Municipal de Lisboa", "Viação Alvorada", "Alsa Todi", "Município de Oeiras", "Municipio de Setúbal"],
 			"severity": "warning"
 		},
 		"agency_name_id_match": {
@@ -181,19 +181,32 @@
 			"severity": "warning"
 		}
 	},
+	"fare_media": {
+		"_file": "ignore",
+		"fare_id": {
+			"severity": "error"
+		},
+		"fare_media_name": {
+			"severity": "warning"
+		},
+		"fare_media_type": {
+			"options": ["0", "1", "2", "3", "4"],
+			"severity": "error"
+		}
+	},
 	"fare_rules": {
 		"_file": "warning",
 		"contains_id": {
-			"severity": "forbidden"
+			"severity": "ignore"
 		},
 		"destination_id": {
-			"severity": "forbidden"
+			"severity": "ignore"
 		},
 		"fare_id": {
 			"severity": "error"
 		},
 		"origin_id": {
-			"severity": "forbidden"
+			"severity": "ignore"
 		},
 		"route_id": {
 			"severity": "error"
@@ -304,6 +317,21 @@
 		},
 		"traversal_time": {
 			"severity": "ignore"
+		}
+	},
+	"rider_categories": {
+		"_file": "ignore",
+		"eligibility_url": {
+			"severity": "warning"
+		},
+		"is_default_fare_category": {
+			"severity": "error"
+		},
+		"rider_category_id": {
+			"severity": "error"
+		},
+		"rider_category_name": {
+			"severity": "error"
 		}
 	},
 	"routes": {
@@ -593,6 +621,9 @@
 		"pattern_id": {
 			"severity": "error"
 		},
+		"pattern_id_format": {
+			"severity": "error"
+		},
 		"route_id": {
 			"severity": "error"
 		},
@@ -611,6 +642,9 @@
 		"trip_id": {
 			"severity": "error"
 		},
+		"trip_id_limit_characters": {
+			"severity": "error"
+		},
 		"trip_short_name": {
 			"severity": "ignore"
 		},
@@ -619,7 +653,7 @@
 		}
 	},
 	"vehicles": {
-		"_file": "warning",
+		"_file": "error",
 		"agency_id": {
 			"severity": "error"
 		},
@@ -642,7 +676,7 @@
 			"severity": "error"
 		},
 		"emission": {
-			"options": ["1", "2", "3", "4", "5", "6"],
+			"options": ["0", "1", "2", "3", "4", "5", "6"],
 			"severity": "error"
 		},
 		"external_sound": {
@@ -662,7 +696,7 @@
 			"severity": "error"
 		},
 		"license_plate": {
-			"severity": "error"
+			"severity": "warning"
 		},
 		"lowered_floor": {
 			"options": ["0", "1", "2"],
@@ -709,14 +743,15 @@
 			"severity": "error"
 		},
 		"typology": {
-			"severity": "error"
+			"options": ["0.1", "0.2", "0.3", "1.1", "1.2", "1.3", "2.1", "2.2", "2.3", "3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "4.1", "4.2", "4.3", "7.1", "7.2", "7.3"],
+			"severity": "warning"
 		},
 		"vehicle_id": {
 			"severity": "error"
 		},
 		"video_surveillance": {
 			"options": ["0", "1"],
-			"severity": "error"
+			"severity": "warning"
 		},
 		"wheelchair": {
 			"options": ["0", "1"],
