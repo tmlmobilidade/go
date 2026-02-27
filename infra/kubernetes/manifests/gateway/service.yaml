@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+  namespace: go-poc
+  labels:
+    app: gateway
+    app.kubernetes.io/name: gateway
+    app.kubernetes.io/part-of: go-poc
+spec:
+  # ClusterIP: the Service is only reachable inside the cluster.
+  # External traffic is routed here via the Ingress below.
+  type: ClusterIP
+  selector:
+    app: gateway
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
