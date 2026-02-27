@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, holidays } from '@tmlmobilidade/interfaces';
 import { type CreateHolidayDto, type Holiday, PermissionCatalog, type UpdateHolidayDto } from '@tmlmobilidade/types';
@@ -27,7 +27,7 @@ export class HolidaysController {
 		// If no permission found, deny access
 
 		if (!userHolidayPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create holidays');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create holidays');
 		}
 
 		//
@@ -42,7 +42,7 @@ export class HolidaysController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create holidays for these agencies. You must have permission for all agencies involved.');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create holidays for these agencies. You must have permission for all agencies involved.');
 		}
 
 		//
@@ -53,7 +53,7 @@ export class HolidaysController {
 		//
 		// Send the response
 
-		reply.send({ data: newHoliday, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: newHoliday, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -68,7 +68,7 @@ export class HolidaysController {
 		const holiday = await holidays.findById(id);
 
 		if (!holiday) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Holiday not found');
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
 		}
 
 		//
@@ -80,7 +80,7 @@ export class HolidaysController {
 		// If no permission found, deny access
 
 		if (!userHolidayPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete holidays');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete holidays');
 		}
 
 		//
@@ -95,14 +95,14 @@ export class HolidaysController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete this holiday. You must have permission for all agencies involved.');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this holiday. You must have permission for all agencies involved.');
 		}
 
 		//
 
 		await holidays.deleteById(id);
 
-		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -122,7 +122,7 @@ export class HolidaysController {
 		// If no permission found, deny access
 
 		if (!userHolidayPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read holidays');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read holidays');
 		}
 
 		//
@@ -145,7 +145,7 @@ export class HolidaysController {
 
 		const allHolidays = await holidays.findMany(queryFilters, { sort: { created_at: -1 } });
 
-		return reply.send({ data: allHolidays, error: null, statusCode: HttpStatus.OK });
+		return reply.send({ data: allHolidays, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -163,7 +163,7 @@ export class HolidaysController {
 
 		const holidayData = await holidays.findById(request.params.id);
 
-		if (!holidayData) throw new HttpException(HttpStatus.NOT_FOUND, 'Holiday not found');
+		if (!holidayData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
 
 		//
 		// Get the resource permissions for holidays for the current user.
@@ -174,7 +174,7 @@ export class HolidaysController {
 		// If no permission found, deny access
 
 		if (!userHolidayPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read holidays');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read holidays');
 		}
 
 		//
@@ -189,7 +189,7 @@ export class HolidaysController {
 		});
 
 		if (!hasPermissionForAnyAgency) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read this holiday');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this holiday');
 		}
 
 		//
@@ -198,7 +198,7 @@ export class HolidaysController {
 		return reply.send({
 			data: holidayData,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//
@@ -217,7 +217,7 @@ export class HolidaysController {
 
 		const holidayData = await holidays.findById(request.params.id);
 
-		if (!holidayData) throw new HttpException(HttpStatus.NOT_FOUND, 'Holiday not found');
+		if (!holidayData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
 
 		//
 		// Get the resource permissions for holidays for the current user.
@@ -228,7 +228,7 @@ export class HolidaysController {
 		// If no permission found, deny access
 
 		if (!userHolidayPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to lock/unlock holidays');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock holidays');
 		}
 
 		//
@@ -243,15 +243,15 @@ export class HolidaysController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: toggle lock holiday. You must have permission for all agencies involved.');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock holiday. You must have permission for all agencies involved.');
 		}
 
 		// If authorized, toggle the lock status of the holiday
 		await holidays.toggleLockById(request.params.id);
 		const foundHoliday = await holidays.findById(request.params.id);
-		if (!foundHoliday) throw new HttpException(HttpStatus.NOT_FOUND, 'Holiday not found');
+		if (!foundHoliday) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
 
-		return reply.send({ data: foundHoliday, error: null, statusCode: HttpStatus.OK });
+		return reply.send({ data: foundHoliday, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -269,7 +269,7 @@ export class HolidaysController {
 
 		const holidayData = await holidays.findById(request.params.id);
 
-		if (!holidayData) throw new HttpException(HttpStatus.NOT_FOUND, 'Holiday not found');
+		if (!holidayData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
 
 		//
 		// Get the resource permissions for holidays for the current user.
@@ -280,7 +280,7 @@ export class HolidaysController {
 		// If no permission found, deny access
 
 		if (!userHolidayPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update holidays');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update holidays');
 		}
 
 		//
@@ -295,7 +295,7 @@ export class HolidaysController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update this holiday. You must have permission for all agencies involved.');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this holiday. You must have permission for all agencies involved.');
 		}
 
 		//
@@ -309,7 +309,7 @@ export class HolidaysController {
 		reply.send({
 			data: updatedHoliday,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//

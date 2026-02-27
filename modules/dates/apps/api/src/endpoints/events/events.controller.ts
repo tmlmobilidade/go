@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { events, type Filter } from '@tmlmobilidade/interfaces';
 import { type CreateEventDto, type Event, PermissionCatalog, type UpdateEventDto } from '@tmlmobilidade/types';
@@ -27,7 +27,7 @@ export class EventsController {
 		// If no permission found, deny access
 
 		if (!userEventPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create events');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create events');
 		}
 
 		//
@@ -42,7 +42,7 @@ export class EventsController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create events for these agencies. You must have permission for all agencies involved.');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create events for these agencies. You must have permission for all agencies involved.');
 		}
 
 		//
@@ -53,7 +53,7 @@ export class EventsController {
 		//
 		// Send the response
 
-		reply.send({ data: newEvent, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: newEvent, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -68,7 +68,7 @@ export class EventsController {
 		const event = await events.findById(id);
 
 		if (!event) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Event not found');
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
 		}
 
 		//
@@ -80,7 +80,7 @@ export class EventsController {
 		// If no permission found, deny access
 
 		if (!userEventPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete events');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete events');
 		}
 
 		//
@@ -95,14 +95,14 @@ export class EventsController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete this event. You must have permission for all agencies involved.');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this event. You must have permission for all agencies involved.');
 		}
 
 		//
 
 		await events.deleteById(id);
 
-		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -122,7 +122,7 @@ export class EventsController {
 		// If no permission found, deny access
 
 		if (!userEventPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read events');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read events');
 		}
 
 		//
@@ -145,7 +145,7 @@ export class EventsController {
 
 		const allEvents = await events.findMany(queryFilters, { sort: { created_at: -1 } });
 
-		return reply.send({ data: allEvents, error: null, statusCode: HttpStatus.OK });
+		return reply.send({ data: allEvents, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -163,7 +163,7 @@ export class EventsController {
 
 		const eventData = await events.findById(request.params.id);
 
-		if (!eventData) throw new HttpException(HttpStatus.NOT_FOUND, 'Event not found');
+		if (!eventData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
 
 		//
 		// Get the resource permissions for events for the current user.
@@ -174,7 +174,7 @@ export class EventsController {
 		// If no permission found, deny access
 
 		if (!userEventPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read events');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read events');
 		}
 
 		//
@@ -189,7 +189,7 @@ export class EventsController {
 		});
 
 		if (!hasPermissionForAnyAgency) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read this event');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this event');
 		}
 
 		//
@@ -198,7 +198,7 @@ export class EventsController {
 		return reply.send({
 			data: eventData,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//
@@ -217,7 +217,7 @@ export class EventsController {
 
 		const eventData = await events.findById(request.params.id);
 
-		if (!eventData) throw new HttpException(HttpStatus.NOT_FOUND, 'Event not found');
+		if (!eventData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
 
 		//
 		// Get the resource permissions for events for the current user.
@@ -228,7 +228,7 @@ export class EventsController {
 		// If no permission found, deny access
 
 		if (!userEventPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to lock/unlock events');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock events');
 		}
 
 		//
@@ -243,15 +243,15 @@ export class EventsController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: toggle lock event. You must have permission for all agencies involved.');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock event. You must have permission for all agencies involved.');
 		}
 
 		// If authorized, toggle the lock status of the event
 		await events.toggleLockById(request.params.id);
 		const foundEvent = await events.findById(request.params.id);
-		if (!foundEvent) throw new HttpException(HttpStatus.NOT_FOUND, 'Event not found');
+		if (!foundEvent) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
 
-		return reply.send({ data: foundEvent, error: null, statusCode: HttpStatus.OK });
+		return reply.send({ data: foundEvent, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -269,7 +269,7 @@ export class EventsController {
 
 		const eventData = await events.findById(request.params.id);
 
-		if (!eventData) throw new HttpException(HttpStatus.NOT_FOUND, 'Event not found');
+		if (!eventData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
 
 		//
 		// Get the resource permissions for events for the current user.
@@ -280,7 +280,7 @@ export class EventsController {
 		// If no permission found, deny access
 
 		if (!userEventPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update events');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update events');
 		}
 
 		//
@@ -295,7 +295,7 @@ export class EventsController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update this event. You must have permission for all agencies involved.');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this event. You must have permission for all agencies involved.');
 		}
 
 		//
@@ -309,7 +309,7 @@ export class EventsController {
 		reply.send({
 			data: updatedEvent,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//
