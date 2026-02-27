@@ -4,7 +4,7 @@
 
 import { Fieldset, NumberInput as MantineNumberInput } from '@mantine/core';
 import { IconWorldLatitude, IconWorldLongitude } from '@tabler/icons-react';
-import { type ClipboardEvent, useCallback, useEffect, useState } from 'react';
+import { type ClipboardEvent, useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
 
@@ -84,8 +84,6 @@ export function CoordinatesInput(props: CoordinatesInputProps) {
 	//
 	// A. Setup variables
 
-	const { onChange } = props;
-
 	const [latitudeValue, setLatitudeValue] = useState<number | string>();
 	const [longitudeValue, setLongitudeValue] = useState<number | string>();
 
@@ -108,19 +106,19 @@ export function CoordinatesInput(props: CoordinatesInputProps) {
 
 	useEffect(() => {
 		// Skip if onChange is not provided
-		if (!onChange) return;
+		if (!props.onChange) return;
 		// If input values are null or undefined, call onChange with null
 		if (latitudeValue === undefined || latitudeValue === null) return;
 		if (longitudeValue === undefined || longitudeValue === null) return;
 		// Try to transform the value into a valid coordinates array
 		const coordinates: [number, number] = [Number(latitudeValue), Number(longitudeValue)];
-		onChange(coordinates);
-	}, [latitudeValue, longitudeValue, onChange]);
+		props.onChange(coordinates);
+	}, [latitudeValue, longitudeValue]);
 
 	//
 	// C. Handle actions
 
-	const handlePasteCoordinates = useCallback((event: ClipboardEvent<HTMLInputElement>) => {
+	const handlePasteCoordinates = (event: ClipboardEvent<HTMLInputElement>) => {
 		const pastedText = event.clipboardData.getData('text').trim();
 		if (!pastedText) return;
 
@@ -146,7 +144,7 @@ export function CoordinatesInput(props: CoordinatesInputProps) {
 
 		setLatitudeValue(firstValue);
 		setLongitudeValue(secondValue);
-	}, []);
+	};
 
 	// const handlePaste = useCallback(
 	// 	(event: React.ClipboardEvent<HTMLInputElement>) => {
