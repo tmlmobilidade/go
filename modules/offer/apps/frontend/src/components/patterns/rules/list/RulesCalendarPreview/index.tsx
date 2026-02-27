@@ -6,8 +6,8 @@ import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { IconArrowBarToLeft, IconArrowBarToRight } from '@tabler/icons-react';
 import { buildAffectedDaysDetails, calendarKey, CalendarKey, Dates, datesFromCalendarKey, Formats } from '@tmlmobilidade/dates';
-import { CalendarEvent, ScheduleRule } from '@tmlmobilidade/types';
-import { BusinessPeriodsTimepoints, CloseButton, Divider, EventsCalendar, Pane, Section, Surface, Text } from '@tmlmobilidade/ui';
+import { CalendarEvent, HHMM, ScheduleRule } from '@tmlmobilidade/types';
+import { CloseButton, DayPeriodsTimepoints, Divider, EventsCalendar, Pane, Section, Surface, Text } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -103,7 +103,7 @@ export function RulesCalendarPreview({ rules }: RulesCalendarPreviewProps) {
 
 			{/* Main Content */}
 			<div className={styles.mainContent}>
-				<Pane header={[<RulesCalendarPreviewHeader />]}>
+				<Pane header={[<RulesCalendarPreviewHeader key="header" />]}>
 					<EventsCalendar
 						additionalEvents={calendarEvents}
 						initialView="year"
@@ -134,7 +134,7 @@ export function RulesCalendarPreview({ rules }: RulesCalendarPreviewProps) {
 									</Text>
 									<Divider />
 
-									<BusinessPeriodsTimepoints timepoints={selectedDayDetails.finalTimePoints} />
+									<DayPeriodsTimepoints timepoints={selectedDayDetails.finalTimePoints as HHMM[]} />
 								</Section>
 							</Surface>
 

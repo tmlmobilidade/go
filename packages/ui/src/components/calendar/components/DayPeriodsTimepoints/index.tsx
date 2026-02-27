@@ -3,35 +3,35 @@
 /* * */
 
 import { IconMoon, IconSun, IconSunset } from '@tabler/icons-react';
-import { BUSINESS_PERIOD_LABELS, BusinessPeriod, HHMM } from '@tmlmobilidade/types';
+import { groupTimesByDayPeriod } from '@tmlmobilidade/dates';
+import { DAY_PERIOD_LABELS, DayPeriod, HHMM } from '@tmlmobilidade/types';
 import React, { JSX } from 'react';
 
 import styles from './styles.module.css';
 
 import { Text } from '../../../display';
 import { Section } from '../../../layout';
-import { groupTimesByPeriod } from '../../utils/businessPeriods';
 import { TimeChip } from '../TimeChip';
 
 /* * */
 
-interface BusinessPeriodType {
+interface DayPeriodType {
 	icon: JSX.Element
-	key: BusinessPeriod
+	key: DayPeriod
 	title: string
 }
 
-const BUSINESS_PERIODS: BusinessPeriodType[] = [
-	{ icon: <IconSun size={14} />, key: 'PPM', title: BUSINESS_PERIOD_LABELS.PPM.long_with_time },
-	{ icon: <IconSun size={14} style={{ opacity: 0.7 }} />, key: 'CD', title: BUSINESS_PERIOD_LABELS.CD.long_with_time },
-	{ icon: <IconSunset size={14} style={{ opacity: 0.7 }} />, key: 'PPT', title: BUSINESS_PERIOD_LABELS.PPT.long_with_time },
-	{ icon: <IconMoon size={14} />, key: 'N', title: BUSINESS_PERIOD_LABELS.N.long_with_time },
-	{ icon: <IconMoon size={14} style={{ opacity: 0.7 }} />, key: 'M', title: BUSINESS_PERIOD_LABELS.M.long_with_time },
+const DAY_PERIODS: DayPeriodType[] = [
+	{ icon: <IconSun size={14} />, key: 'PPM', title: DAY_PERIOD_LABELS.PPM.long_with_time },
+	{ icon: <IconSun size={14} style={{ opacity: 0.7 }} />, key: 'CD', title: DAY_PERIOD_LABELS.CD.long_with_time },
+	{ icon: <IconSunset size={14} style={{ opacity: 0.7 }} />, key: 'PPT', title: DAY_PERIOD_LABELS.PPT.long_with_time },
+	{ icon: <IconMoon size={14} />, key: 'N', title: DAY_PERIOD_LABELS.N.long_with_time },
+	{ icon: <IconMoon size={14} style={{ opacity: 0.7 }} />, key: 'M', title: DAY_PERIOD_LABELS.M.long_with_time },
 ];
 
 /* * */
 
-interface BusinessPeriodsTimepointsProps {
+interface DayPeriodsTimepointsProps {
 	children?: (time: string) => React.ReactNode
 	onRemove?: (time: string) => void
 	timepoints?: HHMM[]
@@ -40,13 +40,13 @@ interface BusinessPeriodsTimepointsProps {
 
 /* * */
 
-export function BusinessPeriodsTimepoints({ children, onRemove, timepoints = [], variant = 'compact' }: BusinessPeriodsTimepointsProps) {
+export function DayPeriodsTimepoints({ children, onRemove, timepoints = [], variant = 'compact' }: DayPeriodsTimepointsProps) {
 	//
 
 	//
 	// A. Setup variables
 
-	const groupedTimePoints = groupTimesByPeriod(timepoints);
+	const groupedTimePoints = groupTimesByDayPeriod(timepoints);
 
 	//
 	// B. Render components
@@ -54,7 +54,7 @@ export function BusinessPeriodsTimepoints({ children, onRemove, timepoints = [],
 	if (variant === 'long') {
 		return (
 			<Section gap="md" padding="none">
-				{BUSINESS_PERIODS.map(period => (
+				{DAY_PERIODS.map(period => (
 					<Section key={period.key} gap="sm" padding="none">
 						<Text c="var(--color-system-text-200)" className={styles.longTitle} size="xs">
 							{period.icon} {period.title}
@@ -79,7 +79,7 @@ export function BusinessPeriodsTimepoints({ children, onRemove, timepoints = [],
 
 	return (
 		<Section gap="xs" padding="none">
-			{BUSINESS_PERIODS.filter(p => groupedTimePoints[p.key].length > 0).map(period => (
+			{DAY_PERIODS.filter(p => groupedTimePoints[p.key].length > 0).map(period => (
 				<Section key={period.key} alignItems="center" flexDirection="row" gap="xs" padding="none">
 					<Text className={styles.compactTitle} size="xs">
 						{period.icon} {period.key}

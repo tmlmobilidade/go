@@ -5,7 +5,7 @@
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { IconArrowRight, IconCalendarCancel, IconCalendarCheck } from '@tabler/icons-react';
 import { ManualRule, ScheduleRule } from '@tmlmobilidade/types';
-import { BusinessPeriodsTimepoints, IconButton, Section, Text } from '@tmlmobilidade/ui';
+import { DayPeriodsTimepoints, IconButton, Section, Text } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -51,7 +51,7 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 					<Text className={styles.timesCount}>{times.length} {times.length > 1 ? 'horários' : 'horário'}</Text>
 				</Section>
 
-				<BusinessPeriodsTimepoints timepoints={times} variant="compact" />
+				<DayPeriodsTimepoints timepoints={times} variant="compact" />
 			</Section>
 
 			<IconButton

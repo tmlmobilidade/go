@@ -3,7 +3,8 @@
 /* * */
 
 import { IconPlus } from '@tabler/icons-react';
-import { BusinessPeriodsTimepoints, Button, Section, TextInput } from '@tmlmobilidade/ui';
+import { HHMM } from '@tmlmobilidade/types';
+import { Button, DayPeriodsTimepoints, Section, TextInput } from '@tmlmobilidade/ui';
 import { KeyboardEvent, useState } from 'react';
 
 /* * */
@@ -102,7 +103,7 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 
 			{/* Periods Layout */}
 			{value.length > 0 && (
-				<BusinessPeriodsTimepoints onRemove={handleRemove} timepoints={value} variant="long" />
+				<DayPeriodsTimepoints onRemove={handleRemove} timepoints={value as HHMM[]} variant="long" />
 			)}
 		</Section>
 	);

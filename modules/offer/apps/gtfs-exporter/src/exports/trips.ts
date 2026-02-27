@@ -1,7 +1,7 @@
 import { type GtfsV29ExportConfig } from '@/types.js';
 import { ServiceId, type ServiceRegistry } from '@/utils/service-registry.js';
-import { buildAffectedDaysDetails, calendarWeekday, Dates, datesFromCalendarKey, getActivePeriodId, resolveBusinessPeriod, yyyymmddToKey } from '@tmlmobilidade/dates';
-import { BusinessPeriod, GtfsBikesAllowed, GtfsTMLTrip, GtfsWheelchairBoarding, type HHMM, hhmm, type IsoWeekday, type OperationalDate, type Pattern, type Period, type Route } from '@tmlmobilidade/types';
+import { buildAffectedDaysDetails, calendarWeekday, Dates, datesFromCalendarKey, getActivePeriodId, resolveDayPeriod, yyyymmddToKey } from '@tmlmobilidade/dates';
+import { DayPeriod, GtfsBikesAllowed, GtfsTMLTrip, GtfsWheelchairBoarding, type HHMM, hhmm, type IsoWeekday, type OperationalDate, type Pattern, type Period, type Route } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -68,7 +68,7 @@ export interface TripSchedule {
 	timepoint: HHMM
 	weekdays: IsoWeekday[]
 	period_ids: string[]
-	business_period: BusinessPeriod
+	day_period: DayPeriod
 }
 
 /**
@@ -154,7 +154,7 @@ export async function exportTripsForPattern(
 			}
 
 			tripSchedules.push({
-				business_period: resolveBusinessPeriod(timepointHHMM),
+				day_period: resolveDayPeriod(timepointHHMM),
 				period_ids: Array.from(periodIdsSet),
 				service_id,
 				timepoint: timepointHHMM,

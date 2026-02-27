@@ -1,6 +1,6 @@
 import { Period, StopsParameter } from '@tmlmobilidade/types';
 
-import { buildBusinessPeriodsPart, buildPeriodsPart, buildWeekdaysPart } from './common.js';
+import { buildDayPeriodsPart, buildPeriodsPart, buildWeekdaysPart } from './common.js';
 
 /**
  * Human-readable summary for a stops parameter.
@@ -14,7 +14,7 @@ export interface StopsParameterSummary {
 
 /**
  * Builds human-readable summaries of a stops parameter.
- * Currently uses only business periods (day_periods).
+ * Currently uses only day periods (day_periods).
  */
 export function buildParameterSummary(
 	parameter: StopsParameter,
@@ -47,8 +47,8 @@ function buildParameterSummaryShort(
 		return 'Configuração padrão';
 	}
 
-	const businessDayPart = buildBusinessPeriodsPart(parameter, { mode: 'short' });
-	if (businessDayPart) parts.push(businessDayPart);
+	const dayPeriodsPart = buildDayPeriodsPart(parameter, { mode: 'short' });
+	if (dayPeriodsPart) parts.push(dayPeriodsPart);
 
 	const periodPart = buildPeriodsPart(parameter, options, { mode: 'short' });
 	if (periodPart) parts.push(periodPart);
@@ -73,11 +73,11 @@ function buildParameterSummaryLong(
 		return 'Configuração padrão';
 	}
 
-	const businessDayPart = buildBusinessPeriodsPart(parameter, { mode: 'long' });
+	const dayPeriodsPart = buildDayPeriodsPart(parameter, { mode: 'long' });
 
 	const periodPart = buildPeriodsPart(parameter, options, { mode: 'short' });
 
 	const weekdayPart = buildWeekdaysPart(parameter, { mode: 'short' });
 
-	return `${businessDayPart}, ${periodPart} · ${weekdayPart}`;
+	return `${dayPeriodsPart}, ${periodPart} · ${weekdayPart}`;
 }

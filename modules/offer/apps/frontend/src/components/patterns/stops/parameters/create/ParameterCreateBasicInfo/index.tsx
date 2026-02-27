@@ -3,7 +3,7 @@
 /* * */
 
 import { useParameterCreateContext } from '@/components/patterns/stops/parameters/create/ParameterCreate.context';
-import { ParameterCreateBusinessPeriod } from '@/components/patterns/stops/parameters/create/ParameterCreateBusinessPeriod';
+import { ParameterCreateDayPeriod } from '@/components/patterns/stops/parameters/create/ParameterCreateDayPeriod';
 import { ParameterCreatePeriods } from '@/components/patterns/stops/parameters/create/ParameterCreatePeriods';
 import { ParameterCreateTable } from '@/components/patterns/stops/parameters/create/ParameterCreateTable';
 import { ParameterCreateVehicleType } from '@/components/patterns/stops/parameters/create/ParameterCreateVehicleType';
@@ -57,7 +57,7 @@ export function ParameterCreateBasicInfo() {
 						<Divider />
 						<ParameterCreateWeekdays />
 						<Divider />
-						<ParameterCreateBusinessPeriod />
+						<ParameterCreateDayPeriod />
 					</div>
 				</>
 

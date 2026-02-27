@@ -6,7 +6,7 @@ import { IconCalendarCancel, IconCalendarCheck } from '@tabler/icons-react';
 import { buildRuleSummary } from '@tmlmobilidade/dates';
 import { DayRuleDetail } from '@tmlmobilidade/dates/dist/calendar/rules/preview/types';
 import { HHMM, ScheduleRule } from '@tmlmobilidade/types';
-import { BusinessPeriodsTimepoints, Section, Text, TimeChip } from '@tmlmobilidade/ui';
+import { DayPeriodsTimepoints, Section, Text, TimeChip } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -117,7 +117,7 @@ export function RulesGroup({ excludedTimePoints, includeRules, kind, rules }: Ru
 								</Text>
 							</Section>
 
-							<BusinessPeriodsTimepoints timepoints={allTimePoints as HHMM[]} variant="compact">
+							<DayPeriodsTimepoints timepoints={allTimePoints as HHMM[]} variant="compact">
 								{(time) => {
 									// For include rules, check if this time was excluded by another rule
 									const excludedByRule = (kind === 'include' || kind === 'replacement') && excludedTimePoints?.get(time);
@@ -135,7 +135,7 @@ export function RulesGroup({ excludedTimePoints, includeRules, kind, rules }: Ru
 										/>
 									);
 								}}
-							</BusinessPeriodsTimepoints>
+							</DayPeriodsTimepoints>
 						</Section>
 					</div>
 				);

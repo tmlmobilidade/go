@@ -1,16 +1,16 @@
 import { hhmm, type HHMM } from '@/dates/common.js';
 import { z } from 'zod';
 
-export const BusinessPeriodsValues = ['PPM', 'CD', 'PPT', 'N', 'M'] as const;
-export const BusinessPeriodSchema = z.enum(BusinessPeriodsValues);
-export type BusinessPeriod = z.infer<typeof BusinessPeriodSchema>;
+export const DayPeriodsValues = ['PPM', 'CD', 'PPT', 'N', 'M'] as const;
+export const DayPeriodSchema = z.enum(DayPeriodsValues);
+export type DayPeriod = z.infer<typeof DayPeriodSchema>;
 
-export interface BusinessPeriodTimeRange {
+export interface DayPeriodTimeRange {
 	end: HHMM
 	start: HHMM
 }
 
-export const BUSINESS_PERIOD_TIME_RANGES: Record<BusinessPeriod, BusinessPeriodTimeRange> = {
+export const DAY_PERIOD_TIME_RANGES: Record<DayPeriod, DayPeriodTimeRange> = {
 	CD: { end: hhmm('15:59'), start: hhmm('10:00') },
 	M: { end: hhmm('05:59'), start: hhmm('00:00') },
 	N: { end: hhmm('23:59'), start: hhmm('20:00') },
@@ -18,7 +18,7 @@ export const BUSINESS_PERIOD_TIME_RANGES: Record<BusinessPeriod, BusinessPeriodT
 	PPT: { end: hhmm('19:59'), start: hhmm('16:00') },
 };
 
-const BUSINESS_PERIOD_LABEL_BASE: Record<BusinessPeriod, { long: string, short: string }> = {
+const DAY_PERIOD_LABEL_BASE: Record<DayPeriod, { long: string, short: string }> = {
 	CD: { long: 'Corpo do Dia', short: 'CD' },
 	M: { long: 'Madrugada', short: 'M' },
 	N: { long: 'Noite', short: 'N' },
@@ -26,15 +26,15 @@ const BUSINESS_PERIOD_LABEL_BASE: Record<BusinessPeriod, { long: string, short: 
 	PPT: { long: 'Período de ponta da tarde', short: 'PPT' },
 };
 
-export type BusinessPeriodLabels = Record<
-	BusinessPeriod,
+export type DayPeriodLabels = Record<
+	DayPeriod,
 	{ long: string, long_with_time: string, short: string, short_with_time: string }
 >;
 
-export const BUSINESS_PERIOD_LABELS: BusinessPeriodLabels = Object.fromEntries(
-	BusinessPeriodsValues.map((period) => {
-		const base = BUSINESS_PERIOD_LABEL_BASE[period];
-		const range = BUSINESS_PERIOD_TIME_RANGES[period];
+export const DAY_PERIOD_LABELS: DayPeriodLabels = Object.fromEntries(
+	DayPeriodsValues.map((period) => {
+		const base = DAY_PERIOD_LABEL_BASE[period];
+		const range = DAY_PERIOD_TIME_RANGES[period];
 		return [
 			period,
 			{
@@ -44,4 +44,4 @@ export const BUSINESS_PERIOD_LABELS: BusinessPeriodLabels = Object.fromEntries(
 			},
 		] as const;
 	}),
-) as BusinessPeriodLabels;
+) as DayPeriodLabels;

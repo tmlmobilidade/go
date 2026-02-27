@@ -1,4 +1,4 @@
-import { BUSINESS_PERIOD_LABELS, EventReplacementRule, IsoWeekday, ManualRule, Period, StopsParameterOverride, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
+import { DAY_PERIOD_LABELS, EventReplacementRule, IsoWeekday, ManualRule, Period, StopsParameterOverride, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
 
 /**
  * Builds the period portion of a rule summary.
@@ -101,14 +101,14 @@ export function buildWeekdaysPart(rule: EventReplacementRule | ManualRule | Stop
 		: `à ${dayLabels.join(', ')}`;
 }
 
-export function buildBusinessPeriodsPart(
+export function buildDayPeriodsPart(
 	parameter: StopsParameterOverride,
 	cfg: { mode: 'long' | 'short' },
 ): string {
-	const selected = (parameter.business_periods ?? []);
+	const selected = (parameter.day_periods ?? []);
 	if (!selected.length) return 'Todo o dia';
 
-	const labels = selected.map(p => BUSINESS_PERIOD_LABELS[p]?.[cfg.mode] ?? p.toUpperCase());
+	const labels = selected.map(p => DAY_PERIOD_LABELS[p]?.[cfg.mode] ?? p.toUpperCase());
 
 	if (cfg.mode === 'short') return labels.join(' · ');
 	if (labels.length === 1) return `Durante ${labels[0]}`;
