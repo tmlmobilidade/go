@@ -3,7 +3,7 @@
 /* * */
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Period } from '@tmlmobilidade/types';
+import { YearPeriod } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -11,7 +11,7 @@ import useSWR from 'swr';
 
 interface PeriodsContextState {
 	data: {
-		periods: Period[]
+		raw: YearPeriod[]
 	}
 }
 
@@ -35,7 +35,7 @@ export const PeriodsContextProvider = ({ agencyId, children }: PropsWithChildren
 	//
 	// A. Fetch data
 
-	const { data: periodsData } = useSWR<Period[]>(API_ROUTES.dates.PERIODS_LIST);
+	const { data: periodsData } = useSWR<YearPeriod[]>(API_ROUTES.dates.YEAR_PERIODS_LIST);
 
 	//
 	// B. Define context value
@@ -43,7 +43,7 @@ export const PeriodsContextProvider = ({ agencyId, children }: PropsWithChildren
 	const contextValue: PeriodsContextState = useMemo(() => ({
 
 		data: {
-			periods: periodsData?.filter(period => !agencyId || period.agency_id === agencyId) || [],
+			raw: periodsData?.filter(period => !agencyId || period.agency_ids.includes(agencyId)) || [],
 		},
 	}), [periodsData, agencyId]);
 

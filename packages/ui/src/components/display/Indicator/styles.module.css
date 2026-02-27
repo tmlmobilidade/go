@@ -20,6 +20,24 @@
 	border-radius: 999px;
 }
 
+/* * */
+/* PROPS / SIZE */
+
+.root[data-size='sm'] .indicator {
+	width: 6px;
+	height: 6px;
+}
+
+.root[data-size='md'] .indicator {
+	width: 8px;
+	height: 8px;
+}
+
+.root[data-size='lg'] .indicator {
+	width: 12px;
+	height: 12px;
+}
+
 
 /* * */
 /* PROPS / VARIANT */

@@ -1,0 +1,29 @@
+.timeChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  font-family: monospace;
+  font-weight: 500;
+  background-color: var(--color-system-background-200);
+  border: 1px solid var(--color-system-border-100);
+  border-radius: 4px;
+}
+
+.deleteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  color: var(--color-system-text-300);
+  cursor: pointer;
+}
+
+.deleteBtn:hover {
+  color: var(--color-status-danger-primary);
+}
+
+.removed {
+  color: var(--color-status-danger-primary);
+  background-color: var(--color-status-danger-contrast);
+  border-color: var(--color-status-danger-primary);
+}
