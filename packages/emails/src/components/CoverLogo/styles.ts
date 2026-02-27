@@ -1,14 +1,24 @@
 /* * */
 /* IMAGE */
 
-const image: React.CSSProperties = {
+const link: React.CSSProperties = {
+	alignContent: 'center',
 	backgroundColor: '#F6F8FA',
-	borderBottom: '1px solid #FFFFFF',
+	display: 'flex',
+	flexDirection: 'row',
+	justifyContent: 'space-between',
+	marginBottom: '1px',
 	width: '100%',
+};
+
+const image: React.CSSProperties = {
+	height: 60,
+	width: 'auto',
 };
 
 /* * */
 
 export default {
 	image,
+	link,
 };

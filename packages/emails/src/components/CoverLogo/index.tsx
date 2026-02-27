@@ -9,10 +9,15 @@ import styles from './styles.js';
 
 export function CoverLogo() {
 	return (
-		<Link href={GO_HOMEPAGE_URL} target="_blank">
+		<Link href={GO_HOMEPAGE_URL} style={styles.link} target="_blank">
 			<Img
 				alt="SPG Logo"
-				src="https://spginecologia.pt/wp-content/mu-plugins/post_office/templates/imgs/spg-mail-header@2x.png"
+				src="https://storage.carrismetropolitana.pt/static/test/go-header-left.png"
+				style={styles.image}
+			/>
+			<Img
+				alt="SPG Logo"
+				src="https://storage.carrismetropolitana.pt/static/test/go-header-right.png"
 				style={styles.image}
 			/>
 		</Link>

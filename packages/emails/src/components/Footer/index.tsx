@@ -1,5 +1,6 @@
 /* * */
 
+import { GO_HOMEPAGE_URL } from '@/constants.js';
 import { Link, Section, Text } from '@react-email/components';
 
 import styles from './styles.js';
@@ -10,9 +11,9 @@ export function Footer() {
 	return (
 		<Section>
 			<Text style={styles.text}>
-				Esta mensagem foi enviada automaticamente. Entre em contacto connosco se precisar de mais informações ou se acha que recebeu esta mensagem por engano. Visite o nosso site em
+				Esta mensagem foi enviada automaticamente. Verifica sempre o email do remetente antes de carregares em qualquer link ou introduzires informações pessoais em qualquer site. Fala connosco se precisares de mais informações ou se achares que recebeste esta mensagem por engano. Visita-nos em
 				{' '}
-				<Link href="https://spginecologia.pt" style={styles.link}>https://spginecologia.pt</Link>
+				<Link href={GO_HOMEPAGE_URL} style={styles.link}>{GO_HOMEPAGE_URL}</Link>
 			</Text>
 		</Section>
 	);

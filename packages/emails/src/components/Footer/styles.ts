@@ -2,8 +2,8 @@
 /* TEXT */
 
 const text: React.CSSProperties = {
-	color: '#A09696',
-	fontFamily: '\'Lato\', \'Open Sans\', Arial, sans-serif',
+	color: '#BEBEC8',
+	fontFamily: '\'Work Sans\', Verdana, Arial, sans-serif',
 	fontSize: '12px',
 	fontWeight: '400',
 	lineHeight: '1.5',
@@ -15,7 +15,8 @@ const text: React.CSSProperties = {
 /* LINK */
 
 const link: React.CSSProperties = {
-	color: '#9E2064',
+	color: '#BEBEC8',
+	textDecoration: 'underline',
 };
 
 /* * */

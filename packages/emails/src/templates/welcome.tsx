@@ -1,11 +1,14 @@
 /* * */
 
-import { styles } from '@/components/index.js';
+import { Anchor } from '@/components/Anchor/index.js';
+import { Greeting } from '@/components/Greeting/index.js';
+import { MainButton } from '@/components/MainButton/index.js';
+import { Paragraph } from '@/components/Paragraph/index.js';
 import { Wrapper } from '@/components/Wrapper/index.js';
 import { GO_HOMEPAGE_URL } from '@/constants.js';
 import { emailProvider } from '@/email.provider.js';
 import { type SendEmailProps } from '@/types.js';
-import { Button, Hr, Link, render, Section, Text } from '@react-email/components';
+import { render } from '@react-email/components';
 
 /* * */
 
@@ -23,50 +26,16 @@ export interface WelcomeTemplateProps {
 export default function WelcomeTemplate({ firstName, resetPasswordUrl }: WelcomeTemplateProps) {
 	return (
 		<Wrapper previewMessage="Bem-vindo ao GO - Gestor de Oferta">
-			<Section>
-				<Text style={styles.text}>
-					👋 Olá
-					{' '}
-					{firstName}
-					,
-				</Text>
-
-				<Text style={styles.text}>
-					É um prazer dar-lhe as boas-vindas à plataforma
-					{' '}
-					<strong>GO (Gestor de Oferta)</strong>
-					{' '}
-					da Transportes Metropolitanos de Lisboa!
-				</Text>
-
-				<Text style={styles.text}>
-					Para começar a usar o GO, por favor defina uma palavra-passe para a sua conta:
-				</Text>
-
-				<Button href={resetPasswordUrl} style={styles.button}>
-					Definir Palavra-passe
-				</Button>
-
-				<Hr style={{ margin: '24px 0' }} />
-
-				<Text style={styles.textStyles.small}>
-					<strong>Já tem uma conta configurada?</strong>
-				</Text>
-
-				<Text style={styles.textStyles.small}>
-					Pode aceder diretamente ao GO através do seguinte
-					{' '}
-					<Link href={GO_HOMEPAGE_URL} style={{ color: '#0369A1', textDecoration: 'underline' }}>
-						link.
-					</Link>
-				</Text>
-
-				<Hr style={{ margin: '24px 0' }} />
-
-				<Text style={styles.textStyles.muted}>
-					Se tiver alguma dúvida sobre como utilizar a plataforma ou encontrar qualquer dificuldade durante o processo de configuração, não hesite em contactar a nossa equipa de suporte. Estamos aqui para ajudar!
-				</Text>
-			</Section>
+			<Greeting text={`Olá ${firstName} 👋`} />
+			<Paragraph>É um prazer dar-te as boas vindas ao GO.</Paragraph>
+			<Paragraph>Esta plataforma é o resultado de uma enorme vontade de evoluir o dia-a-dia de quem trabalha no setor dos transportes públicos, tornando-o mais simples e agradável.</Paragraph>
+			<Paragraph>
+				<Anchor href={GO_HOMEPAGE_URL} spaceAfter text="Na página inicial do GO" />
+				encontras documentação útil sobre a plataforma, o GTFS e a API APEX, assim como novidades e outros conteúdos interessantes. Estes recursos são atualizados regularmente e estão disponíveis para consulta a qualquer momento.
+			</Paragraph>
+			<Paragraph>Comprometemo-nos a ser transparentes e a manter uma atitude de colaboração contigo. Se tiveres alguma dúvida ou sugestão não hesites em falar connosco respondendo a este email.</Paragraph>
+			<MainButton href={resetPasswordUrl} label="Definir Palavra-passe" />
+			<Paragraph>Para começar a utilizar o GO, clica no botão acima para definir a tua palavra-passe.</Paragraph>
 		</Wrapper>
 	);
 };
