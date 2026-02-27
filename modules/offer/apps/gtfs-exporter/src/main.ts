@@ -12,7 +12,7 @@ import { exportFeedInfoFile } from './exports/feedInfo.js';
 import { fetchAllFares } from './fetchers/fare.js';
 import { fetchAllHolidays } from './fetchers/holidays.js';
 import { fetchAllMunicipalities } from './fetchers/municipality.js';
-import { fetchAllPeriods } from './fetchers/periods.js';
+import { fetchAllYearPeriods } from './fetchers/year-periods.js';
 import { fetchAllTypologies } from './fetchers/typology.js';
 import { fetchAllZones } from './fetchers/zone.js';
 
@@ -163,7 +163,7 @@ export async function exportGtfsV29(
 		Logger.success(`Loaded ${allMunicipalitiesMap.size} municipalities`);
 
 		Logger.info('Fetching all periods...');
-		const allPeriodsMap = await fetchAllPeriods();
+		const allPeriodsMap = await fetchAllYearPeriods();
 		Logger.success(`Loaded ${allPeriodsMap.size} periods`);
 
 		Logger.info('Fetching all holidays...');

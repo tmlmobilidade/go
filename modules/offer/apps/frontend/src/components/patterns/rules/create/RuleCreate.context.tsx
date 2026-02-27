@@ -73,7 +73,7 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 		initialValues: initialValues || {
 			kind: 'manual',
 			operatingMode: OPERATING_MODE.INCLUDE,
-			periodIds: [],
+			yearPeriodIds: [],
 			timePoints: [],
 			weekdays: [],
 		},

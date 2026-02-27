@@ -4,10 +4,10 @@
 
 import { useParameterCreateContext } from '@/components/patterns/stops/parameters/create/ParameterCreate.context';
 import { ParameterCreateDayPeriod } from '@/components/patterns/stops/parameters/create/ParameterCreateDayPeriod';
-import { ParameterCreatePeriods } from '@/components/patterns/stops/parameters/create/ParameterCreatePeriods';
 import { ParameterCreateTable } from '@/components/patterns/stops/parameters/create/ParameterCreateTable';
 import { ParameterCreateVehicleType } from '@/components/patterns/stops/parameters/create/ParameterCreateVehicleType';
 import { ParameterCreateWeekdays } from '@/components/patterns/stops/parameters/create/ParameterCreateWeekdays';
+import { ParameterCreateYearPeriods } from '@/components/patterns/stops/parameters/create/ParameterCreateYearPeriods';
 import { Divider, Section, Text } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -53,7 +53,7 @@ export function ParameterCreateBasicInfo() {
 						<Text size="lg">3. Quando devem estes parâmetros aplicar-se?</Text>
 						<Text c="dimmed" size="sm">Estes parâmetros aplicam-se quando TODAS as condições abaixo se verificam</Text>
 
-						<ParameterCreatePeriods />
+						<ParameterCreateYearPeriods />
 						<Divider />
 						<ParameterCreateWeekdays />
 						<Divider />

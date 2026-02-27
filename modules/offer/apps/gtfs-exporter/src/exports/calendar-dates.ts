@@ -4,7 +4,7 @@ import { type ExportedCalendarDatesRow, type GtfsV29ExportConfig } from '@/types
 import { getDayType, getPeriodForDate, isHoliday } from '@/utils/calendar-helpers.js';
 import { type ServiceRegistry } from '@/utils/service-registry.js';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Holiday, type Period } from '@tmlmobilidade/types';
+import { type Holiday, type YearPeriod } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -19,7 +19,7 @@ import { type Holiday, type Period } from '@tmlmobilidade/types';
  */
 export async function exportCalendarDates(
 	serviceRegistry: ServiceRegistry,
-	periods: Map<string, Period>,
+	periods: Map<string, YearPeriod>,
 	holidays: Map<string, Holiday>,
 	exportConfig: GtfsV29ExportConfig,
 ) {

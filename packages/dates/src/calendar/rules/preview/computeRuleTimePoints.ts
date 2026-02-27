@@ -1,4 +1,4 @@
-import type { Event, IsoWeekday, OperationalDate, Period, ScheduleRule } from '@tmlmobilidade/types';
+import type { Event, IsoWeekday, OperationalDate, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
 
 import { calendarKey, calendarWeekday } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
@@ -20,7 +20,7 @@ import { buildOperationalDateRange } from '../utils/date.js';
 export function computeRuleTimePoints(
 	rule: ScheduleRule,
 	allRules: ScheduleRule[],
-	periods: Period[],
+	periods: YearPeriod[],
 	options?: {
 		events?: Event[]
 	},
@@ -47,7 +47,7 @@ export function computeRuleTimePoints(
 	// For replacement rules: return timepoints from the TARGET weekdays
 	if (rule.kind === 'event_replacement') {
 		const targetWeekdays = new Set<IsoWeekday>(rule.weekdays || []);
-		const targetPeriods = new Set(rule.periodIds || []);
+		const targetPeriods = new Set(rule.yearPeriodIds || []);
 
 		// Find manual include rules that match the target pattern
 		const timePoints = new Set<string>();
@@ -56,7 +56,7 @@ export function computeRuleTimePoints(
 
 			// Check if this manual rule applies to the target weekdays/periods
 			const hasMatchingWeekday = r.weekdays?.some(w => targetWeekdays.has(w));
-			const hasMatchingPeriod = r.periodIds?.some(p => targetPeriods.has(p));
+			const hasMatchingPeriod = r.yearPeriodIds?.some(p => targetPeriods.has(p));
 
 			if (hasMatchingWeekday && hasMatchingPeriod) {
 				for (const tp of r.timePoints || []) {
@@ -111,7 +111,7 @@ export function computeRuleTimePoints(
 function computeScheduleMap(
 	rules: ScheduleRule[],
 	dateRange: OperationalDate[],
-	periods: Period[],
+	periods: YearPeriod[],
 	events?: Event[],
 ): Map<string, { timePoints: string[] }> {
 	const result = new Map<string, { timePoints: string[] }>();

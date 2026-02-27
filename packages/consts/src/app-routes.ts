@@ -87,9 +87,9 @@ export const PAGE_ROUTES = Object.freeze({
 		HOLIDAYS_DETAIL: (id: string) => `${getAppConfig('dates', 'frontend_url')}/holidays/${id}`,
 		HOLIDAYS_LIST: `${getAppConfig('dates', 'frontend_url')}/holidays`,
 
-		// PERIODS
-		PERIODS_DETAIL: (id: string) => `${getAppConfig('dates', 'frontend_url')}/periods/${id}`,
-		PERIODS_LIST: `${getAppConfig('dates', 'frontend_url')}/periods`,
+		// YEAR_PERIODS
+		YEAR_PERIODS_DETAIL: (id: string) => `${getAppConfig('dates', 'frontend_url')}/year-periods/${id}`,
+		YEAR_PERIODS_LIST: `${getAppConfig('dates', 'frontend_url')}/year-periods`,
 	},
 
 	/* * */
@@ -308,11 +308,11 @@ export const API_ROUTES = Object.freeze({
 		HOLIDAYS_DETAIL_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/holidays/${id}/lock`,
 		HOLIDAYS_LIST: `${getAppConfig('dates', 'api_url')}/holidays`,
 
-		// PERIODS
-		PERIODS_CHECK_CONFLICTS: `${getAppConfig('dates', 'api_url')}/periods/check-conflicts`,
-		PERIODS_DETAIL: (id: string) => `${getAppConfig('dates', 'api_url')}/periods/${id}`,
-		PERIODS_DETAIL_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/periods/${id}/lock`,
-		PERIODS_LIST: `${getAppConfig('dates', 'api_url')}/periods`,
+		// YEAR-PERIODS
+		YEAR_PERIODS_CHECK_CONFLICTS: `${getAppConfig('dates', 'api_url')}/year-periods/check-conflicts`,
+		YEAR_PERIODS_DETAIL: (id: string) => `${getAppConfig('dates', 'api_url')}/year-periods/${id}`,
+		YEAR_PERIODS_DETAIL_LOCK: (id: string) => `${getAppConfig('dates', 'api_url')}/year-periods/${id}/lock`,
+		YEAR_PERIODS_LIST: `${getAppConfig('dates', 'api_url')}/year-periods`,
 	},
 
 	/* * */

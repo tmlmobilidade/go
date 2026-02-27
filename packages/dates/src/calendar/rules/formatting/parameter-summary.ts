@@ -1,6 +1,6 @@
-import { Period, StopsParameter } from '@tmlmobilidade/types';
+import { StopsParameter, YearPeriod } from '@tmlmobilidade/types';
 
-import { buildDayPeriodsPart, buildPeriodsPart, buildWeekdaysPart } from './common.js';
+import { buildDayPeriodsPart, buildWeekdaysPart, buildYearPeriodsPart } from './common.js';
 
 /**
  * Human-readable summary for a stops parameter.
@@ -19,7 +19,7 @@ export interface StopsParameterSummary {
 export function buildParameterSummary(
 	parameter: StopsParameter,
 	options: {
-		periods?: Period[]
+		periods?: YearPeriod[]
 	},
 ): StopsParameterSummary {
 	return {
@@ -34,11 +34,11 @@ export function buildParameterSummary(
  * Builds the short summary format for a parameter.
  *
  * Event parameters: Returns event title
- * Manual parameters: Returns "Period · Weekdays" format
+ * Manual parameters: Returns "YearPeriod · Weekdays" format
  */
 function buildParameterSummaryShort(
 	parameter: StopsParameter,
-	options: { periods?: Period[] },
+	options: { periods?: YearPeriod[] },
 ): string {
 	// manual
 	const parts: string[] = [];
@@ -50,7 +50,7 @@ function buildParameterSummaryShort(
 	const dayPeriodsPart = buildDayPeriodsPart(parameter, { mode: 'short' });
 	if (dayPeriodsPart) parts.push(dayPeriodsPart);
 
-	const periodPart = buildPeriodsPart(parameter, options, { mode: 'short' });
+	const periodPart = buildYearPeriodsPart(parameter, options, { mode: 'short' });
 	if (periodPart) parts.push(periodPart);
 
 	const weekdayPart = buildWeekdaysPart(parameter, { mode: 'short' });
@@ -67,7 +67,7 @@ function buildParameterSummaryShort(
  */
 function buildParameterSummaryLong(
 	parameter: StopsParameter,
-	options: { periods?: Period[] },
+	options: { periods?: YearPeriod[] },
 ): string {
 	if (parameter.kind === 'default') {
 		return 'Configuração padrão';
@@ -75,7 +75,7 @@ function buildParameterSummaryLong(
 
 	const dayPeriodsPart = buildDayPeriodsPart(parameter, { mode: 'long' });
 
-	const periodPart = buildPeriodsPart(parameter, options, { mode: 'short' });
+	const periodPart = buildYearPeriodsPart(parameter, options, { mode: 'short' });
 
 	const weekdayPart = buildWeekdaysPart(parameter, { mode: 'short' });
 

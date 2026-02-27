@@ -1,6 +1,6 @@
 /* * */
 
-import { PeriodsListContextProvider } from '@/components/periods/list/PeriodsList.context';
+import { PeriodsListContextProvider } from '@/components/year-periods/list/PeriodsList.context';
 import { AgenciesContextProvider } from '@/contexts/Agencies.context';
 import { LinesContextProvider } from '@/contexts/Lines.context';
 import { MeContextProvider } from '@tmlmobilidade/ui';

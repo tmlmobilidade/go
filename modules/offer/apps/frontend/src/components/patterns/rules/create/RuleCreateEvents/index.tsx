@@ -37,7 +37,7 @@ export function RuleCreateEvents() {
 						const enabled = event.currentTarget.checked;
 						createRuleContext.actions.setEventExceptionEnabled(enabled);
 						if (enabled) {
-							createRuleContext.data.form.setFieldValue('periodIds', []);
+							createRuleContext.data.form.setFieldValue('yearPeriodIds', []);
 							createRuleContext.data.form.setFieldValue('weekdays', []);
 						} else {
 							createRuleContext.data.form.setFieldValue('eventId', undefined);

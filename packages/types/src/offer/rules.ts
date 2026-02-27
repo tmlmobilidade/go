@@ -24,11 +24,11 @@ export const ManualRuleSchema = z.object({
 	name: z.string().optional(),
 
 	operatingMode: z.nativeEnum(OPERATING_MODE),
-	periodIds: z.array(z.string()),
-
 	timePoints: z.array(HHMMSchema),
 
 	weekdays: z.array(z.nativeEnum(WEEKDAYS)),
+
+	yearPeriodIds: z.array(z.string()),
 });
 
 /* * */
@@ -70,8 +70,8 @@ export const EventReplacementSchema = EventDerivedBaseSchema.extend({
 
 	kind: z.literal('event_replacement'),
 
-	periodIds: z.array(z.string()),
 	weekdays: z.array(z.nativeEnum(WEEKDAYS)),
+	yearPeriodIds: z.array(z.string()),
 });
 
 export const EventRuleSchema = z.discriminatedUnion('kind', [EventRestrictionSchema, EventReplacementSchema]);

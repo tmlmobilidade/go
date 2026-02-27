@@ -1,4 +1,4 @@
-import { DAY_PERIOD_LABELS, EventReplacementRule, IsoWeekday, ManualRule, Period, StopsParameterOverride, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
+import { DAY_PERIOD_LABELS, EventReplacementRule, IsoWeekday, ManualRule, StopsParameterOverride, WEEKDAY_OPTIONS, YearPeriod } from '@tmlmobilidade/types';
 
 /**
  * Builds the period portion of a rule summary.
@@ -8,13 +8,13 @@ import { DAY_PERIOD_LABELS, EventReplacementRule, IsoWeekday, ManualRule, Period
  * - Single period: Shows period name
  * - Multiple periods: "N períodos" (short) or "Durante os períodos de X e Y" (long)
  */
-export function buildPeriodsPart(
+export function buildYearPeriodsPart(
 	rule: EventReplacementRule | ManualRule | StopsParameterOverride,
-	options: { periods?: Period[] },
+	options: { periods?: YearPeriod[] },
 	cfg: { mode: 'long' | 'short' },
 ): string {
 	const allPeriodIds = options?.periods?.map(p => p._id) ?? [];
-	const selectedPeriodIds = rule.periodIds || [];
+	const selectedPeriodIds = rule.yearPeriodIds || [];
 	const isAll = allPeriodIds.length > 0 && selectedPeriodIds.length === allPeriodIds.length && allPeriodIds.every(id => selectedPeriodIds.includes(id));
 
 	if (!selectedPeriodIds.length || isAll) {

@@ -2,7 +2,7 @@
 
 import { calendarKey, CalendarKey, calendarWeekday, datesFromCalendarKey, keyToYYYYMMDD } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
-import { Event, ManualRule, OperationalDate, Period } from '@tmlmobilidade/types';
+import { Event, ManualRule, OperationalDate, YearPeriod } from '@tmlmobilidade/types';
 
 /**
  * Context for computing which dates a manual rule affects within a calendar range.
@@ -13,7 +13,7 @@ interface CalendarContext {
 	/** Optional events list for eventId matching */
 	events?: Event[]
 	/** Available periods for matching rule criteria */
-	periods: Period[]
+	periods: YearPeriod[]
 	/** Start date of the calendar range */
 	startDate: Date
 }
@@ -23,12 +23,12 @@ interface CalendarContext {
  * Verifies that at least one of the rule's period IDs is active on this date.
  */
 function isInPeriod(rule: ManualRule, key: CalendarKey, ctx: CalendarContext): boolean {
-	if (!rule.periodIds?.length) return false;
+	if (!rule.yearPeriodIds?.length) return false;
 
 	const op = keyToYYYYMMDD(key) as OperationalDate;
 
 	return ctx.periods.some(
-		p => rule.periodIds?.includes(p._id) && p.dates?.includes(op),
+		p => rule.yearPeriodIds?.includes(p._id) && p.dates?.includes(op),
 	);
 }
 
@@ -39,7 +39,7 @@ function isInPeriod(rule: ManualRule, key: CalendarKey, ctx: CalendarContext): b
 function ruleAppliesToCivilKey(rule: ManualRule, key: CalendarKey, ctx: CalendarContext): boolean {
 	const weekday = calendarWeekday(key);
 
-	// 1) Period required
+	// 1) YearPeriod required
 	if (!isInPeriod(rule, key, ctx)) return false;
 
 	// 2) Weekdays required

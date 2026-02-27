@@ -117,11 +117,11 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 		permissions: [{ action: PermissionCatalog.all.annotations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.annotations.scope }],
 	},
 	{
-		_id: 'periods',
-		href: PAGE_ROUTES.dates.PERIODS_LIST,
+		_id: 'year_periods',
+		href: PAGE_ROUTES.dates.YEAR_PERIODS_LIST,
 		icon: <IconClock size={26} />,
 		label: 'Períodos',
-		permissions: [{ action: PermissionCatalog.all.periods.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.periods.scope }],
+		permissions: [{ action: PermissionCatalog.all.year_periods.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.year_periods.scope }],
 	},
 	{
 		_id: 'holidays',
@@ -143,7 +143,7 @@ export const sidebarApps: SidebarAppItemConfig[] = [
 		icon: <IconCalendarEvent size={26} />,
 		label: 'Calendário',
 		permissions: [
-			{ action: PermissionCatalog.all.periods.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.periods.scope },
+			{ action: PermissionCatalog.all.year_periods.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.year_periods.scope },
 			{ action: PermissionCatalog.all.annotations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.annotations.scope },
 		],
 	},

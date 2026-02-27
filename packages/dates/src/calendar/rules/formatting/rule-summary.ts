@@ -1,8 +1,8 @@
 import { Dates } from '@/dates.js';
 import { Formats } from '@/format.js';
-import { Event, EventReplacementRule, EventRestrictionRule, ManualRule, Period, ScheduleRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
+import { Event, EventReplacementRule, EventRestrictionRule, ManualRule, YearPeriod, ScheduleRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
 
-import { buildPeriodsPart, buildWeekdaysPart } from './common.js';
+import { buildYearPeriodsPart, buildWeekdaysPart } from './common.js';
 
 /**
  * Human-readable summary of a rule in multiple formats.
@@ -31,7 +31,7 @@ export interface RuleSummary {
  *
  * @example
  * ```ts
- * const rule = { kind: 'manual', weekdays: [1,2,3,4,5], periodIds: ['school'], ... };
+ * const rule = { kind: 'manual', weekdays: [1,2,3,4,5], yearPeriodIds: ['school'], ... };
  * const summary = buildRuleSummary(rule, { periods });
  * // summary = {
  * //   short: "Dias úteis · Período Escolar",
@@ -44,7 +44,7 @@ export function buildRuleSummary(
 	rule: ScheduleRule,
 	options: {
 		events?: Event[]
-		periods?: Period[]
+		periods?: YearPeriod[]
 	},
 ): RuleSummary {
 	return {
@@ -75,11 +75,11 @@ const getEventForManualRule = (rule: ManualRule, events?: Event[]) => {
  * Builds the short summary format for a rule.
  *
  * Event rules: Returns event title
- * Manual rules: Returns "Period · Weekdays" format
+ * Manual rules: Returns "YearPeriod · Weekdays" format
  */
 function buildRuleSummaryShort(
 	rule: ScheduleRule,
-	options: { events?: Event[], periods?: Period[] },
+	options: { events?: Event[], periods?: YearPeriod[] },
 ): string {
 	if (isEventRestriction(rule)) {
 		// Restriction: show event name
@@ -98,7 +98,7 @@ function buildRuleSummaryShort(
 	// manual
 	const parts: string[] = [];
 
-	const periodPart = buildPeriodsPart(rule, options, { mode: 'short' });
+	const periodPart = buildYearPeriodsPart(rule, options, { mode: 'short' });
 	if (periodPart) parts.push(periodPart);
 
 	const weekdayPart = buildWeekdaysPart(rule, { mode: 'short' });
@@ -115,7 +115,7 @@ function buildRuleSummaryShort(
  */
 function buildRuleSummaryLong(
 	rule: ScheduleRule,
-	options: { events?: Event[], periods?: Period[] },
+	options: { events?: Event[], periods?: YearPeriod[] },
 ): string {
 	if (isEventReplacement(rule) || isEventRestriction(rule)) {
 		return rule.event?.title ?? '';
@@ -128,7 +128,7 @@ function buildRuleSummaryLong(
 	// manual
 	const parts: string[] = [];
 
-	const periodPart = buildPeriodsPart(rule, options, { mode: 'long' });
+	const periodPart = buildYearPeriodsPart(rule, options, { mode: 'long' });
 	if (periodPart) parts.push(periodPart);
 
 	const weekdayPart = buildWeekdaysPart(rule, { mode: 'long' });
@@ -158,7 +158,7 @@ function formatDateWithWeekday(date: string): string {
  */
 function buildRuleSummaryTooltip(
 	rule: ScheduleRule,
-	options: { events?: Event[], periods?: Period[] },
+	options: { events?: Event[], periods?: YearPeriod[] },
 ): string {
 	if (isEventRestriction(rule)) {
 		const dates = (rule.dates ?? []).map(formatDateWithWeekday).join(', ');
@@ -180,7 +180,7 @@ function buildRuleSummaryTooltip(
 			.filter(Boolean)
 			.join(', ') ?? '';
 
-		const periods = rule.periodIds
+		const periods = rule.yearPeriodIds
 			?.map(id => options?.periods?.find(p => p._id === id)?.name || id)
 			.join(', ') || '';
 

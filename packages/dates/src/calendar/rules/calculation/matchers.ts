@@ -14,14 +14,14 @@ import { EventReplacementRule, ManualRule } from '@tmlmobilidade/types';
  *
  * @example
  * ```ts
- * const rule = { weekdays: [1, 2, 3], periodIds: ['school'], ... };
- * const ctx = { weekday: 1, periodId: 'school' };
+ * const rule = { weekdays: [1, 2, 3], yearPeriodIds: ['school'], ... };
+ * const ctx = { weekday: 1, yearPeriodId: 'school' };
  * manualRuleMatchesContext(rule, ctx); // true
  * ```
  */
 export function manualRuleMatchesContext(rule: ManualRule, ctx: DayContext): boolean {
-	// Strict by design: rule must include the weekday and the periodId.
-	return rule.weekdays.includes(ctx.weekday) && rule.periodIds.includes(ctx.periodId);
+	// Strict by design: rule must include the weekday and the yearPeriodId.
+	return rule.weekdays.includes(ctx.weekday) && rule.yearPeriodIds.includes(ctx.yearPeriodId);
 }
 
 /**
@@ -53,14 +53,14 @@ function intersects<T>(a: readonly T[], b: readonly T[]): boolean {
  *
  * @example
  * ```ts
- * const rule = { weekdays: [1, 2], periodIds: ['school'], ... };
- * const replacement = { weekdays: [1], periodIds: ['school', 'summer'], ... };
+ * const rule = { weekdays: [1, 2], yearPeriodIds: ['school'], ... };
+ * const replacement = { weekdays: [1], yearPeriodIds: ['school', 'summer'], ... };
  * manualRuleMatchesReplacement(rule, replacement); // true (weekday 1 matches)
  * ```
  */
 export function manualRuleMatchesReplacement(rule: ManualRule, replacement: EventReplacementRule): boolean {
 	return (
 		intersects(rule.weekdays, replacement.weekdays)
-		&& intersects(rule.periodIds, replacement.periodIds)
+		&& intersects(rule.yearPeriodIds, replacement.yearPeriodIds)
 	);
 }

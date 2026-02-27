@@ -1,4 +1,4 @@
-import type { EventReplacementRule, OperationalDate, Period } from '@tmlmobilidade/types';
+import type { EventReplacementRule, OperationalDate, YearPeriod } from '@tmlmobilidade/types';
 
 import { Dates } from '@/dates.js';
 
@@ -10,7 +10,7 @@ import { Dates } from '@/dates.js';
  * @returns The _id of the active period, or empty string if none found
  *
  */
-export function getActivePeriodId(date: OperationalDate, periods: Period[]): string {
+export function getActivePeriodId(date: OperationalDate, periods: YearPeriod[]): string {
 	if (!periods?.length) return '';
 	for (const p of periods) {
 		if (p?.dates?.includes(date)) return p._id;

@@ -53,7 +53,7 @@ function buildEventDerivedReplacement(args: {
 
 	if (!rule.dates?.length) return null;
 	if (!eventRuleAffectsLine(rule, pattern.line_id)) return null;
-	if (!rule.weekdays?.length && !rule.periodIds?.length) return null;
+	if (!rule.weekdays?.length && !rule.yearPeriodIds?.length) return null;
 
 	return {
 		_id: `event:${event._id}:rule:${rule._id || 'unnamed'}`,
@@ -67,8 +67,8 @@ function buildEventDerivedReplacement(args: {
 		lines_to_exclude: rule.lines_to_exclude,
 		lines_to_include: rule.lines_to_include,
 		name: rule.name,
-		periodIds: rule.periodIds,
 		weekdays: rule.weekdays,
+		yearPeriodIds: rule.yearPeriodIds,
 	};
 }
 
@@ -93,8 +93,7 @@ export async function mergePatternWithEventRules(pattern: Pattern): Promise<Patt
 			if (rule.kind === 'event_restriction') {
 				const restrictionRule = buildEventDerivedRestriction({ event, pattern, rule });
 				if (restrictionRule) derivedRules.push(restrictionRule);
-			}
-			else if (rule.kind === 'event_replacement') {
+			} else if (rule.kind === 'event_replacement') {
 				const replacementRule = buildEventDerivedReplacement({ event, pattern, rule });
 				if (replacementRule) derivedRules.push(replacementRule);
 			}

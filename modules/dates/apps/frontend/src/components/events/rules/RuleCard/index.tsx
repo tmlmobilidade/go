@@ -3,7 +3,7 @@
 /* * */
 
 import { useEventsDetailContext } from '@/components/events/detail/EventsDetail.context';
-import { usePeriodsListContext } from '@/components/periods/list/PeriodsList.context';
+import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
 import { IconArrowRight, IconCalendarCancel, IconCalendarRepeat } from '@tabler/icons-react';
 import { Dates, Formats } from '@tmlmobilidade/dates';
 import { EventRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
@@ -60,22 +60,19 @@ export function RuleCard({ rule }: RuleCardProps) {
 	let linesDescription = '';
 	if (linesMode === 'all') {
 		linesDescription = 'Todas as linhas';
-	}
-	else if (linesMode === 'include' && rule.lines_to_include?.length) {
+	} else if (linesMode === 'include' && rule.lines_to_include?.length) {
 		const lineNames = rule.lines_to_include
 			.map(lineId => eventsDetailContext.data.lines?.find(l => l._id === lineId)?.code)
 			.filter(Boolean)
 			.join(', ');
 		linesDescription = `Linhas ${lineNames}`;
-	}
-	else if (linesMode === 'exclude' && rule.lines_to_exclude?.length) {
+	} else if (linesMode === 'exclude' && rule.lines_to_exclude?.length) {
 		const lineNames = rule.lines_to_exclude
 			.map(lineId => eventsDetailContext.data.lines?.find(l => l._id === lineId)?.code)
 			.filter(Boolean)
 			.join(', ');
 		linesDescription = `Todas exceto ${lineNames}`;
-	}
-	else {
+	} else {
 		linesDescription = 'Nenhuma linha';
 	}
 
@@ -86,7 +83,7 @@ export function RuleCard({ rule }: RuleCardProps) {
 			WEEKDAY_OPTIONS.find(opt => opt.value === wd)?.label,
 		).filter(Boolean).join(', ') ?? '';
 
-		const periodNames = rule.periodIds?.map(pid =>
+		const periodNames = rule.yearPeriodIds?.map(pid =>
 			periodsContext.data.raw.find(p => p._id === pid)?.name,
 		).filter(Boolean).join(', ') ?? '';
 

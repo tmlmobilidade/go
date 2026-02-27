@@ -51,9 +51,9 @@ export default function RulesListViewEventCard({ rule }: RulesListViewEventCardP
 			WEEKDAY_OPTIONS.find(opt => opt.value === wd)?.label,
 		).filter(Boolean).join(', ') ?? '';
 
-		const periodNames = rule.periodIds?.map((periodId) => {
-			const period = periodsContext.data.raw.find(p => p._id === periodId);
-			return period?.name || periodId;
+		const periodNames = rule.yearPeriodIds?.map((yearPeriodId) => {
+			const period = periodsContext.data.raw.find(p => p._id === yearPeriodId);
+			return period?.name || yearPeriodId;
 		}).join(', ') || '';
 
 		const parts: string[] = [];

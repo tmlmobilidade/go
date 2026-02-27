@@ -22,7 +22,7 @@ import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matche
  * ```ts
  * const timePoints = new Set(['08:00', '09:00', '10:00']);
  * const appliedRuleIds = ['rule1'];
- * applyManualExcludes(timePoints, appliedRuleIds, rules, { weekday: 1, periodId: 'school' });
+ * applyManualExcludes(timePoints, appliedRuleIds, rules, { weekday: 1, yearPeriodId: 'school' });
  * // timePoints might now be Set(['08:00', '10:00']) if a rule excluded '09:00'
  * ```
  */

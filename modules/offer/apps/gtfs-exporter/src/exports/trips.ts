@@ -1,7 +1,7 @@
 import { type GtfsV29ExportConfig } from '@/types.js';
 import { ServiceId, type ServiceRegistry } from '@/utils/service-registry.js';
 import { buildAffectedDaysDetails, calendarWeekday, Dates, datesFromCalendarKey, getActivePeriodId, resolveDayPeriod, yyyymmddToKey } from '@tmlmobilidade/dates';
-import { DayPeriod, GtfsBikesAllowed, GtfsTMLTrip, GtfsWheelchairBoarding, type HHMM, hhmm, type IsoWeekday, type OperationalDate, type Pattern, type Period, type Route } from '@tmlmobilidade/types';
+import { DayPeriod, GtfsBikesAllowed, GtfsTMLTrip, GtfsWheelchairBoarding, type HHMM, hhmm, type IsoWeekday, type OperationalDate, type Pattern, type YearPeriod, type Route } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -15,7 +15,7 @@ import { DayPeriod, GtfsBikesAllowed, GtfsTMLTrip, GtfsWheelchairBoarding, type 
  */
 function buildTimepointSchedules(
 	patternData: Pattern,
-	periods: Period[],
+	periods: YearPeriod[],
 	startDate: Dates,
 	endDate: Dates,
 ): Map<HHMM, Set<OperationalDate>> {
@@ -107,7 +107,7 @@ export async function exportTripsForPattern(
 	routeData: Route,
 	patternData: Pattern,
 	shapeId: string,
-	periods: Period[],
+	periods: YearPeriod[],
 	startDate: Dates,
 	endDate: Dates,
 	serviceRegistry: ServiceRegistry,
@@ -149,8 +149,8 @@ export async function exportTripsForPattern(
 			for (const date of timepointDates) {
 				weekdaysSet.add(calendarWeekday(yyyymmddToKey(date)));
 
-				const periodId = getActivePeriodId(date, periods);
-				if (periodId) periodIdsSet.add(periodId);
+				const yearPeriodId = getActivePeriodId(date, periods);
+				if (yearPeriodId) periodIdsSet.add(yearPeriodId);
 			}
 
 			tripSchedules.push({

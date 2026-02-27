@@ -3,7 +3,7 @@
 import { AgenciesPermissionSchema } from '@/permissions/agencies.js';
 import { AlertsPermissionSchema } from '@/permissions/alerts.js';
 import { RidesPermissionSchema, SamsPermissionSchema } from '@/permissions/controller.js';
-import { AnnotationsPermissionSchema, EventsPermissionSchema, HolidaysPermissionSchema, PeriodsPermissionSchema } from '@/permissions/dates.js';
+import { AnnotationsPermissionSchema, EventsPermissionSchema, HolidaysPermissionSchema, YearPeriodsPermissionSchema } from '@/permissions/dates.js';
 import { FaresPermissionSchema } from '@/permissions/fares.js';
 import { GtfsValidationsPermissionSchema } from '@/permissions/gtfs-validations.js';
 import { HomePermissionSchema } from '@/permissions/home.js';
@@ -37,7 +37,7 @@ export const PermissionSchema = z.discriminatedUnion('scope', [
 	VehiclesPermissionSchema,
 	FaresPermissionSchema,
 	AnnotationsPermissionSchema,
-	PeriodsPermissionSchema,
+	YearPeriodsPermissionSchema,
 	HolidaysPermissionSchema,
 	EventsPermissionSchema,
 	ZonesPermissionSchema,
@@ -162,8 +162,7 @@ export class PermissionCatalog {
 						scope,
 						value: resource.value,
 					});
-				}
-				else {
+				} else {
 					result[key] = this.hasPermissionResource({
 						action,
 						permissions,
@@ -172,8 +171,7 @@ export class PermissionCatalog {
 						value: resource.value,
 					});
 				}
-			}
-			else {
+			} else {
 				result[key] = this.hasPermission(permissions, scope, action as ActionsOf<S>);
 			}
 		}

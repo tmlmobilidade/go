@@ -1,7 +1,7 @@
 /* * */
 
 import { calendarWeekday, Dates } from '@tmlmobilidade/dates';
-import { Holiday, OperationalDate, Period } from '@tmlmobilidade/types';
+import { Holiday, OperationalDate, YearPeriod } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -13,7 +13,7 @@ import { Holiday, OperationalDate, Period } from '@tmlmobilidade/types';
  */
 export function getPeriodForDate(
 	date: OperationalDate,
-	periods: Map<string, Period>,
+	periods: Map<string, YearPeriod>,
 ): string {
 	// Check each period to see if the date falls within its dates
 	for (const period of periods.values()) {

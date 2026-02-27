@@ -1,5 +1,5 @@
 import type { DayContext, RuleApplication } from './types.js';
-import type { Event, EventReplacementRule, ManualRule, OperationalDate, Period, ScheduleRule } from '@tmlmobilidade/types';
+import type { Event, EventReplacementRule, ManualRule, OperationalDate, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
 
 import { calendarKey, calendarWeekday } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
@@ -29,14 +29,14 @@ import { applyEventRestrictions, applyManualExcludes, applyReplacementManualExcl
  *
  * @param rules - All scheduling rules to process (manual, replacement, restriction)
  * @param dateRange - Array of operational dates to calculate schedules for
- * @param periods - Period definitions (school term, summer, etc.) for context resolution
+ * @param periods - YearPeriod definitions (school term, summer, etc.) for context resolution
  * @returns Map from CalendarKey to RuleApplication with active time points and metadata
  *
  * @example
  * ```ts
  * const rules = [...]; // Manual, replacement, and restriction rules
  * const dates = ['2026-02-01', '2026-02-02', ...];
- * const periods = [...]; // Period definitions
+ * const periods = [...]; // YearPeriod definitions
  *
  * const result = computeActiveTimePoints(rules, dates, periods);
  * const feb1 = result.get(calendarKey(Dates.fromOperationalDate('2026-02-01')));
@@ -49,7 +49,7 @@ import { applyEventRestrictions, applyManualExcludes, applyReplacementManualExcl
 export function computeActiveRules(
 	date: OperationalDate,
 	rules: ScheduleRule[],
-	periods: Period[],
+	periods: YearPeriod[],
 	options?: {
 		events?: Event[]
 	},
@@ -82,10 +82,10 @@ export function computeActiveRules(
 		// Apply manual excludes *also* by intersection with replacement targets
 		applyReplacementManualExcludes(timePoints, appliedRuleIds, replacement, filteredManualRules);
 	} else {
-		// Normal mode: day resolves to a single weekday + single periodId
+		// Normal mode: day resolves to a single weekday + single yearPeriodId
 		const ctx: DayContext = {
-			periodId: getActivePeriodId(date, periods),
 			weekday: calendarWeekday(key),
+			yearPeriodId: getActivePeriodId(date, periods),
 		};
 
 		const base = collectManualIncludes(filteredManualRules, ctx);

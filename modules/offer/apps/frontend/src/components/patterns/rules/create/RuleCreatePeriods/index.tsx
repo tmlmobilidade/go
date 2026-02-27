@@ -42,18 +42,18 @@ export function RuleCreatePeriods() {
 	//
 	// B. Handle actions
 
-	const currentPeriodIds = createRuleContext.data.form.values.periodIds || [];
+	const currentPeriodIds = createRuleContext.data.form.values.yearPeriodIds || [];
 	const selectedPresetKey = getSelectedPresetKey(currentPeriodIds, allPeriodIds);
 
 	const applyPreset = (key: null | PeriodPresetKey) => {
 		if (!key) {
 			// same convention as weekdays: empty => undefined
-			createRuleContext.data.form.setFieldValue('periodIds', undefined);
+			createRuleContext.data.form.setFieldValue('yearPeriodIds', undefined);
 			return;
 		}
 
 		// select all
-		createRuleContext.data.form.setFieldValue('periodIds', [...allPeriodIds]);
+		createRuleContext.data.form.setFieldValue('yearPeriodIds', [...allPeriodIds]);
 	};
 
 	//
@@ -77,7 +77,7 @@ export function RuleCreatePeriods() {
 			<SegmentedMultiSelect
 				value={currentPeriodIds}
 				onChange={(selectedPeriods) => {
-					createRuleContext.data.form.setFieldValue('periodIds', selectedPeriods.length > 0 ? selectedPeriods : undefined);
+					createRuleContext.data.form.setFieldValue('yearPeriodIds', selectedPeriods.length > 0 ? selectedPeriods : undefined);
 				}}
 				options={PERIOD_OPTIONS.map(o => ({
 					ariaLabel: o.label,

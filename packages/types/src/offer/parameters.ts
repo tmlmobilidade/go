@@ -1,5 +1,5 @@
-import { BusinessPeriodSchema } from '@/calendar/businessPeriods.js';
 import { WEEKDAYS } from '@/dates/common.js';
+import { DayPeriodSchema } from '@/dates/day-period.js';
 import { z } from 'zod';
 
 /* * */
@@ -22,10 +22,10 @@ export const StopsParameterDefaultSchema = StopsParameterCommonSchema.extend({
 });
 
 export const StopsParameterOverrideSchema = StopsParameterCommonSchema.extend({
-	business_periods: z.array(BusinessPeriodSchema).optional(),
+	day_periods: z.array(DayPeriodSchema).optional(),
 	kind: z.literal('override'),
-	periodIds: z.array(z.string()),
 	weekdays: z.array(z.nativeEnum(WEEKDAYS)),
+	yearPeriodIds: z.array(z.string()),
 
 });
 

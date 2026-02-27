@@ -9,8 +9,8 @@ import styles from './styles.module.css';
 
 import { RuleCreateDates } from '../RuleCreateDates';
 import { RuleCreateLines } from '../RuleCreateLines';
-import { RuleCreatePeriods } from '../RuleCreatePeriods';
 import { RuleCreateWeekdays } from '../RuleCreateWeekdays';
+import { RuleCreateYearPeriods } from '../RuleCreateYearPeriods';
 
 /* * */
 
@@ -69,7 +69,7 @@ export function RuleCreateBasicInfo() {
 					<Text c="dimmed" size="sm">O(s) dia(s) selecionado(s) irão funcionar como:</Text>
 
 					<RuleCreateWeekdays />
-					<RuleCreatePeriods />
+					<RuleCreateYearPeriods />
 
 				</div>
 			)}

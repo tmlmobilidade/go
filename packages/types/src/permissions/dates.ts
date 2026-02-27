@@ -58,7 +58,7 @@ export type HolidaysPermission = z.infer<typeof HolidaysPermissionSchema>;
 
 /* * */
 
-export const PeriodsPermissionSchema = z.object({
+export const YearPeriodsPermissionSchema = z.object({
 	action: z.enum([
 		'create',
 		'delete',
@@ -69,7 +69,7 @@ export const PeriodsPermissionSchema = z.object({
 	resources: z.object({
 		agency_ids: z.array(z.string()).default([]),
 	}).default({}),
-	scope: z.literal('periods'),
+	scope: z.literal('year_periods'),
 });
 
-export type PeriodsPermission = z.infer<typeof PeriodsPermissionSchema>;
+export type YearPeriodsPermission = z.infer<typeof YearPeriodsPermissionSchema>;

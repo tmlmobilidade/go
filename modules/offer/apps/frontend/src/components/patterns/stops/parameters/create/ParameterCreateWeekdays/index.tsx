@@ -46,6 +46,8 @@ export function ParameterCreateWeekdays() {
 	//
 	// B. Handle actions
 
+	if (createParameterContext.data.form.values.kind === 'default') return null;
+
 	const currentWeekdays = createParameterContext.data.form.values.weekdays || [];
 	const selectedPresetKey = getSelectedPresetKey(currentWeekdays);
 

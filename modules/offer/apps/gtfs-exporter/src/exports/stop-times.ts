@@ -19,7 +19,7 @@ function resolveActiveParameter(
 	if (overrides.length > 0) {
 		for (const override of overrides) {
 			const weekdayMatch = tripSchedule.weekdays.some(w => override.weekdays.includes(w));
-			const periodMatch = tripSchedule.period_ids.some(p => override.periodIds.includes(p));
+			const periodMatch = tripSchedule.period_ids.some(p => override.yearPeriodIds.includes(p));
 			const dayPeriodMatch = !override.day_periods?.length
 				|| override.day_periods.includes(tripSchedule.day_period);
 

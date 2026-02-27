@@ -1,4 +1,4 @@
-import type { Event, Period, ScheduleRule } from '@tmlmobilidade/types';
+import type { Event, YearPeriod, ScheduleRule } from '@tmlmobilidade/types';
 
 import { calendarKey, CalendarKey, datesFromCalendarKey } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
@@ -9,7 +9,7 @@ import { DayRuleDetail, DayScheduleDetail } from './types.js';
 function buildDayScheduleDetail(
 	key: CalendarKey,
 	allRules: ScheduleRule[],
-	periods: Period[],
+	periods: YearPeriod[],
 	events?: Event[],
 ): DayScheduleDetail {
 	const date = datesFromCalendarKey(key);
@@ -117,7 +117,7 @@ export function buildAffectedDaysDetails(
 	startDate: Dates,
 	endDate: Dates,
 	allRules: ScheduleRule[],
-	periods: Period[],
+	periods: YearPeriod[],
 	options?: {
 		events?: Event[]
 	},

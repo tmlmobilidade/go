@@ -1,6 +1,6 @@
 /* * */
 
-import { periods } from '@tmlmobilidade/interfaces';
+import { yearPeriods } from '@tmlmobilidade/interfaces';
 import { type OperationalDate } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -67,11 +67,11 @@ export async function seedFromGoV1() {
 		//
 		// Update each period with its dates
 
-		for (const [periodType, periodId] of Object.entries(PERIOD_MAPPING)) {
+		for (const [periodType, yearPeriodId] of Object.entries(PERIOD_MAPPING)) {
 			const datesToUpdate = datesByPeriod[periodType] || [];
 
 			if (datesToUpdate.length === 0) {
-				console.log(`No dates found for period ${periodId}, skipping`);
+				console.log(`No dates found for period ${yearPeriodId}, skipping`);
 				continue;
 			}
 
@@ -80,15 +80,15 @@ export async function seedFromGoV1() {
 			const startDate = sortedDates[0];
 			const endDate = sortedDates[sortedDates.length - 1];
 
-			await periods.updateOne(
-				{ _id: periodId },
+			await yearPeriods.updateOne(
+				{ _id: yearPeriodId },
 				{
 					dates: datesToUpdate as OperationalDate[],
 					updated_by: 'system',
 				},
 			);
 
-			console.log(`Updated period ${periodId} with ${datesToUpdate.length} dates (${startDate} to ${endDate})`);
+			console.log(`Updated period ${yearPeriodId} with ${datesToUpdate.length} dates (${startDate} to ${endDate})`);
 		}
 
 		console.log('All periods updated successfully');

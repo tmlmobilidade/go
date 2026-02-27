@@ -1,6 +1,6 @@
 /* * */
 
-import { Annotation, Event, Period } from '@tmlmobilidade/types';
+import { Annotation, Event, YearPeriod } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -8,7 +8,7 @@ export interface AnnotationNormalized extends Annotation {
 	agency_ids_normalized: string
 }
 
-export interface PeriodNormalized extends Period {
+export interface PeriodNormalized extends YearPeriod {
 	agency_ids_normalized: string
 }
 

@@ -112,7 +112,7 @@ function EventsCalendarContent({
 				{
 					checked: uiContext.state.eventTypeFilters.get('period') !== false,
 					color: EVENT_TYPE_DEFS['period'].color,
-					count: eventsContext.data.eventTypeCounts.periods,
+					count: eventsContext.data.eventTypeCounts.yearPeriods,
 					id: 'period',
 					label: 'Períodos',
 				},

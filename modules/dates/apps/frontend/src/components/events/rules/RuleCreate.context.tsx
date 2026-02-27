@@ -2,9 +2,9 @@
 
 /* * */
 
-import { usePeriodsListContext } from '@/components/periods/list/PeriodsList.context';
+import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
 import { useForm } from '@mantine/form';
-import { EventRule, EventRuleSchema } from '@tmlmobilidade/types';
+import { EventRule, EventRuleSchema, HHMM } from '@tmlmobilidade/types';
 import { type UseFormReturnType } from '@tmlmobilidade/ui';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -64,7 +64,7 @@ export const RuleCreateContextProvider = ({ children, eventData, initialValues, 
 		initialValues: initialValues || {
 			all_day: false,
 			dates: [],
-			end_time: '23:59',
+			end_time: '23:59' as HHMM,
 			event: {
 				id: '',
 				title: '',
@@ -72,7 +72,7 @@ export const RuleCreateContextProvider = ({ children, eventData, initialValues, 
 
 			kind: 'event_restriction',
 			lines_mode: 'all',
-			start_time: '00:00',
+			start_time: '00:00' as HHMM,
 		},
 		mode: 'controlled',
 		validate: zodResolver(EventRuleSchema),

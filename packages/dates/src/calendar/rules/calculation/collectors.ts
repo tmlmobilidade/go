@@ -17,7 +17,7 @@ import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matche
  *
  * @example
  * ```ts
- * const result = collectManualIncludes(rules, { weekday: 1, periodId: 'school' });
+ * const result = collectManualIncludes(rules, { weekday: 1, yearPeriodId: 'school' });
  * // result = { appliedRuleIds: ['rule1', 'rule2'], timePoints: Set(['08:00', '09:00']) }
  * ```
  */
@@ -54,7 +54,7 @@ export function collectManualIncludes(
  *
  * @example
  * ```ts
- * const replacement = { weekdays: [1], periodIds: ['school'], _id: 'event1' };
+ * const replacement = { weekdays: [1], yearPeriodIds: ['school'], _id: 'event1' };
  * const result = collectReplacementManualIncludes(replacement, manualRules);
  * // result.appliedRuleIds will always include 'event1'
  * ```

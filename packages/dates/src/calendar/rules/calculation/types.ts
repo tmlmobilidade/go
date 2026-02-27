@@ -17,8 +17,8 @@ export interface RuleApplication {
  * Contains only the period and weekday - enough to match against manual rule criteria.
  */
 export interface DayContext {
-	/** The active period ID for this day (e.g., school term, summer, etc.) */
-	periodId: string
 	/** ISO weekday number (1=Monday, 7=Sunday) */
 	weekday: IsoWeekday
+	/** The active period ID for this day (e.g., school term, summer, etc.) */
+	yearPeriodId: string
 }
