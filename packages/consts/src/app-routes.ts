@@ -420,12 +420,14 @@ export const API_ROUTES = Object.freeze({
 		PLANS_DETAIL_CONTROLLER_REPROCESS: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/controller-reprocess`,
 		PLANS_DETAIL_LOCK: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/lock`,
 		PLANS_DETAIL_OPERATION_FILE: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/operation-file`,
+		PLANS_DETAIL_OPERATION_FILE_DOWNLOAD: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/operation-file/download`,
 		PLANS_DRT_MODEL_: (id: string) => `${getAppConfig('plans', 'api_url')}/ID:/plans/api/plans/drt-model/${id}`,
 		PLANS_LIST: `${getAppConfig('plans', 'api_url')}/plans`,
 
 		// VALIDATIONS
 		VALIDATIONS_DETAIL: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}`,
 		VALIDATIONS_DETAIL_FILE: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/file`,
+		VALIDATIONS_DETAIL_FILE_DOWNLOAD: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/file/download`,
 		VALIDATIONS_DETAIL_LOCK: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/lock`,
 		VALIDATIONS_DETAIL_REQUEST_APPROVAL: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/request-approval`,
 		VALIDATIONS_LIST: `${getAppConfig('plans', 'api_url')}/validations`,

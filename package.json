@@ -27,7 +27,7 @@
 		"build:stops": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-stops-*",
 		"build:types": "turbo build --filter=@tmlmobilidade/types",
 
-		"dev:alerts": "ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
+		"dev:alerts": "npm run build:alerts:packages && ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
 		"dev:auth": "ENVIRONMENT=development dotenv-run -f ./modules/auth/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-auth-*",
 		"dev:auth:prod": "ENVIRONMENT=development dotenv-run -f ./modules/auth/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-auth-*",
 		"dev:controller": "ENVIRONMENT=development dotenv-run -f ./modules/controller/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-*",
@@ -66,7 +66,7 @@
 	"devDependencies": {
 		"@dotenv-run/cli": "1.3.6",
 		"@tmlmobilidade/eslint": "*",
-		"turbo": "2.8.10"
+		"turbo": "2.8.11"
 	},
 	"packageManager": "npm@11.10.1",
 	"workspaces": [

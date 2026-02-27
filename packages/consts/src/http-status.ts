@@ -1,6 +1,6 @@
 /* eslint-disable perfectionist/sort-objects */
 
-export const HttpStatus = Object.freeze({
+export const HTTP_STATUS = Object.freeze({
 	/* 100s */
 	CONTINUE: 100,
 	SWITCHING_PROTOCOLS: 101,

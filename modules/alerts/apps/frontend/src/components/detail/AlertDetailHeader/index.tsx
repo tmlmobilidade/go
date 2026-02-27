@@ -5,8 +5,7 @@
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { DeleteButton, HasPermission, keepUrlParams, LockButton, PublishStatusTag, SaveButton, useMeContext } from '@tmlmobilidade/ui';
-import { CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, DeleteButton, HasPermission, keepUrlParams, Label, LockButton, PublishStatusTag, SaveButton, Spacer, Toolbar, useMeContext } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
@@ -55,10 +54,13 @@ export function AlertDetailHeader() {
 		router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_LIST));
 	};
 
-	// const handleDuplicate = () => {
-	// 	const id = alertDetailContext.data.id;
-	// 	router.replace(`${PAGE_ROUTES.alerts.ALERTS_DETAIL('new')}?copy=${id}`);
-	// };
+	const handleDuplicate = () => {
+		const id = alertDetailContext.data.id;
+		if (!id) return;
+		const searchParams = new URLSearchParams(window.location.search);
+		searchParams.set('copy', id);
+		router.push(`${PAGE_ROUTES.alerts.ALERTS_LIST}?${searchParams.toString()}`);
+	};
 
 	//
 	// C. Render components
@@ -78,12 +80,16 @@ export function AlertDetailHeader() {
 
 			<Spacer />
 
-			{/* <Button
-				icon={<IconCopy size={28} />}
-				label="Duplicar"
-				onClick={handleDuplicate}
-				variant="secondary"
-			/> */}
+			<HasPermission
+				action={PermissionCatalog.all.alerts.actions.create}
+				scope={PermissionCatalog.all.alerts.scope}
+			>
+				<Button
+					label="Duplicar"
+					onClick={handleDuplicate}
+					variant="secondary"
+				/>
+			</HasPermission>
 
 			<HasPermission
 				action={PermissionCatalog.all.alerts.actions.update}
