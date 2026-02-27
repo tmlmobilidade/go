@@ -119,7 +119,7 @@ export default defineConfig([
 				},
 				// Constants: SCREAMING_SNAKE_CASE
 				{
-					format: ['UPPER_CASE', 'camelCase'], // Allow both for flexibility
+					format: ['UPPER_CASE', 'camelCase', 'PascalCase'], // Allow both for flexibility
 					modifiers: ['const', 'global'],
 					selector: 'variable',
 				},

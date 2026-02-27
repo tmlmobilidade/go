@@ -10,6 +10,8 @@ const SupplyByAgencySchema = MetricBaseSchema.extend({
 		z.string(),
 		z.object({
 			accomplished_rides: z.number(),
+			cost_per_trip: z.number(),
+			revenue_per_trip: z.number(),
 			scheduled_rides: z.number(),
 			vkms_observed: z.number(),
 			vkms_scheduled: z.number(),
@@ -33,10 +35,12 @@ export const SupplyByAgencyByDaySchema = SupplyByAgencySchema.extend({
 		z.string(),
 		z.object({
 			accomplished_rides: z.number(),
+			cost_per_trip: z.number(),
 			day_type: z.enum(['1', '2', '3']),
 			holiday: z.enum(['0', '1']),
 			notes: z.string().nullable(),
 			period: z.enum(['1', '2', '3']),
+			revenue_per_trip: z.number(),
 			scheduled_rides: z.number(),
 			vkms_observed: z.number(),
 			vkms_scheduled: z.number(),

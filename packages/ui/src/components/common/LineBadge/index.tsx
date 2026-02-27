@@ -15,7 +15,7 @@ export interface LineBadgeProps {
 	lineId?: string
 	onClick?: () => void
 	shortName?: string
-	size?: 'lg' | 'md'
+	size?: 'full-width' | 'lg' | 'md'
 	textColor?: string
 	withAlertIcon?: boolean
 }

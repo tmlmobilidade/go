@@ -36,6 +36,7 @@ env:
     alerts:nginx
     alerts:api
     alerts:frontend
+    alerts:organizer
 
     auth:nginx
     auth:api
@@ -98,10 +99,6 @@ env:
     stops:api
     stops:frontend
     stops:organizer
-
-    ticketing:nginx
-    ticketing:api
-    ticketing:frontend
 
     offer:nginx
     offer:api

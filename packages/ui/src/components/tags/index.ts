@@ -1,3 +1,4 @@
+export * from './AgencyTag';
 export * from './EnvironmentTag';
 export * from './OperationalStatusTag';
 export * from './PublishStatusTag';

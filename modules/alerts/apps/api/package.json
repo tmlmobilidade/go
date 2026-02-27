@@ -23,6 +23,7 @@
 		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-alerts-pckg-transform": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/utils": "*"

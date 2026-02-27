@@ -28,7 +28,7 @@ export function TopbarNotifications() {
 	// B. Render components
 
 	return (
-		<TopbarMenu counter={unreadNotifications.length} icon={IconBell}>
+		<TopbarMenu counter={unreadNotifications.length} icon={IconBell} label="Notificações">
 
 			<TopbarMenuList data={unreadNotifications} itemComponent={({ item }) => <TopbarNotificationsItem notification={item} />} title="Não Lidas" />
 			<TopbarMenuList data={readNotifications} itemComponent={({ item }) => <TopbarNotificationsItem notification={item} />} title="Lidas" />

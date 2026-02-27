@@ -4,7 +4,7 @@
 
 import { type DescribeAlertProps } from '@/types/describe-alert-props.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { AlertReferenceType, type RideNormalized } from '@tmlmobilidade/types';
+import { type AlertReferenceType, type RideNormalized } from '@tmlmobilidade/types';
 
 /* * */
 
