@@ -1,18 +1,28 @@
 /* * */
 
 import { EmailWrapper, styles, ValidationSummary } from '@/components/index.js';
-import { Button, Hr, Section, Text } from '@react-email/components';
+import { emailProvider } from '@/email.provider.js';
+import { type SendEmailProps } from '@/types.js';
+import { Button, Hr, render, Section, Text } from '@react-email/components';
 import { getAppConfig } from '@tmlmobilidade/consts';
 import { GtfsValidation, ProcessingStatus, UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
 
-export interface UnsuccessfulGtfsValidationEmailProps {
-	first_name: string
+export const unsuccessfulGtfsValidationSubject = 'Validação GTFS com erros';
+
+/* * */
+
+export interface UnsuccessfulGtfsValidationTemplateProps {
+	firstName: string
 	validation: GtfsValidation
 }
 
-export function UnsuccessfulGtfsValidationEmail({ first_name, validation }: UnsuccessfulGtfsValidationEmailProps) {
+/* * */
+
+export default function UnsuccessfulGtfsValidationTemplate({ firstName, validation }: UnsuccessfulGtfsValidationTemplateProps) {
+	//
+
 	const go_link = getAppConfig('plans', 'frontend_url') + '/validations/' + validation._id;
 
 	// Safe access to validation summary with fallbacks
@@ -26,7 +36,7 @@ export function UnsuccessfulGtfsValidationEmail({ first_name, validation }: Unsu
 				<Text style={styles.text}>
 					👋 Olá
 					{' '}
-					{first_name}
+					{firstName}
 					,
 				</Text>
 
@@ -69,7 +79,9 @@ export function UnsuccessfulGtfsValidationEmail({ first_name, validation }: Unsu
 	);
 };
 
-const validation: GtfsValidation = {
+/* * */
+
+const mockValidation: GtfsValidation = {
 	_id: '123',
 	created_at: 1715328000 as UnixTimestamp,
 	created_by: '',
@@ -94,9 +106,23 @@ const validation: GtfsValidation = {
 	updated_by: '',
 };
 
-UnsuccessfulGtfsValidationEmail.PreviewProps = {
-	first_name: 'Josué',
-	validation,
-} as UnsuccessfulGtfsValidationEmailProps;
+UnsuccessfulGtfsValidationTemplate.PreviewProps = {
+	firstName: 'Josué',
+	validation: mockValidation,
+} satisfies UnsuccessfulGtfsValidationTemplateProps;
 
-export default UnsuccessfulGtfsValidationEmail;
+/* * */
+
+export const renderUnsuccessfulGtfsValidationTemplate = async (props: UnsuccessfulGtfsValidationTemplateProps) => {
+	return await render(<UnsuccessfulGtfsValidationTemplate {...props} />);
+};
+
+/* * */
+
+export const sendUnsuccessfulGtfsValidationEmail = async ({ data, to }: SendEmailProps<UnsuccessfulGtfsValidationTemplateProps>) => {
+	await emailProvider.send({
+		html: await renderUnsuccessfulGtfsValidationTemplate(data),
+		subject: unsuccessfulGtfsValidationSubject,
+		to: to,
+	});
+};

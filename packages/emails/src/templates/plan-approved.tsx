@@ -1,15 +1,29 @@
+/* * */
+
 import { EmailWrapper, InfoBox, styles } from '@/components/index.js';
-import { Button, Hr, Section, Text } from '@react-email/components';
+import { emailProvider } from '@/email.provider.js';
+import { type SendEmailProps } from '@/types.js';
+import { Button, Hr, render, Section, Text } from '@react-email/components';
 import { getAppConfig } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type OperationalDate, type Plan, type UnixTimestamp } from '@tmlmobilidade/types';
 
-export interface PlanApprovedEmailProps {
-	first_name: string
+/* * */
+
+export const planApprovedSubject = 'Plano Aprovado';
+
+/* * */
+
+export interface PlanApprovedTemplateProps {
+	firstName: string
 	plan: Plan
 }
 
-export function PlanApprovedEmail({ first_name, plan }: PlanApprovedEmailProps) {
+/* * */
+
+export default function PlanApprovedTemplate({ firstName, plan }: PlanApprovedTemplateProps) {
+	//
+
 	const go_link = getAppConfig('plans', 'frontend_url') + '/plans/' + plan._id;
 
 	return (
@@ -18,7 +32,7 @@ export function PlanApprovedEmail({ first_name, plan }: PlanApprovedEmailProps) 
 				<Text style={styles.text}>
 					👋 Olá
 					{' '}
-					{first_name}
+					{firstName}
 					,
 				</Text>
 
@@ -90,6 +104,8 @@ export function PlanApprovedEmail({ first_name, plan }: PlanApprovedEmailProps) 
 	);
 };
 
+/* * */
+
 const mockPlan: Plan = {
 	_id: '64f8b2a3c1d2e3f4a5b6c7d8',
 	apps: {
@@ -126,9 +142,23 @@ const mockPlan: Plan = {
 	updated_by: '',
 };
 
-PlanApprovedEmail.PreviewProps = {
-	first_name: 'Josué',
+PlanApprovedTemplate.PreviewProps = {
+	firstName: 'Josué',
 	plan: mockPlan,
-} as PlanApprovedEmailProps;
+} satisfies PlanApprovedTemplateProps;
 
-export default PlanApprovedEmail;
+/* * */
+
+export const renderPlanApprovedTemplate = async (props: PlanApprovedTemplateProps) => {
+	return await render(<PlanApprovedTemplate {...props} />);
+};
+
+/* * */
+
+export const sendPlanApprovedEmail = async ({ data, to }: SendEmailProps<PlanApprovedTemplateProps>) => {
+	await emailProvider.send({
+		html: await renderPlanApprovedTemplate(data),
+		subject: planApprovedSubject,
+		to: to,
+	});
+};

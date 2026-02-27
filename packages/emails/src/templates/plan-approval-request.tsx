@@ -1,22 +1,29 @@
 /* * */
 
 import { EmailWrapper, InfoBox, styles } from '@/components/index.js';
-import { Button, Hr, Section, Text } from '@react-email/components';
+import { emailProvider } from '@/email.provider.js';
+import { type SendEmailProps } from '@/types.js';
+import { Button, Hr, render, Section, Text } from '@react-email/components';
 import { getAppConfig } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type GtfsValidation, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
 
-export interface PlanApprovalRequestEmailProps {
-	solicited_by: string
+export const planApprovalRequestSubject = 'Pedido de aprovação de plano';
+
+/* * */
+
+export interface PlanApprovalRequestTemplateProps {
+	solicitedBy: string
 	validation: GtfsValidation
 }
 
-export function PlanApprovalRequestEmail({
-	solicited_by,
-	validation,
-}: PlanApprovalRequestEmailProps) {
+/* * */
+
+export default function PlanApprovalRequestTemplate({ solicitedBy, validation }: PlanApprovalRequestTemplateProps) {
+	//
+
 	const validation_url = getAppConfig('plans', 'frontend_url') + '/validations/' + validation._id;
 
 	return (
@@ -60,7 +67,7 @@ export function PlanApprovalRequestEmail({
 				<Text style={styles.textStyles.muted}>
 					<strong>Solicitado por:</strong>
 					{' '}
-					{solicited_by}
+					{solicitedBy}
 					<br />
 					<strong>Data do pedido:</strong>
 					{' '}
@@ -70,6 +77,8 @@ export function PlanApprovalRequestEmail({
 		</EmailWrapper>
 	);
 };
+
+/* * */
 
 const mockValidation: GtfsValidation = {
 	_id: 'ABC123',
@@ -96,9 +105,23 @@ const mockValidation: GtfsValidation = {
 	updated_by: '',
 };
 
-PlanApprovalRequestEmail.PreviewProps = {
-	solicited_by: 'Josué Monteiro',
+PlanApprovalRequestTemplate.PreviewProps = {
+	solicitedBy: 'Josué Monteiro',
 	validation: mockValidation,
-} as unknown as PlanApprovalRequestEmailProps;
+} satisfies PlanApprovalRequestTemplateProps;
 
-export default PlanApprovalRequestEmail;
+/* * */
+
+export const renderPlanApprovalRequestTemplate = async (props: PlanApprovalRequestTemplateProps) => {
+	return await render(<PlanApprovalRequestTemplate {...props} />);
+};
+
+/* * */
+
+export const sendPlanApprovalRequestEmail = async ({ data, to }: SendEmailProps<PlanApprovalRequestTemplateProps>) => {
+	await emailProvider.send({
+		html: await renderPlanApprovalRequestTemplate(data),
+		subject: planApprovalRequestSubject,
+		to: to,
+	});
+};

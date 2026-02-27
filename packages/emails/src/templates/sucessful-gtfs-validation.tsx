@@ -1,18 +1,28 @@
 /* * */
 
 import { EmailWrapper, styles, ValidationSummary } from '@/components/index.js';
-import { Button, Hr, Section, Text } from '@react-email/components';
+import { emailProvider } from '@/email.provider.js';
+import { type SendEmailProps } from '@/types.js';
+import { Button, Hr, render, Section, Text } from '@react-email/components';
 import { getAppConfig } from '@tmlmobilidade/consts';
-import { GtfsValidation, ProcessingStatus, UnixTimestamp } from '@tmlmobilidade/types';
+import { type GtfsValidation, type ProcessingStatus, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
 
-export interface SucessfulGtfsValidationEmailProps {
-	first_name: string
+export const sucessfulGtfsValidationSubject = 'Validação GTFS realizada com sucesso';
+
+/* * */
+
+export interface SucessfulGtfsValidationTemplateProps {
+	firstName: string
 	validation: GtfsValidation
 }
 
-export function SucessfulGtfsValidationEmail({ first_name, validation }: SucessfulGtfsValidationEmailProps) {
+/* * */
+
+export default function SucessfulGtfsValidationTemplate({ firstName, validation }: SucessfulGtfsValidationTemplateProps) {
+	//
+
 	const go_link = getAppConfig('plans', 'frontend_url') + '/validations/' + validation._id;
 
 	const totalWarnings = validation.summary?.total_warnings ?? 0;
@@ -24,7 +34,7 @@ export function SucessfulGtfsValidationEmail({ first_name, validation }: Sucessf
 				<Text style={styles.text}>
 					👋 Olá
 					{' '}
-					{first_name}
+					{firstName}
 					,
 				</Text>
 
@@ -69,7 +79,9 @@ export function SucessfulGtfsValidationEmail({ first_name, validation }: Sucessf
 	);
 };
 
-const validation: GtfsValidation = {
+/* * */
+
+const mockValidation: GtfsValidation = {
 	_id: '123',
 	created_at: 1715328000 as UnixTimestamp,
 	created_by: '',
@@ -94,9 +106,23 @@ const validation: GtfsValidation = {
 	updated_by: '',
 };
 
-SucessfulGtfsValidationEmail.PreviewProps = {
-	first_name: 'Josué',
-	validation,
-} as SucessfulGtfsValidationEmailProps;
+SucessfulGtfsValidationTemplate.PreviewProps = {
+	firstName: 'Josué',
+	validation: mockValidation,
+} satisfies SucessfulGtfsValidationTemplateProps;
 
-export default SucessfulGtfsValidationEmail;
+/* * */
+
+export const renderSucessfulGtfsValidationTemplate = async (props: SucessfulGtfsValidationTemplateProps) => {
+	return await render(<SucessfulGtfsValidationTemplate {...props} />);
+};
+
+/* * */
+
+export const sendSucessfulGtfsValidationEmail = async ({ data, to }: SendEmailProps<SucessfulGtfsValidationTemplateProps>) => {
+	await emailProvider.send({
+		html: await renderSucessfulGtfsValidationTemplate(data),
+		subject: sucessfulGtfsValidationSubject,
+		to: to,
+	});
+};

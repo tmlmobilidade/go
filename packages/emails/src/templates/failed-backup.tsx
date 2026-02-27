@@ -2,9 +2,8 @@
 
 import { EmailWrapper, HighlightText, InfoBox, styles } from '@/components/index.js';
 import { emailProvider } from '@/email.provider.js';
-import { SendEmailProps } from '@/types.js';
-import { Hr, Section, Text } from '@react-email/components';
-import { render } from '@react-email/components';
+import { type SendEmailProps } from '@/types.js';
+import { Hr, render, Section, Text } from '@react-email/components';
 
 /* * */
 
@@ -12,7 +11,7 @@ export const failedBackupSubject = 'Falha na execução do backup';
 
 /* * */
 
-export interface FailedBackupProps {
+export interface FailedBackupTemplateProps {
 	backupService: string
 	errorMessage?: string
 	failureTime: string
@@ -20,7 +19,7 @@ export interface FailedBackupProps {
 
 /* * */
 
-export default function FailedBackupTemplate({ backupService, errorMessage, failureTime }: FailedBackupProps) {
+export default function FailedBackupTemplate({ backupService, errorMessage, failureTime }: FailedBackupTemplateProps) {
 	return (
 		<EmailWrapper preview="Falha na execução do backup">
 			<Section>
@@ -73,17 +72,17 @@ FailedBackupTemplate.PreviewProps = {
 	backupService: 'MongoDB - Produção',
 	errorMessage: 'Conexão com a base de dados falhou após 3 tentativas',
 	failureTime: '2024-01-15 02:30:00',
-} satisfies FailedBackupProps;
+} satisfies FailedBackupTemplateProps;
 
 /* * */
 
-export const renderFailedBackupTemplate = async (props: FailedBackupProps) => {
+export const renderFailedBackupTemplate = async (props: FailedBackupTemplateProps) => {
 	return await render(<FailedBackupTemplate {...props} />);
 };
 
 /* * */
 
-export const sendFailedBackupEmail = async ({ data, to }: SendEmailProps<FailedBackupProps>) => {
+export const sendFailedBackupEmail = async ({ data, to }: SendEmailProps<FailedBackupTemplateProps>) => {
 	await emailProvider.send({
 		html: await renderFailedBackupTemplate(data),
 		subject: failedBackupSubject,

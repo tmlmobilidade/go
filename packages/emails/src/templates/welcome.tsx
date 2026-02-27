@@ -1,17 +1,27 @@
 /* * */
 
 import { EmailWrapper, styles } from '@/components/index.js';
-import { Button, Hr, Link, Section, Text } from '@react-email/components';
+import { emailProvider } from '@/email.provider.js';
+import { type SendEmailProps } from '@/types.js';
+import { Button, Hr, Link, render, Section, Text } from '@react-email/components';
 import { getAppConfig } from '@tmlmobilidade/consts';
 
 /* * */
 
-export interface WelcomeEmailProps {
-	first_name: string
-	setup_password_link: string
+export const welcomeSubject = 'Bem-vindo ao GO!';
+
+/* * */
+
+export interface WelcomeTemplateProps {
+	firstName: string
+	resetPasswordUrl: string
 }
 
-export function WelcomeEmail({ first_name, setup_password_link }: WelcomeEmailProps) {
+/* * */
+
+export default function WelcomeTemplate({ firstName, resetPasswordUrl }: WelcomeTemplateProps) {
+	//
+
 	const go_link = getAppConfig('auth', 'frontend_url', 'production');
 
 	return (
@@ -20,7 +30,7 @@ export function WelcomeEmail({ first_name, setup_password_link }: WelcomeEmailPr
 				<Text style={styles.text}>
 					👋 Olá
 					{' '}
-					{first_name}
+					{firstName}
 					,
 				</Text>
 
@@ -36,7 +46,7 @@ export function WelcomeEmail({ first_name, setup_password_link }: WelcomeEmailPr
 					Para começar a usar o GO, por favor defina uma palavra-passe para a sua conta:
 				</Text>
 
-				<Button href={setup_password_link} style={styles.button}>
+				<Button href={resetPasswordUrl} style={styles.button}>
 					Definir Palavra-passe
 				</Button>
 
@@ -64,9 +74,25 @@ export function WelcomeEmail({ first_name, setup_password_link }: WelcomeEmailPr
 	);
 };
 
-WelcomeEmail.PreviewProps = {
-	first_name: 'Josué',
-	setup_password_link: 'https://www.tmlmobilidade.pt/setup-password',
-} as WelcomeEmailProps;
+/* * */
 
-export default WelcomeEmail;
+WelcomeTemplate.PreviewProps = {
+	firstName: 'Josué',
+	resetPasswordUrl: 'https://www.tmlmobilidade.pt/setup-password',
+} satisfies WelcomeTemplateProps;
+
+/* * */
+
+export const renderWelcomeTemplate = async (props: WelcomeTemplateProps) => {
+	return await render(<WelcomeTemplate {...props} />);
+};
+
+/* * */
+
+export const sendWelcomeEmail = async ({ data, to }: SendEmailProps<WelcomeTemplateProps>) => {
+	await emailProvider.send({
+		html: await renderWelcomeTemplate(data),
+		subject: welcomeSubject,
+		to: to,
+	});
+};

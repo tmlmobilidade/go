@@ -1,26 +1,31 @@
 /* * */
 
 import { EmailWrapper, InfoBox, styles } from '@/components/index.js';
-import { Button, Hr, Section, Text } from '@react-email/components';
+import { emailProvider } from '@/email.provider.js';
+import { type SendEmailProps } from '@/types.js';
+import { Button, Hr, render, Section, Text } from '@react-email/components';
 
 /* * */
 
-export interface NotificationEmailProps {
+export const genericNotificationSubject = 'Nova Notificação';
+
+/* * */
+
+export interface GenericNotificationTemplateProps {
 	body: string
 	href: string
 	priority: string
-	scope: string
 	title: string
-	topic: string
 }
 
 /* * */
 
-export function NotificationEmail({ body, href, priority, scope, title, topic }: NotificationEmailProps) {
+export default function GenericNotificationTemplate({ body, href, priority, title }: GenericNotificationTemplateProps) {
 	//
 
 	//
 	// A. Setup variables
+
 	const priorityMap: Record<string, string> = {
 		high: 'Alta',
 		low: 'Baixa',
@@ -74,4 +79,27 @@ export function NotificationEmail({ body, href, priority, scope, title, topic }:
 	//
 };
 
-export default NotificationEmail;
+/* * */
+
+GenericNotificationTemplate.PreviewProps = {
+	body: 'Tens uma nova notificação.',
+	href: 'https://www.tmlmobilidade.pt',
+	priority: 'high',
+	title: 'Nova Notificação',
+} satisfies GenericNotificationTemplateProps;
+
+/* * */
+
+export const renderGenericNotificationTemplate = async (props: GenericNotificationTemplateProps) => {
+	return await render(<GenericNotificationTemplate {...props} />);
+};
+
+/* * */
+
+export const sendGenericNotificationEmail = async ({ data, to }: SendEmailProps<GenericNotificationTemplateProps>) => {
+	await emailProvider.send({
+		html: await renderGenericNotificationTemplate(data),
+		subject: genericNotificationSubject,
+		to: to,
+	});
+};

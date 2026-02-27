@@ -1,23 +1,31 @@
 /* * */
 
 import { EmailWrapper, HighlightText, InfoBox, styles } from '@/components/index.js';
-import { Button, Hr, Section, Text } from '@react-email/components';
+import { emailProvider } from '@/email.provider.js';
+import { type SendEmailProps } from '@/types.js';
+import { Button, Hr, render, Section, Text } from '@react-email/components';
 
 /* * */
 
-export interface ResetPasswordEmailProps {
-	first_name: string
-	password_reset_link: string
+export const resetPasswordSubject = 'Redefinição da sua palavra-passe';
+
+/* * */
+
+export interface ResetPasswordTemplateProps {
+	firstName: string
+	resetPasswordUrl: string
 }
 
-export function ResetPasswordEmail({ first_name, password_reset_link }: ResetPasswordEmailProps) {
+/* * */
+
+export default function ResetPasswordTemplate({ firstName, resetPasswordUrl }: ResetPasswordTemplateProps) {
 	return (
 		<EmailWrapper preview="Redefinição da sua palavra-passe">
 			<Section>
 				<Text style={styles.text}>
 					👋 Olá
 					{' '}
-					{first_name}
+					{firstName}
 					,
 				</Text>
 
@@ -40,7 +48,7 @@ export function ResetPasswordEmail({ first_name, password_reset_link }: ResetPas
 					</Text>
 				</InfoBox>
 
-				<Button href={password_reset_link} style={styles.button}>
+				<Button href={resetPasswordUrl} style={styles.button}>
 					Redefinir Palavra-passe
 				</Button>
 
@@ -124,9 +132,25 @@ export function ResetPasswordEmail({ first_name, password_reset_link }: ResetPas
 	);
 };
 
-ResetPasswordEmail.PreviewProps = {
-	first_name: 'Josué',
-	password_reset_link: 'https://www.tmlmobilidade.pt/reset-password',
-} as ResetPasswordEmailProps;
+/* * */
 
-export default ResetPasswordEmail;
+ResetPasswordTemplate.PreviewProps = {
+	firstName: 'Josué',
+	resetPasswordUrl: 'https://www.tmlmobilidade.pt/reset-password',
+} satisfies ResetPasswordTemplateProps;
+
+/* * */
+
+export const renderResetPasswordTemplate = async (props: ResetPasswordTemplateProps) => {
+	return await render(<ResetPasswordTemplate {...props} />);
+};
+
+/* * */
+
+export const sendResetPasswordEmail = async ({ data, to }: SendEmailProps<ResetPasswordTemplateProps>) => {
+	await emailProvider.send({
+		html: await renderResetPasswordTemplate(data),
+		subject: resetPasswordSubject,
+		to: to,
+	});
+};
