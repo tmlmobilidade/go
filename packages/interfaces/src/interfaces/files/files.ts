@@ -85,7 +85,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 		const foundFile = await this.findById(fileId);
 		if (!foundFile) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 		await this.storageService.deleteFile(`${foundFile.scope}/${foundFile.resource_id}/${foundFile._id}.${Files.getFileExtensionFromMimeType(foundFile.type)}`);
-		return await super.deleteById(fileId, options);
+		return await super.deleteById(fileId, { ...options, forceIfLocked: true });
 	}
 
 	/**
