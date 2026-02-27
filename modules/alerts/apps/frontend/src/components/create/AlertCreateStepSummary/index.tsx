@@ -46,11 +46,13 @@ export function AlertCreateStepSummary() {
 					readOnly={!hasPermissionToEdit}
 					{...alertCreateContext.data.form.getInputProps('title')}
 				/>
-				<Switch
-					checked={alertCreateContext.data.auto_texts}
-					label="Gerar descrição automaticamente"
-					onChange={event => alertCreateContext.data.set_auto_texts(event.currentTarget.checked)}
-				/>
+				<Section padding="none">
+					<Switch
+						checked={alertCreateContext.data.auto_texts}
+						label="Gerar descrição automaticamente"
+						onChange={event => alertCreateContext.data.set_auto_texts(event.currentTarget.checked)}
+					/>
+				</Section>
 				<Textarea
 					key={alertCreateContext.data.form.key('description')}
 					label="Descrição"
