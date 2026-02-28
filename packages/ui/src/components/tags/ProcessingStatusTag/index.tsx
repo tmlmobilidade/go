@@ -75,7 +75,7 @@ export function ProcessingStatusTag({ disabled, onChange, onClick, tooltip, valu
 			{value === 'error' && <Tag label={t('shared:status.processing_status.error')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} tooltip={tooltip} variant="danger" />}
 			{value === 'processing' && <Tag label={t('shared:status.processing_status.processing')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} tooltip={tooltip} variant="primary" filled />}
 			{value === 'skipped' && <Tag label={t('shared:status.processing_status.skipped')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} tooltip={tooltip} variant="muted" />}
-			{value === 'waiting' && <Tag label={t('shared:status.processing_status.waiting')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} tooltip={tooltip} variant="secondary" />}
+			{value === 'waiting' && <Tag label={t('shared:status.processing_status.waiting')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} tooltip={tooltip} variant="primary" />}
 		</>
 	);
 

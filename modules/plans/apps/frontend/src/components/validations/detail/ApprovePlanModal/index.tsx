@@ -84,7 +84,7 @@ export default function ApprovePlanModal() {
 						icon={<IconRosetteDiscountCheckFilled />}
 						label="Aprovar Plano"
 						loading={plansCreateContext.flags.loading}
-						onClick={void plansCreateContext.actions.createPlan}
+						onClick={plansCreateContext.actions.createPlan}
 					/>
 				</Grid>
 			</Section>
