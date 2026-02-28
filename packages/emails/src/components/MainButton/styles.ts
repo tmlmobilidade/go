@@ -10,17 +10,12 @@ const button: React.CSSProperties = {
 	fontFamily: '\'Work Sans\', Verdana, Arial, sans-serif',
 	fontSize: '18px',
 	fontWeight: '600',
-	marginBottom: '20px',
+	marginBottom: '30px',
 	marginTop: '10px',
 	padding: '12px 0',
 	textAlign: 'center',
 	textTransform: 'uppercase',
 	width: '100%',
-
-// height: 40px;
-// 	padding: 0 15px;
-// 	border: 2px solid transparent;
-// 	color: var(--color-contrast);
 };
 
 /* * */

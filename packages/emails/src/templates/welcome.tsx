@@ -12,7 +12,7 @@ import { render } from '@react-email/components';
 
 /* * */
 
-export const welcomeSubject = 'Bem-vindo ao GO!';
+export const welcomeSubject = 'O GO dá-te as boas-vindas!';
 
 /* * */
 
@@ -25,7 +25,7 @@ export interface WelcomeTemplateProps {
 
 export default function WelcomeTemplate({ firstName, resetPasswordUrl }: WelcomeTemplateProps) {
 	return (
-		<Wrapper previewMessage="Bem-vindo ao GO - Gestor de Oferta">
+		<Wrapper previewMessage="Agora vai ser melhor gerir mobilidade.">
 			<Greeting text={`Olá ${firstName} 👋`} />
 			<Paragraph>É um prazer dar-te as boas vindas ao GO.</Paragraph>
 			<Paragraph>Esta plataforma é o resultado de uma enorme vontade de evoluir o setor dos transportes públicos.</Paragraph>
