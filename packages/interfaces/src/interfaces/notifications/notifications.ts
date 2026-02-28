@@ -74,20 +74,20 @@ class NotificationsClass extends MongoCollectionClass<Notification, CreateNotifi
 
 			const newNotification: CreateNotificationDto = { ...baseNotification, user_id: recipient._id };
 
+			const result = await notifications.insertOne(newNotification);
+
 			// Send email if permission allows
 			if (canReceiveEmail) {
 				await sendGenericNotificationEmail({
 					data: {
-						body: baseNotification.payload.body,
-						href: baseNotification.payload.href ?? '',
-						priority: baseNotification.priority,
-						title: baseNotification.payload.title,
+						body: result.payload.body,
+						notificationId: result._id,
+						notificationUrl: result.payload.href ?? '',
+						title: result.payload.title,
 					},
 					to: recipient.email,
 				});
 			}
-
-			await notifications.insertOne(newNotification);
 		}
 	}
 

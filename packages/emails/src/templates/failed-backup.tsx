@@ -1,9 +1,11 @@
 /* * */
 
-import { EmailWrapper, HighlightText, InfoBox, styles } from '@/components/index.js';
+import { Paragraph } from '@/components/Paragraph/index.js';
+import { Span } from '@/components/Span/index.js';
+import { Wrapper } from '@/components/Wrapper/index.js';
 import { emailProvider } from '@/email.provider.js';
 import { type SendEmailProps } from '@/types.js';
-import { Hr, render, Section, Text } from '@react-email/components';
+import { render } from '@react-email/components';
 
 /* * */
 
@@ -21,48 +23,21 @@ export interface FailedBackupTemplateProps {
 
 export default function FailedBackupTemplate({ backupService, errorMessage, failureTime }: FailedBackupTemplateProps) {
 	return (
-		<EmailWrapper preview="Falha na execução do backup">
-			<Section>
-				<Text style={styles.text}>
-					Atenção!
-				</Text>
-
-				<Text style={styles.text}>
-					Detetámos uma falha na execução do backup do serviço
-					{' '}
-					<strong>{backupService}</strong>
-					{' '}
-					que requer a sua atenção imediata.
-				</Text>
-
-				<Hr style={{ margin: '24px 0' }} />
-
-				<InfoBox variant="error">
-					<Text style={{ ...styles.text, fontWeight: '600', margin: '0 0 12px 0' }}>
-						⚠️ Falha no Backup
-					</Text>
-
-					<Text style={{ ...styles.text, margin: '8px 0' }}>
-						<strong>Serviço:</strong>
-						{' '}
-						{backupService}
-						<br />
-						<strong>Hora da falha:</strong>
-						{' '}
-						{failureTime}
-					</Text>
-
-					{errorMessage && (
-						<Text style={{ ...styles.text, margin: '8px 0' }}>
-							<strong>Erro:</strong>
-							<br />
-							<HighlightText variant="error">{errorMessage}</HighlightText>
-						</Text>
-					)}
-				</InfoBox>
-
-			</Section>
-		</EmailWrapper>
+		<Wrapper previewMessage="Falha na execução do backup">
+			<Paragraph bold color="danger">Erro na execução de backup.</Paragraph>
+			<Paragraph bold size="md">
+				Serviço:
+				<Span spaceBefore weight="normal">{backupService}</Span>
+			</Paragraph>
+			<Paragraph bold size="md">
+				Mensagem:
+				<Span spaceBefore weight="normal">{errorMessage ?? 'N/A'}</Span>
+			</Paragraph>
+			<Paragraph bold size="md">
+				Timestamp:
+				<Span spaceBefore weight="normal">{failureTime}</Span>
+			</Paragraph>
+		</Wrapper>
 	);
 };
 
