@@ -34,7 +34,7 @@ const RUN_INTERVAL_MS = 1_000; // 1 second
 			// that may be stuck due to previous crashes or errors.
 
 			const waitingOrStuckGtfsValidations = await gtfsValidations.findMany(
-				{ system_status: { $in: ['waiting', 'processing'] } },
+				{ processing_status: { $in: ['waiting', 'processing'] } },
 				{ sort: { created_at: 1 } },
 			);
 

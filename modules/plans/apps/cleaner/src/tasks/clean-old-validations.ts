@@ -28,7 +28,7 @@ export async function cleanOldValidations() {
 	//
 	// Set the threshold for deletion (30 days)
 
-	const thresholdsByStatus: Record<GtfsValidation['system_status'], number> = {
+	const thresholdsByProcessingStatus: Record<GtfsValidation['processing_status'], number> = {
 
 		complete: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
 
@@ -60,10 +60,10 @@ export async function cleanOldValidations() {
 		//
 		// Set the cutoff date based on the validation status
 
-		const thresholdValue = thresholdsByStatus[validation.system_status];
+		const thresholdValue = thresholdsByProcessingStatus[validation.processing_status];
 
 		if (!thresholdValue) {
-			Logger.error(`No threshold defined for status ${validation.system_status}. Skipping validation ${validation._id}.`);
+			Logger.error(`No threshold defined for status ${validation.processing_status}. Skipping validation ${validation._id}.`);
 			continue;
 		}
 

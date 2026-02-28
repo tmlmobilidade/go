@@ -2,15 +2,13 @@
 
 /* * */
 
-import { ValidationStatusTag } from '@/components/common/ValidationStatusTag';
 import { useValidationsListContext } from '@/components/validations/list/ValidationsList.context';
-import { ValidationsListCellAgency } from '@/components/validations/list/ValidationsListCellAgency';
 import { ValidationsListCellDate } from '@/components/validations/list/ValidationsListCellCreatedAt';
 import { ValidationsListFiltersBar } from '@/components/validations/list/ValidationsListFiltersBar';
 import { ValidationsListHeader } from '@/components/validations/list/ValidationsListHeader';
 import { type ValidationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, ProcessingStatusTag, Tag, ValidityStatusTag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -32,17 +30,23 @@ export function ValidationsList() {
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
 			title: '#ID',
-			width: 100,
+			width: 80,
 		},
 		{
-			accessor: 'system_status',
-			render: item => <ValidationStatusTag status={item.system_status} />,
+			accessor: 'processing_status',
+			render: item => <ProcessingStatusTag value={item.processing_status} />,
 			title: 'Estado',
-			width: 125,
+			width: 200,
+		},
+		{
+			accessor: 'validity_status',
+			render: item => <ValidityStatusTag value={item.validity_status} />,
+			title: 'Resultado',
+			width: 200,
 		},
 		{
 			accessor: 'agency_id_normalized',
-			render: item => <ValidationsListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,
+			render: item => <AgencyTag agencyId={item.gtfs_agency.agency_id} showName />,
 			title: 'Operador',
 			width: 400,
 		},

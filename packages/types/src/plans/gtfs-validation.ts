@@ -1,7 +1,7 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { ProcessingStatusSchema } from '@/_common/status.js';
+import { ProcessingStatusSchema, ValidityStatusSchema } from '@/_common/status.js';
 import { GtfsAgencySchema } from '@/gtfs/agency.js';
 import { GtfsFeedInfoSchema } from '@/gtfs/feed-info.js';
 import { z } from 'zod';
@@ -38,10 +38,10 @@ export const GtfsValidationSchema = DocumentSchema.extend({
 	file_id: z.string(),
 	gtfs_agency: GtfsAgencySchema,
 	gtfs_feed_info: GtfsFeedInfoSchema,
-	is_valid: z.boolean().default(false),
 	notification_sent: z.boolean().default(false),
+	processing_status: ProcessingStatusSchema.default('waiting'),
 	summary: GTFSValidatorSummarySchema.nullish(),
-	system_status: ProcessingStatusSchema,
+	validity_status: ValidityStatusSchema.default('unknown'),
 });
 
 export const CreateGtfsValidationSchema = GtfsValidationSchema.omit({ _id: true, created_at: true, updated_at: true });

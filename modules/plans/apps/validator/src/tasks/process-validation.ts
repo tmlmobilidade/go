@@ -34,7 +34,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		Logger.info('Updating GTFS Validation document...');
 
-		await gtfsValidations.updateById(gtfsValidation._id, { system_status: 'processing' });
+		await gtfsValidations.updateById(gtfsValidation._id, { processing_status: 'processing' });
 
 		//
 		// Get the associated file document from MongoDB
@@ -81,9 +81,9 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		Logger.info('Validation completed. Updating GTFS Validation document with results...');
 
 		await gtfsValidations.updateById(gtfsValidation._id, {
-			is_valid: gtfsValidationResult.summary.total_errors === 0,
+			processing_status: 'complete',
 			summary: gtfsValidationResult.summary,
-			system_status: 'complete',
+			validity_status: gtfsValidationResult.summary.total_errors === 0 ? 'valid' : 'invalid',
 		});
 
 		//
@@ -93,7 +93,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		const updatedGtfsValidation = await gtfsValidations.findById(gtfsValidation._id);
 
 		try {
-			if (updatedGtfsValidation.is_valid) {
+			if (updatedGtfsValidation.validity_status === 'valid') {
 				await sendSucessfulGtfsValidationEmail({
 					data: {
 						firstName: '',
@@ -144,6 +144,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// a custom error result to be saved in the database and sent via email.
 		Logger.error('Error during GTFS validation:', error);
 		await gtfsValidations.updateById(gtfsValidation._id, {
+			processing_status: 'error',
 			summary: {
 				messages: [
 					{
@@ -158,7 +159,6 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 				total_errors: 1,
 				total_warnings: 0,
 			},
-			system_status: 'error',
 		});
 		await sendSystemErrorEmail({
 			data: {

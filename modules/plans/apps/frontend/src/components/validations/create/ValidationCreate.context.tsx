@@ -131,7 +131,8 @@ export const ValidationCreateContextProvider = ({ children }: PropsWithChildren)
 		uploadFormData.append('agency_id', form.values.gtfs_agency.agency_id);
 		uploadFormData.append('gtfs_agency', JSON.stringify(form.values.gtfs_agency));
 		uploadFormData.append('gtfs_feed_info', JSON.stringify(form.values.gtfs_feed_info));
-		uploadFormData.append('system_status', form.values.system_status);
+		uploadFormData.append('processing_status', form.values.processing_status);
+		uploadFormData.append('validity_status', form.values.validity_status);
 		uploadFormData.append('file', validationFile);
 
 		//

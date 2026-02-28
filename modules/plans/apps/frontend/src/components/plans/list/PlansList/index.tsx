@@ -32,7 +32,7 @@ export function PlansList() {
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
 			title: '#ID',
-			width: 100,
+			width: 80,
 		},
 		{
 			accessor: 'agency_id_normalized',
@@ -86,8 +86,8 @@ export function PlansList() {
 
 	return (
 		<Pane header={[
-			<PlansListHeader />,
-			<PlansListFiltersBar />,
+			<PlansListHeader key="header" />,
+			<PlansListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable

@@ -2,13 +2,12 @@
 
 /* * */
 
-import { ValidationStatusTag } from '@/components/common/ValidationStatusTag';
 import { openApprovePlanModal } from '@/components/validations/detail/ApprovePlanModal';
 import { openRequestApprovalModalModal } from '@/components/validations/detail/RequestApprovalModal';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, CloseButton, HasPermission, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, HasPermission, ProcessingStatusTag, Spacer, Tag, Toolbar, ValidityStatusTag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -47,12 +46,13 @@ export function ValidationsDetailHeader() {
 			<CloseButton onClick={handleClose} type="close" />
 
 			<Tag label={validationsDetailContext.data.validation?._id} variant="secondary" />
-			<ValidationStatusTag status={validationsDetailContext.data.validation?.system_status} />
+			<ProcessingStatusTag value={validationsDetailContext.data.validation?.processing_status} />
+			<ValidityStatusTag value={validationsDetailContext.data.validation?.validity_status} />
 			<Tag label={validationsDetailContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
 
 			<Spacer />
 
-			{validationsDetailContext.data.validation.system_status === 'complete' && (
+			{validationsDetailContext.data.validation.processing_status === 'complete' && (
 				<HasPermission
 					action={PermissionCatalog.all.gtfs_validations.actions.request_approval}
 					resourceKey="agency_ids"
@@ -68,7 +68,7 @@ export function ValidationsDetailHeader() {
 				</HasPermission>
 			)}
 
-			{validationsDetailContext.data.validation.system_status === 'complete' && (
+			{validationsDetailContext.data.validation.processing_status === 'complete' && (
 				<HasPermission
 					action={PermissionCatalog.all.plans.actions.create}
 					resourceKey="agency_ids"
