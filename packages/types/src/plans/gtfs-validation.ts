@@ -35,12 +35,13 @@ export type GTFSValidatorMessage = z.infer<typeof GTFSValidatorMessageSchema>;
 /* VALIDATION */
 
 export const GtfsValidationSchema = DocumentSchema.extend({
-	feeder_status: ProcessingStatusSchema,
 	file_id: z.string(),
 	gtfs_agency: GtfsAgencySchema,
 	gtfs_feed_info: GtfsFeedInfoSchema,
+	is_valid: z.boolean().default(false),
 	notification_sent: z.boolean().default(false),
 	summary: GTFSValidatorSummarySchema.nullish(),
+	system_status: ProcessingStatusSchema,
 });
 
 export const CreateGtfsValidationSchema = GtfsValidationSchema.omit({ _id: true, created_at: true, updated_at: true });
