@@ -27,7 +27,7 @@ const info = {
 
 const warning = {
 	background: '#fff3cd',
-	foreground: '#856404',
+	foreground: 'rgb(235, 120, 0)',
 };
 
 /* * */
