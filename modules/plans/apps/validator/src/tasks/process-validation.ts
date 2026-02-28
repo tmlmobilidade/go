@@ -132,7 +132,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// the downloaded GTFS file and the validation result file.
 
 		try {
-			fs.rmdirSync(tempWorkdirPath);
+			fs.rmSync(tempWorkdirPath, { force: true, recursive: true });
 			Logger.info('Cleaned up temporary files.');
 		} catch (error) {
 			Logger.error('Error during cleanup of temporary files:', error);

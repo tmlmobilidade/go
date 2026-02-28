@@ -36,13 +36,13 @@ export function ValidationsList() {
 			accessor: 'processing_status',
 			render: item => <ProcessingStatusTag value={item.processing_status} />,
 			title: 'Estado',
-			width: 200,
+			width: 130,
 		},
 		{
 			accessor: 'validity_status',
 			render: item => <ValidityStatusTag value={item.validity_status} />,
 			title: 'Resultado',
-			width: 200,
+			width: 115,
 		},
 		{
 			accessor: 'agency_id_normalized',
