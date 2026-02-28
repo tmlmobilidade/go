@@ -1,9 +1,13 @@
 /* * */
 
 import { processValidation } from '@/tasks/process-validation.js';
+import { SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
+import { sendSystemErrorEmail } from '@tmlmobilidade/emails';
 import { gtfsValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import pjson from 'package.json' with { type: 'json' };
 
 /* * */
 
@@ -25,7 +29,7 @@ await (async function init() {
 			// that may be stuck due to previous crashes or errors.
 
 			const waitingOrStuckGtfsValidations = await gtfsValidations.findMany(
-				{ feeder_status: { $in: ['waiting', 'processing'] } },
+				{ system_status: { $in: ['waiting', 'processing'] } },
 				{ sort: { created_at: 1 } },
 			);
 
@@ -47,7 +51,17 @@ await (async function init() {
 
 			//
 		} catch (error) {
+			// Log any unexpected errors that occur during the validation loop
+			// and send a system error email to the administrators.
 			Logger.error('Error processing validations:', error);
+			await sendSystemErrorEmail({
+				data: {
+					errorMessage: error.message ?? 'Unknown error',
+					serviceName: pjson.name,
+					timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+				},
+				to: SYSTEM_CONTACT_EMAIL,
+			});
 		}
 
 		Logger.terminate(`Validation completed in ${globalTimer.get()}`);

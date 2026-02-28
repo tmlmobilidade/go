@@ -17,6 +17,7 @@
 		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {
+		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/gtfs-validator": "20260226.1216.10",
