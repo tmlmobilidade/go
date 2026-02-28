@@ -2,7 +2,6 @@
 
 import { validateFile } from '@/tasks/validate-file.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { GTFSValidatorResult } from '@tmlmobilidade/gtfs-validator';
 import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -13,26 +12,30 @@ import { join } from 'node:path';
 
 /* * */
 
-export async function processValidation(validation: GtfsValidation) {
+export async function processValidation(gtfsValidation: GtfsValidation) {
 	//
 
-	const tempFilePath = join(tmpdir(), `gtfs_${validation.file_id}.zip`);
-	const outputFilePath = join(tmpdir(), `gtfs_validation_${validation._id}.json`);
+	//
+	// Setup temporary directory paths for this validation process
+	// to avoid any conflicts with other concurrent validations.
+
+	const tempFilePath = join(tmpdir(), `gtfs_${gtfsValidation.file_id}.zip`);
+	const outputFilePath = join(tmpdir(), `gtfs_validation_${gtfsValidation._id}.json`);
 
 	try {
 		Logger.info('Processing validation...');
 
 		// 1. Update validation status to processing
-		const updatedValidation = await gtfsValidations.updateById(validation._id, {
+		const updatedValidation = await gtfsValidations.updateById(gtfsValidation._id, {
 			feeder_status: 'processing',
 		});
 
 		Logger.info(`Validation set to processing: ${updatedValidation.feeder_status}`);
 
 		// 2. Get the file from MongoDB
-		const file = await files.findById(validation.file_id);
+		const file = await files.findById(gtfsValidation.file_id);
 		if (!file) {
-			throw new Error(`File not found: ${validation.file_id}`);
+			throw new Error(`File not found: ${gtfsValidation.file_id}`);
 		}
 
 		Logger.info(`Getting file from MongoDB: ${file._id}`);
@@ -49,7 +52,7 @@ export async function processValidation(validation: GtfsValidation) {
 
 		let validationResult: GTFSValidatorResult['summary'];
 		try {
-			validationResult = await validateFile(tempFilePath, outputFilePath, validation.gtfs_agency.agency_id);
+			validationResult = await validateFile(tempFilePath, outputFilePath, gtfsValidation.gtfs_agency.agency_id);
 		} catch (error) {
 			validationResult = {
 				messages: [
@@ -59,7 +62,7 @@ export async function processValidation(validation: GtfsValidation) {
 						message: error instanceof Error ? error.message : String(error),
 						rows: [],
 						severity: 'error',
-						validation_id: validation._id,
+						validation_id: gtfsValidation._id,
 					},
 				],
 				total_errors: 1,
@@ -70,14 +73,14 @@ export async function processValidation(validation: GtfsValidation) {
 		Logger.info(`File validated, updating document in MongoDB`);
 
 		// 5. Update validation status based on results
-		await gtfsValidations.updateById(validation._id, {
+		await gtfsValidations.updateById(gtfsValidation._id, {
 			feeder_status: validationResult.total_errors > 0 ? 'error' : 'complete',
 			summary: validationResult,
 		});
 
 		// 6. Send email to user
 		try {
-			const latest_validation = await gtfsValidations.findById(validation._id);
+			const latest_validation = await gtfsValidations.findById(gtfsValidation._id);
 			await sendGtfsValidationEmail({
 				props: {
 					first_name: '',
@@ -112,7 +115,7 @@ export async function processValidation(validation: GtfsValidation) {
 
 		// Update validation status to error
 		try {
-			await gtfsValidations.updateById(validation._id, {
+			await gtfsValidations.updateById(gtfsValidation._id, {
 				feeder_status: 'error',
 				summary: {
 					messages: [
@@ -122,7 +125,7 @@ export async function processValidation(validation: GtfsValidation) {
 							message: error instanceof Error ? error.message : JSON.stringify(error),
 							rows: [],
 							severity: 'error',
-							validation_id: validation._id,
+							validation_id: gtfsValidation._id,
 						},
 					],
 					total_errors: 1,
