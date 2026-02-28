@@ -1,5 +1,6 @@
 /* * */
 
+import { Span } from '@/components/Span/index.js';
 import { Text } from '@react-email/components';
 
 import styles from './styles.js';
@@ -18,8 +19,7 @@ export function DebugCode({ label = 'Olá,', value }: DebugCodeProps) {
 		<Text style={styles.text}>
 			{label}
 			:
-			{' '}
-			{value}
+			<Span spaceBefore weight="bold">{value}</Span>
 		</Text>
 	);
 };

@@ -7,7 +7,6 @@ const link: React.CSSProperties = {
 	display: 'flex',
 	flexDirection: 'row',
 	justifyContent: 'space-between',
-	marginBottom: '1px',
 	width: '100%',
 };
 

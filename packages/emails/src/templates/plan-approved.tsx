@@ -35,17 +35,17 @@ export default function PlanApprovedTemplate({ createdBy, endDate, firstName, pl
 			<Greeting text={`${firstName},`} />
 			<Paragraph>
 				O plano
-				<Span size="md" spaceAfter spaceBefore weight="bold">{planId}</Span>
+				<Span spaceAfter spaceBefore weight="bold">{planId}</Span>
 				foi aprovado  por
-				<Span size="md" spaceAfter spaceBefore weight="bold">{createdBy}</Span>
+				<Span spaceAfter spaceBefore weight="bold">{createdBy}</Span>
 				e está agora em processamento.
 			</Paragraph>
 			<Paragraph>
-				<Span size="md" spaceAfter spaceBefore weight="bold">Início: </Span>
+				<Span spaceAfter spaceBefore weight="bold">Início: </Span>
 				{Dates.fromOperationalDate(startDate, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR, 'pt-PT')}
 			</Paragraph>
 			<Paragraph>
-				<Span size="md" spaceAfter spaceBefore weight="bold">Fim: </Span>
+				<Span spaceAfter spaceBefore weight="bold">Fim: </Span>
 				{Dates.fromOperationalDate(endDate, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR, 'pt-PT')}
 			</Paragraph>
 			<MainButton href={planUrl} label="Ver detalhes do plano" />

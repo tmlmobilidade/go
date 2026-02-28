@@ -1,10 +1,13 @@
 /* * */
+
+import { fontFamily } from '@/styles/font.js';
+
+/* * */
 /* LINK */
 
 const link: React.CSSProperties = {
 	color: '#005ADC',
-	fontFamily: '\'Work Sans\', Verdana, Arial, sans-serif',
-	fontSize: '17px',
+	fontFamily: fontFamily.primary,
 	textDecoration: 'underline',
 };
 

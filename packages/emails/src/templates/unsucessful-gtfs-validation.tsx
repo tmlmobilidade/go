@@ -1,6 +1,7 @@
 /* * */
 
 import { Anchor } from '@/components/Anchor/index.js';
+import { DebugCode } from '@/components/DebugCode/index.js';
 import { Greeting } from '@/components/Greeting/index.js';
 import { MainButton } from '@/components/MainButton/index.js';
 import { Paragraph } from '@/components/Paragraph/index.js';
@@ -9,7 +10,6 @@ import { Wrapper } from '@/components/Wrapper/index.js';
 import { emailProvider } from '@/email.provider.js';
 import { type SendEmailProps } from '@/types.js';
 import { render } from '@react-email/components';
-import { getAppConfig } from '@tmlmobilidade/consts';
 
 /* * */
 
@@ -19,18 +19,15 @@ export const unsuccessfulGtfsValidationSubject = 'Validação GTFS com erros';
 
 export interface UnsuccessfulGtfsValidationTemplateProps {
 	firstName: string
-	totalErrors?: number
-	totalWarnings?: number
+	gtfsValidationUrl: string
+	totalErrors: number
+	totalWarnings: number
 	validationId: string
 }
 
 /* * */
 
-export default function UnsuccessfulGtfsValidationTemplate({ firstName, totalErrors = 0, totalWarnings = 0, validationId }: UnsuccessfulGtfsValidationTemplateProps) {
-	//
-
-	const go_link = getAppConfig('plans', 'frontend_url') + '/validations/' + validationId;
-
+export default function UnsuccessfulGtfsValidationTemplate({ firstName, gtfsValidationUrl, totalErrors = 0, totalWarnings = 0, validationId }: UnsuccessfulGtfsValidationTemplateProps) {
 	return (
 		<Wrapper previewMessage="O GTFS que enviaste contém erros.">
 			<Greeting text={`${firstName},`} />
@@ -84,7 +81,8 @@ export default function UnsuccessfulGtfsValidationTemplate({ firstName, totalErr
 				ou entra em contacto connosco.
 			</Paragraph>
 			<Paragraph bold size="md">Erros formais impedem a publicação do GTFS e devem ser corrigidos para prosseguir com a aprovação.</Paragraph>
-			<MainButton href={go_link} label="Ver resumo da validação" />
+			<MainButton href={gtfsValidationUrl} label="Ver resumo da validação" />
+			<DebugCode label="Validation ID" value={validationId} />
 		</Wrapper>
 	);
 };
@@ -93,6 +91,7 @@ export default function UnsuccessfulGtfsValidationTemplate({ firstName, totalErr
 
 UnsuccessfulGtfsValidationTemplate.PreviewProps = {
 	firstName: 'Josué',
+	gtfsValidationUrl: 'https://go.tmlmobilidade.com/gtfs-validations/TUH16N',
 	totalErrors: 2,
 	totalWarnings: 2,
 	validationId: 'TUH16N',
