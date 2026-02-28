@@ -19,14 +19,14 @@ export const sucessfulGtfsValidationSubject = 'Validação GTFS realizada com su
 
 export interface SucessfulGtfsValidationTemplateProps {
 	firstName: string
+	gtfsValidationId: string
 	gtfsValidationUrl: string
 	totalWarnings?: number
-	validationId: string
 }
 
 /* * */
 
-export default function SucessfulGtfsValidationTemplate({ firstName, gtfsValidationUrl, totalWarnings = 0, validationId }: SucessfulGtfsValidationTemplateProps) {
+export default function SucessfulGtfsValidationTemplate({ firstName, gtfsValidationId, gtfsValidationUrl, totalWarnings = 0 }: SucessfulGtfsValidationTemplateProps) {
 	return (
 		<Wrapper previewMessage="Validação GTFS realizada com sucesso">
 			<Greeting text={`${firstName},`} />
@@ -60,7 +60,7 @@ export default function SucessfulGtfsValidationTemplate({ firstName, gtfsValidat
 			</Paragraph>
 			<Paragraph>A validação pode agora ser aprovada para plano.</Paragraph>
 			<MainButton href={gtfsValidationUrl} label="Ver resumo da validação" />
-			<DebugCode label="Validation ID" value={validationId} />
+			<DebugCode label="GTFS Validation ID" value={gtfsValidationId} />
 		</Wrapper>
 	);
 };
@@ -69,9 +69,9 @@ export default function SucessfulGtfsValidationTemplate({ firstName, gtfsValidat
 
 SucessfulGtfsValidationTemplate.PreviewProps = {
 	firstName: 'Josué',
+	gtfsValidationId: 'TUH16N',
 	gtfsValidationUrl: 'https://go.tmlmobilidade.com/gtfs-validations/TUH16N',
 	totalWarnings: 0,
-	validationId: 'TUH16N',
 } satisfies SucessfulGtfsValidationTemplateProps;
 
 /* * */

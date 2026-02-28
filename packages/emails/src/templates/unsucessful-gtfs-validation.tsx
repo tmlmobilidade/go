@@ -19,15 +19,15 @@ export const unsuccessfulGtfsValidationSubject = 'Validação GTFS com erros';
 
 export interface UnsuccessfulGtfsValidationTemplateProps {
 	firstName: string
+	gtfsValidationId: string
 	gtfsValidationUrl: string
 	totalErrors: number
 	totalWarnings: number
-	validationId: string
 }
 
 /* * */
 
-export default function UnsuccessfulGtfsValidationTemplate({ firstName, gtfsValidationUrl, totalErrors = 0, totalWarnings = 0, validationId }: UnsuccessfulGtfsValidationTemplateProps) {
+export default function UnsuccessfulGtfsValidationTemplate({ firstName, gtfsValidationId, gtfsValidationUrl, totalErrors = 0, totalWarnings = 0 }: UnsuccessfulGtfsValidationTemplateProps) {
 	return (
 		<Wrapper previewMessage="O GTFS que enviaste contém erros.">
 			<Greeting text={`${firstName},`} />
@@ -82,7 +82,7 @@ export default function UnsuccessfulGtfsValidationTemplate({ firstName, gtfsVali
 			</Paragraph>
 			<Paragraph bold size="md">Erros formais impedem a publicação do GTFS e devem ser corrigidos para prosseguir com a aprovação.</Paragraph>
 			<MainButton href={gtfsValidationUrl} label="Ver resumo da validação" />
-			<DebugCode label="Validation ID" value={validationId} />
+			<DebugCode label="GTFS Validation ID" value={gtfsValidationId} />
 		</Wrapper>
 	);
 };
@@ -91,10 +91,10 @@ export default function UnsuccessfulGtfsValidationTemplate({ firstName, gtfsVali
 
 UnsuccessfulGtfsValidationTemplate.PreviewProps = {
 	firstName: 'Josué',
+	gtfsValidationId: 'TUH16N',
 	gtfsValidationUrl: 'https://go.tmlmobilidade.com/gtfs-validations/TUH16N',
 	totalErrors: 2,
 	totalWarnings: 2,
-	validationId: 'TUH16N',
 } satisfies UnsuccessfulGtfsValidationTemplateProps;
 
 /* * */
