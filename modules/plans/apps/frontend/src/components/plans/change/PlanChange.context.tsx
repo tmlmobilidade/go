@@ -66,12 +66,12 @@ export const PlanChangeContextProvider = ({ children, planId }: PropsWithChildre
 
 		return allValidationsData.filter((item) => {
 			const matchesAgencyId = item.gtfs_agency.agency_id === planData.gtfs_agency.agency_id;
-			const isComplete = item.feeder_status === 'complete';
+			const isComplete = item.processing_status === 'complete';
+			const isValid = item.validity_status === 'valid';
 			// optional: only validations with no GTFS errors
 			// const hasNoErrors = item.summary?.total_errors === 0;
 			// return matchesAgencyId && isComplete && hasNoErrors;
-
-			return matchesAgencyId && isComplete;
+			return matchesAgencyId && isComplete && isValid;
 		});
 	}, [planData, allValidationsData]);
 

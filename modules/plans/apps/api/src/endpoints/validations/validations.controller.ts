@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { agencies, files, Filter, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
@@ -49,12 +49,13 @@ export class GtfsValidationsController {
 
 		const validationData: CreateGtfsValidationDto = {
 			created_by: request.me._id,
-			feeder_status: 'waiting',
 			file_id: '',
 			gtfs_agency: JSON.parse(requestData.fields.gtfs_agency['value'] as string) as GtfsAgency,
 			gtfs_feed_info: JSON.parse(requestData.fields.gtfs_feed_info['value'] as string) as GtfsFeedInfo,
 			is_locked: false,
+			is_valid: false,
 			notification_sent: false,
+			system_status: 'waiting',
 		};
 
 		//
@@ -74,8 +75,7 @@ export class GtfsValidationsController {
 			// Read file back as buffer for upload
 			buffer = readFileSync(tempFilePath);
 			size = buffer.length;
-		}
-		catch (streamError) {
+		} catch (streamError) {
 			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error processing file stream', { cause: streamError });
 		}
 
@@ -137,8 +137,7 @@ export class GtfsValidationsController {
 		if (tempFilePath) {
 			try {
 				unlinkSync(tempFilePath);
-			}
-			catch (cleanupError) {
+			} catch (cleanupError) {
 				console.warn('Failed to cleanup temporary file:', tempFilePath, cleanupError);
 			}
 		}
@@ -159,7 +158,7 @@ export class GtfsValidationsController {
 	static async downloadFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
 		// Get the Validation from the database
 		const foundValidation = await gtfsValidations.findById(request.params.id);
-		if (!foundValidation) throw new HttpException(HttpStatus.NOT_FOUND, 'Validation not found');
+		if (!foundValidation) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
 		// Check if the user has permission to read the Validation
 		const hasPermissionReadValidation = PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.gtfs_validations.actions.read,
@@ -168,10 +167,10 @@ export class GtfsValidationsController {
 			scope: PermissionCatalog.all.gtfs_validations.scope,
 			value: foundValidation.gtfs_agency.agency_id,
 		});
-		if (!hasPermissionReadValidation) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: read validation file');
+		if (!hasPermissionReadValidation) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read validation file');
 		// Fetch the file associated with the validation
 		const foundFileData = await files.findById(foundValidation.file_id);
-		if (!foundFileData) throw new HttpException(HttpStatus.NOT_FOUND, 'Validation file not found');
+		if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation file not found');
 		// Stream the file in the given URL to the client
 		const storageServiceResponse = await fetch(foundFileData.url);
 		if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
@@ -364,9 +363,14 @@ export class GtfsValidationsController {
 		// Send the approval request email
 
 		await sendPlanApprovalRequestEmail({
-			props: {
-				solicited_by: request.me.first_name + ' ' + request.me.last_name,
-				validation: validationData,
+			data: {
+				agencyName: validationData.gtfs_agency.agency_name,
+				endDate: validationData.gtfs_feed_info.feed_end_date,
+				firstName: request.me.first_name,
+				gtfsValidationId: validationData._id,
+				gtfsValidationUrl: `${process.env.FRONTEND_URL}/validations/${validationData._id.toString()}`,
+				requestedBy: request.me.first_name + ' ' + request.me.last_name,
+				startDate: validationData.gtfs_feed_info.feed_start_date,
 			},
 			to: agencyData.contact_emails_pta || [],
 		});
