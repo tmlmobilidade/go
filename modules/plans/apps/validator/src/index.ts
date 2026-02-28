@@ -12,7 +12,11 @@ import pjson from 'package.json' with { type: 'json' };
 
 /* * */
 
-await (async function init() {
+const RUN_INTERVAL_MS = 1_000; // 1 second
+
+/* * */
+
+(async function init() {
 	const runOnInterval = async () => {
 		//
 
@@ -36,6 +40,7 @@ await (async function init() {
 
 			if (!waitingOrStuckGtfsValidations.length) {
 				Logger.info('No waiting validations to process. Exiting...');
+				setTimeout(runOnInterval, RUN_INTERVAL_MS);
 				return;
 			}
 
@@ -68,7 +73,7 @@ await (async function init() {
 
 		Logger.terminate(`Validation completed in ${globalTimer.get()}`);
 
-		setTimeout(void runOnInterval, 10_000);
+		setTimeout(runOnInterval, RUN_INTERVAL_MS);
 	};
 	await runOnInterval();
 })();

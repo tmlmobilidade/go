@@ -4,6 +4,7 @@ import { indentConfig } from '@/rules/indent.js';
 import { jsonConfig } from '@/rules/json.js';
 import { namingConventionsConfig } from '@/rules/naming-conventions.js';
 import { packageJsonConfig } from '@/rules/pjson.js';
+import { promisesConfig } from '@/rules/promises.js';
 import { tsconfigConfig } from '@/rules/tsconfig.js';
 import eslint from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
@@ -56,23 +57,6 @@ export default defineConfig([
 				project: true,
 			},
 			sourceType: 'module',
-		},
-	},
-
-	// TypeScript-specific rules (only for TS files)
-	{
-		files: ['**/*.{ts,tsx}'],
-		languageOptions: {
-			parserOptions: {
-				project: true,
-			},
-		},
-		rules: {
-			// TypeScript specific rules that require type checking
-			'@typescript-eslint/await-thenable': 'error',
-			'@typescript-eslint/no-floating-promises': 'error',
-			'@typescript-eslint/no-misused-promises': 'error',
-			'@typescript-eslint/switch-exhaustiveness-check': 'error',
 		},
 	},
 
@@ -147,6 +131,8 @@ export default defineConfig([
 			// Component structure and organization (prefer-const already enabled by base config)
 		},
 	},
+
+	...promisesConfig,
 
 	...namingConventionsConfig,
 

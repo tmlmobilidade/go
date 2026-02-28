@@ -1,4 +1,3 @@
 /* * */
 
-declare const window: typeof globalThis;
-export const isBrowser = typeof window?.document !== 'undefined';
+export const isBrowser = typeof globalThis === 'object' && 'window' in globalThis;

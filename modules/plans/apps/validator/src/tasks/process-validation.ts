@@ -22,7 +22,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// Setup temporary directory paths for this validation process
 		// to avoid any conflicts with other concurrent validations.
 
-		const tempWorkdirPath = getTmpWorkdirPath();
+		const tempWorkdirPath = getTmpWorkdirPath(null, true);
 
 		const gtfsFilePath = join(tempWorkdirPath, `${gtfsValidation.file_id}.zip`);
 		const gtfsValidationRulesPath = join(tempWorkdirPath, `rules_${gtfsValidation._id}.json`);

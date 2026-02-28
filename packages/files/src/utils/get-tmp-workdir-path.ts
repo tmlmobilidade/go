@@ -2,6 +2,7 @@
 
 import { isBrowser } from '@/utils/is-browser.js';
 import { generateRandomString } from '@tmlmobilidade/strings';
+import fs from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -10,7 +11,7 @@ import { join } from 'node:path';
  * @param id The ID to get the temporary working directory path for.
  * @returns The temporary working directory path.
  */
-export function getTmpWorkdirPath(id?: string): string {
+export function getTmpWorkdirPath(id?: string, createIfNotExists?: boolean): string {
 	//
 
 	if (isBrowser) {
@@ -24,9 +25,17 @@ export function getTmpWorkdirPath(id?: string): string {
 
 	const osTmpDir = tmpdir();
 
-	const workdirName = id ? generateRandomString() : 'default';
+	const workdirName = id ? id : generateRandomString();
 
 	const workdirPath = join(osTmpDir, encodeURIComponent(workdirName));
+
+	//
+	// If the createIfNotExists flag is set to true,
+	// create the directory if it doesn't exist.
+
+	if (createIfNotExists && !fs.existsSync(workdirPath)) {
+		fs.mkdirSync(workdirPath, { recursive: true });
+	}
 
 	//
 	// Return the temporary working directory path.
