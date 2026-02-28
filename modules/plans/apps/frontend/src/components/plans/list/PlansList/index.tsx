@@ -4,13 +4,12 @@
 
 import { PlanStatusTag } from '@/components/common/PlanStatusTag';
 import { usePlansListContext } from '@/components/plans/list/PlansList.context';
-import { PlansListCellAgency } from '@/components/plans/list/PlansListCellAgency';
 import { PlansListCellFeedDates } from '@/components/plans/list/PlansListCellFeedDates';
 import { PlansListFiltersBar } from '@/components/plans/list/PlansListFiltersBar';
 import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { type PlanNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -32,13 +31,13 @@ export function PlansList() {
 			accessor: '_id',
 			render: item => <Tag label={item._id} variant="secondary" />,
 			title: '#ID',
-			width: 80,
+			width: 90,
 		},
 		{
 			accessor: 'agency_id_normalized',
-			render: item => <PlansListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,
+			render: item => <AgencyTag agencyId={item.gtfs_agency.agency_id} showShortName />,
 			title: 'Operador',
-			width: 300,
+			width: 110,
 		},
 		{
 			accessor: 'gtfs_feed_info',
