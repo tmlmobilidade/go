@@ -1,6 +1,7 @@
 /* * */
 
 import { Anchor } from '@/components/Anchor/index.js';
+import { DebugCode } from '@/components/DebugCode/index.js';
 import { Greeting } from '@/components/Greeting/index.js';
 import { MainButton } from '@/components/MainButton/index.js';
 import { Paragraph } from '@/components/Paragraph/index.js';
@@ -9,7 +10,6 @@ import { Wrapper } from '@/components/Wrapper/index.js';
 import { emailProvider } from '@/email.provider.js';
 import { type SendEmailProps } from '@/types.js';
 import { render } from '@react-email/components';
-import { getAppConfig } from '@tmlmobilidade/consts';
 
 /* * */
 
@@ -19,17 +19,14 @@ export const sucessfulGtfsValidationSubject = 'Validação GTFS realizada com su
 
 export interface SucessfulGtfsValidationTemplateProps {
 	firstName: string
+	gtfsValidationUrl: string
 	totalWarnings?: number
 	validationId: string
 }
 
 /* * */
 
-export default function SucessfulGtfsValidationTemplate({ firstName, totalWarnings = 0, validationId }: SucessfulGtfsValidationTemplateProps) {
-	//
-
-	const go_link = getAppConfig('plans', 'frontend_url') + '/validations/' + validationId;
-
+export default function SucessfulGtfsValidationTemplate({ firstName, gtfsValidationUrl, totalWarnings = 0, validationId }: SucessfulGtfsValidationTemplateProps) {
 	return (
 		<Wrapper previewMessage="Validação GTFS realizada com sucesso">
 			<Greeting text={`${firstName},`} />
@@ -62,7 +59,8 @@ export default function SucessfulGtfsValidationTemplate({ firstName, totalWarnin
 				ou entra em contacto connosco.
 			</Paragraph>
 			<Paragraph>A validação pode agora ser aprovada para plano.</Paragraph>
-			<MainButton href={go_link} label="Ver resumo da validação" />
+			<MainButton href={gtfsValidationUrl} label="Ver resumo da validação" />
+			<DebugCode label="Validation ID" value={validationId} />
 		</Wrapper>
 	);
 };
@@ -71,6 +69,7 @@ export default function SucessfulGtfsValidationTemplate({ firstName, totalWarnin
 
 SucessfulGtfsValidationTemplate.PreviewProps = {
 	firstName: 'Josué',
+	gtfsValidationUrl: 'https://go.tmlmobilidade.com/gtfs-validations/TUH16N',
 	totalWarnings: 0,
 	validationId: 'TUH16N',
 } satisfies SucessfulGtfsValidationTemplateProps;

@@ -23,6 +23,14 @@ const info = {
 };
 
 /* * */
+/* MUTED */
+
+const muted = {
+	background: '#f8f9fa',
+	foreground: '#BEBEC8',
+};
+
+/* * */
 /* SUCCESS */
 
 const success = {
@@ -43,6 +51,7 @@ const warning = {
 export default {
 	danger,
 	info,
+	muted,
 	prose,
 	success,
 	warning,

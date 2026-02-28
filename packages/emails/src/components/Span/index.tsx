@@ -1,7 +1,7 @@
 /* * */
 
 import colors from '@/styles/colors.js';
-import sizes from '@/styles/sizes.js';
+import { fontSize, fontWeight } from '@/styles/font.js';
 import { type PropsWithChildren } from 'react';
 
 /* * */
@@ -24,8 +24,8 @@ export function Span({ children, color, size, spaceAfter, spaceBefore, weight }:
 			{spaceBefore && ' '}
 			<span style={{
 				color: color ? colors[color].foreground : undefined,
-				fontSize: size ? sizes.text[size] : undefined,
-				fontWeight: weight ? weight : undefined,
+				fontSize: size ? fontSize[size] : undefined,
+				fontWeight: weight ? fontWeight[weight] : undefined,
 			}}
 			>
 				{children}

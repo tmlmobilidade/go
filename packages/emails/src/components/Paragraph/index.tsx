@@ -1,7 +1,7 @@
 /* * */
 
 import colors from '@/styles/colors.js';
-import sizes from '@/styles/sizes.js';
+import { fontSize, fontWeight } from '@/styles/font.js';
 import { Text } from '@react-email/components';
 import { type PropsWithChildren } from 'react';
 
@@ -11,7 +11,7 @@ import styles from './styles.js';
 
 interface ParagraphProps {
 	bold?: boolean
-	color?: 'danger' | 'info' | 'prose' | 'success' | 'warning'
+	color?: 'danger' | 'info' | 'muted' | 'prose' | 'success' | 'warning'
 	size?: 'lg' | 'md' | 'sm'
 }
 
@@ -22,8 +22,8 @@ export function Paragraph({ bold, children, color = 'prose', size = 'lg' }: Prop
 		<Text style={{
 			...styles.text,
 			color: colors[color].foreground,
-			fontSize: sizes.text[size],
-			fontWeight: bold ? 'bold' : 'normal',
+			fontSize: fontSize[size],
+			fontWeight: bold ? fontWeight.bold : fontWeight.normal,
 		}}
 		>
 			{children}

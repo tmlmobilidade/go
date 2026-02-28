@@ -1,4 +1,8 @@
 /* * */
+
+import { fontFamily, fontSize, fontWeight } from '@/styles/font.js';
+
+/* * */
 /* IMAGE */
 
 const button: React.CSSProperties = {
@@ -7,9 +11,9 @@ const button: React.CSSProperties = {
 	borderRadius: '5px',
 	boxShadow: '0 1px 3px 0 #000A5040',
 	color: '#FFFFFF',
-	fontFamily: '\'Work Sans\', Verdana, Arial, sans-serif',
-	fontSize: '18px',
-	fontWeight: '600',
+	fontFamily: fontFamily.primary,
+	fontSize: fontSize.lg,
+	fontWeight: fontWeight.bold,
 	marginBottom: '30px',
 	marginTop: '10px',
 	padding: '12px 0',

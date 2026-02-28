@@ -1,12 +1,15 @@
 /* * */
+
+import { fontFamily, fontSize, lineHeight } from '@/styles/font.js';
+
+/* * */
 /* TEXT */
 
 const text: React.CSSProperties = {
 	color: '#000000',
-	fontFamily: '\'Lato\', \'Open Sans\', Arial, sans-serif',
-	fontSize: '18px',
-	fontWeight: '400',
-	lineHeight: '1.5',
+	fontFamily: fontFamily.primary,
+	fontSize: fontSize.lg,
+	lineHeight: lineHeight.primary,
 	margin: '0',
 	marginBottom: '15px',
 	textAlign: 'left',

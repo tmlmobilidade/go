@@ -1,12 +1,16 @@
 /* * */
 
-import { EmailWrapper, InfoBox, styles } from '@/components/index.js';
+import { DebugCode } from '@/components/DebugCode/index.js';
+import { Greeting } from '@/components/Greeting/index.js';
+import { MainButton } from '@/components/MainButton/index.js';
+import { Paragraph } from '@/components/Paragraph/index.js';
+import { Span } from '@/components/Span/index.js';
+import { Wrapper } from '@/components/Wrapper/index.js';
 import { emailProvider } from '@/email.provider.js';
 import { type SendEmailProps } from '@/types.js';
-import { Button, Hr, render, Section, Text } from '@react-email/components';
-import { getAppConfig } from '@tmlmobilidade/consts';
+import { render } from '@react-email/components';
 import { Dates } from '@tmlmobilidade/dates';
-import { type OperationalDate, type Plan, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type OperationalDate } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -15,136 +19,50 @@ export const planApprovedSubject = 'Plano Aprovado';
 /* * */
 
 export interface PlanApprovedTemplateProps {
+	createdBy: string
+	endDate: OperationalDate
 	firstName: string
-	plan: Plan
+	planId: string
+	planUrl: string
+	startDate: OperationalDate
 }
 
 /* * */
 
-export default function PlanApprovedTemplate({ firstName, plan }: PlanApprovedTemplateProps) {
-	//
-
-	const go_link = getAppConfig('plans', 'frontend_url') + '/plans/' + plan._id;
-
+export default function PlanApprovedTemplate({ createdBy, endDate, firstName, planId, planUrl, startDate }: PlanApprovedTemplateProps) {
 	return (
-		<EmailWrapper preview="Plano aprovado com sucesso">
-			<Section>
-				<Text style={styles.text}>
-					👋 Olá
-					{' '}
-					{firstName}
-					,
-				</Text>
-
-				<Text style={styles.text}>
-					Excelentes notícias! O seu plano foi aprovado e está agora disponível para publicação.
-				</Text>
-
-				<Hr style={{ margin: '24px 0' }} />
-
-				<InfoBox variant="success">
-					<Text style={{ ...styles.text, fontWeight: '600', margin: '0 0 12px 0' }}>
-						✅ Plano Aprovado
-					</Text>
-
-					<Text style={{ ...styles.text, margin: '8px 0' }}>
-						<strong>ID do Plano:</strong>
-						{' '}
-						{plan._id}
-						<br />
-						<strong>Agência:</strong>
-						{' '}
-						{plan.gtfs_agency?.agency_name || 'Não especificada'}
-						<br />
-						<strong>Data de Aprovação:</strong>
-						{' '}
-						{new Date().toLocaleDateString('pt-PT')}
-					</Text>
-				</InfoBox>
-
-				<InfoBox variant="info">
-					<Text style={{ ...styles.text, fontWeight: '600', margin: '0 0 12px 0' }}>
-						📅 Data de publicação
-					</Text>
-
-					<Text style={{ ...styles.text, margin: '8px 0' }}>
-						<strong>Data de início:</strong>
-						{' '}
-						{Dates.fromOperationalDate(plan.gtfs_feed_info?.feed_start_date as OperationalDate, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR, 'pt-PT')}
-					</Text>
-
-					<Text style={{ ...styles.text, margin: '8px 0' }}>
-						<strong>Data de fim:</strong>
-						{' '}
-						{Dates.fromOperationalDate(plan.gtfs_feed_info?.feed_end_date as OperationalDate, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR, 'pt-PT')}
-					</Text>
-				</InfoBox>
-
-				<Hr style={{ margin: '24px 0' }} />
-
-				<Text style={styles.text}>
-					<strong>O que isto significa:</strong>
-				</Text>
-
-				<Text style={styles.text}>
-					• O plano passou por todas as validações necessárias
-					<br />
-					• Os dados serão automaticamente publicados para os sistemas de informação
-				</Text>
-
-				<Text style={styles.text}>
-					Para ver os detalhes completos do seu plano aprovado, clique no botão abaixo:
-				</Text>
-
-				<Button href={go_link} style={styles.button}>
-					Ver Plano Aprovado
-				</Button>
-			</Section>
-		</EmailWrapper>
+		<Wrapper previewMessage="Plano aprovado com sucesso">
+			<Greeting text={`${firstName},`} />
+			<Paragraph>
+				O plano
+				<Span size="md" spaceAfter spaceBefore weight="bold">{planId}</Span>
+				foi aprovado  por
+				<Span size="md" spaceAfter spaceBefore weight="bold">{createdBy}</Span>
+				e está agora em processamento.
+			</Paragraph>
+			<Paragraph>
+				<Span size="md" spaceAfter spaceBefore weight="bold">Início: </Span>
+				{Dates.fromOperationalDate(startDate, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR, 'pt-PT')}
+			</Paragraph>
+			<Paragraph>
+				<Span size="md" spaceAfter spaceBefore weight="bold">Fim: </Span>
+				{Dates.fromOperationalDate(endDate, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR, 'pt-PT')}
+			</Paragraph>
+			<MainButton href={planUrl} label="Ver detalhes do plano" />
+			<DebugCode label="Plan ID" value={planId} />
+		</Wrapper>
 	);
 };
 
 /* * */
 
-const mockPlan: Plan = {
-	_id: '64f8b2a3c1d2e3f4a5b6c7d8',
-	apps: {
-		controller: {
-			last_hash: 'abcdef1234567890',
-			status: 'complete',
-			timestamp: 1715328000 as UnixTimestamp,
-		},
-		merger: {
-			last_hash: 'abcdef1234567890',
-			status: 'complete',
-			timestamp: 1715328000 as UnixTimestamp,
-		},
-	},
-	created_at: 1715328000 as UnixTimestamp,
-	created_by: '',
-	gtfs_agency: {
-		agency_id: 'TML001',
-		agency_name: 'Transportes Metropolitanos de Lisboa',
-		agency_timezone: 'Europe/Lisbon',
-	},
-	gtfs_feed_info: {
-		feed_end_date: '20241231' as OperationalDate,
-		feed_lang: 'pt',
-		feed_start_date: '20240101' as OperationalDate,
-	},
-	hash: '1234567890',
-	is_locked: false,
-	operation_file_id: '64f8b2a3c1d2e3f4a5b6c7d9',
-	pcgi_legacy: {
-		operation_plan_id: '123',
-	},
-	updated_at: 1715328000 as UnixTimestamp,
-	updated_by: '',
-};
-
 PlanApprovedTemplate.PreviewProps = {
+	createdBy: 'Maria Adelaide',
+	endDate: '20260131' as OperationalDate,
 	firstName: 'Josué',
-	plan: mockPlan,
+	planId: 'YUA81A',
+	planUrl: 'https://go.tmlmobilidade.com/plans/YUA81A',
+	startDate: '20250101' as OperationalDate,
 } satisfies PlanApprovedTemplateProps;
 
 /* * */

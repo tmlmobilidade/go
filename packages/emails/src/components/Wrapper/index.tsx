@@ -2,6 +2,7 @@
 
 import { CoverLogo } from '@/components/CoverLogo/index.js';
 import { Footer } from '@/components/Footer/index.js';
+import { fontWeight } from '@/styles/font.js';
 import { Body, Container, Font, Head, Html, Preview } from '@react-email/components';
 import { type PropsWithChildren } from 'react';
 
@@ -23,15 +24,29 @@ export function Wrapper({ children, previewMessage }: PropsWithChildren<WrapperP
 					fallbackFontFamily="Verdana"
 					fontFamily="Work Sans"
 					fontStyle="normal"
-					fontWeight={400}
-					webFont={{ format: 'woff2', url: 'https://go.tmlmobilidade.pt/auth/global/fonts/work-sans-regular.woff2' }}
+					fontWeight={fontWeight.normal}
+					webFont={{ format: 'woff2', url: 'https://storage.carrismetropolitana.pt/static/test/work-sans-regular.woff2' }}
+				/>
+				<Font
+					fallbackFontFamily="Verdana"
+					fontFamily="Work Sans"
+					fontStyle="normal"
+					fontWeight={fontWeight.bold}
+					webFont={{ format: 'woff2', url: 'https://storage.carrismetropolitana.pt/static/test/work-sans-regular.woff2' }}
 				/>
 				<Font
 					fallbackFontFamily="Verdana"
 					fontFamily="Work Sans"
 					fontStyle="italic"
-					fontWeight={400}
-					webFont={{ format: 'woff2', url: 'https://go.tmlmobilidade.pt/auth/global/fonts/work-sans-italic.woff2' }}
+					fontWeight={fontWeight.normal}
+					webFont={{ format: 'woff2', url: 'https://storage.carrismetropolitana.pt/static/test/work-sans-italic.woff2' }}
+				/>
+				<Font
+					fallbackFontFamily="Verdana"
+					fontFamily="Work Sans"
+					fontStyle="italic"
+					fontWeight={fontWeight.bold}
+					webFont={{ format: 'woff2', url: 'https://storage.carrismetropolitana.pt/static/test/work-sans-italic.woff2' }}
 				/>
 			</Head>
 			<Body style={styles.body}>

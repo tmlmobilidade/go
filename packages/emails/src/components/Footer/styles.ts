@@ -1,12 +1,16 @@
 /* * */
+
+import { fontFamily, fontSize, fontWeight, lineHeight } from '@/styles/font.js';
+
+/* * */
 /* TEXT */
 
 const text: React.CSSProperties = {
 	color: '#BEBEC8',
-	fontFamily: '\'Work Sans\', Verdana, Arial, sans-serif',
-	fontSize: '12px',
-	fontWeight: '400',
-	lineHeight: '1.5',
+	fontFamily: fontFamily.primary,
+	fontSize: fontSize.xs,
+	fontWeight: fontWeight.normal,
+	lineHeight: lineHeight.primary,
 	margin: '5px 0',
 	textAlign: 'left',
 };

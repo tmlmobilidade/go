@@ -1,18 +1,17 @@
 /* * */
 
+import colors from '@/styles/colors.js';
 import { fontFamily, fontSize, fontWeight } from '@/styles/font.js';
 
 /* * */
 /* TEXT */
 
 const text: React.CSSProperties = {
-	color: '#000',
+	color: colors.muted.foreground,
 	fontFamily: fontFamily.primary,
-	fontSize: fontSize.lg,
-	fontWeight: fontWeight.bold,
+	fontSize: fontSize.xs,
+	fontWeight: fontWeight.normal,
 	margin: '0',
-	marginBottom: '20px',
-	textAlign: 'left',
 };
 
 /* * */
