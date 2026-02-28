@@ -33,7 +33,7 @@ export default function SucessfulGtfsValidationTemplate({ firstName, totalWarnin
 	return (
 		<Wrapper previewMessage="Validação GTFS realizada com sucesso">
 			<Greeting text={`${firstName},`} />
-			<Paragraph bold color="success">Não foram encontrados erros no GTFS que submeteste para validação.</Paragraph>
+			<Paragraph bold color="success">Não foram encontrados erros no GTFS que enviaste para validação.</Paragraph>
 			{totalWarnings === 1 && (
 				<Paragraph>
 					No entanto, foi encontrado

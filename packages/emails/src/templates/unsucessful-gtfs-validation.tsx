@@ -32,7 +32,7 @@ export default function UnsuccessfulGtfsValidationTemplate({ firstName, totalErr
 	const go_link = getAppConfig('plans', 'frontend_url') + '/validations/' + validationId;
 
 	return (
-		<Wrapper previewMessage="O GTFS que submeteste contém erros.">
+		<Wrapper previewMessage="O GTFS que enviaste contém erros.">
 			<Greeting text={`${firstName},`} />
 			{totalErrors === 1 && (
 				<Paragraph>
@@ -42,7 +42,7 @@ export default function UnsuccessfulGtfsValidationTemplate({ firstName, totalErr
 						{' '}
 						erro
 					</Span>
-					no GTFS que submeteste para validação.
+					no GTFS que enviaste para validação.
 				</Paragraph>
 			)}
 			{totalErrors > 1 && (
@@ -53,7 +53,7 @@ export default function UnsuccessfulGtfsValidationTemplate({ firstName, totalErr
 						{' '}
 						erros
 					</Span>
-					no GTFS que submeteste para validação.
+					no GTFS que enviaste para validação.
 				</Paragraph>
 			)}
 			{totalWarnings === 1 && (
