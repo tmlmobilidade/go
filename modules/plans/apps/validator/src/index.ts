@@ -7,6 +7,7 @@ import { sendSystemErrorEmail } from '@tmlmobilidade/emails';
 import { gtfsValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { GtfsValidation } from '@tmlmobilidade/types';
 import pjson from 'package.json' with { type: 'json' };
 
 /* * */
@@ -43,7 +44,8 @@ await (async function init() {
 			//
 			// Process each waiting validation
 
-			for (const gtfsValidation of waitingOrStuckGtfsValidations) {
+			for (const gtfsValidationItem of waitingOrStuckGtfsValidations) {
+				const gtfsValidation = gtfsValidationItem as unknown as GtfsValidation;
 				Logger.title(`Processing GTFS Validation ${gtfsValidation._id} for File ${gtfsValidation.file_id}`);
 				await processValidation(gtfsValidation);
 				Logger.info(`Finished processing validation ${gtfsValidation._id} in ${globalTimer.get()}ms`);
