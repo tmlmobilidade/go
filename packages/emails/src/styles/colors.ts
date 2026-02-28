@@ -23,6 +23,14 @@ const info = {
 };
 
 /* * */
+/* SUCCESS */
+
+const success = {
+	background: '#d4edda',
+	foreground: '#00B932',
+};
+
+/* * */
 /* WARNING */
 
 const warning = {
@@ -36,5 +44,6 @@ export default {
 	danger,
 	info,
 	prose,
+	success,
 	warning,
 };

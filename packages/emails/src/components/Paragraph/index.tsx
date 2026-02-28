@@ -11,7 +11,7 @@ import styles from './styles.js';
 
 interface ParagraphProps {
 	bold?: boolean
-	color?: 'danger' | 'info' | 'prose' | 'warning'
+	color?: 'danger' | 'info' | 'prose' | 'success' | 'warning'
 	size?: 'lg' | 'md' | 'sm'
 }
 

@@ -34,23 +34,52 @@ export default function UnsuccessfulGtfsValidationTemplate({ firstName, totalErr
 	return (
 		<Wrapper previewMessage="O GTFS que submeteste contém erros.">
 			<Greeting text={`${firstName},`} />
+			{totalErrors === 1 && (
+				<Paragraph>
+					Foi encontrado
+					<Span color="danger" spaceAfter spaceBefore weight="bold">
+						{totalErrors}
+						{' '}
+						erro
+					</Span>
+					no GTFS que submeteste para validação.
+				</Paragraph>
+			)}
+			{totalErrors > 1 && (
+				<Paragraph>
+					Foram encontrados
+					<Span color="danger" spaceAfter spaceBefore weight="bold">
+						{totalErrors}
+						{' '}
+						erros
+					</Span>
+					no GTFS que submeteste para validação.
+				</Paragraph>
+			)}
+			{totalWarnings === 1 && (
+				<Paragraph>
+					Também foi encontrado
+					<Span color="warning" spaceAfter spaceBefore weight="bold">
+						{totalWarnings}
+						{' '}
+						aviso
+					</Span>
+					que deve ser corrigido o mais breve possível, pois pode passar a ser considerado erro formal no futuro.
+				</Paragraph>
+			)}
+			{totalWarnings > 1 && (
+				<Paragraph>
+					Também foram encontrados
+					<Span color="warning" spaceAfter spaceBefore weight="bold">
+						{totalWarnings}
+						{' '}
+						avisos
+					</Span>
+					que devem ser corrigidos o mais breve possível, pois podem passar a ser considerados erros formais no futuro.
+				</Paragraph>
+			)}
 			<Paragraph>
-				Foram encontrados
-				<Span color="danger" spaceAfter spaceBefore weight="bold">
-					{totalErrors}
-					{' '}
-					erros
-				</Span>
-				e
-				<Span color="warning" spaceAfter spaceBefore weight="bold">
-					{totalWarnings}
-					{' '}
-					avisos
-				</Span>
-				no GTFS que submeteste para validação.
-			</Paragraph>
-			<Paragraph>
-				No resumo da validação encontras mais detalhe sobre cada um. Se tiveres dúvidas sobre alguma regra
+				Se tiveres dúvidas sobre alguma regra
 				<Anchor href="https://go.tmlmobilidade.com/docs" spaceAfter spaceBefore text="explora a documentação" />
 				ou entra em contacto connosco.
 			</Paragraph>
@@ -64,8 +93,8 @@ export default function UnsuccessfulGtfsValidationTemplate({ firstName, totalErr
 
 UnsuccessfulGtfsValidationTemplate.PreviewProps = {
 	firstName: 'Josué',
-	totalErrors: 4,
-	totalWarnings: 3,
+	totalErrors: 2,
+	totalWarnings: 2,
 	validationId: 'TUH16N',
 } satisfies UnsuccessfulGtfsValidationTemplateProps;
 
