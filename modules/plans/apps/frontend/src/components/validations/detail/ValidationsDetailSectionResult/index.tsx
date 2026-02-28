@@ -70,7 +70,7 @@ export function ValidationsDetailSectionResult() {
 	//
 	// C. Render components
 
-	if (validationsDetailContext.data.validation?.feeder_status !== 'complete' && validationsDetailContext.data.validation?.feeder_status !== 'error') {
+	if (validationsDetailContext.data.validation?.system_status !== 'complete' && validationsDetailContext.data.validation?.system_status !== 'error') {
 		return null;
 	}
 

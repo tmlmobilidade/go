@@ -92,12 +92,12 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 			// Filter by agency
 			if (!agencySet.has(item.gtfs_agency.agency_id)) return false;
 			// Filter by validity_status
-			if (!validityStatusSet.has(item.feeder_status)) return false;
+			if (!validityStatusSet.has(item.system_status)) return false;
 			// Return true if all filters pass
 			return true;
 		});
 		return filteredResultsData;
-	}, [searchResultsData, filterAgency]);
+	}, [searchResultsData, filterAgency, filterProcessingStatus.value]);
 
 	//
 	// D. Define context value

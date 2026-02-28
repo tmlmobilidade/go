@@ -35,8 +35,8 @@ export function ValidationsList() {
 			width: 100,
 		},
 		{
-			accessor: 'feeder_status',
-			render: item => <ValidationStatusTag status={item.feeder_status} />,
+			accessor: 'system_status',
+			render: item => <ValidationStatusTag status={item.system_status} />,
 			title: 'Estado',
 			width: 125,
 		},
@@ -74,8 +74,8 @@ export function ValidationsList() {
 
 	return (
 		<Pane header={[
-			<ValidationsListHeader />,
-			<ValidationsListFiltersBar />,
+			<ValidationsListHeader key="header" />,
+			<ValidationsListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable

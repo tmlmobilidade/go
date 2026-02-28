@@ -44,7 +44,7 @@ export default function RequestApprovalModal() {
 		<>
 
 			<Section alignItems="center" flexDirection="row" gap="lg">
-				<ValidationStatusTag status={plansCreateContext.data.validation?.feeder_status || 'waiting'} />
+				<ValidationStatusTag status={plansCreateContext.data.validation?.system_status || 'waiting'} />
 				<Tag label={plansCreateContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
 				<Label size="md" caps>{plansCreateContext.data.validation._id}</Label>
 			</Section>
@@ -82,7 +82,7 @@ export default function RequestApprovalModal() {
 					<Button
 						label="Solicitar aprovação à TML"
 						loading={plansCreateContext.flags.loading}
-						onClick={plansCreateContext.actions.requestApproval}
+						onClick={void plansCreateContext.actions.requestApproval}
 					/>
 				</Grid>
 			</Section>

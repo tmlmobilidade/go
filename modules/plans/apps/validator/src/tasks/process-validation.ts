@@ -1,13 +1,13 @@
 /* * */
 
-import { validateFile } from '@/tasks/validate-file.js';
 import { SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail } from '@tmlmobilidade/emails';
+import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { getTmpWorkdirPath } from '@tmlmobilidade/files';
-import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
+import { GTFSValidator } from '@tmlmobilidade/gtfs-validator';
+import { agencies, files, gtfsValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GtfsValidation } from '@tmlmobilidade/types';
+import { getCurrentEnvironment, type GtfsValidation } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import pjson from 'package.json' with { type: 'json' };
@@ -25,7 +25,8 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		const tempWorkdirPath = getTmpWorkdirPath();
 
 		const gtfsFilePath = join(tempWorkdirPath, `${gtfsValidation.file_id}.zip`);
-		const gtfsValidationResultPath = join(tempWorkdirPath, `gtfs_validation_${gtfsValidation._id}.json`);
+		const gtfsValidationRulesPath = join(tempWorkdirPath, `rules_${gtfsValidation._id}.json`);
+		const gtfsValidationResultPath = join(tempWorkdirPath, `result_${gtfsValidation._id}.json`);
 
 		//
 		// Update the gtfs validation document to 'processing' status
@@ -49,18 +50,39 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		fs.writeFileSync(gtfsFilePath, Buffer.from(fileBuffer));
 
 		//
+		// Get the agency-specific validation rules, if they exist,
+		// and download them to the working directory. Throw an error
+		// if no agency is found or if the rules file is not accessible.
+
+		const foundAgency = await agencies.findById(gtfsValidation.gtfs_agency.agency_id);
+		if (!foundAgency) throw new Error(`Agency not found: ${gtfsValidation.gtfs_agency.agency_id}`);
+		if (!foundAgency.validation_rules) throw new Error(`No validation rules found for agency: ${gtfsValidation.gtfs_agency.agency_id}`);
+
+		const rulesContent = typeof foundAgency.validation_rules === 'string'
+			? foundAgency.validation_rules
+			: JSON.stringify(foundAgency.validation_rules);
+
+		fs.writeFileSync(gtfsValidationRulesPath, rulesContent, { encoding: 'utf-8' });
+		Logger.info(`Custom validation rules saved to: ${gtfsValidationRulesPath}`);
+
+		//
 		// Perform the GTFS validation using the GTFSValidator library
 		// and update the GTFS validation document in MongoDB with the results.
 
 		Logger.info('Performing the actual GTFS validation...');
 
-		const gtfsValidationResult = await validateFile(gtfsFilePath, gtfsValidationResultPath, gtfsValidation.gtfs_agency.agency_id);
+		const gtfsValidationResult = await GTFSValidator(gtfsFilePath, {
+			lang: 'pt',
+			log_level: getCurrentEnvironment() === 'production' ? 'info' : 'debug',
+			out_file: gtfsValidationResultPath,
+			rules_path: gtfsValidationRulesPath,
+		});
 
 		Logger.info('Validation completed. Updating GTFS Validation document with results...');
 
 		await gtfsValidations.updateById(gtfsValidation._id, {
-			is_valid: gtfsValidationResult.total_errors === 0,
-			summary: gtfsValidationResult,
+			is_valid: gtfsValidationResult.summary.total_errors === 0,
+			summary: gtfsValidationResult.summary,
 			system_status: 'complete',
 		});
 
@@ -77,16 +99,18 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 						firstName: '',
 						gtfsValidationId: gtfsValidation._id,
 						gtfsValidationUrl: `https://plans.tmlmobilidade.pt/validations/${gtfsValidation._id}`,
-						totalWarnings: gtfsValidationResult.total_warnings,
+						totalWarnings: gtfsValidationResult.summary.total_warnings,
 					},
 					to: gtfsFile.created_by,
 				});
 			} else {
-				await sendSystemErrorEmail({
+				await sendUnsuccessfulGtfsValidationEmail({
 					data: {
-						errorMessage: `GTFS validation completed with errors. Total Errors: ${gtfsValidationResult.total_errors}, Total Warnings: ${gtfsValidationResult.total_warnings}`,
-						serviceName: pjson.name,
-						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+						firstName: '',
+						gtfsValidationId: gtfsValidation._id,
+						gtfsValidationUrl: `https://plans.tmlmobilidade.pt/validations/${gtfsValidation._id}`,
+						totalErrors: gtfsValidationResult.summary.total_errors,
+						totalWarnings: gtfsValidationResult.summary.total_warnings,
 					},
 					to: gtfsFile.created_by,
 				});

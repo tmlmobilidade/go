@@ -66,7 +66,7 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 			validation: validationData,
 		},
 		flags: {
-			can_approve: validationData?.feeder_status === 'complete',
+			can_approve: validationData?.system_status === 'complete',
 			error: validationError || fileError,
 			loading: validationLoading || fileLoading,
 		},

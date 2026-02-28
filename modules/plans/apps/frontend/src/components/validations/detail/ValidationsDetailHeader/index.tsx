@@ -47,12 +47,12 @@ export function ValidationsDetailHeader() {
 			<CloseButton onClick={handleClose} type="close" />
 
 			<Tag label={validationsDetailContext.data.validation?._id} variant="secondary" />
-			<ValidationStatusTag status={validationsDetailContext.data.validation?.feeder_status} />
+			<ValidationStatusTag status={validationsDetailContext.data.validation?.system_status} />
 			<Tag label={validationsDetailContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
 
 			<Spacer />
 
-			{validationsDetailContext.data.validation.feeder_status === 'complete' && (
+			{validationsDetailContext.data.validation.system_status === 'complete' && (
 				<HasPermission
 					action={PermissionCatalog.all.gtfs_validations.actions.request_approval}
 					resourceKey="agency_ids"
@@ -68,7 +68,7 @@ export function ValidationsDetailHeader() {
 				</HasPermission>
 			)}
 
-			{validationsDetailContext.data.validation.feeder_status === 'complete' && (
+			{validationsDetailContext.data.validation.system_status === 'complete' && (
 				<HasPermission
 					action={PermissionCatalog.all.plans.actions.create}
 					resourceKey="agency_ids"
