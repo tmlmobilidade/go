@@ -10,6 +10,7 @@ import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Button, CloseButton, HasPermission, ProcessingStatusTag, Spacer, Tag, Toolbar, ValidityStatusTag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -21,6 +22,18 @@ export function ValidationsDetailHeader() {
 
 	const router = useRouter();
 	const validationsDetailContext = useValidationsDetailContext();
+
+	//
+	// B. Transform data
+
+	const canApproveIntoPlan = useMemo(() => {
+		if (validationsDetailContext.data.validation?.processing_status !== 'complete') return false;
+		if (validationsDetailContext.data.validation?.validity_status !== 'valid') return false;
+		return true;
+	}, [
+		validationsDetailContext.data.validation?.processing_status,
+		validationsDetailContext.data.validation?.validity_status,
+	]);
 
 	//
 	// C. Handle actions
@@ -52,7 +65,7 @@ export function ValidationsDetailHeader() {
 
 			<Spacer />
 
-			{validationsDetailContext.data.validation.processing_status === 'complete' && (
+			{canApproveIntoPlan && (
 				<HasPermission
 					action={PermissionCatalog.all.gtfs_validations.actions.request_approval}
 					resourceKey="agency_ids"
@@ -68,7 +81,7 @@ export function ValidationsDetailHeader() {
 				</HasPermission>
 			)}
 
-			{validationsDetailContext.data.validation.processing_status === 'complete' && (
+			{canApproveIntoPlan && (
 				<HasPermission
 					action={PermissionCatalog.all.plans.actions.create}
 					resourceKey="agency_ids"
