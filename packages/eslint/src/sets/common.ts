@@ -2,6 +2,7 @@
 
 import { indentConfig } from '@/rules/indent.js';
 import { jsonConfig } from '@/rules/json.js';
+import { namingConventionsConfig } from '@/rules/naming-conventions.js';
 import { packageJsonConfig } from '@/rules/pjson.js';
 import { tsconfigConfig } from '@/rules/tsconfig.js';
 import eslint from '@eslint/js';
@@ -104,47 +105,6 @@ export default defineConfig([
 			'@typescript-eslint/no-unused-vars': 'warn',
 			'@typescript-eslint/prefer-optional-chain': 'error',
 
-			// Naming conventions
-			'@typescript-eslint/naming-convention': [
-				'error',
-				// Variables and functions: camelCase
-				{
-					format: ['camelCase'],
-					leadingUnderscore: 'allow',
-					selector: 'variableLike',
-				},
-				{
-					format: ['camelCase'],
-					selector: 'function',
-				},
-				// Constants: SCREAMING_SNAKE_CASE
-				{
-					format: ['UPPER_CASE', 'camelCase', 'PascalCase'], // Allow both for flexibility
-					modifiers: ['const', 'global'],
-					selector: 'variable',
-				},
-				// Types and interfaces: PascalCase
-				{
-					format: ['PascalCase'],
-					selector: 'typeLike',
-				},
-				// Class members: camelCase
-				{
-					format: ['camelCase'],
-					selector: 'classMethod',
-				},
-				{
-					format: ['camelCase'],
-					leadingUnderscore: 'allow',
-					selector: 'classProperty',
-				},
-				// Enum members: PascalCase or UPPER_CASE
-				{
-					format: ['PascalCase', 'UPPER_CASE'],
-					selector: 'enumMember',
-				},
-			],
-
 			// Code style rules
 			'@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: true }],
 			'@stylistic/comma-dangle': ['error', 'always-multiline'],
@@ -187,6 +147,8 @@ export default defineConfig([
 			// Component structure and organization (prefer-const already enabled by base config)
 		},
 	},
+
+	...namingConventionsConfig,
 
 	...jsonConfig,
 
