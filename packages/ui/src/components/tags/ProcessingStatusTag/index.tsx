@@ -15,12 +15,13 @@ interface ProcessingStatusTagProps {
 	disabled?: boolean
 	onChange?: (value: ProcessingStatus) => void
 	onClick?: () => void
+	tooltip?: string
 	value: ProcessingStatus
 }
 
 /* * */
 
-export function ProcessingStatusTag({ disabled, onChange, onClick, value }: ProcessingStatusTagProps) {
+export function ProcessingStatusTag({ disabled, onChange, onClick, tooltip, value }: ProcessingStatusTagProps) {
 	//
 
 	//
@@ -70,11 +71,11 @@ export function ProcessingStatusTag({ disabled, onChange, onClick, value }: Proc
 
 	return (
 		<>
-			{value === 'complete' && <Tag label={t('shared:status.processing_status.complete')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="secondary" />}
-			{value === 'error' && <Tag label={t('shared:status.processing_status.error')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="danger" />}
-			{value === 'processing' && <Tag label={t('shared:status.processing_status.processing')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="primary" filled />}
-			{value === 'skipped' && <Tag label={t('shared:status.processing_status.skipped')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="muted" />}
-			{value === 'waiting' && <Tag label={t('shared:status.processing_status.waiting')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="primary" />}
+			{value === 'complete' && <Tag label={t('shared:status.processing_status.complete')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} tooltip={tooltip} variant="success" />}
+			{value === 'error' && <Tag label={t('shared:status.processing_status.error')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} tooltip={tooltip} variant="danger" />}
+			{value === 'processing' && <Tag label={t('shared:status.processing_status.processing')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} tooltip={tooltip} variant="primary" filled />}
+			{value === 'skipped' && <Tag label={t('shared:status.processing_status.skipped')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} tooltip={tooltip} variant="muted" />}
+			{value === 'waiting' && <Tag label={t('shared:status.processing_status.waiting')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} tooltip={tooltip} variant="secondary" />}
 		</>
 	);
 
