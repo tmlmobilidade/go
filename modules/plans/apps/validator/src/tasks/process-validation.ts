@@ -1,11 +1,11 @@
 /* * */
 
-import { SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
+import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { getTmpWorkdirPath } from '@tmlmobilidade/files';
 import { GTFSValidator } from '@tmlmobilidade/gtfs-validator';
-import { agencies, files, gtfsValidations } from '@tmlmobilidade/interfaces';
+import { agencies, files, gtfsValidations, users } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { getCurrentEnvironment, type GtfsValidation } from '@tmlmobilidade/types';
 import fs from 'node:fs';
@@ -63,6 +63,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 			: JSON.stringify(foundAgency.validation_rules);
 
 		fs.writeFileSync(gtfsValidationRulesPath, rulesContent, { encoding: 'utf-8' });
+
 		Logger.info(`Custom validation rules saved to: ${gtfsValidationRulesPath}`);
 
 		//
@@ -89,30 +90,38 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		//
 		// After successful validation, even if there are validation errors,
 		// we consider the process complete and send the results to the user via email.
+		// Fetch the user details from the created_by field of the GTFS Validation document
+		// to personalize the email content and include a link to the validation detail.
 
 		const updatedGtfsValidation = await gtfsValidations.findById(gtfsValidation._id);
+
+		if (!updatedGtfsValidation) throw new Error(`GTFS Validation not found after update: ${gtfsValidation._id}`);
+		if (!updatedGtfsValidation.created_by) throw new Error(`No creator information found for file: ${gtfsFile._id}`);
+
+		const foundUser = await users.findById(updatedGtfsValidation.created_by);
+		if (!foundUser) throw new Error(`User not found: ${updatedGtfsValidation.created_by}`);
 
 		try {
 			if (updatedGtfsValidation.validity_status === 'valid') {
 				await sendSucessfulGtfsValidationEmail({
 					data: {
-						firstName: '',
+						firstName: foundUser.first_name,
 						gtfsValidationId: gtfsValidation._id,
-						gtfsValidationUrl: `https://plans.tmlmobilidade.pt/validations/${gtfsValidation._id}`,
+						gtfsValidationUrl: PAGE_ROUTES.plans.VALIDATIONS_DETAIL(gtfsValidation._id),
 						totalWarnings: gtfsValidationResult.summary.total_warnings,
 					},
-					to: gtfsFile.created_by,
+					to: foundUser.email,
 				});
 			} else {
 				await sendUnsuccessfulGtfsValidationEmail({
 					data: {
-						firstName: '',
+						firstName: foundUser.first_name,
 						gtfsValidationId: gtfsValidation._id,
-						gtfsValidationUrl: `https://plans.tmlmobilidade.pt/validations/${gtfsValidation._id}`,
+						gtfsValidationUrl: PAGE_ROUTES.plans.VALIDATIONS_DETAIL(gtfsValidation._id),
 						totalErrors: gtfsValidationResult.summary.total_errors,
 						totalWarnings: gtfsValidationResult.summary.total_warnings,
 					},
-					to: gtfsFile.created_by,
+					to: foundUser.email,
 				});
 			}
 		} catch (error) {

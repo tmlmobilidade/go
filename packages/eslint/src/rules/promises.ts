@@ -33,6 +33,7 @@ export const promisesConfig: Config[] = [
 					checksVoidReturn: {
 						arguments: false,
 						attributes: false,
+						properties: false,
 					},
 				},
 			],

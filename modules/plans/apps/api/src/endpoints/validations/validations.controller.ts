@@ -53,9 +53,9 @@ export class GtfsValidationsController {
 			gtfs_agency: JSON.parse(requestData.fields.gtfs_agency['value'] as string) as GtfsAgency,
 			gtfs_feed_info: JSON.parse(requestData.fields.gtfs_feed_info['value'] as string) as GtfsFeedInfo,
 			is_locked: false,
-			is_valid: false,
 			notification_sent: false,
-			system_status: 'waiting',
+			processing_status: 'waiting',
+			validity_status: 'unknown',
 		};
 
 		//
