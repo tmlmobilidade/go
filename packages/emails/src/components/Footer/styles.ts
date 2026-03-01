@@ -11,7 +11,8 @@ const text: React.CSSProperties = {
 	fontSize: fontSize.xs,
 	fontWeight: fontWeight.normal,
 	lineHeight: lineHeight.primary,
-	margin: '5px 0',
+	margin: 0,
+	padding: '30px',
 	textAlign: 'left',
 };
 

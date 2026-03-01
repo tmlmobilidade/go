@@ -4,13 +4,14 @@
 const body: React.CSSProperties = {
 	backgroundColor: '#FFFFFF',
 	margin: '0 auto',
-	padding: '10px',
+	padding: 0,
 };
 
 /* * */
 /* CONTAINER */
 
 const container: React.CSSProperties = {
+	maxWidth: '600px',
 	width: '100%',
 };
 
