@@ -1,7 +1,7 @@
 /* * */
 
 import { CoverLogo } from '@/components/CoverLogo/index.js';
-import { Footer } from '@/components/Footer/index.js';
+import { Disclaimer } from '@/components/Disclaimer/index.js';
 import { fontWeight } from '@/styles/font.js';
 import { Body, Container, Font, Head, Html, Preview } from '@react-email/components';
 import { type PropsWithChildren } from 'react';
@@ -55,8 +55,8 @@ export function Wrapper({ children, previewMessage }: PropsWithChildren<WrapperP
 					<CoverLogo />
 					<Container style={styles.content}>
 						{children}
+						<Disclaimer />
 					</Container>
-					<Footer />
 				</Container>
 			</Body>
 		</Html>

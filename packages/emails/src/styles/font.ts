@@ -17,7 +17,7 @@ export const fontFamily = {
 /* LINE HEIGHT */
 
 export const lineHeight = {
-	primary: '1.5',
+	normal: '1.5',
 };
 
 /* * */

@@ -10,9 +10,9 @@ const text: React.CSSProperties = {
 	fontFamily: fontFamily.primary,
 	fontSize: fontSize.xs,
 	fontWeight: fontWeight.normal,
-	lineHeight: lineHeight.primary,
+	lineHeight: lineHeight.normal,
 	margin: 0,
-	padding: '30px',
+	marginTop: '20px',
 	textAlign: 'left',
 };
 

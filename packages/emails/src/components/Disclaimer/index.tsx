@@ -7,7 +7,7 @@ import styles from './styles.js';
 
 /* * */
 
-export function Footer() {
+export function Disclaimer() {
 	return (
 		<Section>
 			<Text style={styles.text}>
