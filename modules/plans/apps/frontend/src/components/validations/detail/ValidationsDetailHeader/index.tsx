@@ -28,6 +28,15 @@ export function ValidationsDetailHeader() {
 	//
 	// B. Transform data
 
+	const canApproveIntoPlan = useMemo(() => {
+		if (validationsDetailContext.data.validation?.processing_status !== 'complete') return false;
+		if (validationsDetailContext.data.validation?.validity_status !== 'valid') return false;
+		return true;
+	}, [
+		validationsDetailContext.data.validation?.processing_status,
+		validationsDetailContext.data.validation?.validity_status,
+	]);
+
 	const hasPermissionToChangeProcessingStatus = useMemo(() => {
 		// User can change processing status if they have permission
 		// for the agency and reference type.
@@ -80,7 +89,7 @@ export function ValidationsDetailHeader() {
 
 			<Spacer />
 
-			{validationsDetailContext.data.validation.processing_status === 'complete' && (
+			{canApproveIntoPlan && (
 				<HasPermission
 					action={PermissionCatalog.all.gtfs_validations.actions.request_approval}
 					resourceKey="agency_ids"
@@ -96,7 +105,7 @@ export function ValidationsDetailHeader() {
 				</HasPermission>
 			)}
 
-			{validationsDetailContext.data.validation.processing_status === 'complete' && (
+			{canApproveIntoPlan && (
 				<HasPermission
 					action={PermissionCatalog.all.plans.actions.create}
 					resourceKey="agency_ids"
