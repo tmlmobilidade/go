@@ -99,9 +99,9 @@ export class AuthController {
 		});
 		// Send the password reset email to the user
 		await sendResetPasswordEmail({
-			props: {
-				first_name: foundUser.first_name,
-				password_reset_link: `${PAGE_ROUTES.auth.CHANGE_PASSWORD_LIST}?token=${randomToken}&email=${encodeURIComponent(foundUser.email)}`,
+			data: {
+				firstName: foundUser.first_name,
+				resetPasswordUrl: `${PAGE_ROUTES.auth.CHANGE_PASSWORD_LIST}?token=${randomToken}&email=${encodeURIComponent(foundUser.email)}`,
 			},
 			to: request.body.email,
 		});

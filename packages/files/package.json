@@ -35,6 +35,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/strings": "*",
 		"jszip": "3.10.1",
 		"papaparse": "5.5.3"
 	},

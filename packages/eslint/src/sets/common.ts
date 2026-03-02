@@ -2,7 +2,9 @@
 
 import { indentConfig } from '@/rules/indent.js';
 import { jsonConfig } from '@/rules/json.js';
+import { namingConventionsConfig } from '@/rules/naming-conventions.js';
 import { packageJsonConfig } from '@/rules/pjson.js';
+import { promisesConfig } from '@/rules/promises.js';
 import { tsconfigConfig } from '@/rules/tsconfig.js';
 import eslint from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
@@ -58,24 +60,6 @@ export default defineConfig([
 		},
 	},
 
-	// TypeScript-specific rules (only for TS files)
-	{
-		files: ['**/*.{ts,tsx}'],
-		languageOptions: {
-			parserOptions: {
-				project: true,
-			},
-		},
-		rules: {
-			// TypeScript specific rules that require type checking
-			'@typescript-eslint/await-thenable': 'error',
-			'@typescript-eslint/no-floating-promises': 'off',
-			'@typescript-eslint/no-misused-promises': 'error',
-			'@typescript-eslint/prefer-optional-chain': 'error',
-			'@typescript-eslint/switch-exhaustiveness-check': 'error',
-		},
-	},
-
 	// Disable type-checked rules for JS files
 	{
 		files: ['**/*.{js,jsx,cjs,mjs}'],
@@ -103,47 +87,7 @@ export default defineConfig([
 			'@typescript-eslint/no-extraneous-class': 'off',
 			'@typescript-eslint/no-non-null-assertion': 'warn',
 			'@typescript-eslint/no-unused-vars': 'warn',
-
-			// Naming conventions
-			'@typescript-eslint/naming-convention': [
-				'error',
-				// Variables and functions: camelCase
-				{
-					format: ['camelCase'],
-					leadingUnderscore: 'allow',
-					selector: 'variableLike',
-				},
-				{
-					format: ['camelCase'],
-					selector: 'function',
-				},
-				// Constants: SCREAMING_SNAKE_CASE
-				{
-					format: ['UPPER_CASE', 'camelCase', 'PascalCase'], // Allow both for flexibility
-					modifiers: ['const', 'global'],
-					selector: 'variable',
-				},
-				// Types and interfaces: PascalCase
-				{
-					format: ['PascalCase'],
-					selector: 'typeLike',
-				},
-				// Class members: camelCase
-				{
-					format: ['camelCase'],
-					selector: 'classMethod',
-				},
-				{
-					format: ['camelCase'],
-					leadingUnderscore: 'allow',
-					selector: 'classProperty',
-				},
-				// Enum members: PascalCase or UPPER_CASE
-				{
-					format: ['PascalCase', 'UPPER_CASE'],
-					selector: 'enumMember',
-				},
-			],
+			'@typescript-eslint/prefer-optional-chain': 'error',
 
 			// Code style rules
 			'@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: true }],
@@ -187,6 +131,10 @@ export default defineConfig([
 			// Component structure and organization (prefer-const already enabled by base config)
 		},
 	},
+
+	...promisesConfig,
+
+	...namingConventionsConfig,
 
 	...jsonConfig,
 
