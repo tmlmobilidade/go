@@ -1,6 +1,6 @@
 /* * */
 
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { connect as amqpConnect, Channel, ChannelModel, Options, Replies } from 'amqplib';
 
 /* * */
@@ -37,8 +37,7 @@ export class RabbitMQConnector {
 			this.channel.on('error', (err) => {
 				console.error('Channel error:', err);
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			console.error('Failed to connect to RabbitMQ:', error);
 			throw error;
 		}
@@ -117,4 +116,4 @@ class RabbitMQService extends RabbitMQConnector {
 	}
 }
 
-export const rabbitMQ = AsyncSingletonProxy(RabbitMQService);
+export const rabbitMQ = asyncSingletonProxy(RabbitMQService);

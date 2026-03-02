@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreatePeriodDto, type Period, PeriodSchema, type UpdatePeriodDto, UpdatePeriodSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -51,4 +51,4 @@ class PeriodsClass extends MongoCollectionClass<Period, CreatePeriodDto, UpdateP
 
 /* * */
 
-export const periods = AsyncSingletonProxy(PeriodsClass);
+export const periods = asyncSingletonProxy(PeriodsClass);

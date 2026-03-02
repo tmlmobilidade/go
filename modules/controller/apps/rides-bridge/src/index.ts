@@ -7,6 +7,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -101,13 +102,12 @@ export async function syncRides() {
 
 		await BRIDGEDB.disconnect();
 
-		fetch('https://status.carrismetropolitana.pt/api/push/xdBaFdiO0O42QVTqgp4pZzy66mdhTOYz');
+		void fetch('https://status.carrismetropolitana.pt/api/push/xdBaFdiO0O42QVTqgp4pZzy66mdhTOYz');
 
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
 		//
-	}
-	catch (err) {
+	} catch (err) {
 		Logger.error('An error occurred. Halting execution.', err);
 		Logger.info('Retrying in 10 seconds...');
 		setTimeout(() => process.exit(1), 10000);
@@ -116,10 +116,4 @@ export async function syncRides() {
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		await syncRides();
-		setTimeout(runOnInterval, RUN_INTERVAL);
-	};
-	runOnInterval();
-})();
+runOnInterval(syncRides, RUN_INTERVAL);

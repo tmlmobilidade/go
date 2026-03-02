@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { agencies, files, Filter, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
@@ -74,8 +74,7 @@ export class GtfsValidationsController {
 			// Read file back as buffer for upload
 			buffer = readFileSync(tempFilePath);
 			size = buffer.length;
-		}
-		catch (streamError) {
+		} catch (streamError) {
 			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error processing file stream', { cause: streamError });
 		}
 
@@ -137,8 +136,7 @@ export class GtfsValidationsController {
 		if (tempFilePath) {
 			try {
 				unlinkSync(tempFilePath);
-			}
-			catch (cleanupError) {
+			} catch (cleanupError) {
 				console.warn('Failed to cleanup temporary file:', tempFilePath, cleanupError);
 			}
 		}

@@ -4,7 +4,7 @@ import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type CreateRideAcceptanceDto, CreateRideAcceptanceSchema, type RideAcceptance, type UpdateRideAcceptanceDto, UpdateRideAcceptanceSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy, compareObjects, flattenObject } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy, compareObjects, flattenObject } from '@tmlmobilidade/utils';
 import { type Filter, IndexDescription, InsertOneOptions, UpdateOptions } from 'mongodb';
 import { z } from 'zod';
 
@@ -105,4 +105,4 @@ class RideAcceptanceClass extends MongoCollectionClass<RideAcceptance, CreateRid
 
 /* * */
 
-export const rideAcceptances: Omit<RideAcceptanceClass, 'deleteById' | 'deleteMany' | 'deleteOne' | 'insertOne' | 'updateById' | 'updateOne'> = AsyncSingletonProxy(RideAcceptanceClass);
+export const rideAcceptances: Omit<RideAcceptanceClass, 'deleteById' | 'deleteMany' | 'deleteOne' | 'insertOne' | 'updateById' | 'updateOne'> = asyncSingletonProxy(RideAcceptanceClass);

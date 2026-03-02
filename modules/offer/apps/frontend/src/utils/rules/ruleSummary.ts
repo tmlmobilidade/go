@@ -17,16 +17,14 @@ export function buildRuleSummary(
 
 	if (!rule.periodIds || rule.periodIds.length === 0) {
 		parts.push('Em todos os períodos');
-	}
-	else {
+	} else {
 		const labels = rule.periodIds.map(
 			id => options?.periods?.find(p => p._id === id)?.name ?? 'período desconhecido',
 		);
 
 		if (labels.length === 1) {
 			parts.push(`Durante o ${labels[0]}`);
-		}
-		else {
+		} else {
 			parts.push(`Durante os períodos de ${labels.join(' e ')}`);
 		}
 	}
@@ -35,11 +33,9 @@ export function buildRuleSummary(
 
 	if (!rule.weekdays || rule.weekdays.length === 0) {
 		parts.push('em todos os dias');
-	}
-	else if (rule.weekdays.length === 7) {
+	} else if (rule.weekdays.length === 7) {
 		parts.push('todos os dias');
-	}
-	else {
+	} else {
 		const weekdaySet = new Set<IsoWeekday>(rule.weekdays as IsoWeekday[]);
 
 		const hasMonFri = ([1, 2, 3, 4, 5] as IsoWeekday[]).every(d => weekdaySet.has(d));
@@ -50,8 +46,7 @@ export function buildRuleSummary(
 
 		if (hasMonFri && hasWeekend) {
 			parts.push('todos os dias');
-		}
-		else if (hasMonFri) {
+		} else if (hasMonFri) {
 			// extra = not Mon..Fri
 			const extraDays = (rule.weekdays as IsoWeekday[])
 				.filter(d => d < 1 || d > 5) // catches 6,7
@@ -59,24 +54,20 @@ export function buildRuleSummary(
 
 			if (extraDays.length === 0) {
 				parts.push('nos dias úteis');
-			}
-			else {
+			} else {
 				const extraLabels = extraDays.map(getDayLabel);
 				parts.push(`nos dias úteis e ${extraLabels.join(', ')}`);
 			}
-		}
-		else if (hasWeekend && rule.weekdays.length === 2) {
+		} else if (hasWeekend && rule.weekdays.length === 2) {
 			parts.push('no fim de semana');
-		}
-		else if (hasWeekend) {
+		} else if (hasWeekend) {
 			const extraDays = (rule.weekdays as IsoWeekday[])
 				.filter(d => d !== 6 && d !== 7)
 				.sort((a, b) => a - b);
 
 			const extraLabels = extraDays.map(getDayLabel);
 			parts.push(`no fim de semana e ${extraLabels.join(', ')}`);
-		}
-		else {
+		} else {
 			const sortedDays = [...(rule.weekdays as IsoWeekday[])].sort((a, b) => a - b);
 			const dayLabels = sortedDays.map(getDayLabel);
 			parts.push(`à ${dayLabels.join(', ')}`);
@@ -87,20 +78,17 @@ export function buildRuleSummary(
 
 	if (rule.holidays?.mode === 'all') {
 		parts.push('incluindo feriados');
-	}
-	else if (rule.holidays?.mode === 'specific' && rule.holidays.ids?.length) {
+	} else if (rule.holidays?.mode === 'specific' && rule.holidays.ids?.length) {
 		const labels = rule.holidays.ids.map(
 			id => holidayNames[id] ?? 'feriado',
 		);
 
 		if (labels.length === 1) {
 			parts.push(`apenas no feriado ${labels[0]}`);
-		}
-		else {
+		} else {
 			parts.push(`apenas nos feriados ${labels.join(' e ')}`);
 		}
-	}
-	else {
+	} else {
 		parts.push('excepto feriados');
 	}
 
@@ -113,8 +101,7 @@ export function buildRuleSummary(
 
 		if (labels.length === 1) {
 			parts.push(`durante o evento ${labels[0]}`);
-		}
-		else {
+		} else {
 			parts.push(`durante os eventos ${labels.join(' e ')}`);
 		}
 	}

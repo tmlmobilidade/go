@@ -29,8 +29,7 @@ export function simpleOneApexValidationAnalyzer(analysisData: AnalysisData): Rid
 		};
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		return {
 			error_message: error.message,
 			grade: 'error',

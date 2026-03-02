@@ -6,7 +6,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { sendWelcomeEmail } from '@tmlmobilidade/emails';
 import { generateRandomString, generateRandomToken } from '@tmlmobilidade/strings';
 import { type CreateUserDto, type LoginDto, type Organization, type Permission, type Session, type User } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 
 /* * */
@@ -179,4 +179,4 @@ class AuthProvider {
 
 /* * */
 
-export const authProvider = AsyncSingletonProxy(AuthProvider);
+export const authProvider = asyncSingletonProxy(AuthProvider);

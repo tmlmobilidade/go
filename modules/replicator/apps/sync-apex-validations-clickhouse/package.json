@@ -24,6 +24,7 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
 		"luxon": "3.7.2"
 	},

@@ -4,6 +4,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { rideAcceptances } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { runOnInterval } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
 
 /* * */
@@ -86,8 +87,7 @@ async function main() {
 		}
 
 		Logger.info(`Total rides: ${totalRides}. (${globalTimer.get()})`);
-	}
-	catch (err) {
+	} catch (err) {
 		Logger.error('An error occurred. Halting execution.', err);
 		Logger.info('Retrying in 10 seconds...');
 		setTimeout(() => {
@@ -100,14 +100,4 @@ async function main() {
 
 //
 
-(async function init() {
-	//
-
-	//
-	// Run the main function on interval.
-	const runOnInterval = async () => {
-		await main();
-		setTimeout(runOnInterval, RUN_INTERVAL);
-	};
-	runOnInterval();
-})();
+runOnInterval(main, RUN_INTERVAL);

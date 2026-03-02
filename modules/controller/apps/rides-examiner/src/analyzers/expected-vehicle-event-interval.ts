@@ -64,8 +64,7 @@ export function expectedVehicleEventIntervalAnalyzer(analysisData: AnalysisData)
 		};
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		return {
 			error_message: error.message,
 			grade: 'error',

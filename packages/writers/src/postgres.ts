@@ -72,8 +72,7 @@ export class PostgresWriter {
 			this.CURRENT_BATCH_DATA = [];
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error(`POSTGRESWRITER [${this.INSTANCE_NAME}]: Error @ flush(): ${error.message}`);
 		}
 	}
@@ -93,8 +92,7 @@ export class PostgresWriter {
 		if (Array.isArray(data)) {
 			const combinedDataWithOptions = data.map(item => ({ data: item, options: options }));
 			this.CURRENT_BATCH_DATA = [...this.CURRENT_BATCH_DATA, ...combinedDataWithOptions];
-		}
-		else {
+		} else {
 			this.CURRENT_BATCH_DATA.push(data);
 		}
 		//
