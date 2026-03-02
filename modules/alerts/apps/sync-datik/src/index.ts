@@ -32,8 +32,7 @@ async function main() {
 		const alert = await alerts.findByExternalId(serviceAlert.id);
 		if (alert) {
 			Logger.error(`Alert with external ID ${serviceAlert.id} already exists, skipping...`);
-		}
-		else {
+		} else {
 			//
 			Logger.info(`Alert with external ID ${serviceAlert.id} does not exist, creating...`);
 
@@ -92,7 +91,7 @@ async function main() {
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	const runOnInterval = async () => {
 		await main();
 		setTimeout(runOnInterval, RUN_INTERVAL);

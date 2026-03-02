@@ -5,7 +5,7 @@ import { ensureGtfsFiles } from '@/tasks/ensure-gtfs-files.js';
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	const runOnInterval = async () => {
 		//
 

@@ -8,7 +8,7 @@ import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	//
 
 	const runOnInterval = async () => {

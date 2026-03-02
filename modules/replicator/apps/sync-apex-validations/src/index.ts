@@ -186,7 +186,7 @@ export async function syncApexValidations() {
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	const runOnInterval = async () => {
 		await syncApexValidations();
 		setTimeout(runOnInterval, 1_800_000);// 30 minutes

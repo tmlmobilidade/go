@@ -116,7 +116,7 @@ export async function syncRides() {
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	const runOnInterval = async () => {
 		await syncRides();
 		setTimeout(runOnInterval, RUN_INTERVAL);

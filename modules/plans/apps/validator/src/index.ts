@@ -242,7 +242,7 @@ const RUN_INTERVAL = 10_000; // 10 seconds
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	const runOnInterval = async () => {
 		Logger.init();
 

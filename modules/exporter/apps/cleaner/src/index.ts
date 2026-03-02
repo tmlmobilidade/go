@@ -81,7 +81,7 @@ async function deleteOldFileExports(): Promise<void> {
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	const runOnInterval = async () => {
 		try {
 			Logger.init();

@@ -185,7 +185,7 @@ async function syncApexOnBoardSales() {
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	const runOnInterval = async () => {
 		await syncApexOnBoardSales();
 		setTimeout(runOnInterval, 1_800_000);// 30 minutes

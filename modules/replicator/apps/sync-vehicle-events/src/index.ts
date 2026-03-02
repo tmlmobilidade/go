@@ -181,7 +181,7 @@ async function syncVehicleEvents() {
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	const runOnInterval = async () => {
 		await syncVehicleEvents();
 		setTimeout(runOnInterval, 1_800_000);// 30 minutes

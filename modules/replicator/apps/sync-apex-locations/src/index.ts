@@ -183,7 +183,7 @@ async function syncApexLocations() {
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	const runOnInterval = async () => {
 		await syncApexLocations();
 		setTimeout(runOnInterval, 1_800_000);// 30 minutes

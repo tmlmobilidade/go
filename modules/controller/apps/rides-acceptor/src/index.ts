@@ -209,7 +209,7 @@ async function main() {
 
 //
 
-(async function init() {
+await (async function init() {
 	//
 
 	//

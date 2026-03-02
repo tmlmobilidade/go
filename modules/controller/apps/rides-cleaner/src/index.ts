@@ -114,7 +114,7 @@ async function reprocessStuckRides() {
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	const runOnInterval = async () => {
 		await reprocessStuckRides();
 		setTimeout(runOnInterval, RUN_INTERVAL);

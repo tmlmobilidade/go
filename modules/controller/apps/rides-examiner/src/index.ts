@@ -169,7 +169,7 @@ export async function validateRides() {
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	const runOnInterval = async () => {
 		await validateRides();
 		setTimeout(runOnInterval, 1_000); // Run every 1 second

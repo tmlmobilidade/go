@@ -185,7 +185,7 @@ async function syncApexOnBoardRefunds() {
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	const runOnInterval = async () => {
 		await syncApexOnBoardRefunds();
 		setTimeout(runOnInterval, 1_800_000);// 30 minutes

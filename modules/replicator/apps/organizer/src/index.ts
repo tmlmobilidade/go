@@ -6,7 +6,7 @@ import { linkSalesToValidations } from '@/tasks/link-sales.js';
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	const runOnInterval = async () => {
 		//
 
