@@ -429,8 +429,8 @@ export const API_ROUTES = Object.freeze({
 		VALIDATIONS_DETAIL_FILE: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/file`,
 		VALIDATIONS_DETAIL_FILE_DOWNLOAD: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/file/download`,
 		VALIDATIONS_DETAIL_LOCK: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/lock`,
+		VALIDATIONS_DETAIL_PROCESSING_STATUS: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/processing-status`,
 		VALIDATIONS_DETAIL_REQUEST_APPROVAL: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/request-approval`,
-		VALIDATIONS_DETAIL_STATUS: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/status`,
 		VALIDATIONS_LIST: `${getAppConfig('plans', 'api_url')}/validations`,
 	},
 

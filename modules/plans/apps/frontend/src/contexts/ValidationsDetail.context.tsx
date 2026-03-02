@@ -59,7 +59,7 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 			return;
 		}
 		try {
-			const response = await fetchData<GtfsValidation>(API_ROUTES.plans.VALIDATIONS_DETAIL_STATUS(validationId), 'PUT', { processing_status: status });
+			const response = await fetchData<GtfsValidation>(API_ROUTES.plans.VALIDATIONS_DETAIL_PROCESSING_STATUS(validationId), 'PUT', { processing_status: status });
 			if (response.error || !response.data) {
 				useToast.error({ message: response.error ?? 'Erro ao atualizar estado da validação.', title: 'Erro' });
 				return;
