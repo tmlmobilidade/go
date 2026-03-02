@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type SimplifiedApexOnBoardRefund, type UpdateSimplifiedApexOnBoardRefundDto } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 
 /* * */
@@ -49,4 +49,4 @@ class SimplifiedApexOnBoardRefundsClass extends MongoCollectionClass<SimplifiedA
 
 /* * */
 
-export const simplifiedApexOnBoardRefunds = AsyncSingletonProxy(SimplifiedApexOnBoardRefundsClass);
+export const simplifiedApexOnBoardRefunds = asyncSingletonProxy(SimplifiedApexOnBoardRefundsClass);

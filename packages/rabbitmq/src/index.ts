@@ -1,6 +1,6 @@
 /* * */
 
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { connect as amqpConnect, Channel, ChannelModel, Options, Replies } from 'amqplib';
 
 /* * */
@@ -117,4 +117,4 @@ class RabbitMQService extends RabbitMQConnector {
 	}
 }
 
-export const rabbitMQ = AsyncSingletonProxy(RabbitMQService);
+export const rabbitMQ = asyncSingletonProxy(RabbitMQService);
