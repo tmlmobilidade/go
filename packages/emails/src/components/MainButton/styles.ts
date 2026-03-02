@@ -1,11 +1,12 @@
 /* * */
 
 import { fontFamily, fontSize, fontWeight } from '@/styles/font.js';
+import { type CSSProperties } from 'react';
 
 /* * */
 /* IMAGE */
 
-const button: React.CSSProperties = {
+const button: CSSProperties = {
 	backgroundColor: '#005ADC',
 	border: '3px solid #0041A0',
 	borderRadius: '5px',
