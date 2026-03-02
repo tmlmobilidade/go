@@ -168,9 +168,9 @@ class AuthProvider {
 		});
 		// Send a welcome email to the user with the verification token
 		await sendWelcomeEmail({
-			props: {
-				first_name: createUserDto.first_name,
-				setup_password_link: `${PAGE_ROUTES.auth.CHANGE_PASSWORD_LIST}?token=${verificationToken}&email=${encodeURIComponent(createUserDto.email)}`,
+			data: {
+				firstName: createUserDto.first_name,
+				resetPasswordUrl: `${PAGE_ROUTES.auth.CHANGE_PASSWORD_LIST}?token=${verificationToken}&email=${encodeURIComponent(createUserDto.email)}`,
 			},
 			to: createUserDto.email,
 		});

@@ -49,12 +49,13 @@ export class GtfsValidationsController {
 
 		const validationData: CreateGtfsValidationDto = {
 			created_by: request.me._id,
-			feeder_status: 'waiting',
 			file_id: '',
 			gtfs_agency: JSON.parse(requestData.fields.gtfs_agency['value'] as string) as GtfsAgency,
 			gtfs_feed_info: JSON.parse(requestData.fields.gtfs_feed_info['value'] as string) as GtfsFeedInfo,
 			is_locked: false,
 			notification_sent: false,
+			processing_status: 'waiting',
+			validity_status: 'unknown',
 		};
 
 		//
@@ -147,6 +148,40 @@ export class GtfsValidationsController {
 		return reply.send({ data: result, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
+	}
+
+	/**
+		 * Download the operation file associated with a plan by ID.
+		 * @param request The request object.
+		 * @param reply The reply object.
+		 */
+	static async downloadFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
+		// Get the Validation from the database
+		const foundValidation = await gtfsValidations.findById(request.params.id);
+		if (!foundValidation) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+		// Check if the user has permission to read the Validation
+		const hasPermissionReadValidation = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.gtfs_validations.actions.read,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.gtfs_validations.scope,
+			value: foundValidation.gtfs_agency.agency_id,
+		});
+		if (!hasPermissionReadValidation) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read validation file');
+		// Fetch the file associated with the validation
+		const foundFileData = await files.findById(foundValidation.file_id);
+		if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation file not found');
+		// Stream the file in the given URL to the client
+		const storageServiceResponse = await fetch(foundFileData.url);
+		if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
+		// Set headers and pipe the response body to the client
+		reply.header('Content-Disposition', `attachment; filename="${foundFileData.name}"`);
+		reply.header('Content-Type', 'application/zip');
+		// Set content length if available
+		const contentLength = storageServiceResponse.headers.get('Content-Length');
+		if (contentLength) reply.header('Content-Length', contentLength);
+		// Pipe the response body to the client
+		return reply.send(storageServiceResponse.body);
 	}
 
 	/**
@@ -328,9 +363,14 @@ export class GtfsValidationsController {
 		// Send the approval request email
 
 		await sendPlanApprovalRequestEmail({
-			props: {
-				solicited_by: request.me.first_name + ' ' + request.me.last_name,
-				validation: validationData,
+			data: {
+				agencyName: validationData.gtfs_agency.agency_name,
+				endDate: validationData.gtfs_feed_info.feed_end_date,
+				firstName: request.me.first_name,
+				gtfsValidationId: validationData._id,
+				gtfsValidationUrl: `${process.env.FRONTEND_URL}/validations/${validationData._id.toString()}`,
+				requestedBy: request.me.first_name + ' ' + request.me.last_name,
+				startDate: validationData.gtfs_feed_info.feed_start_date,
 			},
 			to: agencyData.contact_emails_pta || [],
 		});

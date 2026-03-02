@@ -1,0 +1,15 @@
+.longTitle {
+  display: flex;
+  gap: var(--size-spacing-xs);
+  align-items: center;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.compactTitle {
+  display: flex;
+  gap: var(--size-spacing-xs);
+  align-items: center;
+  min-width: 50px;
+  text-transform: uppercase
+}

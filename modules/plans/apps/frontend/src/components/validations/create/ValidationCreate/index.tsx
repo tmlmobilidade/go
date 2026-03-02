@@ -10,7 +10,7 @@ import { Pane } from '@tmlmobilidade/ui';
 
 export function ValidationCreate() {
 	return (
-		<Pane header={[<ValidationCreateHeader />]}>
+		<Pane header={[<ValidationCreateHeader key="header" />]}>
 			<ValidationCreateBasicInfo />
 		</Pane>
 	);

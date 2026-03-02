@@ -1,14 +1,46 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { generateComments } from '@/utils/comments.js';
+import { mergePatternWithEventRules } from '@/utils/rules.js';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { patterns, stops } from '@tmlmobilidade/interfaces';
-import { CreatePatternDto, type Pattern, PermissionCatalog, type UpdatePatternDto } from '@tmlmobilidade/types';
+import { CreatePatternDto, NoteComment, type Pattern, PermissionCatalog, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 
 /* * */
 
 export class PatternsController {
 	//
+
+	/**
+	 * Adds a comment to a pattern by pattern ID
+	 */
+	static async comment(request: FastifyRequest<{ Body: NoteComment, Params: { id: string } }>, reply: FastifyReply<Pattern>) {
+		//
+
+		const patternData = await patterns.findById(request.params.id);
+
+		if (!patternData) {
+			return reply.status(HTTP_STATUS.NOT_FOUND).send({
+				data: null,
+				error: 'Pattern not found.',
+				statusCode: HTTP_STATUS.NOT_FOUND,
+			});
+		}
+
+		const createdBy = request.me.first_name + ' ' + request.me.last_name;
+
+		const updateResult = await patterns.updateById(
+			request.params.id,
+			{ comments: [...patternData.comments, { ...request.body, created_by: createdBy, updated_by: createdBy }], updated_by: createdBy },
+		);
+
+		return reply.send({
+			data: updateResult,
+			error: null,
+			statusCode: HTTP_STATUS.OK,
+		});
+	}
 
 	/**
 	 * Creates a new pattern.
@@ -90,6 +122,8 @@ export class PatternsController {
 
 		if (!patternData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 
+		const merged = await mergePatternWithEventRules(patternData);
+
 		//
 		// Get the resource permissions for patterns for the current user.
 
@@ -122,7 +156,7 @@ export class PatternsController {
 
 			// Return pattern with populated path
 			return reply.send({
-				data: { ...patternData, path: populatedPath },
+				data: { ...merged, path: populatedPath },
 				error: null,
 				statusCode: HTTP_STATUS.OK,
 			});
@@ -132,7 +166,7 @@ export class PatternsController {
 		// Fetch the pattern data
 
 		return reply.send({
-			data: patternData,
+			data: merged,
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});
@@ -213,10 +247,22 @@ export class PatternsController {
 			});
 		}
 
+		// Set default values for avg_speed and dwell_time
+		const defaultParameter: StopsParameter = {
+			_id: crypto.randomUUID(),
+			kind: 'default',
+			path: formattedPath.map(p => ({
+				avg_speed: 0,
+				dwell_time: 30,
+				stop_id: p.stop_id,
+			})),
+		};
+
 		//
 		// Update the pattern with imported data
 
-		const updatedPattern = await patterns.updateById(patternData._id, {
+		const updatedPattern: Pattern = await patterns.updateById(patternData._id, {
+			parameters: [defaultParameter],
 			path: formattedPath,
 			shape: {
 				extension: Math.round(shapeExtension),
@@ -307,10 +353,32 @@ export class PatternsController {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update patterns');
 		}
 
+		const sanitizedBody = UpdatePatternSchema.parse(request.body);
+
+		//
+		// Generate activity comments
+		const patternComments = generateComments(
+			patternData,
+			sanitizedBody,
+			{
+				excludeFields: ['comments', 'updated_at', 'updated_by'],
+				updatedBy: request.me.first_name + ' ' + request.me.last_name,
+			},
+		);
+
+		// Merge with existing comments
+		const updateData = {
+			...sanitizedBody,
+			comments: [
+				...(patternData.comments || []),
+				...patternComments,
+			],
+		};
+
 		//
 		// Update the pattern
 
-		const updatedPattern = await patterns.updateById(patternData._id, request.body);
+		const updatedPattern = await patterns.updateById(patternData._id, updateData);
 
 		//
 		// Send the updated pattern data as the response

@@ -14,7 +14,7 @@ import { AlertsListHeader } from '@/components/list/AlertsListHeader';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert } from '@tmlmobilidade/types';
-import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, PublishStatusTag } from '@tmlmobilidade/ui';
+import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, PublishStatusTag } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
 /* * */
@@ -31,6 +31,12 @@ export function AlertsList() {
 	const alertsListContext = useAlertsListContext();
 
 	const columns: DataTableColumn<Alert>[] = [
+		{
+			accessor: 'agency_id',
+			render: item => <AgencyTag agencyId={item.agency_id} showId />,
+			title: 'Oper.',
+			width: 55,
+		},
 		{
 			accessor: 'publish_status',
 			render: item => <PublishStatusTag value={item.publish_status} />,

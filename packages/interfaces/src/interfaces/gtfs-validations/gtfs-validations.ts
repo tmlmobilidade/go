@@ -27,7 +27,7 @@ class GtfValidationsClass extends MongoCollectionClass<GtfsValidation, CreateGtf
 	}
 
 	/**
-	 * Finds Validation documents by agency ID.
+	 * Finds GTFS Validation documents by agency ID.
 	 * @param agencyId The agency ID to search for.
 	 * @returns A promise that resolves to an array of matching documents
 	 */
