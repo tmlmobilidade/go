@@ -31,8 +31,8 @@ export function ValidationStatusTag({ disabled, onChange, onClick, value }: Vali
 	// B. Transform data
 
 	const processingStatusOptions = ProcessingStatusSchema.options.map(value => ({
-		label: value === 'waiting' ? 'Em Espera' : value === 'processing' ? 'Em Análise' : value === 'complete' ? 'Válido' : value === 'error' ? 'Inválido' : 'UNKNOWN',
-		value: value,
+		label: value === 'waiting' ? 'Em Espera' : value === 'processing' ? 'Em Análise' : value === 'complete' ? 'Válido' : value === 'error' ? 'Inválido' : value === 'skipped' ? 'Omitido' : 'Desconhecido',
+		value: value as ProcessingStatus,
 	}));
 
 	//

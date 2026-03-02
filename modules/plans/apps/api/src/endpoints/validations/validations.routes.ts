@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 /* * */
 
 import { GtfsValidationsController } from '@/endpoints/validations/validations.controller.js';
@@ -50,6 +51,12 @@ server.register(
 			'/:id/lock',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.lock]) },
 			GtfsValidationsController.lock,
+		);
+
+		instance.put(
+			'/:id/status',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.update_publish_status]) },
+			GtfsValidationsController.changeStatus,
 		);
 
 		next();

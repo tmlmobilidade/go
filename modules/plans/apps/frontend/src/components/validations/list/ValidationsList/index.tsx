@@ -2,7 +2,6 @@
 
 /* * */
 
-import { ValidationStatusTag } from '@/components/common/ValidationStatusTag';
 import { useValidationsListContext } from '@/components/validations/list/ValidationsList.context';
 import { ValidationsListCellAgency } from '@/components/validations/list/ValidationsListCellAgency';
 import { ValidationsListCellDate } from '@/components/validations/list/ValidationsListCellCreatedAt';
@@ -10,6 +9,7 @@ import { ValidationsListFiltersBar } from '@/components/validations/list/Validat
 import { ValidationsListHeader } from '@/components/validations/list/ValidationsListHeader';
 import { type ValidationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { ValidationStatusTag } from '@tmlmobilidade/ui';
 import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
@@ -36,7 +36,7 @@ export function ValidationsList() {
 		},
 		{
 			accessor: 'feeder_status',
-			render: item => <ValidationStatusTag status={item.feeder_status} />,
+			render: item => <ValidationStatusTag value={item.feeder_status} />,
 			title: 'Estado',
 			width: 125,
 		},

@@ -1,16 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 /* * */
 
-import { ValidationStatusTag } from '@/components/common/ValidationStatusTag';
 import { openApprovePlanModal } from '@/components/validations/detail/ApprovePlanModal';
 import { openRequestApprovalModalModal } from '@/components/validations/detail/RequestApprovalModal';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, CloseButton, HasPermission, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog, ProcessingStatus } from '@tmlmobilidade/types';
+import { Button, CloseButton, HasPermission, Spacer, Tag, Toolbar, useMeContext, ValidationStatusTag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -22,9 +23,37 @@ export function ValidationsDetailHeader() {
 
 	const router = useRouter();
 	const validationsDetailContext = useValidationsDetailContext();
+	const meContext = useMeContext();
+
+	//
+	// B. Transform data
+
+	const hasPermissionToChangePublishStatus = useMemo(() => {
+		return meContext.actions.hasPermissionResource([
+			{
+				action: PermissionCatalog.all.gtfs_validations.actions.update_publish_status,
+				resource_key: 'agency_ids',
+				scope: PermissionCatalog.all.gtfs_validations.scope,
+				value: validationsDetailContext.data.validation.gtfs_agency.agency_id,
+			},
+			{
+				action: PermissionCatalog.all.gtfs_validations.actions.update_publish_status,
+				resource_key: 'reference_types',
+				scope: PermissionCatalog.all.gtfs_validations.scope,
+				value: validationsDetailContext.data.validation.gtfs_agency.agency_id,
+			},
+		]);
+	}, [
+		meContext.data.user?.permissions,
+		validationsDetailContext.data.validation.gtfs_agency.agency_id,
+	]);
 
 	//
 	// C. Handle actions
+
+	const handleUpdateValidationStatus = async (status: ProcessingStatus) => {
+		await validationsDetailContext.actions.updateValidationStatus(status);
+	};
 
 	const handleClose = () => {
 		router.push(keepUrlParams(PAGE_ROUTES.plans.VALIDATIONS_LIST));
@@ -43,11 +72,15 @@ export function ValidationsDetailHeader() {
 
 	return (
 		<Toolbar>
-
 			<CloseButton onClick={handleClose} type="close" />
 
 			<Tag label={validationsDetailContext.data.validation?._id} variant="secondary" />
-			<ValidationStatusTag status={validationsDetailContext.data.validation?.feeder_status} />
+			<ValidationStatusTag
+				disabled={hasPermissionToChangePublishStatus}
+				// eslint-disable-next-line @typescript-eslint/no-misused-promises
+				onChange={handleUpdateValidationStatus}
+				value={validationsDetailContext.data.validation?.feeder_status}
+			/>
 			<Tag label={validationsDetailContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
 
 			<Spacer />

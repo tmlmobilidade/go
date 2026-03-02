@@ -1,10 +1,10 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { agencies, files, Filter, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
-import { type CreateGtfsValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
+import { type CreateGtfsValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, PermissionCatalog, ProcessingStatus } from '@tmlmobilidade/types';
 import { createWriteStream } from 'fs';
 import { readFileSync, unlinkSync } from 'node:fs';
 import { pipeline } from 'node:stream/promises';
@@ -15,6 +15,42 @@ import { join } from 'path';
 
 export class GtfsValidationsController {
 	//
+
+	static async changeStatus(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<GtfsValidation>) {
+		//
+
+		//
+		// Get the requested Validation data
+
+		const validationData = await gtfsValidations.findById(request.params.id);
+
+		if (!validationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+
+		//
+		// Check if the user has permission to change the status of the Validation
+
+		const hasPermissionChangeStatus = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.gtfs_validations.actions.update_publish_status,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.gtfs_validations.scope,
+			value: validationData.gtfs_agency.agency_id,
+		});
+		if (!hasPermissionChangeStatus) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: change status validation');
+		//
+		// Update the Validation document and send it to caller
+
+		// Expect a body shaped like: { feeder_status: ProcessingStatus }
+		const { feeder_status } = request.body as { feeder_status: ProcessingStatus };
+
+		const updatedValidation = await gtfsValidations.updateById(
+			validationData._id,
+			{ feeder_status },
+		);
+		reply.send({ data: updatedValidation, error: null, statusCode: HTTP_STATUS.OK });
+
+		//
+	}
 
 	/**
 	 * Creates a new GTFS Validation from multipart form data.
@@ -74,8 +110,7 @@ export class GtfsValidationsController {
 			// Read file back as buffer for upload
 			buffer = readFileSync(tempFilePath);
 			size = buffer.length;
-		}
-		catch (streamError) {
+		} catch (streamError) {
 			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error processing file stream', { cause: streamError });
 		}
 
@@ -137,8 +172,7 @@ export class GtfsValidationsController {
 		if (tempFilePath) {
 			try {
 				unlinkSync(tempFilePath);
-			}
-			catch (cleanupError) {
+			} catch (cleanupError) {
 				console.warn('Failed to cleanup temporary file:', tempFilePath, cleanupError);
 			}
 		}
