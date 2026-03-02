@@ -54,7 +54,7 @@ export const LineSchema = DocumentSchema.extend({
 	is_circular_line: z.boolean().default(false),
 	is_locked: z.boolean().default(false),
 	is_school_line: z.boolean().default(false),
-	name: z.string().trim().min(1).max(50),
+	name: z.string().trim().min(1).max(150),
 	onboard_fare_ids: z.array(z.string()).nullable().default([]),
 	prepaid_fare_id: z.string().nullable().default(null),
 	routes: z.array(RouteSimplifiedSchema).optional().default([]), // Computed field, not stored in DB

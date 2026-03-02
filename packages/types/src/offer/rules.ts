@@ -15,8 +15,7 @@ export type LinesMode = z.infer<typeof LinesModeSchema>;
 /* * */
 
 export const ManualRuleSchema = z.object({
-	// stable id for UI dedupe
-	_id: z.string().optional(),
+	_id: z.string(),
 
 	eventId: z.string().optional(),
 

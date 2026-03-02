@@ -38,6 +38,7 @@ export const StopsParameterSchema = z.discriminatedUnion('kind', [
 
 export type StopsParameter = z.infer<typeof StopsParameterSchema>;
 export type StopsParameterOverride = z.infer<typeof StopsParameterOverrideSchema>;
+export type StopsParameterDefault = z.infer<typeof StopsParameterDefaultSchema>;
 
 /* * */
 
