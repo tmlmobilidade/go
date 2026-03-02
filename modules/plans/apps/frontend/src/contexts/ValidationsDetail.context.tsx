@@ -53,7 +53,7 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 	//
 	// B. Handle actions
 
-	const handleUpdateProcessingStatus = useCallback(async (status: ProcessingStatus) => {
+	const updateProcessingStatus = useCallback(async (status: ProcessingStatus) => {
 		if (!validationId) {
 			useToast.error({ message: 'ID da validação é obrigatório.', title: 'Erro' });
 			return;
@@ -81,7 +81,7 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 	const contextValue: ValidationsDetailContextState = useMemo(() => ({
 		actions: {
 			approvePlan,
-			updateProcessingStatus: handleUpdateProcessingStatus,
+			updateProcessingStatus,
 		},
 		data: {
 			file: fileData,
@@ -97,7 +97,7 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 		fileData,
 		fileError,
 		fileLoading,
-		handleUpdateProcessingStatus,
+		updateProcessingStatus,
 		validationData,
 		validationError,
 		validationLoading,

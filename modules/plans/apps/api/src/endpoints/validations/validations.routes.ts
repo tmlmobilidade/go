@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 /* * */
 
 import { GtfsValidationsController } from '@/endpoints/validations/validations.controller.js';
@@ -60,9 +59,9 @@ server.register(
 		);
 
 		instance.put(
-			'/:id/status',
+			'/:id/processing-status',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.update_processing_status]) },
-			GtfsValidationsController.changeStatus,
+			GtfsValidationsController.updateProcessingStatus,
 		);
 
 		next();
