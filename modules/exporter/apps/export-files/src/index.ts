@@ -5,6 +5,7 @@ import { fileExports, files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { ProcessingStatusSchema } from '@tmlmobilidade/types';
+import { runOnInterval } from '@tmlmobilidade/utils';
 import fs from 'fs';
 
 import { exportRidesFile } from './export-rides.js';
@@ -56,8 +57,7 @@ async function main() {
 
 				await fileExports.updateById(fileExport._id, { file_id: file._id, processing_status: 'complete' });
 			}
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error(error);
 			Logger.error(`Error processing file export: ${error instanceof Error ? error.message : 'Unknown error'}.`);
 			await fileExports.updateById(fileExport._id, { processing_status: 'error' });
@@ -72,12 +72,4 @@ async function main() {
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		await main();
-		setTimeout(runOnInterval, RUN_INTERVAL);
-	};
-	runOnInterval();
-})();
-
-/* * */
+runOnInterval(main, RUN_INTERVAL);

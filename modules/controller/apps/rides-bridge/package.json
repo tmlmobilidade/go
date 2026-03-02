@@ -14,7 +14,7 @@
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint . --fix",
+		"lint:fix": "eslint ./src --fix",
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
@@ -23,7 +23,7 @@
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"pg": "8.18.0"
+		"pg": "8.19.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

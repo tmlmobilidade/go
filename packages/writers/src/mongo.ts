@@ -174,14 +174,12 @@ export class MongoDbWriter<T> {
 				this.DATA_BUCKET_FLUSH_OPS = [];
 
 				//
-			}
-			catch (error) {
+			} catch (error) {
 				Logger.error(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Error @ flush().writeOperations(): ${error.message}`);
 			}
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Error @ flush(): ${error.message}`);
 		}
 	}
@@ -230,8 +228,7 @@ export class MongoDbWriter<T> {
 		if (Array.isArray(data)) {
 			const combinedDataWithOptions = data.map(item => ({ data: item, options: options }));
 			this.DATA_BUCKET_ALWAYS_AVAILABLE = [...this.DATA_BUCKET_ALWAYS_AVAILABLE, ...combinedDataWithOptions];
-		}
-		else {
+		} else {
 			this.DATA_BUCKET_ALWAYS_AVAILABLE.push({ data: data, options: options });
 		}
 

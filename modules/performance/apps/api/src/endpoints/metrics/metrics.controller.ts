@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { type Metric } from '@tmlmobilidade/types';
@@ -68,11 +68,9 @@ function filterDataByDate(
 
 		if (/^\d{4}$/.test(dateStr)) {
 			return 'annual'; // YYYY
-		}
-		else if (/^\d{4}-\d{2}$/.test(dateStr)) {
+		} else if (/^\d{4}-\d{2}$/.test(dateStr)) {
 			return 'monthly'; // YYYY-MM
-		}
-		else {
+		} else {
 			return 'daily'; // YYYY-MM-DD or full ISO
 		}
 	};
@@ -158,8 +156,7 @@ export class MetricsController {
 				error: null,
 				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			console.error(error);
 			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to retrieve metric');
 		}

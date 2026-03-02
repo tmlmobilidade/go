@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateZoneDto, CreateZoneSchema, type UpdateZoneDto, UpdateZoneSchema, type Zone } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -71,4 +71,4 @@ class ZonesClass extends MongoCollectionClass<Zone, CreateZoneDto, UpdateZoneDto
 
 /* * */
 
-export const zones = AsyncSingletonProxy(ZonesClass);
+export const zones = asyncSingletonProxy(ZonesClass);

@@ -39,8 +39,7 @@ export async function processStopsFile(context: ImportGtfsContext): Promise<void
 		Logger.success(`Finished processing "stops.txt": ${context.gtfs.stops.size} rows saved in ${stopsParseTimer.get()}.`, 1);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "stops.txt" file.', error);
 		throw new Error('✖︎ Error processing "stops.txt" file.');
 	}
