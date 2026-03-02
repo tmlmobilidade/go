@@ -11,7 +11,8 @@ const link: React.CSSProperties = {
 };
 
 const image: React.CSSProperties = {
-	height: 70,
+	height: 40,
+	padding: '20px',
 	width: 'auto',
 };
 

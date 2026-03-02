@@ -11,6 +11,9 @@ const body: React.CSSProperties = {
 /* CONTAINER */
 
 const container: React.CSSProperties = {
+	backgroundColor: '#F6F8FA',
+	display: 'flex',
+	flexDirection: 'column',
 	maxWidth: '600px',
 	width: '100%',
 };
@@ -19,10 +22,10 @@ const container: React.CSSProperties = {
 /* CONTENT */
 
 const content: React.CSSProperties = {
-	backgroundColor: '#F6F8FA',
 	display: 'flex',
 	flexDirection: 'column',
 	padding: '30px',
+	paddingBottom: '10px',
 	paddingTop: '10px',
 	width: '100%',
 };
