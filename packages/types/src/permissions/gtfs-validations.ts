@@ -10,6 +10,7 @@ export const GtfsValidationsPermissionSchema = z.object({
 		'read',
 		'lock',
 		'request_approval',
+		'update_publish_status',
 	]),
 	resources: z.object({
 		agency_ids: z.array(z.string()).default([]),
