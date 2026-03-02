@@ -42,7 +42,7 @@ export function AlertDetailHeader() {
 			},
 		]);
 	}, [
-		meContext.actions,
+		meContext.data.user?.permissions,
 		alertDetailContext.data.alert.agency_id,
 		alertDetailContext.data.alert.reference_type,
 	]);
