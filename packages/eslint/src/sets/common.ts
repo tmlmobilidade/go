@@ -8,6 +8,7 @@ import { promisesConfig } from '@/rules/promises.js';
 import { tsconfigConfig } from '@/rules/tsconfig.js';
 import eslint from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
+import eslintPluginImport from 'eslint-plugin-import';
 import perfectionist from 'eslint-plugin-perfectionist';
 import { defineConfig } from 'eslint/config';
 import globals from 'globals';
@@ -38,6 +39,7 @@ export default defineConfig([
 	{
 		plugins: {
 			'@stylistic': stylistic,
+			'import': eslintPluginImport,
 		},
 	},
 
@@ -88,6 +90,9 @@ export default defineConfig([
 			'@typescript-eslint/no-non-null-assertion': 'warn',
 			'@typescript-eslint/no-unused-vars': 'warn',
 			'@typescript-eslint/prefer-optional-chain': 'error',
+			'import/no-extraneous-dependencies': ['error', {
+				packageDir: ['.'],
+			}],
 
 			// Code style rules
 			'@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: true }],
