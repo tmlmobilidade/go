@@ -30,7 +30,7 @@ export class GtfsValidationsController {
 		// Check if the user has permission to change the status of the Validation
 
 		const hasPermissionChangeStatus = PermissionCatalog.hasPermissionResource({
-			action: PermissionCatalog.all.gtfs_validations.actions.update_publish_status,
+			action: PermissionCatalog.all.gtfs_validations.actions.update_processing_status,
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.gtfs_validations.scope,
@@ -43,9 +43,12 @@ export class GtfsValidationsController {
 		// Expect a body shaped like: { feeder_status: ProcessingStatus }
 		const { feeder_status } = request.body as { feeder_status: ProcessingStatus };
 
+		// feeder_status is not an allowed/known property on the update object, so we should update processing_status instead if that's intended,
+		// or otherwise handle accordingly. Assuming the correct property is processing_status:
+
 		const updatedValidation = await gtfsValidations.updateById(
 			validationData._id,
-			{ feeder_status },
+			{ processing_status: feeder_status },
 		);
 		reply.send({ data: updatedValidation, error: null, statusCode: HTTP_STATUS.OK });
 

@@ -10,7 +10,7 @@ import { Tag } from '../Tag';
 
 /* * */
 
-interface ValidationStatusTagProps {
+interface ProcessingStatusTagProps {
 	disabled?: boolean
 	onChange?: (value: ProcessingStatus) => void
 	onClick?: () => void
@@ -19,7 +19,7 @@ interface ValidationStatusTagProps {
 
 /* * */
 
-export function ValidationStatusTag({ disabled, onChange, onClick, value }: ValidationStatusTagProps) {
+export function ProcessingStatusTag({ disabled, onChange, onClick, value }: ProcessingStatusTagProps) {
 	//
 
 	//

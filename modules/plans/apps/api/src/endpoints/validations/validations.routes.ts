@@ -61,7 +61,7 @@ server.register(
 
 		instance.put(
 			'/:id/status',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.update_publish_status]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.update_processing_status]) },
 			GtfsValidationsController.changeStatus,
 		);
 
