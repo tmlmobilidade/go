@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateHolidayDto, CreateHolidaySchema, type Holiday, type UpdateHolidayDto, UpdateHolidaySchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -51,4 +51,4 @@ class HolidaysClass extends MongoCollectionClass<Holiday, CreateHolidayDto, Upda
 
 /* * */
 
-export const holidays = AsyncSingletonProxy(HolidaysClass);
+export const holidays = asyncSingletonProxy(HolidaysClass);

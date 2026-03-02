@@ -6,7 +6,7 @@ import { users } from '@/interfaces/auth/users.js';
 import { getAppConfig } from '@tmlmobilidade/consts';
 import { sendGenericNotificationEmail } from '@tmlmobilidade/emails';
 import { type CreateNotificationDto, CreateNotificationSchema, type Notification, NotificationPermission, Permission, Role, UpdateNotificationDto, UpdateNotificationSchema, User } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -142,4 +142,4 @@ class NotificationsClass extends MongoCollectionClass<Notification, CreateNotifi
 
 /* * */
 
-export const notifications = AsyncSingletonProxy(NotificationsClass);
+export const notifications = asyncSingletonProxy(NotificationsClass);

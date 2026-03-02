@@ -9,7 +9,7 @@ import { pcgidbLegacy, pcgidbTicketing, pcgidbValidations } from '@tmlmobilidade
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	//
 
 	await pcgidbLegacy.connect();

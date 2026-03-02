@@ -22,7 +22,7 @@ const RUN_INTERVAL_MS = 1_000; // 1 second
 
 		Logger.init();
 
-		const globalTimer = new Timer();
+	const globalTimer = new Timer();
 
 		try {
 			//

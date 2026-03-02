@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateSessionDto, CreateSessionSchema, Session, type UpdateSessionDto, UpdateSessionSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -45,4 +45,4 @@ class SessionsClass extends MongoCollectionClass<Session, CreateSessionDto, Upda
 
 /* * */
 
-export const sessions = AsyncSingletonProxy(SessionsClass);
+export const sessions = asyncSingletonProxy(SessionsClass);

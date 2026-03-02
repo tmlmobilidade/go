@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateGtfsValidationDto, CreateGtfsValidationSchema, type GtfsValidation, type UpdateGtfsValidationDto, UpdateGtfsValidationSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -50,4 +50,4 @@ class GtfValidationsClass extends MongoCollectionClass<GtfsValidation, CreateGtf
 
 /* * */
 
-export const gtfsValidations = AsyncSingletonProxy(GtfValidationsClass);
+export const gtfsValidations = asyncSingletonProxy(GtfValidationsClass);

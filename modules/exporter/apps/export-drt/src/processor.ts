@@ -49,8 +49,7 @@ export async function processor() {
 
 		await processAgencies();
 		await processRides();
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing.', error);
 		throw new Error('✖︎ Error processing rides.');
 	}
@@ -174,8 +173,7 @@ async function processHashedTrips(hashedTripsIds: IndexedValues<string>): Promis
 		Logger.info(`Processed ${totalHashedTrips} Hashed Trips in ${hashedTripsTimer.get()}.`);
 
 		return stopIds;
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing Hashed Trips.', error); ;
 		throw new Error('✖︎ Error processing Hashed Trips.');
 	}
@@ -221,8 +219,7 @@ async function processHashedShapes(hashedShapesIds: IndexedValues<string>) {
 		GLOBAL_CONTEXT.tables.shapes.flush();
 
 		Logger.info(`Processed ${totalHashedShapes} Hashed Shapes in ${hashedShapesTimer.get()}.`);
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing Hashed Shapes.', error);
 		throw new Error('✖︎ Error processing Hashed Shapes.');
 	}
@@ -247,8 +244,7 @@ async function processAgencies() {
 		GLOBAL_CONTEXT.tables.agencies.flush();
 
 		Logger.info(`Processed 1 Agency in ${agenciesTimer.get()}.`);
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing Agencies.', error);
 		throw new Error('✖︎ Error processing Agencies.');
 	}
@@ -293,8 +289,7 @@ async function processStops(stopIds: Set<string>) {
 		GLOBAL_CONTEXT.tables.stops.flush();
 
 		Logger.info(`Processed ${totalStops} Stops in ${stopsTimer.get()}.`);
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing Stops.', error);
 		throw new Error('✖︎ Error processing Stops.');
 	}

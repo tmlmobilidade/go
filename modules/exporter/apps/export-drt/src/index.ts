@@ -3,6 +3,7 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { runOnInterval } from '@tmlmobilidade/utils';
 import os from 'os';
 
 import { deleteAllAgencyDatabases, initializeDatabase } from './database.js';
@@ -70,8 +71,7 @@ async function main() {
 		await saveAllAgencyDatabasesToStorage(baseConfig, AGENCY_IDS);
 
 		Logger.terminate('DRT export completed successfully.');
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error parsing plan.', error);
 		throw error;
 	}
@@ -79,10 +79,4 @@ async function main() {
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		await main();
-		setTimeout(runOnInterval, RUN_INTERVAL);
-	};
-	runOnInterval();
-})();
+runOnInterval(main, RUN_INTERVAL);

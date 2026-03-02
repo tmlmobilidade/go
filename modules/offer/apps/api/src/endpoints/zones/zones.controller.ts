@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, zones } from '@tmlmobilidade/interfaces';
 import { CreateZoneDto, PermissionCatalog, type UpdateZoneDto, type Zone } from '@tmlmobilidade/types';

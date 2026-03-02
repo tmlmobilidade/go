@@ -4,7 +4,7 @@
 import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
 import { MongoConnector } from '@tmlmobilidade/mongo';
 import { type AvailableLocations, type CensusFeature, type District, type DistrictFeature, type Locality, type LocalityFeature, type Location, type Municipality, type MunicipalityFeature, type Parish, type ParishFeature } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { Collection, Document, Filter, FindOptions, WithId } from 'mongodb';
 
 /* * */
@@ -261,4 +261,4 @@ class LocationsClass {
 
 /* * */
 
-export const locations = AsyncSingletonProxy(LocationsClass);
+export const locations = asyncSingletonProxy(LocationsClass);
