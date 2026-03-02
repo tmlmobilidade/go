@@ -20,6 +20,8 @@ const container: React.CSSProperties = {
 
 const content: React.CSSProperties = {
 	backgroundColor: '#F6F8FA',
+	display: 'flex',
+	flexDirection: 'column',
 	padding: '30px',
 	paddingTop: '10px',
 	width: '100%',
