@@ -417,7 +417,10 @@ export class GtfsValidationsController {
 
 		const updatedGtfsValidation = await gtfsValidations.updateById(
 			gtfsValidationData._id,
-			{ processing_status: request.body.processing_status ?? 'error' },
+			{
+				processing_status: request.body.processing_status ?? 'error',
+				validity_status: 'unknown',
+			},
 		);
 
 		reply.send({ data: updatedGtfsValidation, error: null, statusCode: HTTP_STATUS.OK });
