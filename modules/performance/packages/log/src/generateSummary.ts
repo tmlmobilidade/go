@@ -64,8 +64,7 @@ export function generatePerformanceSummary() {
 	let metricsData;
 	try {
 		metricsData = JSON.parse(readFileSync(metricsFile, 'utf8'));
-	}
-	catch (err) {
+	} catch (err) {
 		console.error(`Error parsing metrics JSON: ${err.message}`);
 		return;
 	}

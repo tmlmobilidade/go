@@ -1,6 +1,7 @@
 /* * */
 
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
+import { useTypologiesContext } from '@/contexts/Typologies.context';
 import { LineDisplay } from '@tmlmobilidade/ui';
 
 /* * */
@@ -12,8 +13,10 @@ export function LineTag({ line_id, onClick, withLabel = true }: { line_id: strin
 	// A. Setup variables
 
 	const linesList = useLinesListContext();
-	const line = linesList.data.filtered.find(line => line._id === line_id);
-	const typologyData = linesList.data.typologyData.find(typology => typology._id === line?.typology);
+	const typologiesContext = useTypologiesContext();
+
+	const line = linesList.data.raw.find(line => line._id === line_id);
+	const typologyData = typologiesContext.data.raw.find(typology => typology._id === line?.typology);
 
 	//
 	// B. Render components

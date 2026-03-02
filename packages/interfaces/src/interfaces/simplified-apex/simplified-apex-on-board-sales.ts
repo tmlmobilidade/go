@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type SimplifiedApexOnBoardSale, type UpdateSimplifiedApexOnBoardSaleDto } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 
 /* * */
@@ -50,4 +50,4 @@ class SimplifiedApexOnBoardSalesClass extends MongoCollectionClass<SimplifiedApe
 
 /* * */
 
-export const simplifiedApexOnBoardSales = AsyncSingletonProxy(SimplifiedApexOnBoardSalesClass);
+export const simplifiedApexOnBoardSales = asyncSingletonProxy(SimplifiedApexOnBoardSalesClass);

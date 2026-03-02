@@ -6,6 +6,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -182,8 +183,7 @@ async function main() {
 		Logger.terminate(`Run took ${globalTimer.get()}`);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('An error occurred. Halting execution.', error);
 		Logger.error('Retrying in 10 seconds...');
 		setTimeout(() => {
@@ -194,10 +194,4 @@ async function main() {
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		await main();
-		setTimeout(runOnInterval, 43_200_000); // 12 hours
-	};
-	runOnInterval();
-})();
+runOnInterval(main, 43_200_000); // 12 hours

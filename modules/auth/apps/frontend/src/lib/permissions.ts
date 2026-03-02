@@ -211,7 +211,7 @@ const performanceActions: PermissionConfig = {
 
 const annotationsActions: PermissionConfig = {
 	actions: [
-		{ action: 'read', description: 'Permite ver anotações', label: 'Ver anotações', resources: ['AGENCIES'] },
+		{ action: 'read', description: 'Permite ver feriados', label: 'Ver anotações', resources: ['AGENCIES'] },
 		{ action: 'create', description: 'Permite criar uma anotação', label: 'Criar anotação', resources: ['AGENCIES'] },
 		{ action: 'update', description: 'Permite editar uma anotação', label: 'Editar anotação', resources: ['AGENCIES'] },
 		{ action: 'delete', description: 'Permite eliminar uma anotação', label: 'Eliminar anotação', resources: ['AGENCIES'] },
@@ -220,6 +220,19 @@ const annotationsActions: PermissionConfig = {
 	description: 'As ações que o utilizador pode realizar na gestão de anotações.',
 	scope: PermissionCatalog.all.annotations.scope,
 	title: 'Permissões de Anotações',
+};
+
+const holidaysActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver feriados', label: 'Ver feriados', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar um feriado', label: 'Criar feriado', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar um feriado', label: 'Editar feriado', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar um feriado', label: 'Eliminar feriado', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear um feriado', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de feriados.',
+	scope: PermissionCatalog.all.holidays.scope,
+	title: 'Permissões de Feriados',
 };
 
 const periodsActions: PermissionConfig = {
@@ -231,7 +244,7 @@ const periodsActions: PermissionConfig = {
 		{ action: 'lock', description: 'Permite bloquear/desbloquear um período', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de períodos.',
-	scope: PermissionCatalog.all.periods.scope,
+	scope: PermissionCatalog.all.year_periods.scope,
 	title: 'Permissões de Períodos',
 };
 
@@ -321,6 +334,7 @@ export const permissionsConfig = [
 	zonesActions,
 	typologiesActions,
 	linesActions,
+	holidaysActions,
 	// topicActions,
 	// proposedChangesActions,
 ];

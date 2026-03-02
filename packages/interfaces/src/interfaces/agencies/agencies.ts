@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type Agency, type CreateAgencyDto, CreateAgencySchema, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -53,4 +53,4 @@ class AgenciesClass extends MongoCollectionClass<Agency, CreateAgencyDto, Update
 
 /* * */
 
-export const agencies = AsyncSingletonProxy(AgenciesClass);
+export const agencies = asyncSingletonProxy(AgenciesClass);

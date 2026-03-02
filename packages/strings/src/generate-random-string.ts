@@ -31,6 +31,7 @@ export function generateRandomString({ length = 6, type = 'alphanumeric' }: Gene
 		case 'numeric':
 			allowedCharacters = numericSet;
 			break;
+		case 'alphanumeric':
 		default:
 			allowedCharacters = alphanumericSet;
 			break;

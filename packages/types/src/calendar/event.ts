@@ -14,7 +14,7 @@ export const CalendarEventSchema = z.object({
 	metadata: z.record(z.unknown()).optional(),
 	startDate: z.string(),
 	title: z.string(),
-	type: z.enum(['annotation', 'period', 'event']).optional(),
+	type: z.enum(['annotation', 'period', 'holiday', 'event', 'rule-impact']).optional(),
 });
 
 export const CalendarEventTypeEnum = CalendarEventSchema.shape.type;
@@ -23,8 +23,8 @@ export type CalendarEventType = NonNullable<z.infer<typeof CalendarEventTypeEnum
 
 export interface CalendarEventMetadata {
 	[key: string]: unknown
-	agency_id?: string
-	agency_name?: string
+	agency_ids?: string
+	agency_names?: string
 }
 
 export type CalendarEvent = z.infer<typeof CalendarEventSchema>;

@@ -1,6 +1,9 @@
 /* * */
 
-import { fetchZipFromUrl, isBrowser, normalizeFileContent, readZipFromFile } from '@/utils.js';
+import { fetchZipFromUrl } from '@/utils/fetch-zip-from-url.js';
+import { isBrowser } from '@/utils/is-browser.js';
+import { normalizeFileContent } from '@/utils/normalize-file.content.js';
+import { readZipFromFile } from '@/utils/read-zip-from-file.js';
 import { mimeTypes } from '@tmlmobilidade/consts';
 import JSZip from 'jszip';
 import papaparse, { type ParseConfig } from 'papaparse';
@@ -124,8 +127,7 @@ export class Files {
 
 				if (isBrowser || pathOrUrl.startsWith('http')) {
 					data = await fetchZipFromUrl(pathOrUrl);
-				}
-				else {
+				} else {
 					data = await readZipFromFile(pathOrUrl);
 				}
 			}
@@ -141,8 +143,7 @@ export class Files {
 			}
 
 			return zip;
-		}
-		catch (error) {
+		} catch (error) {
 			if (error instanceof Error && error.message.includes('Central Directory')) {
 				throw new Error('Invalid or corrupted ZIP file');
 			}
@@ -193,8 +194,7 @@ export class Files {
 			}
 
 			return zipContent;
-		}
-		catch (error) {
+		} catch (error) {
 			throw new Error(`Failed to create ZIP archive: ${(error as Error).message}`);
 		}
 	}

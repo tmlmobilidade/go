@@ -653,7 +653,7 @@
 		}
 	},
 	"vehicles": {
-		"_file": "warning",
+		"_file": "error",
 		"agency_id": {
 			"severity": "error"
 		},

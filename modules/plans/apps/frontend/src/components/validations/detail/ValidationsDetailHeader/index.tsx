@@ -7,8 +7,8 @@ import { openApprovePlanModal } from '@/components/validations/detail/ApprovePla
 import { openRequestApprovalModalModal } from '@/components/validations/detail/RequestApprovalModal';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog, ProcessingStatus } from '@tmlmobilidade/types';
-import { Button, CloseButton, HasPermission, Spacer, Tag, Toolbar, useMeContext, ValidationStatusTag } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/types';
+import { Button, CloseButton, HasPermission, ProcessingStatusTag, Spacer, Tag, Toolbar, ValidityStatusTag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
@@ -49,6 +49,18 @@ export function ValidationsDetailHeader() {
 	]);
 
 	//
+	// B. Transform data
+
+	const canApproveIntoPlan = useMemo(() => {
+		if (validationsDetailContext.data.validation?.processing_status !== 'complete') return false;
+		if (validationsDetailContext.data.validation?.validity_status !== 'valid') return false;
+		return true;
+	}, [
+		validationsDetailContext.data.validation?.processing_status,
+		validationsDetailContext.data.validation?.validity_status,
+	]);
+
+	//
 	// C. Handle actions
 
 	const handleUpdateValidationStatus = async (status: ProcessingStatus) => {
@@ -75,17 +87,13 @@ export function ValidationsDetailHeader() {
 			<CloseButton onClick={handleClose} type="close" />
 
 			<Tag label={validationsDetailContext.data.validation?._id} variant="secondary" />
-			<ValidationStatusTag
-				disabled={hasPermissionToChangePublishStatus}
-				// eslint-disable-next-line @typescript-eslint/no-misused-promises
-				onChange={handleUpdateValidationStatus}
-				value={validationsDetailContext.data.validation?.feeder_status}
-			/>
+			<ProcessingStatusTag value={validationsDetailContext.data.validation?.processing_status} />
+			<ValidityStatusTag value={validationsDetailContext.data.validation?.validity_status} />
 			<Tag label={validationsDetailContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
 
 			<Spacer />
 
-			{validationsDetailContext.data.validation.feeder_status === 'complete' && (
+			{canApproveIntoPlan && (
 				<HasPermission
 					action={PermissionCatalog.all.gtfs_validations.actions.request_approval}
 					resourceKey="agency_ids"
@@ -101,7 +109,7 @@ export function ValidationsDetailHeader() {
 				</HasPermission>
 			)}
 
-			{validationsDetailContext.data.validation.feeder_status === 'complete' && (
+			{canApproveIntoPlan && (
 				<HasPermission
 					action={PermissionCatalog.all.plans.actions.create}
 					resourceKey="agency_ids"

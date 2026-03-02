@@ -113,8 +113,7 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 		};
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		return {
 			error_message: error.message,
 			grade: 'error',
