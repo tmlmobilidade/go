@@ -99,10 +99,13 @@ export const calculateDailyServiceCompliance = async (context: ExportContext) =>
 
 	const resultsByDay: Record<string, DailyResults> = {};
 
+	const startDate = Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').unix_timestamp;
+	const endDate = Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').unix_timestamp;
+
 	const ridesQuery = {
-		operational_date: {
-			$gte: context.dates.start,
-			$lte: context.dates.end,
+		start_time_scheduled: {
+			$gte: startDate,
+			$lte: endDate,
 		},
 	};
 

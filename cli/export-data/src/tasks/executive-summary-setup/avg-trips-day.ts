@@ -16,8 +16,8 @@ export async function calculateAverageRidesByAgencyByDayType(
 
 	const ridesCollection = await rides.getCollection();
 
-	const startDateStr = Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').toFormat('yyyyMMdd');
-	const endDateStr = Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').toFormat('yyyyMMdd');
+	const startDateStr = Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').unix_timestamp;
+	const endDateStr = Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').unix_timestamp;
 
 	// Load calendar JSON
 	const calendarJson = await fetchCalendarData();
@@ -33,7 +33,7 @@ export async function calculateAverageRidesByAgencyByDayType(
 		{
 			$match: {
 				agency_id: { $exists: true },
-				operational_date: { $gte: startDateStr, $lte: endDateStr },
+				start_time_scheduled: { $gte: startDateStr, $lte: endDateStr },
 				system_status: 'complete',
 			},
 		},

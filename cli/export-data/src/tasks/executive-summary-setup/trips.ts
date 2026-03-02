@@ -35,8 +35,8 @@ export async function calculatePlannedTrips({ context, message }: TaskProps): Pr
 
 	const ridesCollection = await rides.getCollection();
 
-	const startDateStr = Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').toFormat('yyyyMMdd');
-	const endDateStr = Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').toFormat('yyyyMMdd');
+	const startDateStr = Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').unix_timestamp;
+	const endDateStr = Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').unix_timestamp;
 
 	message(`Date range: ${startDateStr} to ${endDateStr}`);
 
@@ -44,7 +44,7 @@ export async function calculatePlannedTrips({ context, message }: TaskProps): Pr
 		{
 			$match: {
 				agency_id: { $exists: true },
-				operational_date: { $gte: startDateStr, $lte: endDateStr },
+				start_time_scheduled: { $gte: startDateStr, $lte: endDateStr },
 			},
 		},
 		{
