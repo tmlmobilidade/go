@@ -3,7 +3,7 @@
 /* * */
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type File, type GtfsValidation, ProcessingStatus } from '@tmlmobilidade/types';
+import { type File, type GtfsValidation, type ProcessingStatus } from '@tmlmobilidade/types';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
