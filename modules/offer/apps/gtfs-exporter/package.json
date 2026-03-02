@@ -25,6 +25,7 @@
 		"@tmlmobilidade/rabbitmq": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
+		"@tmlmobilidade/writers": "*",
 		"adm-zip": "0.5.16",
 		"formidable": "3.5.4",
 		"papaparse": "5.5.3"
