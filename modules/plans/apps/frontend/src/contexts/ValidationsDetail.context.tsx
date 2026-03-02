@@ -13,7 +13,6 @@ import useSWR from 'swr';
 
 interface ValidationsDetailContextState {
 	actions: {
-		approvePlan: () => Promise<void>
 		updateProcessingStatus: (status: ProcessingStatus) => Promise<void>
 	}
 	data: {
@@ -71,16 +70,11 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 		}
 	}, [validationId, validationMutate]);
 
-	const approvePlan = useCallback(async () => {
-		if (!validationId) return;
-	}, [validationId]);
-
 	//
 	// C. Define context value
 
 	const contextValue: ValidationsDetailContextState = useMemo(() => ({
 		actions: {
-			approvePlan,
 			updateProcessingStatus,
 		},
 		data: {
@@ -93,7 +87,6 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 			loading: validationLoading || fileLoading,
 		},
 	}), [
-		approvePlan,
 		fileData,
 		fileError,
 		fileLoading,
