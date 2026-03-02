@@ -6,6 +6,7 @@ import { alerts } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type CreateAlertDto, type ServiceAlertResponse } from '@tmlmobilidade/types';
+import { runOnInterval } from '@tmlmobilidade/utils';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -91,10 +92,4 @@ async function main() {
 
 /* * */
 
-await (async function init() {
-	const runOnInterval = async () => {
-		await main();
-		setTimeout(runOnInterval, RUN_INTERVAL);
-	};
-	runOnInterval();
-})();
+runOnInterval(main, RUN_INTERVAL);

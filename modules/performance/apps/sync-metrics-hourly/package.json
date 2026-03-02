@@ -23,6 +23,7 @@
 		"@tmlmobilidade/go-performance-pckg-log": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/utils": "*",
 		"luxon": "3.7.2",
 		"p-limit": "7.3.0"
 	},
