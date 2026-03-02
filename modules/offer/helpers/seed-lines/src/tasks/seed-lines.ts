@@ -186,7 +186,6 @@ export async function seedLinesFromGoV1() {
 				created_by: 'system',
 				interchange: normalizeInterchange(originalLine.interchange),
 				is_circular_line: Boolean(originalLine.circular),
-				is_continuous_line: Boolean(originalLine.continuous),
 				is_locked: Boolean(originalLine.is_locked),
 				is_school_line: Boolean(originalLine.school),
 				name: originalLine.name,

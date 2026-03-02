@@ -52,7 +52,6 @@ export const LineSchema = DocumentSchema.extend({
 	code: z.string().trim().min(1).max(10),
 	interchange: z.nativeEnum(INTERCHANGE_MODE).default(INTERCHANGE_MODE.NONE),
 	is_circular_line: z.boolean().default(false),
-	is_continuous_line: z.boolean().default(false),
 	is_locked: z.boolean().default(false),
 	is_school_line: z.boolean().default(false),
 	name: z.string().trim().min(1).max(50),
