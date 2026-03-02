@@ -28,17 +28,13 @@ export function ValidationsDetailHeader() {
 	//
 	// B. Transform data
 
-	const hasPermissionToChangePublishStatus = useMemo(() => {
+	const hasPermissionToChangeProcessingStatus = useMemo(() => {
+		// User can change processing status if they have permission
+		// for the agency and reference type.
 		return meContext.actions.hasPermissionResource([
 			{
 				action: PermissionCatalog.all.gtfs_validations.actions.update_processing_status,
 				resource_key: 'agency_ids',
-				scope: PermissionCatalog.all.gtfs_validations.scope,
-				value: validationsDetailContext.data.validation.gtfs_agency.agency_id,
-			},
-			{
-				action: PermissionCatalog.all.gtfs_validations.actions.update_processing_status,
-				resource_key: 'reference_types',
 				scope: PermissionCatalog.all.gtfs_validations.scope,
 				value: validationsDetailContext.data.validation.gtfs_agency.agency_id,
 			},
@@ -51,8 +47,8 @@ export function ValidationsDetailHeader() {
 	//
 	// C. Handle actions
 
-	const handleUpdateValidationStatus = async (status: ProcessingStatus) => {
-		await validationsDetailContext.actions.updateValidationStatus(status);
+	const handleUpdateProcessingStatus = async (status: ProcessingStatus) => {
+		await validationsDetailContext.actions.updateProcessingStatus(status);
 	};
 
 	const handleClose = () => {
@@ -76,9 +72,8 @@ export function ValidationsDetailHeader() {
 
 			<Tag label={validationsDetailContext.data.validation?._id} variant="secondary" />
 			<ProcessingStatusTag
-				disabled={hasPermissionToChangePublishStatus}
-
-				onChange={handleUpdateValidationStatus}
+				disabled={!hasPermissionToChangeProcessingStatus}
+				onChange={handleUpdateProcessingStatus}
 				value={validationsDetailContext.data.validation?.processing_status}
 			/>
 			<Tag label={validationsDetailContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />

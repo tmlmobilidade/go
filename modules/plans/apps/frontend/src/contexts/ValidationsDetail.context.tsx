@@ -14,7 +14,7 @@ import useSWR from 'swr';
 interface ValidationsDetailContextState {
 	actions: {
 		approvePlan: () => Promise<void>
-		updateValidationStatus: (status: ProcessingStatus) => Promise<GtfsValidation>
+		updateProcessingStatus: (status: ProcessingStatus) => Promise<void>
 	}
 	data: {
 		file: File | null
@@ -53,25 +53,21 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 	//
 	// B. Handle actions
 
-	const handleUpdateValidationStatus = useCallback(async (status: ProcessingStatus) => {
+	const handleUpdateProcessingStatus = useCallback(async (status: ProcessingStatus) => {
 		if (!validationId) {
 			useToast.error({ message: 'ID da validação é obrigatório.', title: 'Erro' });
 			return;
 		}
 		try {
-			const response = await fetchData<GtfsValidation>(API_ROUTES.plans.VALIDATIONS_DETAIL(validationId) + '/status', 'PUT', {
-				feeder_status: status,
-			});
+			const response = await fetchData<GtfsValidation>(API_ROUTES.plans.VALIDATIONS_DETAIL_STATUS(validationId), 'PUT', { processing_status: status });
 			if (response.error || !response.data) {
 				useToast.error({ message: response.error ?? 'Erro ao atualizar estado da validação.', title: 'Erro' });
 				return;
 			}
-			// Update SWR cache so UI reflects new feeder_status immediately
+			// Update SWR cache so UI reflects new processing_status immediately
 			await validationMutate(response.data);
-			return response.data;
 		} catch (error) {
 			useToast.error({ message: error instanceof Error ? error.message : 'Erro ao atualizar estado da validação.', title: 'Erro' });
-			return;
 		}
 	}, [validationId, validationMutate]);
 
@@ -85,7 +81,7 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 	const contextValue: ValidationsDetailContextState = useMemo(() => ({
 		actions: {
 			approvePlan,
-			updateValidationStatus: handleUpdateValidationStatus,
+			updateProcessingStatus: handleUpdateProcessingStatus,
 		},
 		data: {
 			file: fileData,
@@ -101,7 +97,7 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 		fileData,
 		fileError,
 		fileLoading,
-		handleUpdateValidationStatus,
+		handleUpdateProcessingStatus,
 		validationData,
 		validationError,
 		validationLoading,
