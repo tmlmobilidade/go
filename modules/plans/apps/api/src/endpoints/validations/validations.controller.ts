@@ -3,8 +3,8 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { agencies, files, Filter, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
-import { type CreateGtfsValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
+import { agencies, files, type Filter, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
+import { type CreateGtfsValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, PermissionCatalog, type ProcessingStatus } from '@tmlmobilidade/types';
 import { createWriteStream } from 'fs';
 import { readFileSync, unlinkSync } from 'node:fs';
 import { pipeline } from 'node:stream/promises';
@@ -381,6 +381,46 @@ export class GtfsValidationsController {
 		const updatedValidation = await gtfsValidations.updateById(validationData._id, { notification_sent: true });
 
 		reply.send({ data: updatedValidation, error: null, statusCode: HTTP_STATUS.OK });
+
+		//
+	}
+
+	static async updateProcessingStatus(request: FastifyRequest<{ Body: { processing_status: ProcessingStatus }, Params: { id: string } }>, reply: FastifyReply<GtfsValidation>) {
+		//
+
+		//
+		// Get the requested Validation data
+
+		const gtfsValidationData = await gtfsValidations.findById(request.params.id);
+
+		if (!gtfsValidationData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'GTFS Validation not found');
+		}
+
+		//
+		// Check if the user has permission to change the status of the Validation
+
+		const hasPermissionChangeStatus = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.gtfs_validations.actions.update_processing_status,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.gtfs_validations.scope,
+			value: gtfsValidationData.gtfs_agency.agency_id,
+		});
+
+		if (!hasPermissionChangeStatus) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: change status validation');
+		}
+
+		//
+		// Update the Validation document and send it to caller
+
+		const updatedGtfsValidation = await gtfsValidations.updateById(gtfsValidationData._id, {
+			processing_status: request.body.processing_status ?? 'error',
+			validity_status: 'unknown',
+		});
+
+		reply.send({ data: updatedGtfsValidation, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}

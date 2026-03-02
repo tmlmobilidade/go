@@ -58,6 +58,12 @@ server.register(
 			GtfsValidationsController.lock,
 		);
 
+		instance.put(
+			'/:id/processing-status',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.update_processing_status]) },
+			GtfsValidationsController.updateProcessingStatus,
+		);
+
 		next();
 	},
 	{ prefix: NAMESPACE },
