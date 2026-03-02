@@ -146,8 +146,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 			if (rule?._id) {
 				// Editing - preserve the _id
 				handleEditRule({ ...validatedRule, _id: rule._id });
-			}
-			else {
+			} else {
 				// Creating new
 				handleAddRule(validatedRule);
 			}

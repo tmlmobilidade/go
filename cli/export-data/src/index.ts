@@ -24,7 +24,7 @@ import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
 
 /* * */
 
-(async function main() {
+await (async function main() {
 	//
 
 	//

@@ -7,6 +7,7 @@ import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedAp
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { UpdateRideSchema } from '@tmlmobilidade/types';
+import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -141,8 +142,7 @@ export async function validateRides() {
 				]);
 
 				//
-			}
-			catch (error) {
+			} catch (error) {
 				await rides.updateById(rideData._id, { system_status: 'error' });
 				Logger.error('An error occurred while processing a ride.', error);
 			}
@@ -150,13 +150,12 @@ export async function validateRides() {
 
 		//
 
-		fetch('https://status.carrismetropolitana.pt/api/push/B52rdR5Luo30Y1RAtCpHDrn4MF7vXCZb');
+		void fetch('https://status.carrismetropolitana.pt/api/push/B52rdR5Luo30Y1RAtCpHDrn4MF7vXCZb');
 
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
 		//
-	}
-	catch (err) {
+	} catch (err) {
 		Logger.error('An error occurred. Halting execution.', err);
 		Logger.error('Retrying in 10 seconds...');
 		setTimeout(() => {
@@ -169,10 +168,4 @@ export async function validateRides() {
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		await validateRides();
-		setTimeout(runOnInterval, 1_000); // Run every 1 second
-	};
-	runOnInterval();
-})();
+runOnInterval(validateRides, 1_000); // Run every 1 second

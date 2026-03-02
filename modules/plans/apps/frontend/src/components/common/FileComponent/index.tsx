@@ -54,8 +54,7 @@ export function FileComponent({ file }: { file: File }) {
 				message: `A transferência do ficheiro "${file.name}" está a começar...`,
 				title: 'A transferir ficheiro',
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			useToast.error({
 				message: error instanceof Error ? error.message : 'Erro ao transferir ficheiro',
 				title: 'Erro ao transferir ficheiro',

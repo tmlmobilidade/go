@@ -63,8 +63,7 @@ function GtfsImportConfirmation({ currentShapeExtension, currentStopCount, onSuc
 			closeGtfsImportConfirmationModal();
 			useToast.success({ message: 'Percurso importado com sucesso' });
 			onSuccess();
-		}
-		catch (error) {
+		} catch (error) {
 			console.log(error);
 			useToast.error({ message: 'Erro ao importar percurso' });
 			setIsImporting(false);

@@ -7,6 +7,7 @@ import { pcgidbValidations, rides, simplifiedApexValidations } from '@tmlmobilid
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { runOnInterval } from '@tmlmobilidade/utils';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@tmlmobilidade/writers';
 import { Interval } from 'luxon';
 
@@ -109,8 +110,7 @@ export async function syncApexValidations() {
 					Logger.info(`Flush [apex_validations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 
 					//
-				}
-				catch (error) {
+				} catch (error) {
 					Logger.error('Error in flushCallback', error);
 				}
 			};
@@ -172,8 +172,7 @@ export async function syncApexValidations() {
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
 		//
-	}
-	catch (err) {
+	} catch (err) {
 		console.log('An error occurred. Halting execution.', err);
 		console.log('Retrying in 10 seconds...');
 		setTimeout(() => {
@@ -186,10 +185,4 @@ export async function syncApexValidations() {
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		await syncApexValidations();
-		setTimeout(runOnInterval, 1_800_000);// 30 minutes
-	};
-	runOnInterval();
-})();
+runOnInterval(syncApexValidations, 1_800_000); // 30 minutes

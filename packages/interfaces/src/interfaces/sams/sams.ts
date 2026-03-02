@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateSamDto, CreateSamSchema, type Sam, type UpdateSamDto, UpdateSamSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -45,4 +45,4 @@ class SamsClass extends MongoCollectionClass<Sam, CreateSamDto, UpdateSamDto> {
 
 /* * */
 
-export const sams = AsyncSingletonProxy(SamsClass);
+export const sams = asyncSingletonProxy(SamsClass);

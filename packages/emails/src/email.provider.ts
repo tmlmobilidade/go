@@ -1,6 +1,6 @@
 /* * */
 
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import nodemailer from 'nodemailer';
 
 /* * */
@@ -92,4 +92,4 @@ export class EmailProvider {
 	//
 }
 
-export const emailProvider = AsyncSingletonProxy(EmailProvider);
+export const emailProvider = asyncSingletonProxy(EmailProvider);

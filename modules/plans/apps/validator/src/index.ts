@@ -3,21 +3,41 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { sendFailedBackupEmail, sendGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { GTFSValidator, GTFSValidatorError, GTFSValidatorResult } from '@tmlmobilidade/gtfs-validator';
-import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
+import { agencies, files, gtfsValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { getCurrentEnvironment, type GtfsValidation } from '@tmlmobilidade/types';
+import { runOnInterval } from '@tmlmobilidade/utils';
 import { access, constants, unlink, writeFile } from 'fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 /* * */
 
-async function validateFile(filePath: string, outputFilePath: string): Promise<GTFSValidatorResult['summary']> {
+async function validateFile(filePath: string, outputFilePath: string, agency_id: string): Promise<GTFSValidatorResult['summary']> {
 	//
 	// Get the environment and rules path
 	const environment = getCurrentEnvironment();
-	const rulesPath = environment === 'development' ? undefined : '/secrets/tml-rules.json';
+	let rulesPath = environment === 'development' ? undefined : join(tmpdir(), 'tml-rules.json');
+
+	// Get agency rules
+	const agency = await agencies.findById(agency_id);
+	if (!agency) {
+		throw new Error(`Agency not found: ${agency_id}`);
+	}
+
+	if (agency.validation_rules != null) {
+		// Write temporary file with agency rules
+		const tempRulesFilePath = join(tmpdir(), `gtfs_validation_rules_${agency_id}.json`);
+		const rulesContent = typeof agency.validation_rules === 'string'
+			? agency.validation_rules
+			: JSON.stringify(agency.validation_rules);
+
+		Logger.info(`Writing temporary file with agency rules to: ${tempRulesFilePath}`);
+		await writeFile(tempRulesFilePath, rulesContent, { encoding: 'utf-8' });
+		Logger.info(`Using custom validation rules: ${tempRulesFilePath}`);
+		rulesPath = tempRulesFilePath;
+	}
 
 	//
 	// Check if the file exists
@@ -26,8 +46,7 @@ async function validateFile(filePath: string, outputFilePath: string): Promise<G
 		try {
 			await access(rulesPath, constants.F_OK | constants.R_OK);
 			Logger.info(`Using custom validation rules: ${rulesPath}`);
-		}
-		catch (err) {
+		} catch (err) {
 			const msg = `Custom rules file not accessible: ${rulesPath}. Falling back to default rules. Error: ${err instanceof Error ? err.message : String(err)}`;
 			Logger.error(msg);
 			throw new Error(msg);
@@ -45,8 +64,7 @@ async function validateFile(filePath: string, outputFilePath: string): Promise<G
 
 		Logger.info(`Validation completed in ${validationResult.executionTime}ms`);
 		return validationResult.summary;
-	}
-	catch (err) {
+	} catch (err) {
 		if (err instanceof GTFSValidatorError) {
 			switch (err.code) {
 				case 'BINARY_NOT_FOUND':
@@ -79,8 +97,7 @@ async function validateFile(filePath: string, outputFilePath: string): Promise<G
 
 			// Re-throw to let calling code handle the failure
 			throw err;
-		}
-		else {
+		} else {
 			Logger.error(`Unexpected error during GTFS validation: ${err instanceof Error ? err.message : String(err)}`);
 			throw err;
 		}
@@ -93,6 +110,7 @@ async function processValidation(validation: GtfsValidation) {
 
 	try {
 		Logger.info('Processing validation...');
+
 		// 1. Update validation status to processing
 		const updatedValidation = await gtfsValidations.updateById(validation._id, {
 			feeder_status: 'processing',
@@ -120,9 +138,8 @@ async function processValidation(validation: GtfsValidation) {
 
 		let validationResult: GTFSValidatorResult['summary'];
 		try {
-			validationResult = await validateFile(tempFilePath, outputFilePath);
-		}
-		catch (error) {
+			validationResult = await validateFile(tempFilePath, outputFilePath, validation.gtfs_agency.agency_id);
+		} catch (error) {
 			validationResult = {
 				messages: [
 					{
@@ -157,15 +174,13 @@ async function processValidation(validation: GtfsValidation) {
 				},
 				to: file.created_by,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error('Error sending email:', error);
 		}
 
 		Logger.success('Validation Finished Successfully');
 		Logger.divider();
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing validation:', error);
 
 		// Send email to system
@@ -180,8 +195,7 @@ async function processValidation(validation: GtfsValidation) {
 					to: process.env.EMAIL_TO,
 				});
 			}
-		}
-		catch (emailError) {
+		} catch (emailError) {
 			Logger.error('Error sending email:', emailError);
 		}
 
@@ -204,12 +218,10 @@ async function processValidation(validation: GtfsValidation) {
 					total_warnings: 0,
 				},
 			});
-		}
-		catch (updateError) {
+		} catch (updateError) {
 			Logger.error('Error updating validation status:', updateError);
 		}
-	}
-	finally {
+	} finally {
 		// Clean up temporary files
 		try {
 			await Promise.allSettled([
@@ -221,8 +233,7 @@ async function processValidation(validation: GtfsValidation) {
 				}),
 			]);
 			Logger.info('Temporary files cleaned up');
-		}
-		catch (cleanupError) {
+		} catch (cleanupError) {
 			Logger.error('Error cleaning up temporary files:', cleanupError);
 		}
 	}
@@ -232,43 +243,41 @@ const RUN_INTERVAL = 10_000; // 10 seconds
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		Logger.init();
+async function main() {
+	Logger.init();
 
-		const globalTimer = new Timer();
+	const globalTimer = new Timer();
 
-		try {
-			// Query for waiting validations
-			const waitingValidations = await gtfsValidations.findMany(
-				{ feeder_status: { $in: ['waiting', 'processing'] } },
-				{ sort: { created_at: 1 } }, // Process oldest first
-			);
+	try {
+		// Query for waiting validations
+		const waitingValidations = await gtfsValidations.findMany(
+			{ feeder_status: { $in: ['waiting', 'processing'] } },
+			{ sort: { created_at: 1 } }, // Process oldest first
+		);
 
-			Logger.info(`Found ${waitingValidations.length} waiting or stuck validations`);
+		Logger.info(`Found ${waitingValidations.length} waiting or stuck validations`);
 
-			// Process each waiting validation
-			for (const validation of waitingValidations) {
-				Logger.spacer(3);
-				Logger.title('🚀 Processing validation...');
-				Logger.info(`Validation ID: ${validation._id}, File ID: ${validation.file_id}`);
+		// Process each waiting validation
+		for (const validation of waitingValidations) {
+			Logger.spacer(3);
+			Logger.title('🚀 Processing validation...');
+			Logger.info(`Validation ID: ${validation._id}, File ID: ${validation.file_id}`);
 
-				await processValidation(validation);
-			}
-
-			if (waitingValidations.length === 0) {
-				Logger.info('No waiting validations to process');
-			}
-		}
-		catch (error) {
-			Logger.error('Error processing validations:', error);
+			await processValidation(validation);
 		}
 
-		Logger.terminate(`Validation check completed in ${globalTimer.get()}`);
+		if (waitingValidations.length === 0) {
+			Logger.info('No waiting validations to process');
+		}
+	} catch (error) {
+		Logger.error('Error processing validations:', error);
+	}
 
-		setTimeout(runOnInterval, RUN_INTERVAL);
-	};
-	runOnInterval();
-})();
+	Logger.terminate(`Validation check completed in ${globalTimer.get()}`);
+
+	//
+}
+
+runOnInterval(main, RUN_INTERVAL);
 
 /* * */

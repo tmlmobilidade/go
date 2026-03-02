@@ -31,8 +31,7 @@ export function RuleCreatePeriods() {
 			// Remove period
 			const newPeriodIds = currentPeriodIds.filter(id => id !== periodValue);
 			createRuleContext.data.form.setFieldValue('periodIds', newPeriodIds);
-		}
-		else {
+		} else {
 			// Add period
 			const newPeriodIds = [...currentPeriodIds, periodValue];
 			createRuleContext.data.form.setFieldValue('periodIds', newPeriodIds);
@@ -49,8 +48,7 @@ export function RuleCreatePeriods() {
 		if (allSelected) {
 			// Deselect all
 			createRuleContext.data.form.setFieldValue('periodIds', []);
-		}
-		else {
+		} else {
 			// Select all
 			createRuleContext.data.form.setFieldValue('periodIds', selections[type]);
 		}
