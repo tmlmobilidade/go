@@ -7,6 +7,7 @@ import { agencies, files, gtfsValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { getCurrentEnvironment, type GtfsValidation } from '@tmlmobilidade/types';
+import { runOnInterval } from '@tmlmobilidade/utils';
 import { access, constants, unlink, writeFile } from 'fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -242,42 +243,41 @@ const RUN_INTERVAL = 10_000; // 10 seconds
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		Logger.init();
+async function main() {
+	Logger.init();
 
-		const globalTimer = new Timer();
+	const globalTimer = new Timer();
 
-		try {
-			// Query for waiting validations
-			const waitingValidations = await gtfsValidations.findMany(
-				{ feeder_status: { $in: ['waiting', 'processing'] } },
-				{ sort: { created_at: 1 } }, // Process oldest first
-			);
+	try {
+		// Query for waiting validations
+		const waitingValidations = await gtfsValidations.findMany(
+			{ feeder_status: { $in: ['waiting', 'processing'] } },
+			{ sort: { created_at: 1 } }, // Process oldest first
+		);
 
-			Logger.info(`Found ${waitingValidations.length} waiting or stuck validations`);
+		Logger.info(`Found ${waitingValidations.length} waiting or stuck validations`);
 
-			// Process each waiting validation
-			for (const validation of waitingValidations) {
-				Logger.spacer(3);
-				Logger.title('🚀 Processing validation...');
-				Logger.info(`Validation ID: ${validation._id}, File ID: ${validation.file_id}`);
+		// Process each waiting validation
+		for (const validation of waitingValidations) {
+			Logger.spacer(3);
+			Logger.title('🚀 Processing validation...');
+			Logger.info(`Validation ID: ${validation._id}, File ID: ${validation.file_id}`);
 
-				await processValidation(validation);
-			}
-
-			if (waitingValidations.length === 0) {
-				Logger.info('No waiting validations to process');
-			}
-		} catch (error) {
-			Logger.error('Error processing validations:', error);
+			await processValidation(validation);
 		}
 
-		Logger.terminate(`Validation check completed in ${globalTimer.get()}`);
+		if (waitingValidations.length === 0) {
+			Logger.info('No waiting validations to process');
+		}
+	} catch (error) {
+		Logger.error('Error processing validations:', error);
+	}
 
-		setTimeout(runOnInterval, RUN_INTERVAL);
-	};
-	runOnInterval();
-})();
+	Logger.terminate(`Validation check completed in ${globalTimer.get()}`);
+
+	//
+}
+
+runOnInterval(main, RUN_INTERVAL);
 
 /* * */

@@ -7,7 +7,7 @@ import { Logger } from '@tmlmobilidade/logger';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { Timer } from '@tmlmobilidade/timer';
 import { type Ride, type RideAcceptance } from '@tmlmobilidade/types';
-import { compareObjects } from '@tmlmobilidade/utils';
+import { compareObjects, runOnInterval } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
 
 /* * */
@@ -42,8 +42,7 @@ async function createRideAcceptances(ride: Ride) {
 		}, { returnResult: false });
 
 		Logger.info(`Created acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.`);
-	}
-	catch (err) {
+	} catch (err) {
 		Logger.error('An error occurred. Halting execution.', err);
 	}
 }
@@ -64,8 +63,7 @@ async function updateRideAcceptances(ride: Ride, acceptance: RideAcceptance) {
 		}, { returnResult: false });
 
 		Logger.info(`Updated acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.`);
-	}
-	catch (err) {
+	} catch (err) {
 		Logger.error('An error occurred. Halting execution.', err);
 	}
 }
@@ -94,8 +92,7 @@ async function alertJustification(ride: Ride) {
 		});
 
 		Logger.info(`Justified ride ${ride._id} with alert ${foundAlert._id}.`);
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('An error occurred. Halting execution.', error);
 		Logger.info('Retrying in 10 seconds...');
 	}
@@ -195,8 +192,7 @@ async function main() {
 		}
 
 		Logger.info(`Total rides: ${totalRides}. (${globalTimer.get()})`);
-	}
-	catch (err) {
+	} catch (err) {
 		Logger.error('An error occurred. Halting execution.', err);
 		Logger.info('Retrying in 10 seconds...');
 		setTimeout(() => {
@@ -209,14 +205,4 @@ async function main() {
 
 //
 
-(async function init() {
-	//
-
-	//
-	// Run the main function on interval.
-	const runOnInterval = async () => {
-		await main();
-		setTimeout(runOnInterval, RUN_INTERVAL);
-	};
-	runOnInterval();
-})();
+runOnInterval(main, RUN_INTERVAL);

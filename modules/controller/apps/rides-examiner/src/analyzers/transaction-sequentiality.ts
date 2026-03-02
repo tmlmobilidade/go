@@ -140,8 +140,7 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ri
 		};
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		return {
 			error_message: error.message,
 			expected_qty: null,

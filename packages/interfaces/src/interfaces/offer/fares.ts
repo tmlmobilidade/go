@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateFareDto, CreateFareSchema, type Fare, type UpdateFareDto, UpdateFareSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -51,4 +51,4 @@ class FaresClass extends MongoCollectionClass<Fare, CreateFareDto, UpdateFareDto
 
 /* * */
 
-export const fares = AsyncSingletonProxy(FaresClass);
+export const fares = asyncSingletonProxy(FaresClass);

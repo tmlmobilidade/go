@@ -60,6 +60,7 @@ export default [
 
 			// Backend-specific rules
 			'@typescript-eslint/no-explicit-any': 'warn', // More lenient for API responses
+			'@typescript-eslint/no-misused-promises': 'off', // Allow promises to not be awaited in backend
 			'no-console': 'off', // Allow console in backend for logging
 		},
 	},
