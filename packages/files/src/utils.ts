@@ -1,5 +1,5 @@
 declare const window: typeof globalThis;
-export const isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
+export const isBrowser = typeof window?.document !== 'undefined';
 
 /**
  * Fetches a ZIP file from a URL and returns it as an ArrayBuffer.
@@ -32,8 +32,7 @@ export async function readZipFromFile(path: string): Promise<ArrayBuffer> {
 	try {
 		const buffer = await readFile(path);
 		return buffer.buffer as ArrayBuffer;
-	}
-	catch (err) {
+	} catch (err) {
 		throw new Error(`Failed to read ZIP file: ${(err as Error).message}`);
 	}
 }

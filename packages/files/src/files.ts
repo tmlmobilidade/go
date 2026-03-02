@@ -124,8 +124,7 @@ export class Files {
 
 				if (isBrowser || pathOrUrl.startsWith('http')) {
 					data = await fetchZipFromUrl(pathOrUrl);
-				}
-				else {
+				} else {
 					data = await readZipFromFile(pathOrUrl);
 				}
 			}
@@ -141,8 +140,7 @@ export class Files {
 			}
 
 			return zip;
-		}
-		catch (error) {
+		} catch (error) {
 			if (error instanceof Error && error.message.includes('Central Directory')) {
 				throw new Error('Invalid or corrupted ZIP file');
 			}
@@ -193,8 +191,7 @@ export class Files {
 			}
 
 			return zipContent;
-		}
-		catch (error) {
+		} catch (error) {
 			throw new Error(`Failed to create ZIP archive: ${(error as Error).message}`);
 		}
 	}

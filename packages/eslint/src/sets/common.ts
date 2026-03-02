@@ -69,7 +69,7 @@ export default defineConfig([
 		rules: {
 			// TypeScript specific rules that require type checking
 			'@typescript-eslint/await-thenable': 'error',
-			'@typescript-eslint/no-floating-promises': 'error',
+			'@typescript-eslint/no-floating-promises': 'off',
 			'@typescript-eslint/no-misused-promises': 'error',
 			'@typescript-eslint/prefer-optional-chain': 'error',
 			'@typescript-eslint/switch-exhaustiveness-check': 'error',

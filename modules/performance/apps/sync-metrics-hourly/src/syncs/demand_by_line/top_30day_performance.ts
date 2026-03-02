@@ -106,11 +106,9 @@ export const computeTop30DayPerformanceByLine = async () => {
 				const dayType = dayData.day_type;
 				if (dayType === '1') {
 					last30DaysByDayType.day_type_1 += dayData.qty || 0;
-				}
-				else if (dayType === '2') {
+				} else if (dayType === '2') {
 					last30DaysByDayType.day_type_2 += dayData.qty || 0;
-				}
-				else if (dayType === '3') {
+				} else if (dayType === '3') {
 					last30DaysByDayType.day_type_3 += dayData.qty || 0;
 				}
 			}

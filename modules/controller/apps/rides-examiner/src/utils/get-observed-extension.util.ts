@@ -11,12 +11,12 @@ import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 export function getObservedExtension(startEvent: SimplifiedVehicleEvent, endEvent: SimplifiedVehicleEvent): null | number {
 	//
 
-	if (!startEvent || !startEvent.odometer) {
+	if (!startEvent?.odometer) {
 		// throw new Error('Start event must be provided and should have a valid odometer value.');
 		return null;
 	}
 
-	if (!endEvent || !endEvent.odometer) {
+	if (!endEvent?.odometer) {
 		// throw new Error('End event must be provided and should have a valid odometer value.');
 		return null;
 	}

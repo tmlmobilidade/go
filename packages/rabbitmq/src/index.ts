@@ -37,8 +37,7 @@ export class RabbitMQConnector {
 			this.channel.on('error', (err) => {
 				console.error('Channel error:', err);
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			console.error('Failed to connect to RabbitMQ:', error);
 			throw error;
 		}

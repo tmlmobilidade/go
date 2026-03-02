@@ -1,6 +1,6 @@
 /* * */
 
-import { type DatesFormat, Formats, OPERATIONAL_DATE_FORMAT } from '@/format.js';
+import { type DatesFormat, FORMATS, OPERATIONAL_DATE_FORMAT } from '@/format.js';
 import { type TimezoneIdentified, timezoneList, timezoneListSchema } from '@/types.js';
 import { type OperationalDate, type UnixTimestamp } from '@tmlmobilidade/types';
 import { type DateObjectUnits, DateTime, type DateTimeUnit, type DurationObjectUnits } from 'luxon';
@@ -25,7 +25,7 @@ export class Dates {
 
 	static readonly STANDARD_WINDOW_HOURS = 10;
 
-	static get FORMATS() { return Formats; }
+	static get FORMATS() { return FORMATS; }
 	static get TIMEZONE_LIST() { return timezoneList; }
 	static get TIMEZONE_LIST_VALUES() { return timezoneListSchema.Values; }
 
@@ -414,8 +414,7 @@ export class Dates {
 			// If true, return the previous day in the yyyyLLdd format
 			const previousDay = dateObject.minus({ days: 1 });
 			operational_date = previousDay.toFormat(OPERATIONAL_DATE_FORMAT);
-		}
-		else {
+		} else {
 			// Else, return the current day in the yyyyLLdd format
 			operational_date = dateObject.toFormat(OPERATIONAL_DATE_FORMAT);
 		}
