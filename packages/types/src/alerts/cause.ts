@@ -49,7 +49,7 @@ export type AlertCause = z.infer<typeof AlertCauseSchema>;
  * This mapping is used to convert extended alert causes
  * to their corresponding standard GTFS-RT cause types.
  */
-export const AlertCauseToGtfsCauseMap: Record<AlertCause, GtfsRtCause> = {
+export const AlertCauseToGtfsRtCauseMap: Record<AlertCause, GtfsRtCause> = {
 	ABUSIVE_PARKING: 'OTHER_CAUSE',
 	ACCIDENT: 'ACCIDENT',
 	CONSTRUCTION: 'CONSTRUCTION',

@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { agencies, files, Filter, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
@@ -74,8 +74,7 @@ export class GtfsValidationsController {
 			// Read file back as buffer for upload
 			buffer = readFileSync(tempFilePath);
 			size = buffer.length;
-		}
-		catch (streamError) {
+		} catch (streamError) {
 			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error processing file stream', { cause: streamError });
 		}
 
@@ -137,8 +136,7 @@ export class GtfsValidationsController {
 		if (tempFilePath) {
 			try {
 				unlinkSync(tempFilePath);
-			}
-			catch (cleanupError) {
+			} catch (cleanupError) {
 				console.warn('Failed to cleanup temporary file:', tempFilePath, cleanupError);
 			}
 		}
@@ -149,6 +147,40 @@ export class GtfsValidationsController {
 		return reply.send({ data: result, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
+	}
+
+	/**
+		 * Download the operation file associated with a plan by ID.
+		 * @param request The request object.
+		 * @param reply The reply object.
+		 */
+	static async downloadFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
+		// Get the Validation from the database
+		const foundValidation = await gtfsValidations.findById(request.params.id);
+		if (!foundValidation) throw new HttpException(HttpStatus.NOT_FOUND, 'Validation not found');
+		// Check if the user has permission to read the Validation
+		const hasPermissionReadValidation = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.gtfs_validations.actions.read,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.gtfs_validations.scope,
+			value: foundValidation.gtfs_agency.agency_id,
+		});
+		if (!hasPermissionReadValidation) throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: read validation file');
+		// Fetch the file associated with the validation
+		const foundFileData = await files.findById(foundValidation.file_id);
+		if (!foundFileData) throw new HttpException(HttpStatus.NOT_FOUND, 'Validation file not found');
+		// Stream the file in the given URL to the client
+		const storageServiceResponse = await fetch(foundFileData.url);
+		if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
+		// Set headers and pipe the response body to the client
+		reply.header('Content-Disposition', `attachment; filename="${foundFileData.name}"`);
+		reply.header('Content-Type', 'application/zip');
+		// Set content length if available
+		const contentLength = storageServiceResponse.headers.get('Content-Length');
+		if (contentLength) reply.header('Content-Length', contentLength);
+		// Pipe the response body to the client
+		return reply.send(storageServiceResponse.body);
 	}
 
 	/**

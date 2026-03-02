@@ -58,7 +58,7 @@ export const LineSchema = DocumentSchema.extend({
 	name: z.string().trim().min(1).max(50),
 	onboard_fare_ids: z.array(z.string()).nullable().default([]),
 	prepaid_fare_id: z.string().nullable().default(null),
-	routes: z.array(RouteSimplifiedSchema).optional(), // Computed field, not stored in DB
+	routes: z.array(RouteSimplifiedSchema).optional().default([]), // Computed field, not stored in DB
 	transport_type: z.nativeEnum(TRANSPORT_TYPE).default(TRANSPORT_TYPE.BUS),
 	typology: z.string().nullable().default(null),
 });

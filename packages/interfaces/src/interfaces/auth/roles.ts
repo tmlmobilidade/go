@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateRoleDto, CreateRoleSchema, PermissionCatalog, type Role, type UpdateRoleDto, UpdateRoleSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, type FindOptions, type IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -78,4 +78,4 @@ class RolesClass extends MongoCollectionClass<Role, CreateRoleDto, UpdateRoleDto
 	}
 }
 
-export const roles = AsyncSingletonProxy(RolesClass);
+export const roles = asyncSingletonProxy(RolesClass);

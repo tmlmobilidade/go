@@ -1,6 +1,6 @@
 /* * */
 
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import nodemailer from 'nodemailer';
 
 /* * */
@@ -12,8 +12,8 @@ export class EmailProvider {
 	private _smtp_transporter: nodemailer.Transporter;
 
 	/**
-     * Return the instance of the EmailProvider.
-     */
+	 * Return the instance of the EmailProvider.
+	 */
 	public static async getInstance() {
 		if (!EmailProvider._instance) {
 			const instance = new EmailProvider();
@@ -24,67 +24,51 @@ export class EmailProvider {
 	}
 
 	/**
-     * Connect to MongoDB and return the database instance.
-     */
+	 * Connect to the SMTP server and return the transporter instance.
+	 */
 	async connect(): Promise<nodemailer.Transporter> {
 		try {
 			// Check for required environment variables
-			const requiredEnvVars = [
-				'TML_PROVIDER_EMAIL_SERVER_PASSWORD',
-				'TML_PROVIDER_EMAIL_SERVER_USER',
-				'TML_PROVIDER_EMAIL_FROM',
-				'TML_PROVIDER_EMAIL_SERVER_HOST',
-				'TML_PROVIDER_EMAIL_SERVER_PORT',
-			];
-
-			const missingVars = requiredEnvVars.filter(key => !process.env[key]);
-			if (missingVars.length > 0) {
-				throw new Error(
-					`Missing required environment variable(s): ${missingVars.join(', ')}`,
-				);
-			}
-
-			// Create the SMTP transporter
-			const smtpTransportOptions = {
+			if (!process.env.TML_PROVIDER_EMAIL_SERVER_HOST) throw new Error('Missing required environment variable: TML_PROVIDER_EMAIL_SERVER_HOST');
+			if (!process.env.TML_PROVIDER_EMAIL_SERVER_PORT) throw new Error('Missing required environment variable: TML_PROVIDER_EMAIL_SERVER_PORT');
+			if (!process.env.TML_PROVIDER_EMAIL_AUTH_CLIENT_ID) throw new Error('Missing required environment variable: TML_PROVIDER_EMAIL_AUTH_CLIENT_ID');
+			if (!process.env.TML_PROVIDER_EMAIL_AUTH_CLIENT_SECRET) throw new Error('Missing required environment variable: TML_PROVIDER_EMAIL_AUTH_CLIENT_SECRET');
+			if (!process.env.TML_PROVIDER_EMAIL_AUTH_ACCESS_URL) throw new Error('Missing required environment variable: TML_PROVIDER_EMAIL_AUTH_ACCESS_URL');
+			if (!process.env.TML_PROVIDER_EMAIL_AUTH_REFRESH_TOKEN) throw new Error('Missing required environment variable: TML_PROVIDER_EMAIL_AUTH_REFRESH_TOKEN');
+			if (!process.env.TML_PROVIDER_EMAIL_AUTH_USER) throw new Error('Missing required environment variable: TML_PROVIDER_EMAIL_AUTH_USER');
+			if (!process.env.TML_PROVIDER_EMAIL_FROM) throw new Error('Missing required environment variable: TML_PROVIDER_EMAIL_FROM');
+			// Connect to the SMTP server
+			this._smtp_transporter = nodemailer.createTransport({
 				auth: {
-					pass: process.env.TML_PROVIDER_EMAIL_SERVER_PASSWORD,
-					user: process.env.TML_PROVIDER_EMAIL_SERVER_USER,
+					accessUrl: process.env.TML_PROVIDER_EMAIL_AUTH_ACCESS_URL,
+					clientId: process.env.TML_PROVIDER_EMAIL_AUTH_CLIENT_ID,
+					clientSecret: process.env.TML_PROVIDER_EMAIL_AUTH_CLIENT_SECRET,
+					refreshToken: process.env.TML_PROVIDER_EMAIL_AUTH_REFRESH_TOKEN,
+					type: 'OAuth2',
+					user: process.env.TML_PROVIDER_EMAIL_AUTH_USER,
 				},
 				from: process.env.TML_PROVIDER_EMAIL_FROM,
 				host: process.env.TML_PROVIDER_EMAIL_SERVER_HOST,
 				port: Number(process.env.TML_PROVIDER_EMAIL_SERVER_PORT),
-			};
-			// Connect to the SMTP server
-			this._smtp_transporter = nodemailer.createTransport(smtpTransportOptions);
+			});
 			return this._smtp_transporter;
-		}
-		catch (error) {
+		} catch (error) {
 			throw new Error('Error connecting to SMTP server', { cause: error });
 		}
 	}
 
 	/**
-     * Send an email.
-	 *
+	 * Send an email.
 	 * @param emailOptions - The email options.
 	 * @returns A promise that resolves when the email is sent.
-     */
-	async send({
-		html,
-		subject,
-		to,
-		...options
-	}: nodemailer.SendMailOptions) {
+	 */
+	async send(sendMailOptions: nodemailer.SendMailOptions) {
 		try {
 			await this._smtp_transporter.sendMail({
 				...this._smtp_transporter.options,
-				html,
-				subject,
-				to,
-				...options,
+				...sendMailOptions,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			throw new Error('Error sending email', { cause: error });
 		}
 	}
@@ -92,4 +76,4 @@ export class EmailProvider {
 	//
 }
 
-export const emailProvider = AsyncSingletonProxy(EmailProvider);
+export const emailProvider = asyncSingletonProxy(EmailProvider);

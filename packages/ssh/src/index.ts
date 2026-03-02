@@ -85,20 +85,17 @@ export class SshTunnelService {
 			});
 
 			return this._server;
-		}
-		catch (error) {
+		} catch (error) {
 			if (error.code === 'EADDRINUSE') {
 				Logger.info(`Port "${this.config.serverOptions.port}" already in use. Retrying with a different port...`);
 				this.config.serverOptions.port++;
 				return await this.connect();
-			}
-			else if (this.retries < (this.options?.maxRetries || 3)) {
+			} else if (this.retries < (this.options?.maxRetries || 3)) {
 				Logger.error(`Failed to connect to SSH Tunnel.`, error);
 				this.retries++;
 				Logger.info('Retrying SSH connection...');
 				return await this.connect();
-			}
-			else {
+			} else {
 				throw new Error('Error connecting to SSH tunnel', error);
 			}
 		}
@@ -113,8 +110,7 @@ export class SshTunnelService {
 		try {
 			this._server.close();
 			console.log(`⤷ SSH Tunnel disconnected.`);
-		}
-		catch (error) {
+		} catch (error) {
 			console.log(`⤷ ERROR: Failed to disconnect from SSH Tunnel.`, error);
 		}
 	}

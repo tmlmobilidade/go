@@ -26,7 +26,7 @@ import { exportExecutiveSummary } from './tasks/executive-summary-setup/index.js
 
 /* * */
 
-(async function main() {
+await (async function main() {
 	//
 
 	//

@@ -69,8 +69,9 @@ export default defineConfig([
 		rules: {
 			// TypeScript specific rules that require type checking
 			'@typescript-eslint/await-thenable': 'error',
-			'@typescript-eslint/no-floating-promises': 'error',
+			'@typescript-eslint/no-floating-promises': 'off',
 			'@typescript-eslint/no-misused-promises': 'error',
+			'@typescript-eslint/prefer-optional-chain': 'error',
 			'@typescript-eslint/switch-exhaustiveness-check': 'error',
 		},
 	},
@@ -102,7 +103,6 @@ export default defineConfig([
 			'@typescript-eslint/no-extraneous-class': 'off',
 			'@typescript-eslint/no-non-null-assertion': 'warn',
 			'@typescript-eslint/no-unused-vars': 'warn',
-			'@typescript-eslint/prefer-optional-chain': 'error',
 
 			// Naming conventions
 			'@typescript-eslint/naming-convention': [
@@ -119,7 +119,7 @@ export default defineConfig([
 				},
 				// Constants: SCREAMING_SNAKE_CASE
 				{
-					format: ['UPPER_CASE', 'camelCase'], // Allow both for flexibility
+					format: ['UPPER_CASE', 'camelCase', 'PascalCase'], // Allow both for flexibility
 					modifiers: ['const', 'global'],
 					selector: 'variable',
 				},

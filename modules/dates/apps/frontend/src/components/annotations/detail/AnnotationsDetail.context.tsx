@@ -49,7 +49,7 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 	// B. Fetch data
 
 	const { mutate: annotationsListMutate } = useSWR<Annotation[]>(API_ROUTES.dates.ANNOTATIONS_LIST);
-	const { data: annotationData, error: annotationError, isLoading: annotationLoading, mutate: annotationMutate } = useSWR<Annotation>(API_ROUTES.dates.ANNOTATIONS_DETAIL(annotationId), { refreshInterval: 5000 });
+	const { data: annotationData, error: annotationError, isLoading: annotationLoading, mutate: annotationMutate } = useSWR<Annotation>(API_ROUTES.dates.ANNOTATIONS_DETAIL(annotationId));
 
 	//
 	// C. Setup form

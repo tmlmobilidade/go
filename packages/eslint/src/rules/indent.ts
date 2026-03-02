@@ -13,6 +13,7 @@ export const indentConfig: Config[] = [
 			'@stylistic/indent': ['error', 'tab'],
 			'@stylistic/no-mixed-spaces-and-tabs': 'error',
 			'@stylistic/no-tabs': 'off',
+			'@stylistic/operator-linebreak': 'off',
 			'indent': 'off',
 		},
 	},

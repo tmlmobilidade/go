@@ -9,7 +9,7 @@ import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { Agency, type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, RideNormalized } from '@tmlmobilidade/types';
 import { type CreateContextStateTemplate, keepUrlParams, useDataAgencies, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -17,9 +17,11 @@ import useSWR from 'swr';
 
 interface AlertCreateContextState extends CreateContextStateTemplate {
 	data: {
+		auto_texts: boolean
 		enabled_reference_types: Alert['reference_type'][]
 		form: UseFormReturnType<CreateAlertDto>
 		multi_step: UseMultiStepReturnType
+		set_auto_texts: (value: boolean) => void
 	}
 };
 
@@ -63,17 +65,22 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const router = useRouter();
+	const searchParams = useSearchParams();
 
 	const meContext = useMeContext();
+	const copyAlertId = searchParams.get('copy');
 
+	const [autoTexts, setAutoTexts] = useState(true);
 	const [selectedReferencesData, setSelectedReferencesData] = useState<AgencyData[] | LineData[] | RideNormalized[] | StopData[]>([]);
+	const [hasAppliedCopyData, setHasAppliedCopyData] = useState(false);
 
 	//
 	// B. Fetch data
 
 	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
+	const { data: copyAlertData, isLoading: copyAlertLoading } = useSWR<Alert>(copyAlertId ? API_ROUTES.alerts.ALERTS_DETAIL(copyAlertId) : null);
 
-	const { options: agenciesOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { options: agenciesOptions, raw: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.create],
 		scope: PermissionCatalog.all.alerts.scope,
 	});
@@ -139,6 +146,8 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	]);
 
 	useEffect(() => {
+		if (copyAlertId) return;
+		if (!autoTexts) return;
 		if (multiStep.progress.current?.index !== multiStep.progress.steps.length - 1) return; // Only run when on the last step | if we go back and again to last step, this will run again
 		if (!form.getValues().cause || !form.getValues().effect || !form.getValues().reference_type || !form.getValues().references) return;
 		const references = form.getValues().references;
@@ -154,7 +163,19 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		if (!alertTemplating) return;
 		form.setFieldValue('description', alertTemplating.description.pt);
 		form.setFieldValue('title', alertTemplating.title.pt);
-	}, [multiStep.progress.current?.index]);
+	}, [copyAlertId, autoTexts, multiStep.progress.current?.index]);
+
+	useEffect(() => {
+		if (!copyAlertId || !copyAlertData || hasAppliedCopyData) return;
+
+		const copyAlertAsCreateData = CreateAlertSchema.parse(copyAlertData);
+		form.reset();
+		form.setValues(copyAlertAsCreateData);
+		form.validate();
+		form.resetDirty();
+		multiStep.actions.goTo('summary');
+		setHasAppliedCopyData(true);
+	}, [copyAlertData, copyAlertId, hasAppliedCopyData]);
 
 	useEffect(() => {
 		// Skip if agency is already selected
@@ -229,8 +250,6 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			const parentIds = form.getValues().references.map(reference => reference.parent_id);
 			// Fetch data for agencies
 			if (form.getValues().reference_type === 'agency') {
-				const response = await fetch('https://api.carrismetropolitana.pt/v2/agencies'); // ! THIS NEEDS TO BE REPLACED WITH THE CORRECT API URL
-				const agenciesData = await response.json() as Agency[];
 				const result: Agency[] = agenciesData.filter(agency => parentIds.includes(agency._id));
 				setSelectedReferencesData(result.map(agency => ({ display_name: agency.name, id: agency._id, name: agency.name })));
 			}
@@ -372,15 +391,17 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			create: handleCreate,
 		},
 		data: {
+			auto_texts: autoTexts,
 			enabled_reference_types: enabledReferenceTypes,
 			form,
 			multi_step: multiStep,
+			set_auto_texts: setAutoTexts,
 		},
 		flags: {
 			canCreate: true,
 			error: undefined,
 			isCreating,
-			isLoading: false,
+			isLoading: copyAlertLoading,
 		},
 	};
 
