@@ -46,7 +46,7 @@ const alertsActions: PermissionConfig = {
 		{ action: 'delete', description: 'Permite eliminar um alerta', label: 'Eliminar', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
 		{ action: 'update_texts', description: 'Permite editar os textos de um alerta', label: 'Editar Textos', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
 		{ action: 'update_dates', description: 'Permite alterar as datas de um alerta', label: 'Alterar Datas', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
-		{ action: 'update_processing_status', description: 'Permite alterar o estado de publicação de um alerta', label: 'Alterar Estado de Publicação', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
+		{ action: 'update_publish_status', description: 'Permite alterar o estado de publicação de um alerta', label: 'Alterar Estado de Publicação', resources: ['AGENCIES', 'ALERT_REFERENCE_TYPES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de alertas.',
 	scope: PermissionCatalog.all.alerts.scope,
