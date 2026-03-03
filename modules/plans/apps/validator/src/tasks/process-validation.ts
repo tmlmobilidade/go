@@ -1,5 +1,6 @@
 /* * */
 
+import { SYSTEM_ERROR_MESSAGES } from '@/consts/system-errors.js';
 import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';
@@ -19,6 +20,23 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		//
 
 		//
+		// Check if the GTFS validation has already been attempted 3 times.
+		// If so, mark it as 'error' to avoid infinite retries on problematic files.
+
+		if ((gtfsValidation.validation_attempts ?? 0) >= 3) {
+			Logger.error(`GTFS Validation ${gtfsValidation._id} has already been attempted 3 times. Marking as error.`);
+			await gtfsValidations.updateById(gtfsValidation._id, {
+				processing_status: 'error',
+				summary: {
+					messages: [SYSTEM_ERROR_MESSAGES.MAX_ATTEMPTS_REACHED],
+					total_errors: 1,
+					total_warnings: 0,
+				},
+			});
+			return;
+		}
+
+		//
 		// Setup temporary directory paths for this validation process
 		// to avoid any conflicts with other concurrent validations.
 
@@ -34,7 +52,10 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		Logger.info('Updating GTFS Validation document...');
 
-		await gtfsValidations.updateById(gtfsValidation._id, { processing_status: 'processing' });
+		await gtfsValidations.updateById(gtfsValidation._id, {
+			processing_status: 'processing',
+			validation_attempts: (gtfsValidation.validation_attempts ?? 0) + 1,
+		});
 
 		//
 		// Get the associated file document from MongoDB
@@ -155,16 +176,12 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		await gtfsValidations.updateById(gtfsValidation._id, {
 			processing_status: 'error',
 			summary: {
-				messages: [
-					{
-						field: 'N/A',
-						file_name: 'Erro do sistema',
-						message: error instanceof Error ? error.message : String(error),
-						rows: [],
-						severity: 'error',
-						validation_id: gtfsValidation._id,
-					},
-				],
+				messages: [{
+					...SYSTEM_ERROR_MESSAGES.GENERIC_ERROR,
+					// Override the generic error message with
+					// the actual error message for more context.
+					message: error instanceof Error ? error.message : String(error),
+				}],
 				total_errors: 1,
 				total_warnings: 0,
 			},
