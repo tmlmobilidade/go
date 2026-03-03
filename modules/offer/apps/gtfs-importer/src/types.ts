@@ -3,18 +3,16 @@
 import { IsoWeekday } from '@tmlmobilidade/types';
 
 export interface ImportOptions {
-	agencyIds?: string[]
-	dryRun?: boolean
 	gtfsPath: string
 }
 
 export interface ImportSummary {
 	linesCreated: number
-	linesUpdated: number
+	linesInGtfs: number
 	patternsCreated: number
-	patternsUpdated: number
+	patternsInGtfs: number
 	routesCreated: number
-	routesUpdated: number
+	routesInGtfs: number
 }
 
 export interface CalendarRule {

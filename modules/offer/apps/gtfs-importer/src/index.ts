@@ -1,11 +1,18 @@
 /* * */
 
-import { runImport } from './main.js';
+import path from 'path';
 
-export * from './imports/lines-routes.js';
-export * from './main.js';
-export * from './types.js';
-export * from './utils.js';
+import { importGtfs } from './main.js';
+import { type ImportOptions } from './types.js';
+
+/* * */
+
+export async function runImport() {
+	const options: ImportOptions = {
+		gtfsPath: path.resolve('/Users/afonsoesteves/Downloads/GTFS/GTFS_41'),
+	};
+	await importGtfs(options);
+}
 
 runImport().catch((error) => {
 	console.error(error);
