@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateRideDto, CreateRideSchema, type Ride, type UpdateRideDto, UpdateRideSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -120,4 +120,4 @@ class RidesClass extends MongoCollectionClass<Ride, CreateRideDto, UpdateRideDto
 
 /* * */
 
-export const rides = AsyncSingletonProxy(RidesClass);
+export const rides = asyncSingletonProxy(RidesClass);

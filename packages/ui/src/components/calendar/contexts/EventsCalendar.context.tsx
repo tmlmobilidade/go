@@ -4,11 +4,12 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { Agency, type Annotation, type CalendarEvent, Event, EVENT_TYPE_DEFS, Holiday, PermissionCatalog, type YearPeriod } from '@tmlmobilidade/types';
+import { Agency, type Annotation, type CalendarEvent, Event, Holiday, PermissionCatalog, type YearPeriod } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 import { useMeContext } from '../../../contexts/Me.context';
+import { EVENT_TYPE_DEFS } from '../../../icons/event-types';
 import { CalendarUIContextProvider } from './CalendarUI.context';
 
 /* * */

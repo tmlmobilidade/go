@@ -1,5 +1,5 @@
 import { Dates } from '@/dates.js';
-import { Formats } from '@/format.js';
+import { FORMATS } from '@/format.js';
 import { Event, EventReplacementRule, EventRestrictionRule, ManualRule, ScheduleRule, WEEKDAY_OPTIONS, YearPeriod } from '@tmlmobilidade/types';
 
 import { buildWeekdaysPart, buildYearPeriodsPart } from './common.js';
@@ -143,7 +143,7 @@ function buildRuleSummaryLong(
  */
 function formatDateWithWeekday(date: string): string {
 	const dt = Dates.fromOperationalDate(date, 'Europe/Lisbon');
-	const formattedDate = dt.toLocaleString(Formats.DATE_SHORT, 'pt-PT');
+	const formattedDate = dt.toLocaleString(FORMATS.DATE_SHORT, 'pt-PT');
 	const weekday = dt.js_date.getDay();
 	const weekdayShort = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][weekday];
 	return `${formattedDate} (${weekdayShort})`;

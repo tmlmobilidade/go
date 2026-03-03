@@ -32,7 +32,7 @@ export function ValidationsDetail() {
 	}
 
 	return (
-		<Pane header={[<ValidationsDetailHeader />]}>
+		<Pane header={[<ValidationsDetailHeader key="header" />]}>
 			<ValidationsDetailSectionAgency />
 			<ValidationsDetailSectionFeedInfo />
 			<ValidationsDetailSectionResult />

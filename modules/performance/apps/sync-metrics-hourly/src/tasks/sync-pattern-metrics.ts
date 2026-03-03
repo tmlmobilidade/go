@@ -20,8 +20,7 @@ export const syncPatternMetrics = async (): Promise<void> => {
 		await syncDemandByPatternByYear();
 
 		Logger.success(`Finished Pattern Demand Metrics Sync (${timer.get()})`);
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Failed to sync Pattern Demand Metrics');
 		Logger.error(error);
 		throw error;

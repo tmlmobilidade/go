@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateEventDto, CreateEventSchema, type Event, type UpdateEventDto, UpdateEventSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -51,4 +51,4 @@ class EventsClass extends MongoCollectionClass<Event, CreateEventDto, UpdateEven
 
 /* * */
 
-export const events = AsyncSingletonProxy(EventsClass);
+export const events = asyncSingletonProxy(EventsClass);

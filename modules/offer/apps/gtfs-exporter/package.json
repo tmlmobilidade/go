@@ -25,6 +25,7 @@
 		"@tmlmobilidade/rabbitmq": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
+		"@tmlmobilidade/writers": "*",
 		"adm-zip": "0.5.16",
 		"formidable": "3.5.4",
 		"papaparse": "5.5.3"
@@ -33,7 +34,7 @@
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/adm-zip": "0.5.7",
-		"@types/node": "25.2.2",
+		"@types/node": "25.3.3",
 		"@types/papaparse": "5.5.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",

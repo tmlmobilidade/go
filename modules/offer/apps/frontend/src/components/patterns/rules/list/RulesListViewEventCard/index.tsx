@@ -5,7 +5,7 @@
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { IconCalendarCancel, IconCalendarRepeat, IconEye } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Dates, Formats } from '@tmlmobilidade/dates';
+import { Dates, FORMATS } from '@tmlmobilidade/dates';
 import { EventReplacementRule, EventRestrictionRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
 import { IconButton, Section, Text } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -36,7 +36,7 @@ export default function RulesListViewEventCard({ rule }: RulesListViewEventCardP
 	const eventDates
 		= rule?.dates?.map(d =>
 			Dates.fromOperationalDate(d, 'Europe/Lisbon')
-				.toLocaleString(Formats.DATE_SHORT, 'pt-PT'),
+				.toLocaleString(FORMATS.DATE_SHORT, 'pt-PT'),
 		).join(', ') ?? '';
 
 	const eventDatesSuffix

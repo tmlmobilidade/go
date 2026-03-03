@@ -5,7 +5,7 @@
 import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { IconArrowBarToLeft, IconArrowBarToRight } from '@tabler/icons-react';
-import { buildAffectedDaysDetails, calendarKey, CalendarKey, Dates, datesFromCalendarKey, Formats } from '@tmlmobilidade/dates';
+import { buildAffectedDaysDetails, calendarKey, CalendarKey, Dates, datesFromCalendarKey, FORMATS } from '@tmlmobilidade/dates';
 import { CalendarEvent, HHMM, ScheduleRule } from '@tmlmobilidade/types';
 import { CloseButton, DayPeriodsTimepoints, Divider, EventsCalendar, Pane, Section, Surface, Text } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
@@ -69,7 +69,7 @@ export function RulesCalendarPreview({ rules }: RulesCalendarPreviewProps) {
 	const formattedSelectedDate = useMemo(() => {
 		if (!selectedDate) return '';
 		const date = datesFromCalendarKey(selectedDate);
-		return date.toLocaleString(Formats.DATE_HUGE, 'pt-PT');
+		return date.toLocaleString(FORMATS.DATE_HUGE, 'pt-PT');
 	}, [selectedDate]);
 
 	//

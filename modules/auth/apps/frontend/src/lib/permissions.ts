@@ -132,6 +132,7 @@ const gtfsValidationActions: PermissionConfig = {
 		{ action: 'read', description: 'Permite ver validações', label: 'Ver', resources: ['AGENCIES'] },
 		{ action: 'create', description: 'Permite criar uma validação', label: 'Criar', resources: ['AGENCIES'] },
 		{ action: 'request_approval', description: 'Permite solicitar aprovação de uma validação', label: 'Solicitar aprovação', resources: ['AGENCIES'] },
+		{ action: 'update_processing_status', description: 'Permite alterar o estado de processamento de uma validação', label: 'Alterar estado de processamento', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de validações GTFS.',
 	scope: PermissionCatalog.all.gtfs_validations.scope,

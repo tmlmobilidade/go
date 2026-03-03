@@ -3,7 +3,7 @@
 /* * */
 
 import { useRuleCreateContext } from '@/components/events/rules/RuleCreate.context';
-import { Dates, Formats } from '@tmlmobilidade/dates';
+import { Dates, FORMATS } from '@tmlmobilidade/dates';
 import { type OperationalDate } from '@tmlmobilidade/types';
 import { MultiSelect, Section } from '@tmlmobilidade/ui';
 import { useEffect } from 'react';
@@ -22,7 +22,7 @@ export function RuleCreateDates() {
 	const eventDates = createRuleContext.data.eventData.dates;
 
 	const dateOptions = eventDates.map(date => ({
-		label: Dates.fromOperationalDate(date as OperationalDate, 'Europe/Lisbon').toLocaleString(Formats.DATE_FULL_WITH_YEAR, 'pt-PT'),
+		label: Dates.fromOperationalDate(date as OperationalDate, 'Europe/Lisbon').toLocaleString(FORMATS.DATE_FULL_WITH_YEAR, 'pt-PT'),
 		value: date,
 	}));
 
