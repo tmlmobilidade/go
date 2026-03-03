@@ -6,7 +6,6 @@ import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { readFile } from 'fs/promises';
 
 import { ClickHouseColumn } from './types.js';
-import { isSafeIdentifier } from './utils.js';
 
 /* * */
 
@@ -45,27 +44,6 @@ class ClickhouseService {
 	 * @param orderBy The ORDER BY clause for the table (default: tuple())
 	 */
 	public async createTable<T>(table: string, schema: ClickHouseColumn<T>[], engine = 'MergeTree', orderBy = 'tuple()') {
-		// Validate the table name
-		if (!isSafeIdentifier(table)) {
-			throw new Error(`CLICKHOUSE [${table}]: Unsafe table name provided.`);
-		}
-
-		// Validate the engine
-		if (!isSafeIdentifier(engine)) {
-			throw new Error(`CLICKHOUSE [${engine}]: Unsafe engine type provided.`);
-		}
-
-		// Validate the orderBy
-		if (!isSafeIdentifier(orderBy)) {
-			throw new Error(`CLICKHOUSE [${orderBy}]: Unsafe orderBy clause provided.`);
-		}
-
-		// Validate the schema
-		const unsafeColumns = schema.filter(column => !isSafeIdentifier(column.name)).map(column => column.name);
-		if (unsafeColumns.length > 0) {
-			throw new Error(`CLICKHOUSE [${table}]: Unsafe column names provided: ${unsafeColumns.join(', ')}.`);
-		}
-
 		try {
 			const createTableQuery = `
 				CREATE TABLE IF NOT EXISTS ${table} (
@@ -88,11 +66,6 @@ class ClickhouseService {
 	 * @param table The name of the table to delete
 	 */
 	public async deleteTable(table: string) {
-		// Validate the table name
-		if (!isSafeIdentifier(table)) {
-			throw new Error(`CLICKHOUSE [${table}]: Unsafe table name provided.`);
-		}
-
 		try {
 			await this.client.command({ query: `DROP TABLE IF EXISTS ${table}` });
 			Logger.info(`CLICKHOUSE [${table}]: Table deleted.`);
@@ -119,11 +92,6 @@ class ClickhouseService {
 	 */
 	public async getTable(table: string) {
 		try {
-			// Validate the table name
-			if (!isSafeIdentifier(table)) {
-				throw new Error(`CLICKHOUSE [${table}]: Unsafe table name provided.`);
-			}
-
 			const result = await this.client.command({ query: `SHOW CREATE TABLE ${table}` });
 			Logger.info(`CLICKHOUSE [${table}]: Table schema retrieved.`);
 			return result;
