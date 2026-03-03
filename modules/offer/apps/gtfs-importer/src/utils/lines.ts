@@ -1,4 +1,4 @@
-import { CreateLineDto, GtfsTMLRoute, INTERCHANGE_MODE, TRANSPORT_TYPE, Typology } from '@tmlmobilidade/types';
+import { CreateLineDto, GtfsTMLRoute, INTERCHANGE_MODE, transportTypeMapper, Typology } from '@tmlmobilidade/types';
 
 import { normalizeHexColor } from './typology.js';
 
@@ -14,9 +14,6 @@ export function buildLineFromRoute(route: GtfsTMLRoute, agencyId: string, typolo
 	const lineCode = resolveLineCode(route);
 	const lineName = route.line_long_name || route.route_long_name || route.line_short_name || route.route_short_name || route.route_id;
 	const typology = routeColor ? typologyMap.get(normalizeHexColor(routeColor) ?? '') : undefined;
-	const transportType = Object.values(TRANSPORT_TYPE).includes(String(route.route_type) as (typeof TRANSPORT_TYPE)[keyof typeof TRANSPORT_TYPE])
-		? String(route.route_type)
-		: TRANSPORT_TYPE.BUS;
 
 	return {
 		agency_id: agencyId,
@@ -29,7 +26,7 @@ export function buildLineFromRoute(route: GtfsTMLRoute, agencyId: string, typolo
 		name: lineName,
 		onboard_fare_ids: typology?.default_onboard_fare_ids ?? [],
 		prepaid_fare_id: typology?.default_prepaid_fare_id ?? null,
-		transport_type: transportType as typeof TRANSPORT_TYPE[keyof typeof TRANSPORT_TYPE],
+		transport_type: transportTypeMapper.fromGtfs(route.route_type) || 'bus',
 		typology: typology?._id ?? null,
 	};
 }

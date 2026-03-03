@@ -1,7 +1,7 @@
 /* * */
 
 import { parseCsv, readGtfsFile, toNumberOrNull } from '@/helpers/index.js';
-import { CreateRouteDto, GtfsTMLRoute, GtfsTMLRouteSchema } from '@tmlmobilidade/types';
+import { CreateRouteDto, GtfsTMLRoute, GtfsTMLRouteSchema, pathTypeMapper } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -17,8 +17,6 @@ export async function loadGtfsRoutes(gtfsPath: string) {
 				circular: toNumberOrNull(raw.circular),
 				line_id: toNumberOrNull(raw.line_id),
 				line_type: toNumberOrNull(raw.line_type),
-				path_type: toNumberOrNull(raw.path_type),
-				route_type: toNumberOrNull(raw.route_type),
 				school: toNumberOrNull(raw.school),
 			} as GtfsTMLRoute;
 			routes.push(GtfsTMLRouteSchema.parse(normalized));
@@ -42,14 +40,13 @@ export function buildRoutesForLine(
 		}
 		return [...uniqueByRouteId.values()].map((route) => {
 			const routeName = route.route_long_name || route.route_short_name || lineName;
-			const routePathType = route.path_type ?? 1;
 			return {
 				code: route.route_id,
 				created_by: 'system',
 				is_locked: false,
 				line_id: lineId,
 				name: routeName,
-				path_type: routePathType,
+				path_type: pathTypeMapper.fromGtfs(route.path_type),
 			};
 		});
 	}

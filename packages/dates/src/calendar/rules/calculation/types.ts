@@ -9,7 +9,7 @@ export interface RuleApplication {
 	/** IDs of all rules that were applied to determine this result */
 	appliedRuleIds: string[]
 	/** Array of time points (HH:MM format) that are active on this date */
-	timePoints: string[]
+	timepoints: string[]
 }
 
 /**

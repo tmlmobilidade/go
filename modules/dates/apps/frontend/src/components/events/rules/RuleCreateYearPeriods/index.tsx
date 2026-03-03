@@ -49,7 +49,7 @@ export function RuleCreateYearPeriods() {
 	// B. Handle actions
 
 	const currentPeriodIds = createRuleContext.data.form.values.kind === 'event_replacement'
-		? createRuleContext.data.form.values.yearPeriodIds || []
+		? createRuleContext.data.form.values.year_period_ids || []
 		: [];
 	const selectedPresetKey = getSelectedPresetKey(currentPeriodIds, allPeriodIds);
 
@@ -58,12 +58,12 @@ export function RuleCreateYearPeriods() {
 
 		if (!key) {
 			// same convention as weekdays: empty => undefined
-			createRuleContext.data.form.setFieldValue('yearPeriodIds', undefined);
+			createRuleContext.data.form.setFieldValue('year_period_ids', undefined);
 			return;
 		}
 
 		// select all
-		createRuleContext.data.form.setFieldValue('yearPeriodIds', [...allPeriodIds]);
+		createRuleContext.data.form.setFieldValue('year_period_ids', [...allPeriodIds]);
 	};
 
 	//
@@ -88,7 +88,7 @@ export function RuleCreateYearPeriods() {
 				value={currentPeriodIds}
 				onChange={(selectedPeriods) => {
 					if (createRuleContext.data.form.values.kind !== 'event_replacement') return;
-					createRuleContext.data.form.setFieldValue('yearPeriodIds', selectedPeriods.length > 0 ? selectedPeriods : undefined);
+					createRuleContext.data.form.setFieldValue('year_period_ids', selectedPeriods.length > 0 ? selectedPeriods : undefined);
 				}}
 				options={PERIOD_OPTIONS.map(o => ({
 					ariaLabel: o.label,

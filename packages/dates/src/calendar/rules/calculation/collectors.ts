@@ -1,6 +1,6 @@
 import type { DayContext } from './types.js';
 
-import { EventReplacementRule, ManualRule, OPERATING_MODE } from '@tmlmobilidade/types';
+import { EventReplacementRule, ManualRule } from '@tmlmobilidade/types';
 
 import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matchers.js';
 
@@ -8,7 +8,7 @@ import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matche
  * Collects time points from manual INCLUDE rules that match a given day context.
  *
  * This is the first phase of rule application for normal (non-replacement) days.
- * Finds all manual rules with operatingMode='include' that match both the weekday
+ * Finds all manual rules with operating_mode='include' that match both the weekday
  * and period ID, then aggregates their time points.
  *
  * @param manualRules - Array of all manual rules to check
@@ -18,25 +18,25 @@ import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matche
  * @example
  * ```ts
  * const result = collectManualIncludes(rules, { weekday: 1, yearPeriodId: 'school' });
- * // result = { appliedRuleIds: ['rule1', 'rule2'], timePoints: Set(['08:00', '09:00']) }
+ * // result = { appliedRuleIds: ['rule1', 'rule2'], timepoints: Set(['08:00', '09:00']) }
  * ```
  */
 export function collectManualIncludes(
 	manualRules: ManualRule[],
 	ctx: DayContext,
-): { appliedRuleIds: string[], timePoints: Set<string> } {
-	const timePoints = new Set<string>();
+): { appliedRuleIds: string[], timepoints: Set<string> } {
+	const timepoints = new Set<string>();
 	const appliedRuleIds: string[] = [];
 
 	for (const r of manualRules) {
-		if (r.operatingMode !== 'include') continue;
+		if (r.operating_mode !== 'include') continue;
 		if (!manualRuleMatchesContext(r, ctx)) continue;
 
 		appliedRuleIds.push(r._id);
-		for (const tp of r.timePoints ?? []) timePoints.add(tp);
+		for (const tp of r.timepoints ?? []) timepoints.add(tp);
 	}
 
-	return { appliedRuleIds, timePoints };
+	return { appliedRuleIds, timepoints };
 }
 
 /**
@@ -54,7 +54,7 @@ export function collectManualIncludes(
  *
  * @example
  * ```ts
- * const replacement = { weekdays: [1], yearPeriodIds: ['school'], _id: 'event1' };
+ * const replacement = { weekdays: [1], year_period_ids: ['school'], _id: 'event1' };
  * const result = collectReplacementManualIncludes(replacement, manualRules);
  * // result.appliedRuleIds will always include 'event1'
  * ```
@@ -62,20 +62,20 @@ export function collectManualIncludes(
 export function collectReplacementManualIncludes(
 	replacement: EventReplacementRule,
 	manualRules: ManualRule[],
-): { appliedRuleIds: string[], timePoints: Set<string> } {
-	const timePoints = new Set<string>();
+): { appliedRuleIds: string[], timepoints: Set<string> } {
+	const timepoints = new Set<string>();
 	const appliedRuleIds: string[] = [];
 
 	// Always mark replacement as applied if it has an id (optional in schema)
 	if (replacement._id) appliedRuleIds.push(replacement._id);
 
 	for (const r of manualRules) {
-		if (r.operatingMode !== OPERATING_MODE.INCLUDE) continue;
+		if (r.operating_mode !== 'include') continue;
 		if (!manualRuleMatchesReplacement(r, replacement)) continue;
 
 		if (r._id) appliedRuleIds.push(r._id);
-		for (const tp of r.timePoints) timePoints.add(tp);
+		for (const tp of r.timepoints) timepoints.add(tp);
 	}
 
-	return { appliedRuleIds, timePoints };
+	return { appliedRuleIds, timepoints };
 }

@@ -4,7 +4,7 @@ import { type OriginalLineType } from '@/original-line.type.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { lines } from '@tmlmobilidade/interfaces';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { INTERCHANGE_MODE, type Line, LineSchema, TRANSPORT_TYPE } from '@tmlmobilidade/types';
+import { INTERCHANGE_MODE, type Line, LineSchema, TransportType, TransportTypeValues } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -259,8 +259,8 @@ function normalizeInterchange(value: unknown): Line['interchange'] {
 
 function normalizeTransportType(value: unknown): Line['transport_type'] {
 	const transportType = String(value ?? '').trim();
-	if ((Object.values(TRANSPORT_TYPE) as string[]).includes(transportType)) {
+	if ((TransportTypeValues).includes(transportType as TransportType)) {
 		return transportType as Line['transport_type'];
 	}
-	return TRANSPORT_TYPE.BUS;
+	return 'bus';
 }

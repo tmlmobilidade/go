@@ -6,7 +6,7 @@ import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { useForm } from '@mantine/form';
 import { buildRuleSummary, Dates, getManualRuleAffectedDates } from '@tmlmobilidade/dates';
-import { ManualRule, ManualRuleSchema, OPERATING_MODE } from '@tmlmobilidade/types';
+import { ManualRule, ManualRuleSchema } from '@tmlmobilidade/types';
 import { type UseFormReturnType } from '@tmlmobilidade/ui';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
@@ -61,7 +61,7 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	const periodsContext = usePeriodsContext();
 	const eventsContext = useEventsContext();
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-	const [isEventExceptionEnabled, setIsEventExceptionEnabled] = useState(Boolean(initialValues?.eventId));
+	const [isEventExceptionEnabled, setIsEventExceptionEnabled] = useState(Boolean(initialValues?.event_id));
 
 	//
 	// B. Fetch data
@@ -71,11 +71,12 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 
 	const form = useForm<ManualRule>({
 		initialValues: initialValues || {
+			_id: crypto.randomUUID(),
 			kind: 'manual',
-			operatingMode: OPERATING_MODE.INCLUDE,
-			yearPeriodIds: [],
-			timePoints: [],
+			operating_mode: 'include',
+			timepoints: [],
 			weekdays: [],
+			year_period_ids: [],
 		},
 		mode: 'controlled',
 		validate: zodResolver(ManualRuleSchema),

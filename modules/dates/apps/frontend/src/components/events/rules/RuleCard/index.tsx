@@ -83,7 +83,7 @@ export function RuleCard({ rule }: RuleCardProps) {
 			WEEKDAY_OPTIONS.find(opt => opt.value === wd)?.label,
 		).filter(Boolean).join(', ') ?? '';
 
-		const periodNames = rule.yearPeriodIds?.map(pid =>
+		const periodNames = rule.year_period_ids?.map(pid =>
 			periodsContext.data.raw.find(p => p._id === pid)?.name,
 		).filter(Boolean).join(', ') ?? '';
 

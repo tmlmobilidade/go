@@ -2,7 +2,7 @@
 
 import { getStopByLegacyId } from '@/utils/stops.js';
 import { patterns } from '@tmlmobilidade/interfaces';
-import { type CreatePatternDto, GtfsTMLStopTimes, GtfsTMLTrip, type Shape } from '@tmlmobilidade/types';
+import { type CreatePatternDto, GtfsTMLStopTimes, GtfsTMLTrip, PatternDirection, patternDirectionMapper, type Shape } from '@tmlmobilidade/types';
 
 import {
 	normalizeGtfsDistance,
@@ -57,7 +57,7 @@ export async function buildPatternsForRoute(params: {
 
 	const patternsByDirection = new Map<string, Map<string, { patternKey: string, stopTimes: GtfsTMLStopTimes[], trip: GtfsTMLTrip }>>();
 	for (const trip of routeTrips) {
-		const directionId = String(trip.direction_id ?? '0');
+		const directionId = patternDirectionMapper.fromGtfs(trip.direction_id ?? '0') as PatternDirection;
 		const stopTimes = stopTimesByTrip.get(trip.trip_id) ?? [];
 		if (!stopTimes.length) continue;
 		const fingerprint = stopTimes.map(stopTime => stopTime.stop_id).join('|');
@@ -178,7 +178,7 @@ export async function buildPatternsForRoute(params: {
 				comments: [],
 				created_by: 'system',
 				destination,
-				direction: directionId === '1' ? '1' : '0',
+				direction: directionId as PatternDirection,
 				headsign: trip.trip_headsign ?? destination,
 				is_locked: false,
 				line_id: lineId,

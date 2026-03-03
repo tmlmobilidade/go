@@ -1,6 +1,6 @@
 /* * */
 
-import { GtfsTMLStopTimes, GtfsTMLTrip, HHMM, type ManualRule, OPERATING_MODE } from '@tmlmobilidade/types';
+import { GtfsTMLStopTimes, GtfsTMLTrip, HHMM, type ManualRule, PatternDirection, patternDirectionMapper } from '@tmlmobilidade/types';
 
 import { CalendarRulesCM } from '../config/cm/calendarRules.js';
 import { normalizeGtfsTimeToHHMM, resolvePatternKey } from '../helpers/index.js';
@@ -20,7 +20,7 @@ export function buildScheduleRulesForRoute(params: {
 	const departuresByPatternKey = new Map<string, Map<string, Set<string>>>();
 
 	for (const trip of routeTrips) {
-		const directionId = String(trip.direction_id ?? '0');
+		const directionId = patternDirectionMapper.fromGtfs(trip.direction_id ?? '0') as PatternDirection;
 		const stopTimes = stopTimesByTrip.get(trip.trip_id) ?? [];
 		if (!stopTimes.length) continue;
 		const fingerprint = stopTimes.map(stopTime => stopTime.stop_id).join('|');
@@ -51,7 +51,7 @@ export function buildScheduleRulesForRoute(params: {
 	for (const [patternKey, timeMap] of departuresByPatternKey.entries()) {
 		const ruleMap = new Map<string, ManualRule>();
 		for (const [time, serviceIds] of timeMap.entries()) {
-			const weekdayMap = new Map<string, { weekdays: ManualRule['weekdays'], yearPeriodIds: string[] }>();
+			const weekdayMap = new Map<string, { weekdays: ManualRule['weekdays'], year_period_ids: string[] }>();
 			for (const serviceId of serviceIds) {
 				const calendarRules = CalendarRulesCM.get(serviceId);
 				if (!calendarRules?.length) {
@@ -62,33 +62,33 @@ export function buildScheduleRulesForRoute(params: {
 					const weekdayKey = [...new Set(calendarRule.weekdays)].sort((a, b) => a - b).join(',');
 					const existingWeek = weekdayMap.get(weekdayKey);
 					if (existingWeek) {
-						existingWeek.yearPeriodIds = [...new Set([...existingWeek.yearPeriodIds, ...calendarRule.yearPeriodIds])].sort();
+						existingWeek.year_period_ids = [...new Set([...existingWeek.year_period_ids, ...calendarRule.year_period_ids])].sort();
 						weekdayMap.set(weekdayKey, existingWeek);
 					} else {
 						weekdayMap.set(weekdayKey, {
 							weekdays: [...new Set(calendarRule.weekdays)].sort((a, b) => a - b),
-							yearPeriodIds: [...new Set(calendarRule.yearPeriodIds)].sort(),
+							year_period_ids: [...new Set(calendarRule.year_period_ids)].sort(),
 						});
 					}
 				}
 			}
 
 			for (const ruleEntry of weekdayMap.values()) {
-				const periodKey = ruleEntry.yearPeriodIds.join(',');
+				const periodKey = ruleEntry.year_period_ids.join(',');
 				const weekdayKey = ruleEntry.weekdays.join(',');
 				const ruleKey = `${weekdayKey}|${periodKey}`;
 				const existingRule = ruleMap.get(ruleKey);
 				if (existingRule) {
-					existingRule.timePoints = [...new Set([...(existingRule.timePoints ?? []), time])].sort() as HHMM[];
+					existingRule.timepoints = [...new Set([...(existingRule.timepoints ?? []), time])].sort() as HHMM[];
 					ruleMap.set(ruleKey, existingRule);
 				} else {
 					ruleMap.set(ruleKey, {
 						_id: `${patternKey}-${ruleKey}`,
 						kind: 'manual',
-						operatingMode: OPERATING_MODE.INCLUDE,
-						timePoints: [time] as HHMM[],
+						operating_mode: 'include',
+						timepoints: [time] as HHMM[],
 						weekdays: ruleEntry.weekdays,
-						yearPeriodIds: ruleEntry.yearPeriodIds,
+						year_period_ids: ruleEntry.year_period_ids,
 					});
 				}
 			}
@@ -97,8 +97,8 @@ export function buildScheduleRulesForRoute(params: {
 		const mergedRules = [...ruleMap.values()];
 		const mergedByPeriodAndTimes = new Map<string, ManualRule>();
 		for (const rule of mergedRules) {
-			const periodKey = rule.yearPeriodIds.join(',');
-			const timesKey = (rule.timePoints ?? []).join(',');
+			const periodKey = rule.year_period_ids.join(',');
+			const timesKey = (rule.timepoints ?? []).join(',');
 			const mergeKey = `${periodKey}|${timesKey}`;
 			const existing = mergedByPeriodAndTimes.get(mergeKey);
 			if (existing) {

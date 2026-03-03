@@ -4,7 +4,7 @@
 import { getTypologyDetails } from '@/fetchers/typology.js';
 import { type GtfsV29ExportConfig } from '@/types.js';
 import { getLineType } from '@/utils.js';
-import { Agency, GTFS_PathType, GTFS_RouteType, GtfsTMLRoute, Line, Pattern, Route, Typology } from '@tmlmobilidade/types';
+import { Agency, GtfsTMLRoute, Line, pathTypeMapper, Pattern, Route, transportTypeMapper, Typology } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -35,7 +35,7 @@ export function parseRoute(
 			route_id: routeData.code,
 			route_short_name: lineData.code.replace(/  +/g, ' ').trim(),
 			route_long_name: routeData.name.replaceAll(',', '').replace(/  +/g, ' ').trim(),
-			route_type: Number(lineData.transport_type) as GTFS_RouteType,
+			route_type: transportTypeMapper.toGtfs(lineData.transport_type),
 			route_color: typologyData.color.slice(1),
 			route_text_color: typologyData.text_color.slice(1),
 			route_origin: patternsData[0]?.origin || '',
@@ -43,11 +43,10 @@ export function parseRoute(
 
 			circular: lineData.is_circular_line ? 1 : 0,
 			school: lineData.is_school_line ? 1 : 0,
-			path_type: Number(routeData.path_type) as GTFS_PathType,
+			path_type: pathTypeMapper.toGtfs(routeData.path_type),
 
 		};
-	}
-	catch (error) {
+	} catch (error) {
 		throw new Error(`Error parsing route ${routeData.code}: ${error}`);
 	}
 }

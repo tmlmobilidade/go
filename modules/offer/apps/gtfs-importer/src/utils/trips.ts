@@ -1,7 +1,7 @@
 /* * */
 
-import { parseCsv, readGtfsFile, toNumberOrNull } from '@/helpers/index.js';
-import { GtfsTMLTrip, GtfsTMLTripSchema } from '@tmlmobilidade/types';
+import { parseCsv, readGtfsFile } from '@/helpers/index.js';
+import { GtfsTMLTrip, GtfsTMLTripSchema, PatternDirection, patternDirectionMapper } from '@tmlmobilidade/types';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -15,11 +15,7 @@ export async function loadGtfsTrips(gtfsPath: string) {
 
 	for (const raw of rawTrips) {
 		try {
-			const normalized = {
-				...raw,
-				direction_id: toNumberOrNull(raw.direction_id),
-			} as GtfsTMLTrip;
-			trips.push(GtfsTMLTripSchema.parse(normalized));
+			trips.push(GtfsTMLTripSchema.parse(raw));
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
 			console.warn('[gtfs-importer] Skipping trip due to validation error', {
@@ -44,10 +40,10 @@ export async function loadGtfsTrips(gtfsPath: string) {
 }
 
 export function buildTripsByRouteAndDirection(gtfsTrips: GtfsTMLTrip[]) {
-	const tripsByRouteAndDirection = new Map<string, { directionId: string, headsign?: string }>();
+	const tripsByRouteAndDirection = new Map<string, { directionId: PatternDirection, headsign?: string }>();
 	const tripsByRoute = new Map<string, GtfsTMLTrip[]>();
 	for (const trip of gtfsTrips) {
-		const directionId = String(trip.direction_id ?? '0');
+		const directionId = patternDirectionMapper.fromGtfs(trip.direction_id ?? '0') as PatternDirection;
 		const key = `${trip.route_id}:${directionId}`;
 		if (!tripsByRouteAndDirection.has(key)) {
 			tripsByRouteAndDirection.set(key, { directionId, headsign: trip.trip_headsign });

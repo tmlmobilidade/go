@@ -13,7 +13,7 @@ export interface DayTooltipProps {
 }
 
 interface RuleImpactMetadata {
-	timePoints?: string[] // "HH:mm"
+	timepoints?: string[] // "HH:mm"
 }
 
 /* * */
@@ -35,7 +35,7 @@ export function DayTooltip({ calendarEvents, date }: DayTooltipProps) {
 		.from(new Set(
 			ruleImpacts.flatMap((e) => {
 				const md = e.metadata as RuleImpactMetadata | undefined;
-				return md?.timePoints ?? [];
+				return md?.timepoints ?? [];
 			}),
 		))
 		.sort();

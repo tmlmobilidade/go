@@ -43,10 +43,10 @@ export function RulesScheduleView() {
 
 		for (const rule of allRules) {
 			if (!rule._id) continue;
-			const timePoints = computeRuleTimePoints(rule, allRules, periods, {
+			const timepoints = computeRuleTimePoints(rule, allRules, periods, {
 				events: eventsContext.data.raw,
 			});
-			map.set(rule._id, timePoints);
+			map.set(rule._id, timepoints);
 		}
 		return map;
 	}, [allRules, eventsContext.data.raw, periods]);
@@ -59,7 +59,7 @@ export function RulesScheduleView() {
 			if (!uniqueRules.has(rule._id)) {
 				const { long, short, tooltip } = buildRuleSummary(rule, { events: eventsContext.data.raw, periods });
 				const isReplacement = rule.kind === 'event_replacement';
-				const isExclude = (rule.kind === 'manual' && rule.operatingMode === 'exclude') || rule.kind === 'event_restriction';
+				const isExclude = (rule.kind === 'manual' && rule.operating_mode === 'exclude') || rule.kind === 'event_restriction';
 				uniqueRules.set(rule._id, {
 					color: '',
 					isExclude,
@@ -87,8 +87,8 @@ export function RulesScheduleView() {
 	const timeColumns = useMemo(() => {
 		const allTimes = new Set<string>();
 
-		for (const timePoints of timePointsByRuleId.values()) {
-			for (const tp of timePoints) allTimes.add(tp);
+		for (const timepoints of timePointsByRuleId.values()) {
+			for (const tp of timepoints) allTimes.add(tp);
 		}
 
 		return Array.from(allTimes).sort((a, b) => toMinutes(a) - toMinutes(b));
@@ -170,7 +170,7 @@ export function RulesScheduleView() {
 
 						<tbody>
 							{visibleLegendItems.map((item) => {
-								const timePoints = timePointsByRuleId.get(item.ruleId) ?? new Set<string>();
+								const timepoints = timePointsByRuleId.get(item.ruleId) ?? new Set<string>();
 
 								return (
 									<tr key={item.ruleId}>
@@ -187,7 +187,7 @@ export function RulesScheduleView() {
 										</td>
 
 										{timeColumns.map((time) => {
-											const hasTimePoint = timePoints.has(time);
+											const hasTimePoint = timepoints.has(time);
 
 											return (
 												<td

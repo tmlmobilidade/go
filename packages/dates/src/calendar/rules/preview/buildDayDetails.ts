@@ -1,4 +1,4 @@
-import type { Event, YearPeriod, ScheduleRule } from '@tmlmobilidade/types';
+import type { Event, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
 
 import { calendarKey, CalendarKey, datesFromCalendarKey } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
@@ -13,7 +13,7 @@ function buildDayScheduleDetail(
 	events?: Event[],
 ): DayScheduleDetail {
 	const date = datesFromCalendarKey(key);
-	const { appliedRuleIds, timePoints: finalTimePoints } = computeActiveRules(date.operational_date, allRules, periods, { events });
+	const { appliedRuleIds, timepoints: finalTimePoints } = computeActiveRules(date.operational_date, allRules, periods, { events });
 
 	const appliedRules = appliedRuleIds
 		.map(id => allRules.find(r => r._id === id))
@@ -29,10 +29,10 @@ function buildDayScheduleDetail(
 
 	for (const rule of appliedRules) {
 		const isReplacement = rule.kind === 'event_replacement';
-		const isExclude = (rule.kind === 'manual' && rule.operatingMode === 'exclude') || rule.kind === 'event_restriction';
+		const isExclude = (rule.kind === 'manual' && rule.operating_mode === 'exclude') || rule.kind === 'event_restriction';
 
 		const detail: DayRuleDetail = {
-			allTimePoints: rule.timePoints || [],
+			allTimePoints: rule.timepoints || [],
 			rule,
 			type: isReplacement ? 'replacement' : isExclude ? 'exclude' : 'include',
 		};
@@ -43,15 +43,15 @@ function buildDayScheduleDetail(
 			excludeRules.push(detail);
 
 			// For manual exclude rules, add their timepoints to excludedTimePoints
-			if (rule.kind === 'manual' && rule.operatingMode === 'exclude') {
-				for (const tp of rule?.timePoints ?? []) {
+			if (rule.kind === 'manual' && rule.operating_mode === 'exclude') {
+				for (const tp of rule?.timepoints ?? []) {
 					excludedTimePoints.set(tp, rule);
 				}
 			}
 		} else {
 			includeRules.push(detail);
 			// Collect all include timepoints for later comparison
-			for (const tp of rule.timePoints || []) {
+			for (const tp of rule.timepoints || []) {
 				allIncludeTimePoints.add(tp);
 			}
 		}

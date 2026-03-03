@@ -2,7 +2,7 @@
 /* * */
 
 import { type GtfsV29ExportConfig } from '@/types.js';
-import { type GTFS_Shape, Shape } from '@tmlmobilidade/types';
+import { GTFS_Shape, Shape } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -37,8 +37,7 @@ export function parseShape(shapeId: string, shapeData: Shape): GTFS_Shape[] {
 		}
 
 		return parsedShape;
-	}
-	catch (error) {
+	} catch (error) {
 		throw new Error(`Error parsing shape ${shapeId}: ${error}`);
 	}
 }
