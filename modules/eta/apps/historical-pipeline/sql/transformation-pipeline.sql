@@ -8,6 +8,7 @@ WITH
     -- Pre-aggregate node coords here to avoid re-joining shape_nodes later
     matched_events AS (
         SELECT
+            e._id as event_id,
             e.ride_id,
             e.hashed_shape_id,
             e.created_at,
@@ -23,13 +24,14 @@ WITH
         -- CRITICAL: always filter your event range to prune partitions
         -- Replace with your actual date/time parameter
         WHERE e.created_at > 0
-        GROUP BY e.ride_id, e.hashed_shape_id, e.created_at, e_lat, e_lon
+        GROUP BY event_id, e.ride_id, e.hashed_shape_id, e.created_at, e_lat, e_lon
         HAVING dist <= max_dist_m
     ),
 
     -- 2. PAIR: consecutive events with window, carry both node coords
     segments AS (
         SELECT
+            event_id,
             hashed_shape_id,
             ride_id,
             node_idx                        AS curr_idx,
@@ -51,6 +53,7 @@ WITH
     -- 3. CALCULATE + VALIDATE in one pass — no subqueries
     filtered_segments AS (
         SELECT
+            event_id,
             hashed_shape_id,
             ride_id,
             curr_idx,
@@ -80,6 +83,7 @@ WITH
     -- 4. EXPAND: one row per node in the segment
     expanded_nodes AS (
         SELECT
+            event_id,
             hashed_shape_id,
             arrayJoin(range(toUInt64(prev_idx), toUInt64(curr_idx))) AS node_index,
             toUInt8(toHour(toDateTime(toInt64(prev_ts) / 1000)))     AS hour,
@@ -91,14 +95,15 @@ WITH
 
 -- 5. ENRICH: single final join with shape_nodes for lat/lon
 SELECT
+    en.event_id,
     en.hashed_shape_id,
     en.node_index,
     en.hour,
-    sn.latitude,
-    sn.longitude,
     en.created_at,
     en.travel_time_seconds,
-    en.speed_kmh
+    en.speed_kmh,
+    sn.latitude,
+    sn.longitude
 FROM expanded_nodes AS en
 INNER JOIN shape_nodes AS sn
     ON en.hashed_shape_id = sn.shape_id

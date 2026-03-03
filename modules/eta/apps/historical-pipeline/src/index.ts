@@ -10,6 +10,7 @@ import { Timer } from '@tmlmobilidade/timer';
 import { Ride } from '@tmlmobilidade/types';
 import path from 'path';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 /* * */
@@ -63,19 +64,33 @@ async function main(): Promise<void> {
 
 	//
 	// 1. Sync Vehicle Events
-	await clickhouseService.deleteTable('vehicle_events');
-	const { eventsProcessed, ridesProcessed } = await syncVehicleEvents({ batchSize: BATCH_SIZE, client, ridesQuery });
-	Logger.success(`Sync completed: ${ridesProcessed} rides, ${eventsProcessed} events in ${timer.get()}`);
+	// const [
+	// 	{ eventsProcessed, ridesProcessed },
+	// 	{ shapeNodesProcessed },
+	// ] = await Promise.all([
+	// 	syncVehicleEvents({ batchSize: BATCH_SIZE, client, ridesQuery }),
+	// 	syncShapeNodes({ batchSize: BATCH_SIZE, chunkLength: SHAPE_NODE_CHUNK_LENGTH, client, ridesQuery }),
+	// ]);
+
+	// Logger.success(`Sync completed: ${ridesProcessed} rides, ${eventsProcessed} events in ${timer.get()}`);
+	// Logger.success(`Sync completed: ${shapeNodesProcessed} shape nodes`);
 
 	//
-	// 2. Sync Shape Nodes
-	const { shapeNodesProcessed } = await syncShapeNodes({ batchSize: BATCH_SIZE, chunkLength: SHAPE_NODE_CHUNK_LENGTH, client, ridesQuery });
-	Logger.success(`Sync completed: ${shapeNodesProcessed} shape nodes`);
-
-	//
-	// 3. Run Transformation Pipeline
+	// 4. Run Transformation Pipeline
 	Logger.info('Running transformation pipeline...');
-	const trasnformationPipelineFilePath = path.join(__dirname, '..', 'sql', 'trasnformation-pipeline.sql');
+	await clickhouseService.deleteTable('node_travel_times_samples');
+	await clickhouseService.createTable('node_travel_times_samples', [
+		{ name: 'event_id', type: 'String' },
+		{ name: 'hashed_shape_id', type: 'String' },
+		{ name: 'node_index', type: 'UInt32' },
+		{ name: 'hour', type: 'UInt8' },
+		{ name: 'created_at', type: 'UInt64' },
+		{ name: 'travel_time_seconds', type: 'Float64' },
+		{ name: 'speed_kmh', type: 'Float64' },
+		{ name: 'latitude', type: 'Float64' },
+		{ name: 'longitude', type: 'Float64' },
+	], 'MergeTree', '(hashed_shape_id, node_index, hour)');
+	const trasnformationPipelineFilePath = path.join(__dirname, '..', 'sql', 'transformation-pipeline.sql');
 	await clickhouseService.queryFromFile(trasnformationPipelineFilePath);
 	Logger.success('Transformation pipeline completed');
 

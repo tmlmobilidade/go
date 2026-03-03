@@ -26,6 +26,7 @@ export async function syncVehicleEvents({ batchSize = 100_000, client, ridesQuer
 		table: 'vehicle_events',
 		tableSchema: etaVehicleEventTableSchema,
 	});
+	await client.command({ query: 'DROP TABLE IF EXISTS shape_nodes' });
 	await writer.ensureTable();
 
 	const ridesCollection = await rides.getCollection();
