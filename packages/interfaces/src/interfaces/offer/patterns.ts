@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreatePatternDto, CreatePatternSchema, type Pattern, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -51,4 +51,4 @@ class PatternsClass extends MongoCollectionClass<Pattern, CreatePatternDto, Upda
 
 /* * */
 
-export const patterns = AsyncSingletonProxy(PatternsClass);
+export const patterns = asyncSingletonProxy(PatternsClass);

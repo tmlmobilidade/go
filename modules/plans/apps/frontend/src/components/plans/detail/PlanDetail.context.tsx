@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 /* * */

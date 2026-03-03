@@ -3,7 +3,8 @@
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { CoordinatesInput, Grid, Section, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
+import { CoordinatesInput, Grid, Section, Switch, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,6 +16,7 @@ export function AlertCreateStepSummary() {
 
 	const meContext = useMeContext();
 	const alertCreateContext = useAlertCreateContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -42,13 +44,20 @@ export function AlertCreateStepSummary() {
 			<Grid gap="md">
 				<TextInput
 					key={alertCreateContext.data.form.key('title')}
-					label="Título"
+					label={t('default:alerts.create.summary.title.label')}
 					readOnly={!hasPermissionToEdit}
 					{...alertCreateContext.data.form.getInputProps('title')}
 				/>
+				<Section padding="none">
+					<Switch
+						checked={alertCreateContext.data.auto_texts}
+						label={t('default:alerts.create.summary.auto_text.label')}
+						onChange={event => alertCreateContext.data.set_auto_texts(event.currentTarget.checked)}
+					/>
+				</Section>
 				<Textarea
 					key={alertCreateContext.data.form.key('description')}
-					label="Descrição"
+					label={t('default:alerts.create.summary.description.label')}
 					minRows={4}
 					readOnly={!hasPermissionToEdit}
 					autosize
@@ -56,13 +65,13 @@ export function AlertCreateStepSummary() {
 				/>
 				<CoordinatesInput
 					key={alertCreateContext.data.form.key('coordinates')}
-					label="Coordenadas Geográficas"
+					label={t('default:alerts.create.summary.coordinates.label')}
 					{...alertCreateContext.data.form.getInputProps('coordinates')}
 				/>
 				<TextInput
 					key={alertCreateContext.data.form.key('info_url')}
 					description="Opcionalmente inclua o URL de um website onde é possivel obter mais informação"
-					label="Link Adicional"
+					label={t('default:alerts.create.summary.info_url.label')}
 					leftSection={<IconLink />}
 					placeholder="https://www.cm-setubal.com/..."
 					{...alertCreateContext.data.form.getInputProps('info_url')}

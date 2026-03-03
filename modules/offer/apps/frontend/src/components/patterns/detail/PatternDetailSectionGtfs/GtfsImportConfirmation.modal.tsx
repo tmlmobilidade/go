@@ -63,8 +63,7 @@ function GtfsImportConfirmation({ currentShapeExtension, currentStopCount, onSuc
 			closeGtfsImportConfirmationModal();
 			useToast.success({ message: 'Percurso importado com sucesso' });
 			onSuccess();
-		}
-		catch (error) {
+		} catch (error) {
 			console.log(error);
 			useToast.error({ message: 'Erro ao importar percurso' });
 			setIsImporting(false);
@@ -91,7 +90,7 @@ function GtfsImportConfirmation({ currentShapeExtension, currentStopCount, onSuc
 			</div>
 			<Divider />
 			<Grid columns="ab" gap="sm">
-				<Button color="gray" label="Manter como está" onClick={closeGtfsImportConfirmationModal} variant="danger" />
+				<Button color="gray" label="Cancelar" onClick={closeGtfsImportConfirmationModal} variant="danger" />
 				<Button label="Substituir percurso e shape" loading={isImporting} onClick={handleConfirmImport} variant="primary" />
 			</Grid>
 		</Section>
@@ -106,6 +105,7 @@ export const openGtfsImportConfirmationModal = (props: GtfsImportConfirmationPro
 	openModal({
 		children: <GtfsImportConfirmation {...props} />,
 		modalId: MODAL_ID,
+		size: 'lg',
 		title: 'Substituir percurso e shape?',
 	});
 };

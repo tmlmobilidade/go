@@ -55,8 +55,7 @@ export async function fetchProtobuf<T>(
 		}) as T;
 
 		return decodedMessage;
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error(`Error fetching protobuf from ${url}:`, error);
 		return null;
 	}

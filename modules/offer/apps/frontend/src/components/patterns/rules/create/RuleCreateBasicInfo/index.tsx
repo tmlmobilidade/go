@@ -4,11 +4,10 @@
 
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { RuleCreateEvents } from '@/components/patterns/rules/create/RuleCreateEvents';
-import { RuleCreateHolidays } from '@/components/patterns/rules/create/RuleCreateHolidays';
 import { RuleCreatePeriods } from '@/components/patterns/rules/create/RuleCreatePeriods';
 import { RuleCreateSchedule } from '@/components/patterns/rules/create/RuleCreateSchedule';
 import { RuleCreateWeekdays } from '@/components/patterns/rules/create/RuleCreateWeekdays';
-import { OPERATING_MODE } from '@tmlmobilidade/types';
+import { hhmm, OPERATING_MODE } from '@tmlmobilidade/types';
 import { Divider, Section, Switch, Text } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -53,7 +52,7 @@ export function RuleCreateBasicInfo() {
 					onChange={(newTimes) => {
 						createRuleContext.data.form.setFieldValue(
 							'timePoints',
-							newTimes.length > 0 ? newTimes : undefined,
+							newTimes.length > 0 ? newTimes.map(time => hhmm(time)) : undefined,
 						);
 					}}
 				/>
@@ -66,13 +65,15 @@ export function RuleCreateBasicInfo() {
 				<Text size="lg">3. Quando devem estes horários aplicar-se?</Text>
 				<Text c="dimmed" size="sm">Estes horários aplicam-se quando TODAS as condições abaixo se verificam</Text>
 
-				<RuleCreatePeriods />
-				<Divider />
-				<RuleCreateWeekdays />
-				<Divider />
-				<RuleCreateHolidays />
-				<Divider />
 				<RuleCreateEvents />
+				{!createRuleContext.flags.isEventExceptionEnabled && (
+					<>
+						<Divider />
+						<RuleCreatePeriods />
+						<Divider />
+						<RuleCreateWeekdays />
+					</>
+				)}
 			</div>
 
 		</Section>

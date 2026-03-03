@@ -64,8 +64,7 @@ export class WikiController {
 			reply.send({ data: sortedWikiArticles, error: null, statusCode: HTTP_STATUS.OK });
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
@@ -82,7 +81,7 @@ export class WikiController {
 
 			const fileName = request.params.id;
 
-			if (!fileName || !fileName.endsWith('.md')) {
+			if (!fileName?.endsWith('.md')) {
 				reply.status(HTTP_STATUS.BAD_REQUEST).send({ message: 'Invalid article ID' });
 				return;
 			}
@@ -120,8 +119,7 @@ export class WikiController {
 			reply.send({ data: result, error: null, statusCode: HTTP_STATUS.OK });
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);

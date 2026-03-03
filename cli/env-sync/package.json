@@ -39,7 +39,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "20251202.1817.5",
 		"@types/archiver": "7.0.0",
-		"@types/node": "25.3.0",
+		"@types/node": "25.3.3",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0"
 	}

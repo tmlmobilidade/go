@@ -63,8 +63,7 @@ export function chunkLineByDistance(line: LineString, segmentLength: number): Li
 			if (chunkedLineCoordinates[chunkedLineCoordinates.length - 1][0] !== lastPoint[0] || chunkedLineCoordinates[chunkedLineCoordinates.length - 1][1] !== lastPoint[1]) {
 				chunkedLineCoordinates.push(lastPoint);
 			}
-		}
-		else {
+		} else {
 			// If the current segment length is less than or equal to the desired segment length
 			// Add the current point to the chunked line
 			if (chunkedLineCoordinates[chunkedLineCoordinates.length - 1][0] !== line.coordinates[i][0] || chunkedLineCoordinates[chunkedLineCoordinates.length - 1][1] !== line.coordinates[i][1]) {

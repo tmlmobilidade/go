@@ -4,6 +4,7 @@
 
 import { OfferBreadcrumbs } from '@/components/common/OfferBreadcrumbs';
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
+import { PatternDetailHistory } from '@/components/patterns/detail/PatternDetailHistory';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Button, CloseButton, DeleteButton, keepUrlParams, LockButton, Toolbar } from '@tmlmobilidade/ui';
@@ -44,6 +45,8 @@ export function PatternDetailHeader() {
 					}}
 				/>
 			</div>
+
+			<PatternDetailHistory />
 
 			<LockButton
 				isDisabled={!patternDetailContext.flags.canLock}
