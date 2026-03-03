@@ -2,37 +2,12 @@
 
 import { DocumentSchema } from '@/_common/document.js';
 import { ProcessingStatusSchema, ValidityStatusSchema } from '@/_common/status.js';
+import { GtfsValidationSummarySchema } from '@/gtfs-validation/gtfs-validation-summary.js';
 import { GtfsAgencySchema } from '@/gtfs/agency.js';
 import { GtfsFeedInfoSchema } from '@/gtfs/feed-info.js';
 import { z } from 'zod';
 
 /* * */
-
-/* SUMMARY */
-
-export const SEVERITY_LEVELS = ['error', 'warning', 'ignore', 'forbidden'] as const;
-export const SeverityLevelSchema = z.enum(SEVERITY_LEVELS);
-export type SeverityLevel = z.infer<typeof SeverityLevelSchema>;
-
-export const GTFSValidatorMessageSchema = z.object({
-	field: z.string(),
-	file_name: z.string(),
-	message: z.string(),
-	rows: z.array(z.number()),
-	severity: SeverityLevelSchema,
-	validation_id: z.string(),
-});
-
-export const GTFSValidatorSummarySchema = z.object({
-	messages: z.array(GTFSValidatorMessageSchema),
-	total_errors: z.number(),
-	total_warnings: z.number(),
-});
-
-export type GTFSValidatorSummary = z.infer<typeof GTFSValidatorSummarySchema>;
-export type GTFSValidatorMessage = z.infer<typeof GTFSValidatorMessageSchema>;
-
-/* VALIDATION */
 
 export const GtfsValidationSchema = DocumentSchema.extend({
 	file_id: z.string(),
@@ -40,7 +15,7 @@ export const GtfsValidationSchema = DocumentSchema.extend({
 	gtfs_feed_info: GtfsFeedInfoSchema,
 	notification_sent: z.boolean().default(false),
 	processing_status: ProcessingStatusSchema.default('waiting'),
-	summary: GTFSValidatorSummarySchema.nullish(),
+	summary: GtfsValidationSummarySchema.nullish(),
 	validity_status: ValidityStatusSchema.default('unknown'),
 });
 
