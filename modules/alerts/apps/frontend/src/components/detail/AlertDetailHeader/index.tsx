@@ -62,6 +62,8 @@ export function AlertDetailHeader() {
 		router.push(`${PAGE_ROUTES.alerts.ALERTS_LIST}?${searchParams.toString()}`);
 	};
 
+	const nonAuthenticatedGtfsLink = `${PAGE_ROUTES.alerts.BASE}/gtfs/${alertDetailContext.data.id}`;
+
 	//
 	// C. Render components
 
@@ -77,6 +79,13 @@ export function AlertDetailHeader() {
 			/>
 
 			<Label size="lg" caps>{alertDetailContext.data.id}</Label>
+
+			<Button
+				href={nonAuthenticatedGtfsLink}
+				label="GTFS Público"
+				target="_blank"
+				variant="secondary"
+			/>
 
 			<Spacer />
 
