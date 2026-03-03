@@ -16,6 +16,7 @@ export * from '@/file.js';
 export * from '@/gtfs-new/index.js';
 export * from '@/gtfs-rt/index.js';
 export * from '@/gtfs-tml/index.js';
+export * from '@/gtfs-validation/index.js';
 export * from '@/gtfs/index.js';
 export * from '@/locations/index.js';
 export * from '@/metrics/index.js';
