@@ -194,6 +194,7 @@ const rideActions: PermissionConfig = {
 		{ action: 'acceptance_justify', description: 'Permite justificar uma viagem', label: 'Aceitação - Justificar', resources: ['AGENCIES'] },
 		{ action: 'acceptance_lock', description: 'Permite bloquear/desbloquear uma justificação de uma viagem', label: 'Aceitação - Bloquear/Desbloquear', resources: ['AGENCIES'] },
 		{ action: 'acceptance_read', description: 'Permite ver uma justificação de uma viagem', label: 'Aceitação - Ver', resources: ['AGENCIES'] },
+		{ action: 'acceptance_comment_activity', description: 'Permite adicionar comentários à aceitação de uma viagem', label: 'Aceitação - Adicionar comentário', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de viagens.',
 	scope: PermissionCatalog.all.rides.scope,
