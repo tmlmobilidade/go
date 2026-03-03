@@ -3,7 +3,7 @@ import { yyyymmddToDashed } from '@/utils/dates-helper.js';
 import { metrics } from '@tmlmobilidade/interfaces';
 
 /* Result type for affected passengers per agency per day */
-export interface pax_affected_by_failuresResult {
+export interface PaxAffectedByFailuresResult {
 	agencyId: string
 	date: string
 	estimatedpax_affected_by_failures: number
@@ -28,7 +28,7 @@ interface FailedCirculationsMetric {
  * Calculates the estimated affected passengers by agency and day
  * from the "demand_affected_by_failed_circulations_by_day" metric.
  */
-export async function calculateAffectedPassengers({ context, message }: TaskProps): Promise<pax_affected_by_failuresResult[]> {
+export async function calculateAffectedPassengers({ context, message }: TaskProps): Promise<PaxAffectedByFailuresResult[]> {
 	message('Calculating passengers affected by failed circulations...');
 
 	const metricsCollection = await metrics.getCollection();
@@ -43,7 +43,7 @@ export async function calculateAffectedPassengers({ context, message }: TaskProp
 
 	message(`Found ${docs.length} documents to process`);
 
-	const results = new Map<string, pax_affected_by_failuresResult>(); // key = `${date}-${agencyId}`
+	const results = new Map<string, PaxAffectedByFailuresResult>(); // key = `${date}-${agencyId}`
 
 	const startDate = yyyymmddToDashed(context.dates.start);
 	const endDate = yyyymmddToDashed(context.dates.end);

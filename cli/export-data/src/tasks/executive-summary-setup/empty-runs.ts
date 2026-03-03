@@ -35,8 +35,8 @@ export async function calculateObservedTrips({ context, message }: TaskProps): P
 		{
 			$match: {
 				agency_id: { $exists: true },
-				start_time_scheduled: { $gte: startDateStr, $lte: endDateStr },
 				passengers_observed: 0,
+				start_time_scheduled: { $gte: startDateStr, $lte: endDateStr },
 			},
 		},
 		{
