@@ -1,0 +1,260 @@
+#cloud-config
+# -----------------------------------------------------------------------
+# cloud-init.yaml — ClickHouse Replica Node (node_index = ${node_index})
+#
+# Docker and OS tuning are pre-baked into the Packer image.
+# This file handles runtime concerns only:
+#   - Attaches and mounts the 1TB block volume
+#   - Writes ClickHouse Keeper config (embedded keeper, 3-node Raft quorum)
+#   - Writes ZooKeeper client config (points CH to keeper endpoints)
+#   - Writes replica macros and cluster config
+#   - Writes secrets and Docker Compose, then starts the container
+#
+# Terraform variables injected:
+#   node_index, all_private_ips, clickhouse_admin_password,
+#   clickhouse_http_port, clickhouse_tcp_port, clickhouse_interserver_port,
+#   clickhouse_keeper_client_port, clickhouse_keeper_raft_port
+# -----------------------------------------------------------------------
+
+runcmd:
+  # -----------------------------------------------------------------
+  # 1. Robust Disk Mounting (OCI Device Detection)
+  # -----------------------------------------------------------------
+  - |
+    DATA_DISK=""
+    for i in {1..15}; do
+      echo "Scanning for 1TB data disk (attempt $i)..."
+      ROOT_DISK=$(findmnt -n -o SOURCE / | sed 's/[0-9]*$//')
+      for disk in $(lsblk -d -n -o NAME); do
+        DEV="/dev/$disk"
+        if [[ "$DEV" == "$ROOT_DISK"* ]]; then continue; fi
+        SIZE=$(lsblk -b -n -o SIZE $DEV 2>/dev/null || echo 0)
+        if [ "$SIZE" -ge 966367641600 ] && [ "$SIZE" -le 1181116006400 ]; then
+          DATA_DISK="$DEV"
+          echo "Found 1TB data disk at $DATA_DISK"
+          break 2
+        fi
+      done
+      sleep 2
+    done
+
+    if [ -n "$DATA_DISK" ]; then
+      blkid "$DATA_DISK" || mkfs.xfs -L CHDATA "$DATA_DISK"
+      mkdir -p /opt/clickhouse
+      mount "$DATA_DISK" /opt/clickhouse
+      if ! grep -q "/opt/clickhouse" /etc/fstab; then
+        echo "$DATA_DISK /opt/clickhouse xfs defaults,noatime,_netdev 0 0" >> /etc/fstab
+      fi
+    else
+      echo "ERROR: 1TB data disk not found after 15 attempts!"
+      exit 1
+    fi
+
+  # -----------------------------------------------------------------
+  # 2. Open OS Firewall for ClickHouse + Keeper ports
+  # -----------------------------------------------------------------
+  - iptables -I INPUT 6 -p tcp --dport ${clickhouse_http_port} -j ACCEPT
+  - iptables -I INPUT 6 -p tcp --dport ${clickhouse_tcp_port} -j ACCEPT
+  - iptables -I INPUT 6 -p tcp --dport ${clickhouse_interserver_port} -j ACCEPT
+  - iptables -I INPUT 6 -p tcp --dport ${clickhouse_keeper_client_port} -j ACCEPT
+  - iptables -I INPUT 6 -p tcp --dport ${clickhouse_keeper_raft_port} -j ACCEPT
+  - netfilter-persistent save
+
+  # -----------------------------------------------------------------
+  # 3. Setup ClickHouse Directories (after mount)
+  # -----------------------------------------------------------------
+  - mkdir -p /opt/clickhouse/clickhouse_data
+  - mkdir -p /opt/clickhouse/clickhouse_logs
+  - mkdir -p /opt/clickhouse/config.d
+  - mkdir -p /opt/clickhouse/users.d
+  - mkdir -p /opt/clickhouse/secrets
+  - chown -R 101:101 /opt/clickhouse/clickhouse_data
+  - chown -R 101:101 /opt/clickhouse/clickhouse_logs
+  - chown -R ubuntu:ubuntu /opt/clickhouse/config.d
+  - chown -R ubuntu:ubuntu /opt/clickhouse/users.d
+  - chown -R ubuntu:ubuntu /opt/clickhouse/secrets
+  - chmod -R 775 /opt/clickhouse
+
+  # -----------------------------------------------------------------
+  # 4. Network Config — listen on all interfaces (IPv4 only)
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/config.d/network.xml <<'NETEOF'
+    <clickhouse>
+        <!-- Only bind IPv4 — OCI A1 does not expose IPv6 -->
+        <listen_host>0.0.0.0</listen_host>
+    </clickhouse>
+    NETEOF
+
+  # -----------------------------------------------------------------
+  # 5. ClickHouse Keeper Config
+  #    Each node runs an embedded Keeper. server_id = node_index + 1.
+  #    All 3 nodes are listed as Raft members using their private IPs.
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/config.d/keeper.xml <<'KEEPEREOF'
+    <clickhouse>
+        <keeper_server>
+            <!-- ZooKeeper-compatible client port -->
+            <tcp_port>${clickhouse_keeper_client_port}</tcp_port>
+            <!-- Unique server ID for this node (1, 2, or 3) -->
+            <server_id>${node_index + 1}</server_id>
+            <log_storage_path>/var/lib/clickhouse/coordination/log</log_storage_path>
+            <snapshot_storage_path>/var/lib/clickhouse/coordination/snapshots</snapshot_storage_path>
+            <coordination_settings>
+                <operation_timeout_ms>10000</operation_timeout_ms>
+                <session_timeout_ms>30000</session_timeout_ms>
+                <raft_logs_level>warning</raft_logs_level>
+            </coordination_settings>
+            <raft_configuration>
+%{ for idx in range(length(all_private_ips)) ~}
+                <server>
+                    <id>${idx + 1}</id>
+                    <hostname>${all_private_ips[idx]}</hostname>
+                    <!-- Inter-keeper Raft port -->
+                    <port>${clickhouse_keeper_raft_port}</port>
+                </server>
+%{ endfor ~}
+            </raft_configuration>
+        </keeper_server>
+    </clickhouse>
+    KEEPEREOF
+
+  # -----------------------------------------------------------------
+  # 6. ZooKeeper Client Config — points ClickHouse at all 3 Keeper nodes
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/config.d/zookeeper.xml <<'ZKEOF'
+    <clickhouse>
+        <zookeeper>
+%{ for ip in all_private_ips ~}
+            <node>
+                <host>${ip}</host>
+                <port>${clickhouse_keeper_client_port}</port>
+            </node>
+%{ endfor ~}
+        </zookeeper>
+    </clickhouse>
+    ZKEOF
+
+  # -----------------------------------------------------------------
+  # 7. Replica Macros — node-specific identity for ReplicatedMergeTree
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/config.d/macros.xml <<'MACROEOF'
+    <clickhouse>
+        <macros>
+            <shard>01</shard>
+            <replica>replica-${node_index + 1}</replica>
+            <cluster>clickhouse-replica</cluster>
+        </macros>
+    </clickhouse>
+    MACROEOF
+
+  # -----------------------------------------------------------------
+  # 8. Cluster Config — all 3 replicas in one shard (no sharding)
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/config.d/cluster.xml <<'CLUSTEREOF'
+    <clickhouse>
+        <remote_servers>
+            <clickhouse-replica>
+                <shard>
+                    <internal_replication>true</internal_replication>
+%{ for ip in all_private_ips ~}
+                    <replica>
+                        <host>${ip}</host>
+                        <port>${clickhouse_tcp_port}</port>
+                    </replica>
+%{ endfor ~}
+                </shard>
+            </clickhouse-replica>
+        </remote_servers>
+    </clickhouse>
+    CLUSTEREOF
+
+  # -----------------------------------------------------------------
+  # 9. Performance Tuning Config (server-level)
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/config.d/tuning.xml <<'TUNEOEOF'
+    <clickhouse>
+        <!-- Server-level memory: 85% of 12GB = ~10.2GB -->
+        <max_server_memory_usage_to_ram_ratio>0.85</max_server_memory_usage_to_ram_ratio>
+        <uncompressed_cache_size>2147483648</uncompressed_cache_size>
+        <mark_cache_size>2147483648</mark_cache_size>
+
+        <!-- Enable Prometheus metrics -->
+        <prometheus>
+            <endpoint>/metrics</endpoint>
+            <port>9363</port>
+            <metrics>true</metrics>
+            <events>true</events>
+        </prometheus>
+    </clickhouse>
+    TUNEOEOF
+
+  # -----------------------------------------------------------------
+  # 10. User Profile Config (user-level memory limit, CH 26+)
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/users.d/tuning.xml <<'USERUEOF'
+    <clickhouse>
+        <profiles>
+            <default>
+                <max_memory_usage>10G</max_memory_usage>
+            </default>
+        </profiles>
+    </clickhouse>
+    USERUEOF
+
+  # -----------------------------------------------------------------
+  # 11. Write Secrets
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/secrets/.env <<'ENVEOF'
+    CLICKHOUSE_PASSWORD=${clickhouse_admin_password}
+    CLICKHOUSE_USER=admin
+    ENVEOF
+
+  # -----------------------------------------------------------------
+  # 12. Write Docker Compose file
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/compose.yml <<'COMPOSEEOF'
+    services:
+      clickhouse:
+        image: clickhouse/clickhouse-server:latest
+        container_name: clickhouse
+        restart: unless-stopped
+        deploy:
+          resources:
+            limits:
+              memory: 11gb
+        ports:
+          - "${clickhouse_http_port}:8123"
+          - "${clickhouse_tcp_port}:9000"
+          - "${clickhouse_interserver_port}:9009"
+          - "${clickhouse_keeper_client_port}:${clickhouse_keeper_client_port}"
+          - "${clickhouse_keeper_raft_port}:${clickhouse_keeper_raft_port}"
+        ulimits:
+          nofile:
+            soft: 262144
+            hard: 262144
+        volumes:
+          - ./clickhouse_data:/var/lib/clickhouse
+          - ./clickhouse_logs:/var/log/clickhouse-server
+          - ./config.d:/etc/clickhouse-server/config.d
+          - ./users.d:/etc/clickhouse-server/users.d
+        env_file:
+          - ./secrets/.env
+        environment:
+          CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    COMPOSEEOF
+
+  # -----------------------------------------------------------------
+  # 13. Start ClickHouse
+  # -----------------------------------------------------------------
+  - cd /opt/clickhouse && docker compose up -d
+
+final_message: "ClickHouse replica node ${node_index + 1} of ${length(all_private_ips)} configuration complete."
