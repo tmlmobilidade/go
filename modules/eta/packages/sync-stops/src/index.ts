@@ -38,16 +38,21 @@ export async function syncStops({ batchSize = 100_000, client, ridesQuery }: Syn
 
 	Logger.info(`Creating stops for ${distinctHashedTripIds.length} hashed trip ids`);
 
-	let stopsProcessed = 0;
+	const stopsMap = new Map<string, StopNode>();
 	for await (const hashedTrip of hashedTripsCursor) {
 		for (const stop of hashedTrip.path) {
-			stopsProcessed++;
-			await writer.write({
+			stopsMap.set(stop.stop_id, {
 				id: stop.stop_id,
 				latitude: stop.stop_lat,
 				longitude: stop.stop_lon,
 			});
 		}
+	}
+
+	let stopsProcessed = 0;
+	for (const stop of stopsMap.values()) {
+		stopsProcessed++;
+		await writer.write(stop);
 	}
 
 	await writer.flush();
