@@ -4,7 +4,7 @@ import { type OriginalRouteType } from '@/original-route.type.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { routes } from '@tmlmobilidade/interfaces';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { PATH_TYPE, type Route, RouteSchema } from '@tmlmobilidade/types';
+import { type Route, RouteSchema } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -92,7 +92,7 @@ export async function seedRoutesFromGoV1() {
 				created_by: 'system',
 				line_id: newLineId,
 				name: normalizeName(originalRoute.name),
-				path_type: PATH_TYPE.BASE,
+				path_type: 'base',
 				updated_at: now,
 				updated_by: 'system',
 			});

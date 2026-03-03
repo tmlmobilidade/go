@@ -44,18 +44,18 @@ export function ParameterCreateYearPeriods() {
 
 	if (createParameterContext.data.form.values.kind === 'default') return null;
 
-	const currentPeriodIds = createParameterContext.data.form.values.yearPeriodIds || [];
+	const currentPeriodIds = createParameterContext.data.form.values.year_period_ids || [];
 	const selectedPresetKey = getSelectedPresetKey(currentPeriodIds, allPeriodIds);
 
 	const applyPreset = (key: null | PeriodPresetKey) => {
 		if (!key) {
 			// same convention as weekdays: empty => undefined
-			createParameterContext.data.form.setFieldValue('yearPeriodIds', undefined);
+			createParameterContext.data.form.setFieldValue('year_period_ids', undefined);
 			return;
 		}
 
 		// select all
-		createParameterContext.data.form.setFieldValue('yearPeriodIds', [...allPeriodIds]);
+		createParameterContext.data.form.setFieldValue('year_period_ids', [...allPeriodIds]);
 	};
 
 	//
@@ -79,7 +79,7 @@ export function ParameterCreateYearPeriods() {
 			<SegmentedMultiSelect
 				value={currentPeriodIds}
 				onChange={(selectedPeriods) => {
-					createParameterContext.data.form.setFieldValue('yearPeriodIds', selectedPeriods.length > 0 ? selectedPeriods : undefined);
+					createParameterContext.data.form.setFieldValue('year_period_ids', selectedPeriods.length > 0 ? selectedPeriods : undefined);
 				}}
 				options={PERIOD_OPTIONS.map(o => ({
 					ariaLabel: o.label,

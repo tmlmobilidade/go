@@ -62,8 +62,7 @@ export function parseStop(
 			has_tariffs_information: 0,
 			public_visible: 0,
 		};
-	}
-	catch (error) {
+	} catch (error) {
 		throw new Error(`Error parsing stop ${stopData._id}: ${error}`);
 	}
 }

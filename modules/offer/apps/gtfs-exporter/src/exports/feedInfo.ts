@@ -23,8 +23,7 @@ function parseFeedInfo(
 			feed_start_date: exportConfig.feed_start_date,
 			feed_version: getCurrentTimestamp(),
 		};
-	}
-	catch (error) {
+	} catch (error) {
 		throw new Error(`Error parsing feed info: ${error}`);
 	}
 }

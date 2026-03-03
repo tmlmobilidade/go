@@ -10,7 +10,7 @@ import { Event, ManualRule, OperationalDate, YearPeriod } from '@tmlmobilidade/t
 interface CalendarContext {
 	/** End date of the calendar range */
 	endDate: Date
-	/** Optional events list for eventId matching */
+	/** Optional events list for event_id matching */
 	events?: Event[]
 	/** Available periods for matching rule criteria */
 	periods: YearPeriod[]
@@ -23,12 +23,12 @@ interface CalendarContext {
  * Verifies that at least one of the rule's period IDs is active on this date.
  */
 function isInPeriod(rule: ManualRule, key: CalendarKey, ctx: CalendarContext): boolean {
-	if (!rule.yearPeriodIds?.length) return false;
+	if (!rule.year_period_ids?.length) return false;
 
 	const op = keyToYYYYMMDD(key) as OperationalDate;
 
 	return ctx.periods.some(
-		p => rule.yearPeriodIds?.includes(p._id) && p.dates?.includes(op),
+		p => rule.year_period_ids?.includes(p._id) && p.dates?.includes(op),
 	);
 }
 
@@ -72,8 +72,8 @@ export function getManualRuleAffectedDates(rule: ManualRule, ctx: CalendarContex
 	const from = startKey < endKey ? startKey : endKey;
 	const to = startKey < endKey ? endKey : startKey;
 
-	if (rule.eventId) {
-		const event = ctx.events?.find(e => e._id === rule.eventId);
+	if (rule.event_id) {
+		const event = ctx.events?.find(e => e._id === rule.event_id);
 		if (!event?.dates?.length) return { count: 0, dates: [] };
 
 		for (const opDate of event.dates) {

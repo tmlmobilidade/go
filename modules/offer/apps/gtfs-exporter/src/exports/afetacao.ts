@@ -97,8 +97,7 @@ export async function parseZoning(
 		}
 
 		return parsedZoning;
-	}
-	catch (error) {
+	} catch (error) {
 		throw new Error(`Error parsing zoning for pattern ${patternData.code}: ${error}`);
 	}
 }

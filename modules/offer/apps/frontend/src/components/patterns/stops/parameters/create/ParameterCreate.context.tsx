@@ -80,7 +80,7 @@ export const ParameterCreateContextProvider = ({ children, initialValues, onDele
 			dwell_time: 30,
 			stop_id: pathItem.stop_id,
 		})),
-		yearPeriodIds: [],
+		year_period_ids: [],
 		stop_sequence: [],
 		vehicle_type: '',
 		weekdays: [],

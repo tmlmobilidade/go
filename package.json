@@ -38,7 +38,7 @@
 		"dev:exporter-merged": "ENVIRONMENT=development dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-export-gtfs-merged",
 		"dev:fleet": "ENVIRONMENT=development dotenv-run -f ./modules/fleet/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-fleet-*",
 		"dev:locations": "ENVIRONMENT=development dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-locations-*",
-		"dev:offer": "ENVIRONMENT=development dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-offer-* --filter=!@tmlmobilidade/go-offer-gtfs-exporter",
+		"dev:offer": "ENVIRONMENT=development dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-offer-* --filter=!@tmlmobilidade/go-offer-gtfs-exporter --filter=!@tmlmobilidade/go-offer-gtfs-importer",
 		"dev:performance": "ENVIRONMENT=development dotenv-run -f ./modules/performance/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-performance-*",
 		"dev:performance:sync-metrics-daily": "ENVIRONMENT=development dotenv-run -f ./modules/performance/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-performance-sync-metrics-daily",
 		"dev:plans": "ENVIRONMENT=development dotenv-run -f ./modules/plans/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-plans-*",
