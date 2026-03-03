@@ -5,6 +5,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { transformAlert } from '@tmlmobilidade/go-alerts-pckg-transform';
 import { alerts } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 
 /* * */
@@ -49,8 +50,13 @@ export class GtfsController {
 		const transformResult: GtfsRtFeedEntity[] = [];
 
 		for (const item of findResult) {
-			const transformedItem = await transformAlert(item);
-			if (transformedItem) transformResult.push(transformedItem);
+			try {
+				const transformedItem = await transformAlert(item);
+				if (transformedItem) transformResult.push(transformedItem);
+			} catch (error) {
+				Logger.error(`[Alert ID: ${item._id}] Failed to transform alert for GTFS feed.`);
+				Logger.error(error);
+			}
 		}
 
 		//
