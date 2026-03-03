@@ -159,7 +159,7 @@ export async function exportExecutiveSummary({ context, message }: TaskProps): P
 
 	// Passengers per Km
 	for (const row of passengersPerKmMetrics) {
-		const r = ensureRow(row.date, row.agencyId);
+		const r = ensureRow(undefined, row.agencyId);
 		r.passengersPerKm = row.passengersPerKm;
 	}
 

@@ -4,19 +4,20 @@ import { rides } from '@tmlmobilidade/interfaces';
 
 export interface PassengersPerKmResult {
 	agencyId: string
-	date: string
 	passengersPerKm: number
+	totalKm: number
+	totalPassengers: number
 }
 
-export async function calculatePassengersPerKm({ context, message }: TaskProps): Promise<PassengersPerKmResult[]> {
-	message('Calculating passengers per km for executed trips...');
+export async function calculatePassengersPerKm({ context }: TaskProps): Promise<PassengersPerKmResult[]> {
+	console.log('Calculating passengers per km for executed trips...');
 
 	const ridesCollection = await rides.getCollection();
 
 	const startDateStr = Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').toFormat('yyyyMMdd');
 	const endDateStr = Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').toFormat('yyyyMMdd');
 
-	message(`Date range: ${startDateStr} to ${endDateStr}`);
+	console.log(`Date range: ${startDateStr} to ${endDateStr}`);
 
 	const pipeline = [
 		{
@@ -26,30 +27,43 @@ export async function calculatePassengersPerKm({ context, message }: TaskProps):
 			},
 		},
 		{
-			$group: {
-				_id: { agencyId: '$agency_id', date: '$operational_date' },
-				passengersPerKm: {
-					$sum: {
-						$cond: [
-							{
-								$or: [
-									{ $eq: ['$analysis.SIMPLE_ONE_APEX_VALIDATION.grade', 'pass'] },
-									{ $eq: ['$analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade', 'pass'] },
-								],
-							},
-							{ $divide: ['$passengers_observed', '$extension_scheduled'] },
-							0,
-						],
-					},
+			$project: {
+				agencyId: '$agency_id',
+				extensionScheduled: '$extension_scheduled',
+				isValid: {
+					$or: [
+						{ $eq: ['$analysis.SIMPLE_ONE_APEX_VALIDATION.grade', 'pass'] },
+						{ $eq: ['$analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade', 'pass'] },
+					],
 				},
+				passengersObserved: '$passengers_observed',
+			},
+		},
+		{
+			$group: {
+				_id: { agencyId: '$agencyId' },
+				totalKm: { $sum: { $cond: ['$isValid', '$extensionScheduled', 0] } },
+				totalPassengers: { $sum: { $cond: ['$isValid', '$passengersObserved', 0] } },
 			},
 		},
 		{
 			$project: {
 				_id: 0,
 				agencyId: '$_id.agencyId',
-				date: '$_id.date',
-				passengersPerKm: { $round: ['$passengersPerKm', 0] },
+				passengersPerKm: {
+					$cond: [
+						{ $eq: ['$totalKm', 0] },
+						0,
+						{
+							$round: [
+								{ $divide: ['$totalPassengers', { $divide: ['$totalKm', 1000] }] },
+								2,
+							],
+						},
+					],
+				},
+				totalKm: 1,
+				totalPassengers: 1,
 			},
 		},
 	];
@@ -59,15 +73,20 @@ export async function calculatePassengersPerKm({ context, message }: TaskProps):
 	const results: PassengersPerKmResult[] = [];
 
 	for await (const doc of aggCursor) {
-		const formattedDate = Dates.fromOperationalDate(doc.date, 'Europe/Lisbon').toFormat('dd/MM/yyyy');
+		// // Total Passengers, Km, passengersPerKm DEBUG
+		// console.log(
+		// 	`[DEBUG] Agency: ${doc.agencyId} | Total Passengers: ${doc.totalPassengers} | Total Km: ${doc.totalKm} | passengersPerKm: ${doc.passengersPerKm}`,
+		// );
+
 		results.push({
 			agencyId: doc.agencyId,
-			date: formattedDate,
 			passengersPerKm: doc.passengersPerKm,
+			totalKm: doc.totalKm,
+			totalPassengers: doc.totalPassengers,
 		});
 	}
 
-	message(`Processed ${results.length} passengers per km metrics`);
+	console.log(`Processed ${results.length} agencies for the interval.`);
 
 	return results;
 }
