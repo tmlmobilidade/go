@@ -1,7 +1,7 @@
 /* * */
 
 import { updateFeedInfoDates } from '@/utils/file-utils.js';
-import { HttpException, HTTP_STATUS, mimeTypes } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException, mimeTypes } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { files, type Filter, gtfsValidations, plans, TransactionManager } from '@tmlmobilidade/interfaces';
 import { type CreateFileDto, type CreatePlanDto, File as FileType, HashablePlanMetadata, PermissionCatalog, type Plan, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
@@ -19,8 +19,11 @@ export class PlansController {
 	 */
 	static async changeGtfsPlan(request: FastifyRequest<{ Body: { validation_id: string }, Params: { id: string } }>, reply: FastifyReply<Plan>) {
 		// Get the Plan from the database
+
 		const planData = await plans.findById(request.params.id);
+		const originalFileId = planData.operation_file_id;
 		if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
+
 		// Check if the user has permission to change the GTFS of the Plan
 		const hasPermissionChangeGtfsPlan = PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.plans.actions.update_gtfs_plan,
@@ -29,22 +32,27 @@ export class PlansController {
 			scope: PermissionCatalog.all.plans.scope,
 			value: planData.gtfs_agency.agency_id,
 		});
+
 		// Throw an error if the user is not authorized
 		if (!hasPermissionChangeGtfsPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to change the GTFS of the plan.');
+
 		// For a given validation ID, get the validation data
 		const validationData = await gtfsValidations.findById(request.body.validation_id);
 		if (!validationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+
 		// Create a new MongoDB transaction to manage the GTFS change
 		// and perform all necessary operations atomically, with rollback on failure
 		const transactionManager = new TransactionManager([plans, files] as const);
+
 		// Execute the transaction and return the updated plan data
 		const result = await transactionManager.withTransaction(async (collections, transactions) => {
+			//
+
 			// Get the appropriate transaction for each collection
 			const [plansCollection, filesCollection] = collections;
 			const plansTransaction = transactions.get(plansCollection);
 			const filesTransaction = transactions.get(filesCollection);
-			// Delete the old operation file
-			await files.deleteById(planData.operation_file_id, { session: filesTransaction.getSession() });
+
 			// Make a clone of the validation GTFS file in S3
 			// to keep plan data separate from validations
 			const updateFileResult = await filesCollection.clone(
@@ -53,6 +61,7 @@ export class PlansController {
 				planData._id.toString(),
 				{ session: filesTransaction.getSession() },
 			);
+
 			// Get a hash of all metadata to make it possible
 			// to keep track of changes to the plan
 			const hashablePlanMetadata: HashablePlanMetadata = {
@@ -61,19 +70,26 @@ export class PlansController {
 				gtfs_feed_info: planData.gtfs_feed_info,
 				operation_file_id: updateFileResult._id,
 			};
+
 			// Generate the hash value
 			const hashValue = createHash('sha256')
 				.update(JSON.stringify(hashablePlanMetadata))
 				.digest('hex');
+
 			// Update the plan with the new data
 			const updatedPlanData = await plansCollection.updateById(
 				planData._id,
 				{ hash: hashValue, operation_file_id: updateFileResult._id },
 				{ session: plansTransaction.getSession() },
 			);
+
 			// Return the updated plan data
 			return updatedPlanData;
 		});
+
+		// Delete the old operation file
+		await files.deleteById(originalFileId);
+
 		// Send the updated plan data as the response
 		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -233,6 +249,40 @@ export class PlansController {
 		await plans.deleteById(id);
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
+	 * Download the operation file associated with a plan by ID.
+	 * @param request The request object.
+	 * @param reply The reply object.
+	 */
+	static async downloadPlanOperationFileById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
+		// Get the Plan from the database
+		const planData = await plans.findById(request.params.id);
+		if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
+		// Check if the user has permission to read the Plan
+		const hasPermissionReadPlan = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.plans.actions.read,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.plans.scope,
+			value: planData.gtfs_agency.agency_id,
+		});
+		if (!hasPermissionReadPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
+		// Fetch the file associated with the plan
+		const foundFileData = await files.findById(planData.operation_file_id);
+		if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan operation file not found');
+		// Stream the file in the given URL to the client
+		const storageServiceResponse = await fetch(foundFileData.url);
+		if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
+		// Set headers and pipe the response body to the client
+		reply.header('Content-Disposition', `attachment; filename="${foundFileData.name}"`);
+		reply.header('Content-Type', 'application/zip');
+		// Set content length if available
+		const contentLength = storageServiceResponse.headers.get('Content-Length');
+		if (contentLength) reply.header('Content-Length', contentLength);
+		// Pipe the response body to the client
+		return reply.send(storageServiceResponse.body);
 	}
 
 	/**

@@ -3,81 +3,53 @@
 import { IconDownload, IconFile, IconFileTypeZip } from '@tabler/icons-react';
 import { mimeTypes } from '@tmlmobilidade/consts';
 import { type File } from '@tmlmobilidade/types';
-import { Label, useToast } from '@tmlmobilidade/ui';
+import { Label } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
 /* * */
 
-export function FileComponent({ file }: { file: File }) {
+interface FileComponentProps {
+	fileData: File
+	onClick?: () => void
+}
+
+/* * */
+
+export function FileComponent({ fileData, onClick }: FileComponentProps) {
 	//
-	if (!file) {
-		return null;
-	}
 
 	//
-	// A. Setup variables
+	// A. Transform data
 
-	//
-	// B. Transform data
-	let icon: React.ReactNode;
-
-	switch (file.type) {
-		case mimeTypes.zip:
-			icon = <IconFileTypeZip size={32} />;
-			break;
-		default:
-			icon = <IconFile size={32} />;
-	}
-
-	//
-	// C. Define actions
-	const handleDownload = async () => {
-		if (!file.url) {
-			return;
+	const fileIcon = useMemo(() => {
+		switch (fileData.type) {
+			case mimeTypes.zip:
+				return <IconFileTypeZip size={32} />;
+			default:
+				return <IconFile size={32} />;
 		}
-
-		try {
-			// Open file.url in a new window
-			window.open(file.url, '_blank');
-			return;
-			const response = await fetch(file.url);
-			const blob = await response.blob();
-			const url = window.URL.createObjectURL(blob);
-
-			const a = document.createElement('a');
-			a.href = url;
-			a.download = file.name;
-			a.click();
-
-			useToast.info({
-				message: `A transferência do ficheiro "${file.name}" está a começar...`,
-				title: 'A transferir ficheiro',
-			});
-		} catch (error) {
-			useToast.error({
-				message: error instanceof Error ? error.message : 'Erro ao transferir ficheiro',
-				title: 'Erro ao transferir ficheiro',
-			});
-		}
-	};
+	}, [fileData.type]);
 
 	//
-	// D. Render components
+	// B. Render components
+
 	return (
 		<div className={styles.container}>
-			<div className={styles.content} onClick={handleDownload}>
-				{icon}
-				<Label>{file.name}</Label>
+
+			<div className={styles.content} onClick={onClick}>
+				{fileIcon}
+				<Label>{fileData.name}</Label>
 			</div>
-			{file.url && (
+
+			{fileData.url && (
 				<span className={styles.tooltip}>
 					<IconDownload size={16} />
 					Download
 				</span>
 			)}
+
 		</div>
 	);
 }
-
-/* * */

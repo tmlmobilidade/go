@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -36,8 +36,7 @@ export class DatesController {
 				error: null,
 				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error('Error fetching calendar data:', error);
 
 			if (error instanceof HttpException) {

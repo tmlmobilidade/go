@@ -53,21 +53,11 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		// Extract the database URI from environment variables
 		const dbUri = process.env[this.getEnvName()];
 		if (!dbUri) throw new Error(`Missing ${this.getEnvName()} environment variable`);
-		// Attempt to connect to the database
-		try {
-			// Connect to the MongoDB database
-			this.mongoConnector = new MongoConnector(dbUri, options);
-			await this.mongoConnector.connect();
-			// Setup collection
-			this.mongoCollection = this.mongoConnector.client.db('production').collection<T>(this.getCollectionName());
-			// Create indexes, if any are defined
-			// TODO: This should be refactored as indexes should be created in the database setup script
-			if (process.env.NODE_ENV === 'test' && this.getCollectionIndexes().length > 0) {
-				await this.mongoCollection.createIndexes(this.getCollectionIndexes());
-			}
-		} catch (error) {
-			throw new Error(`Error connecting to ${this.getCollectionName()}`, { cause: error });
-		}
+		// Attempt to connect to the MongoDB database
+		this.mongoConnector = new MongoConnector(dbUri, options);
+		await this.mongoConnector.connect();
+		// Initialize the MongoDB collection instance
+		this.mongoCollection = this.mongoConnector.client.db('production').collection<T>(this.getCollectionName());
 	}
 
 	/**
@@ -101,8 +91,8 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 
 	/**
 	 * Deletes multiple documents matching the filter criteria.
-	 * @param filter - The filter criteria to match documents to delete
-	 * @returns A promise that resolves to the result of the delete operation
+	 * @param filter The filter criteria to match documents to delete.
+	 * @returns A promise that resolves to the result of the delete many operation.
 	 */
 	public async deleteMany(filter: Filter<T>): Promise<DeleteResult> {
 		const result = await this.mongoCollection.deleteMany(filter);
@@ -112,8 +102,8 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 
 	/**
 	 * Deletes a single document matching the filter criteria.
-	 * @param filter - The filter criteria to match the document to delete
-	 * @returns A promise that resolves to the result of the delete operation
+	 * @param filter The filter criteria to match the document to delete.
+	 * @returns A promise that resolves to the result of the delete operation.
 	 */
 	public async deleteOne(filter: Filter<T>, options?: DeleteOptions & { forceIfLocked?: boolean }): Promise<DeleteResult> {
 		// If forceIfLocked is not set then check if the document is locked.
@@ -137,8 +127,8 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 
 	/**
 	 * Finds all distinct values for a key in the collection.
-	 * @param key - The key to find distinct values for
-	 * @returns A promise that resolves to an array of distinct values for the given key
+	 * @param key The key to find distinct values for.
+	 * @returns A promise that resolves to an array of distinct values for the given key.
 	 */
 	public async distinct<Key extends keyof WithId<T>>(key: Key, filter: Filter<T>): Promise<Array<Flatten<WithId<T>[Key]>>>;
 	public async distinct<K extends keyof T>(key: K): Promise<T[K][]> {
@@ -154,7 +144,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	public async exists<K extends keyof T>(key: K, value: T[K]): Promise<boolean> {
 		const filter: Filter<T> = { [key]: value } as Filter<T>;
 		const doc = await this.mongoCollection.findOne(filter, { projection: { [key]: 1 } });
-		return doc !== null;
+		return !!doc;
 	}
 
 	/**
@@ -164,7 +154,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	 */
 	public async existsById(id: T['_id']): Promise<boolean> {
 		const foundDoc = await this.mongoCollection.findOne({ _id: id }, { projection: { _id: 1 } });
-		return foundDoc !== null;
+		return !!foundDoc;
 	}
 
 	/**
@@ -334,15 +324,15 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	public async isLockedById(id: T['_id']): Promise<boolean> {
 		// Fetch the document by its ID from the database
 		const foundDoc = await this.findById(id);
-		// If the document has a is_locked field and it resolves to a truthy value,
-		// then the document is considered locked.
+		// If the document has an is_locked field and it resolves
+		// to a truthy value, then the document is considered locked.
 		if (foundDoc?.is_locked) return true;
 		// Otherwise, the document is not locked.
 		return false;
 	}
 
 	/**
-	 * Toogle the lock status of a document by its ID.
+	 * Toggle the lock status of a document by its ID.
 	 * @param id The ID of the document to toggle lock status.
 	 * @param forceValue Optional boolean to explicitly set the lock status.
 	 * @returns A promise that resolves to the result of the update operation.
@@ -405,13 +395,13 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to update documents', result);
 		}
 
-		const updated_docs = await this.findMany(filter, options);
+		const updatedDocuments = await this.findMany(filter, options);
 
-		if (!updated_docs) {
+		if (!updatedDocuments) {
 			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to find updated documents', result);
 		}
 
-		return updated_docs as TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>;
+		return updatedDocuments as TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>;
 	}
 
 	/**
@@ -446,12 +436,10 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to update documents', result);
 		}
 
-		const updated_doc = await this.findOne(filter, options);
-		if (!updated_doc) {
-			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to find updated document', result);
-		}
+		const updatedDocument = await this.findOne(filter, options);
+		if (!updatedDocument) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to find updated document', result);
 
-		return updated_doc as TReturnDocument extends true ? WithId<T> : UpdateResult<T>;
+		return updatedDocument as TReturnDocument extends true ? WithId<T> : UpdateResult<T>;
 	}
 
 	// Abstract method for subclasses to provide the MongoDB collection indexes

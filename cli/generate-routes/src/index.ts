@@ -6,9 +6,7 @@ const readFile = promisify(fs.readFile);
 
 const PROJECT_ROOT = path.resolve(path.dirname('../../'), '..');
 const MODULES_DIR = path.join(PROJECT_ROOT, 'modules');
-const OUTPUT_FILE
-  = process.argv[2]
-    ?? path.join(PROJECT_ROOT, 'packages/consts/src/app-routes.ts');
+const OUTPUT_FILE = process.argv[2] ?? path.join(PROJECT_ROOT, 'packages/consts/src/app-routes.ts');
 
 /* -------------------------------------------------------
    Utilities
@@ -39,8 +37,7 @@ async function* walk(dir: string): AsyncGenerator<string> {
 		const full = path.join(dir, entry.name);
 		if (entry.isDirectory()) {
 			yield* walk(full);
-		}
-		else {
+		} else {
 			yield full;
 		}
 	}
@@ -89,8 +86,7 @@ async function scanFrontendRoutes(moduleName: string, frontendDir: string) {
 			const pathRoute = base ? `/${base}/\${id}` : '/${id}';
 
 			routes.push(`${name}:${pathRoute}`);
-		}
-		else {
+		} else {
 			let base = dirPath
 				.replace(/\([^)]+\)\//g, '')
 				.replace(/\/\([^)]+\)/g, '')
@@ -124,15 +120,13 @@ async function scanApiRoutes(moduleName: string, endpointsDir: string) {
 		const content = await readFile(file, 'utf8');
 
 		// Extract namespace
-		let namespace
-      = content.match(/(namespace|NAMESPACE)\s*=\s*['"]([^'"]+)['"]/)?.[2]
-        ?? path.basename(path.dirname(file));
+		let namespace = content.match(/(namespace|NAMESPACE)\s*=\s*['"]([^'"]+)['"]/)?.[2] ?? path.basename(path.dirname(file));
 
 		namespace = namespace.replace(/^\/+/, '');
 
 		// Find instance.get/post/put/delete("...") calls
 		const callRegex
-      = /instance\.(get|post|put|delete)\s*\(\s*(['"])(.*?)\2/g;
+			= /instance\.(get|post|put|delete)\s*\(\s*(['"])(.*?)\2/g;
 
 		let m;
 		const foundPaths: string[] = [];
@@ -173,14 +167,12 @@ async function scanApiRoutes(moduleName: string, endpointsDir: string) {
 
 			if (!clean || clean === '/') {
 				name = toSnakeCase(last + (variables.length ? '_DETAIL' : '_LIST'));
-			}
-			else if (isDetail) {
+			} else if (isDetail) {
 				const suffix = clean.replace(/^:[^/]+\/?/, '').replace(/\//g, '_');
 				name = toSnakeCase(
 					suffix ? `${last}_DETAIL_${suffix}` : `${last}_DETAIL`,
 				);
-			}
-			else {
+			} else {
 				name = toSnakeCase(`${last}_${clean.replace(/\//g, '_')}`);
 			}
 
@@ -266,28 +258,25 @@ export const PAGE_ROUTES = Object.freeze({`);
 						out.push(
 							`    ${name}: (id: string) => \`\${getAppConfig('${moduleName}', 'frontend_url')}/${clean}\`,`,
 						);
-					}
-					else {
+					} else {
 						const clean = routePath.replace(/^\//, '');
 						if (!clean) {
 							out.push(
 								`    ${name}: \`\${getAppConfig('${moduleName}', 'frontend_url')}\`,`,
 							);
-						}
-						else {
+						} else {
 							out.push(
 								`    ${name}: \`\${getAppConfig('${moduleName}', 'frontend_url')}/${clean}\`,`,
 							);
 						}
 					}
-				}
-				else {
+				} else {
 					const trimmed = routePath.replace(
 						new RegExp(`^/${moduleName}/api/?`),
 						'',
 					);
 
-					if (vars && vars.trim().length) {
+					if (vars?.trim().length) {
 						const params = vars
 							.trim()
 							.split(/\s+/)
@@ -296,8 +285,7 @@ export const PAGE_ROUTES = Object.freeze({`);
 						out.push(
 							`    ${name}: (${params}) => \`\${getAppConfig('${moduleName}', 'api_url')}/${trimmed}\`,`,
 						);
-					}
-					else {
+					} else {
 						out.push(
 							`    ${name}: \`\${getAppConfig('${moduleName}', 'api_url')}/${trimmed}\`,`,
 						);
@@ -322,4 +310,4 @@ export const PAGE_ROUTES = Object.freeze({`);
 	console.log(`Generated routes at ${OUTPUT_FILE}`);
 }
 
-main();
+await main();

@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateVehicleDto, CreateVehicleSchema, type UpdateVehicleDto, UpdateVehicleSchema, type Vehicle } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -43,4 +43,4 @@ class VehiclesClass extends MongoCollectionClass<Vehicle, CreateVehicleDto, Upda
 
 /* * */
 
-export const vehicles = AsyncSingletonProxy(VehiclesClass);
+export const vehicles = asyncSingletonProxy(VehiclesClass);

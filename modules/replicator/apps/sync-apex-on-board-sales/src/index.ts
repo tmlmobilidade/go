@@ -7,6 +7,7 @@ import { pcgidbTicketing, rides, simplifiedApexOnBoardSales } from '@tmlmobilida
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
+import { runOnInterval } from '@tmlmobilidade/utils';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@tmlmobilidade/writers';
 import { Interval } from 'luxon';
 
@@ -107,8 +108,7 @@ async function syncApexOnBoardSales() {
 					Logger.info(`Flush [apex_on_board_sales]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 
 					//
-				}
-				catch (error) {
+				} catch (error) {
 					Logger.error('Error in flushCallback', error);
 				}
 			};
@@ -171,8 +171,7 @@ async function syncApexOnBoardSales() {
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
 		//
-	}
-	catch (err) {
+	} catch (err) {
 		console.log('An error occurred. Halting execution.', err);
 		console.log('Retrying in 10 seconds...');
 		setTimeout(() => {
@@ -185,10 +184,4 @@ async function syncApexOnBoardSales() {
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		await syncApexOnBoardSales();
-		setTimeout(runOnInterval, 1_800_000);// 30 minutes
-	};
-	runOnInterval();
-})();
+runOnInterval(syncApexOnBoardSales, 1_800_000); // 30 minutes
