@@ -11,6 +11,7 @@ export const SimplifiedUserSchema = UserSchema
 		first_name: true,
 		last_name: true,
 		organization_id: true,
+		seen_last_at: true,
 	})
 	.extend({
 		organization_name: z.string(),

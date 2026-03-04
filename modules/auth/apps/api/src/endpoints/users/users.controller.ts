@@ -130,6 +130,7 @@ export class UsersController {
 			last_name: userData.last_name,
 			organization_id: userData.organization_id,
 			organization_name: organizationData.long_name,
+			seen_last_at: userData.seen_last_at,
 		};
 		// Send the simplified user data in the response
 		reply.send({ data: simplifiedUserData, error: null, statusCode: HTTP_STATUS.OK });
