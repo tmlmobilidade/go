@@ -12,7 +12,7 @@ export interface LabelProps {
 	overflow?: boolean
 	singleLine?: boolean
 	size?: 'lg' | 'md' | 'sm'
-	variant?: 'danger' | 'default' | 'muted' | 'success' | 'warning'
+	variant?: 'danger' | 'default' | 'muted' | 'primary' | 'success' | 'warning'
 }
 
 /* * */

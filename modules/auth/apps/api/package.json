@@ -19,7 +19,9 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
+		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",

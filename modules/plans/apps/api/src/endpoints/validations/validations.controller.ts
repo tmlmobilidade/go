@@ -55,6 +55,7 @@ export class GtfsValidationsController {
 			is_locked: false,
 			notification_sent: false,
 			processing_status: 'waiting',
+			validation_attempts: 0,
 			validity_status: 'unknown',
 		};
 
@@ -417,6 +418,7 @@ export class GtfsValidationsController {
 
 		const updatedGtfsValidation = await gtfsValidations.updateById(gtfsValidationData._id, {
 			processing_status: request.body.processing_status ?? 'error',
+			validation_attempts: 0,
 			validity_status: 'unknown',
 		});
 

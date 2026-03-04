@@ -73,4 +73,4 @@ async function main() {
 	Logger.terminate(`Validation completed in ${globalTimer.get()}`);
 };
 
-runOnInterval(main, RUN_INTERVAL_MS);
+await runOnInterval(main, RUN_INTERVAL_MS);
