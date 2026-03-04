@@ -1,3 +1,5 @@
+'use client';
+
 /* * */
 
 import { HoverCard } from '@mantine/core';
