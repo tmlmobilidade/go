@@ -23,7 +23,7 @@
 		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/go-alerts-pckg-transform": "*",
-		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/interfaces": "*"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/api-types": "20251128.1928.11",
