@@ -28,6 +28,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
+		"@carrismetropolitana/api-types": "20251128.1928.11",
 		"@types/node": "25.3.3",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
