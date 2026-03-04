@@ -2,23 +2,23 @@
 
 /* * */
 
-import { ActionsOf, type Agency, Permission } from '@tmlmobilidade/types';
+import { ActionsOf, Permission, type User } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { type SelectDataItem } from '../components/inputs/Select';
-import { useMeContext } from '../contexts/Me.context';
+import { type SelectDataItem } from '../../components/inputs/Select';
+import { useMeContext } from '../../contexts/Me.context';
 
 /* * */
 
-interface UseDataAgenciesProps<S extends Permission['scope']> {
+interface UseDataUserProps<S extends Permission['scope']> {
 	actions?: ActionsOf<S>[]
 	scope?: S
 }
 
 /* * */
 
-interface UseDataAgenciesReturnType {
+interface UseDataUserReturnType {
 
 	/**
 	 * The error encountered while fetching data, if any.
@@ -28,7 +28,7 @@ interface UseDataAgenciesReturnType {
 	/**
 	 * The raw agencies data.
 	 */
-	filtered: Agency[]
+	filtered: User[]
 
 	/**
 	 * The IDs of the filtered agencies.
@@ -48,7 +48,7 @@ interface UseDataAgenciesReturnType {
 	/**
 	 * The raw agencies data.
 	 */
-	raw: Agency[]
+	raw: User[]
 
 }
 
@@ -58,7 +58,7 @@ interface UseDataAgenciesReturnType {
  * @param props The properties to determine read-only status.
  * @returns An object containing the isCanSave flag.
  */
-export function useDataAgencies<S extends Permission['scope']>(apiUrl: string, props?: UseDataAgenciesProps<S>): UseDataAgenciesReturnType {
+export function useDataUser<S extends Permission['scope']>(apiUrl: string, props?: UseDataUserProps<S>): UseDataUserReturnType {
 	//
 
 	//
@@ -69,7 +69,7 @@ export function useDataAgencies<S extends Permission['scope']>(apiUrl: string, p
 	//
 	// B. Fetch data
 
-	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<Agency[], Error>(apiUrl && apiUrl);
+	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<User[], Error>(apiUrl && apiUrl);
 
 	//
 	// C. Transform data
