@@ -24,7 +24,6 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
 		"@types/node": "25.3.3",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
