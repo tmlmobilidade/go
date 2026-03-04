@@ -1,46 +1,42 @@
 /* * */
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
-
 import styles from './styles.module.css';
 
-import { useDataAgencies } from '../../../hooks/use-data/use-data-agencies';
-import { Label } from '../../display/Label';
+import { useDataSimplifiedUser } from '../../../hooks/use-data/use-data-simplified-user';
 import { Tag } from '../Tag';
 
 /* * */
 
 interface UserTagProps {
-	agencyId: string
-	showId?: boolean
-	showName?: boolean
-	showShortName?: boolean
+	format: 'inline' | 'tag'
+	userId: string
 }
 
 /* * */
 
-export function UserTag({ agencyId, showId = true, showName = false, showShortName = false }: UserTagProps) {
+export function UserTag({ format = 'tag', userId }: UserTagProps) {
 	//
 
 	//
 	// A. Fetch data
 
-	const { raw: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
-
-	//
-	// B. Transform data
-
-	const agencyName = agenciesData.find(agency => agency._id === agencyId)?.name;
-	const agencyShortName = agenciesData.find(agency => agency._id === agencyId)?.short_name;
+	const { data: simplifiedUserData } = useDataSimplifiedUser({ _id: userId });
 
 	//
 	// C. Render components
 
+	if (format === 'inline') {
+		return (
+			<span className={styles.wrapper}>
+				{simplifiedUserData?.first_name || 'N/A'}
+			</span>
+		);
+	}
+
 	return (
-		<div className={styles.wrapper}>
-			{showId && <Tag label={agencyId} variant="secondary" />}
-			{showName && agencyName && <Label>{agencyName}</Label>}
-			{showShortName && agencyShortName && <Label>{agencyShortName}</Label>}
-		</div>
+		<Tag
+			label={simplifiedUserData?.first_name || 'N/A'}
+			variant="secondary"
+		/>
 	);
 }
