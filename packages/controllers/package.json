@@ -34,13 +34,11 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@fastify/websocket": "11.2.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/normalizers": "*",
-		"@tmlmobilidade/utils": "*",
-		"zod": "3.25.76"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
