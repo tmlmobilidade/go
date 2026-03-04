@@ -105,8 +105,7 @@ async function runStorageSync(config: SyncConfig): Promise<void> {
 	try {
 		await syncStorageService(config);
 		s.stop('Storage sync completed successfully');
-	}
-	catch (error) {
+	} catch (error) {
 		s.stop('Storage sync failed');
 		logger.error(error instanceof Error ? error.message : String(error));
 		process.exit(1);
@@ -125,8 +124,7 @@ async function runDatabaseSync(config: SyncConfig, options: ReturnType<typeof pa
 			useReplicaSet: options.replicaSet,
 		});
 		s.stop(backupOnly ? 'Database backup completed successfully' : 'Database sync completed successfully');
-	}
-	catch (error) {
+	} catch (error) {
 		s.stop(backupOnly ? 'Database backup failed' : 'Database sync failed');
 		logger.error(error instanceof Error ? error.message : String(error));
 		process.exit(1);
@@ -149,8 +147,7 @@ async function runArtifactUpload(config: SyncConfig): Promise<void> {
 			storageConfig: config.storage,
 		});
 		s.stop('Artifacts uploaded successfully');
-	}
-	catch (error) {
+	} catch (error) {
 		s.stop('Artifact upload failed');
 		logger.error(error instanceof Error ? error.message : String(error));
 		process.exit(1);
@@ -176,7 +173,7 @@ async function main() {
 		}
 
 		// Load configuration
-		const config = loadConfig();
+		const config = loadConfig(options.envFile);
 		logger.verbose('Configuration loaded successfully');
 
 		const { backupOnly, syncDb, syncStorage } = await determineSyncTargets(options);
@@ -197,12 +194,10 @@ async function main() {
 			const message = backupOnly ? 'Database backup completed successfully!' : 'Environment sync completed successfully!';
 			outro(message);
 		}
-	}
-	catch (error) {
+	} catch (error) {
 		if (error instanceof Error) {
 			logger.error(error.message);
-		}
-		else {
+		} else {
 			logger.error(String(error));
 		}
 		process.exit(1);
