@@ -1,4 +1,5 @@
 export interface CliOptions {
+	backupOnly?: boolean
 	dbOnly?: boolean
 	help?: boolean
 	noCleanup?: boolean
@@ -13,6 +14,9 @@ export function parseArgs(args: string[]): CliOptions {
 
 	for (const arg of args) {
 		switch (arg) {
+			case '--backup-only':
+				options.backupOnly = true;
+				break;
 			case '--db-only':
 				options.dbOnly = true;
 				break;
@@ -66,6 +70,7 @@ MongoDB Backup Strategy:
     - Restores to staging database with --drop flag
 
 OPTIONS
+    --backup-only         Backup MongoDB only (dump without restoring to staging)
     --db-only             Sync only MongoDB database, skip file sync
     --storage-only        Sync only OCI files, skip database sync
     --upload-artifacts    Upload backup artifacts to OCI bucket (instead of GitHub artifacts)
@@ -90,6 +95,12 @@ EXAMPLES
 
     # Upload backup artifacts to OCI bucket (for CI/CD)
     env-sync --upload-artifacts
+
+    # Backup database only (no restore to staging, no storage sync)
+    env-sync --backup-only
+
+    # Backup and upload artifacts to OCI bucket
+    env-sync --backup-only --upload-artifacts
 
     # Or combine with sync operations
     env-sync --db-only --upload-artifacts
