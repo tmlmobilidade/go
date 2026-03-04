@@ -1,6 +1,6 @@
 declare const window: typeof globalThis;
-export const isBrowser = typeof window?.document !== 'undefined';
-
+// eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+export const isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
 /**
  * Fetches a ZIP file from a URL and returns it as an ArrayBuffer.
  * @param url The URL of the ZIP file to fetch

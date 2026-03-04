@@ -27,14 +27,25 @@ export const renderTitle = () => {
 };
 
 interface SyncTargets {
+	backupOnly: boolean
 	syncDb: boolean
 	syncStorage: boolean
 }
 
 async function determineSyncTargets(options: ReturnType<typeof parseArgs>): Promise<SyncTargets> {
+	// --backup-only: only dump the database, skip storage and restore
+	if (options.backupOnly) {
+		return {
+			backupOnly: true,
+			syncDb: true,
+			syncStorage: false,
+		};
+	}
+
 	// If only --upload-artifacts is provided, skip sync operations
 	if (options.uploadArtifacts && !options.dbOnly && !options.storageOnly) {
 		return {
+			backupOnly: false,
 			syncDb: false,
 			syncStorage: false,
 		};
@@ -43,6 +54,7 @@ async function determineSyncTargets(options: ReturnType<typeof parseArgs>): Prom
 	// If flags are provided, use them (non-interactive mode)
 	if (options.dbOnly || options.storageOnly) {
 		return {
+			backupOnly: false,
 			syncDb: Boolean(options.dbOnly),
 			syncStorage: Boolean(options.storageOnly),
 		};
@@ -50,8 +62,13 @@ async function determineSyncTargets(options: ReturnType<typeof parseArgs>): Prom
 
 	// Interactive mode: ask user what to sync
 	const syncOptions = await multiselect({
-		message: 'What would you like to sync?',
+		message: 'What would you like to do?',
 		options: [
+			{
+				hint: 'Dump MongoDB database only (no restore to staging)',
+				label: 'Backup only',
+				value: 'backup',
+			},
 			{
 				hint: 'Sync MongoDB database from production to staging',
 				label: 'Database',
@@ -72,10 +89,12 @@ async function determineSyncTargets(options: ReturnType<typeof parseArgs>): Prom
 	}
 
 	const selected = syncOptions as string[];
+	const isBackupOnly = selected.includes('backup');
 
 	return {
-		syncDb: selected.includes('database'),
-		syncStorage: selected.includes('storage'),
+		backupOnly: isBackupOnly,
+		syncDb: isBackupOnly || selected.includes('database'),
+		syncStorage: !isBackupOnly && selected.includes('storage'),
 	};
 }
 
@@ -95,18 +114,20 @@ async function runStorageSync(config: SyncConfig): Promise<void> {
 }
 
 async function runDatabaseSync(config: SyncConfig, options: ReturnType<typeof parseArgs>): Promise<void> {
+	const backupOnly = options.backupOnly || false;
 	const s = spinner();
-	s.start('Syncing database...');
+	s.start(backupOnly ? 'Backing up database...' : 'Syncing database...');
 
 	try {
 		await syncMongoDB(config, {
+			backupOnly,
 			skipCleanup: options.noCleanup || false,
 			useReplicaSet: options.replicaSet,
 		});
-		s.stop('Database sync completed successfully');
+		s.stop(backupOnly ? 'Database backup completed successfully' : 'Database sync completed successfully');
 	}
 	catch (error) {
-		s.stop('Database sync failed');
+		s.stop(backupOnly ? 'Database backup failed' : 'Database sync failed');
 		logger.error(error instanceof Error ? error.message : String(error));
 		process.exit(1);
 	}
@@ -158,24 +179,23 @@ async function main() {
 		const config = loadConfig();
 		logger.verbose('Configuration loaded successfully');
 
-		const { syncDb, syncStorage } = await determineSyncTargets(options);
+		const { backupOnly, syncDb, syncStorage } = await determineSyncTargets(options);
 
 		if (syncStorage) {
 			await runStorageSync(config);
 		}
 
 		if (syncDb) {
-			await runDatabaseSync(config, options);
+			await runDatabaseSync(config, { ...options, backupOnly });
 		}
 
-		// Upload artifacts to OCI if requested (typically in CI/CD)
 		if (options.uploadArtifacts) {
 			await runArtifactUpload(config);
 		}
 
-		// Only show success message if something was actually done
 		if (syncDb || syncStorage || options.uploadArtifacts) {
-			outro('Environment sync completed successfully!');
+			const message = backupOnly ? 'Database backup completed successfully!' : 'Environment sync completed successfully!';
+			outro(message);
 		}
 	}
 	catch (error) {

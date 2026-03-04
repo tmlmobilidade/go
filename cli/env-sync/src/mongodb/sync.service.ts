@@ -10,26 +10,28 @@ import { dumpMongoDB } from './dump.service.js';
 import { restoreMongoDB } from './restore.service.js';
 
 export interface MongoSyncOptions {
+	backupOnly?: boolean
 	skipCleanup?: boolean
 	useReplicaSet?: boolean
 }
 
 export async function syncMongoDB(config: SyncConfig, options: MongoSyncOptions = {}): Promise<void> {
-	const { skipCleanup = false, useReplicaSet } = options;
+	const { backupOnly = false, skipCleanup = false, useReplicaSet } = options;
 
-	logger.info('Starting MongoDB sync...');
+	logger.info(backupOnly ? 'Starting MongoDB backup...' : 'Starting MongoDB sync...');
 
-	// Check if mongodump and mongorestore are available
 	logger.verbose('Checking for MongoDB tools...');
 	if (!(await checkCommandAvailable('mongodump'))) {
 		throw new Error('mongodump not found. Please install MongoDB tools.');
 	}
 	logger.verbose('mongodump found');
 
-	if (!(await checkCommandAvailable('mongorestore'))) {
-		throw new Error('mongorestore not found. Please install MongoDB tools.');
+	if (!backupOnly) {
+		if (!(await checkCommandAvailable('mongorestore'))) {
+			throw new Error('mongorestore not found. Please install MongoDB tools.');
+		}
+		logger.verbose('mongorestore found');
 	}
-	logger.verbose('mongorestore found');
 
 	// Determine backup type
 	const effectiveReplicaSet = useReplicaSet ?? false;
@@ -55,38 +57,35 @@ export async function syncMongoDB(config: SyncConfig, options: MongoSyncOptions 
 			outputPath: dumpPath,
 			useReplicaSet: effectiveReplicaSet,
 		});
-	}
-	catch (error) {
+	} catch (error) {
 		logger.error(`Failed to dump production database: ${error instanceof Error ? error.message : String(error)}`);
 		throw error;
 	}
 
-	// Restore to staging database
-	logger.info('Restoring to staging database...');
-	try {
-		await restoreMongoDB({
-			config: config.databaseStaging,
-			dumpPath,
-		});
-	}
-	catch (error) {
-		logger.error(`Failed to restore to staging database: ${error instanceof Error ? error.message : String(error)}`);
-		throw error;
+	if (!backupOnly) {
+		logger.info('Restoring to staging database...');
+		try {
+			await restoreMongoDB({
+				config: config.databaseStaging,
+				dumpPath,
+			});
+		} catch (error) {
+			logger.error(`Failed to restore to staging database: ${error instanceof Error ? error.message : String(error)}`);
+			throw error;
+		}
 	}
 
-	// Save backup metadata
 	logger.verbose('Saving backup metadata...');
 	saveBackupMetadata(config.backupDir, backupType, backupTimestamp);
 	logger.verbose(`Backup metadata saved: ${backupType}_last_backup=${backupTimestamp}`);
 
-	logger.success('MongoDB sync completed successfully');
+	logger.success(backupOnly ? 'MongoDB backup completed successfully' : 'MongoDB sync completed successfully');
 
 	// Cleanup old backups
 	if (!skipCleanup) {
 		logger.verbose(`Starting cleanup (retention: ${config.backupRetentionDays} days)...`);
 		cleanupOldBackups(config.backupDir, config.backupRetentionDays);
-	}
-	else {
+	} else {
 		logger.verbose('Cleanup skipped (--no-cleanup flag)');
 	}
 }
@@ -115,8 +114,7 @@ function cleanupOldBackups(backupDir: string, retentionDays: number): void {
 				if (entry.isDirectory()) {
 					rmSync(entryPath, { force: true, recursive: true });
 					logger.info(`Deleted old backup directory: ${entry.name}`);
-				}
-				else {
+				} else {
 					unlinkSync(entryPath);
 					logger.info(`Deleted old backup file: ${entry.name}`);
 				}
@@ -124,8 +122,7 @@ function cleanupOldBackups(backupDir: string, retentionDays: number): void {
 		}
 
 		logger.success('Cleanup completed');
-	}
-	catch (error) {
+	} catch (error) {
 		logger.warn(`Cleanup failed: ${error instanceof Error ? error.message : String(error)}`);
 	}
 }
