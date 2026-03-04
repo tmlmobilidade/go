@@ -1,20 +1,25 @@
+'use client';
+
 /* * */
 
-import styles from './styles.module.css';
+import { useMemo } from 'react';
 
 import { useDataSimplifiedUser } from '../../../hooks/use-data/use-data-simplified-user';
+import { Inline } from '../../display/Inline';
 import { Tag } from '../Tag';
+import { UserTagCard } from '../UserTagCard';
 
 /* * */
 
 interface UserTagProps {
-	format: 'inline' | 'tag'
+	showFullName?: boolean
 	userId: string
+	variant?: 'inline' | 'tag'
 }
 
 /* * */
 
-export function UserTag({ format = 'tag', userId }: UserTagProps) {
+export function UserTag({ showFullName = true, userId, variant = 'tag' }: UserTagProps) {
 	//
 
 	//
@@ -23,20 +28,40 @@ export function UserTag({ format = 'tag', userId }: UserTagProps) {
 	const { data: simplifiedUserData } = useDataSimplifiedUser({ _id: userId });
 
 	//
+	// B. Transform data
+
+	const displayName = useMemo(() => {
+		if (!simplifiedUserData?.first_name) return '• • •';
+		if (!showFullName) return simplifiedUserData.first_name;
+		const fullName = `${simplifiedUserData.first_name} ${simplifiedUserData.last_name}`;
+		return fullName.trim();
+	}, [simplifiedUserData, showFullName]);
+
+	//
 	// C. Render components
 
-	if (format === 'inline') {
+	if (variant === 'inline') {
 		return (
-			<span className={styles.wrapper}>
-				{simplifiedUserData?.first_name || 'N/A'}
-			</span>
+			<UserTagCard
+				fullName={displayName}
+				organizationName={simplifiedUserData?.organization_name || '-'}
+				seenLastAt={simplifiedUserData?.seen_last_at}
+			>
+				<Inline dotted>{displayName}</Inline>
+			</UserTagCard>
 		);
 	}
 
 	return (
-		<Tag
-			label={simplifiedUserData?.first_name || 'N/A'}
-			variant="secondary"
-		/>
+		<UserTagCard
+			fullName={displayName}
+			organizationName={simplifiedUserData?.organization_name || '-'}
+			seenLastAt={simplifiedUserData?.seen_last_at}
+		>
+			<Tag
+				label={displayName}
+				variant="secondary"
+			/>
+		</UserTagCard>
 	);
 }

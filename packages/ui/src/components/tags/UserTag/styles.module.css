@@ -1,10 +1,7 @@
 /* * */
-/* WRAPPER */
+/* INLINE */
 
-.wrapper {
-	display: flex;
-	flex-direction: row;
-	gap: 8px;
-	align-items: center;
-	justify-content: flex-start;
+.inline {
+	border-bottom-style: dotted;
+	border-bottom-width: 1px;
 }

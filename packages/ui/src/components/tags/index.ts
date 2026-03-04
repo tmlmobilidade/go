@@ -5,4 +5,6 @@ export * from './ProcessingStatusTag';
 export * from './PublishStatusTag';
 export * from './Tag';
 export * from './TagGroup';
+export * from './UserTag';
+export * from './UserTagCard';
 export * from './ValidityStatusTag';
