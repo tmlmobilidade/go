@@ -102,6 +102,10 @@ resource "oci_core_instance" "clickhouse_replica" {
 	agent_config {
 		is_monitoring_disabled = false
 		is_management_disabled = false
+		plugins_config {
+			desired_state = "ENABLED"
+			name          = "Bastion"
+		}
 	}
 
 	metadata = {

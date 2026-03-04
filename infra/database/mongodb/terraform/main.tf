@@ -95,13 +95,17 @@ resource "oci_core_instance" "mongodb" {
 	create_vnic_details {
 		subnet_id        = var.subnet_ocid
 		private_ip       = var.private_ips[count.index]
-		assign_public_ip = false
+		assign_public_ip = true
 		display_name     = "${local.name_prefix}-${count.index + 1}-vnic"
 	}
 
 	agent_config {
 		is_monitoring_disabled = false
 		is_management_disabled = false
+		plugins_config {
+			desired_state = "ENABLED"
+			name          = "Bastion"
+		}
 	}
 
 	metadata = {

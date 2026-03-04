@@ -31,6 +31,7 @@ source "oracle-oci" "clickhouse_replica_base" {
   user_ocid    = var.user_ocid
   fingerprint  = var.fingerprint
   key_file     = var.private_key_path
+  pass_phrase  = var.pass_phrase
   region       = var.region
 
   # Placement
@@ -87,7 +88,17 @@ build {
     execute_command = "sudo bash '{{.Path}}'"
   }
 
-  # 3. Clean up apt cache to reduce image size
+  # 3. Pre-pull the ClickHouse Docker image
+  #    Instances in the private subnet have no internet access at runtime.
+  #    Pulling here (during Packer build on the public subnet) bakes the
+  #    image into the base OS image so cloud-init just runs it.
+  provisioner "shell" {
+    inline = [
+      "sudo docker pull clickhouse/clickhouse-server:latest",
+    ]
+  }
+
+  # 4. Clean up apt cache to reduce image size
   provisioner "shell" {
     inline = [
       "sudo apt-get clean",

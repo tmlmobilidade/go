@@ -22,13 +22,15 @@ runcmd:
   # -----------------------------------------------------------------
   - |
     DATA_DISK=""
-    for i in {1..15}; do
-      echo "Scanning for 1TB data disk (attempt $i)..."
+    ATTEMPT=0
+    while [ $ATTEMPT -lt 15 ]; do
+      ATTEMPT=$((ATTEMPT + 1))
+      echo "Scanning for 1TB data disk (attempt $ATTEMPT)..."
       ROOT_DISK=$(findmnt -n -o SOURCE / | sed 's/[0-9]*$//')
       for disk in $(lsblk -d -n -o NAME); do
         DEV="/dev/$disk"
-        if [[ "$DEV" == "$ROOT_DISK"* ]]; then continue; fi
-        SIZE=$(lsblk -b -n -o SIZE $DEV 2>/dev/null || echo 0)
+        case "$DEV" in "$ROOT_DISK"*) continue ;; esac
+        SIZE=$(lsblk -b -n -o SIZE "$DEV" 2>/dev/null || echo 0)
         if [ "$SIZE" -ge 966367641600 ] && [ "$SIZE" -le 1181116006400 ]; then
           DATA_DISK="$DEV"
           echo "Found 1TB data disk at $DATA_DISK"
@@ -255,6 +257,6 @@ runcmd:
   # -----------------------------------------------------------------
   # 13. Start ClickHouse
   # -----------------------------------------------------------------
-  - cd /opt/clickhouse && docker compose up -d
+  - cd /opt/clickhouse && docker compose up -d --pull never
 
 final_message: "ClickHouse replica node ${node_index + 1} of ${length(all_private_ips)} configuration complete."

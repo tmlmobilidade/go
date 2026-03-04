@@ -21,17 +21,19 @@ runcmd:
   # -----------------------------------------------------------------
   - |
     DATA_DISK=""
-    for i in {1..15}; do
-      echo "Scanning for data disk (attempt $i)..."
+    ATTEMPT=0
+    while [ $ATTEMPT -lt 15 ]; do
+      ATTEMPT=$((ATTEMPT + 1))
+      echo "Scanning for 1TB data disk (attempt $ATTEMPT)..."
       ROOT_DISK=$(findmnt -n -o SOURCE / | sed 's/[0-9]*$//')
       for disk in $(lsblk -d -n -o NAME); do
         DEV="/dev/$disk"
-        if [[ "$DEV" == "$ROOT_DISK"* ]]; then continue; fi
-        SIZE=$(lsblk -b -n -o SIZE $DEV 2>/dev/null || echo 0)
+        case "$DEV" in "$ROOT_DISK"*) continue ;; esac
+        SIZE=$(lsblk -b -n -o SIZE "$DEV" 2>/dev/null || echo 0)
         # Accept any non-root disk in the 1TB range (900GB–1100GB binary)
         if [ "$SIZE" -ge 966367641600 ] && [ "$SIZE" -le 1181116006400 ]; then
           DATA_DISK="$DEV"
-          echo "Found data disk at $DATA_DISK (size: $SIZE bytes)"
+          echo "Found 1TB data disk at $DATA_DISK (size: $SIZE bytes)"
           break 2
         fi
       done
@@ -129,7 +131,7 @@ KEYFILEEOF
   # -----------------------------------------------------------------
   # 7. Start MongoDB
   # -----------------------------------------------------------------
-  - cd /opt/mongodb && docker compose up -d
+  - cd /opt/mongodb && docker compose up -d --pull never
 
   # -----------------------------------------------------------------
   # 8. Initialize Replica Set (PRIMARY NODE ONLY — node_index == 0)
@@ -139,7 +141,9 @@ KEYFILEEOF
   - |
     if [ "${node_index}" -eq 0 ]; then
       echo "Node 0: waiting for mongod to be ready..."
-      for i in {1..30}; do
+      RETRY=0
+      while [ $RETRY -lt 30 ]; do
+        RETRY=$((RETRY + 1))
         if docker exec mongodb mongosh \
             --host localhost \
             --port ${mongodb_port} \
@@ -151,7 +155,7 @@ KEYFILEEOF
           echo "mongod is ready."
           break
         fi
-        echo "Attempt $i: mongod not ready yet, waiting 10s..."
+        echo "Attempt $RETRY: mongod not ready yet, waiting 10s..."
         sleep 10
       done
 

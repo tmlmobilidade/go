@@ -23,6 +23,13 @@ variable "private_key_path" {
   description = "File path to the OCI API private key."
 }
 
+variable "pass_phrase" {
+  type        = string
+  description = "Passphrase for the OCI API private key."
+  sensitive   = true
+  default     = ""
+}
+
 variable "region" {
   type        = string
   description = "OCI region to build the image in."

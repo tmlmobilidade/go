@@ -6,6 +6,18 @@
 # -----------------------------------------------------------------------
 set -euo pipefail
 
+# -----------------------------------------------------------------------
+# STEP 0: Wait for cloud-init to finish.
+#
+# On Ubuntu, first boot triggers cloud-init which runs apt-get update
+# and installs packages. We MUST wait for it to complete before touching
+# apt ourselves. This is the canonical solution — no killing processes,
+# no deleting lock files, no race conditions.
+# -----------------------------------------------------------------------
+echo "[tuning] Waiting for cloud-init to finish (this may take 1–2 minutes)..."
+cloud-init status --wait
+echo "[tuning] cloud-init finished."
+
 echo "[tuning] Installing required packages..."
 apt-get update -qq
 DEBIAN_FRONTEND=noninteractive apt-get install -y \
