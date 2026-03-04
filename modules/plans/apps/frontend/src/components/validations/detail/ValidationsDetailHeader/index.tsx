@@ -8,7 +8,7 @@ import { openRequestApprovalModalModal } from '@/components/validations/detail/R
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog, type ProcessingStatus } from '@tmlmobilidade/types';
-import { Button, CloseButton, HasPermission, ProcessingStatusTag, Spacer, Tag, Toolbar, useMeContext, ValidityStatusTag } from '@tmlmobilidade/ui';
+import { AgencyTag, Button, CloseButton, HasPermission, ProcessingStatusTag, Spacer, Tag, Toolbar, useMeContext, ValidityStatusTag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
@@ -70,8 +70,8 @@ export function ValidationsDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-
 			<Tag label={validationsDetailContext.data.validation?._id} variant="secondary" />
+			<AgencyTag agencyId={validationsDetailContext.data.validation?.gtfs_agency.agency_id} />
 
 			<ProcessingStatusTag
 				disabled={!hasPermissionToChangeProcessingStatus}
@@ -80,8 +80,6 @@ export function ValidationsDetailHeader() {
 			/>
 
 			<ValidityStatusTag value={validationsDetailContext.data.validation?.validity_status} />
-
-			<Tag label={validationsDetailContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
 
 			<Spacer />
 
