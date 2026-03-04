@@ -62,7 +62,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   docs:
-    image: ghcr.io/tmlmobilidade/go-docs:staging
+    image: ghcr.io/tmlmobilidade/go-docs:production
     deploy:
       restart_policy:
         condition: any
