@@ -25,7 +25,6 @@
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/utils": "*",
 		"gray-matter": "4.0.3",
 		"remark-html": "16.0.1",
 		"remark-parse": "11.0.0"

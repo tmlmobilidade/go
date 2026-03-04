@@ -21,10 +21,7 @@
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/files": "*",
-		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/rabbitmq": "*",
-		"@tmlmobilidade/strings": "*",
-		"@tmlmobilidade/utils": "*"
+		"@tmlmobilidade/interfaces": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

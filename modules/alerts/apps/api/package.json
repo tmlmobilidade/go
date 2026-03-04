@@ -21,12 +21,9 @@
 		"@fastify/websocket": "11.2.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/controllers": "*",
-		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/go-alerts-pckg-transform": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/normalizers": "*",
-		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/api-types": "20251128.1928.11",

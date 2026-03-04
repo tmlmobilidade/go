@@ -15,11 +15,7 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@carrismetropolitana/tts": "20250418.51.6",
-		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/utils": "*"
+		"@tmlmobilidade/dates": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
