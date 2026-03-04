@@ -1,6 +1,7 @@
 export interface CliOptions {
 	backupOnly?: boolean
 	dbOnly?: boolean
+	envFile?: string
 	help?: boolean
 	noCleanup?: boolean
 	replicaSet?: boolean
@@ -12,13 +13,40 @@ export interface CliOptions {
 export function parseArgs(args: string[]): CliOptions {
 	const options: CliOptions = {};
 
-	for (const arg of args) {
+	for (let i = 0; i < args.length; i++) {
+		const arg = args[i];
+
+		// Options that take a value
+		switch (arg) {
+			case '--env-file': {
+				const value = args[i + 1];
+				if (!value || value.startsWith('-')) {
+					throw new Error(`Missing value for --env-file option\nRun 'env-sync --help' for more information.`);
+				}
+				options.envFile = value;
+				i += 1;
+				continue;
+			}
+			default:
+				if (arg.startsWith('--env-file=')) {
+					const [, value] = arg.split('=', 2);
+					if (!value) {
+						throw new Error(`Missing value for --env-file option\nRun 'env-sync --help' for more information.`);
+					}
+					options.envFile = value;
+					continue;
+				}
+		}
+
 		switch (arg) {
 			case '--backup-only':
 				options.backupOnly = true;
 				break;
 			case '--db-only':
 				options.dbOnly = true;
+				break;
+			case '--env-file':
+				// Handled above (value option)
 				break;
 			case '--help':
 			case '-h':
@@ -74,6 +102,7 @@ OPTIONS
     --db-only             Sync only MongoDB database, skip file sync
     --storage-only        Sync only OCI files, skip database sync
     --upload-artifacts    Upload backup artifacts to OCI bucket (instead of GitHub artifacts)
+    --env-file PATH       Use a specific .env file instead of the default in the script directory
     --replica-set         Use replica set sync mode (overrides .env setting)
     --no-replica-set      Disable replica set sync mode (overrides .env setting)
     --no-cleanup          Skip cleanup of old backups (older than 7 days)
