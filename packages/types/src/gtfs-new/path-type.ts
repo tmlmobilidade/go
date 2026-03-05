@@ -8,9 +8,12 @@ import { z } from 'zod';
  * or a variant path. It is used in the GTFS-TML (Transporte Metropolitano de Lisboa) standard
  * to differentiate between different types of paths for a route.
  */
-export const GtfsPathTypeSchema = z.union([
-	z.literal(1), // Base path
-	z.literal(2), // Partial path
-	z.literal(3), // Variant path
-]);
+export const GtfsPathTypeValues = [
+	'1', // Base path. The main path for a route.
+	'2', // Partial path. A segment of the base path.
+	'3', // Variant path. An alternative path for a route.
+] as const;
+
+export const GtfsPathTypeSchema = z.enum(GtfsPathTypeValues);
+
 export type GtfsPathType = z.infer<typeof GtfsPathTypeSchema>;

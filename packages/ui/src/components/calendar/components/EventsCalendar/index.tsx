@@ -2,9 +2,10 @@
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CalendarKey, Dates } from '@tmlmobilidade/dates';
-import { type CalendarEvent, CalendarEventType, EVENT_TYPE_DEFS } from '@tmlmobilidade/types';
+import { type CalendarEvent, CalendarEventType } from '@tmlmobilidade/types';
 import { useRouter } from 'next/navigation';
 
+import { EVENT_TYPE_DEFS } from '../../../../icons/event-types';
 import { ErrorDisplay } from '../../../display/ErrorDisplay';
 import { LoadingOverlay } from '../../../loaders/LoadingOverlay';
 import { useCalendarUIContext } from '../../contexts/CalendarUI.context';

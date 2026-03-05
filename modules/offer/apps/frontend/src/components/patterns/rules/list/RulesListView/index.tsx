@@ -17,10 +17,10 @@ export function RulesListView() {
 	const mergedRules = patternDetailContext.data.mergedRules || [];
 
 	const includeRules = mergedRules.filter(rule =>
-		rule.kind === 'manual' && rule.operatingMode === 'include',
+		rule.kind === 'manual' && rule.operating_mode === 'include',
 	);
 	const excludeRules = mergedRules.filter(rule =>
-		(rule.kind === 'manual' && rule.operatingMode === 'exclude')
+		(rule.kind === 'manual' && rule.operating_mode === 'exclude')
 		|| rule.kind === 'event_restriction',
 	);
 	const overwriteRules = mergedRules.filter(rule =>

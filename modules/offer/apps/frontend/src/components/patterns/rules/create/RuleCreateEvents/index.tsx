@@ -4,7 +4,7 @@
 
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { useEventsContext } from '@/contexts/Events.context';
-import { Dates, Formats } from '@tmlmobilidade/dates';
+import { Dates, FORMATS } from '@tmlmobilidade/dates';
 import { Section, Select, Switch } from '@tmlmobilidade/ui';
 
 /* * */
@@ -19,7 +19,7 @@ export function RuleCreateEvents() {
 	const { data: eventsData } = useEventsContext();
 
 	const EVENT_OPTIONS = eventsData.raw.map(event => ({
-		label: `${event.title} (${event.dates.sort().map(date => Dates.fromOperationalDate(date, 'Europe/Lisbon').toLocaleString(Formats.DATE_FULL, 'pt-PT')).join(', ')})`,
+		label: `${event.title} (${event.dates.sort().map(date => Dates.fromOperationalDate(date, 'Europe/Lisbon').toLocaleString(FORMATS.DATE_FULL, 'pt-PT')).join(', ')})`,
 		value: event._id,
 	}));
 
@@ -37,10 +37,10 @@ export function RuleCreateEvents() {
 						const enabled = event.currentTarget.checked;
 						createRuleContext.actions.setEventExceptionEnabled(enabled);
 						if (enabled) {
-							createRuleContext.data.form.setFieldValue('yearPeriodIds', []);
+							createRuleContext.data.form.setFieldValue('year_period_ids', []);
 							createRuleContext.data.form.setFieldValue('weekdays', []);
 						} else {
-							createRuleContext.data.form.setFieldValue('eventId', undefined);
+							createRuleContext.data.form.setFieldValue('event_id', undefined);
 						}
 					}}
 				/>
@@ -48,11 +48,11 @@ export function RuleCreateEvents() {
 
 			{createRuleContext.flags.isEventExceptionEnabled && (
 				<Select
-					key={createRuleContext.data.form.key('eventId')}
+					key={createRuleContext.data.form.key('event_id')}
 					data={EVENT_OPTIONS}
-					value={createRuleContext.data.form.values.eventId || []}
+					value={createRuleContext.data.form.values.event_id || []}
 					w="100%"
-					{...createRuleContext.data.form.getInputProps('eventId')}
+					{...createRuleContext.data.form.getInputProps('event_id')}
 				/>
 			)}
 		</Section>

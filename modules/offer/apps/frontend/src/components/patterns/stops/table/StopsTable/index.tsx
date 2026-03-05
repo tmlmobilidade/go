@@ -21,11 +21,13 @@ export function StopsTable() {
 
 	return (
 		<div className={styles.container}>
-			<StopsTableHeader />
-			<div className={styles.body}>
-				{patternDetailContext.data.pattern.path.map((pathItem, index) => (
-					<StopsTableRow key={pathItem.stop_id} pathItem={pathItem} rowIndex={index} />
-				))}
+			<div className={styles.tableScroll}>
+				<StopsTableHeader />
+				<div className={styles.body}>
+					{patternDetailContext.data.pattern.path.map((pathItem, index) => (
+						<StopsTableRow key={index} pathItem={pathItem} rowIndex={index} />
+					))}
+				</div>
 			</div>
 		</div>
 	);

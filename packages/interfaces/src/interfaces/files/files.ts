@@ -6,7 +6,7 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Files } from '@tmlmobilidade/files';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type CreateFileDto, CreateFileSchema, type File, type UpdateFileDto, UpdateFileSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy, convertObject } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy, convertObject } from '@tmlmobilidade/utils';
 import { DeleteOptions, DeleteResult, FindOptions, IndexDescription, InsertOneOptions, WithId } from 'mongodb';
 import { Readable } from 'node:stream';
 import { z } from 'zod';
@@ -223,4 +223,4 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 
 /* * */
 
-export const files = AsyncSingletonProxy(FilesClass);
+export const files = asyncSingletonProxy(FilesClass);

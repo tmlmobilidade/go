@@ -5,6 +5,7 @@ import { type OperationalDate } from '@tmlmobilidade/types';
 /* * */
 
 export const exportTypeLabels = {
+	'executive-summary': '6.0. Sumário Executivo',
 	'hashed-shapes-geojson': '4.0. HashedShapes para GeoJSON',
 	'rides-raw': '2.0. Rides em bruto (SLAs)',
 	'sams-raw': '5.0. SAMs em bruto (Sequencialidade)',

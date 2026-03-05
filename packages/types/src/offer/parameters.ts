@@ -25,7 +25,7 @@ export const StopsParameterOverrideSchema = StopsParameterCommonSchema.extend({
 	day_periods: z.array(DayPeriodSchema).optional(),
 	kind: z.literal('override'),
 	weekdays: z.array(z.nativeEnum(WEEKDAYS)),
-	yearPeriodIds: z.array(z.string()),
+	year_period_ids: z.array(z.string()),
 
 });
 
@@ -38,6 +38,7 @@ export const StopsParameterSchema = z.discriminatedUnion('kind', [
 
 export type StopsParameter = z.infer<typeof StopsParameterSchema>;
 export type StopsParameterOverride = z.infer<typeof StopsParameterOverrideSchema>;
+export type StopsParameterDefault = z.infer<typeof StopsParameterDefaultSchema>;
 
 /* * */
 

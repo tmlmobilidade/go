@@ -27,10 +27,10 @@ export function computeRuleTimePoints(
 ): Set<string> {
 	// Manual rules: just return their timepoints
 	if (rule.kind === 'manual') {
-		if (!rule.eventId) return new Set(rule.timePoints ?? []);
-		const event = options?.events?.find(e => e._id === rule.eventId);
+		if (!rule.event_id) return new Set(rule.timepoints ?? []);
+		const event = options?.events?.find(e => e._id === rule.event_id);
 		if (!event?.dates?.length) return new Set();
-		return new Set(rule.timePoints ?? []);
+		return new Set(rule.timepoints ?? []);
 	}
 
 	// Event rules: need to analyze their impact
@@ -47,24 +47,24 @@ export function computeRuleTimePoints(
 	// For replacement rules: return timepoints from the TARGET weekdays
 	if (rule.kind === 'event_replacement') {
 		const targetWeekdays = new Set<IsoWeekday>(rule.weekdays || []);
-		const targetPeriods = new Set(rule.yearPeriodIds || []);
+		const targetPeriods = new Set(rule.year_period_ids || []);
 
 		// Find manual include rules that match the target pattern
-		const timePoints = new Set<string>();
+		const timepoints = new Set<string>();
 		for (const r of allRules) {
-			if (r.kind !== 'manual' || r.operatingMode !== 'include') continue;
+			if (r.kind !== 'manual' || r.operating_mode !== 'include') continue;
 
 			// Check if this manual rule applies to the target weekdays/periods
 			const hasMatchingWeekday = r.weekdays?.some(w => targetWeekdays.has(w));
-			const hasMatchingPeriod = r.yearPeriodIds?.some(p => targetPeriods.has(p));
+			const hasMatchingPeriod = r.year_period_ids?.some(p => targetPeriods.has(p));
 
 			if (hasMatchingWeekday && hasMatchingPeriod) {
-				for (const tp of r.timePoints || []) {
-					timePoints.add(tp);
+				for (const tp of r.timepoints || []) {
+					timepoints.add(tp);
 				}
 			}
 		}
-		return timePoints;
+		return timepoints;
 	}
 
 	// For restriction rules: compute what was removed on affected weekdays
@@ -91,8 +91,8 @@ export function computeRuleTimePoints(
 		// Only look at days that match the affected weekdays
 		if (!affectedWeekdays.has(weekday)) continue;
 
-		const before = new Set(withoutRule.get(key)?.timePoints ?? []);
-		const after = new Set(withAll.get(key)?.timePoints ?? []);
+		const before = new Set(withoutRule.get(key)?.timepoints ?? []);
+		const after = new Set(withAll.get(key)?.timepoints ?? []);
 
 		// Timepoints that were removed
 		for (const tp of before) {
@@ -113,13 +113,13 @@ function computeScheduleMap(
 	dateRange: OperationalDate[],
 	periods: YearPeriod[],
 	events?: Event[],
-): Map<string, { timePoints: string[] }> {
-	const result = new Map<string, { timePoints: string[] }>();
+): Map<string, { timepoints: string[] }> {
+	const result = new Map<string, { timepoints: string[] }>();
 
 	for (const date of dateRange) {
 		const key = calendarKey(Dates.fromOperationalDate(date, 'Europe/Lisbon'));
 		const application = computeActiveRules(date, rules, periods, { events });
-		result.set(key, { timePoints: application.timePoints });
+		result.set(key, { timepoints: application.timepoints });
 	}
 
 	return result;

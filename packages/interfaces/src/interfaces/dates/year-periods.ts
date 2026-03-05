@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { CreateYearPeriodDto, CreateYearPeriodSchema, UpdateYearPeriodDto, UpdateYearPeriodSchema, type YearPeriod } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -51,4 +51,4 @@ class YearPeriodsClass extends MongoCollectionClass<YearPeriod, CreateYearPeriod
 
 /* * */
 
-export const yearPeriods = AsyncSingletonProxy(YearPeriodsClass);
+export const yearPeriods = asyncSingletonProxy(YearPeriodsClass);

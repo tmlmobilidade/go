@@ -3,8 +3,8 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { AUTH_SESSION_COOKIE_NAME, authProvider, users } from '@tmlmobilidade/interfaces';
-import { type CreateUserDto, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
+import { AUTH_SESSION_COOKIE_NAME, authProvider, organizations, users } from '@tmlmobilidade/interfaces';
+import { type CreateUserDto, type SimplifiedUser, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -106,9 +106,34 @@ export class UsersController {
 		//
 		// Add seen_last_at for this user asynchronously
 
-		users.updateById(userData._id, { seen_last_at: Dates.now('Europe/Lisbon').unix_timestamp });
+		await users.updateById(userData._id, { seen_last_at: Dates.now('Europe/Lisbon').unix_timestamp });
 
 		//
+	}
+
+	/**
+	 * Returns a simplified User by ID.
+	 * @param request The request object
+	 * @param reply The reply object
+	 */
+	static async getSimplifiedById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedUser>) {
+		// Find the user by ID
+		const userData = await users.findById(request.params.id);
+		if (!userData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+		// Find the organization data associated with the user
+		const organizationData = await organizations.findById(userData.organization_id);
+		if (!organizationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
+		// Simplify the user data by selecting only specific fields
+		const simplifiedUserData: SimplifiedUser = {
+			_id: userData._id,
+			first_name: userData.first_name,
+			last_name: userData.last_name,
+			organization_id: userData.organization_id,
+			organization_name: organizationData.long_name,
+			seen_last_at: userData.seen_last_at,
+		};
+		// Send the simplified user data in the response
+		reply.send({ data: simplifiedUserData, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**

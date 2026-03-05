@@ -6,7 +6,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { sendWelcomeEmail } from '@tmlmobilidade/emails';
 import { generateRandomString, generateRandomToken } from '@tmlmobilidade/strings';
 import { type CreateUserDto, type LoginDto, type Organization, type Permission, type Session, type User } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 
 /* * */
@@ -168,9 +168,9 @@ class AuthProvider {
 		});
 		// Send a welcome email to the user with the verification token
 		await sendWelcomeEmail({
-			props: {
-				first_name: createUserDto.first_name,
-				setup_password_link: `${PAGE_ROUTES.auth.CHANGE_PASSWORD_LIST}?token=${verificationToken}&email=${encodeURIComponent(createUserDto.email)}`,
+			data: {
+				firstName: createUserDto.first_name,
+				resetPasswordUrl: `${PAGE_ROUTES.auth.CHANGE_PASSWORD_LIST}?token=${verificationToken}&email=${encodeURIComponent(createUserDto.email)}`,
 			},
 			to: createUserDto.email,
 		});
@@ -179,4 +179,4 @@ class AuthProvider {
 
 /* * */
 
-export const authProvider = AsyncSingletonProxy(AuthProvider);
+export const authProvider = asyncSingletonProxy(AuthProvider);

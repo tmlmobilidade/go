@@ -53,7 +53,7 @@ function buildEventDerivedReplacement(args: {
 
 	if (!rule.dates?.length) return null;
 	if (!eventRuleAffectsLine(rule, pattern.line_id)) return null;
-	if (!rule.weekdays?.length && !rule.yearPeriodIds?.length) return null;
+	if (!rule.weekdays?.length && !rule.year_period_ids?.length) return null;
 
 	return {
 		_id: `event:${event._id}:rule:${rule._id || 'unnamed'}`,
@@ -68,7 +68,7 @@ function buildEventDerivedReplacement(args: {
 		lines_to_include: rule.lines_to_include,
 		name: rule.name,
 		weekdays: rule.weekdays,
-		yearPeriodIds: rule.yearPeriodIds,
+		year_period_ids: rule.year_period_ids,
 	};
 }
 

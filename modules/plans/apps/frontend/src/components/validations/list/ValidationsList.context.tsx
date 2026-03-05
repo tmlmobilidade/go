@@ -5,9 +5,10 @@
 import { type ValidationNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { type GtfsValidation, PermissionCatalog, ProcessingStatusSchema } from '@tmlmobilidade/types';
+import { type GtfsValidation, PermissionCatalog, ProcessingStatusSchema, ValidityStatusSchema } from '@tmlmobilidade/types';
 import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 /* * */
@@ -21,6 +22,7 @@ interface ValidationsListContextState {
 		agency: UseFilterStateListReturnType
 		processing_status: UseFilterStateListReturnType
 		search: UseFilterStateStringReturnType
+		validity_status: UseFilterStateListReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -46,7 +48,12 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 	//
 
 	//
-	// A. Fetch data
+	// A. Setup variables
+
+	const { t } = useTranslation();
+
+	//
+	// B. Fetch data
 
 	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<GtfsValidation[], Error>(API_ROUTES.plans.VALIDATIONS_LIST, { refreshInterval: 3_000 });
 
@@ -56,11 +63,12 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 	});
 
 	//
-	// B. Setup filters
+	// C. Setup filters
 
 	const filterSearch = useFilterStateString('search');
 	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
-	const filterProcessingStatus = useFilterStateList('processing_status', ProcessingStatusSchema.options, ProcessingStatusSchema.options.map(item => ({ label: item, value: item })));
+	const filterProcessingStatus = useFilterStateList('processing_status', ProcessingStatusSchema.options, ProcessingStatusSchema.options.map(item => ({ label: t(`shared:status.processing_status.${item}`), value: item })));
+	const filterValidityStatus = useFilterStateList('validity_status', ValidityStatusSchema.options, ValidityStatusSchema.options.map(item => ({ label: t(`shared:status.validity_status.${item}`), value: item })));
 
 	//
 	// C. Transform data
@@ -87,17 +95,25 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 		if (!searchResultsData) return [];
 		// 1. Convert filter arrays to sets for O(1) membership checks
 		const agencySet = new Set(filterAgency.value);
-		const validityStatusSet = new Set(filterProcessingStatus.value);
+		const processingStatusSet = new Set(filterProcessingStatus.value);
+		const validityStatusSet = new Set(filterValidityStatus.value);
 		const filteredResultsData = searchResultsData.filter((item: ValidationNormalized) => {
 			// Filter by agency
 			if (!agencySet.has(item.gtfs_agency.agency_id)) return false;
+			// Filter by processing_status
+			if (!processingStatusSet.has(item.processing_status)) return false;
 			// Filter by validity_status
-			if (!validityStatusSet.has(item.feeder_status)) return false;
+			if (!validityStatusSet.has(item.validity_status)) return false;
 			// Return true if all filters pass
 			return true;
 		});
 		return filteredResultsData;
-	}, [searchResultsData, filterAgency]);
+	}, [
+		searchResultsData,
+		filterAgency,
+		filterProcessingStatus.value,
+		filterValidityStatus.value,
+	]);
 
 	//
 	// D. Define context value
@@ -111,6 +127,7 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 			agency: filterAgency,
 			processing_status: filterProcessingStatus,
 			search: filterSearch,
+			validity_status: filterValidityStatus,
 		},
 		flags: {
 			error: allValidationsError,
@@ -121,6 +138,7 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 		allValidationsData,
 		filterAgency,
 		filterProcessingStatus,
+		filterValidityStatus,
 		filterSearch,
 		allValidationsError,
 		allValidationsLoading,

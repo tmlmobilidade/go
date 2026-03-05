@@ -5,9 +5,9 @@
 import { useHolidaysDetailContext } from '@/components/holidays/detail/HolidaysDetail.context';
 import { Pill } from '@mantine/core';
 import { Calendar } from '@mantine/dates';
-import { Dates, Formats } from '@tmlmobilidade/dates';
+import { Dates, FORMATS } from '@tmlmobilidade/dates';
 import { type OperationalDate } from '@tmlmobilidade/types';
-import { Grid, Section, Spacer, Text } from '@tmlmobilidade/ui';
+import { Section, Text } from '@tmlmobilidade/ui';
 import dayjs from 'dayjs';
 
 /* * */
@@ -35,8 +35,7 @@ export function DatesSelector() {
 				'dates',
 				dates.filter(d => d !== operationalDate),
 			);
-		}
-		else {
+		} else {
 			// Add date to holiday
 			holidaysDetailContext.data.form.setFieldValue(
 				'dates',
@@ -76,7 +75,7 @@ export function DatesSelector() {
 								onRemove={() => handleRemove(date)}
 								withRemoveButton
 							>
-								{Dates.fromOperationalDate(date, 'Europe/Lisbon').toLocaleString(Formats.DATE_FULL_WITH_YEAR, 'pt-PT')}
+								{Dates.fromOperationalDate(date, 'Europe/Lisbon').toLocaleString(FORMATS.DATE_FULL_WITH_YEAR, 'pt-PT')}
 							</Pill>
 						))}
 					</Section>

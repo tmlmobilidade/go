@@ -7,6 +7,7 @@ import { pcgidbLegacy } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { ClickHouseVehicleEvent } from '@tmlmobilidade/types';
+import { runOnInterval } from '@tmlmobilidade/utils';
 import { ClickHouseWriter } from '@tmlmobilidade/writers';
 import { Interval } from 'luxon';
 
@@ -169,8 +170,7 @@ async function syncVehicleEventsClickHouse() {
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
 		//
-	}
-	catch (err) {
+	} catch (err) {
 		console.log('An error occurred. Halting execution.', err);
 		console.log('Retrying in 10 seconds...');
 		setTimeout(() => {
@@ -183,10 +183,4 @@ async function syncVehicleEventsClickHouse() {
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		await syncVehicleEventsClickHouse();
-		setTimeout(runOnInterval, 1_800_000); // 30 minutes
-	};
-	runOnInterval();
-})();
+runOnInterval(syncVehicleEventsClickHouse, 1_800_000); // 30 minutes
