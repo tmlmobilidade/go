@@ -32,8 +32,7 @@ export function PlanDetailFootnote() {
 
 	return (
 		<Section>
-			<Label size="sm">Validação criada por <UserTag userId={planDetailContext.data.plan.created_by} variant="inline" /> a {formattedDateString}</Label>
-			<Label size="sm">As validações são eliminadas automaticamente ao fim de 30 dias após a sua data de criação. Poderão ser eliminadas mais cedo se necessário.</Label>
+			<Label size="sm">Plano criado por <UserTag userId={planDetailContext.data.plan.created_by} variant="inline" /> a {formattedDateString}</Label>
 		</Section>
 	);
 
