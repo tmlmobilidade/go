@@ -2,7 +2,7 @@
 
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { Dates } from '@tmlmobilidade/dates';
-import { Label, Section } from '@tmlmobilidade/ui';
+import { Label, Section, UserTag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -32,7 +32,8 @@ export function PlanDetailFootnote() {
 
 	return (
 		<Section>
-			<Label size="sm">Plano criado por {planDetailContext.data.user.email} às {formattedDateString}</Label>
+			<Label size="sm">Validação criada por <UserTag userId={planDetailContext.data.plan.created_by} variant="inline" /> a {formattedDateString}</Label>
+			<Label size="sm">As validações são eliminadas automaticamente ao fim de 30 dias após a sua data de criação. Poderão ser eliminadas mais cedo se necessário.</Label>
 		</Section>
 	);
 
