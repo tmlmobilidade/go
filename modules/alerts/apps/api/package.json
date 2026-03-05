@@ -19,7 +19,9 @@
 	"dependencies": {
 		"@fastify/multipart": "9.4.0",
 		"@fastify/websocket": "11.2.0",
+		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/go-alerts-pckg-transform": "*",

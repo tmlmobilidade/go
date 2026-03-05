@@ -5,6 +5,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { transformAlert } from '@tmlmobilidade/go-alerts-pckg-transform';
 import { alerts } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 
 /* * */
@@ -43,8 +44,10 @@ export class GtfsController {
 			},
 		);
 
+		Logger.info(`Retrieved ${findResult.length} active alerts from the database for Carris Metropolitana GTFS feed.`);
+
 		//
-		// Transfor alerts into GTFS-RT feed entities
+		// Transform alerts into GTFS-RT feed entities
 
 		const transformResult: GtfsRtFeedEntity[] = [];
 

@@ -27,103 +27,107 @@ import { type Alert, type GtfsRtEntitySelector, type GtfsRtFeedEntity } from '@t
  * @returns A GTFS-RT Feed Entity object or undefined if the transformation fails.
  */
 export async function transformAlert(alertData: Alert): Promise<GtfsRtFeedEntity | undefined> {
-	//
+	try {
+		//
 
-	//
-	// Validate required input properties
+		//
+		// Validate required input properties
 
-	if (!alertData.reference_type || !alertData.references?.length) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert reference_type or references are missing.`);
-		return;
+		if (!alertData.reference_type || !alertData.references?.length) {
+			Logger.error(`[Alert ID: ${alertData._id}] Alert reference_type or references are missing.`);
+			return;
+		}
+
+		if (!alertData.active_period_start_date) {
+			Logger.error(`[Alert ID: ${alertData._id}] Alert active_period_start_date is missing.`);
+			return;
+		}
+
+		//
+		// Prepare the active_period value. GTFS-RT expects active_period to be
+		// an array of objects with start and end properties in seconds since the epoch.
+
+		const activePeriodValues = [{
+			end: alertData.active_period_end_date ? alertData.active_period_end_date / 1_000 : undefined,
+			start: alertData.active_period_start_date / 1_000,
+		}];
+
+		//
+		// Prepare the cause and effect values as these need to be mapped
+		// from the extended values back to the standard GTFS-RT values.
+
+		const mappedCauseValue = transformCause(alertData);
+		const mappedEffectValue = transformEffect(alertData);
+
+		//
+		// Prepare the Alert header and description texts,
+		// URL and image values as GTFS-RT objects.
+
+		const urlValue = transformUrl(alertData);
+		const headerTextValue = transformHeaderText(alertData);
+		const descriptionTextValue = transformDescriptionText(alertData);
+		const imageValue = await transformImage(alertData);
+
+		if (!headerTextValue) {
+			Logger.error(`[Alert ID: ${alertData._id}] Alert header_text is missing.`);
+			return;
+		}
+
+		if (!descriptionTextValue) {
+			Logger.error(`[Alert ID: ${alertData._id}] Alert description_text is missing.`);
+			return;
+		}
+
+		//
+		// Prepare the informed_entity value
+		// based on the reference_type
+
+		let informedEntityValues: GtfsRtEntitySelector[] | undefined;
+
+		if (alertData.reference_type === 'agency') {
+			informedEntityValues = await transformReferenceTypeAgency(alertData);
+		}
+
+		if (alertData.reference_type === 'lines') {
+			informedEntityValues = await transformReferenceTypeLines(alertData);
+		}
+
+		if (alertData.reference_type === 'rides') {
+			informedEntityValues = await transformReferenceTypeRides(alertData);
+		}
+
+		if (alertData.reference_type === 'stops') {
+			informedEntityValues = await transformReferenceTypeStops(alertData);
+		}
+
+		if (alertData.reference_type === 'stops') {
+			informedEntityValues = await transformReferenceTypeStops(alertData);
+		}
+
+		if (!informedEntityValues) {
+			Logger.error(`[Alert ID: ${alertData._id}] Alert informed_entity values are missing.`);
+			return;
+		}
+
+		//
+		// Validate required input properties
+
+		return {
+			alert: {
+				active_period: activePeriodValues,
+				cause: mappedCauseValue,
+				description_text: descriptionTextValue,
+				effect: mappedEffectValue,
+				header_text: headerTextValue,
+				image: imageValue,
+				informed_entity: informedEntityValues,
+				url: urlValue,
+			},
+			id: alertData._id,
+		};
+
+		//
+	} catch (error) {
+		Logger.error(`[Alert ID: ${alertData._id}] Error transforming alert: ${(error as Error).message}`);
 	}
-
-	if (!alertData.active_period_start_date) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert active_period_start_date is missing.`);
-		return;
-	}
-
-	//
-	// Prepare the active_period value. GTFS-RT expects active_period to be
-	// an array of objects with start and end properties in seconds since the epoch.
-
-	const activePeriodValues = [{
-		end: alertData.active_period_end_date ? alertData.active_period_end_date / 1_000 : undefined,
-		start: alertData.active_period_start_date / 1_000,
-	}];
-
-	//
-	// Prepare the cause and effect values as these need to be mapped
-	// from the extended values back to the standard GTFS-RT values.
-
-	const mappedCauseValue = transformCause(alertData);
-	const mappedEffectValue = transformEffect(alertData);
-
-	//
-	// Prepare the Alert header and description texts,
-	// URL and image values as GTFS-RT objects.
-
-	const urlValue = transformUrl(alertData);
-	const headerTextValue = transformHeaderText(alertData);
-	const descriptionTextValue = transformDescriptionText(alertData);
-	const imageValue = await transformImage(alertData);
-
-	if (!headerTextValue) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert header_text is missing.`);
-		return;
-	}
-
-	if (!descriptionTextValue) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert description_text is missing.`);
-		return;
-	}
-
-	//
-	// Prepare the informed_entity value
-	// based on the reference_type
-
-	let informedEntityValues: GtfsRtEntitySelector[] | undefined;
-
-	if (alertData.reference_type === 'agency') {
-		informedEntityValues = await transformReferenceTypeAgency(alertData);
-	}
-
-	if (alertData.reference_type === 'lines') {
-		informedEntityValues = await transformReferenceTypeLines(alertData);
-	}
-
-	if (alertData.reference_type === 'rides') {
-		informedEntityValues = await transformReferenceTypeRides(alertData);
-	}
-
-	if (alertData.reference_type === 'stops') {
-		informedEntityValues = await transformReferenceTypeStops(alertData);
-	}
-
-	if (alertData.reference_type === 'stops') {
-		informedEntityValues = await transformReferenceTypeStops(alertData);
-	}
-
-	if (!informedEntityValues) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert informed_entity values are missing.`);
-		return;
-	}
-
-	//
-	// Validate required input properties
-
-	return {
-		alert: {
-			active_period: activePeriodValues,
-			cause: mappedCauseValue,
-			description_text: descriptionTextValue,
-			effect: mappedEffectValue,
-			header_text: headerTextValue,
-			image: imageValue,
-			informed_entity: informedEntityValues,
-			url: urlValue,
-		},
-		id: alertData._id,
-	};
-
-	//
 }
