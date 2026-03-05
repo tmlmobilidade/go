@@ -1,8 +1,9 @@
 /* * */
 
+import { Dates } from '@tmlmobilidade/dates';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
+import { type Alert, type GtfsRtEntitySelector, UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -22,11 +23,6 @@ export async function transformReferenceTypeLines(alertData: Alert): Promise<Gtf
 		return;
 	}
 
-	if (!alertData.active_period_end_date) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert active_period_end_date is missing.`);
-		return;
-	}
-
 	//
 	// For each line, add its corresponding
 	// agency_id and route_id to the result
@@ -35,6 +31,15 @@ export async function transformReferenceTypeLines(alertData: Alert): Promise<Gtf
 
 	for (const reference of alertData.references) {
 		//
+
+		//
+		// Set a default end date to one hour after the current time
+		// to limit the search for rides if active_period_end_date is not provided.
+
+		let activePeriodEndDate: UnixTimestamp;
+
+		if (!alertData.active_period_end_date) activePeriodEndDate = Dates.now('Europe/Lisbon').plus({ hours: 1 }).unix_timestamp;
+		else activePeriodEndDate = alertData.active_period_end_date;
 
 		//
 		// Find distinct values of route_id
@@ -48,7 +53,7 @@ export async function transformReferenceTypeLines(alertData: Alert): Promise<Gtf
 					line_id: Number(reference.parent_id),
 					start_time_scheduled: {
 						$gte: alertData.active_period_start_date,
-						$lte: alertData.active_period_end_date,
+						$lte: activePeriodEndDate,
 					},
 				},
 			},
