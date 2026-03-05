@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/prefer-optional-chain */
 'use client';
 
 /* * */
 
+import { useLinesContext } from '@/contexts/Lines.context';
 import { type Line, type Stop } from '@carrismetropolitana/api-types/network';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
@@ -56,7 +58,12 @@ interface LineData {
 	stops: StopData[]
 }
 
-/* * */
+interface LineByHashedTrip {
+	hashed_trip_ids: string[]
+	line_id: number
+	line_long_name: string
+	line_short_name: string
+}
 
 export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
@@ -66,6 +73,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const linesContext = useLinesContext();
 
 	const meContext = useMeContext();
 	const copyAlertId = searchParams.get('copy');
@@ -209,6 +217,18 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	}, [form.getValues().active_period_end_date]);
 
 	useEffect(() => {
+		linesContext.actions.setRidesFilters({
+			agency_id: form.getValues().agency_id || undefined,
+			date_end: form.getValues().active_period_end_date || Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp,
+			date_start: form.getValues().active_period_start_date || Dates.now('Europe/Lisbon').minus({ minutes: 5 }).set({ millisecond: 0, second: 0 }).unix_timestamp,
+		});
+	}, [
+		form.getValues().active_period_end_date,
+		form.getValues().active_period_start_date,
+		form.getValues().agency_id,
+	]);
+
+	useEffect(() => {
 		// Skip if reference type is already set
 		if (form.getValues().reference_type) return;
 		// Get permission definition for reference types
@@ -256,9 +276,43 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 			// Fetch data for lines
 			if (form.getValues().reference_type === 'lines') {
-				const response = await fetch('https://api.carrismetropolitana.pt/v2/lines');
-				const linesData = await response.json() as Line[];
-				const result: Line[] = linesData.filter(line => parentIds.includes(line.id));
+				const hashedTripIds = [...new Set(parentIds.filter(Boolean))];
+				if (!hashedTripIds.length) {
+					setSelectedReferencesData([]);
+					return;
+				}
+
+				const queryParams = new URLSearchParams();
+				hashedTripIds.forEach((hashedTripId) => {
+					queryParams.append('hashed_trip_ids', hashedTripId);
+				});
+
+				const linesResponse = await fetchData<LineByHashedTrip[]>(`${API_ROUTES.alerts.HASHED_TRIPS_LIST}?${queryParams.toString()}`);
+				if (!linesResponse.data?.length) {
+					setSelectedReferencesData([]);
+					return;
+				}
+
+				const lineHashedTripIdsMap = new Map<string, string[]>();
+				const linesMap = new Map<string, LineData>();
+				for (const lineData of linesResponse.data) {
+					const lineId = String(lineData.line_id);
+					if (!linesMap.has(lineId)) {
+						linesMap.set(lineId, {
+							id: lineId,
+							long_name: lineData.line_long_name,
+							short_name: lineData.line_short_name,
+							stops: [],
+						});
+					}
+					lineHashedTripIdsMap.set(lineId, lineData.hashed_trip_ids);
+				}
+
+				const lines = Array.from(linesMap.values());
+				if (!lines.length) {
+					setSelectedReferencesData([]);
+					return;
+				}
 
 				// Get all unique child_ids (stop IDs) from references
 				const allChildIds = form.getValues().references
@@ -276,10 +330,12 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 					});
 				}
 
-				setSelectedReferencesData(result.map((line) => {
-					// Get child_ids for this specific line
-					const lineReference = form.getValues().references.find(ref => ref.parent_id === line.id);
-					const lineChildIds = lineReference?.child_ids ?? [];
+				setSelectedReferencesData(lines.map((line) => {
+					// Get child_ids for all hashed trips that belong to this line.
+					const lineHashedTripIds = lineHashedTripIdsMap.get(line.id) ?? [];
+					const lineChildIds = form.getValues().references
+						.filter(ref => lineHashedTripIds.includes(ref.parent_id))
+						.flatMap(ref => ref.child_ids);
 
 					// Map child_ids to StopData
 					const stops: StopData[] = lineChildIds
@@ -378,7 +434,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', form.getValues()),
 		onSuccess: (updatedItem) => {
-			alertsListMutate();
+			void alertsListMutate();
 			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_DETAIL(updatedItem._id)));
 		},
 	});

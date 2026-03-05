@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 'use client';
 
 /* * */
 
-import type { CachedResource } from '@carrismetropolitana/api-types/common';
 import type { DemandMetricsByLine, ServiceMetrics } from '@carrismetropolitana/api-types/metrics';
 import type { Line } from '@carrismetropolitana/api-types/network';
 
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type SelectDataItem } from '@tmlmobilidade/ui';
-import { standardSwrFetcher } from '@tmlmobilidade/utils';
-import { createContext, useContext, useMemo } from 'react';
+import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
+import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -18,6 +19,7 @@ interface LinesContextState {
 		getDemandMetricsByLineId: (lineId: string) => DemandMetricsByLine | undefined
 		getLineDataById: (lineId: string) => Line | undefined
 		getServiceMetricsByLineId: (lineId: string) => ServiceMetrics[] | undefined
+		setRidesFilters: (filters: Partial<RidesFilters>) => void
 	}
 	data: {
 		demand_metrics: DemandMetricsByLine[]
@@ -44,7 +46,17 @@ export function useLinesContext() {
 
 /* * */
 
-const CMET_API = process.env.NEXT_PUBLIC_CMET_API_URL ?? 'https://api.carrismetropolitana.pt/v2';
+interface LineByHashedTrip {
+	line_id: number
+	line_long_name: string
+	line_short_name: string
+}
+
+interface RidesFilters {
+	agency_id?: string
+	date_end: number
+	date_start: number
+}
 
 export const LinesContextProvider = ({ children }: { children: React.ReactNode }) => {
 	//
@@ -52,24 +64,79 @@ export const LinesContextProvider = ({ children }: { children: React.ReactNode }
 	//
 	// A. Fetch data
 
-	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<Line[]>(`${CMET_API}/lines`, standardSwrFetcher);
-	const { data: demandByLineData, isLoading: demandByLineDataLoading } = useSWR<DemandMetricsByLine[]>(`${CMET_API}/metrics/demand/by_line`, standardSwrFetcher);
-	const { data: serviceMetricsData, isLoading: serviceMetricsLoading } = useSWR<CachedResource<ServiceMetrics[]>>(`${CMET_API}/metrics/service/all`, standardSwrFetcher);
+	const defaultDateEnd = Date.now();
+	const defaultDateStart = defaultDateEnd - (30 * 24 * 60 * 60 * 1000);
+
+	const [ridesFilters, setRidesFilters] = useState<RidesFilters>({
+		date_end: defaultDateEnd,
+		date_start: defaultDateStart,
+	});
+
+	const linesByRidesFiltersUrl = useMemo(() => {
+		// Hashed trips endpoint now supports date/agency filters and aggregates server-side.
+		const queryParams = new URLSearchParams({
+			date_end: String(ridesFilters.date_end),
+			date_start: String(ridesFilters.date_start),
+		});
+
+		if (ridesFilters.agency_id) {
+			queryParams.append('agency_id', ridesFilters.agency_id);
+		}
+
+		return `${API_ROUTES.alerts.HASHED_TRIPS_LIST}?${queryParams.toString()}`;
+	}, [ridesFilters.agency_id, ridesFilters.date_end, ridesFilters.date_start]);
+
+	const { data: linesByHashedTripsData, isLoading: linesByHashedTripsLoading } = useSWR<LineByHashedTrip[]>(
+		linesByRidesFiltersUrl,
+		async () => {
+			const linesMap = new Map<number, LineByHashedTrip>();
+			const response = await fetchData<LineByHashedTrip[]>(linesByRidesFiltersUrl);
+			if (!response.data?.length) return [];
+
+			for (const lineData of response.data) {
+				if (linesMap.has(lineData.line_id)) continue;
+				linesMap.set(lineData.line_id, {
+					line_id: lineData.line_id,
+					line_long_name: lineData.line_long_name,
+					line_short_name: lineData.line_short_name,
+				});
+			}
+
+			return Array.from(linesMap.values());
+		},
+	);
+
+	const allLinesData = useMemo(() => {
+		if (!linesByHashedTripsData?.length) return [];
+
+		return linesByHashedTripsData.map(line => ({
+			id: String(line.line_id),
+			long_name: line.line_long_name,
+			short_name: line.line_short_name,
+		})) as Line[];
+	}, [linesByHashedTripsData]);
 
 	//
 	// B. Handle actions
 
-	const getLineDataById = (lineId: string) => {
+	const getLineDataById = useCallback((lineId: string) => {
 		return allLinesData?.find(line => line.id === lineId);
-	};
+	}, [allLinesData]);
 
-	const getDemandMetricsByLineId = (lineId: string) => {
-		return demandByLineData?.find(demandMetrics => demandMetrics.line_id === lineId);
-	};
+	const getDemandMetricsByLineId = useCallback(() => {
+		return undefined;
+	}, []);
 
-	const getServiceMetricsByLineId = (lineId: string) => {
-		return serviceMetricsData?.data.filter(serviceMetrics => serviceMetrics.line_id === Number(lineId));
-	};
+	const getServiceMetricsByLineId = useCallback(() => {
+		return undefined;
+	}, []);
+
+	const setRidesFiltersAction = useCallback((filters: Partial<RidesFilters>) => {
+		setRidesFilters(prev => ({
+			...prev,
+			...filters,
+		}));
+	}, []);
 
 	//
 	// C. Define context value
@@ -90,24 +157,25 @@ export const LinesContextProvider = ({ children }: { children: React.ReactNode }
 			getDemandMetricsByLineId,
 			getLineDataById,
 			getServiceMetricsByLineId,
+			setRidesFilters: setRidesFiltersAction,
 		},
 		data: {
-			demand_metrics: demandByLineData || [],
+			demand_metrics: [],
 			lines: allLinesData || [],
 			options: asOptions,
-			service_metrics: serviceMetricsData?.data || [],
+			service_metrics: [],
 		},
 		flags: {
-			is_loading: allLinesLoading || demandByLineDataLoading || serviceMetricsLoading,
+			is_loading: linesByHashedTripsLoading,
 		},
 	}), [
 		allLinesData,
-		allLinesLoading,
 		asOptions,
-		demandByLineData,
-		demandByLineDataLoading,
-		serviceMetricsData,
-		serviceMetricsLoading,
+		getDemandMetricsByLineId,
+		getLineDataById,
+		getServiceMetricsByLineId,
+		linesByHashedTripsLoading,
+		setRidesFiltersAction,
 	]);
 
 	//
