@@ -93,37 +93,59 @@ export default async function Page() {
 	}
 
 	const entities = gtfsFeed.entity ?? [];
+	const groupedEntities = entities.reduce<Record<string, GtfsEntity[]>>((acc, entity) => {
+		const startDate = formatUnixDate(entity.alert?.active_period?.[0]?.start) ?? 'Sem data definida';
+		if (!acc[startDate]) acc[startDate] = [];
+		acc[startDate].push(entity);
+		return acc;
+	}, {});
 
 	return (
 		<main className="mx-auto w-full max-w-4xl space-y-6 p-6">
-			<header className="space-y-2">
-				<h1 className="text-2xl font-semibold">Alertas Públicos</h1>
-				<p className="text-sm">{entities.length} alerta(s) disponível(is).</p>
-			</header>
+			<section className="rounded-3xl border bg-white p-6">
+				<h1 className="text-3xl font-semibold">Alertas de Serviço</h1>
+				<p className="mt-2 max-w-2xl text-sm text-zinc-600">
+					Fique a par de todas as alterações à rede e mantenha-se informado sobre alertas ativos no serviço.
+				</p>
+				<p className="mt-4 text-sm font-medium text-zinc-700">Encontrados {entities.length} alerta(s).</p>
+			</section>
 
-			{!entities.length && <p className="text-sm">Não existem alertas disponíveis neste momento.</p>}
+			{!entities.length && (
+				<section className="rounded-3xl border bg-white p-6">
+					<p className="text-sm">Não existem alertas disponíveis neste momento.</p>
+				</section>
+			)}
 
-			<ul className="space-y-3">
-				{entities.map((entity) => {
-					const entityId = String(entity.id ?? '').trim();
-					if (!entityId) return null;
+			{Object.entries(groupedEntities).map(([startDate, items]) => (
+				<section key={startDate} className="overflow-hidden rounded-3xl border bg-white">
+					<header className="border-b p-5">
+						<h2 className="mt-1 text-2xl font-semibold">A partir de {startDate}</h2>
+					</header>
 
-					const title = getTranslationText(entity.alert?.header_text?.translation) ?? `Alerta ${entityId}`;
-					const description = getTranslationText(entity.alert?.description_text?.translation);
-					const startDate = formatUnixDate(entity.alert?.active_period?.[0]?.start);
+					<ul>
+						{items.map((entity) => {
+							const entityId = String(entity.id ?? '').trim();
+							if (!entityId) return null;
 
-					return (
-						<li key={entityId} className="rounded border p-4">
-							<a className="space-y-2 underline" href={`${GTFS_BASE_ROUTE}/${entityId}`}>
-								<p className="text-lg font-semibold">{title}</p>
-								<p className="text-xs">ID: {entityId}</p>
-								{startDate && <p className="text-sm"><strong>Início:</strong> {startDate}</p>}
-								{description && <p className="line-clamp-2 text-sm">{description}</p>}
-							</a>
-						</li>
-					);
-				})}
-			</ul>
+							const title = getTranslationText(entity.alert?.header_text?.translation) ?? `Alerta ${entityId}`;
+							const description = getTranslationText(entity.alert?.description_text?.translation);
+
+							return (
+								<li key={entityId} className="border-b last:border-b-0">
+									<a className="flex items-center justify-between gap-4 p-5 transition hover:bg-zinc-50" href={`${GTFS_BASE_ROUTE}/${entityId}`}>
+										<div className="min-w-0">
+											<p className="truncate text-base font-semibold">{title}</p>
+											<p className="mt-1 text-xs text-zinc-500">ID: {entityId}</p>
+											{description && <p className="mt-2 line-clamp-1 text-sm text-zinc-600">{description}</p>}
+										</div>
+										<span aria-hidden="true" className="text-zinc-400">›</span>
+									</a>
+								</li>
+							);
+						})}
+					</ul>
+				</section>
+			))}
 		</main>
 	);
 }

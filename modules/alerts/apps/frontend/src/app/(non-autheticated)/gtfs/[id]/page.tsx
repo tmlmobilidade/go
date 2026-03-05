@@ -1,6 +1,7 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { Button } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -118,35 +119,29 @@ async function fetchGtfsFeed(): Promise<FetchGtfsFeedResult> {
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 	const { feed: gtfsFeed, status: gtfsFeedStatus } = await fetchGtfsFeed();
+	const alertEntity = gtfsFeed ? getAlertEntity(gtfsFeed, id) : undefined;
 
-	if (!gtfsFeed) {
+	if (!gtfsFeed || !alertEntity) {
+		const alertUnavailableMessage = !gtfsFeed
+			? `Não foi possível carregar o feed GTFS (HTTP ${gtfsFeedStatus}).`
+			: `Alerta ${id} não encontrado no feed GTFS atual. Geralmente isso acontece quando o alerta ainda não está publicado, ainda não iniciou publicação, ou já terminou.`;
+
 		return (
-			<main className="mx-auto w-full max-w-4xl p-6">
-				<h1 className="text-xl font-semibold">GTFS do alerta</h1>
-				<p className="mt-2 text-sm">Não foi possível carregar o feed GTFS (HTTP {gtfsFeedStatus}).</p>
-				<a className="mt-4 inline-block underline" href={GTFS_LIST_ROUTE}>
-					Voltar para lista de alertas
-				</a>
-				<a className="mt-4 inline-block underline" href={API_ROUTES.alerts.GTFS_CARRIS_METROPOLITANA} rel="noreferrer" target="_blank">
-					Abrir feed GTFS completo
-				</a>
-			</main>
-		);
-	}
+			<main className="flex min-h-screen w-full items-center justify-center bg-white px-4 pb-6 pt-[10px] sm:px-6">
+				<div className="space-y-4" style={{ margin: '0 auto', maxWidth: 750, width: '100%' }}>
+					<div className="sticky top-[16px] z-10 w-full bg-white py-2 backdrop-blur">
+						<Button
+							href={GTFS_LIST_ROUTE}
+							label="Ir para lista de alertas"
+							variant="secondary"
+						/>
+					</div>
 
-	const alertEntity = getAlertEntity(gtfsFeed, id);
-
-	if (!alertEntity) {
-		return (
-			<main className="mx-auto w-full max-w-4xl p-6">
-				<h1 className="text-xl font-semibold">GTFS do alerta</h1>
-				<p className="mt-2 text-sm">Alerta {id} não encontrado no feed GTFS atual. Geralmente isso acontece quando o alerta ainda não está publicado, ainda não iniciou publicação, ou já terminou.</p>
-				<a className="mt-4 inline-block underline" href={GTFS_LIST_ROUTE}>
-					Voltar para lista de alertas
-				</a>
-				<a className="mt-4 inline-block underline" href={API_ROUTES.alerts.GTFS_CARRIS_METROPOLITANA} rel="noreferrer" target="_blank">
-					Abrir feed GTFS completo
-				</a>
+					<section className="rounded-3xl border p-8" style={{ margin: '0 auto', maxWidth: 750, width: '100%' }}>
+						<h1 className="text-2xl font-semibold">GTFS do alerta</h1>
+						<p className="mt-3 text-base leading-relaxed" style={{ textAlign: 'justify' }}>{alertUnavailableMessage}</p>
+					</section>
+				</div>
 			</main>
 		);
 	}
@@ -158,32 +153,40 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 	const alertStartDate = formatUnixDate(alertEntity.alert?.active_period?.[0]?.start);
 	const alertEndDate = formatUnixDate(alertEntity.alert?.active_period?.[0]?.end);
 	const alertRoutes = getEntityRoutes(alertEntity);
+	const alertLocation = alertRoutes.join(', ');
 
 	return (
-		<main className="mx-auto w-full max-w-4xl space-y-6 p-6">
-			<header className="space-y-3">
-				<a className="inline-block underline" href={GTFS_LIST_ROUTE}>
-					Ir para lista de alertas
-				</a>
-				<p className="text-xs font-semibold uppercase tracking-wide">Alerta Público</p>
-				<h1 className="text-2xl font-semibold">{alertTitle}</h1>
-				<p className="text-sm">ID: {id}</p>
-			</header>
-
-			<section className="rounded border p-4">
-				<div className="grid gap-2 text-sm">
-					{alertCause && <p><strong>Causa:</strong> {alertCause}</p>}
-					{alertEffect && <p><strong>Efeito:</strong> {alertEffect}</p>}
+		<main className="flex min-h-screen w-full items-center justify-center px-4 pb-6 pt-[10px] sm:px-6">
+			<div className="space-y-6" style={{ margin: '0 auto', maxWidth: 750, width: '100%' }}>
+				<div className="sticky top-[16px] z-10 w-full  py-2 backdrop-blur">
+					<Button
+						href={GTFS_LIST_ROUTE}
+						label="Ir para lista de alertas"
+						variant="secondary"
+					/>
 				</div>
 
-				<div className="mt-4 space-y-2 text-sm">
-					{alertStartDate && <p><strong>Início:</strong> {alertStartDate}</p>}
-					{alertEndDate && <p><strong>Fim:</strong> {alertEndDate}</p>}
-					{!!alertRoutes.length && <p><strong>Linhas:</strong> {alertRoutes.join(', ')}</p>}
-				</div>
+				<section className="overflow-hidden rounded-3xl border" style={{ margin: '0 auto', maxWidth: 750, width: '100%' }}>
+					<div className="space-y-4 p-8">
+						<h1 className="text-5xl font-semibold leading-tight tracking-tight">{alertTitle}</h1>
 
-				{alertDescription && <p className="mt-4 whitespace-pre-line text-sm">{alertDescription}</p>}
-			</section>
+						<div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-2xl font-semibold">
+							{alertCause && <p>{alertCause}</p>}
+							{alertEffect && <p>{alertEffect}</p>}
+							{alertStartDate && <p className="text-zinc-750">Início: {alertStartDate}</p>}
+						</div>
+					</div>
+				</section>
+
+				<section className="rounded-3xl border  p-8" style={{ margin: '0 auto', maxWidth: 750, width: '100%' }}>
+					{alertDescription && <p className="whitespace-pre-line text-4xl font-medium leading-relaxed" style={{ textAlign: 'justify' }}>{alertDescription}</p>}
+
+					<div className="mt-6 space-y-2 text-sm text-zinc-750">
+						{alertEndDate && <p><strong>Fim:</strong> {alertEndDate}</p>}
+						{!!alertRoutes.length && <p><strong>Linhas:</strong> {alertLocation}</p>}
+					</div>
+				</section>
+			</div>
 		</main>
 	);
 }
