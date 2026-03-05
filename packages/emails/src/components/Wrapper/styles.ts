@@ -1,7 +1,11 @@
 /* * */
+
+import { type CSSProperties } from 'react';
+
+/* * */
 /* BODY */
 
-const body: React.CSSProperties = {
+const body: CSSProperties = {
 	backgroundColor: '#FFFFFF',
 	margin: '0 auto',
 	padding: 0,
@@ -10,7 +14,7 @@ const body: React.CSSProperties = {
 /* * */
 /* CONTAINER */
 
-const container: React.CSSProperties = {
+const container: CSSProperties = {
 	backgroundColor: '#F6F8FA',
 	display: 'flex',
 	flexDirection: 'column',
@@ -21,7 +25,7 @@ const container: React.CSSProperties = {
 /* * */
 /* CONTENT */
 
-const content: React.CSSProperties = {
+const content: CSSProperties = {
 	display: 'flex',
 	flexDirection: 'column',
 	padding: '30px',

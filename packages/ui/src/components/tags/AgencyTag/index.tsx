@@ -4,7 +4,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 
 import styles from './styles.module.css';
 
-import { useDataAgencies } from '../../../hooks/use-data-agencies';
+import { useDataAgencies } from '../../../hooks/use-data/use-data-agencies';
 import { Label } from '../../display/Label';
 import { Tag } from '../Tag';
 

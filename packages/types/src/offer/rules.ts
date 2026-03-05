@@ -4,31 +4,41 @@ import { z } from 'zod';
 
 /* * */
 
-export enum OPERATING_MODE {
-	EXCLUDE = 'exclude',
-	INCLUDE = 'include',
-}
+export const OperatingModeValues = [
+	'exclude',
+	'include',
+] as const;
 
-export const LinesModeSchema = z.enum(['all', 'include', 'exclude']);
+export const OperatingModeSchema = z.enum(OperatingModeValues);
+export type OperatingMode = z.infer<typeof OperatingModeSchema>;
+
+/* * */
+
+export const LinesModeValues = [
+	'all',
+	'exclude',
+	'include',
+] as const;
+
+export const LinesModeSchema = z.enum(LinesModeValues);
 export type LinesMode = z.infer<typeof LinesModeSchema>;
 
 /* * */
 
 export const ManualRuleSchema = z.object({
-	// stable id for UI dedupe
-	_id: z.string().optional(),
+	_id: z.string(),
 
-	eventId: z.string().optional(),
+	event_id: z.string().optional(),
 
 	kind: z.literal('manual'),
 	name: z.string().optional(),
 
-	operatingMode: z.nativeEnum(OPERATING_MODE),
-	timePoints: z.array(HHMMSchema),
+	operating_mode: OperatingModeSchema,
+	timepoints: z.array(HHMMSchema),
 
 	weekdays: z.array(z.nativeEnum(WEEKDAYS)),
 
-	yearPeriodIds: z.array(z.string()),
+	year_period_ids: z.array(z.string()),
 });
 
 /* * */
@@ -45,7 +55,7 @@ export const EventDerivedBaseSchema = z.object({
 	lines_to_exclude: z.array(z.string()).optional(),
 	lines_to_include: z.array(z.string()).optional(),
 
-	timePoints: z.array(HHMMSchema).optional(), // UI generated
+	timepoints: z.array(HHMMSchema).optional(), // UI generated
 });
 
 export const EventRestrictionSchema = EventDerivedBaseSchema.extend({
@@ -71,7 +81,7 @@ export const EventReplacementSchema = EventDerivedBaseSchema.extend({
 	kind: z.literal('event_replacement'),
 
 	weekdays: z.array(z.nativeEnum(WEEKDAYS)),
-	yearPeriodIds: z.array(z.string()),
+	year_period_ids: z.array(z.string()),
 });
 
 export const EventRuleSchema = z.discriminatedUnion('kind', [EventRestrictionSchema, EventReplacementSchema]);

@@ -1,10 +1,10 @@
 /* * */
 
-import { type GtfsV29ExportConfig } from '@/types.js';
 import { type TripSchedule } from '@/exports/trips.js';
-import { Logger } from '@tmlmobilidade/logger';
+import { type GtfsV29ExportConfig } from '@/types.js';
 import { computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
-import { HHMM, Path, type GTFS_StopTime, type Pattern, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/types';
+import { Logger } from '@tmlmobilidade/logger';
+import { type GTFS_StopTime, HHMM, Path, type Pattern, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -19,9 +19,8 @@ function resolveActiveParameter(
 	if (overrides.length > 0) {
 		for (const override of overrides) {
 			const weekdayMatch = tripSchedule.weekdays.some(w => override.weekdays.includes(w));
-			const periodMatch = tripSchedule.period_ids.some(p => override.yearPeriodIds.includes(p));
-			const dayPeriodMatch = !override.day_periods?.length
-				|| override.day_periods.includes(tripSchedule.day_period);
+			const periodMatch = tripSchedule.period_ids.some(p => override.year_period_ids.includes(p));
+			const dayPeriodMatch = !override.day_periods?.length || override.day_periods.includes(tripSchedule.day_period);
 
 			if (weekdayMatch && periodMatch && dayPeriodMatch) {
 				return override;
@@ -112,8 +111,7 @@ export async function exportStopTimesForPattern(
 				await exportConfig.writers.stop_times.write(stopTimeRow);
 			}
 		}
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error(`Error exporting stop_times for pattern ${patternData.code}`, error);
 		throw new Error(`Error exporting stop_times for pattern ${patternData.code}: ${error}`);
 	}

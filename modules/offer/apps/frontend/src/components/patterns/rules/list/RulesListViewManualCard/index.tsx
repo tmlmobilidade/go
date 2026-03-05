@@ -25,8 +25,8 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 
 	const patternDetailContext = usePatternDetailContext();
 
-	const isOffTime = rule.kind === 'manual' && rule.operatingMode === 'exclude';
-	const times = rule?.timePoints ?? [];
+	const isOffTime = rule.kind === 'manual' && rule.operating_mode === 'exclude';
+	const times = rule?.timepoints ?? [];
 	const name = rule?.name || 'Regra sem nome';
 
 	//

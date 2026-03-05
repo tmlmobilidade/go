@@ -1,11 +1,12 @@
 /* * */
 
 import { fontFamily, fontSize, fontWeight } from '@/styles/font.js';
+import { type CSSProperties } from 'react';
 
 /* * */
 /* TEXT */
 
-const text: React.CSSProperties = {
+const text: CSSProperties = {
 	color: '#000',
 	fontFamily: fontFamily.primary,
 	fontSize: fontSize.lg,

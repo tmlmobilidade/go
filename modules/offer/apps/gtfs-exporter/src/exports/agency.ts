@@ -24,8 +24,7 @@ export function parseAgency(agencyData: Agency): GtfsTMLAgency {
 			agency_timezone: agencyData.timezone || 'Europe/Lisbon',
 			agency_phone: agencyData.phone, // '210410400',
 		};
-	}
-	catch (error) {
+	} catch (error) {
 		throw new Error(`Error parsing agency: ${error}`);
 	}
 }

@@ -6,8 +6,8 @@ import { ActionsOf, type Agency, Permission } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { type SelectDataItem } from '../components/inputs/Select';
-import { useMeContext } from '../contexts/Me.context';
+import { type SelectDataItem } from '../../components/inputs/Select';
+import { useMeContext } from '../../contexts/Me.context';
 
 /* * */
 

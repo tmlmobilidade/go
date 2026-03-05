@@ -245,6 +245,7 @@ export const API_ROUTES = Object.freeze({
 		// USERS
 		USERS_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/users/${id}`,
 		USERS_DETAIL_LOCK: (id: string) => `${getAppConfig('auth', 'api_url')}/users/${id}/lock`,
+		USERS_DETAIL_SIMPLIFIED: (id: string) => `${getAppConfig('auth', 'api_url')}/users/${id}/simplified`,
 		USERS_LIST: `${getAppConfig('auth', 'api_url')}/users`,
 		USERS_ME: `${getAppConfig('auth', 'api_url')}/users/me`,
 
@@ -429,6 +430,7 @@ export const API_ROUTES = Object.freeze({
 		VALIDATIONS_DETAIL_FILE: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/file`,
 		VALIDATIONS_DETAIL_FILE_DOWNLOAD: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/file/download`,
 		VALIDATIONS_DETAIL_LOCK: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/lock`,
+		VALIDATIONS_DETAIL_PROCESSING_STATUS: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/processing-status`,
 		VALIDATIONS_DETAIL_REQUEST_APPROVAL: (id: string) => `${getAppConfig('plans', 'api_url')}/validations/${id}/request-approval`,
 		VALIDATIONS_LIST: `${getAppConfig('plans', 'api_url')}/validations`,
 	},

@@ -14,7 +14,7 @@ export function buildYearPeriodsPart(
 	cfg: { mode: 'long' | 'short' },
 ): string {
 	const allPeriodIds = options?.periods?.map(p => p._id) ?? [];
-	const selectedPeriodIds = rule.yearPeriodIds || [];
+	const selectedPeriodIds = rule.year_period_ids || [];
 	const isAll = allPeriodIds.length > 0 && selectedPeriodIds.length === allPeriodIds.length && allPeriodIds.every(id => selectedPeriodIds.includes(id));
 
 	if (!selectedPeriodIds.length || isAll) {

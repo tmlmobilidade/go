@@ -2,6 +2,7 @@ export * from './AlertCard';
 export * from './AlertMessage';
 export * from './ErrorDisplay';
 export * from './Indicator';
+export * from './Inline';
 export * from './Label';
 export * from './NoDataLabel';
 export * from './SeenStatusIndicator';

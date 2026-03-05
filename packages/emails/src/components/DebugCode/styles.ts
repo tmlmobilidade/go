@@ -2,11 +2,12 @@
 
 import colors from '@/styles/colors.js';
 import { fontFamily, fontSize, fontWeight } from '@/styles/font.js';
+import { type CSSProperties } from 'react';
 
 /* * */
 /* TEXT */
 
-const text: React.CSSProperties = {
+const text: CSSProperties = {
 	color: colors.muted.foreground,
 	fontFamily: fontFamily.primary,
 	fontSize: fontSize.xs,

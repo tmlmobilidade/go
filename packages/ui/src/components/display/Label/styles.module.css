@@ -73,3 +73,7 @@
 .label[data-variant='warning'] {
 	color: var(--color-status-warning-primary);
 }
+
+.label[data-variant='primary'] {
+	color: var(--color-primary);
+}

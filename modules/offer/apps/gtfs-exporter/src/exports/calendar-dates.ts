@@ -48,8 +48,7 @@ export async function exportCalendarDates(
 		}
 
 		Logger.success(`Exported ${allServices.size} service IDs (${totalRows} total rows) to calendar_dates.txt`);
-	}
-	catch (error) {
+	} catch (error) {
 		throw new Error(`Error exporting calendar dates: ${error}`);
 	}
 }

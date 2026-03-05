@@ -41,7 +41,7 @@ import { applyEventRestrictions, applyManualExcludes, applyReplacementManualExcl
  * const result = computeActiveTimePoints(rules, dates, periods);
  * const feb1 = result.get(calendarKey(Dates.fromOperationalDate('2026-02-01')));
  * // feb1 = {
- * //   timePoints: ['08:00', '09:00', '10:00'],
+ * //   timepoints: ['08:00', '09:00', '10:00'],
  * //   appliedRuleIds: ['rule1', 'rule2']
  * // }
  * ```
@@ -59,8 +59,8 @@ export function computeActiveRules(
 	const replacementRules = rules.filter((r): r is EventReplacementRule => r.kind === 'event_replacement');
 
 	const filteredManualRules = manualRules.filter((rule) => {
-		if (!rule.eventId) return true;
-		const event = options?.events?.find(e => e._id === rule.eventId);
+		if (!rule.event_id) return true;
+		const event = options?.events?.find(e => e._id === rule.event_id);
 		if (!event?.dates?.length) return false;
 		return event.dates.includes(date);
 	});
@@ -70,17 +70,17 @@ export function computeActiveRules(
 	const replacement = findReplacementForDate(date, replacementRules);
 
 	// 1) Base timepoints
-	let timePoints: Set<string>;
+	let timepoints: Set<string>;
 	let appliedRuleIds: string[];
 
 	if (replacement) {
 		// Replacement mode: match manuals by intersection (Option A)
 		const base = collectReplacementManualIncludes(replacement, filteredManualRules);
-		timePoints = base.timePoints;
+		timepoints = base.timepoints;
 		appliedRuleIds = base.appliedRuleIds;
 
 		// Apply manual excludes *also* by intersection with replacement targets
-		applyReplacementManualExcludes(timePoints, appliedRuleIds, replacement, filteredManualRules);
+		applyReplacementManualExcludes(timepoints, appliedRuleIds, replacement, filteredManualRules);
 	} else {
 		// Normal mode: day resolves to a single weekday + single yearPeriodId
 		const ctx: DayContext = {
@@ -89,18 +89,18 @@ export function computeActiveRules(
 		};
 
 		const base = collectManualIncludes(filteredManualRules, ctx);
-		timePoints = base.timePoints;
+		timepoints = base.timepoints;
 		appliedRuleIds = base.appliedRuleIds;
 
-		applyManualExcludes(timePoints, appliedRuleIds, filteredManualRules, ctx);
+		applyManualExcludes(timepoints, appliedRuleIds, filteredManualRules, ctx);
 	}
 
 	// 2) Event restrictions always apply by date
-	applyEventRestrictions(date, timePoints, appliedRuleIds, restrictionRules);
+	applyEventRestrictions(date, timepoints, appliedRuleIds, restrictionRules);
 
 	const result: RuleApplication = {
 		appliedRuleIds,
-		timePoints: Array.from(timePoints).sort() || [],
+		timepoints: Array.from(timepoints).sort() || [],
 	};
 
 	return result;

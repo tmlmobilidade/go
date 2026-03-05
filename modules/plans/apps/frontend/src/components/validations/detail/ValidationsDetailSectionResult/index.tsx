@@ -5,7 +5,7 @@
 import { SeverityTag } from '@/components/common/SeverityTag';
 import { ValidationsDetailSectionResultCellRows } from '@/components/validations/detail/ValidationsDetailSectionResultCellRows';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
-import { type GTFSValidatorMessage } from '@tmlmobilidade/types';
+import { type GtfsValidationMessage } from '@tmlmobilidade/types';
 import { Collapsible, DataTable, DataTableColumn, Divider, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -19,7 +19,7 @@ export function ValidationsDetailSectionResult() {
 
 	const validationsDetailContext = useValidationsDetailContext();
 
-	const columns: DataTableColumn<GTFSValidatorMessage>[] = [
+	const columns: DataTableColumn<GtfsValidationMessage>[] = [
 		{
 			accessor: 'file_name',
 			title: 'Ficheiro',

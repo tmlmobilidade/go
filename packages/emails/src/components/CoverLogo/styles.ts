@@ -1,7 +1,11 @@
 /* * */
+
+import { type CSSProperties } from 'react';
+
+/* * */
 /* IMAGE */
 
-const link: React.CSSProperties = {
+const link: CSSProperties = {
 	alignContent: 'center',
 	backgroundColor: '#F6F8FA',
 	display: 'flex',
@@ -10,7 +14,7 @@ const link: React.CSSProperties = {
 	width: '100%',
 };
 
-const image: React.CSSProperties = {
+const image: CSSProperties = {
 	height: 40,
 	padding: '20px',
 	width: 'auto',

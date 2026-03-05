@@ -9,7 +9,7 @@ import '@fastify/multipart';
 import fastifyCookie from '@fastify/cookie';
 import fastifyCors from '@fastify/cors';
 import oneLineLogger from '@fastify/one-line-logger';
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { HttpResponse, WithPagination } from '@tmlmobilidade/utils';
 import fastify, { FastifyLoggerOptions } from 'fastify';
 import { type FastifyInstance as FastifyInstanceType, type FastifyReply as FastifyReplyType } from 'fastify';
@@ -136,8 +136,7 @@ const loggerOptions: FastifyLoggerOptions<RawServerDefault> = {
 				// Pino serialized error object
 				errorMessage = (errorObj as Error).message || errorMessage;
 				errorStack = (errorObj as Error).stack;
-			}
-			else if (log[messageKey] instanceof Error) {
+			} else if (log[messageKey] instanceof Error) {
 				// Direct Error instance (shouldn't happen with Pino, but just in case)
 				errorMessage = (log[messageKey] as unknown as Error).message || errorMessage;
 				errorStack = (log[messageKey] as Error).stack;
@@ -215,8 +214,7 @@ export class FastifyService {
 			this.server.log.info(`CORS enabled for origin: ${this.options.origin}`);
 			this.server.log.info(`Listening on ${this.options.host}:${this.options.port}`);
 			return serverUrl;
-		}
-		catch (error) {
+		} catch (error) {
 			this.server.log.error({ error, message: 'Error starting server.' });
 			process.exit(1);
 		}
@@ -230,8 +228,7 @@ export class FastifyService {
 		try {
 			await this.server.close();
 			console.log('Fastify server stopped.');
-		}
-		catch (error) {
+		} catch (error) {
 			this.server.log.error({ err: error }, error instanceof Error ? error.message : 'Error stopping server');
 			process.exit(1);
 		}
@@ -270,8 +267,7 @@ export class FastifyService {
 						error: error.message,
 						statusCode: error.statusCode,
 					});
-			}
-			else {
+			} else {
 				reply
 					.status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
 					.send({
@@ -299,8 +295,7 @@ export class FastifyService {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			catch (error) {
 				// Do nothing
-			}
-			finally {
+			} finally {
 				done();
 			}
 		});

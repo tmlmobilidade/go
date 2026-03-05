@@ -31,7 +31,7 @@ export interface RuleSummary {
  *
  * @example
  * ```ts
- * const rule = { kind: 'manual', weekdays: [1,2,3,4,5], yearPeriodIds: ['school'], ... };
+ * const rule = { kind: 'manual', weekdays: [1,2,3,4,5], year_period_ids: ['school'], ... };
  * const summary = buildRuleSummary(rule, { periods });
  * // summary = {
  * //   short: "Dias úteis · Período Escolar",
@@ -65,8 +65,8 @@ const isEventRestriction = (r: ScheduleRule): r is EventRestrictionRule => r.kin
 const isEventReplacement = (r: ScheduleRule): r is EventReplacementRule => r.kind === 'event_replacement';
 
 const getEventForManualRule = (rule: ManualRule, events?: Event[]) => {
-	if (!rule.eventId) return undefined;
-	return events?.find(event => event._id === rule.eventId);
+	if (!rule.event_id) return undefined;
+	return events?.find(event => event._id === rule.event_id);
 };
 
 /* ---------------- helpers ---------------- */
@@ -91,7 +91,7 @@ function buildRuleSummaryShort(
 		return rule.event?.title ?? '';
 	}
 
-	if (rule.kind === 'manual' && rule.eventId) {
+	if (rule.kind === 'manual' && rule.event_id) {
 		return getEventForManualRule(rule, options?.events)?.title ?? '';
 	}
 
@@ -121,7 +121,7 @@ function buildRuleSummaryLong(
 		return rule.event?.title ?? '';
 	}
 
-	if (rule.kind === 'manual' && rule.eventId) {
+	if (rule.kind === 'manual' && rule.event_id) {
 		return getEventForManualRule(rule, options?.events)?.title ?? '';
 	}
 
@@ -180,7 +180,7 @@ function buildRuleSummaryTooltip(
 			.filter(Boolean)
 			.join(', ') ?? '';
 
-		const periods = rule.yearPeriodIds
+		const periods = rule.year_period_ids
 			?.map(id => options?.periods?.find(p => p._id === id)?.name || id)
 			.join(', ') || '';
 
@@ -188,7 +188,7 @@ function buildRuleSummaryTooltip(
 		return `Funcionará como ${parts.join(' · ')}, ${datesText}`;
 	}
 
-	if (rule.kind === 'manual' && rule.eventId) {
+	if (rule.kind === 'manual' && rule.event_id) {
 		const event = getEventForManualRule(rule, options?.events);
 		const dates = (event?.dates ?? []).map(formatDateWithWeekday).join(', ');
 		if (!dates) return '';

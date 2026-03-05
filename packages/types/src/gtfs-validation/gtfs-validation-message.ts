@@ -1,0 +1,17 @@
+/* * */
+
+import { SeverityLevelSchema } from '@/gtfs-validation/severity-level.js';
+import { z } from 'zod';
+
+/* * */
+
+export const GtfsValidationMessageSchema = z.object({
+	field: z.string(),
+	file_name: z.string(),
+	message: z.string(),
+	rows: z.array(z.number()),
+	severity: SeverityLevelSchema,
+	validation_id: z.string(),
+});
+
+export type GtfsValidationMessage = z.infer<typeof GtfsValidationMessageSchema>;

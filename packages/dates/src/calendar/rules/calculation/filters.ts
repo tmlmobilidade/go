@@ -1,6 +1,6 @@
 import type { DayContext } from './types.js';
 
-import { type EventReplacementRule, type ManualRule, OPERATING_MODE, type OperationalDate, type ScheduleRule } from '@tmlmobilidade/types';
+import { type EventReplacementRule, type ManualRule, type OperationalDate, type ScheduleRule } from '@tmlmobilidade/types';
 
 import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matchers.js';
 
@@ -8,39 +8,39 @@ import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matche
  * Removes time points based on manual EXCLUDE rules that match a given day context.
  *
  * This is the second phase of rule application for normal days. Finds all manual rules
- * with operatingMode='exclude' that match the weekday and period, then removes their
+ * with operating_mode='exclude' that match the weekday and period, then removes their
  * time points from the collected set.
  *
- * Mutates the timePoints Set and appliedRuleIds array in place.
+ * Mutates the timepoints Set and appliedRuleIds array in place.
  *
- * @param timePoints - Set of time points to filter (mutated in place)
+ * @param timepoints - Set of time points to filter (mutated in place)
  * @param appliedRuleIds - Array to track which rules were applied (mutated in place)
  * @param manualRules - Array of all manual rules to check
  * @param ctx - The day context (weekday + period) to match against
  *
  * @example
  * ```ts
- * const timePoints = new Set(['08:00', '09:00', '10:00']);
+ * const timepoints = new Set(['08:00', '09:00', '10:00']);
  * const appliedRuleIds = ['rule1'];
- * applyManualExcludes(timePoints, appliedRuleIds, rules, { weekday: 1, yearPeriodId: 'school' });
- * // timePoints might now be Set(['08:00', '10:00']) if a rule excluded '09:00'
+ * applyManualExcludes(timepoints, appliedRuleIds, rules, { weekday: 1, yearPeriodId: 'school' });
+ * // timepoints might now be Set(['08:00', '10:00']) if a rule excluded '09:00'
  * ```
  */
 export function applyManualExcludes(
-	timePoints: Set<string>,
+	timepoints: Set<string>,
 	appliedRuleIds: string[],
 	manualRules: ManualRule[],
 	ctx: DayContext,
 ): void {
 	for (const r of manualRules) {
-		if (r.operatingMode !== 'exclude') continue;
+		if (r.operating_mode !== 'exclude') continue;
 		if (!manualRuleMatchesContext(r, ctx)) continue;
 
 		appliedRuleIds.push(r._id);
 
-		// If exclude rule has no timePoints, treat as "exclude nothing"
+		// If exclude rule has no timepoints, treat as "exclude nothing"
 		// (If you want "exclude whole day", add an explicit flag later.)
-		for (const tp of r.timePoints ?? []) timePoints.delete(tp);
+		for (const tp of r.timepoints ?? []) timepoints.delete(tp);
 	}
 }
 
@@ -51,25 +51,25 @@ export function applyManualExcludes(
  * matching: if an exclude rule matches ANY of the weekdays/periods targeted by the
  * replacement, its time points are removed.
  *
- * Mutates the timePoints Set and appliedRuleIds array in place.
+ * Mutates the timepoints Set and appliedRuleIds array in place.
  *
- * @param timePoints - Set of time points to filter (mutated in place)
+ * @param timepoints - Set of time points to filter (mutated in place)
  * @param appliedRuleIds - Array to track which rules were applied (mutated in place)
  * @param replacement - The event replacement rule controlling this date
  * @param manualRules - Array of all manual rules to check for intersection
  */
 export function applyReplacementManualExcludes(
-	timePoints: Set<string>,
+	timepoints: Set<string>,
 	appliedRuleIds: string[],
 	replacement: EventReplacementRule,
 	manualRules: ManualRule[],
 ): void {
 	for (const r of manualRules) {
-		if (r.operatingMode !== OPERATING_MODE.EXCLUDE) continue;
+		if (r.operating_mode !== 'exclude') continue;
 		if (!manualRuleMatchesReplacement(r, replacement)) continue;
 
 		if (r._id) appliedRuleIds.push(r._id);
-		for (const tp of r.timePoints) timePoints.delete(tp);
+		for (const tp of r.timepoints) timepoints.delete(tp);
 	}
 }
 
@@ -93,9 +93,9 @@ function hhmmToMinutes(hhmm: string): number {
  *
  * Window is inclusive of start, exclusive of end: [start, end)
  *
- * Mutates the timePoints Set in place.
+ * Mutates the timepoints Set in place.
  *
- * @param timePoints - Set of time points to filter (mutated in place)
+ * @param timepoints - Set of time points to filter (mutated in place)
  * @param startHHMM - Window start time in HH:MM format
  * @param endHHMM - Window end time in HH:MM format
  *
@@ -108,7 +108,7 @@ function hhmmToMinutes(hhmm: string): number {
  * ```
  */
 function removeTimePointsByWindow(
-	timePoints: Set<string>,
+	timepoints: Set<string>,
 	startHHMM: string,
 	endHHMM: string,
 ): void {
@@ -117,14 +117,14 @@ function removeTimePointsByWindow(
 
 	const crossesMidnight = end < start;
 
-	for (const tp of Array.from(timePoints)) {
+	for (const tp of Array.from(timepoints)) {
 		const t = hhmmToMinutes(tp);
 
 		const inWindow = crossesMidnight
 			? (t >= start || t < end)
 			: (t >= start && t < end);
 
-		if (inWindow) timePoints.delete(tp);
+		if (inWindow) timepoints.delete(tp);
 	}
 }
 
@@ -133,29 +133,29 @@ function removeTimePointsByWindow(
  *
  * Event restrictions can work in three modes:
  * 1. all_day: Removes all time points (complete service suspension)
- * 2. explicit timePoints: Removes only the specified times (UI-generated)
+ * 2. explicit timepoints: Removes only the specified times (UI-generated)
  * 3. time window: Removes times within start_time to end_time range (supports midnight crossing)
  *
  * This is the final filtering phase after manual includes/excludes have been processed.
  *
- * Mutates the timePoints Set and appliedRuleIds array in place.
+ * Mutates the timepoints Set and appliedRuleIds array in place.
  *
  * @param date - The operational date to check restrictions for
- * @param timePoints - Set of time points to filter (mutated in place)
+ * @param timepoints - Set of time points to filter (mutated in place)
  * @param appliedRuleIds - Array to track which rules were applied (mutated in place)
  * @param rules - Array of all schedule rules (filters for event_restriction type)
  *
  * @example
  * ```ts
- * const timePoints = new Set(['08:00', '09:00', '10:00']);
+ * const timepoints = new Set(['08:00', '09:00', '10:00']);
  * const appliedRuleIds = [];
- * applyEventRestrictions('2026-12-25', timePoints, appliedRuleIds, rules);
- * // If there's an all_day restriction, timePoints is now Set()
+ * applyEventRestrictions('2026-12-25', timepoints, appliedRuleIds, rules);
+ * // If there's an all_day restriction, timepoints is now Set()
  * ```
  */
 export function applyEventRestrictions(
 	date: OperationalDate,
-	timePoints: Set<string>,
+	timepoints: Set<string>,
 	appliedRuleIds: string[],
 	rules: ScheduleRule[],
 ): void {
@@ -167,13 +167,13 @@ export function applyEventRestrictions(
 
 		// 1) all day kills everything
 		if (r?.all_day) {
-			timePoints.clear();
+			timepoints.clear();
 			continue;
 		}
 
-		// 2) explicit timePoints removal (UI generated)
-		if (r.timePoints?.length) {
-			for (const tp of r.timePoints) timePoints.delete(tp);
+		// 2) explicit timepoints removal (UI generated)
+		if (r.timepoints?.length) {
+			for (const tp of r.timepoints) timepoints.delete(tp);
 			continue;
 		}
 
@@ -184,7 +184,7 @@ export function applyEventRestrictions(
 		const end = r?.end_time;
 
 		if (start && end) {
-			removeTimePointsByWindow(timePoints, start, end);
+			removeTimePointsByWindow(timepoints, start, end);
 		}
 	}
 }

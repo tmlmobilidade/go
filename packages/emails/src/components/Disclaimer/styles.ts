@@ -1,11 +1,12 @@
 /* * */
 
 import { fontFamily, fontSize, fontWeight, lineHeight } from '@/styles/font.js';
+import { type CSSProperties } from 'react';
 
 /* * */
 /* TEXT */
 
-const text: React.CSSProperties = {
+const text: CSSProperties = {
 	color: '#BEBEC8',
 	fontFamily: fontFamily.primary,
 	fontSize: fontSize.xs,
@@ -20,7 +21,7 @@ const text: React.CSSProperties = {
 /* * */
 /* LINK */
 
-const link: React.CSSProperties = {
+const link: CSSProperties = {
 	color: '#BEBEC8',
 	textDecoration: 'underline',
 };

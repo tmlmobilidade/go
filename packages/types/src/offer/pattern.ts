@@ -2,6 +2,8 @@
 
 import { CommentSchema } from '@/_common/comment.js';
 import { DocumentSchema } from '@/_common/document.js';
+import { createGtfsMapper } from '@/gtfs-new/mapper.js';
+import { GtfsDirection } from '@/gtfs-new/trips.js';
 import { StopSchema } from '@/stops/stop.js';
 import { z } from 'zod';
 
@@ -10,9 +12,22 @@ import { PatternUpdateRulesSchema, ScheduleRuleSchema } from './rules.js';
 
 /* * */
 
-export const directionOptions = [
-	{ label: 'Ida', value: '0' },
-	{ label: 'Volta', value: '1' },
+export const PatternDirectionValues = [
+	'outbound',
+	'inbound',
+] as const;
+
+export const PatternDirectionSchema = z.enum(PatternDirectionValues);
+export type PatternDirection = z.infer<typeof PatternDirectionSchema>;
+
+export const patternDirectionMapper = createGtfsMapper<typeof PatternDirectionValues[number], GtfsDirection>({
+	inbound: '1',
+	outbound: '0',
+});
+
+export const directionOptions: { label: string, value: typeof PatternDirectionValues[number] }[] = [
+	{ label: 'Ida', value: 'outbound' },
+	{ label: 'Volta', value: 'inbound' },
 ];
 
 /* * */
@@ -51,7 +66,7 @@ export const PatternSchema = DocumentSchema.extend({
 	comments: z.array(CommentSchema).optional().default([]),
 
 	destination: z.string().trim().min(1).max(100),
-	direction: z.enum(['0', '1']), // Change this
+	direction: PatternDirectionSchema,
 	headsign: z.string().trim().min(1).max(100),
 	is_locked: z.boolean().default(false),
 	line_id: z.string(),
@@ -96,17 +111,3 @@ export type Path = z.infer<typeof PathSchema>;
 export type Shape = z.infer<typeof ShapeSchema>;
 
 /* * */
-
-/**
- * Pattern with populated stop data (returned by API)
- */
-// export interface PatternWithStops extends Pattern {
-// 	path?: (Path & {
-// 		stop?: null | {
-// 			_id: string
-// 			latitude: number
-// 			longitude: number
-// 			name: string
-// 		}
-// 	})[]
-// }

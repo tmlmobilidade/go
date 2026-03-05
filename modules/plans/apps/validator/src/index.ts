@@ -9,7 +9,7 @@ import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { GtfsValidation } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
-import pjson from 'package.json' with { type: 'json' };
+import pjson from 'pjson' with { type: 'json' };
 
 /* * */
 
@@ -73,4 +73,4 @@ async function main() {
 	Logger.terminate(`Validation completed in ${globalTimer.get()}`);
 };
 
-runOnInterval(main, RUN_INTERVAL_MS);
+await runOnInterval(main, RUN_INTERVAL_MS);

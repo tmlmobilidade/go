@@ -5,7 +5,7 @@
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { IconCalendarCancel, IconCalendarRepeat, IconEye } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Dates, Formats } from '@tmlmobilidade/dates';
+import { Dates, FORMATS } from '@tmlmobilidade/dates';
 import { EventReplacementRule, EventRestrictionRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
 import { IconButton, Section, Text } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -36,7 +36,7 @@ export default function RulesListViewEventCard({ rule }: RulesListViewEventCardP
 	const eventDates
 		= rule?.dates?.map(d =>
 			Dates.fromOperationalDate(d, 'Europe/Lisbon')
-				.toLocaleString(Formats.DATE_SHORT, 'pt-PT'),
+				.toLocaleString(FORMATS.DATE_SHORT, 'pt-PT'),
 		).join(', ') ?? '';
 
 	const eventDatesSuffix
@@ -51,7 +51,7 @@ export default function RulesListViewEventCard({ rule }: RulesListViewEventCardP
 			WEEKDAY_OPTIONS.find(opt => opt.value === wd)?.label,
 		).filter(Boolean).join(', ') ?? '';
 
-		const periodNames = rule.yearPeriodIds?.map((yearPeriodId) => {
+		const periodNames = rule.year_period_ids?.map((yearPeriodId) => {
 			const period = periodsContext.data.raw.find(p => p._id === yearPeriodId);
 			return period?.name || yearPeriodId;
 		}).join(', ') || '';
