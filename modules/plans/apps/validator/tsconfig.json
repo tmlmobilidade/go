@@ -4,6 +4,7 @@
 		"baseUrl": ".",
 		"outDir": "dist",
 		"paths": {
+			"pjson": ["./package.json"],
 			"@/*": ["./src/*"]
 		},
 		"rootDir": "src"

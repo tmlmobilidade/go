@@ -22,6 +22,8 @@ import { initExportContext } from '@/utils/init-context.js';
 import { intro, log, outro, tasks } from '@clack/prompts';
 import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
 
+import { exportExecutiveSummary } from './tasks/executive-summary-setup/index.js';
+
 /* * */
 
 await (async function main() {
@@ -132,6 +134,11 @@ await (async function main() {
 			enabled: exportTypes.includes('sams-raw'),
 			task: async message => await exportSamsRaw({ context, message }),
 			title: exportTypeLabels['sams-raw'],
+		},
+		{
+			enabled: exportTypes.includes('executive-summary'),
+			task: async message => await exportExecutiveSummary({ context, message }),
+			title: exportTypeLabels['executive-summary'],
 		},
 
 	]);

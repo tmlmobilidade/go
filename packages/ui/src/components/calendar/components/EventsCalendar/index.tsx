@@ -5,6 +5,7 @@ import { CalendarKey, Dates } from '@tmlmobilidade/dates';
 import { type CalendarEvent, CalendarEventType } from '@tmlmobilidade/types';
 import { useRouter } from 'next/navigation';
 
+import { EVENT_TYPE_DEFS } from '../../../../icons/event-types';
 import { ErrorDisplay } from '../../../display/ErrorDisplay';
 import { LoadingOverlay } from '../../../loaders/LoadingOverlay';
 import { useCalendarUIContext } from '../../contexts/CalendarUI.context';
@@ -75,6 +76,12 @@ function EventsCalendarContent({
 		if (event.type === 'annotation') {
 			router.push(PAGE_ROUTES.dates.ANNOTATIONS_DETAIL(event.id));
 		}
+		if (event.type === 'holiday') {
+			router.push(PAGE_ROUTES.dates.HOLIDAYS_DETAIL(event.id));
+		}
+		if (event.type === 'event') {
+			router.push(PAGE_ROUTES.dates.EVENTS_DETAIL(event.id));
+		}
 	};
 
 	//
@@ -105,21 +112,35 @@ function EventsCalendarContent({
 			eventTypes={[
 				{
 					checked: uiContext.state.eventTypeFilters.get('period') !== false,
-					color: 'var(--color-primary)',
-					count: eventsContext.data.eventTypeCounts.periods,
+					color: EVENT_TYPE_DEFS['period'].color,
+					count: eventsContext.data.eventTypeCounts.yearPeriods,
 					id: 'period',
 					label: 'Períodos',
 				},
 				{
 					checked: uiContext.state.eventTypeFilters.get('annotation') !== false,
-					color: '#f59e0b',
+					color: EVENT_TYPE_DEFS['annotation'].color,
 					count: eventsContext.data.eventTypeCounts.annotations,
 					id: 'annotation',
 					label: 'Anotações',
 				},
+				{
+					checked: uiContext.state.eventTypeFilters.get('holiday') !== false,
+					color: EVENT_TYPE_DEFS['holiday'].color,
+					count: eventsContext.data.eventTypeCounts.holidays,
+					id: 'holiday',
+					label: 'Feriados',
+				},
+				{
+					checked: uiContext.state.eventTypeFilters.get('event') !== false,
+					color: EVENT_TYPE_DEFS['event'].color,
+					count: eventsContext.data.eventTypeCounts.events,
+					id: 'event',
+					label: 'Eventos',
+				},
 				...(eventsContext.data.eventTypeCounts.additional > 0 ? [{
 					checked: uiContext.state.eventTypeFilters.get('event') !== false,
-					color: 'var(--color-primary)',
+					color: EVENT_TYPE_DEFS['event'].color,
 					count: eventsContext.data.eventTypeCounts.additional,
 					id: 'event' as CalendarEventType,
 					label: 'Dias afetados',

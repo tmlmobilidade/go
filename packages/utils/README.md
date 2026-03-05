@@ -2,7 +2,7 @@
 
 A collection of utility functions and helpers for the TML Mobilidade Go monorepo, providing common functionality for batching operations, caching, HTTP requests, object manipulation, permissions, and more.
 
-## Installation
+## Installation 1
 
 ```bash
 npm install @tmlmobilidade/utils
@@ -215,14 +215,14 @@ import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 class Database {
   private static instance: Database | null = null;
-  
+
   static async getInstance(): Promise<Database> {
     if (!this.instance) {
       this.instance = await this.initialize();
     }
     return this.instance;
   }
-  
+
   async query(sql: string) {
     // ...
   }
@@ -240,4 +240,3 @@ AGPL-3.0-or-later
 ## Repository
 
 [GitHub](https://github.com/tmlmobilidade/go)
-

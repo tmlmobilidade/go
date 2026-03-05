@@ -61,7 +61,7 @@ export const TypologiesListContextProvider = ({ children }: PropsWithChildren) =
 	//
 	// B. Fetch data
 
-	const { data: allTypologiesData, error: allTypologiesError, isLoading: allTypologiesLoading } = useSWR<Typology[], Error>(API_ROUTES.offer.TYPOLOGIES_LIST, { refreshInterval: 5000 });
+	const { data: allTypologiesData, error: allTypologiesError, isLoading: allTypologiesLoading } = useSWR<Typology[], Error>(API_ROUTES.offer.TYPOLOGIES_LIST);
 
 	//
 	// C. Transform data

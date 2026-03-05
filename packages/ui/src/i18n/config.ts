@@ -10,7 +10,7 @@ import { i18nResourceKeysPtShared } from './resources';
 
 /* * */
 
-i18next
+await i18next
 	.use(ICU)
 	.use(initReactI18next)
 	.init({
@@ -18,4 +18,5 @@ i18next
 		resources: {
 			pt: i18nResourceKeysPtShared,
 		},
+		showSupportNotice: false,
 	});

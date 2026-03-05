@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type File, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema } from '@tmlmobilidade/types';
+import { type File, GtfsValidation, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema, User } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagCustom, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -21,6 +22,7 @@ interface PlanDetailContextState extends DetailContextStateTemplate {
 		id: string
 		operation_file: File | null
 		plan: null | Plan
+		user: null | User
 	}
 	flags: DetailContextStateTemplate['flags'] & {
 		canChangePlan: boolean
@@ -56,6 +58,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	const { mutate: plansListMutate } = useSWR<Plan[]>(API_ROUTES.plans.PLANS_LIST);
 	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), { refreshInterval: 5000 });
 	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: operationFileMutate } = useSWR<File>(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE(planId));
+	const { data: UserData } = useSWR<User>(planId && API_ROUTES.auth.USERS_DETAIL(planData?.created_by));
 
 	//
 	// C. Setup form
@@ -196,6 +199,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			id: planId,
 			operation_file: operationFileData,
 			plan: planData,
+			user: UserData,
 		},
 		flags: {
 			canChangePlan,
@@ -227,6 +231,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 		isLocking,
 		isReadOnly,
 		isSaving,
+		UserData,
 	]);
 
 	//

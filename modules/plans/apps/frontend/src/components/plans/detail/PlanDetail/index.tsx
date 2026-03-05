@@ -9,6 +9,7 @@ import { PlanDetailSectionController } from '@/components/plans/detail/PlanDetai
 import { PlanDetailSectionFeedInfo } from '@/components/plans/detail/PlanDetailSectionFeedInfo';
 import { PlanDetailSectionPcgiLegacy } from '@/components/plans/detail/PlanDetailSectionPcgiLegacy';
 import { PlanDetailSectionFiles } from '@/components/plans/detail/PlansDetailSectionFiles';
+import { PlanDetailFootnote } from '@/components/plans/detail/ValidationsDetailFootnote';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { ErrorDisplay, HasPermission, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
@@ -57,7 +58,7 @@ export function PlanDetail() {
 			>
 				<PlanDetailSectionController />
 			</HasPermission>
-
+			<PlanDetailFootnote />
 		</Pane>
 	);
 

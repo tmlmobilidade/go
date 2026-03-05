@@ -27,6 +27,9 @@ export async function promptExportTypes(): Promise<ExportType[]> {
 			'5. SAMs': [
 				{ label: exportTypeLabels['sams-raw'], value: 'sams-raw' },
 			],
+			'6. Sumário Executivo': [
+				{ label: exportTypeLabels['executive-summary'], value: 'executive-summary' },
+			],
 		},
 		required: true,
 	});

@@ -24,10 +24,10 @@ export function LineDetailSectionRoutes() {
 	// B. Render components
 
 	return (
-		<Collapsible description="Todas as variantes desta linha, incluindo a base." title="Rotas">
+		<Collapsible description="Todas as variantes desta linha, incluindo a base." title="Rotas" defaultOpen>
 			<Section gap="sm">
 				<Section padding="none">
-					{lineDetailContext.data.line.routes.map((route, index) => (
+					{(lineDetailContext.data.line?.routes.sort((a, b) => a.code.localeCompare(b.code)) ?? []).map((route, index) => (
 						<LineDetailRoute key={route._id ?? index} lineId={lineDetailContext.data.line?._id} routeData={route} />
 					))}
 				</Section>
