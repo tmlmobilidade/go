@@ -2,10 +2,6 @@
 
 name: tmlmobilidade-go-offer-production
 
-secrets:
-  ociprivatekey:
-    file: ./secrets/oci-private-key.pem
-
 services:
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -75,8 +71,6 @@ services:
       - ./secrets:/secrets
     env_file:
       - ./secrets/.env
-    secrets:
-      - ociprivatekey
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #

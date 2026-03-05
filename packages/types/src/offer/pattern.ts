@@ -1,16 +1,33 @@
 /* * */
 
+import { CommentSchema } from '@/_common/comment.js';
 import { DocumentSchema } from '@/_common/document.js';
+import { createGtfsMapper } from '@/gtfs-new/mapper.js';
+import { GtfsDirection } from '@/gtfs-new/trips.js';
 import { StopSchema } from '@/stops/stop.js';
 import { z } from 'zod';
 
-import { ScheduleRuleSchema } from './scheduleRule.js';
+import { StopsParametersListSchema } from './parameters.js';
+import { PatternUpdateRulesSchema, ScheduleRuleSchema } from './rules.js';
 
 /* * */
 
-export const directionOptions = [
-	{ label: 'Ida', value: '0' },
-	{ label: 'Volta', value: '1' },
+export const PatternDirectionValues = [
+	'outbound',
+	'inbound',
+] as const;
+
+export const PatternDirectionSchema = z.enum(PatternDirectionValues);
+export type PatternDirection = z.infer<typeof PatternDirectionSchema>;
+
+export const patternDirectionMapper = createGtfsMapper<typeof PatternDirectionValues[number], GtfsDirection>({
+	inbound: '1',
+	outbound: '0',
+});
+
+export const directionOptions: { label: string, value: typeof PatternDirectionValues[number] }[] = [
+	{ label: 'Ida', value: 'outbound' },
+	{ label: 'Volta', value: 'inbound' },
 ];
 
 /* * */
@@ -28,32 +45,39 @@ export const PathSchema = z.object({
 
 /* * */
 
+export const ShapeSchema = z.object({
+	extension: z.number(),
+	geojson: z.object({
+		geometry: z.object({
+			coordinates: z.array(z.array(z.number())),
+			type: z.string().default('LineString'),
+		}),
+		properties: z.object({}).optional(),
+		type: z.string().default('Feature'),
+	}),
+});
+
+/* * */
+
 export const PatternSchema = DocumentSchema.extend({
 	code: z.string().trim().min(1).max(10),
+
+	// Activity (field changes and notes)
+	comments: z.array(CommentSchema).optional().default([]),
+
 	destination: z.string().trim().min(1).max(100),
-	direction: z.enum(['0', '1']).default('0'),
+	direction: PatternDirectionSchema,
 	headsign: z.string().trim().min(1).max(100),
 	is_locked: z.boolean().default(false),
 	line_id: z.string(),
 	origin: z.string().trim().min(1).max(100),
+
+	parameters: StopsParametersListSchema.optional(),
+
 	path: z.array(PathSchema).optional(),
-	presets: z.object({
-		dwell_time: z.number().default(0),
-		velocity: z.number().default(20),
-	}).optional(),
 	route_id: z.string(),
 	rules: z.array(ScheduleRuleSchema).optional().default([]),
-	shape: z.object({
-		extension: z.number(),
-		geojson: z.object({
-			geometry: z.object({
-				coordinates: z.array(z.array(z.number())),
-				type: z.string().default('LineString'),
-			}),
-			properties: z.object({}).optional(),
-			type: z.string().default('Feature'),
-		}),
-	}).optional(),
+	shape: ShapeSchema.optional(),
 });
 
 export const PatternSimplifiedSchema = z.object({
@@ -70,7 +94,10 @@ export const CreatePatternSchema = PatternSchema.omit({ _id: true, created_at: t
 
 export const UpdatePatternSchema = CreatePatternSchema
 	.omit({ created_by: true })
-	.partial();
+	.partial()
+	.extend({
+		rules: PatternUpdateRulesSchema,
+	});
 
 /* * */
 
@@ -81,19 +108,6 @@ export type UpdatePatternDto = z.infer<typeof UpdatePatternSchema>;
 export type PatternSimplified = z.infer<typeof PatternSimplifiedSchema>;
 
 export type Path = z.infer<typeof PathSchema>;
+export type Shape = z.infer<typeof ShapeSchema>;
 
 /* * */
-
-/**
- * Pattern with populated stop data (returned by API)
- */
-// export interface PatternWithStops extends Pattern {
-// 	path?: (Path & {
-// 		stop?: null | {
-// 			_id: string
-// 			latitude: number
-// 			longitude: number
-// 			name: string
-// 		}
-// 	})[]
-// }

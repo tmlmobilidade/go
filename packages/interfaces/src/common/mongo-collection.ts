@@ -1,12 +1,12 @@
 /* * */
 
 import { type AggregationPipeline } from '@/common/aggregation-pipeline.js';
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { MongoConnector } from '@tmlmobilidade/mongo';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type UnixTimestamp } from '@tmlmobilidade/types';
-import { type AggregateOptions, type AggregationCursor, type Collection, type DeleteOptions, type DeleteResult, type Document, type Filter, type FindOptions, type IndexDescription, type InsertManyResult, type InsertOneOptions, type InsertOneResult, type MongoClientOptions, type OptionalUnlessRequiredId, type UpdateOptions, type UpdateResult, type WithId } from 'mongodb';
+import { type AggregateOptions, type AggregationCursor, type Collection, type DeleteOptions, type DeleteResult, type Document, type Filter, type FindOptions, Flatten, type IndexDescription, type InsertManyResult, type InsertOneOptions, type InsertOneResult, type MongoClientOptions, type OptionalUnlessRequiredId, type UpdateOptions, type UpdateResult, type WithId } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
@@ -53,22 +53,11 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		// Extract the database URI from environment variables
 		const dbUri = process.env[this.getEnvName()];
 		if (!dbUri) throw new Error(`Missing ${this.getEnvName()} environment variable`);
-		// Attempt to connect to the database
-		try {
-			// Connect to the MongoDB database
-			this.mongoConnector = new MongoConnector(dbUri, options);
-			await this.mongoConnector.connect();
-			// Setup collection
-			this.mongoCollection = this.mongoConnector.client.db('production').collection<T>(this.getCollectionName());
-			// Create indexes, if any are defined
-			// TODO: This should be refactored as indexes should be created in the database setup script
-			if (process.env.NODE_ENV === 'test' && this.getCollectionIndexes().length > 0) {
-				await this.mongoCollection.createIndexes(this.getCollectionIndexes());
-			}
-		}
-		catch (error) {
-			throw new Error(`Error connecting to ${this.getCollectionName()}`, { cause: error });
-		}
+		// Attempt to connect to the MongoDB database
+		this.mongoConnector = new MongoConnector(dbUri, options);
+		await this.mongoConnector.connect();
+		// Initialize the MongoDB collection instance
+		this.mongoCollection = this.mongoConnector.client.db('production').collection<T>(this.getCollectionName());
 	}
 
 	/**
@@ -90,42 +79,42 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		// If it is locked, then throw an error to prevent the operation.
 		if (!options?.forceIfLocked) {
 			const isLocked = await this.isLockedById(id);
-			if (isLocked) throw new HttpException(HttpStatus.FORBIDDEN, 'Document is locked and cannot be deleted');
+			if (isLocked) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'Document is locked and cannot be deleted');
 		}
 		// Perform the delete operation
 		const result = await this.deleteOne({ _id: { $eq: id } }, options);
 		// Check if the delete operation was acknowledged
-		if (!result.acknowledged) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to delete documents', result);
+		if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete documents', result);
 		// Return the result of the delete operation
 		return result;
 	}
 
 	/**
 	 * Deletes multiple documents matching the filter criteria.
-	 * @param filter - The filter criteria to match documents to delete
-	 * @returns A promise that resolves to the result of the delete operation
+	 * @param filter The filter criteria to match documents to delete.
+	 * @returns A promise that resolves to the result of the delete many operation.
 	 */
 	public async deleteMany(filter: Filter<T>): Promise<DeleteResult> {
 		const result = await this.mongoCollection.deleteMany(filter);
-		if (!result.acknowledged) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to delete documents', result);
+		if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete documents', result);
 		return result;
 	}
 
 	/**
 	 * Deletes a single document matching the filter criteria.
-	 * @param filter - The filter criteria to match the document to delete
-	 * @returns A promise that resolves to the result of the delete operation
+	 * @param filter The filter criteria to match the document to delete.
+	 * @returns A promise that resolves to the result of the delete operation.
 	 */
 	public async deleteOne(filter: Filter<T>, options?: DeleteOptions & { forceIfLocked?: boolean }): Promise<DeleteResult> {
 		// If forceIfLocked is not set then check if the document is locked.
 		// If it is locked, then throw an error to prevent the operation.
 		if (!options?.forceIfLocked) {
 			const isLocked = await this.isLocked(filter);
-			if (isLocked) throw new HttpException(HttpStatus.FORBIDDEN, 'Document is locked and cannot be deleted');
+			if (isLocked) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'Document is locked and cannot be deleted');
 		}
 		// Perform the delete operation
 		const result = await this.mongoCollection.deleteOne(filter, options);
-		if (!result.acknowledged) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to delete document', result);
+		if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete document', result);
 		return result;
 	}
 
@@ -138,9 +127,10 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 
 	/**
 	 * Finds all distinct values for a key in the collection.
-	 * @param key - The key to find distinct values for
-	 * @returns A promise that resolves to an array of distinct values for the given key
+	 * @param key The key to find distinct values for.
+	 * @returns A promise that resolves to an array of distinct values for the given key.
 	 */
+	public async distinct<Key extends keyof WithId<T>>(key: Key, filter: Filter<T>): Promise<Array<Flatten<WithId<T>[Key]>>>;
 	public async distinct<K extends keyof T>(key: K): Promise<T[K][]> {
 		return this.mongoCollection.distinct(key as string);
 	}
@@ -154,7 +144,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	public async exists<K extends keyof T>(key: K, value: T[K]): Promise<boolean> {
 		const filter: Filter<T> = { [key]: value } as Filter<T>;
 		const doc = await this.mongoCollection.findOne(filter, { projection: { [key]: 1 } });
-		return doc !== null;
+		return !!doc;
 	}
 
 	/**
@@ -164,7 +154,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	 */
 	public async existsById(id: T['_id']): Promise<boolean> {
 		const foundDoc = await this.mongoCollection.findOne({ _id: id }, { projection: { _id: 1 } });
-		return foundDoc !== null;
+		return !!foundDoc;
 	}
 
 	/**
@@ -248,9 +238,8 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 						throw new Error('No schema defined for insert operation. This is either an internal interface error or you should pass unsafe=true to the insert operation.');
 					}
 					parsedDocument = this.createSchema.parse(newDocument) as OptionalUnlessRequiredId<T>;
-				}
-				catch (error) {
-					throw new HttpException(HttpStatus.BAD_REQUEST, error.message, { cause: error });
+				} catch (error) {
+					throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 				}
 			}
 			parsedDocuments.push(parsedDocument);
@@ -283,9 +272,8 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 				if (doc.created_by) parsedDocument.created_by = doc.created_by;
 				if (doc.updated_at) parsedDocument.updated_at = doc.updated_at;
 				if (doc.updated_by) parsedDocument.updated_by = doc.updated_by;
-			}
-			catch (error) {
-				throw new HttpException(HttpStatus.BAD_REQUEST, error.message, { cause: error });
+			} catch (error) {
+				throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 			}
 		}
 		// Add default fields if they are missing from the original document
@@ -304,12 +292,12 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		// Attempt to insert the document into the collection
 		const result = await this.mongoCollection.insertOne(parsedDocument, options);
 		// Check if the insert operation was acknowledged
-		if (!result.acknowledged) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to insert document', result);
+		if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to insert document', result);
 		// If returnResult is false, return the insert result directly
 		if (options && options.returnResult === false) return result as TReturnDocument extends true ? WithId<T> : InsertOneResult<T>;
 		// Otherwise, fetch and return the inserted document
 		const insertedDoc = await this.findOne({ _id: { $eq: result.insertedId as T['_id'] } }, options);
-		if (!insertedDoc) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to find inserted document', result);
+		if (!insertedDoc) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to find inserted document', result);
 		return insertedDoc as TReturnDocument extends true ? WithId<T> : InsertOneResult<T>;
 	}
 
@@ -336,15 +324,15 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	public async isLockedById(id: T['_id']): Promise<boolean> {
 		// Fetch the document by its ID from the database
 		const foundDoc = await this.findById(id);
-		// If the document has a is_locked field and it resolves to a truthy value,
-		// then the document is considered locked.
+		// If the document has an is_locked field and it resolves
+		// to a truthy value, then the document is considered locked.
 		if (foundDoc?.is_locked) return true;
 		// Otherwise, the document is not locked.
 		return false;
 	}
 
 	/**
-	 * Toogle the lock status of a document by its ID.
+	 * Toggle the lock status of a document by its ID.
 	 * @param id The ID of the document to toggle lock status.
 	 * @param forceValue Optional boolean to explicitly set the lock status.
 	 * @returns A promise that resolves to the result of the update operation.
@@ -371,7 +359,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		// If it is locked, then throw an error to prevent the operation.
 		if (!options?.forceIfLocked) {
 			const isLocked = await this.isLockedById(id);
-			if (isLocked) throw new HttpException(HttpStatus.FORBIDDEN, 'Document is locked and cannot be updated');
+			if (isLocked) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'Document is locked and cannot be updated');
 		}
 		// Perform the update operation
 		return this.updateOne({ _id: { $eq: id } }, updateFields, options);
@@ -394,9 +382,8 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		if (this.updateSchema) {
 			try {
 				parsedUpdateFields = this.updateSchema.parse(updateFields);
-			}
-			catch (error) {
-				throw new HttpException(HttpStatus.BAD_REQUEST, error.message, { cause: error });
+			} catch (error) {
+				throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 			}
 		}
 
@@ -405,16 +392,16 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		if (options && options.returnResults === false) return result as TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>;
 
 		if (!result.acknowledged) {
-			throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to update documents', result);
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to update documents', result);
 		}
 
-		const updated_docs = await this.findMany(filter, options);
+		const updatedDocuments = await this.findMany(filter, options);
 
-		if (!updated_docs) {
-			throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to find updated documents', result);
+		if (!updatedDocuments) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to find updated documents', result);
 		}
 
-		return updated_docs as TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>;
+		return updatedDocuments as TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>;
 	}
 
 	/**
@@ -429,16 +416,15 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		// If it is locked, then throw an error to prevent the operation.
 		if (!options?.forceIfLocked) {
 			const isLocked = await this.isLocked(filter);
-			if (isLocked) throw new HttpException(HttpStatus.FORBIDDEN, 'Document is locked and cannot be updated');
+			if (isLocked) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'Document is locked and cannot be updated');
 		}
 		// Perform the update operation
 		let parsedUpdateFields = updateFields;
 		if (this.updateSchema) {
 			try {
 				parsedUpdateFields = this.updateSchema.parse(updateFields);
-			}
-			catch (error) {
-				throw new HttpException(HttpStatus.BAD_REQUEST, error.message, { cause: error });
+			} catch (error) {
+				throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 			}
 		}
 
@@ -447,15 +433,13 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		if (options && options.returnResult === false) return result as TReturnDocument extends true ? WithId<T> : UpdateResult<T>;
 
 		if (!result.acknowledged) {
-			throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to update documents', result);
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to update documents', result);
 		}
 
-		const updated_doc = await this.findOne(filter, options);
-		if (!updated_doc) {
-			throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to find updated document', result);
-		}
+		const updatedDocument = await this.findOne(filter, options);
+		if (!updatedDocument) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to find updated document', result);
 
-		return updated_doc as TReturnDocument extends true ? WithId<T> : UpdateResult<T>;
+		return updatedDocument as TReturnDocument extends true ? WithId<T> : UpdateResult<T>;
 	}
 
 	// Abstract method for subclasses to provide the MongoDB collection indexes

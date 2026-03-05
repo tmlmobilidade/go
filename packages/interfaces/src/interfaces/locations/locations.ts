@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable perfectionist/sort-classes */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
 import { MongoConnector } from '@tmlmobilidade/mongo';
 import { type AvailableLocations, type CensusFeature, type District, type DistrictFeature, type Locality, type LocalityFeature, type Location, type Municipality, type MunicipalityFeature, type Parish, type ParishFeature } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { Collection, Document, Filter, FindOptions, WithId } from 'mongodb';
 
 /* * */
@@ -135,7 +135,7 @@ class LocationsClass {
 		await this.findOne(this.collections.census, this.geoFilter(lat, lon), options);
 
 	public async findLocationByGeo(lat: number, lon: number, { census = false }: { census?: boolean } = {}): Promise<Location> {
-		if (!lat || !lon) throw new HttpException(HttpStatus.BAD_REQUEST, 'Missing latitude or longitude');
+		if (!lat || !lon) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing latitude or longitude');
 
 		const municipality = await this.findMunicipalitiesByGeo(lat, lon, { projection: { _id: 1, properties: 1 } });
 		const parish = await this.findParishesByGeo(lat, lon, { projection: { _id: 1, properties: 1 } });
@@ -261,4 +261,4 @@ class LocationsClass {
 
 /* * */
 
-export const locations = AsyncSingletonProxy(LocationsClass);
+export const locations = asyncSingletonProxy(LocationsClass);

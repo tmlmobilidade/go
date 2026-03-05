@@ -2,15 +2,14 @@
 
 /* * */
 
+import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { computeRuleImpact } from '@/utils/rules/ruleAppliesToDate';
-import { buildRuleSummary } from '@/utils/rules/ruleSummary';
 import { useForm } from '@mantine/form';
-import { Dates } from '@tmlmobilidade/dates';
-import { OPERATING_MODE, ScheduleRule, ScheduleRuleSchema } from '@tmlmobilidade/types';
+import { buildRuleSummary, Dates, getManualRuleAffectedDates } from '@tmlmobilidade/dates';
+import { ManualRule, ManualRuleSchema } from '@tmlmobilidade/types';
 import { type UseFormReturnType } from '@tmlmobilidade/ui';
 import { zodResolver } from 'mantine-form-zod-resolver';
-import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 import { closeCreateRuleModal } from './RuleCreate.modal';
 
@@ -21,19 +20,21 @@ interface RuleCreateContextState {
 		closeDrawer: () => void
 		deleteRule?: () => void
 		openDrawer: () => void
+		setEventExceptionEnabled: (enabled: boolean) => void
 		submitRule: () => void
 	}
 	data: {
-		form: UseFormReturnType<ScheduleRule>
+		form: UseFormReturnType<ManualRule>
 		ruleImpact: {
 			count: number
 			dates: string[]
 		}
-		ruleSummary: string
+		ruleSummary: { long: string, short: string }
 	}
 	flags: {
 		isDrawerOpen: boolean
 		isEditing: boolean
+		isEventExceptionEnabled: boolean
 	}
 }
 
@@ -51,14 +52,16 @@ export function useRuleCreateContext() {
 
 /* * */
 
-export const RuleCreateContextProvider = ({ children, initialValues, onDelete, onSubmit }: PropsWithChildren<{ initialValues?: ScheduleRule, onDelete?: () => void, onSubmit: (rule: ScheduleRule) => void }>) => {
+export const RuleCreateContextProvider = ({ children, initialValues, onDelete, onSubmit }: PropsWithChildren<{ initialValues?: ManualRule, onDelete?: () => void, onSubmit: (rule: ManualRule) => void }>) => {
 	//
 
 	//
 	// A. Setup variables
 
 	const periodsContext = usePeriodsContext();
+	const eventsContext = useEventsContext();
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+	const [isEventExceptionEnabled, setIsEventExceptionEnabled] = useState(Boolean(initialValues?.event_id));
 
 	//
 	// B. Fetch data
@@ -66,14 +69,17 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	//
 	// C. Setup form
 
-	const form = useForm<ScheduleRule>({
+	const form = useForm<ManualRule>({
 		initialValues: initialValues || {
-			operatingMode: OPERATING_MODE.INCLUDE,
-			periodIds: [],
-			timePoints: [],
+			_id: crypto.randomUUID(),
+			kind: 'manual',
+			operating_mode: 'include',
+			timepoints: [],
+			weekdays: [],
+			year_period_ids: [],
 		},
 		mode: 'controlled',
-		validate: zodResolver(ScheduleRuleSchema),
+		validate: zodResolver(ManualRuleSchema),
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
@@ -82,24 +88,25 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	//
 
 	const ruleSummary = useMemo(() => buildRuleSummary(form.values, {
-		periods: periodsContext.data.periods,
-	}), [form.values, periodsContext.data.periods]);
+		events: eventsContext.data.raw,
+		periods: periodsContext.data.raw,
+	}),
+	[eventsContext.data.raw, form.values, periodsContext.data.raw]);
 
-	const ruleImpact = useMemo(() => computeRuleImpact(
+	const ruleImpact = useMemo(() => getManualRuleAffectedDates(
 		form.values,
 		{
 			endDate: Dates.now('Europe/Lisbon').plus({ years: 1 }).js_date,
-			events: new Set(),
-			holidays: new Set(),
-			periods: periodsContext.data.periods,
+			events: eventsContext.data.raw,
+			periods: periodsContext.data.raw,
 			startDate: new Date(),
 		},
-	), [form.values, periodsContext.data.periods]);
+	), [eventsContext.data.raw, form.values, periodsContext.data.raw]);
 
 	//
 	// D. Handle actions
 
-	const handleSubmitRule = () => {
+	const handleSubmitRule = useCallback(() => {
 		// Validate form
 		const validation = form.validate();
 		if (validation.hasErrors) {
@@ -109,7 +116,8 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 		// Get the rule values and add the generated name
 		const ruleValues = {
 			...form.getValues(),
-			name: ruleSummary,
+			name: ruleSummary.long,
+			shortName: ruleSummary.short,
 		};
 
 		// Call the onSubmit callback
@@ -117,14 +125,14 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 
 		// Close the modal
 		closeCreateRuleModal();
-	};
+	}, [form, ruleSummary.long, ruleSummary.short, onSubmit]);
 
-	const handleDeleteRule = () => {
+	const handleDeleteRule = useCallback(() => {
 		if (onDelete) {
 			onDelete();
 			closeCreateRuleModal();
 		}
-	};
+	}, [onDelete]);
 
 	//
 	// E. Define context value
@@ -134,6 +142,7 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 			closeDrawer: () => setIsDrawerOpen(false),
 			deleteRule: onDelete ? handleDeleteRule : undefined,
 			openDrawer: () => setIsDrawerOpen(true),
+			setEventExceptionEnabled: (enabled: boolean) => setIsEventExceptionEnabled(enabled),
 			submitRule: handleSubmitRule,
 		},
 		data: {
@@ -144,12 +153,18 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 		flags: {
 			isDrawerOpen,
 			isEditing: Boolean(initialValues),
+			isEventExceptionEnabled,
 		},
 	}), [
 		form,
+		handleDeleteRule,
+		handleSubmitRule,
+		initialValues,
 		ruleImpact,
 		ruleSummary,
 		isDrawerOpen,
+		isEventExceptionEnabled,
+		onDelete,
 	]);
 
 	//

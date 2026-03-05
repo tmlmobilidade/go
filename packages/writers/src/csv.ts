@@ -102,8 +102,7 @@ export class CsvWriter<T> {
 			this.CURRENT_BATCH_DATA = [];
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			throw new Error(`Error at flush(): ${error.message}`);
 		}
 	}

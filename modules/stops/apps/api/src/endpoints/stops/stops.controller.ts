@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { stops } from '@tmlmobilidade/interfaces';
 import { type Stop, type UpdateStopDto } from '@tmlmobilidade/types';
@@ -19,7 +19,7 @@ export class StopsController {
 	static async create(request: FastifyRequest, reply: FastifyReply<Stop>) {
 		const data = request.body as Stop;
 		const result = await stops.insertOne(data);
-		reply.send({ data: result, error: null, statusCode: HttpStatus.CREATED });
+		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED });
 	}
 
 	/**
@@ -30,8 +30,8 @@ export class StopsController {
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Stop>) {
 		await stops.toggleDeleteById(request.params.id);
 		const foundStop = await stops.findById(request.params.id);
-		if (!foundStop) throw new HttpException(HttpStatus.NOT_FOUND, 'Stop not found');
-		reply.send({ data: foundStop, error: null, statusCode: HttpStatus.OK });
+		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		reply.send({ data: foundStop, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -41,7 +41,7 @@ export class StopsController {
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Stop[]>) {
 		const data = await stops.findMany({}, { sort: { created_at: -1 } });
-		reply.send({ data, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -51,8 +51,8 @@ export class StopsController {
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Stop>) {
 		const foundStop = await stops.findById(request.params.id);
-		if (!foundStop) throw new HttpException(HttpStatus.NOT_FOUND, 'Stop not found');
-		reply.send({ data: foundStop, error: null, statusCode: HttpStatus.OK });
+		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		reply.send({ data: foundStop, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -63,8 +63,8 @@ export class StopsController {
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Stop>) {
 		await stops.toggleLockById(request.params.id);
 		const foundStop = await stops.findById(request.params.id);
-		if (!foundStop) throw new HttpException(HttpStatus.NOT_FOUND, 'Stop not found');
-		reply.send({ data: foundStop, error: null, statusCode: HttpStatus.OK });
+		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		reply.send({ data: foundStop, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -74,6 +74,6 @@ export class StopsController {
 	 */
 	static async update(request: FastifyRequest<{ Body: UpdateStopDto, Params: { id: string } }>, reply: FastifyReply<Stop>) {
 		const data = await stops.updateById(request.params.id, request.body);
-		reply.send({ data, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
 	}
 }

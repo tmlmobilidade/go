@@ -1,14 +1,46 @@
 /* * */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { generateComments } from '@/utils/comments.js';
+import { mergePatternWithEventRules } from '@/utils/rules.js';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { patterns, stops } from '@tmlmobilidade/interfaces';
-import { CreatePatternDto, type Pattern, PermissionCatalog, type UpdatePatternDto } from '@tmlmobilidade/types';
+import { CreatePatternDto, NoteComment, type Pattern, PermissionCatalog, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 
 /* * */
 
 export class PatternsController {
 	//
+
+	/**
+	 * Adds a comment to a pattern by pattern ID
+	 */
+	static async comment(request: FastifyRequest<{ Body: NoteComment, Params: { id: string } }>, reply: FastifyReply<Pattern>) {
+		//
+
+		const patternData = await patterns.findById(request.params.id);
+
+		if (!patternData) {
+			return reply.status(HTTP_STATUS.NOT_FOUND).send({
+				data: null,
+				error: 'Pattern not found.',
+				statusCode: HTTP_STATUS.NOT_FOUND,
+			});
+		}
+
+		const createdBy = request.me.first_name + ' ' + request.me.last_name;
+
+		const updateResult = await patterns.updateById(
+			request.params.id,
+			{ comments: [...patternData.comments, { ...request.body, created_by: createdBy, updated_by: createdBy }], updated_by: createdBy },
+		);
+
+		return reply.send({
+			data: updateResult,
+			error: null,
+			statusCode: HTTP_STATUS.OK,
+		});
+	}
 
 	/**
 	 * Creates a new pattern.
@@ -27,7 +59,7 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create patterns');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create patterns');
 		}
 
 		//
@@ -38,7 +70,7 @@ export class PatternsController {
 		//
 		// Send the response
 
-		reply.send({ data: newPattern, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: newPattern, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -53,7 +85,7 @@ export class PatternsController {
 		const pattern = await patterns.findById(id);
 
 		if (!pattern) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Pattern not found');
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 		}
 
 		//
@@ -65,14 +97,14 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete patterns');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete patterns');
 		}
 
 		//
 
 		await patterns.deleteById(id);
 
-		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -88,7 +120,9 @@ export class PatternsController {
 
 		const patternData = await patterns.findById(request.params.id);
 
-		if (!patternData) throw new HttpException(HttpStatus.NOT_FOUND, 'Pattern not found');
+		if (!patternData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
+
+		const merged = await mergePatternWithEventRules(patternData);
 
 		//
 		// Get the resource permissions for patterns for the current user.
@@ -99,7 +133,7 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read patterns');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read patterns');
 		}
 
 		//
@@ -122,9 +156,9 @@ export class PatternsController {
 
 			// Return pattern with populated path
 			return reply.send({
-				data: { ...patternData, path: populatedPath },
+				data: { ...merged, path: populatedPath },
 				error: null,
-				statusCode: HttpStatus.OK,
+				statusCode: HTTP_STATUS.OK,
 			});
 		}
 
@@ -132,9 +166,9 @@ export class PatternsController {
 		// Fetch the pattern data
 
 		return reply.send({
-			data: patternData,
+			data: merged,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//
@@ -157,7 +191,7 @@ export class PatternsController {
 		// If pattern does not exist, throw error
 
 		if (!patternData) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Pattern not found');
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 		}
 
 		//
@@ -169,7 +203,7 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update patterns');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update patterns');
 		}
 
 		//
@@ -191,7 +225,7 @@ export class PatternsController {
 			const associatedStop = await stops.findOne({ legacy_id: pathItem.stop_id.trim() });
 
 			if (!associatedStop) {
-				throw new HttpException(HttpStatus.BAD_REQUEST, `The stop "${pathItem.stop_id}" does not exist`);
+				throw new HttpException(HTTP_STATUS.BAD_REQUEST, `The stop "${pathItem.stop_id}" does not exist`);
 			}
 
 			// Get original path stop to preserve user settings
@@ -213,10 +247,22 @@ export class PatternsController {
 			});
 		}
 
+		// Set default values for avg_speed and dwell_time
+		const defaultParameter: StopsParameter = {
+			_id: crypto.randomUUID(),
+			kind: 'default',
+			path: formattedPath.map(p => ({
+				avg_speed: 0,
+				dwell_time: 30,
+				stop_id: p.stop_id,
+			})),
+		};
+
 		//
 		// Update the pattern with imported data
 
-		const updatedPattern = await patterns.updateById(patternData._id, {
+		const updatedPattern: Pattern = await patterns.updateById(patternData._id, {
+			parameters: [defaultParameter],
 			path: formattedPath,
 			shape: {
 				extension: Math.round(shapeExtension),
@@ -237,7 +283,7 @@ export class PatternsController {
 		reply.send({
 			data: updatedPattern,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//
@@ -256,7 +302,7 @@ export class PatternsController {
 
 		const patternData = await patterns.findById(request.params.id);
 
-		if (!patternData) throw new HttpException(HttpStatus.NOT_FOUND, 'Pattern not found');
+		if (!patternData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 
 		//
 		// Get the resource permissions for patterns for the current user.
@@ -267,15 +313,15 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to lock/unlock patterns');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock patterns');
 		}
 
 		// If authorized, toggle the lock status of the pattern
 		await patterns.toggleLockById(request.params.id);
 		const foundPattern = await patterns.findById(request.params.id);
-		if (!foundPattern) throw new HttpException(HttpStatus.NOT_FOUND, 'Pattern not found');
+		if (!foundPattern) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 
-		return reply.send({ data: foundPattern, error: null, statusCode: HttpStatus.OK });
+		return reply.send({ data: foundPattern, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -293,7 +339,7 @@ export class PatternsController {
 
 		const patternData = await patterns.findById(request.params.id);
 
-		if (!patternData) throw new HttpException(HttpStatus.NOT_FOUND, 'Pattern not found');
+		if (!patternData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 
 		//
 		// Get the resource permissions for patterns for the current user.
@@ -304,13 +350,35 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update patterns');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update patterns');
 		}
+
+		const sanitizedBody = UpdatePatternSchema.parse(request.body);
+
+		//
+		// Generate activity comments
+		const patternComments = generateComments(
+			patternData,
+			sanitizedBody,
+			{
+				excludeFields: ['comments', 'updated_at', 'updated_by'],
+				updatedBy: request.me.first_name + ' ' + request.me.last_name,
+			},
+		);
+
+		// Merge with existing comments
+		const updateData = {
+			...sanitizedBody,
+			comments: [
+				...(patternData.comments || []),
+				...patternComments,
+			],
+		};
 
 		//
 		// Update the pattern
 
-		const updatedPattern = await patterns.updateById(patternData._id, request.body);
+		const updatedPattern = await patterns.updateById(patternData._id, updateData);
 
 		//
 		// Send the updated pattern data as the response
@@ -318,7 +386,7 @@ export class PatternsController {
 		reply.send({
 			data: updatedPattern,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//

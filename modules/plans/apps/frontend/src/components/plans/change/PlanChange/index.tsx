@@ -42,6 +42,7 @@ export function PlanChange() {
 	);
 
 	return (
+		// eslint-disable-next-line react/jsx-key
 		<Pane header={[<PlanChangeHeader />]}>
 			<Section>
 				<Grid gap="md">

@@ -1,10 +1,10 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type CreateRideAcceptanceDto, CreateRideAcceptanceSchema, type RideAcceptance, type UpdateRideAcceptanceDto, UpdateRideAcceptanceSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy, compareObjects, flattenObject } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy, compareObjects, flattenObject } from '@tmlmobilidade/utils';
 import { type Filter, IndexDescription, InsertOneOptions, UpdateOptions } from 'mongodb';
 import { z } from 'zod';
 
@@ -61,7 +61,7 @@ class RideAcceptanceClass extends MongoCollectionClass<RideAcceptance, CreateRid
 		const prevAcceptance = await this.findByRideId(ride_id);
 
 		if (!prevAcceptance) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Ride acceptance not found');
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride acceptance not found');
 		}
 
 		const diff = compareObjects<RideAcceptance>(prevAcceptance, data);
@@ -105,4 +105,4 @@ class RideAcceptanceClass extends MongoCollectionClass<RideAcceptance, CreateRid
 
 /* * */
 
-export const rideAcceptances: Omit<RideAcceptanceClass, 'deleteById' | 'deleteMany' | 'deleteOne' | 'insertOne' | 'updateById' | 'updateOne'> = AsyncSingletonProxy(RideAcceptanceClass);
+export const rideAcceptances: Omit<RideAcceptanceClass, 'deleteById' | 'deleteMany' | 'deleteOne' | 'insertOne' | 'updateById' | 'updateOne'> = asyncSingletonProxy(RideAcceptanceClass);

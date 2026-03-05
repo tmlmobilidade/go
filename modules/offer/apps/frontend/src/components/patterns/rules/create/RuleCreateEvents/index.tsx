@@ -2,42 +2,59 @@
 
 /* * */
 
-import { Section, Text, TextInput } from '@tmlmobilidade/ui';
-
-import { useRuleCreateContext } from '../RuleCreate.context';
+import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
+import { useEventsContext } from '@/contexts/Events.context';
+import { Dates, FORMATS } from '@tmlmobilidade/dates';
+import { Section, Select, Switch } from '@tmlmobilidade/ui';
 
 /* * */
 
 export function RuleCreateEvents() {
 	//
+
+	//
 	// A. Setup variables
 
-	const { form } = useRuleCreateContext().data;
+	const createRuleContext = useRuleCreateContext();
+	const { data: eventsData } = useEventsContext();
+
+	const EVENT_OPTIONS = eventsData.raw.map(event => ({
+		label: `${event.title} (${event.dates.sort().map(date => Dates.fromOperationalDate(date, 'Europe/Lisbon').toLocaleString(FORMATS.DATE_FULL, 'pt-PT')).join(', ')})`,
+		value: event._id,
+	}));
 
 	//
-	// B. Handlers
-
-	//
-	// C. Render
+	// C. Render components
 
 	return (
 		<Section gap="md">
+			<Section gap="xs" padding="none">
+				<Switch
+					checked={createRuleContext.flags.isEventExceptionEnabled}
+					description="Se ativado, a regra aplica-se apenas ao evento selecionado e ignora períodos e dias da semana."
+					label="Exceção por evento"
+					onChange={(event) => {
+						const enabled = event.currentTarget.checked;
+						createRuleContext.actions.setEventExceptionEnabled(enabled);
+						if (enabled) {
+							createRuleContext.data.form.setFieldValue('year_period_ids', []);
+							createRuleContext.data.form.setFieldValue('weekdays', []);
+						} else {
+							createRuleContext.data.form.setFieldValue('event_id', undefined);
+						}
+					}}
+				/>
+			</Section>
 
-			<Text weight="medium">Eventos especiais</Text>
-
-			<TextInput
-				placeholder="Introduza IDs de eventos"
-				value={form.values.events?.join(', ') || ''}
-				w="100%"
-				onChange={(e) => {
-					const events = e.currentTarget.value
-						.split(',')
-						.map(s => s.trim())
-						.filter(Boolean);
-					form.setFieldValue('events', events.length > 0 ? events : undefined);
-				}}
-			/>
-
+			{createRuleContext.flags.isEventExceptionEnabled && (
+				<Select
+					key={createRuleContext.data.form.key('event_id')}
+					data={EVENT_OPTIONS}
+					value={createRuleContext.data.form.values.event_id || []}
+					w="100%"
+					{...createRuleContext.data.form.getInputProps('event_id')}
+				/>
+			)}
 		</Section>
 	);
 }

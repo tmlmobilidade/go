@@ -49,7 +49,7 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 	// B. Fetch data
 
 	const { mutate: typologiesListMutate } = useSWR<Typology[]>(API_ROUTES.offer.TYPOLOGIES_LIST);
-	const { data: typologyData, error: typologyError, isLoading: typologyLoading, mutate: typologyMutate } = useSWR<Typology>(API_ROUTES.offer.TYPOLOGIES_DETAIL(typologyId), { refreshInterval: 5000 });
+	const { data: typologyData, error: typologyError, isLoading: typologyLoading, mutate: typologyMutate } = useSWR<Typology>(API_ROUTES.offer.TYPOLOGIES_DETAIL(typologyId));
 
 	//
 	// C. Setup form

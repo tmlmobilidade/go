@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HttpStatus, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
@@ -22,14 +22,14 @@ export class AuthController {
 		const tokenResult = await verificationTokens.findOne({ token: { $eq: request.body.token } });
 		// If the token is invalid or expired, throw an error
 		if (!tokenResult || tokenResult.expires_at < Dates.now('utc').unix_timestamp) {
-			throw new HttpException(HttpStatus.BAD_REQUEST, 'Invalid or expired token');
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid or expired token');
 		};
 		// Update the user's password in the database
 		await users.updateById(tokenResult.user_id, { password_hash: request.body.password_hash });
 		// Once the token is validated, delete it from the database
 		await verificationTokens.deleteOne({ token: { $eq: request.body.token } });
 		// Send a success response
-		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 		// Log the password change event
 		Logger.info(`Password changed for user ID: ${tokenResult.user_id}`);
 	}
@@ -41,7 +41,7 @@ export class AuthController {
 		// Validate the request body against the LoginDto schema
 		const result = LoginDtoSchema.safeParse(request.body);
 		// If validation fails, throw a bad request error
-		if (!result.success) throw new HttpException(HttpStatus.BAD_REQUEST, result.error.message);
+		if (!result.success) throw new HttpException(HTTP_STATUS.BAD_REQUEST, result.error.message);
 		// Call the authProvider to login the user
 		const newSession = await authProvider.login({
 			email: result.data.email,
@@ -56,7 +56,7 @@ export class AuthController {
 			secure: true,
 		});
 		// Send the session data in the response
-		reply.send({ data: newSession, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: newSession, error: null, statusCode: HTTP_STATUS.OK });
 		// Log the login event
 		Logger.info(`User logged in: ${newSession.user_id}`);
 	}
@@ -78,7 +78,7 @@ export class AuthController {
 			secure: true,
 		});
 		// Send a success response
-		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -87,7 +87,7 @@ export class AuthController {
 	static async sendPasswordResetEmail(request: FastifyRequest<{ Body: { email: string } }>, reply: FastifyReply<void>) {
 		// Search user by the email provided in the request body
 		const foundUser = await users.findByEmail(request.body.email);
-		if (!foundUser) throw new HttpException(HttpStatus.NOT_FOUND, `User not found with email ${request.body.email}`);
+		if (!foundUser) throw new HttpException(HTTP_STATUS.NOT_FOUND, `User not found with email ${request.body.email}`);
 		// Generate a random token for password reset
 		const randomToken = generateRandomToken();
 		// Create a verification token entry in the database
@@ -99,14 +99,14 @@ export class AuthController {
 		});
 		// Send the password reset email to the user
 		await sendResetPasswordEmail({
-			props: {
-				first_name: foundUser.first_name,
-				password_reset_link: `${PAGE_ROUTES.auth.CHANGE_PASSWORD_LIST}?token=${randomToken}&email=${encodeURIComponent(foundUser.email)}`,
+			data: {
+				firstName: foundUser.first_name,
+				resetPasswordUrl: `${PAGE_ROUTES.auth.CHANGE_PASSWORD_LIST}?token=${randomToken}&email=${encodeURIComponent(foundUser.email)}`,
 			},
 			to: request.body.email,
 		});
 		// Send a success response
-		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 		// Log the password reset email event
 		Logger.info(`Password reset email sent to "${request.body.email}" for User ID ${foundUser._id}`);
 	}

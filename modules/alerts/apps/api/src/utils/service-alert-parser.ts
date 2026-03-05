@@ -1,5 +1,5 @@
 import { type Line } from '@carrismetropolitana/api-types/network';
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
 import { files } from '@tmlmobilidade/interfaces';
 import { type ServiceAlertResponseItem } from '@tmlmobilidade/types';
 import { Alert, File } from '@tmlmobilidade/types';
@@ -67,7 +67,7 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 				});
 				break;
 			default:
-				throw new HttpException(HttpStatus.BAD_REQUEST, `Invalid reference type: ${alert.reference_type}`);
+				throw new HttpException(HTTP_STATUS.BAD_REQUEST, `Invalid reference type: ${alert.reference_type}`);
 		}
 
 		return informed_entity;

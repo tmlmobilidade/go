@@ -104,14 +104,12 @@ export async function processCalendarFile(context: ImportGtfsContext, config: Im
 		if (fs.existsSync(`${context.workdir.extract_dir_path}/calendar.txt`)) {
 			await parseCsvFile(`${context.workdir.extract_dir_path}/calendar.txt`, parseEachRow);
 			Logger.success(`Finished processing "calendar.txt": ${context.gtfs.calendar_dates.size} rows saved in ${calendarParseTimer.get()}.`, 1);
-		}
-		else {
+		} else {
 			Logger.info(`Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...`, 1);
 		}
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "calendar.txt" file.', error);
 		throw new Error('✖︎ Error processing "calendar.txt" file.');
 	}

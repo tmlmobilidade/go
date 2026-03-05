@@ -2,14 +2,14 @@
 
 /* * */
 
-import { IconNote } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { Agency, type Annotation, type CalendarEvent, type Period, PermissionCatalog } from '@tmlmobilidade/types';
+import { Agency, type Annotation, type CalendarEvent, Event, Holiday, PermissionCatalog, type YearPeriod } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 import { useMeContext } from '../../../contexts/Me.context';
+import { EVENT_TYPE_DEFS } from '../../../icons/event-types';
 import { CalendarUIContextProvider } from './CalendarUI.context';
 
 /* * */
@@ -17,13 +17,16 @@ import { CalendarUIContextProvider } from './CalendarUI.context';
 interface EventsCalendarContextState {
 	data: {
 		annotations: Annotation[]
-		events: CalendarEvent[]
+		calendarEvents: CalendarEvent[]
 		eventTypeCounts: {
 			additional: number
 			annotations: number
-			periods: number
+			events: number
+			holidays: number
+			yearPeriods: number
 		}
-		periods: Period[]
+		holidays: Holiday[]
+		yearPeriods: YearPeriod[]
 	}
 	flags: {
 		error: Error | null
@@ -65,9 +68,9 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 
 	const meContext = useMeContext();
 
-	const canReadPeriods = meContext.actions.hasPermission(
-		PermissionCatalog.all.periods.scope,
-		PermissionCatalog.all.periods.actions.read,
+	const canReadYearPeriods = meContext.actions.hasPermission(
+		PermissionCatalog.all.year_periods.scope,
+		PermissionCatalog.all.year_periods.actions.read,
 	);
 
 	const canReadAnnotations = meContext.actions.hasPermission(
@@ -75,17 +78,32 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 		PermissionCatalog.all.annotations.actions.read,
 	);
 
+	const canReadHolidays = meContext.actions.hasPermission(
+		PermissionCatalog.all.holidays.scope,
+		PermissionCatalog.all.holidays.actions.read,
+	);
+
+	const canReadEvents = meContext.actions.hasPermission(
+		PermissionCatalog.all.events.scope,
+		PermissionCatalog.all.events.actions.read,
+	);
+
 	//
 	// B. Fetch data
 
-	const { data: periodsData, error: periodsError, isLoading: periodsLoading } = useSWR<Period[]>(
-		canReadPeriods ? API_ROUTES.dates.PERIODS_LIST : null,
-		{ refreshInterval: 10000 },
-	);
+	const { data: yearPeriodsData, error: yearPeriodsError, isLoading: yearPeriodsLoading } = useSWR<YearPeriod[]>(
+		canReadYearPeriods ? API_ROUTES.dates.YEAR_PERIODS_LIST : null);
 
 	const { data: annotationsData, error: annotationsError, isLoading: annotationsLoading } = useSWR<Annotation[]>(
 		canReadAnnotations ? API_ROUTES.dates.ANNOTATIONS_LIST : null,
-		{ refreshInterval: 10000 },
+	);
+
+	const { data: holidaysData, error: holidaysError, isLoading: holidaysLoading } = useSWR<Holiday[]>(
+		canReadHolidays ? API_ROUTES.dates.HOLIDAYS_LIST : null,
+	);
+
+	const { data: eventsData, error: eventsError, isLoading: eventsLoading } = useSWR<Event[]>(
+		canReadEvents ? API_ROUTES.dates.EVENTS_LIST : null,
 	);
 
 	const { data: agenciesData } = useSWR<Agency[], Error>(API_ROUTES.auth.AGENCIES_LIST);
@@ -93,8 +111,8 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 	//
 	// C. Handle errors and loading states
 
-	const hasError = periodsError || annotationsError;
-	const isLoading = periodsLoading || annotationsLoading;
+	const hasError = yearPeriodsError || annotationsError || holidaysError || eventsError || null;
+	const isLoading = yearPeriodsLoading || annotationsLoading || holidaysLoading || eventsLoading;
 
 	//
 	// D. Transform data
@@ -117,8 +135,7 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 			if (daysDiff === 1) {
 				// Dates are consecutive, add to current range
 				currentRange.push(sortedDates[i]);
-			}
-			else {
+			} else {
 				// Gap detected, start a new range
 				ranges.push(currentRange);
 				currentRange = [sortedDates[i]];
@@ -134,20 +151,25 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 	const calendarEvents = useMemo(() => {
 		const events: CalendarEvent[] = [];
 
-		// Transform periods
-		if (periodsData) {
-			periodsData.forEach((period) => {
+		// Transform year periods
+		if (yearPeriodsData) {
+			yearPeriodsData.forEach((period) => {
 				if (period.dates && period.dates.length > 0) {
 					// Create individual calendar events for each date
 					period.dates.forEach((operationalDate) => {
 						const date = Dates.fromOperationalDate(operationalDate, 'Europe/Lisbon');
+						const agenciesNames = agenciesData
+							?.filter(agency => period.agency_ids?.includes(agency._id))
+							.map(agency => agency.short_name || agency.name)
+							.join(', ');
 
 						events.push({
 							color: period.color || '#3b82f6',
 							endDate: date.iso,
 							id: `${period._id}-${operationalDate}`,
 							metadata: {
-								agency_name: agenciesData?.find(agency => agency._id === period.agency_id)?.name ?? '',
+								agency_ids: period.agency_ids,
+								agency_names: agenciesNames,
 								period_id: period._id,
 							},
 							startDate: date.iso,
@@ -159,41 +181,43 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 			});
 		}
 
-		// Transform annotations
-		if (annotationsData) {
-			annotationsData.forEach((annotation) => {
-				if (annotation.dates && annotation.dates.length > 0) {
-					// Group dates into consecutive ranges
-					const dateRanges = groupConsecutiveDates(annotation.dates);
-
-					// Create a separate calendar event for each consecutive range
+		// Helper to transform grouped date data into calendar events
+		function pushGroupedEvents<T extends { _id: string, dates: string[], description?: string, title: string }>(
+			items: T[] | undefined,
+			type: 'annotation' | 'event' | 'holiday',
+			events: CalendarEvent[],
+		) {
+			if (!items) return;
+			items.forEach((item) => {
+				if (item.dates && item.dates.length > 0) {
+					const dateRanges = groupConsecutiveDates(item.dates);
 					dateRanges.forEach((range) => {
 						const startDate = Dates.fromOperationalDate(range[0], 'Europe/Lisbon');
 						const endDate = range.length > 1
 							? Dates.fromOperationalDate(range[range.length - 1], 'Europe/Lisbon')
 							: undefined;
-
 						events.push({
-							color: '#f59e0b',
-							description: annotation.description,
+							color: EVENT_TYPE_DEFS[type].color,
+							description: item.description,
 							endDate: endDate?.iso,
-							icon: IconNote,
-							id: `${annotation._id}`,
-							metadata: {
-								annotation_id: annotation._id,
-								type: 'annotation',
-							},
+							icon: EVENT_TYPE_DEFS[type].icon,
+							id: `${item._id}`,
 							startDate: startDate.iso,
-							title: annotation.title,
-							type: 'annotation',
+							title: item.title,
+							type,
 						});
 					});
 				}
 			});
 		}
 
+		// Transform annotations, holidays, and events
+		pushGroupedEvents(annotationsData, 'annotation', events);
+		pushGroupedEvents(holidaysData, 'holiday', events);
+		pushGroupedEvents(eventsData, 'event', events);
+
 		return events;
-	}, [periodsData, annotationsData, agenciesData]);
+	}, [yearPeriodsData, annotationsData, agenciesData, holidaysData, eventsData]);
 
 	// Merge with additional events
 	const allEvents = useMemo(() => {
@@ -204,11 +228,13 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 	// E. Count events by type
 
 	const eventTypeCounts = useMemo(() => {
-		const periods = periodsData?.length || 0;
+		const yearPeriods = yearPeriodsData?.length || 0;
 		const annotations = annotationsData?.length || 0;
+		const holidays = holidaysData?.length || 0;
 		const additional = additionalEvents.length;
-		return { additional, annotations, periods };
-	}, [periodsData, annotationsData, additionalEvents]);
+		const events = eventsData?.length || 0;
+		return { additional, annotations, events, holidays, yearPeriods };
+	}, [yearPeriodsData, annotationsData, holidaysData, additionalEvents, eventsData]);
 
 	//
 	// F. Context value
@@ -216,15 +242,17 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 	const contextValue: EventsCalendarContextState = useMemo(() => ({
 		data: {
 			annotations: annotationsData || [],
-			events: allEvents,
+			calendarEvents: allEvents,
+			events: eventsData || [],
 			eventTypeCounts,
-			periods: periodsData || [],
+			holidays: holidaysData || [],
+			yearPeriods: yearPeriodsData || [],
 		},
 		flags: {
 			error: hasError || null,
 			loading: isLoading,
 		},
-	}), [annotationsData, allEvents, eventTypeCounts, hasError, isLoading, periodsData]);
+	}), [annotationsData, allEvents, eventsData, eventTypeCounts, holidaysData, yearPeriodsData, hasError, isLoading]);
 
 	//
 	// G. Render

@@ -2,12 +2,12 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { IStorageProvider, StorageFactory } from '@/providers/index.js';
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Files } from '@tmlmobilidade/files';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type CreateFileDto, CreateFileSchema, type File, type UpdateFileDto, UpdateFileSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy, convertObject } from '@tmlmobilidade/utils';
-import { DeleteOptions, DeleteResult, IndexDescription, InsertOneOptions, WithId } from 'mongodb';
+import { asyncSingletonProxy, convertObject } from '@tmlmobilidade/utils';
+import { DeleteOptions, DeleteResult, FindOptions, IndexDescription, InsertOneOptions, WithId } from 'mongodb';
 import { Readable } from 'node:stream';
 import { z } from 'zod';
 
@@ -65,7 +65,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 	public async clone(file_id: string, scope: string, resource_id: string, options?: InsertOneOptions): Promise<File> {
 		const _id = generateRandomString({ length: 5 });
 		const file = await this.findOne({ _id: file_id });
-		if (!file) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
+		if (!file) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 
 		const originalFilePath = `${file.scope}/${file.resource_id}/${file._id}.${Files.getFileExtension(file.name)}`;
 		const newFilePath = `${scope}/${resource_id}/${_id}.${Files.getFileExtension(file.name)}`;
@@ -83,9 +83,9 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 	 */
 	public override async deleteById(fileId: string, options?: DeleteOptions): Promise<DeleteResult> {
 		const foundFile = await this.findById(fileId);
-		if (!foundFile) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
+		if (!foundFile) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 		await this.storageService.deleteFile(`${foundFile.scope}/${foundFile.resource_id}/${foundFile._id}.${Files.getFileExtensionFromMimeType(foundFile.type)}`);
-		return await super.deleteById(fileId, options);
+		return await super.deleteById(fileId, { ...options, forceIfLocked: true });
 	}
 
 	/**
@@ -93,13 +93,13 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 	 * @param file_id - The unique identifier of the file in the database.
 	 * @returns The file with the signed URL.
 	 */
-	public override async findById(...args: Parameters<typeof MongoCollectionClass.prototype.findById>): Promise<null | WithId<File>> {
-		const file = await super.findById(...args);
+	public override async findById(id: string, options?: FindOptions): Promise<null | WithId<File>> {
+		const file = await super.findById(id, options);
 		if (!file) {
 			return null;
 		}
 
-		file.url = await this.getFileUrl({ file_id: file._id });
+		file.url = await this.getFileUrl({ file_id: file._id }, options);
 		return file;
 	}
 
@@ -108,11 +108,12 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 	 * @param params - Object containing either `file_id` or `key`.
 	 * @param params.file_id - The unique identifier of the file in the database.
 	 * @param params.key - The storage key of the file.
+	 * @param options - Optional options.
 	 * @returns The signed URL of the file.
 	 * @throws {Error} If neither `file_id` nor `key` is provided.
 	 * @throws {HttpException} If `file_id` is provided but the file is not found.
 	*/
-	public async getFileUrl({ file_id, key }: { file_id?: string, key?: string }): Promise<string> {
+	public async getFileUrl({ file_id, key }: { file_id?: string, key?: string }, options?: FindOptions): Promise<string> {
 		if (!file_id && !key) {
 			throw new Error('Either "file_id" or "key" must be provided');
 		}
@@ -120,9 +121,9 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 		// If `file_id` is provided, fetch the file and use its key
 		let file: File | null = null;
 		if (file_id) {
-			file = await this.findOne({ _id: file_id });
+			file = await this.findOne({ _id: file_id }, options);
 			if (!file) {
-				throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
+				throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 			}
 			key = `${file.scope}/${file.resource_id}/${file._id}.${Files.getFileExtension(file.name)}`; // Use the file's storage key
 		}
@@ -130,7 +131,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 		// Check if key exists
 		const keyExists = await this.storageService.fileExists(key as string);
 		if (!keyExists) {
-			throw new HttpException(HttpStatus.NOT_FOUND, `Key ${key} does not exist in bucket ${this.bucketName}`);
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, `Key ${key} does not exist in bucket ${this.bucketName}`);
 		}
 
 		// At this point, `key` must exist
@@ -149,7 +150,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 		//
 		// A. Define variables
 		if (createFileDto._id && !options?.override) {
-			throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'When File ID is provided, override must be true');
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'When File ID is provided, override must be true');
 		}
 
 		const fileId = createFileDto._id || generateRandomString({ length: 5 });
@@ -175,7 +176,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 					const existingFilePath = `${existingFile.scope}/${existingFile.resource_id}/${existingFile._id}.${existingFileExtension}`;
 
 					if (existingFilePath !== filePath) {
-						throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'File ID is provided, but the file path is different from the existing file', { cause: { existingFilePath, filePath } });
+						throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'File ID is provided, but the file path is different from the existing file', { cause: { existingFilePath, filePath } });
 					}
 
 					await super.deleteById(fileId);
@@ -190,13 +191,11 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 			// C.3. Insert file record
 			result = await this.insertOne({ ...createFileDto, _id: fileId, type: mimeType }, { options });
 			await session.commitTransaction();
-		}
-		catch (error) {
+		} catch (error) {
 			await session.abortTransaction();
 			throw error;
-		}
-		finally {
-			session.endSession();
+		} finally {
+			await session.endSession();
 		}
 
 		return result;
@@ -224,4 +223,4 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 
 /* * */
 
-export const files = AsyncSingletonProxy(FilesClass);
+export const files = asyncSingletonProxy(FilesClass);

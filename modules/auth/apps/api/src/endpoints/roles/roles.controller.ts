@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { roles } from '@tmlmobilidade/interfaces';
 import { type CreateRoleDto, type Role, type UpdateRoleDto } from '@tmlmobilidade/types';
@@ -24,7 +24,7 @@ export class RolesController {
 		request.body.updated_by = request.me._id;
 
 		const role = await roles.insertOne(request.body);
-		reply.send({ data: role, error: null, statusCode: HttpStatus.CREATED });
+		reply.send({ data: role, error: null, statusCode: HTTP_STATUS.CREATED });
 	}
 
 	/**
@@ -34,7 +34,7 @@ export class RolesController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		await roles.deleteById(request.params.id);
-		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -44,7 +44,7 @@ export class RolesController {
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Role[]>) {
 		const allRolesData = await roles.findMany({}, { sort: { name: 1 } });
-		reply.send({ data: allRolesData, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: allRolesData, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -55,9 +55,9 @@ export class RolesController {
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Role>) {
 		const role = await roles.findById(request.params.id);
 
-		if (!role) throw new HttpException(HttpStatus.NOT_FOUND, 'Role not found');
+		if (!role) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Role not found');
 
-		reply.send({ data: role, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: role, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -68,8 +68,8 @@ export class RolesController {
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Role>) {
 		await roles.toggleLockById(request.params.id);
 		const foundRole = await roles.findById(request.params.id);
-		if (!foundRole) throw new HttpException(HttpStatus.NOT_FOUND, 'Role not found');
-		reply.send({ data: foundRole, error: null, statusCode: HttpStatus.OK });
+		if (!foundRole) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Role not found');
+		reply.send({ data: foundRole, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -85,6 +85,6 @@ export class RolesController {
 		request.body.updated_by = request.me._id;
 
 		const role = await roles.updateById(request.params.id, request.body);
-		reply.send({ data: role, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: role, error: null, statusCode: HTTP_STATUS.OK });
 	}
 }

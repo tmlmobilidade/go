@@ -1,0 +1,64 @@
+'use client';
+
+/* * */
+
+import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
+import { IconArrowRight, IconCalendarCancel, IconCalendarCheck } from '@tabler/icons-react';
+import { ManualRule, ScheduleRule } from '@tmlmobilidade/types';
+import { DayPeriodsTimepoints, IconButton, Section, Text } from '@tmlmobilidade/ui';
+
+import styles from './styles.module.css';
+
+/* * */
+
+interface RulesListViewCardProps {
+	rule: ScheduleRule
+}
+
+/* * */
+
+export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
+	//
+
+	//
+	// A. Setup variables
+
+	const patternDetailContext = usePatternDetailContext();
+
+	const isOffTime = rule.kind === 'manual' && rule.operating_mode === 'exclude';
+	const times = rule?.timepoints ?? [];
+	const name = rule?.name || 'Regra sem nome';
+
+	//
+	// B. Handle actions
+
+	const handleEdit = () => {
+		patternDetailContext.actions.openRuleModal(rule as ManualRule);
+	};
+
+	//
+	// C. Render components
+
+	return (
+		<div className={styles.container} onClick={handleEdit}>
+			<Section gap="md" justifyContent="space-between" padding="none">
+
+				<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
+					{isOffTime
+						? <IconCalendarCancel color="var(--color-status-danger-primary)" size={20} />
+						: <IconCalendarCheck color="var(--color-status-success-primary)" size={20} />}
+					<Text size="lg">{name} · </Text>
+					<Text className={styles.timesCount}>{times.length} {times.length > 1 ? 'horários' : 'horário'}</Text>
+				</Section>
+
+				<DayPeriodsTimepoints timepoints={times} variant="compact" />
+			</Section>
+
+			<IconButton
+				icon={<IconArrowRight size={20} />}
+				onClick={handleEdit}
+			/>
+
+		</div>
+	);
+}

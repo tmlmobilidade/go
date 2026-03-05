@@ -22,7 +22,7 @@ export function RuleCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateRuleModal} type="close" />
-			<Tag label={ruleCreateContext.data.ruleSummary || 'Nova Regra'} variant="muted" />
+			<Tag label={ruleCreateContext.data.ruleSummary.short || 'Nova Regra'} variant="muted" />
 
 			<Spacer />
 

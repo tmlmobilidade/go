@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type IndexDescription } from 'mongodb';
 
 /* * */
@@ -42,4 +42,4 @@ class SimplifiedVehicleEventsClass extends MongoCollectionClass<SimplifiedVehicl
 
 /* * */
 
-export const simplifiedVehicleEvents = AsyncSingletonProxy(SimplifiedVehicleEventsClass);
+export const simplifiedVehicleEvents = asyncSingletonProxy(SimplifiedVehicleEventsClass);

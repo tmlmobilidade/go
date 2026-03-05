@@ -1,0 +1,17 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+/* * */
+/* ROW */
+
+.row {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}

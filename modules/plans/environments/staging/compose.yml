@@ -71,6 +71,8 @@ services:
       options:
         max-size: '1m'
         max-file: '1'
+    volumes:
+      - ./secrets:/secrets
     env_file:
       - ./secrets/.env
     secrets:
@@ -127,7 +129,8 @@ services:
         delay: 30s
       resources:
         limits:
-          memory: 12gb
+          memory: 10gb
+          cpus: 6
     logging:
       options:
         max-size: '1m'

@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { type Metric } from '@tmlmobilidade/types';
@@ -68,11 +68,9 @@ function filterDataByDate(
 
 		if (/^\d{4}$/.test(dateStr)) {
 			return 'annual'; // YYYY
-		}
-		else if (/^\d{4}-\d{2}$/.test(dateStr)) {
+		} else if (/^\d{4}-\d{2}$/.test(dateStr)) {
 			return 'monthly'; // YYYY-MM
-		}
-		else {
+		} else {
 			return 'daily'; // YYYY-MM-DD or full ISO
 		}
 	};
@@ -143,7 +141,7 @@ export class MetricsController {
 			const metricDocs = (await metrics.findMany(query)) as Metric[];
 
 			if (!metricDocs || metricDocs.length === 0) {
-				throw new HttpException(HttpStatus.NOT_FOUND, 'Metric not found');
+				throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Metric not found');
 			}
 
 			// Apply date filtering
@@ -156,12 +154,11 @@ export class MetricsController {
 			reply.send({
 				data: filteredDocs,
 				error: null,
-				statusCode: HttpStatus.OK,
+				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			console.error(error);
-			throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to retrieve metric');
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to retrieve metric');
 		}
 	}
 }

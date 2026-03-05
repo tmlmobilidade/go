@@ -9,7 +9,7 @@ import '@fastify/multipart';
 import fastifyCookie from '@fastify/cookie';
 import fastifyCors from '@fastify/cors';
 import oneLineLogger from '@fastify/one-line-logger';
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { HttpResponse, WithPagination } from '@tmlmobilidade/utils';
 import fastify, { FastifyLoggerOptions } from 'fastify';
 import { type FastifyInstance as FastifyInstanceType, type FastifyReply as FastifyReplyType } from 'fastify';
@@ -136,8 +136,7 @@ const loggerOptions: FastifyLoggerOptions<RawServerDefault> = {
 				// Pino serialized error object
 				errorMessage = (errorObj as Error).message || errorMessage;
 				errorStack = (errorObj as Error).stack;
-			}
-			else if (log[messageKey] instanceof Error) {
+			} else if (log[messageKey] instanceof Error) {
 				// Direct Error instance (shouldn't happen with Pino, but just in case)
 				errorMessage = (log[messageKey] as unknown as Error).message || errorMessage;
 				errorStack = (log[messageKey] as Error).stack;
@@ -215,8 +214,7 @@ export class FastifyService {
 			this.server.log.info(`CORS enabled for origin: ${this.options.origin}`);
 			this.server.log.info(`Listening on ${this.options.host}:${this.options.port}`);
 			return serverUrl;
-		}
-		catch (error) {
+		} catch (error) {
 			this.server.log.error({ error, message: 'Error starting server.' });
 			process.exit(1);
 		}
@@ -230,8 +228,7 @@ export class FastifyService {
 		try {
 			await this.server.close();
 			console.log('Fastify server stopped.');
-		}
-		catch (error) {
+		} catch (error) {
 			this.server.log.error({ err: error }, error instanceof Error ? error.message : 'Error stopping server');
 			process.exit(1);
 		}
@@ -270,14 +267,13 @@ export class FastifyService {
 						error: error.message,
 						statusCode: error.statusCode,
 					});
-			}
-			else {
+			} else {
 				reply
-					.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
 					.send({
 						data: undefined,
 						error: 'Internal server error',
-						statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+						statusCode: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 					});
 			}
 		});
@@ -287,20 +283,19 @@ export class FastifyService {
 		 * This hook intercepts every outgoing response before it is sent.
 		 * It parses the payload as a JSON object (assuming it matches the HttpResponse<T> structure),
 		 * and sets the HTTP status code of the reply to the value of 'statusCode' in the payload,
-		 * defaulting to HttpStatus.OK if not present.
+		 * defaulting to HTTP_STATUS.OK if not present.
 		 * This ensures that the HTTP status code in the response matches the statusCode property
 		 * in the application's response payload, providing consistent status handling.
 		 */
 		this.server.addHook('onSend', (_, reply, payload, done) => {
 			try {
 				const payloadJson = JSON.parse(payload as string) as HttpResponse<unknown>;
-				reply.code(payloadJson.statusCode ?? HttpStatus.OK);
+				reply.code(payloadJson.statusCode ?? HTTP_STATUS.OK);
 			}
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			catch (error) {
 				// Do nothing
-			}
-			finally {
+			} finally {
 				done();
 			}
 		});
