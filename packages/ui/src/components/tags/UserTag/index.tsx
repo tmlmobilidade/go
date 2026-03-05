@@ -2,6 +2,7 @@
 
 /* * */
 
+import { Dates } from '@tmlmobilidade/dates';
 import { useMemo } from 'react';
 
 import { useDataSimplifiedUser } from '../../../hooks/use-data/use-data-simplified-user';
@@ -39,6 +40,18 @@ export function UserTag({ showFullName = true, userId, variant = 'tag' }: UserTa
 
 	//
 	// C. Render components
+
+	if (userId === 'system') {
+		return (
+			<UserTagCard
+				fullName="Plataforma GO"
+				organizationName="Sistema"
+				seenLastAt={Dates.now('Europe/Lisbon').unix_timestamp}
+			>
+				<Inline dotted>GO</Inline>
+			</UserTagCard>
+		);
+	}
 
 	if (variant === 'inline') {
 		return (

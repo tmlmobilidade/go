@@ -42,6 +42,7 @@
 		"dev:performance": "ENVIRONMENT=development dotenv-run -f ./modules/performance/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-performance-*",
 		"dev:performance:sync-metrics-daily": "ENVIRONMENT=development dotenv-run -f ./modules/performance/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-performance-sync-metrics-daily",
 		"dev:plans": "ENVIRONMENT=development dotenv-run -f ./modules/plans/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-plans-*",
+		"dev:plans:prod": "ENVIRONMENT=development dotenv-run -f ./modules/plans/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-plans-*",
 		"dev:replicator": "ENVIRONMENT=development dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-replicator-*",
 		"dev:replicator:helpers-dump-data": "ENVIRONMENT=development dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-replicator-helpers-dump-data",
 		"dev:stops": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-*",

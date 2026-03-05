@@ -49,12 +49,16 @@ export class GtfsController {
 		//
 		// Transform alerts into GTFS-RT feed entities
 
-		const transformResult: GtfsRtFeedEntity[] = [];
+		const transformedItems = await Promise.all(
+			findResult.map((item, index) => {
+				Logger.info(`Transforming alert [${index + 1}/${findResult.length}] with ID ${item._id} into GTFS-RT feed entity for Carris Metropolitana GTFS feed.`);
+				return transformAlert(item);
+			}),
+		);
 
-		for (const item of findResult) {
-			const transformedItem = await transformAlert(item);
-			if (transformedItem) transformResult.push(transformedItem);
-		}
+		const transformResult: GtfsRtFeedEntity[] = transformedItems.filter(Boolean);
+
+		Logger.info(`Transformed ${transformResult.length} alerts into GTFS-RT feed entities for Carris Metropolitana GTFS feed.`);
 
 		//
 		// Send the GTFS-RT feed as the response

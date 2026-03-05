@@ -2,7 +2,7 @@
 
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { Dates } from '@tmlmobilidade/dates';
-import { Label, Section } from '@tmlmobilidade/ui';
+import { Label, Section, UserTag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -32,7 +32,7 @@ export function PlanDetailFootnote() {
 
 	return (
 		<Section>
-			<Label size="sm">Plano criado por {planDetailContext.data.user.email} às {formattedDateString}</Label>
+			<Label size="sm">Plano criado por <UserTag userId={planDetailContext.data.plan.created_by} variant="inline" /> a {formattedDateString}</Label>
 		</Section>
 	);
 
