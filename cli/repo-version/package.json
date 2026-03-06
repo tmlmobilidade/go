@@ -26,7 +26,7 @@
 		"@tmlmobilidade/dates": "*"
 	},
 	"devDependencies": {
-		"@types/node": "25.3.3",
+		"@types/node": "25.3.5",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.9.3"
 	}
