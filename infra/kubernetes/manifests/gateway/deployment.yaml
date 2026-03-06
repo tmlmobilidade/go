@@ -29,6 +29,15 @@ spec:
         app: gateway
 
     spec:
+      # Secret created with:
+      #   kubectl create secret docker-registry ghcr-secret \
+      #     --docker-server=ghcr.io \
+      #     --docker-username=<github-username> \
+      #     --docker-password=<github-pat-with-read:packages> \
+      #     --namespace go-poc
+      imagePullSecrets:
+        - name: ghcr-secret
+
       # Anti-affinity: prefer scheduling replicas on different nodes.
       # If only one node exists (PoC), this is a soft preference and is safely ignored.
       affinity:

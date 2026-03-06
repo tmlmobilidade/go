@@ -132,6 +132,15 @@ kubectl get nodes
 
 ```bash
 kubectl apply -f infra/kubernetes/manifests/namespace.yaml
+
+# Create the GHCR pull secret (image is private — requires a PAT with read:packages scope)
+# Generate a PAT: github.com → Settings → Developer settings → Personal access tokens
+kubectl create secret docker-registry ghcr-secret \
+  --docker-server=ghcr.io \
+  --docker-username=<github-username> \
+  --docker-password=<github-pat-with-read:packages> \
+  --namespace go-poc
+
 kubectl apply -f infra/kubernetes/manifests/gateway/
 
 # Monitor

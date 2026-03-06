@@ -58,7 +58,7 @@ variable "compartment_ocid" {
 	The OCID of the compartment where all resources will be created.
 	Current compartment is set to: cmetropolitana
 	EOT
-	default     = "ocid1.compartment.oc1..aaaaaaaaqwnoahpbcxhsogpszdixlv4jnrnujst7qxyar6536oeptpwjtkna"
+	default     = "ocid1.compartment.oc1..aaaaaaaanljo4qhg4wnwjpul5seazrticeyswmx5zt7f64ekfewpr6y6mbva"
 }
 
 variable "availability_domain" {
