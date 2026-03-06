@@ -107,8 +107,10 @@
 }
 
 .tag[data-variant='id'] .label {
-	font-family: var(--font-family-monospace) !important;
-	letter-spacing: 0.5px;
+
+	/* font-family: var(--font-family-monospace); */
+	font-size: 15px;
+	letter-spacing: 1px;
 }
 
 /* * */
