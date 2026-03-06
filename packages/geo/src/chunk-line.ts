@@ -88,3 +88,55 @@ export function chunkLineByDistance(line: LineString, segmentLength: number): Li
 
 	//
 }
+
+/**
+ * Resamples a GeoJSON LineString into equidistant points by walking the full
+ * cumulative distance of the polyline. Unlike `chunkLineByDistance` which
+ * processes each segment independently (producing short chunks on curves),
+ * this function accumulates distance across all original vertices and places
+ * nodes at exact `segmentLength` intervals, interpolating between vertices.
+ * @param line The LineString to resample.
+ * @param segmentLength The target distance between consecutive output points, in meters.
+ * @returns A GeoJSON LineString with equidistant coordinates along the original path.
+ */
+export function chunkLineByDistanceV2(line: LineString, segmentLength: number): LineString {
+	//
+
+	if (line.coordinates.length < 2) return line;
+
+	const coords = line.coordinates;
+
+	// Pre-compute cumulative distances at each original vertex
+	const cumDist: number[] = [0];
+	for (let i = 0; i < coords.length - 1; i++) {
+		cumDist.push(cumDist[i] + getDistanceBetweenPositions(coords[i], coords[i + 1]));
+	}
+
+	const totalLength = cumDist[cumDist.length - 1];
+	if (totalLength === 0) return line;
+
+	const result: Position[] = [coords[0]];
+
+	// Walk the polyline placing a node every segmentLength meters
+	let segIdx = 0;
+	const nodeCount = Math.floor(totalLength / segmentLength);
+
+	for (let n = 1; n <= nodeCount; n++) {
+		const targetDist = n * segmentLength;
+
+		// Advance segIdx to the segment that contains targetDist
+		while (segIdx < coords.length - 2 && cumDist[segIdx + 1] < targetDist) {
+			segIdx++;
+		}
+
+		const segStart = cumDist[segIdx];
+		const segEnd = cumDist[segIdx + 1];
+		const ratio = segEnd > segStart ? (targetDist - segStart) / (segEnd - segStart) : 0;
+
+		result.push(interpolatePositions(coords[segIdx], coords[segIdx + 1], ratio));
+	}
+
+	return toLineStringFromPositions(result);
+
+	//
+}
