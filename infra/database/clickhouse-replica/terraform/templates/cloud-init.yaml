@@ -55,11 +55,11 @@ runcmd:
   # -----------------------------------------------------------------
   # 2. Open OS Firewall for ClickHouse + Keeper ports
   # -----------------------------------------------------------------
-  - iptables -I INPUT 6 -p tcp --dport ${clickhouse_http_port} -j ACCEPT
-  - iptables -I INPUT 6 -p tcp --dport ${clickhouse_tcp_port} -j ACCEPT
-  - iptables -I INPUT 6 -p tcp --dport ${clickhouse_interserver_port} -j ACCEPT
-  - iptables -I INPUT 6 -p tcp --dport ${clickhouse_keeper_client_port} -j ACCEPT
-  - iptables -I INPUT 6 -p tcp --dport ${clickhouse_keeper_raft_port} -j ACCEPT
+  - iptables -I INPUT 5 -p tcp --dport ${clickhouse_http_port} -j ACCEPT
+  - iptables -I INPUT 5 -p tcp --dport ${clickhouse_tcp_port} -j ACCEPT
+  - iptables -I INPUT 5 -p tcp --dport ${clickhouse_interserver_port} -j ACCEPT
+  - iptables -I INPUT 5 -p tcp --dport ${clickhouse_keeper_client_port} -j ACCEPT
+  - iptables -I INPUT 5 -p tcp --dport ${clickhouse_keeper_raft_port} -j ACCEPT
   - netfilter-persistent save
 
   # -----------------------------------------------------------------
