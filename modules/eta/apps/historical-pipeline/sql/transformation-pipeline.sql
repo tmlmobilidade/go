@@ -4,8 +4,9 @@ WITH
     30 AS max_dist_m,
     90 AS bearing_threshold_deg,
 
-    -- 1. SNAP: nearest node per GPS ping
-    -- Pre-aggregate node coords here to avoid re-joining shape_nodes later
+    -- 1. SNAP: for every raw GPS ping, find the nearest node on the matching shape
+    -- We also cache the snapped node's coordinates so later steps can compute bearings without
+    -- repeatedly joining back to shape_nodes (cheaper and simpler downstream)
     matched_events AS (
         SELECT
             e._id as event_id,
@@ -28,7 +29,9 @@ WITH
         HAVING dist <= max_dist_m
     ),
 
-    -- 2. PAIR: consecutive events with window, carry both node coords
+    -- 2. PAIR: within each ride, pair every event with the immediately previous one (window over time)
+    -- This keeps both the snapped node indices/coords and the original GPS positions so we can
+    -- later compute time deltas, distances along the shape, and a GPS vs shape bearing comparison
     segments AS (
         SELECT
             event_id,
@@ -50,7 +53,9 @@ WITH
         WINDOW w AS (PARTITION BY ride_id ORDER BY created_at)
     ),
 
-    -- 3. CALCULATE + VALIDATE in one pass — no subqueries
+    -- 3. CALCULATE + VALIDATE in one pass: derive time, distance and speed between consecutive
+    -- snapped nodes, then immediately discard segments that are backwards, too fast/slow, or have
+    -- inconsistent GPS vs shape bearings, avoiding extra subqueries or re-scans
     filtered_segments AS (
         SELECT
             event_id,
@@ -80,7 +85,9 @@ WITH
                 ) < (bearing_threshold_deg * pi() / 180)
     ),
 
-    -- 4. EXPAND: one row per node in the segment
+    -- 4. EXPAND: turn each valid segment between two snapped nodes into one row per intermediate node
+    -- We generate the full [prev_idx, curr_idx) node range and evenly apportion the segment travel
+    -- time across those nodes, keeping an hour-of-day bucket for later aggregation
     expanded_nodes AS (
         SELECT
             event_id,
@@ -88,12 +95,13 @@ WITH
             arrayJoin(range(toUInt64(prev_idx), toUInt64(curr_idx))) AS node_index,
             toUInt8(toHour(toDateTime(toInt64(prev_ts) / 1000)))     AS hour,
             prev_ts                                                   AS created_at,
-            time_delta / (curr_idx - prev_idx)                       AS travel_time_seconds,
-            speed_kmh
+            round(time_delta / (curr_idx - prev_idx))                       AS travel_time_seconds,
+            round(speed_kmh) as speed_kmh
         FROM filtered_segments
     )
 
--- 5. ENRICH: single final join with shape_nodes for lat/lon
+-- 5. ENRICH: attach static geometry from shape_nodes (lat/lon per node) to the per-node samples
+-- so downstream consumers can aggregate travel times while still having the exact node locations
 SELECT
     en.event_id,
     en.hashed_shape_id,
