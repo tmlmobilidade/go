@@ -15,7 +15,6 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@mantine/nprogress": "8.3.15",
 		"@tabler/icons-react": "3.38.0",
 		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/strings": "*",

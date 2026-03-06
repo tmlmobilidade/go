@@ -43,7 +43,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/utils": "*",
-		"fastify": "5.7.4"
+		"fastify": "5.8.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

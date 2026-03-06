@@ -23,7 +23,7 @@
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"pg": "8.19.0"
+		"pg": "8.20.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
