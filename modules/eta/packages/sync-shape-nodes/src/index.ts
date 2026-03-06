@@ -1,7 +1,7 @@
 /* * */
 
 import { ClickHouseClient } from '@tmlmobilidade/clickhouse';
-import { chunkLineByDistance, hashedShapesToFeatureCollection } from '@tmlmobilidade/geo';
+import { chunkLineByDistanceV2, hashedShapesToFeatureCollection } from '@tmlmobilidade/geo';
 import { Filter, hashedShapes, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Ride } from '@tmlmobilidade/types';
@@ -44,7 +44,7 @@ export async function syncShapeNodes({ batchSize = 100_000, chunkLength = 25, cl
 	let shapeNodesProcessed = 0;
 	for await (const hashedShape of hashedShapesCursor) {
 		const geojson = hashedShapesToFeatureCollection(hashedShape);
-		const chunks = chunkLineByDistance(geojson.features[0].geometry, chunkLength);
+		const chunks = chunkLineByDistanceV2(geojson.features[0].geometry, chunkLength);
 
 		for (const [idx, chunk] of chunks.coordinates.entries()) {
 			shapeNodesProcessed++;
