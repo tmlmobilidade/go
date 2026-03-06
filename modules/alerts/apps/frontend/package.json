@@ -14,7 +14,7 @@
 		"lint:fix": "eslint --fix ./src"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.38.0",
+		"@tabler/icons-react": "3.39.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-alerts-pckg-describe": "*",
 		"@tmlmobilidade/ui": "*",
@@ -28,7 +28,7 @@
 		"@carrismetropolitana/api-types": "20251128.1928.11",
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.3.3",
+		"@types/node": "25.3.5",
 		"@types/react": "19",
 		"@types/react-dom": "19",
 		"typescript": "5"
