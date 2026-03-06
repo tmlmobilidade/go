@@ -79,12 +79,17 @@ runcmd:
 
   # -----------------------------------------------------------------
   # 4. Network Config — listen on all interfaces (IPv4 only)
+  #    interserver_http_host must be set to the node's private IP so
+  #    other replicas can fetch parts by IP instead of the Docker
+  #    container hostname (which is not resolvable across nodes).
   # -----------------------------------------------------------------
   - |
     cat > /opt/clickhouse/config.d/network.xml <<'NETEOF'
     <clickhouse>
         <!-- Only bind IPv4 — OCI A1 does not expose IPv6 -->
         <listen_host>0.0.0.0</listen_host>
+        <!-- Use private IP for interserver replication — Docker hostname is not DNS-resolvable -->
+        <interserver_http_host>${all_private_ips[node_index]}</interserver_http_host>
     </clickhouse>
     NETEOF
 
