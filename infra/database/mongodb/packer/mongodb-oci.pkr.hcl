@@ -8,7 +8,8 @@
 #
 # USAGE:
 #   packer init .
-#   packer build -var-file=../terraform/terraform.tfvars .
+#   cp ../terraform/terraform.tfvars ../terraform/terraform.pkrvars.hcl   # Packer requires .hcl extension
+#   packer build -var-file=../terraform/terraform.pkrvars.hcl -warn-on-undeclared-var .
 # -----------------------------------------------------------------------
 
 packer {

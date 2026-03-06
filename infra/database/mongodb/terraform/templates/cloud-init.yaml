@@ -55,7 +55,7 @@ runcmd:
   # -----------------------------------------------------------------
   # 2. Open OS Firewall for MongoDB port
   # -----------------------------------------------------------------
-  - iptables -I INPUT 6 -p tcp --dport ${mongodb_port} -j ACCEPT
+  - iptables -I INPUT 5 -p tcp --dport ${mongodb_port} -j ACCEPT
   - netfilter-persistent save
 
   # -----------------------------------------------------------------
@@ -78,10 +78,8 @@ runcmd:
   #    Same content on all nodes — injected by Terraform from variable.
   #    Permission 400 owned by mongodb user (999) is required by mongod.
   # -----------------------------------------------------------------
-  - |
-    cat > /opt/mongodb/keyfile/keyfile <<'KEYFILEEOF'
-${mongodb_keyfile}
-KEYFILEEOF
+  # Base64-encoded to avoid YAML parse errors from multiline base64 keyfile content.
+  - echo "${base64encode(mongodb_keyfile)}" | base64 -d > /opt/mongodb/keyfile/keyfile
   - chmod 400 /opt/mongodb/keyfile/keyfile
   - chown 999:999 /opt/mongodb/keyfile/keyfile
 
@@ -151,7 +149,7 @@ KEYFILEEOF
             --password "${mongodb_root_password}" \
             --authenticationDatabase admin \
             --quiet \
-            --eval "db.runCommand({ ping: 1 })" 2>/dev/null | grep -q '"ok" : 1\|"ok":1'; then
+            --eval "db.runCommand({ ping: 1 })" 2>/dev/null | grep -q 'ok.*1'; then
           echo "mongod is ready."
           break
         fi
@@ -167,15 +165,15 @@ KEYFILEEOF
         --password "${mongodb_root_password}" \
         --authenticationDatabase admin \
         --eval '
-rs.initiate({
-  _id: "${replica_set_name}",
-  members: [
+        rs.initiate({
+          _id: "${replica_set_name}",
+          members: [
 %{ for idx in range(length(all_private_ips)) ~}
-    { _id: ${idx}, host: "${all_private_ips[idx]}:${mongodb_port}", priority: ${idx == 0 ? 2 : 1} },
+            { _id: ${idx}, host: "${all_private_ips[idx]}:${mongodb_port}", priority: ${idx == 0 ? 2 : 1} },
 %{ endfor ~}
-  ]
-});
-'
+          ]
+        });
+        '
       echo "Node 0: rs.initiate() complete."
     else
       echo "Node ${node_index}: secondary node, replica set will be joined automatically."

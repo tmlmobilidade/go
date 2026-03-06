@@ -95,7 +95,7 @@ resource "oci_core_instance" "mongodb" {
 	create_vnic_details {
 		subnet_id        = var.subnet_ocid
 		private_ip       = var.private_ips[count.index]
-		assign_public_ip = true
+		assign_public_ip = false
 		display_name     = "${local.name_prefix}-${count.index + 1}-vnic"
 	}
 
