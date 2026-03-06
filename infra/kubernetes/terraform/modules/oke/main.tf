@@ -21,12 +21,14 @@ resource "oci_containerengine_cluster" "this" {
 	vcn_id             = var.vcn_id
 
 
-	# Kubernetes API endpoint — placed in the public subnet so kubectl can reach it
-	# from outside the VCN. For production, consider switching to a private endpoint
-	# accessible only via VPN or a bastion host.
+	# Kubernetes API endpoint — placed in the private subnet (no public IP).
+	# The public subnet's security list does not have port 6443 open.
+	# Access kubectl via VPN or a bastion host inside the VCN.
+	# To expose publicly later, ask the networking team to allow TCP 6443 inbound
+	# on the public subnet and switch is_public_ip_enabled to true.
 	endpoint_config {
-		is_public_ip_enabled = true
-		subnet_id            = var.public_subnet_id
+		is_public_ip_enabled = false
+		subnet_id            = var.private_subnet_id
 	}
 
 

@@ -9,7 +9,7 @@ output "cluster_id" {
 }
 
 output "cluster_endpoint" {
-	description = "The public endpoint of the Kubernetes API server (used by kubectl)."
+	description = "The private endpoint of the Kubernetes API server (used by kubectl from inside the VCN)."
 	value       = module.oke.cluster_endpoint
 }
 
@@ -26,6 +26,6 @@ output "kubeconfig_command" {
 	  --file $HOME/.kube/config \
 	  --region ${var.region} \
 	  --token-version 2.0.0 \
-	  --kube-endpoint PUBLIC_ENDPOINT
+	  --kube-endpoint PRIVATE_ENDPOINT
 	EOT
 }

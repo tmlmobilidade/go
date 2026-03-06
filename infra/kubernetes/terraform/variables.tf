@@ -56,7 +56,7 @@ variable "compartment_ocid" {
 	type        = string
 	description = <<-EOT
 	The OCID of the compartment where all resources will be created.
-	Current compartment is set to: cmetropolitana
+	Current compartment is set to: GO-stg
 	EOT
 	default     = "ocid1.compartment.oc1..aaaaaaaanljo4qhg4wnwjpul5seazrticeyswmx5zt7f64ekfewpr6y6mbva"
 }

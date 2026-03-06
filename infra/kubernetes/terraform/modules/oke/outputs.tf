@@ -7,6 +7,6 @@ output "cluster_id" {
 }
 
 output "cluster_endpoint" {
-	description = "The public endpoint of the Kubernetes API server."
-	value       = oci_containerengine_cluster.this.endpoints[0].public_endpoint
+	description = "The private endpoint of the Kubernetes API server."
+	value       = oci_containerengine_cluster.this.endpoints[0].private_endpoint
 }

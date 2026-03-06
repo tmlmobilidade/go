@@ -45,6 +45,7 @@ module "oke" {
 	kubernetes_version = var.kubernetes_version
 	vcn_id             = var.vcn_id
 	public_subnet_id   = var.public_subnet_id
+	private_subnet_id  = var.private_subnet_id
 }
 
 module "node_pool" {
