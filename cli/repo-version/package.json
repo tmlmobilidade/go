@@ -19,14 +19,14 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint . --fix",
+		"lint:fix": "eslint ./src --fix",
 		"start": "tsc && resolve-tspaths && node dist/index.js"
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*"
 	},
 	"devDependencies": {
-		"@types/node": "25.3.0",
+		"@types/node": "25.3.5",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.9.3"
 	}

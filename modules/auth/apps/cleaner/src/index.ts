@@ -5,6 +5,7 @@ import { cleanExpiredVerificationTokens } from '@/tasks/clean-verification-token
 import { sanitizePermissions } from '@/tasks/sanitize-permissions.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -12,25 +13,22 @@ const RUN_INTERVAL = 300_000; // 5 minutes in milliseconds
 
 /* * */
 
-(async function init() {
+async function main() {
 	// Only run in production environment
 	if (process.env.ENVIRONMENT !== 'production') {
 		Logger.info('Cleaner is disabled in non-production environments');
 		return;
 	}
 
-	const runOnInterval = async () => {
-		Logger.init();
+	Logger.init();
 
-		const globalTimer = new Timer();
+	const globalTimer = new Timer();
 
-		await cleanExpiredSessions();
-		await cleanExpiredVerificationTokens();
-		await sanitizePermissions();
+	await cleanExpiredSessions();
+	await cleanExpiredVerificationTokens();
+	await sanitizePermissions();
 
-		Logger.terminate(`Cleanup completed in ${globalTimer.get()}`);
+	Logger.terminate(`Cleanup completed in ${globalTimer.get()}`);
+}
 
-		setTimeout(runOnInterval, RUN_INTERVAL);
-	};
-	runOnInterval();
-})();
+runOnInterval(main, RUN_INTERVAL);

@@ -19,8 +19,8 @@ export function generateRandomString({ length = 6, type = 'alphanumeric' }: Gene
 	//
 
 	const numericSet = '0123456789';
-	const alphabeticSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	const alphanumericSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+	const alphabeticSet = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // Remove O and I to avoid confusion with 0 and 1
+	const alphanumericSet = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789'; // Remove O and I to avoid confusion with 0 and 1
 
 	let allowedCharacters: string;
 
@@ -31,6 +31,7 @@ export function generateRandomString({ length = 6, type = 'alphanumeric' }: Gene
 		case 'numeric':
 			allowedCharacters = numericSet;
 			break;
+		case 'alphanumeric':
 		default:
 			allowedCharacters = alphanumericSet;
 			break;

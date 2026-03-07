@@ -37,15 +37,13 @@ async function main() {
 		if (config.email?.send_success) {
 			await mailer.sendSuccessMail();
 		}
-	}
-	catch (error) {
+	} catch (error) {
 		console.error('Error during backup:', error);
 
 		if (config.email?.send_failure) {
 			await mailer.sendFailureMail(error.message);
 		}
-	}
-	finally {
+	} finally {
 		// Disconnect from the database
 		await database.disconnect();
 	}

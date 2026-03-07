@@ -14,7 +14,7 @@
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint . --fix",
+		"lint:fix": "eslint ./src --fix",
 		"test": "tsx ./src/tests/index.ts"
 	},
 	"dependencies": {
@@ -23,6 +23,7 @@
 		"@tmlmobilidade/go-performance-pckg-log": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/utils": "*",
 		"luxon": "3.7.2",
 		"p-limit": "7.3.0"
 	},
@@ -30,7 +31,7 @@
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.3.0",
+		"@types/node": "25.3.5",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"

@@ -65,8 +65,8 @@ export function RuleCreate() {
 							<Section gap="sm">
 								<Text>Resumo:</Text>
 								<Divider />
-								<Text>{createRuleContext.data.ruleSummary}</Text>
-								<Text>Horários: {createRuleContext.data.form.values.timePoints?.join(', ')}</Text>
+								<Text>{createRuleContext.data.ruleSummary.long}</Text>
+								<Text>Horários: {createRuleContext.data.form.values.timepoints?.join(', ')}</Text>
 							</Section>
 						</Surface>
 

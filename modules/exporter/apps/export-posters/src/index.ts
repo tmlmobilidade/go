@@ -20,7 +20,7 @@ import fs from 'node:fs';
 
 /* * */
 
-(async function main() {
+await (async function main() {
 	try {
 		//
 
@@ -108,8 +108,7 @@ import fs from 'node:fs';
 		Logger.terminate(`Run took ${globalTimer.get()}`);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error(error);
 	}
 })();

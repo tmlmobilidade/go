@@ -28,10 +28,10 @@ export function RouteDetailSectionPatterns() {
 	}
 
 	return (
-		<Collapsible description="Todos os percursos desta rota. No máximo, uma rota pode ter dois percursos: o de ida e o de volta." title="Patterns">
+		<Collapsible description="Todos os percursos desta rota. No máximo, uma rota pode ter dois percursos: o de ida e o de volta." title="Patterns" defaultOpen>
 			<Section gap="sm">
 				<Section padding="none">
-					{routeDetailContext.data.route.patterns.map((pattern, index) => (
+					{routeDetailContext.data.route.patterns.sort((a, b) => a.code.localeCompare(b.code)).map((pattern, index) => (
 						<RouteDetailPattern key={pattern._id ?? index} patternData={pattern} />
 					))}
 				</Section>

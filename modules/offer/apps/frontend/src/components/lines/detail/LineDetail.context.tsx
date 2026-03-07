@@ -3,7 +3,7 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Fare, Line, PermissionCatalog, Typology, type UpdateLineDto, UpdateLineSchema } from '@tmlmobilidade/types';
+import { Line, PermissionCatalog, type UpdateLineDto, UpdateLineSchema } from '@tmlmobilidade/types';
 import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -15,8 +15,6 @@ import useSWR from 'swr';
 interface LineDetailContextState {
 	actions: DetailContextStateTemplate['actions']
 	data: {
-		allFares: Fare[]
-		allTypologies: Typology[]
 		form: UseFormReturnType<UpdateLineDto>
 		id: string
 		line: Line | null
@@ -51,9 +49,7 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 	// B. Fetch data
 
 	const { mutate: linesListMutate } = useSWR<Line[]>(API_ROUTES.offer.LINES_LIST);
-	const { data: lineData, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useSWR<Line>(API_ROUTES.offer.LINES_DETAIL(lineId), { refreshInterval: 5000 });
-	const { data: allTypologies } = useSWR<Typology[]>(API_ROUTES.offer.TYPOLOGIES_LIST);
-	const { data: allFares } = useSWR<Fare[]>(API_ROUTES.ticketing.FARES_LIST);
+	const { data: lineData, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useSWR<Line>(API_ROUTES.offer.LINES_DETAIL(lineId));
 
 	//
 	// C. Setup form
@@ -131,8 +127,6 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 			save: handleSave,
 		},
 		data: {
-			allFares,
-			allTypologies,
 			form,
 			id: lineId,
 			line: lineData,

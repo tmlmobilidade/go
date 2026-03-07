@@ -15,7 +15,7 @@
 		"calculate-runtime": "node src/calculate-total-runtime.js",
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint . --fix",
+		"lint:fix": "eslint ./src --fix",
 		"test": "tsx ./src/tests/index.ts"
 	}
 }

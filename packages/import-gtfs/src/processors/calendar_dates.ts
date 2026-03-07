@@ -61,15 +61,13 @@ export async function processCalendarDatesFile(context: ImportGtfsContext, confi
 				if (validatedData.exception_type === 1) {
 					updatedCalendar.add(validatedData.date);
 					context.counters.calendar_dates++;
-				}
-				else if (validatedData.exception_type === 2) {
+				} else if (validatedData.exception_type === 2) {
 					updatedCalendar.delete(validatedData.date);
 					context.counters.calendar_dates--;
 				}
 				// Update the service_id with the new dates
 				context.gtfs.calendar_dates[validatedData.service_id] = Array.from(updatedCalendar);
-			}
-			else {
+			} else {
 				// If this is the first time we're seeing this service_id, then it is only necessary
 				// to initiate a new dates array if it is a service addition
 				if (validatedData.exception_type === 1) {
@@ -87,14 +85,12 @@ export async function processCalendarDatesFile(context: ImportGtfsContext, confi
 		if (fs.existsSync(`${context.workdir.extract_dir_path}/calendar_dates.txt`)) {
 			await parseCsvFile(`${context.workdir.extract_dir_path}/calendar_dates.txt`, parseEachRow);
 			Logger.success(`Finished processing "calendar_dates.txt": ${Object.keys(context.gtfs.calendar_dates).length} rows saved in ${calendarDatesParseTimer.get()}.`, 1);
-		}
-		else {
+		} else {
 			Logger.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`, 1);
 		}
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "calendar_dates.txt" file.', error);
 		throw new Error('✖︎ Error processing "calendar_dates.txt" file.');
 	}

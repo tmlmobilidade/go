@@ -2,7 +2,7 @@
 
 import { ClickHouseClient, createClient } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { readFile } from 'fs/promises';
 
 import { ClickHouseColumn } from './types.js';
@@ -168,5 +168,5 @@ class ClickhouseService {
 	}
 }
 
-export const clickhouseService = AsyncSingletonProxy(ClickhouseService);
+export const clickhouseService = asyncSingletonProxy(ClickhouseService);
 export type { ClickHouseColumn };

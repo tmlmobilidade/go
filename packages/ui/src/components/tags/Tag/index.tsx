@@ -14,7 +14,7 @@ export interface TagProps {
 	label?: number | string
 	onClick?: () => void
 	tooltip?: string
-	variant?: 'danger' | 'muted' | 'primary' | 'secondary' | 'success' | 'warning'
+	variant?: 'danger' | 'id' | 'muted' | 'primary' | 'secondary' | 'success' | 'warning'
 }
 
 /* * */

@@ -54,8 +54,7 @@ export function expectedVehicleEventQtyAnalyzer(analysisData: AnalysisData): Rid
 		};
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		return {
 			error_message: error.message,
 			expected_qty: null,

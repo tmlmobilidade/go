@@ -5,6 +5,7 @@ import { fileExports, files, TransactionManager } from '@tmlmobilidade/interface
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { ProcessingStatusSchema } from '@tmlmobilidade/types';
+import { runOnInterval } from '@tmlmobilidade/utils';
 
 const RUN_INTERVAL = 300_000; // 5 minutes in milliseconds
 
@@ -30,8 +31,7 @@ async function markStuckProcessingExportsAsError(): Promise<void> {
 		try {
 			await fileExports.updateById(item._id, { processing_status: ProcessingStatusSchema.enum.error });
 			Logger.success(`Marked processing file export ${item._id} as error.`);
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error(`Failed to mark processing file export ${item._id} as error:`, error);
 		}
 	}
@@ -72,8 +72,7 @@ async function deleteOldFileExports(): Promise<void> {
 
 				Logger.success(`Deleted file export ${item._id}.`);
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error(`Failed to delete file export ${item._id}:`, error);
 		}
 	}
@@ -81,24 +80,14 @@ async function deleteOldFileExports(): Promise<void> {
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		try {
-			Logger.init();
-			const globalTimer = new Timer();
+async function main() {
+	Logger.init();
+	const globalTimer = new Timer();
 
-			await markStuckProcessingExportsAsError();
-			await deleteOldFileExports();
+	await markStuckProcessingExportsAsError();
+	await deleteOldFileExports();
 
-			Logger.terminate(`Cleanup completed in ${globalTimer.get()}`);
-		}
-		catch (error) {
-			Logger.error('Fatal error during cleanup:', error);
-			Logger.terminate('Cleanup failed');
-		}
+	Logger.terminate(`Cleanup completed in ${globalTimer.get()}`);
+}
 
-		setTimeout(runOnInterval, RUN_INTERVAL);
-	};
-
-	runOnInterval();
-})();
+runOnInterval(main, RUN_INTERVAL);

@@ -100,10 +100,6 @@ env:
     stops:frontend
     stops:organizer
 
-    ticketing:nginx
-    ticketing:api
-    ticketing:frontend
-
     offer:nginx
     offer:api
     offer:frontend

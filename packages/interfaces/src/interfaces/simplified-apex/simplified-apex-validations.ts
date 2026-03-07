@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type SimplifiedApexValidation, type UpdateSimplifiedApexValidationDto } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 
 /* * */
@@ -49,4 +49,4 @@ class SimplifiedApexValidationsClass extends MongoCollectionClass<SimplifiedApex
 
 /* * */
 
-export const simplifiedApexValidations = AsyncSingletonProxy(SimplifiedApexValidationsClass);
+export const simplifiedApexValidations = asyncSingletonProxy(SimplifiedApexValidationsClass);

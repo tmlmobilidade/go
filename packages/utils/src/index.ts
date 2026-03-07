@@ -4,5 +4,6 @@ export * from '@/generic/index.js';
 export * from '@/http.js';
 export * from '@/objects/index.js';
 export * from '@/permissions.js';
+export * from '@/run-on-interval.js';
 export * from '@/singleton-proxy.js';
 export * from '@/validate-query-params.js';

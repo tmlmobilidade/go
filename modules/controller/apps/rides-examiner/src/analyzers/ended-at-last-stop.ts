@@ -78,8 +78,7 @@ export function endedAtLastStopAnalyzer(analysisData: AnalysisData): Ride['analy
 		};
 
 	//
-	}
-	catch (error) {
+	} catch (error) {
 		return {
 			error_message: error.message,
 			grade: 'error',

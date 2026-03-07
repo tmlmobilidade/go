@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type SimplifiedApexInspectionDecision } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 
 /* * */
@@ -45,4 +45,4 @@ class SimplifiedApexInspectionDecisionsClass extends MongoCollectionClass<Simpli
 
 /* * */
 
-export const simplifiedApexInspectionDecisions = AsyncSingletonProxy(SimplifiedApexInspectionDecisionsClass);
+export const simplifiedApexInspectionDecisions = asyncSingletonProxy(SimplifiedApexInspectionDecisionsClass);

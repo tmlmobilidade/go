@@ -26,7 +26,7 @@ export function TopbarOptions() {
 	// B. Render components
 
 	return (
-		<TopbarMenu icon={IconSettings}>
+		<TopbarMenu icon={IconSettings} label="Definições">
 
 			<Menu.Label>Personalização</Menu.Label>
 

@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { files, organizations } from '@tmlmobilidade/interfaces';
 import { CreateOrganizationSchema, type Organization, type UpdateOrganizationDto, UpdateOrganizationSchema } from '@tmlmobilidade/types';
@@ -41,16 +41,14 @@ export class OrganizationsController {
 		if (organization.logo_dark) {
 			try {
 				await files.deleteById(organization.logo_dark);
-			}
-			catch (error) {
+			} catch (error) {
 				console.error('Error deleting dark logo:', error);
 			}
 		}
 		if (organization.logo_light) {
 			try {
 				await files.deleteById(organization.logo_light);
-			}
-			catch (error) {
+			} catch (error) {
 				console.error('Error deleting light logo:', error);
 			}
 		}
@@ -183,21 +181,18 @@ export class OrganizationsController {
 				if (organization.logo_dark) {
 					try {
 						await files.deleteById(organization.logo_dark);
-					}
-					catch (error) {
+					} catch (error) {
 						console.error('Error deleting old dark logo:', error);
 					}
 				}
 				updateFields.logo_dark = result._id;
 				uploadedFiles.logo_dark = result._id;
-			}
-			else if (file.fieldname === 'light') {
+			} else if (file.fieldname === 'light') {
 				// Delete old light logo if it exists
 				if (organization.logo_light) {
 					try {
 						await files.deleteById(organization.logo_light);
-					}
-					catch (error) {
+					} catch (error) {
 						console.error('Error deleting old light logo:', error);
 					}
 				}

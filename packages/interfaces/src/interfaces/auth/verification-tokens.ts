@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateVerificationTokenDto, CreateVerificationTokenSchema, type UpdateVerificationTokenDto, UpdateVerificationTokenSchema, type VerificationToken } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -53,4 +53,4 @@ class VerificationTokensClass extends MongoCollectionClass<VerificationToken, Cr
 
 /* * */
 
-export const verificationTokens = AsyncSingletonProxy(VerificationTokensClass);
+export const verificationTokens = asyncSingletonProxy(VerificationTokensClass);

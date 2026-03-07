@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateLineDto, CreateLineSchema, type Line, type UpdateLineDto, UpdateLineSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -51,4 +51,4 @@ class LinesClass extends MongoCollectionClass<Line, CreateLineDto, UpdateLineDto
 
 /* * */
 
-export const lines = AsyncSingletonProxy(LinesClass);
+export const lines = asyncSingletonProxy(LinesClass);

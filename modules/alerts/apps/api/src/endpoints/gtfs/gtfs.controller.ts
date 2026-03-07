@@ -5,6 +5,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { transformAlert } from '@tmlmobilidade/go-alerts-pckg-transform';
 import { alerts } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 
 /* * */
@@ -43,15 +44,21 @@ export class GtfsController {
 			},
 		);
 
+		Logger.info(`Retrieved ${findResult.length} active alerts from the database for Carris Metropolitana GTFS feed.`);
+
 		//
-		// Transfor alerts into GTFS-RT feed entities
+		// Transform alerts into GTFS-RT feed entities
 
-		const transformResult: GtfsRtFeedEntity[] = [];
+		const transformedItems = await Promise.all(
+			findResult.map((item, index) => {
+				Logger.info(`Transforming alert [${index + 1}/${findResult.length}] with ID ${item._id} into GTFS-RT feed entity for Carris Metropolitana GTFS feed.`);
+				return transformAlert(item);
+			}),
+		);
 
-		for (const item of findResult) {
-			const transformedItem = await transformAlert(item);
-			if (transformedItem) transformResult.push(transformedItem);
-		}
+		const transformResult: GtfsRtFeedEntity[] = transformedItems.filter(Boolean);
+
+		Logger.info(`Transformed ${transformResult.length} alerts into GTFS-RT feed entities for Carris Metropolitana GTFS feed.`);
 
 		//
 		// Send the GTFS-RT feed as the response

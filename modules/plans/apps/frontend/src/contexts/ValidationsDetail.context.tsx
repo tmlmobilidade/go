@@ -3,15 +3,17 @@
 /* * */
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type File, type GtfsValidation } from '@tmlmobilidade/types';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { type File, type GtfsValidation, type ProcessingStatus } from '@tmlmobilidade/types';
+import { useToast } from '@tmlmobilidade/ui';
+import { fetchData } from '@tmlmobilidade/utils';
+import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
 interface ValidationsDetailContextState {
 	actions: {
-		approvePlan: () => Promise<void>
+		updateProcessingStatus: (status: ProcessingStatus) => Promise<void>
 	}
 	data: {
 		file: File | null
@@ -44,39 +46,54 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 	//
 	// A. Fetch data
 
-	const { data: validationData, error: validationError, isLoading: validationLoading } = useSWR<GtfsValidation>(validationId && API_ROUTES.plans.VALIDATIONS_DETAIL(validationId), { refreshInterval: 3_000 });
+	const { data: validationData, error: validationError, isLoading: validationLoading, mutate: validationMutate } = useSWR<GtfsValidation>(validationId && API_ROUTES.plans.VALIDATIONS_DETAIL(validationId), { refreshInterval: 3_000 });
 	const { data: fileData, error: fileError, isLoading: fileLoading } = useSWR<File>(validationId && API_ROUTES.plans.VALIDATIONS_DETAIL_FILE(validationId));
 
 	//
 	// B. Handle actions
 
-	const approvePlan = async () => {
-		if (!validationId) return;
-	};
+	const updateProcessingStatus = useCallback(async (status: ProcessingStatus) => {
+		if (!validationId) {
+			useToast.error({ message: 'ID da validação é obrigatório.', title: 'Erro' });
+			return;
+		}
+		try {
+			const response = await fetchData<GtfsValidation>(API_ROUTES.plans.VALIDATIONS_DETAIL_PROCESSING_STATUS(validationId), 'PUT', { processing_status: status });
+			if (response.error || !response.data) {
+				useToast.error({ message: response.error ?? 'Erro ao atualizar estado da validação.', title: 'Erro' });
+				return;
+			}
+			// Update SWR cache so UI reflects new processing_status immediately
+			await validationMutate(response.data);
+		} catch (error) {
+			useToast.error({ message: error instanceof Error ? error.message : 'Erro ao atualizar estado da validação.', title: 'Erro' });
+		}
+	}, [validationId, validationMutate]);
 
 	//
 	// C. Define context value
 
 	const contextValue: ValidationsDetailContextState = useMemo(() => ({
 		actions: {
-			approvePlan,
+			updateProcessingStatus,
 		},
 		data: {
 			file: fileData,
 			validation: validationData,
 		},
 		flags: {
-			can_approve: validationData?.feeder_status === 'complete',
+			can_approve: validationData?.processing_status === 'complete' && validationData?.validity_status === 'valid',
 			error: validationError || fileError,
 			loading: validationLoading || fileLoading,
 		},
 	}), [
-		validationData,
-		validationLoading,
-		validationError,
 		fileData,
-		fileLoading,
 		fileError,
+		fileLoading,
+		updateProcessingStatus,
+		validationData,
+		validationError,
+		validationLoading,
 	]);
 
 	//

@@ -59,12 +59,6 @@ db.createUser({
 });
 
 db.createUser({
-	pwd: USER_TICKETING_PASSWORD,
-	roles: [{ db: 'admin', role: 'ticketing' }],
-	user: 'ticketing',
-});
-
-db.createUser({
 	pwd: USER_OFFER_PASSWORD,
 	roles: [{ db: 'admin', role: 'offer' }],
 	user: 'offer',

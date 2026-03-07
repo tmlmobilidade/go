@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type Municipality } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type IndexDescription } from 'mongodb';
 
 /* * */
@@ -38,4 +38,4 @@ class MunicipalitiesClass extends MongoCollectionClass<Municipality, Municipalit
 
 /* * */
 
-export const municipalities = AsyncSingletonProxy(MunicipalitiesClass);
+export const municipalities = asyncSingletonProxy(MunicipalitiesClass);

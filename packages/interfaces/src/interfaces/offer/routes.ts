@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateRouteDto, CreateRouteSchema, type Route, type UpdateRouteDto, UpdateRouteSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -51,4 +51,4 @@ class RoutesClass extends MongoCollectionClass<Route, CreateRouteDto, UpdateRout
 
 /* * */
 
-export const routes = AsyncSingletonProxy(RoutesClass);
+export const routes = asyncSingletonProxy(RoutesClass);

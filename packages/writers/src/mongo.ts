@@ -162,15 +162,13 @@ export class MongoDbWriter<T> {
 				this.DATA_BUCKET = [];
 
 				//
-			}
-			catch (error) {
+			} catch (error) {
 				Logger.error(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Error @ flush().writeOperations(): ${error.message}`);
 				console.error(error);
 			}
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Error @ flush(): ${error.message}`);
 			console.error(error);
 		}

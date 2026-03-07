@@ -17,19 +17,20 @@
 		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
-		"@tmlmobilidade/gtfs-validator": "20260226.1216.10",
+		"@tmlmobilidade/gtfs-validator": "20260306.1422.34",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
-		"csv-parse": "6.1.0"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.3.1",
+		"@types/node": "25.3.5",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"

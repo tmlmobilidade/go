@@ -53,6 +53,12 @@ server.register(
 		);
 
 		instance.get(
+			'/:id/simplified',
+			{ preHandler: authorizationMiddleware() },
+			UsersController.getSimplifiedById,
+		);
+
+		instance.get(
 			'/me',
 			{ preHandler: authorizationMiddleware() },
 			UsersController.getMe,

@@ -42,7 +42,7 @@ export function AgencyDetailBasicInfo() {
 					<TextInput
 						key={agencyDetailContext.data.form.key('short_name')}
 						label={t('default:agencies.detail.SectionBasicInfo.fields.short_name.label')}
-						maxLength={3}
+						maxLength={CreateAgencySchema.shape.short_name.maxLength}
 						placeholder={t('default:agencies.detail.SectionBasicInfo.fields.short_name.placeholder')}
 						readOnly={agencyDetailContext.flags.isReadOnly}
 						withAsterisk={!CreateAgencySchema.shape.short_name.isOptional()}

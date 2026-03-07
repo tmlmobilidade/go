@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateUserDto, CreateUserSchema, PermissionCatalog, type UpdateUserDto, UpdateUserSchema, type User, type User_UNSAFE } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, type FindOptions, type IndexDescription, type WithId } from 'mongodb';
 import { z } from 'zod';
 
@@ -138,4 +138,4 @@ class UsersClass extends MongoCollectionClass<User_UNSAFE, CreateUserDto, Update
 
 /* * */
 
-export const users = AsyncSingletonProxy(UsersClass);
+export const users = asyncSingletonProxy(UsersClass);

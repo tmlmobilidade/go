@@ -136,8 +136,7 @@ export class RidesController {
 				error: null,
 				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
@@ -203,8 +202,7 @@ export class RidesController {
 				error: null,
 				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
@@ -270,8 +268,7 @@ export class RidesController {
 				error: null,
 				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
@@ -337,8 +334,7 @@ export class RidesController {
 				error: null,
 				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
@@ -404,8 +400,7 @@ export class RidesController {
 				error: null,
 				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
@@ -471,8 +466,7 @@ export class RidesController {
 				error: null,
 				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
@@ -526,8 +520,7 @@ export class RidesController {
 				error: null,
 				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);

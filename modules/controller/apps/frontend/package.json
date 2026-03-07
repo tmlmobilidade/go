@@ -15,8 +15,7 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@mantine/nprogress": "8.3.15",
-		"@tabler/icons-react": "3.37.1",
+		"@tabler/icons-react": "3.39.0",
 		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/types": "*",
@@ -28,16 +27,15 @@
 		"next": "16.1.6",
 		"react": "19.2.4",
 		"react-dom": "19.2.4",
-		"react-viewport-list": "7.1.2",
 		"recharts": "3.7.0",
 		"sharp": "0.34.5",
-		"swr": "2.4.0"
+		"swr": "2.4.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/geojson": "7946.0.16",
 		"@types/luxon": "3.7.1",
-		"@types/node": "25.3.0",
+		"@types/node": "25.3.5",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",
 		"typescript": "5.9.3"

@@ -34,7 +34,7 @@ export function UsersList() {
 	const columns: DataTableColumn<UserNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <Tag label={item._id} variant="id" />,
 			title: t('default:users.list.Table.columns.id.label'),
 			width: 120,
 		},
@@ -88,8 +88,8 @@ export function UsersList() {
 
 	return (
 		<Pane header={[
-			<UsersListHeader />,
-			<UsersListFilterBar />,
+			<UsersListHeader key="header" />,
+			<UsersListFilterBar key="filters" />,
 		]}
 		>
 			<DataTable

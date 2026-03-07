@@ -164,7 +164,7 @@ export function YearlyCalendarMonth({
 							return hasEvents ? (
 								<Tooltip
 									key={dayIndex}
-									label={<DayTooltip date={tooltipDate} events={dayEvents} />}
+									label={<DayTooltip calendarEvents={dayEvents} date={tooltipDate} />}
 									position="top"
 									multiline
 								>

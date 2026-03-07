@@ -53,7 +53,7 @@ export const AnnotationsListContextProvider = ({ children }: PropsWithChildren) 
 		scope: PermissionCatalog.all.annotations.scope,
 	});
 
-	const { data: allAnnotationsData, error: allAnnotationsError, isLoading: allAnnotationsLoading } = useSWR<Annotation[], Error>(API_ROUTES.dates.ANNOTATIONS_LIST, { refreshInterval: 5000 });
+	const { data: allAnnotationsData, error: allAnnotationsError, isLoading: allAnnotationsLoading } = useSWR<Annotation[], Error>(API_ROUTES.dates.ANNOTATIONS_LIST);
 
 	//
 	// B. Setup filters

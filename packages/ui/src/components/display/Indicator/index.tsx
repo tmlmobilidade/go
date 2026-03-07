@@ -9,7 +9,9 @@ import { Tooltip } from '../../common/Tooltip';
 /* * */
 
 export interface IndicatorProps {
+	color?: string
 	filled?: boolean
+	size?: 'lg' | 'md' | 'sm'
 	tooltip?: string
 	variant?: 'danger' | 'muted' | 'primary' | 'secondary' | 'success' | 'warning'
 }
@@ -21,9 +23,16 @@ const IndicatorBody = forwardRef<HTMLDivElement, IndicatorProps>((props, ref) =>
 		ref={ref}
 		className={styles.root}
 		data-filled={props.filled}
+		data-size={props.size}
 		data-variant={props.variant}
 	>
-		<div className={styles.indicator} />
+		<div
+			className={styles.indicator}
+			style={props.color ? {
+				backgroundColor: props.filled ? props.color : 'transparent',
+				borderColor: props.color,
+			} : undefined}
+		/>
 	</div>
 ));
 

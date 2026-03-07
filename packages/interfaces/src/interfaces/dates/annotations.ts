@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type Annotation, type CreateAnnotationDto, CreateAnnotationSchema, type UpdateAnnotationDto, UpdateAnnotationSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -51,4 +51,4 @@ class AnnotationsClass extends MongoCollectionClass<Annotation, CreateAnnotation
 
 /* * */
 
-export const annotations = AsyncSingletonProxy(AnnotationsClass);
+export const annotations = asyncSingletonProxy(AnnotationsClass);

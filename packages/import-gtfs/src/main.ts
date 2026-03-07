@@ -77,8 +77,7 @@ export async function importGtfsToDatabase(plan: Plan, config: ImportGtfsToDatab
 		return context.gtfs;
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error parsing plan.', error);
 		throw error;
 	}
