@@ -28,7 +28,7 @@ export function ZonesList() {
 	const columns: DataTableColumn<Zone>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <Tag label={item._id} variant="id" />,
 			title: '#ID',
 			width: 100,
 		},
@@ -72,8 +72,8 @@ export function ZonesList() {
 
 	return (
 		<Pane header={[
-			<ZonesListHeader />,
-			<ZonesListFiltersBar />,
+			<ZonesListHeader key="header" />,
+			<ZonesListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable

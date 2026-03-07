@@ -28,7 +28,7 @@ export function ValidationsList() {
 	const columns: DataTableColumn<ValidationNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <Tag label={item._id} variant="id" />,
 			title: '#ID',
 			width: 90,
 		},

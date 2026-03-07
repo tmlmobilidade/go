@@ -35,7 +35,7 @@ export function EventsDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
-			<Tag label={eventsDetailContext.data.event._id} variant="secondary" />
+			<Tag label={eventsDetailContext.data.event._id} variant="id" />
 
 			<Spacer />
 

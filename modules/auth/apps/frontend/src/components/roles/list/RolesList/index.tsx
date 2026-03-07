@@ -27,7 +27,7 @@ export function RolesList() {
 	const columns: DataTableColumn<RoleNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <Tag label={item._id} variant="id" />,
 			title: t('default:roles.list.Header.Table.columns.id'),
 			width: 120,
 		},
@@ -63,7 +63,7 @@ export function RolesList() {
 	}
 
 	return (
-		<Pane header={[<RolesListHeader />]}>
+		<Pane header={[<RolesListHeader key="header" />]}>
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}

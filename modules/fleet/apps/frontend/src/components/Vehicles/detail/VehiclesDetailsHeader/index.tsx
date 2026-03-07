@@ -36,7 +36,7 @@ export function VehiclesDetailsHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
-			<Tag label={vehiclesDetailContext.data.vehicle?._id} variant="secondary" />
+			<Tag label={vehiclesDetailContext.data.vehicle?._id} variant="id" />
 
 			<Spacer />
 

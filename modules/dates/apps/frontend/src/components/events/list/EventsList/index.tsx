@@ -29,7 +29,7 @@ export function EventsList() {
 	const columns: DataTableColumn<EventNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <Tag label={item._id} variant="id" />,
 			title: '#ID',
 			width: 100,
 		},
@@ -72,8 +72,8 @@ export function EventsList() {
 
 	return (
 		<Pane header={[
-			<EventsListHeader />,
-			<EventsListFiltersBar />,
+			<EventsListHeader key="header" />,
+			<EventsListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable
