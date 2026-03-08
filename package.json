@@ -21,7 +21,7 @@
 		"build:locations": "ENVIRONMENT=development dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-locations-*",
 		"build:modules": "turbo build --filter=./modules/**/*",
 		"build:offer": "ENVIRONMENT=development dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-offer-*",
-		"build:packages": "turbo build --filter=./packages/**/* && npm run generate-routes && turbo build --filter=./modules/**/packages/**/*",
+		"build:packages": "turbo build --filter=./packages/**/* && turbo build --filter=./modules/**/packages/**/* && npm run generate-routes",
 		"build:performance": "ENVIRONMENT=development dotenv-run -f ./modules/performance/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-performance-*",
 		"build:plans": "ENVIRONMENT=development dotenv-run -f ./modules/plans/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-plans-*",
 		"build:replicator": "ENVIRONMENT=development dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-replicator-*",
@@ -50,7 +50,7 @@
 		"dev:replicator:helpers-dump-data": "ENVIRONMENT=development dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-replicator-helpers-dump-data",
 		"dev:stops": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-*",
 		"dev:stops:ui": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-api --filter=@tmlmobilidade/go-stops-frontend",
-    "dev:tracker:cm-stream": "ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-stream",
+		"dev:tracker:cm-stream": "ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-stream",
 		"dev:tracker:cm-sync": "ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-sync",
 		"dev:tracker:ttsl-fetch": "ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-ttsl-fetch",
 
