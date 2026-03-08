@@ -37,6 +37,7 @@
 		"@tmlmobilidade/clickhouse": "*",
 		"@clickhouse/client": "1.18.1",
 		"@tmlmobilidade/logger": "*",
+		"@clickhouse/client": "1.18.1",
 		"@tmlmobilidade/timer": "*",
 		"papaparse": "5.5.3"
 	},
