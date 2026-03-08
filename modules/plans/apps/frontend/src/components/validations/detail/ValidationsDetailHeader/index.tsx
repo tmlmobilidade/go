@@ -70,7 +70,7 @@ export function ValidationsDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-			<Tag label={validationsDetailContext.data.validation?._id} variant="secondary" />
+			<Tag label={validationsDetailContext.data.validation?._id} variant="id" />
 			<AgencyTag agencyId={validationsDetailContext.data.validation?.gtfs_agency.agency_id} />
 
 			<ProcessingStatusTag

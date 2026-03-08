@@ -30,7 +30,7 @@ export function VehiclesList() {
 	const columns: DataTableColumn<VehicleNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <Tag label={item._id} variant="id" />,
 			title: '#ID',
 			width: 100,
 		},
@@ -74,8 +74,8 @@ export function VehiclesList() {
 
 	return (
 		<Pane header={[
-			<VehiclesListHeader />,
-			<VehiclesListFiltersBar />,
+			<VehiclesListHeader key="header" />,
+			<VehiclesListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable

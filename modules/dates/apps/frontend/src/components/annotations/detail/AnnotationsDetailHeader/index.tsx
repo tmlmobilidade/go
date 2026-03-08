@@ -35,7 +35,7 @@ export function AnnotationsDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
-			<Tag label={annotationsDetailContext.data.annotation._id} variant="secondary" />
+			<Tag label={annotationsDetailContext.data.annotation._id} variant="id" />
 
 			<Spacer />
 

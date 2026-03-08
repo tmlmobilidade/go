@@ -35,7 +35,7 @@ export function TypologyDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
-			<Tag label={typologyDetailContext.data.typology._id} variant="secondary" />
+			<Tag label={typologyDetailContext.data.typology._id} variant="id" />
 
 			<Spacer />
 

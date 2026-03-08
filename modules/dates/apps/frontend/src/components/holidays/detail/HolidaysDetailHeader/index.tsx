@@ -35,7 +35,7 @@ export function HolidaysDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
-			<Tag label={holidaysDetailContext.data.holiday._id} variant="secondary" />
+			<Tag label={holidaysDetailContext.data.holiday._id} variant="id" />
 
 			<Spacer />
 
