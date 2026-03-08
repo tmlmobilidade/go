@@ -3,6 +3,7 @@
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
+import { getPublicTripId } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -53,7 +54,7 @@ export async function transformReferenceTypeRides(alertData: Alert): Promise<Gtf
 			trip: {
 				route_id: foundRide.route_id,
 				start_date: foundRide.operational_date,
-				trip_id: foundRide.trip_id,
+				trip_id: getPublicTripId(foundRide.plan_id, foundRide.trip_id),
 			},
 		};
 
