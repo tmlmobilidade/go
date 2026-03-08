@@ -33,7 +33,7 @@
 		"@mantine/hooks": "8.3.16",
 		"@mantine/modals": "8.3.16",
 		"@mantine/notifications": "8.3.16",
-		"@tabler/icons-react": "3.39.0",
+		"@tabler/icons-react": "3.40.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",

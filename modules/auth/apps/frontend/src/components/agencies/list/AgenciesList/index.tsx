@@ -28,7 +28,7 @@ export function AgenciesList() {
 	const columns: DataTableColumn<AgencyNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <Tag label={item._id} variant="id" />,
 			title: t('default:agencies.list.Table.columns.id'),
 			width: 50,
 		},
@@ -58,7 +58,7 @@ export function AgenciesList() {
 	}
 
 	return (
-		<Pane header={[<AgenciesListHeader />]}>
+		<Pane header={[<AgenciesListHeader key="header" />]}>
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}

@@ -23,7 +23,7 @@ export function RoleDetail() {
 	// B. Render components
 
 	return (
-		<Pane header={[<RoleDetailHeader />]}>
+		<Pane header={[<RoleDetailHeader key="header" />]}>
 			<RoleDetailBasicInfo />
 			{permissionsConfig.map(item => (
 				<PermissionSection

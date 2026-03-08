@@ -35,7 +35,7 @@ export function FareDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
-			<Tag label={fareDetailContext.data.fare._id} variant="secondary" />
+			<Tag label={fareDetailContext.data.fare._id} variant="id" />
 
 			<Spacer />
 

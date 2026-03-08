@@ -33,7 +33,7 @@ export function StopDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-			<Tag label={stopDetailContext.data.stop?._id} variant="secondary" />
+			<Tag label={stopDetailContext.data.stop?._id} variant="id" />
 			{stopDetailContext.data.stop?.is_deleted && <Tag label="Paragem Eliminada" variant="danger" />}
 
 			<Spacer />

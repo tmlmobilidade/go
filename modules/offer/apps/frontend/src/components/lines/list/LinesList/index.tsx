@@ -29,7 +29,7 @@ export function LinesList() {
 	const columns: DataTableColumn<Line>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <Tag label={item._id} variant="id" />,
 			title: '#ID',
 			width: 100,
 		},
@@ -73,8 +73,8 @@ export function LinesList() {
 
 	return (
 		<Pane header={[
-			<LinesListHeader />,
-			<LinesListFiltersBar />,
+			<LinesListHeader key="header" />,
+			<LinesListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable

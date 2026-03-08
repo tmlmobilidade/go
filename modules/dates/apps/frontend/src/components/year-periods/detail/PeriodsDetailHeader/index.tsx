@@ -36,7 +36,7 @@ export function PeriodsDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
-			<Tag label={periodsDetailContext.data.period._id} variant="secondary" />
+			<Tag label={periodsDetailContext.data.period._id} variant="id" />
 
 			<Spacer />
 
