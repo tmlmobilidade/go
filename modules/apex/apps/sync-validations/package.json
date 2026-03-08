@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-apex-sync-apex-validations",
+	"name": "@tmlmobilidade/go-apex-sync-validations",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -21,6 +21,7 @@
 		"@tmlmobilidade/go-apex-pckg-sync": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
+		"@clickhouse/client": "1.18.1",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",

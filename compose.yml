@@ -14,8 +14,8 @@ services:
       - clickhouse_logs:/var/log/clickhouse-server
     environment:
       CLICKHOUSE_DB: testdb
-      CLICKHOUSE_USER: testuser
-      CLICKHOUSE_PASSWORD: testpass
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: password
     ulimits:
       nofile:
         soft: 262144
