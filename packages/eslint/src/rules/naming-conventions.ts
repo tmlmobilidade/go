@@ -8,7 +8,7 @@ import { type Config } from 'eslint/config';
 export const namingConventionsConfig: Config[] = [
 
 	{
-		// files: ['**/*.*'], // Leave disabled to apply to all file types.
+		files: ['**/*.{ts,tsx}'],
 		rules: {
 			'@typescript-eslint/naming-convention': [
 				'error',
