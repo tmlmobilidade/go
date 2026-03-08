@@ -202,7 +202,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	useEffect(() => {
 		if (!form.getValues().active_period_end_date) {
 			// Set active period end date to the end today
-			form.setFieldValue('active_period_end_date', Dates.now('Europe/Lisbon').endOf('day').unix_timestamp);
+			form.setFieldValue('active_period_end_date', Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp);
 			// Set publish end date to end of today
 			form.setFieldValue('publish_end_date', Dates.now('Europe/Lisbon').endOf('day').unix_timestamp);
 		}

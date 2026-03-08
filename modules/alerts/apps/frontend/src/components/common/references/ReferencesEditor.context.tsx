@@ -224,7 +224,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 			if (!activePeriodStartDate) return;
 			setEndDate(Dates.fromUnixTimestamp(activePeriodStartDate).plus({ hours: 4 }).unix_timestamp);
 		}
-		// setEndDate(Dates.fromUnixTimestamp(activePeriodEndDate).plus({ hours: 4 }).unix_timestamp);
+		setEndDate(activePeriodEndDate);
 	}, [activePeriodStartDate, activePeriodEndDate]);
 
 	//
