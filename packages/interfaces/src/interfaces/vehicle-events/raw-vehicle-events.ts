@@ -1,14 +1,17 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { type RawVehicleEvent } from '@tmlmobilidade/types';
+import { type RawVehicleEvent, RawVehicleEventSchema } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type IndexDescription } from 'mongodb';
+import { z } from 'zod';
 
 /* * */
 
 class RawVehicleEventsClass extends MongoCollectionClass<RawVehicleEvent, RawVehicleEvent, RawVehicleEvent> {
 	private static _instance: RawVehicleEventsClass;
+	protected override createSchema: z.ZodSchema = RawVehicleEventSchema;
+	protected override updateSchema: z.ZodSchema = RawVehicleEventSchema;
 
 	private constructor() {
 		super();
@@ -24,11 +27,7 @@ class RawVehicleEventsClass extends MongoCollectionClass<RawVehicleEvent, RawVeh
 	}
 
 	protected getCollectionIndexes(): IndexDescription[] {
-		return [
-			{ background: true, key: { received_at: 1 } },
-			// eslint-disable-next-line perfectionist/sort-objects
-			{ background: true, key: { trip_id: 1, created_at: 1 } },
-		];
+		return [];
 	}
 
 	protected getCollectionName(): string {

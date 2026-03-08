@@ -104,17 +104,12 @@ export async function syncPcgiLog() {
 
 		await rawVehicleEventsDbWritter.flush();
 
-		//
-
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
 		//
-	}
-	catch (err) {
+	} catch (err) {
 		console.log('An error occurred. Halting execution.', err);
 		console.log('Retrying in 10 seconds...');
 		setTimeout(() => process.exit(0), 10_000);
 	}
-
-	//
 };

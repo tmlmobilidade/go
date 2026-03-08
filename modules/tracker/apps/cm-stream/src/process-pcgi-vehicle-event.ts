@@ -42,7 +42,8 @@ export async function processPcgiVehicleEvent(pcgiVehicleEvent: PcgiVehicleEvent
 			agency_id: entity.vehicle.agencyId,
 			created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
 			entity_id: entity._id,
-			vehicle: entity.vehicle,
+			raw: entity,
+			version: 'default',
 		};
 
 		const hashableRawEventId = crypto

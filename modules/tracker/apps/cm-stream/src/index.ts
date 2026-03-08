@@ -6,26 +6,20 @@ import { type PcgiVehicleEvent } from '@tmlmobilidade/types';
 
 /* * */
 
-(async function init() {
-	//
+await pcgidbLegacy.connect();
 
-	await pcgidbLegacy.connect();
+//
+// Handle the database operation. Ensure it is an insert operation.
+// Only insert operations are expected to occur in this PCGIDB collection.
 
-	//
-	// Handle the database operation. Ensure it is an insert operation.
-	// Only insert operations are expected to occur in this PCGIDB collection.
+async function handleDatabaseOperation(databaseOperation: ChangeStreamDocument<PcgiVehicleEvent>) {
+	if (databaseOperation.operationType !== 'insert') return;
+	await processPcgiVehicleEvent(databaseOperation.fullDocument);
+}
 
-	async function handleDatabaseOperation(databaseOperation: ChangeStreamDocument<PcgiVehicleEvent>) {
-		if (databaseOperation.operationType !== 'insert') return;
-		await processPcgiVehicleEvent(databaseOperation.fullDocument);
-	}
+//
+// Watch for changes to the MongoDB collections
+// and integrate those documents immediately.
 
-	//
-	// Watch for changes to the MongoDB collections
-	// and integrate those documents immediately.
-
-	pcgidbLegacy.VehicleEventsCore.watch().on('change', handleDatabaseOperation);
-	pcgidbLegacy.VehicleEventsLog.watch().on('change', handleDatabaseOperation);
-
-	//
-})();
+pcgidbLegacy.VehicleEventsCore.watch().on('change', handleDatabaseOperation);
+pcgidbLegacy.VehicleEventsLog.watch().on('change', handleDatabaseOperation);
