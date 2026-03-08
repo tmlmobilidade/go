@@ -38,6 +38,7 @@ export function transformVehicleEventForClickHouse(pcgiDoc: any): ClickHouseVehi
 	return {
 		_id: pcgiDoc._id,
 		agency_id: entity.vehicle.agencyId,
+		bearing: entity.vehicle.position.bearing,
 		created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
 		current_status: entity.vehicle.currentStatus,
 		door: entity.vehicle.trigger.door,

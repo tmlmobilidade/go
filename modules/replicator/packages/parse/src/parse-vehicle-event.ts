@@ -11,6 +11,7 @@ export function parseVehicleEvent(pcgiDoc: any): null | SimplifiedVehicleEvent {
 		return {
 			_id: pcgiDoc._id,
 			agency_id: pcgiDoc.content.entity[0].vehicle.agencyId,
+			bearing: pcgiDoc.content.entity[0].vehicle.position.bearing,
 			created_at: Dates.fromSeconds(pcgiDoc.content.entity[0].vehicle.timestamp).unix_timestamp,
 			current_status: pcgiDoc.content.entity[0].vehicle.currentStatus,
 			door: pcgiDoc.content.entity[0].vehicle.trigger.door,
@@ -25,8 +26,7 @@ export function parseVehicleEvent(pcgiDoc: any): null | SimplifiedVehicleEvent {
 			trip_id: pcgiDoc.content.entity[0].vehicle.trip?.tripId,
 			vehicle_id: pcgiDoc.content.entity[0].vehicle.vehicle._id,
 		};
-	}
-	catch (error) {
+	} catch (error) {
 		console.error(`Error parsing Vehicle Event. Transaction ID: "${pcgiDoc._id}"`, error.message);
 		return null;
 	}
