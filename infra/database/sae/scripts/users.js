@@ -42,8 +42,8 @@ db.createUser({
 
 db.createUser({
 	pwd: USER_REPLICATOR_PASSWORD,
-	roles: [{ db: 'admin', role: 'replicator' }],
-	user: 'replicator',
+	roles: [{ db: 'admin', role: 'apex' }],
+	user: 'apex',
 });
 
 db.createUser({
