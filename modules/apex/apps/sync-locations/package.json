@@ -17,6 +17,7 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
+		"@clickhouse/client": "1.18.1",
 		"@tmlmobilidade/go-apex-pckg-parse": "*",
 		"@tmlmobilidade/go-apex-pckg-sync": "*",
 		"@tmlmobilidade/interfaces": "*",
