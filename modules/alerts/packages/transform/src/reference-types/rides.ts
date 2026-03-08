@@ -52,6 +52,7 @@ export async function transformReferenceTypeRides(alertData: Alert): Promise<Gtf
 			agency_id: alertData.agency_id,
 			trip: {
 				route_id: foundRide.route_id,
+				start_date: foundRide.operational_date,
 				trip_id: foundRide.trip_id,
 			},
 		};
