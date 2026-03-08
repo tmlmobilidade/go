@@ -22,7 +22,7 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
-		"fastify": "5.8.1"
+		"fastify": "5.8.2"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
