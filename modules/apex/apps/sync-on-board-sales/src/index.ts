@@ -1,14 +1,62 @@
 /* * */
 
+import { createClient } from '@clickhouse/client';
 import { Dates } from '@tmlmobilidade/dates';
 import { parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-apex-pckg-parse';
-import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-apex-pckg-sync';
-import { pcgidbTicketing, rides, simplifiedApexOnBoardSales } from '@tmlmobilidade/interfaces';
+import { getEarliestDate } from '@tmlmobilidade/go-apex-pckg-sync';
+import { pcgidbTicketing, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
-import { MongoDbWriter, type MongoDBWriterWriteOps } from '@tmlmobilidade/writers';
+import { runOnInterval } from '@tmlmobilidade/utils';
+import { ClickHouseWriter } from '@tmlmobilidade/writers';
 import { Interval } from 'luxon';
+
+/* * */
+
+const CLICKHOUSE_TABLE = 'simplified_apex_on_board_sales';
+const CLICKHOUSE_DELETE_BATCH_SIZE = 5_000;
+
+/* * */
+
+function getClickHouseConfig() {
+	return {
+		database: process.env.CLICKHOUSE_DATABASE,
+		password: process.env.CLICKHOUSE_PASSWORD,
+		url: `${process.env.CLICKHOUSE_TLS === 'true' ? 'https' : 'http'}://${process.env.CLICKHOUSE_HOST}:${process.env.CLICKHOUSE_PORT}`,
+		username: process.env.CLICKHOUSE_USERNAME,
+	};
+}
+
+function escapeClickHouseString(value: string) {
+	return value.replace(/\\/g, '\\\\').replace(/'/g, `\\'`);
+}
+
+async function deleteExtraDocumentsFromClickHouse(extraDocumentIds: string[], chunkStart: number, chunkEnd: number) {
+	if (extraDocumentIds.length === 0) return;
+
+	const client = createClient(getClickHouseConfig());
+
+	try {
+		for (let index = 0; index < extraDocumentIds.length; index += CLICKHOUSE_DELETE_BATCH_SIZE) {
+			const deleteBatch = extraDocumentIds.slice(index, index + CLICKHOUSE_DELETE_BATCH_SIZE);
+			const inClause = deleteBatch.map(item => `'${escapeClickHouseString(item)}'`).join(', ');
+
+			await client.command({
+				query: `
+					ALTER TABLE ${CLICKHOUSE_TABLE}
+					DELETE WHERE created_at >= ${chunkStart}
+					AND created_at <= ${chunkEnd}
+					AND _id IN (${inClause})
+					SETTINGS mutations_sync = 1
+				`,
+			});
+		}
+	}
+	finally {
+		await client.close();
+	}
+}
 
 /* * */
 
@@ -21,12 +69,48 @@ async function syncApexOnBoardSales() {
 		const globalTimer = new Timer();
 
 		//
-		// Connect to databases and setup DB writers
+		// Connect to databases and setup ClickHouse writer
 
 		await pcgidbTicketing.connect();
 
-		const simplifiedApexOnBoardSalesCollection = await simplifiedApexOnBoardSales.getCollection();
-		const simplifiedApexOnBoardSalesDbWritter = new MongoDbWriter<SimplifiedApexOnBoardSale>({ batch_size: 100000, collection: simplifiedApexOnBoardSalesCollection });
+		const clickhouseWriter = new ClickHouseWriter<SimplifiedApexOnBoardSale>({
+			batch_size: 100_000,
+			clientConfig: getClickHouseConfig(),
+			table: CLICKHOUSE_TABLE,
+			tableSchema: [
+				{ name: '_id', primaryKey: true, type: 'String' },
+				{ name: 'agency_id', type: 'String' },
+				{ name: 'apex_version', type: 'String' },
+				{ name: 'block_id', type: 'Nullable(String)' },
+				{ name: 'card_physical_type', type: 'Int64' },
+				{ name: 'card_serial_number', type: 'String' },
+				{ name: 'created_at', type: 'Int64' },
+				{ name: 'device_id', type: 'String' },
+				{ name: 'duty_id', type: 'Nullable(String)' },
+				{ name: 'is_passenger', type: 'Bool' },
+				{ name: 'line_id', type: 'Nullable(String)' },
+				{ name: 'mac_ase_counter_value', type: 'Int64' },
+				{ name: 'mac_sam_serial_number', type: 'Int64' },
+				{ name: 'on_board_refund_id', type: 'Nullable(String)' },
+				{ name: 'pattern_id', type: 'Nullable(String)' },
+				{ name: 'payment_method', type: 'Int64' },
+				{ name: 'price', type: 'Float64' },
+				{ name: 'product_long_id', type: 'String' },
+				{ name: 'product_quantity', type: 'Int64' },
+				{ name: 'received_at', type: 'Int64' },
+				{ name: 'stop_id', type: 'Nullable(String)' },
+				{ name: 'trip_id', type: 'Nullable(String)' },
+				{ name: 'updated_at', type: 'Int64' },
+				{ name: 'validation_id', type: 'Nullable(String)' },
+				{ name: 'vehicle_id', type: 'Nullable(Int64)' },
+			],
+			transformFn: data => ({
+				...data,
+				_id: String(data._id),
+			}),
+		});
+
+		await clickhouseWriter.ensureTable(undefined, 'MergeTree', 'created_at');
 
 		//
 		// In order to sync both collections in a manageable way, due to the high volume of data,
@@ -44,7 +128,7 @@ async function syncApexOnBoardSales() {
 
 		const allTimestampChunks = Interval
 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
-			.splitBy({ hour: 10 })
+			.splitBy({ hours: 10 })
 			.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }))
 			.sort((a, b) => b.start - a.start);
 
@@ -74,7 +158,9 @@ async function syncApexOnBoardSales() {
 			// Setup the callback function that will be called on the DB Writer flush operation
 			// to invalidate all the rides that are affected by the new data.
 
-			const flushCallback = async (flushedData: MongoDBWriterWriteOps<SimplifiedApexOnBoardSale>[]) => {
+			const flushCallback = async (flushedData?: SimplifiedApexOnBoardSale[]) => {
+				if (!flushedData || flushedData.length === 0) return;
+
 				try {
 					//
 
@@ -84,13 +170,14 @@ async function syncApexOnBoardSales() {
 					// Extract the unique trip_ids from the flushed data and
 					// the unique sam serial numbers associated with those transactions.
 
-					const uniqueTripIds: string[] = Array.from(new Set(flushedData.map(writeOp => writeOp.data.trip_id)));
+					const uniqueTripIds = Array.from(new Set(flushedData.map(item => item.trip_id).filter(Boolean))) as string[];
+					if (uniqueTripIds.length === 0) return;
 
 					//
 					// Create a standard window interval based on the earliest and latest timestamps
 
-					const earliestTimestamp = Math.min(...flushedData.map(writeOp => writeOp.data.created_at));
-					const latestTimestamp = Math.max(...flushedData.map(writeOp => writeOp.data.created_at));
+					const earliestTimestamp = Math.min(...flushedData.map(item => item.created_at));
+					const latestTimestamp = Math.max(...flushedData.map(item => item.created_at));
 
 					const earliestStandardWindowInterval = Dates.fromUnixTimestamp(earliestTimestamp).std_window;
 					const latestStandardWindowInterval = Dates.fromUnixTimestamp(latestTimestamp).std_window;
@@ -127,37 +214,69 @@ async function syncApexOnBoardSales() {
 				},
 			};
 
-			const goQuery = {
+			const clickhouseQuery = {
 				created_at: {
 					$gte: chunkStartDate.unix_timestamp,
 					$lte: chunkEndDate.unix_timestamp,
 				},
 			};
 
-			//
-			// Sync the documents
+			const countQueryTimer = new Timer();
 
-			await syncDocuments({
+			const pcgiDocCount = await pcgidbTicketing.SalesEntity.countDocuments(pcgiQuery);
+			const clickhouseDocCount = await clickhouseWriter.countDocuments(clickhouseQuery);
 
-				dbWriter: simplifiedApexOnBoardSalesDbWritter,
+			if (pcgiDocCount === clickhouseDocCount) {
+				Logger.success(`MATCH: Found the same number of documents in both databases: ${pcgiDocCount} PCGIDB = ${clickhouseDocCount} ClickHouse (${countQueryTimer.get()})`);
+				Logger.success(`Chunk sync complete (${chunkTimer.get()})`);
+				continue;
+			}
 
-				docParser: parseSimplifiedApexOnBoardSale,
+			Logger.info(`MISMATCH: Document count was different for both databases: ${pcgiDocCount} PCGIDB != ${clickhouseDocCount} ClickHouse (${countQueryTimer.get()})`);
 
-				flushCallback: flushCallback,
+			const distinctQueryTimer = new Timer();
 
-				goCollection: simplifiedApexOnBoardSalesCollection,
+			const pcgiDocIds = await pcgidbTicketing.SalesEntity.distinct('transaction.transactionId', pcgiQuery);
+			const clickhouseDocIds = await clickhouseWriter.distinct<string>('_id', clickhouseQuery);
 
-				goIdKey: '_id',
+			const pcgiDocIdsUnique = new Set(pcgiDocIds.map(String));
+			const clickhouseDocIdsUnique = new Set(clickhouseDocIds.map(String));
 
-				goQuery: goQuery,
+			const missingDocuments = pcgiDocIds.filter((documentId: string) => !clickhouseDocIdsUnique.has(String(documentId)));
+			const extraDocuments = clickhouseDocIds.filter((documentId: string) => !pcgiDocIdsUnique.has(String(documentId)));
 
-				pcgiCollection: pcgidbTicketing.SalesEntity,
+			Logger.info(`PCGI Total: ${pcgiDocCount} | PCGI Unique: ${pcgiDocIdsUnique.size} | PCGI ▲: ${pcgiDocCount - pcgiDocIdsUnique.size} | CH Total: ${clickhouseDocCount} | CH Unique: ${clickhouseDocIdsUnique.size} | CH ▲: ${clickhouseDocCount - clickhouseDocIdsUnique.size} | CH Missing: ${missingDocuments.length} | CH Extra: ${extraDocuments.length} (${distinctQueryTimer.get()})`);
 
-				pcgiIdKey: 'transaction.transactionId',
+			if (extraDocuments.length > 0) {
+				await deleteExtraDocumentsFromClickHouse(extraDocuments, chunkStartDate.unix_timestamp, chunkEndDate.unix_timestamp);
+				Logger.info(`Removed ${extraDocuments.length} extra documents in ClickHouse. (${distinctQueryTimer.get()})`);
+			}
 
-				pcgiQuery: pcgiQuery,
+			if (missingDocuments.length === 0) {
+				Logger.success(`Chunk complete. All document IDs matched. (${distinctQueryTimer.get()})`);
+				Logger.success(`Chunk sync complete (${chunkTimer.get()})`);
+				continue;
+			}
 
-			});
+			Logger.info(`Found ${missingDocuments.length} missing documents in ClickHouse. (${distinctQueryTimer.get()})`);
+
+			const missingDocumentsStream = pcgidbTicketing.SalesEntity
+				.find({ 'transaction.transactionId': { $in: missingDocuments } })
+				.stream();
+
+			let syncedCount = 0;
+
+			for await (const pcgiDocument of missingDocumentsStream) {
+				const parsedOnBoardSale = parseSimplifiedApexOnBoardSale(pcgiDocument);
+				if (!parsedOnBoardSale) continue;
+
+				await clickhouseWriter.write(parsedOnBoardSale, undefined, flushCallback);
+				syncedCount++;
+			}
+
+			await clickhouseWriter.flush(flushCallback);
+
+			Logger.success(`Complete! Synced ${syncedCount} new documents. (${chunkTimer.get()})`);
 
 			//
 
@@ -167,6 +286,8 @@ async function syncApexOnBoardSales() {
 		}
 
 		//
+
+		await clickhouseWriter.close();
 
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
@@ -181,14 +302,8 @@ async function syncApexOnBoardSales() {
 	}
 
 	//
-};
+}
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		await syncApexOnBoardSales();
-		setTimeout(runOnInterval, 1_800_000);// 30 minutes
-	};
-	runOnInterval();
-})();
+runOnInterval(syncApexOnBoardSales, 1_800_000); // 30 minutes

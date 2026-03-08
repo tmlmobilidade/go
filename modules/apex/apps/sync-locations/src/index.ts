@@ -1,14 +1,62 @@
 /* * */
 
+import { createClient } from '@clickhouse/client';
 import { Dates } from '@tmlmobilidade/dates';
 import { parseSimplifiedApexLocation } from '@tmlmobilidade/go-apex-pckg-parse';
-import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-apex-pckg-sync';
-import { pcgidbValidations, rides, simplifiedApexLocations } from '@tmlmobilidade/interfaces';
+import { getEarliestDate } from '@tmlmobilidade/go-apex-pckg-sync';
+import { pcgidbValidations, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
-import { MongoDbWriter, type MongoDBWriterWriteOps } from '@tmlmobilidade/writers';
+import { runOnInterval } from '@tmlmobilidade/utils';
+import { ClickHouseWriter } from '@tmlmobilidade/writers';
 import { Interval } from 'luxon';
+
+/* * */
+
+const CLICKHOUSE_TABLE = 'simplified_apex_locations';
+const CLICKHOUSE_DELETE_BATCH_SIZE = 5_000;
+
+/* * */
+
+function getClickHouseConfig() {
+	return {
+		database: process.env.CLICKHOUSE_DATABASE,
+		password: process.env.CLICKHOUSE_PASSWORD,
+		url: `${process.env.CLICKHOUSE_TLS === 'true' ? 'https' : 'http'}://${process.env.CLICKHOUSE_HOST}:${process.env.CLICKHOUSE_PORT}`,
+		username: process.env.CLICKHOUSE_USERNAME,
+	};
+}
+
+function escapeClickHouseString(value: string) {
+	return value.replace(/\\/g, '\\\\').replace(/'/g, `\\'`);
+}
+
+async function deleteExtraDocumentsFromClickHouse(extraDocumentIds: string[], chunkStart: number, chunkEnd: number) {
+	if (extraDocumentIds.length === 0) return;
+
+	const client = createClient(getClickHouseConfig());
+
+	try {
+		for (let index = 0; index < extraDocumentIds.length; index += CLICKHOUSE_DELETE_BATCH_SIZE) {
+			const deleteBatch = extraDocumentIds.slice(index, index + CLICKHOUSE_DELETE_BATCH_SIZE);
+			const inClause = deleteBatch.map(item => `'${escapeClickHouseString(item)}'`).join(', ');
+
+			await client.command({
+				query: `
+					ALTER TABLE ${CLICKHOUSE_TABLE}
+					DELETE WHERE created_at >= ${chunkStart}
+					AND created_at <= ${chunkEnd}
+					AND _id IN (${inClause})
+					SETTINGS mutations_sync = 1
+				`,
+			});
+		}
+	}
+	finally {
+		await client.close();
+	}
+}
 
 /* * */
 
@@ -21,12 +69,37 @@ async function syncApexLocations() {
 		const globalTimer = new Timer();
 
 		//
-		// Connect to databases and setup DB writers
+		// Connect to databases and setup ClickHouse writer
 
 		await pcgidbValidations.connect();
 
-		const simplifiedApexLocationsCollection = await simplifiedApexLocations.getCollection();
-		const simplifiedApexLocationsDbWritter = new MongoDbWriter<SimplifiedApexLocation>({ batch_size: 100000, collection: simplifiedApexLocationsCollection });
+		const clickhouseWriter = new ClickHouseWriter<SimplifiedApexLocation>({
+			batch_size: 100_000,
+			clientConfig: getClickHouseConfig(),
+			table: CLICKHOUSE_TABLE,
+			tableSchema: [
+				{ name: '_id', primaryKey: true, type: 'String' },
+				{ name: 'agency_id', type: 'String' },
+				{ name: 'apex_version', type: 'String' },
+				{ name: 'created_at', type: 'Int64' },
+				{ name: 'device_id', type: 'String' },
+				{ name: 'line_id', type: 'String' },
+				{ name: 'mac_ase_counter_value', type: 'Int64' },
+				{ name: 'mac_sam_serial_number', type: 'Int64' },
+				{ name: 'pattern_id', type: 'String' },
+				{ name: 'received_at', type: 'Int64' },
+				{ name: 'stop_id', type: 'String' },
+				{ name: 'trip_id', type: 'String' },
+				{ name: 'updated_at', type: 'Int64' },
+				{ name: 'vehicle_id', type: 'Int64' },
+			],
+			transformFn: data => ({
+				...data,
+				_id: String(data._id),
+			}),
+		});
+
+		await clickhouseWriter.ensureTable(undefined, 'MergeTree', 'created_at');
 
 		//
 		// In order to sync both collections in a manageable way, due to the high volume of data,
@@ -44,7 +117,7 @@ async function syncApexLocations() {
 
 		const allTimestampChunks = Interval
 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
-			.splitBy({ hour: 3 })
+			.splitBy({ hours: 3 })
 			.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }))
 			.sort((a, b) => b.start - a.start);
 
@@ -74,7 +147,9 @@ async function syncApexLocations() {
 			// Setup the callback function that will be called on the DB Writer flush operation
 			// to invalidate all the rides that are affected by the new data.
 
-			const flushCallback = async (flushedData: MongoDBWriterWriteOps<SimplifiedApexLocation>[]) => {
+			const flushCallback = async (flushedData?: SimplifiedApexLocation[]) => {
+				if (!flushedData || flushedData.length === 0) return;
+
 				try {
 					//
 
@@ -84,13 +159,14 @@ async function syncApexLocations() {
 					// Extract the unique trip_ids from the flushed data and
 					// the unique sam serial numbers associated with those transactions.
 
-					const uniqueTripIds: string[] = Array.from(new Set(flushedData.map(writeOp => writeOp.data.trip_id)));
+					const uniqueTripIds = Array.from(new Set(flushedData.map(item => item.trip_id).filter(Boolean))) as string[];
+					if (uniqueTripIds.length === 0) return;
 
 					//
 					// Create a standard window interval based on the earliest and latest timestamps
 
-					const earliestTimestamp = Math.min(...flushedData.map(writeOp => writeOp.data.created_at));
-					const latestTimestamp = Math.max(...flushedData.map(writeOp => writeOp.data.created_at));
+					const earliestTimestamp = Math.min(...flushedData.map(item => item.created_at));
+					const latestTimestamp = Math.max(...flushedData.map(item => item.created_at));
 
 					const earliestStandardWindowInterval = Dates.fromUnixTimestamp(earliestTimestamp).std_window;
 					const latestStandardWindowInterval = Dates.fromUnixTimestamp(latestTimestamp).std_window;
@@ -125,37 +201,69 @@ async function syncApexLocations() {
 				},
 			};
 
-			const goQuery = {
+			const clickhouseQuery = {
 				created_at: {
 					$gte: chunkStartDate.unix_timestamp,
 					$lte: chunkEndDate.unix_timestamp,
 				},
 			};
 
-			//
-			// Sync the documents
+			const countQueryTimer = new Timer();
 
-			await syncDocuments({
+			const pcgiDocCount = await pcgidbValidations.LocationEntity.countDocuments(pcgiQuery);
+			const clickhouseDocCount = await clickhouseWriter.countDocuments(clickhouseQuery);
 
-				dbWriter: simplifiedApexLocationsDbWritter,
+			if (pcgiDocCount === clickhouseDocCount) {
+				Logger.success(`MATCH: Found the same number of documents in both databases: ${pcgiDocCount} PCGIDB = ${clickhouseDocCount} ClickHouse (${countQueryTimer.get()})`);
+				Logger.success(`Chunk sync complete (${chunkTimer.get()})`);
+				continue;
+			}
 
-				docParser: parseSimplifiedApexLocation,
+			Logger.info(`MISMATCH: Document count was different for both databases: ${pcgiDocCount} PCGIDB != ${clickhouseDocCount} ClickHouse (${countQueryTimer.get()})`);
 
-				flushCallback: flushCallback,
+			const distinctQueryTimer = new Timer();
 
-				goCollection: simplifiedApexLocationsCollection,
+			const pcgiDocIds = await pcgidbValidations.LocationEntity.distinct('transaction.transactionId', pcgiQuery);
+			const clickhouseDocIds = await clickhouseWriter.distinct<string>('_id', clickhouseQuery);
 
-				goIdKey: '_id',
+			const pcgiDocIdsUnique = new Set(pcgiDocIds.map(String));
+			const clickhouseDocIdsUnique = new Set(clickhouseDocIds.map(String));
 
-				goQuery: goQuery,
+			const missingDocuments = pcgiDocIds.filter((documentId: string) => !clickhouseDocIdsUnique.has(String(documentId)));
+			const extraDocuments = clickhouseDocIds.filter((documentId: string) => !pcgiDocIdsUnique.has(String(documentId)));
 
-				pcgiCollection: pcgidbValidations.LocationEntity,
+			Logger.info(`PCGI Total: ${pcgiDocCount} | PCGI Unique: ${pcgiDocIdsUnique.size} | PCGI ▲: ${pcgiDocCount - pcgiDocIdsUnique.size} | CH Total: ${clickhouseDocCount} | CH Unique: ${clickhouseDocIdsUnique.size} | CH ▲: ${clickhouseDocCount - clickhouseDocIdsUnique.size} | CH Missing: ${missingDocuments.length} | CH Extra: ${extraDocuments.length} (${distinctQueryTimer.get()})`);
 
-				pcgiIdKey: 'transaction.transactionId',
+			if (extraDocuments.length > 0) {
+				await deleteExtraDocumentsFromClickHouse(extraDocuments, chunkStartDate.unix_timestamp, chunkEndDate.unix_timestamp);
+				Logger.info(`Removed ${extraDocuments.length} extra documents in ClickHouse. (${distinctQueryTimer.get()})`);
+			}
 
-				pcgiQuery: pcgiQuery,
+			if (missingDocuments.length === 0) {
+				Logger.success(`Chunk complete. All document IDs matched. (${distinctQueryTimer.get()})`);
+				Logger.success(`Chunk sync complete (${chunkTimer.get()})`);
+				continue;
+			}
 
-			});
+			Logger.info(`Found ${missingDocuments.length} missing documents in ClickHouse. (${distinctQueryTimer.get()})`);
+
+			const missingDocumentsStream = pcgidbValidations.LocationEntity
+				.find({ 'transaction.transactionId': { $in: missingDocuments } })
+				.stream();
+
+			let syncedCount = 0;
+
+			for await (const pcgiDocument of missingDocumentsStream) {
+				const parsedLocation = parseSimplifiedApexLocation(pcgiDocument);
+				if (!parsedLocation) continue;
+
+				await clickhouseWriter.write(parsedLocation, undefined, flushCallback);
+				syncedCount++;
+			}
+
+			await clickhouseWriter.flush(flushCallback);
+
+			Logger.success(`Complete! Synced ${syncedCount} new documents. (${chunkTimer.get()})`);
 
 			//
 
@@ -165,6 +273,8 @@ async function syncApexLocations() {
 		}
 
 		//
+
+		await clickhouseWriter.close();
 
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
@@ -179,14 +289,8 @@ async function syncApexLocations() {
 	}
 
 	//
-};
+}
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		await syncApexLocations();
-		setTimeout(runOnInterval, 1_800_000);// 30 minutes
-	};
-	runOnInterval();
-})();
+runOnInterval(syncApexLocations, 1_800_000); // 30 minutes
