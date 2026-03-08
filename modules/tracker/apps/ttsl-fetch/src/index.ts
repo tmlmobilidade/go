@@ -72,7 +72,7 @@ const API_URL = 'https://api.ttsl.pt/files/gtfs_rt_vehicles.pb';
 				agency_id: '4',
 				created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
 				entity_id: entity.id,
-				vehicle: entity.vehicle,
+				raw: entity,
 			};
 
 			const hashableRawEventId = crypto

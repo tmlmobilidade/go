@@ -10,8 +10,9 @@ export const RawVehicleEventSchema = z.object({
 	agency_id: z.string(),
 	created_at: UnixTimeStampSchema,
 	entity_id: z.any(),
+	raw: z.any(),
 	received_at: UnixTimeStampSchema,
-	vehicle: z.any(),
+	version: z.string().optional(),
 });
 
 /**
