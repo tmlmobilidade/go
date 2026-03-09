@@ -55,7 +55,7 @@ export default function SucessfulGtfsValidationTemplate({ firstName, gtfsValidat
 			)}
 			<Paragraph>
 				Se tiveres dúvidas sobre alguma regra
-				<Anchor href="https://go.tmlmobilidade.com/docs" spaceAfter spaceBefore text="explora a documentação" />
+				<Anchor href="https://go.tmlmobilidade.pt/reference" spaceAfter spaceBefore text="explora a documentação" />
 				ou entra em contacto connosco.
 			</Paragraph>
 			<Paragraph>A validação pode agora ser aprovada para plano.</Paragraph>
@@ -70,7 +70,7 @@ export default function SucessfulGtfsValidationTemplate({ firstName, gtfsValidat
 SucessfulGtfsValidationTemplate.PreviewProps = {
 	firstName: 'Josué',
 	gtfsValidationId: 'TUH16N',
-	gtfsValidationUrl: 'https://go.tmlmobilidade.com/gtfs-validations/TUH16N',
+	gtfsValidationUrl: 'https://go.tmlmobilidade.pt/gtfs-validations/TUH16N',
 	totalWarnings: 0,
 } satisfies SucessfulGtfsValidationTemplateProps;
 
