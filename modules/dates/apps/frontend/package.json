@@ -34,7 +34,7 @@
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/luxon": "3.7.1",
-		"@types/node": "25.3.5",
+		"@types/node": "25.4.0",
 		"@types/papaparse": "5.5.2",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",

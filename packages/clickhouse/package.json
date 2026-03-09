@@ -34,13 +34,13 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@clickhouse/client": "1.18.1",
+		"@clickhouse/client": "1.18.2",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.3.5",
+		"@types/node": "25.4.0",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",
 		"typescript": "5.9.3"

@@ -27,7 +27,7 @@
 		"@carrismetropolitana/api-types": "20251128.1928.11",
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.3.5",
+		"@types/node": "25.4.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"
