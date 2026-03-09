@@ -9,6 +9,12 @@ const GetStopsBatchQuerySchema = z.object({
 	stop_names: z.union([z.string(), z.array(z.string())]).optional(),
 });
 
+interface StopBatchItem {
+	_id: string
+	legacy_id?: string
+	name: string
+}
+
 export class StopsSharedController {
 	//
 
@@ -32,7 +38,7 @@ export class StopsSharedController {
 		//
 	}
 
-	static async getBatch(request: FastifyRequest, reply: FastifyReply<{ label: string, value: string }[]>) {
+	static async getBatch(request: FastifyRequest, reply: FastifyReply<{ label: string, legacy_id: string, value: string }[]>) {
 		const parsedQuery = GetStopsBatchQuerySchema.parse(request.query);
 		const stopIds = parsedQuery.stop_ids
 			? (Array.isArray(parsedQuery.stop_ids) ? parsedQuery.stop_ids : [parsedQuery.stop_ids])
@@ -47,11 +53,11 @@ export class StopsSharedController {
 
 		const stopsData = await stops.aggregate([
 			...(matchConditions.length > 0 ? [{ $match: { $or: matchConditions } }] : []),
-			{ $project: { _id: 1, name: 1 } },
+			{ $project: { _id: 1, code: 1, name: 1 } },
 			{ $sort: { name: 1 } },
-		]);
+		]) as StopBatchItem[];
 
-		reply.send({ data: stopsData.map(stop => ({ label: `${stop._id} | ${stop.name}`, value: stop._id })), error: null, statusCode: HTTP_STATUS.OK });
+		reply.send({ data: stopsData.map(stop => ({ label: `${stop.legacy_id} | ${stop.name}`, legacy_id: stop.legacy_id, value: stop._id })), error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**

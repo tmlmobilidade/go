@@ -28,7 +28,7 @@ export function ReferencesEditorStopsItem({ index, lines, onRemoveReference, onU
 
 	const availableStops = useMemo(() => {
 		if (!stops) return [];
-		return stops.map(stop => ({ label: `[${stop._id}] ${stop.name}`, value: stop._id }));
+		return stops.map(stop => ({ label: `[${stop.legacy_id}] ${stop.name}`, value: stop._id }));
 	}, [stops]);
 
 	const availableLines = useMemo(() => {
