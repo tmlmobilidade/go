@@ -45,6 +45,7 @@
 		"dev:plans:prod": "ENVIRONMENT=development dotenv-run -f ./modules/plans/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-plans-*",
 		"dev:replicator": "ENVIRONMENT=development dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-replicator-*",
 		"dev:replicator:helpers-dump-data": "ENVIRONMENT=development dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-replicator-helpers-dump-data",
+		"dev:replicator:stream": "ENVIRONMENT=development dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-replicator-stream",
 		"dev:stops": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-*",
 		"dev:stops:ui": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-api --filter=@tmlmobilidade/go-stops-frontend",
 

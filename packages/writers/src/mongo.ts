@@ -62,7 +62,8 @@ export class MongoDbWriter<T> {
 	private BATCH_TIMEOUT_TIMER: NodeJS.Timeout | null = null;
 	private BATCH_TIMEOUT_VALUE = -1;
 
-	private DATA_BUCKET: MongoDBWriterWriteOps<T>[] = [];
+	private DATA_BUCKET_ALWAYS_AVAILABLE: MongoDBWriterWriteOps<T>[] = [];
+	private DATA_BUCKET_FLUSH_OPS: MongoDBWriterWriteOps<T>[] = [];
 
 	private DB_COLLECTION: any | null = null;
 
@@ -117,13 +118,22 @@ export class MongoDbWriter<T> {
 			//
 			// Skip if there is no data to flush
 
-			if (this.DATA_BUCKET.length === 0) return;
+			if (this.DATA_BUCKET_ALWAYS_AVAILABLE.length === 0) return;
+
+			//
+			// Copy everything in data DATA_BUCKET_ALWAYS_AVAILABLE to DATA_BUCKET_FLUSH_OPS
+			// to prevent any new incoming data to be added to the batch. This is to ensure
+			// that the batch is not modified while it is being processed.
+
+			this.DATA_BUCKET_FLUSH_OPS = [...this.DATA_BUCKET_FLUSH_OPS, ...this.DATA_BUCKET_ALWAYS_AVAILABLE];
+
+			this.DATA_BUCKET_ALWAYS_AVAILABLE = [];
 
 			//
 			// Process the data into MongoDB insert/update operations
 
 			try {
-				const writeOperations = this.DATA_BUCKET.map((item) => {
+				const writeOperations = this.DATA_BUCKET_FLUSH_OPS.map((item) => {
 					switch (item.options?.write_mode) {
 						case 'update':
 							return {
@@ -147,30 +157,28 @@ export class MongoDbWriter<T> {
 
 				await this.DB_COLLECTION.bulkWrite(writeOperations);
 
-				Logger.info(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Flush | Length: ${this.DATA_BUCKET.length} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})`);
+				Logger.info(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Flush | Length: ${this.DATA_BUCKET_FLUSH_OPS.length} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})`);
 
 				//
 				// Call the flush callback, if provided
 
 				if (callback) {
-					await callback(this.DATA_BUCKET);
+					await callback(this.DATA_BUCKET_FLUSH_OPS);
 				}
 
 				//
 				// Reset the flush bucket
 
-				this.DATA_BUCKET = [];
+				this.DATA_BUCKET_FLUSH_OPS = [];
 
 				//
 			} catch (error) {
 				Logger.error(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Error @ flush().writeOperations(): ${error.message}`);
-				console.error(error);
 			}
 
 			//
 		} catch (error) {
 			Logger.error(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Error @ flush(): ${error.message}`);
-			console.error(error);
 		}
 	}
 
@@ -196,7 +204,7 @@ export class MongoDbWriter<T> {
 		//
 		// Check if the batch is full
 
-		if (this.DATA_BUCKET.length >= this.BATCH_SIZE) {
+		if (this.DATA_BUCKET_ALWAYS_AVAILABLE.length >= this.BATCH_SIZE) {
 			Logger.info(`MONGODBWRITER [${this.DB_COLLECTION.collectionName}]: Batch full. Flushing data...`);
 			await this.flush(flushCallback);
 		}
@@ -204,14 +212,14 @@ export class MongoDbWriter<T> {
 		//
 		// Reset the session timer (for logging purposes)
 
-		if (this.DATA_BUCKET.length === 0) {
+		if (this.DATA_BUCKET_ALWAYS_AVAILABLE.length === 0) {
 			this.SESSION_TIMER.reset();
 		}
 
 		//
 		// Add the current data to the batch
 
-		this.DATA_BUCKET.push({ data: data, options: options });
+		this.DATA_BUCKET_ALWAYS_AVAILABLE.push({ data: data, options: options });
 
 		//
 		// Call the write callback, if provided
