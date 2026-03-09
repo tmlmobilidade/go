@@ -61,7 +61,7 @@ PlanApprovedTemplate.PreviewProps = {
 	endDate: '20260131' as OperationalDate,
 	firstName: 'Josué',
 	planId: 'YUA81A',
-	planUrl: 'https://go.tmlmobilidade.com/plans/YUA81A',
+	planUrl: 'https://go.tmlmobilidade.pt/plans/YUA81A',
 	startDate: '20250101' as OperationalDate,
 } satisfies PlanApprovedTemplateProps;
 
