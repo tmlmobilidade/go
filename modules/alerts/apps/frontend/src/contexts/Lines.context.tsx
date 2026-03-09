@@ -3,12 +3,10 @@
 
 /* * */
 
-import type { DemandMetricsByLine, ServiceMetrics } from '@carrismetropolitana/api-types/metrics';
-import type { Line } from '@carrismetropolitana/api-types/network';
-
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type Line } from '@tmlmobilidade/types';
 import { type SelectDataItem } from '@tmlmobilidade/ui';
-import { fetchData, swrFetcher } from '@tmlmobilidade/utils';
+import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -16,16 +14,12 @@ import useSWR from 'swr';
 
 interface LinesContextState {
 	actions: {
-		getDemandMetricsByLineId: (lineId: string) => DemandMetricsByLine | undefined
 		getLineDataById: (lineId: string) => Line | undefined
-		getServiceMetricsByLineId: (lineId: string) => ServiceMetrics[] | undefined
 		setRidesFilters: (filters: Partial<RidesFilters>) => void
 	}
 	data: {
-		demand_metrics: DemandMetricsByLine[]
-		lines: Line[]
 		options: SelectDataItem[]
-		service_metrics: ServiceMetrics[]
+		raw: Line[]
 	}
 	flags: {
 		is_loading: boolean
@@ -110,26 +104,18 @@ export const LinesContextProvider = ({ children }: { children: React.ReactNode }
 		if (!linesByHashedTripsData?.length) return [];
 
 		return linesByHashedTripsData.map(line => ({
-			id: String(line.line_id),
-			long_name: line.line_long_name,
-			short_name: line.line_short_name,
-		})) as Line[];
+			_id: String(line.line_id),
+			code: line.line_short_name,
+			name: line.line_long_name,
+		}));
 	}, [linesByHashedTripsData]);
 
 	//
 	// B. Handle actions
 
 	const getLineDataById = useCallback((lineId: string) => {
-		return allLinesData?.find(line => line.id === lineId);
+		return allLinesData?.find(line => line._id === lineId) as Line | undefined;
 	}, [allLinesData]);
-
-	const getDemandMetricsByLineId = useCallback(() => {
-		return undefined;
-	}, []);
-
-	const getServiceMetricsByLineId = useCallback(() => {
-		return undefined;
-	}, []);
 
 	const setRidesFiltersAction = useCallback((filters: Partial<RidesFilters>) => {
 		setRidesFilters(prev => ({
@@ -144,8 +130,8 @@ export const LinesContextProvider = ({ children }: { children: React.ReactNode }
 	const asOptions = useMemo(() => {
 		if (!allLinesData) return [];
 		return allLinesData.map(line => ({
-			label: `${line.short_name} | ${line.long_name}`,
-			value: line.id,
+			label: `${line.code} | ${line.name}`,
+			value: line._id,
 		}));
 	}, [allLinesData]);
 
@@ -154,16 +140,12 @@ export const LinesContextProvider = ({ children }: { children: React.ReactNode }
 
 	const contextValue: LinesContextState = useMemo(() => ({
 		actions: {
-			getDemandMetricsByLineId,
 			getLineDataById,
-			getServiceMetricsByLineId,
 			setRidesFilters: setRidesFiltersAction,
 		},
 		data: {
-			demand_metrics: [],
-			lines: allLinesData || [],
 			options: asOptions,
-			service_metrics: [],
+			raw: allLinesData as Line[] || [],
 		},
 		flags: {
 			is_loading: linesByHashedTripsLoading,
@@ -171,9 +153,7 @@ export const LinesContextProvider = ({ children }: { children: React.ReactNode }
 	}), [
 		allLinesData,
 		asOptions,
-		getDemandMetricsByLineId,
 		getLineDataById,
-		getServiceMetricsByLineId,
 		linesByHashedTripsLoading,
 		setRidesFiltersAction,
 	]);

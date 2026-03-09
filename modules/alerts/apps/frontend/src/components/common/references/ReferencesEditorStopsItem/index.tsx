@@ -2,9 +2,8 @@
 
 /* * */
 
-import { Line, Stop } from '@carrismetropolitana/api-types/network';
 import { IconCornerDownRight, IconMinus } from '@tabler/icons-react';
-import { type Alert } from '@tmlmobilidade/types';
+import { type Alert, type Line, type Stop } from '@tmlmobilidade/types';
 import { Button, Grid, MultiSelect, Section, Select, Surface } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -13,7 +12,6 @@ import { useMemo } from 'react';
 interface ReferencesEditorStopsItemProps {
 	index: number
 	lines: Line[]
-	municipalityIds: string[]
 	onRemoveReference: (index: number) => void
 	onUpdateReference: (index: number, field: 'child_ids' | 'parent_id', value: string | string[]) => void
 	reference: Alert['references'][number]
@@ -22,7 +20,7 @@ interface ReferencesEditorStopsItemProps {
 
 /* * */
 
-export function ReferencesEditorStopsItem({ index, lines, municipalityIds, onRemoveReference, onUpdateReference, reference, stops }: ReferencesEditorStopsItemProps) {
+export function ReferencesEditorStopsItem({ index, lines, onRemoveReference, onUpdateReference, reference, stops }: ReferencesEditorStopsItemProps) {
 	//
 
 	//
@@ -30,19 +28,17 @@ export function ReferencesEditorStopsItem({ index, lines, municipalityIds, onRem
 
 	const availableStops = useMemo(() => {
 		if (!stops) return [];
-		return stops.map(stop => ({ label: `[${stop.id}] ${stop.long_name}`, value: stop.id }));
-	}, [stops, municipalityIds]);
+		return stops.map(stop => ({ label: `[${stop._id}] ${stop.name}`, value: stop._id }));
+	}, [stops]);
 
 	const availableLines = useMemo(() => {
 		if (!lines?.length) return [];
 		if (!reference.parent_id) return [];
-		const selectedStop = stops.find(stop => stop.id === reference.parent_id);
-		if (!selectedStop?.line_ids?.length) return [];
-		return selectedStop?.line_ids.map(lineId => ({
-			label: `[${lineId}] ${lines.find(line => line.id === lineId)?.long_name}`,
-			value: lineId,
+		return lines.map(line => ({
+			label: `[${line._id}] ${line.name}`,
+			value: line._id,
 		}));
-	}, [lines, municipalityIds, reference.parent_id, stops]);
+	}, [lines]);
 
 	//
 	// C. Render components

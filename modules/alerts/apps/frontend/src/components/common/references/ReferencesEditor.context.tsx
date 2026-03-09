@@ -5,6 +5,7 @@
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Dates } from '@tmlmobilidade/dates';
 import { type Alert, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Label, openConfirmModal, SelectDataItem, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';

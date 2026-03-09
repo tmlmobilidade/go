@@ -1,7 +1,8 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
-import { hashedTrips, lines, rides } from '@tmlmobilidade/interfaces';
+import { lines, rides } from '@tmlmobilidade/interfaces';
 import { type Line, PermissionCatalog } from '@tmlmobilidade/types';
+import { z } from 'zod';
 
 export interface LineByHashedTrip {
 	hashed_trip_ids: string[]
@@ -10,12 +11,14 @@ export interface LineByHashedTrip {
 	line_short_name: string
 }
 
-interface GetLinesByHashedTripQuery {
-	agency_id?: string
-	date_end?: number | string
-	date_start?: number | string
-	hashed_trip_ids?: string | string[]
-}
+const GetLinesByHashedTripQuerySchema = z.object({
+	agency_id: z.string().optional(),
+	date_end: z.union([z.number(), z.string()]).optional().transform(value => value !== undefined ? Number(value) : undefined),
+	date_start: z.union([z.number(), z.string()]).optional().transform(value => value !== undefined ? Number(value) : undefined),
+	hashed_trip_ids: z.union([z.string(), z.array(z.string())]).optional(),
+});
+
+export type GetLinesByHashedTripQuery = z.infer<typeof GetLinesByHashedTripQuerySchema>;
 
 export class LinesSharedController {
 	//
@@ -53,85 +56,72 @@ export class LinesSharedController {
 	 * @param request The Fastify request object.
 	 * @param reply The Fastify reply object.
 	 */
-
-	/**
-	 * Get all lines ids with all hashed_trips used in rides.
-	 * @param request The Fastify request object.
-	 * @param reply The Fastify reply object.
-	 */
 	static async getAllLinesIdsByHashedTrip(request: FastifyRequest<{ Querystring: GetLinesByHashedTripQuery }>, reply: FastifyReply<LineByHashedTrip[]>) {
 		//
 		// Resolve hashed trip ids from query directly or by rides filters (date/agency).
 
-		const parsedDateStart = Number(request.query.date_start);
-		const parsedDateEnd = Number(request.query.date_end);
+		const parsedQuery = GetLinesByHashedTripQuerySchema.parse(request.query);
+		const parsedDateStart = parsedQuery.date_start;
+		const parsedDateEnd = parsedQuery.date_end;
 		const hasDateRangeFilters = Number.isFinite(parsedDateStart) && Number.isFinite(parsedDateEnd);
+		const hasAgencyFilter = Boolean(parsedQuery.agency_id);
 
-		const hashedTripIdsQuery = request.query.hashed_trip_ids
-			? (Array.isArray(request.query.hashed_trip_ids) ? request.query.hashed_trip_ids : [request.query.hashed_trip_ids])
+		const hashedTripIdsQuery = parsedQuery.hashed_trip_ids
+			? (Array.isArray(parsedQuery.hashed_trip_ids) ? parsedQuery.hashed_trip_ids : [parsedQuery.hashed_trip_ids])
 			: [];
+		const filteredHashedTripIds = hashedTripIdsQuery.filter(Boolean);
+		const hasHashedTripIds = filteredHashedTripIds.length > 0;
 
-		const hasHashedTripIds = hashedTripIdsQuery.length > 0;
+		if (!hasHashedTripIds && !(hasDateRangeFilters && hasAgencyFilter)) {
+			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
+		}
 
-		let aggregatedRides: Array<{ _id: string }> = [];
+		const ridesMatchStage: Record<string, unknown> = {};
 
 		if (hasHashedTripIds) {
-			aggregatedRides = await rides.aggregate([
-				{ $match: { hashed_trip_id: { $in: hashedTripIdsQuery.filter(Boolean) } } },
-				{ $group: { _id: '$hashed_trip_id' } },
-			]) as Array<{ _id: string }>;
-		} else if (hasDateRangeFilters) {
-			const ridesMatchStage: Record<string, unknown> = {
-				start_time_scheduled: { $gte: parsedDateStart, $lte: parsedDateEnd },
-			};
-
-			if (request.query.agency_id) {
-				ridesMatchStage.agency_id = request.query.agency_id;
-			}
-
-			aggregatedRides = await rides.aggregate([
-				{ $match: ridesMatchStage },
-				{ $group: { _id: '$hashed_trip_id' } },
-			]) as Array<{ _id: string }>;
-		} else {
-			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
+			ridesMatchStage.hashed_trip_id = { $in: filteredHashedTripIds };
+		} else if (hasDateRangeFilters && parsedQuery.agency_id) {
+			ridesMatchStage.start_time_scheduled = { $gte: parsedDateStart, $lte: parsedDateEnd };
+			ridesMatchStage.agency_id = parsedQuery.agency_id;
 		}
 
-		const uniqueHashedTripIds = aggregatedRides
-			.map(ride => ride._id)
-			.filter(Boolean);
-		if (!uniqueHashedTripIds.length) {
-			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
-		}
-
-		//
-		// Aggregate hashed trips by line_id and keep only one hashed_trip_id per line.
-
-		const aggregatedLines = await hashedTrips.aggregate([
-			{ $match: { _id: { $in: uniqueHashedTripIds } } },
-			{ $sort: { _id: 1 } },
+		const aggregatedLines = await rides.aggregate([
+			{ $match: ridesMatchStage },
 			{
-				$group: {
-					_id: '$line_id',
-					hashed_trip_id: { $first: '$_id' },
-					line_long_name: { $first: '$line_long_name' },
-					line_short_name: { $first: '$line_short_name' },
+				$lookup: {
+					as: 'hashed_trip',
+					foreignField: '_id',
+					from: 'hashed_trips',
+					localField: 'hashed_trip_id',
 				},
 			},
-		]) as unknown as Array<{
-			_id: number
-			hashed_trip_id: string
-			line_long_name: string
-			line_short_name: string
-		}>;
+			{ $unwind: '$hashed_trip' },
+			{ $sort: { hashed_trip_id: 1 } },
+			{
+				$group: {
+					_id: '$hashed_trip.line_id',
+					hashed_trip_ids: { $addToSet: '$hashed_trip_id' },
+					line_long_name: { $first: '$hashed_trip.line_long_name' },
+					line_short_name: { $first: '$hashed_trip.line_short_name' },
+				},
+			},
+			{
+				$addFields: {
+					line_id: '$_id',
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					hashed_trip_ids: 1,
+					line_id: 1,
+					line_long_name: 1,
+					line_short_name: 1,
+				},
+			},
+			{ $sort: { line_id: 1 } },
+		]) as unknown as LineByHashedTrip[];
 
-		const linesByHashedTrip = aggregatedLines.map(item => ({
-			hashed_trip_ids: [item.hashed_trip_id],
-			line_id: item._id,
-			line_long_name: item.line_long_name,
-			line_short_name: item.line_short_name,
-		}));
-
-		return reply.send({ data: linesByHashedTrip, error: null, statusCode: HTTP_STATUS.OK });
+		return reply.send({ data: aggregatedLines, error: null, statusCode: HTTP_STATUS.OK });
 	}
 }

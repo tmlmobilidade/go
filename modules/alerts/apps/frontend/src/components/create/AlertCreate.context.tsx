@@ -1,11 +1,12 @@
-/* eslint-disable @typescript-eslint/prefer-optional-chain */
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 /* * */
 
 import { useLinesContext } from '@/contexts/Lines.context';
-import { type Line, type Stop } from '@carrismetropolitana/api-types/network';
+import { useStopsContext } from '@/contexts/Stops.context';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Dates } from '@tmlmobilidade/dates';
 import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { Agency, type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, RideNormalized } from '@tmlmobilidade/types';
@@ -31,6 +32,7 @@ interface AlertCreateContextState extends CreateContextStateTemplate {
 
 const AlertCreateContext = createContext<AlertCreateContextState | undefined>(undefined);
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function useAlertCreateContext() {
 	const context = useContext(AlertCreateContext);
 	if (!context) {
@@ -47,7 +49,6 @@ interface AgencyData {
 
 interface StopData {
 	id: string
-	lines: LineData[]
 	long_name: string
 }
 
@@ -55,7 +56,6 @@ interface LineData {
 	id: string
 	long_name: string
 	short_name: string
-	stops: StopData[]
 }
 
 interface LineByHashedTrip {
@@ -74,6 +74,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const linesContext = useLinesContext();
+	const stopsContext = useStopsContext();
 
 	const meContext = useMeContext();
 	const copyAlertId = searchParams.get('copy');
@@ -282,18 +283,12 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 					return;
 				}
 
-				const queryParams = new URLSearchParams();
-				hashedTripIds.forEach((hashedTripId) => {
-					queryParams.append('hashed_trip_ids', hashedTripId);
-				});
-
-				const linesResponse = await fetchData<LineByHashedTrip[]>(`${API_ROUTES.alerts.HASHED_TRIPS_LIST}?${queryParams.toString()}`);
+				const linesResponse = await fetchData<LineByHashedTrip[]>(API_ROUTES.alerts.LINES_HASHED_TRIPS, 'GET', { hashed_trip_ids: hashedTripIds });
 				if (!linesResponse.data?.length) {
 					setSelectedReferencesData([]);
 					return;
 				}
 
-				const lineHashedTripIdsMap = new Map<string, string[]>();
 				const linesMap = new Map<string, LineData>();
 				for (const lineData of linesResponse.data) {
 					const lineId = String(lineData.line_id);
@@ -302,10 +297,8 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 							id: lineId,
 							long_name: lineData.line_long_name,
 							short_name: lineData.line_short_name,
-							stops: [],
 						});
 					}
-					lineHashedTripIdsMap.set(lineId, lineData.hashed_trip_ids);
 				}
 
 				const lines = Array.from(linesMap.values());
@@ -314,107 +307,29 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 					return;
 				}
 
-				// Get all unique child_ids (stop IDs) from references
-				const allChildIds = form.getValues().references
-					.filter(ref => parentIds.includes(ref.parent_id))
-					.flatMap(ref => ref.child_ids);
-				const uniqueChildIds = [...new Set(allChildIds)];
-
-				// Fetch stops data if there are child_ids
-				const stopsDataMap = new Map<string, Stop>();
-				if (uniqueChildIds.length > 0) {
-					const stopsResponse = await fetch('https://api.carrismetropolitana.pt/v2/stops');
-					const stopsData = await stopsResponse.json() as Stop[];
-					stopsData.filter(stop => uniqueChildIds.includes(stop.id)).forEach((stop) => {
-						stopsDataMap.set(stop.id, stop);
-					});
-				}
-
 				setSelectedReferencesData(lines.map((line) => {
-					// Get child_ids for all hashed trips that belong to this line.
-					const lineHashedTripIds = lineHashedTripIdsMap.get(line.id) ?? [];
-					const lineChildIds = form.getValues().references
-						.filter(ref => lineHashedTripIds.includes(ref.parent_id))
-						.flatMap(ref => ref.child_ids);
-
-					// Map child_ids to StopData
-					const stops: StopData[] = lineChildIds
-						.map(stopId => stopsDataMap.get(stopId))
-						.filter((stop): stop is Stop => stop !== undefined)
-						.map(stop => ({
-							id: stop.id,
-							lines: [],
-							long_name: stop.long_name,
-						}));
-
 					return {
 						id: line.id,
 						long_name: line.long_name,
 						short_name: line.short_name,
-						stops,
 					};
 				}));
 			}
+
 			// Fetch data for stops
 			if (form.getValues().reference_type === 'stops') {
-				const response = await fetch('https://api.carrismetropolitana.pt/v2/stops');
-				const stopsData = await response.json() as Stop[];
-				const result: Stop[] = stopsData.filter(stop => parentIds.includes(stop.id));
-
-				const linesResponse = await fetch('https://api.carrismetropolitana.pt/v2/lines');
-				const linesData = await linesResponse.json() as Line[];
-				const selectedLines = linesData.filter(line => result.some(stop => stop.line_ids.includes(line.id)));
-
-				// Get all unique child_ids (stop IDs) from references
-				const allChildIds = form.getValues().references
-					.filter(ref => parentIds.includes(ref.parent_id))
-					.flatMap(ref => ref.child_ids);
-				const uniqueChildIds = [...new Set(allChildIds)];
-
-				// Fetch stops data if there are child_ids
-				const childStopsDataMap = new Map<string, Stop>();
-				if (uniqueChildIds.length > 0) {
-					const childStopsResponse = await fetch('https://api.carrismetropolitana.pt/v2/stops');
-					const childStopsData = await childStopsResponse.json() as Stop[];
-					childStopsData.filter(stop => uniqueChildIds.includes(stop.id)).forEach((stop) => {
-						childStopsDataMap.set(stop.id, stop);
-					});
+				const selectedStopsResponse = await fetchData<{ label: string, value: string }[]>(API_ROUTES.alerts.STOPS_BATCH, 'GET', { stop_ids: parentIds });
+				if (!selectedStopsResponse.data?.length) {
+					setSelectedReferencesData([]);
+					return;
 				}
-
-				setSelectedReferencesData(result.map((stop) => {
-					// Get child_ids for this specific stop
-					const stopReference = form.getValues().references.find(ref => ref.parent_id === stop.id);
-					const stopChildIds = stopReference?.child_ids ?? [];
-
-					// For each line associated with this stop, populate stops from child_ids
-					const linesWithStops = selectedLines
-						.filter(line => stop.line_ids.includes(line.id))
-						.map((line) => {
-							// Get stops that are child_ids and belong to this line
-							const lineStops: StopData[] = stopChildIds
-								.map(stopId => childStopsDataMap.get(stopId))
-								.filter((childStop): childStop is Stop => childStop !== undefined && childStop.line_ids.includes(line.id))
-								.map(childStop => ({
-									id: childStop.id,
-									lines: [],
-									long_name: childStop.long_name,
-								}));
-
-							return {
-								id: line.id,
-								long_name: line.long_name,
-								short_name: line.short_name,
-								stops: lineStops,
-							};
-						});
-
-					return {
-						id: stop.id,
-						lines: linesWithStops,
-						long_name: stop.long_name,
-					};
+				const selectedStops: StopData[] = selectedStopsResponse.data.map(stop => ({
+					id: stop.value,
+					long_name: stop.label,
 				}));
+				setSelectedReferencesData(selectedStops);
 			}
+
 			// Fetch data for rides
 			if (form.getValues().reference_type === 'rides') {
 				const result: RideNormalized[] = [];
@@ -429,6 +344,9 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	}, [
 		form.getValues().reference_type,
 		form.getValues().references,
+		agenciesData,
+		linesContext.data,
+		stopsContext.data,
 	]);
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
