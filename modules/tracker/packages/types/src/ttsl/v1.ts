@@ -1,6 +1,7 @@
 /* * */
 
 import { TrackerVehicleEventBaseSchema } from '@/common/vehicle-event-base.js';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 /* * */
@@ -42,3 +43,29 @@ export const TrackerTtslV1Schema = TrackerVehicleEventBaseSchema.extend({
 });
 
 export type TrackerTtslV1 = z.infer<typeof TrackerTtslV1Schema>;
+
+/* * */
+
+export const parseTrackerTtslV1Schema = (vehicleEvent: TrackerTtslV1): SimplifiedVehicleEvent => {
+	const vehicle = vehicleEvent.raw.vehicle;
+
+	return {
+		_id: vehicleEvent._id,
+		agency_id: vehicleEvent.agency_id,
+		bearing: vehicle.position.bearing,
+		created_at: vehicleEvent.created_at,
+		current_status: vehicle.currentStatus,
+		door: null,
+		driver_id: vehicle.vehicle.label,
+		extra_trip_id: null,
+		latitude: vehicle.position.latitude,
+		longitude: vehicle.position.longitude,
+		odometer: null,
+		pattern_id: null,
+		received_at: vehicleEvent.received_at,
+		speed: vehicle.position.speed,
+		stop_id: vehicle.stopId,
+		trip_id: vehicle.trip.tripId,
+		vehicle_id: vehicle.vehicle.id,
+	};
+};
