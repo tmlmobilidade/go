@@ -6,8 +6,15 @@ import { DurationObjectUnits, Interval } from 'luxon';
 
 /* * */
 
-interface PerformInTimeChunksOptions {
-	onChunk: (chunk: { end: UnixTimestamp, index: number, start: UnixTimestamp, total: number }) => Promise<void>
+export interface PerformInTimeChunksItem {
+	end: UnixTimestamp
+	index: number
+	start: UnixTimestamp
+	total: number
+}
+
+export interface PerformInTimeChunksOptions {
+	onChunk: (chunk: PerformInTimeChunksItem) => Promise<void>
 	splitBy: DurationObjectUnits
 	startDate: UnixTimestamp
 }

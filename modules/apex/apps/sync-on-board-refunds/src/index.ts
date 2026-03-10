@@ -3,7 +3,7 @@
 import { createClient } from '@clickhouse/client';
 import { Dates } from '@tmlmobilidade/dates';
 import { parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-apex-pckg-parse';
-import { getEarliestDate } from '@tmlmobilidade/go-apex-pckg-sync';
+import { getEarliestDate } from '@tmlmobilidade/consts';
 import { pcgidbTicketing, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
