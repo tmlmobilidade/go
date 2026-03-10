@@ -29,7 +29,7 @@ export function AnnotationsList() {
 	const columns: DataTableColumn<AnnotationNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <Tag label={item._id} variant="id" />,
 			title: '#ID',
 			width: 100,
 		},
@@ -72,8 +72,8 @@ export function AnnotationsList() {
 
 	return (
 		<Pane header={[
-			<AnnotationsListHeader />,
-			<AnnotationsListFiltersBar />,
+			<AnnotationsListHeader key="header" />,
+			<AnnotationsListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable

@@ -27,7 +27,7 @@ export function PeriodsList() {
 	const columns: DataTableColumn<PeriodNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <Tag label={item._id} variant="id" />,
 			title: '#ID',
 			width: 100,
 		},
@@ -71,8 +71,8 @@ export function PeriodsList() {
 
 	return (
 		<Pane header={[
-			<PeriodsListHeader />,
-			<PeriodsListFiltersBar />,
+			<PeriodsListHeader key="header" />,
+			<PeriodsListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable

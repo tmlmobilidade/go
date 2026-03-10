@@ -15,7 +15,7 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.38.0",
+		"@tabler/icons-react": "3.40.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/ui": "*",
@@ -30,7 +30,7 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.3.3",
+		"@types/node": "25.4.0",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",
 		"typescript": "5.9.3"

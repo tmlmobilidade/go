@@ -35,7 +35,7 @@ export function ZoneDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
-			<Tag label={zoneDetailContext.data.zone._id} variant="secondary" />
+			<Tag label={zoneDetailContext.data.zone._id} variant="id" />
 
 			<Spacer />
 

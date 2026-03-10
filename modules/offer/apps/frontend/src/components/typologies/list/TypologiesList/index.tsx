@@ -28,7 +28,7 @@ export function TypologiesList() {
 	const columns: DataTableColumn<Typology>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <Tag label={item._id} variant="id" />,
 			title: '#ID',
 			width: 100,
 		},
@@ -72,8 +72,8 @@ export function TypologiesList() {
 
 	return (
 		<Pane header={[
-			<TypologiesListHeader />,
-			<TypologiesListFiltersBar />,
+			<TypologiesListHeader key="header" />,
+			<TypologiesListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable

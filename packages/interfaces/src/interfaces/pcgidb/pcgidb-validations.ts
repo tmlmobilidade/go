@@ -34,6 +34,7 @@ class PCGIDBValidationsClass {
 
 		const mongoClientOptions: MongoClientOptions = {
 			connectTimeoutMS: 10_000,
+			directConnection: process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'staging' ? false : true,
 			maxPoolSize: 20,
 			minPoolSize: 2,
 			readPreference: 'secondaryPreferred',
@@ -51,8 +52,7 @@ class PCGIDBValidationsClass {
 			this.ValidationEntity = mongoConnector.client.db('ValidationsManagement').collection('validationEntity');
 			// Log success message
 			Logger.success('Connected to PCGIDB Validations successfully.');
-		}
-		catch (error) {
+		} catch (error) {
 			throw new Error('Error connecting to PCGIDB Validations:', { cause: error });
 		}
 	}
