@@ -6,22 +6,27 @@ import { z } from 'zod';
 /* * */
 
 export const SimplifiedVehicleEventSchema = z.object({
+	//
+
+	// Required Fields
 	_id: z.string(),
 	agency_id: z.string(),
-	bearing: z.number().nullable().default(null),
 	created_at: UnixTimeStampSchema,
-	current_status: z.enum(['INCOMING_AT', 'STOPPED_AT', 'IN_TRANSIT_TO']),
+	latitude: z.number(),
+	longitude: z.number(),
+	received_at: UnixTimeStampSchema,
+	trip_id: z.string(),
+	vehicle_id: z.string(),
+
+	// Optional Fields
+	bearing: z.number().nullable().default(null),
+	current_status: z.enum(['INCOMING_AT', 'STOPPED_AT', 'IN_TRANSIT_TO']).nullable().default(null),
 	door: z.string().nullable().default(null),
 	driver_id: z.string().nullable().default(null),
 	extra_trip_id: z.string().nullable().default(null),
-	latitude: z.number(),
-	longitude: z.number(),
 	odometer: z.number().nullable().default(null),
 	pattern_id: z.string().nullable().default(null),
-	received_at: UnixTimeStampSchema,
 	stop_id: z.string(),
-	trip_id: z.string(),
-	vehicle_id: z.string(),
 });
 
 /**
