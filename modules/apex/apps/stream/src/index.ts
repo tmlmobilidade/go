@@ -4,7 +4,7 @@ import { processApexLocation } from '@/tasks/process-apex-location.js';
 import { processApexOnBoardRefund } from '@/tasks/process-apex-on-board-refund.js';
 import { processApexOnBoardSale } from '@/tasks/process-apex-on-board-sale.js';
 import { processApexValidation } from '@/tasks/process-apex-validation.js';
-import { pcgidbLegacy, pcgidbTicketing, pcgidbValidations } from '@tmlmobilidade/interfaces';
+import { pcgidbLegacy, pcgidbTicketing, pcgidbValidations } from '@tmlmobilidade/go-apex-pckg-databases';
 
 /* * */
 

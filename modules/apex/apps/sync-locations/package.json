@@ -20,6 +20,7 @@
 		"@clickhouse/client": "1.18.1",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-apex-pckg-common": "*",
+		"@tmlmobilidade/go-apex-pckg-databases": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",

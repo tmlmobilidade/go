@@ -2,11 +2,11 @@
 
 import { clickhouseService } from '@tmlmobilidade/clickhouse';
 import { Dates } from '@tmlmobilidade/dates';
-import { invalidateRides, parseSimplifiedApexValidation, simplifiedApexValidationsSchema } from '@tmlmobilidade/go-apex-pckg-common';
-import { pcgidbValidations } from '@tmlmobilidade/go-apex-pckg-databases';
+import { invalidateRides, parseSimplifiedApexOnBoardSale, simplifiedApexOnBoardSalesSchema } from '@tmlmobilidade/go-apex-pckg-common';
+import { pcgidbTicketing } from '@tmlmobilidade/go-apex-pckg-databases';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem } from '@tmlmobilidade/utils';
 import { ClickHouseWriter } from '@tmlmobilidade/writers';
 
@@ -14,18 +14,18 @@ import { ClickHouseWriter } from '@tmlmobilidade/writers';
 
 const client = await clickhouseService.getClient();
 
-const writer = new ClickHouseWriter<SimplifiedApexValidation>({
+const writer = new ClickHouseWriter<SimplifiedApexOnBoardSale>({
 	client,
-	table: 'simplified_apex_validations',
-	tableSchema: simplifiedApexValidationsSchema,
+	table: 'simplified_apex_on_board_sales',
+	tableSchema: simplifiedApexOnBoardSalesSchema,
 });
 
 /**
- * Syncs the Apex Validations from the PCGI database
+ * Syncs the Apex OnBoardSales from the PCGI database
  * to the ClickHouse database for a given time chunk.
  * @param timeChunk The time chunk to sync the data for.
  */
-export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
+export async function syncApexOnBoardSales(timeChunk: PerformInTimeChunksItem) {
 	//
 
 	const chunkTimer = new Timer();
@@ -61,10 +61,10 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 
 	const countQueryTimer = new Timer();
 
-	await pcgidbValidations.connect();
+	await pcgidbTicketing.connect();
 
-	const pcgiDocCount = await pcgidbValidations.ValidationEntity.countDocuments(pcgiQuery);
-	const clickhouseDocCount = await clickhouseService.queryFromString<{ count: number }>('SELECT COUNT(*) as count FROM simplified_apex_validations WHERE created_at >= $1 AND created_at <= $2', { 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp });
+	const pcgiDocCount = await pcgidbTicketing.SalesEntity.countDocuments(pcgiQuery);
+	const clickhouseDocCount = await clickhouseService.queryFromString<{ count: number }>('SELECT COUNT(*) as count FROM simplified_apex_on_board_sales WHERE created_at >= $1 AND created_at <= $2', { 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp });
 
 	if (pcgiDocCount === clickhouseDocCount[0].count) {
 		Logger.success(`MATCH: Found the same number of documents in both databases: ${pcgiDocCount} PCGIDB = ${clickhouseDocCount} ClickHouse (${countQueryTimer.get()})`);
@@ -80,10 +80,10 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 
 	const distinctQueryTimer = new Timer();
 
-	const pcgiDocIds = await pcgidbValidations.ValidationEntity.distinct('transaction.transactionId', pcgiQuery);
+	const pcgiDocIds = await pcgidbTicketing.SalesEntity.distinct('transaction.transactionId', pcgiQuery);
 	const pcgiDocIdsUnique = new Set(pcgiDocIds.map(String));
 
-	const clickhouseDocIds = await clickhouseService.queryFromString<{ _id: string }>('SELECT _id FROM simplified_apex_validations WHERE created_at >= $1 AND created_at <= $2', { 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp });
+	const clickhouseDocIds = await clickhouseService.queryFromString<{ _id: string }>('SELECT _id FROM simplified_apex_on_board_sales WHERE created_at >= $1 AND created_at <= $2', { 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp });
 	const clickhouseDocIdsUnique = new Set(clickhouseDocIds.map(doc => doc._id));
 
 	const missingDocuments = pcgiDocIds.filter((documentId: string) => !clickhouseDocIdsUnique.has(String(documentId)));
@@ -103,7 +103,7 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 	// as they are not present in the source database.
 
 	if (extraDocuments.length > 0) {
-		await clickhouseService.queryFromString('DELETE FROM simplified_apex_validations WHERE _id IN ($1)', { 1: extraDocuments.map(doc => `'${doc._id}'`).join(', ') });
+		await clickhouseService.queryFromString('DELETE FROM simplified_apex_on_board_sales WHERE _id IN ($1)', { 1: extraDocuments.map(doc => `'${doc._id}'`).join(', ') });
 		Logger.info(`Removed ${extraDocuments.length} extra documents in ClickHouse. (${distinctQueryTimer.get()})`);
 	}
 
@@ -113,12 +113,12 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 
 	Logger.info(`Found ${missingDocuments.length} missing documents in GO. (${distinctQueryTimer.get()})`);
 
-	const missingDocumentsStream = pcgidbValidations.ValidationEntity
+	const missingDocumentsStream = pcgidbTicketing.SalesEntity
 		.find({ 'transaction.transactionId': { $in: missingDocuments } })
 		.stream();
 
 	for await (const pcgiDocument of missingDocumentsStream) {
-		const parsedSlaDoc = parseSimplifiedApexValidation(pcgiDocument);
+		const parsedSlaDoc = parseSimplifiedApexOnBoardSale(pcgiDocument);
 		if (!parsedSlaDoc) continue; // Skip if parsing failed
 		await writer.write(parsedSlaDoc, { flushCallback: invalidateRides });
 	}

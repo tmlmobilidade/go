@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-apex-stream",
+	"name": "@tmlmobilidade/go-apex-pckg-databases",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -12,26 +12,19 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint . --fix"
+		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/clickhouse": "*",
-		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-apex-pckg-common": "*",
-		"@tmlmobilidade/go-apex-pckg-databases": "*",
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
-		"@tmlmobilidade/writers": "*"
+		"@tmlmobilidade/mongo": "*",
+		"@tmlmobilidade/ssh": "*",
+		"@tmlmobilidade/types": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "25.3.5",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.21.0",
+		"tsc-watch": "7.2.0",
 		"typescript": "5.9.3"
 	}
 }
