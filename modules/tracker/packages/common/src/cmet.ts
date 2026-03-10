@@ -32,5 +32,5 @@ export type TrackerCmetV1Raw = z.infer<typeof TrackerCmetV1RawSchema>;
 
 export const TrackerCmetV1Schema = TrackerVehicleEventBaseSchema.extend({
 	raw: TrackerCmetV1RawSchema,
-	version: z.literal('Cmet-v1'),
+	version: z.literal('cmet-v1'),
 });
