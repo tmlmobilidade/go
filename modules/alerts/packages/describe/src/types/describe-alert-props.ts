@@ -7,7 +7,6 @@ import { z } from 'zod';
 
 export const DescribeAlertPropsBaseSchema = z.object({
 	cause: AlertSchema.shape.cause,
-	coordinates: AlertSchema.shape.coordinates,
 	effect: AlertSchema.shape.effect,
 	reference_type: AlertSchema.shape.reference_type,
 	references: AlertSchema.shape.references,
