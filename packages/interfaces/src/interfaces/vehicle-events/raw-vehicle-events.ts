@@ -1,17 +1,16 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { type TrackerVehicleEvent, TrackerVehicleEventSchema } from '@tmlmobilidade/go-tracker-pckg-types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
 
-class RawVehicleEventsClass extends MongoCollectionClass<TrackerVehicleEvent, TrackerVehicleEvent, TrackerVehicleEvent> {
+class RawVehicleEventsClass extends MongoCollectionClass<any, any, any> {
 	private static _instance: RawVehicleEventsClass;
-	protected override createSchema: z.ZodSchema = TrackerVehicleEventSchema;
-	protected override updateSchema: z.ZodSchema = TrackerVehicleEventSchema;
+	protected override createSchema: z.ZodSchema = z.any();
+	protected override updateSchema: z.ZodSchema = z.any();
 
 	private constructor() {
 		super();

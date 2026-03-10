@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type HashableTrackerVehicleEvent, type TrackerTtslV1 } from '@tmlmobilidade/go-tracker-pckg-types';
+import { type HashableTrackerVehicleEvent, type TrackerTtslV1 } from '@tmlmobilidade/go-tracker-pckg-common';
 import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
 import { rawVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';

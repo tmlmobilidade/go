@@ -2,15 +2,14 @@
 
 import { clickhouseService } from '@tmlmobilidade/clickhouse';
 import { Dates } from '@tmlmobilidade/dates';
-import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-types';
+import { invalidateRides, PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-common';
+import { simplifiedVehicleEventsSchema } from '@tmlmobilidade/go-tracker-pckg-common';
 import { rawVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { PerformInTimeChunksItem } from '@tmlmobilidade/utils';
 import { ClickHouseWriter } from '@tmlmobilidade/writers';
-
-import { simplifiedVehicleEventsSchema } from './schema.js';
 
 /* * */
 
@@ -117,10 +116,10 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 		const parser = PARSER_MAP[originDbDocument.version];
 		const parsedSlaDoc = parser(originDbDocument);
 		if (!parsedSlaDoc) continue; // Skip if parsing failed
-		await writer.write(parsedSlaDoc);
+		await writer.write(parsedSlaDoc, { flushCallback: invalidateRides });
 	}
 
-	await writer.flush();
+	await writer.flush(invalidateRides);
 
 	Logger.success(`Chunk sync complete (${chunkTimer.get()})`);
 

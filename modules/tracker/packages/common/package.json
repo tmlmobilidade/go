@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-tracker-pckg-types",
+	"name": "@tmlmobilidade/go-tracker-pckg-common",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -15,6 +15,11 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@tmlmobilidade/clickhouse": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
 		"zod": "3.25.76"
 	},

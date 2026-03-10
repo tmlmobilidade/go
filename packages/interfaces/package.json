@@ -38,7 +38,6 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/files": "*",
-		"@tmlmobilidade/go-tracker-pckg-types": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/mongo": "*",
 		"@tmlmobilidade/ssh": "*",
