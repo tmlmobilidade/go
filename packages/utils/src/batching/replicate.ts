@@ -67,7 +67,7 @@ interface ReplicateProps<SourceDocType> {
 	 * @param sourceDocument The source document to be written to the destination database.
 	 * @returns A promise that resolves when the document has been successfully written to the destination database.
 	 */
-	writeSourceDocumentFn: (sourceDocument: SourceDocType) => Promise<void>
+	writeSourceDocumentToDestinationDbFn: (sourceDocument: SourceDocType) => Promise<void>
 
 }
 
@@ -93,7 +93,7 @@ interface ReplicateProps<SourceDocType> {
  * 4. Run the onComplete callback function if provided. This allows for any additional actions to be performed after
  * the replication process is complete, such as logging, flushing writers or any other necessary cleanup tasks.
  */
-export async function replicate<SourceDocType>({ countDestinationDbFn, countSourceDbFn, deleteDestinationDbFn, distinctDestinationDbFn, distinctSourceDbFn, missingDocumentsSourceDbAsyncIterator, onCompleteCallbackFn, writeSourceDocumentFn }: ReplicateProps<SourceDocType>) {
+export async function replicate<SourceDocType>({ countDestinationDbFn, countSourceDbFn, deleteDestinationDbFn, distinctDestinationDbFn, distinctSourceDbFn, missingDocumentsSourceDbAsyncIterator, onCompleteCallbackFn, writeSourceDocumentToDestinationDbFn }: ReplicateProps<SourceDocType>) {
 	//
 
 	const globalTimer = new Timer();
@@ -161,7 +161,7 @@ export async function replicate<SourceDocType>({ countDestinationDbFn, countSour
 	Logger.info(`Found ${missingDocumentIds.length} missing documents in the Destination database. (${missingStepTimer.get()})`);
 
 	for await (const sourceDbDocument of missingDocumentsSourceDbAsyncIterator(missingDocumentIds)) {
-		await writeSourceDocumentFn(sourceDbDocument);
+		await writeSourceDocumentToDestinationDbFn(sourceDbDocument);
 	}
 
 	//

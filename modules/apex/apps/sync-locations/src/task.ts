@@ -2,33 +2,28 @@
 
 import { clickhouseService } from '@tmlmobilidade/clickhouse';
 import { Dates } from '@tmlmobilidade/dates';
-import { invalidateRides, parseSimplifiedApexLocation, simplifiedApexLocationsSchema } from '@tmlmobilidade/go-apex-pckg-common';
+import { APEX_LOCATIONS_SETTINGS, invalidateRides, parseSimplifiedApexLocation, simplifiedApexLocationsSchema } from '@tmlmobilidade/go-apex-pckg-common';
 import { pcgidbValidations } from '@tmlmobilidade/go-apex-pckg-databases';
 import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
-import { type PerformInTimeChunksItem } from '@tmlmobilidade/utils';
+import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 import { ClickHouseWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
-const client = await clickhouseService.getClient();
-
 const writer = new ClickHouseWriter<SimplifiedApexLocation>({
-	client,
+	client: await clickhouseService.getClient(),
 	table: 'simplified_apex_locations',
 	tableSchema: simplifiedApexLocationsSchema,
 });
 
 /**
- * Syncs the Apex Locations from the PCGI database
+ * Syncs APEX Locations from the PCGI database
  * to the ClickHouse database for a given time chunk.
  * @param timeChunk The time chunk to sync the data for.
  */
 export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 	//
-
-	const chunkTimer = new Timer();
 
 	const chunkStartDate = Dates
 		.fromUnixTimestamp(timeChunk.start)
@@ -42,12 +37,12 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
 
 	//
-	// Prepare the queries to compare documents from each database
-	// in the current timestamp chunk.
+	// Prepare the PCGIDB query to retrieve documents
+	// for the current timestamp chunk.
 
-	const pcgiQuery = {
-		'transaction.apexTransactionType': 11,
-		'transaction.operatorLongID': { $in: ['41', '42', '43', '44'] },
+	const pcgidbQuery = {
+		'transaction.apexTransactionType': APEX_LOCATIONS_SETTINGS.allowed_apex_transaction_type,
+		'transaction.operatorLongID': { $in: APEX_LOCATIONS_SETTINGS.allowed_operator_long_ids },
 		'transaction.transactionDate': {
 			$gte: chunkStartDate.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
 			$lte: chunkEndDate.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
@@ -55,77 +50,62 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 	};
 
 	//
-	// Count how many documents are matched in each database
-	// for the given queries. If the document count is the same for both databases,
-	// then we assume all documents are synced, and we can skip the rest of the process.
+	// Implement the replication process using the generic replicate function from the utils package.
+	// This function will handle the logic of counting, comparing, syncing and deleting documents
+	// between the source and destination databases based on the provided functions.
 
-	const countQueryTimer = new Timer();
+	await replicate<unknown>({
 
-	await pcgidbValidations.connect();
+		countDestinationDbFn: async () => {
+			const result = await clickhouseService.queryFromString<{ count: number }>(
+				'SELECT COUNT(*) as count FROM simplified_apex_locations WHERE created_at >= $1 AND created_at <= $2',
+				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
+			);
+			return result[0].count;
+		},
 
-	const pcgiDocCount = await pcgidbValidations.LocationEntity.countDocuments(pcgiQuery);
-	const clickhouseDocCount = await clickhouseService.queryFromString<{ count: number }>('SELECT COUNT(*) as count FROM simplified_apex_validations WHERE created_at >= $1 AND created_at <= $2', { 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp });
+		countSourceDbFn: async () => {
+			const result = await pcgidbValidations.LocationEntity.countDocuments(pcgidbQuery);
+			return result;
+		},
 
-	if (pcgiDocCount === clickhouseDocCount[0].count) {
-		Logger.success(`MATCH: Found the same number of documents in both databases: ${pcgiDocCount} PCGIDB = ${clickhouseDocCount} ClickHouse (${countQueryTimer.get()})`);
-		return;
-	}
+		deleteDestinationDbFn: async (ids: string[]) => {
+			await clickhouseService.queryFromString(
+				'DELETE FROM simplified_apex_locations WHERE _id IN ($1)',
+				{ 1: ids.map(id => `'${id}'`).join(', ') },
+			);
+		},
 
-	Logger.info(`MISMATCH: Document count was different for both databases: ${pcgiDocCount} PCGIDB != ${clickhouseDocCount[0].count} ClickHouse (${countQueryTimer.get()})`);
+		distinctDestinationDbFn: async () => {
+			const result = await clickhouseService.queryFromString<{ _id: string }>(
+				'SELECT _id FROM simplified_apex_locations WHERE created_at >= $1 AND created_at <= $2',
+				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
+			);
+			return result.map(doc => doc._id);
+		},
 
-	//
-	// If the document count was different, then we check which documents are missing.
-	// Instead of syncing all documents again, we check only the missing IDs. This is done
-	// by getting the distinct IDs from each database and comparing them to find the missing ones.
+		distinctSourceDbFn: async () => {
+			const result = await pcgidbValidations.LocationEntity.distinct('transaction.transactionId', pcgidbQuery);
+			return result.map(String);
+		},
 
-	const distinctQueryTimer = new Timer();
+		missingDocumentsSourceDbAsyncIterator: (missingDocumentIds) => {
+			return pcgidbValidations.LocationEntity
+				.find({ 'transaction.transactionId': { $in: missingDocumentIds } })
+				.stream();
+		},
 
-	const pcgiDocIds = await pcgidbValidations.LocationEntity.distinct('transaction.transactionId', pcgiQuery);
-	const pcgiDocIdsUnique = new Set(pcgiDocIds.map(String));
+		onCompleteCallbackFn: async () => {
+			await writer.flush(invalidateRides);
+		},
 
-	const clickhouseDocIds = await clickhouseService.queryFromString<{ _id: string }>('SELECT _id FROM simplified_apex_locations WHERE created_at >= $1 AND created_at <= $2', { 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp });
-	const clickhouseDocIdsUnique = new Set(clickhouseDocIds.map(doc => doc._id));
+		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
+			const parseResult = parseSimplifiedApexLocation(sourceDbDocument);
+			if (!parseResult) return; // Skip if parsing failed
+			await writer.write(parseResult, { flushCallback: invalidateRides });
+		},
 
-	const missingDocuments = pcgiDocIds.filter((documentId: string) => !clickhouseDocIdsUnique.has(String(documentId)));
-	const extraDocuments = clickhouseDocIds.filter(doc => !pcgiDocIdsUnique.has(String(doc._id)));
-
-	Logger.info(`PCGI Total: ${pcgiDocCount} | PCGI Unique: ${pcgiDocIdsUnique.size} | PCGI ▲: ${pcgiDocCount - pcgiDocIdsUnique.size} | ClickHouse Total: ${clickhouseDocCount[0].count} | ClickHouse Unique: ${clickhouseDocIdsUnique.size} | ClickHouse ▲: ${clickhouseDocCount[0].count - clickhouseDocIdsUnique.size} | ClickHouse Missing: ${missingDocuments.length} | ClickHouse Extra: ${extraDocuments.length} (${distinctQueryTimer.get()})`);
-
-	//
-	// Skip if all documents are already synced.
-
-	if (missingDocuments.length === 0) {
-		Logger.success(`Chunk complete. All document IDs matched. (${distinctQueryTimer.get()})`);
-	}
-
-	//
-	// Extra documents in the destination database should be removed,
-	// as they are not present in the source database.
-
-	if (extraDocuments.length > 0) {
-		await clickhouseService.queryFromString('DELETE FROM simplified_apex_locations WHERE _id IN ($1)', { 1: extraDocuments.map(doc => `'${doc._id}'`).join(', ') });
-		Logger.info(`Removed ${extraDocuments.length} extra documents in ClickHouse. (${distinctQueryTimer.get()})`);
-	}
-
-	//
-	// If there are missing documents, then we sync them.
-	// We query the PCGIDB for the missing documents and write them to the GO database.
-
-	Logger.info(`Found ${missingDocuments.length} missing documents in GO. (${distinctQueryTimer.get()})`);
-
-	const missingDocumentsStream = pcgidbValidations.LocationEntity
-		.find({ 'transaction.transactionId': { $in: missingDocuments } })
-		.stream();
-
-	for await (const pcgiDocument of missingDocumentsStream) {
-		const parsedSlaDoc = parseSimplifiedApexLocation(pcgiDocument);
-		if (!parsedSlaDoc) continue; // Skip if parsing failed
-		await writer.write(parsedSlaDoc, { flushCallback: invalidateRides });
-	}
-
-	await writer.flush(invalidateRides);
-
-	Logger.success(`Chunk sync complete (${chunkTimer.get()})`);
+	});
 
 	//
 }
