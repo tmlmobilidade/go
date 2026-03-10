@@ -40,14 +40,14 @@ interface GtfsApiResponse {
 
 /* * */
 
-function getTranslationText(translations: Array<{ language?: string, text?: string }> | undefined) {
+function GetTranslationText(translations: Array<{ language?: string, text?: string }> | undefined) {
 	if (!translations?.length) return null;
 	const portuguese = translations.find(item => item.language === 'pt' && item.text);
 	if (portuguese?.text) return portuguese.text;
 	return translations.find(item => item.text)?.text ?? null;
 }
 
-function formatUnixDate(unixValue?: number) {
+function FormatUnixDate(unixValue?: number) {
 	if (!unixValue) return null;
 	const date = new Date(unixValue * 1_000);
 	if (Number.isNaN(date.getTime())) return null;
@@ -58,7 +58,7 @@ function formatUnixDate(unixValue?: number) {
 	}).format(date);
 }
 
-async function fetchGtfsFeed() {
+async function FetchGtfsFeed() {
 	const response = await fetch(API_ROUTES.alerts.GTFS_CARRIS_METROPOLITANA, {
 		next: { revalidate: 30 },
 	});
@@ -81,7 +81,7 @@ async function fetchGtfsFeed() {
 /* * */
 
 export default async function Page() {
-	const { feed: gtfsFeed, status: gtfsFeedStatus } = await fetchGtfsFeed();
+	const { feed: gtfsFeed, status: gtfsFeedStatus } = await FetchGtfsFeed();
 
 	if (!gtfsFeed) {
 		return (
@@ -98,7 +98,7 @@ export default async function Page() {
 
 	const entities = gtfsFeed.entity ?? [];
 	const groupedEntities = entities.reduce<Record<string, GtfsEntity[]>>((acc, entity) => {
-		const startDate = formatUnixDate(entity.alert?.active_period?.[0]?.start) ?? 'Sem data definida';
+		const startDate = FormatUnixDate(entity.alert?.active_period?.[0]?.start) ?? 'Sem data definida';
 		if (!acc[startDate]) acc[startDate] = [];
 		acc[startDate].push(entity);
 		return acc;
@@ -132,8 +132,8 @@ export default async function Page() {
 								const entityId = String(entity.id ?? '').trim();
 								if (!entityId) return null;
 
-								const title = getTranslationText(entity.alert?.header_text?.translation) ?? `Alerta ${entityId}`;
-								const description = getTranslationText(entity.alert?.description_text?.translation);
+								const title = GetTranslationText(entity.alert?.header_text?.translation) ?? `Alerta ${entityId}`;
+								const description = GetTranslationText(entity.alert?.description_text?.translation);
 
 								return (
 									<li key={entityId} className="border-b last:border-b-0">

@@ -57,20 +57,20 @@ interface FetchGtfsFeedResult {
 
 /* * */
 
-function getAlertEntity(feed: GtfsFeed | null | undefined, alertId: string) {
+function GetAlertEntity(feed: GtfsFeed | null | undefined, alertId: string) {
 	if (!feed?.entity) return undefined;
 	const normalizedAlertId = alertId.trim();
 	return feed.entity.find(entity => String(entity.id ?? '').trim() === normalizedAlertId);
 }
 
-function getTranslationText(translations: Array<{ language?: string, text?: string }> | undefined) {
+function GetTranslationText(translations: Array<{ language?: string, text?: string }> | undefined) {
 	if (!translations?.length) return null;
 	const portuguese = translations.find(item => item.language === 'pt' && item.text);
 	if (portuguese?.text) return portuguese.text;
 	return translations.find(item => item.text)?.text ?? null;
 }
 
-function formatUnixDate(unixValue?: number) {
+function FormatUnixDate(unixValue?: number) {
 	if (!unixValue) return null;
 	const date = new Date(unixValue * 1_000);
 	if (Number.isNaN(date.getTime())) return null;
@@ -81,7 +81,7 @@ function formatUnixDate(unixValue?: number) {
 	}).format(date);
 }
 
-function normalizeUpperText(value?: string) {
+function NormalizeUpperText(value?: string) {
 	if (!value) return null;
 	return value.replaceAll('_', ' ');
 }
@@ -119,7 +119,7 @@ const EFFECT_LABELS: Record<string, string> = {
 	STOP_MOVED: 'Paragem Deslocada',
 };
 
-function getEntityRoutes(entity: GtfsEntity | undefined) {
+function GetEntityRoutes(entity: GtfsEntity | undefined) {
 	if (!entity?.alert?.informed_entity?.length) return [];
 	const routes = entity.alert.informed_entity
 		.map(item => item.route_id ?? item.trip?.route_id)
@@ -127,10 +127,10 @@ function getEntityRoutes(entity: GtfsEntity | undefined) {
 	return Array.from(new Set(routes));
 }
 
-async function fetchGtfsFeed(): Promise<FetchGtfsFeedResult> {
+async function FetchGtfsFeed(): Promise<FetchGtfsFeedResult> {
 	const response = await fetch(API_ROUTES.alerts.GTFS_CARRIS_METROPOLITANA, {
 		next: { revalidate: 30 },
-	});
+	} as RequestInit);
 
 	if (!response.ok) {
 		return {
@@ -151,8 +151,8 @@ async function fetchGtfsFeed(): Promise<FetchGtfsFeedResult> {
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
-	const { feed: gtfsFeed, status: gtfsFeedStatus } = await fetchGtfsFeed();
-	const alertEntity = gtfsFeed ? getAlertEntity(gtfsFeed, id) : undefined;
+	const { feed: gtfsFeed, status: gtfsFeedStatus } = await FetchGtfsFeed();
+	const alertEntity = gtfsFeed ? GetAlertEntity(gtfsFeed, id) : undefined;
 
 	if (!gtfsFeed || !alertEntity) {
 		const alertUnavailableMessage = !gtfsFeed
@@ -179,13 +179,13 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 		);
 	}
 
-	const alertTitle = getTranslationText(alertEntity.alert?.header_text?.translation) ?? `Alerta ${id}`;
-	const alertDescription = getTranslationText(alertEntity.alert?.description_text?.translation);
-	const alertCause = alertEntity.alert?.cause ? (CAUSE_LABELS[alertEntity.alert.cause] ?? normalizeUpperText(alertEntity.alert.cause)) : null;
-	const alertEffect = alertEntity.alert?.effect ? (EFFECT_LABELS[alertEntity.alert.effect] ?? normalizeUpperText(alertEntity.alert.effect)) : null;
-	const alertStartDate = formatUnixDate(alertEntity.alert?.active_period?.[0]?.start);
-	const alertEndDate = formatUnixDate(alertEntity.alert?.active_period?.[0]?.end);
-	const alertRoutes = getEntityRoutes(alertEntity);
+	const alertTitle = GetTranslationText(alertEntity.alert?.header_text?.translation) ?? `Alerta ${id}`;
+	const alertDescription = GetTranslationText(alertEntity.alert?.description_text?.translation);
+	const alertCause = alertEntity.alert?.cause ? (CAUSE_LABELS[alertEntity.alert.cause] ?? NormalizeUpperText(alertEntity.alert.cause)) : null;
+	const alertEffect = alertEntity.alert?.effect ? (EFFECT_LABELS[alertEntity.alert.effect] ?? NormalizeUpperText(alertEntity.alert.effect)) : null;
+	const alertStartDate = FormatUnixDate(alertEntity.alert?.active_period?.[0]?.start);
+	const alertEndDate = FormatUnixDate(alertEntity.alert?.active_period?.[0]?.end);
+	const alertRoutes = GetEntityRoutes(alertEntity);
 	const alertLocation = alertRoutes.join(', ');
 
 	return (
