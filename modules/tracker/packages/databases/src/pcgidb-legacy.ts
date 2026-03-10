@@ -118,7 +118,7 @@ class PCGIDBLegacyClass {
 				agent: process.env.SSH_AUTH_SOCK,
 				host: process.env.PCGIDB_TUNNEL_SSH_HOST,
 				keepaliveCountMax: 3, // Retry 3 times before closing the connection
-				keepaliveInterval: 10000, // Send keep-alive every 10 seconds
+				keepaliveInterval: 10_000, // Send keep-alive every 10 seconds
 				port: 22,
 				username: process.env.PCGIDB_TUNNEL_SSH_USERNAME,
 			},
