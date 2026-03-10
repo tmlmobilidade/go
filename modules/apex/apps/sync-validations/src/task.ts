@@ -2,7 +2,7 @@
 
 import { clickhouseService } from '@tmlmobilidade/clickhouse';
 import { Dates } from '@tmlmobilidade/dates';
-import { APEX_VALIDATION_SETTINGS, invalidateRides, parseSimplifiedApexValidation, simplifiedApexValidationsSchema } from '@tmlmobilidade/go-apex-pckg-common';
+import { APEX_VALIDATIONS_SETTINGS, invalidateRides, parseSimplifiedApexValidation, simplifiedApexValidationsSchema } from '@tmlmobilidade/go-apex-pckg-common';
 import { pcgidbValidations } from '@tmlmobilidade/go-apex-pckg-databases';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -46,8 +46,8 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 	// in the current timestamp chunk.
 
 	const pcgiQuery = {
-		'transaction.apexTransactionType': 11,
-		'transaction.operatorLongID': { $in: APEX_VALIDATION_SETTINGS.allowed_operator_long_ids },
+		'transaction.apexTransactionType': APEX_VALIDATIONS_SETTINGS.allowed_apex_transaction_type,
+		'transaction.operatorLongID': { $in: APEX_VALIDATIONS_SETTINGS.allowed_operator_long_ids },
 		'transaction.transactionDate': {
 			$gte: chunkStartDate.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
 			$lte: chunkEndDate.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),

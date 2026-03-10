@@ -23,7 +23,7 @@ export function parseSimplifiedApexLocation(pcgiDoc: any): null | SimplifiedApex
 
 		if (!APEX_LOCATIONS_SETTINGS.allowed_apex_transaction_versions.includes(pcgiDoc.transaction.apexTransactionVersion)) throw new Error(`Invalid apexTransactionVersion: "${pcgiDoc.transaction.apexTransactionVersion}"`);
 
-		if (!APEX_LOCATIONS_SETTINGS.allowed_apex_transaction_types.includes(pcgiDoc.transaction.apexTransactionType)) throw new Error(`Invalid apexTransactionType: "${pcgiDoc.transaction.apexTransactionType}"`);
+		if (pcgiDoc.transaction.apexTransactionType !== APEX_LOCATIONS_SETTINGS.allowed_apex_transaction_type) throw new Error(`Invalid apexTransactionType: "${pcgiDoc.transaction.apexTransactionType}"`);
 
 		//
 		// Evaluate the transaction date and ensure it is not before the set earliest date

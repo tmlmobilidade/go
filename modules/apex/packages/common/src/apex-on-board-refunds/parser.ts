@@ -23,9 +23,9 @@ export function parseSimplifiedApexOnBoardRefund(pcgiDoc: any): null | Simplifie
 
 		if (!APEX_ON_BOARD_REFUNDS_SETTINGS.allowed_apex_transaction_versions.includes(pcgiDoc.transaction.apexTransactionVersion)) throw new Error(`Invalid apexTransactionVersion: "${pcgiDoc.transaction.apexTransactionVersion}"`);
 
-		if (!APEX_ON_BOARD_REFUNDS_SETTINGS.allowed_apex_transaction_types.includes(pcgiDoc.transaction.apexTransactionType)) throw new Error(`Invalid apexTransactionType: "${pcgiDoc.transaction.apexTransactionType}"`);
+		if (pcgiDoc.transaction.apexTransactionType !== APEX_ON_BOARD_REFUNDS_SETTINGS.allowed_apex_transaction_type) throw new Error(`Invalid apexTransactionType: "${pcgiDoc.transaction.apexTransactionType}"`);
 
-		if (!APEX_ON_BOARD_REFUNDS_SETTINGS.allowed_card_physical_types.includes(pcgiDoc.transaction.cardPhysicalType)) throw new Error(`Invalid cardPhysicalType: "${pcgiDoc.transaction.cardPhysicalType}"`);
+		if (pcgiDoc.transaction.cardPhysicalType !== APEX_ON_BOARD_REFUNDS_SETTINGS.allowed_card_physical_type) throw new Error(`Invalid cardPhysicalType: "${pcgiDoc.transaction.cardPhysicalType}"`);
 
 		//
 		// Evaluate the transaction date and ensure it is not before the set earliest date

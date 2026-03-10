@@ -11,7 +11,7 @@ export const APEX_LOCATIONS_SETTINGS = {
 	 * Only import transactions with this type.
 	 * @constant `19` Location transaction
 	 */
-	allowed_apex_transaction_types: [19],
+	allowed_apex_transaction_type: 19,
 
 	/**
 	 * List of allowed schema versions for APEX Location transactions.
@@ -25,4 +25,4 @@ export const APEX_LOCATIONS_SETTINGS = {
 	 */
 	allowed_operator_long_ids: ['1', '4', '21', '41', '42', '43', '44'],
 
-};
+} as const;

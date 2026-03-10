@@ -11,7 +11,7 @@ export const APEX_VALIDATIONS_SETTINGS = {
 	 * Only import transactions with this type.
 	 * @constant `11` Validation transaction
 	 */
-	allowed_apex_transaction_types: [11],
+	allowed_apex_transaction_type: 11,
 
 	/**
 	 * List of allowed schema versions for APEX Validation transactions.
@@ -25,4 +25,4 @@ export const APEX_VALIDATIONS_SETTINGS = {
 	 */
 	allowed_operator_long_ids: ['1', '4', '21', '41', '42', '43', '44'],
 
-};
+} as const;
