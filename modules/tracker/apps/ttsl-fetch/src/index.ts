@@ -1,11 +1,11 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
+import { type HashableTrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-types';
 import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
 import { rawVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type HashableRawVehicleEvent } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 

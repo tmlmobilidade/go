@@ -1,8 +1,7 @@
 /* * */
 
+import { TrackerVehicleEventBaseSchema } from '@/common/vehicle-event-base.js';
 import { z } from 'zod';
-
-import { TrackerVehicleEventBaseSchema } from './vehicle-event-base.js';
 
 /* * */
 

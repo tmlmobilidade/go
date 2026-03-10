@@ -10,7 +10,6 @@ export const TrackerVehicleEventBaseSchema = z.object({
 	agency_id: z.string(),
 	created_at: UnixTimeStampSchema,
 	entity_id: z.string(),
-	raw: z.any(),
 	received_at: UnixTimeStampSchema,
-	version: z.enum(['default']),
+	version: z.string(),
 });

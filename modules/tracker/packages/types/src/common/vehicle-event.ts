@@ -1,13 +1,14 @@
 /* * */
 
+import { TrackerCmetV1Schema } from '@/cmet/index.js';
+import { TrackerTtslV1Schema } from '@/ttsl/index.js';
 import { z } from 'zod';
-
-import { TrackerTtslV1Schema } from './ttsl.js';
 
 /* * */
 
 export const TrackerVehicleEventSchema = z.discriminatedUnion('version', [
 	TrackerTtslV1Schema,
+	TrackerCmetV1Schema,
 ]);
 
 /**
