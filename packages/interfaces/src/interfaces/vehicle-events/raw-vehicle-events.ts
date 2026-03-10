@@ -40,4 +40,8 @@ class RawVehicleEventsClass extends MongoCollectionClass<any, any, any> {
 
 /* * */
 
+/**
+ * @deprecated This should not be used anymore. Only inside the `tracker` module
+ * and then you should use the services provided by the local package.
+ */
 export const rawVehicleEvents = asyncSingletonProxy(RawVehicleEventsClass);

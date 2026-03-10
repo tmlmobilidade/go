@@ -1,20 +1,20 @@
 /* * */
 
 import { processVehicleEvent } from '@/task.js';
-import { rawVehicleEvents } from '@tmlmobilidade/interfaces';
+import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
 
 /* * */
 
 (async function init() {
 	//
 
-	const rawVehicleEventsCollection = await rawVehicleEvents.getCollection();
+	await rawdbVehicleEvents.connect();
 
 	//
 	// Watch for changes to the MongoDB collections
 	// and integrate those documents immediately.
 
-	rawVehicleEventsCollection.watch().on('change', processVehicleEvent);
+	rawdbVehicleEvents.RawVehicleEvents.watch().on('change', processVehicleEvent);
 
 	//
 })();

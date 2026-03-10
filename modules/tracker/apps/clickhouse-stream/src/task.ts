@@ -8,10 +8,8 @@ import { ClickHouseWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
-const client = await clickhouseService.getClient();
-
 const writer = new ClickHouseWriter<SimplifiedVehicleEvent>({
-	client,
+	client: await clickhouseService.getClient(),
 	table: 'simplified_vehicle_events',
 	tableSchema: simplifiedVehicleEventsSchema,
 });
