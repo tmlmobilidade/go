@@ -1,6 +1,6 @@
 /* * */
 
-import { ClickHouseColumn } from '@tmlmobilidade/clickhouse';
+import { type ClickHouseColumn } from '@tmlmobilidade/clickhouse';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 
 /* * */
