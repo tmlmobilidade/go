@@ -18,14 +18,10 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/clickhouse": "*",
-		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-tracker-pckg-common": "*",
 		"@tmlmobilidade/go-tracker-pckg-databases": "*",
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
-		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*"
 	},
 	"devDependencies": {

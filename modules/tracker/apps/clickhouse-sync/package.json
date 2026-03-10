@@ -22,7 +22,6 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-tracker-pckg-common": "*",
 		"@tmlmobilidade/go-tracker-pckg-databases": "*",
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
@@ -31,7 +30,6 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/luxon": "3.7.1",
 		"@types/node": "25.4.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",

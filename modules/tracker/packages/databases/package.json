@@ -19,7 +19,8 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/mongo": "*",
 		"@tmlmobilidade/ssh": "*",
-		"@tmlmobilidade/types": "*"
+		"@tmlmobilidade/types": "*",
+		"mongodb": "7.1.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
