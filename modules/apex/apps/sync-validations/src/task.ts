@@ -61,17 +61,15 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 
 	const countQueryTimer = new Timer();
 
-	await pcgidbValidations.connect();
+	const sourceDbDocCount = await pcgidbValidations.ValidationEntity.countDocuments(pcgiQuery);
+	const destinationDbDocCount = await clickhouseService.queryFromString<{ count: number }>('SELECT COUNT(*) as count FROM simplified_apex_validations WHERE created_at >= $1 AND created_at <= $2', { 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp });
 
-	const pcgiDocCount = await pcgidbValidations.ValidationEntity.countDocuments(pcgiQuery);
-	const clickhouseDocCount = await clickhouseService.queryFromString<{ count: number }>('SELECT COUNT(*) as count FROM simplified_apex_validations WHERE created_at >= $1 AND created_at <= $2', { 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp });
-
-	if (pcgiDocCount === clickhouseDocCount[0].count) {
-		Logger.success(`MATCH: Found the same number of documents in both databases: ${pcgiDocCount} PCGIDB = ${clickhouseDocCount} ClickHouse (${countQueryTimer.get()})`);
+	if (sourceDbDocCount === destinationDbDocCount[0].count) {
+		Logger.success(`MATCH: Found the same number of documents in both databases: ${sourceDbDocCount} PCGIDB = ${destinationDbDocCount[0].count} ClickHouse (${countQueryTimer.get()})`);
 		return;
 	}
 
-	Logger.info(`MISMATCH: Document count was different for both databases: ${pcgiDocCount} PCGIDB != ${clickhouseDocCount[0].count} ClickHouse (${countQueryTimer.get()})`);
+	Logger.info(`MISMATCH: Document count was different for both databases: ${sourceDbDocCount} PCGIDB != ${destinationDbDocCount[0].count} ClickHouse (${countQueryTimer.get()})`);
 
 	//
 	// If the document count was different, then we check which documents are missing.
@@ -80,22 +78,23 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 
 	const distinctQueryTimer = new Timer();
 
-	const pcgiDocIds = await pcgidbValidations.ValidationEntity.distinct('transaction.transactionId', pcgiQuery);
-	const pcgiDocIdsUnique = new Set(pcgiDocIds.map(String));
+	const sourceDbDocIds = await pcgidbValidations.ValidationEntity.distinct('transaction.transactionId', pcgiQuery);
+	const sourceDbDocIdsUnique = new Set(sourceDbDocIds.map(String));
 
-	const clickhouseDocIds = await clickhouseService.queryFromString<{ _id: string }>('SELECT _id FROM simplified_apex_validations WHERE created_at >= $1 AND created_at <= $2', { 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp });
-	const clickhouseDocIdsUnique = new Set(clickhouseDocIds.map(doc => doc._id));
+	const destinationDbDocIds = await clickhouseService.queryFromString<{ _id: string }>('SELECT _id FROM simplified_apex_validations WHERE created_at >= $1 AND created_at <= $2', { 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp });
+	const destinationDbDocIdsUnique = new Set(destinationDbDocIds.map(doc => doc._id));
 
-	const missingDocuments = pcgiDocIds.filter((documentId: string) => !clickhouseDocIdsUnique.has(String(documentId)));
-	const extraDocuments = clickhouseDocIds.filter(doc => !pcgiDocIdsUnique.has(String(doc._id)));
+	const missingDocuments = sourceDbDocIds.filter((documentId: string) => !destinationDbDocIdsUnique.has(String(documentId)));
+	const extraDocuments = destinationDbDocIds.filter(doc => !sourceDbDocIdsUnique.has(String(doc._id)));
 
-	Logger.info(`PCGI Total: ${pcgiDocCount} | PCGI Unique: ${pcgiDocIdsUnique.size} | PCGI ▲: ${pcgiDocCount - pcgiDocIdsUnique.size} | ClickHouse Total: ${clickhouseDocCount[0].count} | ClickHouse Unique: ${clickhouseDocIdsUnique.size} | ClickHouse ▲: ${clickhouseDocCount[0].count - clickhouseDocIdsUnique.size} | ClickHouse Missing: ${missingDocuments.length} | ClickHouse Extra: ${extraDocuments.length} (${distinctQueryTimer.get()})`);
+	Logger.info(`Source Total: ${sourceDbDocCount} | Source Unique: ${sourceDbDocIdsUnique.size} | Source ▲: ${sourceDbDocCount - sourceDbDocIdsUnique.size} | Destination Total: ${destinationDbDocCount[0].count} | Destination Unique: ${destinationDbDocIdsUnique.size} | Destination ▲: ${destinationDbDocCount[0].count - destinationDbDocIdsUnique.size} | Destination Missing: ${missingDocuments.length} | Destination Extra: ${extraDocuments.length} (${distinctQueryTimer.get()})`);
 
 	//
 	// Skip if all documents are already synced.
 
 	if (missingDocuments.length === 0) {
 		Logger.success(`Chunk complete. All document IDs matched. (${distinctQueryTimer.get()})`);
+		return;
 	}
 
 	//
@@ -109,18 +108,19 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 
 	//
 	// If there are missing documents, then we sync them.
-	// We query the PCGIDB for the missing documents and write them to the GO database.
+	// We query the source database for the missing documents
+	// and write them to the destination database.
 
-	Logger.info(`Found ${missingDocuments.length} missing documents in GO. (${distinctQueryTimer.get()})`);
+	Logger.info(`Found ${missingDocuments.length} missing documents in the destination database. (${distinctQueryTimer.get()})`);
 
 	const missingDocumentsStream = pcgidbValidations.ValidationEntity
 		.find({ 'transaction.transactionId': { $in: missingDocuments } })
 		.stream();
 
-	for await (const pcgiDocument of missingDocumentsStream) {
-		const parsedSlaDoc = parseSimplifiedApexValidation(pcgiDocument);
-		if (!parsedSlaDoc) continue; // Skip if parsing failed
-		await writer.write(parsedSlaDoc, { flushCallback: invalidateRides });
+	for await (const sourceDbDocument of missingDocumentsStream) {
+		const parseResult = parseSimplifiedApexValidation(sourceDbDocument);
+		if (!parseResult) continue; // Skip if parsing failed
+		await writer.write(parseResult, { flushCallback: invalidateRides });
 	}
 
 	await writer.flush(invalidateRides);

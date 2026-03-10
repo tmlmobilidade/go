@@ -2,7 +2,7 @@
 
 import { clickhouseService } from '@tmlmobilidade/clickhouse';
 import { Dates } from '@tmlmobilidade/dates';
-import { invalidateRides, parseSimplifiedApexOnBoardRefund, simplifiedApexOnBoardRefundsSchema } from '@tmlmobilidade/go-apex-pckg-common';
+import { APEX_ON_BOARD_REFUNDS_SETTINGS, invalidateRides, parseSimplifiedApexOnBoardRefund, simplifiedApexOnBoardRefundsSchema } from '@tmlmobilidade/go-apex-pckg-common';
 import { pcgidbTicketing } from '@tmlmobilidade/go-apex-pckg-databases';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -45,9 +45,10 @@ export async function syncApexOnBoardRefunds(timeChunk: PerformInTimeChunksItem)
 	// Prepare the queries to compare documents from each database
 	// in the current timestamp chunk.
 
-	const pcgiQuery = {
-		'transaction.apexTransactionType': 11,
-		'transaction.operatorLongID': { $in: ['41', '42', '43', '44'] },
+	const sourceDbQuery = {
+		'transaction.apexTransactionType': APEX_ON_BOARD_REFUNDS_SETTINGS.allowed_apex_transaction_type,
+		'transaction.cardPhysicalType': APEX_ON_BOARD_REFUNDS_SETTINGS.allowed_card_physical_type,
+		'transaction.operatorLongID': { $in: APEX_ON_BOARD_REFUNDS_SETTINGS.allowed_operator_long_ids },
 		'transaction.transactionDate': {
 			$gte: chunkStartDate.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
 			$lte: chunkEndDate.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
@@ -61,16 +62,15 @@ export async function syncApexOnBoardRefunds(timeChunk: PerformInTimeChunksItem)
 
 	const countQueryTimer = new Timer();
 
-	await pcgidbTicketing.connect();
-	const pcgiDocCount = await pcgidbTicketing.SalesEntity.countDocuments(pcgiQuery);
-	const clickhouseDocCount = await clickhouseService.queryFromString<{ count: number }>('SELECT COUNT(*) as count FROM simplified_apex_on_board_refunds WHERE created_at >= $1 AND created_at <= $2', { 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp });
+	const sourceDbDocCount = await pcgidbTicketing.SalesEntity.countDocuments(sourceDbQuery);
+	const destinationDbDocCount = await clickhouseService.queryFromString<{ count: number }>('SELECT COUNT(*) as count FROM simplified_apex_on_board_refunds WHERE created_at >= $1 AND created_at <= $2', { 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp });
 
-	if (pcgiDocCount === clickhouseDocCount[0].count) {
-		Logger.success(`MATCH: Found the same number of documents in both databases: ${pcgiDocCount} PCGIDB = ${clickhouseDocCount} ClickHouse (${countQueryTimer.get()})`);
+	if (sourceDbDocCount === destinationDbDocCount[0].count) {
+		Logger.success(`MATCH: Found the same number of documents in both databases: ${sourceDbDocCount} Source = ${destinationDbDocCount[0].count} Destination (${countQueryTimer.get()})`);
 		return;
 	}
 
-	Logger.info(`MISMATCH: Document count was different for both databases: ${pcgiDocCount} PCGIDB != ${clickhouseDocCount[0].count} ClickHouse (${countQueryTimer.get()})`);
+	Logger.info(`MISMATCH: Document count was different for both databases: ${sourceDbDocCount} Source != ${destinationDbDocCount[0].count} Destination (${countQueryTimer.get()})`);
 
 	//
 	// If the document count was different, then we check which documents are missing.
@@ -79,22 +79,23 @@ export async function syncApexOnBoardRefunds(timeChunk: PerformInTimeChunksItem)
 
 	const distinctQueryTimer = new Timer();
 
-	const pcgiDocIds = await pcgidbTicketing.SalesEntity.distinct('transaction.transactionId', pcgiQuery);
-	const pcgiDocIdsUnique = new Set(pcgiDocIds.map(String));
+	const sourceDbDocIds = await pcgidbTicketing.SalesEntity.distinct('transaction.transactionId', sourceDbQuery);
+	const sourceDbDocIdsUnique = new Set(sourceDbDocIds.map(String));
 
-	const clickhouseDocIds = await clickhouseService.queryFromString<{ _id: string }>('SELECT _id FROM simplified_apex_on_board_sales WHERE created_at >= $1 AND created_at <= $2', { 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp });
-	const clickhouseDocIdsUnique = new Set(clickhouseDocIds.map(doc => doc._id));
+	const destinationDbDocIds = await clickhouseService.queryFromString<{ _id: string }>('SELECT _id FROM simplified_apex_on_board_refunds WHERE created_at >= $1 AND created_at <= $2', { 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp });
+	const destinationDbDocIdsUnique = new Set(destinationDbDocIds.map(doc => doc._id));
 
-	const missingDocuments = pcgiDocIds.filter((documentId: string) => !clickhouseDocIdsUnique.has(String(documentId)));
-	const extraDocuments = clickhouseDocIds.filter(doc => !pcgiDocIdsUnique.has(String(doc._id)));
+	const missingDocuments = sourceDbDocIds.filter((documentId: string) => !destinationDbDocIdsUnique.has(String(documentId)));
+	const extraDocuments = destinationDbDocIds.filter(doc => !sourceDbDocIdsUnique.has(String(doc._id)));
 
-	Logger.info(`PCGI Total: ${pcgiDocCount} | PCGI Unique: ${pcgiDocIdsUnique.size} | PCGI ▲: ${pcgiDocCount - pcgiDocIdsUnique.size} | ClickHouse Total: ${clickhouseDocCount[0].count} | ClickHouse Unique: ${clickhouseDocIdsUnique.size} | ClickHouse ▲: ${clickhouseDocCount[0].count - clickhouseDocIdsUnique.size} | ClickHouse Missing: ${missingDocuments.length} | ClickHouse Extra: ${extraDocuments.length} (${distinctQueryTimer.get()})`);
+	Logger.info(`PCGI Total: ${sourceDbDocCount} | PCGI Unique: ${sourceDbDocIdsUnique.size} | PCGI ▲: ${sourceDbDocCount - sourceDbDocIdsUnique.size} | ClickHouse Total: ${destinationDbDocCount[0].count} | ClickHouse Unique: ${destinationDbDocIdsUnique.size} | ClickHouse ▲: ${destinationDbDocCount[0].count - destinationDbDocIdsUnique.size} | ClickHouse Missing: ${missingDocuments.length} | ClickHouse Extra: ${extraDocuments.length} (${distinctQueryTimer.get()})`);
 
 	//
 	// Skip if all documents are already synced.
 
 	if (missingDocuments.length === 0) {
 		Logger.success(`Chunk complete. All document IDs matched. (${distinctQueryTimer.get()})`);
+		return;
 	}
 
 	//
@@ -102,22 +103,22 @@ export async function syncApexOnBoardRefunds(timeChunk: PerformInTimeChunksItem)
 	// as they are not present in the source database.
 
 	if (extraDocuments.length > 0) {
-		await clickhouseService.queryFromString('DELETE FROM simplified_apex_on_board_sales WHERE _id IN ($1)', { 1: extraDocuments.map(doc => `'${doc._id}'`).join(', ') });
+		await clickhouseService.queryFromString('DELETE FROM simplified_apex_on_board_refunds WHERE _id IN ($1)', { 1: extraDocuments.map(doc => `'${doc._id}'`).join(', ') });
 		Logger.info(`Removed ${extraDocuments.length} extra documents in ClickHouse. (${distinctQueryTimer.get()})`);
 	}
 
 	//
 	// If there are missing documents, then we sync them.
-	// We query the PCGIDB for the missing documents and write them to the GO database.
+	// We query the Source for the missing documents and write them to the Destination database.
 
-	Logger.info(`Found ${missingDocuments.length} missing documents in GO. (${distinctQueryTimer.get()})`);
+	Logger.info(`Found ${missingDocuments.length} missing documents in Destination. (${distinctQueryTimer.get()})`);
 
 	const missingDocumentsStream = pcgidbTicketing.SalesEntity
 		.find({ 'transaction.transactionId': { $in: missingDocuments } })
 		.stream();
 
-	for await (const pcgiDocument of missingDocumentsStream) {
-		const parsedSlaDoc = parseSimplifiedApexOnBoardRefund(pcgiDocument);
+	for await (const sourceDbDocument of missingDocumentsStream) {
+		const parsedSlaDoc = parseSimplifiedApexOnBoardRefund(sourceDbDocument);
 		if (!parsedSlaDoc) continue; // Skip if parsing failed
 		await writer.write(parsedSlaDoc, { flushCallback: invalidateRides });
 	}
