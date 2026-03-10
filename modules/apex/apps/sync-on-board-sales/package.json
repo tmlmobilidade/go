@@ -18,6 +18,7 @@
 	},
 	"dependencies": {
 		"@clickhouse/client": "1.18.1",
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-apex-pckg-parse": "*",
 		"@tmlmobilidade/go-apex-pckg-sync": "*",
 		"@tmlmobilidade/interfaces": "*",

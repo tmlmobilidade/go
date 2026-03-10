@@ -17,11 +17,12 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
+		"@clickhouse/client": "1.18.1",
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-apex-pckg-parse": "*",
 		"@tmlmobilidade/go-apex-pckg-sync": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@clickhouse/client": "1.18.1",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",

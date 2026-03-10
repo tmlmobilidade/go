@@ -18,6 +18,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/writers": "*"
 	},
 	"devDependencies": {

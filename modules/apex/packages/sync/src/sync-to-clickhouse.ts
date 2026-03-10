@@ -105,8 +105,7 @@ export async function syncToClickHouse<T>({ clickhouseQuery, clickhouseWriter, e
 		Logger.success(`Complete! Synced ${syncedCount} documents to ClickHouse. (sync: ${syncTimer.get()}) (total: ${globalTimer.get()})`);
 
 		//
-	}
-	catch (err) {
+	} catch (err) {
 		Logger.error('An error occurred while syncing to ClickHouse.', err);
 		throw err;
 	}

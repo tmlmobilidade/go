@@ -52,8 +52,7 @@ async function deleteExtraDocumentsFromClickHouse(extraDocumentIds: string[], ch
 				`,
 			});
 		}
-	}
-	finally {
+	} finally {
 		await client.close();
 	}
 }
@@ -193,8 +192,7 @@ async function syncApexOnBoardRefunds() {
 					Logger.info(`Flush [apex_on_board_refunds]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 
 					//
-				}
-				catch (error) {
+				} catch (error) {
 					Logger.error('Error in flushCallback', error);
 				}
 			};
@@ -291,8 +289,7 @@ async function syncApexOnBoardRefunds() {
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
 		//
-	}
-	catch (err) {
+	} catch (err) {
 		console.log('An error occurred. Halting execution.', err);
 		console.log('Retrying in 10 seconds...');
 		setTimeout(() => {
