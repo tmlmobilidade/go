@@ -6,7 +6,11 @@ import { z } from 'zod';
 /* * */
 
 export const TrackerCmetV1RawSchema = z.object({
-	_id: z.string(),
+	header: z.object({
+		gtfsRealtimeVersion: z.literal('2.0'),
+		incrementality: z.literal('DIFFERENTIAL'),
+		timestamp: z.number(),
+	}),
 	vehicle: z.object({
 		agencyId: z.string(),
 		currentStatus: z.enum(['INCOMING_AT', 'STOPPED_AT', 'IN_TRANSIT_TO']),
