@@ -33,3 +33,5 @@ export const TrackerTtslV1Schema = TrackerVehicleEventBaseSchema.extend({
 	raw: TrackerTtslV1RawSchema,
 	version: z.literal('ttsl-v1'),
 });
+
+export type TrackerTtslV1 = z.infer<typeof TrackerTtslV1Schema>;
