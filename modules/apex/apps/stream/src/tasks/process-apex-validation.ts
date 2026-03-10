@@ -1,7 +1,7 @@
 /* * */
 
 import { clickhouseService } from '@tmlmobilidade/clickhouse';
-import { parseSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-parse';
+import { invalidateRides, parseSimplifiedApexValidation, simplifiedApexValidationsSchema } from '@tmlmobilidade/go-apex-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 import { ClickHouseWriter } from '@tmlmobilidade/writers';
@@ -9,12 +9,20 @@ import { ClickHouseWriter } from '@tmlmobilidade/writers';
 /* * */
 
 const client = await clickhouseService.getClient();
+
 const writer = new ClickHouseWriter<SimplifiedApexValidation>({
 	client,
 	table: 'simplified_apex_validations',
 	tableSchema: simplifiedApexValidationsSchema,
 });
 
+/**
+ * Process the APEX Validation database operation by validating the operation type,
+ * transforming the document, and writing it to the SimplifiedApexValidations collection.
+ * Additionally, publish heartbeats for each agency after processing the document.
+ * @param databaseOperation The database operation containing the APEX Validation document to be processed.
+ * @returns A promise that resolves when the APEX Validation document has been processed.
+ */
 export async function processApexValidation(databaseOperation) {
 	//
 
@@ -32,6 +40,7 @@ export async function processApexValidation(databaseOperation) {
 	// Skip the operation if the document is not valid.
 
 	const newSimplifiedApexValidationDocument = parseSimplifiedApexValidation(databaseOperation.fullDocument);
+
 	if (!newSimplifiedApexValidationDocument) {
 		Logger.error(`Invalid APEX Validation document, skipping operation: ${databaseOperation.fullDocument.transaction.transactionId}`);
 		return;
@@ -45,10 +54,10 @@ export async function processApexValidation(databaseOperation) {
 	//
 	// Publish the heartbeats for each agency
 
-	if (newSimplifiedApexValidationDocument.agency_id === '41') fetch('https://status.carrismetropolitana.pt/api/push/QRSatZitiBNIhTDneykCGV0PthvQoIUf');
-	if (newSimplifiedApexValidationDocument.agency_id === '42') fetch('https://status.carrismetropolitana.pt/api/push/uZTfvExA1yCpNZIXIzgvCmHdSquNi0lV');
-	if (newSimplifiedApexValidationDocument.agency_id === '43') fetch('https://status.carrismetropolitana.pt/api/push/Rp7hYCJKLL8h67IP07RDAXagwO5avchc');
-	if (newSimplifiedApexValidationDocument.agency_id === '44') fetch('https://status.carrismetropolitana.pt/api/push/Mnm5Rn3tJAXYVWb6I51eTA4xfpXJ3vqq');
+	if (newSimplifiedApexValidationDocument.agency_id === '41') await fetch('https://status.carrismetropolitana.pt/api/push/QRSatZitiBNIhTDneykCGV0PthvQoIUf');
+	if (newSimplifiedApexValidationDocument.agency_id === '42') await fetch('https://status.carrismetropolitana.pt/api/push/uZTfvExA1yCpNZIXIzgvCmHdSquNi0lV');
+	if (newSimplifiedApexValidationDocument.agency_id === '43') await fetch('https://status.carrismetropolitana.pt/api/push/Rp7hYCJKLL8h67IP07RDAXagwO5avchc');
+	if (newSimplifiedApexValidationDocument.agency_id === '44') await fetch('https://status.carrismetropolitana.pt/api/push/Mnm5Rn3tJAXYVWb6I51eTA4xfpXJ3vqq');
 
 	//
 };
