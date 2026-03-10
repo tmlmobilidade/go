@@ -13,6 +13,13 @@ import { ClickHouseWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
+const client = await clickhouseService.getClient();
+const writer = new ClickHouseWriter<SimplifiedApexValidation>({
+	client,
+	table: 'simplified_apex_validations',
+	tableSchema: simplifiedApexValidationsSchema,
+});
+
 async function syncApexValidationsChunk({ chunk, writer }: { chunk: PerformInTimeChunksItem, writer: ClickHouseWriter<SimplifiedApexValidation> }) {
 	//
 
@@ -121,13 +128,6 @@ async function syncApexValidationsChunk({ chunk, writer }: { chunk: PerformInTim
 
 	//
 }
-
-const client = await clickhouseService.getClient();
-const writer = new ClickHouseWriter<SimplifiedApexValidation>({
-	client,
-	table: 'simplified_apex_validations',
-	tableSchema: simplifiedApexValidationsSchema,
-});
 
 async function syncApexValidations() {
 	try {
