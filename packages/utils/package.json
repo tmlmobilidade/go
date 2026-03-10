@@ -35,7 +35,9 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/types": "*",
+		"luxon": "3.7.2",
 		"mergekit": "3.0.6"
 	},
 	"devDependencies": {

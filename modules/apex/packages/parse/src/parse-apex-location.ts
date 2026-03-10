@@ -1,5 +1,6 @@
 /* * */
 
+import { clickhouseService } from '@tmlmobilidade/clickhouse';
 import { Dates } from '@tmlmobilidade/dates';
 import { getEarliestDate } from '@tmlmobilidade/go-apex-pckg-sync';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
@@ -18,6 +19,8 @@ const ALLOWED_APEX_TRANSACTION_TYPES = [19]; // Location Transaction
 export function parseSimplifiedApexLocation(pcgiDoc: any): null | SimplifiedApexLocation {
 	try {
 		//
+
+		await clickhouseService.queryFromFile<SimplifiedApexLocation>('src/queries/simplified_apex_locations.sql');
 
 		//
 		// Validate the document structure and content
@@ -67,8 +70,7 @@ export function parseSimplifiedApexLocation(pcgiDoc: any): null | SimplifiedApex
 		};
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		console.error(`Error parsing simplified APEX Location. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
 		return null;
 	}
