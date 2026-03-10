@@ -59,7 +59,7 @@ export const TrackerCmetV1Schema = TrackerVehicleEventBaseSchema.extend({
 export type TrackerCmetV1 = z.infer<typeof TrackerCmetV1Schema>;
 
 /* * */
-export const parseTrackerCmetV1Schema = (vehicleEvent: TrackerCmetV1): SimplifiedVehicleEvent => {
+export const parseTrackerCmetV1 = (vehicleEvent: TrackerCmetV1): SimplifiedVehicleEvent => {
 	const vehicle = vehicleEvent.raw.vehicle;
 
 	return {

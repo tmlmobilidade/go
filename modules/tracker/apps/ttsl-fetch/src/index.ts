@@ -59,11 +59,12 @@ const main = async () => {
 
 		const hashableRawEvent: HashableTrackerVehicleEvent<TrackerTtslV1> = {
 			agency_id: '4',
-			// @ts-expect-error - The entity is not typed correctly
-			created_at: Dates.fromSeconds(Number(entity.timestamp)).unix_timestamp,
+			created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_timestamp,
 			entity_id: entity.id,
-			// @ts-expect-error - The entity is not typed correctly
-			raw: entity,
+			raw: {
+				header: decodedMessage.header,
+				vehicle: entity.vehicle,
+			},
 			version: 'ttsl-v1',
 		};
 

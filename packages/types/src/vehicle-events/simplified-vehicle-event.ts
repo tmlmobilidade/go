@@ -26,7 +26,8 @@ export const SimplifiedVehicleEventSchema = z.object({
 	extra_trip_id: z.string().nullable().default(null),
 	odometer: z.number().nullable().default(null),
 	pattern_id: z.string().nullable().default(null),
-	stop_id: z.string(),
+	speed: z.number().nullable().default(null),
+	stop_id: z.string().nullable().default(null),
 });
 
 /**
