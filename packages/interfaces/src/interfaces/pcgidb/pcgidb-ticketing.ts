@@ -159,4 +159,8 @@ class PCGIDBTicketingClass {
 
 /* * */
 
+/**
+ * @deprecated This should not be used anymore. Only inside the `apex` module
+ * and then you should use the services provided by the local package.
+ */
 export const pcgidbTicketing = new PCGIDBTicketingClass();

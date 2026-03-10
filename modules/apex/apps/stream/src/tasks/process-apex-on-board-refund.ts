@@ -8,10 +8,8 @@ import { ClickHouseWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
-const client = await clickhouseService.getClient();
-
 const writer = new ClickHouseWriter<SimplifiedApexOnBoardRefund>({
-	client,
+	client: await clickhouseService.getClient(),
 	table: 'simplified_apex_on_board_refunds',
 	tableSchema: simplifiedApexOnBoardRefundsSchema,
 });

@@ -51,8 +51,7 @@ class PCGIDBLegacyClass {
 			this.VehicleEventsLog = mongoConnector.client.db('OfferApiLog').collection('VehicleEvents');
 			// Log success message
 			Logger.success('Connected to PCGIDB Legacy successfully.');
-		}
-		catch (error) {
+		} catch (error) {
 			throw new Error('Error connecting to PCGIDB Legacy:', { cause: error });
 		}
 	}
@@ -161,4 +160,8 @@ class PCGIDBLegacyClass {
 
 /* * */
 
+/**
+ * @deprecated This should not be used anymore. Only inside the `apex` module
+ * and then you should use the services provided by the local package.
+ */
 export const pcgidbLegacy = new PCGIDBLegacyClass();
