@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type HashableTrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-types';
+import { type HashableTrackerVehicleEvent, type TrackerTtslV1 } from '@tmlmobilidade/go-tracker-pckg-types';
 import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
 import { rawVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -57,12 +57,14 @@ const main = async () => {
 		// This allows us to identify duplicate events
 		// and avoid storing them multiple times in the database.
 
-		const hashableRawEvent: HashableRawVehicleEvent = {
+		const hashableRawEvent: HashableTrackerVehicleEvent<TrackerTtslV1> = {
 			agency_id: '4',
-			created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
+			// @ts-expect-error - The entity is not typed correctly
+			created_at: Dates.fromSeconds(Number(entity.timestamp)).unix_timestamp,
 			entity_id: entity.id,
+			// @ts-expect-error - The entity is not typed correctly
 			raw: entity,
-			version: 'default',
+			version: 'ttsl-v1',
 		};
 
 		const hashableRawEventId = crypto
