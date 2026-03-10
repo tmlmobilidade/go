@@ -8,9 +8,8 @@ metadata:
     app.kubernetes.io/name: gateway
     app.kubernetes.io/part-of: go-poc
 spec:
-  # ClusterIP: the Service is only reachable inside the cluster.
-  # External traffic is routed here via the Ingress below.
-  type: ClusterIP
+  # LoadBalancer: OKE automatically provisions an OCI Load Balancer with a public IP.
+  type: LoadBalancer
   selector:
     app: gateway
   ports:
