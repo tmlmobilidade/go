@@ -34,7 +34,7 @@ class PCGIDBValidationsClass {
 
 		const mongoClientOptions: MongoClientOptions = {
 			connectTimeoutMS: 10_000,
-			directConnection: true,
+			directConnection: process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'staging' ? false : true,
 			maxPoolSize: 20,
 			minPoolSize: 2,
 			readPreference: 'secondaryPreferred',

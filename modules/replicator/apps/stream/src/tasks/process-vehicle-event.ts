@@ -37,6 +37,7 @@ export async function processVehicleEvent(databaseOperation) {
 	// Skip the operation if the document is not valid.
 
 	const newVehicleEventDocument = parseVehicleEvent(databaseOperation.fullDocument);
+
 	if (!newVehicleEventDocument) {
 		Logger.error(`Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}`);
 		return;
@@ -76,24 +77,27 @@ export async function processVehicleEvent(databaseOperation) {
 			Logger.info(`Flush [simplified_vehicle_events]: Marked as 'waiting': ${ridesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error('Error in flushCallback', error);
 		}
 	};
 
 	//
-	// Write the new vehicle event document to the VehicleEvents collection
+	// Write the new document to the VehicleEvents collection
 
-	await vehicleEventsDbWritter.write(newVehicleEventDocument, { filter: { _id: newVehicleEventDocument._id }, upsert: true }, () => null, flushCallback);
+	await vehicleEventsDbWritter.write(
+		newVehicleEventDocument,
+		{ filter: { _id: newVehicleEventDocument._id }, upsert: true },
+		() => null, flushCallback,
+	);
 
 	//
 	// Publish the heartbeats for each agency
 
-	if (newVehicleEventDocument.agency_id === '41') fetch('https://status.carrismetropolitana.pt/api/push/B7fPoFcoIP77bgkQfL3x4PpiZRqfJAYE');
-	if (newVehicleEventDocument.agency_id === '42') fetch('https://status.carrismetropolitana.pt/api/push/4JRIEqablXpp5FCsdrnves1UGxsGadES');
-	if (newVehicleEventDocument.agency_id === '43') fetch('https://status.carrismetropolitana.pt/api/push/HwQXlW056WNegEqw2a5igrJIGncfyiia');
-	if (newVehicleEventDocument.agency_id === '44') fetch('https://status.carrismetropolitana.pt/api/push/LeX8eyUo3ZI7hwXc67bahTuPydGOXK9T');
+	if (newVehicleEventDocument.agency_id === '41') await fetch('https://status.carrismetropolitana.pt/api/push/B7fPoFcoIP77bgkQfL3x4PpiZRqfJAYE');
+	if (newVehicleEventDocument.agency_id === '42') await fetch('https://status.carrismetropolitana.pt/api/push/4JRIEqablXpp5FCsdrnves1UGxsGadES');
+	if (newVehicleEventDocument.agency_id === '43') await fetch('https://status.carrismetropolitana.pt/api/push/HwQXlW056WNegEqw2a5igrJIGncfyiia');
+	if (newVehicleEventDocument.agency_id === '44') await fetch('https://status.carrismetropolitana.pt/api/push/LeX8eyUo3ZI7hwXc67bahTuPydGOXK9T');
 
 	//
 };

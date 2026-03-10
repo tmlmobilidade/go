@@ -36,6 +36,7 @@ export async function processApexOnBoardRefund(databaseOperation) {
 	// Skip the operation if the document is not valid.
 
 	const newSimplifiedApexOnBoardRefundDocument = parseSimplifiedApexOnBoardRefund(databaseOperation.fullDocument);
+
 	if (!newSimplifiedApexOnBoardRefundDocument) {
 		Logger.error(`Invalid APEX OnBoard Refund document, skipping operation: ${databaseOperation.fullDocument.transaction.transactionId}`);
 		return;
@@ -70,24 +71,27 @@ export async function processApexOnBoardRefund(databaseOperation) {
 			Logger.info(`Flush [simplified_apex_on_board_refunds]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error('Error in flushCallback', error);
 		}
 	};
 
 	//
-	// Write the new vehicle event document to the SimplifiedApexOnBoardRefunds collection
+	// Write the new document to the SimplifiedApexOnBoardRefunds collection
 
-	await simplifiedApexOnBoardRefundsDbWritter.write(newSimplifiedApexOnBoardRefundDocument, { filter: { _id: newSimplifiedApexOnBoardRefundDocument._id }, upsert: true }, () => null, flushCallback);
+	await simplifiedApexOnBoardRefundsDbWritter.write(
+		newSimplifiedApexOnBoardRefundDocument,
+		{ filter: { _id: newSimplifiedApexOnBoardRefundDocument._id }, upsert: true },
+		() => null, flushCallback,
+	);
 
 	//
 	// Publish the heartbeats for each agency
 
-	if (newSimplifiedApexOnBoardRefundDocument.agency_id === '41') fetch('https://status.carrismetropolitana.pt/api/push/eQxccZISJfTCE7mSDQhodV2NVcarw3Ge');
-	if (newSimplifiedApexOnBoardRefundDocument.agency_id === '42') fetch('https://status.carrismetropolitana.pt/api/push/XMDCLOEuYfaJyhkOCvwCZ1MUDDgF5xu7');
-	if (newSimplifiedApexOnBoardRefundDocument.agency_id === '43') fetch('https://status.carrismetropolitana.pt/api/push/WPU6a61aIIf2g2bZrCWK7eVQOwchM0Gk');
-	if (newSimplifiedApexOnBoardRefundDocument.agency_id === '44') fetch('https://status.carrismetropolitana.pt/api/push/bReYHiH3nq7FLENX5KRGdrECfZbTN9m6');
+	if (newSimplifiedApexOnBoardRefundDocument.agency_id === '41') await fetch('https://status.carrismetropolitana.pt/api/push/eQxccZISJfTCE7mSDQhodV2NVcarw3Ge');
+	if (newSimplifiedApexOnBoardRefundDocument.agency_id === '42') await fetch('https://status.carrismetropolitana.pt/api/push/XMDCLOEuYfaJyhkOCvwCZ1MUDDgF5xu7');
+	if (newSimplifiedApexOnBoardRefundDocument.agency_id === '43') await fetch('https://status.carrismetropolitana.pt/api/push/WPU6a61aIIf2g2bZrCWK7eVQOwchM0Gk');
+	if (newSimplifiedApexOnBoardRefundDocument.agency_id === '44') await fetch('https://status.carrismetropolitana.pt/api/push/bReYHiH3nq7FLENX5KRGdrECfZbTN9m6');
 
 	//
 };
