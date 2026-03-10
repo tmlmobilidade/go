@@ -2,8 +2,8 @@
 
 import { clickhouseService } from '@tmlmobilidade/clickhouse';
 import { Dates } from '@tmlmobilidade/dates';
-import { APEX_LOCATIONS_SETTINGS, invalidateRides, parseSimplifiedVehicleEvent, simplifiedVehicleEventsSchema } from '@tmlmobilidade/go-tracker-pckg-common';
-import { pcgidbValidations } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { invalidateRides, PARSER_MAP, simplifiedVehicleEventsSchema, TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';
+import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
@@ -18,7 +18,7 @@ const writer = new ClickHouseWriter<SimplifiedVehicleEvent>({
 });
 
 /**
- * Syncs APEX Locations from the PCGI database
+ * Syncs VehicleEvents from the RAWDB database
  * to the ClickHouse database for a given time chunk.
  * @param timeChunk The time chunk to sync the data for.
  */
@@ -37,10 +37,10 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
 
 	//
-	// Prepare the PCGIDB query to retrieve documents
+	// Prepare the RAWDB query to retrieve documents
 	// for the current timestamp chunk.
 
-	const sourceDbQuery = {
+	const rawdbQuery = {
 		created_at: {
 			$gte: chunkStartDate.unix_timestamp,
 			$lte: chunkEndDate.unix_timestamp,
@@ -52,7 +52,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 	// This function will handle the logic of counting, comparing, syncing and deleting documents
 	// between the source and destination databases based on the provided functions.
 
-	await replicate<unknown>({
+	await replicate<TrackerVehicleEvent>({
 
 		countDestinationDbFn: async () => {
 			const result = await clickhouseService.queryFromString<{ count: number }>(
@@ -63,7 +63,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		countSourceDbFn: async () => {
-			const result = await pcgidbValidations.LocationEntity.countDocuments(sourceDbQuery);
+			const result = await rawdbVehicleEvents.RawVehicleEvents.countDocuments(rawdbQuery);
 			return result;
 		},
 
@@ -83,13 +83,13 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		distinctSourceDbFn: async () => {
-			const result = await pcgidbValidations.LocationEntity.distinct('transaction.transactionId', sourceDbQuery);
+			const result = await rawdbVehicleEvents.RawVehicleEvents.distinct('_id', rawdbQuery);
 			return result.map(String);
 		},
 
 		missingDocumentsSourceDbAsyncIterator: (missingDocumentIds) => {
-			return pcgidbValidations.LocationEntity
-				.find({ 'transaction.transactionId': { $in: missingDocumentIds } })
+			return rawdbVehicleEvents.RawVehicleEvents
+				.find({ _id: { $in: missingDocumentIds } })
 				.stream();
 		},
 
@@ -98,7 +98,8 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			const parseResult = parseSimplifiedVehicleEvent(sourceDbDocument);
+			const parser = PARSER_MAP[sourceDbDocument.version];
+			const parseResult = parser(sourceDbDocument);
 			if (!parseResult) return; // Skip if parsing failed
 			await writer.write(parseResult, { flushCallback: invalidateRides });
 		},

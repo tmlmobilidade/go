@@ -1,11 +1,11 @@
 /* * */
 
+import { syncVehicleEvents } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
+import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
-
-import { syncVehicleEvents } from './task.js';
 
 /* * */
 
@@ -18,8 +18,19 @@ async function main() {
 		const globalTimer = new Timer();
 
 		//
+		// Connect to the source database
+
+		await rawdbVehicleEvents.connect();
+
+		//
+		// Get the earliest date from which we have data to sync,
+		// and perform the sync in time chunks until we reach the current date.
 
 		const earliestDate = getEarliestDate();
+
+		//
+		// Divide the time range into chunks
+		// and sync each one sequentially.
 
 		await performInTimeChunks({
 			onChunk: syncVehicleEvents,
@@ -36,4 +47,5 @@ async function main() {
 }
 
 /* * */
+
 await runOnInterval(main, 300_000); // 5 minutes

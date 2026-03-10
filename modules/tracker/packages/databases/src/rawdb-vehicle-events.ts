@@ -2,6 +2,7 @@
 
 /* * */
 
+import { type TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 import { MongoConnector } from '@tmlmobilidade/mongo';
 import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
@@ -16,7 +17,7 @@ let GLOBAL_RAWDB_TUNNEL_INSTANCE: SshTunnelService | undefined;
 class RAWDBVehicleEventsClass {
 	//
 
-	public RawVehicleEvents: Collection;
+	public RawVehicleEvents: Collection<TrackerVehicleEvent>;
 
 	/**
 	 * Establishes a connection to the Mongo database and initializes the collection.
