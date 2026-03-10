@@ -2,8 +2,8 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { type HashableTrackerVehicleEvent, type TrackerTtslV1 } from '@tmlmobilidade/go-tracker-pckg-common';
+import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
 import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
-import { rawVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -16,8 +16,6 @@ const API_URL = 'https://api.ttsl.pt/files/gtfs_rt_vehicles.pb';
 /* * */
 
 let iteration = 0;
-
-const rawVehicleEventsCollection = await rawVehicleEvents.getCollection();
 
 /* * */
 
@@ -77,11 +75,11 @@ const main = async () => {
 		// Write the new vehicle event document
 		// to the RawVehicleEvents collection
 
-		const alreadyExists = await rawVehicleEventsCollection.findOne({ _id: hashableRawEventId });
+		const alreadyExists = await rawdbVehicleEvents.RawVehicleEvents.findOne({ _id: hashableRawEventId });
 
 		if (alreadyExists) continue;
 
-		await rawVehicleEventsCollection.insertOne({
+		await rawdbVehicleEvents.RawVehicleEvents.insertOne({
 			...hashableRawEvent,
 			_id: hashableRawEventId,
 			received_at: Dates.now('Europe/Lisbon').unix_timestamp,
