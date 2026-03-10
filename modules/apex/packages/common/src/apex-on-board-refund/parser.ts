@@ -1,8 +1,8 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { getEarliestDate } from '@tmlmobilidade/consts';
-import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
+import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -10,14 +10,14 @@ const ALLOWED_OPERATOR_LONG_IDS = ['41', '42', '43', '44'];
 
 const ALLOWED_APEX_TRANSACTION_VERSIONS = ['2.0', '3.0'];
 
-const ALLOWED_APEX_TRANSACTION_TYPES = [3]; // Refund Transaction
+const ALLOWED_APEX_TRANSACTION_TYPES = [6]; // Refund Transaction
 
 const ALLOWED_CARD_PHYSICAL_TYPES = [28]; // OnBoard Transaction
 
 /* * */
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function parseSimplifiedApexOnBoardSale(pcgiDoc: any): null | SimplifiedApexOnBoardSale {
+export function parseSimplifiedApexOnBoardRefund(pcgiDoc: any): null | SimplifiedApexOnBoardRefund {
 	try {
 		//
 
@@ -63,11 +63,10 @@ export function parseSimplifiedApexOnBoardSale(pcgiDoc: any): null | SimplifiedA
 			created_at: transactionDate,
 			device_id: pcgiDoc.transaction.deviceID,
 			duty_id: null,
-			is_passenger: validateIfSimplifiedApexOnBoardSaleIsPassenger(null),
 			line_id: null,
 			mac_ase_counter_value: pcgiDoc.transaction.macDataFields.aseCounterValue,
 			mac_sam_serial_number: pcgiDoc.transaction.macDataFields.samSerialNumber,
-			on_board_refund_id: null,
+			on_board_sale_id: pcgiDoc.transaction.corrTransactionId,
 			pattern_id: null,
 			payment_method: pcgiDoc.transaction.paymentMethod,
 			price: pcgiDoc.transaction.price,
@@ -82,16 +81,8 @@ export function parseSimplifiedApexOnBoardSale(pcgiDoc: any): null | SimplifiedA
 		};
 
 		//
-	}
-	catch (error) {
-		console.error(`Error parsing simplified APEX OnBoardSale. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
+	} catch (error) {
+		console.error(`Error parsing simplified APEX OnBoardRefund. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
 		return null;
 	}
-}
-
-/* * */
-
-export function validateIfSimplifiedApexOnBoardSaleIsPassenger(refundId: null | string): boolean {
-	const hasNoRefund = refundId === null;
-	return hasNoRefund;
 }

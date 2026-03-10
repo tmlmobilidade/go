@@ -1,22 +1,22 @@
-/* * */
+// /* * */
 
-import { categorizeValidations } from '@/tasks/categorize-validations.js';
-import { linkRefundsToSalesToValidations } from '@/tasks/link-refunds.js';
-import { linkSalesToValidations } from '@/tasks/link-sales.js';
+// import { categorizeValidations } from '@/tasks/categorize-validations.js';
+// import { linkRefundsToSalesToValidations } from '@/tasks/link-refunds.js';
+// import { linkSalesToValidations } from '@/tasks/link-sales.js';
 
-/* * */
+// /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		//
+// (async function init() {
+// 	const runOnInterval = async () => {
+// 		//
 
-		await linkRefundsToSalesToValidations();
+// 		await linkRefundsToSalesToValidations();
 
-		await linkSalesToValidations();
+// 		await linkSalesToValidations();
 
-		await categorizeValidations();
+// 		await categorizeValidations();
 
-		setTimeout(runOnInterval, 60_000); // 60 seconds
-	};
-	runOnInterval();
-})();
+// 		setTimeout(runOnInterval, 60_000); // 60 seconds
+// 	};
+// 	runOnInterval();
+// })();

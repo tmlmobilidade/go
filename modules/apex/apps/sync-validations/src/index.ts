@@ -1,10 +1,10 @@
 /* * */
 
-import { ClickHouseColumn, clickhouseService } from '@tmlmobilidade/clickhouse';
+import { clickhouseService } from '@tmlmobilidade/clickhouse';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { parseSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-parse';
-import { pcgidbValidations, rides } from '@tmlmobilidade/interfaces';
+import { invalidateRides, parseSimplifiedApexValidation, simplifiedApexValidationsSchema } from '@tmlmobilidade/go-apex-pckg-common';
+import { pcgidbValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
@@ -12,71 +12,6 @@ import { performInTimeChunks, PerformInTimeChunksItem, runOnInterval } from '@tm
 import { ClickHouseWriter } from '@tmlmobilidade/writers';
 
 /* * */
-
-const simplifiedApexValidationsSchema: ClickHouseColumn<SimplifiedApexValidation>[] = [
-	{ name: '_id', primaryKey: true, type: 'String' },
-	{ name: 'agency_id', type: 'String' },
-	{ name: 'apex_version', type: 'String' },
-	{ name: 'card_serial_number', type: 'String' },
-	{ name: 'category', type: 'String' },
-	{ name: 'created_at', type: 'Int64' },
-	{ name: 'device_id', type: 'String' },
-	{ name: 'event_type', type: 'Int64' },
-	{ name: 'is_passenger', type: 'Bool' },
-	{ name: 'line_id', type: 'String' },
-	{ name: 'mac_ase_counter_value', type: 'Int64' },
-	{ name: 'mac_sam_serial_number', type: 'Int64' },
-	{ name: 'on_board_refund_id', type: 'Nullable(String)' },
-	{ name: 'on_board_sale_id', type: 'Nullable(String)' },
-	{ name: 'pattern_id', type: 'String' },
-	{ name: 'product_id', type: 'String' },
-	{ name: 'received_at', type: 'Int64' },
-	{ name: 'stop_id', type: 'String' },
-	{ name: 'trip_id', type: 'String' },
-	{ name: 'units_qty', type: 'Nullable(Int64)' },
-	{ name: 'updated_at', type: 'Int64' },
-	{ name: 'validation_status', type: 'Int64' },
-	{ name: 'vehicle_id', type: 'Int64' },
-];
-
-const flushCallback = async (flushedData: SimplifiedApexValidation[]) => {
-	try {
-		//
-		if (!flushedData || flushedData.length === 0) return;
-
-		const invalidationTimer = new Timer();
-
-		//
-		// Extract the unique trip_ids from the flushed data and
-		// the unique sam serial numbers associated with those transactions.
-
-		const uniqueTripIds: string[] = Array.from(new Set(flushedData.map(item => item.trip_id)));
-
-		//
-		// Create a standard window interval based on the earliest and latest timestamps
-
-		const earliestTimestamp = Math.min(...flushedData.map(item => item.created_at));
-		const latestTimestamp = Math.max(...flushedData.map(item => item.created_at));
-
-		const earliestStandardWindowInterval = Dates.fromUnixTimestamp(earliestTimestamp).std_window;
-		const latestStandardWindowInterval = Dates.fromUnixTimestamp(latestTimestamp).std_window;
-
-		//
-		// Invalidate all rides that are affected
-
-		const updateRidesResult = await rides.updateMany(
-			{ start_time_scheduled: { $gte: earliestStandardWindowInterval.start, $lte: latestStandardWindowInterval.end }, trip_id: { $in: uniqueTripIds } },
-			{ system_status: 'waiting' },
-			{ returnResults: false },
-		);
-
-		Logger.info(`Flush [apex_validations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
-
-		//
-	} catch (error) {
-		Logger.error('Error in flushCallback', error);
-	}
-};
 
 async function syncApexValidationsChunk({ chunk, writer }: { chunk: PerformInTimeChunksItem, writer: ClickHouseWriter<SimplifiedApexValidation> }) {
 	//
@@ -175,10 +110,10 @@ async function syncApexValidationsChunk({ chunk, writer }: { chunk: PerformInTim
 	for await (const pcgiDocument of missingDocumentsStream) {
 		const parsedSlaDoc = parseSimplifiedApexValidation(pcgiDocument);
 		if (!parsedSlaDoc) continue; // Skip if parsing failed
-		await writer.write(parsedSlaDoc, { flushCallback });
+		await writer.write(parsedSlaDoc, { flushCallback: invalidateRides });
 	}
 
-	await writer.flush(flushCallback);
+	await writer.flush(invalidateRides);
 
 	//
 
@@ -187,6 +122,13 @@ async function syncApexValidationsChunk({ chunk, writer }: { chunk: PerformInTim
 	//
 }
 
+const client = await clickhouseService.getClient();
+const writer = new ClickHouseWriter<SimplifiedApexValidation>({
+	client,
+	table: 'simplified_apex_validations',
+	tableSchema: simplifiedApexValidationsSchema,
+});
+
 async function syncApexValidations() {
 	try {
 		//
@@ -194,13 +136,6 @@ async function syncApexValidations() {
 		Logger.init();
 
 		const globalTimer = new Timer();
-
-		const client = await clickhouseService.getClient();
-		const writer = new ClickHouseWriter<SimplifiedApexValidation>({
-			client,
-			table: 'simplified_apex_validations',
-			tableSchema: simplifiedApexValidationsSchema,
-		});
 
 		//
 

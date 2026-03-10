@@ -11,17 +11,17 @@ import { pcgidbLegacy, pcgidbTicketing, pcgidbValidations } from '@tmlmobilidade
 (async function init() {
 	//
 
-	await pcgidbLegacy.connect();
-	await pcgidbTicketing.connect();
+	// await pcgidbLegacy.connect();
+	// await pcgidbTicketing.connect();
 	await pcgidbValidations.connect();
 
 	//
 	// Watch for changes to the MongoDB collections
 	// and integrate those documents immediately.
 
-	pcgidbTicketing.SalesEntity.watch().on('change', processApexOnBoardRefund);
-	pcgidbTicketing.SalesEntity.watch().on('change', processApexOnBoardSale);
-	pcgidbValidations.LocationEntity.watch().on('change', processApexLocation);
+	// pcgidbTicketing.SalesEntity.watch().on('change', processApexOnBoardRefund);
+	// pcgidbTicketing.SalesEntity.watch().on('change', processApexOnBoardSale);
+	// pcgidbValidations.LocationEntity.watch().on('change', processApexLocation);
 	pcgidbValidations.ValidationEntity.watch().on('change', processApexValidation);
 
 	//

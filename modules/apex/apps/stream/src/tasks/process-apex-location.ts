@@ -102,8 +102,7 @@ export async function processApexLocation(databaseOperation) {
 			Logger.info(`Flush [simplified_apex_locations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error('Error in flushCallback', error);
 		}
 	};

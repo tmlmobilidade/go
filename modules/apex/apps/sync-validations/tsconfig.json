@@ -8,6 +8,6 @@
 		},
 		"rootDir": "src"
 	},
-	"include": ["src"],
+	"include": ["src", "../../packages/common/src/apex-location/callback.ts"],
 	"exclude": ["node_modules", "dist"]
 }

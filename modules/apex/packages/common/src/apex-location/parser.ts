@@ -1,7 +1,7 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { getEarliestDate } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
 
 /* * */

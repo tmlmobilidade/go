@@ -17,8 +17,9 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
+		"@tmlmobilidade/clickhouse": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-apex-pckg-parse": "*",
+		"@tmlmobilidade/go-apex-pckg-common": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
