@@ -1,23 +1,23 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { rawVehicleEvents } from '@tmlmobilidade/interfaces';
-import { type HashableRawVehicleEvent, type PcgiVehicleEvent, type RawVehicleEvent } from '@tmlmobilidade/types';
+import { HashableTrackerVehicleEvent, TrackerCmetV1, TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';
+import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
 import { MongoDbWriter } from '@tmlmobilidade/writers';
 import crypto from 'node:crypto';
 
 /* * */
 
-const rawVehicleEventsDbWritter = new MongoDbWriter<RawVehicleEvent>({
+const rawVehicleEventsDbWritter = new MongoDbWriter<TrackerVehicleEvent>({
 	batch_size: 500,
 	batch_timeout: 10_000,
-	collection: await rawVehicleEvents.getCollection(),
+	collection: rawdbVehicleEvents.RawVehicleEvents,
 	idle_timeout: 10_000,
 });
 
 /* * */
 
-export async function processPcgiVehicleEvent(pcgiVehicleEvent: PcgiVehicleEvent) {
+export async function processPcgiVehicleEvent(pcgiVehicleEvent) {
 	//
 
 	//
@@ -38,12 +38,15 @@ export async function processPcgiVehicleEvent(pcgiVehicleEvent: PcgiVehicleEvent
 		// This allows us to identify duplicate events
 		// and avoid storing them multiple times in the database.
 
-		const hashableRawEvent: HashableRawVehicleEvent = {
+		const hashableRawEvent: HashableTrackerVehicleEvent<TrackerCmetV1> = {
 			agency_id: entity.vehicle.agencyId,
 			created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
 			entity_id: entity._id,
-			raw: entity,
-			version: 'default',
+			raw: {
+				header: pcgiVehicleEvent.content.header,
+				vehicle: entity.vehicle,
+			},
+			version: 'cmet-v1',
 		};
 
 		const hashableRawEventId = crypto
