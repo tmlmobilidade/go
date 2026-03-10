@@ -22,6 +22,7 @@ export function parseVehicleEvent(pcgiDoc: any): null | SimplifiedVehicleEvent {
 			odometer: pcgiDoc.content.entity[0].vehicle.position.odometer,
 			pattern_id: pcgiDoc.content.entity[0].vehicle.trip?.patternId,
 			received_at: Dates.fromUnixTimestamp(pcgiDoc.millis).unix_timestamp,
+			speed: pcgiDoc.content.entity[0].vehicle.position.speed,
 			stop_id: pcgiDoc.content.entity[0].vehicle.stopId,
 			trip_id: pcgiDoc.content.entity[0].vehicle.trip?.tripId,
 			vehicle_id: pcgiDoc.content.entity[0].vehicle.vehicle._id,
