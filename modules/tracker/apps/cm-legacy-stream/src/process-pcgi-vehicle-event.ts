@@ -1,14 +1,13 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
-import { HashableTrackerVehicleEvent, TrackerCmetV1, TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';
+import { parsePcgiVehicleEvent, TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';
 import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { Logger } from '@tmlmobilidade/logger';
 import { MongoDbWriter } from '@tmlmobilidade/writers';
-import crypto from 'node:crypto';
 
 /* * */
 
-const rawVehicleEventsDbWritter = new MongoDbWriter<TrackerVehicleEvent>({
+const writer = new MongoDbWriter<TrackerVehicleEvent>({
 	batch_size: 500,
 	batch_timeout: 10_000,
 	collection: rawdbVehicleEvents.RawVehicleEvents,
@@ -17,60 +16,29 @@ const rawVehicleEventsDbWritter = new MongoDbWriter<TrackerVehicleEvent>({
 
 /* * */
 
-export async function processPcgiVehicleEvent(pcgiVehicleEvent) {
+export async function processPcgiVehicleEvent(databaseOperation) {
 	//
 
 	//
-	// Transform each message into a RawVehicleEvent
+	// Validate that the operation is an insert or update. Otherwise, send an email to the emergency contact.
+	// Only insert operations are expected to occur in this PCGIDB collection.
 
-	for (const entity of pcgiVehicleEvent.content.entity ?? []) {
-		//
+	if (databaseOperation.operationType !== 'insert') {
+		Logger.error(`WARNING: processApexLocation with operationType != "insert": [${databaseOperation.fullDocument.transaction.operatorLongID}] type="${databaseOperation.operationType}" transactionId="${databaseOperation.fullDocument.transaction.transactionId}"`);
+	}
 
-		//
-		// Skip entities that do not have a vehicle field,
-		// as they are not relevant for our use case.
+	//
+	// Extract the PCGI document from the database operation
+	// and transform the vehicle timestamp into an operational date.
+	// Skip the operation if the document is not valid.
 
-		if (!entity.vehicle) continue;
+	const parsedDocuments = parsePcgiVehicleEvent(databaseOperation.fullDocument);
 
-		//
-		// Hash the relevant fields of the vehicle event
-		// to create a unique identifier for the event.
-		// This allows us to identify duplicate events
-		// and avoid storing them multiple times in the database.
-
-		const hashableRawEvent: HashableTrackerVehicleEvent<TrackerCmetV1> = {
-			agency_id: entity.vehicle.agencyId,
-			created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
-			entity_id: entity._id,
-			raw: {
-				header: pcgiVehicleEvent.content.header,
-				vehicle: entity.vehicle,
-			},
-			version: 'cmet-v1',
-		};
-
-		const hashableRawEventId = crypto
-			.createHash('sha256')
-			.update(JSON.stringify(hashableRawEvent))
-			.digest('hex');
-
-		//
-		// Write the new vehicle event document
-		// to the RawVehicleEvents collection
-
-		await rawVehicleEventsDbWritter.write(
-			{
-				...hashableRawEvent,
-				_id: hashableRawEventId,
-				received_at: Dates.fromUnixTimestamp(pcgiVehicleEvent.millis).unix_timestamp,
-			},
-			{
-				filter: { _id: hashableRawEventId },
-				upsert: true,
-			},
-		);
-
-		//
+	for (const parsedDocument of parsedDocuments) {
+		await writer.write(parsedDocument, {
+			filter: { _id: parsedDocument._id },
+			upsert: true,
+		});
 	}
 
 	//

@@ -1,8 +1,7 @@
 /* * */
 
-import { parsePcgiVehicleEvent } from '@/tasks/parse-pcgi-vehicle-event.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';
+import { parsePcgiVehicleEvent, TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';
 import { pcgidbLegacy, rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
 import { Logger } from '@tmlmobilidade/logger';
 import { type PerformInTimeChunksItem } from '@tmlmobilidade/utils';

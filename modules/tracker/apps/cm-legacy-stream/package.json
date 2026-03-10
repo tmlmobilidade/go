@@ -17,15 +17,10 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-tracker-pckg-common": "*",
 		"@tmlmobilidade/go-tracker-pckg-databases": "*",
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
-		"@tmlmobilidade/writers": "*",
-		"luxon": "3.7.2"
+		"@tmlmobilidade/writers": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

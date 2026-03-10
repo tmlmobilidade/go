@@ -1,7 +1,10 @@
 /* * */
 
 import { TrackerVehicleEventBaseSchema } from '@/common/vehicle-event-base.js';
+import { HashableTrackerVehicleEvent, TrackerVehicleEvent } from '@/common/vehicle-event.js';
+import { Dates } from '@tmlmobilidade/dates';
 import { SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import crypto from 'node:crypto';
 import { z } from 'zod';
 
 /* * */
@@ -59,6 +62,66 @@ export const TrackerCmetV1Schema = TrackerVehicleEventBaseSchema.extend({
 export type TrackerCmetV1 = z.infer<typeof TrackerCmetV1Schema>;
 
 /* * */
+
+export function parsePcgiVehicleEvent(pcgiVehicleEvent): TrackerVehicleEvent[] {
+	//
+
+	const result: TrackerVehicleEvent[] = [];
+
+	//
+	// Transform each message into a RawVehicleEvent
+
+	for (const entity of pcgiVehicleEvent.content.entity ?? []) {
+		//
+
+		//
+		// Skip entities that do not have a vehicle field,
+		// as they are not relevant for our use case.
+
+		if (!entity.vehicle) continue;
+
+		//
+		// Hash the relevant fields of the vehicle event
+		// to create a unique identifier for the event.
+		// This allows us to identify duplicate events
+		// and avoid storing them multiple times in the database.
+
+		const hashableRawEvent: HashableTrackerVehicleEvent<TrackerCmetV1> = {
+			agency_id: entity.vehicle.agencyId,
+			created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
+			entity_id: entity._id,
+			raw: {
+				header: pcgiVehicleEvent.content.header,
+				vehicle: entity.vehicle,
+			},
+			version: 'cmet-v1',
+		};
+
+		const hashableRawEventId = crypto
+			.createHash('sha256')
+			.update(JSON.stringify(hashableRawEvent))
+			.digest('hex');
+
+		//
+		// Write the new vehicle event document
+		// to the RawVehicleEvents collection
+
+		result.push({
+			...hashableRawEvent,
+			_id: hashableRawEventId,
+			received_at: Dates.fromUnixTimestamp(pcgiVehicleEvent.millis).unix_timestamp,
+		});
+
+		//
+	}
+
+	return result;
+
+	//
+};
+
+/* * */
+
 export const parseTrackerCmetV1 = (vehicleEvent: TrackerCmetV1): SimplifiedVehicleEvent => {
 	const vehicle = vehicleEvent.raw.vehicle;
 
