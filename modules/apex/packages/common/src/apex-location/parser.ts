@@ -6,7 +6,7 @@ import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
 
 /* * */
 
-const ALLOWED_OPERATOR_LONG_IDS = ['41', '42', '43', '44'];
+const ALLOWED_OPERATOR_LONG_IDS = ['1', '4', '21', '41', '42', '43', '44'];
 
 const ALLOWED_APEX_TRANSACTION_VERSIONS = ['3.0'];
 
