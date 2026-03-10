@@ -1,15 +1,16 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type HashableRawVehicleEvent, type PcgiVehicleEvent, type RawVehicleEvent } from '@tmlmobilidade/types';
+import { type HashableTrackerVehicleEvent, type TrackerCmetV1, type TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';
+import { type PcgiVehicleEvent } from '@tmlmobilidade/types';
 import crypto from 'node:crypto';
 
 /* * */
 
-export function parsePcgiVehicleEvent(pcgiVehicleEvent: PcgiVehicleEvent): RawVehicleEvent[] {
+export function parsePcgiVehicleEvent(pcgiVehicleEvent: PcgiVehicleEvent): TrackerVehicleEvent[] {
 	//
 
-	const result: RawVehicleEvent[] = [];
+	const result: TrackerVehicleEvent[] = [];
 
 	//
 	// Transform each message into a RawVehicleEvent
@@ -29,12 +30,15 @@ export function parsePcgiVehicleEvent(pcgiVehicleEvent: PcgiVehicleEvent): RawVe
 		// This allows us to identify duplicate events
 		// and avoid storing them multiple times in the database.
 
-		const hashableRawEvent: HashableRawVehicleEvent = {
+		const hashableRawEvent: HashableTrackerVehicleEvent<TrackerCmetV1> = {
 			agency_id: entity.vehicle.agencyId,
 			created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
 			entity_id: entity._id,
-			raw: entity,
-			version: 'default',
+			raw: {
+				header: pcgiVehicleEvent.content.header,
+				vehicle: entity.vehicle,
+			},
+			version: 'cmet-v1',
 		};
 
 		const hashableRawEventId = crypto

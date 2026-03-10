@@ -1,16 +1,56 @@
 /* * */
 
-import { syncPcgiCore } from '@/tasks/sync-pcgi-core.js';
-import { syncPcgiLog } from '@/tasks/sync-pcgi-log.js';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { syncPcgidbCoreVehicleEvents } from '@/tasks/sync-pcgidb-core.js';
+import { syncPcgidbLogVehicleEvents } from '@/tasks/sync-pcgidb-log.js';
+import { getEarliestDate } from '@tmlmobilidade/consts';
+import { pcgidbLegacy, rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
+import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
 
-/**
- * Perform a hard sync of all documents every 30 minutes,
- * to ensure that any missed documents are eventually integrated.
- */
-const main = async () => {
-	await syncPcgiCore();
-	await syncPcgiLog();
-};
+/* * */
+
+async function main() {
+	try {
+		//
+
+		Logger.init();
+
+		const globalTimer = new Timer();
+
+		//
+		// Connect to the source database
+
+		await pcgidbLegacy.connect();
+		await rawdbVehicleEvents.connect();
+
+		//
+		// Get the earliest date from which we have data to sync,
+		// and perform the sync in time chunks until we reach the current date.
+
+		const earliestDate = getEarliestDate();
+
+		//
+		// Divide the time range into chunks
+		// and sync each one sequentially.
+
+		await performInTimeChunks({
+			onChunk: async (chunk) => {
+				await syncPcgidbCoreVehicleEvents(chunk);
+				await syncPcgidbLogVehicleEvents(chunk);
+			},
+			splitBy: { hours: 4 },
+			startDate: earliestDate.unix_timestamp,
+		});
+
+		Logger.terminate(`Run took ${globalTimer.get()}.`);
+
+		//
+	} catch (err) {
+		console.log('An error occurred. Halting execution.', err);
+	}
+}
+
+/* * */
 
 await runOnInterval(main, 1_800_000);
