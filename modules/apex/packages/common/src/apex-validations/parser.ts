@@ -1,16 +1,9 @@
 /* * */
 
+import { APEX_VALIDATIONS_SETTINGS } from '@/apex-validations/settings.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
-
-/* * */
-
-const ALLOWED_OPERATOR_LONG_IDS = ['1', '4', '21', '41', '42', '43', '44'];
-
-const ALLOWED_APEX_TRANSACTION_VERSIONS = ['2.0', '3.0'];
-
-const ALLOWED_APEX_TRANSACTION_TYPES = [11]; // Validation Transaction
 
 /* * */
 
@@ -26,11 +19,11 @@ export function parseSimplifiedApexValidation(pcgiDoc: any): null | SimplifiedAp
 
 		if (!pcgiDoc.transaction?.operatorLongID) throw new Error('Missing operatorLongID in transaction.');
 
-		if (!ALLOWED_OPERATOR_LONG_IDS.includes(pcgiDoc.transaction.operatorLongID)) throw new Error(`Invalid operatorLongID: "${pcgiDoc.transaction.operatorLongID}"`);
+		if (!APEX_VALIDATIONS_SETTINGS.allowed_operator_long_ids.includes(pcgiDoc.transaction.operatorLongID)) throw new Error(`Invalid operatorLongID: "${pcgiDoc.transaction.operatorLongID}"`);
 
-		if (!ALLOWED_APEX_TRANSACTION_VERSIONS.includes(pcgiDoc.transaction.apexTransactionVersion)) throw new Error(`Invalid apexTransactionVersion: "${pcgiDoc.transaction.apexTransactionVersion}"`);
+		if (!APEX_VALIDATIONS_SETTINGS.allowed_apex_transaction_versions.includes(pcgiDoc.transaction.apexTransactionVersion)) throw new Error(`Invalid apexTransactionVersion: "${pcgiDoc.transaction.apexTransactionVersion}"`);
 
-		if (!ALLOWED_APEX_TRANSACTION_TYPES.includes(pcgiDoc.transaction.apexTransactionType)) throw new Error(`Invalid apexTransactionType: "${pcgiDoc.transaction.apexTransactionType}"`);
+		if (!APEX_VALIDATIONS_SETTINGS.allowed_apex_transaction_types.includes(pcgiDoc.transaction.apexTransactionType)) throw new Error(`Invalid apexTransactionType: "${pcgiDoc.transaction.apexTransactionType}"`);
 
 		//
 		// Evaluate the transaction date and ensure it is not before the set earliest date

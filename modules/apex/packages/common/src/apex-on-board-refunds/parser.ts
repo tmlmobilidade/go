@@ -1,23 +1,14 @@
 /* * */
 
+import { APEX_ON_BOARD_REFUNDS_SETTINGS } from '@/apex-on-board-refunds/settings.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
-
-/* * */
-
-const ALLOWED_OPERATOR_LONG_IDS = ['1', '4', '21', '41', '42', '43', '44'];
-
-const ALLOWED_APEX_TRANSACTION_VERSIONS = ['2.0', '3.0'];
-
-const ALLOWED_APEX_TRANSACTION_TYPES = [3]; // Refund Transaction
-
-const ALLOWED_CARD_PHYSICAL_TYPES = [28]; // OnBoard Transaction
+import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
 
 /* * */
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function parseSimplifiedApexOnBoardSale(pcgiDoc: any): null | SimplifiedApexOnBoardSale {
+export function parseSimplifiedApexOnBoardRefund(pcgiDoc: any): null | SimplifiedApexOnBoardRefund {
 	try {
 		//
 
@@ -28,13 +19,13 @@ export function parseSimplifiedApexOnBoardSale(pcgiDoc: any): null | SimplifiedA
 
 		if (!pcgiDoc.transaction?.operatorLongID) throw new Error('Missing operatorLongID in transaction.');
 
-		if (!ALLOWED_OPERATOR_LONG_IDS.includes(pcgiDoc.transaction.operatorLongID)) throw new Error(`Invalid operatorLongID: "${pcgiDoc.transaction.operatorLongID}"`);
+		if (!APEX_ON_BOARD_REFUNDS_SETTINGS.allowed_operator_long_ids.includes(pcgiDoc.transaction.operatorLongID)) throw new Error(`Invalid operatorLongID: "${pcgiDoc.transaction.operatorLongID}"`);
 
-		if (!ALLOWED_APEX_TRANSACTION_VERSIONS.includes(pcgiDoc.transaction.apexTransactionVersion)) throw new Error(`Invalid apexTransactionVersion: "${pcgiDoc.transaction.apexTransactionVersion}"`);
+		if (!APEX_ON_BOARD_REFUNDS_SETTINGS.allowed_apex_transaction_versions.includes(pcgiDoc.transaction.apexTransactionVersion)) throw new Error(`Invalid apexTransactionVersion: "${pcgiDoc.transaction.apexTransactionVersion}"`);
 
-		if (!ALLOWED_APEX_TRANSACTION_TYPES.includes(pcgiDoc.transaction.apexTransactionType)) throw new Error(`Invalid apexTransactionType: "${pcgiDoc.transaction.apexTransactionType}"`);
+		if (!APEX_ON_BOARD_REFUNDS_SETTINGS.allowed_apex_transaction_types.includes(pcgiDoc.transaction.apexTransactionType)) throw new Error(`Invalid apexTransactionType: "${pcgiDoc.transaction.apexTransactionType}"`);
 
-		if (!ALLOWED_CARD_PHYSICAL_TYPES.includes(pcgiDoc.transaction.cardPhysicalType)) throw new Error(`Invalid cardPhysicalType: "${pcgiDoc.transaction.cardPhysicalType}"`);
+		if (!APEX_ON_BOARD_REFUNDS_SETTINGS.allowed_card_physical_types.includes(pcgiDoc.transaction.cardPhysicalType)) throw new Error(`Invalid cardPhysicalType: "${pcgiDoc.transaction.cardPhysicalType}"`);
 
 		//
 		// Evaluate the transaction date and ensure it is not before the set earliest date
@@ -63,11 +54,10 @@ export function parseSimplifiedApexOnBoardSale(pcgiDoc: any): null | SimplifiedA
 			created_at: transactionDate,
 			device_id: pcgiDoc.transaction.deviceID,
 			duty_id: null,
-			is_passenger: validateIfSimplifiedApexOnBoardSaleIsPassenger(null),
 			line_id: null,
 			mac_ase_counter_value: pcgiDoc.transaction.macDataFields.aseCounterValue,
 			mac_sam_serial_number: pcgiDoc.transaction.macDataFields.samSerialNumber,
-			on_board_refund_id: null,
+			on_board_sale_id: pcgiDoc.transaction.corrTransactionId,
 			pattern_id: null,
 			payment_method: pcgiDoc.transaction.paymentMethod,
 			price: pcgiDoc.transaction.price,
@@ -83,14 +73,7 @@ export function parseSimplifiedApexOnBoardSale(pcgiDoc: any): null | SimplifiedA
 
 		//
 	} catch (error) {
-		console.error(`Error parsing simplified APEX OnBoardSale. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
+		console.error(`Error parsing simplified APEX OnBoardRefund. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
 		return null;
 	}
-}
-
-/* * */
-
-export function validateIfSimplifiedApexOnBoardSaleIsPassenger(refundId: null | string): boolean {
-	const hasNoRefund = refundId === null;
-	return hasNoRefund;
 }
