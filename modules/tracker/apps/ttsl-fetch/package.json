@@ -18,6 +18,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-tracker-pckg-databases": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
