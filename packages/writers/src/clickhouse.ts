@@ -13,7 +13,7 @@ type ClickHouseWriterParams<T> = {
 	/**
 	 * The maximum number of items to hold in memory
 	 * before flushing to the database.
-	 * @default 10000
+	 * @default 10_000
 	 */
 	batch_size?: number
 
@@ -24,6 +24,13 @@ type ClickHouseWriterParams<T> = {
 	 * @default disabled
 	 */
 	batch_timeout?: number
+
+	/**
+	 * If enabled, starts an async one-time table ensure operation in the constructor.
+	 * Use `await writer.init()` if you need to block startup until it is completed.
+	 * @default false
+	 */
+	ensure_table_on_init?: boolean
 
 	/**
 	 * How long to wait, in milliseconds, after the last write operation
@@ -72,6 +79,7 @@ export class ClickHouseWriter<T> {
 	private batchTimeoutTimer: NodeJS.Timeout | null = null;
 	private idleTimeoutTimer: NodeJS.Timeout | null = null;
 	private sessionTimer = new Timer();
+	private isInitialized = false;
 
 	/* * */
 
@@ -79,7 +87,7 @@ export class ClickHouseWriter<T> {
 		if (!params.table) throw new Error('CLICKHOUSEWRITER: Table name is required');
 		if (params.client) {
 			this.params = params;
-			this.client = params.client as ClickHouseClient;
+			this.client = params.client;
 		} else if (params.clientConfig) {
 			const { database, password, url, username } = params.clientConfig;
 			if (!database || !password || !url || !username) {
@@ -100,6 +108,16 @@ export class ClickHouseWriter<T> {
 	}
 
 	/* * */
+
+	/**
+	 * Initializes the writer by ensuring the table exists.
+	 * Safe to call multiple times.
+	 */
+	async init() {
+		if (this.isInitialized) return;
+		await this.ensureTable();
+		this.isInitialized = true;
+	}
 
 	/**
 	 * Ensures the table exists in ClickHouse by creating it if it doesn't exist.
@@ -137,6 +155,8 @@ export class ClickHouseWriter<T> {
 
 	async flush(callback?: (data?: T[]) => Promise<void>) {
 		try {
+			await this.init();
+
 			//
 
 			const flushTimer = new Timer();
@@ -228,6 +248,7 @@ export class ClickHouseWriter<T> {
 
 	async write(data: T | T[], { flushCallback, writeCallback }: { flushCallback?: (data?: T[]) => Promise<void>, writeCallback?: () => Promise<void> } = {}) {
 		//
+		await this.init();
 
 		//
 		// Invalidate the previously set idle timeout timer
