@@ -12,6 +12,7 @@ import { ClickHouseWriter } from '@tmlmobilidade/writers';
 /* * */
 
 const writer = new ClickHouseWriter<SimplifiedApexOnBoardSale>({
+	batch_size: 50_000,
 	client: await clickhouseService.getClient(),
 	table: 'simplified_apex_on_board_sales',
 	tableSchema: simplifiedApexOnBoardSalesSchema,
