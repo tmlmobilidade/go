@@ -25,6 +25,8 @@ const writer = new ClickHouseWriter<SimplifiedApexLocation>({
 export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 	//
 
+	await writer.ensureTable();
+
 	const chunkStartDate = Dates
 		.fromUnixTimestamp(timeChunk.start)
 		.setZone('Europe/Lisbon', 'offset_only');
