@@ -1,47 +1,5 @@
-# The OCI Native Ingress Controller is required to use this Ingress.
-# It is available as a built-in add-on on OKE clusters (v1.28+).
+# Ingress is no longer used for this service.
+# External traffic is handled by the nginx proxy VM in pub-go,
+# which forwards requests to the gateway NodePort (30080) on the worker nodes.
 #
-# To enable it via the OCI Console:
-#   Kubernetes Engine > Cluster > Add-ons > OCI Native Ingress Controller > Enable
-#
-# To enable it via OCI CLI:
-#   oci ce cluster update --cluster-id <cluster-id> \
-#     --defined-tags '{}' --freeform-tags '{}'
-#   (Then enable from Console, or via the add-on API)
-#
-# Once enabled, this Ingress will automatically provision an OCI Load Balancer
-# and expose the gateway service on a public IP.
-#
-# ALTERNATIVE (simpler for PoC):
-# If you do not want to set up an Ingress Controller, change the Service type in
-# service.yaml from ClusterIP to LoadBalancer. OKE will automatically create an
-# OCI Load Balancer for you without needing this Ingress object.
-
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: gateway
-  namespace: go-poc
-  labels:
-    app: gateway
-    app.kubernetes.io/name: gateway
-    app.kubernetes.io/part-of: go-poc
-  annotations:
-    # OCI Native Ingress Controller annotations.
-    # The load balancer shape controls cost/performance.
-    oci-native-ingress.oracle.com/protocol: HTTP
-    oci-native-ingress.oracle.com/load-balancer-shape: "flexible"
-    oci-native-ingress.oracle.com/load-balancer-shape-flex-min: "10"
-    oci-native-ingress.oracle.com/load-balancer-shape-flex-max: "100"
-spec:
-  ingressClassName: native
-  rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: gateway
-                port:
-                  name: http
+# The OCI Native Ingress Controller add-on can be disabled if not used elsewhere.

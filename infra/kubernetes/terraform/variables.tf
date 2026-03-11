@@ -148,3 +148,22 @@ variable "node_count" {
 	default     = 1
 }
 
+
+# -----------------------------------------------------------------------
+# PROXY VM
+# -----------------------------------------------------------------------
+
+variable "ssh_public_key_path" {
+	type        = string
+	description = "The file path to the SSH public key for proxy VM access."
+}
+
+variable "worker_node_ips" {
+	type        = list(string)
+	description = <<-EOT
+	Private IPs of the Kubernetes worker nodes in prv-go.
+	Obtain after the node pool is active with:
+	  kubectl get nodes -o wide
+	EOT
+}
+

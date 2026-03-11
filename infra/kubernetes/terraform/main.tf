@@ -36,6 +36,8 @@ provider "oci" {
 # Resources provisioned here:
 #   1. oke       — OKE cluster (managed control plane) in the existing VCN
 #   2. node_pool — Worker nodes placed in the existing private subnet
+#   3. proxy     — Nginx VM in pub-go that forwards internet traffic to
+#                  the worker nodes via NodePort 30080
 # -----------------------------------------------------------------------
 
 module "oke" {
@@ -61,4 +63,14 @@ module "node_pool" {
 	node_ocpus          = var.node_ocpus
 	node_memory_in_gbs  = var.node_memory_in_gbs
 	node_count          = var.node_count
+}
+
+module "proxy" {
+	source              = "./modules/proxy"
+	project_name        = var.project_name
+	compartment_ocid    = var.compartment_ocid
+	availability_domain = var.availability_domain
+	ssh_authorized_keys = file(var.ssh_public_key_path)
+	subnet_ocid         = var.public_subnet_id
+	worker_node_ips     = var.worker_node_ips
 }

@@ -18,6 +18,11 @@ output "node_pool_id" {
 	value       = module.node_pool.node_pool_id
 }
 
+output "proxy_public_ip" {
+	description = "Public IP of the nginx proxy VM. Provide this to the networking team for security list rules."
+	value       = module.proxy.public_ip
+}
+
 output "kubeconfig_command" {
 	description = "Run this command after 'terraform apply' to configure kubectl."
 	value       = <<-EOT

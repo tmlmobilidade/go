@@ -11,10 +11,11 @@
 # Generated in OCI Console > Profile > API Keys > Add API Key
 # -----------------------------------------------------------------------
 
-tenancy_ocid     = "ocid1.tenancy.oc1..your_tenancy_ocid_here"
-user_ocid        = "ocid1.user.oc1..your_user_ocid_here"
-fingerprint      = "xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx"
-private_key_path = "~/.oci/oci_api_key.pem"
+tenancy_ocid        = "ocid1.tenancy.oc1..your_tenancy_ocid_here"
+user_ocid           = "ocid1.user.oc1..your_user_ocid_here"
+fingerprint         = "xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx"
+private_key_path    = "~/.oci/oci_api_key.pem"
+ssh_public_key_path = "~/.ssh/id_rsa.pub"
 
 
 # -----------------------------------------------------------------------
@@ -44,6 +45,14 @@ kubernetes_version = "v1.31.1"
 node_count         = 1
 node_ocpus         = 2
 node_memory_in_gbs = 8
+
+
+# -----------------------------------------------------------------------
+# PROXY VM
+# worker_node_ips: get from `kubectl get nodes -o wide` after node pool is active.
+# -----------------------------------------------------------------------
+
+worker_node_ips = ["10.x.x.x"]
 
 
 # -----------------------------------------------------------------------
