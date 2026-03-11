@@ -19,6 +19,7 @@ resource "oci_containerengine_cluster" "this" {
 	compartment_id     = var.compartment_ocid
 	kubernetes_version = var.kubernetes_version
 	vcn_id             = var.vcn_id
+	type               = "ENHANCED_CLUSTER"
 
 
 	# Kubernetes API endpoint — placed in the private subnet (no public IP).
