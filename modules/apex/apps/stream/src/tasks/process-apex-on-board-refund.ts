@@ -9,6 +9,7 @@ import { ClickHouseWriter } from '@tmlmobilidade/writers';
 /* * */
 
 const writer = new ClickHouseWriter<SimplifiedApexOnBoardRefund>({
+	batch_size: 10,
 	client: await clickhouseService.getClient(),
 	table: 'simplified_apex_on_board_refunds',
 	tableSchema: simplifiedApexOnBoardRefundsSchema,

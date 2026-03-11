@@ -34,7 +34,7 @@ async function main() {
 
 		await performInTimeChunks({
 			onChunk: syncApexValidations,
-			splitBy: { hours: 4 },
+			splitBy: { hours: 2 },
 			startDate: earliestDate.unix_timestamp,
 		});
 

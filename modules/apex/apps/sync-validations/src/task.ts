@@ -12,6 +12,7 @@ import { ClickHouseWriter } from '@tmlmobilidade/writers';
 /* * */
 
 const writer = new ClickHouseWriter<SimplifiedApexValidation>({
+	batch_size: 50_000,
 	client: await clickhouseService.getClient(),
 	table: 'simplified_apex_validations',
 	tableSchema: simplifiedApexValidationsSchema,
@@ -42,6 +43,7 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 
 	const pcgidbQuery = {
 		'transaction.apexTransactionType': APEX_VALIDATIONS_SETTINGS.allowed_apex_transaction_type,
+		'transaction.apexTransactionVersion': { $in: APEX_VALIDATIONS_SETTINGS.allowed_apex_transaction_versions },
 		'transaction.operatorLongID': { $in: APEX_VALIDATIONS_SETTINGS.allowed_operator_long_ids },
 		'transaction.transactionDate': {
 			$gte: chunkStartDate.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),

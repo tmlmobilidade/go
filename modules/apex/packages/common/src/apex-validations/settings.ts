@@ -17,7 +17,7 @@ export const APEX_VALIDATIONS_SETTINGS = {
 	 * List of allowed schema versions for APEX Validation transactions.
 	 * Only import transactions with these versions.
 	 */
-	allowed_apex_transaction_versions: ['2.0', '3.0'],
+	allowed_apex_transaction_versions: ['2.0', '3.0', '4.0'],
 
 	/**
 	 * List of allowed operator long IDs for APEX Validation transactions.

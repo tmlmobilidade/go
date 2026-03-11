@@ -9,6 +9,7 @@ import { ClickHouseWriter } from '@tmlmobilidade/writers';
 /* * */
 
 const writer = new ClickHouseWriter<SimplifiedApexLocation>({
+	batch_size: 250,
 	client: await clickhouseService.getClient(),
 	table: 'simplified_apex_locations',
 	tableSchema: simplifiedApexLocationsSchema,

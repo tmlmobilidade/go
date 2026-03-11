@@ -42,6 +42,7 @@ export async function syncApexOnBoardSales(timeChunk: PerformInTimeChunksItem) {
 
 	const pcgidbQuery = {
 		'transaction.apexTransactionType': APEX_ON_BOARD_SALES_SETTINGS.allowed_apex_transaction_type,
+		'transaction.apexTransactionVersion': { $in: APEX_ON_BOARD_SALES_SETTINGS.allowed_apex_transaction_versions },
 		'transaction.cardPhysicalType': APEX_ON_BOARD_SALES_SETTINGS.allowed_card_physical_type,
 		'transaction.operatorLongID': { $in: APEX_ON_BOARD_SALES_SETTINGS.allowed_operator_long_ids },
 		'transaction.transactionDate': {
