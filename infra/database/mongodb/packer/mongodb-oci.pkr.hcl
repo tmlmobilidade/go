@@ -60,7 +60,7 @@ source "oracle-oci" "mongodb_base" {
   ssh_private_key_file = var.ssh_private_key_path
 
   # Output image name — datestamped for traceability
-  image_name = "mongodb-base-{{isotime \"2006-01-02\"}}"
+  image_name = "mongodb-base-{{isotime \"2000-03-16\"}}"
 
   tags = {
     "PackerBuilt" = "true"
