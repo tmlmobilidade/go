@@ -80,12 +80,11 @@ export function RideAnalysisVehicleEvents() {
 	// C. Render components
 
 	return (
-		<Collapsible description={t('default:rides.analysis.RideAnalysisVehicleEvents.description')} title={t('default:rides.analysis.RideAnalysisVehicleEvents.title')}>
-			<DataTable
-				columns={columns}
-				records={sortedVehicleEvents}
-				rowIdAccessor="_id"
-			/>
+		<Collapsible
+			description={t('default:rides.analysis.RideAnalysisVehicleEvents.description')}
+			title={t('default:rides.analysis.RideAnalysisVehicleEvents.title')}
+		>
+			<DataTable columns={columns} maxHeight={600} records={sortedVehicleEvents} rowIdAccessor="_id" />
 		</Collapsible>
 	);
 
