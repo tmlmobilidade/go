@@ -45,7 +45,7 @@ source "oracle-oci" "mongodb_base" {
   shape = "VM.Standard.A1.Flex"
   shape_config {
     ocpus         = 2
-    memory_in_gbs = 12
+    memory_in_gbs = 2
   }
 
   # Base image
