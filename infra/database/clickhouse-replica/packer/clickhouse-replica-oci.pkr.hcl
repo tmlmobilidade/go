@@ -32,7 +32,6 @@ source "oracle-oci" "clickhouse_replica_base" {
   user_ocid    = var.user_ocid
   fingerprint  = var.fingerprint
   key_file     = var.private_key_path
-  pass_phrase  = var.pass_phrase
   region       = var.region
 
   # Placement

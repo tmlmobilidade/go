@@ -47,6 +47,13 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y \
   xfsprogs \
   iptables-persistent
 
+echo "[tuning] Clearing restrictive iptables rules..."
+# OCI base images ship with a REJECT-all default that blocks inter-node traffic.
+# OCI security lists handle perimeter firewall; the OS-level REJECT is redundant.
+iptables -F INPUT
+iptables -P INPUT ACCEPT
+netfilter-persistent save
+
 echo "[tuning] Disabling Transparent Huge Pages (THP)..."
 cat > /etc/rc.local <<'EOF'
 #!/bin/bash

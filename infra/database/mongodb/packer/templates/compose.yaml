@@ -3,6 +3,9 @@ services:
     image: mongo:latest
     container_name: mongodb
     restart: unless-stopped
+    # network_mode: host so MongoDB sees the real host IP and rs.initiate()
+    # can map replica set member addresses back to this node.
+    network_mode: host
     command: >
       mongod
       --replSet rs0
@@ -13,8 +16,6 @@ services:
       resources:
         limits:
           memory: 10gb
-    ports:
-      - "27017:27017"
     ulimits:
       nofile:
         soft: 64000

@@ -62,11 +62,21 @@ for IP in "${IPS[@]}"; do
 done
 
 echo "Node 0: initiating replica set $REPLICA_SET_NAME..."
-docker exec mongodb mongosh \
-  --host localhost \
-  --port "$PORT" \
-  --username "$USERNAME" \
-  --password "$PASSWORD" \
-  --authenticationDatabase admin \
-  --eval "rs.initiate({ _id: \"$REPLICA_SET_NAME\", members: [ $MEMBERS ] });"
-echo "Node 0: rs.initiate() complete."
+INIT_RETRY=0
+while [ $INIT_RETRY -lt 20 ]; do
+  INIT_RETRY=$((INIT_RETRY + 1))
+  OUTPUT=$(docker exec mongodb mongosh \
+    --host localhost \
+    --port "$PORT" \
+    --username "$USERNAME" \
+    --password "$PASSWORD" \
+    --authenticationDatabase admin \
+    --quiet \
+    --eval "rs.initiate({ _id: \"$REPLICA_SET_NAME\", members: [ $MEMBERS ] });" 2>&1)
+  if echo "$OUTPUT" | grep -qE 'ok\s*:\s*1'; then
+    echo "Node 0: rs.initiate() succeeded."
+    break
+  fi
+  echo "Attempt $INIT_RETRY: rs.initiate() failed, retrying in 15s... ($OUTPUT)"
+  sleep 15
+done
