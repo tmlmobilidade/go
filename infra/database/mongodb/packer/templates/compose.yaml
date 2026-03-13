@@ -1,0 +1,27 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    command: >
+      mongod
+      --replSet rs0
+      --bind_ip_all
+      --port 27017
+      --keyFile /data/keyfile/keyfile
+    deploy:
+      resources:
+        limits:
+          memory: 10gb
+    ports:
+      - "27017:27017"
+    ulimits:
+      nofile:
+        soft: 64000
+        hard: 64000
+    volumes:
+      - ./data:/data/db
+      - ./logs:/var/log/mongodb
+      - ./keyfile:/data/keyfile
+    env_file:
+      - ./secrets/.env

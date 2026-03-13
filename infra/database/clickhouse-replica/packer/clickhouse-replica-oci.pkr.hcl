@@ -89,7 +89,34 @@ build {
     execute_command = "sudo bash '{{.Path}}'"
   }
 
-  # 3. Pre-pull the ClickHouse Docker image
+  # 3. Install runtime scripts and templates so cloud-init can call them at boot
+  provisioner "file" {
+    source      = "${path.root}/scripts/attach-volume.sh"
+    destination = "/tmp/attach-volume.sh"
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/scripts/setup-clickhouse.sh"
+    destination = "/tmp/setup-clickhouse.sh"
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/templates/compose.yaml"
+    destination = "/tmp/compose.yaml"
+  }
+
+  provisioner "shell" {
+    inline = [
+      "sudo mv /tmp/attach-volume.sh /usr/local/bin/attach-volume.sh",
+      "sudo chmod +x /usr/local/bin/attach-volume.sh",
+      "sudo mv /tmp/setup-clickhouse.sh /usr/local/bin/setup-clickhouse.sh",
+      "sudo chmod +x /usr/local/bin/setup-clickhouse.sh",
+      "sudo mkdir -p /usr/local/share/clickhouse",
+      "sudo mv /tmp/compose.yaml /usr/local/share/clickhouse/compose.yaml",
+    ]
+  }
+
+  # 4. Pre-pull the ClickHouse Docker image
   #    Instances in the private subnet have no internet access at runtime.
   #    Pulling here (during Packer build on the public subnet) bakes the
   #    image into the base OS image so cloud-init just runs it.
@@ -99,7 +126,7 @@ build {
     ]
   }
 
-  # 4. Clean up apt cache to reduce image size
+  # 5. Clean up apt cache to reduce image size
   provisioner "shell" {
     inline = [
       "sudo apt-get clean",

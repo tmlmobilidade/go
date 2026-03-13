@@ -13,78 +13,34 @@
 # Terraform variables injected:
 #   node_index, all_private_ips, mongodb_port, replica_set_name,
 #   mongodb_root_username, mongodb_root_password, mongodb_keyfile
+#
+# Note: mongodb_port and replica_set_name are hardcoded in packer/templates/compose.yaml
+#   and only referenced here for rs.initiate().
 # -----------------------------------------------------------------------
 
 runcmd:
   # -----------------------------------------------------------------
-  # 1. Robust Disk Mounting (OCI Device Detection)
+  # 1. Attach and mount the block volume (script pre-baked by Packer)
   # -----------------------------------------------------------------
-  - |
-    DATA_DISK=""
-    ATTEMPT=0
-    while [ $ATTEMPT -lt 15 ]; do
-      ATTEMPT=$((ATTEMPT + 1))
-      echo "Scanning for 1TB data disk (attempt $ATTEMPT)..."
-      ROOT_DISK=$(findmnt -n -o SOURCE / | sed 's/[0-9]*$//')
-      for disk in $(lsblk -d -n -o NAME); do
-        DEV="/dev/$disk"
-        case "$DEV" in "$ROOT_DISK"*) continue ;; esac
-        SIZE=$(lsblk -b -n -o SIZE "$DEV" 2>/dev/null || echo 0)
-        # Accept any non-root disk in the 1TB range (900GB–1100GB binary)
-        if [ "$SIZE" -ge 966367641600 ] && [ "$SIZE" -le 1181116006400 ]; then
-          DATA_DISK="$DEV"
-          echo "Found 1TB data disk at $DATA_DISK (size: $SIZE bytes)"
-          break 2
-        fi
-      done
-      sleep 2
-    done
-
-    if [ -n "$DATA_DISK" ]; then
-      blkid "$DATA_DISK" || mkfs.xfs -L MGDATA "$DATA_DISK"
-      mkdir -p /opt/mongodb
-      mount "$DATA_DISK" /opt/mongodb
-      if ! grep -q "/opt/mongodb" /etc/fstab; then
-        echo "$DATA_DISK /opt/mongodb xfs defaults,noatime,_netdev 0 0" >> /etc/fstab
-      fi
-    else
-      echo "ERROR: Data disk not found after 15 attempts!"
-      exit 1
-    fi
+  - /usr/local/bin/attach-volume.sh /opt/mongodb
 
   # -----------------------------------------------------------------
-  # 2. Open OS Firewall for MongoDB port
+  # 2. Setup MongoDB Directories (script pre-baked by Packer)
   # -----------------------------------------------------------------
-  - iptables -I INPUT 5 -p tcp --dport ${mongodb_port} -j ACCEPT
-  - netfilter-persistent save
+  - /usr/local/bin/setup-mongodb.sh /opt/mongodb
 
   # -----------------------------------------------------------------
-  # 3. Setup MongoDB Directories (after mount)
-  # -----------------------------------------------------------------
-  - mkdir -p /opt/mongodb/data
-  - mkdir -p /opt/mongodb/logs
-  - mkdir -p /opt/mongodb/keyfile
-  - mkdir -p /opt/mongodb/secrets
-  # UID 999 is the mongodb user inside the official mongo container
-  - chown -R 999:999 /opt/mongodb/data
-  - chown -R 999:999 /opt/mongodb/logs
-  - chown -R 999:999 /opt/mongodb/keyfile
-  - chown -R ubuntu:ubuntu /opt/mongodb/secrets
-  - chmod -R 770 /opt/mongodb/data
-  - chmod -R 770 /opt/mongodb/logs
-
-  # -----------------------------------------------------------------
-  # 4. Write Shared Replica Set Keyfile
-  #    Same content on all nodes — injected by Terraform from variable.
+  # 3. Write Shared Replica Set Keyfile
+  #    Same secret on all nodes — injected by Terraform via mongodb_keyfile variable.
+  #    Base64-encoded to avoid YAML parse errors with multiline content.
   #    Permission 400 owned by mongodb user (999) is required by mongod.
   # -----------------------------------------------------------------
-  # Base64-encoded to avoid YAML parse errors from multiline base64 keyfile content.
   - echo "${base64encode(mongodb_keyfile)}" | base64 -d > /opt/mongodb/keyfile/keyfile
   - chmod 400 /opt/mongodb/keyfile/keyfile
   - chown 999:999 /opt/mongodb/keyfile/keyfile
 
   # -----------------------------------------------------------------
-  # 5. Write Secrets
+  # 4. Write Secrets
   # -----------------------------------------------------------------
   - |
     cat > /opt/mongodb/secrets/.env <<'ENVEOF'
@@ -93,90 +49,14 @@ runcmd:
     ENVEOF
 
   # -----------------------------------------------------------------
-  # 6. Write Docker Compose file
+  # 5. Start MongoDB
   # -----------------------------------------------------------------
-  - |
-    cat > /opt/mongodb/compose.yml <<'COMPOSEEOF'
-    services:
-      mongodb:
-        image: mongo:latest
-        container_name: mongodb
-        restart: unless-stopped
-        command: >
-          mongod
-          --replSet ${replica_set_name}
-          --bind_ip_all
-          --port ${mongodb_port}
-          --keyFile /data/keyfile/keyfile
-        deploy:
-          resources:
-            limits:
-              memory: 10gb
-        ports:
-          - "${mongodb_port}:${mongodb_port}"
-        ulimits:
-          nofile:
-            soft: 64000
-            hard: 64000
-        volumes:
-          - ./data:/data/db
-          - ./logs:/var/log/mongodb
-          - ./keyfile:/data/keyfile
-        env_file:
-          - ./secrets/.env
-    COMPOSEEOF
+  - cd /opt/mongodb && docker compose up -d --build --force-recreate --remove-orphans --pull=always
 
   # -----------------------------------------------------------------
-  # 7. Start MongoDB
+  # 6. Initialize Replica Set (script pre-baked by Packer)
+  #    Node 0 waits for mongod and runs rs.initiate(). Others exit early.
   # -----------------------------------------------------------------
-  - cd /opt/mongodb && docker compose up -d --pull never
-
-  # -----------------------------------------------------------------
-  # 8. Initialize Replica Set (PRIMARY NODE ONLY — node_index == 0)
-  #    Wait for mongod to be ready, then call rs.initiate() with all
-  #    3 member IPs. Secondaries will sync once they come online.
-  # -----------------------------------------------------------------
-  - |
-    if [ "${node_index}" -eq 0 ]; then
-      echo "Node 0: waiting for mongod to be ready..."
-      RETRY=0
-      while [ $RETRY -lt 30 ]; do
-        RETRY=$((RETRY + 1))
-        if docker exec mongodb mongosh \
-            --host localhost \
-            --port ${mongodb_port} \
-            --username "${mongodb_root_username}" \
-            --password "${mongodb_root_password}" \
-            --authenticationDatabase admin \
-            --quiet \
-            --eval "db.runCommand({ ping: 1 })" 2>/dev/null | grep -q 'ok.*1'; then
-          echo "mongod is ready."
-          break
-        fi
-        echo "Attempt $RETRY: mongod not ready yet, waiting 10s..."
-        sleep 10
-      done
-
-      echo "Node 0: initiating replica set ${replica_set_name}..."
-      docker exec mongodb mongosh \
-        --host localhost \
-        --port ${mongodb_port} \
-        --username "${mongodb_root_username}" \
-        --password "${mongodb_root_password}" \
-        --authenticationDatabase admin \
-        --eval '
-        rs.initiate({
-          _id: "${replica_set_name}",
-          members: [
-%{ for idx in range(length(all_private_ips)) ~}
-            { _id: ${idx}, host: "${all_private_ips[idx]}:${mongodb_port}", priority: ${idx == 0 ? 2 : 1} },
-%{ endfor ~}
-          ]
-        });
-        '
-      echo "Node 0: rs.initiate() complete."
-    else
-      echo "Node ${node_index}: secondary node, replica set will be joined automatically."
-    fi
+  - /usr/local/bin/init-mongodb-replica-set.sh ${node_index} ${mongodb_port} '${mongodb_root_username}' '${mongodb_root_password}' ${replica_set_name} ${join(",", all_private_ips)}
 
 final_message: "MongoDB replica node ${node_index + 1} of ${length(all_private_ips)} configuration complete."

@@ -45,7 +45,7 @@ source "oracle-oci" "mongodb_base" {
   shape = "VM.Standard.A1.Flex"
   shape_config {
     ocpus         = 2
-    memory_in_gbs = 12
+    memory_in_gbs = 2
   }
 
   # Base image
@@ -60,7 +60,7 @@ source "oracle-oci" "mongodb_base" {
   ssh_private_key_file = var.ssh_private_key_path
 
   # Output image name — datestamped for traceability
-  image_name = "mongodb-base-{{isotime \"2006-01-02\"}}"
+  image_name = "mongodb-base-{{isotime \"2000-03-16\"}}"
 
   tags = {
     "PackerBuilt" = "true"
@@ -90,7 +90,41 @@ build {
     execute_command = "sudo bash '{{.Path}}'"
   }
 
-  # 3. Pre-pull the MongoDB Docker image
+  # 3. Install runtime scripts and templates so cloud-init can call them at boot
+  provisioner "file" {
+    source      = "${path.root}/scripts/attach-volume.sh"
+    destination = "/tmp/attach-volume.sh"
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/scripts/setup-mongodb.sh"
+    destination = "/tmp/setup-mongodb.sh"
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/scripts/init-mongodb-replica-set.sh"
+    destination = "/tmp/init-mongodb-replica-set.sh"
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/templates/compose.yaml"
+    destination = "/tmp/compose.yaml"
+  }
+
+  provisioner "shell" {
+    inline = [
+      "sudo mv /tmp/attach-volume.sh /usr/local/bin/attach-volume.sh",
+      "sudo chmod +x /usr/local/bin/attach-volume.sh",
+      "sudo mv /tmp/setup-mongodb.sh /usr/local/bin/setup-mongodb.sh",
+      "sudo chmod +x /usr/local/bin/setup-mongodb.sh",
+      "sudo mv /tmp/init-mongodb-replica-set.sh /usr/local/bin/init-mongodb-replica-set.sh",
+      "sudo chmod +x /usr/local/bin/init-mongodb-replica-set.sh",
+      "sudo mkdir -p /usr/local/share/mongodb",
+      "sudo mv /tmp/compose.yaml /usr/local/share/mongodb/compose.yaml",
+    ]
+  }
+
+  # 4. Pre-pull the MongoDB Docker image
   #    Instances in the private subnet have no internet access at runtime.
   #    Pulling here (during Packer build on the public subnet) bakes the
   #    image into the base OS image so cloud-init just runs it.
@@ -100,7 +134,7 @@ build {
     ]
   }
 
-  # 4. Clean up apt cache to reduce image size
+  # 5. Clean up apt cache to reduce image size
   provisioner "shell" {
     inline = [
       "sudo apt-get clean",
