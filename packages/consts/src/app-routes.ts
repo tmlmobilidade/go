@@ -414,6 +414,10 @@ export const API_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getAppConfig('plans', 'api_url')}`,
 
+		// MUNICIPALITY
+		MUNICIPALITIES_GETALLMUNICIPALITIESJSON_UPLOAD: `${getAppConfig('plans', 'api_url')}/municipalities/getAllMunicipalitiesJson/upload`,
+		MUNICIPALITIES_LIST: `${getAppConfig('plans', 'api_url')}/municipalities`,
+
 		// PLANS
 		PLANS_APPROVED: `${getAppConfig('plans', 'api_url')}/plans/approved`,
 		PLANS_DETAIL: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}`,

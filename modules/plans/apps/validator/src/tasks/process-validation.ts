@@ -1,6 +1,7 @@
 /* * */
 
 import { SYSTEM_ERROR_MESSAGES } from '@/consts/system-errors.js';
+import { getMunicipalitiesJson } from '@/tasks/getMunicipalitiesJson.js';
 import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';
@@ -44,6 +45,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		const gtfsFilePath = join(tempWorkdirPath, `${gtfsValidation.file_id}.zip`);
 		const gtfsValidationRulesPath = join(tempWorkdirPath, `rules_${gtfsValidation._id}.json`);
+		const gtfsValidationMunicipalitiesPath = join(tempWorkdirPath, 'municipalities.json');
 		const gtfsValidationResultPath = join(tempWorkdirPath, `result_${gtfsValidation._id}.json`);
 
 		//
@@ -88,12 +90,25 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		Logger.info(`Custom validation rules saved to: ${gtfsValidationRulesPath}`);
 
 		//
+		// Build a temporary municipalities FeatureCollection from the database
+		// so validator checks run against up-to-date municipality geometry.
+
+		Logger.info('Building municipalities aggregation JSON...');
+
+		const municipalitiesJson = await getMunicipalitiesJson();
+
+		fs.writeFileSync(gtfsValidationMunicipalitiesPath, JSON.stringify(municipalitiesJson), { encoding: 'utf-8' });
+
+		Logger.info(`Municipalities JSON saved to: ${gtfsValidationMunicipalitiesPath}`);
+
+		//
 		// Perform the GTFS validation using the GTFSValidator library
 		// and update the GTFS validation document in MongoDB with the results.
 
 		Logger.info('Performing the actual GTFS validation...');
 
 		const gtfsValidationResult = await GTFSValidator(gtfsFilePath, {
+			cwd: tempWorkdirPath,
 			lang: 'pt',
 			log_level: getCurrentEnvironment() === 'production' ? 'info' : 'debug',
 			out_file: gtfsValidationResultPath,
