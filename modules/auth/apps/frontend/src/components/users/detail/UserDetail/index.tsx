@@ -24,7 +24,7 @@ export function UserDetail() {
 	// B. Render components
 
 	return (
-		<Pane header={[<UserDetailHeader />]}>
+		<Pane header={[<UserDetailHeader key="header" />]}>
 			<UserDetailBasicInfo />
 			<UserDetailRolesAndOrganization />
 			{permissionsConfig.map(item => (

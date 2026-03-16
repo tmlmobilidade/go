@@ -23,10 +23,11 @@
 		"@turf/turf": "7.3.4",
 		"@vis.gl/react-maplibre": "8.1.0",
 		"luxon": "3.7.2",
-		"maplibre-gl": "5.19.0",
+		"maplibre-gl": "5.20.1",
 		"next": "16.1.6",
 		"react": "19.2.4",
 		"react-dom": "19.2.4",
+		"react-i18next": "16.5.8",
 		"recharts": "3.8.0",
 		"sharp": "0.34.5",
 		"swr": "2.4.1"
@@ -35,7 +36,7 @@
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/geojson": "7946.0.16",
 		"@types/luxon": "3.7.1",
-		"@types/node": "25.4.0",
+		"@types/node": "25.5.0",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",
 		"typescript": "5.9.3"

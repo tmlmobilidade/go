@@ -1,6 +1,6 @@
 /* * */
 
-import { Button } from '@react-email/components';
+import { Button, Section } from '@react-email/components';
 
 import styles from './styles.js';
 
@@ -15,8 +15,12 @@ interface MainButtonProps {
 
 export function MainButton({ href, label }: MainButtonProps) {
 	return (
-		<Button href={href} style={styles.button}>
-			{label}
-		</Button>
+		<Section style={styles.container}>
+			<Section style={styles.section}>
+				<Button href={href} style={styles.button}>
+					{label}
+				</Button>
+			</Section>
+		</Section>
 	);
 };

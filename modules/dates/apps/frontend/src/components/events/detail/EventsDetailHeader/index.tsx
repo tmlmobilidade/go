@@ -5,7 +5,7 @@
 import { useEventsDetailContext } from '@/components/events/detail/EventsDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Button, CloseButton, DeleteButton, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, DeleteButton, IdTag, LockButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -35,7 +35,7 @@ export function EventsDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
-			<Tag label={eventsDetailContext.data.event._id} variant="id" />
+			<IdTag id={eventsDetailContext.data.event._id} />
 
 			<Spacer />
 

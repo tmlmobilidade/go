@@ -8,7 +8,7 @@ import { FaresListFiltersBar } from '@/components/fares/list/FaresListFiltersBar
 import { FaresListHeader } from '@/components/fares/list/FaresListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Fare } from '@tmlmobilidade/types';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, Text } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, Text } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -28,7 +28,7 @@ export function FaresList() {
 	const columns: DataTableColumn<Fare>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="id" />,
+			render: item => <IdTag id={item._id} />,
 			title: '#ID',
 			width: 100,
 		},
