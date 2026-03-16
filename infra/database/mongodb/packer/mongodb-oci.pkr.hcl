@@ -7,8 +7,8 @@
 # rebuilding the image.
 #
 # USAGE:
-#   packer init .
-#   packer build --warn-on-undeclared-var .
+#  packer init .
+#  packer build --warn-on-undeclared-var .
 # -----------------------------------------------------------------------
 
 
@@ -19,7 +19,7 @@
 packer {
 	required_plugins {
 		oracle = {
-			source  = "github.com/hashicorp/oracle"
+			source = "github.com/hashicorp/oracle"
 			version = "~> 1"
 		}
 	}
@@ -58,8 +58,8 @@ source "oracle-oci" "mongodb-source" {
 
 	tags = {
 		"PackerBuilt" = "true"
-		"ImageType"   = "mongodb-base"
-		"ManagedBy"   = "packer"
+		"ImageType" = "mongodb-base"
+		"ManagedBy" = "packer"
 	}
 
 }

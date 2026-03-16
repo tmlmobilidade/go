@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # setup-mongodb.sh — Create MongoDB data directory structure
 #
 # Usage: setup-mongodb.sh <base_dir>
@@ -8,6 +9,7 @@
 #
 # Expected to run after attach-volume.sh has mounted the block volume.
 # UID 999 is the mongodb user inside the official mongo Docker image.
+
 set -euo pipefail
 
 BASE_DIR="${1:?Usage: setup-mongodb.sh <base_dir>}"
