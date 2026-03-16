@@ -8,142 +8,155 @@
 #
 # USAGE:
 #   packer init .
-#   cp ../terraform/terraform.tfvars ../terraform/terraform.pkrvars.hcl   # Packer requires .hcl extension
-#   packer build -var-file=../terraform/terraform.pkrvars.hcl -warn-on-undeclared-var .
+#   packer build --warn-on-undeclared-var .
 # -----------------------------------------------------------------------
+
+
+# # #
+# PLUGIN
+# Setup required OCI Packer plugin.
 
 packer {
-  required_plugins {
-    oracle = {
-      source  = "github.com/hashicorp/oracle"
-      version = "~> 1.0"
-    }
-  }
+	required_plugins {
+		oracle = {
+			source  = "github.com/hashicorp/oracle"
+			version = "~> 1"
+		}
+	}
 }
 
 
-# -----------------------------------------------------------------------
-# SOURCE — OCI builder
-# Creates a temporary instance, runs provisioners, then captures an image.
-# -----------------------------------------------------------------------
+# # #
+# SOURCE
+# Configure the VM that will be used
+# to create the final output image.
 
-source "oracle-oci" "mongodb_base" {
-  # Authentication
-  tenancy_ocid = var.tenancy_ocid
-  user_ocid    = var.user_ocid
-  fingerprint  = var.fingerprint
-  key_file     = var.private_key_path
-  region       = var.region
+source "oracle-oci" "mongodb-source" {
 
-  # Placement
-  compartment_ocid    = var.compartment_ocid
-  availability_domain = var.availability_domain
-  subnet_ocid         = var.packer_subnet_ocid
+	image_name = "${var.project_name}-mongodb-{{isotime \"2000-01-01\"}}"
 
-  # Temporary build instance settings (ARM)
-  shape = "VM.Standard.A1.Flex"
-  shape_config {
-    ocpus         = 2
-    memory_in_gbs = 2
-  }
+	instance_name = "${var.project_name}-mongodb-packer-image-builder"
 
-  # Base image
-  base_image_ocid = var.base_image_ocid
+	# Placement
+	subnet_ocid = var.subnet_ocid
+	compartment_ocid = var.compartment_ocid
+	availability_domain = var.availability_domain
+	ssh_username = "ubuntu"
 
-  # Inject the SSH public key so Packer can connect
-  metadata = {
-    "ssh_authorized_keys" = file(var.ssh_public_key_path)
-  }
+	base_image_ocid = var.base_image_ocid
 
-  ssh_username         = "ubuntu"
-  ssh_private_key_file = var.ssh_private_key_path
+	shape = var.vm_shape
 
-  # Output image name — datestamped for traceability
-  image_name = "mongodb-base-{{isotime \"2000-03-16\"}}"
+	shape_config {
+		ocpus = var.vm_ocpus
+		memory_in_gbs = var.vm_memory_in_gbs
+	}
 
-  tags = {
-    "PackerBuilt" = "true"
-    "ImageType"   = "mongodb-base"
-    "ManagedBy"   = "packer"
-  }
+	create_vnic_details {
+		assign_public_ip = "true"
+	}
+
+	tags = {
+		"PackerBuilt" = "true"
+		"ImageType"   = "mongodb-base"
+		"ManagedBy"   = "packer"
+	}
+
 }
 
 
-# -----------------------------------------------------------------------
-# BUILD — Run provisioner scripts inside the temporary instance
-# -----------------------------------------------------------------------
+# # #
+# BUILD
+# Define the steps to customize the image.
 
 build {
-  name    = "mongodb-base"
-  sources = ["source.oracle-oci.mongodb_base"]
 
-  # 1. OS performance tuning + install prerequisite packages
-  provisioner "shell" {
-    script          = "${path.root}/scripts/os-tuning.sh"
-    execute_command = "sudo bash '{{.Path}}'"
-  }
+	sources = ["source.oracle-oci.mongodb-source"]
 
-  # 2. Install Docker Engine
-  provisioner "shell" {
-    script          = "${path.root}/scripts/install-docker.sh"
-    execute_command = "sudo bash '{{.Path}}'"
-  }
+	# 1.
+	# OS performance tuning + install prerequisite packages
 
-  # 3. Install runtime scripts and templates so cloud-init can call them at boot
-  provisioner "file" {
-    source      = "${path.root}/scripts/attach-volume.sh"
-    destination = "/tmp/attach-volume.sh"
-  }
+	provisioner "shell" {
+		script = "${path.root}/scripts/os-tuning.sh"
+		execute_command = "sudo bash '{{.Path}}'"
+	}
 
-  provisioner "file" {
-    source      = "${path.root}/scripts/setup-mongodb.sh"
-    destination = "/tmp/setup-mongodb.sh"
-  }
+	# 2.
+	# Install Docker Engine
 
-  provisioner "file" {
-    source      = "${path.root}/scripts/init-mongodb-replica-set.sh"
-    destination = "/tmp/init-mongodb-replica-set.sh"
-  }
+	provisioner "shell" {
+		script = "${path.root}/scripts/install-docker.sh"
+		execute_command = "sudo bash '{{.Path}}'"
+	}
 
-  provisioner "file" {
-    source      = "${path.root}/templates/compose.yaml"
-    destination = "/tmp/compose.yaml"
-  }
+	# 3.
+	# Install runtime scripts and templates so cloud-init
+	# can call them at boot. Packer file provisioners do not support
+	# setting executable permissions on the files, so an additional
+	# shell provisioner is used to set the correct permissions.
+	# This ensures the scripts are ready to be executed by cloud-init
+	# at runtime without requiring manual setup after instance launch.
 
-  provisioner "shell" {
-    inline = [
-      "sudo mv /tmp/attach-volume.sh /usr/local/bin/attach-volume.sh",
-      "sudo chmod +x /usr/local/bin/attach-volume.sh",
-      "sudo mv /tmp/setup-mongodb.sh /usr/local/bin/setup-mongodb.sh",
-      "sudo chmod +x /usr/local/bin/setup-mongodb.sh",
-      "sudo mv /tmp/init-mongodb-replica-set.sh /usr/local/bin/init-mongodb-replica-set.sh",
-      "sudo chmod +x /usr/local/bin/init-mongodb-replica-set.sh",
-      "sudo mkdir -p /usr/local/share/mongodb",
-      "sudo mv /tmp/compose.yaml /usr/local/share/mongodb/compose.yaml",
-    ]
-  }
+	provisioner "file" {
+		source = "${path.root}/scripts/attach-volume.sh"
+		destination = "/usr/local/bin/attach-volume.sh"
+	}
 
-  # 4. Pre-pull the MongoDB Docker image
-  #    Instances in the private subnet have no internet access at runtime.
-  #    Pulling here (during Packer build on the public subnet) bakes the
-  #    image into the base OS image so cloud-init just runs it.
-  provisioner "shell" {
-    inline = [
-      "sudo docker pull mongo:latest",
-    ]
-  }
+	provisioner "shell" {
+		inline = ["sudo chmod +x /usr/local/bin/attach-volume.sh"]
+	}
 
-  # 5. Clean up apt cache to reduce image size
-  provisioner "shell" {
-    inline = [
-      "sudo apt-get clean",
-      "sudo rm -rf /var/lib/apt/lists/*",
-      "sudo cloud-init clean --logs",
-    ]
-  }
 
-  post-processor "manifest" {
-    output     = "${path.root}/packer-manifest.json"
-    strip_path = true
-  }
+	provisioner "file" {
+		source = "${path.root}/scripts/setup-mongodb.sh"
+		destination = "/usr/local/bin/setup-mongodb.sh"
+	}
+
+	provisioner "shell" {
+		inline = ["sudo chmod +x /usr/local/bin/setup-mongodb.sh"]
+	}
+
+
+	provisioner "file" {
+		source = "${path.root}/scripts/init-mongodb-replica-set.sh"
+		destination = "/usr/local/bin/init-mongodb-replica-set.sh"
+	}
+
+	provisioner "shell" {
+		inline = ["sudo chmod +x /usr/local/bin/init-mongodb-replica-set.sh"]
+	}
+
+
+	provisioner "file" {
+		source = "${path.root}/templates/compose.yaml"
+		destination = "/usr/local/share/mongodb/compose.yaml"
+	}
+
+	provisioner "shell" {
+		inline = [
+			"sudo mkdir -p /usr/local/share/mongodb",
+			"sudo mv /tmp/compose.yaml /usr/local/share/mongodb/compose.yaml",
+		]
+	}
+
+	# 4.
+	# Clean up apt cache to reduce image size
+
+	provisioner "shell" {
+		inline = [
+			"sudo apt-get clean",
+			# "sudo rm -rf /var/lib/apt/lists/*",
+			"sudo cloud-init clean --logs",
+		]
+	}
+
+	# 5.
+	# Generate a manifest file with the image OCID
+	# for later use in Terraform pipelines.
+
+	post-processor "manifest" {
+		output = "${path.root}/packer-manifest.json"
+		strip_path = true
+	}
+
 }
