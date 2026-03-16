@@ -100,19 +100,6 @@
 	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
 }
 
-.tag[data-variant='id'] {
-	color: var(--color-system-text-100);
-	background-color: var(--color-system-background-200);
-	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
-}
-
-.tag[data-variant='id'] .label {
-
-	/* font-family: var(--font-family-monospace); */
-	font-size: 15px;
-	letter-spacing: 1px;
-}
-
 /* * */
 /* PROPS / CLICKABLE */
 

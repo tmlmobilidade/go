@@ -5,8 +5,8 @@
 import { useUserDetailContext } from '@/components/users/detail/UserDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { DeleteButton, HasPermission, keepUrlParams, Label, LockButton, SaveButton } from '@tmlmobilidade/ui';
-import { CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, SaveButton } from '@tmlmobilidade/ui';
+import { CloseButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -36,7 +36,7 @@ export function UserDetailHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={handleClose} type="close" />
-			<Tag label={userDetailContext.data.id || t('default:users.detail.Header.NewUserButton.label')} variant="muted" />
+			<IdTag id={userDetailContext.data.id} copyOnClick />
 			<Label size="lg" singleLine>{userDetailContext.data.form.values.email}</Label>
 
 			<Spacer />
