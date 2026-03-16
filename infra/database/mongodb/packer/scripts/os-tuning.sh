@@ -14,7 +14,7 @@ set -euo pipefail
 # apt ourselves. This is the canonical solution — no killing processes,
 # no deleting lock files, no race conditions.
 # -----------------------------------------------------------------------
-echo "[tuning] Waiting for cloud-init to finish (this may take 1–2 minutes)..."
+echo "[tuning] Waiting for cloud-init to finish (this may take 1-2 minutes)..."
 cloud-init status --wait
 echo "[tuning] cloud-init finished."
 
