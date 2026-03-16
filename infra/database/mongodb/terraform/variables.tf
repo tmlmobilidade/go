@@ -101,10 +101,7 @@ variable "private_ips" {
 
 variable "base_image_ocid" {
 	type = string
-	description = <<-EOT
-	OCID of the base Ubuntu image. This should be the OCID
-	of the Packer-built image.
-	EOT
+	description = "OCID of the Packer-built image."
 	default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaaehm3rohfjplxw73gzlyhp4gy2xtym33utccjawp3b5hivi7tbvlq"
 }
 
