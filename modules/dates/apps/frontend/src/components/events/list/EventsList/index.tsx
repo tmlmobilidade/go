@@ -9,7 +9,7 @@ import { EventsListFiltersBar } from '@/components/events/list/EventsListFilters
 import { EventsListHeader } from '@/components/events/list/EventsListHeader';
 import { type EventNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -29,7 +29,7 @@ export function EventsList() {
 	const columns: DataTableColumn<EventNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="id" />,
+			render: item => <IdTag id={item._id} />,
 			title: '#ID',
 			width: 100,
 		},

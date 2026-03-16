@@ -6,7 +6,7 @@ import { useOrganizationsListContext } from '@/components/organizations/list/Org
 import { OrganizationsListHeader } from '@/components/organizations/list/OrganizationsListHeader';
 import { type OrganizationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -28,7 +28,7 @@ export function OrganizationsList() {
 	const columns: DataTableColumn<OrganizationNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="id" />,
+			render: item => <IdTag id={item._id} />,
 			title: t('default:organizations.list.table.columns.id.label'),
 			width: 100,
 		},
