@@ -24,7 +24,7 @@ export function PlanChange() {
 
 	const availableValidationsOptions = useMemo(() => {
 		return changePlanContext.data.available_validations.map(item => ({
-			icon: <Tag label={item._id} variant="secondary" />,
+			icon: <Tag label={item._id} variant="id" />,
 			label: `Submetida a ${Dates.fromUnixTimestamp(item.created_at).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.DATETIME_MEDIUM, 'pt-PT')}`,
 			value: item._id,
 		}));
@@ -35,15 +35,14 @@ export function PlanChange() {
 
 	const renderSelectOption: SelectProps['renderOption'] = ({ checked, option }) => (
 		<Section alignItems="center" flexDirection="row" gap="sm" padding="sm">
-			<Tag label={option.value} variant="secondary" />
+			<Tag label={option.value} variant="id" />
 			<Label size="md" singleLine>{option.label}</Label>
 			{checked && <IconCheck />}
 		</Section>
 	);
 
 	return (
-		// eslint-disable-next-line react/jsx-key
-		<Pane header={[<PlanChangeHeader />]}>
+		<Pane header={[<PlanChangeHeader key="header" />]}>
 			<Section>
 				<Grid gap="md">
 					<Select

@@ -28,7 +28,7 @@ export function OrganizationsList() {
 	const columns: DataTableColumn<OrganizationNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <Tag label={item._id} variant="id" />,
 			title: t('default:organizations.list.table.columns.id.label'),
 			width: 100,
 		},
@@ -58,7 +58,7 @@ export function OrganizationsList() {
 	}
 
 	return (
-		<Pane header={[<OrganizationsListHeader />]}>
+		<Pane header={[<OrganizationsListHeader key="header" />]}>
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}

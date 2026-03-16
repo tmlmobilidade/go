@@ -28,7 +28,7 @@ export function FaresList() {
 	const columns: DataTableColumn<Fare>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <Tag label={item._id} variant="id" />,
 			title: '#ID',
 			width: 100,
 		},
@@ -72,8 +72,8 @@ export function FaresList() {
 
 	return (
 		<Pane header={[
-			<FaresListHeader />,
-			<FaresListFiltersBar />,
+			<FaresListHeader key="header" />,
+			<FaresListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable

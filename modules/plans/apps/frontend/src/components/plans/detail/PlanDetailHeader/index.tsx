@@ -36,7 +36,7 @@ export function PlanDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-			<Tag label={planDetailContext.data.plan._id} variant="secondary" />
+			<Tag label={planDetailContext.data.plan._id} variant="id" />
 
 			<Spacer />
 

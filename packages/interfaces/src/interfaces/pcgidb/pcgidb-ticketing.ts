@@ -33,6 +33,7 @@ class PCGIDBTicketingClass {
 
 		const mongoClientOptions: MongoClientOptions = {
 			connectTimeoutMS: 10_000,
+			directConnection: process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'staging' ? false : true,
 			maxPoolSize: 20,
 			minPoolSize: 2,
 			readPreference: 'secondaryPreferred',
@@ -49,8 +50,7 @@ class PCGIDBTicketingClass {
 			this.SalesEntity = mongoConnector.client.db('SalesManagement').collection('salesEntity');
 			// Log success message
 			Logger.success('Connected to PCGIDB Ticketing successfully.');
-		}
-		catch (error) {
+		} catch (error) {
 			throw new Error('Error connecting to PCGIDB Ticketing:', { cause: error });
 		}
 	}

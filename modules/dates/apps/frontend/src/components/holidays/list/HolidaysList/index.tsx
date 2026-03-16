@@ -29,7 +29,7 @@ export function HolidaysList() {
 	const columns: DataTableColumn<HolidayNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <Tag label={item._id} variant="id" />,
 			title: '#ID',
 			width: 100,
 		},
@@ -72,8 +72,8 @@ export function HolidaysList() {
 
 	return (
 		<Pane header={[
-			<HolidaysListHeader />,
-			<HolidaysListFiltersBar />,
+			<HolidaysListHeader key="header" />,
+			<HolidaysListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable
