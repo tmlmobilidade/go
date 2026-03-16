@@ -5,7 +5,7 @@ terraform {
 	required_providers {
 		oci = {
 			source = "oracle/oci"
-			version = "~> 7.0"
+			version = "~> 7"
 		}
 	}
 }
@@ -67,7 +67,6 @@ resource "oci_core_instance" "mongodb" {
 		subnet_id = var.subnet_ocid
 		private_ip = var.private_ips[count.index]
 		assign_public_ip = false
-		display_name = "${var.project_name}-${var.module_name}-${count.index + 1}-vnic"
 	}
 
 	agent_config {
