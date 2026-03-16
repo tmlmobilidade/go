@@ -58,7 +58,6 @@ variable "compartment_ocid" {
 	The OCID of the compartment where resources will be created in.
 	Current compartment is set to: cmet
 	EOT
-	default = "ocid1.compartment.oc1..aaaaaaaaqwnoahpbcxhsogpszdixlv4jnrnujst7qxyar6536oeptpwjtkna"
 }
 
 variable "availability_domain" {
@@ -85,7 +84,6 @@ variable "subnet_ocid" {
 	IGW, route table, security list, or NSG.
 	Defaults to the shared pub-cmet subnet.
 	EOT
-	default = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaa4vbr4wpapm3wpa4o73yqytsyqedinrxouelf7ntkefdfuogof6rq"
 }
 
 variable "private_ips" {
@@ -104,17 +102,15 @@ variable "private_ips" {
 variable "base_image_ocid" {
 	type = string
 	description = <<-EOT
-	OCID of the base Ubuntu image. Used by Packer as the build source and
-	by Terraform as a fallback if no Packer-built image is found.
-	Defaults to Canonical Ubuntu 22.04 Minimal aarch64 in eu-frankfurt-1.
+	OCID of the base Ubuntu image. This should be the OCID
+	of the Packer-built image.
 	EOT
-	# Canonical-Ubuntu-22.04-Minimal-aarch64-2026.01.29-0 in eu-frankfurt-1
 	default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaaehm3rohfjplxw73gzlyhp4gy2xtym33utccjawp3b5hivi7tbvlq"
 }
 
 variable "vm_shape" {
 	type = string
-	description = "The shape of the VM. Defaults to VM.Standard.A1.Flex (ARM/Ampere)."
+	description = "The shape of the VM."
 	default = "VM.Standard.A1.Flex"
 }
 
