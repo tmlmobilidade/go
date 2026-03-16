@@ -2,9 +2,8 @@
 
 /* * */
 
-import { PlanStatusTag } from '@/components/common/PlanStatusTag';
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
-import { Button, Collapsible, Section, Tag } from '@tmlmobilidade/ui';
+import { Button, Collapsible, ProcessingStatusTag, Section, Tag } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -28,7 +27,7 @@ export function PlanDetailSectionController() {
 		>
 			<Section gap="sm">
 
-				<PlanStatusTag status={planDetailContext.data.plan.apps?.controller?.status} />
+				<ProcessingStatusTag value={planDetailContext.data.plan.apps?.controller?.status} />
 
 				<Tag label={planDetailContext.data.plan.hash || 'N/A'} variant="secondary" />
 				<Tag label={planDetailContext.data.plan.apps?.controller?.last_hash || 'N/A'} variant="secondary" />

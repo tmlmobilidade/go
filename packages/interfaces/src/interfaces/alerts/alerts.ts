@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type Alert, type CreateAlertDto, CreateAlertSchema, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -62,4 +62,4 @@ class AlertsClass extends MongoCollectionClass<Alert, CreateAlertDto, UpdateAler
 
 /* * */
 
-export const alerts = AsyncSingletonProxy(AlertsClass);
+export const alerts = asyncSingletonProxy(AlertsClass);

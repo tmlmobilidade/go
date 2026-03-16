@@ -7,7 +7,7 @@ import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.conte
 import { IconRefresh } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { CloseButton, DeleteButton, HasPermission, IconButton, LockButton, SaveButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, HasPermission, IconButton, IdTag, LockButton, SaveButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -38,9 +38,8 @@ export function PlanDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-			<Tag label={planDetailContext.data.plan._id} variant="secondary" />
 
-			<Spacer />
+			<IdTag id={planDetailContext.data.plan._id} copyOnClick />
 
 			<Spacer />
 

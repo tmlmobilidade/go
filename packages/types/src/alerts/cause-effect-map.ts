@@ -21,6 +21,7 @@ export const alertCauseEffectReferenceTypeMap = {
 		NO_SERVICE: ['rides', 'lines'],
 		REDUCED_SERVICE: ['rides', 'lines'],
 		SIGNIFICANT_DELAYS: ['rides', 'agency', 'lines'],
+		STOP_MOVED: ['stops'],
 	},
 
 	CONSTRUCTION: {
@@ -39,6 +40,7 @@ export const alertCauseEffectReferenceTypeMap = {
 		NO_SERVICE: ['rides', 'lines', 'stops'],
 		REDUCED_SERVICE: ['rides', 'lines', 'stops'],
 		SIGNIFICANT_DELAYS: ['rides', 'lines', 'stops', 'agency'],
+		STOP_MOVED: ['stops'],
 	},
 
 	DRIVER_ABSENCE: {
@@ -94,6 +96,7 @@ export const alertCauseEffectReferenceTypeMap = {
 		NO_SERVICE: ['rides', 'lines', 'stops'],
 		REDUCED_SERVICE: ['rides', 'lines', 'stops'],
 		SIGNIFICANT_DELAYS: ['rides', 'lines', 'stops'],
+		STOP_MOVED: ['stops'],
 	},
 
 	STRIKE: {
@@ -134,6 +137,7 @@ export const alertCauseEffectReferenceTypeMap = {
 		NO_SERVICE: ['rides', 'lines', 'stops'],
 		REDUCED_SERVICE: ['rides', 'lines', 'stops'],
 		SIGNIFICANT_DELAYS: ['rides', 'lines', 'stops', 'agency'],
+		STOP_MOVED: ['stops'],
 	},
 
 } as const satisfies Record<AlertCause, Partial<Record<AlertEffect, AlertReferenceType[]>>>;

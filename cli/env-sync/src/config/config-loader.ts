@@ -52,11 +52,13 @@ function parseEnvNumber(value: string | undefined, defaultValue: number): number
 	return isNaN(parsed) ? defaultValue : parsed;
 }
 
-export function loadConfig(): SyncConfig {
+export function loadConfig(envFilePath?: string): SyncConfig {
 	const __filename = fileURLToPath(import.meta.url);
 	const __dirname = path.dirname(__filename);
 	const scriptDir = path.resolve(__dirname, '../..');
-	const envFile = path.join(scriptDir, '.env');
+	const envFile = envFilePath
+		? (path.isAbsolute(envFilePath) ? envFilePath : path.resolve(process.cwd(), envFilePath))
+		: path.join(scriptDir, '.env');
 
 	if (!existsSync(envFile)) {
 		throw new Error(`Environment file not found at ${envFile}\nPlease copy env.example to .env and configure it`);

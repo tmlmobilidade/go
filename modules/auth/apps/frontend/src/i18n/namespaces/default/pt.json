@@ -65,6 +65,20 @@
 				},
 				"title": "Informação financeira da agência"
 			},
+			"SectionValidationRules": {
+				"description": "Ficheiro de regras de validação do GTFS",
+				"fields": {
+					"file": {
+						"button": "Carregar regras",
+						"label": "Inserir regras de validação do GTFS"
+					},
+					"file_content": {
+						"button": "Transferir regras ",
+						"label": "Download regras de validação do GTFS"
+					}
+				},
+				"title": "Regras de validação do GTFS"
+			},
 			"header": {
 				"save": "Guardar"
 			}
@@ -82,6 +96,12 @@
 		}
 	},
 	"common": {
+		"FileComponent": {
+			"downloadError": "Erro ao transferir ficheiro",
+			"downloadFailed": "Não foi possível gerar o ficheiro JSON.",
+			"downloadStarted": "Download iniciado com sucesso.",
+			"downloadTitle": "A transferir ficheiro"
+		},
 		"IconChooser": {
 			"label": "Ícones"
 		},

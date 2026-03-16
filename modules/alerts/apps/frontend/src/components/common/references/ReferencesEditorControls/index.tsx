@@ -5,6 +5,7 @@
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { AlertReferenceTypeSchema, PermissionCatalog } from '@tmlmobilidade/types';
 import { Divider, Grid, Section, SegmentedControl, Select, useMeContext } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -36,7 +37,22 @@ export function ReferencesEditorControls() {
 	//
 	// C. Render components
 
-	if (referencesEditorContext.data.available_agencies_options.length <= 1 && availableReferenceTypeOptions.length <= 1) {
+	const sortedAvailableAgenciesOptions = useMemo(() => {
+		const arr = referencesEditorContext.data.available_agencies_options || [];
+		return [...arr].sort((a, b) => {
+			const getLabelText = (label = '') => {
+				const idx = label.indexOf(' - ');
+				return (idx >= 0 ? label.slice(idx + 3) : label).trim().toLowerCase();
+			};
+
+			const la = getLabelText(a.label);
+			const lb = getLabelText(b.label);
+			if (la === lb) return (a.label || '').localeCompare(b.label || '');
+			return la.localeCompare(lb);
+		});
+	}, [referencesEditorContext.data.available_agencies_options]);
+
+	if (sortedAvailableAgenciesOptions.length <= 1 && availableReferenceTypeOptions.length <= 1) {
 		return;
 	}
 
@@ -45,9 +61,9 @@ export function ReferencesEditorControls() {
 
 			<Section>
 				<Grid gap="md">
-					{referencesEditorContext.data.available_agencies_options.length > 1 && (
+					{sortedAvailableAgenciesOptions.length > 1 && (
 						<Select
-							data={referencesEditorContext.data.available_agencies_options}
+							data={sortedAvailableAgenciesOptions}
 							label="Operador afetado"
 							onChange={referencesEditorContext.actions.changeAgencyId}
 							value={referencesEditorContext.data.selected_agency_id}

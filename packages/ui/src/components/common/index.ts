@@ -15,6 +15,8 @@ export * from './MetricsSkeleton';
 export * from './Popover';
 export * from './Progress';
 export * from './Radio';
+export * from './SegmentedMultiSelect';
+export * from './SelectChipGroup';
 export * from './SemiCircleProgress';
 export * from './Skeleton';
 export * from './Slider';

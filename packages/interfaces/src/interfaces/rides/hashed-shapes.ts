@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { DocumentSchema, HashedShape } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -43,4 +43,4 @@ class HashedShapesClass extends MongoCollectionClass<HashedShape, HashedShape, H
 
 /* * */
 
-export const hashedShapes = AsyncSingletonProxy(HashedShapesClass);
+export const hashedShapes = asyncSingletonProxy(HashedShapesClass);

@@ -29,6 +29,7 @@ export function PlanChangeHeader() {
 			<SaveButton
 				isDisabled={!changePlanContext.data.selected_validation_id}
 				isLoading={changePlanContext.flags.isSaving}
+				// eslint-disable-next-line @typescript-eslint/no-misused-promises
 				onClick={changePlanContext.actions.save}
 			/>
 		</Toolbar>

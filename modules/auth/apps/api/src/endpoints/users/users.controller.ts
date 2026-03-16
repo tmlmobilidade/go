@@ -1,10 +1,10 @@
 /* * */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { AUTH_SESSION_COOKIE_NAME, authProvider, users } from '@tmlmobilidade/interfaces';
-import { type CreateUserDto, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
+import { AUTH_SESSION_COOKIE_NAME, authProvider, organizations, users } from '@tmlmobilidade/interfaces';
+import { type CreateUserDto, type SimplifiedUser, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -25,7 +25,7 @@ export class UsersController {
 		// Fetch the newly created user to ensure it was created successfully
 		// and send a response back to the client
 		const newUser = await users.findByEmail(request.body.email);
-		reply.send({ data: newUser, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: newUser, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -35,7 +35,7 @@ export class UsersController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		await users.deleteById(request.params.id);
-		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -45,7 +45,7 @@ export class UsersController {
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<User[]>) {
 		const foundUsers = await users.findMany({}, { sort: { created_at: -1 } });
-		reply.send({ data: foundUsers, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: foundUsers, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -55,8 +55,8 @@ export class UsersController {
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<User>) {
 		const foundUser = await users.findById(request.params.id);
-		if (!foundUser) throw new HttpException(HttpStatus.NOT_FOUND, 'User not found');
-		reply.send({ data: foundUser, error: null, statusCode: HttpStatus.OK });
+		if (!foundUser) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+		reply.send({ data: foundUser, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -84,13 +84,12 @@ export class UsersController {
 		try {
 			userData = await authProvider.getUserFromSessionToken(sessionToken);
 			if (!userData) throw new Error('User not found');
-		}
-		catch (error) {
+		} catch (error) {
 			console.error('Error retrieving user data:', error);
 			await authProvider.logout(sessionToken);
 			return reply
 				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
-				.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+				.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 		}
 
 		//
@@ -102,14 +101,39 @@ export class UsersController {
 		//
 		// Send the user data back in the response.
 
-		reply.send({ data: userData, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: userData, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 		// Add seen_last_at for this user asynchronously
 
-		users.updateById(userData._id, { seen_last_at: Dates.now('Europe/Lisbon').unix_timestamp });
+		await users.updateById(userData._id, { seen_last_at: Dates.now('Europe/Lisbon').unix_timestamp });
 
 		//
+	}
+
+	/**
+	 * Returns a simplified User by ID.
+	 * @param request The request object
+	 * @param reply The reply object
+	 */
+	static async getSimplifiedById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedUser>) {
+		// Find the user by ID
+		const userData = await users.findById(request.params.id);
+		if (!userData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+		// Find the organization data associated with the user
+		const organizationData = await organizations.findById(userData.organization_id);
+		if (!organizationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
+		// Simplify the user data by selecting only specific fields
+		const simplifiedUserData: SimplifiedUser = {
+			_id: userData._id,
+			first_name: userData.first_name,
+			last_name: userData.last_name,
+			organization_id: userData.organization_id,
+			organization_name: organizationData.long_name,
+			seen_last_at: userData.seen_last_at,
+		};
+		// Send the simplified user data in the response
+		reply.send({ data: simplifiedUserData, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -120,8 +144,8 @@ export class UsersController {
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<User>) {
 		await users.toggleLockById(request.params.id);
 		const foundUser = await users.findById(request.params.id);
-		if (!foundUser) throw new HttpException(HttpStatus.NOT_FOUND, 'User not found');
-		reply.send({ data: foundUser, error: null, statusCode: HttpStatus.OK });
+		if (!foundUser) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+		reply.send({ data: foundUser, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -134,14 +158,14 @@ export class UsersController {
 		request.body.updated_by = request.me._id;
 		// Validate the request body against the UpdateUserDto schema
 		const validatedUserData = UpdateUserSchema.safeParse(request.body);
-		if (!validatedUserData.success) throw new HttpException(HttpStatus.BAD_REQUEST, 'Invalid user data', validatedUserData.error.errors);
+		if (!validatedUserData.success) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid user data', validatedUserData.error.errors);
 		// Remove password field if not provided to avoid
 		// overwriting existing password with undefined
 		if (!validatedUserData.data.password_hash) delete validatedUserData.data.password_hash;
 		// Update the user in the database
 		const updateResult = await users.updateById(request.params.id, validatedUserData.data);
 		// Send the updated user data back in the response
-		reply.send({ data: updateResult, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: updateResult, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -155,6 +179,6 @@ export class UsersController {
 
 		// For now, only the preferences field is allowed to be updated by the current user
 		const updatedUser = await users.updateById(userData._id, { preferences: request.body.preferences });
-		reply.send({ data: updatedUser, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: updatedUser, error: null, statusCode: HTTP_STATUS.OK });
 	}
 }

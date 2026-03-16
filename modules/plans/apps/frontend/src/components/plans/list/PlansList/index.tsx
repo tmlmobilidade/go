@@ -2,15 +2,14 @@
 
 /* * */
 
-import { PlanStatusTag } from '@/components/common/PlanStatusTag';
 import { usePlansListContext } from '@/components/plans/list/PlansList.context';
-import { PlansListCellAgency } from '@/components/plans/list/PlansListCellAgency';
 import { PlansListCellFeedDates } from '@/components/plans/list/PlansListCellFeedDates';
 import { PlansListFiltersBar } from '@/components/plans/list/PlansListFiltersBar';
 import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { type PlanNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/dates';
+import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, ProcessingStatusTag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -32,15 +31,15 @@ export function PlansList() {
 	const columns: DataTableColumn<PlanNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
-			title: t('plans:plans.list.PlansList.table.columns.id.label'),
-			width: 100,
+			render: item => <IdTag id={item._id} />,
+			title: '#ID',
+			width: 90,
 		},
 		{
 			accessor: 'agency_id_normalized',
-			render: item => <PlansListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,
+			render: item => <AgencyTag agencyId={item.gtfs_agency.agency_id} showShortName />,
 			title: t('plans:plans.list.PlansList.table.columns.agency_id_normalized.label'),
-			width: 300,
+			width: 110,
 		},
 		{
 			accessor: 'gtfs_feed_info',
@@ -56,15 +55,31 @@ export function PlansList() {
 		},
 		{
 			accessor: 'apps',
-			render: item => <PlanStatusTag status={item.apps?.controller?.status} timestamp={item.apps?.controller?.timestamp} />,
+			render: item => (
+				<ProcessingStatusTag
+					value={item.apps?.controller?.status}
+					tooltip={item.apps?.controller?.timestamp && Dates
+						.fromUnixTimestamp(item.apps?.controller?.timestamp)
+						.setZone('Europe/Lisbon', 'offset_only')
+						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
+				/>
+			),
 			title: t('plans:plans.list.PlansList.table.columns.apps_controller.label'),
-			width: 220,
+			width: 135,
 		},
 		{
 			accessor: 'apps',
-			render: item => <PlanStatusTag status={item.apps?.merger?.status} timestamp={item.apps?.merger?.timestamp} />,
+			render: item => (
+				<ProcessingStatusTag
+					value={item.apps?.merger?.status}
+					tooltip={item.apps?.merger?.timestamp && Dates
+						.fromUnixTimestamp(item.apps?.merger?.timestamp)
+						.setZone('Europe/Lisbon', 'offset_only')
+						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
+				/>
+			),
 			title: t('plans:plans.list.PlansList.table.columns.apps_merger.label'),
-			width: 220,
+			width: 135,
 		},
 	];
 
@@ -88,8 +103,8 @@ export function PlansList() {
 
 	return (
 		<Pane header={[
-			<PlansListHeader />,
-			<PlansListFiltersBar />,
+			<PlansListHeader key="header" />,
+			<PlansListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable

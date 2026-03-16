@@ -1,7 +1,7 @@
 /* * */
 
 import { type RideChangeListener, ridesChangeStream } from '@/rides/watch.js';
-import { HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
@@ -34,7 +34,7 @@ export class RidesSharedController {
 
 		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
 
-		if (!ridesPermission['resources']?.agency_ids?.length) return reply.send({ data: [], error: null, statusCode: HttpStatus.OK });
+		if (!ridesPermission['resources']?.agency_ids?.length) return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
 
 		const allowAllAgencies = ridesPermission['resources'].agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
@@ -52,7 +52,7 @@ export class RidesSharedController {
 
 		if (foundRideById) {
 			const normalizedRide = normalizeRide(foundRideById);
-			return reply.send({ data: [normalizedRide], error: null, statusCode: HttpStatus.OK });
+			return reply.send({ data: [normalizedRide], error: null, statusCode: HTTP_STATUS.OK });
 		}
 
 		//
@@ -94,7 +94,7 @@ export class RidesSharedController {
 		reply.send({
 			data: ridesBatch as RideNormalized[] ?? [],
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//
@@ -114,7 +114,7 @@ export class RidesSharedController {
 
 		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
 
-		if (!ridesPermission['resources']?.agency_ids?.length) return reply.send({ data: null, error: null, statusCode: HttpStatus.OK });
+		if (!ridesPermission['resources']?.agency_ids?.length) return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
 
 		const allowAllAgencies = ridesPermission['resources'].agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
@@ -130,7 +130,7 @@ export class RidesSharedController {
 
 		if (foundRideById) {
 			const normalizedRide = normalizeRide(foundRideById);
-			return reply.send({ data: normalizedRide, error: null, statusCode: HttpStatus.OK });
+			return reply.send({ data: normalizedRide, error: null, statusCode: HTTP_STATUS.OK });
 		}
 
 		//

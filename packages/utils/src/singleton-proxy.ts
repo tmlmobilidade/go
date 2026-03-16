@@ -3,7 +3,7 @@
  * @param cls - A class with a static `getInstance` method that returns a promise resolving to the class instance.
  * @returns A proxy object that intercepts method calls and ensures the instance is initialized before invoking them.
  */
-export function AsyncSingletonProxy<T extends object>(cls: { getInstance: () => Promise<T> }): T {
+export function asyncSingletonProxy<T extends object>(cls: { getInstance: () => Promise<T> }): T {
 	return new Proxy({} as T, {
 		get: function (_target, prop, receiver) {
 			return async (...args: unknown[]) => {

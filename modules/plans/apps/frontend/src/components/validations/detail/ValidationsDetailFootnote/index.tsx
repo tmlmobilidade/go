@@ -2,7 +2,7 @@
 
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { Dates } from '@tmlmobilidade/dates';
-import { Label, Section } from '@tmlmobilidade/ui';
+import { Label, Section, UserTag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -34,6 +34,7 @@ export function ValidationsDetailFootnote() {
 
 	return (
 		<Section>
+			<Label size="sm">Validação criada por <UserTag userId={validationsDetailContext.data.validation.created_by} variant="inline" /> a {formattedDateString}</Label>
 			<Label size="sm">{t('plans:validations.detail.ValidationsDetailFootnote.created_by_label', { createdBy: validationsDetailContext.data.file.created_by, formattedDateString: formattedDateString })}</Label>
 			<Label size="sm">{t('plans:validations.detail.ValidationsDetailFootnote.label')}</Label>
 		</Section>

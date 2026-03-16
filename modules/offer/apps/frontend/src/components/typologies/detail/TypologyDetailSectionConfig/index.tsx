@@ -26,7 +26,7 @@ export function TypologyDetailSectionConfig() {
 	// B. Render components
 
 	return (
-		<Collapsible title="Configuração Básica">
+		<Collapsible title="Configuração Básica" defaultOpen>
 			<Section gap="sm">
 				<TextInput
 					key={typologyDetailContext.data.form.key('name')}

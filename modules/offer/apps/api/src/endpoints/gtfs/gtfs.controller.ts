@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import AdmZip from 'adm-zip';
 import Papa from 'papaparse';
@@ -246,15 +246,15 @@ export class GtfsController {
 			return reply.send({
 				data: gtfsFinal,
 				error: null,
-				statusCode: HttpStatus.OK,
+				statusCode: HTTP_STATUS.OK,
 			});
 		}
 		catch (error) {
 			console.log(error);
-			return reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: null,
 				error: error instanceof Error ? error.message : 'Failed to parse GTFS file',
-				statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+				statusCode: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 			});
 		}
 

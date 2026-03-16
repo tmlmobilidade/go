@@ -87,8 +87,7 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 		};
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		return {
 			error_message: error.message,
 			grade: 'error',

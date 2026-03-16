@@ -6,7 +6,7 @@
 		"name": "TML-ISO"
 	},
 	"license": "AGPL-3.0-or-later",
-	"homepage": "https://github.com/tmlmobilidade/go#readme",
+	"homepage": "https://go.tmlmobilidade.pt",
 	"bugs": {
 		"url": "https://github.com/tmlmobilidade/go/issues"
 	},
@@ -35,12 +35,16 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
+		"luxon": "3.7.2",
 		"mergekit": "3.0.6"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.2.2",
+		"@types/node": "25.5.0",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",
 		"typescript": "5.9.3"

@@ -6,6 +6,7 @@ import { alerts } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type CreateAlertDto, type ServiceAlertResponse } from '@tmlmobilidade/types';
+import { runOnInterval } from '@tmlmobilidade/utils';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -32,8 +33,7 @@ async function main() {
 		const alert = await alerts.findByExternalId(serviceAlert.id);
 		if (alert) {
 			Logger.error(`Alert with external ID ${serviceAlert.id} already exists, skipping...`);
-		}
-		else {
+		} else {
 			//
 			Logger.info(`Alert with external ID ${serviceAlert.id} does not exist, creating...`);
 
@@ -92,10 +92,4 @@ async function main() {
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		await main();
-		setTimeout(runOnInterval, RUN_INTERVAL);
-	};
-	runOnInterval();
-})();
+runOnInterval(main, RUN_INTERVAL);

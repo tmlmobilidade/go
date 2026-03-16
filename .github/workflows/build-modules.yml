@@ -38,6 +38,13 @@ env:
     alerts:frontend
     alerts:organizer
 
+    apex:organizer
+    apex:stream
+    apex:sync-apex-locations
+    apex:sync-apex-on-board-refunds
+    apex:sync-apex-on-board-sales
+    apex:sync-apex-validations
+
     auth:nginx
     auth:api
     auth:cleaner
@@ -86,23 +93,10 @@ env:
     plans:frontend
     plans:validator
 
-    replicator:organizer
-    replicator:stream
-    replicator:sync-apex-locations
-    replicator:sync-apex-on-board-refunds
-    replicator:sync-apex-on-board-sales
-    replicator:sync-apex-validations
-    replicator:sync-vehicle-events
-    replicator:sync-vehicle-events-clickhouse
-
     stops:nginx
     stops:api
     stops:frontend
     stops:organizer
-
-    ticketing:nginx
-    ticketing:api
-    ticketing:frontend
 
     offer:nginx
     offer:api
@@ -212,7 +206,7 @@ jobs:
     with:
       module: ${{ matrix.module }}
       modules-apps: ${{ needs.discover-modules.outputs.modules-apps }}
-      ref-name: ${{ github.event.pull_request.base.ref || github.ref_name }}
+      ref-name: ${{ github.ref_name }}
     secrets: inherit
 
 

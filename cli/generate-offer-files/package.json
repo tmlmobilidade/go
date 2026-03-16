@@ -20,26 +20,23 @@
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint . --fix",
+		"lint:fix": "eslint ./src --fix",
 		"start": "tsc && resolve-tspaths && node dist/index.js"
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/geo": "*",
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
 		"commander": "14.0.3",
 		"csv-parse": "6.1.0",
-		"extract-zip": "2.0.1",
-		"gtfs-types": "5.1.0"
+		"extract-zip": "2.0.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.2.2",
+		"@types/node": "25.5.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"

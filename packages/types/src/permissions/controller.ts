@@ -18,6 +18,7 @@ export const RidesPermissionSchema = z.object({
 		'audit_lock',
 		'audit_read',
 		'audit_update',
+		'acceptance_comment_activity',
 	]),
 	resources: z.object({
 		agency_ids: z.array(z.string()).default([]),

@@ -7,7 +7,7 @@ import fs from 'node:fs';
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	//
 
 	//

@@ -33,6 +33,7 @@ class PCGIDBTicketingClass {
 
 		const mongoClientOptions: MongoClientOptions = {
 			connectTimeoutMS: 10_000,
+			directConnection: process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'staging' ? false : true,
 			maxPoolSize: 20,
 			minPoolSize: 2,
 			readPreference: 'secondaryPreferred',
@@ -49,8 +50,7 @@ class PCGIDBTicketingClass {
 			this.SalesEntity = mongoConnector.client.db('SalesManagement').collection('salesEntity');
 			// Log success message
 			Logger.success('Connected to PCGIDB Ticketing successfully.');
-		}
-		catch (error) {
+		} catch (error) {
 			throw new Error('Error connecting to PCGIDB Ticketing:', { cause: error });
 		}
 	}
@@ -115,7 +115,7 @@ class PCGIDBTicketingClass {
 				agent: process.env.SSH_AUTH_SOCK,
 				host: process.env.PCGIDB_TUNNEL_SSH_HOST,
 				keepaliveCountMax: 3, // Retry 3 times before closing the connection
-				keepaliveInterval: 10000, // Send keep-alive every 10 seconds
+				keepaliveInterval: 10_000, // Send keep-alive every 10 seconds
 				port: 22,
 				username: process.env.PCGIDB_TUNNEL_SSH_USERNAME,
 			},
@@ -159,4 +159,8 @@ class PCGIDBTicketingClass {
 
 /* * */
 
+/**
+ * @deprecated This should not be used anymore. Only inside the `apex` module
+ * and then you should use the services provided by the local package.
+ */
 export const pcgidbTicketing = new PCGIDBTicketingClass();

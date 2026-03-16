@@ -16,7 +16,7 @@ export function TypologyDetailSectionFares() {
 	// A. Setup variables
 
 	const typologyDetailContext = useTypologyDetailContext();
-	const { data: faresData } = useSWR<Fare[]>(API_ROUTES.ticketing.FARES_LIST);
+	const { data: faresData } = useSWR<Fare[]>(API_ROUTES.offer.FARES_LIST);
 
 	const prepaidFaresOptions = useMemo(() => {
 		return faresData?.filter(f => f.payment_method === FARE_PAYMENT_METHOD.PREPAID).map(fare => ({

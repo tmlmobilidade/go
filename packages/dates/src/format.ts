@@ -106,7 +106,7 @@ const DATETIME_FULL_WITH_SECONDS = {
 
 export const OPERATIONAL_DATE_FORMAT = 'yyyyMMdd';
 
-export const Formats = {
+export const FORMATS = {
 	DATE_FULL,
 	DATE_FULL_WITH_YEAR,
 	DATE_HUGE,

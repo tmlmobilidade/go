@@ -34,8 +34,7 @@ export async function downloadAndExtractGtfs(plan: Plan): Promise<ImportGtfsCont
 		fs.mkdirSync(workdirPath, { recursive: true });
 
 		Logger.success('Prepared working directory.', 1);
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error(`Error preparing workdir path "${workdirPath}".`, error);
 		process.exit(1);
 	}
@@ -54,8 +53,7 @@ export async function downloadAndExtractGtfs(plan: Plan): Promise<ImportGtfsCont
 		const downloadResponse = await fetch(operationFileData.url);
 		const downloadArrayBuffer = await downloadResponse.arrayBuffer();
 		fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error downloading the file.', error);
 		process.exit(1);
 	}
@@ -63,8 +61,7 @@ export async function downloadAndExtractGtfs(plan: Plan): Promise<ImportGtfsCont
 	try {
 		await unzipFile(downloadFilePath, extractDirPath);
 		Logger.success(`Unzipped GTFS file from "${downloadFilePath}" to "${extractDirPath}".`, 1);
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error unzipping the file.', error);
 		process.exit(1);
 	}

@@ -6,7 +6,7 @@ import { stops } from '@tmlmobilidade/interfaces';
 
 /* * */
 
-(async function main() {
+await (async function main() {
 	//
 
 	//

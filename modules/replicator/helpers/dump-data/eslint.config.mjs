@@ -1,6 +1,6 @@
 /* * */
 
-import { node } from '@carrismetropolitana/eslint'
+import { node } from '@tmlmobilidade/eslint'
 
 /* * */
 

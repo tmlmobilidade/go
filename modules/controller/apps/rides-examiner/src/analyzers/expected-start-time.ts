@@ -76,8 +76,7 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): Ride['ana
 		}
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		return {
 			error_message: error.message,
 			grade: 'error',

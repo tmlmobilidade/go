@@ -3,7 +3,7 @@
 /* * */
 
 import { Image } from '@mantine/core';
-import { getAppConfig, HttpException } from '@tmlmobilidade/consts';
+import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
 import useSWR from 'swr';
 
 import styles from './styles.module.css';
@@ -24,7 +24,7 @@ export function AppWrapperLogo() {
 	//
 	// B. Fetch data
 
-	const { data: organizationLogoData } = useSWR<{ logo_dark: null | string, logo_light: null | string }, HttpException>(meContext.data.user?.organization_id && `${getAppConfig('auth', 'api_url')}/organizations/${meContext.data.user.organization_id}/logo`);
+	const { data: organizationLogoData } = useSWR<{ logo_dark: null | string, logo_light: null | string }, HttpException>(meContext.data.user?.organization_id && API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOGO(meContext.data.user.organization_id));
 
 	//
 	// C. Render components

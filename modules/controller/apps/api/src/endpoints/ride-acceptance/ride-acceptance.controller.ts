@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { enrichUserRefs, rideAcceptances } from '@tmlmobilidade/interfaces';
@@ -23,7 +23,7 @@ export class RideAcceptanceController {
 		return reply.send({
 			data: updateResult,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 	}
 
@@ -36,10 +36,10 @@ export class RideAcceptanceController {
 		const rideAcceptanceData = await rideAcceptances.findByRideId(request.params.id);
 
 		if (!rideAcceptanceData) {
-			return reply.status(HttpStatus.NOT_FOUND).send({
+			return reply.status(HTTP_STATUS.NOT_FOUND).send({
 				data: null,
 				error: 'Ride acceptance not found.',
-				statusCode: HttpStatus.NOT_FOUND,
+				statusCode: HTTP_STATUS.NOT_FOUND,
 			});
 		}
 
@@ -51,7 +51,7 @@ export class RideAcceptanceController {
 		return reply.send({
 			data: updateResult,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 	}
 
@@ -64,13 +64,13 @@ export class RideAcceptanceController {
 		const rideAcceptanceData = await rideAcceptances.findByRideId(request.params.id);
 
 		if (!rideAcceptanceData) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Esta viagem não ainda não tem uma aprovação.');
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Esta viagem não ainda não tem uma aprovação.');
 		}
 
 		return reply.send({
 			data: await enrichUserRefs(rideAcceptanceData),
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 	}
 
@@ -97,7 +97,7 @@ export class RideAcceptanceController {
 		return reply.send({
 			data: updateResult,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 	}
 
@@ -112,7 +112,7 @@ export class RideAcceptanceController {
 			return reply.send({
 				data: oldJustificationData,
 				error: null,
-				statusCode: HttpStatus.OK,
+				statusCode: HTTP_STATUS.OK,
 			});
 		}
 
@@ -121,7 +121,7 @@ export class RideAcceptanceController {
 		return reply.send({
 			data: updateResult,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 	}
 }

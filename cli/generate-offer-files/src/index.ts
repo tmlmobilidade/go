@@ -11,7 +11,7 @@ import fs from 'fs';
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	//
 
 	//

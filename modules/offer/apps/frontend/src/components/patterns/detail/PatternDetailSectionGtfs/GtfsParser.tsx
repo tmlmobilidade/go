@@ -40,8 +40,7 @@ export function GtfsParser({ onParse }: GtfsParserProps) {
 			const data = await res.json();
 			onParse(data.data);
 			setIsUploading(false);
-		}
-		catch (error) {
+		} catch (error) {
 			console.log(error);
 			setIsUploading(false);
 		}

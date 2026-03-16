@@ -30,8 +30,7 @@ export function PlanDetailSectionFiles() {
 		try {
 			// Open file.url in a new window
 			window.open(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE_DOWNLOAD(planDetailContext.data.id), '_blank');
-		}
-		catch (error) {
+		} catch (error) {
 			useToast.error({
 				message: error instanceof Error ? error.message : 'Erro ao transferir ficheiro',
 				title: 'Erro ao transferir ficheiro',

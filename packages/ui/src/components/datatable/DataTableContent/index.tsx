@@ -18,7 +18,7 @@ type Props<T> = Omit<DataTableProps<T>, 'records'>;
 
 /* * */
 
-export function DataTableContent<T>({ columns, onRowClick, onRowContextMenu, onRowDoubleClick, rowIdAccessor, selectedId, selectedIds, withTopBorder }: Props<T>) {
+export function DataTableContent<T>({ columns, maxHeight, onRowClick, onRowContextMenu, onRowDoubleClick, rowIdAccessor, selectedId, selectedIds, withTopBorder }: Props<T>) {
 	//
 
 	//
@@ -39,7 +39,7 @@ export function DataTableContent<T>({ columns, onRowClick, onRowContextMenu, onR
 	// C. Render components
 
 	return (
-		<div className={styles.root}>
+		<div className={styles.root} style={{ maxHeight }}>
 			<DataTableHeader columns={columns} withTopBorder={withTopBorder} />
 			<ViewportList
 				ref={dataTableContext.refs.list}

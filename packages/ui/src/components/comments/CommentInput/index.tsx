@@ -2,7 +2,6 @@
 
 /* * */
 
-import { Textarea } from '@mantine/core';
 import { IconSend } from '@tabler/icons-react';
 import { useCallback, useState } from 'react';
 
@@ -11,6 +10,7 @@ import styles from './styles.module.css';
 import { isPlatformMac } from '../../../utils';
 import { IconButton } from '../../buttons';
 import { Label } from '../../display/Label';
+import { Textarea } from '../../inputs';
 import { Section } from '../../layout/Section';
 
 /* * */
@@ -124,8 +124,7 @@ export function CommentInput({
 						onKeyDown={handleKeyDown}
 						placeholder={placeholder}
 						value={value}
-						variant="comment"
-						autosize
+						w="100%"
 					/>
 					{maxChars && (
 						<Label size="sm" variant={isFocused && isOverLimit ? 'danger' : undefined}>

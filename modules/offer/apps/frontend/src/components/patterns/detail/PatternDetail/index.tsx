@@ -6,11 +6,10 @@ import { usePatternDetailContext } from '@/components/patterns/detail/PatternDet
 import { PatternDetailHeader } from '@/components/patterns/detail/PatternDetailHeader';
 import { PatternDetailSectionConfig } from '@/components/patterns/detail/PatternDetailSectionConfig';
 import { PatternDetailSectionGtfs } from '@/components/patterns/detail/PatternDetailSectionGtfs';
+import { PatternDetailSectionRules } from '@/components/patterns/detail/PatternDetailSectionRules';
 import { PatternDetailSectionShape } from '@/components/patterns/detail/PatternDetailSectionShape';
 import { PatternDetailSectionStops } from '@/components/patterns/detail/PatternDetailSectionStops';
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
-
-import { PatternDetailSectionOpRules } from '../PatternDetailSectionOpRules';
 
 /* * */
 
@@ -39,7 +38,7 @@ export function PatternDetail() {
 			<PatternDetailSectionShape />
 			<PatternDetailSectionStops />
 			<PatternDetailSectionGtfs />
-			<PatternDetailSectionOpRules />
+			<PatternDetailSectionRules />
 		</Pane>
 	);
 

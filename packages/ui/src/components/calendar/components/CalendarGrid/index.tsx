@@ -124,7 +124,7 @@ export function CalendarGrid({ events = [], onDayClick, onEventClick, weeks }: C
 							return dayEventPositions.length > 0 ? (
 								<Tooltip
 									key={dayIndex}
-									label={<DayTooltip date={tooltipDate} events={dayEventPositions.map(ep => ep.event)} />}
+									label={<DayTooltip calendarEvents={dayEventPositions.map(ep => ep.event)} date={tooltipDate} />}
 									position="top"
 									multiline
 								>

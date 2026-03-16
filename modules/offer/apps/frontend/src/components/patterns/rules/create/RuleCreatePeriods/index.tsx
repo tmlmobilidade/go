@@ -4,7 +4,22 @@
 
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { Button, Section, Tag, Text } from '@tmlmobilidade/ui';
+import { Section, SegmentedMultiSelect, SelectChipGroup, Text } from '@tmlmobilidade/ui';
+
+/* * */
+
+type PeriodPresetKey = 'all';
+
+function getSelectedPresetKey(
+	currentPeriodIds: string[] | undefined,
+	allPeriodIds: string[],
+): null | PeriodPresetKey {
+	if (!currentPeriodIds?.length) return null;
+
+	const isAllSelected = allPeriodIds.length > 0 && allPeriodIds.every(id => currentPeriodIds.includes(id)) && currentPeriodIds.length === allPeriodIds.length;
+
+	return isAllSelected ? 'all' : null;
+}
 
 /* * */
 
@@ -17,78 +32,59 @@ export function RuleCreatePeriods() {
 	const createRuleContext = useRuleCreateContext();
 	const { data: periodsData } = usePeriodsContext();
 
-	const PERIOD_OPTIONS = periodsData.periods.map(period => ({
+	const PERIOD_OPTIONS = periodsData.raw.map(period => ({
 		label: period.name,
 		value: period._id,
 	}));
 
+	const allPeriodIds = PERIOD_OPTIONS.map(p => p.value);
+
 	//
 	// B. Handle actions
 
-	const handleChangePeriods = (periodValue: string) => {
-		const currentPeriodIds = createRuleContext.data.form.values.periodIds || [];
-		if (currentPeriodIds.includes(periodValue)) {
-			// Remove period
-			const newPeriodIds = currentPeriodIds.filter(id => id !== periodValue);
-			createRuleContext.data.form.setFieldValue('periodIds', newPeriodIds);
+	const currentPeriodIds = createRuleContext.data.form.values.year_period_ids || [];
+	const selectedPresetKey = getSelectedPresetKey(currentPeriodIds, allPeriodIds);
+
+	const applyPreset = (key: null | PeriodPresetKey) => {
+		if (!key) {
+			// same convention as weekdays: empty => undefined
+			createRuleContext.data.form.setFieldValue('year_period_ids', undefined);
+			return;
 		}
-		else {
-			// Add period
-			const newPeriodIds = [...currentPeriodIds, periodValue];
-			createRuleContext.data.form.setFieldValue('periodIds', newPeriodIds);
-		}
+
+		// select all
+		createRuleContext.data.form.setFieldValue('year_period_ids', [...allPeriodIds]);
 	};
-
-	const handleQuickSelectPeriods = (type: 'all') => {
-		const selections = {
-			all: PERIOD_OPTIONS.map(period => period.value),
-		};
-		const currentPeriodIds = createRuleContext.data.form.values.periodIds || [];
-		const allSelected = selections[type].every(id => currentPeriodIds.includes(id));
-
-		if (allSelected) {
-			// Deselect all
-			createRuleContext.data.form.setFieldValue('periodIds', []);
-		}
-		else {
-			// Select all
-			createRuleContext.data.form.setFieldValue('periodIds', selections[type]);
-		}
-	};
-
-	const allPeriodsSelected = PERIOD_OPTIONS.every(period =>
-		createRuleContext.data.form.values.periodIds?.includes(period.value),
-	);
 
 	//
 	// C. Render components
 
 	return (
 		<Section gap="md">
-
 			<Section gap="xs" padding="none">
 				<Text>Períodos</Text>
 			</Section>
 
 			{/* Quick Select Tags */}
-			<Section flexDirection="row" gap="sm" padding="none">
-				<Tag label="Todos" onClick={() => handleQuickSelectPeriods('all')} variant={allPeriodsSelected ? 'primary' : 'muted'} />
-			</Section>
+			<SelectChipGroup<PeriodPresetKey>
+				onChange={applyPreset}
+				value={selectedPresetKey}
+				options={[
+					{ label: 'Todos', value: 'all' },
+				]}
+			/>
 
-			<Section flexDirection="row" gap="sm" padding="none">
-				{PERIOD_OPTIONS.length > 0 && PERIOD_OPTIONS.map((period) => {
-					const isSelected = createRuleContext.data.form.values.periodIds?.includes(period.value);
-					return (
-						<Button
-							key={period.value}
-							label={period.label}
-							onClick={() => handleChangePeriods(period.value)}
-							variant={isSelected ? 'primary' : 'muted'}
-						/>
-					);
-				})}
-			</Section>
-
+			<SegmentedMultiSelect
+				value={currentPeriodIds}
+				onChange={(selectedPeriods) => {
+					createRuleContext.data.form.setFieldValue('year_period_ids', selectedPeriods.length > 0 ? selectedPeriods : undefined);
+				}}
+				options={PERIOD_OPTIONS.map(o => ({
+					ariaLabel: o.label,
+					label: o.label,
+					value: o.value,
+				}))}
+			/>
 		</Section>
 	);
 }

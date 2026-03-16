@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
@@ -24,11 +24,11 @@ export class RidesController {
 
 		if (!rideId) {
 			return reply
-				.status(HttpStatus.BAD_REQUEST)
+				.status(HTTP_STATUS.BAD_REQUEST)
 				.send({
 					data: null,
 					error: 'Missing ride_id parameter.',
-					status: HttpStatus.BAD_REQUEST,
+					status: HTTP_STATUS.BAD_REQUEST,
 				});
 		}
 
@@ -39,11 +39,11 @@ export class RidesController {
 
 		if (!rideData) {
 			return reply
-				.status(HttpStatus.NOT_FOUND)
+				.status(HTTP_STATUS.NOT_FOUND)
 				.send({
 					data: null,
 					error: 'Ride not found.',
-					status: HttpStatus.NOT_FOUND,
+					status: HTTP_STATUS.NOT_FOUND,
 				});
 		}
 
@@ -55,11 +55,11 @@ export class RidesController {
 
 		if (!hashedShapeData) {
 			return reply
-				.status(HttpStatus.NOT_FOUND)
+				.status(HTTP_STATUS.NOT_FOUND)
 				.send({
 					data: null,
 					error: 'HashedShape not found.',
-					status: HttpStatus.NOT_FOUND,
+					status: HTTP_STATUS.NOT_FOUND,
 				});
 		}
 
@@ -69,7 +69,7 @@ export class RidesController {
 		reply.send({
 			data: hashedShapeData,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 	}
 
@@ -89,11 +89,11 @@ export class RidesController {
 
 			if (!rideId) {
 				return reply
-					.status(HttpStatus.BAD_REQUEST)
+					.status(HTTP_STATUS.BAD_REQUEST)
 					.send({
 						data: null,
 						error: 'Missing ride_id parameter.',
-						status: HttpStatus.BAD_REQUEST,
+						status: HTTP_STATUS.BAD_REQUEST,
 					});
 			}
 
@@ -104,11 +104,11 @@ export class RidesController {
 
 			if (!rideData) {
 				return reply
-					.status(HttpStatus.NOT_FOUND)
+					.status(HTTP_STATUS.NOT_FOUND)
 					.send({
 						data: null,
 						error: 'Ride not found.',
-						status: HttpStatus.NOT_FOUND,
+						status: HTTP_STATUS.NOT_FOUND,
 					});
 			}
 
@@ -120,11 +120,11 @@ export class RidesController {
 
 			if (!hashedTripData) {
 				return reply
-					.status(HttpStatus.NOT_FOUND)
+					.status(HTTP_STATUS.NOT_FOUND)
 					.send({
 						data: null,
 						error: 'HashedTrip not found.',
-						status: HttpStatus.NOT_FOUND,
+						status: HTTP_STATUS.NOT_FOUND,
 					});
 			}
 
@@ -134,12 +134,11 @@ export class RidesController {
 			reply.send({
 				data: hashedTripData,
 				error: null,
-				statusCode: HttpStatus.OK,
+				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
 		}
 	}
@@ -160,11 +159,11 @@ export class RidesController {
 
 			if (!rideId) {
 				return reply
-					.status(HttpStatus.BAD_REQUEST)
+					.status(HTTP_STATUS.BAD_REQUEST)
 					.send({
 						data: null,
 						error: 'Missing ride_id parameter.',
-						status: HttpStatus.BAD_REQUEST,
+						status: HTTP_STATUS.BAD_REQUEST,
 					});
 			}
 
@@ -175,11 +174,11 @@ export class RidesController {
 
 			if (!rideData) {
 				return reply
-					.status(HttpStatus.NOT_FOUND)
+					.status(HTTP_STATUS.NOT_FOUND)
 					.send({
 						data: null,
 						error: 'Ride not found.',
-						status: HttpStatus.NOT_FOUND,
+						status: HTTP_STATUS.NOT_FOUND,
 					});
 			}
 
@@ -201,12 +200,11 @@ export class RidesController {
 			reply.send({
 				data: simplifiedApexLocationsData ?? [],
 				error: null,
-				statusCode: HttpStatus.OK,
+				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
 		}
 	}
@@ -227,11 +225,11 @@ export class RidesController {
 
 			if (!rideId) {
 				return reply
-					.status(HttpStatus.BAD_REQUEST)
+					.status(HTTP_STATUS.BAD_REQUEST)
 					.send({
 						data: null,
 						error: 'Missing ride_id parameter.',
-						status: HttpStatus.BAD_REQUEST,
+						status: HTTP_STATUS.BAD_REQUEST,
 					});
 			}
 
@@ -242,11 +240,11 @@ export class RidesController {
 
 			if (!rideData) {
 				return reply
-					.status(HttpStatus.NOT_FOUND)
+					.status(HTTP_STATUS.NOT_FOUND)
 					.send({
 						data: null,
 						error: 'Ride not found.',
-						status: HttpStatus.NOT_FOUND,
+						status: HTTP_STATUS.NOT_FOUND,
 					});
 			}
 
@@ -268,12 +266,11 @@ export class RidesController {
 			reply.send({
 				data: simplifiedApexOnBoardRefundsData ?? [],
 				error: null,
-				statusCode: HttpStatus.OK,
+				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
 		}
 	}
@@ -294,11 +291,11 @@ export class RidesController {
 
 			if (!rideId) {
 				return reply
-					.status(HttpStatus.BAD_REQUEST)
+					.status(HTTP_STATUS.BAD_REQUEST)
 					.send({
 						data: null,
 						error: 'Missing ride_id parameter.',
-						status: HttpStatus.BAD_REQUEST,
+						status: HTTP_STATUS.BAD_REQUEST,
 					});
 			}
 
@@ -309,11 +306,11 @@ export class RidesController {
 
 			if (!rideData) {
 				return reply
-					.status(HttpStatus.NOT_FOUND)
+					.status(HTTP_STATUS.NOT_FOUND)
 					.send({
 						data: null,
 						error: 'Ride not found.',
-						status: HttpStatus.NOT_FOUND,
+						status: HTTP_STATUS.NOT_FOUND,
 					});
 			}
 
@@ -335,12 +332,11 @@ export class RidesController {
 			reply.send({
 				data: simplifiedApexOnBoardSalesData ?? [],
 				error: null,
-				statusCode: HttpStatus.OK,
+				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
 		}
 	}
@@ -361,11 +357,11 @@ export class RidesController {
 
 			if (!rideId) {
 				return reply
-					.status(HttpStatus.BAD_REQUEST)
+					.status(HTTP_STATUS.BAD_REQUEST)
 					.send({
 						data: null,
 						error: 'Missing ride_id parameter.',
-						status: HttpStatus.BAD_REQUEST,
+						status: HTTP_STATUS.BAD_REQUEST,
 					});
 			}
 
@@ -376,11 +372,11 @@ export class RidesController {
 
 			if (!rideData) {
 				return reply
-					.status(HttpStatus.NOT_FOUND)
+					.status(HTTP_STATUS.NOT_FOUND)
 					.send({
 						data: null,
 						error: 'Ride not found.',
-						status: HttpStatus.NOT_FOUND,
+						status: HTTP_STATUS.NOT_FOUND,
 					});
 			}
 
@@ -402,12 +398,11 @@ export class RidesController {
 			reply.send({
 				data: simplifiedApexValidationsData ?? [],
 				error: null,
-				statusCode: HttpStatus.OK,
+				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
 		}
 	}
@@ -428,11 +423,11 @@ export class RidesController {
 
 			if (!rideId) {
 				return reply
-					.status(HttpStatus.BAD_REQUEST)
+					.status(HTTP_STATUS.BAD_REQUEST)
 					.send({
 						data: null,
 						error: 'Missing ride_id parameter.',
-						status: HttpStatus.BAD_REQUEST,
+						status: HTTP_STATUS.BAD_REQUEST,
 					});
 			}
 
@@ -443,11 +438,11 @@ export class RidesController {
 
 			if (!rideData) {
 				return reply
-					.status(HttpStatus.NOT_FOUND)
+					.status(HTTP_STATUS.NOT_FOUND)
 					.send({
 						data: null,
 						error: 'Ride not found.',
-						status: HttpStatus.NOT_FOUND,
+						status: HTTP_STATUS.NOT_FOUND,
 					});
 			}
 
@@ -469,12 +464,11 @@ export class RidesController {
 			reply.send({
 				data: vehicleEventsData ?? [],
 				error: null,
-				statusCode: HttpStatus.OK,
+				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
 		}
 	}
@@ -495,11 +489,11 @@ export class RidesController {
 
 			if (!rideId) {
 				return reply
-					.status(HttpStatus.BAD_REQUEST)
+					.status(HTTP_STATUS.BAD_REQUEST)
 					.send({
 						data: null,
 						error: 'Missing ride_id parameter.',
-						status: HttpStatus.BAD_REQUEST,
+						status: HTTP_STATUS.BAD_REQUEST,
 					});
 			}
 
@@ -510,11 +504,11 @@ export class RidesController {
 
 			if (!rideData) {
 				return reply
-					.status(HttpStatus.NOT_FOUND)
+					.status(HTTP_STATUS.NOT_FOUND)
 					.send({
 						data: null,
 						error: 'Ride not found.',
-						status: HttpStatus.NOT_FOUND,
+						status: HTTP_STATUS.NOT_FOUND,
 					});
 			}
 
@@ -524,12 +518,11 @@ export class RidesController {
 			reply.send({
 				data: rideData,
 				error: null,
-				statusCode: HttpStatus.OK,
+				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			reply
-				.status(error.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
 		}
 	}

@@ -5,7 +5,7 @@
 import { SeverityTag } from '@/components/common/SeverityTag';
 import { ValidationsDetailSectionResultCellRows } from '@/components/validations/detail/ValidationsDetailSectionResultCellRows';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
-import { type GTFSValidatorMessage } from '@tmlmobilidade/types';
+import { type GtfsValidationMessage } from '@tmlmobilidade/types';
 import { Collapsible, DataTable, DataTableColumn, Divider, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +21,7 @@ export function ValidationsDetailSectionResult() {
 	const validationsDetailContext = useValidationsDetailContext();
 	const { t } = useTranslation();
 
-	const columns: DataTableColumn<GTFSValidatorMessage>[] = [
+	const columns: DataTableColumn<GtfsValidationMessage>[] = [
 		{
 			accessor: 'file_name',
 			title: t('plans:validations.detail.ValidationsDetailSectionResult.table.columns.file_name.label'),
@@ -72,7 +72,7 @@ export function ValidationsDetailSectionResult() {
 	//
 	// C. Render components
 
-	if (validationsDetailContext.data.validation?.feeder_status !== 'complete' && validationsDetailContext.data.validation?.feeder_status !== 'error') {
+	if (validationsDetailContext.data.validation?.processing_status !== 'complete' && validationsDetailContext.data.validation?.processing_status !== 'error') {
 		return null;
 	}
 

@@ -1,17 +1,18 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 /* * */
 
-import { ValidationStatusTag } from '@/components/common/ValidationStatusTag';
 import { openApprovePlanModal } from '@/components/validations/detail/ApprovePlanModal';
 import { openRequestApprovalModalModal } from '@/components/validations/detail/RequestApprovalModal';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, CloseButton, HasPermission, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog, type ProcessingStatus } from '@tmlmobilidade/types';
+import { AgencyTag, Button, CloseButton, HasPermission, IdTag, ProcessingStatusTag, Spacer, Toolbar, useMeContext, ValidityStatusTag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -24,9 +25,33 @@ export function ValidationsDetailHeader() {
 	const router = useRouter();
 	const validationsDetailContext = useValidationsDetailContext();
 	const { t } = useTranslation();
+	const meContext = useMeContext();
+
+	//
+	// B. Transform data
+
+	const hasPermissionToChangeProcessingStatus = useMemo(() => {
+		// User can change processing status if they have permission
+		// for the agency and reference type.
+		return meContext.actions.hasPermissionResource([
+			{
+				action: PermissionCatalog.all.gtfs_validations.actions.update_processing_status,
+				resource_key: 'agency_ids',
+				scope: PermissionCatalog.all.gtfs_validations.scope,
+				value: validationsDetailContext.data.validation.gtfs_agency.agency_id,
+			},
+		]);
+	}, [
+		meContext.data.user?.permissions,
+		validationsDetailContext.data.validation.gtfs_agency.agency_id,
+	]);
 
 	//
 	// C. Handle actions
+
+	const handleUpdateProcessingStatus = async (status: ProcessingStatus) => {
+		await validationsDetailContext.actions.updateProcessingStatus(status);
+	};
 
 	const handleClose = () => {
 		router.push(keepUrlParams(PAGE_ROUTES.plans.VALIDATIONS_LIST));
@@ -47,14 +72,20 @@ export function ValidationsDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
+			<IdTag id={validationsDetailContext.data.validation?._id} copyOnClick />
+			<AgencyTag agencyId={validationsDetailContext.data.validation?.gtfs_agency.agency_id} />
 
-			<Tag label={validationsDetailContext.data.validation?._id} variant="secondary" />
-			<ValidationStatusTag status={validationsDetailContext.data.validation?.feeder_status} />
-			<Tag label={validationsDetailContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
+			<ProcessingStatusTag
+				disabled={!hasPermissionToChangeProcessingStatus}
+				onChange={handleUpdateProcessingStatus}
+				value={validationsDetailContext.data.validation?.processing_status}
+			/>
+
+			<ValidityStatusTag value={validationsDetailContext.data.validation?.validity_status} />
 
 			<Spacer />
 
-			{validationsDetailContext.data.validation.feeder_status === 'complete' && (
+			{validationsDetailContext.flags.can_approve && (
 				<HasPermission
 					action={PermissionCatalog.all.gtfs_validations.actions.request_approval}
 					resourceKey="agency_ids"
@@ -70,7 +101,7 @@ export function ValidationsDetailHeader() {
 				</HasPermission>
 			)}
 
-			{validationsDetailContext.data.validation.feeder_status === 'complete' && (
+			{validationsDetailContext.flags.can_approve && (
 				<HasPermission
 					action={PermissionCatalog.all.plans.actions.create}
 					resourceKey="agency_ids"

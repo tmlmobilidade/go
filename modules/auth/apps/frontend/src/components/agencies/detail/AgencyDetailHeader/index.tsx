@@ -5,8 +5,8 @@
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { HasPermission, keepUrlParams, LockButton, SaveButton } from '@tmlmobilidade/ui';
-import { CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { HasPermission, IdTag, keepUrlParams, LockButton, SaveButton } from '@tmlmobilidade/ui';
+import { CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -34,7 +34,7 @@ export function AgencyDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-			<Tag label={agencyDetailContext.data.id} variant="secondary" />
+			<IdTag id={agencyDetailContext.data.id} copyOnClick />
 			<Label size="lg" singleLine>{agencyDetailContext.data.form.values.name}</Label>
 
 			<Spacer />

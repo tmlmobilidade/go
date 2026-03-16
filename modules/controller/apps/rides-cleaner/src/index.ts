@@ -3,6 +3,7 @@
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -89,8 +90,7 @@ async function reprocessStuckRides() {
 			Logger.spacer(1);
 
 			//
-		}
-		else {
+		} else {
 			Logger.info(`No stuck rides found!`);
 			Logger.spacer(1);
 		}
@@ -100,8 +100,7 @@ async function reprocessStuckRides() {
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
 		//
-	}
-	catch (err) {
+	} catch (err) {
 		Logger.error('An error occurred. Halting execution.', err);
 		Logger.error('Retrying in 10 seconds...');
 		setTimeout(() => {
@@ -114,10 +113,4 @@ async function reprocessStuckRides() {
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		await reprocessStuckRides();
-		setTimeout(runOnInterval, RUN_INTERVAL);
-	};
-	runOnInterval();
-})();
+runOnInterval(reprocessStuckRides, RUN_INTERVAL);

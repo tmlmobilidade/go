@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateTypologyDto, CreateTypologySchema, type Typology, type UpdateTypologyDto, UpdateTypologySchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -51,4 +51,4 @@ class TypologiesClass extends MongoCollectionClass<Typology, CreateTypologyDto, 
 
 /* * */
 
-export const typologies = AsyncSingletonProxy(TypologiesClass);
+export const typologies = asyncSingletonProxy(TypologiesClass);

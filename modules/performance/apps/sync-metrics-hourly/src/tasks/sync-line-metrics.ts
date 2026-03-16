@@ -27,8 +27,7 @@ export const syncLineMetrics = async (): Promise<void> => {
 		await computeTop30DayPerformanceByLine();
 
 		Logger.success(`Finished Line Demand Metrics Sync (${timer.get()})`);
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Failed to sync Line Demand Metrics');
 		Logger.error(error);
 		throw error;

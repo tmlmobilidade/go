@@ -7,6 +7,7 @@ import { AgencyDetailHeader } from '@/components/agencies/detail/AgencyDetailHea
 import { AgencyDetailBasicInfo } from '@/components/agencies/detail/AgencySectionBasicInfo';
 import { AgencySectionContacts } from '@/components/agencies/detail/AgencySectionContacts';
 import { AgencySectionFinacial } from '@/components/agencies/detail/AgencySectionFinacial';
+import { AgencyValidationRules } from '@/components/agencies/detail/AgencyValidationRules';
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */
@@ -35,6 +36,7 @@ export function AgencyDetail() {
 			<AgencyDetailBasicInfo />
 			<AgencySectionFinacial />
 			<AgencySectionContacts />
+			<AgencyValidationRules />
 		</Pane>
 	);
 
