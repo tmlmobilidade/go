@@ -31,7 +31,7 @@ provider "oci" {
 # and can be used throughout the module.
 
 locals {
-	ssh_keys = file(var.ssh_public_key_path)
+	ssh_keys = file(var.ssh_authorized_keys_path)
 }
 
 

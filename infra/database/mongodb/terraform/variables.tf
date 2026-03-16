@@ -43,9 +43,9 @@ variable "private_key_path" {
 	description = "The file path to the private key for OCI API authentication."
 }
 
-variable "ssh_public_key_path" {
+variable "ssh_authorized_keys_path" {
 	type = string
-	description = "The file path to the SSH public key for instance access."
+	description = "The file path to the SSH authorized keys to allow instance access."
 }
 
 
