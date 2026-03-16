@@ -5,7 +5,7 @@
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { CloseButton, DeleteButton, HasPermission, keepUrlParams, LockButton, SaveButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, LockButton, SaveButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -33,7 +33,9 @@ export function StopDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-			<Tag label={stopDetailContext.data.stop?._id} variant="id" />
+
+			<IdTag id={stopDetailContext.data.stop?._id} copyOnClick />
+
 			{stopDetailContext.data.stop?.is_deleted && <Tag label="Paragem Eliminada" variant="danger" />}
 
 			<Spacer />

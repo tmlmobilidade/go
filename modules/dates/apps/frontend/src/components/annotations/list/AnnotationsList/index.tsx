@@ -9,7 +9,7 @@ import { AnnotationsListFiltersBar } from '@/components/annotations/list/Annotat
 import { AnnotationsListHeader } from '@/components/annotations/list/AnnotationsListHeader';
 import { type AnnotationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -29,7 +29,7 @@ export function AnnotationsList() {
 	const columns: DataTableColumn<AnnotationNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="id" />,
+			render: item => <IdTag id={item._id} />,
 			title: '#ID',
 			width: 100,
 		},

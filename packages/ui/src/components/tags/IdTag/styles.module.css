@@ -1,0 +1,40 @@
+/* * */
+/* TAG */
+
+.idTag {
+	display: flex;
+	gap: 3px;
+	align-items: center;
+	justify-content: flex-start;
+	width: auto;
+	padding: 5px;
+	color: var(--color-system-text-100);
+	background-color: var(--color-system-background-200);
+	border-radius: 3px;
+	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
+}
+
+.label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	line-clamp: 1;
+	font-family: var(--font-family-monospace);
+	font-size: 15px;
+	font-weight: var(--font-weight-semibold);
+	line-height: 1;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	white-space: nowrap;
+}
+
+/* * */
+/* PROPS / CLICKABLE */
+
+.idTag[data-clickable='true'] {
+	cursor: pointer;
+	user-select: none;
+}
+
+.idTag[data-clickable='true']:active {
+	transform: translateY(1px);
+}

@@ -9,7 +9,7 @@ import { VehicleNormalized } from '@/types/normalized';
 import { formatDate } from '@/utils/formatDate';
 import { FormatlLicensePlate } from '@/utils/formatLicencePlate';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, useAgenciesContext } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, Tag, useAgenciesContext } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -30,7 +30,7 @@ export function VehiclesList() {
 	const columns: DataTableColumn<VehicleNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="id" />,
+			render: item => <IdTag id={item._id} />,
 			title: '#ID',
 			width: 100,
 		},

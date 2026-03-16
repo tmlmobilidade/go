@@ -5,7 +5,7 @@
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, CloseButton, DeleteButton, HasPermission, keepUrlParams, Label, LockButton, PublishStatusTag, SaveButton, Spacer, Toolbar, useMeContext } from '@tmlmobilidade/ui';
+import { Button, CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusTag, SaveButton, Spacer, Toolbar, useMeContext } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
@@ -55,10 +55,9 @@ export function AlertDetailHeader() {
 	};
 
 	const handleDuplicate = () => {
-		const id = alertDetailContext.data.id;
-		if (!id) return;
+		if (!alertDetailContext.data.id) return;
 		const searchParams = new URLSearchParams(window.location.search);
-		searchParams.set('copy', id);
+		searchParams.set('copy', alertDetailContext.data.id);
 		router.push(`${PAGE_ROUTES.alerts.ALERTS_LIST}?${searchParams.toString()}`);
 	};
 
@@ -70,13 +69,13 @@ export function AlertDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
+			<IdTag id={alertDetailContext.data.id} copyOnClick />
+
 			<PublishStatusTag
 				disabled={!hasPermissionToChangePublishStatus}
 				onChange={value => alertDetailContext.data.form.setFieldValue('publish_status', value)}
 				value={alertDetailContext.data.form.values.publish_status}
 			/>
-
-			<Label size="lg" caps>{alertDetailContext.data.id}</Label>
 
 			<Spacer />
 

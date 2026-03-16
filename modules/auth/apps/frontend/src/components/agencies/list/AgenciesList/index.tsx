@@ -6,8 +6,8 @@ import { useAgenciesListContext } from '@/components/agencies/list/AgenciesList.
 import { AgenciesListHeader } from '@/components/agencies/list/AgenciesListHeader';
 import { type AgencyNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { keepUrlParams } from '@tmlmobilidade/ui';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { IdTag, keepUrlParams } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -28,7 +28,7 @@ export function AgenciesList() {
 	const columns: DataTableColumn<AgencyNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="id" />,
+			render: item => <IdTag id={item._id} />,
 			title: t('default:agencies.list.Table.columns.id'),
 			width: 50,
 		},

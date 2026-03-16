@@ -6,7 +6,7 @@ import { useVehiclesDetailContext } from '@/contexts/VehiclesDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, CloseButton, DeleteButton, HasPermission, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, DeleteButton, HasPermission, IdTag, LockButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -36,7 +36,7 @@ export function VehiclesDetailsHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
-			<Tag label={vehiclesDetailContext.data.vehicle?._id} variant="id" />
+			<IdTag id={vehiclesDetailContext.data.vehicle?._id} copyOnClick />
 
 			<Spacer />
 
