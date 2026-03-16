@@ -43,3 +43,11 @@ EOT
 
 subnet_ocid = ""
 private_ips = ["", "", ""]
+
+# # #
+# BLOCK STORAGE
+# Create block volumes separately paste each OCID below.
+# They must be in the same availability domain as your compute instances.
+# e.g. ["ocid1...", "ocid2...", "ocid3..."]
+
+block_volume_ocids = ["", "", ""]

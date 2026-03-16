@@ -127,7 +127,7 @@ resource "oci_core_volume_attachment" "mongodb_data" {
 
 	instance_id = oci_core_instance.mongodb[count.index].id
 
-	volume_id = var.block_volume_ids[count.index]
+	volume_id = var.block_volume_ocids[count.index]
 
 	attachment_type = "paravirtualized"
 

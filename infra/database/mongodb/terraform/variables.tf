@@ -133,7 +133,7 @@ variable "boot_volume_size_in_gbs" {
 # # #
 # STORAGE
 
-variable "block_volume_ids" {
+variable "block_volume_ocids" {
 	type = list(string)
 	description = <<-EOT
 	List of OCIDs for existing block volumes to attach as data disks to the replica nodes.
