@@ -2,33 +2,44 @@
 
 /* * */
 
+import { openCreateRuleModal } from '@/components/patterns/rules/create/RuleCreate.modal';
+import { openRulesCalendarPreviewModal } from '@/components/patterns/rules/list/RulesCalendarPreview.modal';
+import { openCreateParameterModal } from '@/components/patterns/stops/parameters/create/ParameterCreate.modal';
+import { useEventsContext } from '@/contexts/Events.context';
+import { usePeriodsContext } from '@/contexts/Periods.context';
+import { useTypologiesContext } from '@/contexts/Typologies.context';
+import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, Dates, getMergedPath } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { Line, Pattern, PermissionCatalog, ScheduleRule, Typology, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
-import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { EventReplacementRule, EventRestrictionRule, Line, ManualRule, Pattern, PermissionCatalog, ScheduleRule, StopsParameter, Typology, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
+import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { type Feature, type FeatureCollection, type LineString, type Point } from 'geojson';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
-
-import { openCreateRuleModal } from '../rules/create/RuleCreate.modal';
 
 /* * */
 
 interface PatternDetailContextState {
 	actions: DetailContextStateTemplate['actions'] & {
-		addRule: (rule: ScheduleRule) => void
+		addComment: (comment: string) => void
+		addRule: (rule: ManualRule) => void
 		deleteRule: (ruleId: string) => void
-		editRule: (rule: ScheduleRule) => void
+		editRule: (rule: ManualRule) => void
 		mutate: () => Promise<Pattern | undefined>
-		openRuleModal: (rule?: ScheduleRule) => void
+		openRuleModal: (rule?: ManualRule) => void
+		openRulesCalendarPreviewModal: () => void
+		openStopsParameterModal: (rule?: StopsParameter) => void
 	}
 	data: {
 		agency_id: string
 		form: UseFormReturnType<UpdatePatternDto>
 		id: string
+		mergedRules: ScheduleRule[]
 		pattern: null | Pattern
+		stopsParameterRules: StopsParameterExtended[]
 		typologyData?: Typology
 	}
 	flags: DetailContextStateTemplate['flags']
@@ -60,13 +71,16 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 	const router = useRouter();
 	const meContext = useMeContext();
+	const periodsContext = usePeriodsContext();
+	const eventsContext = useEventsContext();
 
 	//
 	// B. Fetch data
 
-	const { data: patternData, error: patternError, isLoading: patternLoading, mutate: patternMutate } = useSWR<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), { refreshInterval: 5000 });
+	const { data: patternData, error: patternError, isLoading: patternLoading, mutate: patternMutate } = useSWR<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId));
 	const { data: lineData, mutate: lineMutate } = useSWR<Line>(API_ROUTES.offer.LINES_DETAIL(lineId));
-	const { data: typologyData } = useSWR<Typology>(API_ROUTES.offer.TYPOLOGIES_DETAIL(lineData?.typology || ''));
+	const typologiesContext = useTypologiesContext();
+	const typologyData = typologiesContext.data.raw.find(t => t._id === lineData?.typology);
 
 	//
 	// C. Transform data to GeoJSON
@@ -81,12 +95,12 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 				type: 'LineString' as const,
 			},
 			properties: {
-				color: typologyData?.color,
+				color: typologiesContext.data.raw.find(t => t._id === lineData?.typology)?.color,
 				id: patternData._id,
 			},
 			type: 'Feature' as const,
 		};
-	}, [patternData, typologyData]);
+	}, [patternData, typologiesContext.data.raw, lineData?.typology]);
 
 	const patternStopsFC: FeatureCollection<Point, MapOverlayPatternShapeStopsDataProps> | null = useMemo(() => {
 		const featureCollection = getBaseGeoJsonFeatureCollection<Point, MapOverlayPatternShapeStopsDataProps>();
@@ -114,40 +128,96 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	//
 	// D. Setup form
 
-	const { form } = useTypicalForm<UpdatePatternDto>(UpdatePatternSchema, patternData);
+	const manualRules = useMemo(
+		() => (patternData?.rules ?? []).filter((r): r is ManualRule => r.kind === 'manual'),
+		[patternData],
+	);
+
+	const derivedRules = useMemo(
+		() => (patternData?.rules ?? []).filter(r => r.kind === 'event_restriction' || r.kind === 'event_replacement') as (EventReplacementRule | EventRestrictionRule)[],
+		[patternData],
+	);
+
+	const patternForForm = useMemo(
+		() => (patternData ? { ...patternData, rules: manualRules } : patternData),
+		[patternData, manualRules],
+	);
+
+	const { form } = useTypicalForm<UpdatePatternDto>(UpdatePatternSchema, patternForForm as UpdatePatternDto);
+
+	// rules used for UI + preview
+	const rulesForUI = useMemo(
+		() => {
+			const allRules = [...(form.values.rules ?? []), ...derivedRules] as ScheduleRule[];
+			const periods = periodsContext.data.raw || [];
+
+			// Enhance each rule with generated name and short name
+			return allRules.map((rule) => {
+				const { long, short, tooltip } = buildRuleSummary(rule, { events: eventsContext.data.raw, periods });
+				return { ...rule, name: long, shortName: short, tooltip };
+			});
+		},
+		[eventsContext.data.raw, form.values.rules, derivedRules, periodsContext.data.raw],
+	);
+
+	// parameters used for UI + preview
+	const parametersForUI = useMemo(() => {
+		const allParameters = [...(form.values.parameters ?? [])] as StopsParameter[];
+		const periods = periodsContext.data.raw || [];
+		const basePath = patternData?.path ?? [];
+
+		return allParameters.map((parameter) => {
+			const { long, short } = buildParameterSummary(parameter, { periods });
+
+			const mergedPath = getMergedPath(basePath, parameter.path || []);
+			const parameterTravelTimes = computeSegmentTravelTimes(mergedPath);
+
+			return {
+				...parameter,
+				name: long,
+				shortName: short,
+				travelTimes: parameterTravelTimes,
+			};
+		});
+	}, [form.values.parameters, periodsContext.data.raw, patternData?.path]);
 
 	//
-	// E. Handle actions
+	// E. Handle Schedule RULES actions
 
-	const handleAddRule = (rule: ScheduleRule) => {
-		const currentRules = form.values.rules || [];
+	const handleAddRule = useCallback((rule: ManualRule) => {
+		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
 		const ruleWithId = { ...rule, _id: crypto.randomUUID() };
-		form.setFieldValue('rules', [...currentRules, ruleWithId]);
-	};
+		const newRules = [...currentRules, ruleWithId];
 
-	const handleEditRule = (rule: ScheduleRule) => {
+		form.setFieldValue('rules', newRules);
+	}, [form]);
+
+	const handleEditRule = useCallback((rule: ManualRule) => {
 		if (!rule._id) {
 			console.error('Cannot edit rule without _id');
 			return;
 		}
-		const currentRules = form.values.rules || [];
-		form.setFieldValue('rules', currentRules.map(r =>
+		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
+		const newRules = currentRules.map(r =>
 			r._id === rule._id ? rule : r,
-		));
-	};
+		);
 
-	const handleDeleteRule = (ruleId: string) => {
-		const currentRules = form.values.rules || [];
-		form.setFieldValue('rules', currentRules.filter(r => r._id !== ruleId));
-	};
+		form.setFieldValue('rules', newRules);
+	}, [form]);
 
-	const handleOpenRuleModal = (rule?: ScheduleRule) => {
-		const onSubmit = (validatedRule: ScheduleRule) => {
+	const handleDeleteRule = useCallback((ruleId: string) => {
+		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
+		const newRules = currentRules.filter(r => r._id !== ruleId);
+
+		form.setFieldValue('rules', newRules);
+	}, [form]);
+
+	const handleOpenRuleModal = useCallback((rule?: ManualRule) => {
+		const onSubmit = (validatedRule: ManualRule) => {
 			if (rule?._id) {
 				// Editing - preserve the _id
 				handleEditRule({ ...validatedRule, _id: rule._id });
-			}
-			else {
+			} else {
 				// Creating new
 				handleAddRule(validatedRule);
 			}
@@ -156,14 +226,91 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		const onDelete = rule?._id ? () => handleDeleteRule(rule._id) : undefined;
 
 		openCreateRuleModal(lineData?.agency_id || '', onSubmit, rule, onDelete);
-	};
+	}, [handleAddRule, handleEditRule, handleDeleteRule, lineData?.agency_id]);
+
+	const handleOpenRulesCalendarPreviewModal = useCallback(() => {
+		openRulesCalendarPreviewModal(
+			lineData?.agency_id || '',
+			rulesForUI,
+		);
+	}, [lineData?.agency_id, rulesForUI]);
+
+	//
+	// F. Handle Schedule RULES actions
+
+	const handleAddStopParameter = useCallback((rule: StopsParameter) => {
+		const currentRules = (form.getValues().parameters ?? []) as StopsParameter[];
+		const ruleWithId = { ...rule, _id: crypto.randomUUID() };
+		const newRules = [...currentRules, ruleWithId];
+
+		form.setFieldValue('parameters', newRules);
+	}, [form]);
+
+	const handleEditStopParameter = useCallback((rule: StopsParameter) => {
+		if (!rule._id) {
+			console.error('Cannot edit rule without _id');
+			return;
+		}
+		const currentRules = (form.getValues().parameters ?? []) as StopsParameter[];
+		const newRules = currentRules.map(r =>
+			r._id === rule._id ? rule : r,
+		);
+
+		form.setFieldValue('parameters', newRules);
+	}, [form]);
+
+	const handleDeleteStopParameter = useCallback((ruleId: string) => {
+		const currentRules = (form.getValues().parameters ?? []) as StopsParameter[];
+		const newRules = currentRules.filter(r => r._id !== ruleId);
+
+		form.setFieldValue('parameters', newRules);
+	}, [form]);
+
+	const handleOpenStopsParameterModal = useCallback((rule?: StopsParameter) => {
+		const onSubmit = (validatedRule: StopsParameter) => {
+			if (rule?._id) {
+				// Editing - preserve the _id
+				handleEditStopParameter({ ...validatedRule, _id: rule._id });
+			} else {
+				// Creating new
+				handleAddStopParameter(validatedRule);
+			}
+		};
+
+		const onDelete = rule?._id ? () => handleDeleteStopParameter(rule._id) : undefined;
+
+		openCreateParameterModal(lineData?.agency_id || '', onSubmit, patternData.path, rule, onDelete);
+	}, [lineData?.agency_id, patternData, handleEditStopParameter, handleAddStopParameter, handleDeleteStopParameter]);
+
+	const addComment = useCallback(async (comment: string) => {
+		try {
+			const commentToAdd = {
+				created_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				created_by: 'will-be-set-by-api',
+				message: comment,
+				type: 'note',
+				updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			};
+			const res = await fetchData(API_ROUTES.offer.PATTERNS_DETAIL_COMMENT(patternId), 'POST', commentToAdd);
+
+			if (res.error) {
+				useToast.error({ message: res.error, title: 'Erro ao adicionar comentário' });
+				return;
+			}
+
+			await patternMutate();
+			useToast.success({ message: 'Comentário adicionado com sucesso.', title: 'Sucesso' });
+		} catch (error) {
+			useToast.error({ message: error.message, title: 'Erro ao adicionar comentário' });
+		}
+	}, [patternId, patternMutate]);
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
-			patternMutate(updatedItem);
-			lineMutate();
+			void patternMutate(updatedItem);
+			void lineMutate();
 		},
 	});
 
@@ -171,7 +318,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), 'DELETE', patternData),
 		onSuccess: () => {
 			form.resetDirty();
-			lineMutate();
+			void lineMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.offer.LINES_LIST));
 		},
 	});
@@ -180,8 +327,8 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL_LOCK(patternId)),
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
-			patternMutate(updatedItem);
-			lineMutate();
+			void patternMutate(updatedItem);
+			void lineMutate();
 		},
 	});
 
@@ -221,6 +368,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 	const contextValue: PatternDetailContextState = useMemo(() => ({
 		actions: {
+			addComment,
 			addRule: handleAddRule,
 			delete: handleDelete,
 			deleteRule: handleDeleteRule,
@@ -228,6 +376,8 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 			lock: handleLock,
 			mutate: patternMutate,
 			openRuleModal: handleOpenRuleModal,
+			openRulesCalendarPreviewModal: handleOpenRulesCalendarPreviewModal,
+			openStopsParameterModal: handleOpenStopsParameterModal,
 			save: handleSave,
 		},
 		data: {
@@ -235,7 +385,9 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 			form,
 			id: patternId,
 			lineId,
+			mergedRules: rulesForUI,
 			pattern: patternData,
+			stopsParameterRules: parametersForUI,
 			typologyData,
 		},
 		flags: {
@@ -253,18 +405,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 			pattern_line: patternLineFC,
 			pattern_stops: patternStopsFC,
 		},
-	}), [
-		patternData,
-		patternError,
-		patternLoading,
-		patternId,
-		form,
-		isSaving,
-		patternLineFC,
-		patternStopsFC,
-		lineData,
-		typologyData,
-	]);
+	}), [addComment, handleAddRule, handleDelete, handleDeleteRule, handleEditRule, handleLock, patternMutate, handleOpenRuleModal, handleOpenRulesCalendarPreviewModal, handleOpenStopsParameterModal, handleSave, lineData?.agency_id, form, patternId, lineId, rulesForUI, patternData, parametersForUI, typologyData, canDelete, canLock, canSave, patternError, isDeleting, patternLoading, isLocking, isReadOnly, isSaving, patternLineFC, patternStopsFC]);
 
 	//
 	// H. Render components

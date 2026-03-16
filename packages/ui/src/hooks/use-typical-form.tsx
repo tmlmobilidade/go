@@ -34,6 +34,7 @@ export function useTypicalForm<T extends Record<string, unknown>>(
 	schema: Schema,
 	apiData?: null | T | undefined,
 	initialValues?: Partial<T>,
+	mode?: 'controlled' | 'uncontrolled',
 ): UseTypicalFormReturnType<T> {
 	//
 
@@ -43,7 +44,7 @@ export function useTypicalForm<T extends Record<string, unknown>>(
 	const form = useForm<T>({
 		cascadeUpdates: true,
 		initialValues: initialValues as T,
-		mode: 'uncontrolled',
+		mode: mode || 'uncontrolled',
 		validate: zodResolver(schema as Schema<T>),
 		validateInputOnBlur: true,
 		validateInputOnChange: true,

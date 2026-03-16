@@ -9,7 +9,6 @@ import { type AlertCauseEffectReference } from '@tmlmobilidade/types';
  * of an alert in the format: 'CAUSE:EFFECT:REFERENCE_TYPE'
  */
 export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragment> = {
-
 	'ABUSIVE_PARKING:ACCESSIBILITY_ISSUE:lines': {
 		description: {
 			plural: {
@@ -558,6 +557,29 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			singular: {
 				en: 'not-available',
 				pt: '{rides_title} | Atrasos significativos',
+			},
+		},
+	},
+
+	'ACCIDENT:STOP_MOVED:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a um acidente/incidente, foi necessário deslocar temporariamente {def_f_p} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a um acidente/incidente, foi necessário deslocar temporariamente {def_f_s} {stops_description_pt}. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Paragem deslocada',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Paragem deslocada',
 			},
 		},
 	},
@@ -1317,6 +1339,29 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			singular: {
 				en: 'not-available',
 				pt: '{stops_title} | Atrasos significativos',
+			},
+		},
+	},
+
+	'DEMONSTRATION:STOP_MOVED:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a um evento, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a um evento, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Acessibilidade comprometida',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Acessibilidade comprometida',
 			},
 		},
 	},
@@ -2471,6 +2516,29 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 		},
 	},
 
+	'ROAD_ISSUE:STOP_MOVED:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido a uma obstrução na estrada, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido a uma obstrução na estrada, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Acessibilidade comprometida',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Acessibilidade comprometida',
+			},
+		},
+	},
+
 	'STRIKE:ADDITIONAL_SERVICE:agency': {
 		description: {
 			plural: {
@@ -3367,7 +3435,6 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
-
 	'WEATHER:DETOUR:rides': {
 		description: {
 			plural: {
@@ -3390,7 +3457,6 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
-
 	'WEATHER:DETOUR:stops': {
 		description: {
 			plural: {
@@ -3413,7 +3479,6 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			},
 		},
 	},
-
 	'WEATHER:NO_SERVICE:lines': {
 		description: {
 			plural: {
@@ -3631,6 +3696,28 @@ export const alertI18nTemplates: Record<AlertCauseEffectReference, TemplateFragm
 			singular: {
 				en: 'not-available',
 				pt: '{stops_title} | Atrasos significativos',
+			},
+		},
+	},
+	'WEATHER:STOP_MOVED:stops': {
+		description: {
+			plural: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas, a acessibilidade para passageiros PMR está comprometida {in_def_f_p} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+			singular: {
+				en: 'not-available',
+				pt: 'Devido às condições metereológicas adversas, a acessibilidade para passageiros PMR está comprometida {in_def_f_s} {stops_description_pt}. Por favor contacte a linha de apoio para alternativas. Lamentamos o incómodo e agradecemos a sua compreensão.',
+			},
+		},
+		title: {
+			plural: {
+				en: 'not-available',
+				pt: '{stops_title} | Acessibilidade comprometida',
+			},
+			singular: {
+				en: 'not-available',
+				pt: '{stops_title} | Acessibilidade comprometida',
 			},
 		},
 	},

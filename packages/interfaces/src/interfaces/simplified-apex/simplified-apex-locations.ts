@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type SimplifiedApexLocation, type UpdateSimplifiedApexLocationDto } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 
 /* * */
@@ -48,4 +48,4 @@ class SimplifiedApexLocationsClass extends MongoCollectionClass<SimplifiedApexLo
 
 /* * */
 
-export const simplifiedApexLocations = AsyncSingletonProxy(SimplifiedApexLocationsClass);
+export const simplifiedApexLocations = asyncSingletonProxy(SimplifiedApexLocationsClass);

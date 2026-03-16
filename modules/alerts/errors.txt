@@ -6,5 +6,3 @@ Could not parse agency ID for Alert ID: N8VR2
 Could not parse agency ID for Alert ID: 2GXQA
 Could not parse agency ID for Alert ID: 2E16Z
 Could not parse agency ID for Alert ID: 6LIAX
-
-37C8Y - sem textos

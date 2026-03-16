@@ -67,7 +67,7 @@ export function Calendar({
 		if (view === 'year' && onRangeSelect) {
 			const { end, start } = rangeSelection;
 
-			const clickedKey = day.calendarKey; // ✅ civil key from MonthGrid
+			const clickedKey = day.calendarKey;
 
 			// First click: set start
 			if (!start) {

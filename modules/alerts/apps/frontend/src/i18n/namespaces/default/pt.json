@@ -1,77 +1,23 @@
 {
-	"ChangePasswordForm": {
-		"description": "Introduza a sua nova password",
-		"error_message": {
-			"description": "Ocorreu um erro ao tentar alterar a password",
-			"title": "Erro ao tentar alterar password"
-		},
-		"fields": {
-			"confirm_password": {
-				"placeholder": "Confirmar Password"
-			},
-			"password": {
-				"placeholder": "Password"
+	"alerts": {
+		"create": {
+			"summary": {
+				"auto_text": {
+					"label": "Gerar descrição automaticamente"
+				},
+				"coordinates": {
+					"label": "Coordenadas Geográficas"
+				},
+				"description": {
+					"label": "Descrição"
+				},
+				"info_url": {
+					"label": "Link Adicional"
+				},
+				"title": {
+					"label": "Título"
+				}
 			}
-		},
-		"footer": {
-			"label": "Voltar ao login"
-		},
-		"submit": {
-			"label": "Confirmar"
-		},
-		"success": {
-			"description": "Password alterada com sucesso.",
-			"title": "Sucesso"
-		},
-		"title": "Alterar password"
-	},
-	"LoginForm": {
-		"description": "Procuramos simplificar a gestão dos transportes públicos com ferramentas digitais estáveis e intuitivas.",
-		"error": {
-			"description": "Ocorreu um erro ao tentar efetuar o login",
-			"title": "Erro ao tentar efetuar o login"
-		},
-		"fields": {
-			"email": {
-				"placeholder": "Email"
-			},
-			"password": {
-				"placeholder": "Password"
-			}
-		},
-		"footer": {
-			"label": "Recuperar Password"
-		},
-		"submit": {
-			"label": "Login"
-		},
-		"success": {
-			"description": "Login efetuado com sucesso",
-			"title": "Sucesso"
-		},
-		"title": "Login no GO+"
-	},
-	"SendPasswordResetEmailForm": {
-		"description": "Introduza seu email para recuperar a sua palavra-passe",
-		"error": {
-			"description": "Ocorreu um erro ao tentar enviar email",
-			"title": "Erro ao tentar enviar email"
-		},
-		"fields": {
-			"email": {
-				"placeholder": "Email de Recuperação"
-			}
-		},
-		"footer": {
-			"label": "Voltar ao login"
-		},
-		"submit": {
-			"label": "Enviar email"
-		},
-		"success": {
-			"description": "Email de recuperação enviado com sucesso",
-			"title": "Sucesso"
-		},
-		"title": "Recuperar Password"
+		}
 	}
 }

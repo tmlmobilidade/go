@@ -127,7 +127,7 @@
 .daySelectedStart .dayNumber,
 .daySelectedEnd .dayNumber {
 	font-weight: 700;
-	color: var(--color-contrast);
+	color: var(--color-text-100);
 }
 
 .today .dayNumber {
@@ -137,7 +137,7 @@
 	width: 20px;
 	height: 20px;
 	font-weight: 600;
-	color: var(--color-contrast);
+	color: var(--color-system-background-100) !important;
 	background: var(--color-primary);
 	border-radius: 50%;
 }
@@ -149,7 +149,7 @@
 
 .hasCellEvent .dayNumber {
 	font-weight: 600;
-	color: var(--color-contrast);
+	color: var(--color-text-100);
 }
 
 .otherMonth {
@@ -166,7 +166,8 @@
 }
 
 .hasCellEvent.weekend .dayNumber {
-	color: var(--color-system-background-100);
+
+	/* color: var(--color-system-text-100); */
 }
 
 .otherMonth.weekend .dayNumber {

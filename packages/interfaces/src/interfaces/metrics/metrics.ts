@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { MetricSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -50,4 +50,4 @@ class MetricsClass extends MongoCollectionClass<MetricDocument, MetricDocument, 
 
 /* * */
 
-export const metrics = AsyncSingletonProxy(MetricsClass);
+export const metrics = asyncSingletonProxy(MetricsClass);

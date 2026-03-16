@@ -5,7 +5,7 @@
 import { useRoleDetailContext } from '@/components/roles/detail/RoleDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { CloseButton, DeleteButton, HasPermission, keepUrlParams, Label, LockButton, SaveButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, SaveButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -36,7 +36,7 @@ export function RoleDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-			<Tag label={roleDetailContext.data.id || t('default:roles.detail.header.NewRoleButton.label')} variant="secondary" />
+			<IdTag id={roleDetailContext.data.id} copyOnClick />
 			<Label size="lg" singleLine>{roleDetailContext.data.form.values.name}</Label>
 
 			<Spacer />

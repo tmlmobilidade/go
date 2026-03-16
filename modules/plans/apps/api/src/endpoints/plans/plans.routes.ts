@@ -34,6 +34,12 @@ server.register(
 			PlansController.getPlanOperationFileById,
 		);
 
+		instance.get(
+			'/:id/operation-file/download',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
+			PlansController.downloadPlanOperationFileById,
+		);
+
 		instance.post(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.create]) },

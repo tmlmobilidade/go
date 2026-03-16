@@ -2,15 +2,13 @@
 
 /* * */
 
-import { ValidationStatusTag } from '@/components/common/ValidationStatusTag';
 import { useValidationsListContext } from '@/components/validations/list/ValidationsList.context';
-import { ValidationsListCellAgency } from '@/components/validations/list/ValidationsListCellAgency';
 import { ValidationsListCellDate } from '@/components/validations/list/ValidationsListCellCreatedAt';
 import { ValidationsListFiltersBar } from '@/components/validations/list/ValidationsListFiltersBar';
 import { ValidationsListHeader } from '@/components/validations/list/ValidationsListHeader';
 import { type ValidationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag } from '@tmlmobilidade/ui';
+import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, ProcessingStatusTag, ValidityStatusTag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -30,21 +28,27 @@ export function ValidationsList() {
 	const columns: DataTableColumn<ValidationNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <IdTag id={item._id} />,
 			title: '#ID',
-			width: 100,
-		},
-		{
-			accessor: 'feeder_status',
-			render: item => <ValidationStatusTag status={item.feeder_status} />,
-			title: 'Estado',
-			width: 125,
+			width: 90,
 		},
 		{
 			accessor: 'agency_id_normalized',
-			render: item => <ValidationsListCellAgency agencyId={item.gtfs_agency.agency_id} agencyName={item.gtfs_agency.agency_name} />,
+			render: item => <AgencyTag agencyId={item.gtfs_agency.agency_id} showShortName />,
 			title: 'Operador',
-			width: 400,
+			width: 110,
+		},
+		{
+			accessor: 'processing_status',
+			render: item => <ProcessingStatusTag value={item.processing_status} />,
+			title: 'Estado',
+			width: 135,
+		},
+		{
+			accessor: 'validity_status',
+			render: item => <ValidityStatusTag value={item.validity_status} />,
+			title: 'Resultado',
+			width: 110,
 		},
 		{
 			accessor: 'created_at',
@@ -74,8 +78,8 @@ export function ValidationsList() {
 
 	return (
 		<Pane header={[
-			<ValidationsListHeader />,
-			<ValidationsListFiltersBar />,
+			<ValidationsListHeader key="header" />,
+			<ValidationsListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable

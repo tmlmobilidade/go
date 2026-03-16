@@ -18,7 +18,7 @@ export const AgencySchema = DocumentSchema.extend({
 	operation_start_date: OperationalDateSchema.nullable().default(null),
 	phone: z.string(),
 	public_email: z.string().email(),
-	short_name: z.string(),
+	short_name: z.string().max(4),
 	timezone: z.string().default('Europe/Lisbon'),
 	validation_rules: z.any().nullable().default(null),
 	website_url: z.string().url(),

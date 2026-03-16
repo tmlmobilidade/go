@@ -10,7 +10,7 @@ import { useRolesContext } from '@/contexts/Roles.context';
 import { type UserNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Tag, TagGroup } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, LoadingOverlay, Pane, Tag, TagGroup } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -34,7 +34,7 @@ export function UsersList() {
 	const columns: DataTableColumn<UserNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <IdTag id={item._id} />,
 			title: t('default:users.list.Table.columns.id.label'),
 			width: 120,
 		},
@@ -88,8 +88,8 @@ export function UsersList() {
 
 	return (
 		<Pane header={[
-			<UsersListHeader />,
-			<UsersListFilterBar />,
+			<UsersListHeader key="header" />,
+			<UsersListFilterBar key="filters" />,
 		]}
 		>
 			<DataTable

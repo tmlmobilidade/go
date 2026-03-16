@@ -2,6 +2,13 @@
 /* INPUT */
 
 .input {
+	display: block;
+	align-items: initial;   
+	height: auto;             
+	min-height: 96px;        
 	padding: 10px 15px;
-	line-height: 1.5;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	overflow: auto;
+	line-height: 1.5;       
 }

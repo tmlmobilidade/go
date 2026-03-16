@@ -20,7 +20,7 @@
  *
  * Benefits:
  * - Single MongoDB change stream regardless of number of clients
- * - Lazy initialization - stream only starts when first client connects through "AsyncSingletonProxy"
+ * - Lazy initialization - stream only starts when first client connects through "asyncSingletonProxy"
  * - Clean subscription management per client
  * - Reduced database load and network overhead
 */
@@ -29,7 +29,7 @@ import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { rides } from '@tmlmobilidade/interfaces';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { RideNormalized } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy, HttpResponse } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy, HttpResponse } from '@tmlmobilidade/utils';
 import EventEmitter from 'events';
 
 /**
@@ -131,4 +131,4 @@ class RidesChangeStreamManager {
 	//
 }
 
-export const ridesChangeStream = AsyncSingletonProxy<RidesChangeStreamManager>(RidesChangeStreamManager);
+export const ridesChangeStream = asyncSingletonProxy<RidesChangeStreamManager>(RidesChangeStreamManager);

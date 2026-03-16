@@ -2,18 +2,13 @@
 
 import { cleanOldValidations } from '@/tasks/clean-old-validations.js';
 import { ensureGtfsFiles } from '@/tasks/ensure-gtfs-files.js';
+import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		//
+async function main() {
+	await cleanOldValidations();
+	await ensureGtfsFiles();
+}
 
-		await cleanOldValidations();
-
-		await ensureGtfsFiles();
-
-		setTimeout(runOnInterval, 300_000); // 5 minutes in milliseconds
-	};
-	runOnInterval();
-})();
+runOnInterval(main, 300_000); // 5 minutes in milliseconds

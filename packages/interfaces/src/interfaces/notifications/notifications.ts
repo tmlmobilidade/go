@@ -4,9 +4,9 @@ import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { roles } from '@/interfaces/auth/roles.js';
 import { users } from '@/interfaces/auth/users.js';
 import { getAppConfig } from '@tmlmobilidade/consts';
-import { sendNotificationEmail } from '@tmlmobilidade/emails';
+import { sendGenericNotificationEmail } from '@tmlmobilidade/emails';
 import { type CreateNotificationDto, CreateNotificationSchema, type Notification, NotificationPermission, Permission, Role, UpdateNotificationDto, UpdateNotificationSchema, User } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -74,22 +74,20 @@ class NotificationsClass extends MongoCollectionClass<Notification, CreateNotifi
 
 			const newNotification: CreateNotificationDto = { ...baseNotification, user_id: recipient._id };
 
+			const result = await notifications.insertOne(newNotification);
+
 			// Send email if permission allows
 			if (canReceiveEmail) {
-				await sendNotificationEmail({
-					props: {
-						body: baseNotification.payload.body,
-						href: baseNotification.payload.href ?? '',
-						priority: baseNotification.priority,
-						scope: baseNotification.scope,
-						title: baseNotification.payload.title,
-						topic: baseNotification.topic,
+				await sendGenericNotificationEmail({
+					data: {
+						body: result.payload.body,
+						notificationId: result._id,
+						notificationUrl: result.payload.href ?? '',
+						title: result.payload.title,
 					},
 					to: recipient.email,
 				});
 			}
-
-			await notifications.insertOne(newNotification);
 		}
 	}
 
@@ -144,4 +142,4 @@ class NotificationsClass extends MongoCollectionClass<Notification, CreateNotifi
 
 /* * */
 
-export const notifications = AsyncSingletonProxy(NotificationsClass);
+export const notifications = asyncSingletonProxy(NotificationsClass);

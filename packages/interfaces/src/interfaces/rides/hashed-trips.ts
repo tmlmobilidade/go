@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { DocumentSchema, HashedTrip } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -44,4 +44,4 @@ class HashedTripsClass extends MongoCollectionClass<HashedTrip, HashedTrip, Hash
 
 /* * */
 
-export const hashedTrips = AsyncSingletonProxy(HashedTripsClass);
+export const hashedTrips = asyncSingletonProxy(HashedTripsClass);

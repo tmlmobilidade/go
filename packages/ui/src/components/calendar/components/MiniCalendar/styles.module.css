@@ -1,26 +1,3 @@
-/* stylelint-disable selector-class-pattern */
-/* stylelint-disable selector-pseudo-class-no-unknown */
-.container {
-	width: 100%;
-}
-
-.container :global(.mantine-Calendar-calendar) {
-	width: 100% !important;
-	max-width: 100% !important;
-}
-
-.container :global(.mantine-Calendar-levelsGroup) {
-	width: 100% !important;
-}
-
-.container :global(.mantine-Calendar-calendarHeader) {
-	width: 100% !important;
-}
-
-.container :global(.mantine-Calendar-month) {
-	width: 100% !important;
-}
-
 /* Override Mantine Calendar selected day styles */
 .day[data-selected="true"] {
 	color: white !important;

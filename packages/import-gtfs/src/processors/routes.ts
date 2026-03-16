@@ -39,8 +39,7 @@ export async function processRoutesFile(context: ImportGtfsContext): Promise<voi
 		Logger.success(`Finished processing "routes.txt": ${context.gtfs.routes.size} rows saved in ${routesParseTimer.get()}.`, 1);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "routes.txt" file.', error);
 		throw new Error('✖︎ Error processing "routes.txt" file.');
 	}

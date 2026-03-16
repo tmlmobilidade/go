@@ -35,9 +35,15 @@ db.createUser({
 });
 
 db.createUser({
+	pwd: USER_TRACKER_PASSWORD,
+	roles: [{ db: 'admin', role: 'tracker' }],
+	user: 'tracker',
+});
+
+db.createUser({
 	pwd: USER_REPLICATOR_PASSWORD,
-	roles: [{ db: 'admin', role: 'replicator' }],
-	user: 'replicator',
+	roles: [{ db: 'admin', role: 'apex' }],
+	user: 'apex',
 });
 
 db.createUser({
@@ -50,12 +56,6 @@ db.createUser({
 	pwd: USER_DATES_PASSWORD,
 	roles: [{ db: 'admin', role: 'dates' }],
 	user: 'dates',
-});
-
-db.createUser({
-	pwd: USER_TICKETING_PASSWORD,
-	roles: [{ db: 'admin', role: 'ticketing' }],
-	user: 'ticketing',
 });
 
 db.createUser({

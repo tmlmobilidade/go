@@ -13,7 +13,7 @@ type ClickHouseWriterParams<T> = {
 	/**
 	 * The maximum number of items to hold in memory
 	 * before flushing to the database.
-	 * @default 10000
+	 * @default 10_000
 	 */
 	batch_size?: number
 
@@ -24,6 +24,13 @@ type ClickHouseWriterParams<T> = {
 	 * @default disabled
 	 */
 	batch_timeout?: number
+
+	/**
+	 * If enabled, starts an async one-time table ensure operation in the constructor.
+	 * Use `await writer.init()` if you need to block startup until it is completed.
+	 * @default false
+	 */
+	ensure_table_on_init?: boolean
 
 	/**
 	 * How long to wait, in milliseconds, after the last write operation
@@ -72,6 +79,7 @@ export class ClickHouseWriter<T> {
 	private batchTimeoutTimer: NodeJS.Timeout | null = null;
 	private idleTimeoutTimer: NodeJS.Timeout | null = null;
 	private sessionTimer = new Timer();
+	private isInitialized = false;
 
 	/* * */
 
@@ -79,7 +87,7 @@ export class ClickHouseWriter<T> {
 		if (!params.table) throw new Error('CLICKHOUSEWRITER: Table name is required');
 		if (params.client) {
 			this.params = params;
-			this.client = params.client as ClickHouseClient;
+			this.client = params.client;
 		} else if (params.clientConfig) {
 			const { database, password, url, username } = params.clientConfig;
 			if (!database || !password || !url || !username) {
@@ -100,6 +108,16 @@ export class ClickHouseWriter<T> {
 	}
 
 	/* * */
+
+	/**
+	 * Initializes the writer by ensuring the table exists.
+	 * Safe to call multiple times.
+	 */
+	async init() {
+		if (this.isInitialized) return;
+		await this.ensureTable();
+		this.isInitialized = true;
+	}
 
 	/**
 	 * Ensures the table exists in ClickHouse by creating it if it doesn't exist.
@@ -135,136 +153,10 @@ export class ClickHouseWriter<T> {
 
 	/* * */
 
-	/**
-	 * Builds a WHERE clause from a filter object.
-	 * Supports simple equality, range queries ($gte, $lte, $gt, $lt), and $in queries.
-	 *
-	 * @param filter Filter object with column names as keys
-	 * @returns WHERE clause string (without the WHERE keyword)
-	 */
-	private buildWhereClause(filter?: Record<string, unknown>): null | string {
-		if (!filter || Object.keys(filter).length === 0) {
-			return null;
-		}
-
-		const conditions: string[] = [];
-
-		for (const [key, value] of Object.entries(filter)) {
-			if (value === null || value === undefined) {
-				continue;
-			}
-
-			// Handle range queries (MongoDB-style operators)
-			if (typeof value === 'object' && !Array.isArray(value)) {
-				const operators = value as Record<string, unknown>;
-				for (const [op, opValue] of Object.entries(operators)) {
-					switch (op) {
-						case '$gt':
-							conditions.push(`${key} > ${this.formatValue(opValue)}`);
-							break;
-						case '$gte':
-							conditions.push(`${key} >= ${this.formatValue(opValue)}`);
-							break;
-						case '$in':
-							if (Array.isArray(opValue)) {
-								const values = opValue.map(v => this.formatValue(v)).join(', ');
-								conditions.push(`${key} IN (${values})`);
-							}
-							break;
-						case '$lt':
-							conditions.push(`${key} < ${this.formatValue(opValue)}`);
-							break;
-						case '$lte':
-							conditions.push(`${key} <= ${this.formatValue(opValue)}`);
-							break;
-					}
-				}
-			} else {
-				// Simple equality
-				conditions.push(`${key} = ${this.formatValue(value)}`);
-			}
-		}
-
-		return conditions.length > 0 ? conditions.join(' AND ') : null;
-	}
-
-	/**
-	 * Formats a value for use in a SQL query.
-	 */
-	private formatValue(value: unknown): string {
-		if (typeof value === 'string') {
-			return `'${value}'`;
-		}
-		return String(value);
-	}
-
-	/* * */
-
-	/**
-	 * Counts the number of documents in the table that match the given filter.
-	 * Supports simple equality and range queries ($gte, $lte, $gt, $lt).
-	 *
-	 * @param filter Optional WHERE clause conditions (e.g., { operational_date: '2024-01-01' } or { received_at: { $gte: 1234567890 } })
-	 * @returns The count of matching documents
-	 */
-	async countDocuments(filter?: Record<string, unknown>): Promise<number> {
-		try {
-			let query = `SELECT count() as count FROM ${this.params.table}`;
-
-			const whereClause = this.buildWhereClause(filter);
-			if (whereClause) {
-				query += ` WHERE ${whereClause}`;
-			}
-
-			const result = await this.client.query({
-				format: 'JSONEachRow',
-				query,
-			});
-
-			const data = await result.json() as { count: string }[];
-			return parseInt(data[0]?.count ?? '0', 10);
-		} catch (error) {
-			Logger.error(`CLICKHOUSEWRITER [${this.params.table}]: Error @ countDocuments(): ${(error as Error).message}`);
-			throw error;
-		}
-	}
-
-	/* * */
-
-	/**
-	 * Returns distinct values for a given column, optionally filtered.
-	 * Supports simple equality and range queries ($gte, $lte, $gt, $lt).
-	 *
-	 * @param column The column name to get distinct values for
-	 * @param filter Optional WHERE clause conditions
-	 * @returns Array of distinct values
-	 */
-	async distinct<K = string>(column: string, filter?: Record<string, unknown>): Promise<K[]> {
-		try {
-			let query = `SELECT DISTINCT ${column} FROM ${this.params.table}`;
-
-			const whereClause = this.buildWhereClause(filter);
-			if (whereClause) {
-				query += ` WHERE ${whereClause}`;
-			}
-
-			const result = await this.client.query({
-				format: 'JSONEachRow',
-				query,
-			});
-
-			const data = await result.json() as Record<string, K>[];
-			return data.map(row => row[column]);
-		} catch (error) {
-			Logger.error(`CLICKHOUSEWRITER [${this.params.table}]: Error @ distinct(): ${(error as Error).message}`);
-			throw error;
-		}
-	}
-
-	/* * */
-
 	async flush(callback?: (data?: T[]) => Promise<void>) {
 		try {
+			await this.init();
+
 			//
 
 			const flushTimer = new Timer();
@@ -354,8 +246,9 @@ export class ClickHouseWriter<T> {
 	 * @param flushCallback Callback function to call after the flush operation is complete
 	 */
 
-	async write(data: T | T[], writeCallback?: () => Promise<void>, flushCallback?: (data?: T[]) => Promise<void>) {
+	async write(data: T | T[], { flushCallback, writeCallback }: { flushCallback?: (data?: T[]) => Promise<void>, writeCallback?: () => Promise<void> } = {}) {
 		//
+		await this.init();
 
 		//
 		// Invalidate the previously set idle timeout timer

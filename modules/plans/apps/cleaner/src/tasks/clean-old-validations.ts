@@ -28,17 +28,17 @@ export async function cleanOldValidations() {
 	//
 	// Set the threshold for deletion (30 days)
 
-	const thresholdsByStatus: Record<GtfsValidation['feeder_status'], number> = {
+	const thresholdsByProcessingStatus: Record<GtfsValidation['processing_status'], number> = {
 
 		complete: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
 
-		error: 2 * 24 * 60 * 60 * 1000, // 2 days in milliseconds
+		error: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
 
-		processing: 1 * 24 * 60 * 60 * 1000, // 1 day in milliseconds
+		processing: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
 
-		skipped: 1 * 24 * 60 * 60 * 1000, // 1 day in milliseconds
+		skipped: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
 
-		waiting: 1 * 24 * 60 * 60 * 1000, // 1 day in milliseconds
+		waiting: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
 
 	};
 
@@ -60,10 +60,10 @@ export async function cleanOldValidations() {
 		//
 		// Set the cutoff date based on the validation status
 
-		const thresholdValue = thresholdsByStatus[validation.feeder_status];
+		const thresholdValue = thresholdsByProcessingStatus[validation.processing_status];
 
 		if (!thresholdValue) {
-			Logger.error(`No threshold defined for status ${validation.feeder_status}. Skipping validation ${validation._id}.`);
+			Logger.error(`No threshold defined for status ${validation.processing_status}. Skipping validation ${validation._id}.`);
 			continue;
 		}
 
@@ -87,8 +87,7 @@ export async function cleanOldValidations() {
 			await gtfsValidations.deleteById(validation._id);
 			await files.deleteById(validation.file_id);
 			Logger.success(`Deleted validation ${validation._id} and its associated file ${validation.file_id} in ${fileDeletionTimer.get()}.`);
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error(`Failed to delete validation ${validation._id} or its associated file ${validation.file_id}:`, error);
 		}
 

@@ -9,7 +9,7 @@ import { LinesListFiltersBar } from '@/components/lines/list/LinesListFiltersBar
 import { LinesListHeader } from '@/components/lines/list/LinesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Line } from '@tmlmobilidade/types';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, Text } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, Text } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -29,7 +29,7 @@ export function LinesList() {
 	const columns: DataTableColumn<Line>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <IdTag id={item._id} />,
 			title: '#ID',
 			width: 100,
 		},
@@ -73,8 +73,8 @@ export function LinesList() {
 
 	return (
 		<Pane header={[
-			<LinesListHeader />,
-			<LinesListFiltersBar />,
+			<LinesListHeader key="header" />,
+			<LinesListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable

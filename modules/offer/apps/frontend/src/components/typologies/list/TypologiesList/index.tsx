@@ -8,7 +8,7 @@ import { TypologiesListFiltersBar } from '@/components/typologies/list/Typologie
 import { TypologiesListHeader } from '@/components/typologies/list/TypologiesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Typology } from '@tmlmobilidade/types';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, Text } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LineBadge, LoadingOverlay, Pane, Text } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -28,7 +28,7 @@ export function TypologiesList() {
 	const columns: DataTableColumn<Typology>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <IdTag id={item._id} />,
 			title: '#ID',
 			width: 100,
 		},
@@ -40,7 +40,7 @@ export function TypologiesList() {
 		},
 		{
 			accessor: 'name',
-			render: item => <Text>{item.name}</Text>,
+			render: item => <LineBadge color={item.color} shortName={item.name} size="full-width" textColor={item.text_color} />,
 			title: 'Nome',
 			width: 300,
 		},
@@ -72,8 +72,8 @@ export function TypologiesList() {
 
 	return (
 		<Pane header={[
-			<TypologiesListHeader />,
-			<TypologiesListFiltersBar />,
+			<TypologiesListHeader key="header" />,
+			<TypologiesListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable

@@ -46,8 +46,7 @@ export async function processTripsFile(context: ImportGtfsContext): Promise<void
 		Logger.success(`Finished processing "trips.txt": ${context.gtfs.trips.size} rows saved in ${tripsParseTimer.get()}.`, 1);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "trips.txt" file.', error);
 		throw new Error('✖︎ Error processing "trips.txt" file.');
 	}

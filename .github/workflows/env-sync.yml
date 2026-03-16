@@ -47,15 +47,16 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build env-sync CLI
-        working-directory: ./cli/env-sync
-        run: npm run build
+      - name: Prune and build env-sync only
+        run: |
+          npx turbo prune @tmlmobilidade/env-sync --out-dir=out
+          cd out && npm install && npx turbo run build --filter=@tmlmobilidade/env-sync
 
       # # # # # # # # # # # # # # # # # # # # #
       # Secrets / Environment Setup
       # # # # # # # # # # # # # # # # # # # # #
       - name: Configure Secrets (.env + key file)
-        working-directory: ./cli/env-sync
+        working-directory: ./out/cli/env-sync
         run: |
           mkdir -p secrets
 
@@ -78,7 +79,7 @@ jobs:
       - name: Verify .env configuration
         uses: ./.github/actions/verify-env
         with:
-          env-path: ./cli/env-sync/.env
+          env-path: ./out/cli/env-sync/.env
           required-vars: |
             OCI_KEY_FILE
             OCI_COMPARTMENT
@@ -109,7 +110,7 @@ jobs:
       # Run Sync
       # # # # # # # # # # # # # # # # # # # # #
       - name: Run Environment Sync
-        working-directory: ./cli/env-sync
+        working-directory: ./out/cli/env-sync
         run: |
           set -e
           echo "Running DB sync..."
@@ -123,7 +124,7 @@ jobs:
       # # # # # # # # # # # # # # # # # # # # #
       - name: Upload backup artifacts to OCI
         if: always()
-        working-directory: ./cli/env-sync
+        working-directory: ./out/cli/env-sync
         run: |
           echo "Uploading artifacts to OCI bucket..."
           node dist/index.js --upload-artifacts || echo "Artifact upload failed or no artifacts to upload"

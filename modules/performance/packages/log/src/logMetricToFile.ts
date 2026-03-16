@@ -26,8 +26,7 @@ export function logMetricToFile(log: LogEntry) {
 		try {
 			const content = fs.readFileSync(logFilePath, 'utf-8');
 			logs = Array.isArray(JSON.parse(content)) ? JSON.parse(content) : [];
-		}
-		catch {
+		} catch {
 			logs = [];
 		}
 	}

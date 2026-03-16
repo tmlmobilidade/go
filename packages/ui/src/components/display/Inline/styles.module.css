@@ -1,0 +1,7 @@
+/* * */
+/* INLINE / DOTTED */
+
+.inline[data-dotted="true"] {
+	border-bottom-style: dotted;
+	border-bottom-width: 1px;
+}

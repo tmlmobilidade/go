@@ -1,6 +1,6 @@
 # # #
 
-FROM node:24-alpine AS base
+FROM node:lts-alpine AS base
 
 
 # # #

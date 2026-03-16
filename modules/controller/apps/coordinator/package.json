@@ -14,7 +14,7 @@
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint . --fix",
+		"lint:fix": "eslint ./src --fix",
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
@@ -22,12 +22,12 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
-		"fastify": "5.7.4"
+		"fastify": "5.8.2"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.3.0",
+		"@types/node": "25.5.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"

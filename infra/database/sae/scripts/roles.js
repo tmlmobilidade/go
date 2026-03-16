@@ -111,13 +111,8 @@ db.createRole({
 db.createRole({
 	privileges: [
 		{ actions: ['find', 'update'], resource: { collection: 'rides', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'simplified_apex_locations', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'simplified_apex_on_board_refunds', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'simplified_apex_on_board_sales', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'simplified_apex_validations', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'simplified_vehicle_events', db: 'production' } },
 	],
-	role: 'replicator',
+	role: 'apex',
 	roles: [],
 });
 
@@ -138,7 +133,9 @@ db.createRole({
 db.createRole({
 	privileges: [
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'annotations', db: 'production' } },
-		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'periods', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'holidays', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'year_periods', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'events', db: 'production' } },
 	],
 	role: 'dates',
 	roles: [{ db: 'admin', role: 'common' }],
@@ -146,19 +143,14 @@ db.createRole({
 
 db.createRole({
 	privileges: [
-		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'fares', db: 'production' } },
-		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'zones', db: 'production' } },
-	],
-	role: 'ticketing',
-	roles: [{ db: 'admin', role: 'common' }],
-});
-
-db.updateRole({
-	privileges: [
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'typologies', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'lines', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'routes', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'patterns', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'fares', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'zones', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'events', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
 	],
 	role: 'offer',
 	roles: [{ db: 'admin', role: 'common' }],

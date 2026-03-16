@@ -129,8 +129,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 				},
 				title: 'Tem a certeza que pretende mudar de operador?',
 			});
-		}
-		else {
+		} else {
 			onChangeAgencyId(value);
 			onChangeReferences([]);
 		}
@@ -150,8 +149,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 				},
 				title: 'Tem a certeza que pretende mudar de tipo de referência?',
 			});
-		}
-		else {
+		} else {
 			onChangeReferenceType(value);
 			onChangeReferences([]);
 		}
@@ -174,8 +172,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 			updatedReferences[index].parent_id = value as string;
 			updatedReferences[index].child_ids = [];
 			onChangeReferences(updatedReferences);
-		}
-		else {
+		} else {
 			const updatedReferences = Array.from(selectedReferences);
 			updatedReferences[index].child_ids = value as string[];
 			onChangeReferences(updatedReferences);

@@ -43,8 +43,7 @@ export async function processShapesFile(context: ImportGtfsContext): Promise<voi
 		Logger.success(`Finished processing "shapes.txt": ${context.gtfs.shapes.size} rows saved in ${shapesParseTimer.get()}.`, 1);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "shapes.txt" file.', error);
 		throw new Error('✖︎ Error processing "shapes.txt" file.');
 	}

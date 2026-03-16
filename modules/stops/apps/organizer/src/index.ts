@@ -4,44 +4,42 @@ import { organizeStop } from '@tmlmobilidade/go-stops-pckg-organize';
 import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
+async function main() {
+	//
+
+	Logger.init();
+
+	const globalTimer = new Timer();
+
+	//
+	// Get all Stop documents from the database
+
+	const allStopsData = await stops.all();
+
+	Logger.info(`Found ${allStopsData.length} stops.`);
+
+	//
+	// Loop through all stops and request updated attributes for each document
+
+	for (const [stopIndex, stopData] of allStopsData.entries()) {
 		//
 
-		Logger.init();
+		Logger.info(`[${allStopsData.length - stopIndex}/${allStopsData.length}] Processing Stop ${stopData._id}...`);
 
-		const globalTimer = new Timer();
+		const organizedStopData = await organizeStop(stopData);
 
-		//
-		// Get all Stop documents from the database
-
-		const allStopsData = await stops.all();
-
-		Logger.info(`Found ${allStopsData.length} stops.`);
+		await stops.updateById(stopData._id, organizedStopData);
 
 		//
-		// Loop through all stops and request updated attributes for each document
+	}
 
-		for (const [stopIndex, stopData] of allStopsData.entries()) {
-			//
+	Logger.terminate(`Organization completed in ${globalTimer.get()}`);
 
-			Logger.info(`[${allStopsData.length - stopIndex}/${allStopsData.length}] Processing Stop ${stopData._id}...`);
+	//
+}
 
-			const organizedStopData = await organizeStop(stopData);
-
-			await stops.updateById(stopData._id, organizedStopData);
-
-			//
-		}
-
-		Logger.terminate(`Organization completed in ${globalTimer.get()}`);
-
-		//
-
-		setTimeout(runOnInterval, 300_000); // 5 minutes in milliseconds
-	};
-	runOnInterval();
-})();
+runOnInterval(main, 300_000); // 5 minutes

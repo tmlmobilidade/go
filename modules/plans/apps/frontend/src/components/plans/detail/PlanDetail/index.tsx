@@ -3,6 +3,7 @@
 /* * */
 
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
+import { PlanDetailFootnote } from '@/components/plans/detail/PlanDetailFootnote';
 import { PlanDetailHeader } from '@/components/plans/detail/PlanDetailHeader';
 import { PlanDetailSectionAgency } from '@/components/plans/detail/PlanDetailSectionAgency';
 import { PlanDetailSectionController } from '@/components/plans/detail/PlanDetailSectionController';
@@ -34,7 +35,7 @@ export function PlanDetail() {
 	}
 
 	return (
-		<Pane header={[<PlanDetailHeader />]}>
+		<Pane header={[<PlanDetailHeader key="header" />]}>
 
 			<PlanDetailSectionAgency />
 			<PlanDetailSectionFeedInfo />
@@ -57,7 +58,7 @@ export function PlanDetail() {
 			>
 				<PlanDetailSectionController />
 			</HasPermission>
-
+			<PlanDetailFootnote />
 		</Pane>
 	);
 

@@ -1,6 +1,6 @@
 # # #
 
-FROM node:24-slim AS base
+FROM node:lts-alpine AS base
 
 
 # # #
@@ -59,6 +59,7 @@ FROM base AS runner
 
 WORKDIR /app
 
+COPY --from=builder /app/package.json .
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/modules ./modules

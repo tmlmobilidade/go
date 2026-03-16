@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { stops } from '@tmlmobilidade/interfaces';
 import { type Stop, type UpdateStopDto } from '@tmlmobilidade/types';
