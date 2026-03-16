@@ -4,22 +4,35 @@ import { fontFamily, fontSize, fontWeight } from '@/styles/font.js';
 import { type CSSProperties } from 'react';
 
 /* * */
-/* IMAGE */
 
 const button: CSSProperties = {
-	backgroundColor: '#005ADC',
-	border: '3px solid #0041A0',
-	borderRadius: '5px',
-	boxShadow: '0 1px 3px 0 #000A5040',
 	color: '#FFFFFF',
+	display: 'block',
 	fontFamily: fontFamily.primary,
 	fontSize: fontSize.lg,
 	fontWeight: fontWeight.bold,
-	marginBottom: '30px',
-	marginTop: '10px',
-	padding: '12px 0',
+	padding: 12,
 	textAlign: 'center',
 	textTransform: 'uppercase',
+	width: '100%',
+};
+
+const section: CSSProperties = {
+	backgroundColor: '#005ADC',
+	borderColor: '#0041A0',
+	borderRadius: 5,
+	borderStyle: 'solid',
+	borderWidth: 3,
+	boxShadow: '0 1px 3px 0 #000A5040',
+	boxSizing: 'border-box',
+	textAlign: 'center',
+	width: '100%',
+};
+
+const container: CSSProperties = {
+	paddingBottom: 30,
+	paddingTop: 10,
+	textAlign: 'center',
 	width: '100%',
 };
 
@@ -27,4 +40,6 @@ const button: CSSProperties = {
 
 export default {
 	button,
+	container,
+	section,
 };

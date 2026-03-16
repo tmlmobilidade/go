@@ -20,7 +20,7 @@
 		"build:locations": "ENVIRONMENT=development dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-locations-*",
 		"build:modules": "turbo build --filter=./modules/**/*",
 		"build:offer": "ENVIRONMENT=development dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-offer-*",
-		"build:packages": "turbo build --filter=./packages/**/* && npm run generate-routes && turbo build --filter=./modules/**/packages/**/*",
+		"build:packages": "turbo build --filter=./packages/**/* && turbo build --filter=./modules/**/packages/**/* && npm run generate-routes",
 		"build:performance": "ENVIRONMENT=development dotenv-run -f ./modules/performance/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-performance-*",
 		"build:plans": "ENVIRONMENT=development dotenv-run -f ./modules/plans/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-plans-*",
 		"build:replicator": "ENVIRONMENT=development dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-replicator-*",
