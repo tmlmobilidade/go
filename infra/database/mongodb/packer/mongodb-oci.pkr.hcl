@@ -99,37 +99,46 @@ build {
 
 	provisioner "file" {
 		source = "${path.root}/scripts/attach-volume.sh"
-		destination = "/usr/local/bin/attach-volume.sh"
+		destination = "/tmp/attach-volume.sh"
 	}
 
 	provisioner "shell" {
-		inline = ["sudo chmod +x /usr/local/bin/attach-volume.sh"]
+		inline = [
+			"sudo mv /tmp/attach-volume.sh /usr/local/bin/attach-volume.sh",
+			"sudo chmod +x /usr/local/bin/attach-volume.sh"
+		]
 	}
 
 
 	provisioner "file" {
 		source = "${path.root}/scripts/setup-mongodb.sh"
-		destination = "/usr/local/bin/setup-mongodb.sh"
+		destination = "/tmp/setup-mongodb.sh"
 	}
 
 	provisioner "shell" {
-		inline = ["sudo chmod +x /usr/local/bin/setup-mongodb.sh"]
+		inline = [
+			"sudo mv /tmp/setup-mongodb.sh /usr/local/bin/setup-mongodb.sh",
+			"sudo chmod +x /usr/local/bin/setup-mongodb.sh"
+		]
 	}
 
 
 	provisioner "file" {
 		source = "${path.root}/scripts/init-mongodb-replica-set.sh"
-		destination = "/usr/local/bin/init-mongodb-replica-set.sh"
+		destination = "/tmp/init-mongodb-replica-set.sh"
 	}
 
 	provisioner "shell" {
-		inline = ["sudo chmod +x /usr/local/bin/init-mongodb-replica-set.sh"]
+		inline = [
+			"sudo mv /tmp/init-mongodb-replica-set.sh /usr/local/bin/init-mongodb-replica-set.sh",
+			"sudo chmod +x /usr/local/bin/init-mongodb-replica-set.sh"
+		]
 	}
 
 
 	provisioner "file" {
 		source = "${path.root}/templates/compose.yaml"
-		destination = "/usr/local/share/mongodb/compose.yaml"
+		destination = "/tmp/compose.yaml"
 	}
 
 	provisioner "shell" {
