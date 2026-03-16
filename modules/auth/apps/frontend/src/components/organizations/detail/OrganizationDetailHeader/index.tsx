@@ -4,8 +4,7 @@
 import { useOrganizationsDetailContext } from '@/components/organizations/detail/OrganizationDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { DeleteButton, HasPermission, keepUrlParams, Label, LockButton, SaveButton } from '@tmlmobilidade/ui';
-import { CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, SaveButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -36,7 +35,7 @@ export function OrganizationDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-			<Tag label={organizationDetailContext.data.id || t('default:organizations.list.header.NewOrganizationButton.label')} variant="muted" />
+			<IdTag id={organizationDetailContext.data.id} copyOnClick />
 			<Label size="lg" singleLine>{organizationDetailContext.data.form.values.long_name}</Label>
 
 			<Spacer />
