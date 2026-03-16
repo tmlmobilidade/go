@@ -19,44 +19,46 @@
 # -----------------------------------------------------------------------
 
 runcmd:
-  # -----------------------------------------------------------------
-  # 1. Attach and mount the block volume (script pre-baked by Packer)
-  # -----------------------------------------------------------------
+
+  # 1.
+  # Attach and mount the block volume (script pre-baked by Packer)
+
   - /usr/local/bin/attach-volume.sh /opt/mongodb
 
-  # -----------------------------------------------------------------
-  # 2. Setup MongoDB Directories (script pre-baked by Packer)
-  # -----------------------------------------------------------------
+  # 2.
+  # Setup MongoDB Directories (script pre-baked by Packer)
+
   - /usr/local/bin/setup-mongodb.sh /opt/mongodb
 
-  # -----------------------------------------------------------------
-  # 3. Write Shared Replica Set Keyfile
-  #    Same secret on all nodes — injected by Terraform via mongodb_keyfile variable.
-  #    Base64-encoded to avoid YAML parse errors with multiline content.
-  #    Permission 400 owned by mongodb user (999) is required by mongod.
-  # -----------------------------------------------------------------
+  # 3.
+  # Write Shared Replica Set Keyfile
+  # Same secret on all nodes — injected by Terraform via mongodb_keyfile variable.
+  # Base64-encoded to avoid YAML parse errors with multiline content.
+  # Permission 400 owned by mongodb user (999) is required by mongod.
+
   - echo "${base64encode(mongodb_keyfile)}" | base64 -d > /opt/mongodb/keyfile/keyfile
   - chmod 400 /opt/mongodb/keyfile/keyfile
   - chown 999:999 /opt/mongodb/keyfile/keyfile
 
-  # -----------------------------------------------------------------
-  # 4. Write Secrets
-  # -----------------------------------------------------------------
+  # 4.
+  # Write Secrets
+
   - |
     cat > /opt/mongodb/secrets/.env <<'ENVEOF'
     MONGO_INITDB_ROOT_USERNAME=${mongodb_root_username}
     MONGO_INITDB_ROOT_PASSWORD=${mongodb_root_password}
     ENVEOF
 
-  # -----------------------------------------------------------------
-  # 5. Start MongoDB
-  # -----------------------------------------------------------------
-  - cd /opt/mongodb && docker compose up -d --build --force-recreate --remove-orphans --pull=always
+  # 5.
+  # Start MongoDB
 
-  # -----------------------------------------------------------------
-  # 6. Initialize Replica Set (script pre-baked by Packer)
-  #    Node 0 waits for mongod and runs rs.initiate(). Others exit early.
-  # -----------------------------------------------------------------
+  - cd /opt/mongodb
+  - docker compose up -d --build --force-recreate --remove-orphans --pull=always
+
+  # 6.
+  # Initialize Replica Set (script pre-baked by Packer)
+  # Node 0 waits for mongod and runs rs.initiate(). Others exit early.
+
   - /usr/local/bin/init-mongodb-replica-set.sh ${node_index} ${mongodb_port} '${mongodb_root_username}' '${mongodb_root_password}' ${replica_set_name} ${join(",", all_private_ips)}
 
 final_message: "MongoDB replica node ${node_index + 1} of ${length(all_private_ips)} configuration complete."
