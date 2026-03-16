@@ -17,8 +17,9 @@ export function RideAnalysisVehicleEvents() {
 	//
 	// A. Setup variables
 
-	const RideAnalysisContext = useRideAnalysisContext();
 	const { t } = useTranslation();
+
+	const rideAnalysisContext = useRideAnalysisContext();
 
 	const columns: DataTableColumn<SimplifiedVehicleEvent>[] = [
 		{
@@ -73,8 +74,8 @@ export function RideAnalysisVehicleEvents() {
 	// B. Transform data
 
 	const sortedVehicleEvents = useMemo(() => {
-		return RideAnalysisContext.data.vehicle_events.sort((a, b) => a.created_at - b.created_at);
-	}, [RideAnalysisContext.data.vehicle_events]);
+		return rideAnalysisContext.data.vehicle_events.sort((a, b) => a.created_at - b.created_at);
+	}, [rideAnalysisContext.data.vehicle_events]);
 
 	//
 	// C. Render components
@@ -84,7 +85,12 @@ export function RideAnalysisVehicleEvents() {
 			description={t('default:rides.analysis.RideAnalysisVehicleEvents.description')}
 			title={t('default:rides.analysis.RideAnalysisVehicleEvents.title')}
 		>
-			<DataTable columns={columns} maxHeight={600} records={sortedVehicleEvents} rowIdAccessor="_id" />
+			<DataTable
+				columns={columns}
+				maxHeight={600}
+				records={sortedVehicleEvents}
+				rowIdAccessor="_id"
+			/>
 		</Collapsible>
 	);
 
