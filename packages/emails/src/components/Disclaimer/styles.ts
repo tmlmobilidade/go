@@ -12,10 +12,6 @@ const text: CSSProperties = {
 	fontSize: fontSize.xs,
 	fontWeight: fontWeight.normal,
 	lineHeight: lineHeight.normal,
-	// margin: 0,
-	// padding: '30px',
-	// paddingTop: '10px',
-	// textAlign: 'left',
 };
 
 const section: CSSProperties = {
@@ -24,7 +20,7 @@ const section: CSSProperties = {
 	fontWeight: fontWeight.normal,
 	lineHeight: lineHeight.normal,
 	padding: '30px',
-	// paddingTop: '10px',
+	paddingTop: 0,
 };
 
 /* * */
