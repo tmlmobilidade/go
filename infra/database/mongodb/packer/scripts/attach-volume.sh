@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # attach-volume.sh — Detect and mount a block volume by size range
 #
 # Usage: attach-volume.sh <mount_point> <min_size_bytes> <max_size_bytes>
@@ -7,6 +8,7 @@
 #   mount_point    - Directory to mount the volume (e.g. /opt/mongodb)
 #   min_size_bytes - Minimum disk size in bytes (default: 966367641600  ~900 GB)
 #   max_size_bytes - Maximum disk size in bytes (default: 1181116006400 ~1.1 TB)
+
 set -euo pipefail
 
 MOUNT_POINT="${1:?Usage: attach-volume.sh <mount_point> [min_size_bytes] [max_size_bytes]}"

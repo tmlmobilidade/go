@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # init-mongodb-replica-set.sh — Initialize MongoDB replica set (primary node only)
 #
 # Usage: init-mongodb-replica-set.sh <node_index> <port> <username> <password> <replica_set_name> <all_private_ips>
@@ -10,6 +11,7 @@
 #   password         - MongoDB root password
 #   replica_set_name - Name of the replica set
 #   all_private_ips  - Comma-separated list of all node private IPs
+
 set -euo pipefail
 
 NODE_INDEX="${1:?Usage: init-mongodb-replica-set.sh <node_index> <port> <username> <password> <replica_set_name> <all_private_ips>}"
