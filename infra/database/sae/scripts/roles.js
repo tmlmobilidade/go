@@ -111,13 +111,8 @@ db.createRole({
 db.createRole({
 	privileges: [
 		{ actions: ['find', 'update'], resource: { collection: 'rides', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'simplified_apex_locations', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'simplified_apex_on_board_refunds', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'simplified_apex_on_board_sales', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'simplified_apex_validations', db: 'production' } },
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'simplified_vehicle_events', db: 'production' } },
 	],
-	role: 'replicator',
+	role: 'apex',
 	roles: [],
 });
 

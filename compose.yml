@@ -1,0 +1,30 @@
+volumes:
+  clickhouse_data:
+  clickhouse_logs:
+
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse-test
+    ports:
+      - "8123:8123"   # HTTP interface
+      - "9000:9000"   # Native client interface
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - clickhouse_logs:/var/log/clickhouse-server
+    environment:
+      CLICKHOUSE_DB: testdb
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: password
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+  mongo:
+    image: mongo:latest
+    container_name: mongo-test
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
