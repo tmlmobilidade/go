@@ -5,7 +5,7 @@
 import { useZoneDetailContext } from '@/components/zones/detail/ZoneDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Button, CloseButton, DeleteButton, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, DeleteButton, IdTag, LockButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -35,7 +35,7 @@ export function ZoneDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
-			<Tag label={zoneDetailContext.data.zone._id} variant="id" />
+			<IdTag id={zoneDetailContext.data.zone._id} copyOnClick />
 
 			<Spacer />
 

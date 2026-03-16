@@ -1,5 +1,6 @@
 export * from './AgencyTag';
 export * from './EnvironmentTag';
+export * from './IdTag';
 export * from './OperationalStatusTag';
 export * from './ProcessingStatusTag';
 export * from './PublishStatusTag';
