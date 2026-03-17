@@ -1,4 +1,5 @@
 #cloud-config
+
 # -----------------------------------------------------------------------
 # cloud-init.yaml — MongoDB Replica Set Node (node_index = ${node_index})
 #
@@ -27,13 +28,13 @@ runcmd:
   # Attach and mount the block volume
   # using the script pre-packed by Packer
 
-  - /usr/local/bin/attach-volume.sh
+  - /opt/app/attach-volume.sh
 
   # 2.
   # Setup MongoDB Directories
   # using the script pre-packed by Packer
 
-  - /usr/local/bin/setup-mongodb.sh
+  - /opt/app/setup-mongodb.sh
 
   # 3.
   # Write Shared Replica Set Keyfile
@@ -41,15 +42,15 @@ runcmd:
   # Base64-encoded to avoid YAML parse errors with multiline content.
   # Permission 400 owned by mongodb user (999) is required by mongod.
 
-  - echo "${base64encode(mongodb_keyfile)}" | base64 -d > /opt/mongodb/keyfile/keyfile
-  - chmod 400 /opt/mongodb/keyfile/keyfile
-  - chown 999:999 /opt/mongodb/keyfile/keyfile
+  - echo "${base64encode(mongodb_keyfile)}" | base64 -d > /opt/app/persistent-data/replica.key
+  - chmod 400 /opt/app/persistent-data/replica.key
+  - chown 999:999 /opt/app/persistent-data/replica.key
 
   # 4.
   # Write Secrets
 
   - |
-    cat > /opt/mongodb/secrets/.env <<'ENVEOF'
+    cat > /opt/app/secrets/.env <<'ENVEOF'
     MONGO_INITDB_ROOT_USERNAME=${mongodb_root_username}
     MONGO_INITDB_ROOT_PASSWORD=${mongodb_root_password}
     ENVEOF
@@ -57,13 +58,12 @@ runcmd:
   # 5.
   # Start MongoDB
 
-  - cd /opt/mongodb
-  - docker compose up -d --build --force-recreate --remove-orphans --pull=always
+  - cd /opt/app && docker compose up -d --build --force-recreate --remove-orphans --pull=always
 
   # 6.
   # Initialize Replica Set (script pre-baked by Packer)
   # Node 0 waits for mongod and runs rs.initiate(). Others exit early.
 
-  - /usr/local/bin/init-mongodb-replica-set.sh ${node_index} ${mongodb_port} '${mongodb_root_username}' '${mongodb_root_password}' ${replica_set_name} ${join(",", all_private_ips)}
+  - /opt/app/init-mongodb-replica-set.sh ${node_index} ${mongodb_port} '${mongodb_root_username}' '${mongodb_root_password}' ${replica_set_name} ${join(",", all_private_ips)}
 
 final_message: "MongoDB replica node ${node_index + 1} of ${length(all_private_ips)} configuration complete."

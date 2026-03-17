@@ -10,7 +10,7 @@ services:
         --replSet rs0
         --bind_ip_all
         --port 27017
-        --keyFile /data/keyfile/keyfile
+        --keyFile /data/replica.key
     deploy:
       resources:
         limits:
@@ -20,8 +20,8 @@ services:
         soft: 64000
         hard: 64000
     volumes:
-      - /opt/persistent-data/data:/data/db
-      - /opt/persistent-data/logs:/var/log/mongodb
-      - /opt/persistent-data/keyfile:/data/keyfile:ro
+      - /opt/app/persistent-data/data:/data/db
+      - /opt/app/persistent-data/logs:/var/log/mongodb
+      - /opt/app/persistent-data/replica.key:/data/replica.key:ro
     env_file:
       - /opt/app/secrets/.env
