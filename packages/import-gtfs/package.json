@@ -38,7 +38,7 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/sqlite": "*",
 		"@tmlmobilidade/timer": "*",
-		"csv-parse": "6.1.0",
+		"csv-parse": "6.2.0",
 		"extract-zip": "2.0.1"
 	},
 	"devDependencies": {

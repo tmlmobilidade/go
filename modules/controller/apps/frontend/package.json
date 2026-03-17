@@ -23,7 +23,7 @@
 		"@turf/turf": "7.3.4",
 		"@vis.gl/react-maplibre": "8.1.0",
 		"luxon": "3.7.2",
-		"maplibre-gl": "5.20.1",
+		"maplibre-gl": "5.20.2",
 		"next": "16.1.7",
 		"react": "19.2.4",
 		"react-dom": "19.2.4",
