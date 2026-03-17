@@ -25,7 +25,9 @@ const IdTagBody = forwardRef<HTMLDivElement, IdTagProps & { onClick?: () => void
 		data-clickable={!!props.onClick}
 		onClick={props.onClick}
 	>
-		{props.id !== null && props.id !== undefined && <span className={styles.label}>{props.id}</span>}
+		{props.id !== null && props.id !== undefined && String(props.id).split('').map((char, index) => (
+			<span key={index} className={styles.char}>{char}</span>
+		))}
 	</div>
 ));
 
