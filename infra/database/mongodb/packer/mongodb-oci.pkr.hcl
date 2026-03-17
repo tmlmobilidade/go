@@ -93,12 +93,19 @@ build {
 	}
 
 	# 3.
-	# Install runtime scripts and templates so cloud-init
-	# can call them at boot. Packer file provisioners do not support
-	# setting executable permissions on the files, so an additional
-	# shell provisioner is used to set the correct permissions.
-	# This ensures the scripts are ready to be executed by cloud-init
-	# at runtime without requiring manual setup after instance launch.
+	# Copy setup scripts that cloud-init can call at boot time.
+	# Since Packer file provisioners do not support setting executable
+	# permissions on the files, an additional shell provisioner is used
+	# to move the files to the final location and set the correct permissions.
+
+	provisioner "shell" {
+		inline = [
+			"sudo mkdir -p /opt/app"
+		]
+	}
+
+	# The attach-volume.sh script is responsible
+	# for attaching and mounting the block volume.
 
 	provisioner "file" {
 		source = "${path.root}/scripts/attach-volume.sh"
@@ -107,11 +114,13 @@ build {
 
 	provisioner "shell" {
 		inline = [
-			"sudo mv /tmp/attach-volume.sh /usr/local/bin/attach-volume.sh",
-			"sudo chmod +x /usr/local/bin/attach-volume.sh"
+			"sudo mv /tmp/attach-volume.sh /opt/app/attach-volume.sh",
+			"sudo chmod +x /opt/app/attach-volume.sh"
 		]
 	}
 
+	# The setup-mongodb.sh script is responsible for
+	# setting up the MongoDB data directories and permissions.
 
 	provisioner "file" {
 		source = "${path.root}/scripts/setup-mongodb.sh"
@@ -120,11 +129,13 @@ build {
 
 	provisioner "shell" {
 		inline = [
-			"sudo mv /tmp/setup-mongodb.sh /usr/local/bin/setup-mongodb.sh",
-			"sudo chmod +x /usr/local/bin/setup-mongodb.sh"
+			"sudo mv /tmp/setup-mongodb.sh /opt/app/setup-mongodb.sh",
+			"sudo chmod +x /opt/app/setup-mongodb.sh"
 		]
 	}
 
+	# The init-mongodb-replica-set.sh script is responsible for
+	# initializing the MongoDB replica set on the primary node.
 
 	provisioner "file" {
 		source = "${path.root}/scripts/init-mongodb-replica-set.sh"
@@ -133,22 +144,17 @@ build {
 
 	provisioner "shell" {
 		inline = [
-			"sudo mv /tmp/init-mongodb-replica-set.sh /usr/local/bin/init-mongodb-replica-set.sh",
-			"sudo chmod +x /usr/local/bin/init-mongodb-replica-set.sh"
+			"sudo mv /tmp/init-mongodb-replica-set.sh /opt/app/init-mongodb-replica-set.sh",
+			"sudo chmod +x /opt/app/init-mongodb-replica-set.sh"
 		]
 	}
 
+	# The compose.yaml file holds the configuration
+	# that defines the MongoDB container and its settings.
 
 	provisioner "file" {
 		source = "${path.root}/templates/compose.yaml"
-		destination = "/tmp/compose.yaml"
-	}
-
-	provisioner "shell" {
-		inline = [
-			"sudo mkdir -p /usr/local/share/mongodb",
-			"sudo mv /tmp/compose.yaml /usr/local/share/mongodb/compose.yaml",
-		]
+		destination = "/opt/app/compose.yaml"
 	}
 
 	# 4.
@@ -157,7 +163,6 @@ build {
 	provisioner "shell" {
 		inline = [
 			"sudo apt-get clean",
-			# "sudo rm -rf /var/lib/apt/lists/*",
 			"sudo cloud-init clean --logs",
 		]
 	}

@@ -27,13 +27,13 @@ runcmd:
   # Attach and mount the block volume
   # using the script pre-packed by Packer
 
-  - /usr/local/bin/attach-volume.sh /opt/mongodb
+  - /usr/local/bin/attach-volume.sh
 
   # 2.
   # Setup MongoDB Directories
   # using the script pre-packed by Packer
 
-  - /usr/local/bin/setup-mongodb.sh /opt/mongodb
+  - /usr/local/bin/setup-mongodb.sh
 
   # 3.
   # Write Shared Replica Set Keyfile

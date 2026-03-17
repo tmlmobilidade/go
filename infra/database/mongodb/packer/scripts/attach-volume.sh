@@ -12,7 +12,7 @@ BLOCK_VOLUME_PATH="/dev/oracleoci/oraclevdb"
 
 # This is the directory where the volume
 # will be mounted and accessible in the filesystem.
-MOUNT_POINT="/data"
+MOUNT_POINT="/opt/persistent-data"
 
 
 # 1.

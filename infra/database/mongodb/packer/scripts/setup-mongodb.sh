@@ -1,30 +1,29 @@
-#!/bin/bash
-
-# setup-mongodb.sh — Create MongoDB data directory structure
-#
-# Usage: setup-mongodb.sh <base_dir>
-#
-# Arguments:
-#   base_dir - Root directory for MongoDB data (e.g. /opt/mongodb)
-#
-# Expected to run after attach-volume.sh has mounted the block volume.
-# UID 999 is the mongodb user inside the official mongo Docker image.
+#!/usr/bin/env bash
 
 set -euo pipefail
 
-BASE_DIR="${1:?Usage: setup-mongodb.sh <base_dir>}"
+# # #
+# SETTINGS
+
+# This is the persistent-data directory where MongoDB
+# files and data will be stored. It is expected to be mounted
+# as a block volume at /opt/persistent-data by attach-volume.sh.
+BASE_DIR="/opt/persistent-data"
+
+
+# 1.
+# Create the directory structure for
+# MongoDB data, logs, keyfiles, secrets
+# and set appropriate ownership and permissions.
 
 mkdir -p "$BASE_DIR/data"
 mkdir -p "$BASE_DIR/logs"
 mkdir -p "$BASE_DIR/keyfile"
-mkdir -p "$BASE_DIR/secrets"
 
 chown -R 999:999 "$BASE_DIR/data"
 chown -R 999:999 "$BASE_DIR/logs"
 chown -R 999:999 "$BASE_DIR/keyfile"
-chown -R ubuntu:ubuntu "$BASE_DIR/secrets"
 
 chmod -R 770 "$BASE_DIR/data"
 chmod -R 770 "$BASE_DIR/logs"
-
-cp /usr/local/share/mongodb/compose.yaml "$BASE_DIR/compose.yml"
+chmod -R 700 "$BASE_DIR/keyfile"

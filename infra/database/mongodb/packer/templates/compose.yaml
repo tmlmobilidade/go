@@ -20,8 +20,8 @@ services:
         soft: 64000
         hard: 64000
     volumes:
-      - ./data:/data/db
-      - ./logs:/var/log/mongodb
-      - ./keyfile:/data/keyfile
+      - /opt/persistent-data/data:/data/db
+      - /opt/persistent-data/logs:/var/log/mongodb
+      - /opt/persistent-data/keyfile:/data/keyfile:ro
     env_file:
-      - ./secrets/.env
+      - /opt/app/secrets/.env
