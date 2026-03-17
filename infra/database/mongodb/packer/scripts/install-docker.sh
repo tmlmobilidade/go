@@ -16,20 +16,42 @@ while fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do
 done
 
 
-echo "[docker] Downloading Docker installation script..."
-curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
+echo "[docker] Removing old versions..."
+apt remove $(dpkg --get-selections docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc | cut -f1)
+echo "[docker] Old versions removed (if any were present)."
 
 
-echo "[docker] Running Docker installation script..."
-sh /tmp/get-docker.sh
+echo "[docker] Adding Docker's official GPG key and repository..."
+apt update
+apt install ca-certificates curl
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
+echo "[docker] Docker GPG key added."
 
 
-echo "[docker] Cleaning up installation script..."
-rm /tmp/get-docker.sh
+echo "[docker] Adding Docker repository to apt sources..."
+tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+echo "[docker] Docker repository added."
 
 
-echo "[docker] Adding 'ubuntu' user to the docker group..."
+echo "[docker] Installing Docker Engine and related components..."
+apt update
+apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+echo "[docker] Docker Engine installation complete."
+
+
+echo "[docker] Linux post-installation steps for Docker Engine..."
+groupadd docker
 usermod -aG docker ubuntu
+newgrp docker
+echo "[docker] User 'ubuntu' added to 'docker' group."
 
 
 echo "[docker] Docker install complete."
