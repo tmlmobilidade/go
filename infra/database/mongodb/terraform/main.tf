@@ -31,7 +31,7 @@ provider "oci" {
 # and can be used throughout the module.
 
 locals {
-	ssh_keys = file(var.ssh_authorized_keys_path)
+	ssh_authorized_keys = file(var.ssh_authorized_keys_path)
 }
 
 
@@ -80,7 +80,7 @@ resource "oci_core_instance" "mongodb" {
 
 	metadata = {
 
-		ssh_authorized_keys = local.ssh_keys
+		ssh_authorized_keys = local.ssh_authorized_keys
 
 		# cloud-init runs on first boot and configures MongoDB replica set.
 		# All node IPs are known at plan time so they are injected into the template.
