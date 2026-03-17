@@ -11,14 +11,16 @@ echo "[docker] Starting Docker Engine installation..."
 
 
 wait_for_apt() {
+	sleep 5
 	while fuser "/var/lib/apt/lists/lock" >/dev/null 2>&1; do
 		echo "[docker] Waiting for apt lock..."
-		sleep 2
+		sleep 5
 	done
 }
 
 
 echo "[docker] Removing old versions..."
+wait_for_apt
 apt-get remove -y $(dpkg --get-selections docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc | cut -f1)
 echo "[docker] Old versions removed (if any were present)."
 
@@ -34,6 +36,7 @@ echo "[docker] Docker GPG key added."
 
 
 echo "[docker] Adding Docker repository to apt sources..."
+wait_for_apt
 tee /etc/apt/sources.list.d/docker.sources <<EOF
 Types: deb
 URIs: https://download.docker.com/linux/ubuntu
