@@ -17,13 +17,13 @@ done
 
 
 echo "[docker] Removing old versions..."
-apt remove $(dpkg --get-selections docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc | cut -f1)
+apt-get remove -y $(dpkg --get-selections docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc | cut -f1)
 echo "[docker] Old versions removed (if any were present)."
 
 
 echo "[docker] Adding Docker's official GPG key and repository..."
-apt update
-apt install ca-certificates curl
+apt-get update -qq
+apt-get install -y ca-certificates curl
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
@@ -42,8 +42,8 @@ echo "[docker] Docker repository added."
 
 
 echo "[docker] Installing Docker Engine and related components..."
-apt update
-apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+apt-get update -qq
+apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 echo "[docker] Docker Engine installation complete."
 
 
