@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-cleaner
+  namespace: go-auth
+  labels:
+    app: auth-cleaner
+    app.kubernetes.io/name: auth-cleaner
+    app.kubernetes.io/component: cleaner
+    app.kubernetes.io/part-of: go-auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-cleaner
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: auth-cleaner
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: cleaner
+          image: ghcr.io/tmlmobilidade/go-auth-cleaner:production
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: auth-secret
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi

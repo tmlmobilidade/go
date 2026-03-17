@@ -1,7 +1,15 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: go-poc
+  name: go-gateway
   labels:
     app.kubernetes.io/managed-by: kubectl
-    app.kubernetes.io/part-of: go-poc
+    app.kubernetes.io/part-of: go-gateway
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: go-auth
+  labels:
+    app.kubernetes.io/managed-by: kubectl
+    app.kubernetes.io/part-of: go-auth

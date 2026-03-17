@@ -16,6 +16,12 @@ variable "node_port" {
 	default     = 30080
 }
 
+variable "auth_node_port" {
+	type        = number
+	description = "The NodePort exposed by the Kubernetes auth-nginx service."
+	default     = 30081
+}
+
 variable "image_ocid" {
 	type        = string
 	description = <<-EOT

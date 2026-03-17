@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: gateway
-  namespace: go-poc
+  namespace: go-gateway
   labels:
     app: gateway
     app.kubernetes.io/name: gateway

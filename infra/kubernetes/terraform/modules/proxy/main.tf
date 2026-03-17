@@ -45,6 +45,7 @@ resource "oci_core_instance" "this" {
 		user_data = base64encode(templatefile("${path.module}/templates/cloud-init.yaml", {
 			worker_node_ips = var.worker_node_ips
 			node_port       = var.node_port
+			auth_node_port  = var.auth_node_port
 		}))
 	}
 
