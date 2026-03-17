@@ -1,47 +1,89 @@
-#!/bin/bash
-
-# attach-volume.sh — Detect and mount a block volume by size range
-#
-# Usage: attach-volume.sh <mount_point> <min_size_bytes> <max_size_bytes>
-#
-# Arguments:
-#   mount_point    - Directory to mount the volume (e.g. /opt/mongodb)
-#   min_size_bytes - Minimum disk size in bytes (default: 966367641600  ~900 GB)
-#   max_size_bytes - Maximum disk size in bytes (default: 1181116006400 ~1.1 TB)
+#!/usr/bin/env bash
 
 set -euo pipefail
 
-MOUNT_POINT="${1:?Usage: attach-volume.sh <mount_point> [min_size_bytes] [max_size_bytes]}"
-MIN_SIZE="${2:-966367641600}"
-MAX_SIZE="${3:-1181116006400}"
+# # #
+# SETTINGS
 
-DATA_DISK=""
-ATTEMPT=0
-while [ $ATTEMPT -lt 15 ]; do
-  ATTEMPT=$((ATTEMPT + 1))
-  echo "Scanning for data disk (attempt $ATTEMPT)..."
-  ROOT_DISK=$(findmnt -n -o SOURCE / | sed 's/[0-9]*$//')
-  for disk in $(lsblk -d -n -o NAME); do
-    DEV="/dev/$disk"
-    case "$DEV" in "$ROOT_DISK"*) continue ;; esac
-    SIZE=$(lsblk -b -n -o SIZE "$DEV" 2>/dev/null || echo 0)
-    if [ "$SIZE" -ge "$MIN_SIZE" ] && [ "$SIZE" -le "$MAX_SIZE" ]; then
-      DATA_DISK="$DEV"
-      echo "Found data disk at $DATA_DISK (size: $SIZE bytes)"
-      break 2
-    fi
-  done
-  sleep 2
-done
+# This is the path for the pre-attached OCI block volume.
+# It is alphabetically named (e.g. ...oraclevdb, ...oraclevdc, etc.)
+# according to the order of attachment, so `b` is the first attached volume.
+BLOCK_VOLUME_PATH="/dev/oracleoci/oraclevdb"
 
-if [ -n "$DATA_DISK" ]; then
-  blkid "$DATA_DISK" || mkfs.xfs -L DATA "$DATA_DISK"
-  mkdir -p "$MOUNT_POINT"
-  mount "$DATA_DISK" "$MOUNT_POINT"
-  if ! grep -q "$MOUNT_POINT" /etc/fstab; then
-    echo "$DATA_DISK $MOUNT_POINT xfs defaults,noatime,_netdev 0 0" >> /etc/fstab
-  fi
-else
-  echo "ERROR: Data disk not found after 15 attempts!"
-  exit 1
+# This is the directory where the volume
+# will be mounted and accessible in the filesystem.
+MOUNT_POINT="/data"
+
+
+# 1.
+# Check if the volume is already mounted
+# (e.g. from a previous run or if the script is re-run)
+# and exit early if so, to avoid redundant operations and potential issues.
+
+if findmnt -rno TARGET "$MOUNT_POINT" >/dev/null 2>&1; then
+	echo "[attach-volume] Already mounted at $MOUNT_POINT"
+	exit 0
 fi
+
+
+# 2.
+# Wait for OCI block volume to appear by checking the expected device path
+# after waiting for 10 seconds for the system to recognize it.
+
+sleep 10
+
+if [[ -b "$BLOCK_VOLUME_PATH" ]]; then
+	echo "[attach-volume] Found device: $BLOCK_VOLUME_PATH"
+else
+	echo "[attach-volume] ERROR: OCI block volume not found at $BLOCK_VOLUME_PATH" >&2
+	exit 1
+fi
+
+
+# 3.
+# Ensure mount point exists. This is necessary before mounting
+# the volume, and also ensures that the directory is present
+# for any subsequent operations that rely on it.
+
+mkdir -p "$MOUNT_POINT"
+
+
+# 4.
+# Check if the block volume already has a filesystem.
+# This happens when the volume is being attached to a new instance
+# but has been previously used. This is the most likely scenario.
+# If the volume already has a filesystem, skip this formatting step
+# to avoid data loss.
+
+if blkid "$BLOCK_VOLUME_PATH" >/dev/null 2>&1; then
+	echo "[attach-volume] Filesystem exists on $BLOCK_VOLUME_PATH. Skipping format to avoid data loss."
+else
+	echo "[attach-volume] No filesystem found. Formating disk by creating filesystem on $BLOCK_VOLUME_PATH"
+	mkfs.xfs "$BLOCK_VOLUME_PATH"
+fi
+
+
+# 5.
+# Mount the block volume to the specified mount point.
+# This makes the volume accessible in the filesystem.
+
+if ! mount | grep -q "$MOUNT_POINT"; then
+	echo "[attach-volume] Mounting $BLOCK_VOLUME_PATH on $MOUNT_POINT"
+	mount "$BLOCK_VOLUME_PATH" "$MOUNT_POINT"
+fi
+
+
+# 6.
+# Persist using stable UUID, instead of only device path,
+# which can sometimes change across reboots.
+# Adding to `/etc/fstab` ensures that the volume will be
+# automatically mounted on machine reboot.
+
+UUID=$(blkid -s UUID -o value "$BLOCK_VOLUME_PATH")
+
+if ! grep -q "$MOUNT_POINT" /etc/fstab; then
+	echo "UUID=$UUID $MOUNT_POINT xfs defaults,noatime,_netdev 0 0" >> /etc/fstab
+	echo "[attach-volume] Added to fstab with UUID=$UUID"
+fi
+
+echo "[attach-volume] Operation completed successfully. Volume mounted at $MOUNT_POINT"

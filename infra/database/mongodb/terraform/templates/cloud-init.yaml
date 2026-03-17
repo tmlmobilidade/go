@@ -18,15 +18,20 @@
 #   and only referenced here for rs.initiate().
 # -----------------------------------------------------------------------
 
+packages:
+  - xfsprogs
+
 runcmd:
 
   # 1.
-  # Attach and mount the block volume (script pre-baked by Packer)
+  # Attach and mount the block volume
+  # using the script pre-packed by Packer
 
   - /usr/local/bin/attach-volume.sh /opt/mongodb
 
   # 2.
-  # Setup MongoDB Directories (script pre-baked by Packer)
+  # Setup MongoDB Directories
+  # using the script pre-packed by Packer
 
   - /usr/local/bin/setup-mongodb.sh /opt/mongodb
 
