@@ -111,39 +111,111 @@ WITH
                 ) < (bearing_threshold_deg * pi() / 180)
     ),
 
-    -- 4. EXPAND: turn each valid segment between two snapped nodes into one row per intermediate node
-    -- We generate the full [prev_idx, curr_idx) node range and evenly apportion the segment travel
-    -- time across those nodes, keeping an hour-of-day bucket for later aggregation
+    -- 4. EXPAND: turn each valid segment into one row per traversed node and build a
+    -- monotonic per-node timestamp. We also distribute whole seconds exactly so per-node
+    -- travel_time_seconds sums back to the segment time (no rounding drift).
     expanded_nodes AS (
-    SELECT
-        event_id,
-        hashed_shape_id,
-        ride_id,
-        -- Generate nodes strictly between prev_idx and including curr_idx:
-        -- [prev_idx + 1, curr_idx] to avoid double-counting prev_idx and
-        -- ensure the final node index is not off by one.
-        arrayJoin(range(toUInt64(prev_idx + 1), toUInt64(curr_idx + 1))) AS node_index,
-        toUInt8(toHour(toDateTime(toInt64(prev_ts) / 1000)))     AS hour,
-        prev_ts                                                   AS created_at,
-        round(time_delta / (curr_idx - prev_idx))                       AS travel_time_seconds,
-        round(speed_kmh) as speed_kmh
-    FROM filtered_segments
-)
+        SELECT
+            event_id,
+            hashed_shape_id,
+            ride_id,
+            node_tuple.1 AS node_index,
+            toUInt8(toHour(toDateTime(intDiv(toInt64(node_tuple.2), 1000)))) AS hour,
+            node_tuple.2 AS created_at,
+            node_tuple.3 AS travel_time_seconds,
+            round(speed_kmh) AS speed_kmh
+        FROM (
+            SELECT
+                event_id,
+                hashed_shape_id,
+                ride_id,
+                speed_kmh,
+                arrayJoin(
+                    arrayMap(
+                        i -> (
+                            toUInt64(prev_idx + i),
+                            toInt64(
+                                prev_ts
+                                + 1000 * ((i - 1) * base_sec + least(i - 1, rem_sec))
+                            ),
+                            toUInt32(base_sec + if(i <= rem_sec, 1, 0))
+                        ),
+                        range(1, toUInt64(nodes_count + 1))
+                    )
+                ) AS node_tuple
+            FROM (
+                SELECT
+                    event_id,
+                    hashed_shape_id,
+                    ride_id,
+                    prev_idx,
+                    prev_ts,
+                    speed_kmh,
+                    nodes_count,
+                    intDiv(time_delta_s, nodes_count) AS base_sec,
+                    modulo(time_delta_s, nodes_count) AS rem_sec
+                FROM (
+                    SELECT
+                        event_id,
+                        hashed_shape_id,
+                        ride_id,
+                        prev_idx,
+                        prev_ts,
+                        speed_kmh,
+                        toInt64(curr_idx - prev_idx) AS nodes_count,
+                        greatest(
+                            toInt64(round(time_delta)),
+                            toInt64(curr_idx - prev_idx)
+                        ) AS time_delta_s
+                    FROM filtered_segments
+                )
+            )
+        )
+    ),
 
--- 5. ENRICH: attach static geometry from shape_nodes (lat/lon per node) to the per-node samples
+    -- 5. RE-TIME: enforce per-node travel time as the delta to the next emitted node timestamp
+    -- so downstream sums align with node timeline spans.
+    retimed_nodes AS (
+        SELECT
+            event_id,
+            hashed_shape_id,
+            ride_id,
+            node_index,
+            hour,
+            created_at,
+            toUInt32(
+                if(
+                    next_created_at IS NULL,
+                    0,
+                    greatest(intDiv(next_created_at - created_at, 1000), 0)
+                )
+            ) AS travel_time_seconds,
+            speed_kmh
+        FROM (
+            SELECT
+                *,
+                lead(created_at, 1) OVER (
+                    PARTITION BY ride_id, hashed_shape_id
+                    ORDER BY node_index
+                ) AS next_created_at
+            FROM expanded_nodes
+        )
+    )
+
+-- 6. ENRICH: attach static geometry from shape_nodes (lat/lon per node) to the per-node samples
 -- so downstream consumers can aggregate travel times while still having the exact node locations
 SELECT
-    en.event_id,
-    en.ride_id,
-    en.hashed_shape_id,
-    en.node_index,
-    en.hour,
-    en.created_at,
-    en.travel_time_seconds,
-    en.speed_kmh,
+    rn.event_id,
+    rn.ride_id,
+    rn.hashed_shape_id,
+    rn.node_index,
+    rn.hour,
+    rn.created_at,
+    rn.travel_time_seconds,
+    rn.speed_kmh,
     sn.latitude,
     sn.longitude
-FROM expanded_nodes AS en
+FROM retimed_nodes AS rn
 INNER JOIN shape_nodes AS sn
-    ON en.hashed_shape_id = sn.shape_id
-    AND en.node_index = sn.node_index;
+    ON rn.hashed_shape_id = sn.shape_id
+    AND rn.node_index = sn.node_index;
