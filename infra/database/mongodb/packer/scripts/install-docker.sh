@@ -52,7 +52,7 @@ echo "[docker] Docker Engine installation complete."
 
 
 echo "[docker] Linux post-installation steps for Docker Engine..."
-groupadd docker
+groupadd docker || true
 usermod -aG docker ubuntu
 newgrp docker
 echo "[docker] User 'ubuntu' added to 'docker' group."
