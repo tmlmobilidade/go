@@ -21,7 +21,7 @@
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
-		"@tmlmobilidade/gtfs-validator": "20260312.1420.42",
+		"@tmlmobilidade/gtfs-validator": "20260317.1128.35",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
