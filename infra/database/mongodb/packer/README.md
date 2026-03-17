@@ -29,5 +29,5 @@ packer validate .
 
 Then, start building the images:
 ```
-packer build .
+packer build -var-file="secrets.pkrvars.hcl" .
 ```
