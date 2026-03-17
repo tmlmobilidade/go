@@ -11,7 +11,7 @@ WITH
         SELECT
             e._id as event_id,
             e.ride_id,
-            e.hashed_shape_id,
+            e.hashed_shape_id, 
             e.created_at,
             e.latitude  AS e_lat,
             e.longitude AS e_lon,
@@ -29,7 +29,33 @@ WITH
         HAVING dist <= max_dist_m
     ),
 
-    -- 2. PAIR: within each ride, pair every event with the immediately previous one (window over time)
+    -- 2. FILTER BACKWARDS: drop any events whose snapped node index goes backwards
+    -- relative to the previous event for the same ride, so downstream pairing only sees
+    -- a monotonically non-decreasing node index sequence.
+    matched_with_prev AS (
+        SELECT
+            *,
+            lag(node_idx, 1) OVER w AS prev_idx_raw
+        FROM matched_events
+        WINDOW w AS (PARTITION BY ride_id ORDER BY created_at)
+    ),
+
+    forward_matched_events AS (
+        SELECT
+            event_id,
+            ride_id,
+            hashed_shape_id,
+            created_at,
+            e_lat,
+            e_lon,
+            node_idx,
+            node_lat,
+            node_lon
+        FROM matched_with_prev
+        WHERE prev_idx_raw IS NULL OR node_idx >= prev_idx_raw
+    ),
+
+    -- 3. PAIR: within each ride, pair every event with the immediately previous one (window over time)
     -- This keeps both the snapped node indices/coords and the original GPS positions so we can
     -- later compute time deltas, distances along the shape, and a GPS vs shape bearing comparison
     segments AS (
@@ -49,7 +75,7 @@ WITH
             e_lon                           AS curr_lon,
             lag(e_lat, 1) OVER w            AS prev_lat,
             lag(e_lon, 1) OVER w            AS prev_lon
-        FROM matched_events
+        FROM forward_matched_events
         WINDOW w AS (PARTITION BY ride_id ORDER BY created_at)
     ),
 
@@ -89,21 +115,26 @@ WITH
     -- We generate the full [prev_idx, curr_idx) node range and evenly apportion the segment travel
     -- time across those nodes, keeping an hour-of-day bucket for later aggregation
     expanded_nodes AS (
-        SELECT
-            event_id,
-            hashed_shape_id,
-            arrayJoin(range(toUInt64(prev_idx), toUInt64(curr_idx))) AS node_index,
-            toUInt8(toHour(toDateTime(toInt64(prev_ts) / 1000)))     AS hour,
-            prev_ts                                                   AS created_at,
-            round(time_delta / (curr_idx - prev_idx))                       AS travel_time_seconds,
-            round(speed_kmh) as speed_kmh
-        FROM filtered_segments
-    )
+    SELECT
+        event_id,
+        hashed_shape_id,
+        ride_id,
+        -- Generate nodes strictly between prev_idx and including curr_idx:
+        -- [prev_idx + 1, curr_idx] to avoid double-counting prev_idx and
+        -- ensure the final node index is not off by one.
+        arrayJoin(range(toUInt64(prev_idx + 1), toUInt64(curr_idx + 1))) AS node_index,
+        toUInt8(toHour(toDateTime(toInt64(prev_ts) / 1000)))     AS hour,
+        prev_ts                                                   AS created_at,
+        round(time_delta / (curr_idx - prev_idx))                       AS travel_time_seconds,
+        round(speed_kmh) as speed_kmh
+    FROM filtered_segments
+)
 
 -- 5. ENRICH: attach static geometry from shape_nodes (lat/lon per node) to the per-node samples
 -- so downstream consumers can aggregate travel times while still having the exact node locations
 SELECT
     en.event_id,
+    en.ride_id,
     en.hashed_shape_id,
     en.node_index,
     en.hour,
