@@ -10,10 +10,12 @@ set -euo pipefail
 echo "[docker] Starting Docker Engine installation..."
 
 
-while fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do
-	echo "[docker] Waiting for apt lock..."
-	sleep 2
-done
+wait_for_apt() {
+	while fuser "/var/lib/apt/lists/lock" >/dev/null 2>&1; do
+		echo "[docker] Waiting for apt lock..."
+		sleep 2
+	done
+}
 
 
 echo "[docker] Removing old versions..."
@@ -22,6 +24,7 @@ echo "[docker] Old versions removed (if any were present)."
 
 
 echo "[docker] Adding Docker's official GPG key and repository..."
+wait_for_apt
 apt-get update -qq
 apt-get install -y ca-certificates curl
 install -m 0755 -d /etc/apt/keyrings
@@ -42,6 +45,7 @@ echo "[docker] Docker repository added."
 
 
 echo "[docker] Installing Docker Engine and related components..."
+wait_for_apt
 apt-get update -qq
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 echo "[docker] Docker Engine installation complete."
