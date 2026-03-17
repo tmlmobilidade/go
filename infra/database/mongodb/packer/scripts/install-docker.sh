@@ -10,6 +10,12 @@ set -euo pipefail
 echo "[docker] Starting Docker Engine installation..."
 
 
+while fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do
+	echo "[docker] Waiting for apt lock..."
+	sleep 2
+done
+
+
 echo "[docker] Downloading Docker installation script..."
 curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
 
