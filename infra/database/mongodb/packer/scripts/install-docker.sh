@@ -12,8 +12,8 @@ echo "[docker] Starting Docker Engine installation..."
 
 wait_for_apt() {
 	sleep 5
-	while fuser "/var/lib/apt/lists/lock" >/dev/null 2>&1; do
-		echo "[docker] Waiting for apt lock..."
+	while sudo lsof /var/lib/dpkg/lock-frontend /var/lib/apt/lists/lock >/dev/null 2>&1; do
+		echo "[docker] apt is locked, waiting 5s..."
 		sleep 5
 	done
 }
@@ -21,7 +21,10 @@ wait_for_apt() {
 
 echo "[docker] Removing old versions..."
 wait_for_apt
-apt-get remove -y $(dpkg --get-selections docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc | cut -f1)
+OLD_PKGS=$(dpkg -l | grep -E 'docker|containerd|runc' | awk '{print $2}')
+if [[ -n "$OLD_PKGS" ]]; then
+	apt-get remove -y $OLD_PKGS
+fi
 echo "[docker] Old versions removed (if any were present)."
 
 
