@@ -123,7 +123,6 @@ build {
 
 	provisioner "shell" {
 		inline = [
-			# "sudo mv /tmp/attach-volume.sh /opt/app/attach-volume.sh",
 			"sudo chmod +x /opt/app/attach-volume.sh"
 		]
 	}
@@ -138,7 +137,6 @@ build {
 
 	provisioner "shell" {
 		inline = [
-			# "sudo mv /tmp/setup-mongodb.sh /opt/app/setup-mongodb.sh",
 			"sudo chmod +x /opt/app/setup-mongodb.sh"
 		]
 	}
@@ -153,7 +151,6 @@ build {
 
 	provisioner "shell" {
 		inline = [
-			# "sudo mv /tmp/init-mongodb-replica-set.sh /opt/app/init-mongodb-replica-set.sh",
 			"sudo chmod +x /opt/app/init-mongodb-replica-set.sh"
 		]
 	}
