@@ -43,34 +43,54 @@ if [[ "$NODE_INDEX" -ne 0 ]]; then
 fi
 
 # Give mongod a moment to start
-sleep 10
+sleep 15
 
 
-echo "Node 0: waiting for mongod to be ready..."
-RETRY=0
-READY=0
-while [ $RETRY -lt 30 ]; do
-  RETRY=$((RETRY + 1))
-  if docker exec mongodb mongosh \
-      --host localhost \
-      --port "$PORT" \
-      --username "$USERNAME" \
-      --password "$PASSWORD" \
-      --authenticationDatabase admin \
-      --quiet \
-      --eval "db.runCommand({ ping: 1 })" 2>/dev/null | grep -q 'ok.*1'; then
-    echo "mongod is ready."
-    READY=1
-    break
-  fi
-  echo "Attempt $RETRY: mongod not ready yet, waiting 10s..."
-  sleep 10
-done
+wait_for_port() {
+  local host="$1"
+  local port="$2"
 
-if [ "$READY" -eq 0 ]; then
-  echo "ERROR: mongod did not become ready after 30 attempts."
-  exit 1
-fi
+  until nc -z -w 2 "$host" "$port"; do
+    echo "Waiting for $host:$port..."
+    sleep 2
+  done
+
+  echo "$host:$port is reachable"
+}
+
+
+wait_for_port "go-mongodb-1.tmlmobilidade.pt" "$PORT"
+wait_for_port "go-mongodb-2.tmlmobilidade.pt" "$PORT"
+wait_for_port "go-mongodb-3.tmlmobilidade.pt" "$PORT"
+
+
+sleep 15
+
+# echo "Node 0: waiting for mongod to be ready..."
+# RETRY=0
+# READY=0
+# while [ $RETRY -lt 30 ]; do
+#   RETRY=$((RETRY + 1))
+#   if docker exec mongodb mongosh \
+#       --host localhost \
+#       --port "$PORT" \
+#       --username "$USERNAME" \
+#       --password "$PASSWORD" \
+#       --authenticationDatabase admin \
+#       --quiet \
+#       --eval "db.runCommand({ ping: 1 })" 2>/dev/null | grep -q 'ok.*1'; then
+#     echo "mongod is ready."
+#     READY=1
+#     break
+#   fi
+#   echo "Attempt $RETRY: mongod not ready yet, waiting 10s..."
+#   sleep 10
+# done
+
+# if [ "$READY" -eq 0 ]; then
+#   echo "ERROR: mongod did not become ready after 30 attempts."
+#   exit 1
+# fi
 
 # ----------------------------
 # Run mongosh

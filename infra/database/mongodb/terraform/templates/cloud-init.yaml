@@ -29,14 +29,23 @@ runcmd:
   # using the script pre-packed by Packer
 
   - /opt/app/attach-volume.sh
+  - rm /opt/app/attach-volume.sh
 
   # 2.
+  # Configure the firewall to allow MongoDB traffic
+  # using the script pre-packed by Packer
+
+  - /opt/app/firewall.sh
+  - rm /opt/app/firewall.sh
+
+  # 3.
   # Setup MongoDB Directories
   # using the script pre-packed by Packer
 
   - /opt/app/setup-mongodb.sh
+  - rm /opt/app/setup-mongodb.sh
 
-  # 3.
+  # 4.
   # Write Shared Replica Set Keyfile
   # Same secret on all nodes — injected by Terraform via mongodb_keyfile variable.
   # Base64-encoded to avoid YAML parse errors with multiline content.
@@ -46,7 +55,7 @@ runcmd:
   - chmod 400 /opt/app/persistent-data/replica.key
   - chown 999:999 /opt/app/persistent-data/replica.key
 
-  # 4.
+  # 5.
   # Write Secrets
 
   - |
@@ -56,12 +65,12 @@ runcmd:
     MONGO_INITDB_ROOT_PASSWORD=${mongodb_root_password}
     ENVEOF
 
-  # 5.
+  # 6.
   # Start MongoDB
 
   - cd /opt/app && docker compose up -d --build --force-recreate --remove-orphans --pull=always
 
-  # 6.
+  # 7.
   # Initialize Replica Set (script pre-baked by Packer)
   # Node 0 waits for mongod and runs rs.initiate(). Others exit early.
 
@@ -72,5 +81,6 @@ runcmd:
       --username '${mongodb_root_username}' \
       --password '${mongodb_root_password}' \
       --replica-set-name ${replica_set_name}
+  - rm /opt/app/init-mongodb-replica-set.sh
 
 final_message: "MongoDB replica node ${node_index + 1} of ${length(all_private_ips)} configuration complete."

@@ -127,6 +127,20 @@ build {
 		]
 	}
 
+	# The firewall.sh script is responsible for
+	# configuring the firewall to allow MongoDB traffic.
+
+	provisioner "file" {
+		source = "${path.root}/init/firewall.sh"
+		destination = "/opt/app/firewall.sh"
+	}
+
+	provisioner "shell" {
+		inline = [
+			"sudo chmod +x /opt/app/firewall.sh"
+		]
+	}
+
 	# The setup-mongodb.sh script is responsible for
 	# setting up the MongoDB data directories and permissions.
 
