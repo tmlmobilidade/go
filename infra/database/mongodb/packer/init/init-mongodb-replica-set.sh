@@ -16,17 +16,17 @@ PASSWORD=""
 REPLICA_SET_NAME=""
 
 while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --node-index) NODE_INDEX="$2"; shift 2 ;;
-    --mongodb-port) PORT="$2"; shift 2 ;;
-    --username) USERNAME="$2"; shift 2 ;;
-    --password) PASSWORD="$2"; shift 2 ;;
-    --replica-set-name) REPLICA_SET_NAME="$2"; shift 2 ;;
-    *)
-      echo "Unknown argument: $1"
-      exit 1
-      ;;
-  esac
+	case "$1" in
+		--node-index) NODE_INDEX="$2"; shift 2 ;;
+		--mongodb-port) PORT="$2"; shift 2 ;;
+		--username) USERNAME="$2"; shift 2 ;;
+		--password) PASSWORD="$2"; shift 2 ;;
+		--replica-set-name) REPLICA_SET_NAME="$2"; shift 2 ;;
+		*)
+		echo "Unknown argument: $1"
+		exit 1
+		;;
+	esac
 done
 
 # Validate required args
@@ -40,6 +40,36 @@ done
 if [[ "$NODE_INDEX" -ne 0 ]]; then
   echo "Node $NODE_INDEX: secondary node, skipping rs.initiate()"
   exit 0
+fi
+
+# Give mongod a moment to start
+sleep 10
+
+
+echo "Node 0: waiting for mongod to be ready..."
+RETRY=0
+READY=0
+while [ $RETRY -lt 30 ]; do
+  RETRY=$((RETRY + 1))
+  if docker exec mongodb mongosh \
+      --host localhost \
+      --port "$PORT" \
+      --username "$USERNAME" \
+      --password "$PASSWORD" \
+      --authenticationDatabase admin \
+      --quiet \
+      --eval "db.runCommand({ ping: 1 })" 2>/dev/null | grep -q 'ok.*1'; then
+    echo "mongod is ready."
+    READY=1
+    break
+  fi
+  echo "Attempt $RETRY: mongod not ready yet, waiting 10s..."
+  sleep 10
+done
+
+if [ "$READY" -eq 0 ]; then
+  echo "ERROR: mongod did not become ready after 30 attempts."
+  exit 1
 fi
 
 # ----------------------------
