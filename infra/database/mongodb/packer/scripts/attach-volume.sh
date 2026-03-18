@@ -8,7 +8,7 @@ set -euo pipefail
 # This is the path for the pre-attached OCI block volume.
 # It is alphabetically named (e.g. ...oraclevdb, ...oraclevdc, etc.)
 # according to the order of attachment, so `b` is the first attached volume.
-BLOCK_VOLUME_PATH="/dev/oracleoci/oraclevdb"
+BLOCK_VOLUME_PATH="/dev/sdb"
 
 # This is the directory where the volume
 # will be mounted and accessible in the filesystem.

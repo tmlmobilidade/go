@@ -64,6 +64,7 @@ resource "oci_core_instance" "mongodb" {
 	}
 
 	create_vnic_details {
+		display_name = "${var.project_name}-${var.module_name}-${count.index + 1}-vnic"
 		subnet_id = var.subnet_ocid
 		private_ip = var.private_ips[count.index]
 		assign_public_ip = false
