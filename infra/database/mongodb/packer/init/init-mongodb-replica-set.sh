@@ -59,6 +59,7 @@ wait_for_port() {
 }
 
 
+wait_for_port "go-mongodb-1.tmlmobilidade.pt" "$PORT"
 wait_for_port "go-mongodb-2.tmlmobilidade.pt" "$PORT"
 wait_for_port "go-mongodb-3.tmlmobilidade.pt" "$PORT"
 
