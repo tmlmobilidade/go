@@ -50,6 +50,7 @@ runcmd:
   # Write Secrets
 
   - |
+    mkdir -p /opt/app/secrets
     cat > /opt/app/secrets/.env <<'ENVEOF'
     MONGO_INITDB_ROOT_USERNAME=${mongodb_root_username}
     MONGO_INITDB_ROOT_PASSWORD=${mongodb_root_password}
