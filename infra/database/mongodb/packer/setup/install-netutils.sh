@@ -19,6 +19,7 @@ wait_for_apt() {
 # Install networking utilities.
 
 echo "[netutils] Installing netutils packages..."
+wait_for_apt
 apt-get update -qq
 apt-get install -y iputils-ping netcat-traditional net-tools
 echo "[netutils] netutils packages installation complete."
