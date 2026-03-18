@@ -212,7 +212,7 @@ const performanceActions: PermissionConfig = {
 
 const annotationsActions: PermissionConfig = {
 	actions: [
-		{ action: 'read', description: 'Permite ver feriados', label: 'Ver anotações', resources: ['AGENCIES'] },
+		{ action: 'read', description: 'Permite ver anotações', label: 'Ver anotações', resources: ['AGENCIES'] },
 		{ action: 'create', description: 'Permite criar uma anotação', label: 'Criar anotação', resources: ['AGENCIES'] },
 		{ action: 'update', description: 'Permite editar uma anotação', label: 'Editar anotação', resources: ['AGENCIES'] },
 		{ action: 'delete', description: 'Permite eliminar uma anotação', label: 'Eliminar anotação', resources: ['AGENCIES'] },
@@ -221,6 +221,19 @@ const annotationsActions: PermissionConfig = {
 	description: 'As ações que o utilizador pode realizar na gestão de anotações.',
 	scope: PermissionCatalog.all.annotations.scope,
 	title: 'Permissões de Anotações',
+};
+
+const eventsActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver eventos', label: 'Ver eventos', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar um evento', label: 'Criar evento', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar um evento', label: 'Editar evento', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar um evento', label: 'Eliminar evento', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear um evento', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de eventos.',
+	scope: PermissionCatalog.all.events.scope,
+	title: 'Permissões de Eventos',
 };
 
 const holidaysActions: PermissionConfig = {
@@ -334,6 +347,7 @@ export const permissionsConfig = [
 	faresActions,
 	zonesActions,
 	typologiesActions,
+	eventsActions,
 	linesActions,
 	holidaysActions,
 	// topicActions,

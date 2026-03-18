@@ -36,4 +36,4 @@ async function main() {
 	//
 }
 
-runOnInterval(main, 120_000); // 2 minutes
+await runOnInterval(main, 30_000); // 30 seconds

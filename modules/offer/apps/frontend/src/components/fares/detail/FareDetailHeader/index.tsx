@@ -5,7 +5,7 @@
 import { useFareDetailContext } from '@/components/fares/detail/FareDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Button, CloseButton, DeleteButton, LockButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, DeleteButton, IdTag, LockButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -35,7 +35,7 @@ export function FareDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
-			<Tag label={fareDetailContext.data.fare._id} variant="secondary" />
+			<IdTag id={fareDetailContext.data.fare._id} copyOnClick />
 
 			<Spacer />
 

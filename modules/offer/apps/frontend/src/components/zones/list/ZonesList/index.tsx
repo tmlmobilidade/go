@@ -8,7 +8,7 @@ import { ZonesListFiltersBar } from '@/components/zones/list/ZonesListFiltersBar
 import { ZonesListHeader } from '@/components/zones/list/ZonesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Zone } from '@tmlmobilidade/types';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, Text } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, Text } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -28,7 +28,7 @@ export function ZonesList() {
 	const columns: DataTableColumn<Zone>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <IdTag id={item._id} />,
 			title: '#ID',
 			width: 100,
 		},
@@ -72,8 +72,8 @@ export function ZonesList() {
 
 	return (
 		<Pane header={[
-			<ZonesListHeader />,
-			<ZonesListFiltersBar />,
+			<ZonesListHeader key="header" />,
+			<ZonesListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable

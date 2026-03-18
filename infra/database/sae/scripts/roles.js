@@ -147,7 +147,7 @@ db.createRole({
 	roles: [{ db: 'admin', role: 'common' }],
 });
 
-db.updateRole({
+db.createRole({
 	privileges: [
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'typologies', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'lines', db: 'production' } },

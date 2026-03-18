@@ -12,10 +12,15 @@ const text: CSSProperties = {
 	fontSize: fontSize.xs,
 	fontWeight: fontWeight.normal,
 	lineHeight: lineHeight.normal,
-	margin: 0,
+};
+
+const section: CSSProperties = {
+	fontFamily: fontFamily.primary,
+	fontSize: fontSize.xs,
+	fontWeight: fontWeight.normal,
+	lineHeight: lineHeight.normal,
 	padding: '30px',
-	paddingTop: '10px',
-	textAlign: 'left',
+	paddingTop: 0,
 };
 
 /* * */
@@ -30,5 +35,6 @@ const link: CSSProperties = {
 
 export default {
 	link,
+	section,
 	text,
 };

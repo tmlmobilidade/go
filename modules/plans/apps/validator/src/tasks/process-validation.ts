@@ -11,7 +11,7 @@ import { Logger } from '@tmlmobilidade/logger';
 import { getCurrentEnvironment, type GtfsValidation } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 import { join } from 'node:path';
-import pjson from 'package.json' with { type: 'json' };
+import pjson from 'pjson' with { type: 'json' };
 
 /* * */
 

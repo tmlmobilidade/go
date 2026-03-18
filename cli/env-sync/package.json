@@ -29,17 +29,17 @@
 	},
 	"dependencies": {
 		"@clack/prompts": "1.1.0",
-		"@tmlmobilidade/consts": "20251202.1817.5",
-		"@tmlmobilidade/types": "20251202.1817.5",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/types": "*",
 		"archiver": "7.0.1",
 		"chalk": "5.6.2",
 		"dotenv": "17.3.1",
 		"mongodb": "7.1.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "20251202.1817.5",
+		"@tmlmobilidade/tsconfig": "*",
 		"@types/archiver": "7.0.0",
-		"@types/node": "25.3.3",
+		"@types/node": "25.4.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0"
 	}

@@ -36,20 +36,18 @@
 	},
 	"dependencies": {
 		"@react-email/components": "1.0.8",
-		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"@types/nodemailer": "7.0.11",
-		"browserslist": "4.28.1",
-		"nodemailer": "8.0.1",
+		"nodemailer": "8.0.2",
 		"react": "19.2.4",
 		"react-email": "5.2.9"
 	},
 	"devDependencies": {
 		"@react-email/preview-server": "5.2.9",
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.3.3",
+		"@types/node": "25.4.0",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",
 		"typescript": "5.9.3"

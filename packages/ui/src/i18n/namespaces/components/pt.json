@@ -25,5 +25,11 @@
 		"Select": {
 			"nothing_found": "Nenhum resultado encontrado"
 		}
+	},
+	"tags": {
+		"IdTag": {
+			"copied": "Copiado!",
+			"copy": "Clique para copiar o ID"
+		}
 	}
 }

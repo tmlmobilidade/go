@@ -21,15 +21,12 @@
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/files": "*",
-		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/rabbitmq": "*",
-		"@tmlmobilidade/strings": "*",
-		"@tmlmobilidade/utils": "*"
+		"@tmlmobilidade/interfaces": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.3.3",
+		"@types/node": "25.4.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"

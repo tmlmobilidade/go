@@ -45,7 +45,7 @@ export function useDataSimplifiedUser(props?: UseDataSimplifiedUserProps): UseDa
 	//
 	// A. Fetch data
 
-	const { data: simplifiedUserData, error: simplifiedUserError, isLoading: simplifiedUserLoading } = useSWR<SimplifiedUser, Error>(props._id && API_ROUTES.auth.USERS_DETAIL_SIMPLIFIED(props._id));
+	const { data: simplifiedUserData, error: simplifiedUserError, isLoading: simplifiedUserLoading } = useSWR<SimplifiedUser, Error>(props._id && props._id !== 'system' && API_ROUTES.auth.USERS_DETAIL_SIMPLIFIED(props._id));
 
 	//
 	// B. Return value
