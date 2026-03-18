@@ -102,7 +102,7 @@ variable "private_ips" {
 variable "base_image_ocid" {
 	type = string
 	description = "OCID of the Packer-built image."
-	default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaalxnziqbnclocxxhv2xnp5wmq5ijflmvg4smrra62hm6lboh26hsa"
+	default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaayhhmu7pq5c43ixnunzqrhiuhkupxghdrctwmzkvb4wblfofnfwha"
 }
 
 variable "vm_shape" {

@@ -46,41 +46,41 @@ if [[ "$NODE_INDEX" -ne 0 ]]; then
 fi
 
 # ----------------------------
-# Build members array (JS)
-# ----------------------------
-IFS=',' read -ra IPS <<< "$ALL_IPS"
-
-MEMBERS_JS=""
-IDX=0
-
-for IP in "${IPS[@]}"; do
-  PRIORITY=$( [[ "$IDX" -eq 0 ]] && echo 1 || echo 0.5 )
-
-  MEMBERS_JS+="{ _id: $IDX, host: \"$IP:$PORT\", priority: $PRIORITY },"
-  IDX=$((IDX + 1))
-done
-
-# Remove trailing comma
-MEMBERS_JS="${MEMBERS_JS%,}"
-
-# ----------------------------
 # Run mongosh
 # ----------------------------
 echo "Node 0: initiating replica set '$REPLICA_SET_NAME'..."
 
-docker compose exec -T mongodb mongosh \
-  "mongodb://$USERNAME:$PASSWORD@localhost:$PORT/admin" <<EOF
-rs.initiate({
-  _id: "$REPLICA_SET_NAME",
-  members: [
-    $MEMBERS_JS
-  ]
-})
+cat <<EOF
+	use admin;
+	rs.initiate({
+		_id: "$REPLICA_SET_NAME",
+		members: [$MEMBERS_JS]
+	})
 
-// Wait until primary is elected
-while (!rs.isMaster().ismaster) {
-  sleep(1000);
-}
+	// Wait until primary is elected
+	while (!rs.isMaster().ismaster) {
+		sleep(1000);
+	}
+EOF
+
+docker compose exec -T mongodb mongosh \
+  -u "$MONGO_INITDB_ROOT_USERNAME" \
+  -p "$MONGO_INITDB_ROOT_PASSWORD" \
+  --authenticationDatabase admin <<EOF
+	use admin;
+	rs.initiate({
+		_id: "$REPLICA_SET_NAME",
+		members: [
+			{ _id: 0, host: "go-mongodb-1.tmlmobilidade.pt:27017", priority: 1 },
+			{ _id: 1, host: "go-mongodb-2.tmlmobilidade.pt:27017", priority: 0.5 },
+			{ _id: 2, host: "go-mongodb-3.tmlmobilidade.pt:27017", priority: 0.5 }
+		]
+	})
+
+	// Wait until primary is elected
+	while (!rs.isMaster().ismaster) {
+		sleep(1000);
+	}
 EOF
 
 echo "================================================"
