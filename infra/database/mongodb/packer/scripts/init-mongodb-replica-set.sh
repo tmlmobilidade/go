@@ -48,8 +48,8 @@ fi
 echo "Node 0: initiating replica set '$REPLICA_SET_NAME'..."
 
 docker compose exec -T mongodb mongosh \
-  -u "$MONGO_INITDB_ROOT_USERNAME" \
-  -p "$MONGO_INITDB_ROOT_PASSWORD" \
+  -u "$USERNAME" \
+  -p "$PASSWORD" \
   --authenticationDatabase admin <<EOF
 	use admin;
 	rs.initiate({
