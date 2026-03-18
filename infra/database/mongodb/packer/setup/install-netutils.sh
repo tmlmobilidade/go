@@ -20,5 +20,5 @@ wait_for_apt() {
 
 echo "[netutils] Installing netutils packages..."
 apt-get update -qq
-apt-get install -y iputils-ping netcat-traditional
+apt-get install -y iputils-ping netcat-traditional net-tools
 echo "[netutils] netutils packages installation complete."
