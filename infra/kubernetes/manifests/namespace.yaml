@@ -13,3 +13,99 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kubectl
     app.kubernetes.io/part-of: go-auth
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: go-dates
+  labels:
+    app.kubernetes.io/managed-by: kubectl
+    app.kubernetes.io/part-of: go-dates
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: go-fleet
+  labels:
+    app.kubernetes.io/managed-by: kubectl
+    app.kubernetes.io/part-of: go-fleet
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: go-locations
+  labels:
+    app.kubernetes.io/managed-by: kubectl
+    app.kubernetes.io/part-of: go-locations
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: go-offer
+  labels:
+    app.kubernetes.io/managed-by: kubectl
+    app.kubernetes.io/part-of: go-offer
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: go-ticketing
+  labels:
+    app.kubernetes.io/managed-by: kubectl
+    app.kubernetes.io/part-of: go-ticketing
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: go-alerts
+  labels:
+    app.kubernetes.io/managed-by: kubectl
+    app.kubernetes.io/part-of: go-alerts
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: go-stops
+  labels:
+    app.kubernetes.io/managed-by: kubectl
+    app.kubernetes.io/part-of: go-stops
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: go-plans
+  labels:
+    app.kubernetes.io/managed-by: kubectl
+    app.kubernetes.io/part-of: go-plans
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: go-performance
+  labels:
+    app.kubernetes.io/managed-by: kubectl
+    app.kubernetes.io/part-of: go-performance
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: go-exporter
+  labels:
+    app.kubernetes.io/managed-by: kubectl
+    app.kubernetes.io/part-of: go-exporter
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: go-controller
+  labels:
+    app.kubernetes.io/managed-by: kubectl
+    app.kubernetes.io/part-of: go-controller
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: go-replicator
+  labels:
+    app.kubernetes.io/managed-by: kubectl
+    app.kubernetes.io/part-of: go-replicator

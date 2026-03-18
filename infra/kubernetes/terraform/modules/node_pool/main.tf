@@ -65,7 +65,7 @@ resource "oci_containerengine_node_pool" "this" {
 	node_source_details {
 		image_id                = local.node_image_id
 		source_type             = "IMAGE"
-		boot_volume_size_in_gbs = 50
+		boot_volume_size_in_gbs = 200
 	}
 
 	node_config_details {

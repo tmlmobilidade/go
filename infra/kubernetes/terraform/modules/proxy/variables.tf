@@ -10,25 +10,13 @@ variable "worker_node_ips" {
 	EOT
 }
 
-variable "node_port" {
-	type        = number
-	description = "The NodePort exposed by the Kubernetes gateway service."
-	default     = 30080
-}
-
-variable "auth_node_port" {
-	type        = number
-	description = "The NodePort exposed by the Kubernetes auth-nginx service."
-	default     = 30081
-}
-
 variable "image_ocid" {
 	type        = string
 	description = <<-EOT
 	The OCID of the base image to use for the proxy VM.
 	Defaults to the same Ubuntu image used by the compute gateway module.
 	EOT
-	default     = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaaa4zybj2dpcgjoq64negiojdbkg4bawnloi6kmyatv5ywhn4rhqsq"
+	default     = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaack7qrrfuvvkgfwuvyhmklyvg42dq7blgbmf3fqma4xoa7ca6kdoq"
 }
 
 variable "vm_shape" {

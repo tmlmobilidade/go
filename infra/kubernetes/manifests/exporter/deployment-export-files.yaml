@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exporter-export-files
+  namespace: go-exporter
+  labels:
+    app: exporter-export-files
+    app.kubernetes.io/name: exporter-export-files
+    app.kubernetes.io/component: worker
+    app.kubernetes.io/part-of: go-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: exporter-export-files
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
+  template:
+    metadata:
+      labels:
+        app: exporter-export-files
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: export-files
+          image: ghcr.io/tmlmobilidade/go-exporter-export-files:staging
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: exporter-secret
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

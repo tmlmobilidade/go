@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: locations-api
+  namespace: go-locations
+  labels:
+    app: locations-api
+    app.kubernetes.io/name: locations-api
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: go-locations
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: locations-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: locations-api
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values: [locations-api]
+                topologyKey: kubernetes.io/hostname
+      containers:
+        - name: api
+          image: ghcr.io/tmlmobilidade/go-locations-api:staging
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 5050
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: locations-secret
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 15
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi

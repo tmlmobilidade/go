@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stops-organizer
+  namespace: go-stops
+  labels:
+    app: stops-organizer
+    app.kubernetes.io/name: stops-organizer
+    app.kubernetes.io/component: worker
+    app.kubernetes.io/part-of: go-stops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stops-organizer
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
+  template:
+    metadata:
+      labels:
+        app: stops-organizer
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: organizer
+          image: ghcr.io/tmlmobilidade/go-stops-organizer:staging
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: stops-secret
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

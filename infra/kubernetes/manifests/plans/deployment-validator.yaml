@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plans-validator
+  namespace: go-plans
+  labels:
+    app: plans-validator
+    app.kubernetes.io/name: plans-validator
+    app.kubernetes.io/component: worker
+    app.kubernetes.io/part-of: go-plans
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: plans-validator
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
+  template:
+    metadata:
+      labels:
+        app: plans-validator
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: validator
+          image: ghcr.io/tmlmobilidade/go-plans-validator:staging
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: plans-secret
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

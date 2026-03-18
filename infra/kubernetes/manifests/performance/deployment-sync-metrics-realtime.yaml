@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: performance-sync-metrics-realtime
+  namespace: go-performance
+  labels:
+    app: performance-sync-metrics-realtime
+    app.kubernetes.io/name: performance-sync-metrics-realtime
+    app.kubernetes.io/component: worker
+    app.kubernetes.io/part-of: go-performance
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: performance-sync-metrics-realtime
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
+  template:
+    metadata:
+      labels:
+        app: performance-sync-metrics-realtime
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: sync-metrics-realtime
+          image: ghcr.io/tmlmobilidade/go-performance-sync-metrics-realtime:staging
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: performance-secret
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
