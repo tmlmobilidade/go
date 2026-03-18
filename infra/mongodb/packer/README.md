@@ -18,7 +18,7 @@ TBD
 ## Usage
 Open a new terminal window and change the shell into this directory:
 ```
-cd ./infra/database/mongodb/packer
+cd ./infra/mongodb/packer
 ```
 
 Initialize the packer module and validate the configuration files:
@@ -29,5 +29,6 @@ packer validate .
 
 Then, start building the images:
 ```
-packer build -var-file="secrets.pkrvars.hcl" .
+packer build -var-file="staging.pkrvars.hcl" .
+packer build -var-file="production.pkrvars.hcl" .
 ```

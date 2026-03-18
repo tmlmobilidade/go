@@ -8,6 +8,11 @@ variable "project_name" {
 	default = "iso-go"
 }
 
+variable "environment" {
+	type = string
+	description = "The environment of the deployment (e.g., staging, production)."
+}
+
 variable "compartment_ocid" {
 	type = string
 	description = <<-EOT
