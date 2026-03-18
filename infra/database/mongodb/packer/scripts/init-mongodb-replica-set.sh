@@ -1,84 +1,88 @@
-#!/bin/bash
-
-# init-mongodb-replica-set.sh — Initialize MongoDB replica set (primary node only)
-#
-# Usage: init-mongodb-replica-set.sh <node_index> <port> <username> <password> <replica_set_name> <all_private_ips>
-#
-# Arguments:
-#   node_index       - 0-based index of this node (only node 0 runs rs.initiate())
-#   port             - MongoDB port
-#   username         - MongoDB root username
-#   password         - MongoDB root password
-#   replica_set_name - Name of the replica set
-#   all_private_ips  - Comma-separated list of all node private IPs
+#!/usr/bin/env bash
 
 set -euo pipefail
 
-NODE_INDEX="${1:?Usage: init-mongodb-replica-set.sh <node_index> <port> <username> <password> <replica_set_name> <all_private_ips>}"
-PORT="$2"
-USERNAME="$3"
-PASSWORD="$4"
-REPLICA_SET_NAME="$5"
-ALL_IPS="$6"
+echo "================================================"
+echo "Initializing MongoDB replica set"
+echo "================================================"
 
-if [ "$NODE_INDEX" -ne 0 ]; then
-  echo "Node $NODE_INDEX: secondary node, replica set will be joined automatically."
+# ----------------------------
+# Parse named arguments
+# ----------------------------
+NODE_INDEX=""
+PORT=""
+USERNAME=""
+PASSWORD=""
+REPLICA_SET_NAME=""
+ALL_IPS=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --node-index) NODE_INDEX="$2"; shift 2 ;;
+    --mongodb-port) PORT="$2"; shift 2 ;;
+    --username) USERNAME="$2"; shift 2 ;;
+    --password) PASSWORD="$2"; shift 2 ;;
+    --replica-set-name) REPLICA_SET_NAME="$2"; shift 2 ;;
+    --all-private-ips) ALL_IPS="$2"; shift 2 ;;
+    *)
+      echo "Unknown argument: $1"
+      exit 1
+      ;;
+  esac
+done
+
+# Validate required args
+: "${NODE_INDEX:?Missing --node-index}"
+: "${PORT:?Missing --mongodb-port}"
+: "${USERNAME:?Missing --username}"
+: "${PASSWORD:?Missing --password}"
+: "${REPLICA_SET_NAME:?Missing --replica-set-name}"
+: "${ALL_IPS:?Missing --all-private-ips}"
+
+# Only primary initializes
+if [[ "$NODE_INDEX" -ne 0 ]]; then
+  echo "Node $NODE_INDEX: secondary node, skipping rs.initiate()"
   exit 0
 fi
 
-echo "Node 0: waiting for mongod to be ready..."
-RETRY=0
-READY=0
-while [ $RETRY -lt 30 ]; do
-  RETRY=$((RETRY + 1))
-  if docker exec mongodb mongosh \
-      --host localhost \
-      --port "$PORT" \
-      --username "$USERNAME" \
-      --password "$PASSWORD" \
-      --authenticationDatabase admin \
-      --quiet \
-      --eval "db.runCommand({ ping: 1 })" 2>/dev/null | grep -q 'ok.*1'; then
-    echo "mongod is ready."
-    READY=1
-    break
-  fi
-  echo "Attempt $RETRY: mongod not ready yet, waiting 10s..."
-  sleep 10
-done
-
-if [ "$READY" -eq 0 ]; then
-  echo "ERROR: mongod did not become ready after 30 attempts."
-  exit 1
-fi
-
-# Build members array from comma-separated IPs
-MEMBERS=""
-IDX=0
+# ----------------------------
+# Build members array (JS)
+# ----------------------------
 IFS=',' read -ra IPS <<< "$ALL_IPS"
+
+MEMBERS_JS=""
+IDX=0
+
 for IP in "${IPS[@]}"; do
-  PRIORITY=$([ "$IDX" -eq 0 ] && echo 2 || echo 1)
-  [ -n "$MEMBERS" ] && MEMBERS="$MEMBERS,"
-  MEMBERS="$MEMBERS{ _id: $IDX, host: \"$IP:$PORT\", priority: $PRIORITY }"
+  PRIORITY=$( [[ "$IDX" -eq 0 ]] && echo 1 || echo 0.5 )
+
+  MEMBERS_JS+="{ _id: $IDX, host: \"$IP:$PORT\", priority: $PRIORITY },"
   IDX=$((IDX + 1))
 done
 
-echo "Node 0: initiating replica set $REPLICA_SET_NAME..."
-INIT_RETRY=0
-while [ $INIT_RETRY -lt 20 ]; do
-  INIT_RETRY=$((INIT_RETRY + 1))
-  OUTPUT=$(docker exec mongodb mongosh \
-    --host localhost \
-    --port "$PORT" \
-    --username "$USERNAME" \
-    --password "$PASSWORD" \
-    --authenticationDatabase admin \
-    --quiet \
-    --eval "rs.initiate({ _id: \"$REPLICA_SET_NAME\", members: [ $MEMBERS ] });" 2>&1)
-  if echo "$OUTPUT" | grep -qE 'ok\s*:\s*1'; then
-    echo "Node 0: rs.initiate() succeeded."
-    break
-  fi
-  echo "Attempt $INIT_RETRY: rs.initiate() failed, retrying in 15s... ($OUTPUT)"
-  sleep 15
-done
+# Remove trailing comma
+MEMBERS_JS="${MEMBERS_JS%,}"
+
+# ----------------------------
+# Run mongosh
+# ----------------------------
+echo "Node 0: initiating replica set '$REPLICA_SET_NAME'..."
+
+docker compose exec -T mongodb mongosh \
+  "mongodb://$USERNAME:$PASSWORD@localhost:$PORT/admin" <<EOF
+rs.initiate({
+  _id: "$REPLICA_SET_NAME",
+  members: [
+    $MEMBERS_JS
+  ]
+})
+
+// Wait until primary is elected
+while (!rs.isMaster().ismaster) {
+  sleep(1000);
+}
+EOF
+
+echo "================================================"
+echo "Replica set initialization complete"
+echo "================================================"

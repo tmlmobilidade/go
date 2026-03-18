@@ -11,11 +11,12 @@ echo "[docker] Starting Docker Engine installation..."
 
 
 wait_for_apt() {
-	sleep 5
-	while sudo lsof /var/lib/dpkg/lock-frontend /var/lib/apt/lists/lock >/dev/null 2>&1; do
-		echo "[docker] apt is locked, waiting 5s..."
-		sleep 5
+	sleep 15
+	while pgrep -x apt >/dev/null || pgrep -x apt-get >/dev/null || pgrep -x dpkg >/dev/null; do
+		echo "APT/dpkg still running..."
+		sleep 15
 	done
+	echo "APT process finished"
 }
 
 

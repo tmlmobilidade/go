@@ -65,6 +65,13 @@ runcmd:
   # Initialize Replica Set (script pre-baked by Packer)
   # Node 0 waits for mongod and runs rs.initiate(). Others exit early.
 
-  - /opt/app/init-mongodb-replica-set.sh ${node_index} ${mongodb_port} '${mongodb_root_username}' '${mongodb_root_password}' ${replica_set_name} ${join(",", all_private_ips)}
+  - |
+    /opt/app/init-mongodb-replica-set.sh \
+      --node-index ${node_index} \
+      --mongodb-port ${mongodb_port} \
+      --username '${mongodb_root_username}' \
+      --password '${mongodb_root_password}' \
+      --replica-set-name ${replica_set_name} \
+      --all-private-ips ${join(",", all_private_ips)}
 
 final_message: "MongoDB replica node ${node_index + 1} of ${length(all_private_ips)} configuration complete."
