@@ -7,7 +7,7 @@ import { PeriodsListCellAgency } from '@/components/year-periods/list/PeriodsLis
 import { PeriodsListHeader } from '@/components/year-periods/list/PeriodsListHeader';
 import { type PeriodNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { ColorSwatch, DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, Tag, Text } from '@tmlmobilidade/ui';
+import { ColorSwatch, DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, Text } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -27,7 +27,7 @@ export function PeriodsList() {
 	const columns: DataTableColumn<PeriodNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <IdTag id={item._id} />,
 			title: '#ID',
 			width: 100,
 		},
@@ -71,8 +71,8 @@ export function PeriodsList() {
 
 	return (
 		<Pane header={[
-			<PeriodsListHeader />,
-			<PeriodsListFiltersBar />,
+			<PeriodsListHeader key="header" />,
+			<PeriodsListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable

@@ -34,6 +34,7 @@ class PCGIDBValidationsClass {
 
 		const mongoClientOptions: MongoClientOptions = {
 			connectTimeoutMS: 10_000,
+			directConnection: process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'staging' ? false : true,
 			maxPoolSize: 20,
 			minPoolSize: 2,
 			readPreference: 'secondaryPreferred',
@@ -51,8 +52,7 @@ class PCGIDBValidationsClass {
 			this.ValidationEntity = mongoConnector.client.db('ValidationsManagement').collection('validationEntity');
 			// Log success message
 			Logger.success('Connected to PCGIDB Validations successfully.');
-		}
-		catch (error) {
+		} catch (error) {
 			throw new Error('Error connecting to PCGIDB Validations:', { cause: error });
 		}
 	}
@@ -117,7 +117,7 @@ class PCGIDBValidationsClass {
 				agent: process.env.SSH_AUTH_SOCK,
 				host: process.env.PCGIDB_TUNNEL_SSH_HOST,
 				keepaliveCountMax: 3, // Retry 3 times before closing the connection
-				keepaliveInterval: 10000, // Send keep-alive every 10 seconds
+				keepaliveInterval: 10_000, // Send keep-alive every 10 seconds
 				port: 22,
 				username: process.env.PCGIDB_TUNNEL_SSH_USERNAME,
 			},
@@ -161,4 +161,8 @@ class PCGIDBValidationsClass {
 
 /* * */
 
+/**
+ * @deprecated This should not be used anymore. Only inside the `apex` module
+ * and then you should use the services provided by the local package.
+ */
 export const pcgidbValidations = new PCGIDBValidationsClass();

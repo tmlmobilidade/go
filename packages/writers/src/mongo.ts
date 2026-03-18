@@ -95,8 +95,6 @@ export class MongoDbWriter<T> {
 		}
 	}
 
-	/* * */
-
 	async flush(callback?: (data?: MongoDBWriterWriteOps<T>[]) => Promise<void>) {
 		try {
 			//
@@ -184,18 +182,14 @@ export class MongoDbWriter<T> {
 		}
 	}
 
-	/* * */
-
 	/**
 	 * Write data to the MongoDB collection.
-	 *
 	 * @param data The data to write
 	 * @param options Options for the write operation
 	 * @param writeCallback Callback function to call after the write operation is complete
 	 * @param flushCallback Callback function to call after the flush operation is complete
 	 */
-
-	async write(data: T | T[], options: MongoDbWriterWriteOptions = {}, writeCallback?: () => Promise<void>, flushCallback?: (data?: MongoDBWriterWriteOps<T>[]) => Promise<void>) {
+	async write(data: T, options: MongoDbWriterWriteOptions = {}, writeCallback?: () => Promise<void>, flushCallback?: (data?: MongoDBWriterWriteOps<T>[]) => Promise<void>) {
 		//
 
 		//
@@ -225,12 +219,7 @@ export class MongoDbWriter<T> {
 		//
 		// Add the current data to the batch
 
-		if (Array.isArray(data)) {
-			const combinedDataWithOptions = data.map(item => ({ data: item, options: options }));
-			this.DATA_BUCKET_ALWAYS_AVAILABLE = [...this.DATA_BUCKET_ALWAYS_AVAILABLE, ...combinedDataWithOptions];
-		} else {
-			this.DATA_BUCKET_ALWAYS_AVAILABLE.push({ data: data, options: options });
-		}
+		this.DATA_BUCKET_ALWAYS_AVAILABLE.push({ data: data, options: options });
 
 		//
 		// Call the write callback, if provided

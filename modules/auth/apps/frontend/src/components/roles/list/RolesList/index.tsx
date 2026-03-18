@@ -6,7 +6,7 @@ import { useRolesListContext } from '@/components/roles/list/RolesList.context';
 import { RolesListHeader } from '@/components/roles/list/RolesListHeader';
 import { type RoleNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, Tag, TagGroup } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, LoadingOverlay, Pane, TagGroup } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -27,7 +27,7 @@ export function RolesList() {
 	const columns: DataTableColumn<RoleNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <IdTag id={item._id} />,
 			title: t('default:roles.list.Header.Table.columns.id'),
 			width: 120,
 		},
@@ -63,7 +63,7 @@ export function RolesList() {
 	}
 
 	return (
-		<Pane header={[<RolesListHeader />]}>
+		<Pane header={[<RolesListHeader key="header" />]}>
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}

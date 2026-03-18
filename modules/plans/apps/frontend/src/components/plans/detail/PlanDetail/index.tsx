@@ -3,13 +3,13 @@
 /* * */
 
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
+import { PlanDetailFootnote } from '@/components/plans/detail/PlanDetailFootnote';
 import { PlanDetailHeader } from '@/components/plans/detail/PlanDetailHeader';
 import { PlanDetailSectionAgency } from '@/components/plans/detail/PlanDetailSectionAgency';
 import { PlanDetailSectionController } from '@/components/plans/detail/PlanDetailSectionController';
 import { PlanDetailSectionFeedInfo } from '@/components/plans/detail/PlanDetailSectionFeedInfo';
 import { PlanDetailSectionPcgiLegacy } from '@/components/plans/detail/PlanDetailSectionPcgiLegacy';
 import { PlanDetailSectionFiles } from '@/components/plans/detail/PlansDetailSectionFiles';
-import { PlanDetailFootnote } from '@/components/plans/detail/ValidationsDetailFootnote';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { ErrorDisplay, HasPermission, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
@@ -35,7 +35,7 @@ export function PlanDetail() {
 	}
 
 	return (
-		<Pane header={[<PlanDetailHeader />]}>
+		<Pane header={[<PlanDetailHeader key="header" />]}>
 
 			<PlanDetailSectionAgency />
 			<PlanDetailSectionFeedInfo />

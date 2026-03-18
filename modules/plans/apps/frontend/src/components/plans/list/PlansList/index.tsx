@@ -9,7 +9,7 @@ import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { type PlanNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane, ProcessingStatusTag, Tag } from '@tmlmobilidade/ui';
+import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, ProcessingStatusTag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -29,7 +29,7 @@ export function PlansList() {
 	const columns: DataTableColumn<PlanNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <Tag label={item._id} variant="secondary" />,
+			render: item => <IdTag id={item._id} />,
 			title: '#ID',
 			width: 90,
 		},

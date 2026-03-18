@@ -77,8 +77,7 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 				// Trigger data update
 				ridesData.set(next);
 				setLastUpdatedAt(Dates.now('Europe/Lisbon').unix_timestamp);
-			}
-			catch (error) {
+			} catch (error) {
 				console.error('WebSocket message parse error:', error);
 			}
 		};

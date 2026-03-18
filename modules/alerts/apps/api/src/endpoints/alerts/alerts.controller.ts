@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { alerts, files, notifications } from '@tmlmobilidade/interfaces';
 import { type Alert, CreateAlertDto, type File, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
@@ -156,8 +156,7 @@ export class AlertsController {
 		if (foundAlert.file_id) {
 			try {
 				await files.deleteById(foundAlert.file_id);
-			}
-			catch (error) {
+			} catch (error) {
 				console.error(error);
 			}
 		}
