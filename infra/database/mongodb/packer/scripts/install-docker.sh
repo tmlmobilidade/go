@@ -21,10 +21,7 @@ wait_for_apt() {
 
 echo "[docker] Removing old versions..."
 wait_for_apt
-OLD_PKGS=$(dpkg -l | grep -E 'docker|containerd|runc' | awk '{print $2}')
-if [[ -n "$OLD_PKGS" ]]; then
-	apt-get remove -y $OLD_PKGS
-fi
+apt-get remove -y $(dpkg --get-selections docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc | cut -f1)
 echo "[docker] Old versions removed (if any were present)."
 
 
