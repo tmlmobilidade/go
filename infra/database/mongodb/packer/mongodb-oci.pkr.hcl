@@ -80,19 +80,27 @@ build {
 	# OS performance tuning + install prerequisite packages
 
 	provisioner "shell" {
-		script = "${path.root}/scripts/os-tuning.sh"
+		script = "${path.root}/setup/os-tuning.sh"
 		execute_command = "sudo bash '{{.Path}}'"
 	}
 
 	# 2.
-	# Install Docker Engine
+	# Install netutils packages for network troubleshooting.
 
 	provisioner "shell" {
-		script = "${path.root}/scripts/install-docker.sh"
+		script = "${path.root}/setup/install-netutils.sh"
 		execute_command = "sudo bash '{{.Path}}'"
 	}
 
 	# 3.
+	# Install Docker Engine
+
+	provisioner "shell" {
+		script = "${path.root}/setup/install-docker.sh"
+		execute_command = "sudo bash '{{.Path}}'"
+	}
+
+	# 4.
 	# Copy setup scripts that cloud-init can call at boot time.
 	# Since Packer file provisioners do not support setting executable
 	# permissions on the files, an additional shell provisioner is used
@@ -109,13 +117,13 @@ build {
 	# for attaching and mounting the block volume.
 
 	provisioner "file" {
-		source = "${path.root}/scripts/attach-volume.sh"
-		destination = "/tmp/attach-volume.sh"
+		source = "${path.root}/init/attach-volume.sh"
+		destination = "/opt/app/attach-volume.sh"
 	}
 
 	provisioner "shell" {
 		inline = [
-			"sudo mv /tmp/attach-volume.sh /opt/app/attach-volume.sh",
+			# "sudo mv /tmp/attach-volume.sh /opt/app/attach-volume.sh",
 			"sudo chmod +x /opt/app/attach-volume.sh"
 		]
 	}
@@ -124,13 +132,13 @@ build {
 	# setting up the MongoDB data directories and permissions.
 
 	provisioner "file" {
-		source = "${path.root}/scripts/setup-mongodb.sh"
-		destination = "/tmp/setup-mongodb.sh"
+		source = "${path.root}/init/setup-mongodb.sh"
+		destination = "/opt/app/setup-mongodb.sh"
 	}
 
 	provisioner "shell" {
 		inline = [
-			"sudo mv /tmp/setup-mongodb.sh /opt/app/setup-mongodb.sh",
+			# "sudo mv /tmp/setup-mongodb.sh /opt/app/setup-mongodb.sh",
 			"sudo chmod +x /opt/app/setup-mongodb.sh"
 		]
 	}
@@ -139,13 +147,13 @@ build {
 	# initializing the MongoDB replica set on the primary node.
 
 	provisioner "file" {
-		source = "${path.root}/scripts/init-mongodb-replica-set.sh"
-		destination = "/tmp/init-mongodb-replica-set.sh"
+		source = "${path.root}/init/init-mongodb-replica-set.sh"
+		destination = "/opt/app/init-mongodb-replica-set.sh"
 	}
 
 	provisioner "shell" {
 		inline = [
-			"sudo mv /tmp/init-mongodb-replica-set.sh /opt/app/init-mongodb-replica-set.sh",
+			# "sudo mv /tmp/init-mongodb-replica-set.sh /opt/app/init-mongodb-replica-set.sh",
 			"sudo chmod +x /opt/app/init-mongodb-replica-set.sh"
 		]
 	}
@@ -154,11 +162,11 @@ build {
 	# that defines the MongoDB container and its settings.
 
 	provisioner "file" {
-		source = "${path.root}/templates/compose.yaml"
+		source = "${path.root}/init/compose.yaml"
 		destination = "/opt/app/compose.yaml"
 	}
 
-	# 4.
+	# 5.
 	# Clean up apt cache to reduce image size
 
 	provisioner "shell" {
@@ -168,7 +176,7 @@ build {
 		]
 	}
 
-	# 5.
+	# 6.
 	# Generate a manifest file with the image OCID
 	# for later use in Terraform pipelines.
 
