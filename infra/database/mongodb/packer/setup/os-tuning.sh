@@ -17,7 +17,19 @@ cloud-init status --wait
 sleep 30
 echo "[tuning] cloud-init finished."
 
+
 # 2.
+# OCI base images ship with a REJECT-all default that blocks inter-node traffic.
+# OCI security lists handle perimeter firewall; the OS-level REJECT is redundant.
+
+echo "[tuning] Clearing restrictive iptables rules..."
+iptables -F INPUT
+iptables -P INPUT ACCEPT
+netfilter-persistent save
+echo "[tuning] iptables rules cleared."
+
+
+# 3.
 # Apply MongoDB-recommended kernel settings.
 
 echo "[tuning] Applying sysctl settings..."
