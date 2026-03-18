@@ -3,10 +3,9 @@
 
 .idTag {
 	display: flex;
-	gap: 3px;
+	gap: 1px;
 	align-items: center;
-	justify-content: flex-start;
-	width: auto;
+	justify-content: center;
 	padding: 5px;
 	color: var(--color-system-text-100);
 	background-color: var(--color-system-background-200);
@@ -14,8 +13,7 @@
 	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
 }
 
-.label {
-	overflow: hidden;
+.char {
 	text-overflow: ellipsis;
 	line-clamp: 1;
 	font-family: var(--font-family-monospace);
@@ -23,7 +21,6 @@
 	font-weight: var(--font-weight-semibold);
 	line-height: 1;
 	text-transform: uppercase;
-	letter-spacing: 1px;
 	white-space: nowrap;
 }
 

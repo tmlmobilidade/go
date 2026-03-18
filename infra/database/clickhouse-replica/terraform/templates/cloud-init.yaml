@@ -1,0 +1,185 @@
+#cloud-config
+# -----------------------------------------------------------------------
+# cloud-init.yaml — ClickHouse Replica Node (node_index = ${node_index})
+#
+# Docker and OS tuning are pre-baked into the Packer image.
+# This file handles runtime concerns only:
+#   - Attaches and mounts the 1TB block volume
+#   - Writes ClickHouse Keeper config (embedded keeper, 3-node Raft quorum)
+#   - Writes ZooKeeper client config (points CH to keeper endpoints)
+#   - Writes replica macros and cluster config
+#   - Writes secrets and starts the container
+#
+# Terraform variables injected:
+#   node_index, all_private_ips, clickhouse_admin_password,
+#   clickhouse_http_port, clickhouse_tcp_port, clickhouse_interserver_port,
+#   clickhouse_keeper_client_port, clickhouse_keeper_raft_port
+#
+# Note: ports are hardcoded in packer/templates/compose.yaml
+#   and only referenced here for the XML configuration files.
+# -----------------------------------------------------------------------
+
+runcmd:
+  # -----------------------------------------------------------------
+  # 1. Attach and mount the block volume (script pre-baked by Packer)
+  # -----------------------------------------------------------------
+  - /usr/local/bin/attach-volume.sh /opt/clickhouse
+
+  # -----------------------------------------------------------------
+  # 2. Setup ClickHouse Directories (script pre-baked by Packer)
+  # -----------------------------------------------------------------
+  - /usr/local/bin/setup-clickhouse.sh /opt/clickhouse
+
+  # -----------------------------------------------------------------
+  # 3. Network Config — listen on all interfaces (IPv4 only)
+  #    interserver_http_host must be set to the node's private IP so
+  #    other replicas can fetch parts by IP instead of the Docker
+  #    container hostname (which is not resolvable across nodes).
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/config.d/network.xml <<'NETEOF'
+    <clickhouse>
+        <!-- Only bind IPv4 — OCI A1 does not expose IPv6 -->
+        <listen_host>0.0.0.0</listen_host>
+        <!-- Use private IP for interserver replication — Docker hostname is not DNS-resolvable -->
+        <interserver_http_host>${all_private_ips[node_index]}</interserver_http_host>
+    </clickhouse>
+    NETEOF
+
+  # -----------------------------------------------------------------
+  # 4. ClickHouse Keeper Config
+  #    Each node runs an embedded Keeper. server_id = node_index + 1.
+  #    All 3 nodes are listed as Raft members using their private IPs.
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/config.d/keeper.xml <<'KEEPEREOF'
+    <clickhouse>
+        <keeper_server>
+            <!-- ZooKeeper-compatible client port -->
+            <tcp_port>${clickhouse_keeper_client_port}</tcp_port>
+            <!-- Unique server ID for this node (1, 2, or 3) -->
+            <server_id>${node_index + 1}</server_id>
+            <log_storage_path>/var/lib/clickhouse/coordination/log</log_storage_path>
+            <snapshot_storage_path>/var/lib/clickhouse/coordination/snapshots</snapshot_storage_path>
+            <coordination_settings>
+                <operation_timeout_ms>10000</operation_timeout_ms>
+                <session_timeout_ms>30000</session_timeout_ms>
+                <raft_logs_level>warning</raft_logs_level>
+            </coordination_settings>
+            <raft_configuration>
+%{ for idx in range(length(all_private_ips)) ~}
+                <server>
+                    <id>${idx + 1}</id>
+                    <hostname>${all_private_ips[idx]}</hostname>
+                    <!-- Inter-keeper Raft port -->
+                    <port>${clickhouse_keeper_raft_port}</port>
+                </server>
+%{ endfor ~}
+            </raft_configuration>
+        </keeper_server>
+    </clickhouse>
+    KEEPEREOF
+
+  # -----------------------------------------------------------------
+  # 5. ZooKeeper Client Config — points ClickHouse at all 3 Keeper nodes
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/config.d/zookeeper.xml <<'ZKEOF'
+    <clickhouse>
+        <zookeeper>
+%{ for ip in all_private_ips ~}
+            <node>
+                <host>${ip}</host>
+                <port>${clickhouse_keeper_client_port}</port>
+            </node>
+%{ endfor ~}
+        </zookeeper>
+    </clickhouse>
+    ZKEOF
+
+  # -----------------------------------------------------------------
+  # 6. Replica Macros — node-specific identity for ReplicatedMergeTree
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/config.d/macros.xml <<'MACROEOF'
+    <clickhouse>
+        <macros>
+            <shard>01</shard>
+            <replica>replica-${node_index + 1}</replica>
+            <cluster>clickhouse-replica</cluster>
+        </macros>
+    </clickhouse>
+    MACROEOF
+
+  # -----------------------------------------------------------------
+  # 7. Cluster Config — all 3 replicas in one shard (no sharding)
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/config.d/cluster.xml <<'CLUSTEREOF'
+    <clickhouse>
+        <remote_servers>
+            <clickhouse-replica>
+                <shard>
+                    <internal_replication>true</internal_replication>
+%{ for ip in all_private_ips ~}
+                    <replica>
+                        <host>${ip}</host>
+                        <port>${clickhouse_tcp_port}</port>
+                    </replica>
+%{ endfor ~}
+                </shard>
+            </clickhouse-replica>
+        </remote_servers>
+    </clickhouse>
+    CLUSTEREOF
+
+  # -----------------------------------------------------------------
+  # 8. Performance Tuning Config (server-level)
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/config.d/tuning.xml <<'TUNEOEOF'
+    <clickhouse>
+        <!-- Server-level memory: 85% of 12GB = ~10.2GB -->
+        <max_server_memory_usage_to_ram_ratio>0.85</max_server_memory_usage_to_ram_ratio>
+        <uncompressed_cache_size>2147483648</uncompressed_cache_size>
+        <mark_cache_size>2147483648</mark_cache_size>
+
+        <!-- Enable Prometheus metrics -->
+        <prometheus>
+            <endpoint>/metrics</endpoint>
+            <port>9363</port>
+            <metrics>true</metrics>
+            <events>true</events>
+        </prometheus>
+    </clickhouse>
+    TUNEOEOF
+
+  # -----------------------------------------------------------------
+  # 9. User Profile Config (user-level memory limit, CH 26+)
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/users.d/tuning.xml <<'USERUEOF'
+    <clickhouse>
+        <profiles>
+            <default>
+                <max_memory_usage>10G</max_memory_usage>
+            </default>
+        </profiles>
+    </clickhouse>
+    USERUEOF
+
+  # -----------------------------------------------------------------
+  # 10. Write Secrets
+  # -----------------------------------------------------------------
+  - |
+    cat > /opt/clickhouse/secrets/.env <<'ENVEOF'
+    CLICKHOUSE_PASSWORD=${clickhouse_admin_password}
+    CLICKHOUSE_USER=admin
+    ENVEOF
+
+  # -----------------------------------------------------------------
+  # 11. Start ClickHouse
+  # -----------------------------------------------------------------
+  - cd /opt/clickhouse && docker compose up -d --build --force-recreate --remove-orphans --pull=always
+
+final_message: "ClickHouse replica node ${node_index + 1} of ${length(all_private_ips)} configuration complete."

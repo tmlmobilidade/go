@@ -22,7 +22,7 @@
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
-		"next": "16.1.6",
+		"next": "16.1.7",
 		"react": "19.2.4",
 		"react-dom": "19.2.4",
 		"swr": "2.4.1"
@@ -32,7 +32,7 @@
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/geojson": "7946.0.16",
-		"@types/node": "25.4.0",
+		"@types/node": "25.5.0",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",
 		"typescript": "5.9.3"

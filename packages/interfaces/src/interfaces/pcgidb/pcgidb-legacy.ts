@@ -14,10 +14,8 @@ let GLOBAL_PCGIDB_TUNNEL_INSTANCE: SshTunnelService | undefined;
 class PCGIDBLegacyClass {
 	//
 
-	public LocationEntity: Collection;
-	public SalesEntity: Collection;
-	public ValidationEntity: Collection;
-	public VehicleEvents: Collection;
+	public VehicleEventsCore: Collection;
+	public VehicleEventsLog: Collection;
 
 	/**
 	 * Establishes a connection to the Mongo database and initializes the collection.
@@ -49,14 +47,11 @@ class PCGIDBLegacyClass {
 			const mongoConnector = new MongoConnector(pcgidbLegacyConnectionString, mongoClientOptions);
 			await mongoConnector.connect();
 			// Setup collections
-			this.LocationEntity = mongoConnector.client.db('LocationManagement').collection('locationEntity');
-			this.SalesEntity = mongoConnector.client.db('SalesManagement').collection('salesEntity');
-			this.ValidationEntity = mongoConnector.client.db('ValidationsManagement').collection('validationEntity');
-			this.VehicleEvents = mongoConnector.client.db('CoreManagement').collection('VehicleEvents');
+			this.VehicleEventsCore = mongoConnector.client.db('CoreManagement').collection('VehicleEvents');
+			this.VehicleEventsLog = mongoConnector.client.db('OfferApiLog').collection('VehicleEvents');
 			// Log success message
 			Logger.success('Connected to PCGIDB Legacy successfully.');
-		}
-		catch (error) {
+		} catch (error) {
 			throw new Error('Error connecting to PCGIDB Legacy:', { cause: error });
 		}
 	}
@@ -121,7 +116,7 @@ class PCGIDBLegacyClass {
 				agent: process.env.SSH_AUTH_SOCK,
 				host: process.env.PCGIDB_TUNNEL_SSH_HOST,
 				keepaliveCountMax: 3, // Retry 3 times before closing the connection
-				keepaliveInterval: 10000, // Send keep-alive every 10 seconds
+				keepaliveInterval: 10_000, // Send keep-alive every 10 seconds
 				port: 22,
 				username: process.env.PCGIDB_TUNNEL_SSH_USERNAME,
 			},
@@ -165,4 +160,8 @@ class PCGIDBLegacyClass {
 
 /* * */
 
+/**
+ * @deprecated This should not be used anymore. Only inside the `apex` module
+ * and then you should use the services provided by the local package.
+ */
 export const pcgidbLegacy = new PCGIDBLegacyClass();

@@ -118,4 +118,4 @@ jobs:
             MODULE=${{ inputs.module }}
             APP=${{ matrix.app }}
             ENVIRONMENT=${{ inputs.ref-name }}
-            NGINX_SERVER_NAME=${{ inputs.ref-name == 'staging' && 'staging.go.tmlmobilidade.pt' || 'go.tmlmobilidade.pt' }}
+            NGINX_SERVER_NAME=${{ inputs.ref-name == 'staging' && 'go-stg.tmlmobilidade.pt' || 'go.tmlmobilidade.pt' }}
