@@ -13,6 +13,12 @@ variable "module_name" {
 	default = "mongodb"
 }
 
+variable "environment" {
+	type = string
+	description = "The environment for this module (e.g., stg, prd)."
+	default = "stg"
+}
+
 variable "instance_count" {
 	type = number
 	description = "Number of MongoDB replica nodes to provision."
