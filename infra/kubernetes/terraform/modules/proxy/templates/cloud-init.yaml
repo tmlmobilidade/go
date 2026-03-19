@@ -1,6 +1,7 @@
 #cloud-config
 # Kubernetes Nginx Proxy - Cloud Init Configuration
 # Forwards internet traffic to Kubernetes worker nodes via NodePort.
+# Single server on port 80, path-based routing to each module's NodePort.
 
 package_update: true
 
@@ -14,9 +15,15 @@ write_files:
   - path: /etc/nginx/conf.d/kubernetes-proxy.conf
     permissions: '0644'
     content: |
-      # -----------------------------------------------------------------------
-      # gateway — proxy port 80 → NodePort 30080
-      # -----------------------------------------------------------------------
+      # WebSocket upgrade support
+      map $${http_upgrade} $${connection_upgrade} {
+        default upgrade;
+        ''      close;
+      }
+
+      # All traffic goes to the gateway NodePort.
+      # The gateway pod (nginx:alpine + ConfigMap) handles path-based routing
+      # to each module's ClusterIP service internally within the cluster.
       upstream k8s_gateway {
         least_conn;
       %{ for ip in worker_node_ips ~}
@@ -29,6 +36,7 @@ write_files:
         listen 80 default_server;
         listen [::]:80 default_server;
 
+        # Proxy VM health check (does not hit k8s)
         location /health {
           access_log off;
           return 200 "healthy\n";
@@ -42,342 +50,8 @@ write_files:
           proxy_set_header   X-Real-IP         $${remote_addr};
           proxy_set_header   X-Forwarded-For   $${proxy_add_x_forwarded_for};
           proxy_set_header   X-Forwarded-Proto $${scheme};
-          proxy_connect_timeout 60s;
-          proxy_send_timeout    60s;
-          proxy_read_timeout    60s;
-        }
-      }
-
-      # -----------------------------------------------------------------------
-      # auth — proxy port 8080 → NodePort 30081
-      # -----------------------------------------------------------------------
-      upstream k8s_auth {
-        least_conn;
-      %{ for ip in worker_node_ips ~}
-        server ${ip}:30081 max_fails=3 fail_timeout=30s;
-      %{ endfor ~}
-        keepalive 32;
-      }
-
-      server {
-        listen 8080;
-        listen [::]:8080;
-
-        location / {
-          proxy_pass         http://k8s_auth;
-          proxy_http_version 1.1;
-          proxy_set_header   Host              $${host};
-          proxy_set_header   X-Real-IP         $${remote_addr};
-          proxy_set_header   X-Forwarded-For   $${proxy_add_x_forwarded_for};
-          proxy_set_header   X-Forwarded-Proto $${scheme};
-          proxy_connect_timeout 60s;
-          proxy_send_timeout    60s;
-          proxy_read_timeout    60s;
-        }
-      }
-
-      # -----------------------------------------------------------------------
-      # dates — proxy port 8081 → NodePort 30082
-      # -----------------------------------------------------------------------
-      upstream k8s_dates {
-        least_conn;
-      %{ for ip in worker_node_ips ~}
-        server ${ip}:30082 max_fails=3 fail_timeout=30s;
-      %{ endfor ~}
-        keepalive 32;
-      }
-
-      server {
-        listen 8081;
-        listen [::]:8081;
-
-        location / {
-          proxy_pass         http://k8s_dates;
-          proxy_http_version 1.1;
-          proxy_set_header   Host              $${host};
-          proxy_set_header   X-Real-IP         $${remote_addr};
-          proxy_set_header   X-Forwarded-For   $${proxy_add_x_forwarded_for};
-          proxy_set_header   X-Forwarded-Proto $${scheme};
-          proxy_connect_timeout 60s;
-          proxy_send_timeout    60s;
-          proxy_read_timeout    60s;
-        }
-      }
-
-      # -----------------------------------------------------------------------
-      # stops — proxy port 8082 → NodePort 30083
-      # -----------------------------------------------------------------------
-      upstream k8s_stops {
-        least_conn;
-      %{ for ip in worker_node_ips ~}
-        server ${ip}:30083 max_fails=3 fail_timeout=30s;
-      %{ endfor ~}
-        keepalive 32;
-      }
-
-      server {
-        listen 8082;
-        listen [::]:8082;
-
-        location / {
-          proxy_pass         http://k8s_stops;
-          proxy_http_version 1.1;
-          proxy_set_header   Host              $${host};
-          proxy_set_header   X-Real-IP         $${remote_addr};
-          proxy_set_header   X-Forwarded-For   $${proxy_add_x_forwarded_for};
-          proxy_set_header   X-Forwarded-Proto $${scheme};
-          proxy_connect_timeout 60s;
-          proxy_send_timeout    60s;
-          proxy_read_timeout    60s;
-        }
-      }
-
-      # -----------------------------------------------------------------------
-      # fleet — proxy port 8083 → NodePort 30084
-      # -----------------------------------------------------------------------
-      upstream k8s_fleet {
-        least_conn;
-      %{ for ip in worker_node_ips ~}
-        server ${ip}:30084 max_fails=3 fail_timeout=30s;
-      %{ endfor ~}
-        keepalive 32;
-      }
-
-      server {
-        listen 8083;
-        listen [::]:8083;
-
-        location / {
-          proxy_pass         http://k8s_fleet;
-          proxy_http_version 1.1;
-          proxy_set_header   Host              $${host};
-          proxy_set_header   X-Real-IP         $${remote_addr};
-          proxy_set_header   X-Forwarded-For   $${proxy_add_x_forwarded_for};
-          proxy_set_header   X-Forwarded-Proto $${scheme};
-          proxy_connect_timeout 60s;
-          proxy_send_timeout    60s;
-          proxy_read_timeout    60s;
-        }
-      }
-
-      # -----------------------------------------------------------------------
-      # locations — proxy port 8084 → NodePort 30085
-      # -----------------------------------------------------------------------
-      upstream k8s_locations {
-        least_conn;
-      %{ for ip in worker_node_ips ~}
-        server ${ip}:30085 max_fails=3 fail_timeout=30s;
-      %{ endfor ~}
-        keepalive 32;
-      }
-
-      server {
-        listen 8084;
-        listen [::]:8084;
-
-        location / {
-          proxy_pass         http://k8s_locations;
-          proxy_http_version 1.1;
-          proxy_set_header   Host              $${host};
-          proxy_set_header   X-Real-IP         $${remote_addr};
-          proxy_set_header   X-Forwarded-For   $${proxy_add_x_forwarded_for};
-          proxy_set_header   X-Forwarded-Proto $${scheme};
-          proxy_connect_timeout 60s;
-          proxy_send_timeout    60s;
-          proxy_read_timeout    60s;
-        }
-      }
-
-      # -----------------------------------------------------------------------
-      # offer — proxy port 8085 → NodePort 30086
-      # -----------------------------------------------------------------------
-      upstream k8s_offer {
-        least_conn;
-      %{ for ip in worker_node_ips ~}
-        server ${ip}:30086 max_fails=3 fail_timeout=30s;
-      %{ endfor ~}
-        keepalive 32;
-      }
-
-      server {
-        listen 8085;
-        listen [::]:8085;
-
-        location / {
-          proxy_pass         http://k8s_offer;
-          proxy_http_version 1.1;
-          proxy_set_header   Host              $${host};
-          proxy_set_header   X-Real-IP         $${remote_addr};
-          proxy_set_header   X-Forwarded-For   $${proxy_add_x_forwarded_for};
-          proxy_set_header   X-Forwarded-Proto $${scheme};
-          proxy_connect_timeout 60s;
-          proxy_send_timeout    60s;
-          proxy_read_timeout    60s;
-        }
-      }
-
-      # -----------------------------------------------------------------------
-      # plans — proxy port 8086 → NodePort 30087
-      # -----------------------------------------------------------------------
-      upstream k8s_plans {
-        least_conn;
-      %{ for ip in worker_node_ips ~}
-        server ${ip}:30087 max_fails=3 fail_timeout=30s;
-      %{ endfor ~}
-        keepalive 32;
-      }
-
-      server {
-        listen 8086;
-        listen [::]:8086;
-
-        location / {
-          proxy_pass         http://k8s_plans;
-          proxy_http_version 1.1;
-          proxy_set_header   Host              $${host};
-          proxy_set_header   X-Real-IP         $${remote_addr};
-          proxy_set_header   X-Forwarded-For   $${proxy_add_x_forwarded_for};
-          proxy_set_header   X-Forwarded-Proto $${scheme};
-          proxy_connect_timeout 60s;
-          proxy_send_timeout    60s;
-          proxy_read_timeout    60s;
-        }
-      }
-
-      # -----------------------------------------------------------------------
-      # alerts — proxy port 8087 → NodePort 30088
-      # -----------------------------------------------------------------------
-      upstream k8s_alerts {
-        least_conn;
-      %{ for ip in worker_node_ips ~}
-        server ${ip}:30088 max_fails=3 fail_timeout=30s;
-      %{ endfor ~}
-        keepalive 32;
-      }
-
-      server {
-        listen 8087;
-        listen [::]:8087;
-
-        location / {
-          proxy_pass         http://k8s_alerts;
-          proxy_http_version 1.1;
-          proxy_set_header   Host              $${host};
-          proxy_set_header   X-Real-IP         $${remote_addr};
-          proxy_set_header   X-Forwarded-For   $${proxy_add_x_forwarded_for};
-          proxy_set_header   X-Forwarded-Proto $${scheme};
-          proxy_connect_timeout 60s;
-          proxy_send_timeout    60s;
-          proxy_read_timeout    60s;
-        }
-      }
-
-      # -----------------------------------------------------------------------
-      # performance — proxy port 8088 → NodePort 30089
-      # -----------------------------------------------------------------------
-      upstream k8s_performance {
-        least_conn;
-      %{ for ip in worker_node_ips ~}
-        server ${ip}:30089 max_fails=3 fail_timeout=30s;
-      %{ endfor ~}
-        keepalive 32;
-      }
-
-      server {
-        listen 8088;
-        listen [::]:8088;
-
-        location / {
-          proxy_pass         http://k8s_performance;
-          proxy_http_version 1.1;
-          proxy_set_header   Host              $${host};
-          proxy_set_header   X-Real-IP         $${remote_addr};
-          proxy_set_header   X-Forwarded-For   $${proxy_add_x_forwarded_for};
-          proxy_set_header   X-Forwarded-Proto $${scheme};
-          proxy_connect_timeout 60s;
-          proxy_send_timeout    60s;
-          proxy_read_timeout    60s;
-        }
-      }
-
-      # -----------------------------------------------------------------------
-      # ticketing — proxy port 8089 → NodePort 30090
-      # -----------------------------------------------------------------------
-      upstream k8s_ticketing {
-        least_conn;
-      %{ for ip in worker_node_ips ~}
-        server ${ip}:30090 max_fails=3 fail_timeout=30s;
-      %{ endfor ~}
-        keepalive 32;
-      }
-
-      server {
-        listen 8089;
-        listen [::]:8089;
-
-        location / {
-          proxy_pass         http://k8s_ticketing;
-          proxy_http_version 1.1;
-          proxy_set_header   Host              $${host};
-          proxy_set_header   X-Real-IP         $${remote_addr};
-          proxy_set_header   X-Forwarded-For   $${proxy_add_x_forwarded_for};
-          proxy_set_header   X-Forwarded-Proto $${scheme};
-          proxy_connect_timeout 60s;
-          proxy_send_timeout    60s;
-          proxy_read_timeout    60s;
-        }
-      }
-
-      # -----------------------------------------------------------------------
-      # exporter — proxy port 8090 → NodePort 30091
-      # -----------------------------------------------------------------------
-      upstream k8s_exporter {
-        least_conn;
-      %{ for ip in worker_node_ips ~}
-        server ${ip}:30091 max_fails=3 fail_timeout=30s;
-      %{ endfor ~}
-        keepalive 32;
-      }
-
-      server {
-        listen 8090;
-        listen [::]:8090;
-
-        location / {
-          proxy_pass         http://k8s_exporter;
-          proxy_http_version 1.1;
-          proxy_set_header   Host              $${host};
-          proxy_set_header   X-Real-IP         $${remote_addr};
-          proxy_set_header   X-Forwarded-For   $${proxy_add_x_forwarded_for};
-          proxy_set_header   X-Forwarded-Proto $${scheme};
-          proxy_connect_timeout 60s;
-          proxy_send_timeout    60s;
-          proxy_read_timeout    60s;
-        }
-      }
-
-      # -----------------------------------------------------------------------
-      # controller — proxy port 8091 → NodePort 30092
-      # -----------------------------------------------------------------------
-      upstream k8s_controller {
-        least_conn;
-      %{ for ip in worker_node_ips ~}
-        server ${ip}:30092 max_fails=3 fail_timeout=30s;
-      %{ endfor ~}
-        keepalive 32;
-      }
-
-      server {
-        listen 8091;
-        listen [::]:8091;
-
-        location / {
-          proxy_pass         http://k8s_controller;
-          proxy_http_version 1.1;
-          proxy_set_header   Host              $${host};
-          proxy_set_header   X-Real-IP         $${remote_addr};
-          proxy_set_header   X-Forwarded-For   $${proxy_add_x_forwarded_for};
-          proxy_set_header   X-Forwarded-Proto $${scheme};
+          proxy_set_header   Upgrade           $${http_upgrade};
+          proxy_set_header   Connection        $${connection_upgrade};
           proxy_connect_timeout 60s;
           proxy_send_timeout    60s;
           proxy_read_timeout    60s;
@@ -387,20 +61,9 @@ write_files:
 runcmd:
   # Remove default nginx site to avoid duplicate default_server conflict
   - rm -f /etc/nginx/sites-enabled/default
-  # Allow all proxy ports through OS firewall (OCI Ubuntu blocks non-22 ports by default)
-  - iptables -I INPUT 4 -p tcp --dport 80   -m state --state NEW -j ACCEPT
-  - iptables -I INPUT 4 -p tcp --dport 8080 -m state --state NEW -j ACCEPT
-  - iptables -I INPUT 4 -p tcp --dport 8081 -m state --state NEW -j ACCEPT
-  - iptables -I INPUT 4 -p tcp --dport 8082 -m state --state NEW -j ACCEPT
-  - iptables -I INPUT 4 -p tcp --dport 8083 -m state --state NEW -j ACCEPT
-  - iptables -I INPUT 4 -p tcp --dport 8084 -m state --state NEW -j ACCEPT
-  - iptables -I INPUT 4 -p tcp --dport 8085 -m state --state NEW -j ACCEPT
-  - iptables -I INPUT 4 -p tcp --dport 8086 -m state --state NEW -j ACCEPT
-  - iptables -I INPUT 4 -p tcp --dport 8087 -m state --state NEW -j ACCEPT
-  - iptables -I INPUT 4 -p tcp --dport 8088 -m state --state NEW -j ACCEPT
-  - iptables -I INPUT 4 -p tcp --dport 8089 -m state --state NEW -j ACCEPT
-  - iptables -I INPUT 4 -p tcp --dport 8090 -m state --state NEW -j ACCEPT
-  - iptables -I INPUT 4 -p tcp --dport 8091 -m state --state NEW -j ACCEPT
+  # Allow port 80 through OS firewall (only port needed with path-based routing)
+  # Only port 80 needed — gateway handles all internal routing
+  - iptables -I INPUT 4 -p tcp --dport 80 -m state --state NEW -j ACCEPT
   - service netfilter-persistent save
   # Validate and reload nginx
   - nginx -t

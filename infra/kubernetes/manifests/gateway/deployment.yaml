@@ -9,8 +9,6 @@ metadata:
     app.kubernetes.io/component: gateway
     app.kubernetes.io/part-of: go-poc
 spec:
-  # 2 replicas for high availability — ensures zero downtime during rolling deploys.
-  # This is the pattern every GO module will follow.
   replicas: 2
 
   selector:
@@ -20,8 +18,8 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 0   # Never take a pod down before a replacement is Ready
-      maxSurge: 1         # Allow one extra pod during the rollout
+      maxUnavailable: 0
+      maxSurge: 1
 
   template:
     metadata:
@@ -29,17 +27,6 @@ spec:
         app: gateway
 
     spec:
-      # Secret created with:
-      #   kubectl create secret docker-registry ghcr-secret \
-      #     --docker-server=ghcr.io \
-      #     --docker-username=<github-username> \
-      #     --docker-password=<github-pat-with-read:packages> \
-      #     --namespace go-poc
-      imagePullSecrets:
-        - name: ghcr-secret
-
-      # Anti-affinity: prefer scheduling replicas on different nodes.
-      # If only one node exists (PoC), this is a soft preference and is safely ignored.
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -52,22 +39,26 @@ spec:
                       values: [gateway]
                 topologyKey: kubernetes.io/hostname
 
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: gateway-nginx-config
+
       containers:
         - name: gateway
-
-          # Image hosted on GitHub Container Registry (GHCR), following the team convention:
-          #   ghcr.io/tmlmobilidade/go-<module>-<app>:<tag>
-          # Build: cd infra/kubernetes/poc-app && docker build -t gateway-poc:latest .
-          # Push:  see infra/kubernetes/README.md Step 1
-          image: ghcr.io/tmlmobilidade/go-gateway-poc:latest
-          imagePullPolicy: Always
+          image: nginx:alpine
+          imagePullPolicy: IfNotPresent
 
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
 
-          # Liveness probe: if this fails, Kubernetes restarts the container.
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+
           livenessProbe:
             httpGet:
               path: /health
@@ -76,7 +67,6 @@ spec:
             periodSeconds: 15
             failureThreshold: 3
 
-          # Readiness probe: if this fails, the pod is removed from Service endpoints (no traffic).
           readinessProbe:
             httpGet:
               path: /health
@@ -85,9 +75,6 @@ spec:
             periodSeconds: 10
             failureThreshold: 3
 
-          # Resource requests and limits — tune based on observed usage.
-          # requests: what Kubernetes reserves for scheduling.
-          # limits: the hard cap; container is OOMKilled if memory limit is exceeded.
           resources:
             requests:
               cpu: 50m
