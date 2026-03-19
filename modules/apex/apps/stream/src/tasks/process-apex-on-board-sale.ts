@@ -25,6 +25,8 @@ const writer = new ClickHouseWriter<SimplifiedApexOnBoardSale>({
 export async function processApexOnBoardSale(databaseOperation) {
 	//
 
+	await writer.init();
+
 	//
 	// Validate that the operation is an insert or update. Otherwise, send an email to the emergency contact.
 	// Only insert operations are expected to occur in this PCGIDB collection.
