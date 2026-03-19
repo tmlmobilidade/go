@@ -39,13 +39,12 @@ class ClickhouseService {
 
 	/**
 	 * Creates a table in ClickHouse if it doesn't exist.
-	 *
 	 * @param table The name of the table to create
 	 * @param schema The schema of the table to create
-	 * @param engine The ClickHouse table engine to use (default: MergeTree)
+	 * @param engine The ClickHouse table engine to use (default: ReplicatedMergeTree('/clickhouse/tables/{shard}/{table}', '{replica}'))
 	 * @param orderBy The ORDER BY clause for the table (default: tuple())
 	 */
-	public async createTable<T>(table: string, schema: ClickHouseColumn<T>[], engine = 'MergeTree', orderBy = 'tuple()') {
+	public async createTable<T>(table: string, schema: ClickHouseColumn<T>[], engine = 'ReplicatedMergeTree(\'/clickhouse/tables/{shard}/{table}\', \'{replica}\')', orderBy = 'tuple()') {
 		// Validate the table name
 		if (!isSafeIdentifier(table)) {
 			throw new Error(`CLICKHOUSE [${table}]: Unsafe table name provided.`);
@@ -69,7 +68,7 @@ class ClickhouseService {
 
 		try {
 			const createTableQuery = `
-				CREATE TABLE IF NOT EXISTS ${table} (
+				CREATE TABLE IF NOT EXISTS ${table} ON CLUSTER 'clickhouse-replica' (
 					${schema.map(column => `${column.name} ${column.type}`).join(', ')}
 				) ENGINE = ${engine}
 				ORDER BY ${orderBy}
@@ -95,7 +94,7 @@ class ClickhouseService {
 		}
 
 		try {
-			await this.client.command({ query: `DROP TABLE IF EXISTS ${table}` });
+			await this.client.command({ query: `DROP TABLE IF EXISTS ${table} ON CLUSTER 'clickhouse-replica'` });
 			Logger.info(`CLICKHOUSE [${table}]: Table deleted.`);
 		} catch (error) {
 			Logger.error(`CLICKHOUSE [${table}]: Error @ deleteTable(): ${(error as Error).message}`);

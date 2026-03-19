@@ -136,7 +136,7 @@ export class ClickHouseWriter<T> {
 
 		try {
 			const createTableQuery = `
-				CREATE TABLE IF NOT EXISTS ${this.params.table} (
+				CREATE TABLE IF NOT EXISTS ${this.params.table} ON CLUSTER 'clickhouse-replica' (
 					${tableSchema}
 				) ENGINE = ${engine}
 				ORDER BY ${orderBy}
