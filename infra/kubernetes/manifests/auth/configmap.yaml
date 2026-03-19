@@ -25,8 +25,8 @@ data:
         add_header Content-Type text/plain;
       }
 
-      location /api {
-        proxy_pass         http://auth_api;
+      location /auth/api/ {
+        proxy_pass         http://auth_api/;
         proxy_http_version 1.1;
         proxy_set_header   Host              $host;
         proxy_set_header   X-Real-IP         $remote_addr;
@@ -37,7 +37,7 @@ data:
         proxy_read_timeout    60s;
       }
 
-      location / {
+      location /auth {
         proxy_pass         http://auth_frontend;
         proxy_http_version 1.1;
         proxy_set_header   Host              $host;
