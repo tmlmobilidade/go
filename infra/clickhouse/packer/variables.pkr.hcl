@@ -1,75 +1,84 @@
-# -----------------------------------------------------------------------
+# # #
 # PACKER VARIABLES
-# Shared with Terraform — can be supplied via -var-file=../terraform/terraform.tfvars
-# -----------------------------------------------------------------------
+# Define variables for Packer templates.
 
-variable "tenancy_ocid" {
-  type        = string
-  description = "OCID of the OCI tenancy."
+variable "project_name" {
+	type = string
+	description = "The name of the project. This will be used as a prefix for resource names and tags."
+	default = "iso-go"
 }
 
-variable "user_ocid" {
-  type        = string
-  description = "OCID of the OCI user (e.g. tiago.macedo)."
-}
-
-variable "fingerprint" {
-  type        = string
-  description = "Fingerprint of the API signing key."
-}
-
-variable "private_key_path" {
-  type        = string
-  description = "File path to the OCI API private key."
-}
-
-variable "pass_phrase" {
-  type        = string
-  description = "Passphrase for the OCI API private key."
-  sensitive   = true
-  default     = ""
-}
-
-variable "region" {
-  type        = string
-  description = "OCI region to build the image in."
-  default     = "eu-frankfurt-1"
+variable "environment" {
+	type = string
+	description = "The environment of the deployment (e.g., staging, production)."
 }
 
 variable "compartment_ocid" {
-  type        = string
-  description = "OCID of the compartment where the custom image will be stored."
-  default     = "ocid1.compartment.oc1..aaaaaaaaqwnoahpbcxhsogpszdixlv4jnrnujst7qxyar6536oeptpwjtkna"
+	type = string
+	description = <<-EOT
+	The OCID of the compartment where resources will be created in.
+	Current compartment is set to: cmetropolitana
+	EOT
+}
+
+variable "subnet_ocid" {
+	type = string
+	description = <<-EOT
+	The OCID of the subnet where the VM will be created.
+	For Packer builds, this subnet must have public access
+	to the internet, so it should be a public subnet.
+	EOT
 }
 
 variable "availability_domain" {
-  type        = string
-  description = "Availability domain to run the temporary build instance in."
-  default     = "LUDo:EU-FRANKFURT-1-AD-1"
+	type = string
+	description = <<-EOT
+	The availability domain where resources will be created.
+	This should be the full ID string, e.g., 'LUDo:EU-FRANKFURT-1-AD-1'.
+	This can only be found via the OCI CLI or by inspecting the API response
+	for VM instance details on the web console.
+	EOT
+	default = "LUDo:EU-FRANKFURT-1-AD-1"
 }
 
-variable "packer_subnet_ocid" {
-  type        = string
-  description = <<-EOT
-  OCID of an existing subnet to launch the temporary Packer build instance in.
-  Defaults to the shared pub-cmet subnet.
-  EOT
-  default     = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaa4vbr4wpapm3wpa4o73yqytsyqedinrxouelf7ntkefdfuogof6rq"
+variable "vm_shape" {
+	type = string
+	description = <<-EOT
+	The shape of the VM to be created, i.e., the compute resources allocated to the VM machine
+	that will be used to build the final image. For building lightweight images, a small shape is sufficient.
+	EOT
+	default = "VM.Standard.A1.Flex"
+}
+
+variable "vm_ocpus" {
+	type = number
+	description = <<-EOT
+	The number of OCPUs to allocate to the VM used for building the image.
+	It is not recommended to use less than 2 OCPUs because the machine might hang due to insufficient resources.
+	The building process can be CPU intensive and is very short lived (the machine is destroyed afterwards),
+	so having more resources is beneficial and not expensive.
+	EOT
+	default = 2
+}
+
+variable "vm_memory_in_gbs" {
+	type = number
+	description = <<-EOT
+	The amount of memory in GBs to allocate to the VM used for building the image.
+	It is not recommended to use less than 2 GBs because the machine might hang due to insufficient resources.
+	The building process can be memory intensive and is very short lived (the machine is destroyed afterwards),
+	so having more resources is beneficial and not expensive.
+	EOT
+	default = 4
 }
 
 variable "base_image_ocid" {
-  type        = string
-  description = "OCID of the base Ubuntu 22.04 Minimal ARM image to build from."
-  # Canonical-Ubuntu-22.04-Minimal-aarch64-2026.01.29-0 in eu-frankfurt-1
-  default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaaehm3rohfjplxw73gzlyhp4gy2xtym33utccjawp3b5hivi7tbvlq"
-}
-
-variable "ssh_public_key_path" {
-  type        = string
-  description = "File path to the SSH public key. Injected into the OCI build instance via metadata."
-}
-
-variable "ssh_private_key_path" {
-  type        = string
-  description = "File path to the SSH private key. Used by Packer to connect to the build instance."
+	type = string
+	description = <<-EOT
+	The OCID of the base image to use for the VM.
+	It is recommended to use a *minimal* Ubuntu image to reduce the final image size.
+	This should be regularly updated to the latest available minimal Ubuntu image.
+	Current image is set to: Canonical-Ubuntu-24.04-Minimal-aarch64-2026.02.28-0"
+	EOT
+	default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaav7j5fmkuvwreezyn7pkyyzgexm4uaobnceclctrmkj2urjvo6e5a"
 }
