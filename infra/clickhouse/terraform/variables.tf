@@ -188,24 +188,6 @@ variable "clickhouse_tcp_port" {
 	default     = 9000
 }
 
-variable "clickhouse_interserver_port" {
-	type        = number
-	description = "ClickHouse interserver HTTP port for replication (external host port; container uses 9009 internally)."
-	default     = 9009
-}
-
-variable "clickhouse_keeper_client_port" {
-	type        = number
-	description = "ClickHouse Keeper ZooKeeper-compatible client port. Each node runs an embedded Keeper."
-	default     = 2181
-}
-
-variable "clickhouse_keeper_raft_port" {
-	type        = number
-	description = "ClickHouse Keeper Raft port for inter-keeper consensus between nodes."
-	default     = 9444
-}
-
 variable "clickhouse_admin_password" {
 	type        = string
 	sensitive   = true

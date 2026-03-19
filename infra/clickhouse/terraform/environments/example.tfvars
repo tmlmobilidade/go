@@ -44,6 +44,3 @@ private_ips = ["", "", ""]   # e.g. ["10.0.1.10", "10.0.1.11", "10.0.1.12"]
 
 # clickhouse_http_port          = 8123
 # clickhouse_tcp_port           = 9000
-# clickhouse_interserver_port   = 9009
-# clickhouse_keeper_client_port = 2181
-# clickhouse_keeper_raft_port   = 9444

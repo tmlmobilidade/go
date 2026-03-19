@@ -119,9 +119,6 @@ resource "oci_core_instance" "clickhouse_replica" {
 			clickhouse_admin_password     = var.clickhouse_admin_password
 			clickhouse_http_port          = var.clickhouse_http_port
 			clickhouse_tcp_port           = var.clickhouse_tcp_port
-			clickhouse_interserver_port   = var.clickhouse_interserver_port
-			clickhouse_keeper_client_port = var.clickhouse_keeper_client_port
-			clickhouse_keeper_raft_port   = var.clickhouse_keeper_raft_port
 		}))
 	}
 
