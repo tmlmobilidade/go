@@ -43,7 +43,7 @@ locals {
 
 resource "oci_core_instance" "mongodb" {
 
-	display_name = "${var.project_name}-${var.module_name}-${var.environment}-${count.index + 1}"
+	display_name = "${var.project_name}-${var.environment}-${var.module_name}-${count.index + 1}"
 
 	count = var.instance_count
 
