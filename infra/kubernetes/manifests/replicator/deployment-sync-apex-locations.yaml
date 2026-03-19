@@ -27,7 +27,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: sync-apex-locations
-          image: ghcr.io/tmlmobilidade/go-replicator-sync-apex-locations:staging
+          image: ghcr.io/tmlmobilidade/go-replicator-sync-apex-locations:k8s
           imagePullPolicy: Always
           envFrom:
             - secretRef:

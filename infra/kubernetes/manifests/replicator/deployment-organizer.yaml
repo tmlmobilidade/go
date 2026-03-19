@@ -27,7 +27,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: organizer
-          image: ghcr.io/tmlmobilidade/go-replicator-organizer:staging
+          image: ghcr.io/tmlmobilidade/go-replicator-organizer:k8s
           imagePullPolicy: Always
           envFrom:
             - secretRef:

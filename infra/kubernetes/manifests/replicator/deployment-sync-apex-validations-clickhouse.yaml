@@ -27,7 +27,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: sync-apex-validations-clickhouse
-          image: ghcr.io/tmlmobilidade/go-replicator-sync-apex-validations-clickhouse:staging
+          image: ghcr.io/tmlmobilidade/go-replicator-sync-apex-validations-clickhouse:k8s
           imagePullPolicy: Always
           envFrom:
             - secretRef:

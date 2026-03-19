@@ -38,7 +38,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: api
-          image: ghcr.io/tmlmobilidade/go-auth-api:staging
+          image: ghcr.io/tmlmobilidade/go-auth-api:k8s
           imagePullPolicy: Always
           ports:
             - name: http

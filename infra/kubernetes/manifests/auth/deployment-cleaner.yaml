@@ -24,7 +24,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: cleaner
-          image: ghcr.io/tmlmobilidade/go-auth-cleaner:staging
+          image: ghcr.io/tmlmobilidade/go-auth-cleaner:k8s
           imagePullPolicy: Always
           envFrom:
             - secretRef:

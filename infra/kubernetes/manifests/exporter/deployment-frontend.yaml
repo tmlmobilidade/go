@@ -38,7 +38,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: frontend
-          image: ghcr.io/tmlmobilidade/go-exporter-frontend:staging
+          image: ghcr.io/tmlmobilidade/go-exporter-frontend:k8s
           imagePullPolicy: Always
           ports:
             - name: http

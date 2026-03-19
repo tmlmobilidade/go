@@ -27,7 +27,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: sams-feeder
-          image: ghcr.io/tmlmobilidade/go-controller-sams-feeder:staging
+          image: ghcr.io/tmlmobilidade/go-controller-sams-feeder:k8s
           imagePullPolicy: Always
           envFrom:
             - secretRef:

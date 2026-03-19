@@ -110,12 +110,12 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@master
         with:
-          push: ${{ inputs.ref-name == 'production' || inputs.ref-name == 'staging' }}
+          push: ${{ inputs.ref-name == 'production' || inputs.ref-name == 'staging' || inputs.ref-name == 'k8s' }}
           context: .
           file: ${{ steps.dockerfile.outputs.dockerfile }}
-          tags: ghcr.io/tmlmobilidade/go-${{ inputs.module }}-${{ matrix.app }}:${{ (inputs.ref-name == 'production' || inputs.ref-name == 'staging') && inputs.ref-name || 'none' }}
+          tags: ghcr.io/tmlmobilidade/go-${{ inputs.module }}-${{ matrix.app }}:${{ (inputs.ref-name == 'production' || inputs.ref-name == 'staging' || inputs.ref-name == 'k8s') && inputs.ref-name || 'none' }}
           build-args: |
             MODULE=${{ inputs.module }}
             APP=${{ matrix.app }}
             ENVIRONMENT=${{ inputs.ref-name }}
-            NGINX_SERVER_NAME=${{ inputs.ref-name == 'staging' && 'go-stg.tmlmobilidade.pt' || 'go.tmlmobilidade.pt' }}
+            NGINX_SERVER_NAME=${{ inputs.ref-name == 'staging' && 'go-stg.tmlmobilidade.pt' || inputs.ref-name == 'k8s' && 'go-k8s.tmlmobilidade.pt' || 'go.tmlmobilidade.pt' }}

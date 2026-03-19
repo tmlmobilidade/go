@@ -27,7 +27,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: stream
-          image: ghcr.io/tmlmobilidade/go-replicator-stream:staging
+          image: ghcr.io/tmlmobilidade/go-replicator-stream:k8s
           imagePullPolicy: Always
           envFrom:
             - secretRef:

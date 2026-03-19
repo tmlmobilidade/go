@@ -27,7 +27,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: sync-metrics-realtime
-          image: ghcr.io/tmlmobilidade/go-performance-sync-metrics-realtime:staging
+          image: ghcr.io/tmlmobilidade/go-performance-sync-metrics-realtime:k8s
           imagePullPolicy: Always
           envFrom:
             - secretRef:

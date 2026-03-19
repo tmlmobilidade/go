@@ -27,7 +27,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: export-gtfs-merged
-          image: ghcr.io/tmlmobilidade/go-exporter-export-gtfs-merged:staging
+          image: ghcr.io/tmlmobilidade/go-exporter-export-gtfs-merged:k8s
           imagePullPolicy: Always
           envFrom:
             - secretRef:

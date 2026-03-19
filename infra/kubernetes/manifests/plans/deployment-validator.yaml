@@ -27,7 +27,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: validator
-          image: ghcr.io/tmlmobilidade/go-plans-validator:staging
+          image: ghcr.io/tmlmobilidade/go-plans-validator:k8s
           imagePullPolicy: Always
           envFrom:
             - secretRef:

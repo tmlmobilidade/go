@@ -27,7 +27,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: rides-feeder
-          image: ghcr.io/tmlmobilidade/go-controller-rides-feeder:staging
+          image: ghcr.io/tmlmobilidade/go-controller-rides-feeder:k8s
           imagePullPolicy: Always
           envFrom:
             - secretRef:

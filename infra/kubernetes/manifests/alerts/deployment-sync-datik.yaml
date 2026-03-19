@@ -27,7 +27,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: sync-datik
-          image: ghcr.io/tmlmobilidade/go-alerts-sync-datik:staging
+          image: ghcr.io/tmlmobilidade/go-alerts-sync-datik:k8s
           imagePullPolicy: Always
           envFrom:
             - secretRef:

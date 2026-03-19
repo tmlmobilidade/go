@@ -27,7 +27,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: export-drt
-          image: ghcr.io/tmlmobilidade/go-exporter-export-drt:staging
+          image: ghcr.io/tmlmobilidade/go-exporter-export-drt:k8s
           imagePullPolicy: Always
           envFrom:
             - secretRef:

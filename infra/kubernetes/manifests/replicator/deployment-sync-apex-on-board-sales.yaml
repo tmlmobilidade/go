@@ -27,7 +27,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: sync-apex-on-board-sales
-          image: ghcr.io/tmlmobilidade/go-replicator-sync-apex-on-board-sales:staging
+          image: ghcr.io/tmlmobilidade/go-replicator-sync-apex-on-board-sales:k8s
           imagePullPolicy: Always
           envFrom:
             - secretRef:

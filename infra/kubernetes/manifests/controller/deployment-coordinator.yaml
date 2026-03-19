@@ -27,7 +27,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: coordinator
-          image: ghcr.io/tmlmobilidade/go-controller-coordinator:staging
+          image: ghcr.io/tmlmobilidade/go-controller-coordinator:k8s
           imagePullPolicy: Always
           ports:
             - name: http

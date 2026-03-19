@@ -27,7 +27,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: rides-locker
-          image: ghcr.io/tmlmobilidade/go-controller-rides-locker:staging
+          image: ghcr.io/tmlmobilidade/go-controller-rides-locker:k8s
           imagePullPolicy: Always
           envFrom:
             - secretRef:

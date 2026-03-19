@@ -27,7 +27,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: rides-bridge
-          image: ghcr.io/tmlmobilidade/go-controller-rides-bridge:staging
+          image: ghcr.io/tmlmobilidade/go-controller-rides-bridge:k8s
           imagePullPolicy: Always
           envFrom:
             - secretRef:

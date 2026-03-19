@@ -27,7 +27,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: sync-vehicle-events-clickhouse
-          image: ghcr.io/tmlmobilidade/go-replicator-sync-vehicle-events-clickhouse:staging
+          image: ghcr.io/tmlmobilidade/go-replicator-sync-vehicle-events-clickhouse:k8s
           imagePullPolicy: Always
           envFrom:
             - secretRef:

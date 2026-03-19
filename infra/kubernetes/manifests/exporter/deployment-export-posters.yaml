@@ -27,7 +27,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: export-posters
-          image: ghcr.io/tmlmobilidade/go-exporter-export-posters:staging
+          image: ghcr.io/tmlmobilidade/go-exporter-export-posters:k8s
           imagePullPolicy: Always
           envFrom:
             - secretRef:
