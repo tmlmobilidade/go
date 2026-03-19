@@ -100,14 +100,14 @@ export class ClickHouseWriter<T> {
 		}
 	}
 
-	/* * */
-
+	/*
+	 * Closes the ClickHouse client connection
+	 * and clears any active timers.
+	 */
 	async close() {
 		await this.client.close();
 		Logger.info(`CLICKHOUSEWRITER [${this.params.table}]: Connection closed.`);
 	}
-
-	/* * */
 
 	/**
 	 * Initializes the writer by ensuring the table exists.
@@ -122,12 +122,11 @@ export class ClickHouseWriter<T> {
 	/**
 	 * Ensures the table exists in ClickHouse by creating it if it doesn't exist.
 	 * Uses the tableSchema provided in the constructor, or an optional schema parameter.
-	 *
 	 * @param schema Optional schema to use instead of the constructor-provided tableSchema
-	 * @param engine The ClickHouse table engine to use (default: MergeTree)
+	 * @param engine The ClickHouse table engine to use (default: ReplicatedMergeTree('/clickhouse/tables/{shard}/{table}', '{replica}'))
 	 * @param orderBy The ORDER BY clause for the table (default: tuple())
 	 */
-	async ensureTable(schema?: ClickHouseColumn<T>[], engine = 'MergeTree', orderBy = 'tuple()') {
+	async ensureTable(schema?: ClickHouseColumn<T>[], engine = 'ReplicatedMergeTree(\'/clickhouse/tables/{shard}/{table}\', \'{replica}\')', orderBy = 'tuple()') {
 		const tableSchemaToUse = schema ?? this.params.tableSchema;
 		const tableSchema = tableSchemaToUse?.map(column => `${column.name} ${column.type}`).join(', ');
 
@@ -151,8 +150,12 @@ export class ClickHouseWriter<T> {
 		}
 	}
 
-	/* * */
-
+	/**
+	 * Flushes the current batch of data to ClickHouse.
+	 * This method is called internally when the batch size or timeouts are reached,
+	 * but can also be called manually if needed.
+	 * @param callback Optional callback to execute after the flush is complete, receiving the flushed data as a parameter
+	 */
 	async flush(callback?: (data?: T[]) => Promise<void>) {
 		try {
 			await this.init();
@@ -235,17 +238,13 @@ export class ClickHouseWriter<T> {
 		}
 	}
 
-	/* * */
-
 	/**
 	 * Write data to the ClickHouse table.
-	 *
 	 * @param data The data to write
 	 * @param options Options for the write operation (reserved for future use)
 	 * @param writeCallback Callback function to call after the write operation is complete
 	 * @param flushCallback Callback function to call after the flush operation is complete
 	 */
-
 	async write(data: T | T[], { flushCallback, writeCallback }: { flushCallback?: (data?: T[]) => Promise<void>, writeCallback?: () => Promise<void> } = {}) {
 		//
 		await this.init();
