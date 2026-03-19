@@ -36,7 +36,7 @@ source "oracle-oci" "mongodb-source" {
 	# In HashiCorp Packer, the isotime function expects
 	# a Go time format layout. Go uses the reference date:
 	# Mon Jan 2 15:04:05 MST 2006
-	image_name = "${var.project_name}-mongodb-${var.environment}-{{isotime \"2006-01-02\"}}"
+	image_name = "${var.project_name}-${var.environment}-mongodb-{{isotime \"2006-01-02\"}}"
 
 	instance_name = "${var.project_name}-${var.environment}-mongodb-packer-image-builder"
 
