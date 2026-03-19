@@ -1,9 +1,9 @@
 /* * */
 
-import { ClickHouseClient } from '@tmlmobilidade/clickhouse';
+import { ClickHouseClient, clickhouseService } from '@tmlmobilidade/clickhouse';
 import { Filter, rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { Ride } from '@tmlmobilidade/types';
+import { Ride, UnixTimestamp } from '@tmlmobilidade/types';
 import { ClickHouseWriter } from '@tmlmobilidade/writers';
 
 import { parseToEtaVehicleEvent } from './parser.js';
@@ -26,7 +26,7 @@ export async function syncVehicleEvents({ batchSize = 100_000, client, ridesQuer
 		table: 'vehicle_events',
 		tableSchema: etaVehicleEventTableSchema,
 	});
-	await client.command({ query: 'DROP TABLE IF EXISTS shape_nodes' });
+	await clickhouseService.deleteTable('vehicle_events');
 	await writer.ensureTable();
 
 	const ridesCollection = await rides.getCollection();
@@ -56,8 +56,10 @@ export async function syncVehicleEvents({ batchSize = 100_000, client, ridesQuer
 
 			if (!ride.start_time_observed || !ride.end_time_observed) continue;
 
+			const start = Math.max(ride.start_time_observed, ride.start_time_scheduled) as UnixTimestamp;
+
 			const vehicleEventsCursor = vehicleEventsCollection.find({
-				created_at: { $gte: ride.start_time_observed, $lte: ride.end_time_observed },
+				created_at: { $gte: start, $lte: ride.end_time_observed },
 				trip_id: ride.trip_id,
 			}).batchSize(batchSize);
 

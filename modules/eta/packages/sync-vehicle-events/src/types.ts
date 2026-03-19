@@ -21,6 +21,7 @@ export const rideProjection: Partial<Record<keyof Ride, 0 | 1>> = {
 	line_id: 1,
 	operational_date: 1,
 	start_time_observed: 1,
+	start_time_scheduled: 1,
 	trip_id: 1,
 };
 
