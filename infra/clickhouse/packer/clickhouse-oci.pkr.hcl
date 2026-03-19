@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------
-# clickhouse-replica-oci.pkr.hcl
+# clickhouse-oci.pkr.hcl
 #
 # Builds a custom OCI image for ClickHouse Replica nodes with Docker and
 # OS tuning pre-installed. The resulting image is used by Terraform in
@@ -32,115 +32,155 @@ packer {
 # to create the final output image.
 
 source "oracle-oci" "clickhouse_base" {
-  # Authentication
-  tenancy_ocid = var.tenancy_ocid
-  user_ocid    = var.user_ocid
-  fingerprint  = var.fingerprint
-  key_file     = var.private_key_path
-  region       = var.region
 
-  # Placement
-  compartment_ocid    = var.compartment_ocid
-  availability_domain = var.availability_domain
-  subnet_ocid         = var.packer_subnet_ocid
+	# In HashiCorp Packer, the isotime function expects
+	# a Go time format layout. Go uses the reference date:
+	# Mon Jan 2 15:04:05 MST 2006
+	image_name = "${var.project_name}-clickhouse-${var.environment}-{{isotime \"2006-01-02\"}}"
 
-  # Temporary build instance settings (ARM)
-  shape = "VM.Standard.A1.Flex"
-  shape_config {
-    ocpus         = 2
-    memory_in_gbs = 12
-  }
+	instance_name = "${var.project_name}-${var.environment}-clickhouse-packer-image-builder"
 
-  # Base image
-  base_image_ocid = var.base_image_ocid
+	# Placement
+	subnet_ocid = var.subnet_ocid
+	compartment_ocid = var.compartment_ocid
+	availability_domain = var.availability_domain
+	ssh_username = "ubuntu"
 
-  # Inject the SSH public key so Packer can connect
-  metadata = {
-    "ssh_authorized_keys" = file(var.ssh_public_key_path)
-  }
+	base_image_ocid = var.base_image_ocid
 
-  ssh_username         = "ubuntu"
-  ssh_private_key_file = var.ssh_private_key_path
+	shape = var.vm_shape
 
-  # Output image name — datestamped for traceability
-  image_name = "clickhouse-replica-base-{{isotime \"2006-01-02\"}}"
+	shape_config {
+		ocpus = var.vm_ocpus
+		memory_in_gbs = var.vm_memory_in_gbs
+	}
 
-  tags = {
-    "PackerBuilt" = "true"
-    "ImageType"   = "clickhouse-replica-base"
-    "ManagedBy"   = "packer"
-  }
+	create_vnic_details {
+		assign_public_ip = "true"
+	}
+
+	tags = {
+		"PackerBuilt" = "true"
+		"ImageType" = "clickhouse-base"
+		"ManagedBy" = "packer"
+		"Environment" = var.environment
+	}
+
 }
 
 
-# -----------------------------------------------------------------------
-# BUILD — Run provisioner scripts inside the temporary instance
-# -----------------------------------------------------------------------
+# # #
+# BUILD
+# Define the steps to customize the image.
 
 build {
-  name    = "clickhouse-replica-base"
-  sources = ["source.oracle-oci.clickhouse_replica_base"]
 
-  # 1. OS performance tuning + install prerequisite packages
-  provisioner "shell" {
-    script          = "${path.root}/scripts/os-tuning.sh"
-    execute_command = "sudo bash '{{.Path}}'"
-  }
+	sources = ["source.oracle-oci.clickhouse_base"]
 
-  # 2. Install Docker Engine
-  provisioner "shell" {
-    script          = "${path.root}/scripts/install-docker.sh"
-    execute_command = "sudo bash '{{.Path}}'"
-  }
+	# 1.
+	# OS performance tuning + install prerequisite packages
 
-  # 3. Install runtime scripts and templates so cloud-init can call them at boot
-  provisioner "file" {
-    source      = "${path.root}/scripts/attach-volume.sh"
-    destination = "/tmp/attach-volume.sh"
-  }
+	provisioner "shell" {
+		script = "${path.root}/setup/os-tuning.sh"
+		execute_command = "sudo bash '{{.Path}}'"
+	}
 
-  provisioner "file" {
-    source      = "${path.root}/scripts/setup-clickhouse.sh"
-    destination = "/tmp/setup-clickhouse.sh"
-  }
+	# 2.
+	# Install netutils packages for network troubleshooting.
 
-  provisioner "file" {
-    source      = "${path.root}/templates/compose.yaml"
-    destination = "/tmp/compose.yaml"
-  }
+	provisioner "shell" {
+		script = "${path.root}/setup/install-netutils.sh"
+		execute_command = "sudo bash '{{.Path}}'"
+	}
 
-  provisioner "shell" {
-    inline = [
-      "sudo mv /tmp/attach-volume.sh /usr/local/bin/attach-volume.sh",
-      "sudo chmod +x /usr/local/bin/attach-volume.sh",
-      "sudo mv /tmp/setup-clickhouse.sh /usr/local/bin/setup-clickhouse.sh",
-      "sudo chmod +x /usr/local/bin/setup-clickhouse.sh",
-      "sudo mkdir -p /usr/local/share/clickhouse",
-      "sudo mv /tmp/compose.yaml /usr/local/share/clickhouse/compose.yaml",
-    ]
-  }
+	# 3.
+	# Install Docker Engine
 
-  # 4. Pre-pull the ClickHouse Docker image
-  #    Instances in the private subnet have no internet access at runtime.
-  #    Pulling here (during Packer build on the public subnet) bakes the
-  #    image into the base OS image so cloud-init just runs it.
-  provisioner "shell" {
-    inline = [
-      "sudo docker pull clickhouse/clickhouse-server:latest",
-    ]
-  }
+	provisioner "shell" {
+		script = "${path.root}/setup/install-docker.sh"
+		execute_command = "sudo bash '{{.Path}}'"
+	}
 
-  # 5. Clean up apt cache to reduce image size
-  provisioner "shell" {
-    inline = [
-      "sudo apt-get clean",
-      "sudo rm -rf /var/lib/apt/lists/*",
-      "sudo cloud-init clean --logs",
-    ]
-  }
+	# 4.
+	# Copy setup scripts that cloud-init can call at boot time.
+	# Since Packer file provisioners do not support setting executable
+	# permissions on the files, an additional shell provisioner is used
+	# to move the files to the final location and set the correct permissions.
 
-  post-processor "manifest" {
-    output     = "${path.root}/packer-manifest.json"
-    strip_path = true
-  }
+	provisioner "shell" {
+		inline = [
+			"sudo mkdir -p /opt/app",
+			"sudo chown ubuntu:ubuntu /opt/app"
+		]
+	}
+
+	# The attach-volume.sh script is responsible
+	# for attaching and mounting the block volume.
+
+	provisioner "file" {
+		source = "${path.root}/init/attach-volume.sh"
+		destination = "/opt/app/attach-volume.sh"
+	}
+
+	provisioner "shell" {
+		inline = [
+			"sudo chmod +x /opt/app/attach-volume.sh"
+		]
+	}
+
+	# The firewall.sh script is responsible for
+	# configuring the firewall to allow ClickHouse traffic.
+
+	provisioner "file" {
+		source = "${path.root}/init/firewall.sh"
+		destination = "/opt/app/firewall.sh"
+	}
+
+	provisioner "shell" {
+		inline = [
+			"sudo chmod +x /opt/app/firewall.sh"
+		]
+	}
+
+	# The setup-clickhouse.sh script is responsible for
+	# setting up the ClickHouse data directories and permissions.
+
+	provisioner "file" {
+		source = "${path.root}/init/setup-clickhouse.sh"
+		destination = "/opt/app/setup-clickhouse.sh"
+	}
+
+	provisioner "shell" {
+		inline = [
+			"sudo chmod +x /opt/app/setup-clickhouse.sh"
+		]
+	}
+
+	# The compose.yaml file holds the configuration
+	# that defines the ClickHouse container and its settings.
+
+	provisioner "file" {
+		source = "${path.root}/init/compose.yaml"
+		destination = "/opt/app/compose.yaml"
+	}
+
+	# 5.
+	# Clean up apt cache to reduce image size
+
+	provisioner "shell" {
+		inline = [
+			"sudo apt-get clean",
+			"sudo cloud-init clean --logs",
+		]
+	}
+
+	# 6.
+	# Generate a manifest file with the image OCID
+	# for later use in Terraform pipelines.
+
+	post-processor "manifest" {
+		output = "${path.root}/packer-manifest.json"
+		strip_path = true
+	}
+
 }
