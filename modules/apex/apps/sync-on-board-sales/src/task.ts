@@ -26,6 +26,8 @@ const writer = new ClickHouseWriter<SimplifiedApexOnBoardSale>({
 export async function syncApexOnBoardSales(timeChunk: PerformInTimeChunksItem) {
 	//
 
+	await writer.init();
+
 	const chunkStartDate = Dates
 		.fromUnixTimestamp(timeChunk.start)
 		.setZone('Europe/Lisbon', 'offset_only');
