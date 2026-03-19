@@ -107,6 +107,14 @@ env:
     fleet:api
     fleet:frontend
 
+    replicator:organizer
+    replicator:stream
+    replicator:sync-apex-locations
+    replicator:sync-apex-on-board-refunds
+    replicator:sync-apex-on-board-sales
+    replicator:sync-apex-validations
+    replicator:sync-vehicle-events
+
 # # #
 
 jobs:

@@ -38,7 +38,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: nginx
-          image: ghcr.io/tmlmobilidade/go-ticketing-nginx:k8s
+          image: ghcr.io/tmlmobilidade/go-ticketing-nginx:staging
           imagePullPolicy: Always
           ports:
             - name: http
