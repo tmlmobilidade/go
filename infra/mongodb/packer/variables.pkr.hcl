@@ -10,7 +10,7 @@ variable "project_name" {
 
 variable "environment" {
 	type = string
-	description = "The environment of the deployment (e.g., staging, production)."
+	description = "The environment of the deployment (e.g., stg, prd)."
 }
 
 variable "compartment_ocid" {
