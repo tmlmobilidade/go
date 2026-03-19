@@ -15,8 +15,8 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@mantine/dates": "8.3.15",
-		"@tabler/icons-react": "3.37.1",
+		"@mantine/dates": "8.3.18",
+		"@tabler/icons-react": "3.40.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/strings": "*",
@@ -24,17 +24,17 @@
 		"@tmlmobilidade/utils": "*",
 		"clsx": "2.1.1",
 		"jszip": "3.10.1",
-		"next": "16.1.6",
+		"next": "16.1.7",
 		"papaparse": "5.5.3",
 		"react": "19.2.4",
 		"react-dom": "19.2.4",
-		"swr": "2.4.0"
+		"swr": "2.4.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/luxon": "3.7.1",
-		"@types/node": "25.3.0",
+		"@types/node": "25.5.0",
 		"@types/papaparse": "5.5.2",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",

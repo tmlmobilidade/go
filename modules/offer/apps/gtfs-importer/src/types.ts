@@ -1,0 +1,22 @@
+/* * */
+
+import { IsoWeekday } from '@tmlmobilidade/types';
+
+export interface ImportOptions {
+	gtfsPath: string
+}
+
+export interface ImportSummary {
+	linesCreated: number
+	linesInGtfs: number
+	patternsCreated: number
+	patternsInGtfs: number
+	routesCreated: number
+	routesInGtfs: number
+}
+
+export interface CalendarRule {
+	description?: string
+	weekdays: IsoWeekday[]
+	year_period_ids: string[]
+}

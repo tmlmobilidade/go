@@ -3,81 +3,17 @@
 
 import { type ClickHouseClient, type ClickHouseClientConfigOptions, createClient } from '@clickhouse/client';
 import { NodeClickHouseClient } from '@clickhouse/client/dist/client.js';
+import { ClickHouseColumn } from '@tmlmobilidade/clickhouse';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
-/**
- * Supported ClickHouse data types
- */
-export type ClickHouseType =
-  | 'Bool'
-  | 'Boolean' | 'Date32' | 'Date' | 'DateTime' | 'Decimal' | 'Float32'
-  | 'Float64' | 'Int8' | 'Int16' | 'Int32' | 'Int64' | 'Int128'
-  | 'Int256' | 'String'
-  | 'UInt8' | 'UInt16'
-  | 'UInt32' | 'UInt64'
-  | 'UInt128' | 'UInt256' | 'UUID' | `Array(${string})`
-  | `DateTime64(${number})`
-  | `Decimal(${number}, ${number})`
-  | `Enum8(${string})`
-  | `Enum16(${string})`
-  | `FixedString(${number})`
-  | `LowCardinality(${string})` | `Map(${string}, ${string})`
-  | `Nullable(${string})`;
-
-export interface ClickHouseColumn<T> {
-	/** Alias expression (computed on read) */
-	alias?: string
-
-	/** Column codec for compression */
-	codec?: string
-
-	/** Comment for the column */
-	comment?: string
-
-	/** Default value expression */
-	default?: string
-
-	/** Create a secondary index (skipping index) on this column */
-	indexed?: boolean
-
-	/** Granularity for the index. Default: 4 */
-	indexGranularity?: number
-
-	/** Type of skipping index. Default: 'minmax' */
-	indexType?: 'bloom_filter' | 'minmax' | 'ngrambf_v1' | 'set' | 'tokenbf_v1'
-
-	/** Use LowCardinality wrapper for low-cardinality strings */
-	lowCardinality?: boolean
-
-	/** Materialized value expression (computed on insert) */
-	materialized?: string
-
-	name: Extract<keyof T, string>
-
-	/** Whether the column can be null (wraps type in Nullable) */
-	nullable?: boolean
-
-	/** Include this column in the ORDER BY clause (ClickHouse's primary index) */
-	primaryKey?: boolean
-
-	/** Order of this column in the primary key (lower = first). Default: 0 */
-	primaryKeyOrder?: number
-
-	/** TTL expression for this column */
-	ttl?: string
-
-	/** The ClickHouse data type */
-	type: ClickHouseType
-}
-
 type ClickHouseWriterParams<T> = {
 	/**
 	 * The maximum number of items to hold in memory
 	 * before flushing to the database.
-	 * @default 10000
+	 * @default 10_000
 	 */
 	batch_size?: number
 
@@ -88,6 +24,13 @@ type ClickHouseWriterParams<T> = {
 	 * @default disabled
 	 */
 	batch_timeout?: number
+
+	/**
+	 * If enabled, starts an async one-time table ensure operation in the constructor.
+	 * Use `await writer.init()` if you need to block startup until it is completed.
+	 * @default false
+	 */
+	ensure_table_on_init?: boolean
 
 	/**
 	 * How long to wait, in milliseconds, after the last write operation
@@ -136,6 +79,7 @@ export class ClickHouseWriter<T> {
 	private batchTimeoutTimer: NodeJS.Timeout | null = null;
 	private idleTimeoutTimer: NodeJS.Timeout | null = null;
 	private sessionTimer = new Timer();
+	private isInitialized = false;
 
 	/* * */
 
@@ -143,39 +87,46 @@ export class ClickHouseWriter<T> {
 		if (!params.table) throw new Error('CLICKHOUSEWRITER: Table name is required');
 		if (params.client) {
 			this.params = params;
-			this.client = params.client as ClickHouseClient;
-		}
-		else if (params.clientConfig) {
+			this.client = params.client;
+		} else if (params.clientConfig) {
 			const { database, password, url, username } = params.clientConfig;
 			if (!database || !password || !url || !username) {
 				throw new Error('CLICKHOUSEWRITER: Client configuration is invalid. Ensure database, password, url and username are provided.');
 			}
 			this.params = params;
 			this.client = createClient(params.clientConfig);
-		}
-		else {
+		} else {
 			throw new Error('CLICKHOUSEWRITER: Either client or clientConfig is required.');
 		}
 	}
 
-	/* * */
-
+	/*
+	 * Closes the ClickHouse client connection
+	 * and clears any active timers.
+	 */
 	async close() {
 		await this.client.close();
 		Logger.info(`CLICKHOUSEWRITER [${this.params.table}]: Connection closed.`);
 	}
 
-	/* * */
+	/**
+	 * Initializes the writer by ensuring the table exists.
+	 * Safe to call multiple times.
+	 */
+	async init() {
+		if (this.isInitialized) return;
+		await this.ensureTable();
+		this.isInitialized = true;
+	}
 
 	/**
 	 * Ensures the table exists in ClickHouse by creating it if it doesn't exist.
 	 * Uses the tableSchema provided in the constructor, or an optional schema parameter.
-	 *
 	 * @param schema Optional schema to use instead of the constructor-provided tableSchema
-	 * @param engine The ClickHouse table engine to use (default: MergeTree)
+	 * @param engine The ClickHouse table engine to use (default: ReplicatedMergeTree('/clickhouse/tables/{shard}/{table}', '{replica}'))
 	 * @param orderBy The ORDER BY clause for the table (default: tuple())
 	 */
-	async ensureTable(schema?: ClickHouseColumn<T>[], engine = 'MergeTree', orderBy = 'tuple()') {
+	async ensureTable(schema?: ClickHouseColumn<T>[], engine = 'ReplicatedMergeTree(\'/clickhouse/tables/{shard}/{table}\', \'{replica}\')', orderBy = 'tuple()') {
 		const tableSchemaToUse = schema ?? this.params.tableSchema;
 		const tableSchema = tableSchemaToUse?.map(column => `${column.name} ${column.type}`).join(', ');
 
@@ -185,7 +136,7 @@ export class ClickHouseWriter<T> {
 
 		try {
 			const createTableQuery = `
-				CREATE TABLE IF NOT EXISTS ${this.params.table} (
+				CREATE TABLE IF NOT EXISTS ${this.params.table} ON CLUSTER 'clickhouse-replica' (
 					${tableSchema}
 				) ENGINE = ${engine}
 				ORDER BY ${orderBy}
@@ -193,148 +144,22 @@ export class ClickHouseWriter<T> {
 
 			await this.client.command({ query: createTableQuery });
 			Logger.info(`CLICKHOUSEWRITER [${this.params.table}]: Table ensured.`);
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error(`CLICKHOUSEWRITER [${this.params.table}]: Error @ ensureTable(): ${(error as Error).message}`);
 			throw error;
 		}
 	}
 
-	/* * */
-
 	/**
-	 * Builds a WHERE clause from a filter object.
-	 * Supports simple equality, range queries ($gte, $lte, $gt, $lt), and $in queries.
-	 *
-	 * @param filter Filter object with column names as keys
-	 * @returns WHERE clause string (without the WHERE keyword)
+	 * Flushes the current batch of data to ClickHouse.
+	 * This method is called internally when the batch size or timeouts are reached,
+	 * but can also be called manually if needed.
+	 * @param callback Optional callback to execute after the flush is complete, receiving the flushed data as a parameter
 	 */
-	private buildWhereClause(filter?: Record<string, unknown>): null | string {
-		if (!filter || Object.keys(filter).length === 0) {
-			return null;
-		}
-
-		const conditions: string[] = [];
-
-		for (const [key, value] of Object.entries(filter)) {
-			if (value === null || value === undefined) {
-				continue;
-			}
-
-			// Handle range queries (MongoDB-style operators)
-			if (typeof value === 'object' && !Array.isArray(value)) {
-				const operators = value as Record<string, unknown>;
-				for (const [op, opValue] of Object.entries(operators)) {
-					switch (op) {
-						case '$gt':
-							conditions.push(`${key} > ${this.formatValue(opValue)}`);
-							break;
-						case '$gte':
-							conditions.push(`${key} >= ${this.formatValue(opValue)}`);
-							break;
-						case '$in':
-							if (Array.isArray(opValue)) {
-								const values = opValue.map(v => this.formatValue(v)).join(', ');
-								conditions.push(`${key} IN (${values})`);
-							}
-							break;
-						case '$lt':
-							conditions.push(`${key} < ${this.formatValue(opValue)}`);
-							break;
-						case '$lte':
-							conditions.push(`${key} <= ${this.formatValue(opValue)}`);
-							break;
-					}
-				}
-			}
-			else {
-				// Simple equality
-				conditions.push(`${key} = ${this.formatValue(value)}`);
-			}
-		}
-
-		return conditions.length > 0 ? conditions.join(' AND ') : null;
-	}
-
-	/**
-	 * Formats a value for use in a SQL query.
-	 */
-	private formatValue(value: unknown): string {
-		if (typeof value === 'string') {
-			return `'${value}'`;
-		}
-		return String(value);
-	}
-
-	/* * */
-
-	/**
-	 * Counts the number of documents in the table that match the given filter.
-	 * Supports simple equality and range queries ($gte, $lte, $gt, $lt).
-	 *
-	 * @param filter Optional WHERE clause conditions (e.g., { operational_date: '2024-01-01' } or { received_at: { $gte: 1234567890 } })
-	 * @returns The count of matching documents
-	 */
-	async countDocuments(filter?: Record<string, unknown>): Promise<number> {
-		try {
-			let query = `SELECT count() as count FROM ${this.params.table}`;
-
-			const whereClause = this.buildWhereClause(filter);
-			if (whereClause) {
-				query += ` WHERE ${whereClause}`;
-			}
-
-			const result = await this.client.query({
-				format: 'JSONEachRow',
-				query,
-			});
-
-			const data = await result.json() as { count: string }[];
-			return parseInt(data[0]?.count ?? '0', 10);
-		}
-		catch (error) {
-			Logger.error(`CLICKHOUSEWRITER [${this.params.table}]: Error @ countDocuments(): ${(error as Error).message}`);
-			throw error;
-		}
-	}
-
-	/* * */
-
-	/**
-	 * Returns distinct values for a given column, optionally filtered.
-	 * Supports simple equality and range queries ($gte, $lte, $gt, $lt).
-	 *
-	 * @param column The column name to get distinct values for
-	 * @param filter Optional WHERE clause conditions
-	 * @returns Array of distinct values
-	 */
-	async distinct<K = string>(column: string, filter?: Record<string, unknown>): Promise<K[]> {
-		try {
-			let query = `SELECT DISTINCT ${column} FROM ${this.params.table}`;
-
-			const whereClause = this.buildWhereClause(filter);
-			if (whereClause) {
-				query += ` WHERE ${whereClause}`;
-			}
-
-			const result = await this.client.query({
-				format: 'JSONEachRow',
-				query,
-			});
-
-			const data = await result.json() as Record<string, K>[];
-			return data.map(row => row[column]);
-		}
-		catch (error) {
-			Logger.error(`CLICKHOUSEWRITER [${this.params.table}]: Error @ distinct(): ${(error as Error).message}`);
-			throw error;
-		}
-	}
-
-	/* * */
-
 	async flush(callback?: (data?: T[]) => Promise<void>) {
 		try {
+			await this.init();
+
 			//
 
 			const flushTimer = new Timer();
@@ -401,33 +226,28 @@ export class ClickHouseWriter<T> {
 				this.dataBucketFlushOps = [];
 
 				//
-			}
-			catch (error) {
+			} catch (error) {
 				Logger.error(`CLICKHOUSEWRITER [${this.params.table}]: Error @ flush().insert(): ${(error as Error).message}`);
 				throw error; // Re-throw to allow retry logic at higher level
 			}
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error(`CLICKHOUSEWRITER [${this.params.table}]: Error @ flush(): ${(error as Error).message}`);
 			throw error; // Re-throw to allow retry logic at higher level
 		}
 	}
 
-	/* * */
-
 	/**
 	 * Write data to the ClickHouse table.
-	 *
 	 * @param data The data to write
 	 * @param options Options for the write operation (reserved for future use)
 	 * @param writeCallback Callback function to call after the write operation is complete
 	 * @param flushCallback Callback function to call after the flush operation is complete
 	 */
-
-	async write(data: T | T[], writeCallback?: () => Promise<void>, flushCallback?: (data?: T[]) => Promise<void>) {
+	async write(data: T | T[], { flushCallback, writeCallback }: { flushCallback?: (data?: T[]) => Promise<void>, writeCallback?: () => Promise<void> } = {}) {
 		//
+		await this.init();
 
 		//
 		// Invalidate the previously set idle timeout timer
@@ -460,8 +280,7 @@ export class ClickHouseWriter<T> {
 		if (Array.isArray(data)) {
 			const combinedDataWithOptions = data.map(item => item);
 			this.dataBucketAlwaysAvailable = [...this.dataBucketAlwaysAvailable, ...combinedDataWithOptions];
-		}
-		else {
+		} else {
 			this.dataBucketAlwaysAvailable.push(data);
 		}
 

@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { vehicles } from '@tmlmobilidade/interfaces';
 import { type CreateVehicleDto, PermissionCatalog, type UpdateVehicleDto, type Vehicle } from '@tmlmobilidade/types';
@@ -22,7 +22,7 @@ export class VehiclesController {
 		// Check if the user has permission to create vehicles
 
 		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.create)) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create vehicles');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create vehicles');
 		}
 
 		//
@@ -33,7 +33,7 @@ export class VehiclesController {
 		//
 		// Send the response
 
-		reply.send({ data: newVehicle, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: newVehicle, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -48,21 +48,21 @@ export class VehiclesController {
 		const vehicle = await vehicles.findById(id);
 
 		if (!vehicle) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Vehicle not found');
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
 		}
 
 		//
 		// Check if the user has permission to delete vehicles
 
 		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.delete)) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete vehicles');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete vehicles');
 		}
 
 		//
 
 		await vehicles.deleteById(id);
 
-		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -77,7 +77,7 @@ export class VehiclesController {
 		// Check if the user has permission to read vehicles
 
 		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.read)) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read vehicles');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read vehicles');
 		}
 
 		//
@@ -85,7 +85,7 @@ export class VehiclesController {
 
 		const allVehicles = await vehicles.findMany({}, { sort: { created_at: -1 } });
 
-		return reply.send({ data: allVehicles, error: null, statusCode: HttpStatus.OK });
+		return reply.send({ data: allVehicles, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -103,13 +103,13 @@ export class VehiclesController {
 
 		const vehicleData = await vehicles.findById(request.params.id);
 
-		if (!vehicleData) throw new HttpException(HttpStatus.NOT_FOUND, 'Vehicle not found');
+		if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
 
 		//
 		// Check if the user has permission to read vehicles
 
 		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.read)) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read vehicles');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read vehicles');
 		}
 
 		//
@@ -118,7 +118,7 @@ export class VehiclesController {
 		return reply.send({
 			data: vehicleData,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//
@@ -132,8 +132,8 @@ export class VehiclesController {
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Vehicle>) {
 		await vehicles.toggleLockById(request.params.id);
 		const foundVehicle = await vehicles.findById(request.params.id);
-		if (!foundVehicle) throw new HttpException(HttpStatus.NOT_FOUND, 'Vehicle not found');
-		reply.send({ data: foundVehicle, error: null, statusCode: HttpStatus.OK });
+		if (!foundVehicle) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
+		reply.send({ data: foundVehicle, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -149,13 +149,13 @@ export class VehiclesController {
 
 		const vehicleData = await vehicles.findById(request.params.id);
 
-		if (!vehicleData) throw new HttpException(HttpStatus.NOT_FOUND, 'Vehicle not found');
+		if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
 
 		//
 		// Check if the user has permission to update vehicles
 
 		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.update)) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update vehicles');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update vehicles');
 		}
 
 		//
@@ -169,7 +169,7 @@ export class VehiclesController {
 		reply.send({
 			data: updatedVehicle,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//

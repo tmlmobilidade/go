@@ -37,8 +37,7 @@ export function expectedDriverIdQtyAnalyzer(analysisData: AnalysisData): Ride['a
 		};
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		return {
 			error_message: error.message,
 			grade: 'error',

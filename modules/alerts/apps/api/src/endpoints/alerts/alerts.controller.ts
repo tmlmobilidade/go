@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { alerts, files, notifications } from '@tmlmobilidade/interfaces';
 import { type Alert, CreateAlertDto, type File, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
@@ -18,7 +18,7 @@ export class AlertsController {
 	static async create(request: FastifyRequest<{ Body: CreateAlertDto }>, reply: FastifyReply<Alert>) {
 		const insertResult = await alerts.insertOne({ ...request.body, created_by: request.me._id, updated_by: request.me._id });
 		await notifications.sendNotification(PermissionCatalog.all.alerts.scope, 'created_alert', request.me, insertResult._id, insertResult.title, insertResult.description);
-		reply.send({ data: insertResult, error: null, statusCode: HttpStatus.CREATED }).status(HttpStatus.CREATED);
+		reply.send({ data: insertResult, error: null, statusCode: HTTP_STATUS.CREATED }).status(HTTP_STATUS.CREATED);
 	}
 
 	/**
@@ -28,7 +28,7 @@ export class AlertsController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		await alerts.deleteById(request.params.id);
-		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -40,8 +40,8 @@ export class AlertsController {
 		console.log('===> Deleting image for alert ID:', request.params.id);
 		// Ensure the alert exists and has an image
 		const foundAlert = await alerts.findById(request.params.id);
-		if (!foundAlert) return reply.status(HttpStatus.NOT_FOUND).send({ message: 'Alert not found' });
-		if (!foundAlert.file_id) return reply.status(HttpStatus.NOT_FOUND).send({ message: 'Image not found' });
+		if (!foundAlert) return reply.status(HTTP_STATUS.NOT_FOUND).send({ message: 'Alert not found' });
+		if (!foundAlert.file_id) return reply.status(HTTP_STATUS.NOT_FOUND).send({ message: 'Image not found' });
 		console.log('===> Found alert with image ID:', foundAlert.file_id);
 		// Delete the image file and update the alert
 		// await files.deleteById(foundAlert.file_id);
@@ -49,8 +49,8 @@ export class AlertsController {
 		await alerts.updateById(request.params.id, { file_id: null });
 		// Send the updated Alert to the client
 		const updatedAlert = await alerts.findById(request.params.id);
-		if (!updatedAlert) return reply.status(HttpStatus.NOT_FOUND).send({ message: 'Alert not found' });
-		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		if (!updatedAlert) return reply.status(HTTP_STATUS.NOT_FOUND).send({ message: 'Alert not found' });
+		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -70,7 +70,7 @@ export class AlertsController {
 		// Retrieve and send all alerts
 		const allAlerts = await alerts.findMany({ ...permissionsQuery }, { sort: { active_period_start_date: -1 } });
 		// Send the alerts to the client
-		reply.send({ data: allAlerts, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: allAlerts, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -80,8 +80,8 @@ export class AlertsController {
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Alert>) {
 		const foundAlert = await alerts.findById(request.params.id);
-		if (!foundAlert) throw new HttpException(HttpStatus.NOT_FOUND, 'Alert not found');
-		reply.send({ data: foundAlert, error: null, statusCode: HttpStatus.OK });
+		if (!foundAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+		reply.send({ data: foundAlert, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -92,14 +92,14 @@ export class AlertsController {
 	static async getImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<File>) {
 		// Ensure the alert exists
 		const foundAlert = await alerts.findById(request.params.id);
-		if (!foundAlert) throw new HttpException(HttpStatus.NOT_FOUND, 'Alert not found');
+		if (!foundAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
 		// Ensure the alert has an associated image file.
 		// Since it is optional, return null if not present
-		if (!foundAlert.file_id) return reply.send({ data: null, error: null, statusCode: HttpStatus.OK });
+		if (!foundAlert.file_id) return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
 		// Retrieve and send the image file
 		const foundImageFile = await files.findById(foundAlert.file_id);
-		if (!foundImageFile) throw new HttpException(HttpStatus.NOT_FOUND, 'File not found');
-		return reply.send({ data: foundImageFile, error: null, statusCode: HttpStatus.OK });
+		if (!foundImageFile) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
+		return reply.send({ data: foundImageFile, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -110,8 +110,8 @@ export class AlertsController {
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Alert>) {
 		await alerts.toggleLockById(request.params.id);
 		const foundAlert = await alerts.findById(request.params.id);
-		if (!foundAlert) throw new HttpException(HttpStatus.NOT_FOUND, 'Alert not found');
-		reply.send({ data: foundAlert, error: null, statusCode: HttpStatus.OK });
+		if (!foundAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+		reply.send({ data: foundAlert, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -122,10 +122,10 @@ export class AlertsController {
 	static async update(request: FastifyRequest<{ Body: UpdateAlertDto, Params: { id: string } }>, reply: FastifyReply<Alert>) {
 		// Validate the request body
 		const validatedAlert = UpdateAlertSchema.safeParse(request.body);
-		if (!validatedAlert.success) throw new HttpException(HttpStatus.BAD_REQUEST, 'Dados inválidos', validatedAlert.error);
+		if (!validatedAlert.success) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Dados inválidos', validatedAlert.error);
 		// Update the alert in the database
 		const updatedAlertData = await alerts.updateById(request.params.id, validatedAlert.data);
-		reply.send({ data: updatedAlertData, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: updatedAlertData, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -136,10 +136,10 @@ export class AlertsController {
 	static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<File>) {
 		// Retrieve the alert from the database
 		const foundAlert = await alerts.findById(request.params.id);
-		if (!foundAlert) throw new HttpException(HttpStatus.NOT_FOUND, 'Alert not found');
+		if (!foundAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
 		// Extract the file data from the request
 		const fileData = await request.file();
-		if (!fileData) throw new HttpException(HttpStatus.BAD_REQUEST, 'No file uploaded');
+		if (!fileData) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No file uploaded');
 		const buffer = await fileData.toBuffer();
 		const size = buffer.buffer.byteLength;
 		// Upload the file to the database
@@ -156,14 +156,13 @@ export class AlertsController {
 		if (foundAlert.file_id) {
 			try {
 				await files.deleteById(foundAlert.file_id);
-			}
-			catch (error) {
+			} catch (error) {
 				console.error(error);
 			}
 		}
 		// Update the alert with the new file ID
 		await alerts.updateById(foundAlert._id, { file_id: fileUploadResult._id.toString() });
-		reply.send({ data: fileUploadResult, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: fileUploadResult, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	//

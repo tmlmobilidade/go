@@ -49,7 +49,7 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 	//
 	// B. Fetch data
 
-	const { data: routeData, error: routeError, isLoading: routeLoading, mutate: routeMutate } = useSWR<Route>(API_ROUTES.offer.ROUTES_DETAIL(routeId), { refreshInterval: 5000 });
+	const { data: routeData, error: routeError, isLoading: routeLoading, mutate: routeMutate } = useSWR<Route>(API_ROUTES.offer.ROUTES_DETAIL(routeId));
 	const { data: lineData, mutate: lineMutate } = useSWR<Line>(API_ROUTES.offer.LINES_DETAIL(lineId));
 
 	//

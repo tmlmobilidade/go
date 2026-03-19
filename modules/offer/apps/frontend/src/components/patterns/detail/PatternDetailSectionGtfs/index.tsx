@@ -58,8 +58,7 @@ export function PatternDetailSectionGtfs() {
 				}
 			}
 			setParseResult(trips);
-		}
-		catch (error) {
+		} catch (error) {
 			console.log(error);
 			setParseResult(null);
 		}

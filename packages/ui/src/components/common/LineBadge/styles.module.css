@@ -28,6 +28,14 @@
 		max-height: 34px;
 		font-size: 22px;
 	}
+
+	&[data-size='full-width'] {
+		min-width: 65px;
+		max-width: none;
+		min-height: 26px;
+		max-height: 26px;
+		padding: var(--size-spacing-sm);
+	}
 }
 
 

@@ -103,8 +103,7 @@ export class JsonWriter<T> {
 		// Add the data to the batch
 		if (Array.isArray(data)) {
 			this.CURRENT_BATCH_DATA = [...this.CURRENT_BATCH_DATA, ...data];
-		}
-		else {
+		} else {
 			this.CURRENT_BATCH_DATA.push(data);
 		}
 

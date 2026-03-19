@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateStopDto, CreateStopSchema, type Stop, type UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type DeleteResult, type Filter, type IndexDescription, type Sort } from 'mongodb';
 import { z } from 'zod';
 
@@ -106,4 +106,4 @@ class StopsClass extends MongoCollectionClass<Stop, CreateStopDto, UpdateStopDto
 
 /* * */
 
-export const stops = AsyncSingletonProxy(StopsClass);
+export const stops = asyncSingletonProxy(StopsClass);

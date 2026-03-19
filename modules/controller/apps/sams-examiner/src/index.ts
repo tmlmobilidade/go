@@ -6,6 +6,7 @@ import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplified
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type CreateSamDto, Sam, type SamAnalysis } from '@tmlmobilidade/types';
+import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -245,8 +246,7 @@ async function main() {
 						currentGroup.last_transaction_type = currentTx.transaction_type;
 						currentGroup.transactions_expected++;
 						currentGroup.transactions_found++;
-					}
-					else {
+					} else {
 						// If any of the checks fail, we need
 						// to save the current group as it is terminated here.
 						samAnalysisGroups.push(currentGroup);
@@ -330,12 +330,10 @@ async function main() {
 				Logger.success(`Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing} (${analysisTimer.get()})`, 1);
 
 			//
-			}
-			catch (error) {
+			} catch (error) {
 				Logger.error(`Error processing SAM "${samData._id}": ${error.message}`);
 				await sams.updateById(samData._id, { remarks: `Error processing SAM "${samData._id}": ${error.message}`, system_status: 'error' });
-			}
-			finally {
+			} finally {
 				counter--;
 			}
 		}
@@ -345,8 +343,7 @@ async function main() {
 		Logger.terminate(`Run took ${globalTimer.get()}`);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('An error occurred. Halting execution.', error);
 		Logger.error('Retrying in 10 seconds...');
 		setTimeout(() => {
@@ -359,10 +356,4 @@ async function main() {
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		await main();
-		setTimeout(runOnInterval, 18_000_000); // 5 hours
-	};
-	runOnInterval();
-})();
+runOnInterval(main, 18_000_000); // 5 hours

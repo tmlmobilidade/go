@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { enrichUserRefs, proposedChanges } from '@tmlmobilidade/interfaces';
 import { ProposedChange, UpdateProposedChangeDto } from '@tmlmobilidade/types';
@@ -17,7 +17,7 @@ export class ProposedChangesController {
 		const data = request.body as ProposedChange<any>;
 		const result = await proposedChanges.insertOne({ ...data, created_by: request.me._id, updated_by: request.me._id });
 
-		reply.send({ data: result, error: null, statusCode: HttpStatus.CREATED });
+		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED });
 	}
 
 	/**
@@ -29,7 +29,7 @@ export class ProposedChangesController {
 		const { id } = request.params;
 		await proposedChanges.deleteById(id);
 
-		reply.send({ data: null, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -42,7 +42,7 @@ export class ProposedChangesController {
 			sort: { created_at: -1 },
 		});
 
-		reply.send({ data: await enrichUserRefs(data), error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: await enrichUserRefs(data), error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -54,9 +54,9 @@ export class ProposedChangesController {
 		const { id } = request.params;
 		const proposedChange = await proposedChanges.findById(id);
 
-		if (!proposedChange) throw new HttpException(HttpStatus.NOT_FOUND, 'Proposed Change not found');
+		if (!proposedChange) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Proposed Change not found');
 
-		reply.send({ data: await enrichUserRefs(proposedChange), error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: await enrichUserRefs(proposedChange), error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -68,6 +68,6 @@ export class ProposedChangesController {
 		const { id } = request.params;
 		const data = await proposedChanges.updateById(id, request.body);
 
-		reply.send({ data, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
 	}
 }

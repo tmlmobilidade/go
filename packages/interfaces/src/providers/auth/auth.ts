@@ -1,12 +1,12 @@
 /* * */
 
 import { organizations, roles, sessions, users, verificationTokens } from '@/interfaces/index.js';
-import { HttpException, HttpStatus, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendWelcomeEmail } from '@tmlmobilidade/emails';
 import { generateRandomString, generateRandomToken } from '@tmlmobilidade/strings';
 import { type CreateUserDto, type LoginDto, type Organization, type Permission, type Session, type User } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 
 /* * */
@@ -64,7 +64,7 @@ class AuthProvider {
 	public async getPermissionsFromUserId(userId: string): Promise<Permission[]> {
 		// Get the user associated with the session token
 		const userData = await users.findById(userId);
-		if (!userData) throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found.');
+		if (!userData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found.');
 		// Get the roles assigned to the user
 		const rolesData = await roles.findMany({ _id: { $in: userData.role_ids } });
 		// Combine permissions from roles and user-specific permissions
@@ -80,8 +80,7 @@ class AuthProvider {
 				const existingPermission = permissionsMap.get(key);
 				// Merge the existing permission with the new one
 				permissionsMap.set(key, mergeObjects(existingPermission, permission));
-			}
-			else {
+			} else {
 				// Otherwise, just add the new permission
 				permissionsMap.set(key, permission);
 			}
@@ -99,10 +98,10 @@ class AuthProvider {
 	public async getUserFromSessionToken(sessionToken: string): Promise<User> {
 		// Find the current session in the database
 		const sessionData = await sessions.findOne({ token: { $eq: sessionToken } });
-		if (!sessionData) throw new HttpException(HttpStatus.UNAUTHORIZED, 'Session not found');
+		if (!sessionData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Session not found');
 		// Find the user associated with the session
 		const userData = await users.findOne({ _id: { $eq: sessionData.user_id } });
-		if (!userData) throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found');
+		if (!userData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found');
 		// Sanitize the user data by removing sensitive fields
 		userData.password_hash = undefined;
 		// Return the user data to the caller
@@ -121,10 +120,10 @@ class AuthProvider {
 	public async login(loginDto: LoginDto): Promise<Session> {
 		// Find the user by email
 		const userData = await users.findByEmail(loginDto.email, { includeUnsafeProperties: true });
-		if (!userData) throw new HttpException(HttpStatus.UNAUTHORIZED, 'User not found');
+		if (!userData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found');
 		// Check if the password matches the stored hash
 		const passwordHashMatch = await bcrypt.compare(loginDto.password, userData.password_hash ?? '');
-		if (!passwordHashMatch) throw new HttpException(HttpStatus.UNAUTHORIZED, 'Invalid password');
+		if (!passwordHashMatch) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Invalid password');
 		// Create a new session object if the password matches
 		const newSession: Session = {
 			_id: generateRandomString(),
@@ -169,9 +168,9 @@ class AuthProvider {
 		});
 		// Send a welcome email to the user with the verification token
 		await sendWelcomeEmail({
-			props: {
-				first_name: createUserDto.first_name,
-				setup_password_link: `${PAGE_ROUTES.auth.CHANGE_PASSWORD_LIST}?token=${verificationToken}&email=${encodeURIComponent(createUserDto.email)}`,
+			data: {
+				firstName: createUserDto.first_name,
+				resetPasswordUrl: `${PAGE_ROUTES.auth.CHANGE_PASSWORD_LIST}?token=${verificationToken}&email=${encodeURIComponent(createUserDto.email)}`,
 			},
 			to: createUserDto.email,
 		});
@@ -180,4 +179,4 @@ class AuthProvider {
 
 /* * */
 
-export const authProvider = AsyncSingletonProxy(AuthProvider);
+export const authProvider = asyncSingletonProxy(AuthProvider);

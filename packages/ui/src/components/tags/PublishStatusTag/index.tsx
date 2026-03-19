@@ -4,6 +4,7 @@
 
 import { type PublishStatus, PublishStatusSchema } from '@tmlmobilidade/types';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Select } from '../../inputs/Select';
 import { Tag } from '../Tag';
@@ -25,13 +26,15 @@ export function PublishStatusTag({ disabled, onChange, onClick, value }: Publish
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const [isEditing, setIsEditing] = useState(false);
 
 	//
 	// B. Transform data
 
 	const publishStatusOptions = PublishStatusSchema.options.map(value => ({
-		label: value === 'archived' ? 'Arquivado' : value === 'draft' ? 'Rascunho' : value === 'published' ? 'Publicado' : 'UNKNOWN',
+		label: t(`shared:status.publish_status.${value}`),
 		value: value,
 	}));
 
@@ -67,9 +70,9 @@ export function PublishStatusTag({ disabled, onChange, onClick, value }: Publish
 
 	return (
 		<>
-			{value === 'draft' && <Tag label="Rascunho" onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="muted" />}
-			{value === 'archived' && <Tag label="Arquivado" onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="primary" />}
-			{value === 'published' && <Tag label="Publicado" onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="primary" filled />}
+			{value === 'draft' && <Tag label={t('shared:status.publish_status.draft')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="muted" />}
+			{value === 'archived' && <Tag label={t('shared:status.publish_status.archived')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="primary" />}
+			{value === 'published' && <Tag label={t('shared:status.publish_status.published')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="primary" filled />}
 		</>
 	);
 

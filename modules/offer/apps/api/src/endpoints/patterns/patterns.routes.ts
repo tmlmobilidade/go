@@ -46,6 +46,12 @@ server.register(
 			PatternsController.importFromGtfs,
 		);
 
+		instance.post(
+			'/:id/comment',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.update]) },
+			PatternsController.comment,
+		);
+
 		instance.delete(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.delete]) },

@@ -22,7 +22,7 @@ const DEFAULT_PRODUCTION_CONFIG: Omit<AppConfigGroup, 'api_url' | 'frontend_url'
 
 const DEFAULT_STAGING_CONFIG: Omit<AppConfigGroup, 'api_url' | 'frontend_url'> = {
 	api_port: 5050,
-	cors_origin: new RegExp(`https://staging.go.tmlmobilidade.pt$`),
+	cors_origin: new RegExp(`https://go-stg.tmlmobilidade.pt$`),
 	frontend_port: 3000,
 };
 
@@ -42,8 +42,8 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: 'https://staging.go.tmlmobilidade.pt/alerts/api',
-			frontend_url: 'https://staging.go.tmlmobilidade.pt/alerts',
+			api_url: 'https://go-stg.tmlmobilidade.pt/alerts/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/alerts',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -62,8 +62,8 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: 'https://staging.go.tmlmobilidade.pt/auth/api',
-			frontend_url: 'https://staging.go.tmlmobilidade.pt/auth',
+			api_url: 'https://go-stg.tmlmobilidade.pt/auth/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/auth',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -82,8 +82,8 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: 'https://staging.go.tmlmobilidade.pt/controller/api',
-			frontend_url: 'https://staging.go.tmlmobilidade.pt/controller',
+			api_url: 'https://go-stg.tmlmobilidade.pt/controller/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/controller',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -102,8 +102,8 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: 'https://staging.go.tmlmobilidade.pt/dates/api',
-			frontend_url: 'https://staging.go.tmlmobilidade.pt/dates',
+			api_url: 'https://go-stg.tmlmobilidade.pt/dates/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/dates',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -122,8 +122,8 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: 'https://staging.go.tmlmobilidade.pt/exporter/api',
-			frontend_url: 'https://staging.go.tmlmobilidade.pt/exporter',
+			api_url: 'https://go-stg.tmlmobilidade.pt/exporter/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/exporter',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -142,8 +142,8 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: 'https://staging.go.tmlmobilidade.pt/fleet/api',
-			frontend_url: 'https://staging.go.tmlmobilidade.pt/fleet',
+			api_url: 'https://go-stg.tmlmobilidade.pt/fleet/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/fleet',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -162,8 +162,8 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: 'https://staging.go.tmlmobilidade.pt/locations/api',
-			frontend_url: 'https://staging.go.tmlmobilidade.pt/locations',
+			api_url: 'https://go-stg.tmlmobilidade.pt/locations/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/locations',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -182,8 +182,8 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: 'https://staging.go.tmlmobilidade.pt/offer/api',
-			frontend_url: 'https://staging.go.tmlmobilidade.pt/offer',
+			api_url: 'https://go-stg.tmlmobilidade.pt/offer/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/offer',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -202,8 +202,8 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: 'https://staging.go.tmlmobilidade.pt/performance/api',
-			frontend_url: 'https://staging.go.tmlmobilidade.pt/performance',
+			api_url: 'https://go-stg.tmlmobilidade.pt/performance/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/performance',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -222,8 +222,8 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: 'https://staging.go.tmlmobilidade.pt/plans/api',
-			frontend_url: 'https://staging.go.tmlmobilidade.pt/plans',
+			api_url: 'https://go-stg.tmlmobilidade.pt/plans/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/plans',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -242,28 +242,8 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: 'https://staging.go.tmlmobilidade.pt/stops/api',
-			frontend_url: 'https://staging.go.tmlmobilidade.pt/stops',
-			...DEFAULT_STAGING_CONFIG,
-		},
-	},
-
-	ticketing: {
-		development: {
-			api_port: 52009,
-			api_url: 'http://localhost:52009',
-			cors_origin: true,
-			frontend_port: 51009,
-			frontend_url: 'http://localhost:51009/ticketing',
-		},
-		production: {
-			api_url: 'https://go.tmlmobilidade.pt/ticketing/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/ticketing',
-			...DEFAULT_PRODUCTION_CONFIG,
-		},
-		staging: {
-			api_url: 'https://staging.go.tmlmobilidade.pt/ticketing/api',
-			frontend_url: 'https://staging.go.tmlmobilidade.pt/ticketing',
+			api_url: 'https://go-stg.tmlmobilidade.pt/stops/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/stops',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},

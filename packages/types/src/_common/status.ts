@@ -64,3 +64,10 @@ export type LifecycleStatus = z.infer<typeof LifecycleStatusSchema>;
 export const AvailabilityStatusValues = ['available', 'unavailable', 'unknown'] as const;
 export const AvailabilityStatusSchema = z.enum(AvailabilityStatusValues);
 export type AvailabilityStatus = z.infer<typeof AvailabilityStatusSchema>;
+
+/* * */
+/* VALIDITY STATUS */
+
+export const ValidityStatusValues = ['valid', 'invalid', 'unknown'] as const;
+export const ValidityStatusSchema = z.enum(ValidityStatusValues);
+export type ValidityStatus = z.infer<typeof ValidityStatusSchema>;

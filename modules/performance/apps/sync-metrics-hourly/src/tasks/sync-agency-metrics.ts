@@ -32,8 +32,7 @@ export const syncAgencyMetrics = async (): Promise<void> => {
 		await syncSupplyByAgencyByYear();
 
 		Logger.success(`Finished Agency Demand Metrics Sync (${timer.get()})`);
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Failed to sync Agency Demand Metrics');
 		Logger.error(error);
 		throw error;

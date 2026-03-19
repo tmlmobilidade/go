@@ -6,7 +6,7 @@ import Fastify from 'fastify';
 
 /* * */
 
-(async function init() {
+await (async function init() {
 	//
 
 	//

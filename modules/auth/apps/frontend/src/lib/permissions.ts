@@ -132,6 +132,7 @@ const gtfsValidationActions: PermissionConfig = {
 		{ action: 'read', description: 'Permite ver validações', label: 'Ver', resources: ['AGENCIES'] },
 		{ action: 'create', description: 'Permite criar uma validação', label: 'Criar', resources: ['AGENCIES'] },
 		{ action: 'request_approval', description: 'Permite solicitar aprovação de uma validação', label: 'Solicitar aprovação', resources: ['AGENCIES'] },
+		{ action: 'update_processing_status', description: 'Permite alterar o estado de processamento de uma validação', label: 'Alterar estado de processamento', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de validações GTFS.',
 	scope: PermissionCatalog.all.gtfs_validations.scope,
@@ -193,6 +194,7 @@ const rideActions: PermissionConfig = {
 		{ action: 'acceptance_justify', description: 'Permite justificar uma viagem', label: 'Aceitação - Justificar', resources: ['AGENCIES'] },
 		{ action: 'acceptance_lock', description: 'Permite bloquear/desbloquear uma justificação de uma viagem', label: 'Aceitação - Bloquear/Desbloquear', resources: ['AGENCIES'] },
 		{ action: 'acceptance_read', description: 'Permite ver uma justificação de uma viagem', label: 'Aceitação - Ver', resources: ['AGENCIES'] },
+		{ action: 'acceptance_comment_activity', description: 'Permite adicionar comentários à aceitação de uma viagem', label: 'Aceitação - Adicionar comentário', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de viagens.',
 	scope: PermissionCatalog.all.rides.scope,
@@ -221,6 +223,32 @@ const annotationsActions: PermissionConfig = {
 	title: 'Permissões de Anotações',
 };
 
+const eventsActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver eventos', label: 'Ver eventos', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar um evento', label: 'Criar evento', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar um evento', label: 'Editar evento', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar um evento', label: 'Eliminar evento', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear um evento', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de eventos.',
+	scope: PermissionCatalog.all.events.scope,
+	title: 'Permissões de Eventos',
+};
+
+const holidaysActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver feriados', label: 'Ver feriados', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar um feriado', label: 'Criar feriado', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar um feriado', label: 'Editar feriado', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar um feriado', label: 'Eliminar feriado', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear um feriado', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de feriados.',
+	scope: PermissionCatalog.all.holidays.scope,
+	title: 'Permissões de Feriados',
+};
+
 const periodsActions: PermissionConfig = {
 	actions: [
 		{ action: 'read', description: 'Permite ver períodos', label: 'Ver períodos', resources: ['AGENCIES'] },
@@ -230,7 +258,7 @@ const periodsActions: PermissionConfig = {
 		{ action: 'lock', description: 'Permite bloquear/desbloquear um período', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de períodos.',
-	scope: PermissionCatalog.all.periods.scope,
+	scope: PermissionCatalog.all.year_periods.scope,
 	title: 'Permissões de Períodos',
 };
 
@@ -319,7 +347,9 @@ export const permissionsConfig = [
 	faresActions,
 	zonesActions,
 	typologiesActions,
+	eventsActions,
 	linesActions,
+	holidaysActions,
 	// topicActions,
 	// proposedChangesActions,
 ];

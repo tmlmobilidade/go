@@ -9,8 +9,6 @@ import { Metric, SupplyByAgencyByDay } from '@tmlmobilidade/types';
 /* * */
 
 export const syncSupplyByAgencyByMonth = async () => {
-	//
-
 	Logger.title(`Sync Supply Metrics by Agency by Month`);
 	const globalTimer = new Timer();
 
@@ -23,15 +21,14 @@ export const syncSupplyByAgencyByMonth = async () => {
 	await metrics.deleteMany({ metric: METRIC });
 	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
-	//
 	// Fetch by_day metrics from the metrics collection
 
 	const fetchTimer = new Timer();
 
 	const metricsCollection = await metrics.getCollection();
-	const dailyMetrics = await metricsCollection.find({
-		metric: 'supply_by_agency_by_day',
-	}).toArray() as SupplyByAgencyByDay[];
+	const dailyMetrics = await metricsCollection
+		.find({ metric: 'supply_by_agency_by_day' })
+		.toArray() as SupplyByAgencyByDay[];
 
 	Logger.info(`Fetched ${dailyMetrics.length} daily metrics (${fetchTimer.get()})`);
 
@@ -46,7 +43,7 @@ export const syncSupplyByAgencyByMonth = async () => {
 		// Initialize agency if not exists
 		if (!agencyMap.has(agency_id)) {
 			agencyMap.set(agency_id, {
-				data: {} as Record<string, { accomplished_rides: number, scheduled_rides: number, vkms_observed: number, vkms_scheduled: number }>,
+				data: {} as Record<string, { accomplished_rides: number, cost_per_trip: number, revenue_per_trip: number, scheduled_rides: number, vkms_observed: number, vkms_scheduled: number }>,
 				description: `Aggregated supply for agency ${agency_id}`,
 				generated_at: new Date(),
 				metric: METRIC,
@@ -58,18 +55,20 @@ export const syncSupplyByAgencyByMonth = async () => {
 
 		// Aggregate daily data into months
 		for (const [dayKey, dayData] of Object.entries(dailyMetric.data)) {
-			const monthKey = dayKey.slice(0, 7); // Extract YYYY-MM from YYYY-MM-DD
+			const monthKey = dayKey.slice(0, 7); // YYYY-MM
 
 			// Initialize month if not exists
 			if (!agencyDoc.data[monthKey]) {
-				agencyDoc.data[monthKey] = { accomplished_rides: 0, scheduled_rides: 0, vkms_observed: 0, vkms_scheduled: 0 };
+				agencyDoc.data[monthKey] = { accomplished_rides: 0, cost_per_trip: 0, revenue_per_trip: 0, scheduled_rides: 0, vkms_observed: 0, vkms_scheduled: 0 };
 			}
 
 			// Sum daily quantity into monthly total
-			agencyDoc.data[monthKey].scheduled_rides += dayData.scheduled_rides;
-			agencyDoc.data[monthKey].accomplished_rides += dayData.accomplished_rides;
-			agencyDoc.data[monthKey].vkms_observed += dayData.vkms_observed;
-			agencyDoc.data[monthKey].vkms_scheduled += dayData.vkms_scheduled;
+			agencyDoc.data[monthKey].scheduled_rides += Number(dayData.scheduled_rides ?? 0);
+			agencyDoc.data[monthKey].accomplished_rides += Number(dayData.accomplished_rides ?? 0);
+			agencyDoc.data[monthKey].vkms_observed += Number(dayData.vkms_observed ?? 0);
+			agencyDoc.data[monthKey].vkms_scheduled += Number(dayData.vkms_scheduled ?? 0);
+			agencyDoc.data[monthKey].revenue_per_trip += Number(dayData.revenue_per_trip ?? 0);
+			agencyDoc.data[monthKey].cost_per_trip += Number(dayData.cost_per_trip ?? 0);
 		}
 	}
 
@@ -85,7 +84,7 @@ export const syncSupplyByAgencyByMonth = async () => {
 	logMetricToFile({
 		approach: { description: 'Aggregate from by_day metrics', key: 'aggregate_from_daily' },
 		metric: METRIC,
-		queryCount: 1, // Only 1 query to fetch daily metrics
+		queryCount: 1,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),
 	});

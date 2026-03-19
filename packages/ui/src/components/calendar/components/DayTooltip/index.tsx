@@ -8,22 +8,37 @@ import styles from './styles.module.css';
 /* * */
 
 export interface DayTooltipProps {
+	calendarEvents: CalendarEvent[]
 	date: string
-	events: CalendarEvent[]
+}
+
+interface RuleImpactMetadata {
+	timepoints?: string[] // "HH:mm"
 }
 
 /* * */
 
-export function DayTooltip({ date, events }: DayTooltipProps) {
+export function DayTooltip({ calendarEvents, date }: DayTooltipProps) {
 	//
 
-	if (events.length === 0) {
+	if (calendarEvents.length === 0) {
 		return null;
 	}
 
 	// Separate periods and other events
-	const periods = events.filter(e => e.type === 'period');
-	const annotations = events.filter(e => e.type === 'annotation');
+	const periods = calendarEvents.filter(e => e.type === 'period');
+	const annotations = calendarEvents.filter(e => e.type === 'annotation');
+	const holidays = calendarEvents.filter(e => e.type === 'holiday');
+	const events = calendarEvents.filter(e => e.type === 'event');
+	const ruleImpacts = calendarEvents.filter(e => e.type === 'rule-impact');
+	const affectedTimepoints = Array
+		.from(new Set(
+			ruleImpacts.flatMap((e) => {
+				const md = e.metadata as RuleImpactMetadata | undefined;
+				return md?.timepoints ?? [];
+			}),
+		))
+		.sort();
 
 	return (
 		<div className={styles.container}>
@@ -42,9 +57,9 @@ export function DayTooltip({ date, events }: DayTooltipProps) {
 								/>
 								<div className={styles.eventContent}>
 									<div className={styles.eventTitle}>{period.title}</div>
-									{metadata?.agency_name && (
+									{metadata?.agency_names && (
 										<div className={styles.eventMeta}>
-											Operador: {metadata.agency_name}
+											{metadata.agency_names.length > 1 ? 'Operadores' : 'Operador'}: {metadata.agency_names}
 										</div>
 									)}
 								</div>
@@ -77,6 +92,74 @@ export function DayTooltip({ date, events }: DayTooltipProps) {
 							</div>
 						);
 					})}
+				</div>
+			)}
+
+			{holidays.length > 0 && (
+				<div className={styles.section}>
+					<div className={styles.sectionTitle}>Feriados</div>
+					{holidays.map((event) => {
+						const Icon = event.icon;
+						return (
+							<div key={event.id} className={styles.event}>
+								{Icon && (
+									<div className={styles.eventIcon}>
+										<Icon size={14} />
+									</div>
+								)}
+								<div className={styles.eventContent}>
+									<div className={styles.eventTitle}>{event.title}</div>
+									{event.description && (
+										<div className={styles.eventMeta}>
+											{event.description}
+										</div>
+									)}
+								</div>
+							</div>
+						);
+					})}
+				</div>
+			)}
+
+			{events.length > 0 && (
+				<div className={styles.section}>
+					<div className={styles.sectionTitle}>Eventos</div>
+					{events.map((event) => {
+						const Icon = event.icon;
+						return (
+							<div key={event.id} className={styles.event}>
+								{Icon && (
+									<div className={styles.eventIcon}>
+										<Icon size={14} />
+									</div>
+								)}
+								<div className={styles.eventContent}>
+									<div className={styles.eventTitle}>{event.title}</div>
+									{event.description && (
+										<div className={styles.eventMeta}>
+											{event.description}
+										</div>
+									)}
+								</div>
+							</div>
+						);
+					})}
+				</div>
+			)}
+
+			{affectedTimepoints.length > 0 && (
+				<div className={styles.section}>
+					<div className={styles.sectionTitle}>Oferta</div>
+
+					<div className={styles.event}>
+						<div
+							className={styles.eventColor}
+							style={{ backgroundColor: 'var(--color-primary)' }}
+						/>
+						<div className={styles.eventContent}>
+							<div className={styles.eventTitle}>{affectedTimepoints.join(', ')}</div>
+						</div>
+					</div>
 				</div>
 			)}
 		</div>

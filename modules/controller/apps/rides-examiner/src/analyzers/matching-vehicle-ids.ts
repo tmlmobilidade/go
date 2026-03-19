@@ -65,8 +65,7 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): Ride['an
 		};
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		return {
 			error_message: error.message,
 			grade: 'error',

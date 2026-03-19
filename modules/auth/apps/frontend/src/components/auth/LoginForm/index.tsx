@@ -23,7 +23,7 @@ export function LoginForm() {
 
 	const [isLoading, setIsLoading] = useState(false);
 
-	const [redirectToValue] = useQueryState('redirect', { clearOnDefault: true, defaultValue: '/' });
+	const [redirectToValue] = useQueryState('redirect', { clearOnDefault: true, defaultValue: PAGE_ROUTES.auth.HOME_LIST });
 
 	const [emailValue, setEmailValue] = useQueryState('email', { clearOnDefault: true, defaultValue: '' });
 	const [passwordValue, setPasswordValue] = useState('');

@@ -6,6 +6,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -85,8 +86,7 @@ async function main() {
 				await parsePlan(currentPlan);
 
 				//
-			}
-			catch (error) {
+			} catch (error) {
 				await plans.updateById(currentPlan._id, { apps: { ...currentPlan.apps, controller: { last_hash: null, status: 'error', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } });
 				Logger.error(`Error processing plan ${currentPlan._id}`, error);
 				Logger.divider();
@@ -105,8 +105,7 @@ async function main() {
 		Logger.terminate(`Run took ${globalTimer.get()}`);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('An error occurred. Halting execution.', error);
 		Logger.error('Retrying in 10 seconds...');
 		setTimeout(() => {
@@ -119,10 +118,4 @@ async function main() {
 
 /* * */
 
-(async function init() {
-	const runOnInterval = async () => {
-		await main();
-		setTimeout(runOnInterval, 60_000); // 1 minute
-	};
-	runOnInterval();
-})();
+runOnInterval(main, 60_000); // 1 minute

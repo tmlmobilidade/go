@@ -41,6 +41,12 @@ server.register(
 		);
 
 		instance.get(
+			'/:id/file/download',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.read]) },
+			GtfsValidationsController.downloadFile,
+		);
+
+		instance.get(
 			'/:id/request-approval',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.request_approval]) },
 			GtfsValidationsController.requestApproval,
@@ -50,6 +56,12 @@ server.register(
 			'/:id/lock',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.lock]) },
 			GtfsValidationsController.lock,
+		);
+
+		instance.put(
+			'/:id/processing-status',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.update_processing_status]) },
+			GtfsValidationsController.updateProcessingStatus,
 		);
 
 		next();

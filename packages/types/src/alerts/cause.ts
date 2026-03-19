@@ -45,11 +45,11 @@ export const AlertCauseSchema = z.enum(AlertCauseValues);
 export type AlertCause = z.infer<typeof AlertCauseSchema>;
 
 /**
- * Mapping from AlertCause to GtfsCause.
+ * Mapping from AlertCause to GtfsRtCause.
  * This mapping is used to convert extended alert causes
  * to their corresponding standard GTFS-RT cause types.
  */
-export const AlertCauseToGtfsCauseMap: Record<AlertCause, GtfsRtCause> = {
+export const AlertCauseToGtfsRtCauseMap: Record<AlertCause, GtfsRtCause> = {
 	ABUSIVE_PARKING: 'OTHER_CAUSE',
 	ACCIDENT: 'ACCIDENT',
 	CONSTRUCTION: 'CONSTRUCTION',

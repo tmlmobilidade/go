@@ -7,42 +7,35 @@ import { syncProductMetrics } from '@/tasks/sync-product-metrics.js';
 import { generatePerformanceSummary } from '@tmlmobilidade/go-performance-pckg-log';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
-(async function init() {
+async function main() {
 	//
+	const globalTimer = new Timer();
 
-	const runOnInterval = async () => {
-	//
+	Logger.title('Starting Metrics Sync');
+	Logger.divider();
 
-		const globalTimer = new Timer();
+	try {
+		await syncPatternHourMetrics();
+		await syncProductMetrics();
+		await syncCategoryMetrics();
+		await syncPassengerImpactMetrics();
 
-		Logger.title('Starting Metrics Sync');
+		generatePerformanceSummary();
+
 		Logger.divider();
-
-		try {
-			await syncPatternHourMetrics();
-			await syncProductMetrics();
-			await syncCategoryMetrics();
-			await syncPassengerImpactMetrics();
-
-			generatePerformanceSummary();
-
-			Logger.divider();
-			Logger.terminate(`Finished All Metrics Sync (${globalTimer.get()})`);
-			Logger.divider();
-		}
-		catch (error) {
-			Logger.error('Failed to sync metrics');
-			Logger.error(error);
-			Logger.divider();
-		}
-
-		setTimeout(runOnInterval, 86_400_000); // 1 day
-	};
-
-	runOnInterval();
+		Logger.terminate(`Finished All Metrics Sync (${globalTimer.get()})`);
+		Logger.divider();
+	} catch (error) {
+		Logger.error('Failed to sync metrics');
+		Logger.error(error);
+		Logger.divider();
+	}
 
 	//
-})();
+}
+
+runOnInterval(main, 86_400_000); // 1 day

@@ -48,8 +48,7 @@ export async function processStopTimesFile(context: ImportGtfsContext): Promise<
 		Logger.success(`Finished processing "stop_times.txt": ${context.counters.stop_times} rows saved in ${stopTimesParseTimer.get()}.`, 1);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "stop_times.txt" file.', error);
 		throw new Error('✖︎ Error processing "stop_times.txt" file.');
 	}

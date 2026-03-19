@@ -18,8 +18,7 @@ export const setDirectoryPermissions = (dirPath, mode = 0o666) => {
 		const filePath = `${dirPath}/${file.name}`;
 		if (file.isDirectory()) {
 			setDirectoryPermissions(filePath, mode);
-		}
-		else {
+		} else {
 			fs.chmodSync(filePath, mode);
 		}
 	}

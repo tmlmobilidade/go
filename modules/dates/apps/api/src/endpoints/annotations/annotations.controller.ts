@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { annotations, type Filter } from '@tmlmobilidade/interfaces';
 import { type Annotation, type CreateAnnotationDto, PermissionCatalog, type UpdateAnnotationDto } from '@tmlmobilidade/types';
@@ -27,7 +27,7 @@ export class AnnotationsController {
 		// If no permission found, deny access
 
 		if (!userAnnotationPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create annotations');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create annotations');
 		}
 
 		//
@@ -42,7 +42,7 @@ export class AnnotationsController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to create annotations for these agencies. You must have permission for all agencies involved.');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create annotations for these agencies. You must have permission for all agencies involved.');
 		}
 
 		//
@@ -53,7 +53,7 @@ export class AnnotationsController {
 		//
 		// Send the response
 
-		reply.send({ data: newAnnotation, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: newAnnotation, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -68,7 +68,7 @@ export class AnnotationsController {
 		const annotation = await annotations.findById(id);
 
 		if (!annotation) {
-			throw new HttpException(HttpStatus.NOT_FOUND, 'Annotation not found');
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
 		}
 
 		//
@@ -80,7 +80,7 @@ export class AnnotationsController {
 		// If no permission found, deny access
 
 		if (!userAnnotationPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete annotations');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete annotations');
 		}
 
 		//
@@ -95,14 +95,14 @@ export class AnnotationsController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to delete this annotation. You must have permission for all agencies involved.');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this annotation. You must have permission for all agencies involved.');
 		}
 
 		//
 
 		await annotations.deleteById(id);
 
-		reply.send({ data: undefined, error: null, statusCode: HttpStatus.OK });
+		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -122,7 +122,7 @@ export class AnnotationsController {
 		// If no permission found, deny access
 
 		if (!userAnnotationPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read annotations');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read annotations');
 		}
 
 		//
@@ -145,7 +145,7 @@ export class AnnotationsController {
 
 		const allAnnotations = await annotations.findMany(queryFilters, { sort: { created_at: -1 } });
 
-		return reply.send({ data: allAnnotations, error: null, statusCode: HttpStatus.OK });
+		return reply.send({ data: allAnnotations, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -163,7 +163,7 @@ export class AnnotationsController {
 
 		const annotationData = await annotations.findById(request.params.id);
 
-		if (!annotationData) throw new HttpException(HttpStatus.NOT_FOUND, 'Annotation not found');
+		if (!annotationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
 
 		//
 		// Get the resource permissions for annotations for the current user.
@@ -174,7 +174,7 @@ export class AnnotationsController {
 		// If no permission found, deny access
 
 		if (!userAnnotationPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read annotations');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read annotations');
 		}
 
 		//
@@ -189,7 +189,7 @@ export class AnnotationsController {
 		});
 
 		if (!hasPermissionForAnyAgency) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to read this annotation');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this annotation');
 		}
 
 		//
@@ -198,7 +198,7 @@ export class AnnotationsController {
 		return reply.send({
 			data: annotationData,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//
@@ -217,7 +217,7 @@ export class AnnotationsController {
 
 		const annotationData = await annotations.findById(request.params.id);
 
-		if (!annotationData) throw new HttpException(HttpStatus.NOT_FOUND, 'Annotation not found');
+		if (!annotationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
 
 		//
 		// Get the resource permissions for annotations for the current user.
@@ -228,7 +228,7 @@ export class AnnotationsController {
 		// If no permission found, deny access
 
 		if (!userAnnotationPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to lock/unlock annotations');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock annotations');
 		}
 
 		//
@@ -243,15 +243,15 @@ export class AnnotationsController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to perform this action: toggle lock annotation. You must have permission for all agencies involved.');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock annotation. You must have permission for all agencies involved.');
 		}
 
 		// If authorized, toggle the lock status of the annotation
 		await annotations.toggleLockById(request.params.id);
 		const foundAnnotation = await annotations.findById(request.params.id);
-		if (!foundAnnotation) throw new HttpException(HttpStatus.NOT_FOUND, 'Annotation not found');
+		if (!foundAnnotation) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
 
-		return reply.send({ data: foundAnnotation, error: null, statusCode: HttpStatus.OK });
+		return reply.send({ data: foundAnnotation, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -269,7 +269,7 @@ export class AnnotationsController {
 
 		const annotationData = await annotations.findById(request.params.id);
 
-		if (!annotationData) throw new HttpException(HttpStatus.NOT_FOUND, 'Annotation not found');
+		if (!annotationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
 
 		//
 		// Get the resource permissions for annotations for the current user.
@@ -280,7 +280,7 @@ export class AnnotationsController {
 		// If no permission found, deny access
 
 		if (!userAnnotationPermissions) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update annotations');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update annotations');
 		}
 
 		//
@@ -295,7 +295,7 @@ export class AnnotationsController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HttpStatus.FORBIDDEN, 'You are not authorized to update this annotation. You must have permission for all agencies involved.');
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this annotation. You must have permission for all agencies involved.');
 		}
 
 		//
@@ -309,7 +309,7 @@ export class AnnotationsController {
 		reply.send({
 			data: updatedAnnotation,
 			error: null,
-			statusCode: HttpStatus.OK,
+			statusCode: HTTP_STATUS.OK,
 		});
 
 		//

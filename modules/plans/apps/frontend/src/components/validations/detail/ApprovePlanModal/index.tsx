@@ -2,10 +2,9 @@
 
 import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
-import { ValidationStatusTag } from '@/components/common/ValidationStatusTag';
 import { PlansCreateContextProvider, usePlansCreateContext } from '@/contexts/PlansCreate.context';
 import { IconRosetteDiscountCheckFilled } from '@tabler/icons-react';
-import { Button, closeModal, Divider, Grid, Label, openModal, Section, Tag } from '@tmlmobilidade/ui';
+import { Button, closeModal, Divider, Grid, Label, openModal, ProcessingStatusTag, Section, Tag, ValidityStatusTag } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -45,7 +44,8 @@ export default function ApprovePlanModal() {
 		<>
 
 			<Section alignItems="center" flexDirection="row" gap="lg">
-				<ValidationStatusTag status={plansCreateContext.data.validation.feeder_status} />
+				<ProcessingStatusTag value={plansCreateContext.data.validation.processing_status} />
+				<ValidityStatusTag value={plansCreateContext.data.validation.validity_status} />
 				<Tag label={plansCreateContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
 				<Label size="md" caps>{plansCreateContext.data.validation._id}</Label>
 			</Section>

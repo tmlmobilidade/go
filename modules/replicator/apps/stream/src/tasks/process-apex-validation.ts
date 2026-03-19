@@ -36,6 +36,7 @@ export async function processApexValidation(databaseOperation) {
 	// Skip the operation if the document is not valid.
 
 	const newSimplifiedApexValidationDocument = parseSimplifiedApexValidation(databaseOperation.fullDocument);
+
 	if (!newSimplifiedApexValidationDocument) {
 		Logger.error(`Invalid APEX Validation document, skipping operation: ${databaseOperation.fullDocument.transaction.transactionId}`);
 		return;
@@ -70,24 +71,27 @@ export async function processApexValidation(databaseOperation) {
 			Logger.info(`Flush [simplified_apex_validations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error('Error in flushCallback', error);
 		}
 	};
 
 	//
-	// Write the new vehicle event document to the SimplifiedApexValidations collection
+	// Write the new document to the SimplifiedApexValidations collection
 
-	await simplifiedApexValidationsDbWritter.write(newSimplifiedApexValidationDocument, { filter: { _id: newSimplifiedApexValidationDocument._id }, upsert: true }, () => null, flushCallback);
+	await simplifiedApexValidationsDbWritter.write(
+		newSimplifiedApexValidationDocument,
+		{ filter: { _id: newSimplifiedApexValidationDocument._id }, upsert: true },
+		() => null, flushCallback,
+	);
 
 	//
 	// Publish the heartbeats for each agency
 
-	if (newSimplifiedApexValidationDocument.agency_id === '41') fetch('https://status.carrismetropolitana.pt/api/push/QRSatZitiBNIhTDneykCGV0PthvQoIUf');
-	if (newSimplifiedApexValidationDocument.agency_id === '42') fetch('https://status.carrismetropolitana.pt/api/push/uZTfvExA1yCpNZIXIzgvCmHdSquNi0lV');
-	if (newSimplifiedApexValidationDocument.agency_id === '43') fetch('https://status.carrismetropolitana.pt/api/push/Rp7hYCJKLL8h67IP07RDAXagwO5avchc');
-	if (newSimplifiedApexValidationDocument.agency_id === '44') fetch('https://status.carrismetropolitana.pt/api/push/Mnm5Rn3tJAXYVWb6I51eTA4xfpXJ3vqq');
+	if (newSimplifiedApexValidationDocument.agency_id === '41') await fetch('https://status.carrismetropolitana.pt/api/push/QRSatZitiBNIhTDneykCGV0PthvQoIUf');
+	if (newSimplifiedApexValidationDocument.agency_id === '42') await fetch('https://status.carrismetropolitana.pt/api/push/uZTfvExA1yCpNZIXIzgvCmHdSquNi0lV');
+	if (newSimplifiedApexValidationDocument.agency_id === '43') await fetch('https://status.carrismetropolitana.pt/api/push/Rp7hYCJKLL8h67IP07RDAXagwO5avchc');
+	if (newSimplifiedApexValidationDocument.agency_id === '44') await fetch('https://status.carrismetropolitana.pt/api/push/Mnm5Rn3tJAXYVWb6I51eTA4xfpXJ3vqq');
 
 	//
 };

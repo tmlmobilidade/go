@@ -1,2 +1,2 @@
-export * from '@/render.js';
+export * from '@/main.js';
 export * from '@/types/index.js';

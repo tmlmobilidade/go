@@ -6,8 +6,8 @@ import { RideAnalysisAnalysisResultItem } from '@/components/rides/analysis/Ride
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { IconAlertCircle, IconCircleCheck, IconCircleDashedLetterC, IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX, IconCircleFilled, IconCircleX, IconClock, IconLock, IconLockOpen, IconMathMaxMin, IconMessageCircle } from '@tabler/icons-react';
 import { Dates } from '@tmlmobilidade/dates';
-import { Ride, RideAcceptance, UserDisplay } from '@tmlmobilidade/types';
-import { CommentInput, CommentItemProps, CommentList, Label, Section, Tooltip } from '@tmlmobilidade/ui';
+import { PermissionCatalog, Ride, RideAcceptance, UserDisplay } from '@tmlmobilidade/types';
+import { CommentInput, CommentItemProps, CommentList, HasPermission, Label, Section, Tooltip } from '@tmlmobilidade/ui';
 import React, { createElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -200,10 +200,12 @@ export function RideAcceptanceCommentList() {
 		<Section gap="md" width="100%">
 			<Label size="lg" caps>{t('default:rides.acceptance.RideAcceptance.title')}</Label>
 			<CommentList data={commentItems} maxHeight={500} reverse />
-			<CommentInput
-				disabled={acceptanceContext.data.acceptance.is_locked}
-				onSubmit={addComment}
-			/>
+			<HasPermission action={PermissionCatalog.all.rides.actions.acceptance_comment_activity} scope={PermissionCatalog.all.rides.scope}>
+				<CommentInput
+					disabled={acceptanceContext.data.acceptance.is_locked}
+					onSubmit={addComment}
+				/>
+			</HasPermission>
 		</Section>
 	);
 }

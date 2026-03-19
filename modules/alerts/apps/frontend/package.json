@@ -14,26 +14,21 @@
 		"lint:fix": "eslint --fix ./src"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.37.1",
+		"@tabler/icons-react": "3.40.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-alerts-pckg-describe": "*",
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
-		"clsx": "2.1.1",
-		"luxon": "3.7.2",
-		"next": "16.1.6",
+		"next": "16.1.7",
 		"react": "19.2.4",
 		"react-dom": "19.2.4",
-		"react-viewport-list": "7.1.2",
-		"swr": "2.4.0"
+		"swr": "2.4.1"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/api-types": "20251128.1928.11",
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/luxon": "3.7.1",
-		"@types/node": "25.3.0",
+		"@types/node": "25.5.0",
 		"@types/react": "19",
 		"@types/react-dom": "19",
 		"typescript": "5"

@@ -40,9 +40,14 @@
 	"processing_status": {
 		"complete": "Concluído",
 		"error": "Erro",
-		"processing": "Em processamento",
+		"processing": "Em curso",
 		"skipped": "Omitido",
 		"waiting": "Em espera"
+	},
+	"validity_status": {
+		"valid": "Válido",
+		"invalid": "Inválido",
+		"unknown": "Desconhecido"
 	},
 	"publish_status": {
 		"archived": "Arquivado",

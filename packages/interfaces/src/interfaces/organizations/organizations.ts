@@ -2,7 +2,7 @@
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateOrganizationDto, CreateOrganizationSchema, type Organization, type UpdateOrganizationDto, UpdateOrganizationSchema } from '@tmlmobilidade/types';
-import { AsyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
@@ -41,4 +41,4 @@ class OrganizationsClass extends MongoCollectionClass<Organization, CreateOrgani
 	}
 }
 
-export const organizations = AsyncSingletonProxy(OrganizationsClass);
+export const organizations = asyncSingletonProxy(OrganizationsClass);

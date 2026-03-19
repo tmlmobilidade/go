@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HttpStatus } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { metrics } from '@tmlmobilidade/interfaces';
 
@@ -25,12 +25,11 @@ export class NetworkController {
 			reply.send({
 				data: aggregationResult[0].uniqueValues,
 				error: null,
-				statusCode: HttpStatus.OK,
+				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			console.error(error);
-			throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to retrieve lines');
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to retrieve lines');
 		}
 	}
 
@@ -50,12 +49,11 @@ export class NetworkController {
 			reply.send({
 				data: aggregationResult[0].uniqueValues,
 				error: null,
-				statusCode: HttpStatus.OK,
+				statusCode: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			console.error(error);
-			throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, 'Failed to retrieve patterns');
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to retrieve patterns');
 		}
 	}
 

@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable react-hooks/exhaustive-deps */
+
 'use client';
 
 /* * */
@@ -5,12 +8,10 @@
 import { closePlanChangeModal } from '@/components/plans/change/PlanChange.modal';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { GtfsValidation, type Plan } from '@tmlmobilidade/types';
-import { useHandleUpdate } from '@tmlmobilidade/ui';
+import { useHandleUpdate, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
-
-/* * */
 
 interface PlanChangeContextState {
 	actions: {
@@ -19,7 +20,7 @@ interface PlanChangeContextState {
 	}
 	data: {
 		available_validations: GtfsValidation[]
-		plan: Plan
+		plan: Plan | undefined
 		selected_validation_id: string | undefined
 	}
 	flags: {
@@ -45,8 +46,6 @@ export function usePlanChangeContext() {
 
 export const PlanChangeContextProvider = ({ children, planId }: PropsWithChildren<{ planId: string }>) => {
 	//
-
-	//
 	// A. Setup variables
 
 	const [selectedValidationId, setSelectedValidationId] = useState<string | undefined>(undefined);
@@ -62,23 +61,50 @@ export const PlanChangeContextProvider = ({ children, planId }: PropsWithChildre
 	// C. Transform data
 
 	const availableValidations = useMemo(() => {
-		// Skip if data is unavailable
 		if (!planData) return [];
 		if (!allValidationsData) return [];
-		// Filter validations that match the agency
-		// of the current plan and are complete
+
 		return allValidationsData.filter((item) => {
 			const matchesAgencyId = item.gtfs_agency.agency_id === planData.gtfs_agency.agency_id;
-			const isComplete = item.feeder_status === 'complete';
-			return matchesAgencyId && isComplete;
+			const isComplete = item.processing_status === 'complete';
+			const isValid = item.validity_status === 'valid';
+			return matchesAgencyId && isComplete && isValid;
 		});
 	}, [planData, allValidationsData]);
 
 	//
 	// D. Handle actions
 
-	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL_CHANGE_GTFS(planData._id), 'POST', { validation_id: selectedValidationId }),
+	const { action: handleSave, isLoading: isSaving } = useHandleUpdate<Plan>({
+		fetchFn: async () => {
+			if (!selectedValidationId) {
+				useToast.error({ message: 'Selecione uma validação antes de alterar o plano.', title: 'Erro' });
+				return;
+			}
+
+			if (!planData || !allValidationsData) {
+				useToast.error({ message: 'Dados do plano ou validações indisponíveis.', title: 'Erro' });
+				return;
+			}
+
+			const selectedValidation = availableValidations.find(item => item._id === selectedValidationId) ?? allValidationsData?.find(item => item._id === selectedValidationId);
+
+			if (!selectedValidation) {
+				useToast.error({ message: 'Validação selecionada não encontrada.', title: 'Erro' });
+				return;
+			}
+
+			if (!selectedValidation.summary || selectedValidation.summary.total_errors > 0) {
+				useToast.error({ message: 'Não é possível alterar o plano com uma validação que contém erros.', title: 'Erro' });
+				return;
+			}
+
+			return await fetchData<Plan>(
+				API_ROUTES.plans.PLANS_DETAIL_CHANGE_GTFS(planId),
+				'POST',
+				{ validation_id: selectedValidationId },
+			);
+		},
 		onSuccess: (updatedItem) => {
 			plansList();
 			planMutate(updatedItem);
@@ -87,7 +113,7 @@ export const PlanChangeContextProvider = ({ children, planId }: PropsWithChildre
 	});
 
 	//
-	// D. Define context value
+	// E. Define context value
 
 	const contextValue: PlanChangeContextState = useMemo(() => {
 		return {
@@ -110,20 +136,18 @@ export const PlanChangeContextProvider = ({ children, planId }: PropsWithChildre
 		availableValidations,
 		allValidationsError,
 		allValidationsLoading,
-		isSaving,
 		planData,
 		planLoading,
 		selectedValidationId,
+		isSaving,
 	]);
 
 	//
-	// E. Render components
+	// F. Render components
 
 	return (
 		<PlanChangeContext.Provider value={contextValue}>
 			{children}
 		</PlanChangeContext.Provider>
 	);
-
-	//
 };
