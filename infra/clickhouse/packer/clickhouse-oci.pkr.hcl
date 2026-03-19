@@ -11,22 +11,27 @@
 #   packer build -var-file=../terraform/terraform.pkrvars.hcl -warn-on-undeclared-var .
 # -----------------------------------------------------------------------
 
+
+# # #
+# PLUGIN
+# Setup required OCI Packer plugin.
+
 packer {
-  required_plugins {
-    oracle = {
-      source  = "github.com/hashicorp/oracle"
-      version = "~> 1.0"
-    }
-  }
+	required_plugins {
+		oracle = {
+			source = "github.com/hashicorp/oracle"
+			version = "~> 1"
+		}
+	}
 }
 
 
-# -----------------------------------------------------------------------
-# SOURCE — OCI builder
-# Creates a temporary instance, runs provisioners, then captures an image.
-# -----------------------------------------------------------------------
+# # #
+# SOURCE
+# Configure the VM that will be used
+# to create the final output image.
 
-source "oracle-oci" "clickhouse_replica_base" {
+source "oracle-oci" "clickhouse_base" {
   # Authentication
   tenancy_ocid = var.tenancy_ocid
   user_ocid    = var.user_ocid
