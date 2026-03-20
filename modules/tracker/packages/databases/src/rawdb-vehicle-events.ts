@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 /* * */
 
 import { type TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger';

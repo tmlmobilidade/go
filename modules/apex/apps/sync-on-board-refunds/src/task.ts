@@ -25,6 +25,8 @@ const writer = new ClickHouseWriter<SimplifiedApexOnBoardRefund>({
 export async function syncApexOnBoardRefunds(timeChunk: PerformInTimeChunksItem) {
 	//
 
+	await writer.init();
+
 	const chunkStartDate = Dates
 		.fromUnixTimestamp(timeChunk.start)
 		.setZone('Europe/Lisbon', 'offset_only');
