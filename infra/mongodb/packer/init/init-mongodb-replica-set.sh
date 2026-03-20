@@ -14,6 +14,7 @@ PORT=""
 USERNAME=""
 PASSWORD=""
 REPLICA_SET_NAME=""
+REPLICA_SET_MEMBERS=""
 
 while [[ $# -gt 0 ]]; do
 	case "$1" in
@@ -22,6 +23,7 @@ while [[ $# -gt 0 ]]; do
 		--username) USERNAME="$2"; shift 2 ;;
 		--password) PASSWORD="$2"; shift 2 ;;
 		--replica-set-name) REPLICA_SET_NAME="$2"; shift 2 ;;
+		--replica-set-members) REPLICA_SET_MEMBERS="$2"; shift 2 ;;
 		*)
 		echo "Unknown argument: $1"
 		exit 1
@@ -35,6 +37,7 @@ done
 : "${USERNAME:?Missing --username}"
 : "${PASSWORD:?Missing --password}"
 : "${REPLICA_SET_NAME:?Missing --replica-set-name}"
+: "${REPLICA_SET_MEMBERS:?Missing --replica-set-members}"
 
 # Only primary initializes
 if [[ "$NODE_INDEX" -ne 0 ]]; then
@@ -59,9 +62,10 @@ wait_for_port() {
 }
 
 
-wait_for_port "go-mongodb-1.tmlmobilidade.pt" "$PORT"
-wait_for_port "go-mongodb-2.tmlmobilidade.pt" "$PORT"
-wait_for_port "go-mongodb-3.tmlmobilidade.pt" "$PORT"
+IFS=',' read -ra MEMBERS <<< "$REPLICA_SET_MEMBERS"
+for MEMBER in "${MEMBERS[@]}"; do
+  wait_for_port "$MEMBER" "$PORT"
+done
 
 
 sleep 15
@@ -105,9 +109,9 @@ docker compose exec -T mongodb mongosh \
 	rs.initiate({
 		_id: "$REPLICA_SET_NAME",
 		members: [
-			{ _id: 0, host: "go-mongodb-1.tmlmobilidade.pt:$PORT", priority: 1 },
-			{ _id: 1, host: "go-mongodb-2.tmlmobilidade.pt:$PORT", priority: 0.5 },
-			{ _id: 2, host: "go-mongodb-3.tmlmobilidade.pt:$PORT", priority: 0.5 }
+			{ _id: 0, host: "${MEMBERS[0]}:$PORT", priority: 1 },
+			{ _id: 1, host: "${MEMBERS[1]}:$PORT", priority: 0.5 },
+			{ _id: 2, host: "${MEMBERS[2]}:$PORT", priority: 0.5 }
 		]
 	})
 

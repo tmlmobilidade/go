@@ -80,7 +80,8 @@ runcmd:
       --mongodb-port ${mongodb_port} \
       --username '${mongodb_root_username}' \
       --password '${mongodb_root_password}' \
-      --replica-set-name ${replica_set_name}
+      --replica-set-name ${replica_set_name} \
+      --replica-set-members ${join(",", all_private_ips)}
   - rm /opt/app/init-mongodb-replica-set.sh
 
 final_message: "MongoDB replica node ${node_index + 1} of ${length(all_private_ips)} configuration complete."

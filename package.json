@@ -53,11 +53,11 @@
 		"dev:replicator:stream": "ENVIRONMENT=development dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-replicator-stream",
 		"dev:stops": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-*",
 		"dev:stops:ui": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-api --filter=@tmlmobilidade/go-stops-frontend",
-		"dev:tracker": "ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-*",
-		"dev:tracker:clickhouse-sync": "ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-clickhouse-sync",
-		"dev:tracker:cm-stream": "ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-stream",
-		"dev:tracker:cm-sync": "ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-sync",
-		"dev:tracker:ttsl-fetch": "ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-ttsl-fetch",
+		"dev:tracker": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-*",
+		"dev:tracker:clickhouse-sync": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-clickhouse-sync",
+		"dev:tracker:cm-stream": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-stream",
+		"dev:tracker:cm-sync": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-sync",
+		"dev:tracker:ttsl-fetch": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-ttsl-fetch",
 
 		"generate-routes": "bash ./scripts/generate-routes.sh",
 
