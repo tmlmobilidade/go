@@ -77,8 +77,8 @@ variable "subnet_ocid" {
 	OCID of the existing subnet to attach instances to.
 	Networking is managed externally — this module creates no VCN, subnet,
 	IGW, route table, security list, or NSG.
-	Defaults to the shared pub-cmet subnet.
 	EOT
+	default = ""
 }
 
 variable "private_ips" {
@@ -137,8 +137,12 @@ variable "block_volume_ocids" {
 	description = <<-EOT
 	List of OCIDs for existing block volumes to attach as data disks to the replica nodes.
 	Each volume must be pre-created and match the count of replica nodes.
-	Example: ["10.0.1.20", "10.0.1.21", "10.0.1.22"]
 	EOT
+	default = [
+		"",
+		"",
+		""
+	]
 }
 
 
