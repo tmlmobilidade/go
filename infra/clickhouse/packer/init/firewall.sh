@@ -12,6 +12,7 @@ set -euo pipefail
 echo "[firewall] Clearing restrictive iptables rules..."
 sudo iptables -I INPUT 1 -p tcp --dport 8123 -j ACCEPT
 sudo iptables -I INPUT 1 -p tcp --dport 9000 -j ACCEPT
+sudo iptables -I INPUT 1 -p tcp --dport 9009 -j ACCEPT
 sudo iptables -I INPUT 1 -p tcp --dport 9444 -j ACCEPT
 sudo iptables -I INPUT 1 -p tcp --dport 2181 -j ACCEPT
 echo "[firewall] iptables rules cleared."
