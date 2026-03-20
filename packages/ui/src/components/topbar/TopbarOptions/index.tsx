@@ -4,7 +4,7 @@
 
 import { ColorSwatch, Menu } from '@mantine/core';
 import { IconBellRinging, IconBrightness, IconCheck, IconColorSwatch, IconLogout, IconMaximize, IconMinimize, IconSettings } from '@tabler/icons-react';
-import { VERSION } from 'luxon';
+import { VERSION } from '@tmlmobilidade/types';
 
 import { AVAILABLE_MODES, AVAILABLE_THEMES, useLayoutContext } from '../../../contexts/Layout.context';
 import { useMeContext } from '../../../contexts/Me.context';

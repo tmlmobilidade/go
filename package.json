@@ -1,5 +1,6 @@
 {
 	"name": "@tmlmobilidade/go",
+	"version": "0.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
 		"name": "TML-ISO"

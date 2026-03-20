@@ -15,6 +15,9 @@ on:
       - 'scripts/versions.sh'
       - '.github/workflows/update-new-version.yml'
 
+permissions:
+  contents: write
+
 jobs:
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -58,5 +61,7 @@ jobs:
       - name: Commit and push
         uses: EndBug/add-and-commit@v9
         with:
-          add: 'package.json'
-          message: 'chore: update new version to ${{ needs.version-number.outputs.version_number }}'
+          add: |
+            package.json
+            message: 'chore: update new version to ${{ needs.version-number.outputs.version_number }}'
+
