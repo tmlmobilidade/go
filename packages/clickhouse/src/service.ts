@@ -4,6 +4,7 @@ import { type ClickHouseColumn } from '@/types.js';
 import { isSafeIdentifier } from '@/utils.js';
 import { ClickHouseClient, createClient } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
+import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { readFile } from 'fs/promises';
 
@@ -21,23 +22,18 @@ class ClickhouseService {
 	private client: ClickHouseClient;
 
 	private constructor() {
-		// Check missing environment variables
-		const missingEnvVars = ['CLICKHOUSE_DATABASE', 'CLICKHOUSE_URI'].filter(envVar => !process.env[envVar]);
+		const missingEnvVars = ['CLICKHOUSE_DATABASE'].filter(envVar => !process.env[envVar]);
 		if (missingEnvVars.length > 0) {
 			throw new Error(`Missing ClickHouse environment variables: ${missingEnvVars.join(', ')}`);
 		}
-		this.client = createClient({
-			database: process.env.CLICKHOUSE_DATABASE,
-			url: process.env.CLICKHOUSE_URI,
-		});
 	}
 
 	public static async getInstance() {
 		if (!ClickhouseService._instance) {
 			const instance = new ClickhouseService();
+			await instance.init(); // <-- async happens here
 			ClickhouseService._instance = instance;
 		}
-
 		return ClickhouseService._instance;
 	}
 
@@ -88,7 +84,6 @@ class ClickhouseService {
 
 	/**
 	 * Deletes a table in ClickHouse if it exists.
-	 *
 	 * @param table The name of the table to delete
 	 */
 	public async deleteTable(table: string) {
@@ -108,7 +103,6 @@ class ClickhouseService {
 
 	/**
 	 * Gets the ClickHouse client.
-	 *
 	 * @returns The ClickHouse client
 	 */
 	public async getClient(): Promise<ClickHouseClient> {
@@ -117,7 +111,6 @@ class ClickhouseService {
 
 	/**
 	 * Gets a table in ClickHouse if it exists.
-	 *
 	 * @param table The name of the table to get
 	 * @returns The table schema
 	 */
@@ -139,7 +132,6 @@ class ClickhouseService {
 
 	/**
 	 * Executes a query from a SQL file.
-	 *
 	 * @param filePath Absolute or relative path to the .sql file
 	 * @param params Optional key-value substitutions applied to the query (replaces {key} placeholders)
 	 * @returns Query result rows typed as T
@@ -170,8 +162,7 @@ class ClickhouseService {
 	}
 
 	/**
-	 * Query from string
-	 *
+	 * Query from string.
 	 * @param query The SQL query to execute
 	 * @param params Optional positional substitutions applied to the query (replaces $1, $2, ... placeholders)
 	 */
@@ -191,6 +182,74 @@ class ClickhouseService {
 		}
 	}
 
+	private async getClickhouseConnectionString(): Promise<string> {
+		if (!process.env.CLICKHOUSE_DATABASE) {
+			throw new Error('Missing CLICKHOUSE_DATABASE');
+		}
+
+		if (!process.env.CLICKHOUSE_HOST || !process.env.CLICKHOUSE_PORT) {
+			throw new Error('Missing CLICKHOUSE_HOST or CLICKHOUSE_PORT');
+		}
+
+		// Direct connection (prod/staging)
+		if (process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'staging') {
+			return `http://${process.env.CLICKHOUSE_USER}:${process.env.CLICKHOUSE_PASSWORD}@${process.env.CLICKHOUSE_HOST}:${process.env.CLICKHOUSE_PORT}`;
+		}
+
+		// SSH required
+		if (!process.env.CLICKHOUSE_TUNNEL_LOCAL_PORT) {
+			throw new Error('Missing CLICKHOUSE_TUNNEL_LOCAL_PORT');
+		}
+
+		if (!process.env.CLICKHOUSE_TUNNEL_SSH_HOST || !process.env.CLICKHOUSE_TUNNEL_SSH_USERNAME) {
+			throw new Error('Missing SSH config');
+		}
+
+		const sshConfig: SshConfig = {
+			forwardOptions: {
+				dstAddr: process.env.CLICKHOUSE_HOST,
+				dstPort: Number(process.env.CLICKHOUSE_PORT),
+				srcAddr: 'localhost',
+				srcPort: Number(process.env.CLICKHOUSE_TUNNEL_LOCAL_PORT),
+			},
+			serverOptions: {
+				port: Number(process.env.CLICKHOUSE_TUNNEL_LOCAL_PORT),
+			},
+			sshOptions: {
+				agent: process.env.SSH_AUTH_SOCK,
+				host: process.env.CLICKHOUSE_TUNNEL_SSH_HOST,
+				keepaliveCountMax: 3,
+				keepaliveInterval: 10_000,
+				port: 22,
+				username: process.env.CLICKHOUSE_TUNNEL_SSH_USERNAME,
+			},
+			tunnelOptions: {
+				autoClose: false,
+				reconnectOnError: true,
+			},
+		};
+
+		const sshOptions: SshTunnelServiceOptions = {
+			maxRetries: 3,
+		};
+
+		if (!GLOBAL_CHDB_TUNNEL_INSTANCE) {
+			GLOBAL_CHDB_TUNNEL_INSTANCE = new SshTunnelService(sshConfig, sshOptions);
+		}
+
+		Logger.info('Setting up SSH Tunnel for ClickHouse...');
+
+		const connection = await GLOBAL_CHDB_TUNNEL_INSTANCE.connect();
+		const addr = connection.address();
+
+		if (!addr || typeof addr !== 'object') {
+			throw new Error('Failed to retrieve SSH tunnel address');
+		}
+
+		// ClickHouse HTTP interface
+		return `http://${process.env.CLICKHOUSE_USER}:${process.env.CLICKHOUSE_PASSWORD}@localhost:${addr.port}`;
+	}
+
 	private getClickHouseParamType(value: number | string): 'Float64' | 'Int64' | 'String' {
 		if (typeof value === 'number') {
 			if (!Number.isFinite(value)) {
@@ -200,6 +259,14 @@ class ClickhouseService {
 		}
 
 		return 'String';
+	}
+
+	private async init() {
+		const url = await this.getClickhouseConnectionString();
+		this.client = createClient({
+			// database: process.env.CLICKHOUSE_DATABASE,
+			url,
+		});
 	}
 
 	private prepareNamedQueryParams(
