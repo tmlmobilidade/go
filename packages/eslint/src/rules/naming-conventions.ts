@@ -22,6 +22,12 @@ export const namingConventionsConfig: Config[] = [
 					format: ['camelCase'],
 					selector: 'function',
 				},
+				// Global variables and constants: UPPER_CASE
+				{
+					format: ['UPPER_CASE'],
+					modifiers: ['global'],
+					selector: 'variable',
+				},
 				// Constants: SCREAMING_SNAKE_CASE
 				{
 					format: ['UPPER_CASE', 'camelCase', 'PascalCase'], // Allow both for flexibility

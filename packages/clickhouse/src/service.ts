@@ -9,6 +9,10 @@ import { readFile } from 'fs/promises';
 
 /* * */
 
+let GLOBAL_CHDB_TUNNEL_INSTANCE: SshTunnelService | undefined;
+
+/* * */
+
 class ClickhouseService {
 	//
 
@@ -22,7 +26,6 @@ class ClickhouseService {
 		if (missingEnvVars.length > 0) {
 			throw new Error(`Missing ClickHouse environment variables: ${missingEnvVars.join(', ')}`);
 		}
-
 		this.client = createClient({
 			database: process.env.CLICKHOUSE_DATABASE,
 			url: process.env.CLICKHOUSE_URI,
