@@ -264,7 +264,7 @@ class ClickhouseService {
 	private async init() {
 		const url = await this.getClickhouseConnectionString();
 		this.client = createClient({
-			// database: process.env.CLICKHOUSE_DATABASE,
+			database: process.env.CLICKHOUSE_DATABASE,
 			url,
 		});
 	}
