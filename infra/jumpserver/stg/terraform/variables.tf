@@ -1,7 +1,7 @@
 # # #
 # PROJECT VARIABLES
 
-variable "deployment_name" {
+variable "display_name" {
 	type = string
 	description = "The name of the deployment. Used as the display name for resource names and tags."
 	default = "iso-go-stg-jumpserver"
