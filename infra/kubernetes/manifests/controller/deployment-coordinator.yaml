@@ -38,14 +38,14 @@ spec:
                 name: controller-secret
           livenessProbe:
             httpGet:
-              path: /
+              path: /rides
               port: http
             initialDelaySeconds: 20
             periodSeconds: 15
             failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /
+              path: /rides
               port: http
             initialDelaySeconds: 10
             periodSeconds: 10
