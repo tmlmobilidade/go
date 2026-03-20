@@ -43,7 +43,7 @@ locals {
 
 resource "oci_core_instance" "mongodb" {
 
-	display_name = "${var.project_name}-${var.environment}-${var.module_name}-${count.index + 1}"
+	display_name = "${var.display_name}-${count.index + 1}"
 
 	count = var.instance_count
 
@@ -64,7 +64,7 @@ resource "oci_core_instance" "mongodb" {
 	}
 
 	create_vnic_details {
-		display_name = "${var.project_name}-${var.module_name}-${count.index + 1}-vnic"
+		display_name = "${var.display_name}-${count.index + 1}-vnic"
 		subnet_id = var.subnet_ocid
 		private_ip = var.private_ips[count.index]
 		assign_public_ip = false
@@ -98,7 +98,7 @@ resource "oci_core_instance" "mongodb" {
 	}
 
 	freeform_tags = {
-		"TerraformModule" = var.module_name
+		"TerraformModule" = var.display_name
 		"ManagedBy" = "terraform"
 		"ReplicaIndex" = tostring(count.index + 1)
 	}
