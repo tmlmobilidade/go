@@ -43,8 +43,7 @@ export class MongoConnector {
 		try {
 			await this._client.connect();
 			return this._client;
-		}
-		catch (error) {
+		} catch (error) {
 			throw new Error('Error connecting to MongoDB', { cause: error });
 		}
 	}
