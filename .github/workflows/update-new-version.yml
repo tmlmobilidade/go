@@ -26,13 +26,15 @@ jobs:
   version-number:
     name: 'Version Number'
     runs-on: ubuntu-latest
+    outputs:
+      version_number: ${{ steps.generate-version-number.outputs.version_number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - id: generate-version-number
         env:
-          VERSION_OVERRIDE: ${{ github.event.inputs.version_override }}
+          VERSION_OVERRIDE: ${{ github.event.inputs.version_override || '' }}
         run: |
           version="$(bash scripts/versions.sh)"
           echo "Generated version: $version"
@@ -56,12 +58,20 @@ jobs:
         run: npm install
 
       - name: Update new version
-        run: npm version --no-git-tag-version ${{ needs.version-number.outputs.version_number }}
+        env:
+          VERSION_NUMBER: ${{ needs.version-number.outputs.version_number }}
+        run: |
+          if [[ -z "${VERSION_NUMBER}" ]]; then
+            echo "::error::version_number output was empty — check job outputs on version-number."
+            exit 1
+          fi
+          npm version --no-git-tag-version "$VERSION_NUMBER"
 
-      - name: Commit changes
+      - name: Commit and push
         uses: EndBug/add-and-commit@v9
         with:
-          add: |
+          add: |-
             package.json
           message: 'chore: update new version to ${{ needs.version-number.outputs.version_number }}'
+          push: true
 
