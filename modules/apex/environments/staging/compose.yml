@@ -81,7 +81,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-apex-locations:
-    image: ghcr.io/tmlmobilidade/go-apex-sync-apex-locations:staging
+    image: ghcr.io/tmlmobilidade/go-apex-sync-locations:staging
     deploy:
       restart_policy:
         condition: any
@@ -104,7 +104,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-apex-on-board-refunds:
-    image: ghcr.io/tmlmobilidade/go-apex-sync-apex-on-board-refunds:staging
+    image: ghcr.io/tmlmobilidade/go-apex-sync-on-board-refunds:staging
     deploy:
       restart_policy:
         condition: any
@@ -127,7 +127,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-apex-on-board-sales:
-    image: ghcr.io/tmlmobilidade/go-apex-sync-apex-on-board-sales:staging
+    image: ghcr.io/tmlmobilidade/go-apex-sync-on-board-sales:staging
     deploy:
       restart_policy:
         condition: any
@@ -150,7 +150,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   sync-apex-validations:
-    image: ghcr.io/tmlmobilidade/go-apex-sync-apex-validations:staging
+    image: ghcr.io/tmlmobilidade/go-apex-sync-validations:staging
     deploy:
       restart_policy:
         condition: any
