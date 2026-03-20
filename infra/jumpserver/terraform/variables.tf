@@ -101,8 +101,13 @@ variable "private_ip" {
 
 variable "base_image_ocid" {
 	type = string
-	description = "OCID of the Packer-built image."
-	default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaa7rcorfa7zo7gj3x3c3eaxv6dafegp2uuapg446xzigzukabpp7ba"
+	description = <<-EOT
+	The OCID of the base image to use for the VM.
+	It is recommended to use a *minimal* Ubuntu image to reduce the final image size.
+	This should be regularly updated to the latest available minimal Ubuntu image.
+	Current image is set to: Canonical-Ubuntu-24.04-Minimal-aarch64-2026.02.28-0"
+	EOT
+	default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaav7j5fmkuvwreezyn7pkyyzgexm4uaobnceclctrmkj2urjvo6e5a"
 }
 
 variable "vm_shape" {
