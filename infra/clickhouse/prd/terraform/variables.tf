@@ -97,8 +97,12 @@ variable "private_ips" {
 	description = <<-EOT
 	List of 3 static private IP addresses to assign to the replica nodes (one per node).
 	Must be free within the existing subnet — verify in OCI Console > Networking before applying.
-	Example: ["10.0.1.20", "10.0.1.21", "10.0.1.22"]
 	EOT
+	default = [
+		"",
+		"",
+		""
+	]
 }
 
 
@@ -108,6 +112,7 @@ variable "private_ips" {
 variable "base_image_ocid" {
 	type = string
 	description = "OCID of the Packer-built image."
+	default = ""
 }
 
 variable "vm_shape" {
