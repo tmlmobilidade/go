@@ -36,9 +36,9 @@ source "oracle-oci" "clickhouse_base" {
 	# In HashiCorp Packer, the isotime function expects
 	# a Go time format layout. Go uses the reference date:
 	# Mon Jan 2 15:04:05 MST 2006
-	image_name = "${var.project_name}-${var.environment}-clickhouse-{{isotime \"2006-01-02\"}}"
+	image_name = "${var.display_name}-{{isotime \"2006-01-02\"}}"
 
-	instance_name = "${var.project_name}-${var.environment}-clickhouse-packer-image-builder"
+	instance_name = "${var.display_name}-packer-image-builder"
 
 	# Placement
 	subnet_ocid = var.subnet_ocid
@@ -61,9 +61,8 @@ source "oracle-oci" "clickhouse_base" {
 
 	tags = {
 		"PackerBuilt" = "true"
-		"ImageType" = "clickhouse-base"
 		"ManagedBy" = "packer"
-		"Environment" = var.environment
+		"ImageType" = var.display_name
 	}
 
 }

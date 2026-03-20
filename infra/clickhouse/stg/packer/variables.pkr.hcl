@@ -2,23 +2,19 @@
 # PACKER VARIABLES
 # Define variables for Packer templates.
 
-variable "project_name" {
+variable "display_name" {
 	type = string
 	description = "The name of the project. This will be used as a prefix for resource names and tags."
-	default = "iso-go"
-}
-
-variable "environment" {
-	type = string
-	description = "The environment of the deployment (e.g., stg, prd)."
+	default = "iso-go-stg-clickhouse"
 }
 
 variable "compartment_ocid" {
 	type = string
 	description = <<-EOT
 	The OCID of the compartment where resources will be created in.
-	Current compartment is set to: cmetropolitana
+	Current compartment is set to: go-stg
 	EOT
+	default = "ocid1.compartment.oc1..aaaaaaaanljo4qhg4wnwjpul5seazrticeyswmx5zt7f64ekfewpr6y6mbva"
 }
 
 variable "subnet_ocid" {
