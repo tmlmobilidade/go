@@ -1,0 +1,62 @@
+name: "Update New Version"
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_override:
+        description: 'Optional version override (leave empty to auto-generate)'
+        required: false
+        type: string
+  push:
+    branches:
+      - feature/iso-1503-adicionar-n-da-versao-do-go
+    paths:
+      - 'packages/**'
+      - 'scripts/versions.sh'
+      - '.github/workflows/update-new-version.yml'
+
+jobs:
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  version-number:
+    name: 'Version Number'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - id: generate-version-number
+        env:
+          VERSION_OVERRIDE: ${{ github.event.inputs.version_override }}
+        run: |
+          version="$(bash scripts/versions.sh)"
+          echo "Generated version: $version"
+          echo "version_number=$version" >> "$GITHUB_OUTPUT"
+  # # # # # # # # # # # # # # # # # # # # #
+
+  update-new-version:
+    name: 'Update New Version'
+    needs: [version-number]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Update new version
+        run: npm version --no-git-tag-version ${{ needs.version-number.outputs.version_number }}
+
+      - name: Commit and push
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'package.json'
+          message: 'chore: update new version to ${{ needs.version-number.outputs.version_number }}'
