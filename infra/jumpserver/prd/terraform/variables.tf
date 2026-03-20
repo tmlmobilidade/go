@@ -1,22 +1,10 @@
 # # #
 # PROJECT VARIABLES
 
-variable "project_name" {
+variable "deployment_name" {
 	type = string
-	description = "The name of the project. Used as a prefix for resource names and tags."
-	default = "iso-go"
-}
-
-variable "environment" {
-	type = string
-	description = "The environment name. Used as a prefix for resource names and tags."
-	default = "stg"
-}
-
-variable "module_name" {
-	type = string
-	description = "The component name for this module. Used for tagging and identification."
-	default = "jumpserver"
+	description = "The name of the deployment. Used as the display name for resource names and tags."
+	default = "iso-go-prd-jumpserver"
 }
 
 

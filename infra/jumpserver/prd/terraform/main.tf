@@ -41,7 +41,7 @@ locals {
 
 resource "oci_core_instance" "jumpserver" {
 
-	display_name = "${var.project_name}-${var.environment}-${var.module_name}"
+	display_name = var.deployment_name
 
 	compartment_id = var.compartment_ocid
 	availability_domain = var.availability_domain
@@ -60,7 +60,7 @@ resource "oci_core_instance" "jumpserver" {
 	}
 
 	create_vnic_details {
-		display_name = "${var.project_name}-${var.environment}-${var.module_name}-vnic"
+		display_name = "${var.deployment_name}-vnic"
 		subnet_id = var.subnet_ocid
 		private_ip = var.private_ip
 		assign_public_ip = true
@@ -80,10 +80,8 @@ resource "oci_core_instance" "jumpserver" {
 	}
 
 	freeform_tags = {
-		"TerraformModule" = var.module_name
+		"TerraformModule" = var.deployment_name
 		"ManagedBy" = "terraform"
-		"Environment" = var.environment
 	}
-
 
 }
