@@ -5,6 +5,6 @@
  * @letable `VERSION`
  */
 
-const version = '0.0.0';
+const version = '20260320.142841.0';
 
 export { version as VERSION };
