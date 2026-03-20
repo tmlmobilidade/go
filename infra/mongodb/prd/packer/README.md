@@ -12,12 +12,6 @@ cd ./infra/mongodb/packer
 Initialize the packer module and validate the configuration files:
 ```
 packer init .
-packer validate -var-file="environments/staging.pkrvars.hcl" .
-packer validate -var-file="environments/production.pkrvars.hcl" .
-```
-
-Then, start building the images:
-```
-packer build -var-file="environments/staging.pkrvars.hcl" .
-packer build -var-file="environments/production.pkrvars.hcl" .
+packer validate .
+packer build .
 ```
