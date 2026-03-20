@@ -55,8 +55,8 @@
 		"dev:stops:ui": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-api --filter=@tmlmobilidade/go-stops-frontend",
 		"dev:tracker": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-*",
 		"dev:tracker:clickhouse-sync": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-clickhouse-sync",
-		"dev:tracker:cm-stream": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-stream",
-		"dev:tracker:cm-sync": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-sync",
+		"dev:tracker:cm-legacy-stream": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-legacy-stream",
+		"dev:tracker:cm-legacy-sync": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-legacy-sync",
 		"dev:tracker:ttsl-fetch": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-ttsl-fetch",
 
 		"generate-routes": "bash ./scripts/generate-routes.sh",

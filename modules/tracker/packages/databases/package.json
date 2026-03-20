@@ -20,6 +20,7 @@
 		"@tmlmobilidade/mongo": "*",
 		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/utils": "*",
 		"mongodb": "7.1.0"
 	},
 	"devDependencies": {

@@ -11,7 +11,7 @@ import { MongoDbWriter } from '@tmlmobilidade/writers';
 
 const writer = new MongoDbWriter<TrackerVehicleEvent>({
 	batch_size: 100_000,
-	collection: rawdbVehicleEvents.RawVehicleEvents,
+	collection: await rawdbVehicleEvents.getCollection(),
 });
 
 /**
