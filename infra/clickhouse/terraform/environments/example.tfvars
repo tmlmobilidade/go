@@ -1,4 +1,9 @@
 # # #
+# ENVIRONMENT
+
+environment = "stg" | "prd"
+
+# # #
 # OCI AUTHENTICATION
 # Copy this file to terraform.tfvars and fill in the values.
 # Never commit terraform.tfvars to source control.
