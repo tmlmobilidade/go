@@ -7,16 +7,16 @@ variable "project_name" {
 	default = "iso-go"
 }
 
-variable "module_name" {
-	type = string
-	description = "The component name for this module. Used for tagging and identification."
-	default = "jumpserver"
-}
-
 variable "environment" {
 	type = string
 	description = "The environment name. Used as a prefix for resource names and tags."
 	default = "stg"
+}
+
+variable "module_name" {
+	type = string
+	description = "The component name for this module. Used for tagging and identification."
+	default = "jumpserver"
 }
 
 
