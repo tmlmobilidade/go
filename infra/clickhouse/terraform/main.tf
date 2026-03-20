@@ -101,13 +101,6 @@ resource "oci_core_instance" "clickhouse" {
 		"ReplicaIndex" = tostring(count.index + 1)
 	}
 
-	# Prevent accidental replacement of the database VM
-	lifecycle {
-		ignore_changes = [
-			source_details,
-		]
-	}
-
 }
 
 
