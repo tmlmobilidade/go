@@ -30,7 +30,7 @@
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/writers": "*",
 		"commander": "14.0.3",
-		"csv-parse": "6.2.0",
+		"csv-parse": "6.2.1",
 		"extract-zip": "2.0.1"
 	},
 	"devDependencies": {
