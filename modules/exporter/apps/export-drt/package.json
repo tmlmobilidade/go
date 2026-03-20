@@ -17,7 +17,7 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@carrismetropolitana/api-types": "20251128.1928.11",
+		"@carrismetropolitana/api-types": "20260317.2218.39",
 		"@tmlmobilidade/connectors": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",
@@ -27,7 +27,7 @@
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
-		"csv-parse": "6.1.0",
+		"csv-parse": "6.2.1",
 		"extract-zip": "2.0.1",
 		"gtfs-types": "5.1.0",
 		"node-cron": "4.2.1"
@@ -35,7 +35,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.4.0",
+		"@types/node": "25.5.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"
