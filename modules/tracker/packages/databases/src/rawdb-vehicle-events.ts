@@ -4,6 +4,7 @@ import { type TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common'
 import { Logger } from '@tmlmobilidade/logger';
 import { MongoConnector } from '@tmlmobilidade/mongo';
 import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Collection, type MongoClientOptions } from 'mongodb';
 
 /* * */
@@ -15,7 +16,18 @@ let GLOBAL_RAWDB_TUNNEL_INSTANCE: SshTunnelService | undefined;
 class RAWDBVehicleEventsClass {
 	//
 
+	private static _instance: RAWDBVehicleEventsClass;
+
 	public RawVehicleEvents: Collection<TrackerVehicleEvent>;
+
+	public static async getInstance() {
+		if (!RAWDBVehicleEventsClass._instance) {
+			const instance = new RAWDBVehicleEventsClass();
+			await instance.connect();
+			RAWDBVehicleEventsClass._instance = instance;
+		}
+		return RAWDBVehicleEventsClass._instance;
+	}
 
 	/**
 	 * Establishes a connection to the Mongo database and initializes the collection.
@@ -54,6 +66,11 @@ class RAWDBVehicleEventsClass {
 		} catch (error) {
 			throw new Error('Error connecting to RAWDB VehicleEvents:', { cause: error });
 		}
+	}
+
+	public async getCollection() {
+		await this.connect();
+		return this.RawVehicleEvents;
 	}
 
 	/**
@@ -160,4 +177,4 @@ class RAWDBVehicleEventsClass {
 
 /* * */
 
-export const rawdbVehicleEvents = new RAWDBVehicleEventsClass();
+export const rawdbVehicleEvents = asyncSingletonProxy(RAWDBVehicleEventsClass);

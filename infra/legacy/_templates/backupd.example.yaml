@@ -1,0 +1,91 @@
+# This is an example configuration file for backupd.
+# It is not used by the application, but it is a template for the configuration file needed to run the backupd service
+
+# The configuration file is a YAML file, which is a human-readable data serialization format.
+# It is used to configure the backupd service.
+
+# The Storage Configuration
+storage:
+  # The type of storage service to use. Options: "aws" (AWS) | "oci" (Oracle Cloud Infrastructure Object Storage)
+  type: STORAGE_TYPE
+
+  # The AWS configuration
+  aws_config:
+    aws_access_key_id: YOUR_AWS_ACCESS_KEY_ID
+    aws_secret_access_key: YOUR_AWS_SECRET_ACCESS_KEY
+    bucket_name: YOUR_BUCKET_NAME
+    region: YOUR_REGION
+
+  # The Oracle Cloud Infrastructure Object Storage configuration
+  oci_config:
+    tenancy: YOUR_TENANCY
+    user: YOUR_USER
+    fingerprint: YOUR_FINGERPRINT
+    private_key_path: YOUR_PRIVATE_KEY_PATH
+
+# The Database Configuration
+database:
+  # The type of database service to use. Options: "mongodb" (MongoDB) | "postgres" (PostgreSQL)
+  type: DATABASE_TYPE
+
+  # The MongoDB configuration (required if type is mongodb)
+  mongodb_config:
+    uri: YOUR_MONGODB_URI
+    options: # (Optional) The options to pass to the MongoDB client.
+      # The time in milliseconds to attempt a connection before timing out.
+      connectTimeoutMS: 10000 
+      # Whether to use direct connection to the MongoDB server.
+      directConnection: true
+      # The maximum number of connections in the connection pool.
+      maxPoolSize: 10
+      # The minimum number of connections in the connection pool.
+      minPoolSize: 5
+      # The read preference to use. Options: "primary" | "primaryPreferred" | "secondary" | "secondaryPreferred" | "nearest"
+      readPreference: YOUR_READ_PREFERENCE
+      # The time in milliseconds to wait for a server to respond to a request before timing out.
+      serverSelectionTimeoutMS: 10000
+
+  # The PostgreSQL configuration (required if type is postgres)
+  postgres_config:
+    uri: YOUR_POSTGRES_URI
+    options: # (Optional) The options to pass to the PostgreSQL client.
+      # The maximum number of connections in the connection pool.
+      max: 10
+      # The minimum number of connections in the connection pool.
+      min: 5
+
+# The Backup Configuration
+backup:
+  # The interval between backups in minutes.
+  interval: 360 # 6 hour
+  # Backup destination directory.
+  destination: PATH_TO_BACKUP_DESTINATION_DIRECTORY
+  # The maximum number of backups to keep. (If undefined or 0, no backups will be deleted.)
+  max_remote_backups: 10
+  # The maximum number of backup files to keep in the storage. (If set to 0, no backups will be stored in the device storage.)
+  max_local_backups: 10
+
+# The Email Configuration (if not set, no email will be sent)
+email:
+  # Whether to send the backup success report.
+  send_success: true
+  # Whether to send the backup failure report.
+  send_failure: true
+ # The mail options.
+  mail_options:
+    from: FROM_EMAIL_ADDRESS
+    to: TO_EMAIL_ADDRESS
+    subject: BACKUP_REPORT_SUBJECT
+  # The SMTP server configuration.
+  smtp:
+    host: YOUR_SMTP_HOST
+    port: YOUR_SMTP_PORT
+    auth:
+      user: YOUR_SMTP_USER
+      pass: YOUR_SMTP_PASSWORD
+
+
+
+
+
+
