@@ -3,44 +3,44 @@
 # Copy this file to terraform.tfvars and fill in the values.
 # Never commit terraform.tfvars to source control.
 
-tenancy_ocid     = ""
-user_ocid        = ""  # tiago.macedo user OCID
-fingerprint      = ""
+tenancy_ocid = ""
+user_ocid = ""
+fingerprint = ""
 private_key_path = "~/.oci/oci_api_key.pem"
 
-ssh_public_key_path  = "~/.ssh/id_rsa.pub"
-ssh_private_key_path = "~/.ssh/id_rsa"  # Used by Packer only
+# # #
+# PLACEMENT
 
-# ClickHouse admin password (will be set as CLICKHOUSE_PASSWORD env var)
+compartment_ocid = ""
+
+# # #
+# SSH ACCESS
+# This is the authorized keys files that will be added
+# to the `~/.ssh/authorized_keys` of each instance,
+# allowing you to SSH into them using the corresponding private key.
+
+ssh_authorized_keys_path = "/path/to/authorized_keys"
+
+# # #
+# CLICKHOUSE
+# Generate 64 character random password for ClickHouse admin user.
+
 clickhouse_admin_password = ""
 
+# # #
+# NETWORKING
+# Static private IPs for the 3 replica nodes.
+# Verify these IPs are free in your OCI subnet before applying.
+# Go to: OCI > Networking > Virtual Cloud Networks > [your subnet] > IP Addresses
+# e.g. ["10.0.1.20", "10.0.1.21", "10.0.1.22"]
 
-# -----------------------------------------------------------------------
-# REQUIRED — Static private IPs for the 3 replica nodes
-# IMPORTANT: Verify these IPs are free in your OCI subnet before applying.
-# Check: OCI Console > Networking > Virtual Cloud Networks > pub-cmet subnet > IP Addresses
-# -----------------------------------------------------------------------
+subnet_ocid = ""
+private_ips = ["", "", ""]
 
-private_ips = ["", "", ""]   # e.g. ["10.0.1.10", "10.0.1.11", "10.0.1.12"]
+# # #
+# BLOCK STORAGE
+# Create block volumes separately paste each OCID below.
+# They must be in the same availability domain as your compute instances.
+# e.g. ["ocid1...", "ocid2...", "ocid3..."]
 
-
-# -----------------------------------------------------------------------
-# OPTIONAL OVERRIDES (uncomment to change defaults)
-# -----------------------------------------------------------------------
-
-# compartment_ocid    = ""
-# availability_domain = "LUDo:EU-FRANKFURT-1-AD-1"
-# region              = "eu-frankfurt-1"
-
-# subnet_ocid         = ""   # defaults to pub-cmet
-# packer_subnet_ocid  = ""   # defaults to pub-cmet
-
-# instance_count      = 3
-# vm_shape            = "VM.Standard.A1.Flex"
-# vm_ocpus            = 2
-# vm_memory_in_gbs    = 12
-# boot_volume_size_in_gbs = 50
-# data_volume_size_in_gbs = 1024
-
-# clickhouse_http_port          = 8123
-# clickhouse_tcp_port           = 9000
+block_volume_ocids = ["", "", ""]
