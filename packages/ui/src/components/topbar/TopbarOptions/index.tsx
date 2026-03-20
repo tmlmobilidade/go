@@ -4,6 +4,7 @@
 
 import { ColorSwatch, Menu } from '@mantine/core';
 import { IconBellRinging, IconBrightness, IconCheck, IconColorSwatch, IconLogout, IconMaximize, IconMinimize, IconSettings } from '@tabler/icons-react';
+import { VERSION } from 'luxon';
 
 import { AVAILABLE_MODES, AVAILABLE_THEMES, useLayoutContext } from '../../../contexts/Layout.context';
 import { useMeContext } from '../../../contexts/Me.context';
@@ -97,6 +98,8 @@ export function TopbarOptions() {
 			>
 				Logout
 			</Menu.Item>
+
+			<Menu.Label>Versão: {VERSION}</Menu.Label>
 
 		</TopbarMenu>
 	);
