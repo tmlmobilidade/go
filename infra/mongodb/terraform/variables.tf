@@ -97,12 +97,8 @@ variable "private_ips" {
 	description = <<-EOT
 	List of 3 static private IP addresses to assign to the replica nodes (one per node).
 	Must be free within the existing subnet — verify in OCI Console > Networking before applying.
+	Example: ["10.0.1.20", "10.0.1.21", "10.0.1.22"]
 	EOT
-	default = [
-		"10.81.101.161",
-		"10.81.101.162",
-		"10.81.101.163"
-	]
 }
 
 
