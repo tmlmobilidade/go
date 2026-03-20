@@ -49,6 +49,11 @@ export const namingConventionsConfig: Config[] = [
 					leadingUnderscore: 'allow',
 					selector: 'classProperty',
 				},
+				{
+					format: ['PascalCase'],
+					modifiers: ['public'],
+					selector: 'classProperty',
+				},
 				// Enum members: PascalCase or UPPER_CASE
 				{
 					format: ['PascalCase', 'UPPER_CASE'],
