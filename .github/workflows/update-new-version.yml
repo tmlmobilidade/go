@@ -58,10 +58,10 @@ jobs:
       - name: Update new version
         run: npm version --no-git-tag-version ${{ needs.version-number.outputs.version_number }}
 
-      - name: Commit and push
+      - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
           add: |
             package.json
-            message: 'chore: update new version to ${{ needs.version-number.outputs.version_number }}'
+          message: 'chore: update new version to ${{ needs.version-number.outputs.version_number }}'
 
