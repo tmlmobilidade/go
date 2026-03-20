@@ -44,8 +44,9 @@ variable "compartment_ocid" {
 	type = string
 	description = <<-EOT
 	The OCID of the compartment where resources will be created in.
-	Current compartment is set to: cmet
+	Current compartment is set to: go-stg
 	EOT
+	default = "ocid1.compartment.oc1..aaaaaaaanljo4qhg4wnwjpul5seazrticeyswmx5zt7f64ekfewpr6y6mbva"
 }
 
 variable "availability_domain" {
@@ -71,6 +72,7 @@ variable "subnet_ocid" {
 	Networking is managed externally — this module creates no VCN, subnet,
 	IGW, route table, security list, or NSG.
 	EOT
+	default = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaabxgcifumk7or4z5kbdj6l6tkox3xqzpnmvhmq3l5hruveil4ze3q"
 }
 
 variable "private_ip" {
@@ -78,8 +80,8 @@ variable "private_ip" {
 	description = <<-EOT
 	Static private IP address to assign to the instance.
 	Must be free within the existing subnet — verify in OCI Console > Networking before applying.
-	Example: "10.0.1.20"
 	EOT
+	default = "10.91.101.5"
 }
 
 
