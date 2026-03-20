@@ -19,6 +19,11 @@ private_key_path = "~/.oci/oci_api_key.pem"
 compartment_ocid = ""
 
 # # #
+# VM SHAPE
+
+base_image_ocid = ""
+
+# # #
 # SSH ACCESS
 # This is the authorized keys files that will be added
 # to the `~/.ssh/authorized_keys` of each instance,
