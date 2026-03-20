@@ -39,6 +39,7 @@ jobs:
           version="$(bash scripts/versions.sh)"
           echo "Generated version: $version"
           echo "version_number=$version" >> "$GITHUB_OUTPUT"
+          
   # # # # # # # # # # # # # # # # # # # # #
 
   update-new-version:
@@ -75,3 +76,14 @@ jobs:
           message: 'chore: update new version to ${{ needs.version-number.outputs.version_number }}'
           push: true
 
+      - name: check injected version
+        shell: bash
+        run: |
+          VERSION="${{ needs.version-number.outputs.version_number }}"
+          echo "output version: $VERSION"
+          if echo "$VERSION" | grep -q "${{ needs.version-number.outputs.version_number }}"; then
+            echo "✓ Version correctly injected"
+          else
+            echo "✗ Version NOT injected"
+            exit 1
+          fi
