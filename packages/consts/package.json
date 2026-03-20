@@ -33,6 +33,9 @@
 		"lint:fix": "eslint ./src/ --fix",
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
+	"dependencies": {
+		"@tmlmobilidade/dates": "*"
+	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
