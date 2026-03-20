@@ -9,7 +9,8 @@ on:
         type: string
   push:
     branches:
-      - feature/iso-1503-adicionar-n-da-versao-do-go
+      - Production
+      - Staging
     paths:
       - 'packages/**'
       - 'scripts/versions.sh'
