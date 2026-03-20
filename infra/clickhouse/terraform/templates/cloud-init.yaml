@@ -51,7 +51,7 @@ runcmd:
   # sets the current node's private IP to allow cluster communication.
 
   - |
-    cat > /opt/app/config.d/network.xml <<'NETEOF'
+    cat > /opt/app/persistent-data/config.d/network.xml <<'NETEOF'
     <clickhouse>
         <listen_host>0.0.0.0</listen_host>
         <interserver_http_host>${all_private_ips[node_index]}</interserver_http_host>
@@ -188,6 +188,7 @@ runcmd:
   # Write Secrets
 
   - |
+    mkdir -p /opt/app/secrets
     cat > /opt/app/secrets/.env <<'ENVEOF'
     CLICKHOUSE_PASSWORD=${clickhouse_admin_password}
     CLICKHOUSE_USER=admin
