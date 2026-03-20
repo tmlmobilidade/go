@@ -1,22 +1,10 @@
 # # #
 # PROJECT VARIABLES
 
-variable "project_name" {
+variable "deployment_name" {
 	type = string
-	description = "The name of the project. Used as a prefix for resource names and tags."
-	default = "iso-go"
-}
-
-variable "module_name" {
-	type = string
-	description = "The component name for this module. Used for tagging and identification."
-	default = "clickhouse"
-}
-
-variable "environment" {
-	type = string
-	description = "The environment for this module (e.g., stg, prd)."
-	default = "stg"
+	description = "The name of the deployment. Used as the display name for resource names and tags."
+	default = "iso-go-stg-clickhouse"
 }
 
 variable "instance_count" {
@@ -62,8 +50,9 @@ variable "compartment_ocid" {
 	type = string
 	description = <<-EOT
 	The OCID of the compartment where resources will be created in.
-	Current compartment is set to: cmet
+	Current compartment is set to: go-stg
 	EOT
+	default = "ocid1.compartment.oc1..aaaaaaaanljo4qhg4wnwjpul5seazrticeyswmx5zt7f64ekfewpr6y6mbva"
 }
 
 variable "availability_domain" {
