@@ -65,7 +65,7 @@ runcmd:
   # to the next available node.
 
   - |
-    cat > /opt/clickhouse/config.d/keeper.xml <<'KEEPEREOF'
+    cat > /opt/app/persistent-data/config.d/keeper.xml <<'KEEPEREOF'
     <clickhouse>
         <keeper_server>
             <!-- ZooKeeper-compatible client port -->
@@ -100,7 +100,7 @@ runcmd:
   # to the next available node.
 
   - |
-    cat > /opt/clickhouse/config.d/zookeeper.xml <<'ZKEOF'
+    cat > /opt/app/persistent-data/config.d/zookeeper.xml <<'ZKEOF'
     <clickhouse>
         <zookeeper>
         %{ for node_ip in all_private_ips ~}
@@ -118,7 +118,7 @@ runcmd:
   # node-specific identity for ReplicatedMergeTree
 
   - |
-    cat > /opt/clickhouse/config.d/macros.xml <<'MACROEOF'
+    cat > /opt/app/persistent-data/config.d/macros.xml <<'MACROEOF'
     <clickhouse>
         <macros>
             <shard>01</shard>
@@ -132,7 +132,7 @@ runcmd:
   # Cluster Config — all 3 replicas in one shard (no sharding)
 
   - |
-    cat > /opt/clickhouse/config.d/cluster.xml <<'CLUSTEREOF'
+    cat > /opt/app/persistent-data/config.d/cluster.xml <<'CLUSTEREOF'
     <clickhouse>
         <remote_servers>
             <clickhouse-replica>
@@ -154,7 +154,7 @@ runcmd:
   # Performance Tuning Config (server-level)
 
   - |
-    cat > /opt/clickhouse/config.d/tuning.xml <<'TUNEOEOF'
+    cat > /opt/app/persistent-data/config.d/tuning.xml <<'TUNEOEOF'
     <clickhouse>
         <!-- Server-level memory: 85% of 12GB = ~10.2GB -->
         <max_server_memory_usage_to_ram_ratio>0.85</max_server_memory_usage_to_ram_ratio>
@@ -174,7 +174,7 @@ runcmd:
   # User Profile Config (user-level memory limit, CH 26+)
 
   - |
-    cat > /opt/clickhouse/users.d/tuning.xml <<'USERUEOF'
+    cat > /opt/app/persistent-data/users.d/tuning.xml <<'USERUEOF'
     <clickhouse>
         <profiles>
             <default>
@@ -188,7 +188,7 @@ runcmd:
   # Write Secrets
 
   - |
-    cat > /opt/clickhouse/secrets/.env <<'ENVEOF'
+    cat > /opt/app/secrets/.env <<'ENVEOF'
     CLICKHOUSE_PASSWORD=${clickhouse_admin_password}
     CLICKHOUSE_USER=admin
     ENVEOF
@@ -196,6 +196,6 @@ runcmd:
   # 11.
   # Start ClickHouse
 
-  - cd /opt/clickhouse && docker compose up -d --build --force-recreate --remove-orphans --pull=always
+  - cd /opt/app && docker compose up -d --build --force-recreate --remove-orphans --pull=always
 
 final_message: "ClickHouse replica node ${node_index + 1} of ${length(all_private_ips)} configuration complete."
