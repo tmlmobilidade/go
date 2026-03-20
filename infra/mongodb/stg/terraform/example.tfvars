@@ -47,7 +47,6 @@ EOT
 # e.g. ["10.0.1.20", "10.0.1.21", "10.0.1.22"]
 
 subnet_ocid = ""
-private_ips = ["", "", ""]
 
 # # #
 # BLOCK STORAGE
