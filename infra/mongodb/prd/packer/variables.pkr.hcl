@@ -14,7 +14,7 @@ variable "compartment_ocid" {
 	The OCID of the compartment where resources will be created in.
 	Current compartment is set to: go-prd
 	EOT
-	default = ""
+	default = "ocid1.compartment.oc1..aaaaaaaade3kztlncv2ydpnbb5jl5hl6yqxyhkmezxhtj5dfjzsv27i3wf5a"
 }
 
 variable "subnet_ocid" {
@@ -24,7 +24,7 @@ variable "subnet_ocid" {
 	For Packer builds, this subnet must have public access
 	to the internet, so it should be a public subnet.
 	EOT
-	default = ""
+	default = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaap4iuqtem64qsbejvu73u7ssm5n3eaa7ggds76zsokytka24q5pna"
 }
 
 variable "availability_domain" {

@@ -24,7 +24,7 @@ variable "subnet_ocid" {
 	For Packer builds, this subnet must have public access
 	to the internet, so it should be a public subnet.
 	EOT
-	default = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaaqwztdskuufaajsp2wz3htvywxlywkwcj63zof52hr7gywnnssbxa"
+	default = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaap4iuqtem64qsbejvu73u7ssm5n3eaa7ggds76zsokytka24q5pna"
 }
 
 variable "availability_domain" {
