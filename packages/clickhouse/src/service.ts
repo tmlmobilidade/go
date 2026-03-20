@@ -31,7 +31,7 @@ class ClickhouseService {
 	public static async getInstance() {
 		if (!ClickhouseService._instance) {
 			const instance = new ClickhouseService();
-			await instance.init(); // <-- async happens here
+			await instance.init();
 			ClickhouseService._instance = instance;
 		}
 		return ClickhouseService._instance;
@@ -73,7 +73,6 @@ class ClickhouseService {
 				) ENGINE = ${engine}
 				ORDER BY ${orderBy}
 			`;
-
 			await this.client.command({ query: createTableQuery });
 			Logger.info(`CLICKHOUSE [${table}]: Table created.`);
 		} catch (error) {
@@ -91,7 +90,6 @@ class ClickhouseService {
 		if (!isSafeIdentifier(table)) {
 			throw new Error(`CLICKHOUSE [${table}]: Unsafe table name provided.`);
 		}
-
 		try {
 			await this.client.command({ query: `DROP TABLE IF EXISTS ${table} ON CLUSTER 'clickhouse-replica'` });
 			Logger.info(`CLICKHOUSE [${table}]: Table deleted.`);
@@ -120,7 +118,6 @@ class ClickhouseService {
 			if (!isSafeIdentifier(table)) {
 				throw new Error(`CLICKHOUSE [${table}]: Unsafe table name provided.`);
 			}
-
 			const result = await this.client.command({ query: `SHOW CREATE TABLE ${table}` });
 			Logger.info(`CLICKHOUSE [${table}]: Table schema retrieved.`);
 			return result;
@@ -138,7 +135,6 @@ class ClickhouseService {
 	 */
 	public async queryFromFile<T>(filePath: string, params?: Record<string, number | string>): Promise<T[]> {
 		let sql: string;
-
 		try {
 			sql = await readFile(filePath, { encoding: 'utf-8' });
 		} catch (error) {
@@ -187,12 +183,15 @@ class ClickhouseService {
 			throw new Error('Missing CLICKHOUSE_DATABASE');
 		}
 
+		if (process.env.CLICKHOUSE_TUNNEL_ENABLED !== 'true' && process.env.CLICKHOUSE_TUNNEL_ENABLED !== 'false') {
+			throw new Error('Missing CLICKHOUSE_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting CLICKHOUSE_TUNNEL_ENABLED to "true" or "false".');
+		}
+
 		if (!process.env.CLICKHOUSE_HOST || !process.env.CLICKHOUSE_PORT) {
 			throw new Error('Missing CLICKHOUSE_HOST or CLICKHOUSE_PORT');
 		}
 
-		// Direct connection (prod/staging)
-		if (process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'staging') {
+		if (process.env.CLICKHOUSE_TUNNEL_ENABLED === 'false') {
 			return `http://${process.env.CLICKHOUSE_USER}:${process.env.CLICKHOUSE_PASSWORD}@${process.env.CLICKHOUSE_HOST}:${process.env.CLICKHOUSE_PORT}`;
 		}
 
@@ -257,23 +256,18 @@ class ClickhouseService {
 			}
 			return Number.isInteger(value) ? 'Int64' : 'Float64';
 		}
-
 		return 'String';
 	}
 
 	private async init() {
 		const url = await this.getClickhouseConnectionString();
 		this.client = createClient({
-			// database: process.env.CLICKHOUSE_DATABASE,
+			database: process.env.CLICKHOUSE_DATABASE,
 			url,
 		});
 	}
 
-	private prepareNamedQueryParams(
-		query: string,
-		params?: Record<string, number | string>,
-		context?: string,
-	): { query: string, queryParams: Record<string, number | string> } {
+	private prepareNamedQueryParams(query: string, params?: Record<string, number | string>, context?: string): { query: string, queryParams: Record<string, number | string> } {
 		const queryParams: Record<string, number | string> = {};
 		const providedParams = params ?? {};
 		const usedKeys = new Set<string>();
@@ -316,10 +310,7 @@ class ClickhouseService {
 		return { query: normalizedQuery, queryParams };
 	}
 
-	private preparePositionalQueryParams(
-		query: string,
-		params?: Record<string, number | string>,
-	): { query: string, queryParams: Record<string, number | string> } {
+	private preparePositionalQueryParams(query: string, params?: Record<string, number | string>): { query: string, queryParams: Record<string, number | string> } {
 		const queryParams: Record<string, number | string> = {};
 		const providedParams = params ?? {};
 		const usedKeys = new Set<string>();
