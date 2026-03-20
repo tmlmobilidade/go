@@ -78,7 +78,7 @@ variable "subnet_ocid" {
 	Networking is managed externally — this module creates no VCN, subnet,
 	IGW, route table, security list, or NSG.
 	EOT
-	default = ""
+	default = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaaqwztdskuufaajsp2wz3htvywxlywkwcj63zof52hr7gywnnssbxa"
 }
 
 variable "private_ips" {
@@ -88,9 +88,9 @@ variable "private_ips" {
 	Must be free within the existing subnet — verify in OCI Console > Networking before applying.
 	EOT
 	default = [
-		"",
-		"",
-		""
+		"10.81.101.141",
+		"10.81.101.142",
+		"10.81.101.143"
 	]
 }
 
@@ -139,9 +139,9 @@ variable "block_volume_ocids" {
 	Each volume must be pre-created and match the count of replica nodes.
 	EOT
 	default = [
-		"",
-		"",
-		""
+		"ocid1.volume.oc1.eu-frankfurt-1.abtheljt7mjcnokm2bd5nlsu74emdyxbjfigb7hqhkcv5ljbc35z3oz23doa",
+		"ocid1.volume.oc1.eu-frankfurt-1.abtheljtq4chsufuuymafiubmrmz3tkxpw5atsamgfxdlcuuw5f3r3abfs4q",
+		"ocid1.volume.oc1.eu-frankfurt-1.abtheljt4dk5nlaciz72elgciodaclf2gawzy3czb6re7zdkayog5jtlxyxa"
 	]
 }
 
