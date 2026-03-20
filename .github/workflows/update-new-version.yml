@@ -9,8 +9,8 @@ on:
         type: string
   push:
     branches:
-      - Production
-      - Staging
+      - production
+      - staging
     paths:
       - 'packages/**'
       - 'scripts/versions.sh'
