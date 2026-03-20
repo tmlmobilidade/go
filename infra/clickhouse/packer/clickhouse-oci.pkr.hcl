@@ -1,14 +1,14 @@
 # -----------------------------------------------------------------------
-# mongodb-oci.pkr.hcl
+# clickhouse-oci.pkr.hcl
 #
-# Builds a custom OCI image for MongoDB replica nodes with Docker and
-# OS tuning pre-installed. MongoDB itself runs as a Docker container
-# at runtime (not baked into the image) so it can be updated without
-# rebuilding the image.
+# Builds a custom OCI image for ClickHouse Replica nodes with Docker and
+# OS tuning pre-installed. The resulting image is used by Terraform in
+# place of the raw Ubuntu base image, speeding up instance boot.
 #
 # USAGE:
-#  packer init .
-#  packer build --warn-on-undeclared-var .
+#   packer init .
+#   cp ../terraform/terraform.tfvars ../terraform/terraform.pkrvars.hcl   # Packer requires .hcl extension
+#   packer build -var-file=../terraform/terraform.pkrvars.hcl -warn-on-undeclared-var .
 # -----------------------------------------------------------------------
 
 
@@ -31,14 +31,14 @@ packer {
 # Configure the VM that will be used
 # to create the final output image.
 
-source "oracle-oci" "mongodb-source" {
+source "oracle-oci" "clickhouse_base" {
 
 	# In HashiCorp Packer, the isotime function expects
 	# a Go time format layout. Go uses the reference date:
 	# Mon Jan 2 15:04:05 MST 2006
-	image_name = "${var.project_name}-${var.environment}-mongodb-{{isotime \"2006-01-02\"}}"
+	image_name = "${var.project_name}-${var.environment}-clickhouse-{{isotime \"2006-01-02\"}}"
 
-	instance_name = "${var.project_name}-${var.environment}-mongodb-packer-image-builder"
+	instance_name = "${var.project_name}-${var.environment}-clickhouse-packer-image-builder"
 
 	# Placement
 	subnet_ocid = var.subnet_ocid
@@ -61,7 +61,7 @@ source "oracle-oci" "mongodb-source" {
 
 	tags = {
 		"PackerBuilt" = "true"
-		"ImageType" = "mongodb-base"
+		"ImageType" = "clickhouse-base"
 		"ManagedBy" = "packer"
 		"Environment" = var.environment
 	}
@@ -75,7 +75,7 @@ source "oracle-oci" "mongodb-source" {
 
 build {
 
-	sources = ["source.oracle-oci.mongodb-source"]
+	sources = ["source.oracle-oci.clickhouse_base"]
 
 	# 1.
 	# OS performance tuning + install prerequisite packages
@@ -129,7 +129,7 @@ build {
 	}
 
 	# The firewall.sh script is responsible for
-	# configuring the firewall to allow MongoDB traffic.
+	# configuring the firewall to allow ClickHouse traffic.
 
 	provisioner "file" {
 		source = "${path.root}/init/firewall.sh"
@@ -142,36 +142,22 @@ build {
 		]
 	}
 
-	# The setup-mongodb.sh script is responsible for
-	# setting up the MongoDB data directories and permissions.
+	# The setup-clickhouse.sh script is responsible for
+	# setting up the ClickHouse data directories and permissions.
 
 	provisioner "file" {
-		source = "${path.root}/init/setup-mongodb.sh"
-		destination = "/opt/app/setup-mongodb.sh"
+		source = "${path.root}/init/setup-clickhouse.sh"
+		destination = "/opt/app/setup-clickhouse.sh"
 	}
 
 	provisioner "shell" {
 		inline = [
-			"sudo chmod +x /opt/app/setup-mongodb.sh"
-		]
-	}
-
-	# The init-mongodb-replica-set.sh script is responsible for
-	# initializing the MongoDB replica set on the primary node.
-
-	provisioner "file" {
-		source = "${path.root}/init/init-mongodb-replica-set.sh"
-		destination = "/opt/app/init-mongodb-replica-set.sh"
-	}
-
-	provisioner "shell" {
-		inline = [
-			"sudo chmod +x /opt/app/init-mongodb-replica-set.sh"
+			"sudo chmod +x /opt/app/setup-clickhouse.sh"
 		]
 	}
 
 	# The compose.yaml file holds the configuration
-	# that defines the MongoDB container and its settings.
+	# that defines the ClickHouse container and its settings.
 
 	provisioner "file" {
 		source = "${path.root}/init/compose.yaml"

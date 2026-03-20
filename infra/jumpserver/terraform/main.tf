@@ -41,7 +41,7 @@ locals {
 
 resource "oci_core_instance" "jumpserver" {
 
-	display_name = "${var.project_name}-${var.module_name}-${var.environment}"
+	display_name = "${var.project_name}-${var.environment}-${var.module_name}"
 
 	compartment_id = var.compartment_ocid
 	availability_domain = var.availability_domain
@@ -60,7 +60,7 @@ resource "oci_core_instance" "jumpserver" {
 	}
 
 	create_vnic_details {
-		display_name = "${var.project_name}-${var.module_name}-${var.environment}-vnic"
+		display_name = "${var.project_name}-${var.environment}-${var.module_name}-vnic"
 		subnet_id = var.subnet_ocid
 		private_ip = var.private_ip
 		assign_public_ip = true

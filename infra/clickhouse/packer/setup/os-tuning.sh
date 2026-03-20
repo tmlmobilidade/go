@@ -13,19 +13,17 @@ echo "[tuning] cloud-init finished."
 
 
 # 2.
-# Apply MongoDB-recommended kernel settings.
+# Apply ClickHouse-recommended kernel settings.
 
 echo "[tuning] Applying sysctl settings..."
-cat >> /etc/sysctl.d/99-mongodb.conf <<'EOF'
-# MongoDB recommended kernel settings
+cat >> /etc/sysctl.d/99-clickhouse.conf <<'EOF'
+# ClickHouse recommended kernel settings
 fs.file-max = 2097152
-vm.swappiness = 1
-vm.dirty_ratio = 15
-vm.dirty_background_ratio = 5
+vm.overcommit_memory = 1
 net.core.somaxconn = 65535
 net.ipv4.tcp_max_syn_backlog = 65535
 EOF
-sysctl -p /etc/sysctl.d/99-mongodb.conf
+sysctl -p /etc/sysctl.d/99-clickhouse.conf
 echo "[tuning] sysctl settings applied."
 
 

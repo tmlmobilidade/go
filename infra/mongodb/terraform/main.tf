@@ -14,7 +14,7 @@ terraform {
 # # #
 # OCI AUTHENTICATION
 # Variables defined in `variables.tf`
-# Values come from `terraform.tfvars`
+# Values come from `{environment}.tfvars`
 
 provider "oci" {
 	tenancy_ocid = var.tenancy_ocid
@@ -43,7 +43,7 @@ locals {
 
 resource "oci_core_instance" "mongodb" {
 
-	display_name = "${var.project_name}-${var.module_name}-${count.index + 1}"
+	display_name = "${var.project_name}-${var.environment}-${var.module_name}-${count.index + 1}"
 
 	count = var.instance_count
 
@@ -104,13 +104,6 @@ resource "oci_core_instance" "mongodb" {
 		"ReplicaIndex" = tostring(count.index + 1)
 	}
 
-	# Prevent accidental replacement of the database VM
-	lifecycle {
-		ignore_changes = [
-			source_details,
-		]
-	}
-
 }
 
 
@@ -129,10 +122,10 @@ resource "oci_core_volume_attachment" "mongodb_data" {
 
 	volume_id = var.block_volume_ocids[count.index]
 
-	attachment_type = "paravirtualized"
-
 	# Paravirtualized is easier to manage
 	# in cloud-init than iSCSI
+	attachment_type = "paravirtualized"
+
 	is_pv_encryption_in_transit_enabled = false
 
 }
