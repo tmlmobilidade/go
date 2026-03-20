@@ -12,10 +12,10 @@
 #     with all 3 node IPs, so the replica set is self-initializing on first boot.
 #
 # Terraform variables injected:
-#   node_index, all_private_ips, mongodb_port, replica_set_name,
+#   node_index, all_private_ips, mongodb_port,
 #   mongodb_root_username, mongodb_root_password, mongodb_keyfile
 #
-# Note: mongodb_port and replica_set_name are hardcoded in packer/templates/compose.yaml
+# Note: mongodb_port are hardcoded in packer/templates/compose.yaml
 #   and only referenced here for rs.initiate().
 # -----------------------------------------------------------------------
 
@@ -80,7 +80,6 @@ runcmd:
       --mongodb-port ${mongodb_port} \
       --username '${mongodb_root_username}' \
       --password '${mongodb_root_password}' \
-      --replica-set-name ${replica_set_name} \
       --replica-set-members ${join(",", all_private_ips)}
   - rm /opt/app/init-mongodb-replica-set.sh
 

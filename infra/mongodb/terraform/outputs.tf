@@ -13,7 +13,7 @@ output "mongodb_dsns" {
 
 output "replica_set_dsn" {
 	description = "MongoDB Replica Set connection string (connect via any node; driver discovers primary)."
-	value = "mongodb://${var.mongodb_root_username}:<password>@${join(",", [for i in oci_core_instance.mongodb : "${i.private_ip}:${var.mongodb_port}"])}/?replicaSet=${var.replica_set_name}&authSource=admin"
+	value = "mongodb://${var.mongodb_root_username}:<password>@${join(",", [for i in oci_core_instance.mongodb : "${i.private_ip}:${var.mongodb_port}"])}/?replicaSet=rs0&authSource=admin"
 }
 
 output "ssh_commands" {

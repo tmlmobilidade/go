@@ -151,12 +151,6 @@ variable "block_volume_ocids" {
 # # #
 # MONGODB
 
-variable "replica_set_name" {
-	type = string
-	description = "MongoDB replica set name. All 3 nodes must use the same name."
-	default = "rs0"
-}
-
 variable "mongodb_port" {
 	type = number
 	description = "MongoDB listening port."

@@ -92,7 +92,6 @@ resource "oci_core_instance" "mongodb" {
 			mongodb_root_username = var.mongodb_root_username
 			mongodb_root_password = var.mongodb_root_password
 			mongodb_keyfile = var.mongodb_keyfile
-			replica_set_name = var.replica_set_name
 			mongodb_port = var.mongodb_port
 		}))
 

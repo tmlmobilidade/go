@@ -13,7 +13,6 @@ NODE_INDEX=""
 PORT=""
 USERNAME=""
 PASSWORD=""
-REPLICA_SET_NAME=""
 REPLICA_SET_MEMBERS=""
 
 while [[ $# -gt 0 ]]; do
@@ -22,7 +21,6 @@ while [[ $# -gt 0 ]]; do
 		--mongodb-port) PORT="$2"; shift 2 ;;
 		--username) USERNAME="$2"; shift 2 ;;
 		--password) PASSWORD="$2"; shift 2 ;;
-		--replica-set-name) REPLICA_SET_NAME="$2"; shift 2 ;;
 		--replica-set-members) REPLICA_SET_MEMBERS="$2"; shift 2 ;;
 		*)
 		echo "Unknown argument: $1"
@@ -36,7 +34,6 @@ done
 : "${PORT:?Missing --mongodb-port}"
 : "${USERNAME:?Missing --username}"
 : "${PASSWORD:?Missing --password}"
-: "${REPLICA_SET_NAME:?Missing --replica-set-name}"
 : "${REPLICA_SET_MEMBERS:?Missing --replica-set-members}"
 
 # Only primary initializes
@@ -99,7 +96,7 @@ sleep 15
 # ----------------------------
 # Run mongosh
 # ----------------------------
-echo "Node 0: initiating replica set '$REPLICA_SET_NAME'..."
+echo "Node 0: initiating replica set 'rs0'..."
 
 docker compose exec -T mongodb mongosh \
   -u "$USERNAME" \
@@ -107,7 +104,7 @@ docker compose exec -T mongodb mongosh \
   --authenticationDatabase admin <<EOF
 	use admin;
 	rs.initiate({
-		_id: "$REPLICA_SET_NAME",
+		_id: "rs0",
 		members: [
 			{ _id: 0, host: "${MEMBERS[0]}:$PORT", priority: 1 },
 			{ _id: 1, host: "${MEMBERS[1]}:$PORT", priority: 0.5 },
