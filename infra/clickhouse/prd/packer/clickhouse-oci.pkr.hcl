@@ -38,7 +38,7 @@ source "oracle-oci" "clickhouse_base" {
 	# Mon Jan 2 15:04:05 MST 2006
 	image_name = "${var.display_name}-{{isotime \"2006-01-02\"}}"
 
-	instance_name = "${var.display_name}-packer-image-builder"
+	instance_name = "${var.display_name}-packer"
 
 	# Placement
 	subnet_ocid = var.subnet_ocid

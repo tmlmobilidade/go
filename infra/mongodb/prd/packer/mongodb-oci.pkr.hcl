@@ -38,7 +38,7 @@ source "oracle-oci" "mongodb-source" {
 	# Mon Jan 2 15:04:05 MST 2006
 	image_name = "${var.project_name}-${var.environment}-mongodb-{{isotime \"2006-01-02\"}}"
 
-	instance_name = "${var.project_name}-${var.environment}-mongodb-packer-image-builder"
+	instance_name = "${var.project_name}-${var.environment}-mongodb-packer"
 
 	# Placement
 	subnet_ocid = var.subnet_ocid
