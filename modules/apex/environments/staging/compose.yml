@@ -80,7 +80,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  sync-apex-locations:
+  sync-locations:
     image: ghcr.io/tmlmobilidade/go-apex-sync-locations:staging
     deploy:
       restart_policy:
@@ -103,7 +103,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  sync-apex-on-board-refunds:
+  sync-on-board-refunds:
     image: ghcr.io/tmlmobilidade/go-apex-sync-on-board-refunds:staging
     deploy:
       restart_policy:
@@ -126,7 +126,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  sync-apex-on-board-sales:
+  sync-on-board-sales:
     image: ghcr.io/tmlmobilidade/go-apex-sync-on-board-sales:staging
     deploy:
       restart_policy:
@@ -149,7 +149,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  sync-apex-validations:
+  sync-validations:
     image: ghcr.io/tmlmobilidade/go-apex-sync-validations:staging
     deploy:
       restart_policy:
@@ -168,22 +168,3 @@ services:
       - "prd-validations-mongodb-01.tml.local:10.5.4.124"
       - "prd-validations-mongodb-02.tml.local:10.5.4.112"
       - "prd-validations-mongodb-03.tml.local:10.5.4.206"
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  sync-vehicle-events:
-    image: ghcr.io/tmlmobilidade/go-apex-sync-vehicle-events:staging
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 4gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/.env
