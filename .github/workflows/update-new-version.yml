@@ -36,7 +36,7 @@ jobs:
         env:
           VERSION_OVERRIDE: ${{ github.event.inputs.version_override || '' }}
         run: |
-          version="$(bash scripts/versions.sh)"
+          version="$(bash scripts/versions.sh --print-only)"
           echo "Generated version: $version"
           echo "version_number=$version" >> "$GITHUB_OUTPUT"
           
@@ -66,6 +66,7 @@ jobs:
             echo "::error::version_number output was empty — check job outputs on version-number."
             exit 1
           fi
+          VERSION_OVERRIDE="${VERSION_NUMBER}" bash scripts/versions.sh
           npm version --no-git-tag-version "$VERSION_NUMBER"
 
       - name: Commit and push
@@ -73,6 +74,7 @@ jobs:
         with:
           add: |-
             package.json
+            packages/ui/src/types/version.ts
           message: 'chore: update new version to ${{ needs.version-number.outputs.version_number }}'
           push: true
 
