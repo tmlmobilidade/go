@@ -69,6 +69,8 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    volumes:
+      - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
     extra_hosts:
       - "prd-bilhetica-mongodb-01.tml.local:10.5.4.185"
       - "prd-bilhetica-mongodb-02.tml.local:10.5.4.151"
@@ -95,6 +97,8 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    volumes:
+      - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
     extra_hosts:
       - "prd-validations-mongodb-01.tml.local:10.5.4.124"
       - "prd-validations-mongodb-02.tml.local:10.5.4.112"
@@ -118,6 +122,8 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    volumes:
+      - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
     extra_hosts:
       - "prd-bilhetica-mongodb-01.tml.local:10.5.4.185"
       - "prd-bilhetica-mongodb-02.tml.local:10.5.4.151"
@@ -141,6 +147,8 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    volumes:
+      - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
     extra_hosts:
       - "prd-bilhetica-mongodb-01.tml.local:10.5.4.185"
       - "prd-bilhetica-mongodb-02.tml.local:10.5.4.151"
@@ -164,8 +172,8 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-    ports:
-      - "5432:5432"
+    volumes:
+      - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
     extra_hosts:
       - "prd-validations-mongodb-01.tml.local:10.5.4.124"
       - "prd-validations-mongodb-02.tml.local:10.5.4.112"
