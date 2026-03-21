@@ -76,11 +76,15 @@ class PCGIDBValidationsClass {
 			throw new Error('Missing PCGIDB_VALIDATIONS_ADDRESS_1, PCGIDB_VALIDATIONS_ADDRESS_2, PCGIDB_VALIDATIONS_ADDRESS_3 or PCGIDB_VALIDATIONS_PORT environment variable.');
 		}
 
+		if (process.env.PCGIDB_TUNNEL_ENABLED !== 'true' && process.env.PCGIDB_TUNNEL_ENABLED !== 'false') {
+			throw new Error('Missing PCGIDB_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting PCGIDB_TUNNEL_ENABLED to "true" or "false".');
+		}
+
 		//
 		// Check if the SSH Tunnel is required based on the environment.
 		// In 'production' and 'staging', we assume direct connection is used.
 
-		if (process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'staging') {
+		if (process.env.PCGIDB_TUNNEL_ENABLED === 'false') {
 			return `mongodb://${process.env.PCGIDB_VALIDATIONS_USER}:${process.env.PCGIDB_VALIDATIONS_PASSWORD}@${process.env.PCGIDB_VALIDATIONS_ADDRESS_1}:${process.env.PCGIDB_VALIDATIONS_PORT},${process.env.PCGIDB_VALIDATIONS_ADDRESS_2}:${process.env.PCGIDB_VALIDATIONS_PORT},${process.env.PCGIDB_VALIDATIONS_ADDRESS_3}:${process.env.PCGIDB_VALIDATIONS_PORT}/`;
 		}
 
