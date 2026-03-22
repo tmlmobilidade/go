@@ -26,6 +26,8 @@ const main = async () => {
 
 	let saveCount = 0;
 
+	await rawdbVehicleEvents.connect();
+
 	//
 	// Fetch the TTSL Vehicle Events data from the API and decode it
 

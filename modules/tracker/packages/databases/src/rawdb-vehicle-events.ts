@@ -91,11 +91,15 @@ class RAWDBVehicleEventsClass {
 			throw new Error('Missing RAWDB_VEHICLE_EVENTS_ADDRESS_1, RAWDB_VEHICLE_EVENTS_ADDRESS_2, RAWDB_VEHICLE_EVENTS_ADDRESS_3 or RAWDB_VEHICLE_EVENTS_PORT environment variable.');
 		}
 
+		if (process.env.RAWDB_TUNNEL_ENABLED !== 'true' && process.env.RAWDB_TUNNEL_ENABLED !== 'false') {
+			throw new Error('Missing RAWDB_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting RAWDB_TUNNEL_ENABLED to "true" or "false".');
+		}
+
 		//
 		// Check if the SSH Tunnel is required based on the environment.
 		// In 'production' and 'staging', we assume direct connection is used.
 
-		if (process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'staging') {
+		if (process.env.RAWDB_TUNNEL_ENABLED === 'false') {
 			return `mongodb://${process.env.RAWDB_VEHICLE_EVENTS_USER}:${process.env.RAWDB_VEHICLE_EVENTS_PASSWORD}@${process.env.RAWDB_VEHICLE_EVENTS_ADDRESS_1}:${process.env.RAWDB_VEHICLE_EVENTS_PORT},${process.env.RAWDB_VEHICLE_EVENTS_ADDRESS_2}:${process.env.RAWDB_VEHICLE_EVENTS_PORT},${process.env.RAWDB_VEHICLE_EVENTS_ADDRESS_3}:${process.env.RAWDB_VEHICLE_EVENTS_PORT}/`;
 		}
 
@@ -177,4 +181,4 @@ class RAWDBVehicleEventsClass {
 
 /* * */
 
-export const rawdbVehicleEvents = asyncSingletonProxy(RAWDBVehicleEventsClass);
+export const rawdbVehicleEvents = new RAWDBVehicleEventsClass();
