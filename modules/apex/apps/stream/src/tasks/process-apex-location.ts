@@ -1,18 +1,19 @@
 /* * */
 
-import { clickhouseService } from '@tmlmobilidade/clickhouse';
-import { invalidateRides, parseSimplifiedApexLocation, simplifiedApexLocationsSchema } from '@tmlmobilidade/go-apex-pckg-common';
+import { invalidateRides, parseSimplifiedApexLocation } from '@tmlmobilidade/go-apex-pckg-common';
+import { simplifiedApexLocationsNew } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
-import { ClickHouseWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
-const writer = new ClickHouseWriter<SimplifiedApexLocation>({
-	batch_size: 250,
-	client: await clickhouseService.getClient(),
-	table: 'simplified_apex_locations',
-	tableSchema: simplifiedApexLocationsSchema,
+const writer = new BatchWriter<SimplifiedApexLocation>({
+	batch_size: 50_000,
+	insertFn: async (data) => {
+		await simplifiedApexLocationsNew.insert('JSONEachRow', data);
+	},
+	title: simplifiedApexLocationsNew.tableName,
 });
 
 /**
@@ -24,8 +25,6 @@ const writer = new ClickHouseWriter<SimplifiedApexLocation>({
  */
 export async function processApexLocation(databaseOperation) {
 	//
-
-	await writer.init();
 
 	//
 	// Validate that the operation is an insert or update. Otherwise, send an email to the emergency contact.

@@ -1,20 +1,22 @@
 /* * */
 
-import { clickhouseService } from '@tmlmobilidade/clickhouse';
 import { Dates } from '@tmlmobilidade/dates';
-import { APEX_ON_BOARD_REFUNDS_SETTINGS, invalidateRides, parseSimplifiedApexOnBoardRefund, simplifiedApexOnBoardRefundsSchema } from '@tmlmobilidade/go-apex-pckg-common';
+import { APEX_ON_BOARD_REFUNDS_SETTINGS, invalidateRides, parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-apex-pckg-common';
 import { pcgidbTicketing } from '@tmlmobilidade/go-apex-pckg-databases';
+import { simplifiedApexOnBoardRefundsNew } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
-import { ClickHouseWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
-const writer = new ClickHouseWriter<SimplifiedApexOnBoardRefund>({
-	client: await clickhouseService.getClient(),
-	table: 'simplified_apex_on_board_refunds',
-	tableSchema: simplifiedApexOnBoardRefundsSchema,
+const writer = new BatchWriter<SimplifiedApexOnBoardRefund>({
+	batch_size: 5,
+	insertFn: async (data) => {
+		await simplifiedApexOnBoardRefundsNew.insert('JSONEachRow', data);
+	},
+	title: simplifiedApexOnBoardRefundsNew.tableName,
 });
 
 /**
@@ -24,8 +26,6 @@ const writer = new ClickHouseWriter<SimplifiedApexOnBoardRefund>({
  */
 export async function syncApexOnBoardRefunds(timeChunk: PerformInTimeChunksItem) {
 	//
-
-	await writer.init();
 
 	const chunkStartDate = Dates
 		.fromUnixTimestamp(timeChunk.start)
@@ -61,8 +61,8 @@ export async function syncApexOnBoardRefunds(timeChunk: PerformInTimeChunksItem)
 	await replicate<unknown>({
 
 		countDestinationDbFn: async () => {
-			const result = await clickhouseService.queryFromString<{ count: number }>(
-				'SELECT COUNT(*) as count FROM simplified_apex_on_board_refunds WHERE created_at >= $1 AND created_at <= $2',
+			const result = await simplifiedApexOnBoardRefundsNew.queryFromString<{ count: number }>(
+				'SELECT COUNT(*) as count FROM "simplified_apex"."simplified_apex_on_board_refunds" WHERE created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
 			return result[0].count;
@@ -74,15 +74,15 @@ export async function syncApexOnBoardRefunds(timeChunk: PerformInTimeChunksItem)
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await clickhouseService.queryFromString(
-				'DELETE FROM simplified_apex_on_board_refunds WHERE _id IN ($1)',
+			await simplifiedApexOnBoardRefundsNew.queryFromString(
+				'DELETE FROM "simplified_apex"."simplified_apex_on_board_refunds" WHERE _id IN ($1)',
 				{ 1: ids.map(id => `'${id}'`).join(', ') },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
-			const result = await clickhouseService.queryFromString<{ _id: string }>(
-				'SELECT _id FROM simplified_apex_on_board_refunds WHERE created_at >= $1 AND created_at <= $2',
+			const result = await simplifiedApexOnBoardRefundsNew.queryFromString<{ _id: string }>(
+				'SELECT _id FROM "simplified_apex"."simplified_apex_on_board_refunds" WHERE created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
 			return result.map(doc => doc._id);

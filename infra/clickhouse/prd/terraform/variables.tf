@@ -139,9 +139,9 @@ variable "block_volume_ocids" {
 	Each volume must be pre-created and match the count of replica nodes.
 	EOT
 	default = [
-		"ocid1.volume.oc1.eu-frankfurt-1.abtheljt7mjcnokm2bd5nlsu74emdyxbjfigb7hqhkcv5ljbc35z3oz23doa",
-		"ocid1.volume.oc1.eu-frankfurt-1.abtheljtq4chsufuuymafiubmrmz3tkxpw5atsamgfxdlcuuw5f3r3abfs4q",
-		"ocid1.volume.oc1.eu-frankfurt-1.abtheljt4dk5nlaciz72elgciodaclf2gawzy3czb6re7zdkayog5jtlxyxa"
+		"ocid1.volume.oc1.eu-frankfurt-1.abtheljtupqpydik3vogm4pxjbeorlrnm4fgex4evl6y7rh74uf62lkr25va",
+		"ocid1.volume.oc1.eu-frankfurt-1.abtheljtmfu5sqxgnri3nyzvur5iye54lbz4kucrdcszakhgp6oesjndolga",
+		"ocid1.volume.oc1.eu-frankfurt-1.abtheljtauzqt6a5owzs3tbxuhhmf5cd223wz6bd62ftpa4ju44lm4igtkea"
 	]
 }
 
