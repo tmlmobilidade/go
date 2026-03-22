@@ -1,19 +1,19 @@
 /* eslint-disable perfectionist/sort-classes */
 /* * */
 
-import { type ClickHouseColumn, ClickhouseService } from '@tmlmobilidade/clickhouse';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
-interface ClickHouseWriterParams<T> {
+interface BatchWriterParams<T> {
+
 	/**
 	 * The maximum number of items to hold in memory
 	 * before flushing to the database.
-	 * @default 10_000
+	 * @required
 	 */
-	batch_size?: number
+	batch_size: number
 
 	/**
 	 * How long, in milliseconds, data should be kept in memory before
@@ -22,19 +22,6 @@ interface ClickHouseWriterParams<T> {
 	 * @default disabled
 	 */
 	batch_timeout?: number
-
-	/**
-	 * The ClickHouse table name to write to.
-	 * @required
-	 */
-	databaseName: string
-
-	/**
-	 * If enabled, starts an async one-time table ensure operation in the constructor.
-	 * Use `await writer.init()` if you need to block startup until it is completed.
-	 * @default false
-	 */
-	ensure_table_on_init?: boolean
 
 	/**
 	 * How long to wait, in milliseconds, after the last write operation
@@ -46,78 +33,49 @@ interface ClickHouseWriterParams<T> {
 	idle_timeout?: number
 
 	/**
-	 * An instance of ClickHouseService to use for database operations.
+	 * The insert function to use for inserting data into the batch.
 	 * @required
 	 */
-	service: ClickhouseService
+	insertFn: (data: T[]) => Promise<void>
 
 	/**
-	 * The ClickHouse table name to write to.
+	 * The title of this BatchWriter instance,
+	 * used to identify the source of the logs.
 	 * @required
 	 */
-	tableName: string
-
-	/**
-	 * Optional ClickHouse column definitions for auto-creating the table.
-	 */
-	tableSchema: ClickHouseColumn<T>[]
-
-	/**
-	 * Optional transformation function to convert documents before writing to ClickHouse.
-	 * Use this to map MongoDB document fields to ClickHouse column names.
-	 */
-	transformFn?: (data: T) => Record<string, unknown>
+	title: string
 
 }
 
 /* * */
 
-export class ClickHouseWriter<T> {
+export class BatchWriter<T> {
 	//
 
-	//
-	private params: ClickHouseWriterParams<T>;
-	private service: ClickhouseService;
+	private params: BatchWriterParams<T>;
 
-	//
 	private dataBucketAlwaysAvailable: T[] = [];
 	private dataBucketFlushOps: T[] = [];
 
-	//
 	private batchTimeoutTimer: NodeJS.Timeout | null = null;
 	private idleTimeoutTimer: NodeJS.Timeout | null = null;
 	private sessionTimer = new Timer();
-	private isInitialized = false;
 
-	/* * */
-
-	constructor(params: ClickHouseWriterParams<T>) {
-		if (!params.tableName) throw new Error('CLICKHOUSEWRITER: Table name is required');
-		if (!params.service) throw new Error('CLICKHOUSEWRITER: ClickHouse service instance is required');
+	constructor(params: BatchWriterParams<T>) {
+		if (!params.title) throw new Error('BATCHWRITER: Title is required.');
+		if (!params.insertFn) throw new Error('BATCHWRITER: Insert function is required.');
+		if (!params.batch_size) throw new Error('BATCHWRITER: Batch size is required.');
 		this.params = params;
-		this.service = params.service;
 	}
 
 	/**
-	 * Initializes the writer by ensuring the table exists.
-	 * Safe to call multiple times.
-	 */
-	async init() {
-		if (this.isInitialized) return;
-		await this.service.verifyTableExists(this.params.databaseName, this.params.tableName);
-		this.isInitialized = true;
-	}
-
-	/**
-	 * Flushes the current batch of data to ClickHouse.
+	 * Flushes the current batch of data.
 	 * This method is called internally when the batch size or timeouts are reached,
 	 * but can also be called manually if needed.
 	 * @param callback Optional callback to execute after the flush is complete, receiving the flushed data as a parameter
 	 */
 	async flush(callback?: (data?: T[]) => Promise<void>) {
 		try {
-			await this.init();
-
 			//
 
 			const flushTimer = new Timer();
@@ -151,53 +109,31 @@ export class ClickHouseWriter<T> {
 			this.dataBucketAlwaysAvailable = [];
 
 			//
-			// Process the data for ClickHouse insert
+			// Process the data for batch insert
 
 			try {
-				// Transform data if a transformation function is provided
-				const insertData = this.dataBucketFlushOps.map((item) => {
-					if (this.params.transformFn) {
-						return this.params.transformFn(item);
-					}
-					return item as Record<string, unknown>;
-				});
-
-				// Insert data using ClickHouse client
-				await this.service.getClient().then(client => client.insert({
-					format: 'JSONEachRow',
-					table: `"${this.params.databaseName}"."${this.params.tableName}"`,
-					values: insertData,
-				}));
-
-				Logger.info(`CLICKHOUSEWRITER [${this.params.tableName}]: Flush | Length: ${this.dataBucketFlushOps.length} (session: ${sessionTimerResult}) (flush: ${flushTimer.get()})`);
-
-				//
+				// Call the insert function provided in the params to perform the actual database insertion.
+				if (!this.params.insertFn) throw new Error('BATCHWRITER: No insert function provided in params');
+				await this.params.insertFn(this.dataBucketFlushOps);
+				Logger.info(`BATCHWRITER [${this.params.title}]: Flush | Length: ${this.dataBucketFlushOps.length} (session: ${sessionTimerResult}) (flush: ${flushTimer.get()})`);
 				// Call the flush callback, if provided
-
-				if (callback) {
-					await callback(this.dataBucketFlushOps);
-				}
-
-				//
+				if (callback) await callback(this.dataBucketFlushOps);
 				// Reset the flush bucket
-
 				this.dataBucketFlushOps = [];
-
-				//
 			} catch (error) {
-				Logger.error(`CLICKHOUSEWRITER [${this.params.tableName}]: Error @ flush().insert(): ${(error as Error).message}`);
+				Logger.error(`BATCHWRITER [${this.params.title}]: Error @ flush().insert(): ${(error as Error).message}`);
 				throw error; // Re-throw to allow retry logic at higher level
 			}
 
 			//
 		} catch (error) {
-			Logger.error(`CLICKHOUSEWRITER [${this.params.tableName}]: Error @ flush(): ${(error as Error).message}`);
+			Logger.error(`BATCHWRITER [${this.params.title}]: Error @ flush(): ${(error as Error).message}`);
 			throw error; // Re-throw to allow retry logic at higher level
 		}
 	}
 
 	/**
-	 * Write data to the ClickHouse table.
+	 * Write data to the batch.
 	 * @param data The data to write
 	 * @param options Options for the write operation (reserved for future use)
 	 * @param writeCallback Callback function to call after the write operation is complete
@@ -205,7 +141,6 @@ export class ClickHouseWriter<T> {
 	 */
 	async write(data: T | T[], { flushCallback, writeCallback }: { flushCallback?: (data?: T[]) => Promise<void>, writeCallback?: () => Promise<void> } = {}) {
 		//
-		await this.init();
 
 		//
 		// Invalidate the previously set idle timeout timer
@@ -221,7 +156,7 @@ export class ClickHouseWriter<T> {
 
 		const batchSize = this.params.batch_size ?? 10_000;
 		if (this.dataBucketAlwaysAvailable.length >= batchSize) {
-			Logger.info(`CLICKHOUSEWRITER [${this.params.tableName}]: Batch full. Flushing data...`);
+			Logger.info(`BATCHWRITER [${this.params.title}]: Batch full. Flushing data...`);
 			await this.flush(flushCallback);
 		}
 
@@ -255,7 +190,7 @@ export class ClickHouseWriter<T> {
 
 		if (this.params.idle_timeout && this.params.idle_timeout > 0 && !this.idleTimeoutTimer) {
 			this.idleTimeoutTimer = setTimeout(async () => {
-				Logger.info(`CLICKHOUSEWRITER [${this.params.tableName}]: Idle timeout reached. Flushing data...`);
+				Logger.info(`BATCHWRITER [${this.params.title}]: Idle timeout reached. Flushing data...`);
 				await this.flush(flushCallback);
 			}, this.params.idle_timeout);
 		}
@@ -266,7 +201,7 @@ export class ClickHouseWriter<T> {
 
 		if (this.params.batch_timeout && this.params.batch_timeout > 0 && !this.batchTimeoutTimer) {
 			this.batchTimeoutTimer = setTimeout(async () => {
-				Logger.info(`CLICKHOUSEWRITER [${this.params.tableName}]: Batch timeout reached. Flushing data...`);
+				Logger.info(`BATCHWRITER [${this.params.title}]: Batch timeout reached. Flushing data...`);
 				await this.flush(flushCallback);
 			}, this.params.batch_timeout);
 		}

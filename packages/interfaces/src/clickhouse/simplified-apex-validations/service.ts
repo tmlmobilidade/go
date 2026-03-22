@@ -1,24 +1,24 @@
 /* * */
 
 import { simplifiedApexValidationsSchema } from '@/clickhouse/simplified-apex-validations/schema.js';
-import { ClickhouseService } from '@tmlmobilidade/clickhouse';
-import { asyncSingletonProxy } from '@tmlmobilidade/utils';
+import { ClickhouseTable } from '@tmlmobilidade/clickhouse';
 
 /* * */
 
-export class SimplifiedApexValidationsNewClass extends ClickhouseService {
+export class SimplifiedApexValidationsNew extends ClickhouseTable {
 	//
 
-	public static DatabaseName = 'simplified_apex';
-	public static TableName = 'simplified_apex_validations';
-	public static TableSchema = simplifiedApexValidationsSchema;
+	public static override DatabaseName = 'simplified_apex';
+	public static override TableName = 'simplified_apex_validations';
+	public static override TableSchema = simplifiedApexValidationsSchema;
 
-	override async init() {
-		await this.createDatabase(SimplifiedApexValidationsNewClass.DatabaseName);
+	public override async init() {
+		console.log('Initializing ClickHouse service for Simplified Apex Validations...');
+		await this.createDatabase();
 		await this.createTable(
-			SimplifiedApexValidationsNewClass.DatabaseName,
-			SimplifiedApexValidationsNewClass.TableName,
-			SimplifiedApexValidationsNewClass.TableSchema,
+			SimplifiedApexValidationsNew.DatabaseName,
+			SimplifiedApexValidationsNew.TableName,
+			SimplifiedApexValidationsNew.TableSchema,
 			'_id',
 			'ReplicatedMergeTree',
 		);
@@ -26,7 +26,3 @@ export class SimplifiedApexValidationsNewClass extends ClickhouseService {
 
 	//
 }
-
-/* * */
-
-export const simplifiedApexValidationsNew = asyncSingletonProxy(SimplifiedApexValidationsNewClass);
