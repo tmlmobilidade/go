@@ -63,7 +63,7 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 
 		countDestinationDbFn: async () => {
 			const result = await clickhouseService.queryFromString<{ count: number }>(
-				'SELECT COUNT(*) as count FROM simplified_apex_validations WHERE created_at >= $1 AND created_at <= $2',
+				'SELECT COUNT(*) as count FROM "simplified_apex"."simplified_apex_validations" WHERE created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
 			return result[0].count;
@@ -76,14 +76,14 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 
 		deleteDestinationDbFn: async (ids: string[]) => {
 			await clickhouseService.queryFromString(
-				'DELETE FROM simplified_apex_validations WHERE _id IN ($1)',
+				'DELETE FROM "simplified_apex"."simplified_apex_validations" WHERE _id IN ($1)',
 				{ 1: ids.map(id => `'${id}'`).join(', ') },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
 			const result = await clickhouseService.queryFromString<{ _id: string }>(
-				'SELECT _id FROM simplified_apex_validations WHERE created_at >= $1 AND created_at <= $2',
+				'SELECT _id FROM "simplified_apex"."simplified_apex_validations" WHERE created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
 			return result.map(doc => doc._id);

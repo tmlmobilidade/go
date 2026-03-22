@@ -82,7 +82,6 @@ export class ClickhouseService {
 			) ENGINE = ${engineString}
 			ORDER BY ${orderBy}
 		`;
-		console.log(createTableQuery);
 		// Perform the query to create the table
 		try {
 			await this.client.command({ query: createTableQuery });
@@ -307,11 +306,8 @@ export class ClickhouseService {
 	}
 
 	private async init() {
-		const url = await this.getClickhouseConnectionString();
-		this.client = createClient({
-			database: process.env.CLICKHOUSE_DATABASE,
-			url,
-		});
+		const clickhouseConnectionString = await this.getClickhouseConnectionString();
+		this.client = createClient({ url: clickhouseConnectionString });
 	}
 
 	private prepareNamedQueryParams(query: string, params?: Record<string, number | string>, context?: string): { query: string, queryParams: Record<string, number | string> } {

@@ -165,7 +165,7 @@ export class ClickHouseWriter<T> {
 				// Insert data using ClickHouse client
 				await this.service.getClient().then(client => client.insert({
 					format: 'JSONEachRow',
-					table: this.params.tableName,
+					table: `"${this.params.databaseName}"."${this.params.tableName}"`,
 					values: insertData,
 				}));
 
