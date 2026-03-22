@@ -16,16 +16,16 @@ export class PCGIDBTicketingService {
 
 	/**
 	 * Disallow direct instantiation of the service.
-	 * Use getInstance() instead to ensure singleton behavior.
+	 * Use getClient() instead to ensure singleton behavior.
 	 */
 	private constructor() {}
 
 	/**
 	 * Returns the singleton instance of the subclass.
 	 */
-	public static async getInstance() {
+	public static async getClient() {
 		// If no instance exists, create one and store the promise.
-		// This ensures that if multiple calls to getInstance() happen concurrently,
+		// This ensures that if multiple calls to getClient() happen concurrently,
 		// they will all await the same initialization process.
 		if (!this._instance) {
 			this._instance = (async () => {
@@ -38,7 +38,8 @@ export class PCGIDBTicketingService {
 		}
 		// Await the instance if it's still initializing,
 		// or return it immediately if ready.
-		return this._instance;
+		const instance = await this._instance;
+		return instance.client;
 	}
 
 	/**
