@@ -52,7 +52,7 @@ terraform apply
 ## Creating a Replicated Table
 
 ```sql
-CREATE TABLE events ON CLUSTER 'clickhouse-replica' (
+CREATE TABLE events ON CLUSTER 'default_cluster' (
     id   UUID,
     ts   DateTime,
     data String

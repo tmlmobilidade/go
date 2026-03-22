@@ -1,187 +1,79 @@
 /* * */
 
-import { type ClickHouseColumn } from '@/types.js';
-import { isSafeIdentifier } from '@/utils.js';
 import { ClickHouseClient, createClient } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
-import { asyncSingletonProxy } from '@tmlmobilidade/utils';
-import { readFile } from 'fs/promises';
 
 /* * */
 
-let GLOBAL_CHDB_TUNNEL_INSTANCE: SshTunnelService | undefined;
-
-/* * */
-
-class ClickhouseService {
+export class ClickHouseService {
 	//
 
-	private static _instance: ClickhouseService;
-	private static readonly safeQueryParamKey = /^[A-Za-z_][A-Za-z0-9_]*$/;
+	private static _instance: ClickHouseService;
+	private static _instancePromise: null | Promise<ClickHouseService> = null;
+
 	private client: ClickHouseClient;
+	private tunnel: null | SshTunnelService = null;
 
-	private constructor() {
-		const missingEnvVars = ['CLICKHOUSE_DATABASE'].filter(envVar => !process.env[envVar]);
-		if (missingEnvVars.length > 0) {
-			throw new Error(`Missing ClickHouse environment variables: ${missingEnvVars.join(', ')}`);
-		}
-	}
-
-	public static async getInstance() {
-		if (!ClickhouseService._instance) {
-			const instance = new ClickhouseService();
-			await instance.init();
-			ClickhouseService._instance = instance;
-		}
-		return ClickhouseService._instance;
+	/**
+	 * Returns the singleton instance of the subclass.
+	 */
+	static async getInstance() {
+		// If already initialized, return immediately
+		if (this._instance) return this._instance;
+		// If there is a promise for initialization in progress, await it.
+		// This handles the case where multiple calls to getInstance()
+		// happen concurrently before initialization completes.
+		if (this._instancePromise) return this._instancePromise;
+		// Otherwise, start initialization and store the promise.
+		this._instancePromise = (async () => {
+			const instance = new ClickHouseService();
+			await instance.connect();
+			this._instance = instance;
+			return instance;
+		})();
+		// Return the instance once ready.
+		return this._instancePromise;
 	}
 
 	/**
-	 * Creates a table in ClickHouse if it doesn't exist.
-	 * @param table The name of the table to create
-	 * @param schema The schema of the table to create
-	 * @param engine The ClickHouse table engine to use (default: ReplicatedMergeTree('/clickhouse/tables/{shard}/{table}', '{replica}'))
-	 * @param orderBy The ORDER BY clause for the table (default: tuple())
+	 * This is an escape hatch for executing queries that are not covered by the service's methods.
+	 * It should be used with caution. Always prefer using the provided methods for common operations
+	 * like creating tables or databases, or querying data, as they include safety checks and error handling.
+	 * Directly using the client can lead to SQL injection vulnerabilities or other unintended side effects.
+	 * @returns The ClickHouse client.
 	 */
-	public async createTable<T>(table: string, schema: ClickHouseColumn<T>[], engine = 'ReplicatedMergeTree(\'/clickhouse/tables/{shard}/{table}\', \'{replica}\')', orderBy = 'tuple()') {
-		// Validate the table name
-		if (!isSafeIdentifier(table)) {
-			throw new Error(`CLICKHOUSE [${table}]: Unsafe table name provided.`);
+	public async getClient() {
+		while (!this.client) {
+			Logger.info('ClickHouse client not initialized yet. Waiting...');
+			await new Promise(resolve => setTimeout(resolve, 100));
 		}
-
-		// Validate the engine
-		if (!isSafeIdentifier(engine)) {
-			throw new Error(`CLICKHOUSE [${engine}]: Unsafe engine type provided.`);
-		}
-
-		// Validate the orderBy
-		if (!isSafeIdentifier(orderBy)) {
-			throw new Error(`CLICKHOUSE [${orderBy}]: Unsafe orderBy clause provided.`);
-		}
-
-		// Validate the schema
-		const unsafeColumns = schema.filter(column => !isSafeIdentifier(column.name)).map(column => column.name);
-		if (unsafeColumns.length > 0) {
-			throw new Error(`CLICKHOUSE [${table}]: Unsafe column names provided: ${unsafeColumns.join(', ')}.`);
-		}
-
-		try {
-			const createTableQuery = `
-				CREATE TABLE IF NOT EXISTS ${table} ON CLUSTER 'clickhouse-replica' (
-					${schema.map(column => `${column.name} ${column.type}`).join(', ')}
-				) ENGINE = ${engine}
-				ORDER BY ${orderBy}
-			`;
-			await this.client.command({ query: createTableQuery });
-			Logger.info(`CLICKHOUSE [${table}]: Table created.`);
-		} catch (error) {
-			Logger.error(`CLICKHOUSE [${table}]: Error @ createTable(): ${(error as Error).message}`);
-			throw error;
-		}
+		return this.client;
 	}
 
 	/**
-	 * Deletes a table in ClickHouse if it exists.
-	 * @param table The name of the table to delete
+	 * Connects to ClickHouse, setting up the client instance.
+	 * If SSH tunneling is required, it establishes the tunnel first.
+	 * This method is called internally by the service and should not be used directly.
 	 */
-	public async deleteTable(table: string) {
-		// Validate the table name
-		if (!isSafeIdentifier(table)) {
-			throw new Error(`CLICKHOUSE [${table}]: Unsafe table name provided.`);
-		}
-		try {
-			await this.client.command({ query: `DROP TABLE IF EXISTS ${table} ON CLUSTER 'clickhouse-replica'` });
-			Logger.info(`CLICKHOUSE [${table}]: Table deleted.`);
-		} catch (error) {
-			Logger.error(`CLICKHOUSE [${table}]: Error @ deleteTable(): ${(error as Error).message}`);
-			throw error;
-		}
+	private async connect() {
+		const clickhouseConnectionString = await this.getClickhouseConnectionString();
+		this.client = createClient({ url: clickhouseConnectionString });
 	}
 
 	/**
-	 * Gets the ClickHouse client.
-	 * @returns The ClickHouse client
+	 * Constructs the ClickHouse connection string based on environment variables
+	 * and SSH tunneling configuration, and handles both direct connections and SSH-tunneled
+	 * connections, validating the necessary environment variables for each case.
+	 * This method is called internally by the service and should not be used directly.
+	 * @throws Will throw an error if required environment variables are missing or if the SSH tunnel setup fails.
+	 * @returns A promise that resolves to the ClickHouse connection string.
 	 */
-	public async getClient(): Promise<ClickHouseClient> {
-		return Promise.resolve(this.client);
-	}
-
-	/**
-	 * Gets a table in ClickHouse if it exists.
-	 * @param table The name of the table to get
-	 * @returns The table schema
-	 */
-	public async getTable(table: string) {
-		try {
-			// Validate the table name
-			if (!isSafeIdentifier(table)) {
-				throw new Error(`CLICKHOUSE [${table}]: Unsafe table name provided.`);
-			}
-			const result = await this.client.command({ query: `SHOW CREATE TABLE ${table}` });
-			Logger.info(`CLICKHOUSE [${table}]: Table schema retrieved.`);
-			return result;
-		} catch (error) {
-			Logger.error(`CLICKHOUSE [${table}]: Error @ getTable(): ${(error as Error).message}`);
-			throw error;
-		}
-	}
-
-	/**
-	 * Executes a query from a SQL file.
-	 * @param filePath Absolute or relative path to the .sql file
-	 * @param params Optional key-value substitutions applied to the query (replaces {key} placeholders)
-	 * @returns Query result rows typed as T
-	 */
-	public async queryFromFile<T>(filePath: string, params?: Record<string, number | string>): Promise<T[]> {
-		let sql: string;
-		try {
-			sql = await readFile(filePath, { encoding: 'utf-8' });
-		} catch (error) {
-			Logger.error(`CLICKHOUSE: Error reading SQL file "${filePath}": ${(error as Error).message}`);
-			throw error;
-		}
-
-		const { query, queryParams } = this.prepareNamedQueryParams(sql, params, filePath);
-
-		try {
-			const result = await this.client.query({
-				format: 'JSONEachRow',
-				query,
-				query_params: queryParams,
-			});
-			return result.json<T>();
-		} catch (error) {
-			Logger.error(`CLICKHOUSE: Error @ queryFromFile() "${filePath}": ${(error as Error).message}`);
-			throw error;
-		}
-	}
-
-	/**
-	 * Query from string.
-	 * @param query The SQL query to execute
-	 * @param params Optional positional substitutions applied to the query (replaces $1, $2, ... placeholders)
-	 */
-	public async queryFromString<T>(query: string, params?: Record<string, number | string>): Promise<T[]> {
-		const { query: normalizedQuery, queryParams } = this.preparePositionalQueryParams(query, params);
-
-		try {
-			const result = await this.client.query({
-				format: 'JSONEachRow',
-				query: normalizedQuery,
-				query_params: queryParams,
-			});
-			return result.json<T>();
-		} catch (error) {
-			Logger.error(`CLICKHOUSE: Error @ queryFromString() "${query}": ${(error as Error).message}`);
-			throw error;
-		}
-	}
-
 	private async getClickhouseConnectionString(): Promise<string> {
-		if (!process.env.CLICKHOUSE_DATABASE) {
-			throw new Error('Missing CLICKHOUSE_DATABASE');
-		}
+		//
+
+		//
+		// Validate required environment variables
 
 		if (process.env.CLICKHOUSE_TUNNEL_ENABLED !== 'true' && process.env.CLICKHOUSE_TUNNEL_ENABLED !== 'false') {
 			throw new Error('Missing CLICKHOUSE_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting CLICKHOUSE_TUNNEL_ENABLED to "true" or "false".');
@@ -232,13 +124,13 @@ class ClickhouseService {
 			maxRetries: 3,
 		};
 
-		if (!GLOBAL_CHDB_TUNNEL_INSTANCE) {
-			GLOBAL_CHDB_TUNNEL_INSTANCE = new SshTunnelService(sshConfig, sshOptions);
+		if (!this.tunnel) {
+			this.tunnel = new SshTunnelService(sshConfig, sshOptions);
 		}
 
 		Logger.info('Setting up SSH Tunnel for ClickHouse...');
 
-		const connection = await GLOBAL_CHDB_TUNNEL_INSTANCE.connect();
+		const connection = await this.tunnel.connect();
 		const addr = connection.address();
 
 		if (!addr || typeof addr !== 'object') {
@@ -249,99 +141,5 @@ class ClickhouseService {
 		return `http://${process.env.CLICKHOUSE_USER}:${process.env.CLICKHOUSE_PASSWORD}@localhost:${addr.port}`;
 	}
 
-	private getClickHouseParamType(value: number | string): 'Float64' | 'Int64' | 'String' {
-		if (typeof value === 'number') {
-			if (!Number.isFinite(value)) {
-				throw new Error('CLICKHOUSE: Query params do not support non-finite numbers.');
-			}
-			return Number.isInteger(value) ? 'Int64' : 'Float64';
-		}
-		return 'String';
-	}
-
-	private async init() {
-		const url = await this.getClickhouseConnectionString();
-		this.client = createClient({
-			database: process.env.CLICKHOUSE_DATABASE,
-			url,
-		});
-	}
-
-	private prepareNamedQueryParams(query: string, params?: Record<string, number | string>, context?: string): { query: string, queryParams: Record<string, number | string> } {
-		const queryParams: Record<string, number | string> = {};
-		const providedParams = params ?? {};
-		const usedKeys = new Set<string>();
-
-		for (const key of Object.keys(providedParams)) {
-			if (!ClickhouseService.safeQueryParamKey.test(key)) {
-				throw new Error(`CLICKHOUSE "${context ?? 'query'}": Unsafe query param name: "${key}"`);
-			}
-		}
-
-		// Backward compatibility: convert untyped placeholders ({name}) into typed ClickHouse params.
-		const normalizedQuery = query.replace(/\{([A-Za-z_][A-Za-z0-9_]*)\}/g, (_, key: string) => {
-			if (!(key in providedParams)) {
-				throw new Error(`CLICKHOUSE "${context ?? 'query'}": Missing query param: ${key}`);
-			}
-
-			usedKeys.add(key);
-			const value = providedParams[key];
-			queryParams[key] = value;
-
-			return `{${key}:${this.getClickHouseParamType(value)}}`;
-		});
-
-		// Also include explicitly typed placeholders already present in query (e.g. {id:UInt64}).
-		for (const match of normalizedQuery.matchAll(/\{([A-Za-z_][A-Za-z0-9_]*):[^}]+\}/g)) {
-			const key = match[1];
-			if (!(key in providedParams)) {
-				throw new Error(`CLICKHOUSE "${context ?? 'query'}": Missing query param: ${key}`);
-			}
-			usedKeys.add(key);
-			queryParams[key] = providedParams[key];
-		}
-
-		for (const key of Object.keys(providedParams)) {
-			if (!usedKeys.has(key)) {
-				throw new Error(`CLICKHOUSE "${context ?? 'query'}": Unused query param: ${key}`);
-			}
-		}
-
-		return { query: normalizedQuery, queryParams };
-	}
-
-	private preparePositionalQueryParams(query: string, params?: Record<string, number | string>): { query: string, queryParams: Record<string, number | string> } {
-		const queryParams: Record<string, number | string> = {};
-		const providedParams = params ?? {};
-		const usedKeys = new Set<string>();
-
-		const normalizedQuery = query.replace(/\$(\d+)/g, (_, index: string) => {
-			const key = String(index);
-			if (!(key in providedParams)) {
-				throw new Error(`CLICKHOUSE "${query}": Missing query param: $${key}`);
-			}
-
-			usedKeys.add(key);
-			const queryParamKey = `p${key}`;
-			const value = providedParams[key];
-			queryParams[queryParamKey] = value;
-
-			return `{${queryParamKey}:${this.getClickHouseParamType(value)}}`;
-		});
-
-		for (const key of Object.keys(providedParams)) {
-			if (!/^\d+$/.test(key)) {
-				throw new Error(`CLICKHOUSE "${query}": Invalid positional query param key: "${key}"`);
-			}
-			if (!usedKeys.has(key)) {
-				throw new Error(`CLICKHOUSE "${query}": Unused query param: $${key}`);
-			}
-		}
-
-		return { query: normalizedQuery, queryParams };
-	}
+	//
 }
-
-/* * */
-
-export const clickhouseService = asyncSingletonProxy(ClickhouseService);

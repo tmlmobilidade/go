@@ -123,7 +123,7 @@ runcmd:
         <macros>
             <shard>01</shard>
             <replica>replica-${node_index + 1}</replica>
-            <cluster>clickhouse-replica</cluster>
+            <cluster>default_cluster</cluster>
         </macros>
     </clickhouse>
     MACROEOF
@@ -135,7 +135,7 @@ runcmd:
     cat > /opt/app/persistent-data/config.d/cluster.xml <<'CLUSTEREOF'
     <clickhouse>
         <remote_servers>
-            <clickhouse-replica>
+            <default_cluster>
                 <shard>
                 %{ for ip in all_private_ips ~}
                   <replica>
@@ -145,7 +145,7 @@ runcmd:
                 %{ endfor ~}
                   <internal_replication>true</internal_replication>
                 </shard>
-            </clickhouse-replica>
+            </default_cluster>
         </remote_servers>
     </clickhouse>
     CLUSTEREOF

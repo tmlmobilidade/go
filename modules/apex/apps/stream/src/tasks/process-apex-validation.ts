@@ -1,18 +1,19 @@
 /* * */
 
-import { clickhouseService } from '@tmlmobilidade/clickhouse';
-import { invalidateRides, parseSimplifiedApexValidation, simplifiedApexValidationsSchema } from '@tmlmobilidade/go-apex-pckg-common';
+import { invalidateRides, parseSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-common';
+import { simplifiedApexValidationsNew } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
-import { ClickHouseWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
-const writer = new ClickHouseWriter<SimplifiedApexValidation>({
-	batch_size: 250,
-	client: await clickhouseService.getClient(),
-	table: 'simplified_apex_validations',
-	tableSchema: simplifiedApexValidationsSchema,
+const writer = new BatchWriter<SimplifiedApexValidation>({
+	batch_size: 100,
+	insertFn: async (data) => {
+		await simplifiedApexValidationsNew.insert('JSONEachRow', data);
+	},
+	title: simplifiedApexValidationsNew.tableName,
 });
 
 /**
@@ -24,8 +25,6 @@ const writer = new ClickHouseWriter<SimplifiedApexValidation>({
  */
 export async function processApexValidation(databaseOperation) {
 	//
-
-	await writer.init();
 
 	//
 	// Validate that the operation is an insert or update. Otherwise, send an email to the emergency contact.
