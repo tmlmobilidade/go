@@ -17,6 +17,10 @@ export type ClickHouseType =
   | `LowCardinality(${string})` | `Map(${string}, ${string})`
   | `Nullable(${string})`;
 
+/**
+ * Definition of a ClickHouse column,
+ * including its name, type, and various optional properties.
+ */
 export interface ClickHouseColumn<T> {
 	/** Alias expression (computed on read) */
 	alias?: string
@@ -62,3 +66,10 @@ export interface ClickHouseColumn<T> {
 	/** The ClickHouse data type */
 	type: ClickHouseType
 }
+
+/**
+ * Definition for allowed ClickHouse table engines.
+ * Please avoid using other engines before consulting with the team.
+ * Only `ReplicatedMergeTree` supports automatic replication.
+ */
+export type ClickHouseTableEngine = 'ReplicatedMergeTree';

@@ -13,8 +13,9 @@ import { ClickHouseWriter } from '@tmlmobilidade/writers';
 
 const writer = new ClickHouseWriter<SimplifiedApexValidation>({
 	batch_size: 50_000,
-	client: await clickhouseService.getClient(),
-	table: 'simplified_apex_validations',
+	databaseName: 'simplified_apex',
+	service: clickhouseService,
+	tableName: 'simplified_apex_validations',
 	tableSchema: simplifiedApexValidationsSchema,
 });
 

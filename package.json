@@ -34,6 +34,7 @@
 		"dev:alerts": "npm run build:alerts:packages && ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
 		"dev:apex": "npm run build:apex:packages && ENVIRONMENT=development dotenv-run -f ./modules/apex/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-apex-*",
 		"dev:apex:sync-validations": "npm run build:apex:packages && ENVIRONMENT=development dotenv-run -f ./modules/apex/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-apex-sync-validations",
+		"dev:apex:sync-validations:prod": "npm run build:apex:packages && ENVIRONMENT=development dotenv-run -f ./modules/apex/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-apex-sync-validations",
 		"dev:auth": "ENVIRONMENT=development dotenv-run -f ./modules/auth/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-auth-*",
 		"dev:auth:prod": "ENVIRONMENT=development dotenv-run -f ./modules/auth/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-auth-*",
 		"dev:controller": "ENVIRONMENT=development dotenv-run -f ./modules/controller/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-*",

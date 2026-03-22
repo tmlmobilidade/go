@@ -1,6 +1,6 @@
 /* * */
 
-import { type ClickHouseColumn } from '@/types.js';
+import { type ClickHouseColumn, ClickHouseTableEngine } from '@/types.js';
 import { isSafeIdentifier } from '@/utils.js';
 import { ClickHouseClient, createClient } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
@@ -14,19 +14,13 @@ let GLOBAL_CHDB_TUNNEL_INSTANCE: SshTunnelService | undefined;
 
 /* * */
 
-class ClickhouseService {
+export class ClickhouseService {
 	//
 
 	private static _instance: ClickhouseService;
 	private static readonly safeQueryParamKey = /^[A-Za-z_][A-Za-z0-9_]*$/;
-	private client: ClickHouseClient;
 
-	private constructor() {
-		const missingEnvVars = ['CLICKHOUSE_DATABASE'].filter(envVar => !process.env[envVar]);
-		if (missingEnvVars.length > 0) {
-			throw new Error(`Missing ClickHouse environment variables: ${missingEnvVars.join(', ')}`);
-		}
-	}
+	private client: ClickHouseClient;
 
 	public static async getInstance() {
 		if (!ClickhouseService._instance) {
@@ -38,45 +32,47 @@ class ClickhouseService {
 	}
 
 	/**
-	 * Creates a table in ClickHouse if it doesn't exist.
-	 * @param table The name of the table to create
-	 * @param schema The schema of the table to create
-	 * @param engine The ClickHouse table engine to use (default: ReplicatedMergeTree('/clickhouse/tables/{shard}/{table}', '{replica}'))
-	 * @param orderBy The ORDER BY clause for the table (default: tuple())
+	 * Creates a new table in ClickHouse with the specified schema, orderBy, and engine.
+	 * @param databaseName The name of the database where the table will be created.
+	 * @param tableName The name of the table to create.
+	 * @param schema An array of column definitions for the table schema.
+	 * @param orderBy The column name to use in the ORDER BY clause (default is '_id').
+	 * @param engine The ClickHouse table engine to use (default is 'ReplicatedMergeTree').
+	 * @throws Will throw an error if any of the inputs are unsafe or if the table creation fails.
+	 * @returns A promise that resolves when the table is created successfully.
+	 * @example
+	 * await clickhouseService.createNewTable('my_database', 'my_table', [
+	 *   { name: 'id', type: 'UInt64' },
+	 *   { name: 'name', type: 'String' },
+	 *   { name: 'created_at', type: 'DateTime' },
+	 * ], 'id', 'ReplicatedMergeTree');
 	 */
-	public async createTable<T>(table: string, schema: ClickHouseColumn<T>[], engine = 'ReplicatedMergeTree(\'/clickhouse/tables/{shard}/{table}\', \'{replica}\')', orderBy = 'tuple()') {
-		// Validate the table name
-		if (!isSafeIdentifier(table)) {
-			throw new Error(`CLICKHOUSE [${table}]: Unsafe table name provided.`);
-		}
-
-		// Validate the engine
-		if (!isSafeIdentifier(engine)) {
-			throw new Error(`CLICKHOUSE [${engine}]: Unsafe engine type provided.`);
-		}
-
-		// Validate the orderBy
-		if (!isSafeIdentifier(orderBy)) {
-			throw new Error(`CLICKHOUSE [${orderBy}]: Unsafe orderBy clause provided.`);
-		}
-
-		// Validate the schema
+	public async createNewTable<T>(databaseName: string, tableName: string, schema: ClickHouseColumn<T>[], orderBy = '_id', engine: ClickHouseTableEngine = 'ReplicatedMergeTree') {
+		// Validate the inputs are safe identifiers to prevent SQL injection
+		if (!isSafeIdentifier(databaseName)) throw new Error(`CLICKHOUSE [${databaseName}]: Unsafe database name provided.`);
+		if (!isSafeIdentifier(tableName)) throw new Error(`CLICKHOUSE [${tableName}]: Unsafe table name provided.`);
+		if (!isSafeIdentifier(engine)) throw new Error(`CLICKHOUSE [${engine}]: Unsafe engine type provided.`);
+		if (!isSafeIdentifier(orderBy)) throw new Error(`CLICKHOUSE [${orderBy}]: Unsafe orderBy clause provided.`);
+		// Validate the schema columns are safe identifiers
 		const unsafeColumns = schema.filter(column => !isSafeIdentifier(column.name)).map(column => column.name);
-		if (unsafeColumns.length > 0) {
-			throw new Error(`CLICKHOUSE [${table}]: Unsafe column names provided: ${unsafeColumns.join(', ')}.`);
-		}
-
+		if (unsafeColumns.length > 0) throw new Error(`CLICKHOUSE [${tableName}]: Unsafe column names provided: ${unsafeColumns.join(', ')}.`);
+		// Setup the engine string based on the provided engine type
+		const engineString = this.getEngineQueryString(engine, tableName);
+		// Setup the full CREATE TABLE query
+		const createTableQuery = `
+			CREATE DATABASE IF NOT EXISTS "${databaseName}" on CLUSTER default_cluster;
+			CREATE TABLE IF NOT EXISTS "${databaseName}"."${tableName}" ON CLUSTER default_cluster (
+				${schema.map(column => `${column.name} ${column.type}`).join(', ')}
+			) ENGINE = ${engineString}
+			ORDER BY ${orderBy}
+		`;
+		console.log(createTableQuery);
+		// Perform the query to create the table
 		try {
-			const createTableQuery = `
-				CREATE TABLE IF NOT EXISTS ${table} ON CLUSTER 'clickhouse-replica' (
-					${schema.map(column => `${column.name} ${column.type}`).join(', ')}
-				) ENGINE = ${engine}
-				ORDER BY ${orderBy}
-			`;
 			await this.client.command({ query: createTableQuery });
-			Logger.info(`CLICKHOUSE [${table}]: Table created.`);
+			Logger.info(`CLICKHOUSE [${tableName}]: Table created.`);
 		} catch (error) {
-			Logger.error(`CLICKHOUSE [${table}]: Error @ createTable(): ${(error as Error).message}`);
+			Logger.error(`CLICKHOUSE [${tableName}]: Error @ createNewTable(): ${(error as Error).message}`);
 			throw error;
 		}
 	}
@@ -91,7 +87,7 @@ class ClickhouseService {
 			throw new Error(`CLICKHOUSE [${table}]: Unsafe table name provided.`);
 		}
 		try {
-			await this.client.command({ query: `DROP TABLE IF EXISTS ${table} ON CLUSTER 'clickhouse-replica'` });
+			await this.client.command({ query: `DROP TABLE IF EXISTS ${table} ON CLUSTER default_cluster` });
 			Logger.info(`CLICKHOUSE [${table}]: Table deleted.`);
 		} catch (error) {
 			Logger.error(`CLICKHOUSE [${table}]: Error @ deleteTable(): ${(error as Error).message}`);
@@ -158,18 +154,18 @@ class ClickhouseService {
 	}
 
 	/**
-	 * Query from string.
-	 * @param query The SQL query to execute
-	 * @param params Optional positional substitutions applied to the query (replaces $1, $2, ... placeholders)
+	 * Executes a query from a string.
+	 * @param query The SQL query to execute, with optional {key} placeholders for parameters.
+	 * @param params Optional key-value substitutions applied to the query (replaces {key} placeholders).
 	 */
 	public async queryFromString<T>(query: string, params?: Record<string, number | string>): Promise<T[]> {
-		const { query: normalizedQuery, queryParams } = this.preparePositionalQueryParams(query, params);
-
+		// Validate query param keys and prepare the query statement
+		const preparedQuery = this.preparePositionalQueryParams(query, params);
 		try {
 			const result = await this.client.query({
 				format: 'JSONEachRow',
-				query: normalizedQuery,
-				query_params: queryParams,
+				query: preparedQuery.query,
+				query_params: preparedQuery.query_params,
 			});
 			return result.json<T>();
 		} catch (error) {
@@ -178,10 +174,36 @@ class ClickhouseService {
 		}
 	}
 
-	private async getClickhouseConnectionString(): Promise<string> {
-		if (!process.env.CLICKHOUSE_DATABASE) {
-			throw new Error('Missing CLICKHOUSE_DATABASE');
+	/**
+	 * Verifies that a table exists in ClickHouse by attempting to retrieve its schema.
+	 * @throws Will throw an error if the table does not exist or if the table name is unsafe.
+	 * @param databaseName The name of the database where the table is located.
+	 * @param tableName The name of the table to verify.
+	 * @param throwIfNotExists If true, the function will throw an error if the table does not exist.
+	 * @returns A boolean indicating whether the table exists
+	 */
+	public async verifyTableExists(databaseName: string, tableName: string, throwIfNotExists = true): Promise<boolean> {
+		try {
+			// Validate the table name
+			if (!isSafeIdentifier(tableName)) throw new Error(`CLICKHOUSE [${tableName}]: Unsafe table name provided.`);
+			const response = await this.client.query({ format: 'JSONEachRow', query: `EXISTS TABLE "${databaseName}"."${tableName}";` });
+			const responseData = await response.json<{ result: number }>();
+			const tableExists = responseData[0]?.result === 1;
+			// Throw an error if the table does not exist and throwIfNotExists is true
+			if (!tableExists && throwIfNotExists) throw new Error(`CLICKHOUSE [${tableName}]: Table "${databaseName}"."${tableName}" does not exist.`);
+			// Otherwise, return result
+			return tableExists;
+		} catch (error) {
+			Logger.error(`CLICKHOUSE [${tableName}]: Error @ verifyTableExists(): ${(error as Error).message}`);
+			throw error;
 		}
+	}
+
+	private async getClickhouseConnectionString(): Promise<string> {
+		//
+
+		//
+		// Validate required environment variables
 
 		if (process.env.CLICKHOUSE_TUNNEL_ENABLED !== 'true' && process.env.CLICKHOUSE_TUNNEL_ENABLED !== 'false') {
 			throw new Error('Missing CLICKHOUSE_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting CLICKHOUSE_TUNNEL_ENABLED to "true" or "false".');
@@ -259,6 +281,15 @@ class ClickhouseService {
 		return 'String';
 	}
 
+	private getEngineQueryString(engine: ClickHouseTableEngine, tableName: string): string {
+		switch (engine) {
+			case 'ReplicatedMergeTree':
+				return `ReplicatedMergeTree('/clickhouse/tables/{shard}/${tableName}', '{replica}')`;
+			default:
+				throw new Error(`CLICKHOUSE [${tableName}]: Unsupported engine type: ${engine}`);
+		}
+	}
+
 	private async init() {
 		const url = await this.getClickhouseConnectionString();
 		this.client = createClient({
@@ -310,7 +341,7 @@ class ClickhouseService {
 		return { query: normalizedQuery, queryParams };
 	}
 
-	private preparePositionalQueryParams(query: string, params?: Record<string, number | string>): { query: string, queryParams: Record<string, number | string> } {
+	private preparePositionalQueryParams(query: string, params?: Record<string, number | string>): { query: string, query_params: Record<string, number | string> } {
 		const queryParams: Record<string, number | string> = {};
 		const providedParams = params ?? {};
 		const usedKeys = new Set<string>();
@@ -338,7 +369,7 @@ class ClickhouseService {
 			}
 		}
 
-		return { query: normalizedQuery, queryParams };
+		return { query: normalizedQuery, query_params: queryParams };
 	}
 }
 
