@@ -2,6 +2,7 @@
 
 import { processVehicleEvent } from '@/task.js';
 import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { simplifiedVehicleEventsNew } from '@tmlmobilidade/interfaces';
 
 /* * */
 
@@ -9,6 +10,7 @@ import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
 	//
 
 	await rawdbVehicleEvents.connect();
+	await simplifiedVehicleEventsNew.init();
 
 	//
 	// Watch for changes to the MongoDB collections

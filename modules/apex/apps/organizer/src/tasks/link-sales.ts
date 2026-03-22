@@ -54,7 +54,7 @@
 
 // 		const unlinkedOnBoardSales = await simplifiedApexOnBoardSalesNew.queryFromString<SaleRow>(`
 // 			SELECT _id, card_serial_number, created_at
-// 			FROM "simplified_apex"."simplified_apex_on_board_sales"
+// 			FROM "operation"."simplified_apex_on_board_sales"
 // 			WHERE validation_id IS NULL
 // 			ORDER BY created_at DESC
 // 			LIMIT 200000
@@ -67,7 +67,7 @@
 // 			// If no transaction is found, skip this iteration.
 // 			const [validationTransaction] = await simplifiedApexValidationsNew.queryFromString<ValidationRow>(`
 // 				SELECT _id, event_type, line_id, on_board_refund_id, pattern_id, stop_id, trip_id, units_qty, validation_status, vehicle_id
-// 				FROM "simplified_apex"."simplified_apex_validations"
+// 				FROM "operation"."simplified_apex_validations"
 // 				WHERE card_serial_number = '${onBoardSale.card_serial_number}'
 // 				ORDER BY created_at DESC
 // 				LIMIT 1

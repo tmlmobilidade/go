@@ -1,22 +1,10 @@
 # # #
 # PROJECT VARIABLES
 
-variable "project_name" {
+variable "display_name" {
 	type = string
-	description = "The name of the project. Used as a prefix for resource names and tags."
-	default = "iso-go"
-}
-
-variable "module_name" {
-	type = string
-	description = "The component name for this module. Used for tagging and identification."
-	default = "mongodb"
-}
-
-variable "environment" {
-	type = string
-	description = "The environment for this module (e.g., stg, prd)."
-	default = "stg"
+	description = "The name of the deployment. Used as the display name for resource names and tags."
+	default = "iso-go-prd-mongodb"
 }
 
 variable "instance_count" {
@@ -64,6 +52,7 @@ variable "compartment_ocid" {
 	The OCID of the compartment where resources will be created in.
 	Current compartment is set to: cmet
 	EOT
+	default = "ocid1.compartment.oc1..aaaaaaaade3kztlncv2ydpnbb5jl5hl6yqxyhkmezxhtj5dfjzsv27i3wf5a"
 }
 
 variable "availability_domain" {
@@ -90,6 +79,7 @@ variable "subnet_ocid" {
 	IGW, route table, security list, or NSG.
 	Defaults to the shared pub-cmet subnet.
 	EOT
+	default = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaaqwztdskuufaajsp2wz3htvywxlywkwcj63zof52hr7gywnnssbxa"
 }
 
 variable "private_ips" {
@@ -99,9 +89,9 @@ variable "private_ips" {
 	Must be free within the existing subnet — verify in OCI Console > Networking before applying.
 	EOT
 	default = [
-		"10.81.101.141",
-		"10.81.101.142",
-		"10.81.101.143"
+		"10.81.101.161",
+		"10.81.101.162",
+		"10.81.101.163"
 	]
 }
 
@@ -112,6 +102,7 @@ variable "private_ips" {
 variable "base_image_ocid" {
 	type = string
 	description = "OCID of the Packer-built image."
+	default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaaxhrwqtvbviatfloexqdqrnv37pt2x7qdjkycup36uw4svbb4gr6a"
 }
 
 variable "vm_shape" {
@@ -147,8 +138,12 @@ variable "block_volume_ocids" {
 	description = <<-EOT
 	List of OCIDs for existing block volumes to attach as data disks to the replica nodes.
 	Each volume must be pre-created and match the count of replica nodes.
-	Example: ["10.0.1.20", "10.0.1.21", "10.0.1.22"]
 	EOT
+	default = [
+		"ocid1.volume.oc1.eu-frankfurt-1.abtheljt27vzjct7ftkzwlym2fjabrdpfkz5mu7y5a7ilqkfg64ixnc65lya",
+		"ocid1.volume.oc1.eu-frankfurt-1.abtheljtdf4spcknv6luvg6dgaltggnlix7up26w6qs7infz57m4nuqbb7ja",
+		"ocid1.volume.oc1.eu-frankfurt-1.abtheljtdtarvhpgxefurosibaint237tcglfxjmxlry66buxest2356byca",
+	]
 }
 
 
