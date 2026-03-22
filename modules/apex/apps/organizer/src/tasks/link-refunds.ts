@@ -1,28 +1,27 @@
 // /* * */
 
+// import { escapeClickHouseString, queryRows, updateById } from '@/utils/clickhouse.js';
 // import { Dates } from '@tmlmobilidade/dates';
 // import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/go-apex-pckg-parse';
 // import { rides } from '@tmlmobilidade/interfaces';
 // import { Logger } from '@tmlmobilidade/logger';
 // import { Timer } from '@tmlmobilidade/timer';
 
-// import { escapeClickHouseString, queryRows, updateById } from '@/utils/clickhouse.js';
-
 // /* * */
 
-// type RefundRow = {
+// interface RefundRow {
 // 	_id: string
 // 	card_serial_number: string
 // 	created_at: number
 // 	on_board_sale_id: null | string
 // 	trip_id: null | string
-// };
+// }
 
-// type SaleRow = {
+// interface SaleRow {
 // 	_id: string
-// };
+// }
 
-// type ValidationRow = {
+// interface ValidationRow {
 // 	_id: string
 // 	event_type: number
 // 	line_id: string
@@ -32,7 +31,7 @@
 // 	units_qty: null | number
 // 	validation_status: number
 // 	vehicle_id: number
-// };
+// }
 
 // /**
 //  * This function links Refunds with Sales and Validation transactions.
@@ -142,8 +141,7 @@
 // 		Logger.success(`Linked ${totalLinkedOnBoardRefunds} out of ${totalUnlinkedOnBoardRefunds} OnBoardRefunds in ${globalTimer.get()}.`);
 
 // 		//
-// 	}
-// 	catch (err) {
+// 	} catch (err) {
 // 		console.log('An error occurred. Halting execution.', err);
 // 		console.log('Retrying in 10 seconds...');
 // 		setTimeout(() => process.exit(0), 10000); // after 10 seconds
