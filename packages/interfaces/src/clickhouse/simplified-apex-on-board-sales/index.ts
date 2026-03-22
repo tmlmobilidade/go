@@ -1,2 +1,2 @@
-export * from '@/clickhouse/simplified-apex-validations/schema.js';
-export * from '@/clickhouse/simplified-apex-validations/service.js';
+export * from '@/clickhouse/simplified-apex-on-board-sales/schema.js';
+export * from '@/clickhouse/simplified-apex-on-board-sales/service.js';

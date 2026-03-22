@@ -1,21 +1,22 @@
 /* * */
 
-import { clickhouseService } from '@tmlmobilidade/clickhouse';
 import { Dates } from '@tmlmobilidade/dates';
-import { APEX_ON_BOARD_SALES_SETTINGS, invalidateRides, parseSimplifiedApexOnBoardSale, simplifiedApexOnBoardSalesSchema } from '@tmlmobilidade/go-apex-pckg-common';
+import { APEX_ON_BOARD_SALES_SETTINGS, invalidateRides, parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-apex-pckg-common';
 import { pcgidbTicketing } from '@tmlmobilidade/go-apex-pckg-databases';
+import { simplifiedApexOnBoardSalesNew } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
-import { ClickHouseWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
-const writer = new ClickHouseWriter<SimplifiedApexOnBoardSale>({
+const writer = new BatchWriter<SimplifiedApexOnBoardSale>({
 	batch_size: 50_000,
-	client: await clickhouseService.getClient(),
-	table: 'simplified_apex_on_board_sales',
-	tableSchema: simplifiedApexOnBoardSalesSchema,
+	insertFn: async (data) => {
+		await simplifiedApexOnBoardSalesNew.insert('JSONEachRow', data);
+	},
+	title: simplifiedApexOnBoardSalesNew.tableName,
 });
 
 /**
@@ -25,8 +26,6 @@ const writer = new ClickHouseWriter<SimplifiedApexOnBoardSale>({
  */
 export async function syncApexOnBoardSales(timeChunk: PerformInTimeChunksItem) {
 	//
-
-	await writer.init();
 
 	const chunkStartDate = Dates
 		.fromUnixTimestamp(timeChunk.start)
@@ -62,8 +61,8 @@ export async function syncApexOnBoardSales(timeChunk: PerformInTimeChunksItem) {
 	await replicate<unknown>({
 
 		countDestinationDbFn: async () => {
-			const result = await clickhouseService.queryFromString<{ count: number }>(
-				'SELECT COUNT(*) as count FROM simplified_apex_on_board_sales WHERE created_at >= $1 AND created_at <= $2',
+			const result = await simplifiedApexOnBoardSalesNew.queryFromString<{ count: number }>(
+				'SELECT COUNT(*) as count FROM "simplified_apex"."simplified_apex_on_board_sales" WHERE created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
 			return result[0].count;
@@ -75,15 +74,15 @@ export async function syncApexOnBoardSales(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await clickhouseService.queryFromString(
-				'DELETE FROM simplified_apex_on_board_sales WHERE _id IN ($1)',
+			await simplifiedApexOnBoardSalesNew.queryFromString(
+				'DELETE FROM "simplified_apex"."simplified_apex_on_board_sales" WHERE _id IN ($1)',
 				{ 1: ids.map(id => `'${id}'`).join(', ') },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
-			const result = await clickhouseService.queryFromString<{ _id: string }>(
-				'SELECT _id FROM simplified_apex_on_board_sales WHERE created_at >= $1 AND created_at <= $2',
+			const result = await simplifiedApexOnBoardSalesNew.queryFromString<{ _id: string }>(
+				'SELECT _id FROM "simplified_apex"."simplified_apex_on_board_sales" WHERE created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
 			return result.map(doc => doc._id);
