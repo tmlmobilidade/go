@@ -23,7 +23,7 @@ export abstract class ClickHouseTable<T> {
 
 	public async init() {
 		const instance = await ClickHouseService.getInstance();
-		this.client = instance.getClient();
+		this.client = await instance.getClient();
 		await this.ensureDatabase();
 		await this.ensureTable();
 		await this.postInit();

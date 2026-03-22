@@ -28,8 +28,7 @@ export class ClickHouseService {
 		// Otherwise, start initialization and store the promise.
 		this._instancePromise = (async () => {
 			const instance = new ClickHouseService();
-			// Optional lifecycle hooks
-			if (typeof instance.connect === 'function') await instance.connect();
+			await instance.connect();
 			this._instance = instance;
 			return instance;
 		})();
@@ -44,7 +43,11 @@ export class ClickHouseService {
 	 * Directly using the client can lead to SQL injection vulnerabilities or other unintended side effects.
 	 * @returns The ClickHouse client.
 	 */
-	public getClient() {
+	public async getClient() {
+		while (!this.client) {
+			Logger.info('ClickHouse client not initialized yet. Waiting...');
+			await new Promise(resolve => setTimeout(resolve, 100));
+		}
 		return this.client;
 	}
 

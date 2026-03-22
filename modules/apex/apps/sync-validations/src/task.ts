@@ -3,7 +3,7 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { APEX_VALIDATIONS_SETTINGS, invalidateRides, parseSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-common';
 import { pcgidbValidations } from '@tmlmobilidade/go-apex-pckg-databases';
-import { SimplifiedApexValidationsNew } from '@tmlmobilidade/interfaces';
+import { simplifiedApexValidationsNew } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
@@ -14,13 +14,9 @@ import { BatchWriter } from '@tmlmobilidade/writers';
 const writer = new BatchWriter<SimplifiedApexValidation>({
 	batch_size: 50_000,
 	insertFn: async (data) => {
-		await SimplifiedApexValidationsNew.insert({
-			format: 'JSONEachRow',
-			table: `"${this.params.databaseName}"."${this.params.tableName}"`,
-			values: data,
-		});
+		await simplifiedApexValidationsNew.insert('JSONEachRow', data);
 	},
-	title: SimplifiedApexValidationsNew.TableName,
+	title: simplifiedApexValidationsNew.tableName,
 });
 
 /**
@@ -30,8 +26,6 @@ const writer = new BatchWriter<SimplifiedApexValidation>({
  */
 export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 	//
-
-	await writer.init();
 
 	const chunkStartDate = Dates
 		.fromUnixTimestamp(timeChunk.start)
@@ -66,7 +60,7 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 	await replicate<unknown>({
 
 		countDestinationDbFn: async () => {
-			const result = await SimplifiedApexValidationsNew.queryFromString<{ count: number }>(
+			const result = await simplifiedApexValidationsNew.queryFromString<{ count: number }>(
 				'SELECT COUNT(*) as count FROM "simplified_apex"."simplified_apex_validations" WHERE created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
@@ -79,14 +73,14 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await SimplifiedApexValidationsNew.queryFromString(
+			await simplifiedApexValidationsNew.queryFromString(
 				'DELETE FROM "simplified_apex"."simplified_apex_validations" WHERE _id IN ($1)',
 				{ 1: ids.map(id => `'${id}'`).join(', ') },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
-			const result = await SimplifiedApexValidationsNew.queryFromString<{ _id: string }>(
+			const result = await simplifiedApexValidationsNew.queryFromString<{ _id: string }>(
 				'SELECT _id FROM "simplified_apex"."simplified_apex_validations" WHERE created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);

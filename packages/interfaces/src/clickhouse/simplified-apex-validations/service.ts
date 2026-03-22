@@ -6,7 +6,7 @@ import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 
 /* * */
 
-export class SimplifiedApexValidationsNew extends ClickHouseTable<SimplifiedApexValidation> {
+class SimplifiedApexValidationsNewClass extends ClickHouseTable<SimplifiedApexValidation> {
 	//
 
 	override databaseName = 'simplified_apex';
@@ -14,8 +14,12 @@ export class SimplifiedApexValidationsNew extends ClickHouseTable<SimplifiedApex
 	override tableName = 'simplified_apex_validations';
 
 	public override async postInit(): Promise<void> {
-		console.log('Initializing ClickHouse service for Simplified Apex Validations...');
+		console.log('Post init ClickHouse service for Simplified Apex Validations...');
 	}
 
 	//
 }
+
+/* * */
+
+export const simplifiedApexValidationsNew = new SimplifiedApexValidationsNewClass();
