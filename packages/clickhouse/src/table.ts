@@ -193,9 +193,9 @@ export abstract class ClickHouseTable<T> {
 	private getEngine(): string {
 		switch (this.engine) {
 			case 'ReplicatedMergeTree':
-				return `ReplicatedMergeTree('/clickhouse/tables/{shard}/${this.tableName}', '{replica}')`;
+				return `ReplicatedMergeTree('/clickhouse/tables/{shard}/${this.databaseName}/${this.tableName}', '{replica}')`;
 			default:
-				throw new Error(`CLICKHOUSE [${this.tableName}]: Unsupported engine type: ${this.engine}`);
+				throw new Error(`CLICKHOUSE [${this.databaseName}/${this.tableName}]: Unsupported engine type: ${this.engine}`);
 		}
 	}
 
