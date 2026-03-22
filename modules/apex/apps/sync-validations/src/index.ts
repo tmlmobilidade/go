@@ -1,7 +1,9 @@
 /* * */
 
 import { syncApexValidations } from '@/task.js';
+import { clickhouseService } from '@tmlmobilidade/clickhouse';
 import { getEarliestDate } from '@tmlmobilidade/consts';
+import { simplifiedApexValidationsSchema } from '@tmlmobilidade/go-apex-pckg-common';
 import { pcgidbValidations } from '@tmlmobilidade/go-apex-pckg-databases';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -21,6 +23,8 @@ async function main() {
 		// Connect to the source database
 
 		await pcgidbValidations.connect();
+
+		await clickhouseService.createNewTable('simplified_apex', 'simplified_apex_validations', simplifiedApexValidationsSchema, '_id');
 
 		//
 		// Get the earliest date from which we have data to sync,

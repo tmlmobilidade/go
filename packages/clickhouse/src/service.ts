@@ -31,6 +31,21 @@ export class ClickhouseService {
 		return ClickhouseService._instance;
 	}
 
+	public async createDatabase(databaseName: string) {
+		// Validate the inputs are safe identifiers to prevent SQL injection
+		if (!isSafeIdentifier(databaseName)) throw new Error(`CLICKHOUSE [${databaseName}]: Unsafe database name provided.`);
+		// Setup the full CREATE TABLE query
+		const createTableQuery = `CREATE DATABASE IF NOT EXISTS "${databaseName}" on CLUSTER default_cluster;`;
+		// Perform the query to create the table
+		try {
+			await this.client.command({ query: createTableQuery });
+			Logger.info(`CLICKHOUSE [${databaseName}]: Database created.`);
+		} catch (error) {
+			Logger.error(`CLICKHOUSE [${databaseName}]: Error @ createDatabase(): ${(error as Error).message}`);
+			throw error;
+		}
+	}
+
 	/**
 	 * Creates a new table in ClickHouse with the specified schema, orderBy, and engine.
 	 * @param databaseName The name of the database where the table will be created.
@@ -56,11 +71,12 @@ export class ClickhouseService {
 		// Validate the schema columns are safe identifiers
 		const unsafeColumns = schema.filter(column => !isSafeIdentifier(column.name)).map(column => column.name);
 		if (unsafeColumns.length > 0) throw new Error(`CLICKHOUSE [${tableName}]: Unsafe column names provided: ${unsafeColumns.join(', ')}.`);
+		// Ensure the database exists before creating the table
+		await this.createDatabase(databaseName);
 		// Setup the engine string based on the provided engine type
 		const engineString = this.getEngineQueryString(engine, tableName);
 		// Setup the full CREATE TABLE query
 		const createTableQuery = `
-			CREATE DATABASE IF NOT EXISTS "${databaseName}" on CLUSTER default_cluster;
 			CREATE TABLE IF NOT EXISTS "${databaseName}"."${tableName}" ON CLUSTER default_cluster (
 				${schema.map(column => `${column.name} ${column.type}`).join(', ')}
 			) ENGINE = ${engineString}
