@@ -18,19 +18,26 @@ export class ClickhouseService {
 	//
 
 	private static _instance: ClickhouseService;
-	private static readonly safeQueryParamKey = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
+	private static readonly safeQueryParamKey = /^[A-Za-z_][A-Za-z0-9_]*$/;
 	private client: ClickHouseClient;
 
 	public static async getInstance() {
 		if (!ClickhouseService._instance) {
 			const instance = new ClickhouseService();
+			await instance.connect();
 			await instance.init();
 			ClickhouseService._instance = instance;
 		}
 		return ClickhouseService._instance;
 	}
 
+	/**
+	 * Creates a new database in ClickHouse if it does not already exist.
+	 * @throws Will throw an error if the database name is unsafe or if the database creation fails.
+	 * @param databaseName The name of the database to create.
+	 * @returns A promise that resolves when the database is created successfully.
+	 */
 	public async createDatabase(databaseName: string) {
 		// Validate the inputs are safe identifiers to prevent SQL injection
 		if (!isSafeIdentifier(databaseName)) throw new Error(`CLICKHOUSE [${databaseName}]: Unsafe database name provided.`);
@@ -56,13 +63,13 @@ export class ClickhouseService {
 	 * @throws Will throw an error if any of the inputs are unsafe or if the table creation fails.
 	 * @returns A promise that resolves when the table is created successfully.
 	 * @example
-	 * await clickhouseService.createNewTable('my_database', 'my_table', [
+	 * await clickhouseService.createTable('my_database', 'my_table', [
 	 *   { name: 'id', type: 'UInt64' },
 	 *   { name: 'name', type: 'String' },
 	 *   { name: 'created_at', type: 'DateTime' },
 	 * ], 'id', 'ReplicatedMergeTree');
 	 */
-	public async createNewTable<T>(databaseName: string, tableName: string, schema: ClickHouseColumn<T>[], orderBy = '_id', engine: ClickHouseTableEngine = 'ReplicatedMergeTree') {
+	public async createTable<T>(databaseName: string, tableName: string, schema: ClickHouseColumn<T>[], orderBy = '_id', engine: ClickHouseTableEngine = 'ReplicatedMergeTree') {
 		// Validate the inputs are safe identifiers to prevent SQL injection
 		if (!isSafeIdentifier(databaseName)) throw new Error(`CLICKHOUSE [${databaseName}]: Unsafe database name provided.`);
 		if (!isSafeIdentifier(tableName)) throw new Error(`CLICKHOUSE [${tableName}]: Unsafe table name provided.`);
@@ -87,32 +94,39 @@ export class ClickhouseService {
 			await this.client.command({ query: createTableQuery });
 			Logger.info(`CLICKHOUSE [${tableName}]: Table created.`);
 		} catch (error) {
-			Logger.error(`CLICKHOUSE [${tableName}]: Error @ createNewTable(): ${(error as Error).message}`);
+			Logger.error(`CLICKHOUSE [${tableName}]: Error @ createTable(): ${(error as Error).message}`);
 			throw error;
 		}
 	}
 
 	/**
 	 * Deletes a table in ClickHouse if it exists.
-	 * @param table The name of the table to delete
+	 * @param databaseName The name of the database where the table is located.
+	 * @param tableName The name of the table to delete.
+	 * @throws Will throw an error if any of the inputs are unsafe or if the table deletion fails.
+	 * @returns A promise that resolves when the table is deleted successfully.
+	 * @override This method can be overridden in subclasses to prevent accidental deletion of critical tables.
 	 */
-	public async deleteTable(table: string) {
+	public async deleteTable(databaseName: string, tableName: string) {
 		// Validate the table name
-		if (!isSafeIdentifier(table)) {
-			throw new Error(`CLICKHOUSE [${table}]: Unsafe table name provided.`);
-		}
+		if (!isSafeIdentifier(databaseName)) throw new Error(`CLICKHOUSE [${databaseName}]: Unsafe database name provided.`);
+		if (!isSafeIdentifier(tableName)) throw new Error(`CLICKHOUSE [${tableName}]: Unsafe table name provided.`);
+		// Perform the query to delete the table
 		try {
-			await this.client.command({ query: `DROP TABLE IF EXISTS ${table} ON CLUSTER default_cluster` });
-			Logger.info(`CLICKHOUSE [${table}]: Table deleted.`);
+			await this.client.command({ query: `DROP TABLE IF EXISTS "${databaseName}"."${tableName}" ON CLUSTER default_cluster` });
+			Logger.info(`CLICKHOUSE [${tableName}]: Table deleted.`);
 		} catch (error) {
-			Logger.error(`CLICKHOUSE [${table}]: Error @ deleteTable(): ${(error as Error).message}`);
+			Logger.error(`CLICKHOUSE [${tableName}]: Error @ deleteTable(): ${(error as Error).message}`);
 			throw error;
 		}
 	}
 
 	/**
-	 * Gets the ClickHouse client.
-	 * @returns The ClickHouse client
+	 * This is an escape hatch for executing queries that are not covered by the service's methods.
+	 * It should be used with caution. Always prefer using the provided methods for common operations
+	 * like creating tables or databases, or querying data, as they include safety checks and error handling.
+	 * Directly using the client can lead to SQL injection vulnerabilities or other unintended side effects.
+	 * @returns The ClickHouse client.
 	 */
 	public async getClient(): Promise<ClickHouseClient> {
 		return Promise.resolve(this.client);
@@ -120,36 +134,59 @@ export class ClickhouseService {
 
 	/**
 	 * Gets a table in ClickHouse if it exists.
-	 * @param table The name of the table to get
-	 * @returns The table schema
+	 * @param databaseName The name of the database where the table is located.
+	 * @param tableName The name of the table to get.
+	 * @returns The table schema.
 	 */
-	public async getTable(table: string) {
+	public async getTable(databaseName: string, tableName: string) {
 		try {
 			// Validate the table name
-			if (!isSafeIdentifier(table)) {
-				throw new Error(`CLICKHOUSE [${table}]: Unsafe table name provided.`);
+			if (!isSafeIdentifier(databaseName)) {
+				throw new Error(`CLICKHOUSE [${databaseName}]: Unsafe database name provided.`);
 			}
-			const result = await this.client.command({ query: `SHOW CREATE TABLE ${table}` });
-			Logger.info(`CLICKHOUSE [${table}]: Table schema retrieved.`);
+			if (!isSafeIdentifier(tableName)) {
+				throw new Error(`CLICKHOUSE [${tableName}]: Unsafe table name provided.`);
+			}
+			const result = await this.client.command({ query: `SHOW CREATE TABLE "${databaseName}"."${tableName}"` });
+			Logger.info(`CLICKHOUSE [${tableName}]: Table schema retrieved.`);
 			return result;
 		} catch (error) {
-			Logger.error(`CLICKHOUSE [${table}]: Error @ getTable(): ${(error as Error).message}`);
+			Logger.error(`CLICKHOUSE [${tableName}]: Error @ getTable(): ${(error as Error).message}`);
 			throw error;
 		}
 	}
 
 	/**
-	 * Executes a query from a SQL file.
-	 * @param filePath Absolute or relative path to the .sql file
-	 * @param params Optional key-value substitutions applied to the query (replaces {key} placeholders)
-	 * @returns Query result rows typed as T
+	 * This method is intentionally left blank in the base service class,
+	 * as the ClickHouse database and tables are expected to be managed by subclasses.
+	 * If you are implementing a subclass of ClickhouseService, you should override this method
+	 * to include any necessary setup logic, such as creating databases or tables.
+	 */
+	public async init() {
+		console.warn('CLICKHOUSE: You are using ClickhouseService directly.');
+		console.log('CLICKHOUSE: Consider creating a subclass of ClickhouseService and overriding the init() method to include setup logic for your specific use case.');
+	}
+
+	/**
+	 * Executes a query from a .sql file with optional parameter substitutions.
+	 * @param filePath Absolute or relative path to the .sql file.
+	 * @param params Optional key-value substitutions applied to the query (replaces {key} placeholders).
+	 * @returns Query result rows typed as `T`.
+	 * @example
+	 * // Given a SQL file "get_users.sql" with the content:
+	 * // SELECT * FROM users WHERE created_at >= {start_date} AND created_at <= {end_date}
+	 *
+	 * const users = await clickhouseService.queryFromFile<User>('get_users.sql', {
+	 *   start_date: '2024-01-01',
+	 *   end_date: '2024-12-31',
+	 * });
 	 */
 	public async queryFromFile<T>(filePath: string, params?: Record<string, number | string>): Promise<T[]> {
 		let sql: string;
 		try {
 			sql = await readFile(filePath, { encoding: 'utf-8' });
 		} catch (error) {
-			Logger.error(`CLICKHOUSE: Error reading SQL file "${filePath}": ${(error as Error).message}`);
+			Logger.error(`CLICKHOUSE: Error @ queryFromFile(): Failed to read SQL file "${filePath}": ${(error as Error).message}`);
 			throw error;
 		}
 
@@ -163,7 +200,7 @@ export class ClickhouseService {
 			});
 			return result.json<T>();
 		} catch (error) {
-			Logger.error(`CLICKHOUSE: Error @ queryFromFile() "${filePath}": ${(error as Error).message}`);
+			Logger.error(`CLICKHOUSE: Error @ queryFromFile(): Failed to execute query from file "${filePath}": ${(error as Error).message}`);
 			throw error;
 		}
 	}
@@ -184,7 +221,7 @@ export class ClickhouseService {
 			});
 			return result.json<T>();
 		} catch (error) {
-			Logger.error(`CLICKHOUSE: Error @ queryFromString() "${query}": ${(error as Error).message}`);
+			Logger.error(`CLICKHOUSE: Error @ queryFromString(): Failed to execute query "${query}": ${(error as Error).message}`);
 			throw error;
 		}
 	}
@@ -214,6 +251,24 @@ export class ClickhouseService {
 		}
 	}
 
+	/**
+	 * Connects to ClickHouse, setting up the client instance.
+	 * If SSH tunneling is required, it establishes the tunnel first.
+	 * This method is called internally by the service and should not be used directly.
+	 */
+	private async connect() {
+		const clickhouseConnectionString = await this.getClickhouseConnectionString();
+		this.client = createClient({ url: clickhouseConnectionString });
+	}
+
+	/**
+	 * Constructs the ClickHouse connection string based on environment variables
+	 * and SSH tunneling configuration, and handles both direct connections and SSH-tunneled
+	 * connections, validating the necessary environment variables for each case.
+	 * This method is called internally by the service and should not be used directly.
+	 * @throws Will throw an error if required environment variables are missing or if the SSH tunnel setup fails.
+	 * @returns A promise that resolves to the ClickHouse connection string.
+	 */
 	private async getClickhouseConnectionString(): Promise<string> {
 		//
 
@@ -286,6 +341,12 @@ export class ClickhouseService {
 		return `http://${process.env.CLICKHOUSE_USER}:${process.env.CLICKHOUSE_PASSWORD}@localhost:${addr.port}`;
 	}
 
+	/**
+	 * Determines the appropriate ClickHouse parameter type based on the value's JavaScript type.
+	 * This is used to convert untyped query placeholders into typed ClickHouse parameters.
+	 * @param value
+	 * @returns
+	 */
 	private getClickHouseParamType(value: number | string): 'Float64' | 'Int64' | 'String' {
 		if (typeof value === 'number') {
 			if (!Number.isFinite(value)) {
@@ -296,6 +357,13 @@ export class ClickhouseService {
 		return 'String';
 	}
 
+	/**
+	 * Constructs the appropriate engine query string based on the provided engine type.
+	 * @param engine The ClickHouse table engine type.
+	 * @param tableName The name of the table (used for ReplicatedMergeTree).
+	 * @returns The engine query string to be used in the CREATE TABLE statement.
+	 * @throws Will throw an error if an unsupported engine type is provided.
+	 */
 	private getEngineQueryString(engine: ClickHouseTableEngine, tableName: string): string {
 		switch (engine) {
 			case 'ReplicatedMergeTree':
@@ -303,11 +371,6 @@ export class ClickhouseService {
 			default:
 				throw new Error(`CLICKHOUSE [${tableName}]: Unsupported engine type: ${engine}`);
 		}
-	}
-
-	private async init() {
-		const clickhouseConnectionString = await this.getClickhouseConnectionString();
-		this.client = createClient({ url: clickhouseConnectionString });
 	}
 
 	private prepareNamedQueryParams(query: string, params?: Record<string, number | string>, context?: string): { query: string, queryParams: Record<string, number | string> } {
