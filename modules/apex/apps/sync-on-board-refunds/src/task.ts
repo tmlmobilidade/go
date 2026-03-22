@@ -12,7 +12,7 @@ import { BatchWriter } from '@tmlmobilidade/writers';
 /* * */
 
 const writer = new BatchWriter<SimplifiedApexOnBoardRefund>({
-	batch_size: 50_000,
+	batch_size: 5,
 	insertFn: async (data) => {
 		await simplifiedApexOnBoardRefundsNew.insert('JSONEachRow', data);
 	},
