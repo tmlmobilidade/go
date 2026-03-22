@@ -58,7 +58,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 
 		countDestinationDbFn: async () => {
 			const result = await simplifiedVehicleEventsNew.queryFromString<{ count: number }>(
-				'SELECT COUNT(*) as count FROM simplified_vehicle_events WHERE created_at >= $1 AND created_at <= $2',
+				'SELECT COUNT(*) as count FROM "operation"."simplified_vehicle_events" WHERE created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
 			return result[0].count;
@@ -71,14 +71,14 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 
 		deleteDestinationDbFn: async (ids: string[]) => {
 			await simplifiedVehicleEventsNew.queryFromString(
-				'DELETE FROM simplified_vehicle_events WHERE _id IN ($1)',
+				'DELETE FROM "operation"."simplified_vehicle_events" WHERE _id IN ($1)',
 				{ 1: ids.map(id => `'${id}'`).join(', ') },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
-			const result = await clickhouseService.queryFromString<{ _id: string }>(
-				'SELECT _id FROM simplified_vehicle_events WHERE created_at >= $1 AND created_at <= $2',
+			const result = await simplifiedVehicleEventsNew.queryFromString<{ _id: string }>(
+				'SELECT _id FROM "operation"."simplified_vehicle_events" WHERE created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
 			return result.map(doc => doc._id);
