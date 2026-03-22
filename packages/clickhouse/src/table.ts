@@ -6,7 +6,7 @@ import { ClickHouseClient, type DataFormat } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
 import { readFile } from 'fs/promises';
 
-import { ClickHouseService } from './index.js';
+import { GODBClickHouseService } from '../../databases/dist/index.js';
 
 /* * */
 
@@ -14,16 +14,18 @@ export abstract class ClickHouseTable<T> {
 	//
 
 	private static readonly safeQueryParamKey = /^[A-Za-z_][A-Za-z0-9_]*$/;
-	protected client!: ClickHouseClient;
+
 	protected abstract databaseName: string;
-	protected engine: ClickHouseTableEngine = 'ReplicatedMergeTree';
-	protected orderBy: string = '_id';
+
+	protected abstract engine: ClickHouseTableEngine;
+	protected abstract orderBy: string;
 	protected abstract schema: ClickHouseColumn<T>[];
 	protected abstract tableName: string;
 
+	private client: ClickHouseClient;
+
 	public async init() {
-		const instance = await ClickHouseService.getInstance();
-		this.client = await instance.getClient();
+		this.client = await GODBClickHouseService.getClient();
 		await this.ensureDatabase();
 		await this.ensureTable();
 		await this.postInit();

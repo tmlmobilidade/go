@@ -35,6 +35,7 @@
 	},
 	"dependencies": {
 		"@clickhouse/client": "1.18.2",
+		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/utils": "*"
