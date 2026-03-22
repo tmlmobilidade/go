@@ -106,6 +106,12 @@ env:
     stops:frontend
     stops:organizer
 
+    tracker:clickhouse-stream
+    tracker:clickhouse-sync
+    tracker:cm-legacy-stream
+    tracker:cm-legacy-sync
+    tracker:ttsl-fetch
+
     offer:nginx
     offer:api
     offer:frontend
