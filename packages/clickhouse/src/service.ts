@@ -6,11 +6,11 @@ import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '
 
 /* * */
 
-export class ClickHouseClientService {
+export class ClickHouseService {
 	//
 
-	private static _instance: ClickHouseClientService;
-	private static _instancePromise: null | Promise<ClickHouseClientService> = null;
+	private static _instance: ClickHouseService;
+	private static _instancePromise: null | Promise<ClickHouseService> = null;
 
 	private client: ClickHouseClient;
 	private tunnel: null | SshTunnelService = null;
@@ -27,7 +27,7 @@ export class ClickHouseClientService {
 		if (this._instancePromise) return this._instancePromise;
 		// Otherwise, start initialization and store the promise.
 		this._instancePromise = (async () => {
-			const instance = new ClickHouseClientService();
+			const instance = new ClickHouseService();
 			// Optional lifecycle hooks
 			if (typeof instance.connect === 'function') await instance.connect();
 			this._instance = instance;

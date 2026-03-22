@@ -1,27 +1,20 @@
 /* * */
 
 import { simplifiedApexValidationsSchema } from '@/clickhouse/simplified-apex-validations/schema.js';
-import { ClickhouseTable } from '@tmlmobilidade/clickhouse';
+import { ClickHouseTable } from '@tmlmobilidade/clickhouse';
+import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 
 /* * */
 
-export class SimplifiedApexValidationsNew extends ClickhouseTable {
+export class SimplifiedApexValidationsNew extends ClickHouseTable<SimplifiedApexValidation> {
 	//
 
-	public static override DatabaseName = 'simplified_apex';
-	public static override TableName = 'simplified_apex_validations';
-	public static override TableSchema = simplifiedApexValidationsSchema;
+	override databaseName = 'simplified_apex';
+	override schema = simplifiedApexValidationsSchema;
+	override tableName = 'simplified_apex_validations';
 
-	public override async init() {
+	public override async postInit(): Promise<void> {
 		console.log('Initializing ClickHouse service for Simplified Apex Validations...');
-		await this.createDatabase();
-		await this.createTable(
-			SimplifiedApexValidationsNew.DatabaseName,
-			SimplifiedApexValidationsNew.TableName,
-			SimplifiedApexValidationsNew.TableSchema,
-			'_id',
-			'ReplicatedMergeTree',
-		);
 	}
 
 	//
