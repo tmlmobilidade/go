@@ -9,7 +9,7 @@ import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
 class SimplifiedApexOnBoardRefundsNewClass extends ClickHouseTable<SimplifiedApexOnBoardRefund> {
 	//
 
-	override databaseName = 'simplified_apex';
+	override databaseName = 'operation';
 	override schema = simplifiedApexOnBoardRefundsSchema;
 	override tableName = 'simplified_apex_on-board-refunds';
 

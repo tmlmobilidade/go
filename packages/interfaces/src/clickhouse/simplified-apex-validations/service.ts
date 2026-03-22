@@ -9,7 +9,7 @@ import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 class SimplifiedApexValidationsNewClass extends ClickHouseTable<SimplifiedApexValidation> {
 	//
 
-	override databaseName = 'simplified_apex';
+	override databaseName = 'operation';
 	override schema = simplifiedApexValidationsSchema;
 	override tableName = 'simplified_apex_validations';
 

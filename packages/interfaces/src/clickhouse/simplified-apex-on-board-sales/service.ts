@@ -9,7 +9,7 @@ import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
 class SimplifiedApexOnBoardSalesNewClass extends ClickHouseTable<SimplifiedApexOnBoardSale> {
 	//
 
-	override databaseName = 'simplified_apex';
+	override databaseName = 'operation';
 	override schema = simplifiedApexOnBoardSalesSchema;
 	override tableName = 'simplified_apex_on-board-sales';
 

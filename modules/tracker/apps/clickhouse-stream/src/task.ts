@@ -1,17 +1,19 @@
 /* * */
 
-import { clickhouseService } from '@tmlmobilidade/clickhouse';
-import { invalidateRides, PARSER_MAP, simplifiedVehicleEventsSchema } from '@tmlmobilidade/go-tracker-pckg-common';
+import { invalidateRides, PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-common';
+import { simplifiedVehicleEventsNew } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
-import { ClickHouseWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
-const writer = new ClickHouseWriter<SimplifiedVehicleEvent>({
-	client: await clickhouseService.getClient(),
-	table: 'simplified_vehicle_events',
-	tableSchema: simplifiedVehicleEventsSchema,
+const writer = new BatchWriter<SimplifiedVehicleEvent>({
+	batch_size: 50_000,
+	insertFn: async (data) => {
+		await simplifiedVehicleEventsNew.insert('JSONEachRow', data);
+	},
+	title: simplifiedVehicleEventsNew.tableName,
 });
 
 /**
