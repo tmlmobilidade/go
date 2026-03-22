@@ -1,31 +1,28 @@
 /* * */
 
+import { safeQueryParamKey } from '@/safe-query-param.js';
 import { type ClickHouseColumn, type ClickHouseTableEngine } from '@/types.js';
 import { isSafeIdentifier } from '@/utils.js';
 import { ClickHouseClient, type DataFormat } from '@clickhouse/client';
+import { GOClickHouseDatabase } from '@tmlmobilidade/databases';
 import { Logger } from '@tmlmobilidade/logger';
 import { readFile } from 'fs/promises';
-
-import { GODBClickHouseService } from '../../databases/dist/index.js';
 
 /* * */
 
 export abstract class ClickHouseTable<T> {
 	//
 
-	private static readonly safeQueryParamKey = /^[A-Za-z_][A-Za-z0-9_]*$/;
-
 	protected abstract databaseName: string;
-
-	protected abstract engine: ClickHouseTableEngine;
-	protected abstract orderBy: string;
+	protected engine: ClickHouseTableEngine = 'ReplicatedMergeTree';
+	protected orderBy: string = '_id';
 	protected abstract schema: ClickHouseColumn<T>[];
 	protected abstract tableName: string;
 
 	private client: ClickHouseClient;
 
 	public async init() {
-		this.client = await GODBClickHouseService.getClient();
+		this.client = await GOClickHouseDatabase.getClient();
 		await this.ensureDatabase();
 		await this.ensureTable();
 		await this.postInit();
@@ -207,7 +204,7 @@ export abstract class ClickHouseTable<T> {
 		const usedKeys = new Set<string>();
 
 		for (const key of Object.keys(providedParams)) {
-			if (!ClickHouseTable.safeQueryParamKey.test(key)) {
+			if (!safeQueryParamKey.test(key)) {
 				throw new Error(`CLICKHOUSE "${context ?? 'query'}": Unsafe query param name: "${key}"`);
 			}
 		}
