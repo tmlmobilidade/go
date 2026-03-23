@@ -18,10 +18,10 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-apex-pckg-common": "*",
 		"@tmlmobilidade/go-apex-pckg-databases": "*",
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",

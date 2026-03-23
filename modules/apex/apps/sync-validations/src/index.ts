@@ -3,7 +3,6 @@
 import { syncApexValidations } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { pcgidbValidations } from '@tmlmobilidade/go-apex-pckg-databases';
-import { simplifiedApexValidationsNew } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
@@ -23,7 +22,6 @@ async function main() {
 		// and initialize the destination.
 
 		await pcgidbValidations.connect();
-		await simplifiedApexValidationsNew.init();
 
 		//
 		// Get the earliest date from which we have data to sync,

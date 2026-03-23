@@ -1,24 +1,24 @@
 {
-	"name": "@tmlmobilidade/interfaces",
+	"name": "@tmlmobilidade/databases",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
 		"name": "TML-ISO"
 	},
 	"license": "AGPL-3.0-or-later",
-	"homepage": "https://github.com/tmlmobilidade/services#readme",
+	"homepage": "https://go.tmlmobilidade.pt",
 	"bugs": {
-		"url": "https://github.com/tmlmobilidade/services/issues"
+		"url": "https://github.com/tmlmobilidade/go/issues"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/tmlmobilidade/services.git"
+		"url": "git+https://github.com/tmlmobilidade/go.git"
 	},
 	"keywords": [
 		"public transit",
 		"tml",
 		"transportes metropolitanos de lisboa",
-		"services"
+		"go"
 	],
 	"publishConfig": {
 		"access": "public"
@@ -29,32 +29,20 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"lint": "eslint && tsc --noEmit",
-		"lint:fix": "eslint --fix",
+		"lint": "eslint ./src/ && tsc --noEmit",
+		"lint:fix": "eslint ./src/ --fix",
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/clickhouse": "*",
-		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/databases": "*",
-		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/emails": "*",
-		"@tmlmobilidade/files": "*",
+		"@clickhouse/client": "1.18.2",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/mongo": "*",
 		"@tmlmobilidade/ssh": "*",
-		"@tmlmobilidade/strings": "*",
+		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"@tmlmobilidade/writers": "*",
-		"bcryptjs": "3.0.3",
-		"mongodb": "7.1.0",
-		"oci-common": "2.126.2",
-		"oci-objectstorage": "2.126.2",
-		"zod": "3.25.76"
+		"mongodb": "7.1.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
 		"@types/node": "25.5.0",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",
