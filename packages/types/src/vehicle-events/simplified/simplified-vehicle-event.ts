@@ -6,7 +6,6 @@ import { z } from 'zod';
 /* * */
 
 export const SimplifiedVehicleEventSchema = z.object({
-	//
 
 	// Required Fields
 	_id: z.string(),
@@ -28,6 +27,7 @@ export const SimplifiedVehicleEventSchema = z.object({
 	pattern_id: z.string().nullable().default(null),
 	speed: z.number().nullable().default(null),
 	stop_id: z.string().nullable().default(null),
+
 });
 
 /**

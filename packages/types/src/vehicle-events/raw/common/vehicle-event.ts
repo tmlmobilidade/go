@@ -1,19 +1,15 @@
 /* * */
 
-import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { TrackerCmetV1Schema } from '@/cmet/index.js';
+import { TrackerTtslV1Schema } from '@/ttsl/index.js';
 import { z } from 'zod';
 
 /* * */
 
-export const RawVehicleEventSchema = z.object({
-	_id: z.string(),
-	agency_id: z.string(),
-	created_at: UnixTimeStampSchema,
-	entity_id: z.string(),
-	raw: z.any(),
-	received_at: UnixTimeStampSchema,
-	version: z.enum(['default']),
-});
+export const TrackerVehicleEventSchema = z.discriminatedUnion('version', [
+	TrackerTtslV1Schema,
+	TrackerCmetV1Schema,
+]);
 
 /**
  * Vehicle Events are produced by the vehicle's on-board computer on a regular schedule
@@ -22,14 +18,7 @@ export const RawVehicleEventSchema = z.object({
  * These events are based on the GTFS-RT specification but extended with additional fields
  * specific to TML's needs.
  */
-export type RawVehicleEvent = z.infer<typeof RawVehicleEventSchema>;
-
-/* * */
-
-export const HashableRawVehicleEventSchema = RawVehicleEventSchema.omit({
-	_id: true,
-	received_at: true,
-});
+export type TrackerVehicleEvent = z.infer<typeof TrackerVehicleEventSchema>;
 
 /**
  * A HashableRawVehicleEvent is a RawVehicleEvent without the _id and received_at fields,
@@ -37,4 +26,4 @@ export const HashableRawVehicleEventSchema = RawVehicleEventSchema.omit({
  * for each vehicle event based on its content, allowing us to identify duplicate events
  * and avoid storing them multiple times in the database.
  */
-export type HashableRawVehicleEvent = z.infer<typeof HashableRawVehicleEventSchema>;
+export type HashableTrackerVehicleEvent<T extends TrackerVehicleEvent> = Omit<T, '_id' | 'received_at'>;
