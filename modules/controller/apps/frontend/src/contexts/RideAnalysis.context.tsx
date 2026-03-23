@@ -126,7 +126,7 @@ export function RideAnalysisContextProvider({ children, rideId }: PropsWithChild
 				properties: {
 					id: vehicleEvent._id,
 					stop_id: vehicleEvent.stop_id,
-					trigger_door: vehicleEvent.trigger_door,
+					door: vehicleEvent.door,
 					// color: getCssVariableValue('--color-primary'),
 					// text_color: getCssVariableValue('--color-contrast'),
 					sequence: index,
