@@ -5,6 +5,7 @@ import { jsonConfig } from '@/rules/json.js';
 import { namingConventionsConfig } from '@/rules/naming-conventions.js';
 import { packageJsonConfig } from '@/rules/pjson.js';
 import { promisesConfig } from '@/rules/promises.js';
+import { sortClassesConfig } from '@/rules/sort-classes.js';
 import { tsconfigConfig } from '@/rules/tsconfig.js';
 import eslint from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
@@ -138,6 +139,8 @@ export default defineConfig([
 	},
 
 	...promisesConfig,
+
+	...sortClassesConfig,
 
 	...namingConventionsConfig,
 

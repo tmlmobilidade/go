@@ -18,8 +18,10 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/clickhouse": "*",
+		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/go-apex-pckg-common": "*",
 		"@tmlmobilidade/go-apex-pckg-databases": "*",
+		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/writers": "*"

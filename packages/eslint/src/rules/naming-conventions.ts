@@ -50,7 +50,7 @@ export const namingConventionsConfig: Config[] = [
 					selector: 'classProperty',
 				},
 				{
-					format: ['PascalCase'],
+					format: ['PascalCase', 'camelCase'],
 					modifiers: ['public'],
 					selector: 'classProperty',
 				},

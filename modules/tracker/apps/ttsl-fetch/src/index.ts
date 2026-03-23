@@ -15,7 +15,7 @@ const API_URL = 'https://api.ttsl.pt/files/gtfs_rt_vehicles.pb';
 
 /* * */
 
-let iteration = 0;
+let ITERATION = 0;
 
 /* * */
 
@@ -26,16 +26,18 @@ const main = async () => {
 
 	let saveCount = 0;
 
+	await rawdbVehicleEvents.connect();
+
 	//
 	// Fetch the TTSL Vehicle Events data from the API and decode it
 
-	Logger.info(`[${iteration}] Fetching TTSL data from API...`, 0, 1);
+	Logger.info(`[${ITERATION}] Fetching TTSL data from API...`, 0, 1);
 
 	const response = await fetch(API_URL);
 	const arrayBuffer = await response.arrayBuffer();
 	const decodedMessage = await decodeGtfsRtFeed(arrayBuffer);
 
-	Logger.info(`[${iteration}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the TTSL data.`);
+	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the TTSL data.`);
 
 	//
 	// Transform each message into a RawVehicleEvent
@@ -90,9 +92,9 @@ const main = async () => {
 		//
 	}
 
-	Logger.info(`[${iteration}] Saved ${saveCount} new Vehicle Events from TTSL data in ${timer.get()}.`);
+	Logger.info(`[${ITERATION}] Saved ${saveCount} new Vehicle Events from TTSL data in ${timer.get()}.`);
 
-	iteration++;
+	ITERATION++;
 
 	//
 };

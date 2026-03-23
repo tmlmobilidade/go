@@ -3,6 +3,7 @@
 import { Logger } from '@tmlmobilidade/logger';
 import { MongoConnector } from '@tmlmobilidade/mongo';
 import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
+import { readFileSync } from 'fs';
 import { type Collection, type MongoClientOptions } from 'mongodb';
 
 /* * */
@@ -33,7 +34,7 @@ class PCGIDBTicketingClass {
 
 		const mongoClientOptions: MongoClientOptions = {
 			connectTimeoutMS: 10_000,
-			directConnection: process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'staging' ? false : true,
+			directConnection: process.env.PCGIDB_TUNNEL_ENABLED === 'true' ? true : false,
 			maxPoolSize: 20,
 			minPoolSize: 2,
 			readPreference: 'secondaryPreferred',
@@ -73,11 +74,15 @@ class PCGIDBTicketingClass {
 			throw new Error('Missing PCGIDB_TICKETING_ADDRESS_1, PCGIDB_TICKETING_ADDRESS_2, PCGIDB_TICKETING_ADDRESS_3 or PCGIDB_TICKETING_PORT environment variable.');
 		}
 
+		if (process.env.PCGIDB_TUNNEL_ENABLED !== 'true' && process.env.PCGIDB_TUNNEL_ENABLED !== 'false') {
+			throw new Error('Missing PCGIDB_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting PCGIDB_TUNNEL_ENABLED to "true" or "false".');
+		}
+
 		//
 		// Check if the SSH Tunnel is required based on the environment.
 		// In 'production' and 'staging', we assume direct connection is used.
 
-		if (process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'staging') {
+		if (process.env.PCGIDB_TUNNEL_ENABLED === 'false') {
 			return `mongodb://${process.env.PCGIDB_TICKETING_USER}:${process.env.PCGIDB_TICKETING_PASSWORD}@${process.env.PCGIDB_TICKETING_ADDRESS_1}:${process.env.PCGIDB_TICKETING_PORT},${process.env.PCGIDB_TICKETING_ADDRESS_2}:${process.env.PCGIDB_TICKETING_PORT},${process.env.PCGIDB_TICKETING_ADDRESS_3}:${process.env.PCGIDB_TICKETING_PORT}/`;
 		}
 
@@ -112,11 +117,12 @@ class PCGIDBTicketingClass {
 				 * Ensure that your SSH key is added to the SSH agent beforehand.
 				 * @see https://developer.1password.com/docs/ssh/agent/compatibility/#ssh-auth-sock
 				 */
-				agent: process.env.SSH_AUTH_SOCK,
+				agent: process.env.PCGIDB_TUNNEL_SSH_KEY_PATH ? undefined : process.env.SSH_AUTH_SOCK,
 				host: process.env.PCGIDB_TUNNEL_SSH_HOST,
 				keepaliveCountMax: 3, // Retry 3 times before closing the connection
 				keepaliveInterval: 10_000, // Send keep-alive every 10 seconds
 				port: 22,
+				privateKey: process.env.PCGIDB_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.PCGIDB_TUNNEL_SSH_KEY_PATH) : undefined,
 				username: process.env.PCGIDB_TUNNEL_SSH_USERNAME,
 			},
 			tunnelOptions: {

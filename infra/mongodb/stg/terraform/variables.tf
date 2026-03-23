@@ -4,7 +4,7 @@
 variable "display_name" {
 	type = string
 	description = "The name of the deployment. Used as the display name for resource names and tags."
-	default = "iso-go-stg-clickhouse"
+	default = "iso-go-stg-mongodb"
 }
 
 variable "instance_count" {
@@ -52,6 +52,7 @@ variable "compartment_ocid" {
 	The OCID of the compartment where resources will be created in.
 	Current compartment is set to: cmet
 	EOT
+	default = "ocid1.compartment.oc1..aaaaaaaanljo4qhg4wnwjpul5seazrticeyswmx5zt7f64ekfewpr6y6mbva"
 }
 
 variable "availability_domain" {
@@ -78,6 +79,7 @@ variable "subnet_ocid" {
 	IGW, route table, security list, or NSG.
 	Defaults to the shared pub-cmet subnet.
 	EOT
+	default = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaamognhazfxcnompsleq3oyfsufigrrw5753vp74hmheju7uuaxtba"
 }
 
 variable "private_ips" {
@@ -100,6 +102,7 @@ variable "private_ips" {
 variable "base_image_ocid" {
 	type = string
 	description = "OCID of the Packer-built image."
+	default = ""
 }
 
 variable "vm_shape" {
@@ -135,8 +138,12 @@ variable "block_volume_ocids" {
 	description = <<-EOT
 	List of OCIDs for existing block volumes to attach as data disks to the replica nodes.
 	Each volume must be pre-created and match the count of replica nodes.
-	Example: ["10.0.1.20", "10.0.1.21", "10.0.1.22"]
 	EOT
+	default = [
+		"",
+		"",
+		"",
+	]
 }
 
 
