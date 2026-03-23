@@ -117,7 +117,7 @@ class PCGIDBLegacyClass {
 				 * Ensure that your SSH key is added to the SSH agent beforehand.
 				 * @see https://developer.1password.com/docs/ssh/agent/compatibility/#ssh-auth-sock
 				 */
-				agent: process.env.SSH_AUTH_SOCK,
+				agent: process.env.PCGIDB_TUNNEL_SSH_KEY_PATH ? undefined : process.env.SSH_AUTH_SOCK,
 				host: process.env.PCGIDB_TUNNEL_SSH_HOST,
 				keepaliveCountMax: 3, // Retry 3 times before closing the connection
 				keepaliveInterval: 10_000, // Send keep-alive every 10 seconds
