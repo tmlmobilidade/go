@@ -25,7 +25,7 @@ export function RideAnalysisVehicleEvents() {
 		{
 			accessor: '_id',
 			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns._id.label'),
-			width: 400,
+			width: 350,
 		},
 		{
 			accessor: 'created_at',
