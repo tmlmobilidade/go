@@ -9,7 +9,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 /* * */
 
-const PLAY_INTERVAL_MS = 500;
+const PLAY_INTERVAL_MS = 1000;
 
 /* * */
 
