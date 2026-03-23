@@ -1,21 +1,28 @@
 /* * */
 
-import { ClickHouseClient, type DataFormat } from '@clickhouse/client';
-import { type ClickHouseColumn, type ClickHouseTableEngine, GOClickHouseClient, validateSqlParam } from '@tmlmobilidade/databases';
+import { type ClickHouseColumn, type ClickHouseTableEngine } from '@/types/index.js';
+import { validateSqlParam } from '@/utils/validate-sql-param.js';
+import { type ClickHouseClient, type DataFormat } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
-export abstract class ClickHouseTable<T> {
+export abstract class GOClickHouseTemplate<T> {
 	//
 
-	protected abstract databaseName: string;
-	protected engine: ClickHouseTableEngine = 'ReplicatedMergeTree';
-	protected orderBy: string = '_id';
-	protected abstract schema: ClickHouseColumn<T>[];
-	protected abstract tableName: string;
+	public readonly abstract databaseName: string;
+	public readonly engine: ClickHouseTableEngine = 'ReplicatedMergeTree';
+	public readonly orderBy: string = '_id';
+	public readonly abstract schema: ClickHouseColumn<T>[];
+	public readonly abstract tableName: string;
 
 	private client: ClickHouseClient;
+
+	/**
+	 * Disallow direct instantiation of the service.
+	 * Use getClient() instead to ensure singleton behavior.
+	 */
+	protected constructor() {}
 
 	/**
 	 * Executes a COUNT query on the ClickHouse table using the service's client.
@@ -62,12 +69,47 @@ export abstract class ClickHouseTable<T> {
 	}
 
 	/**
+	 * Abstract method to establish a connection to ClickHouse.
+	 * This method must be implemented by subclasses to define the specific connection logic,
+	 * such as handling SSH tunneling or configuring connection parameters.
+	 */
+	protected abstract connectToClient(): Promise<ClickHouseClient>;
+
+	/**
+	 * Initializes the ClickHouse client and ensures that the specified database and table exist.
+	 * This method should be called before performing any operations on the database or table.
+	 * It handles the asynchronous setup process and logs any errors that occur during initialization.
+	 * @throws Will throw an error if the client initialization or database/table setup fails.
+	 * @returns A promise that resolves when the initialization process is complete.
+	 */
+	protected async init() {
+		// Validate required properties before attempting to connect
+		if (!this.databaseName) throw new Error('CLICKHOUSE: databaseName is required.');
+		if (!this.tableName) throw new Error('CLICKHOUSE: tableName is required.');
+		if (!this.schema || this.schema.length === 0) throw new Error('CLICKHOUSE: schema is required and cannot be empty.');
+		// Connect to the ClickHouse client
+		this.client = await this.connectToClient();
+		// Ensure the database and table exist, and perform any additional setup
+		await this.ensureDatabase();
+		await this.ensureTable();
+		await this.postInit();
+	}
+
+	/**
+	 * Optional override for custom setup logic:
+	 * indexes, materialized views, constraints, etc.
+	 */
+	protected async postInit(): Promise<void> {
+		// no-op by default
+	}
+
+	/**
 	 * Ensures that the specified database exists in ClickHouse, creating it if it does not already exist.
 	 * This method performs input validation to prevent SQL injection and logs the outcome of the operation.
 	 * @throws Will throw an error if the database name is unsafe or if the database creation query fails.
 	 * @returns A promise that resolves when the database is ensured to exist.
 	 */
-	protected async ensureDatabase(): Promise<void> {
+	private async ensureDatabase(): Promise<void> {
 		// Validate the inputs are safe identifiers to prevent SQL injection
 		if (!validateSqlParam(this.databaseName, false)) throw new Error(`CLICKHOUSE [${this.databaseName}]: Unsafe database name provided.`);
 		// Perform the query to create the database if it does not exist
@@ -87,7 +129,7 @@ export abstract class ClickHouseTable<T> {
 	 * @throws Will throw an error if any of the inputs are unsafe or if the table creation query fails.
 	 * @returns A promise that resolves when the table is ensured to exist.
 	 */
-	protected async ensureTable(): Promise<void> {
+	private async ensureTable(): Promise<void> {
 		// Validate the inputs are safe identifiers to prevent SQL injection
 		if (!validateSqlParam(this.databaseName, false)) throw new Error(`CLICKHOUSE [${this.databaseName}]: Unsafe database name provided.`);
 		if (!validateSqlParam(this.tableName, false)) throw new Error(`CLICKHOUSE [${this.tableName}]: Unsafe table name provided.`);
@@ -113,21 +155,6 @@ export abstract class ClickHouseTable<T> {
 			Logger.error(`CLICKHOUSE [${this.tableName}]: Error @ createTable(): ${(error as Error).message}`);
 			throw error;
 		}
-	}
-
-	protected async init() {
-		this.client = await GOClickHouseClient.getClient();
-		await this.ensureDatabase();
-		await this.ensureTable();
-		await this.postInit();
-	}
-
-	/**
-	 * Optional override for custom setup logic:
-	 * indexes, materialized views, constraints, etc.
-	 */
-	protected async postInit(): Promise<void> {
-		// no-op by default
 	}
 
 	/**

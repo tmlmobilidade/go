@@ -37,6 +37,7 @@
 		"@clickhouse/client": "1.18.2",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/ssh": "*",
+		"@tmlmobilidade/types": "*",
 		"mongodb": "7.1.0"
 	},
 	"devDependencies": {
