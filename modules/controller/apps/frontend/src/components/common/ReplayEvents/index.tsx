@@ -91,9 +91,11 @@ export function ReplayEvents({ onReplayIndexChange, replayIndex }: ReplayEventsP
 			stopPlayback();
 			return;
 		}
+
 		if (replayIndex >= maxIndex) {
 			onReplayIndexChange(0);
 		}
+
 		setIsPlaying(true);
 	};
 

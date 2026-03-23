@@ -5,7 +5,7 @@
 import { ReplayEvents } from '@/components/common/ReplayEvents';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { Collapsible, Divider, MapOverlayGeofences, MapOverlayObservedPath, MapOverlayScheduledPath, MapView, Section, Switch } from '@tmlmobilidade/ui';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -25,11 +25,24 @@ export function RideAnalysisMap() {
 	const eventCount = observedEvents.features.length;
 	const showReplay = rideAnalysisContext.data.ride?.operational_status === 'ended' && eventCount > 0;
 
+	const rideId = rideAnalysisContext.data.ride_id;
+	const prevRideIdRef = useRef<string | undefined>(undefined);
+
 	const [replayIndex, setReplayIndex] = useState(0);
 
 	useEffect(() => {
-		setReplayIndex(i => Math.min(i, Math.max(0, eventCount - 1)));
-	}, [eventCount]);
+		const cap = Math.max(0, eventCount - 1);
+		if (eventCount === 0) {
+			setReplayIndex(0);
+			return;
+		}
+		if (prevRideIdRef.current !== rideId) {
+			prevRideIdRef.current = rideId;
+			setReplayIndex(cap);
+			return;
+		}
+		setReplayIndex(prev => Math.min(prev, cap));
+	}, [eventCount, rideId]);
 
 	const observedPointsData = useMemo(() => {
 		if (!showReplay) return observedEvents;
