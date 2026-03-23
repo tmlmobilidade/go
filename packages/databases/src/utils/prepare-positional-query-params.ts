@@ -1,5 +1,7 @@
 /* * */
 
+import { getClickHouseParamType } from '@/utils/get-clickhouse-param-type.js';
+
 /**
  * Prepares a SQL query with positional parameters by replacing placeholders
  * in the format of $1, $2, etc., with ClickHouse's named parameter syntax.
@@ -25,7 +27,7 @@ export function preparePositionalQueryParams(query: string, params?: Record<stri
 		const value = providedParams[key];
 		queryParams[queryParamKey] = value;
 
-		return `{${queryParamKey}:${this.getClickHouseParamType(value)}}`;
+		return `{${queryParamKey}:${getClickHouseParamType(value)}}`;
 	});
 
 	for (const key of Object.keys(providedParams)) {

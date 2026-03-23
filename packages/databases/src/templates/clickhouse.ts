@@ -1,6 +1,8 @@
 /* * */
 
 import { type ClickHouseColumn, type ClickHouseTableEngine } from '@/types/index.js';
+import { preparePositionalQueryParams } from '@/utils/prepare-positional-query-params.js';
+import { queryFromString } from '@/utils/query-from-string.js';
 import { validateSqlParam } from '@/utils/validate-sql-param.js';
 import { type ClickHouseClient, type DataFormat } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
@@ -28,20 +30,53 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 	 * Executes a COUNT query on the ClickHouse table using the service's client.
 	 * @param select The columns to select in the query (e.g., `"*"`, `"column1, column2"`).
 	 * @param where The WHERE clause to filter the results (e.g., `"id = 1"`).
+	 * @param params Optional key-value substitutions applied to the WHERE clause (replaces $1, $2, etc.).
 	 * @returns A promise that resolves to an array of results matching the query.
 	 */
-	public async count(select: string, where: string): Promise<T[]> {
-		const result = await this.client.query({
-			format: 'JSONEachRow',
-			query: `SELECT COUNT(${select}) FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`,
+	public async count(select: string, where: string, params?: Record<string, number | string>): Promise<number> {
+		const result = await queryFromString<{ count: number }>(this.client, `SELECT ${select} FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
+		return result[0].count;
+	}
+
+	/**
+	 * Executes a DELETE query on the ClickHouse table using the service's client.
+	 * @param where The WHERE clause to filter the results (e.g., `"id = 1"`).
+	 * @param params Optional key-value substitutions applied to the WHERE clause (replaces $1, $2, etc.).
+	 * @returns A promise that resolves when the delete operation is complete.
+	 */
+	public async delete(where: string, params?: Record<string, number | string>): Promise<void> {
+		const preparedQuery = preparePositionalQueryParams(`DELETE FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
+		await this.client.command({
+			query: preparedQuery.query,
+			query_params: preparedQuery.query_params,
 		});
-		return result.json();
+	}
+
+	/**
+	 * Executes a DISTINCT query on the ClickHouse table using the service's client.
+	 * @param select The columns to select in the query (e.g., `"*"`, `"column1, column2"`).
+	 * @param where The WHERE clause to filter the results (e.g., `"id = 1"`).
+	 * @param params Optional key-value substitutions applied to the WHERE clause (replaces $1, $2, etc.).
+	 * @returns A promise that resolves to an array of distinct values matching the query.
+	 */
+	public async distinct<T>(field: keyof T, where: string, params?: Record<string, number | string>): Promise<T[keyof T][]> {
+		const result = await queryFromString<T>(this.client, `SELECT ${String(field)} FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
+		return result.map(doc => doc[field]);
+	}
+
+	/**
+	 * Provides access to the ClickHouse client instance,
+	 * initializing it if it has not already been created.
+	 * @returns A promise that resolves to the ClickHouse client instance.
+	 * @warning Use with caution: direct access to the client allows for executing arbitrary queries.
+	 */
+	public async getClient(): Promise<ClickHouseClient> {
+		if (!this.client) await this.init();
+		return this.client;
 	}
 
 	/**
 	 * Inserts data into a specified ClickHouse table using the service's client.
-	 * @param databaseName The name of the database where the table is located.
-	 * @param tableName The name of the table to insert data into.
 	 * @param format The format of the data being inserted (default is 'JSONEachRow').
 	 * @param values An array of data objects to insert into the table.
 	 * @returns A promise that resolves when the data is inserted successfully.
@@ -58,14 +93,11 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 	 * Executes a simple SELECT query on the ClickHouse table using the service's client.
 	 * @param select The columns to select in the query (e.g., `"*"`, `"column1, column2"`).
 	 * @param where The WHERE clause to filter the results (e.g., `"id = 1"`).
+	 * @param params Optional key-value substitutions applied to the WHERE clause (replaces $1, $2, etc.).
 	 * @returns A promise that resolves to an array of results matching the query.
 	 */
-	public async select(select: string, where: string): Promise<T[]> {
-		const result = await this.client.query({
-			format: 'JSONEachRow',
-			query: `SELECT ${select} FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`,
-		});
-		return result.json();
+	public async select(select: string, where: string, params?: Record<string, number | string>): Promise<T[]> {
+		return await queryFromString<T>(this.client, `SELECT ${select} FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
 	}
 
 	/**
