@@ -1,14 +1,14 @@
 /* * */
 
-import { TrackerCmetV1Schema } from '@/cmet/index.js';
-import { TrackerTtslV1Schema } from '@/ttsl/index.js';
+import { RawVehicleEventCmetV1Schema } from '@/vehicle-events/raw/cmet/v1.js';
+import { RawVehicleEventTtslV1Schema } from '@/vehicle-events/raw/ttsl/v1.js';
 import { z } from 'zod';
 
 /* * */
 
 export const RawVehicleEventSchema = z.discriminatedUnion('version', [
-	TrackerTtslV1Schema,
-	TrackerCmetV1Schema,
+	RawVehicleEventCmetV1Schema,
+	RawVehicleEventTtslV1Schema,
 ]);
 
 /**

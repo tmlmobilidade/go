@@ -4,7 +4,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
 /**
  * Callback function to invalidate Rides based on new SimplifiedApex data.

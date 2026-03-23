@@ -2,7 +2,6 @@
 
 import { GtfsRtOccupancyStatusSchema } from '@/gtfs-rt/occupancy-status.js';
 import { RawVehicleEventBaseSchema } from '@/vehicle-events/raw/raw-vehicle-event-base.js';
-import { type SimplifiedVehicleEvent } from '@/vehicle-events/simplified/simplified-vehicle-event.js';
 import { z } from 'zod';
 
 /* * */
@@ -45,28 +44,3 @@ export const RawVehicleEventTtslV1Schema = RawVehicleEventBaseSchema.extend({
 });
 
 export type RawVehicleEventTtslV1 = z.infer<typeof RawVehicleEventTtslV1Schema>;
-
-/* * */
-
-export const parseRawVehicleEventTtslV1 = (doc: RawVehicleEventTtslV1): SimplifiedVehicleEvent => {
-	const vehicle = doc.payload.vehicle;
-	return {
-		_id: doc._id,
-		agency_id: doc.agency_id,
-		bearing: vehicle.position.bearing ?? null,
-		created_at: doc.created_at,
-		current_status: vehicle.current_status ?? null,
-		door: null,
-		driver_id: null,
-		extra_trip_id: null,
-		latitude: vehicle.position.latitude,
-		longitude: vehicle.position.longitude,
-		odometer: null,
-		pattern_id: null,
-		received_at: doc.received_at,
-		speed: vehicle.position.speed ?? null,
-		stop_id: vehicle.stop_id ?? null,
-		trip_id: vehicle.trip.trip_id,
-		vehicle_id: vehicle.vehicle.id,
-	};
-};

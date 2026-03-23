@@ -1,14 +1,14 @@
 {
 	"extends": "@tmlmobilidade/tsconfig/nodejs.json",
 	"compilerOptions": {
-		"baseUrl": ".",
-		"outDir": "dist",
+		"baseUrl": "../shared",
+		"outDir": "../shared/dist",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["../shared/src/*"]
 		},
-		"rootDir": "src",
+		"rootDir": "../shared/src",
 		"strictNullChecks": true
 	},
-	"include": ["src"],
-	"exclude": ["node_modules", "dist"]
+	"include": ["../shared/src"],
+	"exclude": ["../shared/node_modules", "../shared/dist"]
 }
