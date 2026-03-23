@@ -18,6 +18,20 @@ export abstract class ClickHouseTable<T> {
 	private client: ClickHouseClient;
 
 	/**
+	 * Executes a COUNT query on the ClickHouse table using the service's client.
+	 * @param select The columns to select in the query (e.g., `"*"`, `"column1, column2"`).
+	 * @param where The WHERE clause to filter the results (e.g., `"id = 1"`).
+	 * @returns A promise that resolves to an array of results matching the query.
+	 */
+	public async count(select: string, where: string): Promise<T[]> {
+		const result = await this.client.query({
+			format: 'JSONEachRow',
+			query: `SELECT COUNT(${select}) FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`,
+		});
+		return result.json();
+	}
+
+	/**
 	 * Inserts data into a specified ClickHouse table using the service's client.
 	 * @param databaseName The name of the database where the table is located.
 	 * @param tableName The name of the table to insert data into.
