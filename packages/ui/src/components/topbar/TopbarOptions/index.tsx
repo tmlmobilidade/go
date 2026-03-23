@@ -5,10 +5,10 @@
 import { ColorSwatch, Menu } from '@mantine/core';
 import { IconBellRinging, IconBrightness, IconCheck, IconColorSwatch, IconLogout, IconMaximize, IconMinimize, IconSettings } from '@tabler/icons-react';
 
+import pjson from '../../../../../../package.json';
 import { AVAILABLE_MODES, AVAILABLE_THEMES, useLayoutContext } from '../../../contexts/Layout.context';
 import { useMeContext } from '../../../contexts/Me.context';
 import { useNotificationsContext } from '../../../contexts/Notifications.context';
-import { VERSION } from '../../../types/version';
 import { TopbarMenu } from '../TopbarMenu';
 
 /* * */
@@ -99,7 +99,7 @@ export function TopbarOptions() {
 				Logout
 			</Menu.Item>
 
-			<Menu.Label>Versão: {VERSION}</Menu.Label>
+			<Menu.Label>Versão: {pjson.version}</Menu.Label>
 
 		</TopbarMenu>
 	);
