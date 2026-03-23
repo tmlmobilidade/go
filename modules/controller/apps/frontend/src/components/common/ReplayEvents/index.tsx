@@ -98,6 +98,7 @@ export function ReplayEvents({ onReplayIndexChange, replayIndex }: ReplayEventsP
 	};
 
 	const onSliderChange = (value: number) => {
+		stopPlayback();
 		onReplayIndexChange(value);
 	};
 
