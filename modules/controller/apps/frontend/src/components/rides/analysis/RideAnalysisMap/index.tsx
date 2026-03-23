@@ -101,6 +101,7 @@ export function RideAnalysisMap() {
 				<Switch checked={showObservedPath} label={t('default:rides.analysis.RideAnalysisMap.switches.observed_path.label')} onChange={() => setShowObservedPath(prev => !prev)} />
 				<Switch checked={showGeofences} label={t('default:rides.analysis.RideAnalysisMap.switches.geofences.label')} onChange={() => setShowGeofences(prev => !prev)} />
 			</Section>
+			<Divider />
 			{showReplay && (
 				<ReplayEvents onReplayIndexChange={setReplayIndex} replayIndex={replayIndex} />
 			)}
