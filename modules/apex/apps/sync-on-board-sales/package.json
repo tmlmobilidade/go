@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-apex-sync-apex-on-board-sales",
+	"name": "@tmlmobilidade/go-apex-sync-on-board-sales",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -19,9 +19,11 @@
 	"dependencies": {
 		"@tmlmobilidade/clickhouse": "*",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-apex-pckg-common": "*",
 		"@tmlmobilidade/go-apex-pckg-databases": "*",
+		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",

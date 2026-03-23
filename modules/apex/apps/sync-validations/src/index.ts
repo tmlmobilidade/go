@@ -19,6 +19,7 @@ async function main() {
 
 		//
 		// Connect to the source database
+		// and initialize the destination.
 
 		await pcgidbValidations.connect();
 

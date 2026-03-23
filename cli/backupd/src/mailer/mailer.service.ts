@@ -1,5 +1,5 @@
 import { Dates } from '@tmlmobilidade/dates';
-import { RenderFailedBackupEmail } from '@tmlmobilidade/emails';
+import { renderSystemErrorTemplate } from '@tmlmobilidade/emails';
 import nodemailer, { Transporter } from 'nodemailer';
 
 export interface MailOptions {
@@ -34,37 +34,36 @@ export class MailerService {
 	}
 
 	public async sendFailureMail(error: string): Promise<void> {
-		const emailHtml = await RenderFailedBackupEmail({
-			backup_service: this.config.mail_options.subject,
-			error_message: error,
-			failure_time: Dates.now('Europe/Lisbon').toLocaleString(Dates.FORMATS.DATETIME_FULL_WITH_SECONDS),
+		const emailHtml = await renderSystemErrorTemplate({
+			errorMessage: error,
+			serviceName: this.config.mail_options.subject,
+			timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
 		});
 
-		const mail_options = {
+		const mailOptions = {
 			...this.config.mail_options,
 			html: emailHtml,
 			subject: `${this.config.mail_options.subject}: Falha na execução do backup`,
 		};
 
-		await this.sendMail(mail_options);
+		await this.sendMail(mailOptions);
 	}
 
 	public async sendSuccessMail(): Promise<void> {
-		const mail_options = {
+		const mailOptions = {
 			...this.config.mail_options,
 			subject: `${this.config.mail_options.subject}: Backup successful`,
 			text: 'Backup was successful',
 		};
 
-		await this.sendMail(mail_options);
+		await this.sendMail(mailOptions);
 	}
 
-	private async sendMail(mail_options: MailOptions): Promise<void> {
+	private async sendMail(mailOptions: MailOptions): Promise<void> {
 		try {
-			const info = await this.transporter.sendMail(mail_options);
+			const info = await this.transporter.sendMail(mailOptions);
 			console.log(`Email sent: ${info.messageId}`);
-		}
-		catch (error) {
+		} catch (error) {
 			console.error('Error sending email:', error);
 		}
 	}

@@ -1,20 +1,22 @@
 /* * */
 
-import { clickhouseService } from '@tmlmobilidade/clickhouse';
+import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { invalidateRides, PARSER_MAP, simplifiedVehicleEventsSchema, TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';
+import { invalidateRides, PARSER_MAP, TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';
 import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
-import { ClickHouseWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
-const writer = new ClickHouseWriter<SimplifiedVehicleEvent>({
-	client: await clickhouseService.getClient(),
-	table: 'simplified_vehicle_events',
-	tableSchema: simplifiedVehicleEventsSchema,
+const writer = new BatchWriter<SimplifiedVehicleEvent>({
+	batch_size: 50_000,
+	insertFn: async (data) => {
+		await simplifiedVehicleEventsNew.insert('JSONEachRow', data);
+	},
+	title: await simplifiedVehicleEventsNew.getTableName(),
 });
 
 /**
@@ -55,11 +57,11 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 	await replicate<TrackerVehicleEvent>({
 
 		countDestinationDbFn: async () => {
-			const result = await clickhouseService.queryFromString<{ count: number }>(
-				'SELECT COUNT(*) as count FROM simplified_vehicle_events WHERE created_at >= $1 AND created_at <= $2',
+			return await simplifiedVehicleEventsNew.count(
+				'*',
+				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
-			return result[0].count;
 		},
 
 		countSourceDbFn: async () => {
@@ -68,18 +70,18 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await clickhouseService.queryFromString(
-				'DELETE FROM simplified_vehicle_events WHERE _id IN ($1)',
+			await simplifiedVehicleEventsNew.delete(
+				'_id IN ($1)',
 				{ 1: ids.map(id => `'${id}'`).join(', ') },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
-			const result = await clickhouseService.queryFromString<{ _id: string }>(
-				'SELECT _id FROM simplified_vehicle_events WHERE created_at >= $1 AND created_at <= $2',
+			return await simplifiedVehicleEventsNew.distinct(
+				'_id',
+				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
-			return result.map(doc => doc._id);
 		},
 
 		distinctSourceDbFn: async () => {

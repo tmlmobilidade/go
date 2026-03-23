@@ -29,11 +29,6 @@ export function RideAnalysisVehicleEvents() {
 			width: 280,
 		},
 		{
-			accessor: 'trigger_activity',
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.activity.label'),
-			width: 150,
-		},
-		{
 			accessor: 'stop_id',
 			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.stop_id.label'),
 			width: 150,
@@ -54,7 +49,7 @@ export function RideAnalysisVehicleEvents() {
 			width: 150,
 		},
 		{
-			accessor: 'trigger_door',
+			accessor: 'door',
 			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.door.label'),
 			width: 150,
 		},

@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 /* * */
 
 import { type TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 import { MongoConnector } from '@tmlmobilidade/mongo';
 import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Collection, type MongoClientOptions } from 'mongodb';
 
 /* * */
@@ -17,7 +16,18 @@ let GLOBAL_RAWDB_TUNNEL_INSTANCE: SshTunnelService | undefined;
 class RAWDBVehicleEventsClass {
 	//
 
+	private static _instance: RAWDBVehicleEventsClass;
+
 	public RawVehicleEvents: Collection<TrackerVehicleEvent>;
+
+	public static async getInstance() {
+		if (!RAWDBVehicleEventsClass._instance) {
+			const instance = new RAWDBVehicleEventsClass();
+			await instance.connect();
+			RAWDBVehicleEventsClass._instance = instance;
+		}
+		return RAWDBVehicleEventsClass._instance;
+	}
 
 	/**
 	 * Establishes a connection to the Mongo database and initializes the collection.
@@ -58,6 +68,11 @@ class RAWDBVehicleEventsClass {
 		}
 	}
 
+	public async getCollection() {
+		await this.connect();
+		return this.RawVehicleEvents;
+	}
+
 	/**
 	 * Sets up an SSH Tunnel, if required, and returns the appropriate database URL.
 	 * @throws If required environment variables are missing or if the tunnel setup fails.
@@ -76,11 +91,15 @@ class RAWDBVehicleEventsClass {
 			throw new Error('Missing RAWDB_VEHICLE_EVENTS_ADDRESS_1, RAWDB_VEHICLE_EVENTS_ADDRESS_2, RAWDB_VEHICLE_EVENTS_ADDRESS_3 or RAWDB_VEHICLE_EVENTS_PORT environment variable.');
 		}
 
+		if (process.env.RAWDB_TUNNEL_ENABLED !== 'true' && process.env.RAWDB_TUNNEL_ENABLED !== 'false') {
+			throw new Error('Missing RAWDB_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting RAWDB_TUNNEL_ENABLED to "true" or "false".');
+		}
+
 		//
 		// Check if the SSH Tunnel is required based on the environment.
 		// In 'production' and 'staging', we assume direct connection is used.
 
-		if (process.env.ENVIRONMENT === 'production' || process.env.ENVIRONMENT === 'staging') {
+		if (process.env.RAWDB_TUNNEL_ENABLED === 'false') {
 			return `mongodb://${process.env.RAWDB_VEHICLE_EVENTS_USER}:${process.env.RAWDB_VEHICLE_EVENTS_PASSWORD}@${process.env.RAWDB_VEHICLE_EVENTS_ADDRESS_1}:${process.env.RAWDB_VEHICLE_EVENTS_PORT},${process.env.RAWDB_VEHICLE_EVENTS_ADDRESS_2}:${process.env.RAWDB_VEHICLE_EVENTS_PORT},${process.env.RAWDB_VEHICLE_EVENTS_ADDRESS_3}:${process.env.RAWDB_VEHICLE_EVENTS_PORT}/`;
 		}
 
