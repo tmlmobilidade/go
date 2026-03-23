@@ -3,6 +3,7 @@
 import { Logger } from '@tmlmobilidade/logger';
 import { MongoConnector } from '@tmlmobilidade/mongo';
 import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
+import { readFileSync } from 'fs';
 import { type Collection, type MongoClientOptions } from 'mongodb';
 
 /* * */
@@ -122,6 +123,7 @@ class PCGIDBLegacyClass {
 				keepaliveCountMax: 3, // Retry 3 times before closing the connection
 				keepaliveInterval: 10_000, // Send keep-alive every 10 seconds
 				port: 22,
+				privateKey: process.env.PCGIDB_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.PCGIDB_TUNNEL_SSH_KEY_PATH) : undefined,
 				username: process.env.PCGIDB_TUNNEL_SSH_USERNAME,
 			},
 			tunnelOptions: {
