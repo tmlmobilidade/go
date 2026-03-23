@@ -1,12 +1,13 @@
 /* * */
 
-import { TrackerVehicleEventBaseSchema } from '@/common/vehicle-event-base.js';
-import { GtfsRtOccupancyStatusSchema, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { GtfsRtOccupancyStatusSchema } from '@/gtfs-rt/occupancy-status.js';
+import { RawVehicleEventBaseSchema } from '@/vehicle-events/raw/raw-vehicle-event-base.js';
+import { type SimplifiedVehicleEvent } from '@/vehicle-events/simplified/simplified-vehicle-event.js';
 import { z } from 'zod';
 
 /* * */
 
-export const TrackerTtslV1RawSchema = z.object({
+export const RawVehicleEventPayloadTtslV1Schema = z.object({
 	header: z.object({
 		feed_version: z.string().nullish(),
 		gtfs_realtime_version: z.string(),
@@ -34,27 +35,26 @@ export const TrackerTtslV1RawSchema = z.object({
 	}),
 });
 
-export type TrackerTtslV1Raw = z.infer<typeof TrackerTtslV1RawSchema>;
+export type RawVehicleEventPayloadTtslV1 = z.infer<typeof RawVehicleEventPayloadTtslV1Schema>;
 
 /* * */
 
-export const TrackerTtslV1Schema = TrackerVehicleEventBaseSchema.extend({
-	raw: TrackerTtslV1RawSchema,
+export const RawVehicleEventTtslV1Schema = RawVehicleEventBaseSchema.extend({
+	payload: RawVehicleEventPayloadTtslV1Schema,
 	version: z.literal('ttsl-v1'),
 });
 
-export type TrackerTtslV1 = z.infer<typeof TrackerTtslV1Schema>;
+export type RawVehicleEventTtslV1 = z.infer<typeof RawVehicleEventTtslV1Schema>;
 
 /* * */
 
-export const parseTrackerTtslV1 = (vehicleEvent: TrackerTtslV1): SimplifiedVehicleEvent => {
-	const vehicle = vehicleEvent.raw.vehicle;
-
+export const parseRawVehicleEventTtslV1 = (doc: RawVehicleEventTtslV1): SimplifiedVehicleEvent => {
+	const vehicle = doc.payload.vehicle;
 	return {
-		_id: vehicleEvent._id,
-		agency_id: vehicleEvent.agency_id,
+		_id: doc._id,
+		agency_id: doc.agency_id,
 		bearing: vehicle.position.bearing ?? null,
-		created_at: vehicleEvent.created_at,
+		created_at: doc.created_at,
 		current_status: vehicle.current_status ?? null,
 		door: null,
 		driver_id: null,
@@ -63,7 +63,7 @@ export const parseTrackerTtslV1 = (vehicleEvent: TrackerTtslV1): SimplifiedVehic
 		longitude: vehicle.position.longitude,
 		odometer: null,
 		pattern_id: null,
-		received_at: vehicleEvent.received_at,
+		received_at: doc.received_at,
 		speed: vehicle.position.speed ?? null,
 		stop_id: vehicle.stop_id ?? null,
 		trip_id: vehicle.trip.trip_id,
