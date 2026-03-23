@@ -37,6 +37,7 @@ async function main(): Promise<void> {
 	//
 	// Setup Clickhouse
 	const client = await clickhouseService.getClient();
+
 	//
 	// Get Date Range
 	const { end, start } = getDateRange();
@@ -55,7 +56,7 @@ async function main(): Promise<void> {
 	//
 	// 1. Sync Vehicle Events
 	const [
-		{ ridesProcessed },
+		ridesProcessed,
 	] = await Promise.all([
 		syncDailyRides({ batchSize: BATCH_SIZE, client, ridesQuery }),
 	]);
