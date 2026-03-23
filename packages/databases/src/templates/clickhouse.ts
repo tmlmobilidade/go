@@ -115,6 +115,8 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 	 * @returns A promise that resolves when the initialization process is complete.
 	 */
 	protected async init() {
+		// Skip if already initialized
+		if (this.client) return;
 		// Validate required properties before attempting to connect
 		if (!this.databaseName) throw new Error('CLICKHOUSE: databaseName is required.');
 		if (!this.tableName) throw new Error('CLICKHOUSE: tableName is required.');

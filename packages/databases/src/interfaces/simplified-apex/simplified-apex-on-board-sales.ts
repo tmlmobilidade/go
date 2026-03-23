@@ -4,6 +4,7 @@ import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
 import { type ClickHouseColumn } from '@/types/index.js';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -80,4 +81,4 @@ class SimplifiedApexOnBoardSalesNewClass extends ClickHouseInterfaceTemplate<Sim
 
 /* * */
 
-export const simplifiedApexOnBoardSalesNew = await SimplifiedApexOnBoardSalesNewClass.getInstance();
+export const simplifiedApexOnBoardSalesNew = asyncSingletonProxy(SimplifiedApexOnBoardSalesNewClass);

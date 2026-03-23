@@ -4,6 +4,7 @@ import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
 import { type ClickHouseColumn } from '@/types/index.js';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -73,4 +74,4 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 
 /* * */
 
-export const simplifiedVehicleEventsNew = await SimplifiedVehicleEventsNewClass.getInstance();
+export const simplifiedVehicleEventsNew = asyncSingletonProxy(SimplifiedVehicleEventsNewClass);

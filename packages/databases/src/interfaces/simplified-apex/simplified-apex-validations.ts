@@ -4,6 +4,7 @@ import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
 import { type ClickHouseColumn } from '@/types/index.js';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -52,6 +53,7 @@ class SimplifiedApexValidationsNewClass extends ClickHouseInterfaceTemplate<Simp
 		// This ensures that if multiple calls to getInstance() happen concurrently,
 		// they will all await the same initialization process.
 		if (!this._instance) {
+			console.log('create instance here');
 			this._instance = (async () => {
 				const instance = new SimplifiedApexValidationsNewClass();
 				// This behaves like the constructor,
@@ -78,4 +80,4 @@ class SimplifiedApexValidationsNewClass extends ClickHouseInterfaceTemplate<Simp
 
 /* * */
 
-export const simplifiedApexValidationsNew = await SimplifiedApexValidationsNewClass.getInstance();
+export const simplifiedApexValidationsNew = asyncSingletonProxy(SimplifiedApexValidationsNewClass);

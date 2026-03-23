@@ -4,6 +4,7 @@ import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
 import { type ClickHouseColumn } from '@/types/index.js';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -69,4 +70,4 @@ class SimplifiedApexLocationsNewClass extends ClickHouseInterfaceTemplate<Simpli
 
 /* * */
 
-export const simplifiedApexLocationsNew = await SimplifiedApexLocationsNewClass.getInstance();
+export const simplifiedApexLocationsNew = asyncSingletonProxy(SimplifiedApexLocationsNewClass);

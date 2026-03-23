@@ -4,6 +4,7 @@ import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
 import { type ClickHouseColumn } from '@/types/index.js';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -79,4 +80,4 @@ class SimplifiedApexOnBoardRefundsNewClass extends ClickHouseInterfaceTemplate<S
 
 /* * */
 
-export const simplifiedApexOnBoardRefundsNew = await SimplifiedApexOnBoardRefundsNewClass.getInstance();
+export const simplifiedApexOnBoardRefundsNew = asyncSingletonProxy(SimplifiedApexOnBoardRefundsNewClass);
