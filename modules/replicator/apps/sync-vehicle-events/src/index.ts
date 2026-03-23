@@ -147,7 +147,7 @@ async function syncVehicleEvents() {
 
 				goQuery: goQuery,
 
-				pcgiCollection: pcgidbLegacy.VehicleEvents,
+				pcgiCollection: pcgidbLegacy.VehicleEventsLog,
 
 				pcgiIdKey: '_id',
 
