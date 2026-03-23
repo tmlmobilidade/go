@@ -16,7 +16,7 @@ const writer = new BatchWriter<SimplifiedApexValidation>({
 	insertFn: async (data) => {
 		await simplifiedApexValidationsNew.insert('JSONEachRow', data);
 	},
-	title: simplifiedApexValidationsNew.tableName,
+	title: await simplifiedApexValidationsNew.getTableName(),
 });
 
 /**

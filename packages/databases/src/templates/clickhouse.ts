@@ -34,8 +34,8 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 	 * @returns A promise that resolves to an array of results matching the query.
 	 */
 	public async count(select: string, where: string, params?: Record<string, number | string>): Promise<number> {
-		const result = await queryFromString<{ count: number }>(this.client, `SELECT ${select} FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
-		return result[0].count;
+		const result = await queryFromString<{ count: number }>(this.client, `SELECT COUNT(${select}) AS count FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
+		return result.length > 0 ? result[0].count : 0;
 	}
 
 	/**
@@ -73,6 +73,20 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 	public async getClient(): Promise<ClickHouseClient> {
 		if (!this.client) await this.init();
 		return this.client;
+	}
+
+	/**
+	 * Returns the name of the database used by this service.
+	 */
+	async getDatabaseName() {
+		return this.databaseName;
+	}
+
+	/**
+	 * Returns the name of the table used by this service.
+	 */
+	async getTableName() {
+		return this.tableName;
 	}
 
 	/**
