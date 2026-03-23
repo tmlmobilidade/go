@@ -6,10 +6,10 @@ import { MongoClient } from 'mongodb';
 
 /* * */
 
-export class PCGIDBTicketingService {
+export class PCGIValidationsClient {
 	//
 
-	private static _instance: null | Promise<PCGIDBTicketingService> = null;
+	private static _instance: null | Promise<PCGIValidationsClient> = null;
 
 	private client: MongoClient;
 	private tunnel: null | SshTunnelService = null;
@@ -29,7 +29,7 @@ export class PCGIDBTicketingService {
 		// they will all await the same initialization process.
 		if (!this._instance) {
 			this._instance = (async () => {
-				const instance = new PCGIDBTicketingService();
+				const instance = new PCGIValidationsClient();
 				// This behaves like the constructor,
 				// but allows for async initialization.
 				await instance.connect();
@@ -48,14 +48,14 @@ export class PCGIDBTicketingService {
 	 * This method is called internally by the service and should not be used directly.
 	 */
 	private async connect() {
-		Logger.info('Connecting to PCGIDBTicketingService...');
+		Logger.info('[PCGIValidationsClient] Connecting to database...');
 		const connectionString = await this.getConnectionString();
 		this.client = new MongoClient(connectionString);
 		this.client.on('close', () => {
-			console.warn('[PCGIDBTicketingService] Database connection closed unexpectedly.');
+			console.warn('[PCGIValidationsClient] Database connection closed unexpectedly.');
 		});
 		this.client.on('reconnect', () => {
-			console.log('[PCGIDBTicketingService] Database reconnected.');
+			console.log('[PCGIValidationsClient] Database reconnected.');
 		});
 		await this.client.connect();
 	}
@@ -74,44 +74,52 @@ export class PCGIDBTicketingService {
 		//
 		// Validate required environment variables
 
-		if (process.env.PCGI_MONGO_DB_TUNNEL_ENABLED !== 'true' && process.env.PCGI_MONGO_DB_TUNNEL_ENABLED !== 'false') {
-			throw new Error('Missing PCGI_MONGO_DB_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting PCGI_MONGO_DB_TUNNEL_ENABLED to "true" or "false".');
+		if (process.env.PCGI_VALIDATIONS_TUNNEL_ENABLED !== 'true' && process.env.PCGI_VALIDATIONS_TUNNEL_ENABLED !== 'false') {
+			throw new Error('Missing PCGI_VALIDATIONS_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting PCGI_VALIDATIONS_TUNNEL_ENABLED to "true" or "false".');
 		}
 
-		if (!process.env.PCGI_MONGO_DB_HOST || !process.env.PCGI_MONGO_DB_PORT) {
-			throw new Error('Missing PCGI_MONGO_DB_HOST or PCGI_MONGO_DB_PORT');
+		if (!process.env.PCGI_VALIDATIONS_HOST_1 || !process.env.PCGI_VALIDATIONS_PORT_1) {
+			throw new Error('Missing PCGI_VALIDATIONS_HOST_1 or PCGI_VALIDATIONS_PORT_1');
 		}
 
-		if (process.env.PCGI_MTicketingONGO_DB_TUNNEL_ENABLED === 'false') {
-			return `http://${process.env.PCGI_MTicketingONGO_DB_USER}:${process.env.PCGI_MTicketingONGO_DB_PASSWORD}@${process.env.PCGI_MTicketingONGO_DB_HOST}:${process.env.PCGI_MTicketingONGO_DB_PORT}`;
+		if (!process.env.PCGI_VALIDATIONS_HOST_2 || !process.env.PCGI_VALIDATIONS_PORT_2) {
+			throw new Error('Missing PCGI_VALIDATIONS_HOST_2 or PCGI_VALIDATIONS_PORT_2');
+		}
+
+		if (!process.env.PCGI_VALIDATIONS_HOST_3 || !process.env.PCGI_VALIDATIONS_PORT_3) {
+			throw new Error('Missing PCGI_VALIDATIONS_HOST_3 or PCGI_VALIDATIONS_PORT_3');
+		}
+
+		if (process.env.PCGI_VALIDATIONS_TUNNEL_ENABLED === 'false') {
+			return `http://${process.env.PCGI_VALIDATIONS_USER}:${process.env.PCGI_VALIDATIONS_PASSWORD}@${process.env.PCGI_VALIDATIONS_HOST_1}:${process.env.PCGI_VALIDATIONS_PORT_1},${process.env.PCGI_VALIDATIONS_HOST_2}:${process.env.PCGI_VALIDATIONS_PORT_2},${process.env.PCGI_VALIDATIONS_HOST_3}:${process.env.PCGI_VALIDATIONS_PORT_3}`;
 		}
 
 		// SSH required
-		if (!process.env.PCGI_MTicketingONGO_DB_TUNNEL_LOCAL_PORT) {
-			throw new Error('Missing PCGI_MTicketingONGO_DB_TUNNEL_LOCAL_PORT');
+		if (!process.env.PCGI_VALIDATIONS_TUNNEL_LOCAL_PORT) {
+			throw new Error('Missing PCGI_VALIDATIONS_TUNNEL_LOCAL_PORT');
 		}
 
-		if (!process.env.PCGI_MTicketingONGO_DB_TUNNEL_SSH_HOST || !process.env.PCGI_MTicketingONGO_DB_TUNNEL_SSH_USERNAME) {
+		if (!process.env.PCGI_VALIDATIONS_TUNNEL_SSH_HOST || !process.env.PCGI_VALIDATIONS_TUNNEL_SSH_USERNAME) {
 			throw new Error('Missing SSH config');
 		}
 
 		const sshConfig: SshConfig = {
 			forwardOptions: {
-				dstAddr: process.env.PCGI_MTicketingONGO_DB_HOST,
-				dstPort: Number(process.env.PCGI_MTicketingONGO_DB_PORT),
+				dstAddr: process.env.PCGI_VALIDATIONS_HOST_1,
+				dstPort: Number(process.env.PCGI_VALIDATIONS_PORT_1),
 				srcAddr: 'localhost',
-				srcPort: Number(process.env.PCGI_MTicketingONGO_DB_TUNNEL_LOCAL_PORT),
+				srcPort: Number(process.env.PCGI_VALIDATIONS_TUNNEL_LOCAL_PORT),
 			},
 			serverOptions: {
-				port: Number(process.env.PCGI_MTicketingONGO_DB_TUNNEL_LOCAL_PORT),
+				port: Number(process.env.PCGI_VALIDATIONS_TUNNEL_LOCAL_PORT),
 			},
 			sshOptions: {
 				agent: process.env.SSH_AUTH_SOCK,
-				host: process.env.PCGI_MTicketingONGO_DB_TUNNEL_SSH_HOST,
+				host: process.env.PCGI_VALIDATIONS_TUNNEL_SSH_HOST,
 				keepaliveCountMax: 3,
 				keepaliveInterval: 10_000,
 				port: 22,
-				username: process.env.PCGI_MTicketingONGO_DB_TUNNEL_SSH_USERNAME,
+				username: process.env.PCGI_VALIDATIONS_TUNNEL_SSH_USERNAME,
 			},
 			tunnelOptions: {
 				autoClose: false,
@@ -125,16 +133,16 @@ export class PCGIDBTicketingService {
 
 		this.tunnel = new SshTunnelService(sshConfig, sshOptions);
 
-		Logger.info('[PCGIDBTicketingService] Setting up SSH Tunnel...');
+		Logger.info('[PCGIValidationsClient] Setting up SSH Tunnel...');
 
 		const connection = await this.tunnel.connect();
 		const addr = connection.address();
 
 		if (!addr || typeof addr !== 'object') {
-			throw new Error('[PCGIDBTicketingService] Failed to retrieve SSH tunnel address.');
+			throw new Error('[PCGIValidationsClient] Failed to retrieve SSH tunnel address.');
 		}
 
-		return `http://${process.env.PCGI_MTicketingONGO_DB_USER}:${process.env.PCGI_MTicketingONGO_DB_PASSWORD}@localhost:${addr.port}`;
+		return `http://${process.env.PCGI_VALIDATIONS_USER}:${process.env.PCGI_VALIDATIONS_PASSWORD}@localhost:${addr.port}`;
 	}
 
 	//

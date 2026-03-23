@@ -6,10 +6,10 @@ import { MongoClient } from 'mongodb';
 
 /* * */
 
-export class GOMongoClient {
+export class PCGIFileManagerClient {
 	//
 
-	private static _instance: null | Promise<GOMongoClient> = null;
+	private static _instance: null | Promise<PCGIFileManagerClient> = null;
 
 	private client: MongoClient;
 	private tunnel: null | SshTunnelService = null;
@@ -29,7 +29,7 @@ export class GOMongoClient {
 		// they will all await the same initialization process.
 		if (!this._instance) {
 			this._instance = (async () => {
-				const instance = new GOMongoClient();
+				const instance = new PCGIFileManagerClient();
 				// This behaves like the constructor,
 				// but allows for async initialization.
 				await instance.connect();
@@ -48,14 +48,14 @@ export class GOMongoClient {
 	 * This method is called internally by the service and should not be used directly.
 	 */
 	private async connect() {
-		Logger.info('[GOMongoClient] Connecting to database...');
+		Logger.info('[PCGIFileManagerClient] Connecting to database...');
 		const connectionString = await this.getConnectionString();
 		this.client = new MongoClient(connectionString);
 		this.client.on('close', () => {
-			console.warn('[GOMongoClient] Database connection closed unexpectedly.');
+			console.warn('[PCGIFileManagerClient] Database connection closed unexpectedly.');
 		});
 		this.client.on('reconnect', () => {
-			console.log('[GOMongoClient] Database reconnected.');
+			console.log('[PCGIFileManagerClient] Database reconnected.');
 		});
 		await this.client.connect();
 	}
@@ -74,44 +74,52 @@ export class GOMongoClient {
 		//
 		// Validate required environment variables
 
-		if (process.env.GO_MONGO_TUNNEL_ENABLED !== 'true' && process.env.GO_MONGO_TUNNEL_ENABLED !== 'false') {
-			throw new Error('Missing GO_MONGO_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting GO_MONGO_TUNNEL_ENABLED to "true" or "false".');
+		if (process.env.PCGI_FILE_MANAGER_TUNNEL_ENABLED !== 'true' && process.env.PCGI_FILE_MANAGER_TUNNEL_ENABLED !== 'false') {
+			throw new Error('Missing PCGI_FILE_MANAGER_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting PCGI_FILE_MANAGER_TUNNEL_ENABLED to "true" or "false".');
 		}
 
-		if (!process.env.GO_MONGO_HOST || !process.env.GO_MONGO_PORT) {
-			throw new Error('Missing GO_MONGO_HOST or GO_MONGO_PORT');
+		if (!process.env.PCGI_FILE_MANAGER_HOST_1 || !process.env.PCGI_FILE_MANAGER_PORT_1) {
+			throw new Error('Missing PCGI_FILE_MANAGER_HOST_1 or PCGI_FILE_MANAGER_PORT_1');
 		}
 
-		if (process.env.GO_MONGO_TUNNEL_ENABLED === 'false') {
-			return `mongodb://${process.env.GO_MONGO_USER}:${process.env.GO_MONGO_PASSWORD}@${process.env.GO_MONGO_HOST}:${process.env.GO_MONGO_PORT}`;
+		if (!process.env.PCGI_FILE_MANAGER_HOST_2 || !process.env.PCGI_FILE_MANAGER_PORT_2) {
+			throw new Error('Missing PCGI_FILE_MANAGER_HOST_2 or PCGI_FILE_MANAGER_PORT_2');
+		}
+
+		if (!process.env.PCGI_FILE_MANAGER_HOST_3 || !process.env.PCGI_FILE_MANAGER_PORT_3) {
+			throw new Error('Missing PCGI_FILE_MANAGER_HOST_3 or PCGI_FILE_MANAGER_PORT_3');
+		}
+
+		if (process.env.PCGI_FILE_MANAGER_TUNNEL_ENABLED === 'false') {
+			return `http://${process.env.PCGI_FILE_MANAGER_USER}:${process.env.PCGI_FILE_MANAGER_PASSWORD}@${process.env.PCGI_FILE_MANAGER_HOST_1}:${process.env.PCGI_FILE_MANAGER_PORT_1},${process.env.PCGI_FILE_MANAGER_HOST_2}:${process.env.PCGI_FILE_MANAGER_PORT_2},${process.env.PCGI_FILE_MANAGER_HOST_3}:${process.env.PCGI_FILE_MANAGER_PORT_3}`;
 		}
 
 		// SSH required
-		if (!process.env.GO_MONGO_TUNNEL_LOCAL_PORT) {
-			throw new Error('Missing GO_MONGO_TUNNEL_LOCAL_PORT');
+		if (!process.env.PCGI_FILE_MANAGER_TUNNEL_LOCAL_PORT) {
+			throw new Error('Missing PCGI_FILE_MANAGER_TUNNEL_LOCAL_PORT');
 		}
 
-		if (!process.env.GO_MONGO_TUNNEL_SSH_HOST || !process.env.GO_MONGO_TUNNEL_SSH_USERNAME) {
+		if (!process.env.PCGI_FILE_MANAGER_TUNNEL_SSH_HOST || !process.env.PCGI_FILE_MANAGER_TUNNEL_SSH_USERNAME) {
 			throw new Error('Missing SSH config');
 		}
 
 		const sshConfig: SshConfig = {
 			forwardOptions: {
-				dstAddr: process.env.GO_MONGO_HOST,
-				dstPort: Number(process.env.GO_MONGO_PORT),
+				dstAddr: process.env.PCGI_FILE_MANAGER_HOST_1,
+				dstPort: Number(process.env.PCGI_FILE_MANAGER_PORT_1),
 				srcAddr: 'localhost',
-				srcPort: Number(process.env.GO_MONGO_TUNNEL_LOCAL_PORT),
+				srcPort: Number(process.env.PCGI_FILE_MANAGER_TUNNEL_LOCAL_PORT),
 			},
 			serverOptions: {
-				port: Number(process.env.GO_MONGO_TUNNEL_LOCAL_PORT),
+				port: Number(process.env.PCGI_FILE_MANAGER_TUNNEL_LOCAL_PORT),
 			},
 			sshOptions: {
 				agent: process.env.SSH_AUTH_SOCK,
-				host: process.env.GO_MONGO_TUNNEL_SSH_HOST,
+				host: process.env.PCGI_FILE_MANAGER_TUNNEL_SSH_HOST,
 				keepaliveCountMax: 3,
 				keepaliveInterval: 10_000,
 				port: 22,
-				username: process.env.GO_MONGO_TUNNEL_SSH_USERNAME,
+				username: process.env.PCGI_FILE_MANAGER_TUNNEL_SSH_USERNAME,
 			},
 			tunnelOptions: {
 				autoClose: false,
@@ -125,16 +133,16 @@ export class GOMongoClient {
 
 		this.tunnel = new SshTunnelService(sshConfig, sshOptions);
 
-		Logger.info('[GOMongoClient] Setting up SSH Tunnel...');
+		Logger.info('[PCGIFileManagerClient] Setting up SSH Tunnel...');
 
 		const connection = await this.tunnel.connect();
 		const addr = connection.address();
 
 		if (!addr || typeof addr !== 'object') {
-			throw new Error('[GOMongoClient] Failed to retrieve SSH tunnel address.');
+			throw new Error('[PCGIFileManagerClient] Failed to retrieve SSH tunnel address.');
 		}
 
-		return `mongodb://${process.env.GO_MONGO_USER}:${process.env.GO_MONGO_PASSWORD}@localhost:${addr.port}`;
+		return `http://${process.env.PCGI_FILE_MANAGER_USER}:${process.env.PCGI_FILE_MANAGER_PASSWORD}@localhost:${addr.port}`;
 	}
 
 	//
