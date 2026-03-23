@@ -1,6 +1,6 @@
 /* * */
 
-import { getClickHouseParamType } from '@/utils/get-clickhouse-param-type.js';
+import { getClickHouseParamType } from '@/utils/clickhouse/get-clickhouse-param-type.js';
 
 /**
  * Prepares a SQL query with positional parameters by replacing placeholders
