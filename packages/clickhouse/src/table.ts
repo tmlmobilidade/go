@@ -1,8 +1,7 @@
 /* * */
 
-import { isSafeIdentifier } from '@/utils.js';
 import { ClickHouseClient, type DataFormat } from '@clickhouse/client';
-import { type ClickHouseColumn, type ClickHouseTableEngine, GOClickHouseClient } from '@tmlmobilidade/databases';
+import { type ClickHouseColumn, type ClickHouseTableEngine, GOClickHouseClient, validateSqlParam } from '@tmlmobilidade/databases';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -56,7 +55,7 @@ export abstract class ClickHouseTable<T> {
 	 */
 	protected async ensureDatabase(): Promise<void> {
 		// Validate the inputs are safe identifiers to prevent SQL injection
-		if (!isSafeIdentifier(this.databaseName)) throw new Error(`CLICKHOUSE [${this.databaseName}]: Unsafe database name provided.`);
+		if (!validateSqlParam(this.databaseName, false)) throw new Error(`CLICKHOUSE [${this.databaseName}]: Unsafe database name provided.`);
 		// Perform the query to create the database if it does not exist
 		try {
 			await this.client.command({ query: `CREATE DATABASE IF NOT EXISTS "${this.databaseName}" on CLUSTER default_cluster;` });
@@ -76,12 +75,12 @@ export abstract class ClickHouseTable<T> {
 	 */
 	protected async ensureTable(): Promise<void> {
 		// Validate the inputs are safe identifiers to prevent SQL injection
-		if (!isSafeIdentifier(this.databaseName)) throw new Error(`CLICKHOUSE [${this.databaseName}]: Unsafe database name provided.`);
-		if (!isSafeIdentifier(this.tableName)) throw new Error(`CLICKHOUSE [${this.tableName}]: Unsafe table name provided.`);
-		if (!isSafeIdentifier(this.engine)) throw new Error(`CLICKHOUSE [${this.engine}]: Unsafe engine type provided.`);
-		if (!isSafeIdentifier(this.orderBy)) throw new Error(`CLICKHOUSE [${this.orderBy}]: Unsafe orderBy clause provided.`);
+		if (!validateSqlParam(this.databaseName, false)) throw new Error(`CLICKHOUSE [${this.databaseName}]: Unsafe database name provided.`);
+		if (!validateSqlParam(this.tableName, false)) throw new Error(`CLICKHOUSE [${this.tableName}]: Unsafe table name provided.`);
+		if (!validateSqlParam(this.engine, false)) throw new Error(`CLICKHOUSE [${this.engine}]: Unsafe engine type provided.`);
+		if (!validateSqlParam(this.orderBy, false)) throw new Error(`CLICKHOUSE [${this.orderBy}]: Unsafe orderBy clause provided.`);
 		// Validate the schema columns are safe identifiers
-		const unsafeColumns = this.schema.filter(column => !isSafeIdentifier(column.name)).map(column => column.name);
+		const unsafeColumns = this.schema.filter(column => !validateSqlParam(column.name, false)).map(column => column.name);
 		if (unsafeColumns.length > 0) throw new Error(`CLICKHOUSE [${this.tableName}]: Unsafe column names provided: ${unsafeColumns.join(', ')}.`);
 		// Ensure the database exists before creating the table
 		await this.ensureDatabase();

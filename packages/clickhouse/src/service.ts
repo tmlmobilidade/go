@@ -6,6 +6,10 @@ import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '
 
 /* * */
 
+/**
+ * @deprecated This class is deprecated and should not be used directly.
+ * Please use the provided methods for common operations
+ */
 export class ClickHouseService {
 	//
 

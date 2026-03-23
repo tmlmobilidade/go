@@ -1,6 +1,6 @@
 /* * */
 
-import { validateSqlQueryParam } from './validate-sql-query-param.js';
+import { validateSqlParam } from './validate-sql-param.js';
 
 /**
  * Prepares a SQL query with named parameters by validating the parameter keys
@@ -20,7 +20,7 @@ export function prepareNamedQueryParams(query: string, params?: Record<string, n
 	const usedKeys = new Set<string>();
 
 	for (const key of Object.keys(providedParams)) {
-		validateSqlQueryParam(key);
+		validateSqlParam(key);
 	}
 
 	// Backward compatibility: convert untyped placeholders ({name}) into typed ClickHouse params.
