@@ -18,6 +18,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/clickhouse": "*",
+		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/go-tracker-pckg-common": "*",
 		"@tmlmobilidade/go-tracker-pckg-databases": "*",
 		"@tmlmobilidade/interfaces": "*",
