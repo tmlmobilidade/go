@@ -19,12 +19,12 @@ import { useUserPreference } from '../hooks';
 
 interface MapContextState {
 	actions: {
-		handleSearch: (value: string) => void
+		handleSearchCoordinates: (value: [number, number] | null) => void
 		toggleScrollZoom: (value?: boolean) => void
 		toggleStyle: (value?: MapStyle) => void
 	}
 	data: {
-		search: string
+		search_coordinates: [number, number] | null
 		search_pin: FeatureCollection<Point, MapOverlayPinsPointDataProps>
 	}
 	flags: {
@@ -53,7 +53,7 @@ export const MapContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
-	const [dataSearch, setDataSearch] = useUserPreference<string>('map', 'data:search', '');
+	const [dataSearchCoordinates, setDataSearchCoordinates] = useUserPreference<[number, number] | null>('map', 'data:search-coordinates', null);
 	const [flagStyle, setFlagStyle] = useUserPreference<MapStyle>('map', 'flags:style', 'map');
 	const [flagScrollZoom, setFlagScrollZoom] = useUserPreference<boolean>('map', 'flags:scroll-zoom', true);
 
@@ -64,13 +64,13 @@ export const MapContextProvider = ({ children }: PropsWithChildren) => {
 		// Prepare an empty feature collection
 		const baseGeoJson = getBaseGeoJsonFeatureCollection<Point, MapOverlayPinsPointDataProps>();
 		// Parse the coordinates from the search value
-		const parsedCoordinates = parseCoordinatePairString(dataSearch);
 		// Skip if coordinates are invalid or not found
-		if (!parsedCoordinates) return baseGeoJson;
+		if (!dataSearchCoordinates) return baseGeoJson;
 		// Add the features to the base GeoJSON
+		const [lat, lon] = dataSearchCoordinates;
 		baseGeoJson.features = [{
 			geometry: {
-				coordinates: [parsedCoordinates.lng, parsedCoordinates.lat],
+				coordinates: [lon, lat], // GeoJSON Position is [longitude, latitude]
 				type: 'Point',
 			},
 			properties: {
@@ -80,7 +80,7 @@ export const MapContextProvider = ({ children }: PropsWithChildren) => {
 		}];
 		// Return the collection
 		return baseGeoJson;
-	}, [dataSearch]);
+	}, [dataSearchCoordinates]);
 
 	//
 	// B. Handle actions
@@ -95,8 +95,15 @@ export const MapContextProvider = ({ children }: PropsWithChildren) => {
 		else setFlagStyle(flagStyle === 'map' ? 'satellite' : 'map');
 	};
 
-	const handleSearch = (value: string) => {
-		setDataSearch(value);
+	const handleSearchCoordinates = (value: [number, number] | null) => {
+		if (value === null) {
+			setDataSearchCoordinates(null);
+			return;
+		}
+		const [lat, lon] = value;
+		if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+		if (lat < -90 || lat > 90 || lon < -180 || lon > 180) return;
+		setDataSearchCoordinates([lat, lon]);
 	};
 
 	//
@@ -104,12 +111,12 @@ export const MapContextProvider = ({ children }: PropsWithChildren) => {
 
 	const contextValue: MapContextState = useMemo(() => ({
 		actions: {
-			handleSearch,
+			handleSearchCoordinates,
 			toggleScrollZoom,
 			toggleStyle,
 		},
 		data: {
-			search: dataSearch,
+			search_coordinates: dataSearchCoordinates,
 			search_pin: searchPinFC,
 		},
 		flags: {
@@ -117,7 +124,7 @@ export const MapContextProvider = ({ children }: PropsWithChildren) => {
 			style: flagStyle,
 		},
 	}), [
-		dataSearch,
+		dataSearchCoordinates,
 		searchPinFC,
 		flagScrollZoom,
 		flagStyle,
