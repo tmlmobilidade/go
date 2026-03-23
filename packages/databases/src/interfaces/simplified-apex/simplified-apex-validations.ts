@@ -41,9 +41,9 @@ class SimplifiedApexValidationsNewClass extends ClickHouseInterfaceTemplate<Simp
 
 	private static _instance: null | Promise<SimplifiedApexValidationsNewClass> = null;
 
-	public override readonly databaseName = 'operation';
-	public override readonly schema = tableSchema;
-	public override readonly tableName = 'simplified_apex_validations';
+	protected override readonly databaseName = 'operation';
+	protected override readonly schema = tableSchema;
+	protected override readonly tableName = 'simplified_apex_validations';
 
 	/**
 	 * Returns the singleton instance of the subclass.

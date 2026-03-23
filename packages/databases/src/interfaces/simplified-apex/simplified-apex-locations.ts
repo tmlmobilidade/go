@@ -32,9 +32,9 @@ class SimplifiedApexLocationsNewClass extends ClickHouseInterfaceTemplate<Simpli
 
 	private static _instance: null | Promise<SimplifiedApexLocationsNewClass> = null;
 
-	public override readonly databaseName = 'operation';
-	public override readonly schema = tableSchema;
-	public override readonly tableName = 'simplified_apex_locations';
+	protected override readonly databaseName = 'operation';
+	protected override readonly schema = tableSchema;
+	protected override readonly tableName = 'simplified_apex_locations';
 
 	/**
 	 * Returns the singleton instance of the subclass.

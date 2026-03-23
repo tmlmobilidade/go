@@ -12,11 +12,11 @@ import { Logger } from '@tmlmobilidade/logger';
 export abstract class ClickHouseInterfaceTemplate<T> {
 	//
 
-	public readonly abstract databaseName: string;
-	public readonly engine: ClickHouseTableEngine = 'ReplicatedMergeTree';
-	public readonly orderBy: string = '_id';
-	public readonly abstract schema: ClickHouseColumn<T>[];
-	public readonly abstract tableName: string;
+	protected readonly abstract databaseName: string;
+	protected readonly engine: ClickHouseTableEngine = 'ReplicatedMergeTree';
+	protected readonly orderBy: string = '_id';
+	protected readonly abstract schema: ClickHouseColumn<T>[];
+	protected readonly abstract tableName: string;
 
 	private client: ClickHouseClient;
 

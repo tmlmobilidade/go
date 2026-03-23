@@ -43,9 +43,9 @@ class SimplifiedApexOnBoardSalesNewClass extends ClickHouseInterfaceTemplate<Sim
 
 	private static _instance: null | Promise<SimplifiedApexOnBoardSalesNewClass> = null;
 
-	public override readonly databaseName = 'operation';
-	public override readonly schema = tableSchema;
-	public override readonly tableName = 'simplified_apex_on_board_sales';
+	protected override readonly databaseName = 'operation';
+	protected override readonly schema = tableSchema;
+	protected override readonly tableName = 'simplified_apex_on_board_sales';
 
 	/**
 	 * Returns the singleton instance of the subclass.

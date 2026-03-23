@@ -19,6 +19,7 @@
 	"dependencies": {
 		"@tmlmobilidade/clickhouse": "*",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-apex-pckg-common": "*",
 		"@tmlmobilidade/go-apex-pckg-databases": "*",

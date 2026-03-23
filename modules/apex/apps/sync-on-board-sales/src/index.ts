@@ -3,7 +3,6 @@
 import { syncApexOnBoardSales } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { pcgidbTicketing } from '@tmlmobilidade/go-apex-pckg-databases';
-import { simplifiedApexOnBoardSalesNew } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
@@ -22,7 +21,6 @@ async function main() {
 		// Connect to the source database
 
 		await pcgidbTicketing.connect();
-		await simplifiedApexOnBoardSalesNew.init();
 
 		//
 		// Get the earliest date from which we have data to sync,

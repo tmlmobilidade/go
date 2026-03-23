@@ -1,7 +1,7 @@
 /* * */
 
+import { simplifiedApexOnBoardRefundsNew } from '@tmlmobilidade/databases';
 import { invalidateRides, parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-apex-pckg-common';
-import { simplifiedApexOnBoardRefundsNew } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
 import { BatchWriter } from '@tmlmobilidade/writers';
@@ -13,7 +13,7 @@ const writer = new BatchWriter<SimplifiedApexOnBoardRefund>({
 	insertFn: async (data) => {
 		await simplifiedApexOnBoardRefundsNew.insert('JSONEachRow', data);
 	},
-	title: simplifiedApexOnBoardRefundsNew.tableName,
+	title: await simplifiedApexOnBoardRefundsNew.getTableName(),
 });
 
 /**

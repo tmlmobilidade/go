@@ -1,9 +1,9 @@
 /* * */
 
+import { simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { APEX_LOCATIONS_SETTINGS, invalidateRides, parseSimplifiedApexLocation } from '@tmlmobilidade/go-apex-pckg-common';
 import { pcgidbValidations } from '@tmlmobilidade/go-apex-pckg-databases';
-import { simplifiedApexLocationsNew } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
@@ -16,7 +16,7 @@ const writer = new BatchWriter<SimplifiedApexLocation>({
 	insertFn: async (data) => {
 		await simplifiedApexLocationsNew.insert('JSONEachRow', data);
 	},
-	title: simplifiedApexLocationsNew.tableName,
+	title: await simplifiedApexLocationsNew.getTableName(),
 });
 
 /**
@@ -60,11 +60,11 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 	await replicate<unknown>({
 
 		countDestinationDbFn: async () => {
-			const result = await simplifiedApexLocationsNew.queryFromString<{ count: number }>(
-				'SELECT COUNT(*) as count FROM "operation"."simplified_apex_locations" WHERE created_at >= $1 AND created_at <= $2',
+			return await simplifiedApexLocationsNew.count(
+				'*',
+				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
-			return result[0].count;
 		},
 
 		countSourceDbFn: async () => {
@@ -73,18 +73,18 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await simplifiedApexLocationsNew.queryFromString(
-				'DELETE FROM "operation"."simplified_apex_locations" WHERE _id IN ($1)',
+			await simplifiedApexLocationsNew.delete(
+				'_id IN ($1)',
 				{ 1: ids.map(id => `'${id}'`).join(', ') },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
-			const result = await simplifiedApexLocationsNew.queryFromString<{ _id: string }>(
-				'SELECT _id FROM "operation"."simplified_apex_locations" WHERE created_at >= $1 AND created_at <= $2',
+			return await simplifiedApexLocationsNew.distinct(
+				'_id',
+				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
-			return result.map(doc => doc._id);
 		},
 
 		distinctSourceDbFn: async () => {

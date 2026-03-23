@@ -5,7 +5,6 @@ import { processApexOnBoardRefund } from '@/tasks/process-apex-on-board-refund.j
 import { processApexOnBoardSale } from '@/tasks/process-apex-on-board-sale.js';
 import { processApexValidation } from '@/tasks/process-apex-validation.js';
 import { pcgidbTicketing, pcgidbValidations } from '@tmlmobilidade/go-apex-pckg-databases';
-import { simplifiedApexLocationsNew, simplifiedApexOnBoardRefundsNew, simplifiedApexOnBoardSalesNew, simplifiedApexValidationsNew } from '@tmlmobilidade/interfaces';
 
 /* * */
 
@@ -14,11 +13,6 @@ import { simplifiedApexLocationsNew, simplifiedApexOnBoardRefundsNew, simplified
 
 	await pcgidbTicketing.connect();
 	await pcgidbValidations.connect();
-
-	await simplifiedApexLocationsNew.init();
-	await simplifiedApexOnBoardRefundsNew.init();
-	await simplifiedApexOnBoardSalesNew.init();
-	await simplifiedApexValidationsNew.init();
 
 	//
 	// Watch for changes to the MongoDB collections
