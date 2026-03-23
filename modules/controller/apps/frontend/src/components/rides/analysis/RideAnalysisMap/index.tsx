@@ -2,6 +2,7 @@
 
 /* * */
 
+import { ReplayEvents } from '@/components/common/ReplayEvents';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { Collapsible, Divider, MapOverlayGeofences, MapOverlayObservedPath, MapOverlayScheduledPath, MapView, Section, Switch } from '@tmlmobilidade/ui';
 import { useState } from 'react';
@@ -30,6 +31,7 @@ export function RideAnalysisMap() {
 
 	return (
 		<Collapsible description={t('default:rides.analysis.RideAnalysisMap.description')} title={t('default:rides.analysis.RideAnalysisMap.title')} defaultOpen>
+			<ReplayEvents />
 			<div className={styles.mapWrapper}>
 				<MapView id="RideAnalysisMap">
 					<MapOverlayScheduledPath
@@ -57,20 +59,6 @@ export function RideAnalysisMap() {
 				<Switch checked={showObservedPath} label={t('default:rides.analysis.RideAnalysisMap.switches.observed_path.label')} onChange={() => setShowObservedPath(prev => !prev)} />
 				<Switch checked={showGeofences} label={t('default:rides.analysis.RideAnalysisMap.switches.geofences.label')} onChange={() => setShowGeofences(prev => !prev)} />
 			</Section>
-			{/* <Divider /> */}
-			{/* <Section alignItems="center" flexDirection="row" gap="md">
-				<Button icon={<IconPlayerPlayFilled />} label="Play" />
-				<Slider />
-				<Label size="sm" caps singleLine>Ordenar eventos por</Label>
-				<SegmentedControl
-					value="created_at"
-					data={[
-						{ label: 'Receção', value: 'received_at' },
-						{ label: 'Operador', value: 'updated_at' },
-						{ label: 'Veículo', value: 'created_at' },
-					]}
-				/>
-			</Section> */}
 		</Collapsible>
 	);
 
