@@ -1,6 +1,6 @@
 /* * */
 
-import { type ClickHouseColumn } from '@tmlmobilidade/clickhouse';
+import { type ClickHouseColumn } from '@tmlmobilidade/databases';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
 /* * */

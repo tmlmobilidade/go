@@ -1,9 +1,8 @@
 /* * */
 
-import { type ClickHouseColumn, type ClickHouseTableEngine } from '@/types.js';
 import { isSafeIdentifier } from '@/utils.js';
 import { ClickHouseClient, type DataFormat } from '@clickhouse/client';
-import { GOClickHouseDatabase } from '@tmlmobilidade/databases';
+import { type ClickHouseColumn, type ClickHouseTableEngine, GOClickHouseClient } from '@tmlmobilidade/databases';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -19,13 +18,6 @@ export abstract class ClickHouseTable<T> {
 
 	private client: ClickHouseClient;
 
-	public async init() {
-		this.client = await GOClickHouseDatabase.getClient();
-		await this.ensureDatabase();
-		await this.ensureTable();
-		await this.postInit();
-	}
-
 	/**
 	 * Inserts data into a specified ClickHouse table using the service's client.
 	 * @param databaseName The name of the database where the table is located.
@@ -40,6 +32,20 @@ export abstract class ClickHouseTable<T> {
 			table: `"${this.databaseName}"."${this.tableName}"`,
 			values: values,
 		});
+	}
+
+	/**
+	 * Executes a simple SELECT query on the ClickHouse table using the service's client.
+	 * @param select The columns to select in the query (e.g., `"*"`, `"column1, column2"`).
+	 * @param where The WHERE clause to filter the results (e.g., `"id = 1"`).
+	 * @returns A promise that resolves to an array of results matching the query.
+	 */
+	public async select(select: string, where: string): Promise<T[]> {
+		const result = await this.client.query({
+			format: 'JSONEachRow',
+			query: `SELECT ${select} FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`,
+		});
+		return result.json();
 	}
 
 	/**
@@ -83,7 +89,7 @@ export abstract class ClickHouseTable<T> {
 		const createTableQuery = `
 			CREATE TABLE IF NOT EXISTS "${this.databaseName}"."${this.tableName}" ON CLUSTER default_cluster (
 				${this.schema.map(column => `${column.name} ${column.type}`).join(', ')}
-			) ENGINE = ${this.getEngine()}
+			) ENGINE = ${this.getEngineString()}
 			ORDER BY ${this.orderBy}
 		`;
 		// Perform the query to create the table
@@ -94,6 +100,13 @@ export abstract class ClickHouseTable<T> {
 			Logger.error(`CLICKHOUSE [${this.tableName}]: Error @ createTable(): ${(error as Error).message}`);
 			throw error;
 		}
+	}
+
+	protected async init() {
+		this.client = await GOClickHouseClient.getClient();
+		await this.ensureDatabase();
+		await this.ensureTable();
+		await this.postInit();
 	}
 
 	/**
@@ -108,7 +121,7 @@ export abstract class ClickHouseTable<T> {
 	 * Constructs the appropriate engine string based on the provided engine type.
 	 * @throws Will throw an error if an unsupported engine type is provided.
 	 */
-	private getEngine(): string {
+	private getEngineString(): string {
 		switch (this.engine) {
 			case 'ReplicatedMergeTree':
 				return `ReplicatedMergeTree('/clickhouse/tables/{shard}/${this.databaseName}/${this.tableName}', '{replica}')`;
