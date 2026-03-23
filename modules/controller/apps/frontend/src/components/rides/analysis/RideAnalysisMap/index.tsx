@@ -5,7 +5,7 @@
 import { ReplayEvents } from '@/components/common/ReplayEvents';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { Collapsible, Divider, MapOverlayGeofences, MapOverlayObservedPath, MapOverlayScheduledPath, MapView, Section, Switch } from '@tmlmobilidade/ui';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -20,6 +20,49 @@ export function RideAnalysisMap() {
 
 	const rideAnalysisContext = useRideAnalysisContext();
 
+	const observedEvents = rideAnalysisContext.geojson.observed_events;
+	const observedShape = rideAnalysisContext.geojson.observed_shape;
+	const eventCount = observedEvents.features.length;
+	const showReplay = rideAnalysisContext.data.ride?.operational_status === 'ended' && eventCount > 0;
+
+	const [replayIndex, setReplayIndex] = useState(0);
+
+	useEffect(() => {
+		setReplayIndex(i => Math.min(i, Math.max(0, eventCount - 1)));
+	}, [eventCount]);
+
+	const observedPointsData = useMemo(() => {
+		if (!showReplay) return observedEvents;
+		return {
+			...observedEvents,
+			features: observedEvents.features.slice(0, replayIndex + 1),
+		};
+	}, [showReplay, observedEvents, replayIndex]);
+
+	const observedLineData = useMemo(() => {
+		if (!showReplay) return observedShape;
+		const lineFeature = observedShape.features[0];
+		if (lineFeature?.geometry.type !== 'LineString') return observedShape;
+		const fullCoords = lineFeature.geometry.coordinates;
+		let coordinates = fullCoords.slice(0, replayIndex + 1);
+		if (coordinates.length === 1) {
+			const c = coordinates[0];
+			coordinates = [c, c];
+		}
+		return {
+			...observedShape,
+			features: [
+				{
+					...lineFeature,
+					geometry: {
+						...lineFeature.geometry,
+						coordinates,
+					},
+				},
+			],
+		};
+	}, [showReplay, observedShape, replayIndex]);
+
 	const [showScheduledPath, setShowScheduledPath] = useState(true);
 	const [showObservedPath, setShowObservedPath] = useState(true);
 	const [showGeofences, setShowGeofences] = useState(false);
@@ -31,7 +74,9 @@ export function RideAnalysisMap() {
 
 	return (
 		<Collapsible description={t('default:rides.analysis.RideAnalysisMap.description')} title={t('default:rides.analysis.RideAnalysisMap.title')} defaultOpen>
-			<ReplayEvents />
+			{showReplay && (
+				<ReplayEvents onReplayIndexChange={setReplayIndex} replayIndex={replayIndex} />
+			)}
 			<div className={styles.mapWrapper}>
 				<MapView id="RideAnalysisMap">
 					<MapOverlayScheduledPath
@@ -42,8 +87,8 @@ export function RideAnalysisMap() {
 					/>
 					<MapOverlayObservedPath
 						id="1"
-						lineData={rideAnalysisContext.geojson.observed_shape}
-						pointsData={rideAnalysisContext.geojson.observed_events}
+						lineData={observedLineData}
+						pointsData={observedPointsData}
 						visible={showObservedPath}
 					/>
 					<MapOverlayGeofences

@@ -5,15 +5,22 @@
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { IconPlayerPauseFilled, IconPlayerPlayFilled } from '@tabler/icons-react';
 import { Button, Section, Slider } from '@tmlmobilidade/ui';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /* * */
 
-const PLAY_INTERVAL_MS = 1000;
+const PLAY_INTERVAL_MS = 500;
 
 /* * */
 
-export function ReplayEvents() {
+interface ReplayEventsProps {
+	onReplayIndexChange: (index: number) => void
+	replayIndex: number
+}
+
+/* * */
+
+export function ReplayEvents({ onReplayIndexChange, replayIndex }: ReplayEventsProps) {
 	//
 
 	//
@@ -21,17 +28,16 @@ export function ReplayEvents() {
 
 	const rideAnalysisContext = useRideAnalysisContext();
 
-	const sortedVehicleEvents = useMemo(
-		() => [...rideAnalysisContext.data.vehicle_events].sort((a, b) => a.created_at - b.created_at),
-		[rideAnalysisContext.data.vehicle_events],
-	);
-
-	const eventCount = sortedVehicleEvents.length;
+	const eventCount = rideAnalysisContext.geojson.observed_events.features.length;
 	const maxIndex = eventCount - 1;
 
-	const [index, setIndex] = useState(0);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const playIntervalRef = useRef<null | ReturnType<typeof setInterval>>(null);
+	const replayIndexRef = useRef(replayIndex);
+
+	useEffect(() => {
+		replayIndexRef.current = replayIndex;
+	}, [replayIndex]);
 
 	const stopPlayback = useCallback(() => {
 		if (playIntervalRef.current !== null) {
@@ -45,10 +51,6 @@ export function ReplayEvents() {
 	// B. Effects
 
 	useEffect(() => {
-		setIndex(i => Math.min(i, Math.max(0, eventCount - 1)));
-	}, [eventCount]);
-
-	useEffect(() => {
 		return () => {
 			if (playIntervalRef.current !== null) {
 				clearInterval(playIntervalRef.current);
@@ -59,13 +61,12 @@ export function ReplayEvents() {
 	useEffect(() => {
 		if (!isPlaying || maxIndex < 0) return;
 		playIntervalRef.current = setInterval(() => {
-			setIndex((i) => {
-				if (i >= maxIndex) {
-					stopPlayback();
-					return i;
-				}
-				return i + 1;
-			});
+			const i = replayIndexRef.current;
+			if (i >= maxIndex) {
+				stopPlayback();
+				return;
+			}
+			onReplayIndexChange(i + 1);
 		}, PLAY_INTERVAL_MS);
 		return () => {
 			if (playIntervalRef.current !== null) {
@@ -73,7 +74,7 @@ export function ReplayEvents() {
 				playIntervalRef.current = null;
 			}
 		};
-	}, [isPlaying, maxIndex, stopPlayback]);
+	}, [isPlaying, maxIndex, onReplayIndexChange, stopPlayback]);
 
 	//
 	// C. Render guards
@@ -90,14 +91,14 @@ export function ReplayEvents() {
 			stopPlayback();
 			return;
 		}
-		if (index >= maxIndex) {
-			setIndex(0);
+		if (replayIndex >= maxIndex) {
+			onReplayIndexChange(0);
 		}
 		setIsPlaying(true);
 	};
 
 	const onSliderChange = (value: number) => {
-		setIndex(value);
+		onReplayIndexChange(value);
 	};
 
 	//
@@ -111,10 +112,10 @@ export function ReplayEvents() {
 			/>
 			<Slider
 				max={maxIndex}
-				min={1}
+				min={0}
 				onChange={onSliderChange}
 				step={1}
-				value={index}
+				value={replayIndex}
 			/>
 		</Section>
 	);
