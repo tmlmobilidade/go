@@ -7,7 +7,7 @@ import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
-export abstract class GOClickHouseTemplate<T> {
+export abstract class ClickHouseInterfaceTemplate<T> {
 	//
 
 	public readonly abstract databaseName: string;
