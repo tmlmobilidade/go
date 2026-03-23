@@ -23,6 +23,11 @@ export function RideAnalysisVehicleEvents() {
 
 	const columns: DataTableColumn<SimplifiedVehicleEvent>[] = [
 		{
+			accessor: '_id',
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns._id.label'),
+			width: 400,
+		},
+		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
 			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.created_at.label'),
