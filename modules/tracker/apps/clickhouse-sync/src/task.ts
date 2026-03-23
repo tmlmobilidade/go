@@ -1,9 +1,9 @@
 /* * */
 
+import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { invalidateRides, PARSER_MAP, TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';
 import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
-import { simplifiedVehicleEventsNew } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
@@ -16,7 +16,7 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 	insertFn: async (data) => {
 		await simplifiedVehicleEventsNew.insert('JSONEachRow', data);
 	},
-	title: simplifiedVehicleEventsNew.tableName,
+	title: await simplifiedVehicleEventsNew.getTableName(),
 });
 
 /**
@@ -57,11 +57,11 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 	await replicate<TrackerVehicleEvent>({
 
 		countDestinationDbFn: async () => {
-			const result = await simplifiedVehicleEventsNew.queryFromString<{ count: number }>(
-				'SELECT COUNT(*) as count FROM "operation"."simplified_vehicle_events" WHERE created_at >= $1 AND created_at <= $2',
+			return await simplifiedVehicleEventsNew.count(
+				'*',
+				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
-			return result[0].count;
 		},
 
 		countSourceDbFn: async () => {
@@ -70,18 +70,18 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await simplifiedVehicleEventsNew.queryFromString(
-				'DELETE FROM "operation"."simplified_vehicle_events" WHERE _id IN ($1)',
+			await simplifiedVehicleEventsNew.delete(
+				'_id IN ($1)',
 				{ 1: ids.map(id => `'${id}'`).join(', ') },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
-			const result = await simplifiedVehicleEventsNew.queryFromString<{ _id: string }>(
-				'SELECT _id FROM "operation"."simplified_vehicle_events" WHERE created_at >= $1 AND created_at <= $2',
+			return await simplifiedVehicleEventsNew.distinct(
+				'_id',
+				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
-			return result.map(doc => doc._id);
 		},
 
 		distinctSourceDbFn: async () => {

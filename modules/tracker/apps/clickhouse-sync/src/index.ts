@@ -3,7 +3,6 @@
 import { syncVehicleEvents } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
-import { simplifiedVehicleEventsNew } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
@@ -22,7 +21,6 @@ async function main() {
 		// Connect to the source database
 
 		await rawdbVehicleEvents.connect();
-		await simplifiedVehicleEventsNew.init();
 
 		//
 		// Get the earliest date from which we have data to sync,

@@ -1,9 +1,9 @@
 /* * */
 
+import { simplifiedApexOnBoardRefundsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { APEX_ON_BOARD_REFUNDS_SETTINGS, invalidateRides, parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-apex-pckg-common';
 import { pcgidbTicketing } from '@tmlmobilidade/go-apex-pckg-databases';
-import { simplifiedApexOnBoardRefundsNew } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
@@ -16,7 +16,7 @@ const writer = new BatchWriter<SimplifiedApexOnBoardRefund>({
 	insertFn: async (data) => {
 		await simplifiedApexOnBoardRefundsNew.insert('JSONEachRow', data);
 	},
-	title: simplifiedApexOnBoardRefundsNew.tableName,
+	title: await simplifiedApexOnBoardRefundsNew.getTableName(),
 });
 
 /**
@@ -61,11 +61,11 @@ export async function syncApexOnBoardRefunds(timeChunk: PerformInTimeChunksItem)
 	await replicate<unknown>({
 
 		countDestinationDbFn: async () => {
-			const result = await simplifiedApexOnBoardRefundsNew.queryFromString<{ count: number }>(
-				'SELECT COUNT(*) as count FROM "operation"."simplified_apex_on_board_refunds" WHERE created_at >= $1 AND created_at <= $2',
+			return await simplifiedApexOnBoardRefundsNew.count(
+				'*',
+				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
-			return result[0].count;
 		},
 
 		countSourceDbFn: async () => {
@@ -74,18 +74,18 @@ export async function syncApexOnBoardRefunds(timeChunk: PerformInTimeChunksItem)
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await simplifiedApexOnBoardRefundsNew.queryFromString(
-				'DELETE FROM "operation"."simplified_apex_on_board_refunds" WHERE _id IN ($1)',
+			await simplifiedApexOnBoardRefundsNew.delete(
+				'_id IN ($1)',
 				{ 1: ids.map(id => `'${id}'`).join(', ') },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
-			const result = await simplifiedApexOnBoardRefundsNew.queryFromString<{ _id: string }>(
-				'SELECT _id FROM "operation"."simplified_apex_on_board_refunds" WHERE created_at >= $1 AND created_at <= $2',
+			return await simplifiedApexOnBoardRefundsNew.distinct(
+				'_id',
+				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
-			return result.map(doc => doc._id);
 		},
 
 		distinctSourceDbFn: async () => {

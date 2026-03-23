@@ -1,7 +1,7 @@
 /* * */
 
+import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { invalidateRides, PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-common';
-import { simplifiedVehicleEventsNew } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { BatchWriter } from '@tmlmobilidade/writers';
@@ -13,7 +13,7 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 	insertFn: async (data) => {
 		await simplifiedVehicleEventsNew.insert('JSONEachRow', data);
 	},
-	title: simplifiedVehicleEventsNew.tableName,
+	title: await simplifiedVehicleEventsNew.getTableName(),
 });
 
 /**

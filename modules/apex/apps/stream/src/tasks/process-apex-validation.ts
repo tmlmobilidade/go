@@ -1,7 +1,7 @@
 /* * */
 
+import { simplifiedApexValidationsNew } from '@tmlmobilidade/databases';
 import { invalidateRides, parseSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-common';
-import { simplifiedApexValidationsNew } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 import { BatchWriter } from '@tmlmobilidade/writers';
@@ -13,7 +13,7 @@ const writer = new BatchWriter<SimplifiedApexValidation>({
 	insertFn: async (data) => {
 		await simplifiedApexValidationsNew.insert('JSONEachRow', data);
 	},
-	title: simplifiedApexValidationsNew.tableName,
+	title: await simplifiedApexValidationsNew.getTableName(),
 });
 
 /**
