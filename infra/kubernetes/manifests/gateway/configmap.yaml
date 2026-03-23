@@ -30,6 +30,7 @@ data:
       }
 
       # Module nginx upstreams (ClusterIP — reachable cluster-internally)
+      upstream docs_upstream        { server docs.go-gateway.svc.cluster.local:80;                  keepalive 16; }
       upstream auth_upstream        { server auth-nginx.go-auth.svc.cluster.local:80;               keepalive 16; }
       upstream dates_upstream       { server dates-nginx.go-dates.svc.cluster.local:80;             keepalive 16; }
       upstream stops_upstream       { server stops-nginx.go-stops.svc.cluster.local:80;             keepalive 16; }
@@ -220,10 +221,18 @@ data:
           proxy_read_timeout    60s;
         }
 
-        # Root: placeholder until a real gateway app exists
         location / {
-          return 200 '{"status":"ok","service":"gateway","version":"staging"}\n';
-          add_header Content-Type application/json;
+          proxy_pass         http://docs_upstream;
+          proxy_http_version 1.1;
+          proxy_set_header   Host              $host;
+          proxy_set_header   X-Real-IP         $remote_addr;
+          proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+          proxy_set_header   X-Forwarded-Proto $scheme;
+          proxy_set_header   Upgrade           $http_upgrade;
+          proxy_set_header   Connection        $connection_upgrade;
+          proxy_connect_timeout 60s;
+          proxy_send_timeout    60s;
+          proxy_read_timeout    60s;
         }
       }
     }
