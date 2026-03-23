@@ -2,11 +2,12 @@
 
 import { PCGIRawClient } from '@/clients/pcgi-raw.js';
 import { MongoInterfaceTemplate } from '@/templates/mongodb.js';
+import { RawVehicleEvent } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-class RawVehicleEventsNewClass extends MongoInterfaceTemplate<any> {
+class RawVehicleEventsNewClass extends MongoInterfaceTemplate<RawVehicleEvent> {
 	//
 
 	private static _instance: null | Promise<RawVehicleEventsNewClass> = null;

@@ -1,135 +1,16 @@
 /* * */
 
-import { TrackerVehicleEventBaseSchema } from '@/common/vehicle-event-base.js';
-import { HashableTrackerVehicleEvent, TrackerVehicleEvent } from '@/common/vehicle-event.js';
-import { Dates } from '@tmlmobilidade/dates';
-import { SimplifiedVehicleEvent } from '@tmlmobilidade/types';
-import crypto from 'node:crypto';
-import { z } from 'zod';
+import { type RawVehicleEventCmetV1, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
 /* * */
 
-export const TrackerCmetV1RawSchema = z.object({
-	header: z.object({
-		gtfsRealtimeVersion: z.literal('2.0'),
-		incrementality: z.literal('DIFFERENTIAL'),
-		timestamp: z.number(),
-	}),
-	vehicle: z.object({
-		agencyId: z.string(),
-		currentStatus: z.enum(['INCOMING_AT', 'STOPPED_AT', 'IN_TRANSIT_TO']),
-		occupancyStatus: z.enum(['EMPTY', 'PARTIALLY_OCCUPIED', 'FULL']),
-		operationPlanId: z.string(),
-		position: z.object({
-			bearing: z.number(),
-			latitude: z.number(),
-			longitude: z.number(),
-			odometer: z.number(),
-			speed: z.number(),
-		}),
-		stopId: z.string(),
-		timestamp: z.number(),
-		trigger: z.object({
-			activity: z.enum(['NO_CHANGE', 'CHANGE']),
-			door: z.enum(['NO_CHANGE', 'CHANGE']),
-		}),
-		trip: z.object({
-			extraTripId: z.string(),
-			lineId: z.string(),
-			patternId: z.string(),
-			routeId: z.string(),
-			scheduleRelationship: z.enum(['SCHEDULED', 'NOT_SCHEDULED']),
-			tripId: z.string(),
-		}),
-		vehicle: z.object({
-			_id: z.string(),
-			blockId: z.string(),
-			driverId: z.string(),
-			shiftId: z.string(),
-		}),
-	}),
-});
-
-export type TrackerCmetV1Raw = z.infer<typeof TrackerCmetV1RawSchema>;
-
-/* * */
-
-export const TrackerCmetV1Schema = TrackerVehicleEventBaseSchema.extend({
-	raw: TrackerCmetV1RawSchema,
-	version: z.literal('cmet-v1'),
-});
-
-export type TrackerCmetV1 = z.infer<typeof TrackerCmetV1Schema>;
-
-/* * */
-
-export function parsePcgiVehicleEvent(pcgiVehicleEvent): TrackerVehicleEvent[] {
-	//
-
-	const result: TrackerVehicleEvent[] = [];
-
-	//
-	// Transform each message into a RawVehicleEvent
-
-	for (const entity of pcgiVehicleEvent.content.entity ?? []) {
-		//
-
-		//
-		// Skip entities that do not have a vehicle field,
-		// as they are not relevant for our use case.
-
-		if (!entity.vehicle) continue;
-
-		//
-		// Hash the relevant fields of the vehicle event
-		// to create a unique identifier for the event.
-		// This allows us to identify duplicate events
-		// and avoid storing them multiple times in the database.
-
-		const hashableRawEvent: HashableTrackerVehicleEvent<TrackerCmetV1> = {
-			agency_id: entity.vehicle.agencyId,
-			created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
-			entity_id: entity._id,
-			raw: {
-				header: pcgiVehicleEvent.content.header,
-				vehicle: entity.vehicle,
-			},
-			version: 'cmet-v1',
-		};
-
-		const hashableRawEventId = crypto
-			.createHash('sha256')
-			.update(JSON.stringify(hashableRawEvent))
-			.digest('hex');
-
-		//
-		// Write the new vehicle event document
-		// to the RawVehicleEvents collection
-
-		result.push({
-			...hashableRawEvent,
-			_id: hashableRawEventId,
-			received_at: Dates.fromUnixTimestamp(pcgiVehicleEvent.millis).unix_timestamp,
-		});
-
-		//
-	}
-
-	return result;
-
-	//
-};
-
-/* * */
-
-export const parseTrackerCmetV1 = (vehicleEvent: TrackerCmetV1): SimplifiedVehicleEvent => {
-	const vehicle = vehicleEvent.raw.vehicle;
-
+export const parseRawVehicleEventCmetV1 = (doc: RawVehicleEventCmetV1): SimplifiedVehicleEvent => {
+	const vehicle = doc.payload.vehicle;
 	return {
-		_id: vehicleEvent._id,
-		agency_id: vehicleEvent.agency_id,
+		_id: doc._id,
+		agency_id: doc.agency_id,
 		bearing: vehicle.position.bearing,
-		created_at: vehicleEvent.created_at,
+		created_at: doc.created_at,
 		current_status: vehicle.currentStatus,
 		door: vehicle.trigger.door,
 		driver_id: vehicle.vehicle.driverId,
@@ -138,7 +19,7 @@ export const parseTrackerCmetV1 = (vehicleEvent: TrackerCmetV1): SimplifiedVehic
 		longitude: vehicle.position.longitude,
 		odometer: vehicle.position.odometer,
 		pattern_id: vehicle.trip?.patternId,
-		received_at: vehicleEvent.received_at,
+		received_at: doc.received_at,
 		speed: vehicle.position.speed,
 		stop_id: vehicle.stopId,
 		trip_id: vehicle.trip?.tripId,

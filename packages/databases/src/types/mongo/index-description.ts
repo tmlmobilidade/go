@@ -7,7 +7,7 @@
  */
 export interface SimplifiedMongoIndex<T> {
 	expireAfterSeconds?: number
-	key: Record<keyof T, -1 | 1>
+	key: Partial<Record<keyof T, -1 | 1>>
 	sparse?: boolean
 	unique?: boolean
 }
