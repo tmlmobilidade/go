@@ -2,7 +2,8 @@
 
 import { PCGIRawClient } from '@/clients/pcgi-raw.js';
 import { MongoInterfaceTemplate } from '@/templates/mongodb.js';
-import { RawVehicleEvent } from '@tmlmobilidade/types';
+import { type SimplifiedMongoIndex } from '@/types/mongo/index-description.js';
+import { type RawVehicleEvent } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
@@ -14,8 +15,8 @@ class RawVehicleEventsNewClass extends MongoInterfaceTemplate<RawVehicleEvent> {
 
 	public override readonly collectionName = 'raw_vehicle_events';
 	public override readonly databaseName = 'raw_vehicle_events';
-	public override readonly indexDescription = [
-		{ key: { } },
+	public override readonly indexDescription: SimplifiedMongoIndex<RawVehicleEvent>[] = [
+		{ key: { agency_id: 1, created_at: 1 } },
 	];
 
 	/**
@@ -43,17 +44,9 @@ class RawVehicleEventsNewClass extends MongoInterfaceTemplate<RawVehicleEvent> {
 		return PCGIRawClient.getClient();
 	}
 
-	protected override async postInit(): Promise<void> {
-		console.log('Post init ClickHouse service for Simplified Vehicle Events...');
-	}
-
 	//
 }
 
 /* * */
 
-/**
- * @deprecated This should not be used anymore. Only inside the `tracker` module
- * and then you should use the services provided by the local package.
- */
 export const rawVehicleEventsNew = asyncSingletonProxy(RawVehicleEventsNewClass);
