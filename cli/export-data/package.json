@@ -49,6 +49,6 @@
 		"@tmlmobilidade/types": "*",
 		"@types/node": "25.5.0",
 		"resolve-tspaths": "0.8.23",
-		"typescript": "6.0.2"
+		"typescript": "5.9.3"
 	}
 }

@@ -35,6 +35,6 @@
 		"@types/papaparse": "5.5.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
-		"typescript": "6.0.2"
+		"typescript": "5.9.3"
 	}
 }

@@ -47,7 +47,7 @@
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
 		"bcryptjs": "3.0.3",
-		"mongodb": "7.1.1",
+		"mongodb": "7.1.0",
 		"oci-common": "2.126.2",
 		"oci-objectstorage": "2.126.2",
 		"zod": "3.25.76"
@@ -58,6 +58,6 @@
 		"@types/node": "25.5.0",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",
-		"typescript": "6.0.2"
+		"typescript": "5.9.3"
 	}
 }
