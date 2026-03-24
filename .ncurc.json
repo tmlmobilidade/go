@@ -2,6 +2,7 @@
 	"reject": [
 		"zod",
 		"eslint",
-		"@eslint/js"
+		"@eslint/js",
+		"typescript"
 	]
 }

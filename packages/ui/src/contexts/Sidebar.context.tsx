@@ -25,15 +25,15 @@ interface SidebarContextState {
 
 const SidebarContext = createContext<SidebarContextState | undefined>(undefined);
 
-export function useSidebarContext() {
+export const useSidebarContext = () => {
 	const context = useContext(SidebarContext);
 	if (!context) throw new Error('useSidebarContext must be used within a SidebarContextProvider');
 	return context;
-}
+};
 
 /* * */
 
-export const SidebarContextProvider = ({ children }: PropsWithChildren) => {
+export function SidebarContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//

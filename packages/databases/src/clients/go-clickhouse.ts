@@ -48,7 +48,7 @@ export class GOClickHouseClient {
 	 * This method is called internally by the service and should not be used directly.
 	 */
 	private async connect() {
-		Logger.info('Connecting to GOClickHouseClient...');
+		Logger.info('[GOClickHouseClient] Connecting to database...');
 		const connectionString = await this.getConnectionString();
 		this.client = createClient({
 			clickhouse_settings: {
@@ -76,44 +76,44 @@ export class GOClickHouseClient {
 		//
 		// Validate required environment variables
 
-		if (process.env.GODB_CLICKHOUSE_TUNNEL_ENABLED !== 'true' && process.env.GODB_CLICKHOUSE_TUNNEL_ENABLED !== 'false') {
-			throw new Error('Missing GODB_CLICKHOUSE_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting GODB_CLICKHOUSE_TUNNEL_ENABLED to "true" or "false".');
+		if (process.env.GO_CLICKHOUSE_TUNNEL_ENABLED !== 'true' && process.env.GO_CLICKHOUSE_TUNNEL_ENABLED !== 'false') {
+			throw new Error('Missing GO_CLICKHOUSE_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting GO_CLICKHOUSE_TUNNEL_ENABLED to "true" or "false".');
 		}
 
-		if (!process.env.GODB_CLICKHOUSE_HOST || !process.env.GODB_CLICKHOUSE_PORT) {
-			throw new Error('Missing GODB_CLICKHOUSE_HOST or GODB_CLICKHOUSE_PORT');
+		if (!process.env.GO_CLICKHOUSE_HOST || !process.env.GO_CLICKHOUSE_PORT) {
+			throw new Error('Missing GO_CLICKHOUSE_HOST or GO_CLICKHOUSE_PORT');
 		}
 
-		if (process.env.GODB_CLICKHOUSE_TUNNEL_ENABLED === 'false') {
-			return `http://${process.env.GODB_CLICKHOUSE_USER}:${process.env.GODB_CLICKHOUSE_PASSWORD}@${process.env.GODB_CLICKHOUSE_HOST}:${process.env.GODB_CLICKHOUSE_PORT}`;
+		if (process.env.GO_CLICKHOUSE_TUNNEL_ENABLED === 'false') {
+			return `http://${process.env.GO_CLICKHOUSE_USER}:${process.env.GO_CLICKHOUSE_PASSWORD}@${process.env.GO_CLICKHOUSE_HOST}:${process.env.GO_CLICKHOUSE_PORT}`;
 		}
 
 		// SSH required
-		if (!process.env.GODB_CLICKHOUSE_TUNNEL_LOCAL_PORT) {
-			throw new Error('Missing GODB_CLICKHOUSE_TUNNEL_LOCAL_PORT');
+		if (!process.env.GO_CLICKHOUSE_TUNNEL_LOCAL_PORT) {
+			throw new Error('Missing GO_CLICKHOUSE_TUNNEL_LOCAL_PORT');
 		}
 
-		if (!process.env.GODB_CLICKHOUSE_TUNNEL_SSH_HOST || !process.env.GODB_CLICKHOUSE_TUNNEL_SSH_USERNAME) {
+		if (!process.env.GO_CLICKHOUSE_TUNNEL_SSH_HOST || !process.env.GO_CLICKHOUSE_TUNNEL_SSH_USERNAME) {
 			throw new Error('Missing SSH config');
 		}
 
 		const sshConfig: SshConfig = {
 			forwardOptions: {
-				dstAddr: process.env.GODB_CLICKHOUSE_HOST,
-				dstPort: Number(process.env.GODB_CLICKHOUSE_PORT),
+				dstAddr: process.env.GO_CLICKHOUSE_HOST,
+				dstPort: Number(process.env.GO_CLICKHOUSE_PORT),
 				srcAddr: 'localhost',
-				srcPort: Number(process.env.GODB_CLICKHOUSE_TUNNEL_LOCAL_PORT),
+				srcPort: Number(process.env.GO_CLICKHOUSE_TUNNEL_LOCAL_PORT),
 			},
 			serverOptions: {
-				port: Number(process.env.GODB_CLICKHOUSE_TUNNEL_LOCAL_PORT),
+				port: Number(process.env.GO_CLICKHOUSE_TUNNEL_LOCAL_PORT),
 			},
 			sshOptions: {
 				agent: process.env.SSH_AUTH_SOCK,
-				host: process.env.GODB_CLICKHOUSE_TUNNEL_SSH_HOST,
+				host: process.env.GO_CLICKHOUSE_TUNNEL_SSH_HOST,
 				keepaliveCountMax: 3,
 				keepaliveInterval: 10_000,
 				port: 22,
-				username: process.env.GODB_CLICKHOUSE_TUNNEL_SSH_USERNAME,
+				username: process.env.GO_CLICKHOUSE_TUNNEL_SSH_USERNAME,
 			},
 			tunnelOptions: {
 				autoClose: false,
@@ -136,7 +136,7 @@ export class GOClickHouseClient {
 			throw new Error('[GOClickHouseClient] Failed to retrieve SSH tunnel address.');
 		}
 
-		return `http://${process.env.GODB_CLICKHOUSE_USER}:${process.env.GODB_CLICKHOUSE_PASSWORD}@localhost:${addr.port}`;
+		return `http://${process.env.GO_CLICKHOUSE_USER}:${process.env.GO_CLICKHOUSE_PASSWORD}@localhost:${addr.port}`;
 	}
 
 	//

@@ -42,4 +42,8 @@ class SimplifiedVehicleEventsClass extends MongoCollectionClass<SimplifiedVehicl
 
 /* * */
 
+/**
+ * @deprecated This collection is no longer used and will be removed in a future release.
+ * Use `simplifiedVehicleEventsNew` instead, which is the SQL version of this collection.
+ */
 export const simplifiedVehicleEvents = asyncSingletonProxy(SimplifiedVehicleEventsClass);

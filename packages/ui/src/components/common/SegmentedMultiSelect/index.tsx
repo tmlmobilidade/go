@@ -28,7 +28,6 @@ export interface SegmentedMultiSelectProps<T extends SegmentedValue> {
 
 /* * */
 
-// TODO: Move this into ui package
 export function SegmentedMultiSelect<T extends SegmentedValue>({
 	className,
 	fullWidth = true,

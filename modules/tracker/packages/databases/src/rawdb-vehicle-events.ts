@@ -1,10 +1,8 @@
 /* * */
 
-import { type TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 import { MongoConnector } from '@tmlmobilidade/mongo';
 import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
-import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Collection, type MongoClientOptions } from 'mongodb';
 
 /* * */
