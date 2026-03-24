@@ -65,7 +65,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		countSourceDbFn: async () => {
-			const result = await rawVehicleEventsNew.countDocuments(rawdbQuery);
+			const result = await rawVehicleEventsNew.count(rawdbQuery);
 			return result;
 		},
 
@@ -90,9 +90,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		missingDocumentsSourceDbAsyncIterator: (missingDocumentIds) => {
-			return rawVehicleEventsNew
-				.find({ _id: { $in: missingDocumentIds } })
-				.stream();
+			return rawVehicleEventsNew.stream({ _id: { $in: missingDocumentIds } });
 		},
 
 		onCompleteCallbackFn: async () => {

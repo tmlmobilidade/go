@@ -1,9 +1,23 @@
 /* * */
 
+import type {
+	AnyBulkWriteOperation,
+	BulkWriteOptions,
+	ChangeStreamOptions,
+	Collection,
+	Db,
+	Document,
+	Filter,
+	FindOptions,
+	InsertOneOptions,
+	MongoClient,
+	UpdateOptions,
+	WithId,
+} from 'mongodb';
+
 import { type ComparableMongoIndex, type SimplifiedMongoIndex } from '@/types/mongo/index-description.js';
 import { isSameIndex, normalizeMongoIndex } from '@/utils/mongo/index.js';
 import { Logger } from '@tmlmobilidade/logger';
-import { AnyBulkWriteOperation, BulkWriteOptions, BulkWriteResult, type Collection, type Db, type Document, type Filter, type FindOptions, type InsertManyResult, type InsertOneOptions, type InsertOneResult, type MongoClient, type UpdateOptions, type UpdateResult, type WithId } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
@@ -38,14 +52,35 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	}
 
 	/**
+	 * Finds all distinct values for a key in the collection.
+	 * @param key The key to find distinct values for.
+	 * @param filter Optional filter criteria to match documents before extracting distinct values.
+	 * @returns A promise that resolves to an array of distinct values for the given key.
+	 */
+	public async distinct<Key extends keyof WithId<T>>(key: Key, filter: Filter<T>) {
+		return this.collection.distinct(key, filter);
+	}
+
+	/**
 	 * Finds multiple documents matching the filter criteria,
 	 * with optional pagination and sorting.
 	 * @param filter (Optional) filter criteria to match documents.
 	 * @param options (Optional) find options.
 	 * @returns A promise that resolves to an array of matching documents.
 	 */
-	public async findMany(filter?: Filter<T>, options?: FindOptions): Promise<WithId<T>[]> {
+	public async findMany(filter?: Filter<T>, options?: FindOptions) {
 		return await this.collection.find(filter, options).toArray();
+	}
+
+	/**
+	 * Finds multiple documents matching the filter criteria,
+	 * with optional pagination and sorting, and returns a cursor for streaming results.
+	 * @param filter (Optional) filter criteria to match documents.
+	 * @param options (Optional) find options.
+	 * @returns A promise that resolves to a cursor for streaming matching documents.
+	 */
+	public stream(filter?: Filter<T>, options?: FindOptions) {
+		return this.collection.find(filter, options).stream();
 	}
 
 	/**
@@ -54,7 +89,7 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 * @param options Optional options.
 	 * @returns A promise that resolves to the matching document or null if not found.
 	 */
-	public async findOne(filter: Filter<T>, options?: FindOptions): Promise<null | WithId<T>> {
+	public async findOne(filter: Filter<T>, options?: FindOptions) {
 		return await this.collection.findOne(filter, options);
 	}
 
@@ -104,8 +139,18 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 * @warning This method does not perform schema validation on the operations.
 	 * It is the responsibility of the caller to ensure that the operations are valid and conform to the expected schemas.
 	 */
-	public async bulkWrite(operations: AnyBulkWriteOperation<T>[], options?: BulkWriteOptions): Promise<BulkWriteResult> {
+	public async bulkWrite(operations: AnyBulkWriteOperation<T>[], options?: BulkWriteOptions) {
 		return await this.collection.bulkWrite(operations, options);
+	}
+
+	/**
+	 * Watches for changes in the MongoDB collection and returns a change stream cursor.
+	 * @param pipeline (Optional) An array of aggregation pipeline stages to filter the change events.
+	 * @param options (Optional) Change stream options to configure the behavior of the change stream.
+	 * @returns A change stream cursor that can be used to iterate over the change events.
+	 */
+	public watch(pipeline?: Document[], options?: ChangeStreamOptions) {
+		return this.collection.watch(pipeline, options);
 	}
 
 	/**
@@ -114,7 +159,7 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 * @param options Optional insert options to configure the behavior of the insert operation.
 	 * @returns A promise that resolves to the result of the insertMany operation.
 	 */
-	public async insertMany(data: TCreate[], options?: InsertOneOptions): Promise<InsertManyResult<T>> {
+	public async insertMany(data: TCreate[], options?: InsertOneOptions) {
 		// If no create schema is defined, throw an error.
 		if (!this.createSchema) throw new Error(`No schema defined for insert operation for ${this.collectionName} collection.`);
 		// Validate each document against the create schema
@@ -127,7 +172,7 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 		return await this.collection.insertMany(parsedDocuments, options);
 	}
 
-	public async insertOne(data: TCreate, options?: InsertOneOptions): Promise<InsertOneResult<T>> {
+	public async insertOne(data: TCreate, options?: InsertOneOptions) {
 		// If no create schema is defined, throw an error.
 		if (!this.createSchema) throw new Error(`No schema defined for insert operation for ${this.collectionName} collection.`);
 		// Validate the document against the create schema
@@ -137,7 +182,7 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 		return await this.collection.insertOne(parseResult.data, options);
 	}
 
-	public async updateOne(filter: Filter<T>, data: TUpdate, options?: UpdateOptions): Promise<UpdateResult<T>> {
+	public async updateOne(filter: Filter<T>, data: TUpdate, options?: UpdateOptions) {
 		// If no update schema is defined, throw an error.
 		if (!this.updateSchema) throw new Error(`No schema defined for update operation for ${this.collectionName} collection.`);
 		// Validate the update data against the update schema

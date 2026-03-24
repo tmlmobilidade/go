@@ -1,7 +1,8 @@
 /* * */
 
 import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
-import { invalidateRides, PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-shared';
+import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
+import { invalidateRides } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { BatchWriter } from '@tmlmobilidade/writers';
