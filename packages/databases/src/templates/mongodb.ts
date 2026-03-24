@@ -101,7 +101,7 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 * @param options The options for the insert operation.
 	 * @returns A promise that resolves to the result of the insert operation.
 	 */
-	public async insertOne(data: OptionalUnlessRequiredId<TCreate>, options?: InsertOneOptions): Promise<InsertOneResult<T>> {
+	public async insertOne(data: TCreate, options?: InsertOneOptions): Promise<InsertOneResult<T>> {
 		// If no create schema is defined, throw an error.
 		if (!this.createSchema) throw new Error(`No schema defined for insert operation for ${this.collectionName} collection.`);
 		// Validate the document against the create schema

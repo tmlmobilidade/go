@@ -2,7 +2,7 @@
 
 import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { invalidateRides, PARSER_MAP, TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';
+import { invalidateRides, PARSER_MAP, TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
