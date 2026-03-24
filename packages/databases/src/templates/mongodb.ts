@@ -1,6 +1,6 @@
 /* * */
 
-import { ComparableMongoIndex, SimplifiedMongoIndex } from '@/types/mongo/index-description.js';
+import { type ComparableMongoIndex, type SimplifiedMongoIndex } from '@/types/mongo/index-description.js';
 import { isSameIndex, normalizeMongoIndex } from '@/utils/mongo/index.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Collection, type Db, type Document, type Filter, type FindOptions, type InsertOneOptions, type InsertOneResult, type MongoClient, type OptionalUnlessRequiredId, type UpdateOptions, type UpdateResult, type WithId } from 'mongodb';
