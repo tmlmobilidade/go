@@ -3,7 +3,7 @@
 import { type ComparableMongoIndex, type SimplifiedMongoIndex } from '@/types/mongo/index-description.js';
 import { isSameIndex, normalizeMongoIndex } from '@/utils/mongo/index.js';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Collection, type Db, type Document, type Filter, type FindOptions, type InsertOneOptions, type InsertOneResult, type MongoClient, type OptionalUnlessRequiredId, type UpdateOptions, type UpdateResult, type WithId } from 'mongodb';
+import { AnyBulkWriteOperation, BulkWriteOptions, BulkWriteResult, type Collection, type Db, type Document, type Filter, type FindOptions, type InsertManyResult, type InsertOneOptions, type InsertOneResult, type MongoClient, type UpdateOptions, type UpdateResult, type WithId } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
@@ -75,7 +75,7 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 * @returns A promise that resolves to the MongoDB collection instance.
 	 * @warning Use with caution: direct access to the collection allows for executing arbitrary queries.
 	 */
-	async getCollection() {
+	public async getCollection(): Promise<Collection<T>> {
 		if (!this.collection) await this.init();
 		return this.collection;
 	}
@@ -83,54 +83,68 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	/**
 	 * Returns the name of the collection used by this service.
 	 */
-	async getCollectionName() {
+	public async getCollectionName(): Promise<string> {
 		return this.collectionName;
 	}
 
 	/**
 	 * Returns the name of the database used by this service.
 	 */
-	async getDatabaseName() {
+	public async getDatabaseName(): Promise<string> {
 		return this.databaseName;
 	}
 
 	/**
-	 * Inserts a single document into the collection,
-	 * validating it against the create schema.
-	 * @param doc The document to insert.
-	 * @param options The options for the insert operation.
-	 * @returns A promise that resolves to the result of the insert operation.
+	 * This method allows for performing multiple write operations
+	 * in a single request, which can improve performance.
+	 * The operations can include inserts, updates, deletes, and replacements.
+	 * @param operations An array of bulk write operations to execute on the collection.
+	 * @param options The options for the bulk write operation.
+	 * @returns A promise that resolves to the result of the bulk write operation.
+	 * @warning This method does not perform schema validation on the operations.
+	 * It is the responsibility of the caller to ensure that the operations are valid and conform to the expected schemas.
 	 */
+	public async bulkWrite(operations: AnyBulkWriteOperation<T>[], options?: BulkWriteOptions): Promise<BulkWriteResult> {
+		return await this.collection.bulkWrite(operations, options);
+	}
+
+	/**
+	 * Inserts multiple documents into the collection after validating them against the create schema.
+	 * @param data An array of documents to insert, conforming to the TCreate type.
+	 * @param options Optional insert options to configure the behavior of the insert operation.
+	 * @returns A promise that resolves to the result of the insertMany operation.
+	 */
+	public async insertMany(data: TCreate[], options?: InsertOneOptions): Promise<InsertManyResult<T>> {
+		// If no create schema is defined, throw an error.
+		if (!this.createSchema) throw new Error(`No schema defined for insert operation for ${this.collectionName} collection.`);
+		// Validate each document against the create schema
+		const parsedDocuments = data.map((doc) => {
+			const parseResult = this.createSchema.safeParse(doc);
+			if (!parseResult.success) throw new Error(`Document validation failed: ${parseResult.error.message}`);
+			return parseResult.data;
+		});
+		// Attempt to insert the documents into the collection
+		return await this.collection.insertMany(parsedDocuments, options);
+	}
+
 	public async insertOne(data: TCreate, options?: InsertOneOptions): Promise<InsertOneResult<T>> {
 		// If no create schema is defined, throw an error.
 		if (!this.createSchema) throw new Error(`No schema defined for insert operation for ${this.collectionName} collection.`);
 		// Validate the document against the create schema
 		const parseResult = this.createSchema.safeParse(data);
-		if (!parseResult.success) return Promise.reject(new Error(`Document validation failed: ${parseResult.error.message}`));
-		// Extract the validated document
-		const parsedDocument = parseResult.data as unknown as OptionalUnlessRequiredId<T>;
+		if (!parseResult.success) throw new Error(`Document validation failed: ${parseResult.error.message}`);
 		// Attempt to insert the document into the collection
-		return await this.collection.insertOne(parsedDocument, options);
+		return await this.collection.insertOne(parseResult.data, options);
 	}
 
-	/**
-	 * Updates a single document in the collection matching the filter criteria,
-	 * validating the update data against the update schema.
-	 * @param filter The filter criteria to match the document to update.
-	 * @param data The update data to apply to the matched document.
-	 * @param options The options for the update operation.
-	 * @returns A promise that resolves to the result of the update operation.
-	 */
 	public async updateOne(filter: Filter<T>, data: TUpdate, options?: UpdateOptions): Promise<UpdateResult<T>> {
 		// If no update schema is defined, throw an error.
 		if (!this.updateSchema) throw new Error(`No schema defined for update operation for ${this.collectionName} collection.`);
 		// Validate the update data against the update schema
 		const parseResult = this.updateSchema.safeParse(data);
-		if (!parseResult.success) return Promise.reject(new Error(`Update data validation failed: ${parseResult.error.message}`));
-		// Extract the validated update data
-		const parsedUpdateData = parseResult.data as unknown as Partial<T>;
+		if (!parseResult.success) throw new Error(`Update data validation failed: ${parseResult.error.message}`);
 		// Attempt to find and update the document in the collection
-		return await this.collection.updateOne(filter, { $set: parsedUpdateData }, options);
+		return await this.collection.updateOne(filter, { $set: parseResult.data }, options);
 	}
 
 	/**

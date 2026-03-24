@@ -1,17 +1,29 @@
 /* * */
 
+import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { parsePcgiVehicleEvent, TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-shared';
-import { pcgidbLegacy, rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { transformPcgiVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
+import { type RawVehicleEvent } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem } from '@tmlmobilidade/utils';
-import { MongoDbWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
-const writer = new MongoDbWriter<TrackerVehicleEvent>({
+const writer = new BatchWriter<RawVehicleEvent>({
 	batch_size: 100_000,
-	collection: await rawdbVehicleEvents.getCollection(),
+	insertFn: async (data) => {
+		const writeOps = data.map(doc => ({
+			updateOne: {
+				filter: { _id: doc._id },
+				update: { $set: doc },
+				upsert: true,
+			},
+		}));
+		await rawVehicleEventsNew.bulkWrite(writeOps);
+	},
+	title: await rawVehicleEventsNew.getCollectionName(),
 });
 
 /**
@@ -54,12 +66,9 @@ export async function syncPcgidbLogVehicleEvents(timeChunk: PerformInTimeChunksI
 	const pcgidbLegacyLogStream = pcgidbLegacy.VehicleEventsLog.find(pcgidbLegacyLogQuery).stream();
 
 	for await (const document of pcgidbLegacyLogStream) {
-		const parsedDocuments = parsePcgiVehicleEvent(document);
+		const parsedDocuments = transformPcgiVehicleEvent(document);
 		for (const parsedDocument of parsedDocuments) {
-			await writer.write(parsedDocument, {
-				filter: { _id: parsedDocument._id },
-				upsert: true,
-			});
+			await writer.write(parsedDocument);
 		}
 	}
 

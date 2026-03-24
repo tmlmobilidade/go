@@ -1,17 +1,28 @@
 /* * */
 
-import { parsePcgiVehicleEvent, TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-shared';
-import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
+import { transformPcgiVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
-import { MongoDbWriter } from '@tmlmobilidade/writers';
+import { type RawVehicleEvent } from '@tmlmobilidade/types';
+import { BatchWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
-const writer = new MongoDbWriter<TrackerVehicleEvent>({
+const writer = new BatchWriter<RawVehicleEvent>({
 	batch_size: 500,
 	batch_timeout: 10_000,
-	collection: rawdbVehicleEvents.RawVehicleEvents,
 	idle_timeout: 10_000,
+	insertFn: async (data) => {
+		const writeOps = data.map(doc => ({
+			updateOne: {
+				filter: { _id: doc._id },
+				update: { $set: doc },
+				upsert: true,
+			},
+		}));
+		await rawVehicleEventsNew.bulkWrite(writeOps);
+	},
+	title: await rawVehicleEventsNew.getCollectionName(),
 });
 
 /* * */
@@ -32,13 +43,10 @@ export async function processPcgiVehicleEvent(databaseOperation) {
 	// and transform the vehicle timestamp into an operational date.
 	// Skip the operation if the document is not valid.
 
-	const parsedDocuments = parsePcgiVehicleEvent(databaseOperation.fullDocument);
+	const parsedDocuments = transformPcgiVehicleEvent(databaseOperation.fullDocument);
 
 	for (const parsedDocument of parsedDocuments) {
-		await writer.write(parsedDocument, {
-			filter: { _id: parsedDocument._id },
-			upsert: true,
-		});
+		await writer.write(parsedDocument);
 	}
 
 	//

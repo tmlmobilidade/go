@@ -57,15 +57,17 @@ export const sortClassesConfig: Config[] = [
 						{ group: 'private-readonly-property', newlinesInside: 0 },
 						{ group: 'private-property', newlinesInside: 0 },
 
-						['get-method', 'set-method'],
-
-						// abstract protected properties grouped together here
-
-						// then regular protected properties
-						['protected-get-method', 'protected-set-method'],
-						['private-get-method', 'private-set-method'],
-
 						'constructor',
+
+						// get methods
+						{ group: 'get-method', newlinesInside: 1 },
+						{ group: 'protected-get-method', newlinesInside: 1 },
+						{ group: 'private-get-method', newlinesInside: 1 },
+
+						// set methods
+						{ group: 'set-method', newlinesInside: 1 },
+						{ group: 'protected-set-method', newlinesInside: 1 },
+						{ group: 'private-set-method', newlinesInside: 1 },
 
 						['static-method', 'static-function-property'],
 						['protected-static-method', 'protected-static-function-property'],

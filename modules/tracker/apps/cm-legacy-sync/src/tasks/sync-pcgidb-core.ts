@@ -14,7 +14,14 @@ import { BatchWriter } from '@tmlmobilidade/writers';
 const writer = new BatchWriter<RawVehicleEvent>({
 	batch_size: 100_000,
 	insertFn: async (data) => {
-		await rawVehicleEventsNew.insertOne(data);
+		const writeOps = data.map(doc => ({
+			updateOne: {
+				filter: { _id: doc._id },
+				update: { $set: doc },
+				upsert: true,
+			},
+		}));
+		await rawVehicleEventsNew.bulkWrite(writeOps);
 	},
 	title: await rawVehicleEventsNew.getCollectionName(),
 });
