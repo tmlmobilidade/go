@@ -91,7 +91,7 @@ export class PCGIValidationsClient {
 		}
 
 		if (process.env.PCGI_VALIDATIONS_TUNNEL_ENABLED === 'false') {
-			return `http://${process.env.PCGI_VALIDATIONS_USER}:${process.env.PCGI_VALIDATIONS_PASSWORD}@${process.env.PCGI_VALIDATIONS_HOST_1}:${process.env.PCGI_VALIDATIONS_PORT_1},${process.env.PCGI_VALIDATIONS_HOST_2}:${process.env.PCGI_VALIDATIONS_PORT_2},${process.env.PCGI_VALIDATIONS_HOST_3}:${process.env.PCGI_VALIDATIONS_PORT_3}`;
+			return `mongodb://${process.env.PCGI_VALIDATIONS_USER}:${process.env.PCGI_VALIDATIONS_PASSWORD}@${process.env.PCGI_VALIDATIONS_HOST_1}:${process.env.PCGI_VALIDATIONS_PORT_1},${process.env.PCGI_VALIDATIONS_HOST_2}:${process.env.PCGI_VALIDATIONS_PORT_2},${process.env.PCGI_VALIDATIONS_HOST_3}:${process.env.PCGI_VALIDATIONS_PORT_3}/`;
 		}
 
 		// SSH required
@@ -142,7 +142,7 @@ export class PCGIValidationsClient {
 			throw new Error('[PCGIValidationsClient] Failed to retrieve SSH tunnel address.');
 		}
 
-		return `http://${process.env.PCGI_VALIDATIONS_USER}:${process.env.PCGI_VALIDATIONS_PASSWORD}@localhost:${addr.port}`;
+		return `mongodb://${process.env.PCGI_VALIDATIONS_USER}:${process.env.PCGI_VALIDATIONS_PASSWORD}@localhost:${addr.port}/`;
 	}
 
 	//

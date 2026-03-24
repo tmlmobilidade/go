@@ -91,7 +91,7 @@ export class PCGIRawClient {
 		}
 
 		if (process.env.PCGI_RAW_TUNNEL_ENABLED === 'false') {
-			return `http://${process.env.PCGI_RAW_USER}:${process.env.PCGI_RAW_PASSWORD}@${process.env.PCGI_RAW_HOST_1}:${process.env.PCGI_RAW_PORT_1},${process.env.PCGI_RAW_HOST_2}:${process.env.PCGI_RAW_PORT_2},${process.env.PCGI_RAW_HOST_3}:${process.env.PCGI_RAW_PORT_3}`;
+			return `mongodb://${process.env.PCGI_RAW_USER}:${process.env.PCGI_RAW_PASSWORD}@${process.env.PCGI_RAW_HOST_1}:${process.env.PCGI_RAW_PORT_1},${process.env.PCGI_RAW_HOST_2}:${process.env.PCGI_RAW_PORT_2},${process.env.PCGI_RAW_HOST_3}:${process.env.PCGI_RAW_PORT_3}/`;
 		}
 
 		// SSH required
@@ -142,7 +142,7 @@ export class PCGIRawClient {
 			throw new Error('[PCGIRawClient] Failed to retrieve SSH tunnel address.');
 		}
 
-		return `http://${process.env.PCGI_RAW_USER}:${process.env.PCGI_RAW_PASSWORD}@localhost:${addr.port}`;
+		return `mongodb://${process.env.PCGI_RAW_USER}:${process.env.PCGI_RAW_PASSWORD}@localhost:${addr.port}/`;
 	}
 
 	//

@@ -91,7 +91,7 @@ export class PCGIFileManagerClient {
 		}
 
 		if (process.env.PCGI_FILE_MANAGER_TUNNEL_ENABLED === 'false') {
-			return `http://${process.env.PCGI_FILE_MANAGER_USER}:${process.env.PCGI_FILE_MANAGER_PASSWORD}@${process.env.PCGI_FILE_MANAGER_HOST_1}:${process.env.PCGI_FILE_MANAGER_PORT_1},${process.env.PCGI_FILE_MANAGER_HOST_2}:${process.env.PCGI_FILE_MANAGER_PORT_2},${process.env.PCGI_FILE_MANAGER_HOST_3}:${process.env.PCGI_FILE_MANAGER_PORT_3}`;
+			return `mongodb://${process.env.PCGI_FILE_MANAGER_USER}:${process.env.PCGI_FILE_MANAGER_PASSWORD}@${process.env.PCGI_FILE_MANAGER_HOST_1}:${process.env.PCGI_FILE_MANAGER_PORT_1},${process.env.PCGI_FILE_MANAGER_HOST_2}:${process.env.PCGI_FILE_MANAGER_PORT_2},${process.env.PCGI_FILE_MANAGER_HOST_3}:${process.env.PCGI_FILE_MANAGER_PORT_3}/`;
 		}
 
 		// SSH required
@@ -142,7 +142,7 @@ export class PCGIFileManagerClient {
 			throw new Error('[PCGIFileManagerClient] Failed to retrieve SSH tunnel address.');
 		}
 
-		return `http://${process.env.PCGI_FILE_MANAGER_USER}:${process.env.PCGI_FILE_MANAGER_PASSWORD}@localhost:${addr.port}`;
+		return `mongodb://${process.env.PCGI_FILE_MANAGER_USER}:${process.env.PCGI_FILE_MANAGER_PASSWORD}@localhost:${addr.port}/`;
 	}
 
 	//
