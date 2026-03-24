@@ -74,13 +74,19 @@ export function computeActiveRules(
 	let appliedRuleIds: string[];
 
 	if (replacement) {
+		// When same_weekday is true, each event date functions as its own actual weekday
+		// within the replacement's target periods, rather than all dates acting as one fixed weekday.
+		const effectiveReplacement = replacement.same_weekday
+			? { ...replacement, weekdays: [calendarWeekday(key)] }
+			: replacement;
+
 		// Replacement mode: match manuals by intersection (Option A)
-		const base = collectReplacementManualIncludes(replacement, filteredManualRules);
+		const base = collectReplacementManualIncludes(effectiveReplacement, filteredManualRules);
 		timepoints = base.timepoints;
 		appliedRuleIds = base.appliedRuleIds;
 
 		// Apply manual excludes *also* by intersection with replacement targets
-		applyReplacementManualExcludes(timepoints, appliedRuleIds, replacement, filteredManualRules);
+		applyReplacementManualExcludes(timepoints, appliedRuleIds, effectiveReplacement, filteredManualRules);
 	} else {
 		// Normal mode: day resolves to a single weekday + single yearPeriodId
 		const ctx: DayContext = {
