@@ -37,9 +37,11 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 		// 1. Clean input
 		let time = inputValue.trim();
 
-		// UX: Allow typing "0800" and convert to "08:00"
+		// UX: Allow typing "0800" or "800" and convert to "08:00"
 		if (/^\d{4}$/.test(time)) {
 			time = `${time.slice(0, 2)}:${time.slice(2)}`;
+		} else if (/^\d{3}$/.test(time)) {
+			time = `${time.slice(0, 1)}:${time.slice(1)}`;
 		}
 
 		// 2. Validate Format (HH:mm)
@@ -50,7 +52,7 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 
 		// 3. Format strictly to HH:mm (e.g., 8:30 -> 08:30)
 		const [h, m] = time.split(':');
-		const formattedTime = `${h.padStart(2, '0')}:${m}`;
+		const formattedTime = `${h.padStart(2, '0')}:${m.padStart(2, '0')}`;
 
 		// 4. Duplicate Check
 		if (value.includes(formattedTime)) {
@@ -84,7 +86,7 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 				<TextInput
 					error={inputError || error}
 					onKeyDown={handleKeyDown}
-					placeholder="Ex: 08:30 ou 0830 + Enter"
+					placeholder="Ex: 08:30 ou 0830 ou 830 + Enter"
 					rightSectionWidth={80}
 					style={{ flex: 1 }}
 					value={inputValue}

@@ -3,6 +3,7 @@
 /* * */
 
 import { useRuleCreateContext } from '@/components/events/rules/RuleCreate.context';
+import { EventReplacementRule } from '@tmlmobilidade/types';
 import { Checkbox, Divider, Grid, Section, Switch, Text, TimeInput } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -24,6 +25,7 @@ export function RuleCreateBasicInfo() {
 
 	const isRestrictionRule = createRuleContext.data.form.values.kind === 'event_restriction';
 	const isReplacementRule = createRuleContext.data.form.values.kind === 'event_replacement';
+	const replacementValues = isReplacementRule ? createRuleContext.data.form.values as EventReplacementRule : null;
 
 	//
 	// B. Render components
@@ -68,7 +70,24 @@ export function RuleCreateBasicInfo() {
 					<Text size="lg">4. Que tipo de oferta se aplica nestes dias?</Text>
 					<Text c="dimmed" size="sm">O(s) dia(s) selecionado(s) irão funcionar como:</Text>
 
-					<RuleCreateWeekdays />
+					<Section>
+						<Switch
+							checked={Boolean(replacementValues?.same_weekday)}
+							description="Cada data funciona como o seu próprio dia da semana real, mas no período selecionado. Ex: uma terça-feira funciona como terça-feira · Período de Verão."
+							label="Mesmo dia da semana"
+							onChange={(e) => {
+								const enabled = e.currentTarget.checked;
+								createRuleContext.data.form.setFieldValue('same_weekday', enabled);
+								if (enabled) {
+									createRuleContext.data.form.setFieldValue('weekdays', []);
+								}
+							}}
+						/>
+					</Section>
+
+					{!replacementValues?.same_weekday && (
+						<RuleCreateWeekdays />
+					)}
 					<RuleCreateYearPeriods />
 
 				</div>

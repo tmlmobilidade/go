@@ -67,6 +67,7 @@ function buildEventDerivedReplacement(args: {
 		lines_to_exclude: rule.lines_to_exclude,
 		lines_to_include: rule.lines_to_include,
 		name: rule.name,
+		same_weekday: rule.same_weekday,
 		weekdays: rule.weekdays,
 		year_period_ids: rule.year_period_ids,
 	};
