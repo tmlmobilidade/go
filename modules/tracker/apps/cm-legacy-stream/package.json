@@ -17,9 +17,11 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-tracker-pckg-common": "*",
+		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/go-tracker-pckg-databases": "*",
+		"@tmlmobilidade/go-tracker-pckg-shared": "*",
 		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/writers": "*"
 	},
 	"devDependencies": {

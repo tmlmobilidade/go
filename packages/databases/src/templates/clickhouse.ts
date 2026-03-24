@@ -1,9 +1,9 @@
 /* * */
 
 import { type ClickHouseColumn, type ClickHouseTableEngine } from '@/types/index.js';
-import { preparePositionalQueryParams } from '@/utils/prepare-positional-query-params.js';
-import { queryFromString } from '@/utils/query-from-string.js';
-import { validateSqlParam } from '@/utils/validate-sql-param.js';
+import { preparePositionalQueryParams } from '@/utils/clickhouse/prepare-positional-query-params.js';
+import { queryFromString } from '@/utils/clickhouse/query-from-string.js';
+import { validateSqlParam } from '@/utils/clickhouse/validate-sql-param.js';
 import { type ClickHouseClient, type DataFormat } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -13,10 +13,11 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 	//
 
 	protected readonly abstract databaseName: string;
-	protected readonly engine: ClickHouseTableEngine = 'ReplicatedMergeTree';
-	protected readonly orderBy: string = '_id';
 	protected readonly abstract schema: ClickHouseColumn<T>[];
 	protected readonly abstract tableName: string;
+
+	protected readonly engine: ClickHouseTableEngine = 'ReplicatedMergeTree';
+	protected readonly orderBy: string = '_id';
 
 	private client: ClickHouseClient;
 
