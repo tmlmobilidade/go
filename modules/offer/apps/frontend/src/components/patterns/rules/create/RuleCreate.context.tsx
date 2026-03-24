@@ -42,13 +42,13 @@ interface RuleCreateContextState {
 
 const RuleCreateContext = createContext<RuleCreateContextState | undefined>(undefined);
 
-export function useRuleCreateContext() {
+export const useRuleCreateContext = () => {
 	const context = useContext(RuleCreateContext);
 	if (!context) {
 		throw new Error('useRuleCreateContext must be used within a RuleCreateContextProvider');
 	}
 	return context;
-}
+};
 
 /* * */
 

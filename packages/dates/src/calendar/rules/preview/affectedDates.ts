@@ -79,6 +79,11 @@ export function getManualRuleAffectedDates(rule: ManualRule, ctx: CalendarContex
 		for (const opDate of event.dates) {
 			const key = calendarKey(Dates.fromOperationalDate(opDate, 'Europe/Lisbon'));
 			if (key >= from && key <= to) {
+				// If weekdays are specified, narrow event dates to matching weekdays only
+				if (rule.weekdays?.length) {
+					const weekday = calendarWeekday(key);
+					if (!rule.weekdays.includes(weekday)) continue;
+				}
 				affected.push(key);
 			}
 		}

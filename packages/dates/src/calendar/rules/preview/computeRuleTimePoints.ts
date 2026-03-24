@@ -46,7 +46,10 @@ export function computeRuleTimePoints(
 
 	// For replacement rules: return timepoints from the TARGET weekdays
 	if (rule.kind === 'event_replacement') {
-		const targetWeekdays = new Set<IsoWeekday>(rule.weekdays || []);
+		// When same_weekday is true, each event date maps to its own actual weekday
+		const targetWeekdays = rule.same_weekday
+			? affectedWeekdays
+			: new Set<IsoWeekday>(rule.weekdays || []);
 		const targetPeriods = new Set(rule.year_period_ids || []);
 
 		// Find manual include rules that match the target pattern
