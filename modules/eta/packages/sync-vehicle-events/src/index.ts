@@ -1,33 +1,33 @@
 /* * */
 
-import { ClickHouseClient, clickhouseService } from '@tmlmobilidade/clickhouse';
+import { etaVehicleEvents } from '@tmlmobilidade/databases';
 import { Filter, rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Ride, UnixTimestamp } from '@tmlmobilidade/types';
-import { ClickHouseWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/writers';
 
 import { parseToEtaVehicleEvent } from './parser.js';
-import { EtaVehicleEvent, etaVehicleEventTableSchema, rideProjection } from './types.js';
+import { EtaVehicleEvent, rideProjection } from './types.js';
 
 /* * */
 
+const BATCH_SIZE = 100_000;
+
 interface SyncVehicleEventsOptions {
-	batchSize: number
-	client: ClickHouseClient
 	ridesQuery: Filter<Ride>
 }
 
-export async function syncVehicleEvents({ batchSize = 100_000, client, ridesQuery }: SyncVehicleEventsOptions) {
+export async function syncVehicleEvents({ ridesQuery }: SyncVehicleEventsOptions) {
 	//
 
-	const writer = new ClickHouseWriter<EtaVehicleEvent>({
-		batch_size: batchSize,
-		client,
-		table: 'vehicle_events',
-		tableSchema: etaVehicleEventTableSchema,
+	etaVehicleEvents.clearData();
+	const writer = new BatchWriter<EtaVehicleEvent>({
+		batch_size: BATCH_SIZE,
+		insertFn: async (data) => {
+			await etaVehicleEvents.insert('JSONEachRow', data);
+		},
+		title: 'vehicle_events',
 	});
-	await clickhouseService.deleteTable('vehicle_events');
-	await writer.ensureTable();
 
 	const ridesCollection = await rides.getCollection();
 	const vehicleEventsCollection = await simplifiedVehicleEvents.getCollection();
@@ -45,7 +45,7 @@ export async function syncVehicleEvents({ batchSize = 100_000, client, ridesQuer
 		const ridesBatch = await ridesCollection
 			.find(ridesQuery, { projection: rideProjection })
 			.skip(ridesProcessed)
-			.limit(batchSize)
+			.limit(BATCH_SIZE)
 			.toArray();
 
 		if (ridesBatch.length === 0) break;
@@ -61,12 +61,12 @@ export async function syncVehicleEvents({ batchSize = 100_000, client, ridesQuer
 			const vehicleEventsCursor = vehicleEventsCollection.find({
 				created_at: { $gte: start, $lte: ride.end_time_observed },
 				trip_id: ride.trip_id,
-			}).batchSize(batchSize);
+			}).batchSize(BATCH_SIZE);
 
 			for await (const vehicleEvent of vehicleEventsCursor) {
 				await writer.write(parseToEtaVehicleEvent(vehicleEvent, ride));
 				eventsProcessed++;
-				if (eventsProcessed % batchSize === 0) {
+				if (eventsProcessed % BATCH_SIZE === 0) {
 					Logger.progress(`Processed a total of ${eventsProcessed} events from ${ridesProcessed + ridesBatch.indexOf(ride) + 1} rides`);
 				}
 			}
