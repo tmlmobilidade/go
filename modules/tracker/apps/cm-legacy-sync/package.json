@@ -18,12 +18,14 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-tracker-pckg-common": "*",
 		"@tmlmobilidade/go-tracker-pckg-databases": "*",
+		"@tmlmobilidade/go-tracker-pckg-shared": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
 		"luxon": "3.7.2"
