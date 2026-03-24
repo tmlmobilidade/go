@@ -3,10 +3,9 @@
 /* * */
 
 import { useEventsDetailContext } from '@/components/events/detail/EventsDetail.context';
-import { Pill } from '@mantine/core';
-import { Dates, FORMATS } from '@tmlmobilidade/dates';
+import { Anchor } from '@mantine/core';
 import { type OperationalDate } from '@tmlmobilidade/types';
-import { MiniCalendar, Section, Text } from '@tmlmobilidade/ui';
+import { MiniCalendar, Section, Text, TimeChip } from '@tmlmobilidade/ui';
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -20,13 +19,25 @@ export function DatesSelector() {
 
 	const eventsDetailContext = useEventsDetailContext();
 	const isDisabled = eventsDetailContext.flags.isReadOnly;
-	const dates = eventsDetailContext.data.form.values.dates || [];
+	const dates = useMemo(() => eventsDetailContext.data.form.values.dates ?? [], [eventsDetailContext.data.form.values.dates]);
 	const [displayedMonth, setDisplayedMonth] = useState<Date>();
 
 	//
 	// B. Local mini-calendar state (controlled month)
 
 	const selectedSet = useMemo(() => new Set(dates), [dates]);
+
+	/** Dates grouped by "YYYY-MM" key, sorted chronologically */
+	const groupedByMonth = useMemo(() => {
+		const map = new Map<string, OperationalDate[]>();
+		for (const d of [...dates].sort()) {
+			const key = `${d.slice(0, 4)}-${d.slice(4, 6)}`;
+			const existing = map.get(key);
+			if (existing) existing.push(d);
+			else map.set(key, [d]);
+		}
+		return map;
+	}, [dates]);
 
 	const initialMonth = useMemo(() => {
 		// Prefer showing month of the most recently selected date; fallback to current month
@@ -95,18 +106,47 @@ export function DatesSelector() {
 				/>
 
 				{dates.length > 0 && (
-					<Section gap="sm" padding="none">
-						{dates.map(date => (
-							<Pill
-								key={date.toString()}
-								disabled={isDisabled}
-								onRemove={() => handleRemove(date)}
-								withRemoveButton
-							>
-								{Dates.fromOperationalDate(date, 'Europe/Lisbon').toLocaleString(FORMATS.DATE_FULL_WITH_YEAR, 'pt-PT')}
-							</Pill>
-						))}
-					</Section>
+					<div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--mantine-spacing-md)', minWidth: 0 }}>
+						{Array.from(groupedByMonth.entries()).map(([monthKey, monthDates]) => {
+							const [yyyy, mm] = monthKey.split('-');
+							const monthLabel = new Date(Number(yyyy), Number(mm) - 1, 1)
+								.toLocaleDateString('pt-PT', { month: 'long', year: 'numeric' });
+
+							const removeMonth = () => {
+								eventsDetailContext.data.form.setFieldValue(
+									'dates',
+									dates.filter(d => !monthDates.includes(d)),
+								);
+							};
+
+							return (
+								<Section key={monthKey} gap="xs" padding="none">
+									<div style={{ alignItems: 'center', display: 'flex', gap: 8, justifyContent: 'space-between' }}>
+										<Text fw={600} size="sm" style={{ textTransform: 'capitalize' }}>{monthLabel}</Text>
+										{!isDisabled && (
+											<Anchor c="dimmed" onClick={removeMonth} size="xs" underline="hover">
+												Remover mês
+											</Anchor>
+										)}
+									</div>
+									<div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+										{monthDates.map((date) => {
+											const jsDate = new Date(Number(date.slice(0, 4)), Number(date.slice(4, 6)) - 1, Number(date.slice(6, 8)));
+											const day = jsDate.getDate();
+											const weekdayShort = jsDate.toLocaleDateString('pt-PT', { weekday: 'short' }).slice(0, 3);
+											return (
+												<TimeChip
+													key={date}
+													onRemove={!isDisabled ? () => handleRemove(date) : undefined}
+													time={`${day} (${weekdayShort})`}
+												/>
+											);
+										})}
+									</div>
+								</Section>
+							);
+						})}
+					</div>
 				)}
 
 			</Section>
