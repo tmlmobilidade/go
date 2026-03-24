@@ -98,5 +98,8 @@
 		"modules/**/*",
 		"packages/**/*",
 		"cli/*"
-	]
+	],
+	"overrides": {
+		"zod": "3.25.76"
+	}
 }

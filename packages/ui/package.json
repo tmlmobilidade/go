@@ -50,11 +50,11 @@
 		"luxon": "3.7.2",
 		"mantine-form-zod-resolver": "1.3.0",
 		"maplibre-gl": "5.21.0",
-		"swr": "2.4.1",
 		"next": "16.2.1",
 		"nuqs": "2.8.9",
 		"react-i18next": "16.6.5",
 		"react-viewport-list": "7.1.2",
+		"swr": "2.4.1",
 		"ukkonen": "2.2.0"
 	},
 	"devDependencies": {
