@@ -12,18 +12,19 @@ import { type PropsWithChildren } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
 import { type LocaleContextProps, LocaleContextProvider } from '../../contexts/Locale.context';
+import { type VersionContextProps, VersionContextProvider } from '../../contexts/Version.context';
 import { themeData } from '../../styles/theme';
 
 /* * */
 
-type BaseProviderProps = LocaleContextProps;
+type BaseProviderProps = LocaleContextProps & VersionContextProps;
 
 /**
  * This is the application base provider component. The whole application should be
  * wrapped with this component, including non-authenticated parts. Set this on the Root layout,
  * without `<html>` or `<body>` HTML tags.
  */
-export function BaseProvider({ children, i18n }: PropsWithChildren<BaseProviderProps>) {
+export function BaseProvider({ children, i18n, version }: PropsWithChildren<BaseProviderProps>) {
 	//
 
 	//
@@ -51,18 +52,20 @@ export function BaseProvider({ children, i18n }: PropsWithChildren<BaseProviderP
 		<html data-mode="light" data-theme="ocean" lang="pt">
 			<body>
 				<NuqsAdapter>
-					<SWRConfig value={swrSettings}>
-						<LocaleContextProvider i18n={i18n}>
-							<MantineProvider defaultColorScheme="auto" theme={themeData}>
-								<DatesProvider settings={mantineDatesSettings}>
-									<ModalsProvider>
-										<Notifications position="bottom-right" />
-										{children}
-									</ModalsProvider>
-								</DatesProvider>
-							</MantineProvider>
-						</LocaleContextProvider>
-					</SWRConfig>
+					<VersionContextProvider version={version}>
+						<SWRConfig value={swrSettings}>
+							<LocaleContextProvider i18n={i18n}>
+								<MantineProvider defaultColorScheme="auto" theme={themeData}>
+									<DatesProvider settings={mantineDatesSettings}>
+										<ModalsProvider>
+											<Notifications position="bottom-right" />
+											{children}
+										</ModalsProvider>
+									</DatesProvider>
+								</MantineProvider>
+							</LocaleContextProvider>
+						</SWRConfig>
+					</VersionContextProvider>
 				</NuqsAdapter>
 			</body>
 		</html>
