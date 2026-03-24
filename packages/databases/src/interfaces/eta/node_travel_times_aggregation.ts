@@ -42,6 +42,7 @@ class ETANodeTravelTimesAggregationClass extends ClickHouseInterfaceTemplate<ETA
 	private static _instance: null | Promise<ETANodeTravelTimesAggregationClass> = null;
 
 	public override readonly databaseName = 'eta';
+	public override readonly orderBy = 'shape_id';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'node_travel_times_aggregation';
 

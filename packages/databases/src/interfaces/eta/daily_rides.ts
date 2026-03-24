@@ -27,6 +27,7 @@ class ETADailyRidesClass extends ClickHouseInterfaceTemplate<Partial<Ride>> {
 	private static _instance: null | Promise<ETADailyRidesClass> = null;
 
 	public override readonly databaseName = 'eta';
+	public override readonly orderBy = '_id';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'daily_rides';
 

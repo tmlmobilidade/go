@@ -28,6 +28,7 @@ class ETAShapeNodesClass extends ClickHouseInterfaceTemplate<ETAShapeNodes> {
 	private static _instance: null | Promise<ETAShapeNodesClass> = null;
 
 	public override readonly databaseName = 'eta';
+	public override readonly orderBy = 'shape_id';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'shape_nodes';
 

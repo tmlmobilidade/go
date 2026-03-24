@@ -40,6 +40,7 @@ class ETANodeTravelTimesSamplesClass extends ClickHouseInterfaceTemplate<ETANode
 	private static _instance: null | Promise<ETANodeTravelTimesSamplesClass> = null;
 
 	public override readonly databaseName = 'eta';
+	public override readonly orderBy = 'ride_id';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'node_travel_times_samples';
 
