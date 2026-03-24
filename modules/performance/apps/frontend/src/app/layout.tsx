@@ -8,6 +8,7 @@ import { NetworkContextProvider } from '@/contexts/Network.context';
 import { ThemeProviders } from '@/providers/theme-providers';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
+import pjson from 'package.json';
 import { type PropsWithChildren } from 'react';
 
 /* * */
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider>
+		<BaseProvider version={pjson.version}>
 			<AppProvider>
 				<AppWrapper>
 					<ThemeProviders>
