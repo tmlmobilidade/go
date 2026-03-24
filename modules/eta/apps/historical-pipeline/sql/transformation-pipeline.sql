@@ -1,4 +1,4 @@
-INSERT INTO node_travel_times_samples
+INSERT INTO eta.node_travel_times_samples
 WITH
     25 AS segment_length_m,
     30 AS max_dist_m,
@@ -20,8 +20,8 @@ WITH
             argMin(n.latitude,    greatCircleDistance(e.longitude, e.latitude, n.longitude, n.latitude)) AS node_lat,
             argMin(n.longitude,   greatCircleDistance(e.longitude, e.latitude, n.longitude, n.latitude)) AS node_lon,
             min(greatCircleDistance(e.longitude, e.latitude, n.longitude, n.latitude)) AS dist
-        FROM vehicle_events AS e
-        INNER JOIN shape_nodes AS n ON e.hashed_shape_id = n.shape_id
+        FROM eta.vehicle_events AS e
+        INNER JOIN eta.shape_nodes AS n ON e.hashed_shape_id = n.shape_id
         -- CRITICAL: always filter your event range to prune partitions
         -- Replace with your actual date/time parameter
         WHERE e.created_at > 0
@@ -216,6 +216,6 @@ SELECT
     sn.latitude,
     sn.longitude
 FROM retimed_nodes AS rn
-INNER JOIN shape_nodes AS sn
+INNER JOIN eta.shape_nodes AS sn
     ON rn.hashed_shape_id = sn.shape_id
     AND rn.node_index = sn.node_index;

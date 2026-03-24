@@ -11,7 +11,7 @@
 --   - day_type                  : Weekday | Weekend
 -- =============================================================================
 
-INSERT INTO node_travel_times_aggregates
+INSERT INTO eta.node_travel_times_aggregates
 WITH
 
 -- -----------------------------------------------------------------------------

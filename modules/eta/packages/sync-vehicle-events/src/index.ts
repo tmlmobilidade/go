@@ -11,7 +11,7 @@ import { EtaVehicleEvent, rideProjection } from './types.js';
 
 /* * */
 
-const BATCH_SIZE = 100_000;
+const BATCH_SIZE = 50_000;
 
 interface SyncVehicleEventsOptions {
 	ridesQuery: Filter<Ride>

@@ -10,7 +10,7 @@ import { Timer } from '@tmlmobilidade/timer';
 import { Ride } from '@tmlmobilidade/types';
 import path from 'path';
 
-const _dirname = path.dirname(new URL(import.meta.url).pathname);
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 /* * */
 
@@ -59,16 +59,16 @@ async function main(): Promise<void> {
 
 	//
 	// 1. Sync Vehicle Events
-	const [
-		{ eventsProcessed, ridesProcessed },
-		{ shapeNodesProcessed },
-	] = await Promise.all([
-		syncVehicleEvents({ ridesQuery }),
-		syncShapeNodes({ chunkLength: SHAPE_NODE_CHUNK_LENGTH, ridesQuery }),
-	]);
+	// const [
+	// 	{ eventsProcessed, ridesProcessed },
+	// 	{ shapeNodesProcessed },
+	// ] = await Promise.all([
+	// 	syncVehicleEvents({ ridesQuery }),
+	// 	syncShapeNodes({ chunkLength: SHAPE_NODE_CHUNK_LENGTH, ridesQuery }),
+	// ]);
 
-	Logger.success(`Sync completed: ${ridesProcessed} rides, ${eventsProcessed} events in ${timer.get()}`);
-	Logger.success(`Sync completed: ${shapeNodesProcessed} shape nodes`);
+	// Logger.success(`Sync completed: ${ridesProcessed} rides, ${eventsProcessed} events in ${timer.get()}`);
+	// Logger.success(`Sync completed: ${shapeNodesProcessed} shape nodes`);
 
 	//
 	// 4. Run Transformation Pipeline

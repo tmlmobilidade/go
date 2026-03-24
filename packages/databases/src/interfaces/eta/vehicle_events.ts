@@ -6,29 +6,40 @@ import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-interface ETAVehicleEvents {
+interface EtaVehicleEvent {
+	_id: string
+	agency_id: string
+	created_at: number
+	hashed_shape_id: string
 	latitude: number
+	line_id: number
 	longitude: number
-	node_index: number
-	shape_id: string
+	ride_id: string
+	vehicle_id: string
 }
 
-const tableSchema: ClickHouseColumn<ETAVehicleEvents>[] = [
-	{ name: 'shape_id', type: 'String' },
-	{ name: 'node_index', type: 'UInt32' },
-	{ name: 'longitude', type: 'Float64' },
+const tableSchema: ClickHouseColumn<EtaVehicleEvent>[] = [
+	// Required Fields
+	{ name: '_id', type: 'String' },
+	{ name: 'agency_id', type: 'String' },
+	{ name: 'created_at', type: 'UInt64' },
+	{ name: 'hashed_shape_id', type: 'String' },
 	{ name: 'latitude', type: 'Float64' },
+	{ name: 'line_id', type: 'UInt16' },
+	{ name: 'longitude', type: 'Float64' },
+	{ name: 'ride_id', type: 'String' },
+	{ name: 'vehicle_id', type: 'String' },
 ];
 
 /* * */
 
-class ETAVehicleEventsClass extends ClickHouseInterfaceTemplate<ETAVehicleEvents> {
+class ETAVehicleEventsClass extends ClickHouseInterfaceTemplate<EtaVehicleEvent> {
 	//
 
 	private static _instance: null | Promise<ETAVehicleEventsClass> = null;
 
 	public override readonly databaseName = 'eta';
-	public override readonly orderBy = 'event_id';
+	public override readonly orderBy = '_id';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'vehicle_events';
 
