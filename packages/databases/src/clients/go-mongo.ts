@@ -50,7 +50,14 @@ export class GOMongoClient {
 	private async connect() {
 		Logger.info('[GOMongoClient] Connecting to database...');
 		const connectionString = await this.getConnectionString();
-		this.client = new MongoClient(connectionString);
+		this.client = new MongoClient(connectionString, {
+			connectTimeoutMS: 10_000,
+			directConnection: process.env.GO_MONGO_TUNNEL_ENABLED === 'true',
+			maxPoolSize: 20,
+			minPoolSize: 2,
+			readPreference: 'secondaryPreferred',
+			serverSelectionTimeoutMS: 10_000,
+		});
 		this.client.on('close', () => {
 			console.warn('[GOMongoClient] Database connection closed unexpectedly.');
 		});

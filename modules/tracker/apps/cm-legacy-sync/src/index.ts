@@ -38,7 +38,7 @@ async function main() {
 				await syncPcgidbCoreVehicleEvents(chunk);
 				await syncPcgidbLogVehicleEvents(chunk);
 			},
-			splitBy: { hours: 4 },
+			splitBy: { hours: 1 },
 			startDate: earliestDate.unix_timestamp,
 		});
 

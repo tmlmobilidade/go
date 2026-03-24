@@ -12,7 +12,7 @@ import { BatchWriter } from '@tmlmobilidade/writers';
 /* * */
 
 const writer = new BatchWriter<RawVehicleEvent>({
-	batch_size: 100_000,
+	batch_size: 10_000,
 	insertFn: async (data) => {
 		const writeOps = data.map(doc => ({
 			updateOne: {
