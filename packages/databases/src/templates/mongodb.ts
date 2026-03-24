@@ -113,6 +113,14 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 		return await this.collection.insertOne(parsedDocument, options);
 	}
 
+	/**
+	 * Updates a single document in the collection matching the filter criteria,
+	 * validating the update data against the update schema.
+	 * @param filter The filter criteria to match the document to update.
+	 * @param data The update data to apply to the matched document.
+	 * @param options The options for the update operation.
+	 * @returns A promise that resolves to the result of the update operation.
+	 */
 	public async updateOne(filter: Filter<T>, data: TUpdate, options?: UpdateOptions): Promise<UpdateResult<T>> {
 		// If no update schema is defined, throw an error.
 		if (!this.updateSchema) throw new Error(`No schema defined for update operation for ${this.collectionName} collection.`);
