@@ -13,10 +13,11 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 	//
 
 	protected readonly abstract databaseName: string;
-	protected readonly engine: ClickHouseTableEngine = 'ReplicatedMergeTree';
-	protected readonly orderBy: string = '_id';
 	protected readonly abstract schema: ClickHouseColumn<T>[];
 	protected readonly abstract tableName: string;
+
+	protected readonly engine: ClickHouseTableEngine = 'ReplicatedMergeTree';
+	protected readonly orderBy: string = '_id';
 
 	private client: ClickHouseClient;
 

@@ -3,21 +3,24 @@
 import { PCGIRawClient } from '@/clients/pcgi-raw.js';
 import { MongoInterfaceTemplate } from '@/templates/mongodb.js';
 import { type SimplifiedMongoIndex } from '@/types/mongo/index-description.js';
-import { type RawVehicleEvent } from '@tmlmobilidade/types';
+import { type RawVehicleEvent, RawVehicleEventSchema } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-class RawVehicleEventsNewClass extends MongoInterfaceTemplate<RawVehicleEvent> {
+class RawVehicleEventsNewClass extends MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent, Partial<RawVehicleEvent>> {
 	//
 
 	private static _instance: null | Promise<RawVehicleEventsNewClass> = null;
 
-	public override readonly collectionName = 'raw_vehicle_events';
-	public override readonly databaseName = 'raw_vehicle_events';
-	public override readonly indexDescription: SimplifiedMongoIndex<RawVehicleEvent>[] = [
+	protected override readonly collectionName = 'raw_vehicle_events';
+	protected override readonly databaseName = 'raw_vehicle_events';
+	protected override readonly indexDescription: SimplifiedMongoIndex<RawVehicleEvent>[] = [
 		{ key: { agency_id: 1, created_at: 1 } },
 	];
+
+	protected override createSchema = RawVehicleEventSchema;
+	protected override updateSchema: null = null;
 
 	/**
 	 * Returns the singleton instance of the subclass.

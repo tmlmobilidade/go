@@ -39,7 +39,8 @@
 		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"mongodb": "7.1.0"
+		"mongodb": "7.1.0",
+		"zod": "3.25.76"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

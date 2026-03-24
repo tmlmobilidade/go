@@ -3,16 +3,20 @@
 import { ComparableMongoIndex, SimplifiedMongoIndex } from '@/types/mongo/index-description.js';
 import { isSameIndex, normalizeMongoIndex } from '@/utils/mongo/index.js';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Collection, type Db, type MongoClient } from 'mongodb';
+import { type Collection, type Db, type Document, type Filter, type FindOptions, type InsertOneOptions, type InsertOneResult, type MongoClient, type OptionalUnlessRequiredId, type UpdateOptions, type UpdateResult, type WithId } from 'mongodb';
+import { z } from 'zod';
 
 /* * */
 
-export abstract class MongoInterfaceTemplate<T> {
+export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	//
 
 	protected readonly abstract collectionName: string;
 	protected readonly abstract databaseName: string;
 	protected readonly abstract indexDescription: SimplifiedMongoIndex<T>[];
+
+	protected abstract createSchema: null | z.ZodSchema;
+	protected abstract updateSchema: null | z.ZodSchema;
 
 	private client: MongoClient;
 	private collection: Collection<T>;
@@ -21,8 +25,38 @@ export abstract class MongoInterfaceTemplate<T> {
 	/**
 	 * Disallow direct instantiation of the service.
 	 * Use getClient() instead to ensure singleton behavior.
-	 */
+	*/
 	protected constructor() {}
+
+	/**
+	 * Counts documents matching the filter criteria.
+	 * @param filter The filter criteria to match documents.
+	 * @returns A promise that resolves to the count of matching documents.
+	 */
+	public async count(filter?: Filter<T>): Promise<number> {
+		return await this.collection.countDocuments(filter);
+	}
+
+	/**
+	 * Finds multiple documents matching the filter criteria,
+	 * with optional pagination and sorting.
+	 * @param filter (Optional) filter criteria to match documents.
+	 * @param options (Optional) find options.
+	 * @returns A promise that resolves to an array of matching documents.
+	 */
+	public async findMany(filter?: Filter<T>, options?: FindOptions): Promise<WithId<T>[]> {
+		return await this.collection.find(filter, options).toArray();
+	}
+
+	/**
+	 * Finds a single document matching the filter criteria.
+	 * @param filter The filter criteria to match the document.
+	 * @param options Optional options.
+	 * @returns A promise that resolves to the matching document or null if not found.
+	 */
+	public async findOne(filter: Filter<T>, options?: FindOptions): Promise<null | WithId<T>> {
+		return await this.collection.findOne(filter, options);
+	}
 
 	/**
 	 * Provides access to the MongoDB client instance,
@@ -33,6 +67,17 @@ export abstract class MongoInterfaceTemplate<T> {
 	public async getClient(): Promise<MongoClient> {
 		if (!this.client) await this.init();
 		return this.client;
+	}
+
+	/**
+	 * Provides access to the MongoDB collection instance,
+	 * initializing it if it has not already been created.
+	 * @returns A promise that resolves to the MongoDB collection instance.
+	 * @warning Use with caution: direct access to the collection allows for executing arbitrary queries.
+	 */
+	async getCollection() {
+		if (!this.collection) await this.init();
+		return this.collection;
 	}
 
 	/**
@@ -47,6 +92,37 @@ export abstract class MongoInterfaceTemplate<T> {
 	 */
 	async getDatabaseName() {
 		return this.databaseName;
+	}
+
+	/**
+	 * Inserts a single document into the collection,
+	 * validating it against the create schema.
+	 * @param doc The document to insert.
+	 * @param options The options for the insert operation.
+	 * @returns A promise that resolves to the result of the insert operation.
+	 */
+	public async insertOne(data: OptionalUnlessRequiredId<TCreate>, options?: InsertOneOptions): Promise<InsertOneResult<T>> {
+		// If no create schema is defined, throw an error.
+		if (!this.createSchema) throw new Error(`No schema defined for insert operation for ${this.collectionName} collection.`);
+		// Validate the document against the create schema
+		const parseResult = this.createSchema.safeParse(data);
+		if (!parseResult.success) return Promise.reject(new Error(`Document validation failed: ${parseResult.error.message}`));
+		// Extract the validated document
+		const parsedDocument = parseResult.data as unknown as OptionalUnlessRequiredId<T>;
+		// Attempt to insert the document into the collection
+		return await this.collection.insertOne(parsedDocument, options);
+	}
+
+	public async updateOne(filter: Filter<T>, data: TUpdate, options?: UpdateOptions): Promise<UpdateResult<T>> {
+		// If no update schema is defined, throw an error.
+		if (!this.updateSchema) throw new Error(`No schema defined for update operation for ${this.collectionName} collection.`);
+		// Validate the update data against the update schema
+		const parseResult = this.updateSchema.safeParse(data);
+		if (!parseResult.success) return Promise.reject(new Error(`Update data validation failed: ${parseResult.error.message}`));
+		// Extract the validated update data
+		const parsedUpdateData = parseResult.data as unknown as Partial<T>;
+		// Attempt to find and update the document in the collection
+		return await this.collection.updateOne(filter, { $set: parsedUpdateData }, options);
 	}
 
 	/**
