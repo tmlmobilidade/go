@@ -1,60 +1,60 @@
 /* * */
 
-import { ClickHouseClient, clickhouseService } from '@tmlmobilidade/clickhouse';
+import { etaDailyRides, etaDailyRidesWaypoints } from '@tmlmobilidade/databases';
 import { Filter, hashedTrips, rides } from '@tmlmobilidade/interfaces';
 import { HashedTrip, Ride } from '@tmlmobilidade/types';
-import { ClickHouseWriter } from '@tmlmobilidade/writers';
-
-import { dailyRideTableSchema, DailyTripWaypoint, dailyTripWaypointTableSchema } from './types.js';
+import { BatchWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
+const BATCH_SIZE = 100_000;
+
 interface SyncDailyRidesOptions {
-	batchSize: number
-	client: ClickHouseClient
 	ridesQuery: Filter<Ride>
 }
 
-export async function syncDailyRides({ batchSize = 100_000, client, ridesQuery }: SyncDailyRidesOptions) {
+export async function syncDailyRides({ ridesQuery }: SyncDailyRidesOptions) {
 	//
 
 	//
 	// Setup Writers
-	const ridesWriter = new ClickHouseWriter<Partial<Ride>>({
-		batch_size: batchSize,
-		client,
-		table: 'daily_rides',
-		tableSchema: dailyRideTableSchema,
+	const ridesWriter = new BatchWriter<Partial<Ride>>({
+		batch_size: BATCH_SIZE,
+		insertFn: async (data) => {
+			await etaDailyRides.insert('JSONEachRow', data);
+		},
+		title: 'daily_rides',
 	});
 
-	const waypointsWriter = new ClickHouseWriter<DailyTripWaypoint>({
-		batch_size: batchSize,
-		client,
-		table: 'daily_rides_waypoints',
-		tableSchema: dailyTripWaypointTableSchema,
+	const waypointsWriter = new BatchWriter({
+		batch_size: BATCH_SIZE,
+		insertFn: async (data) => {
+			await etaDailyRidesWaypoints.insert('JSONEachRow', data);
+		},
+		title: 'daily_rides_waypoints',
 	});
 
-	// Delete Tables
-	await clickhouseService.deleteTable('daily_rides');
-	await clickhouseService.deleteTable('daily_rides_waypoints');
-
-	// Ensure Tables exist
-	await ridesWriter.ensureTable();
-	await waypointsWriter.ensureTable();
+	// Clear Tables
+	await etaDailyRides.clearData();
+	await etaDailyRidesWaypoints.clearData();
 
 	const ridesCollection = await rides.getCollection();
-	const ridesCursor = ridesCollection.find<Ride>(ridesQuery).batchSize(batchSize).stream();
+	const ridesCursor = ridesCollection.find<Ride>(ridesQuery).batchSize(BATCH_SIZE).stream();
 
+	let ridesCount = 0;
 	for await (const ride of ridesCursor as unknown as AsyncIterableIterator<Ride>) {
+		ridesCount++;
 		await ridesWriter.write(ride);
 	}
 
 	// Get Distinct Hashed Trip IDs
 	const distinctHashedTripIds = await rides.distinct('hashed_trip_id', ridesQuery);
 	const hashedTripsCollection = await hashedTrips.getCollection();
-	const hashedTripsCursor = hashedTripsCollection.find({ _id: { $in: distinctHashedTripIds } }).batchSize(batchSize).stream();
+	const hashedTripsCursor = hashedTripsCollection.find({ _id: { $in: distinctHashedTripIds } }).batchSize(BATCH_SIZE).stream();
 
+	let waypointsCount = 0;
 	for await (const hashedTrip of hashedTripsCursor as unknown as AsyncIterableIterator<HashedTrip>) {
+		waypointsCount += hashedTrip.path.length;
 		await waypointsWriter.write(hashedTrip.path.map(waypoint => ({
 			...waypoint,
 			hashed_trip_id: hashedTrip._id,
@@ -62,4 +62,7 @@ export async function syncDailyRides({ batchSize = 100_000, client, ridesQuery }
 	}
 
 	await ridesWriter.flush();
+	await waypointsWriter.flush();
+
+	return { ridesCount, waypointsCount };
 }
