@@ -28,9 +28,9 @@ class ETAVehicleEventsClass extends ClickHouseInterfaceTemplate<ETAVehicleEvents
 	private static _instance: null | Promise<ETAVehicleEventsClass> = null;
 
 	public override readonly databaseName = 'eta';
-	public override readonly orderBy = 'shape_id';
+	public override readonly orderBy = 'event_id';
 	public override readonly schema = tableSchema;
-	public override readonly tableName = 'shape_nodes';
+	public override readonly tableName = 'vehicle_events';
 
 	/**
 	 * Returns the singleton instance of the subclass.

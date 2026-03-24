@@ -68,7 +68,7 @@ async function main(): Promise<void> {
 	]);
 
 	Logger.success(`Sync completed: ${ridesProcessed} rides, ${eventsProcessed} events in ${timer.get()}`);
-	// Logger.success(`Sync completed: ${shapeNodesProcessed} shape nodes`);
+	Logger.success(`Sync completed: ${shapeNodesProcessed} shape nodes`);
 
 	//
 	// 4. Run Transformation Pipeline
