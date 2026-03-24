@@ -15,8 +15,8 @@ import type {
 	WithId,
 } from 'mongodb';
 
-import { type ComparableMongoIndex, type SimplifiedMongoIndex } from '@/types/mongo/index-description.js';
-import { isSameIndex, normalizeMongoIndex } from '@/utils/mongo/index.js';
+import { type SimplifiedMongoIndex } from '@/types/mongo/index-description.js';
+import { isSameIndex, prepareMongoIndexOptions } from '@/utils/mongo/index.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { z } from 'zod';
 
@@ -254,25 +254,24 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 */
 	private async syncIndexes(): Promise<void> {
 		try {
+			Logger.info(`MONGODB [${this.collectionName}]: Synchronizing indexes...`);
 			// Normalize already applied and new indexes
 			// and filter the default _id index.
 			const existingIndexes = await this.collection.indexes();
-			const normalizedExisting = existingIndexes.map(normalizeMongoIndex<T>);
-			const filteredExisting = normalizedExisting.filter(idx => JSON.stringify(idx.key) !== JSON.stringify({ _id: 1 }));
-			const normalizedDesired = this.indexDescription.map(idx => normalizeMongoIndex<T>(idx));
+			const filteredExisting = existingIndexes.filter(idx => JSON.stringify(idx.key) !== JSON.stringify({ _id: 1 }));
 			// Setup desired indexes based on indexDescription
-			const indexesToDrop: ComparableMongoIndex<T>[] = [];
-			const indexesToCreate: Omit<ComparableMongoIndex<T>, 'name'>[] = [];
+			const indexesToDrop: string[] = [];
+			const indexesToCreate: SimplifiedMongoIndex<T>[] = [];
 			// Find indexes to drop
 			for (const existingIdx of filteredExisting) {
 				// For the list of existing indexes,
 				// check if they are present in the desired index description.
-				const found = normalizedDesired.some(desiredIdx => isSameIndex(existingIdx, desiredIdx));
+				const found = this.indexDescription.some(desiredIdx => isSameIndex(existingIdx, desiredIdx));
 				// If not, mark them for dropping.
-				if (!found) indexesToDrop.push(existingIdx);
+				if (!found) indexesToDrop.push(existingIdx.name);
 			}
 			// Find indexes to create
-			for (const desiredIdx of normalizedDesired) {
+			for (const desiredIdx of this.indexDescription) {
 				// For the list of desired indexes,
 				// check if they are present in the existing indexes.
 				const found = filteredExisting.some(existingIdx => isSameIndex(existingIdx, desiredIdx));
@@ -280,19 +279,19 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 				if (!found) indexesToCreate.push(desiredIdx);
 			}
 			// Drop indexes
-			for (const idx of indexesToDrop) {
-				if (!idx.name) continue;
-				await this.collection.dropIndex(idx.name);
+			for (const idxName of indexesToDrop) {
+				if (!idxName) continue;
+				Logger.info(`MONGODB [${this.collectionName}]: Dropping index ${idxName}.`);
+				await this.collection.dropIndex(idxName);
+				Logger.success(`MONGODB [${this.collectionName}]: Dropped index ${idxName}.`);
 			}
 			// Create indexes
 			for (const idx of indexesToCreate) {
-				await this.collection.createIndex(idx.key, {
-					expireAfterSeconds: idx.expireAfterSeconds ?? undefined,
-					sparse: idx.sparse,
-					unique: idx.unique,
-				});
+				Logger.info(`MONGODB [${this.collectionName}]: Creating index on keys ${JSON.stringify(idx.key)} with options ${JSON.stringify(prepareMongoIndexOptions(idx))}.`);
+				await this.collection.createIndex(idx.key, prepareMongoIndexOptions(idx));
+				Logger.success(`MONGODB [${this.collectionName}]: Created index on keys ${JSON.stringify(idx.key)}.`);
 			}
-			Logger.info(`MONGODB [${this.collectionName}]: Indexes synchronized.`);
+			Logger.success(`MONGODB [${this.collectionName}]: Indexes synchronized.`);
 		} catch (error) {
 			Logger.error(`MONGODB [${this.collectionName}]: Error @ syncIndexes(): ${(error as Error).message}`);
 			throw error;

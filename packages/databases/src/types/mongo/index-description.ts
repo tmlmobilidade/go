@@ -12,8 +12,3 @@ export interface SimplifiedMongoIndex<T> {
 	unique?: boolean
 }
 
-/**
- * A MongoDB index description type that is normalized
- * to ensure all expected properties are present and have consistent types.
- */
-export type ComparableMongoIndex<T> = Required<SimplifiedMongoIndex<T>> & { name?: string };

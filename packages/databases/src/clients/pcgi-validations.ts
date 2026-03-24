@@ -50,7 +50,14 @@ export class PCGIValidationsClient {
 	private async connect() {
 		Logger.info('[PCGIValidationsClient] Connecting to database...');
 		const connectionString = await this.getConnectionString();
-		this.client = new MongoClient(connectionString);
+		this.client = new MongoClient(connectionString, {
+			connectTimeoutMS: 10_000,
+			directConnection: process.env.PCGI_VALIDATIONS_TUNNEL_ENABLED === 'true',
+			maxPoolSize: 20,
+			minPoolSize: 2,
+			readPreference: 'secondaryPreferred',
+			serverSelectionTimeoutMS: 10_000,
+		});
 		this.client.on('close', () => {
 			console.warn('[PCGIValidationsClient] Database connection closed unexpectedly.');
 		});

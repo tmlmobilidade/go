@@ -50,7 +50,14 @@ export class PCGIFileManagerClient {
 	private async connect() {
 		Logger.info('[PCGIFileManagerClient] Connecting to database...');
 		const connectionString = await this.getConnectionString();
-		this.client = new MongoClient(connectionString);
+		this.client = new MongoClient(connectionString, {
+			connectTimeoutMS: 10_000,
+			directConnection: process.env.PCGI_FILE_MANAGER_TUNNEL_ENABLED === 'true',
+			maxPoolSize: 20,
+			minPoolSize: 2,
+			readPreference: 'secondaryPreferred',
+			serverSelectionTimeoutMS: 10_000,
+		});
 		this.client.on('close', () => {
 			console.warn('[PCGIFileManagerClient] Database connection closed unexpectedly.');
 		});
