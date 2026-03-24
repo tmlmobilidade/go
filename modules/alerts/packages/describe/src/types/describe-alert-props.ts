@@ -1,15 +1,15 @@
 /* * */
 
-import { AlertSchema, RideNormalizedSchema } from '@tmlmobilidade/types';
+import { AlertCauseSchema, AlertEffectSchema, AlertReferencesSchema, AlertReferenceTypeSchema, RideNormalizedSchema } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 /* * */
 
 export const DescribeAlertPropsBaseSchema = z.object({
-	cause: AlertSchema.shape.cause,
-	effect: AlertSchema.shape.effect,
-	reference_type: AlertSchema.shape.reference_type,
-	references: AlertSchema.shape.references,
+	cause: AlertCauseSchema,
+	effect: AlertEffectSchema,
+	reference_type: AlertReferenceTypeSchema,
+	references: AlertReferencesSchema,
 });
 
 const DescribeAlertPropsAgencySchema = DescribeAlertPropsBaseSchema.extend({
