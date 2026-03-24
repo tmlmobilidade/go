@@ -1,6 +1,6 @@
 /* * */
 
-import { clickhouseService } from '@tmlmobilidade/clickhouse';
+import { etaNodeTravelTimesAggregation, etaNodeTravelTimesSamples, queryFromFile } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { syncShapeNodes } from '@tmlmobilidade/go-eta-sync-shape-nodes';
 import { syncVehicleEvents } from '@tmlmobilidade/go-eta-sync-vehicle-events';
@@ -10,14 +10,13 @@ import { Timer } from '@tmlmobilidade/timer';
 import { Ride } from '@tmlmobilidade/types';
 import path from 'path';
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const _dirname = path.dirname(new URL(import.meta.url).pathname);
 
 /* * */
 
 const RUN_INTERVAL_MS = 60_000 * 60 * 24; // 24 hours
 const VEHICLE_EVENTS_DAYS_CUTOFF = 7; // 7 days
 const AGENCY_IDS = ['41', '42', '43', '44'];
-const BATCH_SIZE = 100_000;
 const SHAPE_NODE_CHUNK_LENGTH = 25; // meters
 
 /* * */
@@ -44,9 +43,6 @@ async function main(): Promise<void> {
 	const timer = new Timer();
 
 	//
-	// Setup Clickhouse
-	const client = await clickhouseService.getClient();
-	//
 	// Get Date Range
 	const { end, start } = getDateRange();
 
@@ -65,10 +61,10 @@ async function main(): Promise<void> {
 	// 1. Sync Vehicle Events
 	const [
 		{ eventsProcessed, ridesProcessed },
-		// { shapeNodesProcessed },
+		{ shapeNodesProcessed },
 	] = await Promise.all([
-		syncVehicleEvents({ batchSize: BATCH_SIZE, client, ridesQuery }),
-		// syncShapeNodes({ batchSize: BATCH_SIZE, chunkLength: SHAPE_NODE_CHUNK_LENGTH, client, ridesQuery }),
+		syncVehicleEvents({ ridesQuery }),
+		syncShapeNodes({ chunkLength: SHAPE_NODE_CHUNK_LENGTH, ridesQuery }),
 	]);
 
 	Logger.success(`Sync completed: ${ridesProcessed} rides, ${eventsProcessed} events in ${timer.get()}`);
@@ -77,44 +73,28 @@ async function main(): Promise<void> {
 	//
 	// 4. Run Transformation Pipeline
 	Logger.info('Running transformation pipeline...');
-	await clickhouseService.deleteTable('node_travel_times_samples');
-	await clickhouseService.createTable('node_travel_times_samples', [
-		{ name: 'event_id', type: 'String' },
-		{ name: 'ride_id', type: 'String' },
-		{ name: 'hashed_shape_id', type: 'String' },
-		{ name: 'node_index', type: 'UInt32' },
-		{ name: 'hour', type: 'UInt8' },
-		{ name: 'created_at', type: 'UInt64' },
-		{ name: 'travel_time_seconds', type: 'Float64' },
-		{ name: 'speed_kmh', type: 'Float64' },
-		{ name: 'latitude', type: 'Float64' },
-		{ name: 'longitude', type: 'Float64' },
-	], 'MergeTree', '(hashed_shape_id, node_index, hour)');
 
-	const trasnformationPipelineFilePath = path.join(__dirname, '..', 'sql', 'transformation-pipeline.sql');
-	await clickhouseService.queryFromFile(trasnformationPipelineFilePath);
+	const client = await etaNodeTravelTimesSamples.getClient();
+	await etaNodeTravelTimesSamples.clearData();
+
+	const transformationPipelineFilePath = path.join(__dirname, '..', 'sql', 'transformation-pipeline.sql');
+	await queryFromFile(client, transformationPipelineFilePath);
+
 	Logger.success('Transformation pipeline completed');
 
 	//
 	// 5. Run Aggregation Pipeline
 	Logger.info('Running aggregation pipeline...');
-	await clickhouseService.deleteTable('node_travel_times_aggregates');
-	await clickhouseService.createTable('node_travel_times_aggregates', [
-		{ name: 'shape_id', type: 'String' },
-		{ name: 'node_index', type: 'UInt32' },
-		{ name: 'operational_date', type: 'UInt32' },
-		{ name: 'period', type: 'String' },
-		{ name: 'period_of_day', type: 'Enum8(\'Peak AM\' = 1, \'Mid\' = 2, \'Peak PM\' = 3, \'Off Peak\' = 4)' },
-		{ name: 'weekday', type: 'Enum8(\'Monday\' = 1, \'Tuesday\' = 2, \'Wednesday\' = 3, \'Thursday\' = 4, \'Friday\' = 5, \'Saturday\' = 6, \'Sunday\' = 7)' },
-		{ name: 'day_type', type: 'Enum8(\'Weekday\' = 1, \'Weekend\' = 2)' },
-		{ name: 'avg_travel_time_seconds', type: 'Float64' },
-		{ name: 'min_travel_time_seconds', type: 'Float64' },
-		{ name: 'max_travel_time_seconds', type: 'Float64' },
-		{ name: 'median_travel_time_seconds', type: 'Float64' },
-	], 'MergeTree', '(hashed_shape_id, node_index, hour)');
+
+	const clientAggregation = await etaNodeTravelTimesAggregation.getClient();
+	await etaNodeTravelTimesAggregation.clearData();
+
 	const aggregationPipelineFilePath = path.join(__dirname, '..', 'sql', 'aggregation-pipeline.sql');
-	await clickhouseService.queryFromFile(aggregationPipelineFilePath);
+	await queryFromFile(clientAggregation, aggregationPipelineFilePath);
+
 	Logger.success('Aggregation pipeline completed');
+
+	//
 
 	Logger.terminate(`Terminated in ${timer.get()}`);
 }
