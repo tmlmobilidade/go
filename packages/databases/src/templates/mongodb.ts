@@ -217,7 +217,9 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 		this.client = await this.connectToClient();
 		this.database = this.client.db(this.databaseName);
 		this.collection = this.database.collection(this.collectionName);
-		// Ensure the collection indexes are in sync with the provided index description
+		// Ensure the collection exists and its indexes are in sync
+		// with the provided index description.
+		await this.createCollectionIfNotExists();
 		await this.syncIndexes();
 		// Call postInit for any additional setup logic defined in subclasses
 		await this.postInit();
@@ -229,6 +231,18 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 */
 	protected async postInit(): Promise<void> {
 		// no-op by default
+	}
+
+	/**
+	 * Ensures that the specified collection exists in the MongoDB database,
+	 * creating it if it does not already exist.
+	 * @returns A promise that resolves when the collection is ensured to exist.
+	 */
+	private async createCollectionIfNotExists(): Promise<void> {
+		const collections = await this.database.listCollections({ name: this.collectionName }).toArray();
+		if (collections.length) return;
+		await this.database.createCollection(this.collectionName);
+		Logger.info(`MONGODB [${this.collectionName}]: Collection created.`);
 	}
 
 	/**
