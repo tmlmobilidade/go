@@ -14,7 +14,7 @@ class RawVehicleEventsNewClass extends MongoInterfaceTemplate<RawVehicleEvent, R
 	private static _instance: null | Promise<RawVehicleEventsNewClass> = null;
 
 	protected override readonly collectionName = 'raw_vehicle_events';
-	protected override readonly databaseName = 'raw_vehicle_events';
+	protected override readonly databaseName = 'raw';
 	protected override readonly indexDescription: SimplifiedMongoIndex<RawVehicleEvent>[] = [
 		{ key: { agency_id: 1, created_at: 1 } },
 	];

@@ -17,6 +17,10 @@ services:
       resources:
         limits:
           memory: 10gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
     ulimits:
       nofile:
         soft: 64000
