@@ -1,6 +1,5 @@
 /* * */
 
-import { clickhouseService } from '@tmlmobilidade/clickhouse';
 import { Dates } from '@tmlmobilidade/dates';
 import { syncDailyRides } from '@tmlmobilidade/go-eta-sync-daily-rides';
 import { Filter } from '@tmlmobilidade/interfaces';
@@ -15,7 +14,6 @@ const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 const RUN_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 const AGENCY_IDS = ['41', '42', '43', '44'];
-const BATCH_SIZE = 100_000;
 
 /* * */
 
@@ -35,10 +33,6 @@ async function main(): Promise<void> {
 	const timer = new Timer();
 
 	//
-	// Setup Clickhouse
-	const client = await clickhouseService.getClient();
-
-	//
 	// Get Date Range
 	const { end, start } = getDateRange();
 
@@ -55,17 +49,9 @@ async function main(): Promise<void> {
 
 	//
 	// 1. Sync Vehicle Events
-	const [
-		ridesProcessed,
-	] = await Promise.all([
-		syncDailyRides({ batchSize: BATCH_SIZE, client, ridesQuery }),
-	]);
+	const { ridesCount, waypointsCount } = await syncDailyRides({ ridesQuery });
 
-	Logger.success(`Sync completed: ${ridesProcessed} rides in ${timer.get()}`);
-
-	const trasnformationPipelineFilePath = path.join(__dirname, '..', 'sql', 'transformation-pipeline.sql');
-	await clickhouseService.queryFromFile(trasnformationPipelineFilePath);
-	Logger.success('Transformation pipeline completed');
+	Logger.success(`Sync completed: ${ridesCount} rides and a total of ${waypointsCount} waypoints in ${timer.get()}`);
 
 	Logger.terminate(`Terminated in ${timer.get()}`);
 }
