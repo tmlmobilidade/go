@@ -78,12 +78,20 @@ export class GOMongoClient {
 			throw new Error('Missing GO_MONGO_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting GO_MONGO_TUNNEL_ENABLED to "true" or "false".');
 		}
 
-		if (!process.env.GO_MONGO_HOST || !process.env.GO_MONGO_PORT) {
-			throw new Error('Missing GO_MONGO_HOST or GO_MONGO_PORT');
+		if (!process.env.GO_MONGO_HOST_1 || !process.env.GO_MONGO_PORT_1) {
+			throw new Error('Missing GO_MONGO_HOST_1 or GO_MONGO_PORT_1');
+		}
+
+		if (!process.env.GO_MONGO_HOST_2 || !process.env.GO_MONGO_PORT_2) {
+			throw new Error('Missing GO_MONGO_HOST_2 or GO_MONGO_PORT_2');
+		}
+
+		if (!process.env.GO_MONGO_HOST_3 || !process.env.GO_MONGO_PORT_3) {
+			throw new Error('Missing GO_MONGO_HOST_3 or GO_MONGO_PORT_3');
 		}
 
 		if (process.env.GO_MONGO_TUNNEL_ENABLED === 'false') {
-			return `mongodb://${process.env.GO_MONGO_USER}:${process.env.GO_MONGO_PASSWORD}@${process.env.GO_MONGO_HOST}:${process.env.GO_MONGO_PORT}`;
+			return `mongodb://${process.env.GO_MONGO_USER}:${process.env.GO_MONGO_PASSWORD}@${process.env.GO_MONGO_HOST_1}:${process.env.GO_MONGO_PORT_1},${process.env.GO_MONGO_HOST_2}:${process.env.GO_MONGO_PORT_2},${process.env.GO_MONGO_HOST_3}:${process.env.GO_MONGO_PORT_3}/`;
 		}
 
 		// SSH required
@@ -97,8 +105,8 @@ export class GOMongoClient {
 
 		const sshConfig: SshConfig = {
 			forwardOptions: {
-				dstAddr: process.env.GO_MONGO_HOST,
-				dstPort: Number(process.env.GO_MONGO_PORT),
+				dstAddr: process.env.GO_MONGO_HOST_1,
+				dstPort: Number(process.env.GO_MONGO_PORT_1),
 				srcAddr: 'localhost',
 				srcPort: Number(process.env.GO_MONGO_TUNNEL_LOCAL_PORT),
 			},
@@ -134,7 +142,7 @@ export class GOMongoClient {
 			throw new Error('[GOMongoClient] Failed to retrieve SSH tunnel address.');
 		}
 
-		return `mongodb://${process.env.GO_MONGO_USER}:${process.env.GO_MONGO_PASSWORD}@localhost:${addr.port}`;
+		return `mongodb://${process.env.GO_MONGO_USER}:${process.env.GO_MONGO_PASSWORD}@localhost:${addr.port}/`;
 	}
 
 	//

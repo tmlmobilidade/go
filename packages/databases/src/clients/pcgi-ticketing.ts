@@ -91,7 +91,7 @@ export class PCGITicketingClient {
 		}
 
 		if (process.env.PCGI_TICKETING_TUNNEL_ENABLED === 'false') {
-			return `http://${process.env.PCGI_TICKETING_USER}:${process.env.PCGI_TICKETING_PASSWORD}@${process.env.PCGI_TICKETING_HOST_1}:${process.env.PCGI_TICKETING_PORT_1},${process.env.PCGI_TICKETING_HOST_2}:${process.env.PCGI_TICKETING_PORT_2},${process.env.PCGI_TICKETING_HOST_3}:${process.env.PCGI_TICKETING_PORT_3}`;
+			return `mongodb://${process.env.PCGI_TICKETING_USER}:${process.env.PCGI_TICKETING_PASSWORD}@${process.env.PCGI_TICKETING_HOST_1}:${process.env.PCGI_TICKETING_PORT_1},${process.env.PCGI_TICKETING_HOST_2}:${process.env.PCGI_TICKETING_PORT_2},${process.env.PCGI_TICKETING_HOST_3}:${process.env.PCGI_TICKETING_PORT_3}/`;
 		}
 
 		// SSH required
@@ -142,7 +142,7 @@ export class PCGITicketingClient {
 			throw new Error('[PCGITicketingClient] Failed to retrieve SSH tunnel address.');
 		}
 
-		return `http://${process.env.PCGI_TICKETING_USER}:${process.env.PCGI_TICKETING_PASSWORD}@localhost:${addr.port}`;
+		return `mongodb://${process.env.PCGI_TICKETING_USER}:${process.env.PCGI_TICKETING_PASSWORD}@localhost:${addr.port}/`;
 	}
 
 	//
