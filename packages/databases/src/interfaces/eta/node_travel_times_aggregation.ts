@@ -44,7 +44,7 @@ class ETANodeTravelTimesAggregationClass extends ClickHouseInterfaceTemplate<ETA
 	public override readonly databaseName = 'eta';
 	public override readonly orderBy = 'shape_id';
 	public override readonly schema = tableSchema;
-	public override readonly tableName = 'node_travel_times_aggregation';
+	public override readonly tableName = 'node_travel_times_aggregates';
 
 	/**
 	 * Returns the singleton instance of the subclass.
