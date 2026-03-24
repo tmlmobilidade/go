@@ -111,7 +111,11 @@ export function ReplayEvents({ onReplayIndexChange, replayIndex }: ReplayEventsP
 		<Section alignItems="center" flexDirection="row" gap="md">
 			<Button
 				icon={isPlaying ? <IconPlayerPauseFilled /> : <IconPlayerPlayFilled />}
+				label={isPlaying ? 'Pause' : 'Play'}
 				onClick={togglePlay}
+				styles={{
+					label: { minWidth: '55px', textAlign: 'center' },
+				}}
 			/>
 			<Slider
 				max={maxIndex}
