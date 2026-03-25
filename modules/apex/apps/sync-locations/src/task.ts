@@ -1,9 +1,8 @@
 /* * */
 
-import { simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
+import { pcgiValidations, simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { APEX_LOCATIONS_SETTINGS, invalidateRides, parseSimplifiedApexLocation } from '@tmlmobilidade/go-apex-pckg-common';
-import { pcgidbValidations } from '@tmlmobilidade/go-apex-pckg-databases';
+import { APEX_LOCATIONS_SETTINGS, invalidateRides, parseSimplifiedApexLocation } from '@tmlmobilidade/go-apex-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
@@ -57,6 +56,8 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 	// This function will handle the logic of counting, comparing, syncing and deleting documents
 	// between the source and destination databases based on the provided functions.
 
+	const pcgiValidationsCollection = await pcgiValidations.getCollection();
+
 	await replicate<unknown>({
 
 		countDestinationDbFn: async () => {
@@ -68,7 +69,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		countSourceDbFn: async () => {
-			const result = await pcgidbValidations.LocationEntity.countDocuments(pcgidbQuery);
+			const result = await pcgiValidations.count(pcgidbQuery);
 			return result;
 		},
 
@@ -88,12 +89,12 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		distinctSourceDbFn: async () => {
-			const result = await pcgidbValidations.LocationEntity.distinct('transaction.transactionId', pcgidbQuery);
+			const result = await pcgiValidations.distinct('transaction.transactionId', pcgidbQuery);
 			return result.map(String);
 		},
 
 		missingDocumentsSourceDbAsyncIterator: (missingDocumentIds) => {
-			return pcgidbValidations.LocationEntity
+			return pcgiValidationsCollection
 				.find({ 'transaction.transactionId': { $in: missingDocumentIds } })
 				.stream();
 		},

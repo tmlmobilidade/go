@@ -1,7 +1,7 @@
 /* * */
 
 import { simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
-import { invalidateRides, parseSimplifiedApexLocation } from '@tmlmobilidade/go-apex-pckg-common';
+import { invalidateRides, parseSimplifiedApexLocation } from '@tmlmobilidade/go-apex-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
 import { BatchWriter } from '@tmlmobilidade/writers';

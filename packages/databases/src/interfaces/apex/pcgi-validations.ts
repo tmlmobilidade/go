@@ -1,28 +1,21 @@
-/* * */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { PCGIRawClient } from '@/clients/pcgi-raw.js';
 import { MongoInterfaceTemplate } from '@/templates/mongodb.js';
-import { type SimplifiedMongoIndex } from '@/types/mongo/index-description.js';
-import { type RawVehicleEvent, RawVehicleEventSchema } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-class RawVehicleEventsNewClass extends MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent, Partial<RawVehicleEvent>> {
+class PCGIValidationsClass extends MongoInterfaceTemplate<any, any, Partial<any>> {
 	//
 
-	private static _instance: null | Promise<RawVehicleEventsNewClass> = null;
+	private static _instance: null | Promise<PCGIValidationsClass> = null;
 
-	protected override readonly collectionName = 'raw_vehicle_events';
-	protected override readonly databaseName = 'raw';
-	protected override readonly indexDescription: SimplifiedMongoIndex<RawVehicleEvent>[] = [
-		{ key: { created_at: 1 } },
-		{ key: { agency_id: 1, created_at: 1 } },
-		// eslint-disable-next-line perfectionist/sort-objects
-		{ key: { version: 1, created_at: 1 } },
-	];
+	protected override readonly collectionName = 'validationEntity';
+	protected override readonly databaseName = 'ValidationsManagement';
+	protected override readonly indexDescription = false;
 
-	protected override createSchema = RawVehicleEventSchema;
+	protected override createSchema = null;
 	protected override updateSchema = null;
 
 	/**
@@ -34,7 +27,7 @@ class RawVehicleEventsNewClass extends MongoInterfaceTemplate<RawVehicleEvent, R
 		// they will all await the same initialization process.
 		if (!this._instance) {
 			this._instance = (async () => {
-				const instance = new RawVehicleEventsNewClass();
+				const instance = new PCGIValidationsClass();
 				// This behaves like the constructor,
 				// but allows for async initialization.
 				await instance.init();
@@ -55,4 +48,4 @@ class RawVehicleEventsNewClass extends MongoInterfaceTemplate<RawVehicleEvent, R
 
 /* * */
 
-export const rawVehicleEventsNew = asyncSingletonProxy(RawVehicleEventsNewClass);
+export const pcgiValidations = asyncSingletonProxy(PCGIValidationsClass);
