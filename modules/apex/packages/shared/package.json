@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-apex-pckg-databases",
+	"name": "@tmlmobilidade/go-apex-pckg-shared",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -15,10 +15,12 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/mongo": "*",
-		"@tmlmobilidade/ssh": "*",
-		"@tmlmobilidade/types": "*"
+		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

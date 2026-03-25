@@ -23,11 +23,12 @@ class RawVehicleEventsNewClass extends MongoInterfaceTemplate<RawVehicleEvent, R
 	];
 
 	protected override createSchema = RawVehicleEventSchema;
-	protected override updateSchema = null;
+	protected override updateSchema: null = null;
 
 	/**
 	 * Returns the singleton instance of the subclass.
 	 */
+
 	public static async getInstance() {
 		// If no instance exists, create one and store the promise.
 		// This ensures that if multiple calls to getInstance() happen concurrently,

@@ -13,10 +13,77 @@
 	// Disable the default CSS formatter, use stylelint instead
 	"css.validate": false,
 
+	"dbcode.connections": [
+		{
+			"color": "#00A6FF",
+			"connectionId": "go-prd-clickhouse-1.tmlmobilidade.pt",
+			"connectionType": "host",
+			"driver": "clickhouse",
+			"host": "go-prd-clickhouse-1.tmlmobilidade.pt",
+			"introspection": {
+				"progressive": false
+			},
+			"name": "go-prd-clickhouse-1",
+			"password": "",
+			"pinnedConnectionTimeout": "0",
+			"port": 8123,
+			"postConnectionSqlType": "inline",
+			"readOnly": false,
+			"requestTimeout": 30,
+			"savePassword": "secretStorage",
+			"ssl": false,
+			"tunnelId": "3eCQ9qr_cOeniIfi2VD9b",
+			"username": "admin"
+		},
+		{
+			"color": "#00A6FF",
+			"connectionId": "go-prd-clickhouse-2.tmlmobilidade.pt",
+			"connectionType": "host",
+			"driver": "clickhouse",
+			"host": "go-prd-clickhouse-2.tmlmobilidade.pt",
+			"introspection": {
+				"progressive": false
+			},
+			"name": "go-prd-clickhouse-2",
+			"password": "",
+			"pinnedConnectionTimeout": "0",
+			"port": 8123,
+			"postConnectionSqlType": "inline",
+			"readOnly": false,
+			"requestTimeout": 30,
+			"savePassword": "secretStorage",
+			"ssl": false,
+			"tunnelId": "3eCQ9qr_cOeniIfi2VD9b",
+			"username": "admin"
+		},
+		{
+			"color": "#00A6FF",
+			"connectionId": "go-prd-clickhouse-3.tmlmobilidade.pt",
+			"connectionType": "host",
+			"driver": "clickhouse",
+			"host": "go-prd-clickhouse-3.tmlmobilidade.pt",
+			"introspection": {
+				"progressive": false
+			},
+			"name": "go-prd-clickhouse-3",
+			"password": "",
+			"pinnedConnectionTimeout": "0",
+			"port": 8123,
+			"postConnectionSqlType": "inline",
+			"readOnly": false,
+			"requestTimeout": 30,
+			"savePassword": "secretStorage",
+			"ssl": false,
+			"tunnelId": "3eCQ9qr_cOeniIfi2VD9b",
+			"username": "admin"
+		}
+	],
+
 	// Auto fix
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": "explicit"
 	},
+
 	"editor.defaultFormatter": "dbaeumer.vscode-eslint",
 	"editor.formatOnSave": false,
 	"editor.tabSize": 4,
