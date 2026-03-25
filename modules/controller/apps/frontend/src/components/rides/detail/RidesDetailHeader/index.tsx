@@ -5,8 +5,9 @@
 import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
 import { RideAnalysisSystemStatus } from '@/components/rides/analysis/RideAnalysisSystemStatus';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
+import { IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CloseButton, IdTag, OperationalStatusTag, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, IconButton, IdTag, OperationalStatusTag, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -40,6 +41,7 @@ export function RidesDetailHeader() {
 			<RideAnalysisSystemStatus />
 			<AnalysisStatusTag grade={rideAnalysisContext.data.ride?.analysis_simple_three_vehicle_events_grade} />
 			<OperationalStatusTag value={rideAnalysisContext.data.ride?.operational_status} />
+			<IconButton icon={<IconHeart /> ?? <IconHeartFilled />} onClick={() => {}} variant="primary" />
 		</Toolbar>
 	);
 
