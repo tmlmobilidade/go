@@ -29,9 +29,8 @@ export async function processVehicleEvent(databaseOperation: ChangeStreamInsertD
 	//
 
 	//
-	// Extract the PCGI document from the database operation
-	// and transform the vehicle timestamp into an operational date.
-	// Skip the operation if the document is not valid.
+	// Extract the full document from the database operation and transform it
+	// into a simplified vehicle event document using the appropriate parser based on the version field.
 
 	const parser = PARSER_MAP[databaseOperation.fullDocument.version];
 	const newSimplifiedVehicleEventDocument = parser(databaseOperation.fullDocument);
