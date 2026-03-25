@@ -2,6 +2,7 @@
 
 import { processVehicleEvent } from '@/task.js';
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
+import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
@@ -17,6 +18,17 @@ import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 	const changeStream = collection.watch();
 
 	for await (const change of changeStream) {
+		//
+
+		//
+		// Validate that the operation is an insert or update. Otherwise, send an email to the emergency contact.
+		// Only insert operations are expected to occur in this PCGIDB collection.
+
+		if (change.operationType !== 'insert') {
+			Logger.error(`[clickhouse-stream] WARNING: changeStream document with operationType != "insert": operationType="${change.operationType}" _id="${change._id}"`);
+			continue;
+		}
+
 		await processVehicleEvent(change);
 	}
 
