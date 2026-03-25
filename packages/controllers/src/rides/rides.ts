@@ -3,7 +3,7 @@
 import { type RideChangeListener, ridesChangeStream } from '@/rides/watch.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { rides, ridesBatchAggregationPipeline, ridesSearchStripVehicleDriverTokens, tripQuery } from '@tmlmobilidade/interfaces';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { type ActionsOf, type GetRidesBatchQuery, GetRidesBatchQuerySchema, type Permission, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
 import { type WebSocket } from 'ws';
@@ -42,13 +42,18 @@ export class RidesSharedController {
 		// If search is provided, immediately try to find the ride by ID.
 		// If found, return it as the only result. This optimizes
 		// for the common case of searching by ride ID.
+		// Skip when the query is a trip_id wildcard (first|...|last): aggregation returns all matches.
 
 		const searchQuery = parsedQuery.search?.trim() ?? '';
+		const searchForTripQuery = ridesSearchStripVehicleDriverTokens(searchQuery);
 
-		const foundRideById = await rides.findOne({
-			_id: searchQuery,
-			...(allowAllAgencies ? {} : { agency_id: { $in: ridesPermission['resources'].agency_ids } }),
-		});
+		let foundRideById = null;
+		if (searchQuery && !tripQuery(searchForTripQuery)) {
+			foundRideById = await rides.findOne({
+				_id: searchQuery,
+				...(allowAllAgencies ? {} : { agency_id: { $in: ridesPermission['resources'].agency_ids } }),
+			});
+		}
 
 		if (foundRideById) {
 			const normalizedRide = normalizeRide(foundRideById);

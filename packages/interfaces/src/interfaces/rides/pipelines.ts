@@ -2,6 +2,8 @@ import { AggregationPipeline } from '@/common/aggregation-pipeline.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { DelayStatus, OperationalStatus, Ride, RideAcceptanceStatus, RideAnalysisGradeWithNone, SeenStatus, UnixTimestamp } from '@tmlmobilidade/types';
 
+import { ridesSearchStripVehicleDriverTokens, tripQuery } from './trip-search.js';
+
 /**
  * Creates MongoDB aggregation pipeline stages to calculate and categorize delay statuses.
  *
@@ -339,10 +341,25 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 		const driverMatch = filter.search.match(/d:([\d,]+)/);
 
 		// Remove v: and d: patterns from search string for ride ID matching
-		const searchWithoutSpecialFilters = filter.search.replace(/v:[\d,]+/g, '').replace(/d:[\d,]+/g, '').trim();
+		const searchWithoutSpecialFilters = ridesSearchStripVehicleDriverTokens(filter.search);
+		const tripQueryResult = tripQuery(searchWithoutSpecialFilters);
+
+		if (tripQueryResult) {
+			pipeline.push({
+				$match: {
+					$or: [
+						{ trip_id: { $options: 'i', $regex: tripQueryResult.tripCorePattern } },
+						{ _id: { $options: 'i', $regex: tripQueryResult.tripCorePattern } },
+					],
+				},
+			});
+		}
+
+		// Trip wildcard already matches trip_id / _id; do not add keyword _id match — it would require
+		// the literal "..." / "*" from the search string inside _id, which real documents never contain.
 		const keywords = searchWithoutSpecialFilters.split(/\s+/).filter(k => k.length > 0).map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 
-		if (keywords.length > 0) {
+		if (!tripQueryResult && keywords.length > 0) {
 			const pattern = keywords.map(k => `(?=.*${k})`).join('') + '.*';
 			pipeline.push({
 				$match: { _id: { $options: 'i', $regex: pattern } },
