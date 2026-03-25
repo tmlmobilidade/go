@@ -15,13 +15,11 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/clickhouse": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/types": "*",
-		"zod": "3.25.76"
+		"@tmlmobilidade/types": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

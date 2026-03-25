@@ -34,7 +34,6 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/clickhouse": "*",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
