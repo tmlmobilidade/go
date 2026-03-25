@@ -2,7 +2,7 @@ import { AggregationPipeline } from '@/common/aggregation-pipeline.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { DelayStatus, OperationalStatus, Ride, RideAcceptanceStatus, RideAnalysisGradeWithNone, SeenStatus, UnixTimestamp } from '@tmlmobilidade/types';
 
-import { ridesSearchStripVehicleDriverTokens, tripQuery } from './trip-search.js';
+import { tripQuery } from './trip-search.js';
 
 /**
  * Creates MongoDB aggregation pipeline stages to calculate and categorize delay statuses.
@@ -341,7 +341,7 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 		const driverMatch = filter.search.match(/d:([\d,]+)/);
 
 		// Remove v: and d: patterns from search string for ride ID matching
-		const searchWithoutSpecialFilters = ridesSearchStripVehicleDriverTokens(filter.search);
+		const searchWithoutSpecialFilters = filter.search.replace(/v:[\d,]+/g, '').replace(/d:[\d,]+/g, '').trim();
 		const tripQueryResult = tripQuery(searchWithoutSpecialFilters);
 
 		if (tripQueryResult) {

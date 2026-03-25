@@ -3,11 +3,6 @@
 /** Middle segment must look like an explicit “any” placeholder (not a literal like `2400`). */
 const WILDCARD_MIDDLE = /^(\.{3,}|…|\*)$/u;
 
-/** Strip `v:` / `d:` list tokens so trip wildcard parsing matches {@link ridesBatchAggregationPipeline} search handling. */
-export function ridesSearchStripVehicleDriverTokens(search: string): string {
-	return search.replace(/v:[\d,]+/g, '').replace(/d:[\d,]+/g, '').trim();
-}
-
 /**
  * Trip wildcard search: `first|wildcard|last` with exactly three segments and a wildcard middle
  * (`...`, `…`, or `*`), e.g. `4632_0_1|...|0835` → matches `trip_id` / `_id` suffix
