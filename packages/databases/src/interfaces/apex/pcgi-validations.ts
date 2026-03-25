@@ -9,7 +9,7 @@ import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 class PCGIValidationsClass extends MongoInterfaceTemplate<any, any, Partial<any>> {
 	//
 
-	private static _instance = null;
+	private static _instance: null | Promise<PCGIValidationsClass> = null;
 
 	protected override readonly collectionName = 'validationEntity';
 	protected override readonly databaseName = 'ValidationsManagement';

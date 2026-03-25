@@ -11,7 +11,7 @@ import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 class RawVehicleEventsNewClass extends MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent, Partial<RawVehicleEvent>> {
 	//
 
-	private static _instance = null;
+	private static _instance: null | Promise<RawVehicleEventsNewClass> = null;
 
 	protected override readonly collectionName = 'raw_vehicle_events';
 	protected override readonly databaseName = 'raw';

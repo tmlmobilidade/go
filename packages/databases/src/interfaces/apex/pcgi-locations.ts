@@ -9,7 +9,7 @@ import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 class PCGILocationsClass extends MongoInterfaceTemplate<any, any, Partial<any>> {
 	//
 
-	private static _instance = null;
+	private static _instance: null | Promise<PCGILocationsClass> = null;
 
 	protected override readonly collectionName = 'locationEntity';
 	protected override readonly databaseName = 'LocationManagement';
