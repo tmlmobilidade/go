@@ -18,7 +18,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/databases": "*",
-		"@tmlmobilidade/go-apex-pckg-common": "*",
+		"@tmlmobilidade/go-apex-pckg-shared": "*",
 		"@tmlmobilidade/go-apex-pckg-databases": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/types": "*",

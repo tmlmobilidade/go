@@ -2,7 +2,7 @@
 
 import { simplifiedApexValidationsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { APEX_VALIDATIONS_SETTINGS, invalidateRides, parseSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-common';
+import { APEX_VALIDATIONS_SETTINGS, invalidateRides, parseSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-shared';
 import { pcgidbValidations } from '@tmlmobilidade/go-apex-pckg-databases';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
