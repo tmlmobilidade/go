@@ -26,7 +26,7 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 
 	protected readonly abstract collectionName: string;
 	protected readonly abstract databaseName: string;
-	protected readonly abstract indexDescription: SimplifiedMongoIndex<T>[];
+	protected readonly abstract indexDescription: false | SimplifiedMongoIndex<T>[];
 
 	protected abstract createSchema: null | z.ZodSchema;
 	protected abstract updateSchema: null | z.ZodSchema;
@@ -232,6 +232,11 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 */
 	private async syncIndexes(): Promise<void> {
 		try {
+			if (this.indexDescription === false) {
+				Logger.info(`MONGODB [${this.collectionName}]: Skipping index synchronization.`);
+				return;
+			}
+			// Start index synchronization process
 			Logger.info(`MONGODB [${this.collectionName}]: Synchronizing indexes...`);
 			// Normalize already applied and new indexes
 			// and filter the default _id index.
