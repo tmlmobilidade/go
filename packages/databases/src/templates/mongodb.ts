@@ -3,7 +3,6 @@
 import type {
 	AnyBulkWriteOperation,
 	BulkWriteOptions,
-	ChangeStreamOptions,
 	Collection,
 	Db,
 	Document,
@@ -73,17 +72,6 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	}
 
 	/**
-	 * Finds multiple documents matching the filter criteria,
-	 * with optional pagination and sorting, and returns a cursor for streaming results.
-	 * @param filter (Optional) filter criteria to match documents.
-	 * @param options (Optional) find options.
-	 * @returns A promise that resolves to a cursor for streaming matching documents.
-	 */
-	public stream(filter?: Filter<T>, options?: FindOptions) {
-		return this.collection.find(filter, options).stream();
-	}
-
-	/**
 	 * Finds a single document matching the filter criteria.
 	 * @param filter The filter criteria to match the document.
 	 * @param options Optional options.
@@ -141,16 +129,6 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 */
 	public async bulkWrite(operations: AnyBulkWriteOperation<T>[], options?: BulkWriteOptions) {
 		return await this.collection.bulkWrite(operations, options);
-	}
-
-	/**
-	 * Watches for changes in the MongoDB collection and returns a change stream cursor.
-	 * @param pipeline (Optional) An array of aggregation pipeline stages to filter the change events.
-	 * @param options (Optional) Change stream options to configure the behavior of the change stream.
-	 * @returns A change stream cursor that can be used to iterate over the change events.
-	 */
-	public watch(pipeline?: Document[], options?: ChangeStreamOptions) {
-		return this.collection.watch(pipeline, options);
 	}
 
 	/**

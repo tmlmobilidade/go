@@ -12,7 +12,13 @@ import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 	// Watch for changes to the rawVehicleEventsNew collection
 	// and integrate those documents immediately.
 
-	rawVehicleEventsNew.watch().on('change', processVehicleEvent);
+	const collection = await rawVehicleEventsNew.getCollection();
+
+	const changeStream = collection.watch();
+
+	for await (const change of changeStream) {
+		await processVehicleEvent(change);
+	}
 
 	//
 })();
