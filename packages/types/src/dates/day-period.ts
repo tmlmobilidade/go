@@ -1,34 +1,20 @@
-import { hhmm, type HHMM } from '@/dates/common.js';
 import { z } from 'zod';
 
 export const DayPeriodsValues = ['PPM', 'CD', 'PPT', 'N', 'M'] as const;
 export const DayPeriodSchema = z.enum(DayPeriodsValues);
 export type DayPeriod = z.infer<typeof DayPeriodSchema>;
 
-export interface DayPeriodTimeRangeSegment {
-	end: HHMM
-	start: HHMM
+export interface DayPeriodTimeRange {
+	end: string
+	start: string
 }
 
-export type DayPeriodTimeRanges = Record<DayPeriod, DayPeriodTimeRangeSegment[]>;
-
-export const DAY_PERIOD_TIME_RANGES: DayPeriodTimeRanges = {
-	CD: [
-		{ end: hhmm('15:59'), start: hhmm('10:00') },
-	],
-	M: [
-		{ end: hhmm('05:59'), start: hhmm('04:00') },
-		{ end: hhmm('27:59'), start: hhmm('24:00') },
-	],
-	N: [
-		{ end: hhmm('23:59'), start: hhmm('20:00') },
-	],
-	PPM: [
-		{ end: hhmm('09:59'), start: hhmm('06:00') },
-	],
-	PPT: [
-		{ end: hhmm('19:59'), start: hhmm('16:00') },
-	],
+export const DAY_PERIOD_TIME_RANGES: Record<DayPeriod, DayPeriodTimeRange> = {
+	CD: { end: '15:59', start: '10:00' },
+	M: { end: '05:59', start: '00:00' },
+	N: { end: '23:59', start: '20:00' },
+	PPM: { end: '09:59', start: '06:00' },
+	PPT: { end: '19:59', start: '16:00' },
 };
 
 const DAY_PERIOD_LABEL_BASE: Record<DayPeriod, { long: string, short: string }> = {
@@ -47,15 +33,13 @@ export type DayPeriodLabels = Record<
 export const DAY_PERIOD_LABELS: DayPeriodLabels = Object.fromEntries(
 	DayPeriodsValues.map((period) => {
 		const base = DAY_PERIOD_LABEL_BASE[period];
-		const ranges = DAY_PERIOD_TIME_RANGES[period];
-		const rangesLabel = ranges.map(range => `${range.start} - ${range.end}`).join(' · ');
-
+		const range = DAY_PERIOD_TIME_RANGES[period];
 		return [
 			period,
 			{
 				...base,
-				long_with_time: `${base.short} — ${base.long} (${rangesLabel})`,
-				short_with_time: `${base.short} (${rangesLabel})`,
+				long_with_time: `${base.short} — ${base.long} (${range.start} - ${range.end})`,
+				short_with_time: `${base.short} (${range.start} - ${range.end})`,
 			},
 		] as const;
 	}),

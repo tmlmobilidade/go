@@ -29,15 +29,18 @@ export const WEEKDAY_OPTIONS = [
 /* * */
 
 const OPERATIONAL_DAY_START_HOUR = 4;
-const OPERATIONAL_DAY_LAST_HOUR = 27;
-const OPERATIONAL_DAY_LAST_MINUTE = 59;
 
 /**
  * Parses an operational HH:MM.
  *
+ * Rules:
+ * - minimum is 04:00
+ * - no upper hour limit
+ * - minutes must be 00–59
+ * - hour must be at least 2 digits in stored format
  */
-export function operationalHhmmToMinutes(hhmm: string): number {
-	const match = /^(\d{2}):(\d{2})$/.exec(hhmm);
+export function operationalHhmmToMinutes(hhmm: string, ignoreStartHour = false): number {
+	const match = /^(\d{2,}):(\d{2})$/.exec(hhmm);
 
 	if (!match) {
 		throw new Error(`Invalid operational time: ${hhmm}`);
@@ -56,9 +59,8 @@ export function operationalHhmmToMinutes(hhmm: string): number {
 
 	const total = hours * 60 + minutes;
 	const minAllowed = OPERATIONAL_DAY_START_HOUR * 60; // 04:00
-	const maxAllowed = OPERATIONAL_DAY_LAST_HOUR * 60 + OPERATIONAL_DAY_LAST_MINUTE; // 27:59
 
-	if (total < minAllowed || total > maxAllowed) {
+	if (!ignoreStartHour && total < minAllowed) {
 		throw new Error(`Operational time out of range: ${hhmm}`);
 	}
 
@@ -73,7 +75,10 @@ export function operationalHhmmToMinutes(hhmm: string): number {
  * - "0800" -> "08:00"
  * - "2200" -> "22:00"
  * - "2600" -> "26:00"
+ * - "10000" -> "100:00"
  * - "8:00" -> "08:00"
+ * - "26:00" -> "26:00"
+ * - "100:00" -> "100:00"
  *
  * Returns null if it cannot normalize safely.
  */
@@ -82,21 +87,15 @@ export function normalizeOperationalHhmmInput(value: string): null | string {
 
 	if (!trimmed) return null;
 
-	// Pure digits: allow HMM or HHMM
-	if (/^\d{3}$/.test(trimmed)) {
-		const hours = trimmed.slice(0, 1).padStart(2, '0');
-		const minutes = trimmed.slice(1, 3);
-		return `${hours}:${minutes}`;
+	// Pure digits: last 2 are minutes, everything before is hours
+	if (/^\d{3,}$/.test(trimmed)) {
+		const hours = trimmed.slice(0, -2);
+		const minutes = trimmed.slice(-2);
+		return `${hours.padStart(2, '0')}:${minutes}`;
 	}
 
-	if (/^\d{4}$/.test(trimmed)) {
-		const hours = trimmed.slice(0, 2);
-		const minutes = trimmed.slice(2, 4);
-		return `${hours}:${minutes}`;
-	}
-
-	// H:MM or HH:MM
-	const match = /^(\d{1,2}):(\d{2})$/.exec(trimmed);
+	// HH:MM with any hour length >= 1
+	const match = /^(\d+):(\d{2})$/.exec(trimmed);
 	if (match) {
 		const [, hours, minutes] = match;
 		return `${hours.padStart(2, '0')}:${minutes}`;
@@ -111,10 +110,11 @@ export const HHMMSchema = z
 		try {
 			operationalHhmmToMinutes(value);
 			return true;
-		} catch {
+		} catch (err) {
+			console.warn('Invalid HHMM:', value, err);
 			return false;
 		}
-	}, 'Invalid operational time (expected 04:00–27:59)')
+	}, 'Invalid operational time (expected HH:MM with minimum 04:00)')
 	.brand<'HHMM'>();
 
 export type HHMM = z.infer<typeof HHMMSchema>;
@@ -126,6 +126,6 @@ export const hhmm = (value: string): HHMM => HHMMSchema.parse(value);
 
 /* * */
 
-export function timeToMinutes(time: HHMM): number {
-	return operationalHhmmToMinutes(time);
+export function timeToMinutes(time: HHMM | string, ignoreStartHour = false): number {
+	return operationalHhmmToMinutes(time, ignoreStartHour);
 }
