@@ -11,14 +11,14 @@ import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 const tableSchema: ClickHouseSchema<SimplifiedVehicleEvent> = {
 	_id: { type: 'String' },
 	agency_id: { type: 'String' },
-	created_at: { type: 'UInt64' },
+	created_at: { type: 'Int64' },
 	latitude: { type: 'Float64' },
 	longitude: { type: 'Float64' },
-	received_at: { type: 'UInt64' },
+	received_at: { type: 'Int64' },
 	trip_id: { type: 'String' },
 	vehicle_id: { type: 'String' },
 	// Optional Fields
-	bearing: { type: 'Nullable(Float64)' },
+	bearing: { type: 'Nullable(Int64)' },
 	current_status: { type: 'Nullable(String)' },
 	door: { type: 'Nullable(String)' },
 	driver_id: { type: 'Nullable(String)' },
