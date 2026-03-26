@@ -3,7 +3,7 @@
 /* * */
 
 import { IconPlus } from '@tabler/icons-react';
-import { HHMM } from '@tmlmobilidade/types';
+import { HHMM, HHMMSchema, normalizeOperationalHhmmInput, timeToMinutes } from '@tmlmobilidade/types';
 import { Button, DayPeriodsTimepoints, Section, TextInput } from '@tmlmobilidade/ui';
 import { KeyboardEvent, useState } from 'react';
 
@@ -21,50 +21,39 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 	const [inputValue, setInputValue] = useState('');
 	const [inputError, setInputError] = useState('');
 
-	// Helper: Sort times chronologically
-	const sortTimes = (times: string[]) => {
-		return [...times].sort((a, b) => {
-			const [h1, m1] = a.split(':').map(Number);
-			const [h2, m2] = b.split(':').map(Number);
-			return (h1 * 60 + m1) - (h2 * 60 + m2);
-		});
-	};
-
 	// Helper: Validate and Format Input
 	const handleAdd = () => {
 		setInputError('');
 
-		// 1. Clean input
-		let time = inputValue.trim();
+		// 1. Normalize raw user input into strict HH:MM
+		const normalizedTime = normalizeOperationalHhmmInput(inputValue);
 
-		// UX: Allow typing "0800" or "800" and convert to "08:00"
-		if (/^\d{4}$/.test(time)) {
-			time = `${time.slice(0, 2)}:${time.slice(2)}`;
-		} else if (/^\d{3}$/.test(time)) {
-			time = `${time.slice(0, 1)}:${time.slice(1)}`;
-		}
-
-		// 2. Validate Format (HH:mm)
-		if (!/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(time)) {
-			setInputError('Formato inválido (HH:mm)');
+		if (!normalizedTime) {
+			setInputError('Formato inválido');
 			return;
 		}
 
-		// 3. Format strictly to HH:mm (e.g., 8:30 -> 08:30)
-		const [h, m] = time.split(':');
-		const formattedTime = `${h.padStart(2, '0')}:${m.padStart(2, '0')}`;
+		// 2. Validate with Zod and reuse its message
+		const result = HHMMSchema.safeParse(normalizedTime);
 
-		// 4. Duplicate Check
-		if (value.includes(formattedTime)) {
+		if (!result.success) {
+			setInputError(result.error.issues[0]?.message ?? 'Formato inválido');
+			return;
+		}
+
+		const parsedTime = result.data;
+
+		// 3. Duplicate check
+		if (value.includes(parsedTime)) {
 			setInputError('Este horário já existe');
-			// Optional: You could scroll to the existing chip here
 			return;
 		}
 
-		// 5. Add and Sort
-		const newTimes = sortTimes([...value, formattedTime]);
+		// 4. Add and sort using operational time logic
+		const newTimes = [...value, parsedTime].sort((a, b) => timeToMinutes(a as HHMM) - timeToMinutes(b as HHMM));
+
 		onChange(newTimes);
-		setInputValue(''); // Clear input for next entry
+		setInputValue('');
 	};
 
 	const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
