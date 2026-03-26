@@ -1,6 +1,8 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
+// import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
+// import { Dates } from '@tmlmobilidade/dates';
 import { type CreateUserDto, CreateUserSchema, PermissionCatalog, type UpdateUserDto, UpdateUserSchema, type User, type User_UNSAFE } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, type FindOptions, type IndexDescription, type WithId } from 'mongodb';
@@ -16,6 +18,7 @@ interface SafeUserOptions {
 
 class UsersClass extends MongoCollectionClass<User_UNSAFE, CreateUserDto, UpdateUserDto> {
 	private static _instance: UsersClass;
+
 	protected override createSchema: z.ZodSchema = CreateUserSchema;
 	protected override updateSchema: z.ZodSchema = UpdateUserSchema;
 
@@ -108,6 +111,32 @@ class UsersClass extends MongoCollectionClass<User_UNSAFE, CreateUserDto, Update
 		return this.sanitizeUser(foundUser);
 	}
 
+	// /**
+	//  * Removes one ride ID from pins using $pull (avoids updateById / $set on nested fields).
+	//  */
+	// async deletePinByUserId(userId: string, pinType: keyof User['pins'], rideId: string, options?: { forceIfLocked?: boolean, updatedBy?: string }): Promise<void> {
+	// 	const trimmed = rideId.trim();
+	// 	if (!trimmed) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'rideId is required');
+
+	// 	if (!options?.forceIfLocked) {
+	// 		const isLocked = await this.isLockedById(userId);
+	// 		if (isLocked) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'Document is locked and cannot be updated');
+	// 	}
+
+	// 	const result = await this.mongoCollection.updateOne(
+	// 		{ _id: { $eq: userId } },
+	// 		{
+	// 			$pull: { pins: { [pinType]: { $in: [trimmed] } } } as unknown as Record<string, { $in: string[] }>,
+	// 			$set: {
+	// 				updated_at: Dates.now('utc').unix_timestamp,
+	// 				updated_by: options?.updatedBy ?? 'system',
+	// 			},
+	// 		},
+	// 	);
+
+	// 	if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to remove pin', result);
+	// }
+
 	protected getCollectionIndexes(): IndexDescription[] {
 		return [
 			{ background: true, key: { email: 1 }, unique: true },
@@ -125,11 +154,28 @@ class UsersClass extends MongoCollectionClass<User_UNSAFE, CreateUserDto, Update
 		return 'DATABASE_URI';
 	}
 
+	private normalizePins(raw: unknown): User['pins'] {
+		if (raw && typeof raw === 'object' && raw !== null && 'controller' in raw && Array.isArray((raw as { controller: unknown }).controller)) {
+			const c = (raw as { controller: unknown[] }).controller;
+			return { controller: c.filter((x): x is string => typeof x === 'string') };
+		}
+		if (Array.isArray(raw)) {
+			const flat = raw.flatMap((row) => {
+				if (Array.isArray(row)) return row.filter((x): x is string => typeof x === 'string');
+				if (typeof row === 'string') return [row];
+				return [];
+			});
+			return { controller: flat };
+		}
+		return { controller: [] };
+	}
+
 	private sanitizeUser(user: WithId<User>) {
 		return {
 			...user,
 			password_hash: null,
 			permissions: PermissionCatalog.sanitize(user.permissions),
+			pins: this.normalizePins(user.pins),
 			session_ids: null,
 			verification_token_ids: null,
 		};

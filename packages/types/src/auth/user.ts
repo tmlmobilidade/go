@@ -19,6 +19,14 @@ export type UserPreferenceValue = z.infer<typeof UserPreferenceValueSchema>;
 
 /* * */
 
+export const UserPinsSchema = z.object({
+	controller: z.array(z.string()).default([]),
+}).default({ controller: [] });
+
+export type UserPins = z.infer<typeof UserPinsSchema>;
+
+/* * */
+
 export const UserSchema_UNSAFE = DocumentSchema.extend({
 	email: z.string().email(),
 	email_verified: UnixTimeStampSchema.nullable().default(null),
@@ -28,7 +36,7 @@ export const UserSchema_UNSAFE = DocumentSchema.extend({
 	password_hash: z.string().nullable().default(null),
 	permissions: z.array(PermissionSchema).default([]),
 	phone: z.string().nullable().default(null),
-	pins: z.array(z.array(z.string())).default([]),
+	pins: UserPinsSchema,
 	preferences: z.record(z.record(UserPreferenceValueSchema)).nullable().default(null),
 	role_ids: z.array(z.string()).default([]),
 	seen_last_at: UnixTimeStampSchema.nullable().default(null),

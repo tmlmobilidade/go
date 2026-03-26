@@ -233,6 +233,11 @@ export const API_ROUTES = Object.freeze({
 		ORGANIZATIONS_DETAIL_VAR_IMAGE: (id: string, theme: string) => `${getAppConfig('auth', 'api_url')}/organizations/${id}/${theme}/image`,
 		ORGANIZATIONS_LIST: `${getAppConfig('auth', 'api_url')}/organizations`,
 
+		// PINS
+		PINS_CONTROLLER: `${getAppConfig('auth', 'api_url')}/pins/controller`,
+		PINS_CONTROLLER_ADD: `${getAppConfig('auth', 'api_url')}/pins/controller/add`,
+		PINS_CONTROLLER_REMOVE: `${getAppConfig('auth', 'api_url')}/pins/controller/remove`,
+
 		// PROPOSED-CHANGES
 		PROPOSED_CHANGES_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/proposed-changes/${id}`,
 		PROPOSED_CHANGES_LIST: `${getAppConfig('auth', 'api_url')}/proposed-changes`,
