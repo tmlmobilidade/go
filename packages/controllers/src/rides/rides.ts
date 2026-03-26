@@ -137,6 +137,24 @@ export class RidesSharedController {
 	}
 
 	/**
+	 * Get a Ride by Pin IDs.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
+	 */
+	static async getRideByPinIds(request: FastifyRequest<{ Body: { pinIds: string[] } }>, reply: FastifyReply<RideNormalized[]>) {
+		//
+
+		const { pinIds } = request.body;
+
+		if (!pinIds?.length) return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
+
+		const ridesByPinIds = await rides.findMany({ _id: { $in: pinIds } });
+		const normalizedRides = ridesByPinIds.map(ride => normalizeRide(ride));
+
+		reply.send({ data: normalizedRides, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
 	 * WebSocket event handler.
 	 * @param socket The WebSocket object.
 	 */

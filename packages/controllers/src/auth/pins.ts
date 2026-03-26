@@ -1,6 +1,8 @@
+import type { User_UNSAFE } from '@tmlmobilidade/types';
+
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { users } from '@tmlmobilidade/interfaces';
+import { type AggregationPipeline, users } from '@tmlmobilidade/interfaces';
 
 /* * */
 
@@ -11,9 +13,19 @@ export class PinsSharedController {
 	 * Returns controller ride IDs pinned by the authenticated user.
 	 */
 	static async getMinePins(request: FastifyRequest, reply: FastifyReply<string[]>) {
-		const user = await users.findById(request.me._id);
-		if (!user) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
-		reply.send({ data: user.pins.controller, error: null, statusCode: HTTP_STATUS.OK });
+		const pipeline = [
+			{ $match: { _id: { $eq: request.me._id } } },
+			{ $project: { _id: 0, controller: { $ifNull: ['$pins.controller', []] } } },
+		] as unknown as AggregationPipeline<User_UNSAFE>;
+
+		const rows = await users.aggregate(pipeline);
+		const row = rows[0] as undefined | { controller?: unknown };
+		if (!row) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+
+		const raw = row.controller;
+		const data = Array.isArray(raw) ? raw.filter((id): id is string => typeof id === 'string') : [];
+
+		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
