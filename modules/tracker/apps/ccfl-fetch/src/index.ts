@@ -5,13 +5,13 @@ import { Dates } from '@tmlmobilidade/dates';
 import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type HashableRawVehicleEvent, type RawVehicleEventTtslV1 } from '@tmlmobilidade/types';
+import { type HashableRawVehicleEvent, type RawVehicleEventCcflV1 } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 
 /* * */
 
-const API_URL = 'https://api.ttsl.pt/files/gtfs_rt_vehicles.pb';
+const API_URL = 'https://gateway.carris.pt/gateway/gtfs/api/v2.8/GTFS/realtime/vehiclepositions';
 
 /* * */
 
@@ -27,15 +27,15 @@ const main = async () => {
 	let saveCount = 0;
 
 	//
-	// Fetch the TTSL Vehicle Events data from the API and decode it
+	// Fetch the CCFL Vehicle Events data from the API and decode it
 
-	Logger.info(`[${ITERATION}] Fetching TTSL data from API...`, 0, 1);
+	Logger.info(`[${ITERATION}] Fetching CCFL data from API...`, 0, 1);
 
 	const response = await fetch(API_URL);
 	const arrayBuffer = await response.arrayBuffer();
 	const decodedMessage = await decodeGtfsRtFeed(arrayBuffer);
 
-	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the TTSL data.`);
+	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the CCFL data.`);
 
 	//
 	// Transform each message into a RawVehicleEvent
@@ -55,15 +55,15 @@ const main = async () => {
 		// This allows us to identify duplicate events
 		// and avoid storing them multiple times in the database.
 
-		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventTtslV1> = {
-			agency_id: '4',
+		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventCcflV1> = {
+			agency_id: '1',
 			created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_timestamp,
 			entity_id: entity.id,
 			payload: {
 				header: decodedMessage.header,
 				vehicle: entity.vehicle,
 			},
-			version: 'ttsl-v1',
+			version: 'ccfl-v1',
 		};
 
 		const hashableRawEventId = crypto
@@ -90,7 +90,7 @@ const main = async () => {
 		//
 	}
 
-	Logger.info(`[${ITERATION}] Saved ${saveCount} new Vehicle Events from TTSL data in ${timer.get()}.`);
+	Logger.info(`[${ITERATION}] Saved ${saveCount} new Vehicle Events from CCFL data in ${timer.get()}.`);
 
 	ITERATION++;
 
