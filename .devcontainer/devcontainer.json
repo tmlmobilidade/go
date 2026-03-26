@@ -1,0 +1,44 @@
+{
+	"name": "go-monorepo",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"context": ".."
+	},
+	"remoteUser": "node",
+	"features": {
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"installZsh": false,
+			"username": "node",
+			"userUid": "automatic",
+			"userGid": "automatic"
+		}
+	},
+	"mounts": [
+		"source=${localEnv:HOME}/.ssh,target=/home/node/.ssh,type=bind,readonly",
+		"source=${localEnv:SSH_AUTH_SOCK},target=/ssh-agent,type=bind"
+	],
+	"containerEnv": {
+		"SSH_AUTH_SOCK": "/ssh-agent"
+	},
+	"postCreateCommand": "bash .devcontainer/scripts/post-create.sh",
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"terminal.integrated.defaultProfile.linux": "bash"
+			},
+			"extensions": [
+				"dbcode.dbcode",
+				"dbaeumer.vscode-eslint",
+				"ms-azuretools.vscode-containers",
+				"ms-vscode-remote.remote-containers"
+			]
+		}
+	},
+	"forwardPorts": [
+		27017,
+		8123,
+		9000,
+		5432,
+		6379
+	]
+}

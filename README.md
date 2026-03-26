@@ -36,3 +36,10 @@ mongodump \
 --db=production \
 --gzip \
 --archive=./production.dump
+
+## Devcontainer workflow
+
+The repository now includes a team devcontainer setup under `.devcontainer/`.
+
+Start here for setup and SSH tunnel usage:
+- `.devcontainer/README.md`

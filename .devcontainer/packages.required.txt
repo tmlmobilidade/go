@@ -1,0 +1,9 @@
+ca-certificates
+curl
+git
+openssh-client
+ripgrep
+jq
+less
+procps
+netcat-openbsd
