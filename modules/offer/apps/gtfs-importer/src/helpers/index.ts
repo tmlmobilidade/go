@@ -67,44 +67,10 @@ function stripSeconds(time: string | undefined): string | undefined {
 	return time.split(':').slice(0, 2).join(':');
 }
 
-const loggedTimepointWarnings = new Set<string>();
-
-export function normalizeGtfsTimeToHHMM(time?: string, patternId?: string): null | string {
+export function normalizeGtfsTimeToHHMM(time?: string): null | string {
 	if (!time) return null;
 	const timeWithoutSeconds = stripSeconds(time);
-	const normalized = normalizeOperationalHhmmInput(timeWithoutSeconds);
-	if (!normalized) return null;
-
-	let hours = normalized.split(':').map(Number)[0];
-	const minutes = normalized.split(':').map(Number)[1];
-
-	// If hours > 27, wrap around and log a warning only once per patternId+timepoint
-	if (hours > 27) {
-		const original = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-		const newHours = hours - 24;
-		const fixed = `${String(newHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-		const logKey = `${patternId || 'unknown'}|${original}`;
-		if (!loggedTimepointWarnings.has(logKey)) {
-			console.warn(`[gtfs-importer] Time out of operational range in pattern ${patternId || 'unknown'}: ${original} → ${fixed}`);
-			loggedTimepointWarnings.add(logKey);
-		}
-		hours = newHours;
-	}
-
-	// If hours < 4, wrap to operational day (shouldn't happen, but just in case)
-	if (hours < 4) {
-		const original = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-		const newHours = hours + 24;
-		const fixed = `${String(newHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-		const logKey = `${patternId || 'unknown'}|${original}`;
-		if (!loggedTimepointWarnings.has(logKey)) {
-			console.warn(`[gtfs-importer] Time below operational range in pattern ${patternId || 'unknown'}: ${original} → ${fixed}`);
-			loggedTimepointWarnings.add(logKey);
-		}
-		hours = newHours;
-	}
-
-	return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+	return normalizeOperationalHhmmInput(timeWithoutSeconds ?? '');
 }
 
 export function normalizeGtfsDistance(value?: null | number | string) {
