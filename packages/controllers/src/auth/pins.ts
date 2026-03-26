@@ -11,8 +11,10 @@ export class PinsSharedController {
 
 	/**
 	 * Returns controller ride IDs pinned by the authenticated user.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
-	static async getMinePins(request: FastifyRequest, reply: FastifyReply<string[]>) {
+	static async getMineControllerPins(request: FastifyRequest, reply: FastifyReply<string[]>) {
 		const pipeline = [
 			{ $match: { _id: { $eq: request.me._id } } },
 			{ $project: { _id: 0, controller: { $ifNull: ['$pins.controller', []] } } },
@@ -30,8 +32,10 @@ export class PinsSharedController {
 
 	/**
 	 * Appends a controller ride ID to the authenticated user's pins (deduped).
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
-	static async saveMinePins(request: FastifyRequest<{ Body: { rideId: string } }>, reply: FastifyReply<string[]>) {
+	static async saveMineControllerPins(request: FastifyRequest<{ Body: { rideId: string } }>, reply: FastifyReply<string[]>) {
 		const { rideId } = request.body;
 		if (!rideId?.trim()) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'rideId is required');
 
@@ -46,8 +50,10 @@ export class PinsSharedController {
 
 	/**
 	 * Removes a controller ride ID from the authenticated user's pins.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
 	 */
-	static async removeMinePins(request: FastifyRequest<{ Body: { rideId: string } }>, reply: FastifyReply<string[]>) {
+	static async removeMineControllerPins(request: FastifyRequest<{ Body: { rideId: string } }>, reply: FastifyReply<string[]>) {
 		const { rideId } = request.body;
 		if (!rideId?.trim()) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'rideId is required');
 

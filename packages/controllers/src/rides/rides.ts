@@ -137,7 +137,11 @@ export class RidesSharedController {
 	}
 
 	/**
-	 * Returns rides whose _id appears in the request body pinIds array.
+	 * Get rides by pin IDs provided in the request body.
+	 * Expects the request body to contain an object with a property 'pinIds', which should be an array of strings (ride IDs).
+	 * Each ID will be converted to string, trimmed, deduplicated, and empty values filtered out.
+	 * Response is an array of normalized rides whose _id matches any of the provided pin IDs.
+	 * Returns an empty array if no valid pin IDs are given.
 	 * @param request The Fastify request object.
 	 * @param reply The Fastify reply object.
 	 */

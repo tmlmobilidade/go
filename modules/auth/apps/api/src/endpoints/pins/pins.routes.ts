@@ -18,19 +18,19 @@ server.register(
 		instance.get(
 			'/controller',
 			{ preHandler: authorizationMiddleware() },
-			PinsSharedController.getMinePins,
+			PinsSharedController.getMineControllerPins,
 		);
 
 		instance.post(
 			'/controller/add',
 			{ preHandler: authorizationMiddleware() },
-			PinsSharedController.saveMinePins,
+			PinsSharedController.saveMineControllerPins,
 		);
 
 		instance.put(
 			'/controller/remove',
 			{ preHandler: authorizationMiddleware() },
-			PinsSharedController.removeMinePins,
+			PinsSharedController.removeMineControllerPins,
 		);
 
 		next();
