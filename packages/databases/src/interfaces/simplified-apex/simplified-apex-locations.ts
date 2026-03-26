@@ -22,7 +22,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexLocation> = {
 	stop_id: { type: 'String' },
 	trip_id: { type: 'String' },
 	updated_at: { type: 'Int64' },
-	vehicle_id: { type: 'Int64' },
+	vehicle_id: { type: 'String' },
 };
 
 /* * */

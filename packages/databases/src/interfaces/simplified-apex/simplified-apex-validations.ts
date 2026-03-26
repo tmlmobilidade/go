@@ -31,7 +31,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexValidation> = {
 	units_qty: { type: 'Nullable(Int64)' },
 	updated_at: { type: 'Int64' },
 	validation_status: { type: 'Int64' },
-	vehicle_id: { type: 'Int64' },
+	vehicle_id: { type: 'String' },
 };
 
 /* * */
