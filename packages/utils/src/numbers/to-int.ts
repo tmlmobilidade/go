@@ -11,9 +11,11 @@
  * roundToInt(null); // returns null
  * roundToInt(undefined); // returns null
  */
-export function roundToInt(value: null | number | undefined): null | number {
+export function roundToInt(value: null | number | string | undefined): null | number {
 	if (value === null || value === undefined) return null;
-	return Math.round(value);
+	const num = typeof value === 'string' ? parseFloat(value) : value;
+	if (isNaN(num)) return null;
+	return Math.round(num);
 }
 
 /**
@@ -27,7 +29,9 @@ export function roundToInt(value: null | number | undefined): null | number {
  * truncToInt(null); // returns null
  * truncToInt(undefined); // returns null
  */
-export function truncToInt(value: null | number | undefined): null | number {
+export function truncToInt(value: null | number | string | undefined): null | number {
 	if (value === null || value === undefined) return null;
-	return Math.trunc(value);
+	const num = typeof value === 'string' ? parseFloat(value) : value;
+	if (isNaN(num)) return null;
+	return Math.trunc(num);
 }
