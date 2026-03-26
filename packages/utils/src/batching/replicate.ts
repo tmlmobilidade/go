@@ -135,9 +135,18 @@ export async function replicate<SourceDocType>({ countDestinationDbFn, countSour
 
 	Logger.info(`Source Total: ${sourceDbCount} | Source Unique: ${sourceDbDocIdsUnique.size} | Source ▲: ${sourceDbCount - sourceDbDocIdsUnique.size} | Destination Total: ${destinationDbCount} | Destination Unique: ${destinationDbDocIdsUnique.size} | Destination ▲: ${destinationDbCount - destinationDbDocIdsUnique.size} | Destination Missing: ${missingDocumentIds.length} | Destination Extra: ${extraDocumentIds.length} (${distinctStepTimer.get()})`);
 
-	if (missingDocumentIds.length === 0) {
-		Logger.success(`Chunk complete. All document IDs matched. (${distinctStepTimer.get()})`);
-		return;
+	//
+	// If there are missing documents, then they are synced.
+	// We query the Source database for the missing documents
+	// and write them to the Destination database.
+
+	const missingStepTimer = new Timer();
+
+	if (missingDocumentIds.length > 0) {
+		for await (const sourceDbDocument of missingDocumentsSourceDbAsyncIterator(missingDocumentIds)) {
+			await writeSourceDocumentToDestinationDbFn(sourceDbDocument);
+		}
+		Logger.info(`Synced ${missingDocumentIds.length} missing documents to the Destination database. (${missingStepTimer.get()})`);
 	}
 
 	//
@@ -149,19 +158,6 @@ export async function replicate<SourceDocType>({ countDestinationDbFn, countSour
 	if (extraDocumentIds.length > 0 && deleteDestinationDbFn) {
 		await deleteDestinationDbFn(extraDocumentIds);
 		Logger.info(`Deleted ${extraDocumentIds.length} extra documents in the Destination database. (${deleteStepTimer.get()})`);
-	}
-
-	//
-	// If there are missing documents, then they are synced.
-	// We query the Source database for the missing documents
-	// and write them to the Destination database.
-
-	const missingStepTimer = new Timer();
-
-	Logger.info(`Found ${missingDocumentIds.length} missing documents in the Destination database. (${missingStepTimer.get()})`);
-
-	for await (const sourceDbDocument of missingDocumentsSourceDbAsyncIterator(missingDocumentIds)) {
-		await writeSourceDocumentToDestinationDbFn(sourceDbDocument);
 	}
 
 	//

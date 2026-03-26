@@ -62,7 +62,7 @@ export async function invalidateRides(data: SimplifiedVehicleEvent[]) {
 			{ returnResults: false },
 		);
 
-		Logger.info(`Flush [simplified_apex_validations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+		Logger.info(`Flush: Marked as 'waiting' ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 
 		//
 	} catch (error) {
