@@ -25,7 +25,7 @@ export function buildScheduleRulesForRoute(params: {
 		if (!stopTimes.length) continue;
 		const fingerprint = stopTimes.map(stopTime => stopTime.stop_id).join('|');
 		const patternKey = resolvePatternKey(directionId, trip.pattern_id ?? null, fingerprint);
-		const startTime = normalizeGtfsTimeToHHMM(stopTimes[0]?.departure_time);
+		const startTime = normalizeGtfsTimeToHHMM(stopTimes[0]?.departure_time, trip.pattern_id);
 		if (!startTime) {
 			console.log('[gtfs-importer] Invalid departure time', {
 				time: stopTimes[0]?.departure_time,
