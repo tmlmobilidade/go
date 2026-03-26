@@ -1,6 +1,5 @@
 /* * */
 
-import { DocumentSchema } from '@/_common/document.js';
 import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
@@ -98,30 +97,31 @@ export const ApexValidationStatusSchema = z.nativeEnum(ApexValidationStatus);
 
 /* * */
 
-export const SimplifiedApexValidationSchema = DocumentSchema
-	.omit({ created_by: true, is_locked: true, updated_by: true })
-	.extend({
-		agency_id: z.string(),
-		apex_version: z.string(),
-		card_serial_number: z.string(),
-		category: z.enum(['prepaid', 'subscription', 'on_board_sale']),
-		device_id: z.string(),
-		event_type: z.number(),
-		is_passenger: z.boolean(),
-		line_id: z.string(),
-		mac_ase_counter_value: z.number(),
-		mac_sam_serial_number: z.number(),
-		on_board_refund_id: z.string().nullable(),
-		on_board_sale_id: z.string().nullable(),
-		pattern_id: z.string(),
-		product_id: z.string(),
-		received_at: UnixTimeStampSchema,
-		stop_id: z.string(),
-		trip_id: z.string(),
-		units_qty: z.number().nullable(),
-		validation_status: ApexValidationStatusSchema,
-		vehicle_id: z.number(),
-	});
+export const SimplifiedApexValidationSchema = z.object({
+	_id: z.string(),
+	agency_id: z.string(),
+	apex_version: z.string(),
+	card_serial_number: z.string(),
+	category: z.enum(['prepaid', 'subscription', 'on_board_sale']),
+	created_at: UnixTimeStampSchema,
+	device_id: z.string(),
+	event_type: z.number(),
+	is_passenger: z.boolean(),
+	line_id: z.string(),
+	mac_ase_counter_value: z.number(),
+	mac_sam_serial_number: z.number(),
+	on_board_refund_id: z.string().nullable(),
+	on_board_sale_id: z.string().nullable(),
+	pattern_id: z.string(),
+	product_id: z.string(),
+	received_at: UnixTimeStampSchema,
+	stop_id: z.string(),
+	trip_id: z.string(),
+	units_qty: z.number().nullable(),
+	updated_at: UnixTimeStampSchema,
+	validation_status: ApexValidationStatusSchema,
+	vehicle_id: z.number(),
+});
 
 export const UpdateSimplifiedApexValidationSchema = SimplifiedApexValidationSchema.partial();
 
