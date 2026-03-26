@@ -1,8 +1,6 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-// import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-// import { Dates } from '@tmlmobilidade/dates';
 import { type CreateUserDto, CreateUserSchema, PermissionCatalog, type UpdateUserDto, UpdateUserSchema, type User, type User_UNSAFE } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type Filter, type FindOptions, type IndexDescription, type WithId } from 'mongodb';
@@ -110,32 +108,6 @@ class UsersClass extends MongoCollectionClass<User_UNSAFE, CreateUserDto, Update
 		if (!foundUser) return null;
 		return this.sanitizeUser(foundUser);
 	}
-
-	// /**
-	//  * Removes one ride ID from pins using $pull (avoids updateById / $set on nested fields).
-	//  */
-	// async deletePinByUserId(userId: string, pinType: keyof User['pins'], rideId: string, options?: { forceIfLocked?: boolean, updatedBy?: string }): Promise<void> {
-	// 	const trimmed = rideId.trim();
-	// 	if (!trimmed) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'rideId is required');
-
-	// 	if (!options?.forceIfLocked) {
-	// 		const isLocked = await this.isLockedById(userId);
-	// 		if (isLocked) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'Document is locked and cannot be updated');
-	// 	}
-
-	// 	const result = await this.mongoCollection.updateOne(
-	// 		{ _id: { $eq: userId } },
-	// 		{
-	// 			$pull: { pins: { [pinType]: { $in: [trimmed] } } } as unknown as Record<string, { $in: string[] }>,
-	// 			$set: {
-	// 				updated_at: Dates.now('utc').unix_timestamp,
-	// 				updated_by: options?.updatedBy ?? 'system',
-	// 			},
-	// 		},
-	// 	);
-
-	// 	if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to remove pin', result);
-	// }
 
 	protected getCollectionIndexes(): IndexDescription[] {
 		return [
