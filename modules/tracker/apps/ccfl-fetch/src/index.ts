@@ -43,6 +43,8 @@ const main = async () => {
 	for (const entity of decodedMessage.entity ?? []) {
 		//
 
+		console.log(entity);
+
 		//
 		// Skip entities that do not have a vehicle field,
 		// as they are not relevant for our use case.
