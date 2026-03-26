@@ -137,16 +137,19 @@ export class RidesSharedController {
 	}
 
 	/**
-	 * Get a Ride by Pin IDs.
+	 * Returns rides whose _id appears in the request body pinIds array.
 	 * @param request The Fastify request object.
 	 * @param reply The Fastify reply object.
 	 */
-	static async getRideByPinIds(request: FastifyRequest<{ Body: { pinIds: string[] } }>, reply: FastifyReply<RideNormalized[]>) {
-		//
+	static async getRidesByPinsIds(request: FastifyRequest<{ Body: { pinIds: string[] } }>, reply: FastifyReply<RideNormalized[]>) {
+		const raw = request.body?.pinIds;
+		const pinIds = Array.isArray(raw)
+			? [...new Set(raw.map(id => String(id).trim()).filter(Boolean))]
+			: [];
 
-		const { pinIds } = request.body;
-
-		if (!pinIds?.length) return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
+		if (pinIds.length === 0) {
+			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
+		}
 
 		const ridesByPinIds = await rides.findMany({ _id: { $in: pinIds } });
 		const normalizedRides = ridesByPinIds.map(ride => normalizeRide(ride));

@@ -88,6 +88,13 @@ server.register(
 			RidesController.reprocessRideById,
 		);
 
+		instance.post(
+			'/pins',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+			(request: FastifyRequest<{ Body: { pinIds: string[] } }>, reply: FastifyReply<RideNormalized[]>) =>
+				RidesSharedController.getRidesByPinsIds(request, reply),
+		);
+
 		//
 	},
 	{ prefix: NAMESPACE },
