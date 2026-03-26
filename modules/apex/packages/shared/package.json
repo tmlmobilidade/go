@@ -17,6 +17,7 @@
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
