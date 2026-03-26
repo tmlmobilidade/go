@@ -154,7 +154,7 @@ export function RidesList() {
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}
-				records={ridesListContext.data.filtered}
+				records={ridesListContext.flags.pinsEnabled ? ridesListContext.data.filteredByPinIds : ridesListContext.data.filtered}
 				rowIdAccessor="_id"
 				selectedId={decodeURIComponent(params.id ?? '')}
 			/>

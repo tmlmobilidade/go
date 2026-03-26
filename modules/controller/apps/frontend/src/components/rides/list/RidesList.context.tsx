@@ -9,9 +9,11 @@ import { type OperationalStatus, PermissionCatalog, type RideNormalized, RideNor
 import { DelayStatusSchema, OperationalStatusSchema } from '@tmlmobilidade/types';
 import { RIDE_ANALYSIS_GRADE_OPTIONS, type UnixTimestamp } from '@tmlmobilidade/types';
 import { useDataAgencies, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
+import { fetchData } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import useSWR from 'swr';
 
 /* * */
 
@@ -19,9 +21,11 @@ export interface RidesListContextState {
 	actions: {
 		setFilterDateEnd: (value: number) => void
 		setFilterDateStart: (value: number) => void
+		setPinsEnabled: () => void
 	}
 	data: {
 		filtered: RideNormalized[]
+		filteredByPinIds: RideNormalized[]
 	}
 	filters: {
 		acceptance_status: UseFilterStateListReturnType<RideNormalized['acceptance_status']>
@@ -40,6 +44,7 @@ export interface RidesListContextState {
 		error: Error | null
 		last_updated_at: null | UnixTimestamp
 		loading: boolean
+		pinsEnabled: boolean
 	}
 }
 
@@ -65,6 +70,19 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const { t } = useTranslation();
 
+	const [pinsEnabled, setPinsEnabled] = useState<boolean>(false);
+	const { data: pinsData } = useSWR<string[], Error>(API_ROUTES.auth.PINS_CONTROLLER, { refreshInterval: 1000 });
+
+	const { data: ridesByPinIdsData } = useSWR<RideNormalized[], Error>(
+		pinsData !== undefined ? ['rides-by-pin-ids', pinsData] as const : null,
+		async ([, pinIds]: readonly ['rides-by-pin-ids', string[]]) => {
+			if (pinIds.length === 0) return [];
+			const res = await fetchData<RideNormalized[]>(API_ROUTES.controller.RIDES_PINS, 'POST', { pinIds });
+			if (res.error != null || res.data == null) throw new Error(res.error ?? 'Failed to load rides by pin ids');
+			return res.data;
+		},
+		{ refreshInterval: 1000 },
+	);
 	//
 	// B. Fetch data
 
@@ -110,15 +128,24 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	});
 
 	//
+	// D. Handle actions
+
+	const handleSetPinsEnabled = () => {
+		setPinsEnabled(!pinsEnabled);
+	};
+
+	//
 	// D. Define context value
 
 	const contextValue: RidesListContextState = useMemo(() => ({
 		actions: {
 			setFilterDateEnd,
 			setFilterDateStart,
+			setPinsEnabled: handleSetPinsEnabled,
 		},
 		data: {
 			filtered: ridesData ?? [],
+			filteredByPinIds: ridesByPinIdsData ?? [],
 		},
 		filters: {
 			acceptance_status: filterAcceptanceStatus,
@@ -137,6 +164,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			error: ridesError,
 			last_updated_at: ridesLastUpdatedAt,
 			loading: ridesLoading,
+			pinsEnabled,
 		},
 	}), [
 		ridesData,
@@ -153,6 +181,8 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		filterAnalysisEndedAtLastStop,
 		ridesLoading,
 		ridesError,
+		pinsEnabled,
+		ridesByPinIdsData,
 	]);
 
 	//

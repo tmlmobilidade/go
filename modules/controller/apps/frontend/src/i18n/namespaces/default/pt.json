@@ -35,6 +35,9 @@
 				"passengers_observed": {
 					"label": "Pax"
 				},
+				"pins": {
+					"label": "Favoritos"
+				},
 				"seen_last_at": {
 					"label": ""
 				},

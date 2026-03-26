@@ -9,6 +9,7 @@ import { RidesListFilterAnalysisTransactionSequentiality } from '@/components/ri
 import { RidesListFilterDateRange } from '@/components/rides/list/RidesListFilterDateRange';
 import { RidesListFilterDelayStatus } from '@/components/rides/list/RidesListFilterDelayStatus';
 import { RidesListFilterOperationalStatus } from '@/components/rides/list/RidesListFilterOperationalStatus';
+import { RidesListFilterPins } from '@/components/rides/list/RidesListFilterPins';
 import { FiltersBar } from '@tmlmobilidade/ui';
 
 /* * */
@@ -16,6 +17,7 @@ import { FiltersBar } from '@tmlmobilidade/ui';
 export function RidesListFiltersBar() {
 	return (
 		<FiltersBar>
+			<RidesListFilterPins />
 			<RidesListFilterDateRange />
 			<RidesListFilterAgency />
 			<RidesListFilterOperationalStatus />
