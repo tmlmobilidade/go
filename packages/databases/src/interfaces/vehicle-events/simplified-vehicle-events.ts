@@ -23,9 +23,9 @@ const tableSchema: ClickHouseSchema<SimplifiedVehicleEvent> = {
 	door: { type: 'Nullable(String)' },
 	driver_id: { type: 'Nullable(String)' },
 	extra_trip_id: { type: 'Nullable(String)' },
-	odometer: { type: 'Nullable(Float64)' },
+	odometer: { type: 'Nullable(Int64)' },
 	pattern_id: { type: 'Nullable(String)' },
-	speed: { type: 'Nullable(Float64)' },
+	speed: { type: 'Nullable(Int64)' },
 	stop_id: { type: 'Nullable(String)' },
 };
 

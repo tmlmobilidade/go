@@ -12,7 +12,7 @@ import { BatchWriter } from '@tmlmobilidade/writers';
 /* * */
 
 const writer = new BatchWriter<SimplifiedVehicleEvent>({
-	batch_size: 10_000,
+	batch_size: 2, // 10_000
 	insertFn: async (data) => {
 		await simplifiedVehicleEventsNew.insert('JSONEachRow', data);
 	},
@@ -103,6 +103,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 			const parser = PARSER_MAP[sourceDbDocument.version];
 			const parseResult = parser(sourceDbDocument);
 			if (!parseResult) return; // Skip if parsing failed
+			console.log(parseResult);
 			await writer.write(parseResult, { flushCallback: invalidateRides });
 		},
 

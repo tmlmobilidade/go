@@ -1,6 +1,7 @@
 /* * */
 
 import { type RawVehicleEventCcflV1, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { roundToInt } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -9,7 +10,7 @@ export const parseRawVehicleEventCcflV1 = (doc: RawVehicleEventCcflV1): Simplifi
 	return {
 		_id: doc._id,
 		agency_id: doc.agency_id,
-		bearing: vehicle.position.bearing ?? null,
+		bearing: roundToInt(vehicle.position.bearing),
 		created_at: doc.created_at,
 		current_status: vehicle.current_status ?? null,
 		door: null,
