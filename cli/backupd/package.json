@@ -24,11 +24,11 @@
 		"@tmlmobilidade/utils": "*",
 		"@types/archiver": "7.0.0",
 		"archiver": "7.0.1",
-		"mongodb": "7.1.0",
-		"nodemailer": "8.0.2",
+		"mongodb": "7.1.1",
+		"nodemailer": "8.0.3",
 		"pg": "8.20.0",
 		"resolve-tspaths": "0.8.23",
-		"yaml": "2.8.2"
+		"yaml": "2.8.3"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

@@ -40,10 +40,10 @@ env:
 
     apex:organizer
     apex:stream
-    apex:sync-apex-locations
-    apex:sync-apex-on-board-refunds
-    apex:sync-apex-on-board-sales
-    apex:sync-apex-validations
+    apex:sync-locations
+    apex:sync-on-board-refunds
+    apex:sync-on-board-sales
+    apex:sync-validations
 
     auth:nginx
     auth:api
@@ -93,10 +93,24 @@ env:
     plans:frontend
     plans:validator
 
+    # replicator:organizer
+    # replicator:stream
+    # replicator:sync-apex-locations
+    # replicator:sync-apex-on-board-refunds
+    # replicator:sync-apex-on-board-sales
+    # replicator:sync-apex-validations
+    # replicator:sync-vehicle-events
+
     stops:nginx
     stops:api
     stops:frontend
     stops:organizer
+
+    tracker:clickhouse-stream
+    tracker:clickhouse-sync
+    tracker:cm-legacy-stream
+    tracker:cm-legacy-sync
+    tracker:ttsl-fetch
 
     offer:nginx
     offer:api

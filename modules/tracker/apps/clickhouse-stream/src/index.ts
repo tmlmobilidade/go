@@ -1,20 +1,36 @@
 /* * */
 
 import { processVehicleEvent } from '@/task.js';
-import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
+import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
 (async function init() {
 	//
 
-	await rawdbVehicleEvents.connect();
-
 	//
-	// Watch for changes to the MongoDB collections
+	// Watch for changes to the rawVehicleEventsNew collection
 	// and integrate those documents immediately.
 
-	rawdbVehicleEvents.RawVehicleEvents.watch().on('change', processVehicleEvent);
+	const collection = await rawVehicleEventsNew.getCollection();
+
+	const changeStream = collection.watch();
+
+	for await (const change of changeStream) {
+		//
+
+		//
+		// Validate that the operation is an insert or update. Otherwise, send an email to the emergency contact.
+		// Only insert operations are expected to occur in this PCGIDB collection.
+
+		if (change.operationType !== 'insert') {
+			Logger.error(`[clickhouse-stream] WARNING: changeStream document with operationType != "insert": operationType="${change.operationType}" _id="${change._id}"`);
+			continue;
+		}
+
+		await processVehicleEvent(change);
+	}
 
 	//
 })();

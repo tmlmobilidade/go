@@ -8,7 +8,7 @@ import { useMemo } from 'react';
 
 import { useMapContext } from '../../../../contexts';
 import { Button } from '../../../buttons/Button';
-import { SearchInput } from '../../../inputs';
+import { CoordinatesInput } from '../../../inputs';
 import { Spacer, Toolbar } from '../../../layout';
 import { MAP_STYLES } from '../../configs';
 import { useMapViewContext } from '../MapViewContext';
@@ -41,7 +41,7 @@ export function MapViewToolbar() {
 			<Switch checked={mapContext.flags.scroll_zoom} label="Permitir Zoom" onChange={() => mapContext.actions.toggleScrollZoom()} />
 			<Switch checked={mapViewContext.flags.auto_zoom} label="Auto Zoom" onChange={() => mapViewContext.actions.toggleAutoZoom()} />
 			<Spacer />
-			<SearchInput onChange={mapContext.actions.handleSearch} value={mapContext.data.search} />
+			<CoordinatesInput onChange={mapContext.actions.handleSearchCoordinates} value={mapContext.data.search_coordinates ?? null} />
 			<Button icon={<IconCrosshair />} label="Centrar" loading={mapViewContext.flags.loading} onClick={() => mapViewContext.actions.toggleAutoZoom(true)} />
 			<SegmentedControl data={mapStyleOptions} onChange={() => mapContext.actions.toggleStyle()} value={mapContext.flags.style} />
 		</Toolbar>

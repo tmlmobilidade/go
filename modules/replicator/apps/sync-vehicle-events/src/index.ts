@@ -147,7 +147,7 @@ async function syncVehicleEvents() {
 
 				goQuery: goQuery,
 
-				pcgiCollection: pcgidbLegacy.VehicleEvents,
+				pcgiCollection: pcgidbLegacy.VehicleEventsCore,
 
 				pcgiIdKey: '_id',
 
@@ -180,4 +180,4 @@ async function syncVehicleEvents() {
 
 /* * */
 
-runOnInterval(syncVehicleEvents, 1_800_000); // 30 minutes
+await runOnInterval(syncVehicleEvents, 1_800_000); // 30 minutes

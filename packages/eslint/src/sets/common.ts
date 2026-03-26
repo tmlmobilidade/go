@@ -5,6 +5,7 @@ import { jsonConfig } from '@/rules/json.js';
 import { namingConventionsConfig } from '@/rules/naming-conventions.js';
 import { packageJsonConfig } from '@/rules/pjson.js';
 import { promisesConfig } from '@/rules/promises.js';
+import { sortClassesConfig } from '@/rules/sort-classes.js';
 import { tsconfigConfig } from '@/rules/tsconfig.js';
 import eslint from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
@@ -78,9 +79,9 @@ export default defineConfig([
 		files: ['**/*.{js,jsx,cjs,mjs,ts,tsx}'],
 		rules: {
 			// Core language rules
+			'@stylistic/no-multiple-empty-lines': ['error', { max: 1, maxBOF: 0, maxEOF: 1 }],
 			'eqeqeq': ['error', 'always', { null: 'ignore' }],
 			'no-console': 'warn',
-			'no-multiple-empty-lines': ['error', { max: 2, maxBOF: 0, maxEOF: 1 }],
 
 			// TypeScript specific rules (non-type-checking ones)
 			'@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
@@ -115,8 +116,10 @@ export default defineConfig([
 					markers: ['/'],
 				},
 			}],
+			'no-multiple-empty-lines': 'off',
 
 			// Import sorting and organization
+			// 'perfectionist/sort-classes': 'off',
 			'perfectionist/sort-imports': ['error', {
 				groups: [
 					['type'],
@@ -138,6 +141,8 @@ export default defineConfig([
 	},
 
 	...promisesConfig,
+
+	...sortClassesConfig,
 
 	...namingConventionsConfig,
 

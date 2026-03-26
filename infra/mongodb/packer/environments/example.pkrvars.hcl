@@ -1,5 +1,0 @@
-# # #
-
-environment = ""
-compartment_ocid = ""
-subnet_ocid = ""

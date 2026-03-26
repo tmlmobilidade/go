@@ -28,6 +28,18 @@ export interface MapOverlayObservedPathLineDataProps {
 
 /* * */
 
+/** MapLibre draws layers in array order; later = on top. Re-stack these after other overlays (e.g. scheduled path) mount. */
+const OBSERVED_PATH_LAYER_SUFFIXES = [
+	'line-shadow',
+	'line-padding',
+	'line',
+	'line-direction-padding',
+	'line-direction',
+	'points',
+] as const;
+
+/* * */
+
 interface MapOverlayObservedPathProps {
 	id: string
 	lineData?: FeatureCollection<LineString, MapOverlayObservedPathLineDataProps> | null
@@ -63,6 +75,41 @@ export function MapOverlayObservedPath({ id, lineData, pointsData, visible = tru
 			mapViewContext.actions.unregisterOverlaySource(`${id}:observed-path:source:points`);
 		};
 	}, [lineData, pointsData]);
+
+	useEffect(() => {
+		if (!lineData || !pointsData) return;
+		if (mapViewContext.flags.loading) return;
+
+		const mapRef = mapViewContext.ref.map.current;
+		if (!mapRef) return;
+
+		const map = mapRef.getMap();
+		const layerIds = OBSERVED_PATH_LAYER_SUFFIXES.map(suffix => `${id}:observed-path:layer:${suffix}`);
+
+		const bringObservedPathToFront = () => {
+			if (!map.isStyleLoaded()) return;
+			const layers = map.getStyle()?.layers;
+			if (!layers?.length) return;
+			if (layers[layers.length - 1]?.id === layerIds[layerIds.length - 1]) return;
+
+			for (const layerId of layerIds) {
+				if (map.getLayer(layerId)) {
+					map.moveLayer(layerId);
+				}
+			}
+		};
+
+		const onStyleData = () => {
+			requestAnimationFrame(bringObservedPathToFront);
+		};
+
+		bringObservedPathToFront();
+		map.on('styledata', onStyleData);
+
+		return () => {
+			map.off('styledata', onStyleData);
+		};
+	}, [id, lineData, pointsData, mapViewContext.flags.loading]);
 
 	const handleMouseOverEvent = (event: MapMouseEvent) => {
 		const relevantFeature = event.target

@@ -35,8 +35,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  organizer:
-    image: ghcr.io/tmlmobilidade/go-tracker-organizer:staging
+  clickhouse-stream:
+    image: ghcr.io/tmlmobilidade/go-tracker-clickhouse-stream:staging
     deploy:
       restart_policy:
         condition: any
@@ -54,8 +54,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  stream:
-    image: ghcr.io/tmlmobilidade/go-tracker-stream:staging
+  clickhouse-sync:
+    image: ghcr.io/tmlmobilidade/go-tracker-clickhouse-sync:staging
     deploy:
       restart_policy:
         condition: any
@@ -69,19 +69,12 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-    extra_hosts:
-      - "prd-bilhetica-mongodb-01.tml.local:10.5.4.185"
-      - "prd-bilhetica-mongodb-02.tml.local:10.5.4.151"
-      - "prd-bilhetica-mongodb-03.tml.local:10.5.4.97"
-      - "prd-validations-mongodb-01.tml.local:10.5.4.124"
-      - "prd-validations-mongodb-02.tml.local:10.5.4.112"
-      - "prd-validations-mongodb-03.tml.local:10.5.4.206"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  sync-apex-locations:
-    image: ghcr.io/tmlmobilidade/go-tracker-sync-apex-locations:staging
+  cm-legacy-stream:
+    image: ghcr.io/tmlmobilidade/go-tracker-cm-legacy-stream:staging
     deploy:
       restart_policy:
         condition: any
@@ -95,16 +88,12 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-    extra_hosts:
-      - "prd-validations-mongodb-01.tml.local:10.5.4.124"
-      - "prd-validations-mongodb-02.tml.local:10.5.4.112"
-      - "prd-validations-mongodb-03.tml.local:10.5.4.206"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  sync-apex-on-board-refunds:
-    image: ghcr.io/tmlmobilidade/go-tracker-sync-apex-on-board-refunds:staging
+  cm-legacy-sync:
+    image: ghcr.io/tmlmobilidade/go-tracker-cm-legacy-sync:staging
     deploy:
       restart_policy:
         condition: any
@@ -118,16 +107,12 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-    extra_hosts:
-      - "prd-bilhetica-mongodb-01.tml.local:10.5.4.185"
-      - "prd-bilhetica-mongodb-02.tml.local:10.5.4.151"
-      - "prd-bilhetica-mongodb-03.tml.local:10.5.4.97"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  sync-apex-on-board-sales:
-    image: ghcr.io/tmlmobilidade/go-tracker-sync-apex-on-board-sales:staging
+  ttsl-fetch:
+    image: ghcr.io/tmlmobilidade/go-tracker-ttsl-fetch:staging
     deploy:
       restart_policy:
         condition: any
@@ -141,16 +126,12 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-    extra_hosts:
-      - "prd-bilhetica-mongodb-01.tml.local:10.5.4.185"
-      - "prd-bilhetica-mongodb-02.tml.local:10.5.4.151"
-      - "prd-bilhetica-mongodb-03.tml.local:10.5.4.97"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  sync-apex-validations:
-    image: ghcr.io/tmlmobilidade/go-tracker-sync-apex-validations:staging
+  ccfl-fetch:
+    image: ghcr.io/tmlmobilidade/go-tracker-ccfl-fetch:staging
     deploy:
       restart_policy:
         condition: any
@@ -164,16 +145,12 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
-    extra_hosts:
-      - "prd-validations-mongodb-01.tml.local:10.5.4.124"
-      - "prd-validations-mongodb-02.tml.local:10.5.4.112"
-      - "prd-validations-mongodb-03.tml.local:10.5.4.206"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  sync-vehicle-events:
-    image: ghcr.io/tmlmobilidade/go-tracker-sync-vehicle-events:staging
+  cap-fetch:
+    image: ghcr.io/tmlmobilidade/go-tracker-cap-fetch:staging
     deploy:
       restart_policy:
         condition: any

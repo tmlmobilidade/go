@@ -35,7 +35,7 @@
 	},
 	"dependencies": {
 		"@eslint/js": "9.39.3",
-		"@next/eslint-plugin-next": "16.1.7",
+		"@next/eslint-plugin-next": "16.2.1",
 		"@stylistic/eslint-plugin": "5.10.0",
 		"eslint": "9.39.3",
 		"eslint-plugin-import": "2.32.0",
@@ -44,10 +44,10 @@
 		"eslint-plugin-react": "7.37.5",
 		"eslint-plugin-react-hooks": "7.0.1",
 		"globals": "17.4.0",
-		"stylelint": "17.4.0",
+		"stylelint": "17.5.0",
 		"stylelint-config-recess-order": "7.7.0",
 		"stylelint-config-standard": "40.0.0",
-		"typescript-eslint": "8.57.1"
+		"typescript-eslint": "8.57.2"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

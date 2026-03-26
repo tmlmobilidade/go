@@ -1,18 +1,19 @@
 /* * */
 
-import { clickhouseService } from '@tmlmobilidade/clickhouse';
-import { invalidateRides, parseSimplifiedApexOnBoardSale, simplifiedApexOnBoardSalesSchema } from '@tmlmobilidade/go-apex-pckg-common';
+import { simplifiedApexOnBoardSalesNew } from '@tmlmobilidade/databases';
+import { invalidateRides, parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-apex-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
-import { ClickHouseWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
-const writer = new ClickHouseWriter<SimplifiedApexOnBoardSale>({
-	batch_size: 50,
-	client: await clickhouseService.getClient(),
-	table: 'simplified_apex_on_board_sales',
-	tableSchema: simplifiedApexOnBoardSalesSchema,
+const writer = new BatchWriter<SimplifiedApexOnBoardSale>({
+	batch_size: 5,
+	insertFn: async (data) => {
+		await simplifiedApexOnBoardSalesNew.insert('JSONEachRow', data);
+	},
+	title: await simplifiedApexOnBoardSalesNew.getTableName(),
 });
 
 /**
@@ -24,8 +25,6 @@ const writer = new ClickHouseWriter<SimplifiedApexOnBoardSale>({
  */
 export async function processApexOnBoardSale(databaseOperation) {
 	//
-
-	await writer.init();
 
 	//
 	// Validate that the operation is an insert or update. Otherwise, send an email to the emergency contact.
