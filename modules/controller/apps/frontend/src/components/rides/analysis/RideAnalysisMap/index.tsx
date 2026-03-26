@@ -2,9 +2,10 @@
 
 /* * */
 
+import { ReplayEvents } from '@/components/common/ReplayEvents';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { Collapsible, Divider, MapOverlayGeofences, MapOverlayObservedPath, MapOverlayScheduledPath, MapView, Section, Switch } from '@tmlmobilidade/ui';
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -18,6 +19,62 @@ export function RideAnalysisMap() {
 	// A. Setup variables
 
 	const rideAnalysisContext = useRideAnalysisContext();
+
+	const observedEvents = rideAnalysisContext.geojson.observed_events;
+	const observedShape = rideAnalysisContext.geojson.observed_shape;
+	const eventCount = observedEvents.features.length;
+	const showReplay = rideAnalysisContext.data.ride?.operational_status === 'ended' && eventCount > 0;
+
+	const rideId = rideAnalysisContext.data.ride_id;
+	const prevRideIdRef = useRef<string | undefined>(undefined);
+
+	const [replayIndex, setReplayIndex] = useState(0);
+
+	useEffect(() => {
+		const cap = Math.max(0, eventCount - 1);
+		if (eventCount === 0) {
+			setReplayIndex(0);
+			return;
+		}
+		if (prevRideIdRef.current !== rideId) {
+			prevRideIdRef.current = rideId;
+			setReplayIndex(cap);
+			return;
+		}
+		setReplayIndex(prev => Math.min(prev, cap));
+	}, [eventCount, rideId]);
+
+	const observedPointsData = useMemo(() => {
+		if (!showReplay) return observedEvents;
+		return {
+			...observedEvents,
+			features: observedEvents.features.slice(0, replayIndex + 1),
+		};
+	}, [showReplay, observedEvents, replayIndex]);
+
+	const observedLineData = useMemo(() => {
+		if (!showReplay) return observedShape;
+		const lineFeature = observedShape.features[0];
+		if (lineFeature?.geometry.type !== 'LineString') return observedShape;
+		const fullCoords = lineFeature.geometry.coordinates;
+		let coordinates = fullCoords.slice(0, replayIndex + 1);
+		if (coordinates.length === 1) {
+			const c = coordinates[0];
+			coordinates = [c, c];
+		}
+		return {
+			...observedShape,
+			features: [
+				{
+					...lineFeature,
+					geometry: {
+						...lineFeature.geometry,
+						coordinates,
+					},
+				},
+			],
+		};
+	}, [showReplay, observedShape, replayIndex]);
 
 	const [showScheduledPath, setShowScheduledPath] = useState(true);
 	const [showObservedPath, setShowObservedPath] = useState(true);
@@ -40,8 +97,8 @@ export function RideAnalysisMap() {
 					/>
 					<MapOverlayObservedPath
 						id="1"
-						lineData={rideAnalysisContext.geojson.observed_shape}
-						pointsData={rideAnalysisContext.geojson.observed_events}
+						lineData={observedLineData}
+						pointsData={observedPointsData}
 						visible={showObservedPath}
 					/>
 					<MapOverlayGeofences
@@ -57,20 +114,10 @@ export function RideAnalysisMap() {
 				<Switch checked={showObservedPath} label={t('default:rides.analysis.RideAnalysisMap.switches.observed_path.label')} onChange={() => setShowObservedPath(prev => !prev)} />
 				<Switch checked={showGeofences} label={t('default:rides.analysis.RideAnalysisMap.switches.geofences.label')} onChange={() => setShowGeofences(prev => !prev)} />
 			</Section>
-			{/* <Divider /> */}
-			{/* <Section alignItems="center" flexDirection="row" gap="md">
-				<Button icon={<IconPlayerPlayFilled />} label="Play" />
-				<Slider />
-				<Label size="sm" caps singleLine>Ordenar eventos por</Label>
-				<SegmentedControl
-					value="created_at"
-					data={[
-						{ label: 'Receção', value: 'received_at' },
-						{ label: 'Operador', value: 'updated_at' },
-						{ label: 'Veículo', value: 'created_at' },
-					]}
-				/>
-			</Section> */}
+			<Divider />
+			{showReplay && (
+				<ReplayEvents onReplayIndexChange={setReplayIndex} replayIndex={replayIndex} />
+			)}
 		</Collapsible>
 	);
 

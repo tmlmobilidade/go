@@ -101,7 +101,7 @@ export class GOClickHouseClient {
 			sshOptions: {
 				agent: process.env.SSH_AUTH_SOCK,
 				host: process.env.GO_CLICKHOUSE_TUNNEL_SSH_HOST,
-				keepaliveCountMax: 3,
+				keepaliveCountMax: 20,
 				keepaliveInterval: 10_000,
 				port: 22,
 				username: process.env.GO_CLICKHOUSE_TUNNEL_SSH_USERNAME,
