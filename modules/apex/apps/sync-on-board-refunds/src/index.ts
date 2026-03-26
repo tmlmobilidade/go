@@ -2,7 +2,6 @@
 
 import { syncApexOnBoardRefunds } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
-import { pcgidbTicketing } from '@tmlmobilidade/go-apex-pckg-databases';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
@@ -16,11 +15,6 @@ async function main() {
 		Logger.init();
 
 		const globalTimer = new Timer();
-
-		//
-		// Connect to the source database
-
-		await pcgidbTicketing.connect();
 
 		//
 		// Get the earliest date from which we have data to sync,

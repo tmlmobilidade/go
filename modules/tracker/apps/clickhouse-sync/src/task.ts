@@ -54,6 +54,8 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 	// This function will handle the logic of counting, comparing, syncing and deleting documents
 	// between the source and destination databases based on the provided functions.
 
+	const rawVehicleEventsNewCollection = await rawVehicleEventsNew.getCollection();
+
 	await replicate<RawVehicleEvent>({
 
 		countDestinationDbFn: async () => {
@@ -90,7 +92,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		missingDocumentsSourceDbAsyncIterator: (missingDocumentIds) => {
-			return rawVehicleEventsNew.stream({ _id: { $in: missingDocumentIds } });
+			return rawVehicleEventsNewCollection.find({ _id: { $in: missingDocumentIds } }).stream();
 		},
 
 		onCompleteCallbackFn: async () => {

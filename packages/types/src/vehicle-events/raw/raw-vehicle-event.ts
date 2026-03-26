@@ -1,5 +1,7 @@
 /* * */
 
+import { RawVehicleEventCapV1Schema } from '@/vehicle-events/raw/cap/v1.js';
+import { RawVehicleEventCcflV1Schema } from '@/vehicle-events/raw/ccfl/v1.js';
 import { RawVehicleEventCmetV1Schema } from '@/vehicle-events/raw/cmet/v1.js';
 import { RawVehicleEventTtslV1Schema } from '@/vehicle-events/raw/ttsl/v1.js';
 import { z } from 'zod';
@@ -7,6 +9,8 @@ import { z } from 'zod';
 /* * */
 
 export const RawVehicleEventSchema = z.discriminatedUnion('version', [
+	RawVehicleEventCapV1Schema,
+	RawVehicleEventCcflV1Schema,
 	RawVehicleEventCmetV1Schema,
 	RawVehicleEventTtslV1Schema,
 ]);
