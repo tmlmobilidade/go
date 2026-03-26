@@ -17,11 +17,8 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/clickhouse": "*",
 		"@tmlmobilidade/databases": "*",
-		"@tmlmobilidade/go-apex-pckg-common": "*",
-		"@tmlmobilidade/go-apex-pckg-databases": "*",
-		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/go-apex-pckg-shared": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/writers": "*"

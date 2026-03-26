@@ -1,11 +1,11 @@
 /* * */
 
+import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { type HashableTrackerVehicleEvent, type TrackerTtslV1 } from '@tmlmobilidade/go-tracker-pckg-common';
-import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
 import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { type HashableRawVehicleEvent, type RawVehicleEventTtslV1 } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 
@@ -25,8 +25,6 @@ const main = async () => {
 	const timer = new Timer();
 
 	let saveCount = 0;
-
-	await rawdbVehicleEvents.connect();
 
 	//
 	// Fetch the TTSL Vehicle Events data from the API and decode it
@@ -57,11 +55,11 @@ const main = async () => {
 		// This allows us to identify duplicate events
 		// and avoid storing them multiple times in the database.
 
-		const hashableRawEvent: HashableTrackerVehicleEvent<TrackerTtslV1> = {
+		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventTtslV1> = {
 			agency_id: '4',
 			created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_timestamp,
 			entity_id: entity.id,
-			raw: {
+			payload: {
 				header: decodedMessage.header,
 				vehicle: entity.vehicle,
 			},
@@ -77,11 +75,11 @@ const main = async () => {
 		// Write the new vehicle event document
 		// to the RawVehicleEvents collection
 
-		const alreadyExists = await rawdbVehicleEvents.RawVehicleEvents.findOne({ _id: hashableRawEventId });
+		const alreadyExists = await rawVehicleEventsNew.findOne({ _id: hashableRawEventId });
 
 		if (alreadyExists) continue;
 
-		await rawdbVehicleEvents.RawVehicleEvents.insertOne({
+		await rawVehicleEventsNew.insertOne({
 			...hashableRawEvent,
 			_id: hashableRawEventId,
 			received_at: Dates.now('Europe/Lisbon').unix_timestamp,

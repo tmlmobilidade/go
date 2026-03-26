@@ -1,7 +1,7 @@
 /* * */
 
 import { simplifiedApexValidationsNew } from '@tmlmobilidade/databases';
-import { invalidateRides, parseSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-common';
+import { invalidateRides, parseSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 import { BatchWriter } from '@tmlmobilidade/writers';

@@ -66,14 +66,16 @@ export function RuleCreateBasicInfo() {
 				<Text c="dimmed" size="sm">Estes horários aplicam-se quando TODAS as condições abaixo se verificam</Text>
 
 				<RuleCreateEvents />
+
 				{!createRuleContext.flags.isEventExceptionEnabled && (
 					<>
 						<Divider />
 						<RuleCreatePeriods />
-						<Divider />
-						<RuleCreateWeekdays />
 					</>
 				)}
+
+				<Divider />
+				<RuleCreateWeekdays />
 			</div>
 
 		</Section>

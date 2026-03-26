@@ -18,7 +18,7 @@ type WeekdayPresetKey = keyof typeof WEEKDAY_PRESETS;
 
 /* * */
 
-function getSelectedPresetKey(currentWeekdays: number[] | undefined): null | WeekdayPresetKey {
+const getSelectedPresetKey = (currentWeekdays: number[] | undefined): null | WeekdayPresetKey => {
 	if (!currentWeekdays?.length) return null;
 
 	const keys = Object.keys(WEEKDAY_PRESETS) as WeekdayPresetKey[];
@@ -31,7 +31,7 @@ function getSelectedPresetKey(currentWeekdays: number[] | undefined): null | Wee
 	}
 
 	return null;
-}
+};
 
 /* * */
 
@@ -65,7 +65,8 @@ export function RuleCreateWeekdays() {
 		<Section gap="md">
 
 			<Section gap="xs" padding="none">
-				<Text>Dias da Semana</Text>
+				<Text>Dias da Semana {createRuleContext.flags.isEventExceptionEnabled ? 'do evento' : ''}</Text>
+				{createRuleContext.flags.isEventExceptionEnabled && <Text c="dimmed">Se não selecionar, aplica-se a todos os dias do evento</Text>}
 			</Section>
 
 			{/* Quick Select Tags */}

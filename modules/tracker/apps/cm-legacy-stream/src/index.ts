@@ -1,7 +1,7 @@
 /* * */
 
 import { processPcgiVehicleEvent } from '@/process-pcgi-vehicle-event.js';
-import { pcgidbLegacy, rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
 
 /* * */
 
@@ -9,7 +9,6 @@ import { pcgidbLegacy, rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg
 	//
 
 	await pcgidbLegacy.connect();
-	await rawdbVehicleEvents.connect();
 
 	//
 	// Watch for changes to the MongoDB collections

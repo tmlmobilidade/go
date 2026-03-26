@@ -4,7 +4,7 @@
 
 import { Fieldset, NumberInput as MantineNumberInput } from '@mantine/core';
 import { IconWorldLatitude, IconWorldLongitude } from '@tabler/icons-react';
-import { type ClipboardEvent, useEffect, useState } from 'react';
+import { type ClipboardEvent, useEffect, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
 
@@ -87,33 +87,53 @@ export function CoordinatesInput(props: CoordinatesInputProps) {
 	const [latitudeValue, setLatitudeValue] = useState<number | string>();
 	const [longitudeValue, setLongitudeValue] = useState<number | string>();
 
+	const onChangeRef = useRef(props.onChange);
+	onChangeRef.current = props.onChange;
+
 	//
 	// B. Transform data
 
 	useEffect(() => {
-		// Combine value and defaultValue props
-		const combinedValue = props.value ?? props.defaultValue;
-		// If value is not provided, clear input fields
+		const combinedValue = props.value !== undefined ? props.value : props.defaultValue;
 		if (combinedValue === undefined || combinedValue === null) {
 			setLatitudeValue(undefined);
 			setLongitudeValue(undefined);
 			return;
 		}
-		// Transform lat/lon values
 		setLatitudeValue(combinedValue[0]);
 		setLongitudeValue(combinedValue[1]);
 	}, [props.value, props.defaultValue]);
 
 	useEffect(() => {
-		// Skip if onChange is not provided
-		if (!props.onChange) return;
-		// If input values are null or undefined, call onChange with null
-		if (latitudeValue === undefined || latitudeValue === null) return;
-		if (longitudeValue === undefined || longitudeValue === null) return;
-		// Try to transform the value into a valid coordinates array
-		const coordinates: [number, number] = [Number(latitudeValue), Number(longitudeValue)];
-		props.onChange(coordinates);
-	}, [latitudeValue, longitudeValue]);
+		const onChange = onChangeRef.current;
+		if (!onChange) return;
+
+		const latEmpty = latitudeValue === undefined || latitudeValue === null || latitudeValue === '';
+		const lonEmpty = longitudeValue === undefined || longitudeValue === null || longitudeValue === '';
+
+		const external = props.value !== undefined ? props.value : props.defaultValue;
+		const externalTuple = external !== undefined && external !== null ? external : null;
+
+		if (latEmpty && lonEmpty) {
+			if (externalTuple !== null) onChange(null);
+			return;
+		}
+		if (latEmpty || lonEmpty) return;
+
+		const lat = Number(latitudeValue);
+		const lon = Number(longitudeValue);
+		if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+
+		if (
+			externalTuple !== null
+			&& externalTuple[0] === lat
+			&& externalTuple[1] === lon
+		) {
+			return;
+		}
+
+		onChange([lat, lon]);
+	}, [latitudeValue, longitudeValue, props.value, props.defaultValue]);
 
 	//
 	// C. Handle actions
@@ -200,7 +220,7 @@ export function CoordinatesInput(props: CoordinatesInputProps) {
 				onPaste={handlePasteCoordinates}
 				placeholder="Latitude (-90 to 90)"
 				step={0.000001}
-				value={latitudeValue}
+				value={latitudeValue ?? ''}
 			/>
 			<MantineNumberInput
 				classNames={{ root: styles.lonInput_root, wrapper: styles.lonInput_wrapper }}
@@ -213,7 +233,7 @@ export function CoordinatesInput(props: CoordinatesInputProps) {
 				placeholder="Longitude (-180 to 180)"
 				step={0.000001}
 				style={{ flex: 1 }}
-				value={longitudeValue}
+				value={longitudeValue ?? ''}
 			/>
 		</Fieldset>
 	);

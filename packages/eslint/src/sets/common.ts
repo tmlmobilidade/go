@@ -79,9 +79,9 @@ export default defineConfig([
 		files: ['**/*.{js,jsx,cjs,mjs,ts,tsx}'],
 		rules: {
 			// Core language rules
+			'@stylistic/no-multiple-empty-lines': ['error', { max: 1, maxBOF: 0, maxEOF: 1 }],
 			'eqeqeq': ['error', 'always', { null: 'ignore' }],
 			'no-console': 'warn',
-			'no-multiple-empty-lines': ['error', { max: 2, maxBOF: 0, maxEOF: 1 }],
 
 			// TypeScript specific rules (non-type-checking ones)
 			'@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
@@ -116,8 +116,10 @@ export default defineConfig([
 					markers: ['/'],
 				},
 			}],
+			'no-multiple-empty-lines': 'off',
 
 			// Import sorting and organization
+			// 'perfectionist/sort-classes': 'off',
 			'perfectionist/sort-imports': ['error', {
 				groups: [
 					['type'],

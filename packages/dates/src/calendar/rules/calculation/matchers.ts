@@ -20,6 +20,17 @@ import { EventReplacementRule, ManualRule } from '@tmlmobilidade/types';
  * ```
  */
 export function manualRuleMatchesContext(rule: ManualRule, ctx: DayContext): boolean {
+	if (rule.event_id) {
+		// Event-exception rules: date matching already done by filteredManualRules in computeActiveRules.
+		// year_period_ids is cleared for these rules, so skip that check.
+		// If weekdays is non-empty, the user narrowed the event to specific days — check it.
+		// If weekdays is empty, all days of the event are included.
+		if (rule.weekdays.length > 0) {
+			return rule.weekdays.includes(ctx.weekday);
+		}
+		return true;
+	}
+
 	// Strict by design: rule must include the weekday and the yearPeriodId.
 	return rule.weekdays.includes(ctx.weekday) && rule.year_period_ids.includes(ctx.yearPeriodId);
 }
