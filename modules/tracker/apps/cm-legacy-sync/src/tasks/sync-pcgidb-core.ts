@@ -23,7 +23,7 @@ const writer = new BatchWriter<RawVehicleEvent>({
 		}));
 		await rawVehicleEventsNew.bulkWrite(writeOps);
 	},
-	title: await rawVehicleEventsNew.getCollectionName(),
+	title: 'PCGI Legacy Core › PCGI Raw Vehicle Events',
 });
 
 /**
