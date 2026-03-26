@@ -1,15 +1,17 @@
 /* * */
 
 import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
-import { invalidateRides, PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-common';
+import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
+import { invalidateRides } from '@tmlmobilidade/go-tracker-pckg-shared';
+import { type ChangeStreamInsertDocument } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { BatchWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
 const writer = new BatchWriter<SimplifiedVehicleEvent>({
-	batch_size: 50_000,
+	batch_size: 100,
 	insertFn: async (data) => {
 		await simplifiedVehicleEventsNew.insert('JSONEachRow', data);
 	},
@@ -23,27 +25,18 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
  * @param databaseOperation The database operation containing the Vehicle Event document to be processed.
  * @returns A promise that resolves when the Vehicle Event document has been processed.
  */
-export async function processVehicleEvent(databaseOperation) {
+export async function processVehicleEvent(databaseOperation: ChangeStreamInsertDocument<RawVehicleEvent>) {
 	//
 
 	//
-	// Validate that the operation is an insert or update. Otherwise, send an email to the emergency contact.
-	// Only insert operations are expected to occur in this PCGIDB collection.
-
-	if (databaseOperation.operationType !== 'insert') {
-		Logger.error(`WARNING: processApexValidation with operationType != "insert": [${databaseOperation.fullDocument.transaction.operatorLongID}] type="${databaseOperation.operationType}" transactionId="${databaseOperation.fullDocument.transaction.transactionId}"`);
-	}
-
-	//
-	// Extract the PCGI document from the database operation
-	// and transform the vehicle timestamp into an operational date.
-	// Skip the operation if the document is not valid.
+	// Extract the full document from the database operation and transform it
+	// into a simplified vehicle event document using the appropriate parser based on the version field.
 
 	const parser = PARSER_MAP[databaseOperation.fullDocument.version];
 	const newSimplifiedVehicleEventDocument = parser(databaseOperation.fullDocument);
 
 	if (!newSimplifiedVehicleEventDocument) {
-		Logger.error(`Invalid APEX Validation document, skipping operation: ${databaseOperation.fullDocument.transaction.transactionId}`);
+		Logger.error(`Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}`);
 		return;
 	}
 

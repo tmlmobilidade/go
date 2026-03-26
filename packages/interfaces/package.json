@@ -34,7 +34,6 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/clickhouse": "*",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
@@ -47,7 +46,7 @@
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
 		"bcryptjs": "3.0.3",
-		"mongodb": "7.1.0",
+		"mongodb": "7.1.1",
 		"oci-common": "2.126.2",
 		"oci-objectstorage": "2.126.2",
 		"zod": "3.25.76"

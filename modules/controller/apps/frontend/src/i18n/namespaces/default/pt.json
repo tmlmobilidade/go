@@ -452,6 +452,9 @@
 			"RideAnalysisVehicleEvents": {
 				"Table": {
 					"columns": {
+						"_id": {
+							"label": "ID"
+						},
 						"activity": {
 							"label": "Atividade"
 						},

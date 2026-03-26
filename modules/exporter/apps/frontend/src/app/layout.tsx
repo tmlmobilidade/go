@@ -5,6 +5,7 @@ import { AppProvider, BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
+import pjson from 'package.json';
 import { type PropsWithChildren } from 'react';
 
 /* * */
@@ -35,7 +36,7 @@ export default async function Layout({ children }: PropsWithChildren) {
 	// B. Render components
 
 	return (
-		<BaseProvider>
+		<BaseProvider version={pjson.version}>
 			<AppProvider>
 				{children}
 			</AppProvider>

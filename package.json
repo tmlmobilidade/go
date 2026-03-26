@@ -33,6 +33,7 @@
 
 		"dev:alerts": "npm run build:alerts:packages && ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
 		"dev:apex": "npm run build:apex:packages && ENVIRONMENT=development dotenv-run -f ./modules/apex/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-apex-*",
+		"dev:apex:prd": "npm run build:apex:packages && ENVIRONMENT=development dotenv-run -f ./modules/apex/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-apex-*",
 		"dev:apex:sync-locations": "npm run build:apex:packages && ENVIRONMENT=development dotenv-run -f ./modules/apex/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-apex-sync-locations",
 		"dev:apex:sync-locations:prod": "npm run build:apex:packages && ENVIRONMENT=development dotenv-run -f ./modules/apex/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-apex-sync-locations",
 		"dev:apex:sync-validations": "npm run build:apex:packages && ENVIRONMENT=development dotenv-run -f ./modules/apex/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-apex-sync-validations",
@@ -58,10 +59,19 @@
 		"dev:stops": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-*",
 		"dev:stops:ui": "ENVIRONMENT=development dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-api --filter=@tmlmobilidade/go-stops-frontend",
 		"dev:tracker": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-*",
+		"dev:tracker:cap-fetch": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cap-fetch",
+		"dev:tracker:cap-fetch:prd": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cap-fetch",
+		"dev:tracker:ccfl-fetch": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-ccfl-fetch",
+		"dev:tracker:ccfl-fetch:prd": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-ccfl-fetch",
+		"dev:tracker:clickhouse-stream": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-clickhouse-stream",
+		"dev:tracker:clickhouse-stream:prd": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-clickhouse-stream",
 		"dev:tracker:clickhouse-sync": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-clickhouse-sync",
 		"dev:tracker:clickhouse-sync:prd": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-clickhouse-sync",
 		"dev:tracker:cm-legacy-stream": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-legacy-stream",
+		"dev:tracker:cm-legacy-stream:prd": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-legacy-stream",
 		"dev:tracker:cm-legacy-sync": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-legacy-sync",
+		"dev:tracker:cm-legacy-sync:prd": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-legacy-sync",
+		"dev:tracker:prd": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-*",
 		"dev:tracker:ttsl-fetch": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-ttsl-fetch",
 		"dev:tracker:ttsl-fetch:prd": "npm run build:tracker:packages && ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-ttsl-fetch",
 
@@ -97,5 +107,8 @@
 		"modules/**/*",
 		"packages/**/*",
 		"cli/*"
-	]
+	],
+	"overrides": {
+		"zod": "3.25.76"
+	}
 }

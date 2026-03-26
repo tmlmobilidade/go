@@ -1,17 +1,29 @@
 /* * */
 
+import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { parsePcgiVehicleEvent, TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';
-import { pcgidbLegacy, rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { transformPcgiVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
+import { type RawVehicleEvent } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem } from '@tmlmobilidade/utils';
-import { MongoDbWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
-const writer = new MongoDbWriter<TrackerVehicleEvent>({
-	batch_size: 100_000,
-	collection: await rawdbVehicleEvents.getCollection(),
+const writer = new BatchWriter<RawVehicleEvent>({
+	batch_size: 10_000,
+	insertFn: async (data) => {
+		const writeOps = data.map(doc => ({
+			updateOne: {
+				filter: { _id: doc._id },
+				update: { $set: doc },
+				upsert: true,
+			},
+		}));
+		await rawVehicleEventsNew.bulkWrite(writeOps);
+	},
+	title: 'CORE',
 });
 
 /**
@@ -31,7 +43,7 @@ export async function syncPcgidbCoreVehicleEvents(timeChunk: PerformInTimeChunks
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	Logger.spacer(1);
-	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
+	Logger.divider(`CORE [${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
 
 	//
 	// Prepare the queries to compare documents from each database
@@ -54,12 +66,9 @@ export async function syncPcgidbCoreVehicleEvents(timeChunk: PerformInTimeChunks
 	const pcgidbLegacyCoreStream = pcgidbLegacy.VehicleEventsCore.find(pcgidbLegacyCoreQuery).stream();
 
 	for await (const document of pcgidbLegacyCoreStream) {
-		const parsedDocuments = parsePcgiVehicleEvent(document);
+		const parsedDocuments = transformPcgiVehicleEvent(document);
 		for (const parsedDocument of parsedDocuments) {
-			await writer.write(parsedDocument, {
-				filter: { _id: parsedDocument._id },
-				upsert: true,
-			});
+			await writer.write(parsedDocument);
 		}
 	}
 

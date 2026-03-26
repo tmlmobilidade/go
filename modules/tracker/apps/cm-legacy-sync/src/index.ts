@@ -3,7 +3,7 @@
 import { syncPcgidbCoreVehicleEvents } from '@/tasks/sync-pcgidb-core.js';
 import { syncPcgidbLogVehicleEvents } from '@/tasks/sync-pcgidb-log.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
-import { pcgidbLegacy, rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
@@ -22,7 +22,6 @@ async function main() {
 		// Connect to the source database
 
 		await pcgidbLegacy.connect();
-		await rawdbVehicleEvents.connect();
 
 		//
 		// Get the earliest date from which we have data to sync,
@@ -39,7 +38,7 @@ async function main() {
 				await syncPcgidbCoreVehicleEvents(chunk);
 				await syncPcgidbLogVehicleEvents(chunk);
 			},
-			splitBy: { hours: 4 },
+			splitBy: { hours: 1 },
 			startDate: earliestDate.unix_timestamp,
 		});
 

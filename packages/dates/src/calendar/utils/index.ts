@@ -153,7 +153,7 @@ export function generateMonthGrid(
 		tz,
 	);
 
-	const lastDayOfMonth = firstDayOfMonth.endOf('month');
+	const lastDayOfMonth = firstDayOfMonth.endOf('month').set({ hour: 12, millisecond: 0, minute: 0, second: 0 });
 
 	// Today (civil)
 	const todayKey = calendarKey(Dates.now(tz), tz);
@@ -199,9 +199,12 @@ export function generateMonthGrid(
 	}
 
 	// Next month overflow
+	// Use firstDayOfMonth (noon, tz-stable) as anchor instead of lastDayOfMonth (23:59 UTC),
+	// which crosses midnight into the next civil day when converted to a UTC+ timezone (e.g.
+	// Lisbon entering DST on March 29: 23:59 UTC = 00:59+01:00 = next day).
 	const daysFromNextMonth = fixedWeeks ? 42 - days.length : naturalDaysFromNextMonth;
 	for (let i = 1; i <= daysFromNextMonth; i++) {
-		pushDay(lastDayOfMonth.plus({ days: i }), false);
+		pushDay(firstDayOfMonth.plus({ days: daysInMonth + i - 1 }), false);
 	}
 
 	// Weeks (rows)

@@ -1,11 +1,11 @@
 /* * */
 
-import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
+import { rawVehicleEventsNew, simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { invalidateRides, PARSER_MAP, TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';
-import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
+import { invalidateRides } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
-import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { type RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 import { BatchWriter } from '@tmlmobilidade/writers';
 
@@ -54,7 +54,9 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 	// This function will handle the logic of counting, comparing, syncing and deleting documents
 	// between the source and destination databases based on the provided functions.
 
-	await replicate<TrackerVehicleEvent>({
+	const rawVehicleEventsNewCollection = await rawVehicleEventsNew.getCollection();
+
+	await replicate<RawVehicleEvent>({
 
 		countDestinationDbFn: async () => {
 			return await simplifiedVehicleEventsNew.count(
@@ -65,7 +67,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		countSourceDbFn: async () => {
-			const result = await rawdbVehicleEvents.RawVehicleEvents.countDocuments(rawdbQuery);
+			const result = await rawVehicleEventsNew.count(rawdbQuery);
 			return result;
 		},
 
@@ -85,14 +87,12 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		distinctSourceDbFn: async () => {
-			const result = await rawdbVehicleEvents.RawVehicleEvents.distinct('_id', rawdbQuery);
+			const result = await rawVehicleEventsNew.distinct('_id', rawdbQuery);
 			return result.map(String);
 		},
 
 		missingDocumentsSourceDbAsyncIterator: (missingDocumentIds) => {
-			return rawdbVehicleEvents.RawVehicleEvents
-				.find({ _id: { $in: missingDocumentIds } })
-				.stream();
+			return rawVehicleEventsNewCollection.find({ _id: { $in: missingDocumentIds } }).stream();
 		},
 
 		onCompleteCallbackFn: async () => {

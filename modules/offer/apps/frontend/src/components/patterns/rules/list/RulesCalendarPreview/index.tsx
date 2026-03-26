@@ -127,19 +127,18 @@ export function RulesCalendarPreview({ rules }: RulesCalendarPreviewProps) {
 					{selectedDayDetails ? (
 						<>
 							{/* Time Points Summary */}
-							<Surface>
+							<Surface style={{ flexShrink: 0 }}>
 								<Section gap="sm">
 									<Text size="lg" weight="semibold">
 										{selectedDayDetails.finalTimePoints.length} horários ativos
 									</Text>
 									<Divider />
-
 									<DayPeriodsTimepoints timepoints={selectedDayDetails.finalTimePoints as HHMM[]} />
 								</Section>
 							</Surface>
 
 							{/* Applied Rules Details */}
-							<Surface>
+							<Surface overflow="auto">
 								<Section gap="sm">
 									<Text size="lg" weight="semibold">Regras Aplicadas</Text>
 									<Divider />

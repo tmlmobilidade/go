@@ -1,7 +1,7 @@
 /* * */
 
 import { simplifiedApexOnBoardSalesNew } from '@tmlmobilidade/databases';
-import { invalidateRides, parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-apex-pckg-common';
+import { invalidateRides, parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-apex-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
 import { BatchWriter } from '@tmlmobilidade/writers';

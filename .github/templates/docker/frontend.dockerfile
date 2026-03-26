@@ -60,6 +60,9 @@ RUN npm ci
 
 # Build the app
 COPY --from=pruner /app/out/full/ .
+
+RUN npx @tmlmobilidade/repo-version --output=/app/modules/${MODULE}/apps/${APP}/package.json
+
 RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 
 

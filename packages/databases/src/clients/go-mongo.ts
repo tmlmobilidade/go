@@ -48,9 +48,16 @@ export class GOMongoClient {
 	 * This method is called internally by the service and should not be used directly.
 	 */
 	private async connect() {
-		Logger.info('Connecting to GOMongoClient...');
+		Logger.info('[GOMongoClient] Connecting to database...');
 		const connectionString = await this.getConnectionString();
-		this.client = new MongoClient(connectionString);
+		this.client = new MongoClient(connectionString, {
+			connectTimeoutMS: 10_000,
+			directConnection: process.env.GO_MONGO_TUNNEL_ENABLED === 'true',
+			maxPoolSize: 20,
+			minPoolSize: 2,
+			readPreference: 'secondaryPreferred',
+			serverSelectionTimeoutMS: 10_000,
+		});
 		this.client.on('close', () => {
 			console.warn('[GOMongoClient] Database connection closed unexpectedly.');
 		});
@@ -74,44 +81,52 @@ export class GOMongoClient {
 		//
 		// Validate required environment variables
 
-		if (process.env.GODB_MONGO_TUNNEL_ENABLED !== 'true' && process.env.GODB_MONGO_TUNNEL_ENABLED !== 'false') {
-			throw new Error('Missing GODB_MONGO_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting GODB_MONGO_TUNNEL_ENABLED to "true" or "false".');
+		if (process.env.GO_MONGO_TUNNEL_ENABLED !== 'true' && process.env.GO_MONGO_TUNNEL_ENABLED !== 'false') {
+			throw new Error('Missing GO_MONGO_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting GO_MONGO_TUNNEL_ENABLED to "true" or "false".');
 		}
 
-		if (!process.env.GODB_MONGO_HOST || !process.env.GODB_MONGO_PORT) {
-			throw new Error('Missing GODB_MONGO_HOST or GODB_MONGO_PORT');
+		if (!process.env.GO_MONGO_HOST_1 || !process.env.GO_MONGO_PORT_1) {
+			throw new Error('Missing GO_MONGO_HOST_1 or GO_MONGO_PORT_1');
 		}
 
-		if (process.env.GODB_MONGO_TUNNEL_ENABLED === 'false') {
-			return `mongodb://${process.env.GODB_MONGO_USER}:${process.env.GODB_MONGO_PASSWORD}@${process.env.GODB_MONGO_HOST}:${process.env.GODB_MONGO_PORT}`;
+		if (!process.env.GO_MONGO_HOST_2 || !process.env.GO_MONGO_PORT_2) {
+			throw new Error('Missing GO_MONGO_HOST_2 or GO_MONGO_PORT_2');
+		}
+
+		if (!process.env.GO_MONGO_HOST_3 || !process.env.GO_MONGO_PORT_3) {
+			throw new Error('Missing GO_MONGO_HOST_3 or GO_MONGO_PORT_3');
+		}
+
+		if (process.env.GO_MONGO_TUNNEL_ENABLED === 'false') {
+			return `mongodb://${process.env.GO_MONGO_USER}:${process.env.GO_MONGO_PASSWORD}@${process.env.GO_MONGO_HOST_1}:${process.env.GO_MONGO_PORT_1},${process.env.GO_MONGO_HOST_2}:${process.env.GO_MONGO_PORT_2},${process.env.GO_MONGO_HOST_3}:${process.env.GO_MONGO_PORT_3}/`;
 		}
 
 		// SSH required
-		if (!process.env.GODB_MONGO_TUNNEL_LOCAL_PORT) {
-			throw new Error('Missing GODB_MONGO_TUNNEL_LOCAL_PORT');
+		if (!process.env.GO_MONGO_TUNNEL_LOCAL_PORT) {
+			throw new Error('Missing GO_MONGO_TUNNEL_LOCAL_PORT');
 		}
 
-		if (!process.env.GODB_MONGO_TUNNEL_SSH_HOST || !process.env.GODB_MONGO_TUNNEL_SSH_USERNAME) {
+		if (!process.env.GO_MONGO_TUNNEL_SSH_HOST || !process.env.GO_MONGO_TUNNEL_SSH_USERNAME) {
 			throw new Error('Missing SSH config');
 		}
 
 		const sshConfig: SshConfig = {
 			forwardOptions: {
-				dstAddr: process.env.GODB_MONGO_HOST,
-				dstPort: Number(process.env.GODB_MONGO_PORT),
+				dstAddr: process.env.GO_MONGO_HOST_1,
+				dstPort: Number(process.env.GO_MONGO_PORT_1),
 				srcAddr: 'localhost',
-				srcPort: Number(process.env.GODB_MONGO_TUNNEL_LOCAL_PORT),
+				srcPort: Number(process.env.GO_MONGO_TUNNEL_LOCAL_PORT),
 			},
 			serverOptions: {
-				port: Number(process.env.GODB_MONGO_TUNNEL_LOCAL_PORT),
+				port: Number(process.env.GO_MONGO_TUNNEL_LOCAL_PORT),
 			},
 			sshOptions: {
 				agent: process.env.SSH_AUTH_SOCK,
-				host: process.env.GODB_MONGO_TUNNEL_SSH_HOST,
+				host: process.env.GO_MONGO_TUNNEL_SSH_HOST,
 				keepaliveCountMax: 3,
 				keepaliveInterval: 10_000,
 				port: 22,
-				username: process.env.GODB_MONGO_TUNNEL_SSH_USERNAME,
+				username: process.env.GO_MONGO_TUNNEL_SSH_USERNAME,
 			},
 			tunnelOptions: {
 				autoClose: false,
@@ -134,7 +149,7 @@ export class GOMongoClient {
 			throw new Error('[GOMongoClient] Failed to retrieve SSH tunnel address.');
 		}
 
-		return `mongodb://${process.env.GODB_MONGO_USER}:${process.env.GODB_MONGO_PASSWORD}@localhost:${addr.port}`;
+		return `mongodb://${process.env.GO_MONGO_USER}:${process.env.GO_MONGO_PASSWORD}@localhost:${addr.port}/`;
 	}
 
 	//

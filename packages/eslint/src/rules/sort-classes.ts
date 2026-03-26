@@ -1,6 +1,5 @@
 /* * */
 
-import perfectionist from 'eslint-plugin-perfectionist';
 import { type Config } from 'eslint/config';
 
 /**
@@ -9,11 +8,9 @@ import { type Config } from 'eslint/config';
 export const sortClassesConfig: Config[] = [
 
 	{
-		files: ['**/*.{ts}'],
-		plugins: {
-			perfectionist,
-		},
+		files: ['**/*.{js,ts}'],
 		rules: {
+			'@stylistic/lines-between-class-members': 'off',
 			'perfectionist/sort-classes': [
 				'error',
 				// Variables and functions: camelCase
@@ -21,34 +18,56 @@ export const sortClassesConfig: Config[] = [
 					fallbackSort: { order: 'asc', type: 'subgroup-order' },
 					groups: [
 						'index-signature',
+						// 'static-block',
 
-						['static-property', 'static-accessor-property'],
-						['static-get-method', 'static-set-method'],
+						// static properties
+						{ group: 'static-public-readonly-property', newlinesInside: 0 },
+						{ group: 'static-public-property', newlinesInside: 0 },
+						{ group: 'static-protected-readonly-property', newlinesInside: 0 },
+						{ group: 'static-protected-property', newlinesInside: 0 },
+						{ group: 'static-private-readonly-property', newlinesInside: 0 },
+						{ group: 'static-private-property', newlinesInside: 0 },
+						{ group: 'static-property', newlinesInside: 0 },
 
-						['protected-static-property', 'protected-static-accessor-property'],
-						['protected-static-get-method', 'protected-static-set-method'],
+						// abstract properties
+						{ group: 'abstract-public-readonly-property', newlinesInside: 0 },
+						{ group: 'abstract-public-property', newlinesInside: 0 },
+						{ group: 'abstract-protected-readonly-property', newlinesInside: 0 },
+						{ group: 'abstract-protected-property', newlinesInside: 0 },
+						{ group: 'abstract-private-readonly-property', newlinesInside: 0 },
+						{ group: 'abstract-private-property', newlinesInside: 0 },
+						{ group: 'abstract-property', newlinesInside: 0 },
 
-						['private-static-property', 'private-static-accessor-property'],
-						['private-static-get-method', 'private-static-set-method'],
+						// public properties
+						{ group: 'public-override-readonly-property', newlinesInside: 0 },
+						{ group: 'public-override-property', newlinesInside: 0 },
+						{ group: 'public-readonly-property', newlinesInside: 0 },
+						{ group: 'public-property', newlinesInside: 0 },
+						{ group: 'property', newlinesInside: 0 },
 
-						'static-block',
+						// protected properties
+						{ group: 'protected-override-readonly-property', newlinesInside: 0 },
+						{ group: 'protected-override-property', newlinesInside: 0 },
+						{ group: 'protected-readonly-property', newlinesInside: 0 },
+						{ group: 'protected-property', newlinesInside: 0 },
 
-						// normal properties
-						['property', 'accessor-property'],
-
-						['get-method', 'set-method'],
-
-						// abstract protected properties grouped together here
-						['protected-abstract-property'],
-
-						// then regular protected properties
-						['protected-property', 'protected-accessor-property'],
-						['protected-get-method', 'protected-set-method'],
-
-						['private-property', 'private-accessor-property'],
-						['private-get-method', 'private-set-method'],
+						// private properties
+						{ group: 'private-override-readonly-property', newlinesInside: 0 },
+						{ group: 'private-override-property', newlinesInside: 0 },
+						{ group: 'private-readonly-property', newlinesInside: 0 },
+						{ group: 'private-property', newlinesInside: 0 },
 
 						'constructor',
+
+						// get methods
+						{ group: 'get-method', newlinesInside: 1 },
+						{ group: 'protected-get-method', newlinesInside: 1 },
+						{ group: 'private-get-method', newlinesInside: 1 },
+
+						// set methods
+						{ group: 'set-method', newlinesInside: 1 },
+						{ group: 'protected-set-method', newlinesInside: 1 },
+						{ group: 'private-set-method', newlinesInside: 1 },
 
 						['static-method', 'static-function-property'],
 						['protected-static-method', 'protected-static-function-property'],
@@ -60,7 +79,9 @@ export const sortClassesConfig: Config[] = [
 
 						'unknown',
 					],
-					newlinesBetween: 2,
+					newlinesBetween: 1,
+					newlinesInside: 1,
+					partitionByComment: true,
 					type: 'alphabetical',
 				},
 			],

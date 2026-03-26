@@ -34,7 +34,7 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"mongodb": "7.1.0"
+		"mongodb": "7.1.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
