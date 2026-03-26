@@ -37,7 +37,7 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 	private static _instance: null | Promise<SimplifiedVehicleEventsNewClass> = null;
 
 	public override readonly databaseName = 'operation';
-	public override readonly orderBy = '(created_at, trip_id)';
+	public override readonly orderBy = 'created_at, trip_id';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'simplified_vehicle_events';
 
