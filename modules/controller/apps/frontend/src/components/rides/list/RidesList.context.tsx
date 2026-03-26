@@ -73,15 +73,17 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const [pinsEnabled, setPinsEnabled] = useState<boolean>(false);
 	const { data: pinsData } = useSWR<string[], Error>(API_ROUTES.auth.PINS_CONTROLLER, { refreshInterval: 1000 });
 
+	// Fetch rides by pin ids if the pinsData is available, otherwise skip fetching.
 	const { data: ridesByPinIdsData } = useSWR<RideNormalized[], Error>(
 		pinsData !== undefined ? ['rides-by-pin-ids', pinsData] as const : null,
+		// The fetcher sends a POST request with pinIds to fetch ride data.
 		async ([, pinIds]: readonly ['rides-by-pin-ids', string[]]) => {
 			if (pinIds.length === 0) return [];
 			const res = await fetchData<RideNormalized[]>(API_ROUTES.controller.RIDES_PINS, 'POST', { pinIds });
 			if (res.error != null || res.data == null) throw new Error(res.error ?? 'Failed to load rides by pin ids');
 			return res.data;
 		},
-		{ refreshInterval: 1000 },
+		{ refreshInterval: 1000 }, // Poll every second to refresh the data.
 	);
 	//
 	// B. Fetch data
