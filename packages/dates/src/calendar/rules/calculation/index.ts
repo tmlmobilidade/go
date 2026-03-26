@@ -1,5 +1,5 @@
 import type { DayContext, RuleApplication } from './types.js';
-import type { Event, EventReplacementRule, ManualRule, OperationalDate, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
+import type { Event, EventReplacementRule, HHMM, ManualRule, OperationalDate, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
 
 import { calendarKey, calendarWeekday } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
@@ -70,7 +70,7 @@ export function computeActiveRules(
 	const replacement = findReplacementForDate(date, replacementRules);
 
 	// 1) Base timepoints
-	let timepoints: Set<string>;
+	let timepoints: Set<HHMM>;
 	let appliedRuleIds: string[];
 
 	if (replacement) {
@@ -106,7 +106,7 @@ export function computeActiveRules(
 
 	const result: RuleApplication = {
 		appliedRuleIds,
-		timepoints: Array.from(timepoints).sort() || [],
+		timepoints: Array.from(timepoints).sort() as HHMM[],
 	};
 
 	return result;

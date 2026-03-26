@@ -1,7 +1,6 @@
-import type { Event, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
-
 import { calendarKey, CalendarKey, datesFromCalendarKey } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
+import { type Event, HHMM, type ScheduleRule, timeToMinutes, type YearPeriod } from '@tmlmobilidade/types';
 
 import { computeActiveRules } from '../calculation/index.js';
 import { DayRuleDetail, DayScheduleDetail } from './types.js';
@@ -22,10 +21,10 @@ function buildDayScheduleDetail(
 	const includeRules: DayRuleDetail[] = [];
 	const excludeRules: DayRuleDetail[] = [];
 	const replacementRules: DayRuleDetail[] = [];
-	const excludedTimePoints = new Map<string, ScheduleRule>();
+	const excludedTimePoints = new Map<HHMM, ScheduleRule>();
 
 	// Collect all timepoints from include rules (before exclusions)
-	const allIncludeTimePoints = new Set<string>();
+	const allIncludeTimePoints = new Set<HHMM>();
 
 	for (const rule of appliedRules) {
 		const isReplacement = rule.kind === 'event_replacement';
@@ -93,13 +92,7 @@ function buildDayScheduleDetail(
 /**
  * Helper to check if a time falls within a range (inclusive start, exclusive end)
  */
-function isTimeInRange(time: string, start: string, end: string): boolean {
-	// Convert HH:mm to minutes for comparison
-	const timeToMinutes = (t: string): number => {
-		const [h, m] = t.split(':').map(Number);
-		return h * 60 + m;
-	};
-
+function isTimeInRange(time: HHMM, start: HHMM, end: HHMM): boolean {
 	const timeMinutes = timeToMinutes(time);
 	const startMinutes = timeToMinutes(start);
 	const endMinutes = timeToMinutes(end);

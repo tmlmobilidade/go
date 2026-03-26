@@ -1,6 +1,6 @@
 import type { DayContext } from './types.js';
 
-import { type EventReplacementRule, type ManualRule, type OperationalDate, type ScheduleRule } from '@tmlmobilidade/types';
+import { type EventReplacementRule, HHMM, type ManualRule, type OperationalDate, type ScheduleRule, timeToMinutes } from '@tmlmobilidade/types';
 
 import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matchers.js';
 
@@ -74,18 +74,6 @@ export function applyReplacementManualExcludes(
 }
 
 /**
- * Converts HH:MM time string to total minutes since midnight.
- * Helper function for time window calculations.
- *
- * @param hhmm - Time string in HH:MM format (validated by Zod)
- * @returns Total minutes (e.g., "09:30" → 570)
- */
-function hhmmToMinutes(hhmm: string): number {
-	const [h, m] = hhmm.split(':');
-	return Number(h) * 60 + Number(m);
-}
-
-/**
  * Removes all time points that fall within a specified time window.
  *
  * Handles midnight crossing: if end < start, the window wraps around midnight
@@ -108,17 +96,17 @@ function hhmmToMinutes(hhmm: string): number {
  * ```
  */
 function removeTimePointsByWindow(
-	timepoints: Set<string>,
-	startHHMM: string,
-	endHHMM: string,
+	timepoints: Set<HHMM>,
+	startHHMM: HHMM,
+	endHHMM: HHMM,
 ): void {
-	const start = hhmmToMinutes(startHHMM);
-	const end = hhmmToMinutes(endHHMM);
+	const start = timeToMinutes(startHHMM);
+	const end = timeToMinutes(endHHMM);
 
 	const crossesMidnight = end < start;
 
 	for (const tp of Array.from(timepoints)) {
-		const t = hhmmToMinutes(tp);
+		const t = timeToMinutes(tp);
 
 		const inWindow = crossesMidnight
 			? (t >= start || t < end)
@@ -155,7 +143,7 @@ function removeTimePointsByWindow(
  */
 export function applyEventRestrictions(
 	date: OperationalDate,
-	timepoints: Set<string>,
+	timepoints: Set<HHMM>,
 	appliedRuleIds: string[],
 	rules: ScheduleRule[],
 ): void {

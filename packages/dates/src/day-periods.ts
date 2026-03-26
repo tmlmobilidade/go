@@ -8,16 +8,18 @@ import { DAY_PERIOD_TIME_RANGES, DayPeriod, HHMM, timeToMinutes } from '@tmlmobi
 export function resolveDayPeriod(timepoint: HHMM): DayPeriod {
 	const totalMinutes = timeToMinutes(timepoint);
 
-	for (const [period, range] of Object.entries(DAY_PERIOD_TIME_RANGES) as Array<[DayPeriod, { end: HHMM, start: HHMM }]>) {
-		const startMinutes = timeToMinutes(range.start);
-		const endMinutes = timeToMinutes(range.end);
+	for (const [period, ranges] of Object.entries(DAY_PERIOD_TIME_RANGES) as Array<[DayPeriod, Array<{ end: HHMM, start: HHMM }>]>) {
+		for (const range of ranges) {
+			const startMinutes = timeToMinutes(range.start);
+			const endMinutes = timeToMinutes(range.end);
 
-		if (totalMinutes >= startMinutes && totalMinutes <= endMinutes) {
-			return period;
+			if (totalMinutes >= startMinutes && totalMinutes <= endMinutes) {
+				return period;
+			}
 		}
 	}
 
-	// Fallback (should not happen with valid ranges)
+	// Fallback (should not happen if ranges cover the full operational day)
 	return 'N';
 }
 
