@@ -34,7 +34,7 @@ export const RawVehicleEventCcflV1PayloadSchema = z.object({
 	}),
 });
 
-export type RawVehicleEventPayloadCcflV1 = z.infer<typeof RawVehicleEventCcflV1PayloadSchema>;
+export type RawVehicleEventCcflV1Payload = z.infer<typeof RawVehicleEventCcflV1PayloadSchema>;
 
 /* * */
 

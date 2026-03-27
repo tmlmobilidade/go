@@ -6,7 +6,7 @@ import { RawApexTransactionEntityBaseSchema } from '../raw-apex-transaction-base
 
 /* * */
 
-export const RawApexTransactionPayloadValidationV20Schema = z.object({
+export const RawApexTransactionValidationV20PayloadSchema = z.object({
 	cardInfo: z.object({
 		cardIssuer: z.number(),
 		cardNetworkID: z.string(),
@@ -90,7 +90,7 @@ export const RawApexTransactionPayloadValidationV20Schema = z.object({
  * or not, and with which conditions. A validation also contains information about the card holder's card, the vehicle,
  * the validator machine, the route, and the time and location of the validation.
  */
-export type RawApexValidationV20 = z.infer<typeof RawApexValidationV20Schema>;
+export type RawApexTransactionValidationV20 = z.infer<typeof RawApexTransactionValidationV20PayloadSchema>;
 
 /* * */
 

@@ -34,7 +34,7 @@ export const RawVehicleEventCapV1PayloadSchema = z.object({
 	}),
 });
 
-export type RawVehicleEventPayloadCapV1 = z.infer<typeof RawVehicleEventCapV1PayloadSchema>;
+export type RawVehicleEventCapV1Payload = z.infer<typeof RawVehicleEventCapV1PayloadSchema>;
 
 /* * */
 
