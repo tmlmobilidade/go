@@ -1,10 +1,10 @@
 /* * */
 
-import { type ParsedTransactionEntityV2, type UnparsedTransactionEntityV2 } from '@tmlmobilidade/types';
+import { ApexTransactionEntity, type ParsedTransactionEntityV2, type UnparsedTransactionEntityV2 } from '@tmlmobilidade/types';
 
 /* * */
 
-export function parseApexTransactionEntityV20(doc: UnparsedTransactionEntityV2): null | ParsedTransactionEntityV2 {
+export function parseApexTransaction(doc: ApexTransactionEntity): null | SimplifiedApexValidation {
 	try {
 		//
 
