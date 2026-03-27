@@ -1,4 +1,6 @@
+export * from '@/apex/simplified/any-simplified-apex.js';
 export * from '@/apex/simplified/apex-validation-status.js';
+export * from '@/apex/simplified/simplified-apex-banking-taps.js';
 export * from '@/apex/simplified/simplified-apex-inspection-decision.js';
 export * from '@/apex/simplified/simplified-apex-inspection.js';
 export * from '@/apex/simplified/simplified-apex-location.js';
