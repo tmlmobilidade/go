@@ -5,14 +5,12 @@ import { z } from 'zod';
 
 /* * */
 
-export const RawApexTransactionValidationV30PayloadSchema = z.object({
-	cardInfo: z.object({
-		cardIssuer: z.number(),
-		cardNetworkID: z.string(),
-		cardNumber: z.number(),
-		cardPhysicalType: z.number(),
-		cardSerialNumber: z.string(),
-		cardTypeID: z.string(),
+export const RawApexTransactionLocationV30PayloadSchema = z.object({
+	countersInfo: z.object({
+		countersTransactionContext: z.number(),
+		paperSaleAckCounter: z.number(),
+		paperSaleCounter: z.number(),
+		validationCounter: z.number(),
 	}),
 	mac: z.object({
 		aseCounterValue: z.number(),
@@ -33,22 +31,6 @@ export const RawApexTransactionValidationV30PayloadSchema = z.object({
 		networkID: z.string(),
 		operatorLongID: z.string(),
 	}),
-	serviceInfo: z.object({
-		journeyID: z.string(),
-		lineLongID: z.string(),
-		outOfBoundsType: z.number(),
-		patternLongID: z.string(),
-		stopLongID: z.string(),
-		validatorID: z.number(),
-		vehicleID: z.number(),
-		zoneLongID: z.string(),
-	}),
-	signedData: z.object({
-		contractBinaryRead: z.string(),
-		eventBinaryRead: z.string(),
-		eventBinaryWritten: z.string(),
-		raw: z.string(),
-	}),
 	transactionInfo: z.object({
 		apexTransactionType: z.number(),
 		apexTransactionVersion: z.literal('3.0'),
@@ -56,21 +38,17 @@ export const RawApexTransactionValidationV30PayloadSchema = z.object({
 		transactionGroupId: z.string(),
 		transactionId: z.string(),
 	}),
-	validationInfo: z.object({
-		calendarID: z.string(),
-		contractNumber: z.number(),
-		eventType: z.number(),
-		greylistItemsData: z.array(z.any()),
-		productLongID: z.string(),
-		profilesUsedData: z.array(z.any()),
-		spatialValidityLongID: z.string(),
-		tickLoadDate: z.string(),
-		tickLoadMachCode: z.number(),
-		tickLoadNumbDaily: z.number(),
-		unitsRemaining: z.number(),
-		validationStatus: z.number(),
-		validationType: z.number(),
-		validityPeriodID: z.string(),
+	validationServiceInfo: z.object({
+		blockID: z.string(),
+		dutyID: z.string(),
+		journeyID: z.string(),
+		lineLongID: z.string(),
+		onBehalfOfOperatorLongID: z.string(),
+		outOfBoundsType: z.number(),
+		patternLongID: z.string(),
+		stopLongID: z.string(),
+		validatorID: z.number(),
+		vehicleID: z.number(),
 	}),
 	versionInfo: z.object({
 		actionListsVersion: z.string(),
@@ -82,13 +60,13 @@ export const RawApexTransactionValidationV30PayloadSchema = z.object({
 	}),
 });
 
-export type RawApexTransactionValidationV30Payload = z.infer<typeof RawApexTransactionValidationV30PayloadSchema>;
+export type RawApexTransactionLocationV30Payload = z.infer<typeof RawApexTransactionLocationV30PayloadSchema>;
 
 /* * */
 
-export const RawApexTransactionValidationV30Schema = RawApexTransactionBaseSchema.extend({
-	payload: RawApexTransactionValidationV30PayloadSchema,
-	version: z.literal('apex-validation-3.0'),
+export const RawApexTransactionLocationV30Schema = RawApexTransactionBaseSchema.extend({
+	payload: RawApexTransactionLocationV30PayloadSchema,
+	version: z.literal('apex-location-3.0'),
 });
 
-export type RawApexTransactionValidationV30 = z.infer<typeof RawApexTransactionValidationV30Schema>;
+export type RawApexTransactionLocationV30 = z.infer<typeof RawApexTransactionLocationV30Schema>;

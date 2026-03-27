@@ -1,2 +1,1 @@
-export * from '@/apex/raw/validations/validation-v20.js';
-export * from '@/apex/raw/validations/validation-v30.js';
+export * from '@/apex/raw/locations/location-v30.js';
