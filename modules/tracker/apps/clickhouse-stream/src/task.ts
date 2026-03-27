@@ -43,7 +43,8 @@ export async function processVehicleEvent(databaseOperation: ChangeStreamInsertD
 	//
 	// Write the new vehicle event document to the SimplifiedVehicleEvents collection
 
-	await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: invalidateRides });
+	// await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: invalidateRides });
+	await writer.write(newSimplifiedVehicleEventDocument);
 
 	//
 	// Publish the heartbeats for each agency
