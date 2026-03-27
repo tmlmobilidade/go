@@ -26,8 +26,6 @@ export class RidesSharedController {
 
 		const parsedQuery = GetRidesBatchQuerySchema.parse(request.query);
 
-		console.log('RidesSharedController.getBatch - parsedQuery:', parsedQuery);
-
 		//
 		// Detect which agency_ids the user has access to,
 		// based on their permissions. If none, return an empty array.
@@ -85,8 +83,6 @@ export class RidesSharedController {
 		// Fetch the rides batch from the database
 
 		const ridesBatch = await rides.aggregate(pipeline);
-
-		console.log('RidesSharedController.getBatch - ridesBatch count:', ridesBatch?.length ?? 0);
 
 		//
 		// Send the response
