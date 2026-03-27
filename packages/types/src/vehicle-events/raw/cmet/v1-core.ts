@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const RawVehicleEventCmetV1PayloadSchema = z.object({
+export const RawVehicleEventCmetV1CorePayloadSchema = z.object({
 	header: z.object({
 		gtfsRealtimeVersion: z.literal('2.0'),
 		incrementality: z.literal('DIFFERENTIAL'),
@@ -46,13 +46,13 @@ export const RawVehicleEventCmetV1PayloadSchema = z.object({
 	}),
 });
 
-export type RawVehicleEventCmetV1Payload = z.infer<typeof RawVehicleEventCmetV1PayloadSchema>;
+export type RawVehicleEventCmetV1CorePayload = z.infer<typeof RawVehicleEventCmetV1CorePayloadSchema>;
 
 /* * */
 
-export const RawVehicleEventCmetV1Schema = RawVehicleEventBaseSchema.extend({
-	payload: RawVehicleEventCmetV1PayloadSchema,
-	version: z.literal('cmet-v1'),
+export const RawVehicleEventCmetV1CoreSchema = RawVehicleEventBaseSchema.extend({
+	payload: RawVehicleEventCmetV1CorePayloadSchema,
+	version: z.literal('cmet-v1-core'),
 });
 
-export type RawVehicleEventCmetV1 = z.infer<typeof RawVehicleEventCmetV1Schema>;
+export type RawVehicleEventCmetV1Core = z.infer<typeof RawVehicleEventCmetV1CoreSchema>;
