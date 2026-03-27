@@ -1,2 +1,1 @@
-export * from '@/apex/raw/validations/validation-v20.js';
-export * from '@/apex/raw/validations/validation-v30.js';
+export * from '@/apex/raw/banking-taps/banking-tap-v40.js';
