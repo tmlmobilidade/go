@@ -1,0 +1,30 @@
+/* * */
+/* SQUARE */
+
+.square {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 20px;
+	min-height: 20px;
+	padding: 2px 6px;
+	border-radius: var(--border-radius-sm);
+	border-width: 1px;
+	border-style: solid;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1;
+	font-variant-numeric: tabular-nums;
+}
+
+.filled {
+	color: var(--color-status-success-primary);
+	background-color: var(--color-status-success-contrast);
+	border-color: var(--color-status-success-primary);
+}
+
+.empty {
+	color: var(--color-status-danger-primary);
+	background-color: var(--color-status-danger-contrast);
+	border-color: var(--color-status-danger-primary);
+}

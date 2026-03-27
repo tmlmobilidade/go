@@ -1,4 +1,5 @@
 export * from './Alert';
+export * from './AnalysisSquare';
 export * from './AppLogos';
 export { default as Badge } from './Badge';
 export * from './Breadcrumbs';
