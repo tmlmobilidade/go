@@ -1,12 +1,12 @@
 /* * */
 
 import { clampCoordinate } from '@tmlmobilidade/geo';
-import { type RawVehicleEventCmetV1, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { type RawVehicleEventCmetV1Core, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { roundToInt } from '@tmlmobilidade/utils';
 
 /* * */
 
-export const parseRawVehicleEventCmetV1 = (doc: RawVehicleEventCmetV1): null | SimplifiedVehicleEvent => {
+export function parseRawVehicleEventCmetV1Core(doc: RawVehicleEventCmetV1Core): null | SimplifiedVehicleEvent {
 	const vehicle = doc.payload.vehicle;
 	// Validate coordinates before parsing the rest of the event.
 	const latitude = clampCoordinate(vehicle.position.latitude);
