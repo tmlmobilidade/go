@@ -55,6 +55,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	// B. Transform data
 
 	const { data: allSamsData, error: allSamsError, isLoading: allSamsLoading } = useSWR<Sam[], Error>(API_ROUTES.controller.SAMS_LIST, { refreshInterval: 5000 });
+	console.log('allSamsData', allSamsData);
 
 	//
 	// C. Handle actions
