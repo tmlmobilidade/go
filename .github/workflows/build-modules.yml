@@ -196,6 +196,7 @@ jobs:
           node-version: '24'
 
       - name: Install dependencies
+        working-directory: ${{ github.workspace }}
         run: npm install --package-lock-only
 
       - name: Save package-lock.json as artifact
