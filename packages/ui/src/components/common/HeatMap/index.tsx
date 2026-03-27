@@ -25,7 +25,7 @@ function GetTooltipLabel({ date, value }: { date: string, value: null | number }
 	if (value === null) {
 		return date;
 	}
-	return `${date} · ${value}`;
+	return `${date} — ${value}`;
 }
 
 /* * */
