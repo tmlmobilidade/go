@@ -327,6 +327,15 @@ const fleetActions: PermissionConfig = {
 	title: 'Permissões de Veículos',
 };
 
+const samsActions: PermissionConfig = {
+	actions: [
+		{ action: 'read', description: 'Permite ver Sams', label: 'Ver Sams' },
+	],
+	description: 'As ações que o utilizador pode realizar na gestão de Sams.',
+	scope: PermissionCatalog.all.sams.scope,
+	title: 'Permissões de Sams',
+};
+
 /* * */
 
 export const permissionsConfig = [
@@ -350,6 +359,7 @@ export const permissionsConfig = [
 	eventsActions,
 	linesActions,
 	holidaysActions,
+	samsActions,
 	// topicActions,
 	// proposedChangesActions,
 ];
