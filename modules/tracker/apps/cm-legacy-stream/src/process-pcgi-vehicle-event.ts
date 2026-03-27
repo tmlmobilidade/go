@@ -9,7 +9,7 @@ import { BatchWriter } from '@tmlmobilidade/writers';
 /* * */
 
 const writer = new BatchWriter<RawVehicleEvent>({
-	batch_size: 500,
+	batch_size: 100,
 	batch_timeout: 10_000,
 	idle_timeout: 10_000,
 	insertFn: async (data) => {
