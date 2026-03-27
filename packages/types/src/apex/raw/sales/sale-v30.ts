@@ -54,7 +54,7 @@ export const RawApexTransactionSaleV30PayloadSchema = z.object({
 		raw: z.string(),
 	}),
 	transactionInfo: z.object({
-		apexTransactionType: z.number(),
+		apexTransactionType: z.literal(3),
 		apexTransactionVersion: z.string(),
 		transactionDate: z.string(),
 		transactionGroupId: z.string(),
