@@ -5,6 +5,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
 import { transformPcgiVehicleEventLog } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { type RawVehicleEvent } from '@tmlmobilidade/types';
 import { BatchWriter, type PerformInTimeChunksItem } from '@tmlmobilidade/utils';
 
@@ -45,15 +46,35 @@ export async function syncPcgidbLogVehicleEvents(timeChunk: PerformInTimeChunksI
 	Logger.divider(`LOG [${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
 
 	//
-	// Prepare the queries to compare documents from each database
-	// in the current timestamp chunk.
+	// Implement a simplified version of the replication process, since there is no possibility
+	// of comparing documents by ID. Only check the count of documents in each database for the
+	// current timestamp chunk, and if they are different, sync all of them.
 
-	const pcgidbLegacyLogQuery = {
+	const countStepTimer = new Timer();
+
+	const sourceQuery = {
 		millis: {
 			$gte: chunkStartDate.unix_timestamp,
 			$lte: chunkEndDate.unix_timestamp,
 		},
 	};
+
+	const sourceDbCount = await pcgidbLegacy.VehicleEventsLog.countDocuments(sourceQuery);
+
+	const destinationDbCount = await rawVehicleEventsNew.count({
+		created_at: {
+			$gte: chunkStartDate.unix_timestamp,
+			$lte: chunkEndDate.unix_timestamp,
+		},
+		version: 'cmet-v1-log',
+	});
+
+	if (sourceDbCount === destinationDbCount) {
+		Logger.success(`[LOG] MATCH: Found the same number of documents in both databases: ${sourceDbCount} Source = ${destinationDbCount} Destination (${countStepTimer.get()})`);
+		return;
+	}
+
+	Logger.info(`[LOG] MISMATCH: Document count was different for both databases: ${sourceDbCount} Source != ${destinationDbCount} Destination (${countStepTimer.get()})`);
 
 	//
 	// Sync all documents in the current timestamp chunk. We query the Source database for all documents
@@ -62,7 +83,7 @@ export async function syncPcgidbLogVehicleEvents(timeChunk: PerformInTimeChunksI
 	// because they are impossible to calculate without fetching and parsing all documents,
 	// so we just upsert them in the Destination database and the DB takes care of deduplication.
 
-	const pcgidbLegacyLogStream = pcgidbLegacy.VehicleEventsLog.find(pcgidbLegacyLogQuery).stream();
+	const pcgidbLegacyLogStream = pcgidbLegacy.VehicleEventsLog.find(sourceQuery).stream();
 
 	for await (const document of pcgidbLegacyLogStream) {
 		const parsedDocuments = transformPcgiVehicleEventLog(document);
