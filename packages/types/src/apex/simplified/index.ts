@@ -1,3 +1,4 @@
+export * from '@/apex/simplified/apex-validation-status.js';
 export * from '@/apex/simplified/simplified-apex-inspection-decision.js';
 export * from '@/apex/simplified/simplified-apex-inspection.js';
 export * from '@/apex/simplified/simplified-apex-location.js';
