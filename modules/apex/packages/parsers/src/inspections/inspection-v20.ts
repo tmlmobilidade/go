@@ -2,11 +2,11 @@
 
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RawApexTransactionBankingTapV40, type SimplifiedApexBankingTap } from '@tmlmobilidade/types';
+import { type RawApexTransactionInspectionV20, type SimplifiedApexInspection } from '@tmlmobilidade/types';
 
 /* * */
 
-export function parseRawApexTransactionBankingTapV40(doc: RawApexTransactionBankingTapV40): null | SimplifiedApexBankingTap {
+export function parseRawApexTransactionInspectionV20(doc: RawApexTransactionInspectionV20): null | SimplifiedApexInspection {
 	try {
 		//
 
@@ -36,24 +36,24 @@ export function parseRawApexTransactionBankingTapV40(doc: RawApexTransactionBank
 			_id: doc.payload.transactionInfo.transactionId,
 			agency_id: doc.payload.operatorInfo.operatorLongID,
 			apex_version: doc.payload.versionInfo.apexVersion,
-			banking_token: '',
-			card_brand: 0,
-			card_pan: '',
+			card_serial_number: doc.payload.cardInfo.cardSerialNumber,
+			control_destination_stop_id: doc.payload.controlServiceInfo.controlDestinationStopLongID,
+			control_origin_stop_id: doc.payload.controlServiceInfo.controlOriginStopLongID,
+			control_status: doc.payload.controlInfo.controlStatus,
 			created_at: transactionDate,
 			device_id: doc.payload.operatorInfo.deviceID,
-			event_type: null,
+			environment_status: doc.payload.controlInfo.environmentStatus,
+			inspection_id: null,
 			is_ok: false,
-			is_ok_pcgi: doc.is_ok,
-			line_id: doc.payload.serviceInfo.lineLongID,
+			is_ok_pcgi: false,
+			line_id: doc.payload.controlServiceInfo.lineLongID,
 			mac_ase_counter_value: doc.payload.mac.aseCounterValue,
 			mac_sam_serial_number: doc.payload.mac.samSerialNumber,
-			pattern_id: doc.payload.serviceInfo.patternLongID,
-			product_id: doc.payload.tapInInfo.productLongID,
+			pattern_id: doc.payload.controlServiceInfo.patternLongID,
+			product_id: doc.payload.controlInfo.productLongID,
 			received_at: doc.created_at,
-			stop_id: doc.payload.serviceInfo.stopLongID,
-			trip_id: doc.payload.serviceInfo.journeyID,
-			units_qty: doc.payload.tapInInfo.groupDimension,
-			vehicle_id: doc.payload.serviceInfo.vehicleID,
+			trip_id: doc.payload.controlServiceInfo.journeyID,
+			vehicle_id: doc.payload.controlServiceInfo.vehicleID,
 		};
 	} catch (error) {
 		console.error(`Error parsing simplified APEX Validation. Transaction ID: "${doc.payload.transactionInfo.transactionId}"`, error.message);

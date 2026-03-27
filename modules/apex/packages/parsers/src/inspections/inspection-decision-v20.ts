@@ -2,11 +2,11 @@
 
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RawApexTransactionBankingTapV40, type SimplifiedApexBankingTap } from '@tmlmobilidade/types';
+import { type RawApexTransactionInspectionDecisionV20, type SimplifiedApexInspectionDecision } from '@tmlmobilidade/types';
 
 /* * */
 
-export function parseRawApexTransactionBankingTapV40(doc: RawApexTransactionBankingTapV40): null | SimplifiedApexBankingTap {
+export function parseRawApexTransactionInspectionDecisionV20(doc: RawApexTransactionInspectionDecisionV20): null | SimplifiedApexInspectionDecision {
 	try {
 		//
 
@@ -36,24 +36,15 @@ export function parseRawApexTransactionBankingTapV40(doc: RawApexTransactionBank
 			_id: doc.payload.transactionInfo.transactionId,
 			agency_id: doc.payload.operatorInfo.operatorLongID,
 			apex_version: doc.payload.versionInfo.apexVersion,
-			banking_token: '',
-			card_brand: 0,
-			card_pan: '',
 			created_at: transactionDate,
 			device_id: doc.payload.operatorInfo.deviceID,
-			event_type: null,
+			final_control_status: doc.payload.controlAckInfo.finalControlStatus,
+			inspection_decision_id: doc.payload.controlAckInfo.corrControlTransactionID,
 			is_ok: false,
 			is_ok_pcgi: doc.is_ok,
-			line_id: doc.payload.serviceInfo.lineLongID,
 			mac_ase_counter_value: doc.payload.mac.aseCounterValue,
 			mac_sam_serial_number: doc.payload.mac.samSerialNumber,
-			pattern_id: doc.payload.serviceInfo.patternLongID,
-			product_id: doc.payload.tapInInfo.productLongID,
 			received_at: doc.created_at,
-			stop_id: doc.payload.serviceInfo.stopLongID,
-			trip_id: doc.payload.serviceInfo.journeyID,
-			units_qty: doc.payload.tapInInfo.groupDimension,
-			vehicle_id: doc.payload.serviceInfo.vehicleID,
 		};
 	} catch (error) {
 		console.error(`Error parsing simplified APEX Validation. Transaction ID: "${doc.payload.transactionInfo.transactionId}"`, error.message);
