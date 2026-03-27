@@ -149,11 +149,9 @@ export function RidesList() {
 		<Pane header={[
 			<RidesListHeader />,
 			<RidesListFiltersBar />,
+			<HeatMap />,
 		]}
 		>
-			<Section>
-				<HeatMap />
-			</Section>
 			<Divider />
 
 			<Section>

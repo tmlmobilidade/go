@@ -4,8 +4,9 @@
 
 .wrapper {
 	width: 100%;
+	min-width: 100%;
 	min-height: 100px;
-	overflow-x: auto;
+	overflow: auto hidden;
 }
 
 .root {
@@ -19,6 +20,6 @@
 	display: block;
 	flex-shrink: 0;
 	min-height: 100px;
-	margin: var(--size-spacing-sm) 0;
+	margin: var(--size-spacing-md) 0;
 	margin-inline: auto;
 }
