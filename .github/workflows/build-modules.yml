@@ -7,6 +7,26 @@ name: 'Build Modules'
 on:
   workflow_dispatch:
     inputs:
+      module:
+        description: 'Module to build'
+        required: false
+        default: all
+        type: choice
+        options:
+          - all
+          - alerts
+          - apex
+          - auth
+          - controller
+          - dates
+          - exporter
+          - locations
+          - performance
+          - plans
+          - stops
+          - tracker
+          - offer
+          - fleet
       build_all:
         description: 'Build all modules (ignores file changes)'
         required: false
@@ -175,6 +195,8 @@ jobs:
         uses: ./.github/actions/discover-modules
         with:
           modules-apps: ${{ env.MODULES_APPS }}
+          selected-module: ${{ github.event_name == 'workflow_dispatch' && inputs.module || 'all' }}
+          build-all: ${{ github.event_name == 'workflow_dispatch' && inputs.build_all || false }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
