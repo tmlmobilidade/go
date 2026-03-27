@@ -62,7 +62,7 @@ export async function syncPcgidbLogVehicleEvents(timeChunk: PerformInTimeChunksI
 	const sourceDbCount = await pcgidbLegacy.VehicleEventsLog.countDocuments(sourceQuery);
 
 	const destinationDbCount = await rawVehicleEventsNew.count({
-		created_at: {
+		received_at: {
 			$gte: chunkStartDate.unix_timestamp,
 			$lte: chunkEndDate.unix_timestamp,
 		},
