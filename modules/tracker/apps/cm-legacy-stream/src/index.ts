@@ -1,6 +1,7 @@
 /* * */
 
-import { processPcgiVehicleEvent } from '@/process-pcgi-vehicle-event.js';
+import { processPcgiVehicleEventCore } from '@/process-pcgi-vehicle-event-core.js';
+import { processPcgiVehicleEventLog } from '@/process-pcgi-vehicle-event-log.js';
 import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
 
 /* * */
@@ -14,8 +15,8 @@ import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
 	// Watch for changes to the MongoDB collections
 	// and integrate those documents immediately.
 
-	pcgidbLegacy.VehicleEventsCore.watch().on('change', processPcgiVehicleEvent);
-	pcgidbLegacy.VehicleEventsLog.watch().on('change', processPcgiVehicleEvent);
+	pcgidbLegacy.VehicleEventsCore.watch().on('change', processPcgiVehicleEventCore);
+	pcgidbLegacy.VehicleEventsLog.watch().on('change', processPcgiVehicleEventLog);
 
 	//
 })();

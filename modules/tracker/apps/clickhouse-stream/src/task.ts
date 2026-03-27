@@ -6,7 +6,7 @@ import { invalidateRides } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { type ChangeStreamInsertDocument } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
-import { BatchWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 

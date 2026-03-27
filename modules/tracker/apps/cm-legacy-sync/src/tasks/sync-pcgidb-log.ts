@@ -3,11 +3,10 @@
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
-import { transformPcgiVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-shared';
+import { transformPcgiVehicleEventLog } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { type RawVehicleEvent } from '@tmlmobilidade/types';
-import { type PerformInTimeChunksItem } from '@tmlmobilidade/utils';
-import { BatchWriter } from '@tmlmobilidade/writers';
+import { BatchWriter, type PerformInTimeChunksItem } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -66,7 +65,7 @@ export async function syncPcgidbLogVehicleEvents(timeChunk: PerformInTimeChunksI
 	const pcgidbLegacyLogStream = pcgidbLegacy.VehicleEventsLog.find(pcgidbLegacyLogQuery).stream();
 
 	for await (const document of pcgidbLegacyLogStream) {
-		const parsedDocuments = transformPcgiVehicleEvent(document);
+		const parsedDocuments = transformPcgiVehicleEventLog(document);
 		for (const parsedDocument of parsedDocuments) {
 			await writer.write(parsedDocument);
 		}

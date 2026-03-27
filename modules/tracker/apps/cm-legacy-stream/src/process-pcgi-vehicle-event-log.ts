@@ -1,10 +1,10 @@
 /* * */
 
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
-import { transformPcgiVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-shared';
+import { transformPcgiVehicleEventLog } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { type RawVehicleEvent } from '@tmlmobilidade/types';
-import { BatchWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -27,7 +27,7 @@ const writer = new BatchWriter<RawVehicleEvent>({
 
 /* * */
 
-export async function processPcgiVehicleEvent(databaseOperation) {
+export async function processPcgiVehicleEventLog(databaseOperation) {
 	//
 
 	//
@@ -43,7 +43,7 @@ export async function processPcgiVehicleEvent(databaseOperation) {
 	// and transform the vehicle timestamp into an operational date.
 	// Skip the operation if the document is not valid.
 
-	const parsedDocuments = transformPcgiVehicleEvent(databaseOperation.fullDocument);
+	const parsedDocuments = transformPcgiVehicleEventLog(databaseOperation.fullDocument);
 
 	for (const parsedDocument of parsedDocuments) {
 		await writer.write(parsedDocument);
