@@ -2,32 +2,32 @@
 
 import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
-import { type ClickHouseColumn } from '@/types/index.js';
+import { type ClickHouseSchema } from '@/types/index.js';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-const tableSchema: ClickHouseColumn<SimplifiedVehicleEvent>[] = [
-	// Required Fields
-	{ name: '_id', type: 'String' },
-	{ name: 'agency_id', type: 'String' },
-	{ name: 'created_at', type: 'UInt64' },
-	{ name: 'latitude', type: 'Float64' },
-	{ name: 'longitude', type: 'Float64' },
-	{ name: 'received_at', type: 'UInt64' },
-	{ name: 'trip_id', type: 'String' },
-	{ name: 'vehicle_id', type: 'String' },
+const tableSchema: ClickHouseSchema<SimplifiedVehicleEvent> = {
+	_id: { type: 'String' },
+	agency_id: { type: 'String' },
+	created_at: { type: 'Int64' },
+	latitude: { type: 'Float64' },
+	longitude: { type: 'Float64' },
+	received_at: { type: 'Int64' },
+	trip_id: { type: 'String' },
+	vehicle_id: { type: 'String' },
 	// Optional Fields
-	{ name: 'bearing', type: 'Nullable(Float64)' },
-	{ name: 'current_status', type: 'Nullable(String)' },
-	{ name: 'door', type: 'Nullable(String)' },
-	{ name: 'driver_id', type: 'Nullable(String)' },
-	{ name: 'extra_trip_id', type: 'Nullable(String)' },
-	{ name: 'odometer', type: 'Nullable(Float64)' },
-	{ name: 'pattern_id', type: 'Nullable(String)' },
-	{ name: 'stop_id', type: 'Nullable(String)' },
-];
+	bearing: { type: 'Nullable(Int64)' },
+	current_status: { type: 'Nullable(String)' },
+	door: { type: 'Nullable(String)' },
+	driver_id: { type: 'Nullable(String)' },
+	extra_trip_id: { type: 'Nullable(String)' },
+	odometer: { type: 'Nullable(Int64)' },
+	pattern_id: { type: 'Nullable(String)' },
+	speed: { type: 'Nullable(Int64)' },
+	stop_id: { type: 'Nullable(String)' },
+};
 
 /* * */
 

@@ -190,7 +190,6 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 		// Validate required properties before attempting to connect
 		if (!this.databaseName) throw new Error('MONGODB: databaseName is required.');
 		if (!this.collectionName) throw new Error('MONGODB: collectionName is required.');
-		if (!this.indexDescription) throw new Error('MONGODB: indexDescription is required and cannot be empty.');
 		// Connect to the MongoDB client
 		this.client = await this.connectToClient();
 		this.database = this.client.db(this.databaseName);
