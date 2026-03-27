@@ -134,7 +134,7 @@ jobs:
     steps:
       - name: Check if branch has open PR
         id: check
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             if (context.eventName !== 'push') {
@@ -168,7 +168,7 @@ jobs:
     steps:
       # # #
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       # # #
       - name: Discover modules and apps
         id: discover
@@ -188,12 +188,13 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
+          package-manager-cache: false
 
       - name: Install dependencies
         run: npm install --package-lock-only

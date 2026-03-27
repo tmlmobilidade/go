@@ -17,7 +17,7 @@
 	"dependencies": {
 		"@mantine/core": "^8.3.18",
 		"@mantine/dates": "8.3.18",
-		"@tabler/icons-react": "3.40.0",
+		"@tabler/icons-react": "3.41.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/strings": "*",
