@@ -10,6 +10,25 @@ import styles from './styles.module.css';
 
 import { data as defaultHeatMapData } from './data';
 
+/* * */
+
+/** Mantine maps lower values to the first color, higher to the last — order is light → dark on theme chart palette. */
+const HeatmapThemeColors = [
+	'var(--heatmap-stop-1)',
+	'var(--heatmap-stop-2)',
+	'var(--heatmap-stop-3)',
+	'var(--heatmap-stop-4)',
+	'var(--heatmap-stop-5)',
+] as const;
+
+function GetTooltipLabel({ date, value }: { date: string, value: null | number }) {
+	if (value === null) {
+		return date;
+	}
+	return `${date} · ${value}`;
+}
+
+/* * */
 interface HeatMapProps extends Omit<MantineHeatmapProps, 'data'> {
 	data?: MantineHeatmapProps['data']
 }
@@ -29,18 +48,24 @@ function GetCalendarYearRangeFromData(data: Record<string, number>): { endDate: 
 export function HeatMap({ data = defaultHeatMapData, ...props }: HeatMapProps) {
 	const calendarRange = GetCalendarYearRangeFromData(data);
 	return (
-		<MantineHeatmap
-			classNames={{ ...styles, ...props.classNames }}
-			{...props}
-			data={data}
-			endDate={props.endDate ?? calendarRange.endDate}
-			gap={5}
-			rectRadius={5}
-			rectSize={15}
-			startDate={props.startDate ?? calendarRange.startDate}
-			withOutsideDates={props.withOutsideDates ?? false}
-			splitMonths
-			withMonthLabels
-		/>
+		<div className={styles.wrapper}>
+			<MantineHeatmap
+				classNames={{ ...styles, ...props.classNames }}
+				{...props}
+				colors={props.colors ?? [...HeatmapThemeColors]}
+				data={data}
+				endDate={props.endDate ?? calendarRange.endDate}
+				gap={5}
+				getTooltipLabel={props.getTooltipLabel ?? GetTooltipLabel}
+				rectRadius={5}
+				rectSize={15}
+				startDate={props.startDate ?? calendarRange.startDate}
+				withOutsideDates={props.withOutsideDates ?? false}
+				withTooltip={props.withTooltip ?? true}
+				withWeekdayLabels={false}
+				splitMonths
+				withMonthLabels
+			/>
+		</div>
 	);
 }

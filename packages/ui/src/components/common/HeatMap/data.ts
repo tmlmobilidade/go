@@ -1,14 +1,17 @@
 export const data = {
-	// 2026 dates, generated, each assigned the value 1.
+	// 2026 sample: UTC calendar days only (matches Mantine heatmap). Day index 1…n for a visible ramp.
 	...(() => {
 		const dates: { [date: string]: number } = {};
-		const startDate = new Date('2026-01-01');
-		const endDate = new Date('2026-12-31');
-		for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-			const month = String(d.getMonth() + 1).padStart(2, '0');
-			const day = String(d.getDate()).padStart(2, '0');
-			const datestr = `${d.getFullYear()}-${month}-${day}`;
-			dates[datestr] = 1;
+		const startUtc = Date.UTC(2026, 0, 1);
+		const endUtc = Date.UTC(2026, 11, 31);
+		let dayIndex = 0;
+		for (let t = startUtc; t <= endUtc; t += 86400000) {
+			dayIndex++;
+			const d = new Date(t);
+			const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+			const day = String(d.getUTCDate()).padStart(2, '0');
+			const datestr = `${d.getUTCFullYear()}-${month}-${day}`;
+			dates[datestr] = dayIndex;
 		}
 		return dates;
 	})(),

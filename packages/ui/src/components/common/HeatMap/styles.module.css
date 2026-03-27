@@ -1,14 +1,23 @@
 /* stylelint-disable at-rule-no-unknown */
 /* * */
-/* HEATMAP */
+/* HEATMAP — ramp uses --chart-color-* from theme (data-theme on html/root) */
 
-.heatmap {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
+.wrapper {
 	width: 100%;
+	overflow-x: auto;
 	min-height: 100px;
-	
-	
+}
+
+.root {
+	/* Lighter → darker with value; palette order matches theme tokens (3,2,1 then 4,5). */
+	--heatmap-stop-1: var(--chart-color-3);
+	--heatmap-stop-2: var(--chart-color-2);
+	--heatmap-stop-3: var(--chart-color-1);
+	--heatmap-stop-4: var(--chart-color-4);
+	--heatmap-stop-5: var(--chart-color-5);
+
+	display: block;
+	flex-shrink: 0;
+	margin-inline: auto;
+	min-height: 100px;
 }
