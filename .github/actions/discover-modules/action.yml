@@ -63,7 +63,7 @@ runs:
 
     - name: Discover modules and apps
       id: discover
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       env:
         MODULES_APPS: ${{ inputs.modules-apps }}
         CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
