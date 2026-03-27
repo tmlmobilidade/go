@@ -1,25 +1,14 @@
+/* stylelint-disable at-rule-no-unknown */
 /* * */
-/* ROOT */
-
-.root {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	min-height: 100px;
-
-	--rect-size: 15px;
-	--rect-radius: 5px;
-
-	& > div {
-		--rect-size: var(--rect-size);
-		--rect-radius: var(--rect-radius);
-	}
-}
-
 /* HEATMAP */
 
 .heatmap {
-	gap: var(--size-spacing-xs);
+	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	width: 100%;
+	min-height: 100px;
+	
+	
 }
