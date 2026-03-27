@@ -1,14 +1,18 @@
 /* * */
 
 import { clampCoordinate } from '@tmlmobilidade/geo';
-import { type RawVehicleEventCcflV1, type SimplifiedVehicleEvent, SimplifiedVehicleEventSchema } from '@tmlmobilidade/types';
+import { type RawVehicleEventCcflV1, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { roundToInt } from '@tmlmobilidade/utils';
 
 /* * */
 
 export const parseRawVehicleEventCcflV1 = (doc: RawVehicleEventCcflV1): null | SimplifiedVehicleEvent => {
 	const vehicle = doc.payload.vehicle;
-	const validationResult = SimplifiedVehicleEventSchema.safeParse({
+	// Validate coordinates before parsing the rest of the event.
+	const latitude = clampCoordinate(vehicle.position.latitude);
+	const longitude = clampCoordinate(vehicle.position.longitude);
+	if (latitude === null || longitude === null) return null;
+	return {
 		_id: doc._id,
 		agency_id: doc.agency_id,
 		bearing: roundToInt(vehicle.position.bearing),
@@ -17,14 +21,14 @@ export const parseRawVehicleEventCcflV1 = (doc: RawVehicleEventCcflV1): null | S
 		door: null,
 		driver_id: null,
 		extra_trip_id: null,
-		latitude: clampCoordinate(vehicle.position.latitude),
-		longitude: clampCoordinate(vehicle.position.longitude),
+		latitude: latitude,
+		longitude: longitude,
+		odometer: null,
 		pattern_id: null,
 		received_at: doc.received_at,
 		speed: roundToInt(vehicle.position.speed),
 		stop_id: vehicle.stop_id ?? null,
 		trip_id: vehicle.trip.trip_id,
 		vehicle_id: vehicle.vehicle.id,
-	});
-	return validationResult.success ? validationResult.data : null;
+	};
 };

@@ -1,14 +1,18 @@
 /* * */
 
 import { clampCoordinate } from '@tmlmobilidade/geo';
-import { type RawVehicleEventCmetV1, type SimplifiedVehicleEvent, SimplifiedVehicleEventSchema } from '@tmlmobilidade/types';
+import { type RawVehicleEventCmetV1, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { roundToInt } from '@tmlmobilidade/utils';
 
 /* * */
 
 export const parseRawVehicleEventCmetV1 = (doc: RawVehicleEventCmetV1): null | SimplifiedVehicleEvent => {
 	const vehicle = doc.payload.vehicle;
-	const validationResult = SimplifiedVehicleEventSchema.safeParse({
+	// Validate coordinates before parsing the rest of the event.
+	const latitude = clampCoordinate(vehicle.position.latitude);
+	const longitude = clampCoordinate(vehicle.position.longitude);
+	if (latitude === null || longitude === null) return null;
+	return {
 		_id: doc._id,
 		agency_id: doc.agency_id,
 		bearing: roundToInt(vehicle.position.bearing),
@@ -17,8 +21,8 @@ export const parseRawVehicleEventCmetV1 = (doc: RawVehicleEventCmetV1): null | S
 		door: vehicle.trigger.door,
 		driver_id: vehicle.vehicle.driverId,
 		extra_trip_id: vehicle.trip?.extraTripId,
-		latitude: clampCoordinate(vehicle.position.latitude),
-		longitude: clampCoordinate(vehicle.position.longitude),
+		latitude: latitude,
+		longitude: longitude,
 		odometer: roundToInt(vehicle.position.odometer),
 		pattern_id: vehicle.trip?.patternId,
 		received_at: doc.received_at,
@@ -26,6 +30,5 @@ export const parseRawVehicleEventCmetV1 = (doc: RawVehicleEventCmetV1): null | S
 		stop_id: vehicle.stopId,
 		trip_id: vehicle.trip?.tripId,
 		vehicle_id: vehicle.vehicle._id,
-	});
-	return validationResult.success ? validationResult.data : null;
+	};
 };
