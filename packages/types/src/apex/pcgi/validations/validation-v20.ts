@@ -5,7 +5,6 @@ import { z } from 'zod';
 /* * */
 
 export const RawApexValidationV20Schema = z.object({
-	_version: z.literal('apex-validation-v2.0'),
 	cardInfo: z.object({
 		cardIssuer: z.number(),
 		cardNetworkID: z.string(),
