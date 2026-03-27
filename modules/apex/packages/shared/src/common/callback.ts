@@ -21,6 +21,13 @@ export type CommonSimplifiedApexDocument = SimplifiedApexLocation | SimplifiedAp
  * @param data An array of SimplifiedApex documents that have been inserted or updated.
  */
 export async function invalidateRides(data: CommonSimplifiedApexDocument[]) {
+	//
+
+	// FOR NOW THIS IS DISABLED UNTIL THE OTHER PACKAGES ARE MIGRATED
+	// TO READ EVENTS AND VALIDATIONS FROM GO
+	return;
+
+	//
 	try {
 		//
 

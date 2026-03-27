@@ -103,8 +103,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 			const parser = PARSER_MAP[sourceDbDocument.version];
 			const parseResult = parser(sourceDbDocument);
 			if (!parseResult) return; // Skip if parsing failed
-			// await writer.write(parseResult, { flushCallback: invalidateRides });
-			await writer.write(parseResult);
+			await writer.write(parseResult, { flushCallback: invalidateRides });
 		},
 
 	});
