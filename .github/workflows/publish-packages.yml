@@ -90,6 +90,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '24'
+          package-manager-cache: false
 
       - name: Install dependencies
         run: npm install --package-lock-only
@@ -143,6 +144,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '24'
+          package-manager-cache: false
           registry-url: 'https://registry.npmjs.org'
       # # #
       - name: Setup Turbo
