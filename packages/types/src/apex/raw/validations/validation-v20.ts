@@ -1,8 +1,7 @@
 /* * */
 
+import { RawApexTransactionBaseSchema } from '@/apex/raw/raw-apex-transaction-base.js';
 import { z } from 'zod';
-
-import { RawApexTransactionEntityBaseSchema } from '../raw-apex-transaction-base.js';
 
 /* * */
 
@@ -83,20 +82,13 @@ export const RawApexTransactionValidationV20PayloadSchema = z.object({
 	}),
 });
 
-/**
- * APEX Validations are APEX transactions of type 11 that are generated when a card holder touches a validator
- * reader (ex: bus validator, subway gate). These validation transactions represent the card holder's right to travel
- * on a given route, line, or vehicle. T11s have statuses that indicate if the card holder was allowed to travel
- * or not, and with which conditions. A validation also contains information about the card holder's card, the vehicle,
- * the validator machine, the route, and the time and location of the validation.
- */
-export type RawApexTransactionValidationV20 = z.infer<typeof RawApexTransactionValidationV20PayloadSchema>;
+export type RawApexTransactionValidationV20Payload = z.infer<typeof RawApexTransactionValidationV20PayloadSchema>;
 
 /* * */
 
-export const RawApexValidationV20Schema = RawApexTransactionEntityBaseSchema.extend({
-	payload: RawApexValidationV20PayloadSchema,
-	version: z.literal('2.0'),
+export const RawApexTransactionValidationV20Schema = RawApexTransactionBaseSchema.extend({
+	payload: RawApexTransactionValidationV20PayloadSchema,
+	version: z.literal('apex-validation-2.0'),
 });
 
-export type RawApexValidationV20 = z.infer<typeof RawApexValidationV20Schema>;
+export type RawApexTransactionValidationV20 = z.infer<typeof RawApexTransactionValidationV20Schema>;
