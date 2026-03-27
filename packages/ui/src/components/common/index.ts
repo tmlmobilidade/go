@@ -7,7 +7,6 @@ export { default as Combobox } from './Combobox';
 export type { DataItem } from './Combobox';
 export * from './ComponentWrapper';
 export * from './Description';
-export * from './HeatMap';
 export * from './LineBadge';
 export * from './LineDisplay';
 export * from './LineName';

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 'use client';
 
 /* * */
@@ -15,7 +16,7 @@ import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
-import { DataTable, DataTableColumn, Divider, ErrorDisplay, HeatMap, OperationalStatusTag, Pane, Section, SeenStatusIndicator, Tag } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, ErrorDisplay, OperationalStatusTag, Pane, SeenStatusIndicator, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -149,20 +150,15 @@ export function RidesList() {
 		<Pane header={[
 			<RidesListHeader />,
 			<RidesListFiltersBar />,
-			<HeatMap />,
 		]}
 		>
-			<Divider />
-
-			<Section>
-				<DataTable
-					columns={columns}
-					onRowClick={handleRowClick}
-					records={ridesListContext.data.filtered}
-					rowIdAccessor="_id"
-					selectedId={decodeURIComponent(params.id ?? '')}
-				/>
-			</Section>
+			<DataTable
+				columns={columns}
+				onRowClick={handleRowClick}
+				records={ridesListContext.data.filtered}
+				rowIdAccessor="_id"
+				selectedId={decodeURIComponent(params.id ?? '')}
+			/>
 		</Pane>
 	);
 
