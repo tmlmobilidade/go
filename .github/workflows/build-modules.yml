@@ -168,7 +168,7 @@ jobs:
     steps:
       # # #
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       # # #
       - name: Discover modules and apps
         id: discover
@@ -188,7 +188,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
