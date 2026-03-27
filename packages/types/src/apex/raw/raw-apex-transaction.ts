@@ -4,12 +4,12 @@ import { z } from 'zod';
 
 /* * */
 
-export const ApexTransactionEntitySchema = z.object({
-	_id: z.string(),
-	createdAt: z.string(),
-	decodeValue: z.string(),
-	isOK: z.boolean(),
-});
+export const RawApexTransactionSchema = z.discriminatedUnion('version', [
+	// RawVehicleEventCapV1Schema,
+	// RawVehicleEventCcflV1Schema,
+	// RawVehicleEventCmetV1Schema,
+	// RawVehicleEventTtslV1Schema,
+]);
 
 /**
  * Represents an APEX transaction entity, which is the PCGI wrapper
@@ -17,4 +17,4 @@ export const ApexTransactionEntitySchema = z.object({
  * is stored as a string and varies based on the type and version
  * of the enclosed APEX transaction.
  */
-export type ApexTransactionEntity = z.infer<typeof ApexTransactionEntitySchema>;
+export type RawApexTransaction = z.infer<typeof RawApexTransactionSchema>;

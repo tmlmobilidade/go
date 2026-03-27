@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const RawVehicleEventPayloadCapV1Schema = z.object({
+export const RawVehicleEventCapV1PayloadSchema = z.object({
 	header: z.object({
 		feed_version: z.string().nullish(),
 		gtfs_realtime_version: z.string(),
@@ -34,12 +34,12 @@ export const RawVehicleEventPayloadCapV1Schema = z.object({
 	}),
 });
 
-export type RawVehicleEventPayloadCapV1 = z.infer<typeof RawVehicleEventPayloadCapV1Schema>;
+export type RawVehicleEventPayloadCapV1 = z.infer<typeof RawVehicleEventCapV1PayloadSchema>;
 
 /* * */
 
 export const RawVehicleEventCapV1Schema = RawVehicleEventBaseSchema.extend({
-	payload: RawVehicleEventPayloadCapV1Schema,
+	payload: RawVehicleEventCapV1PayloadSchema,
 	version: z.literal('cap-v1'),
 });
 

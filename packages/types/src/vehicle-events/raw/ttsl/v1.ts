@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const RawVehicleEventPayloadTtslV1Schema = z.object({
+export const RawVehicleEventTtslV1PayloadSchema = z.object({
 	header: z.object({
 		feed_version: z.string().nullish(),
 		gtfs_realtime_version: z.string(),
@@ -34,12 +34,12 @@ export const RawVehicleEventPayloadTtslV1Schema = z.object({
 	}),
 });
 
-export type RawVehicleEventPayloadTtslV1 = z.infer<typeof RawVehicleEventPayloadTtslV1Schema>;
+export type RawVehicleEventPayloadTtslV1 = z.infer<typeof RawVehicleEventTtslV1PayloadSchema>;
 
 /* * */
 
 export const RawVehicleEventTtslV1Schema = RawVehicleEventBaseSchema.extend({
-	payload: RawVehicleEventPayloadTtslV1Schema,
+	payload: RawVehicleEventTtslV1PayloadSchema,
 	version: z.literal('ttsl-v1'),
 });
 

@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const RawVehicleEventPayloadCcflV1Schema = z.object({
+export const RawVehicleEventCcflV1PayloadSchema = z.object({
 	header: z.object({
 		feed_version: z.string().nullish(),
 		gtfs_realtime_version: z.string(),
@@ -34,12 +34,12 @@ export const RawVehicleEventPayloadCcflV1Schema = z.object({
 	}),
 });
 
-export type RawVehicleEventPayloadCcflV1 = z.infer<typeof RawVehicleEventPayloadCcflV1Schema>;
+export type RawVehicleEventPayloadCcflV1 = z.infer<typeof RawVehicleEventCcflV1PayloadSchema>;
 
 /* * */
 
 export const RawVehicleEventCcflV1Schema = RawVehicleEventBaseSchema.extend({
-	payload: RawVehicleEventPayloadCcflV1Schema,
+	payload: RawVehicleEventCcflV1PayloadSchema,
 	version: z.literal('ccfl-v1'),
 });
 
