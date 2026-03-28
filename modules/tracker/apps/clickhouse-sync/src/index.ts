@@ -28,7 +28,7 @@ async function main() {
 
 		await performInTimeChunks({
 			onChunk: syncVehicleEvents,
-			splitBy: { minutes: 20 },
+			splitBy: { minutes: 10 },
 			startDate: earliestDate.unix_timestamp,
 		});
 
