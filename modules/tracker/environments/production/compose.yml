@@ -1,4 +1,7 @@
 # # #
+# THIS IS THE PRODUCTION COMPOSE FILE #
+# BUT ITS USING THE STAGING IMAGES FOR NOW #
+# # #
 
 name: tmlmobilidade-go-tracker-staging
 
