@@ -1,7 +1,6 @@
 /* * */
 
-import { syncPcgidbCoreVehicleEvents } from '@/tasks/sync-pcgidb-core.js';
-import { syncPcgidbLogVehicleEvents } from '@/tasks/sync-pcgidb-log.js';
+import { syncPcgidbLogVehicleEvents } from '@/sync-pcgidb-log.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
 import { Logger } from '@tmlmobilidade/logger';
@@ -35,7 +34,6 @@ async function main() {
 
 		await performInTimeChunks({
 			onChunk: async (chunk) => {
-				await syncPcgidbCoreVehicleEvents(chunk);
 				await syncPcgidbLogVehicleEvents(chunk);
 			},
 			splitBy: { hours: 1 },
