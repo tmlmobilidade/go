@@ -11,7 +11,7 @@ import { BatchWriter, type PerformInTimeChunksItem, replicate } from '@tmlmobili
 /* * */
 
 const writer = new BatchWriter<SimplifiedVehicleEvent>({
-	batch_size: 10_000,
+	batch_size: 1_000,
 	insertFn: async (data) => {
 		await simplifiedVehicleEventsNew.insert('JSONEachRow', data);
 	},

@@ -50,7 +50,10 @@ export class GOClickHouseClient {
 	private async connect() {
 		Logger.info('[GOClickHouseClient] Connecting to database...');
 		const connectionString = await this.getConnectionString();
-		this.client = createClient({ url: connectionString });
+		this.client = createClient({
+			keep_alive: { enabled: false },
+			url: connectionString,
+		});
 	}
 
 	/**
