@@ -6,8 +6,7 @@ import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
 import { invalidateRides } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { type RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
-import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
-import { BatchWriter } from '@tmlmobilidade/writers';
+import { BatchWriter, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 
 /* * */
 

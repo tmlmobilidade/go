@@ -52,8 +52,10 @@ export interface MongoDBWriterWriteOps<T> {
 	options: MongoDbWriterWriteOptions
 }
 
-/* * */
-
+/**
+ * @deprecated This class is deprecated and should not be used for new implementations.
+ * It is recommended to use the BatchWriter class instead.
+ */
 export class MongoDbWriter<T> {
 	//
 
@@ -61,16 +63,12 @@ export class MongoDbWriter<T> {
 	private BATCH_TIMEOUT_ENABLED = false;
 	private BATCH_TIMEOUT_TIMER: NodeJS.Timeout | null = null;
 	private BATCH_TIMEOUT_VALUE = -1;
-
 	private DATA_BUCKET_ALWAYS_AVAILABLE: MongoDBWriterWriteOps<T>[] = [];
 	private DATA_BUCKET_FLUSH_OPS: MongoDBWriterWriteOps<T>[] = [];
-
 	private DB_COLLECTION: any | null = null;
-
 	private IDLE_TIMEOUT_ENABLED = false;
 	private IDLE_TIMEOUT_TIMER: NodeJS.Timeout | null = null;
 	private IDLE_TIMEOUT_VALUE = -1;
-
 	private SESSION_TIMER = new Timer();
 
 	/* * */
