@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-tracker-cm-legacy-stream",
+	"name": "@tmlmobilidade/go-tracker-cm-sync-core",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -17,12 +17,17 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
+		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/databases": "*",
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-tracker-pckg-databases": "*",
 		"@tmlmobilidade/go-tracker-pckg-shared": "*",
+		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
-		"@tmlmobilidade/utils": "*"
+		"@tmlmobilidade/utils": "*",
+		"luxon": "3.7.2"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

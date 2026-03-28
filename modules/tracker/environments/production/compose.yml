@@ -73,8 +73,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  cm-legacy-stream:
-    image: ghcr.io/tmlmobilidade/go-tracker-cm-legacy-stream:production
+  cm-stream:
+    image: ghcr.io/tmlmobilidade/go-tracker-cm-stream:production
     deploy:
       restart_policy:
         condition: any
@@ -94,8 +94,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  cm-legacy-sync:
-    image: ghcr.io/tmlmobilidade/go-tracker-cm-legacy-sync:production
+  cm-sync:
+    image: ghcr.io/tmlmobilidade/go-tracker-cm-sync:production
     deploy:
       restart_policy:
         condition: any

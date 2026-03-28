@@ -108,8 +108,8 @@ env:
 
     tracker:clickhouse-stream
     tracker:clickhouse-sync
-    tracker:cm-legacy-stream
-    tracker:cm-legacy-sync
+    tracker:cm-stream
+    tracker:cm-sync
     tracker:ttsl-fetch
 
     offer:nginx
