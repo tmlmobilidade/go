@@ -6,6 +6,8 @@ import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
+const DEFAULT_CONCURRENCY = 16;
+
 (async function init() {
 	//
 
@@ -16,6 +18,7 @@ import { Logger } from '@tmlmobilidade/logger';
 	const collection = await rawVehicleEventsNew.getCollection();
 
 	const changeStream = collection.watch();
+	const inFlight = new Set<Promise<void>>();
 
 	for await (const change of changeStream) {
 		//
@@ -29,8 +32,22 @@ import { Logger } from '@tmlmobilidade/logger';
 			continue;
 		}
 
-		await processVehicleEvent(change);
+		const taskPromise = processVehicleEvent(change)
+			.catch((error) => {
+				Logger.error(`[clickhouse-stream] Error processing vehicle event: ${(error as Error).message}`);
+			})
+			.finally(() => {
+				inFlight.delete(taskPromise);
+			});
+
+		inFlight.add(taskPromise);
+
+		if (inFlight.size >= DEFAULT_CONCURRENCY) {
+			await Promise.race(inFlight);
+		}
 	}
+
+	await Promise.allSettled([...inFlight]);
 
 	//
 })();
