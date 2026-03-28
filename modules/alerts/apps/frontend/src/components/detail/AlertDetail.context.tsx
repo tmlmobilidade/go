@@ -244,7 +244,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			isDeleting,
 			isDeletingImage: isDeletingImage,
 			isDirty: form.isDirty(),
-			isLoading: alertLoading || alertImageLoading,
+			isLoading: alertLoading,
 			isLocking: isLocking,
 			isReadOnly,
 			isSaving,
