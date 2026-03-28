@@ -9,9 +9,9 @@ import { BatchWriter } from '@tmlmobilidade/utils';
 /* * */
 
 const writer = new BatchWriter<RawVehicleEvent>({
-	batch_size: 100,
-	batch_timeout: 10_000,
-	idle_timeout: 10_000,
+	batch_size: 500,
+	batch_timeout: 500,
+	idle_timeout: 500,
 	insertFn: async (data) => {
 		const writeOps = data.map(doc => ({
 			updateOne: {
