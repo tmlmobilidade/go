@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-go-tracker-production
+name: tmlmobilidade-go-tracker-staging
 
 services:
 
@@ -36,7 +36,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   clickhouse-stream:
-    image: ghcr.io/tmlmobilidade/go-tracker-clickhouse-stream:production
+    image: ghcr.io/tmlmobilidade/go-tracker-clickhouse-stream:staging
     deploy:
       restart_policy:
         condition: any
@@ -55,7 +55,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   clickhouse-sync:
-    image: ghcr.io/tmlmobilidade/go-tracker-clickhouse-sync:production
+    image: ghcr.io/tmlmobilidade/go-tracker-clickhouse-sync:staging
     deploy:
       restart_policy:
         condition: any
@@ -73,8 +73,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  cm-stream:
-    image: ghcr.io/tmlmobilidade/go-tracker-cm-stream:production
+  cm-stream-core:
+    image: ghcr.io/tmlmobilidade/go-tracker-cm-stream-core:staging
     deploy:
       restart_policy:
         condition: any
@@ -94,8 +94,50 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  cm-sync:
-    image: ghcr.io/tmlmobilidade/go-tracker-cm-sync:production
+  cm-stream-log:
+    image: ghcr.io/tmlmobilidade/go-tracker-cm-stream-log:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    volumes:
+      - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  cm-sync-core:
+    image: ghcr.io/tmlmobilidade/go-tracker-cm-sync-core:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    volumes:
+      - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  cm-sync-log:
+    image: ghcr.io/tmlmobilidade/go-tracker-cm-sync-log:staging
     deploy:
       restart_policy:
         condition: any
@@ -116,7 +158,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   ttsl-fetch:
-    image: ghcr.io/tmlmobilidade/go-tracker-ttsl-fetch:production
+    image: ghcr.io/tmlmobilidade/go-tracker-ttsl-fetch:staging
     deploy:
       restart_policy:
         condition: any
@@ -135,7 +177,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   ccfl-fetch:
-    image: ghcr.io/tmlmobilidade/go-tracker-ccfl-fetch:production
+    image: ghcr.io/tmlmobilidade/go-tracker-ccfl-fetch:staging
     deploy:
       restart_policy:
         condition: any
@@ -154,7 +196,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   cap-fetch:
-    image: ghcr.io/tmlmobilidade/go-tracker-cap-fetch:production
+    image: ghcr.io/tmlmobilidade/go-tracker-cap-fetch:staging
     deploy:
       restart_policy:
         condition: any
