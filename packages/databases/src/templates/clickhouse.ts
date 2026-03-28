@@ -18,6 +18,7 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 
 	protected readonly engine: ClickHouseTableEngine = 'ReplicatedMergeTree';
 	protected readonly orderBy: string = '_id';
+	protected readonly partitionBy: string = 'toYYYYMMDD(fromUnixTimestamp64Milli(created_at))';
 
 	private client: ClickHouseClient;
 
@@ -182,7 +183,6 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 		// Validate the inputs are safe identifiers to prevent SQL injection
 		if (!validateSqlParam(this.databaseName, false)) throw new Error(`CLICKHOUSE [${this.databaseName}]: Unsafe database name provided.`);
 		if (!validateSqlParam(this.tableName, false)) throw new Error(`CLICKHOUSE [${this.tableName}]: Unsafe table name provided.`);
-		if (!validateSqlParam(this.engine, false)) throw new Error(`CLICKHOUSE [${this.engine}]: Unsafe engine type provided.`);
 		// Validate the schema columns are safe identifiers
 		const unsafeColumns = Object.keys(this.schema).filter(key => !validateSqlParam(key, false));
 		if (unsafeColumns.length > 0) throw new Error(`CLICKHOUSE [${this.tableName}]: Unsafe column names provided: ${unsafeColumns.join(', ')}.`);
@@ -193,7 +193,8 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 			CREATE TABLE IF NOT EXISTS "${this.databaseName}"."${this.tableName}" ON CLUSTER default_cluster (
 				${Object.entries<ClickHouseColumn>(this.schema).map(([key, column]) => `${key} ${column.type}`).join(', ')}
 			) ENGINE = ${this.getEngineString()}
-			ORDER BY ${this.orderBy}
+			${this.orderBy ? `ORDER BY ${this.orderBy}` : ''}
+			${this.partitionBy ? `PARTITION BY ${this.partitionBy}` : ''}
 		`;
 		// Perform the query to create the table
 		try {
