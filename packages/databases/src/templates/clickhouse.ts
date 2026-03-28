@@ -18,7 +18,7 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 
 	protected readonly engine: ClickHouseTableEngine = 'ReplicatedMergeTree';
 	protected readonly orderBy: string = '_id';
-	protected readonly partitionBy: string = 'toYYYYMMDD(fromUnixTimestamp64Milli(created_at))';
+	protected readonly partitionBy: null | string = null;
 
 	private client: ClickHouseClient;
 

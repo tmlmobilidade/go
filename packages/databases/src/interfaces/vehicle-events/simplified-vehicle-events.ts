@@ -38,6 +38,7 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 
 	public override readonly databaseName = 'operation';
 	public override readonly orderBy = '(created_at, trip_id)';
+	public override readonly partitionBy = 'toYYYYMMDD(fromUnixTimestamp64Milli(created_at))';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'simplified_vehicle_events';
 
