@@ -52,6 +52,11 @@ server.register(
 			VehiclesController.delete,
 		);
 
+		instance.get(
+			'/positions',
+			VehiclesController.getPositions,
+		);
+
 		next();
 	},
 	{ prefix: NAMESPACE },
