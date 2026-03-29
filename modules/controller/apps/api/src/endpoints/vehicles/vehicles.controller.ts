@@ -18,7 +18,8 @@ export class VehiclesController {
 				trip_id,
 				created_at,
 				latitude,
-				longitude
+				longitude,
+				bearing
 			FROM operation.simplified_vehicle_events
 			WHERE created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL 90 SECOND)
 				AND vehicle_id NOT IN ('', NULL)

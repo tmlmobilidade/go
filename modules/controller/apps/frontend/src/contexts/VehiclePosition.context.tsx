@@ -11,6 +11,7 @@ import useSWR from 'swr';
 
 interface VehiclePositionData {
 	agency_id: string
+	bearing: number
 	created_at: number
 	latitude: number
 	longitude: number
@@ -44,7 +45,7 @@ export function useVehiclePositionContext() {
 /* * */
 
 export const VehiclePositionContextProvider = ({ children }: PropsWithChildren) => {
-	const { data: fetchedVehiclePositionData, error, isLoading } = useSWR<VehiclePositionData[], Error>(API_ROUTES.controller.VEHICLES_POSITIONS);
+	const { data: fetchedVehiclePositionData, error, isLoading } = useSWR<VehiclePositionData[], Error>(API_ROUTES.controller.VEHICLES_POSITIONS, { refreshInterval: 5000 });
 
 	const vehiclesGeoJsonFeatureCollection: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties> | undefined = useMemo(() => {
 		const collection = getBaseGeoJsonFeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>();
@@ -83,6 +84,7 @@ export function TransformVehicleDataIntoGeoJsonFeature(vehiclePositionData: Vehi
 		id: vehiclePositionData.vehicle_id,
 		properties: {
 			agency_id: vehiclePositionData.agency_id,
+			bearing: vehiclePositionData.bearing,
 			id: vehiclePositionData.vehicle_id,
 			lat: vehiclePositionData.latitude,
 			lon: vehiclePositionData.longitude,
