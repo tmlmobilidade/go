@@ -1,16 +1,18 @@
 'use client';
 
+import { useSamsDetailContext } from '@/contexts/SamsDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CloseButton, keepUrlParams, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, IdTag, keepUrlParams, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
 
-export function SamsAnalysisHeader() {
+export function SamsDetailHeader() {
 	//
 	// A. Setup variables
 
 	const router = useRouter();
+	const samDetailContext = useSamsDetailContext();
 
 	//
 	// B. Handle actions
@@ -19,10 +21,13 @@ export function SamsAnalysisHeader() {
 		router.push(keepUrlParams(PAGE_ROUTES.controller.SAMS_LIST));
 	};
 
+	//
+	// C. Render components
+
 	return (
 		<Toolbar>
 			<CloseButton onClick={handleGoBack} type="close" />
-			<Tag label="Análise" variant="muted" />
+			<IdTag id={samDetailContext.data.sam?._id} copyOnClick />
 		</Toolbar>
 	);
 }

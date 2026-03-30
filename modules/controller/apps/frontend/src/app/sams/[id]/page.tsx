@@ -1,12 +1,12 @@
 'use client';
 /* * */
 
-import { SamsAnalysis } from '@/components/sams/analysis/SamsAnalysis';
+import { SamsDetail } from '@/components/sams/detail/SamsDetail';
 
 /* * */
 
 export default function Page() {
 	return (
-		<SamsAnalysis />
+		<SamsDetail />
 	);
 }

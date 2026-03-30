@@ -45,32 +45,32 @@ export class SamsController {
 	}
 
 	/**
-	 * Returns the analysis for a SAM.
+	 * Returns a SAM by ID.
 	 * @param request The Fastify request object.
 	 * @param reply The Fastify reply object.
 	 */
-	static async getAnalysis(request: FastifyRequest, reply: FastifyReply<SamAnalysis[]>) {
+	static async getById(request: FastifyRequest, reply: FastifyReply<Sam>) {
 		//
 		// Validate the request parameters
 
-		const { id } = request.params as { id: number };
+		const { id } = request.params as { id: string };
 
-		if (!id) {
+		if (!id || isNaN(Number(id))) {
 			return reply.status(HTTP_STATUS.BAD_REQUEST).send({ data: null, error: 'Missing id parameter.', statusCode: HTTP_STATUS.BAD_REQUEST });
 		}
 
 		//
 		// Fetch the SAM from the database
 
-		const sam = await sams.findById(id);
+		const sam = await sams.findById(Number(id));
 
 		if (!sam) {
 			return reply.status(HTTP_STATUS.NOT_FOUND).send({ data: null, error: 'SAM not found.', statusCode: HTTP_STATUS.NOT_FOUND });
 		}
 
 		//
-		// Return the analysis for the SAM
+		// Return the SAM
 
-		return reply.send({ data: sam.analysis ?? [], error: null, statusCode: HTTP_STATUS.OK });
+		return reply.send({ data: sam, error: null, statusCode: HTTP_STATUS.OK });
 	}
 }

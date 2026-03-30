@@ -1,7 +1,7 @@
 /* * */
 
 import { SamsList } from '@/components/sams/list/SamsList';
-import { SamsAnalysisContextProvider } from '@/contexts/SamsAnalysis.context';
+import { SamsDetailContextProvider } from '@/contexts/SamsDetail.context';
 import { SamsListContextProvider } from '@/contexts/SamsList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
 
@@ -17,9 +17,9 @@ export default async function Layout({ children, params }) {
 					<SamsList />
 				</SamsListContextProvider>,
 
-				<SamsAnalysisContextProvider key="sams-analysis" samId={Number(id)}>
+				<SamsDetailContextProvider key="sams-detail" samId={id}>
 					{children}
-				</SamsAnalysisContextProvider>,
+				</SamsDetailContextProvider>,
 			]}
 		/>
 	);
