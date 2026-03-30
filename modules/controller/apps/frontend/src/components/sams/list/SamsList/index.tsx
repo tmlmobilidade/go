@@ -5,7 +5,7 @@ import { SamsListHeader } from '@/components/sams/list/SamsListHeader';
 import { useSamsListContext } from '@/contexts/SamsList.context';
 import { formatUnixTimestampToDateString } from '@/lib/utils';
 import { Sam } from '@tmlmobilidade/types';
-import { AgencyTag, AnalysisSquareRow, DataTable, DataTableColumn, IdTag, Pane, Tag } from '@tmlmobilidade/ui';
+import { AgencyTag, AnalysisTimeLineRow, DataTable, DataTableColumn, IdTag, Pane, Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -68,7 +68,7 @@ export function SamsList() {
 		},
 		{
 			accessor: 'analysis',
-			render: item => <AnalysisSquareRow analyses={item.analysis ?? []} />,
+			render: item => <AnalysisTimeLineRow analyses={item.analysis ?? []} />,
 			title: 'Análises',
 			width: 1000,
 		},

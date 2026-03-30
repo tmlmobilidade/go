@@ -2,49 +2,60 @@
 
 /* * */
 
+import type { MouseEventHandler } from 'react';
+
 import { type SamAnalysis } from '@tmlmobilidade/types';
 
 import styles from './styles.module.css';
 
 import { cn } from '../../../lib/utils';
+import { analysisSquareHasValues, analysisSquareLabel, analysisSquareTitle } from './analysis-square-shared';
 
 /* * */
 
-const LAST_TYPE_LABEL: Record<NonNullable<SamAnalysis['last_transaction_type']>, string> = {
-	location: 'L',
-	on_board_refund: 'R',
-	on_board_sale: 'S',
-	validation: 'V',
-};
-
 export interface AnalysisSquareProps {
+	/** When set (e.g. one square per calendar day), overrides filled/empty from `value`. */
+	accent?: 'green' | 'orange' | 'red'
 	className?: string
-	/** When neither first nor last transaction id is set, the square uses the empty (red) style. */
-	value: SamAnalysis
+	onClick?: MouseEventHandler<HTMLDivElement>
+	textLabel: string
+	/** Tooltip; when omitted, derived from `value` when present. */
+	title?: string
+	/** When `accent` is set, optional (e.g. empty day). Otherwise required for styling. */
+	value?: SamAnalysis
 }
 
 /* * */
 
-export function AnalysisSquare({ className, value }: AnalysisSquareProps) {
-	const filled = value.last_transaction_id != null || value.first_transaction_id != null;
-	let label = '-';
-	if (filled) {
-		const type = value.last_transaction_type ?? value.first_transaction_type;
-		if (type && LAST_TYPE_LABEL[type]) label = LAST_TYPE_LABEL[type];
-		else label = '•';
-	}
+export function AnalysisSquare({ accent, className, onClick, textLabel, title, value }: AnalysisSquareProps) {
+	const filled = value != null && analysisSquareHasValues(value);
+	const toneClass =
+		accent === 'orange'
+			? styles.accentOrange
+			: accent === 'green'
+				? styles.filled
+				: accent === 'red'
+					? styles.empty
+					: filled
+						? styles.filled
+						: styles.empty;
+	const dataState =
+		accent === 'orange'
+			? 'warning'
+			: accent === 'green' || (accent == null && filled)
+				? 'filled'
+				: 'empty';
 
-	const title = filled
-		? [value.last_transaction_type, value.last_transaction_id].filter(Boolean).join(' · ')
-		: undefined;
+	const resolvedTitle = title ?? (value != null ? analysisSquareTitle(value) : undefined);
 
 	return (
 		<div
-			className={cn(styles.square, filled ? styles.filled : styles.empty, className)}
-			data-state={filled ? 'filled' : 'empty'}
-			title={title}
+			className={cn(styles.square, toneClass, className)}
+			data-state={dataState}
+			onClick={onClick}
+			title={resolvedTitle}
 		>
-			{label}
+			{textLabel}
 		</div>
 	);
 }
@@ -53,9 +64,11 @@ export interface AnalysisSquareRowProps {
 	/** One square per analysis entry, in order. */
 	analyses: SamAnalysis[]
 	className?: string
+	/** Optional click handler. */
+	onClick?: () => void
 }
 
-export function AnalysisSquareRow({ analyses, className }: AnalysisSquareRowProps) {
+export function AnalysisSquareRow({ analyses, className, onClick }: AnalysisSquareRowProps) {
 	if (!analyses?.length) {
 		return <span className={styles.rowEmpty}>sem análises</span>;
 	}
@@ -65,6 +78,8 @@ export function AnalysisSquareRow({ analyses, className }: AnalysisSquareRowProp
 			{analyses.map((value, index) => (
 				<AnalysisSquare
 					key={`${value.first_transaction_id ?? ''}-${value.last_transaction_id ?? ''}-${index}`}
+					onClick={onClick}
+					textLabel={analysisSquareLabel(value)}
 					value={value}
 				/>
 			))}

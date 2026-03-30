@@ -1,0 +1,56 @@
+/* Organized by calendar day */
+
+.organizedByDates {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	max-width: 100%;
+}
+
+.dayGroup {
+	padding: 6px 8px 8px 10px;
+	border-color: var(--color-border-subtle, #e0e0e0);
+	border-style: solid;
+	border-width: 1px;
+	border-left-width: 4px;
+	border-radius: var(--border-radius-sm);
+}
+
+.dayGroupGreen {
+	background-color: var(--color-status-success-contrast);
+	border-left-color: var(--color-status-success-primary);
+}
+
+.dayGroupOrange {
+	background-color: var(--color-status-warning-contrast);
+	border-left-color: var(--color-status-warning-primary);
+}
+
+.dayGroupRed {
+	background-color: var(--color-status-danger-contrast);
+	border-left-color: var(--color-status-danger-primary);
+}
+
+.dayLabel {
+	margin-bottom: 4px;
+	font-size: 11px;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+	line-height: 1.2;
+	text-transform: uppercase;
+	letter-spacing: 2.5px;
+}
+
+.daySquares {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	align-items: center;
+}
+
+.dayGapHint {
+	font-size: 12px;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+	color: var(--color-status-danger-primary);
+}
