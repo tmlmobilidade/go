@@ -1,9 +1,14 @@
 /* * */
 
-import { NoDataLabel } from '@tmlmobilidade/ui';
+import { SamsList } from '@/components/sams/list/SamsList';
+import { SamsListContextProvider } from '@/contexts/SamsList.context';
 
 /* * */
 
 export default function Page() {
-	return <NoDataLabel />;
+	return (
+		<SamsListContextProvider>
+			<SamsList />
+		</SamsListContextProvider>
+	);
 }

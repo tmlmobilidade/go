@@ -23,7 +23,7 @@ server.register(
 		);
 
 		instance.get(
-			'/:id/analysis',
+			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.sams.scope, [PermissionCatalog.all.sams.actions.read]) },
 			(request: FastifyRequest, reply: FastifyReply<SamAnalysis[]>) => SamsController.getAnalysis(request, reply),
 		);

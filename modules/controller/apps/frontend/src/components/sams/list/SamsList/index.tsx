@@ -4,8 +4,10 @@
 import { SamsListHeader } from '@/components/sams/list/SamsListHeader';
 import { useSamsListContext } from '@/contexts/SamsList.context';
 import { formatUnixTimestampToDateString } from '@/lib/utils';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Sam } from '@tmlmobilidade/types';
-import { AgencyTag, AnalysisTimeLineRow, DataTable, DataTableColumn, IdTag, Pane, Tag } from '@tmlmobilidade/ui';
+import { AgencyTag, AnalysisTimeLineRow, DataTable, DataTableColumn, IdTag, keepUrlParams, Pane, Tag } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 
 /* * */
 
@@ -16,6 +18,7 @@ export function SamsList() {
 	// A. Setup variables
 
 	const samsListContext = useSamsListContext();
+	const router = useRouter();
 
 	const columns: DataTableColumn<Sam>[] = [
 		{
@@ -75,7 +78,14 @@ export function SamsList() {
 	];
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const handleRowClick = (item: Sam) => {
+		router.push(keepUrlParams(PAGE_ROUTES.controller.SAMS_DETAIL(item._id.toString())));
+	};
+
+	//
+	// C. Render components
 
 	return (
 		<Pane header={[
@@ -84,6 +94,7 @@ export function SamsList() {
 		>
 			<DataTable
 				columns={columns}
+				onRowClick={handleRowClick}
 				records={samsListContext.data.filtered}
 			/>
 		</Pane>

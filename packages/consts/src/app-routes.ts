@@ -66,6 +66,7 @@ export const PAGE_ROUTES = Object.freeze({
 		RIDES_LIST: `${getAppConfig('controller', 'frontend_url')}/rides`,
 
 		// SAMS
+		SAMS_DETAIL: (id: string) => `${getAppConfig('controller', 'frontend_url')}/sams/${id}`,
 		SAMS_LIST: `${getAppConfig('controller', 'frontend_url')}/sams`,
 	},
 
@@ -284,7 +285,7 @@ export const API_ROUTES = Object.freeze({
 		RIDES_WS: `${getAppConfig('controller', 'api_url')}/rides/ws`,
 
 		// SAMS
-		SAMS_DETAIL_ANALYSIS: (id: string) => `${getAppConfig('controller', 'api_url')}/sams/${id}/analysis`,
+		SAMS_DETAIL: (id: string) => `${getAppConfig('controller', 'api_url')}/sams/${id}`,
 		SAMS_LIST: `${getAppConfig('controller', 'api_url')}/sams`,
 	},
 
