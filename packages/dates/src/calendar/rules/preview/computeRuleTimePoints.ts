@@ -1,4 +1,4 @@
-import type { Event, IsoWeekday, OperationalDate, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
+import type { Event, Holiday, IsoWeekday, OperationalDate, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
 
 import { calendarKey, calendarWeekday } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
@@ -21,6 +21,7 @@ export function computeRuleTimePoints(
 	rule: ScheduleRule,
 	allRules: ScheduleRule[],
 	periods: YearPeriod[],
+	holidays: Holiday[],
 	options?: {
 		events?: Event[]
 	},
@@ -41,7 +42,7 @@ export function computeRuleTimePoints(
 	const affectedWeekdays = new Set<IsoWeekday>();
 	for (const opDate of relevantDates) {
 		const key = calendarKey(Dates.fromOperationalDate(opDate, 'Europe/Lisbon'));
-		affectedWeekdays.add(calendarWeekday(key));
+		affectedWeekdays.add(calendarWeekday(key, holidays));
 	}
 
 	// For replacement rules: return timepoints from the TARGET weekdays
@@ -76,11 +77,12 @@ export function computeRuleTimePoints(
 	const end = Dates.fromJSDate(start).plus({ years: 1 }).js_date;
 	const dateRange = buildOperationalDateRange(start, end);
 
-	const withAll = computeScheduleMap(allRules, dateRange, periods, options?.events);
+	const withAll = computeScheduleMap(allRules, dateRange, periods, holidays, options?.events);
 	const withoutRule = computeScheduleMap(
 		allRules.filter(r => r._id !== rule._id),
 		dateRange,
 		periods,
+		holidays,
 		options?.events,
 	);
 
@@ -89,7 +91,7 @@ export function computeRuleTimePoints(
 	// Check only dates that match the affected weekdays
 	for (const opDate of dateRange) {
 		const key = calendarKey(Dates.fromOperationalDate(opDate, 'Europe/Lisbon'));
-		const weekday = calendarWeekday(key);
+		const weekday = calendarWeekday(key, holidays);
 
 		// Only look at days that match the affected weekdays
 		if (!affectedWeekdays.has(weekday)) continue;
@@ -115,13 +117,14 @@ function computeScheduleMap(
 	rules: ScheduleRule[],
 	dateRange: OperationalDate[],
 	periods: YearPeriod[],
+	holidays: Holiday[],
 	events?: Event[],
 ): Map<string, { timepoints: string[] }> {
 	const result = new Map<string, { timepoints: string[] }>();
 
 	for (const date of dateRange) {
 		const key = calendarKey(Dates.fromOperationalDate(date, 'Europe/Lisbon'));
-		const application = computeActiveRules(date, rules, periods, { events });
+		const application = computeActiveRules(date, rules, periods, holidays, { events });
 		result.set(key, { timepoints: application.timepoints });
 	}
 
