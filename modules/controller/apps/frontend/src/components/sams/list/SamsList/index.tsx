@@ -4,10 +4,8 @@
 import { SamsListHeader } from '@/components/sams/list/SamsListHeader';
 import { useSamsListContext } from '@/contexts/SamsList.context';
 import { formatUnixTimestampToDateString } from '@/lib/utils';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Sam } from '@tmlmobilidade/types';
 import { AgencyTag, AnalysisTimeLineRow, DataTable, DataTableColumn, IdTag, Pane, Tag } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
 
 /* * */
 
@@ -18,7 +16,6 @@ export function SamsList() {
 	// A. Setup variables
 
 	const samsListContext = useSamsListContext();
-	const router = useRouter();
 
 	const columns: DataTableColumn<Sam>[] = [
 		{
