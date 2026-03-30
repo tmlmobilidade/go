@@ -121,7 +121,7 @@ export class PCGIRawClient {
 				port: Number(process.env.PCGI_RAW_TUNNEL_LOCAL_PORT),
 			},
 			sshOptions: {
-				agent: process.env.SSH_AUTH_SOCK,
+				agent: process.env.PCGI_RAW_TUNNEL_SSH_KEY_PATH ? undefined : process.env.SSH_AUTH_SOCK,
 				host: process.env.PCGI_RAW_TUNNEL_SSH_HOST,
 				keepaliveCountMax: 3,
 				keepaliveInterval: 10_000,
