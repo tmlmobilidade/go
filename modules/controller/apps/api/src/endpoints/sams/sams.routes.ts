@@ -2,7 +2,7 @@
 
 import { SamsController } from '@/endpoints/sams/sams.controller.js';
 import { authorizationMiddleware, type FastifyReply, type FastifyRequest, FastifyService } from '@tmlmobilidade/fastify';
-import { PermissionCatalog, type Sam } from '@tmlmobilidade/types';
+import { PermissionCatalog, type Sam, SamAnalysis } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -20,6 +20,12 @@ server.register(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.sams.scope, [PermissionCatalog.all.sams.actions.read]) },
 			(request: FastifyRequest, reply: FastifyReply<Sam[]>) => SamsController.getBatch(request, reply),
+		);
+
+		instance.get(
+			'/:id/analysis',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.sams.scope, [PermissionCatalog.all.sams.actions.read]) },
+			(request: FastifyRequest, reply: FastifyReply<SamAnalysis[]>) => SamsController.getAnalysis(request, reply),
 		);
 
 		next();

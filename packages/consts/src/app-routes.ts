@@ -284,6 +284,7 @@ export const API_ROUTES = Object.freeze({
 		RIDES_WS: `${getAppConfig('controller', 'api_url')}/rides/ws`,
 
 		// SAMS
+		SAMS_DETAIL_ANALYSIS: (id: string) => `${getAppConfig('controller', 'api_url')}/sams/${id}/analysis`,
 		SAMS_LIST: `${getAppConfig('controller', 'api_url')}/sams`,
 	},
 

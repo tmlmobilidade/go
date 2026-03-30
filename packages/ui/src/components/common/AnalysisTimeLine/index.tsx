@@ -32,10 +32,12 @@ export function AnalysisTimeLine({ className, value }: AnalysisTimeLineProps) {
 export interface AnalysisTimeLineRowProps {
 	analyses: SamAnalysis[]
 	className?: string
+	/** Optional click handler. */
+	onClick?: () => void
 }
 
 /** One square per calendar day; color from aggregate state (`buildSections` accent). */
-export function AnalysisTimeLineRow({ analyses, className }: AnalysisTimeLineRowProps) {
+export function AnalysisTimeLineRow({ analyses, className, onClick }: AnalysisTimeLineRowProps) {
 	const sections = useMemo(() => buildSections(analyses ?? []), [analyses]);
 
 	if (!analyses?.length) {
@@ -54,6 +56,7 @@ export function AnalysisTimeLineRow({ analyses, className }: AnalysisTimeLineRow
 					<AnalysisSquare
 						key={section.dayKey}
 						accent={section.accent}
+						onClick={() => onClick}
 						textLabel={section.label}
 						title={dayTitle}
 						value={section.items[0]}
