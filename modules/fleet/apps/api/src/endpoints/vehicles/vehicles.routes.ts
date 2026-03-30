@@ -52,6 +52,17 @@ server.register(
 			VehiclesController.delete,
 		);
 
+		instance.get(
+			'/:id/last-event',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.read]) },
+			VehiclesController.getLastEvent,
+		);
+
+		instance.get(
+			'/positions',
+			VehiclesController.getPositions,
+		);
+
 		next();
 	},
 	{ prefix: NAMESPACE },

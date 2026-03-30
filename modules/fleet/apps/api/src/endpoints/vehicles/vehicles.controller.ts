@@ -1,10 +1,10 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
+import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { vehicles } from '@tmlmobilidade/interfaces';
-import { type CreateVehicleDto, PermissionCatalog, type UpdateVehicleDto, type Vehicle } from '@tmlmobilidade/types';
-import path from 'path';
+import { type CreateVehicleDto, PermissionCatalog, SimplifiedVehicleEvent, type UpdateVehicleDto, type Vehicle } from '@tmlmobilidade/types';
 
 /* * */;
 
@@ -174,5 +174,31 @@ export class VehiclesController {
 		});
 
 		//
+	}
+
+	/**
+	 * Retrieves the last event for a given vehicle.
+	 * @param request Fastify request containing vehicle ID in params
+	 * @param reply Fastify reply
+	 */
+	static async getLastEvent(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedVehicleEvent>) {
+		const lastEvent = await simplifiedVehicleEventsNew.getLastEvent(request.params.id);
+		reply.send({ data: lastEvent, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
+	 * Retrieves the latest position per vehicle from recent simplified vehicle events.
+	 * @param request Fastify request
+	 * @param reply Fastify reply
+	 */
+	static async getPositions(request: FastifyRequest, reply: FastifyReply<SimplifiedVehicleEvent[]>) {
+		const positions = await simplifiedVehicleEventsNew.getPositions();
+		reply
+			.header('access-control-allow-origin', '*')
+			.send({
+				data: positions,
+				error: null,
+				statusCode: HTTP_STATUS.OK,
+			});
 	}
 }
