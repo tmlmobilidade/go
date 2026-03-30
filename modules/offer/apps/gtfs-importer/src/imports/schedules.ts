@@ -1,5 +1,6 @@
 /* * */
 
+import { generateRandomString } from '@tmlmobilidade/strings';
 import { GtfsTMLStopTimes, GtfsTMLTrip, HHMM, type ManualRule, PatternDirection, patternDirectionMapper } from '@tmlmobilidade/types';
 
 import { CalendarRulesCM } from '../config/cm/calendarRules.js';
@@ -83,7 +84,7 @@ export function buildScheduleRulesForRoute(params: {
 					ruleMap.set(ruleKey, existingRule);
 				} else {
 					ruleMap.set(ruleKey, {
-						_id: `${patternKey}-${ruleKey}`,
+						_id: generateRandomString({ length: 5 }),
 						kind: 'manual',
 						operating_mode: 'include',
 						timepoints: [time] as HHMM[],

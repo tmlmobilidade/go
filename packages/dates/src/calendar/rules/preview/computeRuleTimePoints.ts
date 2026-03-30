@@ -47,28 +47,29 @@ export function computeRuleTimePoints(
 
 	// For replacement rules: return timepoints from the TARGET weekdays
 	if (rule.kind === 'event_replacement') {
-		// When same_weekday is true, each event date maps to its own actual weekday
-		const targetWeekdays = rule.same_weekday
-			? affectedWeekdays
-			: new Set<IsoWeekday>(rule.weekdays || []);
-		const targetPeriods = new Set(rule.year_period_ids || []);
+		const addedTimepoints = new Set<string>();
 
-		// Find manual include rules that match the target pattern
-		const timepoints = new Set<string>();
-		for (const r of allRules) {
-			if (r.kind !== 'manual' || r.operating_mode !== 'include') continue;
+		for (const date of rule.dates ?? []) {
+			const withRule = computeActiveRules(date, allRules, periods, holidays, options);
+			const withoutRule = computeActiveRules(
+				date,
+				allRules.filter(r => r._id !== rule._id),
+				periods,
+				holidays,
+				options,
+			);
 
-			// Check if this manual rule applies to the target weekdays/periods
-			const hasMatchingWeekday = r.weekdays?.some(w => targetWeekdays.has(w));
-			const hasMatchingPeriod = r.year_period_ids?.some(p => targetPeriods.has(p));
+			const withSet = new Set(withRule.timepoints);
+			const withoutSet = new Set(withoutRule.timepoints);
 
-			if (hasMatchingWeekday && hasMatchingPeriod) {
-				for (const tp of r.timepoints || []) {
-					timepoints.add(tp);
+			for (const tp of withSet) {
+				if (!withoutSet.has(tp)) {
+					addedTimepoints.add(tp);
 				}
 			}
 		}
-		return timepoints;
+
+		return addedTimepoints;
 	}
 
 	// For restriction rules: compute what was removed on affected weekdays
