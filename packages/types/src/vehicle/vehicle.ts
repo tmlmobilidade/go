@@ -1,31 +1,52 @@
+/* * */
+
 import { DocumentSchema } from '@/_common/document.js';
 import { OperationalDateSchema } from '@/_common/operational-date.js';
 import { z } from 'zod';
 
 import { VehicleEmissionSchema } from './emission.js';
 import { VehiclePropulsionSchema } from './propulsion.js';
-import { VehicleWheelchairSchema } from './wheelchair.js';
-
-/* Example regex for license plates (adjust to your region) */
-const licensePlateRegex = /^([A-Z]{2}[0-9]{2}[A-Z]{2}|[0-9]{2}[A-Z]{2}[0-9]{2})$/;
+import { VehicleTypologySchema } from './typology.js';
 
 /* * */
 
 export const vehicleSchema = DocumentSchema.extend({
+	// Vehicle identification
 	agency_id: z.string(),
-	bikes_allowed: z.boolean().default(false),
-	capacity_seated: z.number().optional(),
-	capacity_standing: z.number().optional(),
-	contactless: z.boolean().default(false),
-	emission_class: z.string(VehicleEmissionSchema),
-	license_plate: z.string().regex(licensePlateRegex, 'Formato de matrícula inválido'),
+	license_plate: z.string(),
 	make: z.string(),
 	model: z.string(),
 	owner: z.string(),
+	registration_date: OperationalDateSchema,
+	start_date: OperationalDateSchema,
+	vehicle_id: z.string(),
+
+	// Vehicle specifications
+	available_seats: z.number().nullable().default(null),
+	available_standing: z.number().nullable().default(null),
+	emission: VehicleEmissionSchema.nullable().default(null),
+	propulsion: VehiclePropulsionSchema.nullable().default(null),
+	typology: VehicleTypologySchema.nullable().default(null),
+
+	// Vehicle functionalities
+	bicycles: z.boolean().default(false),
+	climatization: z.boolean().default(false),
+	consumption_meter: z.boolean().default(false),
+	contactless: z.boolean().default(false),
+	corridor: z.boolean().default(false),
+	external_sound: z.boolean().default(false),
+	folding_system: z.boolean().default(false),
+	front_display: z.boolean().default(false),
+	internal_sound: z.boolean().default(false),
+	kneeling: z.boolean().default(false),
+	lowered_floor: z.boolean().default(false),
+	onboard_monitor: z.boolean().default(false),
 	passenger_counting: z.boolean().default(false),
-	propulsion: z.string(VehiclePropulsionSchema),
-	registration_date: z.string(OperationalDateSchema),
-	wheelchair_acessible: z.string(VehicleWheelchairSchema),
+	ramp: z.boolean().default(false),
+	rear_display: z.boolean().default(false),
+	side_display: z.boolean().default(false),
+	static_information: z.boolean().default(false),
+	wheelchair: z.boolean().default(false),
 });
 
 export const CreateVehicleSchema = vehicleSchema.omit({ created_at: true, updated_at: true });
