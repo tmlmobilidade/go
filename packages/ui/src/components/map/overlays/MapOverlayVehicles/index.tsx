@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 'use client';
 
 /* * */
@@ -9,7 +8,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
 
-import { Indicator } from '../../..';
+import { Indicator } from '../../../display/Indicator';
+import { useMapViewContext } from '../../view/MapViewContext';
 
 /* * */
 
@@ -88,6 +88,7 @@ export function MapOverlayVehicles({ presentBeforeId, showCounter, vehiclesData 
 
 	//
 	// A. Setup variables
+	const mapViewContext = useMapViewContext();
 
 	const [animatedData, setAnimatedData] = useState(vehiclesData);
 	const previousDataRef = useRef<GeoJSON.FeatureCollection>(vehiclesData);
@@ -96,6 +97,14 @@ export function MapOverlayVehicles({ presentBeforeId, showCounter, vehiclesData 
 
 	//
 	// B. Transform data
+
+	useEffect(() => {
+		// Register features for sources in this overlay component
+		if (vehiclesData) mapViewContext.actions.registerOverlaySource(`default-source-vehicles`, vehiclesData);
+		return () => {
+			mapViewContext.actions.unregisterOverlaySource(`default-source-vehicles`);
+		};
+	}, [vehiclesData]);
 
 	useEffect(() => {
 		if (!vehiclesData || vehiclesData.features.length === 0) {
@@ -230,14 +239,14 @@ export function MapOverlayVehicles({ presentBeforeId, showCounter, vehiclesData 
 			{showCounter === 'always' && (
 				<div className={`${styles.vehiclesCounter} ${vehiclesData.features.length === 0 && styles.zeroCount}`}>
 					<Indicator />
-					{vehiclesData.features.length}
+					{vehiclesData.features.length} veículos em movimento
 				</div>
 			)}
 
 			{showCounter === 'positive' && vehiclesData.features.length > 0 && (
 				<div className={styles.vehiclesCounter}>
 					<Indicator />
-					{vehiclesData.features.length}
+					{vehiclesData.features.length} veículos em movimento
 				</div>
 			)}
 

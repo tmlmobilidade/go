@@ -6,14 +6,14 @@
     bottom: 12px;
     left: 15px;
     display: flex;
-    gap:2px;
+    gap: var(--spacing-1);
     align-items: center;
     justify-content: center;
-    height: 20px;
-    padding: 4px 8px 4px 4px;
-    font-size: 10px;
+    height: 30px;
+    padding: 4px 8px 4px 10px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--color-realtime-100);
+    color: var(--color-brand-primary);
     background-color: var(--color-system-background-100);
     border-radius: 1000px;
 }

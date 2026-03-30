@@ -4,9 +4,10 @@
 
 import { useVehiclesDetailContext } from '@/contexts/VehiclesDetail.context';
 import { getBaseGeoJsonFeatureCollection, transformVehicleDataIntoGeoJsonFeature } from '@tmlmobilidade/geo';
-import { Collapsible, MapOverlayVehicles, MapView, Section } from '@tmlmobilidade/ui';
+import { Collapsible, MapOverlayVehicles, MapView } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
+import styles from './styles.module.css';
 /* * */
 
 export function VehicleDetailsMap() {
@@ -30,11 +31,11 @@ export function VehicleDetailsMap() {
 
 	return (
 		<Collapsible description="Última posição reportada do veículo." title="Mapa da posição atual" defaultOpen>
-			<Section>
-				<MapView height={360} id={`VehicleDetailsMap-${vehiclesDetailContext.data.id}`} layers={{ scale: false }} toolbar={false}>
-					<MapOverlayVehicles showCounter="always" vehiclesData={vehiclePositionGeoJson} />
+			<div className={styles.mapWrapper}>
+				<MapView id="VehicleDetailsMap" toolbar={false}>
+					<MapOverlayVehicles vehiclesData={vehiclePositionGeoJson} />
 				</MapView>
-			</Section>
+			</div>
 		</Collapsible>
 	);
 

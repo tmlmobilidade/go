@@ -13,7 +13,7 @@ import useSWR from 'swr';
 interface VehiclePositionContextState {
 	data: {
 		vehiclePosition: SimplifiedVehicleEvent[]
-		vehiclePositionGeoJson: GeoJSON.FeatureCollection<GeoJSON.Point> | undefined
+		vehiclePositionGeoJson: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties> | undefined
 	}
 	flags: {
 		error: Error | undefined
@@ -40,7 +40,7 @@ export const VehiclePositionContextProvider = ({ children }: PropsWithChildren) 
 
 	const vehiclesGeoJsonFeatureCollection: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties> | undefined = useMemo(() => {
 		const collection = getBaseGeoJsonFeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>();
-		fetchedVehiclePositionData?.forEach(vehicle => collection.features.push(transformVehicleDataIntoGeoJsonFeature(vehicle)));
+		fetchedVehiclePositionData?.forEach(position => collection.features.push(transformVehicleDataIntoGeoJsonFeature(position)));
 		return collection;
 	}, [fetchedVehiclePositionData]);
 
@@ -55,7 +55,7 @@ export const VehiclePositionContextProvider = ({ children }: PropsWithChildren) 
 				loading: isLoading,
 			},
 		};
-	}, [fetchedVehiclePositionData, vehiclesGeoJsonFeatureCollection, error, isLoading]);
+	}, [fetchedVehiclePositionData]);
 
 	return (
 		<VehiclePositionContext.Provider value={contextValue}>
