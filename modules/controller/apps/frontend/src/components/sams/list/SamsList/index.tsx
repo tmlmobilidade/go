@@ -3,8 +3,9 @@
 
 import { SamsListHeader } from '@/components/sams/list/SamsListHeader';
 import { useSamsListContext } from '@/contexts/SamsList.context';
-import { type Sam } from '@tmlmobilidade/types';
-import { DataTable, DataTableColumn, IdTag, Pane } from '@tmlmobilidade/ui';
+import { formatUnixTimestampToDateString } from '@/lib/utils';
+import { Sam } from '@tmlmobilidade/types';
+import { AgencyTag, AnalysisSquareRow, DataTable, DataTableColumn, IdTag, Pane, Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -19,9 +20,57 @@ export function SamsList() {
 	const columns: DataTableColumn<Sam>[] = [
 		{
 			accessor: '_id',
-			render: item => <IdTag id={item._id} />,
+			render: item => <IdTag id={item._id} copyOnClick />,
 			title: '#ID',
-			width: 100,
+			width: 150,
+		},
+		{
+			accessor: 'agency_id',
+			render: item => <AgencyTag agencyId={item.agency_id} />,
+			title: 'Operador',
+			width: 80,
+		},
+		{
+			accessor: 'transactions_expected',
+			render: item => <Tag label={item.transactions_expected ? item.transactions_expected.toString() : '-'} />,
+			title: 'Transações esperadas',
+			width: 180,
+		},
+		{
+			accessor: 'transactions_found',
+			render: item => <Tag label={item.transactions_found ? item.transactions_found.toString() : '-'} />,
+			title: 'Transações encontradas',
+			width: 200,
+		},
+		{
+			accessor: 'transactions_missing',
+			render: item => <Tag label={item.transactions_missing ? item.transactions_missing.toString() : '-'} />,
+			title: 'Transações em falta',
+			width: 180,
+		},
+		{
+			accessor: 'seen_first_at',
+			render: item => <Tag label={formatUnixTimestampToDateString(item.seen_first_at)} />,
+			title: 'Primeira vista',
+			width: 180,
+		},
+		{
+			accessor: 'seen_last_at',
+			render: item => <Tag label={formatUnixTimestampToDateString(item.seen_last_at)} />,
+			title: 'Última vista',
+			width: 180,
+		},
+		{
+			accessor: 'system_status',
+			render: item => <Tag label={item.system_status} />,
+			title: 'Estado',
+			width: 150,
+		},
+		{
+			accessor: 'analysis',
+			render: item => <AnalysisSquareRow analyses={item.analysis ?? []} />,
+			title: 'Análises',
+			width: 1000,
 		},
 	];
 
@@ -35,7 +84,7 @@ export function SamsList() {
 		>
 			<DataTable
 				columns={columns}
-				records={samsListContext.data.raw}
+				records={samsListContext.data.filtered}
 			/>
 		</Pane>
 	);

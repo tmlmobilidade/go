@@ -1,6 +1,20 @@
 /* * */
 /* SQUARE */
 
+.row {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	align-items: center;
+	max-width: 100%;
+}
+
+.rowEmpty {
+	font-size: 14px;
+	font-variant-numeric: tabular-nums;
+	color: var(--color-status-danger-primary);
+}
+
 .square {
 	display: inline-flex;
 	align-items: center;
@@ -8,13 +22,13 @@
 	min-width: 20px;
 	min-height: 20px;
 	padding: 2px 6px;
-	border-radius: var(--border-radius-sm);
-	border-width: 1px;
-	border-style: solid;
 	font-size: 12px;
 	font-weight: 600;
-	line-height: 1;
 	font-variant-numeric: tabular-nums;
+	line-height: 1;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: var(--border-radius-sm);
 }
 
 .filled {

@@ -45,17 +45,15 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	const filterSearch = useFilterStateString('search');
 
+	const { data: allSamsData, error: allSamsError, isLoading: allSamsLoading } = useSWR<Sam[], Error>(API_ROUTES.controller.SAMS_LIST, { refreshInterval: 5000 });
+
 	const searchResultsData = useSearch<Sam>({
-		accessors: ['_id', 'remarks'],
-		data: [],
+		accessors: ['_id', 'agency_id'],
+		data: allSamsData ?? [],
 		query: filterSearch.value,
 	});
 
-	//
-	// B. Transform data
-
-	const { data: allSamsData, error: allSamsError, isLoading: allSamsLoading } = useSWR<Sam[], Error>(API_ROUTES.controller.SAMS_LIST, { refreshInterval: 5000 });
-	console.log('allSamsData', allSamsData);
+	console.log('sams 1', searchResultsData[0]);
 
 	//
 	// C. Handle actions
