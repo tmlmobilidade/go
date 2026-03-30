@@ -53,8 +53,6 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 		query: filterSearch.value,
 	});
 
-	console.log('sams 1', searchResultsData[0]);
-
 	//
 	// C. Handle actions
 
