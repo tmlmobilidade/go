@@ -14,8 +14,8 @@ const licensePlateRegex = /^([A-Z]{2}[0-9]{2}[A-Z]{2}|[0-9]{2}[A-Z]{2}[0-9]{2})$
 export const vehicleSchema = DocumentSchema.extend({
 	agency_id: z.string(),
 	bikes_allowed: z.boolean().default(false),
-	capacity_seated: z.number(),
-	capacity_standing: z.number(),
+	capacity_seated: z.number().optional(),
+	capacity_standing: z.number().optional(),
 	contactless: z.boolean().default(false),
 	emission_class: z.string(VehicleEmissionSchema),
 	license_plate: z.string().regex(licensePlateRegex, 'Formato de matrícula inválido'),

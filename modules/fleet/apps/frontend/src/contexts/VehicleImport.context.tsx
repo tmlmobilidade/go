@@ -168,11 +168,9 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 				message: `${createCounter} to create · ${updateCounter} to update`,
 				title: 'File imported',
 			});
-		}
-		catch (err) {
+		} catch (err) {
 			setIsError(err as Error);
-		}
-		finally {
+		} finally {
 			setIsloading(false);
 		}
 	};
@@ -190,8 +188,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 						'POST',
 						item.vehicle,
 					);
-				}
-				else {
+				} else {
 					await fetchData(
 						API_ROUTES.fleet.VEHICLES_DETAIL(item.vehicle._id),
 						'PUT',
@@ -208,11 +205,9 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			});
 
 			closeImportVehicleModal();
-		}
-		catch (err) {
+		} catch (err) {
 			setIsError(err as Error);
-		}
-		finally {
+		} finally {
 			setIsSaving(false);
 		}
 	};
@@ -240,15 +235,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 				isSaving,
 			},
 		}),
-		[
-			importPreview,
-			createdCount,
-			updatedCount,
-			isError,
-			isloading,
-			isSaving,
-			form,
-		],
+		[createdCount, updatedCount, form, importPreview, isError, isloading, isSaving],
 	);
 
 	//

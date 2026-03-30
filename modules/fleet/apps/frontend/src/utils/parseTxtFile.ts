@@ -1,14 +1,15 @@
+/* * */
+
 import { CreateVehicleDto } from '@tmlmobilidade/types';
 
 import { parseVehicleLine } from './parseVehicleLine';
 
+/* * */
+
 export const parseTxtFile = async (file: File): Promise<CreateVehicleDto[]> => {
 	const text = await file.text();
 
-	const lines = text
-		.split('\n')
-		.map(l => l.trim())
-		.filter(Boolean);
+	const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
 
 	if (!lines.length) {
 		throw new Error('Empty file');
@@ -28,9 +29,9 @@ export const parseTxtFile = async (file: File): Promise<CreateVehicleDto[]> => {
 				{},
 			);
 
+			console.log("Capacity seated:", raw.available_seats);
 			return parseVehicleLine(raw);
-		}
-		catch (err) {
+		} catch (err) {
 			throw new Error(
 				`Error parsing line ${index + 2}: ${(err as Error).message}`,
 			);
