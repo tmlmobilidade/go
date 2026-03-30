@@ -52,11 +52,8 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 			SELECT *
 			FROM "${this.databaseName}"."${this.tableName}"
 			WHERE vehicle_id = '${vehicleId}'
-				AND agency_id NOT IN ('', NULL)
-				AND trip_id NOT IN ('', NULL)
-				AND floor(latitude) != 0 AND floor(longitude) != 0
-			ORDER BY agency_id, vehicle_id, trip_id, created_at DESC
-			LIMIT 1 BY vehicle_id
+			ORDER BY created_at DESC
+			LIMIT 1
 		`;
 		const result = await this.queryFromString<SimplifiedVehicleEvent>(query);
 		return result.length > 0 ? result[0] : null;
@@ -76,13 +73,9 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 			SELECT *
 			FROM "${this.databaseName}"."${this.tableName}"
 			WHERE created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL ${secondsAgo} SECOND)
-				AND vehicle_id NOT IN ('', NULL)
-				AND agency_id NOT IN ('', NULL)
-				AND trip_id NOT IN ('', NULL)
-				AND floor(latitude) != 0 AND floor(longitude) != 0
-			ORDER BY agency_id, vehicle_id, trip_id, created_at DESC
-			LIMIT 1 BY vehicle_id
-			`;
+			ORDER BY created_at DESC
+			LIMIT 1;
+		`;
 
 		const result = await this.queryFromString<SimplifiedVehicleEvent>(query);
 		return result;
