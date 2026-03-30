@@ -2,6 +2,7 @@
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { useEventsContext } from '@/contexts/Events.context';
+import { useHolidaysContext } from '@/contexts/Holidays.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { Badge } from '@mantine/core';
 import { IconCancel, IconCheck, IconSwitchHorizontal } from '@tabler/icons-react';
@@ -30,6 +31,7 @@ interface RuleLegendItem {
 export function RulesScheduleView() {
 	const patternDetailContext = usePatternDetailContext();
 	const periodsContext = usePeriodsContext();
+	const holidaysContext = useHolidaysContext();
 	const eventsContext = useEventsContext();
 
 	const [selectedRuleIds, setSelectedRuleIds] = useState<Set<string>>(new Set());
@@ -37,19 +39,20 @@ export function RulesScheduleView() {
 
 	const allRules = useMemo(() => patternDetailContext.data.mergedRules || [], [patternDetailContext.data.mergedRules]);
 	const periods = useMemo(() => periodsContext.data.raw || [], [periodsContext.data.raw]);
+	const holidays = useMemo(() => holidaysContext.data.raw || [], [holidaysContext.data.raw]);
 
 	const timePointsByRuleId = useMemo(() => {
 		const map = new Map<string, Set<string>>();
 
 		for (const rule of allRules) {
 			if (!rule._id) continue;
-			const timepoints = computeRuleTimePoints(rule, allRules, periods, {
+			const timepoints = computeRuleTimePoints(rule, allRules, periods, holidays, {
 				events: eventsContext.data.raw,
 			});
 			map.set(rule._id, timepoints);
 		}
 		return map;
-	}, [allRules, eventsContext.data.raw, periods]);
+	}, [allRules, eventsContext.data.raw, periods, holidays]);
 
 	// Build legend items with alphabetic labels
 	const legendItems = useMemo<RuleLegendItem[]>(() => {
@@ -221,16 +224,16 @@ export function RulesScheduleView() {
 
 /* * */
 
-function toMinutes(hhmm: string): number {
+const toMinutes = (hhmm: string): number => {
 	const [h, m] = hhmm.split(':').map(Number);
 	if (Number.isNaN(h) || Number.isNaN(m)) return Number.POSITIVE_INFINITY;
 	return h * 60 + m;
-}
+};
 
-function getPillCount(fallback = 8) {
+const getPillCount = (fallback = 8) => {
 	if (typeof window === 'undefined') return fallback;
 
 	const raw = getComputedStyle(document.documentElement).getPropertyValue('--pill-count');
 	const n = Number(raw);
 	return Number.isFinite(n) && n > 0 ? n : fallback;
-}
+};
