@@ -29,7 +29,6 @@ export const parseTxtFile = async (file: File): Promise<CreateVehicleDto[]> => {
 				{},
 			);
 
-			console.log("Capacity seated:", raw.available_seats);
 			return parseVehicleLine(raw);
 		} catch (err) {
 			throw new Error(
