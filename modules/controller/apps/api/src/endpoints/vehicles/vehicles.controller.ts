@@ -30,6 +30,6 @@ export class VehiclesController {
 			LIMIT 1 BY vehicle_id`,
 		);
 
-		return reply.send({ data: positions, error: null, statusCode: HTTP_STATUS.OK });
+		return reply.header('access-control-allow-origin', '*').send({ data: positions, error: null, statusCode: HTTP_STATUS.OK });
 	}
 }
