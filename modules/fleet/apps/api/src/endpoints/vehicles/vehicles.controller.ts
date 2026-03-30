@@ -194,7 +194,6 @@ export class VehiclesController {
 	static async getPositions(request: FastifyRequest, reply: FastifyReply<SimplifiedVehicleEvent[]>) {
 		const positions = await simplifiedVehicleEventsNew.getPositions();
 		reply
-			.header('access-control-allow-origin', '*')
 			.send({
 				data: positions,
 				error: null,

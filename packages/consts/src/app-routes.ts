@@ -337,8 +337,10 @@ export const API_ROUTES = Object.freeze({
 
 		// VEHICLES
 		VEHICLES_DETAIL: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}`,
+		VEHICLES_DETAIL_LAST_EVENT: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}/last-event`,
 		VEHICLES_DETAIL_LOCK: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}/lock`,
 		VEHICLES_LIST: `${getAppConfig('fleet', 'api_url')}/vehicles`,
+		VEHICLES_POSITIONS: `${getAppConfig('fleet', 'api_url')}/vehicles/positions`,
 	},
 
 	/* * */

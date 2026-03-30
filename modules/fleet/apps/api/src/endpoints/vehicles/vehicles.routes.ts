@@ -60,6 +60,7 @@ server.register(
 
 		instance.get(
 			'/positions',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.read]) },
 			VehiclesController.getPositions,
 		);
 
