@@ -29,7 +29,7 @@ export const RawVehicleEventCcflV1PayloadSchema = z.object({
 		}),
 		vehicle: z.object({
 			id: z.string(),
-			label: z.string(),
+			license_plate: z.string(),
 		}),
 	}),
 });
