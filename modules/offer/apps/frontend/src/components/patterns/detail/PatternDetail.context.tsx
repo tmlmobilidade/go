@@ -12,6 +12,7 @@ import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, Dates, getMergedPath } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { generateRandomString } from '@tmlmobilidade/strings';
 import { EventReplacementRule, EventRestrictionRule, Line, ManualRule, Pattern, PermissionCatalog, ScheduleRule, StopsParameter, Typology, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -186,7 +187,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 	const handleAddRule = useCallback((rule: ManualRule) => {
 		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
-		const ruleWithId = { ...rule, _id: crypto.randomUUID() };
+		const ruleWithId = { ...rule, _id: generateRandomString({ length: 5 }) };
 		const newRules = [...currentRules, ruleWithId];
 
 		form.setFieldValue('rules', newRules);
@@ -240,7 +241,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 	const handleAddStopParameter = useCallback((rule: StopsParameter) => {
 		const currentRules = (form.getValues().parameters ?? []) as StopsParameter[];
-		const ruleWithId = { ...rule, _id: crypto.randomUUID() };
+		const ruleWithId = { ...rule, _id: generateRandomString({ length: 5 }) };
 		const newRules = [...currentRules, ruleWithId];
 
 		form.setFieldValue('parameters', newRules);

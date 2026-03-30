@@ -18,8 +18,7 @@ export async function fetchAllHolidays(agencyId: string): Promise<Map<string, Ho
 			holidaysMap.set(holiday._id, holiday);
 		}
 		return holidaysMap;
-	}
-	catch (error) {
+	} catch (error) {
 		throw new Error(`Error fetching holidays: ${error}`);
 	}
 }
