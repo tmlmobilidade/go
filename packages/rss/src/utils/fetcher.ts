@@ -1,33 +1,31 @@
 /* * */
 
-import { type Fetcher } from '@/types/fetcher.types.js';
 import { type RssRawItem } from '@/types/fetcher.types.js';
 
-export const fetcher = async ({ type = 'news' }: Fetcher): Promise<RssRawItem[]> => {
-	//
+/* * */
 
-	//
-	// A.Setup variables
+const NEWS_API_URL = 'https://cmet.pt/admin/api/news';
 
-	const baseUrl = `https://api.cmet.pt/${type}`;
+export async function fetchNewsItems(): Promise<RssRawItem[]> {
+	const response = await fetch(NEWS_API_URL);
 
-	//
-	// B.Fetch data
+	if (!response.ok) return [];
 
-	const response = await fetch(baseUrl);
-	const payload = await response.json() as unknown;
+	let payload: unknown;
 
-	//
-	// C.Return data
+	try {
+		payload = await response.json();
+	} catch {
+		return [];
+	}
 
 	if (Array.isArray(payload)) return payload as RssRawItem[];
 
-	// Support payloads shaped as { docs: [...] }.
 	if (payload && typeof payload === 'object' && 'docs' in payload && Array.isArray((payload as { docs?: unknown[] }).docs)) {
 		return (payload as { docs: RssRawItem[] }).docs;
 	}
 
 	return [];
-};
+}
 
 /* * */

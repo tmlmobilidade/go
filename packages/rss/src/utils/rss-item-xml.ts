@@ -11,7 +11,7 @@ export function rssItemXml(item: RssNormalizedItem): string {
 		`<title>${escapeXml(item.title)}</title>`,
 		`<link>${escapeXml(item.link)}</link>`,
 		`<guid isPermaLink="true">${escapeXml(item.guid)}</guid>`,
-		item.pubDate ? `<pubDate>${escapeXml(item.pubDate)}</pubDate>` : '',
+		item.publishDate ? `<pubDate>${escapeXml(item.publishDate)}</pubDate>` : '',
 		`<description>${escapeXml(item.description)}</description>`,
 		'</item>',
 	].filter(Boolean).join('\n');

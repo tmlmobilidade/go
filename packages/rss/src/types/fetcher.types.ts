@@ -1,9 +1,3 @@
-export type RssFeedType = 'alerts' | 'news';
-
-export interface Fetcher {
-	type: RssFeedType
-}
-
 export interface RssRawItem {
 	_id?: string
 	created_at?: number | string
@@ -22,6 +16,6 @@ export interface RssNormalizedItem {
 	description: string
 	guid: string
 	link: string
-	pubDate?: string
+	publishDate?: string
 	title: string
 }
