@@ -3,6 +3,7 @@
 import { Logger } from '@tmlmobilidade/logger';
 import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
 import { MongoClient } from 'mongodb';
+import { readFileSync } from 'node:fs';
 
 /* * */
 
@@ -126,6 +127,7 @@ export class PCGIRawClient {
 				keepaliveCountMax: 3,
 				keepaliveInterval: 10_000,
 				port: 22,
+				privateKey: process.env.PCGI_RAW_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.PCGI_RAW_TUNNEL_SSH_KEY_PATH) : undefined,
 				username: process.env.PCGI_RAW_TUNNEL_SSH_USERNAME,
 			},
 			tunnelOptions: {
