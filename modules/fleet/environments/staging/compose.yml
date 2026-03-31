@@ -1,6 +1,6 @@
 # # #
 
-name: tmlmobilidade-go-dates-staging
+name: tmlmobilidade-go-fleet-staging
 
 services:
 
@@ -36,7 +36,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   nginx:
-    image: ghcr.io/tmlmobilidade/go-dates-nginx:staging
+    image: ghcr.io/tmlmobilidade/go-fleet-nginx:staging
     deploy:
       restart_policy:
         condition: on-failure
@@ -55,7 +55,7 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
 
   api:
-    image: ghcr.io/tmlmobilidade/go-dates-api:staging
+    image: ghcr.io/tmlmobilidade/go-fleet-api:staging
     deploy:
       restart_policy:
         condition: on-failure
@@ -69,12 +69,19 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    volumes:
+      - ./secrets/go-ssh-tunnel-key:/ssh-keys/go-ssh-tunnel-key:ro
+    extra_hosts:
+      - "go-prd-clickhouse-1.tmlmobilidade.pt:10.81.101.141"
+      - "go-prd-clickhouse-2.tmlmobilidade.pt:10.81.101.142"
+      - "go-prd-clickhouse-3.tmlmobilidade.pt:10.81.101.143"
+
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
   frontend:
-    image: ghcr.io/tmlmobilidade/go-dates-frontend:staging
+    image: ghcr.io/tmlmobilidade/go-fleet-frontend:staging
     deploy:
       restart_policy:
         condition: on-failure

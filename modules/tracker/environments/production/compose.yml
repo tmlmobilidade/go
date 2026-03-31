@@ -97,23 +97,23 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  cm-stream-log:
-    image: ghcr.io/tmlmobilidade/go-tracker-cm-stream-log:staging
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 4gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    volumes:
-      - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
-    env_file:
-      - ./secrets/.env
+  # cm-stream-log:
+  #   image: ghcr.io/tmlmobilidade/go-tracker-cm-stream-log:staging
+  #   deploy:
+  #     restart_policy:
+  #       condition: any
+  #       delay: 30s
+  #     resources:
+  #       limits:
+  #         memory: 4gb
+  #   logging:
+  #     options:
+  #       max-size: '1m'
+  #       max-file: '1'
+  #   volumes:
+  #     - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
+  #   env_file:
+  #     - ./secrets/.env
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -139,23 +139,23 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  cm-sync-log:
-    image: ghcr.io/tmlmobilidade/go-tracker-cm-sync-log:staging
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 4gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    volumes:
-      - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
-    env_file:
-      - ./secrets/.env
+  # cm-sync-log:
+  #   image: ghcr.io/tmlmobilidade/go-tracker-cm-sync-log:staging
+  #   deploy:
+  #     restart_policy:
+  #       condition: any
+  #       delay: 30s
+  #     resources:
+  #       limits:
+  #         memory: 4gb
+  #   logging:
+  #     options:
+  #       max-size: '1m'
+  #       max-file: '1'
+  #   volumes:
+  #     - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
+  #   env_file:
+  #     - ./secrets/.env
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #

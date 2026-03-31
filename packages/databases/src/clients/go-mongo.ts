@@ -3,6 +3,7 @@
 import { Logger } from '@tmlmobilidade/logger';
 import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
 import { MongoClient } from 'mongodb';
+import { readFileSync } from 'node:fs';
 
 /* * */
 
@@ -121,11 +122,12 @@ export class GOMongoClient {
 				port: Number(process.env.GO_MONGO_TUNNEL_LOCAL_PORT),
 			},
 			sshOptions: {
-				agent: process.env.SSH_AUTH_SOCK,
+				agent: process.env.GO_MONGO_TUNNEL_SSH_KEY_PATH ? undefined : process.env.SSH_AUTH_SOCK,
 				host: process.env.GO_MONGO_TUNNEL_SSH_HOST,
 				keepaliveCountMax: 3,
 				keepaliveInterval: 10_000,
 				port: 22,
+				privateKey: process.env.GO_MONGO_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.GO_MONGO_TUNNEL_SSH_KEY_PATH) : undefined,
 				username: process.env.GO_MONGO_TUNNEL_SSH_USERNAME,
 			},
 			tunnelOptions: {

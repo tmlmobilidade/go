@@ -1,6 +1,7 @@
 /* * */
 
 import { GtfsRtOccupancyStatusSchema } from '@/gtfs-rt/occupancy-status.js';
+import { OperationalDateSchema } from '@/index.js';
 import { RawVehicleEventBaseSchema } from '@/vehicle-events/raw/raw-vehicle-event-base.js';
 import { z } from 'zod';
 
@@ -25,11 +26,13 @@ export const RawVehicleEventCapV1PayloadSchema = z.object({
 		stop_id: z.string().nullish(),
 		timestamp: z.number().nullish(),
 		trip: z.object({
+			route_id: z.string(),
+			schedule_relationship: z.enum(['SCHEDULED', 'NOT_SCHEDULED']).nullish(),
+			start_time: OperationalDateSchema.nullish(),
 			trip_id: z.string(),
 		}),
 		vehicle: z.object({
 			id: z.string(),
-			label: z.string(),
 		}),
 	}),
 });

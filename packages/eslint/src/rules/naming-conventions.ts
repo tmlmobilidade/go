@@ -68,23 +68,23 @@ export const namingConventionsConfig: Config[] = [
 		rules: {
 			'@typescript-eslint/naming-convention': [
 				'error',
-				// React hooks (useXxx): camelCase per Rules of Hooks naming
+				// Components: PascalCase
 				{
 					filter: {
 						match: true,
-						regex: '^use[A-Z]',
+						regex: '^[A-Z]',
 					},
-					format: ['camelCase'],
+					format: ['PascalCase'],
 					leadingUnderscore: 'allow',
 					selector: 'function',
 				},
-				// Components and other functions: PascalCase
+				// Non-component functions (including hooks): camelCase
 				{
 					filter: {
 						match: false,
-						regex: '^use[A-Z]',
+						regex: '^[A-Z]',
 					},
-					format: ['PascalCase'],
+					format: ['camelCase'],
 					leadingUnderscore: 'allow',
 					selector: 'function',
 				},

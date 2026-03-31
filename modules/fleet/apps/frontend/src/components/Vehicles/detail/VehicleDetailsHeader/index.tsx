@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 
 /* * */
 
-export function VehiclesDetailsHeader() {
+export function VehicleDetailsHeader() {
 	//
 
 	//
