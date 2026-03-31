@@ -114,14 +114,17 @@ export class AlertsController {
 
 		const allAlerts = await alerts.findMany(
 			{
-				$or: [
-					{ publish_end_date: { $gte: now } },
-					{ publish_end_date: null },
-					{ publish_end_date: undefined },
-					{ publish_end_date: { $exists: false } },
+				$and: [
+					{
+						$or: [
+							{ publish_end_date: { $gte: now } },
+							{ publish_end_date: null },
+							{ publish_end_date: { $exists: false } },
+						],
+					},
+					{ publish_start_date: { $lte: now } },
+					{ publish_status: 'published' },
 				],
-				publish_start_date: { $lte: now },
-				publish_status: 'published',
 			},
 			{ sort: { publish_start_date: -1 } },
 		);
