@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-key */
 'use client';
 
+import { SamsFilters } from '@/components/sams/list/SamsFilters';
 import { SamsListHeader } from '@/components/sams/list/SamsListHeader';
 import { useSamsListContext } from '@/contexts/SamsList.context';
 import { formatUnixTimestampToDateString } from '@/lib/utils';
@@ -90,6 +91,7 @@ export function SamsList() {
 	return (
 		<Pane header={[
 			<SamsListHeader />,
+			<SamsFilters />,
 		]}
 		>
 			<DataTable

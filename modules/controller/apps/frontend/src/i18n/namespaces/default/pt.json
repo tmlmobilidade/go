@@ -520,5 +520,21 @@
 				"title": "Exportar Circulações"
 			}
 		}
+	},
+	"sams": {
+		"list": {
+			"SamsFiltersAgency": {
+				"label": "Agência"
+			},
+			"SamsListHeader": {
+				"title": "SAMs"
+			},
+			"SamsListStatus": {
+				"waiting": "Aguardando",
+				"processing": "Em processamento",
+				"completed": "Completo",
+				"failed": "Falhou"
+			}
+		}
 	}
 }
