@@ -95,7 +95,7 @@ export function parseRide(ride: RideNormalized & { acceptance: null | RideAccept
 		acceptance_status: ride.acceptance?.acceptance_status,
 		justification_cause: ride.acceptance?.justification?.justification_cause,
 		justification_source: ride.acceptance?.justification?.justification_source,
-		manual_trip_id: ride.acceptance?.justification?.manual_trip_id.replaceAll('\n', ' ').replaceAll(',', ' ').replaceAll('  ', ' '),
-		pto_message: ride.acceptance?.justification?.pto_message.replaceAll('\n', ' ').replaceAll(',', ' ').replaceAll('  ', ' '),
+		manual_trip_id: ride.acceptance?.justification?.manual_trip_id?.replaceAll('\n', ' ')?.replaceAll(',', ' ')?.replaceAll('  ', ' '),
+		pto_message: ride.acceptance?.justification?.pto_message?.replaceAll('\n', ' ')?.replaceAll(',', ' ')?.replaceAll('  ', ' '),
 	};
 }
