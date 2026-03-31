@@ -1,6 +1,6 @@
 import type { DayContext } from './types.js';
 
-import { EventReplacementRule, ManualRule } from '@tmlmobilidade/types';
+import { EventReplacementRule, HHMM, ManualRule } from '@tmlmobilidade/types';
 
 import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matchers.js';
 
@@ -24,8 +24,8 @@ import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matche
 export function collectManualIncludes(
 	manualRules: ManualRule[],
 	ctx: DayContext,
-): { appliedRuleIds: string[], timepoints: Set<string> } {
-	const timepoints = new Set<string>();
+): { appliedRuleIds: string[], timepoints: Set<HHMM> } {
+	const timepoints = new Set<HHMM>();
 	const appliedRuleIds: string[] = [];
 
 	for (const r of manualRules) {
@@ -62,8 +62,8 @@ export function collectManualIncludes(
 export function collectReplacementManualIncludes(
 	replacement: EventReplacementRule,
 	manualRules: ManualRule[],
-): { appliedRuleIds: string[], timepoints: Set<string> } {
-	const timepoints = new Set<string>();
+): { appliedRuleIds: string[], timepoints: Set<HHMM> } {
+	const timepoints = new Set<HHMM>();
 	const appliedRuleIds: string[] = [];
 
 	// Always mark replacement as applied if it has an id (optional in schema)
@@ -74,7 +74,7 @@ export function collectReplacementManualIncludes(
 		if (!manualRuleMatchesReplacement(r, replacement)) continue;
 
 		if (r._id) appliedRuleIds.push(r._id);
-		for (const tp of r.timepoints) timepoints.add(tp);
+		for (const tp of r.timepoints) timepoints.add(tp as HHMM);
 	}
 
 	return { appliedRuleIds, timepoints };

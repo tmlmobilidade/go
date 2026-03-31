@@ -1,6 +1,6 @@
 /* * */
 
-import { PCGIRawClient } from '@/clients/pcgi-raw.js';
+import { PCGIFileManagerClient } from '@/clients/pcgi-file-manager.js';
 import { MongoInterfaceTemplate } from '@/templates/mongodb.js';
 import { type SimplifiedMongoIndex } from '@/types/mongo/index-description.js';
 import { type RawVehicleEvent, RawVehicleEventSchema } from '@tmlmobilidade/types';
@@ -48,7 +48,7 @@ class RawVehicleEventsNewClass extends MongoInterfaceTemplate<RawVehicleEvent, R
 	}
 
 	protected override connectToClient() {
-		return PCGIRawClient.getClient();
+		return PCGIFileManagerClient.getClient();
 	}
 
 	//

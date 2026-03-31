@@ -3,6 +3,7 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { generateRandomString } from '@tmlmobilidade/strings';
 import { CreateEventSchema, type Event, EventRule, Line, PermissionCatalog, type UpdateEventDto, UpdateEventSchema } from '@tmlmobilidade/types';
 import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -100,7 +101,7 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 
 	const handleAddRule = (rule: EventRule) => {
 		const currentRules = (form.getValues().rules ?? []) as EventRule[];
-		const ruleWithId = { ...rule, _id: crypto.randomUUID() };
+		const ruleWithId = { ...rule, _id: generateRandomString({ length: 5 }) };
 		const newRules = [...currentRules, ruleWithId];
 
 		form.setFieldValue('rules', newRules);
@@ -131,8 +132,7 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 			if (rule?._id) {
 				// Editing - preserve the _id
 				handleEditRule({ ...validatedRule, _id: rule._id });
-			}
-			else {
+			} else {
 				// Creating new
 				handleAddRule(validatedRule);
 			}

@@ -37,7 +37,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -48,7 +48,7 @@ jobs:
         run: npm install --package-lock-only
 
       - name: Save package-lock.json as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: package-lock.json
           path: package-lock.json
@@ -99,14 +99,14 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org/'
-          always-auth: true
+        #   always-auth: true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
@@ -114,7 +114,7 @@ jobs:
         run: npm install -g turbo@^2
 
       - name: Download package-lock.json artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: package-lock.json
           path: .

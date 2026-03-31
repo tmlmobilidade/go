@@ -1,5 +1,5 @@
 import type { DayContext, RuleApplication } from './types.js';
-import type { Event, EventReplacementRule, ManualRule, OperationalDate, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
+import type { Event, EventReplacementRule, HHMM, Holiday, ManualRule, OperationalDate, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
 
 import { calendarKey, calendarWeekday } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
@@ -50,6 +50,7 @@ export function computeActiveRules(
 	date: OperationalDate,
 	rules: ScheduleRule[],
 	periods: YearPeriod[],
+	holidays: Holiday[],
 	options?: {
 		events?: Event[]
 	},
@@ -70,14 +71,14 @@ export function computeActiveRules(
 	const replacement = findReplacementForDate(date, replacementRules);
 
 	// 1) Base timepoints
-	let timepoints: Set<string>;
+	let timepoints: Set<HHMM>;
 	let appliedRuleIds: string[];
 
 	if (replacement) {
 		// When same_weekday is true, each event date functions as its own actual weekday
 		// within the replacement's target periods, rather than all dates acting as one fixed weekday.
 		const effectiveReplacement = replacement.same_weekday
-			? { ...replacement, weekdays: [calendarWeekday(key)] }
+			? { ...replacement, weekdays: [calendarWeekday(key, holidays)] }
 			: replacement;
 
 		// Replacement mode: match manuals by intersection (Option A)
@@ -90,7 +91,7 @@ export function computeActiveRules(
 	} else {
 		// Normal mode: day resolves to a single weekday + single yearPeriodId
 		const ctx: DayContext = {
-			weekday: calendarWeekday(key),
+			weekday: calendarWeekday(key, holidays),
 			yearPeriodId: getActivePeriodId(date, periods),
 		};
 
@@ -106,7 +107,7 @@ export function computeActiveRules(
 
 	const result: RuleApplication = {
 		appliedRuleIds,
-		timepoints: Array.from(timepoints).sort() || [],
+		timepoints: Array.from(timepoints).sort() as HHMM[],
 	};
 
 	return result;

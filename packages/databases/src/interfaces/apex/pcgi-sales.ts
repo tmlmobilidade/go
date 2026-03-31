@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { PCGIRawClient } from '@/clients/pcgi-raw.js';
+import { PCGITicketingClient } from '@/clients/pcgi-ticketing.js';
 import { MongoInterfaceTemplate } from '@/templates/mongodb.js';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
@@ -40,7 +40,7 @@ class PCGISalesClass extends MongoInterfaceTemplate<any, any, Partial<any>> {
 	}
 
 	protected override connectToClient() {
-		return PCGIRawClient.getClient();
+		return PCGITicketingClient.getClient();
 	}
 
 	//

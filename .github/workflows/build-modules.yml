@@ -7,6 +7,26 @@ name: 'Build Modules'
 on:
   workflow_dispatch:
     inputs:
+      module:
+        description: 'Module to build'
+        required: false
+        default: all
+        type: choice
+        options:
+          - all
+          - alerts
+          - apex
+          - auth
+          - controller
+          - dates
+          - exporter
+          - locations
+          - performance
+          - plans
+          - stops
+          - tracker
+          - offer
+          - fleet
       build_all:
         description: 'Build all modules (ignores file changes)'
         required: false
@@ -134,7 +154,7 @@ jobs:
     steps:
       - name: Check if branch has open PR
         id: check
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             if (context.eventName !== 'push') {
@@ -168,13 +188,15 @@ jobs:
     steps:
       # # #
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       # # #
       - name: Discover modules and apps
         id: discover
         uses: ./.github/actions/discover-modules
         with:
           modules-apps: ${{ env.MODULES_APPS }}
+          selected-module: ${{ github.event_name == 'workflow_dispatch' && inputs.module || 'all' }}
+          build-all: ${{ github.event_name == 'workflow_dispatch' && inputs.build_all || false }}
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
@@ -188,7 +210,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -199,7 +221,7 @@ jobs:
         run: npm install --package-lock-only
 
       - name: Save package-lock.json as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: package-lock.json
           path: package-lock.json

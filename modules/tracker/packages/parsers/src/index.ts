@@ -8,7 +8,7 @@ import { type RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidad
 
 /* * */
 
-export const PARSER_MAP: Record<RawVehicleEvent['version'], (vehicleEvent: RawVehicleEvent) => SimplifiedVehicleEvent> = {
+export const PARSER_MAP: Record<RawVehicleEvent['version'], (vehicleEvent: RawVehicleEvent) => null | SimplifiedVehicleEvent> = {
 	'cap-v1': parseRawVehicleEventCapV1,
 	'ccfl-v1': parseRawVehicleEventCcflV1,
 	'cmet-v1': parseRawVehicleEventCmetV1,
