@@ -23,7 +23,7 @@ server.register(
 		);
 
 		instance.get(
-			'/xml',
+			'.rss',
 			AlertsController.getRssFeed,
 		);
 
