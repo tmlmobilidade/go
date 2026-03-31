@@ -109,4 +109,4 @@ const main = async () => {
 
 /* * */
 
-await runOnInterval(main, 1_000);
+await runOnInterval(main, 30_000);
