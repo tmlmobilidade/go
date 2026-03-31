@@ -19,7 +19,7 @@ export function createRssFeed(rawItems: RssRawItem[], options: CreateRssFeedOpti
 	})).join('\n');
 
 	//
-	// B. Create adn return XML feed
+	// B. Create and return XML feed
 
 	const now = new Date().toUTCString();
 	return rssFeedXml(itemsXml, {
