@@ -6,16 +6,15 @@ export interface RssRawItem {
 	info_url?: null | string
 	link?: null | string
 	publish_start_date?: null | number
-	publishedAt?: null | string
+	publishDate?: null | string
 	slug?: null | string
 	summary?: null | string
 	title?: null | string
 }
 
-export interface RssNormalizedItem {
+export interface CreateRssFeedOptions {
+	copyright: string
 	description: string
-	guid: string
 	link: string
-	publishDate?: string
 	title: string
 }

@@ -23,6 +23,11 @@ server.register(
 		);
 
 		instance.get(
+			'/xml',
+			AlertsController.getRssFeed,
+		);
+
+		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
 			AlertsController.getById,

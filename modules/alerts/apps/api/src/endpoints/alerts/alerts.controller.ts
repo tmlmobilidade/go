@@ -1,8 +1,10 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
+import { API_ROUTES, HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { alerts, files, notifications } from '@tmlmobilidade/interfaces';
+import { createRssFeed } from '@tmlmobilidade/rss';
 import { type Alert, CreateAlertDto, type File, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
 
 /* * */
@@ -100,6 +102,55 @@ export class AlertsController {
 		const foundImageFile = await files.findById(foundAlert.file_id);
 		if (!foundImageFile) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 		return reply.send({ data: foundImageFile, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
+	 * Returns active published alerts as RSS feed XML.
+	 * @param request The request object.
+	 * @param reply The reply object.
+	 */
+	static async getRssFeed(request: FastifyRequest, reply: FastifyReply) {
+		const allAlerts = await alerts.findMany(
+			{
+				$and: [
+					{
+						$or: [
+							{ publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_timestamp } },
+							{ publish_end_date: null },
+							{ publish_end_date: undefined },
+							{ publish_end_date: { $exists: false } },
+						],
+						publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
+						publish_status: 'published',
+					},
+				],
+			},
+			{ sort: { publish_start_date: -1 } },
+		);
+
+		if (!allAlerts.length) {
+			reply
+				.status(HTTP_STATUS.NOT_FOUND)
+				.header('Cache-Control', 'public, max-age=60, s-maxage=60')
+				.type('text/plain; charset=utf-8')
+				.send('No alerts available.');
+			return;
+		}
+
+		reply
+			.header('Cache-Control', 'public, max-age=180, s-maxage=180')
+			.type('application/rss+xml; charset=utf-8')
+			.send(createRssFeed(allAlerts.map(alert => ({
+				description: alert.description,
+				link: alert.info_url || API_ROUTES.alerts.ALERTS_DETAIL(alert._id),
+				publish_start_date: alert.publish_start_date,
+				title: alert.title,
+			})), {
+				copyright: 'Carris Metropolitana',
+				description: 'Alertas e atualizacoes da Carris Metropolitana.',
+				link: API_ROUTES.alerts.ALERTS_LIST,
+				title: 'Carris Metropolitana - Alertas',
+			}));
 	}
 
 	/**

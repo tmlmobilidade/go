@@ -1,41 +1,38 @@
 /* * */
 
-import { type RssNormalizedItem, type RssRawItem } from '@/types/fetcher.types.js';
-import { fetchNewsItems } from '@/utils/fetcher.js';
-import { rssFeedXml } from '@/utils/rss-feed-xml.js';
-import { rssItemXml } from '@/utils/rss-item-xml.js';
+import { type CreateRssFeedOptions, type RssRawItem } from '@/types/index.js';
+import { rssFeedXml, rssItemXml } from '@/utils/index.js';
 
 /* * */
 
-export type { RssRawItem } from '@/types/fetcher.types.js';
+export function createRssFeed(rawItems: RssRawItem[], options: CreateRssFeedOptions): string {
+	//
 
-export function buildNewsRssXml(rawItems: RssRawItem[], siteOrigin = 'https://cmet.pt'): string {
-	const origin = siteOrigin.replace(/\/$/, '');
-	const normalizedItems = rawItems.map(item => normalizeNewsItem(item, origin));
-	const itemsXml = normalizedItems.map(item => rssItemXml(item)).join('\n');
+	//
+	// A. Create XML items
 
-	return rssFeedXml(itemsXml, 'Carris Metropolitana - Notícias');
-}
-
-export async function rssFeed(): Promise<string> {
-	const rawItems = await fetchNewsItems();
-
-	return buildNewsRssXml(rawItems);
-}
-
-function normalizeNewsItem(item: RssRawItem, siteOrigin: string): RssNormalizedItem {
-	const slugOrId = item.slug || item.id || item._id || '';
-	const linkFromData = item.link || item.info_url || '';
-	const path = `/news/${slugOrId}`;
-	const link = linkFromData || `${siteOrigin}${path}`;
-	const publishDateSource = item.publishedAt || item.publish_start_date || item.created_at;
-	const publishDate = publishDateSource ? new Date(publishDateSource).toUTCString() : undefined;
-
-	return {
+	const itemsXml = rawItems.map(item => rssItemXml({
 		description: item.summary || item.description || '',
-		guid: link,
-		link,
-		publishDate,
+		link: item.link || '',
+		publishDate: item.publishDate || item.publish_start_date || item.created_at ? new Date(item.publishDate || item.publish_start_date || item.created_at).toUTCString() : undefined,
 		title: item.title || '',
-	};
+	})).join('\n');
+
+	//
+	// B. Create adn return XML feed
+
+	const now = new Date().toUTCString();
+	return rssFeedXml(itemsXml, {
+		channelCopyright: options.copyright,
+		channelDescription: options.description,
+		channelDocs: 'https://www.rssboard.org/rss-specification',
+		channelGenerator: '@tmlmobilidade/rss',
+		channelLanguage: 'pt-pt',
+		channelLastBuildDate: now,
+		channelLink: options.link,
+		channelPubDate: now,
+		channelTitle: options.title,
+	});
+
+	//
 }
