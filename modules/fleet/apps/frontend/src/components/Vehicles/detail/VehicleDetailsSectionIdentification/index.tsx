@@ -51,6 +51,13 @@ export function VehicleDetailsSectionIdentification() {
 						{...vehiclesDetailContext.data.form.getInputProps('registration_date')}
 					/>
 
+					<DateInput
+						key={vehiclesDetailContext.data.form.key('start_date')}
+						label="Data de início de operação"
+						readOnly={vehiclesDetailContext.flags.read_only}
+						{...vehiclesDetailContext.data.form.getInputProps('start_date')}
+					/>
+
 					<TextInput
 						key={vehiclesDetailContext.data.form.key('license_plate')}
 						label="Placa do veículo"

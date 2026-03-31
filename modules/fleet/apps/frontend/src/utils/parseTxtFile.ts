@@ -15,11 +15,18 @@ export const parseTxtFile = async (file: File): Promise<CreateVehicleDto[]> => {
 		throw new Error('Empty file');
 	}
 
-	const headers = lines[0].split(';').map(h => h.trim());
+	const resolveDelimiter = (headerLine: string) => {
+		const commaCount = headerLine.split(',').length;
+		const semicolonCount = headerLine.split(';').length;
+		return commaCount >= semicolonCount ? ',' : ';';
+	};
+
+	const delimiter = resolveDelimiter(lines[0]);
+	const headers = lines[0].split(delimiter).map(h => h.trim());
 
 	return lines.slice(1).map((line, index) => {
 		try {
-			const values = line.split(';');
+			const values = line.split(delimiter);
 
 			const raw = headers.reduce<Record<string, string>>(
 				(acc, header, i) => {

@@ -4,7 +4,7 @@
 
 import { useVehiclesDetailContext } from '@/contexts/VehiclesDetail.context';
 import { Translations } from '@/lib/translations';
-import { VehicleEmissionSchema, VehiclePropulsionSchema, VehicleWheelchairSchema } from '@tmlmobilidade/types';
+import { VehicleEmissionSchema, VehiclePropulsionSchema, VehicleTypologySchema } from '@tmlmobilidade/types';
 import { Collapsible, ErrorDisplay, Grid, LoadingOverlay, NumberInput, Section, Select, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
@@ -47,17 +47,25 @@ export function VehicleDetailsSectionSpecifications() {
 					/>
 
 					<NumberInput
-						key={vehiclesDetailContext.data.form.key('capacity_seated')}
+						key={vehiclesDetailContext.data.form.key('available_seats')}
 						label="Capacidade de assentos"
 						readOnly={vehiclesDetailContext.flags.read_only}
-						{...vehiclesDetailContext.data.form.getInputProps('capacity_seated')}
+						{...vehiclesDetailContext.data.form.getInputProps('available_seats')}
 					/>
 
 					<NumberInput
-						key={vehiclesDetailContext.data.form.key('capacity_standing')}
+						key={vehiclesDetailContext.data.form.key('available_standing')}
 						label="Capacidade de pé"
 						readOnly={vehiclesDetailContext.flags.read_only}
-						{...vehiclesDetailContext.data.form.getInputProps('capacity_standing')}
+						{...vehiclesDetailContext.data.form.getInputProps('available_standing')}
+					/>
+
+					<Select
+						key={vehiclesDetailContext.data.form.key('typology')}
+						data={VehicleTypologySchema.options.map(value => ({ label: Translations.TYPOLOGY[value], value }))}
+						disabled={vehiclesDetailContext.flags.read_only}
+						label="Tipologia"
+						{...vehiclesDetailContext.data.form.getInputProps('typology')}
 					/>
 
 					<Select
@@ -69,19 +77,11 @@ export function VehicleDetailsSectionSpecifications() {
 					/>
 
 					<Select
-						key={vehiclesDetailContext.data.form.key('emission_class')}
+						key={vehiclesDetailContext.data.form.key('emission')}
 						data={VehicleEmissionSchema.options.map(value => ({ label: Translations.EMISSION[value], value }))}
 						disabled={vehiclesDetailContext.flags.read_only}
 						label="Classe de emissão"
-						{...vehiclesDetailContext.data.form.getInputProps('emission_class')}
-					/>
-
-					<Select
-						key={vehiclesDetailContext.data.form.key('wheelchair_acessible')}
-						data={VehicleWheelchairSchema.options.map(value => ({ label: Translations.WHEELCHAIR[value], value }))}
-						disabled={vehiclesDetailContext.flags.read_only}
-						label="Acessibilidade para cadeirantes"
-						{...vehiclesDetailContext.data.form.getInputProps('wheelchair_acessible')}
+						{...vehiclesDetailContext.data.form.getInputProps('emission')}
 					/>
 				</Grid>
 			</Section>
