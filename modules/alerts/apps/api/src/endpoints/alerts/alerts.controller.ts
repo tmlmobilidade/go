@@ -111,6 +111,7 @@ export class AlertsController {
 	 */
 	static async getRssFeed(_request: FastifyRequest, reply: FastifyReply<string>) {
 		const now = Dates.now('Europe/Lisbon').unix_timestamp;
+		
 		const allAlerts = await alerts.findMany(
 			{
 				$or: [
@@ -130,21 +131,21 @@ export class AlertsController {
 			return;
 		}
 
-		const rssItems = allAlerts.map(alert => ({
+		const xmlItems = allAlerts.map(alert => ({
 			description: alert.description,
 			link: `https://www.carrismetropolitana.pt/alerts/${alert._id}`,
 			publish_start_date: alert.publish_start_date,
 			title: alert.title,
 		}));
 
-		const xml = createRssFeed(rssItems, {
+		const xml = createRssFeed(xmlItems, {
 			copyright: 'Carris Metropolitana',
 			description: 'Alertas e atualizacoes da Carris Metropolitana.',
 			link: 'https://www.carrismetropolitana.pt/alerts',
 			title: 'Carris Metropolitana - Alertas',
 		});
 
-		reply.header('Cache-Control', 'public, max-age=180, s-maxage=180').type('application/rss+xml; charset=utf-8').send(xml);
+		reply.type('application/rss+xml; charset=utf-8').send(xml);
 	}
 
 	/**
