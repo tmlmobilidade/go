@@ -47,11 +47,12 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 	 * @param vehicleId - The ID of the vehicle.
 	 * @returns The last event for the vehicle.
 	 */
-	public async getLastEvent(vehicleId: string): Promise<null | SimplifiedVehicleEvent> {
+	public async getLastEvent(vehicleId: string, agencyId: string): Promise<null | SimplifiedVehicleEvent> {
 		const query = `
 			SELECT *
 			FROM "${this.databaseName}"."${this.tableName}"
 			WHERE vehicle_id = '${vehicleId}'
+			AND agency_id = '${agencyId}'
 			ORDER BY created_at DESC
 			LIMIT 1
 		`;
