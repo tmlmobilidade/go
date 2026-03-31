@@ -1,12 +1,9 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { fetchData } from '@tmlmobilidade/utils';
+import { useUserPreference } from '@tmlmobilidade/ui';
 /* * */
 
 import { createContext, type PropsWithChildren, useContext } from 'react';
-import useSWR from 'swr';
 
 /* * */
 
@@ -41,19 +38,22 @@ export function useRidePinsContext() {
 export const RidePinsContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
-	const { data: pins = [], error: pinsError, isLoading: pinsLoading, mutate } = useSWR<string[], Error>(API_ROUTES.auth.PINS_CONTROLLER);
+	const [pins, setPins] = useUserPreference<string[]>('ride', 'controller', []);
 
 	//
 	// B. Handle actions
 
-	const addPin = async (rideId: string) => {
-		const response = await fetchData<string[]>(API_ROUTES.auth.PINS_CONTROLLER_ADD, 'POST', { rideId });
-		if (response.data) await mutate(response.data);
+	const handleAddPin = async (rideId: string) => {
+		const pinId = rideId.trim();
+		if (!pinId) return;
+		if (pins.includes(pinId)) return;
+		setPins([...pins, pinId]);
 	};
 
-	const removePin = async (rideId: string) => {
-		const response = await fetchData<string[]>(API_ROUTES.auth.PINS_CONTROLLER_REMOVE, 'PUT', { rideId });
-		if (response.data) await mutate(response.data);
+	const handleRemovePin = async (rideId: string) => {
+		const pinId = rideId.trim();
+		if (!pinId) return;
+		setPins(pins.filter(existingPinId => existingPinId !== pinId));
 	};
 
 	//
@@ -61,15 +61,15 @@ export const RidePinsContextProvider = ({ children }: PropsWithChildren) => {
 
 	const contextValue: RidePinsContextState = {
 		actions: {
-			addPin,
-			removePin,
+			addPin: handleAddPin,
+			removePin: handleRemovePin,
 		},
 		data: {
 			pins,
 		},
 		flags: {
-			error: pinsError ?? null,
-			loading: pinsLoading,
+			error: null,
+			loading: false,
 		},
 	};
 

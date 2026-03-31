@@ -1,6 +1,6 @@
 /* * */
 
-import { PinsSharedController } from '@tmlmobilidade/controllers';
+import { PinsSharedController } from '@/endpoints/pins/pins.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */
