@@ -1,10 +1,10 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
+import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { vehicles } from '@tmlmobilidade/interfaces';
-import { type CreateVehicleDto, PermissionCatalog, type UpdateVehicleDto, type Vehicle } from '@tmlmobilidade/types';
-import path from 'path';
+import { type CreateVehicleDto, PermissionCatalog, SimplifiedVehicleEvent, type UpdateVehicleDto, type Vehicle } from '@tmlmobilidade/types';
 
 /* * */;
 
@@ -16,7 +16,7 @@ export class VehiclesController {
 	 * @param request Fastify request containing vehicle data
 	 * @param reply Fastify reply
 	 */
-	static async create(request: FastifyRequest<{ Body: CreateVehicleDto }>, reply: FastifyReply<Vehicle>) {
+	static async create(request: FastifyRequest<{ Body: CreateVehicleDto | CreateVehicleDto[] }>, reply: FastifyReply<null | Vehicle>) {
 		//
 
 		//
@@ -29,14 +29,13 @@ export class VehiclesController {
 		//
 		// Create the new vehicle
 
-		const newVehicle = await vehicles.insertOne(request.body);
-
-		//
-		// Send the response
-
-		reply.send({ data: newVehicle, error: null, statusCode: HTTP_STATUS.OK });
-
-		//
+		if (Array.isArray(request.body)) {
+			await vehicles.insertMany(request.body);
+			reply.send({ data: null, error: null, statusCode: HTTP_STATUS.CREATED });
+		} else {
+			const newVehicle = await vehicles.insertOne(request.body);
+			reply.send({ data: newVehicle, error: null, statusCode: HTTP_STATUS.CREATED });
+		}
 	}
 
 	/**
@@ -75,18 +74,13 @@ export class VehiclesController {
 		//
 
 		//
-		// Check if the user has permission to read vehicles
-
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.read)) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read vehicles');
-		}
-
-		//
 		// Fetch all vehicles
 
 		const allVehicles = await vehicles.findMany({}, { sort: { created_at: -1 } });
 
-		return reply.send({ data: allVehicles, error: null, statusCode: HTTP_STATUS.OK });
+		return reply
+			.header('Access-Control-Allow-Origin', '*')
+			.send({ data: allVehicles, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -105,22 +99,16 @@ export class VehiclesController {
 		const vehicleData = await vehicles.findById(request.params.id);
 
 		if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
-
-		//
-		// Check if the user has permission to read vehicles
-
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.read)) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read vehicles');
-		}
-
 		//
 		// Fetch the vehicle data
 
-		return reply.send({
-			data: vehicleData,
-			error: null,
-			statusCode: HTTP_STATUS.OK,
-		});
+		return reply
+			.header('Access-Control-Allow-Origin', '*')
+			.send({
+				data: vehicleData,
+				error: null,
+				statusCode: HTTP_STATUS.OK,
+			});
 
 		//
 	}
@@ -142,37 +130,91 @@ export class VehiclesController {
 	 * @param request Fastify request containing vehicle ID in params and update data in body
 	 * @param reply Fastify reply
 	 */
-	static async update(request: FastifyRequest<{ Body: UpdateVehicleDto, Params: { id: string } }>, reply: FastifyReply<Vehicle>) {
+	static async update(request: FastifyRequest<{ Body: UpdateVehicleDto | UpdateVehicleDto[], Params: { id: string | string[] } }>, reply: FastifyReply<null | Vehicle>) {
 		//
 
 		//
 		// Get the Vehicle from the database
+		if (Array.isArray(request.params.id)) {
+			const vehicleData = await vehicles.findMany({ _id: { $in: request.params.id } });
 
-		const vehicleData = await vehicles.findById(request.params.id);
+			if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicles not found');
 
-		if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
+			//
+			// Check if the user has permission to update vehicles
 
-		//
-		// Check if the user has permission to update vehicles
+			if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.update)) {
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update vehicles');
+			}
 
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.update)) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update vehicles');
+			//
+			// Update the vehicles
+
+			for (const vehicle of vehicleData) {
+				await vehicles.updateById(vehicle._id, vehicle);
+			}
+
+			//
+			// Send the updated vehicles data as the response
+
+			return reply.send({
+				data: null,
+				error: null,
+				statusCode: HTTP_STATUS.OK,
+			});
+		} else {
+			const vehicleData = await vehicles.findById(request.params.id);
+
+			if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
+
+			//
+			// Check if the user has permission to update vehicles
+
+			if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.update)) {
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update vehicles');
+			}
+
+			//
+			// Update the vehicle
+
+			const updatedVehicle = await vehicles.updateById(vehicleData._id, vehicleData);
+
+			//
+			// Send the updated vehicle data as the response
+
+			return reply.send({
+				data: updatedVehicle,
+				error: null,
+				statusCode: HTTP_STATUS.OK,
+			});
 		}
 
 		//
-		// Update the vehicle
+	}
 
-		const updatedVehicle = await vehicles.updateById(vehicleData._id, request.body);
+	/**
+	 * Retrieves the last event for a given vehicle.
+	 * @param request Fastify request containing vehicle ID in params
+	 * @param reply Fastify reply
+	 */
+	static async getLastEvent(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedVehicleEvent>) {
+		const lastEvent = await simplifiedVehicleEventsNew.getLastEvent(request.params.id);
+		reply.send({ data: lastEvent, error: null, statusCode: HTTP_STATUS.OK });
+	}
 
-		//
-		// Send the updated vehicle data as the response
-
-		reply.send({
-			data: updatedVehicle,
-			error: null,
-			statusCode: HTTP_STATUS.OK,
-		});
-
-		//
+	/**
+	 * Retrieves the latest position per vehicle from recent simplified vehicle events.
+	 * @param request Fastify request
+	 * @param reply Fastify reply
+	 */
+	static async getPositions(request: FastifyRequest, reply: FastifyReply<SimplifiedVehicleEvent[]>) {
+		const positions = await simplifiedVehicleEventsNew.getPositions();
+		reply
+			.header('Access-Control-Allow-Origin', '*')
+			.send({
+				data: positions,
+				error: null,
+				statusCode: HTTP_STATUS.OK,
+			});
 	}
 }

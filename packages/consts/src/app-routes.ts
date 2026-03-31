@@ -61,9 +61,6 @@ export const PAGE_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getAppConfig('controller', 'frontend_url')}`,
 
-		// POSITIONS
-		POSITIONS_LIST: `${getAppConfig('controller', 'frontend_url')}/positions`,
-
 		// RIDES
 		RIDES_DETAIL: (id: string) => `${getAppConfig('controller', 'frontend_url')}/rides/${id}`,
 		RIDES_LIST: `${getAppConfig('controller', 'frontend_url')}/rides`,
@@ -283,9 +280,6 @@ export const API_ROUTES = Object.freeze({
 		RIDES_DETAIL_VEHICLE_EVENTS: (id: string) => `${getAppConfig('controller', 'api_url')}/rides/${id}/vehicle-events`,
 		RIDES_LIST: `${getAppConfig('controller', 'api_url')}/rides`,
 		RIDES_WS: `${getAppConfig('controller', 'api_url')}/rides/ws`,
-
-		// VEHICLES
-		VEHICLES_POSITIONS: `${getAppConfig('controller', 'api_url')}/vehicles/positions`,
 	},
 
 	/* * */
@@ -338,8 +332,10 @@ export const API_ROUTES = Object.freeze({
 
 		// VEHICLES
 		VEHICLES_DETAIL: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}`,
+		VEHICLES_DETAIL_LAST_EVENT: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}/last-event`,
 		VEHICLES_DETAIL_LOCK: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}/lock`,
 		VEHICLES_LIST: `${getAppConfig('fleet', 'api_url')}/vehicles`,
+		VEHICLES_POSITIONS: `${getAppConfig('fleet', 'api_url')}/vehicles/positions`,
 	},
 
 	/* * */

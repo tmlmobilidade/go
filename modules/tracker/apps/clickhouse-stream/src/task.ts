@@ -48,12 +48,4 @@ export async function processVehicleEvent(databaseOperation: ChangeStreamInsertD
 	await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: invalidateRides });
 
 	//
-	// Publish the heartbeats for each agency
-
-	if (newSimplifiedVehicleEventDocument.agency_id === '41') await fetch('https://status.carrismetropolitana.pt/api/push/QRSatZitiBNIhTDneykCGV0PthvQoIUf');
-	if (newSimplifiedVehicleEventDocument.agency_id === '42') await fetch('https://status.carrismetropolitana.pt/api/push/uZTfvExA1yCpNZIXIzgvCmHdSquNi0lV');
-	if (newSimplifiedVehicleEventDocument.agency_id === '43') await fetch('https://status.carrismetropolitana.pt/api/push/Rp7hYCJKLL8h67IP07RDAXagwO5avchc');
-	if (newSimplifiedVehicleEventDocument.agency_id === '44') await fetch('https://status.carrismetropolitana.pt/api/push/Mnm5Rn3tJAXYVWb6I51eTA4xfpXJ3vqq');
-
-	//
 };

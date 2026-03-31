@@ -1,17 +1,21 @@
 /* * */
 
-import { clampCoordinate } from '@tmlmobilidade/geo';
+import { isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
 import { type RawVehicleEventCmetV1Core, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { roundToInt } from '@tmlmobilidade/utils';
 
 /* * */
 
 export function parseRawVehicleEventCmetV1Core(doc: RawVehicleEventCmetV1Core): null | SimplifiedVehicleEvent {
+	//
 	const vehicle = doc.payload.vehicle;
+
 	// Validate coordinates before parsing the rest of the event.
-	const latitude = clampCoordinate(vehicle.position.latitude);
-	const longitude = clampCoordinate(vehicle.position.longitude);
-	if (latitude === null || longitude === null) return null;
+	const latitude = isValidLatitude(vehicle.position.latitude);
+	const longitude = isValidLongitude(vehicle.position.longitude);
+
+	if (!latitude || !longitude) return null;
+
 	return {
 		_id: doc._id,
 		agency_id: doc.agency_id,

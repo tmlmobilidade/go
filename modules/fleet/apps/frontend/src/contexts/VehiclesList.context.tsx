@@ -5,6 +5,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog, type Vehicle } from '@tmlmobilidade/types';
 import { useDataAgencies, useFilterStateList, UseFilterStateListReturnType, useFilterStateString, UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
+import { unauthenticatedSwrFetcher } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -62,7 +63,7 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 	//
 	// B. Fetch data
 
-	const { data: allVehicleData, error: allVehicleError, isLoading: allVehicleLoading } = useSWR<Vehicle[], Error>(API_ROUTES.fleet.VEHICLES_LIST, { refreshInterval: 5000 });
+	const { data: allVehicleData, error: allVehicleError, isLoading: allVehicleLoading } = useSWR<Vehicle[], Error>(API_ROUTES.fleet.VEHICLES_LIST, unauthenticatedSwrFetcher, { refreshInterval: 5000 });
 
 	//
 	// C. Transform data

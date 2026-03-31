@@ -1,6 +1,6 @@
 import { calendarKey, CalendarKey, datesFromCalendarKey } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
-import { type Event, HHMM, type ScheduleRule, timeToMinutes, type YearPeriod } from '@tmlmobilidade/types';
+import { type Event, HHMM, Holiday, type ScheduleRule, timeToMinutes, type YearPeriod } from '@tmlmobilidade/types';
 
 import { computeActiveRules } from '../calculation/index.js';
 import { DayRuleDetail, DayScheduleDetail } from './types.js';
@@ -9,10 +9,11 @@ function buildDayScheduleDetail(
 	key: CalendarKey,
 	allRules: ScheduleRule[],
 	periods: YearPeriod[],
+	holidays: Holiday[],
 	events?: Event[],
 ): DayScheduleDetail {
 	const date = datesFromCalendarKey(key);
-	const { appliedRuleIds, timepoints: finalTimePoints } = computeActiveRules(date.operational_date, allRules, periods, { events });
+	const { appliedRuleIds, timepoints: finalTimePoints } = computeActiveRules(date.operational_date, allRules, periods, holidays, { events });
 
 	const appliedRules = appliedRuleIds
 		.map(id => allRules.find(r => r._id === id))
@@ -111,6 +112,7 @@ export function buildAffectedDaysDetails(
 	endDate: Dates,
 	allRules: ScheduleRule[],
 	periods: YearPeriod[],
+	holidays: Holiday[],
 	options?: {
 		events?: Event[]
 	},
@@ -121,7 +123,7 @@ export function buildAffectedDaysDetails(
 
 	while (currentDate.unix_timestamp <= endDate.unix_timestamp) {
 		const key = calendarKey(currentDate);
-		const dayDetails = buildDayScheduleDetail(key, allRules, periods, options?.events);
+		const dayDetails = buildDayScheduleDetail(key, allRules, periods, holidays, options?.events);
 
 		// Only include days that are "affected" (have active timepoints or applied rules)
 		if (

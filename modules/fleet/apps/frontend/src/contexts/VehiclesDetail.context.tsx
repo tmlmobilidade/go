@@ -3,7 +3,7 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type UpdateVehicleDto, UpdateVehicleSchema, type Vehicle } from '@tmlmobilidade/types';
+import { SimplifiedVehicleEvent, type UpdateVehicleDto, UpdateVehicleSchema, type Vehicle } from '@tmlmobilidade/types';
 import { UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -21,6 +21,7 @@ interface VehiclesDetailContextState {
 	data: {
 		form: UseFormReturnType<UpdateVehicleDto>
 		id: string
+		position: null | SimplifiedVehicleEvent
 		vehicle: null | Vehicle
 	}
 	flags: {
@@ -58,7 +59,8 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 	// B. Fetch data
 
 	const { mutate: vehiclesListMutate } = useSWR<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST);
-	const { data: vehicleData, error: vehicleError, isLoading: vehicleLoading, mutate: vehicleMutate } = useSWR<Vehicle>(API_ROUTES.fleet.VEHICLES_DETAIL(vehicleId), { refreshInterval: 5000 });
+	const { data: vehicleData, error: vehicleError, isLoading: vehicleLoading, mutate: vehicleMutate } = useSWR<Vehicle>(API_ROUTES.fleet.VEHICLES_DETAIL(vehicleId), { refreshInterval: 5_000 });
+	const { data: vehiclePositions } = useSWR<SimplifiedVehicleEvent>(API_ROUTES.fleet.VEHICLES_DETAIL_LAST_EVENT(vehicleId), { refreshInterval: 1_000 });
 
 	//
 	// C. Setup form
@@ -101,16 +103,14 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 				type: 'success',
 			});
 			form.resetDirty();
-		}
-		catch (error) {
+		} catch (error) {
 			useToast.update(toastId, {
 				loading: false,
 				message: error.message,
 				title: 'Erro ao guardar alterações',
 				type: 'error',
 			});
-		}
-		finally {
+		} finally {
 			vehicleMutate();
 			vehiclesListMutate();
 			setIsSaving(false);
@@ -133,14 +133,12 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 			useToast.success({ message: 'veículo apagado com sucesso', title: 'Sucesso' });
 
 			router.replace(PAGE_ROUTES.fleet.VEHICLES_LIST);
-		}
-		catch (error) {
+		} catch (error) {
 			useToast.error({
 				message: error.message,
 				title: 'Erro ao apagar veículo',
 			});
-		}
-		finally {
+		} finally {
 			vehiclesListMutate();
 		}
 	};
@@ -156,14 +154,12 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 					title: 'Erro ao bloquear veículo',
 				});
 			}
-		}
-		catch (error) {
+		} catch (error) {
 			useToast.error({
 				message: error.message,
 				title: 'Erro ao bloquear veículo',
 			});
-		}
-		finally {
+		} finally {
 			vehicleMutate();
 			vehiclesListMutate();
 		}
@@ -181,6 +177,7 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 		data: {
 			form,
 			id: vehicleId,
+			position: vehiclePositions,
 			vehicle: vehicleData,
 		},
 		flags: {
@@ -189,14 +186,7 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 			read_only: vehicleData?.is_locked || vehicleLoading || isSaving,
 			saving: isSaving,
 		},
-	}), [
-		vehicleData,
-		vehicleError,
-		vehicleLoading,
-		vehicleId,
-		form,
-		isSaving,
-	]);
+	}), [form, vehicleId, vehiclePositions, vehicleData, vehicleError, vehicleLoading, isSaving]);
 
 	//
 	// G. Render components
