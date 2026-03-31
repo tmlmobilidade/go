@@ -21,6 +21,13 @@ interface DaySection {
 	label: string
 }
 
+const monthKeyFromDayKey = (dayKey: string): string | null => {
+	// dayKey is ISO date (YYYY-MM-DD)
+	const dt = DateTime.fromISO(dayKey, { zone: TZ });
+	if (!dt.isValid) return null;
+	return dt.toFormat('yyyy-LL');
+};
+
 /**
  * All calendar days (Europe/Lisbon) an analysis belongs to.
  * When both `start_time` and `end_time` exist, every day in the inclusive range gets a copy (e.g. 9/12–11/12 → 3 days).
@@ -105,6 +112,76 @@ export const buildSections = (analyses: SamAnalysis[]): DaySection[] => {
 	}
 
 	const undated = byDay.get(SEM_DATA_KEY);
+	if (undated?.length) {
+		sections.push({
+			accent: accentForDay(undated),
+			dayKey: SEM_DATA_KEY,
+			items: undated,
+			label: SEM_DATA_KEY,
+		});
+	}
+
+	return sections;
+};
+
+export const buildMonthSections = (analyses: SamAnalysis[]): DaySection[] => {
+	const byMonth = new Map<string, SamAnalysis[]>();
+
+	for (const a of analyses) {
+		const dayKeys = dayKeysForAnalysis(a);
+		if (dayKeys.length === 1 && dayKeys[0] === SEM_DATA_KEY) {
+			const list = byMonth.get(SEM_DATA_KEY) ?? [];
+			list.push(a);
+			byMonth.set(SEM_DATA_KEY, list);
+			continue;
+		}
+
+		const months = new Set<string>();
+		for (const dayKey of dayKeys) {
+			if (dayKey === SEM_DATA_KEY) continue;
+			const mk = monthKeyFromDayKey(dayKey);
+			if (mk) months.add(mk);
+		}
+		if (months.size === 0) {
+			const list = byMonth.get(SEM_DATA_KEY) ?? [];
+			list.push(a);
+			byMonth.set(SEM_DATA_KEY, list);
+			continue;
+		}
+		for (const mk of months) {
+			const list = byMonth.get(mk) ?? [];
+			list.push(a);
+			byMonth.set(mk, list);
+		}
+	}
+
+	const datedKeys = [...byMonth.keys()].filter(k => k !== SEM_DATA_KEY);
+	const sections: DaySection[] = [];
+
+	if (datedKeys.length > 0) {
+		const sorted = [...datedKeys].sort();
+		const first = sorted[0];
+		const last = sorted[sorted.length - 1];
+
+		if (first !== undefined && last !== undefined) {
+			let cursor = DateTime.fromFormat(first, 'yyyy-LL', { zone: TZ }).startOf('month');
+			const end = DateTime.fromFormat(last, 'yyyy-LL', { zone: TZ }).startOf('month');
+
+			while (cursor <= end) {
+				const k = cursor.toFormat('yyyy-LL');
+				const items = byMonth.get(k) ?? [];
+				sections.push({
+					accent: accentForDay(items),
+					dayKey: k,
+					items,
+					label: cursor.setLocale('pt-PT').toFormat('LLLL yyyy'),
+				});
+				cursor = cursor.plus({ months: 1 });
+			}
+		}
+	}
+
+	const undated = byMonth.get(SEM_DATA_KEY);
 	if (undated?.length) {
 		sections.push({
 			accent: accentForDay(undated),

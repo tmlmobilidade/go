@@ -11,7 +11,7 @@ import styles from './styles.module.css';
 import { cn } from '../../../lib/utils';
 import { AnalysisSquare } from '../AnalysisSquare';
 import { analysisSquareLabel, analysisSquareTitle } from '../AnalysisSquare/analysis-square-shared';
-import { buildSections } from './organized_by_dates';
+import { buildMonthSections, buildSections } from './organized_by_dates';
 
 /* * */
 
@@ -32,13 +32,17 @@ export function AnalysisTimeLine({ className, value }: AnalysisTimeLineProps) {
 export interface AnalysisTimeLineRowProps {
 	analyses: SamAnalysis[]
 	className?: string
+	groupBy?: 'day' | 'month'
 	/** Optional click handler. */
 	onClick?: () => void
 }
 
 /** One square per calendar day; color from aggregate state (`buildSections` accent). */
-export function AnalysisTimeLineRow({ analyses, className, onClick }: AnalysisTimeLineRowProps) {
-	const sections = useMemo(() => buildSections(analyses ?? []), [analyses]);
+export function AnalysisTimeLineRow({ analyses, className, groupBy = 'day', onClick }: AnalysisTimeLineRowProps) {
+	const sections = useMemo(() => {
+		const list = analyses ?? [];
+		return groupBy === 'month' ? buildMonthSections(list) : buildSections(list);
+	}, [analyses, groupBy]);
 
 	if (!analyses?.length) {
 		return <span className={styles.rowEmpty}>sem análises</span>;

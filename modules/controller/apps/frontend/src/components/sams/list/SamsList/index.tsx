@@ -71,7 +71,7 @@ export function SamsList() {
 		},
 		{
 			accessor: 'analysis',
-			render: item => <AnalysisTimeLineRow analyses={item.analysis ?? []} />,
+			render: item => <AnalysisTimeLineRow analyses={item.analysis ?? []} groupBy="month" />,
 			title: 'Análises',
 			width: 1000,
 		},
