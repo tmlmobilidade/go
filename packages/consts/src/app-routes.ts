@@ -61,9 +61,6 @@ export const PAGE_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getAppConfig('controller', 'frontend_url')}`,
 
-		// POSITIONS
-		POSITIONS_LIST: `${getAppConfig('controller', 'frontend_url')}/positions`,
-
 		// RIDES
 		RIDES_DETAIL: (id: string) => `${getAppConfig('controller', 'frontend_url')}/rides/${id}`,
 		RIDES_LIST: `${getAppConfig('controller', 'frontend_url')}/rides`,

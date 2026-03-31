@@ -74,18 +74,13 @@ export class VehiclesController {
 		//
 
 		//
-		// Check if the user has permission to read vehicles
-
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.read)) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read vehicles');
-		}
-
-		//
 		// Fetch all vehicles
 
 		const allVehicles = await vehicles.findMany({}, { sort: { created_at: -1 } });
 
-		return reply.send({ data: allVehicles, error: null, statusCode: HTTP_STATUS.OK });
+		return reply
+			.header('Access-Control-Allow-Origin', '*')
+			.send({ data: allVehicles, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -104,22 +99,16 @@ export class VehiclesController {
 		const vehicleData = await vehicles.findById(request.params.id);
 
 		if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
-
-		//
-		// Check if the user has permission to read vehicles
-
-		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.read)) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read vehicles');
-		}
-
 		//
 		// Fetch the vehicle data
 
-		return reply.send({
-			data: vehicleData,
-			error: null,
-			statusCode: HTTP_STATUS.OK,
-		});
+		return reply
+			.header('Access-Control-Allow-Origin', '*')
+			.send({
+				data: vehicleData,
+				error: null,
+				statusCode: HTTP_STATUS.OK,
+			});
 
 		//
 	}
@@ -221,6 +210,7 @@ export class VehiclesController {
 	static async getPositions(request: FastifyRequest, reply: FastifyReply<SimplifiedVehicleEvent[]>) {
 		const positions = await simplifiedVehicleEventsNew.getPositions();
 		reply
+			.header('Access-Control-Allow-Origin', '*')
 			.send({
 				data: positions,
 				error: null,

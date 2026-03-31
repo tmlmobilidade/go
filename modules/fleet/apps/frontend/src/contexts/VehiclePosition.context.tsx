@@ -5,6 +5,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection, transformVehicleDataIntoGeoJsonFeature } from '@tmlmobilidade/geo';
 import { SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { unauthenticatedSwrFetcher } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -36,7 +37,7 @@ export function useVehiclePositionContext() {
 /* * */
 
 export const VehiclePositionContextProvider = ({ children }: PropsWithChildren) => {
-	const { data: fetchedVehiclePositionData, error, isLoading } = useSWR<SimplifiedVehicleEvent[], Error>(API_ROUTES.fleet.VEHICLES_POSITIONS, { refreshInterval: 5_000 });
+	const { data: fetchedVehiclePositionData, error, isLoading } = useSWR<SimplifiedVehicleEvent[], Error>(API_ROUTES.fleet.VEHICLES_POSITIONS, unauthenticatedSwrFetcher, { refreshInterval: 5_000 });
 
 	const vehiclesGeoJsonFeatureCollection: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties> | undefined = useMemo(() => {
 		const collection = getBaseGeoJsonFeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>();
