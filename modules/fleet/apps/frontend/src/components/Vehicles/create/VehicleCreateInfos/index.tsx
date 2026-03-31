@@ -6,7 +6,7 @@ import { AgencySelect } from '@/components/common/AgencySelect';
 
 import { useVehicleCreateContext } from '@/components/Vehicles/create/VehicleCreate.context';
 import { Translations } from '@/lib/translations';
-import { VehicleEmissionSchema, VehiclePropulsionSchema, vehicleSchema, VehicleWheelchairSchema } from '@tmlmobilidade/types';
+import { VehicleEmissionSchema, VehiclePropulsionSchema, vehicleSchema, VehicleTypologySchema } from '@tmlmobilidade/types';
 import { Checkbox, DateInput, NumberInput, Section, Select, Spacer, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
@@ -35,6 +35,7 @@ export function VehicleCreateInfos() {
 				onChange={(event) => {
 					const value = event.toString(); // only numbers
 					vehicleCreateContext.data.form.getInputProps('_id').onChange(value);
+					vehicleCreateContext.data.form.getInputProps('vehicle_id').onChange(value);
 				}}
 			/>
 
@@ -60,6 +61,13 @@ export function VehicleCreateInfos() {
 				key={vehicleCreateContext.data.form.key('registration_date')}
 				label="Data de registro do veículo"
 				{...vehicleCreateContext.data.form.getInputProps('registration_date')}
+			/>
+
+			<DateInput
+				key={vehicleCreateContext.data.form.key('start_date')}
+				label="Data de início de operação"
+				required={!vehicleSchema.shape.start_date.isOptional()}
+				{...vehicleCreateContext.data.form.getInputProps('start_date')}
 			/>
 
 			<TextInput
@@ -95,29 +103,29 @@ export function VehicleCreateInfos() {
 			/>
 
 			<NumberInput
-				key={vehicleCreateContext.data.form.key('capacity_seated')}
+				key={vehicleCreateContext.data.form.key('available_seats')}
 				label="Capacidade de assentos"
 				placeholder="Introduza a capacidade de assentos"
-				required={!vehicleSchema.shape.capacity_seated.isOptional()}
+				required={!vehicleSchema.shape.available_seats.isOptional()}
 				w="100%"
-				{...vehicleCreateContext.data.form.getInputProps('capacity_seated')}
+				{...vehicleCreateContext.data.form.getInputProps('available_seats')}
 			/>
 
 			<NumberInput
-				key={vehicleCreateContext.data.form.key('capacity_standing')}
+				key={vehicleCreateContext.data.form.key('available_standing')}
 				label="Capacidade de pé"
 				placeholder="Introduza a capacidade de pé"
-				required={!vehicleSchema.shape.capacity_standing.isOptional()}
+				required={!vehicleSchema.shape.available_standing.isOptional()}
 				w="100%"
-				{...vehicleCreateContext.data.form.getInputProps('capacity_standing')}
+				{...vehicleCreateContext.data.form.getInputProps('available_standing')}
 			/>
 
 			<Spacer size="sm" />
 
 			<Checkbox
-				key={vehicleCreateContext.data.form.key('bikes_allowed')}
+				key={vehicleCreateContext.data.form.key('bicycles')}
 				label="Aceita bicicletas"
-				{...vehicleCreateContext.data.form.getInputProps('bikes_allowed', { type: 'checkbox' })}
+				{...vehicleCreateContext.data.form.getInputProps('bicycles', { type: 'checkbox' })}
 			/>
 
 			<Checkbox
@@ -132,7 +140,109 @@ export function VehicleCreateInfos() {
 				{...vehicleCreateContext.data.form.getInputProps('passenger_counting', { type: 'checkbox' })}
 			/>
 
+			<Checkbox
+				key={vehicleCreateContext.data.form.key('climatization')}
+				label="Possui climatização"
+				{...vehicleCreateContext.data.form.getInputProps('climatization', { type: 'checkbox' })}
+			/>
+
+			<Checkbox
+				key={vehicleCreateContext.data.form.key('wheelchair')}
+				label="Acessível para cadeirantes"
+				{...vehicleCreateContext.data.form.getInputProps('wheelchair', { type: 'checkbox' })}
+			/>
+
+			<Checkbox
+				key={vehicleCreateContext.data.form.key('corridor')}
+				label="Possui corredor"
+				{...vehicleCreateContext.data.form.getInputProps('corridor', { type: 'checkbox' })}
+			/>
+
+			<Checkbox
+				key={vehicleCreateContext.data.form.key('lowered_floor')}
+				label="Piso rebaixado"
+				{...vehicleCreateContext.data.form.getInputProps('lowered_floor', { type: 'checkbox' })}
+			/>
+
+			<Checkbox
+				key={vehicleCreateContext.data.form.key('ramp')}
+				label="Possui rampa"
+				{...vehicleCreateContext.data.form.getInputProps('ramp', { type: 'checkbox' })}
+			/>
+
+			<Checkbox
+				key={vehicleCreateContext.data.form.key('folding_system')}
+				label="Sistema de ajoelhamento/dobragem"
+				{...vehicleCreateContext.data.form.getInputProps('folding_system', { type: 'checkbox' })}
+			/>
+
+			<Checkbox
+				key={vehicleCreateContext.data.form.key('kneeling')}
+				label="Kneeling"
+				{...vehicleCreateContext.data.form.getInputProps('kneeling', { type: 'checkbox' })}
+			/>
+
+			<Checkbox
+				key={vehicleCreateContext.data.form.key('static_information')}
+				label="Informação estática"
+				{...vehicleCreateContext.data.form.getInputProps('static_information', { type: 'checkbox' })}
+			/>
+
+			<Checkbox
+				key={vehicleCreateContext.data.form.key('onboard_monitor')}
+				label="Monitor a bordo"
+				{...vehicleCreateContext.data.form.getInputProps('onboard_monitor', { type: 'checkbox' })}
+			/>
+
+			<Checkbox
+				key={vehicleCreateContext.data.form.key('front_display')}
+				label="Display frontal"
+				{...vehicleCreateContext.data.form.getInputProps('front_display', { type: 'checkbox' })}
+			/>
+
+			<Checkbox
+				key={vehicleCreateContext.data.form.key('rear_display')}
+				label="Display traseiro"
+				{...vehicleCreateContext.data.form.getInputProps('rear_display', { type: 'checkbox' })}
+			/>
+
+			<Checkbox
+				key={vehicleCreateContext.data.form.key('side_display')}
+				label="Display lateral"
+				{...vehicleCreateContext.data.form.getInputProps('side_display', { type: 'checkbox' })}
+			/>
+
+			<Checkbox
+				key={vehicleCreateContext.data.form.key('internal_sound')}
+				label="Som interno"
+				{...vehicleCreateContext.data.form.getInputProps('internal_sound', { type: 'checkbox' })}
+			/>
+
+			<Checkbox
+				key={vehicleCreateContext.data.form.key('external_sound')}
+				label="Som externo"
+				{...vehicleCreateContext.data.form.getInputProps('external_sound', { type: 'checkbox' })}
+			/>
+
+			<Checkbox
+				key={vehicleCreateContext.data.form.key('consumption_meter')}
+				label="Medição de consumo"
+				{...vehicleCreateContext.data.form.getInputProps('consumption_meter', { type: 'checkbox' })}
+			/>
+
 			<Spacer size="sm" />
+
+			<Select
+				key={vehicleCreateContext.data.form.key('typology')}
+				label="Tipologia"
+				placeholder="Selecione a tipologia do veículo"
+				w="100%"
+				data={VehicleTypologySchema.options.map(value => ({
+					label: Translations.TYPOLOGY[value],
+					value,
+				}))}
+				{...vehicleCreateContext.data.form.getInputProps('typology')}
+			/>
 
 			<Select
 				key={vehicleCreateContext.data.form.key('propulsion')}
@@ -147,7 +257,7 @@ export function VehicleCreateInfos() {
 			/>
 
 			<Select
-				key={vehicleCreateContext.data.form.key('emission_class')}
+				key={vehicleCreateContext.data.form.key('emission')}
 				label="Classe de emissão"
 				placeholder="Selecione a classe de emissão do veículo"
 				w="100%"
@@ -155,19 +265,7 @@ export function VehicleCreateInfos() {
 					label: Translations.EMISSION[value],
 					value: value,
 				}))}
-				{...vehicleCreateContext.data.form.getInputProps('emission_class')}
-			/>
-
-			<Select
-				key={vehicleCreateContext.data.form.key('wheelchair_acessible')}
-				label="Acessibilidade para cadeirantes"
-				placeholder="Selecione a acessibilidade para cadeirantes do veículo"
-				w="100%"
-				data={VehicleWheelchairSchema.options.map(value => ({
-					label: Translations.WHEELCHAIR[value],
-					value: value,
-				}))}
-				{...vehicleCreateContext.data.form.getInputProps('wheelchair_acessible')}
+				{...vehicleCreateContext.data.form.getInputProps('emission')}
 			/>
 
 		</Section>

@@ -6,12 +6,14 @@ import { invalidateRides } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { type ChangeStreamInsertDocument } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
-import { BatchWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 
 const writer = new BatchWriter<SimplifiedVehicleEvent>({
-	batch_size: 100,
+	batch_size: 500,
+	batch_timeout: 500,
+	idle_timeout: 500,
 	insertFn: async (data) => {
 		await simplifiedVehicleEventsNew.insert('JSONEachRow', data);
 	},
@@ -44,14 +46,6 @@ export async function processVehicleEvent(databaseOperation: ChangeStreamInsertD
 	// Write the new vehicle event document to the SimplifiedVehicleEvents collection
 
 	await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: invalidateRides });
-
-	//
-	// Publish the heartbeats for each agency
-
-	if (newSimplifiedVehicleEventDocument.agency_id === '41') await fetch('https://status.carrismetropolitana.pt/api/push/QRSatZitiBNIhTDneykCGV0PthvQoIUf');
-	if (newSimplifiedVehicleEventDocument.agency_id === '42') await fetch('https://status.carrismetropolitana.pt/api/push/uZTfvExA1yCpNZIXIzgvCmHdSquNi0lV');
-	if (newSimplifiedVehicleEventDocument.agency_id === '43') await fetch('https://status.carrismetropolitana.pt/api/push/Rp7hYCJKLL8h67IP07RDAXagwO5avchc');
-	if (newSimplifiedVehicleEventDocument.agency_id === '44') await fetch('https://status.carrismetropolitana.pt/api/push/Mnm5Rn3tJAXYVWb6I51eTA4xfpXJ3vqq');
 
 	//
 };

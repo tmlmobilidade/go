@@ -17,6 +17,8 @@ const tableSchema: ClickHouseSchema<SimplifiedApexValidation> = {
 	created_at: { type: 'Int64' },
 	device_id: { type: 'String' },
 	event_type: { type: 'Int64' },
+	is_ok: { type: 'Bool' },
+	is_ok_pcgi: { type: 'Bool' },
 	is_passenger: { type: 'Bool' },
 	line_id: { type: 'String' },
 	mac_ase_counter_value: { type: 'Int64' },
@@ -29,7 +31,6 @@ const tableSchema: ClickHouseSchema<SimplifiedApexValidation> = {
 	stop_id: { type: 'String' },
 	trip_id: { type: 'String' },
 	units_qty: { type: 'Nullable(Int64)' },
-	updated_at: { type: 'Int64' },
 	validation_status: { type: 'Int64' },
 	vehicle_id: { type: 'String' },
 };

@@ -6,7 +6,7 @@ import { VehicleImportContextProvider } from '@/contexts/VehicleImport.context';
 import { DataProviders } from '@/providers/data-providers';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
-import { VehicleImport } from './VehicleImport';
+import { VehicleImportFile } from './VehicleImportFile';
 
 /* * */
 
@@ -20,7 +20,7 @@ export const openImportVehicleModal = () => {
 			<MeContextProvider>
 				<DataProviders>
 					<VehicleImportContextProvider>
-						<VehicleImport />
+						<VehicleImportFile />
 					</VehicleImportContextProvider>
 				</DataProviders>
 			</MeContextProvider>
