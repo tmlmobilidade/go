@@ -5,7 +5,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { SimplifiedVehicleEvent, type UpdateVehicleDto, UpdateVehicleSchema, type Vehicle } from '@tmlmobilidade/types';
 import { UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { fetchData, unauthenticatedSwrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -59,7 +59,7 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 	// B. Fetch data
 
 	const { mutate: vehiclesListMutate } = useSWR<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST);
-	const { data: vehicleData, error: vehicleError, isLoading: vehicleLoading, mutate: vehicleMutate } = useSWR<Vehicle>(API_ROUTES.fleet.VEHICLES_DETAIL(vehicleId), { refreshInterval: 5_000 });
+	const { data: vehicleData, error: vehicleError, isLoading: vehicleLoading, mutate: vehicleMutate } = useSWR<Vehicle>(API_ROUTES.fleet.VEHICLES_DETAIL(vehicleId), unauthenticatedSwrFetcher, { refreshInterval: 5_000 });
 	const { data: vehiclePositions } = useSWR<SimplifiedVehicleEvent>(API_ROUTES.fleet.VEHICLES_DETAIL_LAST_EVENT(vehicleId), { refreshInterval: 1_000 });
 
 	//
