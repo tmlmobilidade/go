@@ -1,6 +1,6 @@
 /* * */
 
-import { API_ROUTES, HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { alerts, files, notifications } from '@tmlmobilidade/interfaces';
@@ -109,18 +109,19 @@ export class AlertsController {
 	 * @param request The request object.
 	 * @param reply The reply object.
 	 */
-	static async getRssFeed(request: FastifyRequest, reply: FastifyReply) {
+	static async getRssFeed(_request: FastifyRequest, reply: FastifyReply<string>) {
+		const now = Dates.now('Europe/Lisbon').unix_timestamp;
 		const allAlerts = await alerts.findMany(
 			{
 				$and: [
 					{
 						$or: [
-							{ publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_timestamp } },
+							{ publish_end_date: { $gte: now } },
 							{ publish_end_date: null },
 							{ publish_end_date: undefined },
 							{ publish_end_date: { $exists: false } },
 						],
-						publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
+						publish_start_date: { $lte: now },
 						publish_status: 'published',
 					},
 				],
@@ -142,13 +143,13 @@ export class AlertsController {
 			.type('application/rss+xml; charset=utf-8')
 			.send(createRssFeed(allAlerts.map(alert => ({
 				description: alert.description,
-				link: alert.info_url || API_ROUTES.alerts.ALERTS_DETAIL(alert._id),
+				link: `https://www.carrismetropolitana.pt/alerts/${alert._id}`,
 				publish_start_date: alert.publish_start_date,
 				title: alert.title,
 			})), {
 				copyright: 'Carris Metropolitana',
 				description: 'Alertas e atualizacoes da Carris Metropolitana.',
-				link: API_ROUTES.alerts.ALERTS_LIST,
+				link: "https://www.carrismetropolitana.pt/alerts",
 				title: 'Carris Metropolitana - Alertas',
 			}));
 	}
