@@ -111,7 +111,7 @@ export class AlertsController {
 	 */
 	static async getRssFeed(_request: FastifyRequest, reply: FastifyReply<string>) {
 		const now = Dates.now('Europe/Lisbon').unix_timestamp;
-		
+
 		const allAlerts = await alerts.findMany(
 			{
 				$or: [
