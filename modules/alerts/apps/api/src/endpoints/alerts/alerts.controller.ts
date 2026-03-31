@@ -110,44 +110,41 @@ export class AlertsController {
 	 * @param reply The reply object.
 	 */
 	static async getRssFeed(_request: FastifyRequest, reply: FastifyReply<string>) {
+		const now = Dates.now('Europe/Lisbon').unix_timestamp;
 		const allAlerts = await alerts.findMany(
 			{
-				$and: [
-					{
-						$or: [
-							{ publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_timestamp } },
-							{ publish_end_date: null },
-							{ publish_end_date: undefined },
-							{ publish_end_date: { $exists: false } },
-						],
-						publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
-						publish_status: 'published',
-					},
+				$or: [
+					{ publish_end_date: { $gte: now } },
+					{ publish_end_date: null },
+					{ publish_end_date: undefined },
+					{ publish_end_date: { $exists: false } },
 				],
+				publish_start_date: { $lte: now },
+				publish_status: 'published',
 			},
 			{ sort: { publish_start_date: -1 } },
 		);
 
 		if (!allAlerts.length) {
-			reply
-				.status(HTTP_STATUS.NOT_FOUND)
-				.header('Cache-Control', 'public, max-age=60, s-maxage=60')
-				.type('text/plain; charset=utf-8')
-				.send('No alerts available.');
+			reply.status(HTTP_STATUS.NOT_FOUND).send('No alerts available.');
 			return;
 		}
 
-		reply.header('Cache-Control', 'public, max-age=180, s-maxage=180').type('application/rss+xml; charset=utf-8').send(createRssFeed(allAlerts.map(alert => ({
-				description: alert.description,
-				link: `https://www.carrismetropolitana.pt/alerts/${alert._id}`,
-				publish_start_date: alert.publish_start_date,
-				title: alert.title,
-			})), {
-				copyright: 'Carris Metropolitana',
-				description: 'Alertas e atualizacoes da Carris Metropolitana.',
-				link: "https://www.carrismetropolitana.pt/alerts",
-				title: 'Carris Metropolitana - Alertas',
-			}));
+		const rssItems = allAlerts.map(alert => ({
+			description: alert.description,
+			link: `https://www.carrismetropolitana.pt/alerts/${alert._id}`,
+			publish_start_date: alert.publish_start_date,
+			title: alert.title,
+		}));
+
+		const xml = createRssFeed(rssItems, {
+			copyright: 'Carris Metropolitana',
+			description: 'Alertas e atualizacoes da Carris Metropolitana.',
+			link: 'https://www.carrismetropolitana.pt/alerts',
+			title: 'Carris Metropolitana - Alertas',
+		});
+
+		reply.header('Cache-Control', 'public, max-age=180, s-maxage=180').type('application/rss+xml; charset=utf-8').send(xml);
 	}
 
 	/**
