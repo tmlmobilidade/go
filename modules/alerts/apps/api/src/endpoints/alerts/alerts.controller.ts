@@ -110,18 +110,17 @@ export class AlertsController {
 	 * @param reply The reply object.
 	 */
 	static async getRssFeed(_request: FastifyRequest, reply: FastifyReply<string>) {
-		const now = Dates.now('Europe/Lisbon').unix_timestamp;
 		const allAlerts = await alerts.findMany(
 			{
 				$and: [
 					{
 						$or: [
-							{ publish_end_date: { $gte: now } },
+							{ publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_timestamp } },
 							{ publish_end_date: null },
 							{ publish_end_date: undefined },
 							{ publish_end_date: { $exists: false } },
 						],
-						publish_start_date: { $lte: now },
+						publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
 						publish_status: 'published',
 					},
 				],
@@ -138,10 +137,7 @@ export class AlertsController {
 			return;
 		}
 
-		reply
-			.header('Cache-Control', 'public, max-age=180, s-maxage=180')
-			.type('application/rss+xml; charset=utf-8')
-			.send(createRssFeed(allAlerts.map(alert => ({
+		reply.header('Cache-Control', 'public, max-age=180, s-maxage=180').type('application/rss+xml; charset=utf-8').send(createRssFeed(allAlerts.map(alert => ({
 				description: alert.description,
 				link: `https://www.carrismetropolitana.pt/alerts/${alert._id}`,
 				publish_start_date: alert.publish_start_date,
