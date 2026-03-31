@@ -9,7 +9,6 @@ import { useEffect, useRef, useState } from 'react';
 import styles from './styles.module.css';
 
 import { Indicator } from '../../../display/Indicator';
-import { useMapViewContext } from '../../view/MapViewContext';
 
 /* * */
 
@@ -41,6 +40,20 @@ function interpolateCoords(start: number[], end: number[], t: number): number[] 
 	];
 }
 
+function calculateBearing(start: number[], end: number[]): number {
+	// Coordinates are [longitude, latitude].
+	const startLng = start[0] * (Math.PI / 180);
+	const startLat = start[1] * (Math.PI / 180);
+	const endLng = end[0] * (Math.PI / 180);
+	const endLat = end[1] * (Math.PI / 180);
+
+	const y = Math.sin(endLng - startLng) * Math.cos(endLat);
+	const x = Math.cos(startLat) * Math.sin(endLat) - Math.sin(startLat) * Math.cos(endLat) * Math.cos(endLng - startLng);
+
+	const bearing = Math.atan2(y, x) * (180 / Math.PI);
+	return (bearing + 360) % 360;
+}
+
 function interpolateAngle(start: number, end: number, t: number): number {
 	const delta = ((((end - start) % 360) + 540) % 360) - 180;
 	return start + delta * t;
@@ -55,7 +68,9 @@ function interpolateProps(startFeature: GeoJSON.Feature<GeoJSON.Point> | undefin
 
 	const interpolatedCoords = interpolateCoords(startCoords, endCoords, t);
 
-	const endBearing = endFeature.properties?.bearing ?? 0;
+	const hasMovement = startCoords[0] !== endCoords[0] || startCoords[1] !== endCoords[1];
+	const computedBearing = hasMovement ? calculateBearing(startCoords, endCoords) : undefined;
+	const endBearing = endFeature.properties?.bearing ?? computedBearing ?? 0;
 	const startBearing = startFeature?.properties?.bearing ?? endBearing;
 	const interpolatedBearing = interpolateAngle(startBearing, endBearing, t);
 
@@ -88,7 +103,6 @@ export function MapOverlayVehicles({ presentBeforeId, showCounter, vehiclesData 
 
 	//
 	// A. Setup variables
-	const mapViewContext = useMapViewContext();
 
 	const [animatedData, setAnimatedData] = useState(vehiclesData);
 	const previousDataRef = useRef<GeoJSON.FeatureCollection>(vehiclesData);
@@ -97,14 +111,6 @@ export function MapOverlayVehicles({ presentBeforeId, showCounter, vehiclesData 
 
 	//
 	// B. Transform data
-
-	useEffect(() => {
-		// Register features for sources in this overlay component
-		if (vehiclesData) mapViewContext.actions.registerOverlaySource(`default-source-vehicles`, vehiclesData);
-		return () => {
-			mapViewContext.actions.unregisterOverlaySource(`default-source-vehicles`);
-		};
-	}, [vehiclesData]);
 
 	useEffect(() => {
 		if (!vehiclesData || vehiclesData.features.length === 0) {
@@ -214,6 +220,10 @@ export function MapOverlayVehicles({ presentBeforeId, showCounter, vehiclesData 
 							['to-string', ['get', 'agency_id']],
 							'4',
 							'ttsl-boat-regular',
+							'1',
+							'carris-bus-regular',
+							'21',
+							'carris-bus-regular',
 							'cmet-bus-regular',
 						],
 						'icon-offset': [0, 0],
