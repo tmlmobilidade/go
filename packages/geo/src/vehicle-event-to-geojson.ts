@@ -24,7 +24,7 @@ export function transformVehicleDataIntoGeoJsonFeature(event: SimplifiedVehicleE
 			coordinates: [event.longitude, event.latitude],
 			type: 'Point',
 		},
-		id: event.vehicle_id,
+		id: `${event.agency_id}-${event.vehicle_id}`,
 		properties: {
 			...(vehicleData ?? {}),
 			...event,

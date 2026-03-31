@@ -74,7 +74,7 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 			FROM "${this.databaseName}"."${this.tableName}"
 			WHERE created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL ${secondsAgo} SECOND)
 			ORDER BY created_at DESC
-			LIMIT 1;
+			LIMIT 1 BY vehicle_id, agency_id
 		`;
 
 		const result = await this.queryFromString<SimplifiedVehicleEvent>(query);

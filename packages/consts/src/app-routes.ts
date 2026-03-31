@@ -282,9 +282,6 @@ export const API_ROUTES = Object.freeze({
 		RIDES_DETAIL_VEHICLE_EVENTS: (id: string) => `${getAppConfig('controller', 'api_url')}/rides/${id}/vehicle-events`,
 		RIDES_LIST: `${getAppConfig('controller', 'api_url')}/rides`,
 		RIDES_WS: `${getAppConfig('controller', 'api_url')}/rides/ws`,
-
-		// VEHICLES
-		VEHICLES_POSITIONS: `${getAppConfig('controller', 'api_url')}/vehicles/positions`,
 	},
 
 	/* * */
