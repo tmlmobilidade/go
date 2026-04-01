@@ -1,7 +1,10 @@
 /* * */
 
 import { useSamsDetailContext } from '@/contexts/SamsDetail.context';
-import { ErrorDisplay, Grid, Label, LoadingOverlay, Section } from '@tmlmobilidade/ui';
+import { Collapsible, ErrorDisplay, Grid, LoadingOverlay, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+/* * */
 
 export function SamsDetailBasicInfos() {
 	//
@@ -10,6 +13,7 @@ export function SamsDetailBasicInfos() {
 	// A. Setup variables
 
 	const samDetailContext = useSamsDetailContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -23,10 +27,16 @@ export function SamsDetailBasicInfos() {
 	}
 
 	return (
-		<Section gap="md">
-			<Grid columns="abc" gap="md">
-				<Label>Descrição</Label>
-			</Grid>
-		</Section>
+		<Collapsible
+			description={t('default:sams.detail.SamsDetailBasicInfos.description')}
+			title={t('default:sams.detail.SamsDetailBasicInfos.title')}
+			defaultOpen
+		>
+			<Section>
+				<Grid columns="ab" gap="md">
+					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.latest_apex_version.label')} value={samDetailContext.data.sam?.latest_apex_version} />
+				</Grid>
+			</Section>
+		</Collapsible>
 	);
 }

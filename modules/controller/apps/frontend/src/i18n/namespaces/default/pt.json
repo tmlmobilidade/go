@@ -523,6 +523,15 @@
 	},
 	"sams": {
 		"detail": {
+			"SamsDetailBasicInfos": {
+				"description": "Informações básicas do SAM",
+				"fields": {
+					"latest_apex_version": {
+						"label": "Versão APEX utilizada"
+					}
+				},
+				"title": "Informações Básicas"
+			},
 			"SamsDetailCalender": {
 				"description": "Calendário das análises do SAM",
 				"title": "Calendário de Análises"
