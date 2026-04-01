@@ -17,7 +17,6 @@ export interface AnalysisSquareProps {
 	/** When set (e.g. one square per calendar day), overrides filled/empty from `value`. */
 	accent?: 'green' | 'orange' | 'red'
 	className?: string
-	onClick?: MouseEventHandler<HTMLDivElement>
 	textLabel: string
 	/** Tooltip; when omitted, derived from `value` when present. */
 	title?: string
@@ -27,7 +26,7 @@ export interface AnalysisSquareProps {
 
 /* * */
 
-export function AnalysisSquare({ accent, className, onClick, textLabel, title, value }: AnalysisSquareProps) {
+export function AnalysisSquare({ accent, className, textLabel, title, value }: AnalysisSquareProps) {
 	const filled = value != null && analysisSquareHasValues(value);
 	const toneClass =
 		accent === 'orange'
@@ -52,7 +51,6 @@ export function AnalysisSquare({ accent, className, onClick, textLabel, title, v
 		<div
 			className={cn(styles.square, toneClass, className)}
 			data-state={dataState}
-			onClick={onClick}
 			title={resolvedTitle}
 		>
 			{textLabel}
@@ -64,11 +62,9 @@ export interface AnalysisSquareRowProps {
 	/** One square per analysis entry, in order. */
 	analyses: SamAnalysis[]
 	className?: string
-	/** Optional click handler. */
-	onClick?: () => void
 }
 
-export function AnalysisSquareRow({ analyses, className, onClick }: AnalysisSquareRowProps) {
+export function AnalysisSquareRow({ analyses, className }: AnalysisSquareRowProps) {
 	if (!analyses?.length) {
 		return <span className={styles.rowEmpty}>sem análises</span>;
 	}
@@ -78,7 +74,6 @@ export function AnalysisSquareRow({ analyses, className, onClick }: AnalysisSqua
 			{analyses.map((value, index) => (
 				<AnalysisSquare
 					key={`${value.first_transaction_id ?? ''}-${value.last_transaction_id ?? ''}-${index}`}
-					onClick={onClick}
 					textLabel={analysisSquareLabel(value)}
 					value={value}
 				/>

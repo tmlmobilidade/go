@@ -522,18 +522,24 @@
 		}
 	},
 	"sams": {
+		"detail": {
+			"SamsDetailCalender": {
+				"description": "Calendário das análises do SAM",
+				"title": "Calendário de Análises"
+			}
+		},
 		"list": {
-			"SamsFiltersAgency": {
-				"label": "Agência"
+			"SamsListFilterAgency": {
+				"label": "Operador"
 			},
 			"SamsListHeader": {
 				"title": "SAMs"
 			},
 			"SamsListStatus": {
-				"waiting": "Aguardando",
-				"processing": "Em processamento",
 				"completed": "Completo",
-				"failed": "Falhou"
+				"failed": "Falhou",
+				"processing": "Em processamento",
+				"waiting": "Aguardando"
 			}
 		}
 	}

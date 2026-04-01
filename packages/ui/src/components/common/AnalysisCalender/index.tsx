@@ -3,7 +3,7 @@
 /* * */
 
 import { type SamAnalysis } from '@tmlmobilidade/types';
-import { useMemo } from 'react';
+import { type CSSProperties, useMemo } from 'react';
 
 import styles from './styles.module.css';
 
@@ -17,6 +17,11 @@ import { buildSections } from '../AnalysisTimeLine/organized_by_dates';
 export interface AnalysisCalenderProps {
 	analyses: SamAnalysis[]
 	className?: string
+	/**
+	 * Upper bound on day columns when the container is wide; narrower widths show fewer columns (CSS `auto-fit`).
+	 * Override density with `--analysis-calendar-day-min` (e.g. `140px`) via `style` / CSS if needed.
+	 */
+	maxDaysPerRow?: number
 }
 
 /* * */
@@ -29,7 +34,9 @@ export function AnalysisCalender({ analyses, className }: AnalysisCalenderProps)
 	}
 
 	return (
-		<div className={cn(styles.organizedByDates, className)}>
+		<div
+			className={cn(styles.organizedByDates, className)}
+		>
 			{sections.map(section => (
 				<div
 					key={section.dayKey}
@@ -42,17 +49,13 @@ export function AnalysisCalender({ analyses, className }: AnalysisCalenderProps)
 				>
 					<div className={styles.dayLabel}>{section.label}</div>
 					<div className={styles.daySquares}>
-						{section.items.length === 0 ? (
-							<span className={styles.dayGapHint}>—</span>
-						) : (
-							section.items.map((value, index) => (
-								<AnalysisSquare
-									key={`${value.first_transaction_id ?? ''}-${value.last_transaction_id ?? ''}-${section.dayKey}-${index}`}
-									textLabel={analysisSquareLabel(value)}
-									value={value}
-								/>
-							))
-						)}
+						{section.items.map((value, index) => (
+							<AnalysisSquare
+								key={`${value.first_transaction_id ?? ''}-${value.last_transaction_id ?? ''}-${section.dayKey}-${index}`}
+								textLabel={analysisSquareLabel(value)}
+								value={value}
+							/>
+						))}
 					</div>
 				</div>
 			))}

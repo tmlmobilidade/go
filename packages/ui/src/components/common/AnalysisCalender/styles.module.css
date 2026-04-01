@@ -1,14 +1,45 @@
 /* Organized by calendar day */
 
+.rowEmpty {
+	font-size: 12px;
+	font-variant-numeric: tabular-nums;
+	color: var(--color-status-danger-primary);
+}
+
 .organizedByDates {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
+	--analysis-calendar-grid-gap: 10px;
+	box-sizing: border-box;
+	display: grid;
+	grid-template-columns: repeat(
+		auto-fit,
+		minmax(
+			min(
+				100%,
+				max(
+					var(--analysis-calendar-day-min, 120px),
+					calc(
+						(100% - (var(--analysis-calendar-max-cols, 12) - 1) * var(--analysis-calendar-grid-gap))
+						/ var(--analysis-calendar-max-cols, 12)
+					)
+				)
+			),
+			1fr
+		)
+	);
+	gap: var(--analysis-calendar-grid-gap);
+	align-self: stretch;
+	width: 100%;
 	max-width: 100%;
+	margin-right: 10px;
+	margin-left: 10px;
+	container-name: analysis-calendar;
+	container-type: inline-size;
 }
 
 .dayGroup {
-	padding: 6px 8px 8px 10px;
+	box-sizing: border-box;
+	min-width: 0;
+	padding: 6px 8px 8px;
 	border-color: var(--color-border-subtle, #e0e0e0);
 	border-style: solid;
 	border-width: 1px;
@@ -32,9 +63,9 @@
 }
 
 .dayLabel {
-	margin-bottom: 4px;
-	font-size: 11px;
-	font-weight: 700;
+	margin-bottom: 6px;
+	font-size: 12px;
+	font-weight: 600;
 	font-variant-numeric: tabular-nums;
 	line-height: 1.2;
 	text-transform: uppercase;
@@ -42,10 +73,12 @@
 }
 
 .daySquares {
-	display: inline-flex;
+	display: flex;
 	flex-wrap: wrap;
 	gap: 4px;
 	align-items: center;
+	width: 100%;
+	min-width: 0;
 }
 
 .dayGapHint {
