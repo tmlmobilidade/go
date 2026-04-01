@@ -11,7 +11,7 @@ import styles from './styles.module.css';
 import { cn } from '../../../lib/utils';
 import { AnalysisSquare } from '../AnalysisSquare';
 import { analysisSquareLabel, analysisSquareTitle } from '../AnalysisSquare/analysis-square-shared';
-import { buildMonthSections, buildSections } from './organized_by_dates';
+import { buildMonthSections } from './organized_by_dates';
 
 /* * */
 
@@ -32,17 +32,14 @@ export function AnalysisTimeLine({ className, value }: AnalysisTimeLineProps) {
 export interface AnalysisTimeLineRowProps {
 	analyses: SamAnalysis[]
 	className?: string
-	groupBy?: 'day' | 'month'
-	/** Optional click handler. */
-	onClick?: () => void
 }
 
 /** One square per calendar day; color from aggregate state (`buildSections` accent). */
-export function AnalysisTimeLineRow({ analyses, className, groupBy = 'day', onClick }: AnalysisTimeLineRowProps) {
+export function AnalysisTimeLineRow({ analyses, className }: AnalysisTimeLineRowProps) {
 	const sections = useMemo(() => {
 		const list = analyses ?? [];
-		return groupBy === 'month' ? buildMonthSections(list) : buildSections(list);
-	}, [analyses, groupBy]);
+		return buildMonthSections(list);
+	}, [analyses]);
 
 	if (!analyses?.length) {
 		return <span className={styles.rowEmpty}>sem análises</span>;
@@ -60,7 +57,6 @@ export function AnalysisTimeLineRow({ analyses, className, groupBy = 'day', onCl
 					<AnalysisSquare
 						key={section.dayKey}
 						accent={section.accent}
-						onClick={() => onClick}
 						textLabel={section.label}
 						title={dayTitle}
 						value={section.items[0]}

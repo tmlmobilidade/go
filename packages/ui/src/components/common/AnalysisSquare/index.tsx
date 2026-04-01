@@ -2,8 +2,6 @@
 
 /* * */
 
-import type { MouseEventHandler } from 'react';
-
 import { type SamAnalysis } from '@tmlmobilidade/types';
 
 import styles from './styles.module.css';

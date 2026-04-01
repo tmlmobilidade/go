@@ -21,7 +21,7 @@ interface DaySection {
 	label: string
 }
 
-const monthKeyFromDayKey = (dayKey: string): string | null => {
+const monthKeyFromDayKey = (dayKey: string): null | string => {
 	// dayKey is ISO date (YYYY-MM-DD)
 	const dt = DateTime.fromISO(dayKey, { zone: TZ });
 	if (!dt.isValid) return null;
@@ -103,7 +103,7 @@ export const buildSections = (analyses: SamAnalysis[]): DaySection[] => {
 						accent: accentForDay(items),
 						dayKey: k,
 						items,
-						label: cursor.toFormat('dd/MM'),
+						label: cursor.toFormat('dd/MM/yyyy'),
 					});
 				}
 				cursor = cursor.plus({ days: 1 });

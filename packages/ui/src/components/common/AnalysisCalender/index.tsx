@@ -3,7 +3,7 @@
 /* * */
 
 import { type SamAnalysis } from '@tmlmobilidade/types';
-import { type CSSProperties, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
