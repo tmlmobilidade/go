@@ -7,20 +7,19 @@ import { useTranslation } from 'react-i18next';
 /* * */
 
 export function SamsFiltersAgency() {
+	//
+	// A. Setup variables
 
-    //
-    // A. Setup variables
+	const samsListContext = useSamsListContext();
+	const { t } = useTranslation();
 
-    const samsListContext = useSamsListContext();
-    const { t } = useTranslation();
-
-    //
-    // B. Render components
+	//
+	// B. Render components
 
 	return (
 		<FilterTypeList
 			active={samsListContext.filters.agency.isActive}
-			label={t('default:sams.list.SamsFiltersAgency.label')}
+			label={t('default:sams.list.SamsListFilterAgency.label')}
 			onChange={samsListContext.filters.agency.set}
 			options={samsListContext.filters.agency.options}
 			isMultiple

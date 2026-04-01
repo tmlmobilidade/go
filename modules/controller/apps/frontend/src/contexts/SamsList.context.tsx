@@ -1,12 +1,13 @@
 'use client';
 
+import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog, Sam } from '@tmlmobilidade/types';
-import { useDataAgencies, useFilterStateList, useFilterStateString, type UseFilterStateListReturnType, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
+import { Sam } from '@tmlmobilidade/types';
+import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
 
 /* * */
 
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -17,8 +18,8 @@ export interface SamsListContextState {
 		raw: Sam[]
 	}
 	filters: {
-		search: UseFilterStateStringReturnType
 		agency: UseFilterStateListReturnType
+		search: UseFilterStateStringReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -46,53 +47,69 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	const filterSearch = useFilterStateString('search');
 
-	const { data: allSamsData, error: allSamsError, isLoading: allSamsLoading } = useSWR<Sam[], Error>(API_ROUTES.controller.SAMS_LIST, { refreshInterval: 5000 });
+	const [debouncedFilterSearch, setDebouncedFilterSearch] = useState('');
+
+	useEffect(() => {
+		const handle = window.setTimeout(() => {
+			setDebouncedFilterSearch(filterSearch.value.trim());
+		}, 500);
+		return () => window.clearTimeout(handle);
+	}, [filterSearch.value]);
 
 	//
-	// B. Fetch data
+	// B. Agencies (all operators for defaults / options; URL omits `agency_id` when all are selected)
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.sams.actions.read],
-		scope: PermissionCatalog.all.sams.scope,
-	});
+	const agenciesContext = useAgenciesContext();
 
-	const searchResultsData = useSearch<Sam>({
-		accessors: ['_id', 'agency_id'],
-		data: allSamsData ?? [],
-		query: filterSearch.value,
-	});
-	
-	const filterAgency = useFilterStateList('agency_id', filteredAgencyIds, filteredAgencyOptions);
+	const agencyIdsOrdered = agenciesContext.data.ids;
 
-	//
-	// C. Handle actions
+	const agencyOptions = useMemo(
+		() => agenciesContext.data.raw.map(item => ({
+			checked: false,
+			disabled: false,
+			label: `${item._id} - ${item.name}`,
+			value: item._id,
+		})),
+		[agenciesContext.data.raw],
+	);
 
-	const handleFilter = (filter: string, value: string) => {
-		if (filter === 'search') {
-			filterSearch.set(value);
-		} else if (filter === 'agency') {
-			filterAgency.set([value]);		
-		}
-	};
+	const filterAgency = useFilterStateList('agency_id', agencyIdsOrdered, agencyOptions);
+
+	const samsListQueryString = useMemo(() => {
+		const params = new URLSearchParams();
+		if (filterAgency.isActive && filterAgency.value.length)
+			params.set('agency_ids', filterAgency.value.join(','));
+		if (debouncedFilterSearch)
+			params.set('search', debouncedFilterSearch);
+		return params.toString();
+	}, [debouncedFilterSearch, filterAgency.isActive, filterAgency.value]);
+
+	const samsListUrl = useMemo(() => {
+		if (agenciesContext.flags.loading)
+			return null;
+		const base = API_ROUTES.controller.SAMS_LIST;
+		return samsListQueryString ? `${base}?${samsListQueryString}` : base;
+	}, [agenciesContext.flags.loading, samsListQueryString]);
+
+	const { data: allSamsData, error: allSamsError, isLoading: allSamsLoading } = useSWR<Sam[], Error>(samsListUrl, { refreshInterval: 5000 });
 
 	//
 	// D. Define context value
 
 	const contextValue: SamsListContextState = useMemo(() => ({
 		data: {
-			setFilter: handleFilter,
-			filtered: searchResultsData,
+			filtered: allSamsData ?? [],
 			raw: allSamsData ?? [],
 		},
 		filters: {
-			search: filterSearch,
 			agency: filterAgency,
+			search: filterSearch,
 		},
 		flags: {
 			error: allSamsError,
 			loading: allSamsLoading,
 		},
-	}), [allSamsError, allSamsLoading, filterSearch, searchResultsData, allSamsData, filterAgency]);
+	}), [allSamsError, allSamsLoading, filterSearch, allSamsData, filterAgency]);
 
 	//
 	// E. Render components
