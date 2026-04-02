@@ -6,6 +6,27 @@
 	color: var(--color-status-danger-primary);
 }
 
+.byMonthGroups {
+	display: grid;
+	gap: 12px;
+	width: 100%;
+}
+
+.monthGroup {
+	display: grid;
+	gap: 8px;
+}
+
+.monthLabel {
+	font-size: 16px;
+	font-weight: 700;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	text-align: center;
+	justify-self: center;
+	padding-bottom: 20px;
+}
+
 .organizedByDates {
 	--analysis-calendar-grid-gap: 10px;
 	box-sizing: border-box;
