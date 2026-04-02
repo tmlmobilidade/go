@@ -534,6 +534,18 @@
 					},
 					"transactions_missing": {
 						"label": "Transações em falta"
+					},
+					"seen_first_at": {
+						"label": "Primeira vista"
+					},
+					"seen_last_at": {
+						"label": "Última vista"
+					},
+					"system_status": {
+						"label": "Estado do sistema"
+					},
+					"latest_apex_version": {
+						"label": "Versão APEX utilizada"
 					}
 				},
 				"title": "Informações Básicas"
