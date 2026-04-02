@@ -1,7 +1,7 @@
 /* * */
 
 import { useSamsDetailContext } from '@/contexts/SamsDetail.context';
-import { AnalysisCalender, Collapsible, Section, SegmentedControl } from '@tmlmobilidade/ui';
+import { AnalysisCalender, Collapsible, Divider, Section, SegmentedControl } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -40,7 +40,9 @@ export function SamsDetailCalender() {
 					]}
 					onChange={handleChangeView}
 					value={selectedPeriod}
+					fullWidth
 				/>
+				<Divider />
 				<AnalysisCalender analyses={samDetailContext.data.sam?.analysis ?? []} groupBy={selectedPeriod} />
 			</Section>
 		</Collapsible>
