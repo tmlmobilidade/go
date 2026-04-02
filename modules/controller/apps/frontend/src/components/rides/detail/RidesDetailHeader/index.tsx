@@ -2,7 +2,7 @@
 
 /* * */
 
-import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
+import { AnalysisStatusTag } from '@/components/common/AnalysisSams';
 import { RideAnalysisSystemStatus } from '@/components/rides/analysis/RideAnalysisSystemStatus';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';

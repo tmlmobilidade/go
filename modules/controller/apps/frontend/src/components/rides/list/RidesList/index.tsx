@@ -3,7 +3,7 @@
 
 /* * */
 
-import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
+import { AnalysisStatusTag } from '@/components/common/AnalysisSams';
 import { OperationalDateTag } from '@/components/common/OperationalDateTag';
 import { StartTimeStatusTag } from '@/components/common/StartTimeStatusTag';
 import { useRidesListContext } from '@/components/rides/list/RidesList.context';

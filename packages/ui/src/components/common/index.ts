@@ -1,7 +1,7 @@
 export * from './Alert';
-export * from '../../../../../modules/controller/apps/frontend/src/components/common/AnalysisStatusTag/AnalysisCalender';
-export * from '../../../../../modules/controller/apps/frontend/src/components/common/AnalysisStatusTag/AnalysisSquare';
-export * from '../../../../../modules/controller/apps/frontend/src/components/common/AnalysisStatusTag/AnalysisTimeLine';
+export * from '../../../../../modules/controller/apps/frontend/src/components/common/AnalysisSams/AnalysisCalender';
+export * from '../../../../../modules/controller/apps/frontend/src/components/common/AnalysisSams/AnalysisSquare';
+export * from '../../../../../modules/controller/apps/frontend/src/components/common/AnalysisSams/AnalysisTimeLine';
 export * from './AppLogos';
 export { default as Badge } from './Badge';
 export * from './Breadcrumbs';
