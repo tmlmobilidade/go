@@ -8,7 +8,7 @@ import { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
-import { cn } from '../../../../../../../../../packages/ui/src/lib/utils';
+import { cn } from '@/lib/utils';
 import { AnalysisSquare } from '../AnalysisSquare';
 import { analysisSquareLabel, analysisSquareTitle } from '../AnalysisSquare/analysis-square-shared';
 import { buildMonthSections } from './organized_by_dates';
