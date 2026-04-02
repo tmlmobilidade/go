@@ -526,8 +526,14 @@
 			"SamsDetailBasicInfos": {
 				"description": "Informações básicas do SAM",
 				"fields": {
-					"latest_apex_version": {
-						"label": "Versão APEX utilizada"
+					"transactions_expected": {
+						"label": "Transações esperadas"
+					},
+					"transactions_found": {
+						"label": "Transações encontradas"
+					},
+					"transactions_missing": {
+						"label": "Transações em falta"
 					}
 				},
 				"title": "Informações Básicas"
