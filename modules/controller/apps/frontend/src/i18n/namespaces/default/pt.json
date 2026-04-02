@@ -526,6 +526,9 @@
 			"SamsDetailBasicInfos": {
 				"description": "Informações básicas do SAM",
 				"fields": {
+					"agency_id": {
+						"label": "Operador"
+					},
 					"transactions_expected": {
 						"label": "Transações esperadas"
 					},
