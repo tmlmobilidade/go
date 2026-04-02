@@ -555,6 +555,12 @@
 			},
 			"SamsDetailCalender": {
 				"description": "Calendário das análises do SAM",
+				"day": {
+					"label": "Diário"
+				},
+				"month": {
+					"label": "Mensal"
+				},
 				"title": "Calendário de Análises"
 			}
 		},

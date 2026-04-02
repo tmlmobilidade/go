@@ -10,13 +10,14 @@ import styles from './styles.module.css';
 import { cn } from '../../../lib/utils';
 import { analysisSquareLabel } from '../AnalysisSquare/analysis-square-shared';
 import { AnalysisSquare } from '../AnalysisSquare/index';
-import { buildSections } from '../AnalysisTimeLine/organized_by_dates';
+import { buildMonthSections, buildSections } from '../AnalysisTimeLine/organized_by_dates';
 
 /* * */
 
 export interface AnalysisCalenderProps {
 	analyses: SamAnalysis[]
 	className?: string
+	groupBy?: 'day' | 'month'
 	/**
 	 * Upper bound on day columns when the container is wide; narrower widths show fewer columns (CSS `auto-fit`).
 	 * Override density with `--analysis-calendar-day-min` (e.g. `140px`) via `style` / CSS if needed.
@@ -26,8 +27,11 @@ export interface AnalysisCalenderProps {
 
 /* * */
 
-export function AnalysisCalender({ analyses, className }: AnalysisCalenderProps) {
-	const sections = useMemo(() => buildSections(analyses ?? []), [analyses]);
+export function AnalysisCalender({ analyses, className, groupBy = 'day' }: AnalysisCalenderProps) {
+	const sections = useMemo(() => {
+		if (groupBy === 'month') return buildMonthSections(analyses ?? []);
+		return buildSections(analyses ?? []);
+	}, [analyses, groupBy]);
 
 	if (!analyses?.length) {
 		return <span className={styles.rowEmpty}>sem análises</span>;
@@ -35,7 +39,7 @@ export function AnalysisCalender({ analyses, className }: AnalysisCalenderProps)
 
 	return (
 		<div
-			className={cn(styles.organizedByDates, className)}
+			className={cn(styles.organizedByDates, groupBy === 'month' && styles.organizedByMonths, className)}
 		>
 			{sections.map(section => (
 				<div

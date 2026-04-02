@@ -36,6 +36,10 @@
 	container-type: inline-size;
 }
 
+.organizedByMonths {
+	grid-template-columns: 1fr;
+}
+
 .dayGroup {
 	box-sizing: border-box;
 	min-width: 0;
