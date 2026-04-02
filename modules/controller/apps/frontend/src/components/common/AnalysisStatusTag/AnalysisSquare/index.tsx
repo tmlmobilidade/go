@@ -6,7 +6,7 @@ import { type SamAnalysis } from '@tmlmobilidade/types';
 
 import styles from './styles.module.css';
 
-import { cn } from '../../../lib/utils';
+import { cn } from '../../../../../../../../../packages/ui/src/lib/utils';
 import { analysisSquareHasValues, analysisSquareLabel, analysisSquareTitle } from './analysis-square-shared';
 
 /* * */

@@ -7,10 +7,10 @@ import { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
-import { cn } from '../../../lib/utils';
 import { analysisSquareLabel } from '../AnalysisSquare/analysis-square-shared';
 import { AnalysisSquare } from '../AnalysisSquare/index';
 import { buildMonthSections, buildSections } from '../AnalysisTimeLine/organized_by_dates';
+import { cn } from '@/lib/utils';
 
 /* * */
 
