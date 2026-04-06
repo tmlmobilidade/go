@@ -11,8 +11,8 @@ export function SamsFilters() {
 	return (
 		<FiltersBar>
 			<SamsFiltersDate />
-			<SamsFilterStatus />
 			<SamsFiltersAgency />
+			<SamsFilterStatus />
 		</FiltersBar>
 	);
 }
