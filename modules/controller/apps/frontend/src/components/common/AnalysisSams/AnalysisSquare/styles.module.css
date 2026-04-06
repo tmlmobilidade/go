@@ -16,6 +16,7 @@
 }
 
 .square {
+	position: relative;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -29,6 +30,11 @@
 	border-style: solid;
 	border-width: 1px;
 	border-radius: var(--border-radius-sm);
+	outline: none;
+}
+
+.square:focus-visible {
+	box-shadow: 0 0 0 2px var(--color-primary-contrast), 0 0 0 4px var(--color-primary-primary);
 }
 
 .filled {
@@ -125,5 +131,33 @@
 	font-weight: 600;
 	font-variant-numeric: tabular-nums;
 	color: var(--color-status-danger-primary);
+}
+
+.tooltip {
+	position: absolute;
+	z-index: 10;
+	bottom: calc(100% + 6px);
+	left: 50%;
+	transform: translateX(-50%) translateY(2px);
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	white-space: nowrap;
+	padding: 4px 8px;
+	border-radius: var(--border-radius-sm);
+	font-size: 11px;
+	font-weight: 500;
+	line-height: 1.2;
+	color: var(--color-text-primary);
+	background-color: var(--color-background-panel, #111827);
+	border: 1px solid var(--color-border-subtle, #374151);
+	transition: opacity 120ms ease, transform 120ms ease, visibility 120ms ease;
+}
+
+.square:hover .tooltip,
+.square:focus-visible .tooltip {
+	opacity: 1;
+	visibility: visible;
+	transform: translateX(-50%) translateY(0);
 }
 

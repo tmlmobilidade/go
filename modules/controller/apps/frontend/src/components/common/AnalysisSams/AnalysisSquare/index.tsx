@@ -49,9 +49,14 @@ export function AnalysisSquare({ accent, className, textLabel, title, value }: A
 		<div
 			className={cn(styles.square, toneClass, className)}
 			data-state={dataState}
-			title={resolvedTitle}
+			tabIndex={resolvedTitle ? 0 : -1}
 		>
 			{textLabel}
+			{resolvedTitle && (
+				<span className={styles.tooltip} role="tooltip">
+					{resolvedTitle}
+				</span>
+			)}
 		</div>
 	);
 }
