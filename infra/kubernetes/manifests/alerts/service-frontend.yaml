@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  # Name must match the upstream in the baked-in nginx config: "server frontend:3000"
+  name: frontend
+  namespace: go-alerts
+  labels:
+    app: alerts-frontend
+    app.kubernetes.io/name: alerts-frontend
+    app.kubernetes.io/part-of: go-alerts
+spec:
+  type: ClusterIP
+  selector:
+    app: alerts-frontend
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http
+      protocol: TCP
