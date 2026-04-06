@@ -2,38 +2,38 @@
 
 import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
-import { type ClickHouseColumn } from '@/types/index.js';
+import { type ClickHouseSchema } from '@/types/index.js';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-const tableSchema: ClickHouseColumn<SimplifiedApexOnBoardRefund>[] = [
-	{ name: '_id', type: 'String' },
-	{ name: 'created_at', type: 'String' },
-	{ name: 'updated_at', type: 'String' },
-	{ name: 'agency_id', type: 'String' },
-	{ name: 'apex_version', type: 'String' },
-	{ name: 'device_id', type: 'String' },
-	{ name: 'line_id', type: 'String' },
-	{ name: 'mac_ase_counter_value', type: 'String' },
-	{ name: 'mac_sam_serial_number', type: 'String' },
-	{ name: 'pattern_id', type: 'String' },
-	{ name: 'received_at', type: 'String' },
-	{ name: 'stop_id', type: 'String' },
-	{ name: 'trip_id', type: 'String' },
-	{ name: 'vehicle_id', type: 'String' },
-	{ name: 'block_id', type: 'String' },
-	{ name: 'card_physical_type', type: 'String' },
-	{ name: 'card_serial_number', type: 'String' },
-	{ name: 'duty_id', type: 'String' },
-	{ name: 'on_board_sale_id', type: 'String' },
-	{ name: 'payment_method', type: 'String' },
-	{ name: 'price', type: 'String' },
-	{ name: 'product_long_id', type: 'String' },
-	{ name: 'product_quantity', type: 'String' },
-	{ name: 'validation_id', type: 'String' },
-];
+const tableSchema: ClickHouseSchema<SimplifiedApexOnBoardRefund> = {
+	_id: { primaryKey: true, type: 'String' },
+	agency_id: { type: 'String' },
+	apex_version: { type: 'String' },
+	block_id: { type: 'String' },
+	card_physical_type: { type: 'String' },
+	card_serial_number: { type: 'String' },
+	created_at: { type: 'Int64' },
+	device_id: { type: 'String' },
+	duty_id: { type: 'String' },
+	line_id: { type: 'String' },
+	mac_ase_counter_value: { type: 'Int64' },
+	mac_sam_serial_number: { type: 'Int64' },
+	on_board_sale_id: { type: 'Nullable(String)' },
+	pattern_id: { type: 'String' },
+	payment_method: { type: 'String' },
+	price: { type: 'Int64' },
+	product_long_id: { type: 'String' },
+	product_quantity: { type: 'Int64' },
+	received_at: { type: 'Int64' },
+	stop_id: { type: 'String' },
+	trip_id: { type: 'String' },
+	updated_at: { type: 'Int64' },
+	validation_id: { type: 'Nullable(String)' },
+	vehicle_id: { type: 'String' },
+};
 
 /* * */
 

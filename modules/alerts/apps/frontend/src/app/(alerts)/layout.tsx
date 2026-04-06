@@ -12,7 +12,7 @@ export default function Layout({ children }: PropsWithChildren) {
 		<PanesManager
 			id="alerts"
 			panes={[
-				<AlertsListContextProvider>
+				<AlertsListContextProvider key="alerts-list">
 					<AlertsList />
 				</AlertsListContextProvider>,
 				children,

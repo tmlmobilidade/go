@@ -1,5 +1,6 @@
 /* * */
 
+import { normalizeOperationalHhmmInput } from '@tmlmobilidade/types';
 import AdmZip from 'adm-zip';
 import fs from 'fs/promises';
 import Papa from 'papaparse';
@@ -61,16 +62,15 @@ export function resolvePatternCode(lineCode: string, directionId: string, patter
 	return buildPatternCode(lineCode, directionId, index);
 }
 
-export function normalizeGtfsTimeToHHMM(time?: string) {
+function stripSeconds(time: string | undefined): string | undefined {
+	if (!time) return time;
+	return time.split(':').slice(0, 2).join(':');
+}
+
+export function normalizeGtfsTimeToHHMM(time?: string): null | string {
 	if (!time) return null;
-	const [rawHours, rawMinutes] = time.split(':');
-	if (!rawHours || !rawMinutes) return null;
-	let hours = Number(rawHours);
-	const minutes = Number(rawMinutes);
-	if (Number.isNaN(hours) || Number.isNaN(minutes)) return null;
-	if (hours >= 24) hours = hours % 24;
-	if (minutes < 0 || minutes > 59) return null;
-	return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+	const timeWithoutSeconds = stripSeconds(time);
+	return normalizeOperationalHhmmInput(timeWithoutSeconds ?? '');
 }
 
 export function normalizeGtfsDistance(value?: null | number | string) {

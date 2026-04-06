@@ -3,6 +3,7 @@
 import { ClickHouseClient, createClient } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
+import { readFileSync } from 'node:fs';
 
 /* * */
 
@@ -57,6 +58,7 @@ export class GOClickHouseClient {
 				http_send_timeout: 360 * 1000,
 				max_execution_time: 360 * 1000,
 			},
+			keep_alive: { enabled: false },
 			request_timeout: 360 * 1000,
 			url: connectionString,
 		});
@@ -108,11 +110,12 @@ export class GOClickHouseClient {
 				port: Number(process.env.GO_CLICKHOUSE_TUNNEL_LOCAL_PORT),
 			},
 			sshOptions: {
-				agent: process.env.SSH_AUTH_SOCK,
+				agent: process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY_PATH ? undefined : process.env.SSH_AUTH_SOCK,
 				host: process.env.GO_CLICKHOUSE_TUNNEL_SSH_HOST,
-				keepaliveCountMax: 3,
+				keepaliveCountMax: 20,
 				keepaliveInterval: 10_000,
 				port: 22,
+				privateKey: process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY_PATH) : undefined,
 				username: process.env.GO_CLICKHOUSE_TUNNEL_SSH_USERNAME,
 			},
 			tunnelOptions: {

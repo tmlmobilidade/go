@@ -9,11 +9,12 @@ import { Logger } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
 
 import { exportFeedInfoFile } from './exports/feedInfo.js';
+import { fetchAllEvents } from './fetchers/events.js';
 import { fetchAllFares } from './fetchers/fare.js';
 import { fetchAllHolidays } from './fetchers/holidays.js';
 import { fetchAllMunicipalities } from './fetchers/municipality.js';
-import { fetchAllYearPeriods } from './fetchers/year-periods.js';
 import { fetchAllTypologies } from './fetchers/typology.js';
+import { fetchAllYearPeriods } from './fetchers/year-periods.js';
 import { fetchAllZones } from './fetchers/zone.js';
 
 /* * */
@@ -33,8 +34,7 @@ async function clearExportFiles(exportConfig: GtfsV29ExportConfig) {
 			}
 			Logger.info('Cleared existing CSV files');
 		}
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error clearing export files', error);
 		// Don't throw - continue with export even if cleanup fails
 	}
@@ -55,8 +55,7 @@ async function updateProgress(
 		// TODO: Replace with actual database update logic
 		// await ExportModel.updateOne({ _id: exportDocument._id }, updates);
 		Logger.info(`Progress: ${updates.progress_current || 0}/${updates.progress_total || 0}`);
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error(`Error updating progress for export ${exportDocument._id}`, error);
 		throw new Error(`Error updating progress: ${error}`);
 	}
@@ -131,8 +130,7 @@ export async function exportGtfsV29(
 		if (exportConfig.lines_include.length > 0) {
 			// If lines_include is specified, only include those lines
 			linesFilter._id = { $in: exportConfig.lines_include };
-		}
-		else if (exportConfig.lines_exclude.length > 0) {
+		} else if (exportConfig.lines_exclude.length > 0) {
 			// If lines_exclude is specified, exclude those lines
 			linesFilter._id = { $nin: exportConfig.lines_exclude };
 		}
@@ -170,16 +168,16 @@ export async function exportGtfsV29(
 		const allHolidaysMap = await fetchAllHolidays(exportConfig.agency_id);
 		Logger.success(`Loaded ${allHolidaysMap.size} holidays`);
 
+		Logger.info('Fetching all events...');
+		const allEventsMap = await fetchAllEvents(exportConfig.agency_id);
+		Logger.success(`Loaded ${allEventsMap.size} events`);
+
 		// 3.
 		// Process each line and its routes/patterns
 		// Initiate the main loop that go through all lines
 		// and progressively builds the GTFS files
 
-		// for (const [lineIndex, lineData] of allLinesData.entries()) {
-		const firstLine = allLinesData[0];
-		if (firstLine) {
-			const lineIndex = 0;
-			const lineData = firstLine;
+		for (const [lineIndex, lineData] of allLinesData.entries()) {
 			//
 
 			// 3.0.
@@ -258,6 +256,8 @@ export async function exportGtfsV29(
 						patternData,
 						shapeId,
 						Array.from(allPeriodsMap.values()),
+						Array.from(allHolidaysMap.values()),
+						Array.from(allEventsMap.values()),
 						exportStartDate,
 						exportEndDate,
 						serviceRegistry,
@@ -331,8 +331,7 @@ export async function exportGtfsV29(
 		Logger.success('All files flushed successfully');
 
 	//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error during GTFS v29 export', error);
 		throw error;
 	}
