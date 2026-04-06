@@ -95,6 +95,7 @@ function buildTimepointSchedules(
 	allRules: ScheduleRule[],
 	periods: YearPeriod[],
 	holidays: Holiday[],
+	events: Event[],
 	startDate: Dates,
 	endDate: Dates,
 ): Map<string, RuleTimepointSchedule> {
@@ -112,6 +113,7 @@ function buildTimepointSchedules(
 			allRules,
 			periods,
 			holidays,
+			events,
 			rulesById,
 		);
 
@@ -126,6 +128,7 @@ function buildTimepointSchedules(
 			allRules,
 			periods,
 			holidays,
+			events,
 		);
 
 		// 3) Build OFF buckets from:
@@ -149,6 +152,7 @@ function getAppliedRulesForDate(
 	allRules: ScheduleRule[],
 	periods: YearPeriod[],
 	holidays: Holiday[],
+	events: Event[],
 	rulesById: Map<string | undefined, ScheduleRule>,
 ): ScheduleRule[] {
 	const { appliedRuleIds } = computeActiveRules(
@@ -156,6 +160,7 @@ function getAppliedRulesForDate(
 		allRules,
 		periods,
 		holidays,
+		{ events },
 	);
 
 	return appliedRuleIds
@@ -170,6 +175,7 @@ function collectIncludeTimepointsForDate(
 	allRules: ScheduleRule[],
 	periods: YearPeriod[],
 	holidays: Holiday[],
+	events: Event[],
 ): Set<HHMM> {
 	const activeIncludeTimepoints = new Set<HHMM>();
 
@@ -192,9 +198,12 @@ function collectIncludeTimepointsForDate(
 				allRules,
 				periods,
 				holidays,
+				events,
 			);
 
 			for (const timepoint of addedTimepoints) {
+				if (activeIncludeTimepoints.has(timepoint)) continue;
+
 				activeIncludeTimepoints.add(timepoint);
 
 				addScheduleDate(schedules, {
@@ -214,6 +223,8 @@ function collectIncludeTimepointsForDate(
 	for (const manualRule of activeManualIncludeRules) {
 		for (const rawTimepoint of manualRule.timepoints ?? []) {
 			const timepoint = hhmm(rawTimepoint);
+
+			if (activeIncludeTimepoints.has(timepoint)) continue;
 
 			activeIncludeTimepoints.add(timepoint);
 
@@ -235,12 +246,14 @@ function getReplacementAddedTimepoints(
 	allRules: ScheduleRule[],
 	periods: YearPeriod[],
 	holidays: Holiday[],
+	events: Event[],
 ): Set<HHMM> {
 	const withRule = computeActiveRules(
 		operationalDate,
 		allRules,
 		periods,
 		holidays,
+		{ events },
 	);
 
 	const withoutRule = computeActiveRules(
@@ -248,6 +261,7 @@ function getReplacementAddedTimepoints(
 		allRules.filter(r => r._id !== replacementRule._id),
 		periods,
 		holidays,
+		{ events },
 	);
 
 	const withSet = new Set(withRule.timepoints);
@@ -457,6 +471,7 @@ export async function exportTripsForPattern(
 			allRules,
 			periods,
 			holidays,
+			events,
 			startDate,
 			endDate,
 		);

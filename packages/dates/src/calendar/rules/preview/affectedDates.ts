@@ -86,6 +86,10 @@ export function getManualRuleAffectedDates(rule: ManualRule, ctx: CalendarContex
 					const weekday = calendarWeekday(key, ctx.holidays);
 					if (!rule.weekdays.includes(weekday)) continue;
 				}
+				// If year periods are specified, narrow event dates to matching periods only
+				if (rule.year_period_ids?.length) {
+					if (!isInPeriod(rule, key, ctx)) continue;
+				}
 				affected.push(key);
 			}
 		}
