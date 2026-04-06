@@ -163,3 +163,30 @@
 	transform: translateX(-50%) translateY(0);
 }
 
+.tooltipContent {
+	display: grid;
+	gap: 8px;
+}
+
+.tooltipAnalysisGroup {
+	display: grid;
+	gap: 4px;
+}
+
+.tooltipAnalysisTitle {
+	font-size: 11px;
+	font-weight: 700;
+}
+
+.tooltipList {
+	margin: 0;
+	padding-left: 16px;
+	display: grid;
+	gap: 2px;
+}
+
+.tooltipListItem {
+	font-size: 11px;
+	line-height: 1.2;
+}
+
