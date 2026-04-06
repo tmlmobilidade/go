@@ -16,6 +16,12 @@ function escapeRegex(value: string): string {
 	return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+const RESERVED_QUERY_FIELDS = new Set(['agency_ids', 'search']);
+const RANGE_QUERY_FIELDS = {
+	seen_first_at: { field: 'seen_first_at', operator: '$gte' },
+	seen_last_at: { field: 'seen_last_at', operator: '$lte' },
+} as const;
+
 export class SamsController {
 	/**
 	 * Newest SAMs first (capped), with `analysis` limited to the last {@link ANALYSIS_LIST_TAIL} entries per chip.
@@ -43,8 +49,25 @@ export class SamsController {
 			});
 		}
 
-		if (parsedQuery.system_status?.length) {
-			matchAnd.push({ system_status: { $in: parsedQuery.system_status } });
+		for (const [key, value] of Object.entries(parsedQuery)) {
+			if (RESERVED_QUERY_FIELDS.has(key) || value === undefined || value === null || value === '')
+				continue;
+
+			if (key in RANGE_QUERY_FIELDS) {
+				const rangeKey = key as keyof typeof RANGE_QUERY_FIELDS;
+				const rangeConfig = RANGE_QUERY_FIELDS[rangeKey];
+				matchAnd.push({ [rangeConfig.field]: { [rangeConfig.operator]: value } });
+				continue;
+			}
+
+			if (Array.isArray(value)) {
+				if (value.length > 0) {
+					matchAnd.push({ [key]: { $in: value } });
+				}
+				continue;
+			}
+
+			matchAnd.push({ [key]: value });
 		}
 
 		const pipeline = [
