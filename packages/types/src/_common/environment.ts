@@ -7,7 +7,7 @@
  * - `staging` is used for pre-production testing environments.
  * - `development` is used for local development environments. It uses staging variables.
  */
-export type Environment = 'development' | 'k8s' | 'production' | 'staging';
+export type Environment = 'development' | 'production' | 'staging';
 
 /**
  * Get the current environment from server-side `ENVIRONMENT`
