@@ -3,6 +3,7 @@
 /* * */
 
 import { type SamAnalysis } from '@tmlmobilidade/types';
+import { Tooltip } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -44,20 +45,33 @@ export function AnalysisSquare({ accent, className, textLabel, title, value }: A
 				: 'empty';
 
 	const resolvedTitle = title ?? (value != null ? analysisSquareTitle(value) : undefined);
-
-	return (
+	const square = (
 		<div
 			className={cn(styles.square, toneClass, className)}
 			data-state={dataState}
 			tabIndex={resolvedTitle ? 0 : -1}
 		>
 			{textLabel}
-			{resolvedTitle && (
-				<span className={styles.tooltip} role="tooltip">
-					{resolvedTitle}
-				</span>
-			)}
 		</div>
+	);
+
+	if (!resolvedTitle) {
+		return square;
+	}
+
+	return (
+		<Tooltip
+			closeDelay={80}
+			label={resolvedTitle}
+			multiline
+			openDelay={120}
+			position="bottom-start"
+			w={100}
+			withinPortal
+			withArrow
+		>
+			{square}
+		</Tooltip>
 	);
 }
 
