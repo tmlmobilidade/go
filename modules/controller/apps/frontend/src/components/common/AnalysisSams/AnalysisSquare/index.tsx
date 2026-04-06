@@ -66,7 +66,7 @@ export function AnalysisSquare({ accent, className, textLabel, title, value }: A
 			multiline
 			openDelay={120}
 			position="bottom-start"
-			w={100}
+			w={250}
 			withinPortal
 			withArrow
 		>
