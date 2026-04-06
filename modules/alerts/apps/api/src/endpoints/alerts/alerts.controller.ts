@@ -4,8 +4,7 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { alerts, files, notifications } from '@tmlmobilidade/interfaces';
-import { createRssFeed } from '@tmlmobilidade/rss';
-import { RssRawImageInput } from '@tmlmobilidade/rss/dist/types/feed.types.js';
+import { createRssFeed, type RssRawImageInput } from '@tmlmobilidade/rss';
 import { type Alert, CreateAlertDto, type File, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
 
 /* * */
@@ -158,18 +157,22 @@ export class AlertsController {
 			}
 
 			for (const fileId of fileIdOrder) {
-				const file = await files.findById(fileId);
-				if (!file?.url) continue;
-				images.push({
-					alt: alert.title,
-					type: file.type ?? null,
-					url: file.url,
-				});
+				try {
+					const file = await files.findById(fileId);
+					if (!file?.url) continue;
+					images.push({
+						alt: alert.title,
+						type: file.type ?? null,
+						url: file.url,
+					});
+				} catch {
+					// DB row exists but object missing in storage — omit image, still emit the item
+				}
 			}
 
 			return {
 				description: alert.description,
-				images: images.length ? images : undefined,
+				images: images.length ? images : [],
 				link: `${alertsPublicListUrl}/${alert._id}`,
 				linkLabel: 'Ver o alerta completo em carrismetropolitana.pt',
 				publish_start_date: alert.publish_start_date,

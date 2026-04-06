@@ -1,16 +1,17 @@
 /* * */
 
 import { type RssRawImageInput } from '@/types/feed.types.js';
+import { NormalizedRssImage } from '@/types/normalized-rss-image.js';
 
 /* * */
 
-export function normalizeImageInputs(images: RssRawImageInput[]) {
+export function normalizeImageInputs(images: RssRawImageInput[]): NormalizedRssImage[] {
 	//
 
 	//
 	// A. Setup Variables
 
-	const normalizedImages: RssRawImageInput[] = [];
+	const normalizedImages: NormalizedRssImage[] = [];
 
 	//
 	// B. Transform Data
@@ -23,7 +24,7 @@ export function normalizeImageInputs(images: RssRawImageInput[]) {
 		}
 
 		const url = image.url?.trim() ?? '';
-		const normalizedImage: { alt?: string, length?: number, type?: string, url: string } = { url };
+		const normalizedImage: NormalizedRssImage = { url };
 
 		if (!url) continue;
 		if (image.alt) normalizedImage.alt = image.alt;

@@ -1,8 +1,9 @@
 /* * */
 
+import type { CreateRssFeedOptions, RssRawItem } from '@/types/index.js';
+
 import { rssFeedItem } from '@/components/RSSFeedItem/index.js';
 import { rssFeed } from '@/components/RssXML/index.js';
-import { type CreateRssFeedOptions, type RssRawItem } from '@/types/index.js';
 
 /* * */
 

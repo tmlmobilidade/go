@@ -26,27 +26,23 @@ export function buildContentEncoded(item: RssRawItem): string {
 		return `<content:encoded><![CDATA[${cdataSafe(item.contentHtml)}]]></content:encoded>`;
 	}
 
-	if (item.title) {
-		parts.push(`<h2>${escapeXml(item.title)}</h2>`);
-	}
-
-	if (item.link) {
-		parts.push(
-			`<p`
-			+ `<a href="${escapeXml(item.link)}" style="color:inherit;text-decoration:underline">${escapeXml(item.linkLabel ?? 'Ler artigo completo')}</a>`
-			+ `</p>`,
-		);
-	}
-
 	if (item.description) {
 		parts.push(`<div>${bodyHtml}</div>`);
 	}
 
-	for (const image of normalizeImageInputs(item.images)) {
+	for (const image of normalizeImageInputs(item.images ?? [])) {
 		const alt = image.alt ? escapeXml(image.alt) : '';
 		parts.push(
 			`<p>`
 			+ `<img src="${escapeXml(image.url)}" alt="${alt}" />`
+			+ `</p>`,
+		);
+	}
+
+	if (item.link) {
+		parts.push(
+			`<p>`
+			+ `<a href="${escapeXml(item.link)}">${escapeXml(item.linkLabel ?? 'Ler artigo completo')}</a>`
 			+ `</p>`,
 		);
 	}
