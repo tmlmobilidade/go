@@ -14,13 +14,6 @@ interface AppConfigGroup {
 
 /* * */
 
-const globalWithLocation = globalThis as { location?: { origin?: string } };
-
-const STAGING_BASE_URL =
-	typeof globalThis !== 'undefined' && typeof globalWithLocation.location?.origin === 'string'
-		? globalWithLocation.location.origin
-		: 'https://go-stg.tmlmobilidade.pt';
-
 const DEFAULT_PRODUCTION_CONFIG: Omit<AppConfigGroup, 'api_url' | 'frontend_url'> = {
 	api_port: 5050,
 	cors_origin: new RegExp(`https://go.tmlmobilidade.pt$`),
@@ -29,7 +22,7 @@ const DEFAULT_PRODUCTION_CONFIG: Omit<AppConfigGroup, 'api_url' | 'frontend_url'
 
 const DEFAULT_STAGING_CONFIG: Omit<AppConfigGroup, 'api_url' | 'frontend_url'> = {
 	api_port: 5050,
-	cors_origin: new RegExp(`${STAGING_BASE_URL}$`),
+	cors_origin: new RegExp(`https://go-stg.tmlmobilidade.pt$`),
 	frontend_port: 3000,
 };
 
@@ -143,7 +136,6 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			frontend_port: 51009,
 			frontend_url: 'http://localhost:51009/fleet',
 		},
-
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/fleet/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/fleet', ...DEFAULT_PRODUCTION_CONFIG,
@@ -163,7 +155,6 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			frontend_port: 51005,
 			frontend_url: 'http://localhost:51005/locations',
 		},
-
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/locations/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/locations',
@@ -183,7 +174,6 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			frontend_port: 51010,
 			frontend_url: 'http://localhost:51010/offer',
 		},
-
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/offer/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/offer',
@@ -203,7 +193,6 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			frontend_port: 51006,
 			frontend_url: 'http://localhost:51006/performance',
 		},
-
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/performance/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/performance',
@@ -223,7 +212,6 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			frontend_port: 51004,
 			frontend_url: 'http://localhost:51004/plans',
 		},
-
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/plans/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/plans',
@@ -243,7 +231,6 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			cors_origin: true,
 			frontend_port: 51003,
 			frontend_url: 'http://localhost:51003/stops' },
-
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/stops/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/stops',
