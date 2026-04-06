@@ -2,7 +2,7 @@
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Sam } from '@tmlmobilidade/types';
+import { type ProcessingStatus, ProcessingStatusSchema, Sam } from '@tmlmobilidade/types';
 import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
 
 /* * */
@@ -19,6 +19,7 @@ export interface SamsListContextState {
 	}
 	filters: {
 		agency: UseFilterStateListReturnType
+		status: UseFilterStateListReturnType<ProcessingStatus>
 		search: UseFilterStateStringReturnType
 	}
 	flags: {
@@ -48,6 +49,26 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	const filterSearch = useFilterStateString('search');
 
 	const [debouncedFilterSearch, setDebouncedFilterSearch] = useState('');
+	const filterStatusOptions = useMemo(() => {
+		const labelsByValue: Record<ProcessingStatus, string> = {
+			complete: 'Completo',
+			error: 'Erro',
+			processing: 'Em processamento',
+			skipped: 'Ignorado',
+			waiting: 'Aguardando',
+		};
+		return ProcessingStatusSchema.options.map(status => ({
+			checked: false,
+			disabled: false,
+			label: labelsByValue[status],
+			value: status,
+		}));
+	}, []);
+	const filterStatus = useFilterStateList<ProcessingStatus>(
+		'system_status',
+		ProcessingStatusSchema.options,
+		filterStatusOptions,
+	);
 
 	useEffect(() => {
 		const handle = window.setTimeout(() => {
@@ -63,8 +84,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	const agencyIdsOrdered = agenciesContext.data.ids;
 
-	const agencyOptions = useMemo(
-		() => agenciesContext.data.raw.map(item => ({
+	const agencyOptions = useMemo(() => agenciesContext.data.raw.map(item => ({
 			checked: false,
 			disabled: false,
 			label: `${item._id} - ${item.name}`,
@@ -81,8 +101,10 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 			params.set('agency_ids', filterAgency.value.join(','));
 		if (debouncedFilterSearch)
 			params.set('search', debouncedFilterSearch);
+		if (filterStatus.isActive && filterStatus.value.length)
+			params.set('system_status', filterStatus.value.join(','));
 		return params.toString();
-	}, [debouncedFilterSearch, filterAgency.isActive, filterAgency.value]);
+	}, [debouncedFilterSearch, filterAgency.isActive, filterAgency.value, filterStatus.isActive, filterStatus.value]);
 
 	const samsListUrl = useMemo(() => {
 		if (agenciesContext.flags.loading)
@@ -103,13 +125,14 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 		},
 		filters: {
 			agency: filterAgency,
+			status: filterStatus,
 			search: filterSearch,
 		},
 		flags: {
 			error: allSamsError,
 			loading: allSamsLoading,
 		},
-	}), [allSamsError, allSamsLoading, filterSearch, allSamsData, filterAgency]);
+	}), [allSamsError, allSamsLoading, filterSearch, allSamsData, filterAgency, filterStatus]);
 
 	//
 	// E. Render components

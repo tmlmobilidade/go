@@ -1,27 +1,33 @@
 /* * */
 
 import { PermissionCatalog } from '@/permissions/index.js';
+import { ProcessingStatusSchema } from '@/_common/status.js';
 import { z } from 'zod';
 
 /* * */
 
 /** When absent or empty in the querystring → use {@link PermissionCatalog.ALLOW_ALL_FLAG} via schema default (no agency restriction). */
 function preprocessAgencyIdsParam(val: unknown): string[] | undefined {
+	return preprocessStringArrayParam(val);
+}
+
+/** Parses querystring arrays that may come as CSV strings or repeated params. */
+function preprocessStringArrayParam(val: unknown): string[] | undefined {
 	if (val === undefined || val === null || val === '')
 		return undefined;
 	if (Array.isArray(val)) {
-		const ids = val
+		const values = val
 			.flatMap(v => String(v).split(','))
 			.map(s => s.trim())
 			.filter(Boolean);
-		return ids.length ? ids : undefined;
+		return values.length ? values : undefined;
 	}
 	if (typeof val === 'string') {
-		const ids = val
+		const values = val
 			.split(',')
-			.map(id => id.trim())
+			.map(value => value.trim())
 			.filter(Boolean);
-		return ids.length ? ids : undefined;
+		return values.length ? values : undefined;
 	}
 	return undefined;
 }
@@ -37,6 +43,9 @@ export const GetSamsBatchQuerySchema = z.object({
 	search: z
 		.string()
 		.optional(),
+
+	system_status: z
+		.preprocess(preprocessStringArrayParam, z.array(ProcessingStatusSchema).optional()),
 
 });
 

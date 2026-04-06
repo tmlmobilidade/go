@@ -43,6 +43,10 @@ export class SamsController {
 			});
 		}
 
+		if (parsedQuery.system_status?.length) {
+			matchAnd.push({ system_status: { $in: parsedQuery.system_status } });
+		}
+
 		const pipeline = [
 			...(matchAnd.length > 0 ? [{ $match: { $and: matchAnd } }] : []),
 			{ $sort: { created_at: -1 } },

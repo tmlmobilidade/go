@@ -3,25 +3,26 @@
 import { useSamsListContext } from '@/contexts/SamsList.context';
 
 import { FilterTypeList } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
 export function SamsFilterStatus() {
+	//
+	// A. Setup variables
 
-    //
-    // A. Setup variables
+	const samsListContext = useSamsListContext();
+	const { t } = useTranslation();
 
-    const samsListContext = useSamsListContext();
-
-    //
-    // B. Render components
+	//
+	// B. Render components
 
 	return (
 		<FilterTypeList
-			active={true}
-			label="Estado"
-			onChange={() => {}}
-			options={[]}
+			active={samsListContext.filters.status.isActive}
+			label={t('default:sams.list.SamsListFilterStatus.label', { defaultValue: 'Estado' })}
+			onChange={samsListContext.filters.status.set}
+			options={samsListContext.filters.status.options}
 			withToggleAll
 		/>
 	);

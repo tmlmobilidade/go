@@ -1,7 +1,7 @@
 /* * */
 
 import { SamsFiltersAgency } from '@/components/sams/list/SamsFiltersAgency';
-// import { SamsFilterStatus } from '@/components/sams/list/SamsFilterStatus';
+import { SamsFilterStatus } from '@/components/sams/list/SamsFilterStatus';
 import { FiltersBar } from '@tmlmobilidade/ui';
 
 /* * */
@@ -9,7 +9,7 @@ import { FiltersBar } from '@tmlmobilidade/ui';
 export function SamsFilters() {
 	return (
 		<FiltersBar>
-			{/* <SamsFilterStatus /> */}
+			<SamsFilterStatus />
 			<SamsFiltersAgency />
 		</FiltersBar>
 	);
