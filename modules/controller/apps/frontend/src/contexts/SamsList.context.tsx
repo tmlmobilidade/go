@@ -74,11 +74,11 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	const [filterSeenFirstAt, setFilterSeenFirstAt] = useQueryState<number>(
 		'seen_first_at',
-		parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp, [])),
+		parseAsInteger
 	);
 	const [filterSeenLastAt, setFilterSeenLastAt] = useQueryState<number>(
 		'seen_last_at',
-		parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').plus({ minutes: 5 }).unix_timestamp, [])),
+		parseAsInteger
 	);
 
 	useEffect(() => {

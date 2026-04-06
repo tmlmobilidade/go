@@ -566,7 +566,7 @@
 		},
 		"list": {
 			"SamsFiltersDate": {
-				"label": "Datas entre vistas"
+				"label": "Datas de visualização"
 			},
 			"SamsFiltersStatus": {
 				"label": "Estado"
