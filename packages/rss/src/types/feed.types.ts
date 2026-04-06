@@ -1,6 +1,11 @@
 /* * */
 
-export type RssRawImageInput = string | { alt?: null | string, length?: null | number, type?: null | string, url: string };
+export interface RssRawImageInput {
+	alt?: null | string
+	length?: null | number
+	type?: null | string
+	url: string
+}
 
 /* * */
 

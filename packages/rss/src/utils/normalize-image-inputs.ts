@@ -17,12 +17,6 @@ export function normalizeImageInputs(images: RssRawImageInput[]): NormalizedRssI
 	// B. Transform Data
 
 	for (const image of images ?? []) {
-		if (typeof image === 'string') {
-			const url = image.trim();
-			if (url) normalizedImages.push({ url });
-			continue;
-		}
-
 		const url = image.url?.trim() ?? '';
 		const normalizedImage: NormalizedRssImage = { url };
 

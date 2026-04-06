@@ -7,6 +7,10 @@ import { rssFeed } from '@/components/RssXML/index.js';
 
 /* * */
 
+export type { RssRawImageInput } from '@/types/index.js';
+
+/* * */
+
 export function createRssFeed(rawItems: RssRawItem[], options: CreateRssFeedOptions): string {
 	//
 

@@ -4,8 +4,8 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { alerts, files, notifications } from '@tmlmobilidade/interfaces';
+import { type RssRawImageInput } from '@tmlmobilidade/rss';
 import { createRssFeed } from '@tmlmobilidade/rss';
-import { type RssRawImageInput } from '@tmlmobilidade/rss/dist/types/feed.types.js';
 import { type Alert, CreateAlertDto, type File, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
 
 /* * */
