@@ -12,8 +12,11 @@ export function createRssFeed(rawItems: RssRawItem[], options: CreateRssFeedOpti
 	// A. Create XML items
 
 	const itemsXml = rawItems.map(item => rssItemXml({
+		contentHtml: item.contentHtml,
 		description: item.summary || item.description || '',
+		images: item.images,
 		link: item.link || '',
+		mutedLinkLabel: item.mutedLinkLabel,
 		publishDate: item.publishDate || item.publish_start_date || item.created_at ? new Date(item.publishDate || item.publish_start_date || item.created_at).toUTCString() : undefined,
 		title: item.title || '',
 	})).join('\n');
@@ -26,6 +29,7 @@ export function createRssFeed(rawItems: RssRawItem[], options: CreateRssFeedOpti
 		channelCopyright: options.copyright,
 		channelDescription: options.description,
 		channelDocs: 'https://www.rssboard.org/rss-specification',
+		channelFeedSelfUrl: options.feedSelfUrl,
 		channelGenerator: '@tmlmobilidade/rss',
 		channelLanguage: 'pt-pt',
 		channelLastBuildDate: now,

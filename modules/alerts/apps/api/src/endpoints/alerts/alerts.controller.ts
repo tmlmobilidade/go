@@ -134,16 +134,34 @@ export class AlertsController {
 			return;
 		}
 
-		const xmlItems = allAlerts.map(alert => ({
-			description: alert.description,
-			link: `https://www.carrismetropolitana.pt/alerts/${alert._id}`,
-			publish_start_date: alert.publish_start_date,
-			title: alert.title,
+		const xmlItems = await Promise.all(allAlerts.map(async (alert) => {
+			const images: Array<{ alt?: string, type?: null | string, url: string }> = [];
+
+			if (alert.file_id) {
+				const file = await files.findById(alert.file_id);
+				if (file?.url) {
+					images.push({
+						alt: alert.title,
+						type: file.type ?? null,
+						url: file.url,
+					});
+				}
+			}
+
+			return {
+				description: alert.description,
+				images: images.length ? images : undefined,
+				link: `${'https://www.carrismetropolitana.pt/alerts'}/${alert._id}`,
+				mutedLinkLabel: 'Ver o alerta completo em carrismetropolitana.pt',
+				publish_start_date: alert.publish_start_date,
+				title: alert.title,
+			};
 		}));
 
 		const xml = createRssFeed(xmlItems, {
 			copyright: 'Carris Metropolitana',
 			description: 'Alertas e atualizacoes da Carris Metropolitana.',
+			feedSelfUrl: 'https://www.carrismetropolitana.pt/alerts.rss',
 			link: 'https://www.carrismetropolitana.pt/alerts',
 			title: 'Carris Metropolitana - Alertas',
 		});
