@@ -5,7 +5,7 @@ import { chunkLineByDistanceV2, hashedShapesToFeatureCollection } from '@tmlmobi
 import { Filter, hashedShapes, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Ride } from '@tmlmobilidade/types';
-import { BatchWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 

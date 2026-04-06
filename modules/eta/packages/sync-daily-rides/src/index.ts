@@ -3,7 +3,7 @@
 import { etaDailyRides, etaDailyRidesWaypoints } from '@tmlmobilidade/databases';
 import { Filter, hashedTrips, rides } from '@tmlmobilidade/interfaces';
 import { HashedTrip, Ride } from '@tmlmobilidade/types';
-import { BatchWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 

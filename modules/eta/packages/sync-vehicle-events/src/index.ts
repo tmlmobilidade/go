@@ -4,7 +4,7 @@ import { etaVehicleEvents } from '@tmlmobilidade/databases';
 import { Filter, rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Ride, UnixTimestamp } from '@tmlmobilidade/types';
-import { BatchWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/utils';
 
 import { parseToEtaVehicleEvent } from './parser.js';
 import { EtaVehicleEvent, rideProjection } from './types.js';
