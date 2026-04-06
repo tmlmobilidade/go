@@ -34,7 +34,7 @@ export interface AnalysisTimeLineRowProps {
 	className?: string
 }
 
-/** One square per calendar day; color from aggregate state (`buildSections` accent). */
+/** One square per month; color from aggregate state (`buildMonthSections` accent). */
 export function AnalysisTimeLineRow({ analyses, className }: AnalysisTimeLineRowProps) {
 	const sections = useMemo(() => {
 		const list = analyses ?? [];

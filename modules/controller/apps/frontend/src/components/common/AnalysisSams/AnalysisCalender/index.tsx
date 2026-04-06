@@ -9,9 +9,14 @@ import { type ReactNode, useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
 
+import { AnalysisSquare } from '../AnalysisSquare';
 import { analysisSquareLabel } from '../AnalysisSquare/analysis-square-shared';
-import { AnalysisSquare } from '../AnalysisSquare/index';
-import { buildMonthSections, buildSections } from '../AnalysisTimeLine/organized_by_dates';
+import {
+	buildMonthSections,
+	buildSections,
+	type DaySection,
+	SEM_DATA_KEY,
+} from '../AnalysisTimeLine/organized_by_dates';
 
 /* * */
 
@@ -28,38 +33,43 @@ export interface AnalysisCalenderProps {
 
 /* * */
 
+const CALENDAR_TZ = 'Europe/Lisbon';
+
+const isAnalysisInMonthRange = (
+	analysis: SamAnalysis,
+	monthStart: DateTime,
+	monthEnd: DateTime,
+) => {
+	const startTs = analysis.start_time;
+	const endTs = analysis.end_time;
+	if (startTs == null && endTs == null) return false;
+
+	const rangeStart = DateTime.fromMillis(startTs ?? endTs ?? 0).setZone(CALENDAR_TZ).startOf('day');
+	const rangeEnd = DateTime.fromMillis(endTs ?? startTs ?? 0).setZone(CALENDAR_TZ).startOf('day');
+	if (!rangeStart.isValid || !rangeEnd.isValid) return false;
+
+	const from = rangeStart <= rangeEnd ? rangeStart : rangeEnd;
+	const to = rangeStart <= rangeEnd ? rangeEnd : rangeStart;
+	return from <= monthEnd && to >= monthStart;
+};
+
+const buildDaySectionsForMonth = (analyses: SamAnalysis[], monthKey: string): DaySection[] => {
+	const monthStart = DateTime.fromFormat(monthKey, 'yyyy-LL', { zone: CALENDAR_TZ }).startOf('month');
+	if (!monthStart.isValid) return [];
+	const monthEnd = monthStart.endOf('month');
+	const analysesInMonth = analyses.filter(analysis => isAnalysisInMonthRange(analysis, monthStart, monthEnd));
+	return buildSections(analysesInMonth).filter(section => section.dayKey.startsWith(`${monthKey}-`));
+};
+
 export function AnalysisCalender({ analyses, className, onClick }: AnalysisCalenderProps) {
 	const [selectedMonthKey, setSelectedMonthKey] = useState<null | string>(null);
 
 	const sections = useMemo(() => buildMonthSections(analyses ?? []), [analyses]);
 	const monthDaySectionsByKey = useMemo(() => {
-		const grouped = new Map<string, ReturnType<typeof buildSections>>();
+		const grouped = new Map<string, DaySection[]>();
 		for (const monthSection of sections) {
-			if (monthSection.dayKey === 'Sem data') continue;
-			const monthStart = DateTime
-				.fromFormat(monthSection.dayKey, 'yyyy-LL', { zone: 'Europe/Lisbon' })
-				.startOf('month');
-			if (!monthStart.isValid) continue;
-			const monthEnd = monthStart.endOf('month');
-
-			const analysesInMonth = (analyses ?? []).filter((analysis) => {
-				const startTs = analysis.start_time;
-				const endTs = analysis.end_time;
-				if (startTs == null && endTs == null) return false;
-
-				const rangeStart = DateTime.fromMillis(startTs ?? endTs ?? 0).setZone('Europe/Lisbon').startOf('day');
-				const rangeEnd = DateTime.fromMillis(endTs ?? startTs ?? 0).setZone('Europe/Lisbon').startOf('day');
-				if (!rangeStart.isValid || !rangeEnd.isValid) return false;
-
-				const from = rangeStart <= rangeEnd ? rangeStart : rangeEnd;
-				const to = rangeStart <= rangeEnd ? rangeEnd : rangeStart;
-				return from <= monthEnd && to >= monthStart;
-			});
-
-			grouped.set(
-				monthSection.dayKey,
-				buildSections(analysesInMonth).filter(section => section.dayKey.startsWith(`${monthSection.dayKey}-`)),
-			);
+			if (monthSection.dayKey === SEM_DATA_KEY) continue;
+			grouped.set(monthSection.dayKey, buildDaySectionsForMonth(analyses ?? [], monthSection.dayKey));
 		}
 		return grouped;
 	}, [analyses, sections]);
@@ -69,7 +79,7 @@ export function AnalysisCalender({ analyses, className, onClick }: AnalysisCalen
 	}
 
 	const renderSection = (
-		section: (typeof sections)[number],
+		section: DaySection,
 		clickable: boolean,
 		selected: boolean,
 		squares: ReactNode,
@@ -125,10 +135,10 @@ export function AnalysisCalender({ analyses, className, onClick }: AnalysisCalen
 						<div key={section.dayKey} className={styles.monthGroup}>
 							{renderSection(
 								section,
-								section.dayKey !== 'Sem data',
+								section.dayKey !== SEM_DATA_KEY,
 								selected,
 								sectionSquares,
-								section.dayKey === 'Sem data'
+								section.dayKey === SEM_DATA_KEY
 									? undefined
 									: () => {
 										setSelectedMonthKey(current => (current === section.dayKey ? null : section.dayKey));

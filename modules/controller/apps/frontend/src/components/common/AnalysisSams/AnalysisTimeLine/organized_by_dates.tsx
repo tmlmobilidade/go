@@ -9,12 +9,12 @@ import { analysisSquareHasValues } from '../AnalysisSquare/analysis-square-share
 
 /* * */
 
-const SEM_DATA_KEY = 'Sem data';
+export const SEM_DATA_KEY = 'Sem data';
 const TZ = 'Europe/Lisbon';
 
-type DayAccent = 'green' | 'orange' | 'red';
+export type DayAccent = 'green' | 'orange' | 'red';
 
-interface DaySection {
+export interface DaySection {
 	accent: DayAccent
 	dayKey: string
 	items: SamAnalysis[]
