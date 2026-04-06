@@ -56,4 +56,6 @@ export interface ClickHouseColumn {
  * A ClickHouse schema is a mapping of column names to their definitions (ClickHouseColumn).
  * The generic type T represents the shape of the data, and the keys of T are used as column names.
  */
-export type ClickHouseSchema<T> = Record<keyof T, ClickHouseColumn>;
+export type ClickHouseSchema<T extends object> = {
+	[K in keyof T]: ClickHouseColumn
+};
