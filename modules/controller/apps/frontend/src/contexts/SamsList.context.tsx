@@ -2,8 +2,10 @@
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type ProcessingStatus, ProcessingStatusSchema, Sam } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
+import { type ProcessingStatus, ProcessingStatusSchema, Sam, type UnixTimestamp } from '@tmlmobilidade/types';
 import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
+import { parseAsInteger, useQueryState } from 'nuqs';
 
 /* * */
 
@@ -13,12 +15,18 @@ import useSWR from 'swr';
 /* * */
 
 export interface SamsListContextState {
+	actions: {
+		setFilterSeenFirstAt: (value: null | UnixTimestamp) => void
+		setFilterSeenLastAt: (value: null | UnixTimestamp) => void
+	}
 	data: {
 		filtered: Sam[]
 		raw: Sam[]
 	}
 	filters: {
 		agency: UseFilterStateListReturnType
+		seen_first_at: null | UnixTimestamp
+		seen_last_at: null | UnixTimestamp
 		status: UseFilterStateListReturnType<ProcessingStatus>
 		search: UseFilterStateStringReturnType
 	}
@@ -49,18 +57,12 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	const filterSearch = useFilterStateString('search');
 
 	const [debouncedFilterSearch, setDebouncedFilterSearch] = useState('');
+
 	const filterStatusOptions = useMemo(() => {
-		const labelsByValue: Record<ProcessingStatus, string> = {
-			complete: 'Completo',
-			error: 'Erro',
-			processing: 'Em processamento',
-			skipped: 'Ignorado',
-			waiting: 'Aguardando',
-		};
 		return ProcessingStatusSchema.options.map(status => ({
 			checked: false,
 			disabled: false,
-			label: labelsByValue[status],
+			label: status,
 			value: status,
 		}));
 	}, []);
@@ -68,6 +70,15 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 		'system_status',
 		ProcessingStatusSchema.options,
 		filterStatusOptions,
+	);
+
+	const [filterSeenFirstAt, setFilterSeenFirstAt] = useQueryState<number>(
+		'seen_first_at',
+		parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp, [])),
+	);
+	const [filterSeenLastAt, setFilterSeenLastAt] = useQueryState<number>(
+		'seen_last_at',
+		parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').plus({ minutes: 5 }).unix_timestamp, [])),
 	);
 
 	useEffect(() => {
@@ -103,8 +114,12 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 			params.set('search', debouncedFilterSearch);
 		if (filterStatus.isActive && filterStatus.value.length)
 			params.set('system_status', filterStatus.value.join(','));
+		if (filterSeenFirstAt)
+			params.set('seen_first_at', filterSeenFirstAt.toString());
+		if (filterSeenLastAt)
+			params.set('seen_last_at', filterSeenLastAt.toString());
 		return params.toString();
-	}, [debouncedFilterSearch, filterAgency.isActive, filterAgency.value, filterStatus.isActive, filterStatus.value]);
+	}, [debouncedFilterSearch, filterAgency.isActive, filterAgency.value, filterStatus.isActive, filterStatus.value, filterSeenFirstAt, filterSeenLastAt]);
 
 	const samsListUrl = useMemo(() => {
 		if (agenciesContext.flags.loading)
@@ -119,12 +134,18 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	// D. Define context value
 
 	const contextValue: SamsListContextState = useMemo(() => ({
+		actions: {
+			setFilterSeenFirstAt: value => setFilterSeenFirstAt(value as number | null),
+			setFilterSeenLastAt: value => setFilterSeenLastAt(value as number | null),
+		},
 		data: {
 			filtered: allSamsData ?? [],
 			raw: allSamsData ?? [],
 		},
 		filters: {
 			agency: filterAgency,
+			seen_first_at: (filterSeenFirstAt ?? null) as null | UnixTimestamp,
+			seen_last_at: (filterSeenLastAt ?? null) as null | UnixTimestamp,
 			status: filterStatus,
 			search: filterSearch,
 		},
@@ -132,7 +153,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 			error: allSamsError,
 			loading: allSamsLoading,
 		},
-	}), [allSamsError, allSamsLoading, filterSearch, allSamsData, filterAgency, filterStatus]);
+	}), [allSamsError, allSamsLoading, filterSearch, allSamsData, filterAgency, filterStatus, filterSeenFirstAt, filterSeenLastAt, setFilterSeenFirstAt, setFilterSeenLastAt]);
 
 	//
 	// E. Render components

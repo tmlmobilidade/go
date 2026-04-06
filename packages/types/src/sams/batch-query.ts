@@ -3,6 +3,7 @@
 import { PermissionCatalog } from '@/permissions/index.js';
 import { ProcessingStatusSchema } from '@/_common/status.js';
 import { z } from 'zod';
+import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
 
 /* * */
 
@@ -46,6 +47,9 @@ export const GetSamsBatchQuerySchema = z.object({
 
 	system_status: z
 		.preprocess(preprocessStringArrayParam, z.array(ProcessingStatusSchema).optional()),
+
+	seen_first_at: UnixTimeStampSchema.optional(),
+	seen_last_at: UnixTimeStampSchema.optional(),
 
 });
 
