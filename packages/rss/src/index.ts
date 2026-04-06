@@ -1,7 +1,8 @@
 /* * */
 
+import { rssFeedItem } from '@/components/RSSFeedItem/index.js';
+import { rssFeed } from '@/components/RssXML/index.js';
 import { type CreateRssFeedOptions, type RssRawItem } from '@/types/index.js';
-import { rssFeedXml, rssItemXml } from '@/utils/index.js';
 
 /* * */
 
@@ -11,12 +12,12 @@ export function createRssFeed(rawItems: RssRawItem[], options: CreateRssFeedOpti
 	//
 	// A. Create XML items
 
-	const itemsXml = rawItems.map(item => rssItemXml({
+	const itemsXml = rawItems.map(item => rssFeedItem({
 		contentHtml: item.contentHtml,
 		description: item.summary || item.description || '',
 		images: item.images,
 		link: item.link || '',
-		mutedLinkLabel: item.mutedLinkLabel,
+		linkLabel: item.linkLabel,
 		publishDate: item.publishDate || item.publish_start_date || item.created_at ? new Date(item.publishDate || item.publish_start_date || item.created_at).toUTCString() : undefined,
 		title: item.title || '',
 	})).join('\n');
@@ -25,7 +26,7 @@ export function createRssFeed(rawItems: RssRawItem[], options: CreateRssFeedOpti
 	// B. Create and return XML feed
 
 	const now = new Date().toUTCString();
-	return rssFeedXml(itemsXml, {
+	return rssFeed(itemsXml, {
 		channelCopyright: options.copyright,
 		channelDescription: options.description,
 		channelDocs: 'https://www.rssboard.org/rss-specification',

@@ -5,6 +5,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { alerts, files, notifications } from '@tmlmobilidade/interfaces';
 import { createRssFeed } from '@tmlmobilidade/rss';
+import { RssRawImageInput } from '@tmlmobilidade/rss/dist/types/feed.types.js';
 import { type Alert, CreateAlertDto, type File, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
 
 /* * */
@@ -111,7 +112,7 @@ export class AlertsController {
 	 */
 	static async getRssFeed(_request: FastifyRequest, reply: FastifyReply<string>) {
 		const now = Dates.now('Europe/Lisbon').unix_timestamp;
-
+		const alertsPublicListUrl = 'https://www.carrismetropolitana.pt/alerts';
 		const allAlerts = await alerts.findMany(
 			{
 				$and: [
@@ -135,24 +136,42 @@ export class AlertsController {
 		}
 
 		const xmlItems = await Promise.all(allAlerts.map(async (alert) => {
-			const images: Array<{ alt?: string, type?: null | string, url: string }> = [];
+			const images: RssRawImageInput[] = [];
+			const fileIdOrder: string[] = [];
+			const seen = new Set<string>();
+
+			const attachedFiles = await files.findMany(
+				{ resource_id: alert._id, scope: 'alerts' },
+				{ sort: { created_at: 1 } },
+			);
 
 			if (alert.file_id) {
-				const file = await files.findById(alert.file_id);
-				if (file?.url) {
-					images.push({
-						alt: alert.title,
-						type: file.type ?? null,
-						url: file.url,
-					});
+				fileIdOrder.push(alert.file_id);
+				seen.add(alert.file_id);
+			}
+
+			for (const f of attachedFiles) {
+				if (!seen.has(f._id)) {
+					fileIdOrder.push(f._id);
+					seen.add(f._id);
 				}
+			}
+
+			for (const fileId of fileIdOrder) {
+				const file = await files.findById(fileId);
+				if (!file?.url) continue;
+				images.push({
+					alt: alert.title,
+					type: file.type ?? null,
+					url: file.url,
+				});
 			}
 
 			return {
 				description: alert.description,
 				images: images.length ? images : undefined,
-				link: `${'https://www.carrismetropolitana.pt/alerts'}/${alert._id}`,
-				mutedLinkLabel: 'Ver o alerta completo em carrismetropolitana.pt',
+				link: `${alertsPublicListUrl}/${alert._id}`,
+				linkLabel: 'Ver o alerta completo em carrismetropolitana.pt',
 				publish_start_date: alert.publish_start_date,
 				title: alert.title,
 			};
@@ -161,8 +180,8 @@ export class AlertsController {
 		const xml = createRssFeed(xmlItems, {
 			copyright: 'Carris Metropolitana',
 			description: 'Alertas e atualizacoes da Carris Metropolitana.',
-			feedSelfUrl: 'https://www.carrismetropolitana.pt/alerts.rss',
-			link: 'https://www.carrismetropolitana.pt/alerts',
+			feedSelfUrl: `${alertsPublicListUrl}.rss`,
+			link: alertsPublicListUrl,
 			title: 'Carris Metropolitana - Alertas',
 		});
 

@@ -11,7 +11,7 @@ export interface RssRawItem {
 	description?: null | string
 	images?: Array<RssRawImageInput>
 	link?: null | string
-	mutedLinkLabel?: null | string
+	linkLabel?: null | string
 	publish_start_date?: null | number
 	publishDate?: null | string
 	slug?: null | string

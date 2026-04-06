@@ -17,8 +17,18 @@ interface RssChannelOptions {
 	channelTitle: string
 }
 
-export function rssFeedXml(itemsXml: string, channelOptions: RssChannelOptions): string {
+/* * */
+
+export function rssFeed(itemsXml: string, channelOptions: RssChannelOptions): string {
+	//
+
+	//
+	// A. Setup Variables
+
 	const rssOpenTag = '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">';
+
+	//
+	// B. Return Result
 
 	return [
 		'<?xml version="1.0" encoding="UTF-8"?>',
@@ -40,6 +50,8 @@ export function rssFeedXml(itemsXml: string, channelOptions: RssChannelOptions):
 		'</channel>',
 		'</rss>',
 	].filter(Boolean).join('\n');
+
+	//
 }
 
 /* * */
