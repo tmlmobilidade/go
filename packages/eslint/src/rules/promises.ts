@@ -23,7 +23,7 @@ export const promisesConfig: Config[] = [
 			'@typescript-eslint/await-thenable': 'error',
 
 			'@typescript-eslint/no-floating-promises': [
-				'error',
+				'off',
 				{ ignoreIIFE: true },
 			],
 

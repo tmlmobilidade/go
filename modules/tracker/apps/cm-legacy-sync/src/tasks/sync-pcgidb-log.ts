@@ -23,7 +23,7 @@ const writer = new BatchWriter<RawVehicleEvent>({
 		}));
 		await rawVehicleEventsNew.bulkWrite(writeOps);
 	},
-	title: await rawVehicleEventsNew.getCollectionName(),
+	title: 'LOG',
 });
 
 /**
@@ -43,7 +43,7 @@ export async function syncPcgidbLogVehicleEvents(timeChunk: PerformInTimeChunksI
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	Logger.spacer(1);
-	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
+	Logger.divider(`LOG [${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
 
 	//
 	// Prepare the queries to compare documents from each database

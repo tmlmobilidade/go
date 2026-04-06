@@ -28,7 +28,7 @@ async function main() {
 
 		await performInTimeChunks({
 			onChunk: syncVehicleEvents,
-			splitBy: { hours: 1 },
+			splitBy: { minutes: 10 },
 			startDate: earliestDate.unix_timestamp,
 		});
 
@@ -36,7 +36,8 @@ async function main() {
 
 		//
 	} catch (err) {
-		console.log('An error occurred. Halting execution.', err);
+		Logger.error('An error occurred while syncing clickhouse data.', err as Error);
+		throw err;
 	}
 }
 

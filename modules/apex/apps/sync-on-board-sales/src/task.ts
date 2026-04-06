@@ -1,9 +1,8 @@
 /* * */
 
-import { simplifiedApexOnBoardSalesNew } from '@tmlmobilidade/databases';
+import { pcgiSales, simplifiedApexOnBoardSalesNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { APEX_ON_BOARD_SALES_SETTINGS, invalidateRides, parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-apex-pckg-common';
-import { pcgidbTicketing } from '@tmlmobilidade/go-apex-pckg-databases';
+import { APEX_ON_BOARD_SALES_SETTINGS, invalidateRides, parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-apex-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
@@ -58,6 +57,8 @@ export async function syncApexOnBoardSales(timeChunk: PerformInTimeChunksItem) {
 	// This function will handle the logic of counting, comparing, syncing and deleting documents
 	// between the source and destination databases based on the provided functions.
 
+	const pcgiSalesCollection = await pcgiSales.getCollection();
+
 	await replicate<unknown>({
 
 		countDestinationDbFn: async () => {
@@ -69,7 +70,7 @@ export async function syncApexOnBoardSales(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		countSourceDbFn: async () => {
-			const result = await pcgidbTicketing.SalesEntity.countDocuments(pcgidbQuery);
+			const result = await pcgiSales.count(pcgidbQuery);
 			return result;
 		},
 
@@ -89,12 +90,12 @@ export async function syncApexOnBoardSales(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		distinctSourceDbFn: async () => {
-			const result = await pcgidbTicketing.SalesEntity.distinct('transaction.transactionId', pcgidbQuery);
+			const result = await pcgiSales.distinct('transaction.transactionId', pcgidbQuery);
 			return result.map(String);
 		},
 
 		missingDocumentsSourceDbAsyncIterator: (missingDocumentIds) => {
-			return pcgidbTicketing.SalesEntity
+			return pcgiSalesCollection
 				.find({ 'transaction.transactionId': { $in: missingDocumentIds } })
 				.stream();
 		},

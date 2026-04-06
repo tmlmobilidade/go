@@ -3,6 +3,7 @@ export * from '@/caching/index.js';
 export * from '@/generic/index.js';
 export * from '@/get-public-trip-id.js';
 export * from '@/http.js';
+export * from '@/numbers/index.js';
 export * from '@/objects/index.js';
 export * from '@/permissions.js';
 export * from '@/run-on-interval.js';

@@ -11,8 +11,14 @@ export const SimplifiedVehicleEventSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	created_at: UnixTimeStampSchema,
-	latitude: z.number(),
-	longitude: z.number(),
+	latitude: z.number()
+		.min(-90)
+		.max(90)
+		.refine(value => value.toFixed(6) === value.toString()),
+	longitude: z.number()
+		.min(-180)
+		.max(180)
+		.refine(value => value.toFixed(6) === value.toString()),
 	received_at: UnixTimeStampSchema,
 	trip_id: z.string(),
 	vehicle_id: z.string(),

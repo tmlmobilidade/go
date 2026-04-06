@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-apex-pckg-databases",
+	"name": "@tmlmobilidade/go-tracker-ccfl-fetch",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -12,19 +12,25 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
+		"dev": "tsx watch src/index.ts",
+		"lint": "eslint . --fix && tsc --noEmit",
+		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
+		"@tmlmobilidade/databases": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-tracker-pckg-shared": "*",
+		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/mongo": "*",
-		"@tmlmobilidade/ssh": "*",
-		"@tmlmobilidade/types": "*"
+		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/utils": "*",
+		"@tmlmobilidade/writers": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "25.5.0",
 		"resolve-tspaths": "0.8.23",
-		"tsc-watch": "7.2.0",
+		"tsx": "4.21.0",
 		"typescript": "5.9.3"
 	}
 }

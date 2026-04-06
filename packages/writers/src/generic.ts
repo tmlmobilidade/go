@@ -39,6 +39,18 @@ interface BatchWriterParams<T> {
 	insertFn: (data: T[]) => Promise<void>
 
 	/**
+	 * Maximum number of retries for transient insert errors.
+	 * @default 3
+	 */
+	max_retries?: number
+
+	/**
+	 * Base delay in milliseconds for exponential backoff.
+	 * @default 1000
+	 */
+	retry_base_delay_ms?: number
+
+	/**
 	 * The title of this BatchWriter instance,
 	 * used to identify the source of the logs.
 	 * @required
@@ -114,7 +126,7 @@ export class BatchWriter<T> {
 			try {
 				// Call the insert function provided in the params to perform the actual database insertion.
 				if (!this.params.insertFn) throw new Error('BATCHWRITER: No insert function provided in params');
-				await this.params.insertFn(this.dataBucketFlushOps);
+				await this.insertWithRetry(this.dataBucketFlushOps);
 				Logger.info(`BATCHWRITER [${this.params.title}]: Flush | Length: ${this.dataBucketFlushOps.length} (session: ${sessionTimerResult}) (flush: ${flushTimer.get()})`);
 				// Call the flush callback, if provided
 				if (callback) await callback(this.dataBucketFlushOps);
@@ -133,11 +145,36 @@ export class BatchWriter<T> {
 	}
 
 	/**
+	 * Helper method to perform insert operations with retry logic for transient errors.
+	 * This method will attempt to insert the data using the provided insert function,
+	 * and if an error occurs, it will retry the operation with exponential backoff
+	 * until the maximum number of retries is reached.
+	 * @param data The data to insert.
+	 * @returns A promise that resolves when the insert operation is successful, or rejects if all retries fail.
+	 */
+	private async insertWithRetry(data: T[]) {
+		const maxRetries = this.params.max_retries ?? 3;
+		const retryBaseDelayMs = this.params.retry_base_delay_ms ?? 1000;
+		for (let attempt = 0; attempt <= maxRetries; attempt++) {
+			try {
+				await this.params.insertFn(data);
+				return;
+			} catch (error) {
+				const parsedError = error as Error & { code?: string };
+				const nextAttempt = attempt + 1;
+				const delayMs = retryBaseDelayMs * (2 ** attempt);
+				Logger.error(`BATCHWRITER [${this.params.title}]: Transient insert error (${parsedError.code ?? 'unknown'}). Retrying ${nextAttempt}/${maxRetries} in ${delayMs}ms. ${parsedError.message}`);
+				await new Promise(resolve => setTimeout(resolve, delayMs));
+			}
+		}
+	}
+
+	/**
 	 * Write data to the batch.
-	 * @param data The data to write
-	 * @param options Options for the write operation (reserved for future use)
-	 * @param writeCallback Callback function to call after the write operation is complete
-	 * @param flushCallback Callback function to call after the flush operation is complete
+	 * @param data The data to write.
+	 * @param options Options for the write operation (reserved for future use).
+	 * @param writeCallback Callback function to call after the write operation is complete.
+	 * @param flushCallback Callback function to call after the flush operation is complete.
 	 */
 	async write(data: T | T[], { flushCallback, writeCallback }: { flushCallback?: (data?: T[]) => Promise<void>, writeCallback?: () => Promise<void> } = {}) {
 		//

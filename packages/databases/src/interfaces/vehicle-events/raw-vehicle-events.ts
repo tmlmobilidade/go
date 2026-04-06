@@ -16,11 +16,14 @@ class RawVehicleEventsNewClass extends MongoInterfaceTemplate<RawVehicleEvent, R
 	protected override readonly collectionName = 'raw_vehicle_events';
 	protected override readonly databaseName = 'raw';
 	protected override readonly indexDescription: SimplifiedMongoIndex<RawVehicleEvent>[] = [
+		{ key: { created_at: 1 } },
 		{ key: { agency_id: 1, created_at: 1 } },
+		// eslint-disable-next-line perfectionist/sort-objects
+		{ key: { version: 1, created_at: 1 } },
 	];
 
 	protected override createSchema = RawVehicleEventSchema;
-	protected override updateSchema: null = null;
+	protected override updateSchema = null;
 
 	/**
 	 * Returns the singleton instance of the subclass.

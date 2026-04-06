@@ -28,6 +28,7 @@ export function StopCreateStep1Coordinates() {
 	return (
 		<Section gap="md">
 			<CoordinatesInput
+				key={stopCreateContext.data.form.key('coordinates')}
 				onChange={handleSetCoordinates}
 				value={[stopCreateContext.data.form.values.latitude, stopCreateContext.data.form.values.longitude]}
 			/>

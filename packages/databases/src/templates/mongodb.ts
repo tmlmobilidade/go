@@ -26,7 +26,7 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 
 	protected readonly abstract collectionName: string;
 	protected readonly abstract databaseName: string;
-	protected readonly abstract indexDescription: SimplifiedMongoIndex<T>[];
+	protected readonly abstract indexDescription: false | SimplifiedMongoIndex<T>[];
 
 	protected abstract createSchema: null | z.ZodSchema;
 	protected abstract updateSchema: null | z.ZodSchema;
@@ -190,7 +190,6 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 		// Validate required properties before attempting to connect
 		if (!this.databaseName) throw new Error('MONGODB: databaseName is required.');
 		if (!this.collectionName) throw new Error('MONGODB: collectionName is required.');
-		if (!this.indexDescription) throw new Error('MONGODB: indexDescription is required and cannot be empty.');
 		// Connect to the MongoDB client
 		this.client = await this.connectToClient();
 		this.database = this.client.db(this.databaseName);
@@ -232,22 +231,18 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 */
 	private async syncIndexes(): Promise<void> {
 		try {
+			if (this.indexDescription === false) {
+				Logger.info(`MONGODB [${this.collectionName}]: Skipping index synchronization.`);
+				return;
+			}
+			// Start index synchronization process
 			Logger.info(`MONGODB [${this.collectionName}]: Synchronizing indexes...`);
 			// Normalize already applied and new indexes
 			// and filter the default _id index.
 			const existingIndexes = await this.collection.indexes();
 			const filteredExisting = existingIndexes.filter(idx => JSON.stringify(idx.key) !== JSON.stringify({ _id: 1 }));
 			// Setup desired indexes based on indexDescription
-			const indexesToDrop: string[] = [];
 			const indexesToCreate: SimplifiedMongoIndex<T>[] = [];
-			// Find indexes to drop
-			for (const existingIdx of filteredExisting) {
-				// For the list of existing indexes,
-				// check if they are present in the desired index description.
-				const found = this.indexDescription.some(desiredIdx => isSameIndex(existingIdx, desiredIdx));
-				// If not, mark them for dropping.
-				if (!found) indexesToDrop.push(existingIdx.name);
-			}
 			// Find indexes to create
 			for (const desiredIdx of this.indexDescription) {
 				// For the list of desired indexes,
@@ -255,13 +250,6 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 				const found = filteredExisting.some(existingIdx => isSameIndex(existingIdx, desiredIdx));
 				// If not, mark them for creation.
 				if (!found) indexesToCreate.push(desiredIdx);
-			}
-			// Drop indexes
-			for (const idxName of indexesToDrop) {
-				if (!idxName) continue;
-				Logger.info(`MONGODB [${this.collectionName}]: Dropping index ${idxName}.`);
-				await this.collection.dropIndex(idxName);
-				Logger.success(`MONGODB [${this.collectionName}]: Dropped index ${idxName}.`);
 			}
 			// Create indexes
 			for (const idx of indexesToCreate) {

@@ -1,6 +1,6 @@
 /* * */
 
-import { type ClickHouseColumn, type ClickHouseTableEngine } from '@/types/index.js';
+import { type ClickHouseColumn, type ClickHouseSchema, type ClickHouseTableEngine } from '@/types/index.js';
 import { preparePositionalQueryParams } from '@/utils/clickhouse/prepare-positional-query-params.js';
 import { queryFromString } from '@/utils/clickhouse/query-from-string.js';
 import { validateSqlParam } from '@/utils/clickhouse/validate-sql-param.js';
@@ -13,7 +13,7 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 	//
 
 	protected readonly abstract databaseName: string;
-	protected readonly abstract schema: ClickHouseColumn<T>[];
+	protected readonly abstract schema: ClickHouseSchema<T>;
 	protected readonly abstract tableName: string;
 
 	protected readonly engine: ClickHouseTableEngine = 'ReplicatedMergeTree';
@@ -135,7 +135,7 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 		// Validate required properties before attempting to connect
 		if (!this.databaseName) throw new Error('CLICKHOUSE: databaseName is required.');
 		if (!this.tableName) throw new Error('CLICKHOUSE: tableName is required.');
-		if (!this.schema || this.schema.length === 0) throw new Error('CLICKHOUSE: schema is required and cannot be empty.');
+		if (!this.schema || Object.entries(this.schema).length === 0) throw new Error('CLICKHOUSE: schema is required and cannot be empty.');
 		// Connect to the ClickHouse client
 		this.client = await this.connectToClient();
 		// Ensure the database and table exist, and perform any additional setup
@@ -183,16 +183,15 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 		if (!validateSqlParam(this.databaseName, false)) throw new Error(`CLICKHOUSE [${this.databaseName}]: Unsafe database name provided.`);
 		if (!validateSqlParam(this.tableName, false)) throw new Error(`CLICKHOUSE [${this.tableName}]: Unsafe table name provided.`);
 		if (!validateSqlParam(this.engine, false)) throw new Error(`CLICKHOUSE [${this.engine}]: Unsafe engine type provided.`);
-		if (!validateSqlParam(this.orderBy, false)) throw new Error(`CLICKHOUSE [${this.orderBy}]: Unsafe orderBy clause provided.`);
 		// Validate the schema columns are safe identifiers
-		const unsafeColumns = this.schema.filter(column => !validateSqlParam(column.name, false)).map(column => column.name);
+		const unsafeColumns = Object.keys(this.schema).filter(key => !validateSqlParam(key, false));
 		if (unsafeColumns.length > 0) throw new Error(`CLICKHOUSE [${this.tableName}]: Unsafe column names provided: ${unsafeColumns.join(', ')}.`);
 		// Ensure the database exists before creating the table
 		await this.ensureDatabase();
 		// Setup the full CREATE TABLE query
 		const createTableQuery = `
 			CREATE TABLE IF NOT EXISTS "${this.databaseName}"."${this.tableName}" ON CLUSTER default_cluster (
-				${this.schema.map(column => `${column.name} ${column.type}`).join(', ')}
+				${Object.entries<ClickHouseColumn>(this.schema).map(([key, column]) => `${key} ${column.type}`).join(', ')}
 			) ENGINE = ${this.getEngineString()}
 			ORDER BY ${this.orderBy}
 		`;

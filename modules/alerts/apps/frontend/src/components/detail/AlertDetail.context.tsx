@@ -60,7 +60,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 
 	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
 	const { data: alertData, error: alertError, isLoading: alertLoading, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId));
-	const { data: alertImage, isLoading: alertImageLoading, mutate: alertImageMutate } = useSWR<FileType>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
+	const { data: alertImage, mutate: alertImageMutate } = useSWR<FileType>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
 
 	//
 	// C. Define form
@@ -122,7 +122,6 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 
 	useEffect(() => {
 		if (!imageFile) return;
-		console.log('Uploading image file:', imageFile);
 		handleSave();
 	}, [imageFile]);
 
@@ -244,7 +243,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			isDeleting,
 			isDeletingImage: isDeletingImage,
 			isDirty: form.isDirty(),
-			isLoading: alertLoading || alertImageLoading,
+			isLoading: alertLoading,
 			isLocking: isLocking,
 			isReadOnly,
 			isSaving,
