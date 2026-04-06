@@ -1,6 +1,6 @@
 /* * */
 
-import { ClickHouseColumn, GOClickHouseClient } from '@/index.js';
+import { ClickHouseSchema, GOClickHouseClient } from '@/index.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
@@ -13,12 +13,12 @@ interface ETAShapeNodes {
 	shape_id: string
 }
 
-const tableSchema: ClickHouseColumn<ETAShapeNodes>[] = [
-	{ name: 'shape_id', type: 'String' },
-	{ name: 'node_index', type: 'UInt32' },
-	{ name: 'longitude', type: 'Float64' },
-	{ name: 'latitude', type: 'Float64' },
-];
+const tableSchema: ClickHouseSchema<ETAShapeNodes> = {
+	latitude: { type: 'Float64' },
+	longitude: { type: 'Float64' },
+	node_index: { type: 'UInt32' },
+	shape_id: { type: 'String' },
+};
 
 /* * */
 

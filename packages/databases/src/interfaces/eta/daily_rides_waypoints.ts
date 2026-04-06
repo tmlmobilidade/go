@@ -1,6 +1,6 @@
 /* * */
 
-import { ClickHouseColumn, GOClickHouseClient } from '@/index.js';
+import { ClickHouseSchema, GOClickHouseClient } from '@/index.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
 import { HashedTripWaypoint } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
@@ -9,20 +9,20 @@ import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 export type DailyTripWaypoint = HashedTripWaypoint & { hashed_trip_id: string };
 
-const tableSchema: ClickHouseColumn<DailyTripWaypoint>[] = [
-	{ name: 'hashed_trip_id', type: 'String' },
-	{ name: 'arrival_time', type: 'String' },
-	{ name: 'departure_time', type: 'String' },
-	{ name: 'drop_off_type', type: 'UInt8' },
-	{ name: 'pickup_type', type: 'UInt8' },
-	{ name: 'shape_dist_traveled', type: 'Float64' },
-	{ name: 'stop_id', type: 'String' },
-	{ name: 'stop_lat', type: 'Float64' },
-	{ name: 'stop_lon', type: 'Float64' },
-	{ name: 'stop_name', type: 'String' },
-	{ name: 'stop_sequence', type: 'UInt16' },
-	{ name: 'timepoint', type: 'UInt8' },
-];
+const tableSchema: ClickHouseSchema<DailyTripWaypoint> = {
+	arrival_time: { type: 'String' },
+	departure_time: { type: 'String' },
+	drop_off_type: { type: 'UInt8' },
+	hashed_trip_id: { type: 'String' },
+	pickup_type: { type: 'UInt8' },
+	shape_dist_traveled: { type: 'Float64' },
+	stop_id: { type: 'String' },
+	stop_lat: { type: 'Float64' },
+	stop_lon: { type: 'Float64' },
+	stop_name: { type: 'String' },
+	stop_sequence: { type: 'UInt16' },
+	timepoint: { type: 'UInt8' },
+};
 
 /* * */
 

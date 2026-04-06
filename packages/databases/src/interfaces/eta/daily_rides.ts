@@ -1,23 +1,23 @@
 /* * */
 
-import { ClickHouseColumn, GOClickHouseClient } from '@/index.js';
+import { ClickHouseSchema, GOClickHouseClient } from '@/index.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
 import { Ride } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-const tableSchema: ClickHouseColumn<Partial<Ride>>[] = [
-	{ name: '_id', type: 'String' },
-	{ name: 'hashed_trip_id', type: 'String' },
-	{ name: 'hashed_shape_id', type: 'String' },
-	{ name: 'line_id', type: 'UInt16' },
-	{ name: 'operational_date', type: 'String' },
-	{ name: 'start_time_scheduled', type: 'UInt64' },
-	{ name: 'end_time_scheduled', type: 'UInt64' },
-	{ name: 'start_time_observed', type: 'UInt64' },
-	{ name: 'headsign', type: 'String' },
-];
+const tableSchema: ClickHouseSchema<Partial<Ride>> = {
+	_id: { type: 'String' },
+	end_time_scheduled: { type: 'UInt64' },
+	hashed_shape_id: { type: 'String' },
+	hashed_trip_id: { type: 'String' },
+	headsign: { type: 'String' },
+	line_id: { type: 'UInt16' },
+	operational_date: { type: 'String' },
+	start_time_observed: { type: 'UInt64' },
+	start_time_scheduled: { type: 'UInt64' },
+};
 
 /* * */
 

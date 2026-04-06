@@ -1,6 +1,6 @@
 /* * */
 
-import { ClickHouseColumn, GOClickHouseClient } from '@/index.js';
+import { ClickHouseSchema, GOClickHouseClient } from '@/index.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
@@ -19,18 +19,18 @@ interface ETANodeTravelTimesSample {
 	travel_time_seconds: number
 }
 
-const tableSchema: ClickHouseColumn<ETANodeTravelTimesSample>[] = [
-	{ name: 'event_id', type: 'String' },
-	{ name: 'ride_id', type: 'String' },
-	{ name: 'hashed_shape_id', type: 'String' },
-	{ name: 'node_index', type: 'UInt32' },
-	{ name: 'hour', type: 'UInt8' },
-	{ name: 'created_at', type: 'UInt64' },
-	{ name: 'travel_time_seconds', type: 'Float64' },
-	{ name: 'speed_kmh', type: 'Float64' },
-	{ name: 'latitude', type: 'Float64' },
-	{ name: 'longitude', type: 'Float64' },
-];
+const tableSchema: ClickHouseSchema<ETANodeTravelTimesSample> = {
+	created_at: { type: 'UInt64' },
+	event_id: { type: 'String' },
+	hashed_shape_id: { type: 'String' },
+	hour: { type: 'UInt8' },
+	latitude: { type: 'Float64' },
+	longitude: { type: 'Float64' },
+	node_index: { type: 'UInt32' },
+	ride_id: { type: 'String' },
+	speed_kmh: { type: 'Float64' },
+	travel_time_seconds: { type: 'Float64' },
+};
 
 /* * */
 

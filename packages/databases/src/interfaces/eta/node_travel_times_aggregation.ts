@@ -1,6 +1,6 @@
 /* * */
 
-import { ClickHouseColumn, GOClickHouseClient } from '@/index.js';
+import { ClickHouseSchema, GOClickHouseClient } from '@/index.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
@@ -20,19 +20,19 @@ interface ETANodeTravelTimesAggregation {
 	weekday: string
 }
 
-const tableSchema: ClickHouseColumn<ETANodeTravelTimesAggregation>[] = [
-	{ name: 'shape_id', type: 'String' },
-	{ name: 'node_index', type: 'UInt32' },
-	{ name: 'operational_date', type: 'UInt32' },
-	{ name: 'period', type: 'String' },
-	{ name: 'period_of_day', type: 'Enum8(\'Peak AM\' = 1, \'Mid\' = 2, \'Peak PM\' = 3, \'Off Peak\' = 4)' },
-	{ name: 'weekday', type: 'Enum8(\'Monday\' = 1, \'Tuesday\' = 2, \'Wednesday\' = 3, \'Thursday\' = 4, \'Friday\' = 5, \'Saturday\' = 6, \'Sunday\' = 7)' },
-	{ name: 'day_type', type: 'Enum8(\'Weekday\' = 1, \'Weekend\' = 2)' },
-	{ name: 'avg_travel_time_seconds', type: 'Float64' },
-	{ name: 'min_travel_time_seconds', type: 'Float64' },
-	{ name: 'max_travel_time_seconds', type: 'Float64' },
-	{ name: 'median_travel_time_seconds', type: 'Float64' },
-];
+const tableSchema: ClickHouseSchema<ETANodeTravelTimesAggregation> = {
+	avg_travel_time_seconds: { type: 'Float64' },
+	day_type: { type: 'Enum8(\'Weekday\' = 1, \'Weekend\' = 2)' },
+	max_travel_time_seconds: { type: 'Float64' },
+	median_travel_time_seconds: { type: 'Float64' },
+	min_travel_time_seconds: { type: 'Float64' },
+	node_index: { type: 'UInt32' },
+	operational_date: { type: 'UInt32' },
+	period: { type: 'String' },
+	period_of_day: { type: 'Enum8(\'Peak AM\' = 1, \'Mid\' = 2, \'Peak PM\' = 3, \'Off Peak\' = 4)' },
+	shape_id: { type: 'String' },
+	weekday: { type: 'Enum8(\'Monday\' = 1, \'Tuesday\' = 2, \'Wednesday\' = 3, \'Thursday\' = 4, \'Friday\' = 5, \'Saturday\' = 6, \'Sunday\' = 7)' },
+};
 
 /* * */
 

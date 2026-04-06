@@ -1,6 +1,6 @@
 /* * */
 
-import { ClickHouseColumn, GOClickHouseClient } from '@/index.js';
+import { ClickHouseSchema, GOClickHouseClient } from '@/index.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
@@ -18,18 +18,17 @@ interface EtaVehicleEvent {
 	vehicle_id: string
 }
 
-const tableSchema: ClickHouseColumn<EtaVehicleEvent>[] = [
-	// Required Fields
-	{ name: '_id', type: 'String' },
-	{ name: 'agency_id', type: 'String' },
-	{ name: 'created_at', type: 'UInt64' },
-	{ name: 'hashed_shape_id', type: 'String' },
-	{ name: 'latitude', type: 'Float64' },
-	{ name: 'line_id', type: 'UInt16' },
-	{ name: 'longitude', type: 'Float64' },
-	{ name: 'ride_id', type: 'String' },
-	{ name: 'vehicle_id', type: 'String' },
-];
+const tableSchema: ClickHouseSchema<EtaVehicleEvent> = {
+	_id: { type: 'String' },
+	agency_id: { type: 'String' },
+	created_at: { type: 'UInt64' },
+	hashed_shape_id: { type: 'String' },
+	latitude: { type: 'Float64' },
+	line_id: { type: 'UInt16' },
+	longitude: { type: 'Float64' },
+	ride_id: { type: 'String' },
+	vehicle_id: { type: 'String' },
+};
 
 /* * */
 
