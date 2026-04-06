@@ -2,7 +2,7 @@
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { ApexVersion, ApexVersionSchema, type ProcessingStatus, ProcessingStatusSchema, Sam, type UnixTimestamp } from '@tmlmobilidade/types';
+import { ApexVersion, ApexVersionSchema, Sam, type SystemStatus, SystemStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
 import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
 import { parseAsInteger, useQueryState } from 'nuqs';
 
@@ -28,7 +28,7 @@ export interface SamsListContextState {
 		search: UseFilterStateStringReturnType
 		seen_first_at: null | UnixTimestamp
 		seen_last_at: null | UnixTimestamp
-		status: UseFilterStateListReturnType<ProcessingStatus>
+		status: UseFilterStateListReturnType<SystemStatus>
 	}
 	flags: {
 		error: Error | undefined
@@ -48,6 +48,24 @@ export const useSamsListContext = () => {
 	return context;
 };
 
+const getSamSystemStatus = (sam: Sam): SystemStatus => {
+	const analyses = sam.analysis ?? [];
+	if (!analyses.length)
+		return 'error';
+
+	const isNullish = (value: unknown) => value === null || value === undefined;
+
+	const allAnalysesAreFullyNull = analyses.every(analysis => Object.values(analysis).every(isNullish));
+	if (allAnalysesAreFullyNull)
+		return 'error';
+
+	const hasAnyNullFieldInAnyAnalysis = analyses.some(analysis => Object.values(analysis).some(isNullish));
+	if (hasAnyNullFieldInAnyAnalysis)
+		return 'incomplete';
+
+	return 'complete';
+};
+
 export function SamsListContextProvider({ children }: PropsWithChildren) {
 	//
 
@@ -59,16 +77,16 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	const [debouncedFilterSearch, setDebouncedFilterSearch] = useState('');
 
 	const filterStatusOptions = useMemo(() => {
-		return ProcessingStatusSchema.options.map(status => ({
+		return SystemStatusSchema.options.map(status => ({
 			checked: false,
 			disabled: false,
 			label: status,
 			value: status,
 		}));
 	}, []);
-	const filterStatus = useFilterStateList<ProcessingStatus>(
+	const filterStatus = useFilterStateList<SystemStatus>(
 		'system_status',
-		ProcessingStatusSchema.options,
+		SystemStatusSchema.options,
 		filterStatusOptions,
 	);
 
@@ -114,8 +132,6 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 			params.set('agency_ids', filterAgency.value.join(','));
 		if (debouncedFilterSearch)
 			params.set('search', debouncedFilterSearch);
-		if (filterStatus.isActive && filterStatus.value.length)
-			params.set('system_status', filterStatus.value.join(','));
 		if (filterSeenFirstAt)
 			params.set('seen_first_at', filterSeenFirstAt.toString());
 		if (filterSeenLastAt)
@@ -123,7 +139,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 		if (filterApexVersion.isActive && filterApexVersion.value.length)
 			params.set('latest_apex_version', filterApexVersion.value.join(','));
 		return params.toString();
-	}, [debouncedFilterSearch, filterAgency.isActive, filterAgency.value, filterStatus.isActive, filterStatus.value, filterSeenFirstAt, filterSeenLastAt, filterApexVersion.isActive, filterApexVersion.value]);
+	}, [debouncedFilterSearch, filterAgency.isActive, filterAgency.value, filterSeenFirstAt, filterSeenLastAt, filterApexVersion.isActive, filterApexVersion.value]);
 
 	const samsListUrl = useMemo(() => {
 		if (agenciesContext.flags.loading)
@@ -133,6 +149,14 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	}, [agenciesContext.flags.loading, samsListQueryString]);
 
 	const { data: allSamsData, error: allSamsError, isLoading: allSamsLoading } = useSWR<Sam[], Error>(samsListUrl, { refreshInterval: 5000 });
+	const samsDataWithComputedStatus = useMemo(() => {
+		return (allSamsData ?? []).map(item => ({ ...item, system_status: getSamSystemStatus(item) }));
+	}, [allSamsData]);
+	const filteredSamsData = useMemo(() => {
+		if (!filterStatus.isActive || !filterStatus.value.length)
+			return samsDataWithComputedStatus;
+		return samsDataWithComputedStatus.filter(item => filterStatus.value.includes(item.system_status));
+	}, [filterStatus.isActive, filterStatus.value, samsDataWithComputedStatus]);
 
 	//
 	// D. Define context value
@@ -143,8 +167,8 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 			setFilterSeenLastAt: value => setFilterSeenLastAt(value as null | number),
 		},
 		data: {
-			filtered: allSamsData ?? [],
-			raw: allSamsData ?? [],
+			filtered: filteredSamsData,
+			raw: samsDataWithComputedStatus,
 		},
 		filters: {
 			agency: filterAgency,
@@ -158,7 +182,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 			error: allSamsError,
 			loading: allSamsLoading,
 		},
-	}), [allSamsError, allSamsLoading, filterSearch, allSamsData, filterAgency, filterApexVersion.isActive, filterApexVersion.value, filterStatus.isActive, filterStatus.value, filterSeenFirstAt, filterSeenLastAt, setFilterSeenFirstAt, setFilterSeenLastAt]);
+	}), [allSamsError, allSamsLoading, filterSearch, filterAgency, filterApexVersion, filterStatus, filterSeenFirstAt, filterSeenLastAt, filteredSamsData, samsDataWithComputedStatus, setFilterSeenFirstAt, setFilterSeenLastAt]);
 
 	//
 	// E. Render components

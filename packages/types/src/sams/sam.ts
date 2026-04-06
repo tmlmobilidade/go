@@ -1,7 +1,7 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { ProcessingStatusSchema } from '@/_common/status.js';
+import { SystemStatusSchema } from '@/_common/system-status.js';
 import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
 import { SamAnalysisSchema } from '@/sams/sam-analysis.js';
 import { z } from 'zod';
@@ -18,7 +18,7 @@ export const SamSchema = DocumentSchema
 		remarks: z.string().nullable().default(null),
 		seen_first_at: UnixTimeStampSchema.nullable(),
 		seen_last_at: UnixTimeStampSchema.nullable(),
-		system_status: ProcessingStatusSchema.default('waiting'),
+		system_status: SystemStatusSchema.default('waiting'),
 		transactions_expected: z.number().nullable(),
 		transactions_found: z.number().nullable(),
 		transactions_missing: z.number().nullable(),
