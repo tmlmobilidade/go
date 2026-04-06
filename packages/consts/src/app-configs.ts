@@ -21,11 +21,6 @@ const STAGING_BASE_URL =
 		? globalWithLocation.location.origin
 		: 'https://go-stg.tmlmobilidade.pt';
 
-const K8S_BASE_URL =
-	typeof globalThis !== 'undefined' && typeof globalWithLocation.location?.origin === 'string'
-		? globalWithLocation.location.origin
-		: 'https://go-k8s.tmlmobilidade.pt';
-
 const DEFAULT_PRODUCTION_CONFIG: Omit<AppConfigGroup, 'api_url' | 'frontend_url'> = {
 	api_port: 5050,
 	cors_origin: new RegExp(`https://go.tmlmobilidade.pt$`),
@@ -35,12 +30,6 @@ const DEFAULT_PRODUCTION_CONFIG: Omit<AppConfigGroup, 'api_url' | 'frontend_url'
 const DEFAULT_STAGING_CONFIG: Omit<AppConfigGroup, 'api_url' | 'frontend_url'> = {
 	api_port: 5050,
 	cors_origin: new RegExp(`${STAGING_BASE_URL}$`),
-	frontend_port: 3000,
-};
-
-const DEFAULT_K8S_CONFIG: Omit<AppConfigGroup, 'api_url' | 'frontend_url'> = {
-	api_port: 5050,
-	cors_origin: new RegExp(`${K8S_BASE_URL}$`),
 	frontend_port: 3000,
 };
 
@@ -54,19 +43,14 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			frontend_port: 51001,
 			frontend_url: 'http://localhost:51001/alerts',
 		},
-		k8s: {
-			api_url: `${K8S_BASE_URL}/alerts/api`,
-			frontend_url: `${K8S_BASE_URL}/alerts`,
-			...DEFAULT_K8S_CONFIG,
-		},
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/alerts/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/alerts',
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: `${STAGING_BASE_URL}/alerts/api`,
-			frontend_url: `${STAGING_BASE_URL}/alerts`,
+			api_url: 'https://go-stg.tmlmobilidade.pt/alerts/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/alerts',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -79,19 +63,14 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			frontend_port: 51000,
 			frontend_url: 'http://localhost:51000/auth',
 		},
-		k8s: {
-			api_url: `${K8S_BASE_URL}/auth/api`,
-			frontend_url: `${K8S_BASE_URL}/auth`,
-			...DEFAULT_K8S_CONFIG,
-		},
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/auth/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/auth',
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: `${STAGING_BASE_URL}/auth/api`,
-			frontend_url: `${STAGING_BASE_URL}/auth`,
+			api_url: 'https://go-stg.tmlmobilidade.pt/auth/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/auth',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -104,19 +83,14 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			frontend_port: 51002,
 			frontend_url: 'http://localhost:51002/controller',
 		},
-		k8s: {
-			api_url: `${K8S_BASE_URL}/controller/api`,
-			frontend_url: `${K8S_BASE_URL}/controller`,
-			...DEFAULT_K8S_CONFIG,
-		},
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/controller/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/controller',
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: `${STAGING_BASE_URL}/controller/api`,
-			frontend_url: `${STAGING_BASE_URL}/controller`,
+			api_url: 'https://go-stg.tmlmobilidade.pt/controller/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/controller',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -129,19 +103,14 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			frontend_port: 51008,
 			frontend_url: 'http://localhost:51008/dates',
 		},
-		k8s: {
-			api_url: `${K8S_BASE_URL}/dates/api`,
-			frontend_url: `${K8S_BASE_URL}/dates`,
-			...DEFAULT_K8S_CONFIG,
-		},
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/dates/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/dates',
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: `${STAGING_BASE_URL}/dates/api`,
-			frontend_url: `${STAGING_BASE_URL}/dates`,
+			api_url: 'https://go-stg.tmlmobilidade.pt/dates/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/dates',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -154,19 +123,14 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			frontend_port: 51007,
 			frontend_url: 'http://localhost:51007/exporter',
 		},
-		k8s: {
-			api_url: `${K8S_BASE_URL}/exporter/api`,
-			frontend_url: `${K8S_BASE_URL}/exporter`,
-			...DEFAULT_K8S_CONFIG,
-		},
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/exporter/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/exporter',
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: `${STAGING_BASE_URL}/exporter/api`,
-			frontend_url: `${STAGING_BASE_URL}/exporter`,
+			api_url: 'https://go-stg.tmlmobilidade.pt/exporter/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/exporter',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -179,19 +143,14 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			frontend_port: 51009,
 			frontend_url: 'http://localhost:51009/fleet',
 		},
-		k8s: {
-			api_url: `${K8S_BASE_URL}/fleet/api`,
-			frontend_url: `${K8S_BASE_URL}/fleet`,
-			...DEFAULT_K8S_CONFIG,
-		},
+
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/fleet/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/fleet',
-			...DEFAULT_PRODUCTION_CONFIG,
+			frontend_url: 'https://go.tmlmobilidade.pt/fleet', ...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: `${STAGING_BASE_URL}/fleet/api`,
-			frontend_url: `${STAGING_BASE_URL}/fleet`,
+			api_url: 'https://go-stg.tmlmobilidade.pt/fleet/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/fleet',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -204,19 +163,14 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			frontend_port: 51005,
 			frontend_url: 'http://localhost:51005/locations',
 		},
-		k8s: {
-			api_url: `${K8S_BASE_URL}/locations/api`,
-			frontend_url: `${K8S_BASE_URL}/locations`,
-			...DEFAULT_K8S_CONFIG,
-		},
+
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/locations/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/locations',
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: `${STAGING_BASE_URL}/locations/api`,
-			frontend_url: `${STAGING_BASE_URL}/locations`,
+			api_url: 'https://go-stg.tmlmobilidade.pt/locations/api', frontend_url: 'https://go-stg.tmlmobilidade.pt/locations',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -229,23 +183,18 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			frontend_port: 51010,
 			frontend_url: 'http://localhost:51010/offer',
 		},
-		k8s: {
-			api_url: `${K8S_BASE_URL}/offer/api`,
-			frontend_url: `${K8S_BASE_URL}/offer`,
-			...DEFAULT_K8S_CONFIG,
-		},
+
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/offer/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/offer',
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: `${STAGING_BASE_URL}/offer/api`,
-			frontend_url: `${STAGING_BASE_URL}/offer`,
+			api_url: 'https://go-stg.tmlmobilidade.pt/offer/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/offer',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
-
 	performance: {
 		development: {
 			api_port: 52006,
@@ -254,44 +203,35 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			frontend_port: 51006,
 			frontend_url: 'http://localhost:51006/performance',
 		},
-		k8s: {
-			api_url: `${K8S_BASE_URL}/performance/api`,
-			frontend_url: `${K8S_BASE_URL}/performance`,
-			...DEFAULT_K8S_CONFIG,
-		},
+
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/performance/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/performance',
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: `${STAGING_BASE_URL}/performance/api`,
-			frontend_url: `${STAGING_BASE_URL}/performance`,
+			api_url: 'https://go-stg.tmlmobilidade.pt/performance/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/performance',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
 
 	plans: {
 		development: {
-			api_port: 52004,
-			api_url: 'http://localhost:52004',
+			api_port: 52004, api_url: 'http://localhost:52004',
 			cors_origin: true,
 			frontend_port: 51004,
 			frontend_url: 'http://localhost:51004/plans',
 		},
-		k8s: {
-			api_url: `${K8S_BASE_URL}/plans/api`,
-			frontend_url: `${K8S_BASE_URL}/plans`,
-			...DEFAULT_K8S_CONFIG,
-		},
+
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/plans/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/plans',
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: `${STAGING_BASE_URL}/plans/api`,
-			frontend_url: `${STAGING_BASE_URL}/plans`,
+			api_url: 'https://go-stg.tmlmobilidade.pt/plans/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/plans',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -302,21 +242,16 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			api_url: 'http://localhost:52003',
 			cors_origin: true,
 			frontend_port: 51003,
-			frontend_url: 'http://localhost:51003/stops',
-		},
-		k8s: {
-			api_url: `${K8S_BASE_URL}/stops/api`,
-			frontend_url: `${K8S_BASE_URL}/stops`,
-			...DEFAULT_K8S_CONFIG,
-		},
+			frontend_url: 'http://localhost:51003/stops' },
+
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/stops/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/stops',
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: `${STAGING_BASE_URL}/stops/api`,
-			frontend_url: `${STAGING_BASE_URL}/stops`,
+			api_url: 'https://go-stg.tmlmobilidade.pt/stops/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/stops',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
@@ -331,8 +266,7 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
  * @param environment The environment to get the property for. If not provided, it will use the ENVIRONMENT environment variable.
  * @returns The value of the specified property for the given app and environment.
  */
-export function getAppConfig<Prop extends keyof AppConfigGroup>(app: keyof typeof APP_CONFIGS, property: Prop, environment?: Environment): AppConfigGroup[Prop] {
-	// Get the desired app object
+export function getAppConfig<Prop extends keyof AppConfigGroup>(app: keyof typeof APP_CONFIGS, property: Prop, environment?: Environment): AppConfigGroup[Prop] {	// Get the desired app object
 	const appObject = APP_CONFIGS[app];
 	if (!appObject) throw new Error(`[@core/lib] App Config Object for "${app}" app not found. Available apps: ${Object.keys(APP_CONFIGS).join(', ')}`);
 	// Extract the current app environment either from the parameter

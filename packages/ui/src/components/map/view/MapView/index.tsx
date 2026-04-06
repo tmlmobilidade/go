@@ -7,7 +7,7 @@ import { type CSSProperties, type PropsWithChildren } from 'react';
 
 import styles from './styles.module.css';
 
-import { MapViewBasemap } from '../MapViewBasemap';
+import { MapViewBasemap, MapViewBasemapLayers } from '../MapViewBasemap';
 import { MapViewContextProvider } from '../MapViewContext';
 import { MapViewToolbar } from '../MapViewToolbar';
 
@@ -18,6 +18,7 @@ interface MapViewProps {
 	height?: number
 	id: string
 	interactiveLayerIds?: string[]
+	layers?: MapViewBasemapLayers
 	onClick?: (e: MapLayerMouseEvent) => void
 	onDrag?: (e: ViewStateChangeEvent) => void
 	onDragEnd?: (e: ViewStateChangeEvent) => void
@@ -27,11 +28,12 @@ interface MapViewProps {
 	onMouseLeave?: (e: MapLayerMouseEvent) => void
 	onMouseOut?: (e: MapLayerMouseEvent) => void
 	onMouseOver?: (e: MapLayerMouseEvent) => void
+	toolbar?: boolean
 }
 
 /* * */
 
-export function MapView({ children, cursor, height, id, interactiveLayerIds = [], onClick, onDrag, onDragEnd, onDragStart, onMouseDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver }: PropsWithChildren<MapViewProps>) {
+export function MapView({ children, cursor, height, id, interactiveLayerIds = [], layers, onClick, onDrag, onDragEnd, onDragStart, onMouseDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, toolbar = true }: PropsWithChildren<MapViewProps>) {
 	return (
 		<MapViewContextProvider>
 			<div
@@ -42,6 +44,7 @@ export function MapView({ children, cursor, height, id, interactiveLayerIds = []
 					cursor={cursor}
 					id={id}
 					interactiveLayerIds={interactiveLayerIds}
+					layers={layers}
 					onClick={onClick}
 					onDrag={onDrag}
 					onDragEnd={onDragEnd}
@@ -54,7 +57,7 @@ export function MapView({ children, cursor, height, id, interactiveLayerIds = []
 				>
 					{children}
 				</MapViewBasemap>
-				<MapViewToolbar />
+				{toolbar && <MapViewToolbar />}
 			</div>
 		</MapViewContextProvider>
 	);

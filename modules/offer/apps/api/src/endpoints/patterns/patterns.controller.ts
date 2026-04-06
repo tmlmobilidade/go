@@ -5,6 +5,7 @@ import { mergePatternWithEventRules } from '@/utils/rules.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { patterns, stops } from '@tmlmobilidade/interfaces';
+import { generateRandomString } from '@tmlmobilidade/strings';
 import { CreatePatternDto, NoteComment, type Pattern, PermissionCatalog, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 
 /* * */
@@ -249,7 +250,7 @@ export class PatternsController {
 
 		// Set default values for avg_speed and dwell_time
 		const defaultParameter: StopsParameter = {
-			_id: crypto.randomUUID(),
+			_id: generateRandomString({ length: 5 }),
 			kind: 'default',
 			path: formattedPath.map(p => ({
 				avg_speed: 0,

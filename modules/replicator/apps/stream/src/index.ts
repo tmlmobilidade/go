@@ -20,7 +20,7 @@ await (async function init() {
 	// Watch for changes to the MongoDB collections
 	// and integrate those documents immediately.
 
-	pcgidbLegacy.VehicleEventsLog.watch().on('change', processVehicleEvent);
+	pcgidbLegacy.VehicleEventsCore.watch().on('change', processVehicleEvent);
 
 	pcgidbTicketing.SalesEntity.watch().on('change', processApexOnBoardRefund);
 	pcgidbTicketing.SalesEntity.watch().on('change', processApexOnBoardSale);

@@ -69,6 +69,8 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    volumes:
+      - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
     extra_hosts:
       - "prd-bilhetica-mongodb-01.tml.local:10.5.4.185"
       - "prd-bilhetica-mongodb-02.tml.local:10.5.4.151"
@@ -80,8 +82,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  sync-apex-locations:
-    image: ghcr.io/tmlmobilidade/go-apex-sync-apex-locations:production
+  sync-locations:
+    image: ghcr.io/tmlmobilidade/go-apex-sync-locations:production
     deploy:
       restart_policy:
         condition: any
@@ -95,6 +97,8 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    volumes:
+      - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
     extra_hosts:
       - "prd-validations-mongodb-01.tml.local:10.5.4.124"
       - "prd-validations-mongodb-02.tml.local:10.5.4.112"
@@ -103,8 +107,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  sync-apex-on-board-refunds:
-    image: ghcr.io/tmlmobilidade/go-apex-sync-apex-on-board-refunds:production
+  sync-on-board-refunds:
+    image: ghcr.io/tmlmobilidade/go-apex-sync-on-board-refunds:production
     deploy:
       restart_policy:
         condition: any
@@ -118,6 +122,8 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    volumes:
+      - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
     extra_hosts:
       - "prd-bilhetica-mongodb-01.tml.local:10.5.4.185"
       - "prd-bilhetica-mongodb-02.tml.local:10.5.4.151"
@@ -126,8 +132,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  sync-apex-on-board-sales:
-    image: ghcr.io/tmlmobilidade/go-apex-sync-apex-on-board-sales:production
+  sync-on-board-sales:
+    image: ghcr.io/tmlmobilidade/go-apex-sync-on-board-sales:production
     deploy:
       restart_policy:
         condition: any
@@ -141,6 +147,8 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    volumes:
+      - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
     extra_hosts:
       - "prd-bilhetica-mongodb-01.tml.local:10.5.4.185"
       - "prd-bilhetica-mongodb-02.tml.local:10.5.4.151"
@@ -149,8 +157,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  sync-apex-validations:
-    image: ghcr.io/tmlmobilidade/go-apex-sync-apex-validations:production
+  sync-validations:
+    image: ghcr.io/tmlmobilidade/go-apex-sync-validations:production
     deploy:
       restart_policy:
         condition: any
@@ -164,45 +172,9 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    volumes:
+      - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
     extra_hosts:
       - "prd-validations-mongodb-01.tml.local:10.5.4.124"
       - "prd-validations-mongodb-02.tml.local:10.5.4.112"
       - "prd-validations-mongodb-03.tml.local:10.5.4.206"
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  sync-vehicle-events:
-    image: ghcr.io/tmlmobilidade/go-apex-sync-vehicle-events:production
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 4gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/.env
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  sync-vehicle-events-clickhouse:
-    image: ghcr.io/tmlmobilidade/go-apex-sync-vehicle-events-clickhouse:production
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 4gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/.env

@@ -1,20 +1,21 @@
 /* * */
 
-import { clickhouseService } from '@tmlmobilidade/clickhouse';
+import { rawVehicleEventsNew, simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { invalidateRides, PARSER_MAP, simplifiedVehicleEventsSchema, TrackerVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-common';
-import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
+import { invalidateRides } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
-import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
-import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
-import { ClickHouseWriter } from '@tmlmobilidade/writers';
+import { type RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { BatchWriter, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 
 /* * */
 
-const writer = new ClickHouseWriter<SimplifiedVehicleEvent>({
-	client: await clickhouseService.getClient(),
-	table: 'simplified_vehicle_events',
-	tableSchema: simplifiedVehicleEventsSchema,
+const writer = new BatchWriter<SimplifiedVehicleEvent>({
+	batch_size: 10_000,
+	insertFn: async (data) => {
+		await simplifiedVehicleEventsNew.insert('JSONEachRow', data);
+	},
+	title: await simplifiedVehicleEventsNew.getTableName(),
 });
 
 /**
@@ -52,45 +53,45 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 	// This function will handle the logic of counting, comparing, syncing and deleting documents
 	// between the source and destination databases based on the provided functions.
 
-	await replicate<TrackerVehicleEvent>({
+	const rawVehicleEventsNewCollection = await rawVehicleEventsNew.getCollection();
+
+	await replicate<RawVehicleEvent>({
 
 		countDestinationDbFn: async () => {
-			const result = await clickhouseService.queryFromString<{ count: number }>(
-				'SELECT COUNT(*) as count FROM simplified_vehicle_events WHERE created_at >= $1 AND created_at <= $2',
+			return await simplifiedVehicleEventsNew.count(
+				'*',
+				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
-			return result[0].count;
 		},
 
 		countSourceDbFn: async () => {
-			const result = await rawdbVehicleEvents.RawVehicleEvents.countDocuments(rawdbQuery);
+			const result = await rawVehicleEventsNew.count(rawdbQuery);
 			return result;
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await clickhouseService.queryFromString(
-				'DELETE FROM simplified_vehicle_events WHERE _id IN ($1)',
+			await simplifiedVehicleEventsNew.delete(
+				'_id IN ($1)',
 				{ 1: ids.map(id => `'${id}'`).join(', ') },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
-			const result = await clickhouseService.queryFromString<{ _id: string }>(
-				'SELECT _id FROM simplified_vehicle_events WHERE created_at >= $1 AND created_at <= $2',
+			return await simplifiedVehicleEventsNew.distinct(
+				'_id',
+				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
-			return result.map(doc => doc._id);
 		},
 
 		distinctSourceDbFn: async () => {
-			const result = await rawdbVehicleEvents.RawVehicleEvents.distinct('_id', rawdbQuery);
+			const result = await rawVehicleEventsNew.distinct('_id', rawdbQuery);
 			return result.map(String);
 		},
 
 		missingDocumentsSourceDbAsyncIterator: (missingDocumentIds) => {
-			return rawdbVehicleEvents.RawVehicleEvents
-				.find({ _id: { $in: missingDocumentIds } })
-				.stream();
+			return rawVehicleEventsNewCollection.find({ _id: { $in: missingDocumentIds } }).stream();
 		},
 
 		onCompleteCallbackFn: async () => {

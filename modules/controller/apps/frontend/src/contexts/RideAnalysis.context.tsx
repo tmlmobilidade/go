@@ -74,13 +74,13 @@ interface RideAnalysisContextState {
 
 const RideAnalysisContext = createContext<RideAnalysisContextState | undefined>(undefined);
 
-export function useRideAnalysisContext() {
+export const useRideAnalysisContext = () => {
 	const context = useContext(RideAnalysisContext);
 	if (!context) {
 		throw new Error('useRideAnalysisContext must be used within a RideAnalysisContextProvider');
 	}
 	return context;
-}
+};
 
 /* * */
 
@@ -126,7 +126,7 @@ export function RideAnalysisContextProvider({ children, rideId }: PropsWithChild
 				properties: {
 					id: vehicleEvent._id,
 					stop_id: vehicleEvent.stop_id,
-					door: vehicleEvent.door,
+					trigger_door: vehicleEvent.door,
 					// color: getCssVariableValue('--color-primary'),
 					// text_color: getCssVariableValue('--color-contrast'),
 					sequence: index,
@@ -224,20 +224,20 @@ export function RideAnalysisContextProvider({ children, rideId }: PropsWithChild
 		// lineString.properties['color'] = `#${hashedTripData?.data.route_color}`;
 		featureCollection.features.push(lineString);
 		return featureCollection;
-	}, [hashedShapeData, hashedTripData]);
+	}, [hashedShapeData]);
 
 	//
 	// C. Handle actions
 
 	const reprocessRide = async () => {
 		const result = await fetchData<Ride>(API_ROUTES.controller.RIDES_DETAIL_REPROCESS(rideId));
-		rideMutate(result.data);
+		await rideMutate(result.data);
 	};
 
 	//
 	// C. Define context value
 
-	const contextValue: RideAnalysisContextState = useMemo(() => ({
+	const contextValue: RideAnalysisContextState = {
 		actions: {
 			reprocessRide,
 			setSelectedView,
@@ -265,39 +265,7 @@ export function RideAnalysisContextProvider({ children, rideId }: PropsWithChild
 			scheduled_path_geofences: scheduledPathGeofencesFC,
 			scheduled_shape: scheduledShapeFC,
 		},
-	}), [
-		rideId,
-		vehicleEventsData,
-		simplifiedApexValidationsData,
-		scheduledPathGeofencesFC,
-		hashedTripData,
-		hashedShapeData,
-		observedEventsFC,
-		observedShapeFC,
-		scheduledPathFC,
-		scheduledShapeFC,
-		rideDataNormalized,
-		rideLoading,
-		rideError,
-		vehicleEventsLoading,
-		vehicleEventsError,
-		selectedView,
-		simplifiedApexLocationsData,
-		simplifiedApexLocationsError,
-		simplifiedApexOnBoardRefundsData,
-		simplifiedApexOnBoardRefundsLoading,
-		simplifiedApexOnBoardRefundsError,
-		simplifiedApexLocationsLoading,
-		simplifiedApexValidationsLoading,
-		simplifiedApexValidationsError,
-		hashedTripLoading,
-		hashedTripError,
-		hashedShapeLoading,
-		hashedShapeError,
-		simplifiedApexOnBoardSalesLoading,
-		simplifiedApexOnBoardSalesError,
-		simplifiedApexOnBoardRefundsError,
-	]);
+	};
 
 	//
 	// D. Render components

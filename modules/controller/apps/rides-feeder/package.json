@@ -26,7 +26,7 @@
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
-		"csv-parse": "6.2.0",
+		"csv-parse": "6.2.1",
 		"extract-zip": "2.0.1",
 		"gtfs-types": "5.1.0"
 	},

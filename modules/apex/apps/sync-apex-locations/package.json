@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-apex-sync-apex-locations",
+	"name": "@tmlmobilidade/go-apex-sync-locations",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -17,11 +17,10 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/clickhouse": "*",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-apex-pckg-common": "*",
-		"@tmlmobilidade/go-apex-pckg-databases": "*",
+		"@tmlmobilidade/go-apex-pckg-shared": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
