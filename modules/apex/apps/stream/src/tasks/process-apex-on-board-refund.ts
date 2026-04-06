@@ -4,7 +4,7 @@ import { simplifiedApexOnBoardRefundsNew } from '@tmlmobilidade/databases';
 import { invalidateRides, parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-apex-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
-import { BatchWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 
