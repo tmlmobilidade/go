@@ -19,7 +19,7 @@ export interface MapOverlayObservedPathPointsDataProps {
 	sequence: number
 	stop_id: string
 	timestamp: string
-	door: string
+	trigger_door: string
 }
 
 export interface MapOverlayObservedPathLineDataProps {
@@ -150,7 +150,7 @@ export function MapOverlayObservedPath({ id, lineData, pointsData, visible = tru
 						<span className={styles.id}>{hoveredFeature.properties.sequence}/{pointsData.features.length}</span>
 						<span className={styles.id}>#{hoveredFeature.properties.id}</span>
 						<Divider />
-						<span className={styles.value}>Portas: {hoveredFeature.properties.door}</span>
+						<span className={styles.value}>Portas: {hoveredFeature.properties.trigger_door}</span>
 						<span className={styles.value}>Stop ID: #{hoveredFeature.properties.stop_id}</span>
 						<span className={styles.value}>Hora: {hoveredFeature.properties.timestamp}</span>
 					</div>
