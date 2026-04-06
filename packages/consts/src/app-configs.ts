@@ -138,7 +138,8 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 		},
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/fleet/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/fleet', ...DEFAULT_PRODUCTION_CONFIG,
+			frontend_url: 'https://go.tmlmobilidade.pt/fleet',
+			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
 			api_url: 'https://go-stg.tmlmobilidade.pt/fleet/api',
@@ -161,7 +162,8 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: 'https://go-stg.tmlmobilidade.pt/locations/api', frontend_url: 'https://go-stg.tmlmobilidade.pt/locations',
+			api_url: 'https://go-stg.tmlmobilidade.pt/locations/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/locations',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
