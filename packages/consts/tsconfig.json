@@ -2,7 +2,6 @@
 	"extends": "@tmlmobilidade/tsconfig/nodejs.json",
 	"compilerOptions": {
 		"baseUrl": ".",
-		"lib": ["es2022", "dom"],
 		"outDir": "dist",
 		"paths": {
 			"@/*": ["./src/*"]
