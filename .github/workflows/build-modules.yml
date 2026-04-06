@@ -36,7 +36,6 @@ on:
   push:
     branches:
       - production
-      - k8s
       - staging*
     paths:
       - 'modules/**'
