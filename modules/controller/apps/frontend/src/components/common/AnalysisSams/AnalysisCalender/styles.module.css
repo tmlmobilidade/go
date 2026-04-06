@@ -31,24 +31,10 @@
 	--analysis-calendar-grid-gap: 10px;
 	box-sizing: border-box;
 	display: grid;
-	grid-template-columns: repeat(
-		auto-fit,
-		minmax(
-			min(
-				100%,
-				max(
-					var(--analysis-calendar-day-min, 120px),
-					calc(
-						(100% - (var(--analysis-calendar-max-cols, 12) - 1) * var(--analysis-calendar-grid-gap))
-						/ var(--analysis-calendar-max-cols, 12)
-					)
-				)
-			),
-			1fr
-		)
-	);
+	grid-template-columns: repeat(auto-fill, minmax(var(--analysis-calendar-day-min, 80px), 1fr));
 	gap: var(--analysis-calendar-grid-gap);
 	align-self: stretch;
+	align-items: stretch;
 	width: 100%;
 	max-width: 100%;
 	margin-right: 10px;
@@ -58,18 +44,29 @@
 }
 
 .organizedByMonths {
+	display: grid;
 	grid-template-columns: 1fr;
 }
 
 .dayGroup {
 	box-sizing: border-box;
 	min-width: 0;
+	width: 100%;
 	padding: 6px 8px 8px;
 	border-color: var(--color-border-subtle, #e0e0e0);
 	border-style: solid;
 	border-width: 1px;
 	border-left-width: 4px;
 	border-radius: var(--border-radius-sm);
+}
+
+.dayGroupClickable {
+	cursor: pointer;
+}
+
+.dayGroupSelected {
+	outline: 2px solid var(--color-border-brand, #3b82f6);
+	outline-offset: 1px;
 }
 
 .dayGroupGreen {
@@ -103,6 +100,29 @@
 	gap: 4px;
 	align-items: center;
 	width: 100%;
+	min-width: 0;
+}
+
+.dayBreakdownRow {
+	display: grid;
+	grid-template-columns: 28px 1fr;
+	gap: 8px;
+	align-items: center;
+	width: 100%;
+}
+
+.dayBreakdownLabel {
+	font-size: 12px;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+	line-height: 1.2;
+}
+
+.dayBreakdownSquares {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	align-items: center;
 	min-width: 0;
 }
 

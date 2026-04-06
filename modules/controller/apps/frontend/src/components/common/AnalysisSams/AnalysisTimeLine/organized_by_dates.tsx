@@ -103,7 +103,7 @@ export const buildSections = (analyses: SamAnalysis[]): DaySection[] => {
 						accent: accentForDay(items),
 						dayKey: k,
 						items,
-						label: cursor.toFormat('dd/MM/yyyy'),
+						label: cursor.toFormat('dd'),
 					});
 				}
 				cursor = cursor.plus({ days: 1 });

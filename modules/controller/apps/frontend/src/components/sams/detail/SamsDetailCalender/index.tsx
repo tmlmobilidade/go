@@ -1,8 +1,7 @@
 /* * */
 
 import { useSamsDetailContext } from '@/contexts/SamsDetail.context';
-import { AnalysisCalender, Collapsible, Divider, Section, SegmentedControl } from '@tmlmobilidade/ui';
-import { useState } from 'react';
+import { AnalysisCalender, Collapsible, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -14,18 +13,9 @@ export function SamsDetailCalender() {
 
 	const { t } = useTranslation();
 	const samDetailContext = useSamsDetailContext();
-	const [selectedPeriod, setSelectedPeriod] = useState<'day' | 'month'>('day');
 
 	//
-	// B. Handle actions
-
-	const handleChangeView = (value: string) => {
-		if (value !== 'day' && value !== 'month') return;
-		setSelectedPeriod(value);
-	};
-
-	//
-	// C. Render component
+	// B. Render component
 
 	return (
 		<Collapsible
@@ -33,17 +23,7 @@ export function SamsDetailCalender() {
 			title={t('default:sams.detail.SamsDetailCalender.title')}
 		>
 			<Section gap="md">
-				<SegmentedControl
-					data={[
-						{ label: t('default:sams.detail.SamsDetailCalender.day.label'), value: 'day' },
-						{ label: t('default:sams.detail.SamsDetailCalender.month.label'), value: 'month' },
-					]}
-					onChange={handleChangeView}
-					value={selectedPeriod}
-					fullWidth
-				/>
-				<Divider />
-				<AnalysisCalender analyses={samDetailContext.data.sam?.analysis ?? []} groupBy={selectedPeriod} />
+				<AnalysisCalender analyses={samDetailContext.data.sam?.analysis ?? []} />
 			</Section>
 		</Collapsible>
 	);
