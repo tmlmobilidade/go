@@ -187,6 +187,7 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},
+
 	performance: {
 		development: {
 			api_port: 52006,
@@ -232,7 +233,8 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			api_url: 'http://localhost:52003',
 			cors_origin: true,
 			frontend_port: 51003,
-			frontend_url: 'http://localhost:51003/stops' },
+			frontend_url: 'http://localhost:51003/stops',
+		},
 		production: {
 			api_url: 'https://go.tmlmobilidade.pt/stops/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/stops',
@@ -255,7 +257,8 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
  * @param environment The environment to get the property for. If not provided, it will use the ENVIRONMENT environment variable.
  * @returns The value of the specified property for the given app and environment.
  */
-export function getAppConfig<Prop extends keyof AppConfigGroup>(app: keyof typeof APP_CONFIGS, property: Prop, environment?: Environment): AppConfigGroup[Prop] {	// Get the desired app object
+export function getAppConfig<Prop extends keyof AppConfigGroup>(app: keyof typeof APP_CONFIGS, property: Prop, environment?: Environment): AppConfigGroup[Prop] {
+	// Get the desired app object
 	const appObject = APP_CONFIGS[app];
 	if (!appObject) throw new Error(`[@core/lib] App Config Object for "${app}" app not found. Available apps: ${Object.keys(APP_CONFIGS).join(', ')}`);
 	// Extract the current app environment either from the parameter
