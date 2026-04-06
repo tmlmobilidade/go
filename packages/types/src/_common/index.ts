@@ -1,3 +1,4 @@
+export * from '@/_common/apex-version.js';
 export * from '@/_common/comment.js';
 export * from '@/_common/document.js';
 export * from '@/_common/environment.js';

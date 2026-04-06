@@ -1,0 +1,29 @@
+/* * */
+
+import { useSamsListContext } from '@/contexts/SamsList.context';
+import { FilterTypeList } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+/* * */
+
+export function SamsFiltersApexVersion() {
+	//
+	// A. Setup variables
+
+	const samsListContext = useSamsListContext();
+	const { t } = useTranslation();
+
+	//
+	// B. Render components
+
+	return (
+		<FilterTypeList
+			active={samsListContext.filters.apex_version.isActive}
+			label={t('default:sams.list.SamsFiltersApexVersion.label')}
+			onChange={samsListContext.filters.apex_version.set}
+			options={samsListContext.filters.apex_version.options}
+			isMultiple
+			withToggleAll
+		/>
+	);
+}

@@ -2,8 +2,7 @@
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
-import { type ProcessingStatus, ProcessingStatusSchema, Sam, type UnixTimestamp } from '@tmlmobilidade/types';
+import { ApexVersion, ApexVersionSchema, type ProcessingStatus, ProcessingStatusSchema, Sam, type UnixTimestamp } from '@tmlmobilidade/types';
 import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
 import { parseAsInteger, useQueryState } from 'nuqs';
 
@@ -25,10 +24,11 @@ export interface SamsListContextState {
 	}
 	filters: {
 		agency: UseFilterStateListReturnType
+		apex_version: UseFilterStateListReturnType<ApexVersion>
+		search: UseFilterStateStringReturnType
 		seen_first_at: null | UnixTimestamp
 		seen_last_at: null | UnixTimestamp
 		status: UseFilterStateListReturnType<ProcessingStatus>
-		search: UseFilterStateStringReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -74,12 +74,14 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	const [filterSeenFirstAt, setFilterSeenFirstAt] = useQueryState<number>(
 		'seen_first_at',
-		parseAsInteger
+		parseAsInteger,
 	);
 	const [filterSeenLastAt, setFilterSeenLastAt] = useQueryState<number>(
 		'seen_last_at',
-		parseAsInteger
+		parseAsInteger,
 	);
+
+	const filterApexVersion = useFilterStateList<ApexVersion>('latest_apex_version', ApexVersionSchema.options, ApexVersionSchema.options.map(item => ({ label: item, value: item })));
 
 	useEffect(() => {
 		const handle = window.setTimeout(() => {
@@ -96,12 +98,12 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	const agencyIdsOrdered = agenciesContext.data.ids;
 
 	const agencyOptions = useMemo(() => agenciesContext.data.raw.map(item => ({
-			checked: false,
-			disabled: false,
-			label: `${item._id} - ${item.name}`,
-			value: item._id,
-		})),
-		[agenciesContext.data.raw],
+		checked: false,
+		disabled: false,
+		label: `${item._id} - ${item.name}`,
+		value: item._id,
+	})),
+	[agenciesContext.data.raw],
 	);
 
 	const filterAgency = useFilterStateList('agency_id', agencyIdsOrdered, agencyOptions);
@@ -118,8 +120,10 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 			params.set('seen_first_at', filterSeenFirstAt.toString());
 		if (filterSeenLastAt)
 			params.set('seen_last_at', filterSeenLastAt.toString());
+		if (filterApexVersion.isActive && filterApexVersion.value.length)
+			params.set('latest_apex_version', filterApexVersion.value.join(','));
 		return params.toString();
-	}, [debouncedFilterSearch, filterAgency.isActive, filterAgency.value, filterStatus.isActive, filterStatus.value, filterSeenFirstAt, filterSeenLastAt]);
+	}, [debouncedFilterSearch, filterAgency.isActive, filterAgency.value, filterStatus.isActive, filterStatus.value, filterSeenFirstAt, filterSeenLastAt, filterApexVersion.isActive, filterApexVersion.value]);
 
 	const samsListUrl = useMemo(() => {
 		if (agenciesContext.flags.loading)
@@ -135,8 +139,8 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	const contextValue: SamsListContextState = useMemo(() => ({
 		actions: {
-			setFilterSeenFirstAt: value => setFilterSeenFirstAt(value as number | null),
-			setFilterSeenLastAt: value => setFilterSeenLastAt(value as number | null),
+			setFilterSeenFirstAt: value => setFilterSeenFirstAt(value as null | number),
+			setFilterSeenLastAt: value => setFilterSeenLastAt(value as null | number),
 		},
 		data: {
 			filtered: allSamsData ?? [],
@@ -144,16 +148,17 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 		},
 		filters: {
 			agency: filterAgency,
+			apex_version: filterApexVersion,
+			search: filterSearch,
 			seen_first_at: (filterSeenFirstAt ?? null) as null | UnixTimestamp,
 			seen_last_at: (filterSeenLastAt ?? null) as null | UnixTimestamp,
 			status: filterStatus,
-			search: filterSearch,
 		},
 		flags: {
 			error: allSamsError,
 			loading: allSamsLoading,
 		},
-	}), [allSamsError, allSamsLoading, filterSearch, allSamsData, filterAgency, filterStatus, filterSeenFirstAt, filterSeenLastAt, setFilterSeenFirstAt, setFilterSeenLastAt]);
+	}), [allSamsError, allSamsLoading, filterSearch, allSamsData, filterAgency, filterApexVersion.isActive, filterApexVersion.value, filterStatus.isActive, filterStatus.value, filterSeenFirstAt, filterSeenLastAt, setFilterSeenFirstAt, setFilterSeenLastAt]);
 
 	//
 	// E. Render components

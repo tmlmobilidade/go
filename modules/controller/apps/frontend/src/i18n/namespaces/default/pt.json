@@ -529,14 +529,8 @@
 					"agency_id": {
 						"label": "Operador"
 					},
-					"transactions_expected": {
-						"label": "Transações esperadas"
-					},
-					"transactions_found": {
-						"label": "Transações encontradas"
-					},
-					"transactions_missing": {
-						"label": "Transações em falta"
+					"latest_apex_version": {
+						"label": "Versão APEX utilizada"
 					},
 					"seen_first_at": {
 						"label": "Primeira vista"
@@ -547,17 +541,23 @@
 					"system_status": {
 						"label": "Estado do sistema"
 					},
-					"latest_apex_version": {
-						"label": "Versão APEX utilizada"
+					"transactions_expected": {
+						"label": "Transações esperadas"
+					},
+					"transactions_found": {
+						"label": "Transações encontradas"
+					},
+					"transactions_missing": {
+						"label": "Transações em falta"
 					}
 				},
 				"title": "Informações Básicas"
 			},
 			"SamsDetailCalender": {
-				"description": "Calendário das análises do SAM",
 				"day": {
 					"label": "Diário"
 				},
+				"description": "Calendário das análises do SAM",
 				"month": {
 					"label": "Mensal"
 				},
@@ -565,14 +565,14 @@
 			}
 		},
 		"list": {
+			"SamsFiltersApexVersion": {
+				"label": "Versão APEX"
+			},
 			"SamsFiltersDate": {
 				"label": "Datas de visualização"
 			},
 			"SamsFiltersStatus": {
 				"label": "Estado"
-			},
-			"SamsFiltersAgency": {
-				"label": "Operador"
 			},
 			"SamsListFilterAgency": {
 				"label": "Operador"
