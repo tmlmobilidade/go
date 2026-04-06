@@ -13,10 +13,10 @@ export function rssFeedItem(item: RssRawItem): string {
 	//
 	// A. Transform Data
 
-	const enclosuresXml = normalizeImageInputs(item.images).map((image) => {
-		const lengthAttr = image.length != null ? ` length="${String(image.length)}"` : '';
-		const typeAttr = image.type ? ` type="${escapeXml(image.type)}"` : '';
-		return `<enclosure url="${escapeXml(image.url)}"${lengthAttr}${typeAttr} />`;
+	const enclosuresXml = normalizeImageInputs(item.images).map((image, index) => {
+		const lengthAttr = image.length != null ? ` length="${image.length}"` : '';
+		const typeAttr = image[index].type ? ` type="${escapeXml(image[index].type)}"` : '';
+		return `<enclosure url="${escapeXml(image[index].url)}"${lengthAttr}${typeAttr} />`;
 	});
 
 	//

@@ -8,10 +8,10 @@ import { normalizeImageInputs } from '@/utils/normalize-image-inputs.js';
 /* * */
 
 export function rssItemXml(item: RssRawItem): string {
-	const enclosuresXml = normalizeImageInputs(item.images).map((image) => {
-		const lengthAttr = image.length != null ? ` length="${String(image.length)}"` : '';
-		const typeAttr = image.type ? ` type="${escapeXml(image.type)}"` : '';
-		return `<enclosure url="${escapeXml(image.url)}"${lengthAttr}${typeAttr} />`;
+	const enclosuresXml = normalizeImageInputs(item.images).map((image, index) => {
+		const lengthAttr = image[index].length != null ? ` length="${image[index].length}"` : '';
+		const typeAttr = image[index].type ? ` type="${escapeXml(image[index].type)}"` : '';
+		return `<enclosure url="${escapeXml(image[index].url)}"${lengthAttr}${typeAttr} />`;
 	});
 
 	return [
