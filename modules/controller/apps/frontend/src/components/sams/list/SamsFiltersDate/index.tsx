@@ -19,7 +19,7 @@ export function SamsFiltersDate() {
 
 	return (
 		<FilterTypeDateRange
-			label={t('default:sams.list.SamsFiltersDate.label', { defaultValue: 'Data de Início' })}
+			label={t('default:sams.list.SamsFiltersDate.label')}
 			startDate={samsListContext.filters.seen_first_at as UnixTimestamp}
 			endDate={samsListContext.filters.seen_last_at as UnixTimestamp}
 			onStartDateChange={samsListContext.actions.setFilterSeenFirstAt}

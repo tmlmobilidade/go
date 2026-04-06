@@ -565,6 +565,15 @@
 			}
 		},
 		"list": {
+			"SamsFiltersDate": {
+				"label": "Datas entre vistas"
+			},
+			"SamsFiltersStatus": {
+				"label": "Estado"
+			},
+			"SamsFiltersAgency": {
+				"label": "Operador"
+			},
 			"SamsListFilterAgency": {
 				"label": "Operador"
 			},

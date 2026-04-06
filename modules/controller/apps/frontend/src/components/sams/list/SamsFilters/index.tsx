@@ -10,8 +10,8 @@ import { FiltersBar } from '@tmlmobilidade/ui';
 export function SamsFilters() {
 	return (
 		<FiltersBar>
-			<SamsFilterStatus />
 			<SamsFiltersDate />
+			<SamsFilterStatus />
 			<SamsFiltersAgency />
 		</FiltersBar>
 	);
