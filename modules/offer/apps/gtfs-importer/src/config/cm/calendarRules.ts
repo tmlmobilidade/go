@@ -136,11 +136,37 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 			year_period_ids: [PERIODS.ESC],
 		},
 	]],
+	['ESC_DOM_1', [
+		{
+			event_id: '9AQDF',
+			year_period_ids: [PERIODS.ESC],
+		},
+	]],
 	['ESC_DU', [
 		{
 			description: 'Dias úteis do período escolar',
 			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
 			year_period_ids: [PERIODS.ESC],
+		},
+	]],
+	['ESC_DU-OFF-ESP_SANTOS_DIA', [
+		{
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+			year_period_ids: [PERIODS.ESC],
+		},
+		{
+			event_id: '594HB',
+			isExclude: true,
+		},
+	]],
+	['ESC_DU-OFF-ESP_SANTOS_VESP', [
+		{
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+			year_period_ids: [PERIODS.ESC],
+		},
+		{
+			event_id: 'XTC9J',
+			isExclude: true,
 		},
 	]],
 	['ESC_QUA', [
@@ -164,6 +190,16 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 			year_period_ids: [PERIODS.ESC],
 		},
 	]],
+	['ESC_SAB-OFF-ESP_SANTOS_DIA', [
+		{
+			weekdays: [WEEKDAYS.Sat],
+			year_period_ids: [PERIODS.ESC],
+		},
+		{
+			event_id: '594HB',
+			isExclude: true,
+		},
+	]],
 	['ESC_SEG', [
 		{
 			description: 'Segundas-feiras do período escolar',
@@ -185,6 +221,75 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 			year_period_ids: [PERIODS.ESC],
 		},
 	]],
+	['ESP_BT_FDS', [
+		{
+			event_id: '45NK2',
+		},
+	]],
+	['ESP_CARNAVAL_DIA', [
+		{
+			event_id: 'B0R1W',
+			weekdays: [WEEKDAYS.Tue],
+		},
+	]],
+	['ESP_CARNAVAL_FDS', [
+		{
+			event_id: 'B0R1W',
+			weekdays: [WEEKDAYS.Sat, WEEKDAYS.Sun],
+		},
+	]],
+	['ESP_CARNAVAL_SEG', [
+		{
+			event_id: 'B0R1W',
+			weekdays: [WEEKDAYS.Mon],
+		},
+	]],
+	['ESP_SANTOS_DIA', [
+		{
+			event_id: '594HB',
+		},
+	]],
+	['EVENTOS_AVANTE_DOM', [
+		{
+			event_id: 'N17H6',
+			weekdays: [WEEKDAYS.Sun],
+		},
+	]],
+	['EVENTOS_AVANTE_SAB', [
+		{
+			event_id: 'N17H6',
+			weekdays: [WEEKDAYS.Sat],
+		},
+	]],
+	['EVENTOS_AVANTE_SEX', [
+		{
+			event_id: 'N17H6',
+			weekdays: [WEEKDAYS.Fri],
+		},
+	]],
+	['EVENTOS_SOL_DOM', [
+		{
+			event_id: 'X3MSP',
+			weekdays: [WEEKDAYS.Sun],
+		},
+	]],
+	['EVENTOS_SOL_DU', [
+		{
+			event_id: 'X3MSP',
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+		},
+	]],
+	['EVENTOS_SOL_SAB', [
+		{
+			event_id: 'X3MSP',
+			weekdays: [WEEKDAYS.Sat],
+		},
+	]],
+	['EVENTOS_SUMOL_TOD', [
+		{
+			event_id: '6XT8T',
+		},
+	]],
 	['FER_DOM', [
 		{
 			description: 'Domingos e feriados do período de férias',
@@ -192,7 +297,62 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 			year_period_ids: [PERIODS.FER],
 		},
 	]],
+	['FER_DOM-OFF-ESP_ANONOVO_DIA-ESP_NATAL_DIA', [
+		{
+			description: 'Dias úteis do período de férias',
+			weekdays: [WEEKDAYS.Sun],
+			year_period_ids: [PERIODS.FER],
+		},
+	]],
+	['FER_DOM-OFF-ESP_NATAL_DIA', [
+		{
+			description: 'Dias úteis do período de férias',
+			weekdays: [WEEKDAYS.Sun],
+			year_period_ids: [PERIODS.FER],
+		},
+	]],
+	['FER_DOM-OFF-ESP_NATAL_DIA-ESP_ANONOVO_DIA', [
+		{
+			description: 'Dias úteis do período de férias',
+			weekdays: [WEEKDAYS.Sun],
+			year_period_ids: [PERIODS.FER],
+		},
+	]],
+	['FER_DOM_1', [
+		{
+			event_id: '9AQDF',
+			year_period_ids: [PERIODS.FER],
+		},
+	]],
 	['FER_DU', [
+		{
+			description: 'Dias úteis do período de férias',
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+			year_period_ids: [PERIODS.FER],
+		},
+	]],
+	['FER_DU-OFF-ESP_ANONOVO_VESP', [
+		{
+			description: 'Dias úteis do período de férias',
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+			year_period_ids: [PERIODS.FER],
+		},
+	]],
+	['FER_DU-OFF-ESP_ANONOVO_VESP-ESP_NATAL_VESP', [
+		{
+			description: 'Dias úteis do período de férias',
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+			year_period_ids: [PERIODS.FER],
+		},
+	]],
+	['FER_DU-OFF-ESP_NATAL_VESP', [
+		{
+			description: 'Dias úteis do período de férias',
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+			year_period_ids: [PERIODS.FER],
+		},
+	]],
+	['FER_DU-OFF-ESP_NATAL_VESP-ESP_ANONOVO_VESP', [
 		{
 			description: 'Dias úteis do período de férias',
 			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
@@ -241,10 +401,21 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 			year_period_ids: [PERIODS.FER],
 		},
 	]],
+	['MES_JUN_U2S', [
+		{
+			event_id: 'FDETG',
+		},
+	]],
 	['VER_DOM', [
 		{
 			description: 'Domingos e feriados do período de verão',
 			weekdays: [WEEKDAYS.Sun],
+			year_period_ids: [PERIODS.VER],
+		},
+	]],
+	['VER_DOM_1', [
+		{
+			event_id: '9AQDF',
 			year_period_ids: [PERIODS.VER],
 		},
 	]],
