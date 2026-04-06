@@ -210,7 +210,8 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 
 	plans: {
 		development: {
-			api_port: 52004, api_url: 'http://localhost:52004',
+			api_port: 52004,
+			api_url: 'http://localhost:52004',
 			cors_origin: true,
 			frontend_port: 51004,
 			frontend_url: 'http://localhost:51004/plans',
