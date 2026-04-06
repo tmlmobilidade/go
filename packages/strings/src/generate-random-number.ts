@@ -1,7 +1,5 @@
 /* * */
 
-import crypto from 'crypto';
-
 /**
  * Generates a secure random number between 0 and 1.
  * This function uses the Web Crypto API so it is suitable
@@ -11,6 +9,6 @@ import crypto from 'crypto';
  */
 export function generateRandomNumber(): number {
 	const array = new Uint32Array(1);
-	crypto.getRandomValues(array);
+	globalThis.crypto.getRandomValues(array);
 	return array[0] / 2 ** 32;
 }
