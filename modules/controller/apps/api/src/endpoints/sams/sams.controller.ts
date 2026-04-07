@@ -11,6 +11,39 @@ function escapeRegex(value: string): string {
 	return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+const SAMS_VEHICLE_SEARCH_REGEX = /^v:(?<vehicleIds>\d+(?:\s*,\s*\d+)*)$/i;
+const SAMS_DEVICE_SEARCH_REGEX = /^d:(?<deviceIds>[^,\s]+(?:\s*,\s*[^,\s]+)*)$/i;
+
+function parseSamsVehicleSearch(searchRaw: string): number[] {
+	const normalizedSearch = searchRaw.trim();
+	const regexMatch = SAMS_VEHICLE_SEARCH_REGEX.exec(normalizedSearch);
+	if (!regexMatch?.groups?.vehicleIds) return [];
+
+	return [
+		...new Set(
+			regexMatch.groups.vehicleIds
+				.split(',')
+				.map(item => Number(item.trim()))
+				.filter(item => Number.isInteger(item)),
+		),
+	];
+}
+
+function parseSamsDeviceSearch(searchRaw: string): string[] {
+	const normalizedSearch = searchRaw.trim();
+	const regexMatch = SAMS_DEVICE_SEARCH_REGEX.exec(normalizedSearch);
+	if (!regexMatch?.groups?.deviceIds) return [];
+
+	return [
+		...new Set(
+			regexMatch.groups.deviceIds
+				.split(',')
+				.map(item => item.trim())
+				.filter(Boolean),
+		),
+	];
+}
+
 const RESERVED_QUERY_FIELDS = new Set(['agency_ids', 'limit', 'offset', 'search']);
 const RANGE_QUERY_FIELDS = {
 	seen_first_at: { field: 'seen_first_at', operator: '$gte' },
@@ -33,13 +66,33 @@ function buildSamsMatchAnd(
 
 	const searchRaw = parsedQuery.search?.trim() ?? '';
 	if (searchRaw.length > 0) {
-		const escaped = escapeRegex(searchRaw);
-		matchAnd.push({
-			$or: [
-				{ $expr: { $regexMatch: { input: { $toString: '$_id' }, options: 'i', regex: escaped } } },
-				{ agency_id: { $options: 'i', $regex: escaped } },
-			],
-		});
+		const vehicleIds = parseSamsVehicleSearch(searchRaw);
+		if (vehicleIds.length > 0) {
+			matchAnd.push({
+				$or: [
+					{ vehicle_id: { $in: vehicleIds } },
+					{ 'analysis.vehicle_id': { $in: vehicleIds } },
+				],
+			});
+		} else {
+			const deviceIds = parseSamsDeviceSearch(searchRaw);
+			if (deviceIds.length > 0) {
+				matchAnd.push({
+					$or: [
+						{ device_id: { $in: deviceIds } },
+						{ 'analysis.device_id': { $in: deviceIds } },
+					],
+				});
+			} else {
+				const escaped = escapeRegex(searchRaw);
+				matchAnd.push({
+					$or: [
+						{ $expr: { $regexMatch: { input: { $toString: '$_id' }, options: 'i', regex: escaped } } },
+						{ agency_id: { $options: 'i', $regex: escaped } },
+					],
+				});
+			}
+		}
 	}
 
 	for (const [key, value] of Object.entries(parsedQuery)) {
