@@ -171,16 +171,25 @@ function useSamsListContextState(): SamsListContextState {
 			],
 		[filterApexVersion.value, normalizeApexVersion],
 	);
+	const effectiveApexVersionFilterValues = useMemo(() => {
+		if (apexVersionOptions.length === 0) return [];
+		const available = new Set(apexVersionOptions);
+		const selectedAvailable = normalizedFilterApexVersionValues.filter(value => available.has(value));
+		if (selectedAvailable.length === 0) return [];
+		// If all available options are selected, do not restrict or write URL filter.
+		if (selectedAvailable.length === apexVersionOptions.length) return [];
+		return selectedAvailable;
+	}, [apexVersionOptions, normalizedFilterApexVersionValues]);
 
 	const samsListQueryString = useMemo(() => {
 		const params = new URLSearchParams(baseQueryString);
-		if (filterApexVersion.isActive && normalizedFilterApexVersionValues.length)
-			params.set('latest_apex_version', normalizedFilterApexVersionValues.join(','));
+		if (effectiveApexVersionFilterValues.length)
+			params.set('latest_apex_version', effectiveApexVersionFilterValues.join(','));
 		const page = Math.max(1, filterPage ?? 1);
 		params.set('limit', SAMS_PAGE_SIZE.toString());
 		params.set('offset', ((page - 1) * SAMS_PAGE_SIZE).toString());
 		return params.toString();
-	}, [baseQueryString, filterApexVersion.isActive, filterPage, normalizedFilterApexVersionValues]);
+	}, [baseQueryString, effectiveApexVersionFilterValues, filterPage]);
 
 	const samsListUrl = useMemo(() => {
 		if (agenciesContext.flags.loading) return null;
@@ -191,7 +200,7 @@ function useSamsListContextState(): SamsListContextState {
 	useEffect(() => {
 		if ((filterPage ?? 1) <= 1) return;
 		void setFilterPage(1);
-	}, [baseQueryString, filterApexVersion.isActive, filterPage, normalizedFilterApexVersionValues, setFilterPage]);
+	}, [baseQueryString, effectiveApexVersionFilterValues, filterPage, setFilterPage]);
 
 	const { data: allSamsData = [], error: allSamsError, isLoading: allSamsLoading } = useSWR<Sam[], Error>(samsListUrl);
 
