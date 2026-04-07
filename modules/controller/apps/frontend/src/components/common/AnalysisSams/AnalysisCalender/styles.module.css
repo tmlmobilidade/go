@@ -90,7 +90,7 @@
 
 /* Label for calendar days or months (e.g. header) */
 .dayLabel {
-	margin-bottom: 6px;
+	margin-bottom: 12px;
 	font-size: 12px;
 	font-weight: 600;
 	font-variant-numeric: tabular-nums;
@@ -118,6 +118,13 @@
 	gap: 8px;
 	align-items: center;
 	width: 100%;
+	opacity: 0;
+	transform: translateY(-4px);
+	animation: monthBreakdownReveal 440ms ease-out forwards;
+}
+
+.dayBreakdownRowClosing {
+	animation: monthBreakdownHide 220ms ease-in forwards;
 }
 
 /* Label for a breakdown row (usually date or sub-label) */
@@ -135,5 +142,41 @@
 	gap: 4px;
 	align-items: center;
 	min-width: 0;
-	margin-bottom: 5px;
+	margin-bottom: 6px;
+}
+
+@keyframes monthBreakdownReveal {
+	from {
+		opacity: 0;
+		transform: translateY(-4px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes monthBreakdownHide {
+	from {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	to {
+		opacity: 0;
+		transform: translateY(-4px);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.dayBreakdownRow {
+		opacity: 1;
+		transform: none;
+		animation: none;
+	}
+
+	.dayBreakdownRowClosing {
+		animation: none;
+	}
 }

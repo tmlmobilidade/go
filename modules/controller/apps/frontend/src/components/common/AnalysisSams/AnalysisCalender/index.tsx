@@ -5,7 +5,7 @@
 import { cn } from '@/lib/utils';
 import { type SamAnalysis } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
-import { type ReactNode, useMemo, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
 
@@ -29,6 +29,7 @@ export interface AnalysisCalenderProps {
 /* * */
 
 const CALENDAR_TZ = 'Europe/Lisbon';
+const CLOSE_ANIMATION_MS = 220;
 
 const isAnalysisInMonthRange = (
 	analysis: SamAnalysis,
@@ -58,6 +59,15 @@ const buildDaySectionsForMonth = (analyses: SamAnalysis[], monthKey: string): Da
 
 export function AnalysisCalender({ analyses, className, onClick }: AnalysisCalenderProps) {
 	const [selectedMonthKey, setSelectedMonthKey] = useState<null | string>(null);
+	const [closingMonthKey, setClosingMonthKey] = useState<null | string>(null);
+	const closeTimerRef = useRef<null | ReturnType<typeof window.setTimeout>>(null);
+
+	useEffect(
+		() => () => {
+			if (closeTimerRef.current != null) window.clearTimeout(closeTimerRef.current);
+		},
+		[],
+	);
 
 	const sections = useMemo(() => buildMonthSections(analyses ?? []), [analyses]);
 	const monthDaySectionsByKey = useMemo(() => {
@@ -102,10 +112,15 @@ export function AnalysisCalender({ analyses, className, onClick }: AnalysisCalen
 			<div className={cn(styles.organizedByDates, styles.organizedByMonths)}>
 				{sections.map((section) => {
 					const selected = selectedMonthKey === section.dayKey;
-					const daySections = selected ? monthDaySectionsByKey.get(section.dayKey) ?? [] : [];
-					const sectionSquares = selected
+					const closing = closingMonthKey === section.dayKey;
+					const showBreakdown = selected || closing;
+					const daySections = showBreakdown ? monthDaySectionsByKey.get(section.dayKey) ?? [] : [];
+					const sectionSquares = showBreakdown
 						? daySections.map((daySection, index) => (
-							<div key={`${daySection.dayKey}-${index}`} className={styles.dayBreakdownRow}>
+							<div
+								key={`${daySection.dayKey}-${index}`}
+								className={cn(styles.dayBreakdownRow, closing && styles.dayBreakdownRowClosing)}
+							>
 								<div className={styles.dayBreakdownLabel}>{daySection.label}</div>
 								<div className={styles.dayBreakdownSquares}>
 									{daySection.items.map((value, valueIndex) => (
@@ -136,7 +151,23 @@ export function AnalysisCalender({ analyses, className, onClick }: AnalysisCalen
 								section.dayKey === SEM_DATA_KEY
 									? undefined
 									: () => {
-										setSelectedMonthKey(current => (current === section.dayKey ? null : section.dayKey));
+										if (closeTimerRef.current != null) {
+											window.clearTimeout(closeTimerRef.current);
+											closeTimerRef.current = null;
+										}
+
+										if (selectedMonthKey === section.dayKey) {
+											setClosingMonthKey(section.dayKey);
+											closeTimerRef.current = window.setTimeout(() => {
+												setSelectedMonthKey(current => (current === section.dayKey ? null : current));
+												setClosingMonthKey(current => (current === section.dayKey ? null : current));
+												closeTimerRef.current = null;
+											}, CLOSE_ANIMATION_MS);
+										} else {
+											setClosingMonthKey(null);
+											setSelectedMonthKey(section.dayKey);
+										}
+
 										if (section.items[0] != null) onClick?.(section.items[0]);
 									},
 							)}
