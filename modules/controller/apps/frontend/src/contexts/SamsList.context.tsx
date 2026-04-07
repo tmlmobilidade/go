@@ -171,6 +171,7 @@ function useSamsListContextState(): SamsListContextState {
 			],
 		[filterApexVersion.value, normalizeApexVersion],
 	);
+
 	const effectiveApexVersionFilterValues = useMemo(() => {
 		if (apexVersionOptions.length === 0) return [];
 		const available = new Set(apexVersionOptions);

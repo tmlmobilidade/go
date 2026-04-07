@@ -36,7 +36,7 @@ export function SamsList() {
 		},
 		{
 			accessor: 'latest_apex_version',
-			render: item => <Tag label={item.latest_apex_version ?? 'N/A'} />,
+			render: item => <Tag label={item.latest_apex_version ?? '-'} />,
 			title: 'Versão APEX',
 			width: 100,
 		},
