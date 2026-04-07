@@ -144,34 +144,41 @@ export class SamsController {
 					agency_id: 1,
 					analysis: { $slice: [{ $ifNull: ['$analysis', []] }, -ANALYSIS_LIST_TAIL] },
 					latest_apex_version: {
-						$ifNull: [
-							'$latest_apex_version',
-							{
-								$let: {
-									in: {
-										$arrayElemAt: [
-											{
-												$map: {
-													as: 'analysisItem',
-													in: '$$analysisItem.apex_version',
-													input: '$$analysisWithApexVersion',
-												},
-											},
-											-1,
+						$let: {
+							in: {
+								$cond: [
+									{
+										$and: [
+											{ $ne: ['$$storedApexVersion', null] },
+											{ $ne: ['$$storedApexVersion', ''] },
 										],
 									},
-									vars: {
-										analysisWithApexVersion: {
-											$filter: {
+									'$$storedApexVersion',
+									{ $arrayElemAt: ['$$analysisApexVersions', -1] },
+								],
+							},
+							vars: {
+								analysisApexVersions: {
+									$filter: {
+										as: 'analysisApexVersion',
+										cond: {
+											$and: [
+												{ $ne: ['$$analysisApexVersion', null] },
+												{ $ne: ['$$analysisApexVersion', ''] },
+											],
+										},
+										input: {
+											$map: {
 												as: 'analysisItem',
-												cond: { $ne: ['$$analysisItem.apex_version', null] },
+												in: '$$analysisItem.apex_version',
 												input: { $ifNull: ['$analysis', []] },
 											},
 										},
 									},
 								},
+								storedApexVersion: { $ifNull: ['$latest_apex_version', null] },
 							},
-						],
+						},
 					},
 					seen_first_at: 1,
 					seen_last_at: 1,
