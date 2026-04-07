@@ -1,17 +1,23 @@
 /* * */
 
-import { clickhouseService } from '@tmlmobilidade/clickhouse';
-import { invalidateRides, PARSER_MAP, simplifiedVehicleEventsSchema } from '@tmlmobilidade/go-tracker-pckg-common';
+import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
+import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
+import { invalidateRides } from '@tmlmobilidade/go-tracker-pckg-shared';
+import { type ChangeStreamInsertDocument } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
-import { ClickHouseWriter } from '@tmlmobilidade/writers';
+import { RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 
-const writer = new ClickHouseWriter<SimplifiedVehicleEvent>({
-	client: await clickhouseService.getClient(),
-	table: 'simplified_vehicle_events',
-	tableSchema: simplifiedVehicleEventsSchema,
+const writer = new BatchWriter<SimplifiedVehicleEvent>({
+	batch_size: 500,
+	batch_timeout: 500,
+	idle_timeout: 500,
+	insertFn: async (data) => {
+		await simplifiedVehicleEventsNew.insert('JSONEachRow', data);
+	},
+	title: await simplifiedVehicleEventsNew.getTableName(),
 });
 
 /**
@@ -21,27 +27,18 @@ const writer = new ClickHouseWriter<SimplifiedVehicleEvent>({
  * @param databaseOperation The database operation containing the Vehicle Event document to be processed.
  * @returns A promise that resolves when the Vehicle Event document has been processed.
  */
-export async function processVehicleEvent(databaseOperation) {
+export async function processVehicleEvent(databaseOperation: ChangeStreamInsertDocument<RawVehicleEvent>) {
 	//
 
 	//
-	// Validate that the operation is an insert or update. Otherwise, send an email to the emergency contact.
-	// Only insert operations are expected to occur in this PCGIDB collection.
-
-	if (databaseOperation.operationType !== 'insert') {
-		Logger.error(`WARNING: processApexValidation with operationType != "insert": [${databaseOperation.fullDocument.transaction.operatorLongID}] type="${databaseOperation.operationType}" transactionId="${databaseOperation.fullDocument.transaction.transactionId}"`);
-	}
-
-	//
-	// Extract the PCGI document from the database operation
-	// and transform the vehicle timestamp into an operational date.
-	// Skip the operation if the document is not valid.
+	// Extract the full document from the database operation and transform it
+	// into a simplified vehicle event document using the appropriate parser based on the version field.
 
 	const parser = PARSER_MAP[databaseOperation.fullDocument.version];
 	const newSimplifiedVehicleEventDocument = parser(databaseOperation.fullDocument);
 
 	if (!newSimplifiedVehicleEventDocument) {
-		Logger.error(`Invalid APEX Validation document, skipping operation: ${databaseOperation.fullDocument.transaction.transactionId}`);
+		Logger.error(`Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}`);
 		return;
 	}
 
@@ -49,14 +46,6 @@ export async function processVehicleEvent(databaseOperation) {
 	// Write the new vehicle event document to the SimplifiedVehicleEvents collection
 
 	await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: invalidateRides });
-
-	//
-	// Publish the heartbeats for each agency
-
-	if (newSimplifiedVehicleEventDocument.agency_id === '41') await fetch('https://status.carrismetropolitana.pt/api/push/QRSatZitiBNIhTDneykCGV0PthvQoIUf');
-	if (newSimplifiedVehicleEventDocument.agency_id === '42') await fetch('https://status.carrismetropolitana.pt/api/push/uZTfvExA1yCpNZIXIzgvCmHdSquNi0lV');
-	if (newSimplifiedVehicleEventDocument.agency_id === '43') await fetch('https://status.carrismetropolitana.pt/api/push/Rp7hYCJKLL8h67IP07RDAXagwO5avchc');
-	if (newSimplifiedVehicleEventDocument.agency_id === '44') await fetch('https://status.carrismetropolitana.pt/api/push/Mnm5Rn3tJAXYVWb6I51eTA4xfpXJ3vqq');
 
 	//
 };

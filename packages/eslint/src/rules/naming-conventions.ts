@@ -22,6 +22,12 @@ export const namingConventionsConfig: Config[] = [
 					format: ['camelCase'],
 					selector: 'function',
 				},
+				// Global variables and constants: UPPER_CASE
+				{
+					format: ['UPPER_CASE'],
+					modifiers: ['global'],
+					selector: 'variable',
+				},
 				// Constants: SCREAMING_SNAKE_CASE
 				{
 					format: ['UPPER_CASE', 'camelCase', 'PascalCase'], // Allow both for flexibility
@@ -43,6 +49,11 @@ export const namingConventionsConfig: Config[] = [
 					leadingUnderscore: 'allow',
 					selector: 'classProperty',
 				},
+				{
+					format: ['PascalCase', 'camelCase'],
+					modifiers: ['public'],
+					selector: 'classProperty',
+				},
 				// Enum members: PascalCase or UPPER_CASE
 				{
 					format: ['PascalCase', 'UPPER_CASE'],
@@ -57,8 +68,23 @@ export const namingConventionsConfig: Config[] = [
 		rules: {
 			'@typescript-eslint/naming-convention': [
 				'error',
+				// Components: PascalCase
 				{
+					filter: {
+						match: true,
+						regex: '^[A-Z]',
+					},
 					format: ['PascalCase'],
+					leadingUnderscore: 'allow',
+					selector: 'function',
+				},
+				// Non-component functions (including hooks): camelCase
+				{
+					filter: {
+						match: false,
+						regex: '^[A-Z]',
+					},
+					format: ['camelCase'],
 					leadingUnderscore: 'allow',
 					selector: 'function',
 				},

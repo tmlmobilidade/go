@@ -99,6 +99,12 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+    volumes:
+      - ./secrets/go-ssh-tunnel-key:/ssh-keys/go-ssh-tunnel-key:ro
+    extra_hosts:
+      - "go-prd-mongodb-1.tmlmobilidade.pt:10.81.101.161"
+      - "go-prd-mongodb-2.tmlmobilidade.pt:10.81.101.162"
+      - "go-prd-mongodb-3.tmlmobilidade.pt:10.81.101.163"
 
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #

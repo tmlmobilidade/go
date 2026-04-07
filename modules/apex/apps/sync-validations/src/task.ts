@@ -1,21 +1,21 @@
 /* * */
 
-import { clickhouseService } from '@tmlmobilidade/clickhouse';
+import { pcgiValidations, simplifiedApexValidationsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { APEX_VALIDATIONS_SETTINGS, invalidateRides, parseSimplifiedApexValidation, simplifiedApexValidationsSchema } from '@tmlmobilidade/go-apex-pckg-common';
-import { pcgidbValidations } from '@tmlmobilidade/go-apex-pckg-databases';
+import { APEX_VALIDATIONS_SETTINGS, invalidateRides, parseSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
-import { ClickHouseWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 
-const writer = new ClickHouseWriter<SimplifiedApexValidation>({
+const writer = new BatchWriter<SimplifiedApexValidation>({
 	batch_size: 50_000,
-	client: await clickhouseService.getClient(),
-	table: 'simplified_apex_validations',
-	tableSchema: simplifiedApexValidationsSchema,
+	insertFn: async (data) => {
+		await simplifiedApexValidationsNew.insert('JSONEachRow', data);
+	},
+	title: await simplifiedApexValidationsNew.getTableName(),
 });
 
 /**
@@ -56,43 +56,45 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 	// This function will handle the logic of counting, comparing, syncing and deleting documents
 	// between the source and destination databases based on the provided functions.
 
+	const pcgiValidationsCollection = await pcgiValidations.getCollection();
+
 	await replicate<unknown>({
 
 		countDestinationDbFn: async () => {
-			const result = await clickhouseService.queryFromString<{ count: number }>(
-				'SELECT COUNT(*) as count FROM simplified_apex_validations WHERE created_at >= $1 AND created_at <= $2',
+			return await simplifiedApexValidationsNew.count(
+				'*',
+				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
-			return result[0].count;
 		},
 
 		countSourceDbFn: async () => {
-			const result = await pcgidbValidations.ValidationEntity.countDocuments(pcgidbQuery);
+			const result = await pcgiValidations.count(pcgidbQuery);
 			return result;
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await clickhouseService.queryFromString(
-				'DELETE FROM simplified_apex_validations WHERE _id IN ($1)',
+			await simplifiedApexValidationsNew.delete(
+				'_id IN ($1)',
 				{ 1: ids.map(id => `'${id}'`).join(', ') },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
-			const result = await clickhouseService.queryFromString<{ _id: string }>(
-				'SELECT _id FROM simplified_apex_validations WHERE created_at >= $1 AND created_at <= $2',
+			return await simplifiedApexValidationsNew.distinct(
+				'_id',
+				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
-			return result.map(doc => doc._id);
 		},
 
 		distinctSourceDbFn: async () => {
-			const result = await pcgidbValidations.ValidationEntity.distinct('transaction.transactionId', pcgidbQuery);
+			const result = await pcgiValidations.distinct('transaction.transactionId', pcgidbQuery);
 			return result.map(String);
 		},
 
 		missingDocumentsSourceDbAsyncIterator: (missingDocumentIds) => {
-			return pcgidbValidations.ValidationEntity
+			return pcgiValidationsCollection
 				.find({ 'transaction.transactionId': { $in: missingDocumentIds } })
 				.stream();
 		},

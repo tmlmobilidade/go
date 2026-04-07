@@ -1,6 +1,9 @@
 # # #
+# THIS IS THE PRODUCTION COMPOSE FILE #
+# BUT ITS USING THE STAGING IMAGES FOR NOW #
+# # #
 
-name: tmlmobilidade-go-tracker-production
+name: tmlmobilidade-go-tracker-staging
 
 services:
 
@@ -35,8 +38,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  organizer:
-    image: ghcr.io/tmlmobilidade/go-tracker-organizer:production
+  clickhouse-stream:
+    image: ghcr.io/tmlmobilidade/go-tracker-clickhouse-stream:staging
     deploy:
       restart_policy:
         condition: any
@@ -54,126 +57,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  stream:
-    image: ghcr.io/tmlmobilidade/go-tracker-stream:production
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 4gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/.env
-    extra_hosts:
-      - "prd-bilhetica-mongodb-01.tml.local:10.5.4.185"
-      - "prd-bilhetica-mongodb-02.tml.local:10.5.4.151"
-      - "prd-bilhetica-mongodb-03.tml.local:10.5.4.97"
-      - "prd-validations-mongodb-01.tml.local:10.5.4.124"
-      - "prd-validations-mongodb-02.tml.local:10.5.4.112"
-      - "prd-validations-mongodb-03.tml.local:10.5.4.206"
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  sync-apex-locations:
-    image: ghcr.io/tmlmobilidade/go-tracker-sync-apex-locations:production
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 4gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/.env
-    extra_hosts:
-      - "prd-validations-mongodb-01.tml.local:10.5.4.124"
-      - "prd-validations-mongodb-02.tml.local:10.5.4.112"
-      - "prd-validations-mongodb-03.tml.local:10.5.4.206"
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  sync-apex-on-board-refunds:
-    image: ghcr.io/tmlmobilidade/go-tracker-sync-apex-on-board-refunds:production
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 4gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/.env
-    extra_hosts:
-      - "prd-bilhetica-mongodb-01.tml.local:10.5.4.185"
-      - "prd-bilhetica-mongodb-02.tml.local:10.5.4.151"
-      - "prd-bilhetica-mongodb-03.tml.local:10.5.4.97"
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  sync-apex-on-board-sales:
-    image: ghcr.io/tmlmobilidade/go-tracker-sync-apex-on-board-sales:production
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 4gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/.env
-    extra_hosts:
-      - "prd-bilhetica-mongodb-01.tml.local:10.5.4.185"
-      - "prd-bilhetica-mongodb-02.tml.local:10.5.4.151"
-      - "prd-bilhetica-mongodb-03.tml.local:10.5.4.97"
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  sync-apex-validations:
-    image: ghcr.io/tmlmobilidade/go-tracker-sync-apex-validations:production
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 30s
-      resources:
-        limits:
-          memory: 4gb
-    logging:
-      options:
-        max-size: '1m'
-        max-file: '1'
-    env_file:
-      - ./secrets/.env
-    extra_hosts:
-      - "prd-validations-mongodb-01.tml.local:10.5.4.124"
-      - "prd-validations-mongodb-02.tml.local:10.5.4.112"
-      - "prd-validations-mongodb-03.tml.local:10.5.4.206"
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  sync-vehicle-events:
-    image: ghcr.io/tmlmobilidade/go-tracker-sync-vehicle-events:production
+  clickhouse-sync:
+    image: ghcr.io/tmlmobilidade/go-tracker-clickhouse-sync:staging
     deploy:
       restart_policy:
         condition: any
@@ -191,8 +76,130 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  sync-vehicle-events-clickhouse:
-    image: ghcr.io/tmlmobilidade/go-tracker-sync-vehicle-events-clickhouse:production
+  cm-stream-core:
+    image: ghcr.io/tmlmobilidade/go-tracker-cm-stream-core:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    volumes:
+      - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  # cm-stream-log:
+  #   image: ghcr.io/tmlmobilidade/go-tracker-cm-stream-log:staging
+  #   deploy:
+  #     restart_policy:
+  #       condition: any
+  #       delay: 30s
+  #     resources:
+  #       limits:
+  #         memory: 4gb
+  #   logging:
+  #     options:
+  #       max-size: '1m'
+  #       max-file: '1'
+  #   volumes:
+  #     - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
+  #   env_file:
+  #     - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  cm-sync-core:
+    image: ghcr.io/tmlmobilidade/go-tracker-cm-sync-core:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    volumes:
+      - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  # cm-sync-log:
+  #   image: ghcr.io/tmlmobilidade/go-tracker-cm-sync-log:staging
+  #   deploy:
+  #     restart_policy:
+  #       condition: any
+  #       delay: 30s
+  #     resources:
+  #       limits:
+  #         memory: 4gb
+  #   logging:
+  #     options:
+  #       max-size: '1m'
+  #       max-file: '1'
+  #   volumes:
+  #     - ./secrets/pcgidb-ssh-tunnel-key:/ssh-keys/pcgidb-ssh-tunnel-key:ro
+  #   env_file:
+  #     - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  ttsl-fetch:
+    image: ghcr.io/tmlmobilidade/go-tracker-ttsl-fetch:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  ccfl-fetch:
+    image: ghcr.io/tmlmobilidade/go-tracker-ccfl-fetch:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  cap-fetch:
+    image: ghcr.io/tmlmobilidade/go-tracker-cap-fetch:staging
     deploy:
       restart_policy:
         condition: any

@@ -91,8 +91,7 @@ export async function fetchData<T>(
 				error: null,
 				statusCode: response.status,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			lastError = error;
 			attempt++;
 
@@ -151,8 +150,7 @@ export async function multipartFetch<T>(url: string, formData: FormData): Promis
 			error: null,
 			statusCode: response.status,
 		});
-	}
-	catch (error) {
+	} catch (error) {
 		return new HttpResponse<T>({
 			data: null,
 			error: error instanceof Error ? error.message : 'Network error',
@@ -188,6 +186,26 @@ export async function uploadFile<T>(url: string, file: File): Promise<HttpRespon
  */
 export const swrFetcher = async <T>(url: string): Promise<T> => {
 	const res = await fetch(url, { credentials: 'include' });
+	const data = await res.json() as HttpResponse<T>;
+
+	if (!res.ok) {
+		throw new HttpException(res.status, data.error ?? 'An error occurred');
+	}
+
+	return data.data as T;
+};
+
+/**
+ * Fetches data from a URL using the SWR fetcher function.
+ * @param url - The URL to fetch from
+ * @returns Promise resolving to the fetched data
+ * @example
+ * ```ts
+ * const data = await swrFetcher('/api/users/123');
+ * ```
+ */
+export const unauthenticatedSwrFetcher = async <T>(url: string): Promise<T> => {
+	const res = await fetch(url, { credentials: 'omit' });
 	const data = await res.json() as HttpResponse<T>;
 
 	if (!res.ok) {

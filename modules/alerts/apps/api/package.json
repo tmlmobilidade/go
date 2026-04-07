@@ -25,12 +25,13 @@
 		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/go-alerts-pckg-transform": "*",
+		"@tmlmobilidade/rss": "*",
 		"@tmlmobilidade/interfaces": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@carrismetropolitana/api-types": "20251128.1928.11",
+		"@carrismetropolitana/api-types": "20260317.2218.39",
 		"@types/node": "25.5.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",

@@ -12,23 +12,20 @@ interface JsonWriterOptions {
 	batch_size?: number
 }
 
-/* * */
-
+/**
+ * @deprecated This class is deprecated and should not be used for new implementations.
+ * It is recommended to use the BatchWriter class instead.
+ */
 export class JsonWriter<T> {
 	//
 
 	private readonly ADD_AFTER: null | string = null;
-
 	private readonly ADD_BEFORE: null | string = null;
 
 	private CURRENT_BATCH_DATA: T[] = [];
-
 	private FILE_PATH = null;
-
 	private INSTANCE_NAME = 'Unnamed Instance';
-
 	private MAX_BATCH_SIZE = 5000;
-
 	private SESSION_TIMER = new Timer();
 
 	/* * */

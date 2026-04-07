@@ -92,7 +92,10 @@ function buildRuleSummaryShort(
 	}
 
 	if (rule.kind === 'manual' && rule.event_id) {
-		return getEventForManualRule(rule, options?.events)?.title ?? '';
+		const title = getEventForManualRule(rule, options?.events)?.title ?? '';
+		if (!rule.weekdays?.length) return title;
+		const weekdayPart = buildWeekdaysPart(rule, { mode: 'short' });
+		return [title, weekdayPart].filter(Boolean).join(' · ');
 	}
 
 	// manual
@@ -122,7 +125,10 @@ function buildRuleSummaryLong(
 	}
 
 	if (rule.kind === 'manual' && rule.event_id) {
-		return getEventForManualRule(rule, options?.events)?.title ?? '';
+		const title = getEventForManualRule(rule, options?.events)?.title ?? '';
+		if (!rule.weekdays?.length) return title;
+		const weekdayPart = buildWeekdaysPart(rule, { mode: 'long' });
+		return [title, weekdayPart].filter(Boolean).join(', ');
 	}
 
 	// manual
@@ -149,6 +155,13 @@ function formatDateWithWeekday(date: string): string {
 	return `${formattedDate} (${weekdayShort})`;
 }
 
+function truncateDates(dates: string[], max = 5): string {
+	if (dates.length <= max) return dates.join(', ');
+	const visible = dates.slice(0, max);
+	const remaining = dates.length - max;
+	return `${visible.join(', ')} e mais ${remaining}`;
+}
+
 /**
  * Builds detailed tooltip text for event rules.
  *
@@ -161,7 +174,8 @@ function buildRuleSummaryTooltip(
 	options: { events?: Event[], periods?: YearPeriod[] },
 ): string {
 	if (isEventRestriction(rule)) {
-		const dates = (rule.dates ?? []).map(formatDateWithWeekday).join(', ');
+		const formattedDates = (rule.dates ?? []).map(formatDateWithWeekday);
+		const dates = truncateDates(formattedDates);
 		const datesText = (rule.dates?.length ?? 0) > 1 ? `nos dias ${dates}` : `no dia ${dates}`;
 
 		const timeWindow = (rule?.start_time && rule?.end_time)
@@ -172,17 +186,23 @@ function buildRuleSummaryTooltip(
 	}
 
 	if (isEventReplacement(rule)) {
-		const dates = (rule.dates ?? []).map(formatDateWithWeekday).join(', ');
+		const formattedDates = [...(rule.dates ?? [])].sort().map(formatDateWithWeekday);
+		const dates = truncateDates(formattedDates);
 		const datesText = (rule.dates?.length ?? 0) > 1 ? `nos dias ${dates}` : `no dia ${dates}`;
+
+		const periods = rule.year_period_ids
+			?.map(id => options?.periods?.find(p => p._id === id)?.name || id)
+			.join(', ') || '';
+
+		if (rule.same_weekday) {
+			const parts = ['mesmo dia da semana', periods].filter(Boolean);
+			return `Funcionará como ${parts.join(' · ')}, ${datesText}`;
+		}
 
 		const weekdays = rule.weekdays
 			?.map(wd => WEEKDAY_OPTIONS.find(opt => opt.value === wd)?.label)
 			.filter(Boolean)
 			.join(', ') ?? '';
-
-		const periods = rule.year_period_ids
-			?.map(id => options?.periods?.find(p => p._id === id)?.name || id)
-			.join(', ') || '';
 
 		const parts = [weekdays, periods].filter(Boolean);
 		return `Funcionará como ${parts.join(' · ')}, ${datesText}`;
@@ -190,11 +210,115 @@ function buildRuleSummaryTooltip(
 
 	if (rule.kind === 'manual' && rule.event_id) {
 		const event = getEventForManualRule(rule, options?.events);
-		const dates = (event?.dates ?? []).map(formatDateWithWeekday).join(', ');
+		const filteredDates = (event?.dates ?? []).filter((date) => {
+			if (!rule.weekdays?.length) return true;
+			const jsDay = Dates.fromOperationalDate(date, 'Europe/Lisbon').js_date.getDay();
+			const isoWeekday = (jsDay === 0 ? 7 : jsDay) as (typeof rule.weekdays)[number];
+			return rule.weekdays.includes(isoWeekday);
+		});
+		const dates = truncateDates(filteredDates.map(formatDateWithWeekday));
 		if (!dates) return '';
-		const datesText = (event?.dates?.length ?? 0) > 1 ? `nos dias ${dates}` : `no dia ${dates}`;
+		const datesText = filteredDates.length > 1 ? `nos dias ${dates}` : `no dia ${dates}`;
 		return `Aplicável ${datesText}`;
 	}
 
 	return '';
+}
+
+/**
+ * TEMP:
+ * Maps year period ids/names into GTFS abbreviations.
+ * Replace with a persisted abbreviation/code field when available.
+ */
+function mapPeriodsToGtfsAbbreviation(periodIds?: string[]): string {
+	if (!periodIds?.length) return 'ALL';
+
+	const map: Record<string, string> = {
+		'2KIUJ': 'FER',
+		'99H2R': 'ESC',
+		'UW2U0': 'VER',
+	};
+
+	const abbreviations = periodIds.map((id) => {
+		const abbr = map[id];
+		if (!abbr) throw new Error(`Unknown period id: ${id}`);
+		return abbr;
+	});
+
+	const unique = [...new Set(abbreviations)];
+	const allSet = new Set(['ESC', 'FER', 'VER']);
+
+	// If all three are present, return 'ALL'
+	if (unique.length === 3 && unique.every(x => allSet.has(x))) {
+		return 'ALL';
+	}
+
+	return unique.join('-');
+}
+
+function mapWeekdaysToGtfsAbbreviation(weekdays?: number[]): string {
+	if (!weekdays?.length) return 'ALL';
+
+	const sorted = [...new Set(weekdays)].sort((a, b) => a - b);
+	const joined = sorted.join('-');
+
+	// Special cases
+	if (joined === '1-2-3-4-5') return 'DU';
+	if (joined === '1-2-3-4-5-6-7') return 'ALL';
+
+	const map: Record<number, string> = {
+		1: 'SEG',
+		2: 'TER',
+		3: 'QUA',
+		4: 'QUI',
+		5: 'SEX',
+		6: 'SAB',
+		7: 'DOM',
+	};
+
+	return sorted.map(day => map[day] || String(day)).join('-');
+}
+
+/**
+ * GTFS-oriented rule token:
+ * - FER_DU
+ * - VER_SAB
+ * - ESC_DOM
+ * - ALL
+ * - ALL_DU
+ * - VER-FER_SAB-DOM
+ * - event title for event rules (temporary)
+ */
+export function buildRuleSummaryGtfs(
+	rule: ScheduleRule,
+	options: { events?: Event[], periods?: YearPeriod[] },
+): string {
+	if (isEventRestriction(rule) || isEventReplacement(rule)) {
+		return rule.event?.title ?? rule.name ?? rule._id;
+	}
+
+	if (rule.kind === 'manual' && rule.event_id) {
+		return getEventForManualRule(rule, options?.events)?.title ?? rule.name ?? rule._id;
+	}
+
+	const periodIds = rule.year_period_ids ?? [];
+	const weekdays = rule.weekdays ?? [];
+
+	const periodPart = mapPeriodsToGtfsAbbreviation(periodIds);
+
+	const weekdayPart = mapWeekdaysToGtfsAbbreviation(weekdays);
+
+	if (periodPart === 'ALL' && weekdayPart === 'ALL') {
+		return 'ALL';
+	}
+
+	if (periodPart === 'ALL') {
+		return `ALL_${weekdayPart}`;
+	}
+
+	if (weekdayPart === 'ALL') {
+		return periodPart;
+	}
+
+	return `${periodPart}_${weekdayPart}`;
 }

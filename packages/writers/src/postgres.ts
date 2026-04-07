@@ -9,21 +9,18 @@ interface PostgresWriterOptions {
 	batch_size?: number
 }
 
-/* * */
-
+/**
+ * @deprecated This class is deprecated and should not be used for new implementations.
+ * It is recommended to use the BatchWriter class instead.
+ */
 export class PostgresWriter {
 	//
 
 	private CURRENT_BATCH_DATA = [];
-
 	private DB_CLIENT = null;
-
 	private DB_TABLE = null;
-
 	private INSTANCE_NAME = 'Unnamed Instance';
-
 	private MAX_BATCH_SIZE = 250;
-
 	private SESSION_TIMER = new Timer();
 
 	/* * */

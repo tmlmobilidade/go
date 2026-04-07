@@ -18,13 +18,11 @@ server.register(
 
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.read]) },
 			VehiclesController.getAll,
 		);
 
 		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.read]) },
 			VehiclesController.getById,
 		);
 
@@ -50,6 +48,17 @@ server.register(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.delete]) },
 			VehiclesController.delete,
+		);
+
+		instance.get(
+			'/:id/last-event',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.read]) },
+			VehiclesController.getLastEvent,
+		);
+
+		instance.get(
+			'/positions',
+			VehiclesController.getPositions,
 		);
 
 		next();

@@ -21,6 +21,14 @@ export const Translations = {
 		mixture: 'Mistura',
 		natural_gas: 'Gás Natural',
 	},
+	TYPOLOGY: {
+		bus: 'Autocarro',
+		funicular: 'Funicular',
+		metro: 'Metro',
+		ship: 'Navio',
+		tram: 'Elétrico',
+		train: 'Comboio',
+	},
 	WHEELCHAIR: {
 		electric_ramp: 'Rampa Elétrica',
 		manual_ramp: 'Rampa Manual',

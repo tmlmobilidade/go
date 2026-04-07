@@ -1,4 +1,3 @@
-import { hhmm, type HHMM } from '@/dates/common.js';
 import { z } from 'zod';
 
 export const DayPeriodsValues = ['PPM', 'CD', 'PPT', 'N', 'M'] as const;
@@ -6,16 +5,16 @@ export const DayPeriodSchema = z.enum(DayPeriodsValues);
 export type DayPeriod = z.infer<typeof DayPeriodSchema>;
 
 export interface DayPeriodTimeRange {
-	end: HHMM
-	start: HHMM
+	end: string
+	start: string
 }
 
 export const DAY_PERIOD_TIME_RANGES: Record<DayPeriod, DayPeriodTimeRange> = {
-	CD: { end: hhmm('15:59'), start: hhmm('10:00') },
-	M: { end: hhmm('05:59'), start: hhmm('00:00') },
-	N: { end: hhmm('23:59'), start: hhmm('20:00') },
-	PPM: { end: hhmm('09:59'), start: hhmm('06:00') },
-	PPT: { end: hhmm('19:59'), start: hhmm('16:00') },
+	CD: { end: '15:59', start: '10:00' },
+	M: { end: '05:59', start: '00:00' },
+	N: { end: '23:59', start: '20:00' },
+	PPM: { end: '09:59', start: '06:00' },
+	PPT: { end: '19:59', start: '16:00' },
 };
 
 const DAY_PERIOD_LABEL_BASE: Record<DayPeriod, { long: string, short: string }> = {

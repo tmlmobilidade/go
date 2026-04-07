@@ -294,7 +294,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 		// Check if the insert operation was acknowledged
 		if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to insert document', result);
 		// If returnResult is false, return the insert result directly
-		if (options && options.returnResult === false) return result as TReturnDocument extends true ? WithId<T> : InsertOneResult<T>;
+		if (options?.returnResult === false) return result as TReturnDocument extends true ? WithId<T> : InsertOneResult<T>;
 		// Otherwise, fetch and return the inserted document
 		const insertedDoc = await this.findOne({ _id: { $eq: result.insertedId as T['_id'] } }, options);
 		if (!insertedDoc) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to find inserted document', result);
@@ -389,7 +389,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 
 		const result = await this.mongoCollection.updateMany(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_timestamp } } as unknown as Partial<T>, options);
 
-		if (options && options.returnResults === false) return result as TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>;
+		if (options?.returnResults === false) return result as TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>;
 
 		if (!result.acknowledged) {
 			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to update documents', result);
@@ -430,7 +430,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 
 		const result = await this.mongoCollection.updateOne(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_timestamp } } as unknown as Partial<T>, options);
 
-		if (options && options.returnResult === false) return result as TReturnDocument extends true ? WithId<T> : UpdateResult<T>;
+		if (options?.returnResult === false) return result as TReturnDocument extends true ? WithId<T> : UpdateResult<T>;
 
 		if (!result.acknowledged) {
 			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to update documents', result);

@@ -1,18 +1,19 @@
 /* * */
 
-import { clickhouseService } from '@tmlmobilidade/clickhouse';
-import { invalidateRides, parseSimplifiedApexValidation, simplifiedApexValidationsSchema } from '@tmlmobilidade/go-apex-pckg-common';
+import { simplifiedApexValidationsNew } from '@tmlmobilidade/databases';
+import { invalidateRides, parseSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
-import { ClickHouseWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 
-const writer = new ClickHouseWriter<SimplifiedApexValidation>({
-	batch_size: 250,
-	client: await clickhouseService.getClient(),
-	table: 'simplified_apex_validations',
-	tableSchema: simplifiedApexValidationsSchema,
+const writer = new BatchWriter<SimplifiedApexValidation>({
+	batch_size: 100,
+	insertFn: async (data) => {
+		await simplifiedApexValidationsNew.insert('JSONEachRow', data);
+	},
+	title: await simplifiedApexValidationsNew.getTableName(),
 });
 
 /**

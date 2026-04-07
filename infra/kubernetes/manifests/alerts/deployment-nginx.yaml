@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alerts-nginx
+  namespace: go-alerts
+  labels:
+    app: alerts-nginx
+    app.kubernetes.io/name: alerts-nginx
+    app.kubernetes.io/component: nginx
+    app.kubernetes.io/part-of: go-alerts
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alerts-nginx
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: alerts-nginx
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values: [alerts-nginx]
+                topologyKey: kubernetes.io/hostname
+      containers:
+        - name: nginx
+          image: ghcr.io/tmlmobilidade/go-alerts-nginx:k8s
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            failureThreshold: 3
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi

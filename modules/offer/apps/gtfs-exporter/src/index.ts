@@ -9,12 +9,12 @@ export * from '@/types.js';
 export * from '@/utils.js';
 
 const exportConfig: GtfsV29ExportConfig = {
-	agency_id: '41',
-	calendars_clip_end_date: '20241231',
-	calendars_clip_start_date: '20240101',
-	clip_calendars: true,
-	feed_end_date: Dates.fromISO('20261231').operational_date,
-	feed_start_date: Dates.fromISO('20250101').operational_date,
+	agency_id: '43',
+	calendars_clip_end_date: '20241231', // not currently used
+	calendars_clip_start_date: '20240101', // not currently used
+	clip_calendars: true, // not currently used
+	feed_end_date: Dates.fromISO('20260630').operational_date,
+	feed_start_date: Dates.fromISO('20250701').operational_date,
 	lines_exclude: [],
 	lines_include: [],
 	numeric_calendar_codes: false,

@@ -1,18 +1,19 @@
 /* * */
 
-import { clickhouseService } from '@tmlmobilidade/clickhouse';
-import { invalidateRides, parseSimplifiedApexLocation, simplifiedApexLocationsSchema } from '@tmlmobilidade/go-apex-pckg-common';
+import { simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
+import { invalidateRides, parseSimplifiedApexLocation } from '@tmlmobilidade/go-apex-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
-import { ClickHouseWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 
-const writer = new ClickHouseWriter<SimplifiedApexLocation>({
-	batch_size: 250,
-	client: await clickhouseService.getClient(),
-	table: 'simplified_apex_locations',
-	tableSchema: simplifiedApexLocationsSchema,
+const writer = new BatchWriter<SimplifiedApexLocation>({
+	batch_size: 50_000,
+	insertFn: async (data) => {
+		await simplifiedApexLocationsNew.insert('JSONEachRow', data);
+	},
+	title: await simplifiedApexLocationsNew.getTableName(),
 });
 
 /**

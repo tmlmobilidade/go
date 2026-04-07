@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+  namespace: go-gateway
+  labels:
+    app: gateway
+    app.kubernetes.io/name: gateway
+    app.kubernetes.io/part-of: go-poc
+spec:
+  # NodePort: exposes the service on a fixed port on every worker node.
+  # The nginx proxy VM in pub-go forwards external traffic to this port.
+  type: NodePort
+  selector:
+    app: gateway
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 30080
+      protocol: TCP

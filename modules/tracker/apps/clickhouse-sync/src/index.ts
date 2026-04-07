@@ -2,7 +2,6 @@
 
 import { syncVehicleEvents } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
-import { rawdbVehicleEvents } from '@tmlmobilidade/go-tracker-pckg-databases';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
@@ -18,11 +17,6 @@ async function main() {
 		const globalTimer = new Timer();
 
 		//
-		// Connect to the source database
-
-		await rawdbVehicleEvents.connect();
-
-		//
 		// Get the earliest date from which we have data to sync,
 		// and perform the sync in time chunks until we reach the current date.
 
@@ -34,7 +28,7 @@ async function main() {
 
 		await performInTimeChunks({
 			onChunk: syncVehicleEvents,
-			splitBy: { hours: 4 },
+			splitBy: { minutes: 10 },
 			startDate: earliestDate.unix_timestamp,
 		});
 
@@ -42,7 +36,8 @@ async function main() {
 
 		//
 	} catch (err) {
-		console.log('An error occurred. Halting execution.', err);
+		Logger.error('An error occurred while syncing clickhouse data.', err as Error);
+		throw err;
 	}
 }
 
