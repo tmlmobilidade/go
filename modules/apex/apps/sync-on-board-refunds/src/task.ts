@@ -6,7 +6,7 @@ import { APEX_ON_BOARD_REFUNDS_SETTINGS, invalidateRides, parseSimplifiedApexOnB
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
-import { BatchWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 

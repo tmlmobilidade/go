@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plans-frontend
+  namespace: go-plans
+  labels:
+    app: plans-frontend
+    app.kubernetes.io/name: plans-frontend
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/part-of: go-plans
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: plans-frontend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: plans-frontend
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values: [plans-frontend]
+                topologyKey: kubernetes.io/hostname
+      containers:
+        - name: frontend
+          image: ghcr.io/tmlmobilidade/go-plans-frontend:k8s
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: plans-secret
+          livenessProbe:
+            httpGet:
+              path: /plans
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /plans
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
