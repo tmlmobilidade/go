@@ -66,6 +66,3 @@ export const analysisSquareTooltipItems = (a: SamAnalysis): string[] => {
 	];
 };
 
-export const analysisSquareTooltip = (a: SamAnalysis): string | undefined => {
-	return analysisSquareTooltipItems(a).join('\n');
-};

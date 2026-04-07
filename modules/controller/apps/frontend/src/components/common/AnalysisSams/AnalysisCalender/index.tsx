@@ -23,11 +23,6 @@ import {
 export interface AnalysisCalenderProps {
 	analyses: SamAnalysis[]
 	className?: string
-	/**
-	 * Upper bound on day columns when the container is wide; narrower widths show fewer columns (CSS `auto-fit`).
-	 * Override density with `--analysis-calendar-day-min` (e.g. `140px`) via `style` / CSS if needed.
-	 */
-	maxDaysPerRow?: number
 	onClick?: (analysis: SamAnalysis) => void
 }
 

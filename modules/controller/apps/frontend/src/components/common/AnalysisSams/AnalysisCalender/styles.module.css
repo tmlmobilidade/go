@@ -17,16 +17,6 @@
 	gap: 8px;
 }
 
-.monthLabel {
-	font-size: 20px;
-	font-weight: 700;
-	letter-spacing: 0.5px;
-	text-transform: uppercase;
-	text-align: center;
-	justify-self: center;
-	padding-bottom: 20px;
-}
-
 .organizedByDates {
 	--analysis-calendar-grid-gap: 10px;
 	box-sizing: border-box;
@@ -124,11 +114,4 @@
 	gap: 4px;
 	align-items: center;
 	min-width: 0;
-}
-
-.dayGapHint {
-	font-size: 12px;
-	font-weight: 600;
-	font-variant-numeric: tabular-nums;
-	color: var(--color-status-danger-primary);
 }
