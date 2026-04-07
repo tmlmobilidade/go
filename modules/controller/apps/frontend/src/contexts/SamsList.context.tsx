@@ -67,7 +67,7 @@ const getSamSystemStatus = (sam: Sam): SystemStatus => {
 const SAMS_PAGE_SIZE = 500;
 
 // --- Custom Hook splits out logic for clean separation
-function useSamsListContextState(): SamsListContextState {
+export function SamsListContextProvider({ children }: PropsWithChildren) {
 	// A. Setup variables
 	const filterSearch = useFilterStateString('search');
 	const [debouncedFilterSearch, setDebouncedFilterSearch] = useState('');
@@ -261,16 +261,14 @@ function useSamsListContextState(): SamsListContextState {
 		],
 	);
 
-	return contextValue;
-}
+	//
 
-// --- Split out component for separation
-export function SamsListContextProvider({ children }: PropsWithChildren) {
-	const contextValue = useSamsListContextState();
-
+	//
+	// E. Render components
 	return (
 		<SamsListContext.Provider value={contextValue}>
 			{children}
 		</SamsListContext.Provider>
 	);
 }
+
