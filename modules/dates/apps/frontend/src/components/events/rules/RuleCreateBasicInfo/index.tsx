@@ -5,7 +5,7 @@
 import { useRuleCreateContext } from '@/components/events/rules/RuleCreate.context';
 import { IconClockPlay } from '@tabler/icons-react';
 import { EventReplacementRule, HHMM } from '@tmlmobilidade/types';
-import { Checkbox, Divider, Grid, Section, Switch, Text, TextInput } from '@tmlmobilidade/ui';
+import { Checkbox, Divider, Grid, Section, SegmentedControl, Switch, Text, TextInput } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -52,13 +52,18 @@ export function RuleCreateBasicInfo() {
 			{/* Rule Type */}
 			<div className={styles.sectionWrapper}>
 				<Text size="lg">1. Tipo de regra</Text>
-				<Section>
-					<Switch
-						checked={isReplacementRule}
-						description={isReplacementRule ? 'Exemplo: O dia 17/02/2026 (terça-feira) passa a funcionar como Sábado · Período Escolar.' : 'Ex: Dia 17/02/26 (terça-feira) tem oferta removida entre as 14h e 18h'}
-						label={isReplacementRule ? 'Aplicar oferta de outro tipo de dia nestas datas' : 'Esta regra irá remover toda a oferta durante a duração do evento'}
-						onChange={e => createRuleContext.data.form.setFieldValue('kind', e.currentTarget.checked ? 'event_replacement' : 'event_restriction')}
+				<Section gap="sm">
+					<SegmentedControl
+						onChange={value => createRuleContext.data.form.setFieldValue('kind', value as 'event_replacement' | 'event_restriction')}
+						value={createRuleContext.data.form.values.kind}
+						data={[
+							{ label: 'Restrição de oferta', value: 'event_restriction' },
+							{ label: 'Substituição de oferta', value: 'event_replacement' },
+						]}
 					/>
+					{/* <Spacer orientation="vertical" size="md" /> */}
+					<Text c="dimmed">{isReplacementRule ? 'Aplicar oferta de outro tipo de dia nestas datas' : 'Esta regra irá remover toda a oferta durante a duração do evento'}</Text>
+					<Text c="dimmed" size="sm">{isReplacementRule ? 'Exemplo: O dia 17/02/2026 (terça-feira) passa a funcionar como Sábado · Período Escolar.' : 'Ex: Dia 17/02/26 (terça-feira) tem oferta removida entre as 14h e 18h'}</Text>
 				</Section>
 			</div>
 
