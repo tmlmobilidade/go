@@ -119,8 +119,8 @@ export function AlertsList() {
 	return (
 		<Pane
 			header={[
-				<AlertsListHeader />,
-				<AlertsListFiltersBar />,
+				<AlertsListHeader key="alerts-list-header" />,
+				<AlertsListFiltersBar key="alerts-list-filters" />,
 			]}
 		>
 			<DataTable
