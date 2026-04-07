@@ -1,9 +1,9 @@
 /* * */
 
-import { PermissionCatalog } from '@/permissions/index.js';
 import { ProcessingStatusSchema } from '@/_common/status.js';
-import { z } from 'zod';
 import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { PermissionCatalog } from '@/permissions/index.js';
+import { z } from 'zod';
 
 /* * */
 
@@ -33,6 +33,15 @@ function preprocessStringArrayParam(val: unknown): string[] | undefined {
 	return undefined;
 }
 
+function preprocessIntegerParam(val: unknown): number | undefined {
+	if (val === undefined || val === null || val === '')
+		return undefined;
+	const parsed = Number(val);
+	if (!Number.isFinite(parsed))
+		return undefined;
+	return Math.trunc(parsed);
+}
+
 /* * */
 
 export const GetSamsBatchQuerySchema = z.object({
@@ -41,15 +50,26 @@ export const GetSamsBatchQuerySchema = z.object({
 		.preprocess(preprocessAgencyIdsParam, z.array(z.string()).optional())
 		.default([PermissionCatalog.ALLOW_ALL_FLAG]),
 
+	latest_apex_version: z
+		.preprocess(preprocessStringArrayParam, z.array(z.string()).optional()),
+
+	limit: z
+		.preprocess(preprocessIntegerParam, z.number().int().min(1).max(500).optional())
+		.default(500),
+
+	offset: z
+		.preprocess(preprocessIntegerParam, z.number().int().min(0).optional())
+		.default(0),
+
 	search: z
 		.string()
 		.optional(),
 
+	seen_first_at: UnixTimeStampSchema.optional(),
+
+	seen_last_at: UnixTimeStampSchema.optional(),
 	system_status: z
 		.preprocess(preprocessStringArrayParam, z.array(ProcessingStatusSchema).optional()),
-
-	seen_first_at: UnixTimeStampSchema.optional(),
-	seen_last_at: UnixTimeStampSchema.optional(),
 
 });
 

@@ -23,6 +23,12 @@ server.register(
 		);
 
 		instance.get(
+			'/apex-versions',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.sams.scope, [PermissionCatalog.all.sams.actions.read]) },
+			(request: FastifyRequest<{ Querystring: GetSamsBatchQuery }>, reply: FastifyReply<string[]>) => SamsController.getApexVersions(request, reply),
+		);
+
+		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.sams.scope, [PermissionCatalog.all.sams.actions.read]) },
 			(request: FastifyRequest, reply: FastifyReply<Sam>) => SamsController.getById(request, reply),

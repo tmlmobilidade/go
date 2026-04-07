@@ -35,6 +35,12 @@ export function SamsList() {
 			width: 80,
 		},
 		{
+			accessor: 'latest_apex_version',
+			render: item => <Tag label={item.latest_apex_version ?? 'N/A'} />,
+			title: 'Versão APEX',
+			width: 100,
+		},
+		{
 			accessor: 'transactions_expected',
 			render: item => <Tag label={item.transactions_expected ? item.transactions_expected.toString() : '-'} />,
 			title: 'Transações esperadas',
@@ -72,7 +78,7 @@ export function SamsList() {
 		},
 		{
 			accessor: 'analysis',
-			render: item => <AnalysisTimeLineRow analyses={item.analysis ?? []} groupBy="month" />,
+			render: item => <AnalysisTimeLineRow analyses={item.analysis ?? []} />,
 			title: 'Análises',
 			width: 800,
 		},

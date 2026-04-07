@@ -2,13 +2,13 @@
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { ApexVersion, ApexVersionSchema, Sam, type SystemStatus, SystemStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
+import { Sam, type SystemStatus, SystemStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
 import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
 import { parseAsInteger, useQueryState } from 'nuqs';
 
 /* * */
 
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -24,7 +24,7 @@ export interface SamsListContextState {
 	}
 	filters: {
 		agency: UseFilterStateListReturnType
-		apex_version: UseFilterStateListReturnType<ApexVersion>
+		apex_version: UseFilterStateListReturnType<string>
 		search: UseFilterStateStringReturnType
 		seen_first_at: null | UnixTimestamp
 		seen_last_at: null | UnixTimestamp
@@ -66,6 +66,8 @@ const getSamSystemStatus = (sam: Sam): SystemStatus => {
 	return 'complete';
 };
 
+const SAMS_PAGE_SIZE = 500;
+
 export function SamsListContextProvider({ children }: PropsWithChildren) {
 	//
 
@@ -98,13 +100,22 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 		'seen_last_at',
 		parseAsInteger,
 	);
+	const [filterPage, setFilterPage] = useQueryState<number>(
+		'page',
+		parseAsInteger,
+	);
 
-	const filterApexVersion = useFilterStateList<ApexVersion>('latest_apex_version', ApexVersionSchema.options, ApexVersionSchema.options.map(item => ({ label: item, value: item })));
+	const normalizeApexVersion = useCallback((value: null | string | undefined): null | string => {
+		if (value == null) return null;
+		const trimmed = value.trim();
+		if (!trimmed) return null;
+		return trimmed;
+	}, []);
 
 	useEffect(() => {
 		const handle = window.setTimeout(() => {
 			setDebouncedFilterSearch(filterSearch.value.trim());
-		}, 500);
+		}, 100);
 		return () => window.clearTimeout(handle);
 	}, [filterSearch.value]);
 
@@ -126,7 +137,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	const filterAgency = useFilterStateList('agency_id', agencyIdsOrdered, agencyOptions);
 
-	const samsListQueryString = useMemo(() => {
+	const baseQueryString = useMemo(() => {
 		const params = new URLSearchParams();
 		if (filterAgency.isActive && filterAgency.value.length)
 			params.set('agency_ids', filterAgency.value.join(','));
@@ -136,10 +147,45 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 			params.set('seen_first_at', filterSeenFirstAt.toString());
 		if (filterSeenLastAt)
 			params.set('seen_last_at', filterSeenLastAt.toString());
-		if (filterApexVersion.isActive && filterApexVersion.value.length)
-			params.set('latest_apex_version', filterApexVersion.value.join(','));
 		return params.toString();
-	}, [debouncedFilterSearch, filterAgency.isActive, filterAgency.value, filterSeenFirstAt, filterSeenLastAt, filterApexVersion.isActive, filterApexVersion.value]);
+	}, [debouncedFilterSearch, filterAgency.isActive, filterAgency.value, filterSeenFirstAt, filterSeenLastAt]);
+
+	const apexVersionsUrl = useMemo(() => {
+		if (agenciesContext.flags.loading)
+			return null;
+		const base = `${API_ROUTES.controller.SAMS_LIST}/apex-versions`;
+		return baseQueryString ? `${base}?${baseQueryString}` : base;
+	}, [agenciesContext.flags.loading, baseQueryString]);
+
+	const { data: apexVersionsData } = useSWR<string[], Error>(apexVersionsUrl);
+	const apexVersionOptions = useMemo(
+		() => [...new Set((apexVersionsData ?? [])
+			.map(value => normalizeApexVersion(value))
+			.filter((value): value is string => value != null))]
+			.sort((a, b) => b.localeCompare(a, undefined, { numeric: true })),
+		[apexVersionsData, normalizeApexVersion],
+	);
+	const filterApexVersion = useFilterStateList<string>(
+		'latest_apex_version',
+		apexVersionOptions,
+		apexVersionOptions.map(item => ({ label: item, value: item })),
+	);
+	const normalizedFilterApexVersionValues = useMemo(
+		() => [...new Set(filterApexVersion.value
+			.map(item => normalizeApexVersion(item))
+			.filter((item): item is string => item != null))],
+		[filterApexVersion.value, normalizeApexVersion],
+	);
+
+	const samsListQueryString = useMemo(() => {
+		const params = new URLSearchParams(baseQueryString);
+		if (filterApexVersion.isActive && normalizedFilterApexVersionValues.length)
+			params.set('latest_apex_version', normalizedFilterApexVersionValues.join(','));
+		const page = Math.max(1, filterPage ?? 1);
+		params.set('limit', SAMS_PAGE_SIZE.toString());
+		params.set('offset', ((page - 1) * SAMS_PAGE_SIZE).toString());
+		return params.toString();
+	}, [baseQueryString, filterApexVersion.isActive, filterPage, normalizedFilterApexVersionValues]);
 
 	const samsListUrl = useMemo(() => {
 		if (agenciesContext.flags.loading)
@@ -148,10 +194,21 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 		return samsListQueryString ? `${base}?${samsListQueryString}` : base;
 	}, [agenciesContext.flags.loading, samsListQueryString]);
 
-	const { data: allSamsData, error: allSamsError, isLoading: allSamsLoading } = useSWR<Sam[], Error>(samsListUrl, { refreshInterval: 5000 });
+	useEffect(() => {
+		if ((filterPage ?? 1) <= 1) return;
+		void setFilterPage(1);
+	}, [baseQueryString, filterApexVersion.isActive, filterPage, normalizedFilterApexVersionValues, setFilterPage]);
+
+	const { data: allSamsData = [], error: allSamsError, isLoading: allSamsLoading } = useSWR<Sam[], Error>(samsListUrl);
+	const normalizedSamsData = useMemo(() => {
+		return allSamsData.map(item => ({
+			...item,
+			latest_apex_version: normalizeApexVersion(item.latest_apex_version),
+		}));
+	}, [allSamsData, normalizeApexVersion]);
 	const samsDataWithComputedStatus = useMemo(() => {
-		return (allSamsData ?? []).map(item => ({ ...item, system_status: getSamSystemStatus(item) }));
-	}, [allSamsData]);
+		return normalizedSamsData.map(item => ({ ...item, system_status: getSamSystemStatus(item) }));
+	}, [normalizedSamsData]);
 	const filteredSamsData = useMemo(() => {
 		if (!filterStatus.isActive || !filterStatus.value.length)
 			return samsDataWithComputedStatus;
