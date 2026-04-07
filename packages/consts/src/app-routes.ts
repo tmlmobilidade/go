@@ -17,6 +17,10 @@ export const PAGE_ROUTES = Object.freeze({
 		// ALERTS
 		ALERTS_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/${id}`,
 		ALERTS_LIST: `${getAppConfig('alerts', 'frontend_url')}`,
+
+		// HOME
+		HOME_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/home/${id}`,
+		HOME_LIST: `${getAppConfig('alerts', 'frontend_url')}/home`,
 	},
 
 	/* * */
@@ -193,7 +197,7 @@ export const API_ROUTES = Object.freeze({
 		ALERTS_DETAIL_IMAGE: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/image`,
 		ALERTS_DETAIL_LOCK: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/lock`,
 		ALERTS_LIST: `${getAppConfig('alerts', 'api_url')}/alerts`,
-		ALERTS_RSS: `${getAppConfig('alerts', 'api_url')}/alerts.rss`,
+		ALERTS_RSS: `${getAppConfig('alerts', 'api_url')}/alerts/.rss`,
 
 		// GTFS
 		GTFS_CARRIS_METROPOLITANA: `${getAppConfig('alerts', 'api_url')}/gtfs/carris-metropolitana`,
