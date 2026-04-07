@@ -6,7 +6,6 @@
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Dates } from '@tmlmobilidade/dates';
 import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { Agency, type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, RideNormalized } from '@tmlmobilidade/types';
@@ -32,7 +31,6 @@ interface AlertCreateContextState extends CreateContextStateTemplate {
 
 const AlertCreateContext = createContext<AlertCreateContextState | undefined>(undefined);
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function useAlertCreateContext() {
 	const context = useContext(AlertCreateContext);
 	if (!context) {
