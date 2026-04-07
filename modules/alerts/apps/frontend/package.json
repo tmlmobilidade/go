@@ -17,6 +17,7 @@
 		"@tabler/icons-react": "3.41.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-alerts-pckg-describe": "*",
+		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"next": "16.2.1",
