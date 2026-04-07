@@ -57,7 +57,7 @@ export class GtfsController {
 		);
 
 		const transformResult: GtfsRtFeedEntity[] = transformedItems.filter(Boolean);
-
+    
 		Logger.info(`Transformed ${transformResult.length} alerts into GTFS-RT feed entities for Carris Metropolitana GTFS feed.`);
 
 		//

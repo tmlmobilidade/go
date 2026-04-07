@@ -17,6 +17,10 @@ export const PAGE_ROUTES = Object.freeze({
 		// ALERTS
 		ALERTS_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/${id}`,
 		ALERTS_LIST: `${getAppConfig('alerts', 'frontend_url')}`,
+
+		// GTFS
+		GTFS_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/gtfs/${id}`,
+		GTFS_LIST: `${getAppConfig('alerts', 'frontend_url')}/gtfs`,
 	},
 
 	/* * */

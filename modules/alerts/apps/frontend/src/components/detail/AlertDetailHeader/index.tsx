@@ -61,6 +61,8 @@ export function AlertDetailHeader() {
 		router.push(`${PAGE_ROUTES.alerts.ALERTS_LIST}?${searchParams.toString()}`);
 	};
 
+	const nonAuthenticatedGtfsLink = PAGE_ROUTES.alerts.GTFS_DETAIL(alertDetailContext.data.id);
+
 	//
 	// C. Render components
 
@@ -75,6 +77,13 @@ export function AlertDetailHeader() {
 				disabled={!hasPermissionToChangePublishStatus}
 				onChange={value => alertDetailContext.data.form.setFieldValue('publish_status', value)}
 				value={alertDetailContext.data.form.values.publish_status}
+			/>
+
+			<Button
+				href={nonAuthenticatedGtfsLink}
+				label="GTFS Público"
+				target="_blank"
+				variant="secondary"
 			/>
 
 			<Spacer />
