@@ -38,7 +38,7 @@ export function ReferencesEditorStopsItem({ index, lines, onRemoveReference, onU
 			label: `[${line._id}] ${line.name}`,
 			value: line._id,
 		}));
-	}, [lines]);
+	}, [lines, reference.parent_id]);
 
 	//
 	// C. Render components
