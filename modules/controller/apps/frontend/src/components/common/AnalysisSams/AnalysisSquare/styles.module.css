@@ -1,6 +1,9 @@
 /* * */
 /* SQUARE */
 
+/* ========== SQUARE COMPONENT ========== */
+
+/* Row container for squares; allows multiple squares to wrap */
 .row {
 	display: inline-flex;
 	flex-wrap: wrap;
@@ -9,12 +12,14 @@
 	max-width: 100%;
 }
 
+/* Empty state within square row */
 .rowEmpty {
 	font-size: 14px;
 	font-variant-numeric: tabular-nums;
-	color: var(--color-status-danger-primary);
+	color: var(--color-status-danger-primary); /* Danger color for empty state */
 }
 
+/* Individual analysis square */
 .square {
 	position: relative;
 	display: inline-flex;
@@ -33,43 +38,55 @@
 	outline: none;
 }
 
+/* Keyboard focus-visible highlight for accessibility */
 .square:focus-visible {
 	box-shadow: 0 0 0 2px var(--color-primary-contrast), 0 0 0 4px var(--color-primary-primary);
 }
 
+/* ========== SQUARE STATE VARIANTS ========== */
+
+/* Filled (success/completed) square */
 .filled {
 	color: var(--color-status-success-primary);
 	background-color: var(--color-status-success-contrast);
 	border-color: var(--color-status-success-primary);
 }
 
+/* Empty (failure/negative) square */
 .empty {
 	color: var(--color-status-danger-primary);
 	background-color: var(--color-status-danger-contrast);
 	border-color: var(--color-status-danger-primary);
 }
 
+/* Orange accent state (warning) */
 .accentOrange {
 	color: var(--color-status-warning-primary);
 	background-color: var(--color-status-warning-contrast);
 	border-color: var(--color-status-warning-primary);
 }
 
+/* ========== TOOLTIP STYLES (for analysis detail popovers) ========== */
+
+/* Layout for main tooltip content */
 .tooltipContent {
 	display: grid;
 	gap: 8px;
 }
 
+/* Groups analyses inside tooltip */
 .tooltipAnalysisGroup {
 	display: grid;
 	gap: 4px;
 }
 
+/* Analysis group title in tooltip */
 .tooltipAnalysisTitle {
 	font-size: 11px;
 	font-weight: 700;
 }
 
+/* Unordered list for tooltip details */
 .tooltipList {
 	margin: 0;
 	padding-left: 16px;
@@ -77,6 +94,7 @@
 	gap: 2px;
 }
 
+/* List item in tooltip */
 .tooltipListItem {
 	font-size: 11px;
 	line-height: 1.2;

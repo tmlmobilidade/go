@@ -1,18 +1,21 @@
 /* * */
-/* ANALYSIS TIME LINE */
+/* ANALYSIS TIMELINE */
 
+/* ========== Empty State ========== */
+/* Displayed when there are no items in the timeline */
 .rowEmpty {
 	font-size: 14px;
 	font-variant-numeric: tabular-nums;
-	color: var(--color-status-danger-primary);
+	color: var(--color-status-danger-primary); /* Danger color for empty state */
 }
 
-/* By-day inline: marker + squares */
+/* ========== Timeline Layouts ========== */
 
+/* Inline container for by-day markers and associated squares */
 .byDayInline {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 8px 12px;
+	gap: 8px 12px;         /* Row gap 8px, column gap 12px */
 	align-items: center;
 	max-width: 100%;
 }
