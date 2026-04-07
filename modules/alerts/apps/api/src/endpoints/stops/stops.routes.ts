@@ -1,8 +1,8 @@
 /* * */
 
 import { StopsSharedController } from '@tmlmobilidade/controllers';
-import { authorizationMiddleware, FastifyInstance, FastifyReply, FastifyRequest, FastifyService } from '@tmlmobilidade/fastify';
-import { PermissionCatalog, type Stop } from '@tmlmobilidade/types';
+import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -19,19 +19,19 @@ server.register(
 		instance.get(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read, PermissionCatalog.all.alerts.actions.create]) },
-			(request: FastifyRequest, reply: FastifyReply<Stop[]>) => StopsSharedController.getAll(request, reply),
+			StopsSharedController.getAll,
 		);
 
 		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read, PermissionCatalog.all.alerts.actions.create]) },
-			(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<null | Stop>) => StopsSharedController.getById(request, reply),
+			StopsSharedController.getById,
 		);
 
 		instance.get(
 			'/batch',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read, PermissionCatalog.all.alerts.actions.create]) },
-			(request: FastifyRequest, reply: FastifyReply<{ label: string, value: string }[]>) => StopsSharedController.getBatch(request, reply),
+			StopsSharedController.getBatch,
 		);
 	},
 	{ prefix: NAMESPACE },

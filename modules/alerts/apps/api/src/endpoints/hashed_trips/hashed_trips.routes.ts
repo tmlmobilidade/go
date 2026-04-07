@@ -1,19 +1,10 @@
-import { HashedTripsSharedController, LineByHashedTrip, LinesSharedController } from '@tmlmobilidade/controllers';
-import { authorizationMiddleware, FastifyInstance, type FastifyReply, type FastifyRequest, FastifyService } from '@tmlmobilidade/fastify';
-import { type HashedTrip, PermissionCatalog } from '@tmlmobilidade/types';
+import { HashedTripsSharedController, LinesSharedController } from '@tmlmobilidade/controllers';
+import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
 const NAMESPACE = '/hashed-trips';
-
-/* * */
-
-interface GetHashedTripsQuery {
-	agency_id?: string
-	date_end?: number | string
-	date_start?: number | string
-	hashed_trip_ids?: string | string[]
-}
 
 /* * */
 
@@ -29,14 +20,14 @@ server.register(
 		instance.get(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
-			(request: FastifyRequest<{ Querystring: GetHashedTripsQuery }>, reply: FastifyReply<LineByHashedTrip[]>) => LinesSharedController.getAllLinesIdsByHashedTrip(request, reply),
+			LinesSharedController.getAllLinesIdsByHashedTrip,
 		);
 
 		// get a hashed trip by id
 		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
-			(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HashedTrip>) => HashedTripsSharedController.getById(request, reply),
+			HashedTripsSharedController.getById,
 		);
 
 		//

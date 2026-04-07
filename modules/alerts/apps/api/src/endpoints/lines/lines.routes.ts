@@ -1,12 +1,6 @@
-import { LineByHashedTrip, LinesSharedController } from '@tmlmobilidade/controllers';
-import { authorizationMiddleware, FastifyInstance, type FastifyReply, type FastifyRequest, FastifyService } from '@tmlmobilidade/fastify';
-import { type Line, PermissionCatalog } from '@tmlmobilidade/types';
-
-/* * */
-
-interface GetHashedTripsQuery {
-	hashed_trip_ids: string[]
-}
+import { LinesSharedController } from '@tmlmobilidade/controllers';
+import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -25,13 +19,13 @@ server.register(
 		instance.get(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
-			(request: FastifyRequest, reply: FastifyReply<Line[]>) => LinesSharedController.getAll(request, reply),
+			LinesSharedController.getAll,
 		);
 
 		instance.get(
 			'/hashed-trips',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
-			(request: FastifyRequest<{ Querystring: GetHashedTripsQuery }>, reply: FastifyReply<LineByHashedTrip[]>) => LinesSharedController.getAllLinesIdsByHashedTrip(request, reply),
+			LinesSharedController.getAllLinesIdsByHashedTrip,
 		);
 
 		//
