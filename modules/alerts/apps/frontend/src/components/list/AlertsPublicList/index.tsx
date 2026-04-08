@@ -2,13 +2,11 @@
 
 /* * */
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Alert } from '@tmlmobilidade/types';
+import { useAlertsPublicListContext } from '@/contexts/AlertsPublicList.context';
 import { Grid, Loader, Section, Surface } from '@tmlmobilidade/ui';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 import { useState } from 'react';
-import useSWR from 'swr';
 
 /* * */
 
@@ -19,13 +17,13 @@ export default function AlertsPublicList() {
 	// A. Setup Variables
 
 	const sentinelRef = useRef<HTMLDivElement | null>(null);
-	const { data: alerts, isLoading: alertsLoading } = useSWR<Alert[]>(`${API_ROUTES.alerts.BASE}/alerts/public`);
+	const alertsPublicListContext = useAlertsPublicListContext();
 	const [visibleCount, setVisibleCount] = useState(20);
 
 	//
 	// B. Transform Data
 
-	const visibleAlerts = (alerts ?? []).slice(0, visibleCount);
+	const visibleAlerts = alertsPublicListContext.data.filtered.slice(0, visibleCount);
 
 	useEffect(() => {
 		if (!sentinelRef.current) return;
@@ -36,12 +34,12 @@ export default function AlertsPublicList() {
 		}, { rootMargin: '200px' });
 		observer.observe(sentinelRef.current);
 		return () => observer.disconnect();
-	}, [alerts?.length]);
+	}, [alertsPublicListContext.data.filtered.length]);
 
 	//
 	// C. Render Components
 
-	if (alertsLoading) {
+	if (alertsPublicListContext.flags.loading) {
 		return <Loader size="xl" />;
 	}
 
