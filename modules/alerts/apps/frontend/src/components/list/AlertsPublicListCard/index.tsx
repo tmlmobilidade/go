@@ -1,5 +1,6 @@
 /* * */
 
+import { getAlertCardSeverityLevel } from '@/lib/alert-severity';
 import { IconAffiliate, IconAlertCircle, IconAmbulance, IconBarrierBlock, IconBusStop, IconCirclePlus, IconClockExclamation, IconCloudStorm, IconCreditCard, IconFlag, IconFlame, IconInfoCircle, IconMapPin, IconParkingOff, IconProgressDown, IconRoad, IconRoute, IconShield, IconTool, IconTrafficCone, IconUserExclamation, IconUserMinus, IconUserOff, IconUsersGroup, IconWheelchair, IconX } from '@tabler/icons-react';
 import { Dates } from '@tmlmobilidade/dates';
 import { type Alert, type AlertCause } from '@tmlmobilidade/types';
@@ -98,6 +99,8 @@ function iconForCause(cause: AlertCause) {
 export function AlertsPublicListCard({ alert, description, title }: AlertsPublicListCardProps) {
 	const { t } = useTranslation();
 
+	const severity = getAlertCardSeverityLevel(alert.cause, alert.effect);
+
 	const activePeriodDates = useMemo(() => {
 		const startDate = Dates
 			.fromUnixTimestamp(alert.active_period_start_date)
@@ -113,9 +116,9 @@ export function AlertsPublicListCard({ alert, description, title }: AlertsPublic
 	}, [alert.active_period_end_date, alert.active_period_start_date, t]);
 
 	return (
-		<article className={styles.card}>
+		<article className={styles.card} data-severity={String(severity)}>
 			<div className={styles.header}>
-				<span aria-hidden="true" className={styles.iconWrap}>
+				<span aria-hidden="true" className={styles.iconWrap} data-severity={String(severity)}>
 					<AlertsPublicListCardIcon alert={alert} />
 				</span>
 				<div className={styles.main}>
