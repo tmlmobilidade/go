@@ -1,6 +1,6 @@
 /* * */
 
-import { useAlertsListContext } from '@/components/list/AlertsList.context';
+import { useAlertsListContext } from '@/contexts/AlertsList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 
 /* * */

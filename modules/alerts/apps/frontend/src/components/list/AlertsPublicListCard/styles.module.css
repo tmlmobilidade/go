@@ -4,14 +4,38 @@
 .card {
 	display: flex;
 	flex-direction: column;
-	gap: var(--size-spacing-sm);
-	height: 100%;
+	gap: var(--size-spacing-md);
 	padding: var(--size-spacing-lg);
 	color: var(--color-system-text-100);
 	background-color: var(--color-system-background-100);
 	border: 1px solid var(--color-system-border-100);
 	border-radius: var(--border-radius-lg);
 	box-shadow: 0 1px 2px var(--color-shadow);
+}
+
+.header {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--size-spacing-md);
+}
+
+.iconWrap {
+	display: flex;
+	flex-shrink: 0;
+	margin-top: 2px;
+	color: var(--color-primary);
+}
+
+.cardIcon {
+	display: block;
+}
+
+.main {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	flex: 1;
+	min-width: 0;
 }
 
 /* * */

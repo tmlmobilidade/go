@@ -29,7 +29,14 @@
 					}
 				},
 				"filters": {
-					"date_range": "Desde / Até"
+					"cause": "Causa",
+					"effect": "Efeito",
+					"line": "Linha",
+					"past_alerts": "Alertas passados",
+					"stop": "Paragem"
+				},
+				"search": {
+					"placeholder": "Pesquisar…"
 				},
 				"groups": {
 					"from_date": "A partir de {date}",

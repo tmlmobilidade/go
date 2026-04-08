@@ -2,8 +2,7 @@
 /* * */
 
 import { AlertsPublicListFilterBar } from '@/components/list/AlertsPublicListFilterBar';
-import { Toolbar } from '@tmlmobilidade/ui';
-import { Label } from '@tmlmobilidade/ui';
+import { Label, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -12,12 +11,12 @@ export function AlertsPublicListHeader() {
 	//
 
 	//
-	// A. Setup Variables
+	// A. Setup variables
 
 	const { t } = useTranslation();
 
 	//
-	// B. Render Components
+	// B. Render components
 
 	return (
 		<>

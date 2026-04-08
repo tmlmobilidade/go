@@ -4,12 +4,9 @@
 
 import { AlertsPublicListCard } from '@/components/list/AlertsPublicListCard';
 import { useAlertsPublicListContext } from '@/contexts/AlertsPublicList.context';
-// import { Dates } from '@tmlmobilidade/dates';
-import { Grid, Loader, Section, Surface } from '@tmlmobilidade/ui';
-import { useEffect } from 'react';
-import { useMemo } from 'react';
-import { useRef } from 'react';
-import { useState } from 'react';
+import { Dates } from '@tmlmobilidade/dates';
+import { Section, Surface } from '@tmlmobilidade/ui';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -26,9 +23,9 @@ export default function AlertsPublicList() {
 	const sentinelRef = useRef<HTMLDivElement | null>(null);
 	const alertsPublicListContext = useAlertsPublicListContext();
 	const [visibleCount, setVisibleCount] = useState(20);
-	// const todayDateKey = useMemo(() => Dates.now('Europe/Lisbon').startOf('day').toFormat('yyyyMMdd'), []);
-	// const tomorrowDateKey = useMemo(() => Dates.now('Europe/Lisbon').plus({ days: 1 }).startOf('day').toFormat('yyyyMMdd'), []);
-	// const yesterdayDateKey = useMemo(() => Dates.now('Europe/Lisbon').minus({ days: 1 }).startOf('day').toFormat('yyyyMMdd'), []);
+	const todayDateKey = useMemo(() => Dates.now('Europe/Lisbon').startOf('day').toFormat('yyyyMMdd'), []);
+	const tomorrowDateKey = useMemo(() => Dates.now('Europe/Lisbon').plus({ days: 1 }).startOf('day').toFormat('yyyyMMdd'), []);
+	const yesterdayDateKey = useMemo(() => Dates.now('Europe/Lisbon').minus({ days: 1 }).startOf('day').toFormat('yyyyMMdd'), []);
 
 	//
 	// B. Transform Data
@@ -38,14 +35,14 @@ export default function AlertsPublicList() {
 		const alertsMap = new Map<number, typeof visibleAlerts>();
 
 		for (const alert of visibleAlerts) {
-			// const dayTimestamp = Dates
-			// 	.fromUnixTimestamp(alert.active_period_start_date)
-			// 	.setZone('Europe/Lisbon', 'offset_only')
-			// 	.startOf('day')
-			// 	.unix_timestamp;
-			// const currentGroup = alertsMap.get(dayTimestamp) ?? [];
-			// currentGroup.push(alert);
-			// alertsMap.set(dayTimestamp, currentGroup);
+			const dayTimestamp = Dates
+				.fromUnixTimestamp(alert.active_period_start_date)
+				.setZone('Europe/Lisbon', 'offset_only')
+				.startOf('day')
+				.unix_timestamp;
+			const currentGroup = alertsMap.get(dayTimestamp) ?? [];
+			currentGroup.push(alert);
+			alertsMap.set(dayTimestamp, currentGroup);
 		}
 
 		return [...alertsMap.entries()]
@@ -53,27 +50,19 @@ export default function AlertsPublicList() {
 			.map(([dayTimestamp, alerts]) => ({ alerts, dayTimestamp }));
 	}, [visibleAlerts]);
 
-	// const getGroupDateLabel = (dayTimestamp: number) => {
-	// 	const dayDate = Dates
-	// 		.fromUnixTimestamp(dayTimestamp)
-	// 		.setZone('Europe/Lisbon', 'offset_only');
-	// 	const dateLabel = dayDate.toFormat('d LLLL yyyy', { locale: 'pt' });
-	// 	const dayDateKey = dayDate.toFormat('yyyyMMdd');
+	const getGroupDateLabel = (dayTimestamp: number) => {
+		const dayDate = Dates
+			.fromUnixTimestamp(dayTimestamp)
+			.setZone('Europe/Lisbon', 'offset_only');
+		const dateLabel = dayDate.toFormat('d LLLL yyyy', { locale: 'pt' });
+		const dayDateKey = dayDate.toFormat('yyyyMMdd');
 
-	// 	if (dayDateKey === todayDateKey) {
-	// 		return t('default:alerts.public.list.groups.from_today', { date: dateLabel });
-	// 	}
-	// 	if (dayDateKey === tomorrowDateKey) {
-	// 		return t('default:alerts.public.list.groups.from_tomorrow', { date: dateLabel });
-	// 	}
-	// 	if (dayDateKey === yesterdayDateKey) {
-	// 		return t('default:alerts.public.list.groups.since_yesterday', { date: dateLabel });
-	// 	}
-	// 	if (dayDateKey < todayDateKey) {
-	// 		return t('default:alerts.public.list.groups.since_date', { date: dateLabel });
-	// 	}
-	// 	return t('default:alerts.public.list.groups.from_date', { date: dateLabel });
-	// };
+		if (dayDateKey === todayDateKey) return `A partir de hoje, ${dateLabel}`;
+		if (dayDateKey === tomorrowDateKey) return `A partir de amanha, ${dateLabel}`;
+		if (dayDateKey === yesterdayDateKey) return `Desde ontem, ${dateLabel}`;
+		if (dayDateKey < todayDateKey) return `Desde ${dateLabel}`;
+		return `A partir de ${dateLabel}`;
+	};
 
 	useEffect(() => {
 		if (!sentinelRef.current) return;
@@ -89,10 +78,6 @@ export default function AlertsPublicList() {
 	//
 	// C. Render Components
 
-	if (alertsPublicListContext.flags.loading) {
-		return <Loader size="xl" />;
-	}
-
 	return (
 		<Surface>
 			<Section>
@@ -105,13 +90,18 @@ export default function AlertsPublicList() {
 										? t('default:alerts.public.list.groups.label_plural')
 										: t('default:alerts.public.list.groups.label_single')}
 								</p>
-								{/* <p className={styles.groupDate}>{getGroupDateLabel(group.dayTimestamp)}</p> */}
+								<p className={styles.groupDate}>{getGroupDateLabel(group.dayTimestamp)}</p>
 							</header>
-							<Grid columns="abc" gap="md">
+							<div className={styles.groupCards}>
 								{group.alerts.map(alert => (
-									<AlertsPublicListCard key={alert._id} alert={alert} description={alert.description} title={alert.title} />
+									<AlertsPublicListCard
+										key={alert._id}
+										alert={alert}
+										description={alert.description}
+										title={alert.title}
+									/>
 								))}
-							</Grid>
+							</div>
 						</section>
 					))}
 				</div>
