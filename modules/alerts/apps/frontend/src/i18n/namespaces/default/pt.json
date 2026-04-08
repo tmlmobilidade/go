@@ -18,6 +18,13 @@
 					"label": "Título"
 				}
 			}
+		},
+		"public": {
+			"list": {
+				"header": {
+					"title": "Alertas públicos"
+				}
+			}
 		}
 	}
 }
