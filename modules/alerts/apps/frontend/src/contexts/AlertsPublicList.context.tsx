@@ -4,9 +4,11 @@
 
 import { type AlertNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { type Alert, AlertReferenceTypeSchema, AlertSchema, PublishStatusSchema } from '@tmlmobilidade/types';
+import { type Alert, AlertReferenceTypeSchema, AlertSchema, PublishStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
 import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
+import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
@@ -26,6 +28,10 @@ interface AlertsPublicListContextState {
 		publish_status: UseFilterStateListReturnType
 		reference_type: UseFilterStateListReturnType
 		search: UseFilterStateStringReturnType
+		setSince: (value: null | number) => Promise<URLSearchParams>
+		setUntil: (value: null | number) => Promise<URLSearchParams>
+		since: UnixTimestamp
+		until: UnixTimestamp
 	}
 	flags: {
 		error: Error | undefined
@@ -71,6 +77,10 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 	// C. Setup filters
 
 	const filterSearch = useFilterStateString('search');
+	const defaultSince = useMemo(() => Dates.now('Europe/Lisbon').startOf('day').unix_timestamp, []);
+	const defaultUntil = useMemo(() => Dates.now('Europe/Lisbon').plus({ years: 1 }).endOf('day').unix_timestamp, []);
+	const [filterSince, setFilterSince] = useQueryState<number>('since', parseAsInteger.withDefault(defaultSince));
+	const [filterUntil, setFilterUntil] = useQueryState<number>('until', parseAsInteger.withDefault(defaultUntil));
 	// const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
 	const filterAlertReferenceType = useFilterStateList('reference_type', AlertReferenceTypeSchema.options, AlertReferenceTypeSchema.options.map(item => ({ label: t(`shared:alerts.reference_types.${item}.title`), value: item })));
 	const filterPublishStatus = useFilterStateList('publish_status', PublishStatusSchema.options, PublishStatusSchema.options.map(item => ({ label: t(`shared:status.publish_status.${item}`), value: item })));
@@ -101,8 +111,9 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
 		if (!searchResultsData) return [];
-		// Skip if no query filters are set
-		if (filterPublishStatus.value.length === 0 && filterCause.value.length === 0 && filterEffect.value.length === 0 && filterMunicipality.value.length === 0) return searchResultsData;
+		const [windowStart, windowEnd] = filterSince <= filterUntil
+			? [filterSince, filterUntil]
+			: [filterUntil, filterSince];
 		// Filter by query filters
 		const result = searchResultsData.filter((alert: AlertNormalized) => {
 			// Filter by agency IDs
@@ -116,7 +127,11 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 			// Filter by effect
 			if (!filterEffect.value.includes(alert.effect)) return false;
 			// Filter by municipality IDs
-			// if (!alert.municipality_ids.some((mId: string) => filterMunicipality.value.includes(mId))) return false;
+			if (!alert.municipality_ids.some((mId: string) => filterMunicipality.value.includes(mId))) return false;
+			// Filter by active period overlap
+			if (alert.active_period_start_date > windowEnd) return false;
+			const activePeriodEnd = alert.active_period_end_date ?? Number.MAX_SAFE_INTEGER;
+			if (activePeriodEnd < windowStart) return false;
 			// Return true if all filters pass
 			return true;
 		});
@@ -131,6 +146,8 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 		filterCause.value,
 		filterEffect.value,
 		filterMunicipality.value,
+		filterSince,
+		filterUntil,
 	]);
 
 	//
@@ -149,6 +166,10 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 			publish_status: filterPublishStatus,
 			reference_type: filterAlertReferenceType,
 			search: filterSearch,
+			setSince: setFilterSince,
+			setUntil: setFilterUntil,
+			since: filterSince as UnixTimestamp,
+			until: filterUntil as UnixTimestamp,
 		},
 		flags: {
 			error: allScheduledError,
@@ -166,6 +187,10 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 		filterEffect,
 		filterMunicipality,
 		filterSearch,
+		filterSince,
+		filterUntil,
+		setFilterSince,
+		setFilterUntil,
 	]);
 
 	//

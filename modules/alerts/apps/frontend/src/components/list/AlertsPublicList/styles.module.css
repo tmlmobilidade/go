@@ -1,0 +1,36 @@
+/* * */
+/* GROUPS */
+
+.groups {
+	display: flex;
+	flex-flow: row wrap;
+	gap: var(--size-spacing-xl);
+}
+
+.group {
+	display: flex;
+	flex-flow: row wrap;
+	gap: var(--size-spacing-md);
+}
+
+.groupHeader {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.groupLabel {
+	margin: 0;
+	font-size: var(--font-size-xs);
+	font-weight: 700;
+	color: var(--color-system-text-300);
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.groupDate {
+	margin: 0;
+	font-size: var(--font-size-lg);
+	font-weight: 700;
+	color: var(--color-system-text-100);
+}

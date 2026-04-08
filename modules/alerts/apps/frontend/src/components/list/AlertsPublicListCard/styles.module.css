@@ -1,0 +1,64 @@
+/* * */
+/* CARD */
+
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	height: 100%;
+	padding: var(--size-spacing-lg);
+	color: var(--color-system-text-100);
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-lg);
+	box-shadow: 0 1px 2px var(--color-shadow);
+}
+
+/* * */
+/* TYPOGRAPHY */
+
+.title {
+	margin: 0;
+	font-size: var(--font-size-md);
+	font-weight: 700;
+	line-height: 1.35;
+}
+
+.description {
+	margin: 0;
+	font-size: var(--font-size-sm);
+	font-weight: 400;
+	line-height: 1.5;
+	color: var(--color-system-text-200);
+}
+
+.dates {
+	display: flex;
+	flex-direction: row;
+	gap: var(--size-spacing-xs);
+	align-items: center;
+	justify-content: space-between;
+	padding-top: var(--size-spacing-sm);
+	margin-top: auto;
+	border-top: 1px solid var(--color-system-border-100);
+}
+
+.dateRow {
+	display: flex;
+	gap: var(--size-spacing-sm);
+	align-items: baseline;
+}
+
+.dateLabel {
+	font-size: var(--font-size-xs);
+	font-weight: 700;
+	line-height: 1.4;
+	color: var(--color-system-text-200);
+}
+
+.dateValue {
+	font-size: var(--font-size-xs);
+	font-weight: 500;
+	line-height: 1.4;
+	color: var(--color-system-text-300);
+}
