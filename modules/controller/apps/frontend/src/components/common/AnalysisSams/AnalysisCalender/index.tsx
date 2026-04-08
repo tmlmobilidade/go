@@ -10,7 +10,7 @@ import { useMemo } from 'react';
 import styles from './styles.module.css';
 
 import { AnalysisSquare } from '../AnalysisSquare';
-import { analysisSquareHasValues, analysisSquareLabel } from '../AnalysisSquare/analysis-square-shared';
+import { analysisSquareLabel } from '../AnalysisSquare/analysis-square-shared';
 import {
 	buildMonthSections,
 	buildSections,
@@ -82,7 +82,6 @@ export function AnalysisCalender({ analyses, className, rangeEndTs, rangeStartTs
 										? section.items.map((value, index) => (
 											<AnalysisSquare
 												key={`${value.first_transaction_id ?? ''}-${value.last_transaction_id ?? ''}-${index}`}
-												isFilled={analysisSquareHasValues(value)}
 												textLabel={analysisSquareLabel(value)}
 												value={value}
 											/>

@@ -3,7 +3,7 @@
 import { useSamsDetailContext } from '@/contexts/SamsDetail.context';
 import { formatUnixTimestampToDateString } from '@/lib/utils';
 import { SamAnalysis } from '@tmlmobilidade/types';
-import { Collapsible, DataTable, DataTableColumn, IdTag, Section, Tag } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, IdTag, Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -43,7 +43,7 @@ export function SamsDetailList() {
 				accessor: 'device_id',
 				render: item => <IdTag id={item.device_id} copyOnClick />,
 				title: 'Device ID',
-				width: 'auto',
+				width: 250,
 			},
 			{
 				accessor: 'vehicle_id',

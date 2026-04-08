@@ -31,6 +31,12 @@
 	max-width: 90vw;
 }
 
+/* Inner square spans expanded wrapper width. */
+.squareWithDetailsExpanded .square {
+	width: 100%;
+	box-sizing: border-box;
+}
+
 .detailsPanel {
 	width: 100%;
 	max-width: 100%;
@@ -85,16 +91,13 @@
 	width: 100%;
 }
 
-.squareExpanded {
-	width: 100%;
-}
-
-.squareOpenPulse {
-	animation: squareOpenPulse 180ms ease-out;
-}
-
 .squareClickable {
 	cursor: pointer;
+}
+
+.squareFilled {
+	background-color: var(--color-status-success-primary);
+	border-color: var(--color-status-success-primary);
 }
 
 /* Keyboard focus-visible highlight for accessibility */
@@ -105,31 +108,31 @@
 /* ========== SQUARE STATE VARIANTS ========== */
 
 /* Filled (success/completed) square */
-.filled {
-	color: var(--color-system-background-100, #fff);
-	background-color: var(--color-status-success-primary);
+.green {
+	color: var(--color-status-success-primary);
+	background-color: var(--color-system-primary);
 	border-color: var(--color-status-success-primary);
 }
 
 /* Empty (failure/negative) square */
-.empty {
-	color: var(--color-system-background-100, #fff);
-	background-color: var(--color-status-danger-primary);
+.red {
+	color: var(--color-status-danger-primary);
+	background-color: var(--color-system-primary);
 	border-color: var(--color-status-danger-primary);
 }
 
 /* Orange accent state (warning) */
-.accentOrange {
-	color: var(--color-system-background-100, #fff);
-	background-color: #f97316;
+.orange {
+	color: #f97316;
+	background-color: var(--color-system-primary);
 	border-color: #f97316;
 }
 
 /* White accent state (empty) */
-.accentWhite {
-	color: #111827;
-	background-color: #d1d5db;
-	border-color: #9ca3af;
+.white {
+	color: #000;
+	background-color: var(--color-system-background-100);
+	border-color: #d1d5db;
 }
 
 /* ========== TOOLTIP STYLES (for analysis detail popovers) ========== */
@@ -166,26 +169,8 @@
 	line-height: 1.2;
 }
 
-@keyframes squareOpenPulse {
-	0% {
-		transform: scale(0.98);
-	}
-
-	60% {
-		transform: scale(1.02);
-	}
-
-	100% {
-		transform: scale(1);
-	}
-}
-
 @media (prefers-reduced-motion: reduce) {
 	.detailsPanel {
-		animation: none;
-	}
-
-	.squareOpenPulse {
 		animation: none;
 	}
 }

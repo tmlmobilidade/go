@@ -4,27 +4,23 @@
 
 import { cn } from '@/lib/utils';
 import { type SamAnalysis } from '@tmlmobilidade/types';
-import { ExpandLabel, Tooltip } from '@tmlmobilidade/ui';
-import { type ReactNode, useState } from 'react';
+import { Tooltip } from '@tmlmobilidade/ui';
+import { type ReactNode } from 'react';
 
 import styles from './styles.module.css';
 
-import { analysisSquareHasValues, analysisSquareLabel, analysisSquareTooltipItems } from './analysis-square-shared';
+import { analysisSquareHasValues, analysisSquareTooltipItems } from './analysis-square-shared';
 
 /* * */
 
 export interface AnalysisSquareProps {
 	/** When set (e.g. one square per calendar day), overrides filled/empty from `value`. */
 	accent?: 'green' | 'orange' | 'red' | 'white'
-	/** Enables inline detail panel on click (used by AnalysisCalender). */
-	allowInlineExpand?: boolean
 	/** When provided, tooltip shows all these analyses (one per line). */
 	analyses?: SamAnalysis[]
 	className?: string
 	/** Expand square to container width. */
 	fullWidth?: boolean
-	/** Forces filled/empty styling when `accent` is not set. */
-	isFilled?: boolean
 	onClick?: (analysis: SamAnalysis) => void
 	textLabel?: string
 	/** Tooltip; when omitted, derived from `value` when present. */
@@ -35,13 +31,27 @@ export interface AnalysisSquareProps {
 
 /* * */
 
-export function AnalysisSquare({ accent, allowInlineExpand = false, analyses, className, fullWidth = false, isFilled = false, onClick, textLabel, title, value }: AnalysisSquareProps) {
-	const [showDetails, setShowDetails] = useState(false);
-	const resolvedFilled = isFilled ?? (value != null && analysisSquareHasValues(value));
-	const toneClass = accent === 'orange' ? styles.accentOrange : accent === 'green' ? styles.filled : accent === 'red' ? styles.empty : accent === 'white' ? styles.accentWhite : resolvedFilled ? styles.filled : styles.empty;
-	const dataState = accent === 'orange' ? 'warning' : accent === 'green' || accent === 'white' || (accent == null && resolvedFilled) ? 'filled' : 'empty';
+export function AnalysisSquare({ accent, analyses, className, fullWidth = false, onClick, textLabel, title, value }: AnalysisSquareProps) {
+	const derivedFilled = value != null && analysisSquareHasValues(value);
+	const toneClass =
+		accent === 'orange'
+			? styles.orange
+			: accent === 'green'
+				? styles.green
+				: accent === 'red'
+					? styles.red
+					: accent === 'white'
+						? styles.white
+						: derivedFilled
+							? styles.green
+							: styles.red;
+	const dataState =
+		accent === 'orange'
+			? 'warning'
+			: accent === 'green' || accent === 'white' || (accent == null && derivedFilled)
+				? 'filled'
+				: 'empty';
 	const tooltipAnalyses = analyses?.length ? analyses : value != null ? [value] : [];
-	const canShowDetails = allowInlineExpand && (tooltipAnalyses.length > 0);
 
 	const renderTooltipList = (): ReactNode => (
 		<div className={styles.tooltipContent}>
@@ -69,14 +79,9 @@ export function AnalysisSquare({ accent, allowInlineExpand = false, analyses, cl
 				toneClass,
 				className,
 				fullWidth && styles.squareFullWidth,
-				resolvedFilled && styles.filled,
-				canShowDetails && styles.squareClickable,
-				showDetails && canShowDetails && styles.squareExpanded,
-				showDetails && canShowDetails && styles.squareOpenPulse,
 			)}
 			onClick={(event) => {
 				event.stopPropagation();
-				if (canShowDetails && dataState !== 'empty') setShowDetails(current => !current);
 				if (dataState !== 'empty') onClick?.(value);
 			}}
 		>
@@ -86,7 +91,7 @@ export function AnalysisSquare({ accent, allowInlineExpand = false, analyses, cl
 
 	return (
 		<div
-			className={cn(styles.squareWithDetails, showDetails && canShowDetails && styles.squareWithDetailsExpanded)}
+			className={cn(styles.squareWithDetails)}
 			onClick={(event) => {
 				event.stopPropagation();
 			}}
@@ -107,13 +112,6 @@ export function AnalysisSquare({ accent, allowInlineExpand = false, analyses, cl
 					</Tooltip>
 				)
 				: square}
-			{showDetails && canShowDetails && (
-				<div className={styles.detailsPanel}>
-					<ExpandLabel defaultExpanded>
-						{renderTooltipList()}
-					</ExpandLabel>
-				</div>
-			)}
 		</div>
 	);
 }
