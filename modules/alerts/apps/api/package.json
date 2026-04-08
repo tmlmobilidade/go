@@ -17,22 +17,22 @@
 		"lint:fix": "eslint ./src --fix"
 	},
 	"dependencies": {
-		"@fastify/multipart": "10.0.0",
+		"@fastify/multipart": "9.4.0",
 		"@fastify/websocket": "11.2.0",
+		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/go-alerts-pckg-transform": "*",
-		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/rss": "*"
+		"@tmlmobilidade/rss": "*",
+		"@tmlmobilidade/interfaces": "*"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/api-types": "20260317.2218.39",
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.5.2",
+		"@carrismetropolitana/api-types": "20260317.2218.39",
+		"@types/node": "25.5.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"
