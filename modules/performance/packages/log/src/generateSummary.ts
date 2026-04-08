@@ -1,5 +1,5 @@
-import { existsSync, readFileSync, writeFileSync } from 'fs';
-import path, { join } from 'path';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import path, { join } from 'node:path';
 
 // -----------------------------
 // Helper Functions
