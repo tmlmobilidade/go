@@ -572,7 +572,13 @@
 				"label": "Datas de visualização"
 			},
 			"SamsFiltersStatus": {
-				"label": "Estado"
+				"label": "Estado",
+				"options": {
+					"complete": "Completo",
+					"error": "Erro",
+					"incomplete": "Incompleto",
+					"waiting": "Aguardando"
+				}
 			},
 			"SamsListFilterAgency": {
 				"label": "Operador"
