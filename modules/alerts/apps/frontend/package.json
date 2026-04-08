@@ -16,6 +16,7 @@
 	"dependencies": {
 		"@tabler/icons-react": "3.41.0",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-alerts-pckg-describe": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
