@@ -25,6 +25,7 @@
 		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/go-alerts-pckg-transform": "*",
+		"@tmlmobilidade/rss": "*",
 		"@tmlmobilidade/interfaces": "*"
 	},
 	"devDependencies": {

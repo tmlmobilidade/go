@@ -2,6 +2,7 @@
 
 import { type ClickHouseColumn, type ClickHouseSchema, type ClickHouseTableEngine } from '@/types/index.js';
 import { preparePositionalQueryParams } from '@/utils/clickhouse/prepare-positional-query-params.js';
+import { queryFromFile } from '@/utils/clickhouse/query-from-file.js';
 import { queryFromString } from '@/utils/clickhouse/query-from-string.js';
 import { validateSqlParam } from '@/utils/clickhouse/validate-sql-param.js';
 import { type ClickHouseClient, type DataFormat } from '@clickhouse/client';
@@ -18,6 +19,7 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 
 	protected readonly engine: ClickHouseTableEngine = 'ReplicatedMergeTree';
 	protected readonly orderBy: string = '_id';
+	protected readonly partitionBy: null | string = null;
 
 	private client: ClickHouseClient;
 
@@ -153,11 +155,38 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 	}
 
 	/**
-	 * Ensures that the specified database exists in ClickHouse, creating it if it does not already exist.
-	 * This method performs input validation to prevent SQL injection and logs the outcome of the operation.
-	 * @throws Will throw an error if the database name is unsafe or if the database creation query fails.
-	 * @returns A promise that resolves when the database is ensured to exist.
-	 */
+	 * Executes a query from a .sql file with optional parameter substitutions.
+	 * @param filePath Absolute or relative path to the .sql file.
+	 * @param params Optional key-value substitutions applied to the query (replaces {key} placeholders).
+	 * @returns Query result rows typed as `T`.
+	 * @example
+	 * // Given a SQL file "get_users.sql" with the content:
+	 * // SELECT * FROM users WHERE created_at >= {start_date} AND created_at <= {end_date}
+	 * const users = await clickhouseService.queryFromFile<User>('get_users.sql', {
+	 *   start_date: '2024-01-01',
+	 *   end_date: '2024-12-31',
+	 * });
+	*/
+	public async queryFromFile<T>(filePath: string, params?: Record<string, number | string>): ReturnType<typeof queryFromFile<T>> {
+		return await queryFromFile<T>(this.client, filePath, params);
+	}
+
+	/**
+	 * Executes a query from a string.
+	 * @param client The ClickHouse client to use for executing the query.
+	 * @param query The SQL query to execute, with optional {key} placeholders for parameters.
+	 * @param params Optional key-value substitutions applied to the query (replaces {key} placeholders).
+	 * @returns Query result rows typed as `T`.
+	 * @example
+	 * const users = await queryFromString<User>(clickhouseClient,
+	 *   'SELECT * FROM users WHERE created_at >= {start_date} AND created_at <= {end_date}',
+	 *   { start_date: '2024-01-01', end_date: '2024-12-31' }
+	 * );
+	*/
+	public async queryFromString<T>(query: string, params?: Record<string, number | string>): ReturnType<typeof queryFromString<T>> {
+		return await queryFromString<T>(this.client, query, params);
+	}
+
 	private async ensureDatabase(): Promise<void> {
 		// Validate the inputs are safe identifiers to prevent SQL injection
 		if (!validateSqlParam(this.databaseName, false)) throw new Error(`CLICKHOUSE [${this.databaseName}]: Unsafe database name provided.`);
@@ -182,7 +211,6 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 		// Validate the inputs are safe identifiers to prevent SQL injection
 		if (!validateSqlParam(this.databaseName, false)) throw new Error(`CLICKHOUSE [${this.databaseName}]: Unsafe database name provided.`);
 		if (!validateSqlParam(this.tableName, false)) throw new Error(`CLICKHOUSE [${this.tableName}]: Unsafe table name provided.`);
-		if (!validateSqlParam(this.engine, false)) throw new Error(`CLICKHOUSE [${this.engine}]: Unsafe engine type provided.`);
 		// Validate the schema columns are safe identifiers
 		const unsafeColumns = Object.keys(this.schema).filter(key => !validateSqlParam(key, false));
 		if (unsafeColumns.length > 0) throw new Error(`CLICKHOUSE [${this.tableName}]: Unsafe column names provided: ${unsafeColumns.join(', ')}.`);
@@ -193,7 +221,8 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 			CREATE TABLE IF NOT EXISTS "${this.databaseName}"."${this.tableName}" ON CLUSTER default_cluster (
 				${Object.entries<ClickHouseColumn>(this.schema).map(([key, column]) => `${key} ${column.type}`).join(', ')}
 			) ENGINE = ${this.getEngineString()}
-			ORDER BY ${this.orderBy}
+			${this.orderBy ? `ORDER BY ${this.orderBy}` : ''}
+			${this.partitionBy ? `PARTITION BY ${this.partitionBy}` : ''}
 		`;
 		// Perform the query to create the table
 		try {

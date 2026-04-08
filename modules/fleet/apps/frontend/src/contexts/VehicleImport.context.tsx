@@ -5,7 +5,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateVehicleDto, CreateVehicleSchema, PermissionCatalog, type Vehicle } from '@tmlmobilidade/types';
 import { useAgenciesContext, type UseFormReturnType, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -68,17 +68,17 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// B. Fetch data
 
-	const hasUpdatePermission = (agencyId: string) => meContext.actions.hasPermissionResource({
+	const hasUpdatePermission = useCallback((agencyId: string) => meContext.actions.hasPermissionResource({
 		action: PermissionCatalog.all.vehicles.actions.update,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.vehicles.scope,
 		value: agencyId,
-	});
+	}), [meContext.actions]);
 
 	//
 	// c. Handle actions
 
-	const diffVehicle = (existing: Vehicle, incoming: CreateVehicleDto) => {
+	const diffVehicle = useCallback((existing: Vehicle, incoming: CreateVehicleDto) => {
 		const changes: VehicleImportPreview['changes'] = {};
 		for (const key of Object.keys(incoming) as (keyof CreateVehicleDto)[]) {
 			if (incoming[key] !== existing[key]) {
@@ -89,11 +89,11 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			}
 		}
 		return Object.keys(changes).length ? changes : undefined;
-	};
+	}, []);
 
 	//
 
-	const handleSetImportFile = async (file: File | null) => {
+	const handleSetImportFile = useCallback(async (file: File | null) => {
 		if (!file) {
 			setIsError(new Error('Invalid or empty file'));
 			return;
@@ -168,36 +168,53 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 				message: `${createCounter} to create · ${updateCounter} to update`,
 				title: 'File imported',
 			});
-		}
-		catch (err) {
+		} catch (err) {
 			setIsError(err as Error);
-		}
-		finally {
+		} finally {
 			setIsloading(false);
 		}
-	};
+	}, [agencies.data.raw, diffVehicle, hasUpdatePermission]);
 
 	//
 
-	const handleCreateOrUpdateAll = async () => {
+	const handleCreateOrUpdateAll = useCallback(async () => {
 		setIsSaving(true);
+		setIsError(null);
 
 		try {
-			for (const item of importPreview) {
-				if (item.mode === 'CREATE') {
-					await fetchData(
-						API_ROUTES.fleet.VEHICLES_LIST,
-						'POST',
-						item.vehicle,
-					);
+			const vehiclesToCreate = importPreview
+				.filter(item => item.mode === 'CREATE')
+				.map(item => item.vehicle);
+
+			const vehiclesToUpdate = importPreview
+				.filter(item => item.mode === 'UPDATE')
+				.map(item => item.vehicle);
+
+			if (vehiclesToCreate.length > 0) {
+				const response = await fetchData<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST, 'POST', vehiclesToCreate);
+				if (response.error) {
+					setIsError(new Error(response.error));
+					return;
 				}
-				else {
-					await fetchData(
-						API_ROUTES.fleet.VEHICLES_DETAIL(item.vehicle._id),
-						'PUT',
-						item,
-					);
+				allVehiclesMutate();
+				useToast.success({
+					message: `${vehiclesToCreate.length} created`,
+					title: 'Success',
+				});
+			}
+
+			if (vehiclesToUpdate.length > 0) {
+				const vehicleIds = vehiclesToUpdate.map(vehicle => vehicle._id).join(',');
+				const response = await fetchData<Vehicle[]>(API_ROUTES.fleet.VEHICLES_DETAIL(vehicleIds), 'PUT', vehiclesToUpdate);
+				if (response.error) {
+					setIsError(new Error(response.error));
+					return;
 				}
+				allVehiclesMutate();
+				useToast.success({
+					message: `${vehiclesToUpdate.length} updated`,
+					title: 'Success',
+				});
 			}
 
 			allVehiclesMutate();
@@ -208,14 +225,12 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			});
 
 			closeImportVehicleModal();
-		}
-		catch (err) {
+		} catch (err) {
 			setIsError(err as Error);
-		}
-		finally {
+		} finally {
 			setIsSaving(false);
 		}
-	};
+	}, [allVehiclesMutate, createdCount, importPreview, updatedCount]);
 
 	//
 	// D. Define context value
@@ -241,13 +256,15 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			},
 		}),
 		[
-			importPreview,
 			createdCount,
 			updatedCount,
+			form,
+			importPreview,
 			isError,
 			isloading,
 			isSaving,
-			form,
+			handleCreateOrUpdateAll,
+			handleSetImportFile,
 		],
 	);
 
