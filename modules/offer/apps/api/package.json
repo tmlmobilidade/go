@@ -20,6 +20,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/files": "*",

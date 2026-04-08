@@ -27,6 +27,7 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/rabbitmq": "*",
 		"@tmlmobilidade/strings": "*",
+		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
 		"adm-zip": "0.5.16",
