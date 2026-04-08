@@ -20,7 +20,6 @@
 }
 
 .squareWithDetails {
-	position: relative;
 	display: inline-flex;
 	flex-direction: column;
 	align-items: start;
@@ -33,12 +32,9 @@
 }
 
 .detailsPanel {
-	position: absolute;
-	top: calc(100% + 6px);
-	left: 0;
-	z-index: 3;
-	width: var(--analysis-square-expanded-width, 100%);
+	width: 100%;
 	max-width: 100%;
+	margin-top: 6px;
 	transform-origin: top left;
 	animation: detailsPanelReveal 220ms ease-out forwards;
 }
@@ -86,7 +82,7 @@
 }
 
 .squareExpanded {
-	width: var(--analysis-square-expanded-width, 100%);
+	width: 100%;
 }
 
 .squareOpenPulse {
@@ -170,5 +166,15 @@
 
 	100% {
 		transform: scale(1);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.detailsPanel {
+		animation: none;
+	}
+
+	.squareOpenPulse {
+		animation: none;
 	}
 }

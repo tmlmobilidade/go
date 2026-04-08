@@ -128,6 +128,7 @@ export function AnalysisCalender({ analyses, className, onClick }: AnalysisCalen
 											key={`${value.first_transaction_id ?? ''}-${value.last_transaction_id ?? ''}-${daySection.dayKey}-${valueIndex}`}
 											textLabel={analysisSquareLabel(value)}
 											value={value}
+											allowInlineExpand
 										/>
 									))}
 								</div>
@@ -138,6 +139,7 @@ export function AnalysisCalender({ analyses, className, onClick }: AnalysisCalen
 								key={`${value.first_transaction_id ?? ''}-${value.last_transaction_id ?? ''}-${section.dayKey}-${index}`}
 								textLabel={analysisSquareLabel(value)}
 								value={value}
+								allowInlineExpand
 							/>
 						));
 

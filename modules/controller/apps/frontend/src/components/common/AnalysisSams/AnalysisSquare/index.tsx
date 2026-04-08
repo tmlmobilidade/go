@@ -16,6 +16,8 @@ import { analysisSquareHasValues, analysisSquareLabel, analysisSquareTooltipItem
 export interface AnalysisSquareProps {
 	/** When set (e.g. one square per calendar day), overrides filled/empty from `value`. */
 	accent?: 'green' | 'orange' | 'red'
+	/** Enables inline detail panel on click (used by AnalysisCalender). */
+	allowInlineExpand?: boolean
 	/** When provided, tooltip shows all these analyses (one per line). */
 	analyses?: SamAnalysis[]
 	className?: string
@@ -29,13 +31,13 @@ export interface AnalysisSquareProps {
 
 /* * */
 
-export function AnalysisSquare({ accent, analyses, className, onClick, textLabel, title, value }: AnalysisSquareProps) {
+export function AnalysisSquare({ accent, allowInlineExpand = false, analyses, className, onClick, textLabel, title, value }: AnalysisSquareProps) {
 	const [showDetails, setShowDetails] = useState(false);
 	const filled = value != null && analysisSquareHasValues(value);
 	const toneClass = accent === 'orange' ? styles.accentOrange : accent === 'green' ? styles.filled : accent === 'red' ? styles.empty : filled ? styles.filled : styles.empty;
 	const dataState = accent === 'orange' ? 'warning' : accent === 'green' || (accent == null && filled) ? 'filled' : 'empty';
 	const tooltipAnalyses = analyses?.length ? analyses : value != null ? [value] : [];
-	const canShowDetails = tooltipAnalyses.length > 0;
+	const canShowDetails = allowInlineExpand && tooltipAnalyses.length > 0;
 
 	const renderTooltipList = (): ReactNode => (
 		<div className={styles.tooltipContent}>
