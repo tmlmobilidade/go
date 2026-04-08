@@ -1,6 +1,5 @@
 import '@/endpoints/agencies/agencies.routes';
 import '@/endpoints/auth/auth.routes';
-import '@/endpoints/pins/pins.routes';
 import '@/endpoints/roles/roles.routes';
 import '@/endpoints/users/users.routes';
 import '@/endpoints/wiki/wiki.routes';
