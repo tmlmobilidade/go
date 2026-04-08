@@ -4,8 +4,8 @@
 
 import { cn } from '@/lib/utils';
 import { type SamAnalysis } from '@tmlmobilidade/types';
-import { Tooltip } from '@tmlmobilidade/ui';
-import { type ReactNode } from 'react';
+import { ExpandLabel, Tooltip } from '@tmlmobilidade/ui';
+import { type ReactNode, useState } from 'react';
 
 import styles from './styles.module.css';
 
@@ -19,6 +19,7 @@ export interface AnalysisSquareProps {
 	/** When provided, tooltip shows all these analyses (one per line). */
 	analyses?: SamAnalysis[]
 	className?: string
+	onClick?: (analysis: SamAnalysis) => void
 	textLabel: string
 	/** Tooltip; when omitted, derived from `value` when present. */
 	title?: string
@@ -28,11 +29,13 @@ export interface AnalysisSquareProps {
 
 /* * */
 
-export function AnalysisSquare({ accent, analyses, className, textLabel, title, value }: AnalysisSquareProps) {
+export function AnalysisSquare({ accent, analyses, className, onClick, textLabel, title, value }: AnalysisSquareProps) {
+	const [showDetails, setShowDetails] = useState(false);
 	const filled = value != null && analysisSquareHasValues(value);
 	const toneClass = accent === 'orange' ? styles.accentOrange : accent === 'green' ? styles.filled : accent === 'red' ? styles.empty : filled ? styles.filled : styles.empty;
 	const dataState = accent === 'orange' ? 'warning' : accent === 'green' || (accent == null && filled) ? 'filled' : 'empty';
 	const tooltipAnalyses = analyses?.length ? analyses : value != null ? [value] : [];
+	const canShowDetails = tooltipAnalyses.length > 0;
 
 	const renderTooltipList = (): ReactNode => (
 		<div className={styles.tooltipContent}>
@@ -53,31 +56,57 @@ export function AnalysisSquare({ accent, analyses, className, textLabel, title, 
 	const resolvedTooltip = title ?? (tooltipAnalyses.length > 0 ? renderTooltipList() : undefined);
 	const square = (
 		<div
-			className={cn(styles.square, toneClass, className)}
 			data-state={dataState}
 			tabIndex={resolvedTooltip ? 0 : -1}
+			className={cn(
+				styles.square,
+				toneClass,
+				className,
+				canShowDetails && styles.squareClickable,
+				showDetails && canShowDetails && styles.squareExpanded,
+				showDetails && canShowDetails && styles.squareOpenPulse,
+			)}
+			onClick={(event) => {
+				event.stopPropagation();
+				if (canShowDetails) setShowDetails(current => !current);
+				if (value != null) onClick?.(value);
+			}}
 		>
 			{textLabel}
 		</div>
 	);
 
-	if (!resolvedTooltip) {
-		return square;
-	}
-
 	return (
-		<Tooltip
-			closeDelay={80}
-			label={resolvedTooltip}
-			openDelay={120}
-			position="bottom-start"
-			w={320}
-			multiline
-			withArrow
-			withinPortal
+		<div
+			className={cn(styles.squareWithDetails, showDetails && canShowDetails && styles.squareWithDetailsExpanded)}
+			onClick={(event) => {
+				event.stopPropagation();
+			}}
 		>
-			{square}
-		</Tooltip>
+			{resolvedTooltip
+				? (
+					<Tooltip
+						closeDelay={80}
+						label={resolvedTooltip}
+						openDelay={120}
+						position="bottom-start"
+						w={320}
+						multiline
+						withArrow
+						withinPortal
+					>
+						{square}
+					</Tooltip>
+				)
+				: square}
+			{showDetails && canShowDetails && (
+				<div className={styles.detailsPanel}>
+					<ExpandLabel defaultExpanded>
+						{renderTooltipList()}
+					</ExpandLabel>
+				</div>
+			)}
+		</div>
 	);
 }
 
