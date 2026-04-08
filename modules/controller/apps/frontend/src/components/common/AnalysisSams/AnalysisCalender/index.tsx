@@ -60,7 +60,7 @@ const buildDaySectionsForMonth = (analyses: SamAnalysis[], monthKey: string): Da
 export function AnalysisCalender({ analyses, className, onClick }: AnalysisCalenderProps) {
 	const [selectedMonthKey, setSelectedMonthKey] = useState<null | string>(null);
 	const [closingMonthKey, setClosingMonthKey] = useState<null | string>(null);
-	const closeTimerRef = useRef<null | ReturnType<typeof window.setTimeout>>(null);
+	const closeTimerRef = useRef<null | number>(null);
 
 	useEffect(
 		() => () => {

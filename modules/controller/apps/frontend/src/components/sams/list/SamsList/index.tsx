@@ -1,13 +1,14 @@
 /* eslint-disable react/jsx-key */
 'use client';
 
+import { AnalysisTimeLineRow } from '@/components/common/AnalysisSams/AnalysisTimeLine';
 import { SamsFilters } from '@/components/sams/list/SamsFilters';
 import { SamsListHeader } from '@/components/sams/list/SamsListHeader';
 import { useSamsListContext } from '@/contexts/SamsList.context';
 import { formatUnixTimestampToDateString } from '@/lib/utils';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Sam } from '@tmlmobilidade/types';
-import { AgencyTag, AnalysisTimeLineRow, DataTable, DataTableColumn, IdTag, keepUrlParams, Pane, Tag } from '@tmlmobilidade/ui';
+import { AgencyTag, DataTable, DataTableColumn, IdTag, keepUrlParams, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -78,7 +79,7 @@ export function SamsList() {
 		},
 		{
 			accessor: 'analysis',
-			render: item => <AnalysisTimeLineRow analyses={item.analysis ?? []} />,
+			render: item => <AnalysisTimeLineRow analyses={item.analysis ?? []} remarks={item.remarks} />,
 			title: 'Análises',
 			width: 800,
 		},

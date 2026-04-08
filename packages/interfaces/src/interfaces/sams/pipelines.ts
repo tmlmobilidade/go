@@ -97,6 +97,7 @@ export function samsBatchAggregationPipeline({
 						},
 					},
 				},
+				remarks: 1,
 				seen_first_at: 1,
 				seen_last_at: 1,
 				system_status: 1,
