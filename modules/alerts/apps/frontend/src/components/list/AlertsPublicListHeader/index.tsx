@@ -20,10 +20,12 @@ export function AlertsPublicListHeader() {
 	// B. Render Components
 
 	return (
-		<Toolbar>
-			<Label size="lg" caps singleLine>{t('default:alerts.public.list.header.title')}</Label>
+		<>
+			<Toolbar>
+				<Label size="lg" caps singleLine>{t('default:alerts.public.list.header.title')}</Label>
+			</Toolbar>
 			<AlertsPublicListFilterBar />
-		</Toolbar>
+		</>
 	);
 
 	//
