@@ -1,6 +1,15 @@
 import { Dates } from '@/dates.js';
 import { FORMATS } from '@/format.js';
-import { Event, EventReplacementRule, EventRestrictionRule, ManualRule, ScheduleRule, WEEKDAY_OPTIONS, YearPeriod } from '@tmlmobilidade/types';
+import {
+	Event,
+	EventReplacementRule,
+	EventRestrictionRule,
+	ManualRule,
+	OperationalDate,
+	ScheduleRule,
+	WEEKDAY_OPTIONS,
+	YearPeriod,
+} from '@tmlmobilidade/types';
 
 import { buildWeekdaysPart, buildYearPeriodsPart } from './common.js';
 
@@ -24,21 +33,6 @@ export interface RuleSummary {
  * - **short**: Compact label for badges/pills (e.g., "Dias úteis · Período Escolar")
  * - **long**: Full description for tooltips (e.g., "Durante o Período Escolar, nos dias úteis")
  * - **tooltip**: Detailed event information with dates and times
- *
- * @param rule - The scheduling rule to summarize
- * @param options - Configuration options (periods array for name resolution)
- * @returns RuleSummary with short, long, and tooltip text
- *
- * @example
- * ```ts
- * const rule = { kind: 'manual', weekdays: [1,2,3,4,5], year_period_ids: ['school'], ... };
- * const summary = buildRuleSummary(rule, { periods });
- * // summary = {
- * //   short: "Dias úteis · Período Escolar",
- * //   long: "Durante o Período Escolar, nos dias úteis",
- * //   tooltip: ""
- * // }
- * ```
  */
 export function buildRuleSummary(
 	rule: ScheduleRule,
@@ -71,31 +65,64 @@ const getEventForManualRule = (rule: ManualRule, events?: Event[]) => {
 
 /* ---------------- helpers ---------------- */
 
+function dateMatchesWeekdays(date: string, weekdays?: number[]): boolean {
+	if (!weekdays?.length) return true;
+
+	const jsDay = Dates.fromOperationalDate(date, 'Europe/Lisbon').js_date.getDay();
+	const isoWeekday = (jsDay === 0 ? 7 : jsDay) as number;
+
+	return weekdays.includes(isoWeekday);
+}
+
+function dateMatchesPeriods(
+	date: OperationalDate,
+	yearPeriodIds: string[] | undefined,
+	periods?: YearPeriod[],
+): boolean {
+	if (!yearPeriodIds?.length) return true;
+
+	const allowedDates = new Set(
+		periods
+			?.filter(p => yearPeriodIds.includes(p._id))
+			.flatMap(p => p.dates ?? []) ?? [],
+	);
+
+	return allowedDates.has(date);
+}
+
 /**
  * Builds the short summary format for a rule.
  *
- * Event rules: Returns event title
- * Manual rules: Returns "YearPeriod · Weekdays" format
+ * Event restriction / replacement rules: event title
+ * Manual rules:
+ * - event-based: "Event · Period · Weekdays"
+ * - normal: "Period · Weekdays"
  */
 function buildRuleSummaryShort(
 	rule: ScheduleRule,
 	options: { events?: Event[], periods?: YearPeriod[] },
 ): string {
 	if (isEventRestriction(rule)) {
-		// Restriction: show event name
 		return rule.event?.title ?? '';
 	}
 
 	if (isEventReplacement(rule)) {
-		// Replacement: show event name
 		return rule.event?.title ?? '';
 	}
 
 	if (rule.kind === 'manual' && rule.event_id) {
 		const title = getEventForManualRule(rule, options?.events)?.title ?? '';
-		if (!rule.weekdays?.length) return title;
-		const weekdayPart = buildWeekdaysPart(rule, { mode: 'short' });
-		return [title, weekdayPart].filter(Boolean).join(' · ');
+
+		const parts: string[] = [];
+		if (title) parts.push(title);
+
+		const periodPart = buildYearPeriodsPart(rule, options, { mode: 'short', omitIfAll: true });
+		if (periodPart) parts.push(periodPart);
+
+		const weekdayPart = buildWeekdaysPart(rule, { mode: 'short', omitIfAll: true });
+		if (weekdayPart) parts.push(weekdayPart);
+
+		return parts.join(' · ');
 	}
 
 	// manual
@@ -113,8 +140,10 @@ function buildRuleSummaryShort(
 /**
  * Builds the long summary format for a rule.
  *
- * Event rules: Returns event title
- * Manual rules: Returns "During [period], on [weekdays]" format in Portuguese
+ * Event restriction / replacement rules: event title
+ * Manual rules:
+ * - event-based: "Event, Period, Weekdays"
+ * - normal: "Period, Weekdays"
  */
 function buildRuleSummaryLong(
 	rule: ScheduleRule,
@@ -126,9 +155,17 @@ function buildRuleSummaryLong(
 
 	if (rule.kind === 'manual' && rule.event_id) {
 		const title = getEventForManualRule(rule, options?.events)?.title ?? '';
-		if (!rule.weekdays?.length) return title;
-		const weekdayPart = buildWeekdaysPart(rule, { mode: 'long' });
-		return [title, weekdayPart].filter(Boolean).join(', ');
+
+		const parts: string[] = [];
+		if (title) parts.push(title);
+
+		const periodPart = buildYearPeriodsPart(rule, options, { mode: 'long', omitIfAll: true });
+		if (periodPart) parts.push(periodPart);
+
+		const weekdayPart = buildWeekdaysPart(rule, { mode: 'long', omitIfAll: true });
+		if (weekdayPart) parts.push(weekdayPart);
+
+		return parts.join(', ');
 	}
 
 	// manual
@@ -167,7 +204,7 @@ function truncateDates(dates: string[], max = 5): string {
  *
  * Restriction rules: "Oferta excluída [on dates] [time window]"
  * Replacement rules: "Funcionará como [weekdays] · [periods] · [dates]"
- * Manual rules: Returns empty string (no tooltip needed)
+ * Manual event rules: filtered event dates based on weekdays and/or periods
  */
 function buildRuleSummaryTooltip(
 	rule: ScheduleRule,
@@ -210,14 +247,16 @@ function buildRuleSummaryTooltip(
 
 	if (rule.kind === 'manual' && rule.event_id) {
 		const event = getEventForManualRule(rule, options?.events);
+
 		const filteredDates = (event?.dates ?? []).filter((date) => {
-			if (!rule.weekdays?.length) return true;
-			const jsDay = Dates.fromOperationalDate(date, 'Europe/Lisbon').js_date.getDay();
-			const isoWeekday = (jsDay === 0 ? 7 : jsDay) as (typeof rule.weekdays)[number];
-			return rule.weekdays.includes(isoWeekday);
+			const matchesWeekdays = dateMatchesWeekdays(date, rule.weekdays);
+			const matchesPeriods = dateMatchesPeriods(date, rule.year_period_ids, options?.periods);
+			return matchesWeekdays && matchesPeriods;
 		});
+
 		const dates = truncateDates(filteredDates.map(formatDateWithWeekday));
 		if (!dates) return '';
+
 		const datesText = filteredDates.length > 1 ? `nos dias ${dates}` : `no dia ${dates}`;
 		return `Aplicável ${datesText}`;
 	}
@@ -287,7 +326,7 @@ function mapWeekdaysToGtfsAbbreviation(weekdays?: number[]): string {
  * - ALL
  * - ALL_DU
  * - VER-FER_SAB-DOM
- * - event title for event rules (temporary)
+ * - Rock in Rio_VER_DU
  */
 export function buildRuleSummaryGtfs(
 	rule: ScheduleRule,
@@ -297,16 +336,29 @@ export function buildRuleSummaryGtfs(
 		return rule.event?.title ?? rule.name ?? rule._id;
 	}
 
-	if (rule.kind === 'manual' && rule.event_id) {
-		return getEventForManualRule(rule, options?.events)?.title ?? rule.name ?? rule._id;
-	}
-
 	const periodIds = rule.year_period_ids ?? [];
 	const weekdays = rule.weekdays ?? [];
 
 	const periodPart = mapPeriodsToGtfsAbbreviation(periodIds);
-
 	const weekdayPart = mapWeekdaysToGtfsAbbreviation(weekdays);
+
+	if (rule.kind === 'manual' && rule.event_id) {
+		const title = getEventForManualRule(rule, options?.events)?.title ?? rule.name ?? rule._id;
+
+		if (periodPart === 'ALL' && weekdayPart === 'ALL') {
+			return title;
+		}
+
+		if (periodPart === 'ALL') {
+			return `${title}_${weekdayPart}`;
+		}
+
+		if (weekdayPart === 'ALL') {
+			return `${title}_${periodPart}`;
+		}
+
+		return `${title}_${periodPart}_${weekdayPart}`;
+	}
 
 	if (periodPart === 'ALL' && weekdayPart === 'ALL') {
 		return 'ALL';

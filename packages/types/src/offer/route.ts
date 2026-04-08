@@ -20,7 +20,7 @@ export const RouteSchema = DocumentSchema.extend({
 	code: z.string().trim().min(1).max(10),
 	line_id: z.string(),
 	name: z.string().trim().min(1),
-	path_type: RoutePathTypeSchema,
+	path_type: RoutePathTypeSchema.default('base'),
 	patterns: z.array(PatternSimplifiedSchema).optional(),
 });
 

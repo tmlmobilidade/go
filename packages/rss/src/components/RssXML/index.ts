@@ -8,6 +8,7 @@ interface RssChannelOptions {
 	channelCopyright: string
 	channelDescription: string
 	channelDocs: string
+	channelFeedSelfUrl?: string
 	channelGenerator: string
 	channelLanguage: string
 	channelLastBuildDate: string
@@ -16,12 +17,23 @@ interface RssChannelOptions {
 	channelTitle: string
 }
 
-export function rssFeedXml(itemsXml: string, channelOptions: RssChannelOptions): string {
+/* * */
+
+export function rssFeed(itemsXml: string, channelOptions: RssChannelOptions): string {
+	//
+
+	//
+	// A. Setup Variables
+
+	const rssOpenTag = '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">';
+
+	//
+	// B. Return Result
+
 	return [
 		'<?xml version="1.0" encoding="UTF-8"?>',
-		'<rss version="2.0">',
+		rssOpenTag,
 		'<channel>',
-		`<title>${escapeXml(channelOptions.channelTitle)}</title>`,
 		`<link>${escapeXml(channelOptions.channelLink)}</link>`,
 		`<description>${escapeXml(channelOptions.channelDescription)}</description>`,
 		`<language>${escapeXml(channelOptions.channelLanguage)}</language>`,
@@ -30,10 +42,15 @@ export function rssFeedXml(itemsXml: string, channelOptions: RssChannelOptions):
 		`<docs>${escapeXml(channelOptions.channelDocs)}</docs>`,
 		`<pubDate>${escapeXml(channelOptions.channelPubDate)}</pubDate>`,
 		`<copyright>${escapeXml(channelOptions.channelCopyright)}</copyright>`,
+		channelOptions.channelFeedSelfUrl
+			? `<atom:link href="${escapeXml(channelOptions.channelFeedSelfUrl)}" rel="self" type="application/rss+xml" />`
+			: '',
 		itemsXml,
 		'</channel>',
 		'</rss>',
-	].join('\n');
+	].filter(Boolean).join('\n');
+
+	//
 }
 
 /* * */

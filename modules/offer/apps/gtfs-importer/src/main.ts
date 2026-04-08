@@ -3,12 +3,14 @@
 import { lines, patterns, routes } from '@tmlmobilidade/interfaces';
 import { INTERCHANGE_MODE } from '@tmlmobilidade/types';
 
+import { fetchAllEvents } from './fetchers/events.js';
 import { buildPatternsForRoute, insertPatterns } from './imports/patterns.js';
 import { buildScheduleRulesForRoute } from './imports/schedules.js';
 import { buildImportContext } from './index.context.js';
 import { type ImportOptions, type ImportSummary } from './types.js';
 import { buildLineFromRoute, resolveLineCode } from './utils/lines.js';
 import { buildRoutesForLine } from './utils/routes.js';
+import { printWarningSummary, warn, WARNING } from './warnings.js';
 
 /* * */
 
@@ -40,18 +42,20 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 	// C. Cleanup existing data for agencies being imported
 
 	const agencyIds = [...new Set(gtfsRoutes.map(route => route.agency_id).filter(Boolean))];
-	if (agencyIds.length) {
-		console.log('[gtfs-importer] Clearing existing data for agencies', {
-			agency_ids: agencyIds,
-		});
-		const existingLines = await lines.findByAgencyIds(agencyIds);
-		const lineIds = existingLines.map(line => line._id);
-		if (lineIds.length) {
-			await patterns.deleteMany({ line_id: { $in: lineIds } });
-			await routes.deleteMany({ line_id: { $in: lineIds } });
-		}
-		await lines.deleteMany({ agency_id: { $in: agencyIds } });
+	const existingLines = await lines.findByAgencyIds(agencyIds);
+
+	const lineIds = existingLines.map(line => line._id);
+
+	if (lineIds.length) {
+		await patterns.deleteMany({ line_id: { $in: lineIds } });
+		await routes.deleteMany({ line_id: { $in: lineIds } });
+		await lines.deleteMany({ _id: { $in: lineIds } });
 	}
+
+	// Fetch events
+
+	const allEventsMap = await fetchAllEvents(agencyIds[0]);
+	const events = [...allEventsMap.values()];
 
 	//
 	// D. Group GTFS routes by canonical line code
@@ -150,6 +154,7 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 		// E.4 Build schedule rules (pure computation) and merge into pattern DTOs
 
 		const { rulesByPatternKey, unknownServiceIds } = buildScheduleRulesForRoute({
+			events,
 			routeId: lineInput.code,
 			routeTrips,
 			stopTimesByTrip,
@@ -163,10 +168,9 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 		}
 
 		if (unknownServiceIds.size) {
-			console.log('[gtfs-importer] Unmapped service_ids', {
-				line_code: lineInput.code,
-				service_ids: [...unknownServiceIds],
-			});
+			for (const serviceId of unknownServiceIds) {
+				warn(WARNING.UNKNOWN_SERVICE_ID, { line_code: lineInput.code, service_id: serviceId });
+			}
 		}
 
 		//
@@ -177,10 +181,9 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 	}
 
 	if (missingZoneCodes.size) {
-		console.log('[gtfs-importer] Unmapped zone codes', {
-			codes: [...missingZoneCodes],
-			count: missingZoneCodes.size,
-		});
+		for (const code of missingZoneCodes) {
+			warn(WARNING.MISSING_ZONE_CODE, { code });
+		}
 	}
 
 	console.log('[gtfs-importer] Import finished', {
@@ -191,6 +194,8 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 		routesCreated,
 		routesInGtfs,
 	});
+
+	printWarningSummary();
 
 	return {
 		linesCreated,

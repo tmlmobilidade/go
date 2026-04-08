@@ -63,6 +63,7 @@ export function RuleCreatePeriods() {
 		<Section gap="md">
 			<Section gap="xs" padding="none">
 				<Text>Períodos</Text>
+				{createRuleContext.flags.isEventExceptionEnabled && <Text c="dimmed">Se não selecionar, aplica-se a todos os períodos do evento</Text>}
 			</Section>
 
 			{/* Quick Select Tags */}
