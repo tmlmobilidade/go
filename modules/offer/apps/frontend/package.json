@@ -15,8 +15,8 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@mantine/core": "9.0.1",
-		"@mantine/form": "9.0.1",
+		"@mantine/core": "8.3.18",
+		"@mantine/form": "8.3.18",
 		"@tabler/icons-react": "3.41.1",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
@@ -26,7 +26,7 @@
 		"clsx": "2.1.1",
 		"jszip": "3.10.1",
 		"mantine-form-zod-resolver": "1.3.0",
-		"next": "16.2.2",
+		"next": "16.2.1",
 		"papaparse": "5.5.3",
 		"react": "19.2.4",
 		"react-dom": "19.2.4",
@@ -36,7 +36,7 @@
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/luxon": "3.7.1",
-		"@types/node": "25.5.2",
+		"@types/node": "25.5.0",
 		"@types/papaparse": "5.5.2",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",

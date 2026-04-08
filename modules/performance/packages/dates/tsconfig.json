@@ -2,7 +2,8 @@
 	"extends": "@tmlmobilidade/tsconfig/nodejs.json",
 	"compilerOptions": {
 		"allowJs": true,
-"outDir": "dist",
+		"baseUrl": ".",
+		"outDir": "dist",
 		"paths": {
 			"@/*": ["./src/*"]
 		},
