@@ -5,6 +5,7 @@
 		"name": "TML-ISO"
 	},
 	"license": "AGPL-3.0-or-later",
+	"type": "module",
 	"main": "./dist/index.js",
 	"scripts": {
 
