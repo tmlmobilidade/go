@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { sams, SAMS_ANALYSIS_LIST_TAIL, samsApexVersionsAggregationPipeline, samsBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { sams, SAMS_ANALYSIS_LIST_TAIL, SAMS_DEVICE_SEARCH_REGEX, SAMS_VEHICLE_SEARCH_REGEX, samsApexVersionsAggregationPipeline, samsBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { type GetSamsBatchQuery, GetSamsBatchQuerySchema, PermissionCatalog, type Sam } from '@tmlmobilidade/types';
 
 /* * */
@@ -10,9 +10,6 @@ import { type GetSamsBatchQuery, GetSamsBatchQuerySchema, PermissionCatalog, typ
 function escapeRegex(value: string): string {
 	return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
-
-const SAMS_VEHICLE_SEARCH_REGEX = /^v:(?<vehicleIds>\d+(?:\s*,\s*\d+)*)$/i;
-const SAMS_DEVICE_SEARCH_REGEX = /^d:(?<deviceIds>[^,\s]+(?:\s*,\s*[^,\s]+)*)$/i;
 
 function parseSamsVehicleSearch(searchRaw: string): number[] {
 	const normalizedSearch = searchRaw.trim();
