@@ -37,7 +37,7 @@ export function AnalysisSquare({ accent, allowInlineExpand = false, analyses, cl
 	const toneClass = accent === 'orange' ? styles.accentOrange : accent === 'green' ? styles.filled : accent === 'red' ? styles.empty : filled ? styles.filled : styles.empty;
 	const dataState = accent === 'orange' ? 'warning' : accent === 'green' || (accent == null && filled) ? 'filled' : 'empty';
 	const tooltipAnalyses = analyses?.length ? analyses : value != null ? [value] : [];
-	const canShowDetails = allowInlineExpand && tooltipAnalyses.length > 0;
+	const canShowDetails = allowInlineExpand && (tooltipAnalyses.length > 0);
 
 	const renderTooltipList = (): ReactNode => (
 		<div className={styles.tooltipContent}>
@@ -70,8 +70,8 @@ export function AnalysisSquare({ accent, allowInlineExpand = false, analyses, cl
 			)}
 			onClick={(event) => {
 				event.stopPropagation();
-				if (canShowDetails) setShowDetails(current => !current);
-				if (value != null) onClick?.(value);
+				if (canShowDetails && dataState !== 'empty') setShowDetails(current => !current);
+				if (dataState !== 'empty') onClick?.(value);
 			}}
 		>
 			{textLabel}
