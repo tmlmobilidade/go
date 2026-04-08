@@ -12,13 +12,18 @@ import { analysisSquareHasValues } from '../AnalysisSquare/analysis-square-share
 export const SEM_DATA_KEY = 'Sem data';
 const TZ = 'Europe/Lisbon';
 
-export type DayAccent = 'green' | 'orange' | 'red';
+export type DayAccent = 'green' | 'orange' | 'red' | 'white';
 
 export interface DaySection {
 	accent: DayAccent
 	dayKey: string
 	items: SamAnalysis[]
 	label: string
+}
+
+export interface SectionsRangeOptions {
+	rangeEndTs?: null | number
+	rangeStartTs?: null | number
 }
 
 const monthKeyFromDayKey = (dayKey: string): null | string => {
@@ -63,7 +68,7 @@ const dayKeysForAnalysis = (a: SamAnalysis): string[] => {
 };
 
 const accentForDay = (items: SamAnalysis[]): DayAccent => {
-	if (items.length === 0) return 'red';
+	if (items.length === 0) return 'white';
 	let withVal = 0;
 	let without = 0;
 	for (const a of items) {
@@ -75,7 +80,17 @@ const accentForDay = (items: SamAnalysis[]): DayAccent => {
 	return 'red';
 };
 
-export const buildSections = (analyses: SamAnalysis[]): DaySection[] => {
+const dayFromTs = (ts: number) => DateTime.fromMillis(ts).setZone(TZ).startOf('day');
+
+const rangeBoundsFromOptions = ({ rangeEndTs, rangeStartTs }: SectionsRangeOptions) => {
+	if (rangeStartTs == null || rangeEndTs == null) return null;
+	const start = dayFromTs(rangeStartTs);
+	const end = dayFromTs(rangeEndTs);
+	if (!start.isValid || !end.isValid) return null;
+	return start <= end ? { end, start } : { end: start, start: end };
+};
+
+export const buildSections = (analyses: SamAnalysis[], options: SectionsRangeOptions = {}): DaySection[] => {
 	const byDay = new Map<string, SamAnalysis[]>();
 	for (const a of analyses) {
 		for (const key of dayKeysForAnalysis(a)) {
@@ -87,27 +102,35 @@ export const buildSections = (analyses: SamAnalysis[]): DaySection[] => {
 
 	const datedKeys = [...byDay.keys()].filter(k => k !== SEM_DATA_KEY);
 	const sections: DaySection[] = [];
+	const explicitRange = rangeBoundsFromOptions(options);
 
-	if (datedKeys.length > 0) {
+	let firstDay: DateTime | null = explicitRange ? explicitRange.start : null;
+	let lastDay: DateTime | null = explicitRange ? explicitRange.end : null;
+
+	if (explicitRange == null && datedKeys.length > 0) {
 		const sorted = [...datedKeys].sort();
-		const first = sorted[0];
-		const last = sorted[sorted.length - 1];
-		if (first !== undefined && last !== undefined) {
-			let cursor = DateTime.fromISO(first, { zone: TZ }).startOf('day');
-			const end = DateTime.fromISO(last, { zone: TZ }).startOf('day');
-			while (cursor <= end) {
-				const k = cursor.toISODate();
-				if (k) {
-					const items = byDay.get(k) ?? [];
-					sections.push({
-						accent: accentForDay(items),
-						dayKey: k,
-						items,
-						label: cursor.toFormat('dd'),
-					});
-				}
-				cursor = cursor.plus({ days: 1 });
+		const firstFromData = sorted[0] ? DateTime.fromISO(sorted[0], { zone: TZ }).startOf('day') : null;
+		const lastFromData = sorted[sorted.length - 1] ? DateTime.fromISO(sorted[sorted.length - 1], { zone: TZ }).startOf('day') : null;
+		if (firstFromData?.isValid && lastFromData?.isValid) {
+			firstDay = firstFromData;
+			lastDay = lastFromData;
+		}
+	}
+
+	if (firstDay != null && lastDay != null) {
+		let cursor = firstDay;
+		while (cursor <= lastDay) {
+			const k = cursor.toISODate();
+			if (k) {
+				const items = byDay.get(k) ?? [];
+				sections.push({
+					accent: accentForDay(items),
+					dayKey: k,
+					items,
+					label: cursor.toFormat('dd'),
+				});
 			}
+			cursor = cursor.plus({ days: 1 });
 		}
 	}
 
@@ -124,7 +147,7 @@ export const buildSections = (analyses: SamAnalysis[]): DaySection[] => {
 	return sections;
 };
 
-export const buildMonthSections = (analyses: SamAnalysis[]): DaySection[] => {
+export const buildMonthSections = (analyses: SamAnalysis[], options: SectionsRangeOptions = {}): DaySection[] => {
 	const byMonth = new Map<string, SamAnalysis[]>();
 
 	for (const a of analyses) {
@@ -157,27 +180,32 @@ export const buildMonthSections = (analyses: SamAnalysis[]): DaySection[] => {
 
 	const datedKeys = [...byMonth.keys()].filter(k => k !== SEM_DATA_KEY);
 	const sections: DaySection[] = [];
+	const explicitRange = rangeBoundsFromOptions(options);
+	let firstMonth = explicitRange?.start?.startOf('month') ?? null;
+	let lastMonth = explicitRange?.end?.startOf('month') ?? null;
 
-	if (datedKeys.length > 0) {
+	if (explicitRange == null && datedKeys.length > 0) {
 		const sorted = [...datedKeys].sort();
-		const first = sorted[0];
-		const last = sorted[sorted.length - 1];
+		const first = sorted[0] ? DateTime.fromFormat(sorted[0], 'yyyy-LL', { zone: TZ }).startOf('month') : null;
+		const last = sorted[sorted.length - 1] ? DateTime.fromFormat(sorted[sorted.length - 1], 'yyyy-LL', { zone: TZ }).startOf('month') : null;
+		if (first?.isValid && last?.isValid) {
+			firstMonth = first;
+			lastMonth = last;
+		}
+	}
 
-		if (first !== undefined && last !== undefined) {
-			let cursor = DateTime.fromFormat(first, 'yyyy-LL', { zone: TZ }).startOf('month');
-			const end = DateTime.fromFormat(last, 'yyyy-LL', { zone: TZ }).startOf('month');
-
-			while (cursor <= end) {
-				const k = cursor.toFormat('yyyy-LL');
-				const items = byMonth.get(k) ?? [];
-				sections.push({
-					accent: accentForDay(items),
-					dayKey: k,
-					items,
-					label: cursor.setLocale('pt-PT').toFormat('LLLL yyyy'),
-				});
-				cursor = cursor.plus({ months: 1 });
-			}
+	if (firstMonth != null && lastMonth != null) {
+		let cursor = firstMonth;
+		while (cursor <= lastMonth) {
+			const k = cursor.toFormat('yyyy-LL');
+			const items = byMonth.get(k) ?? [];
+			sections.push({
+				accent: accentForDay(items),
+				dayKey: k,
+				items,
+				label: cursor.setLocale('pt-PT').toFormat('LLLL yyyy'),
+			});
+			cursor = cursor.plus({ months: 1 });
 		}
 	}
 

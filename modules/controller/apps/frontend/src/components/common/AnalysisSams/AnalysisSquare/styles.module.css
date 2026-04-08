@@ -81,6 +81,10 @@
 	outline: none;
 }
 
+.squareFullWidth {
+	width: 100%;
+}
+
 .squareExpanded {
 	width: 100%;
 }
@@ -102,23 +106,30 @@
 
 /* Filled (success/completed) square */
 .filled {
-	color: var(--color-status-success-primary);
-	background-color: var(--color-status-success-contrast);
+	color: var(--color-system-background-100, #fff);
+	background-color: var(--color-status-success-primary);
 	border-color: var(--color-status-success-primary);
 }
 
 /* Empty (failure/negative) square */
 .empty {
-	color: var(--color-status-danger-primary);
-	background-color: var(--color-status-danger-contrast);
+	color: var(--color-system-background-100, #fff);
+	background-color: var(--color-status-danger-primary);
 	border-color: var(--color-status-danger-primary);
 }
 
 /* Orange accent state (warning) */
 .accentOrange {
-	color: var(--color-status-warning-primary);
-	background-color: var(--color-status-warning-contrast);
-	border-color: var(--color-status-warning-primary);
+	color: var(--color-system-background-100, #fff);
+	background-color: #f97316;
+	border-color: #f97316;
+}
+
+/* White accent state (empty) */
+.accentWhite {
+	color: #111827;
+	background-color: #d1d5db;
+	border-color: #9ca3af;
 }
 
 /* ========== TOOLTIP STYLES (for analysis detail popovers) ========== */

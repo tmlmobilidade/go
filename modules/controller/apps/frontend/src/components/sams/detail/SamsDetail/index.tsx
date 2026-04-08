@@ -4,6 +4,7 @@
 import { SamsDetailBasicInfos } from '@/components/sams/detail/SamsDetailBasicInfos';
 import { SamsDetailCalender } from '@/components/sams/detail/SamsDetailCalender';
 import { SamsDetailHeader } from '@/components/sams/detail/SamsDetailHeader';
+import { SamsDetailList } from '@/components/sams/detail/SamsDetailList';
 import { Pane } from '@tmlmobilidade/ui';
 
 export function SamsDetail() {
@@ -14,6 +15,7 @@ export function SamsDetail() {
 		>
 			<SamsDetailBasicInfos />
 			<SamsDetailCalender />
+			<SamsDetailList />
 		</Pane>
 	);
 }

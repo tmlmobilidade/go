@@ -1,4 +1,3 @@
-/* eslint-disable @stylistic/arrow-parens */
 'use client';
 
 /* * */
@@ -10,7 +9,7 @@ import { useMemo } from 'react';
 import styles from './styles.module.css';
 
 import { AnalysisSquare } from '../AnalysisSquare';
-import { analysisSquareLabel, analysisSquareTitle } from '../AnalysisSquare/analysis-square-shared';
+import { analysisSquareLabel } from '../AnalysisSquare/analysis-square-shared';
 import { buildMonthSections } from './organized_by_dates';
 
 /* * */
@@ -48,22 +47,15 @@ export function AnalysisTimeLineRow({ analyses, className, remarks }: AnalysisTi
 
 	return (
 		<div className={cn(styles.byDayInline, className)}>
-			{sections.map(section => {
-				const dayTitle =
-					section.items.length === 0
-						? undefined
-						: section.items.map(a => analysisSquareTitle(a)).filter(Boolean).join('\n') || undefined;
-
-				return (
-					<AnalysisSquare
-						key={section.dayKey}
-						accent={section.accent}
-						textLabel={section.label}
-						title={dayTitle}
-						value={section.items[0]}
-					/>
-				);
-			})}
+			{sections.map(section => (
+				<AnalysisSquare
+					key={section.dayKey}
+					accent={section.accent}
+					analyses={section.items.length > 0 ? section.items : undefined}
+					className={styles.monthSquare}
+					textLabel={section.label}
+				/>
+			))}
 		</div>
 	);
 }

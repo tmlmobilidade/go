@@ -61,17 +61,6 @@
 	border-radius: var(--border-radius-sm);
 }
 
-/* Interactive state for day group */
-.dayGroupClickable {
-	cursor: pointer;
-}
-
-/* Selected state outline for day group */
-.dayGroupSelected {
-	outline: 2px solid var(--color-border-brand, #3b82f6);
-	outline-offset: 1px;
-}
-
 /* Accent variations for day groups */
 .dayGroupGreen {
 	background-color: var(--color-status-success-contrast);
@@ -84,6 +73,10 @@
 .dayGroupRed {
 	background-color: var(--color-status-danger-contrast);
 	border-left-color: var(--color-status-danger-primary);
+}
+.dayGroupWhite {
+	background-color: var(--color-background-base, #fff);
+	border-left-color: var(--color-border-subtle, #e0e0e0);
 }
 
 /* ========== Day & Square Labels ========== */
@@ -103,28 +96,21 @@
 .daySquares {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 4px;
+	gap: 8px;
 	align-items: flex-start;
 	width: 100%;
 	min-width: 0;
 }
 
-/* ========== Day Breakdown (Drilled-In View) ========== */
+/* ========== Day Tiles (day over square) ========== */
 
-/* Row for showing breakdown of a day (label + squares) */
-.dayBreakdownRow {
-	display: grid;
-	grid-template-columns: 28px 1fr;
-	gap: 8px;
+.dayTile {
+	display: inline-flex;
+	flex-direction: column;
+	gap: 4px;
 	align-items: center;
-	width: 100%;
-	opacity: 0;
-	transform: translateY(-4px);
-	animation: monthBreakdownReveal 440ms ease-out forwards;
-}
-
-.dayBreakdownRowClosing {
-	animation: monthBreakdownHide 220ms ease-in forwards;
+	justify-content: flex-start;
+	min-width: 28px;
 }
 
 /* Label for a breakdown row (usually date or sub-label) */
@@ -133,50 +119,10 @@
 	font-weight: 700;
 	font-variant-numeric: tabular-nums;
 	line-height: 1.2;
+	text-align: center;
 }
 
-/* Container for squares in breakdown rows */
-.dayBreakdownSquares {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 4px;
-	align-items: flex-start;
-	min-width: 0;
-	margin-bottom: 6px;
-}
-
-@keyframes monthBreakdownReveal {
-	from {
-		opacity: 0;
-		transform: translateY(-4px);
-	}
-
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
-
-@keyframes monthBreakdownHide {
-	from {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
-	to {
-		opacity: 0;
-		transform: translateY(-4px);
-	}
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.dayBreakdownRow {
-		opacity: 1;
-		transform: none;
-		animation: none;
-	}
-
-	.dayBreakdownRowClosing {
-		animation: none;
-	}
+.dayTileSquare {
+	min-width: 22px;
+	min-height: 22px;
 }

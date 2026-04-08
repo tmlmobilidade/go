@@ -15,14 +15,18 @@ import { analysisSquareHasValues, analysisSquareLabel, analysisSquareTooltipItem
 
 export interface AnalysisSquareProps {
 	/** When set (e.g. one square per calendar day), overrides filled/empty from `value`. */
-	accent?: 'green' | 'orange' | 'red'
+	accent?: 'green' | 'orange' | 'red' | 'white'
 	/** Enables inline detail panel on click (used by AnalysisCalender). */
 	allowInlineExpand?: boolean
 	/** When provided, tooltip shows all these analyses (one per line). */
 	analyses?: SamAnalysis[]
 	className?: string
+	/** Expand square to container width. */
+	fullWidth?: boolean
+	/** Forces filled/empty styling when `accent` is not set. */
+	isFilled?: boolean
 	onClick?: (analysis: SamAnalysis) => void
-	textLabel: string
+	textLabel?: string
 	/** Tooltip; when omitted, derived from `value` when present. */
 	title?: string
 	/** When `accent` is set, optional (e.g. empty day). Otherwise required for styling. */
@@ -31,11 +35,11 @@ export interface AnalysisSquareProps {
 
 /* * */
 
-export function AnalysisSquare({ accent, allowInlineExpand = false, analyses, className, onClick, textLabel, title, value }: AnalysisSquareProps) {
+export function AnalysisSquare({ accent, allowInlineExpand = false, analyses, className, fullWidth = false, isFilled = false, onClick, textLabel, title, value }: AnalysisSquareProps) {
 	const [showDetails, setShowDetails] = useState(false);
-	const filled = value != null && analysisSquareHasValues(value);
-	const toneClass = accent === 'orange' ? styles.accentOrange : accent === 'green' ? styles.filled : accent === 'red' ? styles.empty : filled ? styles.filled : styles.empty;
-	const dataState = accent === 'orange' ? 'warning' : accent === 'green' || (accent == null && filled) ? 'filled' : 'empty';
+	const resolvedFilled = isFilled ?? (value != null && analysisSquareHasValues(value));
+	const toneClass = accent === 'orange' ? styles.accentOrange : accent === 'green' ? styles.filled : accent === 'red' ? styles.empty : accent === 'white' ? styles.accentWhite : resolvedFilled ? styles.filled : styles.empty;
+	const dataState = accent === 'orange' ? 'warning' : accent === 'green' || accent === 'white' || (accent == null && resolvedFilled) ? 'filled' : 'empty';
 	const tooltipAnalyses = analyses?.length ? analyses : value != null ? [value] : [];
 	const canShowDetails = allowInlineExpand && (tooltipAnalyses.length > 0);
 
@@ -64,6 +68,8 @@ export function AnalysisSquare({ accent, allowInlineExpand = false, analyses, cl
 				styles.square,
 				toneClass,
 				className,
+				fullWidth && styles.squareFullWidth,
+				resolvedFilled && styles.filled,
 				canShowDetails && styles.squareClickable,
 				showDetails && canShowDetails && styles.squareExpanded,
 				showDetails && canShowDetails && styles.squareOpenPulse,
@@ -129,7 +135,6 @@ export function AnalysisSquareRow({ analyses, className }: AnalysisSquareRowProp
 				<AnalysisSquare
 					key={`${value.first_transaction_id ?? ''}-${value.last_transaction_id ?? ''}-${index}`}
 					analyses={analyses}
-					textLabel={analysisSquareLabel(value)}
 					value={value}
 				/>
 			))}

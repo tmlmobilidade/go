@@ -562,6 +562,10 @@
 					"label": "Mensal"
 				},
 				"title": "Calendário de Análises"
+			},
+			"SamsDetailList": {
+				"description": "Análises do SAM",
+				"title": "Análises"
 			}
 		},
 		"list": {

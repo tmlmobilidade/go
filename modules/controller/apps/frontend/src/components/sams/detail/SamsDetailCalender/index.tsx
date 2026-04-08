@@ -23,7 +23,11 @@ export function SamsDetailCalender() {
 			title={t('default:sams.detail.SamsDetailCalender.title')}
 		>
 			<Section gap="md">
-				<AnalysisCalender analyses={samDetailContext.data.sam?.analysis ?? []} />
+				<AnalysisCalender
+					analyses={samDetailContext.data.sam?.analysis ?? []}
+					rangeEndTs={samDetailContext.data.sam?.seen_last_at}
+					rangeStartTs={samDetailContext.data.sam?.seen_first_at}
+				/>
 			</Section>
 		</Collapsible>
 	);
