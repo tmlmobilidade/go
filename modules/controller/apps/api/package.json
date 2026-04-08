@@ -17,10 +17,11 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/databases": "*",
 		"@fastify/websocket": "11.2.0",
+		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/controllers": "*",
+		"@tmlmobilidade/databases": "*",
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/interfaces": "*",
