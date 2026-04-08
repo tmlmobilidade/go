@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 'use client';
 
 /* * */
@@ -96,6 +97,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Setup filters
 
+	//
 	const filterSearch = useFilterStateString('search');
 	const [debouncedFilterSearch] = useDebouncedValue(filterSearch.value.trim(), 500);
 
