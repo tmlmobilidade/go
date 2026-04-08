@@ -2,6 +2,7 @@
 	"extends": "@tmlmobilidade/tsconfig/nextjs.json",
 	"compilerOptions": {
 		"paths": {
+			"#/*": ["./*"],
 			"@/*": ["./src/*"]
 		},
 		"plugins": [
