@@ -23,6 +23,11 @@ server.register(
 		);
 
 		instance.get(
+			'/public',
+			AlertsController.getAllPublic,
+		);
+
+		instance.get(
 			'.rss',
 			AlertsController.getRssFeed,
 		);

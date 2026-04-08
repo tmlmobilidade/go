@@ -1,11 +1,18 @@
 /* * */
 
+import AlertsPublicList from '@/components/list/AlertsPublicList';
+
 /* * */
 
 export default function Page() {
+	//
+
+	//
+	// A. Render Components
+
 	return (
-		<div>
-			<h1>Alerts public page</h1>
-		</div>
+		<AlertsPublicList />
 	);
+
+	//
 }

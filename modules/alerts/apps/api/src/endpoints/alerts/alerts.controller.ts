@@ -76,6 +76,32 @@ export class AlertsController {
 	}
 
 	/**
+	 * Returns published alerts for public consumption (no auth required).
+	 * @param _request The request object.
+	 * @param reply The reply object.
+	 */
+	static async getAllPublic(_request: FastifyRequest, reply: FastifyReply<Alert[]>) {
+		const now = Dates.now('Europe/Lisbon').unix_timestamp;
+		const allAlerts = await alerts.findMany(
+			{
+				$and: [
+					{
+						$or: [
+							{ publish_end_date: { $gte: now } },
+							{ publish_end_date: null },
+							{ publish_end_date: { $exists: false } },
+						],
+					},
+					{ publish_start_date: { $lte: now } },
+					{ publish_status: 'published' },
+				],
+			},
+			{ sort: { publish_start_date: -1 } },
+		);
+		reply.send({ data: allAlerts, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
 	 * Returns an Alert by ID.
 	 * @param request The request object.
 	 * @param reply The reply object.
