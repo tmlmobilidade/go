@@ -1,6 +1,6 @@
 # # #
 
-FROM node:lts-alpine AS base
+FROM node:24-slim AS base
 
 
 # # #
@@ -34,16 +34,25 @@ RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${APP} --docker
 
 
 # # #
-# BUILDER STAGE
-# Build the app in the pruned monorepo.
-# First install dependencies, as they change less often.
+# BUILD DEPS STAGE
+# Install all dependencies (including dev) once for the build.
 
-FROM base AS builder
+FROM base AS build-deps
 
 WORKDIR /app
 
 COPY --from=pruner /app/out/json/ .
+
 RUN npm ci
+
+
+# # #
+# BUILDER STAGE
+# Build the app with dev dependencies available.
+
+FROM build-deps AS builder
+
+WORKDIR /app
 
 COPY --from=pruner /app/out/full/ .
 
@@ -51,22 +60,22 @@ RUN npx @tmlmobilidade/repo-version --output=/app/modules/${MODULE}/apps/${APP}/
 
 RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 
+# Reinstall only production deps and materialize workspace links
+# so the final runner image only needs node_modules + dist.
+RUN npm ci --omit=dev --install-links
+
 
 # # #
 # RUNNER STAGE
-# Copy the installed node_modules and built app to a fresh image.
-# Also copy the packages and modules folders, as some local
-# packages need to be included because node_modules symlinks to them.
+# Use a clean base image (no global turbo).
+# Local package symlinks are already embedded in node_modules via --install-links,
+# so only node_modules and the built dist are needed.
 
-FROM base AS runner
+FROM gcr.io/distroless/nodejs24-debian13 AS runner
 
 WORKDIR /app
 
-COPY --from=builder /app/package.json .
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/packages ./packages
-COPY --from=builder /app/modules ./modules
-
 COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist ./dist
 
 CMD ["node", "dist/index.js"]
