@@ -192,7 +192,7 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 		if (!validateSqlParam(this.databaseName, false)) throw new Error(`CLICKHOUSE [${this.databaseName}]: Unsafe database name provided.`);
 		// Perform the query to create the database if it does not exist
 		try {
-			await this.client.command({ query: `CREATE DATABASE IF NOT EXISTS "${this.databaseName}";` });
+			await this.client.command({ query: `CREATE DATABASE IF NOT EXISTS "${this.databaseName}"` });
 			Logger.info(`CLICKHOUSE [${this.databaseName}]: Database created.`);
 		} catch (error) {
 			Logger.error(`CLICKHOUSE [${this.databaseName}]: Error @ createDatabase(): ${(error as Error).message}`);

@@ -16,10 +16,15 @@ export type WarningType = typeof WARNING[keyof typeof WARNING];
 /* * */
 
 const counts = new Map<WarningType, number>();
+const details = new Map<WarningType, Record<string, unknown>[]>();
 
-export function warn(type: WarningType, details?: Record<string, unknown>): void {
+export function warn(type: WarningType, info?: Record<string, unknown>): void {
 	counts.set(type, (counts.get(type) ?? 0) + 1);
-	console.warn(`[gtfs-importer] ${type}`, details ?? '');
+	if (info) {
+		if (!details.has(type)) details.set(type, []);
+		details.get(type)!.push(info);
+	}
+	console.warn(`[gtfs-importer] ${type}`, info ?? '');
 }
 
 export function printWarningSummary(): void {
@@ -28,7 +33,14 @@ export function printWarningSummary(): void {
 	if (!total) return;
 
 	const lines = [...counts.entries()]
-		.map(([type, count]) => `  - ${count}x ${type}`)
+		.map(([type, count]) => {
+			const typeDetails = details.get(type);
+			if (typeDetails?.length) {
+				const detailLines = typeDetails.map(d => `      ${JSON.stringify(d)}`).join('\n');
+				return `  - ${count}x ${type}:\n${detailLines}`;
+			}
+			return `  - ${count}x ${type}`;
+		})
 		.join('\n');
 
 	console.warn(`[gtfs-importer] Finished with ${total} warning(s):\n${lines}`);
@@ -36,4 +48,5 @@ export function printWarningSummary(): void {
 
 export function resetWarnings(): void {
 	counts.clear();
+	details.clear();
 }

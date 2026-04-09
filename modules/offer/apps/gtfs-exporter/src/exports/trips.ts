@@ -102,7 +102,7 @@ function buildTimepointSchedules(
 	const schedules = new Map<string, RuleTimepointSchedule>();
 	const rulesById = new Map(allRules.map(rule => [rule._id, rule]));
 
-	let currentDate = startDate.startOf('day');
+	let currentDate = startDate;
 
 	while (currentDate.unix_timestamp <= endDate.unix_timestamp) {
 		const operationalDate = currentDate.operational_date;
@@ -214,12 +214,11 @@ function collectIncludeTimepointsForDate(
 				});
 			}
 		}
-
-		return activeIncludeTimepoints;
 	}
 
-	// No replacement active on this date:
-	// ON buckets come directly from manual include rules.
+	// ON buckets from manual include rules.
+	// When replacements are active, this captures timepoints that already existed
+	// (not "added" by the replacement) so their dates still land in the correct service calendar.
 	for (const manualRule of activeManualIncludeRules) {
 		for (const rawTimepoint of manualRule.timepoints ?? []) {
 			const timepoint = hhmm(rawTimepoint);

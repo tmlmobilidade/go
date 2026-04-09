@@ -24,19 +24,19 @@ import { type CsvWriter } from '@tmlmobilidade/writers';
  */
 export interface GtfsV29ExportConfig {
 	/**
-	 * The agency ID to export data for
+	 * The agency IDs to export data for
 	 */
-	agency_id: string
+	agency_ids: string[]
 
 	/**
-	 * Start date for calendar export (YYYYMMDD format)
+	 * Start date used to clip calendars — trips outside this range are excluded
 	 */
-	calendars_clip_start_date: string
+	calendars_clip_start_date: OperationalDate
 
 	/**
-	 * End date for calendar export (YYYYMMDD format)
+	 * End date used to clip calendars — trips outside this range are excluded
 	 */
-	calendars_clip_end_date: string
+	calendars_clip_end_date: OperationalDate
 
 	/**
 	 * Whether to clip calendars to the specified date range
@@ -44,12 +44,12 @@ export interface GtfsV29ExportConfig {
 	clip_calendars: boolean
 
 	/**
-	 * Feed end date (YYYYMMDD format)
+	 * Feed end date written to feed_info.txt — informational only
 	 */
 	feed_end_date: OperationalDate
 
 	/**
-	 * Feed start date (YYYYMMDD format)
+	 * Feed start date written to feed_info.txt — informational only
 	 */
 	feed_start_date: OperationalDate
 
