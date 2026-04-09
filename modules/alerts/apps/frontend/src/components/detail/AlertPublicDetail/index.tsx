@@ -4,8 +4,10 @@
 
 import { useAlertDetailPublicContext } from '@/contexts/AlertPublicDetail.context';
 import { IconChevronLeft } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Description, Label, Section, Surface, Tag, TagGroup } from '@tmlmobilidade/ui';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -19,6 +21,7 @@ export function AlertPublicDetail() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
+	const router = useRouter();
 
 	const alertDetailPublicContext = useAlertDetailPublicContext();
 	const activePeriodStart = alertDetailPublicContext.data.activePeriodStart;
@@ -63,7 +66,14 @@ export function AlertPublicDetail() {
 					</div>
 					{linesTags.length > 0 && (
 						<div className={styles.tagsRow}>
-							<TagGroup limit={20} tags={linesTags} />
+							<TagGroup
+								limit={20}
+								tags={linesTags.map(line => ({
+									label: line.label,
+									onClick: () => router.push(`${PAGE_ROUTES.alerts.HOME_LIST}?line=${encodeURIComponent(line.value)}`),
+									variant: 'danger',
+								}))}
+							/>
 						</div>
 					)}
 				</div>

@@ -19,7 +19,7 @@ interface AlertDetailPublicContextState {
 		activePeriodStart: string
 		alert: Alert | undefined
 		image: FileType | undefined
-		linesTags: { label: string }[]
+		linesTags: { label: string, value: string }[]
 	}
 	flags: {
 		loading: boolean
@@ -67,9 +67,9 @@ export const AlertPublicDetailContextProvider = ({ alertId, children }: PropsWit
 	const linesTags = useMemo(() => {
 		if (!foundAlert) return [];
 		return getAvailableLines(foundAlert)
-			.map(lineId => linesContext.actions.getLineDataById(lineId))
-			.filter(Boolean)
-			.map(lineData => ({ label: lineData.short_name }));
+			.map(lineId => ({ lineData: linesContext.actions.getLineDataById(lineId), lineId }))
+			.filter(item => !!item.lineData)
+			.map(item => ({ label: item.lineData.short_name, value: item.lineId }));
 	}, [foundAlert, linesContext]);
 
 	//
