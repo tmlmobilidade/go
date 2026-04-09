@@ -152,8 +152,6 @@ export class RidesSharedController {
 		const rawPinIds = request.body.pinIds;
 		const pinIds = Array.isArray(rawPinIds) ? rawPinIds : rawPinIds.split(',');
 
-		console.log('RidesSharedController.getRidesByPinsIds - pinIds:', pinIds);
-
 		if (pinIds.length === 0) {
 			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
 		}
