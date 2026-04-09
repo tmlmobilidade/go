@@ -40,12 +40,21 @@ export const ManualRuleBaseSchema = z.object({
 });
 
 export const ManualRuleSchema = ManualRuleBaseSchema.superRefine((data, ctx) => {
-	if (!data.event_id && !data.weekdays?.length) {
-		ctx.addIssue({
-			code: z.ZodIssueCode.custom,
-			message: 'Selecione pelo menos um dia da semana.',
-			path: ['weekdays'],
-		});
+	if (!data.event_id) {
+		if (!data.weekdays?.length) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'Selecione pelo menos um dia da semana.',
+				path: ['weekdays'],
+			});
+		}
+		if (!data.year_period_ids?.length) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'Selecione pelo menos um período do ano.',
+				path: ['year_period_ids'],
+			});
+		}
 	}
 });
 
