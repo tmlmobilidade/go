@@ -14,8 +14,11 @@ import styles from './styles.module.css';
 /* * */
 
 export function AlertsPublicListFilterBar() {
+	//
+
+	// A. Render Components
 	return (
-		<div className={styles.sticky}>
+		<div className={styles.stickyFilterBar}>
 			<FiltersBar>
 				<AlertsPublicListFilterLine />
 				<AlertsPublicListFilterStop />
