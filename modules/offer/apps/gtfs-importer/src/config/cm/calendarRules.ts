@@ -107,7 +107,6 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 			year_period_ids: [PERIODS.FER, PERIODS.ESC],
 		},
 	]],
-
 	['41', [
 		{
 			description: 'Dias úteis de férias escolares e verão',
@@ -305,6 +304,38 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 		{
 			event_id: 'RJVKN',
 			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+		},
+	]],
+	['513', [
+		{
+			description: '#5.1.3. Outubro a Abril',
+			months: [10, 11, 12, 1, 2, 3, 4],
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri, WEEKDAYS.Sat, WEEKDAYS.Sun],
+			year_period_ids: [PERIODS.VER, PERIODS.FER, PERIODS.ESC],
+		},
+	]],
+	['514', [
+		{
+			description: '#5.1.4.DU Outubro a Abril',
+			months: [10, 11, 12, 1, 2, 3, 4],
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+			year_period_ids: [PERIODS.VER, PERIODS.FER, PERIODS.ESC],
+		},
+	]],
+	['582', [
+		{
+			description: '#5.8.2. Meses - Agosto - Sábados',
+			months: [8],
+			weekdays: [WEEKDAYS.Sat],
+			year_period_ids: [PERIODS.VER, PERIODS.FER, PERIODS.ESC],
+		},
+	]],
+	['583', [
+		{
+			description: '#5.8.3. Meses - Agosto - Domingos',
+			months: [8],
+			weekdays: [WEEKDAYS.Sun],
+			year_period_ids: [PERIODS.VER, PERIODS.FER, PERIODS.ESC],
 		},
 	]],
 	['8125', [
