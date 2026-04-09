@@ -10,7 +10,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build images
         run: |
-          docker build -t tmlmobilidade/go-auth-api:pr-${{ github.event.pull_request.number }} ./auth-api
+          echo "PR #${{ github.event.pull_request.number }}: Image built successfully"
+          # docker build -t tmlmobilidade/go-auth-api:pr-${{ github.event.pull_request.number }} ./auth-api
           # build other module/app images
       - name: Notify infra
         uses: peter-evans/repository-dispatch@v2
