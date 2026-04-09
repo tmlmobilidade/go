@@ -65,6 +65,7 @@ RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 # PROD DEPS STAGE
 # Reinstall only production deps and materialize workspace links
 # so the final runner image only needs node_modules + dist.
+
 FROM build-deps AS prod-deps
 
 WORKDIR /app
@@ -73,6 +74,10 @@ COPY --from=pruner /app/out/full/ .
 
 RUN npm ci --omit=dev --install-links
 
+RUN ls -R /app/node_modules/@tmlmobilidade || true
+
+RUN ls -R /app/modules || true
+
 
 # # #
 # RUNNER STAGE
@@ -80,7 +85,8 @@ RUN npm ci --omit=dev --install-links
 # Local package symlinks are already embedded in node_modules via --install-links,
 # so only node_modules and the built dist are needed.
 
-FROM gcr.io/distroless/nodejs24-debian13 AS runner
+# FROM gcr.io/distroless/nodejs24-debian13 AS runner
+FROM node:24-alpine AS runner
 
 WORKDIR /app
 
@@ -89,5 +95,7 @@ ARG APP
 
 COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist ./dist
+
+RUN ls -R node_modules/@tmlmobilidade || true
 
 CMD ["dist/index.js"]
