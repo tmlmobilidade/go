@@ -64,10 +64,7 @@ RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 # so the final runner image only needs node_modules + dist.
 RUN npm ci --omit=dev --install-links
 
-RUN ls -R /app/node_modules/@tmlmobilidade || true
 RUN ls -R /app/node_modules/@tmlmobilidade/consts || true
-
-RUN ls -R /app/modules || true
 
 
 # # #
@@ -85,8 +82,8 @@ ARG MODULE
 ARG APP
 
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist ./dist
+COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist .
 
-RUN ls -R node_modules/@tmlmobilidade || true
+RUN ls -R /app/node_modules/@tmlmobilidade/consts || true
 
-CMD ["dist/index.js"]
+CMD ["index.js"]
