@@ -6,13 +6,13 @@ import { Event } from '@tmlmobilidade/types';
 /* * */
 
 /**
- * Fetches all events for a given agency and returns them as a Map keyed by ID
- * @param agencyId - The agency ID to fetch events for
+ * Fetches all events for the given agencies and returns them as a Map keyed by ID
+ * @param agencyIds - The agency IDs to fetch events for
  * @returns A Map of event ID to Event object
  */
-export async function fetchAllEvents(agencyId: string): Promise<Map<string, Event>> {
+export async function fetchAllEvents(agencyIds: string[]): Promise<Map<string, Event>> {
 	try {
-		const allEvents = await events.findByAgencyIds([agencyId]);
+		const allEvents = await events.findByAgencyIds(agencyIds);
 		const eventsMap = new Map<string, Event>();
 		for (const event of allEvents) {
 			eventsMap.set(event._id, event);

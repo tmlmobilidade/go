@@ -27,6 +27,7 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/rabbitmq": "*",
 		"@tmlmobilidade/strings": "*",
+		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
 		"adm-zip": "0.5.16",
@@ -35,7 +36,6 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
 		"@types/adm-zip": "0.5.8",
 		"@types/node": "25.5.0",
 		"@types/papaparse": "5.5.2",

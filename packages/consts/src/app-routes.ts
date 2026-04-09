@@ -364,6 +364,7 @@ export const API_ROUTES = Object.freeze({
 		FARES_LIST: `${getAppConfig('offer', 'api_url')}/fares`,
 
 		// GTFS
+		GTFS_CREATE_EXPORT: `${getAppConfig('offer', 'api_url')}/gtfs/create-export`,
 		GTFS_PARSE: `${getAppConfig('offer', 'api_url')}/gtfs/parse`,
 
 		// LINES
