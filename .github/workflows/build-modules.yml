@@ -141,43 +141,10 @@ env:
 
 jobs:
 
-  check-pr:
-    name: Check for Open PR
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
-    outputs:
-      has-open-pr: ${{ steps.check.outputs.has-open-pr }}
-    steps:
-      - name: Check if branch has open PR
-        id: check
-        uses: actions/github-script@v8
-        with:
-          script: |
-            if (context.eventName !== 'push') {
-              core.setOutput('has-open-pr', 'false');
-              return;
-            }
-
-            const branch = context.ref.replace('refs/heads/', '');
-            const { data: pulls } = await github.rest.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head: `${context.repo.owner}:${branch}`,
-              state: 'open'
-            });
-            const hasOpenPR = pulls.length > 0;
-            core.setOutput('has-open-pr', hasOpenPR);
-            if (hasOpenPR) {
-              core.info(`Branch ${branch} has ${pulls.length} open PR(s), skipping push event`);
-            }
-
   discover-modules:
     name: Discover Modules
-    needs: check-pr
     if: |
-      github.event_name != 'push' ||
-      needs.check-pr.outputs.has-open-pr == 'false'
+      github.event_name != 'push'
     runs-on: ubuntu-latest
     outputs:
       modules: ${{ steps.discover.outputs.modules }}
