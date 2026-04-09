@@ -131,6 +131,23 @@ export class AlertsController {
 	}
 
 	/**
+	 * Retrieves an alert image from storage.
+	 * @param request The request object containing the alert ID in the params.
+	 * @param reply The reply object.
+	 */
+	static async getPublicImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<File>) {
+		// Ensure the alert exists
+		const foundAlert = await alerts.findById(request.params.id);
+		if (!foundAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+		// Ensure the alert has an associated image file.
+		// Since it is optional, return null if not present
+		if (!foundAlert.file_id) return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
+		// Retrieve and send the image file
+		const foundImageFile = await files.findById(foundAlert.file_id);
+		if (!foundImageFile) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
+		return reply.send({ data: foundImageFile, error: null, statusCode: HTTP_STATUS.OK });
+	}
+	/**
 	 * Returns active published alerts as RSS feed XML.
 	 * @param request The request object.
 	 * @param reply The reply object.

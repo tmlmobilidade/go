@@ -48,9 +48,25 @@
 .descriptionCard {
 	display: flex;
 	flex-direction: column;
-	gap: var(--size-spacing-sm);
+	gap: var(--size-spacing-md);
+	width: 100%;
 	padding: var(--size-spacing-lg);
 	background-color: var(--color-system-background-100);
 	border: 1px solid var(--color-system-border-100);
 	border-radius: var(--border-radius-lg);
+}
+
+.imageCard {
+	padding: var(--size-spacing-md);
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-lg);
+}
+
+.image {
+	display: block;
+	width: 100%;
+	max-width: 560px;
+	height: auto;
+	border-radius: var(--border-radius-md);
 }

@@ -2,8 +2,13 @@
 
 /* * */
 
-import { type Alert } from '@tmlmobilidade/types';
+import { useLinesContext } from '@/contexts/Lines.context';
+import { getAvailableLines } from '@/lib/alert-utils';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
+import { type Alert, type File as FileType } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import useSWR from 'swr';
 
 import { useAlertsPublicListContext } from './AlertsPublicList.context';
 
@@ -11,7 +16,10 @@ import { useAlertsPublicListContext } from './AlertsPublicList.context';
 
 interface AlertDetailPublicContextState {
 	data: {
+		activePeriodStart: string
 		alert: Alert | undefined
+		image: FileType | undefined
+		linesTags: { label: string }[]
 	}
 	flags: {
 		loading: boolean
@@ -40,6 +48,8 @@ export const AlertPublicDetailContextProvider = ({ alertId, children }: PropsWit
 	// A. Setup variables
 
 	const alertsPublicListContext = useAlertsPublicListContext();
+	const linesContext = useLinesContext();
+	const { data: alertImage } = useSWR<FileType>(API_ROUTES.alerts.ALERTS_DETAIL_PUBLIC_IMAGE(alertId));
 
 	//
 	// B. Transform data
@@ -50,13 +60,27 @@ export const AlertPublicDetailContextProvider = ({ alertId, children }: PropsWit
 	}, [alertsPublicListContext.flags.loading, alertsPublicListContext.data.raw, alertId]);
 	const isLoading = alertsPublicListContext.flags.loading;
 	const isNotFound = !isLoading && !foundAlert;
+	const activePeriodStart = useMemo(() => {
+		if (!foundAlert) return '-';
+		return Dates.fromUnixTimestamp(foundAlert.active_period_start_date).setZone('Europe/Lisbon', 'offset_only').toFormat('d LLLL yyyy', { locale: 'pt' });
+	}, [foundAlert]);
+	const linesTags = useMemo(() => {
+		if (!foundAlert) return [];
+		return getAvailableLines(foundAlert)
+			.map(lineId => linesContext.actions.getLineDataById(lineId))
+			.filter(Boolean)
+			.map(lineData => ({ label: lineData.short_name }));
+	}, [foundAlert, linesContext]);
 
 	//
 	// E. Define context value
 
 	const contextValue: AlertDetailPublicContextState = {
 		data: {
+			activePeriodStart,
 			alert: foundAlert,
+			image: alertImage,
+			linesTags,
 		},
 		flags: {
 			loading: isLoading,

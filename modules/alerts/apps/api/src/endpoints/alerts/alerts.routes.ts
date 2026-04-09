@@ -43,6 +43,10 @@ server.register(
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
 			AlertsController.getImage,
 		);
+		instance.get(
+			'/public/:id/image',
+			AlertsController.getPublicImage,
+		);
 
 		instance.post(
 			'/',

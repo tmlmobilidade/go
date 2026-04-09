@@ -3,12 +3,9 @@
 /* * */
 
 import { useAlertDetailPublicContext } from '@/contexts/AlertPublicDetail.context';
-import { useLinesContext } from '@/contexts/Lines.context';
-import { getAvailableLines } from '@/lib/alert-utils';
 import { IconChevronLeft } from '@tabler/icons-react';
-import { Dates } from '@tmlmobilidade/dates';
-import { Description, Label, LoadingOverlay, Section, Surface, Tag, TagGroup } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { Description, Label, Section, Surface, Tag, TagGroup } from '@tmlmobilidade/ui';
+import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -23,32 +20,15 @@ export function AlertPublicDetail() {
 
 	const { t } = useTranslation();
 
-	const linesContext = useLinesContext();
 	const alertDetailPublicContext = useAlertDetailPublicContext();
+	const activePeriodStart = alertDetailPublicContext.data.activePeriodStart;
 	const foundAlert = alertDetailPublicContext.data.alert;
-	const isLoading = alertDetailPublicContext.flags.loading;
+	const foundAlertImage = alertDetailPublicContext.data.image;
+	const linesTags = alertDetailPublicContext.data.linesTags;
 	const isNotFound = alertDetailPublicContext.flags.notFound;
-	//
-	// B. Transform data
-
-	const activePeriodStart = useMemo(() => {
-		if (!foundAlert) return '-';
-		return Dates.fromUnixTimestamp(foundAlert.active_period_start_date).setZone('Europe/Lisbon', 'offset_only').toFormat('d LLLL yyyy', { locale: 'pt' });
-	}, [foundAlert]);
-
-	const linesTags = useMemo(() => {
-		if (!foundAlert) return [];
-		return getAvailableLines(foundAlert)
-			.map(lineId => linesContext.actions.getLineDataById(lineId))
-			.map(lineData => ({ label: lineData.short_name, variant: 'danger' as const }));
-	}, [foundAlert, linesContext]);
 
 	//
-	// C. Render components
-
-	if (isLoading) {
-		return <LoadingOverlay />;
-	}
+	// B. Render components
 
 	if (isNotFound || !foundAlert) {
 		return (
@@ -91,6 +71,9 @@ export function AlertPublicDetail() {
 				<div className={styles.descriptionCard}>
 					<Label caps={true} size="sm">Descrição</Label>
 					<Description>{foundAlert.description}</Description>
+					{foundAlertImage?.url && (
+						<Image alt={foundAlert.title} className={styles.image} height={300} src={foundAlertImage.url} width={400} />
+					)}
 				</div>
 			</Section>
 		</Surface>
