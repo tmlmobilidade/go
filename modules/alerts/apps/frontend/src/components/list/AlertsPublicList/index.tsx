@@ -4,8 +4,10 @@
 
 import { AlertsPublicListCard } from '@/components/list/AlertsPublicListCard';
 import { useAlertsPublicListContext } from '@/contexts/AlertsPublicList.context';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { Section, Surface } from '@tmlmobilidade/ui';
+import { keepUrlParams, Section, Surface } from '@tmlmobilidade/ui';
+import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -94,12 +96,17 @@ export default function AlertsPublicList() {
 							</header>
 							<div className={styles.groupCards}>
 								{group.alerts.map(alert => (
-									<AlertsPublicListCard
+									<Link
 										key={alert._id}
-										alert={alert}
-										description={alert.description}
-										title={alert.title}
-									/>
+										className={styles.cardLink}
+										href={keepUrlParams(PAGE_ROUTES.alerts.HOME_DETAIL(alert._id))}
+									>
+										<AlertsPublicListCard
+											alert={alert}
+											description={alert.description}
+											title={alert.title}
+										/>
+									</Link>
 								))}
 							</div>
 						</section>

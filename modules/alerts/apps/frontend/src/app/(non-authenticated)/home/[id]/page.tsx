@@ -1,8 +1,9 @@
 /* * */
 
+import { AlertPublicDetail } from '@/components/detail/AlertPublicDetail';
+
 /* * */
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-	const { id } = await params;
-	return <p>Alert detail page: {id}</p>;
+export default function Page() {
+	return <AlertPublicDetail />;
 }
