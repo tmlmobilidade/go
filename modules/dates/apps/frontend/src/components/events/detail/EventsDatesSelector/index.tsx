@@ -72,7 +72,7 @@ export function DatesSelector() {
 	}, [dates]);
 
 	useEffect(() => {
-		setDisplayedMonth(initialMonth);
+		setDisplayedMonth(prev => prev ?? initialMonth);
 	}, [initialMonth]);
 
 	//
