@@ -5,13 +5,14 @@ import {
 	EventReplacementRule,
 	EventRestrictionRule,
 	ManualRule,
+	MONTH_OPTIONS,
 	OperationalDate,
 	ScheduleRule,
 	WEEKDAY_OPTIONS,
 	YearPeriod,
 } from '@tmlmobilidade/types';
 
-import { buildWeekdaysPart, buildYearPeriodsPart } from './common.js';
+import { buildMonthsPart, buildWeekdaysPart, buildYearPeriodsPart } from './common.js';
 
 /**
  * Human-readable summary of a rule in multiple formats.
@@ -119,6 +120,9 @@ function buildRuleSummaryShort(
 		const periodPart = buildYearPeriodsPart(rule, options, { mode: 'short', omitIfAll: true });
 		if (periodPart) parts.push(periodPart);
 
+		const monthsPart = buildMonthsPart(rule, { mode: 'short', omitIfAll: true });
+		if (monthsPart) parts.push(monthsPart);
+
 		const weekdayPart = buildWeekdaysPart(rule, { mode: 'short', omitIfAll: true });
 		if (weekdayPart) parts.push(weekdayPart);
 
@@ -130,6 +134,9 @@ function buildRuleSummaryShort(
 
 	const periodPart = buildYearPeriodsPart(rule, options, { mode: 'short' });
 	if (periodPart) parts.push(periodPart);
+
+	const monthsPart = buildMonthsPart(rule, { mode: 'short', omitIfAll: true });
+	if (monthsPart) parts.push(monthsPart);
 
 	const weekdayPart = buildWeekdaysPart(rule, { mode: 'short' });
 	if (weekdayPart) parts.push(weekdayPart);
@@ -162,6 +169,9 @@ function buildRuleSummaryLong(
 		const periodPart = buildYearPeriodsPart(rule, options, { mode: 'long', omitIfAll: true });
 		if (periodPart) parts.push(periodPart);
 
+		const monthsPart = buildMonthsPart(rule, { mode: 'long', omitIfAll: true });
+		if (monthsPart) parts.push(monthsPart);
+
 		const weekdayPart = buildWeekdaysPart(rule, { mode: 'long', omitIfAll: true });
 		if (weekdayPart) parts.push(weekdayPart);
 
@@ -173,6 +183,9 @@ function buildRuleSummaryLong(
 
 	const periodPart = buildYearPeriodsPart(rule, options, { mode: 'long' });
 	if (periodPart) parts.push(periodPart);
+
+	const monthsPart = buildMonthsPart(rule, { mode: 'long', omitIfAll: true });
+	if (monthsPart) parts.push(monthsPart);
 
 	const weekdayPart = buildWeekdaysPart(rule, { mode: 'long' });
 	if (weekdayPart) parts.push(weekdayPart);
@@ -318,6 +331,14 @@ function mapWeekdaysToGtfsAbbreviation(weekdays?: number[]): string {
 	return sorted.map(day => map[day] || String(day)).join('-');
 }
 
+function mapMonthsToGtfsAbbreviation(months?: number[]): null | string {
+	if (!months?.length) return null;
+	const sorted = [...months].sort((a, b) => a - b);
+	return sorted
+		.map(m => MONTH_OPTIONS.find(o => o.value === m)?.label.toUpperCase() ?? String(m))
+		.join('-');
+}
+
 /**
  * GTFS-oriented rule token:
  * - FER_DU
@@ -341,36 +362,24 @@ export function buildRuleSummaryGtfs(
 
 	const periodPart = mapPeriodsToGtfsAbbreviation(periodIds);
 	const weekdayPart = mapWeekdaysToGtfsAbbreviation(weekdays);
+	const monthsPart = mapMonthsToGtfsAbbreviation(rule.months);
 
 	if (rule.kind === 'manual' && rule.event_id) {
 		const title = getEventForManualRule(rule, options?.events)?.title ?? rule.name ?? rule._id;
 
-		if (periodPart === 'ALL' && weekdayPart === 'ALL') {
-			return title;
-		}
+		const tokenParts: string[] = [];
+		if (periodPart !== 'ALL') tokenParts.push(periodPart);
+		if (monthsPart) tokenParts.push(monthsPart);
+		if (weekdayPart !== 'ALL') tokenParts.push(weekdayPart);
 
-		if (periodPart === 'ALL') {
-			return `${title}_${weekdayPart}`;
-		}
-
-		if (weekdayPart === 'ALL') {
-			return `${title}_${periodPart}`;
-		}
-
-		return `${title}_${periodPart}_${weekdayPart}`;
+		if (!tokenParts.length) return title;
+		return `${title}_${tokenParts.join('_')}`;
 	}
 
-	if (periodPart === 'ALL' && weekdayPart === 'ALL') {
-		return 'ALL';
-	}
+	const tokenParts: string[] = [periodPart];
+	if (monthsPart) tokenParts.push(monthsPart);
+	if (weekdayPart !== 'ALL') tokenParts.push(weekdayPart);
 
-	if (periodPart === 'ALL') {
-		return `ALL_${weekdayPart}`;
-	}
-
-	if (weekdayPart === 'ALL') {
-		return periodPart;
-	}
-
-	return `${periodPart}_${weekdayPart}`;
+	if (tokenParts.length === 1 && tokenParts[0] === 'ALL') return 'ALL';
+	return tokenParts.join('_');
 }

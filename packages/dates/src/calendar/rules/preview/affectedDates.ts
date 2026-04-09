@@ -48,6 +48,12 @@ function ruleAppliesToCivilKey(rule: ManualRule, key: CalendarKey, ctx: Calendar
 	if (!rule.weekdays?.length) return false;
 	if (!rule.weekdays.includes(weekday)) return false;
 
+	// 3) Months filter (optional)
+	if (rule.months?.length) {
+		const month = Number(key.slice(5, 7));
+		if (!(rule.months as number[]).includes(month)) return false;
+	}
+
 	return true;
 }
 
@@ -89,6 +95,11 @@ export function getManualRuleAffectedDates(rule: ManualRule, ctx: CalendarContex
 				// If year periods are specified, narrow event dates to matching periods only
 				if (rule.year_period_ids?.length) {
 					if (!isInPeriod(rule, key, ctx)) continue;
+				}
+				// If months are specified, narrow event dates to matching months only
+				if (rule.months?.length) {
+					const month = Number(key.slice(5, 7));
+					if (!(rule.months as number[]).includes(month)) continue;
 				}
 				affected.push(key);
 			}

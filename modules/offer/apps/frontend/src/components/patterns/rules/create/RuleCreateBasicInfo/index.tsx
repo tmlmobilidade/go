@@ -4,6 +4,7 @@
 
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { RuleCreateEvents } from '@/components/patterns/rules/create/RuleCreateEvents';
+import { RuleCreateMonths } from '@/components/patterns/rules/create/RuleCreateMonths';
 import { RuleCreatePeriods } from '@/components/patterns/rules/create/RuleCreatePeriods';
 import { RuleCreateSchedule } from '@/components/patterns/rules/create/RuleCreateSchedule';
 import { RuleCreateWeekdays } from '@/components/patterns/rules/create/RuleCreateWeekdays';
@@ -72,6 +73,9 @@ export function RuleCreateBasicInfo() {
 
 				<Divider />
 				<RuleCreateWeekdays />
+
+				<Divider />
+				<RuleCreateMonths />
 			</div>
 
 		</Section>
