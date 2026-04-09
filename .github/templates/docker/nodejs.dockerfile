@@ -1,6 +1,6 @@
 # # #
 
-FROM node:24-alpine AS base
+FROM node:24-slim AS base
 
 
 # # #
@@ -52,7 +52,8 @@ RUN npx @tmlmobilidade/repo-version --output=/app/modules/${MODULE}/apps/${APP}/
 
 RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 
-RUN npm ci --omit-dev && npm cache clean --force
+# RUN npm ci --omit-dev
+RUN npm prune --omit-dev
 
 
 # # #
@@ -73,6 +74,6 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/modules ./modules
 
-COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist .
+COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist ./dist
 
-CMD ["index.js"]
+CMD ["./dist/index.js"]
