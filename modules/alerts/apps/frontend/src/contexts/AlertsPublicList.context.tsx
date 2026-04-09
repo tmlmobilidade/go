@@ -9,7 +9,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type Alert, AlertSchema } from '@tmlmobilidade/types';
-import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
+import { useAgenciesContext, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
 import { parseAsBoolean, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,6 +23,7 @@ interface AlertsPublicListContextState {
 		raw: Alert[]
 	}
 	filters: {
+		agency: UseFilterStateListReturnType
 		cause: UseFilterStateListReturnType
 		effect: UseFilterStateListReturnType
 		include_past_alerts: boolean
@@ -58,6 +59,7 @@ interface StopWithLines {
 
 export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren) => {
 	const { t } = useTranslation();
+	const agenciesContext = useAgenciesContext();
 	const linesContext = useLinesContext();
 	const stopsContext = useStopsContext();
 
@@ -119,7 +121,18 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 			.filter(o => ids.has(String(o.value)))
 			.sort((a, b) => String(a.label).localeCompare(String(b.label), 'pt'));
 	}, [stopsContext.data.options, stopIdsInAlerts]);
+	const agencyIdsInAlerts = useMemo(() => {
+		if (!allScheduledData) return [];
+		return [...new Set(allScheduledData.map(item => item.agency_id))].sort();
+	}, [allScheduledData]);
+	const agencyFilterOptions = useMemo(() => {
+		const ids = new Set(agencyIdsInAlerts);
+		return agenciesContext.data.as_options
+			.filter(option => ids.has(String(option.value)))
+			.sort((a, b) => Number(a.value) - Number(b.value));
+	}, [agencyIdsInAlerts, agenciesContext.data.as_options]);
 
+	const filterAgency = useFilterStateList('agency', agencyIdsInAlerts, agencyFilterOptions);
 	const filterCause = useFilterStateList('cause', AlertSchema.shape.cause.options, AlertSchema.shape.cause.options.map(item => ({ label: t(`shared:alerts.causes.${item}.title`), value: item })));
 	const filterEffect = useFilterStateList('effect', AlertSchema.shape.effect.options, AlertSchema.shape.effect.options.map(item => ({ label: t(`shared:alerts.effects.${item}.title`), value: item })));
 
@@ -184,6 +197,7 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 					.unix_timestamp;
 				if (alertDayStart < startOfTodayLisbon) return false;
 			}
+			if (agencyIdsInAlerts.length > 0 && !filterAgency.value.includes(alert.agency_id)) return false;
 			if (!passesLine(alert) || !passesStop(alert)) return false;
 			if (!filterCause.value.includes(alert.cause)) return false;
 			if (!filterEffect.value.includes(alert.effect)) return false;
@@ -197,8 +211,10 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 		filterLine.value,
 		filterStop.isActive,
 		filterStop.value,
+		filterAgency.value,
 		filterCause.value,
 		filterEffect.value,
+		agencyIdsInAlerts.length,
 		lineIdsInAlerts.length,
 		stopIdsInAlerts.length,
 		stopsById,
@@ -211,6 +227,7 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 			raw: allScheduledData,
 		},
 		filters: {
+			agency: filterAgency,
 			cause: filterCause,
 			effect: filterEffect,
 			include_past_alerts: includePastAlerts,
@@ -229,6 +246,7 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 		allScheduledData,
 		filterResultsData,
 		allScheduledLoading,
+		filterAgency,
 		filterCause,
 		filterEffect,
 		filterLine,

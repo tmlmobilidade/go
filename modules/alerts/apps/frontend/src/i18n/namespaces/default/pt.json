@@ -29,6 +29,7 @@
 					}
 				},
 				"filters": {
+					"agency": "Operador",
 					"cause": "Causa",
 					"effect": "Efeito",
 					"line": "Linha",

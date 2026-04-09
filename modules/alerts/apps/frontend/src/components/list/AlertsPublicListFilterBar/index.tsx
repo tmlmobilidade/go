@@ -1,6 +1,7 @@
 'use client';
 /* * */
 
+import { AlertsPublicListFilterAgency } from '@/components/list/AlertsPublicListFilterAgency';
 import { AlertsPublicListFilterCause } from '@/components/list/AlertsPublicListFilterCause';
 import { AlertsPublicListFilterEffect } from '@/components/list/AlertsPublicListFilterEffect';
 import { AlertsPublicListFilterLine } from '@/components/list/AlertsPublicListFilterLine';
@@ -20,6 +21,7 @@ export function AlertsPublicListFilterBar() {
 	return (
 		<div className={styles.stickyFilterBar}>
 			<FiltersBar>
+				<AlertsPublicListFilterAgency />
 				<AlertsPublicListFilterLine />
 				<AlertsPublicListFilterStop />
 				<AlertsPublicListFilterCause />
