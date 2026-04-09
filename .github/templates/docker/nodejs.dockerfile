@@ -52,7 +52,6 @@ RUN npx @tmlmobilidade/repo-version --output=/app/modules/${MODULE}/apps/${APP}/
 
 RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 
-# RUN npm ci --omit-dev
 RUN npm prune --omit-dev
 
 
