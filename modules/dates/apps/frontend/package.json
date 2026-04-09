@@ -24,7 +24,7 @@
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"clsx": "2.1.1",
-		"dayjs": "^1.11.20",
+		"dayjs": "1.11.20",
 		"jszip": "3.10.1",
 		"next": "16.2.1",
 		"papaparse": "5.5.3",

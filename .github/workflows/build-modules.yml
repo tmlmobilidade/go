@@ -96,9 +96,17 @@ env:
     exporter:export-posters
     exporter:frontend
 
+    fleet:nginx
+    fleet:api
+    fleet:frontend
+
     locations:nginx
     locations:api
     locations:frontend
+
+    offer:nginx
+    offer:api
+    offer:frontend
 
     performance:nginx
     performance:api
@@ -126,19 +134,15 @@ env:
     stops:frontend
     stops:organizer
 
+    tracker:cap-fetch
+    tracker:ccfl-fetch
     tracker:clickhouse-stream
     tracker:clickhouse-sync
-    tracker:cm-legacy-stream
-    tracker:cm-legacy-sync
+    tracker:cm-stream-core
+    tracker:cm-stream-log
+    tracker:cm-sync-core
+    tracker:cm-sync-log
     tracker:ttsl-fetch
-
-    offer:nginx
-    offer:api
-    offer:frontend
-
-    fleet:nginx
-    fleet:api
-    fleet:frontend
 
 # # #
 

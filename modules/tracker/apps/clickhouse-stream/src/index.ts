@@ -2,6 +2,7 @@
 
 import { processVehicleEvent } from '@/task.js';
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
+import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -15,7 +16,9 @@ import { Logger } from '@tmlmobilidade/logger';
 
 	const collection = await rawVehicleEventsNew.getCollection();
 
-	const changeStream = collection.watch();
+	const changeStream = collection.watch(
+		// [{ $match: { 'fullDocument.created_at': { $gt: Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp }, 'operationType': 'insert' } }],
+	);
 
 	for await (const change of changeStream) {
 		//
@@ -26,6 +29,18 @@ import { Logger } from '@tmlmobilidade/logger';
 
 		if (change.operationType !== 'insert') {
 			Logger.error(`[clickhouse-stream] WARNING: changeStream document with operationType != "insert": operationType="${change.operationType}" _id="${change._id}"`);
+			continue;
+		}
+
+		if (!change.fullDocument) {
+			Logger.error(`[clickhouse-stream] WARNING: changeStream document with missing fullDocument: operationType="${change.operationType}" _id="${change._id}"`);
+			continue;
+		}
+
+		const nowMinus5Minutes = Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp;
+
+		if (!change.fullDocument.created_at || change.fullDocument.created_at < nowMinus5Minutes) {
+			Logger.error(`[clickhouse-stream] WARNING: changeStream document with missing or outdated created_at field: operationType="${change.operationType}" _id="${change._id}"`);
 			continue;
 		}
 

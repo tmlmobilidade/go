@@ -6,7 +6,7 @@ import { APEX_VALIDATIONS_SETTINGS, invalidateRides, parseSimplifiedApexValidati
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
-import { BatchWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 

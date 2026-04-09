@@ -11,7 +11,7 @@ import crypto from 'node:crypto';
 
 /* * */
 
-const API_URL = 'https://api.ttsl.pt/files/gtfs_rt_vehicles.pb';
+const API_URL = 'https://cascais-rt.trenmo.com/api/v1/key/fcba5b10/agency/2/command/gtfs-rt/vehiclePositions';
 
 /* * */
 
@@ -31,7 +31,11 @@ const main = async () => {
 
 	Logger.info(`[${ITERATION}] Fetching CAP data from API...`, 0, 1);
 
-	const response = await fetch(API_URL);
+	const response = await fetch(API_URL, {
+		headers: {
+			Authorization: `Basic ${Buffer.from(`${process.env.CAP_API_USERNAME}:${process.env.CAP_API_PASSWORD}`).toString('base64')}`,
+		},
+	});
 	const arrayBuffer = await response.arrayBuffer();
 	const decodedMessage = await decodeGtfsRtFeed(arrayBuffer);
 
@@ -50,18 +54,25 @@ const main = async () => {
 		if (!entity.vehicle) continue;
 
 		//
+		// Skip entities that do not have a trip field,
+		// as they are not relevant for our use case.
+
+		if (!entity.vehicle.trip) continue;
+
+		//
 		// Hash the relevant fields of the vehicle event
 		// to create a unique identifier for the event.
 		// This allows us to identify duplicate events
 		// and avoid storing them multiple times in the database.
 
 		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventCapV1> = {
-			agency_id: '4',
+			agency_id: '21',
 			created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_timestamp,
 			entity_id: entity.id,
 			payload: {
 				header: decodedMessage.header,
 				vehicle: entity.vehicle,
+
 			},
 			version: 'cap-v1',
 		};
@@ -99,4 +110,4 @@ const main = async () => {
 
 /* * */
 
-await runOnInterval(main, 1_000);
+await runOnInterval(main, 30_000);
