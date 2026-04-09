@@ -1,4 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable @typescript-eslint/naming-convention */
 'use client';
 
 /* * */
@@ -9,7 +9,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { type OperationalStatus, PermissionCatalog, type RideNormalized, RideNormalizedSchema } from '@tmlmobilidade/types';
 import { DelayStatusSchema, OperationalStatusSchema } from '@tmlmobilidade/types';
 import { RIDE_ANALYSIS_GRADE_OPTIONS, type UnixTimestamp } from '@tmlmobilidade/types';
-import { useDataAgencies, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
+import { useDataAgencies, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useMeContext } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
@@ -70,17 +70,18 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const { t } = useTranslation();
+	const meContext = useMeContext();
 
 	const [pinsEnabled, setPinsEnabled] = useState<boolean>(false);
-	const { data: pinsData } = useSWR<string[], Error>(API_ROUTES.auth.PINS_CONTROLLER, { refreshInterval: 1000 });
+	const pins = meContext.data.user?.preferences?.controller?.rides as string[] | undefined ?? [];
 
 	// Fetch rides by pin ids if the pinsData is available, otherwise skip fetching.
 	const { data: ridesByPinIdsData } = useSWR<RideNormalized[], Error>(
-		pinsData !== undefined ? ['rides-by-pin-ids', pinsData] as const : null,
+		pins !== undefined ? ['rides-by-pin-ids', pins.join(',')] as const : null,
 		// The fetcher sends a POST request with pinIds to fetch ride data.
-		async ([, pinIds]: readonly ['rides-by-pin-ids', string[]]) => {
-			if (pinIds.length === 0) return [];
-			const res = await fetchData<RideNormalized[]>(API_ROUTES.controller.RIDES_PINS, 'POST', { pinIds });
+		async () => {
+			if (pins === undefined || pins.length === 0) return [];
+			const res = await fetchData<RideNormalized[]>(API_ROUTES.controller.RIDES_PINS, 'POST', { pinIds: pins.join(',') });
 			if (res.error != null || res.data == null) throw new Error(res.error ?? 'Failed to load rides by pin ids');
 			return res.data;
 		},
@@ -97,7 +98,6 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Setup filters
 
-	//
 	const filterSearch = useFilterStateString('search');
 	const [debouncedFilterSearch] = useDebouncedValue(filterSearch.value.trim(), 500);
 

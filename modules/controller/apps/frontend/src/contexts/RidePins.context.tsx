@@ -38,7 +38,7 @@ export function useRidePinsContext() {
 export const RidePinsContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
-	const [pins, setPins] = useUserPreference<string[]>('ride', 'controller', []);
+	const [pins, setPins] = useUserPreference<string[]>('controller', 'rides', []);
 
 	//
 	// B. Handle actions

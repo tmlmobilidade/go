@@ -26,8 +26,6 @@ export class RidesSharedController {
 
 		const parsedQuery = GetRidesBatchQuerySchema.parse(request.query);
 
-		console.log('RidesSharedController.getBatch - parsedQuery:', parsedQuery);
-
 		//
 		// Detect which agency_ids the user has access to,
 		// based on their permissions. If none, return an empty array.
@@ -145,20 +143,38 @@ export class RidesSharedController {
 	 * @param request The Fastify request object.
 	 * @param reply The Fastify reply object.
 	 */
-	static async getRidesByPinsIds(request: FastifyRequest<{ Body: { pinIds: string[] } }>, reply: FastifyReply<RideNormalized[]>) {
-		const raw = request.body?.pinIds;
-		const pinIds = Array.isArray(raw)
-			? [...new Set(raw.map(id => String(id).trim()).filter(Boolean))]
-			: [];
+	static async getRidesByPinsIds(request: FastifyRequest<{ Body: { pinIds: string | string[] } }>, reply: FastifyReply<RideNormalized[]>) {
+		//
+
+		//
+		// Validate the request body parameters
+
+		const rawPinIds = request.body.pinIds;
+		const pinIds = Array.isArray(rawPinIds) ? rawPinIds : rawPinIds.split(',');
+
+		console.log('RidesSharedController.getRidesByPinsIds - pinIds:', pinIds);
 
 		if (pinIds.length === 0) {
 			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
 		}
 
-		const ridesByPinIds = await rides.findMany({ _id: { $in: pinIds } });
-		const normalizedRides = ridesByPinIds.map(ride => normalizeRide(ride));
+		//
+		// Fetch the rides by pin IDs from the database
+		const normalizedPinIds = pinIds.map(id => id.trim()).filter(Boolean);
 
-		reply.send({ data: normalizedRides, error: null, statusCode: HTTP_STATUS.OK });
+		if (normalizedPinIds.length === 0) {
+			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
+		}
+
+		const ridesByPinIds = await rides.findMany({ _id: { $in: normalizedPinIds } });
+
+		reply.send({
+			data: ridesByPinIds.map(ride => normalizeRide(ride)),
+			error: null,
+			statusCode: HTTP_STATUS.OK,
+		});
+
+		//
 	}
 
 	/**

@@ -126,28 +126,11 @@ class UsersClass extends MongoCollectionClass<User_UNSAFE, CreateUserDto, Update
 		return 'DATABASE_URI';
 	}
 
-	private normalizePins(raw: unknown): User['pins'] {
-		if (raw && typeof raw === 'object' && raw !== null && 'controller' in raw && Array.isArray((raw as { controller: unknown }).controller)) {
-			const c = (raw as { controller: unknown[] }).controller;
-			return { controller: c.filter((x): x is string => typeof x === 'string') };
-		}
-		if (Array.isArray(raw)) {
-			const flat = raw.flatMap((row) => {
-				if (Array.isArray(row)) return row.filter((x): x is string => typeof x === 'string');
-				if (typeof row === 'string') return [row];
-				return [];
-			});
-			return { controller: flat };
-		}
-		return { controller: [] };
-	}
-
 	private sanitizeUser(user: WithId<User>) {
 		return {
 			...user,
 			password_hash: null,
 			permissions: PermissionCatalog.sanitize(user.permissions),
-			pins: this.normalizePins(user.pins),
 			session_ids: null,
 			verification_token_ids: null,
 		};
