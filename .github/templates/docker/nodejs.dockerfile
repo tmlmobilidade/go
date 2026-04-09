@@ -71,11 +71,14 @@ RUN npm ci --omit=dev --install-links
 # Local package symlinks are already embedded in node_modules via --install-links,
 # so only node_modules and the built dist are needed.
 
-FROM gcr.io/distroless/nodejs24 AS runner
+FROM gcr.io/distroless/nodejs24-debian13 AS runner
 
 WORKDIR /app
+
+ARG MODULE
+ARG APP
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist ./dist
 
-CMD ["node", "dist/index.js"]
+CMD ["dist/index.js"]
