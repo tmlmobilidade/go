@@ -16,7 +16,7 @@ export class AgenciesController {
 	 * @param reply The reply object
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Agency[]>) {
-		const allAgencies = await agencies.findMany({}, { sort: { _id: 1 } });
+		const allAgencies = await agencies.findMany({}, { projection: { validation_rules: 0 }, sort: { _id: 1 } });
 		reply.send({ data: allAgencies, error: null, statusCode: HTTP_STATUS.OK });
 	}
 

@@ -73,8 +73,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  cm-legacy-stream:
-    image: ghcr.io/tmlmobilidade/go-tracker-cm-legacy-stream:staging
+  cm-stream:
+    image: ghcr.io/tmlmobilidade/go-tracker-cm-stream:staging
     deploy:
       restart_policy:
         condition: any
@@ -92,8 +92,8 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
-  cm-legacy-sync:
-    image: ghcr.io/tmlmobilidade/go-tracker-cm-legacy-sync:staging
+  cm-sync:
+    image: ghcr.io/tmlmobilidade/go-tracker-cm-sync:staging
     deploy:
       restart_policy:
         condition: any
@@ -113,6 +113,44 @@ services:
 
   ttsl-fetch:
     image: ghcr.io/tmlmobilidade/go-tracker-ttsl-fetch:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  ccfl-fetch:
+    image: ghcr.io/tmlmobilidade/go-tracker-ccfl-fetch:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  cap-fetch:
+    image: ghcr.io/tmlmobilidade/go-tracker-cap-fetch:staging
     deploy:
       restart_policy:
         condition: any

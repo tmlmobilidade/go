@@ -13,6 +13,13 @@ import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
  * @param data An array of SimplifiedApex documents that have been inserted or updated.
  */
 export async function invalidateRides(data: SimplifiedVehicleEvent[]) {
+	//
+
+	// FOR NOW THIS IS DISABLED UNTIL THE OTHER PACKAGES ARE MIGRATED
+	// TO READ EVENTS AND VALIDATIONS FROM GO
+	return;
+
+	//
 	try {
 		//
 
@@ -62,7 +69,7 @@ export async function invalidateRides(data: SimplifiedVehicleEvent[]) {
 			{ returnResults: false },
 		);
 
-		Logger.info(`Flush [simplified_apex_validations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+		Logger.info(`Flush: Marked as 'waiting' ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
 
 		//
 	} catch (error) {

@@ -1,3 +1,5 @@
+export * from '@/vehicle-events/raw/cap/index.js';
+export * from '@/vehicle-events/raw/ccfl/index.js';
 export * from '@/vehicle-events/raw/cmet/index.js';
 export * from '@/vehicle-events/raw/raw-vehicle-event-base.js';
 export * from '@/vehicle-events/raw/raw-vehicle-event.js';

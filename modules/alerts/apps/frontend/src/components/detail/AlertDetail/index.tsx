@@ -32,7 +32,7 @@ export function AlertDetail() {
 	}
 
 	return (
-		<Pane header={[<AlertDetailHeader />]}>
+		<Pane header={[<AlertDetailHeader key="header" />]}>
 			<AlertDetailSectionTexts />
 			<AlertDetailSectionDates />
 			<AlertDetailSectionCauseEffect />

@@ -1,8 +1,9 @@
 /* * */
 
 import { type ExportedCalendarDatesRow, type GtfsV29ExportConfig } from '@/types.js';
-import { getDayType, getPeriodForDate, isHoliday } from '@/utils/calendar-helpers.js';
+import { getDayType, getPeriodForDate } from '@/utils/calendar-helpers.js';
 import { type ServiceRegistry } from '@/utils/service-registry.js';
+import { Dates, isHoliday } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Holiday, type YearPeriod } from '@tmlmobilidade/types';
 
@@ -29,15 +30,19 @@ export async function exportCalendarDates(
 		const allServices = serviceRegistry.getAllServices();
 		Logger.info(`Exporting ${allServices.size} unique service IDs...`);
 
+		const holidaysArray = Array.from(holidays.values());
+
 		let totalRows = 0;
 
 		for (const serviceInfo of allServices.values()) {
 			for (const date of serviceInfo.dates) {
+				const dateObj = Dates.fromOperationalDate(date, 'Europe/Lisbon');
+
 				const row: ExportedCalendarDatesRow = {
 					date,
-					day_type: getDayType(date, holidays),
+					day_type: getDayType(date, holidaysArray),
 					exception_type: 1, // Service added (all our dates are service additions)
-					holiday: isHoliday(date, holidays),
+					holiday: isHoliday(dateObj, holidaysArray) ? 1 : 0,
 					period: getPeriodForDate(date, periods),
 					service_id: serviceInfo.service_id,
 				};

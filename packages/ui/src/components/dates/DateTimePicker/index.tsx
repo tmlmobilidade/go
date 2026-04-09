@@ -61,7 +61,6 @@ export interface DateTimePickerProps {
 	 * The current value of the input.
 	 */
 	value?: null | UnixTimestamp
-
 }
 
 /**
@@ -107,14 +106,10 @@ export function DateTimePicker({ clearable, description, disabled, fullWidth, la
 			leftSection={leftSection}
 			onChange={handleChange}
 			placeholder={placeholder}
+			popoverProps={{ withinPortal: false }}
 			style={{ width: fullWidth ? '100%' : undefined }}
 			value={valueAsString}
 			valueFormat="YYYY-MM-DD HH:mm"
-			popoverProps={{
-				withinPortal: false,
-			}}
 		/>
 	);
-
-	//
 }

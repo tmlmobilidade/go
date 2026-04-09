@@ -1,8 +1,11 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { alerts, files, notifications } from '@tmlmobilidade/interfaces';
+import { type RssRawImageInput } from '@tmlmobilidade/rss';
+import { createRssFeed } from '@tmlmobilidade/rss';
 import { type Alert, CreateAlertDto, type File, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
 
 /* * */
@@ -100,6 +103,93 @@ export class AlertsController {
 		const foundImageFile = await files.findById(foundAlert.file_id);
 		if (!foundImageFile) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 		return reply.send({ data: foundImageFile, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
+	 * Returns active published alerts as RSS feed XML.
+	 * @param request The request object.
+	 * @param reply The reply object.
+	 */
+	static async getRssFeed(_request: FastifyRequest, reply: FastifyReply<string>) {
+		const now = Dates.now('Europe/Lisbon').unix_timestamp;
+		const alertsPublicListUrl = 'https://www.carrismetropolitana.pt/alerts';
+		const allAlerts = await alerts.findMany(
+			{
+				$and: [
+					{
+						$or: [
+							{ publish_end_date: { $gte: now } },
+							{ publish_end_date: null },
+							{ publish_end_date: { $exists: false } },
+						],
+					},
+					{ publish_start_date: { $lte: now } },
+					{ publish_status: 'published' },
+				],
+			},
+			{ sort: { publish_start_date: -1 } },
+		);
+
+		if (!allAlerts.length) {
+			reply.status(HTTP_STATUS.NOT_FOUND).send('No alerts available.');
+			return;
+		}
+
+		const xmlItems = await Promise.all(allAlerts.map(async (alert) => {
+			const images: RssRawImageInput[] = [];
+			const fileIdOrder: string[] = [];
+			const seen = new Set<string>();
+
+			const attachedFiles = await files.findMany(
+				{ resource_id: alert._id, scope: 'alerts' },
+				{ sort: { created_at: 1 } },
+			);
+
+			if (alert.file_id) {
+				fileIdOrder.push(alert.file_id);
+				seen.add(alert.file_id);
+			}
+
+			for (const f of attachedFiles) {
+				if (!seen.has(f._id)) {
+					fileIdOrder.push(f._id);
+					seen.add(f._id);
+				}
+			}
+
+			for (const fileId of fileIdOrder) {
+				try {
+					const file = await files.findById(fileId);
+					if (!file?.url) continue;
+					images.push({
+						alt: alert.title,
+						type: file.type ?? null,
+						url: file.url,
+					});
+				} catch {
+					// DB row exists but object missing in storage — omit image, still emit the item
+				}
+			}
+
+			return {
+				description: alert.description,
+				images: images.length ? images : [],
+				link: `${alertsPublicListUrl}/${alert._id}`,
+				linkLabel: 'Ver o alerta completo em carrismetropolitana.pt',
+				publish_start_date: alert.publish_start_date,
+				title: alert.title,
+			};
+		}));
+
+		const xml = createRssFeed(xmlItems, {
+			copyright: 'Carris Metropolitana',
+			description: 'Alertas e atualizacoes da Carris Metropolitana.',
+			feedSelfUrl: `${alertsPublicListUrl}.rss`,
+			link: alertsPublicListUrl,
+			title: 'Carris Metropolitana - Alertas',
+		});
+
+		reply.type('application/rss+xml; charset=utf-8').send(xml);
 	}
 
 	/**

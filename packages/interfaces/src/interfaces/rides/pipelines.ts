@@ -2,6 +2,16 @@ import { AggregationPipeline } from '@/common/aggregation-pipeline.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { DelayStatus, OperationalStatus, Ride, RideAcceptanceStatus, RideAnalysisGradeWithNone, SeenStatus, UnixTimestamp } from '@tmlmobilidade/types';
 
+//
+// Time thresholds
+
+const LAST_SEEN_WINDOW = 30 * 1000; // 30 seconds
+const OPERATIONAL_WINDOW = 60 * 1000 * 10; // 10 minutes
+const DELAY_THRESHOLDS = {
+	delayed: 5 * 60 * 1000, // 5 minutes after scheduled time
+	early: -1 * 60 * 1000, // 1 minute before scheduled time
+};
+
 /**
  * Creates MongoDB aggregation pipeline stages to calculate and categorize delay statuses.
  *
@@ -19,13 +29,6 @@ import { DelayStatus, OperationalStatus, Ride, RideAcceptanceStatus, RideAnalysi
  * @returns {Array} Array of MongoDB aggregation pipeline stages
  */
 export function ridesPipelineDelayStatus({ filter }: { filter?: { end_delay_status?: DelayStatus[], start_delay_status?: DelayStatus[] } } = {}): AggregationPipeline<Ride> {
-	//
-	// Delay thresholds in milliseconds
-	const DELAY_THRESHOLDS = {
-		delayed: 300000, // 5 minutes after scheduled time
-		early: -60000, // 1 minute before scheduled time
-	};
-
 	const pipeline: AggregationPipeline<Ride> = [
 		// Stage 1: Calculate delay differences in milliseconds
 		// Only compute if both scheduled and observed times exist
@@ -97,11 +100,11 @@ export function ridesPipelineDelayStatus({ filter }: { filter?: { end_delay_stat
 	];
 
 	// Stage 5: Filter by delay status if provided
-	if (filter && filter.end_delay_status) {
+	if (filter?.end_delay_status) {
 		pipeline.push({ $match: { end_delay_status: { $in: filter.end_delay_status } } });
 	}
 
-	if (filter && filter.start_delay_status) {
+	if (filter?.start_delay_status) {
 		pipeline.push({ $match: { start_delay_status: { $in: filter.start_delay_status } } });
 	}
 
@@ -130,9 +133,6 @@ export function ridesPipelineDelayStatus({ filter }: { filter?: { end_delay_stat
  * @returns {Array} Array of MongoDB aggregation pipeline stages
  */
 export function ridesPipelineOperationalStatus({ filter }: { filter?: { operational_status?: OperationalStatus[] } } = {}): AggregationPipeline<Ride> {
-	//
-	// Time thresholds in milliseconds
-	const OPERATIONAL_WINDOW = 600000; // 10 minutes
 	const now = Dates.now('Europe/Lisbon').unix_timestamp;
 
 	const pipeline: AggregationPipeline<Ride> = [
@@ -201,7 +201,7 @@ export function ridesPipelineOperationalStatus({ filter }: { filter?: { operatio
 	];
 
 	// Stage 5: Filter by operational status if provided
-	if (filter && filter.operational_status) {
+	if (filter?.operational_status) {
 		pipeline.push({ $match: { operational_status: { $in: filter.operational_status } } });
 	}
 
@@ -229,9 +229,6 @@ export function ridesPipelineOperationalStatus({ filter }: { filter?: { operatio
  * @returns {Array} Array of MongoDB aggregation pipeline stages
  */
 export function ridesPipelineSeenStatus({ filter }: { filter?: { seen_status?: SeenStatus[] } } = {}): AggregationPipeline<Ride> {
-	//
-	// Time thresholds in milliseconds
-	const SEEN_WINDOW = 30000; // 30 seconds
 	const now = Dates.now('Europe/Lisbon').unix_timestamp;
 
 	const pipeline: AggregationPipeline<Ride> = [
@@ -257,7 +254,7 @@ export function ridesPipelineSeenStatus({ filter }: { filter?: { seen_status?: S
 					$switch: {
 						branches: [
 							{ case: { $eq: ['$seen_last_at', null] }, then: 'unseen' },
-							{ case: { $lte: ['$milliseconds_from_last_seen_to_now', SEEN_WINDOW] }, then: 'seen' },
+							{ case: { $lte: ['$milliseconds_from_last_seen_to_now', LAST_SEEN_WINDOW] }, then: 'seen' },
 						],
 						default: 'gone',
 					},
@@ -275,7 +272,7 @@ export function ridesPipelineSeenStatus({ filter }: { filter?: { seen_status?: S
 	];
 
 	// Stage 5: Filter by seen status if provided
-	if (filter && filter.seen_status) {
+	if (filter?.seen_status) {
 		pipeline.push({ $match: { seen_status: { $in: filter.seen_status } } });
 	}
 
@@ -340,7 +337,19 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 
 		// Remove v: and d: patterns from search string for ride ID matching
 		const searchWithoutSpecialFilters = filter.search.replace(/v:[\d,]+/g, '').replace(/d:[\d,]+/g, '').trim();
-		const keywords = searchWithoutSpecialFilters.split(/\s+/).filter(k => k.length > 0).map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+
+		const keywords = searchWithoutSpecialFilters
+			.split(/\s+/)
+			.filter(k => k.length > 0)
+			.map((v) => {
+				// Escape regex special chars EXCEPT %
+				let escaped = v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+				// Convert SQL wildcards to regex
+				escaped = escaped.replace(/%%/g, '.*');
+
+				return escaped;
+			});
 
 		if (keywords.length > 0) {
 			const pattern = keywords.map(k => `(?=.*${k})`).join('') + '.*';
@@ -351,10 +360,12 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 
 		if (vehicleMatch) {
 			const value = vehicleMatch[1];
+
 			const vehicleIDs = value
 				.split(',')
 				.map(id => Number(id.trim()))
 				.filter(id => !isNaN(id));
+
 			if (vehicleIDs.length > 0) {
 				pipeline.push({ $match: { vehicle_ids: { $in: vehicleIDs } } });
 			}
@@ -362,10 +373,8 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 
 		if (driverMatch) {
 			const value = driverMatch[1];
-			const driverIDs = value
-				.split(',')
-				.map(id => id.trim())
-				.filter(id => id);
+			const driverIDs = value.split(',').map(id => id.trim()).filter(id => id);
+
 			if (driverIDs.length > 0) {
 				pipeline.push({ $match: { driver_ids: { $in: driverIDs } } });
 			}

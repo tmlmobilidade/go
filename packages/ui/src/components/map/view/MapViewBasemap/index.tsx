@@ -15,10 +15,25 @@ import { useMapViewContext } from '../MapViewContext';
 
 /* * */
 
+export interface MapViewBasemapLayers {
+	fullscreen?: boolean
+	geolocate?: boolean
+	navigation?: boolean
+	scale?: boolean
+}
+
+export const DEFAULT_LAYERS: MapViewBasemapLayers = {
+	fullscreen: true,
+	geolocate: true,
+	navigation: true,
+	scale: true,
+};
+
 export interface MapViewBasemapProps {
 	cursor?: CSSProperties['cursor'] | null
 	id: string
 	interactiveLayerIds?: string[]
+	layers: MapViewBasemapLayers
 	onClick?: (e: MapLayerMouseEvent) => void
 	onContextMenu?: (e: MapLayerMouseEvent) => void
 	onDrag?: (e: ViewStateChangeEvent) => void
@@ -34,7 +49,7 @@ export interface MapViewBasemapProps {
 
 /* * */
 
-export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [], onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onWheel }: PropsWithChildren<MapViewBasemapProps>) {
+export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [], layers = DEFAULT_LAYERS, onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onWheel }: PropsWithChildren<MapViewBasemapProps>) {
 	//
 
 	//
@@ -114,10 +129,10 @@ export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [],
 			scrollZoom={mapContext.flags.scroll_zoom}
 			style={{ height: '100%', width: '100%' }}
 		>
-			<NavigationControl />
-			<FullscreenControl />
-			<GeolocateControl />
-			<ScaleControl />
+			{layers.navigation && <NavigationControl />}
+			{layers.fullscreen && <FullscreenControl />}
+			{layers.geolocate && <GeolocateControl />}
+			{layers.scale && <ScaleControl />}
 			<MapOverlayPins
 				id="pins"
 				pinsData={mapContext.data.search_pin}

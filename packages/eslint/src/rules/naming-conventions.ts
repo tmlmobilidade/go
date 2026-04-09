@@ -68,8 +68,23 @@ export const namingConventionsConfig: Config[] = [
 		rules: {
 			'@typescript-eslint/naming-convention': [
 				'error',
+				// Components: PascalCase
 				{
+					filter: {
+						match: true,
+						regex: '^[A-Z]',
+					},
 					format: ['PascalCase'],
+					leadingUnderscore: 'allow',
+					selector: 'function',
+				},
+				// Non-component functions (including hooks): camelCase
+				{
+					filter: {
+						match: false,
+						regex: '^[A-Z]',
+					},
+					format: ['camelCase'],
 					leadingUnderscore: 'allow',
 					selector: 'function',
 				},

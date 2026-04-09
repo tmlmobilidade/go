@@ -193,6 +193,7 @@ export const API_ROUTES = Object.freeze({
 		ALERTS_DETAIL_IMAGE: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/image`,
 		ALERTS_DETAIL_LOCK: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/lock`,
 		ALERTS_LIST: `${getAppConfig('alerts', 'api_url')}/alerts`,
+		ALERTS_RSS: `${getAppConfig('alerts', 'api_url')}/alerts/.rss`,
 
 		// GTFS
 		GTFS_CARRIS_METROPOLITANA: `${getAppConfig('alerts', 'api_url')}/gtfs/carris-metropolitana`,
@@ -332,8 +333,10 @@ export const API_ROUTES = Object.freeze({
 
 		// VEHICLES
 		VEHICLES_DETAIL: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}`,
+		VEHICLES_DETAIL_LAST_EVENT: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}/last-event`,
 		VEHICLES_DETAIL_LOCK: (id: string) => `${getAppConfig('fleet', 'api_url')}/vehicles/${id}/lock`,
 		VEHICLES_LIST: `${getAppConfig('fleet', 'api_url')}/vehicles`,
+		VEHICLES_POSITIONS: `${getAppConfig('fleet', 'api_url')}/vehicles/positions`,
 	},
 
 	/* * */
@@ -362,6 +365,7 @@ export const API_ROUTES = Object.freeze({
 		FARES_LIST: `${getAppConfig('offer', 'api_url')}/fares`,
 
 		// GTFS
+		GTFS_CREATE_EXPORT: `${getAppConfig('offer', 'api_url')}/gtfs/create-export`,
 		GTFS_PARSE: `${getAppConfig('offer', 'api_url')}/gtfs/parse`,
 
 		// LINES

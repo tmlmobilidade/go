@@ -7,7 +7,7 @@ import { useForm } from '@mantine/form';
 import { EventRule, EventRuleSchema, HHMM } from '@tmlmobilidade/types';
 import { type UseFormReturnType } from '@tmlmobilidade/ui';
 import { zodResolver } from 'mantine-form-zod-resolver';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 
 import { closeCreateRuleModal } from './RuleCreate.modal';
 
@@ -36,13 +36,13 @@ interface RuleCreateContextState {
 
 const RuleCreateContext = createContext<RuleCreateContextState | undefined>(undefined);
 
-export function useRuleCreateContext() {
+export const useRuleCreateContext = () => {
 	const context = useContext(RuleCreateContext);
 	if (!context) {
 		throw new Error('useRuleCreateContext must be used within a RuleCreateContextProvider');
 	}
 	return context;
-}
+};
 
 /* * */
 
@@ -50,21 +50,13 @@ export const RuleCreateContextProvider = ({ children, eventData, initialValues, 
 	//
 
 	//
-	// A. Setup variables
-
-	const periodsContext = usePeriodsListContext();
-
-	//
-	// B. Fetch data
-
-	//
-	// C. Setup form
+	// A. Setup form
 
 	const form = useForm<EventRule>({
 		initialValues: initialValues || {
 			all_day: false,
 			dates: [],
-			end_time: '23:59' as HHMM,
+			end_time: '' as HHMM,
 			event: {
 				id: '',
 				title: '',
@@ -72,7 +64,7 @@ export const RuleCreateContextProvider = ({ children, eventData, initialValues, 
 
 			kind: 'event_restriction',
 			lines_mode: 'all',
-			start_time: '00:00' as HHMM,
+			start_time: '' as HHMM,
 		},
 		mode: 'controlled',
 		validate: zodResolver(EventRuleSchema),
@@ -81,9 +73,9 @@ export const RuleCreateContextProvider = ({ children, eventData, initialValues, 
 	});
 
 	//
-	// D. Handle actions
+	// B. Handle actions
 
-	const handleSubmitRule = () => {
+	const handleSubmitRule = useCallback(() => {
 		// Validate form
 		const validation = form.validate();
 		if (validation.hasErrors) {
@@ -100,17 +92,17 @@ export const RuleCreateContextProvider = ({ children, eventData, initialValues, 
 
 		// Close the modal
 		closeCreateRuleModal();
-	};
+	}, [form, onSubmit]);
 
-	const handleDeleteRule = () => {
+	const handleDeleteRule = useCallback(() => {
 		if (onDelete) {
 			onDelete();
 			closeCreateRuleModal();
 		}
-	};
+	}, [onDelete]);
 
 	//
-	// E. Define context value
+	// C. Define context value
 
 	const contextValue: RuleCreateContextState = useMemo(() => ({
 		actions: {
@@ -124,14 +116,10 @@ export const RuleCreateContextProvider = ({ children, eventData, initialValues, 
 		flags: {
 			isEditing: Boolean(initialValues),
 		},
-	}), [
-		eventData,
-		form,
-		periodsContext.data.raw,
-	]);
+	}), [eventData, form, handleDeleteRule, handleSubmitRule, initialValues, onDelete]);
 
 	//
-	// H. Render components
+	// D. Render components
 
 	return (
 		<RuleCreateContext.Provider value={contextValue}>

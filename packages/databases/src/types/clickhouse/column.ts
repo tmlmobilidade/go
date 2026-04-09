@@ -6,7 +6,7 @@ import { type ClickHouseDataType } from '@/types/clickhouse/data-types.js';
  * Definition of a ClickHouse column,
  * including its name, type, and various optional properties.
  */
-export interface ClickHouseColumn<T> {
+export interface ClickHouseColumn {
 
 	/** Alias expression (computed on read) */
 	alias?: string
@@ -35,8 +35,6 @@ export interface ClickHouseColumn<T> {
 	/** Materialized value expression (computed on insert) */
 	materialized?: string
 
-	name: Extract<keyof T, string>
-
 	/** Whether the column can be null (wraps type in Nullable) */
 	nullable?: boolean
 
@@ -51,4 +49,11 @@ export interface ClickHouseColumn<T> {
 
 	/** The ClickHouse data type */
 	type: ClickHouseDataType
+
 }
+
+/**
+ * A ClickHouse schema is a mapping of column names to their definitions (ClickHouseColumn).
+ * The generic type T represents the shape of the data, and the keys of T are used as column names.
+ */
+export type ClickHouseSchema<T> = Record<keyof T, ClickHouseColumn>;

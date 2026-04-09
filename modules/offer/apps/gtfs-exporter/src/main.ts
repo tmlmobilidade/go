@@ -9,11 +9,12 @@ import { Logger } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
 
 import { exportFeedInfoFile } from './exports/feedInfo.js';
+import { fetchAllEvents } from './fetchers/events.js';
 import { fetchAllFares } from './fetchers/fare.js';
 import { fetchAllHolidays } from './fetchers/holidays.js';
 import { fetchAllMunicipalities } from './fetchers/municipality.js';
-import { fetchAllYearPeriods } from './fetchers/year-periods.js';
 import { fetchAllTypologies } from './fetchers/typology.js';
+import { fetchAllYearPeriods } from './fetchers/year-periods.js';
 import { fetchAllZones } from './fetchers/zone.js';
 
 /* * */
@@ -33,8 +34,7 @@ async function clearExportFiles(exportConfig: GtfsV29ExportConfig) {
 			}
 			Logger.info('Cleared existing CSV files');
 		}
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error clearing export files', error);
 		// Don't throw - continue with export even if cleanup fails
 	}
@@ -55,8 +55,7 @@ async function updateProgress(
 		// TODO: Replace with actual database update logic
 		// await ExportModel.updateOne({ _id: exportDocument._id }, updates);
 		Logger.info(`Progress: ${updates.progress_current || 0}/${updates.progress_total || 0}`);
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error(`Error updating progress for export ${exportDocument._id}`, error);
 		throw new Error(`Error updating progress: ${error}`);
 	}
@@ -74,7 +73,7 @@ export async function exportGtfsV29(
 	try {
 		Logger.info('* * *');
 		Logger.info('* GTFS v29 : NEW EXPORT');
-		Logger.info(`* Agency ID: ${exportConfig.agency_id}`);
+		Logger.info(`* Agency IDs: ${exportConfig.agency_ids.join(', ')}`);
 		Logger.info(`* Version: ${exportConfig.version}`);
 		Logger.info('* * *');
 
@@ -93,8 +92,8 @@ export async function exportGtfsV29(
 		const serviceRegistry = new ServiceRegistry();
 
 		// Define export date range
-		const exportStartDate = Dates.fromISO(exportConfig.feed_start_date);
-		const exportEndDate = Dates.fromISO(exportConfig.feed_end_date);
+		const exportStartDate = Dates.fromOperationalDate(exportConfig.calendars_clip_start_date, 'Europe/Lisbon');
+		const exportEndDate = Dates.fromOperationalDate(exportConfig.calendars_clip_end_date, 'Europe/Lisbon');
 
 		//
 		// 1.
@@ -103,16 +102,23 @@ export async function exportGtfsV29(
 
 		await updateProgress(progress, { progress_current: 1, progress_total: 7 });
 
-		const agencyData = await agencies.findById(exportConfig.agency_id);
-		if (!agencyData) {
-			throw new Error(`Agency with ID ${exportConfig.agency_id} not found`);
-		}
+		const allAgenciesData = await Promise.all(
+			exportConfig.agency_ids.map(async (id) => {
+				const agencyData = await agencies.findById(id);
+				if (!agencyData) throw new Error(`Agency with ID ${id} not found`);
+				return agencyData;
+			}),
+		);
 
-		await exportAgencyFile(agencyData, exportConfig);
+		for (const agencyData of allAgenciesData) {
+			await exportAgencyFile(agencyData, exportConfig);
+		}
 		Logger.success('Exported agency.txt');
 
-		await exportFeedInfoFile(agencyData, exportConfig);
+		await exportFeedInfoFile(allAgenciesData[0], exportConfig);
 		Logger.success('Exported feed_info.txt');
+
+		const agenciesMap = new Map(allAgenciesData.map(a => [a._id, a]));
 
 		//
 		// 2.
@@ -123,16 +129,15 @@ export async function exportGtfsV29(
 		await updateProgress(progress, { progress_current: 2, progress_total: 7 });
 
 		// Build the base filter for the agency
-		const linesFilter: { _id?: { $in?: string[], $nin?: string[] }, agency_id: string } = {
-			agency_id: exportConfig.agency_id,
+		const linesFilter: { _id?: { $in?: string[], $nin?: string[] }, agency_id?: { $in: string[] } } = {
+			agency_id: { $in: exportConfig.agency_ids },
 		};
 
 		// Apply include/exclude filters
 		if (exportConfig.lines_include.length > 0) {
 			// If lines_include is specified, only include those lines
 			linesFilter._id = { $in: exportConfig.lines_include };
-		}
-		else if (exportConfig.lines_exclude.length > 0) {
+		} else if (exportConfig.lines_exclude.length > 0) {
 			// If lines_exclude is specified, exclude those lines
 			linesFilter._id = { $nin: exportConfig.lines_exclude };
 		}
@@ -167,20 +172,21 @@ export async function exportGtfsV29(
 		Logger.success(`Loaded ${allPeriodsMap.size} periods`);
 
 		Logger.info('Fetching all holidays...');
-		const allHolidaysMap = await fetchAllHolidays(exportConfig.agency_id);
+		const allHolidaysMap = await fetchAllHolidays(exportConfig.agency_ids);
 		Logger.success(`Loaded ${allHolidaysMap.size} holidays`);
+
+		Logger.info('Fetching all events...');
+		const allEventsMap = await fetchAllEvents(exportConfig.agency_ids);
+		Logger.success(`Loaded ${allEventsMap.size} events`);
 
 		// 3.
 		// Process each line and its routes/patterns
 		// Initiate the main loop that go through all lines
 		// and progressively builds the GTFS files
 
-		// for (const [lineIndex, lineData] of allLinesData.entries()) {
-		const firstLine = allLinesData[0];
-		if (firstLine) {
-			const lineIndex = 0;
-			const lineData = firstLine;
+		for (const [lineIndex, lineData] of allLinesData.entries()) {
 			//
+			const lineAgencyData = agenciesMap.get(lineData.agency_id) ?? allAgenciesData[0];
 
 			// 3.0.
 			// Update progress
@@ -221,10 +227,10 @@ export async function exportGtfsV29(
 				}
 
 				// Export the route
-				await exportRoute(agencyData, lineData, routeData, exportConfig, allTypologiesMap, routePatterns);
+				await exportRoute(lineAgencyData, lineData, routeData, exportConfig, allTypologiesMap, routePatterns);
 
 				// Export fares for this route
-				await exportFareForRoute(agencyData, lineData, routeData, exportConfig, allFaresMap, referencedFareIds);
+				await exportFareForRoute(lineAgencyData, lineData, routeData, exportConfig, allFaresMap, referencedFareIds);
 
 				for (const patternData of routePatterns) {
 					// Skip patterns without shape or path
@@ -242,7 +248,7 @@ export async function exportGtfsV29(
 					// Export afetacao (zoning) for this pattern
 					// Get typology data for this line
 					const typologyData = lineData.typology ? allTypologiesMap.get(lineData.typology) : null;
-					await exportZoning(agencyData, lineData, patternData, allZonesMap, allFaresMap, typologyData || null, exportConfig);
+					await exportZoning(lineAgencyData, lineData, patternData, allZonesMap, allFaresMap, typologyData || null, exportConfig);
 
 					// Track referenced stops from the pattern path
 					if (patternData.path) {
@@ -258,6 +264,8 @@ export async function exportGtfsV29(
 						patternData,
 						shapeId,
 						Array.from(allPeriodsMap.values()),
+						Array.from(allHolidaysMap.values()),
+						Array.from(allEventsMap.values()),
 						exportStartDate,
 						exportEndDate,
 						serviceRegistry,
@@ -310,7 +318,7 @@ export async function exportGtfsV29(
 		await updateProgress(progress, { progress_current: 6, progress_total: 7 });
 
 		Logger.info(`Exporting ${referencedFareIds.size} fare attributes...`);
-		await exportFareAttributes(agencyData, exportConfig, allFaresMap, referencedFareIds);
+		await exportFareAttributes(allAgenciesData[0], exportConfig, allFaresMap, referencedFareIds);
 		Logger.success('Exported fare_attributes.txt');
 
 		//
@@ -331,8 +339,7 @@ export async function exportGtfsV29(
 		Logger.success('All files flushed successfully');
 
 	//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error during GTFS v29 export', error);
 		throw error;
 	}

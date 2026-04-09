@@ -58,6 +58,8 @@ export function parseSimplifiedApexValidation(pcgiDoc: any): null | SimplifiedAp
 			created_at: transactionDate,
 			device_id: pcgiDoc.transaction.deviceID,
 			event_type: pcgiDoc.transaction.eventType,
+			is_ok: false,
+			is_ok_pcgi: false,
 			is_passenger: validateIfSimplifiedApexValidationIsPassenger(pcgiDoc.transaction.validationStatus, pcgiDoc.transaction.eventType, null),
 			line_id: pcgiDoc.transaction.lineLongID,
 			mac_ase_counter_value: pcgiDoc.transaction.macDataFields.aseCounterValue,
@@ -70,12 +72,10 @@ export function parseSimplifiedApexValidation(pcgiDoc: any): null | SimplifiedAp
 			stop_id: pcgiDoc.transaction.stopLongID,
 			trip_id: pcgiDoc.transaction.journeyID,
 			units_qty: pcgiDoc.transaction.unitsQuantity ?? null,
-			updated_at: Dates.fromISO(pcgiDoc.createdAt).unix_timestamp,
 			validation_status: pcgiDoc.transaction.validationStatus,
 			vehicle_id: pcgiDoc.transaction.vehicleID,
 		};
-	}
-	catch (error) {
+	} catch (error) {
 		console.error(`Error parsing simplified APEX Validation. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
 		return null;
 	}

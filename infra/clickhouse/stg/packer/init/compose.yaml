@@ -18,6 +18,10 @@ services:
       options:
         max-size: '1m'
         max-file: '1'
+    extra_hosts:
+      - "go-stg-clickhouse-1.tmlmobilidade.pt:10.91.101.141"
+      - "go-stg-clickhouse-2.tmlmobilidade.pt:10.91.101.142"
+      - "go-stg-clickhouse-3.tmlmobilidade.pt:10.91.101.143"
     volumes:
       - /opt/app/persistent-data/data:/var/lib/clickhouse
       - /opt/app/persistent-data/logs:/var/log/clickhouse-server

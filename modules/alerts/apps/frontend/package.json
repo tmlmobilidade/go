@@ -14,14 +14,16 @@
 		"lint:fix": "eslint --fix ./src"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.40.0",
+		"@tabler/icons-react": "3.41.0",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-alerts-pckg-describe": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"next": "16.2.1",
 		"react": "19.2.4",
 		"react-dom": "19.2.4",
+		"react-i18next": "16.6.6",
 		"swr": "2.4.1"
 	},
 	"devDependencies": {

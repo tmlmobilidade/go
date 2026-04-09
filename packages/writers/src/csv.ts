@@ -14,25 +14,20 @@ interface CsvWriterOptions {
 	new_line_character?: string
 }
 
-/* * */
-
+/**
+ * @deprecated This class is deprecated and should not be used for new implementations.
+ * It is recommended to use the BatchWriter class instead.
+ */
 export class CsvWriter<T> {
 	//
 
 	private CURRENT_BATCH_DATA: T[] = [];
-
 	private FILE_PATH = null;
-
 	private INCLUDE_BOM = false;
-
 	private INSTANCE_NAME = 'Unnamed Instance';
-
 	private LOGS = true;
-
 	private MAX_BATCH_SIZE = 5000;
-
 	private NEW_LINE_CHARACTER = '\n';
-
 	private SESSION_TIMER = new Timer();
 
 	/* * */
