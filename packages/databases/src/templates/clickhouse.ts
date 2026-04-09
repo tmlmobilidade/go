@@ -17,7 +17,7 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 	protected readonly abstract schema: ClickHouseSchema<T>;
 	protected readonly abstract tableName: string;
 
-	protected readonly engine: ClickHouseTableEngine = 'ReplicatedMergeTree';
+	protected readonly engine: ClickHouseTableEngine = 'MergeTree';
 	protected readonly orderBy: string = '_id';
 	protected readonly partitionBy: null | string = null;
 
@@ -192,7 +192,7 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 		if (!validateSqlParam(this.databaseName, false)) throw new Error(`CLICKHOUSE [${this.databaseName}]: Unsafe database name provided.`);
 		// Perform the query to create the database if it does not exist
 		try {
-			await this.client.command({ query: `CREATE DATABASE IF NOT EXISTS "${this.databaseName}" on CLUSTER default_cluster;` });
+			await this.client.command({ query: `CREATE DATABASE IF NOT EXISTS "${this.databaseName}"` });
 			Logger.info(`CLICKHOUSE [${this.databaseName}]: Database created.`);
 		} catch (error) {
 			Logger.error(`CLICKHOUSE [${this.databaseName}]: Error @ createDatabase(): ${(error as Error).message}`);
@@ -218,7 +218,7 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 		await this.ensureDatabase();
 		// Setup the full CREATE TABLE query
 		const createTableQuery = `
-			CREATE TABLE IF NOT EXISTS "${this.databaseName}"."${this.tableName}" ON CLUSTER default_cluster (
+			CREATE TABLE IF NOT EXISTS "${this.databaseName}"."${this.tableName}" (
 				${Object.entries<ClickHouseColumn>(this.schema).map(([key, column]) => `${key} ${column.type}`).join(', ')}
 			) ENGINE = ${this.getEngineString()}
 			${this.orderBy ? `ORDER BY ${this.orderBy}` : ''}
@@ -240,8 +240,8 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 	 */
 	private getEngineString(): string {
 		switch (this.engine) {
-			case 'ReplicatedMergeTree':
-				return `ReplicatedMergeTree('/clickhouse/tables/{shard}/${this.databaseName}/${this.tableName}', '{replica}')`;
+			case 'MergeTree':
+				return `MergeTree()`;
 			default:
 				throw new Error(`CLICKHOUSE [${this.databaseName}/${this.tableName}]: Unsupported engine type: ${this.engine}`);
 		}

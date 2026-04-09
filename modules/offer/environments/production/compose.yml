@@ -2,6 +2,10 @@
 
 name: tmlmobilidade-go-offer-production
 
+secrets:
+  ociprivatekey:
+    file: ./secrets/oci-private-key.pem
+
 services:
 
   # # # # # # # # # # # # # # # # # # # # #
@@ -90,3 +94,24 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  gtfs-exporter:
+    image: ghcr.io/tmlmobilidade/go-offer-gtfs-exporter:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+    secrets:
+      - ociprivatekey
