@@ -35,7 +35,7 @@ export function EventsDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
-			<IdTag id={eventsDetailContext.data.event._id} />
+			<IdTag id={eventsDetailContext.data.event._id} copyOnClick />
 
 			<Spacer />
 
