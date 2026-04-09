@@ -107,6 +107,17 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 			year_period_ids: [PERIODS.FER, PERIODS.ESC],
 		},
 	]],
+	['40', [
+		{
+			description: 'Todos os dias exceto entre 4 de junho a 15 de setembro',
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri, WEEKDAYS.Sat, WEEKDAYS.Sun],
+			year_period_ids: [PERIODS.ESC, PERIODS.FER, PERIODS.VER],
+		},
+		{
+			event_id: 'PLRXJ',
+			isExclude: true,
+		},
+	]],
 	['41', [
 		{
 			description: 'Dias úteis de férias escolares e verão',
@@ -164,6 +175,51 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 			year_period_ids: [PERIODS.VER, PERIODS.FER],
 		},
 	]],
+	['124', [
+		{
+			description: 'A4 - Sábados, domingos e feriados de 4 junho a 14 setembro, dias úteis de 30 junho a 10 setembro',
+			event_id: 'PLRXJ',
+			weekdays: [WEEKDAYS.Sat, WEEKDAYS.Sun],
+		},
+		{
+			event_id: 'VQUZ7',
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+		},
+	]],
+	['125', [
+		{
+			description: 'A4 - Sábados, domingos, feriados de 4 junho a 14 setembro',
+			event_id: 'PLRXJ',
+			weekdays: [WEEKDAYS.Sat, WEEKDAYS.Sun],
+		},
+	]],
+	['126', [
+		{
+			description: 'A4 - Dias úteis de 1 julho a 10 de setembro',
+			event_id: 'VQUZ7',
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+		},
+	]],
+	['127', [
+		{
+			description: 'Dias úteis de 5 junho a 29 junho e de 11 de setembro a 15 de setembro',
+			event_id: 'FJ614',
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+		},
+	]],
+	['128', [
+		{
+			description: 'A4 - Dias úteis de 5 junho a 15 setembro',
+			event_id: 'PLRXJ',
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+		},
+	]],
+	['129', [
+		{
+			description: 'A4 - Todos os dias entre o dia 4 junho e 15 setembro',
+			event_id: 'PLRXJ',
+		},
+	]],
 	['162', [
 		{
 			description: 'Feira de Santiago',
@@ -194,6 +250,16 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 			description: 'Fins de semana, durante o período da Feira de Santiago',
 			event_id: 'MN4FX',
 			weekdays: [WEEKDAYS.Sat, WEEKDAYS.Sun],
+		},
+	]],
+	['168', [
+		{
+			description: 'A4 - Sextas-feiras e sábados (exceto feriados) e último domingo, durante o período da Feira de Santiago (Setúbal)',
+			event_id: 'MN4FX',
+			weekdays: [WEEKDAYS.Fri, WEEKDAYS.Sat],
+		},
+		{
+			event_id: 'M0R7U',
 		},
 	]],
 	['180', [
@@ -296,14 +362,16 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 	]],
 	['511', [
 		{
-			event_id: 'RJVKN',
+			months: [5, 6, 7, 8, 9],
 			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri, WEEKDAYS.Sat, WEEKDAYS.Sun],
+			year_period_ids: [PERIODS.VER, PERIODS.FER, PERIODS.ESC],
 		},
 	]],
 	['512', [
 		{
-			event_id: 'RJVKN',
+			months: [5, 6, 7, 8, 9],
 			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+			year_period_ids: [PERIODS.VER, PERIODS.FER, PERIODS.ESC],
 		},
 	]],
 	['513', [
@@ -336,6 +404,17 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 			months: [8],
 			weekdays: [WEEKDAYS.Sun],
 			year_period_ids: [PERIODS.VER, PERIODS.FER, PERIODS.ESC],
+		},
+	]],
+	['8125', [
+		{
+			description: 'Sábados e Domingos/feriados todo o ano (OFF A4 - Sábados, domingos, feriados de 4 junho a 14 setembro)',
+			weekdays: [WEEKDAYS.Sat, WEEKDAYS.Sun],
+			year_period_ids: [PERIODS.FER, PERIODS.ESC, PERIODS.VER],
+		},
+		{
+			event_id: 'PLRXJ',
+			weekdays: [WEEKDAYS.Sat, WEEKDAYS.Sun],
 		},
 	]],
 	['8125', [
