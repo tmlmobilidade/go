@@ -1,0 +1,21 @@
+name: Build PR Images
+on:
+  pull_request:
+    types: [opened, reopened, closed]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build images
+        run: |
+          docker build -t tmlmobilidade/go-auth-api:pr-${{ github.event.pull_request.number }} ./auth-api
+          # build other module/app images
+      - name: Notify infra
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.INFRA_REPO_TOKEN }}
+          repository: tmlmobilidade/go-infra
+          event-type: preview-pr
+          client-payload: '{"pr": ${{ github.event.pull_request.number }}}'
