@@ -1,6 +1,6 @@
 # # #
 
-FROM node:24-slim AS base
+FROM node:24-alpine AS base
 
 
 # # #
@@ -38,7 +38,7 @@ RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${APP} --docker
 # Build the app in the pruned monorepo.
 # First install dependencies, as they change less often.
 
-FROM base AS build-deps
+FROM base AS builder
 
 WORKDIR /app
 
@@ -46,29 +46,20 @@ COPY --from=pruner /app/out/json/ .
 
 RUN npm ci
 
-
-# # #
-# BUILDER STAGE
-# Build the app with dev dependencies available.
-
-FROM build-deps AS builder
-
-WORKDIR /app
-
 COPY --from=pruner /app/out/full/ .
 
 RUN npx @tmlmobilidade/repo-version --output=/app/modules/${MODULE}/apps/${APP}/package.json
 
 RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 
-RUN npm ci --omit-dev
+RUN npm ci --omit-dev && npm cache clean --force
 
 
 # # #
 # RUNNER STAGE
-# Use a clean base image (no global turbo).
-# Local package symlinks are already embedded in node_modules via --install-links,
-# so only node_modules and the built dist are needed.
+# Copy the installed node_modules and built app to a fresh image.
+# Also copy the packages and modules folders, as some local
+# packages need to be included because node_modules symlinks to them.
 
 FROM gcr.io/distroless/nodejs24-debian13 AS runner
 
