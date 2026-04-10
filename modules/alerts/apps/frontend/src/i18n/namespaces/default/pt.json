@@ -37,9 +37,6 @@
 					"period": "Período",
 					"stop": "Paragem"
 				},
-				"search": {
-					"placeholder": "Pesquisar…"
-				},
 				"groups": {
 					"from_date": "A partir de {date}",
 					"from_today": "A partir de hoje, {date}",
@@ -51,6 +48,9 @@
 				},
 				"header": {
 					"title": "Alertas públicos"
+				},
+				"search": {
+					"placeholder": "Pesquisar…"
 				}
 			}
 		}

@@ -89,9 +89,9 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 	);
 
 	const stopsById = useMemo(() => {
-		const list = stopsContext.data.stops as StopWithLines[];
-		return new Map(list.map(s => [s.id, s]));
-	}, [stopsContext.data.stops]);
+		const list = stopsContext.data.raw;
+		return new Map(list.map(s => [s._id, s]));
+	}, [stopsContext.data.raw]);
 
 	const lineIdsInAlerts = useMemo(() => {
 		const set = new Set<string>();
@@ -197,12 +197,12 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 			if (alert.reference_type === 'lines') {
 				return alert.references.some(r => selected.has(r.parent_id));
 			}
-			if (alert.reference_type === 'stops') {
-				return alert.references.some((r) => {
-					const stop = stopsById.get(r.parent_id);
-					return stop?.line_ids?.some(lid => selected.has(lid)) ?? false;
-				});
-			}
+			// if (alert.reference_type === 'stops') {
+			// 	return alert.references.some((r) => {
+			// 		const stop = stopsById.get(r.parent_id);
+			// 		return stop?.line_ids?.some(lid => selected.has(lid)) ?? false;
+			// 	});
+			// }
 			return false;
 		};
 
