@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 'use client';
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';

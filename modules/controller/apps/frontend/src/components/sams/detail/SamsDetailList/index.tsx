@@ -8,8 +8,8 @@ import { useTranslation } from 'react-i18next';
 
 /* * */
 
-import { SamsDetailListFilters } from './SamsDetailListFilters';
-import { SamsDetaisListItems } from './SamsDetaisListItems';
+import { SamsDetailListFilters } from '../SamsDetailListFilters';
+import { SamsDetaisListItems } from '../SamsDetaisListItems';
 
 /* * */
 
