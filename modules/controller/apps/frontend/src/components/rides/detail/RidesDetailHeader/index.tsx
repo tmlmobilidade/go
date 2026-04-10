@@ -35,6 +35,11 @@ export function RidesDetailHeader() {
 		router.push(keepUrlParams(PAGE_ROUTES.controller.RIDES_LIST));
 	};
 
+	const handleToggleFavorite = () => {
+		if (!rideId || rideFavoritesContext.flags.loading) return;
+		void rideFavoritesContext.actions.toggleFavorite(rideId);
+	};
+
 	//
 	// C. Render components
 
@@ -49,7 +54,7 @@ export function RidesDetailHeader() {
 			<IconButton
 				disabled={!rideId || rideFavoritesContext.flags.loading}
 				icon={isFavorite ? <IconHeartFilled /> : <IconHeart />}
-				onClick={() => rideFavoritesContext.actions.toggleFavorite(rideId)}
+				onClick={handleToggleFavorite}
 				tooltip={isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
 				variant="primary"
 			/>

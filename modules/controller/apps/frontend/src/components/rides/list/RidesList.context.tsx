@@ -2,23 +2,22 @@
 
 /* * */
 
+import { useRideFavoritesContext } from '@/contexts/RideFavorites.context';
 import { useDebouncedValue } from '@mantine/hooks';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type OperationalStatus, PermissionCatalog, type RideNormalized, RideNormalizedSchema } from '@tmlmobilidade/types';
 import { DelayStatusSchema, OperationalStatusSchema } from '@tmlmobilidade/types';
 import { RIDE_ANALYSIS_GRADE_OPTIONS, type UnixTimestamp } from '@tmlmobilidade/types';
-import { useDataAgencies, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useMeContext } from '@tmlmobilidade/ui';
+import { useDataAgencies, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useSWR from 'swr';
 
 /* * */
 
 export interface RidesListContextState {
 	actions: {
-		favoriteRidesMutate: () => void
 		setFavoritesEnabled: () => void
 		setFilterDateEnd: (value: number) => void
 		setFilterDateStart: (value: number) => void
@@ -69,13 +68,9 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const meContext = useMeContext();
+	const rideFavoritesContext = useRideFavoritesContext();
 
 	const [favoritesEnabled, setFavoritesEnabled] = useState<boolean>(false);
-	const favorites = useMemo(() => meContext.data.user?.preferences?.controller?.favorite_rides as string[] | undefined ?? [], [meContext.data.user?.preferences?.controller?.favorite_rides]);
-
-	// Fetch rides by favorite ids if the favoritesData is available, otherwise skip fetching.
-	const { data: favoriteRidesData, mutate: favoriteRidesMutate } = useSWR<RideNormalized[], Error>(API_ROUTES.controller.RIDES_FAVORITES + '?ids=' + favorites.join(','));
 
 	//
 	// B. Fetch data
@@ -126,14 +121,13 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const contextValue: RidesListContextState = useMemo(() => ({
 		actions: {
-			favoriteRidesMutate,
 			setFavoritesEnabled: () => setFavoritesEnabled(!favoritesEnabled),
 			setFilterDateEnd,
 			setFilterDateStart,
 		},
 		data: {
 			filtered: ridesData ?? [],
-			filteredByFavoriteIds: favoriteRidesData ?? [],
+			filteredByFavoriteIds: rideFavoritesContext.data.favoriteRides,
 		},
 		filters: {
 			acceptance_status: filterAcceptanceStatus,
@@ -169,8 +163,11 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		filterAnalysisEndedAtLastStop,
 		ridesLoading,
 		ridesError,
+		ridesLastUpdatedAt,
 		favoritesEnabled,
-		favoriteRidesData,
+		rideFavoritesContext.data.favoriteRides,
+		setFilterDateEnd,
+		setFilterDateStart,
 	]);
 
 	//
