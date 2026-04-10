@@ -34,6 +34,7 @@
 					"effect": "Efeito",
 					"line": "Linha",
 					"past_alerts": "Alertas passados",
+					"period": "Período",
 					"stop": "Paragem"
 				},
 				"search": {

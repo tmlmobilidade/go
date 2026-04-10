@@ -29,11 +29,12 @@ export function FilterTypeDateRange({ active, disabled, endDate, label, onEndDat
 			disabled={disabled}
 			label={label}
 		>
-			<Section gap="sm" height="auto" padding="md"width="auto">
+			<Section gap="sm" height="auto" padding="md" width="auto">
 				<Label size="md">Data de Início</Label>
 				<DateTimePicker
 					onChange={onStartDateChange}
 					value={startDate}
+					clearable
 					fullWidth
 				/>
 				<Spacer />
@@ -41,7 +42,8 @@ export function FilterTypeDateRange({ active, disabled, endDate, label, onEndDat
 				<DateTimePicker
 					onChange={onEndDateChange}
 					value={endDate}
-
+					clearable
+					fullWidth
 				/>
 			</Section>
 		</FilterWrapper>

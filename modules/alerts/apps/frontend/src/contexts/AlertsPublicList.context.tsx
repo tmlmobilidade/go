@@ -8,9 +8,9 @@ import { type AlertNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { type Alert, AlertSchema } from '@tmlmobilidade/types';
+import { type Alert, AlertSchema, type UnixTimestamp } from '@tmlmobilidade/types';
 import { useAgenciesContext, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
-import { parseAsBoolean, useQueryState } from 'nuqs';
+import { parseAsBoolean, parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
@@ -28,8 +28,14 @@ interface AlertsPublicListContextState {
 		effect: UseFilterStateListReturnType
 		include_past_alerts: boolean
 		line: UseFilterStateListReturnType
+		period_default_since: UnixTimestamp
+		period_default_until: UnixTimestamp
+		period_since: UnixTimestamp
+		period_until: UnixTimestamp
 		search: UseFilterStateStringReturnType
 		setIncludePastAlerts: (value: boolean) => void
+		setPeriodSince: (value: null | UnixTimestamp) => void
+		setPeriodUntil: (value: null | UnixTimestamp) => void
 		stop: UseFilterStateListReturnType
 	}
 	flags: {
@@ -67,6 +73,20 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 
 	const filterSearch = useFilterStateString('search');
 	const [includePastAlerts, setIncludePastAlertsParam] = useQueryState('past_alerts', parseAsBoolean.withDefault(false));
+
+	const [defaultPeriodSince, defaultPeriodUntil] = useMemo(() => {
+		const startOfToday = Dates.now('Europe/Lisbon').startOf('day');
+		return [startOfToday.unix_timestamp, startOfToday.plus({ days: 7 }).endOf('day').unix_timestamp] as const;
+	}, []);
+
+	const [periodSince, setPeriodSinceParam] = useQueryState(
+		'since',
+		parseAsInteger.withDefault(defaultPeriodSince),
+	);
+	const [periodUntil, setPeriodUntilParam] = useQueryState(
+		'until',
+		parseAsInteger.withDefault(defaultPeriodUntil),
+	);
 
 	const stopsById = useMemo(() => {
 		const list = stopsContext.data.stops as StopWithLines[];
@@ -159,6 +179,15 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 
 		const startOfTodayLisbon = Dates.now('Europe/Lisbon').startOf('day').unix_timestamp;
 
+		const passesActivePeriodWindow = (alert: AlertNormalized): boolean => {
+			let windowStart = periodSince ?? defaultPeriodSince;
+			let windowEnd = periodUntil ?? defaultPeriodUntil;
+			if (windowStart > windowEnd) [windowStart, windowEnd] = [windowEnd, windowStart];
+			const alertStart = alert.active_period_start_date;
+			const alertEnd = alert.active_period_end_date ?? Number.MAX_SAFE_INTEGER;
+			return alertStart <= windowEnd && alertEnd >= windowStart;
+		};
+
 		const passesLine = (alert: AlertNormalized): boolean => {
 			if (lineIdsInAlerts.length === 0) return true;
 			if (!filterLine.isActive) return true;
@@ -197,6 +226,7 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 					.unix_timestamp;
 				if (alertDayStart < startOfTodayLisbon) return false;
 			}
+			if (!passesActivePeriodWindow(alert)) return false;
 			if (agencyIdsInAlerts.length > 0 && !filterAgency.value.includes(alert.agency_id)) return false;
 			if (!passesLine(alert) || !passesStop(alert)) return false;
 			if (!filterCause.value.includes(alert.cause)) return false;
@@ -219,6 +249,10 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 		stopIdsInAlerts.length,
 		stopsById,
 		includePastAlerts,
+		defaultPeriodSince,
+		defaultPeriodUntil,
+		periodSince,
+		periodUntil,
 	]);
 
 	const contextValue: AlertsPublicListContextState = useMemo(() => ({
@@ -232,9 +266,19 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 			effect: filterEffect,
 			include_past_alerts: includePastAlerts,
 			line: filterLine,
+			period_default_since: defaultPeriodSince as UnixTimestamp,
+			period_default_until: defaultPeriodUntil as UnixTimestamp,
+			period_since: (periodSince ?? defaultPeriodSince) as UnixTimestamp,
+			period_until: (periodUntil ?? defaultPeriodUntil) as UnixTimestamp,
 			search: filterSearch,
 			setIncludePastAlerts: (value: boolean) => {
 				void setIncludePastAlertsParam(value ? true : null);
+			},
+			setPeriodSince: (value: null | UnixTimestamp) => {
+				void setPeriodSinceParam(value as null | number);
+			},
+			setPeriodUntil: (value: null | UnixTimestamp) => {
+				void setPeriodUntilParam(value as null | number);
 			},
 			stop: filterStop,
 		},
@@ -255,6 +299,12 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 		allScheduledError,
 		includePastAlerts,
 		setIncludePastAlertsParam,
+		defaultPeriodSince,
+		defaultPeriodUntil,
+		periodSince,
+		periodUntil,
+		setPeriodSinceParam,
+		setPeriodUntilParam,
 	]);
 
 	return (

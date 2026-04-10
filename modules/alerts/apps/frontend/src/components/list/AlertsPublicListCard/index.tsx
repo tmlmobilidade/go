@@ -1,10 +1,10 @@
 /* * */
 
 import { getAlertCardSeverityLevel } from '@/lib/alert-severity';
-import { IconAffiliate, IconAlertCircle, IconAmbulance, IconBarrierBlock, IconBusStop, IconCirclePlus, IconClockExclamation, IconCloudStorm, IconCreditCard, IconFlag, IconFlame, IconInfoCircle, IconMapPin, IconParkingOff, IconProgressDown, IconRoad, IconRoute, IconShield, IconTool, IconTrafficCone, IconUserExclamation, IconUserMinus, IconUserOff, IconUsersGroup, IconWheelchair, IconX } from '@tabler/icons-react';
 import { Dates } from '@tmlmobilidade/dates';
-import { type Alert, type AlertCause } from '@tmlmobilidade/types';
-import { useMemo } from 'react';
+import { type Alert } from '@tmlmobilidade/types';
+import { AlertCauseIcons, AlertEffectIcons } from '@tmlmobilidade/ui';
+import { cloneElement, isValidElement, type ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -19,79 +19,14 @@ interface AlertsPublicListCardProps {
 
 /* * */
 
-const iconProps = {
-	className: styles.cardIcon,
-	size: 22,
-	stroke: 1.75,
-} as const;
-
 function AlertsPublicListCardIcon({ alert }: { alert: Alert }) {
-	const { cause, effect } = alert;
-
-	switch (effect) {
-		case 'ACCESSIBILITY_ISSUE':
-			return <IconWheelchair {...iconProps} />;
-		case 'ADDITIONAL_SERVICE':
-			return <IconCirclePlus {...iconProps} />;
-		case 'DETOUR':
-		case 'MODIFIED_SERVICE':
-			return <IconRoute {...iconProps} />;
-		case 'NO_SERVICE':
-			return <IconX {...iconProps} />;
-		case 'ON_BOARD_SALE_ISSUE':
-			return <IconCreditCard {...iconProps} />;
-		case 'REALTIME_INFO_ISSUE':
-			return <IconInfoCircle {...iconProps} />;
-		case 'REDUCED_SERVICE':
-			return <IconProgressDown {...iconProps} />;
-		case 'SIGNIFICANT_DELAYS':
-			return <IconClockExclamation {...iconProps} />;
-		case 'STOP_MOVED':
-			return <IconMapPin {...iconProps} />;
-		default:
-			return iconForCause(cause);
-	}
-}
-
-function iconForCause(cause: AlertCause) {
-	switch (cause) {
-		case 'ABUSIVE_PARKING':
-			return <IconParkingOff {...iconProps} />;
-		case 'ACCIDENT':
-			return <IconBarrierBlock {...iconProps} />;
-		case 'CONSTRUCTION':
-			return <IconBarrierBlock {...iconProps} />;
-		case 'DEMONSTRATION':
-			return <IconFlag {...iconProps} />;
-		case 'DRIVER_ABSENCE':
-			return <IconUserMinus {...iconProps} />;
-		case 'DRIVER_ISSUE':
-			return <IconUserExclamation {...iconProps} />;
-		case 'HIGH_PASSENGER_LOAD':
-			return <IconUsersGroup {...iconProps} />;
-		case 'MEDICAL_EMERGENCY':
-			return <IconAmbulance {...iconProps} />;
-		case 'NETWORK_UPDATE':
-			return <IconAffiliate {...iconProps} />;
-		case 'POLICE_ACTIVITY':
-			return <IconShield {...iconProps} />;
-		case 'PUBLIC_DISORDER':
-			return <IconFlame {...iconProps} />;
-		case 'ROAD_ISSUE':
-			return <IconRoad {...iconProps} />;
-		case 'STRIKE':
-			return <IconUserOff {...iconProps} />;
-		case 'TECHNICAL_ISSUE':
-			return <IconTool {...iconProps} />;
-		case 'TRAFFIC_JAM':
-			return <IconTrafficCone {...iconProps} />;
-		case 'VEHICLE_ISSUE':
-			return <IconBusStop {...iconProps} />;
-		case 'WEATHER':
-			return <IconCloudStorm {...iconProps} />;
-		default:
-			return <IconAlertCircle {...iconProps} />;
-	}
+	const template = AlertEffectIcons[alert.effect] ?? AlertCauseIcons[alert.cause];
+	if (!isValidElement(template)) return template;
+	return cloneElement(template as ReactElement<{ className?: string, size?: number, stroke?: number }>, {
+		className: styles.cardIcon,
+		size: 22,
+		stroke: 2,
+	});
 }
 
 /* * */
@@ -102,16 +37,9 @@ export function AlertsPublicListCard({ alert, description, title }: AlertsPublic
 	const severity = getAlertCardSeverityLevel(alert.cause, alert.effect);
 
 	const activePeriodDates = useMemo(() => {
-		const startDate = Dates
-			.fromUnixTimestamp(alert.active_period_start_date)
-			.setZone('Europe/Lisbon', 'offset_only')
-			.toFormat('dd/MM/yyyy HH:mm');
-		const endDate = alert.active_period_end_date
-			? Dates
-				.fromUnixTimestamp(alert.active_period_end_date)
-				.setZone('Europe/Lisbon', 'offset_only')
-				.toFormat('dd/MM/yyyy HH:mm')
-			: t('default:alerts.public.list.card.dates.no_end');
+		const startDate = Dates.fromUnixTimestamp(alert.active_period_start_date).setZone('Europe/Lisbon', 'offset_only').toFormat('dd/MM/yyyy HH:mm');
+		const endDate = alert.active_period_end_date ? Dates.fromUnixTimestamp(alert.active_period_end_date).setZone('Europe/Lisbon', 'offset_only').toFormat('dd/MM/yyyy HH:mm') : t('default:alerts.public.list.card.dates.no_end');
+
 		return { endDate, startDate };
 	}, [alert.active_period_end_date, alert.active_period_start_date, t]);
 

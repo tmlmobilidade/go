@@ -3,6 +3,7 @@
 
 import { AlertsPublicListFilterAgency } from '@/components/list/AlertsPublicListFilterAgency';
 import { AlertsPublicListFilterCause } from '@/components/list/AlertsPublicListFilterCause';
+import { AlertsPublicListFilterDates } from '@/components/list/AlertsPublicListFilterDates';
 import { AlertsPublicListFilterEffect } from '@/components/list/AlertsPublicListFilterEffect';
 import { AlertsPublicListFilterLine } from '@/components/list/AlertsPublicListFilterLine';
 import { AlertsPublicListFilterPast } from '@/components/list/AlertsPublicListFilterPast';
@@ -21,6 +22,7 @@ export function AlertsPublicListFilterBar() {
 	return (
 		<div className={styles.stickyFilterBar}>
 			<FiltersBar>
+				<AlertsPublicListFilterDates />
 				<AlertsPublicListFilterAgency />
 				<AlertsPublicListFilterLine />
 				<AlertsPublicListFilterStop />
