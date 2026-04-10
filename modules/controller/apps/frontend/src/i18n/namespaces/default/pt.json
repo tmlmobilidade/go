@@ -570,8 +570,11 @@
 				"title": "Calendário de Análises"
 			},
 			"SamsDetailList": {
-				"description": "Análises do SAM",
-				"title": "Análises"
+				"SamsDetailListFilterDate": {
+					"label": "Intervalo de análise"
+				},
+				"description": "Lista de análises realizadas do SAM",
+				"title": "Lista de análises"
 			}
 		},
 		"list": {

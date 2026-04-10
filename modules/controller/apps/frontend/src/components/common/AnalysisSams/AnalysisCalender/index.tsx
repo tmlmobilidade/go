@@ -24,6 +24,7 @@ import {
 export interface AnalysisCalenderProps {
 	analyses: SamAnalysis[]
 	className?: string
+	onDayClick?: (dayKey: string) => void
 	rangeEndTs?: null | number
 	rangeStartTs?: null | number
 }
@@ -39,7 +40,7 @@ const monthKeyFromDayKey = (dayKey: string): null | string => {
 
 const toSquareAccent = (accent: DayAccent): 'green' | 'orange' | 'red' | 'white' => accent;
 
-export function AnalysisCalender({ analyses, className, rangeEndTs, rangeStartTs }: AnalysisCalenderProps) {
+export function AnalysisCalender({ analyses, className, onDayClick, rangeEndTs, rangeStartTs }: AnalysisCalenderProps) {
 	const sections = useMemo(() => buildMonthSections(analyses ?? [], { rangeEndTs, rangeStartTs }), [analyses, rangeEndTs, rangeStartTs]);
 	const allDaySections = useMemo(() => buildSections(analyses ?? [], { rangeEndTs, rangeStartTs }), [analyses, rangeEndTs, rangeStartTs]);
 	const monthDaySectionsByKey = useMemo(() => {
@@ -95,6 +96,9 @@ export function AnalysisCalender({ analyses, className, rangeEndTs, rangeStartTs
 													analyses={daySection.items}
 													className={styles.dayTileSquare}
 													title={daySection.items.length > 0 ? undefined : 'sem validações'}
+													onClick={() => {
+														onDayClick?.(daySection.dayKey);
+													}}
 													filled
 												/>
 											</div>

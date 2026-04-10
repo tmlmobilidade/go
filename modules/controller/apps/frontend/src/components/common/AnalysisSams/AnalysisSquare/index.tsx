@@ -23,7 +23,7 @@ export interface AnalysisSquareProps {
 	filled?: boolean
 	/** Expand square to container width. */
 	fullWidth?: boolean
-	onClick?: (analysis: SamAnalysis) => void
+	onClick?: (analysis: SamAnalysis | undefined) => void
 	textLabel?: string
 	/** Tooltip; when omitted, derived from `value` when present. */
 	title?: string
@@ -139,7 +139,7 @@ export interface AnalysisSquareRowProps {
 	className?: string
 	filled?: boolean
 	fullWidth?: boolean
-	onClick?: (analysis: SamAnalysis) => void
+	onClick?: (analysis: SamAnalysis | undefined) => void
 	textLabel?: string
 	title?: string
 }

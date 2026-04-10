@@ -25,6 +25,7 @@ export function SamsDetailCalender() {
 			<Section gap="md">
 				<AnalysisCalender
 					analyses={samDetailContext.data.sam?.analysis ?? []}
+					onDayClick={samDetailContext.actions.applyAnalysisFilterFromCalendarDay}
 					rangeEndTs={samDetailContext.data.sam?.seen_last_at}
 					rangeStartTs={samDetailContext.data.sam?.seen_first_at}
 				/>
