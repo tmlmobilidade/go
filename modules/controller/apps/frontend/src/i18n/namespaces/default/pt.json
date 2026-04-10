@@ -23,6 +23,9 @@
 				"end_time_scheduled": {
 					"label": "Chegada"
 				},
+				"favorites": {
+					"label": "Favoritos"
+				},
 				"headsign": {
 					"label": "Pattern"
 				},

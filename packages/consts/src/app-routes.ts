@@ -197,7 +197,7 @@ export const API_ROUTES = Object.freeze({
 		ALERTS_DETAIL_IMAGE: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/image`,
 		ALERTS_DETAIL_LOCK: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/lock`,
 		ALERTS_LIST: `${getAppConfig('alerts', 'api_url')}/alerts`,
-		ALERTS_RSS: `${getAppConfig('alerts', 'api_url')}/alerts/.rss`,
+		ALERTS_RSS: `${getAppConfig('alerts', 'api_url')}/alerts.rss`,
 
 		// GTFS
 		GTFS_CARRIS_METROPOLITANA: `${getAppConfig('alerts', 'api_url')}/gtfs/carris-metropolitana`,
@@ -282,6 +282,7 @@ export const API_ROUTES = Object.freeze({
 		RIDES_DETAIL_SIMPLIFIED_APEX_ON_BOARD_SALES: (id: string) => `${getAppConfig('controller', 'api_url')}/rides/${id}/simplified-apex-on-board-sales`,
 		RIDES_DETAIL_SIMPLIFIED_APEX_VALIDATIONS: (id: string) => `${getAppConfig('controller', 'api_url')}/rides/${id}/simplified-apex-validations`,
 		RIDES_DETAIL_VEHICLE_EVENTS: (id: string) => `${getAppConfig('controller', 'api_url')}/rides/${id}/vehicle-events`,
+		RIDES_FAVORITES: `${getAppConfig('controller', 'api_url')}/rides/favorites`,
 		RIDES_LIST: `${getAppConfig('controller', 'api_url')}/rides`,
 		RIDES_WS: `${getAppConfig('controller', 'api_url')}/rides/ws`,
 
@@ -373,6 +374,7 @@ export const API_ROUTES = Object.freeze({
 		FARES_LIST: `${getAppConfig('offer', 'api_url')}/fares`,
 
 		// GTFS
+		GTFS_CREATE_EXPORT: `${getAppConfig('offer', 'api_url')}/gtfs/create-export`,
 		GTFS_PARSE: `${getAppConfig('offer', 'api_url')}/gtfs/parse`,
 
 		// LINES
@@ -434,7 +436,7 @@ export const API_ROUTES = Object.freeze({
 		PLANS_DETAIL_LOCK: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/lock`,
 		PLANS_DETAIL_OPERATION_FILE: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/operation-file`,
 		PLANS_DETAIL_OPERATION_FILE_DOWNLOAD: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/operation-file/download`,
-		PLANS_DRT_MODEL_: (id: string) => `${getAppConfig('plans', 'api_url')}/ID:/plans/api/plans/drt-model/${id}`,
+		PLANS_DRT_MODEL: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/drt-model/${id}`,
 		PLANS_LIST: `${getAppConfig('plans', 'api_url')}/plans`,
 
 		// VALIDATIONS

@@ -1,4 +1,4 @@
-import { DAY_PERIOD_LABELS, EventReplacementRule, IsoWeekday, ManualRule, StopsParameterOverride, WEEKDAY_OPTIONS, YearPeriod } from '@tmlmobilidade/types';
+import { DAY_PERIOD_LABELS, EventReplacementRule, IsoWeekday, ManualRule, MONTH_OPTIONS, StopsParameterOverride, WEEKDAY_OPTIONS, YearPeriod } from '@tmlmobilidade/types';
 
 /**
  * Builds the period portion of a rule summary.
@@ -11,13 +11,14 @@ import { DAY_PERIOD_LABELS, EventReplacementRule, IsoWeekday, ManualRule, StopsP
 export function buildYearPeriodsPart(
 	rule: EventReplacementRule | ManualRule | StopsParameterOverride,
 	options: { periods?: YearPeriod[] },
-	cfg: { mode: 'long' | 'short' },
+	cfg: { mode: 'long' | 'short', omitIfAll?: boolean } = { mode: 'long', omitIfAll: false },
 ): string {
 	const allPeriodIds = options?.periods?.map(p => p._id) ?? [];
 	const selectedPeriodIds = rule.year_period_ids || [];
 	const isAll = allPeriodIds.length > 0 && selectedPeriodIds.length === allPeriodIds.length && allPeriodIds.every(id => selectedPeriodIds.includes(id));
 
 	if (!selectedPeriodIds.length || isAll) {
+		if (cfg.omitIfAll) return '';
 		return cfg.mode === 'short' ? 'Todos os períodos' : 'Em todos os períodos';
 	}
 
@@ -49,12 +50,10 @@ export function buildYearPeriodsPart(
  * @param cfg - Format mode (short or long)
  * @returns Formatted weekday string in Portuguese
  */
-export function buildWeekdaysPart(rule: EventReplacementRule | ManualRule | StopsParameterOverride, cfg: { mode: 'long' | 'short' }): string {
-	if (!rule.weekdays || rule.weekdays.length === 0) {
+export function buildWeekdaysPart(rule: EventReplacementRule | ManualRule | StopsParameterOverride, cfg: { mode: 'long' | 'short', omitIfAll?: boolean } = { mode: 'long' }): string {
+	if (!rule.weekdays || rule.weekdays.length === 0 || rule.weekdays.length === 7) {
+		if (cfg.omitIfAll) return '';
 		return cfg.mode === 'short' ? 'Todos os dias' : 'em todos os dias';
-	}
-	if (rule.weekdays.length === 7) {
-		return 'Todos os dias';
 	}
 
 	const weekdaySet = new Set<IsoWeekday>(rule.weekdays as IsoWeekday[]);
@@ -113,4 +112,34 @@ export function buildDayPeriodsPart(
 	if (cfg.mode === 'short') return labels.join(' · ');
 	if (labels.length === 1) return `Durante ${labels[0]}`;
 	return `Durante ${labels.join(' e ')}`;
+}
+
+/**
+ * Builds the months portion of a rule summary.
+ *
+ * Handles smart formatting:
+ * - No months or all 12 selected: "Todos os meses" / "em todos os meses"
+ * - Single month: Shows month label
+ * - Multiple months: "N meses" (short) or lists them (long)
+ */
+export function buildMonthsPart(
+	rule: Pick<ManualRule, 'months'>,
+	cfg: { mode: 'long' | 'short', omitIfAll?: boolean } = { mode: 'long' },
+): string {
+	if (!rule.months?.length || rule.months.length === 12) {
+		if (cfg.omitIfAll) return '';
+		return cfg.mode === 'short' ? 'Todos os meses' : 'em todos os meses';
+	}
+
+	const labels = MONTH_OPTIONS
+		.filter(o => (rule.months as number[]).includes(o.value))
+		.map(o => o.label);
+
+	if (cfg.mode === 'short') {
+		return labels.length === 1 ? labels[0] : `${labels.length} meses`;
+	}
+
+	if (labels.length === 1) return labels[0];
+	if (labels.length === 2) return `${labels[0]} e ${labels[1]}`;
+	return labels.join(', ');
 }

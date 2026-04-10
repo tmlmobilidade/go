@@ -107,6 +107,7 @@ env:
     offer:nginx
     offer:api
     offer:frontend
+    offer:gtfs-exporter
 
     performance:nginx
     performance:api

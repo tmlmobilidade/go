@@ -48,6 +48,12 @@ function ruleAppliesToCivilKey(rule: ManualRule, key: CalendarKey, ctx: Calendar
 	if (!rule.weekdays?.length) return false;
 	if (!rule.weekdays.includes(weekday)) return false;
 
+	// 3) Months filter (optional)
+	if (rule.months?.length) {
+		const month = Number(key.slice(5, 7));
+		if (!(rule.months as number[]).includes(month)) return false;
+	}
+
 	return true;
 }
 

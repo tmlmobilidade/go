@@ -68,6 +68,12 @@ export function computeActiveRules(
 
 	const key = calendarKey(Dates.fromOperationalDate(date, 'Europe/Lisbon'));
 
+	// Filter out manual rules whose months list doesn't include the current month
+	const month = Number(key.slice(5, 7));
+	const monthFilteredManualRules = filteredManualRules.filter(rule =>
+		!rule.months?.length || (rule.months as number[]).includes(month),
+	);
+
 	const replacement = findReplacementForDate(date, replacementRules);
 
 	// 1) Base timepoints
@@ -82,12 +88,12 @@ export function computeActiveRules(
 			: replacement;
 
 		// Replacement mode: match manuals by intersection (Option A)
-		const base = collectReplacementManualIncludes(effectiveReplacement, filteredManualRules);
+		const base = collectReplacementManualIncludes(effectiveReplacement, monthFilteredManualRules);
 		timepoints = base.timepoints;
 		appliedRuleIds = base.appliedRuleIds;
 
 		// Apply manual excludes *also* by intersection with replacement targets
-		applyReplacementManualExcludes(timepoints, appliedRuleIds, effectiveReplacement, filteredManualRules);
+		applyReplacementManualExcludes(timepoints, appliedRuleIds, effectiveReplacement, monthFilteredManualRules);
 	} else {
 		// Normal mode: day resolves to a single weekday + single yearPeriodId
 		const ctx: DayContext = {
@@ -95,11 +101,11 @@ export function computeActiveRules(
 			yearPeriodId: getActivePeriodId(date, periods),
 		};
 
-		const base = collectManualIncludes(filteredManualRules, ctx);
+		const base = collectManualIncludes(monthFilteredManualRules, ctx);
 		timepoints = base.timepoints;
 		appliedRuleIds = base.appliedRuleIds;
 
-		applyManualExcludes(timepoints, appliedRuleIds, filteredManualRules, ctx);
+		applyManualExcludes(timepoints, appliedRuleIds, monthFilteredManualRules, ctx);
 	}
 
 	// 2) Event restrictions always apply by date

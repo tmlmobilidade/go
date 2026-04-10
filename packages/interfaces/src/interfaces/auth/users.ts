@@ -16,6 +16,7 @@ interface SafeUserOptions {
 
 class UsersClass extends MongoCollectionClass<User_UNSAFE, CreateUserDto, UpdateUserDto> {
 	private static _instance: UsersClass;
+
 	protected override createSchema: z.ZodSchema = CreateUserSchema;
 	protected override updateSchema: z.ZodSchema = UpdateUserSchema;
 
