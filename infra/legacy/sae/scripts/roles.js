@@ -65,9 +65,10 @@ db.createRole({
 		{ actions: ['find', 'changeStream'], resource: { collection: 'rides', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'ride_acceptances', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
 	],
 	role: 'alerts',
-	roles: [{ db: 'admin', role: 'common' }],
+	roles: [{ db: 'admin', role: 'common' }], 
 });
 
 db.createRole({

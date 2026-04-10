@@ -2,8 +2,8 @@
 
 /* * */
 
-import { Line, Stop } from '@carrismetropolitana/api-types/network';
 import { IconCornerDownRight, IconMinus } from '@tabler/icons-react';
+import { type Line, type Stop } from '@tmlmobilidade/types';
 import { type Alert } from '@tmlmobilidade/types';
 import { Button, Grid, MultiSelect, Section, Select, Surface } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -13,7 +13,6 @@ import { useMemo } from 'react';
 interface ReferencesEditorLinesItemProps {
 	index: number
 	lines: Line[]
-	municipalityIds: string[]
 	onRemoveReference: (index: number) => void
 	onUpdateReference: (index: number, field: 'child_ids' | 'parent_id', value: string | string[]) => void
 	reference: Alert['references'][number]
@@ -22,7 +21,7 @@ interface ReferencesEditorLinesItemProps {
 
 /* * */
 
-export function ReferencesEditorLinesItem({ index, lines, municipalityIds, onRemoveReference, onUpdateReference, reference, stops }: ReferencesEditorLinesItemProps) {
+export function ReferencesEditorLinesItem({ index, lines, onRemoveReference, onUpdateReference, reference, stops }: ReferencesEditorLinesItemProps) {
 	//
 
 	//
@@ -30,15 +29,14 @@ export function ReferencesEditorLinesItem({ index, lines, municipalityIds, onRem
 
 	const availableLines = useMemo(() => {
 		if (!lines) return [];
-		return lines.map(line => ({ label: `[${line.id}] ${line.long_name}`, value: line.id }));
-	}, [lines, municipalityIds]);
+		return lines.map(line => ({ label: `[${line._id}] ${line.name}`, value: line._id }));
+	}, [lines]);
 
 	const availableStops = useMemo(() => {
 		if (!stops) return [];
 		if (!reference.parent_id) return [];
 		return stops
-			.filter(stop => stop.line_ids.includes(reference.parent_id))
-			.map(stop => ({ label: `[${stop.id}] ${stop.long_name}`, value: stop.id }));
+			.map(stop => ({ label: `[${stop._id}] ${stop.name}`, value: stop._id }));
 	}, [stops, reference.parent_id]);
 
 	//
