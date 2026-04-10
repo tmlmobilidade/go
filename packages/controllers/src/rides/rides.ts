@@ -135,42 +135,38 @@ export class RidesSharedController {
 	}
 
 	/**
-	 * Get rides by pin IDs provided in the request body.
-	 * Expects the request body to contain an object with a property 'pinIds', which should be an array of strings (ride IDs).
-	 * Each ID will be converted to string, trimmed, deduplicated, and empty values filtered out.
-	 * Response is an array of normalized rides whose _id matches any of the provided pin IDs.
-	 * Returns an empty array if no valid pin IDs are given.
+	 * Get a Ride by multiple IDs.
 	 * @param request The Fastify request object.
 	 * @param reply The Fastify reply object.
 	 */
-	static async getRidesByPinsIds(request: FastifyRequest<{ Body: { pinIds: string | string[] } }>, reply: FastifyReply<RideNormalized[]>) {
+	n;
+
+	static async getRideByIds<S extends Permission['scope']>(request: FastifyRequest, reply: FastifyReply<RideNormalized[]>, scope: S, action: ActionsOf<S>) {
 		//
 
 		//
-		// Validate the request body parameters
+		// Detect which agency_ids the user has access to,
+		// based on their permissions. If none, return an empty array.
 
-		const rawPinIds = request.body.pinIds;
-		const pinIds = Array.isArray(rawPinIds) ? rawPinIds : rawPinIds.split(',');
+		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
 
-		if (pinIds.length === 0) {
-			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
-		}
+		if (!ridesPermission['resources']?.agency_ids?.length) return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
+
+		const allowAllAgencies = ridesPermission['resources'].agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
 		//
-		// Fetch the rides by pin IDs from the database
-		const normalizedPinIds = pinIds.map(id => id.trim()).filter(Boolean);
+		// If search is provided, immediately try to find the ride by ID.
+		// If found, return it as the only result. This optimizes
+		// for the common case of searching by ride ID.
 
-		if (normalizedPinIds.length === 0) {
-			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
-		}
+		const ids = request.query['ids']?.split(',') ?? [];
 
-		const ridesByPinIds = await rides.findMany({ _id: { $in: normalizedPinIds } });
-
-		reply.send({
-			data: ridesByPinIds.map(ride => normalizeRide(ride)),
-			error: null,
-			statusCode: HTTP_STATUS.OK,
+		const foundRidesByIds = await rides.findMany({
+			_id: { $in: ids },
+			...(allowAllAgencies ? {} : { agency_id: { $in: ridesPermission['resources'].agency_ids } }),
 		});
+
+		return reply.send({ data: foundRidesByIds.map(ride => normalizeRide(ride)), error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}

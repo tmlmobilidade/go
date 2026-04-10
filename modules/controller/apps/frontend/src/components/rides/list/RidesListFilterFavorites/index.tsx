@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 /* * */
 
-export function RidesListFilterPins() {
+export function RidesListFilterFavorites() {
 	//
 
 	//
@@ -23,11 +23,11 @@ export function RidesListFilterPins() {
 
 	return (
 		<FilterTarget
-			active={ridesListContext.flags.pinsEnabled}
+			active={ridesListContext.flags.favoritesEnabled}
 			disabled={ridesListContext.flags.loading}
-			label={t('default:list.RidesList.columns.pins.label')}
+			label={t('default:list.RidesList.columns.favorites.label')}
 			onClick={() => {
-				ridesListContext.actions.setPinsEnabled();
+				ridesListContext.actions.setFavoritesEnabled();
 			}}
 		/>
 	);

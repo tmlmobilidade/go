@@ -88,10 +88,10 @@ server.register(
 			RidesController.reprocessRideById,
 		);
 
-		instance.post(
-			'/pins',
+		instance.get(
+			'/favorites',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			(request: FastifyRequest<{ Body: { pinIds: string[] } }>, reply: FastifyReply<RideNormalized[]>) => RidesSharedController.getRidesByPinsIds(request, reply),
+			(request: FastifyRequest<{ Querystring: { ids: string } }>, reply: FastifyReply<RideNormalized[]>) => RidesSharedController.getRideByIds(request, reply, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read),
 		);
 
 		//

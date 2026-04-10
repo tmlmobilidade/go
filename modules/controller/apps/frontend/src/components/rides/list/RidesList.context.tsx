@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 'use client';
 
 /* * */
@@ -10,7 +9,6 @@ import { type OperationalStatus, PermissionCatalog, type RideNormalized, RideNor
 import { DelayStatusSchema, OperationalStatusSchema } from '@tmlmobilidade/types';
 import { RIDE_ANALYSIS_GRADE_OPTIONS, type UnixTimestamp } from '@tmlmobilidade/types';
 import { useDataAgencies, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useMeContext } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,13 +18,14 @@ import useSWR from 'swr';
 
 export interface RidesListContextState {
 	actions: {
+		favoriteRidesMutate: () => void
+		setFavoritesEnabled: () => void
 		setFilterDateEnd: (value: number) => void
 		setFilterDateStart: (value: number) => void
-		setPinsEnabled: () => void
 	}
 	data: {
 		filtered: RideNormalized[]
-		filteredByPinIds: RideNormalized[]
+		filteredByFavoriteIds: RideNormalized[]
 	}
 	filters: {
 		acceptance_status: UseFilterStateListReturnType<RideNormalized['acceptance_status']>
@@ -43,9 +42,9 @@ export interface RidesListContextState {
 	}
 	flags: {
 		error: Error | null
+		favoritesEnabled: boolean
 		last_updated_at: null | UnixTimestamp
 		loading: boolean
-		pinsEnabled: boolean
 	}
 }
 
@@ -72,21 +71,12 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const { t } = useTranslation();
 	const meContext = useMeContext();
 
-	const [pinsEnabled, setPinsEnabled] = useState<boolean>(false);
-	const pins = meContext.data.user?.preferences?.controller?.rides as string[] | undefined ?? [];
+	const [favoritesEnabled, setFavoritesEnabled] = useState<boolean>(false);
+	const favorites = useMemo(() => meContext.data.user?.preferences?.controller?.favorite_rides as string[] | undefined ?? [], [meContext.data.user?.preferences?.controller?.favorite_rides]);
 
-	// Fetch rides by pin ids if the pinsData is available, otherwise skip fetching.
-	const { data: ridesByPinIdsData } = useSWR<RideNormalized[], Error>(
-		pins !== undefined ? ['rides-by-pin-ids', pins.join(',')] as const : null,
-		// The fetcher sends a POST request with pinIds to fetch ride data.
-		async () => {
-			if (pins === undefined || pins.length === 0) return [];
-			const res = await fetchData<RideNormalized[]>(API_ROUTES.controller.RIDES_PINS, 'POST', { pinIds: pins.join(',') });
-			if (res.error != null || res.data == null) throw new Error(res.error ?? 'Failed to load rides by pin ids');
-			return res.data;
-		},
-		{ refreshInterval: 1000 }, // Poll every second to refresh the data.
-	);
+	// Fetch rides by favorite ids if the favoritesData is available, otherwise skip fetching.
+	const { data: favoriteRidesData, mutate: favoriteRidesMutate } = useSWR<RideNormalized[], Error>(API_ROUTES.controller.RIDES_FAVORITES + '?ids=' + favorites.join(','));
+
 	//
 	// B. Fetch data
 
@@ -132,24 +122,18 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	});
 
 	//
-	// D. Handle actions
-
-	const handleSetPinsEnabled = () => {
-		setPinsEnabled(!pinsEnabled);
-	};
-
-	//
 	// D. Define context value
 
 	const contextValue: RidesListContextState = useMemo(() => ({
 		actions: {
+			favoriteRidesMutate,
+			setFavoritesEnabled: () => setFavoritesEnabled(!favoritesEnabled),
 			setFilterDateEnd,
 			setFilterDateStart,
-			setPinsEnabled: handleSetPinsEnabled,
 		},
 		data: {
 			filtered: ridesData ?? [],
-			filteredByPinIds: ridesByPinIdsData ?? [],
+			filteredByFavoriteIds: favoriteRidesData ?? [],
 		},
 		filters: {
 			acceptance_status: filterAcceptanceStatus,
@@ -166,9 +150,9 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		flags: {
 			error: ridesError,
+			favoritesEnabled,
 			last_updated_at: ridesLastUpdatedAt,
 			loading: ridesLoading,
-			pinsEnabled,
 		},
 	}), [
 		ridesData,
@@ -185,8 +169,8 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		filterAnalysisEndedAtLastStop,
 		ridesLoading,
 		ridesError,
-		pinsEnabled,
-		ridesByPinIdsData,
+		favoritesEnabled,
+		favoriteRidesData,
 	]);
 
 	//

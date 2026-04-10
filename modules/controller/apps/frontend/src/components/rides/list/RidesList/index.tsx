@@ -147,14 +147,14 @@ export function RidesList() {
 
 	return (
 		<Pane header={[
-			<RidesListHeader />,
-			<RidesListFiltersBar />,
+			<RidesListHeader key="header" />,
+			<RidesListFiltersBar key="filters" />,
 		]}
 		>
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}
-				records={ridesListContext.flags.pinsEnabled ? ridesListContext.data.filteredByPinIds : ridesListContext.data.filtered}
+				records={ridesListContext.flags.favoritesEnabled ? ridesListContext.data.filteredByFavoriteIds : ridesListContext.data.filtered}
 				rowIdAccessor="_id"
 				selectedId={decodeURIComponent(params.id ?? '')}
 			/>

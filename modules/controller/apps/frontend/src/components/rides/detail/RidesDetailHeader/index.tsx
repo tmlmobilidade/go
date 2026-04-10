@@ -5,7 +5,7 @@
 import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
 import { RideAnalysisSystemStatus } from '@/components/rides/analysis/RideAnalysisSystemStatus';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
-import { useRidePinsContext } from '@/contexts/RidePins.context';
+import { useRideFavoritesContext } from '@/contexts/RideFavorites.context';
 import { IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CloseButton, IconButton, IdTag, OperationalStatusTag, Spacer, Toolbar } from '@tmlmobilidade/ui';
@@ -23,22 +23,16 @@ export function RidesDetailHeader() {
 	const router = useRouter();
 
 	const rideAnalysisContext = useRideAnalysisContext();
-	const ridePinsContext = useRidePinsContext();
+	const rideFavoritesContext = useRideFavoritesContext();
 
 	const rideId = rideAnalysisContext.data.ride_id;
-	const isPinned = rideId ? ridePinsContext.data.pins.includes(rideId) : false;
+	const isFavorite = rideId ? rideFavoritesContext.data.favorites.includes(rideId) : false;
 
 	//
 	// B. Handle actions
 
 	const handleGoBack = () => {
 		router.push(keepUrlParams(PAGE_ROUTES.controller.RIDES_LIST));
-	};
-
-	const handlePinToggle = async () => {
-		if (!rideId) return;
-		if (isPinned) await ridePinsContext.actions.removePin(rideId);
-		else await ridePinsContext.actions.addPin(rideId);
 	};
 
 	//
@@ -53,10 +47,10 @@ export function RidesDetailHeader() {
 			<AnalysisStatusTag grade={rideAnalysisContext.data.ride?.analysis_simple_three_vehicle_events_grade} />
 			<OperationalStatusTag value={rideAnalysisContext.data.ride?.operational_status} />
 			<IconButton
-				disabled={!rideId || ridePinsContext.flags.loading}
-				icon={isPinned ? <IconHeartFilled /> : <IconHeart />}
-				onClick={handlePinToggle}
-				tooltip={isPinned ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+				disabled={!rideId || rideFavoritesContext.flags.loading}
+				icon={isFavorite ? <IconHeartFilled /> : <IconHeart />}
+				onClick={() => rideFavoritesContext.actions.toggleFavorite(rideId)}
+				tooltip={isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
 				variant="primary"
 			/>
 		</Toolbar>
