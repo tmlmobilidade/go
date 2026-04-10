@@ -1,5 +1,7 @@
 import { OperationalDateSchema } from '@/_common/operational-date.js';
-import { HHMMSchema, WEEKDAYS } from '@/dates/common.js';
+import { HHMMSchema } from '@/dates/common.js';
+import { MONTHS } from '@/dates/months.js';
+import { WEEKDAYS } from '@/dates/weekdays.js';
 import { z } from 'zod';
 
 /* * */
@@ -29,6 +31,7 @@ export const ManualRuleBaseSchema = z.object({
 	_id: z.string(),
 	event_id: z.string().optional(),
 	kind: z.literal('manual'),
+	months: z.array(z.nativeEnum(MONTHS)).optional(),
 	name: z.string().optional(),
 	operating_mode: OperatingModeSchema,
 	timepoints: z.array(HHMMSchema),
@@ -37,12 +40,21 @@ export const ManualRuleBaseSchema = z.object({
 });
 
 export const ManualRuleSchema = ManualRuleBaseSchema.superRefine((data, ctx) => {
-	if (!data.event_id && !data.weekdays?.length) {
-		ctx.addIssue({
-			code: z.ZodIssueCode.custom,
-			message: 'Selecione pelo menos um dia da semana.',
-			path: ['weekdays'],
-		});
+	if (!data.event_id) {
+		if (!data.weekdays?.length) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'Selecione pelo menos um dia da semana.',
+				path: ['weekdays'],
+			});
+		}
+		if (!data.year_period_ids?.length) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'Selecione pelo menos um período do ano.',
+				path: ['year_period_ids'],
+			});
+		}
 	}
 });
 

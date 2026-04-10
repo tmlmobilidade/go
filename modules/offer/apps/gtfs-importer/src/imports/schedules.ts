@@ -19,8 +19,13 @@ import { warn, WARNING } from '../warnings.js';
 
 interface NormalizedRuleDimensions {
 	event_id?: string
+	months: ManualRule['months']
 	weekdays: ManualRule['weekdays']
 	year_period_ids: string[]
+}
+
+function sortAndUniqMonths(months: number[] = []): ManualRule['months'] {
+	return [...new Set(months)].sort((a, b) => a - b) as ManualRule['months'];
 }
 
 function sortAndUniqWeekdays(weekdays: number[] = []): ManualRule['weekdays'] {
@@ -46,8 +51,9 @@ function mergeRulesByPeriodsAndTimes(rules: ManualRule[]): ManualRule[] {
 		const operatingModeKey = rule.operating_mode;
 		const eventKey = rule.event_id ?? '';
 		const periodKey = sortAndUniqStrings(rule.year_period_ids ?? []).join(',');
+		const monthsKey = sortAndUniqMonths(rule.months ?? [])?.join(',') ?? '';
 		const timesKey = sortAndUniqTimepoints(rule.timepoints ?? []).join(',');
-		const mergeKey = `${operatingModeKey}|${eventKey}|${periodKey}|${timesKey}`;
+		const mergeKey = `${operatingModeKey}|${eventKey}|${periodKey}|${monthsKey}|${timesKey}`;
 
 		const existing = merged.get(mergeKey);
 
@@ -61,6 +67,7 @@ function mergeRulesByPeriodsAndTimes(rules: ManualRule[]): ManualRule[] {
 		} else {
 			merged.set(mergeKey, {
 				...rule,
+				...(rule.months?.length && { months: sortAndUniqMonths(rule.months) }),
 				timepoints: sortAndUniqTimepoints(rule.timepoints ?? []),
 				weekdays: sortAndUniqWeekdays(rule.weekdays ?? []),
 				year_period_ids: sortAndUniqStrings(rule.year_period_ids ?? []),
@@ -82,8 +89,9 @@ function mergeRulesByWeekdaysAndTimes(rules: ManualRule[]): ManualRule[] {
 		const operatingModeKey = rule.operating_mode;
 		const eventKey = rule.event_id ?? '';
 		const weekdayKey = sortAndUniqWeekdays(rule.weekdays ?? []).join(',');
+		const monthsKey = sortAndUniqMonths(rule.months ?? [])?.join(',') ?? '';
 		const timesKey = sortAndUniqTimepoints(rule.timepoints ?? []).join(',');
-		const mergeKey = `${operatingModeKey}|${eventKey}|${weekdayKey}|${timesKey}`;
+		const mergeKey = `${operatingModeKey}|${eventKey}|${weekdayKey}|${monthsKey}|${timesKey}`;
 
 		const existing = merged.get(mergeKey);
 
@@ -97,6 +105,7 @@ function mergeRulesByWeekdaysAndTimes(rules: ManualRule[]): ManualRule[] {
 		} else {
 			merged.set(mergeKey, {
 				...rule,
+				...(rule.months?.length && { months: sortAndUniqMonths(rule.months) }),
 				timepoints: sortAndUniqTimepoints(rule.timepoints ?? []),
 				weekdays: sortAndUniqWeekdays(rule.weekdays ?? []),
 				year_period_ids: sortAndUniqStrings(rule.year_period_ids ?? []),
@@ -122,6 +131,7 @@ function mergeRulesByWeekdaysAndTimes(rules: ManualRule[]): ManualRule[] {
 function mergeRulesUntilStable(rules: ManualRule[]): ManualRule[] {
 	let current: ManualRule[] = rules.map(rule => ({
 		...rule,
+		...(rule.months?.length && { months: sortAndUniqMonths(rule.months) }),
 		timepoints: sortAndUniqTimepoints(rule.timepoints ?? []),
 		weekdays: sortAndUniqWeekdays(rule.weekdays ?? []),
 		year_period_ids: sortAndUniqStrings(rule.year_period_ids ?? []),
@@ -133,6 +143,7 @@ function mergeRulesUntilStable(rules: ManualRule[]): ManualRule[] {
 				rule.operating_mode,
 				rule.event_id ?? '',
 				(rule.weekdays ?? []).join(','),
+				(rule.months ?? []).join(','),
 				(rule.year_period_ids ?? []).join(','),
 				(rule.timepoints ?? []).join(','),
 			].join('|'))
@@ -147,6 +158,7 @@ function mergeRulesUntilStable(rules: ManualRule[]): ManualRule[] {
 				rule.operating_mode,
 				rule.event_id ?? '',
 				(rule.weekdays ?? []).join(','),
+				(rule.months ?? []).join(','),
 				(rule.year_period_ids ?? []).join(','),
 				(rule.timepoints ?? []).join(','),
 			].join('|'))
@@ -258,6 +270,7 @@ export function buildScheduleRulesForRoute(params: {
 
 				for (const calendarRule of calendarRules) {
 					const eventId = calendarRule.event_id;
+					const months = sortAndUniqMonths(calendarRule.months ?? []);
 					const weekdays = sortAndUniqWeekdays(calendarRule.weekdays ?? []);
 					const yearPeriodIds = sortAndUniqStrings(calendarRule.year_period_ids ?? []);
 
@@ -273,6 +286,7 @@ export function buildScheduleRulesForRoute(params: {
 
 					const groupingKey = [
 						`event:${eventId ?? ''}`,
+						`months:${months?.join(',') ?? ''}`,
 						`weekdays:${weekdays.join(',')}`,
 					].join('|');
 
@@ -292,6 +306,7 @@ export function buildScheduleRulesForRoute(params: {
 					} else {
 						targetGrouped.set(groupingKey, {
 							event_id: eventId,
+							months,
 							weekdays,
 							year_period_ids: yearPeriodIds,
 						});
@@ -315,8 +330,9 @@ export function buildScheduleRulesForRoute(params: {
 				for (const ruleEntry of groupedMap.values()) {
 					const eventKey = ruleEntry.event_id ?? '';
 					const weekdayKey = ruleEntry.weekdays.join(',');
+					const monthsKey = ruleEntry.months?.join(',') ?? '';
 					const periodKey = ruleEntry.year_period_ids.join(',');
-					const ruleKey = `${operatingMode}|${eventKey}|${weekdayKey}|${periodKey}`;
+					const ruleKey = `${operatingMode}|${eventKey}|${weekdayKey}|${monthsKey}|${periodKey}`;
 
 					const existingRule = ruleMap.get(ruleKey);
 
@@ -331,6 +347,7 @@ export function buildScheduleRulesForRoute(params: {
 						ruleMap.set(ruleKey, {
 							_id: generateRandomString({ length: 5 }),
 							...(ruleEntry.event_id && { event_id: ruleEntry.event_id }),
+							...(ruleEntry.months?.length && { months: ruleEntry.months }),
 							kind: 'manual',
 							operating_mode: operatingMode,
 							timepoints: [time as HHMM],
