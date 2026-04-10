@@ -141,10 +141,12 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 			.filter(o => ids.has(String(o.value)))
 			.sort((a, b) => String(a.label).localeCompare(String(b.label), 'pt'));
 	}, [stopsContext.data.options, stopIdsInAlerts]);
+
 	const agencyIdsInAlerts = useMemo(() => {
 		if (!allScheduledData) return [];
 		return [...new Set(allScheduledData.map(item => item.agency_id))].sort();
 	}, [allScheduledData]);
+
 	const agencyFilterOptions = useMemo(() => {
 		const ids = new Set(agencyIdsInAlerts);
 		return agenciesContext.data.as_options

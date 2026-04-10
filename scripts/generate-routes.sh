@@ -321,8 +321,9 @@ scan_api_routes() {
                     local route_name=$(to_snake_case "${last_namespace_part}_DETAIL_${suffix_name}")
                 fi
             else
-                # Non-root path without variables - use path suffix for naming
-                local route_suffix=$(echo "$clean_path" | sed 's|/|_|g' | sed 's|-|_|g')
+                # Non-root path without leading variables - remove inline variables from naming
+                # e.g. public/:id/image -> PUBLIC_IMAGE (not PUBLIC_:ID_IMAGE)
+                local route_suffix=$(echo "$clean_path" | sed -E 's|:[a-zA-Z][a-zA-Z0-9]*||g' | sed 's|/|_|g' | sed 's|-|_|g')
                 local route_name=$(to_snake_case "${last_namespace_part}_${route_suffix}")
             fi
             route_name=$(sanitize_route_name "$route_name")

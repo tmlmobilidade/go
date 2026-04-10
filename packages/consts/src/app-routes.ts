@@ -198,7 +198,7 @@ export const API_ROUTES = Object.freeze({
 		ALERTS_DETAIL_LOCK: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/lock`,
 		ALERTS_LIST: `${getAppConfig('alerts', 'api_url')}/alerts`,
 		ALERTS_PUBLIC: `${getAppConfig('alerts', 'api_url')}/alerts/public`,
-		ALERTS_PUBLIC_: (id: string) => `${getAppConfig('alerts', 'api_url')}/ID_IMAGE:/alerts/api/alerts/public/${id}/image`,
+		ALERTS_PUBLIC_IMAGE: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/public/${id}/image`,
 		ALERTS_RSS: `${getAppConfig('alerts', 'api_url')}/alerts.rss`,
 
 		// GTFS
@@ -431,7 +431,7 @@ export const API_ROUTES = Object.freeze({
 		PLANS_DETAIL_LOCK: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/lock`,
 		PLANS_DETAIL_OPERATION_FILE: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/operation-file`,
 		PLANS_DETAIL_OPERATION_FILE_DOWNLOAD: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/${id}/operation-file/download`,
-		PLANS_DRT_MODEL_: (id: string) => `${getAppConfig('plans', 'api_url')}/ID:/plans/api/plans/drt-model/${id}`,
+		PLANS_DRT_MODEL: (id: string) => `${getAppConfig('plans', 'api_url')}/plans/drt-model/${id}`,
 		PLANS_LIST: `${getAppConfig('plans', 'api_url')}/plans`,
 
 		// VALIDATIONS

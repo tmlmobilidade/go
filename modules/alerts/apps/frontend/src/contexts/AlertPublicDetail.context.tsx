@@ -49,7 +49,7 @@ export const AlertPublicDetailContextProvider = ({ alertId, children }: PropsWit
 
 	const alertsPublicListContext = useAlertsPublicListContext();
 	const linesContext = useLinesContext();
-	const { data: alertImage } = useSWR<FileType>(API_ROUTES.alerts.ALERTS_DETAILS_PUBLIC_IMAGE(alertId));
+	const { data: alertImage } = useSWR<FileType>(API_ROUTES.alerts.ALERTS_PUBLIC_IMAGE(alertId));
 
 	//
 	// B. Transform data
