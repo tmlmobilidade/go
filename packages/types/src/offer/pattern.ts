@@ -66,7 +66,7 @@ export const PatternSchema = DocumentSchema.extend({
 	comments: z.array(CommentSchema).optional().default([]),
 
 	destination: z.string().trim().min(1).max(100),
-	direction: PatternDirectionSchema,
+	direction: PatternDirectionSchema.default('outbound'),
 	headsign: z.string().trim().min(1).max(100),
 	is_locked: z.boolean().default(false),
 	line_id: z.string(),

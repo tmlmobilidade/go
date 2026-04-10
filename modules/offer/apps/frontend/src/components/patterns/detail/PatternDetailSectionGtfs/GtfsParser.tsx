@@ -51,11 +51,16 @@ export function GtfsParser({ onParse }: GtfsParserProps) {
 
 	return (
 		<Dropzone
-			accept={{ 'application/zip': ['.zip'] }}
 			loading={isUploading}
 			maxSize={MAX_FILE_SIZE}
 			onDrop={handleUpload}
 			w="100%"
+			accept={{
+				'application/octet-stream': ['.zip'],
+				'application/x-zip': ['.zip'],
+				'application/x-zip-compressed': ['.zip'],
+				'application/zip': ['.zip'],
+			}}
 		>
 			<Dropzone.Accept>
 				<div style={{ alignItems: 'center', display: 'flex', gap: 'var(--mantine-spacing-xl)', minHeight: 100, pointerEvents: 'none' }}>

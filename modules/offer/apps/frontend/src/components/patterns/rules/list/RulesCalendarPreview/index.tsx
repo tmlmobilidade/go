@@ -41,8 +41,8 @@ export function RulesCalendarPreview({ rules }: RulesCalendarPreviewProps) {
 
 	// Compute which dates are affected by rules with their details
 	const affectedDaysMap = useMemo(() => {
-		const startOfYear = Dates.now('Europe/Lisbon').startOf('year');
-		const endOfYear = startOfYear.plus({ years: 1 });
+		const startOfYear = Dates.now('Europe/Lisbon').startOf('year').minus({ years: 1 });
+		const endOfYear = startOfYear.plus({ years: 2 });
 		return buildAffectedDaysDetails(startOfYear, endOfYear, rules, periods, holidays, {
 			events: eventsContext.data.raw,
 		});

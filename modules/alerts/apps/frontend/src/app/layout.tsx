@@ -1,10 +1,10 @@
 /* * */
 
+import pjson from '#/package.json';
 import { i18nResourceKeysPt } from '@/i18n/resources';
 import { DataProviders } from '@/providers/data-providers';
 import { BaseProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
-import pjson from 'package.json';
 import { type PropsWithChildren } from 'react';
 
 /* * */

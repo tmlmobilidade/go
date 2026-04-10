@@ -1,7 +1,9 @@
-import type { ComboboxItem, ComboboxItemGroup, MultiSelectProps as MantineMultiSelectProps } from '@mantine/core';
-import type { ClipboardEvent } from 'react';
+/* * */
 
-import { useCallback, useMemo } from 'react';
+import { type ComboboxItem, type MultiSelectProps as MantineMultiSelectProps } from '@mantine/core';
+import { type ClipboardEvent, useCallback, useMemo } from 'react';
+
+/* * */
 
 type MultiSelectData = MantineMultiSelectProps['data'];
 
@@ -13,14 +15,11 @@ function getValidValuesFromData(data: MultiSelectData): Set<string> {
 	for (const item of data) {
 		if (typeof item === 'string') {
 			values.add(item);
-		}
-		else if (item && typeof item === 'object' && 'group' in item && 'items' in item) {
-			const group = item as ComboboxItemGroup;
-			for (const sub of group.items) {
+		} else if (item && typeof item === 'object' && 'group' in item && 'items' in item) {
+			for (const sub of item.items) {
 				values.add(typeof sub === 'string' ? sub : sub.value);
 			}
-		}
-		else {
+		} else {
 			values.add((item as ComboboxItem).value);
 		}
 	}

@@ -6,6 +6,7 @@ import { type NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
 	basePath: '/dates',
+	devIndicators: false,
 	env: {
 		NEXT_PUBLIC_BASE_PATH: '/dates',
 	},
