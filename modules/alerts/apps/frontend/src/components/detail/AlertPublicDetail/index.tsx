@@ -67,7 +67,7 @@ export function AlertPublicDetail() {
 					{linesTags.length > 0 && (
 						<div className={styles.tagsRow}>
 							<TagGroup
-								limit={20}
+								limit={25}
 								tags={linesTags.map(line => ({
 									label: line.label,
 									onClick: () => router.push(`${PAGE_ROUTES.alerts.HOME_LIST}?line=${encodeURIComponent(line.value)}`),
@@ -88,4 +88,6 @@ export function AlertPublicDetail() {
 			</Section>
 		</Surface>
 	);
+
+	//
 }
