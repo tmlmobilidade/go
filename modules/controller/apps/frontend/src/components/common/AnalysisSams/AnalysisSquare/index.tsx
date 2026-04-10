@@ -33,7 +33,7 @@ export interface AnalysisSquareProps {
 
 /* * */
 
-export function AnalysisSquare({ accent, analyses, className, filled, fullWidth = false, onClick, textLabel, title, value }: AnalysisSquareProps) {
+export function AnalysisSquare({ accent, analyses, className, filled = false, fullWidth = false, onClick, textLabel, title, value }: AnalysisSquareProps) {
 	const derivedFilled = value != null && analysisSquareHasValues(value);
 	const toneClass =
 		accent === 'orange'
