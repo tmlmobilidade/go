@@ -6,5 +6,5 @@ import { redirect } from 'next/navigation';
 /* * */
 
 export default function Page() {
-	redirect(PAGE_ROUTES.controller.POSITIONS_LIST);
+	redirect(PAGE_ROUTES.controller.RIDES_LIST);
 }
