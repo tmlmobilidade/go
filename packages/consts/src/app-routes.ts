@@ -278,6 +278,7 @@ export const API_ROUTES = Object.freeze({
 		RIDES_DETAIL_SIMPLIFIED_APEX_ON_BOARD_SALES: (id: string) => `${getAppConfig('controller', 'api_url')}/rides/${id}/simplified-apex-on-board-sales`,
 		RIDES_DETAIL_SIMPLIFIED_APEX_VALIDATIONS: (id: string) => `${getAppConfig('controller', 'api_url')}/rides/${id}/simplified-apex-validations`,
 		RIDES_DETAIL_VEHICLE_EVENTS: (id: string) => `${getAppConfig('controller', 'api_url')}/rides/${id}/vehicle-events`,
+		RIDES_FAVORITES: `${getAppConfig('controller', 'api_url')}/rides/favorites`,
 		RIDES_LIST: `${getAppConfig('controller', 'api_url')}/rides`,
 		RIDES_WS: `${getAppConfig('controller', 'api_url')}/rides/ws`,
 	},

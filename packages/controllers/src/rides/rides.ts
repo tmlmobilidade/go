@@ -26,8 +26,6 @@ export class RidesSharedController {
 
 		const parsedQuery = GetRidesBatchQuerySchema.parse(request.query);
 
-		console.log('RidesSharedController.getBatch - parsedQuery:', parsedQuery);
-
 		//
 		// Detect which agency_ids the user has access to,
 		// based on their permissions. If none, return an empty array.
@@ -132,6 +130,43 @@ export class RidesSharedController {
 			const normalizedRide = normalizeRide(foundRideById);
 			return reply.send({ data: normalizedRide, error: null, statusCode: HTTP_STATUS.OK });
 		}
+
+		//
+	}
+
+	/**
+	 * Get a Ride by multiple IDs.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
+	 */
+	n;
+
+	static async getRideByIds<S extends Permission['scope']>(request: FastifyRequest, reply: FastifyReply<RideNormalized[]>, scope: S, action: ActionsOf<S>) {
+		//
+
+		//
+		// Detect which agency_ids the user has access to,
+		// based on their permissions. If none, return an empty array.
+
+		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
+
+		if (!ridesPermission['resources']?.agency_ids?.length) return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
+
+		const allowAllAgencies = ridesPermission['resources'].agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+
+		//
+		// If search is provided, immediately try to find the ride by ID.
+		// If found, return it as the only result. This optimizes
+		// for the common case of searching by ride ID.
+
+		const ids = request.query['ids']?.split(',') ?? [];
+
+		const foundRidesByIds = await rides.findMany({
+			_id: { $in: ids },
+			...(allowAllAgencies ? {} : { agency_id: { $in: ridesPermission['resources'].agency_ids } }),
+		});
+
+		return reply.send({ data: foundRidesByIds.map(ride => normalizeRide(ride)), error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
