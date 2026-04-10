@@ -37,6 +37,7 @@ on:
     branches:
       - production
       - staging*
+      - prd
     paths:
       - 'modules/**'
       - '!modules/*/environments/**'
