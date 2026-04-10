@@ -11,7 +11,6 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Sam } from '@tmlmobilidade/types';
 import { AgencyTag, DataTable, DataTableColumn, IdTag, keepUrlParams, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -23,7 +22,6 @@ export function SamsList() {
 
 	const samsListContext = useSamsListContext();
 	const router = useRouter();
-	const { t } = useTranslation();
 
 	const columns: DataTableColumn<Sam>[] = [
 		{
