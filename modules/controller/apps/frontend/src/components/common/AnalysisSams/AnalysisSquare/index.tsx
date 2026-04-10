@@ -99,7 +99,7 @@ export function AnalysisSquare({ accent, analyses, className, filled = false, fu
 			)}
 			onClick={(event) => {
 				event.stopPropagation();
-				if (dataState !== 'empty') onClick?.(value);
+				onClick?.(value);
 			}}
 		>
 			{textLabel}
