@@ -70,7 +70,7 @@ export function AlertPublicDetail() {
 								limit={25}
 								tags={linesTags.map(line => ({
 									label: line.label,
-									onClick: () => router.push(`${PAGE_ROUTES.alerts.HOME_LIST}?line=${encodeURIComponent(line.value)}`),
+									onClick: () => router.push(`https://carrismetropolitana.pt/lines/${line.value}`),
 									variant: 'danger',
 								}))}
 							/>
