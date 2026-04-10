@@ -1,6 +1,6 @@
 # # #
 
-FROM node:lts-alpine AS base
+FROM node:24-slim AS base
 
 
 # # #
@@ -43,6 +43,7 @@ FROM base AS builder
 WORKDIR /app
 
 COPY --from=pruner /app/out/json/ .
+
 RUN npm ci
 
 COPY --from=pruner /app/out/full/ .
@@ -51,6 +52,8 @@ RUN npx @tmlmobilidade/repo-version --output=/app/modules/${MODULE}/apps/${APP}/
 
 RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 
+RUN npm prune --omit-dev
+
 
 # # #
 # RUNNER STAGE
@@ -58,9 +61,12 @@ RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 # Also copy the packages and modules folders, as some local
 # packages need to be included because node_modules symlinks to them.
 
-FROM base AS runner
+FROM gcr.io/distroless/nodejs24-debian13 AS runner
 
 WORKDIR /app
+
+ARG MODULE
+ARG APP
 
 COPY --from=builder /app/package.json .
 COPY --from=builder /app/node_modules ./node_modules
@@ -69,4 +75,4 @@ COPY --from=builder /app/modules ./modules
 
 COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist ./dist
 
-CMD ["node", "dist/index.js"]
+CMD ["./dist/index.js"]

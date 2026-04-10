@@ -30,6 +30,7 @@ export const packageJsonConfig: Config[] = [
 						'files',
 						'main',
 						'types',
+						'exports',
 						'scripts',
 						'dependencies',
 						'devDependencies',

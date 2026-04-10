@@ -67,12 +67,8 @@ export function RuleCreateBasicInfo() {
 
 				<RuleCreateEvents />
 
-				{!createRuleContext.flags.isEventExceptionEnabled && (
-					<>
-						<Divider />
-						<RuleCreatePeriods />
-					</>
-				)}
+				<Divider />
+				<RuleCreatePeriods />
 
 				<Divider />
 				<RuleCreateWeekdays />

@@ -36,7 +36,7 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@clack/prompts": "1.1.0",
+		"@clack/prompts": "1.2.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",
@@ -47,7 +47,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.5.0",
+		"@types/node": "25.5.2",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "5.9.3"
 	}

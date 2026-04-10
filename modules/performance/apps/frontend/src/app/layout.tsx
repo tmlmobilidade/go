@@ -1,5 +1,6 @@
 /* * */
 
+import pjson from '#/package.json';
 import { AgenciesContextProvider } from '@/contexts/Agencies.context';
 import { DatesContextProvider } from '@/contexts/Dates.context';
 import { HomeContextProvider } from '@/contexts/Home.context';
@@ -8,7 +9,6 @@ import { NetworkContextProvider } from '@/contexts/Network.context';
 import { ThemeProviders } from '@/providers/theme-providers';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
-import pjson from 'package.json';
 import { type PropsWithChildren } from 'react';
 
 /* * */
