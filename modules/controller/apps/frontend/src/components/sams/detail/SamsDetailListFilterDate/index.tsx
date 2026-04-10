@@ -31,6 +31,7 @@ export function SamsDetailListFilterDate() {
 			onEndDateChange={samDetailContext.actions.setAnalysisFilterEnd}
 			onStartDateChange={samDetailContext.actions.setAnalysisFilterStart}
 			startDate={analysisFilterStartTime}
+			clearable
 		/>
 	);
 }

@@ -12,6 +12,7 @@ import { FilterWrapper } from '../FilterWrapper';
 
 interface FilterTypeDateRangeProps {
 	active?: boolean
+	clearable?: boolean
 	disabled?: boolean
 	endDate?: null | UnixTimestamp
 	label: string
@@ -22,16 +23,17 @@ interface FilterTypeDateRangeProps {
 
 /* * */
 
-export function FilterTypeDateRange({ active, disabled, endDate, label, onEndDateChange, onStartDateChange, startDate }: FilterTypeDateRangeProps) {
+export function FilterTypeDateRange({ active, clearable = false, disabled, endDate, label, onEndDateChange, onStartDateChange, startDate }: FilterTypeDateRangeProps) {
 	return (
 		<FilterWrapper
 			active={active}
 			disabled={disabled}
 			label={label}
 		>
-			<Section gap="sm" height="auto" padding="md"width="auto">
+			<Section gap="sm" height="auto" padding="md" width="auto">
 				<Label size="md">Data de Início</Label>
 				<DateTimePicker
+					clearable={clearable}
 					onChange={onStartDateChange}
 					value={startDate}
 					fullWidth
@@ -39,9 +41,9 @@ export function FilterTypeDateRange({ active, disabled, endDate, label, onEndDat
 				<Spacer />
 				<Label size="md">Data de Fim</Label>
 				<DateTimePicker
+					clearable={clearable}
 					onChange={onEndDateChange}
 					value={endDate}
-
 				/>
 			</Section>
 		</FilterWrapper>
