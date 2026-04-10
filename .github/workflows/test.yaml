@@ -20,4 +20,4 @@ jobs:
           token: ${{ secrets.INFRA_REPO_TOKEN }}
           repository: tmlmobilidade/go-infra
           event-type: preview-pr
-          client-payload: '{"pr": ${{ github.event.pull_request.number }}}'
+          client-payload: '{"pr_number": ${{ github.event.pull_request.number }}, "pr_state": "${{ github.event.pull_request.state }}"}'
