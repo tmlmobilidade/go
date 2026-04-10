@@ -18,10 +18,10 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
-		"@tmlmobilidade/gtfs-validator": "20260320.1057.15",
+		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/gtfs-validator": "20260410.1054.36",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",

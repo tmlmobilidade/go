@@ -11,7 +11,7 @@ import {
 	YearPeriod,
 } from '@tmlmobilidade/types';
 
-import { buildWeekdaysPart, buildYearPeriodsPart } from './common.js';
+import { buildMonthsPart, buildWeekdaysPart, buildYearPeriodsPart } from './common.js';
 
 /**
  * Human-readable summary of a rule in multiple formats.
@@ -112,17 +112,9 @@ function buildRuleSummaryShort(
 
 	if (rule.kind === 'manual' && rule.event_id) {
 		const title = getEventForManualRule(rule, options?.events)?.title ?? '';
-
-		const parts: string[] = [];
-		if (title) parts.push(title);
-
-		const periodPart = buildYearPeriodsPart(rule, options, { mode: 'short', omitIfAll: true });
-		if (periodPart) parts.push(periodPart);
-
-		const weekdayPart = buildWeekdaysPart(rule, { mode: 'short', omitIfAll: true });
-		if (weekdayPart) parts.push(weekdayPart);
-
-		return parts.join(' · ');
+		if (!rule.weekdays?.length) return title;
+		const weekdayPart = buildWeekdaysPart(rule, { mode: 'short' });
+		return [title, weekdayPart].filter(Boolean).join(' · ');
 	}
 
 	// manual
@@ -130,6 +122,9 @@ function buildRuleSummaryShort(
 
 	const periodPart = buildYearPeriodsPart(rule, options, { mode: 'short' });
 	if (periodPart) parts.push(periodPart);
+
+	const monthsPart = buildMonthsPart(rule, { mode: 'short', omitIfAll: true });
+	if (monthsPart) parts.push(monthsPart);
 
 	const weekdayPart = buildWeekdaysPart(rule, { mode: 'short' });
 	if (weekdayPart) parts.push(weekdayPart);
@@ -155,17 +150,9 @@ function buildRuleSummaryLong(
 
 	if (rule.kind === 'manual' && rule.event_id) {
 		const title = getEventForManualRule(rule, options?.events)?.title ?? '';
-
-		const parts: string[] = [];
-		if (title) parts.push(title);
-
-		const periodPart = buildYearPeriodsPart(rule, options, { mode: 'long', omitIfAll: true });
-		if (periodPart) parts.push(periodPart);
-
-		const weekdayPart = buildWeekdaysPart(rule, { mode: 'long', omitIfAll: true });
-		if (weekdayPart) parts.push(weekdayPart);
-
-		return parts.join(', ');
+		if (!rule.weekdays?.length) return title;
+		const weekdayPart = buildWeekdaysPart(rule, { mode: 'long' });
+		return [title, weekdayPart].filter(Boolean).join(', ');
 	}
 
 	// manual
@@ -173,6 +160,9 @@ function buildRuleSummaryLong(
 
 	const periodPart = buildYearPeriodsPart(rule, options, { mode: 'long' });
 	if (periodPart) parts.push(periodPart);
+
+	const monthsPart = buildMonthsPart(rule, { mode: 'long', omitIfAll: true });
+	if (monthsPart) parts.push(monthsPart);
 
 	const weekdayPart = buildWeekdaysPart(rule, { mode: 'long' });
 	if (weekdayPart) parts.push(weekdayPart);
@@ -262,115 +252,4 @@ function buildRuleSummaryTooltip(
 	}
 
 	return '';
-}
-
-/**
- * TEMP:
- * Maps year period ids/names into GTFS abbreviations.
- * Replace with a persisted abbreviation/code field when available.
- */
-function mapPeriodsToGtfsAbbreviation(periodIds?: string[]): string {
-	if (!periodIds?.length) return 'ALL';
-
-	const map: Record<string, string> = {
-		'2KIUJ': 'FER',
-		'99H2R': 'ESC',
-		'UW2U0': 'VER',
-	};
-
-	const abbreviations = periodIds.map((id) => {
-		const abbr = map[id];
-		if (!abbr) throw new Error(`Unknown period id: ${id}`);
-		return abbr;
-	});
-
-	const unique = [...new Set(abbreviations)];
-	const allSet = new Set(['ESC', 'FER', 'VER']);
-
-	// If all three are present, return 'ALL'
-	if (unique.length === 3 && unique.every(x => allSet.has(x))) {
-		return 'ALL';
-	}
-
-	return unique.join('-');
-}
-
-function mapWeekdaysToGtfsAbbreviation(weekdays?: number[]): string {
-	if (!weekdays?.length) return 'ALL';
-
-	const sorted = [...new Set(weekdays)].sort((a, b) => a - b);
-	const joined = sorted.join('-');
-
-	// Special cases
-	if (joined === '1-2-3-4-5') return 'DU';
-	if (joined === '1-2-3-4-5-6-7') return 'ALL';
-
-	const map: Record<number, string> = {
-		1: 'SEG',
-		2: 'TER',
-		3: 'QUA',
-		4: 'QUI',
-		5: 'SEX',
-		6: 'SAB',
-		7: 'DOM',
-	};
-
-	return sorted.map(day => map[day] || String(day)).join('-');
-}
-
-/**
- * GTFS-oriented rule token:
- * - FER_DU
- * - VER_SAB
- * - ESC_DOM
- * - ALL
- * - ALL_DU
- * - VER-FER_SAB-DOM
- * - Rock in Rio_VER_DU
- */
-export function buildRuleSummaryGtfs(
-	rule: ScheduleRule,
-	options: { events?: Event[], periods?: YearPeriod[] },
-): string {
-	if (isEventRestriction(rule) || isEventReplacement(rule)) {
-		return rule.event?.title ?? rule.name ?? rule._id;
-	}
-
-	const periodIds = rule.year_period_ids ?? [];
-	const weekdays = rule.weekdays ?? [];
-
-	const periodPart = mapPeriodsToGtfsAbbreviation(periodIds);
-	const weekdayPart = mapWeekdaysToGtfsAbbreviation(weekdays);
-
-	if (rule.kind === 'manual' && rule.event_id) {
-		const title = getEventForManualRule(rule, options?.events)?.title ?? rule.name ?? rule._id;
-
-		if (periodPart === 'ALL' && weekdayPart === 'ALL') {
-			return title;
-		}
-
-		if (periodPart === 'ALL') {
-			return `${title}_${weekdayPart}`;
-		}
-
-		if (weekdayPart === 'ALL') {
-			return `${title}_${periodPart}`;
-		}
-
-		return `${title}_${periodPart}_${weekdayPart}`;
-	}
-
-	if (periodPart === 'ALL' && weekdayPart === 'ALL') {
-		return 'ALL';
-	}
-
-	if (periodPart === 'ALL') {
-		return `ALL_${weekdayPart}`;
-	}
-
-	if (weekdayPart === 'ALL') {
-		return periodPart;
-	}
-
-	return `${periodPart}_${weekdayPart}`;
 }

@@ -1,4 +1,4 @@
-import { DAY_PERIOD_LABELS, EventReplacementRule, IsoWeekday, ManualRule, StopsParameterOverride, WEEKDAY_OPTIONS, YearPeriod } from '@tmlmobilidade/types';
+import { DAY_PERIOD_LABELS, EventReplacementRule, IsoWeekday, ManualRule, MONTH_OPTIONS, StopsParameterOverride, WEEKDAY_OPTIONS, YearPeriod } from '@tmlmobilidade/types';
 
 /**
  * Builds the period portion of a rule summary.
@@ -112,4 +112,34 @@ export function buildDayPeriodsPart(
 	if (cfg.mode === 'short') return labels.join(' · ');
 	if (labels.length === 1) return `Durante ${labels[0]}`;
 	return `Durante ${labels.join(' e ')}`;
+}
+
+/**
+ * Builds the months portion of a rule summary.
+ *
+ * Handles smart formatting:
+ * - No months or all 12 selected: "Todos os meses" / "em todos os meses"
+ * - Single month: Shows month label
+ * - Multiple months: "N meses" (short) or lists them (long)
+ */
+export function buildMonthsPart(
+	rule: Pick<ManualRule, 'months'>,
+	cfg: { mode: 'long' | 'short', omitIfAll?: boolean } = { mode: 'long' },
+): string {
+	if (!rule.months?.length || rule.months.length === 12) {
+		if (cfg.omitIfAll) return '';
+		return cfg.mode === 'short' ? 'Todos os meses' : 'em todos os meses';
+	}
+
+	const labels = MONTH_OPTIONS
+		.filter(o => (rule.months as number[]).includes(o.value))
+		.map(o => o.label);
+
+	if (cfg.mode === 'short') {
+		return labels.length === 1 ? labels[0] : `${labels.length} meses`;
+	}
+
+	if (labels.length === 1) return labels[0];
+	if (labels.length === 2) return `${labels[0]} e ${labels[1]}`;
+	return labels.join(', ');
 }
