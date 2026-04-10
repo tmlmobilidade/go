@@ -23,8 +23,8 @@ export function SamsFilterStatus() {
 			label={t('default:sams.list.SamsFiltersStatus.label')}
 			onChange={samsListContext.filters.status.set}
 			options={samsListContext.filters.status.options.map(option => ({
+				...option,
 				label: translateFilterValue('sams_status', option.value),
-				value: option.value,
 			}))}
 			isMultiple
 			withToggleAll
