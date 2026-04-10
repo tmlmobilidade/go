@@ -38,6 +38,14 @@ export const ANALYSIS_GRADE_TRANSLATIONS: Record<string, string> = {
 	none: 'Nenhum',
 };
 
+// Status translations
+export const SAMS_STATUS_TRANSLATIONS: Record<string, string> = {
+	complete: 'Completo',
+	error: 'Erro',
+	incomplete: 'Incompleto',
+	waiting: 'Aguardando',
+};
+
 /* * */
 
 export function translateFilterKey(key: string): string {
@@ -53,6 +61,9 @@ export function translateFilterValue(key: string, value: string): string {
 	}
 	if (key === 'analysis_simple_three_vehicle_events_grade' || key === 'analysis_ended_at_last_stop' || key === 'analysis_expected_apex_validation_interval' || key === 'analysis_transaction_sequentiality') {
 		return ANALYSIS_GRADE_TRANSLATIONS[value] || value;
+	}
+	if (key === 'sams_status') {
+		return SAMS_STATUS_TRANSLATIONS[value] || value;
 	}
 	return value;
 }

@@ -5,11 +5,13 @@ import { AnalysisTimeLineRow } from '@/components/common/AnalysisSams/AnalysisTi
 import { SamsFilters } from '@/components/sams/list/SamsFilters';
 import { SamsListHeader } from '@/components/sams/list/SamsListHeader';
 import { useSamsListContext } from '@/contexts/SamsList.context';
+import { translateFilterValue } from '@/lib/translations';
 import { formatUnixTimestampToDateString } from '@/lib/utils';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Sam } from '@tmlmobilidade/types';
 import { AgencyTag, DataTable, DataTableColumn, IdTag, keepUrlParams, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -21,6 +23,7 @@ export function SamsList() {
 
 	const samsListContext = useSamsListContext();
 	const router = useRouter();
+	const { t } = useTranslation();
 
 	const columns: DataTableColumn<Sam>[] = [
 		{
@@ -73,7 +76,7 @@ export function SamsList() {
 		},
 		{
 			accessor: 'system_status',
-			render: item => <Tag label={item.system_status} />,
+			render: item => <Tag label={translateFilterValue('sams_status', item.system_status)} />,
 			title: 'Estado',
 			width: 150,
 		},
