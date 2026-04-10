@@ -49,7 +49,7 @@ export const AlertPublicDetailContextProvider = ({ alertId, children }: PropsWit
 
 	const alertsPublicListContext = useAlertsPublicListContext();
 	const linesContext = useLinesContext();
-	const { data: alertImage } = useSWR<FileType>(API_ROUTES.alerts.ALERTS_DETAIL_PUBLIC_IMAGE(alertId));
+	const { data: alertImage } = useSWR<FileType>(API_ROUTES.alerts.ALERTS_DETAILS_PUBLIC_IMAGE(alertId));
 
 	//
 	// B. Transform data
@@ -58,12 +58,15 @@ export const AlertPublicDetailContextProvider = ({ alertId, children }: PropsWit
 		if (alertsPublicListContext.flags.loading) return undefined;
 		return alertsPublicListContext.data.raw.find(alert => alert._id === alertId);
 	}, [alertsPublicListContext.flags.loading, alertsPublicListContext.data.raw, alertId]);
+
 	const isLoading = alertsPublicListContext.flags.loading;
 	const isNotFound = !isLoading && !foundAlert;
+
 	const activePeriodStart = useMemo(() => {
 		if (!foundAlert) return '-';
 		return Dates.fromUnixTimestamp(foundAlert.active_period_start_date).setZone('Europe/Lisbon', 'offset_only').toFormat('d LLLL yyyy', { locale: 'pt' });
 	}, [foundAlert]);
+
 	const linesTags = useMemo(() => {
 		if (!foundAlert) return [];
 		return getAvailableLines(foundAlert)

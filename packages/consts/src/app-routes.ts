@@ -199,7 +199,7 @@ export const API_ROUTES = Object.freeze({
 		ALERTS_LIST: `${getAppConfig('alerts', 'api_url')}/alerts`,
 		ALERTS_PUBLIC: `${getAppConfig('alerts', 'api_url')}/alerts/public`,
 		ALERTS_PUBLIC_: (id: string) => `${getAppConfig('alerts', 'api_url')}/ID_IMAGE:/alerts/api/alerts/public/${id}/image`,
-		ALERTS_RSS: `${getAppConfig('alerts', 'api_url')}/alerts/.rss`,
+		ALERTS_RSS: `${getAppConfig('alerts', 'api_url')}/alerts.rss`,
 
 		// GTFS
 		GTFS_CARRIS_METROPOLITANA: `${getAppConfig('alerts', 'api_url')}/gtfs/carris-metropolitana`,

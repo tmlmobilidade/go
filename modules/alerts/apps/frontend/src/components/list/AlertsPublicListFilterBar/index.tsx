@@ -18,6 +18,7 @@ import styles from './styles.module.css';
 export function AlertsPublicListFilterBar() {
 	//
 
+	//
 	// A. Render Components
 	return (
 		<div className={styles.stickyFilterBar}>
@@ -33,4 +34,6 @@ export function AlertsPublicListFilterBar() {
 			</FiltersBar>
 		</div>
 	);
+
+	//
 }

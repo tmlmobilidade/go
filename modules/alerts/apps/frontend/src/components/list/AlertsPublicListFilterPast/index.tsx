@@ -8,8 +8,16 @@ import { useTranslation } from 'react-i18next';
 /* * */
 
 export function AlertsPublicListFilterPast() {
+	//
+
+	//
+	// A. Setup variables
+
 	const { t } = useTranslation();
 	const { filters } = useAlertsPublicListContext();
+
+	//
+	// B. Render components
 
 	return (
 		<Switch
@@ -18,4 +26,6 @@ export function AlertsPublicListFilterPast() {
 			onChange={e => filters.setIncludePastAlerts(e.currentTarget.checked)}
 		/>
 	);
+
+	//
 }

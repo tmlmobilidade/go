@@ -7,8 +7,16 @@ import { useTranslation } from 'react-i18next';
 /* * */
 
 export function AlertsPublicListFilterCause() {
+	//
+
+	//
+	// A. Setup variables
+
 	const { t } = useTranslation();
 	const alertsPublicListContext = useAlertsPublicListContext();
+
+	//
+	// B. Render components
 
 	return (
 		<FilterTypeList
@@ -19,4 +27,6 @@ export function AlertsPublicListFilterCause() {
 			withToggleAll
 		/>
 	);
+
+	//
 }

@@ -7,8 +7,16 @@ import { useTranslation } from 'react-i18next';
 /* * */
 
 export function AlertsPublicListFilterLine() {
+	//
+
+	//
+	// A. Setup variables
+
 	const { t } = useTranslation();
 	const { filters } = useAlertsPublicListContext();
+
+	//
+	// B. Render components
 
 	return (
 		<FilterTypeList
@@ -20,4 +28,6 @@ export function AlertsPublicListFilterLine() {
 			withToggleAll
 		/>
 	);
+
+	//
 }

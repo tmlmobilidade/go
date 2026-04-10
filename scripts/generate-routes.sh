@@ -273,6 +273,9 @@ scan_api_routes() {
             if [ "$path" = "/" ] || [ -z "$clean_path" ]; then
                 # Root path - just use the namespace (add leading slash)
                 local full_route_path="/${namespace_for_path}"
+            elif [[ "$clean_path_for_route" == .* ]]; then
+                # Dot-suffix path (e.g. ".rss") should be concatenated without an extra slash
+                local full_route_path="/${namespace_for_path}${clean_path_for_route}"
             else
                 # Append the path to the namespace (add leading slash to namespace)
                 local full_route_path="/${namespace_for_path}/${clean_path_for_route}"
