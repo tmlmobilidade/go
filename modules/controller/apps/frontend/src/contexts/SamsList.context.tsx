@@ -1,10 +1,10 @@
-/* eslint-disable import/no-extraneous-dependencies */
 'use client';
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Sam, type SystemStatus, SystemStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
 import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';

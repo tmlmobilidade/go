@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Sam, type UnixTimestamp } from '@tmlmobilidade/types';
+import { Sam, SystemStatus, type UnixTimestamp } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
 
 /* * */
@@ -23,6 +23,7 @@ export interface SamsDetailContextState {
 	}
 	data: {
 		sam: null | Sam
+		status: SystemStatus
 	}
 	flags: {
 		error: Error | undefined
@@ -82,6 +83,25 @@ export function SamsDetailContextProvider({ children, samId }: PropsWithChildren
 		setSelectedDayKey(null);
 	}, []);
 
+	const getSamStatus = (sam: Sam): SystemStatus => {
+		const analyses = sam.analysis ?? [];
+		if (!analyses.length) return 'error';
+
+		const isNullish = (value: unknown) => value === null || value === undefined;
+
+		const allAnalysesAreFullyNull = analyses.every(analysis =>
+			Object.values(analysis).every(isNullish),
+		);
+		if (allAnalysesAreFullyNull) return 'error';
+
+		const hasAnyNullFieldInAnyAnalysis = analyses.some(analysis =>
+			Object.values(analysis).some(isNullish),
+		);
+		if (hasAnyNullFieldInAnyAnalysis) return 'incomplete';
+
+		return 'complete';
+	};
+
 	//
 	// D. Define context value
 
@@ -93,6 +113,7 @@ export function SamsDetailContextProvider({ children, samId }: PropsWithChildren
 		},
 		data: {
 			sam: samData ?? null,
+			status: getSamStatus(samData ?? { analysis: [] } as Sam),
 		},
 		flags: {
 			error: samError,

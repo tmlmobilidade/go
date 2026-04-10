@@ -44,7 +44,7 @@ export function SamsDetailBasicInfos() {
 					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.transactions_expected.label')} value={samDetailContext.data.sam?.transactions_expected?.toString() ?? '-'} raised />
 					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.transactions_found.label')} value={samDetailContext.data.sam?.transactions_found?.toString() ?? '-'} raised />
 					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.transactions_missing.label')} value={samDetailContext.data.sam?.transactions_missing?.toString() ?? '-'} raised />
-					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.status.label')} value={translateFilterValue('sams_status', samDetailContext.data.sam?.system_status)} raised />
+					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.status.label')} value={translateFilterValue('sams_status', samDetailContext.data.status ?? '')} raised />
 					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.system_status.label')} value={translateFilterValue('sams_status', samDetailContext.data.sam?.system_status)} raised />
 					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.latest_apex_version.label')} value={samDetailContext.data.sam?.latest_apex_version ?? '-'} raised />
 				</Grid>
