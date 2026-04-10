@@ -135,6 +135,30 @@
 	border-color: #d1d5db;
 }
 
+.filledGreen {
+	color: #fff;
+	background-color: var(--color-status-success-primary);
+	border-color: var(--color-status-success-primary);
+}
+
+.filledOrange {
+	color: #fff;
+	background-color: #f97316;
+	border-color: #f97316;
+}
+
+.filledRed {
+	color: #fff;
+	background-color: var(--color-status-danger-primary);
+	border-color: var(--color-status-danger-primary);
+}
+
+.filledWhite {
+	color: #000;
+	background-color: #d1d5db;
+	border-color: #d1d5db;
+}
+
 /* ========== TOOLTIP STYLES (for analysis detail popovers) ========== */
 
 /* Layout for main tooltip content */

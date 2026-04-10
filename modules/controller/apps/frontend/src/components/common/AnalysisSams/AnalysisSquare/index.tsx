@@ -19,6 +19,8 @@ export interface AnalysisSquareProps {
 	/** When provided, tooltip shows all these analyses (one per line). */
 	analyses?: SamAnalysis[]
 	className?: string
+	/** When set, the square is filled with the color of the accent. */
+	filled?: boolean
 	/** Expand square to container width. */
 	fullWidth?: boolean
 	onClick?: (analysis: SamAnalysis) => void
@@ -31,7 +33,7 @@ export interface AnalysisSquareProps {
 
 /* * */
 
-export function AnalysisSquare({ accent, analyses, className, fullWidth = false, onClick, textLabel, title, value }: AnalysisSquareProps) {
+export function AnalysisSquare({ accent, analyses, className, filled, fullWidth = false, onClick, textLabel, title, value }: AnalysisSquareProps) {
 	const derivedFilled = value != null && analysisSquareHasValues(value);
 	const toneClass =
 		accent === 'orange'
@@ -45,12 +47,27 @@ export function AnalysisSquare({ accent, analyses, className, fullWidth = false,
 						: derivedFilled
 							? styles.green
 							: styles.red;
+
+	const filledClass =
+		accent === 'green'
+			? styles.filledGreen
+			: accent === 'orange'
+				? styles.filledOrange
+				: accent === 'red'
+					? styles.filledRed
+					: accent === 'white'
+						? styles.filledWhite
+						: derivedFilled
+							? styles.filledGreen
+							: styles.filledRed;
+
 	const dataState =
 		accent === 'orange'
 			? 'warning'
-			: accent === 'green' || accent === 'white' || (accent == null && derivedFilled)
+			: accent === 'green' || accent === 'white' || derivedFilled
 				? 'filled'
 				: 'empty';
+
 	const tooltipAnalyses = analyses?.length ? analyses : value != null ? [value] : [];
 
 	const renderTooltipList = (): ReactNode => (
@@ -76,7 +93,7 @@ export function AnalysisSquare({ accent, analyses, className, fullWidth = false,
 			tabIndex={resolvedTooltip ? 0 : -1}
 			className={cn(
 				styles.square,
-				toneClass,
+				filled ? filledClass : toneClass,
 				className,
 				fullWidth && styles.squareFullWidth,
 			)}
@@ -120,9 +137,14 @@ export interface AnalysisSquareRowProps {
 	/** One square per analysis entry, in order. */
 	analyses: SamAnalysis[]
 	className?: string
+	filled?: boolean
+	fullWidth?: boolean
+	onClick?: (analysis: SamAnalysis) => void
+	textLabel?: string
+	title?: string
 }
 
-export function AnalysisSquareRow({ analyses, className }: AnalysisSquareRowProps) {
+export function AnalysisSquareRow({ analyses, className, filled, fullWidth = false, onClick, textLabel, title }: AnalysisSquareRowProps) {
 	if (!analyses?.length) {
 		return <span className={styles.rowEmpty}>sem análises</span>;
 	}
@@ -133,6 +155,11 @@ export function AnalysisSquareRow({ analyses, className }: AnalysisSquareRowProp
 				<AnalysisSquare
 					key={`${value.first_transaction_id ?? ''}-${value.last_transaction_id ?? ''}-${index}`}
 					analyses={analyses}
+					filled={filled === true}
+					fullWidth={fullWidth}
+					onClick={onClick}
+					textLabel={textLabel}
+					title={title}
 					value={value}
 				/>
 			))}

@@ -84,6 +84,7 @@ export function AnalysisCalender({ analyses, className, rangeEndTs, rangeStartTs
 												key={`${value.first_transaction_id ?? ''}-${value.last_transaction_id ?? ''}-${index}`}
 												textLabel={analysisSquareLabel(value)}
 												value={value}
+												filled
 											/>
 										))
 										: daySections.map(daySection => (
@@ -94,6 +95,7 @@ export function AnalysisCalender({ analyses, className, rangeEndTs, rangeStartTs
 													analyses={daySection.items}
 													className={styles.dayTileSquare}
 													title={daySection.items.length > 0 ? undefined : 'sem validações'}
+													filled
 												/>
 											</div>
 										))}
