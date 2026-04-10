@@ -82,23 +82,7 @@ export class AlertsController {
 	 * @param reply The reply object.
 	 */
 	static async getAllPublic(_request: FastifyRequest, reply: FastifyReply<Alert[]>) {
-		const now = Dates.now('Europe/Lisbon').unix_timestamp;
-		const allAlerts = await alerts.findMany(
-			{
-				$and: [
-					{
-						$or: [
-							{ publish_end_date: { $gte: now } },
-							{ publish_end_date: null },
-							{ publish_end_date: { $exists: false } },
-						],
-					},
-					{ publish_start_date: { $lte: now } },
-					{ publish_status: 'published' },
-				],
-			},
-			{ sort: { publish_start_date: -1 } },
-		);
+		const allAlerts = await AlertsController.fetchAlerts();
 		reply.send({ data: allAlerts, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -132,46 +116,13 @@ export class AlertsController {
 	}
 
 	/**
-	 * Retrieves an alert image from storage.
-	 * @param request The request object containing the alert ID in the params.
-	 * @param reply The reply object.
-	 */
-	static async getPublicImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<File>) {
-		// Ensure the alert exists
-		const foundAlert = await alerts.findById(request.params.id);
-		if (!foundAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
-		// Ensure the alert has an associated image file.
-		// Since it is optional, return null if not present
-		if (!foundAlert.file_id) return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
-		// Retrieve and send the image file
-		const foundImageFile = await files.findById(foundAlert.file_id);
-		if (!foundImageFile) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
-		return reply.send({ data: foundImageFile, error: null, statusCode: HTTP_STATUS.OK });
-	}
-	/**
 	 * Returns active published alerts as RSS feed XML.
 	 * @param request The request object.
 	 * @param reply The reply object.
 	 */
 	static async getRssFeed(_request: FastifyRequest, reply: FastifyReply<string>) {
-		const now = Dates.now('Europe/Lisbon').unix_timestamp;
-		const alertsPublicListUrl = 'https://www.carrismetropolitana.pt/alerts';
-		const allAlerts = await alerts.findMany(
-			{
-				$and: [
-					{
-						$or: [
-							{ publish_end_date: { $gte: now } },
-							{ publish_end_date: null },
-							{ publish_end_date: { $exists: false } },
-						],
-					},
-					{ publish_start_date: { $lte: now } },
-					{ publish_status: 'published' },
-				],
-			},
-			{ sort: { publish_start_date: -1 } },
-		);
+		const alertsPublicListUrl = 'https://www.carrismetropolitana.pt/alerts'; // TODO: Replace with alerts public page
+		const allAlerts = await AlertsController.fetchAlerts();
 
 		if (!allAlerts.length) {
 			reply.status(HTTP_STATUS.NOT_FOUND).send('No alerts available.');
@@ -210,7 +161,7 @@ export class AlertsController {
 						url: file.url,
 					});
 				} catch {
-					// DB row exists but object missing in storage — omit image, still emit the item
+					// Ignore errors
 				}
 			}
 
@@ -296,6 +247,26 @@ export class AlertsController {
 		// Update the alert with the new file ID
 		await alerts.updateById(foundAlert._id, { file_id: fileUploadResult._id.toString() });
 		reply.send({ data: fileUploadResult, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	private static async fetchAlerts() {
+		const now = Dates.now('Europe/Lisbon').unix_timestamp;
+		return await alerts.findMany(
+			{
+				$and: [
+					{
+						$or: [
+							{ publish_end_date: { $gte: now } },
+							{ publish_end_date: null },
+							{ publish_end_date: { $exists: false } },
+						],
+					},
+					{ publish_start_date: { $lte: now } },
+					{ publish_status: 'published' },
+				],
+			},
+			{ sort: { publish_start_date: -1 } },
+		);
 	}
 
 	//

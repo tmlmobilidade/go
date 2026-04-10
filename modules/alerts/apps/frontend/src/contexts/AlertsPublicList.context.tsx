@@ -103,7 +103,7 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 			if (alert.reference_type === 'stops') {
 				for (const r of alert.references) {
 					const stop = stopsById.get(r.parent_id);
-					for (const lid of stop?.line_ids ?? []) set.add(lid);
+					for (const lid of (stop as unknown as StopWithLines)?.line_ids ?? []) set.add(lid);
 				}
 			}
 		}
@@ -237,25 +237,7 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 		});
 
 		return result.sort((a, b) => (b.created_at ?? 0) - (a.created_at ?? 0));
-	}, [
-		searchResultsData,
-		filterLine.isActive,
-		filterLine.value,
-		filterStop.isActive,
-		filterStop.value,
-		filterAgency.value,
-		filterCause.value,
-		filterEffect.value,
-		agencyIdsInAlerts.length,
-		lineIdsInAlerts.length,
-		stopIdsInAlerts.length,
-		stopsById,
-		includePastAlerts,
-		defaultPeriodSince,
-		defaultPeriodUntil,
-		periodSince,
-		periodUntil,
-	]);
+	}, [searchResultsData, filterLine.isActive, filterLine.value, filterStop.isActive, filterStop.value, filterAgency.value, filterCause.value, filterEffect.value, agencyIdsInAlerts.length, lineIdsInAlerts.length, stopIdsInAlerts.length, includePastAlerts, defaultPeriodSince, defaultPeriodUntil, periodSince, periodUntil]);
 
 	const contextValue: AlertsPublicListContextState = useMemo(() => ({
 		data: {
