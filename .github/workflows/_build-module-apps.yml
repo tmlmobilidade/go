@@ -113,7 +113,7 @@ jobs:
           push: ${{ inputs.ref-name == 'production' || inputs.ref-name == 'staging' }}
           context: .
           file: ${{ steps.dockerfile.outputs.dockerfile }}
-          tags: ghcr.io/tmlmobilidade/go-${{ inputs.module }}-${{ matrix.app }}:${{ (inputs.ref-name == 'production' || inputs.ref-name == 'staging') && inputs.ref-name || 'none' }}
+          tags: ghcr.io/tmlmobilidade/go-${{ inputs.module }}-${{ matrix.app }}:${{ (inputs.ref-name == 'production' || inputs.ref-name == 'staging') && inputs.ref-name || 'prd' }}
           build-args: |
             MODULE=${{ inputs.module }}
             APP=${{ matrix.app }}

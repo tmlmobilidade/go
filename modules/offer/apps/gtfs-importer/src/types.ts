@@ -17,8 +17,6 @@ export interface ImportSummary {
 
 export interface CalendarRule {
 	description?: string
-	event_id?: string
-	isExclude?: boolean
-	weekdays?: IsoWeekday[]
-	year_period_ids?: string[]
+	weekdays: IsoWeekday[]
+	year_period_ids: string[]
 }
