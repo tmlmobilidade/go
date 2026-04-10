@@ -2,8 +2,9 @@
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useSamsDetailContext } from '@/contexts/SamsDetail.context';
+import { translateFilterValue } from '@/lib/translations';
 import { formatUnixTimestampToDateString } from '@/lib/utils';
-import { Collapsible, ErrorDisplay, Grid, LoadingOverlay, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, ErrorDisplay, Grid, LoadingOverlay, Section, Tag, ValueDisplay } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -47,7 +48,8 @@ export function SamsDetailBasicInfos() {
 					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.transactions_missing.label')} value={samDetailContext.data.sam?.transactions_missing?.toString() ?? '-'} raised />
 				</Grid>
 				<Grid columns="ab" gap="md">
-					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.system_status.label')} value={samDetailContext.data.sam?.system_status} raised />
+					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.status.label')} value={translateFilterValue('sams_status', samDetailContext.data.sam?.system_status)} raised />
+					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.system_status.label')} value={translateFilterValue('sams_status', samDetailContext.data.sam?.system_status)} raised />
 					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.latest_apex_version.label')} value={samDetailContext.data.sam?.latest_apex_version ?? '-'} raised />
 				</Grid>
 			</Section>

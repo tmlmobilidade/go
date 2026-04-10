@@ -538,8 +538,11 @@
 					"seen_last_at": {
 						"label": "Última vista"
 					},
+					"status": {
+						"label": "Estado do SAM"
+					},
 					"system_status": {
-						"label": "Estado do sistema"
+						"label": "Estado do SAM no sistema"
 					},
 					"transactions_expected": {
 						"label": "Transações esperadas"

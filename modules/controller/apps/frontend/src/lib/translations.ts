@@ -38,6 +38,14 @@ export const ANALYSIS_GRADE_TRANSLATIONS: Record<string, string> = {
 	none: 'Nenhum',
 };
 
+// status system translations
+export const SAMS_STATUS_SYSTEM_TRANSLATIONS: Record<string, string> = {
+	complete: 'Completo',
+	error: 'Erro',
+	incomplete: 'Incompleto',
+	waiting: 'Aguardando',
+};
+
 // Status translations
 export const SAMS_STATUS_TRANSLATIONS: Record<string, string> = {
 	complete: 'Completo',
