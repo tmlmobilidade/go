@@ -37,7 +37,7 @@ jobs:
             MODULE=$(echo "$dir" | cut -d/ -f2)
             APP=$(echo "$dir" | cut -d/ -f4)
             echo "{\"module\":\"$MODULE\",\"app\":\"$APP\"}"
-          done | jq -s '.')
+          done | jq -sc '.')
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
           echo "$MATRIX" | jq .
 
@@ -52,14 +52,14 @@ jobs:
 
       - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: '24'
           package-manager-cache: false
 
       - run: npm install --package-lock-only
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: package-lock
           path: package-lock.json
