@@ -230,7 +230,7 @@ async function main() {
  * Auto-generated.
  * Do not edit manually.
  */
-import { getAppConfig } from './app-configs.js';
+import { getModuleConfig } from './app-configs.js';
 
 export const PAGE_ROUTES = Object.freeze({`);
 
@@ -246,7 +246,7 @@ export const PAGE_ROUTES = Object.freeze({`);
 
 			out.push(`  /* ${moduleName.toUpperCase()} */`);
 			out.push(`  ${moduleName}: {`);
-			out.push(`    BASE: \`${type === 'api' ? `\${getAppConfig('${moduleName}', 'api_url')}` : `\${getAppConfig('${moduleName}', 'frontend_url')}`}\`,`);
+			out.push(`    BASE: \`${type === 'api' ? `\${getModuleConfig('${moduleName}', 'api_url')}` : `\${getModuleConfig('${moduleName}', 'frontend_url')}`}\`,`);
 
 			for (const e of entries) {
 				const [name, rest] = e.route.split(':');
@@ -256,17 +256,17 @@ export const PAGE_ROUTES = Object.freeze({`);
 					if (routePath.includes('${id}')) {
 						const clean = routePath.replace(/^\//, '');
 						out.push(
-							`    ${name}: (id: string) => \`\${getAppConfig('${moduleName}', 'frontend_url')}/${clean}\`,`,
+							`    ${name}: (id: string) => \`\${getModuleConfig('${moduleName}', 'frontend_url')}/${clean}\`,`,
 						);
 					} else {
 						const clean = routePath.replace(/^\//, '');
 						if (!clean) {
 							out.push(
-								`    ${name}: \`\${getAppConfig('${moduleName}', 'frontend_url')}\`,`,
+								`    ${name}: \`\${getModuleConfig('${moduleName}', 'frontend_url')}\`,`,
 							);
 						} else {
 							out.push(
-								`    ${name}: \`\${getAppConfig('${moduleName}', 'frontend_url')}/${clean}\`,`,
+								`    ${name}: \`\${getModuleConfig('${moduleName}', 'frontend_url')}/${clean}\`,`,
 							);
 						}
 					}
@@ -283,11 +283,11 @@ export const PAGE_ROUTES = Object.freeze({`);
 							.map(v => `${v.slice(1)}: string`)
 							.join(', ');
 						out.push(
-							`    ${name}: (${params}) => \`\${getAppConfig('${moduleName}', 'api_url')}/${trimmed}\`,`,
+							`    ${name}: (${params}) => \`\${getModuleConfig('${moduleName}', 'api_url')}/${trimmed}\`,`,
 						);
 					} else {
 						out.push(
-							`    ${name}: \`\${getAppConfig('${moduleName}', 'api_url')}/${trimmed}\`,`,
+							`    ${name}: \`\${getModuleConfig('${moduleName}', 'api_url')}/${trimmed}\`,`,
 						);
 					}
 				}
