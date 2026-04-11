@@ -6,9 +6,11 @@ FROM node:24-slim AS base
 # # #
 # MODULE CONFIGURATION
 
+ARG ENVIRONMENT
 ARG MODULE
 ARG APP
 
+ENV ENVIRONMENT=${ENVIRONMENT}
 ENV MODULE=${MODULE}
 ENV APP=${APP}
 
@@ -65,8 +67,13 @@ FROM gcr.io/distroless/nodejs24-debian13 AS runner
 
 WORKDIR /app
 
+ARG ENVIRONMENT
 ARG MODULE
 ARG APP
+
+ENV ENVIRONMENT=${ENVIRONMENT}
+ENV MODULE=${MODULE}
+ENV APP=${APP}
 
 COPY --from=builder /app/package.json .
 COPY --from=builder /app/node_modules ./node_modules
