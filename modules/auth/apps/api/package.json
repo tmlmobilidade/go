@@ -20,6 +20,7 @@
 	"dependencies": {
 		"@fastify/multipart": "10.0.0",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/fastify": "*",

@@ -106,8 +106,7 @@ export const NotificationsContextProvider = ({ children }: PropsWithChildren) =>
 		try {
 			const permission = await Notification.requestPermission();
 			return permission === 'granted';
-		}
-		catch (err) {
+		} catch (err) {
 			console.error('Error requesting notification permission:', err);
 			return false;
 		}
@@ -125,8 +124,7 @@ export const NotificationsContextProvider = ({ children }: PropsWithChildren) =>
 			notification.onclick = () => {
 				window.focus();
 			};
-		}
-		catch (err) {
+		} catch (err) {
 			console.error('Failed to trigger notification:', err);
 		}
 	};
@@ -145,8 +143,7 @@ export const NotificationsContextProvider = ({ children }: PropsWithChildren) =>
 
 			// Revalidate after successful delete to ensure consistency
 			mutate(`${getAppConfig('auth', 'api_url')}/notifications`);
-		}
-		catch (error) {
+		} catch (error) {
 			// Rollback if something goes wrong
 			mutate(`${getAppConfig('auth', 'api_url')}/notifications`);
 			console.error('Failed to delete notification:', error);
@@ -157,8 +154,7 @@ export const NotificationsContextProvider = ({ children }: PropsWithChildren) =>
 		if (notification.payload.href) {
 			fetchData(`${getAppConfig('auth', 'api_url')}/notifications/${notification._id}/mark-as-read`);
 			window.location.href = notification.payload.href;
-		}
-		else {
+		} else {
 			await fetchData(`${getAppConfig('auth', 'api_url')}/notifications/${notification._id}/mark-as-read`);
 			mutate(`${getAppConfig('auth', 'api_url')}/notifications`);
 		}

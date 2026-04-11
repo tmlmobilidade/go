@@ -5,7 +5,7 @@
 import { useEventsDetailContext } from '@/components/events/detail/EventsDetail.context';
 import { Anchor } from '@mantine/core';
 import { type OperationalDate } from '@tmlmobilidade/types';
-import { MiniCalendar, Section, Text, TimeChip } from '@tmlmobilidade/ui';
+import { Button, MiniCalendar, Section, Text, TimeChip } from '@tmlmobilidade/ui';
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -26,6 +26,26 @@ export function DatesSelector() {
 	// B. Local mini-calendar state (controlled month)
 
 	const selectedSet = useMemo(() => new Set(dates), [dates]);
+
+	/** All operational dates in the currently displayed month */
+	const displayedMonthDates = useMemo(() => {
+		if (!displayedMonth) return [];
+		const year = displayedMonth.getFullYear();
+		const month = displayedMonth.getMonth();
+		const daysInMonth = new Date(year, month + 1, 0).getDate();
+		const result: OperationalDate[] = [];
+		for (let d = 1; d <= daysInMonth; d++) {
+			const mm = String(month + 1).padStart(2, '0');
+			const dd = String(d).padStart(2, '0');
+			result.push(`${year}${mm}${dd}` as OperationalDate);
+		}
+		return result;
+	}, [displayedMonth]);
+
+	const isAllDisplayedMonthSelected = useMemo(
+		() => displayedMonthDates.length > 0 && displayedMonthDates.every(d => selectedSet.has(d)),
+		[displayedMonthDates, selectedSet],
+	);
 
 	/** Dates grouped by "YYYY-MM" key, sorted chronologically */
 	const groupedByMonth = useMemo(() => {
@@ -52,7 +72,7 @@ export function DatesSelector() {
 	}, [dates]);
 
 	useEffect(() => {
-		setDisplayedMonth(initialMonth);
+		setDisplayedMonth(prev => prev ?? initialMonth);
 	}, [initialMonth]);
 
 	//
@@ -84,6 +104,18 @@ export function DatesSelector() {
 		);
 	};
 
+	const handleToggleDisplayedMonth = () => {
+		if (isAllDisplayedMonthSelected) {
+			eventsDetailContext.data.form.setFieldValue(
+				'dates',
+				dates.filter(d => !displayedMonthDates.includes(d)),
+			);
+		} else {
+			const newDates = [...new Set([...dates, ...displayedMonthDates])].sort() as OperationalDate[];
+			eventsDetailContext.data.form.setFieldValue('dates', newDates);
+		}
+	};
+
 	//
 	// D. Render components
 
@@ -92,18 +124,23 @@ export function DatesSelector() {
 			<Text size="sm">Selecione as datas da ocorrência</Text>
 
 			<Section flexDirection="row" gap="md" padding="none">
-				<MiniCalendar
-					displayedMonth={displayedMonth}
-					onDisplayedMonthChange={setDisplayedMonth}
-					isDateSelected={(date) => {
-						const operationalDate = dayjs(date).format('YYYYMMDD') as OperationalDate;
-						return selectedSet.has(operationalDate);
-					}}
-					onDayClick={(date) => {
-						if (isDisabled) return;
-						handleSelect(date);
-					}}
-				/>
+				<Section alignItems="center" gap="xs" padding="none" width="fit-content">
+					<MiniCalendar
+						displayedMonth={displayedMonth}
+						onDisplayedMonthChange={setDisplayedMonth}
+						isDateSelected={(date) => {
+							const operationalDate = dayjs(date).format('YYYYMMDD') as OperationalDate;
+							return selectedSet.has(operationalDate);
+						}}
+						onDayClick={(date) => {
+							if (isDisabled) return;
+							handleSelect(date);
+						}}
+					/>
+					{!isDisabled && (
+						<Button label={isAllDisplayedMonthSelected ? 'Remover mês' : 'Selecionar mês'} onClick={handleToggleDisplayedMonth} size="xs" style={{ color: 'var(--color-primary)', textDecoration: 'underline' }} variant="transparent" />
+					)}
+				</Section>
 
 				{dates.length > 0 && (
 					<div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--mantine-spacing-md)', minWidth: 0 }}>

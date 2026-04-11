@@ -35,7 +35,7 @@ export function HolidaysDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
-			<IdTag id={holidaysDetailContext.data.holiday._id} />
+			<IdTag id={holidaysDetailContext.data.holiday._id} copyOnClick />
 
 			<Spacer />
 

@@ -2,6 +2,7 @@
 
 /* * */
 
+import { useRideFavoritesContext } from '@/contexts/RideFavorites.context';
 import { useDebouncedValue } from '@mantine/hooks';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
@@ -10,18 +11,20 @@ import { DelayStatusSchema, OperationalStatusSchema } from '@tmlmobilidade/types
 import { RIDE_ANALYSIS_GRADE_OPTIONS, type UnixTimestamp } from '@tmlmobilidade/types';
 import { useDataAgencies, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
 import { parseAsInteger, useQueryState } from 'nuqs';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
 export interface RidesListContextState {
 	actions: {
+		setFavoritesEnabled: () => void
 		setFilterDateEnd: (value: number) => void
 		setFilterDateStart: (value: number) => void
 	}
 	data: {
 		filtered: RideNormalized[]
+		filteredByFavoriteIds: RideNormalized[]
 	}
 	filters: {
 		acceptance_status: UseFilterStateListReturnType<RideNormalized['acceptance_status']>
@@ -38,6 +41,7 @@ export interface RidesListContextState {
 	}
 	flags: {
 		error: Error | null
+		favoritesEnabled: boolean
 		last_updated_at: null | UnixTimestamp
 		loading: boolean
 	}
@@ -64,6 +68,9 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const { t } = useTranslation();
+	const rideFavoritesContext = useRideFavoritesContext();
+
+	const [favoritesEnabled, setFavoritesEnabled] = useState<boolean>(false);
 
 	//
 	// B. Fetch data
@@ -114,11 +121,13 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const contextValue: RidesListContextState = useMemo(() => ({
 		actions: {
+			setFavoritesEnabled: () => setFavoritesEnabled(!favoritesEnabled),
 			setFilterDateEnd,
 			setFilterDateStart,
 		},
 		data: {
 			filtered: ridesData ?? [],
+			filteredByFavoriteIds: rideFavoritesContext.data.favoriteRides,
 		},
 		filters: {
 			acceptance_status: filterAcceptanceStatus,
@@ -135,6 +144,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		flags: {
 			error: ridesError,
+			favoritesEnabled,
 			last_updated_at: ridesLastUpdatedAt,
 			loading: ridesLoading,
 		},
@@ -153,6 +163,11 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 		filterAnalysisEndedAtLastStop,
 		ridesLoading,
 		ridesError,
+		ridesLastUpdatedAt,
+		favoritesEnabled,
+		rideFavoritesContext.data.favoriteRides,
+		setFilterDateEnd,
+		setFilterDateStart,
 	]);
 
 	//
