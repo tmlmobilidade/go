@@ -1,0 +1,6 @@
+{
+	"recommendations": [
+		"dbcode.dbcode",
+		"dbaeumer.vscode-eslint"
+	]
+}

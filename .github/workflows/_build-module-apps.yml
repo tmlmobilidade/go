@@ -59,7 +59,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@main
+        uses: actions/checkout@v5
 
       - name: Generate nginx.conf from template
         if: matrix.app == 'nginx'
@@ -95,27 +95,27 @@ jobs:
           echo "Dockerfile for $MODULE/$APP: $DOCKERFILE"
 
       - name: Download package-lock.json artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: package-lock.json
           path: .
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@master
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push Docker Image
-        uses: docker/build-push-action@master
+        uses: docker/build-push-action@v6
         with:
-          push: ${{ inputs.ref-name == 'production' || inputs.ref-name == 'staging' }}
+          push: ${{ inputs.ref-name == 'production' || inputs.ref-name == 'staging' || inputs.ref-name == 'prd' }}
           context: .
           file: ${{ steps.dockerfile.outputs.dockerfile }}
-          tags: ghcr.io/tmlmobilidade/go-${{ inputs.module }}-${{ matrix.app }}:${{ (inputs.ref-name == 'production' || inputs.ref-name == 'staging') && inputs.ref-name || 'none' }}
+          tags: ghcr.io/tmlmobilidade/go-${{ inputs.module }}-${{ matrix.app }}:${{ (inputs.ref-name == 'production' || inputs.ref-name == 'staging' || inputs.ref-name == 'prd') && inputs.ref-name || 'none' }}
           build-args: |
             MODULE=${{ inputs.module }}
             APP=${{ matrix.app }}
             ENVIRONMENT=${{ inputs.ref-name }}
-            NGINX_SERVER_NAME=${{ inputs.ref-name == 'staging' && 'staging.go.tmlmobilidade.pt' || 'go.tmlmobilidade.pt' }}
+            NGINX_SERVER_NAME=${{ inputs.ref-name == 'staging' && 'go-stg.tmlmobilidade.pt' || 'go.tmlmobilidade.pt' }}

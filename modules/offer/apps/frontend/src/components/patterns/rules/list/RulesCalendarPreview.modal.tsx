@@ -3,6 +3,7 @@
 /* * */
 
 import { EventsContextProvider } from '@/contexts/Events.context';
+import { HolidaysContextProvider } from '@/contexts/Holidays.context';
 import { PeriodsContextProvider } from '@/contexts/Periods.context';
 import { ScheduleRule } from '@tmlmobilidade/types';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
@@ -21,7 +22,9 @@ export const openRulesCalendarPreviewModal = (agencyId: string, rules: ScheduleR
 			<MeContextProvider>
 				<EventsContextProvider agencyId={agencyId}>
 					<PeriodsContextProvider agencyId={agencyId}>
-						<RulesCalendarPreview rules={rules} />
+						<HolidaysContextProvider agencyId={agencyId}>
+							<RulesCalendarPreview rules={rules} />
+						</HolidaysContextProvider>
 					</PeriodsContextProvider>
 				</EventsContextProvider>
 			</MeContextProvider>

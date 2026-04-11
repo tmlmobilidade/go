@@ -1,5 +1,7 @@
 import { OperationalDateSchema } from '@/_common/operational-date.js';
-import { HHMMSchema, WEEKDAYS } from '@/dates/common.js';
+import { HHMMSchema } from '@/dates/common.js';
+import { MONTHS } from '@/dates/months.js';
+import { WEEKDAYS } from '@/dates/weekdays.js';
 import { z } from 'zod';
 
 /* * */
@@ -25,20 +27,35 @@ export type LinesMode = z.infer<typeof LinesModeSchema>;
 
 /* * */
 
-export const ManualRuleSchema = z.object({
+export const ManualRuleBaseSchema = z.object({
 	_id: z.string(),
-
 	event_id: z.string().optional(),
-
 	kind: z.literal('manual'),
+	months: z.array(z.nativeEnum(MONTHS)).optional(),
 	name: z.string().optional(),
-
 	operating_mode: OperatingModeSchema,
 	timepoints: z.array(HHMMSchema),
-
-	weekdays: z.array(z.nativeEnum(WEEKDAYS)),
-
+	weekdays: z.array(z.nativeEnum(WEEKDAYS)).optional(),
 	year_period_ids: z.array(z.string()),
+});
+
+export const ManualRuleSchema = ManualRuleBaseSchema.superRefine((data, ctx) => {
+	if (!data.event_id) {
+		if (!data.weekdays?.length) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'Selecione pelo menos um dia da semana.',
+				path: ['weekdays'],
+			});
+		}
+		if (!data.year_period_ids?.length) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'Selecione pelo menos um período do ano.',
+				path: ['year_period_ids'],
+			});
+		}
+	}
 });
 
 /* * */
@@ -80,6 +97,13 @@ export const EventReplacementSchema = EventDerivedBaseSchema.extend({
 
 	kind: z.literal('event_replacement'),
 
+	/**
+	 * When true, each date in the rule will function as its own actual weekday
+	 * but within the specified year_period_ids, instead of all dates functioning
+	 * as the same target weekday(s).
+	 */
+	same_weekday: z.boolean().optional(),
+
 	weekdays: z.array(z.nativeEnum(WEEKDAYS)),
 	year_period_ids: z.array(z.string()),
 });
@@ -89,12 +113,27 @@ export const EventRuleSchema = z.discriminatedUnion('kind', [EventRestrictionSch
 /* * */
 
 export const ScheduleRuleSchema = z.discriminatedUnion('kind', [
-	ManualRuleSchema,
+	ManualRuleBaseSchema,
 	EventRestrictionSchema,
 	EventReplacementSchema,
 ]);
 
-export const PatternUpdateRulesSchema = z.array(ManualRuleSchema.omit({ name: true })).optional();
+export const PatternUpdateRuleBaseSchema = ManualRuleBaseSchema.omit({ name: true });
+
+export const PatternUpdateRuleSchema = PatternUpdateRuleBaseSchema.superRefine((data, ctx) => {
+	const hasEvent = Boolean(data.event_id);
+	const hasWeekdays = Boolean(data.weekdays?.length);
+
+	if (!hasEvent && !hasWeekdays) {
+		ctx.addIssue({
+			code: z.ZodIssueCode.custom,
+			message: 'Selecione pelo menos um dia da semana.',
+			path: ['weekdays'],
+		});
+	}
+});
+
+export const PatternUpdateRulesSchema = z.array(PatternUpdateRuleSchema).optional();
 
 export type ScheduleRule = z.infer<typeof ScheduleRuleSchema>;
 export type ManualRule = z.infer<typeof ManualRuleSchema>;

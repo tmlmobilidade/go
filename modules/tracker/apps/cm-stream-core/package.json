@@ -1,0 +1,35 @@
+{
+	"name": "@tmlmobilidade/go-tracker-cm-stream-core",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"type": "module",
+	"files": ["dist"],
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc && resolve-tspaths",
+		"dev": "tsx watch src/index.ts",
+		"lint": "eslint . --fix && tsc --noEmit",
+		"lint:fix": "eslint . --fix"
+	},
+	"dependencies": {
+		"@tmlmobilidade/databases": "*",
+		"@tmlmobilidade/go-tracker-pckg-databases": "*",
+		"@tmlmobilidade/go-tracker-pckg-shared": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/utils": "*"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/tsconfig": "*",
+		"@types/luxon": "3.7.1",
+		"@types/node": "25.5.2",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.21.0",
+		"typescript": "5.9.3"
+	}
+}

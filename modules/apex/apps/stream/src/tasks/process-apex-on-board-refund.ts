@@ -1,18 +1,19 @@
 /* * */
 
-import { clickhouseService } from '@tmlmobilidade/clickhouse';
-import { invalidateRides, parseSimplifiedApexOnBoardRefund, simplifiedApexOnBoardRefundsSchema } from '@tmlmobilidade/go-apex-pckg-common';
+import { simplifiedApexOnBoardRefundsNew } from '@tmlmobilidade/databases';
+import { invalidateRides, parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-apex-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
-import { ClickHouseWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 
-const writer = new ClickHouseWriter<SimplifiedApexOnBoardRefund>({
-	batch_size: 10,
-	client: await clickhouseService.getClient(),
-	table: 'simplified_apex_on_board_refunds',
-	tableSchema: simplifiedApexOnBoardRefundsSchema,
+const writer = new BatchWriter<SimplifiedApexOnBoardRefund>({
+	batch_size: 50_000,
+	insertFn: async (data) => {
+		await simplifiedApexOnBoardRefundsNew.insert('JSONEachRow', data);
+	},
+	title: await simplifiedApexOnBoardRefundsNew.getTableName(),
 });
 
 /**

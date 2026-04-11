@@ -17,17 +17,18 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@clickhouse/client": "1.18.1",
+		"@clickhouse/client": "1.18.2",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.3.5",
+		"@types/node": "25.5.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"

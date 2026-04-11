@@ -3,7 +3,9 @@
 import { type UnixTimestamp } from '@tmlmobilidade/types';
 
 import { DateTimePicker } from '../../dates/DateTimePicker';
+import { Label } from '../../display/Label';
 import { Section } from '../../layout/Section';
+import { Spacer } from '../../layout/Spacer';
 import { FilterWrapper } from '../FilterWrapper';
 
 /* * */
@@ -27,20 +29,21 @@ export function FilterTypeDateRange({ active, disabled, endDate, label, onEndDat
 			disabled={disabled}
 			label={label}
 		>
-			<Section gap="md" padding="sm">
+			<Section gap="sm" height="auto" padding="md"width="auto">
+				<Label size="md">Data de Início</Label>
 				<DateTimePicker
 					onChange={onStartDateChange}
-					placeholder="Data de Início"
 					value={startDate}
 					fullWidth
 				/>
+				<Spacer />
+				<Label size="md">Data de Fim</Label>
 				<DateTimePicker
 					onChange={onEndDateChange}
-					placeholder="Data de Fim"
 					value={endDate}
-					fullWidth
+
 				/>
 			</Section>
 		</FilterWrapper>
 	);
-};
+}

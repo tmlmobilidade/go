@@ -1,13 +1,16 @@
-/* * */
 /* INPUT */
 
 .input {
 	height: auto;
 	max-height: none;
 	padding: 10px 15px;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	font-size: var(--font-size-sm);
 	font-weight: var(--font-weight-medium);
 	line-height: 1;
+	white-space: nowrap;
+	appearance: none;
 	background-color: var(--color-system-background-100);
 	border: 2px solid var(--color-system-text-300);
 	border-radius: var(--border-radius-sm);
@@ -36,6 +39,8 @@
 
 .section {
 	display: flex;
+	align-items: center;
+	justify-content: center;
 	width: auto;
 	padding: var(--size-spacing-sm);
 	color: var(--color-system-text-300);
@@ -72,4 +77,11 @@
 	font-size: var(--font-size-sm);
 	font-weight: var(--font-weight-medium);
 	color: var(--color-system-text-200);
+}
+
+/* * */
+/* overflow */
+
+.overflow {
+	overflow: scroll;
 }

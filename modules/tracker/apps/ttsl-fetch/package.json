@@ -17,18 +17,18 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
+		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-tracker-pckg-common": "*",
-		"@tmlmobilidade/go-tracker-pckg-databases": "*",
+		"@tmlmobilidade/go-tracker-pckg-shared": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
-		"@tmlmobilidade/writers": "*"
+		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.3.5",
+		"@types/node": "25.5.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"

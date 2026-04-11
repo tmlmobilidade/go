@@ -1,5 +1,5 @@
-import { WEEKDAYS } from '@/dates/common.js';
 import { DayPeriodSchema } from '@/dates/day-period.js';
+import { WEEKDAYS } from '@/dates/weekdays.js';
 import { z } from 'zod';
 
 /* * */

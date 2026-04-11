@@ -1,6 +1,7 @@
 /* * */
 
 import { i18nNamespaces } from '@/i18n/resources';
+import pjson from '#/package.json';
 import { DataProviders } from '@/providers/data-providers';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider i18n={i18nNamespaces}>
+		<BaseProvider version={pjson.version} i18n={i18nNamespaces}>
 			<AppProvider>
 				<AppWrapper>
 					<DataProviders>

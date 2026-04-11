@@ -37,12 +37,16 @@ export function isValidCoordinatePair(lat: number, lng: number): boolean {
 }
 
 /**
- * Clamps a coordinate value to 6 decimal places.
+ * Clamps a coordinate value to 6 decimal places
+ * and ensures it's a valid number.
  * @param value The coordinate value to clamp.
- * @returns The clamped coordinate value.
+ * @returns The clamped coordinate value, or null if the input value is invalid.
  */
-export function clampCoordinate(value: number): number {
-	return parseFloat(value.toFixed(6));
+export function clampCoordinate(value: null | number | string | undefined): null | number {
+	if (value == null) return null;
+	const num = typeof value === 'string' ? parseFloat(value) : value;
+	if (isNaN(num)) return null;
+	return parseFloat(num.toFixed(6));
 }
 
 /**

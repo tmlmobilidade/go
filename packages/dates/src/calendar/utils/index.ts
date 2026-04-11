@@ -2,7 +2,7 @@
 
 import { Dates } from '@/dates.js';
 import { TimezoneIdentified } from '@/types.js';
-import { IsoWeekday } from '@tmlmobilidade/types';
+import { Holiday, IsoWeekday, OperationalDate } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -93,17 +93,33 @@ export function yyyymmddToKey(yyyymmdd: string): CalendarKey {
 	return `${yyyymmdd.slice(0, 4)}-${yyyymmdd.slice(4, 6)}-${yyyymmdd.slice(6, 8)}` as CalendarKey;
 }
 
+export function isHoliday(
+	input: CalendarKey | Dates,
+	holidays: Holiday[],
+	tz: TimezoneIdentified = DEFAULT_CAL_TZ,
+): boolean {
+	const key = input instanceof Dates ? calendarKey(input, tz) : input;
+	const yyyymmdd = keyToYYYYMMDD(key) as OperationalDate;
+
+	return holidays.some(holiday => holiday.dates.includes(yyyymmdd));
+}
+
 /**
  * ISO weekday (1..7 Mon..Sun) for a calendar key or Dates (civil day).
  */
-export function calendarWeekday(input: CalendarKey | Dates, tz: TimezoneIdentified = DEFAULT_CAL_TZ): IsoWeekday {
+export function calendarWeekday(input: CalendarKey | Dates, holidays: Holiday[] | null, tz: TimezoneIdentified = DEFAULT_CAL_TZ): IsoWeekday {
 	const key = input instanceof Dates ? calendarKey(input, tz) : input;
+
+	if (holidays && isHoliday(key, holidays, tz)) {
+		return 7;
+	}
+
 	const d = Dates.fromFormat(`${key} 12:00`, 'yyyy-MM-dd HH:mm', tz);
 	return Number(d.toFormat('E')) as IsoWeekday;
 }
 
 export function isWeekend(input: CalendarKey | Dates, tz: TimezoneIdentified = DEFAULT_CAL_TZ): boolean {
-	const wd = calendarWeekday(input, tz);
+	const wd = calendarWeekday(input, null, tz);
 	return wd === 6 || wd === 7;
 }
 
@@ -153,7 +169,7 @@ export function generateMonthGrid(
 		tz,
 	);
 
-	const lastDayOfMonth = firstDayOfMonth.endOf('month');
+	const lastDayOfMonth = firstDayOfMonth.endOf('month').set({ hour: 12, millisecond: 0, minute: 0, second: 0 });
 
 	// Today (civil)
 	const todayKey = calendarKey(Dates.now(tz), tz);
@@ -199,9 +215,12 @@ export function generateMonthGrid(
 	}
 
 	// Next month overflow
+	// Use firstDayOfMonth (noon, tz-stable) as anchor instead of lastDayOfMonth (23:59 UTC),
+	// which crosses midnight into the next civil day when converted to a UTC+ timezone (e.g.
+	// Lisbon entering DST on March 29: 23:59 UTC = 00:59+01:00 = next day).
 	const daysFromNextMonth = fixedWeeks ? 42 - days.length : naturalDaysFromNextMonth;
 	for (let i = 1; i <= daysFromNextMonth; i++) {
-		pushDay(lastDayOfMonth.plus({ days: i }), false);
+		pushDay(firstDayOfMonth.plus({ days: daysInMonth + i - 1 }), false);
 	}
 
 	// Weeks (rows)

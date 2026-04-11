@@ -5,3 +5,4 @@ export * from './MapOverlayPatternShape';
 export * from './MapOverlayPins';
 export * from './MapOverlayPolygon';
 export * from './MapOverlayScheduledPath';
+export * from './MapOverlayVehicles';

@@ -1,8 +1,0 @@
-# # #
-# OCI AUTHENTICATION
-
-tenancy_ocid = ""
-user_ocid = ""
-fingerprint = ""
-private_key_path = ""
-ssh_public_key_path = "~/.ssh/id_rsa.pub"

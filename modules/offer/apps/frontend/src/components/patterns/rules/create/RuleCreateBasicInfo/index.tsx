@@ -4,6 +4,7 @@
 
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { RuleCreateEvents } from '@/components/patterns/rules/create/RuleCreateEvents';
+import { RuleCreateMonths } from '@/components/patterns/rules/create/RuleCreateMonths';
 import { RuleCreatePeriods } from '@/components/patterns/rules/create/RuleCreatePeriods';
 import { RuleCreateSchedule } from '@/components/patterns/rules/create/RuleCreateSchedule';
 import { RuleCreateWeekdays } from '@/components/patterns/rules/create/RuleCreateWeekdays';
@@ -66,14 +67,15 @@ export function RuleCreateBasicInfo() {
 				<Text c="dimmed" size="sm">Estes horários aplicam-se quando TODAS as condições abaixo se verificam</Text>
 
 				<RuleCreateEvents />
-				{!createRuleContext.flags.isEventExceptionEnabled && (
-					<>
-						<Divider />
-						<RuleCreatePeriods />
-						<Divider />
-						<RuleCreateWeekdays />
-					</>
-				)}
+
+				<Divider />
+				<RuleCreatePeriods />
+
+				<Divider />
+				<RuleCreateWeekdays />
+
+				<Divider />
+				<RuleCreateMonths />
 			</div>
 
 		</Section>

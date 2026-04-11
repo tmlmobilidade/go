@@ -1,5 +1,6 @@
 /* * */
 
+import pjson from '#/package.json';
 import { getAppConfig } from '@tmlmobilidade/consts';
 import { AppProvider, BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
@@ -35,7 +36,7 @@ export default async function Layout({ children }: PropsWithChildren) {
 	// B. Render components
 
 	return (
-		<BaseProvider>
+		<BaseProvider version={pjson.version}>
 			<AppProvider>
 				{children}
 			</AppProvider>

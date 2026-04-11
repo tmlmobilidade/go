@@ -14,9 +14,13 @@ import { z } from 'zod';
 /* * */
 
 class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto> {
+	//
+
 	private static _instance: FilesClass;
+
 	protected override createSchema: z.ZodSchema = CreateFileSchema;
 	protected override updateSchema: z.ZodSchema = UpdateFileSchema;
+
 	private readonly bucketName: string;
 	private readonly storageService: IStorageProvider;
 
@@ -25,8 +29,11 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 
 		switch (process.env.STORAGE_TYPE) {
 			case 'oci':
-				if (!process.env.OCI_BUCKET_NAME || !process.env.OCI_FINGERPRINT || !process.env.OCI_NAMESPACE || !process.env.OCI_PRIVATE_KEY || !process.env.OCI_REGION || !process.env.OCI_TENANCY || !process.env.OCI_USER) {
-					throw new Error('OCI_BUCKET_NAME, OCI_FINGERPRINT, OCI_NAMESPACE, OCI_PRIVATE_KEY, OCI_REGION, OCI_TENANCY, and OCI_USER must be set');
+				if (!process.env.OCI_PRIVATE_KEY && !process.env.OCI_PRIVATE_KEY_PATH) {
+					throw new Error('Either OCI_PRIVATE_KEY or OCI_PRIVATE_KEY_PATH must be set');
+				}
+				if (!process.env.OCI_BUCKET_NAME || !process.env.OCI_FINGERPRINT || !process.env.OCI_NAMESPACE || !process.env.OCI_REGION || !process.env.OCI_TENANCY || !process.env.OCI_USER) {
+					throw new Error('OCI_BUCKET_NAME, OCI_FINGERPRINT, OCI_NAMESPACE, OCI_REGION, OCI_TENANCY, and OCI_USER must be set');
 				}
 				this.bucketName = process.env.OCI_BUCKET_NAME;
 				this.storageService = StorageFactory.create({
@@ -35,6 +42,7 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 						fingerprint: process.env.OCI_FINGERPRINT,
 						namespace: process.env.OCI_NAMESPACE,
 						private_key: process.env.OCI_PRIVATE_KEY,
+						private_key_path: process.env.OCI_PRIVATE_KEY_PATH,
 						region: process.env.OCI_REGION,
 						tenancy: process.env.OCI_TENANCY,
 						user: process.env.OCI_USER,
@@ -58,22 +66,22 @@ class FilesClass extends MongoCollectionClass<File, CreateFileDto, UpdateFileDto
 
 	/**
 	 * Clones a file from one resource to another.
-	 * @param file_id - The unique identifier of the file in the database.
-	 * @param resource_id - The unique identifier of the resource to clone the file to.
+	 * @param fileId - The unique identifier of the file in the database.
+	 * @param resourceId - The unique identifier of the resource to clone the file to.
 	 * @returns The file that was cloned.
 	 */
-	public async clone(file_id: string, scope: string, resource_id: string, options?: InsertOneOptions): Promise<File> {
+	public async clone(fileId: string, scope: string, resourceId: string, options?: InsertOneOptions): Promise<File> {
 		const _id = generateRandomString({ length: 5 });
-		const file = await this.findOne({ _id: file_id });
+		const file = await this.findOne({ _id: fileId });
 		if (!file) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 
 		const originalFilePath = `${file.scope}/${file.resource_id}/${file._id}.${Files.getFileExtension(file.name)}`;
-		const newFilePath = `${scope}/${resource_id}/${_id}.${Files.getFileExtension(file.name)}`;
+		const newFilePath = `${scope}/${resourceId}/${_id}.${Files.getFileExtension(file.name)}`;
 
 		await this.storageService.copyFile(originalFilePath, newFilePath);
 
 		const newFile = convertObject(file, CreateFileSchema);
-		return await this.insertOne({ ...newFile, _id, resource_id, scope }, { options });
+		return await this.insertOne({ ...newFile, _id, resource_id: resourceId, scope }, { options });
 	}
 
 	/**

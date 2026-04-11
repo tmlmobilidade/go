@@ -2,7 +2,7 @@
 
 import { calendarKey, CalendarKey, calendarWeekday, datesFromCalendarKey, keyToYYYYMMDD } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
-import { Event, ManualRule, OperationalDate, YearPeriod } from '@tmlmobilidade/types';
+import { Event, Holiday, ManualRule, OperationalDate, YearPeriod } from '@tmlmobilidade/types';
 
 /**
  * Context for computing which dates a manual rule affects within a calendar range.
@@ -12,6 +12,8 @@ interface CalendarContext {
 	endDate: Date
 	/** Optional events list for event_id matching */
 	events?: Event[]
+	/** Available holidays for accurate weekday calculations */
+	holidays: Holiday[]
 	/** Available periods for matching rule criteria */
 	periods: YearPeriod[]
 	/** Start date of the calendar range */
@@ -37,7 +39,7 @@ function isInPeriod(rule: ManualRule, key: CalendarKey, ctx: CalendarContext): b
  * Checks both period membership and weekday matching.
  */
 function ruleAppliesToCivilKey(rule: ManualRule, key: CalendarKey, ctx: CalendarContext): boolean {
-	const weekday = calendarWeekday(key);
+	const weekday = calendarWeekday(key, ctx.holidays);
 
 	// 1) YearPeriod required
 	if (!isInPeriod(rule, key, ctx)) return false;
@@ -45,6 +47,12 @@ function ruleAppliesToCivilKey(rule: ManualRule, key: CalendarKey, ctx: Calendar
 	// 2) Weekdays required
 	if (!rule.weekdays?.length) return false;
 	if (!rule.weekdays.includes(weekday)) return false;
+
+	// 3) Months filter (optional)
+	if (rule.months?.length) {
+		const month = Number(key.slice(5, 7));
+		if (!(rule.months as number[]).includes(month)) return false;
+	}
 
 	return true;
 }
@@ -79,6 +87,11 @@ export function getManualRuleAffectedDates(rule: ManualRule, ctx: CalendarContex
 		for (const opDate of event.dates) {
 			const key = calendarKey(Dates.fromOperationalDate(opDate, 'Europe/Lisbon'));
 			if (key >= from && key <= to) {
+				// If weekdays are specified, narrow event dates to matching weekdays only
+				if (rule.weekdays?.length) {
+					const weekday = calendarWeekday(key, ctx.holidays);
+					if (!rule.weekdays.includes(weekday)) continue;
+				}
 				affected.push(key);
 			}
 		}

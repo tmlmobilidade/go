@@ -23,15 +23,15 @@ export function RideAnalysisVehicleEvents() {
 
 	const columns: DataTableColumn<SimplifiedVehicleEvent>[] = [
 		{
+			accessor: '_id',
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns._id.label'),
+			width: 250,
+		},
+		{
 			accessor: 'created_at',
 			render: item => <TimestampTag value={item.created_at} />,
 			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.created_at.label'),
 			width: 280,
-		},
-		{
-			accessor: 'trigger_activity',
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.activity.label'),
-			width: 150,
 		},
 		{
 			accessor: 'stop_id',
@@ -54,7 +54,7 @@ export function RideAnalysisVehicleEvents() {
 			width: 150,
 		},
 		{
-			accessor: 'trigger_door',
+			accessor: 'door',
 			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.door.label'),
 			width: 150,
 		},

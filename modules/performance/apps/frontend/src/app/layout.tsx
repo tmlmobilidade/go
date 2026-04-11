@@ -1,5 +1,6 @@
 /* * */
 
+import pjson from '#/package.json';
 import { AgenciesContextProvider } from '@/contexts/Agencies.context';
 import { DatesContextProvider } from '@/contexts/Dates.context';
 import { HomeContextProvider } from '@/contexts/Home.context';
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider>
+		<BaseProvider version={pjson.version}>
 			<AppProvider>
 				<AppWrapper>
 					<ThemeProviders>

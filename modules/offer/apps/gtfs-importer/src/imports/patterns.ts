@@ -10,6 +10,7 @@ import {
 	resolvePatternCode,
 	resolvePatternKey,
 } from '../helpers/index.js';
+import { warn, WARNING } from '../warnings.js';
 
 /* * */
 
@@ -81,7 +82,7 @@ export async function buildPatternsForRoute(params: {
 				: `${lineCode}_${directionId}`.slice(0, 10);
 			const routeDoc = routeDocsByCode.get(routeKey);
 			if (!routeDoc) {
-				console.log('[gtfs-importer] Missing route for patterns', {
+				warn(WARNING.MISSING_ROUTE, {
 					line_id: lineId,
 					routeCode: routeKey,
 					trip_route_id: trip.route_id,
@@ -98,7 +99,7 @@ export async function buildPatternsForRoute(params: {
 				const stopId = stopTime.stop_id.trim();
 				const stopRef = await getStopByLegacyId(stopId, stopCache);
 				if (!stopRef) {
-					console.log('[gtfs-importer] Missing stop for pattern', {
+					warn(WARNING.MISSING_STOP, {
 						stop_id: stopId,
 						trip_id: trip.trip_id,
 					});

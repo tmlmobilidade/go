@@ -44,8 +44,7 @@ export const templatePlaceholderReplacements = {
 						: `na paragem ${stopNames[0]}`;
 
 					parts.push(`linha ${lineShortName} ${stopsPart}`);
-				}
-				else {
+				} else {
 					parts.push(`linha ${lineShortName}`);
 				}
 			}
@@ -99,7 +98,7 @@ export const templatePlaceholderReplacements = {
 			for (const [, group] of Object.entries(patternGroups).sort()) {
 				const rideStartTimes = group
 					.sort((a, b) => a.start_time_scheduled - b.start_time_scheduled)
-					.map(ride => Dates.fromUnixTimestamp(ride.start_time_scheduled).setZone('Europe/Lisbon', 'rebase_utc').toFormat('HH:mm'));
+					.map(ride => Dates.fromUnixTimestamp(ride.start_time_scheduled).setZone('Europe/Lisbon', 'offset_only').toFormat('HH:mm'));
 
 				const lineShortNames = Array.from(new Set(group.map(ht => ht.line_id)));
 				const linePart = lineShortNames.length > 1
@@ -154,8 +153,7 @@ export const templatePlaceholderReplacements = {
 						: `da linha ${lineShortNames[0]}`;
 
 					parts.push(`paragem ${stopName} ${linesPart}`);
-				}
-				else {
+				} else {
 					parts.push(`paragem ${stopName}`);
 				}
 			}

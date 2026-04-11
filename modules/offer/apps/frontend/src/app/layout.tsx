@@ -1,5 +1,6 @@
 /* * */
 
+import pjson from '#/package.json';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
 import { type PropsWithChildren } from 'react';
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider>
+		<BaseProvider version={pjson.version}>
 			<AppProvider>
 				<AppWrapper>
 					{children}

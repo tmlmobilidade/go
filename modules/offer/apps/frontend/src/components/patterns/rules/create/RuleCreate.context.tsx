@@ -3,9 +3,11 @@
 /* * */
 
 import { useEventsContext } from '@/contexts/Events.context';
+import { useHolidaysContext } from '@/contexts/Holidays.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { useForm } from '@mantine/form';
 import { buildRuleSummary, Dates, getManualRuleAffectedDates } from '@tmlmobilidade/dates';
+import { generateRandomString } from '@tmlmobilidade/strings';
 import { ManualRule, ManualRuleSchema } from '@tmlmobilidade/types';
 import { type UseFormReturnType } from '@tmlmobilidade/ui';
 import { zodResolver } from 'mantine-form-zod-resolver';
@@ -42,13 +44,13 @@ interface RuleCreateContextState {
 
 const RuleCreateContext = createContext<RuleCreateContextState | undefined>(undefined);
 
-export function useRuleCreateContext() {
+export const useRuleCreateContext = () => {
 	const context = useContext(RuleCreateContext);
 	if (!context) {
 		throw new Error('useRuleCreateContext must be used within a RuleCreateContextProvider');
 	}
 	return context;
-}
+};
 
 /* * */
 
@@ -59,6 +61,7 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	// A. Setup variables
 
 	const periodsContext = usePeriodsContext();
+	const holidaysContext = useHolidaysContext();
 	const eventsContext = useEventsContext();
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [isEventExceptionEnabled, setIsEventExceptionEnabled] = useState(Boolean(initialValues?.event_id));
@@ -71,7 +74,7 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 
 	const form = useForm<ManualRule>({
 		initialValues: initialValues || {
-			_id: crypto.randomUUID(),
+			_id: generateRandomString({ length: 5 }),
 			kind: 'manual',
 			operating_mode: 'include',
 			timepoints: [],
@@ -98,10 +101,11 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 		{
 			endDate: Dates.now('Europe/Lisbon').plus({ years: 1 }).js_date,
 			events: eventsContext.data.raw,
+			holidays: holidaysContext.data.raw,
 			periods: periodsContext.data.raw,
 			startDate: new Date(),
 		},
-	), [eventsContext.data.raw, form.values, periodsContext.data.raw]);
+	), [eventsContext.data.raw, form.values, periodsContext.data.raw, holidaysContext.data.raw]);
 
 	//
 	// D. Handle actions

@@ -15,7 +15,7 @@ export function getEarliestDate(): Dates {
 	// In production, return the fixed date of
 	// 1 January 2024, in the Europe/Lisbon timezone.
 
-	if (getCurrentEnvironment() === 'production') {
+	if (getCurrentEnvironment() === 'prd') {
 		return Dates
 			.fromOperationalDate('20240101', 'Europe/Lisbon')
 			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 });
