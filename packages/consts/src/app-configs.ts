@@ -37,13 +37,13 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			frontend_url: 'http://localhost:51001/alerts',
 		},
 		prd: {
-			api_url: 'https://go.tmlmobilidade.pt/alerts/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/alerts',
+			api_url: '/alerts/api',
+			frontend_url: '/alerts',
 			...DEFAULT_PRD_CONFIG,
 		},
 		stg: {
-			api_url: 'https://go-stg.tmlmobilidade.pt/alerts/api',
-			frontend_url: 'https://go-stg.tmlmobilidade.pt/alerts',
+			api_url: '/alerts/api',
+			frontend_url: '/alerts',
 			...DEFAULT_STG_CONFIG,
 		},
 	},
@@ -57,13 +57,13 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			frontend_url: 'http://localhost:51000/auth',
 		},
 		prd: {
-			api_url: 'https://go.tmlmobilidade.pt/auth/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/auth',
+			api_url: '/auth/api',
+			frontend_url: '/auth',
 			...DEFAULT_PRD_CONFIG,
 		},
 		stg: {
-			api_url: 'https://go-stg.tmlmobilidade.pt/auth/api',
-			frontend_url: 'https://go-stg.tmlmobilidade.pt/auth',
+			api_url: '/auth/api',
+			frontend_url: '/auth',
 			...DEFAULT_STG_CONFIG,
 		},
 	},
@@ -77,13 +77,13 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			frontend_url: 'http://localhost:51002/controller',
 		},
 		prd: {
-			api_url: 'https://go.tmlmobilidade.pt/controller/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/controller',
+			api_url: '/controller/api',
+			frontend_url: '/controller',
 			...DEFAULT_PRD_CONFIG,
 		},
 		stg: {
-			api_url: 'https://go-stg.tmlmobilidade.pt/controller/api',
-			frontend_url: 'https://go-stg.tmlmobilidade.pt/controller',
+			api_url: '/controller/api',
+			frontend_url: '/controller',
 			...DEFAULT_STG_CONFIG,
 		},
 	},
@@ -97,13 +97,13 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			frontend_url: 'http://localhost:51008/dates',
 		},
 		prd: {
-			api_url: 'https://go.tmlmobilidade.pt/dates/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/dates',
+			api_url: '/dates/api',
+			frontend_url: '/dates',
 			...DEFAULT_PRD_CONFIG,
 		},
 		stg: {
-			api_url: 'https://go-stg.tmlmobilidade.pt/dates/api',
-			frontend_url: 'https://go-stg.tmlmobilidade.pt/dates',
+			api_url: '/dates/api',
+			frontend_url: '/dates',
 			...DEFAULT_STG_CONFIG,
 		},
 	},
@@ -117,13 +117,13 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			frontend_url: 'http://localhost:51007/exporter',
 		},
 		prd: {
-			api_url: 'https://go.tmlmobilidade.pt/exporter/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/exporter',
+			api_url: '/exporter/api',
+			frontend_url: '/exporter',
 			...DEFAULT_PRD_CONFIG,
 		},
 		stg: {
-			api_url: 'https://go-stg.tmlmobilidade.pt/exporter/api',
-			frontend_url: 'https://go-stg.tmlmobilidade.pt/exporter',
+			api_url: '/exporter/api',
+			frontend_url: '/exporter',
 			...DEFAULT_STG_CONFIG,
 		},
 	},
@@ -137,13 +137,13 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			frontend_url: 'http://localhost:51009/fleet',
 		},
 		prd: {
-			api_url: 'https://go.tmlmobilidade.pt/fleet/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/fleet',
+			api_url: '/fleet/api',
+			frontend_url: '/fleet',
 			...DEFAULT_PRD_CONFIG,
 		},
 		stg: {
-			api_url: 'https://go-stg.tmlmobilidade.pt/fleet/api',
-			frontend_url: 'https://go-stg.tmlmobilidade.pt/fleet',
+			api_url: '/fleet/api',
+			frontend_url: '/fleet',
 			...DEFAULT_STG_CONFIG,
 		},
 	},
@@ -157,13 +157,13 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			frontend_url: 'http://localhost:51005/locations',
 		},
 		prd: {
-			api_url: 'https://go.tmlmobilidade.pt/locations/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/locations',
+			api_url: '/locations/api',
+			frontend_url: '/locations',
 			...DEFAULT_PRD_CONFIG,
 		},
 		stg: {
-			api_url: 'https://go-stg.tmlmobilidade.pt/locations/api',
-			frontend_url: 'https://go-stg.tmlmobilidade.pt/locations',
+			api_url: '/locations/api',
+			frontend_url: '/locations',
 			...DEFAULT_STG_CONFIG,
 		},
 	},
@@ -177,13 +177,13 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			frontend_url: 'http://localhost:51010/offer',
 		},
 		prd: {
-			api_url: 'https://go.tmlmobilidade.pt/offer/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/offer',
+			api_url: '/offer/api',
+			frontend_url: '/offer',
 			...DEFAULT_PRD_CONFIG,
 		},
 		stg: {
-			api_url: 'https://go-stg.tmlmobilidade.pt/offer/api',
-			frontend_url: 'https://go-stg.tmlmobilidade.pt/offer',
+			api_url: '/offer/api',
+			frontend_url: '/offer',
 			...DEFAULT_STG_CONFIG,
 		},
 	},
@@ -197,13 +197,13 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			frontend_url: 'http://localhost:51006/performance',
 		},
 		prd: {
-			api_url: 'https://go.tmlmobilidade.pt/performance/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/performance',
+			api_url: '/performance/api',
+			frontend_url: '/performance',
 			...DEFAULT_PRD_CONFIG,
 		},
 		stg: {
-			api_url: 'https://go-stg.tmlmobilidade.pt/performance/api',
-			frontend_url: 'https://go-stg.tmlmobilidade.pt/performance',
+			api_url: '/performance/api',
+			frontend_url: '/performance',
 			...DEFAULT_STG_CONFIG,
 		},
 	},
@@ -217,13 +217,13 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			frontend_url: 'http://localhost:51004/plans',
 		},
 		prd: {
-			api_url: 'https://go.tmlmobilidade.pt/plans/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/plans',
+			api_url: '/plans/api',
+			frontend_url: '/plans',
 			...DEFAULT_PRD_CONFIG,
 		},
 		stg: {
-			api_url: 'https://go-stg.tmlmobilidade.pt/plans/api',
-			frontend_url: 'https://go-stg.tmlmobilidade.pt/plans',
+			api_url: '/plans/api',
+			frontend_url: '/plans',
 			...DEFAULT_STG_CONFIG,
 		},
 	},
@@ -237,13 +237,13 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			frontend_url: 'http://localhost:51003/stops',
 		},
 		prd: {
-			api_url: 'https://go.tmlmobilidade.pt/stops/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/stops',
+			api_url: '/stops/api',
+			frontend_url: '/stops',
 			...DEFAULT_PRD_CONFIG,
 		},
 		stg: {
-			api_url: 'https://go-stg.tmlmobilidade.pt/stops/api',
-			frontend_url: 'https://go-stg.tmlmobilidade.pt/stops',
+			api_url: '/stops/api',
+			frontend_url: '/stops',
 			...DEFAULT_STG_CONFIG,
 		},
 	},
@@ -266,8 +266,7 @@ export function getModuleConfig<Prop extends keyof ModuleConfigGroup>(module: ke
 	// or automatically from the set environment variable.
 	const currentEnvironment = environment || getCurrentEnvironment();
 	// Get the config group for the current environment
-	const configGroupForEnvironment = moduleObject[currentEnvironment];
-	if (!configGroupForEnvironment) throw new Error(`[@core/lib] ModuleConfig group for module "${module}" in environment "${currentEnvironment}" environment not found. Available environments: ${Object.keys(moduleObject).join(', ')}`);
+	const configGroupForEnvironment = moduleObject[currentEnvironment] || moduleObject['stg'];
 	// Get the property value from the config group
 	const propertyValue = configGroupForEnvironment[property];
 	if (propertyValue === undefined) throw new Error(`[@core/lib] Property "${property}" for module "${module}" in environment "${currentEnvironment}" not found. Available properties: ${Object.keys(configGroupForEnvironment).join(', ')}`);
