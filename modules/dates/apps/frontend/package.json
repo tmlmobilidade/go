@@ -15,8 +15,8 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@mantine/core": "8.3.18",
-		"@mantine/dates": "8.3.18",
+		"@mantine/core": "9.0.1",
+		"@mantine/dates": "9.0.1",
 		"@tabler/icons-react": "3.41.1",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
@@ -26,17 +26,17 @@
 		"clsx": "2.1.1",
 		"dayjs": "1.11.20",
 		"jszip": "3.10.1",
-		"next": "16.2.1",
+		"next": "16.2.3",
 		"papaparse": "5.5.3",
-		"react": "19.2.4",
-		"react-dom": "19.2.4",
+		"react": "19.2.5",
+		"react-dom": "19.2.5",
 		"swr": "2.4.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/luxon": "3.7.1",
-		"@types/node": "25.5.0",
+		"@types/node": "25.5.2",
 		"@types/papaparse": "5.5.2",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",
