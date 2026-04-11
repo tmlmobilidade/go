@@ -42,7 +42,8 @@ jobs:
           echo "$MATRIX" | jq .
 
   # # #
-  # Generate package-lock.json once, shared across all builds
+  # Generate package-lock.json once,
+  # shared across all builds.
 
   package-lock:
     name: Generate package-lock.json
@@ -64,6 +65,31 @@ jobs:
           name: package-lock
           path: package-lock.json
           retention-days: 1
+
+  # # #
+  # If the current workflow is triggered by a pull request,
+  # eagerly notify the go-infra repo to generate a preview environment,
+  # even if some of the builds fail. This allows faster feedback for PR authors.
+
+  notify-infra:
+    name: Notify Infrastructure
+    needs: [package-lock]
+    if: |
+      always() &&
+      github.event_name == 'pull_request' &&
+      (github.event.action == 'closed' || needs.package-lock.result == 'success')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.INFRA_REPO_TOKEN }}
+          repository: tmlmobilidade/go-infra
+          event-type: preview-pr
+          client-payload: >-
+            {
+              "pr_number": ${{ github.event.pull_request.number }},
+              "pr_action": "${{ github.event.action }}"
+            }
 
   # # #
   # Build and push Docker image for each module/app
@@ -112,33 +138,6 @@ jobs:
           file: ${{ steps.dockerfile.outputs.path }}
           tags: ghcr.io/tmlmobilidade/go-${{ matrix.module }}-${{ matrix.app }}:${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
           build-args: |
+            ENVIRONMENT=${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
             MODULE=${{ matrix.module }}
             APP=${{ matrix.app }}
-            ENVIRONMENT=prd
-            NGINX_SERVER_NAME=go.tmlmobilidade.pt
-
-  # # #
-  # Notify go-infra repo for PR preview environments
-
-  notify-infra:
-    name: Notify Infrastructure
-    needs: [build]
-    if: |
-      always() &&
-      github.event_name == 'pull_request' &&
-      (github.event.action == 'closed' || needs.build.result == 'success')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.INFRA_REPO_TOKEN }}
-          repository: tmlmobilidade/go-infra
-          event-type: preview-pr
-          client-payload: >-
-            {
-              "pr_number": ${{ github.event.pull_request.number }},
-              "pr_action": "${{ github.event.action }}"
-            }
-
-
-
