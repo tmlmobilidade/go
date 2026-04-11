@@ -7,7 +7,7 @@
 		"moduleResolution": "nodenext",
 		"outDir": "dist",
 		"strictNullChecks": false,
-		"types": ["node"]
+		"types": ["node", "geojson"]
 	},
 	"extends": "./base.json"
 }
