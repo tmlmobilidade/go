@@ -6,7 +6,8 @@
 			"@/*": ["./src/*"]
 		},
 		"rootDir": "src",
-		"strictNullChecks": true
+		"strictNullChecks": true,
+		"types": ["node", "geojson"]
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", "dist"]
