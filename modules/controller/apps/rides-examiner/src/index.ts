@@ -159,7 +159,7 @@ export async function validateRides() {
 		Logger.error('An error occurred. Halting execution.', err);
 		Logger.error('Retrying in 10 seconds...');
 		setTimeout(() => {
-			process.exit(0); // End process
+			process.exit(1); // End process
 		}, 10000); // after 10 seconds
 	}
 
