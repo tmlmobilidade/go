@@ -1,6 +1,6 @@
 /* * */
 
-import { getAppConfig } from '@tmlmobilidade/consts';
+import { getModuleConfig } from '@tmlmobilidade/consts';
 import { FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */
@@ -9,8 +9,8 @@ import { FastifyService } from '@tmlmobilidade/fastify';
 	//
 
 	const fastifyService = FastifyService.getInstance({
-		origin: getAppConfig('controller', 'cors_origin'),
-		port: getAppConfig('controller', 'api_port'),
+		origin: getModuleConfig('controller', 'cors_origin'),
+		port: getModuleConfig('controller', 'api_port'),
 	});
 
 	await fastifyService.start();

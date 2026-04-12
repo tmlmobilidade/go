@@ -3,7 +3,7 @@
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { roles } from '@/interfaces/auth/roles.js';
 import { users } from '@/interfaces/auth/users.js';
-import { getAppConfig } from '@tmlmobilidade/consts';
+import { getModuleConfig } from '@tmlmobilidade/consts';
 import { sendGenericNotificationEmail } from '@tmlmobilidade/emails';
 import { type CreateNotificationDto, CreateNotificationSchema, type Notification, NotificationPermission, Permission, Role, UpdateNotificationDto, UpdateNotificationSchema, User } from '@tmlmobilidade/types';
 import { asyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
@@ -57,7 +57,7 @@ class NotificationsClass extends MongoCollectionClass<Notification, CreateNotifi
 			is_read: false,
 			payload: {
 				body: description,
-				href: `${getAppConfig(scope, 'frontend_url')}/${scope}/${id}`,
+				href: `${getModuleConfig(scope, 'frontend_url')}/${scope}/${id}`,
 				icon: scope,
 				title,
 			},
