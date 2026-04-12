@@ -24,7 +24,7 @@ jobs:
   discover:
     name: Discover Apps
     if: github.event.action != 'closed'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     outputs:
       matrix: ${{ steps.discover.outputs.matrix }}
     steps:
@@ -48,7 +48,7 @@ jobs:
   package-lock:
     name: Generate package-lock.json
     needs: discover
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
 
       - uses: actions/checkout@v5
@@ -78,7 +78,7 @@ jobs:
       always() &&
       github.event_name == 'pull_request' &&
       (github.event.action == 'closed' || needs.package-lock.result == 'success')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: peter-evans/repository-dispatch@v3
         with:
@@ -97,7 +97,7 @@ jobs:
   build:
     name: ${{ matrix.module }}/${{ matrix.app }}
     needs: [discover, package-lock]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     permissions:
       contents: read
       packages: write
