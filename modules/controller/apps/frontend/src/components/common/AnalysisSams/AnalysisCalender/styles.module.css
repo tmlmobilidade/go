@@ -34,8 +34,8 @@
 	align-items: stretch;
 	width: 100%;
 	max-width: 100%;
-	margin-right: 10px;
-	margin-left: 10px;
+	margin-right: 6px;
+	margin-left: 6px;
 	container-name: analysis-calendar;
 	container-type: inline-size;
 }
@@ -96,7 +96,7 @@
 .daySquares {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 8px;
+	gap: 4px;
 	align-items: flex-start;
 	width: 100%;
 	min-width: 0;

@@ -90,11 +90,11 @@ export function AnalysisCalender({ analyses, className, onDayClick, rangeEndTs, 
 										))
 										: daySections.map(daySection => (
 											<div key={daySection.dayKey} className={styles.dayTile}>
-												<div className={styles.dayBreakdownLabel}>{daySection.label}</div>
 												<AnalysisSquare
 													accent={toSquareAccent(daySection.accent)}
 													analyses={daySection.items}
 													className={styles.dayTileSquare}
+													textLabel={daySection.label}
 													title={daySection.items.length > 0 ? undefined : 'sem validações'}
 													onClick={() => {
 														onDayClick?.(daySection.dayKey);
