@@ -3,6 +3,7 @@
 /* * */
 
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
+import Link from 'next/link';
 import { useMemo, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -88,7 +89,7 @@ export function SidebarItem({ href, icon, label, requiredPermissions }: SidebarI
 
 	return (
 		<>
-			<a
+			<Link
 				ref={ref}
 				className={styles.icon}
 				data-active={isActive}
@@ -98,7 +99,7 @@ export function SidebarItem({ href, icon, label, requiredPermissions }: SidebarI
 				onMouseLeave={() => setHover(false)}
 			>
 				{icon}
-			</a>
+			</Link>
 			{hover && (
 				<SidebarItemTooltip
 					label={label}
