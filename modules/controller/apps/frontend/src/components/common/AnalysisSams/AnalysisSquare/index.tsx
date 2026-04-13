@@ -9,14 +9,14 @@ import { type ReactNode } from 'react';
 
 import styles from './styles.module.css';
 
-import { analysisSquareHasValues, analysisSquareTooltipItems } from './analysis-square-shared';
+import { analysisCountTooltipLabel, analysisSquareHasValues, analysisSquareTooltipItems } from './analysis-square-shared';
 
 /* * */
 
 export interface AnalysisSquareProps {
 	/** When set (e.g. one square per calendar day), overrides filled/empty from `value`. */
 	accent?: 'green' | 'orange' | 'red' | 'white'
-	/** When provided, tooltip shows all these analyses (one per line). */
+	/** When provided (non-empty), tooltip shows only how many analyses are in this bucket. */
 	analyses?: SamAnalysis[]
 	className?: string
 	/** When set, the square is filled with the color of the accent. */
@@ -68,13 +68,14 @@ export function AnalysisSquare({ accent, analyses, className, filled = false, fu
 				? 'filled'
 				: 'empty';
 
-	const tooltipAnalyses = analyses?.length ? analyses : value != null ? [value] : [];
+	const aggregateCount = analyses != null && analyses.length > 0 ? analyses.length : 0;
+	const detailAnalyses = aggregateCount > 0 ? [] : value != null ? [value] : [];
 
-	const renderTooltipList = (): ReactNode => (
+	const renderDetailTooltip = (): ReactNode => (
 		<div className={styles.tooltipContent}>
-			{tooltipAnalyses.map((analysis, analysisIndex) => (
+			{detailAnalyses.map((analysis, analysisIndex) => (
 				<div key={`${analysis.first_transaction_id ?? ''}-${analysis.last_transaction_id ?? ''}-${analysisIndex}`} className={styles.tooltipAnalysisGroup}>
-					{tooltipAnalyses.length > 1 && <div className={styles.tooltipAnalysisTitle}>Analise {analysisIndex + 1}</div>}
+					{detailAnalyses.length > 1 && <div className={styles.tooltipAnalysisTitle}>Analise {analysisIndex + 1}</div>}
 					<ul className={styles.tooltipList}>
 						{analysisSquareTooltipItems(analysis).map((item, itemIndex) => (
 							<li key={`${analysisIndex}-${itemIndex}`} className={styles.tooltipListItem}>
@@ -86,7 +87,14 @@ export function AnalysisSquare({ accent, analyses, className, filled = false, fu
 			))}
 		</div>
 	);
-	const resolvedTooltip = title ?? (tooltipAnalyses.length > 0 ? renderTooltipList() : undefined);
+
+	const resolvedTooltip =
+		title
+		?? (aggregateCount > 0
+			? analysisCountTooltipLabel(aggregateCount)
+			: detailAnalyses.length > 0
+				? renderDetailTooltip()
+				: undefined);
 	const square = (
 		<div
 			data-state={dataState}
@@ -118,10 +126,10 @@ export function AnalysisSquare({ accent, analyses, className, filled = false, fu
 					<Tooltip
 						closeDelay={80}
 						label={resolvedTooltip}
+						multiline={typeof resolvedTooltip !== 'string'}
 						openDelay={120}
 						position="bottom-start"
-						w={320}
-						multiline
+						w={typeof resolvedTooltip === 'string' ? undefined : 320}
 						withArrow
 						withinPortal
 					>

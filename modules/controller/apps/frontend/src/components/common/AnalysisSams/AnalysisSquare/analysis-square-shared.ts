@@ -43,6 +43,10 @@ export const analysisSquareTitle = (a: SamAnalysis): string | undefined => {
 	return [a.last_transaction_type, a.last_transaction_id].filter(Boolean).join(' · ');
 };
 
+/** Label for day/month aggregates: how many analyses in that bucket. */
+export const analysisCountTooltipLabel = (count: number): string =>
+	count === 1 ? '1 análise' : `${count} análises`;
+
 export const analysisSquareTooltipItems = (a: SamAnalysis): string[] => {
 	const firstType = a.first_transaction_type ? TYPE_TEXT[a.first_transaction_type] : '-';
 	const lastType = a.last_transaction_type ? TYPE_TEXT[a.last_transaction_type] : '-';
