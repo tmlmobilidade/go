@@ -97,8 +97,7 @@
 }
 
 .squareClickable:hover {
-	border-color: var(--color-primary);
-	border-width: 1px solid var(--color-primary);
+	opacity: 0.7;
 }
 
 .squareFilled {
