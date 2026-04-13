@@ -56,9 +56,17 @@ export function SidebarItem({ href, icon, label, requiredPermissions }: SidebarI
 		if (typeof window === 'undefined') return false;
 		// Skip if is disabled
 		if (!isEnabled) return false;
+		// Skip if no current URL
+		if (!currentUrl) return false;
+		// Prepare the item pathname for comparison.
+		// In development, the href value is a full URL,
+		// while in production it's a pathname.
+		let itemPathname: string;
+		if (URL.canParse(href)) itemPathname = new URL(href).pathname;
+		else itemPathname = href;
 		// The current item is active if the
-		// current URL starts with the item href
-		if (currentUrl?.startsWith(href)) return true;
+		// current URL pathname starts with the item pathname
+		if (currentUrl.pathname.startsWith(itemPathname)) return true;
 		return false;
 	}, [href, isEnabled, currentUrl]);
 
