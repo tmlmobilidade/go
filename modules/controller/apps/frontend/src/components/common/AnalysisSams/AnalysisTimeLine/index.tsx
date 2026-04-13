@@ -9,7 +9,6 @@ import { useMemo } from 'react';
 import styles from './styles.module.css';
 
 import { AnalysisSquare } from '../AnalysisSquare';
-import { analysisSquareLabel } from '../AnalysisSquare/analysis-square-shared';
 import { buildMonthSections } from '../organized_by_dates';
 
 /* * */
@@ -24,7 +23,7 @@ export interface AnalysisTimeLineProps {
 
 export function AnalysisTimeLine({ className, value }: AnalysisTimeLineProps) {
 	return (
-		<AnalysisSquare className={className} textLabel={analysisSquareLabel(value)} value={value} />
+		<AnalysisSquare className={className} value={value} />
 	);
 }
 

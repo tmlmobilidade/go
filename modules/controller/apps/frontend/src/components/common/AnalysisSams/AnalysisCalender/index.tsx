@@ -10,7 +10,6 @@ import { useMemo } from 'react';
 import styles from './styles.module.css';
 
 import { AnalysisSquare } from '../AnalysisSquare';
-import { analysisSquareLabel } from '../AnalysisSquare/analysis-square-shared';
 import { buildMonthSections, buildSections, type DayAccent, type DaySection, SEM_DATA_KEY } from '../organized_by_dates';
 
 /* * */
@@ -73,29 +72,20 @@ export function AnalysisCalender({ analyses, className, onDayClick, rangeEndTs, 
 							>
 								<div className={styles.dayLabel}>{section.label}</div>
 								<div className={styles.daySquares}>
-									{section.dayKey === SEM_DATA_KEY
-										? section.items.map((value, index) => (
+									{daySections.map(daySection => (
+										<div key={daySection.dayKey}>
 											<AnalysisSquare
-												key={`${value.first_transaction_id ?? ''}-${value.last_transaction_id ?? ''}-${index}`}
-												textLabel={analysisSquareLabel(value)}
-												value={value}
+												accent={toSquareAccent(daySection.accent)}
+												analyses={daySection.items}
+												textLabel={daySection.label}
+												title={daySection.items.length > 0 ? undefined : 'sem validações'}
+												onClick={() => {
+													onDayClick?.(daySection.dayKey);
+												}}
 												filled
 											/>
-										))
-										: daySections.map(daySection => (
-											<div key={daySection.dayKey}>
-												<AnalysisSquare
-													accent={toSquareAccent(daySection.accent)}
-													analyses={daySection.items}
-													textLabel={daySection.label}
-													title={daySection.items.length > 0 ? undefined : 'sem validações'}
-													onClick={() => {
-														onDayClick?.(daySection.dayKey);
-													}}
-													filled
-												/>
-											</div>
-										))}
+										</div>
+									))}
 								</div>
 							</div>
 						</div>
