@@ -199,11 +199,14 @@ export const buildMonthSections = (analyses: SamAnalysis[], options: SectionsRan
 		while (cursor <= lastMonth) {
 			const k = cursor.toFormat('yyyy-LL');
 			const items = byMonth.get(k) ?? [];
+			const pt = cursor.setLocale('pt-PT');
+			const monthShort = pt.toFormat('LLLL').slice(0, 3);
+			const yearShort = pt.toFormat('yy');
 			sections.push({
 				accent: accentForDay(items),
 				dayKey: k,
 				items,
-				label: cursor.setLocale('pt-PT').toFormat('LLLL yyyy'),
+				label: `${monthShort} ${yearShort}`,
 			});
 			cursor = cursor.plus({ months: 1 });
 		}
