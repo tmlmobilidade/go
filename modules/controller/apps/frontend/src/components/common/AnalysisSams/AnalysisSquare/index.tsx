@@ -9,7 +9,7 @@ import { type ReactNode } from 'react';
 
 import styles from './styles.module.css';
 
-import { analysisCountTooltipLabel, analysisSquareHasValues, analysisSquareTooltipItems } from './analysis-square-shared';
+import { analysisCountTooltipLabel, analysisSquareHasValues } from './analysis-square-shared';
 
 /* * */
 
@@ -76,13 +76,6 @@ export function AnalysisSquare({ accent, analyses, className, filled = false, fu
 			{detailAnalyses.map((analysis, analysisIndex) => (
 				<div key={`${analysis.first_transaction_id ?? ''}-${analysis.last_transaction_id ?? ''}-${analysisIndex}`} className={styles.tooltipAnalysisGroup}>
 					{detailAnalyses.length > 1 && <div className={styles.tooltipAnalysisTitle}>Analise {analysisIndex + 1}</div>}
-					<ul className={styles.tooltipList}>
-						{analysisSquareTooltipItems(analysis).map((item, itemIndex) => (
-							<li key={`${analysisIndex}-${itemIndex}`} className={styles.tooltipListItem}>
-								{item}
-							</li>
-						))}
-					</ul>
 				</div>
 			))}
 		</div>

@@ -10,7 +10,7 @@ import styles from './styles.module.css';
 
 import { AnalysisSquare } from '../AnalysisSquare';
 import { analysisSquareLabel } from '../AnalysisSquare/analysis-square-shared';
-import { buildMonthSections } from './organized_by_dates';
+import { buildMonthSections } from '../organized_by_dates';
 
 /* * */
 

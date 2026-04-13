@@ -45,28 +45,5 @@ export const analysisSquareTitle = (a: SamAnalysis): string | undefined => {
 
 /** Label for day/month aggregates: how many analyses in that bucket. */
 export const analysisCountTooltipLabel = (count: number): string =>
-	count === 1 ? '1 análise' : `${count} análises`;
-
-export const analysisSquareTooltipItems = (a: SamAnalysis): string[] => {
-	const firstType = a.first_transaction_type ? TYPE_TEXT[a.first_transaction_type] : '-';
-	const lastType = a.last_transaction_type ? TYPE_TEXT[a.last_transaction_type] : '-';
-	const listItem = (label: string, value: null | number | string | undefined) => `${label}: ${valueOrDash(value)}`;
-
-	return [
-		listItem('Apex version', valueOrDash(a.apex_version)),
-		listItem('Device', valueOrDash(a.device_id)),
-		listItem('Vehicle', valueOrDash(a.vehicle_id)),
-		listItem('Inicio', formatTs(a.start_time)),
-		listItem('Fim', formatTs(a.end_time)),
-		listItem('Primeira transacao tipo', firstType),
-		listItem('Primeira transacao ID', valueOrDash(a.first_transaction_id)),
-		listItem('Primeira transacao ASE', valueOrDash(a.first_transaction_ase_counter_value)),
-		listItem('Ultima transacao tipo', lastType),
-		listItem('Ultima transacao ID', valueOrDash(a.last_transaction_id)),
-		listItem('Ultima transacao ASE', valueOrDash(a.last_transaction_ase_counter_value)),
-		listItem('Transacoes esperadas', a.transactions_expected),
-		listItem('Transacoes encontradas', a.transactions_found),
-		listItem('Transacoes em falta', a.transactions_missing),
-	];
-};
+	count === 0 ? 'sem análises' : count === 1 ? '1 análise' : `${count} análises`;
 

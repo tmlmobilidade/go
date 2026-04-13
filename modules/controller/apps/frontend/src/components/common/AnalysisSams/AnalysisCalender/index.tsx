@@ -11,13 +11,7 @@ import styles from './styles.module.css';
 
 import { AnalysisSquare } from '../AnalysisSquare';
 import { analysisSquareLabel } from '../AnalysisSquare/analysis-square-shared';
-import {
-	buildMonthSections,
-	buildSections,
-	type DayAccent,
-	type DaySection,
-	SEM_DATA_KEY,
-} from '../AnalysisTimeLine/organized_by_dates';
+import { buildMonthSections, buildSections, type DayAccent, type DaySection, SEM_DATA_KEY } from '../organized_by_dates';
 
 /* * */
 

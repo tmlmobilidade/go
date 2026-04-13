@@ -5,7 +5,7 @@
 import { type SamAnalysis } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
 
-import { analysisSquareHasValues } from '../AnalysisSquare/analysis-square-shared';
+import { analysisSquareHasValues } from './AnalysisSquare/analysis-square-shared';
 
 /* * */
 
