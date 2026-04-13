@@ -48,9 +48,8 @@ export function StopDetailsSectionGeneral() {
 		>
 
 			<Section>
-				<Grid columns="abcd" gap="md">
+				<Grid columns="abc" gap="md">
 					<ValueDisplay label="Código Único da Paragem" value={stopDetailContext.data.stop?._id ?? 'N/A'} bordered />
-					<ValueDisplay label="Código do Operador (legacy)" value={stopDetailContext.data.stop?.legacy_id ?? 'N/A'} bordered />
 					<ValueDisplay label="Latitude" value={stopDetailContext.data.stop?.latitude ?? 'N/A'} bordered />
 					<ValueDisplay label="Longitude" value={stopDetailContext.data.stop?.longitude ?? 'N/A'} bordered />
 				</Grid>

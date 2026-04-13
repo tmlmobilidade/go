@@ -7,6 +7,7 @@ import { StopDetailsSectionAdministrative } from '@/components/stops/detail/Stop
 import { StopDetailsSectionConnections } from '@/components/stops/detail/StopDetailsSectionConnections';
 import { StopDetailsSectionEquipment } from '@/components/stops/detail/StopDetailsSectionEquipment';
 import { StopDetailsSectionGeneral } from '@/components/stops/detail/StopDetailsSectionGeneral';
+import { StopDetailsSectionIds } from '@/components/stops/detail/StopDetailsSectionIds';
 import { StopDetailsSectionImages } from '@/components/stops/detail/StopDetailsSectionImages';
 import { StopDetailsSectionInfrastructure } from '@/components/stops/detail/StopDetailsSectionInfrastructure';
 import { StopDetailsSectionMap } from '@/components/stops/detail/StopDetailsSectionMap';
@@ -19,10 +20,11 @@ import { Divider, Pane } from '@tmlmobilidade/ui';
 
 export function StopDetail() {
 	return (
-		<Pane header={[<StopDetailHeader />]}>
+		<Pane header={[<StopDetailHeader key="header" />]}>
 			<StopDetailsSectionMap />
 			<Divider />
 			<StopDetailsSectionGeneral />
+			<StopDetailsSectionIds />
 			<StopDetailsSectionAdministrative />
 			<StopDetailsSectionShelter />
 			<StopDetailsSectionInfrastructure />
