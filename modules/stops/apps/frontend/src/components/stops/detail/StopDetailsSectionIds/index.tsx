@@ -3,7 +3,7 @@
 /* * */
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
-import { Collapsible, Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { Button, Collapsible, DeleteButton, Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -18,15 +18,30 @@ export function StopDetailsSectionIds() {
 	//
 	// B. Transform data
 
-	const legacyStopIds = stopDetailContext.data.stop?.legacy_ids ?? [];
+	//
+	// C. Handle actions
+
+	const handleAddLegacyId = () => {
+		console.log('Adding legacy ID', stopDetailContext.data.stop);
+		stopDetailContext.data.form.insertListItem('legacy_ids', {
+			agency_id: '',
+			is_merged: false,
+			legacy_id: '',
+		});
+	};
+
+	const handleDeleteLegacyId = (index: number) => {
+		stopDetailContext.data.form.removeListItem('legacy_ids', index);
+	};
 
 	//
-	// C. Render components
+	// D. Render components
 
 	return (
 		<Collapsible
 			description="Gestão de IDs desta paragem."
-			title="IDs"
+			title="Stop IDs"
+			defaultOpen
 		>
 
 			<Section>
@@ -36,18 +51,13 @@ export function StopDetailsSectionIds() {
 			</Section>
 
 			<Section>
-				{stopDetailContext.data.stop?.legacy_ids && (
-					<Grid columns="abc" gap="md">
-						{legacyStopIds.map((legacyId, index) => (
-							<ValueDisplay
-								key={index}
-								label={`Código Legacy ${index + 1}`}
-								value={legacyId}
-								bordered
-							/>
-						))}
-					</Grid>
-				)}
+				{stopDetailContext.data.form.getValues().legacy_ids?.map((legacyId, index) => (
+					<Section key={legacyId.agency_id} padding="none">
+						<Agency>
+						<DeleteButton onDelete={() => handleDeleteLegacyId(index)} />
+					</Section>
+				))}
+				<Button label="Adicionar Código Legacy" onClick={handleAddLegacyId} />
 			</Section>
 
 		</Collapsible>

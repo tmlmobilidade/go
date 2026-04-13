@@ -7,7 +7,7 @@ import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-stops-pckg-o
 import { PermissionCatalog, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -143,7 +143,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	//
 	// G. Define context value
 
-	const contextValue: StopDetailContextState = useMemo(() => ({
+	const contextValue: StopDetailContextState = {
 		actions: {
 			delete: handleDelete,
 			lock: handleLock,
@@ -151,7 +151,6 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		},
 		data: {
 			form,
-			id: stopId,
 			stop: stopData,
 		},
 		flags: {
@@ -165,20 +164,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			isReadOnly,
 			isSaving,
 		},
-	}), [
-		form,
-		stopId,
-		stopData,
-		canDelete,
-		canLock,
-		canSave,
-		stopError,
-		isDeleting,
-		stopLoading,
-		isLocking,
-		isReadOnly,
-		isSaving,
-	]);
+	};
 
 	//
 	// H. Render components
