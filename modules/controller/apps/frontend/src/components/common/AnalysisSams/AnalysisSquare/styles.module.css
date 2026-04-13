@@ -93,6 +93,12 @@
 
 .squareClickable {
 	cursor: pointer;
+	user-select: none;
+}
+
+.squareClickable:hover {
+	border-color: var(--color-primary);
+	border-width: 1px solid var(--color-primary);
 }
 
 .squareFilled {

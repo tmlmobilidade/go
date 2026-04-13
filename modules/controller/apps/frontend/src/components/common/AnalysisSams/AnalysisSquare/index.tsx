@@ -97,6 +97,7 @@ export function AnalysisSquare({ accent, analyses, className, filled = false, fu
 				filled ? filledClass : toneClass,
 				className,
 				fullWidth && styles.squareFullWidth,
+				onClick && styles.squareClickable,
 			)}
 			onClick={(event) => {
 				event.stopPropagation();
