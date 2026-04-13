@@ -50,7 +50,7 @@
 
 /* Style for each group of days (single day or month) */
 .dayGroup {
-	--analysis-calendar-month-label-w: 100px;
+	--analysis-calendar-month-label-w: 60px;
 	box-sizing: border-box;
 	display: grid;
 	grid-template-columns: var(--analysis-calendar-month-label-w) minmax(0, 1fr);
@@ -61,7 +61,7 @@
 	padding: 6px 8px 8px;
 	border-color: var(--color-system-border-100);
 	border-style: solid;
-	border-width: 1px ;
+	border-width: 0px ;
 	border-left-width: 4px;
 	border-radius: var(--border-radius-sm);
 }
