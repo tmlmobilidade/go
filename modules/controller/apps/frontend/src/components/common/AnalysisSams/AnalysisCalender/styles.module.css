@@ -101,28 +101,3 @@
 	width: 100%;
 	min-width: 0;
 }
-
-/* ========== Day Tiles (day over square) ========== */
-
-.dayTile {
-	display: inline-flex;
-	flex-direction: column;
-	gap: 4px;
-	align-items: center;
-	justify-content: flex-start;
-	min-width: 28px;
-}
-
-/* Label for a breakdown row (usually date or sub-label) */
-.dayBreakdownLabel {
-	font-size: 12px;
-	font-weight: 700;
-	font-variant-numeric: tabular-nums;
-	line-height: 1.2;
-	text-align: center;
-}
-
-.dayTileSquare {
-	min-width: 22px;
-	min-height: 22px;
-}
