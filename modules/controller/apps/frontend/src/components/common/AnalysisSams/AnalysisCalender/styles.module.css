@@ -50,7 +50,12 @@
 
 /* Style for each group of days (single day or month) */
 .dayGroup {
+	--analysis-calendar-month-label-w: 150px;
 	box-sizing: border-box;
+	display: grid;
+	grid-template-columns: var(--analysis-calendar-month-label-w) minmax(0, 1fr);
+	align-items: center;
+	gap: 12px;
 	min-width: 0;
 	width: 100%;
 	padding: 6px 8px 8px;
@@ -81,9 +86,10 @@
 
 /* ========== Day & Square Labels ========== */
 
-/* Label for calendar days or months (e.g. header) */
+/* Label for calendar days or months (e.g. header) — fixed column so day squares align across rows */
 .dayLabel {
-	margin-bottom: 12px;
+	margin: 0;
+	min-width: 0;
 	font-size: 12px;
 	font-weight: 600;
 	font-variant-numeric: tabular-nums;
@@ -98,6 +104,5 @@
 	flex-wrap: wrap;
 	gap: 4px;
 	align-items: flex-start;
-	width: 100%;
 	min-width: 0;
 }
