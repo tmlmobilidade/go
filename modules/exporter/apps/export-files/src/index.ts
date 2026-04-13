@@ -35,7 +35,10 @@ async function main() {
 				case 'ride':
 					pathToFile = await exportRidesFile(fileExport);
 					break;
+				case 'gtfs':
 				default:
+					// TODO: Implement GTFS export
+					Logger.error(`GTFS export not implemented yet.`);
 					Logger.error(`Unknown file export type: ${fileExport.type}.`);
 					continue;
 			}
