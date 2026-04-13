@@ -8,7 +8,6 @@ const nextConfig: NextConfig = {
 	basePath: '/fleet',
 	devIndicators: false,
 	env: {
-		HOSTNAME: '0.0.0.0',
 		NEXT_PUBLIC_BASE_PATH: '/fleet',
 		NEXT_PUBLIC_ENVIRONMENT: process.env.ENVIRONMENT,
 	},

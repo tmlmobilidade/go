@@ -8,7 +8,6 @@ const nextConfig: NextConfig = {
 	basePath: '/auth',
 	devIndicators: false,
 	env: {
-		HOSTNAME: '0.0.0.0',
 		NEXT_PUBLIC_BASE_PATH: '/auth',
 		NEXT_PUBLIC_ENVIRONMENT: process.env.ENVIRONMENT,
 	},

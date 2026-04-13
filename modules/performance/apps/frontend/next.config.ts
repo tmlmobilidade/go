@@ -8,7 +8,6 @@ const nextConfig: NextConfig = {
 	basePath: '/performance',
 	devIndicators: false,
 	env: {
-		HOSTNAME: '0.0.0.0',
 		NEXT_PUBLIC_BASE_PATH: '/performance',
 		NEXT_PUBLIC_ENVIRONMENT: process.env.ENVIRONMENT,
 	},
