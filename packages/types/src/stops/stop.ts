@@ -8,6 +8,7 @@ import { StopConnectionSchema } from '@/stops/connections.js';
 import { StopEquipmentSchema } from '@/stops/equipment.js';
 import { StopFacilitySchema } from '@/stops/facilities.js';
 import { StopJurisdictionSchema } from '@/stops/jurisdiction.js';
+import { StopLegacyIdSchema } from '@/stops/legacy-id.js';
 import { StopRoadTypeSchema } from '@/stops/road-type.js';
 import { z } from 'zod';
 
@@ -22,6 +23,7 @@ export const StopSchema = DocumentSchema.extend({
 	is_deleted: z.boolean().default(false),
 	jurisdiction: StopJurisdictionSchema.default('unknown'),
 	legacy_id: z.string().nullable().default(null),
+	legacy_ids: z.array(StopLegacyIdSchema).default([]),
 	lifecycle_status: LifecycleStatusSchema.default('draft'),
 	name: z.string().min(2).max(100),
 	new_name: z.string().min(5).max(100).nullable().default(null),
