@@ -228,8 +228,8 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 	]],
 	['163', [
 		{
-			description: 'Todos os dias do ano',
-			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri, WEEKDAYS.Sat, WEEKDAYS.Sun],
+			description: 'A4 - Dias úteis todo o ano, exceto durante o período da Feira de Santiago (Setúbal)',
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
 			year_period_ids: [PERIODS.ESC, PERIODS.FER, PERIODS.VER],
 		},
 		{
@@ -437,16 +437,24 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 	]],
 	['15561', [
 		{
-			description: 'Dias úteis do período escolar (ignorar evento Trafaria Bluegrass)',
+			description: 'Dias úteis do período escolar',
 			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
 			year_period_ids: [PERIODS.ESC],
+		},
+		{
+			event_id: 'FDETG',
+			isExclude: true,
 		},
 	]],
 	['21561', [
 		{
-			description: 'Quartas-feiras do período escolar (ignorar evento Trafaria Bluegrass)',
+			description: 'Quartas-feiras do período escolar',
 			weekdays: [WEEKDAYS.Wed],
 			year_period_ids: [PERIODS.ESC],
+		},
+		{
+			event_id: 'FDETG',
+			isExclude: true,
 		},
 	]],
 	['28561', [
@@ -455,12 +463,20 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Thu, WEEKDAYS.Fri],
 			year_period_ids: [PERIODS.ESC],
 		},
+		{
+			event_id: 'FDETG',
+			isExclude: true,
+		},
 	]],
 	['30561', [
 		{
 			description: 'Sextas-feiras do período escolar (ignorar evento Trafaria Bluegrass)',
 			weekdays: [WEEKDAYS.Fri],
 			year_period_ids: [PERIODS.ESC],
+		},
+		{
+			event_id: 'FDETG',
+			isExclude: true,
 		},
 	]],
 	['ANO', [

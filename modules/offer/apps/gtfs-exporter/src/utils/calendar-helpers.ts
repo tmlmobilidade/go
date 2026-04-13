@@ -9,7 +9,7 @@ import { Holiday, OperationalDate, YearPeriod } from '@tmlmobilidade/types';
  * Finds which period a date belongs to
  * @param date - The date to check (YYYYMMDD format)
  * @param periods - Map of all periods
- * @returns The period ID ('1', '2', or '3'), or empty string if not found
+ * @returns The period code ('1', '2', or '3'), or period ID
  */
 export function getPeriodForDate(
 	date: OperationalDate,
@@ -18,12 +18,7 @@ export function getPeriodForDate(
 	// Check each period to see if the date falls within its dates
 	for (const period of periods.values()) {
 		if (period.dates?.includes(date)) {
-			// Return the period name as a number string
-			// Assuming periods have a name like 'Escolar', 'Férias', etc.
-			// and we need to map them to '1', '2', '3'
-			// For now, we'll use the period's _id or name
-			// TODO: Clarify how period names map to period codes
-			return period._id;
+			return period?.code ?? period._id; // Return code if available, otherwise fallback to ID
 		}
 	}
 	return '';
