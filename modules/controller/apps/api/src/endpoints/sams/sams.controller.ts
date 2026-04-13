@@ -86,6 +86,8 @@ function buildSamsMatchAnd(
 					$or: [
 						{ $expr: { $regexMatch: { input: { $toString: '$_id' }, options: 'i', regex: escaped } } },
 						{ agency_id: { $options: 'i', $regex: escaped } },
+						{ 'analysis.first_transaction_id': { $options: 'i', $regex: escaped } },
+						{ 'analysis.last_transaction_id': { $options: 'i', $regex: escaped } },
 					],
 				});
 			}
