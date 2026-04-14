@@ -2,10 +2,14 @@
 
 /* * */
 
-import { NoDataLabel } from '@tmlmobilidade/ui';
+import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
 
 /* * */
 
 export default function Page() {
-	return <NoDataLabel />;
+	return (
+		<Surface align="center" justify="center" variant="transparent">
+			<NoDataLabel text="Selecione um SAM na lista." />
+		</Surface>
+	);
 }
