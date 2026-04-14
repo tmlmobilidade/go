@@ -28,7 +28,7 @@ export function AlertsListCellLines({ values }: AlertsListCellLinesProps) {
 		.map((item): TagProps => {
 			const lineData = linesContext.actions.getLineDataById(item);
 			if (!lineData) return null;
-			return { label: lineData.code, variant: 'muted' };
+			return { label: lineData.id, variant: 'muted' };
 		})
 		.filter(Boolean);
 
