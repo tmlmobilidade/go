@@ -20,7 +20,7 @@ export function parseStop(
 		const availabilityToBinary = (value?: string): 0 | 1 => (value === 'available' ? 1 : 0);
 
 		return {
-			stop_id: stopData._id,
+			stop_id: stopData.legacy_id, // change this later to filter for region
 			stop_code: stopData.legacy_id,
 			stop_name: stopData.name,
 			stop_short_name: stopData.short_name,
