@@ -198,27 +198,10 @@ export const API_ROUTES = Object.freeze({
 		// GTFS
 		GTFS_CARRIS_METROPOLITANA: `${getModuleConfig('alerts', 'api_url')}/gtfs/carris-metropolitana`,
 
-		// HASHED_TRIPS
-		HASHED_TRIPS_DETAIL: (id: string) => `${getModuleConfig('alerts', 'api_url')}/hashed-trips/${id}`,
-		HASHED_TRIPS_LIST: `${getModuleConfig('alerts', 'api_url')}/hashed-trips`,
-
-		// LINES
-		LINES_HASHED_TRIPS: `${getModuleConfig('alerts', 'api_url')}/lines/hashed-trips`,
-		LINES_LIST: `${getModuleConfig('alerts', 'api_url')}/lines`,
-
 		// RIDES
 		RIDES_DETAIL_RIDE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/rides/${id}/ride`,
 		RIDES_LIST: `${getModuleConfig('alerts', 'api_url')}/rides`,
 		RIDES_WS: `${getModuleConfig('alerts', 'api_url')}/rides/ws`,
-
-		// STOPS
-		STOPS_BATCH: `${getModuleConfig('alerts', 'api_url')}/stops/batch`,
-		STOPS_DETAIL: (id: string) => `${getModuleConfig('alerts', 'api_url')}/stops/${id}`,
-		STOPS_LIST: `${getModuleConfig('alerts', 'api_url')}/stops`,
-		// RIDES
-		RIDES_DETAIL_RIDE: (id: string) => `${getAppConfig('alerts', 'api_url')}/rides/${id}/ride`,
-		RIDES_LIST: `${getAppConfig('alerts', 'api_url')}/rides`,
-		RIDES_WS: `${getAppConfig('alerts', 'api_url')}/rides/ws`,
 	},
 
 	/* * */
