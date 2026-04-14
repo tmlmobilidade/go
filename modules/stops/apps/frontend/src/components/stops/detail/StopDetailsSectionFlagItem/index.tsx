@@ -3,9 +3,9 @@
 /* * */
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
-import { IconCheck, IconEqualNot } from '@tabler/icons-react';
+import { IconEqual, IconEqualNot } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { DeleteButton, Grid, MultiSelect, Section, Surface, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { Checkbox, DeleteButton, Grid, MultiSelect, Section, Surface, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -32,6 +32,13 @@ export function StopDetailsSectionFlagItem({ index }: StopDetailsSectionFlagItem
 
 	const { options: agenciesOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
 
+	//
+	// C. Transform data
+
+	const flagIsHarmonized = useMemo(() => {
+		return stopDetailContext.data.form.getValues().flags?.[index]?.is_harmonized;
+	}, [stopDetailContext.data.form, index]);
+
 	const flagIdMatchesStopId = useMemo(() => {
 		const flagStopId = stopDetailContext.data.form.getValues().flags?.[index]?.stop_id;
 		const stopId = stopDetailContext.data.stop?._id;
@@ -47,7 +54,7 @@ export function StopDetailsSectionFlagItem({ index }: StopDetailsSectionFlagItem
 	//
 	// C. Handle actions
 
-	const handleDeleteFlagItem = (index: number) => {
+	const handleDeleteFlagItem = () => {
 		stopDetailContext.data.form.removeListItem('flags', index);
 	};
 
@@ -65,21 +72,29 @@ export function StopDetailsSectionFlagItem({ index }: StopDetailsSectionFlagItem
 				/>
 				<Grid columns="abb" gap="md">
 					<TextInput
-						label="ID Atual no Postalete"
-						leftSection={flagIdMatchesStopId ? <IconCheck color="var(--color-status-success-primary)" /> : <IconEqualNot color="var(--color-status-danger-primary)" />}
-						placeholder="ID Atual no Postalete"
+						label="ID Atual do Operador"
+						leftSection={flagIdMatchesStopId ? <IconEqual color="var(--color-status-success-primary)" /> : <IconEqualNot color="var(--color-status-danger-primary)" />}
+						placeholder="ID Atual do Operador"
 						{...stopDetailContext.data.form.getInputProps(`flags.${index}.stop_id`)}
+						disabled={flagIsHarmonized}
 						w="100%"
 					/>
 					<TextInput
-						label="Nome Atual no Postalete"
-						leftSection={flagShortNameMatchesStopName ? <IconCheck color="var(--color-status-success-primary)" /> : <IconEqualNot color="var(--color-status-danger-primary)" />}
-						placeholder="Nome Atual no Postalete"
+						label="Nome Atual do Operador"
+						leftSection={flagShortNameMatchesStopName ? <IconEqual color="var(--color-status-success-primary)" /> : <IconEqualNot color="var(--color-status-danger-primary)" />}
+						placeholder="Nome Atual do Operador"
 						{...stopDetailContext.data.form.getInputProps(`flags.${index}.short_name`)}
+						disabled={flagIsHarmonized}
 						w="100%"
 					/>
 				</Grid>
-				<DeleteButton onDelete={() => handleDeleteFlagItem(index)} />
+				<Section alignItems="center" flexDirection="row" gap="md" padding="none">
+					<Checkbox
+						label="Postalete alinhado com os identificadores únicos"
+						{...stopDetailContext.data.form.getInputProps(`flags.${index}.is_harmonized`, { type: 'checkbox' })}
+					/>
+					<DeleteButton onDelete={handleDeleteFlagItem} />
+				</Section>
 			</Section>
 		</Surface>
 	);
