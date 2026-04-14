@@ -47,7 +47,15 @@ const RANGE_QUERY_FIELDS = {
 	seen_last_at: { field: 'seen_last_at', operator: '$lte' },
 } as const;
 
-function buildSamsMatchAnd(
+type SamBatchListItem = Omit<Sam, 'analysis'> & {
+	analysis: Array<{
+		end_time: null | number
+		first_transaction_id: null | string
+		start_time: null | number
+	}>
+};
+
+function buildSamsMatch(
 	parsedQuery: GetSamsBatchQuery,
 	options: { includeApexVersionFilter?: boolean } = {},
 ): Record<string, unknown>[] {
@@ -131,11 +139,11 @@ function buildSamsMatchAnd(
 
 export class SamsController {
 	/**
-	 * Newest SAMs first (capped), with `analysis` limited to the last {@link SAMS_ANALYSIS_LIST_TAIL} entries per chip.
+	 * Returns distinct apex versions from valid SAM analysis entries.
 	 */
 	static async getApexVersions(request: FastifyRequest<{ Querystring: GetSamsBatchQuery }>, reply: FastifyReply<string[]>) {
 		const parsedQuery = GetSamsBatchQuerySchema.parse(request.query ?? {});
-		const matchAnd = buildSamsMatchAnd(parsedQuery, { includeApexVersionFilter: false });
+		const matchAnd = buildSamsMatch(parsedQuery, { includeApexVersionFilter: false });
 
 		const pipeline = samsApexVersionsAggregationPipeline({ matchAnd });
 
@@ -147,21 +155,19 @@ export class SamsController {
 		});
 	}
 
-	static async getBatch(request: FastifyRequest<{ Querystring: GetSamsBatchQuery }>, reply: FastifyReply<Sam[]>) {
+	static async getBatch(request: FastifyRequest<{ Querystring: GetSamsBatchQuery }>, reply: FastifyReply<SamBatchListItem[]>) {
 		const parsedQuery = GetSamsBatchQuerySchema.parse(request.query ?? {});
 		const pagedQuery = parsedQuery as GetSamsBatchQuery & { limit?: number, offset?: number };
-		const pageLimit = pagedQuery.limit ?? 500;
 		const pageOffset = pagedQuery.offset ?? 0;
-		const matchAnd = buildSamsMatchAnd(parsedQuery);
+		const matchAnd = buildSamsMatch(parsedQuery);
 
 		const pipeline = samsBatchAggregationPipeline({
 			analysisListTail: SAMS_ANALYSIS_LIST_TAIL,
 			matchAnd,
-			pageLimit,
 			pageOffset,
 		});
 
-		const allSams = (await sams.aggregate(pipeline)) as Sam[];
+		const allSams = (await sams.aggregate(pipeline)) as SamBatchListItem[];
 
 		return reply.send({
 			data: allSams,

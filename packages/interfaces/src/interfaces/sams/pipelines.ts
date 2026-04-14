@@ -42,24 +42,33 @@ export function samsApexVersionsAggregationPipeline({ matchAnd }: { matchAnd: Re
 export function samsBatchAggregationPipeline({
 	analysisListTail = SAMS_ANALYSIS_LIST_TAIL,
 	matchAnd,
-	pageLimit,
 	pageOffset,
 }: {
 	analysisListTail?: number
 	matchAnd: Record<string, unknown>[]
-	pageLimit: number
 	pageOffset: number
 }): AggregationPipeline<Sam> {
 	return [
 		...(matchAnd.length > 0 ? [{ $match: { $and: matchAnd } }] : []),
 		{ $sort: { created_at: -1 } },
 		{ $skip: pageOffset },
-		{ $limit: pageLimit },
 		{
 			$project: {
 				_id: 1,
 				agency_id: 1,
-				analysis: { $slice: [{ $ifNull: ['$analysis', []] }, -analysisListTail] },
+				analysis: {
+					$map: {
+						as: 'analysisItem',
+						in: {
+							end_time: '$$analysisItem.end_time',
+							first_transaction_id: '$$analysisItem.first_transaction_id',
+							start_time: '$$analysisItem.start_time',
+						},
+						input: {
+							$slice: [{ $ifNull: ['$analysis', []] }, -analysisListTail],
+						},
+					},
+				},
 				latest_apex_version: {
 					$let: {
 						in: {
