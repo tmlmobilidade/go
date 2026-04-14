@@ -21,7 +21,8 @@ export async function getStopId(): Promise<StopId> {
 	const { data: existingStopIds } = await fetchData<StopId[]>(API_ROUTES.stops.STOPS_IDS);
 
 	//
-	// Generate a new unique Stop ID
+	// Generate a new unique Stop ID that does not conflict
+	// with existing IDs or deleted CM Stops.
 
 	let isValid = false;
 
