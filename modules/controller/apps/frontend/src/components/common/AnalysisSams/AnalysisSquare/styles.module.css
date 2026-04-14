@@ -135,10 +135,12 @@
 
 /* White accent state (empty) */
 .white {
-	color: #fff;
+	color: #6c6c6c;
 	background-color: var(--color-system-background-100);
-	border-color: #d1d5db;
+	border-color: #6c6c6c;
 }
+
+/* Filled squares */
 
 .filledGreen {
 	color: #fff;
@@ -160,8 +162,8 @@
 
 .filledWhite {
 	color: #000;
-	background-color: #d1d5db;
-	border-color: #d1d5db;
+	background-color: #6c6c6c;
+	border-color: #6c6c6c;
 }
 
 /* ========== TOOLTIP STYLES (for analysis detail popovers) ========== */

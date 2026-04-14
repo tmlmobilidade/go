@@ -82,7 +82,7 @@
 }
 .dayGroupWhite {
 	/* background-color: var(--color-background-base, #fff); */
-	border-left-color: var(--color-border-subtle, #e0e0e0);
+	border-left-color: var(--color-border-subtle, #6c6c6c);
 }
 
 /* ========== Day & Square Labels ========== */
