@@ -135,7 +135,7 @@
 
 /* White accent state (empty) */
 .white {
-	color: #000;
+	color: #fff;
 	background-color: var(--color-system-background-100);
 	border-color: #d1d5db;
 }
