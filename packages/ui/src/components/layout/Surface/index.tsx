@@ -12,7 +12,7 @@ export interface SurfaceProps {
 	justify?: 'center' | 'end' | 'start'
 	overflow?: 'auto' | 'hidden' | 'scroll' | 'visible'
 	style?: React.CSSProperties
-	variant?: 'default' | 'transparent'
+	variant?: 'bordered' | 'default' | 'transparent'
 }
 
 export function Surface({ align = 'start', children, className, height = 'auto', justify = 'start', overflow = 'hidden', style, variant = 'default' }: SurfaceProps) {

@@ -6,8 +6,8 @@ import { StopDetailHeader } from '@/components/stops/detail/StopDetailHeader';
 import { StopDetailsSectionAdministrative } from '@/components/stops/detail/StopDetailsSectionAdministrative';
 import { StopDetailsSectionConnections } from '@/components/stops/detail/StopDetailsSectionConnections';
 import { StopDetailsSectionEquipment } from '@/components/stops/detail/StopDetailsSectionEquipment';
+import { StopDetailsSectionFlags } from '@/components/stops/detail/StopDetailsSectionFlags';
 import { StopDetailsSectionGeneral } from '@/components/stops/detail/StopDetailsSectionGeneral';
-import { StopDetailsSectionIds } from '@/components/stops/detail/StopDetailsSectionIds';
 import { StopDetailsSectionImages } from '@/components/stops/detail/StopDetailsSectionImages';
 import { StopDetailsSectionInfrastructure } from '@/components/stops/detail/StopDetailsSectionInfrastructure';
 import { StopDetailsSectionMap } from '@/components/stops/detail/StopDetailsSectionMap';
@@ -24,7 +24,7 @@ export function StopDetail() {
 			<StopDetailsSectionMap />
 			<Divider />
 			<StopDetailsSectionGeneral />
-			<StopDetailsSectionIds />
+			<StopDetailsSectionFlags />
 			<StopDetailsSectionAdministrative />
 			<StopDetailsSectionShelter />
 			<StopDetailsSectionInfrastructure />
