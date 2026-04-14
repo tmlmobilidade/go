@@ -1,14 +1,11 @@
+'use client';
+
 /* * */
 
-import { SamsList } from '@/components/sams/list/SamsList';
-import { SamsListContextProvider } from '@/contexts/SamsList.context';
+import { NoDataLabel } from '@tmlmobilidade/ui';
 
 /* * */
 
 export default function Page() {
-	return (
-		<SamsListContextProvider>
-			<SamsList />
-		</SamsListContextProvider>
-	);
+	return <NoDataLabel />;
 }

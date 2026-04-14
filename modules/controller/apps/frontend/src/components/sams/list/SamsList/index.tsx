@@ -82,7 +82,7 @@ export function SamsList() {
 			accessor: 'analysis',
 			render: item => <AnalysisTimeLineRow analyses={item.analysis ?? []} remarks={item.remarks} />,
 			title: 'Análises',
-			width: 800,
+			width: 600,
 		},
 	];
 

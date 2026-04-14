@@ -50,7 +50,7 @@
 
 /* Style for each group of days (single day or month) */
 .dayGroup {
-	--analysis-calendar-month-label-w: 60px;
+	--analysis-calendar-month-label-w: 65px;
 	box-sizing: border-box;
 	display: grid;
 	grid-template-columns: var(--analysis-calendar-month-label-w) minmax(0, 1fr);
@@ -82,7 +82,7 @@
 }
 .dayGroupWhite {
 	/* background-color: var(--color-background-base, #fff); */
-	border-left-color: var(--color-border-subtle, #6c6c6c);
+	border-left-color: #6c6c6c;
 }
 
 /* ========== Day & Square Labels ========== */

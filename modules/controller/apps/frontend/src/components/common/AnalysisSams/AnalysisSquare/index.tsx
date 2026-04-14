@@ -99,22 +99,19 @@ export function AnalysisSquare({ accent, analyses, className, filled = false, fu
 				fullWidth && styles.squareFullWidth,
 				onClick && styles.squareClickable,
 			)}
-			onClick={(event) => {
-				event.stopPropagation();
-				onClick?.(value);
-			}}
+			onClick={onClick
+				? (event) => {
+					event.stopPropagation();
+					onClick(value);
+				}
+				: undefined}
 		>
 			{textLabel}
 		</div>
 	);
 
 	return (
-		<div
-			className={cn(styles.squareWithDetails)}
-			onClick={(event) => {
-				event.stopPropagation();
-			}}
-		>
+		<div className={cn(styles.squareWithDetails)}>
 			{resolvedTooltip
 				? (
 					<Tooltip
