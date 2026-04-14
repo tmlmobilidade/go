@@ -38,8 +38,7 @@
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/normalizers": "*",
-		"@tmlmobilidade/utils": "*",
-		"zod": "3.25.76"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

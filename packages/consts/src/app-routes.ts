@@ -215,6 +215,10 @@ export const API_ROUTES = Object.freeze({
 		STOPS_BATCH: `${getModuleConfig('alerts', 'api_url')}/stops/batch`,
 		STOPS_DETAIL: (id: string) => `${getModuleConfig('alerts', 'api_url')}/stops/${id}`,
 		STOPS_LIST: `${getModuleConfig('alerts', 'api_url')}/stops`,
+		// RIDES
+		RIDES_DETAIL_RIDE: (id: string) => `${getAppConfig('alerts', 'api_url')}/rides/${id}/ride`,
+		RIDES_LIST: `${getAppConfig('alerts', 'api_url')}/rides`,
+		RIDES_WS: `${getAppConfig('alerts', 'api_url')}/rides/ws`,
 	},
 
 	/* * */
