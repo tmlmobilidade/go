@@ -72,25 +72,13 @@ export function StopDetailsSectionGeneral() {
 
 					<ProposedChangesWrapper
 						inputName="name"
-						label="Antigo Nome da Paragem (p/ alterar)"
+						label="Nome Único da Paragem"
 						relatedId={stopDetailContext.data.stop?._id}
 						scope="stop"
 					>
 						<TextInput
 							readOnly={stopDetailContext.flags.isReadOnly}
 							{...stopDetailContext.data.form.getInputProps('name')}
-						/>
-					</ProposedChangesWrapper>
-
-					<ProposedChangesWrapper
-						inputName="new_name"
-						label="Nome da Paragem (depois da correção)"
-						relatedId={stopDetailContext.data.stop?._id}
-						scope="stop"
-					>
-						<TextInput
-							readOnly={stopDetailContext.flags.isReadOnly}
-							{...stopDetailContext.data.form.getInputProps('new_name')}
 						/>
 					</ProposedChangesWrapper>
 
