@@ -4,7 +4,6 @@ import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { roles } from '@/interfaces/auth/roles.js';
 import { users } from '@/interfaces/auth/users.js';
 import { getModuleConfig } from '@tmlmobilidade/consts';
-import { sendGenericNotificationEmail } from '@tmlmobilidade/emails';
 import { type CreateNotificationDto, CreateNotificationSchema, type Notification, NotificationPermission, Permission, Role, UpdateNotificationDto, UpdateNotificationSchema, User } from '@tmlmobilidade/types';
 import { asyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
@@ -14,6 +13,7 @@ import { z } from 'zod';
 
 class NotificationsClass extends MongoCollectionClass<Notification, CreateNotificationDto, UpdateNotificationDto> {
 	private static _instance: NotificationsClass;
+
 	protected override createSchema: z.ZodSchema = CreateNotificationSchema;
 	protected override updateSchema: z.ZodSchema = UpdateNotificationSchema;
 
@@ -76,18 +76,18 @@ class NotificationsClass extends MongoCollectionClass<Notification, CreateNotifi
 
 			const result = await notifications.insertOne(newNotification);
 
-			// Send email if permission allows
-			if (canReceiveEmail) {
-				await sendGenericNotificationEmail({
-					data: {
-						body: result.payload.body,
-						notificationId: result._id,
-						notificationUrl: result.payload.href ?? '',
-						title: result.payload.title,
-					},
-					to: recipient.email,
-				});
-			}
+			// // Send email if permission allows
+			// if (canReceiveEmail) {
+			// 	await sendGenericNotificationEmail({
+			// 		data: {
+			// 			body: result.payload.body,
+			// 			notificationId: result._id,
+			// 			notificationUrl: result.payload.href ?? '',
+			// 			title: result.payload.title,
+			// 		},
+			// 		to: recipient.email,
+			// 	});
+			// }
 		}
 	}
 
