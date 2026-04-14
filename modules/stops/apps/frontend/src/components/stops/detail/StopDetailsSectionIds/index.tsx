@@ -3,7 +3,8 @@
 /* * */
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
-import { Button, Collapsible, DeleteButton, Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { Button, Collapsible, DeleteButton, Grid, Section, Select, useDataAgencies, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -18,11 +19,16 @@ export function StopDetailsSectionIds() {
 	//
 	// B. Transform data
 
+	const { options: agenciesOptions, raw: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
+
 	//
 	// C. Handle actions
 
 	const handleAddLegacyId = () => {
 		console.log('Adding legacy ID', stopDetailContext.data.stop);
+		if (!stopDetailContext.data.form.getValues().legacy_ids) {
+			stopDetailContext.data.form.setFieldValue('legacy_ids', []);
+		}
 		stopDetailContext.data.form.insertListItem('legacy_ids', {
 			agency_id: '',
 			is_merged: false,
@@ -53,7 +59,12 @@ export function StopDetailsSectionIds() {
 			<Section>
 				{stopDetailContext.data.form.getValues().legacy_ids?.map((legacyId, index) => (
 					<Section key={legacyId.agency_id} padding="none">
-						<Agency>
+						<Select
+							data={agenciesOptions}
+							label="Operador"
+							// onChange={referencesEditorContext.actions.changeAgencyId}
+							// value={referencesEditorContext.data.selected_agency_id}
+						/>
 						<DeleteButton onDelete={() => handleDeleteLegacyId(index)} />
 					</Section>
 				))}

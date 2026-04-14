@@ -1,6 +1,7 @@
 export * from '@/stops/connections.js';
 export * from '@/stops/equipment.js';
 export * from '@/stops/facilities.js';
+export * from '@/stops/flag.js';
 export * from '@/stops/jurisdiction.js';
 export * from '@/stops/name-abbreviations.js';
 export * from '@/stops/parent-station.js';
