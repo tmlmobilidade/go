@@ -10,6 +10,7 @@ import { z } from 'zod';
 
 class StopsClass extends MongoCollectionClass<Stop, CreateStopDto, UpdateStopDto> {
 	private static _instance: StopsClass;
+
 	protected override createSchema: z.ZodSchema = CreateStopSchema;
 	protected override updateSchema: z.ZodSchema = UpdateStopSchema;
 
@@ -67,7 +68,7 @@ class StopsClass extends MongoCollectionClass<Stop, CreateStopDto, UpdateStopDto
 	 * @param ids Array of stop IDs to search for
 	 * @returns A promise that resolves to an array of matching stop documents
 	 */
-	async findManyByIds(ids: string[]) {
+	async findManyByIds(ids: number[]) {
 		return this.mongoCollection.find({ _id: { $in: ids } } as Filter<Stop>).toArray();
 	}
 
@@ -79,7 +80,7 @@ class StopsClass extends MongoCollectionClass<Stop, CreateStopDto, UpdateStopDto
 	 * @param forceValue Optional boolean to explicitly set the deleted status.
 	 * @returns A promise that resolves to the result of the delete operation.
 	 */
-	async toggleDeleteById(id: string, forceValue?: boolean): Promise<void> {
+	async toggleDeleteById(id: number, forceValue?: boolean): Promise<void> {
 		// Get the current document from the database
 		const foundDoc = await this.findById(id);
 		if (!foundDoc) throw new Error('Stop not found');

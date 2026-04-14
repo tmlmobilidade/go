@@ -7,4 +7,5 @@ export * from '@/stops/name-abbreviations.js';
 export * from '@/stops/parent-station.js';
 export * from '@/stops/road-type.js';
 export * from '@/stops/stop-area.js';
+export * from '@/stops/stop-id.js';
 export * from '@/stops/stop.js';

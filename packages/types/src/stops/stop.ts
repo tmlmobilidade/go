@@ -10,6 +10,7 @@ import { StopFacilitySchema } from '@/stops/facilities.js';
 import { StopFlagSchema } from '@/stops/flag.js';
 import { StopJurisdictionSchema } from '@/stops/jurisdiction.js';
 import { StopRoadTypeSchema } from '@/stops/road-type.js';
+import { StopIdSchema } from '@/stops/stop-id.js';
 import { z } from 'zod';
 
 /* * */
@@ -19,7 +20,7 @@ export const StopSchema = DocumentSchema.extend({
 	//
 	// General
 
-	_id: z.string(),
+	_id: StopIdSchema,
 	flags: z.array(StopFlagSchema).default([]),
 	is_deleted: z.boolean().default(false),
 	jurisdiction: StopJurisdictionSchema.default('unknown'),
