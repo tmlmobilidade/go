@@ -91,7 +91,7 @@ async function main() {
 		Logger.error('An error occurred. Halting execution.', err);
 		Logger.info('Retrying in 10 seconds...');
 		setTimeout(() => {
-			process.exit(0); // End process
+			process.exit(1); // End process
 		}, 10000); // after 10 seconds
 	}
 

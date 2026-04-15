@@ -110,5 +110,6 @@ await (async function main() {
 		//
 	} catch (error) {
 		Logger.error(error);
+		throw error;
 	}
 })();

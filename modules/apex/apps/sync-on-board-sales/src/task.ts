@@ -6,7 +6,7 @@ import { APEX_ON_BOARD_SALES_SETTINGS, invalidateRides, parseSimplifiedApexOnBoa
 import { Logger } from '@tmlmobilidade/logger';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
-import { BatchWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 

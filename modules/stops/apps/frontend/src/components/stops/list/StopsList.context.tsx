@@ -103,7 +103,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	}, [allStopsData]);
 
 	const searchResultsData = useSearch<StopNormalized>({
-		accessors: ['_id', 'name_normalized', 'new_name_normalized'],
+		accessors: ['_id', 'name_normalized', 'new_name_normalized', 'legacy_id'],
 		data: normalizedStopsData,
 		query: filterSearch,
 	});

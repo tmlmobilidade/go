@@ -57,8 +57,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 			fs.mkdirSync(workdirPath, { recursive: true });
 			Logger.success('Prepared working directory.');
 			Logger.spacer(1);
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error(`Error preparing workdir path "${workdirPath}".`, error);
 			process.exit(1);
 		}
@@ -67,8 +66,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 			await unzipFile(filePath, extractDirPath);
 			Logger.success(`Unzipped GTFS file from "${filePath}" to "${extractDirPath}".`);
 			Logger.spacer(1);
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error('Error unzipping the file.', error);
 			process.exit(1);
 		}
@@ -151,15 +149,13 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 				await parseCsvFile(`${extractDirPath}/calendar.txt`, parseEachRow);
 				Logger.success(`Finished processing "calendar.txt"`);
 				Logger.spacer(1);
-			}
-			else {
+			} else {
 				Logger.info(`Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...`);
 				Logger.spacer(1);
 			}
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error('Error processing "calendar.txt" file.', error);
 			throw new Error('✖︎ Error processing "calendar.txt" file.');
 		}
@@ -205,8 +201,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 					else if (validatedData.exception_type === 2) updatedCalendar.delete(validatedData.date);
 					// Update the service_id with the new dates
 					savedCalendarDates.set(validatedData.service_id, Array.from(updatedCalendar));
-				}
-				else {
+				} else {
 					// If this is the first time we're seeing this service_id, then it is only necessary
 					// to initiate a new dates array if it is a service addition
 					if (validatedData.exception_type === 1) {
@@ -224,15 +219,13 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 				await parseCsvFile(`${extractDirPath}/calendar_dates.txt`, parseEachRow);
 				Logger.success(`Finished processing "calendar_dates.txt"`);
 				Logger.spacer(1);
-			}
-			else {
+			} else {
 				Logger.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`);
 				Logger.spacer(1);
 			}
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error('Error processing "calendar_dates.txt" file.', error);
 			throw new Error('✖︎ Error processing "calendar_dates.txt" file.');
 		}
@@ -271,8 +264,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 			Logger.spacer(1);
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error('Error processing "trips.txt" file.', error);
 			throw new Error('✖︎ Error processing "trips.txt" file.');
 		}
@@ -308,8 +300,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 			Logger.spacer(1);
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error('Error processing "routes.txt" file.', error);
 			throw new Error('✖︎ Error processing "routes.txt" file.');
 		}
@@ -343,8 +334,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 			Logger.spacer(1);
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error('Error processing "stops.txt" file.', error);
 			throw new Error('✖︎ Error processing "stops.txt" file.');
 		}
@@ -403,8 +393,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 			Logger.spacer(1);
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error('Error processing "stop_times.txt" file.', error);
 			throw new Error('✖︎ Error processing "stop_times.txt" file.');
 		}
@@ -584,8 +573,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 			}
 
 			//
-		}
-		catch (error) {
+		} catch (error) {
 			Logger.error('Error transforming or saving Offer documents.', error);
 			throw new Error('✖︎ Error transforming or saving Offer documents.');
 		}
@@ -603,12 +591,11 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		Logger.terminate(`Finished processing GTFS file. Run took ${globalTimer.get()}`);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('An error occurred. Halting execution.', error);
 		Logger.error('Retrying in 10 seconds...');
 		setTimeout(() => {
-			process.exit(0); // End process
+			process.exit(1); // End process
 		}, 10000); // after 10 seconds
 	}
 
@@ -642,8 +629,7 @@ const setDirectoryPermissions = (dirPath, mode = 0o666) => {
 		const filePath = `${dirPath}/${file.name}`;
 		if (file.isDirectory()) {
 			setDirectoryPermissions(filePath, mode);
-		}
-		else {
+		} else {
 			fs.chmodSync(filePath, mode);
 		}
 	}

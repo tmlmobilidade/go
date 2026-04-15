@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
 	devIndicators: false,
 	env: {
 		NEXT_PUBLIC_BASE_PATH: '/plans',
+		NEXT_PUBLIC_ENVIRONMENT: process.env.ENVIRONMENT,
 	},
 	experimental: {
 		optimizePackageImports: ['@tmlmobilidade/ui'],

@@ -1,7 +1,7 @@
 /* * */
 
 import fastifyMultipart from '@fastify/multipart';
-import { getAppConfig } from '@tmlmobilidade/consts';
+import { getModuleConfig } from '@tmlmobilidade/consts';
 import { FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */
@@ -11,8 +11,8 @@ import { FastifyService } from '@tmlmobilidade/fastify';
 
 	const fastifyService = FastifyService.getInstance({
 		bodyLimit: 1024 * 1024 * 1024 * 2, // 2GB
-		origin: getAppConfig('offer', 'cors_origin'),
-		port: getAppConfig('offer', 'api_port'),
+		origin: getModuleConfig('offer', 'cors_origin'),
+		port: getModuleConfig('offer', 'api_port'),
 	});
 
 	await fastifyService.server.register(fastifyMultipart, {

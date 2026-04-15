@@ -113,20 +113,9 @@ function buildRuleSummaryShort(
 
 	if (rule.kind === 'manual' && rule.event_id) {
 		const title = getEventForManualRule(rule, options?.events)?.title ?? '';
-
-		const parts: string[] = [];
-		if (title) parts.push(title);
-
-		const periodPart = buildYearPeriodsPart(rule, options, { mode: 'short', omitIfAll: true });
-		if (periodPart) parts.push(periodPart);
-
-		const monthsPart = buildMonthsPart(rule, { mode: 'short', omitIfAll: true });
-		if (monthsPart) parts.push(monthsPart);
-
-		const weekdayPart = buildWeekdaysPart(rule, { mode: 'short', omitIfAll: true });
-		if (weekdayPart) parts.push(weekdayPart);
-
-		return parts.join(' · ');
+		if (!rule.weekdays?.length) return title;
+		const weekdayPart = buildWeekdaysPart(rule, { mode: 'short' });
+		return [title, weekdayPart].filter(Boolean).join(' · ');
 	}
 
 	// manual
@@ -162,20 +151,9 @@ function buildRuleSummaryLong(
 
 	if (rule.kind === 'manual' && rule.event_id) {
 		const title = getEventForManualRule(rule, options?.events)?.title ?? '';
-
-		const parts: string[] = [];
-		if (title) parts.push(title);
-
-		const periodPart = buildYearPeriodsPart(rule, options, { mode: 'long', omitIfAll: true });
-		if (periodPart) parts.push(periodPart);
-
-		const monthsPart = buildMonthsPart(rule, { mode: 'long', omitIfAll: true });
-		if (monthsPart) parts.push(monthsPart);
-
-		const weekdayPart = buildWeekdaysPart(rule, { mode: 'long', omitIfAll: true });
-		if (weekdayPart) parts.push(weekdayPart);
-
-		return parts.join(', ');
+		if (!rule.weekdays?.length) return title;
+		const weekdayPart = buildWeekdaysPart(rule, { mode: 'long' });
+		return [title, weekdayPart].filter(Boolean).join(', ');
 	}
 
 	// manual

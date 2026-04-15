@@ -10,7 +10,7 @@ import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
-export abstract class ClickHouseInterfaceTemplate<T> {
+export abstract class ClickHouseInterfaceTemplate<T extends object> {
 	//
 
 	protected readonly abstract databaseName: string;

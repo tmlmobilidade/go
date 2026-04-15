@@ -15,8 +15,10 @@ await i18next
 	.use(initReactI18next)
 	.init({
 		fallbackLng: 'pt',
+		interpolation: {
+			escapeValue: true,
+		},
 		resources: {
 			pt: i18nResourceKeysPtShared,
 		},
-		showSupportNotice: false,
 	});
