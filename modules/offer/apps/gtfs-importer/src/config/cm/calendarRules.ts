@@ -355,6 +355,13 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 			weekdays: [WEEKDAYS.Fri, WEEKDAYS.Sat],
 		},
 	]],
+	['421', [
+		{
+			description: '#4.2.1. Especial - Páscoa - Dias Úteis',
+			event_id: 'RFQ6A',
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+		},
+	]],
 	['432', [
 		{
 			event_id: '594HB',
@@ -435,6 +442,19 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 			isExclude: true,
 		},
 	]],
+	['15421', [
+		{
+			description: 'Dias úteis do período escolar',
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+			year_period_ids: [PERIODS.ESC],
+		},
+		{
+			description: '#4.2.1. Especial - Páscoa - Dias Úteis',
+			event_id: 'RFQ6A',
+			isExclude: true,
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+		},
+	]],
 	['15561', [
 		{
 			description: 'Dias úteis do período escolar',
@@ -470,9 +490,94 @@ export const CalendarRulesCM = new Map<string, CalendarRule[]>([
 	]],
 	['30561', [
 		{
-			description: 'Sextas-feiras do período escolar (ignorar evento Trafaria Bluegrass)',
+			description: 'Sextas-feiras do período escolar',
 			weekdays: [WEEKDAYS.Fri],
 			year_period_ids: [PERIODS.ESC],
+		},
+		{
+			event_id: 'FDETG',
+			isExclude: true,
+		},
+	]],
+	['182421', [
+		{
+			description: 'A4 - Dias úteis no período escolar, exceto durante o período de funcionamento das Piscinas das manteigadas',
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+			year_period_ids: [PERIODS.ESC],
+		},
+		{
+			event_id: '1C64V',
+			isExclude: true,
+		},
+		{
+			description: '#4.2.1. Especial - Páscoa - Dias Úteis',
+			event_id: 'RFQ6A',
+			isExclude: true,
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+		},
+	]],
+	['15561421', [
+		{
+			description: 'Dias úteis do período escolar',
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+			year_period_ids: [PERIODS.ESC],
+		},
+		{
+			description: '#4.2.1. Especial - Páscoa - Dias Úteis',
+			event_id: 'RFQ6A',
+			isExclude: true,
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+		},
+		{
+			event_id: 'FDETG',
+			isExclude: true,
+		},
+	]],
+	['21561421', [
+		{
+			description: 'Quartas-feiras do período escolar',
+			weekdays: [WEEKDAYS.Wed],
+			year_period_ids: [PERIODS.ESC],
+		},
+		{
+			description: '#4.2.1. Especial - Páscoa - Dias Úteis',
+			event_id: 'RFQ6A',
+			isExclude: true,
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+		},
+		{
+			event_id: 'FDETG',
+			isExclude: true,
+		},
+	]],
+	['28561421', [
+		{
+			description: 'Segunda, terças, quintas e sextas de período escolar, excepto feriados',
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Thu, WEEKDAYS.Fri],
+			year_period_ids: [PERIODS.ESC],
+		},
+		{
+			description: '#4.2.1. Especial - Páscoa - Dias Úteis',
+			event_id: 'RFQ6A',
+			isExclude: true,
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
+		},
+		{
+			event_id: 'FDETG',
+			isExclude: true,
+		},
+	]],
+	['30561421', [
+		{
+			description: 'Segunda, terças, quintas e sextas de período escolar, excepto feriados',
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Thu, WEEKDAYS.Fri],
+			year_period_ids: [PERIODS.ESC],
+		},
+		{
+			description: '#4.2.1. Especial - Páscoa - Dias Úteis',
+			event_id: 'RFQ6A',
+			isExclude: true,
+			weekdays: [WEEKDAYS.Mon, WEEKDAYS.Tue, WEEKDAYS.Wed, WEEKDAYS.Thu, WEEKDAYS.Fri],
 		},
 		{
 			event_id: 'FDETG',
