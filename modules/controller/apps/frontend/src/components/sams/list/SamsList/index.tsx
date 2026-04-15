@@ -9,7 +9,7 @@ import { useSamsListContext } from '@/contexts/SamList.context';
 import { translateFilterValue } from '@/lib/translations';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Sam } from '@tmlmobilidade/types';
-import { AgencyTag, DataTable, DataTableColumn, IdTag, keepUrlParams, Label, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, keepUrlParams, Label, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -27,13 +27,13 @@ export function SamsList() {
 	const columns: DataTableColumn<Sam>[] = [
 		{
 			accessor: '_id',
-			render: item => <IdTag id={item._id} copyOnClick />,
+			render: item => <Label>{item._id}</Label>,
 			title: '#ID',
 			width: 150,
 		},
 		{
 			accessor: 'agency_id',
-			render: item => <AgencyTag agencyId={item.agency_id} />,
+			render: item => <Label>{item.agency_id}</Label>,
 			title: 'Operador',
 			width: 80,
 		},
