@@ -55,7 +55,10 @@ const SAMS_PAGE_SIZE = 500;
 // --- Custom Hook splits out logic for clean separation
 export function SamsListContextProvider({ children }: PropsWithChildren) {
 	//
+
+	//
 	// A. Setup variables
+
 	const [favoritesEnabled, setFavoritesEnabled] = useState<boolean>(false);
 	const filterSearch = useFilterStateString('search');
 	const [debouncedFilterSearch, setDebouncedFilterSearch] = useState('');
@@ -95,10 +98,8 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	}, [filterSearch.value]);
 
 	//
-	// C. Favorites (same section as rides: list pane is under SamsFavoritesContextProvider)
-	const samsFavoritesContext = useSamsFavoritesContext();
 
-	// D. Agencies (all operators for defaults / options; URL omits `agency_id` when all are selected)
+	const samsFavoritesContext = useSamsFavoritesContext();
 	const agenciesContext = useAgenciesContext();
 	const agencyIdsOrdered = agenciesContext.data.ids;
 
@@ -116,7 +117,6 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	const filterAgency = useFilterStateList('agency_id', agencyIdsOrdered, agencyOptions);
 
 	//
-	// E. Base query string
 
 	const baseQueryString = useMemo(() => {
 		const params = new URLSearchParams();
@@ -129,7 +129,6 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	}, [debouncedFilterSearch, filterAgency.isActive, filterAgency.value, filterSeenFirstAt, filterSeenLastAt]);
 
 	//
-	// F. Apex versions
 
 	const apexVersionsUrl = useMemo(() => {
 		if (agenciesContext.flags.loading) return null;
@@ -180,7 +179,6 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	}, [apexVersionOptions, normalizedFilterApexVersionValues]);
 
 	//
-	// G. Sams list query string
 
 	const samsListQueryString = useMemo(() => {
 		const params = new URLSearchParams(baseQueryString);
@@ -192,7 +190,6 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	}, [baseQueryString, effectiveApexVersionFilterValues]);
 
 	//
-	// H. Sams list URL
 
 	const samsListUrl = useMemo(() => {
 		if (agenciesContext.flags.loading) return null;
@@ -201,7 +198,6 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	}, [agenciesContext.flags.loading, samsListQueryString]);
 
 	//
-	// I. Fetch data
 
 	const { data: allSamsData = [], error: allSamsError, isLoading: allSamsLoading } = useSWR<Sam[], Error>(samsListUrl, {
 		revalidateOnFocus: false,
@@ -209,14 +205,12 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	});
 
 	//
-	// J. Normalize data
 
 	const normalizedSamsData = useMemo(() => {
 		return allSamsData.map(item => ({ ...item, latest_apex_version: normalizeApexVersion(item.latest_apex_version) }));
 	}, [allSamsData, normalizeApexVersion]);
 
 	//
-	// K. Compute status
 
 	const samsDataWithComputedStatus = useMemo(() => {
 		return normalizedSamsData.map(item => ({ ...item, system_status: getSamSystemStatus(item) }));
@@ -232,7 +226,6 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	);
 
 	//
-	// L. Filter data
 
 	const listSourceRows = favoritesEnabled ? favoriteSamsNormalized : samsDataWithComputedStatus;
 
@@ -247,7 +240,6 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	const listLoading = favoritesEnabled ? (allSamsLoading || samsFavoritesContext.flags.loading) : allSamsLoading;
 
 	//
-	// M. Define context value
 
 	const contextValue: SamsListContextState = useMemo(
 		() => ({
@@ -294,7 +286,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
-	// N. Render components
+	// B. Render components
 	return (
 		<SamsListContext.Provider value={contextValue}>
 			{children}

@@ -34,13 +34,14 @@ export function SamsDetaisListItems() {
 	// A. Setup variables
 
 	const samDetailContext = useSamsDetailContext();
+
+	//
+	// B. Setup variables
+
 	const filterStart = samDetailContext.ui.analysisFilterStartTime;
 	const filterEnd = samDetailContext.ui.analysisFilterEndTime;
 	const apexSelection = samDetailContext.ui.analysisApexVersionFilter;
 	const hasDateFilter = filterStart != null && filterEnd != null;
-
-	//
-	// B. Render component
 
 	const records = useMemo(() => {
 		const analysisRecords = samDetailContext.data.sam?.analysis ?? [];
@@ -57,6 +58,9 @@ export function SamsDetaisListItems() {
 			next = next.filter(analysis => hasRangeOverlap(analysis, filterStart, filterEnd));
 		return next;
 	}, [apexSelection, filterEnd, filterStart, hasDateFilter, samDetailContext.data.sam?.analysis]);
+
+	//
+	// C. Render components
 
 	const columns = useMemo(() => {
 		return [

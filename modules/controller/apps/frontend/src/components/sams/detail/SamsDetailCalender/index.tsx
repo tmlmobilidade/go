@@ -9,9 +9,11 @@ import { useTranslation } from 'react-i18next';
 export function SamsDetailCalender() {
 	//
 
+	//
 	// A. Setup variables
 
 	const { t } = useTranslation();
+
 	const samDetailContext = useSamsDetailContext();
 
 	//

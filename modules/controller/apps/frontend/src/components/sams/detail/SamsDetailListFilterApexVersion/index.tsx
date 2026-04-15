@@ -18,8 +18,17 @@ const normalizeApexValue = (value: null | string | undefined): string => {
 /* * */
 
 export function SamsDetailListFilterApexVersion() {
+	//
+
+	//
+	// A. Setup variables
+
 	const { t } = useTranslation();
+
 	const samDetailContext = useSamsDetailContext();
+
+	//
+	// B. Transform data
 
 	const versionValues = useMemo(() => {
 		const analysisRecords = samDetailContext.data.sam?.analysis ?? [];
@@ -32,6 +41,9 @@ export function SamsDetailListFilterApexVersion() {
 
 	const selection = samDetailContext.ui.analysisApexVersionFilter;
 
+	//
+	// C. Render components
+
 	const options = useMemo(
 		() =>
 			versionValues.map(value => ({
@@ -43,10 +55,7 @@ export function SamsDetailListFilterApexVersion() {
 		[selection, versionValues],
 	);
 
-	const apexFilterActive =
-		versionValues.length > 0
-		&& selection.length > 0
-		&& selection.length < versionValues.length;
+	const apexFilterActive = versionValues.length > 0 && selection.length > 0 && selection.length < versionValues.length;
 
 	if (versionValues.length === 0) return null;
 

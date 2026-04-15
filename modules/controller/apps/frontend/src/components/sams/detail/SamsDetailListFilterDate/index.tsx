@@ -15,13 +15,17 @@ export function SamsDetailListFilterDate() {
 
 	const { t } = useTranslation();
 	const samDetailContext = useSamsDetailContext();
+
+	//
+	// B. Transform data
+
 	const { analysisFilterEndTime, analysisFilterStartTime } = samDetailContext.ui;
 	const hasCompleteRange = analysisFilterStartTime != null && analysisFilterEndTime != null;
 	const isActiveFromCalendar = samDetailContext.ui.selectedDayKey != null;
 	const active = isActiveFromCalendar || hasCompleteRange || analysisFilterStartTime != null || analysisFilterEndTime != null;
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<FilterTypeDateRange

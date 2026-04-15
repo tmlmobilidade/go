@@ -1,60 +1,63 @@
-/* * */
-/* SQUARE */
+/* ========== SQUARE ROW & EMPTY STATE ========== */
 
-/* ========== SQUARE COMPONENT ========== */
-
-/* Row container for squares; allows multiple squares to wrap */
+/* Container flex row for multiple analysis squares */
 .row {
-	display: inline-flex;
-	flex-wrap: wrap;
-	gap: 4px;
-	align-items: flex-start;
-	max-width: 100%;
+	display: inline-flex; 
+	flex-wrap: wrap;      
+	gap: 4px;             
+	align-items: flex-start;  
+	max-width: 100%;      
 }
 
-/* Empty state within square row */
+/* Styling to display "sem análises" for empty states */
 .rowEmpty {
 	font-size: 14px;
 	font-variant-numeric: tabular-nums;
-	color: var(--color-status-danger-primary); /* Danger color for empty state */
+	color: var(--color-status-danger-primary); 
 }
 
+/* ========== SQUARE WRAPPER & EXPANSION ========== */
+
+/* Wrapper that arranges square + details/tooltip vertically */
 .squareWithDetails {
 	display: inline-flex;
 	flex-direction: column;
 	align-items: start;
 }
 
+/* Expanded wrapper: sets max width and optional clamp for details panels */
 .squareWithDetailsExpanded {
-	--analysis-square-expanded-width: clamp(300px, 36vw, 420px);
+	--analysis-square-expanded-width: clamp(300px, 36vw, 420px); 
 	width: var(--analysis-square-expanded-width);
 	max-width: 90vw;
 }
 
-/* Inner square spans expanded wrapper width. */
+/* Ensures square takes the full expanded width inside an expanded panel */
 .squareWithDetailsExpanded .square {
 	width: 100%;
 	box-sizing: border-box;
 }
 
+/* ========== DETAILS PANEL (shown below square on expand) ========== */
+
 .detailsPanel {
 	width: 100%;
 	max-width: 100%;
-	margin-top: 6px;
+	margin-top: 6px;        
 	transform-origin: top left;
-	animation: detailsPanelReveal 220ms ease-out forwards;
+	animation: detailsPanelReveal 220ms ease-out forwards;  
 }
-
+/* Children of details panel span full width */
 .detailsPanel > * {
 	display: block;
 	width: 100%;
 }
-
 .detailsPanel > * > * {
 	width: 100%;
 	box-sizing: border-box;
 }
 
+/* Animation for details panel (reveals from above with opacity fade) */
 @keyframes detailsPanelReveal {
 	from {
 		opacity: 0;
@@ -67,7 +70,9 @@
 	}
 }
 
-/* Individual analysis square */
+/* ========== INDIVIDUAL ANALYSIS SQUARE ========== */
+
+/* Base style for a single analysis square */
 .square {
 	position: relative;
 	display: inline-flex;
@@ -76,7 +81,7 @@
 	box-sizing: border-box;
 	min-width: 20px;
 	min-height: 20px;
-	padding: 2px 6px;
+	padding: 2px 6px;             
 	font-size: 12px;
 	font-weight: 600;
 	font-variant-numeric: tabular-nums;
@@ -87,119 +92,130 @@
 	outline: none;
 }
 
+/* Force square to fill horizontal space of parent */
 .squareFullWidth {
 	width: 100%;
 }
 
+/* Interactivity style, used when square is clickable */
 .squareClickable {
 	cursor: pointer;
 	user-select: none;
 }
-
+/* Subtle opacity effect on hover */
 .squareClickable:hover {
 	opacity: 0.7;
 }
 
+/* Deprecated/legacy filled class (use .filledGreen, etc.) */
 .squareFilled {
 	background-color: var(--color-status-success-primary);
 	border-color: var(--color-status-success-primary);
 }
 
-/* Keyboard focus-visible highlight for accessibility */
+/* Keyboard accessibility highlight: thick colored box-shadow on focus */
 .square:focus-visible {
-	box-shadow: 0 0 0 2px var(--color-primary-contrast), 0 0 0 4px var(--color-primary-primary);
+	box-shadow: 0 0 0 2px var(--color-primary-contrast), 
+	            0 0 0 4px var(--color-primary-primary);
 }
 
-/* ========== SQUARE STATE VARIANTS ========== */
+/* ========== SQUARE COLOR STATE VARIANTS ========== */
 
-/* Filled (success/completed) square */
+/* Outlined "success" square (filled = false) */
 .green {
 	color: var(--color-status-success-primary);
-	background-color: var(--color-system-primary);
+	background-color: var(--color-system-primary);           
 	border-color: var(--color-status-success-primary);
 }
 
-/* Empty (failure/negative) square */
+/* Outlined "danger/failure" square (filled = false) */
 .red {
 	color: var(--color-status-danger-primary);
 	background-color: var(--color-system-primary);
 	border-color: var(--color-status-danger-primary);
 }
 
-/* Orange accent state (warning) */
+/* Outlined "warning/orange" square (filled = false) */
 .orange {
-	color: #f97316;
+	color: #f97316;      
 	background-color: var(--color-system-primary);
 	border-color: #f97316;
 }
 
-/* White accent state (empty) */
+/* Outlined "white/neutral" square (filled = false) */
 .white {
 	color: #6c6c6c;
 	background-color: var(--color-system-background-100);
 	border-color: #6c6c6c;
 }
 
-/* Filled squares */
+/* === Filled variants for each accent state === */
 
+/* Filled "success" square */
 .filledGreen {
 	color: #fff;
 	background-color: var(--color-status-success-primary);
 	border-color: var(--color-status-success-primary);
 }
 
+/* Filled "warning/orange" square */
 .filledOrange {
 	color: #fff;
 	background-color: #f97316;
 	border-color: #f97316;
 }
 
+/* Filled "danger/failure" square */
 .filledRed {
 	color: #fff;
 	background-color: var(--color-status-danger-primary);
 	border-color: var(--color-status-danger-primary);
 }
 
+/* Filled "white/neutral" square */
 .filledWhite {
 	color: #000;
 	background-color: #6c6c6c;
 	border-color: #6c6c6c;
 }
 
-/* ========== TOOLTIP STYLES (for analysis detail popovers) ========== */
+/* ========== TOOLTIP STYLES (analysis detail popovers) ========== */
 
-/* Layout for main tooltip content */
+/* Grid layout for tooltip content (holds one or more groups) */
 .tooltipContent {
 	display: grid;
 	gap: 8px;
 }
 
-/* Groups analyses inside tooltip */
+/* Group wrapper inside tooltip: used for sets of info per analysis */
 .tooltipAnalysisGroup {
 	display: grid;
 	gap: 4px;
 }
 
-/* Analysis group title in tooltip */
+/* Title within a tooltip group (e.g., label for an analysis) */
 .tooltipAnalysisTitle {
 	font-size: 11px;
 	font-weight: 700;
 }
 
-/* Unordered list for tooltip details */
+/* Unordered list for statistics/details in analysis tooltip */
 .tooltipList {
 	margin: 0;
-	padding-left: 16px;
+	padding-left: 16px;       
 	display: grid;
 	gap: 2px;
 }
 
-/* List item in tooltip */
+/* List item entry inside tooltip analysis list */
 .tooltipListItem {
 	font-size: 11px;
 	line-height: 1.2;
 }
 
+/* ========== ACCESSIBILITY: REDUCED MOTION SUPPORT ========== */
+
+/* Removes animation for users preferring reduced motion */
 @media (prefers-reduced-motion: reduce) {
 	.detailsPanel {
 		animation: none;

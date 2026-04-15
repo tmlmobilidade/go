@@ -69,19 +69,15 @@
 
 /* Accent variations for day groups */
 .dayGroupGreen {
-	/* background-color: var(--color-status-success-contrast); */
 	border-left-color: var(--color-status-success-primary);
 }
 .dayGroupOrange {
-	/* background-color: var(--color-status-warning-contrast); */
 	border-left-color: var(--color-status-warning-primary);
 }
 .dayGroupRed {
-	/* background-color: var(--color-status-danger-contrast); */
 	border-left-color: var(--color-status-danger-primary);
 }
 .dayGroupWhite {
-	/* background-color: var(--color-background-base, #fff); */
 	border-left-color: #6c6c6c;
 }
 

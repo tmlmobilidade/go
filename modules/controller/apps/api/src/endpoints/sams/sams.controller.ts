@@ -7,10 +7,18 @@ import { ActionsOf, type GetSamsBatchQuery, GetSamsBatchQuerySchema, Permission,
 
 /* * */
 
+/**
+ * Escapes a regex string.
+ */
 function escapeRegex(value: string): string {
 	return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+/**
+ * Parses the vehicle search query and returns an array of vehicle IDs.
+ * @param searchRaw - The search query string.
+ * @returns An array of vehicle IDs.
+ */
 function parseSamsVehicleSearch(searchRaw: string): number[] {
 	const normalizedSearch = searchRaw.trim();
 	const regexMatch = SAMS_VEHICLE_SEARCH_REGEX.exec(normalizedSearch);
@@ -26,6 +34,11 @@ function parseSamsVehicleSearch(searchRaw: string): number[] {
 	];
 }
 
+/**
+ * Parses the device search query and returns an array of device IDs.
+ * @param searchRaw - The search query string.
+ * @returns An array of device IDs.
+ */
 function parseSamsDeviceSearch(searchRaw: string): string[] {
 	const normalizedSearch = searchRaw.trim();
 	const regexMatch = SAMS_DEVICE_SEARCH_REGEX.exec(normalizedSearch);
@@ -41,12 +54,20 @@ function parseSamsDeviceSearch(searchRaw: string): string[] {
 	];
 }
 
+/* * */
+
+/**
+ * Reserved query fields that are not used in the aggregation pipeline.
+ */
 const RESERVED_QUERY_FIELDS = new Set(['agency_ids', 'limit', 'offset', 'search']);
 const RANGE_QUERY_FIELDS = {
 	seen_first_at: { field: 'seen_first_at', operator: '$gte' },
 	seen_last_at: { field: 'seen_last_at', operator: '$lte' },
 } as const;
 
+/**
+ * A type for the batch list item.
+ */
 type SamBatchListItem = Omit<Sam, 'analysis'> & {
 	analysis: Array<{
 		end_time: null | number
@@ -55,10 +76,13 @@ type SamBatchListItem = Omit<Sam, 'analysis'> & {
 	}>
 };
 
-function buildSamsMatch(
-	parsedQuery: GetSamsBatchQuery,
-	options: { includeApexVersionFilter?: boolean } = {},
-): Record<string, unknown>[] {
+/**
+ * Builds the match for the SAMs.
+ * @param parsedQuery - The parsed query.
+ * @param options - The options.
+ * @returns The match.
+ */
+function buildSamsMatch(parsedQuery: GetSamsBatchQuery, options: { includeApexVersionFilter?: boolean } = {}): Record<string, unknown>[] {
 	const { includeApexVersionFilter = true } = options;
 	const matchAnd: Record<string, unknown>[] = [];
 
@@ -132,6 +156,8 @@ function buildSamsMatch(
 	return matchAnd;
 }
 
+/* * */
+
 export class SamsController {
 	/**
 	 * Returns distinct `latest_apex_version` values from SAM documents (list filter).
@@ -202,6 +228,15 @@ export class SamsController {
 		return reply.send({ data: sam, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
+	/* * */
+
+	/**
+	 * Returns a list of SAMs by IDs.
+	 * @param request The Fastify request object.
+	 * @param reply The Fastify reply object.
+	 * @param scope The scope of the permission.
+	 * @param action The action of the permission.
+	 */
 	static async getSamByIds<S extends Permission['scope']>(request: FastifyRequest, reply: FastifyReply<Sam[]>, scope: S, action: ActionsOf<S>) {
 		//
 		// Resolve SAMs for stored favorite ids. `SamsPermission` has no `resources` today — treat missing

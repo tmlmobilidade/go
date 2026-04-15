@@ -11,8 +11,9 @@ export function SamsFiltersDate() {
 	//
 	// A. Setup variables
 
-	const samsListContext = useSamsListContext();
 	const { t } = useTranslation();
+
+	const samsListContext = useSamsListContext();
 
 	//
 	// B. Render components

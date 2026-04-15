@@ -66,6 +66,7 @@ export function SamsDetailContextProvider({ children, samId }: PropsWithChildren
 
 	//
 	// C. Handle actions
+
 	const applyAnalysisFilterFromCalendarDay = useCallback((dayKey: string) => {
 		const dayStart = DateTime.fromISO(dayKey, { zone: CALENDAR_TZ }).startOf('day');
 		if (!dayStart.isValid) return;
@@ -76,19 +77,27 @@ export function SamsDetailContextProvider({ children, samId }: PropsWithChildren
 		setListOpenVersion(currentValue => currentValue + 1);
 	}, []);
 
+	//
+
 	const setAnalysisFilterStart = useCallback((value: null | UnixTimestamp) => {
 		setAnalysisFilterStartTime(value);
 		setSelectedDayKey(null);
 	}, []);
+
+	//
 
 	const setAnalysisFilterEnd = useCallback((value: null | UnixTimestamp) => {
 		setAnalysisFilterEndTime(value);
 		setSelectedDayKey(null);
 	}, []);
 
+	//
+
 	const setAnalysisApexVersionFilterAction = useCallback((values: string[]) => {
 		setAnalysisApexVersionFilter(values);
 	}, []);
+
+	//
 
 	const getSamStatus = (sam: Sam): SystemStatus => {
 		const analyses = sam.analysis ?? [];
@@ -135,6 +144,8 @@ export function SamsDetailContextProvider({ children, samId }: PropsWithChildren
 			selectedDayKey,
 		},
 	}), [analysisApexVersionFilter, analysisFilterEndTime, analysisFilterStartTime, applyAnalysisFilterFromCalendarDay, listOpenVersion, samError, samLoading, samData, selectedDayKey, setAnalysisApexVersionFilterAction, setAnalysisFilterEnd, setAnalysisFilterStart]);
+
+	//
 	// E. Render components
 
 	return (

@@ -15,12 +15,10 @@ export function SamsDetailBasicInfos() {
 	//
 	// A. Setup variables
 
-	const samDetailContext = useSamsDetailContext();
 	const { t } = useTranslation();
-	const agenciesContext = useAgenciesContext();
 
-	//
-	// B. Render components
+	const samDetailContext = useSamsDetailContext();
+	const agenciesContext = useAgenciesContext();
 
 	if (samDetailContext.flags.loading) {
 		return <LoadingOverlay />;
@@ -29,6 +27,9 @@ export function SamsDetailBasicInfos() {
 	if (samDetailContext.flags.error) {
 		return <ErrorDisplay message={samDetailContext.flags.error.message} />;
 	}
+
+	//
+	// B. Render components
 
 	return (
 		<Collapsible
