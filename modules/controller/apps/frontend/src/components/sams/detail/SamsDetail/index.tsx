@@ -1,4 +1,6 @@
 /* eslint-disable react/jsx-key */
+'use client';
+
 /* * */
 
 import { SamsDetailBasicInfos } from '@/components/sams/detail/SamsDetailBasicInfos';

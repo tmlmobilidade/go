@@ -78,7 +78,7 @@ export function AnalysisCalender({ analyses, className, onDayClick, rangeEndTs, 
 												accent={toSquareAccent(daySection.accent)}
 												analyses={daySection.items}
 												textLabel={daySection.label}
-												title={daySection.items.length > 0 ? undefined : 'sem validações'}
+												title={daySection.items.length > 0 ? undefined : 'sem transações'}
 												onClick={() => {
 													onDayClick?.(daySection.dayKey);
 												}}

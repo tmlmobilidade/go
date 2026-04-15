@@ -18,7 +18,7 @@ export function SamsDetailListFilterDate() {
 	const { analysisFilterEndTime, analysisFilterStartTime } = samDetailContext.ui;
 	const hasCompleteRange = analysisFilterStartTime != null && analysisFilterEndTime != null;
 	const isActiveFromCalendar = samDetailContext.ui.selectedDayKey != null;
-	const active = isActiveFromCalendar || hasCompleteRange;
+	const active = isActiveFromCalendar || hasCompleteRange || analysisFilterStartTime != null || analysisFilterEndTime != null;
 
 	//
 	// B. Render components

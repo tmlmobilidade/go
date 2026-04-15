@@ -46,19 +46,19 @@ export function SamsList() {
 			accessor: 'transactions_expected',
 			render: item => <Tag label={item.transactions_expected ? item.transactions_expected.toString() : '-'} />,
 			title: 'Transações esperadas',
-			width: 180,
+			width: 170,
 		},
 		{
 			accessor: 'transactions_found',
 			render: item => <Tag label={item.transactions_found ? item.transactions_found.toString() : '-'} />,
-			title: 'Transações encontradas',
-			width: 200,
+			title: 'encontradas',
+			width: 100,
 		},
 		{
 			accessor: 'transactions_missing',
 			render: item => <Tag label={item.transactions_missing ? item.transactions_missing.toString() : '-'} />,
-			title: 'Transações em falta',
-			width: 180,
+			title: 'em falta',
+			width: 100,
 		},
 		{
 			accessor: 'seen_first_at',
@@ -80,7 +80,14 @@ export function SamsList() {
 		},
 		{
 			accessor: 'analysis',
-			render: item => <AnalysisTimeLineRow analyses={item.analysis ?? []} remarks={item.remarks} />,
+			render: item => (
+				<AnalysisTimeLineRow
+					analyses={item.analysis ?? []}
+					rangeEndTs={item.seen_last_at}
+					rangeStartTs={item.seen_first_at}
+					remarks={item.remarks}
+				/>
+			),
 			title: 'Análises',
 			width: 600,
 		},

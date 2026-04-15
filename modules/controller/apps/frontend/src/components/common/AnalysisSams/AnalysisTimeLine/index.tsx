@@ -30,15 +30,17 @@ export function AnalysisTimeLine({ className, value }: AnalysisTimeLineProps) {
 export interface AnalysisTimeLineRowProps {
 	analyses: SamAnalysis[]
 	className?: string
+	rangeEndTs?: null | number
+	rangeStartTs?: null | number
 	remarks?: null | string
 }
 
 /** One square per month; color from aggregate state (`buildMonthSections` accent). */
-export function AnalysisTimeLineRow({ analyses, className, remarks }: AnalysisTimeLineRowProps) {
+export function AnalysisTimeLineRow({ analyses, className, rangeEndTs, rangeStartTs, remarks }: AnalysisTimeLineRowProps) {
 	const sections = useMemo(() => {
 		const list = analyses ?? [];
-		return buildMonthSections(list);
-	}, [analyses]);
+		return buildMonthSections(list, { rangeEndTs, rangeStartTs });
+	}, [analyses, rangeEndTs, rangeStartTs]);
 
 	if (!analyses?.length) {
 		return <span className={styles.rowEmpty}>{remarks ?? 'sem análises'}</span>;
