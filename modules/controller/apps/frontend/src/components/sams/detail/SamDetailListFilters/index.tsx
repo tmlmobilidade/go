@@ -6,8 +6,8 @@ import { FiltersBar } from '@tmlmobilidade/ui';
 
 /* * */
 
-import { SamsDetailListFilterApexVersion } from '../SamsDetailListFilterApexVersion';
-import { SamsDetailListFilterDate } from '../SamsDetailListFilterDate';
+import { SamsDetailListFilterApexVersion } from '../SamDetailListFilterApexVersion';
+import { SamsDetailListFilterDate } from '../SamDetailListFilterDate';
 
 /* * */
 

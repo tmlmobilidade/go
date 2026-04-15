@@ -1,6 +1,6 @@
 /* * */
 
-import { useSamsDetailContext } from '@/contexts/SamsDetail.context';
+import { useSamsDetailContext } from '@/contexts/SamDetail.context';
 import { formatUnixTimestampToDateString } from '@/lib/utils';
 import { SamAnalysis } from '@tmlmobilidade/types';
 import { DataTable, DataTableColumn, Label } from '@tmlmobilidade/ui';

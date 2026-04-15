@@ -4,8 +4,8 @@
 import { AnalysisTimeLineRow } from '@/components/common/AnalysisSams/AnalysisTimeLine';
 import { SamsFilters } from '@/components/sams/list/SamsFilters';
 import { SamsListHeader } from '@/components/sams/list/SamsHeader';
-import { useSamsFavoritesContext } from '@/contexts/SamsFavorites.context';
-import { useSamsListContext } from '@/contexts/SamsList.context';
+import { useSamsFavoritesContext } from '@/contexts/SamFavorites.context';
+import { useSamsListContext } from '@/contexts/SamList.context';
 import { translateFilterValue } from '@/lib/translations';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Sam } from '@tmlmobilidade/types';

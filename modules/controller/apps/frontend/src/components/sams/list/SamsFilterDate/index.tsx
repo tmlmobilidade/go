@@ -1,6 +1,6 @@
 /* * */
 
-import { useSamsListContext } from '@/contexts/SamsList.context';
+import { useSamsListContext } from '@/contexts/SamList.context';
 import { UnixTimestamp } from '@tmlmobilidade/types';
 import { FilterTypeDateRange } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';

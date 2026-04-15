@@ -2,7 +2,7 @@
 'use client';
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { useSamsFavoritesContext } from '@/contexts/SamsFavorites.context';
+import { useSamsFavoritesContext } from '@/contexts/SamFavorites.context';
 import { getSamSystemStatus } from '@/lib/sam-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Sam, type SystemStatus, SystemStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';

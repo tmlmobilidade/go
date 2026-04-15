@@ -2,14 +2,14 @@
 
 /* * */
 
-import { useSamsDetailContext } from '@/contexts/SamsDetail.context';
+import { useSamsDetailContext } from '@/contexts/SamDetail.context';
 import { Collapsible } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
-import { SamsDetailListFilters } from '../SamsDetailListFilters';
-import { SamsDetaisListItems } from '../SamsDetaisListItems';
+import { SamsDetailListFilters } from '../SamDetailListFilters';
+import { SamsDetaisListItems } from '../SamDetaisListItems';
 
 /* * */
 

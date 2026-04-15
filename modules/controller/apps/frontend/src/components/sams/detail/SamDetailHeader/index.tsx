@@ -2,8 +2,8 @@
 
 /* * */
 
-import { useSamsDetailContext } from '@/contexts/SamsDetail.context';
-import { useSamsFavoritesContext } from '@/contexts/SamsFavorites.context';
+import { useSamsDetailContext } from '@/contexts/SamDetail.context';
+import { useSamsFavoritesContext } from '@/contexts/SamFavorites.context';
 import { IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CloseButton, IconButton, IdTag, keepUrlParams, Spacer, Toolbar } from '@tmlmobilidade/ui';

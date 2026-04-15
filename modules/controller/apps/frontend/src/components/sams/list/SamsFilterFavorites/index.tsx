@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useSamsListContext } from '@/contexts/SamsList.context';
+import { useSamsListContext } from '@/contexts/SamList.context';
 import { FilterTarget } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

@@ -1,7 +1,7 @@
 /* * */
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { useSamsDetailContext } from '@/contexts/SamsDetail.context';
+import { useSamsDetailContext } from '@/contexts/SamDetail.context';
 import { translateFilterValue } from '@/lib/translations';
 import { formatUnixTimestampToDateString } from '@/lib/utils';
 import { Collapsible, ErrorDisplay, Grid, LoadingOverlay, Section, ValueDisplay } from '@tmlmobilidade/ui';

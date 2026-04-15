@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useSamsDetailContext } from '@/contexts/SamsDetail.context';
+import { useSamsDetailContext } from '@/contexts/SamDetail.context';
 import { FilterTypeDateRange } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

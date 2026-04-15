@@ -1,7 +1,7 @@
 'use client';
 /* * */
 
-import { SamsDetail } from '@/components/sams/detail/SamsDetail';
+import { SamsDetail } from '@/components/sams/detail/SamDetail';
 
 /* * */
 

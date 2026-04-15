@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useSamsDetailContext } from '@/contexts/SamsDetail.context';
+import { useSamsDetailContext } from '@/contexts/SamDetail.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

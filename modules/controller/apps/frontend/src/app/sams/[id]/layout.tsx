@@ -1,6 +1,6 @@
 /* * */
 
-import { SamsDetailContextProvider } from '@/contexts/SamsDetail.context';
+import { SamsDetailContextProvider } from '@/contexts/SamDetail.context';
 
 /* * */
 
