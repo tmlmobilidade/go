@@ -45,7 +45,7 @@ FROM base AS builder
 WORKDIR /app
 
 COPY --from=pruner /app/out/json/ .
-# COPY .github/templates/docker/scripts /app/.docker/scripts
+COPY .github/templates/docker/scripts /app/.docker/scripts
 
 RUN npm ci
 
@@ -57,8 +57,8 @@ RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 
 RUN npm prune --omit-dev
 
-# RUN node /app/.docker/scripts/trim-node-modules.js /app/node_modules
-# RUN node /app/.docker/scripts/trim-workspaces.js /app/packages /app/modules
+RUN node /app/.docker/scripts/trim-node-modules.js /app/node_modules
+RUN node /app/.docker/scripts/trim-workspaces.js /app/packages /app/modules
 
 
 # # #

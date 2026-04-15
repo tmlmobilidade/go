@@ -15,9 +15,13 @@ function walk(dir) {
 		return;
 	}
 
-	const isWorkspacePackage = entries.some(
+	const hasPackageJson = entries.some(
 		(entry) => entry.isFile() && entry.name === "package.json",
 	);
+	const hasDistDir = entries.some(
+		(entry) => entry.isDirectory() && entry.name === "dist",
+	);
+	const isWorkspacePackage = hasPackageJson && hasDistDir;
 
 	if (isWorkspacePackage) {
 		for (const entry of entries) {
