@@ -19,6 +19,7 @@
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-stops-pckg-id-engine": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/utils": "*"
 	},

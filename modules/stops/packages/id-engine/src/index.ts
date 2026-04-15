@@ -1,1 +1,1 @@
-export * from '@/functions/get-stop-id.js';
+export * from '@/functions/generate-stop-id.js';

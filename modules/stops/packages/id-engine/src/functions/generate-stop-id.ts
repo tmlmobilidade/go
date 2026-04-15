@@ -10,7 +10,7 @@ import { fetchData } from '@tmlmobilidade/utils';
  * formatted according to the set rules.
  * @returns The new Stop ID.
  */
-export async function getStopId(): Promise<StopId> {
+export async function generateStopId(): Promise<StopId> {
 	//
 
 	let newStopId: StopId;

@@ -2,6 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { generateStopId } from '@tmlmobilidade/go-stops-pckg-id-engine';
 import { stops } from '@tmlmobilidade/interfaces';
 import { type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
 
@@ -18,7 +19,8 @@ export class StopsController {
 	 */
 	static async create(request: FastifyRequest, reply: FastifyReply<Stop>) {
 		const data = request.body as Stop;
-		const result = await stops.insertOne(data);
+		const newStopId = await generateStopId();
+		const result = await stops.insertOne({ ...data, _id: newStopId }, { unsafe: true });
 		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED });
 	}
 
