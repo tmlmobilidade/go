@@ -1,6 +1,6 @@
 /* * */
 
-import { seedFromTmp } from '@/tasks/seed-from-tmp.js';
+import { migrateToFlagsModel } from '@/tasks/migrate-to-flags-model.js';
 
 /* * */
 
@@ -10,7 +10,7 @@ await (async function main() {
 	//
 	// Run tasks
 
-	await seedFromTmp();
+	await migrateToFlagsModel();
 
 	console.log('Done');
 

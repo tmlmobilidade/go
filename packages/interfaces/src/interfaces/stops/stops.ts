@@ -48,6 +48,16 @@ class StopsClass extends MongoCollectionClass<Stop, CreateStopDto, UpdateStopDto
 	}
 
 	/**
+	 * Override deleteMany to prevent actual deletion of stop documents.
+	 * Stops cannot be deleted, only archived.
+	 * @param filter The filter used to select the documents to "delete".
+	 * @returns A promise that rejects with an error indicating deletion is not allowed.
+	 */
+	override async deleteMany(): Promise<DeleteResult> {
+		throw new Error('Method not implemented. Stops cannot be deleted, only archived.');
+	}
+
+	/**
 	 * Finds stop documents by municipality ID with optional pagination and sorting.
 	 * @param id The municipality ID to search for
 	 * @param perPage Optional number of documents per page for pagination
