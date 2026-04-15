@@ -2,7 +2,7 @@
 
 import { deletedCmStops } from '@/lib/deleted-cm-stops.js';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type StopId } from '@tmlmobilidade/types';
+import { type StopId, validateStopIdStructure } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
 
 /**
@@ -33,9 +33,11 @@ export async function generateStopId(): Promise<StopId> {
 		const isExistingId = existingStopIds.includes(newStopId);
 		// Check if the generated Stop ID is not in the list of deleted CM Stops
 		const isDeletedCmStop = deletedCmStops.some(deletedStop => deletedStop.stop_id === String(newStopId));
+		// Validate the structure of the generated Stop ID
+		const isValidStructure = validateStopIdStructure(newStopId) !== false;
 		// If the generated Stop ID does not exist
-		// and is not a deleted CM Stop, it is valid.
-		isValid = !isExistingId && !isDeletedCmStop;
+		// and is not a deleted CM Stop, and has a valid structure, it is valid.
+		isValid = !isExistingId && !isDeletedCmStop && isValidStructure;
 	}
 
 	return newStopId;
