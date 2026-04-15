@@ -3,6 +3,7 @@
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useSamsFavoritesContext } from '@/contexts/SamsFavorites.context';
+import { getSamSystemStatus } from '@/lib/sam-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Sam, type SystemStatus, SystemStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
 import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
@@ -47,25 +48,6 @@ export const useSamsListContext = () => {
 		throw new Error('useSamsListContext must be used within a SamsListContextProvider');
 	}
 	return context;
-};
-
-const getSamSystemStatus = (sam: Sam): SystemStatus => {
-	const analyses = sam.analysis ?? [];
-	if (!analyses.length) return 'error';
-
-	const isNullish = (value: unknown) => value === null || value === undefined;
-
-	const allAnalysesAreFullyNull = analyses.every(analysis =>
-		Object.values(analysis).every(isNullish),
-	);
-	if (allAnalysesAreFullyNull) return 'error';
-
-	const hasAnyNullFieldInAnyAnalysis = analyses.some(analysis =>
-		Object.values(analysis).some(isNullish),
-	);
-	if (hasAnyNullFieldInAnyAnalysis) return 'incomplete';
-
-	return 'complete';
 };
 
 const SAMS_PAGE_SIZE = 500;
@@ -245,7 +227,6 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 			(samsFavoritesContext.data.favoriteSams ?? []).map(item => ({
 				...item,
 				latest_apex_version: normalizeApexVersion(item.latest_apex_version),
-				system_status: getSamSystemStatus(item),
 			})),
 		[samsFavoritesContext.data.favoriteSams, normalizeApexVersion],
 	);

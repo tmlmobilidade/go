@@ -1,5 +1,6 @@
 'use client';
 
+import { getSamSystemStatus } from '@/lib/sam-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Sam } from '@tmlmobilidade/types';
 import { useUserPreference } from '@tmlmobilidade/ui';
@@ -51,6 +52,11 @@ export const SamsFavoritesContextProvider = ({ children }: PropsWithChildren) =>
 	const favoriteSamsKey = favorites.length ? `${API_ROUTES.controller.SAMS_FAVORITES}?ids=${favoritesIdsQuery}` : null;
 	const { data: favoriteSamsData, error: favoriteSamsError, isLoading: favoriteSamsLoading, mutate: mutateFavoriteSams } = useSWR<Sam[], Error>(favoriteSamsKey);
 
+	const favoriteSamsWithStatus = useMemo(
+		() => (favoriteSamsData ?? []).map(sam => ({ ...sam, system_status: getSamSystemStatus(sam) })),
+		[favoriteSamsData],
+	);
+
 	//
 	// B. Handle actions
 
@@ -82,7 +88,7 @@ export const SamsFavoritesContextProvider = ({ children }: PropsWithChildren) =>
 		},
 		data: {
 			favorites,
-			favoriteSams: favoriteSamsData ?? [],
+			favoriteSams: favoriteSamsWithStatus,
 		},
 		flags: {
 			error: favoriteSamsError ?? null,
