@@ -289,6 +289,7 @@ export const API_ROUTES = Object.freeze({
 		// SAMS
 		SAMS_APEX_VERSIONS: `${getAppConfig('controller', 'api_url')}/sams/apex-versions`,
 		SAMS_DETAIL: (id: string) => `${getAppConfig('controller', 'api_url')}/sams/${id}`,
+		SAMS_FAVORITES: `${getAppConfig('controller', 'api_url')}/sams/favorites`,
 		SAMS_LIST: `${getAppConfig('controller', 'api_url')}/sams`,
 	},
 

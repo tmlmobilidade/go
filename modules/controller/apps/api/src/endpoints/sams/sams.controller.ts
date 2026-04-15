@@ -3,7 +3,7 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { sams, SAMS_ANALYSIS_LIST_TAIL, SAMS_DEVICE_SEARCH_REGEX, SAMS_VEHICLE_SEARCH_REGEX, samsApexVersionsAggregationPipeline, samsBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
-import { type GetSamsBatchQuery, GetSamsBatchQuerySchema, PermissionCatalog, type Sam } from '@tmlmobilidade/types';
+import { ActionsOf, type GetSamsBatchQuery, GetSamsBatchQuerySchema, Permission, PermissionCatalog, type Sam } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -200,5 +200,41 @@ export class SamsController {
 		// Return the SAM
 
 		return reply.send({ data: sam, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	static async getSamByIds<S extends Permission['scope']>(request: FastifyRequest, reply: FastifyReply<Sam[]>, scope: S, action: ActionsOf<S>) {
+		//
+		// Resolve SAMs for stored favorite ids. `SamsPermission` has no `resources` today — treat missing
+		// `agency_ids` like list batch default (no agency restriction). When resources exist, match rides.
+
+		void scope;
+		void action;
+
+		const samsPermission = PermissionCatalog.get(request.permissions, PermissionCatalog.all.sams.scope, PermissionCatalog.all.sams.actions.read);
+
+		if (!samsPermission) {
+			return reply.status(HTTP_STATUS.FORBIDDEN).send({ data: null, error: 'Insufficient permissions.', statusCode: HTTP_STATUS.FORBIDDEN });
+		}
+
+		const agencyIds = (samsPermission as Permission & { resources?: { agency_ids?: string[] } }).resources?.agency_ids;
+		const restrictByAgency = Array.isArray(agencyIds) && agencyIds.length > 0;
+		const allowAllAgencies = !restrictByAgency || (agencyIds?.includes(PermissionCatalog.ALLOW_ALL_FLAG) ?? false);
+
+		const numericIds = (request.query['ids']?.split(',') ?? [])
+			.map(part => part.trim())
+			.filter(Boolean)
+			.map(Number)
+			.filter(id => Number.isInteger(id));
+
+		if (numericIds.length === 0) {
+			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
+		}
+
+		const foundSamsByIds = await sams.findMany({
+			_id: { $in: numericIds },
+			...(!allowAllAgencies && agencyIds?.length ? { agency_id: { $in: agencyIds } } : {}),
+		});
+
+		return reply.send({ data: foundSamsByIds.map(sam => sam), error: null, statusCode: HTTP_STATUS.OK });
 	}
 }

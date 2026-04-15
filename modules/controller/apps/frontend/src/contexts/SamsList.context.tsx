@@ -2,6 +2,7 @@
 'use client';
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
+import { useSamsFavoritesContext } from '@/contexts/SamsFavorites.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Sam, type SystemStatus, SystemStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
 import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
@@ -13,6 +14,7 @@ import useSWR from 'swr';
 
 export interface SamsListContextState {
 	actions: {
+		setFavoritesEnabled: () => void
 		setFilterSeenFirstAt: (value: null | UnixTimestamp) => void
 		setFilterSeenLastAt: (value: null | UnixTimestamp) => void
 	}
@@ -30,6 +32,7 @@ export interface SamsListContextState {
 	}
 	flags: {
 		error: Error | undefined
+		favoritesEnabled: boolean
 		loading: boolean
 	}
 }
@@ -69,7 +72,9 @@ const SAMS_PAGE_SIZE = 500;
 
 // --- Custom Hook splits out logic for clean separation
 export function SamsListContextProvider({ children }: PropsWithChildren) {
+	//
 	// A. Setup variables
+	const [favoritesEnabled, setFavoritesEnabled] = useState<boolean>(false);
 	const filterSearch = useFilterStateString('search');
 	const [debouncedFilterSearch, setDebouncedFilterSearch] = useState('');
 
@@ -107,7 +112,11 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 		return () => window.clearTimeout(handle);
 	}, [filterSearch.value]);
 
-	// B. Agencies (all operators for defaults / options; URL omits `agency_id` when all are selected)
+	//
+	// C. Favorites (same section as rides: list pane is under SamsFavoritesContextProvider)
+	const samsFavoritesContext = useSamsFavoritesContext();
+
+	// D. Agencies (all operators for defaults / options; URL omits `agency_id` when all are selected)
 	const agenciesContext = useAgenciesContext();
 	const agencyIdsOrdered = agenciesContext.data.ids;
 
@@ -124,6 +133,9 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	const filterAgency = useFilterStateList('agency_id', agencyIdsOrdered, agencyOptions);
 
+	//
+	// E. Base query string
+
 	const baseQueryString = useMemo(() => {
 		const params = new URLSearchParams();
 		if (filterAgency.isActive && filterAgency.value.length)
@@ -133,6 +145,9 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 		if (filterSeenLastAt) params.set('seen_last_at', filterSeenLastAt.toString());
 		return params.toString();
 	}, [debouncedFilterSearch, filterAgency.isActive, filterAgency.value, filterSeenFirstAt, filterSeenLastAt]);
+
+	//
+	// F. Apex versions
 
 	const apexVersionsUrl = useMemo(() => {
 		if (agenciesContext.flags.loading) return null;
@@ -182,6 +197,9 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 		return selectedAvailable;
 	}, [apexVersionOptions, normalizedFilterApexVersionValues]);
 
+	//
+	// G. Sams list query string
+
 	const samsListQueryString = useMemo(() => {
 		const params = new URLSearchParams(baseQueryString);
 		if (effectiveApexVersionFilterValues.length)
@@ -191,37 +209,69 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 		return params.toString();
 	}, [baseQueryString, effectiveApexVersionFilterValues]);
 
+	//
+	// H. Sams list URL
+
 	const samsListUrl = useMemo(() => {
 		if (agenciesContext.flags.loading) return null;
 		const base = API_ROUTES.controller.SAMS_LIST;
 		return samsListQueryString ? `${base}?${samsListQueryString}` : base;
 	}, [agenciesContext.flags.loading, samsListQueryString]);
 
+	//
+	// I. Fetch data
+
 	const { data: allSamsData = [], error: allSamsError, isLoading: allSamsLoading } = useSWR<Sam[], Error>(samsListUrl, {
 		revalidateOnFocus: false,
 		revalidateOnReconnect: false,
 	});
 
+	//
+	// J. Normalize data
+
 	const normalizedSamsData = useMemo(() => {
 		return allSamsData.map(item => ({ ...item, latest_apex_version: normalizeApexVersion(item.latest_apex_version) }));
 	}, [allSamsData, normalizeApexVersion]);
+
+	//
+	// K. Compute status
 
 	const samsDataWithComputedStatus = useMemo(() => {
 		return normalizedSamsData.map(item => ({ ...item, system_status: getSamSystemStatus(item) }));
 	}, [normalizedSamsData]);
 
+	const favoriteSamsNormalized = useMemo(
+		() =>
+			(samsFavoritesContext.data.favoriteSams ?? []).map(item => ({
+				...item,
+				latest_apex_version: normalizeApexVersion(item.latest_apex_version),
+				system_status: getSamSystemStatus(item),
+			})),
+		[samsFavoritesContext.data.favoriteSams, normalizeApexVersion],
+	);
+
+	//
+	// L. Filter data
+
+	const listSourceRows = favoritesEnabled ? favoriteSamsNormalized : samsDataWithComputedStatus;
+
 	const filteredSamsData = useMemo(() => {
 		if (!filterStatus.isActive || !filterStatus.value.length)
-			return samsDataWithComputedStatus;
-		return samsDataWithComputedStatus.filter(item =>
+			return listSourceRows;
+		return listSourceRows.filter(item =>
 			filterStatus.value.includes(item.system_status),
 		);
-	}, [filterStatus.isActive, filterStatus.value, samsDataWithComputedStatus]);
+	}, [filterStatus.isActive, filterStatus.value, listSourceRows]);
 
-	// D. Define context value
+	const listLoading = favoritesEnabled ? (allSamsLoading || samsFavoritesContext.flags.loading) : allSamsLoading;
+
+	//
+	// M. Define context value
+
 	const contextValue: SamsListContextState = useMemo(
 		() => ({
 			actions: {
+				setFavoritesEnabled: () => setFavoritesEnabled(!favoritesEnabled),
 				setFilterSeenFirstAt: value => setFilterSeenFirstAt(value as null | number),
 				setFilterSeenLastAt: value => setFilterSeenLastAt(value as null | number),
 			},
@@ -239,12 +289,13 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 			},
 			flags: {
 				error: allSamsError,
-				loading: allSamsLoading,
+				favoritesEnabled,
+				loading: listLoading,
 			},
 		}),
 		[
 			allSamsError,
-			allSamsLoading,
+			favoritesEnabled,
 			filterSearch,
 			filterAgency,
 			filterApexVersion,
@@ -252,6 +303,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 			filterSeenFirstAt,
 			filterSeenLastAt,
 			filteredSamsData,
+			listLoading,
 			samsDataWithComputedStatus,
 			setFilterSeenFirstAt,
 			setFilterSeenLastAt,
@@ -261,7 +313,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
-	// E. Render components
+	// N. Render components
 	return (
 		<SamsListContext.Provider value={contextValue}>
 			{children}

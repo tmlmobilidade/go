@@ -3,7 +3,8 @@
 
 import { AnalysisTimeLineRow } from '@/components/common/AnalysisSams/AnalysisTimeLine';
 import { SamsFilters } from '@/components/sams/list/SamsFilters';
-import { SamsListHeader } from '@/components/sams/list/SamsListHeader';
+import { SamsListHeader } from '@/components/sams/list/SamsHeader';
+import { useSamsFavoritesContext } from '@/contexts/SamsFavorites.context';
 import { useSamsListContext } from '@/contexts/SamsList.context';
 import { translateFilterValue } from '@/lib/translations';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
@@ -20,6 +21,7 @@ export function SamsList() {
 	// A. Setup variables
 
 	const samsListContext = useSamsListContext();
+	const samsFavoritesContext = useSamsFavoritesContext();
 	const router = useRouter();
 
 	const columns: DataTableColumn<Sam>[] = [
@@ -99,7 +101,7 @@ export function SamsList() {
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}
-				records={samsListContext.data.filtered}
+				records={samsListContext.flags.favoritesEnabled ? samsFavoritesContext.data.favoriteSams : samsListContext.data.raw}
 			/>
 		</Pane>
 	);
