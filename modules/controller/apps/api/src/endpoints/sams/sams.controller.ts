@@ -118,12 +118,7 @@ function buildSamsMatch(
 		if (Array.isArray(value)) {
 			if (value.length > 0) {
 				if (key === 'latest_apex_version') {
-					matchAnd.push({
-						$or: [
-							{ latest_apex_version: { $in: value } },
-							{ 'analysis.apex_version': { $in: value } },
-						],
-					});
+					matchAnd.push({ latest_apex_version: { $in: value } });
 					continue;
 				}
 				matchAnd.push({ [key]: { $in: value } });
@@ -139,7 +134,7 @@ function buildSamsMatch(
 
 export class SamsController {
 	/**
-	 * Returns distinct apex versions from valid SAM analysis entries.
+	 * Returns distinct `latest_apex_version` values from SAM documents (list filter).
 	 */
 	static async getApexVersions(request: FastifyRequest<{ Querystring: GetSamsBatchQuery }>, reply: FastifyReply<string[]>) {
 		const parsedQuery = GetSamsBatchQuerySchema.parse(request.query ?? {});
@@ -164,6 +159,7 @@ export class SamsController {
 		const pipeline = samsBatchAggregationPipeline({
 			analysisListTail: SAMS_ANALYSIS_LIST_TAIL,
 			matchAnd,
+			pageLimit: parsedQuery.limit,
 			pageOffset,
 		});
 

@@ -61,18 +61,6 @@ export function SamsList() {
 			width: 100,
 		},
 		{
-			accessor: 'seen_first_at',
-			render: item => <Tag label={formatUnixTimestampToDateString(item.seen_first_at)} />,
-			title: 'Primeira vista',
-			width: 180,
-		},
-		{
-			accessor: 'seen_last_at',
-			render: item => <Tag label={formatUnixTimestampToDateString(item.seen_last_at)} />,
-			title: 'Última vista',
-			width: 180,
-		},
-		{
 			accessor: 'system_status',
 			render: item => <Tag label={translateFilterValue('sams_status', item.system_status)} />,
 			title: 'Estado',

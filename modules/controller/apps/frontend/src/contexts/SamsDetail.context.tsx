@@ -18,6 +18,7 @@ const CALENDAR_TZ = 'Europe/Lisbon';
 export interface SamsDetailContextState {
 	actions: {
 		applyAnalysisFilterFromCalendarDay: (dayKey: string) => void
+		setAnalysisApexVersionFilter: (values: string[]) => void
 		setAnalysisFilterEnd: (value: null | UnixTimestamp) => void
 		setAnalysisFilterStart: (value: null | UnixTimestamp) => void
 	}
@@ -30,6 +31,7 @@ export interface SamsDetailContextState {
 		loading: boolean
 	}
 	ui: {
+		analysisApexVersionFilter: string[]
 		analysisFilterEndTime: null | UnixTimestamp
 		analysisFilterStartTime: null | UnixTimestamp
 		listOpenVersion: number
@@ -59,6 +61,7 @@ export function SamsDetailContextProvider({ children, samId }: PropsWithChildren
 	const [selectedDayKey, setSelectedDayKey] = useState<null | string>(null);
 	const [analysisFilterStartTime, setAnalysisFilterStartTime] = useState<null | UnixTimestamp>(null);
 	const [analysisFilterEndTime, setAnalysisFilterEndTime] = useState<null | UnixTimestamp>(null);
+	const [analysisApexVersionFilter, setAnalysisApexVersionFilter] = useState<string[]>([]);
 	const [listOpenVersion, setListOpenVersion] = useState(0);
 
 	//
@@ -81,6 +84,10 @@ export function SamsDetailContextProvider({ children, samId }: PropsWithChildren
 	const setAnalysisFilterEnd = useCallback((value: null | UnixTimestamp) => {
 		setAnalysisFilterEndTime(value);
 		setSelectedDayKey(null);
+	}, []);
+
+	const setAnalysisApexVersionFilterAction = useCallback((values: string[]) => {
+		setAnalysisApexVersionFilter(values);
 	}, []);
 
 	const getSamStatus = (sam: Sam): SystemStatus => {
@@ -108,6 +115,7 @@ export function SamsDetailContextProvider({ children, samId }: PropsWithChildren
 	const contextValue: SamsDetailContextState = useMemo(() => ({
 		actions: {
 			applyAnalysisFilterFromCalendarDay,
+			setAnalysisApexVersionFilter: setAnalysisApexVersionFilterAction,
 			setAnalysisFilterEnd,
 			setAnalysisFilterStart,
 		},
@@ -120,12 +128,13 @@ export function SamsDetailContextProvider({ children, samId }: PropsWithChildren
 			loading: samLoading,
 		},
 		ui: {
+			analysisApexVersionFilter,
 			analysisFilterEndTime,
 			analysisFilterStartTime,
 			listOpenVersion,
 			selectedDayKey,
 		},
-	}), [analysisFilterEndTime, analysisFilterStartTime, applyAnalysisFilterFromCalendarDay, listOpenVersion, samError, samLoading, samData, selectedDayKey, setAnalysisFilterEnd, setAnalysisFilterStart]);
+	}), [analysisApexVersionFilter, analysisFilterEndTime, analysisFilterStartTime, applyAnalysisFilterFromCalendarDay, listOpenVersion, samError, samLoading, samData, selectedDayKey, setAnalysisApexVersionFilterAction, setAnalysisFilterEnd, setAnalysisFilterStart]);
 	// E. Render components
 
 	return (

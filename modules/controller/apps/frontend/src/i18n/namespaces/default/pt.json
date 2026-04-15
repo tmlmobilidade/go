@@ -570,6 +570,9 @@
 				"title": "Calendário de Análises"
 			},
 			"SamsDetailList": {
+				"SamsDetailListFilterApexVersion": {
+					"label": "Versão APEX (transações)"
+				},
 				"SamsDetailListFilterDate": {
 					"label": "Intervalo de análise"
 				},

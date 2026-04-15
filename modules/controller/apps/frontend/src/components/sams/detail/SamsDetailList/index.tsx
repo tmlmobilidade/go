@@ -21,9 +21,17 @@ export function SamsDetailList() {
 
 	const { t } = useTranslation();
 	const samDetailContext = useSamsDetailContext();
-	const { analysisFilterEndTime, analysisFilterStartTime, selectedDayKey } = samDetailContext.ui;
+	const { analysisApexVersionFilter, analysisFilterEndTime, analysisFilterStartTime, selectedDayKey } = samDetailContext.ui;
 	const hasCompleteRange = analysisFilterStartTime != null && analysisFilterEndTime != null;
-	const hasActiveFilter = selectedDayKey != null || hasCompleteRange;
+	const analysisRecords = samDetailContext.data.sam?.analysis ?? [];
+	const uniqueApexCount = new Set(
+		analysisRecords.map(a => (a.apex_version?.trim() ?? '')),
+	).size;
+	const apexFilterActive =
+		uniqueApexCount > 0
+		&& analysisApexVersionFilter.length > 0
+		&& analysisApexVersionFilter.length < uniqueApexCount;
+	const hasActiveFilter = selectedDayKey != null || hasCompleteRange || apexFilterActive;
 
 	//
 	// B. Render component

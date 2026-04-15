@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 'use client';
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
@@ -88,7 +89,6 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	const [filterSeenFirstAt, setFilterSeenFirstAt] = useQueryState<number>('seen_first_at', parseAsInteger);
 	const [filterSeenLastAt, setFilterSeenLastAt] = useQueryState<number>('seen_last_at', parseAsInteger);
-	const [filterPage, setFilterPage] = useQueryState<number>('page', parseAsInteger);
 
 	const normalizeApexVersion = useCallback(
 		(value: null | string | undefined): null | string => {
@@ -186,11 +186,10 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 		const params = new URLSearchParams(baseQueryString);
 		if (effectiveApexVersionFilterValues.length)
 			params.set('latest_apex_version', effectiveApexVersionFilterValues.join(','));
-		const page = Math.max(1, filterPage ?? 1);
 		params.set('limit', SAMS_PAGE_SIZE.toString());
-		params.set('offset', ((page - 1) * SAMS_PAGE_SIZE).toString());
+		params.set('offset', '0');
 		return params.toString();
-	}, [baseQueryString, effectiveApexVersionFilterValues, filterPage]);
+	}, [baseQueryString, effectiveApexVersionFilterValues]);
 
 	const samsListUrl = useMemo(() => {
 		if (agenciesContext.flags.loading) return null;
@@ -198,12 +197,10 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 		return samsListQueryString ? `${base}?${samsListQueryString}` : base;
 	}, [agenciesContext.flags.loading, samsListQueryString]);
 
-	useEffect(() => {
-		if ((filterPage ?? 1) <= 1) return;
-		void setFilterPage(1);
-	}, [baseQueryString, effectiveApexVersionFilterValues, filterPage, setFilterPage]);
-
-	const { data: allSamsData = [], error: allSamsError, isLoading: allSamsLoading } = useSWR<Sam[], Error>(samsListUrl);
+	const { data: allSamsData = [], error: allSamsError, isLoading: allSamsLoading } = useSWR<Sam[], Error>(samsListUrl, {
+		revalidateOnFocus: false,
+		revalidateOnReconnect: false,
+	});
 
 	const normalizedSamsData = useMemo(() => {
 		return allSamsData.map(item => ({ ...item, latest_apex_version: normalizeApexVersion(item.latest_apex_version) }));

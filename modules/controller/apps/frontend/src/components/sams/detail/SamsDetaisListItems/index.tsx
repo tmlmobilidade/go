@@ -8,6 +8,12 @@ import { useMemo } from 'react';
 
 /* * */
 
+const normalizeAnalysisApex = (value: null | string | undefined): string => {
+	if (value == null) return '';
+	const trimmed = value.trim();
+	return trimmed;
+};
+
 const hasRangeOverlap = (analysis: SamAnalysis, filterStart: number, filterEnd: number): boolean => {
 	const analysisStart = analysis.start_time;
 	const analysisEnd = analysis.end_time;
@@ -30,17 +36,27 @@ export function SamsDetaisListItems() {
 	const samDetailContext = useSamsDetailContext();
 	const filterStart = samDetailContext.ui.analysisFilterStartTime;
 	const filterEnd = samDetailContext.ui.analysisFilterEndTime;
-	const hasActiveFilter = filterStart != null && filterEnd != null;
+	const apexSelection = samDetailContext.ui.analysisApexVersionFilter;
+	const hasDateFilter = filterStart != null && filterEnd != null;
 
 	//
 	// B. Render component
 
 	const records = useMemo(() => {
 		const analysisRecords = samDetailContext.data.sam?.analysis ?? [];
-		if (!hasActiveFilter) return analysisRecords;
-		if (filterStart == null || filterEnd == null) return analysisRecords;
-		return analysisRecords.filter(analysis => hasRangeOverlap(analysis, filterStart, filterEnd));
-	}, [hasActiveFilter, filterStart, filterEnd, samDetailContext.data.sam?.analysis]);
+		const uniqueApexValues = [...new Set(analysisRecords.map(a => normalizeAnalysisApex(a.apex_version)))];
+		const apexFilterActive =
+			uniqueApexValues.length > 0
+			&& apexSelection.length > 0
+			&& apexSelection.length < uniqueApexValues.length;
+
+		let next = analysisRecords;
+		if (apexFilterActive)
+			next = next.filter(analysis => apexSelection.includes(normalizeAnalysisApex(analysis.apex_version)));
+		if (hasDateFilter && filterStart != null && filterEnd != null)
+			next = next.filter(analysis => hasRangeOverlap(analysis, filterStart, filterEnd));
+		return next;
+	}, [apexSelection, filterEnd, filterStart, hasDateFilter, samDetailContext.data.sam?.analysis]);
 
 	const columns = useMemo(() => {
 		return [
