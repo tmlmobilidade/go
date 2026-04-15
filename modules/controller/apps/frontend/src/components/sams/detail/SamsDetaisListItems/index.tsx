@@ -92,19 +92,19 @@ export function SamsDetaisListItems() {
 			},
 			{
 				accessor: 'transactions_expected',
-				render: item => item.transactions_expected ? <Label>{item.transactions_expected.toString()}</Label> : <Label>0</Label>,
+				render: item => item.transactions_expected ? <Label>{item.transactions_expected.toString()}</Label> : <Label>-</Label>,
 				title: 'Transações esperadas',
 				width: 200,
 			},
 			{
 				accessor: 'transactions_found',
-				render: item => item.transactions_found ? <Label>{item.transactions_found.toString()}</Label> : <Label>0</Label>,
+				render: item => item.transactions_found ? <Label>{item.transactions_found.toString()}</Label> : <Label>-</Label>,
 				title: 'Transações encontradas',
 				width: 200,
 			},
 			{
 				accessor: 'transactions_missing',
-				render: item => item.transactions_missing ? <Label>{item.transactions_missing.toString()}</Label> : <Label>0</Label>,
+				render: item => item.transactions_missing ? <Label>{item.transactions_missing.toString()}</Label> : <Label>-</Label>,
 				title: 'Transações em falta',
 				width: 200,
 			},
@@ -122,13 +122,13 @@ export function SamsDetaisListItems() {
 			},
 			{
 				accessor: 'first_transaction_ase_counter_value',
-				render: item => item.first_transaction_ase_counter_value ? <Label>{item.first_transaction_ase_counter_value.toString()}</Label> : <Label>0</Label>,
+				render: item => item.first_transaction_ase_counter_value ? <Label>{item.first_transaction_ase_counter_value.toString()}</Label> : <Label>-</Label>,
 				title: 'Valor do ASE Counter da primeira transação',
 				width: 350,
 			},
 			{
 				accessor: 'last_transaction_ase_counter_value',
-				render: item => item.last_transaction_ase_counter_value ? <Label>{item.last_transaction_ase_counter_value.toString()}</Label> : <Label>0</Label>,
+				render: item => item.last_transaction_ase_counter_value ? <Label>{item.last_transaction_ase_counter_value.toString()}</Label> : <Label>-</Label>,
 				title: 'Valor do ASE Counter da última transação',
 				width: 350,
 			},

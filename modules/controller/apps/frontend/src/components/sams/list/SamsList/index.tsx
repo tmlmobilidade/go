@@ -45,19 +45,19 @@ export function SamsList() {
 		},
 		{
 			accessor: 'transactions_expected',
-			render: item => item.transactions_expected ? <Label>{item.transactions_expected.toString()}</Label> : <Label>0</Label>,
+			render: item => item.transactions_expected ? <Label>{item.transactions_expected.toString()}</Label> : <Label>-</Label>,
 			title: 'Transações esperadas',
 			width: 180,
 		},
 		{
 			accessor: 'transactions_found',
-			render: item => item.transactions_found ? <Label>{item.transactions_found.toString()}</Label> : <Label>0</Label>,
+			render: item => item.transactions_found ? <Label>{item.transactions_found.toString()}</Label> : <Label>-</Label>,
 			title: 'encontradas',
 			width: 110,
 		},
 		{
 			accessor: 'transactions_missing',
-			render: item => item.transactions_missing ? <Label>{item.transactions_missing.toString()}</Label> : <Label>0</Label>,
+			render: item => item.transactions_missing ? <Label>{item.transactions_missing.toString()}</Label> : <Label>-</Label>,
 			title: 'em falta',
 			width: 120,
 		},
