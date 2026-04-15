@@ -29,7 +29,7 @@ export function StopDetailsSectionFlags() {
 		const uniqueId = stopDetailContext.data.stop?._id;
 		return Array
 			.from(new Set([...flagIds, ...legacyIds]))
-			.filter(id => id && id !== uniqueId)
+			.filter(id => id && id !== String(uniqueId))
 			.sort();
 	}, [stopDetailContext.data.form, stopDetailContext.data.stop]);
 
@@ -75,13 +75,7 @@ export function StopDetailsSectionFlags() {
 				</Grid>
 
 				{stopDetailContext.data.form.getValues().flags?.map((flag, index) => (
-					<StopDetailsSectionFlagItem
-						key={`flag-${index}-${flag.agency_ids.join('-')}`}
-						agencyIds={flag.agency_ids}
-						index={index}
-						shortName={flag.short_name}
-						stopId={flag.stop_id}
-					/>
+					<StopDetailsSectionFlagItem key={`flag-${index}`}index={index} />
 				))}
 
 				<Button label="Adicionar Novo Postalete" onClick={handleAddLegacyId} />

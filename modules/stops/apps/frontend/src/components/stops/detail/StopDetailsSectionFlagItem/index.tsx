@@ -11,10 +11,7 @@ import { useMemo } from 'react';
 /* * */
 
 interface StopDetailsSectionFlagItemProps {
-	agencyIds: string[]
 	index: number
-	shortName: string
-	stopId: string
 }
 
 /* * */
@@ -42,7 +39,7 @@ export function StopDetailsSectionFlagItem({ index }: StopDetailsSectionFlagItem
 	const flagIdMatchesStopId = useMemo(() => {
 		const flagStopId = stopDetailContext.data.form.getValues().flags?.[index]?.stop_id;
 		const stopId = stopDetailContext.data.stop?._id;
-		return flagStopId === stopId;
+		return flagStopId === String(stopId);
 	}, [stopDetailContext.data.form, index, stopDetailContext.data.stop]);
 
 	const flagShortNameMatchesStopName = useMemo(() => {

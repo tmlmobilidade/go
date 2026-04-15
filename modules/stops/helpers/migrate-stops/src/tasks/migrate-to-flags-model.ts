@@ -10,10 +10,14 @@ export async function migrateToFlagsModel() {
 	try {
 		//
 
-		const stopsData = await stops.findMany();
+		const stopsCollection = await stops.getCollection();
 
-		for (const stopItem of stopsData) {
+		const stopsStream = stopsCollection.find().stream();
+
+		for await (const stopItem of stopsStream) {
 			//
+
+			console.log(`Migrating stop with legacy ID: ${stopItem.legacy_id}`);
 
 			const updatedStop: Stop = { ...stopItem };
 			if (!updatedStop.flags) updatedStop.flags = [];
@@ -26,10 +30,24 @@ export async function migrateToFlagsModel() {
 			// Migrate the flag
 			updatedStop.flags.push({
 				agency_ids: ['41', '42', '43', '44'],
-				is_harmonized: validatedStopId === stopItem._id,
-				short_name: updatedStop.short_name,
+				is_harmonized: String(validatedStopId) === String(stopItem.legacy_id),
+				short_name: updatedStop.name,
 				stop_id: stopItem.legacy_id,
 			});
+
+			updatedStop.legacy_ids = [stopItem.legacy_id];
+
+			updatedStop.previous_go_id = stopItem._id;
+
+			updatedStop.legacy_id = null;
+
+			//
+			// Delete and re-insert the stop with the new ID and flags
+			await stopsCollection.deleteOne({ _id: stopItem._id });
+			await stopsCollection.insertOne(updatedStop);
+
+			console.log(`Successfully migrated stop with legacy ID: ${stopItem.legacy_id} to new ID: ${validatedStopId}`);
+			//
 		}
 
 		//
