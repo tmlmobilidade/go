@@ -14,7 +14,8 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "ENVIRONMENT=development dotenv-run -f ./modules/offer/environments/staging/secrets/.env tsx watch src/index.ts",
+		"dev": "ENVIRONMENT=development dotenv-run -f ./modules/offer/environments/production/secrets/.env tsx watch src/index.ts",
+		"dev:local": "ENVIRONMENT=development dotenv-run -f ./modules/offer/environments/production/secrets/.env tsx src/local.ts",
 		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint --fix ."
 	},
