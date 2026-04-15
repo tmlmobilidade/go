@@ -54,6 +54,8 @@ ARG APP
 
 WORKDIR /app
 
+COPY .github/templates/docker/scripts /app/.docker/scripts
+
 # First install the dependencies (as they change less often)
 COPY --from=pruner /app/out/json/ .
 RUN npm ci
@@ -64,6 +66,10 @@ COPY --from=pruner /app/out/full/ .
 RUN npx @tmlmobilidade/repo-version --output=/app/modules/${MODULE}/apps/${APP}/package.json
 
 RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
+
+RUN node /app/.docker/scripts/trim-node-modules.js /app/modules/${MODULE}/apps/${APP}/.next/standalone/node_modules
+
+RUN node /app/.docker/scripts/trim-workspaces.js /app/modules/${MODULE}/apps/${APP}/.next/standalone/packages /app/modules/${MODULE}/apps/${APP}/.next/standalone/modules
 
 
 # # #
