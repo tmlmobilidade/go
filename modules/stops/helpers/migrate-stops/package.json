@@ -17,8 +17,8 @@
 		"start": "tsx watch src/index.ts"
 	},
 	"dependencies": {
+		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-stops-pckg-id-engine": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",

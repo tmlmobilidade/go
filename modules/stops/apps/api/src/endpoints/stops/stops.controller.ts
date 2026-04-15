@@ -1,8 +1,8 @@
 /* * */
 
+import { generateStopId } from '@/utils/generate-stop-id.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { generateStopId } from '@tmlmobilidade/go-stops-pckg-id-engine';
 import { stops } from '@tmlmobilidade/interfaces';
 import { type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
 
@@ -47,14 +47,14 @@ export class StopsController {
 	}
 
 	/**
-	 * Retrieves all stops, sorted by creation date descending
+	 * Generates and retrieves a new unique Stop ID
+	 * that does not conflict with existing IDs or deleted CM Stops.
 	 * @param request Fastify request
 	 * @param reply Fastify reply
 	 */
-	static async getAllIds(request: FastifyRequest, reply: FastifyReply<StopId[]>) {
-		const data = await stops.findMany({}, { projection: { _id: 1 }, sort: { _id: 1 } });
-		const ids = data.map(stop => stop._id);
-		reply.send({ data: ids, error: null, statusCode: HTTP_STATUS.OK });
+	static async getValidId(request: FastifyRequest, reply: FastifyReply<StopId>) {
+		const newStopId = await generateStopId();
+		reply.send({ data: newStopId, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**

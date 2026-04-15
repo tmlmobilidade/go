@@ -23,8 +23,8 @@ server.register(
 		);
 
 		instance.get(
-			'/ids',
-			StopsController.getAllIds,
+			'/valid-id',
+			StopsController.getValidId,
 		);
 
 		instance.get(
