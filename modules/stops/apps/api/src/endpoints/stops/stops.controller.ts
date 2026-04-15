@@ -63,7 +63,7 @@ export class StopsController {
 	 * @param reply Fastify reply.
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
-		const foundStop = await stops.findById(request.params.id);
+		const foundStop = await stops.findById(Number(request.params.id));
 		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
 		reply.send({ data: foundStop, error: null, statusCode: HTTP_STATUS.OK });
 	}
