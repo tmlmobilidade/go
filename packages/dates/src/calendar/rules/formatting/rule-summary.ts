@@ -312,11 +312,8 @@ function mapWeekdaysToGtfsAbbreviation(weekdays?: number[]): string {
 	if (!weekdays?.length) return 'ALL';
 
 	const sorted = [...new Set(weekdays)].sort((a, b) => a - b);
-	const joined = sorted.join('-');
 
-	// Special cases
-	if (joined === '1-2-3-4-5') return 'DU';
-	if (joined === '1-2-3-4-5-6-7') return 'ALL';
+	if (sorted.length === 7) return 'ALL';
 
 	const map: Record<number, string> = {
 		1: 'SEG',
@@ -327,6 +324,13 @@ function mapWeekdaysToGtfsAbbreviation(weekdays?: number[]): string {
 		6: 'SAB',
 		7: 'DOM',
 	};
+
+	// Collapse weekdays 1-5 into DU when all present
+	const hasDU = [1, 2, 3, 4, 5].every(d => sorted.includes(d));
+	if (hasDU) {
+		const weekend = sorted.filter(d => d > 5).map(d => map[d]);
+		return ['DU', ...weekend].join('-');
+	}
 
 	return sorted.map(day => map[day] || String(day)).join('-');
 }
@@ -353,7 +357,14 @@ export function buildRuleSummaryGtfs(
 	rule: ScheduleRule,
 	options: { events?: Event[], periods?: YearPeriod[] },
 ): string {
-	if (isEventRestriction(rule) || isEventReplacement(rule)) {
+	if (isEventRestriction(rule)) {
+		const base = rule.event?.title ?? rule.name ?? rule._id;
+		if (rule.all_day) return `${base}_ALLDAY`;
+		if (rule.start_time && rule.end_time)
+			return `${base}_${rule.start_time.replace(':', '')}${rule.end_time.replace(':', '')}`;
+		return base;
+	}
+	if (isEventReplacement(rule)) {
 		return rule.event?.title ?? rule.name ?? rule._id;
 	}
 
