@@ -19,6 +19,7 @@ export function SamsFiltersAgency() {
 	return (
 		<FilterTypeList
 			active={samsListContext.filters.agency.isActive}
+			disabled={samsListContext.flags.favoritesEnabled}
 			label={t('default:sams.list.SamsListFilterAgency.label')}
 			onChange={samsListContext.filters.agency.set}
 			options={samsListContext.filters.agency.options}

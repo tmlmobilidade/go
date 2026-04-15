@@ -20,6 +20,7 @@ export function SamsFilterStatus() {
 	return (
 		<FilterTypeList
 			active={samsListContext.filters.status.isActive}
+			disabled={samsListContext.flags.favoritesEnabled}
 			label={t('default:sams.list.SamsFiltersStatus.label')}
 			onChange={samsListContext.filters.status.set}
 			options={samsListContext.filters.status.options.map(option => ({

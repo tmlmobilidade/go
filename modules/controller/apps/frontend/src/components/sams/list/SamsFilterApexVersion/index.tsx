@@ -19,6 +19,7 @@ export function SamsFiltersApexVersion() {
 	return (
 		<FilterTypeList
 			active={samsListContext.filters.apex_version.isActive}
+			disabled={samsListContext.flags.favoritesEnabled}
 			label={t('default:sams.list.SamsFiltersApexVersion.label')}
 			onChange={samsListContext.filters.apex_version.set}
 			options={samsListContext.filters.apex_version.options}
