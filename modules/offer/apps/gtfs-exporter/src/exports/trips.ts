@@ -1,7 +1,7 @@
 import { type GtfsV29ExportConfig } from '@/types.js';
 import { type ServiceId, type ServiceRegistry } from '@/utils/service-registry.js';
 import {
-	buildRuleSummary,
+	buildRuleSummaryGtfs,
 	calendarWeekday,
 	computeActiveRules,
 	Dates,
@@ -395,13 +395,12 @@ function resolveTripRows(
 				continue;
 			}
 
-			const includeRuleName = buildRuleSummary(includeSchedule.rule, { events, periods });
-			const excludeRuleNames = overlappingExcludeSchedules.map(s => buildRuleSummary(s.rule, { events, periods })).sort();
+			const includeRuleName = buildRuleSummaryGtfs(includeSchedule.rule, { events, periods });
+			const excludeRuleNames = overlappingExcludeSchedules.map(s => buildRuleSummaryGtfs(s.rule, { events, periods })).sort();
 
-			// ! OLHAR PARA ISTO
 			const ruleToken = excludeRuleNames.length > 0
-				? `${includeRuleName.long}-OFF-${excludeRuleNames.map(r => r.long).join('-')}`
-				: includeRuleName.long;
+				? `${includeRuleName}-OFF-${excludeRuleNames.join('-')}`
+				: includeRuleName;
 
 			const serviceId = serviceRegistry.getOrCreateServiceId(resultingDates);
 
