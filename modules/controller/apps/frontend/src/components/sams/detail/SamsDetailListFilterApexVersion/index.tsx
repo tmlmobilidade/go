@@ -37,7 +37,7 @@ export function SamsDetailListFilterApexVersion() {
 			versionValues.map(value => ({
 				checked: selection.includes(value),
 				disabled: false,
-				label: value === '' ? '—' : value,
+				label: value === '' ? 'N/A' : value,
 				value,
 			})),
 		[selection, versionValues],

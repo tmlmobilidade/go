@@ -62,74 +62,85 @@ export function SamsDetaisListItems() {
 		return [
 			{
 				accessor: 'start_time',
-				render: item => <Label>{formatUnixTimestampToDateString(item.start_time)}</Label>,
+				render: item => item.start_time ? <Label>{formatUnixTimestampToDateString(item.start_time)}</Label> : <Label>N/A</Label>,
 				title: 'Data de início',
 				width: 200,
 			},
 			{
 				accessor: 'end_time',
-				render: item => <Label>{formatUnixTimestampToDateString(item.end_time)}</Label>,
+				render: item => item.end_time ? <Label>{formatUnixTimestampToDateString(item.end_time)}</Label> : <Label>N/A</Label>,
 				title: 'Data de fim',
 				width: 200,
 			},
 			{
 				accessor: 'device_id',
+				render: item => item.device_id ? <Label>{item.device_id}</Label> : <Label>N/A</Label>,
 				title: 'Device ID',
 				width: 250,
 			},
 			{
 				accessor: 'vehicle_id',
+				render: item => item.vehicle_id ? <Label>{item.vehicle_id}</Label> : <Label>N/A</Label>,
 				title: 'Vehicle ID',
 				width: 100,
 			},
 			{
 				accessor: 'apex_version',
+				render: item => item.apex_version ? <Label>{item.apex_version}</Label> : <Label>N/A</Label>,
 				title: 'Versão APEX',
 				width: 100,
 			},
 			{
 				accessor: 'transactions_expected',
-
+				render: item => item.transactions_expected ? <Label>{item.transactions_expected.toString()}</Label> : <Label>0</Label>,
 				title: 'Transações esperadas',
 				width: 200,
 			},
 			{
 				accessor: 'transactions_found',
+				render: item => item.transactions_found ? <Label>{item.transactions_found.toString()}</Label> : <Label>0</Label>,
 				title: 'Transações encontradas',
 				width: 200,
 			},
 			{
 				accessor: 'transactions_missing',
+				render: item => item.transactions_missing ? <Label>{item.transactions_missing.toString()}</Label> : <Label>0</Label>,
 				title: 'Transações em falta',
 				width: 200,
 			},
 			{
 				accessor: 'first_transaction_id',
+				render: item => item.first_transaction_id ? <Label>{item.first_transaction_id}</Label> : <Label>N/A</Label>,
 				title: 'ID da primeira transação',
 				width: 400,
 			},
 			{
 				accessor: 'last_transaction_id',
+				render: item => item.last_transaction_id ? <Label>{item.last_transaction_id}</Label> : <Label>N/A</Label>,
 				title: 'ID da última transação',
 				width: 400,
 			},
 			{
 				accessor: 'first_transaction_ase_counter_value',
+				render: item => item.first_transaction_ase_counter_value ? <Label>{item.first_transaction_ase_counter_value.toString()}</Label> : <Label>0</Label>,
 				title: 'Valor do ASE Counter da primeira transação',
 				width: 350,
 			},
 			{
 				accessor: 'last_transaction_ase_counter_value',
+				render: item => item.last_transaction_ase_counter_value ? <Label>{item.last_transaction_ase_counter_value.toString()}</Label> : <Label>0</Label>,
 				title: 'Valor do ASE Counter da última transação',
 				width: 350,
 			},
 			{
 				accessor: 'first_transaction_type',
+				render: item => item.first_transaction_type ? <Label>{item.first_transaction_type}</Label> : <Label>N/A</Label>,
 				title: 'Tipo da primeira transação',
 				width: 250,
 			},
 			{
 				accessor: 'last_transaction_type',
+				render: item => item.last_transaction_type ? <Label>{item.last_transaction_type}</Label> : <Label>N/A</Label>,
 				title: 'Tipo da última transação',
 				width: 250,
 			},

@@ -9,7 +9,7 @@ import { useSamsListContext } from '@/contexts/SamsList.context';
 import { translateFilterValue } from '@/lib/translations';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Sam } from '@tmlmobilidade/types';
-import { AgencyTag, DataTable, DataTableColumn, IdTag, keepUrlParams, Pane, Tag } from '@tmlmobilidade/ui';
+import { AgencyTag, DataTable, DataTableColumn, IdTag, keepUrlParams, Label, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 /* * */
@@ -39,27 +39,27 @@ export function SamsList() {
 		},
 		{
 			accessor: 'latest_apex_version',
-			render: item => <Tag label={item.latest_apex_version ?? '-'} />,
+			render: item => item.latest_apex_version ? <Label>{item.latest_apex_version}</Label> : <Label>N/A</Label>,
 			title: 'Versão APEX',
-			width: 100,
+			width: 120,
 		},
 		{
 			accessor: 'transactions_expected',
-			render: item => <Tag label={item.transactions_expected ? item.transactions_expected.toString() : '-'} />,
+			render: item => item.transactions_expected ? <Label>{item.transactions_expected.toString()}</Label> : <Label>0</Label>,
 			title: 'Transações esperadas',
-			width: 170,
+			width: 180,
 		},
 		{
 			accessor: 'transactions_found',
-			render: item => <Tag label={item.transactions_found ? item.transactions_found.toString() : '-'} />,
+			render: item => item.transactions_found ? <Label>{item.transactions_found.toString()}</Label> : <Label>0</Label>,
 			title: 'encontradas',
-			width: 100,
+			width: 110,
 		},
 		{
 			accessor: 'transactions_missing',
-			render: item => <Tag label={item.transactions_missing ? item.transactions_missing.toString() : '-'} />,
+			render: item => item.transactions_missing ? <Label>{item.transactions_missing.toString()}</Label> : <Label>0</Label>,
 			title: 'em falta',
-			width: 100,
+			width: 120,
 		},
 		{
 			accessor: 'system_status',
