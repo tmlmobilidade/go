@@ -51,8 +51,6 @@ export const SamsFavoritesContextProvider = ({ children }: PropsWithChildren) =>
 	const favoriteSamsKey = favorites.length ? `${API_ROUTES.controller.SAMS_FAVORITES}?ids=${favoritesIdsQuery}` : null;
 	const { data: favoriteSamsData, error: favoriteSamsError, isLoading: favoriteSamsLoading, mutate: mutateFavoriteSams } = useSWR<Sam[], Error>(favoriteSamsKey);
 
-	console.log('favoriteSamsKey', favoriteSamsKey);
-	console.log('favoriteSamsData', favoriteSamsData);
 	//
 	// B. Handle actions
 
