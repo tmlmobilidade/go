@@ -2,12 +2,9 @@
 
 /* * */
 
+import { SamsDetailListFilterApexVersion } from '@/components/sams/detail/SamDetailListFilters/SamListFilterApex';
+import { SamsDetailListFilterDate } from '@/components/sams/detail/SamDetailListFilters/SamListFilterDate';
 import { FiltersBar } from '@tmlmobilidade/ui';
-
-/* * */
-
-import { SamsDetailListFilterApexVersion } from '../SamDetailListFilterApexVersion';
-import { SamsDetailListFilterDate } from '../SamDetailListFilterDate';
 
 /* * */
 

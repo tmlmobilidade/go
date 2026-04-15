@@ -8,8 +8,8 @@ import { useTranslation } from 'react-i18next';
 
 /* * */
 
-import { SamsDetailListFilters } from '../SamDetailListFilters';
-import { SamsDetaisListItems } from '../SamDetaisListItems';
+import { SamsDetailListFilters } from '@/components/sams/detail/SamDetailListFilters';
+import { SamsDetailListItems } from '@/components/sams/detail/SamDetailListItems';
 
 /* * */
 
@@ -44,7 +44,7 @@ export function SamsDetailList() {
 			title={t('default:sams.detail.SamsDetailList.title')}
 		>
 			<SamsDetailListFilters />
-			<SamsDetaisListItems />
+			<SamsDetailListItems />
 		</Collapsible>
 	);
 }

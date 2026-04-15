@@ -27,7 +27,7 @@ const hasRangeOverlap = (analysis: SamAnalysis, filterStart: number, filterEnd: 
 
 /* * */
 
-export function SamsDetaisListItems() {
+export function SamsDetailListItems() {
 	//
 
 	//
