@@ -98,12 +98,17 @@
 
 		"pckg:dev:emails": "ENVIRONMENT=dev turbo run dev --filter=@tmlmobilidade/emails",
 
+		"prepare": "husky",
+
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse"
 
 	},
 	"devDependencies": {
+		"@commitlint/cli": "^20.1.0",
+		"@commitlint/config-conventional": "^20.0.0",
 		"@dotenv-run/cli": "1.3.6",
 		"@tmlmobilidade/eslint": "*",
+		"husky": "^9.1.7",
 		"turbo": "2.9.6"
 	},
 	"packageManager": "npm@11.12.1",
