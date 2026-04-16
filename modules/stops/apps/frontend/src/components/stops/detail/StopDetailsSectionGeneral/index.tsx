@@ -49,9 +49,9 @@ export function StopDetailsSectionGeneral() {
 
 			<Section>
 				<Grid columns="abc" gap="md">
-					<ValueDisplay label="Código Único da Paragem" value={stopDetailContext.data.stop?._id ?? 'N/A'} bordered />
-					<ValueDisplay label="Latitude" value={stopDetailContext.data.stop?.latitude ?? 'N/A'} bordered />
-					<ValueDisplay label="Longitude" value={stopDetailContext.data.stop?.longitude ?? 'N/A'} bordered />
+					<ValueDisplay label="Código Único da Paragem" value={stopDetailContext.data.stop?._id ?? 'N/A'} variant="bordered" />
+					<ValueDisplay label="Latitude" value={stopDetailContext.data.stop?.latitude ?? 'N/A'} variant="bordered" />
+					<ValueDisplay label="Longitude" value={stopDetailContext.data.stop?.longitude ?? 'N/A'} variant="bordered" />
 				</Grid>
 			</Section>
 
@@ -73,7 +73,7 @@ export function StopDetailsSectionGeneral() {
 					<ProposedChangesWrapper
 						inputName="name"
 						label="Nome Único da Paragem"
-						relatedId={stopDetailContext.data.stop?._id}
+						relatedId={String(stopDetailContext.data.stop?._id)}
 						scope="stop"
 					>
 						<TextInput
@@ -87,8 +87,8 @@ export function StopDetailsSectionGeneral() {
 
 			<Section>
 				<Grid columns="ab" gap="md">
-					<ValueDisplay label="Nome Curto" value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'} bordered />
-					<ValueDisplay label="Nome TTS" value={stopDetailContext.data.form.getValues()?.tts_name ?? 'N/A'} bordered />
+					<ValueDisplay label="Nome Curto" value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'} variant="bordered" />
+					<ValueDisplay label="Nome TTS" value={stopDetailContext.data.form.getValues()?.tts_name ?? 'N/A'} variant="bordered" />
 				</Grid>
 			</Section>
 
