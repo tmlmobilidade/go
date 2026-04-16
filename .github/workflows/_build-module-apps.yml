@@ -1,0 +1,97 @@
+name: Build Module Apps
+
+on:
+  workflow_call:
+    inputs:
+      module:
+        description: "Module name"
+        required: true
+        type: string
+      modules-apps:
+        description: "JSON object mapping modules to their apps"
+        required: true
+        type: string
+      image-tag:
+        description: "Docker image tag"
+        required: true
+        type: string
+      environment:
+        description: "Build environment value"
+        required: true
+        type: string
+
+jobs:
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  get-apps:
+    name: Get Apps for ${{ inputs.module }}
+    runs-on: ubuntu-24.04-arm
+    outputs:
+      apps: ${{ steps.get-apps.outputs.apps }}
+    steps:
+      - name: Get apps for module
+        id: get-apps
+        run: |
+          MODULE="${{ inputs.module }}"
+          MODULES_APPS='${{ inputs.modules-apps }}'
+          APPS=$(echo "$MODULES_APPS" | jq -r ".[\"$MODULE\"] // []")
+
+          {
+            echo "apps<<EOF"
+            echo "$APPS"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+          echo "Apps for module $MODULE: $APPS"
+
+  build:
+    name: Build ${{ inputs.module }}/${{ matrix.app }}
+    needs: get-apps
+    if: needs.get-apps.outputs.apps != '[]'
+    runs-on: ubuntu-24.04-arm
+    concurrency:
+      group: build-${{ inputs.module }}-${{ matrix.app }}-${{ github.ref }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJson(needs.get-apps.outputs.apps) }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Determine Dockerfile
+        id: dockerfile
+        run: |
+          CUSTOM="modules/${{ inputs.module }}/apps/${{ matrix.app }}/Dockerfile"
+          if [ -f "$CUSTOM" ]; then
+            echo "path=$CUSTOM" >> $GITHUB_OUTPUT
+          elif [ "${{ matrix.app }}" = "frontend" ]; then
+            echo "path=.github/templates/docker/frontend.dockerfile" >> $GITHUB_OUTPUT
+          else
+            echo "path=.github/templates/docker/nodejs.dockerfile" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: package-lock
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          push: true
+          context: .
+          file: ${{ steps.dockerfile.outputs.path }}
+          tags: ghcr.io/tmlmobilidade/go-${{ inputs.module }}-${{ matrix.app }}:${{ inputs.image-tag }}
+          build-args: |
+            ENVIRONMENT=${{ inputs.environment }}
+            MODULE=${{ inputs.module }}
+            APP=${{ matrix.app }}

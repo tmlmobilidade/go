@@ -19,27 +19,39 @@ concurrency:
 jobs:
 
   # # #
-  # Auto-discover all module/app pairs from the filesystem
+  # Auto-discover modules and module->apps mapping from filesystem
 
   discover:
-    name: Discover Apps
+    name: Discover Modules
     if: github.event.action != 'closed'
     runs-on: ubuntu-24.04-arm
     outputs:
-      matrix: ${{ steps.discover.outputs.matrix }}
+      modules: ${{ steps.discover.outputs.modules }}
+      modules-apps: ${{ steps.discover.outputs.modules-apps }}
     steps:
       - uses: actions/checkout@v5
         with:
           sparse-checkout: modules
       - id: discover
         run: |
-          MATRIX=$(find modules/*/apps/* -maxdepth 0 -type d | sort | while read -r dir; do
-            MODULE=$(echo "$dir" | cut -d/ -f2)
-            APP=$(echo "$dir" | cut -d/ -f4)
-            echo "{\"module\":\"$MODULE\",\"app\":\"$APP\"}"
-          done | jq -sc '.')
-          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
-          echo "$MATRIX" | jq .
+          MODULES_APPS=$(
+            find modules/*/apps/* -maxdepth 0 -type d | sort | \
+            jq -Rsc '
+              split("\n")
+              | map(select(length > 0))
+              | map(split("/"))
+              | map({module: .[1], app: .[3]})
+              | group_by(.module)
+              | map({key: .[0].module, value: (map(.app))})
+              | from_entries
+            '
+          )
+
+          MODULES=$(echo "$MODULES_APPS" | jq -c 'keys')
+
+          echo "modules=$MODULES" >> $GITHUB_OUTPUT
+          echo "modules-apps=$MODULES_APPS" >> $GITHUB_OUTPUT
+          echo "$MODULES_APPS" | jq .
 
   # # #
   # Generate package-lock.json once,
@@ -48,6 +60,7 @@ jobs:
   package-lock:
     name: Generate package-lock.json
     needs: discover
+    if: needs.discover.outputs.modules != '[]'
     runs-on: ubuntu-24.04-arm
     steps:
 
@@ -92,52 +105,20 @@ jobs:
             }
 
   # # #
-  # Build and push Docker image for each module/app
+  # Build and push Docker images for each module
 
-  build:
-    name: ${{ matrix.module }}/${{ matrix.app }}
+  build-module:
+    name: Build ${{ matrix.module }}
     needs: [discover, package-lock]
-    runs-on: ubuntu-24.04-arm
-    permissions:
-      contents: read
-      packages: write
+    if: needs.discover.outputs.modules != '[]'
+    uses: ./.github/workflows/_build-module-apps.yml
     strategy:
       fail-fast: false
       matrix:
-        include: ${{ fromJson(needs.discover.outputs.matrix) }}
-    steps:
-
-      - uses: actions/checkout@v5
-
-      - name: Determine Dockerfile
-        id: dockerfile
-        run: |
-          CUSTOM="modules/${{ matrix.module }}/apps/${{ matrix.app }}/Dockerfile"
-          if [ -f "$CUSTOM" ]; then
-            echo "path=$CUSTOM" >> $GITHUB_OUTPUT
-          elif [ "${{ matrix.app }}" = "frontend" ]; then
-            echo "path=.github/templates/docker/frontend.dockerfile" >> $GITHUB_OUTPUT
-          else
-            echo "path=.github/templates/docker/nodejs.dockerfile" >> $GITHUB_OUTPUT
-          fi
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: package-lock
-
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: docker/build-push-action@v6
-        with:
-          push: true
-          context: .
-          file: ${{ steps.dockerfile.outputs.path }}
-          tags: ghcr.io/tmlmobilidade/go-${{ matrix.module }}-${{ matrix.app }}:${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
-          build-args: |
-            ENVIRONMENT=${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
-            MODULE=${{ matrix.module }}
-            APP=${{ matrix.app }}
+        module: ${{ fromJson(needs.discover.outputs.modules) }}
+    with:
+      module: ${{ matrix.module }}
+      modules-apps: ${{ needs.discover.outputs.modules-apps }}
+      image-tag: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
+      environment: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
+    secrets: inherit
