@@ -84,7 +84,7 @@ export async function parseZoning(
 				line_id: lineData.code,
 				line_type: typologyCode,
 				pattern_id: patternData.code,
-				stop_id: pathData.stop._id,
+				stop_id: String(pathData.stop._id),
 				stop_name: pathData.stop.name || '',
 				stop_sequence: pathIndex + exportConfig.stop_sequence_start,
 				accepted_zone_codes: formattedZoneCodes,

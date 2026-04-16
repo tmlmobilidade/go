@@ -116,7 +116,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 					type: 'Point' as const,
 				},
 				properties: {
-					id: pathItem.stop?._id,
+					id: String(pathItem.stop?._id),
 					name: pathItem.stop?.name,
 					sequence: index + 1,
 				},

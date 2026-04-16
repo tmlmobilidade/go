@@ -1,5 +1,6 @@
 import { DayPeriodSchema } from '@/dates/day-period.js';
 import { WEEKDAYS } from '@/dates/weekdays.js';
+import { StopIdSchema } from '@/stops/stop-id.js';
 import { z } from 'zod';
 
 /* * */
@@ -12,7 +13,7 @@ const StopsParameterCommonSchema = z.object({
 	path: z.array(z.object({
 		avg_speed: z.number(),
 		dwell_time: z.number(),
-		stop_id: z.string(),
+		stop_id: StopIdSchema,
 	})),
 	vehicle_type: z.string().optional(),
 });
