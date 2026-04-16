@@ -100,7 +100,13 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 			new_name_normalized: normalizeString(item.new_name),
 			parish_name: locationsContext.data.parishes_map.get(item.parish_id)?.name ?? '',
 		}));
-	}, [allStopsData]);
+	}, [
+		allStopsData,
+		locationsContext.data.districts_map,
+		locationsContext.data.localities_map,
+		locationsContext.data.municipalities_map,
+		locationsContext.data.parishes_map,
+	]);
 
 	const searchResultsData = useSearch<StopNormalized>({
 		accessors: ['_id', 'name_normalized', 'new_name_normalized', 'legacy_id'],
@@ -134,24 +140,14 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 				return lifecycleStatusMatch && matchesDistrict && matchesMunicipality && matchesParish && matchesLocality && matchesFacilities && matchesEquipment && matchesConnections;
 			})
 			.sort((a, b) => {
-				return a._id.localeCompare(b._id);
+				return String(a._id).localeCompare(String(b._id));
 			});
-	}, [
-		searchResultsData,
-		filterDistricts,
-		filterMunicipalities,
-		filterParishes,
-		filterLocalities,
-		filterFacilities,
-		filterLifecycleStatus,
-		filterEquipment,
-		filterConnections,
-	]);
+	}, [searchResultsData, filterLifecycleStatus]);
 
 	//
 	// D. Define context value
 
-	const contextValue: StopsListContextState = useMemo(() => ({
+	const contextValue: StopsListContextState = {
 		actions: {
 			setFilterConnections,
 			setFilterDistricts,
@@ -182,20 +178,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 			error: allStopsError,
 			loading: allStopsLoading,
 		},
-	}), [
-		allStopsError,
-		allStopsLoading,
-		filterResultsData,
-		filterConnections,
-		filterDistricts,
-		filterLifecycleStatus,
-		filterEquipment,
-		filterFacilities,
-		filterLocalities,
-		filterMunicipalities,
-		filterParishes,
-		filterSearch,
-	]);
+	};
 
 	//
 	// E. Render components

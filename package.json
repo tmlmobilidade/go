@@ -28,6 +28,7 @@
 		"build:plans": "ENVIRONMENT=dev dotenv-run -f ./modules/plans/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-plans-*",
 		"build:replicator": "ENVIRONMENT=dev dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-replicator-*",
 		"build:stops": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-stops-*",
+		"build:stops:packages": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-stops-pckg-*",
 		"build:tracker": "ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-tracker-*",
 		"build:tracker:packages": "ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-tracker-pckg-*",
 		"build:types": "turbo build --filter=@tmlmobilidade/types",
@@ -91,8 +92,9 @@
 		"helper:offer:seed-lines": "dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-lines",
 		"helper:offer:seed-typologies": "dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-typologies",
 		"helper:offer:seed-zones": "dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-zones",
-		"helper:stops:seed-stops": "dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-stops-helpers-seed-stops",
+		"helper:stops:migrate-stops": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-stops-helpers-migrate-stops",
 
+		"helper:stops:seed-stops": "dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-stops-helpers-seed-stops",
 		"lint": "turbo lint",
 		"lint:fix": "turbo lint:fix",
 

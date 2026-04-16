@@ -209,7 +209,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	 * @param options - The options for the insert operation
 	 * @returns A promise that resolves to the result of the insert operation
 	 */
-	public async insertMany(docs: (TCreate & { _id?: string, created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string })[], { options, unsafe = false }: { options?: InsertOneOptions, unsafe?: boolean } = {}): Promise<InsertManyResult<T>> {
+	public async insertMany(docs: (TCreate & { _id?: T['_id'], created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string })[], { options, unsafe = false }: { options?: InsertOneOptions, unsafe?: boolean } = {}): Promise<InsertManyResult<T>> {
 		const newDocuments = docs.map((doc) => {
 			return {
 				...doc,
@@ -254,7 +254,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	 * @param options The options for the insert operation.
 	 * @returns A promise that resolves to the result of the insert operation.
 	 */
-	public async insertOne<TReturnDocument extends boolean = true>(doc: TCreate & { _id?: string, created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string }, { options, unsafe = false }: { options?: InsertOneOptions & { returnResult?: TReturnDocument }, unsafe?: boolean } = {}): Promise<TReturnDocument extends true ? WithId<T> : InsertOneResult<T>> {
+	public async insertOne<TReturnDocument extends boolean = true>(doc: TCreate & { _id?: T['_id'], created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string }, { options, unsafe = false }: { options?: InsertOneOptions & { returnResult?: TReturnDocument }, unsafe?: boolean } = {}): Promise<TReturnDocument extends true ? WithId<T> : InsertOneResult<T>> {
 		// Setup a copy of the document to be inserted
 		let parsedDocument = { ...doc } as OptionalUnlessRequiredId<T>;
 		// Validate the document against the create schema if unsafe is false

@@ -450,5 +450,6 @@ export const API_ROUTES = Object.freeze({
 		STOPS_DETAIL: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/${id}`,
 		STOPS_DETAIL_LOCK: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/${id}/lock`,
 		STOPS_LIST: `${getModuleConfig('stops', 'api_url')}/stops`,
+		STOPS_VALID_ID: `${getModuleConfig('stops', 'api_url')}/stops/valid-id`,
 	},
 } as const);

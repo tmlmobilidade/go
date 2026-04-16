@@ -1,16 +1,17 @@
 'use client';
 
-import { SegmentedControl, Switch } from '@mantine/core';
 /* * */
 
+import { SegmentedControl, Switch } from '@mantine/core';
 import { IconCrosshair } from '@tabler/icons-react';
 import { useMemo } from 'react';
 
-import { useMapContext } from '../../../../contexts';
+import { useMapContext } from '../../../../contexts/Map.context';
 import { Button } from '../../../buttons/Button';
-import { CoordinatesInput } from '../../../inputs';
-import { Spacer, Toolbar } from '../../../layout';
-import { MAP_STYLES } from '../../configs';
+import { SearchInput } from '../../../inputs/SearchInput';
+import { Spacer } from '../../../layout/Spacer';
+import { Toolbar } from '../../../layout/Toolbar';
+import { MAP_STYLES } from '../../configs/styles';
 import { useMapViewContext } from '../MapViewContext';
 
 /* * */
@@ -27,11 +28,9 @@ export function MapViewToolbar() {
 	//
 	// B. Transform data
 
-	const mapStyleOptions = useMemo(() => {
-		return Object
-			.entries(MAP_STYLES)
-			.map(([key, style]) => ({ label: style.label, value: key }));
-	}, [MAP_STYLES]);
+	const mapStyleOptions = Object
+		.entries(MAP_STYLES)
+		.map(([key, style]) => ({ label: style.label, value: key }));
 
 	//
 	// C. Render components
@@ -41,7 +40,7 @@ export function MapViewToolbar() {
 			<Switch checked={mapContext.flags.scroll_zoom} label="Permitir Zoom" onChange={() => mapContext.actions.toggleScrollZoom()} />
 			<Switch checked={mapViewContext.flags.auto_zoom} label="Auto Zoom" onChange={() => mapViewContext.actions.toggleAutoZoom()} />
 			<Spacer />
-			<CoordinatesInput key="search-coordinates" onChange={mapContext.actions.handleSearchCoordinates} value={mapContext.data.search_coordinates ?? null} />
+			<SearchInput onChange={mapContext.actions.handleSearch} value={mapContext.data.search} />
 			<Button icon={<IconCrosshair />} label="Centrar" loading={mapViewContext.flags.loading} onClick={() => mapViewContext.actions.toggleAutoZoom(true)} />
 			<SegmentedControl data={mapStyleOptions} onChange={() => mapContext.actions.toggleStyle()} value={mapContext.flags.style} />
 		</Toolbar>
