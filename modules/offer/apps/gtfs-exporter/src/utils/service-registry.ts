@@ -12,6 +12,17 @@ export interface ServiceIdInfo {
 	service_id: ServiceId
 }
 
+export interface ServiceRuleTokenEntry {
+	patterns: string[]
+	rule_token: string
+}
+
+export interface ServiceRuleMapInfo {
+	dates: Set<OperationalDate>
+	rule_tokens: ServiceRuleTokenEntry[]
+	service_id: ServiceId
+}
+
 /**
  * Global registry of service IDs and their corresponding date sets.
  * This ensures that patterns with identical schedules share the same service_id.
@@ -23,13 +34,104 @@ export class ServiceRegistry {
 	// Map: service_id -> date set
 	private servicesById = new Map<ServiceId, Set<OperationalDate>>();
 
+	// Map: service_id -> rule_token -> Set of pattern codes
+	private serviceRuleTokens = new Map<ServiceId, Map<string, Set<string>>>();
+
+	// Map: base rule token name -> array of service_ids in order of first encounter.
+	// Used to disambiguate identical token names that map to different date sets.
+	private ruleTokenServiceIds = new Map<string, ServiceId[]>();
+
+	// Map: rule-token service_id -> date set (the externally visible service registry).
+	// Populated by registerServiceId() after resolveRuleToken() produces the final token.
+	private tokenServices = new Map<ServiceId, Set<OperationalDate>>();
+
+	/**
+	 * Resolves the final rule token name for a given (ruleToken, serviceId) pair.
+	 * If this exact ruleToken+serviceId combination was seen before, returns the same
+	 * suffixed name. If the ruleToken was seen with a DIFFERENT serviceId, appends
+	 * " 2", " 3", etc. to disambiguate.
+	 */
+	resolveRuleToken(ruleToken: string, serviceId: ServiceId): string {
+		const existing = this.ruleTokenServiceIds.get(ruleToken);
+
+		if (!existing) {
+			// First time this token name is seen.
+			this.ruleTokenServiceIds.set(ruleToken, [serviceId]);
+			return ruleToken;
+		}
+
+		const idx = existing.indexOf(serviceId);
+
+		if (idx === 0) return ruleToken;
+		if (idx > 0) return idx === 1 ? `${ruleToken} 2` : `${ruleToken} ${idx + 1}`;
+
+		// New serviceId for this token — assign next suffix.
+		existing.push(serviceId);
+		const newIdx = existing.length - 1;
+		return newIdx === 1 ? `${ruleToken} 2` : `${ruleToken} ${newIdx + 1}`;
+	}
+
+	/**
+	 * Registers a resolved rule token as an externally visible service_id with its date set.
+	 * Idempotent: calling again with the same token and identical dates is a no-op.
+	 * This is what populates calendar_dates.txt — the hash-based internal service_id is
+	 * never exposed outside the registry.
+	 */
+	registerServiceId(serviceId: ServiceId, dates: Set<OperationalDate>): void {
+		if (!this.tokenServices.has(serviceId)) {
+			this.tokenServices.set(serviceId, new Set(dates));
+		}
+	}
+
+	/**
+	 * Attaches a rule token and the originating pattern to a service_id.
+	 * Multiple patterns can share the same rule token for the same service.
+	 */
+	attachRuleToken(serviceId: ServiceId, ruleToken: string, patternCode: string): void {
+		if (!this.serviceRuleTokens.has(serviceId)) {
+			this.serviceRuleTokens.set(serviceId, new Map());
+		}
+
+		const tokenMap = this.serviceRuleTokens.get(serviceId)!;
+
+		if (!tokenMap.has(ruleToken)) {
+			tokenMap.set(ruleToken, new Set());
+		}
+
+		tokenMap.get(ruleToken)!.add(patternCode);
+	}
+
+	/**
+	 * Returns a map of all service IDs with their date sets and contributing rule tokens + patterns.
+	 */
+	getServiceRuleMap(): Map<ServiceId, ServiceRuleMapInfo> {
+		const result = new Map<ServiceId, ServiceRuleMapInfo>();
+
+		for (const [service_id, dates] of this.tokenServices.entries()) {
+			const tokenMap = this.serviceRuleTokens.get(service_id);
+			const rule_tokens: ServiceRuleTokenEntry[] = [];
+
+			if (tokenMap) {
+				for (const [rule_token, patternSet] of tokenMap.entries()) {
+					rule_tokens.push({ patterns: Array.from(patternSet).sort(), rule_token });
+				}
+
+				rule_tokens.sort((a, b) => a.rule_token.localeCompare(b.rule_token));
+			}
+
+			result.set(service_id, { dates, rule_tokens, service_id });
+		}
+
+		return result;
+	}
+
 	/**
 	 * Gets all registered services
 	 * @returns Map of service_id to ServiceIdInfo
 	 */
 	getAllServices(): Map<ServiceId, ServiceIdInfo> {
 		const result = new Map<string, ServiceIdInfo>();
-		for (const [service_id, dates] of this.servicesById.entries()) {
+		for (const [service_id, dates] of this.tokenServices.entries()) {
 			result.set(service_id, { dates, service_id });
 		}
 		return result;
@@ -65,7 +167,7 @@ export class ServiceRegistry {
 	 * Gets the number of unique services
 	 */
 	getServiceCount(): number {
-		return this.servicesById.size;
+		return this.tokenServices.size;
 	}
 
 	/**
