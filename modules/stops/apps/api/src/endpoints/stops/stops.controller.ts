@@ -86,7 +86,16 @@ export class StopsController {
 	 * @param reply Fastify reply
 	 */
 	static async update(request: FastifyRequest<{ Body: UpdateStopDto, Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
-		const data = await stops.updateById(request.params.id, request.body);
+		// Check if the stop exists before attempting to update
+		const foundStop = await stops.findById(Number(request.params.id));
+		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		// Ensure the flag IDs are saved in the legacy IDs array
+		const flagIds = request.body.flags?.map(flag => flag.stop_id) || [];
+		const existingLegacyIds = new Set(foundStop.legacy_ids || []);
+		flagIds.forEach(flagId => existingLegacyIds.add(flagId));
+		request.body.legacy_ids = Array.from(existingLegacyIds);
+		// Perform the update
+		const data = await stops.updateById(Number(request.params.id), request.body);
 		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
 	}
 }
