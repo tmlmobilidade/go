@@ -60,6 +60,17 @@ export const PAGE_ROUTES = Object.freeze({
 	},
 
 	/* * */
+	/* BASE */
+	base: {
+		// BASE
+		BASE: `${getAppConfig('base', 'frontend_url')}`,
+
+		// VEHICLES
+		VEHICLES_DETAIL: (id: string) => `${getAppConfig('base', 'frontend_url')}/vehicles/${id}`,
+		VEHICLES_LIST: `${getAppConfig('base', 'frontend_url')}/vehicles`,
+	},
+
+	/* * */
 	/* CONTROLLER */
 	controller: {
 		// BASE
@@ -272,6 +283,20 @@ export const API_ROUTES = Object.freeze({
 		// WIKI
 		WIKI_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/wiki/${id}`,
 		WIKI_LIST: `${getAppConfig('auth', 'api_url')}/wiki`,
+	},
+
+	/* * */
+	/* BASE */
+	base: {
+		// BASE
+		BASE: `${getAppConfig('base', 'api_url')}`,
+
+		// VEHICLES
+		VEHICLES_DETAIL: (id: string) => `${getAppConfig('base', 'api_url')}/vehicles/${id}`,
+		VEHICLES_DETAIL_LAST_EVENT: (id: string) => `${getAppConfig('base', 'api_url')}/vehicles/${id}/last-event`,
+		VEHICLES_DETAIL_LOCK: (id: string) => `${getAppConfig('base', 'api_url')}/vehicles/${id}/lock`,
+		VEHICLES_LIST: `${getAppConfig('base', 'api_url')}/vehicles`,
+		VEHICLES_POSITIONS: `${getAppConfig('base', 'api_url')}/vehicles/positions`,
 	},
 
 	/* * */

@@ -10,6 +10,7 @@
 	"scripts": {
 		"build": "turbo build",
 		"build:alerts": "ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-alerts-*",
+		"build:base": "ENVIRONMENT=development dotenv-run -f ./modules/base/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-base-*",
 		"build:alerts:packages": "ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-alerts-pckg-*",
 		"build:apex": "ENVIRONMENT=development dotenv-run -f ./modules/apex/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-apex-*",
 		"build:apex:packages": "ENVIRONMENT=development dotenv-run -f ./modules/apex/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-apex-pckg-*",
@@ -30,6 +31,7 @@
 		"build:tracker": "ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-tracker-*",
 		"build:tracker:packages": "ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-tracker-pckg-*",
 		"build:types": "turbo build --filter=@tmlmobilidade/types",
+		"dev:base": "ENVIRONMENT=development dotenv-run -f ./modules/base/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-base-*",
 		"dev:alerts": "npm run build:alerts:packages && ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
 		"dev:apex": "npm run build:apex:packages && ENVIRONMENT=development dotenv-run -f ./modules/apex/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-apex-*",
 		"dev:apex:prd": "npm run build:apex:packages && ENVIRONMENT=development dotenv-run -f ./modules/apex/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-apex-*",
