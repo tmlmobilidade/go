@@ -296,6 +296,126 @@ interface RidesPipelineFilter {
 	stop_ids?: string[]
 }
 
+type FieldCondition = Record<string, unknown>;
+
+/**
+ * Attempts to map search term to specific indexed field based on structural
+ * heuristics. Returns null when term does not match known pattern.
+ */
+function routeTermToField(term: string): FieldCondition | null {
+	// Exact pattern_id match: "1001_0_2"
+	if (/^\d+_\d+_\d+$/.test(term)) {
+		return { pattern_id: term };
+	}
+
+	// Exact trip_id match: "1001_0_2_0800_0829_0_26"
+	if (/^\d+_\d+_\d+_\d+_\d+_\d+_\d+$/.test(term)) {
+		return { trip_id: term };
+	}
+
+	// route_id: "1001_0"
+	if (/^\d+_\d+$/.test(term)) {
+		return { route_id: term };
+	}
+
+	// operational_date: "20240101"
+	if (/^\d{8}$/.test(term)) {
+		return { operational_date: term };
+	}
+
+	// line_id: pure integer string like "1001"
+	// agency_id also numeric, so use length heuristic
+	if (/^\d+$/.test(term)) {
+		const n = Number(term);
+		if (term.length >= 3) return { line_id: n };
+		if (term.length <= 2) return { agency_id: term };
+	}
+
+	// plan_id: uppercase alpha-numeric prefix like "KACZ2"
+	if (/^[A-Z]+\d*$/.test(term)) {
+		return { plan_id: term };
+	}
+
+	return null;
+}
+
+function buildSearchPipeline(filter: Pick<RidesPipelineFilter, 'search'>): AggregationPipeline<Ride> {
+	const pipeline: AggregationPipeline<Ride> = [];
+
+	if (!filter.search) return pipeline;
+
+	const vehicleMatch = filter.search.match(/v:([\d,]+)/);
+	const driverMatch = filter.search.match(/d:([\d,]+)/);
+
+	const rawSearch = filter.search
+		.replace(/v:[\d,]+/g, '')
+		.replace(/d:[\d,]+/g, '')
+		.trim();
+
+	if (rawSearch.length > 0) {
+		const terms = rawSearch
+			.split(/\s+/)
+			.filter(k => k.length > 0);
+
+		const conditions: FieldCondition[] = [];
+		const unroutableTerms: string[] = [];
+		const routedFields = new Set<string>();
+
+		for (const term of terms) {
+			const routed = routeTermToField(term);
+			if (routed) {
+				const [field] = Object.keys(routed);
+				if (routedFields.has(field)) {
+					unroutableTerms.push(term);
+					continue;
+				}
+
+				routedFields.add(field);
+				conditions.push(routed);
+			} else {
+				unroutableTerms.push(term);
+			}
+		}
+
+		if (unroutableTerms.length > 0) {
+			const pattern = unroutableTerms
+				.map(k => `(?=.*${k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`)
+				.join('') + '.*';
+			conditions.push({ _id: { $options: 'i', $regex: pattern } });
+		}
+
+		if (conditions.length === 1) {
+			pipeline.push({ $match: conditions[0] });
+		} else if (conditions.length > 1) {
+			pipeline.push({ $match: { $and: conditions } });
+		}
+	}
+
+	if (vehicleMatch) {
+		const vehicleIDs = vehicleMatch[1]
+			.split(',')
+			.map(id => Number(id.trim()))
+			.filter(id => !isNaN(id));
+
+		if (vehicleIDs.length > 0) {
+			pipeline.push({ $match: { vehicle_ids: { $in: vehicleIDs } } });
+		}
+	}
+
+	if (driverMatch) {
+		const driverIDs = driverMatch[1]
+			.split(',')
+			.map(id => id.trim())
+			.filter(Boolean);
+
+		if (driverIDs.length > 0) {
+			pipeline.push({ $match: { driver_ids: { $in: driverIDs } } });
+		}
+	}
+
+	return pipeline;
+}
+
 /**
  * Creates MongoDB aggregation pipeline stages to filter and process ride data.
  *
@@ -325,82 +445,8 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 	// Stage 3: Filter by line IDs if provided
 	if (filter.line_ids?.length) pipeline.push({ $match: { line_id: { $in: filter.line_ids.map(id => Number(id)) } } });
 
-	// Stage 4: Search by ride ID if provided
-	// Uses regex pattern matching with case-insensitive option
-	// Also removes all vehicle IDs and driver IDs from the search string
-	// And adds a filter for the vehicle IDs if they are present in the search string (v:1117,1118)
-	// And adds a filter for the driver IDs if they are present in the search string (d:123,456)
-	if (filter.search) {
-		// Extract vehicle and driver IDs before stripping them from search
-		const vehicleMatch = filter.search.match(/v:([\d,]+)/);
-		const driverMatch = filter.search.match(/d:([\d,]+)/);
-
-		// Remove v: and d: patterns from search string for ride ID matching
-		const searchWithoutSpecialFilters = filter.search.replace(/v:[\d,]+/g, '').replace(/d:[\d,]+/g, '').trim();
-
-		// Pattern IDs follow "part_part" format (e.g. "1234_0")
-		const routeIds = [...searchWithoutSpecialFilters.matchAll(/\b([A-Za-z0-9]+_[A-Za-z0-9]+)\b/g)].map(match => match[1]);
-
-		if (routeIds.length > 0) {
-			pipeline.push({
-				$match: { route_id: { $in: [...new Set(routeIds)] } },
-			});
-		}
-
-		// Pattern IDs follow "part_part_part" format (e.g. "1234_0_0")
-		const patternIdMatches = [...searchWithoutSpecialFilters.matchAll(/\b([A-Za-z0-9]+_[A-Za-z0-9]+_[A-Za-z0-9]+)\b/g)].map(match => match[1]);
-
-		if (patternIdMatches.length > 0) {
-			pipeline.push({
-				$match: { pattern_id: { $in: [...new Set(patternIdMatches)] } },
-			});
-		}
-
-		// Remove pattern IDs from ride ID keyword search terms
-		const searchWithoutPatternIds = searchWithoutSpecialFilters.replace(/\b[A-Za-z0-9]+_[A-Za-z0-9]+_[A-Za-z0-9]+\b/g, '').trim();
-
-		const keywords = searchWithoutPatternIds
-			.split(/\s+/)
-			.filter(k => k.length > 0)
-			.map((v) => {
-				// Escape regex special chars EXCEPT %
-				let escaped = v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-				// Convert SQL wildcards to regex
-				escaped = escaped.replace(/%%/g, '.*');
-
-				return escaped;
-			});
-
-		if (keywords.length > 0) {
-			const pattern = keywords.map(k => `(?=.*${k})`).join('') + '.*';
-			pipeline.push({
-				$match: { _id: { $options: 'i', $regex: pattern } },
-			});
-		}
-
-		if (vehicleMatch) {
-			const value = vehicleMatch[1];
-
-			const vehicleIDs = value
-				.split(',')
-				.map(id => Number(id.trim()))
-				.filter(id => !isNaN(id));
-
-			if (vehicleIDs.length > 0) {
-				pipeline.push({ $match: { vehicle_ids: { $in: vehicleIDs } } });
-			}
-		}
-
-		if (driverMatch) {
-			const value = driverMatch[1];
-			const driverIDs = value.split(',').map(id => id.trim()).filter(id => id);
-
-			if (driverIDs.length > 0) {
-				pipeline.push({ $match: { driver_ids: { $in: driverIDs } } });
-			}
-		}
-	}
+	// Stage 4: Search by term routing and selective fallback regex
+	pipeline.push(...buildSearchPipeline(filter));
 
 	// Stage 5: Search by vehicle IDs from search field if provided (legacy support)
 	// This allows filtering via search field with "v:1117" or "v:1117,1118" format
