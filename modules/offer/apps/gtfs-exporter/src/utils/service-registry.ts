@@ -9,39 +9,39 @@ export type ServiceId = string;
 
 export interface ServiceIdInfo {
 	dates: Set<OperationalDate>
-	service_id: ServiceId
+	serviceId: ServiceId
 }
 
 export interface ServiceRuleTokenEntry {
 	patterns: string[]
-	rule_token: string
+	ruleToken: string
 }
 
 export interface ServiceRuleMapInfo {
 	dates: Set<OperationalDate>
-	rule_tokens: ServiceRuleTokenEntry[]
-	service_id: ServiceId
+	ruleTokens: ServiceRuleTokenEntry[]
+	serviceId: ServiceId
 }
 
 /**
  * Global registry of service IDs and their corresponding date sets.
- * This ensures that patterns with identical schedules share the same service_id.
+ * This ensures that patterns with identical schedules share the same serviceId.
  */
 export class ServiceRegistry {
-	// Map: hash of dates -> service_id (for quick lookup)
+	// Map: hash of dates -> serviceId (for quick lookup)
 	private servicesByDateHash = new Map<string, ServiceId>();
 
-	// Map: service_id -> date set
+	// Map: serviceId -> date set
 	private servicesById = new Map<ServiceId, Set<OperationalDate>>();
 
-	// Map: service_id -> rule_token -> Set of pattern codes
+	// Map: serviceId -> ruleToken -> Set of pattern codes
 	private serviceRuleTokens = new Map<ServiceId, Map<string, Set<string>>>();
 
-	// Map: base rule token name -> array of service_ids in order of first encounter.
+	// Map: base rule token name -> array of serviceIds in order of first encounter.
 	// Used to disambiguate identical token names that map to different date sets.
 	private ruleTokenServiceIds = new Map<string, ServiceId[]>();
 
-	// Map: rule-token service_id -> date set (the externally visible service registry).
+	// Map: rule-token serviceId -> date set (the externally visible service registry).
 	// Populated by registerServiceId() after resolveRuleToken() produces the final token.
 	private tokenServices = new Map<ServiceId, Set<OperationalDate>>();
 
@@ -72,9 +72,9 @@ export class ServiceRegistry {
 	}
 
 	/**
-	 * Registers a resolved rule token as an externally visible service_id with its date set.
+	 * Registers a resolved rule token as an externally visible serviceId with its date set.
 	 * Idempotent: calling again with the same token and identical dates is a no-op.
-	 * This is what populates calendar_dates.txt — the hash-based internal service_id is
+	 * This is what populates calendar_dates.txt — the hash-based internal serviceId is
 	 * never exposed outside the registry.
 	 */
 	registerServiceId(serviceId: ServiceId, dates: Set<OperationalDate>): void {
@@ -84,7 +84,7 @@ export class ServiceRegistry {
 	}
 
 	/**
-	 * Attaches a rule token and the originating pattern to a service_id.
+	 * Attaches a rule token and the originating pattern to a serviceId.
 	 * Multiple patterns can share the same rule token for the same service.
 	 */
 	attachRuleToken(serviceId: ServiceId, ruleToken: string, patternCode: string): void {
@@ -92,13 +92,13 @@ export class ServiceRegistry {
 			this.serviceRuleTokens.set(serviceId, new Map());
 		}
 
-		const tokenMap = this.serviceRuleTokens.get(serviceId)!;
+		const tokenMap = this.serviceRuleTokens.get(serviceId);
 
 		if (!tokenMap.has(ruleToken)) {
 			tokenMap.set(ruleToken, new Set());
 		}
 
-		tokenMap.get(ruleToken)!.add(patternCode);
+		tokenMap.get(ruleToken).add(patternCode);
 	}
 
 	/**
@@ -107,19 +107,19 @@ export class ServiceRegistry {
 	getServiceRuleMap(): Map<ServiceId, ServiceRuleMapInfo> {
 		const result = new Map<ServiceId, ServiceRuleMapInfo>();
 
-		for (const [service_id, dates] of this.tokenServices.entries()) {
-			const tokenMap = this.serviceRuleTokens.get(service_id);
-			const rule_tokens: ServiceRuleTokenEntry[] = [];
+		for (const [serviceId, dates] of this.tokenServices.entries()) {
+			const tokenMap = this.serviceRuleTokens.get(serviceId);
+			const ruleTokens: ServiceRuleTokenEntry[] = [];
 
 			if (tokenMap) {
-				for (const [rule_token, patternSet] of tokenMap.entries()) {
-					rule_tokens.push({ patterns: Array.from(patternSet).sort(), rule_token });
+				for (const [ruleToken, patternSet] of tokenMap.entries()) {
+					ruleTokens.push({ patterns: Array.from(patternSet).sort(), ruleToken });
 				}
 
-				rule_tokens.sort((a, b) => a.rule_token.localeCompare(b.rule_token));
+				ruleTokens.sort((a, b) => a.ruleToken.localeCompare(b.ruleToken));
 			}
 
-			result.set(service_id, { dates, rule_tokens, service_id });
+			result.set(serviceId, { dates, ruleTokens, serviceId });
 		}
 
 		return result;
@@ -127,33 +127,33 @@ export class ServiceRegistry {
 
 	/**
 	 * Gets all registered services
-	 * @returns Map of service_id to ServiceIdInfo
+	 * @returns Map of serviceId to ServiceIdInfo
 	 */
 	getAllServices(): Map<ServiceId, ServiceIdInfo> {
 		const result = new Map<string, ServiceIdInfo>();
-		for (const [service_id, dates] of this.tokenServices.entries()) {
-			result.set(service_id, { dates, service_id });
+		for (const [serviceId, dates] of this.tokenServices.entries()) {
+			result.set(serviceId, { dates, serviceId });
 		}
 		return result;
 	}
 
 	/**
-	 * Gets or creates a service_id for a given set of dates
+	 * Gets or creates a serviceId for a given set of dates
 	 * @param dates - Set of operational dates
-	 * @returns The service_id for this date set
+	 * @returns The serviceId for this date set
 	 */
 	getOrCreateServiceId(dates: Set<OperationalDate>): ServiceId {
 		// Create a hash of the sorted dates for lookup
 		const sortedDates = Array.from(dates).sort();
 		const dateHash = sortedDates.join(',');
 
-		// Check if we already have a service_id for this exact date set
+		// Check if we already have a serviceId for this exact date set
 		const existingServiceId = this.servicesByDateHash.get(dateHash);
 		if (existingServiceId) {
 			return existingServiceId;
 		}
 
-		// Generate a new service_id
+		// Generate a new serviceId
 		const newServiceId = this.generateServiceId(dates);
 
 		// Store the mapping
@@ -171,9 +171,9 @@ export class ServiceRegistry {
 	}
 
 	/**
-	 * Generates a stable service_id based on the set of dates
+	 * Generates a stable serviceId based on the set of dates
 	 * @param dates - Set of operational dates
-	 * @returns A stable service_id
+	 * @returns A stable serviceId
 	 */
 	private generateServiceId(dates: Set<OperationalDate>): string {
 		const sortedDates = Array.from(dates).sort();

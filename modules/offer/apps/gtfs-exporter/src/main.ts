@@ -91,8 +91,8 @@ export async function exportGtfsV29(
 		// Initialize service registry for calendar deduplication
 		const serviceRegistry = new ServiceRegistry();
 
-		// Track circulations: (patternCode:timepoint) -> [{ rule_token, service_id }]
-		const circulationTracker = new Map<string, { rule_token: string, service_id: string }[]>();
+		// Track circulations: (patternCode:timepoint) -> [{ ruleToken, serviceId }]
+		const circulationTracker = new Map<string, { ruleToken: string, serviceId: string }[]>();
 
 		// Define export date range
 		const exportStartDate = Dates.fromOperationalDate(exportConfig.calendars_clip_start_date, 'Europe/Lisbon');
@@ -261,7 +261,7 @@ export async function exportGtfsV29(
 						}
 					}
 
-					// Export trips for this pattern (will deduplicate service_ids across patterns)
+					// Export trips for this pattern (will deduplicate serviceIds across patterns)
 					const tripSchedules = await exportTripsForPattern(
 						routeData,
 						patternData,
@@ -282,7 +282,7 @@ export async function exportGtfsV29(
 						const key = `${patternData.code}:${schedule.timepoint}`;
 						if (!circulationTracker.has(key)) circulationTracker.set(key, []);
 						const ruleToken = schedule.trip_id.split('|')[1] ?? '';
-						circulationTracker.get(key)!.push({ rule_token: ruleToken, service_id: schedule.service_id });
+						circulationTracker.get(key).push({ ruleToken: ruleToken, serviceId: schedule.serviceId });
 					}
 				}
 
@@ -318,21 +318,21 @@ export async function exportGtfsV29(
 
 		//
 		// Step 4.5: Export calendar_dates
-		// Export all unique service_ids and their dates that were collected during pattern processing
+		// Export all unique serviceIds and their dates that were collected during pattern processing
 
 		await exportCalendarDates(serviceRegistry, allPeriodsMap, allHolidaysMap, exportConfig);
 
 		//
 		// Step 4.6: Write service-rule-map.json
-		// Maps each unique service_id to its date set and the rule tokens + patterns that produced it
+		// Maps each unique serviceId to its date set and the rule tokens + patterns that produced it
 
 		const serviceRuleMap = serviceRegistry.getServiceRuleMap();
-		const serviceRuleMapJson: Record<string, { dates: string[], rule_tokens: { rule_token: string, patterns: string[] }[] }> = {};
+		const serviceRuleMapJson: Record<string, { dates: string[], ruleTokens: { patterns: string[], ruleToken: string }[] }> = {};
 
-		for (const [service_id, info] of serviceRuleMap.entries()) {
-			serviceRuleMapJson[service_id] = {
+		for (const [serviceId, info] of serviceRuleMap.entries()) {
+			serviceRuleMapJson[serviceId] = {
 				dates: Array.from(info.dates).sort(),
-				rule_tokens: info.rule_tokens,
+				ruleTokens: info.ruleTokens,
 			};
 		}
 
@@ -346,25 +346,25 @@ export async function exportGtfsV29(
 
 		//
 		// Step 4.7: Write service-rule-duplicates.json
-		// Identifies rule tokens that appear under multiple distinct service_ids and shows the date differences
+		// Identifies rule tokens that appear under multiple distinct serviceIds and shows the date differences
 
-		// Build inverse map: rule_token -> [{ service_id, dates }]
-		const ruleTokenIndex = new Map<string, { dates: Set<string>, service_id: string }[]>();
+		// Build inverse map: ruleToken -> [{ serviceId, dates }]
+		const ruleTokenIndex = new Map<string, { dates: Set<string>, serviceId: string }[]>();
 
-		for (const [service_id, info] of serviceRuleMap.entries()) {
+		for (const [serviceId, info] of serviceRuleMap.entries()) {
 			const sortedDates = new Set(Array.from(info.dates).sort());
-			for (const entry of info.rule_tokens) {
-				if (!ruleTokenIndex.has(entry.rule_token)) {
-					ruleTokenIndex.set(entry.rule_token, []);
+			for (const entry of info.ruleTokens) {
+				if (!ruleTokenIndex.has(entry.ruleToken)) {
+					ruleTokenIndex.set(entry.ruleToken, []);
 				}
-				ruleTokenIndex.get(entry.rule_token)!.push({ dates: sortedDates, service_id });
+				ruleTokenIndex.get(entry.ruleToken).push({ dates: sortedDates, serviceId });
 			}
 		}
 
-		// Keep only tokens with more than one distinct service_id
-		const duplicatesJson: Record<string, { dates: string[], dates_exclusive: string[], service_id: string }[]> = {};
+		// Keep only tokens with more than one distinct serviceId
+		const duplicatesJson: Record<string, { dates: string[], dates_exclusive: string[], serviceId: string }[]> = {};
 
-		for (const [rule_token, entries] of ruleTokenIndex.entries()) {
+		for (const [ruleToken, entries] of ruleTokenIndex.entries()) {
 			if (entries.length < 2) continue;
 
 			// All dates across all services for this token
@@ -373,10 +373,10 @@ export async function exportGtfsV29(
 				for (const d of entry.dates) allDates.add(d);
 			}
 
-			duplicatesJson[rule_token] = entries.map(entry => ({
+			duplicatesJson[ruleToken] = entries.map(entry => ({
 				dates: Array.from(entry.dates),
 				dates_exclusive: Array.from(allDates).filter(d => !entry.dates.has(d)).sort(),
-				service_id: entry.service_id,
+				serviceId: entry.serviceId,
 			}));
 		}
 
@@ -390,10 +390,10 @@ export async function exportGtfsV29(
 
 		//
 		// Step 4.8: Write circulation-duplicates.json
-		// Identifies (pattern:timepoint) pairs that have multiple service_ids sharing at least one date.
+		// Identifies (pattern:timepoint) pairs that have multiple serviceIds sharing at least one date.
 
 		const allServices = serviceRegistry.getAllServices();
-		type CirculationEntry = { dates: string[], rule_token: string, service_id: string };
+		interface CirculationEntry { dates: string[], ruleToken: string, serviceId: string }
 		const circulationDuplicatesJson: Record<string, { services: CirculationEntry[], shared_dates: string[] }> = {};
 
 		for (const [key, entries] of circulationTracker.entries()) {
@@ -402,10 +402,10 @@ export async function exportGtfsV29(
 			// Build date sets per entry
 			const entriesWithDates = entries.map(e => ({
 				...e,
-				dates: Array.from(allServices.get(e.service_id)?.dates ?? []).sort(),
+				dates: Array.from(allServices.get(e.serviceId)?.dates ?? []).sort(),
 			}));
 
-			// Find dates shared by at least two service_ids
+			// Find dates shared by at least two serviceIds
 			const dateCounts = new Map<string, number>();
 			for (const entry of entriesWithDates) {
 				for (const d of entry.dates) {

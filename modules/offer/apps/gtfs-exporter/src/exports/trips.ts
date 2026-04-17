@@ -42,15 +42,15 @@ interface RuleTimepointSchedule {
 
 interface ResolvedTripRow {
 	dates: Set<OperationalDate>
-	rule_token: string
-	service_id: ServiceId
+	ruleToken: string
+	serviceId: ServiceId
 	timepoint: HHMM
 }
 
 export interface TripSchedule {
 	day_period: DayPeriod
 	period_ids: string[]
-	service_id: ServiceId
+	serviceId: ServiceId
 	timepoint: HHMM
 	trip_id: string
 	weekdays: IsoWeekday[]
@@ -427,7 +427,7 @@ function groupSchedulesByTimepoint(
  * at the same timepoint, A is redundant — B already owns all of A's dates.
  * Without this pass the displacement logic produces:
  *   - A on weekdays (clean)
- *   - B-OFF-A on weekends only (messy, ends up sharing a service_id with other SAB-DOM patterns)
+ *   - B-OFF-A on weekends only (messy, ends up sharing a serviceId with other SAB-DOM patterns)
  * With this pass A is absorbed into B, yielding:
  *   - B on all dates (clean)
  *
@@ -445,7 +445,7 @@ function mergeSubsetIncludeSchedules(schedules: Map<string, RuleTimepointSchedul
 			includesByTimepoint.set(schedule.timepoint, []);
 		}
 
-		includesByTimepoint.get(schedule.timepoint)!.push(schedule);
+		includesByTimepoint.get(schedule.timepoint).push(schedule);
 	}
 
 	const keysToDelete = new Set<string>();
@@ -455,11 +455,7 @@ function mergeSubsetIncludeSchedules(schedules: Map<string, RuleTimepointSchedul
 
 		for (const a of includes) {
 			// A is dominated if there exists B with a.dates ⊊ b.dates (strict subset).
-			const isDominated = includes.some(
-				b => b.rule._id !== a.rule._id
-					&& b.dates.size > a.dates.size
-					&& [...a.dates].every(d => b.dates.has(d)),
-			);
+			const isDominated = includes.some(b => b.rule._id !== a.rule._id && b.dates.size > a.dates.size && [...a.dates].every(d => b.dates.has(d)));
 
 			if (isDominated) {
 				keysToDelete.add(`${a.rule._id}|include|${a.timepoint}`);
@@ -534,8 +530,8 @@ function resolveTripRows(
 
 			resolvedRows.push({
 				dates: resultingDates,
-				rule_token: resolvedRuleToken,
-				service_id: resolvedRuleToken,
+				ruleToken: resolvedRuleToken,
+				serviceId: resolvedRuleToken,
 				timepoint,
 			});
 		}
@@ -614,7 +610,7 @@ export async function exportTripsForPattern(
 
 		// Step 2: Resolve final trip rows:
 		// include dates minus overlapping exclude dates,
-		// with service_id deduplication based on final date sets.
+		// with serviceId deduplication based on final date sets.
 		const resolvedTripRows = resolveTripRows(schedules, serviceRegistry, { events, periods });
 
 		if (resolvedTripRows.length === 0) {
@@ -627,7 +623,7 @@ export async function exportTripsForPattern(
 		const sortedTripRows = resolvedTripRows.sort((a, b) => {
 			const timeDiff = timepointToOperationalMinutes(a.timepoint) - timepointToOperationalMinutes(b.timepoint);
 			if (timeDiff !== 0) return timeDiff;
-			return a.rule_token.localeCompare(b.rule_token);
+			return a.ruleToken.localeCompare(b.ruleToken);
 		});
 
 		const tripSchedules: TripSchedule[] = [];
@@ -635,14 +631,14 @@ export async function exportTripsForPattern(
 		for (const row of sortedTripRows) {
 			const timepointHHMM = hhmm(row.timepoint);
 			const startTimeStripped = timepointHHMM.split(':').join('');
-			const tripId = `${patternData.code}|${row.rule_token}|${startTimeStripped}`;
+			const tripId = `${patternData.code}|${row.ruleToken}|${startTimeStripped}`;
 
 			const metadata = collectDateMetadata(row.dates, periods, holidays);
 
 			tripSchedules.push({
 				day_period: resolveDayPeriod(timepointHHMM),
 				period_ids: metadata.period_ids,
-				service_id: row.service_id,
+				serviceId: row.serviceId,
 				timepoint: timepointHHMM,
 				trip_id: tripId,
 				weekdays: metadata.weekdays,
@@ -655,7 +651,7 @@ export async function exportTripsForPattern(
 				pattern_id: patternData.code,
 				pattern_short_name: headsign,
 				route_id: routeData.code,
-				service_id: row.service_id,
+				service_id: row.serviceId,
 				shape_id: shapeId,
 				trip_headsign: headsign,
 				trip_id: tripId,
@@ -664,7 +660,7 @@ export async function exportTripsForPattern(
 
 			await exportConfig.writers.trips.write(tripData);
 
-			serviceRegistry.attachRuleToken(row.service_id, row.rule_token, patternData.code);
+			serviceRegistry.attachRuleToken(row.serviceId, row.ruleToken, patternData.code);
 		}
 
 		return tripSchedules;
