@@ -1,0 +1,6 @@
+.headerActions {
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    z-index: 1;
+}

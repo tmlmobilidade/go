@@ -1,0 +1,27 @@
+/* * */
+
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { Button } from '@tmlmobilidade/ui';
+import Link from 'next/link';
+
+import styles from './styles.module.css';
+
+/* * */
+
+export function HeaderLinks() {
+	//
+
+	//
+	// A. Render components
+
+	return (
+		<div className={styles.headerLinks}>
+			<Link href="https://go.tmlmobilidade.pt/reference">
+				<p className={styles.headerActionsLink}> Documentação</p>
+			</Link>
+			<Button href={PAGE_ROUTES.auth.LOGIN_LIST} label="Entrar" variant="primary" />
+		</div>
+	);
+
+	//
+}

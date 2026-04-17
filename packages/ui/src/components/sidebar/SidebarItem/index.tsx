@@ -41,6 +41,8 @@ export function SidebarItem({ href, icon, label, requiredPermissions }: SidebarI
 	// B. Transform data
 
 	const isEnabled = useMemo(() => {
+		// Item with no required permissions is public.
+		if (requiredPermissions.length === 0) return true;
 		// Skip if user has no permissions
 		if (!meContext.data.user?.permissions) return false;
 		// For all possible permissions...

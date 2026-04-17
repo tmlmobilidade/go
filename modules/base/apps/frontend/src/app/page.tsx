@@ -1,10 +1,15 @@
 /* * */
 
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { redirect } from 'next/navigation';
+import { Base } from '@/components/common/base';
+import { Header } from '@/components/common/layout/Header';
 
 /* * */
 
 export default function Page() {
-	redirect(PAGE_ROUTES.fleet.VEHICLES_LIST);
+	return (
+		<>
+			<Header />
+			<Base />
+		</>
+	);
 }

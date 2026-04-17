@@ -113,6 +113,7 @@
 		"zod": "3.25.76"
 	},
 	"dependencies": {
+		"@fastify/multipart": "^10.0.0",
 		"@tmlmobilidade/dates": "^1.0.0",
 		"@tmlmobilidade/strings": "^1.0.0",
 		"nuqs": "^2.8.9"
