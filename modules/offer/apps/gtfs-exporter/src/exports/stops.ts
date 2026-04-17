@@ -4,24 +4,28 @@
 import { type GtfsV29ExportConfig } from '@/types.js';
 import { GtfsTMLStop, Municipality, Stop } from '@tmlmobilidade/types';
 
+import { getAgencyStopId } from '../utils/get-agency-stop-id.js';
+
 /* * */
 
 /**
  * Parses stop data into GTFS stops.txt format
  * @param stopData - The stop data
  * @param municipalityData - The municipality data
+ * @param agencyId - The agency id for which to extract stop_id
  * @returns The formatted stop row
  */
 export function parseStop(
 	stopData: Stop,
 	municipalityData: Municipality,
+	agencyId: string,
 ): GtfsTMLStop {
 	try {
 		const availabilityToBinary = (value?: string): 0 | 1 => (value === 'available' ? 1 : 0);
 
 		return {
-			stop_id: stopData.legacy_id, // change this later to filter for region
-			stop_code: stopData.legacy_id,
+			stop_id: getAgencyStopId(stopData, agencyId),
+			stop_code: getAgencyStopId(stopData, agencyId),
 			stop_name: stopData.name,
 			stop_short_name: stopData.short_name,
 			stop_desc: '',
@@ -78,6 +82,8 @@ export async function exportStop(
 	municipalityData: Municipality,
 	exportConfig: GtfsV29ExportConfig,
 ) {
-	const parsedStop = parseStop(stopData, municipalityData);
+	// Use the first agency_id in exportConfig.agency_ids for this export
+	const agencyId = exportConfig.agency_ids[0];
+	const parsedStop = parseStop(stopData, municipalityData, agencyId);
 	await exportConfig.writers.stops.write(parsedStop);
 }

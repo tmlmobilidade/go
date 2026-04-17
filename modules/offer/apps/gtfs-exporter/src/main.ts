@@ -275,7 +275,7 @@ export async function exportGtfsV29(
 						exportConfig,
 					);
 
-					await exportStopTimesForPattern(patternData, tripSchedules, exportConfig);
+					await exportStopTimesForPattern(patternData, tripSchedules, exportConfig, lineData.agency_id);
 
 					// Track circulations for duplicate detection
 					for (const schedule of tripSchedules) {
