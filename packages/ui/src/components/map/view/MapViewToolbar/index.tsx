@@ -4,7 +4,6 @@
 
 import { SegmentedControl, Switch } from '@mantine/core';
 import { IconCrosshair } from '@tabler/icons-react';
-import { useMemo } from 'react';
 
 import { useMapContext } from '../../../../contexts/Map.context';
 import { Button } from '../../../buttons/Button';
