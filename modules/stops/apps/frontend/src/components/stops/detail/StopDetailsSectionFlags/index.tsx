@@ -55,7 +55,6 @@ export function StopDetailsSectionFlags() {
 		<Collapsible
 			description="Gestão de IDs desta paragem."
 			title="Identificadores e Postaletes"
-			defaultOpen
 		>
 
 			<Section gap="md">
