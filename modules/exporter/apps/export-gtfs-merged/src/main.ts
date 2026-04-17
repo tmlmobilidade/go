@@ -122,8 +122,7 @@ export async function main() {
 
 			const planTimer = new Timer();
 
-			Logger.spacer(1);
-			Logger.divider(`[${planIndex + 1}/${allPlansData.length}] - Agency ${planData.gtfs_agency.agency_id} - Plan ${planData._id}`);
+			Logger.info(`[${planIndex + 1}/${allPlansData.length}] - Agency ${planData.gtfs_agency.agency_id} - Plan ${planData._id}`);
 
 			//
 			// Validate the Plan data before processing.
@@ -135,7 +134,7 @@ export async function main() {
 
 			if (!isValidPlan) {
 				await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'skipped', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
-				Logger.divider();
+				Logger.info(`Skipped plan ${planData._id} due to validation errors.`);
 				continue;
 			}
 
@@ -236,6 +235,8 @@ export async function main() {
 			// to rely on garbage collection alone to free up memory in a timely manner.
 
 			importedGtfsSql._db.close();
+
+			Logger.divider();
 
 			//
 		} catch (error) {

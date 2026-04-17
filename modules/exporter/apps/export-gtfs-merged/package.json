@@ -23,6 +23,7 @@
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
 		"gtfs-types": "5.1.0",
 		"yazl": "3.3.1"
