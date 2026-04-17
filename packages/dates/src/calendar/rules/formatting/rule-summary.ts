@@ -336,14 +336,18 @@ export function buildRuleSummaryGtfs(
 	options: { events?: Event[], periods?: YearPeriod[] },
 ): string {
 	if (isEventRestriction(rule)) {
-		const base = rule.event?.title ?? rule.name ?? rule._id;
+		const eventCode = options.events?.find(e => e._id === rule.event.id)?.code;
+
+		const base = eventCode ?? rule.name ?? rule._id;
 		if (rule.all_day) return `${base}_ALLDAY`;
 		if (rule.start_time && rule.end_time)
 			return `${base}_${rule.start_time.replace(':', '')}${rule.end_time.replace(':', '')}`;
 		return base;
 	}
 	if (isEventReplacement(rule)) {
-		return rule.event?.title ?? rule.name ?? rule._id;
+		const eventCode = options.events?.find(e => e._id === rule.event.id)?.code;
+
+		return eventCode ?? rule.name ?? rule._id;
 	}
 
 	const periodIds = rule.year_period_ids ?? [];
@@ -354,7 +358,7 @@ export function buildRuleSummaryGtfs(
 	const monthsPart = mapMonthsToGtfsAbbreviation(rule.months);
 
 	if (rule.kind === 'manual' && rule.event_id) {
-		const title = getEventForManualRule(rule, options?.events)?.title ?? rule.name ?? rule._id;
+		const title = getEventForManualRule(rule, options?.events)?.code ?? rule.name ?? rule._id;
 
 		const tokenParts: string[] = [];
 		if (periodPart !== 'ALL') tokenParts.push(periodPart);
