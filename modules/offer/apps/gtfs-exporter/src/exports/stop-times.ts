@@ -6,6 +6,8 @@ import { computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GTFS_StopTime, HHMM, Path, type Pattern, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/types';
 
+import { getAgencyStopId } from '../utils/get-agency-stop-id.js';
+
 /* * */
 
 function resolveActiveParameter(
@@ -68,6 +70,7 @@ export async function exportStopTimesForPattern(
 	patternData: Pattern,
 	tripSchedules: TripSchedule[],
 	exportConfig: GtfsV29ExportConfig,
+	agencyId: string,
 ) {
 	try {
 		if (!patternData.path?.length) return;
@@ -96,13 +99,21 @@ export async function exportStopTimesForPattern(
 					cumulativeDistanceMeters += pathItem.distance_delta ?? 0;
 				}
 
+				// If pathItem.stop is present, use agency-specific stop_id; else fallback to pathItem.stop_id
+				let stopId: string;
+				if ('stop' in pathItem && pathItem.stop) {
+					stopId = getAgencyStopId(pathItem.stop, agencyId);
+				} else {
+					stopId = String(pathItem.stop_id);
+				}
+
 				const stopTimeRow: GTFS_StopTime = {
 					arrival_time: formatGtfsTime(arrivalSeconds),
 					departure_time: formatGtfsTime(departureSeconds),
 					drop_off_type: pathItem.allow_drop_off ? 0 : 1,
 					pickup_type: pathItem.allow_pickup ? 0 : 1,
 					shape_dist_traveled: roundKm(cumulativeDistanceMeters),
-					stop_id: String(pathItem.stop_id),
+					stop_id: stopId,
 					stop_sequence: exportConfig.stop_sequence_start + i,
 					timepoint: pathItem.timepoint ? 1 : 0,
 					trip_id: tripSchedule.trip_id,

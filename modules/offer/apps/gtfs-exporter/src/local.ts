@@ -1,5 +1,5 @@
 /* * */
-// Local development entrypoint — runs a single export directly to ./output/
+// Local development entrypoint — runs one export per agency directly to ./output_<agency_id>/
 // without polling the DB or uploading to OCI.
 // Usage: npm run dev:local
 
@@ -13,55 +13,66 @@ import path from 'node:path';
 
 /* * */
 
-const WORKDIR = path.resolve('./output');
+const AGENCY_IDS = ['41', '42', '43', '44'];
 
-const exportConfig: GtfsV29ExportConfig = {
-	agency_ids: ['41'],
-	calendars_clip_end_date: '20261231' as OperationalDate,
-	calendars_clip_start_date: '20260101' as OperationalDate,
-	clip_calendars: true,
-	feed_end_date: '20261231' as OperationalDate,
-	feed_start_date: '20260101' as OperationalDate,
-	lines_exclude: [],
-	lines_include: [],
-	numeric_calendar_codes: false,
-	stop_sequence_start: 1,
-	stops_export_all: false,
-	version: new Date().toISOString().replace(/[-:T]/g, '').slice(0, 13),
-	workdir: WORKDIR,
-	writers: {
-		afetacao: new CsvWriter('afetacao.txt', `${WORKDIR}/afetacao.txt`),
-		agency: new CsvWriter('agency.txt', `${WORKDIR}/agency.txt`),
-		calendar_dates: new CsvWriter('calendar_dates.txt', `${WORKDIR}/calendar_dates.txt`),
-		fare_attributes: new CsvWriter('fare_attributes.txt', `${WORKDIR}/fare_attributes.txt`),
-		fare_rules: new CsvWriter('fare_rules.txt', `${WORKDIR}/fare_rules.txt`),
-		feed_info: new CsvWriter('feed_info.txt', `${WORKDIR}/feed_info.txt`),
-		routes: new CsvWriter('routes.txt', `${WORKDIR}/routes.txt`),
-		shapes: new CsvWriter('shapes.txt', `${WORKDIR}/shapes.txt`),
-		stop_times: new CsvWriter('stop_times.txt', `${WORKDIR}/stop_times.txt`),
-		stops: new CsvWriter('stops.txt', `${WORKDIR}/stops.txt`),
-		trips: new CsvWriter('trips.txt', `${WORKDIR}/trips.txt`),
-	},
-};
+function buildLocalExportConfig(agencyId: string): GtfsV29ExportConfig {
+	const workdir = path.resolve(`./output_${agencyId}`);
+
+	return {
+		agency_ids: [agencyId],
+		calendars_clip_end_date: '20261231' as OperationalDate,
+		calendars_clip_start_date: '20260101' as OperationalDate,
+		clip_calendars: true,
+		feed_end_date: '20261231' as OperationalDate,
+		feed_start_date: '20260101' as OperationalDate,
+		lines_exclude: [],
+		lines_include: [],
+		numeric_calendar_codes: false,
+		stop_sequence_start: 1,
+		stops_export_all: false,
+		version: new Date().toISOString().replace(/[-:T]/g, '').slice(0, 13),
+		workdir,
+		writers: {
+			afetacao: new CsvWriter('afetacao.txt', `${workdir}/afetacao.txt`),
+			agency: new CsvWriter('agency.txt', `${workdir}/agency.txt`),
+			calendar_dates: new CsvWriter('calendar_dates.txt', `${workdir}/calendar_dates.txt`),
+			fare_attributes: new CsvWriter('fare_attributes.txt', `${workdir}/fare_attributes.txt`),
+			fare_rules: new CsvWriter('fare_rules.txt', `${workdir}/fare_rules.txt`),
+			feed_info: new CsvWriter('feed_info.txt', `${workdir}/feed_info.txt`),
+			routes: new CsvWriter('routes.txt', `${workdir}/routes.txt`),
+			shapes: new CsvWriter('shapes.txt', `${workdir}/shapes.txt`),
+			stop_times: new CsvWriter('stop_times.txt', `${workdir}/stop_times.txt`),
+			stops: new CsvWriter('stops.txt', `${workdir}/stops.txt`),
+			trips: new CsvWriter('trips.txt', `${workdir}/trips.txt`),
+		},
+	};
+}
 
 /* * */
 
 async function main() {
 	Logger.init();
-	Logger.info(`Local export — output directory: ${WORKDIR}`);
 
-	fs.mkdirSync(WORKDIR, { recursive: true });
+	for (const agencyId of AGENCY_IDS) {
+		const exportConfig = buildLocalExportConfig(agencyId);
 
-	const progress: ExportProgress = {
-		_id: 'local',
-		progress_current: 0,
-		progress_total: 0,
-		workdir: WORKDIR,
-	};
+		Logger.info(`Starting export for agency ${agencyId} → ${exportConfig.workdir}`);
 
-	await exportGtfsV29(progress, exportConfig);
+		fs.mkdirSync(exportConfig.workdir, { recursive: true });
 
-	Logger.success(`Done. Files written to ${WORKDIR}`);
+		const progress: ExportProgress = {
+			_id: `local_${agencyId}`,
+			progress_current: 0,
+			progress_total: 0,
+			workdir: exportConfig.workdir,
+		};
+
+		await exportGtfsV29(progress, exportConfig);
+
+		Logger.success(`Agency ${agencyId} done. Files written to ${exportConfig.workdir}`);
+	}
+
+	Logger.success('All agencies exported.');
 }
 
 main().catch((error) => {

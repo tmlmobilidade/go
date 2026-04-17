@@ -2,6 +2,7 @@
 
 import { getStopByLegacyId } from '@/utils/stops.js';
 import { patterns } from '@tmlmobilidade/interfaces';
+import { generateRandomString } from '@tmlmobilidade/strings';
 import { type CreatePatternDto, GtfsTMLStopTimes, GtfsTMLTrip, PatternDirection, patternDirectionMapper, type Shape } from '@tmlmobilidade/types';
 
 import {
@@ -185,6 +186,7 @@ export async function buildPatternsForRoute(params: {
 				line_id: lineId,
 				origin,
 				parameters: [{
+					_id: generateRandomString({ length: 5 }),
 					kind: 'default',
 					path: parametersPath,
 				}],
