@@ -44,15 +44,14 @@ export function StopDetailsSectionGeneral() {
 		<Collapsible
 			description="Informações gerais sobre esta paragem."
 			title="Detalhes desta Paragem"
-			defaultOpen
+			// defaultOpen
 		>
 
 			<Section>
-				<Grid columns="abcd" gap="md">
-					<ValueDisplay label="Código Único da Paragem" value={stopDetailContext.data.stop?._id ?? 'N/A'} bordered />
-					<ValueDisplay label="Código do Operador (legacy)" value={stopDetailContext.data.stop?.legacy_id ?? 'N/A'} bordered />
-					<ValueDisplay label="Latitude" value={stopDetailContext.data.stop?.latitude ?? 'N/A'} bordered />
-					<ValueDisplay label="Longitude" value={stopDetailContext.data.stop?.longitude ?? 'N/A'} bordered />
+				<Grid columns="abc" gap="md">
+					<ValueDisplay label="Código Único da Paragem" value={stopDetailContext.data.stop?._id ?? 'N/A'} variant="bordered" />
+					<ValueDisplay label="Latitude" value={stopDetailContext.data.stop?.latitude ?? 'N/A'} variant="bordered" />
+					<ValueDisplay label="Longitude" value={stopDetailContext.data.stop?.longitude ?? 'N/A'} variant="bordered" />
 				</Grid>
 			</Section>
 
@@ -73,8 +72,8 @@ export function StopDetailsSectionGeneral() {
 
 					<ProposedChangesWrapper
 						inputName="name"
-						label="Antigo Nome da Paragem (p/ alterar)"
-						relatedId={stopDetailContext.data.stop?._id}
+						label="Nome Único da Paragem"
+						relatedId={String(stopDetailContext.data.stop?._id)}
 						scope="stop"
 					>
 						<TextInput
@@ -83,25 +82,13 @@ export function StopDetailsSectionGeneral() {
 						/>
 					</ProposedChangesWrapper>
 
-					<ProposedChangesWrapper
-						inputName="new_name"
-						label="Nome da Paragem (depois da correção)"
-						relatedId={stopDetailContext.data.stop?._id}
-						scope="stop"
-					>
-						<TextInput
-							readOnly={stopDetailContext.flags.isReadOnly}
-							{...stopDetailContext.data.form.getInputProps('new_name')}
-						/>
-					</ProposedChangesWrapper>
-
 				</Grid>
 			</Section>
 
 			<Section>
 				<Grid columns="ab" gap="md">
-					<ValueDisplay label="Nome Curto" value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'} bordered />
-					<ValueDisplay label="Nome TTS" value={stopDetailContext.data.form.getValues()?.tts_name ?? 'N/A'} bordered />
+					<ValueDisplay label="Nome Curto" value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'} variant="bordered" />
+					<ValueDisplay label="Nome TTS" value={stopDetailContext.data.form.getValues()?.tts_name ?? 'N/A'} variant="bordered" />
 				</Grid>
 			</Section>
 

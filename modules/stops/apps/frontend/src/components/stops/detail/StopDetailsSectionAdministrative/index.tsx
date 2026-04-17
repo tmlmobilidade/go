@@ -105,10 +105,10 @@ export function StopDetailsSectionAdministrative() {
 			</Section>
 			<Section>
 				<Grid columns="ab" gap="md">
-					<ValueDisplay label="Distrito" value={associatedDistrict?.name ?? 'N/A'} bordered />
-					<ValueDisplay label="Municipio" value={associatedMunicipality?.name ?? 'N/A'} bordered />
-					<ValueDisplay label="Freguesia" value={associatedParish?.name ?? 'N/A'} bordered />
-					<ValueDisplay label="Localidade" value={associatedLocality?.name ?? 'N/A'} bordered />
+					<ValueDisplay label="Distrito" value={associatedDistrict?.name ?? 'N/A'} variant="bordered" />
+					<ValueDisplay label="Municipio" value={associatedMunicipality?.name ?? 'N/A'} variant="bordered" />
+					<ValueDisplay label="Freguesia" value={associatedParish?.name ?? 'N/A'} variant="bordered" />
+					<ValueDisplay label="Localidade" value={associatedLocality?.name ?? 'N/A'} variant="bordered" />
 				</Grid>
 			</Section>
 		</Collapsible>

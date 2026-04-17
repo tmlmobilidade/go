@@ -34,6 +34,10 @@
 .gitignore
 .gitattributes
 .github
+!.github/templates/
+!.github/templates/docker/
+!.github/templates/docker/scripts/
+!.github/templates/docker/scripts/**
 .vscode
 .idea
 

@@ -85,7 +85,7 @@ export async function exportGtfsV29(
 		// to initiate these variables outside all loops that hold the _ids
 		// of the objects that are referenced in the other objects (trips, patterns)
 
-		const referencedStopCodes = new Set<string>();
+		const referencedStopCodes = new Set<number>();
 		const referencedFareIds = new Set<string>();
 
 		// Initialize service registry for calendar deduplication

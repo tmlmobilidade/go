@@ -102,7 +102,7 @@ export async function exportStopTimesForPattern(
 					drop_off_type: pathItem.allow_drop_off ? 0 : 1,
 					pickup_type: pathItem.allow_pickup ? 0 : 1,
 					shape_dist_traveled: roundKm(cumulativeDistanceMeters),
-					stop_id: pathItem.stop_id,
+					stop_id: String(pathItem.stop_id),
 					stop_sequence: exportConfig.stop_sequence_start + i,
 					timepoint: pathItem.timepoint ? 1 : 0,
 					trip_id: tripSchedule.trip_id,
