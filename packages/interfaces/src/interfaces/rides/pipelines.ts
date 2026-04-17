@@ -338,7 +338,28 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 		// Remove v: and d: patterns from search string for ride ID matching
 		const searchWithoutSpecialFilters = filter.search.replace(/v:[\d,]+/g, '').replace(/d:[\d,]+/g, '').trim();
 
-		const keywords = searchWithoutSpecialFilters
+		// Pattern IDs follow "part_part" format (e.g. "1234_0")
+		const routeIds = [...searchWithoutSpecialFilters.matchAll(/\b([A-Za-z0-9]+_[A-Za-z0-9]+)\b/g)].map(match => match[1]);
+
+		if (routeIds.length > 0) {
+			pipeline.push({
+				$match: { route_id: { $in: [...new Set(routeIds)] } },
+			});
+		}
+
+		// Pattern IDs follow "part_part_part" format (e.g. "1234_0_0")
+		const patternIdMatches = [...searchWithoutSpecialFilters.matchAll(/\b([A-Za-z0-9]+_[A-Za-z0-9]+_[A-Za-z0-9]+)\b/g)].map(match => match[1]);
+
+		if (patternIdMatches.length > 0) {
+			pipeline.push({
+				$match: { pattern_id: { $in: [...new Set(patternIdMatches)] } },
+			});
+		}
+
+		// Remove pattern IDs from ride ID keyword search terms
+		const searchWithoutPatternIds = searchWithoutSpecialFilters.replace(/\b[A-Za-z0-9]+_[A-Za-z0-9]+_[A-Za-z0-9]+\b/g, '').trim();
+
+		const keywords = searchWithoutPatternIds
 			.split(/\s+/)
 			.filter(k => k.length > 0)
 			.map((v) => {
