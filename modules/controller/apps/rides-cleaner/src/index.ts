@@ -7,10 +7,6 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
-const RUN_INTERVAL = 10000; // 10 seconds
-
-/* * */
-
 async function reprocessStuckRides() {
 	try {
 		//
@@ -113,4 +109,4 @@ async function reprocessStuckRides() {
 
 /* * */
 
-runOnInterval(reprocessStuckRides, RUN_INTERVAL);
+await runOnInterval(reprocessStuckRides, { intervalMs: '10s' });

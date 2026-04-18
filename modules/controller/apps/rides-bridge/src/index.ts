@@ -11,7 +11,6 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
-const RUN_INTERVAL = 300_000; // 5 minutes
 const BATCH_SIZE = 500;
 
 /* * */
@@ -116,4 +115,4 @@ export async function syncRides() {
 
 /* * */
 
-runOnInterval(syncRides, RUN_INTERVAL);
+await runOnInterval(syncRides, { intervalMs: '5m' });

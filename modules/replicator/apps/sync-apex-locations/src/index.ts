@@ -182,4 +182,4 @@ async function syncApexLocations() {
 
 /* * */
 
-runOnInterval(syncApexLocations, 1_800_000); // 30 minutes
+await runOnInterval(syncApexLocations, { intervalMs: '30m' });

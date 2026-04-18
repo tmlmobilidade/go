@@ -184,4 +184,4 @@ async function syncApexOnBoardRefunds() {
 
 /* * */
 
-runOnInterval(syncApexOnBoardRefunds, 1_800_000); // 30 minutes
+await runOnInterval(syncApexOnBoardRefunds, { intervalMs: '30m' });

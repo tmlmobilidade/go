@@ -10,7 +10,6 @@ import { Interval } from 'luxon';
 /* * */
 
 const SYNC_DAYS_BACK = 90;
-const RUN_INTERVAL = 600_000; // 10 minutes
 
 async function main() {
 	try {
@@ -100,4 +99,4 @@ async function main() {
 
 //
 
-runOnInterval(main, RUN_INTERVAL);
+await runOnInterval(main, { intervalMs: '10m' });
