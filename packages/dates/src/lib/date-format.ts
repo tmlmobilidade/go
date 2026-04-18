@@ -1,3 +1,5 @@
+/* * */
+
 export interface DatesFormat {
 	day?: '2-digit' | 'numeric'
 	hour?: '2-digit' | 'numeric'

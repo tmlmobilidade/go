@@ -1,5 +1,5 @@
 import { Dates } from '@/dates.js';
-import { FORMATS } from '@/format.js';
+import { FORMATS } from '@/lib/date-format.js';
 import {
 	Event,
 	EventReplacementRule,

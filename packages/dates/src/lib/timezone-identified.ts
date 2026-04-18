@@ -1,6 +1,10 @@
+/* * */
+
 import { z } from 'zod';
 
-export const timezoneList = [
+/* * */
+
+export const TimezoneIdentifiedValues = [
 	'Africa/Abidjan',
 	'Africa/Accra',
 	'Africa/Algiers',
@@ -337,6 +341,6 @@ export const timezoneList = [
 	'Pacific/Wallis',
 ] as const;
 
-export const timezoneListSchema = z.enum(timezoneList);
+export const TimezoneIdentifiedSchema = z.enum(TimezoneIdentifiedValues);
 
-export type TimezoneIdentified = z.infer<typeof timezoneListSchema>;
+export type TimezoneIdentified = z.infer<typeof TimezoneIdentifiedSchema>;
