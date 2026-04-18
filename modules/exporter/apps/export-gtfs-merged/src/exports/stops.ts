@@ -42,7 +42,7 @@ export async function exportStopsFile(exportConfig: MergedGtfsExportConfig) {
 	for (const stopData of allStopsList) {
 		//
 
-		const matchingFlagData = stopData.flags.find((flag) => {
+		const matchingFlagData = stopData.flags?.find((flag) => {
 			const matches41 = flag.agency_ids.includes('41');
 			const matches42 = flag.agency_ids.includes('42');
 			const matches43 = flag.agency_ids.includes('43');
