@@ -20,10 +20,10 @@
 		"@tmlmobilidade/go-alerts-pckg-describe": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
-		"next": "16.2.3",
+		"next": "16.2.4",
 		"react": "19.2.5",
 		"react-dom": "19.2.5",
-		"react-i18next": "17.0.2",
+		"react-i18next": "17.0.4",
 		"swr": "2.4.1"
 	},
 	"devDependencies": {
