@@ -78,7 +78,7 @@ export function StopsList() {
 	//
 	// C. Render components
 
-	if (stopsListContext.flags.loading) {
+	if (stopsListContext.flags.isLoading) {
 		return <LoadingOverlay />;
 	}
 
