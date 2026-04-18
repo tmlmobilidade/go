@@ -20,6 +20,7 @@ db.createRole({
 
 db.createRole({
 	privileges: [
+		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'rides', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'sams', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'ride_acceptances', db: 'production' } },
