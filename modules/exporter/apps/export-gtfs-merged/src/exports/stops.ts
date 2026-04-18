@@ -35,7 +35,7 @@ export async function exportStopsFile(exportConfig: MergedGtfsExportConfig) {
 	//
 
 	const allStopsList = await stops.findMany(
-		{ district_id: { $in: ['15', '11'] } }, // Lisboa and Setúbal districts
+		{ district_id: { $in: ['07', '11', '15'] } }, // Évora, Lisboa and Setúbal districts
 		{ sort: { _id: 1 } },
 	);
 
