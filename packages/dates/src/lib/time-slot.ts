@@ -6,6 +6,8 @@ import { z } from 'zod';
 
 export const TimeSlotValues = [
 	'1s',
+	'5s',
+	'10s',
 	'30s',
 	'1m',
 	'5m',
@@ -28,6 +30,7 @@ export type TimeSlot = z.infer<typeof TimeSlotSchema>;
 
 export const TimeSlotMap: Record<TimeSlot, number> = {
 	'10m': 600_000,
+	'10s': 10_000,
 	'12h': 43_200_000,
 	'15m': 900_000,
 	'1h': 3_600_000,
@@ -39,5 +42,6 @@ export const TimeSlotMap: Record<TimeSlot, number> = {
 	'30s': 30_000,
 	'3h': 10_800_000,
 	'5m': 300_000,
+	'5s': 5_000,
 	'6h': 21_600_000,
 };

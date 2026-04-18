@@ -99,4 +99,4 @@ async function main() {
 
 //
 
-await runOnInterval(main, { intervalMs: 600_000 }); // Run every 10 minutes
+await runOnInterval(main, { intervalMs: '10m' });

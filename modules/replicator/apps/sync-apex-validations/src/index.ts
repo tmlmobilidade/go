@@ -185,4 +185,4 @@ export async function syncApexValidations() {
 
 /* * */
 
-await runOnInterval(syncApexValidations, { intervalMs: 1_800_000 }); // 30 minutes
+await runOnInterval(syncApexValidations, { intervalMs: '30m' });

@@ -99,4 +99,4 @@ const main = async () => {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: 1_000 });
+await runOnInterval(main, { intervalMs: '1s' });

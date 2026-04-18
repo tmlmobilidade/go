@@ -78,4 +78,4 @@ async function main() {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: 36_000_000 }); // 10 hours
+await runOnInterval(main, { intervalMs: '12h' });

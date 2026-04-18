@@ -131,4 +131,4 @@ async function main() {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: 10_000 }); // 10 seconds
+await runOnInterval(main, { intervalMs: '10s' });

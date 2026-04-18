@@ -71,4 +71,4 @@ async function main() {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: 1_000 }); // Every 1 second
+await runOnInterval(main, { intervalMs: '1s' });

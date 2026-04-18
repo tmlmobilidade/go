@@ -20,4 +20,4 @@ async function main() {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: 300_000 }); // Run every 5 minutes
+await runOnInterval(main, { intervalMs: '5m' });

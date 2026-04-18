@@ -37,4 +37,6 @@ async function main() {
 	//
 }
 
-await runOnInterval(main, { intervalMs: 3_600_000 }); // 1 hour
+/* * */
+
+await runOnInterval(main, { intervalMs: '1h' });

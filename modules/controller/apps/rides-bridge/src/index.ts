@@ -115,4 +115,4 @@ export async function syncRides() {
 
 /* * */
 
-await runOnInterval(syncRides, { intervalMs: 300_000 }); // Run every 5 minutes
+await runOnInterval(syncRides, { intervalMs: '5m' });
