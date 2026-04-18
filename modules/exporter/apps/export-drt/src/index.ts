@@ -4,7 +4,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
-import os from 'os';
+import os from 'node:os';
 
 import { deleteAllAgencyDatabases, initializeDatabase } from './database.js';
 import { GlobalContext } from './drt.types.js';
@@ -14,7 +14,6 @@ import { saveAllAgencyDatabasesToStorage } from './storage.js';
 /* * */
 
 const DAYS_TO_ADD = 3;
-const RUN_INTERVAL = 10 * 60 * 60_000; // 10 hour in milliseconds
 const AGENCY_IDS = ['43', '41', '42', '44'];
 
 export const GLOBAL_CONTEXT: GlobalContext = {
@@ -79,4 +78,4 @@ async function main() {
 
 /* * */
 
-runOnInterval(main, RUN_INTERVAL);
+await runOnInterval(main, { intervalMs: 36_000_000 }); // 10 hours

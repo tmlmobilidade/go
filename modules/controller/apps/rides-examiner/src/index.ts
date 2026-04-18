@@ -168,4 +168,4 @@ export async function validateRides() {
 
 /* * */
 
-runOnInterval(validateRides, 1_000); // Run every 1 second
+await runOnInterval(validateRides, { intervalMs: 1_000 }); // Run every 1 second

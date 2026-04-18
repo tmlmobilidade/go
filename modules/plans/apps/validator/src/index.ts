@@ -13,10 +13,6 @@ import pjson from 'pjson' with { type: 'json' };
 
 /* * */
 
-const RUN_INTERVAL_MS = 1_000; // 1 second
-
-/* * */
-
 async function main() {
 	//
 
@@ -73,4 +69,6 @@ async function main() {
 	Logger.terminate(`Validation completed in ${globalTimer.get()}`);
 };
 
-await runOnInterval(main, RUN_INTERVAL_MS);
+/* * */
+
+await runOnInterval(main, { intervalMs: 1_000 }); // Every 1 second

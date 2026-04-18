@@ -180,4 +180,4 @@ async function syncVehicleEvents() {
 
 /* * */
 
-await runOnInterval(syncVehicleEvents, 1_800_000); // 30 minutes
+await runOnInterval(syncVehicleEvents, { intervalMs: 1_800_000 }); // 30 minutes

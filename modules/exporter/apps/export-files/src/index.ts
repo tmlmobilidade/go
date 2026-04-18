@@ -12,8 +12,6 @@ import { exportRidesFile } from './export-rides.js';
 
 /* * */
 
-const RUN_INTERVAL = 5_000; // 30 seconds in milliseconds
-
 async function main() {
 	//
 
@@ -75,4 +73,4 @@ async function main() {
 
 /* * */
 
-runOnInterval(main, RUN_INTERVAL);
+await runOnInterval(main, { intervalMs: 5_000 }); // Run every 5 seconds.

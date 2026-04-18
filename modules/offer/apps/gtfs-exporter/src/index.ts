@@ -16,10 +16,6 @@ export * from '@/utils.js';
 
 /* * */
 
-const RUN_INTERVAL = 10_000; // 10 seconds
-
-/* * */
-
 function buildExportConfig(workdir: string, properties: GtfsExportProperties['properties']): GtfsV29ExportConfig {
 	return {
 		agency_ids: properties.agency_ids,
@@ -135,4 +131,4 @@ async function main() {
 
 /* * */
 
-runOnInterval(main, RUN_INTERVAL);
+await runOnInterval(main, { intervalMs: 10_000 }); // 10 seconds

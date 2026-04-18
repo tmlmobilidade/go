@@ -15,7 +15,6 @@ const __dirname = path.dirname(__filename);
 
 /* * */
 
-const RUN_INTERVAL = 60_000; // 1 minute in milliseconds
 const DatikServiceAlertsUrl = 'https://api.control.optibus.co/opendata/v1/gtfs-rt/alerts?uid=c-06821148';
 const ProtobufPath = path.resolve(__dirname, './gtfs-realtime.proto');
 
@@ -92,4 +91,4 @@ async function main() {
 
 /* * */
 
-runOnInterval(main, RUN_INTERVAL);
+await runOnInterval(main, { intervalMs: 60_000 }); // 1 minute in milliseconds

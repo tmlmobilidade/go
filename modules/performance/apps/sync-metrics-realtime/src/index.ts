@@ -36,4 +36,4 @@ async function main() {
 	//
 }
 
-await runOnInterval(main, 30_000); // 30 seconds
+await runOnInterval(main, { intervalMs: 30_000 }); // 30 seconds

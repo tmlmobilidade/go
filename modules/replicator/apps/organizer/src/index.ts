@@ -13,4 +13,6 @@ async function main() {
 	await categorizeValidations();
 }
 
-runOnInterval(main, 60_000); // 60 seconds
+/* * */
+
+await runOnInterval(main, { intervalMs: 60_000 }); // 60 seconds

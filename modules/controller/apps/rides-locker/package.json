@@ -18,10 +18,12 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/utils": "*",
 		"luxon": "3.7.2"
 	},
 	"devDependencies": {
