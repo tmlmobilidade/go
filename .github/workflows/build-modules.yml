@@ -5,6 +5,12 @@ on:
   push:
     branches:
       - prd
+    paths:
+      - 'modules/**'
+      - 'packages/**'
+      - '.github/workflows/build-modules.yml'
+      - '.github/actions/**/*'
+      - '.github/templates/**/*'
   pull_request:
     types:
       - opened

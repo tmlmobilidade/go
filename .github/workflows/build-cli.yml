@@ -8,11 +8,12 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - production
+      - prd
     paths:
       - 'cli/**'
       - 'packages/**'
       - '.github/workflows/build-cli.yml'
+      - '.github/actions/**/*'
       - '.github/templates/**/*'
 
 # # #
