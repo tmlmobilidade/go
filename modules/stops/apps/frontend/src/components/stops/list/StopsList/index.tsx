@@ -97,7 +97,7 @@ export function StopsList() {
 				onRowClick={handleRowClick}
 				records={stopsListContext.data.filtered}
 				rowIdAccessor="_id"
-				selectedId={params.id}
+				selectedId={Number(params.id)}
 			/>
 		</Pane>
 	);
