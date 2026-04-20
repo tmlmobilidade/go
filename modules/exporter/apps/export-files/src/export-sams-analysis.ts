@@ -41,8 +41,6 @@ export async function exportSamsAnalysisFile(fileExport: FileExport): Promise<st
 	const query = {
 		agency_ids: properties.agency_ids ?? [PermissionCatalog.ALLOW_ALL_FLAG],
 		latest_apex_version: properties.apex_versions ?? undefined,
-		limit: 500,
-		offset: 0,
 		search: properties.search ?? undefined,
 		seen_first_at: properties.seen_first_at ?? undefined,
 		seen_last_at: properties.seen_last_at ?? undefined,

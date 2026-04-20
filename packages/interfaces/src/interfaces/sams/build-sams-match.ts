@@ -15,7 +15,7 @@ function escapeRegex(value: string): string {
 /**
  * Reserved query fields that are not used in the aggregation pipeline.
  */
-const RESERVED_QUERY_FIELDS = new Set(['agency_ids', 'limit', 'offset', 'search']);
+const RESERVED_QUERY_FIELDS = new Set(['agency_ids', 'search']);
 const RANGE_QUERY_FIELDS = {
 	seen_first_at: { field: 'seen_first_at', operator: '$gte' },
 	seen_last_at: { field: 'seen_last_at', operator: '$lte' },

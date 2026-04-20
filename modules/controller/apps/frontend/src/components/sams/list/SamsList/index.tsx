@@ -4,13 +4,14 @@
 import { AnalysisTimeLineRow } from '@/components/common/AnalysisSams/AnalysisTimeLine';
 import { SamsFilters } from '@/components/sams/list/SamsFilters';
 import { SamsListHeader } from '@/components/sams/list/SamsHeader';
-import { useSamsFavoritesContext } from '@/contexts/SamFavorites.context';
-import { useSamsListContext } from '@/contexts/SamList.context';
+import { type SamsListItem, useSamsListContext } from '@/contexts/SamList.context';
+import { getSamSystemStatus } from '@/lib/sam-status';
 import { translateFilterValue } from '@/lib/translations';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Sam } from '@tmlmobilidade/types';
+import { type Sam } from '@tmlmobilidade/types';
 import { AgencyTag, DataTable, DataTableColumn, IdTag, keepUrlParams, Label, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useCallback, useMemo } from 'react';
 
 /* * */
 
@@ -21,10 +22,9 @@ export function SamsList() {
 	// A. Setup variables
 
 	const samsListContext = useSamsListContext();
-	const samsFavoritesContext = useSamsFavoritesContext();
 	const router = useRouter();
 
-	const columns: DataTableColumn<Sam>[] = [
+	const columns = useMemo<DataTableColumn<Sam | SamsListItem>[]>(() => [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
@@ -63,31 +63,37 @@ export function SamsList() {
 		},
 		{
 			accessor: 'system_status',
-			render: item => <Tag label={translateFilterValue('sams_status', item.system_status)} />,
+			render: item => (
+				<Tag label={translateFilterValue('sams_status', getSamSystemStatus(item))} />
+			),
 			title: 'Estado',
 			width: 150,
 		},
 		{
-			accessor: 'analysis',
+			accessor: 'timeline_summary',
 			render: item => (
 				<AnalysisTimeLineRow
-					analyses={item.analysis ?? []}
 					rangeEndTs={item.seen_last_at}
 					rangeStartTs={item.seen_first_at}
-					remarks={item.remarks}
+					timelineSummary={item.timeline_summary}
 				/>
 			),
 			title: 'Análises',
 			width: 600,
 		},
-	];
+	], []);
 
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: Sam) => {
+	const handleRowClick = useCallback((item: Sam | SamsListItem) => {
 		router.push(keepUrlParams(PAGE_ROUTES.controller.SAMS_DETAIL(item._id.toString())));
-	};
+	}, [router]);
+
+	const tableRecords = useMemo(
+		() => samsListContext.data.filtered,
+		[samsListContext.data.filtered],
+	);
 
 	//
 	// C. Render components
@@ -101,7 +107,7 @@ export function SamsList() {
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}
-				records={samsListContext.flags.favoritesEnabled ? samsFavoritesContext.data.favoriteSams : samsListContext.data.raw}
+				records={tableRecords}
 			/>
 		</Pane>
 	);

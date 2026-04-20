@@ -31,7 +31,12 @@ class SamsClass extends MongoCollectionClass<Sam, CreateSamDto, UpdateSamDto> {
 		return [
 			{ background: true, key: { created_at: 1 } },
 			{ background: true, key: { agency_id: 1 } },
+			{ background: true, key: { agency_id: 1, created_at: -1 } },
+			{ background: true, key: { latest_apex_version: 1 } },
+			{ background: true, key: { latest_apex_version: 1, created_at: -1 } },
 			{ background: true, key: { mac_sam_serial_number: 1 } },
+			{ background: true, key: { seen_first_at: 1 } },
+			{ background: true, key: { seen_last_at: 1 } },
 		];
 	}
 

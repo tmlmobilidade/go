@@ -5,13 +5,17 @@ import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useSamsFavoritesContext } from '@/contexts/SamFavorites.context';
 import { getSamSystemStatus } from '@/lib/sam-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Sam, type SystemStatus, SystemStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type Sam, type SystemStatus, SystemStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
 import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
+
+export type SamsListItem = Omit<Sam, 'analysis'> & {
+	analysis?: Sam['analysis']
+};
 
 export interface SamsListContextState {
 	actions: {
@@ -20,8 +24,8 @@ export interface SamsListContextState {
 		setFilterSeenLastAt: (value: null | UnixTimestamp) => void
 	}
 	data: {
-		filtered: Sam[]
-		raw: Sam[]
+		filtered: SamsListItem[]
+		raw: SamsListItem[]
 	}
 	filters: {
 		agency: UseFilterStateListReturnType
@@ -49,8 +53,6 @@ export const useSamsListContext = () => {
 	}
 	return context;
 };
-
-const SAMS_PAGE_SIZE = 500;
 
 // --- Custom Hook splits out logic for clean separation
 export function SamsListContextProvider({ children }: PropsWithChildren) {
@@ -184,8 +186,6 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 		const params = new URLSearchParams(baseQueryString);
 		if (effectiveApexVersionFilterValues.length)
 			params.set('latest_apex_version', effectiveApexVersionFilterValues.join(','));
-		params.set('limit', SAMS_PAGE_SIZE.toString());
-		params.set('offset', '0');
 		return params.toString();
 	}, [baseQueryString, effectiveApexVersionFilterValues]);
 
@@ -199,7 +199,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	//
 
-	const { data: allSamsData = [], error: allSamsError, isLoading: allSamsLoading } = useSWR<Sam[], Error>(samsListUrl, {
+	const { data: allSamsData = [], error: allSamsError, isLoading: allSamsLoading } = useSWR<SamsListItem[], Error>(samsListUrl, {
 		revalidateOnFocus: false,
 		revalidateOnReconnect: false,
 	});

@@ -1,5 +1,6 @@
 'use client';
 
+import { getSamSystemStatus } from '@/lib/sam-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Sam, SystemStatus, type UnixTimestamp } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
@@ -98,27 +99,6 @@ export function SamsDetailContextProvider({ children, samId }: PropsWithChildren
 	}, []);
 
 	//
-
-	const getSamStatus = (sam: Sam): SystemStatus => {
-		const analyses = sam.analysis ?? [];
-		if (!analyses.length) return 'error';
-
-		const isNullish = (value: unknown) => value === null || value === undefined;
-
-		const allAnalysesAreFullyNull = analyses.every(analysis =>
-			Object.values(analysis).every(isNullish),
-		);
-		if (allAnalysesAreFullyNull) return 'error';
-
-		const hasAnyNullFieldInAnyAnalysis = analyses.some(analysis =>
-			Object.values(analysis).some(isNullish),
-		);
-		if (hasAnyNullFieldInAnyAnalysis) return 'incomplete';
-
-		return 'complete';
-	};
-
-	//
 	// D. Define context value
 
 	const contextValue: SamsDetailContextState = useMemo(() => ({
@@ -130,7 +110,7 @@ export function SamsDetailContextProvider({ children, samId }: PropsWithChildren
 		},
 		data: {
 			sam: samData ?? null,
-			status: getSamStatus(samData ?? { analysis: [] } as Sam),
+			status: getSamSystemStatus(samData ?? { analysis: [] } as Sam),
 		},
 		flags: {
 			error: samError,

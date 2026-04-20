@@ -6,13 +6,12 @@
 import { cn } from '@/lib/utils';
 import { type SamAnalysis } from '@tmlmobilidade/types';
 import { Tooltip } from '@tmlmobilidade/ui';
-import { type ReactNode } from 'react';
 
 // Style import
 import styles from './styles.module.css';
 
 // Shared helpers
-import { analysisCountTooltipLabel, analysisSquareHasValues } from './analysis-square-shared';
+import { analysisCountTooltipLabel, analysisSquareHasValues, getAnalysisBucketCounts } from './analysis-square-shared';
 
 /* * */
 
@@ -95,37 +94,25 @@ export function AnalysisSquare({
 	// Number of analyses in this "bucket"
 	const aggregateCount = analyses != null && analyses.length > 0 ? analyses.length : 0;
 
-	// If showing a single value rather than an aggregate, wrap in an array to reuse rendering.
-	const detailAnalyses = aggregateCount > 0 ? [] : value != null ? [value] : [];
+	const aggregateCounts = analyses != null
+		? getAnalysisBucketCounts(analyses)
+		: null;
 
-	/**
-	 * Renders a tooltip for analysis details, if displaying a single value.
-	 */
-	const renderDetailTooltip = (): ReactNode => (
-		<div className={styles.tooltipContent}>
-			{detailAnalyses.map((analysis, analysisIndex) => (
-				<div
-					key={`${analysis.first_transaction_id ?? ''}-${analysis.last_transaction_id ?? ''}-${analysisIndex}`}
-					className={styles.tooltipAnalysisGroup}
-				>
-					{/* Optionally render an index/title for each analysis if there are multiples */}
-					{detailAnalyses.length > 1 && (
-						<div className={styles.tooltipAnalysisTitle}>
-							Analise {analysisIndex + 1}
-						</div>
-					)}
-				</div>
-			))}
-		</div>
-	);
+	const detailTooltip = value != null
+		? analysisCountTooltipLabel({
+			failed: analysisSquareHasValues(value) ? 0 : 1,
+			successful: analysisSquareHasValues(value) ? 1 : 0,
+			total: 1,
+		})
+		: undefined;
 
 	// Decide what tooltip to show (passed-in, aggregate count, or details).
 	const resolvedTooltip =
 		title
 		?? (aggregateCount > 0
-			? analysisCountTooltipLabel(aggregateCount)
-			: detailAnalyses.length > 0
-				? renderDetailTooltip()
+			? analysisCountTooltipLabel(aggregateCounts ?? { failed: 0, successful: 0, total: 0 })
+			: detailTooltip
+				? detailTooltip
 				: undefined);
 
 	// The actual colored square element.
@@ -158,10 +145,9 @@ export function AnalysisSquare({
 				<Tooltip
 					closeDelay={80}
 					label={resolvedTooltip}
-					multiline={typeof resolvedTooltip !== 'string'}
+					multiline={false}
 					openDelay={120}
 					position="bottom-start"
-					w={typeof resolvedTooltip === 'string' ? undefined : 320}
 					withArrow
 					withinPortal
 				>

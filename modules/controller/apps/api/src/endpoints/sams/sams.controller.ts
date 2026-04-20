@@ -2,21 +2,15 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { buildSamsMatch, sams, SAMS_ANALYSIS_LIST_TAIL, samsAnalysisExportAggregationPipeline, samsApexVersionsAggregationPipeline, samsBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
-import { ActionsOf, type GetSamsBatchQuery, GetSamsBatchQuerySchema, Permission, PermissionCatalog, type Sam } from '@tmlmobilidade/types';
+import { buildSamsMatch, sams, samsAnalysisExportAggregationPipeline, samsApexVersionsAggregationPipeline, samsBatchAggregationPipeline, samsByIdAggregationPipeline, samsByIdsListViewAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { ActionsOf, type GetSamsBatchQuery, GetSamsBatchQuerySchema, Permission, PermissionCatalog, type Sam, type SamListItem } from '@tmlmobilidade/types';
 
 /* * */
 
 /**
  * A type for the batch list item.
  */
-type SamBatchListItem = Omit<Sam, 'analysis'> & {
-	analysis: Array<{
-		end_time: null | number
-		first_transaction_id: null | string
-		start_time: null | number
-	}>
-};
+type SamBatchListItem = SamListItem;
 
 /* * */
 
@@ -40,16 +34,9 @@ export class SamsController {
 
 	static async getBatch(request: FastifyRequest<{ Querystring: GetSamsBatchQuery }>, reply: FastifyReply<SamBatchListItem[]>) {
 		const parsedQuery = GetSamsBatchQuerySchema.parse(request.query ?? {});
-		const pagedQuery = parsedQuery as GetSamsBatchQuery & { limit?: number, offset?: number };
-		const pageOffset = pagedQuery.offset ?? 0;
 		const matchAnd = buildSamsMatch(parsedQuery);
 
-		const pipeline = samsBatchAggregationPipeline({
-			analysisListTail: SAMS_ANALYSIS_LIST_TAIL,
-			matchAnd,
-			pageLimit: parsedQuery.limit,
-			pageOffset,
-		});
+		const pipeline = samsBatchAggregationPipeline({ matchAnd });
 
 		const allSams = (await sams.aggregate(pipeline)) as SamBatchListItem[];
 
@@ -105,7 +92,8 @@ export class SamsController {
 		//
 		// Fetch the SAM from the database
 
-		const sam = await sams.findById(Number(id));
+		const samRows = await sams.aggregate(samsByIdAggregationPipeline(Number(id)));
+		const sam = samRows[0];
 
 		if (!sam) {
 			return reply.status(HTTP_STATUS.NOT_FOUND).send({ data: null, error: 'SAM not found.', statusCode: HTTP_STATUS.NOT_FOUND });
@@ -119,7 +107,7 @@ export class SamsController {
 
 	/* * */
 
-	static async getSamByIds<S extends Permission['scope']>(request: FastifyRequest, reply: FastifyReply<Sam[]>, scope: S, action: ActionsOf<S>) {
+	static async getSamByIds<S extends Permission['scope']>(request: FastifyRequest, reply: FastifyReply<SamBatchListItem[]>, scope: S, action: ActionsOf<S>) {
 		//
 		// Resolve SAMs for stored favorite ids. `SamsPermission` has no `resources` today — treat missing
 		// `agency_ids` like list batch default (no agency restriction). When resources exist, match rides.
@@ -147,10 +135,13 @@ export class SamsController {
 			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
 		}
 
-		const foundSamsByIds = await sams.findMany({
-			_id: { $in: numericIds },
-			...(!allowAllAgencies && agencyIds?.length ? { agency_id: { $in: agencyIds } } : {}),
-		});
+		const foundSamsByIds = await sams.aggregate(
+			samsByIdsListViewAggregationPipeline({
+				agencyIds,
+				ids: numericIds,
+				restrictByAgency: !allowAllAgencies && Boolean(agencyIds?.length),
+			}),
+		);
 
 		return reply.send({ data: foundSamsByIds.map(sam => sam), error: null, statusCode: HTTP_STATUS.OK });
 	}
