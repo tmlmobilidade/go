@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 'use client';
 
 /* * */
@@ -25,6 +26,8 @@ interface LinesContextState {
 	}
 }
 
+/* * */
+
 const LinesContext = createContext<LinesContextState | undefined>(undefined);
 
 export function useLinesContext() {
@@ -34,6 +37,8 @@ export function useLinesContext() {
 	}
 	return context;
 }
+
+/* * */
 
 interface LineByHashedTrip {
 	line_id: number
@@ -47,7 +52,12 @@ interface RidesFilters {
 	date_start: number
 }
 
-export function LinesContextProvider({ children }: { children: React.ReactNode }) {
+export const LinesContextProvider = ({ children }: { children: React.ReactNode }) => {
+	//
+
+	//
+	// A. Fetch data
+
 	const defaultDateEnd = Date.now();
 	const defaultDateStart = defaultDateEnd - (30 * 24 * 60 * 60 * 1000);
 
@@ -57,11 +67,16 @@ export function LinesContextProvider({ children }: { children: React.ReactNode }
 	});
 
 	const linesByRidesFiltersUrl = useMemo(() => {
+		// Hashed trips endpoint now supports date/agency filters and aggregates server-side.
 		const queryParams = new URLSearchParams({
 			date_end: String(ridesFilters.date_end),
 			date_start: String(ridesFilters.date_start),
 		});
-		if (ridesFilters.agency_id) queryParams.append('agency_id', ridesFilters.agency_id);
+
+		if (ridesFilters.agency_id) {
+			queryParams.append('agency_id', ridesFilters.agency_id);
+		}
+
 		return `${API_ROUTES.alerts.HASHED_TRIPS_LIST}?${queryParams.toString()}`;
 	}, [ridesFilters.agency_id, ridesFilters.date_end, ridesFilters.date_start]);
 
@@ -71,16 +86,23 @@ export function LinesContextProvider({ children }: { children: React.ReactNode }
 			const linesMap = new Map<number, LineByHashedTrip>();
 			const response = await fetchData<LineByHashedTrip[]>(linesByRidesFiltersUrl);
 			if (!response.data?.length) return [];
+
 			for (const lineData of response.data) {
 				if (linesMap.has(lineData.line_id)) continue;
-				linesMap.set(lineData.line_id, lineData);
+				linesMap.set(lineData.line_id, {
+					line_id: lineData.line_id,
+					line_long_name: lineData.line_long_name,
+					line_short_name: lineData.line_short_name,
+				});
 			}
+
 			return Array.from(linesMap.values());
 		},
 	);
 
 	const allLinesData = useMemo(() => {
 		if (!linesByHashedTripsData?.length) return [];
+
 		return linesByHashedTripsData.map(line => ({
 			_id: String(line.line_id),
 			code: line.line_short_name,
@@ -88,13 +110,22 @@ export function LinesContextProvider({ children }: { children: React.ReactNode }
 		}));
 	}, [linesByHashedTripsData]);
 
+	//
+	// B. Handle actions
+
 	const getLineDataById = useCallback((lineId: string) => {
 		return allLinesData?.find(line => line._id === lineId) as Line | undefined;
 	}, [allLinesData]);
 
 	const setRidesFiltersAction = useCallback((filters: Partial<RidesFilters>) => {
-		setRidesFilters(prev => ({ ...prev, ...filters }));
+		setRidesFilters(prev => ({
+			...prev,
+			...filters,
+		}));
 	}, []);
+
+	//
+	// C. Define context value
 
 	const asOptions = useMemo(() => {
 		if (!allLinesData) return [];
@@ -103,6 +134,9 @@ export function LinesContextProvider({ children }: { children: React.ReactNode }
 			value: line._id,
 		}));
 	}, [allLinesData]);
+
+	//
+	// C. Define context value
 
 	const contextValue: LinesContextState = useMemo(() => ({
 		actions: {
@@ -116,11 +150,22 @@ export function LinesContextProvider({ children }: { children: React.ReactNode }
 		flags: {
 			is_loading: linesByHashedTripsLoading,
 		},
-	}), [allLinesData, asOptions, getLineDataById, linesByHashedTripsLoading, setRidesFiltersAction]);
+	}), [
+		allLinesData,
+		asOptions,
+		getLineDataById,
+		linesByHashedTripsLoading,
+		setRidesFiltersAction,
+	]);
+
+	//
+	// D. Render components
 
 	return (
 		<LinesContext.Provider value={contextValue}>
 			{children}
 		</LinesContext.Provider>
 	);
-}
+
+	//
+};
