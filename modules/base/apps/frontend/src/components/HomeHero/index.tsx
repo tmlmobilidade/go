@@ -21,10 +21,7 @@ export function HomeHero() {
 					{' '}<span className={styles.titleBrand}>tempo real</span>
 					{' '}para operações de transporte público mais eficientes.
 				</h1>
-
-				<p className={styles.description}>
-					APIs, links, guias e recursos para a rede de transportes públicos da Área Metropolitana de Lisboa.
-				</p>
+				<p className={styles.description}>APIs, links, guias e recursos para a rede de transportes públicos da Área Metropolitana de Lisboa.</p>
 
 				<div className={styles.buttonsContainer}>
 					<Link className={styles.button} href="/reference">

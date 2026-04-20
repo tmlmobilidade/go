@@ -1,7 +1,33 @@
-/* MAP */
+/* * */
+/* MAP CONTAINER */
+
+.mapSectionContainer {
+	display: flow-root;
+	width: calc(100% - 24px);
+	margin-right: auto;
+	margin-left: auto;
+}
+
+@media (width >= 768px) {
+	.mapSectionContainer {
+		width: 80%;
+	}
+}
+
+/* * */
+/* MAP WRAPPER */
 
 .mapWrapper {
-	position: relative;
-	width: 100%;
-	height: clamp(300px, 80vh, 800px);
+	overflow: hidden;
+	border: 4px solid var(--pill-1-text);
+	border-radius: 16px;
+	height: 520px;
+	margin-top: var(--size-spacing-lg);
+	margin-bottom: var(--size-spacing-3xl);
+}
+
+@media (width >= 768px) {
+	.mapWrapper {
+		height: 700px;
+	}
 }

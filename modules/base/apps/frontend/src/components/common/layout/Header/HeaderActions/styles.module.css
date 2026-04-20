@@ -1,6 +1,12 @@
 .headerActions {
-    justify-self: end;
-    display: inline-flex;
-    align-items: center;
-    z-index: 1;
+	justify-self: end;
+	display: inline-flex;
+	align-items: center;
+	z-index: 1;
+}
+
+@media (width < 768px) {
+	.headerActions {
+		display: none;
+	}
 }

@@ -4,7 +4,6 @@
 
 import { MapOverlayVehicles, MapView } from '@/components/map';
 import { useVehiclePositionContext } from '@/contexts/VehiclePosition.context';
-import { Section, Surface } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -24,17 +23,13 @@ export function VehiclesMap() {
 	// B. Render
 
 	return (
-		<Surface>
-			<Section>
-				<VehiclesMapHeader />
-			</Section>
-			<Section>
-				<div className={styles.mapWrapper}>
-					<MapView id="vehicles-map">
-						<MapOverlayVehicles showCounter="always" vehiclesData={vehiclePositionContext.data.vehiclePositionGeoJson} />
-					</MapView>
-				</div>
-			</Section>
-		</Surface>
+		<div className={styles.mapSectionContainer}>
+			<VehiclesMapHeader />
+			<div className={styles.mapWrapper}>
+				<MapView id="vehicles-map">
+					<MapOverlayVehicles showCounter="always" vehiclesData={vehiclePositionContext.data.vehiclePositionGeoJson} />
+				</MapView>
+			</div>
+		</div>
 	);
 }

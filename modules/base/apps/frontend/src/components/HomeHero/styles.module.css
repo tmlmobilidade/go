@@ -2,11 +2,20 @@
 /* CONTAINER */
 
 .container {
-	max-width: 75%;
+	width: calc(100% - 24px);
+	max-width: none;
 	margin-right: auto;
 	margin-left: auto;
-	margin-top: var(--size-spacing-3xl);	
+	margin-top: var(--size-spacing-xl);
 	margin-bottom: var(--size-spacing-3xl);
+}
+
+@media (width >= 768px) {
+	.container {
+		width: auto;
+		max-width: 80%;
+		margin-top: var(--size-spacing-3xl);
+	}
 }
 
 /* * */
@@ -17,8 +26,9 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	min-height: 280px;
-	padding: 48px 24px;
+	min-height: 520px;
+	height: auto;
+	padding: 28px 18px;
 	overflow: hidden;
 	color: var(--color-system-background-100);
 	background-color: var(--pill-1-text);
@@ -30,6 +40,7 @@
 
 @media (width >= 768px) {
 	.heroContainer {
+		height: 700px;
 		padding: 64px;
 	}
 }
@@ -41,7 +52,7 @@
 	position: relative;
 	z-index: 10;
 	max-width: 768px;
-	font-size: 30px;
+	font-size: 26px;
 	font-weight: 600;
 	line-height: 1.25;
 	letter-spacing: -0.025em;
@@ -91,9 +102,16 @@
 	z-index: 10;
 	display: flex;
 	flex-flow: row wrap;
-	gap: 25px;
+	gap: 10px;
 	align-items: center;
-	margin-top: 32px;
+	margin-top: 24px;
+}
+
+@media (width >= 768px) {
+	.buttonsContainer {
+		gap: 25px;
+		margin-top: 32px;
+	}
 }
 
 .button {
@@ -110,19 +128,24 @@
 	border-radius: 5px;
 }
 
+@media (width < 768px) {
+	.button {
+		width: 100%;
+		justify-content: center;
+	}
+}
+
 .button:hover {
 	text-decoration: none;
 	background-color: rgb(255 255 255 / 10%);
 	border-color: rgb(255 255 255 / 35%);
 }
 
-/* * */
-/* DESCRIPTION */
 
 
 .gforms {
 	z-index: 10;
-	margin-top: 32px;
+	margin-top: 24px;
 	font-size: 14px;
 	font-weight: 600;
 	text-transform: uppercase;
