@@ -123,6 +123,9 @@ export async function exportGtfsV29(
 
 		const agenciesMap = new Map(allAgenciesData.map(a => [a._id, a]));
 
+		Logger.info('Fetching stops...');
+		const allStopsData = await stops.findMany({}, { sort: { _id: 1 } });
+
 		//
 		// 2.
 		// Prepare to process lines
@@ -275,7 +278,7 @@ export async function exportGtfsV29(
 						exportConfig,
 					);
 
-					await exportStopTimesForPattern(patternData, tripSchedules, exportConfig, lineData.agency_id);
+					await exportStopTimesForPattern(allStopsData, patternData, tripSchedules, exportConfig, lineData.agency_id);
 
 					// Track circulations for duplicate detection
 					for (const schedule of tripSchedules) {
@@ -298,15 +301,15 @@ export async function exportGtfsV29(
 
 		await updateProgress(progress, { progress_current: 5, progress_total: 7 });
 
-		Logger.info('Fetching stops...');
-		const allStopsData = exportConfig.stops_export_all
-			? await stops.findMany({}, { sort: { _id: 1 } })
-			: await stops.findMany({ _id: { $in: Array.from(referencedStopCodes) } }, { sort: { _id: 1 } });
-
 		Logger.info(`Processing ${allStopsData.length} stops...`);
 
 		// Export each stop
 		for (const stopData of allStopsData) {
+			//
+
+			// Skip stops that are not referenced
+			if (!exportConfig.stops_export_all && !referencedStopCodes.has(stopData._id)) continue;
+
 			const municipalityData = stopData.municipality_id
 				? allMunicipalitiesMap.get(stopData.municipality_id)
 				: undefined;

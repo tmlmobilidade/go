@@ -4,7 +4,7 @@ import { type TripSchedule } from '@/exports/trips.js';
 import { type GtfsV29ExportConfig } from '@/types.js';
 import { computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GTFS_StopTime, HHMM, Path, type Pattern, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/types';
+import { type GTFS_StopTime, HHMM, Path, type Pattern, type Stop, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/types';
 
 import { getAgencyStopId } from '../utils/get-agency-stop-id.js';
 
@@ -67,6 +67,7 @@ function roundKm(valueMeters: number): number {
 /* * */
 
 export async function exportStopTimesForPattern(
+	stopsData: Stop[],
 	patternData: Pattern,
 	tripSchedules: TripSchedule[],
 	exportConfig: GtfsV29ExportConfig,
@@ -100,12 +101,8 @@ export async function exportStopTimesForPattern(
 				}
 
 				// If pathItem.stop is present, use agency-specific stop_id; else fallback to pathItem.stop_id
-				let stopId: string;
-				if ('stop' in pathItem && pathItem.stop) {
-					stopId = getAgencyStopId(pathItem.stop, agencyId);
-				} else {
-					stopId = String(pathItem.stop_id);
-				}
+				const currentStopData = stopsData.find(s => s._id === pathItem.stop_id);
+				const stopId = currentStopData ? getAgencyStopId(currentStopData, agencyId) : String(pathItem.stop_id);
 
 				const stopTimeRow: GTFS_StopTime = {
 					arrival_time: formatGtfsTime(arrivalSeconds),
