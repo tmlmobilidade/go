@@ -3,6 +3,7 @@
 /* * */
 
 import namespaceAlertsPt from './namespaces/alerts/pt.json' with { type: 'json' };
+import namespaceBasePt from './namespaces/base/pt.json' with { type: 'json' };
 import namespaceComponentsPt from './namespaces/components/pt.json' with { type: 'json' };
 import namespaceOperationsPt from './namespaces/operations/pt.json' with { type: 'json' };
 import namespaceStatusPt from './namespaces/status/pt.json' with { type: 'json' };
@@ -16,6 +17,7 @@ import namespaceStatusPt from './namespaces/status/pt.json' with { type: 'json' 
 export const i18nResourceKeysPtShared = {
 	shared: {
 		alerts: namespaceAlertsPt,
+		base: namespaceBasePt,
 		components: namespaceComponentsPt,
 		operations: namespaceOperationsPt,
 		status: namespaceStatusPt,

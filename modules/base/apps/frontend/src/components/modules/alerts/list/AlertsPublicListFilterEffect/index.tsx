@@ -21,7 +21,7 @@ export function AlertsPublicListFilterEffect() {
 	return (
 		<FilterTypeList
 			active={alertsPublicListContext.filters.effect.isActive}
-			label={t('default:alerts.public.list.filters.effect')}
+			label={t('shared:base.alerts.public.list.filters.effect')}
 			onChange={alertsPublicListContext.filters.effect.set}
 			options={alertsPublicListContext.filters.effect.options}
 			withToggleAll

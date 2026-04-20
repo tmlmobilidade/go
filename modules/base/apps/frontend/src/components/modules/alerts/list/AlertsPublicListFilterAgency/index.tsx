@@ -22,7 +22,7 @@ export function AlertsPublicListFilterAgency() {
 		<FilterTypeList
 			active={filters.agency.isActive}
 			disabled={!filters.agency.options.length}
-			label={t('default:alerts.public.list.filters.agency')}
+			label={t('shared:base.alerts.public.list.filters.agency')}
 			onChange={filters.agency.set}
 			options={filters.agency.options}
 			withToggleAll

@@ -22,7 +22,7 @@ export function AlertsPublicListFilterLine() {
 		<FilterTypeList
 			active={filters.line.isActive}
 			disabled={!filters.line.options.length}
-			label={t('default:alerts.public.list.filters.line')}
+			label={t('shared:base.alerts.public.list.filters.line')}
 			onChange={filters.line.set}
 			options={filters.line.options}
 			withToggleAll

@@ -24,7 +24,7 @@ export function AlertsPublicListFilterDates() {
 		<FilterTypeDateRange
 			active={true}
 			endDate={filters.period_until as UnixTimestamp}
-			label={t('default:alerts.public.list.filters.period')}
+			label={t('shared:base.alerts.public.list.filters.period')}
 			onEndDateChange={filters.setPeriodUntil}
 			onStartDateChange={filters.setPeriodSince}
 			startDate={filters.period_since as UnixTimestamp}

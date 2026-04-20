@@ -5,7 +5,6 @@ import type { Alert } from '@tmlmobilidade/types';
 
 import { AlertsPublicListCard } from '@/components/modules/alerts/list/AlertsPublicListCard';
 import { useAlertsPublicListContext } from '@/contexts/AlertsPublicList.context';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { keepUrlParams, Section, Surface } from '@tmlmobilidade/ui';
 import Link from 'next/link';
@@ -49,11 +48,11 @@ export default function AlertsPublicList() {
 		const dateLabel = dayDate.toFormat('d LLLL yyyy', { locale: 'pt' });
 		const dayDateKey = dayDate.toFormat('yyyyMMdd');
 
-		if (dayDateKey === todayDateKey) return `A partir de hoje, ${dateLabel}`;
-		if (dayDateKey === tomorrowDateKey) return `A partir de amanha, ${dateLabel}`;
-		if (dayDateKey === yesterdayDateKey) return `Desde ontem, ${dateLabel}`;
-		if (dayDateKey < todayDateKey) return `Desde ${dateLabel}`;
-		return `A partir de ${dateLabel}`;
+		if (dayDateKey === todayDateKey) return String(t('shared:base.alerts.public.list.groups.from_today')).replace('{date}', dateLabel);
+		if (dayDateKey === tomorrowDateKey) return String(t('shared:base.alerts.public.list.groups.from_tomorrow')).replace('{date}', dateLabel);
+		if (dayDateKey === yesterdayDateKey) return String(t('shared:base.alerts.public.list.groups.since_yesterday')).replace('{date}', dateLabel);
+		if (dayDateKey < todayDateKey) return String(t('shared:base.alerts.public.list.groups.since_date')).replace('{date}', dateLabel);
+		return String(t('shared:base.alerts.public.list.groups.from_date')).replace('{date}', dateLabel);
 	};
 
 	//
@@ -67,13 +66,13 @@ export default function AlertsPublicList() {
 						<section key={group.dayTimestamp} className={styles.group}>
 							<header className={styles.groupHeader}>
 								<p className={styles.groupLabel}>
-									{group.alerts.length > 1 ? t('default:alerts.public.list.groups.label_plural') : t('default:alerts.public.list.groups.label_single')}
+									{group.alerts.length > 1 ? t('shared:base.alerts.public.list.groups.label_plural') : t('shared:base.alerts.public.list.groups.label_single')}
 								</p>
 								<p className={styles.groupDate}>{getGroupDateLabel(group.dayTimestamp)}</p>
 							</header>
 							<div className={styles.groupCards}>
 								{group.alerts.map(alert => (
-									<Link key={alert._id} className={styles.cardLink} href={keepUrlParams(PAGE_ROUTES.base.ALERTS_DETAIL(alert._id))}>
+									<Link key={alert._id} className={styles.cardLink} href={keepUrlParams(`/alerts/${alert._id}`)}>
 										<AlertsPublicListCard alert={alert} description={alert.description} title={alert.title} />
 									</Link>
 								))}

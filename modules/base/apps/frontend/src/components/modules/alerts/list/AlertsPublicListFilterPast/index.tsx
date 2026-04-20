@@ -22,7 +22,7 @@ export function AlertsPublicListFilterPast() {
 	return (
 		<Switch
 			checked={filters.include_past_alerts}
-			label={t('default:alerts.public.list.filters.past_alerts')}
+			label={t('shared:base.alerts.public.list.filters.past_alerts')}
 			onChange={e => filters.setIncludePastAlerts(e.currentTarget.checked)}
 		/>
 	);

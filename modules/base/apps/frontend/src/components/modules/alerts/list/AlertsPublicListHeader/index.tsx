@@ -21,7 +21,7 @@ export function AlertsPublicListHeader() {
 	return (
 		<>
 			<Toolbar>
-				<Label size="lg" caps singleLine>{t('default:alerts.public.list.header.title')}</Label>
+				<Label size="lg" caps singleLine>{t('shared:base.alerts.public.list.header.title')}</Label>
 			</Toolbar>
 			<AlertsPublicListFilterBar />
 		</>

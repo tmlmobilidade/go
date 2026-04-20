@@ -21,7 +21,7 @@ export function AlertsPublicListFilterCause() {
 	return (
 		<FilterTypeList
 			active={alertsPublicListContext.filters.cause.isActive}
-			label={t('default:alerts.public.list.filters.cause')}
+			label={t('shared:base.alerts.public.list.filters.cause')}
 			onChange={alertsPublicListContext.filters.cause.set}
 			options={alertsPublicListContext.filters.cause.options}
 			withToggleAll

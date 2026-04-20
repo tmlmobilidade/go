@@ -42,7 +42,7 @@ export function AlertsPublicListCard({ alert, description, title }: AlertsPublic
 	const { t } = useTranslation();
 	const severity = getAlertCardSeverityLevel(alert.cause, alert.effect);
 	const startDate = Dates.fromUnixTimestamp(alert.active_period_start_date).setZone('Europe/Lisbon', 'offset_only').toFormat('dd/MM/yyyy HH:mm');
-	const endDate = alert.active_period_end_date ? Dates.fromUnixTimestamp(alert.active_period_end_date).setZone('Europe/Lisbon', 'offset_only').toFormat('dd/MM/yyyy HH:mm') : t('default:alerts.public.list.card.dates.no_end');
+	const endDate = alert.active_period_end_date ? Dates.fromUnixTimestamp(alert.active_period_end_date).setZone('Europe/Lisbon', 'offset_only').toFormat('dd/MM/yyyy HH:mm') : t('shared:base.alerts.public.list.card.dates.no_end');
 
 	//
 	// B. Render components
@@ -60,11 +60,11 @@ export function AlertsPublicListCard({ alert, description, title }: AlertsPublic
 			</div>
 			<div className={styles.dates}>
 				<div className={styles.dateRow}>
-					<span className={styles.dateLabel}>{t('default:alerts.public.list.card.dates.start')}</span>
+					<span className={styles.dateLabel}>{t('shared:base.alerts.public.list.card.dates.start')}</span>
 					<span className={styles.dateValue}>{startDate}</span>
 				</div>
 				<div className={styles.dateRow}>
-					<span className={styles.dateLabel}>{t('default:alerts.public.list.card.dates.end')}</span>
+					<span className={styles.dateLabel}>{t('shared:base.alerts.public.list.card.dates.end')}</span>
 					<span className={styles.dateValue}>{endDate}</span>
 				</div>
 			</div>

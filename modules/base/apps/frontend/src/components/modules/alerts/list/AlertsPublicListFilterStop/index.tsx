@@ -22,7 +22,7 @@ export function AlertsPublicListFilterStop() {
 		<FilterTypeList
 			active={filters.stop.isActive}
 			disabled={!filters.stop.options.length}
-			label={t('default:alerts.public.list.filters.stop')}
+			label={t('shared:base.alerts.public.list.filters.stop')}
 			onChange={filters.stop.set}
 			options={filters.stop.options}
 			withToggleAll
