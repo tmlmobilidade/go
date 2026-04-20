@@ -16,9 +16,7 @@
 
 @media (width < 768px) {
 	.headerLinks {
-		margin: 0;
-		justify-self: end;
-		gap: 8px;
+		display: none;
 	}
 
 	.headerActionsLink {

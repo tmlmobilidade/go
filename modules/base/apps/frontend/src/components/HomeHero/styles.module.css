@@ -101,7 +101,7 @@
 	position: relative;
 	z-index: 10;
 	display: flex;
-	flex-flow: row wrap;
+	flex-direction: row;
 	gap: 10px;
 	align-items: center;
 	margin-top: 24px;
@@ -109,7 +109,6 @@
 
 @media (width >= 768px) {
 	.buttonsContainer {
-		gap: 25px;
 		margin-top: 32px;
 	}
 }
