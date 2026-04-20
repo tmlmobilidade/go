@@ -69,11 +69,12 @@ export const AlertPublicDetailContextProvider = ({ alertId, children }: PropsWit
 
 	const linesTags = useMemo(() => {
 		if (!foundAlert) return [];
-		return getAvailableLines(foundAlert)
-			.map(lineId => ({ lineData: linesContext.actions.getLineDataById(lineId), lineId }))
-			.filter(item => !!item.lineData)
-			.map(item => ({ label: item.lineData.short_name, value: item.lineId }));
-	}, [foundAlert, linesContext]);
+		return getAvailableLines(foundAlert).map((lineId) => {
+			const lineData = linesContext.actions.getLineDataById(lineId);
+			const label = lineData ? `${lineData.code} | ${lineData.name}` : lineId;
+			return { label, value: lineId };
+		});
+	}, [foundAlert, linesContext.actions]);
 
 	//
 	// E. Define context value
