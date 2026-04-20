@@ -2,12 +2,15 @@
 
 /* * */
 
+import { openSamExportModal } from '@/components/sams/export/SamsExportModal';
 import { useSamsDetailContext } from '@/contexts/SamDetail.context';
 import { useSamsFavoritesContext } from '@/contexts/SamFavorites.context';
-import { IconHeart, IconHeartFilled } from '@tabler/icons-react';
+import { IconFileDownload, IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CloseButton, IconButton, IdTag, keepUrlParams, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/types';
+import { CloseButton, HasPermission, IconButton, IdTag, keepUrlParams, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -18,6 +21,7 @@ export function SamsDetailHeader() {
 	// A. Setup variables
 
 	const router = useRouter();
+	const { t } = useTranslation();
 
 	const samDetailContext = useSamsDetailContext();
 	const samsFavoritesContext = useSamsFavoritesContext();
@@ -37,6 +41,17 @@ export function SamsDetailHeader() {
 		void samsFavoritesContext.actions.toggleFavorite(samId.toString());
 	};
 
+	const handleExportSam = () => {
+		if (!samId) return;
+		openSamExportModal({
+			analysisApexVersions: samDetailContext.ui.analysisApexVersionFilter,
+			analysisFilterEndTime: samDetailContext.ui.analysisFilterEndTime,
+			analysisFilterStartTime: samDetailContext.ui.analysisFilterStartTime,
+			samId,
+			source: 'detail',
+		});
+	};
+
 	//
 	// C. Render components
 
@@ -45,6 +60,15 @@ export function SamsDetailHeader() {
 			<CloseButton onClick={handleGoBack} type="close" />
 			<IdTag id={samDetailContext.data.sam?._id} copyOnClick />
 			<Spacer />
+			<HasPermission action={PermissionCatalog.all.sams.actions.export} scope={PermissionCatalog.all.sams.scope}>
+				<IconButton
+					disabled={!samId}
+					icon={<IconFileDownload />}
+					onClick={handleExportSam}
+					tooltip={t('default:sams.export.SamsExportModal.title')}
+					variant="secondary"
+				/>
+			</HasPermission>
 			<IconButton
 				disabled={!samId || samsFavoritesContext.flags.loading}
 				icon={isFavorite ? <IconHeartFilled /> : <IconHeart />}

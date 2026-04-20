@@ -9,6 +9,7 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 import fs from 'fs';
 
 import { exportRidesFile } from './export-rides.js';
+import { exportSamsAnalysisFile } from './export-sams-analysis.js';
 
 /* * */
 
@@ -34,6 +35,9 @@ async function main() {
 			switch (fileExport.type) {
 				case 'ride':
 					pathToFile = await exportRidesFile(fileExport);
+					break;
+				case 'sams_analysis':
+					pathToFile = await exportSamsAnalysisFile(fileExport);
 					break;
 				default:
 					Logger.error(`Unknown file export type: ${fileExport.type}.`);

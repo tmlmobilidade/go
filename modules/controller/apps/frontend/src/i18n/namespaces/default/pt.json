@@ -580,6 +580,14 @@
 				"title": "Lista de análises"
 			}
 		},
+		"export": {
+			"SamsExportModal": {
+				"ExportButton": {
+					"label": "Exportar análises"
+				},
+				"title": "Exportar Análises"
+			}
+		},
 		"list": {
 			"SamsFiltersApexVersion": {
 				"label": "Versão APEX"

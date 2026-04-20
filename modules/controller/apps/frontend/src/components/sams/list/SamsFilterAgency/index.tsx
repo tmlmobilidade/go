@@ -2,6 +2,7 @@
 
 import { useSamsListContext } from '@/contexts/SamList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -14,6 +15,14 @@ export function SamsFiltersAgency() {
 
 	const samsListContext = useSamsListContext();
 
+	const agencyOptionsById = useMemo(
+		() =>
+			[...samsListContext.filters.agency.options].sort((a, b) =>
+				a.value.localeCompare(b.value, undefined, { numeric: true }),
+			),
+		[samsListContext.filters.agency.options],
+	);
+
 	//
 	// B. Render components
 
@@ -23,7 +32,7 @@ export function SamsFiltersAgency() {
 			disabled={samsListContext.flags.favoritesEnabled}
 			label={t('default:sams.list.SamsListFilterAgency.label')}
 			onChange={samsListContext.filters.agency.set}
-			options={samsListContext.filters.agency.options}
+			options={agencyOptionsById}
 			isMultiple
 			withToggleAll
 		/>

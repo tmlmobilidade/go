@@ -29,6 +29,12 @@ server.register(
 		);
 
 		instance.get(
+			'/export/analysis',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.sams.scope, [PermissionCatalog.all.sams.actions.export]) },
+			(request: FastifyRequest<{ Querystring: GetSamsBatchQuery }>, reply: FastifyReply<Sam[]>) => SamsController.getExportData(request, reply),
+		);
+
+		instance.get(
 			'/favorites',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.sams.scope, [PermissionCatalog.all.sams.actions.read]) },
 			(request: FastifyRequest<{ Querystring: { ids: string } }>, reply: FastifyReply<Sam[]>) => SamsController.getSamByIds(request, reply, PermissionCatalog.all.sams.scope, PermissionCatalog.all.sams.actions.read),

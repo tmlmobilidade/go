@@ -2,68 +2,10 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { sams, SAMS_ANALYSIS_LIST_TAIL, SAMS_DEVICE_SEARCH_REGEX, SAMS_VEHICLE_SEARCH_REGEX, samsApexVersionsAggregationPipeline, samsBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { buildSamsMatch, sams, SAMS_ANALYSIS_LIST_TAIL, samsAnalysisExportAggregationPipeline, samsApexVersionsAggregationPipeline, samsBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { ActionsOf, type GetSamsBatchQuery, GetSamsBatchQuerySchema, Permission, PermissionCatalog, type Sam } from '@tmlmobilidade/types';
 
 /* * */
-
-/**
- * Escapes a regex string.
- */
-function escapeRegex(value: string): string {
-	return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-/**
- * Parses the vehicle search query and returns an array of vehicle IDs.
- * @param searchRaw - The search query string.
- * @returns An array of vehicle IDs.
- */
-function parseSamsVehicleSearch(searchRaw: string): number[] {
-	const normalizedSearch = searchRaw.trim();
-	const regexMatch = SAMS_VEHICLE_SEARCH_REGEX.exec(normalizedSearch);
-	if (!regexMatch?.groups?.vehicleIds) return [];
-
-	return [
-		...new Set(
-			regexMatch.groups.vehicleIds
-				.split(',')
-				.map(item => Number(item.trim()))
-				.filter(item => Number.isInteger(item)),
-		),
-	];
-}
-
-/**
- * Parses the device search query and returns an array of device IDs.
- * @param searchRaw - The search query string.
- * @returns An array of device IDs.
- */
-function parseSamsDeviceSearch(searchRaw: string): string[] {
-	const normalizedSearch = searchRaw.trim();
-	const regexMatch = SAMS_DEVICE_SEARCH_REGEX.exec(normalizedSearch);
-	if (!regexMatch?.groups?.deviceIds) return [];
-
-	return [
-		...new Set(
-			regexMatch.groups.deviceIds
-				.split(',')
-				.map(item => item.trim())
-				.filter(Boolean),
-		),
-	];
-}
-
-/* * */
-
-/**
- * Reserved query fields that are not used in the aggregation pipeline.
- */
-const RESERVED_QUERY_FIELDS = new Set(['agency_ids', 'limit', 'offset', 'search']);
-const RANGE_QUERY_FIELDS = {
-	seen_first_at: { field: 'seen_first_at', operator: '$gte' },
-	seen_last_at: { field: 'seen_last_at', operator: '$lte' },
-} as const;
 
 /**
  * A type for the batch list item.
@@ -75,86 +17,6 @@ type SamBatchListItem = Omit<Sam, 'analysis'> & {
 		start_time: null | number
 	}>
 };
-
-/**
- * Builds the match for the SAMs.
- * @param parsedQuery - The parsed query.
- * @param options - The options.
- * @returns The match.
- */
-function buildSamsMatch(parsedQuery: GetSamsBatchQuery, options: { includeApexVersionFilter?: boolean } = {}): Record<string, unknown>[] {
-	const { includeApexVersionFilter = true } = options;
-	const matchAnd: Record<string, unknown>[] = [];
-
-	const agencyIdsForMatch = parsedQuery.agency_ids.filter(
-		id => id !== PermissionCatalog.ALLOW_ALL_FLAG,
-	);
-	if (agencyIdsForMatch.length > 0) {
-		matchAnd.push({ agency_id: { $in: agencyIdsForMatch } });
-	}
-
-	const searchRaw = parsedQuery.search?.trim() ?? '';
-	if (searchRaw.length > 0) {
-		const vehicleIds = parseSamsVehicleSearch(searchRaw);
-		if (vehicleIds.length > 0) {
-			matchAnd.push({
-				$or: [
-					{ vehicle_id: { $in: vehicleIds } },
-					{ 'analysis.vehicle_id': { $in: vehicleIds } },
-				],
-			});
-		} else {
-			const deviceIds = parseSamsDeviceSearch(searchRaw);
-			if (deviceIds.length > 0) {
-				matchAnd.push({
-					$or: [
-						{ device_id: { $in: deviceIds } },
-						{ 'analysis.device_id': { $in: deviceIds } },
-					],
-				});
-			} else {
-				const escaped = escapeRegex(searchRaw);
-				matchAnd.push({
-					$or: [
-						{ $expr: { $regexMatch: { input: { $toString: '$_id' }, options: 'i', regex: escaped } } },
-						{ agency_id: { $options: 'i', $regex: escaped } },
-						{ 'analysis.first_transaction_id': { $options: 'i', $regex: escaped } },
-						{ 'analysis.last_transaction_id': { $options: 'i', $regex: escaped } },
-					],
-				});
-			}
-		}
-	}
-
-	for (const [key, value] of Object.entries(parsedQuery)) {
-		if (RESERVED_QUERY_FIELDS.has(key) || value === undefined || value === null || value === '')
-			continue;
-		if (!includeApexVersionFilter && key === 'latest_apex_version')
-			continue;
-
-		if (key in RANGE_QUERY_FIELDS) {
-			const rangeKey = key as keyof typeof RANGE_QUERY_FIELDS;
-			const rangeConfig = RANGE_QUERY_FIELDS[rangeKey];
-			matchAnd.push({ [rangeConfig.field]: { [rangeConfig.operator]: value } });
-			continue;
-		}
-
-		if (Array.isArray(value)) {
-			if (value.length > 0) {
-				if (key === 'latest_apex_version') {
-					matchAnd.push({ latest_apex_version: { $in: value } });
-					continue;
-				}
-				matchAnd.push({ [key]: { $in: value } });
-			}
-			continue;
-		}
-
-		matchAnd.push({ [key]: value });
-	}
-
-	return matchAnd;
-}
 
 /* * */
 
@@ -199,6 +61,33 @@ export class SamsController {
 	}
 
 	/**
+	 * Returns one row per SAM analysis record for export (same aggregation as the file-export worker).
+	 * Query mirrors {@link GetSamsBatchQuery}; optional `ids` (comma-separated SAM `_id`) ANDs with those filters.
+	 */
+	static async getExportData(request: FastifyRequest<{ Querystring: GetSamsBatchQuery }>, reply: FastifyReply<Sam[]>) {
+		const parsedQuery = GetSamsBatchQuerySchema.parse(request.query ?? {});
+		const matchAnd = buildSamsMatch(parsedQuery);
+
+		const numericIds = (request.query['ids']?.split(',') ?? [])
+			.map(part => part.trim())
+			.filter(Boolean)
+			.map(Number)
+			.filter(id => Number.isInteger(id));
+
+		if (numericIds.length === 0 && matchAnd.length === 0) {
+			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
+		}
+
+		const pipeline = samsAnalysisExportAggregationPipeline({
+			matchAnd: matchAnd.length > 0 ? matchAnd : undefined,
+			samIds: numericIds.length > 0 ? numericIds : undefined,
+		});
+
+		const rows = (await sams.aggregate(pipeline)) as Sam[];
+		return reply.send({ data: rows, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
 	 * Returns a SAM by ID.
 	 * @param request The Fastify request object.
 	 * @param reply The Fastify reply object.
@@ -230,13 +119,6 @@ export class SamsController {
 
 	/* * */
 
-	/**
-	 * Returns a list of SAMs by IDs.
-	 * @param request The Fastify request object.
-	 * @param reply The Fastify reply object.
-	 * @param scope The scope of the permission.
-	 * @param action The action of the permission.
-	 */
 	static async getSamByIds<S extends Permission['scope']>(request: FastifyRequest, reply: FastifyReply<Sam[]>, scope: S, action: ActionsOf<S>) {
 		//
 		// Resolve SAMs for stored favorite ids. `SamsPermission` has no `resources` today — treat missing
