@@ -164,7 +164,6 @@ export function samsAnalysisExportAggregationPipeline({ analysisFilter, matchAnd
 				created_at: 1,
 				latest_apex_version: 1,
 				remarks: 1,
-				sam_id: '$_id',
 				seen_first_at: 1,
 				seen_last_at: 1,
 				system_status: 1,

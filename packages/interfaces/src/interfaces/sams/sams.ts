@@ -10,6 +10,7 @@ import { z } from 'zod';
 
 class SamsClass extends MongoCollectionClass<Sam, CreateSamDto, UpdateSamDto> {
 	private static _instance: SamsClass;
+
 	protected override createSchema: z.ZodSchema = CreateSamSchema;
 	protected override updateSchema: z.ZodSchema = UpdateSamSchema;
 
