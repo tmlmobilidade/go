@@ -21,7 +21,7 @@
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/utils": "*",
-		"@turf/turf": "7.3.4"
+		"@turf/turf": "7.3.5"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

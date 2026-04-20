@@ -24,7 +24,7 @@
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
-		"@turf/turf": "7.3.4",
+		"@turf/turf": "7.3.5",
 		"@vis.gl/react-maplibre": "8.1.1",
 		"luxon": "3.7.2",
 		"maplibre-gl": "5.23.0",
