@@ -53,6 +53,7 @@ function samsListFacetMergeTimelineStages(): AggregationPipeline<Sam> {
 						$group: {
 							_id: { m: '$__rows.monthKey', sam: '$__carry._id' },
 							__carry: { $first: '$__carry' },
+							analysis: { $first: '$analysis' },
 							f: { $sum: '$__rows.failed' },
 							s: { $sum: '$__rows.successful' },
 						},
@@ -61,6 +62,7 @@ function samsListFacetMergeTimelineStages(): AggregationPipeline<Sam> {
 						$group: {
 							_id: '$_id.sam',
 							__carry: { $first: '$__carry' },
+							analysis: { $first: '$analysis' },
 							buckets: { $push: { f: '$f', m: '$_id.m', s: '$s' } },
 						},
 					},
@@ -71,6 +73,7 @@ function samsListFacetMergeTimelineStages(): AggregationPipeline<Sam> {
 								$mergeObjects: [
 									'$__carry',
 									{ timeline_summary: '$timeline_summary' },
+									{ __analysis: '$analysis' },
 								],
 							},
 						},
@@ -120,6 +123,7 @@ function samsDetailFacetMergeTimelineStages(): AggregationPipeline<Sam> {
 						$group: {
 							_id: { m: '$__rows.monthKey', sam: '$__snap._id' },
 							__snap: { $first: '$__snap' },
+							analysis: { $first: '$analysis' },
 							f: { $sum: '$__rows.failed' },
 							s: { $sum: '$__rows.successful' },
 						},
@@ -128,6 +132,7 @@ function samsDetailFacetMergeTimelineStages(): AggregationPipeline<Sam> {
 						$group: {
 							_id: '$_id.sam',
 							__snap: { $first: '$__snap' },
+							analysis: { $first: '$analysis' },
 							buckets: { $push: { f: '$f', m: '$_id.m', s: '$s' } },
 						},
 					},
@@ -138,6 +143,7 @@ function samsDetailFacetMergeTimelineStages(): AggregationPipeline<Sam> {
 								$mergeObjects: [
 									'$__snap',
 									{ timeline_summary: '$timeline_summary' },
+									{ __analysis: '$analysis' },
 								],
 							},
 						},
@@ -157,8 +163,9 @@ function samsDetailFacetMergeTimelineStages(): AggregationPipeline<Sam> {
 
 /**
  * Builds a pipeline to return all matching SAMs for list view (no skip/limit).
- * Excludes `analysis` from the carried fields; `timeline_summary` is computed from `analysis`
- * via {@link samsTimelineSummaryFromBucketsExpr} (month key + counts per month).
+ * Excludes `analysis` from list fields; `timeline_summary` is computed from `analysis`.
+ * The `fromAnalysis` branch temporarily attaches `__analysis` so the API can set
+ * `timeline_summary.months[].has_empty_days_in_range` before the response is sent.
  *
  * @param matchAnd - An array of $match conditions (ANDed).
  * @returns Aggregation pipeline for MongoDB.

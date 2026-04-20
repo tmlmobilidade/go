@@ -96,7 +96,14 @@ export interface AnalysisTimeLineRowProps {
 interface MonthSection {
 	dayKey: string
 	failed_count: number
+	hasEmptyDaysInRange?: boolean
 	label: string
+	successful_count: number
+}
+
+interface MonthCounts {
+	failed_count: number
+	has_empty_days_in_range?: boolean
 	successful_count: number
 }
 
@@ -113,40 +120,36 @@ export function AnalysisTimeLineRow({ className, rangeEndTs, rangeStartTs, remar
 
 	const summarySections = useMemo((): MonthSection[] => {
 		if (!timelineSummary) return [];
-		const normalizedMonths = (timelineSummary.months ?? [])
-			.map((item) => {
-				const rawKey =
-					(item as { key?: unknown }).key
-					?? (item as { month?: unknown }).month;
-				const key = canonicalTimelineMonthKey(
-					rawKey == null
-						? undefined
-						: typeof rawKey === 'number' || typeof rawKey === 'string'
-							? rawKey
-							: String(rawKey),
-				);
-				if (!key) return null;
-				const { failed, successful } = normalizeTimelineCounts({
-					failed_count: item.failed_count,
-					successful_count: item.successful_count,
-				});
-				return {
-					failed_count: failed,
-					key,
-					successful_count: successful,
-				};
-			})
-			.filter((item): item is { failed_count: number, key: string, successful_count: number } => item != null);
-		const monthDataMap = new Map<string, { failed_count: number, successful_count: number }>(
-			normalizedMonths.map(item => [item.key, item]),
-		);
-		const timelineHasData = normalizedMonths.length > 0 || timelineSummary.undated != null;
+		const monthDataMap = new Map<string, MonthCounts>();
+		for (const item of timelineSummary.months ?? []) {
+			const rawKey = (item as { key?: unknown }).key ?? (item as { month?: unknown }).month;
+			const key = canonicalTimelineMonthKey(
+				rawKey == null
+					? undefined
+					: typeof rawKey === 'number' || typeof rawKey === 'string'
+						? rawKey
+						: String(rawKey),
+			);
+			if (!key) continue;
+			const { failed, successful } = normalizeTimelineCounts({
+				failed_count: item.failed_count,
+				successful_count: item.successful_count,
+			});
+			monthDataMap.set(key, {
+				failed_count: failed,
+				has_empty_days_in_range: (item as { has_empty_days_in_range?: boolean }).has_empty_days_in_range,
+				successful_count: successful,
+			});
+		}
+
+		const timelineHasData = monthDataMap.size > 0 || timelineSummary.undated != null;
 		if (!timelineHasData) return [];
 
 		const fromRange = monthKeysBetweenMillis(rangeStartTs, rangeEndTs);
 		/** Include every month present in the summary, not only the seen_* window — otherwise chips can show 0 / “no” while the calendar still has analysis in that month. */
-		const dataMonthKeys = [...monthDataMap.keys()].sort((a, b) => a.localeCompare(b));
-		const monthKeySet = new Set<string>([...fromRange, ...dataMonthKeys]);
+		const monthKeySet = new Set<string>(fromRange);
+		for (const monthKey of monthDataMap.keys())
+			monthKeySet.add(monthKey);
 		const monthKeys = [...monthKeySet].sort((a, b) => a.localeCompare(b));
 
 		const monthSections: MonthSection[] = monthKeys.map((monthKey) => {
@@ -154,6 +157,7 @@ export function AnalysisTimeLineRow({ className, rangeEndTs, rangeStartTs, remar
 			return {
 				dayKey: monthKey,
 				failed_count: monthData?.failed_count ?? 0,
+				hasEmptyDaysInRange: monthData?.has_empty_days_in_range,
 				label: formatMonthChipLabel(monthKey),
 				successful_count: monthData?.successful_count ?? 0,
 			};
@@ -168,6 +172,7 @@ export function AnalysisTimeLineRow({ className, rangeEndTs, rangeStartTs, remar
 			monthSections.push({
 				dayKey: 'Sem data',
 				failed_count: failed,
+				hasEmptyDaysInRange: false,
 				label: 'Sem data',
 				successful_count: successful,
 			});
@@ -201,9 +206,13 @@ export function AnalysisTimeLineRow({ className, rangeEndTs, rangeStartTs, remar
 		? summarySections.map(section => (
 			<AnalysisSquare
 				key={section.dayKey}
-				accent={accentFromSuccessFailedCounts(section.successful_count, section.failed_count)}
 				className={styles.monthSquare}
 				textLabel={section.label}
+				accent={
+					section.hasEmptyDaysInRange
+						? 'white'
+						: accentFromSuccessFailedCounts(section.successful_count, section.failed_count)
+				}
 				title={analysisTimelinePeriodTooltipLabel({
 					failed: section.failed_count,
 					periodLabel: section.label,
