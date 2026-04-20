@@ -28,10 +28,21 @@ export function AlertPublicDetail() {
 	const foundAlert = alertDetailPublicContext.data.alert;
 	const foundAlertImage = alertDetailPublicContext.data.image;
 	const linesTags = alertDetailPublicContext.data.linesTags;
+	const isLoading = alertDetailPublicContext.flags.loading;
 	const isNotFound = alertDetailPublicContext.flags.notFound;
 
 	//
 	// B. Render components
+
+	if (isLoading) {
+		return (
+			<Surface>
+				<Section gap="lg">
+					<Description>A carregar alerta...</Description>
+				</Section>
+			</Surface>
+		);
+	}
 
 	if (isNotFound || !foundAlert) {
 		return (
