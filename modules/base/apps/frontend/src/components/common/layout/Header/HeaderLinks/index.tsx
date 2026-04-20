@@ -22,6 +22,16 @@ export function HeaderLinks() {
 			<Button href={PAGE_ROUTES.auth.LOGIN_LIST} label="Entrar" variant="primary" />
 		</div>
 	);
+}
 
-	//
+interface HeaderLinksMobileProps {
+	onMobileNavigate: () => void
+}
+
+export function HeaderLinksMobile({ onMobileNavigate }: HeaderLinksMobileProps) {
+	return (
+		<Link className={styles.mobilePanelLink} href="https://go.tmlmobilidade.pt/reference" onClick={onMobileNavigate}>
+			Documentação
+		</Link>
+	);
 }

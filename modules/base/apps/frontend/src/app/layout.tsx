@@ -1,6 +1,7 @@
 /* * */
 
 import pjson from '#/package.json';
+import { ThemeContextProvider } from '@/contexts/Theme.context';
 import { VehiclePositionContextProvider } from '@/contexts/VehiclePosition.context';
 import { BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
@@ -18,9 +19,11 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<BaseProvider version={pjson.version}>
-			<VehiclePositionContextProvider>
-				{children}
-			</VehiclePositionContextProvider>
+			<ThemeContextProvider>
+				<VehiclePositionContextProvider>
+					{children}
+				</VehiclePositionContextProvider>
+			</ThemeContextProvider>
 		</BaseProvider>
 	);
 }

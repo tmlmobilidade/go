@@ -13,7 +13,7 @@
     padding: 4px 8px 4px 10px;
     font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--pill-1-text);
+    color: var(--color-primary);
     background-color: var(--color-system-background-100);
     border-radius: 1000px;
 }

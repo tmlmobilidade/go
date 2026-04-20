@@ -1,5 +1,6 @@
 /* * */
 
+import { ThemeSwitcher } from '@/components/ThemeSwitcher';
 import { IconBrandGithub } from '@tabler/icons-react';
 import Link from 'next/link';
 
@@ -15,6 +16,7 @@ export function HeaderActions() {
 
 	return (
 		<div className={styles.headerActions}>
+			<ThemeSwitcher />
 			<Link href="https://github.com/tmlmobilidade">
 				<IconBrandGithub color="var(--color-system-text-200)" size={24} />
 			</Link>
@@ -22,4 +24,12 @@ export function HeaderActions() {
 	);
 
 	//
+}
+
+export function HeaderActionsMobile() {
+	return (
+		<div className={styles.mobileActionsPanel}>
+			<ThemeSwitcher />
+		</div>
+	);
 }
