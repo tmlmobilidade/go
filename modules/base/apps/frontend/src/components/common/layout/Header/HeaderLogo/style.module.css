@@ -27,7 +27,7 @@
     margin-left: -4px;
     margin-top: -4px;
     border-radius: 50%;
-    border: 2px solid var(--color-primary);
+    border: 2px solid var(--pill-1-text);
     opacity: 0;
     pointer-events: none;
     animation: headerLogoRipple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
@@ -46,7 +46,7 @@
     margin-left: -4px;
     margin-top: -4px;
     border-radius: 50%;
-    background-color: var(--color-primary);
+    background-color: var(--pill-1-text);
     z-index: 1;
     pointer-events: none;
 }

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { LiveIcon } from '@/components/brand/LiveIcon';
+import { LiveIcon } from '@/components/LiveIcon';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { Layer, Source } from '@vis.gl/react-maplibre';
 import { useEffect, useRef, useState } from 'react';
@@ -71,9 +71,7 @@ function interpolateProps(startFeature: GeoJSON.Feature<GeoJSON.Point> | undefin
 	const endCoords = endFeature.geometry.coordinates;
 	const featureId = endFeature.id != null ? String(endFeature.id) : '';
 
-	const startCoords = startFeature
-		? (startFeature.geometry as GeoJSON.Point).coordinates
-		: endCoords;
+	const startCoords = startFeature ? (startFeature.geometry as GeoJSON.Point).coordinates : endCoords;
 
 	const interpolatedCoords = interpolateCoords(startCoords, endCoords, t);
 
@@ -94,17 +92,8 @@ function interpolateProps(startFeature: GeoJSON.Feature<GeoJSON.Point> | undefin
 
 	return {
 		...endFeature,
-		geometry: {
-			...endFeature.geometry,
-			coordinates: interpolatedCoords,
-		},
-		properties: {
-			...endFeature.properties,
-			bearing: interpolatedBearing,
-			delay: interpolatedDelay,
-			feature_id: featureId,
-			opacity: interpolatedOpacity,
-		},
+		geometry: { ...endFeature.geometry, coordinates: interpolatedCoords },
+		properties: { ...endFeature.properties, bearing: interpolatedBearing, delay: interpolatedDelay, feature_id: featureId, opacity: interpolatedOpacity },
 	};
 }
 
@@ -178,9 +167,7 @@ export function MapOverlayVehicles({ presentBeforeId, showCounter, vehiclesData 
 
 	return (
 		<>
-
 			<Source data={animatedData} id="default-source-vehicles" type="geojson">
-
 				<Layer
 					beforeId={presentBeforeId}
 					id="default-layer-vehicles-delay"
@@ -217,7 +204,6 @@ export function MapOverlayVehicles({ presentBeforeId, showCounter, vehiclesData 
 						],
 					}}
 				/>
-
 				<Layer
 					beforeId="default-layer-vehicles-delay"
 					id="default-layer-vehicles-regular"
@@ -248,7 +234,7 @@ export function MapOverlayVehicles({ presentBeforeId, showCounter, vehiclesData 
 							['match',
 								['to-string', ['get', 'agency_id']],
 								'1',
-								0.0475,
+								0.0926,
 								'21',
 								0.0475,
 								0.05,
@@ -257,7 +243,7 @@ export function MapOverlayVehicles({ presentBeforeId, showCounter, vehiclesData 
 							['match',
 								['to-string', ['get', 'agency_id']],
 								'1',
-								0.1425,
+								0.2778,
 								'21',
 								0.1425,
 								0.15,
@@ -266,6 +252,7 @@ export function MapOverlayVehicles({ presentBeforeId, showCounter, vehiclesData 
 						'symbol-placement': 'point',
 					}}
 					paint={{
+						'icon-color': '#ffffff',
 						'icon-opacity': ['get', 'opacity'],
 					}}
 				/>

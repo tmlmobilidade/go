@@ -1,7 +1,22 @@
+/* * */
+
+import { HomeHero } from '@/components/HomeHero';
+import { VehiclesMap } from '@/components/VehiclesMap';
+
+/* * */
+
 export function Base() {
+	//
+
+	//
+	// A. Render components
+
 	return (
-		<div>
-			<h1>Base</h1>
-		</div>
+		<>
+			<HomeHero />
+			<VehiclesMap />
+		</>
 	);
+
+	//
 }

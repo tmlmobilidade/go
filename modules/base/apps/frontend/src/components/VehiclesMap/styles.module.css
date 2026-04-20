@@ -1,0 +1,7 @@
+/* MAP */
+
+.mapWrapper {
+	position: relative;
+	width: 100%;
+	height: clamp(300px, 80vh, 800px);
+}

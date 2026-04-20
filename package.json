@@ -116,6 +116,7 @@
 		"@fastify/multipart": "^10.0.0",
 		"@tmlmobilidade/dates": "^1.0.0",
 		"@tmlmobilidade/strings": "^1.0.0",
+		"@turf/turf": "^7.3.4",
 		"nuqs": "^2.8.9"
 	}
 }

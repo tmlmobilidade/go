@@ -1,0 +1,97 @@
+/* * *
+ * WHAT IS THIS?
+ * This file has all color definitions used in the project
+ * for light and dark modes, except theme colors.
+ * For theme colors, check ./themes/*.css files.
+ */
+
+.light {
+
+	/* THEME */
+	--color-brand-primary: #005ADC;
+	--color-brand-secondary: #0041A0;
+	--color-brand-background: #E6F0FF;
+	--color-brand-contrast: #FFF;
+	--color-brand-shadow: #000A5040;
+
+	/* SYSTEM / BACKGROUND */
+	--color-system-background-100: #FFF;
+	--color-system-background-200: #F6F8FA;
+	--color-system-background-300: #F0F0F0;
+
+	/* SYSTEM / BORDER */
+	--color-system-border-100: #E1E1E6;
+	--color-system-border-200: #D3D3D5;
+
+	/* SYSTEM / TEXT */
+	--color-system-text-100: #000;
+	--color-system-text-200: #646482;
+	--color-system-text-300: #BEBEC8;
+
+	/* STATUS / SUCCESS */
+	--color-status-success-primary: #00B932;
+	--color-status-success-contrast: #E6FAEB;
+	--color-status-success-shadow: #d20f1f40;
+
+	/* STATUS / WARNING */
+	--color-status-warning-primary: #F09600;
+	--color-status-warning-contrast: #FFFAF0;
+	--color-status-warning-shadow: #d20f1f40;
+
+	/* STATUS / DANGER */
+	--color-status-danger-primary: #D20F1E;
+	--color-status-danger-contrast: #FFEBEB;
+	--color-status-danger-shadow: #d20f1f40;
+
+}
+
+.dark {
+
+	/* BRAND */
+	--color-brand-primary: #2864B9;
+	--color-brand-secondary: #1E4B96;
+	--color-brand-background: #1E283C;
+	--color-brand-contrast: #CDE1FF;
+	--color-brand-shadow: #00083D40;
+
+	/* SYSTEM / BACKGROUND */
+	--color-system-background-100: #282832;
+	--color-system-background-200: #1e1e28;
+	--color-system-background-300: #0a0a14;
+
+	/* SYSTEM / BORDER */
+	--color-system-border-100: #3c3c41;
+	--color-system-border-200: #505055;
+
+	/* SYSTEM / TEXT */
+	--color-system-text-100: #fff;
+	--color-system-text-200: #c8c8d2;
+	--color-system-text-300: #9696a5;
+
+	/* STATUS / SUCCESS */
+	--color-status-success-primary: #329150;
+	--color-status-success-contrast: #052314;
+	--color-status-success-shadow: #d20f1f40;
+
+	/* STATUS / WARNING */
+	--color-status-warning-primary: #be781e;
+	--color-status-warning-contrast: #2d1e05;
+	--color-status-warning-shadow: #d20f1f40;
+
+	/* STATUS / DANGER */
+	--color-status-danger-primary: #c83c3c;
+	--color-status-danger-contrast: #2d0505;
+	--color-status-danger-shadow: #d20f1f40;
+
+	/* FUMADOCS SPECIFIC */
+	/* --color-fd-background: var(--color-system-background-200);
+	--color-fd-foreground: var(--color-system-text-100);
+	--color-fd-card: var(--color-system-background-100);
+	--color-fd-card-foreground: var(--color-system-text-100);
+	--color-fd-border: var(--color-system-border-100);
+	--color-fd-muted: var(--color-brand-background);
+	--color-fd-muted-foreground: var(--color-system-text-200);
+	--color-fd-primary: var(--color-brand-primary);
+	--color-fd-primary-foreground: var(--color-brand-contrast); */
+
+}

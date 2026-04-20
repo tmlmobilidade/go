@@ -1,0 +1,129 @@
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/black.css';
+@import 'fumadocs-ui/css/preset.css';
+
+/* relative to the CSS file, make sure it's correct for your app */
+@source '../node_modules/fumadocs-ui/dist/**/*.js';
+
+:root {
+	--color-fd-background: var(--color-system-background-200);
+	--color-fd-foreground: var(--color-system-text-100);
+	--color-fd-card: var(--color-system-background-100);
+	--color-fd-card-foreground: var(--color-system-text-100);
+	--color-fd-border: var(--color-system-border-100);
+	--color-fd-muted: var(--color-system-background-200);
+	--color-fd-muted-foreground: var(--color-system-text-200);
+	--color-fd-primary: var(--color-brand-primary);
+	--color-fd-primary-foreground: var(--color-brand-contrast);
+	--color-fd-secondary: var(--color-system-background-100);
+}
+
+:root.dark {
+	--color-fd-primary: #8CB6F1;
+	--color-fd-primary-foreground: #19202A;
+}
+
+/* * */
+/* OPTIMIZATIONS */
+
+*,
+*::before,
+*::after {
+	transition: background-color 200ms ease,
+				border-color 200ms ease, color 150ms ease;
+}
+
+.contain-content {
+	contain: unset !important;
+	content-visibility: visible !important;
+}
+
+/* * */
+/* TYPOGRAPHY */
+
+body {
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizelegibility;
+	-webkit-font-smoothing: antialiased;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+	font-weight: 600;
+	letter-spacing: -0.02em;
+}
+
+.prose h1 {
+	margin-top: 1.5em;
+	margin-bottom: 0.6em;
+	font-size: 2em;
+}
+
+.prose h2 {
+	padding-bottom: 0.3em;
+	margin-bottom: 0.5em;
+	font-size: 1.5em;
+	border-bottom: 1px solid var(--color-fd-border);
+}
+
+.prose > h2 {
+	margin-top: 2.5em;
+}
+
+.prose > h2:first-child {
+	margin-top: 0;
+}
+
+.prose h3 {
+	margin-bottom: 0.4em;
+	font-size: 1.25em;
+}
+
+.prose > h3 {
+	margin-top: 2.5em;
+}
+
+.prose p a,
+.prose li a {
+	color: var(--color-fd-primary);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+	border-radius: 2px;
+	transition: color 150ms ease;
+}
+
+.prose p a:hover,
+.prose li a:hover {
+	background-color: var(--color-brand-background);
+	opacity: 1;
+}
+
+.prose hr {
+	margin: 2em 0;
+	border-color: var(--color-fd-border);
+}
+
+.prose code {
+	color: var(--color-system-text-100);
+}
+
+.prose > *:last-child {
+	margin-bottom: 3em;
+}
+
+.prose :where(strong) {
+	font-weight: 600;
+}
+
+/* * */
+/* THEME SWITCH */
+
+html.dark .theme-light {
+	display: none;
+}
+
+html.light .theme-dark {
+	display: none;
+}

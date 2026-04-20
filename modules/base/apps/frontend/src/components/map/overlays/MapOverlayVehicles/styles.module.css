@@ -6,14 +6,14 @@
     bottom: 12px;
     left: 15px;
     display: flex;
-    gap: var(--spacing-1);
+    gap: var(--size-spacing-xs);
     align-items: center;
     justify-content: center;
     height: 30px;
     padding: 4px 8px 4px 10px;
     font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--color-brand-primary);
+    color: var(--pill-1-text);
     background-color: var(--color-system-background-100);
     border-radius: 1000px;
 }
