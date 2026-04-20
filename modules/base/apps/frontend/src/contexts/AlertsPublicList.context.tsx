@@ -4,7 +4,7 @@
 
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
-import { type AlertNormalized } from '@/types/normalized';
+import { AlertNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { normalizeString } from '@tmlmobilidade/strings';
@@ -128,10 +128,13 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 
 	const lineFilterOptions = useMemo(() => {
 		if (!lineIdsInAlerts.length) return [];
-		const ids = new Set(lineIdsInAlerts);
-		return linesContext.data.options
-			.filter(o => ids.has(String(o.value)))
-			.sort((a, b) => String(a.label).localeCompare(String(b.label), 'pt'));
+		const idSet = new Set(lineIdsInAlerts.map(String));
+		const fromCatalog = linesContext.data.options.filter(o => idSet.has(String(o.value)));
+		const covered = new Set(fromCatalog.map(o => String(o.value)));
+		const fallbacks = lineIdsInAlerts
+			.filter(id => !covered.has(String(id)))
+			.map(id => ({ label: String(id), value: String(id) }));
+		return [...fromCatalog, ...fallbacks].sort((a, b) => String(a.label).localeCompare(String(b.label), 'pt', { numeric: true }));
 	}, [linesContext.data.options, lineIdsInAlerts]);
 
 	const stopFilterOptions = useMemo(() => {
@@ -148,10 +151,14 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 	}, [allScheduledData]);
 
 	const agencyFilterOptions = useMemo(() => {
-		const ids = new Set(agencyIdsInAlerts);
-		return agenciesContext.data.as_options
-			.filter(option => ids.has(String(option.value)))
-			.sort((a, b) => Number(a.value) - Number(b.value));
+		if (!agencyIdsInAlerts.length) return [];
+		const idSet = new Set(agencyIdsInAlerts.map(String));
+		const fromApi = agenciesContext.data.as_options.filter(option => idSet.has(String(option.value)));
+		const covered = new Set(fromApi.map(o => String(o.value)));
+		const fallbacks = agencyIdsInAlerts
+			.filter(id => !covered.has(String(id)))
+			.map(id => ({ label: String(id), value: String(id) }));
+		return [...fromApi, ...fallbacks].sort((a, b) => Number(a.value) - Number(b.value) || String(a.value).localeCompare(String(b.value), 'pt'));
 	}, [agencyIdsInAlerts, agenciesContext.data.as_options]);
 
 	const filterAgency = useFilterStateList('agency', agencyIdsInAlerts, agencyFilterOptions);
