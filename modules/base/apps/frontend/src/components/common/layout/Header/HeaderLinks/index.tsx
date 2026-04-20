@@ -16,6 +16,9 @@ export function HeaderLinks() {
 
 	return (
 		<div className={styles.headerLinks}>
+			<Link href="/alerts">
+				<p className={styles.headerActionsLink}> Alertas</p>
+			</Link>
 			<Link href="https://go.tmlmobilidade.pt/reference">
 				<p className={styles.headerActionsLink}> Documentação</p>
 			</Link>
@@ -30,8 +33,13 @@ interface HeaderLinksMobileProps {
 
 export function HeaderLinksMobile({ onMobileNavigate }: HeaderLinksMobileProps) {
 	return (
-		<Link className={styles.mobilePanelLink} href="https://go.tmlmobilidade.pt/reference" onClick={onMobileNavigate}>
-			Documentação
-		</Link>
+		<>
+			<Link className={styles.mobilePanelLink} href="/alerts" onClick={onMobileNavigate}>
+				Alertas
+			</Link>
+			<Link className={styles.mobilePanelLink} href="https://go.tmlmobilidade.pt/reference" onClick={onMobileNavigate}>
+				Documentação
+			</Link>
+		</>
 	);
 }
