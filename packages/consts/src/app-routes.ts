@@ -17,10 +17,6 @@ export const PAGE_ROUTES = Object.freeze({
 		// ALERTS
 		ALERTS_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/${id}`,
 		ALERTS_LIST: `${getAppConfig('alerts', 'frontend_url')}`,
-
-		// HOME
-		HOME_DETAIL: (id: string) => `${getAppConfig('alerts', 'frontend_url')}/home/${id}`,
-		HOME_LIST: `${getAppConfig('alerts', 'frontend_url')}/home`,
 	},
 
 	/* * */
@@ -65,9 +61,9 @@ export const PAGE_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getAppConfig('base', 'frontend_url')}`,
 
-		// VEHICLES
-		VEHICLES_DETAIL: (id: string) => `${getAppConfig('base', 'frontend_url')}/vehicles/${id}`,
-		VEHICLES_LIST: `${getAppConfig('base', 'frontend_url')}/vehicles`,
+		// ALERTS
+		ALERTS_DETAIL: (id: string) => `${getAppConfig('base', 'frontend_url')}/alerts/${id}`,
+		ALERTS_LIST: `${getAppConfig('base', 'frontend_url')}/alerts`,
 	},
 
 	/* * */
@@ -283,20 +279,6 @@ export const API_ROUTES = Object.freeze({
 		// WIKI
 		WIKI_DETAIL: (id: string) => `${getAppConfig('auth', 'api_url')}/wiki/${id}`,
 		WIKI_LIST: `${getAppConfig('auth', 'api_url')}/wiki`,
-	},
-
-	/* * */
-	/* BASE */
-	base: {
-		// BASE
-		BASE: `${getAppConfig('base', 'api_url')}`,
-
-		// VEHICLES
-		VEHICLES_DETAIL: (id: string) => `${getAppConfig('base', 'api_url')}/vehicles/${id}`,
-		VEHICLES_DETAIL_LAST_EVENT: (id: string) => `${getAppConfig('base', 'api_url')}/vehicles/${id}/last-event`,
-		VEHICLES_DETAIL_LOCK: (id: string) => `${getAppConfig('base', 'api_url')}/vehicles/${id}/lock`,
-		VEHICLES_LIST: `${getAppConfig('base', 'api_url')}/vehicles`,
-		VEHICLES_POSITIONS: `${getAppConfig('base', 'api_url')}/vehicles/positions`,
 	},
 
 	/* * */

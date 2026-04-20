@@ -1,7 +1,7 @@
 'use client';
 /* * */
 
-import { AlertsPublicListFilterBar } from '@/components/list/AlertsPublicListFilterBar';
+import { AlertsPublicListFilterBar } from '@/components/modules/alerts/list/AlertsPublicListFilterBar';
 import { Label, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

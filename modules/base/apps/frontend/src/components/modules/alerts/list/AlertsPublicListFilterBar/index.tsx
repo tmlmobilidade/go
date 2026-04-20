@@ -1,14 +1,14 @@
 'use client';
 /* * */
 
-import { AlertsPublicListFilterAgency } from '@/components/list/AlertsPublicListFilterAgency';
-import { AlertsPublicListFilterCause } from '@/components/list/AlertsPublicListFilterCause';
-import { AlertsPublicListFilterDates } from '@/components/list/AlertsPublicListFilterDates';
-import { AlertsPublicListFilterEffect } from '@/components/list/AlertsPublicListFilterEffect';
-import { AlertsPublicListFilterLine } from '@/components/list/AlertsPublicListFilterLine';
-import { AlertsPublicListFilterPast } from '@/components/list/AlertsPublicListFilterPast';
-import { AlertsPublicListFilterSearch } from '@/components/list/AlertsPublicListFilterSearch';
-import { AlertsPublicListFilterStop } from '@/components/list/AlertsPublicListFilterStop';
+import { AlertsPublicListFilterAgency } from '@/components/modules/alerts/list/AlertsPublicListFilterAgency';
+import { AlertsPublicListFilterCause } from '@/components/modules/alerts/list/AlertsPublicListFilterCause';
+import { AlertsPublicListFilterDates } from '@/components/modules/alerts/list/AlertsPublicListFilterDates';
+import { AlertsPublicListFilterEffect } from '@/components/modules/alerts/list/AlertsPublicListFilterEffect';
+import { AlertsPublicListFilterLine } from '@/components/modules/alerts/list/AlertsPublicListFilterLine';
+import { AlertsPublicListFilterPast } from '@/components/modules/alerts/list/AlertsPublicListFilterPast';
+import { AlertsPublicListFilterSearch } from '@/components/modules/alerts/list/AlertsPublicListFilterSearch';
+import { AlertsPublicListFilterStop } from '@/components/modules/alerts/list/AlertsPublicListFilterStop';
 import { FiltersBar } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';

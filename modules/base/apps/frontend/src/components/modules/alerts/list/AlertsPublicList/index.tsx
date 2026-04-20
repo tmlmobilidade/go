@@ -3,7 +3,7 @@
 
 import type { Alert } from '@tmlmobilidade/types';
 
-import { AlertsPublicListCard } from '@/components/list/AlertsPublicListCard';
+import { AlertsPublicListCard } from '@/components/modules/alerts/list/AlertsPublicListCard';
 import { useAlertsPublicListContext } from '@/contexts/AlertsPublicList.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
@@ -73,7 +73,7 @@ export default function AlertsPublicList() {
 							</header>
 							<div className={styles.groupCards}>
 								{group.alerts.map(alert => (
-									<Link key={alert._id} className={styles.cardLink} href={keepUrlParams(PAGE_ROUTES.alerts.HOME_DETAIL(alert._id))}>
+									<Link key={alert._id} className={styles.cardLink} href={keepUrlParams(PAGE_ROUTES.base.ALERTS_DETAIL(alert._id))}>
 										<AlertsPublicListCard alert={alert} description={alert.description} title={alert.title} />
 									</Link>
 								))}
