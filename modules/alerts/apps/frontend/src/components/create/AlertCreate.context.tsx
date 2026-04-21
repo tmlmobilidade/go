@@ -241,6 +241,19 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	]);
 
 	useEffect(() => {
+		// Reset effect and reference type when cause changes as they are dependent on cause
+		form.setFieldValue('effect', null);
+		form.setFieldValue('reference_type', null);
+		form.setFieldValue('references', []);
+	}, [form.getValues().cause]);
+
+	useEffect(() => {
+		// Reset reference type when effect changes as they are dependent on effect
+		form.setFieldValue('reference_type', null);
+		form.setFieldValue('references', []);
+	}, [form.getValues().effect]);
+
+	useEffect(() => {
 		(async () => {
 			// Reset if no selected reference_type
 			if (!form.getValues().reference_type) return setSelectedReferencesData([]);

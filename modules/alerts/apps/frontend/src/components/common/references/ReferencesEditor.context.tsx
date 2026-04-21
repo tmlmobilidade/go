@@ -113,11 +113,13 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 			date_end: endDate,
 			date_start: startDate,
 			line_ids: filterLines.value,
-			// operational_statuses: ['running', 'missed', 'scheduled'],
 			search: filterSearch.value,
 			stop_ids: filterStops.value,
 		},
 	});
+
+	//
+	// C. Transform data
 
 	const linesData = useMemo(() => {
 		if (!hashedTripsData) return [];
@@ -130,7 +132,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 	}, [hashedTripsData]);
 
 	//
-	// C. Handle actions
+	// D. Handle actions
 
 	useEffect(() => {
 		// Skip if no selected references
@@ -253,7 +255,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 	}, [activePeriodStartDate, activePeriodEndDate]);
 
 	//
-	// D. Define State
+	// E. Define State
 
 	const contextValue: ReferencesEditorContextState = {
 		actions: {
@@ -288,7 +290,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 	};
 
 	//
-	// E. Return state
+	// F. Return state
 
 	return (
 		<ReferencesEditorContext.Provider value={contextValue}>
