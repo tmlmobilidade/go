@@ -69,7 +69,7 @@ export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
 	const linesContext = useLinesContext();
 	const stopsContext = useStopsContext();
 
-	const { data: allScheduledData, error: allScheduledError, isLoading: allScheduledLoading } = useSWR<Alert[], Error>(API_ROUTES.alerts.ALERTS_);
+	const { data: allScheduledData, error: allScheduledError, isLoading: allScheduledLoading } = useSWR<Alert[], Error>(API_ROUTES.alerts.ALERTS_LIST);
 
 	const filterSearch = useFilterStateString('search');
 	const [includePastAlerts, setIncludePastAlertsParam] = useQueryState('past_alerts', parseAsBoolean.withDefault(false));

@@ -1,7 +1,7 @@
 'use client';
 /* * */
 
-import { useAlertsPublicListContext } from '@/contexts/AlertsPublicList.context';
+import { useAlertsListContext } from '@/contexts/AlertsList.context';
 import { UnixTimestamp } from '@tmlmobilidade/types';
 import { FilterTypeDateRange } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ export function AlertsPublicListFilterDates() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { filters } = useAlertsPublicListContext();
+	const alertsListContext = useAlertsListContext();
 
 	//
 	// B. Render components
@@ -23,11 +23,11 @@ export function AlertsPublicListFilterDates() {
 	return (
 		<FilterTypeDateRange
 			active={true}
-			endDate={filters.period_until as UnixTimestamp}
+			endDate={alertsListContext.filters.period_until as UnixTimestamp}
 			label={t('shared:home.alerts.public.list.filters.period')}
-			onEndDateChange={filters.setPeriodUntil}
-			onStartDateChange={filters.setPeriodSince}
-			startDate={filters.period_since as UnixTimestamp}
+			onEndDateChange={alertsListContext.filters.setPeriodUntil}
+			onStartDateChange={alertsListContext.filters.setPeriodSince}
+			startDate={alertsListContext.filters.period_since as UnixTimestamp}
 		/>
 	);
 

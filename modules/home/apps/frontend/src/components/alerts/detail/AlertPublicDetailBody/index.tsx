@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useAlertDetailPublicContext } from '@/contexts/AlertPublicDetail.context';
+import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { Description, Label } from '@tmlmobilidade/ui';
 import Image from 'next/image';
 
@@ -14,7 +14,7 @@ export function AlertPublicDetailBody() {
 	//
 	// A. Setup variables
 
-	const alertDetailPublicContext = useAlertDetailPublicContext();
+	const alertDetailContext = useAlertDetailContext();
 
 	//
 	// B. Render components
@@ -22,8 +22,8 @@ export function AlertPublicDetailBody() {
 	return (
 		<>
 			<Label caps={true} size="sm">Descrição</Label>
-			<Description>{alertDetailPublicContext.data.alert?.description}</Description>
-			{alertDetailPublicContext.data.image?.url && <Image alt={alertDetailPublicContext.data.alert?.title} className={styles.image} height={300} src={alertDetailPublicContext.data.image.url} width={400} />}
+			<Description>{alertDetailContext.data.alert?.description}</Description>
+			{alertDetailContext.data.image?.url && <Image alt={alertDetailContext.data.alert?.title} className={styles.image} height={300} src={alertDetailContext.data.image.url} width={400} />}
 		</>
 	);
 

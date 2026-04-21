@@ -1,7 +1,7 @@
 'use client';
 /* * */
 
-import { useAlertDetailPublicContext } from '@/contexts/AlertPublicDetail.context';
+import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { TagGroup } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -16,18 +16,18 @@ export function AlertPublicDetailLines() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const alertDetailPublicContext = useAlertDetailPublicContext();
+	const alertDetailContext = useAlertDetailContext();
 
 	//
 	// B. Render components
 
 	return (
 		<>
-			{ alertDetailPublicContext.data.linesIds.length > 0 && (
+			{ alertDetailContext.data.linesIds.length > 0 && (
 				<div className={styles.tagsRow}>
 					<TagGroup
 						limit={25}
-						tags={alertDetailPublicContext.data.linesIds.map(line => ({
+						tags={alertDetailContext.data.linesIds.map(line => ({
 							label: line.label,
 							onClick: () => router.push(`https://carrismetropolitana.pt/lines/${line.value}`),
 							variant: 'danger',

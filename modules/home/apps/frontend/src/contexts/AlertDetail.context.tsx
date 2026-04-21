@@ -49,7 +49,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 
 	const alertsListContext = useAlertsListContext();
 	const linesContext = useLinesContext();
-	const { data: alertImage } = useSWR<FileType>(API_ROUTES.alerts.ALERTS__IMAGE(alertId));
+	const { data: alertImage } = useSWR<FileType>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
 
 	//
 	// B. Transform data

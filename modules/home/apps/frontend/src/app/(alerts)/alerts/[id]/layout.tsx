@@ -1,6 +1,6 @@
 /* * */
 
-import { AlertPublicDetailContextProvider } from '@/contexts/AlertPublicDetail.context';
+import { AlertDetailContextProvider } from '@/contexts/AlertDetail.context';
 import { type PropsWithChildren } from 'react';
 
 /* * */
@@ -8,8 +8,8 @@ import { type PropsWithChildren } from 'react';
 export default async function Layout({ children, params }: PropsWithChildren<{ params: Promise<{ id: string }> }>) {
 	const { id } = await params;
 	return (
-		<AlertPublicDetailContextProvider alertId={id}>
+		<AlertDetailContextProvider alertId={id}>
 			{children}
-		</AlertPublicDetailContextProvider>
+		</AlertDetailContextProvider>
 	);
 }

@@ -1,6 +1,6 @@
 /* * */
 
-import { useAlertsPublicListContext } from '@/contexts/AlertsPublicList.context';
+import { useAlertsListContext } from '@/contexts/AlertsList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -13,18 +13,18 @@ export function AlertsPublicListFilterStop() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { filters } = useAlertsPublicListContext();
+	const alertsListContext = useAlertsListContext();
 
 	//
 	// B. Render components
 
 	return (
 		<FilterTypeList
-			active={filters.stop.isActive}
-			disabled={!filters.stop.options.length}
+			active={alertsListContext.filters.stop.isActive}
+			disabled={!alertsListContext.filters.stop.options.length}
 			label={t('shared:home.alerts.public.list.filters.stop')}
-			onChange={filters.stop.set}
-			options={filters.stop.options}
+			onChange={alertsListContext.filters.stop.set}
+			options={alertsListContext.filters.stop.options}
 			withToggleAll
 		/>
 	);

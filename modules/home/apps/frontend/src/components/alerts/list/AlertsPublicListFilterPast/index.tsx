@@ -1,7 +1,7 @@
 'use client';
 /* * */
 
-import { useAlertsPublicListContext } from '@/contexts/AlertsPublicList.context';
+import { useAlertsListContext } from '@/contexts/AlertsList.context';
 import { Switch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -14,16 +14,16 @@ export function AlertsPublicListFilterPast() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { filters } = useAlertsPublicListContext();
+	const alertsListContext = useAlertsListContext();
 
 	//
 	// B. Render components
 
 	return (
 		<Switch
-			checked={filters.include_past_alerts}
+			checked={alertsListContext.filters.include_past_alerts}
 			label={t('shared:home.alerts.public.list.filters.past_alerts')}
-			onChange={e => filters.setIncludePastAlerts(e.currentTarget.checked)}
+			onChange={e => alertsListContext.filters.setIncludePastAlerts(e.currentTarget.checked)}
 		/>
 	);
 

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useAlertsPublicListContext } from '@/contexts/AlertsPublicList.context';
+import { useAlertsListContext } from '@/contexts/AlertsList.context';
 import { SearchInput } from '@tmlmobilidade/ui';
 
 /* * */
@@ -13,12 +13,12 @@ export function AlertsPublicListFilterSearch() {
 	//
 	// A. Setup variables
 
-	const alertsPublicListContext = useAlertsPublicListContext();
+	const alertsListContext = useAlertsListContext();
 
 	//
 	// B. Render components
 
 	return (
-		<SearchInput onChange={alertsPublicListContext.filters.search.set} value={alertsPublicListContext.filters.search.value} />
+		<SearchInput onChange={alertsListContext.filters.search.set} value={alertsListContext.filters.search.value} />
 	);
 }

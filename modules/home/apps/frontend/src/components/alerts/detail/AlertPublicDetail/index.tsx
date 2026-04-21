@@ -5,7 +5,7 @@
 import { AlertPublicDetailHeader } from '@/components/alerts/detail/AlertPublicDetailHeader';
 import { AlertPublicDetailLines } from '@/components/alerts/detail/AlertPublicDetailLines';
 import { AlertPublicDetailNotFound } from '@/components/alerts/detail/AlertPublicDetailNotFound';
-import { useAlertDetailPublicContext } from '@/contexts/AlertPublicDetail.context';
+import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { Section, Surface } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -21,9 +21,9 @@ export function AlertPublicDetail() {
 	//
 	// A. Setup variables
 
-	const alertDetailPublicContext = useAlertDetailPublicContext();
-	const alertData = alertDetailPublicContext.data.alert;
-	const isNotFound = alertDetailPublicContext.flags.notFound;
+	const alertDetailContext = useAlertDetailContext();
+	const alertData = alertDetailContext.data.alert;
+	const isNotFound = alertDetailContext.flags.notFound;
 
 	//
 	// B. Render components

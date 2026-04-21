@@ -1,6 +1,6 @@
 /* * */
 
-import { useAlertsPublicListContext } from '@/contexts/AlertsPublicList.context';
+import { useAlertsListContext } from '@/contexts/AlertsList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -13,17 +13,17 @@ export function AlertsPublicListFilterCause() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const alertsPublicListContext = useAlertsPublicListContext();
+	const alertsListContext = useAlertsListContext();
 
 	//
 	// B. Render components
 
 	return (
 		<FilterTypeList
-			active={alertsPublicListContext.filters.cause.isActive}
+			active={alertsListContext.filters.cause.isActive}
 			label={t('shared:home.alerts.public.list.filters.cause')}
-			onChange={alertsPublicListContext.filters.cause.set}
-			options={alertsPublicListContext.filters.cause.options}
+			onChange={alertsListContext.filters.cause.set}
+			options={alertsListContext.filters.cause.options}
 			withToggleAll
 		/>
 	);

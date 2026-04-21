@@ -1,6 +1,6 @@
 /* * */
 
-import { AlertsPublicListContextProvider } from '@/contexts/AlertsPublicList.context';
+import { AlertsListContextProvider } from '@/contexts/AlertsList.context';
 import { LinesContextProvider } from '@/contexts/Lines.context';
 import { StopsContextProvider } from '@/contexts/Stops.context';
 import { AgenciesContextProvider } from '@tmlmobilidade/ui';
@@ -13,9 +13,9 @@ export default function Layout({ children }: PropsWithChildren) {
 		<LinesContextProvider>
 			<StopsContextProvider>
 				<AgenciesContextProvider>
-					<AlertsPublicListContextProvider>
+					<AlertsListContextProvider>
 						{children}
-					</AlertsPublicListContextProvider>
+					</AlertsListContextProvider>
 				</AgenciesContextProvider>
 			</StopsContextProvider>
 		</LinesContextProvider>

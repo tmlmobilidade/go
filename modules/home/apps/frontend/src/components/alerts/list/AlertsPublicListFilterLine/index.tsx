@@ -1,6 +1,6 @@
 /* * */
 
-import { useAlertsPublicListContext } from '@/contexts/AlertsPublicList.context';
+import { useAlertsListContext } from '@/contexts/AlertsList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -13,18 +13,18 @@ export function AlertsPublicListFilterLine() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { filters } = useAlertsPublicListContext();
+	const alertsListContext = useAlertsListContext();
 
 	//
 	// B. Render components
 
 	return (
 		<FilterTypeList
-			active={filters.line.isActive}
-			disabled={!filters.line.options.length}
+			active={alertsListContext.filters.line.isActive}
+			disabled={!alertsListContext.filters.line.options.length}
 			label={t('shared:home.alerts.public.list.filters.line')}
-			onChange={filters.line.set}
-			options={filters.line.options}
+			onChange={alertsListContext.filters.line.set}
+			options={alertsListContext.filters.line.options}
 			withToggleAll
 		/>
 	);
