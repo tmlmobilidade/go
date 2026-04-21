@@ -6,7 +6,7 @@ import type { Alert } from '@tmlmobilidade/types';
 import { AlertsPublicListCard } from '@/components/alerts/list/AlertsPublicListCard';
 import { useAlertsListContext } from '@/contexts/AlertsList.context';
 import { Dates } from '@tmlmobilidade/dates';
-import { keepUrlParams, Section, Surface } from '@tmlmobilidade/ui';
+import { keepUrlParams, Section } from '@tmlmobilidade/ui';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,15 +1,28 @@
 /* * */
+/* WRAPPER */
+
+.headCardWrapper {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-lg);
+	width: 70%;
+	margin-inline: auto;
+	min-height: 520px;
+	padding: var(--size-spacing-xl);
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-lg);
+}
+
+/* * */
 /* HEAD CARD */
 
 .headCard {
 	display: flex;
 	flex-direction: column;
-	gap: var(--size-spacing-md);
+	gap: var(--size-spacing-lg);
 	width: 100%;
-	padding: var(--size-spacing-lg);
-	background-color: var(--color-system-background-100);
-	border: 1px solid var(--color-system-border-100);
-	border-radius: var(--border-radius-lg);
+	padding: 0;
 }
 
 /* * */
@@ -17,6 +30,7 @@
 
 .title {
 	margin: 0;
+	padding-bottom: var(--size-spacing-xs);
 	font-size: var(--font-size-xl);
 	font-weight: 700;
 	line-height: 1.35;

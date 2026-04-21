@@ -6,7 +6,7 @@ import { AlertPublicDetailHeader } from '@/components/alerts/detail/AlertPublicD
 import { AlertPublicDetailLines } from '@/components/alerts/detail/AlertPublicDetailLines';
 import { AlertPublicDetailNotFound } from '@/components/alerts/detail/AlertPublicDetailNotFound';
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
-import { Section, Surface } from '@tmlmobilidade/ui';
+import { Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -33,8 +33,8 @@ export function AlertPublicDetail() {
 	}
 
 	return (
-		<Surface>
-			<Section gap="lg">
+		<Section>
+			<div className={styles.headCardWrapper}>
 				<AlertPublicDetailHeader />
 				<div className={styles.headCard}>
 					<h1 className={styles.title}>{alertData.title}</h1>
@@ -42,8 +42,8 @@ export function AlertPublicDetail() {
 					<AlertPublicDetailLines />
 				</div>
 				<AlertPublicDetailBody />
-			</Section>
-		</Surface>
+			</div>
+		</Section>
 	);
 
 	//
