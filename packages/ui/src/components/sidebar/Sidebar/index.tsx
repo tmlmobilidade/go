@@ -24,7 +24,7 @@ interface SidebarAppItemConfig {
 export const sidebarApps: SidebarAppItemConfig[] = [
 	{
 		_id: 'base',
-		href: PAGE_ROUTES.home.HOME,
+		href: PAGE_ROUTES.home.BASE,
 		icon: <IconEye size={26} />,
 		label: 'Base',
 		permissions: [],

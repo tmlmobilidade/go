@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
+import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Collapsible, CoordinatesInput, Grid, ImageUpload, Section, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';

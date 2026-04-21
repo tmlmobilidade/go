@@ -107,11 +107,11 @@ export const PAGE_ROUTES = Object.freeze({
 	/* HOME */
 	home: {
 		// BASE
-		BASE: `${getAppConfig('home', 'frontend_url')}`,
+		BASE: `${getModuleConfig('home', 'frontend_url')}`,
 
 		// ALERTS
-		ALERTS_DETAIL: (id: string) => `${getAppConfig('home', 'frontend_url')}/alerts/${id}`,
-		ALERTS_LIST: `${getAppConfig('home', 'frontend_url')}/alerts`,
+		ALERTS_DETAIL: (id: string) => `${getModuleConfig('home', 'frontend_url')}/alerts/${id}`,
+		ALERTS_LIST: `${getModuleConfig('home', 'frontend_url')}/alerts`,
 	},
 
 	/* * */

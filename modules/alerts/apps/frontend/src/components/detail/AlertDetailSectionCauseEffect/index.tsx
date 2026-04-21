@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
+import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { AlertCauseSchema, AlertEffectSchema } from '@tmlmobilidade/types';
 import { AlertCauseIcons, AlertEffectIcons, Collapsible, Grid, Section, Select } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';

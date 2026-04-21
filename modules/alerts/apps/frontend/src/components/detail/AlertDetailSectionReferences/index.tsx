@@ -3,7 +3,7 @@
 /* * */
 
 import { ReferencesEditor } from '@/components/common/references/ReferencesEditor';
-import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
+import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, PermissionCatalog } from '@tmlmobilidade/types';
 import { Collapsible, useDataAgencies } from '@tmlmobilidade/ui';

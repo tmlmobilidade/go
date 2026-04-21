@@ -2,12 +2,12 @@
 
 /* * */
 
-import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { AlertDetailHeader } from '@/components/detail/AlertDetailHeader';
 import { AlertDetailSectionCauseEffect } from '@/components/detail/AlertDetailSectionCauseEffect';
 import { AlertDetailSectionDates } from '@/components/detail/AlertDetailSectionDates';
 import { AlertDetailSectionReferences } from '@/components/detail/AlertDetailSectionReferences';
 import { AlertDetailSectionTexts } from '@/components/detail/AlertDetailSectionTexts';
+import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */

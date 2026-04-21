@@ -26,29 +26,7 @@ const DEFAULT_STG_CONFIG: Omit<ModuleConfigGroup, 'api_url' | 'frontend_url'> = 
 	frontend_port: 3000,
 };
 
-const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
-	home: {
-		development: {
-			api_port: 51011,
-			api_url: 'http://localhost:51011',
-			cors_origin: true,
-			frontend_port: 51011,
-			frontend_url: 'http://localhost:51011',
-		},
-		production: {
-			api_url: 'https://go.tmlmobilidade.pt/home/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/home',
-			...DEFAULT_PRODUCTION_CONFIG,
-		},
-		staging: {
-			api_url: 'https://go-stg.tmlmobilidade.pt/home/api',
-			frontend_url: 'https://go-stg.tmlmobilidade.pt/home',
-			...DEFAULT_STAGING_CONFIG,
-		},
-	},
-	
 const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
-
 	alerts: {
 		dev: {
 			api_port: 52001,
@@ -68,7 +46,6 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			...DEFAULT_STG_CONFIG,
 		},
 	},
-
 	auth: {
 		dev: {
 			api_port: 52000,
@@ -88,7 +65,6 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			...DEFAULT_STG_CONFIG,
 		},
 	},
-
 	controller: {
 		dev: {
 			api_port: 52002,
@@ -169,6 +145,25 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 		},
 	},
 
+	home: {
+		dev: {
+			api_port: 51011,
+			api_url: 'http://localhost:51011',
+			cors_origin: true,
+			frontend_port: 51011,
+			frontend_url: 'http://localhost:51011',
+		},
+		prd: {
+			api_url: 'https://go.tmlmobilidade.pt/home/api',
+			frontend_url: 'https://go.tmlmobilidade.pt/home',
+			...DEFAULT_PRD_CONFIG,
+		},
+		stg: {
+			api_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/home/api`,
+			frontend_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/home`,
+			...DEFAULT_STG_CONFIG,
+		},
+	},
 	locations: {
 		dev: {
 			api_port: 52005,
