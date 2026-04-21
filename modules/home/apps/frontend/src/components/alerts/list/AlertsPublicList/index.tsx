@@ -13,6 +13,8 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
+import { AlertsPublicListSkeleton } from '../AlertsPublicListSkeleton';
+
 /* * */
 
 export default function AlertsPublicList() {
@@ -58,12 +60,17 @@ export default function AlertsPublicList() {
 	//
 	// C. Render Components
 
+	if (alertsListContext.flags.loading) {
+		return <AlertsPublicListSkeleton />;
+	}
+
 	return (
-		<Surface>
-			<Section>
-				<div className={styles.groups}>
-					{groupedAlerts.map(group => (
-						<section key={group.dayTimestamp} className={styles.group}>
+
+		<Section>
+			<div className={styles.groups}>
+				{groupedAlerts.map(group => (
+					<section key={group.dayTimestamp} className={styles.group}>
+						<div className={styles.groupBox}>
 							<header className={styles.groupHeader}>
 								<p className={styles.groupLabel}>
 									{group.alerts.length > 1 ? t('shared:home.alerts.public.list.groups.label_plural') : t('shared:home.alerts.public.list.groups.label_single')}
@@ -77,11 +84,12 @@ export default function AlertsPublicList() {
 									</Link>
 								))}
 							</div>
-						</section>
-					))}
-				</div>
-			</Section>
-		</Surface>
+						</div>
+					</section>
+				))}
+			</div>
+		</Section>
+
 	);
 
 	//

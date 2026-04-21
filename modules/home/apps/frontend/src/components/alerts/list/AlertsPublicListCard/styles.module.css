@@ -77,13 +77,6 @@
 	color: var(--color-alerts-3, #e64b23);
 }
 
-/* * */
-/* CARD ICON */
-
-.cardIcon {
-	display: block;
-}
-
 .main {
 	display: flex;
 	flex: 1;
