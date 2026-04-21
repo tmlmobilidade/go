@@ -140,10 +140,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		const selectedCause = form.getValues().cause;
 		const selectedEffect = form.getValues().effect;
 		return alertCauseEffectReferenceTypeMap[selectedCause]?.[selectedEffect] ?? [];
-	}, [
-		form.getValues().cause,
-		form.getValues().effect,
-	]);
+	}, [form.getValues().cause, form.getValues().effect]);
 
 	useEffect(() => {
 		if (copyAlertId) return;
@@ -167,7 +164,6 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	useEffect(() => {
 		if (!copyAlertId || !copyAlertData || hasAppliedCopyData) return;
-
 		const copyAlertAsCreateData = CreateAlertSchema.parse(copyAlertData);
 		form.reset();
 		form.setValues(copyAlertAsCreateData);
