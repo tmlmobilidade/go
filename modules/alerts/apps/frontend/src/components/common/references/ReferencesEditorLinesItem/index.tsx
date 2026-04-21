@@ -2,17 +2,17 @@
 
 /* * */
 
-import { Line, Stop } from '@carrismetropolitana/api-types/network';
+import { Stop } from '@carrismetropolitana/api-types/network';
 import { IconCornerDownRight, IconMinus } from '@tabler/icons-react';
-import { type Alert } from '@tmlmobilidade/types';
-import { Button, Grid, MultiSelect, Section, Select, Surface } from '@tmlmobilidade/ui';
+import { type Alert, type HashedTrip } from '@tmlmobilidade/types';
+import { Button, Grid, MultiSelect, Section, Select, SelectDataItem, Surface } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
 interface ReferencesEditorLinesItemProps {
 	index: number
-	lines: Line[]
+	lines: SelectDataItem[]
 	municipalityIds: string[]
 	onRemoveReference: (index: number) => void
 	onUpdateReference: (index: number, field: 'child_ids' | 'parent_id', value: string | string[]) => void
@@ -22,16 +22,11 @@ interface ReferencesEditorLinesItemProps {
 
 /* * */
 
-export function ReferencesEditorLinesItem({ index, lines, municipalityIds, onRemoveReference, onUpdateReference, reference, stops }: ReferencesEditorLinesItemProps) {
+export function ReferencesEditorLinesItem({ index, lines, onRemoveReference, onUpdateReference, reference, stops }: ReferencesEditorLinesItemProps) {
 	//
 
 	//
 	// A. Transform data
-
-	const availableLines = useMemo(() => {
-		if (!lines) return [];
-		return lines.map(line => ({ label: `[${line.id}] ${line.long_name}`, value: line.id }));
-	}, [lines, municipalityIds]);
 
 	const availableStops = useMemo(() => {
 		if (!stops) return [];
@@ -50,7 +45,7 @@ export function ReferencesEditorLinesItem({ index, lines, municipalityIds, onRem
 
 				<Grid gap="md">
 					<Select
-						data={availableLines}
+						data={lines}
 						label="Linha Afetada"
 						limit={25}
 						onChange={value => onUpdateReference(index, 'parent_id', value)}
