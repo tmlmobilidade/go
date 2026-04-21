@@ -189,19 +189,11 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('alerts', 'api_url')}`,
 
 		// ALERTS
-<<<<<<< HEAD
-		ALERTS_DETAIL: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}`,
-		ALERTS_DETAIL_IMAGE: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/image`,
-		ALERTS_DETAIL_LOCK: (id: string) => `${getAppConfig('alerts', 'api_url')}/alerts/${id}/lock`,
-		ALERTS_LIST: `${getAppConfig('alerts', 'api_url')}/alerts`,
-		ALERTS_RSS: `${getAppConfig('alerts', 'api_url')}/alerts/.rss`,
-=======
 		ALERTS_DETAIL: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${id}`,
 		ALERTS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${id}/image`,
 		ALERTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${id}/lock`,
 		ALERTS_LIST: `${getModuleConfig('alerts', 'api_url')}/alerts`,
 		ALERTS_RSS: `${getModuleConfig('alerts', 'api_url')}/alerts.rss`,
->>>>>>> prd
 
 		// GTFS
 		GTFS_CARRIS_METROPOLITANA: `${getModuleConfig('alerts', 'api_url')}/gtfs/carris-metropolitana`,
