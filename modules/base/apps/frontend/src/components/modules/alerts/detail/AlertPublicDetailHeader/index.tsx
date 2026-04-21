@@ -12,9 +12,6 @@ export function AlertPublicDetailHeader() {
 	//
 
 	//
-	// A. Setup variables
-
-	//
 	// B. Render components
 
 	return (

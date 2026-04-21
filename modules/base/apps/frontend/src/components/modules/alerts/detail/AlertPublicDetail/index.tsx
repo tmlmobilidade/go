@@ -6,11 +6,12 @@ import { AlertPublicDetailHeader } from '@/components/modules/alerts/detail/Aler
 import { AlertPublicDetailLines } from '@/components/modules/alerts/detail/AlertPublicDetailLines';
 import { AlertPublicDetailNotFound } from '@/components/modules/alerts/detail/AlertPublicDetailNotFound';
 import { useAlertDetailPublicContext } from '@/contexts/AlertPublicDetail.context';
-import { Description, Label, Section, Surface, Tag } from '@tmlmobilidade/ui';
-import Image from 'next/image';
-import { useTranslation } from 'react-i18next';
+import { Section, Surface } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
+
+import { AlertPublicDetailBody } from '../AlertPublicDetailBody';
+import { AlertPublicDetailMeta } from '../AlertPublicDetailMeta';
 
 /* * */
 
@@ -20,18 +21,14 @@ export function AlertPublicDetail() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
-
 	const alertDetailPublicContext = useAlertDetailPublicContext();
-	const activePeriodStart = alertDetailPublicContext.data.activePeriodStart;
-	const foundAlert = alertDetailPublicContext.data.alert;
-	const foundAlertImage = alertDetailPublicContext.data.image;
+	const alertData = alertDetailPublicContext.data.alert;
 	const isNotFound = alertDetailPublicContext.flags.notFound;
 
 	//
 	// B. Render components
 
-	if (isNotFound || !foundAlert) {
+	if (isNotFound || !alertData) {
 		return <AlertPublicDetailNotFound />;
 	}
 
@@ -40,22 +37,11 @@ export function AlertPublicDetail() {
 			<Section gap="lg">
 				<AlertPublicDetailHeader />
 				<div className={styles.headCard}>
-					<h1 className={styles.title}>{foundAlert.title}</h1>
-					<div className={styles.metaRow}>
-						<Tag label={t(`shared:alerts.causes.${foundAlert.cause}.title`)} variant="danger" />
-						<Tag label={t(`shared:alerts.effects.${foundAlert.effect}.title`)} variant="warning" />
-						<Description>Início: {activePeriodStart}</Description>
-					</div>
+					<h1 className={styles.title}>{alertData.title}</h1>
+					<AlertPublicDetailMeta />
 					<AlertPublicDetailLines />
 				</div>
-
-				<div className={styles.descriptionCard}>
-					<Label caps={true} size="sm">Descrição</Label>
-					<Description>{foundAlert.description}</Description>
-					{foundAlertImage?.url && (
-						<Image alt={foundAlert.title} className={styles.image} height={300} src={foundAlertImage.url} width={400} />
-					)}
-				</div>
+				<AlertPublicDetailBody />
 			</Section>
 		</Surface>
 	);

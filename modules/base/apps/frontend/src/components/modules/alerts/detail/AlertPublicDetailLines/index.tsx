@@ -16,8 +16,8 @@ export function AlertPublicDetailLines() {
 	// A. Setup variables
 
 	const router = useRouter();
-
 	const alertDetailPublicContext = useAlertDetailPublicContext();
+
 	//
 	// B. Render components
 
