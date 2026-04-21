@@ -1,7 +1,6 @@
 {
-	"extends": "@tmlmobilidade/tsconfig/nodejs.json",
+	"extends": "@tmlmobilidade/tsconfig/lib.json",
 	"compilerOptions": {
-		"baseUrl": ".",
 		"outDir": "dist",
 		"paths": {
 			"@/*": ["./src/*"]

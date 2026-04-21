@@ -33,7 +33,7 @@ export function StopDetailsSectionMap() {
 				type: 'Point',
 			},
 			properties: {
-				id: stopDetailContext.data.stop._id,
+				id: String(stopDetailContext.data.stop._id),
 				name: stopDetailContext.data.stop.name,
 			},
 			type: 'Feature',

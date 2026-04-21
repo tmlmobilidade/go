@@ -12,7 +12,7 @@ export function PatternDetailSectionStops() {
 	// A. Render components
 
 	return (
-		<Collapsible description="Todas as paragens servidas por este pattern" title="Sequência de paragens" defaultOpen>
+		<Collapsible description="Todas as paragens servidas por este pattern" title="Sequência de paragens">
 			<Stops />
 		</Collapsible>
 	);

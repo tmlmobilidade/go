@@ -22,12 +22,12 @@ import { EventReplacementRule, ManualRule } from '@tmlmobilidade/types';
 export function manualRuleMatchesContext(rule: ManualRule, ctx: DayContext): boolean {
 	if (rule.event_id) {
 		// Event-exception rules: date matching already done by filteredManualRules in computeActiveRules.
-		// year_period_ids is cleared for these rules, so skip that check.
 		// If weekdays is non-empty, the user narrowed the event to specific days — check it.
-		// If weekdays is empty, all days of the event are included.
-		if (rule.weekdays.length > 0) {
-			return rule.weekdays.includes(ctx.weekday);
-		}
+		const weekdays = rule.weekdays ?? [];
+		const yearPeriodIds = rule.year_period_ids ?? [];
+		if (weekdays.length > 0 && !weekdays.includes(ctx.weekday)) return false;
+		// If year_period_ids is non-empty, the user narrowed the event to specific periods — check it.
+		if (yearPeriodIds.length > 0 && !yearPeriodIds.includes(ctx.yearPeriodId)) return false;
 		return true;
 	}
 
@@ -43,8 +43,8 @@ export function manualRuleMatchesContext(rule: ManualRule, ctx: DayContext): boo
  * @param b - Second array
  * @returns True if arrays have any common elements
  */
-function intersects<T>(a: readonly T[], b: readonly T[]): boolean {
-	if (!a.length || !b.length) return false;
+function intersects<T>(a: readonly T[] | undefined, b: readonly T[] | undefined): boolean {
+	if (!a?.length || !b?.length) return false;
 
 	const setA = new Set(a);
 	for (const x of b) if (setA.has(x)) return true;

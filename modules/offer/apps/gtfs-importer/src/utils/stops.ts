@@ -5,7 +5,7 @@ export async function getStopByLegacyId(legacyId: string, cache: Map<string, { _
 	if (cached) return cached;
 	const stop = await stops.findOne({ legacy_id: legacyId });
 	if (!stop) return null;
-	const entry = { _id: stop._id, name: stop.name };
+	const entry = { _id: String(stop._id), name: stop.name };
 	cache.set(legacyId, entry);
 	return entry;
 }

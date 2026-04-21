@@ -42,15 +42,15 @@ interface RuleTimepointSchedule {
 
 interface ResolvedTripRow {
 	dates: Set<OperationalDate>
-	rule_token: string
-	service_id: ServiceId
+	ruleToken: string
+	serviceId: ServiceId
 	timepoint: HHMM
 }
 
 export interface TripSchedule {
 	day_period: DayPeriod
 	period_ids: string[]
-	service_id: ServiceId
+	serviceId: ServiceId
 	timepoint: HHMM
 	trip_id: string
 	weekdays: IsoWeekday[]
@@ -95,13 +95,14 @@ function buildTimepointSchedules(
 	allRules: ScheduleRule[],
 	periods: YearPeriod[],
 	holidays: Holiday[],
+	events: Event[],
 	startDate: Dates,
 	endDate: Dates,
 ): Map<string, RuleTimepointSchedule> {
 	const schedules = new Map<string, RuleTimepointSchedule>();
 	const rulesById = new Map(allRules.map(rule => [rule._id, rule]));
 
-	let currentDate = startDate.startOf('day');
+	let currentDate = startDate;
 
 	while (currentDate.unix_timestamp <= endDate.unix_timestamp) {
 		const operationalDate = currentDate.operational_date;
@@ -112,6 +113,7 @@ function buildTimepointSchedules(
 			allRules,
 			periods,
 			holidays,
+			events,
 			rulesById,
 		);
 
@@ -126,6 +128,7 @@ function buildTimepointSchedules(
 			allRules,
 			periods,
 			holidays,
+			events,
 		);
 
 		// 3) Build OFF buckets from:
@@ -149,6 +152,7 @@ function getAppliedRulesForDate(
 	allRules: ScheduleRule[],
 	periods: YearPeriod[],
 	holidays: Holiday[],
+	events: Event[],
 	rulesById: Map<string | undefined, ScheduleRule>,
 ): ScheduleRule[] {
 	const { appliedRuleIds } = computeActiveRules(
@@ -156,11 +160,38 @@ function getAppliedRulesForDate(
 		allRules,
 		periods,
 		holidays,
+		{ events },
 	);
 
 	return appliedRuleIds
 		.map(id => rulesById.get(id))
 		.filter((rule): rule is ScheduleRule => !!rule);
+}
+
+/**
+ * Computes the manual include rules that would apply on a given date
+ * WITHOUT any event replacement rules in effect.
+ * Used to correctly attribute non-replacement timepoints to their original
+ * weekday/weekend rules instead of the replacement-context rules.
+ */
+function getBaseManualIncludeRules(
+	operationalDate: OperationalDate,
+	allRules: ScheduleRule[],
+	periods: YearPeriod[],
+	holidays: Holiday[],
+	events: Event[],
+): ScheduleRule[] {
+	const baseRules = allRules.filter(r => r.kind !== 'event_replacement');
+	const baseRulesById = new Map<string | undefined, ScheduleRule>(baseRules.map(r => [r._id, r]));
+	const { appliedRuleIds } = computeActiveRules(operationalDate, baseRules, periods, holidays, { events });
+	const result: ScheduleRule[] = [];
+	for (const id of appliedRuleIds) {
+		const rule = baseRulesById.get(id);
+		if (rule?.kind === 'manual' && rule.operating_mode === 'include') {
+			result.push(rule);
+		}
+	}
+	return result;
 }
 
 function collectIncludeTimepointsForDate(
@@ -170,6 +201,7 @@ function collectIncludeTimepointsForDate(
 	allRules: ScheduleRule[],
 	periods: YearPeriod[],
 	holidays: Holiday[],
+	events: Event[],
 ): Set<HHMM> {
 	const activeIncludeTimepoints = new Set<HHMM>();
 
@@ -192,9 +224,12 @@ function collectIncludeTimepointsForDate(
 				allRules,
 				periods,
 				holidays,
+				events,
 			);
 
 			for (const timepoint of addedTimepoints) {
+				if (activeIncludeTimepoints.has(timepoint)) continue;
+
 				activeIncludeTimepoints.add(timepoint);
 
 				addScheduleDate(schedules, {
@@ -205,24 +240,66 @@ function collectIncludeTimepointsForDate(
 				});
 			}
 		}
-
-		return activeIncludeTimepoints;
 	}
 
-	// No replacement active on this date:
-	// ON buckets come directly from manual include rules.
-	for (const manualRule of activeManualIncludeRules) {
+	// ON buckets from manual include rules.
+	// When replacements are active, the replacement-context applied rules are Saturday/event
+	// rules — NOT the original weekday rules. Using those would wrongly attribute non-added
+	// timepoints (e.g. 14:50 that already exists on weekdays) to Saturday calendars.
+	// Fix: when any replacement is active, compute the BASE context (no replacements) so that
+	// non-added timepoints are attributed to their original weekday/weekend rule, keeping
+	// calendars like ALL_DU or ESC_DU correct. Timepoints already claimed by the replacement
+	// are skipped via the `activeIncludeTimepoints.has` guard.
+	const manualIncludeRules: ScheduleRule[] = activeReplacementRules.length > 0
+		? getBaseManualIncludeRules(operationalDate, allRules, periods, holidays, events)
+		: activeManualIncludeRules;
+
+	// Two-pass approach: event-specific rules (event_id set) win over general rules.
+	// When a general rule loses a timepoint to an event-specific rule, record an
+	// artificial include+exclude pair so resolveTripRows can emit the -OFF- suffix.
+	const timepointOwners = new Map<HHMM, ScheduleRule>();
+
+	// Pass 1: event-specific manual include rules (have event_id) — higher priority
+	const eventSpecificIncludes = manualIncludeRules.filter(r => !!(r as { event_id?: string }).event_id);
+
+	for (const manualRule of eventSpecificIncludes) {
 		for (const rawTimepoint of manualRule.timepoints ?? []) {
 			const timepoint = hhmm(rawTimepoint);
 
-			activeIncludeTimepoints.add(timepoint);
+			if (activeIncludeTimepoints.has(timepoint)) continue;
 
-			addScheduleDate(schedules, {
-				date: operationalDate,
-				mode: 'include',
-				rule: manualRule,
-				timepoint,
-			});
+			activeIncludeTimepoints.add(timepoint);
+			timepointOwners.set(timepoint, manualRule);
+
+			addScheduleDate(schedules, { date: operationalDate, mode: 'include', rule: manualRule, timepoint });
+		}
+	}
+
+	// Pass 2: general manual include rules (no event_id) — lower priority.
+	// If a timepoint was already claimed in pass 1 by an event-specific rule, record
+	// the displacement so the general rule's token gains -OFF-<EventName>.
+	const generalIncludes = manualIncludeRules.filter(r => !(r as { event_id?: string }).event_id);
+
+	for (const manualRule of generalIncludes) {
+		for (const rawTimepoint of manualRule.timepoints ?? []) {
+			const timepoint = hhmm(rawTimepoint);
+
+			if (activeIncludeTimepoints.has(timepoint)) {
+				const ownerRule = timepointOwners.get(timepoint);
+
+				if (ownerRule) {
+					// Displaced by event-specific rule: record both sides for token building.
+					addScheduleDate(schedules, { date: operationalDate, mode: 'include', rule: manualRule, timepoint });
+					addScheduleDate(schedules, { date: operationalDate, mode: 'exclude', rule: ownerRule, timepoint });
+				}
+
+				continue;
+			}
+
+			activeIncludeTimepoints.add(timepoint);
+			timepointOwners.set(timepoint, manualRule);
+
+			addScheduleDate(schedules, { date: operationalDate, mode: 'include', rule: manualRule, timepoint });
 		}
 	}
 
@@ -235,12 +312,14 @@ function getReplacementAddedTimepoints(
 	allRules: ScheduleRule[],
 	periods: YearPeriod[],
 	holidays: Holiday[],
+	events: Event[],
 ): Set<HHMM> {
 	const withRule = computeActiveRules(
 		operationalDate,
 		allRules,
 		periods,
 		holidays,
+		{ events },
 	);
 
 	const withoutRule = computeActiveRules(
@@ -248,6 +327,7 @@ function getReplacementAddedTimepoints(
 		allRules.filter(r => r._id !== replacementRule._id),
 		periods,
 		holidays,
+		{ events },
 	);
 
 	const withSet = new Set(withRule.timepoints);
@@ -340,6 +420,58 @@ function groupSchedulesByTimepoint(
 }
 
 /**
+ * Post-processing pass: removes include schedules whose date set is a strict subset of
+ * another include schedule for the same timepoint.
+ *
+ * When rule A covers only weekdays and rule B covers all days (weekdays + weekend),
+ * at the same timepoint, A is redundant — B already owns all of A's dates.
+ * Without this pass the displacement logic produces:
+ *   - A on weekdays (clean)
+ *   - B-OFF-A on weekends only (messy, ends up sharing a serviceId with other SAB-DOM patterns)
+ * With this pass A is absorbed into B, yielding:
+ *   - B on all dates (clean)
+ *
+ * Also removes the paired exclude record created by the displacement logic
+ * (`${A.rule._id}|exclude|${timepoint}`) so B's date set is not incorrectly subtracted.
+ */
+function mergeSubsetIncludeSchedules(schedules: Map<string, RuleTimepointSchedule>): void {
+	// Index include schedules by timepoint
+	const includesByTimepoint = new Map<HHMM, RuleTimepointSchedule[]>();
+
+	for (const schedule of schedules.values()) {
+		if (schedule.mode !== 'include') continue;
+
+		if (!includesByTimepoint.has(schedule.timepoint)) {
+			includesByTimepoint.set(schedule.timepoint, []);
+		}
+
+		includesByTimepoint.get(schedule.timepoint).push(schedule);
+	}
+
+	const keysToDelete = new Set<string>();
+
+	for (const includes of includesByTimepoint.values()) {
+		if (includes.length < 2) continue;
+
+		for (const a of includes) {
+			// A is dominated if there exists B with a.dates ⊊ b.dates (strict subset).
+			const isDominated = includes.some(b => b.rule._id !== a.rule._id && b.dates.size > a.dates.size && [...a.dates].every(d => b.dates.has(d)));
+
+			if (isDominated) {
+				keysToDelete.add(`${a.rule._id}|include|${a.timepoint}`);
+				// Remove the displacement-exclude record too — it was only subtracting
+				// A's dates from B's include, which we no longer need.
+				keysToDelete.add(`${a.rule._id}|exclude|${a.timepoint}`);
+			}
+		}
+	}
+
+	for (const key of keysToDelete) {
+		schedules.delete(key);
+	}
+}
+
+/**
  * Resolves final exportable trip rows.
  *
  * Final semantics:
@@ -364,6 +496,9 @@ function resolveTripRows(
 
 		for (const includeSchedule of includeSchedules) {
 			const overlappingExcludeSchedules = excludeSchedules.filter((excludeSchedule) => {
+				// A rule cannot exclude itself: displacement records write an exclude attributed
+				// to the winning event-specific rule, which would otherwise corrupt its own token.
+				if (excludeSchedule.rule._id === includeSchedule.rule._id) return false;
 				for (const date of includeSchedule.dates) {
 					if (excludeSchedule.dates.has(date)) return true;
 				}
@@ -383,18 +518,20 @@ function resolveTripRows(
 			}
 
 			const includeRuleName = buildRuleSummaryGtfs(includeSchedule.rule, { events, periods });
-			const excludeRuleNames = overlappingExcludeSchedules.map(s => buildRuleSummaryGtfs(s.rule, { events, periods })).sort();
+			const excludeRuleNames = [...new Set(overlappingExcludeSchedules.map(s => buildRuleSummaryGtfs(s.rule, { events, periods })))].sort();
 
 			const ruleToken = excludeRuleNames.length > 0
 				? `${includeRuleName}-OFF-${excludeRuleNames.join('-')}`
 				: includeRuleName;
 
-			const serviceId = serviceRegistry.getOrCreateServiceId(resultingDates);
+			const hashServiceId = serviceRegistry.getOrCreateServiceId(resultingDates);
+			const resolvedRuleToken = serviceRegistry.resolveRuleToken(ruleToken, hashServiceId);
+			serviceRegistry.registerServiceId(resolvedRuleToken, resultingDates);
 
 			resolvedRows.push({
 				dates: resultingDates,
-				rule_token: ruleToken,
-				service_id: serviceId,
+				ruleToken: resolvedRuleToken,
+				serviceId: resolvedRuleToken,
 				timepoint,
 			});
 		}
@@ -457,6 +594,7 @@ export async function exportTripsForPattern(
 			allRules,
 			periods,
 			holidays,
+			events,
 			startDate,
 			endDate,
 		);
@@ -465,9 +603,14 @@ export async function exportTripsForPattern(
 			return [];
 		}
 
+		// Step 1.5: Merge subset include schedules.
+		// When include rule A's dates are a strict subset of include rule B's at the same
+		// timepoint, A is redundant — absorb it into B so B runs on its full date set.
+		mergeSubsetIncludeSchedules(schedules);
+
 		// Step 2: Resolve final trip rows:
 		// include dates minus overlapping exclude dates,
-		// with service_id deduplication based on final date sets.
+		// with serviceId deduplication based on final date sets.
 		const resolvedTripRows = resolveTripRows(schedules, serviceRegistry, { events, periods });
 
 		if (resolvedTripRows.length === 0) {
@@ -480,7 +623,7 @@ export async function exportTripsForPattern(
 		const sortedTripRows = resolvedTripRows.sort((a, b) => {
 			const timeDiff = timepointToOperationalMinutes(a.timepoint) - timepointToOperationalMinutes(b.timepoint);
 			if (timeDiff !== 0) return timeDiff;
-			return a.rule_token.localeCompare(b.rule_token);
+			return a.ruleToken.localeCompare(b.ruleToken);
 		});
 
 		const tripSchedules: TripSchedule[] = [];
@@ -488,14 +631,14 @@ export async function exportTripsForPattern(
 		for (const row of sortedTripRows) {
 			const timepointHHMM = hhmm(row.timepoint);
 			const startTimeStripped = timepointHHMM.split(':').join('');
-			const tripId = `${patternData.code}|${row.rule_token}|${startTimeStripped}`;
+			const tripId = `${patternData.code}|${row.ruleToken}|${startTimeStripped}`;
 
 			const metadata = collectDateMetadata(row.dates, periods, holidays);
 
 			tripSchedules.push({
 				day_period: resolveDayPeriod(timepointHHMM),
 				period_ids: metadata.period_ids,
-				service_id: row.service_id,
+				serviceId: row.serviceId,
 				timepoint: timepointHHMM,
 				trip_id: tripId,
 				weekdays: metadata.weekdays,
@@ -508,7 +651,7 @@ export async function exportTripsForPattern(
 				pattern_id: patternData.code,
 				pattern_short_name: headsign,
 				route_id: routeData.code,
-				service_id: row.service_id,
+				service_id: row.serviceId,
 				shape_id: shapeId,
 				trip_headsign: headsign,
 				trip_id: tripId,
@@ -516,6 +659,8 @@ export async function exportTripsForPattern(
 			};
 
 			await exportConfig.writers.trips.write(tripData);
+
+			serviceRegistry.attachRuleToken(row.serviceId, row.ruleToken, patternData.code);
 		}
 
 		return tripSchedules;

@@ -1,7 +1,7 @@
 /* * */
 
 import { IStorageProvider } from '@/providers/storage/storage.interface.js';
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { mimeTypes } from '@tmlmobilidade/consts';
 import { readFileSync } from 'node:fs';
 import { Readable } from 'node:stream';
@@ -15,7 +15,8 @@ export interface OCIStorageProviderConfiguration {
 	bucket_name: string
 	fingerprint: string
 	namespace: string
-	private_key: string
+	private_key?: string
+	private_key_path?: string
 	region: string
 	tenancy: string
 	user: string
@@ -35,7 +36,7 @@ export class OCIStorageProvider implements IStorageProvider {
 				config.tenancy,
 				config.user,
 				config.fingerprint,
-				readFileSync(config.private_key, 'utf8'),
+				config.private_key_path ? readFileSync(config.private_key_path, 'utf8') : config.private_key,
 				null,
 				Region.fromRegionId(config.region),
 			),
@@ -84,8 +85,7 @@ export class OCIStorageProvider implements IStorageProvider {
 				objectName: key,
 			});
 			return true;
-		}
-		catch (error: unknown) {
+		} catch (error: unknown) {
 			if (error instanceof OciError && error.statusCode === 404) return false;
 			throw error;
 		}
@@ -136,8 +136,7 @@ export class OCIStorageProvider implements IStorageProvider {
 					objectName: key,
 				},
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			console.error('Error uploading file:', JSON.stringify(error, null, 2));
 			throw error;
 		}

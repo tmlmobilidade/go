@@ -4,6 +4,7 @@ import { CommentSchema } from '@/_common/comment.js';
 import { DocumentSchema } from '@/_common/document.js';
 import { createGtfsMapper } from '@/gtfs-new/mapper.js';
 import { GtfsDirection } from '@/gtfs-new/trips.js';
+import { StopIdSchema } from '@/stops/stop-id.js';
 import { StopSchema } from '@/stops/stop.js';
 import { z } from 'zod';
 
@@ -38,7 +39,7 @@ export const PathSchema = z.object({
 	allow_pickup: z.boolean().default(true),
 	distance_delta: z.number().nullable().default(null),
 	stop: StopSchema.nullable().optional(),
-	stop_id: z.string(),
+	stop_id: StopIdSchema,
 	timepoint: z.boolean().default(true),
 	zones: z.array(z.string()).optional(),
 });
@@ -66,7 +67,7 @@ export const PatternSchema = DocumentSchema.extend({
 	comments: z.array(CommentSchema).optional().default([]),
 
 	destination: z.string().trim().min(1).max(100),
-	direction: PatternDirectionSchema,
+	direction: PatternDirectionSchema.default('outbound'),
 	headsign: z.string().trim().min(1).max(100),
 	is_locked: z.boolean().default(false),
 	line_id: z.string(),

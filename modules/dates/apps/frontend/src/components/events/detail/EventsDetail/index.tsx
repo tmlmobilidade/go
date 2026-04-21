@@ -53,6 +53,24 @@ export function EventsDetail() {
 						{...eventsDetailContext.data.form.getInputProps('title')}
 					/>
 
+					<TextInput
+						key={eventsDetailContext.data.form.key('code')}
+						description={`Deve conter apenas letras maiúsculas, números e underscores. Máximo de ${EventSchema.shape.code.maxLength} caracteres.`}
+						label="Código"
+						maxLength={EventSchema.shape.code.maxLength}
+						placeholder="Ex: MARAT_LIS"
+						required={!EventSchema.shape.code.isOptional()}
+						value={eventsDetailContext.data.form.values?.code ?? ''}
+						w="100%"
+						onChange={(e) => {
+							const normalized = e.currentTarget.value
+								.toUpperCase()
+								.replace(/[^A-Z0-9_]/g, '');
+
+							eventsDetailContext.data.form.setFieldValue('code', normalized);
+						}}
+					/>
+
 					<Textarea
 						key={eventsDetailContext.data.form.key('description')}
 						label="Descrição"
@@ -68,6 +86,7 @@ export function EventsDetail() {
 						data={agencyOptions}
 						disabled={eventsDetailContext.flags.isReadOnly}
 						label="Operadores afetados"
+						required={!EventSchema.shape.agency_ids.isOptional()}
 						{...eventsDetailContext.data.form.getInputProps('agency_ids')}
 					/>
 

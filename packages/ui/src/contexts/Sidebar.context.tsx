@@ -2,7 +2,7 @@
 
 /* * */
 
-import { getAppConfig } from '@tmlmobilidade/consts';
+import { getModuleConfig } from '@tmlmobilidade/consts';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -44,7 +44,7 @@ export function SidebarContextProvider({ children }: PropsWithChildren) {
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading } = useSWR<{ sidebar: SidebarItemProps[] }>(`${getAppConfig('auth', 'api_url')}/users/me`);
+	const { data, error, isLoading } = useSWR<{ sidebar: SidebarItemProps[] }>(`${getModuleConfig('auth', 'api_url')}/users/me`);
 
 	//
 	// C. Handle actions

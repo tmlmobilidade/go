@@ -1,25 +1,4 @@
 /* * */
-/* CONTAINER */
-
-.container {
-	display: flex;
-	flex-direction: column;
-	gap: var(--size-spacing-xs);
-}
-
-.container[data-raised='true'] {
-	padding: var(--size-spacing-md);
-	border-radius: 5px;
-	box-shadow: 0 2px 8px 0 var(--color-shadow);
-}
-
-.container[data-bordered='true'] {
-	padding: var(--size-spacing-md);
-	border: 2px solid var(--color-system-border-100);
-	border-radius: 5px;
-}
-
-/* * */
 /* LABEL */
 
 .label {
@@ -35,4 +14,8 @@
 .value {
 	font-size: var(--font-size-lg);
 	font-weight: var(--font-weight-normal);
+}
+
+.value[data-strong='true'] {
+	font-weight: var(--font-weight-bold);
 }

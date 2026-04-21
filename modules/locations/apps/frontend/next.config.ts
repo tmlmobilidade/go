@@ -6,8 +6,10 @@ import { type NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
 	basePath: '/locations',
+	devIndicators: false,
 	env: {
 		NEXT_PUBLIC_BASE_PATH: '/locations',
+		NEXT_PUBLIC_ENVIRONMENT: process.env.ENVIRONMENT,
 	},
 	experimental: {
 		optimizePackageImports: ['@tmlmobilidade/ui'],

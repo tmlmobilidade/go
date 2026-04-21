@@ -73,7 +73,7 @@ export async function exportGtfsV29(
 	try {
 		Logger.info('* * *');
 		Logger.info('* GTFS v29 : NEW EXPORT');
-		Logger.info(`* Agency ID: ${exportConfig.agency_id}`);
+		Logger.info(`* Agency IDs: ${exportConfig.agency_ids.join(', ')}`);
 		Logger.info(`* Version: ${exportConfig.version}`);
 		Logger.info('* * *');
 
@@ -85,15 +85,18 @@ export async function exportGtfsV29(
 		// to initiate these variables outside all loops that hold the _ids
 		// of the objects that are referenced in the other objects (trips, patterns)
 
-		const referencedStopCodes = new Set<string>();
+		const referencedStopCodes = new Set<number>();
 		const referencedFareIds = new Set<string>();
 
 		// Initialize service registry for calendar deduplication
 		const serviceRegistry = new ServiceRegistry();
 
+		// Track circulations: (patternCode:timepoint) -> [{ ruleToken, serviceId }]
+		const circulationTracker = new Map<string, { ruleToken: string, serviceId: string }[]>();
+
 		// Define export date range
-		const exportStartDate = Dates.fromISO(exportConfig.feed_start_date);
-		const exportEndDate = Dates.fromISO(exportConfig.feed_end_date);
+		const exportStartDate = Dates.fromOperationalDate(exportConfig.calendars_clip_start_date, 'Europe/Lisbon');
+		const exportEndDate = Dates.fromOperationalDate(exportConfig.calendars_clip_end_date, 'Europe/Lisbon');
 
 		//
 		// 1.
@@ -102,16 +105,26 @@ export async function exportGtfsV29(
 
 		await updateProgress(progress, { progress_current: 1, progress_total: 7 });
 
-		const agencyData = await agencies.findById(exportConfig.agency_id);
-		if (!agencyData) {
-			throw new Error(`Agency with ID ${exportConfig.agency_id} not found`);
-		}
+		const allAgenciesData = await Promise.all(
+			exportConfig.agency_ids.map(async (id) => {
+				const agencyData = await agencies.findById(id);
+				if (!agencyData) throw new Error(`Agency with ID ${id} not found`);
+				return agencyData;
+			}),
+		);
 
-		await exportAgencyFile(agencyData, exportConfig);
+		for (const agencyData of allAgenciesData) {
+			await exportAgencyFile(agencyData, exportConfig);
+		}
 		Logger.success('Exported agency.txt');
 
-		await exportFeedInfoFile(agencyData, exportConfig);
+		await exportFeedInfoFile(allAgenciesData[0], exportConfig);
 		Logger.success('Exported feed_info.txt');
+
+		const agenciesMap = new Map(allAgenciesData.map(a => [a._id, a]));
+
+		Logger.info('Fetching stops...');
+		const allStopsData = await stops.findMany({}, { sort: { _id: 1 } });
 
 		//
 		// 2.
@@ -122,8 +135,8 @@ export async function exportGtfsV29(
 		await updateProgress(progress, { progress_current: 2, progress_total: 7 });
 
 		// Build the base filter for the agency
-		const linesFilter: { _id?: { $in?: string[], $nin?: string[] }, agency_id: string } = {
-			agency_id: exportConfig.agency_id,
+		const linesFilter: { _id?: { $in?: string[], $nin?: string[] }, agency_id?: { $in: string[] } } = {
+			agency_id: { $in: exportConfig.agency_ids },
 		};
 
 		// Apply include/exclude filters
@@ -165,11 +178,11 @@ export async function exportGtfsV29(
 		Logger.success(`Loaded ${allPeriodsMap.size} periods`);
 
 		Logger.info('Fetching all holidays...');
-		const allHolidaysMap = await fetchAllHolidays(exportConfig.agency_id);
+		const allHolidaysMap = await fetchAllHolidays(exportConfig.agency_ids);
 		Logger.success(`Loaded ${allHolidaysMap.size} holidays`);
 
 		Logger.info('Fetching all events...');
-		const allEventsMap = await fetchAllEvents(exportConfig.agency_id);
+		const allEventsMap = await fetchAllEvents(exportConfig.agency_ids);
 		Logger.success(`Loaded ${allEventsMap.size} events`);
 
 		// 3.
@@ -179,6 +192,7 @@ export async function exportGtfsV29(
 
 		for (const [lineIndex, lineData] of allLinesData.entries()) {
 			//
+			const lineAgencyData = agenciesMap.get(lineData.agency_id) ?? allAgenciesData[0];
 
 			// 3.0.
 			// Update progress
@@ -219,10 +233,10 @@ export async function exportGtfsV29(
 				}
 
 				// Export the route
-				await exportRoute(agencyData, lineData, routeData, exportConfig, allTypologiesMap, routePatterns);
+				await exportRoute(lineAgencyData, lineData, routeData, exportConfig, allTypologiesMap, routePatterns);
 
 				// Export fares for this route
-				await exportFareForRoute(agencyData, lineData, routeData, exportConfig, allFaresMap, referencedFareIds);
+				await exportFareForRoute(lineAgencyData, lineData, routeData, exportConfig, allFaresMap, referencedFareIds);
 
 				for (const patternData of routePatterns) {
 					// Skip patterns without shape or path
@@ -240,7 +254,7 @@ export async function exportGtfsV29(
 					// Export afetacao (zoning) for this pattern
 					// Get typology data for this line
 					const typologyData = lineData.typology ? allTypologiesMap.get(lineData.typology) : null;
-					await exportZoning(agencyData, lineData, patternData, allZonesMap, allFaresMap, typologyData || null, exportConfig);
+					await exportZoning(lineAgencyData, lineData, patternData, allZonesMap, allFaresMap, typologyData || null, exportConfig);
 
 					// Track referenced stops from the pattern path
 					if (patternData.path) {
@@ -250,7 +264,7 @@ export async function exportGtfsV29(
 						}
 					}
 
-					// Export trips for this pattern (will deduplicate service_ids across patterns)
+					// Export trips for this pattern (will deduplicate serviceIds across patterns)
 					const tripSchedules = await exportTripsForPattern(
 						routeData,
 						patternData,
@@ -264,7 +278,15 @@ export async function exportGtfsV29(
 						exportConfig,
 					);
 
-					await exportStopTimesForPattern(patternData, tripSchedules, exportConfig);
+					await exportStopTimesForPattern(allStopsData, patternData, tripSchedules, exportConfig, lineData.agency_id);
+
+					// Track circulations for duplicate detection
+					for (const schedule of tripSchedules) {
+						const key = `${patternData.code}:${schedule.timepoint}`;
+						if (!circulationTracker.has(key)) circulationTracker.set(key, []);
+						const ruleToken = schedule.trip_id.split('|')[1] ?? '';
+						circulationTracker.get(key).push({ ruleToken: ruleToken, serviceId: schedule.serviceId });
+					}
 				}
 
 				Logger.info(`  Processed route ${routeId} with ${routePatterns.length} patterns`);
@@ -279,15 +301,15 @@ export async function exportGtfsV29(
 
 		await updateProgress(progress, { progress_current: 5, progress_total: 7 });
 
-		Logger.info('Fetching stops...');
-		const allStopsData = exportConfig.stops_export_all
-			? await stops.findMany({}, { sort: { _id: 1 } })
-			: await stops.findMany({ _id: { $in: Array.from(referencedStopCodes) } }, { sort: { _id: 1 } });
-
 		Logger.info(`Processing ${allStopsData.length} stops...`);
 
 		// Export each stop
 		for (const stopData of allStopsData) {
+			//
+
+			// Skip stops that are not referenced
+			if (!exportConfig.stops_export_all && !referencedStopCodes.has(stopData._id)) continue;
+
 			const municipalityData = stopData.municipality_id
 				? allMunicipalitiesMap.get(stopData.municipality_id)
 				: undefined;
@@ -299,9 +321,117 @@ export async function exportGtfsV29(
 
 		//
 		// Step 4.5: Export calendar_dates
-		// Export all unique service_ids and their dates that were collected during pattern processing
+		// Export all unique serviceIds and their dates that were collected during pattern processing
 
 		await exportCalendarDates(serviceRegistry, allPeriodsMap, allHolidaysMap, exportConfig);
+
+		//
+		// Step 4.6: Write service-rule-map.json
+		// Maps each unique serviceId to its date set and the rule tokens + patterns that produced it
+
+		const serviceRuleMap = serviceRegistry.getServiceRuleMap();
+		const serviceRuleMapJson: Record<string, { dates: string[], ruleTokens: { patterns: string[], ruleToken: string }[] }> = {};
+
+		for (const [serviceId, info] of serviceRuleMap.entries()) {
+			serviceRuleMapJson[serviceId] = {
+				dates: Array.from(info.dates).sort(),
+				ruleTokens: info.ruleTokens,
+			};
+		}
+
+		fs.writeFileSync(
+			`${exportConfig.workdir}/service-rule-map.json`,
+			JSON.stringify(serviceRuleMapJson, null, 2),
+			'utf-8',
+		);
+
+		Logger.success(`Exported service-rule-map.json with ${serviceRuleMap.size} unique service IDs`);
+
+		//
+		// Step 4.7: Write service-rule-duplicates.json
+		// Identifies rule tokens that appear under multiple distinct serviceIds and shows the date differences
+
+		// Build inverse map: ruleToken -> [{ serviceId, dates }]
+		const ruleTokenIndex = new Map<string, { dates: Set<string>, serviceId: string }[]>();
+
+		for (const [serviceId, info] of serviceRuleMap.entries()) {
+			const sortedDates = new Set(Array.from(info.dates).sort());
+			for (const entry of info.ruleTokens) {
+				if (!ruleTokenIndex.has(entry.ruleToken)) {
+					ruleTokenIndex.set(entry.ruleToken, []);
+				}
+				ruleTokenIndex.get(entry.ruleToken).push({ dates: sortedDates, serviceId });
+			}
+		}
+
+		// Keep only tokens with more than one distinct serviceId
+		const duplicatesJson: Record<string, { dates: string[], dates_exclusive: string[], serviceId: string }[]> = {};
+
+		for (const [ruleToken, entries] of ruleTokenIndex.entries()) {
+			if (entries.length < 2) continue;
+
+			// All dates across all services for this token
+			const allDates = new Set<string>();
+			for (const entry of entries) {
+				for (const d of entry.dates) allDates.add(d);
+			}
+
+			duplicatesJson[ruleToken] = entries.map(entry => ({
+				dates: Array.from(entry.dates),
+				dates_exclusive: Array.from(allDates).filter(d => !entry.dates.has(d)).sort(),
+				serviceId: entry.serviceId,
+			}));
+		}
+
+		fs.writeFileSync(
+			`${exportConfig.workdir}/service-rule-duplicates.json`,
+			JSON.stringify(duplicatesJson, null, 2),
+			'utf-8',
+		);
+
+		Logger.success(`Exported service-rule-duplicates.json with ${Object.keys(duplicatesJson).length} duplicated rule tokens`);
+
+		//
+		// Step 4.8: Write circulation-duplicates.json
+		// Identifies (pattern:timepoint) pairs that have multiple serviceIds sharing at least one date.
+
+		const allServices = serviceRegistry.getAllServices();
+		interface CirculationEntry { dates: string[], ruleToken: string, serviceId: string }
+		const circulationDuplicatesJson: Record<string, { services: CirculationEntry[], shared_dates: string[] }> = {};
+
+		for (const [key, entries] of circulationTracker.entries()) {
+			if (entries.length < 2) continue;
+
+			// Build date sets per entry
+			const entriesWithDates = entries.map(e => ({
+				...e,
+				dates: Array.from(allServices.get(e.serviceId)?.dates ?? []).sort(),
+			}));
+
+			// Find dates shared by at least two serviceIds
+			const dateCounts = new Map<string, number>();
+			for (const entry of entriesWithDates) {
+				for (const d of entry.dates) {
+					dateCounts.set(d, (dateCounts.get(d) ?? 0) + 1);
+				}
+			}
+			const sharedDates = Array.from(dateCounts.entries())
+				.filter(([, count]) => count >= 2)
+				.map(([d]) => d)
+				.sort();
+
+			if (sharedDates.length === 0) continue;
+
+			circulationDuplicatesJson[key] = { services: entriesWithDates, shared_dates: sharedDates };
+		}
+
+		fs.writeFileSync(
+			`${exportConfig.workdir}/circulation-duplicates.json`,
+			JSON.stringify(circulationDuplicatesJson, null, 2),
+			'utf-8',
+		);
+
+		Logger.success(`Exported circulation-duplicates.json with ${Object.keys(circulationDuplicatesJson).length} duplicate circulations`);
 
 		//
 		// Step 5: Export referenced fare attributes
@@ -310,7 +440,7 @@ export async function exportGtfsV29(
 		await updateProgress(progress, { progress_current: 6, progress_total: 7 });
 
 		Logger.info(`Exporting ${referencedFareIds.size} fare attributes...`);
-		await exportFareAttributes(agencyData, exportConfig, allFaresMap, referencedFareIds);
+		await exportFareAttributes(allAgenciesData[0], exportConfig, allFaresMap, referencedFareIds);
 		Logger.success('Exported fare_attributes.txt');
 
 		//

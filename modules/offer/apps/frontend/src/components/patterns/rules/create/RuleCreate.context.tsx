@@ -96,16 +96,20 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	}),
 	[eventsContext.data.raw, form.values, periodsContext.data.raw]);
 
-	const ruleImpact = useMemo(() => getManualRuleAffectedDates(
-		form.values,
-		{
-			endDate: Dates.now('Europe/Lisbon').plus({ years: 1 }).js_date,
-			events: eventsContext.data.raw,
-			holidays: holidaysContext.data.raw,
-			periods: periodsContext.data.raw,
-			startDate: new Date(),
-		},
-	), [eventsContext.data.raw, form.values, periodsContext.data.raw, holidaysContext.data.raw]);
+	const ruleImpact = useMemo(() => {
+		const startOfYear = Dates.now('Europe/Lisbon').startOf('year').minus({ years: 1 });
+
+		return getManualRuleAffectedDates(
+			form.values,
+			{
+				endDate: startOfYear.plus({ years: 2 }).js_date,
+				events: eventsContext.data.raw,
+				holidays: holidaysContext.data.raw,
+				periods: periodsContext.data.raw,
+				startDate: startOfYear.js_date,
+			},
+		);
+	}, [eventsContext.data.raw, form.values, periodsContext.data.raw, holidaysContext.data.raw]);
 
 	//
 	// D. Handle actions

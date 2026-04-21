@@ -76,6 +76,11 @@ export const GetRidesBatchQuerySchema = z.object({
 		.preprocess((val: string) => (val && typeof val === 'string') ? val.split(',').map(status => status.trim()) : [], z.array(z.enum([...RideAcceptanceStatusSchema.options, 'none'])))
 		.optional(),
 
+	/* * */
+
+	favorites: z
+		.boolean()
+		.optional(),
 });
 
 /* * */

@@ -17,12 +17,16 @@ export function EnvironmentTag() {
 	//
 	// B. Render components
 
-	if (currentEnvironment === 'development') {
-		return <Tag label="dev" variant="danger" />;
+	if (currentEnvironment === 'prd') {
+		return <Tag label="prd" variant="danger" />;
 	}
 
-	if (currentEnvironment === 'staging') {
-		return <Tag label="staging" variant="warning" />;
+	if (currentEnvironment === 'stg') {
+		return <Tag label="stg" variant="warning" />;
+	}
+
+	if (currentEnvironment === 'dev') {
+		return <Tag label="dev" variant="success" />;
 	}
 
 	return null;

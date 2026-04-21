@@ -2,6 +2,7 @@
 
 import { getStopByLegacyId } from '@/utils/stops.js';
 import { patterns } from '@tmlmobilidade/interfaces';
+import { generateRandomString } from '@tmlmobilidade/strings';
 import { type CreatePatternDto, GtfsTMLStopTimes, GtfsTMLTrip, PatternDirection, patternDirectionMapper, type Shape } from '@tmlmobilidade/types';
 
 import {
@@ -10,6 +11,7 @@ import {
 	resolvePatternCode,
 	resolvePatternKey,
 } from '../helpers/index.js';
+import { warn, WARNING } from '../warnings.js';
 
 /* * */
 
@@ -81,7 +83,7 @@ export async function buildPatternsForRoute(params: {
 				: `${lineCode}_${directionId}`.slice(0, 10);
 			const routeDoc = routeDocsByCode.get(routeKey);
 			if (!routeDoc) {
-				console.log('[gtfs-importer] Missing route for patterns', {
+				warn(WARNING.MISSING_ROUTE, {
 					line_id: lineId,
 					routeCode: routeKey,
 					trip_route_id: trip.route_id,
@@ -90,7 +92,7 @@ export async function buildPatternsForRoute(params: {
 				continue;
 			}
 			const formattedPath: CreatePatternDto['path'] = [];
-			const parametersPath: { avg_speed: number, dwell_time: number, stop_id: string }[] = [];
+			const parametersPath: { avg_speed: number, dwell_time: number, stop_id: number }[] = [];
 			const pathMetrics: Array<{ arrivalSec: null | number, departureSec: null | number, distanceDelta: number, stopRefId: string }> = [];
 			let prevDistance: null | number = null;
 
@@ -98,8 +100,8 @@ export async function buildPatternsForRoute(params: {
 				const stopId = stopTime.stop_id.trim();
 				const stopRef = await getStopByLegacyId(stopId, stopCache);
 				if (!stopRef) {
-					console.log('[gtfs-importer] Missing stop for pattern', {
-						stop_id: stopId,
+					warn(WARNING.MISSING_STOP, {
+						stop_id: String(stopId),
 						trip_id: trip.trip_id,
 					});
 					continue;
@@ -132,7 +134,7 @@ export async function buildPatternsForRoute(params: {
 					allow_drop_off: parseInt(stopTime.drop_off_type) === 0,
 					allow_pickup: parseInt(stopTime.pickup_type) === 0,
 					distance_delta: distanceDelta,
-					stop_id: stopRef._id,
+					stop_id: Number(stopRef._id),
 					timepoint: parseInt(stopTime.timepoint) === 1,
 					zones,
 				});
@@ -141,7 +143,7 @@ export async function buildPatternsForRoute(params: {
 					arrivalSec,
 					departureSec,
 					distanceDelta,
-					stopRefId: stopRef._id,
+					stopRefId: String(stopRef._id),
 				});
 			}
 
@@ -163,7 +165,7 @@ export async function buildPatternsForRoute(params: {
 				parametersPath.push({
 					avg_speed: avgSpeed,
 					dwell_time: dwellTime,
-					stop_id: current.stopRefId,
+					stop_id: Number(current.stopRefId),
 				});
 			}
 
@@ -184,6 +186,7 @@ export async function buildPatternsForRoute(params: {
 				line_id: lineId,
 				origin,
 				parameters: [{
+					_id: generateRandomString({ length: 5 }),
 					kind: 'default',
 					path: parametersPath,
 				}],

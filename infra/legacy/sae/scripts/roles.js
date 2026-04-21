@@ -20,7 +20,9 @@ db.createRole({
 
 db.createRole({
 	privileges: [
+		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'rides', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'sams', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'ride_acceptances', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'hashed_shapes', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
@@ -132,7 +134,7 @@ db.createRole({
 	roles: [{ db: 'admin', role: 'common' }],
 });
 
-db.createRole({
+db.updateRole('offer', {
 	privileges: [
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'typologies', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'lines', db: 'production' } },
@@ -140,10 +142,13 @@ db.createRole({
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'patterns', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'fares', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'zones', db: 'production' } },
+		{ actions: ['find', 'insert', 'update'], resource: { collection: 'exports', db: 'production' } },
+		{ actions: ['find', 'insert'], resource: { collection: 'files', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'holidays', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'year_periods', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'events', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
 	],
-	role: 'offer',
 	roles: [{ db: 'admin', role: 'common' }],
 });
 
