@@ -12,20 +12,10 @@ import { ActionsOf, type GetSamsBatchQuery, GetSamsBatchQuerySchema, Permission,
  */
 type SamBatchListItem = SamListItem;
 
-type SamsListAggregateRow = SamListItem & { __analysis?: SamAnalysis[] };
-
-function applyTimelineGapFlagsList(row: SamsListAggregateRow): SamListItem {
-	const { __analysis, ...rest } = row;
-	if (!__analysis?.length) return rest;
-	return {
-		...rest,
-		timeline_summary: withTimelineMonthGapFlags(rest.timeline_summary, __analysis, rest.seen_first_at, rest.seen_last_at),
-	};
-}
-
 function applyTimelineGapFlagsDetail(sam: Sam & { __analysis?: SamAnalysis[] }): Sam {
-	const { __analysis, ...rest } = sam;
-	void __analysis;
+	const merged = { ...sam };
+	delete (merged as { __analysis?: SamAnalysis[] }).__analysis;
+	const rest = merged as Sam;
 	return {
 		...rest,
 		timeline_summary: withTimelineMonthGapFlags(rest.timeline_summary, rest.analysis ?? [], rest.seen_first_at, rest.seen_last_at),
@@ -58,10 +48,10 @@ export class SamsController {
 
 		const pipeline = samsBatchAggregationPipeline({ matchAnd });
 
-		const allSams = (await sams.aggregate(pipeline)) as SamsListAggregateRow[];
+		const allSams = (await sams.aggregate(pipeline)) as SamBatchListItem[];
 
 		return reply.send({
-			data: allSams.map(applyTimelineGapFlagsList),
+			data: allSams,
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});
@@ -161,8 +151,8 @@ export class SamsController {
 				ids: numericIds,
 				restrictByAgency: !allowAllAgencies && Boolean(agencyIds?.length),
 			}),
-		)) as SamsListAggregateRow[];
+		)) as SamBatchListItem[];
 
-		return reply.send({ data: foundSamsByIds.map(applyTimelineGapFlagsList), error: null, statusCode: HTTP_STATUS.OK });
+		return reply.send({ data: foundSamsByIds, error: null, statusCode: HTTP_STATUS.OK });
 	}
 }
