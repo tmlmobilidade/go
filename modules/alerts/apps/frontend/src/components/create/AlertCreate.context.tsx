@@ -337,7 +337,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 							// Get stops that are child_ids and belong to this line
 							const lineStops: StopData[] = stopChildIds
 								.map(stopId => childStopsDataMap.get(stopId))
-								.filter((childStop): childStop is Stop => childStop !== undefined && childStop.line_ids.includes(line.id))
+								.filter((childStop): childStop is Stop => childStop?.line_ids.includes(line.id))
 								.map(childStop => ({
 									id: childStop.id,
 									lines: [],

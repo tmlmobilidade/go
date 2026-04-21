@@ -2,8 +2,8 @@
 
 /* * */
 
-import { useLinesContext } from '@/contexts/Lines.context';
-import { getAvailableLines } from '@/lib/alert-utils';
+// import { useLinesContext } from '@/contexts/Lines.context';
+// import { getAvailableLines } from '@/lib/alert-utils';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type Alert, type File as FileType } from '@tmlmobilidade/types';
@@ -19,7 +19,7 @@ interface AlertDetailContextState {
 		activePeriodStart: string
 		alert: Alert | undefined
 		image: FileType | undefined
-		linesIds: { label: string, value: string }[]
+		// linesIds: { label: string, value: string }[]
 	}
 	flags: {
 		loading: boolean
@@ -48,33 +48,35 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	// A. Setup variables
 
 	const alertsListContext = useAlertsListContext();
-	const linesContext = useLinesContext();
+	// const linesContext = useLinesContext();
+	const { data: alertDetailData, error: alertDetailError, isLoading: alertDetailLoading } = useSWR<Alert, Error>(API_ROUTES.alerts.ALERTS_DETAIL(alertId));
 	const { data: alertImage } = useSWR<FileType>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
 
 	//
 	// B. Transform data
 
 	const foundAlert = useMemo(() => {
+		if (alertDetailData) return alertDetailData;
 		if (alertsListContext.flags.loading) return undefined;
 		return alertsListContext.data.raw.find(alert => alert._id === alertId);
-	}, [alertsListContext.flags.loading, alertsListContext.data.raw, alertId]);
+	}, [alertDetailData, alertsListContext.flags.loading, alertsListContext.data.raw, alertId]);
 
-	const isLoading = alertsListContext.flags.loading;
-	const isNotFound = !isLoading && !foundAlert;
+	const isLoading = alertDetailLoading || alertsListContext.flags.loading;
+	const isNotFound = !isLoading && !!alertDetailError && !foundAlert;
 
 	const activePeriodStart = useMemo(() => {
 		if (!foundAlert) return '-';
 		return Dates.fromUnixTimestamp(foundAlert.active_period_start_date).setZone('Europe/Lisbon', 'offset_only').toFormat('d LLLL yyyy', { locale: 'pt' });
 	}, [foundAlert]);
 
-	const linesIds = useMemo(() => {
-		if (!foundAlert) return [];
-		return getAvailableLines(foundAlert).map((lineId) => {
-			const lineData = linesContext.actions.getLineDataById(lineId);
-			const label = lineData ? `${lineData.code} | ${lineData.name}` : lineId;
-			return { label, value: lineId };
-		});
-	}, [foundAlert, linesContext.actions]);
+	// const linesIds = useMemo(() => {
+	// 	if (!foundAlert) return [];
+	// 	return getAvailableLines(foundAlert).map((lineId) => {
+	// 		const lineData = linesContext.actions.getLineDataById(lineId);
+	// 		const label = lineData ? `${lineData.code} | ${lineData.name}` : lineId;
+	// 		return { label, value: lineId };
+	// 	});
+	// }, [foundAlert, linesContext.actions]);
 
 	//
 	// E. Define context value
@@ -84,7 +86,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			activePeriodStart,
 			alert: foundAlert,
 			image: alertImage,
-			linesIds,
+			// linesIds,
 		},
 		flags: {
 			loading: isLoading,

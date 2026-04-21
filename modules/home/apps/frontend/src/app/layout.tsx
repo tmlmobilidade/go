@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider version={pjson.version}>
+		<BaseProvider swrFetcherType="unauthenticated" version={pjson.version}>
 			<ThemeContextProvider>
 				<VehiclePositionContextProvider>
 					{children}
