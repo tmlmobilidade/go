@@ -22,7 +22,7 @@ export function HeaderLinks() {
 			<Link href="https://go.tmlmobilidade.pt/reference">
 				<p className={styles.headerActionsLink}> Documentação</p>
 			</Link>
-			<Button href={PAGE_ROUTES.auth.LOGIN_LIST} label="Entrar" variant="primary" />
+			<Button className={styles.headerActionsButton} href={PAGE_ROUTES.auth.LOGIN_LIST} label="Entrar" size="xs" variant="primary" />
 		</div>
 	);
 }

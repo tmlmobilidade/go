@@ -30,6 +30,9 @@ export function HeaderActionsMobile() {
 	return (
 		<div className={styles.mobileActionsPanel}>
 			<ThemeSwitcher />
+			<Link href="https://github.com/tmlmobilidade">
+				<IconBrandGithub color="var(--color-system-text-200)" size={24} />
+			</Link>
 		</div>
 	);
 }

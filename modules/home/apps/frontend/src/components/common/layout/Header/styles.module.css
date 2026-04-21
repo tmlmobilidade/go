@@ -7,7 +7,7 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	height: 80px;
+	height: 50px;
 	padding: 0 var(--size-spacing-4xl);
 	background-color: color-mix(in srgb, var(--color-system-background-100) 88%, transparent);
 	backdrop-filter: blur(8px);
@@ -15,12 +15,12 @@
 }
 
 .headerInner {
-	width: 80%;
+	width: 85%;
 	display: grid;
 	grid-template-columns: auto 1fr auto;
 	gap: var(--size-spacing-lg);
 	align-items: center;
-	height: 80px;
+	height: 70px;
 }
 
 .mobileMenuToggle {

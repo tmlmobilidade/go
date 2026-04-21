@@ -16,6 +16,7 @@
 		align-items: center;
 		justify-content: flex-end;
 		width: 100%;
-		padding: 12px 4px;
+		gap: 20px;
+		padding: 12px 12px 12px 12px;
 	}
 }
