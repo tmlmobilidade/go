@@ -19,7 +19,7 @@ interface AlertDetailPublicContextState {
 		activePeriodStart: string
 		alert: Alert | undefined
 		image: FileType | undefined
-		linesTags: { label: string, value: string }[]
+		linesIds: { label: string, value: string }[]
 	}
 	flags: {
 		loading: boolean
@@ -67,7 +67,7 @@ export const AlertPublicDetailContextProvider = ({ alertId, children }: PropsWit
 		return Dates.fromUnixTimestamp(foundAlert.active_period_start_date).setZone('Europe/Lisbon', 'offset_only').toFormat('d LLLL yyyy', { locale: 'pt' });
 	}, [foundAlert]);
 
-	const linesTags = useMemo(() => {
+	const linesIds = useMemo(() => {
 		if (!foundAlert) return [];
 		return getAvailableLines(foundAlert).map((lineId) => {
 			const lineData = linesContext.actions.getLineDataById(lineId);
@@ -84,7 +84,7 @@ export const AlertPublicDetailContextProvider = ({ alertId, children }: PropsWit
 			activePeriodStart,
 			alert: foundAlert,
 			image: alertImage,
-			linesTags,
+			linesIds,
 		},
 		flags: {
 			loading: isLoading,
