@@ -10,6 +10,7 @@ import { z } from 'zod';
 
 class StopsClass extends MongoCollectionClass<Stop, CreateStopDto, UpdateStopDto> {
 	private static _instance: StopsClass;
+
 	protected override createSchema: z.ZodSchema = CreateStopSchema;
 	protected override updateSchema: z.ZodSchema = UpdateStopSchema;
 
@@ -47,6 +48,16 @@ class StopsClass extends MongoCollectionClass<Stop, CreateStopDto, UpdateStopDto
 	}
 
 	/**
+	 * Override deleteMany to prevent actual deletion of stop documents.
+	 * Stops cannot be deleted, only archived.
+	 * @param filter The filter used to select the documents to "delete".
+	 * @returns A promise that rejects with an error indicating deletion is not allowed.
+	 */
+	override async deleteMany(): Promise<DeleteResult> {
+		throw new Error('Method not implemented. Stops cannot be deleted, only archived.');
+	}
+
+	/**
 	 * Finds stop documents by municipality ID with optional pagination and sorting.
 	 * @param id The municipality ID to search for
 	 * @param perPage Optional number of documents per page for pagination
@@ -67,7 +78,7 @@ class StopsClass extends MongoCollectionClass<Stop, CreateStopDto, UpdateStopDto
 	 * @param ids Array of stop IDs to search for
 	 * @returns A promise that resolves to an array of matching stop documents
 	 */
-	async findManyByIds(ids: string[]) {
+	async findManyByIds(ids: number[]) {
 		return this.mongoCollection.find({ _id: { $in: ids } } as Filter<Stop>).toArray();
 	}
 
@@ -79,7 +90,7 @@ class StopsClass extends MongoCollectionClass<Stop, CreateStopDto, UpdateStopDto
 	 * @param forceValue Optional boolean to explicitly set the deleted status.
 	 * @returns A promise that resolves to the result of the delete operation.
 	 */
-	async toggleDeleteById(id: string, forceValue?: boolean): Promise<void> {
+	async toggleDeleteById(id: number, forceValue?: boolean): Promise<void> {
 		// Get the current document from the database
 		const foundDoc = await this.findById(id);
 		if (!foundDoc) throw new Error('Stop not found');

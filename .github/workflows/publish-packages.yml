@@ -14,10 +14,12 @@ on:
         type: boolean
   push:
     branches:
-      - production
+      - prd
     paths:
       - 'packages/**'
       - '.github/workflows/publish-packages.yml'
+      - '.github/actions/**/*'
+      - '.github/templates/**/*'
 
 # # #
 

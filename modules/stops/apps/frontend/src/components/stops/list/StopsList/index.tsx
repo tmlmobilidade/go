@@ -7,7 +7,7 @@ import { StopsListFilterBar } from '@/components/stops/list/StopsListFilterBar';
 import { StopsListHeader } from '@/components/stops/list/StopsListHeader';
 import { type StopNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -27,8 +27,9 @@ export function StopsList() {
 	const columns: DataTableColumn<StopNormalized>[] = [
 		{
 			accessor: '_id',
-			title: 'codigo',
-			width: 150,
+			render: item => <IdTag id={item._id} />,
+			title: '#ID',
+			width: 100,
 		},
 		{
 			accessor: 'name',
@@ -71,13 +72,13 @@ export function StopsList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: StopNormalized) => {
-		router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(item._id)));
+		router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(String(item._id))));
 	};
 
 	//
 	// C. Render components
 
-	if (stopsListContext.flags.loading) {
+	if (stopsListContext.flags.isLoading) {
 		return <LoadingOverlay />;
 	}
 
@@ -87,8 +88,8 @@ export function StopsList() {
 
 	return (
 		<Pane header={[
-			<StopsListHeader />,
-			<StopsListFilterBar />,
+			<StopsListHeader key="header" />,
+			<StopsListFilterBar key="filters" />,
 		]}
 		>
 			<DataTable
@@ -96,7 +97,7 @@ export function StopsList() {
 				onRowClick={handleRowClick}
 				records={stopsListContext.data.filtered}
 				rowIdAccessor="_id"
-				selectedId={params.id}
+				selectedId={Number(params.id)}
 			/>
 		</Pane>
 	);

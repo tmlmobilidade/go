@@ -2,13 +2,16 @@
 
 /* * */
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Stop } from '@tmlmobilidade/types';
+import type { Stop } from '@carrismetropolitana/api-types/network';
+
 import { SelectDataItem } from '@tmlmobilidade/ui';
-import { createContext, useCallback, useContext } from 'react';
+import { standardSwrFetcher } from '@tmlmobilidade/utils';
+import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
+
+const CMET_API = process.env.NEXT_PUBLIC_CMET_API_URL ?? 'https://api.carrismetropolitana.pt/v2';
 
 interface StopsContextState {
 	actions: {
@@ -16,7 +19,7 @@ interface StopsContextState {
 	}
 	data: {
 		options: SelectDataItem[]
-		raw: Stop[]
+		stops: Stop[]
 	}
 	flags: {
 		is_loading: boolean
@@ -27,7 +30,6 @@ interface StopsContextState {
 
 const StopsContext = createContext<StopsContextState | undefined>(undefined);
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function useStopsContext() {
 	const context = useContext(StopsContext);
 	if (!context) {
@@ -44,14 +46,24 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 	//
 	// A. Fetch data
 
-	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<Stop[]>(API_ROUTES.alerts.STOPS_LIST);
-	const { data: allStopsOptionsData, isLoading: allStopsOptionsLoading } = useSWR<{ label: string, value: string }[]>(API_ROUTES.alerts.STOPS_BATCH);
+	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<Stop[], Error>(`${CMET_API}/stops`, standardSwrFetcher);
 
 	//
-	// B. Transform data
+	// B. Handle actions
 
-	const getStopById = useCallback((stopId: string): Stop | undefined => {
-		return allStopsData?.find(stop => stop._id === stopId) as Stop | undefined;
+	const getStopById = (stopId: string): Stop | undefined => {
+		return allStopsData?.find(stop => stop.id === stopId);
+	};
+
+	//
+	// C. Define context value
+
+	const asOptions = useMemo(() => {
+		if (!allStopsData) return [];
+		return allStopsData.map(stop => ({
+			label: `${stop.id} | ${stop.long_name}`,
+			value: stop.id,
+		}));
 	}, [allStopsData]);
 
 	//
@@ -62,11 +74,11 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 			getStopById,
 		},
 		data: {
-			options: allStopsOptionsData || [],
-			raw: allStopsData || [],
+			options: asOptions,
+			stops: allStopsData || [],
 		},
 		flags: {
-			is_loading: allStopsLoading || allStopsOptionsLoading,
+			is_loading: allStopsLoading,
 		},
 	};
 
@@ -84,18 +96,18 @@ export const StopsContextProvider = ({ children }: { children: React.ReactNode }
 
 /* * */
 
-export function TransformStopDataIntoGeoJsonFeature(stopData: Stop): GeoJSON.Feature<GeoJSON.Point> {
+export function transformStopDataIntoGeoJsonFeature(stopData: Stop): GeoJSON.Feature<GeoJSON.Point> {
 	return {
 		geometry: {
-			coordinates: [stopData.longitude, stopData.latitude],
+			coordinates: [stopData.lon, stopData.lat],
 			type: 'Point',
 		},
 		properties: {
-			current_status: stopData.lifecycle_status === 'active' ? 'active' : 'inactive',
-			id: stopData._id,
-			lat: stopData.latitude,
-			lon: stopData.longitude,
-			long_name: stopData.name,
+			current_status: stopData.operational_status,
+			id: stopData.id,
+			lat: stopData.lat,
+			lon: stopData.lon,
+			long_name: stopData.long_name,
 		},
 		type: 'Feature',
 	};

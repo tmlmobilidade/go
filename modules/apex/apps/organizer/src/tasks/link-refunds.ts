@@ -144,6 +144,6 @@
 // 	} catch (err) {
 // 		console.log('An error occurred. Halting execution.', err);
 // 		console.log('Retrying in 10 seconds...');
-// 		setTimeout(() => process.exit(0), 10000); // after 10 seconds
+// 		setTimeout(() => process.exit(1), 10000); // after 10 seconds
 // 	}
 // };

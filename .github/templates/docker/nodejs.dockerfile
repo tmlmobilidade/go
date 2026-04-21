@@ -6,9 +6,11 @@ FROM node:24-slim AS base
 # # #
 # MODULE CONFIGURATION
 
+ARG ENVIRONMENT
 ARG MODULE
 ARG APP
 
+ENV ENVIRONMENT=${ENVIRONMENT}
 ENV MODULE=${MODULE}
 ENV APP=${APP}
 
@@ -43,6 +45,7 @@ FROM base AS builder
 WORKDIR /app
 
 COPY --from=pruner /app/out/json/ .
+COPY .github/templates/docker/scripts /app/.docker/scripts
 
 RUN npm ci
 
@@ -54,25 +57,32 @@ RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 
 RUN npm prune --omit-dev
 
+RUN node /app/.docker/scripts/trim-node-modules.js /app/node_modules
+RUN node /app/.docker/scripts/trim-workspaces.js /app/packages /app/modules
+
 
 # # #
 # RUNNER STAGE
-# Copy the installed node_modules and built app to a fresh image.
-# Also copy the packages and modules folders, as some local
-# packages need to be included because node_modules symlinks to them.
+# Copy only what's needed for runtime: node_modules, workspace
+# packages (trimmed to package.json + dist), and the app's dist.
 
 FROM gcr.io/distroless/nodejs24-debian13 AS runner
 
 WORKDIR /app
 
+ARG ENVIRONMENT
 ARG MODULE
 ARG APP
 
-COPY --from=builder /app/package.json .
+ENV ENVIRONMENT=${ENVIRONMENT}
+ENV MODULE=${MODULE}
+ENV APP=${APP}
+ENV NODE_ENV=production
+
+COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/modules ./modules
-
 COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist ./dist
 
 CMD ["./dist/index.js"]

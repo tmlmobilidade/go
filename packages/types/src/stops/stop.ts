@@ -7,8 +7,10 @@ import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
 import { StopConnectionSchema } from '@/stops/connections.js';
 import { StopEquipmentSchema } from '@/stops/equipment.js';
 import { StopFacilitySchema } from '@/stops/facilities.js';
+import { StopFlagSchema } from '@/stops/flag.js';
 import { StopJurisdictionSchema } from '@/stops/jurisdiction.js';
 import { StopRoadTypeSchema } from '@/stops/road-type.js';
+import { StopIdSchema } from '@/stops/stop-id.js';
 import { z } from 'zod';
 
 /* * */
@@ -18,13 +20,16 @@ export const StopSchema = DocumentSchema.extend({
 	//
 	// General
 
-	_id: z.string(),
+	_id: StopIdSchema,
+	flags: z.array(StopFlagSchema).default([]),
 	is_deleted: z.boolean().default(false),
 	jurisdiction: StopJurisdictionSchema.default('unknown'),
 	legacy_id: z.string().nullable().default(null),
+	legacy_ids: z.array(z.string()).default([]),
 	lifecycle_status: LifecycleStatusSchema.default('draft'),
 	name: z.string().min(2).max(100),
 	new_name: z.string().min(5).max(100).nullable().default(null),
+	previous_go_id: z.string().nullable().default(null),
 	short_name: z.string().min(2).max(55),
 	tts_name: z.string(),
 

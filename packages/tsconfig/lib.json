@@ -1,0 +1,13 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"compilerOptions": {
+		"declaration": true,
+		"lib": ["es2022"],
+		"module": "NodeNext",
+		"moduleResolution": "nodenext",
+		"outDir": "dist",
+		"strictNullChecks": false,
+		"types": ["node", "geojson"]
+	},
+	"extends": "./base.json"
+}

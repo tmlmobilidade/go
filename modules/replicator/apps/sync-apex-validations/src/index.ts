@@ -176,7 +176,7 @@ export async function syncApexValidations() {
 		console.log('An error occurred. Halting execution.', err);
 		console.log('Retrying in 10 seconds...');
 		setTimeout(() => {
-			process.exit(0); // End process
+			process.exit(1); // End process
 		}, 10000); // after 10 seconds
 	}
 
@@ -185,4 +185,4 @@ export async function syncApexValidations() {
 
 /* * */
 
-runOnInterval(syncApexValidations, 1_800_000); // 30 minutes
+await runOnInterval(syncApexValidations, { intervalMs: '30m' });

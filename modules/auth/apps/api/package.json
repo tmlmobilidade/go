@@ -20,6 +20,7 @@
 	"dependencies": {
 		"@fastify/multipart": "10.0.0",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/fastify": "*",
@@ -33,7 +34,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.5.2",
+		"@types/node": "25.6.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"

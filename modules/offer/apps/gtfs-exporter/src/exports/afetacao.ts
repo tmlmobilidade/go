@@ -4,6 +4,8 @@
 import { type ExportedAfetacaoRow, type GtfsV29ExportConfig } from '@/types.js';
 import { type Agency, type Fare, type Line, type Pattern, type Typology, type Zone } from '@tmlmobilidade/types';
 
+import { getAgencyStopId } from '../utils/get-agency-stop-id.js';
+
 /* * */
 
 /**
@@ -78,13 +80,17 @@ export async function parseZoning(
 			const formattedZoneNames = stopZones.map(zone => zone.name).join('|');
 			const formattedZoneCodes = stopZones.map(zone => zone.code).join('|');
 
+			// Use agency-specific stop_id
+			const agencyId = agencyData._id;
+			const stopId = getAgencyStopId(pathData.stop, agencyId);
+
 			// Build the afetacao entry
 			parsedZoning.push({
 				operator_id: agencyData._id,
 				line_id: lineData.code,
 				line_type: typologyCode,
 				pattern_id: patternData.code,
-				stop_id: pathData.stop._id,
+				stop_id: stopId,
 				stop_name: pathData.stop.name || '',
 				stop_sequence: pathIndex + exportConfig.stop_sequence_start,
 				accepted_zone_codes: formattedZoneCodes,

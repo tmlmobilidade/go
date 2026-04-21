@@ -7,10 +7,6 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
-const RUN_INTERVAL = 10000; // 10 seconds
-
-/* * */
-
 async function reprocessStuckRides() {
 	try {
 		//
@@ -104,7 +100,7 @@ async function reprocessStuckRides() {
 		Logger.error('An error occurred. Halting execution.', err);
 		Logger.error('Retrying in 10 seconds...');
 		setTimeout(() => {
-			process.exit(0); // End process
+			process.exit(1); // End process
 		}, 10000); // after 10 seconds
 	}
 
@@ -113,4 +109,4 @@ async function reprocessStuckRides() {
 
 /* * */
 
-runOnInterval(reprocessStuckRides, RUN_INTERVAL);
+await runOnInterval(reprocessStuckRides, { intervalMs: '10s' });

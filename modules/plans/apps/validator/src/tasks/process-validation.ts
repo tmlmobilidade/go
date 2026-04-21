@@ -8,7 +8,7 @@ import { getTmpWorkdirPath } from '@tmlmobilidade/files';
 import { GTFSValidator } from '@tmlmobilidade/gtfs-validator';
 import { agencies, files, gtfsValidations, users } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { getCurrentEnvironment, type GtfsValidation } from '@tmlmobilidade/types';
+import { type GtfsValidation } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import pjson from 'pjson' with { type: 'json' };
@@ -95,7 +95,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		const gtfsValidationResult = await GTFSValidator(gtfsFilePath, {
 			lang: 'pt',
-			log_level: getCurrentEnvironment() === 'production' ? 'info' : 'debug',
+			log_level: 'debug',
 			out_file: gtfsValidationResultPath,
 			rules_path: gtfsValidationRulesPath,
 		});

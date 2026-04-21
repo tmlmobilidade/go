@@ -2,6 +2,7 @@
 
 import { getStopByLegacyId } from '@/utils/stops.js';
 import { patterns } from '@tmlmobilidade/interfaces';
+import { generateRandomString } from '@tmlmobilidade/strings';
 import { type CreatePatternDto, GtfsTMLStopTimes, GtfsTMLTrip, PatternDirection, patternDirectionMapper, type Shape } from '@tmlmobilidade/types';
 
 import {
@@ -91,7 +92,7 @@ export async function buildPatternsForRoute(params: {
 				continue;
 			}
 			const formattedPath: CreatePatternDto['path'] = [];
-			const parametersPath: { avg_speed: number, dwell_time: number, stop_id: string }[] = [];
+			const parametersPath: { avg_speed: number, dwell_time: number, stop_id: number }[] = [];
 			const pathMetrics: Array<{ arrivalSec: null | number, departureSec: null | number, distanceDelta: number, stopRefId: string }> = [];
 			let prevDistance: null | number = null;
 
@@ -100,7 +101,7 @@ export async function buildPatternsForRoute(params: {
 				const stopRef = await getStopByLegacyId(stopId, stopCache);
 				if (!stopRef) {
 					warn(WARNING.MISSING_STOP, {
-						stop_id: stopId,
+						stop_id: String(stopId),
 						trip_id: trip.trip_id,
 					});
 					continue;
@@ -133,7 +134,7 @@ export async function buildPatternsForRoute(params: {
 					allow_drop_off: parseInt(stopTime.drop_off_type) === 0,
 					allow_pickup: parseInt(stopTime.pickup_type) === 0,
 					distance_delta: distanceDelta,
-					stop_id: stopRef._id,
+					stop_id: Number(stopRef._id),
 					timepoint: parseInt(stopTime.timepoint) === 1,
 					zones,
 				});
@@ -142,7 +143,7 @@ export async function buildPatternsForRoute(params: {
 					arrivalSec,
 					departureSec,
 					distanceDelta,
-					stopRefId: stopRef._id,
+					stopRefId: String(stopRef._id),
 				});
 			}
 
@@ -164,7 +165,7 @@ export async function buildPatternsForRoute(params: {
 				parametersPath.push({
 					avg_speed: avgSpeed,
 					dwell_time: dwellTime,
-					stop_id: current.stopRefId,
+					stop_id: Number(current.stopRefId),
 				});
 			}
 
@@ -185,6 +186,7 @@ export async function buildPatternsForRoute(params: {
 				line_id: lineId,
 				origin,
 				parameters: [{
+					_id: generateRandomString({ length: 5 }),
 					kind: 'default',
 					path: parametersPath,
 				}],

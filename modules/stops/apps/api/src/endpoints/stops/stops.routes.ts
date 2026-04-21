@@ -22,6 +22,11 @@ server.register(
 		);
 
 		instance.get(
+			'/valid-id',
+			StopsController.getValidId,
+		);
+
+		instance.get(
 			'/:id',
 			StopsController.getById,
 		);
