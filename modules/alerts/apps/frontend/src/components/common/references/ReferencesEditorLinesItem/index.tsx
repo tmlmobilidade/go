@@ -4,8 +4,8 @@
 
 import { Stop } from '@carrismetropolitana/api-types/network';
 import { IconCornerDownRight, IconMinus } from '@tabler/icons-react';
-import { type Alert, type HashedTrip } from '@tmlmobilidade/types';
-import { Button, Grid, MultiSelect, Section, Select, SelectDataItem, Surface } from '@tmlmobilidade/ui';
+import { type Alert } from '@tmlmobilidade/types';
+import { Button, Grid, MultiSelect, Section, Select, type SelectDataItem, Surface } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */

@@ -8,6 +8,7 @@ import { ReferencesEditorControls } from '@/components/common/references/Referen
 import { ReferencesEditorLines } from '@/components/common/references/ReferencesEditorLines';
 import { ReferencesEditorRides } from '@/components/common/references/ReferencesEditorRides';
 import { ReferencesEditorStops } from '@/components/common/references/ReferencesEditorStops';
+import { LoadingSection } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -27,10 +28,12 @@ export function ReferencesEditorMain() {
 
 			<ReferencesEditorControls />
 
-			{referencesEditorContext.data.selected_agency_id && referencesEditorContext.data.selected_reference_type === 'agency' && <ReferencesEditorAgency />}
-			{referencesEditorContext.data.selected_agency_id && referencesEditorContext.data.selected_reference_type === 'lines' && <ReferencesEditorLines />}
-			{referencesEditorContext.data.selected_agency_id && referencesEditorContext.data.selected_reference_type === 'stops' && <ReferencesEditorStops />}
-			{referencesEditorContext.data.selected_agency_id && referencesEditorContext.data.selected_reference_type === 'rides' && <ReferencesEditorRides />}
+			{referencesEditorContext.flags.isLoading && <LoadingSection />}
+
+			{!referencesEditorContext.flags.isLoading && referencesEditorContext.data.selected_agency_id && referencesEditorContext.data.selected_reference_type === 'agency' && <ReferencesEditorAgency />}
+			{!referencesEditorContext.flags.isLoading && referencesEditorContext.data.selected_agency_id && referencesEditorContext.data.selected_reference_type === 'lines' && <ReferencesEditorLines />}
+			{!referencesEditorContext.flags.isLoading && referencesEditorContext.data.selected_agency_id && referencesEditorContext.data.selected_reference_type === 'stops' && <ReferencesEditorStops />}
+			{!referencesEditorContext.flags.isLoading && referencesEditorContext.data.selected_agency_id && referencesEditorContext.data.selected_reference_type === 'rides' && <ReferencesEditorRides />}
 
 		</>
 	);

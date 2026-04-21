@@ -6,7 +6,7 @@ import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type Alert, type HashedTrip, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type Alert, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Label, openConfirmModal, SelectDataItem, useDataHashedTrips, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
@@ -42,6 +42,7 @@ interface ReferencesEditorContextState {
 		enabled_reference_types: Alert['reference_type'][]
 		filtered_lines: SelectDataItem[]
 		filtered_rides: RideNormalized[]
+		filtered_stops: SelectDataItem[]
 		selected_agency_id: Alert['agency_id']
 		selected_reference_type: Alert['reference_type']
 		selected_references: Alert['references']
@@ -54,7 +55,7 @@ interface ReferencesEditorContextState {
 		view_mode?: UseFilterStateStringReturnType
 	}
 	flags: {
-		isRidesLoading: boolean
+		isLoading: boolean
 	}
 };
 
@@ -243,6 +244,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 	useEffect(() => {
 		// Add a margin to the end date
 		if (!activePeriodEndDate) {
+			// eslint-disable-next-line no-console
 			console.warn(activePeriodEndDate, 'ReferencesEditorContextProvider: activePeriodEndDate is undefined');
 			if (!activePeriodStartDate) return;
 			setEndDate(Dates.fromUnixTimestamp(activePeriodStartDate).plus({ hours: 4 }).unix_timestamp);
@@ -268,6 +270,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 			enabled_reference_types: enabledReferenceTypes || [],
 			filtered_lines: linesData,
 			filtered_rides: ridesData,
+			filtered_stops: [],
 			selected_agency_id: selectedAgencyId,
 			selected_reference_type: selectedReferenceType,
 			selected_references: selectedReferences ?? [],
@@ -280,7 +283,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 			view_mode: filterViewMode,
 		},
 		flags: {
-			isRidesLoading: ridesLoading,
+			isLoading: ridesLoading || hashedTripsLoading,
 		},
 	};
 
