@@ -2,16 +2,16 @@
 
 /* * */
 
+import { AlertPublicDetailBody } from '@/components/alerts/detail/AlertPublicDetailBody';
 import { AlertPublicDetailHeader } from '@/components/alerts/detail/AlertPublicDetailHeader';
 import { AlertPublicDetailLines } from '@/components/alerts/detail/AlertPublicDetailLines';
+import { AlertPublicDetailMeta } from '@/components/alerts/detail/AlertPublicDetailMeta';
 import { AlertPublicDetailNotFound } from '@/components/alerts/detail/AlertPublicDetailNotFound';
+import { AlertsPublicListSkeleton } from '@/components/alerts/list/AlertsPublicListSkeleton';
 import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
-
-import { AlertPublicDetailBody } from '../AlertPublicDetailBody';
-import { AlertPublicDetailMeta } from '../AlertPublicDetailMeta';
 
 /* * */
 
@@ -28,8 +28,16 @@ export function AlertPublicDetail() {
 	//
 	// B. Render components
 
-	if (isNotFound || !alertData) {
+	if (isNotFound) {
 		return <AlertPublicDetailNotFound />;
+	}
+
+	if (alertDetailContext.flags.loading || !alertData) {
+		return (
+			<div className={styles.headCardWrapper}>
+				<AlertsPublicListSkeleton />
+			</div>
+		);
 	}
 
 	return (
