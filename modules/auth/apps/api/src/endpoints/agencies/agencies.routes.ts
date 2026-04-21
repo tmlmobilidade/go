@@ -23,7 +23,6 @@ server.register(
 
 		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.agencies.scope, [PermissionCatalog.all.agencies.actions.read]) },
 			AgenciesController.getById,
 		);
 
