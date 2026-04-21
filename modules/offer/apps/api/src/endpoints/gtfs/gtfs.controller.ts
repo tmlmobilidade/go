@@ -2,7 +2,6 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { stops } from '@tmlmobilidade/interfaces';
 import AdmZip from 'adm-zip';
 import Papa from 'papaparse';
 
@@ -73,59 +72,6 @@ interface GtfsTrip {
 type ParsedStopTime = GtfsTrip['path'][number];
 type ParsedShapePoint = GtfsTrip['shape']['points'][number];
 
-/* * */
-
-/**
- * Resolves a GTFS stop_id into the stop DB _id.
- *
- * Accepted GTFS stop_id formats:
- * - the actual DB _id
- * - a stop.flags[].stop_id belonging to the provided agency
- *
- * Always returns the DB _id as string.
- */
-function createAgencyStopResolver(agencyId?: string) {
-	const cache = new Map<string, Promise<string>>();
-
-	return async function resolveAgencyStopId(stopId: string): Promise<string> {
-		const cached = cache.get(stopId);
-		if (cached) return cached;
-
-		const promise = (async () => {
-			// 1) First try assuming the GTFS stop_id is already the DB _id
-			const numericStopId = Number(stopId);
-			if (!Number.isNaN(numericStopId)) {
-				const stopById = await stops.findById(numericStopId);
-				if (stopById) {
-					return String(stopById._id);
-				}
-			}
-
-			// 2) If agencyId exists, try resolving through flags[].stop_id for that agency
-			if (agencyId) {
-				const stopByAgencyFlag = await stops.findOne({
-					flags: {
-						$elemMatch: {
-							agency_ids: agencyId,
-							stop_id: stopId,
-						},
-					},
-				});
-
-				if (stopByAgencyFlag) {
-					return String(stopByAgencyFlag._id);
-				}
-			}
-
-			console.warn(`Stop with GTFS stop_id ${stopId} not found in database`);
-			return String(stopId);
-		})();
-
-		cache.set(stopId, promise);
-		return promise;
-	};
-}
-
 /**
  * Parses a GTFS CSV file from a zip entry.
  */
@@ -186,17 +132,10 @@ export class GtfsController {
 				throw new Error('No file uploaded');
 			}
 
-			const agencyField = data.fields?.agency_id;
-
-			let agencyId: string | undefined;
-
-			if (agencyField && !Array.isArray(agencyField) && agencyField.type === 'field') {
-				agencyId = agencyField.value as string;
-			}
-
-			const resolveAgencyStopId = createAgencyStopResolver(agencyId);
-
+			// Convert file buffer to Buffer
 			const buffer = await data.toBuffer();
+
+			// Setup AdmZip with buffer
 			const zipArchive = new AdmZip(buffer);
 			const zipEntries = zipArchive.getEntries();
 
@@ -236,10 +175,6 @@ export class GtfsController {
 
 			const stopTimesByTripId = new Map<string, ParsedStopTime[]>();
 
-			const resolvedStopIds = await Promise.all(
-				gtfsStopTimesRaw.map(item => resolveAgencyStopId(item.stop_id)),
-			);
-
 			for (let i = 0; i < gtfsStopTimesRaw.length; i++) {
 				const stopTime = gtfsStopTimesRaw[i];
 				const tripId = stopTime.trip_id;
@@ -248,7 +183,7 @@ export class GtfsController {
 					arrival_time: stopTime.arrival_time,
 					departure_time: stopTime.departure_time,
 					shape_dist_traveled: Number.parseFloat(stopTime.shape_dist_traveled),
-					stop_id: resolvedStopIds[i],
+					stop_id: stopTime.stop_id,
 					stop_sequence: Number.parseInt(stopTime.stop_sequence),
 				};
 
