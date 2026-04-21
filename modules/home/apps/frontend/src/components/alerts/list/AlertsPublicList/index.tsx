@@ -4,7 +4,7 @@
 import type { Alert } from '@tmlmobilidade/types';
 
 import { AlertsPublicListCard } from '@/components/alerts/list/AlertsPublicListCard';
-import { useAlertsPublicListContext } from '@/contexts/AlertsPublicList.context';
+import { useAlertsListContext } from '@/contexts/AlertsList.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { keepUrlParams, Section, Surface } from '@tmlmobilidade/ui';
 import Link from 'next/link';
@@ -22,7 +22,7 @@ export default function AlertsPublicList() {
 	// A. Setup Variables
 
 	const { t } = useTranslation();
-	const alertsPublicListContext = useAlertsPublicListContext();
+	const alertsListContext = useAlertsListContext();
 	const todayDateKey = useMemo(() => Dates.now('Europe/Lisbon').startOf('day').toFormat('yyyyMMdd'), []);
 	const tomorrowDateKey = useMemo(() => Dates.now('Europe/Lisbon').plus({ days: 1 }).startOf('day').toFormat('yyyyMMdd'), []);
 	const yesterdayDateKey = useMemo(() => Dates.now('Europe/Lisbon').minus({ days: 1 }).startOf('day').toFormat('yyyyMMdd'), []);
@@ -33,7 +33,7 @@ export default function AlertsPublicList() {
 	const groupedAlerts = useMemo(() => {
 		const alertsMap = new Map<number, Alert[]>();
 
-		for (const alert of alertsPublicListContext.data.filtered) {
+		for (const alert of alertsListContext.data.filtered) {
 			const dayTimestamp = Dates.fromUnixTimestamp(alert.active_period_start_date).setZone('Europe/Lisbon', 'offset_only').startOf('day').unix_timestamp;
 			const currentGroup = alertsMap.get(dayTimestamp) ?? [];
 			currentGroup.push(alert);
@@ -41,7 +41,7 @@ export default function AlertsPublicList() {
 		}
 
 		return [...alertsMap.entries()].sort((a, b) => b[0] - a[0]).map(([dayTimestamp, alerts]) => ({ alerts, dayTimestamp }));
-	}, [alertsPublicListContext.data.filtered]);
+	}, [alertsListContext.data.filtered]);
 
 	const getGroupDateLabel = (dayTimestamp: number) => {
 		const dayDate = Dates.fromUnixTimestamp(dayTimestamp).setZone('Europe/Lisbon', 'offset_only');

@@ -10,11 +10,11 @@ import { type Alert, type File as FileType } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useAlertsPublicListContext } from './AlertsPublicList.context';
+import { useAlertsListContext } from './AlertsList.context';
 
 /* * */
 
-interface AlertDetailPublicContextState {
+interface AlertDetailContextState {
 	data: {
 		activePeriodStart: string
 		alert: Alert | undefined
@@ -29,37 +29,37 @@ interface AlertDetailPublicContextState {
 
 /* * */
 
-const AlertDetailPublicContext = createContext<AlertDetailPublicContextState | undefined>(undefined);
+const AlertDetailContext = createContext<AlertDetailContextState | undefined>(undefined);
 
-export function useAlertDetailPublicContext() {
-	const context = useContext(AlertDetailPublicContext);
+export function useAlertDetailContext() {
+	const context = useContext(AlertDetailContext);
 	if (!context) {
-		throw new Error('useAlertDetailPublicContext must be used within a AlertDetailPublicContextProvider');
+		throw new Error('useAlertDetailContext must be used within a AlertDetailContextProvider');
 	}
 	return context;
 }
 
 /* * */
 
-export const AlertPublicDetailContextProvider = ({ alertId, children }: PropsWithChildren<{ alertId: string }>) => {
+export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChildren<{ alertId: string }>) => {
 	//
 
 	//
 	// A. Setup variables
 
-	const alertsPublicListContext = useAlertsPublicListContext();
+	const alertsListContext = useAlertsListContext();
 	const linesContext = useLinesContext();
-	const { data: alertImage } = useSWR<FileType>(API_ROUTES.alerts.ALERTS_PUBLIC_IMAGE(alertId));
+	const { data: alertImage } = useSWR<FileType>(API_ROUTES.alerts.ALERTS__IMAGE(alertId));
 
 	//
 	// B. Transform data
 
 	const foundAlert = useMemo(() => {
-		if (alertsPublicListContext.flags.loading) return undefined;
-		return alertsPublicListContext.data.raw.find(alert => alert._id === alertId);
-	}, [alertsPublicListContext.flags.loading, alertsPublicListContext.data.raw, alertId]);
+		if (alertsListContext.flags.loading) return undefined;
+		return alertsListContext.data.raw.find(alert => alert._id === alertId);
+	}, [alertsListContext.flags.loading, alertsListContext.data.raw, alertId]);
 
-	const isLoading = alertsPublicListContext.flags.loading;
+	const isLoading = alertsListContext.flags.loading;
 	const isNotFound = !isLoading && !foundAlert;
 
 	const activePeriodStart = useMemo(() => {
@@ -79,7 +79,7 @@ export const AlertPublicDetailContextProvider = ({ alertId, children }: PropsWit
 	//
 	// E. Define context value
 
-	const contextValue: AlertDetailPublicContextState = {
+	const contextValue: AlertDetailContextState = {
 		data: {
 			activePeriodStart,
 			alert: foundAlert,
@@ -96,9 +96,9 @@ export const AlertPublicDetailContextProvider = ({ alertId, children }: PropsWit
 	// F. Render components
 
 	return (
-		<AlertDetailPublicContext.Provider value={contextValue}>
+		<AlertDetailContext.Provider value={contextValue}>
 			{children}
-		</AlertDetailPublicContext.Provider>
+		</AlertDetailContext.Provider>
 	);
 
 	//

@@ -17,7 +17,7 @@ import useSWR from 'swr';
 
 /* * */
 
-interface AlertsPublicListContextState {
+interface AlertsListContextState {
 	data: {
 		filtered: Alert[]
 		raw: Alert[]
@@ -46,12 +46,12 @@ interface AlertsPublicListContextState {
 
 /* * */
 
-const AlertsPublicListContext = createContext<AlertsPublicListContextState | undefined>(undefined);
+const AlertsListContext = createContext<AlertsListContextState | undefined>(undefined);
 
-export const useAlertsPublicListContext = () => {
-	const context = useContext(AlertsPublicListContext);
+export const useAlertsListContext = () => {
+	const context = useContext(AlertsListContext);
 	if (!context) {
-		throw new Error('useAlertsPublicListContext must be used within an AlertsPublicListContextProvider');
+		throw new Error('useAlertsListContext must be used within an AlertsListContextProvider');
 	}
 	return context;
 };
@@ -63,13 +63,13 @@ interface StopWithLines {
 	line_ids?: string[]
 }
 
-export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren) => {
+export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
 	const { t } = useTranslation();
 	const agenciesContext = useAgenciesContext();
 	const linesContext = useLinesContext();
 	const stopsContext = useStopsContext();
 
-	const { data: allScheduledData, error: allScheduledError, isLoading: allScheduledLoading } = useSWR<Alert[], Error>(API_ROUTES.alerts.ALERTS_PUBLIC);
+	const { data: allScheduledData, error: allScheduledError, isLoading: allScheduledLoading } = useSWR<Alert[], Error>(API_ROUTES.alerts.ALERTS_);
 
 	const filterSearch = useFilterStateString('search');
 	const [includePastAlerts, setIncludePastAlertsParam] = useQueryState('past_alerts', parseAsBoolean.withDefault(false));
@@ -240,7 +240,7 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 		return result.sort((a, b) => (b.created_at ?? 0) - (a.created_at ?? 0));
 	}, [searchResultsData, filterLine.isActive, filterLine.value, filterStop.isActive, filterStop.value, filterAgency.value, filterCause.value, filterEffect.value, agencyIdsInAlerts.length, lineIdsInAlerts.length, stopIdsInAlerts.length, includePastAlerts, defaultPeriodSince, defaultPeriodUntil, periodSince, periodUntil]);
 
-	const contextValue: AlertsPublicListContextState = useMemo(() => ({
+	const contextValue: AlertsListContextState = useMemo(() => ({
 		data: {
 			filtered: filterResultsData ?? [],
 			raw: allScheduledData,
@@ -293,8 +293,8 @@ export const AlertsPublicListContextProvider = ({ children }: PropsWithChildren)
 	]);
 
 	return (
-		<AlertsPublicListContext.Provider value={contextValue}>
+		<AlertsListContext.Provider value={contextValue}>
 			{children}
-		</AlertsPublicListContext.Provider>
+		</AlertsListContext.Provider>
 	);
 };

@@ -77,16 +77,6 @@ export class AlertsController {
 	}
 
 	/**
-	 * Returns published alerts for public consumption (no auth required).
-	 * @param _request The request object.
-	 * @param reply The reply object.
-	 */
-	static async getAllPublic(_request: FastifyRequest, reply: FastifyReply<Alert[]>) {
-		const allAlerts = await AlertsController.fetchAlerts();
-		reply.send({ data: allAlerts, error: null, statusCode: HTTP_STATUS.OK });
-	}
-
-	/**
 	 * Returns an Alert by ID.
 	 * @param request The request object.
 	 * @param reply The reply object.
