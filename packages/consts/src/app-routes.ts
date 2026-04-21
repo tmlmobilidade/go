@@ -56,17 +56,6 @@ export const PAGE_ROUTES = Object.freeze({
 	},
 
 	/* * */
-	/* BASE */
-	base: {
-		// BASE
-		BASE: `${getAppConfig('base', 'frontend_url')}`,
-
-		// ALERTS
-		ALERTS_DETAIL: (id: string) => `${getAppConfig('base', 'frontend_url')}/alerts/${id}`,
-		ALERTS_LIST: `${getAppConfig('base', 'frontend_url')}/alerts`,
-	},
-
-	/* * */
 	/* CONTROLLER */
 	controller: {
 		// BASE
@@ -112,6 +101,17 @@ export const PAGE_ROUTES = Object.freeze({
 		// VEHICLES
 		VEHICLES_DETAIL: (id: string) => `${getAppConfig('fleet', 'frontend_url')}/vehicles/${id}`,
 		VEHICLES_LIST: `${getAppConfig('fleet', 'frontend_url')}/vehicles`,
+	},
+
+	/* * */
+	/* HOME */
+	home: {
+		// BASE
+		BASE: `${getAppConfig('home', 'frontend_url')}`,
+
+		// ALERTS
+		ALERTS_DETAIL: (id: string) => `${getAppConfig('home', 'frontend_url')}/alerts/${id}`,
+		ALERTS_LIST: `${getAppConfig('home', 'frontend_url')}/alerts`,
 	},
 
 	/* * */

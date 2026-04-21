@@ -1,0 +1,24 @@
+/* * */
+/* HEAD CARD */
+
+.headCard {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-md);
+	width: 100%;
+	padding: var(--size-spacing-lg);
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-lg);
+}
+
+/* * */
+/* TITLE */
+
+.title {
+	margin: 0;
+	font-size: var(--font-size-xl);
+	font-weight: 700;
+	line-height: 1.35;
+	color: var(--color-system-text-100);
+}

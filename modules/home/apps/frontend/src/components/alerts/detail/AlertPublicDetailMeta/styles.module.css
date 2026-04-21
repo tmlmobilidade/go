@@ -1,0 +1,9 @@
+/* * */
+/* META ROW */
+
+.metaRow {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-spacing-sm);
+	align-items: center;
+}

@@ -27,7 +27,7 @@ const DEFAULT_STAGING_CONFIG: Omit<AppConfigGroup, 'api_url' | 'frontend_url'> =
 };
 
 const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
-	base: {
+	home: {
 		development: {
 			api_port: 51011,
 			api_url: 'http://localhost:51011',
@@ -36,13 +36,13 @@ const APP_CONFIGS: Record<string, Record<Environment, AppConfigGroup>> = {
 			frontend_url: 'http://localhost:51011',
 		},
 		production: {
-			api_url: 'https://go.tmlmobilidade.pt/base/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/base',
+			api_url: 'https://go.tmlmobilidade.pt/home/api',
+			frontend_url: 'https://go.tmlmobilidade.pt/home',
 			...DEFAULT_PRODUCTION_CONFIG,
 		},
 		staging: {
-			api_url: 'https://go-stg.tmlmobilidade.pt/base/api',
-			frontend_url: 'https://go-stg.tmlmobilidade.pt/base',
+			api_url: 'https://go-stg.tmlmobilidade.pt/home/api',
+			frontend_url: 'https://go-stg.tmlmobilidade.pt/home',
 			...DEFAULT_STAGING_CONFIG,
 		},
 	},

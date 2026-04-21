@@ -10,7 +10,6 @@
 	"scripts": {
 		"build": "turbo build",
 		"build:alerts": "ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-alerts-*",
-		"build:base": "ENVIRONMENT=development dotenv-run -f ./modules/base/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-base-*",
 		"build:alerts:packages": "ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-alerts-pckg-*",
 		"build:apex": "ENVIRONMENT=development dotenv-run -f ./modules/apex/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-apex-*",
 		"build:apex:packages": "ENVIRONMENT=development dotenv-run -f ./modules/apex/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-apex-pckg-*",
@@ -20,6 +19,7 @@
 		"build:eslint": "turbo build --filter=@tmlmobilidade/eslint",
 		"build:exporter": "ENVIRONMENT=development dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-exporter-*",
 		"build:fleet": "ENVIRONMENT=development dotenv-run -f ./modules/fleet/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-fleet-*",
+		"build:home": "ENVIRONMENT=development dotenv-run -f ./modules/home/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-home-*",
 		"build:locations": "ENVIRONMENT=development dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-locations-*",
 		"build:modules": "turbo build --filter=./modules/**/*",
 		"build:offer": "ENVIRONMENT=development dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-offer-*",
@@ -31,7 +31,6 @@
 		"build:tracker": "ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-tracker-*",
 		"build:tracker:packages": "ENVIRONMENT=development dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-tracker-pckg-*",
 		"build:types": "turbo build --filter=@tmlmobilidade/types",
-		"dev:base": "ENVIRONMENT=development dotenv-run -f ./modules/base/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-base-*",
 		"dev:alerts": "npm run build:alerts:packages && ENVIRONMENT=development dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
 		"dev:apex": "npm run build:apex:packages && ENVIRONMENT=development dotenv-run -f ./modules/apex/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-apex-*",
 		"dev:apex:prd": "npm run build:apex:packages && ENVIRONMENT=development dotenv-run -f ./modules/apex/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-apex-*",
@@ -48,6 +47,7 @@
 		"dev:exporter": "ENVIRONMENT=development dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-*",
 		"dev:exporter-merged": "ENVIRONMENT=development dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-export-gtfs-merged",
 		"dev:fleet": "ENVIRONMENT=development dotenv-run -f ./modules/fleet/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-fleet-*",
+		"dev:home": "ENVIRONMENT=development dotenv-run -f ./modules/home/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-home-*",
 		"dev:locations": "ENVIRONMENT=development dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-locations-*",
 		"dev:offer": "ENVIRONMENT=development dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-offer-* --filter=!@tmlmobilidade/go-offer-gtfs-exporter --filter=!@tmlmobilidade/go-offer-gtfs-importer",
 		"dev:performance": "ENVIRONMENT=development dotenv-run -f ./modules/performance/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-performance-*",
@@ -95,11 +95,6 @@
 		"pckg:dev:emails": "ENVIRONMENT=development turbo run dev --filter=@tmlmobilidade/emails",
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse"
 	},
-	"devDependencies": {
-		"@dotenv-run/cli": "1.3.6",
-		"@tmlmobilidade/eslint": "*",
-		"turbo": "2.9.5"
-	},
 	"packageManager": "npm@11.12.1",
 	"workspaces": [
 		"!**/.next",
@@ -110,8 +105,8 @@
 	"overrides": {
 		"i18next": "26.0.4",
 		"react": "19.2.4",
-		"react-i18next": "17.0.2",
 		"react-dom": "19.2.4",
+		"react-i18next": "17.0.2",
 		"zod": "3.25.76"
 	},
 	"dependencies": {
@@ -121,5 +116,10 @@
 		"@turf/turf": "^7.3.4",
 		"nuqs": "^2.8.9",
 		"react-i18next": "17.0.2"
+	},
+	"devDependencies": {
+		"@dotenv-run/cli": "1.3.6",
+		"@tmlmobilidade/eslint": "*",
+		"turbo": "2.9.5"
 	}
 }

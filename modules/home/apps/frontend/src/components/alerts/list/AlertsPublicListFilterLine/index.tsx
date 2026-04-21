@@ -1,0 +1,33 @@
+/* * */
+
+import { useAlertsPublicListContext } from '@/contexts/AlertsPublicList.context';
+import { FilterTypeList } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+/* * */
+
+export function AlertsPublicListFilterLine() {
+	//
+
+	//
+	// A. Setup variables
+
+	const { t } = useTranslation();
+	const { filters } = useAlertsPublicListContext();
+
+	//
+	// B. Render components
+
+	return (
+		<FilterTypeList
+			active={filters.line.isActive}
+			disabled={!filters.line.options.length}
+			label={t('shared:home.alerts.public.list.filters.line')}
+			onChange={filters.line.set}
+			options={filters.line.options}
+			withToggleAll
+		/>
+	);
+
+	//
+}
