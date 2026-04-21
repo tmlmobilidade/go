@@ -308,9 +308,13 @@ function routeTermToField(term: string): FieldCondition | null {
 		return { pattern_id: term };
 	}
 
-	// Exact trip_id match: "1001_0_2_0800_0829_0_26"
-	if (/^\d+_\d+_\d+_\d+_\d+_\d+_\d+$/.test(term)) {
-		return { trip_id: term };
+	// Wildcard trip_id: any string containing %%; %% → regex .*
+	// NOTE: case-sensitive (no $options: 'i') so anchored prefix regex can use
+	// the { trip_id: 1 } / { trip_id: 1, start_time_scheduled: 1 } index.
+	if (term.includes('%%')) {
+		let escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+		escaped = escaped.replace(/%%/g, '.*');
+		return { trip_id: { $regex: `^${escaped}$` } };
 	}
 
 	// route_id: "1001_0"
@@ -328,12 +332,6 @@ function routeTermToField(term: string): FieldCondition | null {
 	if (/^\d+$/.test(term)) {
 		const n = Number(term);
 		if (term.length >= 3) return { line_id: n };
-		if (term.length <= 2) return { agency_id: term };
-	}
-
-	// plan_id: uppercase alpha-numeric prefix like "KACZ2"
-	if (/^[A-Z]+\d*$/.test(term)) {
-		return { plan_id: term };
 	}
 
 	return null;
@@ -378,10 +376,17 @@ function buildSearchPipeline(filter: Pick<RidesPipelineFilter, 'search'>): Aggre
 		}
 
 		if (unroutableTerms.length > 0) {
-			const pattern = unroutableTerms
-				.map(k => `(?=.*${k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`)
-				.join('') + '.*';
-			conditions.push({ _id: { $options: 'i', $regex: pattern } });
+			// Anchor first term as prefix on trip_id so the query can use the
+			// { trip_id: 1, start_time_scheduled: 1 } compound index.
+			// Remaining terms become plain contains-regex (no index, but bounded
+			// by the prefix scan of the first term).
+			// NOTE: case-sensitive; adding $options: 'i' disables index usage.
+			const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+			const [firstTerm, ...restTerms] = unroutableTerms;
+			conditions.push({ trip_id: { $regex: `^${escape(firstTerm)}` } });
+			for (const rest of restTerms) {
+				conditions.push({ trip_id: { $regex: escape(rest) } });
+			}
 		}
 
 		if (conditions.length === 1) {
