@@ -235,10 +235,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		if (!form.getValues().agency_id) return;
 		// Set selected references to the selected agency
 		form.setFieldValue('references', [{ child_ids: [], parent_id: form.getValues().agency_id }]);
-	}, [
-		form.getValues().reference_type,
-		form.getValues().agency_id,
-	]);
+	}, [form.getValues().reference_type, form.getValues().agency_id]);
 
 	useEffect(() => {
 		// Reset effect and reference type when cause changes as they are dependent on cause
