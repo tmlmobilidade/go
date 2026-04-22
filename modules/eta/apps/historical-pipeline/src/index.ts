@@ -52,6 +52,7 @@ async function main(): Promise<void> {
 	// Setup Rides Query
 	const ridesQuery: Filter<Ride> = {
 		agency_id: { $in: AGENCY_IDS },
+		end_time_observed: { $ne: null },
 		line_id: { $in: [2652, 2708, 2711, 2713, 2722, 2725, 2728, 2729, 2730, 2731, 2734] }, // ! Development only
 		start_time_observed: { $ne: null },
 		start_time_scheduled: { $gte: start.unix_timestamp, $lt: end.unix_timestamp },
@@ -59,16 +60,16 @@ async function main(): Promise<void> {
 
 	//
 	// 1. Sync Vehicle Events
-	// const [
-	// 	{ eventsProcessed, ridesProcessed },
-	// 	{ shapeNodesProcessed },
-	// ] = await Promise.all([
-	// 	syncVehicleEvents({ ridesQuery }),
-	// 	syncShapeNodes({ chunkLength: SHAPE_NODE_CHUNK_LENGTH, ridesQuery }),
-	// ]);
+	const [
+		{ eventsProcessed, ridesProcessed },
+		{ shapeNodesProcessed },
+	] = await Promise.all([
+		syncVehicleEvents({ ridesQuery }),
+		syncShapeNodes({ chunkLength: SHAPE_NODE_CHUNK_LENGTH, ridesQuery }),
+	]);
 
-	// Logger.success(`Sync completed: ${ridesProcessed} rides, ${eventsProcessed} events in ${timer.get()}`);
-	// Logger.success(`Sync completed: ${shapeNodesProcessed} shape nodes`);
+	Logger.success(`Sync completed: ${ridesProcessed} rides, ${eventsProcessed} events in ${timer.get()}`);
+	Logger.success(`Sync completed: ${shapeNodesProcessed} shape nodes`);
 
 	//
 	// 4. Run Transformation Pipeline
