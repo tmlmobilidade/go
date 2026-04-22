@@ -94,8 +94,8 @@
 		"helper:offer:seed-typologies": "dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-typologies",
 		"helper:offer:seed-zones": "dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-zones",
 		"helper:stops:migrate-stops": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-stops-helpers-migrate-stops",
+		"helper:stops:seed-stops": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-stops-helpers-seed-stops",
 
-		"helper:stops:seed-stops": "dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-stops-helpers-seed-stops",
 		"lint": "turbo lint",
 		"lint:fix": "turbo lint:fix",
 
