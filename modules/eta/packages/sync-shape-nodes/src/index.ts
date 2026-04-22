@@ -16,9 +16,20 @@ interface SyncShapeNodesOptions {
 	ridesQuery: Filter<Ride>
 }
 
+/**
+ * Builds and persists shape nodes for rides matching `ridesQuery`.
+ *
+ * Fetches distinct `hashed_shape_id` values from `rides`, loads each shape,
+ * chunks its geometry by `chunkLength` (meters), and writes every chunk point
+ * to clickhouse table `eta.shape_nodes` with `shape_id` and `node_index`.
+ *
+ * Returns total number of shape nodes processed and written.
+ */
 export async function syncShapeNodes({ chunkLength = 25, ridesQuery }: SyncShapeNodesOptions): Promise<{ shapeNodesProcessed: number }> {
 	//
 
+	//
+	// Setup ClickHouse writer
 	const writer = new BatchWriter({
 		batch_size: BATCH_SIZE,
 		insertFn: async (data) => {
@@ -27,15 +38,21 @@ export async function syncShapeNodes({ chunkLength = 25, ridesQuery }: SyncShape
 		title: 'shape_nodes',
 	});
 
+	//
+	// Get distinct hashed shape ids from rides
 	Logger.info(`Getting distinct hashed shape ids from rides`);
 	const distinctHashedShapeIds = await rides.distinct('hashed_shape_id', ridesQuery);
 	const hashedShapesCollection = await hashedShapes.getCollection();
 
+	//
+	// Get hashed shapes cursor
 	const hashedShapesCursor = hashedShapesCollection.find(
 		{ _id: { $in: distinctHashedShapeIds } },
 		{ projection: { _id: 1, points: { shape_pt_lat: 1, shape_pt_lon: 1 } } },
 	).batchSize(BATCH_SIZE).stream();
 
+	//
+	// Create shape nodes for each hashed shape
 	Logger.info(`Creating shape nodes for ${distinctHashedShapeIds.length} hashed shape ids`);
 
 	let shapeNodesProcessed = 0;
@@ -54,7 +71,11 @@ export async function syncShapeNodes({ chunkLength = 25, ridesQuery }: SyncShape
 		}
 	}
 
+	//
+	// Flush writer
 	await writer.flush();
 
+	//
+	// Return total number of shape nodes processed and written
 	return { shapeNodesProcessed };
 }
