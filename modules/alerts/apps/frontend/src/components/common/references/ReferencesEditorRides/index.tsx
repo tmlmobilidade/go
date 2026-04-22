@@ -8,7 +8,7 @@ import { RidesListCellHeadsign } from '@/components/create/RidesListCellHeadsign
 import { SeenStatusTag } from '@/components/create/SeenStatusTag';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Checkbox, DataTable, DataTableColumn, NoDataLabel, OperationalStatusTag, Section, Surface, Tag } from '@tmlmobilidade/ui';
+import { Checkbox, DataTable, DataTableColumn, NoDataLabel, OperationalStatusTag, Section, SeenStatusIndicator, Surface, Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -34,7 +34,7 @@ export function ReferencesEditorRides() {
 		},
 		{
 			accessor: 'seen_last_at',
-			render: item => <SeenStatusTag value={item.seen_status} />,
+			render: item => <SeenStatusIndicator status={item.seen_status} />,
 			title: '',
 			width: 24,
 		},

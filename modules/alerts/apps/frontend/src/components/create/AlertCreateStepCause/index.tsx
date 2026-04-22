@@ -2,7 +2,7 @@
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { alertCauseEffectReferenceTypeMap } from '@tmlmobilidade/types';
-import { AlertCauseIcons, Grid, LargeButton, Section } from '@tmlmobilidade/ui';
+import { AlertCauseIcons, Grid, LargeButton, Section, useTypicalFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -16,6 +16,8 @@ export function AlertCreateStepCause() {
 	const { t } = useTranslation();
 
 	const alertCreateContext = useAlertCreateContext();
+
+	const watchedFormValues = useTypicalFormWatch(alertCreateContext.data.form, ['cause']);
 
 	//
 	// B. Transform data
@@ -42,7 +44,7 @@ export function AlertCreateStepCause() {
 					<LargeButton
 						key={item.value}
 						icon={item.icon}
-						isActive={alertCreateContext.data.form.getValues().cause === item.value}
+						isActive={watchedFormValues.cause === item.value}
 						onClick={() => handleSelectCause(item.value)}
 						orientation="horizontal"
 						title={item.label}

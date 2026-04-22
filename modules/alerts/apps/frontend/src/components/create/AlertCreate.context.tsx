@@ -7,7 +7,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { Agency, type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, RideNormalized } from '@tmlmobilidade/types';
-import { type CreateContextStateTemplate, keepUrlParams, useDataAgencies, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm } from '@tmlmobilidade/ui';
+import { type CreateContextStateTemplate, keepUrlParams, useDataAgencies, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm, useTypicalFormWatch } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
@@ -90,45 +90,64 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const { form } = useTypicalForm<CreateAlertDto>(CreateAlertSchema);
 
+	const watchedFormValues = useTypicalFormWatch(form, [
+		'cause',
+		'effect',
+		'agency_id',
+		'active_period_start_date',
+		'active_period_end_date',
+		'reference_type',
+		'references',
+		'publish_status',
+	]);
+
 	const multiStep = useMultiStep({
 		steps: [
 			{
 				id: 'cause',
-				isValid: () => !!form.getValues().cause,
+				isValid: () => !!watchedFormValues.cause,
 				isVisible: true,
 				label: 'Causa',
 				order: 0,
 			},
 			{
 				id: 'effect',
-				isEnabled: () => !!form.getValues().cause,
-				isValid: () => !!form.getValues().effect,
+				isEnabled: () => !!watchedFormValues.cause,
+				isValid: () => !!watchedFormValues.effect,
 				isVisible: true,
 				label: 'Efeito',
 				order: 1,
 			},
 			{
-				id: 'dates',
-				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect,
-				isValid: () => !!form.getValues().active_period_start_date,
-				isVisible: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_dates),
-				label: 'Datas',
+				id: 'agency',
+				isEnabled: () => !!watchedFormValues.cause && !!watchedFormValues.effect,
+				isValid: () => !!watchedFormValues.agency_id,
+				isVisible: agenciesOptions?.length > 1,
+				label: 'Operador',
 				order: 2,
 			},
 			{
-				id: 'references',
-				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect && !!form.getValues().active_period_start_date,
-				isValid: () => !!form.getValues().reference_type && !!form.getValues().agency_id && !!form.getValues().references?.length,
-				isVisible: true,
-				label: 'Referências',
+				id: 'dates',
+				isEnabled: () => !!watchedFormValues.agency_id,
+				isValid: () => !!watchedFormValues.active_period_start_date,
+				isVisible: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_dates),
+				label: 'Datas',
 				order: 3,
 			},
 			{
+				id: 'references',
+				isEnabled: () => !!watchedFormValues.cause && !!watchedFormValues.effect && !!watchedFormValues.active_period_start_date,
+				isValid: () => !!watchedFormValues.reference_type && !!watchedFormValues.agency_id && !!watchedFormValues.references?.length,
+				isVisible: true,
+				label: 'Referências',
+				order: 4,
+			},
+			{
 				id: 'summary',
-				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect && !!form.getValues().active_period_start_date && !!form.getValues().reference_type && !!form.getValues().agency_id && !!form.getValues().references?.length,
+				isEnabled: () => !!watchedFormValues.cause && !!watchedFormValues.effect && !!watchedFormValues.active_period_start_date && !!watchedFormValues.reference_type && !!watchedFormValues.agency_id && !!watchedFormValues.references?.length,
 				isVisible: true,
 				label: 'Resumo',
-				order: 4,
+				order: 5,
 			},
 		],
 	});
@@ -137,10 +156,13 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// D. Handle actions
 
 	const enabledReferenceTypes = useMemo(() => {
-		const selectedCause = form.getValues().cause;
-		const selectedEffect = form.getValues().effect;
-		return alertCauseEffectReferenceTypeMap[selectedCause]?.[selectedEffect] ?? [];
-	}, [form.getValues().cause, form.getValues().effect]);
+		return alertCauseEffectReferenceTypeMap[watchedFormValues.cause]?.[watchedFormValues.effect] ?? [];
+	}, [watchedFormValues.cause, watchedFormValues.effect]);
+
+	useEffect(() => {
+		if (watchedFormValues.agency_id) return;
+		if (agenciesOptions?.length === 1) form.setFieldValue('agency_id', agenciesOptions[0].value);
+	}, [watchedFormValues.agency_id, agenciesOptions, form]);
 
 	useEffect(() => {
 		if (copyAlertId) return;
@@ -160,7 +182,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		if (!alertTemplating) return;
 		form.setFieldValue('description', alertTemplating.description.pt);
 		form.setFieldValue('title', alertTemplating.title.pt);
-	}, [copyAlertId, autoTexts, multiStep.progress.current?.index]);
+	}, [copyAlertId, autoTexts, multiStep.progress.current?.index, multiStep.progress, form, selectedReferencesData]);
 
 	useEffect(() => {
 		if (!copyAlertId || !copyAlertData || hasAppliedCopyData) return;
@@ -171,38 +193,31 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		form.resetDirty();
 		multiStep.actions.goTo('summary');
 		setHasAppliedCopyData(true);
-	}, [copyAlertData, copyAlertId, hasAppliedCopyData]);
+	}, [copyAlertData, copyAlertId, form, hasAppliedCopyData, multiStep.actions]);
 
 	useEffect(() => {
-		// Skip if agency is already selected
-		if (form.getValues().agency_id) return;
-		// Pre-select agency if only one option is available
-		if (agenciesOptions?.length === 1) form.setFieldValue('agency_id', agenciesOptions[0].value);
-	}, [form.getValues().agency_id, agenciesOptions]);
-
-	useEffect(() => {
-		if (!form.getValues().publish_status) {
+		if (!watchedFormValues.publish_status) {
 			form.setFieldValue('publish_status', 'published');
 		}
-	}, [form.getValues().publish_status]);
+	}, [watchedFormValues.publish_status, form]);
 
 	useEffect(() => {
-		if (!form.getValues().active_period_start_date) {
+		if (!watchedFormValues.active_period_start_date) {
 			// Set active period start date to 5 minutes ago
 			form.setFieldValue('active_period_start_date', Dates.now('Europe/Lisbon').minus({ minutes: 5 }).set({ millisecond: 0, second: 0 }).unix_timestamp);
 			// Set publish start date to start of today to ensure alert is visible immediately
 			form.setFieldValue('publish_start_date', Dates.now('Europe/Lisbon').startOf('day').unix_timestamp);
 		}
-	}, [form.getValues().active_period_start_date]);
+	}, [watchedFormValues.active_period_start_date, form]);
 
 	useEffect(() => {
-		if (!form.getValues().active_period_end_date) {
+		if (!watchedFormValues.active_period_end_date) {
 			// Set active period end date to the end today
 			form.setFieldValue('active_period_end_date', Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp);
 			// Set publish end date to end of today
 			form.setFieldValue('publish_end_date', Dates.now('Europe/Lisbon').endOf('day').unix_timestamp);
 		}
-	}, [form.getValues().active_period_end_date]);
+	}, [watchedFormValues.active_period_end_date, form]);
 
 	useEffect(() => {
 		// Skip if reference type is already set
@@ -222,52 +237,52 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		if (enabledReferenceTypes.includes('stops') && createPermission?.resources.reference_types.includes('stops')) return form.setFieldValue('reference_type', 'stops');
 		if (enabledReferenceTypes.includes('rides') && createPermission?.resources.reference_types.includes('rides')) return form.setFieldValue('reference_type', 'rides');
 		if (enabledReferenceTypes.includes('agency') && createPermission?.resources.reference_types.includes('agency')) return form.setFieldValue('reference_type', 'agency');
-	}, [form.getValues().reference_type, enabledReferenceTypes]);
+	}, [watchedFormValues.reference_type, enabledReferenceTypes, form, meContext.data.user.permissions]);
 
 	useEffect(() => {
 		// Skip if reference type is not agency
-		if (form.getValues().reference_type !== 'agency') return;
+		if (watchedFormValues.reference_type !== 'agency') return;
 		// Skip if no agency_id selected
-		if (!form.getValues().agency_id) return;
+		if (!watchedFormValues.agency_id) return;
 		// Set selected references to the selected agency
-		form.setFieldValue('references', [{ child_ids: [], parent_id: form.getValues().agency_id }]);
-	}, [form.getValues().reference_type, form.getValues().agency_id]);
+		form.setFieldValue('references', [{ child_ids: [], parent_id: watchedFormValues.agency_id }]);
+	}, [watchedFormValues.reference_type, watchedFormValues.agency_id, form]);
 
 	useEffect(() => {
 		// Reset effect and reference type when cause changes as they are dependent on cause
 		form.setFieldValue('effect', null);
 		form.setFieldValue('reference_type', null);
 		form.setFieldValue('references', []);
-	}, [form.getValues().cause]);
+	}, [form, watchedFormValues.cause]);
 
 	useEffect(() => {
 		// Reset reference type when effect changes as they are dependent on effect
 		form.setFieldValue('reference_type', null);
 		form.setFieldValue('references', []);
-	}, [form.getValues().effect]);
+	}, [form, watchedFormValues.effect]);
 
 	useEffect(() => {
 		(async () => {
 			// Reset if no selected reference_type
-			if (!form.getValues().reference_type) return setSelectedReferencesData([]);
+			if (!watchedFormValues.reference_type) return setSelectedReferencesData([]);
 			// Reset state if no selected references
-			if (!form.getValues().references?.length) return setSelectedReferencesData([]);
+			if (!watchedFormValues.references?.length) return setSelectedReferencesData([]);
 			// Get a list of unique parent_ids
-			const parentIds = form.getValues().references.map(reference => reference.parent_id);
+			const parentIds = watchedFormValues.references.map(reference => reference.parent_id);
 			// Fetch data for agencies
-			if (form.getValues().reference_type === 'agency') {
+			if (watchedFormValues.reference_type === 'agency') {
 				const result: Agency[] = agenciesData.filter(agency => parentIds.includes(agency._id));
 				setSelectedReferencesData(result.map(agency => ({ display_name: agency.name, id: agency._id, name: agency.name })));
 			}
 
 			// Fetch data for lines
-			if (form.getValues().reference_type === 'lines') {
+			if (watchedFormValues.reference_type === 'lines') {
 				const response = await fetch('https://api.carrismetropolitana.pt/v2/lines');
 				const linesData = await response.json() as Line[];
 				const result: Line[] = linesData.filter(line => parentIds.includes(line.id));
 
 				// Get all unique child_ids (stop IDs) from references
-				const allChildIds = form.getValues().references
+				const allChildIds = watchedFormValues.references
 					.filter(ref => parentIds.includes(ref.parent_id))
 					.flatMap(ref => ref.child_ids);
 				const uniqueChildIds = [...new Set(allChildIds)];
@@ -306,7 +321,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 				}));
 			}
 			// Fetch data for stops
-			if (form.getValues().reference_type === 'stops') {
+			if (watchedFormValues.reference_type === 'stops') {
 				const response = await fetch('https://api.carrismetropolitana.pt/v2/stops');
 				const stopsData = await response.json() as Stop[];
 				const result: Stop[] = stopsData.filter(stop => parentIds.includes(stop.id));
@@ -316,7 +331,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 				const selectedLines = linesData.filter(line => result.some(stop => stop.line_ids.includes(line.id)));
 
 				// Get all unique child_ids (stop IDs) from references
-				const allChildIds = form.getValues().references
+				const allChildIds = watchedFormValues.references
 					.filter(ref => parentIds.includes(ref.parent_id))
 					.flatMap(ref => ref.child_ids);
 				const uniqueChildIds = [...new Set(allChildIds)];
@@ -366,7 +381,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 				}));
 			}
 			// Fetch data for rides
-			if (form.getValues().reference_type === 'rides') {
+			if (watchedFormValues.reference_type === 'rides') {
 				const result: RideNormalized[] = [];
 				for (const rideId of parentIds) {
 					const response = await fetchData<RideNormalized>(API_ROUTES.alerts.RIDES_DETAIL_RIDE(rideId));
@@ -376,10 +391,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 				setSelectedReferencesData(result);
 			}
 		})();
-	}, [
-		form.getValues().reference_type,
-		form.getValues().references,
-	]);
+	}, [agenciesData, form, watchedFormValues.reference_type, watchedFormValues.references]);
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', form.getValues()),

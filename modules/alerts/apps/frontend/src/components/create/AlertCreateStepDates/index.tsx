@@ -4,7 +4,7 @@
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { DateTimeInput, Divider, Grid, Label, Section, Text, useMeContext } from '@tmlmobilidade/ui';
+import { DateTimeInput, Divider, Grid, Label, Section, Text, useMeContext, useTypicalFormWatch } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,6 +17,8 @@ export function AlertCreateStepDates() {
 	const meContext = useMeContext();
 	const alertCreateContext = useAlertCreateContext();
 
+	const watchedFormValues = useTypicalFormWatch(alertCreateContext.data.form, ['agency_id', 'reference_type']);
+
 	//
 	// B. Transform data
 
@@ -25,13 +27,13 @@ export function AlertCreateStepDates() {
 			action: PermissionCatalog.all.alerts.actions.update_dates,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.alerts.scope,
-			value: alertCreateContext.data.form.getValues().agency_id,
+			value: watchedFormValues.agency_id,
 		},
 		{
 			action: PermissionCatalog.all.alerts.actions.update_dates,
 			resource_key: 'reference_types',
 			scope: PermissionCatalog.all.alerts.scope,
-			value: alertCreateContext.data.form.getValues().reference_type,
+			value: watchedFormValues.reference_type,
 		},
 	]);
 
