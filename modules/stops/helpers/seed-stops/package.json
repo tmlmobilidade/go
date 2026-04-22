@@ -17,6 +17,7 @@
 		"start": "tsx watch src/index.ts"
 	},
 	"dependencies": {
+		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/strings": "*",

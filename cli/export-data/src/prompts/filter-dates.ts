@@ -26,8 +26,7 @@ export async function promptFilterByDates(): Promise<{ end: OperationalDate, sta
 				validateOperationalDate(formattedValue);
 				if (Number(formattedValue) < 20240101) return 'A data de início não pode ser anterior a 2024-01-01.';
 				if (Number(formattedValue) > 20291231) return 'A data de início não pode ser posterior a 2029-12-31.';
-			}
-			catch (error) {
+			} catch (error) {
 				return error.message;
 			}
 		},
@@ -49,8 +48,7 @@ export async function promptFilterByDates(): Promise<{ end: OperationalDate, sta
 				validateOperationalDate(formattedValue);
 				if (Number(formattedValue) < Number(startDate)) return 'A data de fim não pode ser anterior à data de início.';
 				if (Number(formattedValue) > 20291231) return 'A data de fim não pode ser posterior a 2029-12-31.';
-			}
-			catch (error) {
+			} catch (error) {
 				return error.message;
 			}
 		},
