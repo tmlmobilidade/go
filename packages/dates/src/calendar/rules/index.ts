@@ -3,6 +3,7 @@ export * from './calculation/types.js';
 
 export * from './formatting/parameter-summary.js';
 export * from './formatting/rule-summary.js';
+export * from './formatting/sort.js';
 
 export * from './merging/index.js';
 

@@ -3,6 +3,9 @@
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import RulesListViewEventCard from '@/components/patterns/rules/list/RulesListViewEventCard';
 import RulesListViewManualCard from '@/components/patterns/rules/list/RulesListViewManualCard';
+import { usePeriodsContext } from '@/contexts/Periods.context';
+import { sortRulesBySection } from '@tmlmobilidade/dates';
+import { EventReplacementRule } from '@tmlmobilidade/types';
 import { Section, Text } from '@tmlmobilidade/ui';
 
 /* * */
@@ -14,17 +17,32 @@ export function RulesListView() {
 	// A. Setup variables
 
 	const patternDetailContext = usePatternDetailContext();
-	const mergedRules = patternDetailContext.data.mergedRules || [];
+	const periodsContext = usePeriodsContext();
 
-	const includeRules = mergedRules.filter(rule =>
-		rule.kind === 'manual' && rule.operating_mode === 'include',
+	const mergedRules = patternDetailContext.data.mergedRules || [];
+	const totalYearPeriods = periodsContext.data.raw?.length || 0;
+
+	const includeRules = sortRulesBySection(
+		mergedRules.filter(rule =>
+			rule.kind === 'manual' && rule.operating_mode === 'include',
+		),
+		'include',
+		totalYearPeriods,
 	);
-	const excludeRules = mergedRules.filter(rule =>
-		(rule.kind === 'manual' && rule.operating_mode === 'exclude')
-		|| rule.kind === 'event_restriction',
+
+	const excludeRules = sortRulesBySection(
+		mergedRules.filter(rule =>
+			(rule.kind === 'manual' && rule.operating_mode === 'exclude')
+			|| rule.kind === 'event_restriction',
+		),
+		'exclude',
+		totalYearPeriods,
 	);
-	const overwriteRules = mergedRules.filter(rule =>
-		rule.kind === 'event_replacement',
+
+	const overwriteRules = sortRulesBySection(
+		mergedRules.filter(rule => rule.kind === 'event_replacement'),
+		'overwrite',
+		totalYearPeriods,
 	);
 
 	//
@@ -67,7 +85,7 @@ export function RulesListView() {
 				<Section gap="md" padding="none">
 					<Text size="xl" weight="bold">Substituem oferta</Text>
 					{overwriteRules.map((rule, index) => (
-						<RulesListViewEventCard key={rule._id || index} rule={rule} />
+						<RulesListViewEventCard key={rule._id || index} rule={rule as EventReplacementRule} />
 					))}
 				</Section>
 			)}
