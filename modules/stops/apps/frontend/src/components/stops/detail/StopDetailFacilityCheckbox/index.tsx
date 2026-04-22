@@ -40,7 +40,7 @@ export function StopDetailFacilityCheckbox({ label, proposeable, value }: StopDe
 		/>
 	);
 
-	return proposeable ? <ProposedChangesWrapper inputName={value} relatedId={stopId} scope="stop">{checkbox}</ProposedChangesWrapper> : checkbox;
+	return proposeable ? <ProposedChangesWrapper inputName={value} relatedId={String(stopId)} scope="stop">{checkbox}</ProposedChangesWrapper> : checkbox;
 
 	//
 }

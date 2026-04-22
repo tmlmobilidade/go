@@ -1,10 +1,11 @@
 import { Dates } from '@/dates.js';
-import { FORMATS } from '@/format.js';
+import { FORMATS } from '@/lib/date-format.js';
 import {
 	Event,
 	EventReplacementRule,
 	EventRestrictionRule,
 	ManualRule,
+	MONTH_OPTIONS,
 	OperationalDate,
 	ScheduleRule,
 	WEEKDAY_OPTIONS,
@@ -252,4 +253,126 @@ function buildRuleSummaryTooltip(
 	}
 
 	return '';
+}
+
+/**
+ * TEMP:
+ * Maps year period ids/names into GTFS abbreviations.
+ * Replace with a persisted abbreviation/code field when available.
+ */
+function mapPeriodsToGtfsAbbreviation(periodIds?: string[]): string {
+	if (!periodIds?.length) return 'ALL';
+
+	const map: Record<string, string> = {
+		'2KIUJ': 'FER',
+		'99H2R': 'ESC',
+		'UW2U0': 'VER',
+	};
+
+	const abbreviations = periodIds.map((id) => {
+		const abbr = map[id];
+		if (!abbr) throw new Error(`Unknown period id: ${id}`);
+		return abbr;
+	});
+
+	const unique = [...new Set(abbreviations)];
+	const allSet = new Set(['ESC', 'FER', 'VER']);
+
+	// If all three are present, return 'ALL'
+	if (unique.length === 3 && unique.every(x => allSet.has(x))) {
+		return 'ALL';
+	}
+
+	return unique.sort((a, b) => a.localeCompare(b)).join('-');
+}
+
+function mapWeekdaysToGtfsAbbreviation(weekdays?: number[]): string {
+	if (!weekdays?.length) return 'ALL';
+
+	const sorted = [...new Set(weekdays)].sort((a, b) => a - b);
+
+	if (sorted.length === 7) return 'ALL';
+
+	const map: Record<number, string> = {
+		1: 'SEG',
+		2: 'TER',
+		3: 'QUA',
+		4: 'QUI',
+		5: 'SEX',
+		6: 'SAB',
+		7: 'DOM',
+	};
+
+	// Collapse weekdays 1-5 into DU when all present
+	const hasDU = [1, 2, 3, 4, 5].every(d => sorted.includes(d));
+	if (hasDU) {
+		const weekend = sorted.filter(d => d > 5).map(d => map[d]);
+		return ['DU', ...weekend].join('-');
+	}
+
+	return sorted.map(day => map[day] || String(day)).join('-');
+}
+
+function mapMonthsToGtfsAbbreviation(months?: number[]): null | string {
+	if (!months?.length) return null;
+	const sorted = [...months].sort((a, b) => a - b);
+	return sorted
+		.map(m => MONTH_OPTIONS.find(o => o.value === m)?.label.toUpperCase() ?? String(m))
+		.join('-');
+}
+
+/**
+ * GTFS-oriented rule token:
+ * - FER_DU
+ * - VER_SAB
+ * - ESC_DOM
+ * - ALL
+ * - ALL_DU
+ * - VER-FER_SAB-DOM
+ * - Rock in Rio_VER_DU
+ */
+export function buildRuleSummaryGtfs(
+	rule: ScheduleRule,
+	options: { events?: Event[], periods?: YearPeriod[] },
+): string {
+	if (isEventRestriction(rule)) {
+		const eventCode = options.events?.find(e => e._id === rule.event.id)?.code;
+
+		const base = eventCode ?? rule.name ?? rule._id;
+		if (rule.all_day) return `${base}_ALLDAY`;
+		if (rule.start_time && rule.end_time)
+			return `${base}_${rule.start_time.replace(':', '')}${rule.end_time.replace(':', '')}`;
+		return base;
+	}
+	if (isEventReplacement(rule)) {
+		const eventCode = options.events?.find(e => e._id === rule.event.id)?.code;
+
+		return eventCode ?? rule.name ?? rule._id;
+	}
+
+	const periodIds = rule.year_period_ids ?? [];
+	const weekdays = rule.weekdays ?? [];
+
+	const periodPart = mapPeriodsToGtfsAbbreviation(periodIds);
+	const weekdayPart = mapWeekdaysToGtfsAbbreviation(weekdays);
+	const monthsPart = mapMonthsToGtfsAbbreviation(rule.months);
+
+	if (rule.kind === 'manual' && rule.event_id) {
+		const title = getEventForManualRule(rule, options?.events)?.code ?? rule.name ?? rule._id;
+
+		const tokenParts: string[] = [];
+		if (periodPart !== 'ALL') tokenParts.push(periodPart);
+		if (monthsPart) tokenParts.push(monthsPart);
+		if (weekdayPart !== 'ALL') tokenParts.push(weekdayPart);
+
+		if (!tokenParts.length) return title;
+		return `${title}_${tokenParts.join('_')}`;
+	}
+
+	const tokenParts: string[] = [periodPart];
+	if (monthsPart) tokenParts.push(monthsPart);
+	if (weekdayPart !== 'ALL') tokenParts.push(weekdayPart);
+
+	if (tokenParts.length === 1 && tokenParts[0] === 'ALL') return 'ALL';
+	return tokenParts.join('_');
 }

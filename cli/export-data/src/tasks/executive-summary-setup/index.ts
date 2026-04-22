@@ -3,7 +3,7 @@ import { type TaskProps } from '@/types.js';
 import { log } from 'node:console';
 import fs from 'node:fs';
 
-import { calculateAverageRidesByAgencyByDayType } from './avg-trips-day.js';
+// import { calculateAverageRidesByAgencyByDayType } from './avg-trips-day.js';
 import { calculateObservedTrips } from './empty-runs.js';
 import { calculateSupplyMetrics } from './km.js';
 import { calculateMedianSpeed } from './median-speed.js';
@@ -294,13 +294,13 @@ export async function exportExecutiveSummary({ context, message }: TaskProps): P
 	}
 
 	// Add avg_trips_day_type
-	const avgRidesByDayType = await calculateAverageRidesByAgencyByDayType({ context, message });
-	for (const row of avgRidesByDayType) {
-		const agencyTotals = totalsByAgency[row.agencyId];
-		if (!agencyTotals) continue;
-		const dayTypeKey = `avg_trips_day_type ${row.dayType}` as const;
-		agencyTotals[dayTypeKey] = row.averageRides;
-	}
+	// const avgRidesByDayType = await calculateAverageRidesByAgencyByDayType({ context, message });
+	// for (const row of avgRidesByDayType) {
+	// 	const agencyTotals = totalsByAgency[row.agencyId];
+	// 	if (!agencyTotals) continue;
+	// 	const dayTypeKey = `avg_trips_day_type ${row.dayType}` as const;
+	// 	agencyTotals[dayTypeKey] = row.averageRides;
+	// }
 
 	// Build final output
 	const finalOutput = {

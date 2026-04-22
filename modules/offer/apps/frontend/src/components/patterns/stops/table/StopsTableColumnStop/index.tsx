@@ -26,7 +26,7 @@ export function PathTableColumnStop({ pathItem }: { pathItem: Path }) {
 
 	const handleOpenStop = () => {
 		if (pathItem.stop_id) {
-			router.push(PAGE_ROUTES.stops.STOPS_DETAIL(pathItem.stop_id));
+			router.push(PAGE_ROUTES.stops.STOPS_DETAIL(String(pathItem.stop_id)));
 		}
 	};
 

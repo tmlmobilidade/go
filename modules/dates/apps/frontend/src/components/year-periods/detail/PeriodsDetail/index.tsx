@@ -56,6 +56,15 @@ export function PeriodsDetail() {
 					{...periodsDetailContext.data.form.getInputProps('name')}
 				/>
 
+				<TextInput
+					label="Código"
+					placeholder="Ex: 1"
+					readOnly={periodsDetailContext.flags.isReadOnly}
+					required={!YearPeriodSchema.shape.code.isOptional()}
+					w="100%"
+					{...periodsDetailContext.data.form.getInputProps('code')}
+				/>
+
 				<MultiSelect
 					key={periodsDetailContext.data.form.key('agency_ids')}
 					data={allAgencyOptions}

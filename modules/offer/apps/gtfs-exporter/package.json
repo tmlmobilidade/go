@@ -14,7 +14,8 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "ENVIRONMENT=development dotenv-run -f ./modules/offer/environments/staging/secrets/.env tsx watch src/index.ts",
+		"dev": "ENVIRONMENT=development dotenv-run -f ./modules/offer/environments/production/secrets/.env tsx watch src/index.ts",
+		"dev:local": "ENVIRONMENT=development dotenv-run -f ./modules/offer/environments/production/secrets/.env tsx src/local.ts",
 		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint --fix ."
 	},
@@ -37,7 +38,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/adm-zip": "0.5.8",
-		"@types/node": "25.5.2",
+		"@types/node": "25.6.0",
 		"@types/papaparse": "5.5.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",

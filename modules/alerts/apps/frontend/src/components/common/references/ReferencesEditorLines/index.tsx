@@ -39,11 +39,12 @@ export function ReferencesEditorLines() {
 				<ReferencesEditorLinesItem
 					key={index}
 					index={index}
-					lines={linesContext.data.raw}
+					lines={linesContext.data.lines}
+					municipalityIds={[]}
 					onRemoveReference={referencesEditorContext.actions.removeReference}
 					onUpdateReference={referencesEditorContext.actions.updateReference}
 					reference={reference}
-					stops={stopsContext.data.raw}
+					stops={stopsContext.data.stops}
 				/>
 			))}
 

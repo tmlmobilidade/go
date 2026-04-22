@@ -11,8 +11,12 @@ on:
         description: "JSON object mapping modules to their apps"
         required: true
         type: string
-      ref-name:
-        description: "Git ref name (branch/tag)"
+      image-tag:
+        description: "Docker image tag"
+        required: true
+        type: string
+      environment:
+        description: "Build environment value"
         required: true
         type: string
 
@@ -23,7 +27,7 @@ jobs:
 
   get-apps:
     name: Get Apps for ${{ inputs.module }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     outputs:
       apps: ${{ steps.get-apps.outputs.apps }}
     steps:
@@ -45,7 +49,7 @@ jobs:
     name: Build ${{ inputs.module }}/${{ matrix.app }}
     needs: get-apps
     if: needs.get-apps.outputs.apps != '[]'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     concurrency:
       group: build-${{ inputs.module }}-${{ matrix.app }}-${{ github.ref }}
       cancel-in-progress: false
@@ -57,65 +61,37 @@ jobs:
       matrix:
         app: ${{ fromJson(needs.get-apps.outputs.apps) }}
     steps:
+      - uses: actions/checkout@v5
 
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Generate nginx.conf from template
-        if: matrix.app == 'nginx'
-        run: |
-          MODULE="${{ inputs.module }}"
-          TEMPLATE=".github/templates/nginx/nginx.conf.template"
-          OUTPUT="modules/${MODULE}/apps/nginx/configs/nginx.conf"
-
-          # Create directory if it doesn't exist
-          mkdir -p "$(dirname "$OUTPUT")"
-
-          # Replace {{MODULE}} placeholder with actual module name
-          sed "s/{{MODULE}}/${MODULE}/g" "$TEMPLATE" > "$OUTPUT"
-
-          echo "Generated $OUTPUT from template"
-
-      - name: Determine Dockerfile template
+      - name: Determine Dockerfile
         id: dockerfile
         run: |
-          MODULE="${{ inputs.module }}"
-          APP="${{ matrix.app }}"
-
-          # Determine Dockerfile template based on app type and module
-          if [ "$APP" = "nginx" ]; then
-            DOCKERFILE=".github/templates/docker/nginx.dockerfile"
-          elif [ "$APP" = "frontend" ]; then
-            DOCKERFILE=".github/templates/docker/frontend.dockerfile"
+          CUSTOM="modules/${{ inputs.module }}/apps/${{ matrix.app }}/Dockerfile"
+          if [ -f "$CUSTOM" ]; then
+            echo "path=$CUSTOM" >> $GITHUB_OUTPUT
+          elif [ "${{ matrix.app }}" = "frontend" ]; then
+            echo "path=.github/templates/docker/frontend.dockerfile" >> $GITHUB_OUTPUT
           else
-            DOCKERFILE=".github/templates/docker/nodejs.dockerfile"
+            echo "path=.github/templates/docker/nodejs.dockerfile" >> $GITHUB_OUTPUT
           fi
 
-          echo "dockerfile=$DOCKERFILE" >> $GITHUB_OUTPUT
-          echo "Dockerfile for $MODULE/$APP: $DOCKERFILE"
-
-      - name: Download package-lock.json artifact
-        uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@v4
         with:
-          name: package-lock.json
-          path: .
+          name: package-lock
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+      - uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Push Docker Image
-        uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v6
         with:
-          push: ${{ inputs.ref-name == 'production' || inputs.ref-name == 'staging' || inputs.ref-name == 'prd' }}
+          push: true
           context: .
-          file: ${{ steps.dockerfile.outputs.dockerfile }}
-          tags: ghcr.io/tmlmobilidade/go-${{ inputs.module }}-${{ matrix.app }}:${{ (inputs.ref-name == 'production' || inputs.ref-name == 'staging' || inputs.ref-name == 'prd') && inputs.ref-name || 'none' }}
+          file: ${{ steps.dockerfile.outputs.path }}
+          tags: ghcr.io/tmlmobilidade/go-${{ inputs.module }}-${{ matrix.app }}:${{ inputs.image-tag }}
           build-args: |
+            ENVIRONMENT=${{ inputs.environment }}
             MODULE=${{ inputs.module }}
             APP=${{ matrix.app }}
-            ENVIRONMENT=${{ inputs.ref-name }}
-            NGINX_SERVER_NAME=${{ inputs.ref-name == 'staging' && 'go-stg.tmlmobilidade.pt' || 'go.tmlmobilidade.pt' }}

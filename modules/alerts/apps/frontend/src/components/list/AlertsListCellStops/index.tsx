@@ -28,7 +28,7 @@ export function AlertsListCellStops({ values }: AlertsListCellStopsProps) {
 		.map((item): TagProps => {
 			const stopData = stopsContext.actions.getStopById(item);
 			if (!stopData) return null;
-			return { label: stopData.name, variant: 'muted' };
+			return { label: stopData.long_name, variant: 'muted' };
 		})
 		.filter(Boolean);
 

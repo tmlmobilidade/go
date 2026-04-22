@@ -1,9 +1,8 @@
 /* * */
 
 import { organizations, roles, sessions, users, verificationTokens } from '@/interfaces/index.js';
-import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { sendWelcomeEmail } from '@tmlmobilidade/emails';
 import { generateRandomString, generateRandomToken } from '@tmlmobilidade/strings';
 import { type CreateUserDto, type LoginDto, type Organization, type Permission, type Session, type User } from '@tmlmobilidade/types';
 import { asyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
@@ -155,7 +154,7 @@ class AuthProvider {
 	 * @throws An HTTP error code:
 	 *   - INTERNAL_SERVER_ERROR if user creation fails
 	 */
-	public async register(createUserDto: CreateUserDto): Promise<void> {
+	public async register(createUserDto: CreateUserDto): Promise<string> {
 		// Insert the new user into the database with the provided data
 		const insertNewUserResult = await users.insertOne(createUserDto);
 		// Generate a random token that will be used to verify the user
@@ -166,14 +165,8 @@ class AuthProvider {
 			token: verificationToken,
 			user_id: insertNewUserResult._id,
 		});
-		// Send a welcome email to the user with the verification token
-		await sendWelcomeEmail({
-			data: {
-				firstName: createUserDto.first_name,
-				resetPasswordUrl: `${PAGE_ROUTES.auth.CHANGE_PASSWORD_LIST}?token=${verificationToken}&email=${encodeURIComponent(createUserDto.email)}`,
-			},
-			to: createUserDto.email,
-		});
+
+		return verificationToken;
 	}
 }
 

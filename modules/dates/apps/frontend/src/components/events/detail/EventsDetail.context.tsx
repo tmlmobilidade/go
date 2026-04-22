@@ -4,7 +4,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { CreateEventSchema, type Event, EventRule, Line, PermissionCatalog, type UpdateEventDto, UpdateEventSchema } from '@tmlmobilidade/types';
+import { type Event, EventRule, Line, PermissionCatalog, type UpdateEventDto, UpdateEventSchema } from '@tmlmobilidade/types';
 import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -64,7 +64,19 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<UpdateEventDto>(UpdateEventSchema, eventData, CreateEventSchema.parse({}), 'controlled');
+	const { form } = useTypicalForm<UpdateEventDto>(
+		UpdateEventSchema,
+		eventData,
+		{
+			agency_ids: [],
+			code: '',
+			dates: [],
+			description: '',
+			rules: [],
+			title: '',
+		},
+		'controlled',
+	);
 
 	//
 	// D. Handle actions

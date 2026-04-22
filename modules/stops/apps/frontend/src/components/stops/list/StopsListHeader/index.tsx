@@ -23,7 +23,7 @@ export function StopsListHeader() {
 		<Toolbar>
 			<Label size="lg" caps>Paragens</Label>
 			<Spacer />
-			<SearchInput onChange={stopsListContext.actions.setFilterSearch} value={stopsListContext.filters.search} />
+			<SearchInput onChange={stopsListContext.filters.search.set} value={stopsListContext.filters.search.value} />
 			<HasPermission action={PermissionCatalog.all.stops.actions.create} scope={PermissionCatalog.all.stops.scope}>
 				<Button label="Nova Paragem" leftSection={<IconPlus size={20} />} onClick={openCreateStopModal} />
 			</HasPermission>

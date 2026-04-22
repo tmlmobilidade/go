@@ -20,7 +20,9 @@ db.createRole({
 
 db.createRole({
 	privileges: [
+		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'rides', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'sams', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'ride_acceptances', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'hashed_shapes', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
@@ -65,10 +67,9 @@ db.createRole({
 		{ actions: ['find', 'changeStream'], resource: { collection: 'rides', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'ride_acceptances', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
-		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
 	],
 	role: 'alerts',
-	roles: [{ db: 'admin', role: 'common' }], 
+	roles: [{ db: 'admin', role: 'common' }],
 });
 
 db.createRole({
