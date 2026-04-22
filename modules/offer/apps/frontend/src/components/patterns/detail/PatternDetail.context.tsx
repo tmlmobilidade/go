@@ -233,8 +233,9 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		openRulesCalendarPreviewModal(
 			lineData?.agency_id || '',
 			rulesForUI,
+			patternData?.code,
 		);
-	}, [lineData?.agency_id, rulesForUI]);
+	}, [lineData?.agency_id, rulesForUI, patternData?.code]);
 
 	//
 	// F. Handle Schedule RULES actions

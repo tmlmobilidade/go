@@ -19,12 +19,13 @@ import { RulesGroup } from '../RulesCalendarPreviewRulesGroup';
 /* * */
 
 interface RulesCalendarPreviewProps {
+	patternCode: string
 	rules: ScheduleRule[]
 }
 
 /* * */
 
-export function RulesCalendarPreview({ rules }: RulesCalendarPreviewProps) {
+export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPreviewProps) {
 	//
 
 	//
@@ -108,7 +109,7 @@ export function RulesCalendarPreview({ rules }: RulesCalendarPreviewProps) {
 
 			{/* Main Content */}
 			<div className={styles.mainContent}>
-				<Pane header={[<RulesCalendarPreviewHeader key="header" />]}>
+				<Pane header={[<RulesCalendarPreviewHeader key="header" patternCode={patternCode} />]}>
 					<EventsCalendar
 						additionalEvents={calendarEvents}
 						initialView="year"
