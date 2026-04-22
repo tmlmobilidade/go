@@ -196,28 +196,25 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	}, [copyAlertData, copyAlertId, form, hasAppliedCopyData, multiStep.actions]);
 
 	useEffect(() => {
-		if (!watchedFormValues.publish_status) {
-			form.setFieldValue('publish_status', 'published');
-		}
-	}, [watchedFormValues.publish_status, form]);
+		if (watchedFormValues.publish_status) return;
+		form.setFieldValue('publish_status', 'published');
+	}, [form, watchedFormValues.publish_status]);
 
 	useEffect(() => {
-		if (!watchedFormValues.active_period_start_date) {
-			// Set active period start date to 5 minutes ago
-			form.setFieldValue('active_period_start_date', Dates.now('Europe/Lisbon').minus({ minutes: 5 }).set({ millisecond: 0, second: 0 }).unix_timestamp);
-			// Set publish start date to start of today to ensure alert is visible immediately
-			form.setFieldValue('publish_start_date', Dates.now('Europe/Lisbon').startOf('day').unix_timestamp);
-		}
-	}, [watchedFormValues.active_period_start_date, form]);
+		if (watchedFormValues.active_period_start_date) return;
+		// Set active period start date to 5 minutes ago
+		form.setFieldValue('active_period_start_date', Dates.now('Europe/Lisbon').minus({ minutes: 5 }).set({ millisecond: 0, second: 0 }).unix_timestamp);
+		// Set publish start date to start of today to ensure alert is visible immediately
+		form.setFieldValue('publish_start_date', Dates.now('Europe/Lisbon').startOf('day').unix_timestamp);
+	}, [form, watchedFormValues.active_period_start_date]);
 
 	useEffect(() => {
-		if (!watchedFormValues.active_period_end_date) {
-			// Set active period end date to the end today
-			form.setFieldValue('active_period_end_date', Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp);
-			// Set publish end date to end of today
-			form.setFieldValue('publish_end_date', Dates.now('Europe/Lisbon').endOf('day').unix_timestamp);
-		}
-	}, [watchedFormValues.active_period_end_date, form]);
+		if (watchedFormValues.active_period_end_date) return;
+		// Set active period end date to the end today
+		form.setFieldValue('active_period_end_date', Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp);
+		// Set publish end date to end of today
+		form.setFieldValue('publish_end_date', Dates.now('Europe/Lisbon').endOf('day').unix_timestamp);
+	}, [form, watchedFormValues.active_period_end_date]);
 
 	useEffect(() => {
 		// Skip if reference type is already set
@@ -237,7 +234,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		if (enabledReferenceTypes.includes('stops') && createPermission?.resources.reference_types.includes('stops')) return form.setFieldValue('reference_type', 'stops');
 		if (enabledReferenceTypes.includes('rides') && createPermission?.resources.reference_types.includes('rides')) return form.setFieldValue('reference_type', 'rides');
 		if (enabledReferenceTypes.includes('agency') && createPermission?.resources.reference_types.includes('agency')) return form.setFieldValue('reference_type', 'agency');
-	}, [watchedFormValues.reference_type, enabledReferenceTypes, form, meContext.data.user.permissions]);
+	}, [watchedFormValues.reference_type, enabledReferenceTypes, meContext.data.user.permissions, form]);
 
 	useEffect(() => {
 		// Skip if reference type is not agency
@@ -253,13 +250,13 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		form.setFieldValue('effect', null);
 		form.setFieldValue('reference_type', null);
 		form.setFieldValue('references', []);
-	}, [form, watchedFormValues.cause]);
+	}, [watchedFormValues.cause]);
 
 	useEffect(() => {
 		// Reset reference type when effect changes as they are dependent on effect
 		form.setFieldValue('reference_type', null);
 		form.setFieldValue('references', []);
-	}, [form, watchedFormValues.effect]);
+	}, [watchedFormValues.effect]);
 
 	useEffect(() => {
 		(async () => {
@@ -391,7 +388,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 				setSelectedReferencesData(result);
 			}
 		})();
-	}, [agenciesData, form, watchedFormValues.reference_type, watchedFormValues.references]);
+	}, [agenciesData, watchedFormValues.reference_type, watchedFormValues.references]);
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', form.getValues()),
