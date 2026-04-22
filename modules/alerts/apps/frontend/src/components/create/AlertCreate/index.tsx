@@ -5,6 +5,7 @@
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { AlertCreateFooter } from '@/components/create/AlertCreateFooter';
 import { AlertCreateHeader } from '@/components/create/AlertCreateHeader';
+import { AlertCreateStepAgency } from '@/components/create/AlertCreateStepAgency';
 import { AlertCreateStepCause } from '@/components/create/AlertCreateStepCause';
 import { AlertCreateStepDates } from '@/components/create/AlertCreateStepDates';
 import { AlertCreateStepEffect } from '@/components/create/AlertCreateStepEffect';
@@ -38,9 +39,10 @@ export function AlertCreate() {
 	}
 
 	return (
-		<Pane footer={[<AlertCreateFooter />]} header={[<AlertCreateHeader />]}>
+		<Pane footer={[<AlertCreateFooter key="footer" />]} header={[<AlertCreateHeader key="header" />]}>
 			{alertCreateContext.data.multi_step.progress.current?.id === 'cause' && <AlertCreateStepCause />}
 			{alertCreateContext.data.multi_step.progress.current?.id === 'effect' && <AlertCreateStepEffect />}
+			{alertCreateContext.data.multi_step.progress.current?.id === 'agency' && <AlertCreateStepAgency />}
 			{alertCreateContext.data.multi_step.progress.current?.id === 'dates' && <AlertCreateStepDates />}
 			{alertCreateContext.data.multi_step.progress.current?.id === 'references' && <AlertCreateStepReferences />}
 			{alertCreateContext.data.multi_step.progress.current?.id === 'summary' && <AlertCreateStepSummary />}
