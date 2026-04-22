@@ -166,7 +166,6 @@ export function Calendar({
 									month={m}
 									monthGrid={grid}
 									onDayClick={handleDayClick}
-									onEventClick={onEventClick}
 									onMonthClick={() => handleMonthClick(m)}
 									rangeState={rangeSelection}
 									year={year}
