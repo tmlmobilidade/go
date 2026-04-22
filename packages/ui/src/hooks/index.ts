@@ -18,6 +18,7 @@ export * from './use-organization-logo';
 export * from './use-prevent-navigation';
 export * from './use-state-ref';
 export * from './use-typical-form';
+export * from './use-typical-form-watch';
 export * from './use-user-organization';
 export * from './use-user-preference';
 export * from '@mantine/hooks';

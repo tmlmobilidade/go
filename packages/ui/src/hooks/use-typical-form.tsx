@@ -32,7 +32,7 @@ interface UseTypicalFormReturnType<T> {
  */
 export function useTypicalForm<T extends Record<string, unknown>>(
 	schema: Schema,
-	apiData?: null | T | undefined,
+	apiData?: null | T,
 	initialValues?: Partial<T>,
 	mode?: 'controlled' | 'uncontrolled',
 ): UseTypicalFormReturnType<T> {
@@ -64,7 +64,7 @@ export function useTypicalForm<T extends Record<string, unknown>>(
 		form.validate();
 		form.resetDirty();
 		Logger.success(`[${apiData._id}] Form initialized with values from API.`);
-	}, [apiData]);
+	}, [apiData, form]);
 
 	//
 	// Prevent navigation if form is dirty
