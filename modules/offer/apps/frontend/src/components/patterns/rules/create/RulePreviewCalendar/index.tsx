@@ -13,11 +13,12 @@ export interface RulePreviewCalendarProps {
 	 * Array of ISO dates (YYYY-MM-DD format) that will be affected by the rule
 	 */
 	affectedDates: string[]
+	onVisibleYearChange?: (year: number) => void
 }
 
 /* * */
 
-export function RulePreviewCalendar({ affectedDates }: RulePreviewCalendarProps) {
+export function RulePreviewCalendar({ affectedDates, onVisibleYearChange }: RulePreviewCalendarProps) {
 	//
 
 	//
@@ -49,6 +50,7 @@ export function RulePreviewCalendar({ affectedDates }: RulePreviewCalendarProps)
 		<EventsCalendar
 			additionalEvents={ruleImpactEvents}
 			initialView="year"
+			onYearChange={onVisibleYearChange}
 			showSidebar={false}
 		/>
 	);

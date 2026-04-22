@@ -33,6 +33,8 @@ export function RulesCalendarPreview({ rules }: RulesCalendarPreviewProps) {
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [selectedDate, setSelectedDate] = useState<CalendarKey | null>(null);
 
+	const [previewYear, setPreviewYear] = useState(Dates.now('Europe/Lisbon').js_date.getFullYear());
+
 	const periodsContext = usePeriodsContext();
 	const eventsContext = useEventsContext();
 	const holidaysContext = useHolidaysContext();
@@ -41,12 +43,12 @@ export function RulesCalendarPreview({ rules }: RulesCalendarPreviewProps) {
 
 	// Compute which dates are affected by rules with their details
 	const affectedDaysMap = useMemo(() => {
-		const startOfYear = Dates.now('Europe/Lisbon').startOf('year').minus({ years: 1 });
-		const endOfYear = startOfYear.plus({ years: 2 });
+		const startOfYear = Dates.fromISO(`${previewYear}-01-01`);
+		const endOfYear = Dates.fromISO(`${previewYear}-12-31`);
 		return buildAffectedDaysDetails(startOfYear, endOfYear, rules, periods, holidays, {
 			events: eventsContext.data.raw,
 		});
-	}, [eventsContext.data.raw, rules, periods, holidays]);
+	}, [eventsContext.data.raw, rules, periods, holidays, previewYear]);
 
 	// Convert affected dates to calendar events for visualization
 	const calendarEvents = useMemo(() => {
@@ -111,6 +113,7 @@ export function RulesCalendarPreview({ rules }: RulesCalendarPreviewProps) {
 						additionalEvents={calendarEvents}
 						initialView="year"
 						onDayClick={handleDayClick}
+						onYearChange={year => setPreviewYear(year)}
 						showSidebar={false}
 					/>
 				</Pane>

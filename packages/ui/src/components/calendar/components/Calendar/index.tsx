@@ -29,8 +29,9 @@ export interface CalendarProps {
 	onEventClick?: (event: CalendarEvent) => void
 	onRangeSelect?: (
 		range: { end: CalendarKey, start: CalendarKey },
-		clearSelection: () => void
+		clearSelection: () => void,
 	) => void
+	onYearChange?: (year: number) => void
 	showSidebar?: boolean
 }
 
@@ -42,6 +43,7 @@ export function Calendar({
 	onDayClick,
 	onEventClick,
 	onRangeSelect,
+	onYearChange,
 	showSidebar = true,
 }: CalendarProps) {
 	//
@@ -95,8 +97,7 @@ export function Calendar({
 		// In month view or when onDayClick is provided
 		else if (onDayClick) {
 			onDayClick(day.date);
-		}
-		else {
+		} else {
 			// If no callback provided, navigate to the day's month and switch to month view
 			const { month: dayMonth, year: dayYear } = monthYearFromKey(day.calendarKey);
 
@@ -106,6 +107,10 @@ export function Calendar({
 			}
 		}
 	}, [view, rangeSelection, onDayClick, onRangeSelect, setRangeStart, setRangeEnd, clearRangeSelection, month, year, setMonth, setView]);
+
+	useEffect(() => {
+		onYearChange?.(year);
+	}, [year, onYearChange]);
 
 	// Month click handler - navigate to clicked month in year view
 	const handleMonthClick = useCallback((clickedMonth: number) => {
