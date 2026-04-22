@@ -1,6 +1,6 @@
 /* * */
 
-import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
+import { etaVehicleEvents, simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Filter, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Ride, type UnixTimestamp } from '@tmlmobilidade/types';
@@ -20,7 +20,7 @@ export async function syncVehicleEvents({ ridesQuery }: SyncVehicleEventsOptions
 	//
 
 	const ridesCollection = await rides.getCollection();
-	await simplifiedVehicleEventsNew.delete('\'_id\' != \'\''); // ! DELETE ALL DATA FROM THE TABLE
+	await etaVehicleEvents.clearData();
 
 	//
 	// Setup Rides Cursor
