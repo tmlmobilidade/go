@@ -20,7 +20,7 @@ export async function syncVehicleEvents({ ridesQuery }: SyncVehicleEventsOptions
 	//
 
 	const ridesCollection = await rides.getCollection();
-	await etaVehicleEvents.clearData();
+	await etaVehicleEvents.clearData(); // ! DELETE ALL DATA FROM THE TABLE
 
 	//
 	// Setup Rides Cursor
