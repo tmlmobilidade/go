@@ -3,7 +3,6 @@
 import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Filter, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 import { type Ride, type UnixTimestamp } from '@tmlmobilidade/types';
 
 import { rideProjection } from './types.js';
@@ -37,10 +36,7 @@ export async function syncVehicleEvents({ ridesQuery }: SyncVehicleEventsOptions
 
 	while (ridesProcessed < ridesCount) {
 		const ridesBatch = await ridesCollection
-			.find(
-				{ ...ridesQuery, end_time_observed: { $ne: null }, start_time_observed: { $ne: null } },
-				{ projection: rideProjection },
-			)
+			.find(ridesQuery, { projection: rideProjection })
 			.skip(ridesProcessed)
 			.limit(BATCH_SIZE)
 			.toArray();
