@@ -116,6 +116,7 @@ export async function transformAlert(alertData: Alert): Promise<GtfsRtFeedEntity
 			alert: {
 				active_period: activePeriodValues,
 				cause: mappedCauseValue,
+				coordinates: alertData.coordinates ? [alertData.coordinates[0], alertData.coordinates[1]] : null,
 				description_text: descriptionTextValue,
 				effect: mappedEffectValue,
 				header_text: headerTextValue,

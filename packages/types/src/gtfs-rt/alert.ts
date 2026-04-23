@@ -14,6 +14,7 @@ import { z } from 'zod';
 export const GtfsRtAlertSchema = z.object({
 	active_period: z.array(GtfsRtTimeRangeSchema).nullish(),
 	cause: GtfsRtCauseSchema.nullish(),
+	coordinates: z.tuple([z.number(), z.number()]).nullable().default(null),
 	description_text: GtfsRtTranslatedStringSchema,
 	effect: GtfsRtEffectSchema.nullish(),
 	header_text: GtfsRtTranslatedStringSchema,
