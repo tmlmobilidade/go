@@ -1,6 +1,6 @@
 /* * */
 
-import { Button, Section } from '@react-email/components';
+import { Button, Section } from 'react-email';
 
 import styles from './styles.js';
 

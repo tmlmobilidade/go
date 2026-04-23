@@ -1,7 +1,7 @@
 /* * */
 
 import { GO_HOMEPAGE_URL } from '@/constants.js';
-import { Link, Section, Text } from '@react-email/components';
+import { Link, Section, Text } from 'react-email';
 
 import styles from './styles.js';
 

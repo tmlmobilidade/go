@@ -2,7 +2,7 @@
 
 import colors from '@/styles/colors.js';
 import { fontSize, fontWeight } from '@/styles/font.js';
-import { Text } from '@react-email/components';
+import { Text } from 'react-email';
 import { type PropsWithChildren } from 'react';
 
 import styles from './styles.js';
