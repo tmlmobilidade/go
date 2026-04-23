@@ -19,6 +19,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-alerts-pckg-describe": "*",
 		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"next": "16.2.4",

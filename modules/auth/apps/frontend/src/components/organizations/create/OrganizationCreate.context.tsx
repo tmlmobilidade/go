@@ -8,7 +8,7 @@ import { CreateOrganizationDto, CreateOrganizationSchema, Organization } from '@
 import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -57,14 +57,14 @@ export const OrganizationCreateContextProvider = ({ children }: PropsWithChildre
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<CreateOrganizationDto>(CreateOrganizationSchema);
+	const { formRef } = useTypicalForm<CreateOrganizationDto>(CreateOrganizationSchema);
 
 	//
 	// D. Handle actions
 
 	const handleCreateOrganization = async () => {
 		setIsSaving(true);
-		const response = await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_LIST, 'POST', form.getValues());
+		const response = await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_LIST, 'POST', formRef.current.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({ message: response.error, title: 'Erro ao criar organização' });
@@ -78,7 +78,7 @@ export const OrganizationCreateContextProvider = ({ children }: PropsWithChildre
 			setIsSaving(false);
 			return;
 		}
-		form.reset();
+		formRef.current.reset();
 		allOrganizationsMutate();
 		setIsSaving(false);
 		closeCreateOrganizationModal();
@@ -89,20 +89,17 @@ export const OrganizationCreateContextProvider = ({ children }: PropsWithChildre
 	//
 	// E. Define context value
 
-	const contextValue: OrganizationCreateContextState = useMemo(() => ({
+	const contextValue: OrganizationCreateContextState = {
 		actions: {
 			saveOrganization: handleCreateOrganization,
 		},
 		data: {
-			form,
+			form: formRef.current,
 		},
 		flags: {
 			isSaving,
 		},
-	}), [
-		form,
-		isSaving,
-	]);
+	};
 
 	//
 	// F. Render components

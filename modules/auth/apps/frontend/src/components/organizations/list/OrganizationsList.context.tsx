@@ -5,21 +5,17 @@
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { type OrganizationNormalized } from '@/types/normalized';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { useSearch } from '@tmlmobilidade/ui';
-import { useQueryState } from 'nuqs';
+import { useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
 
 interface OrganizationsListContextState {
-	actions: {
-		setFilterSearch: (values: string) => void
-	}
 	data: {
 		filtered: OrganizationNormalized[]
 	}
 	filters: {
-		search: string
+		search: UseFilterStateStringReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -41,7 +37,7 @@ export const useOrganizationsListContext = () => {
 
 /* * */
 
-export const OrganizationsListContextProvider = ({ children }: PropsWithChildren) => {
+export function OrganizationsListContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
@@ -49,7 +45,7 @@ export const OrganizationsListContextProvider = ({ children }: PropsWithChildren
 
 	const organizationsContext = useOrganizationsContext();
 
-	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
+	const filterSearch = useFilterStateString('search');
 
 	//
 	// B. Transform data
@@ -66,16 +62,13 @@ export const OrganizationsListContextProvider = ({ children }: PropsWithChildren
 	const searchResultsData = useSearch<OrganizationNormalized>({
 		accessors: ['long_name_normalized'],
 		data: normalizedOrganizationsData,
-		query: filterSearch,
+		query: filterSearch.value,
 	});
 
 	//
 	// C. Define context value
 
-	const contextValue: OrganizationsListContextState = useMemo(() => ({
-		actions: {
-			setFilterSearch,
-		},
+	const contextValue: OrganizationsListContextState = {
 		data: {
 			filtered: searchResultsData,
 		},
@@ -86,12 +79,7 @@ export const OrganizationsListContextProvider = ({ children }: PropsWithChildren
 			error: organizationsContext.flags.error,
 			loading: organizationsContext.flags.loading,
 		},
-	}), [
-		organizationsContext.flags.error,
-		organizationsContext.flags.loading,
-		searchResultsData,
-		filterSearch,
-	]);
+	};
 
 	//
 	// D. Render components

@@ -50,15 +50,15 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<UpdateAgencyDto>(UpdateAgencySchema, agencyData);
+	const { formRef } = useTypicalForm<UpdateAgencyDto>(UpdateAgencySchema, agencyData);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Agency>(API_ROUTES.auth.AGENCIES_DETAIL(agencyId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchData<Agency>(API_ROUTES.auth.AGENCIES_DETAIL(agencyId), 'PUT', formRef.current.getValues()),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			agencyMutate(updatedItem);
 			allAgenciesMutate();
 		},
@@ -67,7 +67,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Agency>(API_ROUTES.auth.AGENCIES_DETAIL_LOCK(agencyId)),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			agencyMutate(updatedItem);
 			allAgenciesMutate();
 		},
@@ -86,19 +86,19 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 
 	const { canSave } = useFlagCanSave({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.agencies.scope, PermissionCatalog.all.agencies.actions.update),
-		isDirty: form.isDirty(),
+		isDirty: formRef.current.isDirty(),
 		isLoading: agencyLoading,
 		isLocked: agencyData?.is_locked,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: formRef.current.isValid(),
 	});
 
 	const { canLock } = useFlagCanLock({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.agencies.scope, PermissionCatalog.all.agencies.actions.update),
-		isDirty: form.isDirty(),
+		isDirty: formRef.current.isDirty(),
 		isLoading: agencyLoading,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: formRef.current.isValid(),
 	});
 
 	//
@@ -111,7 +111,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 		},
 		data: {
 			agency: agencyData,
-			form,
+			form: formRef.current,
 			id: agencyId,
 		},
 		flags: {
@@ -131,7 +131,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 		isLocking,
 		isReadOnly,
 		isSaving,
-		form,
+		formRef,
 		agencyData,
 		agencyId,
 	]);

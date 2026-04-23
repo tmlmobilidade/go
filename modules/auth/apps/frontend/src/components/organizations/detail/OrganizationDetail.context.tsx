@@ -7,7 +7,7 @@ import { CreateOrganizationSchema, type Organization, PermissionCatalog, type Up
 import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -63,16 +63,16 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 	//
 	// C. Initialize form
 
-	const { form } = useTypicalForm<UpdateOrganizationDto>(CreateOrganizationSchema, organizationData);
+	const { formRef } = useTypicalForm<UpdateOrganizationDto>(CreateOrganizationSchema, organizationData);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_DETAIL(organizationId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_DETAIL(organizationId), 'PUT', formRef.current.getValues()),
 		onSuccess: async (updatedItem) => {
 			await uploadImages();
-			form.resetDirty();
+			formRef.current.resetDirty();
 			meContext.mutate.me();
 			organizationMutate(updatedItem);
 			allOrganizationsMutate();
@@ -91,7 +91,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOCK(organizationId)),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			meContext.mutate.me();
 			organizationMutate(updatedItem);
 			allOrganizationsMutate();
@@ -130,8 +130,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 
 		if (response.ok) {
 			useToast.success({ message: 'As imagens foram carregadas com sucesso', title: 'Sucesso' });
-		}
-		else {
+		} else {
 			useToast.error({ message: result.error || 'Erro ao carregar imagens', title: 'Erro' });
 		}
 	};
@@ -165,36 +164,36 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 	const { canSave } = useFlagCanSave({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.update),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: formRef.current.isDirty(),
 		isLoading: organizationLoading,
 		isLocked: organizationData?.is_locked,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: formRef.current.isValid(),
 	});
 
 	const { canLock } = useFlagCanLock({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.update),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: formRef.current.isDirty(),
 		isLoading: organizationLoading,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: formRef.current.isValid(),
 	});
 
 	const { canDelete } = useFlagCanDelete({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.update),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: formRef.current.isDirty(),
 		isLoading: organizationLoading,
 		isLocked: organizationData?.is_locked,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: formRef.current.isValid(),
 	});
 
 	//
 	// F. Define context value
 
-	const contextValue: OrganizationsDetailContextState = useMemo(() => ({
+	const contextValue: OrganizationsDetailContextState = {
 		actions: {
 			delete: handleDelete,
 			deleteImage: deleteImage,
@@ -204,7 +203,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 			save: handleSave,
 		},
 		data: {
-			form,
+			form: formRef.current,
 			id: organizationId,
 			logoDarkUrl: logo?.logo_dark,
 			logoLightUrl: logo?.logo_light,
@@ -221,20 +220,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 			isReadOnly,
 			isSaving,
 		},
-	}), [
-		canDelete,
-		canLock,
-		canSave,
-		organizationError,
-		isDeleting,
-		organizationLoading,
-		isLocking,
-		isReadOnly,
-		isSaving,
-		form,
-		organizationData,
-		organizationId,
-	]);
+	};
 
 	//
 	// G. Render components
