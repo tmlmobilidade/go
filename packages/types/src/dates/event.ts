@@ -18,9 +18,18 @@ export const EventSchema = DocumentSchema.extend({
 	is_locked: z.boolean().default(false),
 	rules: z.array(EventRuleSchema).default([]),
 	title: z.string().min(1),
+
+	// This field is not sent by the backend, but is useful to have in the frontend for easier access to the associated patterns of an event
+	associated_patterns: z.array(z.object({
+		_id: z.string(),
+		code: z.string(),
+		headsign: z.string(),
+		line_id: z.string(),
+		route_id: z.string(),
+	})).default([]),
 });
 
-export const CreateEventSchema = EventSchema.omit({ _id: true, created_at: true, updated_at: true });
+export const CreateEventSchema = EventSchema.omit({ _id: true, associated_patterns: true, created_at: true, updated_at: true });
 export const UpdateEventSchema = CreateEventSchema.omit({ created_by: true }).partial();
 
 /* * */
