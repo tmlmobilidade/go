@@ -5,7 +5,7 @@
 import { type FormErrors, useForm, type UseFormReturnType } from '@mantine/form';
 import { Logger } from '@tmlmobilidade/logger';
 import { zodResolver } from 'mantine-form-zod-resolver';
-import { useEffect, useState } from 'react';
+import { type RefObject, useEffect, useRef } from 'react';
 import { type Schema } from 'zod';
 
 // import { usePreventNavigation } from './use-prevent-navigation';
@@ -18,7 +18,7 @@ interface UseTypicalFormReturnType<T> {
 		isDirty: boolean
 		isValid: boolean
 	}
-	form: UseFormReturnType<T>
+	formRef: RefObject<UseFormReturnType<T>>
 }
 
 /**
@@ -41,6 +41,8 @@ export function useTypicalForm<T extends Record<string, unknown>>(
 	//
 	// Setup form and its related logic
 
+	const formRef = useRef<UseFormReturnType<T>>(null);
+
 	const form = useForm<T>({
 		cascadeUpdates: true,
 		initialValues: initialValues as T,
@@ -50,6 +52,11 @@ export function useTypicalForm<T extends Record<string, unknown>>(
 		validateInputOnChange: true,
 	});
 
+	// Assign synchronously so the effect below
+	// always has the latest form methods
+
+	formRef.current = form;
+
 	//
 	// Initialize form with API data
 
@@ -57,12 +64,12 @@ export function useTypicalForm<T extends Record<string, unknown>>(
 		// Skip if no API data
 		if (!apiData) return;
 		// Skip if form is dirty
-		if (form.isDirty()) return;
+		if (formRef.current.isDirty()) return;
 		// Initialize form with API data
-		form.reset();
-		form.setValues(apiData);
-		form.validate();
-		form.resetDirty();
+		formRef.current.reset();
+		formRef.current.setValues(apiData);
+		formRef.current.validate();
+		formRef.current.resetDirty();
 		Logger.success(`[${apiData._id}] Form initialized with values from API.`);
 	}, [apiData]);
 
@@ -73,27 +80,17 @@ export function useTypicalForm<T extends Record<string, unknown>>(
 
 	//
 	// Return hook values and functions
-
-	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const [isValid, setIsValid] = useState<boolean>(false);
-	const [formErrors, setFormErrors] = useState<FormErrors>({});
-
-	useEffect(() => {
-		setFormErrors(form.errors);
-		setIsDirty(form.isDirty());
-		setIsValid(form.isValid());
-	}, [form]);
-
-	//
-	// Return hook values and functions
+	// form.errors is React state inside useForm, so it's reactive.
+	// form.isDirty() reads from reactive dirty-tracking state, also reactive.
+	// Deriving these inline avoids stale state from useState/useEffect.
 
 	return {
-		errors: formErrors,
+		errors: form.errors,
 		flags: {
-			isDirty: isDirty,
-			isValid: isValid,
+			isDirty: form.isDirty(),
+			isValid: Object.keys(form.errors).length === 0,
 		},
-		form,
+		formRef,
 	};
 
 	//

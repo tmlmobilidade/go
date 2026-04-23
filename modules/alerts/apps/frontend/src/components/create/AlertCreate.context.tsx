@@ -88,9 +88,9 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<CreateAlertDto>(CreateAlertSchema);
+	const { formRef } = useTypicalForm<CreateAlertDto>(CreateAlertSchema);
 
-	const watchedFormValues = useTypicalFormWatch(form, [
+	const watchedFormValues = useTypicalFormWatch(formRef.current, [
 		'cause',
 		'effect',
 		'agency_id',
@@ -105,46 +105,46 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		steps: [
 			{
 				id: 'cause',
-				isValid: () => !!form.getValues().cause,
+				isValid: () => !!formRef.current.getValues().cause,
 				isVisible: true,
 				label: 'Causa',
 				order: 0,
 			},
 			{
 				id: 'effect',
-				isEnabled: () => !!form.getValues().cause,
-				isValid: () => !!form.getValues().effect,
+				isEnabled: () => !!formRef.current.getValues().cause,
+				isValid: () => !!formRef.current.getValues().effect,
 				isVisible: true,
 				label: 'Efeito',
 				order: 1,
 			},
 			{
 				id: 'agency',
-				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect,
-				isValid: () => !!form.getValues().agency_id,
+				isEnabled: () => !!formRef.current.getValues().cause && !!formRef.current.getValues().effect,
+				isValid: () => !!formRef.current.getValues().agency_id,
 				isVisible: agenciesOptions?.length > 1,
 				label: 'Operador',
 				order: 2,
 			},
 			{
 				id: 'dates',
-				isEnabled: () => !!form.getValues().agency_id,
-				isValid: () => !!form.getValues().active_period_start_date,
+				isEnabled: () => !!formRef.current.getValues().agency_id,
+				isValid: () => !!formRef.current.getValues().active_period_start_date,
 				isVisible: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_dates),
 				label: 'Datas',
 				order: 3,
 			},
 			{
 				id: 'references',
-				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect && !!form.getValues().active_period_start_date,
-				isValid: () => !!form.getValues().reference_type && !!form.getValues().agency_id && !!form.getValues().references?.length,
+				isEnabled: () => !!formRef.current.getValues().cause && !!formRef.current.getValues().effect && !!formRef.current.getValues().active_period_start_date,
+				isValid: () => !!formRef.current.getValues().reference_type && !!formRef.current.getValues().agency_id && !!formRef.current.getValues().references?.length,
 				isVisible: true,
 				label: 'Referências',
 				order: 4,
 			},
 			{
 				id: 'summary',
-				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect && !!form.getValues().active_period_start_date && !!form.getValues().reference_type && !!form.getValues().agency_id && !!form.getValues().references?.length,
+				isEnabled: () => !!formRef.current.getValues().cause && !!formRef.current.getValues().effect && !!formRef.current.getValues().active_period_start_date && !!formRef.current.getValues().reference_type && !!formRef.current.getValues().agency_id && !!formRef.current.getValues().references?.length,
 				isVisible: true,
 				label: 'Resumo',
 				order: 5,
@@ -161,80 +161,80 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	useEffect(() => {
 		if (watchedFormValues.agency_id) return;
-		if (agenciesOptions?.length === 1) form.setFieldValue('agency_id', agenciesOptions[0].value);
-	}, [watchedFormValues.agency_id, agenciesOptions]);
+		if (agenciesOptions?.length === 1) formRef.current.setFieldValue('agency_id', agenciesOptions[0].value);
+	}, [watchedFormValues.agency_id, agenciesOptions, formRef]);
 
 	useEffect(() => {
 		if (copyAlertId) return;
 		if (!autoTexts) return;
 		if (multiStep.progress.current?.index !== multiStep.progress.steps.length - 1) return; // Only run when on the last step | if we go back and again to last step, this will run again
-		if (!form.getValues().cause || !form.getValues().effect || !form.getValues().reference_type || !form.getValues().references) return;
-		const references = form.getValues().references;
+		if (!formRef.current.getValues().cause || !formRef.current.getValues().effect || !formRef.current.getValues().reference_type || !formRef.current.getValues().references) return;
+		const references = formRef.current.getValues().references;
 		const alertTemplating = describeAlert({
-			cause: form.getValues().cause,
+			cause: formRef.current.getValues().cause,
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			data: selectedReferencesData as any[],
-			effect: form.getValues().effect,
-			reference_type: form.getValues().reference_type,
+			effect: formRef.current.getValues().effect,
+			reference_type: formRef.current.getValues().reference_type,
 			references: references,
-			type: form.getValues().reference_type,
+			type: formRef.current.getValues().reference_type,
 		});
 		if (!alertTemplating) return;
-		form.setFieldValue('description', alertTemplating.description.pt);
-		form.setFieldValue('title', alertTemplating.title.pt);
-	}, [copyAlertId, autoTexts, multiStep.progress.current?.index, multiStep.progress, selectedReferencesData]);
+		formRef.current.setFieldValue('description', alertTemplating.description.pt);
+		formRef.current.setFieldValue('title', alertTemplating.title.pt);
+	}, [copyAlertId, autoTexts, multiStep.progress.current?.index, multiStep.progress, selectedReferencesData, formRef]);
 
 	useEffect(() => {
 		if (!copyAlertId || !copyAlertData || hasAppliedCopyData) return;
 		const copyAlertAsCreateData = CreateAlertSchema.parse(copyAlertData);
-		form.reset();
-		form.setValues(copyAlertAsCreateData);
-		form.validate();
-		form.resetDirty();
+		formRef.current.reset();
+		formRef.current.setValues(copyAlertAsCreateData);
+		formRef.current.validate();
+		formRef.current.resetDirty();
 		multiStep.actions.goTo('summary');
 		setHasAppliedCopyData(true);
-	}, [copyAlertData, copyAlertId, hasAppliedCopyData, multiStep.actions]);
+	}, [copyAlertData, copyAlertId, formRef, hasAppliedCopyData, multiStep.actions]);
 
 	useEffect(() => {
 		if (watchedFormValues.publish_status) return;
-		form.setFieldValue('publish_status', 'published');
-	}, [watchedFormValues.publish_status]);
+		formRef.current.setFieldValue('publish_status', 'published');
+	}, [formRef, watchedFormValues.publish_status]);
 
 	useEffect(() => {
 		if (watchedFormValues.active_period_start_date) return;
 		// Set active period start date to 5 minutes ago
-		form.setFieldValue('active_period_start_date', Dates.now('Europe/Lisbon').minus({ minutes: 5 }).set({ millisecond: 0, second: 0 }).unix_timestamp);
+		formRef.current.setFieldValue('active_period_start_date', Dates.now('Europe/Lisbon').minus({ minutes: 5 }).set({ millisecond: 0, second: 0 }).unix_timestamp);
 		// Set publish start date to start of today to ensure alert is visible immediately
-		form.setFieldValue('publish_start_date', Dates.now('Europe/Lisbon').startOf('day').unix_timestamp);
-	}, [watchedFormValues.active_period_start_date]);
+		formRef.current.setFieldValue('publish_start_date', Dates.now('Europe/Lisbon').startOf('day').unix_timestamp);
+	}, [formRef, watchedFormValues.active_period_start_date]);
 
 	useEffect(() => {
 		if (watchedFormValues.active_period_end_date) return;
 		// Set active period end date to the end today
-		form.setFieldValue('active_period_end_date', Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp);
+		formRef.current.setFieldValue('active_period_end_date', Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp);
 		// Set publish end date to end of today
-		form.setFieldValue('publish_end_date', Dates.now('Europe/Lisbon').endOf('day').unix_timestamp);
-	}, [watchedFormValues.active_period_end_date]);
+		formRef.current.setFieldValue('publish_end_date', Dates.now('Europe/Lisbon').endOf('day').unix_timestamp);
+	}, [formRef, watchedFormValues.active_period_end_date]);
 
 	useEffect(() => {
 		// Skip if reference type is already set
-		if (form.getValues().reference_type) return;
+		if (formRef.current.getValues().reference_type) return;
 		// Get permission definition for reference types
 		const createPermission = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
 		// Set the reference type based on alert cause/effect when possible
 		if (createPermission?.resources.reference_types.includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-			if (enabledReferenceTypes.includes('lines')) return form.setFieldValue('reference_type', 'lines');
-			if (enabledReferenceTypes.includes('stops')) return form.setFieldValue('reference_type', 'stops');
-			if (enabledReferenceTypes.includes('rides')) return form.setFieldValue('reference_type', 'rides');
-			if (enabledReferenceTypes.includes('agency')) return form.setFieldValue('reference_type', 'agency');
+			if (enabledReferenceTypes.includes('lines')) return formRef.current.setFieldValue('reference_type', 'lines');
+			if (enabledReferenceTypes.includes('stops')) return formRef.current.setFieldValue('reference_type', 'stops');
+			if (enabledReferenceTypes.includes('rides')) return formRef.current.setFieldValue('reference_type', 'rides');
+			if (enabledReferenceTypes.includes('agency')) return formRef.current.setFieldValue('reference_type', 'agency');
 			return console.warn('No enabled reference types available to set as default.');
 		}
 		// Set the reference type based on permissions
-		if (enabledReferenceTypes.includes('lines') && createPermission?.resources.reference_types.includes('lines')) return form.setFieldValue('reference_type', 'lines');
-		if (enabledReferenceTypes.includes('stops') && createPermission?.resources.reference_types.includes('stops')) return form.setFieldValue('reference_type', 'stops');
-		if (enabledReferenceTypes.includes('rides') && createPermission?.resources.reference_types.includes('rides')) return form.setFieldValue('reference_type', 'rides');
-		if (enabledReferenceTypes.includes('agency') && createPermission?.resources.reference_types.includes('agency')) return form.setFieldValue('reference_type', 'agency');
-	}, [watchedFormValues.reference_type, enabledReferenceTypes, meContext.data.user.permissions]);
+		if (enabledReferenceTypes.includes('lines') && createPermission?.resources.reference_types.includes('lines')) return formRef.current.setFieldValue('reference_type', 'lines');
+		if (enabledReferenceTypes.includes('stops') && createPermission?.resources.reference_types.includes('stops')) return formRef.current.setFieldValue('reference_type', 'stops');
+		if (enabledReferenceTypes.includes('rides') && createPermission?.resources.reference_types.includes('rides')) return formRef.current.setFieldValue('reference_type', 'rides');
+		if (enabledReferenceTypes.includes('agency') && createPermission?.resources.reference_types.includes('agency')) return formRef.current.setFieldValue('reference_type', 'agency');
+	}, [watchedFormValues.reference_type, enabledReferenceTypes, meContext.data.user.permissions, formRef]);
 
 	useEffect(() => {
 		// Skip if reference type is not agency
@@ -242,21 +242,21 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		// Skip if no agency_id selected
 		if (!watchedFormValues.agency_id) return;
 		// Set selected references to the selected agency
-		form.setFieldValue('references', [{ child_ids: [], parent_id: watchedFormValues.agency_id }]);
-	}, [watchedFormValues.reference_type, watchedFormValues.agency_id]);
+		formRef.current.setFieldValue('references', [{ child_ids: [], parent_id: watchedFormValues.agency_id }]);
+	}, [watchedFormValues.reference_type, watchedFormValues.agency_id, formRef]);
 
 	useEffect(() => {
 		// Reset effect and reference type when cause changes as they are dependent on cause
-		form.setFieldValue('effect', null);
-		form.setFieldValue('reference_type', null);
-		form.setFieldValue('references', []);
-	}, [watchedFormValues.cause]);
+		formRef.current.setFieldValue('effect', null);
+		formRef.current.setFieldValue('reference_type', null);
+		formRef.current.setFieldValue('references', []);
+	}, [formRef, watchedFormValues.cause]);
 
 	useEffect(() => {
 		// Reset reference type when effect changes as they are dependent on effect
-		form.setFieldValue('reference_type', null);
-		form.setFieldValue('references', []);
-	}, [watchedFormValues.effect]);
+		formRef.current.setFieldValue('reference_type', null);
+		formRef.current.setFieldValue('references', []);
+	}, [formRef, watchedFormValues.effect]);
 
 	useEffect(() => {
 		(async () => {
@@ -296,7 +296,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 				setSelectedReferencesData(result.map((line) => {
 					// Get child_ids for this specific line
-					const lineReference = form.getValues().references.find(ref => ref.parent_id === line.id);
+					const lineReference = formRef.current.getValues().references.find(ref => ref.parent_id === line.id);
 					const lineChildIds = lineReference?.child_ids ?? [];
 
 					// Map child_ids to StopData
@@ -345,7 +345,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 				setSelectedReferencesData(result.map((stop) => {
 					// Get child_ids for this specific stop
-					const stopReference = form.getValues().references.find(ref => ref.parent_id === stop.id);
+					const stopReference = formRef.current.getValues().references.find(ref => ref.parent_id === stop.id);
 					const stopChildIds = stopReference?.child_ids ?? [];
 
 					// For each line associated with this stop, populate stops from child_ids
@@ -388,10 +388,10 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 				setSelectedReferencesData(result);
 			}
 		})();
-	}, [agenciesData, watchedFormValues.reference_type, watchedFormValues.references]);
+	}, [agenciesData, formRef, watchedFormValues.reference_type, watchedFormValues.references]);
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', form.getValues()),
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', formRef.current.getValues()),
 		onSuccess: (updatedItem) => {
 			alertsListMutate();
 			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_DETAIL(updatedItem._id)));
@@ -408,7 +408,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		data: {
 			auto_texts: autoTexts,
 			enabled_reference_types: enabledReferenceTypes,
-			form,
+			form: formRef.current,
 			multi_step: multiStep,
 			set_auto_texts: setAutoTexts,
 		},
