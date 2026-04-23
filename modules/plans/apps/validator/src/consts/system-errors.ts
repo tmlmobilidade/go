@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsValidationMessage } from '@tmlmobilidade/types';
+import { type GTFSValidatorMessage } from '@tmlmobilidade/types';
 
 /**
  * Predefined system error messages to be used
@@ -8,7 +8,7 @@ import { type GtfsValidationMessage } from '@tmlmobilidade/types';
  * like when the validation process fails due to an internal error
  * or when the maximum number of validation attempts is reached.
  */
-export const SYSTEM_ERROR_MESSAGES: Record<string, GtfsValidationMessage> = {
+export const SYSTEM_ERROR_MESSAGES: Record<string, GTFSValidatorMessage> = {
 
 	GENERIC_ERROR: {
 		field: 'N/A',
