@@ -23,12 +23,14 @@ export function ReferencesEditorMain() {
 	//
 	// B. Render components
 
+	if (referencesEditorContext.flags.isLoading) {
+		return <LoadingSection />;
+	}
+
 	return (
 		<>
 
 			<ReferencesEditorControls />
-
-			{referencesEditorContext.flags.isLoading && <LoadingSection />}
 
 			{!referencesEditorContext.flags.isLoading && referencesEditorContext.data.selected_agency_id && referencesEditorContext.data.selected_reference_type === 'agency' && <ReferencesEditorAgency />}
 			{!referencesEditorContext.flags.isLoading && referencesEditorContext.data.selected_agency_id && referencesEditorContext.data.selected_reference_type === 'lines' && <ReferencesEditorLines />}

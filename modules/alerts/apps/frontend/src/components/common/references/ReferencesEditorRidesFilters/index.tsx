@@ -27,7 +27,7 @@ export function ReferencesEditorRidesFilters() {
 					onChange={referencesEditorContext.filters.view_mode.set}
 					value={referencesEditorContext.filters.view_mode.value}
 					data={[
-						{ label: `Ver todas as circulações (${referencesEditorContext.flags.isLoading ? 'Loading...' : referencesEditorContext.data.filtered_rides?.length ?? 0})`, value: 'all' },
+						{ label: `Ver todas as circulações (${referencesEditorContext.flags.isLoading ? 'Loading...' : referencesEditorContext.data.rides?.length ?? 0})`, value: 'all' },
 						{ label: `Apenas as Selecionadas (${referencesEditorContext.data.selected_references.length ?? 0})`, value: 'selected' },
 					]}
 				/>

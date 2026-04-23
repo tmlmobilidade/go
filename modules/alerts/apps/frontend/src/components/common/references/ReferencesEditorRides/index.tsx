@@ -64,9 +64,9 @@ export function ReferencesEditorRides() {
 		if (referencesEditorContext.filters.view_mode.value === 'selected') {
 			return referencesEditorContext.data.selected_rides_data;
 		}
-		return referencesEditorContext.data.filtered_rides;
+		return referencesEditorContext.data.rides;
 	}, [
-		referencesEditorContext.data.filtered_rides,
+		referencesEditorContext.data.rides,
 		referencesEditorContext.data.selected_rides_data,
 		referencesEditorContext.filters.view_mode.value,
 	]);

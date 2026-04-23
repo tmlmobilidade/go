@@ -4,10 +4,10 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type Alert, HashedTrip, HashedTripWaypoint, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type Alert, type HashedTrip, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Label, openConfirmModal, type SelectDataItem, useDataHashedTrips, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
 
 /* * */
 
@@ -38,9 +38,8 @@ interface ReferencesEditorContextState {
 	data: {
 		available_agencies_options: SelectDataItem[]
 		enabled_reference_types: Alert['reference_type'][]
-		filtered_hashed_trip_waypoints: HashedTripWaypoint[]
-		filtered_hashed_trips: HashedTrip[]
-		filtered_rides: RideNormalized[]
+		hashed_trips: HashedTrip[]
+		rides: RideNormalized[]
 		selected_agency_id: Alert['agency_id']
 		selected_reference_type: Alert['reference_type']
 		selected_references: Alert['references']
@@ -71,7 +70,7 @@ export function useReferencesEditorContext() {
 
 /* * */
 
-export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePeriodStartDate, availableAgenciesOptions, children, enabledReferenceTypes, onChangeAgencyId, onChangeReferences, onChangeReferenceType, selectedAgencyId, selectedReferences, selectedReferenceType }: PropsWithChildren<ReferencesEditorContextProps>) => {
+export function ReferencesEditorContextProvider({ activePeriodEndDate, activePeriodStartDate, availableAgenciesOptions, children, enabledReferenceTypes, onChangeAgencyId, onChangeReferences, onChangeReferenceType, selectedAgencyId, selectedReferences, selectedReferenceType }: PropsWithChildren<ReferencesEditorContextProps>) {
 	//
 
 	//
@@ -114,32 +113,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 	});
 
 	//
-	// C. Transform data
-
-	const hashedTripsAsLinesData = useMemo(() => {
-		if (!hashedTripsData) return [];
-		const uniqueLinesMap = new Map<number, HashedTrip>();
-		hashedTripsData.forEach((item) => {
-			if (uniqueLinesMap.has(item.line_id)) return;
-			uniqueLinesMap.set(item.line_id, item);
-		});
-		return Array.from(uniqueLinesMap.values());
-	}, [hashedTripsData]);
-
-	const hashedTripsAsStopsData = useMemo(() => {
-		if (!hashedTripsData) return [];
-		const uniqueStopsMap = new Map<string, HashedTripWaypoint>();
-		hashedTripsData.forEach((item) => {
-			item.path.forEach((pathItem) => {
-				if (uniqueStopsMap.has(pathItem.stop_id)) return;
-				uniqueStopsMap.set(pathItem.stop_id, pathItem);
-			});
-		});
-		return Array.from(uniqueStopsMap.values());
-	}, [hashedTripsData]);
-
-	//
-	// D. Handle actions
+	// C. Handle actions
 
 	useEffect(() => {
 		// Skip if no selected references
@@ -262,7 +236,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 	}, [activePeriodStartDate, activePeriodEndDate]);
 
 	//
-	// E. Define State
+	// D. Define State
 
 	const contextValue: ReferencesEditorContextState = {
 		actions: {
@@ -277,9 +251,8 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 		data: {
 			available_agencies_options: availableAgenciesOptions,
 			enabled_reference_types: enabledReferenceTypes || [],
-			filtered_hashed_trip_waypoints: hashedTripsAsStopsData,
-			filtered_hashed_trips: hashedTripsAsLinesData,
-			filtered_rides: ridesData,
+			hashed_trips: hashedTripsData,
+			rides: ridesData,
 			selected_agency_id: selectedAgencyId,
 			selected_reference_type: selectedReferenceType,
 			selected_references: selectedReferences ?? [],
@@ -297,7 +270,7 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 	};
 
 	//
-	// F. Return state
+	// E. Return state
 
 	return (
 		<ReferencesEditorContext.Provider value={contextValue}>

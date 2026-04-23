@@ -36,19 +36,21 @@ export function ReferencesEditorControls() {
 	//
 	// C. Render components
 
+	if (!availableReferenceTypeOptions.length) {
+		return null;
+	}
+
 	return (
 		<>
 
 			<Section>
 				<Grid gap="md">
-					{referencesEditorContext.data.selected_agency_id && availableReferenceTypeOptions.length > 1 && (
-						<SegmentedControl
-							data={availableReferenceTypeOptions}
-							onChange={referencesEditorContext.actions.changeReferenceType}
-							value={referencesEditorContext.data.selected_reference_type}
-							fullWidth
-						/>
-					)}
+					<SegmentedControl
+						data={availableReferenceTypeOptions}
+						onChange={referencesEditorContext.actions.changeReferenceType}
+						value={referencesEditorContext.data.selected_reference_type}
+						fullWidth
+					/>
 				</Grid>
 			</Section>
 
