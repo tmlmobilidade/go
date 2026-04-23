@@ -3,15 +3,16 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { hashedTrips, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { type ActionsOf, type GetRidesBatchQuery, GetRidesBatchQuerySchema, type HashedTrip, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
-export class LinesSharedController {
+export class HashedTripsSharedController {
 	//
 
 	/**
-	 * Gets a batch of Rides built with an aggregation pipeline.
+	 * Gets a batch of HashedTrips built with an aggregation pipeline.
 	 * @param request The Fastify request object.
 	 * @param reply The Fastify reply object.
 	 */
@@ -64,7 +65,7 @@ export class LinesSharedController {
 
 		const ridesBatch = await rides.aggregate(pipeline);
 
-		console.log('LinesSharedController.getBatch - ridesBatch count:', ridesBatch?.length ?? 0);
+		Logger.info(`HashedTripsSharedController.getBatch - ridesBatch count: ${ridesBatch?.length ?? 0}`);
 
 		//
 		// From the given batch of hashed_trip_ids,
@@ -78,7 +79,7 @@ export class LinesSharedController {
 		// Send the response
 
 		reply.send({
-			data: hashedTripsBatch as HashedTrip[] ?? [],
+			data: hashedTripsBatch ?? [],
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});

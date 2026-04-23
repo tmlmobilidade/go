@@ -2,11 +2,12 @@
 
 /* * */
 
-import { type Line, type Stop } from '@carrismetropolitana/api-types/network';
+import { type Stop } from '@carrismetropolitana/api-types/network';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
-import { Agency, type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, RideNormalized } from '@tmlmobilidade/types';
+import { Logger } from '@tmlmobilidade/logger';
+import { type Agency, type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, type HashedTrip, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
 import { type CreateContextStateTemplate, keepUrlParams, useDataAgencies, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm, useTypicalFormWatch } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -71,8 +72,9 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	const copyAlertId = searchParams.get('copy');
 
 	const [autoTexts, setAutoTexts] = useState(true);
-	const [selectedReferencesData, setSelectedReferencesData] = useState<AgencyData[] | LineData[] | RideNormalized[] | StopData[]>([]);
 	const [hasAppliedCopyData, setHasAppliedCopyData] = useState(false);
+
+	const [selectedReferencesData, setSelectedReferencesData] = useState<AgencyData[] | HashedTrip[] | RideNormalized[]>([]);
 
 	//
 	// B. Fetch data
@@ -227,7 +229,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			if (enabledReferenceTypes.includes('stops')) return formRef.current.setFieldValue('reference_type', 'stops');
 			if (enabledReferenceTypes.includes('rides')) return formRef.current.setFieldValue('reference_type', 'rides');
 			if (enabledReferenceTypes.includes('agency')) return formRef.current.setFieldValue('reference_type', 'agency');
-			return console.warn('No enabled reference types available to set as default.');
+			return Logger.info('No enabled reference types available to set as default.');
 		}
 		// Set the reference type based on permissions
 		if (enabledReferenceTypes.includes('lines') && createPermission?.resources.reference_types.includes('lines')) return formRef.current.setFieldValue('reference_type', 'lines');
@@ -276,7 +278,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			if (watchedFormValues.reference_type === 'lines') {
 				const response = await fetch('https://api.carrismetropolitana.pt/v2/lines');
 				const linesData = await response.json() as Line[];
-				const result: Line[] = linesData.filter(line => parentIds.includes(line.id));
+				const result: HashedTrip[] = linesData.filter(line => parentIds.includes(line.id));
 
 				// Get all unique child_ids (stop IDs) from references
 				const allChildIds = watchedFormValues.references
