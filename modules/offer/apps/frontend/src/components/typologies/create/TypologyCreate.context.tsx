@@ -6,7 +6,7 @@ import { CreateTypologyDto, CreateTypologySchema, Typology } from '@tmlmobilidad
 import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, PropsWithChildren, useContext } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -53,15 +53,15 @@ export const TypologyCreateContextProvider = ({ children }: PropsWithChildren) =
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<CreateTypologyDto>(CreateTypologySchema);
+	const { formRef } = useTypicalForm<CreateTypologyDto>(CreateTypologySchema);
 
 	//
 	// D. Handle actions
 
 	const { action: handleCreate, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Typology>(API_ROUTES.offer.TYPOLOGIES_LIST, 'POST', form.getValues()),
+		fetchFn: async () => await fetchData<Typology>(API_ROUTES.offer.TYPOLOGIES_LIST, 'POST', formRef.current.getValues()),
 		onSuccess: (createdItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			allTypologiesMutate();
 			closeCreateTypologyModal();
 			router.push(keepUrlParams(PAGE_ROUTES.offer.TYPOLOGIES_DETAIL(createdItem._id)));
@@ -71,22 +71,17 @@ export const TypologyCreateContextProvider = ({ children }: PropsWithChildren) =
 	//
 	// E. Define context value
 
-	const contextValue: TypologyCreateContextState = useMemo(() => {
-		return {
-			actions: {
-				create: handleCreate,
-			},
-			data: {
-				form,
-			},
-			flags: {
-				isSaving,
-			},
-		};
-	}, [
-		form,
-		isSaving,
-	]);
+	const contextValue: TypologyCreateContextState = {
+		actions: {
+			create: handleCreate,
+		},
+		data: {
+			form: formRef.current,
+		},
+		flags: {
+			isSaving,
+		},
+	};
 
 	//
 	// F. Render components

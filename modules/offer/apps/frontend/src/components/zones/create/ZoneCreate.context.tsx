@@ -6,7 +6,7 @@ import { CreateZoneDto, CreateZoneSchema, Zone } from '@tmlmobilidade/types';
 import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, PropsWithChildren, useContext } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -53,15 +53,15 @@ export const ZoneCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<CreateZoneDto>(CreateZoneSchema);
+	const { formRef } = useTypicalForm<CreateZoneDto>(CreateZoneSchema);
 
 	//
 	// D. Handle actions
 
 	const { action: handleCreate, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Zone>(API_ROUTES.offer.ZONES_LIST, 'POST', form.getValues()),
+		fetchFn: async () => await fetchData<Zone>(API_ROUTES.offer.ZONES_LIST, 'POST', formRef.current.getValues()),
 		onSuccess: (createdItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			allZonesMutate();
 			closeCreateZoneModal();
 			router.push(keepUrlParams(PAGE_ROUTES.offer.ZONES_DETAIL(createdItem._id)));
@@ -71,22 +71,17 @@ export const ZoneCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// E. Define context value
 
-	const contextValue: ZoneCreateContextState = useMemo(() => {
-		return {
-			actions: {
-				create: handleCreate,
-			},
-			data: {
-				form,
-			},
-			flags: {
-				isSaving,
-			},
-		};
-	}, [
-		form,
-		isSaving,
-	]);
+	const contextValue: ZoneCreateContextState = {
+		actions: {
+			create: handleCreate,
+		},
+		data: {
+			form: formRef.current,
+		},
+		flags: {
+			isSaving,
+		},
+	};
 
 	//
 	// F. Render components

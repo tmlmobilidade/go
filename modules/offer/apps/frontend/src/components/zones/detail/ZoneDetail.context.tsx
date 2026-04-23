@@ -54,15 +54,15 @@ export const ZoneDetailContextProvider = ({ children, zoneId }: PropsWithChildre
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<UpdateZoneDto>(UpdateZoneSchema, zoneData);
+	const { formRef } = useTypicalForm<UpdateZoneDto>(UpdateZoneSchema, zoneData);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Zone>(API_ROUTES.offer.ZONES_DETAIL(zoneId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchData<Zone>(API_ROUTES.offer.ZONES_DETAIL(zoneId), 'PUT', formRef.current.getValues()),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			zoneMutate(updatedItem);
 			zonesListMutate();
 		},
@@ -71,7 +71,7 @@ export const ZoneDetailContextProvider = ({ children, zoneId }: PropsWithChildre
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Zone>(API_ROUTES.offer.ZONES_DETAIL(zoneId), 'DELETE', zoneData),
 		onSuccess: () => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			zonesListMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.offer.ZONES_LIST));
 		},
@@ -80,7 +80,7 @@ export const ZoneDetailContextProvider = ({ children, zoneId }: PropsWithChildre
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Zone>(API_ROUTES.offer.ZONES_DETAIL_LOCK(zoneId)),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			zoneMutate(updatedItem);
 			zonesListMutate();
 		},
@@ -122,12 +122,12 @@ export const ZoneDetailContextProvider = ({ children, zoneId }: PropsWithChildre
 		hasError: !!zoneError,
 		isDeleted: null,
 		isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: formRef.current.isDirty(),
 		isLoading: zoneLoading,
 		isLocked: zoneData?.is_locked,
 		isLocking,
 		isSaving: isSaving,
-		isValid: form.isValid(),
+		isValid: formRef.current.isValid(),
 		permissions: {
 			delete: permissions.delete,
 			lock: permissions.lock,
@@ -139,14 +139,14 @@ export const ZoneDetailContextProvider = ({ children, zoneId }: PropsWithChildre
 	//
 	// F. Define context value
 
-	const contextValue: ZoneDetailContextState = useMemo(() => ({
+	const contextValue: ZoneDetailContextState = {
 		actions: {
 			delete: handleDelete,
 			lock: handleLock,
 			save: handleSave,
 		},
 		data: {
-			form,
+			form: formRef.current,
 			id: zoneId,
 			zone: zoneData,
 		},
@@ -161,14 +161,7 @@ export const ZoneDetailContextProvider = ({ children, zoneId }: PropsWithChildre
 			isReadOnly,
 			isSaving: isSaving,
 		},
-	}), [
-		zoneData,
-		zoneError,
-		zoneLoading,
-		zoneId,
-		form,
-		isSaving,
-	]);
+	};
 
 	//
 	// G. Render components

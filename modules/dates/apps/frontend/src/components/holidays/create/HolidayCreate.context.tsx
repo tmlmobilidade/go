@@ -2,11 +2,11 @@
 
 import { closeCreateHolidayModal } from '@/components/holidays/create/HolidayCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type Holiday, type CreateHolidayDto, CreateHolidaySchema } from '@tmlmobilidade/types';
+import { type CreateHolidayDto, CreateHolidaySchema, type Holiday } from '@tmlmobilidade/types';
 import { keepUrlParams, type UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -55,14 +55,14 @@ export const HolidayCreateContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<CreateHolidayDto>(CreateHolidaySchema);
+	const { formRef } = useTypicalForm<CreateHolidayDto>(CreateHolidaySchema);
 
 	//
 	// D. Handle actions
 
 	const handleCreateHoliday = async () => {
 		setIsSaving(true);
-		const response = await fetchData<Holiday>(API_ROUTES.dates.HOLIDAYS_LIST, 'POST', form.getValues());
+		const response = await fetchData<Holiday>(API_ROUTES.dates.HOLIDAYS_LIST, 'POST', formRef.current.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({ message: response.error, title: 'Erro ao criar Feriado' });
@@ -76,7 +76,7 @@ export const HolidayCreateContextProvider = ({ children }: PropsWithChildren) =>
 			setIsSaving(false);
 			return;
 		}
-		form.reset();
+		formRef.current.reset();
 		allHolidaysMutate();
 		setIsSaving(false);
 		closeCreateHolidayModal();
@@ -87,22 +87,17 @@ export const HolidayCreateContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// E. Define context value
 
-	const contextValue: HolidayCreateContextState = useMemo(() => {
-		return {
-			actions: {
-				createHoliday: handleCreateHoliday,
-			},
-			data: {
-				form,
-			},
-			flags: {
-				isSaving,
-			},
-		};
-	}, [
-		form,
-		isSaving,
-	]);
+	const contextValue: HolidayCreateContextState = {
+		actions: {
+			createHoliday: handleCreateHoliday,
+		},
+		data: {
+			form: formRef.current,
+		},
+		flags: {
+			isSaving,
+		},
+	};
 
 	//
 	// F. Render components

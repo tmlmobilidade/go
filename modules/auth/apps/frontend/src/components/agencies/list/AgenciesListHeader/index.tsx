@@ -22,7 +22,7 @@ export function AgenciesListHeader() {
 		<Toolbar>
 			<Label size="lg" caps singleLine>{t('default:agencies.list.Header.title')}</Label>
 			<Spacer />
-			<SearchInput onChange={agenciesListContext.actions.setFilterSearch} value={agenciesListContext.filters.search} />
+			<SearchInput onChange={agenciesListContext.filters.search.set} value={agenciesListContext.filters.search.value} />
 		</Toolbar>
 	);
 

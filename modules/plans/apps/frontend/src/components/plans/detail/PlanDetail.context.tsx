@@ -1,14 +1,13 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type File, GtfsValidation, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema, User } from '@tmlmobilidade/types';
+import { type File, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema, User } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagCustom, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, PropsWithChildren, useContext } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -63,15 +62,15 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<UpdatePlanDto>(UpdatePlanSchema, planData);
+	const { formRef } = useTypicalForm<UpdatePlanDto>(UpdatePlanSchema, planData);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), 'PUT', formRef.current.getValues()),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			planMutate(updatedItem);
 			operationFileMutate();
 			plansListMutate();
@@ -81,7 +80,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), 'DELETE'),
 		onSuccess: () => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			plansListMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.plans.APPROVED_LIST));
 		},
@@ -90,7 +89,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL_LOCK(planId)),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			planMutate(updatedItem);
 			operationFileMutate();
 			plansListMutate();
@@ -100,7 +99,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	const { action: handleControllerReprocessPlan, isLoading: isReprocessing } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL_CONTROLLER_REPROCESS(planId)),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			planMutate(updatedItem);
 			operationFileMutate();
 			plansListMutate();
@@ -132,11 +131,11 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			value: planData?.gtfs_agency.agency_id ?? '',
 		}),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: formRef.current.isDirty(),
 		isLoading: planLoading || isReprocessing,
 		isLocked: planData?.is_locked,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: formRef.current.isValid(),
 	});
 
 	const { canLock } = useFlagCanLock({
@@ -147,10 +146,10 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			value: planData?.gtfs_agency.agency_id ?? '',
 		}),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: formRef.current.isDirty(),
 		isLoading: planLoading || isReprocessing,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: formRef.current.isValid(),
 	});
 
 	const { canDelete } = useFlagCanDelete({
@@ -161,11 +160,11 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			value: planData?.gtfs_agency.agency_id ?? '',
 		}),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: formRef.current.isDirty(),
 		isLoading: planLoading || isReprocessing,
 		isLocked: planData?.is_locked,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: formRef.current.isValid(),
 	});
 
 	const { flag: canChangePlan } = useFlagCustom('all', [
@@ -187,7 +186,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	//
 	// F. Define context value
 
-	const contextValue: PlanDetailContextState = useMemo(() => ({
+	const contextValue: PlanDetailContextState = {
 		actions: {
 			controllerReprocessPlan: handleControllerReprocessPlan,
 			delete: handleDelete,
@@ -195,7 +194,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			save: handleSave,
 		},
 		data: {
-			form,
+			form: formRef.current,
 			id: planId,
 			operation_file: operationFileData,
 			plan: planData,
@@ -213,26 +212,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			isReadOnly,
 			isSaving: isSaving || isReprocessing,
 		},
-	}), [
-		form,
-		planId,
-		planData,
-		canDelete,
-		canLock,
-		canSave,
-		canChangePlan,
-		operationFileError,
-		planError,
-		operationFileLoading,
-		isDeleting,
-		operationFileData,
-		isReprocessing,
-		planLoading,
-		isLocking,
-		isReadOnly,
-		isSaving,
-		UserData,
-	]);
+	};
 
 	//
 	// G. Render components

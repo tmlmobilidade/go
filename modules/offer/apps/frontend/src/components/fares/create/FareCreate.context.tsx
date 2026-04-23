@@ -6,7 +6,7 @@ import { CreateFareDto, CreateFareSchema, Fare } from '@tmlmobilidade/types';
 import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, PropsWithChildren, useContext } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -53,15 +53,15 @@ export const FareCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<CreateFareDto>(CreateFareSchema);
+	const { formRef } = useTypicalForm<CreateFareDto>(CreateFareSchema);
 
 	//
 	// D. Handle actions
 
 	const { action: handleCreate, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Fare>(API_ROUTES.offer.FARES_LIST, 'POST', form.getValues()),
+		fetchFn: async () => await fetchData<Fare>(API_ROUTES.offer.FARES_LIST, 'POST', formRef.current.getValues()),
 		onSuccess: (createdItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			allFaresMutate();
 			closeCreateFareModal();
 			router.push(keepUrlParams(PAGE_ROUTES.offer.FARES_DETAIL(createdItem._id)));
@@ -71,22 +71,17 @@ export const FareCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// E. Define context value
 
-	const contextValue: FareCreateContextState = useMemo(() => {
-		return {
-			actions: {
-				create: handleCreate,
-			},
-			data: {
-				form,
-			},
-			flags: {
-				isSaving,
-			},
-		};
-	}, [
-		form,
-		isSaving,
-	]);
+	const contextValue: FareCreateContextState = {
+		actions: {
+			create: handleCreate,
+		},
+		data: {
+			form: formRef.current,
+		},
+		flags: {
+			isSaving,
+		},
+	};
 
 	//
 	// F. Render components

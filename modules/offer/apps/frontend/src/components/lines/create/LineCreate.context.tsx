@@ -8,7 +8,7 @@ import { type CreateLineDto, CreateLineSchema, Line } from '@tmlmobilidade/types
 import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -55,15 +55,15 @@ export const LineCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<CreateLineDto>(CreateLineSchema);
+	const { formRef } = useTypicalForm<CreateLineDto>(CreateLineSchema);
 
 	//
 	// D. Handle actions
 
 	const { action: handleCreate, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Line>(API_ROUTES.offer.LINES_LIST, 'POST', form.getValues()),
+		fetchFn: async () => await fetchData<Line>(API_ROUTES.offer.LINES_LIST, 'POST', formRef.current.getValues()),
 		onSuccess: (newItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			linesListMutate();
 			closeCreateLineModal();
 			router.push(keepUrlParams(PAGE_ROUTES.offer.LINES_DETAIL(newItem._id)));
@@ -73,20 +73,17 @@ export const LineCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// E. Define context value
 
-	const contextValue: LineCreateContextState = useMemo(() => ({
+	const contextValue: LineCreateContextState = {
 		actions: {
 			create: handleCreate,
 		},
 		data: {
-			form,
+			form: formRef.current,
 		},
 		flags: {
 			isSaving,
 		},
-	}), [
-		form,
-		isSaving,
-	]);
+	};
 
 	//
 	// H. Render components

@@ -6,7 +6,7 @@ import { type CreateEventDto, CreateEventSchema, type Event } from '@tmlmobilida
 import { keepUrlParams, type UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -55,14 +55,14 @@ export const EventCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<CreateEventDto>(CreateEventSchema);
+	const { formRef } = useTypicalForm<CreateEventDto>(CreateEventSchema);
 
 	//
 	// D. Handle actions
 
 	const handleCreateEvent = async () => {
 		setIsSaving(true);
-		const response = await fetchData<Event>(API_ROUTES.dates.EVENTS_LIST, 'POST', form.getValues());
+		const response = await fetchData<Event>(API_ROUTES.dates.EVENTS_LIST, 'POST', formRef.current.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({ message: response.error, title: 'Erro ao criar Evento' });
@@ -76,7 +76,7 @@ export const EventCreateContextProvider = ({ children }: PropsWithChildren) => {
 			setIsSaving(false);
 			return;
 		}
-		form.reset();
+		formRef.current.reset();
 		allEventsMutate();
 		setIsSaving(false);
 		closeCreateEventModal();
@@ -87,22 +87,17 @@ export const EventCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// E. Define context value
 
-	const contextValue: EventCreateContextState = useMemo(() => {
-		return {
-			actions: {
-				createEvent: handleCreateEvent,
-			},
-			data: {
-				form,
-			},
-			flags: {
-				isSaving,
-			},
-		};
-	}, [
-		form,
-		isSaving,
-	]);
+	const contextValue: EventCreateContextState = {
+		actions: {
+			createEvent: handleCreateEvent,
+		},
+		data: {
+			form: formRef.current,
+		},
+		flags: {
+			isSaving,
+		},
+	};
 
 	//
 	// F. Render components

@@ -54,15 +54,15 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<UpdateTypologyDto>(UpdateTypologySchema, typologyData);
+	const { formRef } = useTypicalForm<UpdateTypologyDto>(UpdateTypologySchema, typologyData);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Typology>(API_ROUTES.offer.TYPOLOGIES_DETAIL(typologyId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchData<Typology>(API_ROUTES.offer.TYPOLOGIES_DETAIL(typologyId), 'PUT', formRef.current.getValues()),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			typologyMutate(updatedItem);
 			typologiesListMutate();
 		},
@@ -71,7 +71,7 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Typology>(API_ROUTES.offer.TYPOLOGIES_DETAIL(typologyId), 'DELETE', typologyData),
 		onSuccess: () => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			typologiesListMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.offer.TYPOLOGIES_LIST));
 		},
@@ -80,7 +80,7 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Typology>(API_ROUTES.offer.TYPOLOGIES_DETAIL_LOCK(typologyId)),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			typologyMutate(updatedItem);
 			typologiesListMutate();
 		},
@@ -122,12 +122,12 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 		hasError: !!typologyError,
 		isDeleted: null,
 		isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: formRef.current.isDirty(),
 		isLoading: typologyLoading,
 		isLocked: typologyData?.is_locked,
 		isLocking,
 		isSaving: isSaving,
-		isValid: form.isValid(),
+		isValid: formRef.current.isValid(),
 		permissions: {
 			delete: permissions.delete,
 			lock: permissions.lock,
@@ -139,14 +139,14 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 	//
 	// F. Define context value
 
-	const contextValue: TypologyDetailContextState = useMemo(() => ({
+	const contextValue: TypologyDetailContextState = {
 		actions: {
 			delete: handleDelete,
 			lock: handleLock,
 			save: handleSave,
 		},
 		data: {
-			form,
+			form: formRef.current,
 			id: typologyId,
 			typology: typologyData,
 		},
@@ -161,14 +161,7 @@ export const TypologyDetailContextProvider = ({ children, typologyId }: PropsWit
 			isReadOnly,
 			isSaving: isSaving,
 		},
-	}), [
-		typologyData,
-		typologyError,
-		typologyLoading,
-		typologyId,
-		form,
-		isSaving,
-	]);
+	};
 
 	//
 	// G. Render components

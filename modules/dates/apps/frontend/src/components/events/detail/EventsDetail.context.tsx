@@ -3,6 +3,7 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type Event, EventRule, Line, PermissionCatalog, type UpdateEventDto, UpdateEventSchema } from '@tmlmobilidade/types';
 import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
@@ -64,7 +65,7 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<UpdateEventDto>(
+	const { formRef } = useTypicalForm<UpdateEventDto>(
 		UpdateEventSchema,
 		eventData,
 		{
@@ -82,9 +83,9 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Event>(API_ROUTES.dates.EVENTS_DETAIL(eventId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchData<Event>(API_ROUTES.dates.EVENTS_DETAIL(eventId), 'PUT', formRef.current.getValues()),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			eventMutate(updatedItem);
 			eventsListMutate();
 		},
@@ -93,7 +94,7 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Event>(API_ROUTES.dates.EVENTS_DETAIL(eventId), 'DELETE', eventData),
 		onSuccess: () => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			eventsListMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.dates.EVENTS_LIST));
 		},
@@ -102,7 +103,7 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Event>(API_ROUTES.dates.EVENTS_DETAIL_LOCK(eventId)),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			eventMutate(updatedItem);
 			eventsListMutate();
 		},
@@ -112,31 +113,29 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 	// Rules
 
 	const handleAddRule = (rule: EventRule) => {
-		const currentRules = (form.getValues().rules ?? []) as EventRule[];
+		const currentRules = (formRef.current.getValues().rules ?? []) as EventRule[];
 		const ruleWithId = { ...rule, _id: generateRandomString({ length: 5 }) };
 		const newRules = [...currentRules, ruleWithId];
-
-		form.setFieldValue('rules', newRules);
+		formRef.current.setFieldValue('rules', newRules);
 	};
 
 	const handleEditRule = (rule: EventRule) => {
 		if (!rule._id) {
-			console.error('Cannot edit rule without _id');
+			Logger.error('Cannot edit rule without _id');
 			return;
 		}
-		const currentRules = (form.getValues().rules ?? []) as EventRule[];
+		const currentRules = (formRef.current.getValues().rules ?? []) as EventRule[];
 		const newRules = currentRules.map(r =>
 			r._id === rule._id ? rule : r,
 		);
 
-		form.setFieldValue('rules', newRules);
+		formRef.current.setFieldValue('rules', newRules);
 	};
 
 	const handleDeleteRule = (ruleId: string) => {
-		const currentRules = (form.getValues().rules ?? []) as EventRule[];
+		const currentRules = (formRef.current.getValues().rules ?? []) as EventRule[];
 		const newRules = currentRules.filter(r => r._id !== ruleId);
-
-		form.setFieldValue('rules', newRules);
+		formRef.current.setFieldValue('rules', newRules);
 	};
 
 	const handleOpenRuleModal = (rule?: EventRule) => {
@@ -153,8 +152,8 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 		const onDelete = rule?._id ? () => handleDeleteRule(rule._id) : undefined;
 
 		const eventData = {
-			agency_ids: form.values.agency_ids || [],
-			dates: form.values.dates || [],
+			agency_ids: formRef.current.values.agency_ids || [],
+			dates: formRef.current.values.dates || [],
 		};
 
 		openCreateRuleModal(eventData, rule, onSubmit, onDelete);
@@ -196,12 +195,12 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 		hasError: !!eventError,
 		isDeleted: null,
 		isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: formRef.current.isDirty(),
 		isLoading: eventLoading,
 		isLocked: eventData?.is_locked,
 		isLocking,
 		isSaving: isSaving,
-		isValid: form.isValid(),
+		isValid: formRef.current.isValid(),
 		permissions: {
 			delete: permissions.delete,
 			lock: permissions.lock,
@@ -215,12 +214,12 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 
 	// Filter lines by event's agency_ids
 	const filteredLines = useMemo(() => {
-		if (!allLinesData || !form.values.agency_ids?.length) return [];
-		const agencyIdsSet = new Set(form.values.agency_ids);
+		if (!allLinesData || !formRef.current.values.agency_ids?.length) return [];
+		const agencyIdsSet = new Set(formRef.current.values.agency_ids);
 		return allLinesData.filter(line => agencyIdsSet.has(line.agency_id));
-	}, [allLinesData, form.values.agency_ids]);
+	}, [allLinesData, formRef]);
 
-	const contextValue: EventsDetailContextState = useMemo(() => ({
+	const contextValue: EventsDetailContextState = {
 		actions: {
 			addRule: handleAddRule,
 			delete: handleDelete,
@@ -232,7 +231,7 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 		},
 		data: {
 			event: eventData,
-			form,
+			form: formRef.current,
 			id: eventId,
 			lines: filteredLines,
 		},
@@ -247,15 +246,7 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 			isReadOnly,
 			isSaving: isSaving,
 		},
-	}), [
-		eventData,
-		eventError,
-		eventLoading,
-		eventId,
-		form,
-		isSaving,
-		filteredLines,
-	]);
+	};
 
 	//
 	// G. Render components

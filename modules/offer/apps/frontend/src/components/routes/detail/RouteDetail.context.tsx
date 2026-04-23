@@ -7,7 +7,7 @@ import { Line, PermissionCatalog, Route, type UpdateRouteDto, UpdateRouteSchema 
 import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -55,15 +55,15 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<UpdateRouteDto>(UpdateRouteSchema, routeData);
+	const { formRef } = useTypicalForm<UpdateRouteDto>(UpdateRouteSchema, routeData);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Route>(API_ROUTES.offer.ROUTES_DETAIL(routeId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchData<Route>(API_ROUTES.offer.ROUTES_DETAIL(routeId), 'PUT', formRef.current.getValues()),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			routeMutate(updatedItem);
 			lineMutate();
 		},
@@ -72,7 +72,7 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Route>(API_ROUTES.offer.ROUTES_DETAIL(routeId), 'DELETE', routeData),
 		onSuccess: () => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			lineMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.offer.LINES_LIST));
 		},
@@ -81,7 +81,7 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Route>(API_ROUTES.offer.ROUTES_DETAIL_LOCK(routeId)),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			routeMutate(updatedItem);
 			lineMutate();
 		},
@@ -104,12 +104,12 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 		hasError: !!routeError,
 		isDeleted: null,
 		isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: formRef.current.isDirty(),
 		isLoading: routeLoading,
 		isLocked: routeData?.is_locked,
 		isLocking,
 		isSaving: isSaving,
-		isValid: form.isValid(),
+		isValid: formRef.current.isValid(),
 		permissions: {
 			delete: permissions.delete,
 			lock: permissions.lock,
@@ -121,14 +121,14 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 	//
 	// F. Define context value
 
-	const contextValue: RouteDetailContextState = useMemo(() => ({
+	const contextValue: RouteDetailContextState = {
 		actions: {
 			delete: handleDelete,
 			lock: handleLock,
 			save: handleSave,
 		},
 		data: {
-			form,
+			form: formRef.current,
 			id: routeId,
 			line: lineData,
 			route: routeData,
@@ -144,14 +144,7 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 			isReadOnly,
 			isSaving: isSaving,
 		},
-	}), [
-		routeData,
-		routeError,
-		routeLoading,
-		routeId,
-		form,
-		isSaving,
-	]);
+	};
 
 	//
 	// G. Render components
