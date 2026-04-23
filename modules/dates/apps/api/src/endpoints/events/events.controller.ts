@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { events, type Filter } from '@tmlmobilidade/interfaces';
+import { events, type Filter, patterns } from '@tmlmobilidade/interfaces';
 import { type CreateEventDto, type Event, PermissionCatalog, type UpdateEventDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -193,10 +193,37 @@ export class EventsController {
 		}
 
 		//
+		// Get pattern ids that reference this event in manual pattern rules
+
+		const associatedPatterns = await patterns.findMany(
+			{
+				rules: {
+					$elemMatch: {
+						event_id: request.params.id,
+						kind: 'manual',
+					},
+				},
+			},
+			{
+				projection: {
+					_id: 1,
+					code: 1,
+					headsign: 1,
+					line_id: 1,
+					route_id: 1,
+				},
+				sort: { code: 1 },
+			},
+		);
+
+		//
 		// Fetch the event data
 
 		return reply.send({
-			data: eventData,
+			data: {
+				...eventData,
+				associated_patterns: associatedPatterns,
+			},
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});

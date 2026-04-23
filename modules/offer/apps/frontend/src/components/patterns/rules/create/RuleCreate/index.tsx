@@ -80,7 +80,7 @@ export function RuleCreate() {
 					</Grid>
 
 					<Surface>
-						<RulePreviewCalendar affectedDates={createRuleContext.data.ruleImpact.dates} />
+						<RulePreviewCalendar affectedDates={createRuleContext.data.ruleImpact.dates} onVisibleYearChange={createRuleContext.actions.setPreviewYear} />
 					</Surface>
 				</div>
 			</div>

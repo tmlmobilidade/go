@@ -50,7 +50,10 @@ export function buildYearPeriodsPart(
  * @param cfg - Format mode (short or long)
  * @returns Formatted weekday string in Portuguese
  */
-export function buildWeekdaysPart(rule: EventReplacementRule | ManualRule | StopsParameterOverride, cfg: { mode: 'long' | 'short', omitIfAll?: boolean } = { mode: 'long' }): string {
+export function buildWeekdaysPart(
+	rule: EventReplacementRule | ManualRule | StopsParameterOverride,
+	cfg: { mode: 'long' | 'short', omitIfAll?: boolean } = { mode: 'long' },
+): string {
 	if (!rule.weekdays || rule.weekdays.length === 0 || rule.weekdays.length === 7) {
 		if (cfg.omitIfAll) return '';
 		return cfg.mode === 'short' ? 'Todos os dias' : 'em todos os dias';
@@ -60,18 +63,33 @@ export function buildWeekdaysPart(rule: EventReplacementRule | ManualRule | Stop
 	const hasMonFri = ([1, 2, 3, 4, 5] as IsoWeekday[]).every(d => weekdaySet.has(d));
 	const hasWeekend = weekdaySet.has(6) && weekdaySet.has(7);
 
-	const getDayLabel = (value: IsoWeekday) => WEEKDAY_OPTIONS.find(opt => opt.value === value)?.label ?? '?';
+	const getDayLabel = (value: IsoWeekday) =>
+		WEEKDAY_OPTIONS.find(opt => opt.value === value)?.label ?? '?';
 
-	if (hasMonFri && hasWeekend) return 'Todos os dias';
+	const getSingleDayLongLabel = (value: IsoWeekday) => {
+		if (value === 6) {
+			return `ao ${getDayLabel(value)}`;
+		}
+		if (value === 7) {
+			return `aos ${getDayLabel(value)}`;
+		}
+
+		return `à ${getDayLabel(value)}`;
+	};
+
+	if (hasMonFri && hasWeekend) return cfg.mode === 'short' ? 'Todos os dias' : 'em todos os dias';
 
 	if (hasMonFri) {
 		const extraDays = (rule.weekdays as IsoWeekday[])
 			.filter(d => d < 1 || d > 5)
 			.sort((a, b) => a - b);
 
-		if (extraDays.length === 0) return 'Dias úteis';
+		if (extraDays.length === 0) {
+			return cfg.mode === 'short' ? 'Dias úteis' : 'nos dias úteis';
+		}
 
 		const extraLabels = extraDays.map(getDayLabel);
+
 		return cfg.mode === 'short'
 			? `Dias úteis + ${extraLabels.join(', ')}`
 			: `nos dias úteis e ${extraLabels.join(', ')}`;
@@ -87,6 +105,7 @@ export function buildWeekdaysPart(rule: EventReplacementRule | ManualRule | Stop
 			.sort((a, b) => a - b);
 
 		const extraLabels = extraDays.map(getDayLabel);
+
 		return cfg.mode === 'short'
 			? `Fim de semana + ${extraLabels.join(', ')}`
 			: `no fim de semana e ${extraLabels.join(', ')}`;
@@ -95,9 +114,15 @@ export function buildWeekdaysPart(rule: EventReplacementRule | ManualRule | Stop
 	const sortedDays = [...(rule.weekdays as IsoWeekday[])].sort((a, b) => a - b);
 	const dayLabels = sortedDays.map(getDayLabel);
 
-	return cfg.mode === 'short'
-		? dayLabels.join(', ')
-		: `à ${dayLabels.join(', ')}`;
+	if (cfg.mode === 'short') {
+		return dayLabels.join(', ');
+	}
+
+	if (sortedDays.length === 1) {
+		return getSingleDayLongLabel(sortedDays[0]);
+	}
+
+	return `à ${dayLabels.join(', ')}`;
 }
 
 export function buildDayPeriodsPart(
