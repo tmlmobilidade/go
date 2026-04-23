@@ -2,12 +2,10 @@
 
 /* * */
 
-import { useLinesContext } from '@/contexts/Lines.context';
-import { useStopsContext } from '@/contexts/Stops.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type Alert, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Label, openConfirmModal, SelectDataItem, useDataHashedTrips, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
+import { type Alert, HashedTrip, HashedTripWaypoint, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
+import { Label, openConfirmModal, type SelectDataItem, useDataHashedTrips, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -40,9 +38,9 @@ interface ReferencesEditorContextState {
 	data: {
 		available_agencies_options: SelectDataItem[]
 		enabled_reference_types: Alert['reference_type'][]
-		filtered_lines: SelectDataItem[]
+		filtered_hashed_trip_waypoints: HashedTripWaypoint[]
+		filtered_hashed_trips: HashedTrip[]
 		filtered_rides: RideNormalized[]
-		filtered_stops: SelectDataItem[]
 		selected_agency_id: Alert['agency_id']
 		selected_reference_type: Alert['reference_type']
 		selected_references: Alert['references']
@@ -79,11 +77,8 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 	//
 	// A. Setup variables
 
-	const linesContext = useLinesContext();
-	const stopsContext = useStopsContext();
-
-	const filterLines = useFilterStateList('lines', [], linesContext.data.options);
-	const filterStops = useFilterStateList('stops', [], stopsContext.data.options);
+	const filterLines = useFilterStateList('lines', []);
+	const filterStops = useFilterStateList('stops', []);
 	const filterSearch = useFilterStateString('rides_search');
 	const filterViewMode = useFilterStateString('view_mode', 'selected');
 
@@ -94,6 +89,17 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 
 	//
 	// B. Fetch data
+
+	const { isLoading: hashedTripsLoading, raw: hashedTripsData } = useDataHashedTrips(API_ROUTES.alerts.HASHED_TRIPS_LIST, {
+		filters: {
+			agency_ids: [selectedAgencyId],
+			date_end: endDate,
+			date_start: startDate,
+			line_ids: filterLines.value,
+			search: filterSearch.value,
+			stop_ids: filterStops.value,
+		},
+	});
 
 	const { isLoading: ridesLoading, raw: ridesData } = useDataRides(API_ROUTES.alerts.RIDES_LIST, {
 		filters: {
@@ -107,28 +113,29 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 		},
 	});
 
-	const { isLoading: hashedTripsLoading, raw: hashedTripsData } = useDataHashedTrips(API_ROUTES.alerts.LINES_LIST, {
-		filters: {
-			agency_ids: [selectedAgencyId],
-			date_end: endDate,
-			date_start: startDate,
-			line_ids: filterLines.value,
-			search: filterSearch.value,
-			stop_ids: filterStops.value,
-		},
-	});
-
 	//
 	// C. Transform data
 
-	const linesData = useMemo(() => {
+	const hashedTripsAsLinesData = useMemo(() => {
 		if (!hashedTripsData) return [];
-		const uniqueLinesMap = new Map<number, string>();
+		const uniqueLinesMap = new Map<number, HashedTrip>();
 		hashedTripsData.forEach((item) => {
 			if (uniqueLinesMap.has(item.line_id)) return;
-			uniqueLinesMap.set(item.line_id, `[${item.line_short_name}] ${item.line_long_name}`);
+			uniqueLinesMap.set(item.line_id, item);
 		});
-		return Array.from(uniqueLinesMap, ([value, label]) => ({ label, value: String(value) }));
+		return Array.from(uniqueLinesMap.values());
+	}, [hashedTripsData]);
+
+	const hashedTripsAsStopsData = useMemo(() => {
+		if (!hashedTripsData) return [];
+		const uniqueStopsMap = new Map<string, HashedTripWaypoint>();
+		hashedTripsData.forEach((item) => {
+			item.path.forEach((pathItem) => {
+				if (uniqueStopsMap.has(pathItem.stop_id)) return;
+				uniqueStopsMap.set(pathItem.stop_id, pathItem);
+			});
+		});
+		return Array.from(uniqueStopsMap.values());
 	}, [hashedTripsData]);
 
 	//
@@ -270,9 +277,9 @@ export const ReferencesEditorContextProvider = ({ activePeriodEndDate, activePer
 		data: {
 			available_agencies_options: availableAgenciesOptions,
 			enabled_reference_types: enabledReferenceTypes || [],
-			filtered_lines: linesData,
+			filtered_hashed_trip_waypoints: hashedTripsAsStopsData,
+			filtered_hashed_trips: hashedTripsAsLinesData,
 			filtered_rides: ridesData,
-			filtered_stops: [],
 			selected_agency_id: selectedAgencyId,
 			selected_reference_type: selectedReferenceType,
 			selected_references: selectedReferences ?? [],

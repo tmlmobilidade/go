@@ -50,9 +50,9 @@ export function AlertCreateStepSummary() {
 				/>
 				<Section padding="none">
 					<Switch
-						checked={alertCreateContext.data.auto_texts}
+						key={alertCreateContext.data.form.key('auto_texts')}
 						label={t('default:alerts.create.summary.auto_text.label')}
-						onChange={event => alertCreateContext.data.set_auto_texts(event.currentTarget.checked)}
+						{...alertCreateContext.data.form.getInputProps('auto_texts', { type: 'checkbox' })}
 					/>
 				</Section>
 				<Textarea

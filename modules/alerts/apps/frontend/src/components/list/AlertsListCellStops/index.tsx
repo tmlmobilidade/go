@@ -2,7 +2,6 @@
 
 /* * */
 
-import { useStopsContext } from '@/contexts/Stops.context';
 import { TagGroup, type TagProps } from '@tmlmobilidade/ui';
 
 /* * */
@@ -17,23 +16,12 @@ export function AlertsListCellStops({ values }: AlertsListCellStopsProps) {
 	//
 
 	//
-	// A. Setup variables
+	// A. Transform data
 
-	const stopsContext = useStopsContext();
-
-	//
-	// B. Transform data
-
-	const preparedTags = values
-		.map((item): TagProps => {
-			const stopData = stopsContext.actions.getStopById(item);
-			if (!stopData) return null;
-			return { label: stopData.long_name, variant: 'muted' };
-		})
-		.filter(Boolean);
+	const preparedTags = values.map((item): TagProps => ({ label: item, variant: 'muted' }));
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return <TagGroup limit={2} tags={preparedTags} />;
 

@@ -65,15 +65,15 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	//
 	// C. Define form
 
-	const { form } = useTypicalForm<UpdateAlertDto>(UpdateAlertSchema, alertData);
+	const { formRef } = useTypicalForm<UpdateAlertDto>(UpdateAlertSchema, alertData);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', formRef.current.getValues()),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			alertMutate(updatedItem);
 			alertImageMutate();
 			alertsListMutate();
@@ -84,7 +84,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'DELETE'),
 		onSuccess: () => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			alertsListMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_LIST));
 		},
@@ -93,7 +93,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_LOCK(alertId)),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			alertMutate(updatedItem);
 			alertImageMutate();
 			alertsListMutate();
@@ -103,7 +103,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	const { action: handleUploadImage, isLoading: isUploadingImage } = useHandleUpdate({
 		fetchFn: async () => imageFile && await uploadFile(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), imageFile),
 		onSuccess: () => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			alertMutate();
 			alertImageMutate();
 			alertsListMutate();
@@ -113,7 +113,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	const { action: handleDeleteImage, isLoading: isDeletingImage } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), 'DELETE'),
 		onSuccess: () => {
-			form.resetDirty();
+			formRef.current.resetDirty();
 			alertMutate();
 			alertImageMutate();
 			alertsListMutate();
@@ -166,11 +166,11 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			},
 		]),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: formRef.current.isDirty(),
 		isLoading: alertLoading,
 		isLocked: alertData?.is_locked,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: formRef.current.isValid(),
 	});
 
 	const { canLock } = useFlagCanLock({
@@ -189,10 +189,10 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			},
 		]),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: formRef.current.isDirty(),
 		isLoading: alertLoading,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: formRef.current.isValid(),
 	});
 
 	const { canDelete } = useFlagCanDelete({
@@ -211,11 +211,11 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			},
 		]),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: formRef.current.isDirty(),
 		isLoading: alertLoading,
 		isLocked: alertData?.is_locked,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: formRef.current.isValid(),
 	});
 
 	//
@@ -231,7 +231,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		},
 		data: {
 			alert: alertData,
-			form,
+			form: formRef.current,
 			id: alertId,
 			image: alertImage,
 		},
@@ -242,7 +242,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			error: alertError,
 			isDeleting,
 			isDeletingImage: isDeletingImage,
-			isDirty: form.isDirty(),
+			isDirty: formRef.current.isDirty(),
 			isLoading: alertLoading,
 			isLocking: isLocking,
 			isReadOnly,

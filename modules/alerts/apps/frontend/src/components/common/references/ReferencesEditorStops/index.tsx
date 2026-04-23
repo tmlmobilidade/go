@@ -4,8 +4,6 @@
 
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { ReferencesEditorStopsItem } from '@/components/common/references/ReferencesEditorStopsItem';
-import { useLinesContext } from '@/contexts/Lines.context';
-import { useStopsContext } from '@/contexts/Stops.context';
 import { IconPlus } from '@tabler/icons-react';
 import { Button, NoDataLabel, Section, Surface } from '@tmlmobilidade/ui';
 
@@ -17,8 +15,6 @@ export function ReferencesEditorStops() {
 	//
 	// A. Setup variables
 
-	const linesContext = useLinesContext();
-	const stopsContext = useStopsContext();
 	const referencesEditorContext = useReferencesEditorContext();
 
 	//
@@ -38,13 +34,11 @@ export function ReferencesEditorStops() {
 			{referencesEditorContext.data.selected_references.map((reference, index) => (
 				<ReferencesEditorStopsItem
 					key={index}
+					hashedTrips={referencesEditorContext.data.filtered_hashed_trips}
 					index={index}
-					lines={linesContext.data.lines}
-					municipalityIds={[]}
 					onRemoveReference={referencesEditorContext.actions.removeReference}
 					onUpdateReference={referencesEditorContext.actions.updateReference}
 					reference={reference}
-					stops={stopsContext.data.stops}
 				/>
 			))}
 

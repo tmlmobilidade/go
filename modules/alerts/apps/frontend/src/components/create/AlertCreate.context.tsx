@@ -2,27 +2,23 @@
 
 /* * */
 
-import { type Stop } from '@carrismetropolitana/api-types/network';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Agency, type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, type HashedTrip, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
+import { type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, PermissionCatalog } from '@tmlmobilidade/types';
 import { type CreateContextStateTemplate, keepUrlParams, useDataAgencies, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm, useTypicalFormWatch } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
 interface AlertCreateContextState extends CreateContextStateTemplate {
 	data: {
-		auto_texts: boolean
 		enabled_reference_types: Alert['reference_type'][]
 		form: UseFormReturnType<CreateAlertDto>
 		multi_step: UseMultiStepReturnType
-		set_auto_texts: (value: boolean) => void
 	}
 };
 
@@ -38,25 +34,6 @@ export function useAlertCreateContext() {
 	return context;
 }
 
-interface AgencyData {
-	display_name: string
-	id: string
-	name: string
-}
-
-interface StopData {
-	id: string
-	lines: LineData[]
-	long_name: string
-}
-
-interface LineData {
-	id: string
-	long_name: string
-	short_name: string
-	stops: StopData[]
-}
-
 /* * */
 
 export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
@@ -66,23 +43,14 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const router = useRouter();
-	const searchParams = useSearchParams();
-
 	const meContext = useMeContext();
-	const copyAlertId = searchParams.get('copy');
-
-	const [autoTexts, setAutoTexts] = useState(true);
-	const [hasAppliedCopyData, setHasAppliedCopyData] = useState(false);
-
-	const [selectedReferencesData, setSelectedReferencesData] = useState<AgencyData[] | HashedTrip[] | RideNormalized[]>([]);
 
 	//
 	// B. Fetch data
 
 	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
-	const { data: copyAlertData, isLoading: copyAlertLoading } = useSWR<Alert>(copyAlertId ? API_ROUTES.alerts.ALERTS_DETAIL(copyAlertId) : null);
 
-	const { options: agenciesOptions, raw: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { options: agenciesOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.create],
 		scope: PermissionCatalog.all.alerts.scope,
 	});
@@ -167,37 +135,6 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	}, [watchedFormValues.agency_id, agenciesOptions, formRef]);
 
 	useEffect(() => {
-		if (copyAlertId) return;
-		if (!autoTexts) return;
-		if (multiStep.progress.current?.index !== multiStep.progress.steps.length - 1) return; // Only run when on the last step | if we go back and again to last step, this will run again
-		if (!formRef.current.getValues().cause || !formRef.current.getValues().effect || !formRef.current.getValues().reference_type || !formRef.current.getValues().references) return;
-		const references = formRef.current.getValues().references;
-		const alertTemplating = describeAlert({
-			cause: formRef.current.getValues().cause,
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			data: selectedReferencesData as any[],
-			effect: formRef.current.getValues().effect,
-			reference_type: formRef.current.getValues().reference_type,
-			references: references,
-			type: formRef.current.getValues().reference_type,
-		});
-		if (!alertTemplating) return;
-		formRef.current.setFieldValue('description', alertTemplating.description.pt);
-		formRef.current.setFieldValue('title', alertTemplating.title.pt);
-	}, [copyAlertId, autoTexts, multiStep.progress.current?.index, multiStep.progress, selectedReferencesData, formRef]);
-
-	useEffect(() => {
-		if (!copyAlertId || !copyAlertData || hasAppliedCopyData) return;
-		const copyAlertAsCreateData = CreateAlertSchema.parse(copyAlertData);
-		formRef.current.reset();
-		formRef.current.setValues(copyAlertAsCreateData);
-		formRef.current.validate();
-		formRef.current.resetDirty();
-		multiStep.actions.goTo('summary');
-		setHasAppliedCopyData(true);
-	}, [copyAlertData, copyAlertId, formRef, hasAppliedCopyData, multiStep.actions]);
-
-	useEffect(() => {
 		if (watchedFormValues.publish_status) return;
 		formRef.current.setFieldValue('publish_status', 'published');
 	}, [formRef, watchedFormValues.publish_status]);
@@ -260,138 +197,6 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		formRef.current.setFieldValue('references', []);
 	}, [formRef, watchedFormValues.effect]);
 
-	useEffect(() => {
-		(async () => {
-			// Reset if no selected reference_type
-			if (!watchedFormValues.reference_type) return setSelectedReferencesData([]);
-			// Reset state if no selected references
-			if (!watchedFormValues.references?.length) return setSelectedReferencesData([]);
-			// Get a list of unique parent_ids
-			const parentIds = watchedFormValues.references.map(reference => reference.parent_id);
-			// Fetch data for agencies
-			if (watchedFormValues.reference_type === 'agency') {
-				const result: Agency[] = agenciesData.filter(agency => parentIds.includes(agency._id));
-				setSelectedReferencesData(result.map(agency => ({ display_name: agency.name, id: agency._id, name: agency.name })));
-			}
-
-			// Fetch data for lines
-			if (watchedFormValues.reference_type === 'lines') {
-				const response = await fetch('https://api.carrismetropolitana.pt/v2/lines');
-				const linesData = await response.json() as Line[];
-				const result: HashedTrip[] = linesData.filter(line => parentIds.includes(line.id));
-
-				// Get all unique child_ids (stop IDs) from references
-				const allChildIds = watchedFormValues.references
-					.filter(ref => parentIds.includes(ref.parent_id))
-					.flatMap(ref => ref.child_ids);
-				const uniqueChildIds = [...new Set(allChildIds)];
-
-				// Fetch stops data if there are child_ids
-				const stopsDataMap = new Map<string, Stop>();
-				if (uniqueChildIds.length > 0) {
-					const stopsResponse = await fetch('https://api.carrismetropolitana.pt/v2/stops');
-					const stopsData = await stopsResponse.json() as Stop[];
-					stopsData.filter(stop => uniqueChildIds.includes(stop.id)).forEach((stop) => {
-						stopsDataMap.set(stop.id, stop);
-					});
-				}
-
-				setSelectedReferencesData(result.map((line) => {
-					// Get child_ids for this specific line
-					const lineReference = formRef.current.getValues().references.find(ref => ref.parent_id === line.id);
-					const lineChildIds = lineReference?.child_ids ?? [];
-
-					// Map child_ids to StopData
-					const stops: StopData[] = lineChildIds
-						.map(stopId => stopsDataMap.get(stopId))
-						.filter((stop): stop is Stop => stop !== undefined)
-						.map(stop => ({
-							id: stop.id,
-							lines: [],
-							long_name: stop.long_name,
-						}));
-
-					return {
-						id: line.id,
-						long_name: line.long_name,
-						short_name: line.short_name,
-						stops,
-					};
-				}));
-			}
-			// Fetch data for stops
-			if (watchedFormValues.reference_type === 'stops') {
-				const response = await fetch('https://api.carrismetropolitana.pt/v2/stops');
-				const stopsData = await response.json() as Stop[];
-				const result: Stop[] = stopsData.filter(stop => parentIds.includes(stop.id));
-
-				const linesResponse = await fetch('https://api.carrismetropolitana.pt/v2/lines');
-				const linesData = await linesResponse.json() as Line[];
-				const selectedLines = linesData.filter(line => result.some(stop => stop.line_ids.includes(line.id)));
-
-				// Get all unique child_ids (stop IDs) from references
-				const allChildIds = watchedFormValues.references
-					.filter(ref => parentIds.includes(ref.parent_id))
-					.flatMap(ref => ref.child_ids);
-				const uniqueChildIds = [...new Set(allChildIds)];
-
-				// Fetch stops data if there are child_ids
-				const childStopsDataMap = new Map<string, Stop>();
-				if (uniqueChildIds.length > 0) {
-					const childStopsResponse = await fetch('https://api.carrismetropolitana.pt/v2/stops');
-					const childStopsData = await childStopsResponse.json() as Stop[];
-					childStopsData.filter(stop => uniqueChildIds.includes(stop.id)).forEach((stop) => {
-						childStopsDataMap.set(stop.id, stop);
-					});
-				}
-
-				setSelectedReferencesData(result.map((stop) => {
-					// Get child_ids for this specific stop
-					const stopReference = formRef.current.getValues().references.find(ref => ref.parent_id === stop.id);
-					const stopChildIds = stopReference?.child_ids ?? [];
-
-					// For each line associated with this stop, populate stops from child_ids
-					const linesWithStops = selectedLines
-						.filter(line => stop.line_ids.includes(line.id))
-						.map((line) => {
-							// Get stops that are child_ids and belong to this line
-							const lineStops: StopData[] = stopChildIds
-								.map(stopId => childStopsDataMap.get(stopId))
-								.filter((childStop): childStop is Stop => childStop?.line_ids.includes(line.id))
-								.map(childStop => ({
-									id: childStop.id,
-									lines: [],
-									long_name: childStop.long_name,
-								}));
-
-							return {
-								id: line.id,
-								long_name: line.long_name,
-								short_name: line.short_name,
-								stops: lineStops,
-							};
-						});
-
-					return {
-						id: stop.id,
-						lines: linesWithStops,
-						long_name: stop.long_name,
-					};
-				}));
-			}
-			// Fetch data for rides
-			if (watchedFormValues.reference_type === 'rides') {
-				const result: RideNormalized[] = [];
-				for (const rideId of parentIds) {
-					const response = await fetchData<RideNormalized>(API_ROUTES.alerts.RIDES_DETAIL_RIDE(rideId));
-					if (!response.data) continue;
-					result.push(response.data);
-				}
-				setSelectedReferencesData(result);
-			}
-		})();
-	}, [agenciesData, formRef, watchedFormValues.reference_type, watchedFormValues.references]);
-
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', formRef.current.getValues()),
 		onSuccess: (updatedItem) => {
@@ -408,17 +213,15 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 			create: handleCreate,
 		},
 		data: {
-			auto_texts: autoTexts,
 			enabled_reference_types: enabledReferenceTypes,
 			form: formRef.current,
 			multi_step: multiStep,
-			set_auto_texts: setAutoTexts,
 		},
 		flags: {
 			canCreate: true,
 			error: undefined,
 			isCreating,
-			isLoading: copyAlertLoading,
+			isLoading: false,
 		},
 	};
 
