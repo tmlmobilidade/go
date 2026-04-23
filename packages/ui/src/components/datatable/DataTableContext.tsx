@@ -82,8 +82,8 @@ export function DataTableContextProvider<T>({ children, columns, records }: Prop
 		};
 
 		return records.sort((a, b) => {
-			const aValue = getValueAtPath(a, accessor) ?? '';
-			const bValue = getValueAtPath(b, accessor) ?? '';
+			const aValue = getValueAtPath(a, accessor as any) ?? '';
+			const bValue = getValueAtPath(b, accessor as any) ?? '';
 
 			// Validate if type is sortable
 			if (![typeof aValue, typeof bValue].every(type => type === 'string' || type === 'number')) {
@@ -120,8 +120,7 @@ export function DataTableContextProvider<T>({ children, columns, records }: Prop
 		if (sortState?.accessor === accessor) {
 			const newOrder = sortState.order === 'asc' ? 'desc' : sortState.order === 'desc' ? null : 'asc';
 			setSortState(newOrder ? { accessor, order: newOrder } : null);
-		}
-		else {
+		} else {
 			setSortState({ accessor, order: 'asc' });
 		}
 	}, [sortState]);

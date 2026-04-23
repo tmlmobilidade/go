@@ -1,5 +1,6 @@
 'use client';
 
+import { DotPath } from '@tmlmobilidade/utils';
 /* * */
 
 import { DataTableContent } from '../DataTableContent';
@@ -46,7 +47,7 @@ export interface DataTableProps<T> {
 	/**
 	 * The id of each table row.
 	 */
-	rowIdAccessor?: keyof T
+	rowIdAccessor?: DotPath<T>
 
 	/**
 	 * The ID of the row to mark as selected.
@@ -71,7 +72,7 @@ export interface DataTableColumn<T> {
 	/**
 	 * The row's object property key.
 	 */
-	accessor: keyof T
+	accessor: DotPath<T>
 
 	/**
 	 * Center the column content.

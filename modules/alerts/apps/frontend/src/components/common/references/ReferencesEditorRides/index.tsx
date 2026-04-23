@@ -5,7 +5,6 @@
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { ReferencesEditorRidesFilters } from '@/components/common/references/ReferencesEditorRidesFilters';
 import { RidesListCellHeadsign } from '@/components/create/RidesListCellHeadsign';
-import { SeenStatusTag } from '@/components/create/SeenStatusTag';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Checkbox, DataTable, DataTableColumn, NoDataLabel, OperationalStatusTag, Section, SeenStatusIndicator, Surface, Tag } from '@tmlmobilidade/ui';

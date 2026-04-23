@@ -1,7 +1,7 @@
 /* * */
 
 import { normalizeString } from '@tmlmobilidade/strings';
-import { getValueAtPath } from '@tmlmobilidade/utils';
+import { type DotPath, getValueAtPath } from '@tmlmobilidade/utils';
 
 /**
  * Checks if a given query is present in the value at the specified accessor path
@@ -12,9 +12,9 @@ import { getValueAtPath } from '@tmlmobilidade/utils';
  * @param query The search query string to look for in the value.
  * @returns True if the query is found in the value at the accessor path, otherwise false.
  */
-export function accessorSearch<T>(record: T, accessor: keyof T, query: string) {
+export function accessorSearch<T>(record: T, accessor: DotPath<T>, query: string) {
 	// Get the value at the specified accessor path
-	const valueAtPath = getValueAtPath(record, accessor);
+	const valueAtPath = getValueAtPath(record, accessor as any);
 	// If there is no value return false
 	if (!valueAtPath) return false;
 	// Convert the value to a string and normalize it

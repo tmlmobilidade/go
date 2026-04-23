@@ -4,6 +4,7 @@
 
 import { useDebouncedValue } from '@mantine/hooks';
 import { normalizeString } from '@tmlmobilidade/strings';
+import { type DotPath } from '@tmlmobilidade/utils';
 import { useMemo } from 'react';
 
 import { accessorSearch } from './acessor-search';
@@ -12,7 +13,7 @@ import { plainSearch } from './plain-search';
 /* * */
 
 interface UseSearchProps<T> {
-	accessors?: (keyof T)[]
+	accessors?: DotPath<T>[]
 	customSearch?: (record: T, query: string) => boolean
 	data: T[]
 	debounce?: number
@@ -47,7 +48,7 @@ export function useSearch<T>({ accessors, customSearch, data, debounce = 500, qu
 			// Perform a plain search if there are no accessors
 			if (!accessors) return plainSearch<T>(record, normalizedQuery);
 			// If there are accessors, perform an accessor search
-			const accessorMatch = accessors.some(accessor => accessorSearch<T>(record, accessor, normalizedQuery));
+			const accessorMatch = accessors.some(accessor => accessorSearch<T>(record, accessor as any, normalizedQuery));
 			// If there is no custom search function, return the accessor match immediately
 			if (!customSearch) return accessorMatch;
 			// If there is a custom search function, then run it
