@@ -2,7 +2,8 @@
 /* * */
 
 import { type ExportedAfetacaoRow, type GtfsV29ExportConfig } from '@/types.js';
-import { type Agency, type Fare, type Line, type Pattern, type Typology, type Zone } from '@tmlmobilidade/types';
+import { Logger } from '@tmlmobilidade/logger';
+import { type Agency, type Fare, type Line, type Pattern, Stop, type Typology, type Zone } from '@tmlmobilidade/types';
 
 import { getAgencyStopId } from '../utils/get-agency-stop-id.js';
 
@@ -13,6 +14,7 @@ import { getAgencyStopId } from '../utils/get-agency-stop-id.js';
  * @param agencyData - The agency data
  * @param lineData - The line data
  * @param patternData - The pattern data
+ * @param allStopsMap - Map of stop ID to Stop object
  * @param allZonesMap - Map of zone ID to Zone object
  * @param allFaresMap - Map of fare ID to Fare object
  * @param typologyData - The typology data for this line
@@ -23,6 +25,7 @@ export async function parseZoning(
 	agencyData: Agency,
 	lineData: Line,
 	patternData: Pattern,
+	allStopsMap: Map<number, Stop>,
 	allZonesMap: Map<string, Zone>,
 	allFaresMap: Map<string, Fare>,
 	typologyData: null | Typology,
@@ -63,7 +66,11 @@ export async function parseZoning(
 
 		for (const [pathIndex, pathData] of patternData.path.entries()) {
 			// Skip if this pathStop has no associated stop
-			if (!pathData.stop) continue;
+			const stopData = allStopsMap.get(pathData.stop_id);
+			if (!stopData) {
+				Logger.error(`AFETACAO: stop ${pathData.stop_id} not found for pattern ${patternData.code}`);
+				continue;
+			}
 
 			// Get zones for this specific stop from the pattern path
 			const stopZones: Zone[] = [];
@@ -82,7 +89,7 @@ export async function parseZoning(
 
 			// Use agency-specific stop_id
 			const agencyId = agencyData._id;
-			const stopId = getAgencyStopId(pathData.stop, agencyId);
+			const stopId = getAgencyStopId(stopData, agencyId);
 
 			// Build the afetacao entry
 			parsedZoning.push({
@@ -91,7 +98,7 @@ export async function parseZoning(
 				line_type: typologyCode,
 				pattern_id: patternData.code,
 				stop_id: stopId,
-				stop_name: pathData.stop.name || '',
+				stop_name: stopData.name || '',
 				stop_sequence: pathIndex + exportConfig.stop_sequence_start,
 				accepted_zone_codes: formattedZoneCodes,
 				accepted_zone_names: formattedZoneNames,
@@ -122,11 +129,12 @@ export async function exportZoning(
 	agencyData: Agency,
 	lineData: Line,
 	patternData: Pattern,
+	allStopsMap: Map<number, Stop>,
 	allZonesMap: Map<string, Zone>,
 	allFaresMap: Map<string, Fare>,
 	typologyData: null | Typology,
 	exportConfig: GtfsV29ExportConfig,
 ) {
-	const parsedZoning = await parseZoning(agencyData, lineData, patternData, allZonesMap, allFaresMap, typologyData, exportConfig);
+	const parsedZoning = await parseZoning(agencyData, lineData, patternData, allStopsMap, allZonesMap, allFaresMap, typologyData, exportConfig);
 	await exportConfig.writers.afetacao.write(parsedZoning);
 }
