@@ -9,6 +9,8 @@ import { Button, CloseButton, DeleteButton, IdTag, LockButton, Spacer, Toolbar }
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
+import { EventsDetailPatternsMenu } from '../EventsDetailPatternsMenu';
+
 /* * */
 
 export function EventsDetailHeader() {
@@ -38,6 +40,8 @@ export function EventsDetailHeader() {
 			<IdTag id={eventsDetailContext.data.event._id} copyOnClick />
 
 			<Spacer />
+
+			<EventsDetailPatternsMenu patterns={eventsDetailContext.data.event.associated_patterns} />
 
 			<LockButton
 				isDisabled={!eventsDetailContext.flags.canLock}

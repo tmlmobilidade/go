@@ -20,6 +20,7 @@ export interface EventsCalendarProps {
 	onDayClick?: (date: Dates) => void
 	onEventClick?: (eventId: string, eventType: CalendarEventType) => void
 	onRangeSelect?: (range: { end: CalendarKey, start: CalendarKey }, clearSelection: () => void) => void
+	onYearChange?: (year: number) => void
 	showSidebar?: boolean
 }
 
@@ -31,6 +32,7 @@ export function EventsCalendar({
 	onDayClick,
 	onEventClick,
 	onRangeSelect,
+	onYearChange,
 	showSidebar = true,
 }: EventsCalendarProps) {
 	//
@@ -42,6 +44,7 @@ export function EventsCalendar({
 				onDayClick={onDayClick}
 				onEventClick={onEventClick}
 				onRangeSelect={onRangeSelect}
+				onYearChange={onYearChange}
 				showSidebar={showSidebar}
 			/>
 		</EventsCalendarProvider>
@@ -55,6 +58,7 @@ function EventsCalendarContent({
 	onDayClick,
 	onEventClick,
 	onRangeSelect,
+	onYearChange,
 	showSidebar,
 }: EventsCalendarProps) {
 	//
@@ -108,6 +112,7 @@ function EventsCalendarContent({
 			onDayClick={onDayClick}
 			onEventClick={handleEventClick}
 			onRangeSelect={onRangeSelect}
+			onYearChange={onYearChange}
 			showSidebar={showSidebar}
 			eventTypes={[
 				{

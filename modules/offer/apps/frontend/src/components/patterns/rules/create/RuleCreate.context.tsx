@@ -23,6 +23,7 @@ interface RuleCreateContextState {
 		deleteRule?: () => void
 		openDrawer: () => void
 		setEventExceptionEnabled: (enabled: boolean) => void
+		setPreviewYear: (year: number) => void
 		submitRule: () => void
 	}
 	data: {
@@ -66,6 +67,8 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [isEventExceptionEnabled, setIsEventExceptionEnabled] = useState(Boolean(initialValues?.event_id));
 
+	const [previewYear, setPreviewYear] = useState(Dates.now('Europe/Lisbon').js_date.getFullYear());
+
 	//
 	// B. Fetch data
 
@@ -97,19 +100,20 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	[eventsContext.data.raw, form.values, periodsContext.data.raw]);
 
 	const ruleImpact = useMemo(() => {
-		const startOfYear = Dates.now('Europe/Lisbon').startOf('year').minus({ years: 1 });
+		const startDate = Dates.fromISO(`${previewYear}-01-01`).js_date;
+		const endDate = Dates.fromISO(`${previewYear}-12-31`).js_date;
 
 		return getManualRuleAffectedDates(
 			form.values,
 			{
-				endDate: startOfYear.plus({ years: 2 }).js_date,
+				endDate,
 				events: eventsContext.data.raw,
 				holidays: holidaysContext.data.raw,
 				periods: periodsContext.data.raw,
-				startDate: startOfYear.js_date,
+				startDate,
 			},
 		);
-	}, [eventsContext.data.raw, form.values, periodsContext.data.raw, holidaysContext.data.raw]);
+	}, [eventsContext.data.raw, form.values, periodsContext.data.raw, holidaysContext.data.raw, previewYear]);
 
 	//
 	// D. Handle actions
@@ -151,6 +155,7 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 			deleteRule: onDelete ? handleDeleteRule : undefined,
 			openDrawer: () => setIsDrawerOpen(true),
 			setEventExceptionEnabled: (enabled: boolean) => setIsEventExceptionEnabled(enabled),
+			setPreviewYear,
 			submitRule: handleSubmitRule,
 		},
 		data: {
