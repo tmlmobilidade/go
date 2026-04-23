@@ -109,7 +109,7 @@
 		"@tmlmobilidade/eslint": "*",
 		"turbo": "2.9.6"
 	},
-	"packageManager": "npm@11.12.1",
+	"packageManager": "npm@11.13.0",
 	"workspaces": [
 		"!**/.next",
 		"modules/**/*",
