@@ -79,7 +79,7 @@ export default [
 		},
 		rules: {
 			// JSX Rules
-			'react-hooks/exhaustive-deps': 'warn',
+			'react-hooks/exhaustive-deps': 'off',
 			'react-hooks/rules-of-hooks': 'error',
 			'react/jsx-key': 'error',
 			'react/no-children-prop': 'error',

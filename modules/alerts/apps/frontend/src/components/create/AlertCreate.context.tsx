@@ -105,46 +105,46 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		steps: [
 			{
 				id: 'cause',
-				isValid: () => !!watchedFormValues.cause,
+				isValid: () => !!form.getValues().cause,
 				isVisible: true,
 				label: 'Causa',
 				order: 0,
 			},
 			{
 				id: 'effect',
-				isEnabled: () => !!watchedFormValues.cause,
-				isValid: () => !!watchedFormValues.effect,
+				isEnabled: () => !!form.getValues().cause,
+				isValid: () => !!form.getValues().effect,
 				isVisible: true,
 				label: 'Efeito',
 				order: 1,
 			},
 			{
 				id: 'agency',
-				isEnabled: () => !!watchedFormValues.cause && !!watchedFormValues.effect,
-				isValid: () => !!watchedFormValues.agency_id,
+				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect,
+				isValid: () => !!form.getValues().agency_id,
 				isVisible: agenciesOptions?.length > 1,
 				label: 'Operador',
 				order: 2,
 			},
 			{
 				id: 'dates',
-				isEnabled: () => !!watchedFormValues.agency_id,
-				isValid: () => !!watchedFormValues.active_period_start_date,
+				isEnabled: () => !!form.getValues().agency_id,
+				isValid: () => !!form.getValues().active_period_start_date,
 				isVisible: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_dates),
 				label: 'Datas',
 				order: 3,
 			},
 			{
 				id: 'references',
-				isEnabled: () => !!watchedFormValues.cause && !!watchedFormValues.effect && !!watchedFormValues.active_period_start_date,
-				isValid: () => !!watchedFormValues.reference_type && !!watchedFormValues.agency_id && !!watchedFormValues.references?.length,
+				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect && !!form.getValues().active_period_start_date,
+				isValid: () => !!form.getValues().reference_type && !!form.getValues().agency_id && !!form.getValues().references?.length,
 				isVisible: true,
 				label: 'Referências',
 				order: 4,
 			},
 			{
 				id: 'summary',
-				isEnabled: () => !!watchedFormValues.cause && !!watchedFormValues.effect && !!watchedFormValues.active_period_start_date && !!watchedFormValues.reference_type && !!watchedFormValues.agency_id && !!watchedFormValues.references?.length,
+				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect && !!form.getValues().active_period_start_date && !!form.getValues().reference_type && !!form.getValues().agency_id && !!form.getValues().references?.length,
 				isVisible: true,
 				label: 'Resumo',
 				order: 5,
@@ -162,7 +162,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	useEffect(() => {
 		if (watchedFormValues.agency_id) return;
 		if (agenciesOptions?.length === 1) form.setFieldValue('agency_id', agenciesOptions[0].value);
-	}, [watchedFormValues.agency_id, agenciesOptions, form]);
+	}, [watchedFormValues.agency_id, agenciesOptions]);
 
 	useEffect(() => {
 		if (copyAlertId) return;
@@ -182,7 +182,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		if (!alertTemplating) return;
 		form.setFieldValue('description', alertTemplating.description.pt);
 		form.setFieldValue('title', alertTemplating.title.pt);
-	}, [copyAlertId, autoTexts, multiStep.progress.current?.index, multiStep.progress, form, selectedReferencesData]);
+	}, [copyAlertId, autoTexts, multiStep.progress.current?.index, multiStep.progress, selectedReferencesData]);
 
 	useEffect(() => {
 		if (!copyAlertId || !copyAlertData || hasAppliedCopyData) return;
@@ -193,12 +193,12 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		form.resetDirty();
 		multiStep.actions.goTo('summary');
 		setHasAppliedCopyData(true);
-	}, [copyAlertData, copyAlertId, form, hasAppliedCopyData, multiStep.actions]);
+	}, [copyAlertData, copyAlertId, hasAppliedCopyData, multiStep.actions]);
 
 	useEffect(() => {
 		if (watchedFormValues.publish_status) return;
 		form.setFieldValue('publish_status', 'published');
-	}, [form, watchedFormValues.publish_status]);
+	}, [watchedFormValues.publish_status]);
 
 	useEffect(() => {
 		if (watchedFormValues.active_period_start_date) return;
@@ -206,7 +206,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		form.setFieldValue('active_period_start_date', Dates.now('Europe/Lisbon').minus({ minutes: 5 }).set({ millisecond: 0, second: 0 }).unix_timestamp);
 		// Set publish start date to start of today to ensure alert is visible immediately
 		form.setFieldValue('publish_start_date', Dates.now('Europe/Lisbon').startOf('day').unix_timestamp);
-	}, [form, watchedFormValues.active_period_start_date]);
+	}, [watchedFormValues.active_period_start_date]);
 
 	useEffect(() => {
 		if (watchedFormValues.active_period_end_date) return;
@@ -214,7 +214,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		form.setFieldValue('active_period_end_date', Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp);
 		// Set publish end date to end of today
 		form.setFieldValue('publish_end_date', Dates.now('Europe/Lisbon').endOf('day').unix_timestamp);
-	}, [form, watchedFormValues.active_period_end_date]);
+	}, [watchedFormValues.active_period_end_date]);
 
 	useEffect(() => {
 		// Skip if reference type is already set
@@ -234,7 +234,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		if (enabledReferenceTypes.includes('stops') && createPermission?.resources.reference_types.includes('stops')) return form.setFieldValue('reference_type', 'stops');
 		if (enabledReferenceTypes.includes('rides') && createPermission?.resources.reference_types.includes('rides')) return form.setFieldValue('reference_type', 'rides');
 		if (enabledReferenceTypes.includes('agency') && createPermission?.resources.reference_types.includes('agency')) return form.setFieldValue('reference_type', 'agency');
-	}, [watchedFormValues.reference_type, enabledReferenceTypes, meContext.data.user.permissions, form]);
+	}, [watchedFormValues.reference_type, enabledReferenceTypes, meContext.data.user.permissions]);
 
 	useEffect(() => {
 		// Skip if reference type is not agency
@@ -243,7 +243,7 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 		if (!watchedFormValues.agency_id) return;
 		// Set selected references to the selected agency
 		form.setFieldValue('references', [{ child_ids: [], parent_id: watchedFormValues.agency_id }]);
-	}, [watchedFormValues.reference_type, watchedFormValues.agency_id, form]);
+	}, [watchedFormValues.reference_type, watchedFormValues.agency_id]);
 
 	useEffect(() => {
 		// Reset effect and reference type when cause changes as they are dependent on cause
