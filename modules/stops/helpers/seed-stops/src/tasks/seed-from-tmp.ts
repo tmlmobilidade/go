@@ -24,6 +24,8 @@ export async function seedFromTmp() {
 	try {
 		//
 
+		throw new Error('Disabled.')
+
 		//
 		// Download and prepare GO stops data
 
@@ -36,16 +38,16 @@ export async function seedFromTmp() {
 
 		let preparedStops = [];
 
-		if (fs.existsSync(jsonFile)) {
-			const fileData = fs.readFileSync(jsonFile, 'utf-8');
-			preparedStops = JSON.parse(fileData);
-			console.log(`Loaded ${preparedStops.length} existing stops from JSON file`);
-			ut1StopsData.data = ut1StopsData.data.filter(stop => !preparedStops.some((existingStop: Stop) => existingStop.previous_go_id === stop.stop_id));
-		}
+		// if (fs.existsSync(jsonFile)) {
+		// 	const fileData = fs.readFileSync(jsonFile, 'utf-8');
+		// 	preparedStops = JSON.parse(fileData);
+		// 	console.log(`Loaded ${preparedStops.length} existing stops from JSON file`);
+		// 	ut1StopsData.data = ut1StopsData.data.filter(stop => !preparedStops.some((existingStop: Stop) => existingStop.previous_go_id === stop.stop_id));
+		// }
 
 		const stopsCollection = await stops.getCollection();
-		const deleteCount = await stopsCollection.deleteMany({ latitude: { $gte: 40 } });
-		console.log(`Deleted ${deleteCount.deletedCount} existing stops with latitude >= 40`);
+		const deleteCount = await stopsCollection.deleteMany({ legacy_id: { $regex: '^prg:' } });
+		console.log(`Deleted ${deleteCount.deletedCount} existing stops with legacy_id starting with 'prg:'`);
 
 		for (const [index, originalStop] of ut1StopsData.data.entries()) {
 			console.log(`Processing stop ${index + 1}/${ut1StopsData.data.length}: ${originalStop.stop_name} (${originalStop.stop_id})`);
@@ -77,23 +79,35 @@ export async function seedFromTmp() {
 				updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
 				updated_by: 'system',
 			});
-			if (stop.success) preparedStops.push(stop.data);
-			console.log(`Prepared stop ${index + 1}/${ut1StopsData.data.length}: ${stop.success ? 'success' : 'failed validation'}`);
+			if (stop.success) {
+				await stopsCollection.insertOne(stop.data);
+			}
 			// Write to a JSON file for storage and debugging
-			fs.writeFileSync(jsonFile, JSON.stringify(preparedStops, null, 2));
+			// fs.writeFileSync(jsonFile, JSON.stringify(preparedStops, null, 2));
 		}
 
-		console.log(`Prepared ${preparedStops.length} stops`);
+		// Detect any duplicate stop IDs in the prepared stops
+
+		// for (const preparedStopData of preparedStops) {
+		// 	const duplicateStop = preparedStops.find(s => s._id === preparedStopData._id);
+		// 	if (duplicateStop) {
+		// 		const newStopId = await fetchData<StopId>(API_ROUTES.stops.STOPS_VALID_ID);
+		// 		duplicateStop._id = newStopId.data;
+		// 		console.log(`Duplicate stop ID detected for stop ${preparedStopData.name}. Assigned new ID: ${duplicateStop._id}`);
+		// 	}
+		// }
+
+		// console.log(`Prepared ${preparedStops.length} stops`);
 
 		//
 		// Insert stops into DB
 
-		await stops.insertMany(preparedStops);
-		console.log(`Inserted ${preparedStops.length} stops`);
+		// await stopsCollection.insertMany(preparedStops);
+		// console.log(`Inserted ${preparedStops.length} stops`);
 
 		//
 	} catch (err) {
-		console.error('Error importing stops:', err);
+		console.error('Error importing stops:', err.message);
 		process.exit(1);
 	}
 }
