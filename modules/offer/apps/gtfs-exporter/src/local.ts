@@ -33,7 +33,7 @@ function buildLocalExportConfig(agencyId: string): GtfsV29ExportConfig {
 		version: new Date().toISOString().replace(/[-:T]/g, '').slice(0, 13),
 		workdir,
 		writers: {
-			afetacao: new CsvWriter('afetacao.txt', `${workdir}/afetacao.txt`),
+			afetacao: new CsvWriter('afetacao.csv', `${workdir}/afetacao.csv`),
 			agency: new CsvWriter('agency.txt', `${workdir}/agency.txt`),
 			calendar_dates: new CsvWriter('calendar_dates.txt', `${workdir}/calendar_dates.txt`),
 			fare_attributes: new CsvWriter('fare_attributes.txt', `${workdir}/fare_attributes.txt`),
