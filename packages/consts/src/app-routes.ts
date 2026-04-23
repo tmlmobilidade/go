@@ -198,8 +198,8 @@ export const API_ROUTES = Object.freeze({
 		// GTFS
 		GTFS_CARRIS_METROPOLITANA: `${getModuleConfig('alerts', 'api_url')}/gtfs/carris-metropolitana`,
 
-		// LINES
-		LINES_LIST: `${getModuleConfig('alerts', 'api_url')}/lines`,
+		// HASHED-TRIPS
+		HASHED_TRIPS_LIST: `${getModuleConfig('alerts', 'api_url')}/hashed-trips`,
 
 		// RIDES
 		RIDES_DETAIL_RIDE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/rides/${id}/ride`,
