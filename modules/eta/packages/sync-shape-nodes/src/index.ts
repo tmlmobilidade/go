@@ -28,6 +28,8 @@ interface SyncShapeNodesOptions {
 export async function syncShapeNodes({ chunkLength = 25, ridesQuery }: SyncShapeNodesOptions): Promise<{ shapeNodesProcessed: number }> {
 	//
 
+	await etaShapeNodes.clearData(); // ! DELETE ALL DATA FROM THE TABLE
+
 	//
 	// Setup ClickHouse writer
 	const writer = new BatchWriter({
