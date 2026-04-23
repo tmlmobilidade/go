@@ -28,7 +28,7 @@ async function clearExportFiles(exportConfig: GtfsV29ExportConfig) {
 		if (fs.existsSync(exportConfig.workdir)) {
 			const files = fs.readdirSync(exportConfig.workdir);
 			for (const file of files) {
-				if (file.endsWith('.txt')) {
+				if (file.endsWith('.txt') || file.endsWith('.csv')) {
 					fs.unlinkSync(`${exportConfig.workdir}/${file}`);
 				}
 			}
@@ -123,9 +123,6 @@ export async function exportGtfsV29(
 
 		const agenciesMap = new Map(allAgenciesData.map(a => [a._id, a]));
 
-		Logger.info('Fetching stops...');
-		const allStopsData = await stops.findMany({}, { sort: { _id: 1 } });
-
 		//
 		// 2.
 		// Prepare to process lines
@@ -155,7 +152,7 @@ export async function exportGtfsV29(
 		Logger.info(`Processing ${allLinesData.length} lines...`);
 
 		//
-		// Fetch all typologies and fares data
+		// Fetch data that will be needed for multiple lines/patterns to avoid redundant fetching inside the loops
 
 		Logger.info('Fetching all typologies...');
 		const allTypologiesMap = await fetchAllTypologies();
@@ -164,6 +161,11 @@ export async function exportGtfsV29(
 		Logger.info('Fetching all fares...');
 		const allFaresMap = await fetchAllFares();
 		Logger.success(`Loaded ${allFaresMap.size} fares`);
+
+		Logger.info('Fetching stops...');
+		const allStopsData = await stops.findMany({}, { sort: { _id: 1 } });
+		const allStopsMap = new Map(allStopsData.map(stop => [stop._id, stop]));
+		Logger.success(`Loaded ${allStopsMap.size} stops`);
 
 		Logger.info('Fetching all zones...');
 		const allZonesMap = await fetchAllZones();
@@ -254,7 +256,7 @@ export async function exportGtfsV29(
 					// Export afetacao (zoning) for this pattern
 					// Get typology data for this line
 					const typologyData = lineData.typology ? allTypologiesMap.get(lineData.typology) : null;
-					await exportZoning(lineAgencyData, lineData, patternData, allZonesMap, allFaresMap, typologyData || null, exportConfig);
+					await exportZoning(lineAgencyData, lineData, patternData, allStopsMap, allZonesMap, allFaresMap, typologyData || null, exportConfig);
 
 					// Track referenced stops from the pattern path
 					if (patternData.path) {
