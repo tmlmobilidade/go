@@ -2,6 +2,7 @@
   display: flex;
   gap: var(--size-spacing-xs);
   align-items: center;
+  height: 35px;
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -11,5 +12,6 @@
   gap: var(--size-spacing-xs);
   align-items: center;
   min-width: 50px;
-  text-transform: uppercase
+  height: 35px;
+  text-transform: uppercase;
 }
