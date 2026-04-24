@@ -72,10 +72,11 @@ db.createRole({
 	roles: [{ db: 'admin', role: 'common' }],
 });
 
-db.createRole({
+db.updateRole('stops', {
 	privileges: [
-		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'stops', db: 'production' } }],
-	role: 'stops',
+		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'stops', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'patterns', db: 'production' } }
+	],
 	roles: [{ db: 'admin', role: 'common' }],
 });
 

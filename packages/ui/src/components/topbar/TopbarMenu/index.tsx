@@ -30,10 +30,9 @@ export function TopbarMenu({ children, counter, icon, label, variant = 'neutral'
 	const counterText = counter ? (counter > 99 ? '99+' : counter.toString()) : undefined;
 
 	let iconColor = 'var(--color-system-text-200)'; // default neutral
-	if (counter !== undefined && counter > 0) {
+	if (counter !== undefined && counter > 0 && variant === 'danger') {
 		iconColor = 'var(--color-status-danger-primary)';
-	}
-	else if (variant === 'primary') {
+	} else if (variant === 'primary') {
 		iconColor = 'var(--color-primary)';
 	}
 
@@ -47,7 +46,7 @@ export function TopbarMenu({ children, counter, icon, label, variant = 'neutral'
 			variant="subtle"
 		>
 			{createElement(icon, { size: 24 })}
-			{counterText && <div className={styles.counter}>{counterText}</div>}
+			{counterText && <div className={`${styles.counter} ${styles[variant]}`}>{counterText}</div>}
 		</ActionIcon>
 	);
 
