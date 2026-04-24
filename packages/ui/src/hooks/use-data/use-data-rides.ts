@@ -84,6 +84,7 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 		};
 
 		const handleWebsocketError = (event: Event) => {
+			// eslint-disable-next-line no-console
 			console.error('WebSocket error:', event);
 		};
 
