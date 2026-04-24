@@ -130,8 +130,8 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	 * @param key The key to find distinct values for.
 	 * @returns A promise that resolves to an array of distinct values for the given key.
 	 */
-	public async distinct<K extends keyof T>(key: K, filter?: Filter<T>): Promise<T[K][]> {
-		return this.mongoCollection.distinct(key as string, filter);
+	public async distinct<Key extends keyof WithId<T>>(key: Key, filter?: Filter<T>): Promise<Array<Flatten<WithId<T>[Key]>>> {
+		return this.mongoCollection.distinct(key as string, filter) as Promise<Array<Flatten<WithId<T>[Key]>>>;
 	}
 
 	/**

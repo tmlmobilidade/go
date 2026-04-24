@@ -43,13 +43,13 @@ export function VehiclesList() {
 		{
 			accessor: 'license_plate',
 			render: item => <Tag label={FormatlLicensePlate(item.license_plate)} />,
-			title: 'matrícula do veículo',
+			title: 'Matrícula',
 			width: 200,
 		},
 		{
 			accessor: 'registration_date',
 			render: item => <Tag label={formatDate(item.registration_date)} />,
-			title: 'Data de registo do veíuclo',
+			title: 'Data de Registo',
 			width: 300,
 		},
 	];

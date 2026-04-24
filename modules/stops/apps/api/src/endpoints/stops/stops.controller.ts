@@ -42,7 +42,10 @@ export class StopsController {
 	 * @param reply Fastify reply
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Stop[]>) {
-		const data = await stops.findMany({}, { sort: { created_at: -1 } });
+		const data = await stops.findMany({}, {
+			projection: { _id: 1, flags: 1, is_deleted: 1, latitude: 1, legacy_ids: 1, lifecycle_status: 1, longitude: 1, municipality_id: 1, name: 1 },
+			sort: { created_at: -1 },
+		});
 		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
 	}
 

@@ -123,14 +123,14 @@ db.createRole({
 	roles: [{ db: 'admin', role: 'common' }],
 });
 
-db.createRole({
+db.updateRole('dates', {
 	privileges: [
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'annotations', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'holidays', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'year_periods', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'events', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'patterns', db: 'production' } },
 	],
-	role: 'dates',
 	roles: [{ db: 'admin', role: 'common' }],
 });
 

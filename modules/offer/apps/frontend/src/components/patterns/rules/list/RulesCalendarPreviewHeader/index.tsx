@@ -8,7 +8,7 @@ import { closeRulesCalendarPreviewModal } from '../RulesCalendarPreview.modal';
 
 /* * */
 
-export function RulesCalendarPreviewHeader() {
+export function RulesCalendarPreviewHeader({ patternCode }: { patternCode: string }) {
 	//
 
 	//
@@ -21,6 +21,7 @@ export function RulesCalendarPreviewHeader() {
 		<Toolbar>
 			<CloseButton onClick={closeRulesCalendarPreviewModal} type="close" />
 			<Tag label="Prever calendário" variant="muted" />
+			<Tag label={patternCode} variant="muted" />
 		</Toolbar>
 	);
 

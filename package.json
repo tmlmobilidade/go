@@ -49,10 +49,12 @@
 		"dev:eta:daily": "ENVIRONMENT=development dotenv-run -f ./modules/eta/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-eta-daily-pipeline",
 		"dev:eta:historical": "ENVIRONMENT=development dotenv-run -f ./modules/eta/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-eta-historical-pipeline",
 		"dev:exporter": "ENVIRONMENT=dev dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-*",
+		"dev:exporter-api": "ENVIRONMENT=dev dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-api",
 		"dev:exporter-merged": "ENVIRONMENT=dev dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-export-gtfs-merged",
 		"dev:fleet": "ENVIRONMENT=dev dotenv-run -f ./modules/fleet/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-fleet-*",
 		"dev:locations": "ENVIRONMENT=dev dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-locations-*",
 		"dev:offer": "ENVIRONMENT=dev dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-offer-* --filter=!@tmlmobilidade/go-offer-gtfs-exporter --filter=!@tmlmobilidade/go-offer-gtfs-importer",
+		"dev:offer:gtfs-exporter": "ENVIRONMENT=dev dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-offer-gtfs-exporter",
 		"dev:performance": "ENVIRONMENT=dev dotenv-run -f ./modules/performance/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-performance-*",
 		"dev:performance:sync-metrics-daily": "ENVIRONMENT=dev dotenv-run -f ./modules/performance/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-performance-sync-metrics-daily",
 		"dev:plans": "ENVIRONMENT=dev dotenv-run -f ./modules/plans/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-plans-*",
@@ -96,8 +98,8 @@
 		"helper:offer:seed-typologies": "dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-typologies",
 		"helper:offer:seed-zones": "dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-zones",
 		"helper:stops:migrate-stops": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-stops-helpers-migrate-stops",
+		"helper:stops:seed-stops": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-stops-helpers-seed-stops",
 
-		"helper:stops:seed-stops": "dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-stops-helpers-seed-stops",
 		"lint": "turbo lint",
 		"lint:fix": "turbo lint:fix",
 

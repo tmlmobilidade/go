@@ -1,0 +1,27 @@
+/* * */
+/* TARGET */
+
+.target {
+	position: relative;
+	padding: 4px 0;
+	overflow: visible;
+}
+
+/* * */
+/* COUNTER */
+
+.counter {
+	position: absolute;
+	top: 0;
+	right: -4px;
+	z-index: 10;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 var(--size-spacing-xs);
+	font-size: var(--font-size-xs);
+	color: var(--color-contrast);
+	background-color: var(--color-primary);
+	border-radius: 14px;
+	box-shadow: 0 1px 3px 0 var(--color-shadow);
+}
