@@ -237,13 +237,12 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 
 			// If the error is an ACCESS_DENIED, check if the table exists
 			try {
-				const tables = await this.client.query({
+				const resultSet = await this.client.query({
 					format: 'JSONEachRow',
 					query: `SHOW TABLES FROM "${this.databaseName}" LIKE '${this.tableName}'`,
 				});
-
-				const tableExists = Array.isArray(tables) ? tables.length > 0 : Boolean(tables);
-				if (tableExists) return;
+				const tables = await resultSet.json();
+				if (Array.isArray(tables) && tables.length > 0) return;
 
 				Logger.error(`CLICKHOUSE [${this.tableName}]: ACCESS_DENIED and table does not exist. ${error.message}`);
 				throw error;
