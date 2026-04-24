@@ -1,6 +1,6 @@
 /* * */
 
-import { ClickHouseClient, createClient } from '@clickhouse/client';
+import { ClickHouseClient, ClickHouseLogLevel, createClient } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
 import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
 import { readFileSync } from 'node:fs';
@@ -53,6 +53,10 @@ export class GOClickHouseClient {
 		const connectionString = await this.getConnectionString();
 		this.client = createClient({
 			keep_alive: { enabled: false },
+			log: {
+				level: ClickHouseLogLevel.OFF,
+			},
+			request_timeout: 360 * 1000,
 			url: connectionString,
 		});
 	}
