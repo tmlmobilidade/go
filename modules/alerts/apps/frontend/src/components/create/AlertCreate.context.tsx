@@ -126,7 +126,17 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	// D. Transform data
 
 	const enabledReferenceTypes = useMemo(() => {
-		return alertCauseEffectReferenceTypeMap[watchedFormValues.cause]?.[watchedFormValues.effect] ?? [];
+		// Extract the possible reference types
+		// for the selected cause and effect.
+		const causeMapValue = alertCauseEffectReferenceTypeMap[watchedFormValues.cause];
+		if (!causeMapValue) return [];
+		// If there is a valid cause, get the reference types
+		// for the selected effect.
+		const effectMapValue = causeMapValue[watchedFormValues.effect];
+		if (!effectMapValue) return [];
+		// Return the reference types that are valid
+		// for the selected cause and effect.
+		return effectMapValue;
 	}, [watchedFormValues.cause, watchedFormValues.effect]);
 
 	//
@@ -161,6 +171,8 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	useEffect(() => {
 		// Skip if reference type is already set
 		if (formRef.current.getValues().reference_type) return;
+		// Skip if there are no enabled reference types
+		if (!enabledReferenceTypes.length) return;
 		// Get permission definition for reference types
 		const createPermission = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
 		// Set the reference type based on alert cause/effect when possible
