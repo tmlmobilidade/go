@@ -106,7 +106,7 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 			},
 			{
 				id: 'references',
-				isEnabled: () => !!formRef.current.getValues().cause && !!formRef.current.getValues().effect && !!formRef.current.getValues().active_period_start_date,
+				isEnabled: () => !!formRef.current.getValues().cause && !!formRef.current.getValues().effect && !!formRef.current.getValues().agency_id && !!formRef.current.getValues().active_period_start_date,
 				isValid: () => !!formRef.current.getValues().reference_type && !!formRef.current.getValues().agency_id && !!formRef.current.getValues().references?.length,
 				isVisible: true,
 				label: 'Referências',
