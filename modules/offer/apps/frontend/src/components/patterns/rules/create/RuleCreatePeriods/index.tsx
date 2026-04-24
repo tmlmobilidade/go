@@ -47,8 +47,7 @@ export function RuleCreatePeriods() {
 
 	const applyPreset = (key: null | PeriodPresetKey) => {
 		if (!key) {
-			// same convention as weekdays: empty => undefined
-			createRuleContext.data.form.setFieldValue('year_period_ids', undefined);
+			createRuleContext.data.form.setFieldValue('year_period_ids', []);
 			return;
 		}
 
@@ -78,7 +77,7 @@ export function RuleCreatePeriods() {
 			<SegmentedMultiSelect
 				value={currentPeriodIds}
 				onChange={(selectedPeriods) => {
-					createRuleContext.data.form.setFieldValue('year_period_ids', selectedPeriods.length > 0 ? selectedPeriods : undefined);
+					createRuleContext.data.form.setFieldValue('year_period_ids', selectedPeriods);
 				}}
 				options={PERIOD_OPTIONS.map(o => ({
 					ariaLabel: o.label,

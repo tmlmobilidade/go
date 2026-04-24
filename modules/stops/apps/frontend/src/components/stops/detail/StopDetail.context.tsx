@@ -52,6 +52,8 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 
 	const { form } = useTypicalForm<UpdateStopDto>(UpdateStopSchema, stopData);
 
+	console.log(form.errors);
+
 	//
 	// D. Transform data
 
@@ -151,7 +153,6 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		},
 		data: {
 			form,
-			id: stopId,
 			stop: stopData,
 		},
 		flags: {
@@ -166,9 +167,6 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			isSaving,
 		},
 	}), [
-		form,
-		stopId,
-		stopData,
 		canDelete,
 		canLock,
 		canSave,
@@ -178,6 +176,11 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		isLocking,
 		isReadOnly,
 		isSaving,
+		form,
+		stopData,
+		handleDelete,
+		handleLock,
+		handleSave,
 	]);
 
 	//

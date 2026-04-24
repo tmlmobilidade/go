@@ -2,7 +2,7 @@
 
 /* * */
 
-import { ActionIcon } from '@mantine/core';
+import { ActionIcon, FloatingPosition } from '@mantine/core';
 
 import { Tooltip } from '../../common/Tooltip';
 
@@ -25,12 +25,13 @@ type IconButtonProps = (ButtonProps | LinkProps) & {
 	isLoading?: boolean
 	isReadOnly?: boolean
 	tooltip?: string
+	tooltipOrienation?: FloatingPosition
 	variant?: 'danger' | 'disabled' | 'muted' | 'primary' | 'secondary' | 'subtle'
 };
 
 /* * */
 
-export function IconButton({ color, disabled, icon, isLoading, isReadOnly, tooltip, variant = 'subtle', ...props }: IconButtonProps) {
+export function IconButton({ color, disabled, icon, isLoading, isReadOnly, tooltip, tooltipOrienation, variant = 'subtle', ...props }: IconButtonProps) {
 	//
 
 	//
@@ -71,7 +72,7 @@ export function IconButton({ color, disabled, icon, isLoading, isReadOnly, toolt
 
 	return (
 		tooltip ? (
-			<Tooltip label={tooltip} withArrow>
+			<Tooltip label={tooltip} position={tooltipOrienation} withArrow>
 				{renderButton()}
 			</Tooltip>
 		) : (

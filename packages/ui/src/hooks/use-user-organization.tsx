@@ -1,7 +1,7 @@
 'use client';
 
 /* * */
-import { getAppConfig, HttpException } from '@tmlmobilidade/consts';
+import { getModuleConfig, HttpException } from '@tmlmobilidade/consts';
 import { type Organization } from '@tmlmobilidade/types';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
@@ -22,7 +22,7 @@ export function useUserOrganization(): [Organization | undefined, (value: Organi
 	// A. Setup variables
 
 	const meContext = useMeContext();
-	const { data: raw, error: error, isLoading: loading } = useSWR<Organization[], HttpException>(`${getAppConfig('auth', 'api_url')}/organizations`);
+	const { data: raw, error: error, isLoading: loading } = useSWR<Organization[], HttpException>(`${getModuleConfig('auth', 'api_url')}/organizations`);
 	const [orgData, setOrgData] = useState<Organization | undefined>(undefined);
 
 	//

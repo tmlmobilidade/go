@@ -57,8 +57,8 @@ export function StopCreateStep3Summary() {
 
 			<Section>
 				<Grid columns="ab" gap="md">
-					<ValueDisplay label="Nome curto" value={stopCreateContext.data.form.values.short_name} bordered />
-					<ValueDisplay label="Nome tts" value={stopCreateContext.data.form.values.tts_name} bordered />
+					<ValueDisplay label="Nome curto" value={stopCreateContext.data.form.values.short_name} variant="bordered" />
+					<ValueDisplay label="Nome tts" value={stopCreateContext.data.form.values.tts_name} variant="bordered" />
 				</Grid>
 			</Section>
 

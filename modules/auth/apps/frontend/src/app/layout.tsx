@@ -1,9 +1,9 @@
 /* * */
 
+import pjson from '#/package.json';
 import { i18nResourceKeysPt } from '@/i18n/resources';
 import { BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
-import pjson from 'package.json';
 import { type PropsWithChildren } from 'react';
 
 /* * */

@@ -8,6 +8,7 @@ import { z } from 'zod';
 
 export const YearPeriodSchema = DocumentSchema.extend({
 	agency_ids: z.array(z.string()).default([]),
+	code: z.string().optional(),
 	color: z.string().optional(),
 	dates: z.array(OperationalDateSchema).optional(),
 	is_locked: z.boolean().default(false),

@@ -173,7 +173,7 @@ async function syncApexLocations() {
 		console.log('An error occurred. Halting execution.', err);
 		console.log('Retrying in 10 seconds...');
 		setTimeout(() => {
-			process.exit(0); // End process
+			process.exit(1); // End process
 		}, 10000); // after 10 seconds
 	}
 
@@ -182,4 +182,4 @@ async function syncApexLocations() {
 
 /* * */
 
-runOnInterval(syncApexLocations, 1_800_000); // 30 minutes
+await runOnInterval(syncApexLocations, { intervalMs: '30m' });

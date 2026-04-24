@@ -116,7 +116,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 					type: 'Point' as const,
 				},
 				properties: {
-					id: pathItem.stop?._id,
+					id: String(pathItem.stop?._id),
 					name: pathItem.stop?.name,
 					sequence: index + 1,
 				},
@@ -233,8 +233,9 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		openRulesCalendarPreviewModal(
 			lineData?.agency_id || '',
 			rulesForUI,
+			patternData?.code,
 		);
-	}, [lineData?.agency_id, rulesForUI]);
+	}, [lineData?.agency_id, rulesForUI, patternData?.code]);
 
 	//
 	// F. Handle Schedule RULES actions

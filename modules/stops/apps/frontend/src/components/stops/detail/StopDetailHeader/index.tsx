@@ -3,10 +3,13 @@
 /* * */
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
+import { IconWorldShare } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, LockButton, SaveButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, HasPermission, IconButton, IdTag, keepUrlParams, LockButton, SaveButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+
+import { StopDetailPatternsMenu } from '../StopDetailPatternsMenu';
 
 /* * */
 
@@ -39,6 +42,8 @@ export function StopDetailHeader() {
 			{stopDetailContext.data.stop?.is_deleted && <Tag label="Paragem Eliminada" variant="danger" />}
 
 			<Spacer />
+
+			<StopDetailPatternsMenu patterns={stopDetailContext.data.stop?.associated_patterns} />
 
 			<HasPermission
 				action={PermissionCatalog.all.stops.actions.update}

@@ -4,22 +4,27 @@ import { type ReactNode } from 'react';
 
 import styles from './styles.module.css';
 
+import { Section, Surface, type SurfaceProps } from '../../layout';
+
 /* * */
 
 interface ValueDisplayProps {
-	bordered?: boolean
+	elevated?: SurfaceProps['elevated']
 	label: string
-	raised?: boolean
+	strong?: boolean
 	value: ReactNode | string
+	variant?: SurfaceProps['variant']
 }
 
 /* * */
 
-export function ValueDisplay({ bordered, label, raised, value }: ValueDisplayProps) {
+export function ValueDisplay({ elevated, label, strong, value, variant = 'bordered' }: ValueDisplayProps) {
 	return (
-		<div className={styles.container} data-bordered={bordered} data-raised={raised}>
-			<p className={styles.label}>{label}</p>
-			<p className={styles.value}>{value}</p>
-		</div>
+		<Surface elevated={elevated} variant={variant}>
+			<Section>
+				<p className={styles.label}>{label}</p>
+				<p className={styles.value} data-strong={strong}>{value}</p>
+			</Section>
+		</Surface>
 	);
 }

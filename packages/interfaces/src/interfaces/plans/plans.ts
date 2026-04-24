@@ -10,6 +10,7 @@ import { z } from 'zod';
 
 class PlansClass extends MongoCollectionClass<Plan, CreatePlanDto, UpdatePlanDto> {
 	private static _instance: PlansClass;
+
 	protected override createSchema: z.ZodSchema = CreatePlanSchema;
 	protected override updateSchema: z.ZodSchema = UpdatePlanSchema;
 

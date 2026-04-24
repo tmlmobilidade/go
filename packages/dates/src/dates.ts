@@ -1,7 +1,7 @@
 /* * */
 
-import { type DatesFormat, FORMATS, OPERATIONAL_DATE_FORMAT } from '@/format.js';
-import { type TimezoneIdentified, timezoneList, timezoneListSchema } from '@/types.js';
+import { type DatesFormat, FORMATS, OPERATIONAL_DATE_FORMAT } from '@/lib/date-format.js';
+import { type TimezoneIdentified, TimezoneIdentifiedSchema, TimezoneIdentifiedValues } from '@/lib/timezone-identified.js';
 import { type OperationalDate, type UnixTimestamp } from '@tmlmobilidade/types';
 import { type DateObjectUnits, DateTime, type DateTimeUnit, type DurationObjectUnits } from 'luxon';
 
@@ -26,8 +26,10 @@ export class Dates {
 	static readonly STANDARD_WINDOW_HOURS = 10;
 
 	static get FORMATS() { return FORMATS; }
-	static get TIMEZONE_LIST() { return timezoneList; }
-	static get TIMEZONE_LIST_VALUES() { return timezoneListSchema.Values; }
+
+	static get TIMEZONE_LIST() { return TimezoneIdentifiedValues; }
+
+	static get TIMEZONE_LIST_VALUES() { return TimezoneIdentifiedSchema.Values; }
 
 	//
 	// Instance properties
@@ -408,21 +410,21 @@ export class Dates {
 		// Check if the time is between 00:00 and 03:59.
 		// The operational date is between 04:00 and 03:59 of the following day.
 
-		let operational_date: string;
+		let operationalDate: string;
 
 		if (dateObject.hour < 4) {
 			// If true, return the previous day in the yyyyLLdd format
 			const previousDay = dateObject.minus({ days: 1 });
-			operational_date = previousDay.toFormat(OPERATIONAL_DATE_FORMAT);
+			operationalDate = previousDay.toFormat(OPERATIONAL_DATE_FORMAT);
 		} else {
 			// Else, return the current day in the yyyyLLdd format
-			operational_date = dateObject.toFormat(OPERATIONAL_DATE_FORMAT);
+			operationalDate = dateObject.toFormat(OPERATIONAL_DATE_FORMAT);
 		}
 
 		//
 		// Validate the operational date and return it
 
-		return operational_date as OperationalDate;
+		return operationalDate as OperationalDate;
 
 		//
 	}

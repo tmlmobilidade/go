@@ -3,8 +3,9 @@
 /* * */
 
 import { IconChevronRight } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { RouteSimplified } from '@tmlmobilidade/types';
-import { Text } from '@tmlmobilidade/ui';
+import { keepUrlParams, Text } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 import styles from './styles.module.css';
@@ -23,7 +24,7 @@ export default function LineDetailRoute({ lineId, routeData }: { lineId: string,
 	// C. Handle actions
 
 	const handleClick = () => {
-		router.push(`/lines/${lineId}/${routeData._id}`);
+		router.push(keepUrlParams(PAGE_ROUTES.offer.ROUTE_DETAIL(lineId, routeData._id)));
 	};
 
 	//

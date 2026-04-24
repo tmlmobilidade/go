@@ -35,7 +35,7 @@ export function StopCreateStep1Map() {
 				type: 'Point',
 			},
 			properties: {
-				id: item._id,
+				id: String(item._id),
 				name: item.name,
 			},
 			type: 'Feature',

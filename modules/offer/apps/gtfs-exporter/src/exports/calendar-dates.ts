@@ -44,7 +44,7 @@ export async function exportCalendarDates(
 					exception_type: 1, // Service added (all our dates are service additions)
 					holiday: isHoliday(dateObj, holidaysArray) ? 1 : 0,
 					period: getPeriodForDate(date, periods),
-					service_id: serviceInfo.service_id,
+					service_id: serviceInfo.serviceId,
 				};
 
 				await exportConfig.writers.calendar_dates.write(row);

@@ -13,8 +13,6 @@ import { exportSamsAnalysisFile } from './export-sams-analysis.js';
 
 /* * */
 
-const RUN_INTERVAL = 5_000; // 30 seconds in milliseconds
-
 async function main() {
 	//
 
@@ -39,7 +37,10 @@ async function main() {
 				case 'sams_analysis':
 					pathToFile = await exportSamsAnalysisFile(fileExport);
 					break;
+				case 'gtfs':
 				default:
+					// TODO: Implement GTFS export
+					Logger.error(`GTFS export not implemented yet.`);
 					Logger.error(`Unknown file export type: ${fileExport.type}.`);
 					continue;
 			}
@@ -76,4 +77,4 @@ async function main() {
 
 /* * */
 
-runOnInterval(main, RUN_INTERVAL);
+await runOnInterval(main, { intervalMs: '5s' });

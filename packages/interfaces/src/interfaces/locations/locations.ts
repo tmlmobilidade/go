@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable perfectionist/sort-classes */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { MongoConnector } from '@tmlmobilidade/mongo';
 import { type AvailableLocations, type CensusFeature, type District, type DistrictFeature, type Locality, type LocalityFeature, type Location, type Municipality, type MunicipalityFeature, type Parish, type ParishFeature } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
@@ -172,8 +172,7 @@ class LocationsClass {
 				municipalities: db.collection<MunicipalityFeature>('municipalities'),
 				parishes: db.collection<ParishFeature>('parishes'),
 			};
-		}
-		catch (error) {
+		} catch (error) {
 			throw new Error(`Error connecting to MongoDB`, { cause: error });
 		}
 	}
@@ -235,21 +234,17 @@ class LocationsClass {
 			// Recursive operator like $and, $or, $nor
 				if (Array.isArray(value)) {
 					output[key] = value.map(this.convertFilter);
-				}
-				else if (typeof value === 'object') {
+				} else if (typeof value === 'object') {
 					output[key] = this.convertFilter(value);
-				}
-				else {
+				} else {
 					output[key] = value;
 				}
-			}
-			else {
+			} else {
 				const newKey = this.convertFilterField(key);
 
 				if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
 					output[newKey] = this.convertFilter(value); // nested operator (e.g., $gt)
-				}
-				else {
+				} else {
 					output[newKey] = value;
 				}
 			}
