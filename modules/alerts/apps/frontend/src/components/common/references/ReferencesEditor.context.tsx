@@ -16,7 +16,6 @@ export interface ReferencesEditorContextProps {
 	activePeriodStartDate: undefined | UnixTimestamp
 	availableAgenciesOptions: SelectDataItem[]
 	enabledReferenceTypes: Alert['reference_type'][]
-	onChangeAgencyId: (type: Alert['agency_id']) => void
 	onChangeReferences: (references: Alert['references']) => void
 	onChangeReferenceType: (type: Alert['reference_type']) => void
 	selectedAgencyId: Alert['agency_id']
@@ -28,7 +27,6 @@ export interface ReferencesEditorContextProps {
 interface ReferencesEditorContextState {
 	actions: {
 		addReference: () => void
-		changeAgencyId: (value: Alert['agency_id']) => void
 		changeReferenceType: (value: Alert['reference_type']) => void
 		removeAllRides: () => void
 		removeReference: (index: number) => void
@@ -66,7 +64,7 @@ export function useReferencesEditorContext() {
 
 /* * */
 
-export function ReferencesEditorContextProvider({ activePeriodEndDate, activePeriodStartDate, availableAgenciesOptions, children, enabledReferenceTypes, onChangeAgencyId, onChangeReferences, onChangeReferenceType, selectedAgencyId, selectedReferences, selectedReferenceType }: PropsWithChildren<ReferencesEditorContextProps>) {
+export function ReferencesEditorContextProvider({ activePeriodEndDate, activePeriodStartDate, availableAgenciesOptions, children, enabledReferenceTypes, onChangeReferences, onChangeReferenceType, selectedAgencyId, selectedReferences, selectedReferenceType }: PropsWithChildren<ReferencesEditorContextProps>) {
 	//
 
 	//
@@ -99,26 +97,6 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 
 	//
 	// C. Handle actions
-
-	const changeAgencyId = (value: Alert['agency_id']) => {
-		if (selectedReferences?.length > 0) {
-			openConfirmModal({
-				cancelProps: { variant: 'danger' },
-				centered: true,
-				children: <Label>Ao alterar o operador, irá perder as referências que já foram adicionadas.</Label>,
-				closeOnClickOutside: true,
-				labels: { cancel: 'Cancelar', confirm: 'Continuar' },
-				onConfirm: () => {
-					onChangeAgencyId(value);
-					onChangeReferences([]);
-				},
-				title: 'Tem a certeza que pretende mudar de operador?',
-			});
-		} else {
-			onChangeAgencyId(value);
-			onChangeReferences([]);
-		}
-	};
 
 	const changeReferenceType = (value: Alert['reference_type']) => {
 		if (selectedReferences?.length > 0) {
@@ -219,7 +197,6 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 	const contextValue: ReferencesEditorContextState = {
 		actions: {
 			addReference,
-			changeAgencyId,
 			changeReferenceType,
 			removeAllRides,
 			removeReference,

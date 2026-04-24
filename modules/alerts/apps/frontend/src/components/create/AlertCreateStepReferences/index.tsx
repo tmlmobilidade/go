@@ -26,10 +26,6 @@ export function AlertCreateStepReferences() {
 	//
 	// B. Handle actions
 
-	const handleChangeAgencyId = (value: Alert['agency_id']) => {
-		alertCreateContext.data.form.setFieldValue('agency_id', value);
-	};
-
 	const handleChangeReferenceType = (value: Alert['reference_type']) => {
 		alertCreateContext.data.form.setFieldValue('reference_type', value);
 	};
@@ -47,7 +43,6 @@ export function AlertCreateStepReferences() {
 			activePeriodStartDate={alertCreateContext.data.form.getValues().active_period_start_date}
 			availableAgenciesOptions={agenciesOptions}
 			enabledReferenceTypes={alertCreateContext.data.enabled_reference_types}
-			onChangeAgencyId={handleChangeAgencyId}
 			onChangeReferences={handleChangeReferences}
 			onChangeReferenceType={handleChangeReferenceType}
 			selectedAgencyId={alertCreateContext.data.form.getValues().agency_id}

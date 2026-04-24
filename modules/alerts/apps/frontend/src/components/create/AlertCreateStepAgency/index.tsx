@@ -4,8 +4,8 @@
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Grid, Section, Select, useDataAgencies } from '@tmlmobilidade/ui';
+import { type Alert, PermissionCatalog } from '@tmlmobilidade/types';
+import { Grid, Label, openConfirmModal, Section, Select, useDataAgencies } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -23,6 +23,29 @@ export function AlertCreateStepAgency() {
 	});
 
 	//
+	// B. Handle actions
+
+	const handleChangeAgencyId = (value: Alert['agency_id']) => {
+		if (alertCreateContext.data.form.getValues().references?.length > 0) {
+			openConfirmModal({
+				cancelProps: { variant: 'danger' },
+				centered: true,
+				children: <Label>Ao alterar o operador, irá perder as referências que já foram adicionadas.</Label>,
+				closeOnClickOutside: true,
+				labels: { cancel: 'Cancelar', confirm: 'Continuar' },
+				onConfirm: () => {
+					alertCreateContext.data.form.setFieldValue('agency_id', value);
+					alertCreateContext.data.form.setFieldValue('references', []);
+				},
+				title: 'Tem a certeza que pretende mudar de operador?',
+			});
+		} else {
+			alertCreateContext.data.form.setFieldValue('agency_id', value);
+			alertCreateContext.data.form.setFieldValue('references', []);
+		}
+	};
+
+	//
 	// C. Render components
 
 	return (
@@ -34,6 +57,7 @@ export function AlertCreateStepAgency() {
 						data={agenciesOptions}
 						label="Operador afetado"
 						{...alertCreateContext.data.form.getInputProps('agency_id')}
+						onChange={handleChangeAgencyId}
 					/>
 				)}
 			</Grid>

@@ -36,7 +36,7 @@ export function useAlertCreateContext() {
 
 /* * */
 
-export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
+export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
@@ -123,11 +123,14 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	});
 
 	//
-	// D. Handle actions
+	// D. Transform data
 
 	const enabledReferenceTypes = useMemo(() => {
 		return alertCauseEffectReferenceTypeMap[watchedFormValues.cause]?.[watchedFormValues.effect] ?? [];
 	}, [watchedFormValues.cause, watchedFormValues.effect]);
+
+	//
+	// D. Handle actions
 
 	useEffect(() => {
 		if (watchedFormValues.agency_id) return;
