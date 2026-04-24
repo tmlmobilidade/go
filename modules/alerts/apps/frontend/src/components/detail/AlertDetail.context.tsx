@@ -4,7 +4,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type File as FileType, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
@@ -92,6 +92,16 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_LOCK(alertId)),
+		onSuccess: (updatedItem) => {
+			formRef.current.resetDirty();
+			alertMutate(updatedItem);
+			alertImageMutate();
+			alertsListMutate();
+		},
+	});
+
+	const { action: handleDuplicate, isLoading: isDuplicating } = useHandleUpdate({
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_DUPLICATE(alertId)),
 		onSuccess: (updatedItem) => {
 			formRef.current.resetDirty();
 			alertMutate(updatedItem);
@@ -218,6 +228,28 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		isValid: formRef.current.isValid(),
 	});
 
+	const { canDuplicate } = useFlagCanDuplicate({
+		hasPermission: meContext.actions.hasPermissionResource([
+			{
+				action: PermissionCatalog.all.alerts.actions.create,
+				resource_key: 'agency_ids',
+				scope: PermissionCatalog.all.alerts.scope,
+				value: alertData?.agency_id,
+			},
+			{
+				action: PermissionCatalog.all.alerts.actions.create,
+				resource_key: 'reference_types',
+				scope: PermissionCatalog.all.alerts.scope,
+				value: alertData?.reference_type,
+			},
+		]),
+		isDeleting: isDeleting,
+		isDirty: formRef.current.isDirty(),
+		isLoading: alertLoading,
+		isLocking: isLocking,
+		isValid: formRef.current.isValid(),
+	});
+
 	//
 	// E. Define context value
 
@@ -237,6 +269,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		},
 		flags: {
 			canDelete,
+			canDuplicate,
 			canLock,
 			canSave,
 			error: alertError,

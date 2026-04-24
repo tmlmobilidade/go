@@ -51,6 +51,7 @@ export interface DetailContextStateTemplate {
 	}
 	flags: {
 		canDelete?: boolean
+		canDuplicate?: boolean
 		canLock?: boolean
 		canSave?: boolean
 		error: Error | undefined

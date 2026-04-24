@@ -5,7 +5,7 @@
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusTag, SaveButton, Spacer, Toolbar, useMeContext } from '@tmlmobilidade/ui';
+import { Button, CloseButton, DeleteButton, DuplicateButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusTag, SaveButton, Spacer, Toolbar, useMeContext } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
@@ -83,10 +83,10 @@ export function AlertDetailHeader() {
 				action={PermissionCatalog.all.alerts.actions.create}
 				scope={PermissionCatalog.all.alerts.scope}
 			>
-				<Button
-					label="Duplicar"
-					onClick={handleDuplicate}
-					variant="secondary"
+				<DuplicateButton
+					isDisabled={!alertDetailContext.flags.canDuplicate}
+					isLoading={alertDetailContext.flags.isDuplicating}
+					onClick={alertDetailContext.actions.duplicate}
 				/>
 			</HasPermission>
 

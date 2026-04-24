@@ -205,6 +205,31 @@ export class AlertsController {
 	}
 
 	/**
+	 * Duplicates an alert by ID.
+	 * @param request Fastify request containing alert ID in params.
+	 * @param reply Fastify reply.
+	 */
+	static async duplicate(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Alert>) {
+		// Retrieve the existing alert
+		const existingAlert = await alerts.findById(request.params.id);
+		if (!existingAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+		// Update necessary properties to indicate a copy
+		const duplicatedAlertData = {
+			...existingAlert,
+			_id: undefined, // Let the database generate a new ID
+			created_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			created_by: request.me._id,
+			title: `${existingAlert.title} (Cópia)`,
+			updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			updated_by: request.me._id,
+		};
+		// Insert the duplicated alert into the database
+		// and send the duplicated alert to the client
+		const insertResult = await alerts.insertOne(duplicatedAlertData);
+		reply.send({ data: insertResult, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
 	 * Updates an Alert in the database
 	 * @param request The request object
 	 * @param reply The reply object
