@@ -12,7 +12,6 @@ import { useMemo } from 'react';
 interface ReferencesEditorLinesItemProps {
 	hashedTrips: HashedTrip[]
 	index: number
-	municipalityIds: string[]
 	onRemoveReference: (index: number) => void
 	onUpdateReference: (index: number, field: 'child_ids' | 'parent_id', value: string | string[]) => void
 	reference: Alert['references'][number]

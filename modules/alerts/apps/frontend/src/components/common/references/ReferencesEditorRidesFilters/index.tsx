@@ -79,7 +79,7 @@ export function ReferencesEditorRidesFilters({ lineIdsFilterValue, searchFilterV
 					onChange={setViewMode}
 					value={viewMode}
 					data={[
-						{ label: `Ver todas as circulações (${referencesEditorContext.flags.isLoading ? 'Loading...' : referencesEditorContext.data.rides?.length ?? 0})`, value: 'all' },
+						{ label: `Ver todas as circulações (${referencesEditorContext.data.rides?.length ?? 0})`, value: 'all' },
 						{ label: `Apenas as Selecionadas (${referencesEditorContext.data.selected_references.length ?? 0})`, value: 'selected' },
 					]}
 				/>

@@ -47,14 +47,21 @@ export function ReferencesEditorStopsItem({ hashedTrips, index, onRemoveReferenc
 		// or if parent_id is not set
 		if (!hashedTrips?.length) return [];
 		if (!reference.parent_id) return [];
-		// Transform hashedTrips into SelectDataItem format,
-		// ensuring uniqueness by line_id.
-		return hashedTrips
-			.filter(item => item.path.some(waypoint => waypoint.stop_id === reference.parent_id))
-			.map(item => ({
-				label: String(item.line_id),
-				value: String(item.line_id),
-			}));
+		const matchingHashedTrips = hashedTrips.filter(item => item.path.some(waypoint => String(waypoint.stop_id) === String(reference.parent_id)));
+		if (!matchingHashedTrips.length) return [];
+		// Group hashedTrips by line_id,
+		// as we want unique line options.
+		const uniqueLinesMap = new Map<HashedTrip['line_id'], SelectDataItem>();
+		matchingHashedTrips.forEach((hashedTripItem) => {
+			// Add the matching hashedTrips to the uniqueLinesMap
+			if (uniqueLinesMap.has(hashedTripItem.line_id)) return;
+			uniqueLinesMap.set(hashedTripItem.line_id, {
+				label: `[${hashedTripItem.line_short_name}] ${hashedTripItem.line_long_name}`,
+				value: String(hashedTripItem.line_id),
+			});
+		});
+		// Return the unique lines as an array of SelectDataItem.
+		return Array.from(uniqueLinesMap.values());
 	}, [hashedTrips, reference.parent_id]);
 
 	//

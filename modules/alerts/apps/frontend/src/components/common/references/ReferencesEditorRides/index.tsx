@@ -52,10 +52,10 @@ export function ReferencesEditorRides() {
 
 	useEffect(() => {
 		// Skip if no selected references
-		if (!referencesEditorContext.data.selected_rides_data.length) return;
+		if (!referencesEditorContext.data.selected_references.length) return;
 		// Set filter mode to 'all' if there are no selected references
 		setViewMode('all');
-	}, [referencesEditorContext.data.selected_rides_data.length]);
+	}, [referencesEditorContext.data.selected_references.length]);
 
 	//
 	// E. Render components

@@ -36,7 +36,6 @@ export function ReferencesEditorLines() {
 					key={index}
 					hashedTrips={referencesEditorContext.data.hashed_trips}
 					index={index}
-					municipalityIds={[]}
 					onRemoveReference={referencesEditorContext.actions.removeReference}
 					onUpdateReference={referencesEditorContext.actions.updateReference}
 					reference={reference}
