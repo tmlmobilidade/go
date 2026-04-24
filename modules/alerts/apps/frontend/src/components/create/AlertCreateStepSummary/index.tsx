@@ -42,19 +42,19 @@ export function AlertCreateStepSummary() {
 	return (
 		<Section gap="md">
 			<Grid gap="md">
+				{hasPermissionToEdit && (
+					<Switch
+						key={alertCreateContext.data.form.key('auto_texts')}
+						label={t('default:alerts.create.summary.auto_texts.label')}
+						{...alertCreateContext.data.form.getInputProps('auto_texts', { type: 'checkbox' })}
+					/>
+				)}
 				<TextInput
 					key={alertCreateContext.data.form.key('title')}
 					label={t('default:alerts.create.summary.title.label')}
 					readOnly={!hasPermissionToEdit}
 					{...alertCreateContext.data.form.getInputProps('title')}
 				/>
-				<Section padding="none">
-					<Switch
-						key={alertCreateContext.data.form.key('auto_texts')}
-						label={t('default:alerts.create.summary.auto_text.label')}
-						{...alertCreateContext.data.form.getInputProps('auto_texts', { type: 'checkbox' })}
-					/>
-				</Section>
 				<Textarea
 					key={alertCreateContext.data.form.key('description')}
 					label={t('default:alerts.create.summary.description.label')}

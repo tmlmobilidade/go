@@ -2,7 +2,7 @@
 	"alerts": {
 		"create": {
 			"summary": {
-				"auto_text": {
+				"auto_texts": {
 					"label": "Gerar descrição automaticamente"
 				},
 				"coordinates": {
