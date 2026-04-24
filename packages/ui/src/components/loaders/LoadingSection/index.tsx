@@ -1,17 +1,18 @@
 /* * */
 
 import { Section } from '../../layout/Section';
-import { Loader } from '../Loader';
+import { Loader, type LoaderProps } from '../Loader';
 
 /* * */
 
 interface LoadingOverlayProps {
-	size?: 'lg' | 'md' | 'sm' | 'xl'
+	fullHeight?: boolean
+	size?: LoaderProps['size']
 }
 
-export function LoadingSection({ size = 'md' }: LoadingOverlayProps) {
+export function LoadingSection({ fullHeight = false, size = 'md' }: LoadingOverlayProps) {
 	return (
-		<Section alignItems="center">
+		<Section alignItems="center" height={fullHeight ? '100%' : 'auto'} justifyContent="center">
 			<Loader size={size} />
 		</Section>
 	);

@@ -6,7 +6,7 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { alerts, files } from '@tmlmobilidade/interfaces';
 import { type RssRawImageInput } from '@tmlmobilidade/rss';
 import { createRssFeed } from '@tmlmobilidade/rss';
-import { type Alert, CreateAlertDto, type File, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { type Alert, CreateAlertDto, CreateAlertSchema, type File, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -214,15 +214,13 @@ export class AlertsController {
 		const existingAlert = await alerts.findById(request.params.id);
 		if (!existingAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
 		// Update necessary properties to indicate a copy
-		const duplicatedAlertData = {
+		const duplicatedAlertData = CreateAlertSchema.parse({
 			...existingAlert,
-			_id: undefined, // Let the database generate a new ID
-			created_at: Dates.now('Europe/Lisbon').unix_timestamp,
 			created_by: request.me._id,
+			publish_status: 'draft',
 			title: `${existingAlert.title} (Cópia)`,
-			updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
 			updated_by: request.me._id,
-		};
+		});
 		// Insert the duplicated alert into the database
 		// and send the duplicated alert to the client
 		const insertResult = await alerts.insertOne(duplicatedAlertData);

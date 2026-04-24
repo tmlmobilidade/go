@@ -1,6 +1,6 @@
 /* * */
 
-import { UseFilterStateStringReturnType } from '../hooks/use-filter-state-string';
+import { type UseFilterStateStringReturnType } from '../hooks/use-filter-state-string';
 
 /**
  * Use this interface to type the state of **List** contexts.
@@ -16,6 +16,7 @@ export interface ListContextStateTemplate {
 	flags: {
 		error: Error | undefined
 		isLoading: boolean
+		isValidating?: boolean
 	}
 }
 
@@ -46,6 +47,7 @@ export interface CreateContextStateTemplate {
 export interface DetailContextStateTemplate {
 	actions: {
 		delete?: () => void
+		duplicate?: () => void
 		lock?: () => void
 		save: () => void
 	}
@@ -56,9 +58,11 @@ export interface DetailContextStateTemplate {
 		canSave?: boolean
 		error: Error | undefined
 		isDeleting?: boolean
+		isDuplicating?: boolean
 		isLoading: boolean
 		isLocking?: boolean
 		isReadOnly?: boolean
 		isSaving?: boolean
+		isValidating?: boolean
 	}
 }

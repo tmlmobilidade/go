@@ -100,7 +100,7 @@ export function useFlagCanDuplicate(props: UseFlagCanDuplicateProps): UseFlagCan
 		// Some document types do not have the isLocking property.
 		if (props.isLocking !== undefined && props.isLocking) return false;
 		// If the form is dirty, we cannot duplicate.
-		if (!props.isDirty) return false;
+		if (props.isDirty) return false;
 		// If the form is valid, we can duplicate.
 		if (!props.isValid) return false;
 		// Otherwise, duplication is allowed.

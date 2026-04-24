@@ -59,7 +59,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	// B. Fetch Data
 
 	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
-	const { data: alertData, error: alertError, isLoading: alertLoading, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId));
+	const { data: alertData, error: alertError, isLoading: alertLoading, isValidating: alertValidating, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId));
 	const { data: alertImage, mutate: alertImageMutate } = useSWR<FileType>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
 
 	//
@@ -84,7 +84,6 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'DELETE'),
 		onSuccess: () => {
-			formRef.current.resetDirty();
 			alertsListMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_LIST));
 		},
@@ -102,11 +101,10 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 
 	const { action: handleDuplicate, isLoading: isDuplicating } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_DUPLICATE(alertId)),
-		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
-			alertMutate(updatedItem);
-			alertImageMutate();
+		onSuccess: (duplicatedItem) => {
 			alertsListMutate();
+			const destUrl = keepUrlParams(PAGE_ROUTES.alerts.ALERTS_DETAIL(duplicatedItem._id));
+			router.push(destUrl);
 		},
 	});
 
@@ -133,7 +131,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	useEffect(() => {
 		if (!imageFile) return;
 		handleSave();
-	}, [imageFile]);
+	}, [handleSave, imageFile]);
 
 	//
 	// F. Setup flags
@@ -257,6 +255,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		actions: {
 			delete: handleDelete,
 			deleteImage: handleDeleteImage,
+			duplicate: handleDuplicate,
 			lock: handleLock,
 			save: handleSave,
 			setImageFile: setImageFile,
@@ -274,13 +273,15 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			canSave,
 			error: alertError,
 			isDeleting,
-			isDeletingImage: isDeletingImage,
+			isDeletingImage,
 			isDirty: formRef.current.isDirty(),
+			isDuplicating,
 			isLoading: alertLoading,
-			isLocking: isLocking,
+			isLocking,
 			isReadOnly,
 			isSaving,
-			isUploadingImage: isUploadingImage,
+			isUploadingImage,
+			isValidating: alertValidating,
 		},
 	};
 

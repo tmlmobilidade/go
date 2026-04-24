@@ -5,7 +5,7 @@
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, CloseButton, DeleteButton, DuplicateButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusTag, SaveButton, Spacer, Toolbar, useMeContext } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, DuplicateButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusTag, SaveButton, Spacer, Toolbar, useMeContext } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
@@ -41,28 +41,17 @@ export function AlertDetailHeader() {
 				value: alertDetailContext.data.alert.reference_type,
 			},
 		]);
-	}, [
-		meContext.data.user?.permissions,
-		alertDetailContext.data.alert.agency_id,
-		alertDetailContext.data.alert.reference_type,
-	]);
+	}, [meContext.actions, alertDetailContext.data.alert.agency_id, alertDetailContext.data.alert.reference_type]);
 
 	//
-	// B. Handle actions
+	// C. Handle actions
 
 	const handleClose = () => {
 		router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_LIST));
 	};
 
-	const handleDuplicate = () => {
-		if (!alertDetailContext.data.id) return;
-		const searchParams = new URLSearchParams(window.location.search);
-		searchParams.set('copy', alertDetailContext.data.id);
-		router.push(`${PAGE_ROUTES.alerts.ALERTS_LIST}?${searchParams.toString()}`);
-	};
-
 	//
-	// C. Render components
+	// D. Render components
 
 	return (
 		<Toolbar>
