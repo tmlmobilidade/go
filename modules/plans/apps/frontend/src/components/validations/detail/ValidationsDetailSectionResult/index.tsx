@@ -5,6 +5,7 @@
 import { SeverityTag } from '@/components/common/SeverityTag';
 import { ValidationsDetailSectionResultCellRows } from '@/components/validations/detail/ValidationsDetailSectionResultCellRows';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
+import { getGtfsScheduleDocUrl } from '@/lib/gtfs-schedule-doc-url';
 import { type GtfsValidationMessage } from '@tmlmobilidade/types';
 import { Collapsible, DataTable, DataTableColumn, Divider, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -27,9 +28,27 @@ export function ValidationsDetailSectionResult() {
 		},
 		{
 			accessor: 'field',
+			// eslint-disable-next-line @stylistic/arrow-parens
+			render: item => {
+				const docUrl = getGtfsScheduleDocUrl(item.file_name);
+				const linkable = (item.severity === 'error' || item.severity === 'warning' || item.severity === 'forbidden') && docUrl !== null;
+				if (linkable) {
+					return (
+						<a href={docUrl} rel="noopener noreferrer" target="_blank">
+							{item.field}
+						</a>
+					);
+				}
+				return item.field;
+			},
 			title: 'Campo',
 			width: 250,
 		},
+		// {
+		// 	accessor: 'rule_id',
+		// 	title: 'ID da Regra',
+		// 	width: 200,
+		// },
 		{
 			accessor: 'severity',
 			render: item => <SeverityTag severity={item.severity} />,
