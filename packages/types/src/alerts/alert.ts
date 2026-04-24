@@ -14,6 +14,7 @@ export const AlertSchema = DocumentSchema.extend({
 	active_period_end_date: UnixTimeStampSchema.nullable().default(null),
 	active_period_start_date: UnixTimeStampSchema,
 	agency_id: z.string(),
+	auto_texts: z.boolean().default(true),
 	cause: AlertCauseSchema,
 	coordinates: z.tuple([z.number(), z.number()]).nullable().default(null),
 	description: z.string(),

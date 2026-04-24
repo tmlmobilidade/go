@@ -1,6 +1,6 @@
 /* * */
 
-import { type RideChangeListener, ridesChangeStream } from '@/network/rides/watch.js';
+import { type RideChangeListener, ridesChangeStream } from '@/operation/rides/watch.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';

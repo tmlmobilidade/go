@@ -1,5 +1,3 @@
-'use client';
-
 /* * */
 
 import { type DescribeAlertProps } from '@/types/describe-alert-props.js';
@@ -11,11 +9,8 @@ import { type AlertReferenceType, type RideNormalized } from '@tmlmobilidade/typ
 export const templatePlaceholderReplacements = {
 
 	agency: {
-		'{agency_title}': (data: Extract<DescribeAlertProps, { type: 'agency' }>['data']) => {
-			const agencyNames = Array.from(new Set(data.map(agency => agency.display_name).filter(Boolean)));
-			return agencyNames.length > 1
-				? `agências ${agencyNames.join(', ')}`
-				: `agência ${agencyNames[0]}`;
+		'{agency_title}': (data: Extract<DescribeAlertProps, { reference_type: 'agency' }>['data']) => {
+			return `agência ${data.name}`;
 		},
 	},
 
@@ -24,7 +19,7 @@ export const templatePlaceholderReplacements = {
 		 * Returns a descriptive string for lines in Portuguese, with details about stops when available.
 		 * Groups lines and includes stop information.
 		 */
-		'{lines_description_pt}': (data: Extract<DescribeAlertProps, { type: 'lines' }>['data']) => {
+		'{lines_description_pt}': (data: Extract<DescribeAlertProps, { reference_type: 'lines' }>['data']) => {
 		//
 
 			//
@@ -33,12 +28,12 @@ export const templatePlaceholderReplacements = {
 
 			const parts: string[] = [];
 
-			for (const lineData of data) {
-				const lineShortName = lineData.short_name;
-				const stops = lineData.stops ?? [];
+			for (const hashedTripData of data) {
+				const lineShortName = hashedTripData.line_short_name;
+				const stops = hashedTripData.path ?? [];
 
 				if (stops.length > 0) {
-					const stopNames = stops.map(stop => stop.long_name).filter(Boolean);
+					const stopNames = stops.map(stop => stop.stop_name).filter(Boolean);
 					const stopsPart = stopNames.length > 1
 						? `nas paragens ${stopNames.slice(0, -1).join(', ')} e ${stopNames.slice(-1)}`
 						: `na paragem ${stopNames[0]}`;
@@ -59,8 +54,8 @@ export const templatePlaceholderReplacements = {
 		/**
 		 * Returns a string indicating the line or lines affected in Portuguese.
 		 */
-		'{lines_title}': (data: Extract<DescribeAlertProps, { type: 'lines' }>['data']) => {
-			const lineShortNames = Array.from(new Set(data.map(ht => ht.short_name).filter(Boolean)));
+		'{lines_title}': (data: Extract<DescribeAlertProps, { reference_type: 'lines' }>['data']) => {
+			const lineShortNames = Array.from(new Set(data.map(ht => ht.line_short_name).filter(Boolean)));
 			return lineShortNames.length > 1
 				? `linhas ${lineShortNames.join(', ')}`
 				: `linha ${lineShortNames[0]}`;
@@ -73,7 +68,7 @@ export const templatePlaceholderReplacements = {
 		 * Returns a descriptive string for rides in Portuguese, with details about start times and lines.
 		 * Can handle multiple rides and groups them by pattern ID.
 		 */
-		'{rides_description_pt}': (data: Extract<DescribeAlertProps, { type: 'rides' }>['data']) => {
+		'{rides_description_pt}': (data: Extract<DescribeAlertProps, { reference_type: 'rides' }>['data']) => {
 		//
 
 			//
@@ -122,7 +117,7 @@ export const templatePlaceholderReplacements = {
 		/**
 	 * Returns a comma-separated list of line IDs for rides.
 	 */
-		'{rides_title}': (data: Extract<DescribeAlertProps, { type: 'rides' }>['data']) => {
+		'{rides_title}': (data: Extract<DescribeAlertProps, { reference_type: 'rides' }>['data']) => {
 			const lineShortNames = Array.from(new Set(data.map(ht => ht.line_id) ?? [])).sort();
 			return lineShortNames.join(', ');
 		},
@@ -133,7 +128,7 @@ export const templatePlaceholderReplacements = {
 		 * Returns a descriptive string for stops in Portuguese, with details about lines when available.
 		 * Groups stops and includes line information.
 		 */
-		'{stops_description_pt}': (data: Extract<DescribeAlertProps, { type: 'stops' }>['data']) => {
+		'{stops_description_pt}': (data: Extract<DescribeAlertProps, { reference_type: 'stops' }>['data']) => {
 		//
 
 			//
@@ -142,19 +137,18 @@ export const templatePlaceholderReplacements = {
 
 			const parts: string[] = [];
 
-			for (const stopData of data) {
-				const stopName = stopData.long_name;
-				const lines = stopData.lines ?? [];
+			for (const hashedTripData of data) {
+				for (const waypoint of hashedTripData.path ?? []) {
+					const stopName = waypoint.stop_name;
+					const lines = hashedTripData.line_short_name ?? [];
 
-				if (lines.length > 0) {
-					const lineShortNames = lines.map(line => line.short_name).filter(Boolean);
-					const linesPart = lineShortNames.length > 1
-						? `das linhas ${lineShortNames.slice(0, -1).join(', ')} e ${lineShortNames.slice(-1)}`
-						: `da linha ${lineShortNames[0]}`;
-
-					parts.push(`paragem ${stopName} ${linesPart}`);
-				} else {
-					parts.push(`paragem ${stopName}`);
+					if (lines.length > 0) {
+						const lineShortNames = hashedTripData.line_short_name;
+						const linesPart = `da linha ${lineShortNames[0]}`;
+						parts.push(`paragem ${stopName} ${linesPart}`);
+					} else {
+						parts.push(`paragem ${stopName}`);
+					}
 				}
 			}
 
@@ -164,8 +158,8 @@ export const templatePlaceholderReplacements = {
 
 		//
 		},
-		'{stops_title}': (data: Extract<DescribeAlertProps, { type: 'stops' }>['data']) => {
-			const stopNames = Array.from(new Set(data.map(ht => ht.long_name).filter(Boolean)));
+		'{stops_title}': (data: Extract<DescribeAlertProps, { reference_type: 'stops' }>['data']) => {
+			const stopNames = Array.from(new Set(data.flatMap(ht => ht.path.map(p => p.stop_name)).filter(Boolean)));
 			return stopNames.length > 1
 				? `paragens ${stopNames.join(', ')}`
 				: `paragem ${stopNames[0]}`;

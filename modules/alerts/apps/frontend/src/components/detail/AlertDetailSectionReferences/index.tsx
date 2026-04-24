@@ -6,7 +6,7 @@ import { ReferencesEditor } from '@/components/common/references/ReferencesEdito
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, PermissionCatalog } from '@tmlmobilidade/types';
-import { Collapsible, Label, openConfirmModal, Select, useDataAgencies } from '@tmlmobilidade/ui';
+import { Collapsible, Label, openConfirmModal, Section, Select, useDataAgencies } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -65,13 +65,17 @@ export function AlertDetailSectionReferences() {
 		>
 
 			{agenciesOptions.length > 1 && (
-				<Select
-					clearable={false}
-					data={agenciesOptions}
-					label="Operador afetado"
-					{...alertDetailContext.data.form.getInputProps('agency_id')}
-					onChange={handleChangeAgencyId}
-				/>
+				<Section>
+					<Select
+						key={alertDetailContext.data.form.key('agency_id')}
+						clearable={false}
+						data={agenciesOptions}
+						label="Operador afetado"
+						w="100%"
+						{...alertDetailContext.data.form.getInputProps('agency_id')}
+						onChange={handleChangeAgencyId}
+					/>
+				</Section>
 			)}
 
 			<ReferencesEditor

@@ -1,9 +1,9 @@
 /* * */
 
 import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema } from '@/_common/status.js';
-import { RideAcceptanceStatusSchema } from '@/rides/ride-acceptance.js';
-import { RideAnalysisGradeSchema } from '@/rides/ride-analysis.js';
-import { RideSchema } from '@/rides/ride.js';
+import { RideAcceptanceStatusSchema } from '@/operation/rides/ride-acceptance.js';
+import { RideAnalysisGradeSchema } from '@/operation/rides/ride-analysis.js';
+import { RideSchema } from '@/operation/rides/ride.js';
 import { z } from 'zod';
 
 /* * */

@@ -3,7 +3,7 @@
 import { CommentSchema } from '@/_common/comment.js';
 import { DocumentSchema } from '@/_common/document.js';
 import { AlertCauseSchema } from '@/alerts/cause.js';
-import { RideAnalysisSummarySchema } from '@/rides/ride-analysis.js';
+import { RideAnalysisSummarySchema } from '@/operation/rides/ride-analysis.js';
 import { z } from 'zod';
 
 /* * */
