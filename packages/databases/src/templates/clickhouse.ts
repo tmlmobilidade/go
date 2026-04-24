@@ -230,7 +230,7 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 			Logger.info(`CLICKHOUSE [${this.tableName}]: Table created.`);
 		} catch (error) {
 			// If the error is not an ACCESS_DENIED, throw it right away
-			if (!(error instanceof ClickHouseError) || error.type !== 'ACCESS_DENIED') {
+			if (!(error instanceof ClickHouseError) || error.code !== '497') {
 				Logger.error(`CLICKHOUSE [${this.tableName}]: Error @ createTable(): ${(error as Error).message}`);
 				throw error;
 			}
