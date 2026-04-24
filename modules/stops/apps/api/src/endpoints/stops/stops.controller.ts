@@ -3,7 +3,7 @@
 import { generateStopId } from '@/utils/generate-stop-id.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { stops } from '@tmlmobilidade/interfaces';
+import { patterns, stops } from '@tmlmobilidade/interfaces';
 import { CreateStopSchema, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
 
 /**
@@ -65,7 +65,31 @@ export class StopsController {
 	static async getById(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		const foundStop = await stops.findById(Number(request.params.id));
 		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
-		reply.send({ data: foundStop, error: null, statusCode: HTTP_STATUS.OK });
+
+		//
+		// Get pattern ids that reference this event in manual pattern rules
+
+		const associatedPatterns = await patterns.findMany(
+			{
+				'path.stop_id': Number(request.params.id),
+			},
+			{
+				projection: {
+					_id: 1,
+					code: 1,
+					headsign: 1,
+					line_id: 1,
+					route_id: 1,
+				},
+				sort: { code: 1 },
+			},
+		);
+
+		reply.send({
+			data: { ...foundStop, associated_patterns: associatedPatterns },
+			error: null,
+			statusCode: HTTP_STATUS.OK,
+		});
 	}
 
 	/**

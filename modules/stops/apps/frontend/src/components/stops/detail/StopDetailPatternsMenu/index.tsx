@@ -9,13 +9,13 @@ import { TopbarMenu, TopbarMenuItem, TopbarMenuList, TopbarMenuNoContent } from 
 
 /* * */
 
-interface EventsDetailPatternsMenuProps {
+interface StopDetailPatternsMenuProps {
 	patterns?: Event['associated_patterns']
 }
 
 /* * */
 
-export function EventsDetailPatternsMenu({ patterns = [] }: EventsDetailPatternsMenuProps) {
+export function StopDetailPatternsMenu({ patterns = [] }: StopDetailPatternsMenuProps) {
 	return (
 		<TopbarMenu
 			counter={patterns.length}
