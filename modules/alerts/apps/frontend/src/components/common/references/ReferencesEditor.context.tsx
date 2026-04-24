@@ -5,7 +5,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type Alert, type HashedTrip, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Label, openConfirmModal, type SelectDataItem, useDataHashedTrips, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
+import { Label, openConfirmModal, type SelectDataItem, useDataHashedTrips, useDataRides } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
 
@@ -39,17 +39,13 @@ interface ReferencesEditorContextState {
 		available_agencies_options: SelectDataItem[]
 		enabled_reference_types: Alert['reference_type'][]
 		hashed_trips: HashedTrip[]
+		lookup_end_date: UnixTimestamp
+		lookup_start_date: UnixTimestamp
 		rides: RideNormalized[]
 		selected_agency_id: Alert['agency_id']
 		selected_reference_type: Alert['reference_type']
 		selected_references: Alert['references']
 		selected_rides_data: RideNormalized[]
-	}
-	filters: {
-		lines: UseFilterStateListReturnType
-		search: UseFilterStateStringReturnType
-		stops: UseFilterStateListReturnType
-		view_mode?: UseFilterStateStringReturnType
 	}
 	flags: {
 		isLoading: boolean
@@ -76,13 +72,8 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 	//
 	// A. Setup variables
 
-	const filterLines = useFilterStateList('lines', []);
-	const filterStops = useFilterStateList('stops', []);
-	const filterSearch = useFilterStateString('rides_search');
-	const filterViewMode = useFilterStateString('view_mode', 'selected');
-
-	const [startDate, setStartDate] = useState<UnixTimestamp>();
-	const [endDate, setEndDate] = useState<UnixTimestamp>();
+	const [lookupStartDate, setLookupStartDate] = useState<UnixTimestamp>();
+	const [lookupEndDate, setLookupEndDate] = useState<UnixTimestamp>();
 
 	const [selectedRidesData, setSelectedRidesData] = useState<RideNormalized[]>([]);
 
@@ -92,35 +83,22 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 	const { isLoading: hashedTripsLoading, raw: hashedTripsData } = useDataHashedTrips(API_ROUTES.alerts.HASHED_TRIPS_LIST, {
 		filters: {
 			agency_ids: [selectedAgencyId],
-			date_end: endDate,
-			date_start: startDate,
-			line_ids: filterLines.value,
-			search: filterSearch.value,
-			stop_ids: filterStops.value,
+			date_end: lookupEndDate,
+			date_start: lookupStartDate,
 		},
 	});
 
 	const { isLoading: ridesLoading, raw: ridesData } = useDataRides(API_ROUTES.alerts.RIDES_LIST, {
 		filters: {
 			agency_ids: [selectedAgencyId],
-			date_end: endDate,
-			date_start: startDate,
-			line_ids: filterLines.value,
+			date_end: lookupEndDate,
+			date_start: lookupStartDate,
 			operational_statuses: ['running', 'missed', 'scheduled'],
-			search: filterSearch.value,
-			stop_ids: filterStops.value,
 		},
 	});
 
 	//
 	// C. Handle actions
-
-	useEffect(() => {
-		// Skip if no selected references
-		if (selectedReferenceType !== 'rides') return;
-		// Set filter mode to 'all' if there are no selected references
-		if (!selectedReferences?.length) filterViewMode.set('all');
-	}, [selectedReferences, selectedReferenceType, filterViewMode]);
 
 	const changeAgencyId = (value: Alert['agency_id']) => {
 		if (selectedReferences?.length > 0) {
@@ -221,7 +199,7 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 	useEffect(() => {
 		// Add a margin to the start date
 		if (!activePeriodStartDate) return;
-		setStartDate(Dates.fromUnixTimestamp(activePeriodStartDate).minus({ minutes: 30 }).unix_timestamp);
+		setLookupStartDate(Dates.fromUnixTimestamp(activePeriodStartDate).minus({ minutes: 30 }).unix_timestamp);
 	}, [activePeriodStartDate]);
 
 	useEffect(() => {
@@ -230,9 +208,9 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 			// eslint-disable-next-line no-console
 			console.warn(activePeriodEndDate, 'ReferencesEditorContextProvider: activePeriodEndDate is undefined');
 			if (!activePeriodStartDate) return;
-			setEndDate(Dates.fromUnixTimestamp(activePeriodStartDate).plus({ hours: 4 }).unix_timestamp);
+			setLookupEndDate(Dates.fromUnixTimestamp(activePeriodStartDate).plus({ hours: 4 }).unix_timestamp);
 		}
-		setEndDate(activePeriodEndDate);
+		setLookupEndDate(activePeriodEndDate);
 	}, [activePeriodStartDate, activePeriodEndDate]);
 
 	//
@@ -252,20 +230,16 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 			available_agencies_options: availableAgenciesOptions,
 			enabled_reference_types: enabledReferenceTypes || [],
 			hashed_trips: hashedTripsData,
+			lookup_end_date: lookupEndDate,
+			lookup_start_date: lookupStartDate,
 			rides: ridesData,
 			selected_agency_id: selectedAgencyId,
 			selected_reference_type: selectedReferenceType,
 			selected_references: selectedReferences ?? [],
 			selected_rides_data: selectedRidesData,
 		},
-		filters: {
-			lines: filterLines,
-			search: filterSearch,
-			stops: filterStops,
-			view_mode: filterViewMode,
-		},
 		flags: {
-			isLoading: ridesLoading || hashedTripsLoading,
+			isLoading: hashedTripsLoading || ridesLoading,
 		},
 	};
 

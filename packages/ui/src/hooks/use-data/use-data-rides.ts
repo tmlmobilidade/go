@@ -1,8 +1,9 @@
 'use client';
 
-import { Dates } from '@tmlmobilidade/dates';
 /* * */
 
+import { Dates } from '@tmlmobilidade/dates';
+import { Logger } from '@tmlmobilidade/logger';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { type GetRidesBatchQuery, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
 import { type SelectDataItem, useDebouncedState, useStateRef } from '@tmlmobilidade/ui';
@@ -51,7 +52,7 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 		// Skip if webSocket is already initialized
 		if (webSocketRef.current) return;
 		// Initialize WebSocket connection
-		console.log('Opening WebSocket connection...', `${apiUrl}/ws`);
+		Logger.info(`Opening WebSocket connection... ${apiUrl}/ws`);
 		const wsUrl = new URL(`${apiUrl}/ws`);
 		wsUrl.protocol = wsUrl.protocol === 'https:' ? 'wss:' : 'ws:';
 		const socket = new WebSocket(wsUrl.toString());
@@ -78,7 +79,7 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 				ridesData.set(next);
 				setLastUpdatedAt(Dates.now('Europe/Lisbon').unix_timestamp);
 			} catch (error) {
-				console.error('WebSocket message parse error:', error);
+				Logger.error('WebSocket message parse error:', error);
 			}
 		};
 
@@ -87,7 +88,7 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 		};
 
 		const handleWebsocketClose = (event: CloseEvent) => {
-			console.warn('WebSocket closed:', event.code, event.reason);
+			Logger.info(`WebSocket closed: ${event.code}, ${event.reason}`);
 		};
 
 		socket.addEventListener('open', handleWebsocketInit);
@@ -136,19 +137,7 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 		// Build query string params and set state
 		const result = new URLSearchParams(Object.fromEntries(filtersMap)).toString();
 		setQueryStringParams(result);
-	}, [
-		props?.filters?.search,
-		props?.filters?.agency_ids,
-		props?.filters?.date_start,
-		props?.filters?.date_end,
-		props?.filters?.acceptance_status,
-		props?.filters?.analysis_ended_at_last_stop_grade,
-		props?.filters?.analysis_expected_apex_validation_interval,
-		props?.filters?.analysis_simple_three_vehicle_events_grade,
-		props?.filters?.analysis_transaction_sequentiality,
-		props?.filters?.delay_statuses,
-		props?.filters?.operational_statuses,
-	]);
+	}, [props.filters]);
 
 	const optionsData = useMemo(() => {
 		if (!ridesData.state) return [];

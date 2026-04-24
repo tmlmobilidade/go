@@ -3,7 +3,7 @@
 /* * */
 
 import { useQueryState } from 'nuqs';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { SelectDataItem } from '../components/inputs/Select';
 import { parseAsArrayOfStrings } from '../utils/parse-string-array';
@@ -14,6 +14,7 @@ export interface UseFilterStateListReturnType<T extends string = string> {
 	isActive: boolean
 	options: SelectDataItem[]
 	set: (value: T[]) => void
+	setOptions: (options: SelectDataItem[]) => void
 	value: T[]
 }
 
@@ -35,6 +36,7 @@ export function useFilterStateList<T extends string>(key: string, defaults: T[],
 	// A. Setup variables
 
 	const [urlValue, setUrlValue] = useQueryState<string[]>(key, parseAsArrayOfStrings);
+	const [listOptions, setListOptions] = useState<SelectDataItem[]>(options ?? []);
 
 	//
 	// B. Transform data
@@ -45,15 +47,12 @@ export function useFilterStateList<T extends string>(key: string, defaults: T[],
 	}, [urlValue, defaults]);
 
 	const parsedOptions = useMemo(() => {
-		// Return empty array if
-		// no options are provided
-		if (!options) return [];
 		// Map options to include checked status
-		return options.map(item => ({
+		return listOptions.map(item => ({
 			...item,
 			checked: effectiveValue.includes(item.value as T),
 		}));
-	}, [options, effectiveValue]);
+	}, [listOptions, effectiveValue]);
 
 	const isActive = useMemo(() => {
 		// The filter is not active
@@ -83,6 +82,7 @@ export function useFilterStateList<T extends string>(key: string, defaults: T[],
 		isActive,
 		options: parsedOptions,
 		set: setUrlValue,
+		setOptions: setListOptions,
 		value: effectiveValue,
 	};
 
