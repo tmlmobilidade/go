@@ -123,9 +123,7 @@ export class OperationLinesSharedController {
 			.aggregate<PipelineResult>(pipeline)
 			.toArray();
 
-		Logger.info(`HashedTripsSharedController.getBatch - distinctHashedTripIds count: ${pipelineResult?.length ?? 0}`);
-
-		console.log('pipelineResult', pipelineResult);
+		Logger.info(`OperationLinesController.getBatch - pipeline result count: ${pipelineResult?.length ?? 0}`);
 
 		//
 		// Setup the final Map to keep track of the Operation Lines,
