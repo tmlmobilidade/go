@@ -36,7 +36,7 @@ export function useDataOperationLines(apiUrl: string, props?: UseDataOperationLi
 	//
 	// B. Fetch data
 
-	const { data: fetchedOperationLinesData, error: fetchedOperationLinesError, isLoading: fetchedOperationLinesLoading } = useSWR<OperationLine[], Error>((apiUrl && queryStringParams) && `${apiUrl}?${queryStringParams}`, { refreshInterval: 600_000 });
+	const { data: fetchedOperationLinesData, error: fetchedOperationLinesError, isLoading: fetchedOperationLinesLoading } = useSWR<OperationLine[], Error>((apiUrl && queryStringParams) && `${apiUrl}?${queryStringParams}`);
 
 	//
 	// C. Transform data

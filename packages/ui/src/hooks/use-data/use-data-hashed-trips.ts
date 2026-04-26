@@ -36,7 +36,7 @@ export function useDataHashedTrips(apiUrl: string, props?: UseDataHashedTripsPro
 	//
 	// B. Fetch data
 
-	const { data: fetchedHashedTripsData, error: fetchedHashedTripsError, isLoading: fetchedHashedTripsLoading } = useSWR<HashedTrip[], Error>((apiUrl && queryStringParams) && `${apiUrl}?${queryStringParams}`, { refreshInterval: 60_000 });
+	const { data: fetchedHashedTripsData, error: fetchedHashedTripsError, isLoading: fetchedHashedTripsLoading } = useSWR<HashedTrip[], Error>((apiUrl && queryStringParams) && `${apiUrl}?${queryStringParams}`);
 
 	//
 	// C. Transform data

@@ -3,7 +3,7 @@
 		"create": {
 			"summary": {
 				"auto_texts": {
-					"label": "Gerar descrição automaticamente"
+					"label": "Textos Automáticos"
 				},
 				"coordinates": {
 					"label": "Coordenadas Geográficas"

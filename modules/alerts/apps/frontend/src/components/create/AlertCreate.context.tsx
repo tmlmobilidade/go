@@ -46,10 +46,10 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	const router = useRouter();
 	const meContext = useMeContext();
 
-	const { formRef } = useTypicalForm<CreateAlertDto>(CreateAlertSchema);
-
 	//
-	// B. Fetch data
+	// B. Setup form
+
+	const { formRef } = useTypicalForm<CreateAlertDto>(CreateAlertSchema);
 
 	const watchedFormValues = useTypicalFormWatch(formRef.current, [
 		'cause',
@@ -63,9 +63,12 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		'publish_status',
 	]);
 
+	//
+	// C. Fetch data
+
 	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
 
-	const { options: agenciesOptions, raw: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { raw: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.create],
 		scope: PermissionCatalog.all.alerts.scope,
 	});
@@ -88,7 +91,7 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	});
 
 	//
-	// C. Setup form
+	// D. Transform data
 
 	const multiStep = useMultiStep({
 		steps: [
@@ -111,7 +114,7 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 				id: 'agency',
 				isEnabled: () => !!formRef.current.getValues().cause && !!formRef.current.getValues().effect,
 				isValid: () => !!formRef.current.getValues().agency_id,
-				isVisible: agenciesOptions?.length > 1,
+				isVisible: agenciesData?.length > 1,
 				label: 'Operador',
 				order: 2,
 			},
@@ -141,9 +144,6 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		],
 	});
 
-	//
-	// D. Transform data
-
 	const enabledReferenceTypes = useMemo(() => {
 		// Extract the possible reference types
 		// for the selected cause and effect.
@@ -159,27 +159,33 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	}, [watchedFormValues.cause, watchedFormValues.effect]);
 
 	//
-	// D. Handle actions
+	// E. Handle actions
 
 	useEffect(() => {
+		// Skip if agency_id is already set
 		if (watchedFormValues.agency_id) return;
-		if (agenciesOptions?.length === 1) formRef.current.setFieldValue('agency_id', agenciesOptions[0].value);
-	}, [watchedFormValues.agency_id, agenciesOptions, formRef]);
+		// Pre-select agency if there is only one available
+		if (agenciesData?.length === 1) formRef.current.setFieldValue('agency_id', agenciesData[0]._id);
+	}, [watchedFormValues.agency_id, agenciesData, formRef]);
 
 	useEffect(() => {
+		// Skip if publish status is already set
 		if (watchedFormValues.publish_status) return;
+		// Set publish status to published to ensure alert is visible immediately
 		formRef.current.setFieldValue('publish_status', 'published');
 	}, [formRef, watchedFormValues.publish_status]);
 
 	useEffect(() => {
+		// Skip if active period start date is already set
 		if (watchedFormValues.active_period_start_date) return;
-		// Set active period start date to 5 minutes ago
-		formRef.current.setFieldValue('active_period_start_date', Dates.now('Europe/Lisbon').minus({ minutes: 5 }).set({ millisecond: 0, second: 0 }).unix_timestamp);
+		// Set active period start date to 30 minutes ago
+		formRef.current.setFieldValue('active_period_start_date', Dates.now('Europe/Lisbon').minus({ minutes: 30 }).set({ millisecond: 0, second: 0 }).unix_timestamp);
 		// Set publish start date to start of today to ensure alert is visible immediately
 		formRef.current.setFieldValue('publish_start_date', Dates.now('Europe/Lisbon').startOf('day').unix_timestamp);
 	}, [formRef, watchedFormValues.active_period_start_date]);
 
 	useEffect(() => {
+		// Skip if active period end date is already set
 		if (watchedFormValues.active_period_end_date) return;
 		// Set active period end date to the end today
 		formRef.current.setFieldValue('active_period_end_date', Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp);
@@ -189,24 +195,26 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 
 	useEffect(() => {
 		// Skip if reference type is already set
-		if (formRef.current.getValues().reference_type) return;
+		if (watchedFormValues.reference_type) return;
 		// Skip if there are no enabled reference types
 		if (!enabledReferenceTypes.length) return;
 		// Get permission definition for reference types
 		const createPermission = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
+		// Get reference types availability based on permissions
+		const canUseAllReferenceTypes = createPermission?.resources.reference_types.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+		const allowedReferenceTypes = createPermission?.resources.reference_types;
 		// Set the reference type based on alert cause/effect when possible
-		if (createPermission?.resources.reference_types.includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-			if (enabledReferenceTypes.includes('lines')) return formRef.current.setFieldValue('reference_type', 'lines');
-			if (enabledReferenceTypes.includes('stops')) return formRef.current.setFieldValue('reference_type', 'stops');
-			if (enabledReferenceTypes.includes('rides')) return formRef.current.setFieldValue('reference_type', 'rides');
-			if (enabledReferenceTypes.includes('agency')) return formRef.current.setFieldValue('reference_type', 'agency');
-			return Logger.info('No enabled reference types available to set as default.');
+		if (enabledReferenceTypes.includes('lines') && (canUseAllReferenceTypes || allowedReferenceTypes.includes('lines'))) {
+			formRef.current.setFieldValue('reference_type', 'lines');
+		} else if (enabledReferenceTypes.includes('stops') && (canUseAllReferenceTypes || allowedReferenceTypes.includes('stops'))) {
+			formRef.current.setFieldValue('reference_type', 'stops');
+		} else if (enabledReferenceTypes.includes('rides') && (canUseAllReferenceTypes || allowedReferenceTypes.includes('rides'))) {
+			formRef.current.setFieldValue('reference_type', 'rides');
+		} else if (enabledReferenceTypes.includes('agency') && (canUseAllReferenceTypes || allowedReferenceTypes.includes('agency'))) {
+			formRef.current.setFieldValue('reference_type', 'agency');
+		} else {
+			Logger.info('No enabled reference types available to set as default.');
 		}
-		// Set the reference type based on permissions
-		if (enabledReferenceTypes.includes('lines') && createPermission?.resources.reference_types.includes('lines')) return formRef.current.setFieldValue('reference_type', 'lines');
-		if (enabledReferenceTypes.includes('stops') && createPermission?.resources.reference_types.includes('stops')) return formRef.current.setFieldValue('reference_type', 'stops');
-		if (enabledReferenceTypes.includes('rides') && createPermission?.resources.reference_types.includes('rides')) return formRef.current.setFieldValue('reference_type', 'rides');
-		if (enabledReferenceTypes.includes('agency') && createPermission?.resources.reference_types.includes('agency')) return formRef.current.setFieldValue('reference_type', 'agency');
 	}, [watchedFormValues.reference_type, enabledReferenceTypes, meContext.data.user.permissions, formRef]);
 
 	useEffect(() => {
@@ -217,6 +225,14 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		// Set selected references to the selected agency
 		formRef.current.setFieldValue('references', [{ child_ids: [], parent_id: watchedFormValues.agency_id }]);
 	}, [watchedFormValues.reference_type, watchedFormValues.agency_id, formRef]);
+
+	useEffect(() => {
+		// Skip if auto_texts is either true of false
+		if (watchedFormValues.auto_texts === true) return;
+		if (watchedFormValues.auto_texts === false) return;
+		// Preset auto texts flag to true when unset
+		formRef.current.setFieldValue('auto_texts', true);
+	}, [formRef, watchedFormValues.auto_texts]);
 
 	useEffect(() => {
 		// Reset effect and reference type when cause changes as they are dependent on cause
@@ -268,7 +284,6 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		} else if (watchedFormValues.reference_type === 'rides') {
 			// Filter ridesData to find the selected rides based on parent_id in references
 			const selectedRidesData = ridesData.filter(ride => watchedFormValues.references.some(ref => String(ref.parent_id) === String(ride._id)));
-			console.log('describe: selectedRidesData', watchedFormValues.references, selectedRidesData);
 			if (!selectedRidesData.length) return;
 			// Generate alert templating
 			alertTemplating = describeAlert({

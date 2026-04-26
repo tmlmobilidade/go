@@ -46,7 +46,7 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 	//
 	// B. Fetch data
 
-	const { data: fetchedRidesData, error: fetchedRidesError, isLoading: fetchedRidesLoading } = useSWR<RideNormalized[], Error>((apiUrl && queryStringParams) && `${apiUrl}?${queryStringParams}`, { refreshInterval: 60_000 });
+	const { data: fetchedRidesData, error: fetchedRidesError, isLoading: fetchedRidesLoading } = useSWR<RideNormalized[], Error>((apiUrl && queryStringParams) && `${apiUrl}?${queryStringParams}`);
 
 	useEffect(() => {
 		// Skip if webSocket is already initialized
