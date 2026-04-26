@@ -7,7 +7,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { Logger } from '@tmlmobilidade/logger';
 import { Agency, type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, HashedTrip, PermissionCatalog, RideNormalized } from '@tmlmobilidade/types';
-import { type CreateContextStateTemplate, keepUrlParams, useDataAgencies, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm, useTypicalFormWatch } from '@tmlmobilidade/ui';
+import { type CreateContextStateTemplate, keepUrlParams, useDataAgencies, useDataOperationLines, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm, useTypicalFormWatch } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
@@ -142,6 +142,16 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		// for the selected cause and effect.
 		return effectMapValue;
 	}, [watchedFormValues.cause, watchedFormValues.effect]);
+
+	// const { raw: operationLinesData } = useDataOperationLines(API_ROUTES.alerts.OPERATION_LINES, {
+	// 	filters: {
+	// 		agency_ids: watchedFormValues.agency_id ? [watchedFormValues.agency_id] : [],
+	// 		date_end: Dates.now('Europe/Lisbon').set({ day: 24, hour: 23, millisecond: 0, minute: 0, month: 4, second: 0, year: 2026 }).unix_timestamp,
+	// 		date_start: Dates.now('Europe/Lisbon').set({ day: 24, hour: 20, millisecond: 0, minute: 0, month: 4, second: 0, year: 2026 }).unix_timestamp,
+	// 	},
+	// });
+
+	// console.log('operationLinesData', operationLinesData);
 
 	// useEffect(() => {
 	// 	(async () => {

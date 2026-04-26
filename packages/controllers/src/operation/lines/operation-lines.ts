@@ -138,7 +138,7 @@ export class OperationLinesSharedController {
 			if (!operationLinesMap.has(item.hashed_trip_doc.line_id)) {
 				operationLinesMap.set(item.hashed_trip_doc.line_id, {
 					agency_id: item.agency_id,
-					hashed_trip_ids: [],
+					hashed_trips: [],
 					last_operational_date: item.operational_date,
 					last_plan_id: item.plan_id,
 					line_id: item.hashed_trip_doc.line_id,
@@ -153,7 +153,7 @@ export class OperationLinesSharedController {
 			// Get the saved line from the map
 			const savedOperationLine = operationLinesMap.get(item.hashed_trip_doc.line_id);
 			// Update the object with the latest fields
-			savedOperationLine.hashed_trip_ids.push(item.hashed_trip_doc._id);
+			savedOperationLine.hashed_trips.push(item.hashed_trip_doc);
 			savedOperationLine.pattern_ids = Array.from(new Set([...savedOperationLine.pattern_ids, item.hashed_trip_doc.pattern_id]));
 			savedOperationLine.route_ids = Array.from(new Set([...savedOperationLine.route_ids, item.hashed_trip_doc.route_id]));
 			savedOperationLine.stop_ids = Array.from(new Set([...savedOperationLine.stop_ids, ...(item.hashed_trip_doc.path.map(stop => stop.stop_id) ?? [])]));
