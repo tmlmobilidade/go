@@ -34,7 +34,6 @@ export function ReferencesEditorLines() {
 			{referencesEditorContext.data.selected_references.map((reference, index) => (
 				<ReferencesEditorLinesItem
 					key={index}
-					hashedTrips={referencesEditorContext.data.hashed_trips}
 					index={index}
 					onRemoveReference={referencesEditorContext.actions.removeReference}
 					onUpdateReference={referencesEditorContext.actions.updateReference}

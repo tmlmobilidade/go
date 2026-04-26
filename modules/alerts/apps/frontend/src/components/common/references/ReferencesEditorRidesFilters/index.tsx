@@ -4,9 +4,8 @@
 
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { IconArrowLoopRight } from '@tabler/icons-react';
-import { type HashedTrip, type HashedTripWaypoint } from '@tmlmobilidade/types';
-import { Grid, MultiSelect, SearchInput, Section, SegmentedControl, SelectDataItem } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { Grid, MultiSelect, SearchInput, Section, SegmentedControl, useDataOperationLines } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -32,44 +31,18 @@ export function ReferencesEditorRidesFilters({ lineIdsFilterValue, searchFilterV
 	const referencesEditorContext = useReferencesEditorContext();
 
 	//
-	// B. Transform data
+	// B. Fetch data
 
-	const lineIdsFilterOptions = useMemo(() => {
-		// Skip if there are no hashedTrips
-		if (!referencesEditorContext.data.hashed_trips.length) return;
-		// Populate lines filter options based on fetched rides
-		const uniqueLinesMap = new Map<HashedTrip['line_id'], SelectDataItem>();
-		referencesEditorContext.data.hashed_trips.forEach((item) => {
-			if (uniqueLinesMap.has(item.line_id)) return;
-			uniqueLinesMap.set(item.line_id, {
-				label: `[${item.line_short_name}] ${item.line_long_name}`,
-				value: String(item.line_id),
-			});
-		});
-		// Return the unique lines as an array of SelectDataItem.
-		return Array.from(uniqueLinesMap.values());
-	}, [referencesEditorContext.data.hashed_trips]);
-
-	const stopIdsFilterOptions = useMemo(() => {
-		// Skip if there are no hashedTrips
-		if (!referencesEditorContext.data.hashed_trips.length) return;
-		// Populate stops filter options based on fetched rides
-		const uniqueStopsMap = new Map<HashedTripWaypoint['stop_id'], SelectDataItem>();
-		referencesEditorContext.data.hashed_trips
-			.flatMap(trip => trip.path)
-			.forEach((item) => {
-				if (uniqueStopsMap.has(item.stop_id)) return;
-				uniqueStopsMap.set(item.stop_id, {
-					label: `[${item.stop_id}] ${item.stop_name}`,
-					value: String(item.stop_id),
-				});
-			});
-		// Return the unique stops as an array of SelectDataItem.
-		return Array.from(uniqueStopsMap.values());
-	}, [referencesEditorContext.data.hashed_trips]);
+	const { options: operationLinesOptions } = useDataOperationLines(API_ROUTES.alerts.OPERATION_LINES, {
+		filters: {
+			agency_ids: [referencesEditorContext.data.selected_agency_id],
+			date_end: referencesEditorContext.data.active_period_end_date,
+			date_start: referencesEditorContext.data.active_period_start_date,
+		},
+	});
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<Section>
@@ -79,7 +52,7 @@ export function ReferencesEditorRidesFilters({ lineIdsFilterValue, searchFilterV
 					onChange={setViewMode}
 					value={viewMode}
 					data={[
-						{ label: `Ver todas as circulações (${referencesEditorContext.data.rides?.length ?? 0})`, value: 'all' },
+						{ label: `Ver todas as circulações`, value: 'all' },
 						{ label: `Apenas as Selecionadas (${referencesEditorContext.data.selected_references.length ?? 0})`, value: 'selected' },
 					]}
 				/>
@@ -90,14 +63,14 @@ export function ReferencesEditorRidesFilters({ lineIdsFilterValue, searchFilterV
 
 						<Grid columns="ab" gap="md">
 							<MultiSelect
-								data={lineIdsFilterOptions}
+								data={operationLinesOptions}
 								leftSection={<IconArrowLoopRight size={20} />}
 								onChange={setLineIdsFilterValue}
 								placeholder="Filtrar por linhas..."
 								value={lineIdsFilterValue}
 							/>
 							<MultiSelect
-								data={stopIdsFilterOptions}
+								data={[]}
 								onChange={setStopIdsFilterValue}
 								placeholder="Filtrar por paragens..."
 								value={stopIdsFilterValue}

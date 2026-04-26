@@ -3,7 +3,7 @@
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { CoordinatesInput, Grid, Section, Switch, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
+import { CoordinatesInput, Grid, Section, Switch, Textarea, TextInput, useMeContext, useTypicalFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -17,6 +17,10 @@ export function AlertCreateStepSummary() {
 	const meContext = useMeContext();
 	const alertCreateContext = useAlertCreateContext();
 	const { t } = useTranslation();
+
+	const watchedFormValues = useTypicalFormWatch(alertCreateContext.data.form, [
+		'auto_texts',
+	]);
 
 	//
 	// B. Transform data
@@ -46,9 +50,11 @@ export function AlertCreateStepSummary() {
 					<Switch
 						key={alertCreateContext.data.form.key('auto_texts')}
 						label={t('default:alerts.create.summary.auto_texts.label')}
+						w="100%"
 						{...alertCreateContext.data.form.getInputProps('auto_texts', { type: 'checkbox' })}
 					/>
 				)}
+				{watchedFormValues.auto_texts ? 'TRUE' : 'FALSE'}
 				<TextInput
 					key={alertCreateContext.data.form.key('title')}
 					label={t('default:alerts.create.summary.title.label')}

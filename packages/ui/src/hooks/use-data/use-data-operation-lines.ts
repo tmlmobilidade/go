@@ -36,7 +36,7 @@ export function useDataOperationLines(apiUrl: string, props?: UseDataOperationLi
 	//
 	// B. Fetch data
 
-	const { data: fetchedOperationLinesData, error: fetchedOperationLinesError, isLoading: fetchedOperationLinesLoading } = useSWR<OperationLine[], Error>((apiUrl && queryStringParams) && `${apiUrl}?${queryStringParams}`, { refreshInterval: 60_000 });
+	const { data: fetchedOperationLinesData, error: fetchedOperationLinesError, isLoading: fetchedOperationLinesLoading } = useSWR<OperationLine[], Error>((apiUrl && queryStringParams) && `${apiUrl}?${queryStringParams}`, { refreshInterval: 600_000 });
 
 	//
 	// C. Transform data
@@ -61,7 +61,7 @@ export function useDataOperationLines(apiUrl: string, props?: UseDataOperationLi
 	const optionsData = useMemo(() => {
 		if (!fetchedOperationLinesData) return [];
 		return fetchedOperationLinesData.map(item => ({
-			label: `(${item.line_short_name}) ${item.line_long_name}`,
+			label: `[${item.last_plan_id}] (${item.line_short_name}) ${item.line_long_name}`,
 			value: String(item.line_id),
 		}));
 	}, [fetchedOperationLinesData]);

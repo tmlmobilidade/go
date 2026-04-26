@@ -30,8 +30,8 @@ export function ReferencesEditorRides() {
 	const { isLoading: filteredRidesLoading, raw: filteredRidesData } = useDataRides(API_ROUTES.alerts.RIDES_LIST, {
 		filters: {
 			agency_ids: [referencesEditorContext.data.selected_agency_id],
-			date_end: referencesEditorContext.data.lookup_end_date,
-			date_start: referencesEditorContext.data.lookup_start_date,
+			date_end: referencesEditorContext.data.active_period_end_date,
+			date_start: referencesEditorContext.data.active_period_start_date,
 			line_ids: lineIdsFilterValue,
 			operational_statuses: ['running', 'missed', 'scheduled'],
 			search: searchFilterValue,

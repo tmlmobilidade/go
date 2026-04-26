@@ -2,15 +2,16 @@
 
 /* * */
 
+import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { IconCornerDownRight, IconMinus } from '@tabler/icons-react';
-import { type Alert, type HashedTrip, HashedTripWaypoint } from '@tmlmobilidade/types';
-import { Button, Grid, MultiSelect, Section, Select, type SelectDataItem, Surface } from '@tmlmobilidade/ui';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type Alert, HashedTripWaypoint } from '@tmlmobilidade/types';
+import { Button, Grid, MultiSelect, Section, Select, type SelectDataItem, Surface, useDataOperationLines } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
 interface ReferencesEditorLinesItemProps {
-	hashedTrips: HashedTrip[]
 	index: number
 	onRemoveReference: (index: number) => void
 	onUpdateReference: (index: number, field: 'child_ids' | 'parent_id', value: string | string[]) => void
@@ -19,57 +20,68 @@ interface ReferencesEditorLinesItemProps {
 
 /* * */
 
-export function ReferencesEditorLinesItem({ hashedTrips, index, onRemoveReference, onUpdateReference, reference }: ReferencesEditorLinesItemProps) {
+export function ReferencesEditorLinesItem({ index, onRemoveReference, onUpdateReference, reference }: ReferencesEditorLinesItemProps) {
 	//
 
 	//
-	// A. Transform data
+	// A. Fetch data
 
-	const hashedTripsAsSelectData = useMemo(() => {
-		// Skip if there are no hashedTrips
-		if (!hashedTrips.length) return [];
-		// Group hashedTrips by line_id, as this is the level
-		// of reference we want to work with in this component.
-		const uniqueLinesMap = new Map<HashedTrip['line_id'], SelectDataItem>();
-		hashedTrips.forEach((item) => {
-			if (uniqueLinesMap.has(item.line_id)) return;
-			uniqueLinesMap.set(item.line_id, {
-				label: `[${item.line_short_name}] ${item.line_long_name}`,
-				value: String(item.line_id),
-			});
-		});
-		// Return the unique lines as an array of SelectDataItem.
-		return Array.from(uniqueLinesMap.values());
-	}, [hashedTrips]);
+	const referencesEditorContext = useReferencesEditorContext();
+
+	//
+	// B. Fetch data
+
+	const { options: operationLinesOptions, raw: operationLinesData } = useDataOperationLines(API_ROUTES.alerts.OPERATION_LINES, {
+		filters: {
+			agency_ids: [referencesEditorContext.data.selected_agency_id],
+			date_end: referencesEditorContext.data.active_period_end_date,
+			date_start: referencesEditorContext.data.active_period_start_date,
+		},
+	});
+
+	//
+	// C. Transform data
 
 	const hashedTripWaypointsAsSelectData: SelectDataItem[] = useMemo(() => {
-		// Skip if there are no hashedTrips
-		// or if parent_id is not set
-		if (!hashedTrips?.length) return [];
+		// Skip if parent_id is not set
 		if (!reference.parent_id) return [];
-		const matchingHashedTrips = hashedTrips.filter(item => String(item.line_id) === String(reference.parent_id));
-		if (!matchingHashedTrips.length) return [];
-		// Group hashedTripWaypoints by stop_id,
-		// as we want unique stop options.
-		const uniqueStopsMap = new Map<HashedTripWaypoint['stop_id'], SelectDataItem>();
-		matchingHashedTrips.forEach((hashedTripItem) => {
-			// Keep only the matching hashedTrips based on the selected reference.parent_id
-			if (String(hashedTripItem.line_id) !== String(reference.parent_id)) return;
-			// Add the waypoints of the matching hashedTrips to the uniqueStopsMap
+		// Skip if there is not data
+		if (!operationLinesData?.length) return [];
+		// Find the matching line for the reference.parent_id
+		const matchingLine = operationLinesData.find(item => String(item.line_id) === String(reference.parent_id));
+		if (!matchingLine) return [];
+		// Setup a map to store unique stops
+		const uniqueStopsMap = new Map<string, { pattern_id: string, waypoint: HashedTripWaypoint }[]>();
+		// Group waypoints by stop_id, as we want unique stop options.
+		matchingLine.hashed_trips.forEach((hashedTripItem) => {
 			hashedTripItem.path.forEach((waypointItem) => {
-				if (uniqueStopsMap.has(waypointItem.stop_id)) return;
-				uniqueStopsMap.set(waypointItem.stop_id, {
-					label: `(${hashedTripItem.pattern_id}) #${waypointItem.stop_sequence} [${waypointItem.stop_id}] ${waypointItem.stop_name}`,
-					value: waypointItem.stop_id,
+				// Check if the stop_id is already in the map.
+				// If not, add it with the corresponding label and value.
+				if (!uniqueStopsMap.has(waypointItem.stop_id)) {
+					uniqueStopsMap.set(String(waypointItem.stop_id), []);
+				}
+				// Append the current pattern_id and stop_sequence to the label
+				// of the existing entry, to provide more context in the option label.
+				uniqueStopsMap.get(String(waypointItem.stop_id)).push({
+					pattern_id: hashedTripItem.pattern_id,
+					waypoint: waypointItem,
 				});
 			});
 		});
 		// Return the unique stops as an array of SelectDataItem.
-		return Array.from(uniqueStopsMap.values());
-	}, [hashedTrips, reference.parent_id]);
+		return Array.from(uniqueStopsMap.entries()).map(([stopId, patternWaypoints]) => {
+			// Create a unique set of pattern_id and stop_sequence combinations for the current stop_id
+			const uniquePatternStopSequenceCombination = new Set<string>();
+			patternWaypoints.forEach(({ waypoint }) => uniquePatternStopSequenceCombination.add(`[${patternWaypoints[0].pattern_id} #${waypoint.stop_sequence}]`));
+			return {
+				label: `[${stopId}] ${patternWaypoints[0].waypoint.stop_name} ${Array.from(uniquePatternStopSequenceCombination.values()).join(' / ')}`,
+				value: stopId,
+			};
+		});
+	}, [operationLinesData, reference.parent_id]);
 
 	//
-	// B. Render components
+	// D. Render components
 
 	return (
 		<Surface>
@@ -77,7 +89,7 @@ export function ReferencesEditorLinesItem({ hashedTrips, index, onRemoveReferenc
 
 				<Grid gap="md">
 					<Select
-						data={hashedTripsAsSelectData}
+						data={operationLinesOptions}
 						label="Linha Afetada"
 						onChange={value => onUpdateReference(index, 'parent_id', value)}
 						onClear={() => onUpdateReference(index, 'child_ids', [])}

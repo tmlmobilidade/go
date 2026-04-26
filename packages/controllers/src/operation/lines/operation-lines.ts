@@ -67,6 +67,7 @@ export class OperationLinesSharedController {
 					hashed_trip_id: { $first: '$hashed_trip_id' },
 					line_id: { $first: '$line_id' },
 					operational_date: { $first: '$operational_date' },
+					plan_id: { $first: '$plan_id' },
 					start_time_scheduled: { $first: '$start_time_scheduled' },
 				},
 			},
