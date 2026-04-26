@@ -25,7 +25,7 @@ export function describeAlert(props: DescribeAlertProps): DescribeAlertReturnTyp
 
 	if (!props.cause || !props.effect || !props.reference_type || !props.references || !props.data) return;
 
-	console.log('HERE PROPS =======>', props);
+	// console.log('HERE PROPS =======>', props);
 
 	//
 	// Setup result object

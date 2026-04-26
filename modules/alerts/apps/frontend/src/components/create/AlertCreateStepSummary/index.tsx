@@ -14,10 +14,10 @@ export function AlertCreateStepSummary() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const meContext = useMeContext();
 	const alertCreateContext = useAlertCreateContext();
-
-	const { t } = useTranslation();
 
 	//
 	// B. Transform data
