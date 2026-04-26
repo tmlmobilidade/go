@@ -143,140 +143,140 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		return effectMapValue;
 	}, [watchedFormValues.cause, watchedFormValues.effect]);
 
-	useEffect(() => {
-		(async () => {
-			// Reset if no selected reference_type
-			if (!formRef.current.getValues().reference_type) return setSelectedReferencesData([]);
-			// Reset state if no selected references
-			if (!formRef.current.getValues().references?.length) return setSelectedReferencesData([]);
-			// Get a list of unique parent_ids
-			const parentIds = formRef.current.getValues().references.map(reference => reference.parent_id);
-			// Fetch data for agencies
-			if (formRef.current.getValues().reference_type === 'agency') {
-				const matchingAgency = agenciesData.find(agency => parentIds.includes(agency._id));
-				setSelectedReferencesData(matchingAgency);	;
-			}
+	// useEffect(() => {
+	// 	(async () => {
+	// 		// Reset if no selected reference_type
+	// 		if (!formRef.current.getValues().reference_type) return setSelectedReferencesData([]);
+	// 		// Reset state if no selected references
+	// 		if (!formRef.current.getValues().references?.length) return setSelectedReferencesData([]);
+	// 		// Get a list of unique parent_ids
+	// 		const parentIds = formRef.current.getValues().references.map(reference => reference.parent_id);
+	// 		// Fetch data for agencies
+	// 		if (formRef.current.getValues().reference_type === 'agency') {
+	// 			const matchingAgency = agenciesData.find(agency => parentIds.includes(agency._id));
+	// 			setSelectedReferencesData(matchingAgency);	;
+	// 		}
 
-			// Fetch data for lines
-			if (formRef.current.getValues().reference_type === 'lines') {
-				const response = await fetch('https://api.carrismetropolitana.pt/v2/lines');
-				const linesData = await response.json() as Line[];
-				const result: Line[] = linesData.filter(line => parentIds.includes(line.id));
+	// 		// Fetch data for lines
+	// 		if (formRef.current.getValues().reference_type === 'lines') {
+	// 			const response = await fetch('https://api.carrismetropolitana.pt/v2/lines');
+	// 			const linesData = await response.json() as Line[];
+	// 			const result: Line[] = linesData.filter(line => parentIds.includes(line.id));
 
-				// Get all unique child_ids (stop IDs) from references
-				const allChildIds = formRef.current.getValues().references
-					.filter(ref => parentIds.includes(ref.parent_id))
-					.flatMap(ref => ref.child_ids);
-				const uniqueChildIds = [...new Set(allChildIds)];
+	// 			// Get all unique child_ids (stop IDs) from references
+	// 			const allChildIds = formRef.current.getValues().references
+	// 				.filter(ref => parentIds.includes(ref.parent_id))
+	// 				.flatMap(ref => ref.child_ids);
+	// 			const uniqueChildIds = [...new Set(allChildIds)];
 
-				// Fetch stops data if there are child_ids
-				const stopsDataMap = new Map<string, Stop>();
-				if (uniqueChildIds.length > 0) {
-					const stopsResponse = await fetch('https://api.carrismetropolitana.pt/v2/stops');
-					const stopsData = await stopsResponse.json() as Stop[];
-					stopsData.filter(stop => uniqueChildIds.includes(stop.id)).forEach((stop) => {
-						stopsDataMap.set(stop.id, stop);
-					});
-				}
+	// 			// Fetch stops data if there are child_ids
+	// 			const stopsDataMap = new Map<string, Stop>();
+	// 			if (uniqueChildIds.length > 0) {
+	// 				const stopsResponse = await fetch('https://api.carrismetropolitana.pt/v2/stops');
+	// 				const stopsData = await stopsResponse.json() as Stop[];
+	// 				stopsData.filter(stop => uniqueChildIds.includes(stop.id)).forEach((stop) => {
+	// 					stopsDataMap.set(stop.id, stop);
+	// 				});
+	// 			}
 
-				setSelectedReferencesData(result.map((line) => {
-					// Get child_ids for this specific line
-					const lineReference = form.getValues().references.find(ref => ref.parent_id === line.id);
-					const lineChildIds = lineReference?.child_ids ?? [];
+	// 			setSelectedReferencesData(result.map((line) => {
+	// 				// Get child_ids for this specific line
+	// 				const lineReference = form.getValues().references.find(ref => ref.parent_id === line.id);
+	// 				const lineChildIds = lineReference?.child_ids ?? [];
 
-					// Map child_ids to StopData
-					const stops: StopData[] = lineChildIds
-						.map(stopId => stopsDataMap.get(stopId))
-						.filter((stop): stop is Stop => stop !== undefined)
-						.map(stop => ({
-							id: stop.id,
-							lines: [],
-							long_name: stop.long_name,
-						}));
+	// 				// Map child_ids to StopData
+	// 				const stops: StopData[] = lineChildIds
+	// 					.map(stopId => stopsDataMap.get(stopId))
+	// 					.filter((stop): stop is Stop => stop !== undefined)
+	// 					.map(stop => ({
+	// 						id: stop.id,
+	// 						lines: [],
+	// 						long_name: stop.long_name,
+	// 					}));
 
-					return {
-						id: line.id,
-						long_name: line.long_name,
-						short_name: line.short_name,
-						stops,
-					};
-				}));
-			}
-			// Fetch data for stops
-			if (form.getValues().reference_type === 'stops') {
-				const response = await fetch('https://api.carrismetropolitana.pt/v2/stops');
-				const stopsData = await response.json() as Stop[];
-				const result: Stop[] = stopsData.filter(stop => parentIds.includes(stop.id));
+	// 				return {
+	// 					id: line.id,
+	// 					long_name: line.long_name,
+	// 					short_name: line.short_name,
+	// 					stops,
+	// 				};
+	// 			}));
+	// 		}
+	// 		// Fetch data for stops
+	// 		if (form.getValues().reference_type === 'stops') {
+	// 			const response = await fetch('https://api.carrismetropolitana.pt/v2/stops');
+	// 			const stopsData = await response.json() as Stop[];
+	// 			const result: Stop[] = stopsData.filter(stop => parentIds.includes(stop.id));
 
-				const linesResponse = await fetch('https://api.carrismetropolitana.pt/v2/lines');
-				const linesData = await linesResponse.json() as Line[];
-				const selectedLines = linesData.filter(line => result.some(stop => stop.line_ids.includes(line.id)));
+	// 			const linesResponse = await fetch('https://api.carrismetropolitana.pt/v2/lines');
+	// 			const linesData = await linesResponse.json() as Line[];
+	// 			const selectedLines = linesData.filter(line => result.some(stop => stop.line_ids.includes(line.id)));
 
-				// Get all unique child_ids (stop IDs) from references
-				const allChildIds = form.getValues().references
-					.filter(ref => parentIds.includes(ref.parent_id))
-					.flatMap(ref => ref.child_ids);
-				const uniqueChildIds = [...new Set(allChildIds)];
+	// 			// Get all unique child_ids (stop IDs) from references
+	// 			const allChildIds = form.getValues().references
+	// 				.filter(ref => parentIds.includes(ref.parent_id))
+	// 				.flatMap(ref => ref.child_ids);
+	// 			const uniqueChildIds = [...new Set(allChildIds)];
 
-				// Fetch stops data if there are child_ids
-				const childStopsDataMap = new Map<string, Stop>();
-				if (uniqueChildIds.length > 0) {
-					const childStopsResponse = await fetch('https://api.carrismetropolitana.pt/v2/stops');
-					const childStopsData = await childStopsResponse.json() as Stop[];
-					childStopsData.filter(stop => uniqueChildIds.includes(stop.id)).forEach((stop) => {
-						childStopsDataMap.set(stop.id, stop);
-					});
-				}
+	// 			// Fetch stops data if there are child_ids
+	// 			const childStopsDataMap = new Map<string, Stop>();
+	// 			if (uniqueChildIds.length > 0) {
+	// 				const childStopsResponse = await fetch('https://api.carrismetropolitana.pt/v2/stops');
+	// 				const childStopsData = await childStopsResponse.json() as Stop[];
+	// 				childStopsData.filter(stop => uniqueChildIds.includes(stop.id)).forEach((stop) => {
+	// 					childStopsDataMap.set(stop.id, stop);
+	// 				});
+	// 			}
 
-				setSelectedReferencesData(result.map((stop) => {
-					// Get child_ids for this specific stop
-					const stopReference = form.getValues().references.find(ref => ref.parent_id === stop.id);
-					const stopChildIds = stopReference?.child_ids ?? [];
+	// 			setSelectedReferencesData(result.map((stop) => {
+	// 				// Get child_ids for this specific stop
+	// 				const stopReference = form.getValues().references.find(ref => ref.parent_id === stop.id);
+	// 				const stopChildIds = stopReference?.child_ids ?? [];
 
-					// For each line associated with this stop, populate stops from child_ids
-					const linesWithStops = selectedLines
-						.filter(line => stop.line_ids.includes(line.id))
-						.map((line) => {
-							// Get stops that are child_ids and belong to this line
-							const lineStops: StopData[] = stopChildIds
-								.map(stopId => childStopsDataMap.get(stopId))
-								.filter((childStop): childStop is Stop => childStop !== undefined && childStop.line_ids.includes(line.id))
-								.map(childStop => ({
-									id: childStop.id,
-									lines: [],
-									long_name: childStop.long_name,
-								}));
+	// 				// For each line associated with this stop, populate stops from child_ids
+	// 				const linesWithStops = selectedLines
+	// 					.filter(line => stop.line_ids.includes(line.id))
+	// 					.map((line) => {
+	// 						// Get stops that are child_ids and belong to this line
+	// 						const lineStops: StopData[] = stopChildIds
+	// 							.map(stopId => childStopsDataMap.get(stopId))
+	// 							.filter((childStop): childStop is Stop => childStop !== undefined && childStop.line_ids.includes(line.id))
+	// 							.map(childStop => ({
+	// 								id: childStop.id,
+	// 								lines: [],
+	// 								long_name: childStop.long_name,
+	// 							}));
 
-							return {
-								id: line.id,
-								long_name: line.long_name,
-								short_name: line.short_name,
-								stops: lineStops,
-							};
-						});
+	// 						return {
+	// 							id: line.id,
+	// 							long_name: line.long_name,
+	// 							short_name: line.short_name,
+	// 							stops: lineStops,
+	// 						};
+	// 					});
 
-					return {
-						id: stop.id,
-						lines: linesWithStops,
-						long_name: stop.long_name,
-					};
-				}));
-			}
-			// Fetch data for rides
-			if (form.getValues().reference_type === 'rides') {
-				const result: RideNormalized[] = [];
-				for (const rideId of parentIds) {
-					const response = await fetchData<RideNormalized>(API_ROUTES.alerts.RIDES_DETAIL_RIDE(rideId));
-					if (!response.data) continue;
-					result.push(response.data);
-				}
-				setSelectedReferencesData(result);
-			}
-		})();
-	}, [
-		form.getValues().reference_type,
-		form.getValues().references,
-	]);
+	// 				return {
+	// 					id: stop.id,
+	// 					lines: linesWithStops,
+	// 					long_name: stop.long_name,
+	// 				};
+	// 			}));
+	// 		}
+	// 		// Fetch data for rides
+	// 		if (form.getValues().reference_type === 'rides') {
+	// 			const result: RideNormalized[] = [];
+	// 			for (const rideId of parentIds) {
+	// 				const response = await fetchData<RideNormalized>(API_ROUTES.alerts.RIDES_DETAIL_RIDE(rideId));
+	// 				if (!response.data) continue;
+	// 				result.push(response.data);
+	// 			}
+	// 			setSelectedReferencesData(result);
+	// 		}
+	// 	})();
+	// }, [
+	// 	form.getValues().reference_type,
+	// 	form.getValues().references,
+	// ]);
 
 	//
 	// D. Handle actions

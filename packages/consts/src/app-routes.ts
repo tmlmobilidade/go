@@ -202,6 +202,12 @@ export const API_ROUTES = Object.freeze({
 		// HASHED-TRIPS
 		HASHED_TRIPS_LIST: `${getModuleConfig('alerts', 'api_url')}/hashed-trips`,
 
+		// OPERATION
+		OPERATION_LINES: `${getModuleConfig('alerts', 'api_url')}/operation/lines`,
+		OPERATION_RIDES: `${getModuleConfig('alerts', 'api_url')}/operation/rides`,
+		OPERATION_RIDES_RIDE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/operation/rides/${id}/ride`,
+		OPERATION_RIDES_WS: `${getModuleConfig('alerts', 'api_url')}/operation/rides/ws`,
+
 		// RIDES
 		RIDES_DETAIL_RIDE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/rides/${id}/ride`,
 		RIDES_LIST: `${getModuleConfig('alerts', 'api_url')}/rides`,

@@ -4,9 +4,10 @@
 
 import { type AlertNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type Alert, AlertReferenceTypeSchema, AlertSchema, PermissionCatalog, PublishStatusSchema } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, useDataAgencies, useDataOperationLines, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
@@ -61,6 +62,16 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		actions: [PermissionCatalog.all.alerts.actions.read],
 		scope: PermissionCatalog.all.alerts.scope,
 	});
+
+	const { raw: operationLinesData } = useDataOperationLines(API_ROUTES.alerts.OPERATION_LINES, {
+		filters: {
+			agency_ids: ['4'],
+			date_end: Dates.now('Europe/Lisbon').set({ day: 24, hour: 23, millisecond: 0, minute: 0, month: 4, second: 0, year: 2026 }).unix_timestamp,
+			date_start: Dates.now('Europe/Lisbon').set({ day: 24, hour: 20, millisecond: 0, minute: 0, month: 4, second: 0, year: 2026 }).unix_timestamp,
+		},
+	});
+
+	console.log('operationLinesData', operationLinesData);
 
 	//
 	// C. Setup filters
