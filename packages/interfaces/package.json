@@ -47,6 +47,7 @@
 		"bcryptjs": "3.0.3",
 		"mongodb": "7.2.0",
 		"oci-common": "2.130.0",
+		"oci-generativeaiinference": "2.130.0",
 		"oci-objectstorage": "2.130.0",
 		"zod": "3.25.76"
 	},
