@@ -43,16 +43,13 @@ async function main(): Promise<void> {
 	const ridesQuery: Filter<Ride> = {
 		agency_id: { $in: AGENCY_IDS },
 		line_id: { $in: [2652, 2708, 2711, 2713, 2722, 2725, 2728, 2729, 2730, 2731, 2734] }, // ! Development only
-		start_time_observed: { $eq: null },
 		start_time_scheduled: { $gte: start.unix_timestamp, $lt: end.unix_timestamp },
 	};
 
-	//
 	// 1. Sync Vehicle Events
 	const { ridesCount, waypointsCount } = await syncDailyRides({ ridesQuery });
 
 	Logger.success(`Sync completed: ${ridesCount} rides and a total of ${waypointsCount} waypoints in ${timer.get()}`);
-
 	Logger.terminate(`Terminated in ${timer.get()}`);
 }
 
