@@ -2,27 +2,36 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { hashedTrips, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { AggregationPipeline, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type ActionsOf, type GetRidesBatchQuery, GetRidesBatchQuerySchema, type HashedTrip, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
+import { type ActionsOf, type GetOperationalStopsBatchQuery, GetOperationalStopsBatchQuerySchema, HashedTrip, OperationalDate, OperationalLine, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
-export class OperationStopsSharedController {
+interface PipelineResult {
+	agency_id: string
+	hashed_trip_doc: HashedTrip
+	operational_date: OperationalDate
+	plan_id: string
+}
+
+/* * */
+
+export class OperationalStopsSharedController {
 	//
 
 	/**
-	 * Gets a batch of HashedTrips built with an aggregation pipeline.
+	 * Gets a batch of Operational Stops built with an aggregation pipeline.
 	 * @param request The Fastify request object.
 	 * @param reply The Fastify reply object.
 	 */
-	static async getBatch<S extends Permission['scope']>(request: FastifyRequest<{ Querystring: GetRidesBatchQuery }>, reply: FastifyReply<HashedTrip[]>, scope: S, action: ActionsOf<S>) {
+	static async getBatch<S extends Permission['scope']>(request: FastifyRequest<{ Querystring: GetOperationalStopsBatchQuery }>, reply: FastifyReply<OperationalLine[]>, scope: S, action: ActionsOf<S>) {
 		//
 
 		//
 		// Validate the request query parameters
 
-		const parsedQuery = GetRidesBatchQuerySchema.parse(request.query);
+		const parsedQuery = GetOperationalStopsBatchQuerySchema.parse(request.query);
 
 		//
 		// Detect which agency_ids the user has access to,
@@ -35,51 +44,125 @@ export class OperationStopsSharedController {
 		const allowAllAgencies = ridesPermission['resources'].agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
 		//
-		// Get the rides batch using native MongoDB cursor
-		// with batchSize to prevent memory issues
+		// Use Rides as the baseline to fetch distinct hashed_trip_ids matching the query parameters.
+		// Rides are the glue between the different entities (Patterns, Lines, Stops, etc...) that compose an Operation,
+		// Stream the rides to build the Operation Lines batch on the fly, avoiding loading everything in memory at once.
 
-		const pipeline = ridesBatchAggregationPipeline({
-			acceptance_status: parsedQuery.acceptance_status,
-			agency_ids: parsedQuery.agency_ids?.filter(id => allowAllAgencies || ridesPermission['resources'].agency_ids.includes(id)) ?? [],
-			analysis_ended_at_last_stop_grade: parsedQuery.analysis_ended_at_last_stop_grade,
-			analysis_expected_apex_validation_interval: parsedQuery.analysis_expected_apex_validation_interval,
-			analysis_simple_three_vehicle_events_grade: parsedQuery.analysis_simple_three_vehicle_events_grade,
-			analysis_transaction_sequentiality: parsedQuery.analysis_transaction_sequentiality,
-			date_end: parsedQuery.date_end,
-			date_start: parsedQuery.date_start,
-			delay_statuses: parsedQuery.delay_statuses,
-			line_ids: parsedQuery.line_ids,
-			operational_statuses: parsedQuery.operational_statuses,
-			search: parsedQuery.search,
-			seen_statuses: parsedQuery.seen_statuses,
-			stop_ids: parsedQuery.stop_ids,
+		const pipeline: AggregationPipeline<PipelineResult> = [
+			{
+				$match: {
+					agency_id: { $in: parsedQuery.agency_ids?.filter(id => allowAllAgencies || ridesPermission['resources'].agency_ids.includes(id)) ?? [] },
+					start_time_scheduled: { $gte: parsedQuery.date_start, $lte: parsedQuery.date_end },
+				},
+			},
+			{
+				$sort: {
+					start_time_scheduled: -1, // newest first
+				},
+			},
+			{
+				$group: {
+					_id: '$hashed_trip_id',
+					agency_id: { $first: '$agency_id' },
+					hashed_trip_id: { $first: '$hashed_trip_id' },
+					line_id: { $first: '$line_id' },
+					operational_date: { $first: '$operational_date' },
+					plan_id: { $first: '$plan_id' },
+					start_time_scheduled: { $first: '$start_time_scheduled' },
+				},
+			},
+			{
+				$sort: {
+					start_time_scheduled: -1,
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					agency_id: 1,
+					hashed_trip_id: 1,
+					line_id: 1,
+					operational_date: 1,
+					plan_id: 1,
+					start_time_scheduled: 1,
+				},
+			},
+			{
+				$lookup: {
+					as: 'hashed_trip_doc',
+					foreignField: '_id',
+					from: 'hashed_trips',
+					localField: 'hashed_trip_id',
+				},
+			},
+			{
+				$unwind: {
+					path: '$hashed_trip_doc',
+					preserveNullAndEmptyArrays: true,
+				},
+			},
+			{
+				$sort: {
+					start_time_scheduled: -1,
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					agency_id: 1,
+					hashed_trip_doc: 1, // full joined document
+					operational_date: 1,
+					plan_id: 1,
+				},
+			},
+		];
+
+		const ridesCollection = await rides.getCollection();
+
+		const pipelineResult = await ridesCollection
+			.aggregate<PipelineResult>(pipeline)
+			.toArray();
+
+		Logger.info(`OperationalStopsController.getBatch - pipeline result count: ${pipelineResult?.length ?? 0}`);
+
+		//
+		// Setup the final Map to keep track of the Operation Lines,
+		// using the line_id as the key to avoid duplicates,
+		// since multiple hashed_trip_ids can belong to the same line_id.
+
+		const operationalLinesMap = new Map<OperationalLine['line_id'], OperationalLine>();
+
+		pipelineResult.forEach((item) => {
+			// Initialize the line in the map if it doesn't exist yet
+			if (!operationalLinesMap.has(item.hashed_trip_doc.line_id)) {
+				operationalLinesMap.set(item.hashed_trip_doc.line_id, {
+					agency_id: item.agency_id,
+					hashed_trips: [],
+					last_operational_date: item.operational_date,
+					last_plan_id: item.plan_id,
+					line_id: item.hashed_trip_doc.line_id,
+					line_long_name: item.hashed_trip_doc.line_long_name,
+					line_short_name: item.hashed_trip_doc.line_short_name,
+					pattern_ids: [],
+					route_color: item.hashed_trip_doc.route_color,
+					route_ids: [],
+					stop_ids: [],
+				});
+			}
+			// Get the saved line from the map
+			const savedOperationalLine = operationalLinesMap.get(item.hashed_trip_doc.line_id);
+			// Update the object with the latest fields
+			savedOperationalLine.hashed_trips.push(item.hashed_trip_doc);
+			savedOperationalLine.pattern_ids = Array.from(new Set([...savedOperationalLine.pattern_ids, item.hashed_trip_doc.pattern_id]));
+			savedOperationalLine.route_ids = Array.from(new Set([...savedOperationalLine.route_ids, item.hashed_trip_doc.route_id]));
+			savedOperationalLine.stop_ids = Array.from(new Set([...savedOperationalLine.stop_ids, ...(item.hashed_trip_doc.path.map(stop => stop.stop_id) ?? [])]));
 		});
-
-		//
-		// Limit the number of rides to 2000 and sort by start_time_scheduled
-
-		pipeline.push({ $limit: 2000 }, { $project: { hashed_trip_id: 1 } }, { $sort: { start_time_scheduled: 1 } });
-
-		//
-		// Fetch the rides batch from the database
-
-		const ridesBatch = await rides.aggregate(pipeline);
-
-		Logger.info(`OperationStopsSharedController.getBatch - ridesBatch count: ${ridesBatch?.length ?? 0}`);
-
-		//
-		// From the given batch of hashed_trip_ids,
-		// fetch the full HashedTrip documents with a single query.
-
-		const hashedTripIds = ridesBatch.map(ride => ride.hashed_trip_id);
-
-		const hashedTripsBatch = await hashedTrips.findMany({ _id: { $in: hashedTripIds } });
 
 		//
 		// Send the response
 
 		reply.send({
-			data: hashedTripsBatch ?? [],
+			data: Array.from(operationalLinesMap.values()),
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});
