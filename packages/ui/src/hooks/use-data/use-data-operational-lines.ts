@@ -2,10 +2,12 @@
 
 /* * */
 
+import { useDebouncedState } from '@mantine/hooks';
 import { type GetOperationalLinesBatchQuery, type OperationalLine, type UnixTimestamp } from '@tmlmobilidade/types';
-import { type SelectDataItem, useDebouncedState } from '@tmlmobilidade/ui';
 import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
+
+import { type SelectDataItem } from '../../components/inputs/Select';
 
 /* * */
 

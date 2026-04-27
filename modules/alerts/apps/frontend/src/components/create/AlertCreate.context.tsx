@@ -7,7 +7,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { describeAlert, type DescribeAlertReturnType } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, PermissionCatalog } from '@tmlmobilidade/types';
-import { type CreateContextStateTemplate, keepUrlParams, useDataAgencies, useDataOperationalLines, useDataRides, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm, useTypicalFormWatch } from '@tmlmobilidade/ui';
+import { type CreateContextStateTemplate, keepUrlParams, useDataAgencies, useDataOperationalLines, useDataOperationalStops, useDataRides, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm, useTypicalFormWatch } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
@@ -74,6 +74,14 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	});
 
 	const { raw: operationalLinesData } = useDataOperationalLines(API_ROUTES.alerts.OPERATION_LINES, {
+		filters: {
+			agency_ids: watchedFormValues.agency_id ? [watchedFormValues.agency_id] : [],
+			date_end: watchedFormValues.active_period_end_date,
+			date_start: watchedFormValues.active_period_start_date,
+		},
+	});
+
+	const { raw: operationalStopsData } = useDataOperationalStops(API_ROUTES.alerts.OPERATION_STOPS, {
 		filters: {
 			agency_ids: watchedFormValues.agency_id ? [watchedFormValues.agency_id] : [],
 			date_end: watchedFormValues.active_period_end_date,
@@ -293,23 +301,23 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 				reference_type: 'rides',
 				references: watchedFormValues.references,
 			});
-		// } else if (watchedFormValues.reference_type === 'stops') {
-		// 	// Filter stopsData to find the selected stops based on parent_id in references
-		// 	const selectedStopsData = stopsData.filter(stop => watchedFormValues.references.some(ref => String(ref.parent_id) === String(stop._id)));
-		// 	if (!selectedStopsData.length) return;
-		// 	// Generate alert templating
-		// 	alertTemplating = describeAlert({
-		// 		cause: watchedFormValues.cause,
-		// 		data: selectedStopsData,
-		// 		effect: watchedFormValues.effect,
-		// 		reference_type: 'stops',
-		// 		references: watchedFormValues.references,
-		// 	});
+		} else if (watchedFormValues.reference_type === 'stops') {
+			// Filter operationalStopsData to find the selected stops based on parent_id in references
+			const selectedStopsData = operationalStopsData.filter(stop => watchedFormValues.references.some(ref => String(ref.parent_id) === String(stop.stop_id)));
+			if (!selectedStopsData.length) return;
+			// Generate alert templating
+			alertTemplating = describeAlert({
+				cause: watchedFormValues.cause,
+				data: selectedStopsData,
+				effect: watchedFormValues.effect,
+				reference_type: 'stops',
+				references: watchedFormValues.references,
+			});
 		}
 		if (!alertTemplating) return;
 		formRef.current.setFieldValue('description', alertTemplating.description.pt);
 		formRef.current.setFieldValue('title', alertTemplating.title.pt);
-	}, [agenciesData, formRef, operationalLinesData, ridesData, watchedFormValues.auto_texts, watchedFormValues.cause, watchedFormValues.effect, watchedFormValues.reference_type, watchedFormValues.references]);
+	}, [agenciesData, formRef, operationalLinesData, operationalStopsData, ridesData, watchedFormValues.auto_texts, watchedFormValues.cause, watchedFormValues.effect, watchedFormValues.reference_type, watchedFormValues.references]);
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', formRef.current.getValues()),

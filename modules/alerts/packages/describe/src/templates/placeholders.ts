@@ -137,18 +137,16 @@ export const templatePlaceholderReplacements = {
 
 			const parts: string[] = [];
 
-			for (const hashedTripData of data) {
-				for (const waypoint of hashedTripData.hashed_trips[0].path ?? []) {
-					const stopName = waypoint.stop_name;
-					const lines = hashedTripData.hashed_trips[0].line_short_name ?? [];
+			for (const operationalStop of data) {
+				const stopName = operationalStop.stop_name;
+				const lines = operationalStop.line_ids ?? [];
 
-					if (lines.length > 0) {
-						const lineShortNames = hashedTripData.hashed_trips[0].line_short_name;
-						const linesPart = `da linha ${lineShortNames[0]}`;
-						parts.push(`paragem ${stopName} ${linesPart}`);
-					} else {
-						parts.push(`paragem ${stopName}`);
-					}
+				if (lines.length > 0) {
+					const lineShortNames = operationalStop.line_ids;
+					const linesPart = `da linha ${lineShortNames[0]}`;
+					parts.push(`paragem ${stopName} ${linesPart}`);
+				} else {
+					parts.push(`paragem ${stopName}`);
 				}
 			}
 
@@ -159,7 +157,7 @@ export const templatePlaceholderReplacements = {
 		//
 		},
 		'{stops_title}': (data: Extract<DescribeAlertProps, { reference_type: 'stops' }>['data']) => {
-			const stopNames = Array.from(new Set(data.flatMap(ht => ht.hashed_trips[0].path.map(p => p.stop_name)).filter(Boolean)));
+			const stopNames = Array.from(new Set(data.map(stop => stop.stop_name).filter(Boolean)));
 			return stopNames.length > 1
 				? `paragens ${stopNames.join(', ')}`
 				: `paragem ${stopNames[0]}`;

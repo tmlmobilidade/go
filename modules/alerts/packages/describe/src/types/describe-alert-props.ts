@@ -1,6 +1,6 @@
 /* * */
 
-import { AgencySchema, AlertCauseSchema, AlertEffectSchema, AlertReferencesSchema, AlertReferenceTypeSchema, OperationalLineSchema, RideNormalizedSchema } from '@tmlmobilidade/types';
+import { AgencySchema, AlertCauseSchema, AlertEffectSchema, AlertReferencesSchema, AlertReferenceTypeSchema, OperationalLineSchema, OperationalStopSchema, RideNormalizedSchema } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 /* * */
@@ -28,7 +28,7 @@ const DescribeAlertPropsRidesSchema = DescribeAlertPropsBaseSchema.extend({
 });
 
 const DescribeAlertPropsStopsSchema = DescribeAlertPropsBaseSchema.extend({
-	data: z.array(OperationalLineSchema).default([]),
+	data: z.array(OperationalStopSchema).default([]),
 	reference_type: z.literal('stops'),
 });
 
