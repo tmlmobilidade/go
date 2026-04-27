@@ -17,6 +17,7 @@ const tableSchema: ClickHouseSchema<Partial<Ride>> = {
 	operational_date: { type: 'String' },
 	start_time_observed: { type: 'UInt64' },
 	start_time_scheduled: { type: 'UInt64' },
+	trip_id: { type: 'String' },
 };
 
 /* * */
