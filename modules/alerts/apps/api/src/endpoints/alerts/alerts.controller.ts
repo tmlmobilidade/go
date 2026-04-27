@@ -205,6 +205,18 @@ export class AlertsController {
 	}
 
 	/**
+	 * Describes an alert by ID.
+	 * @param request Fastify request containing alert ID in params.
+	 * @param reply Fastify reply.
+	 */
+	static async describe(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Alert>) {
+		await alerts.toggleLockById(request.params.id);
+		const foundAlert = await alerts.findById(request.params.id);
+		if (!foundAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+		reply.send({ data: foundAlert, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
 	 * Duplicates an alert by ID.
 	 * @param request Fastify request containing alert ID in params.
 	 * @param reply Fastify reply.

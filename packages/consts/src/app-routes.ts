@@ -188,6 +188,9 @@ export const API_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getModuleConfig('alerts', 'api_url')}`,
 
+		// AI
+		AI_TEST: `${getModuleConfig('alerts', 'api_url')}/ai/test`,
+
 		// ALERTS
 		ALERTS_DETAIL: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${id}`,
 		ALERTS_DETAIL_DUPLICATE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${id}/duplicate`,

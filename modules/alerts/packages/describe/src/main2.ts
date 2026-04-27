@@ -7,27 +7,13 @@ import { alertI18nTemplates } from '@/templates/descriptions.js';
 import { templatePlaceholderReplacements } from '@/templates/placeholders.js';
 import { type DescribeAlertProps } from '@/types/describe-alert-props.js';
 import { type I18nCodes } from '@/types/types.js';
-import { OCIGenerativeAIProvider } from '@tmlmobilidade/interfaces';
-import { AlertCause, AlertEffect, AlertReferences, AlertReferenceType, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
-
-export interface DescribeAlertPropsBase {
-	active_period_end_date: UnixTimestamp
-	active_period_start_date: UnixTimestamp
-	cause: AlertCause
-	effect: AlertEffect
-	reference_type: AlertReferenceType
-	references: AlertReferences
-}
 
 export interface DescribeAlertReturnType {
 	description: Record<I18nCodes, string>
 	title: Record<I18nCodes, string>
 }
-
-// const aiProvider = new OCIGenerativeAIProvider();
-// const response = await aiProvider.run('Hello world!');
 
 /**
  * Generates a description and title for an alert based on its properties.
@@ -35,13 +21,13 @@ export interface DescribeAlertReturnType {
  * @returns An object containing the description and title of the alert
  * in multiple languages, or undefined if required properties are missing.
  */
-export async function describeAlertWithAI(props: DescribeAlertProps): Promise<DescribeAlertReturnType | undefined> {
+export function describeAlert(props: DescribeAlertProps): DescribeAlertReturnType | undefined {
 	//
 
 	//
 	// Validate required input properties
 
-	if (!props.cause || !props.effect || !props.reference_type || !props.references) return;
+	if (!props.cause || !props.effect || !props.reference_type || !props.references || !props.data) return;
 
 	// console.log('HERE PROPS =======>', props);
 

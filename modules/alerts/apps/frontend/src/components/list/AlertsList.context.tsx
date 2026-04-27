@@ -7,7 +7,8 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type Alert, AlertReferenceTypeSchema, AlertSchema, PermissionCatalog, PublishStatusSchema } from '@tmlmobilidade/types';
 import { type ListContextStateTemplate, useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { fetchData } from '@tmlmobilidade/utils';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
@@ -61,6 +62,12 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		actions: [PermissionCatalog.all.alerts.actions.read],
 		scope: PermissionCatalog.all.alerts.scope,
 	});
+
+	useEffect(() => {
+		(async () => {
+			await fetchData(API_ROUTES.alerts.AI_TEST);
+		})();
+	}, []);
 
 	//
 	// C. Setup filters

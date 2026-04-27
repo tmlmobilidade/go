@@ -81,6 +81,12 @@ server.register(
 			AlertsController.duplicate,
 		);
 
+		instance.get(
+			'/describe',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.create]) },
+			AlertsController.describe,
+		);
+
 		next();
 	},
 	{ prefix: namespace },
