@@ -5,14 +5,13 @@
 import { templateArticlesReplacements } from '@/templates/articles.js';
 import { alertI18nTemplates } from '@/templates/descriptions.js';
 import { templatePlaceholderReplacements } from '@/templates/placeholders.js';
-import { type DescribeAlertProps } from '@/types/describe-alert-props.js';
 import { type I18nCodes } from '@/types/types.js';
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/interfaces';
-import { AlertCause, AlertEffect, AlertReferences, AlertReferenceType, type UnixTimestamp } from '@tmlmobilidade/types';
+import { Agency, AlertCause, AlertEffect, AlertReferences, AlertReferenceType, OperationalLine, OperationalStop, RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
 
-export interface DescribeAlertPropsBase {
+export interface DescribeAlertProps {
 	active_period_end_date: UnixTimestamp
 	active_period_start_date: UnixTimestamp
 	cause: AlertCause
@@ -41,9 +40,45 @@ export async function describeAlertWithAI(props: DescribeAlertProps): Promise<De
 	//
 	// Validate required input properties
 
-	if (!props.cause || !props.effect || !props.reference_type || !props.references) return;
+	if (!props.cause) throw new Error('Missing required property: cause');
+	if (!props.effect) throw new Error('Missing required property: effect');
+	if (!props.reference_type) throw new Error('Missing required property: reference_type');
+	if (!props.references) throw new Error('Missing required property: references');
+	if (!props.active_period_start_date) throw new Error('Missing required property: active_period_start_date');
+	if (!props.active_period_end_date) throw new Error('Missing required property: active_period_end_date');
 
-	// console.log('HERE PROPS =======>', props);
+	if (props.references.length === 0) throw new Error('References array cannot be empty');
+
+	if (props.active_period_end_date <= props.active_period_start_date) throw new Error('active_period_end_date must be after active_period_start_date');
+
+	if (!['agency', 'lines', 'rides', 'stops'].includes(props.reference_type)) throw new Error('Invalid reference_type value');
+
+	//
+	// For the given alert properties, fetch the necessary data
+	// to populate the template placeholders.
+
+	let fetchedData: Agency | OperationalLine[] | OperationalStop[] | RideNormalized[];
+
+	switch (props.reference_type) {
+		case 'agency':
+			// Fetch the agency data based on the references
+			fetchedData = await fetchAgencyData(props.references);
+			break;
+		case 'lines':
+			// Fetch the lines data based on the references
+			fetchedData = await fetchLinesData(props.references);
+			break;
+		case 'rides':
+			// Fetch the rides data based on the references
+			fetchedData = await fetchRidesData(props.references);
+			break;
+		case 'stops':
+			// Fetch the stops data based on the references
+			fetchedData = await fetchStopsData(props.references);
+			break;
+		default:
+			throw new Error('Unsupported reference_type');
+	}
 
 	//
 	// Setup result object
