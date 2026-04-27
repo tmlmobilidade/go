@@ -1,3 +1,4 @@
+/* eslint-disable perfectionist/sort-objects */
 /* * */
 
 import { ClickHouseSchema, GOClickHouseClient } from '@/index.js';
@@ -20,16 +21,16 @@ interface ETANodeTravelTimesSample {
 }
 
 const tableSchema: ClickHouseSchema<ETANodeTravelTimesSample> = {
-	created_at: { type: 'UInt64' },
 	event_id: { type: 'String' },
+	ride_id: { type: 'String' },
 	hashed_shape_id: { type: 'String' },
+	node_index: { type: 'UInt32' },
 	hour: { type: 'UInt8' },
+	created_at: { type: 'UInt64' },
+	travel_time_seconds: { type: 'UInt32' },
 	latitude: { type: 'Float64' },
 	longitude: { type: 'Float64' },
-	node_index: { type: 'UInt32' },
-	ride_id: { type: 'String' },
 	speed_kmh: { type: 'Float64' },
-	travel_time_seconds: { type: 'Float64' },
 };
 
 /* * */
@@ -40,7 +41,7 @@ class ETANodeTravelTimesSamplesClass extends ClickHouseInterfaceTemplate<ETANode
 	private static _instance: null | Promise<ETANodeTravelTimesSamplesClass> = null;
 
 	public override readonly databaseName = 'eta';
-	public override readonly orderBy = 'ride_id';
+	public override readonly orderBy = 'ride_id, hashed_shape_id, node_index, hour';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'node_travel_times_samples';
 

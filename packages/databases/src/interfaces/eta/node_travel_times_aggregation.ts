@@ -1,3 +1,4 @@
+/* eslint-disable perfectionist/sort-objects */
 /* * */
 
 import { ClickHouseSchema, GOClickHouseClient } from '@/index.js';
@@ -21,17 +22,17 @@ interface ETANodeTravelTimesAggregation {
 }
 
 const tableSchema: ClickHouseSchema<ETANodeTravelTimesAggregation> = {
-	avg_travel_time_seconds: { type: 'Float64' },
-	day_type: { type: 'Enum8(\'Weekday\' = 1, \'Weekend\' = 2)' },
-	max_travel_time_seconds: { type: 'Float64' },
-	median_travel_time_seconds: { type: 'Float64' },
-	min_travel_time_seconds: { type: 'Float64' },
+	shape_id: { type: 'String' },
 	node_index: { type: 'UInt32' },
 	operational_date: { type: 'UInt32' },
 	period: { type: 'String' },
 	period_of_day: { type: 'Enum8(\'Peak AM\' = 1, \'Mid\' = 2, \'Peak PM\' = 3, \'Off Peak\' = 4)' },
-	shape_id: { type: 'String' },
 	weekday: { type: 'Enum8(\'Monday\' = 1, \'Tuesday\' = 2, \'Wednesday\' = 3, \'Thursday\' = 4, \'Friday\' = 5, \'Saturday\' = 6, \'Sunday\' = 7)' },
+	day_type: { type: 'Enum8(\'Weekday\' = 1, \'Weekend\' = 2)' },
+	avg_travel_time_seconds: { type: 'Float64' },
+	min_travel_time_seconds: { type: 'Float64' },
+	max_travel_time_seconds: { type: 'Float64' },
+	median_travel_time_seconds: { type: 'Float64' },
 };
 
 /* * */
@@ -42,7 +43,7 @@ class ETANodeTravelTimesAggregationClass extends ClickHouseInterfaceTemplate<ETA
 	private static _instance: null | Promise<ETANodeTravelTimesAggregationClass> = null;
 
 	public override readonly databaseName = 'eta';
-	public override readonly orderBy = 'shape_id';
+	public override readonly orderBy = 'shape_id, node_index, operational_date, period, period_of_day, weekday, day_type';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'node_travel_times_aggregates';
 
