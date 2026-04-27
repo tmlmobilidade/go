@@ -1,3 +1,4 @@
+/* eslint-disable perfectionist/sort-objects */
 /* * */
 
 import { ClickHouseSchema, GOClickHouseClient } from '@/index.js';
@@ -20,13 +21,13 @@ interface EtaVehicleEvent {
 
 const tableSchema: ClickHouseSchema<EtaVehicleEvent> = {
 	_id: { type: 'String' },
-	agency_id: { type: 'String' },
 	created_at: { type: 'UInt64' },
-	hashed_shape_id: { type: 'String' },
-	latitude: { type: 'Float64' },
-	line_id: { type: 'UInt16' },
-	longitude: { type: 'Float64' },
+	agency_id: { type: 'String' },
 	ride_id: { type: 'String' },
+	hashed_shape_id: { type: 'String' },
+	line_id: { type: 'UInt16' },
+	latitude: { type: 'Float64' },
+	longitude: { type: 'Float64' },
 	vehicle_id: { type: 'String' },
 };
 

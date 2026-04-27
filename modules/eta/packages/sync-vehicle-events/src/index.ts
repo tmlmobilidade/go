@@ -58,7 +58,16 @@ export async function syncVehicleEvents({ ridesQuery }: SyncVehicleEventsOptions
 
 					await simplifiedVehicleEventsNew.queryFromString(`
 						INSERT INTO eta.vehicle_events
-						SELECT _id, '${ride._id}' AS ride_id, '${ride.hashed_shape_id}' AS hashed_shape_id, created_at, latitude, longitude
+						SELECT
+							_id,
+							created_at,
+							agency_id,
+							'${ride._id}' as ride_id,
+							'${ride.hashed_shape_id}' as hashed_shape_id,
+							'${ride.line_id}' as line_id,
+							latitude,
+							longitude,
+							vehicle_id
 						FROM operation.simplified_vehicle_events
 						WHERE created_at >= ${start} AND created_at <= ${ride.end_time_observed} AND trip_id = '${ride.trip_id}'
 					`);
