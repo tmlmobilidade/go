@@ -6,7 +6,7 @@ import { useReferencesEditorContext } from '@/components/common/references/Refer
 import { IconCornerDownRight, IconMinus } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, HashedTripWaypoint } from '@tmlmobilidade/types';
-import { Button, Grid, MultiSelect, Section, Select, type SelectDataItem, Surface, useDataOperationLines } from '@tmlmobilidade/ui';
+import { Button, Grid, MultiSelect, Section, Select, type SelectDataItem, Surface, useDataOperationalLines } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -31,7 +31,7 @@ export function ReferencesEditorLinesItem({ index, onRemoveReference, onUpdateRe
 	//
 	// B. Fetch data
 
-	const { options: operationLinesOptions, raw: operationLinesData } = useDataOperationLines(API_ROUTES.alerts.OPERATION_LINES, {
+	const { options: operationalLinesOptions, raw: operationalLinesData } = useDataOperationalLines(API_ROUTES.alerts.OPERATION_LINES, {
 		filters: {
 			agency_ids: [referencesEditorContext.data.selected_agency_id],
 			date_end: referencesEditorContext.data.active_period_end_date,
@@ -46,9 +46,9 @@ export function ReferencesEditorLinesItem({ index, onRemoveReference, onUpdateRe
 		// Skip if parent_id is not set
 		if (!reference.parent_id) return [];
 		// Skip if there is not data
-		if (!operationLinesData?.length) return [];
+		if (!operationalLinesData?.length) return [];
 		// Find the matching line for the reference.parent_id
-		const matchingLine = operationLinesData.find(item => String(item.line_id) === String(reference.parent_id));
+		const matchingLine = operationalLinesData.find(item => String(item.line_id) === String(reference.parent_id));
 		if (!matchingLine) return [];
 		// Setup a map to store unique stops
 		const uniqueStopsMap = new Map<string, { pattern_id: string, waypoint: HashedTripWaypoint }[]>();
@@ -78,7 +78,7 @@ export function ReferencesEditorLinesItem({ index, onRemoveReference, onUpdateRe
 				value: stopId,
 			};
 		});
-	}, [operationLinesData, reference.parent_id]);
+	}, [operationalLinesData, reference.parent_id]);
 
 	//
 	// D. Render components
@@ -89,7 +89,7 @@ export function ReferencesEditorLinesItem({ index, onRemoveReference, onUpdateRe
 
 				<Grid gap="md">
 					<Select
-						data={operationLinesOptions}
+						data={operationalLinesOptions}
 						label="Linha Afetada"
 						onChange={value => onUpdateReference(index, 'parent_id', value)}
 						onClear={() => onUpdateReference(index, 'child_ids', [])}

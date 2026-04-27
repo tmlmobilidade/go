@@ -7,7 +7,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { describeAlert, type DescribeAlertReturnType } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, PermissionCatalog } from '@tmlmobilidade/types';
-import { type CreateContextStateTemplate, keepUrlParams, useDataAgencies, useDataOperationLines, useDataRides, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm, useTypicalFormWatch } from '@tmlmobilidade/ui';
+import { type CreateContextStateTemplate, keepUrlParams, useDataAgencies, useDataOperationalLines, useDataRides, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm, useTypicalFormWatch } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
@@ -73,7 +73,7 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		scope: PermissionCatalog.all.alerts.scope,
 	});
 
-	const { raw: operationLinesData } = useDataOperationLines(API_ROUTES.alerts.OPERATION_LINES, {
+	const { raw: operationalLinesData } = useDataOperationalLines(API_ROUTES.alerts.OPERATION_LINES, {
 		filters: {
 			agency_ids: watchedFormValues.agency_id ? [watchedFormValues.agency_id] : [],
 			date_end: watchedFormValues.active_period_end_date,
@@ -270,13 +270,13 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 				references: watchedFormValues.references,
 			});
 		} else if (watchedFormValues.reference_type === 'lines') {
-			// Filter operationLinesData to find the selected lines based on parent_id in references
-			const selectedOperationLinesData = operationLinesData.filter(line => watchedFormValues.references.some(ref => String(ref.parent_id) === String(line.line_id)));
-			if (!selectedOperationLinesData.length) return;
+			// Filter operationalLinesData to find the selected lines based on parent_id in references
+			const selectedOperationalLinesData = operationalLinesData.filter(line => watchedFormValues.references.some(ref => String(ref.parent_id) === String(line.line_id)));
+			if (!selectedOperationalLinesData.length) return;
 			// Generate alert templating
 			alertTemplating = describeAlert({
 				cause: watchedFormValues.cause,
-				data: selectedOperationLinesData,
+				data: selectedOperationalLinesData,
 				effect: watchedFormValues.effect,
 				reference_type: 'lines',
 				references: watchedFormValues.references,
@@ -309,7 +309,7 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		if (!alertTemplating) return;
 		formRef.current.setFieldValue('description', alertTemplating.description.pt);
 		formRef.current.setFieldValue('title', alertTemplating.title.pt);
-	}, [agenciesData, formRef, operationLinesData, ridesData, watchedFormValues.auto_texts, watchedFormValues.cause, watchedFormValues.effect, watchedFormValues.reference_type, watchedFormValues.references]);
+	}, [agenciesData, formRef, operationalLinesData, ridesData, watchedFormValues.auto_texts, watchedFormValues.cause, watchedFormValues.effect, watchedFormValues.reference_type, watchedFormValues.references]);
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', formRef.current.getValues()),

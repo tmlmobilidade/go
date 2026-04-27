@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const GetOperationLinesBatchQuerySchema = z.object({
+export const GetOperationalLinesBatchQuerySchema = z.object({
 	agency_ids: z.preprocess((val: string) => (val && typeof val === 'string') ? val.split(',').map(id => id.trim()) : [], z.array(z.string())).default([]),
 	date_end: UnixTimeStampSchema,
 	date_start: UnixTimeStampSchema,
@@ -13,4 +13,4 @@ export const GetOperationLinesBatchQuerySchema = z.object({
 
 /* * */
 
-export type GetOperationLinesBatchQuery = z.infer<typeof GetOperationLinesBatchQuerySchema>;
+export type GetOperationalLinesBatchQuery = z.infer<typeof GetOperationalLinesBatchQuerySchema>;

@@ -1,9 +1,9 @@
 /* * */
 
 import { fastifyWebsocket } from '@fastify/websocket';
-import { OperationLinesSharedController, RidesSharedController } from '@tmlmobilidade/controllers';
+import { OperationalLinesSharedController, RidesSharedController } from '@tmlmobilidade/controllers';
 import { authorizationMiddleware, FastifyInstance, type FastifyReply, type FastifyRequest, FastifyService } from '@tmlmobilidade/fastify';
-import { GetOperationLinesBatchQuery, type GetRidesBatchQuery, OperationLine, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
+import { GetOperationalLinesBatchQuery, type GetRidesBatchQuery, OperationalLine, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -42,7 +42,7 @@ server.register(
 		instance.get(
 			'/lines',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
-			(request: FastifyRequest<{ Querystring: GetOperationLinesBatchQuery }>, reply: FastifyReply<OperationLine[]>) => OperationLinesSharedController.getBatch(request, reply, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.read),
+			(request: FastifyRequest<{ Querystring: GetOperationalLinesBatchQuery }>, reply: FastifyReply<OperationalLine[]>) => OperationalLinesSharedController.getBatch(request, reply, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.read),
 		);
 
 		//

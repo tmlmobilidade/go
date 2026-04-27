@@ -5,7 +5,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { describeAlert, DescribeAlertReturnType } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { type Alert, type File as FileType, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, keepUrlParams, useDataAgencies, useDataOperationLines, useDataRides, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm, useTypicalFormWatch } from '@tmlmobilidade/ui';
+import { type DetailContextStateTemplate, keepUrlParams, useDataAgencies, useDataOperationalLines, useDataRides, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm, useTypicalFormWatch } from '@tmlmobilidade/ui';
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
@@ -88,7 +88,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		scope: PermissionCatalog.all.alerts.scope,
 	});
 
-	const { isLoading: operationLinesLoading, raw: operationLinesData } = useDataOperationLines(API_ROUTES.alerts.OPERATION_LINES, {
+	const { isLoading: operationalLinesLoading, raw: operationalLinesData } = useDataOperationalLines(API_ROUTES.alerts.OPERATION_LINES, {
 		filters: {
 			agency_ids: watchedFormValues.agency_id ? [watchedFormValues.agency_id] : [],
 			date_end: watchedFormValues.active_period_end_date,
@@ -128,13 +128,13 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 				references: watchedFormValues.references,
 			});
 		} else if (watchedFormValues.reference_type === 'lines') {
-			// Filter operationLinesData to find the selected lines based on parent_id in references
-			const selectedOperationLinesData = operationLinesData.filter(line => watchedFormValues.references.some(ref => String(ref.parent_id) === String(line.line_id)));
-			if (!selectedOperationLinesData.length) return;
+			// Filter operationalLinesData to find the selected lines based on parent_id in references
+			const selectedOperationalLinesData = operationalLinesData.filter(line => watchedFormValues.references.some(ref => String(ref.parent_id) === String(line.line_id)));
+			if (!selectedOperationalLinesData.length) return;
 			// Generate alert templating
 			alertTemplating = describeAlert({
 				cause: watchedFormValues.cause,
-				data: selectedOperationLinesData,
+				data: selectedOperationalLinesData,
 				effect: watchedFormValues.effect,
 				reference_type: 'lines',
 				references: watchedFormValues.references,
@@ -167,7 +167,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		if (!alertTemplating) return;
 		formRef.current.setFieldValue('description', alertTemplating.description.pt);
 		formRef.current.setFieldValue('title', alertTemplating.title.pt);
-	}, [agenciesData, formRef, operationLinesData, ridesData, watchedFormValues.auto_texts, watchedFormValues.cause, watchedFormValues.effect, watchedFormValues.reference_type, watchedFormValues.references]);
+	}, [agenciesData, formRef, operationalLinesData, ridesData, watchedFormValues.auto_texts, watchedFormValues.cause, watchedFormValues.effect, watchedFormValues.reference_type, watchedFormValues.references]);
 
 	//
 	// D. Handle actions
@@ -379,7 +379,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			isDeletingImage,
 			isDirty: formRef.current.isDirty(),
 			isDuplicating,
-			isLoading: alertLoading || agenciesLoading || operationLinesLoading || ridesLoading,
+			isLoading: alertLoading || agenciesLoading || operationalLinesLoading || ridesLoading,
 			isLocking,
 			isReadOnly,
 			isSaving,

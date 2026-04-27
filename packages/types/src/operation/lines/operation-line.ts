@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const OperationLineSchema = z.object({
+export const OperationalLineSchema = z.object({
 	agency_id: z.string(),
 	hashed_trips: z.array(HashedTripSchema).default([]),
 	last_operational_date: OperationalDateSchema,
@@ -20,4 +20,4 @@ export const OperationLineSchema = z.object({
 	stop_ids: z.array(z.string()).default([]),
 });
 
-export type OperationLine = z.infer<typeof OperationLineSchema>;
+export type OperationalLine = z.infer<typeof OperationalLineSchema>;

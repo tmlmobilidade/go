@@ -2,30 +2,30 @@
 
 /* * */
 
-import { type GetOperationLinesBatchQuery, type OperationLine, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type GetOperationalLinesBatchQuery, type OperationalLine, type UnixTimestamp } from '@tmlmobilidade/types';
 import { type SelectDataItem, useDebouncedState } from '@tmlmobilidade/ui';
 import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
-interface UseDataOperationLinesProps {
-	filters: GetOperationLinesBatchQuery
+interface UseDataOperationalLinesProps {
+	filters: GetOperationalLinesBatchQuery
 }
 
 /* * */
 
-interface UseDataOperationLinesReturnType {
+interface UseDataOperationalLinesReturnType {
 	error: Error | undefined
 	isLoading: boolean
 	lastUpdatedAt: null | UnixTimestamp
 	options: SelectDataItem[]
-	raw: OperationLine[]
+	raw: OperationalLine[]
 }
 
 /* * */
 
-export function useDataOperationLines(apiUrl: string, props?: UseDataOperationLinesProps): UseDataOperationLinesReturnType {
+export function useDataOperationalLines(apiUrl: string, props?: UseDataOperationalLinesProps): UseDataOperationalLinesReturnType {
 	//
 
 	//
@@ -36,7 +36,7 @@ export function useDataOperationLines(apiUrl: string, props?: UseDataOperationLi
 	//
 	// B. Fetch data
 
-	const { data: fetchedOperationLinesData, error: fetchedOperationLinesError, isLoading: fetchedOperationLinesLoading } = useSWR<OperationLine[], Error>((apiUrl && queryStringParams) && `${apiUrl}?${queryStringParams}`);
+	const { data: fetchedOperationalLinesData, error: fetchedOperationalLinesError, isLoading: fetchedOperationalLinesLoading } = useSWR<OperationalLine[], Error>((apiUrl && queryStringParams) && `${apiUrl}?${queryStringParams}`);
 
 	//
 	// C. Transform data
@@ -59,22 +59,22 @@ export function useDataOperationLines(apiUrl: string, props?: UseDataOperationLi
 	}, [props?.filters]);
 
 	const optionsData = useMemo(() => {
-		if (!fetchedOperationLinesData) return [];
-		return fetchedOperationLinesData.map(item => ({
+		if (!fetchedOperationalLinesData) return [];
+		return fetchedOperationalLinesData.map(item => ({
 			label: `[${item.last_plan_id}] (${item.line_short_name}) ${item.line_long_name}`,
 			value: String(item.line_id),
 		}));
-	}, [fetchedOperationLinesData]);
+	}, [fetchedOperationalLinesData]);
 
 	//
 	// D. Return data
 
 	return {
-		error: fetchedOperationLinesError,
-		isLoading: fetchedOperationLinesLoading,
+		error: fetchedOperationalLinesError,
+		isLoading: fetchedOperationalLinesLoading,
 		lastUpdatedAt: null,
 		options: optionsData,
-		raw: fetchedOperationLinesData ?? [],
+		raw: fetchedOperationalLinesData ?? [],
 	};
 
 	//

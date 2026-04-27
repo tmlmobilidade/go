@@ -4,7 +4,7 @@ import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { AggregationPipeline, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type ActionsOf, type GetOperationLinesBatchQuery, GetOperationLinesBatchQuerySchema, HashedTrip, OperationalDate, OperationLine, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
+import { type ActionsOf, type GetOperationalLinesBatchQuery, GetOperationalLinesBatchQuerySchema, HashedTrip, OperationalDate, OperationalLine, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -17,7 +17,7 @@ interface PipelineResult {
 
 /* * */
 
-export class OperationLinesSharedController {
+export class OperationalLinesSharedController {
 	//
 
 	/**
@@ -25,13 +25,13 @@ export class OperationLinesSharedController {
 	 * @param request The Fastify request object.
 	 * @param reply The Fastify reply object.
 	 */
-	static async getBatch<S extends Permission['scope']>(request: FastifyRequest<{ Querystring: GetOperationLinesBatchQuery }>, reply: FastifyReply<OperationLine[]>, scope: S, action: ActionsOf<S>) {
+	static async getBatch<S extends Permission['scope']>(request: FastifyRequest<{ Querystring: GetOperationalLinesBatchQuery }>, reply: FastifyReply<OperationalLine[]>, scope: S, action: ActionsOf<S>) {
 		//
 
 		//
 		// Validate the request query parameters
 
-		const parsedQuery = GetOperationLinesBatchQuerySchema.parse(request.query);
+		const parsedQuery = GetOperationalLinesBatchQuerySchema.parse(request.query);
 
 		//
 		// Detect which agency_ids the user has access to,
@@ -123,19 +123,19 @@ export class OperationLinesSharedController {
 			.aggregate<PipelineResult>(pipeline)
 			.toArray();
 
-		Logger.info(`OperationLinesController.getBatch - pipeline result count: ${pipelineResult?.length ?? 0}`);
+		Logger.info(`OperationalLinesController.getBatch - pipeline result count: ${pipelineResult?.length ?? 0}`);
 
 		//
 		// Setup the final Map to keep track of the Operation Lines,
 		// using the line_id as the key to avoid duplicates,
 		// since multiple hashed_trip_ids can belong to the same line_id.
 
-		const operationLinesMap = new Map<OperationLine['line_id'], OperationLine>();
+		const operationalLinesMap = new Map<OperationalLine['line_id'], OperationalLine>();
 
 		pipelineResult.forEach((item) => {
 			// Initialize the line in the map if it doesn't exist yet
-			if (!operationLinesMap.has(item.hashed_trip_doc.line_id)) {
-				operationLinesMap.set(item.hashed_trip_doc.line_id, {
+			if (!operationalLinesMap.has(item.hashed_trip_doc.line_id)) {
+				operationalLinesMap.set(item.hashed_trip_doc.line_id, {
 					agency_id: item.agency_id,
 					hashed_trips: [],
 					last_operational_date: item.operational_date,
@@ -150,19 +150,19 @@ export class OperationLinesSharedController {
 				});
 			}
 			// Get the saved line from the map
-			const savedOperationLine = operationLinesMap.get(item.hashed_trip_doc.line_id);
+			const savedOperationalLine = operationalLinesMap.get(item.hashed_trip_doc.line_id);
 			// Update the object with the latest fields
-			savedOperationLine.hashed_trips.push(item.hashed_trip_doc);
-			savedOperationLine.pattern_ids = Array.from(new Set([...savedOperationLine.pattern_ids, item.hashed_trip_doc.pattern_id]));
-			savedOperationLine.route_ids = Array.from(new Set([...savedOperationLine.route_ids, item.hashed_trip_doc.route_id]));
-			savedOperationLine.stop_ids = Array.from(new Set([...savedOperationLine.stop_ids, ...(item.hashed_trip_doc.path.map(stop => stop.stop_id) ?? [])]));
+			savedOperationalLine.hashed_trips.push(item.hashed_trip_doc);
+			savedOperationalLine.pattern_ids = Array.from(new Set([...savedOperationalLine.pattern_ids, item.hashed_trip_doc.pattern_id]));
+			savedOperationalLine.route_ids = Array.from(new Set([...savedOperationalLine.route_ids, item.hashed_trip_doc.route_id]));
+			savedOperationalLine.stop_ids = Array.from(new Set([...savedOperationalLine.stop_ids, ...(item.hashed_trip_doc.path.map(stop => stop.stop_id) ?? [])]));
 		});
 
 		//
 		// Send the response
 
 		reply.send({
-			data: Array.from(operationLinesMap.values()),
+			data: Array.from(operationalLinesMap.values()),
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});

@@ -4,7 +4,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Label, openConfirmModal, type SelectDataItem, useDataOperationLines, useDataRides } from '@tmlmobilidade/ui';
+import { Label, openConfirmModal, type SelectDataItem, useDataOperationalLines, useDataRides } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
 
@@ -72,7 +72,7 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 	//
 	// B. Fetch data
 
-	const { isLoading: operationLinesLoading } = useDataOperationLines(API_ROUTES.alerts.OPERATION_LINES, {
+	const { isLoading: operationalLinesLoading } = useDataOperationalLines(API_ROUTES.alerts.OPERATION_LINES, {
 		filters: {
 			agency_ids: [selectedAgencyId],
 			date_end: activePeriodEndDate,
@@ -191,7 +191,7 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 			selected_rides_data: selectedRidesData,
 		},
 		flags: {
-			isLoading: operationLinesLoading || ridesLoading,
+			isLoading: operationalLinesLoading || ridesLoading,
 		},
 	};
 

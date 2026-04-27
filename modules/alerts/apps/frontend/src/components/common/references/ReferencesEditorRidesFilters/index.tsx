@@ -5,7 +5,7 @@
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { IconArrowLoopRight } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Grid, MultiSelect, SearchInput, Section, SegmentedControl, useDataOperationLines } from '@tmlmobilidade/ui';
+import { Grid, MultiSelect, SearchInput, Section, SegmentedControl, useDataOperationalLines } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -33,7 +33,7 @@ export function ReferencesEditorRidesFilters({ lineIdsFilterValue, searchFilterV
 	//
 	// B. Fetch data
 
-	const { options: operationLinesOptions } = useDataOperationLines(API_ROUTES.alerts.OPERATION_LINES, {
+	const { options: operationalLinesOptions } = useDataOperationalLines(API_ROUTES.alerts.OPERATION_LINES, {
 		filters: {
 			agency_ids: [referencesEditorContext.data.selected_agency_id],
 			date_end: referencesEditorContext.data.active_period_end_date,
@@ -63,7 +63,7 @@ export function ReferencesEditorRidesFilters({ lineIdsFilterValue, searchFilterV
 
 						<Grid columns="ab" gap="md">
 							<MultiSelect
-								data={operationLinesOptions}
+								data={operationalLinesOptions}
 								leftSection={<IconArrowLoopRight size={20} />}
 								onChange={setLineIdsFilterValue}
 								placeholder="Filtrar por linhas..."
