@@ -263,6 +263,8 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 		switch (this.engine) {
 			case 'MergeTree':
 				return `MergeTree()`;
+			case 'ReplacingMergeTree':
+				return `ReplacingMergeTree()`;
 			default:
 				throw new Error(`CLICKHOUSE [${this.databaseName}/${this.tableName}]: Unsupported engine type: ${this.engine}`);
 		}
