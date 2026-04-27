@@ -11,6 +11,8 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 const main = async () => {
 	//
 
+	throw new Error('This script is disabled.');
+
 	Logger.init();
 
 	const globalTimer = new Timer();
