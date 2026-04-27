@@ -3,7 +3,7 @@
 import { DocumentSchema } from '@/_common/document.js';
 import { OperationalDateSchema } from '@/_common/operational-date.js';
 import { ProcessingStatusSchema } from '@/_common/status.js';
-import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { atLeastOneVehicleEventOnFirstStopSchema, endedAtLastStopSchema, expectedApexValidationIntervalSchema, expectedDriverIdQtySchema, expectedStartTimeSchema, expectedVehicleEventDelaySchema, expectedVehicleEventIntervalSchema, expectedVehicleEventQtySchema, expectedVehicleIdQtySchema, matchingApexLocationsSchema, matchingVehicleIdsSchema, simpleOneApexValidationSchema, simpleOneVehicleEventOrApexValidationSchema, simpleThreeVehicleEventsSchema, transactionSequentialitySchema } from '@/operation/rides/ride-analysis.js';
 import { z } from 'zod';
 
@@ -37,8 +37,8 @@ export const RideSchema = DocumentSchema
 		apex_on_board_sales_qty: z.number().nullable(),
 		apex_validations_qty: z.number().nullable(),
 		driver_ids: z.array(z.string()),
-		end_time_observed: UnixTimeStampSchema.nullable(),
-		end_time_scheduled: UnixTimeStampSchema,
+		end_time_observed: UnixTimestampSchema.nullable(),
+		end_time_scheduled: UnixTimestampSchema,
 		extension_observed: z.number().nullable(),
 		extension_scheduled: z.number(),
 		hashed_shape_id: z.string(),
@@ -56,10 +56,10 @@ export const RideSchema = DocumentSchema
 		pattern_id: z.string(),
 		plan_id: z.string(),
 		route_id: z.string(),
-		seen_first_at: UnixTimeStampSchema.nullable(),
-		seen_last_at: UnixTimeStampSchema.nullable(),
-		start_time_observed: UnixTimeStampSchema.nullable(),
-		start_time_scheduled: UnixTimeStampSchema,
+		seen_first_at: UnixTimestampSchema.nullable(),
+		seen_last_at: UnixTimestampSchema.nullable(),
+		start_time_observed: UnixTimestampSchema.nullable(),
+		start_time_scheduled: UnixTimestampSchema,
 		system_status: ProcessingStatusSchema.default('waiting'),
 		trip_id: z.string(),
 		vehicle_ids: z.array(z.number()),

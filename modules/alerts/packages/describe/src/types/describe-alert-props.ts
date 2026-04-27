@@ -1,13 +1,13 @@
 /* * */
 
-import { AgencySchema, AlertCauseSchema, AlertEffectSchema, AlertReferencesSchema, AlertReferenceTypeSchema, OperationalLineSchema, OperationalStopSchema, RideNormalizedSchema, UnixTimeStampSchema } from '@tmlmobilidade/types';
+import { AgencySchema, AlertCauseSchema, AlertEffectSchema, AlertReferencesSchema, AlertReferenceTypeSchema, OperationalLineSchema, OperationalStopSchema, RideNormalizedSchema, UnixTimestampSchema } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 /* * */
 
 export const DescribeAlertPropsBaseSchema = z.object({
-	active_period_end_date: UnixTimeStampSchema,
-	active_period_start_date: UnixTimeStampSchema,
+	active_period_end_date: UnixTimestampSchema,
+	active_period_start_date: UnixTimestampSchema,
 	cause: AlertCauseSchema,
 	effect: AlertEffectSchema,
 	reference_type: AlertReferenceTypeSchema,

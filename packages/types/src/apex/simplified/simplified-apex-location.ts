@@ -1,7 +1,7 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
 /* * */
@@ -16,7 +16,7 @@ export const SimplifiedApexLocationSchema = DocumentSchema
 		mac_ase_counter_value: z.number(),
 		mac_sam_serial_number: z.number(),
 		pattern_id: z.string(),
-		received_at: UnixTimeStampSchema,
+		received_at: UnixTimestampSchema,
 		stop_id: z.string(),
 		trip_id: z.string(),
 		vehicle_id: z.number(),
