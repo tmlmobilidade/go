@@ -1,1 +1,1 @@
-export * from '@/operation/hashed-trips/hashed-trips.js';
+export * from '@/operation/stops/operational-stops.js';

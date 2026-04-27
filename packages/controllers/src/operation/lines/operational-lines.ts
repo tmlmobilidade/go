@@ -4,7 +4,7 @@ import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { AggregationPipeline, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type ActionsOf, type GetOperationalLinesBatchQuery, GetOperationalLinesBatchQuerySchema, HashedTrip, OperationalDate, OperationalLine, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
+import { type ActionsOf, type GetOperationalLinesBatchQuery, GetOperationalLinesBatchQuerySchema, type HashedTrip, type OperationalDate, type OperationalLine, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -152,10 +152,10 @@ export class OperationalLinesSharedController {
 			// Get the saved line from the map
 			const savedOperationalLine = operationalLinesMap.get(item.hashed_trip_doc.line_id);
 			// Update the object with the latest fields
-			savedOperationalLine.hashed_trips.push(item.hashed_trip_doc);
-			savedOperationalLine.pattern_ids = Array.from(new Set([...savedOperationalLine.pattern_ids, item.hashed_trip_doc.pattern_id]));
 			savedOperationalLine.route_ids = Array.from(new Set([...savedOperationalLine.route_ids, item.hashed_trip_doc.route_id]));
+			savedOperationalLine.pattern_ids = Array.from(new Set([...savedOperationalLine.pattern_ids, item.hashed_trip_doc.pattern_id]));
 			savedOperationalLine.stop_ids = Array.from(new Set([...savedOperationalLine.stop_ids, ...(item.hashed_trip_doc.path.map(stop => stop.stop_id) ?? [])]));
+			savedOperationalLine.hashed_trips.push(item.hashed_trip_doc);
 		});
 
 		//

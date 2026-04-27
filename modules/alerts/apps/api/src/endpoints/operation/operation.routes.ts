@@ -1,9 +1,9 @@
 /* * */
 
 import { fastifyWebsocket } from '@fastify/websocket';
-import { OperationalLinesSharedController, RidesSharedController } from '@tmlmobilidade/controllers';
+import { OperationalLinesSharedController, OperationalStopsSharedController, RidesSharedController } from '@tmlmobilidade/controllers';
 import { authorizationMiddleware, FastifyInstance, type FastifyReply, type FastifyRequest, FastifyService } from '@tmlmobilidade/fastify';
-import { GetOperationalLinesBatchQuery, type GetRidesBatchQuery, OperationalLine, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
+import { type GetOperationalLinesBatchQuery, type GetOperationalStopsBatchQuery, type GetRidesBatchQuery, type OperationalLine, type OperationalStop, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -43,6 +43,12 @@ server.register(
 			'/lines',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
 			(request: FastifyRequest<{ Querystring: GetOperationalLinesBatchQuery }>, reply: FastifyReply<OperationalLine[]>) => OperationalLinesSharedController.getBatch(request, reply, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.read),
+		);
+
+		instance.get(
+			'/stops',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
+			(request: FastifyRequest<{ Querystring: GetOperationalStopsBatchQuery }>, reply: FastifyReply<OperationalStop[]>) => OperationalStopsSharedController.getBatch(request, reply, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.read),
 		);
 
 		//

@@ -4,7 +4,7 @@ import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { AggregationPipeline, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type ActionsOf, type GetOperationalStopsBatchQuery, GetOperationalStopsBatchQuerySchema, HashedTrip, OperationalDate, OperationalLine, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
+import { type ActionsOf, type GetOperationalStopsBatchQuery, GetOperationalStopsBatchQuerySchema, type HashedTrip, type OperationalDate, type OperationalStop, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -25,7 +25,7 @@ export class OperationalStopsSharedController {
 	 * @param request The Fastify request object.
 	 * @param reply The Fastify reply object.
 	 */
-	static async getBatch<S extends Permission['scope']>(request: FastifyRequest<{ Querystring: GetOperationalStopsBatchQuery }>, reply: FastifyReply<OperationalLine[]>, scope: S, action: ActionsOf<S>) {
+	static async getBatch<S extends Permission['scope']>(request: FastifyRequest<{ Querystring: GetOperationalStopsBatchQuery }>, reply: FastifyReply<OperationalStop[]>, scope: S, action: ActionsOf<S>) {
 		//
 
 		//
@@ -126,43 +126,42 @@ export class OperationalStopsSharedController {
 		Logger.info(`OperationalStopsController.getBatch - pipeline result count: ${pipelineResult?.length ?? 0}`);
 
 		//
-		// Setup the final Map to keep track of the Operation Lines,
-		// using the line_id as the key to avoid duplicates,
-		// since multiple hashed_trip_ids can belong to the same line_id.
+		// Setup the final Map to keep track of the Operation Stops,
+		// using the stop_id as the key to avoid duplicates,
+		// since multiple hashed_trip_ids can belong to the same stop_id.
 
-		const operationalLinesMap = new Map<OperationalLine['line_id'], OperationalLine>();
+		const operationalStopsMap = new Map<OperationalStop['stop_id'], OperationalStop>();
 
 		pipelineResult.forEach((item) => {
-			// Initialize the line in the map if it doesn't exist yet
-			if (!operationalLinesMap.has(item.hashed_trip_doc.line_id)) {
-				operationalLinesMap.set(item.hashed_trip_doc.line_id, {
-					agency_id: item.agency_id,
-					hashed_trips: [],
-					last_operational_date: item.operational_date,
-					last_plan_id: item.plan_id,
-					line_id: item.hashed_trip_doc.line_id,
-					line_long_name: item.hashed_trip_doc.line_long_name,
-					line_short_name: item.hashed_trip_doc.line_short_name,
-					pattern_ids: [],
-					route_color: item.hashed_trip_doc.route_color,
-					route_ids: [],
-					stop_ids: [],
-				});
-			}
-			// Get the saved line from the map
-			const savedOperationalLine = operationalLinesMap.get(item.hashed_trip_doc.line_id);
-			// Update the object with the latest fields
-			savedOperationalLine.hashed_trips.push(item.hashed_trip_doc);
-			savedOperationalLine.pattern_ids = Array.from(new Set([...savedOperationalLine.pattern_ids, item.hashed_trip_doc.pattern_id]));
-			savedOperationalLine.route_ids = Array.from(new Set([...savedOperationalLine.route_ids, item.hashed_trip_doc.route_id]));
-			savedOperationalLine.stop_ids = Array.from(new Set([...savedOperationalLine.stop_ids, ...(item.hashed_trip_doc.path.map(stop => stop.stop_id) ?? [])]));
+			item.hashed_trip_doc.path.forEach((waypoint) => {
+				// Initialize the stop in the map if it doesn't exist yet
+				if (!operationalStopsMap.has(waypoint.stop_id)) {
+					operationalStopsMap.set(waypoint.stop_id, {
+						agency_ids: [],
+						last_operational_date: item.operational_date,
+						last_plan_id: item.plan_id,
+						line_ids: [],
+						pattern_ids: [],
+						route_ids: [],
+						stop_id: waypoint.stop_id,
+						stop_name: waypoint.stop_name,
+					});
+				}
+				// Get the saved stop from the map
+				const savedOperationalStop = operationalStopsMap.get(waypoint.stop_id);
+				// Update the object with the latest fields
+				savedOperationalStop.agency_ids = Array.from(new Set([...savedOperationalStop.agency_ids, item.agency_id]));
+				savedOperationalStop.line_ids = Array.from(new Set([...savedOperationalStop.line_ids, item.hashed_trip_doc.line_id]));
+				savedOperationalStop.route_ids = Array.from(new Set([...savedOperationalStop.route_ids, item.hashed_trip_doc.route_id]));
+				savedOperationalStop.pattern_ids = Array.from(new Set([...savedOperationalStop.pattern_ids, item.hashed_trip_doc.pattern_id]));
+			});
 		});
 
 		//
 		// Send the response
 
 		reply.send({
-			data: Array.from(operationalLinesMap.values()),
+			data: Array.from(operationalStopsMap.values()),
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});
