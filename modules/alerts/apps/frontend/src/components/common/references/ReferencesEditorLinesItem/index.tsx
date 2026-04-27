@@ -57,7 +57,7 @@ export function ReferencesEditorLinesItem({ index, onRemoveReference, onUpdateRe
 			hashedTripItem.path.forEach((waypointItem) => {
 				// Check if the stop_id is already in the map.
 				// If not, add it with the corresponding label and value.
-				if (!uniqueStopsMap.has(waypointItem.stop_id)) {
+				if (!uniqueStopsMap.has(String(waypointItem.stop_id))) {
 					uniqueStopsMap.set(String(waypointItem.stop_id), []);
 				}
 				// Append the current pattern_id and stop_sequence to the label

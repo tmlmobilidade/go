@@ -138,6 +138,7 @@ export class OperationalStopsSharedController {
 				if (!operationalStopsMap.has(waypoint.stop_id)) {
 					operationalStopsMap.set(waypoint.stop_id, {
 						agency_ids: [],
+						hashed_trips: [],
 						last_operational_date: item.operational_date,
 						last_plan_id: item.plan_id,
 						line_ids: [],
@@ -154,6 +155,7 @@ export class OperationalStopsSharedController {
 				savedOperationalStop.line_ids = Array.from(new Set([...savedOperationalStop.line_ids, item.hashed_trip_doc.line_id]));
 				savedOperationalStop.route_ids = Array.from(new Set([...savedOperationalStop.route_ids, item.hashed_trip_doc.route_id]));
 				savedOperationalStop.pattern_ids = Array.from(new Set([...savedOperationalStop.pattern_ids, item.hashed_trip_doc.pattern_id]));
+				savedOperationalStop.hashed_trips.push(item.hashed_trip_doc);
 			});
 		});
 

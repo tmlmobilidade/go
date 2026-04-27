@@ -59,8 +59,8 @@ export function describeAlert(props: DescribeAlertProps): DescribeAlertReturnTyp
 
 			// Determine which template string we are populating, and if it is singular or plural.
 			// Even though we might need a plural string, if it does not exist we fallback to the singular one.
-			const templateStringType = alertI18nTemplates[templateKey][resultStringKey];
-			const templateStringCountableVariation = templateStringType[pluralKey] ? templateStringType[pluralKey] : templateStringType.singular;
+			const templateStringType = alertI18nTemplates[templateKey]?.[resultStringKey];
+			const templateStringCountableVariation = templateStringType?.[pluralKey] ? templateStringType[pluralKey] : templateStringType?.singular;
 
 			// Skip if the template string variation is not defined
 			if (!templateStringCountableVariation) continue;
