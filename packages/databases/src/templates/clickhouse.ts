@@ -221,8 +221,8 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 			CREATE TABLE IF NOT EXISTS "${this.databaseName}"."${this.tableName}" (
 				${Object.entries<ClickHouseColumn>(this.schema).map(([key, column]) => `${key} ${column.type}`).join(', ')}
 			) ENGINE = ${this.getEngineString()}
-			${this.orderBy ? `ORDER BY ${this.orderBy}` : ''}
-			${this.partitionBy ? `PARTITION BY ${this.partitionBy}` : ''}
+			${this.orderBy ? `ORDER BY (${this.orderBy})` : ''}
+			${this.partitionBy ? `PARTITION BY (${this.partitionBy})` : ''}
 		`;
 		// Perform the query to create the table
 		try {
