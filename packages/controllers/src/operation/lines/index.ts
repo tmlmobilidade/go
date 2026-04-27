@@ -1,1 +1,1 @@
-export * from '@/operation/lines/operation-lines.js';
+export * from '@/operation/lines/operational-lines.js';
