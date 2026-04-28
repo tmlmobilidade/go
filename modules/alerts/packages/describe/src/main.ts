@@ -6,9 +6,9 @@ import { templateArticlesReplacements } from '@/templates/articles.js';
 import { alertI18nTemplates } from '@/templates/descriptions.js';
 import { templatePlaceholderReplacements } from '@/templates/placeholders.js';
 import { type I18nCodes } from '@/types/types.js';
-import { getOperationalLinesBatch } from '@tmlmobilidade/controllers';
-import { agencies, OCIGenerativeAIProvider } from '@tmlmobilidade/interfaces';
-import { Agency, AlertCause, AlertEffect, AlertReferences, AlertReferenceType, OperationalLine, OperationalStop, RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
+import { getOperationalLinesBatch, getOperationalStopsBatch } from '@tmlmobilidade/controllers';
+import { agencies, OCIGenerativeAIProvider, rides } from '@tmlmobilidade/interfaces';
+import { type Agency, type Alert, type OperationalLine, type OperationalStop, type Ride, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -16,19 +16,16 @@ export interface DescribeAlertProps {
 	active_period_end_date: UnixTimestamp
 	active_period_start_date: UnixTimestamp
 	agency_id: Agency['_id']
-	cause: AlertCause
-	effect: AlertEffect
-	reference_type: AlertReferenceType
-	references: AlertReferences
+	cause: Alert['cause']
+	effect: Alert['effect']
+	reference_type: Alert['reference_type']
+	references: Alert['references']
 }
 
 export interface DescribeAlertReturnType {
 	description: Record<I18nCodes, string>
 	title: Record<I18nCodes, string>
 }
-
-// const aiProvider = new OCIGenerativeAIProvider();
-// const response = await aiProvider.run('Hello world!');
 
 /**
  * Generates a description and title for an alert based on its properties.
@@ -60,39 +57,45 @@ export async function describeAlertWithAI(props: DescribeAlertProps): Promise<De
 	// For the given alert properties, fetch the necessary data
 	// to populate the template placeholders.
 
-	let fetchedData: Agency | OperationalLine[] | OperationalStop[] | RideNormalized[];
+	let fetchedData: Agency | null | OperationalLine[] | OperationalStop[] | Ride[] = null;
 
-	switch (props.reference_type) {
-		case 'agency': {
-			// For 'agency' alert types, we expect only one reference,
-			// and we fetch the agency data from the alert context.
-			const foundAgency = await agencies.findById(props.agency_id);
-			if (!foundAgency) throw new Error('Agency not found for the given reference');
-			fetchedData = foundAgency;
-			break;
-		}
-		case 'lines': {
-			// For 'lines' alert types, we fetch the operational lines data
-			// based on the agency_id from the alert context.
-			fetchedData = await getOperationalLinesBatch({
-				agency_ids: [props.agency_id],
-				date_end: props.active_period_end_date,
-				date_start: props.active_period_start_date,
-			});
-			break;
-		}
-		case 'rides': {
-			// Fetch the rides data based on the references
-			// fetchedData = await fetchRidesData(props.references);
-			break;
-		}
-		case 'stops': {
-			// Fetch the stops data based on the references
-			// fetchedData = await fetchStopsData(props.references);
-			break;
-		}
-		default:
-			throw new Error('Unsupported reference_type');
+	if (props.reference_type === 'agency') {
+		// For 'agency' alert types, we expect only one reference,
+		// and we fetch the agency data from the alert context.
+		const foundAgency = await agencies.findById(props.agency_id);
+		if (!foundAgency) throw new Error('Agency not found for the given reference');
+		fetchedData = foundAgency;
+	}
+
+	if (props.reference_type === 'lines') {
+		// For 'lines' alert types, we fetch the operational lines data
+		// based on the agency_id from the alert context.
+		fetchedData = await getOperationalLinesBatch({
+			agency_ids: [props.agency_id],
+			date_end: props.active_period_end_date,
+			date_start: props.active_period_start_date,
+		});
+	}
+
+	if (props.reference_type === 'rides') {
+		// We can fetch rides by ID directly
+		const foundRides = await rides.findMany({ _id: { $in: props.references.map(ref => ref.parent_id) } });
+		if (!foundRides?.length) throw new Error('Rides not found for the given references');
+		fetchedData = foundRides;
+	}
+
+	if (props.reference_type === 'stops') {
+		// For 'stops' alert types, we fetch the operational stops data
+		// based on the agency_id from the alert context.
+		fetchedData = await getOperationalStopsBatch({
+			agency_ids: [props.agency_id],
+			date_end: props.active_period_end_date,
+			date_start: props.active_period_start_date,
+		});
+	}
+
+	if (!fetchedData) {
+		throw new Error('Alert data unnavailable');
 	}
 
 	//
@@ -104,14 +107,17 @@ export async function describeAlertWithAI(props: DescribeAlertProps): Promise<De
 	};
 
 	//
-	// Detect if the alert is singular or plural based on the reference type
-
-	const pluralKey = props.references.length > 1 ? 'plural' : 'singular';
-
-	//
 	// Build the key to access the templates
 
 	const templateKey = `${props.cause}:${props.effect}:${props.reference_type}`;
+
+	//
+	// Build the prompt string
+
+	const prompt = '';
+
+	// const aiProvider = new OCIGenerativeAIProvider();
+	// const response = await aiProvider.run('Hello world!');
 
 	//
 	// Iterate over all strings in the result object and
