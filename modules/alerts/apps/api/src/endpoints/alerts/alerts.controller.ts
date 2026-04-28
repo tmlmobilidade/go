@@ -3,6 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { describeAlert, DescribeAlertProps, DescribeAlertReturnType } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { alerts, files } from '@tmlmobilidade/interfaces';
 import { type RssRawImageInput } from '@tmlmobilidade/rss';
 import { createRssFeed } from '@tmlmobilidade/rss';
@@ -209,11 +210,10 @@ export class AlertsController {
 	 * @param request Fastify request containing alert ID in params.
 	 * @param reply Fastify reply.
 	 */
-	static async describe(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Alert>) {
-		await alerts.toggleLockById(request.params.id);
-		const foundAlert = await alerts.findById(request.params.id);
-		if (!foundAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
-		reply.send({ data: foundAlert, error: null, statusCode: HTTP_STATUS.OK });
+	static async describe(request: FastifyRequest<{ Body: DescribeAlertProps }>, reply: FastifyReply<DescribeAlertReturnType>) {
+		const describeResult = await describeAlert(request.body);
+		if (!describeResult) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to describe alert.');
+		reply.send({ data: describeResult, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**

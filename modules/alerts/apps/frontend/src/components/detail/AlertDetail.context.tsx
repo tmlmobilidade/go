@@ -3,7 +3,6 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { describeAlert, DescribeAlertReturnType } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { type Alert, type File as FileType, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, keepUrlParams, useDataAgencies, useDataOperationalLines, useDataOperationalStops, useDataRides, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm, useTypicalFormWatch } from '@tmlmobilidade/ui';
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
@@ -113,69 +112,69 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		},
 	});
 
-	useEffect(() => {
-		// Skip if auto texts is not enabled
-		if (!watchedFormValues.auto_texts) return;
-		// Skip if required fields for templating are not filled
-		if (!watchedFormValues.cause) return;
-		if (!watchedFormValues.effect) return;
-		if (!watchedFormValues.reference_type) return;
-		if (!watchedFormValues.references?.length) return;
-		// Generate alert templating and set title and description based on it
-		let alertTemplating: DescribeAlertReturnType;
-		if (watchedFormValues.reference_type === 'agency') {
-			// Filter agenciesData to find the selected agency based on parent_id in references
-			const selectedAgencyData = agenciesData.find(agency => String(agency._id) === String(watchedFormValues.references[0].parent_id));
-			if (!selectedAgencyData) return;
-			// Generate alert templating
-			alertTemplating = describeAlert({
-				cause: watchedFormValues.cause,
-				data: selectedAgencyData,
-				effect: watchedFormValues.effect,
-				reference_type: 'agency',
-				references: watchedFormValues.references,
-			});
-		} else if (watchedFormValues.reference_type === 'lines') {
-			// Filter operationalLinesData to find the selected lines based on parent_id in references
-			const selectedOperationalLinesData = operationalLinesData.filter(line => watchedFormValues.references.some(ref => String(ref.parent_id) === String(line.line_id)));
-			if (!selectedOperationalLinesData.length) return;
-			// Generate alert templating
-			alertTemplating = describeAlert({
-				cause: watchedFormValues.cause,
-				data: selectedOperationalLinesData,
-				effect: watchedFormValues.effect,
-				reference_type: 'lines',
-				references: watchedFormValues.references,
-			});
-		} else if (watchedFormValues.reference_type === 'rides') {
-			// Filter ridesData to find the selected rides based on parent_id in references
-			const selectedRidesData = ridesData.filter(ride => watchedFormValues.references.some(ref => String(ref.parent_id) === String(ride._id)));
-			if (!selectedRidesData.length) return;
-			// Generate alert templating
-			alertTemplating = describeAlert({
-				cause: watchedFormValues.cause,
-				data: selectedRidesData,
-				effect: watchedFormValues.effect,
-				reference_type: 'rides',
-				references: watchedFormValues.references,
-			});
-		} else if (watchedFormValues.reference_type === 'stops') {
-			// Filter operationalStopsData to find the selected stops based on parent_id in references
-			const selectedStopsData = operationalStopsData.filter(stop => watchedFormValues.references.some(ref => String(ref.parent_id) === String(stop.stop_id)));
-			if (!selectedStopsData.length) return;
-			// Generate alert templating
-			alertTemplating = describeAlert({
-				cause: watchedFormValues.cause,
-				data: selectedStopsData,
-				effect: watchedFormValues.effect,
-				reference_type: 'stops',
-				references: watchedFormValues.references,
-			});
-		}
-		if (!alertTemplating) return;
-		formRef.current.setFieldValue('description', alertTemplating.description.pt);
-		formRef.current.setFieldValue('title', alertTemplating.title.pt);
-	}, [agenciesData, formRef, operationalLinesData, operationalStopsData, ridesData, watchedFormValues.auto_texts, watchedFormValues.cause, watchedFormValues.effect, watchedFormValues.reference_type, watchedFormValues.references]);
+	// useEffect(() => {
+	// 	// Skip if auto texts is not enabled
+	// 	if (!watchedFormValues.auto_texts) return;
+	// 	// Skip if required fields for templating are not filled
+	// 	if (!watchedFormValues.cause) return;
+	// 	if (!watchedFormValues.effect) return;
+	// 	if (!watchedFormValues.reference_type) return;
+	// 	if (!watchedFormValues.references?.length) return;
+	// 	// Generate alert templating and set title and description based on it
+	// 	let alertTemplating: DescribeAlertReturnType;
+	// 	if (watchedFormValues.reference_type === 'agency') {
+	// 		// Filter agenciesData to find the selected agency based on parent_id in references
+	// 		const selectedAgencyData = agenciesData.find(agency => String(agency._id) === String(watchedFormValues.references[0].parent_id));
+	// 		if (!selectedAgencyData) return;
+	// 		// Generate alert templating
+	// 		alertTemplating = describeAlert({
+	// 			cause: watchedFormValues.cause,
+	// 			data: selectedAgencyData,
+	// 			effect: watchedFormValues.effect,
+	// 			reference_type: 'agency',
+	// 			references: watchedFormValues.references,
+	// 		});
+	// 	} else if (watchedFormValues.reference_type === 'lines') {
+	// 		// Filter operationalLinesData to find the selected lines based on parent_id in references
+	// 		const selectedOperationalLinesData = operationalLinesData.filter(line => watchedFormValues.references.some(ref => String(ref.parent_id) === String(line.line_id)));
+	// 		if (!selectedOperationalLinesData.length) return;
+	// 		// Generate alert templating
+	// 		alertTemplating = describeAlert({
+	// 			cause: watchedFormValues.cause,
+	// 			data: selectedOperationalLinesData,
+	// 			effect: watchedFormValues.effect,
+	// 			reference_type: 'lines',
+	// 			references: watchedFormValues.references,
+	// 		});
+	// 	} else if (watchedFormValues.reference_type === 'rides') {
+	// 		// Filter ridesData to find the selected rides based on parent_id in references
+	// 		const selectedRidesData = ridesData.filter(ride => watchedFormValues.references.some(ref => String(ref.parent_id) === String(ride._id)));
+	// 		if (!selectedRidesData.length) return;
+	// 		// Generate alert templating
+	// 		alertTemplating = describeAlert({
+	// 			cause: watchedFormValues.cause,
+	// 			data: selectedRidesData,
+	// 			effect: watchedFormValues.effect,
+	// 			reference_type: 'rides',
+	// 			references: watchedFormValues.references,
+	// 		});
+	// 	} else if (watchedFormValues.reference_type === 'stops') {
+	// 		// Filter operationalStopsData to find the selected stops based on parent_id in references
+	// 		const selectedStopsData = operationalStopsData.filter(stop => watchedFormValues.references.some(ref => String(ref.parent_id) === String(stop.stop_id)));
+	// 		if (!selectedStopsData.length) return;
+	// 		// Generate alert templating
+	// 		alertTemplating = describeAlert({
+	// 			cause: watchedFormValues.cause,
+	// 			data: selectedStopsData,
+	// 			effect: watchedFormValues.effect,
+	// 			reference_type: 'stops',
+	// 			references: watchedFormValues.references,
+	// 		});
+	// 	}
+	// 	if (!alertTemplating) return;
+	// 	formRef.current.setFieldValue('description', alertTemplating.description.pt);
+	// 	formRef.current.setFieldValue('title', alertTemplating.title.pt);
+	// }, [agenciesData, formRef, operationalLinesData, operationalStopsData, ridesData, watchedFormValues.auto_texts, watchedFormValues.cause, watchedFormValues.effect, watchedFormValues.reference_type, watchedFormValues.references]);
 
 	//
 	// D. Handle actions
