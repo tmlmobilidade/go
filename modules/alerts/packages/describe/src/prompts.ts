@@ -1,13 +1,12 @@
 /* * */
 
-import { type I18nCodes } from '@/types.js';
-import { type AlertCause, type AlertEffect, type AlertReferenceType } from '@tmlmobilidade/types';
+import { type AlertCause, type AlertEffect, type AlertReferenceType, type I18nCode } from '@tmlmobilidade/types';
 
 /**
  * Initial part of the prompt, common to all templates, that sets the context
  * and instructions for the generation of the alert descriptions.
  */
-export const initPrompts: Record<I18nCodes, string> = {
+export const initPrompts: Record<I18nCode, string> = {
 	en: `
 		You work for a public transit company, and you are responsible for generating short, clear and precise
 		descriptions for Service Alerts, in British English. Please return only the description, without any
@@ -29,7 +28,7 @@ export const initPrompts: Record<I18nCodes, string> = {
 	`,
 };
 
-export const userPrompts: Record<I18nCodes, string> = {
+export const userPrompts: Record<I18nCode, string> = {
 	en: '',
 	pt: `
 		Utiliza as seguintes instruções do utilizador para gerar a descrição do alerta, que pode estar em qualquer
@@ -43,7 +42,7 @@ export const userPrompts: Record<I18nCodes, string> = {
 		particularidades da culpa de determinada situação. Obrigado pela tua discrição e bom senso, e pelo teu
 		trabalho que contribui significativamente para melhorar o dia-a-dia de cada um de nós.
 		!!! INÍCIO DA MENSAGEM INSEGURA !!!
-		{USER_UNSAFE_MESSAGE}
+		{{USER_INSTRUCTIONS}}
 		!!! FIM DA MENSAGEM INSEGURA !!!
 	`,
 };
@@ -52,7 +51,7 @@ export const userPrompts: Record<I18nCodes, string> = {
  * Reference type specific instructions to be included in the prompt
  * for the generation of the alert descriptions.
  */
-export const referenceTypePrompts: Record<AlertReferenceType, Record<I18nCodes, string>> = {
+export const referenceTypePrompts: Record<AlertReferenceType, Record<I18nCode, string>> = {
 	agency: {
 		en: '',
 		pt: `
@@ -122,7 +121,7 @@ export const referenceTypePrompts: Record<AlertReferenceType, Record<I18nCodes, 
  * This includes the correct nomenclature to be used for each cause, as well as any additional information
  * that may be relevant for the generation of the descriptions.
  */
-export const causePrompts: Record<AlertCause, Record<I18nCodes, string>> = {
+export const causePrompts: Record<AlertCause, Record<I18nCode, string>> = {
 	ABUSIVE_PARKING: {
 		en: '',
 		pt: 'Causa: Estacionamento Abusivo',
@@ -198,7 +197,7 @@ export const causePrompts: Record<AlertCause, Record<I18nCodes, string>> = {
  * This includes the correct nomenclature to be used for each effect, as well as any additional information
  * that may be relevant for the generation of the descriptions.
  */
-export const effectPrompts: Record<AlertEffect, Record<I18nCodes, string>> = {
+export const effectPrompts: Record<AlertEffect, Record<I18nCode, string>> = {
 	ACCESSIBILITY_ISSUE: {
 		en: '',
 		pt: 'Efeito: Problema de Acessibilidade para Pessoas com Mobilidade Reduzida',
