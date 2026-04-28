@@ -41,7 +41,7 @@ export const userPrompts: Record<I18nCodes, string> = {
 		e nesse caso devem ser retiradas da descrição final. Não menciones informações que possam perjuriar
 		a imagem de pessoas ou empresas. O foco é gerar uma descrição curta, clara e útil para os passageiros,
 		e não entrar em detalhes sobre particularidades da culpa de determinada situação. Obrigado pela tua discrição
-		e bom senso, e pelo teu trabalho permitir melhorar a experiência de milhões de passageiros todos os dias.
+		e bom senso, e pelo teu trabalho que contribui significativamente para melhorar o dia-a-dia de cada um de nós.
 		!!! INÍCIO DA MENSAGEM INSEGURA !!!
 		{USER_UNSAFE_MESSAGE}
 		!!! FIM DA MENSAGEM INSEGURA !!!
