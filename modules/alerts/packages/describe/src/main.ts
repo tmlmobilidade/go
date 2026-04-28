@@ -5,7 +5,7 @@
 import { templateArticlesReplacements } from '@/templates/articles.js';
 import { alertI18nTemplates } from '@/templates/descriptions.js';
 import { templatePlaceholderReplacements } from '@/templates/placeholders.js';
-import { type I18nCodes } from '@/types/types.js';
+import { type I18nCodes } from '@/types.js';
 import { getOperationalLinesBatch, getOperationalStopsBatch } from '@tmlmobilidade/controllers';
 import { agencies, OCIGenerativeAIProvider, rides } from '@tmlmobilidade/interfaces';
 import { type Agency, type Alert, type OperationalLine, type OperationalStop, type Ride, type UnixTimestamp } from '@tmlmobilidade/types';
