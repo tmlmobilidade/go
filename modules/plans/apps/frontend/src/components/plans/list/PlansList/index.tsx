@@ -12,6 +12,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, ProcessingStatusTag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -25,6 +26,7 @@ export function PlansList() {
 	const params = useParams<{ id?: string }>();
 
 	const plansListContext = usePlansListContext();
+	const { t } = useTranslation();
 
 	const columns: DataTableColumn<PlanNormalized>[] = [
 		{
@@ -36,7 +38,7 @@ export function PlansList() {
 		{
 			accessor: 'agency_id_normalized',
 			render: item => <AgencyTag agencyId={item.gtfs_agency.agency_id} showShortName />,
-			title: 'Operador',
+			title: t('plans:plans.list.PlansList.table.columns.agency_id_normalized.label'),
 			width: 110,
 		},
 		{
@@ -48,7 +50,7 @@ export function PlansList() {
 					validityStatus={item.validity_status}
 				/>
 			),
-			title: 'Datas de Validade',
+			title: t('plans:plans.list.PlansList.table.columns.gtfs_feed_info.label'),
 			width: 310,
 		},
 		{
@@ -62,7 +64,7 @@ export function PlansList() {
 						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
 				/>
 			),
-			title: 'Monitorização',
+			title: t('plans:plans.list.PlansList.table.columns.apps_controller.label'),
 			width: 135,
 		},
 		{
@@ -76,7 +78,7 @@ export function PlansList() {
 						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
 				/>
 			),
-			title: 'Inf. Público',
+			title: t('plans:plans.list.PlansList.table.columns.apps_merger.label'),
 			width: 135,
 		},
 	];

@@ -4,6 +4,7 @@ import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { PlansCreateContextProvider, usePlansCreateContext } from '@/contexts/PlansCreate.context';
 import { Button, closeModal, Divider, Grid, Label, openModal, ProcessingStatusTag, Section, Tag, ValidityStatusTag } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -35,6 +36,7 @@ export default function RequestApprovalModal() {
 	// A. Setup variables
 
 	const plansCreateContext = usePlansCreateContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -75,12 +77,12 @@ export default function RequestApprovalModal() {
 				<Grid columns="ab" gap="md">
 					<Button
 						disabled={plansCreateContext.flags.loading}
-						label="Cancelar"
+						label={t('plans:validations.detail.RequestApprovalModal.actions.cancel.label')}
 						onClick={() => closeModal(REQUEST_APPROVAL_MODAL_ID)}
 						variant="secondary"
 					/>
 					<Button
-						label="Solicitar aprovação à TML"
+						label={t('plans:validations.detail.RequestApprovalModal.actions.request.label')}
 						loading={plansCreateContext.flags.loading}
 						onClick={void plansCreateContext.actions.requestApproval}
 					/>

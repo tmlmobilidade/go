@@ -6,6 +6,7 @@ import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { useValidationCreateContext } from '@/components/validations/create/ValidationCreate.context';
 import { AlertMessage, Divider, FileUpload, Label, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -16,6 +17,7 @@ export function ValidationCreateBasicInfo() {
 	// A. Setup variables
 
 	const validationCreateContext = useValidationCreateContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -53,7 +55,7 @@ export function ValidationCreateBasicInfo() {
 			<Section>
 				<FileUpload
 					accept="application/zip"
-					label="Selecionar Arquivo GTFS"
+					label={t('plans:validations.create.ValidationCreateBasicInfo.fields.file.label')}
 					maxFileSize={5 * 1024 * 1024 * 1024} // 5 GB
 					onFileChange={validationCreateContext.actions.setValidationFile}
 				/>

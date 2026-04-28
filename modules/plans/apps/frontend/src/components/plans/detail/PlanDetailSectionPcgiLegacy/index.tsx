@@ -5,6 +5,7 @@
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Collapsible, Section, TextInput, useMeContext } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -16,6 +17,7 @@ export function PlanDetailSectionPcgiLegacy() {
 
 	const meContext = useMeContext();
 	const planDetailContext = usePlanDetailContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -32,15 +34,15 @@ export function PlanDetailSectionPcgiLegacy() {
 
 	return (
 		<Collapsible
-			description="Dados necessários para manter a PCGI em funcionamento."
-			title="PCGI Legacy"
+			description={t('plans:plans.detail.PlanDetailSectionPcgiLegacy.description')}
+			title={t('plans:plans.detail.PlanDetailSectionPcgiLegacy.title')}
 		>
 			<Section gap="sm">
 				<TextInput
 					key={planDetailContext.data.form.key('pcgi_legacy.operation_plan_id')}
-					label="Operation Plan ID da PCGI"
+					label={t('plans:plans.detail.PlanDetailSectionPcgiLegacy.fields.operation_plan_id.label')}
 					miw="50%"
-					placeholder="operationPlanId"
+					placeholder={t('plans:plans.detail.PlanDetailSectionPcgiLegacy.fields.operation_plan_id.placeholder')}
 					{...planDetailContext.data.form.getInputProps('pcgi_legacy.operation_plan_id')}
 					readOnly={planDetailContext.flags.isReadOnly || !canEdit}
 				/>

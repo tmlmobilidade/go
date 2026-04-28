@@ -5,6 +5,7 @@
 import { usePlanChangeContext } from '@/components/plans/change/PlanChange.context';
 import { closePlanChangeModal } from '@/components/plans/change/PlanChange.modal';
 import { CloseButton, Label, SaveButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,6 +16,7 @@ export function PlanChangeHeader() {
 	// A. Setup variables
 
 	const changePlanContext = usePlanChangeContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
@@ -22,7 +24,7 @@ export function PlanChangeHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closePlanChangeModal} type="close" />
-			<Label size="lg" caps singleLine>Alterar Plano</Label>
+			<Label size="lg" caps singleLine>{t('plans:plans.change.PlanChangeHeader.title')}</Label>
 			<Spacer />
 			<SaveButton
 				isDisabled={!changePlanContext.data.selected_validation_id}

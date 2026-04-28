@@ -11,6 +11,7 @@ import { PermissionCatalog, type ProcessingStatus } from '@tmlmobilidade/types';
 import { AgencyTag, Button, CloseButton, HasPermission, IdTag, ProcessingStatusTag, Spacer, Toolbar, useMeContext, ValidityStatusTag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 
 /* * */
@@ -23,6 +24,7 @@ export function ValidationsDetailHeader() {
 
 	const router = useRouter();
 	const validationsDetailContext = useValidationsDetailContext();
+	const { t } = useTranslation();
 	const meContext = useMeContext();
 
 	//
@@ -92,7 +94,7 @@ export function ValidationsDetailHeader() {
 				>
 					<Button
 						disabled={validationsDetailContext.flags.loading || validationsDetailContext.data.validation.notification_sent}
-						label="Pedir aprovação"
+						label={t('plans:validations.detail.ValidationsDetailHeader.actions.request_approval.label')}
 						onClick={handleRequestApproval}
 						variant="secondary"
 					/>
@@ -108,7 +110,7 @@ export function ValidationsDetailHeader() {
 				>
 					<Button
 						disabled={validationsDetailContext.flags.loading}
-						label="Aprovar Plano"
+						label={t('plans:validations.detail.ValidationsDetailHeader.actions.approve.label')}
 						loading={validationsDetailContext.flags.loading}
 						onClick={handleApprovePlan}
 					/>

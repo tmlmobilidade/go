@@ -1,0 +1,252 @@
+{
+	"approved": {
+		"Page": {
+			"step_1": "Validar o ficheiro GTFS",
+			"step_1_description": "Aceda a este <a href={link}>link</a> e faça o upload do seu ficheiro GTFS para iniciar a validação.",
+			"step_2": "Aguardar o resultado da validação",
+			"step_2_description": "O sistema analisará o ficheiro e indicará se está <b>válido</b> ou se existem <b>erros a corrigir</b>.",
+			"step_3": "Converter GTFS em plano",
+			"step_3_description": "Após uma <b>validação bem-sucedida</b>, será possível converter a validação num plano.",
+			"title": "Validar um plano GTFS"
+		}
+	},
+	"common": {
+		"PlanStatusTag": {
+			"complete": "Finalizado",
+			"error": "Erro",
+			"processing": "Em Processamento",
+			"skipped": "Omitido",
+			"unknown": "Desconhecido",
+			"updated_at": "Atualizado a",
+			"waiting": "Em Espera"
+		},
+		"SeverityTag": {
+			"error": "Erro",
+			"forbidden": "Proibido",
+			"warning": "Aviso"
+		},
+		"ValidationStatusTag": {
+			"complete": "Válido",
+			"default": "Valor em falta",
+			"error": "Inválido",
+			"processing": "Em Análise",
+			"waiting": "Em Espera"
+		}
+	},
+	"plans": {
+		"change": {
+			"PlanChangeHeader": {
+				"title": "Alterar Plano"
+			}
+		},
+		"detail": {
+			"PlanDetailHeader": {
+				"actions": {
+					"delete": {
+						"confirm_message": "Tem a certeza que pretende eliminar este plano? O plano ficará indisponível para utilização futura.",
+						"confirm_title": "Eliminar Plano"
+					}
+				},
+				"change_plan_tooltip": "Alterar Plano"
+			},
+			"PlanDetailSectionAgency": {
+				"description": "Resumo dos dados do operador extraídos do ficheiro agency.txt",
+				"title": "Dados do Operador"
+			},
+			"PlanDetailSectionController": {
+				"actions": {
+					"reprocess": {
+						"label": "Reprocessar Plano"
+					}
+				},
+				"description": "Configurações relacionadas com a conversão deste plano em Rides.",
+				"title": "Definições SLA"
+			},
+			"PlanDetailSectionFeedInfo": {
+				"description": "Resumo dos dados do arquivo extraídos do ficheiro feed_info.txt",
+				"title": "Dados do Arquivo"
+			},
+			"PlanDetailSectionPcgiLegacy": {
+				"description": "Dados necessários para manter a PCGI em funcionamento.",
+				"fields": {
+					"operation_plan_id": {
+						"label": "Operation Plan ID da PCGI",
+						"placeholder": "operationPlanId"
+					}
+				},
+				"title": "PCGI Legacy"
+			},
+			"PlansDetailSectionFiles": {
+				"description": "Ficheiros GTFS referentes a este plano.",
+				"empty_state": {
+					"label": "Nenhum ficheiro selecionado"
+				},
+				"title": "Ficheiros GTFS"
+			}
+		},
+		"list": {
+			"PlansList": {
+				"table": {
+					"columns": {
+						"agency_id_normalized": {
+							"label": "Operador"
+						},
+						"apps_controller": {
+							"label": "SLA Status"
+						},
+						"apps_merger": {
+							"label": "Merger Status"
+						},
+						"gtfs_feed_info": {
+							"label": "Datas de Validade"
+						},
+						"id": {
+							"label": "#ID"
+						}
+					}
+				}
+			},
+			"PlansListFilterAgency": {
+				"label": "Operador"
+			},
+			"PlansListFilterValidityStatus": {
+				"label": "Estado de Validade"
+			},
+			"PlansListHeader": {
+				"title": "Planos"
+			}
+		}
+	},
+	"validations": {
+		"Page": {
+			"step_1": "Validar o ficheiro GTFS",
+			"step_1_description": "Clique no botão <b>Nova validação</b> para iniciar a carregar um plano GTFS.",
+			"step_2": "Aguardar o resultado da validação",
+			"step_2_description": "O sistema analisará o ficheiro e indicará se está <b>válido</b> ou se existem <b>erros a corrigir</b>.",
+			"step_3": "Converter GTFS em plano",
+			"step_3_description": "Após uma <b>validação bem-sucedida</b>, será possível converter a validação num <a href={link}>plano</a>.",
+			"title": "Validar um plano GTFS"
+		},
+		"create": {
+			"ValidationCreateBasicInfo": {
+				"fields": {
+					"file": {
+						"label": "Selecionar Arquivo GTFS"
+					}
+				}
+			},
+			"ValidationCreateHeader": {
+				"actions": {
+					"create": {
+						"label": "Criar validação"
+					}
+				},
+				"title": "Nova Validação GTFS"
+			}
+		},
+		"detail": {
+			"ApprovePlanModal": {
+				"actions": {
+					"approve": {
+						"label": "Aprovar Plano"
+					},
+					"cancel": {
+						"label": "Cancelar"
+					}
+				}
+			},
+			"RequestApprovalModal": {
+				"actions": {
+					"cancel": {
+						"label": "Cancelar"
+					},
+					"request": {
+						"label": "Solicitar aprovação à TML"
+					}
+				}
+			},
+			"ValidationsDetailFootnote": {
+				"created_by_label": "Validação criada por {createdBy} a {formattedDateString}",
+				"label": "As validações são eliminadas automaticamente ao fim de 30 dias após a sua data de criação. Poderão ser eliminadas mais cedo se necessário."
+			},
+			"ValidationsDetailHeader": {
+				"actions": {
+					"approve": {
+						"label": "Aprovar Plano"
+					},
+					"request_approval": {
+						"label": "Solicitar aprovação à TML"
+					}
+				}
+			},
+			"ValidationsDetailSectionAgency": {
+				"description": "Resumo dos dados do operador extraídos do ficheiro agency.txt",
+				"title": "Dados do Operador"
+			},
+			"ValidationsDetailSectionFeedInfo": {
+				"description": "Resumo dos dados do arquivo extraídos do ficheiro feed_info.txt",
+				"empty_state": {
+					"label": "Nenhum ficheiro selecionado"
+				},
+				"title": "Dados do Arquivo"
+			},
+			"ValidationsDetailSectionResult": {
+				"description": "Informações, avisos e erros encontrados no arquivo GTFS",
+				"table": {
+					"columns": {
+						"field": {
+							"label": "Campo"
+						},
+						"file_name": {
+							"label": "Ficheiro"
+						},
+						"message": {
+							"label": "Mensagem"
+						},
+						"rows": {
+							"label": "Linhas do Ficheiro"
+						},
+						"severity": {
+							"label": "Severidade"
+						}
+					}
+				},
+				"title": "Resultado da Validação"
+			}
+		},
+		"list": {
+			"ValidationsList": {
+				"table": {
+					"columns": {
+						"agency_name": {
+							"label": "Operador"
+						},
+						"created_at": {
+							"label": "Data de Submissão"
+						},
+						"feeder_status": {
+							"label": "Estado"
+						},
+						"id": {
+							"label": "#ID"
+						}
+					}
+				}
+			},
+			"ValidationsListFilterAgency": {
+				"label": "Operador"
+			},
+			"ValidationsListFilterProcessingStatus": {
+				"label": "Estado"
+			},
+			"ValidationsListHeader": {
+				"actions": {
+					"new": {
+						"label": "Nova validação"
+					}
+				},
+				"title": "Validações GTFS"
+			}
+		}
+	}
+}
