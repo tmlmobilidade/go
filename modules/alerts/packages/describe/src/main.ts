@@ -6,7 +6,8 @@ import { templateArticlesReplacements } from '@/templates/articles.js';
 import { alertI18nTemplates } from '@/templates/descriptions.js';
 import { templatePlaceholderReplacements } from '@/templates/placeholders.js';
 import { type I18nCodes } from '@/types/types.js';
-import { OCIGenerativeAIProvider } from '@tmlmobilidade/interfaces';
+import { getOperationalLinesBatch } from '@tmlmobilidade/controllers';
+import { agencies, OCIGenerativeAIProvider } from '@tmlmobilidade/interfaces';
 import { Agency, AlertCause, AlertEffect, AlertReferences, AlertReferenceType, OperationalLine, OperationalStop, RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
@@ -14,6 +15,7 @@ import { Agency, AlertCause, AlertEffect, AlertReferences, AlertReferenceType, O
 export interface DescribeAlertProps {
 	active_period_end_date: UnixTimestamp
 	active_period_start_date: UnixTimestamp
+	agency_id: Agency['_id']
 	cause: AlertCause
 	effect: AlertEffect
 	reference_type: AlertReferenceType
@@ -42,6 +44,7 @@ export async function describeAlertWithAI(props: DescribeAlertProps): Promise<De
 
 	if (!props.cause) throw new Error('Missing required property: cause');
 	if (!props.effect) throw new Error('Missing required property: effect');
+	if (!props.agency_id) throw new Error('Missing required property: agency_id');
 	if (!props.reference_type) throw new Error('Missing required property: reference_type');
 	if (!props.references) throw new Error('Missing required property: references');
 	if (!props.active_period_start_date) throw new Error('Missing required property: active_period_start_date');
@@ -60,22 +63,34 @@ export async function describeAlertWithAI(props: DescribeAlertProps): Promise<De
 	let fetchedData: Agency | OperationalLine[] | OperationalStop[] | RideNormalized[];
 
 	switch (props.reference_type) {
-		case 'agency':
-			// Fetch the agency data based on the references
-			fetchedData = await fetchAgencyData(props.references);
+		case 'agency': {
+			// For 'agency' alert types, we expect only one reference,
+			// and we fetch the agency data from the alert context.
+			const foundAgency = await agencies.findById(props.agency_id);
+			if (!foundAgency) throw new Error('Agency not found for the given reference');
+			fetchedData = foundAgency;
 			break;
-		case 'lines':
-			// Fetch the lines data based on the references
-			fetchedData = await fetchLinesData(props.references);
+		}
+		case 'lines': {
+			// For 'lines' alert types, we fetch the operational lines data
+			// based on the agency_id from the alert context.
+			fetchedData = await getOperationalLinesBatch({
+				agency_ids: [props.agency_id],
+				date_end: props.active_period_end_date,
+				date_start: props.active_period_start_date,
+			});
 			break;
-		case 'rides':
+		}
+		case 'rides': {
 			// Fetch the rides data based on the references
-			fetchedData = await fetchRidesData(props.references);
+			// fetchedData = await fetchRidesData(props.references);
 			break;
-		case 'stops':
+		}
+		case 'stops': {
 			// Fetch the stops data based on the references
-			fetchedData = await fetchStopsData(props.references);
+			// fetchedData = await fetchStopsData(props.references);
 			break;
+		}
 		default:
 			throw new Error('Unsupported reference_type');
 	}
