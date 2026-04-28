@@ -1,13 +1,67 @@
 /* * */
 
 import { type I18nCodes } from '@/types/types.js';
-import { type AlertCauseEffectReference } from '@tmlmobilidade/types';
+import { AlertCause, type AlertCauseEffectReference, AlertReferenceType } from '@tmlmobilidade/types';
 
-/* * */
+/**
+ * Initial part of the prompt, common to all templates, that sets the context
+ * and instructions for the generation of the alert descriptions.
+ */
+const initPrompts: Record<I18nCodes, string> = {
+	en: `
+		You work for a public transit company, and you are responsible for generating short, clear and precise
+		descriptions for Service Alerts, in British English. Please return only the description, without any
+		additional text such as titles or formatting, using the provided parameters and the template text
+		as a reference for the style of the message.
+	`,
+	pt: `
+		Trabalhas numa empresa de transportes públicos, e estás encarregue de gerar descrições
+		curtas, claras e precisas para Alertas de Serviço (Service Alerts), em Português de Portugal.
+		Por favor devolve apenas a descrição, sem nenhum texto adicional como títulos ou formatação,
+		utilizando os parâmetros fornecidos e o texto-tipo como referência para o estilo da mensagem.
+		Adapta todos os textos em função do número de referências (singular ou plural, evitando marcas
+		de plural facultativas), agrupando-as quando necessário, e utilizando as expressões mais naturais
+		para cada caso. É importante que te coloques no lugar dos passageiros que irão ler a descrição,
+		que provavelmente estão numa paragem à espera do veículo sem informações atualizadas.
+		Deves ter em conta o impacto que o alerta tem nas suas viagens, em função da sua real gravidade,
+		evitando palavras que possam causar ansiedade ou preocupação desnecessária, e focando-te em transmitir
+		a informação de forma empática e útil para os passageiros.
+	`,
+};
 
-const INIT_PROMPT = '';
+const referenceTypePrompts: Record<AlertReferenceType, Record<I18nCodes, string>> = {
+	agency: {
+		en: '',
+		pt: `
+			Quando o tipo da referência é "agency", toda a rede do operador foi afetada.
+			Isto significa que o alerta é especialmente importante, pois irá impactar
+			um grande número de passageiros. A descrição gerada deve mencionar explicitamente
+			que todos os serviços poderão estar impactados, e deves ter especial cuidado nas palavras
+			pois as causas são normalmente situações fora do controlo do operador ou temas sensíveis.
+		`,
+	},
+	lines: {
+		en: '',
+		pt: `
+			Quando o tipo da referência é "lines", todos os serviços de uma determinada linhas
+			estão afetados. Nem sempre é uma situação negativa (como em situações de aumento de serviço).
+			Deves mencionar o número e nome da linha, assim como o período em que o alerta estará ativo,
+			tendo em conta o bom senso das horas (por exemplo manhã/noite; se for durante todo o dia ou vários dias
+			completos talvez não valha a pena referir horas, pois a informação pode não ser relevante para os passageiros).
 
-const END_PROMPT = '';
+			Exemplo de uma descrição:
+			"Devido a {CAUSA}, a(s) linha(s) {LINE_SHORT_NAME} {LINE_LONG_NAME} está(ão) a sofrer atrasos significativos durante a manhã. As viagens não foram canceladas e deverão realizar-se assim que o problema seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão."
+		`,
+	},
+	rides: {
+		en: 'the ride(s) {rides_description_en}',
+		pt: 'a(s) viagem(ns) {rides_description_pt}',
+	},
+	stops: {
+		en: 'the stop(s) {stops_description_en}',
+		pt: 'a(s) paragem(ns) {stops_description_pt}',
+	},
+};
 
 /**
  * Alert i18n templates registry.
@@ -19,7 +73,7 @@ export const alertPromptsMap: Record<AlertCauseEffectReference, { description: R
 		description: {
 			en: 'not-available',
 			pt: `
-				${INIT_PROMPT}
+				${initPrompts}
 
 				Dados:
 				Tipo de Referências; Linhas
