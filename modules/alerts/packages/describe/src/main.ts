@@ -104,7 +104,7 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 	//
 	// Build the prompts for the AI model based on the alert properties and the fetched data.
 
-	const templateKey = `${props.cause}:${props.effect}:${props.reference_type}`;
+	const prompt = `${props.cause}:${props.effect}:${props.reference_type}`;
 
 	//
 	// Build the prompt string
