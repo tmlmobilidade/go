@@ -22,7 +22,7 @@
 					"label": "Título"
 				},
 				"user_instructions": {
-					"label": "Informações Adicionais para geração do texto automático (opcional)",
+					"label": "Informações adicionais para geração do texto automático (opcional)",
 					"placeholder": "Ex: Desvio pela Rua X, sentido Y, devido a Z."
 				}
 			}
