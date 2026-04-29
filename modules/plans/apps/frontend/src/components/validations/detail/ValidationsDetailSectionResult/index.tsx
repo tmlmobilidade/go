@@ -28,27 +28,9 @@ export function ValidationsDetailSectionResult() {
 		},
 		{
 			accessor: 'field',
-			// eslint-disable-next-line @stylistic/arrow-parens
-			render: item => {
-				const docUrl = getGtfsScheduleDocUrl(item.file_name);
-				const linkable = (item.severity === 'error' || item.severity === 'warning' || item.severity === 'forbidden') && docUrl !== null;
-				if (linkable) {
-					return (
-						<a href={docUrl} rel="noopener noreferrer" target="_blank">
-							{item.field}
-						</a>
-					);
-				}
-				return item.field;
-			},
 			title: 'Campo',
 			width: 250,
 		},
-		// {
-		// 	accessor: 'rule_id',
-		// 	title: 'ID da Regra',
-		// 	width: 200,
-		// },
 		{
 			accessor: 'severity',
 			render: item => <SeverityTag severity={item.severity} />,
@@ -57,6 +39,7 @@ export function ValidationsDetailSectionResult() {
 		},
 		{
 			accessor: 'message',
+			render: item => <div>{item.message} <a href={getGtfsScheduleDocUrl(item.rule_id)} target="_blank"> | Saber mais ...</a></div>,
 			title: 'Mensagem',
 			width: 500,
 		},

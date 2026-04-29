@@ -288,6 +288,7 @@ export class GtfsValidationsController {
 		});
 		if (!hasPermissionReadValidation) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read validation file');
 		//
+		console.log('key', process.env.OCI_PRIVATE_KEY);
 		const foundFile = await files.findById(foundValidation.file_id);
 		if (!foundFile) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 		reply.send({ data: foundFile, error: null, statusCode: HTTP_STATUS.OK });
