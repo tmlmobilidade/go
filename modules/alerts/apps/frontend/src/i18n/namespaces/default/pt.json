@@ -11,11 +11,19 @@
 				"description": {
 					"label": "Descrição"
 				},
+				"generate_text": {
+					"label": "Gerar Texto Automático"
+				},
 				"info_url": {
+					"description": "Opcionalmente inclua o URL de um website onde é possivel obter mais informação",
 					"label": "Link Adicional"
 				},
 				"title": {
 					"label": "Título"
+				},
+				"user_instructions": {
+					"label": "Informações Adicionais para geração do texto automático",
+					"placeholder": "Ex: Desvio pela Rua X, sentido Y, devido a Z."
 				}
 			}
 		}

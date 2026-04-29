@@ -32,6 +32,7 @@ export const AlertSchema = DocumentSchema.extend({
 		parent_id: z.string(),
 	})).default([]),
 	title: z.string(),
+	user_instructions: z.string().default(''),
 });
 
 export const CreateAlertSchema = AlertSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });
