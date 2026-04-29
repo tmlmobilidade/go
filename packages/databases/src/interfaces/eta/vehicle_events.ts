@@ -39,6 +39,7 @@ class ETAVehicleEventsClass extends ClickHouseInterfaceTemplate<EtaVehicleEvent>
 	private static _instance: null | Promise<ETAVehicleEventsClass> = null;
 
 	public override readonly databaseName = 'eta';
+	public override readonly manageSchema = false;
 	public override readonly orderBy = '_id';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'vehicle_events';
@@ -78,10 +79,6 @@ class ETAVehicleEventsClass extends ClickHouseInterfaceTemplate<EtaVehicleEvent>
 
 	protected override connectToClient() {
 		return GOClickHouseClient.getClient();
-	}
-
-	protected override async postInit(): Promise<void> {
-		console.log('Post init ClickHouse service for Simplified Vehicle Events...');
 	}
 
 	//

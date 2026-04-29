@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-eta-daily-pipeline",
+	"name": "@tmlmobilidade/go-eta-pipeline",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -19,7 +19,10 @@
 	"dependencies": {
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-eta-bootstrap": "*",
 		"@tmlmobilidade/go-eta-sync-daily-rides": "*",
+		"@tmlmobilidade/go-eta-sync-shape-nodes": "*",
+		"@tmlmobilidade/go-eta-sync-vehicle-events": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*"

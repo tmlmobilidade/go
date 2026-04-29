@@ -10,7 +10,6 @@ import { rideProjection } from './types.js';
 /* * */
 
 const BATCH_SIZE = 50_000;
-const INSERT_CONCURRENCY = 50;
 
 interface SyncVehicleEventsOptions {
 	ridesQuery: Filter<Ride>
@@ -20,6 +19,7 @@ export async function syncVehicleEvents({ ridesQuery }: SyncVehicleEventsOptions
 	//
 
 	const ridesCollection = await rides.getCollection();
+	const clickhouseClient = await simplifiedVehicleEventsNew.getClient();
 	await etaVehicleEvents.clearData(); // ! DELETE ALL DATA FROM THE TABLE
 
 	//
@@ -43,44 +43,77 @@ export async function syncVehicleEvents({ ridesQuery }: SyncVehicleEventsOptions
 
 		if (ridesBatch.length === 0) break;
 
-		//
-		// Process rides in parallel with bounded concurrency
+		const ridesInput = ridesBatch.reduce<Array<{
+			end_time: number
+			hashed_shape_id: string
+			line_id: number
+			ride_id: string
+			start_time: number
+			trip_id: string
+		}>>((acc, ride) => {
+			if (!ride.start_time_observed || !ride.end_time_observed || !ride.trip_id || !ride.hashed_shape_id || !Number.isFinite(ride.line_id)) return acc;
+			const start = Math.max(ride.start_time_observed, ride.start_time_scheduled) as UnixTimestamp;
+			acc.push({
+				end_time: ride.end_time_observed,
+				hashed_shape_id: ride.hashed_shape_id,
+				line_id: ride.line_id,
+				ride_id: ride._id,
+				start_time: start,
+				trip_id: ride.trip_id,
+			});
+			return acc;
+		}, []);
 
-		let rideIndex = 0;
-		for (let i = 0; i < ridesBatch.length; i += INSERT_CONCURRENCY) {
-			const ridesChunk = ridesBatch.slice(i, i + INSERT_CONCURRENCY);
+		if (ridesInput.length > 0) {
+			const stagingTable = `tmp_vehicle_events_rides_${Date.now()}_${ridesProcessed}`;
 
-			await Promise.all(
-				ridesChunk.map(async (ride) => {
-					if (!ride.start_time_observed || !ride.end_time_observed) return;
+			try {
+				await clickhouseClient.command({
+					query: `
+						CREATE TABLE eta.${stagingTable} (
+							ride_id String,
+							hashed_shape_id String,
+							line_id Int64,
+							trip_id String,
+							start_time Int64,
+							end_time Int64
+						) ENGINE = Memory
+					`,
+				});
 
-					const start = Math.max(ride.start_time_observed, ride.start_time_scheduled) as UnixTimestamp;
+				await clickhouseClient.insert({
+					format: 'JSONEachRow',
+					table: `eta.${stagingTable}`,
+					values: ridesInput,
+				});
 
-					await simplifiedVehicleEventsNew.queryFromString(`
-						INSERT INTO eta.vehicle_events
-						SELECT
-							_id,
-							created_at,
-							agency_id,
-							'${ride._id}' as ride_id,
-							'${ride.hashed_shape_id}' as hashed_shape_id,
-							'${ride.line_id}' as line_id,
-							latitude,
-							longitude,
-							vehicle_id
-						FROM operation.simplified_vehicle_events
-						WHERE created_at >= ${start} AND created_at <= ${ride.end_time_observed} AND trip_id = '${ride.trip_id}'
-					`);
-
-					rideIndex++;
-					if (rideIndex % 100 === 0 || rideIndex === ridesBatch.length) {
-						Logger.progress(`Processed ${rideIndex}/${ridesBatch.length} rides in this batch`);
-					}
-				}),
-			);
+				await simplifiedVehicleEventsNew.queryFromString(`
+					INSERT INTO eta.vehicle_events
+					SELECT
+						sve._id,
+						sve.created_at,
+						sve.agency_id,
+						tmp.ride_id,
+						tmp.hashed_shape_id,
+						tmp.line_id,
+						sve.latitude,
+						sve.longitude,
+						sve.vehicle_id
+					FROM operation.simplified_vehicle_events AS sve
+					INNER JOIN eta.${stagingTable} AS tmp
+						ON sve.trip_id = tmp.trip_id
+						AND sve.created_at >= tmp.start_time
+						AND sve.created_at <= tmp.end_time
+				`);
+			} finally {
+				await clickhouseClient.command({
+					query: `DROP TABLE IF EXISTS eta.${stagingTable}`,
+				});
+			}
 		}
 
 		ridesProcessed += ridesBatch.length;
+		Logger.progress(`Processed ${ridesProcessed}/${ridesCount} rides`);
 	}
 
 	return { eventsProcessed, ridesProcessed };

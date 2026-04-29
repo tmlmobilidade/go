@@ -43,6 +43,7 @@ class ETANodeTravelTimesAggregationClass extends ClickHouseInterfaceTemplate<ETA
 	private static _instance: null | Promise<ETANodeTravelTimesAggregationClass> = null;
 
 	public override readonly databaseName = 'eta';
+	public override readonly manageSchema = false;
 	public override readonly orderBy = 'shape_id, node_index, operational_date, period, period_of_day, weekday, day_type';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'node_travel_times_aggregates';
@@ -82,10 +83,6 @@ class ETANodeTravelTimesAggregationClass extends ClickHouseInterfaceTemplate<ETA
 
 	protected override connectToClient() {
 		return GOClickHouseClient.getClient();
-	}
-
-	protected override async postInit(): Promise<void> {
-		console.log('Post init ClickHouse service for Simplified Vehicle Events...');
 	}
 
 	//

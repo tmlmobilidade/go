@@ -1,5 +1,6 @@
 export * from './daily_rides.js';
 export * from './daily_rides_waypoints.js';
+export * from './daily_rides_waypoints_snapped.js';
 export * from './node_travel_times_aggregation.js';
 export * from './node_travel_times_samples.js';
 export * from './shape_nodes.js';

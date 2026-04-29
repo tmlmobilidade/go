@@ -32,6 +32,7 @@ class ETADailyRidesWaypointsClass extends ClickHouseInterfaceTemplate<DailyTripW
 	private static _instance: null | Promise<ETADailyRidesWaypointsClass> = null;
 
 	public override readonly databaseName = 'eta';
+	public override readonly manageSchema = false;
 	public override readonly orderBy = 'hashed_trip_id, stop_sequence';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'daily_rides_waypoints';
@@ -71,10 +72,6 @@ class ETADailyRidesWaypointsClass extends ClickHouseInterfaceTemplate<DailyTripW
 
 	protected override connectToClient() {
 		return GOClickHouseClient.getClient();
-	}
-
-	protected override async postInit(): Promise<void> {
-		console.log('Post init ClickHouse service for Simplified Vehicle Events...');
 	}
 
 	//

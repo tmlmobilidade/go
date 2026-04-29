@@ -1,3 +1,4 @@
+/* eslint-disable perfectionist/sort-objects */
 /* * */
 
 import { ClickHouseSchema, GOClickHouseClient } from '@/index.js';
@@ -6,32 +7,45 @@ import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-interface ETAShapeNodes {
-	latitude: number
-	longitude: number
+interface ETADailyRidesWaypointSnapped {
+	arrival_time: string
+	departure_time: string
+	hashed_shape_id: string
+	hashed_trip_id: string
 	node_index: number
-	shape_id: string
+	stop_id: string
+	stop_lat: number
+	stop_lon: number
+	stop_name: string
+	stop_sequence: number
 }
 
-const tableSchema: ClickHouseSchema<ETAShapeNodes> = {
-	latitude: { type: 'Float64' },
-	longitude: { type: 'Float64' },
+const tableSchema: ClickHouseSchema<ETADailyRidesWaypointSnapped> = {
+	hashed_trip_id: { type: 'String' },
+	hashed_shape_id: { type: 'String' },
+	stop_sequence: { type: 'UInt16' },
+	stop_id: { type: 'String' },
+	stop_name: { type: 'String' },
+	stop_lat: { type: 'Float64' },
+	stop_lon: { type: 'Float64' },
 	node_index: { type: 'UInt32' },
-	shape_id: { type: 'String' },
+	arrival_time: { type: 'String' },
+	departure_time: { type: 'String' },
 };
 
 /* * */
 
-class ETAShapeNodesClass extends ClickHouseInterfaceTemplate<ETAShapeNodes> {
+class ETADailyRidesWaypointsSnappedClass extends ClickHouseInterfaceTemplate<ETADailyRidesWaypointSnapped> {
 	//
 
-	private static _instance: null | Promise<ETAShapeNodesClass> = null;
+	private static _instance: null | Promise<ETADailyRidesWaypointsSnappedClass> = null;
 
 	public override readonly databaseName = 'eta';
+	public override readonly engine = 'ReplacingMergeTree';
 	public override readonly manageSchema = false;
-	public override readonly orderBy = 'shape_id';
+	public override readonly orderBy = 'hashed_trip_id, stop_sequence';
 	public override readonly schema = tableSchema;
-	public override readonly tableName = 'shape_nodes';
+	public override readonly tableName = 'daily_rides_waypoints_snapped';
 
 	/**
 	 * Returns the singleton instance of the subclass.
@@ -42,7 +56,7 @@ class ETAShapeNodesClass extends ClickHouseInterfaceTemplate<ETAShapeNodes> {
 		// they will all await the same initialization process.
 		if (!this._instance) {
 			this._instance = (async () => {
-				const instance = new ETAShapeNodesClass();
+				const instance = new ETADailyRidesWaypointsSnappedClass();
 				// This behaves like the constructor,
 				// but allows for async initialization.
 				await instance.init();
@@ -75,4 +89,4 @@ class ETAShapeNodesClass extends ClickHouseInterfaceTemplate<ETAShapeNodes> {
 
 /* * */
 
-export const etaShapeNodes = asyncSingletonProxy(ETAShapeNodesClass);
+export const etaDailyRidesWaypointsSnapped = asyncSingletonProxy(ETADailyRidesWaypointsSnappedClass);
