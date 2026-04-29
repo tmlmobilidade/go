@@ -36,7 +36,7 @@ export function StopsListMap() {
 				type: 'Point',
 			},
 			properties: {
-				id: item._id,
+				id: String(item._id),
 				name: item.name,
 			},
 			type: 'Feature',
@@ -49,7 +49,7 @@ export function StopsListMap() {
 	// C. Handle actions
 
 	const handleStopClick = (value: MapOverlayMultipleStopsDataProps) => {
-		router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(value.id)));
+		router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(String(value.id))));
 	};
 
 	//

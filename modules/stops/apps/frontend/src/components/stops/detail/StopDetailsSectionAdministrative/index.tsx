@@ -28,7 +28,7 @@ export function StopDetailsSectionAdministrative() {
 		value: value,
 	}));
 
-	const associatedDistrict = useMemo(() => {
+	const associatedDistrictValue = useMemo(() => {
 		// Skip if districts are unavailable
 		if (!locationsContext.data.districts_map) return;
 		// Skip if stop does not yet have a district
@@ -39,10 +39,10 @@ export function StopDetailsSectionAdministrative() {
 		// Return if no matching district data is found
 		if (!matchingDistrictData) return;
 		// Return the matching data
-		return matchingDistrictData;
+		return `${matchingDistrictData.name} (${matchingDistrictData._id})`;
 	}, [stopDetailContext.data.stop, locationsContext.data.districts_map]);
 
-	const associatedMunicipality = useMemo(() => {
+	const associatedMunicipalityValue = useMemo(() => {
 		// Skip if municipalities are unavailable
 		if (!locationsContext.data.municipalities_map) return;
 		// Skip if stop does not yet have a municipality
@@ -53,10 +53,10 @@ export function StopDetailsSectionAdministrative() {
 		// Return if no matching municipality data is found
 		if (!matchingMunicipalityData) return;
 		// Return the matching data
-		return matchingMunicipalityData;
+		return `${matchingMunicipalityData.name} (${matchingMunicipalityData._id})`;
 	}, [stopDetailContext.data.stop, locationsContext.data.municipalities_map]);
 
-	const associatedParish = useMemo(() => {
+	const associatedParishValue = useMemo(() => {
 		// Skip if parishes are unavailable
 		if (!locationsContext.data.parishes_map) return;
 		// Skip if stop does not yet have a parish
@@ -67,10 +67,10 @@ export function StopDetailsSectionAdministrative() {
 		// Return if no matching parish data is found
 		if (!matchingParishData) return;
 		// Return the matching data
-		return matchingParishData;
+		return `${matchingParishData.name} (${matchingParishData._id})`;
 	}, [stopDetailContext.data.stop, locationsContext.data.parishes_map]);
 
-	const associatedLocality = useMemo(() => {
+	const associatedLocalityValue = useMemo(() => {
 		// Skip if localities are unavailable
 		if (!locationsContext.data.localities_map) return;
 		// Skip if stop does not yet have a locality
@@ -81,7 +81,7 @@ export function StopDetailsSectionAdministrative() {
 		// Return if no matching locality data is found
 		if (!matchingLocalityData) return;
 		// Return the matching data
-		return matchingLocalityData;
+		return `${matchingLocalityData.name} (${matchingLocalityData._id})`;
 	}, [stopDetailContext.data.stop, locationsContext.data.localities_map]);
 
 	//
@@ -105,10 +105,10 @@ export function StopDetailsSectionAdministrative() {
 			</Section>
 			<Section>
 				<Grid columns="ab" gap="md">
-					<ValueDisplay label="Distrito" value={associatedDistrict?.name ?? 'N/A'} bordered />
-					<ValueDisplay label="Municipio" value={associatedMunicipality?.name ?? 'N/A'} bordered />
-					<ValueDisplay label="Freguesia" value={associatedParish?.name ?? 'N/A'} bordered />
-					<ValueDisplay label="Localidade" value={associatedLocality?.name ?? 'N/A'} bordered />
+					<ValueDisplay label="Distrito" value={associatedDistrictValue ?? 'N/A'} variant="bordered" />
+					<ValueDisplay label="Municipio" value={associatedMunicipalityValue ?? 'N/A'} variant="bordered" />
+					<ValueDisplay label="Freguesia" value={associatedParishValue ?? 'N/A'} variant="bordered" />
+					<ValueDisplay label="Localidade" value={associatedLocalityValue ?? 'N/A'} variant="bordered" />
 				</Grid>
 			</Section>
 		</Collapsible>

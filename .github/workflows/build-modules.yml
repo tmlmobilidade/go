@@ -1,254 +1,130 @@
-# # #
-
-name: 'Build Modules'
-
-# # #
+name: Build Modules
 
 on:
   workflow_dispatch:
-    inputs:
-      module:
-        description: 'Module to build'
-        required: false
-        default: all
-        type: choice
-        options:
-          - all
-          - alerts
-          - apex
-          - auth
-          - controller
-          - dates
-          - exporter
-          - locations
-          - performance
-          - plans
-          - stops
-          - tracker
-          - offer
-          - fleet
-      build_all:
-        description: 'Build all modules (ignores file changes)'
-        required: false
-        default: true
-        type: boolean
-#   pull_request:
   push:
     branches:
-      - production
-      - staging*
+      - prd
     paths:
       - 'modules/**'
-      - '!modules/*/environments/**'
       - 'packages/**'
-      - '.github/workflows/build-all-modules.yml'
-      - '.github/actions/discover-modules/action.yml'
-      - '.github/workflows/_build-module-apps.yml'
+      - '.github/workflows/build-modules.yml'
+      - '.github/actions/**/*'
       - '.github/templates/**/*'
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
 
-# # #
-
-# Hardcoded array of modules and their apps to build
-# Format: module:app (one app per line)
-env:
-  MODULES_APPS: |
-
-    alerts:nginx
-    alerts:api
-    alerts:frontend
-    alerts:organizer
-
-    apex:organizer
-    apex:stream
-    apex:sync-locations
-    apex:sync-on-board-refunds
-    apex:sync-on-board-sales
-    apex:sync-validations
-
-    auth:nginx
-    auth:api
-    auth:cleaner
-    auth:frontend
-
-    controller:nginx
-    controller:api
-    controller:coordinator
-    controller:frontend
-    controller:rides-acceptor
-    controller:rides-bridge
-    controller:rides-cleaner
-    controller:rides-examiner
-    controller:rides-feeder
-    controller:rides-locker
-    controller:sams-examiner
-    controller:sams-feeder
-
-    dates:nginx
-    dates:api
-    dates:frontend
-
-    exporter:nginx
-    exporter:api
-    exporter:cleaner
-    exporter:export-drt
-    exporter:export-files
-    exporter:export-gtfs-merged
-    exporter:export-posters
-    exporter:frontend
-
-    fleet:nginx
-    fleet:api
-    fleet:frontend
-
-    locations:nginx
-    locations:api
-    locations:frontend
-
-    offer:nginx
-    offer:api
-    offer:frontend
-    offer:gtfs-exporter
-
-    performance:nginx
-    performance:api
-    performance:frontend
-    performance:sync-metrics-hourly
-    performance:sync-metrics-daily
-    performance:sync-metrics-realtime
-
-    plans:nginx
-    plans:api
-    plans:cleaner
-    plans:frontend
-    plans:validator
-
-    # replicator:organizer
-    # replicator:stream
-    # replicator:sync-apex-locations
-    # replicator:sync-apex-on-board-refunds
-    # replicator:sync-apex-on-board-sales
-    # replicator:sync-apex-validations
-    # replicator:sync-vehicle-events
-
-    stops:nginx
-    stops:api
-    stops:frontend
-    stops:organizer
-
-    tracker:cap-fetch
-    tracker:ccfl-fetch
-    tracker:clickhouse-stream
-    tracker:clickhouse-sync
-    tracker:cm-stream-core
-    tracker:cm-stream-log
-    tracker:cm-sync-core
-    tracker:cm-sync-log
-    tracker:ttsl-fetch
-
-# # #
+concurrency:
+  group: build-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
 
-  check-pr:
-    name: Check for Open PR
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
-    outputs:
-      has-open-pr: ${{ steps.check.outputs.has-open-pr }}
-    steps:
-      - name: Check if branch has open PR
-        id: check
-        uses: actions/github-script@v8
-        with:
-          script: |
-            if (context.eventName !== 'push') {
-              core.setOutput('has-open-pr', 'false');
-              return;
-            }
+  # # #
+  # Auto-discover modules and module->apps mapping from filesystem
 
-            const branch = context.ref.replace('refs/heads/', '');
-            const { data: pulls } = await github.rest.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head: `${context.repo.owner}:${branch}`,
-              state: 'open'
-            });
-            const hasOpenPR = pulls.length > 0;
-            core.setOutput('has-open-pr', hasOpenPR);
-            if (hasOpenPR) {
-              core.info(`Branch ${branch} has ${pulls.length} open PR(s), skipping push event`);
-            }
-
-  discover-modules:
+  discover:
     name: Discover Modules
-    needs: check-pr
-    if: |
-      github.event_name != 'push' ||
-      needs.check-pr.outputs.has-open-pr == 'false'
-    runs-on: ubuntu-latest
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-24.04-arm
     outputs:
       modules: ${{ steps.discover.outputs.modules }}
       modules-apps: ${{ steps.discover.outputs.modules-apps }}
     steps:
-      # # #
-      - name: Checkout repository
-        uses: actions/checkout@v5
-      # # #
-      - name: Discover modules and apps
-        id: discover
-        uses: ./.github/actions/discover-modules
+      - uses: actions/checkout@v5
         with:
-          modules-apps: ${{ env.MODULES_APPS }}
-          selected-module: ${{ github.event_name == 'workflow_dispatch' && inputs.module || 'all' }}
-          build-all: ${{ github.event_name == 'workflow_dispatch' && inputs.build_all || false }}
+          sparse-checkout: modules
+      - id: discover
+        run: |
+          MODULES_APPS=$(
+            find modules/*/apps/* -maxdepth 0 -type d | sort | \
+            jq -Rsc '
+              split("\n")
+              | map(select(length > 0))
+              | map(split("/"))
+              | map({module: .[1], app: .[3]})
+              | group_by(.module)
+              | map({key: .[0].module, value: (map(.app))})
+              | from_entries
+            '
+          )
 
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
+          MODULES=$(echo "$MODULES_APPS" | jq -c 'keys')
 
-  generate-package-lock:
+          echo "modules=$MODULES" >> $GITHUB_OUTPUT
+          echo "modules-apps=$MODULES_APPS" >> $GITHUB_OUTPUT
+          echo "$MODULES_APPS" | jq .
+
+  # # #
+  # Generate package-lock.json once,
+  # shared across all builds.
+
+  package-lock:
     name: Generate package-lock.json
-    needs: discover-modules
-    if: needs.discover-modules.outputs.modules != '[]'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
+    needs: discover
+    if: needs.discover.outputs.modules != '[]'
+    runs-on: ubuntu-24.04-arm
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v6
         with:
           node-version: '24'
+          package-manager-cache: false
 
-      - name: Install dependencies
-        run: npm install --package-lock-only
+      - run: npm install --package-lock-only
 
-      - name: Save package-lock.json as artifact
-        uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@v7
         with:
-          name: package-lock.json
+          name: package-lock
           path: package-lock.json
           retention-days: 1
 
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
+  # # #
+  # If the current workflow is triggered by a pull request,
+  # eagerly notify the go-infra repo to generate a preview environment,
+  # even if some of the builds fail. This allows faster feedback for PR authors.
+
+  notify-infra:
+    name: Notify Infrastructure
+    needs: [package-lock]
+    if: |
+      always() &&
+      github.event_name == 'pull_request' &&
+      (github.event.action == 'closed' || needs.package-lock.result == 'success')
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.INFRA_REPO_TOKEN }}
+          repository: tmlmobilidade/go-infra
+          event-type: preview-pr
+          client-payload: >-
+            {
+              "pr_number": ${{ github.event.pull_request.number }},
+              "pr_action": "${{ github.event.action }}"
+            }
+
+  # # #
+  # Build and push Docker images for each module
 
   build-module:
     name: Build ${{ matrix.module }}
-    needs: [discover-modules, generate-package-lock]
-    if: needs.discover-modules.outputs.modules != '[]'
+    needs: [discover, package-lock]
+    if: needs.discover.outputs.modules != '[]'
     uses: ./.github/workflows/_build-module-apps.yml
     strategy:
       fail-fast: false
       matrix:
-        module: ${{ fromJson(needs.discover-modules.outputs.modules) }}
+        module: ${{ fromJson(needs.discover.outputs.modules) }}
     with:
       module: ${{ matrix.module }}
-      modules-apps: ${{ needs.discover-modules.outputs.modules-apps }}
-      ref-name: ${{ github.ref_name }}
+      modules-apps: ${{ needs.discover.outputs.modules-apps }}
+      image-tag: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
+      environment: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
     secrets: inherit
-
-
-

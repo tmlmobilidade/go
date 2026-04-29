@@ -113,8 +113,7 @@ export function DeleteButton(props: DeleteButtonProps) {
 				onConfirm: props.onDelete,
 				title: <Label caps>{props.confirmTitle}</Label>,
 			});
-		}
-		else {
+		} else {
 			props.onDelete();
 		}
 	};

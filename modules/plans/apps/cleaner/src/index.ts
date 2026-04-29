@@ -11,4 +11,6 @@ async function main() {
 	await ensureGtfsFiles();
 }
 
-runOnInterval(main, 300_000); // 5 minutes in milliseconds
+/* * */
+
+await runOnInterval(main, { intervalMs: '5m' });

@@ -9,14 +9,10 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
-const RUN_INTERVAL = 300_000; // 5 minutes in milliseconds
-
-/* * */
-
 async function main() {
 	// Only run in production environment
-	if (process.env.ENVIRONMENT !== 'production') {
-		Logger.info('Cleaner is disabled in non-production environments');
+	if (process.env.ENVIRONMENT !== 'prd') {
+		Logger.info('Cleaner is disabled in non-prd environments');
 		return;
 	}
 
@@ -31,4 +27,6 @@ async function main() {
 	Logger.terminate(`Cleanup completed in ${globalTimer.get()}`);
 }
 
-runOnInterval(main, RUN_INTERVAL);
+/* * */
+
+await runOnInterval(main, { intervalMs: '5m' });

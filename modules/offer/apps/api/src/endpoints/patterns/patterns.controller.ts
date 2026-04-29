@@ -2,9 +2,10 @@
 
 import { generateComments } from '@/utils/comments.js';
 import { mergePatternWithEventRules } from '@/utils/rules.js';
+import { createImportedStopResolver } from '@/utils/stops.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { patterns, stops } from '@tmlmobilidade/interfaces';
+import { lines, patterns, stops } from '@tmlmobilidade/interfaces';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { CreatePatternDto, NoteComment, type Pattern, PermissionCatalog, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 
@@ -208,6 +209,19 @@ export class PatternsController {
 		}
 
 		//
+		// Get agencyId and Create stops cache
+
+		const lineData = await lines.findById(patternData.line_id);
+
+		if (!lineData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found for pattern');
+		}
+
+		const agencyId = lineData.agency_id;
+
+		const resolveImportedStop = createImportedStopResolver(agencyId);
+
+		//
 		// Convert GTFS shape points to GeoJSON
 
 		const sortedShapePoints = request.body.shape.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence);
@@ -222,8 +236,8 @@ export class PatternsController {
 		let prevDistance = 0;
 
 		for (const [pathIndex, pathItem] of sortedPath.entries()) {
-			// Find the associated stop by legacy_id
-			const associatedStop = await stops.findOne({ legacy_id: pathItem.stop_id.trim() });
+			// Find the associated stop
+			const associatedStop = await resolveImportedStop(pathItem.stop_id);
 
 			if (!associatedStop) {
 				throw new HttpException(HTTP_STATUS.BAD_REQUEST, `The stop "${pathItem.stop_id}" does not exist`);

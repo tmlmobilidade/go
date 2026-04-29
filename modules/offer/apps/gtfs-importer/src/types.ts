@@ -1,6 +1,6 @@
 /* * */
 
-import { IsoWeekday } from '@tmlmobilidade/types';
+import { IsoWeekday, Month } from '@tmlmobilidade/types';
 
 export interface ImportOptions {
 	gtfsPath: string
@@ -17,6 +17,9 @@ export interface ImportSummary {
 
 export interface CalendarRule {
 	description?: string
-	weekdays: IsoWeekday[]
-	year_period_ids: string[]
+	event_id?: string
+	isExclude?: boolean
+	months?: Month[]
+	weekdays?: IsoWeekday[]
+	year_period_ids?: string[]
 }

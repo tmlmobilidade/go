@@ -5,12 +5,12 @@ import { preparePositionalQueryParams } from '@/utils/clickhouse/prepare-positio
 import { queryFromFile } from '@/utils/clickhouse/query-from-file.js';
 import { queryFromString } from '@/utils/clickhouse/query-from-string.js';
 import { validateSqlParam } from '@/utils/clickhouse/validate-sql-param.js';
-import { type ClickHouseClient, type DataFormat } from '@clickhouse/client';
+import { type ClickHouseClient, ClickHouseError, type DataFormat } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
-export abstract class ClickHouseInterfaceTemplate<T> {
+export abstract class ClickHouseInterfaceTemplate<T extends object> {
 	//
 
 	protected readonly abstract databaseName: string;
@@ -229,8 +229,29 @@ export abstract class ClickHouseInterfaceTemplate<T> {
 			await this.client.command({ query: createTableQuery });
 			Logger.info(`CLICKHOUSE [${this.tableName}]: Table created.`);
 		} catch (error) {
-			Logger.error(`CLICKHOUSE [${this.tableName}]: Error @ createTable(): ${(error as Error).message}`);
-			throw error;
+			// If the error is not an ACCESS_DENIED, throw it right away
+			if (!(error instanceof ClickHouseError) || error.code !== '497') {
+				Logger.error(`CLICKHOUSE [${this.tableName}]: Error @ createTable(): ${(error as Error).message}`);
+				throw error;
+			}
+
+			// If the error is an ACCESS_DENIED, check if the table exists
+			try {
+				const resultSet = await this.client.query({
+					format: 'JSONEachRow',
+					query: `SHOW TABLES FROM "${this.databaseName}" LIKE '${this.tableName}'`,
+				});
+				const tables = await resultSet.json();
+				if (Array.isArray(tables) && tables.length > 0) return;
+
+				Logger.error(`CLICKHOUSE [${this.tableName}]: ACCESS_DENIED and table does not exist. ${error.message}`);
+				throw error;
+			} catch (verifyError) {
+				//
+
+				Logger.error(`CLICKHOUSE [${this.tableName}]: Failed to verify table existence after ACCESS_DENIED: ${(verifyError as Error).message}`);
+				throw verifyError;
+			}
 		}
 	}
 

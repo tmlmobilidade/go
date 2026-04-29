@@ -3,8 +3,9 @@
 /* * */
 
 import { IconChevronRight } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PatternSimplified } from '@tmlmobilidade/types';
-import { Text } from '@tmlmobilidade/ui';
+import { keepUrlParams, Text } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 import styles from './styles.module.css';
@@ -23,7 +24,7 @@ export default function RouteDetailPattern({ patternData }: { patternData: Patte
 	// C. Handle actions
 
 	const handleClick = () => {
-		router.push(`/lines/${patternData.line_id}/${patternData.route_id}/${patternData._id}`);
+		router.push(keepUrlParams(PAGE_ROUTES.offer.PATTERN_DETAIL(patternData.line_id, patternData._id, patternData.route_id)));
 	};
 
 	//

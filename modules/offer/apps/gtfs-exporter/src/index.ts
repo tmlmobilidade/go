@@ -16,10 +16,6 @@ export * from '@/utils.js';
 
 /* * */
 
-const RUN_INTERVAL = 10_000; // 10 seconds
-
-/* * */
-
 function buildExportConfig(workdir: string, properties: GtfsExportProperties['properties']): GtfsV29ExportConfig {
 	return {
 		agency_ids: properties.agency_ids,
@@ -36,7 +32,7 @@ function buildExportConfig(workdir: string, properties: GtfsExportProperties['pr
 		version: new Date().toISOString().replace(/[-:T]/g, '').slice(0, 13),
 		workdir,
 		writers: {
-			afetacao: new CsvWriter('afetacao.txt', `${workdir}/afetacao.txt`),
+			afetacao: new CsvWriter('afetacao.csv', `${workdir}/afetacao.csv`),
 			agency: new CsvWriter('agency.txt', `${workdir}/agency.txt`),
 			calendar_dates: new CsvWriter('calendar_dates.txt', `${workdir}/calendar_dates.txt`),
 			fare_attributes: new CsvWriter('fare_attributes.txt', `${workdir}/fare_attributes.txt`),
@@ -81,7 +77,7 @@ async function processExport(fileExport: FileExport) {
 		const zip = new AdmZip();
 		const workdirContents = fs.readdirSync(workdir, { withFileTypes: true });
 		for (const entry of workdirContents) {
-			if (entry.isFile() && entry.name.endsWith('.txt')) {
+			if (entry.isFile() && (entry.name.endsWith('.txt') || entry.name.endsWith('.csv'))) {
 				zip.addLocalFile(`${workdir}/${entry.name}`);
 			}
 		}
@@ -135,4 +131,4 @@ async function main() {
 
 /* * */
 
-runOnInterval(main, RUN_INTERVAL);
+await runOnInterval(main, { intervalMs: '10s' });

@@ -3,11 +3,11 @@
  * This type is used to define the environments in which the application can run.
  * It has a companion function `getCurrentEnvironment` that retrieves the current
  * environment based on the set environment variable.
- * - `production` is reserved for live production environments.
- * - `staging` is used for pre-production testing environments.
- * - `development` is used for local development environments. It uses staging variables.
+ * - `prd` is reserved for the live production environment.
+ * - `stg` is used for pre-production testing environments.
+ * - `dev` is used for local development environments. It uses staging variables.
  */
-export type Environment = 'development' | 'production' | 'staging';
+export type Environment = 'dev' | 'prd' | 'stg';
 
 /**
  * Get the current environment from server-side `ENVIRONMENT`
@@ -20,5 +20,5 @@ export function getCurrentEnvironment(): Environment {
 	// Fallback to client-side environment variable
 	if (process.env.NEXT_PUBLIC_ENVIRONMENT) return process.env.NEXT_PUBLIC_ENVIRONMENT as Environment;
 	// Fallback to development
-	return 'development' as Environment;
+	return 'dev' as Environment;
 }

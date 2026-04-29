@@ -2,7 +2,7 @@
 
 /* * */
 
-import { API_ROUTES, getAppConfig, HttpException } from '@tmlmobilidade/consts';
+import { API_ROUTES, getModuleConfig, HttpException } from '@tmlmobilidade/consts';
 import { Notification as TmlNotification } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
@@ -139,24 +139,24 @@ export const NotificationsContextProvider = ({ children }: PropsWithChildren) =>
 		);
 
 		try {
-			await fetchData(`${getAppConfig('auth', 'api_url')}/notifications/${id}`, 'DELETE');
+			await fetchData(`${getModuleConfig('auth', 'api_url')}/notifications/${id}`, 'DELETE');
 
 			// Revalidate after successful delete to ensure consistency
-			mutate(`${getAppConfig('auth', 'api_url')}/notifications`);
+			mutate(`${getModuleConfig('auth', 'api_url')}/notifications`);
 		} catch (error) {
 			// Rollback if something goes wrong
-			mutate(`${getAppConfig('auth', 'api_url')}/notifications`);
+			mutate(`${getModuleConfig('auth', 'api_url')}/notifications`);
 			console.error('Failed to delete notification:', error);
 		}
 	};
 
 	const markAsRead = async (notification: TmlNotification) => {
 		if (notification.payload.href) {
-			fetchData(`${getAppConfig('auth', 'api_url')}/notifications/${notification._id}/mark-as-read`);
+			fetchData(`${getModuleConfig('auth', 'api_url')}/notifications/${notification._id}/mark-as-read`);
 			window.location.href = notification.payload.href;
 		} else {
-			await fetchData(`${getAppConfig('auth', 'api_url')}/notifications/${notification._id}/mark-as-read`);
-			mutate(`${getAppConfig('auth', 'api_url')}/notifications`);
+			await fetchData(`${getModuleConfig('auth', 'api_url')}/notifications/${notification._id}/mark-as-read`);
+			mutate(`${getModuleConfig('auth', 'api_url')}/notifications`);
 		}
 	};
 

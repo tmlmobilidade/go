@@ -40,7 +40,7 @@ export function StopDetailsSectionShelter() {
 					<ProposedChangesWrapper
 						inputName="has_shelter"
 						label="Existe Abrigo?"
-						relatedId={stopDetailContext.data.stop?._id}
+						relatedId={String(stopDetailContext.data.stop?._id)}
 						scope={scopeOption}
 					>
 						<Select

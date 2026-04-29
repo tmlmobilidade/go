@@ -1,11 +1,11 @@
 /* * */
 
-import { getAppConfig } from '@tmlmobilidade/consts';
+import pjson from '#/package.json';
+import { getModuleConfig } from '@tmlmobilidade/consts';
 import { AppProvider, BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
-import pjson from 'package.json';
 import { type PropsWithChildren } from 'react';
 
 /* * */
@@ -27,8 +27,8 @@ export default async function Layout({ children }: PropsWithChildren) {
 	const sessionToken = cookies.get('session_token')?.value;
 
 	if (!sessionToken) {
-		const authUrl = getAppConfig('auth', 'frontend_url');
-		const appUrl = getAppConfig('plans', 'frontend_url');
+		const authUrl = getModuleConfig('auth', 'frontend_url');
+		const appUrl = getModuleConfig('plans', 'frontend_url');
 		redirect(`${authUrl}/login?redirect=${encodeURI(appUrl)}`, RedirectType.replace);
 	}
 

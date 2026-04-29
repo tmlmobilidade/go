@@ -95,10 +95,10 @@ export function computeSegmentTravelTimes(mergedPath: MergedPathItem[]): Segment
 }
 
 export function getMergedPath(basePath: Path[], newPath: StopsParameter['path']): MergedPathItem[] {
-	const editedByStopId = new Map<string, StopsParameter['path'][number]>(
+	const editedByStopId = new Map<number, StopsParameter['path'][number]>(
 		(newPath || [])
 			.filter(p => p?.stop_id)
-			.map(p => [p.stop_id as string, p]),
+			.map(p => [p.stop_id, p]),
 	);
 
 	return basePath.map((baseItem) => {

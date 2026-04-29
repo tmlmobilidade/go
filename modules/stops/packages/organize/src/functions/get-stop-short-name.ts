@@ -1,6 +1,6 @@
 /* * */
 
-import { StopNameAbbreviationRules } from '@tmlmobilidade/types';
+import { StopNameAbbreviationRules, StopSchema } from '@tmlmobilidade/types';
 
 /**
  * Sets the short name for a stop based on its regular name.
@@ -33,7 +33,9 @@ export function getStopShortName(name: string): string {
 		});
 	}
 
-	return shortenedName.trim();
+	return shortenedName
+		.trim()
+		.slice(0, StopSchema.shape.short_name.maxLength ?? 55);
 
 	//
 }

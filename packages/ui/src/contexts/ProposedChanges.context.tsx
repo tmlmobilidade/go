@@ -2,7 +2,7 @@
 'use client';
 
 import { Line } from '@carrismetropolitana/api-types/network';
-import { getAppConfig, HttpException } from '@tmlmobilidade/consts';
+import { getModuleConfig, HttpException } from '@tmlmobilidade/consts';
 import { CreateProposedChangeDto, ProposedChange, Stop, StopFacility, StopFacilitySchema } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
@@ -61,7 +61,7 @@ export function ProposedChangesContextProvider<S extends ScopeKey>({ children, r
 
 	const entityEndpoints: Record<ScopeKey, string> = { line: 'lines', stop: 'stops' };
 	const [relatedProposedChanges, setRelatedProposedChanges] = useState<ProposedChange<Entity>[]>([]);
-	const { data: proposedChangesData, error: proposedChangesError, isLoading: proposedChangesLoading } = useSWR<ProposedChange<Entity>[], HttpException>(`${getAppConfig('auth', 'api_url')}/proposed-changes?scope=${scope}`, { refreshInterval: 2000 });
+	const { data: proposedChangesData, error: proposedChangesError, isLoading: proposedChangesLoading } = useSWR<ProposedChange<Entity>[], HttpException>(`${getModuleConfig('auth', 'api_url')}/proposed-changes?scope=${scope}`, { refreshInterval: 2000 });
 
 	//
 	// B. Transform data
@@ -78,13 +78,13 @@ export function ProposedChangesContextProvider<S extends ScopeKey>({ children, r
 	const approve = async <S extends ScopeKey>(id: string, field: keyof ScopeEntityMap[S] | string, relatedId: string, value: unknown) => {
 		const { key, prevData } = getProposedChangesKeyAndData();
 		try {
-			const entityResponse = await fetchData(`${getAppConfig(entityEndpoints[scope], 'api_url')}/${entityEndpoints[scope]}/${relatedId}`, 'GET');
+			const entityResponse = await fetchData(`${getModuleConfig(entityEndpoints[scope], 'api_url')}/${entityEndpoints[scope]}/${relatedId}`, 'GET');
 			const entity = entityResponse.data as ScopeEntityMap[S];
 			const updateBody = getUpdateBodyForScope(entity, field as string, value, scope);
 			const updated = prevData.map(change => change?._id === id ? { ...change, status: 'approved' } : change);
 			await mutate(key, updated, false);
-			await fetchData(`${getAppConfig(entityEndpoints[scope], 'api_url')}/${entityEndpoints[scope]}/${relatedId}`, 'PUT', updateBody);
-			await fetchData(`${getAppConfig('auth', 'api_url')}/proposed-changes/${id}`, 'PUT', { status: 'approved' });
+			await fetchData(`${getModuleConfig(entityEndpoints[scope], 'api_url')}/${entityEndpoints[scope]}/${relatedId}`, 'PUT', updateBody);
+			await fetchData(`${getModuleConfig('auth', 'api_url')}/proposed-changes/${id}`, 'PUT', { status: 'approved' });
 			useToast.success({ message: 'Proposta aprovada com sucesso', title: 'Sucesso' });
 			await mutate(key);
 		}
@@ -92,7 +92,7 @@ export function ProposedChangesContextProvider<S extends ScopeKey>({ children, r
 			console.error('Error approving proposed change:', error);
 			useToast.error({ message: 'Erro ao aprovar proposta', title: 'Erro' });
 			await mutate(key);
-			await fetchData(`${getAppConfig('auth', 'api_url')}/proposed-changes/${id}`, 'PUT', { status: 'pending' });
+			await fetchData(`${getModuleConfig('auth', 'api_url')}/proposed-changes/${id}`, 'PUT', { status: 'pending' });
 		}
 	};
 
@@ -101,7 +101,7 @@ export function ProposedChangesContextProvider<S extends ScopeKey>({ children, r
 		const updated = prevData.map(change => change?._id === id ? { ...change, status: 'rejected' } : change);
 		try {
 			await mutate(key, updated, false);
-			await fetchData(`${getAppConfig('auth', 'api_url')}/proposed-changes/${id}`, 'PUT', { status: 'rejected' });
+			await fetchData(`${getModuleConfig('auth', 'api_url')}/proposed-changes/${id}`, 'PUT', { status: 'rejected' });
 			useToast.success({ message: 'Proposta rejeitada com sucesso', title: 'Sucesso' });
 			await mutate(key);
 		}
@@ -117,7 +117,7 @@ export function ProposedChangesContextProvider<S extends ScopeKey>({ children, r
 		try {
 			const optimistic = [...prevData, { ...data, status: 'pending' }];
 			await mutate(key, optimistic, false);
-			await fetchData(`${getAppConfig('auth', 'api_url')}/proposed-changes`, 'POST', data);
+			await fetchData(`${getModuleConfig('auth', 'api_url')}/proposed-changes`, 'POST', data);
 			useToast.success({ message: 'Proposta submetida com sucesso', title: 'Sucesso' });
 			await mutate(key);
 		}
@@ -129,7 +129,7 @@ export function ProposedChangesContextProvider<S extends ScopeKey>({ children, r
 	};
 
 	const getProposedChangesKeyAndData = () => {
-		const key = `${getAppConfig('auth', 'api_url')}/proposed-changes?scope=${scope}`;
+		const key = `${getModuleConfig('auth', 'api_url')}/proposed-changes?scope=${scope}`;
 		const prevData = proposedChangesData ?? [];
 		return { key, prevData };
 	};
