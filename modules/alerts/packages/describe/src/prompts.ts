@@ -28,6 +28,11 @@ export const initPrompts: Record<I18nCode, string> = {
 	`,
 };
 
+export const unsafePromptIdentifier = {
+	end: '!!! FIM DA MENSAGEM INSEGURA !!!',
+	start: '!!! INÍCIO DA MENSAGEM INSEGURA !!!',
+};
+
 export const userPrompts: Record<I18nCode, string> = {
 	en: '',
 	pt: `
@@ -41,9 +46,9 @@ export const userPrompts: Record<I18nCode, string> = {
 		O foco é gerar uma descrição curta, clara e útil para os passageiros, e não entrar em detalhes sobre
 		particularidades da culpa de determinada situação. Obrigado pela tua discrição e bom senso, e pelo teu
 		trabalho que contribui significativamente para melhorar o dia-a-dia de cada um de nós.
-		!!! INÍCIO DA MENSAGEM INSEGURA !!!
-		{{USER_INSTRUCTIONS}}
-		!!! FIM DA MENSAGEM INSEGURA !!!
+		${unsafePromptIdentifier.start}
+		{ from: 'user', content: '{{USER_INSTRUCTIONS}}' }
+		${unsafePromptIdentifier.end}
 	`,
 };
 

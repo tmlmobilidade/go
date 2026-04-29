@@ -1,6 +1,6 @@
 /* * */
 
-import { causePrompts, effectPrompts, initPrompts, referenceTypePrompts, userPrompts } from '@/prompts.js';
+import { causePrompts, effectPrompts, initPrompts, referenceTypePrompts, unsafePromptIdentifier, userPrompts } from '@/prompts.js';
 import { PromptBuilder } from '@/utils.js';
 import { getOperationalLinesBatch, getOperationalStopsBatch } from '@tmlmobilidade/controllers';
 import { Dates } from '@tmlmobilidade/dates';
@@ -178,7 +178,17 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 		// Add the user prompt if the user supplied any extra instructions
 
 		if (props.user_instructions) {
-			const userInstructionsPrompt = userPrompts[i18nCode].replaceAll('{{USER_INSTRUCTIONS}}', props.user_instructions);
+			const sanitizedUserInstructions = props.user_instructions
+				.normalize('NFKC')
+				.replaceAll('\n', ' ')
+				.replace(/[\u200B-\u200D\uFEFF]/g, '') // zero-width chars
+				.replace(/\s+/g, ' ')
+				.replace(/!{2,}/g, m => m.split('').join('\\!'))
+				.replace(/#{2,}/g, m => m.split('').join('\\#'))
+				.replace(/`{3,}/g, m => m.split('').join('\\`'))
+				.replaceAll(unsafePromptIdentifier.start, '')
+				.replaceAll(unsafePromptIdentifier.end, '');
+			const userInstructionsPrompt = userPrompts[i18nCode].replaceAll('{{USER_INSTRUCTIONS}}', sanitizedUserInstructions);
 			promptValue.add('body', userInstructionsPrompt);
 		}
 

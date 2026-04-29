@@ -49,8 +49,6 @@ export function AlertDetailSectionTexts() {
 			<Section gap="md">
 				<Grid gap="md">
 
-					<AlertDetailSectionTextsAi />
-
 					<TextInput
 						key={alertDetailContext.data.form.key('title')}
 						description="É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc."
@@ -72,6 +70,8 @@ export function AlertDetailSectionTexts() {
 						withAsterisk
 						{...alertDetailContext.data.form.getInputProps('description')}
 					/>
+
+					<AlertDetailSectionTextsAi />
 
 					<CoordinatesInput
 						key={alertDetailContext.data.form.key('coordinates')}
