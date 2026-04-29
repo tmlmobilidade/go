@@ -58,10 +58,11 @@ export class PromptBuilder {
 	 * and concatenating the intro and body parts.
 	 * @returns The compressed prompt string.
 	 */
-	compress() {
+	getCompressed() {
 		return `${this.intro} ${this.body}`
 			.replaceAll('  ', ' ')
 			.replaceAll('\n', '')
+			.replaceAll('\t', '')
 			.trim();
 	}
 

@@ -72,10 +72,10 @@ export const referenceTypePrompts: Record<AlertReferenceType, Record<I18nCode, s
 			a pena referir horas, pois a informação pode não ser relevante para os passageiros).
 
 			Exemplo de uma descrição:
-			"Devido a {CAUSA; obras, acidente, atualização de rede, etc.}, a(s) linha(s) {LINE_SHORT_NAME}
+			Devido a {CAUSA; obras, acidente, atualização de rede, etc.}, a(s) linha(s) {LINE_SHORT_NAME}
 			{LINE_LONG_NAME} está(ão) a {EFEITO; ser verficados atrasos, têm o seu percurso desviado, etc.}
 			durante {DURAÇÃO; o período da manhã de 1 de Abril, etc.}. Lamentamos o incómodo e agradecemos
-			a sua compreensão."
+			a sua compreensão.
 		`,
 	},
 	rides: {
@@ -90,10 +90,10 @@ export const referenceTypePrompts: Record<AlertReferenceType, Record<I18nCode, s
 			curta e fácil de ler.
 
 			Exemplo de uma descrição:
-			"Devido a {CAUSA}, verificam-se {EFEITO} nas viagens das {HH}:{MM}, {HH}:{MM} e {HH}:{MM}
+			Devido a {CAUSA}, verificam-se {EFEITO} nas viagens das {HH}:{MM}, {HH}:{MM} e {HH}:{MM}
 			da linha {LINE_SHORT_NAME} com destino a {DESTINO} e viagem das {HH}:{MM} da linha {LINE_SHORT_NAME}
 			com destino a {DESTINO}. As viagens não foram canceladas e deverão realizar-se assim que o problema
-			seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão."
+			seja resolvido. Lamentamos o incómodo e agradecemos a sua compreensão.
 		`,
 	},
 	stops: {
@@ -108,10 +108,10 @@ export const referenceTypePrompts: Record<AlertReferenceType, Record<I18nCode, s
 			talvez não valha a pena referir horas, pois a informação pode não ser relevante para os passageiros).
 
 			Exemplo de uma descrição:
-			"Entre as {HH}:{MM} e as {HH}:{MM} do dia {DATE}, {EFEITO; haverá corte de trânsito, desvio de percurso, etc.}
+			Entre as {HH}:{MM} e as {HH}:{MM} do dia {DATE}, {EFEITO; haverá corte de trânsito, desvio de percurso, etc.}
 			na {STOP_NAME}, no {MUNICÍPIO}, devido a {EFEITO; devido a obras, trabalhos na via, etc.}. Deste modo, as linhas
 			{LINE_SHORT_NAME}, {LINE_SHORT_NAME} e {LINE_SHORT_NAME} não servirão esta paragem. Lamentamos o incómodo
-			e agradecemos a sua compreensão."
+			e agradecemos a sua compreensão.
 		`,
 	},
 };

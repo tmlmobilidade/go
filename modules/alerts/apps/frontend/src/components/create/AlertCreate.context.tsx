@@ -5,12 +5,30 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { Agency, type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, I18nCode, PermissionCatalog, UnixTimestamp } from '@tmlmobilidade/types';
 import { type CreateContextStateTemplate, keepUrlParams, useDataAgencies, useDataOperationalLines, useDataOperationalStops, useDataRides, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm, useTypicalFormWatch } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef } from 'react';
 import useSWR from 'swr';
+
+/* * */
+
+interface DescribeAlertProps {
+	active_period_end_date: UnixTimestamp
+	active_period_start_date: UnixTimestamp
+	agency_id: Agency['_id']
+	cause: Alert['cause']
+	effect: Alert['effect']
+	reference_type: Alert['reference_type']
+	references: Alert['references']
+	user_instructions?: string
+}
+
+type DescribeAlertReturnType = Record<I18nCode, {
+	description: string
+	title: string
+}>;
 
 /* * */
 
@@ -253,6 +271,36 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		formRef.current.setFieldValue('reference_type', null);
 		formRef.current.setFieldValue('references', []);
 	}, [formRef, watchedFormValues.effect]);
+
+	const hasRun = useRef(false);
+
+	useEffect(() => {
+		(async () => {
+			// if (hasRun.current) return;
+			// hasRun.current = true;
+			// Skip if auto texts is not enabled
+			if (!watchedFormValues.auto_texts) return;
+			// Skip if required fields for templating are not filled
+			if (!watchedFormValues.cause) return;
+			if (!watchedFormValues.effect) return;
+			if (!watchedFormValues.reference_type) return;
+			if (!watchedFormValues.references?.length) return;
+			// Generate alert templating and set title and description based on i
+			const data: DescribeAlertProps = {
+				active_period_end_date: watchedFormValues.active_period_end_date,
+				active_period_start_date: watchedFormValues.active_period_start_date,
+				agency_id: watchedFormValues.agency_id,
+				cause: watchedFormValues.cause,
+				effect: watchedFormValues.effect,
+				reference_type: watchedFormValues.reference_type,
+				references: watchedFormValues.references,
+				user_instructions: '',
+			};
+			const result = await fetchData<DescribeAlertReturnType>(API_ROUTES.alerts.ALERTS_DESCRIBE, 'POST', data);
+			formRef.current.setFieldValue('description', result.data.pt.description);
+			formRef.current.setFieldValue('title', result.data.pt.title);
+		})();
+	}, [formRef, watchedFormValues.active_period_end_date, watchedFormValues.active_period_start_date, watchedFormValues.agency_id, watchedFormValues.auto_texts, watchedFormValues.cause, watchedFormValues.effect, watchedFormValues.reference_type, watchedFormValues.references]);
 
 	// useEffect(() => {
 	// 	// Skip if auto texts is not enabled

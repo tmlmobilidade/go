@@ -3,7 +3,7 @@
 import { getOperationalStopsBatch } from '@/operation/stops/batch.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type ActionsOf, type GetOperationalStopsBatchQuery, type OperationalStop, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
+import { type ActionsOf, type GetOperationalStopsBatchQuery, GetOperationalStopsBatchQuerySchema, type OperationalStop, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -17,6 +17,8 @@ export class OperationalStopsSharedController {
 	 */
 	static async getBatch<S extends Permission['scope']>(request: FastifyRequest<{ Querystring: GetOperationalStopsBatchQuery }>, reply: FastifyReply<OperationalStop[]>, scope: S, action: ActionsOf<S>) {
 		//
+
+		const parsedQuery = GetOperationalStopsBatchQuerySchema.parse(request.query);
 
 		//
 		// Detect which agency_ids the user has access to,
@@ -32,8 +34,8 @@ export class OperationalStopsSharedController {
 		// Run the query
 
 		const result = await getOperationalStopsBatch({
-			...request.query,
-			agency_ids: request.query.agency_ids?.filter(id => allowAllAgencies || ridesPermission['resources'].agency_ids.includes(id)) ?? [],
+			...parsedQuery,
+			agency_ids: parsedQuery.agency_ids?.filter(id => allowAllAgencies || ridesPermission['resources'].agency_ids.includes(id)) ?? [],
 		});
 
 		//

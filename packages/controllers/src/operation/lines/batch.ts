@@ -2,7 +2,7 @@
 
 import { type AggregationPipeline, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GetOperationalLinesBatchQuery, GetOperationalLinesBatchQuerySchema, type HashedTrip, type OperationalDate, type OperationalLine } from '@tmlmobilidade/types';
+import { type GetOperationalLinesBatchQuery, type HashedTrip, type OperationalDate, type OperationalLine } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -19,11 +19,6 @@ export async function getOperationalLinesBatch(query: GetOperationalLinesBatchQu
 	//
 
 	//
-	// Validate the request query parameters
-
-	const parsedQuery = GetOperationalLinesBatchQuerySchema.parse(query);
-
-	//
 	// Use Rides as the baseline to fetch distinct hashed_trip_ids matching the query parameters.
 	// Rides are the glue between the different entities (Patterns, Lines, Stops, etc...) that compose an Operation,
 	// Stream the rides to build the Operation Lines batch on the fly, avoiding loading everything in memory at once.
@@ -31,8 +26,8 @@ export async function getOperationalLinesBatch(query: GetOperationalLinesBatchQu
 	const pipeline: AggregationPipeline<PipelineResult> = [
 		{
 			$match: {
-				agency_id: { $in: parsedQuery.agency_ids ?? [] },
-				start_time_scheduled: { $gte: parsedQuery.date_start, $lte: parsedQuery.date_end },
+				agency_id: { $in: query.agency_ids ?? [] },
+				start_time_scheduled: { $gte: query.date_start, $lte: query.date_end },
 			},
 		},
 		{

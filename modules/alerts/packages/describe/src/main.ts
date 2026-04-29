@@ -147,10 +147,12 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 	//
 	// Setup result object
 
-	const finalPrompts: Record<I18nCode, string> = {
-		en: '',
-		pt: '',
+	const result: DescribeAlertReturnType = {
+		en: { description: '', title: '' },
+		pt: { description: '', title: '' },
 	};
+
+	const aiProvider = new OCIGenerativeAIProvider();
 
 	//
 	// Iterate over all languages and build the prompt for each one, using the
@@ -184,32 +186,12 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 		// Save the final prompt for the current language
 		// and reset the intro part for the next language iteration.
 
-		finalPrompts[i18nCode] = promptValue.get();
+		result['pt'].description = await aiProvider.run(promptValue.getCompressed());
 
 		promptValue.reset('intro');
 
 		//
 	}
-
-	//
-	// Setup result object
-
-	const result: DescribeAlertReturnType = {
-		en: { description: '', title: '' },
-		pt: { description: '', title: '' },
-	};
-
-	//
-	// Build the OCI requests and run them in parallel, one for each language,
-	// to generate the descriptions and titles based on the built prompts.
-
-	const aiProvider = new OCIGenerativeAIProvider();
-
-	await Promise.all(
-		I18nCodeValues.map(async (code) => {
-			result[code].description = await aiProvider.run(finalPrompts[code]);
-		}),
-	);
 
 	//
 	// Return the result
