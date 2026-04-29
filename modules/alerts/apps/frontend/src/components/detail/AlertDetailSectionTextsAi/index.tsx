@@ -120,6 +120,7 @@ export function AlertDetailSectionTextsAi() {
 					<>
 						<TextInput
 							key={alertDetailContext.data.form.key('user_instructions')}
+							disabled={isLoadingGeneratingText}
 							label={t('default:alerts.create.summary.user_instructions.label')}
 							placeholder={t('default:alerts.create.summary.user_instructions.placeholder')}
 							readOnly={isLoadingGeneratingText}
