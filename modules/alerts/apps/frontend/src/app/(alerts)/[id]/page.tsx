@@ -1,7 +1,7 @@
 /* * */
 
 import { AlertDetail } from '@/components/detail/AlertDetail';
-import { AlertDetailContextProvider } from '@/components/detail/AlertDetail.context';
+import { AlertDetailContextProvider } from '@/contexts/AlertDetail.context';
 
 /* * */
 

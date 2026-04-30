@@ -62,16 +62,7 @@ export class AlertsController {
 	 * @param reply The reply object.
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Alert[]>) {
-		// Retrieve permissions for the current user
-		const userReadPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.read);
-		// Setup a query filter based on permissions
-		const permissionsQuery = userReadPermissions.resources?.agency_ids?.includes(PermissionCatalog.ALLOW_ALL_FLAG)
-			// If user has access to all agencies, no filter is applied
-			? {}
-			// Otherwise, filter by the allowed agency IDs
-			: { agency_id: { $in: userReadPermissions.resources?.agency_ids ?? [] } };
-		// Retrieve and send all alerts
-		const allAlerts = await alerts.findMany({ ...permissionsQuery }, { sort: { active_period_start_date: -1 } });
+		const allAlerts = await alerts.findMany();
 		// Send the alerts to the client
 		reply.send({ data: allAlerts, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -111,24 +102,8 @@ export class AlertsController {
 	 * @param reply The reply object.
 	 */
 	static async getRssFeed(_request: FastifyRequest, reply: FastifyReply<string>) {
-		const now = Dates.now('Europe/Lisbon').unix_timestamp;
-		const alertsPublicListUrl = 'https://www.carrismetropolitana.pt/alerts';
-		const allAlerts = await alerts.findMany(
-			{
-				$and: [
-					{
-						$or: [
-							{ publish_end_date: { $gte: now } },
-							{ publish_end_date: null },
-							{ publish_end_date: { $exists: false } },
-						],
-					},
-					{ publish_start_date: { $lte: now } },
-					{ publish_status: 'published' },
-				],
-			},
-			{ sort: { publish_start_date: -1 } },
-		);
+		const alertsPublicListUrl = 'https://www.carrismetropolitana.pt/alerts'; // TODO: Replace with alerts public page
+		const allAlerts = await AlertsController.fetchAlerts();
 
 		if (!allAlerts.length) {
 			reply.status(HTTP_STATUS.NOT_FOUND).send('No alerts available.');
@@ -167,7 +142,7 @@ export class AlertsController {
 						url: file.url,
 					});
 				} catch {
-					// DB row exists but object missing in storage — omit image, still emit the item
+					// Ignore errors
 				}
 			}
 
@@ -253,6 +228,26 @@ export class AlertsController {
 		// Update the alert with the new file ID
 		await alerts.updateById(foundAlert._id, { file_id: fileUploadResult._id.toString() });
 		reply.send({ data: fileUploadResult, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	private static async fetchAlerts() {
+		const now = Dates.now('Europe/Lisbon').unix_timestamp;
+		return await alerts.findMany(
+			{
+				$and: [
+					{
+						$or: [
+							{ publish_end_date: { $gte: now } },
+							{ publish_end_date: null },
+							{ publish_end_date: { $exists: false } },
+						],
+					},
+					{ publish_start_date: { $lte: now } },
+					{ publish_status: 'published' },
+				],
+			},
+			{ sort: { publish_start_date: -1 } },
+		);
 	}
 
 	//

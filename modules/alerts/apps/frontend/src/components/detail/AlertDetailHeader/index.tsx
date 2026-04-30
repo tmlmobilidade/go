@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
+import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Button, CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusTag, SaveButton, Spacer, Toolbar, useMeContext } from '@tmlmobilidade/ui';
@@ -41,11 +41,7 @@ export function AlertDetailHeader() {
 				value: alertDetailContext.data.alert.reference_type,
 			},
 		]);
-	}, [
-		meContext.data.user?.permissions,
-		alertDetailContext.data.alert.agency_id,
-		alertDetailContext.data.alert.reference_type,
-	]);
+	}, [meContext.actions, alertDetailContext.data.alert.agency_id, alertDetailContext.data.alert.reference_type]);
 
 	//
 	// B. Handle actions

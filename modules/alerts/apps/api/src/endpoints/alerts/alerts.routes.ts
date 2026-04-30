@@ -18,7 +18,6 @@ server.register(
 
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
 			AlertsController.getAll,
 		);
 
@@ -29,13 +28,11 @@ server.register(
 
 		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
 			AlertsController.getById,
 		);
 
 		instance.get(
 			'/:id/image',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
 			AlertsController.getImage,
 		);
 

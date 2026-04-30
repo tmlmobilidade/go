@@ -22,8 +22,7 @@ server.register(
 
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			(request: FastifyRequest<{ Querystring: GetRidesBatchQuery }>, reply: FastifyReply<RideNormalized[]>) => RidesSharedController.getBatch(request, reply, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read),
+			(request: FastifyRequest<{ Querystring: GetRidesBatchQuery }>, reply: FastifyReply<RideNormalized[]>) => RidesSharedController.getBatch(request, reply),
 		);
 
 		instance.get(
@@ -36,8 +35,7 @@ server.register(
 
 		instance.get(
 			'/:id/ride',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<RideNormalized>) => RidesSharedController.getRideById(request, reply, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read),
+			(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<RideNormalized>) => RidesSharedController.getRideById(request, reply),
 		);
 
 		instance.get(

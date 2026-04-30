@@ -6,7 +6,7 @@ import { MantineProvider } from '@mantine/core';
 import { DatesProvider, type DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
-import { swrFetcher } from '@tmlmobilidade/utils';
+import { swrFetcher, unauthenticatedSwrFetcher } from '@tmlmobilidade/utils';
 import { NuqsAdapter } from 'nuqs/adapters/next';
 import { type PropsWithChildren } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
@@ -17,14 +17,16 @@ import { themeData } from '../../styles/theme';
 
 /* * */
 
-type BaseProviderProps = LocaleContextProps & VersionContextProps;
+type BaseProviderProps = LocaleContextProps & VersionContextProps & {
+	swrFetcherType?: 'authenticated' | 'unauthenticated'
+};
 
 /**
  * This is the application base provider component. The whole application should be
  * wrapped with this component, including non-authenticated parts. Set this on the Root layout,
  * without `<html>` or `<body>` HTML tags.
  */
-export function BaseProvider({ children, i18n, version }: PropsWithChildren<BaseProviderProps>) {
+export function BaseProvider({ children, i18n, swrFetcherType = 'authenticated', version }: PropsWithChildren<BaseProviderProps>) {
 	//
 
 	//
@@ -37,7 +39,7 @@ export function BaseProvider({ children, i18n, version }: PropsWithChildren<Base
 	};
 
 	const swrSettings: SWRConfiguration = {
-		fetcher: swrFetcher,
+		fetcher: swrFetcherType === 'authenticated' ? swrFetcher : unauthenticatedSwrFetcher,
 		refreshInterval: 60_000, // 1 minute
 		refreshWhenHidden: true,
 		revalidateIfStale: true,

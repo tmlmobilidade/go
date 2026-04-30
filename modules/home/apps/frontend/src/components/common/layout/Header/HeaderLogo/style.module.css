@@ -1,0 +1,72 @@
+.headerLogo {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--size-spacing-sm);
+}
+
+.wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--size-spacing-sm);
+}
+
+.statusPulse {
+    position: relative;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.statusRipple {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    margin-left: -4px;
+    margin-top: -4px;
+    border-radius: 50%;
+    border: 2px solid var(--color-primary);
+    opacity: 0;
+    pointer-events: none;
+    animation: headerLogoRipple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.statusRipple:nth-of-type(2) {
+    animation-delay: 1s;
+}
+
+.statusDot {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    margin-left: -4px;
+    margin-top: -4px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    z-index: 1;
+    pointer-events: none;
+}
+
+@keyframes headerLogoRipple {
+    0% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+.headerLogoText {
+    margin: 0;
+    font-size: 20px;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-system-text-100);
+    line-height: 1;
+}

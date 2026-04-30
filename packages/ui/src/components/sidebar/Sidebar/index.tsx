@@ -2,7 +2,7 @@
 
 /* * */
 
-import { IconAlertTriangle, IconBeach, IconBuildings, IconBus, IconBusStop, IconCalendarEvent, IconCalendarStar, IconClock, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBeach, IconBuildings, IconBus, IconBusStop, IconCalendarEvent, IconCalendarStar, IconClock, IconEye, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 import { type JSX } from 'react';
@@ -22,6 +22,13 @@ interface SidebarAppItemConfig {
 }
 
 export const sidebarApps: SidebarAppItemConfig[] = [
+	{
+		_id: 'base',
+		href: PAGE_ROUTES.home.BASE,
+		icon: <IconEye size={26} />,
+		label: 'Base',
+		permissions: [],
+	},
 	{
 		_id: 'home',
 		href: PAGE_ROUTES.auth.HOME_LIST,

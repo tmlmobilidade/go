@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
+import { useAlertDetailContext } from '@/contexts/AlertDetail.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Collapsible, DateTimeInput, Divider, Grid, Label, Section, Text, useMeContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';

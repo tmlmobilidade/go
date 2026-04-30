@@ -1,0 +1,18 @@
+
+/* * */
+/* TITLE */
+
+.title {
+	font-size: 32px;
+	font-weight: 600;
+	line-height: 1.2;
+}
+
+/* * */
+/* DESCRIPTION */
+
+.description {
+	max-width: 700px;
+	font-size: 16px;
+	color: var(--color-system-text-200);
+}

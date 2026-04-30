@@ -1,0 +1,97 @@
+# # #
+
+name: tmlmobilidade-go-base-production
+
+services:
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  watchtower:
+    image: nickfedor/watchtower
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 100mb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_POLL_INTERVAL=10
+      - WATCHTOWER_CLEANUP=TRUE
+      - WATCHTOWER_REMOVE_VOLUMES=TRUE
+      - WATCHTOWER_INCLUDE_RESTARTING=TRUE
+      - WATCHTOWER_INCLUDE_STOPPED=TRUE
+      - WATCHTOWER_REVIVE_STOPPED=TRUE
+      - WATCHTOWER_TIMEOUT=120s
+      - WATCHTOWER_ROLLING_RESTART=TRUE
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  nginx:
+    image: ghcr.io/tmlmobilidade/go-base-nginx:production
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 1gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    ports:
+      - 80:80
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  api:
+    image: ghcr.io/tmlmobilidade/go-base-api:production
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+    volumes:
+      - ./secrets/go-ssh-tunnel-key:/ssh-keys/go-ssh-tunnel-key:ro
+    extra_hosts:
+      - "go-prd-clickhouse-1.tmlmobilidade.pt:10.81.101.141"
+      - "go-prd-clickhouse-2.tmlmobilidade.pt:10.81.101.142"
+      - "go-prd-clickhouse-3.tmlmobilidade.pt:10.81.101.143"
+
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  frontend:
+    image: ghcr.io/tmlmobilidade/go-base-frontend:production
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env

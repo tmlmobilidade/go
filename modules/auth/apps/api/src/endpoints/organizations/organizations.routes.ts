@@ -18,13 +18,11 @@ server.register(
 
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware() },
 			OrganizationsController.getAll,
 		);
 
 		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware() },
 			OrganizationsController.getById,
 		);
 
@@ -58,7 +56,6 @@ server.register(
 
 		instance.get(
 			'/:id/logo',
-			{ preHandler: authorizationMiddleware() },
 			OrganizationsController.getLogo,
 		);
 

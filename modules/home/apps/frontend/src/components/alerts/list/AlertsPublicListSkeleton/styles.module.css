@@ -1,0 +1,42 @@
+/* * */
+/* SKELETON WRAPPER */
+
+.skeletonWrapper {
+	margin-top: var(--size-spacing-xl);
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-md);
+}
+
+/* * */
+/* CARD */
+
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-md);
+	padding: var(--size-spacing-lg);
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-lg);
+}
+
+/* * */
+/* HEADER */
+
+.header {
+	display: flex;
+	gap: var(--size-spacing-md);
+	align-items: flex-start;
+}
+
+/* * */
+/* MAIN */
+
+.main {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	min-width: 0;
+}

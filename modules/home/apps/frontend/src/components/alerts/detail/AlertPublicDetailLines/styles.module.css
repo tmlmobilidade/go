@@ -1,0 +1,10 @@
+/* * */
+/* TAGS ROW */
+
+.tagsRow {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-spacing-sm);
+	padding-top: var(--size-spacing-sm);
+	border-top: 1px solid var(--color-system-border-100);
+}

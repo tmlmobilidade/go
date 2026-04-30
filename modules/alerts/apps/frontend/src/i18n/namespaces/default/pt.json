@@ -18,6 +18,41 @@
 					"label": "Título"
 				}
 			}
+		},
+		"public": {
+			"list": {
+				"card": {
+					"dates": {
+						"end": "Fim",
+						"no_end": "Sem data fim",
+						"start": "Início"
+					}
+				},
+				"filters": {
+					"agency": "Operador",
+					"cause": "Causa",
+					"effect": "Efeito",
+					"line": "Linha",
+					"past_alerts": "Alertas passados",
+					"period": "Período",
+					"stop": "Paragem"
+				},
+				"groups": {
+					"from_date": "A partir de {date}",
+					"from_today": "A partir de hoje, {date}",
+					"from_tomorrow": "A partir de amanhã, {date}",
+					"label_plural": "Alertas ativos",
+					"label_single": "Alerta ativo",
+					"since_date": "Desde {date}",
+					"since_yesterday": "Desde ontem, {date}"
+				},
+				"header": {
+					"title": "Alertas públicos"
+				},
+				"search": {
+					"placeholder": "Pesquisar…"
+				}
+			}
 		}
 	}
 }

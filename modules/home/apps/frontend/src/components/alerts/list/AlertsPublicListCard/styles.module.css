@@ -1,0 +1,141 @@
+/* * */
+/* CARD */
+
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-md);
+	padding: var(--size-spacing-lg);
+	color: var(--color-system-text-100);
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-lg);
+	box-shadow: 0 1px 2px var(--color-shadow);
+}
+
+
+/* * */
+/* CARD VARIANTS */
+
+.card[data-severity='0'] {
+	border-color: var(--color-alerts-0, #3d85c6);
+}
+
+.card[data-severity='1'] {
+	border-color: var(--color-alerts-1, #00cd32);
+}
+
+.card[data-severity='2'] {
+	border-color: var(--color-alerts-2, #f5a000);
+}
+
+.card[data-severity='3'] {
+	border-color: var(--color-alerts-3, #e64b23);
+}
+
+/* * */
+/* HEADER */
+
+.header {
+	display: flex;
+	gap: var(--size-spacing-md);
+	align-items: flex-start;
+}
+
+/* * */
+/* ICON */
+
+.iconWrap {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	padding: 5px;
+	margin-top: 2px;
+	color: var(--color-alerts-0, #3d85c6);
+	background-color: var(--color-system-background-200);
+	border-radius: 3px;
+	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
+}
+
+/* * */
+/* ICON VARIANTS */
+
+.iconWrap[data-severity='0'] {
+	color: var(--color-alerts-0, #3d85c6);
+}
+
+.iconWrap[data-severity='1'] {
+	color: var(--color-alerts-1, #00cd32);
+}
+
+.iconWrap[data-severity='2'] {
+	color: var(--color-alerts-2, #f5a000);
+}
+
+.iconWrap[data-severity='3'] {
+	color: var(--color-alerts-3, #e64b23);
+}
+
+.main {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	min-width: 0;
+}
+
+/* * */
+/* TYPOGRAPHY */
+
+.title {
+	margin: 0;
+	font-size: var(--font-size-md);
+	font-weight: 700;
+	line-height: 1.35;
+}
+
+/* * */
+/* DESCRIPTION */
+
+.description {
+	margin: 0;
+	font-size: var(--font-size-sm);
+	font-weight: 400;
+	line-height: 1.5;
+	color: var(--color-system-text-200);
+}
+
+/* * */
+/* DATES */
+
+.dates {
+	display: flex;
+	flex-direction: row;
+	gap: var(--size-spacing-xs);
+	align-items: center;
+	justify-content: space-between;
+	padding-top: var(--size-spacing-sm);
+	margin-top: auto;
+	border-top: 1px solid var(--color-system-border-100);
+}
+
+.dateRow {
+	display: flex;
+	gap: var(--size-spacing-sm);
+	align-items: baseline;
+}
+
+.dateLabel {
+	font-size: var(--font-size-xs);
+	font-weight: 700;
+	line-height: 1.4;
+	color: var(--color-system-text-200);
+}
+
+.dateValue {
+	font-size: var(--font-size-xs);
+	font-weight: 500;
+	line-height: 1.4;
+	color: var(--color-system-text-300);
+}

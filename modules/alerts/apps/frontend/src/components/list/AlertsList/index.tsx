@@ -2,7 +2,6 @@
 
 /* * */
 
-import { useAlertsListContext } from '@/components/list/AlertsList.context';
 import { AlertsListCellCauseEffect } from '@/components/list/AlertsListCellCauseEffect';
 import { AlertsListCellDate } from '@/components/list/AlertsListCellDate';
 import { AlertsListCellLines } from '@/components/list/AlertsListCellLines';
@@ -11,6 +10,7 @@ import { AlertsListCellReferenceType } from '@/components/list/AlertsListCellRef
 import { AlertsListCellStops } from '@/components/list/AlertsListCellStops';
 import { AlertsListFiltersBar } from '@/components/list/AlertsListFiltersBar';
 import { AlertsListHeader } from '@/components/list/AlertsListHeader';
+import { useAlertsListContext } from '@/contexts/AlertsList.context';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert } from '@tmlmobilidade/types';
@@ -119,8 +119,8 @@ export function AlertsList() {
 	return (
 		<Pane
 			header={[
-				<AlertsListHeader />,
-				<AlertsListFiltersBar />,
+				<AlertsListHeader key="alerts-list-header" />,
+				<AlertsListFiltersBar key="alerts-list-filters" />,
 			]}
 		>
 			<DataTable
