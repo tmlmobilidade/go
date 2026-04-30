@@ -110,4 +110,4 @@ const main = async () => {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '30s' });
+await runOnInterval(main, { intervalMs: '30s', throwOnError: true });
