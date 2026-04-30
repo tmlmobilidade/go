@@ -14,8 +14,11 @@ CREATE TABLE IF NOT EXISTS eta.live_trip_stop_etas
     stop_id String,
     stop_name String,
     stop_node_index UInt32,
+    arrival_time String,
+    planned_arrival_at Nullable(DateTime64(3)),
     eta_seconds Nullable(Float64),
     eta_at Nullable(DateTime64(3)),
+    delay_seconds Nullable(Int64),
     refreshed_at DateTime DEFAULT now()
 )
 ENGINE = ReplacingMergeTree(refreshed_at)
@@ -156,6 +159,7 @@ WITH
             pf.hashed_trip_id      AS hashed_trip_id,
             pf.current_node_index  AS current_node_index,
             pf.position_created_at AS position_created_at,
+            pf.operational_date    AS operational_date,
             pf.period_of_day       AS period_of_day,
             pf.weekday             AS weekday,
             pf.day_type            AS day_type,
@@ -163,7 +167,8 @@ WITH
             w.stop_sequence        AS stop_sequence,
             w.stop_id              AS stop_id,
             w.stop_name            AS stop_name,
-            w.node_index           AS stop_node_index
+            w.node_index           AS stop_node_index,
+            w.arrival_time         AS arrival_time
         FROM pos_full AS pf
         INNER JOIN eta.daily_rides_waypoints_snapped AS w
             ON pf.hashed_trip_id = w.hashed_trip_id
@@ -178,10 +183,12 @@ WITH
             u.hashed_shape_id     AS hashed_shape_id,
             u.current_node_index  AS current_node_index,
             u.position_created_at AS position_created_at,
+            u.operational_date    AS operational_date,
             u.stop_sequence       AS stop_sequence,
             u.stop_id             AS stop_id,
             u.stop_name           AS stop_name,
             u.stop_node_index     AS stop_node_index,
+            u.arrival_time        AS arrival_time,
             sumIf(
                 p.predicted_travel_time_seconds,
                 p.node_index >  u.current_node_index
@@ -201,12 +208,33 @@ WITH
             u.hashed_shape_id,
             u.current_node_index,
             u.position_created_at,
+            u.operational_date,
             u.stop_sequence,
             u.stop_id,
             u.stop_name,
-            u.stop_node_index
+            u.stop_node_index,
+            u.arrival_time
     ),
     eta_clean AS (
+        SELECT
+            trip_id,
+            vehicle_id,
+            hashed_trip_id,
+            hashed_shape_id,
+            current_node_index,
+            position_created_at,
+            operational_date,
+            stop_sequence,
+            stop_id,
+            stop_name,
+            stop_node_index,
+            arrival_time,
+            if(eta_seconds IS NOT NULL AND isFinite(assumeNotNull(eta_seconds)),
+               eta_seconds, NULL) AS eta_seconds
+        FROM eta_calc
+    ),
+    -- Parse GTFS arrival_time "HH:MM:SS" (may exceed 24h) and anchor to operational_date midnight in Europe/Lisbon.
+    eta_with_planned AS (
         SELECT
             trip_id,
             vehicle_id,
@@ -218,9 +246,36 @@ WITH
             stop_id,
             stop_name,
             stop_node_index,
-            if(eta_seconds IS NOT NULL AND isFinite(assumeNotNull(eta_seconds)),
-               eta_seconds, NULL) AS eta_seconds
-        FROM eta_calc
+            arrival_time,
+            eta_seconds,
+            if(
+                eta_seconds IS NULL,
+                NULL,
+                fromUnixTimestamp64Milli(position_created_at)
+                    + toIntervalSecond(toInt64(round(assumeNotNull(eta_seconds))))
+            ) AS eta_at,
+            if(
+                NOT match(arrival_time, '^[0-9]+:[0-9]{2}:[0-9]{2}$'),
+                NULL,
+                toDateTime64(
+                    toDateTime(
+                        concat(
+                            substring(toString(operational_date), 1, 4), '-',
+                            substring(toString(operational_date), 5, 2), '-',
+                            substring(toString(operational_date), 7, 2), ' 00:00:00'
+                        ),
+                        'Europe/Lisbon'
+                    )
+                        + toIntervalSecond(
+                            toInt64(splitByChar(':', arrival_time)[1]) * 3600
+                            + toInt64(splitByChar(':', arrival_time)[2]) * 60
+                            + toInt64(splitByChar(':', arrival_time)[3])
+                        ),
+                    3,
+                    'Europe/Lisbon'
+                )
+            ) AS planned_arrival_at
+        FROM eta_clean
     )
 SELECT
     trip_id,
@@ -233,12 +288,14 @@ SELECT
     stop_id,
     stop_name,
     stop_node_index,
+    arrival_time,
+    planned_arrival_at,
     eta_seconds,
+    eta_at,
     if(
-        eta_seconds IS NULL,
+        eta_at IS NULL OR planned_arrival_at IS NULL,
         NULL,
-        fromUnixTimestamp64Milli(position_created_at)
-            + toIntervalSecond(toInt64(round(assumeNotNull(eta_seconds))))
-    ) AS eta_at,
+        dateDiff('second', assumeNotNull(planned_arrival_at), assumeNotNull(eta_at))
+    ) AS delay_seconds,
     now() AS refreshed_at
-FROM eta_clean;
+FROM eta_with_planned;
