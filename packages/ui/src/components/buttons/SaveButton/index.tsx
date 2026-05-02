@@ -9,7 +9,7 @@ import { Button } from '../Button';
 
 /* * */
 
-interface DuplicateButtonProps {
+interface SaveButtonProps {
 	isDisabled?: boolean
 	isLoading?: boolean
 	onClick: () => void
@@ -17,7 +17,7 @@ interface DuplicateButtonProps {
 
 /* * */
 
-export function DuplicateButton({ isDisabled, isLoading, onClick }: DuplicateButtonProps) {
+export function SaveButton({ isDisabled, isLoading, onClick }: SaveButtonProps) {
 	//
 
 	//
@@ -42,16 +42,16 @@ export function DuplicateButton({ isDisabled, isLoading, onClick }: DuplicateBut
 	return (
 		<Tooltip
 			disabled={isDisabled}
-			label={t('shared:components.buttons.DuplicateButton.tooltip')}
+			label={t('shared:components.buttons.SaveButton.tooltip')}
 			position="bottom"
 			withArrow
 		>
 			<Button
 				disabled={isDisabled}
-				label={t('shared:components.buttons.DuplicateButton.label')}
+				label={t('shared:components.buttons.SaveButton.label')}
 				loading={isLoading}
 				onClick={handleClick}
-				variant="secondary"
+				variant="primary"
 			/>
 		</Tooltip>
 	);
