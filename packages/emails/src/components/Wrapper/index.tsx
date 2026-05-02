@@ -3,8 +3,8 @@
 import { CoverLogo } from '@/components/CoverLogo/index.js';
 import { Disclaimer } from '@/components/Disclaimer/index.js';
 import { fontWeight } from '@/styles/font.js';
-import { Body, Container, Font, Head, Html, Preview, Section } from 'react-email';
 import { type PropsWithChildren } from 'react';
+import { Body, Container, Font, Head, Html, Preview, Section } from 'react-email';
 
 import styles from './styles.js';
 

@@ -5,9 +5,9 @@ import { Span } from '@/components/Span/index.js';
 import { Wrapper } from '@/components/Wrapper/index.js';
 import { emailProvider } from '@/email.provider.js';
 import { type SendEmailProps } from '@/types.js';
-import { render } from 'react-email';
 import { Dates } from '@tmlmobilidade/dates';
 import { type UnixTimestamp } from '@tmlmobilidade/types';
+import { render } from 'react-email';
 
 /* * */
 
