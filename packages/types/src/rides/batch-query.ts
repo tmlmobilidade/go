@@ -1,7 +1,7 @@
 /* * */
 
 import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema } from '@/_common/status.js';
-import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { RideAcceptanceStatusSchema } from '@/rides/ride-acceptance.js';
 import { RideAnalysisGradeSchema } from '@/rides/ride-analysis.js';
 import { z } from 'zod';
@@ -24,9 +24,9 @@ export const GetRidesBatchQuerySchema = z.object({
 		.preprocess((val: string) => (val && typeof val === 'string') ? val.split(',').map(id => id.trim()) : [], z.array(z.string()))
 		.default([]),
 
-	date_end: UnixTimeStampSchema,
+	date_end: UnixTimestampSchema,
 
-	date_start: UnixTimeStampSchema,
+	date_start: UnixTimestampSchema,
 
 	/* * */
 

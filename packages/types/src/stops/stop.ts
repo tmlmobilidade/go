@@ -3,7 +3,7 @@
 import { CommentSchema } from '@/_common/comment.js';
 import { DocumentSchema } from '@/_common/document.js';
 import { AvailabilityStatusSchema, ConditionStatusSchema, LifecycleStatusSchema } from '@/_common/status.js';
-import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { StopConnectionSchema } from '@/stops/connections.js';
 import { StopEquipmentSchema } from '@/stops/equipment.js';
 import { StopFacilitySchema } from '@/stops/facilities.js';
@@ -56,7 +56,7 @@ export const StopSchema = DocumentSchema.extend({
 
 	shelter_code: z.string().nullable().default(null),
 	shelter_frame_size: z.tuple([z.number(), z.number()]).nullable().default(null),
-	shelter_installation_date: UnixTimeStampSchema.nullable().default(null),
+	shelter_installation_date: UnixTimestampSchema.nullable().default(null),
 	shelter_maintainer: z.string().nullable().default(null),
 	shelter_make: z.string().nullable().default(null),
 	shelter_model: z.string().nullable().default(null),
@@ -65,10 +65,10 @@ export const StopSchema = DocumentSchema.extend({
 	//
 	// Checks
 
-	last_infrastructure_check: UnixTimeStampSchema.nullable().default(null),
-	last_infrastructure_maintenance: UnixTimeStampSchema.nullable().default(null),
-	last_schedules_check: UnixTimeStampSchema.nullable().default(null),
-	last_schedules_maintenance: UnixTimeStampSchema.nullable().default(null),
+	last_infrastructure_check: UnixTimestampSchema.nullable().default(null),
+	last_infrastructure_maintenance: UnixTimestampSchema.nullable().default(null),
+	last_schedules_check: UnixTimestampSchema.nullable().default(null),
+	last_schedules_maintenance: UnixTimestampSchema.nullable().default(null),
 
 	//
 	// Facilities
