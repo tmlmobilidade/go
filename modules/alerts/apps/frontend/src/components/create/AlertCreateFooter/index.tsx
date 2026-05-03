@@ -26,34 +26,34 @@ export function AlertCreateFooter() {
 				action={PermissionCatalog.all.alerts.actions.update_publish_status}
 				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.alerts.scope}
-				value={alertCreateContext.data.form.getValues().agency_id}
+				value={alertCreateContext.form.instance.getValues('agency_id')}
 			>
 				<PublishStatusTag
-					onChange={value => alertCreateContext.data.form.setFieldValue('publish_status', value)}
-					value={alertCreateContext.data.form.values.publish_status}
+					onChange={value => alertCreateContext.form.instance.setValue('publish_status', value)}
+					value={alertCreateContext.form.instance.getValues('publish_status')}
 				/>
 			</HasPermission>
 
 			<Spacer />
 
 			<Button
-				disabled={alertCreateContext.data.multi_step.progress.current?.id === 'cause'}
+				disabled={alertCreateContext.form.multi_step.progress.current?.id === 'cause'}
 				label="Voltar"
-				onClick={alertCreateContext.data.multi_step.actions.prev}
+				onClick={alertCreateContext.form.multi_step.actions.prev}
 				variant="secondary"
 			/>
 
-			{alertCreateContext.data.multi_step.progress.current?.id !== 'summary' && (
+			{alertCreateContext.form.multi_step.progress.current?.id !== 'summary' && (
 				<Button
-					disabled={!alertCreateContext.data.multi_step.progress.current?.isValid()}
+					disabled={!alertCreateContext.form.multi_step.progress.current?.isValid()}
 					label="Avançar"
-					onClick={alertCreateContext.data.multi_step.actions.next}
+					onClick={alertCreateContext.form.multi_step.actions.next}
 				/>
 			)}
 
-			{alertCreateContext.data.multi_step.progress.current?.id === 'summary' && (
+			{alertCreateContext.form.multi_step.progress.current?.id === 'summary' && (
 				<Button
-					disabled={!alertCreateContext.data.multi_step.progress.current?.isValid()}
+					disabled={!alertCreateContext.form.multi_step.progress.current?.isValid()}
 					label="Publicar"
 					loading={alertCreateContext.flags.isCreating}
 					onClick={alertCreateContext.actions.create}
