@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 /* * */
 
@@ -92,7 +92,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 	//
 	// B. Transform data
 
-	const availableSteps = (() => {
+	const availableSteps = useMemo(() => {
 		return steps
 			// Only include steps that are marked as visible.
 			// Default is visible if not specified.
@@ -101,16 +101,16 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 			.sort((a, b) => a.order - b.order)
 			// Ensure index is sequential based on visible steps
 			.map((step, idx) => ({ ...step, index: idx, isValid: step.isValid || (() => true) }));
-	})();
+	}, [steps]);
 
-	const currentStep = (() => {
+	const currentStep = useMemo(() => {
 		// Skip if no current step ID is set
 		if (!currentStepId) return;
 		// Find and return the current step object
 		return availableSteps.find(step => step.id === currentStepId);
-	})();
+	}, [availableSteps, currentStepId]);
 
-	const nextStep = (() => {
+	const nextStep = useMemo(() => {
 		// Exit if no current step
 		if (!currentStep) return;
 		// Get the index position of the current step
@@ -123,9 +123,9 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		if (!nextStep) return;
 		// Set the next step object
 		return nextStep;
-	})();
+	}, [availableSteps, currentStep]);
 
-	const prevStep = (() => {
+	const prevStep = useMemo(() => {
 		// Exit if no current step
 		if (!currentStep) return;
 		// Get the index position of the current step
@@ -138,7 +138,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		if (!prevStep) return;
 		// Set the prev step object
 		return prevStep;
-	})();
+	}, [availableSteps, currentStep]);
 
 	useEffect(() => {
 		// Skip if no available steps
@@ -151,7 +151,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 	//
 	// C. Handle actions
 
-	const next = () => {
+	const next = useCallback(() => {
 		// Exit if no current step
 		if (!currentStep) return;
 		// Exit if current step is not valid
@@ -162,9 +162,9 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		if (nextStep.isEnabled?.() === false) return;
 		// Proceed to the next step
 		setCurrentStepId(nextStep.id);
-	};
+	}, [currentStep, nextStep]);
 
-	const prev = () => {
+	const prev = useCallback(() => {
 		// Exit if no current step
 		if (!currentStep) return;
 		// Exit if no previous step
@@ -173,9 +173,9 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		if (prevStep.isEnabled?.() === false) return;
 		// Proceed to the previous step
 		setCurrentStepId(prevStep.id);
-	};
+	}, [currentStep, prevStep]);
 
-	const goTo = (id: string) => {
+	const goTo = useCallback((id: string) => {
 		// Get the desired step object
 		const destStep = availableSteps.find(step => step.id === id);
 		// Exit if the step is not found
@@ -184,14 +184,14 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		if (destStep.isEnabled?.() === false) return;
 		// Proceed to set the current step
 		setCurrentStepId(id);
-	};
+	}, [availableSteps]);
 
-	const goToIndex = (idx: number) => {
+	const goToIndex = useCallback((idx: number) => {
 		// Exit if the index is out of bounds
 		if (idx < 0 || idx >= availableSteps.length) return;
 		// Navigate to the step at the specified index
 		goTo(availableSteps[idx].id);
-	};
+	}, [availableSteps, goTo]);
 
 	//
 	// C. Return values

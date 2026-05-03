@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Logger } from '@tmlmobilidade/logger';
 import { useEffect } from 'react';
 import { DefaultValues, useForm, type UseFormReturn } from 'react-hook-form';
-import { type Schema } from 'zod';
+import { type ZodSchema } from 'zod';
 
 import { usePreventNavigation } from './use-prevent-navigation';
 
@@ -16,7 +16,7 @@ interface UseContextFormProps<T> {
 	apiData?: null | T
 	defaultValues?: DefaultValues<T>
 	mode?: 'controlled' | 'uncontrolled'
-	schema: Schema<T>
+	schema?: ZodSchema<T>
 }
 
 /**
