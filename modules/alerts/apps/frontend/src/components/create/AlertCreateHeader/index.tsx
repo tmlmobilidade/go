@@ -4,6 +4,7 @@
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { Stepper, type StepperDataItem, Toolbar } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -18,11 +19,13 @@ export function AlertCreateHeader() {
 	//
 	// B. Transform data
 
-	const preparedSteps = alertCreateContext.data.multi_step.progress.steps.map((step): StepperDataItem => ({
-		id: step.id,
-		isEnabled: step.isEnabled ? step.isEnabled() : true,
-		label: step.label,
-	}));
+	const preparedSteps = useMemo(() => {
+		return alertCreateContext.form.multi_step.progress.steps.map((step): StepperDataItem => ({
+			id: step.id,
+			isEnabled: step.isEnabled ? step.isEnabled() : true,
+			label: step.label,
+		}));
+	}, [alertCreateContext.form.multi_step.progress.steps]);
 
 	//
 	// C. Render components
@@ -30,9 +33,9 @@ export function AlertCreateHeader() {
 	return (
 		<Toolbar>
 			<Stepper
-				active={alertCreateContext.data.multi_step.progress.current?.index}
+				active={alertCreateContext.form.multi_step.progress.current?.index}
 				data={preparedSteps}
-				onStepClick={alertCreateContext.data.multi_step.actions.goToIndex}
+				onStepClick={alertCreateContext.form.multi_step.actions.goToIndex}
 			/>
 		</Toolbar>
 	);
