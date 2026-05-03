@@ -5,6 +5,7 @@ import { AlertCreateStepSummaryAi } from '@/components/create/AlertCreateStepSum
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { CoordinatesInput, Grid, Section, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
+import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -20,6 +21,9 @@ export function AlertCreateStepSummary() {
 	const meContext = useMeContext();
 	const alertCreateContext = useAlertCreateContext();
 
+	const agencyIdValue = alertCreateContext.form.instance.watch('agency_id');
+	const referenceTypeValue = alertCreateContext.form.instance.watch('reference_type');
+
 	//
 	// B. Transform data
 
@@ -28,13 +32,13 @@ export function AlertCreateStepSummary() {
 			action: PermissionCatalog.all.alerts.actions.update_texts,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.alerts.scope,
-			value: alertCreateContext.data.form.getValues().agency_id,
+			value: agencyIdValue,
 		},
 		{
 			action: PermissionCatalog.all.alerts.actions.update_texts,
 			resource_key: 'reference_types',
 			scope: PermissionCatalog.all.alerts.scope,
-			value: alertCreateContext.data.form.getValues().reference_type,
+			value: referenceTypeValue,
 		},
 	]);
 
@@ -47,35 +51,66 @@ export function AlertCreateStepSummary() {
 
 				<AlertCreateStepSummaryAi />
 
-				<TextInput
-					key={alertCreateContext.data.form.key('title')}
-					label={t('default:alerts.create.summary.title.label')}
-					readOnly={!hasPermissionToEdit}
-					{...alertCreateContext.data.form.getInputProps('title')}
+				<Controller
+					control={alertCreateContext.form.instance.control}
+					name="title"
+					render={({ field, fieldState }) => (
+						<TextInput
+							error={fieldState.error?.message}
+							label={t('default:alerts.create.summary.title.label')}
+							onBlur={field.onBlur}
+							onChange={e => field.onChange(e.currentTarget.value)}
+							readOnly={!hasPermissionToEdit}
+							value={field.value ?? ''}
+						/>
+					)}
 				/>
 
-				<Textarea
-					key={alertCreateContext.data.form.key('description')}
-					label={t('default:alerts.create.summary.description.label')}
-					minRows={4}
-					readOnly={!hasPermissionToEdit}
-					autosize
-					{...alertCreateContext.data.form.getInputProps('description')}
+				<Controller
+					control={alertCreateContext.form.instance.control}
+					name="description"
+					render={({ field, fieldState }) => (
+						<Textarea
+							error={fieldState.error?.message}
+							label={t('default:alerts.create.summary.description.label')}
+							minRows={4}
+							onBlur={field.onBlur}
+							onChange={e => field.onChange(e.currentTarget.value)}
+							readOnly={!hasPermissionToEdit}
+							value={field.value ?? ''}
+							autosize
+						/>
+					)}
 				/>
 
-				<CoordinatesInput
-					key={alertCreateContext.data.form.key('coordinates')}
-					label={t('default:alerts.create.summary.coordinates.label')}
-					{...alertCreateContext.data.form.getInputProps('coordinates')}
+				<Controller
+					control={alertCreateContext.form.instance.control}
+					name="coordinates"
+					render={({ field, fieldState }) => (
+						<CoordinatesInput
+							key="key"
+							defaultValue={field.value}
+							label={t('default:alerts.create.summary.coordinates.label')}
+							onChange={field.onChange}
+						/>
+					)}
 				/>
 
-				<TextInput
-					key={alertCreateContext.data.form.key('info_url')}
-					description={t('default:alerts.create.summary.info_url.description')}
-					label={t('default:alerts.create.summary.info_url.label')}
-					leftSection={<IconLink />}
-					placeholder="https://www.cm-setubal.com/..."
-					{...alertCreateContext.data.form.getInputProps('info_url')}
+				<Controller
+					control={alertCreateContext.form.instance.control}
+					name="info_url"
+					render={({ field, fieldState }) => (
+						<TextInput
+							description={t('default:alerts.create.summary.info_url.description')}
+							error={fieldState.error?.message}
+							label={t('default:alerts.create.summary.info_url.label')}
+							leftSection={<IconLink />}
+							onBlur={field.onBlur}
+							onChange={e => field.onChange(e.currentTarget.value)}
+							placeholder="https://www.cm-setubal.com/..."
+							value={field.value ?? ''}
+						/>
+					)}
 				/>
 
 			</Grid>

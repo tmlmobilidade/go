@@ -8,6 +8,7 @@ import { type I18nCode, PermissionCatalog } from '@tmlmobilidade/types';
 import { Button, Section, Surface, Switch, TextInput, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useEffect, useRef } from 'react';
+import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -28,7 +29,12 @@ export function AlertCreateStepSummaryAi() {
 	const { t } = useTranslation();
 
 	const meContext = useMeContext();
+
 	const alertCreateContext = useAlertCreateContext();
+
+	const agencyIdValue = alertCreateContext.form.instance.watch('agency_id');
+	const referenceTypeValue = alertCreateContext.form.instance.watch('reference_type');
+	const autoTextsValue = alertCreateContext.form.instance.watch('auto_texts');
 
 	//
 	// B. Transform data
@@ -38,13 +44,13 @@ export function AlertCreateStepSummaryAi() {
 			action: PermissionCatalog.all.alerts.actions.create,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.alerts.scope,
-			value: alertCreateContext.data.form.getValues().agency_id,
+			value: agencyIdValue,
 		},
 		{
 			action: PermissionCatalog.all.alerts.actions.create,
 			resource_key: 'reference_types',
 			scope: PermissionCatalog.all.alerts.scope,
-			value: alertCreateContext.data.form.getValues().reference_type,
+			value: referenceTypeValue,
 		},
 	]);
 
@@ -53,13 +59,13 @@ export function AlertCreateStepSummaryAi() {
 			action: PermissionCatalog.all.alerts.actions.update_texts,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.alerts.scope,
-			value: alertCreateContext.data.form.getValues().agency_id,
+			value: agencyIdValue,
 		},
 		{
 			action: PermissionCatalog.all.alerts.actions.update_texts,
 			resource_key: 'reference_types',
 			scope: PermissionCatalog.all.alerts.scope,
-			value: alertCreateContext.data.form.getValues().reference_type,
+			value: referenceTypeValue,
 		},
 	]);
 
@@ -68,23 +74,21 @@ export function AlertCreateStepSummaryAi() {
 
 	const { action: generateText, isLoading: isLoadingGeneratingText } = useHandleUpdate<DescribeAlertReturnType>({
 		fetchFn: async () => {
-			// Skip if auto texts is not enabled
-			if (!alertCreateContext.data.form.getValues().auto_texts) return;
-			// Skip if required fields for templating are not filled
-			if (!alertCreateContext.data.form.getValues().cause) return;
-			if (!alertCreateContext.data.form.getValues().effect) return;
-			if (!alertCreateContext.data.form.getValues().reference_type) return;
-			if (!alertCreateContext.data.form.getValues().references?.length) return;
-			// Generate alert templating and set title and description based on i
+			const formValues = alertCreateContext.form.instance.getValues();
+			if (!formValues.auto_texts) return;
+			if (!formValues.cause) return;
+			if (!formValues.effect) return;
+			if (!formValues.reference_type) return;
+			if (!formValues.references?.length) return;
 			return await fetchData<DescribeAlertReturnType>(API_ROUTES.alerts.ALERTS_DESCRIBE, 'POST', {
-				active_period_end_date: alertCreateContext.data.form.getValues().active_period_end_date,
-				active_period_start_date: alertCreateContext.data.form.getValues().active_period_start_date,
-				agency_id: alertCreateContext.data.form.getValues().agency_id,
-				cause: alertCreateContext.data.form.getValues().cause,
-				effect: alertCreateContext.data.form.getValues().effect,
-				reference_type: alertCreateContext.data.form.getValues().reference_type,
-				references: alertCreateContext.data.form.getValues().references,
-				user_instructions: alertCreateContext.data.form.getValues().user_instructions,
+				active_period_end_date: formValues.active_period_end_date,
+				active_period_start_date: formValues.active_period_start_date,
+				agency_id: formValues.agency_id,
+				cause: formValues.cause,
+				effect: formValues.effect,
+				reference_type: formValues.reference_type,
+				references: formValues.references,
+				user_instructions: formValues.user_instructions,
 			});
 		},
 		onError: (error) => {
@@ -92,8 +96,8 @@ export function AlertCreateStepSummaryAi() {
 			console.error('Error generating alert description', { error });
 		},
 		onSuccess: (data) => {
-			alertCreateContext.data.form.setFieldValue('description', data.pt.description);
-			alertCreateContext.data.form.setFieldValue('title', data.pt.title);
+			alertCreateContext.form.instance.setValue('description', data.pt.description);
+			alertCreateContext.form.instance.setValue('title', data.pt.title);
 		},
 	});
 
@@ -120,23 +124,36 @@ export function AlertCreateStepSummaryAi() {
 			<Section gap="md">
 
 				{(hasPermissionToCreate || hasPermissionToEditTexts) && (
-					<Switch
-						key={alertCreateContext.data.form.key('auto_texts')}
-						label={t('default:alerts.create.summary.auto_texts.label')}
-						{...alertCreateContext.data.form.getInputProps('auto_texts', { type: 'checkbox' })}
+					<Controller
+						control={alertCreateContext.form.instance.control}
+						name="auto_texts"
+						render={({ field }) => (
+							<Switch
+								checked={field.value ?? false}
+								label={t('default:alerts.create.summary.auto_texts.label')}
+								onChange={e => field.onChange(e.currentTarget.checked)}
+							/>
+						)}
 					/>
 				)}
 
-				{(alertCreateContext.data.form.getValues().auto_texts && hasPermissionToCreate) && (
+				{(autoTextsValue && hasPermissionToCreate) && (
 					<>
-						<TextInput
-							key={alertCreateContext.data.form.key('user_instructions')}
-							disabled={isLoadingGeneratingText}
-							label={t('default:alerts.create.summary.user_instructions.label')}
-							placeholder={t('default:alerts.create.summary.user_instructions.placeholder')}
-							readOnly={isLoadingGeneratingText}
-							w="100%"
-							{...alertCreateContext.data.form.getInputProps('user_instructions')}
+						<Controller
+							control={alertCreateContext.form.instance.control}
+							name="user_instructions"
+							render={({ field }) => (
+								<TextInput
+									disabled={isLoadingGeneratingText}
+									label={t('default:alerts.create.summary.user_instructions.label')}
+									onBlur={field.onBlur}
+									onChange={e => field.onChange(e.currentTarget.value)}
+									placeholder={t('default:alerts.create.summary.user_instructions.placeholder')}
+									readOnly={isLoadingGeneratingText}
+									value={field.value ?? ''}
+									w="100%"
+								/>
+							)}
 						/>
 						<Button
 							label={t('default:alerts.create.summary.generate_text.label')}
