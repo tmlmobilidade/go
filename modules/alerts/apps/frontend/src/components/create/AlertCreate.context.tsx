@@ -6,7 +6,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, PermissionCatalog } from '@tmlmobilidade/types';
-import { type CreateContextStateTemplate, keepUrlParams, useDataAgencies, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm, useTypicalFormWatch } from '@tmlmobilidade/ui';
+import { type CreateContextStateTemplate, keepUrlParams, useContextForm, useDataAgencies, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
@@ -14,13 +14,11 @@ import useSWR from 'swr';
 
 /* * */
 
-interface AlertCreateContextState extends CreateContextStateTemplate {
-	data: {
-		enabled_reference_types: Alert['reference_type'][]
-		form: UseFormReturnType<CreateAlertDto>
+interface AlertCreateContextState extends CreateContextStateTemplate<CreateAlertDto> {
+	form: CreateContextStateTemplate<CreateAlertDto>['form'] & {
 		multi_step: UseMultiStepReturnType
 	}
-};
+}
 
 /* * */
 
@@ -46,23 +44,6 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	const meContext = useMeContext();
 
 	//
-	// B. Setup form
-
-	const { formRef } = useTypicalForm<CreateAlertDto>(CreateAlertSchema);
-
-	const watchedFormValues = useTypicalFormWatch(formRef.current, [
-		'cause',
-		'effect',
-		'agency_id',
-		'auto_texts',
-		'active_period_start_date',
-		'active_period_end_date',
-		'reference_type',
-		'references',
-		'publish_status',
-	]);
-
-	//
 	// C. Fetch data
 
 	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
@@ -73,164 +54,156 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	});
 
 	//
-	// D. Transform data
+	// B. Setup form with react-hook-form
+	// One-time initializations are handled via defaultValues instead of effects,
+	// eliminating the polling re-render cycle from useTypicalFormWatch.
 
-	const multiStep = useMultiStep({
-		steps: [
-			{
-				id: 'cause',
-				isValid: () => !!formRef.current.getValues().cause,
-				isVisible: true,
-				label: 'Causa',
-				order: 0,
-			},
-			{
-				id: 'effect',
-				isEnabled: () => !!formRef.current.getValues().cause,
-				isValid: () => !!formRef.current.getValues().effect,
-				isVisible: true,
-				label: 'Efeito',
-				order: 1,
-			},
-			{
-				id: 'agency',
-				isEnabled: () => !!formRef.current.getValues().cause && !!formRef.current.getValues().effect,
-				isValid: () => !!formRef.current.getValues().agency_id,
-				isVisible: agenciesData?.length > 1,
-				label: 'Operador',
-				order: 2,
-			},
-			{
-				id: 'dates',
-				isEnabled: () => !!formRef.current.getValues().agency_id,
-				isValid: () => !!formRef.current.getValues().active_period_start_date,
-				isVisible: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_dates),
-				label: 'Datas',
-				order: 3,
-			},
-			{
-				id: 'references',
-				isEnabled: () => !!formRef.current.getValues().cause && !!formRef.current.getValues().effect && !!formRef.current.getValues().agency_id && !!formRef.current.getValues().active_period_start_date,
-				isValid: () => !!formRef.current.getValues().reference_type && !!formRef.current.getValues().agency_id && !!formRef.current.getValues().references?.length,
-				isVisible: true,
-				label: 'Referências',
-				order: 4,
-			},
-			{
-				id: 'summary',
-				isEnabled: () => !!formRef.current.getValues().cause && !!formRef.current.getValues().effect && !!formRef.current.getValues().active_period_start_date && !!formRef.current.getValues().reference_type && !!formRef.current.getValues().agency_id && !!formRef.current.getValues().references?.length,
-				isVisible: true,
-				label: 'Resumo',
-				order: 5,
-			},
-		],
+	const form = useContextForm<CreateAlertDto>({
+		defaultValues: {
+			active_period_end_date: Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp,
+			active_period_start_date: Dates.now('Europe/Lisbon').minus({ minutes: 30 }).set({ millisecond: 0, second: 0 }).unix_timestamp,
+			auto_texts: true,
+			publish_end_date: Dates.now('Europe/Lisbon').endOf('day').unix_timestamp,
+			publish_start_date: Dates.now('Europe/Lisbon').startOf('day').unix_timestamp,
+			publish_status: 'published',
+			references: [],
+		},
+		// schema: CreateAlertSchema,
 	});
 
-	const enabledReferenceTypes = useMemo(() => {
-		// Extract the possible reference types
-		// for the selected cause and effect.
-		const causeMapValue = alertCauseEffectReferenceTypeMap[watchedFormValues.cause];
-		if (!causeMapValue) return [];
-		// If there is a valid cause, get the reference types
-		// for the selected effect.
-		const effectMapValue = causeMapValue[watchedFormValues.effect];
-		if (!effectMapValue) return [];
-		// Return the reference types that are valid
-		// for the selected cause and effect.
-		return effectMapValue;
-	}, [watchedFormValues.cause, watchedFormValues.effect]);
+	//
+	// D. Side effects
+
+	useEffect(() => {
+		// Pre-select agency when only one is available.
+		// Reads getValues() imperatively so this effect
+		// only runs when agenciesData changes,
+		// not on every agency_id change.
+		if (agenciesData?.length !== 1) return;
+		if (form.getValues('agency_id')) return;
+		form.setValue('agency_id', agenciesData[0]._id);
+	}, [agenciesData, form]);
+
+	// Reset downstream fields when cause changes.
+	useEffect(() => {
+		const sub = form.watch((_, { name }) => {
+			if (name !== 'cause') return;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			form.setValue('effect', null as any);
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			form.setValue('reference_type', null as any);
+			form.setValue('references', []);
+		});
+		return () => sub.unsubscribe();
+	}, [form]);
+
+	// Reset reference_type and references when effect changes,
+	// then auto-select the best reference_type based on permissions.
+	useEffect(() => {
+		const sub = form.watch((values, { name }) => {
+			if (name !== 'effect') return;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			form.setValue('reference_type', null as any);
+			form.setValue('references', []);
+			if (!values.cause || !values.effect) return;
+			const enabledTypes = alertCauseEffectReferenceTypeMap[values.cause]?.[values.effect] ?? [];
+			if (!enabledTypes.length) return;
+			const perm = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
+			const canAll = perm?.resources.reference_types.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+			const allowed = perm?.resources.reference_types ?? [];
+			if (enabledTypes.includes('lines') && (canAll || allowed.includes('lines'))) form.setValue('reference_type', 'lines');
+			else if (enabledTypes.includes('stops') && (canAll || allowed.includes('stops'))) form.setValue('reference_type', 'stops');
+			else if (enabledTypes.includes('rides') && (canAll || allowed.includes('rides'))) form.setValue('reference_type', 'rides');
+			else if (enabledTypes.includes('agency') && (canAll || allowed.includes('agency'))) form.setValue('reference_type', 'agency');
+			else Logger.info('No enabled reference types available to set as default.');
+		});
+		return () => sub.unsubscribe();
+	}, [form, meContext.data.user.permissions]);
+
+	// When reference_type is 'agency' or agency_id changes while reference_type is 'agency',
+	// sync references to the selected agency.
+	useEffect(() => {
+		const sub = form.watch((values, { name }) => {
+			if (name !== 'reference_type' && name !== 'agency_id') return;
+			if (values.reference_type !== 'agency' || !values.agency_id) return;
+			form.setValue('references', [{ child_ids: [], parent_id: values.agency_id }]);
+		});
+		return () => sub.unsubscribe();
+	}, [form]);
+
+	// Restore default end dates when active_period_end_date is cleared.
+	useEffect(() => {
+		const sub = form.watch((values, { name }) => {
+			if (name !== 'active_period_end_date' || values.active_period_end_date != null) return;
+			form.setValue('active_period_end_date', Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp);
+			form.setValue('publish_end_date', Dates.now('Europe/Lisbon').endOf('day').unix_timestamp);
+		});
+		return () => sub.unsubscribe();
+	}, [form]);
 
 	//
-	// E. Handle actions
+	// E. Multi-step setup
+	// Steps are memoized so useMultiStep only recalculates when agencies or permissions change,
+	// not on every form value change.
 
-	useEffect(() => {
-		// Skip if agency_id is already set
-		if (watchedFormValues.agency_id) return;
-		// Pre-select agency if there is only one available
-		if (agenciesData?.length === 1) formRef.current.setFieldValue('agency_id', agenciesData[0]._id);
-	}, [watchedFormValues.agency_id, agenciesData, formRef]);
+	const steps = useMemo(() => [
+		{
+			id: 'cause',
+			isValid: () => !!form.getValues('cause'),
+			isVisible: true,
+			label: 'Causa',
+			order: 0,
+		},
+		{
+			id: 'effect',
+			isEnabled: () => !!form.getValues('cause'),
+			isValid: () => !!form.getValues('effect'),
+			isVisible: true,
+			label: 'Efeito',
+			order: 1,
+		},
+		{
+			id: 'agency',
+			isEnabled: () => !!form.getValues('cause') && !!form.getValues('effect'),
+			isValid: () => !!form.getValues('agency_id'),
+			isVisible: agenciesData?.length > 1,
+			label: 'Operador',
+			order: 2,
+		},
+		{
+			id: 'dates',
+			isEnabled: () => !!form.getValues('agency_id'),
+			isValid: () => !!form.getValues('active_period_start_date'),
+			isVisible: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_dates),
+			label: 'Datas',
+			order: 3,
+		},
+		{
+			id: 'references',
+			isEnabled: () => !!form.getValues('cause') && !!form.getValues('effect') && !!form.getValues('agency_id') && !!form.getValues('active_period_start_date'),
+			isValid: () => !!form.getValues('reference_type') && !!form.getValues('agency_id') && !!form.getValues('references')?.length,
+			isVisible: true,
+			label: 'Referências',
+			order: 4,
+		},
+		{
+			id: 'summary',
+			isEnabled: () => !!form.getValues('cause') && !!form.getValues('effect') && !!form.getValues('active_period_start_date') && !!form.getValues('reference_type') && !!form.getValues('agency_id') && !!form.getValues('references')?.length,
+			isValid: () => !!form.getValues('cause') && !!form.getValues('effect') && !!form.getValues('active_period_start_date') && !!form.getValues('reference_type') && !!form.getValues('agency_id') && !!form.getValues('references')?.length,
+			isVisible: true,
+			label: 'Resumo',
+			order: 5,
+		},
 
-	useEffect(() => {
-		// Skip if publish status is already set
-		if (watchedFormValues.publish_status) return;
-		// Set publish status to published to ensure alert is visible immediately
-		formRef.current.setFieldValue('publish_status', 'published');
-	}, [formRef, watchedFormValues.publish_status]);
+	], [agenciesData?.length, form, meContext.actions]);
 
-	useEffect(() => {
-		// Skip if active period start date is already set
-		if (watchedFormValues.active_period_start_date) return;
-		// Set active period start date to 30 minutes ago
-		formRef.current.setFieldValue('active_period_start_date', Dates.now('Europe/Lisbon').minus({ minutes: 30 }).set({ millisecond: 0, second: 0 }).unix_timestamp);
-		// Set publish start date to start of today to ensure alert is visible immediately
-		formRef.current.setFieldValue('publish_start_date', Dates.now('Europe/Lisbon').startOf('day').unix_timestamp);
-	}, [formRef, watchedFormValues.active_period_start_date]);
+	const multiStep = useMultiStep({ steps });
 
-	useEffect(() => {
-		// Skip if active period end date is already set
-		if (watchedFormValues.active_period_end_date) return;
-		// Set active period end date to the end today
-		formRef.current.setFieldValue('active_period_end_date', Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp);
-		// Set publish end date to end of today
-		formRef.current.setFieldValue('publish_end_date', Dates.now('Europe/Lisbon').endOf('day').unix_timestamp);
-	}, [formRef, watchedFormValues.active_period_end_date]);
-
-	useEffect(() => {
-		// Skip if reference type is already set
-		if (watchedFormValues.reference_type) return;
-		// Skip if there are no enabled reference types
-		if (!enabledReferenceTypes.length) return;
-		// Get permission definition for reference types
-		const createPermission = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
-		// Get reference types availability based on permissions
-		const canUseAllReferenceTypes = createPermission?.resources.reference_types.includes(PermissionCatalog.ALLOW_ALL_FLAG);
-		const allowedReferenceTypes = createPermission?.resources.reference_types;
-		// Set the reference type based on alert cause/effect when possible
-		if (enabledReferenceTypes.includes('lines') && (canUseAllReferenceTypes || allowedReferenceTypes.includes('lines'))) {
-			formRef.current.setFieldValue('reference_type', 'lines');
-		} else if (enabledReferenceTypes.includes('stops') && (canUseAllReferenceTypes || allowedReferenceTypes.includes('stops'))) {
-			formRef.current.setFieldValue('reference_type', 'stops');
-		} else if (enabledReferenceTypes.includes('rides') && (canUseAllReferenceTypes || allowedReferenceTypes.includes('rides'))) {
-			formRef.current.setFieldValue('reference_type', 'rides');
-		} else if (enabledReferenceTypes.includes('agency') && (canUseAllReferenceTypes || allowedReferenceTypes.includes('agency'))) {
-			formRef.current.setFieldValue('reference_type', 'agency');
-		} else {
-			Logger.info('No enabled reference types available to set as default.');
-		}
-	}, [watchedFormValues.reference_type, enabledReferenceTypes, meContext.data.user.permissions, formRef]);
-
-	useEffect(() => {
-		// Skip if reference type is not agency
-		if (watchedFormValues.reference_type !== 'agency') return;
-		// Skip if no agency_id selected
-		if (!watchedFormValues.agency_id) return;
-		// Set selected references to the selected agency
-		formRef.current.setFieldValue('references', [{ child_ids: [], parent_id: watchedFormValues.agency_id }]);
-	}, [watchedFormValues.reference_type, watchedFormValues.agency_id, formRef]);
-
-	useEffect(() => {
-		// Skip if auto_texts is either true of false
-		if (watchedFormValues.auto_texts === true) return;
-		if (watchedFormValues.auto_texts === false) return;
-		// Preset auto texts flag to true when unset
-		formRef.current.setFieldValue('auto_texts', true);
-	}, [formRef, watchedFormValues.auto_texts]);
-
-	useEffect(() => {
-		// Reset effect and reference type when cause changes as they are dependent on cause
-		formRef.current.setFieldValue('effect', null);
-		formRef.current.setFieldValue('reference_type', null);
-		formRef.current.setFieldValue('references', []);
-	}, [formRef, watchedFormValues.cause]);
-
-	useEffect(() => {
-		// Reset reference type when effect changes as they are dependent on effect
-		formRef.current.setFieldValue('reference_type', null);
-		formRef.current.setFieldValue('references', []);
-	}, [formRef, watchedFormValues.effect]);
+	//
+	// F. Submit action
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', formRef.current.getValues()),
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', form.getValues()),
 		onSuccess: (updatedItem) => {
 			alertsListMutate();
 			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_DETAIL(updatedItem._id)));
@@ -238,16 +211,16 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	});
 
 	//
-	// E. Define State
+	// G. Define state
+	// control, getValues, setValue are stable references from useForm and do not
+	// change between renders, so they are safe to include in the memoized value.
 
-	const contextValue: AlertCreateContextState = {
+	const contextValue = useMemo<AlertCreateContextState>(() => ({
 		actions: {
 			create: handleCreate,
 		},
 		data: {
-			enabled_reference_types: enabledReferenceTypes,
-			form: formRef.current,
-			multi_step: multiStep,
+
 		},
 		flags: {
 			canCreate: true,
@@ -255,10 +228,14 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 			isCreating,
 			isLoading: false,
 		},
-	};
+		form: {
+			instance: form,
+			multi_step: multiStep,
+		},
+	}), [form, handleCreate, isCreating, multiStep]);
 
 	//
-	// F. Return state
+	// H. Return state
 
 	return (
 		<AlertCreateContext.Provider value={contextValue}>
@@ -267,4 +244,4 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	);
 
 	//
-};
+}
