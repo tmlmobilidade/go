@@ -1,5 +1,7 @@
 /* * */
 
+import { type UseFormReturn } from 'react-hook-form';
+
 import { type UseFilterStateStringReturnType } from '../hooks/use-filter-state-string';
 
 /**
@@ -24,9 +26,10 @@ export interface ListContextStateTemplate {
  * Use this interface to type the state of **Create** contexts.
  * It provides an `actions` section, with a create method
  * and a `flags` section, with error and loading flags.
- * You should add a `data: { ... }` section and expand these defaults as needed.
+ * You should add a `data: { ... }` and `form: { ... }` sections
+ * and expand these defaults as needed.
  */
-export interface CreateContextStateTemplate {
+export interface CreateContextStateTemplate<T> {
 	actions: {
 		create: () => void
 	}
@@ -35,6 +38,9 @@ export interface CreateContextStateTemplate {
 		error: Error | undefined
 		isCreating?: boolean
 		isLoading: boolean
+	}
+	form: {
+		instance: UseFormReturn<T>
 	}
 }
 
