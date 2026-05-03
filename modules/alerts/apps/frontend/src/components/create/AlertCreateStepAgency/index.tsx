@@ -6,6 +6,7 @@ import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, PermissionCatalog } from '@tmlmobilidade/types';
 import { Grid, Label, openConfirmModal, Section, Select, useDataAgencies } from '@tmlmobilidade/ui';
+import { Controller } from 'react-hook-form';
 
 /* * */
 
@@ -25,8 +26,8 @@ export function AlertCreateStepAgency() {
 	//
 	// B. Handle actions
 
-	const handleChangeAgencyId = (value: Alert['agency_id']) => {
-		if (alertCreateContext.data.form.getValues().references?.length > 0) {
+	const handleChangeAgencyId = (value: Alert['agency_id'], fieldOnChange: (v: Alert['agency_id']) => void) => {
+		if (alertCreateContext.form.instance.getValues('references')?.length > 0) {
 			openConfirmModal({
 				cancelProps: { variant: 'danger' },
 				centered: true,
@@ -34,14 +35,14 @@ export function AlertCreateStepAgency() {
 				closeOnClickOutside: true,
 				labels: { cancel: 'Cancelar', confirm: 'Continuar' },
 				onConfirm: () => {
-					alertCreateContext.data.form.setFieldValue('agency_id', value);
-					alertCreateContext.data.form.setFieldValue('references', []);
+					fieldOnChange(value);
+					alertCreateContext.form.instance.setValue('references', []);
 				},
 				title: 'Tem a certeza que pretende mudar de operador?',
 			});
 		} else {
-			alertCreateContext.data.form.setFieldValue('agency_id', value);
-			alertCreateContext.data.form.setFieldValue('references', []);
+			fieldOnChange(value);
+			alertCreateContext.form.instance.setValue('references', []);
 		}
 	};
 
@@ -52,12 +53,20 @@ export function AlertCreateStepAgency() {
 		<Section>
 			<Grid gap="md">
 				{agenciesOptions.length > 1 && (
-					<Select
-						clearable={false}
-						data={agenciesOptions}
-						label="Operador afetado"
-						{...alertCreateContext.data.form.getInputProps('agency_id')}
-						onChange={handleChangeAgencyId}
+					<Controller
+						control={alertCreateContext.form.instance.control}
+						name="agency_id"
+						render={({ field, fieldState }) => (
+							<Select
+								clearable={false}
+								data={agenciesOptions}
+								error={fieldState.error?.message}
+								label="Operador afetado"
+								onBlur={field.onBlur}
+								onChange={value => handleChangeAgencyId(value, field.onChange)}
+								value={field.value}
+							/>
+						)}
 					/>
 				)}
 			</Grid>

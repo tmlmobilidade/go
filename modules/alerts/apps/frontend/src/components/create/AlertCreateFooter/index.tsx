@@ -16,6 +16,8 @@ export function AlertCreateFooter() {
 
 	const alertCreateContext = useAlertCreateContext();
 
+	const publishStatusValue = alertCreateContext.form.instance.watch('publish_status');
+
 	//
 	// B. Render components
 
@@ -30,7 +32,7 @@ export function AlertCreateFooter() {
 			>
 				<PublishStatusTag
 					onChange={value => alertCreateContext.form.instance.setValue('publish_status', value)}
-					value={alertCreateContext.form.instance.getValues('publish_status')}
+					value={publishStatusValue}
 				/>
 			</HasPermission>
 
