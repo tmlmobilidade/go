@@ -25,6 +25,7 @@
 	},
 	"dependencies": {
 		"@carrismetropolitana/api-types": "20260419.1736.4",
+		"@hookform/resolvers": "5.2.2",
 		"@mantine/charts": "9.1.1",
 		"@mantine/core": "9.1.1",
 		"@mantine/dates": "9.1.1",
@@ -52,6 +53,7 @@
 		"maplibre-gl": "5.24.0",
 		"next": "16.2.4",
 		"nuqs": "2.8.9",
+		"react-hook-form": "7.75.0",
 		"react-i18next": "17.0.6",
 		"react-viewport-list": "7.1.2",
 		"swr": "2.4.1",
