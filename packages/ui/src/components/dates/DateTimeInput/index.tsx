@@ -170,6 +170,7 @@ export function DateTimeInput(props: DateTimeInputProps) {
 				error={props.error}
 				label={props.label}
 				leftSection={<IconCalendar size={20} />}
+				popoverProps={{ withinPortal: false }}
 				onChange={setDateInputValue}
 				placeholder={props.placeholder ?? 'Selecione uma data...'}
 				readOnly={props.readOnly}
@@ -185,6 +186,7 @@ export function DateTimeInput(props: DateTimeInputProps) {
 				leftSection={<IconClock size={20} />}
 				onChange={setTimePickerValue}
 				readOnly={props.readOnly}
+				popoverProps={{ withinPortal: false }}
 				value={timePickerValue}
 				withSeconds={props.withSeconds}
 				presets={[
