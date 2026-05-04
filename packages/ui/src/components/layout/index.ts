@@ -2,6 +2,7 @@ export * from './Collapsible';
 export * from './Divider';
 export * from './DraggableList';
 export * from './Grid';
+export * from './Menu';
 export * from './Section';
 export * from './Spacer';
 export * from './Surface';
