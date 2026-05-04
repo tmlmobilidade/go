@@ -5,8 +5,7 @@
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { type OrganizationNormalized } from '@/types/normalized';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { useSearch } from '@tmlmobilidade/ui';
-import { useQueryState } from 'nuqs';
+import { useQueryState, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
