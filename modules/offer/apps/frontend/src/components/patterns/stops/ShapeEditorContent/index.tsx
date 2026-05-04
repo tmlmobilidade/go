@@ -16,9 +16,11 @@ export function ShapeEditorContent() {
 	const stopsEditorContext = useStopsEditorContext();
 
 	const lineData = useMemo(() => {
-		if (stopsEditorContext.data.routeData?.legs?.length) {
+		const legs = stopsEditorContext.data.routeData?.legs ?? patternDetailContext.data.form.values.shape?.legs;
+
+		if (legs?.length) {
 			return {
-				features: stopsEditorContext.data.routeData.legs.map(leg => ({
+				features: legs.map(leg => ({
 					geometry: {
 						coordinates: leg.geometry,
 						type: 'LineString' as const,
@@ -37,6 +39,7 @@ export function ShapeEditorContent() {
 
 		return patternDetailContext.geojson.pattern_line;
 	}, [
+		patternDetailContext.data.form.values.shape?.legs,
 		patternDetailContext.data.id,
 		patternDetailContext.data.typologyData?.color,
 		patternDetailContext.geojson.pattern_line,
@@ -89,7 +92,7 @@ export function ShapeEditorContent() {
 
 	return (
 		<div className={styles.container}>
-			<Section width="40%">
+			<Section width="30%">
 				<StopsList />
 			</Section>
 
@@ -102,11 +105,14 @@ export function ShapeEditorContent() {
 			<div className={styles.mapWrapper}>
 				<MapView id="shapeMapView">
 					<MapOverlayPatternShape
+						anchorsData={stopsEditorContext.data.anchors}
 						enableAnchorPreview={stopsEditorContext.flags.isEditableShape}
 						id="pattern-shape"
 						lineColor={patternDetailContext.data.typologyData?.color || undefined}
 						lineData={lineData}
 						onAnchorDrop={handleAnchorDrop}
+						onAnchorMove={(anchorId, event) => void stopsEditorContext.actions.moveShapeAnchor(anchorId, event.lat, event.lon)}
+						onAnchorRemove={anchorId => void stopsEditorContext.actions.removeShapeAnchor(anchorId)}
 						stopsData={patternDetailContext.geojson.pattern_stops}
 					/>
 				</MapView>

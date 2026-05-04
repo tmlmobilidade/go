@@ -56,6 +56,27 @@ const ShapeAnchorSchema = z.object({
 	type: z.enum(['via', 'through']).default('via'),
 });
 
+const ShapeLegSchema = z.object({
+	distance: z.number(),
+	duration: z.number(),
+	from_index: z.number(),
+	geojson: z.object({
+		geometry: z.object({
+			coordinates: z.array(z.array(z.number())),
+			type: z.string().default('LineString'),
+		}),
+		properties: z.object({
+			distance: z.number(),
+			duration: z.number(),
+			from_index: z.number(),
+			to_index: z.number(),
+		}),
+		type: z.string().default('Feature'),
+	}),
+	geometry: z.array(z.tuple([z.number(), z.number()])),
+	to_index: z.number(),
+});
+
 export const ShapeSchema = z.object({
 	anchors: z.array(ShapeAnchorSchema).optional().default([]),
 	extension: z.number(),
@@ -67,6 +88,7 @@ export const ShapeSchema = z.object({
 		properties: z.object({}).optional(),
 		type: z.string().default('Feature'),
 	}),
+	legs: z.array(ShapeLegSchema).optional(),
 	// source: z.enum(['imported', 'manual', 'valhalla']).default('imported'),
 });
 

@@ -59,8 +59,10 @@ interface StopsEditorContextState {
 		addStop: (stop: Stop, index: number) => Promise<void>
 		appendStop: (stop: Stop) => Promise<void>
 		convertShapeToEditable: () => Promise<void>
+		moveShapeAnchor: (anchorId: string, lat: number, lon: number) => Promise<void>
 		prependStop: (stop: Stop) => Promise<void>
 		recomputeRoute: (path: Path[], anchors?: ShapeAnchor[]) => Promise<void>
+		removeShapeAnchor: (anchorId: string) => Promise<void>
 		removeStop: (index: number) => Promise<void>
 		reorderStops: (path: Path[]) => Promise<void>
 		revertPath: () => void
@@ -107,7 +109,11 @@ function createPathItemFromStop(stop: Stop): Path {
 	};
 }
 
-function applyRouteToPath(path: Path[], routeData: RoutePreviewResponse): Path[] {
+function applyRouteToPath(path: Path[], routeData: RoutePreviewResponse, points: RoutePreviewPoint[]): Path[] {
+	const breakIndices = points
+		.map((p, i) => (p.type === 'break' ? i : -1))
+		.filter(i => i !== -1);
+
 	return path.map((pathItem, index) => {
 		if (index === 0) {
 			return {
@@ -116,11 +122,16 @@ function applyRouteToPath(path: Path[], routeData: RoutePreviewResponse): Path[]
 			};
 		}
 
-		const leg = routeData.legs[index - 1];
+		const fromBreakIdx = breakIndices[index - 1];
+		const toBreakIdx = breakIndices[index];
+
+		const distance = routeData.legs
+			.filter(leg => leg.from_index >= fromBreakIdx && leg.to_index <= toBreakIdx)
+			.reduce((sum, leg) => sum + leg.distance, 0);
 
 		return {
 			...pathItem,
-			distance_delta: leg ? Math.round(leg.distance) : 0,
+			distance_delta: Math.round(distance),
 		};
 	});
 }
@@ -130,8 +141,8 @@ function buildRoutePreviewPoints(path: Path[], anchors: ShapeAnchor[]): RoutePre
 		.filter(pathItem => pathItem.stop)
 		.flatMap((pathItem, index, filteredPath) => {
 			const stopPoint: RoutePreviewPoint = {
-				lat: pathItem.stop!.latitude,
-				lon: pathItem.stop!.longitude,
+				lat: pathItem.stop?.latitude ?? 0,
+				lon: pathItem.stop?.longitude ?? 0,
 				type: 'break',
 			};
 
@@ -198,7 +209,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 				return;
 			}
 
-			const updatedPath = applyRouteToPath(nextPath, res.data);
+			const updatedPath = applyRouteToPath(nextPath, res.data, points);
 
 			patternDetailContext.data.form.setFieldValue('path', updatedPath);
 
@@ -207,6 +218,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 				anchors: nextAnchors,
 				extension: Math.round(res.data.distance),
 				geojson: res.data.geojson,
+				legs: res.data.legs,
 			});
 
 			setRouteData(res.data);
@@ -282,6 +294,18 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 		await recomputeRoute(nextPath, nextAnchors);
 	}, [anchors, patternDetailContext.data.form, recomputeRoute]);
 
+	const removeShapeAnchor = useCallback(async (anchorId: string) => {
+		const nextAnchors = anchors.filter(a => a._id !== anchorId);
+		patternDetailContext.data.form.setFieldValue('shape.anchors', nextAnchors);
+		await recomputeRoute(path, nextAnchors);
+	}, [anchors, path, patternDetailContext.data.form, recomputeRoute]);
+
+	const moveShapeAnchor = useCallback(async (anchorId: string, lat: number, lon: number) => {
+		const nextAnchors = anchors.map(a => a._id === anchorId ? { ...a, lat, lon } : a);
+		patternDetailContext.data.form.setFieldValue('shape.anchors', nextAnchors);
+		await recomputeRoute(path, nextAnchors);
+	}, [anchors, path, patternDetailContext.data.form, recomputeRoute]);
+
 	const revertPath = useCallback(() => {
 		const originalPattern = patternDetailContext.data.pattern;
 		if (!originalPattern) return;
@@ -300,8 +324,10 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 			addStop,
 			appendStop,
 			convertShapeToEditable,
+			moveShapeAnchor,
 			prependStop,
 			recomputeRoute,
+			removeShapeAnchor,
 			removeStop,
 			reorderStops,
 			revertPath,
@@ -317,7 +343,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 			isEditableShape,
 			isLoadingRoute,
 		},
-	}), [addShapeAnchor, addStop, appendStop, convertShapeToEditable, prependStop, recomputeRoute, removeStop, reorderStops, revertPath, submit, anchors, hasUnsavedChanges, path, routeData, isEditableShape, isLoadingRoute]);
+	}), [addShapeAnchor, addStop, appendStop, convertShapeToEditable, moveShapeAnchor, prependStop, recomputeRoute, removeShapeAnchor, removeStop, reorderStops, revertPath, submit, anchors, hasUnsavedChanges, path, routeData, isEditableShape, isLoadingRoute]);
 
 	return (
 		<StopsEditorContext.Provider value={contextValue}>
