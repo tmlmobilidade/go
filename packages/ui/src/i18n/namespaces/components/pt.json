@@ -1,5 +1,9 @@
 {
 	"buttons": {
+		"DuplicateButton": {
+			"label": "Duplicar",
+			"tooltip": "Criar cópia deste documento"
+		},
 		"SaveButton": {
 			"label": "Guardar",
 			"tooltip": "Guardar Alterações"
