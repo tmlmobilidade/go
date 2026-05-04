@@ -6,7 +6,7 @@ import { type CreateYearPeriodDto, CreateYearPeriodSchema, type YearPeriod } fro
 import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -54,14 +54,14 @@ export const PeriodCreateContextProvider = ({ children }: PropsWithChildren) => 
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<CreateYearPeriodDto>(CreateYearPeriodSchema);
+	const { form } = useTypicalForm<CreateYearPeriodDto>(CreateYearPeriodSchema);
 
 	//
 	// D. Handle actions
 
 	const handleCreatePeriod = async () => {
 		setIsSaving(true);
-		const response = await fetchData<YearPeriod>(API_ROUTES.dates.YEAR_PERIODS_LIST, 'POST', formRef.current.getValues());
+		const response = await fetchData<YearPeriod>(API_ROUTES.dates.YEAR_PERIODS_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({ message: response.error, title: 'Erro ao criar período' });
@@ -75,7 +75,7 @@ export const PeriodCreateContextProvider = ({ children }: PropsWithChildren) => 
 			setIsSaving(false);
 			return;
 		}
-		formRef.current.reset();
+		form.reset();
 		void allYearPeriodsMutate();
 		setIsSaving(false);
 		closeCreatePeriodModal();
@@ -86,17 +86,19 @@ export const PeriodCreateContextProvider = ({ children }: PropsWithChildren) => 
 	//
 	// D. Define context value
 
-	const contextValue: PeriodCreateContextState = {
-		actions: {
-			createPeriod: handleCreatePeriod,
-		},
-		data: {
-			form: formRef.current,
-		},
-		flags: {
-			isSaving,
-		},
-	};
+	const contextValue: PeriodCreateContextState = useMemo(() => {
+		return {
+			actions: {
+				createPeriod: handleCreatePeriod,
+			},
+			data: {
+				form,
+			},
+			flags: {
+				isSaving,
+			},
+		};
+	}, [form, isSaving]);
 
 	//
 	// E. Render components
