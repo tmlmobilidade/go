@@ -23,7 +23,7 @@ export function getPublishStatus(alertData: Alert): PublishStatus {
 	// Check the active period and publish period
 	// to determine if the alert should be published
 
-	let result: PublishStatus = 'draft';
+	let result: PublishStatus = alertData.publish_status;
 
 	const nowUnixTimestamp = Dates.now('Europe/Lisbon').unix_timestamp;
 
