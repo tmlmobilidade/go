@@ -1,7 +1,8 @@
 /* * */
 
-import { exportAgencyFile, exportCalendarDates, exportFareAttributes, exportFareForRoute, exportRoute, exportShape, exportStop, exportStopTimesForPattern, exportTripsForPattern, exportZoning } from '@/exports/index.js';
+import { exportAgencyFile, exportCalendarDates, exportCalendarMap, exportFareAttributes, exportFareForRoute, exportRoute, exportShape, exportStop, exportStopTimesForPattern, exportTripsForPattern, exportZoning } from '@/exports/index.js';
 import { type ExportProgress, type GtfsV29ExportConfig } from '@/types.js';
+import { rewriteServiceIds, rewriteTripIds } from '@/utils/rewrite-service-ids.js';
 import { ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { agencies, lines, patterns, routes, stops } from '@tmlmobilidade/interfaces';
@@ -461,6 +462,28 @@ export async function exportGtfsV29(
 		await exportConfig.writers.stop_times.flush();
 
 		Logger.success('All files flushed successfully');
+
+		//
+		// Step 7: Apply numeric calendar codes (if enabled)
+		// Rewrite service_id in trips.txt and calendar_dates.txt, then write calendar_map.txt
+
+		if (exportConfig.numeric_calendar_codes) {
+			const numericMapping = serviceRegistry.buildNumericCalendarMapping();
+
+			rewriteServiceIds(`${exportConfig.workdir}/trips.txt`, numericMapping);
+			rewriteTripIds(`${exportConfig.workdir}/trips.txt`, numericMapping);
+			Logger.success('Rewrote service_id and trip_id in trips.txt to numeric codes');
+
+			rewriteServiceIds(`${exportConfig.workdir}/calendar_dates.txt`, numericMapping);
+			Logger.success('Rewrote service_id in calendar_dates.txt to numeric codes');
+
+			rewriteTripIds(`${exportConfig.workdir}/stop_times.txt`, numericMapping);
+			Logger.success('Rewrote trip_id in stop_times.txt to numeric codes');
+
+			await exportCalendarMap(numericMapping, exportConfig);
+			await exportConfig.writers.calendar_map.flush();
+			Logger.success('Exported calendar_map.txt');
+		}
 
 	//
 	} catch (error) {
