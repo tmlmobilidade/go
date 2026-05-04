@@ -2,9 +2,10 @@
 
 import { causePrompts, effectPrompts, initPrompts, referenceTypePrompts, unsafePromptIdentifier, userPrompts } from '@/prompts.js';
 import { PromptBuilder } from '@/utils.js';
+import { OCIGenerativeAIProvider } from '@tmlmobilidade/ai';
 import { getOperationalLinesBatch, getOperationalStopsBatch } from '@tmlmobilidade/controllers';
 import { Dates } from '@tmlmobilidade/dates';
-import { agencies, OCIGenerativeAIProvider, rides } from '@tmlmobilidade/interfaces';
+import { agencies, rides } from '@tmlmobilidade/interfaces';
 import { type Agency, type Alert, type I18nCode, I18nCodeValues, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
