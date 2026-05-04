@@ -27,7 +27,7 @@ export function OrganizationsListHeader() {
 		<Toolbar>
 			<Label size="lg" caps singleLine>{t('default:organizations.list.header.title')}</Label>
 			<Spacer />
-			<SearchInput onChange={organizationsListContext.actions.setFilterSearch} value={organizationsListContext.filters.search} />
+			<SearchInput onChange={organizationsListContext.filters.search.set} value={organizationsListContext.filters.search.value} />
 			<Button icon={<IconPlus size={20} />} label={t('default:organizations.list.header.NewOrganizationButton.label')} onClick={openCreateOrganizationModal} />
 		</Toolbar>
 	);
