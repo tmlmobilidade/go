@@ -23,8 +23,6 @@
 }
 
 .anchorPreview {
-	width: 22px;
-	height: 22px;
 	pointer-events: none;
 	background: var(--color-system-background-100);
 	border: 3px solid var(--color-system-text-300);
@@ -36,3 +34,56 @@
 .anchorPreview[data-mode='dragging'] {
 	transform: rotate(45deg) scale(1.15);
 }
+
+.anchorMarker {
+	cursor: pointer;
+	background: var(--color-system-background-100);
+	border: 3px solid var(--color-system-text-300);
+	border-radius: 3px;
+	box-shadow: 0 2px 8px rgb(0 0 0 / 30%);
+	transform: rotate(45deg);
+	transition: transform 100ms ease, box-shadow 100ms ease;
+}
+
+.anchorMarker:hover {
+	box-shadow: 0 3px 12px rgb(0 0 0 / 40%);
+	transform: rotate(45deg) scale(1.2);
+}
+
+.anchorRemoveButton {
+	all: unset;
+	box-sizing: border-box;
+	width: 100%;
+	padding: 4px 8px;
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--mantine-color-red-7);
+	text-align: center;
+	cursor: pointer;
+	background: var(--mantine-color-red-0);
+	border-radius: 4px;
+	transition: background 120ms ease;
+}
+
+.anchorRemoveButton:hover {
+	background: var(--mantine-color-red-1);
+}
+
+
+/* stylelint-disable selector-class-pattern, selector-pseudo-class-no-unknown */
+:global(.maplibregl-canvas-container.is-anchor-hovering-road),
+:global(.maplibregl-canvas-container.is-anchor-hovering-road canvas) {
+	cursor: pointer !important;
+}
+
+:global(.maplibregl-canvas-container.is-anchor-dragging),
+:global(.maplibregl-canvas-container.is-anchor-dragging canvas) {
+	cursor: pointer !important;
+}
+
+:global(.maplibregl-canvas-container.is-anchor-invalid),
+:global(.maplibregl-canvas-container.is-anchor-invalid canvas) {
+	cursor: not-allowed !important;
+}
+
+/* stylelint-enable selector-class-pattern, selector-pseudo-class-no-unknown */

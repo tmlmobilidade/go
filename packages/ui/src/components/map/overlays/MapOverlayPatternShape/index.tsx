@@ -4,10 +4,25 @@
 
 import type { DataDrivenPropertyValueSpecification } from 'maplibre-gl';
 
+import { HoverCard } from '@mantine/core';
+import { nearestPointOnLine } from '@turf/turf';
 import { Layer, Marker, Popup, Source } from '@vis.gl/react-maplibre';
-import { type Feature, type FeatureCollection, type LineString, type Point } from 'geojson';
+import {
+	type Feature,
+	type FeatureCollection,
+	type LineString,
+	type Point,
+} from 'geojson';
 import { MapMouseEvent } from 'maplibre-gl';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+	Fragment,
+	type MouseEvent as ReactMouseEvent,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 
 import styles from './styles.module.css';
 
@@ -42,17 +57,49 @@ interface MapOverlayPatternShapeAnchorDropEvent {
 }
 
 interface MapOverlayPatternShapeProps {
+	anchorsData?: Array<{ _id: string, lat: number, lon: number }>
 	enableAnchorPreview?: boolean
 	id: string
 	lineColor?: string
 	lineData: Feature<LineString, MapOverlayPatternShapeLineDataProps> | FeatureCollection<LineString, MapOverlayPatternShapeLineDataProps> | null
 	onAnchorDrop?: (event: MapOverlayPatternShapeAnchorDropEvent) => void
-	stopsData?: FeatureCollection<Point, MapOverlayPatternShapeStopsDataProps> | null
+	onAnchorMove?: (anchorId: string, event: MapOverlayPatternShapeAnchorDropEvent) => void
+	onAnchorRemove?: (anchorId: string) => void
+	stopsData?: FeatureCollection<
+		Point,
+		MapOverlayPatternShapeStopsDataProps
+	> | null
 	thickness?: MapOverlayPatternShapeThickness
 	visible?: boolean
 }
 
 type MapOverlayPatternShapeThickness = 'lg' | 'md' | 'sm';
+
+const BASE_ROAD_LAYER_IDS = [
+	'tunnel_motorway_link',
+	'tunnel_service_track',
+	'tunnel_link',
+	'tunnel_minor',
+	'tunnel_secondary_tertiary',
+	'tunnel_trunk_primary',
+	'tunnel_motorway',
+
+	'road_motorway_link',
+	'road_service_track',
+	'road_link',
+	'road_minor',
+	'road_secondary_tertiary',
+	'road_trunk_primary',
+	'road_motorway',
+
+	'bridge_motorway_link',
+	'bridge_service_track',
+	'bridge_link',
+	'bridge_street',
+	'bridge_secondary_tertiary',
+	'bridge_trunk_primary',
+	'bridge_motorway',
+];
 
 const THICKNESS_CONFIG = {
 	lg: {
@@ -90,7 +137,15 @@ const THICKNESS_CONFIG = {
 	},
 } as const;
 
-const zoomInterpolate = (min: number, max: number): DataDrivenPropertyValueSpecification<number> => [
+const ANCHOR_SNAP_TOLERANCE_PX = {
+	max: 52,
+	min: 24,
+} as const;
+
+const zoomInterpolate = (
+	min: number,
+	max: number,
+): DataDrivenPropertyValueSpecification<number> => [
 	'interpolate',
 	['linear'],
 	['zoom'],
@@ -102,7 +157,19 @@ const zoomInterpolate = (min: number, max: number): DataDrivenPropertyValueSpeci
 
 /* * */
 
-export function MapOverlayPatternShape({ enableAnchorPreview = false, id, lineColor = '#000000', lineData, onAnchorDrop, stopsData, thickness = 'md', visible = true }: MapOverlayPatternShapeProps) {
+export function MapOverlayPatternShape({
+	anchorsData,
+	enableAnchorPreview = false,
+	id,
+	lineColor = '#000000',
+	lineData,
+	onAnchorDrop,
+	onAnchorMove,
+	onAnchorRemove,
+	stopsData,
+	thickness = 'md',
+	visible = true,
+}: MapOverlayPatternShapeProps) {
 	//
 
 	//
@@ -113,15 +180,27 @@ export function MapOverlayPatternShape({ enableAnchorPreview = false, id, lineCo
 	const mapViewContext = useMapViewContext();
 	const primaryHexColor = useCssVariable('--color-primary');
 
-	const anchorPreviewLayerId = useMemo(() => `${id}:pattern-shape:layer:line-anchor-preview-hitbox`, [id]);
+	const anchorPreviewLayerId = useMemo(
+		() => `${id}:pattern-shape:layer:line-anchor-preview-hitbox`,
+		[id],
+	);
 
-	const interactiveLayerIds = useMemo(() => [
-		`${id}:pattern-shape:layer:stops-circle`,
-		`${id}:pattern-shape:layer:stops-labels`,
-		anchorPreviewLayerId,
-	], [id, anchorPreviewLayerId]);
+	const interactiveLayerIds = useMemo(
+		() => [
+			`${id}:pattern-shape:layer:stops-circle`,
+			`${id}:pattern-shape:layer:stops-labels`,
+			anchorPreviewLayerId,
+		],
+		[id, anchorPreviewLayerId],
+	);
 
-	const [hoveredFeature, setHoveredFeature] = useState<Feature<Point, MapOverlayPatternShapeStopsDataProps> | null>(null);
+	const [hoveredFeature, setHoveredFeature] = useState<Feature<
+		Point,
+		MapOverlayPatternShapeStopsDataProps
+	> | null>(null);
+	const [hoveredAnchorId, setHoveredAnchorId] = useState<null | string>(null);
+	const [draggingAnchorId, setDraggingAnchorId] = useState<null | string>(null);
+	const [mapZoom, setMapZoom] = useState(15);
 	const [draftAnchor, setDraftAnchor] = useState<null | {
 		lat: number
 		lon: number
@@ -132,7 +211,54 @@ export function MapOverlayPatternShape({ enableAnchorPreview = false, id, lineCo
 		}
 	}>(null);
 
-	const getFeatureSegment = (feature: { properties?: Record<string, unknown> }) => {
+	// Ref to suppress hitbox-layer interactions when cursor is over an anchor DOM marker.
+	// Track the last hovered stop feature id so we can clear its hover state.
+	const prevHoveredStopIdRef = useRef<null | number>(null);
+
+	const stopsSourceId = useMemo(() => `${id}:pattern-shape:source:stops`, [id]);
+
+	const anchorMarkerSizePx = useMemo(() => {
+		const [minStop, maxStop] = thicknessConfig.stop;
+		const t = Math.max(0, Math.min(1, (mapZoom - 10) / 15));
+		return Math.round((minStop + t * (maxStop - minStop)) * 2);
+	}, [mapZoom, thicknessConfig.stop]);
+
+	const clearStopHoverState = useCallback(() => {
+		const map = mapViewContext.ref.map.current;
+		if (!map || prevHoveredStopIdRef.current === null) return;
+		map.setFeatureState(
+			{ id: prevHoveredStopIdRef.current, source: stopsSourceId },
+			{ hover: false },
+		);
+		prevHoveredStopIdRef.current = null;
+	}, [mapViewContext.ref.map, stopsSourceId]);
+
+	const getSnappedAnchor = useCallback(
+		(event: MapMouseEvent, feature: ReturnType<typeof event.target.queryRenderedFeatures>[number]) => {
+			if (feature.geometry?.type !== 'LineString') {
+				return null;
+			}
+
+			const snapped = nearestPointOnLine(
+				feature as unknown as Feature<LineString>,
+				[event.lngLat.lng, event.lngLat.lat],
+				{ units: 'meters' },
+			);
+
+			const [lon, lat] = snapped.geometry.coordinates;
+
+			return {
+				lat,
+				lon,
+				segment: getFeatureSegment(feature),
+			};
+		},
+		[],
+	);
+
+	const getFeatureSegment = (feature: {
+		properties?: Record<string, unknown>
+	}) => {
 		const fromIndex = Number(feature.properties?.from_index);
 		const toIndex = Number(feature.properties?.to_index);
 
@@ -146,106 +272,376 @@ export function MapOverlayPatternShape({ enableAnchorPreview = false, id, lineCo
 		};
 	};
 
+	const getExistingLayerIds = useCallback(
+		(layerIds: string[]) => {
+			const map = mapViewContext.ref.map.current;
+			if (!map) return [];
+
+			return layerIds.filter(layerId => map.getLayer(layerId));
+		},
+		[mapViewContext.ref.map],
+	);
+
+	type MapCursorMode = '' | 'anchor' | 'dragging-anchor' | 'invalid-anchor';
+
+	const setMapCursor = useCallback((mode: MapCursorMode) => {
+		const map = mapViewContext.ref.map.current;
+		if (!map) return;
+
+		const container = map.getCanvasContainer();
+
+		container.classList.remove(
+			'is-anchor-hovering-road',
+			'is-anchor-dragging',
+			'is-anchor-invalid',
+		);
+
+		if (mode === 'anchor') {
+			container.classList.add('is-anchor-hovering-road');
+			return;
+		}
+
+		if (mode === 'dragging-anchor') {
+			container.classList.add('is-anchor-dragging');
+			return;
+		}
+
+		if (mode === 'invalid-anchor') {
+			container.classList.add('is-anchor-invalid');
+		}
+	}, [mapViewContext.ref.map]);
+
+	const getAnchorSnapTolerancePx = useCallback(
+		(zoom: number) => {
+			const t = Math.max(0, Math.min(1, (zoom - 10) / 15));
+
+			return (
+				ANCHOR_SNAP_TOLERANCE_PX.min +
+				t * (ANCHOR_SNAP_TOLERANCE_PX.max - ANCHOR_SNAP_TOLERANCE_PX.min)
+			);
+		},
+		[],
+	);
+
+	const getQueryBoxAroundPoint = useCallback(
+		(event: MapMouseEvent, radiusPx: number) => {
+			return [
+				[event.point.x - radiusPx, event.point.y - radiusPx],
+				[event.point.x + radiusPx, event.point.y + radiusPx],
+			] as [[number, number], [number, number]];
+		},
+		[],
+	);
+
+	const getExistingBaseRoadLayerIds = useCallback(() => {
+		const map = mapViewContext.ref.map.current;
+		if (!map) return [];
+
+		return BASE_ROAD_LAYER_IDS.filter(layerId => map.getLayer(layerId));
+	}, [mapViewContext.ref.map]);
+
+	const getSnappedBaseRoadAnchor = useCallback(
+		(event: MapMouseEvent) => {
+			const roadLayerIds = getExistingBaseRoadLayerIds();
+
+			if (roadLayerIds.length === 0) return null;
+
+			const tolerancePx = getAnchorSnapTolerancePx(event.target.getZoom());
+			const queryBox = getQueryBoxAroundPoint(event, tolerancePx);
+
+			const roadFeatures = event.target
+				.queryRenderedFeatures(queryBox, {
+					layers: roadLayerIds,
+				})
+				.filter(feature =>
+					feature.geometry?.type === 'LineString' ||
+					feature.geometry?.type === 'MultiLineString',
+				);
+
+			if (roadFeatures.length === 0) return null;
+
+			const candidates = roadFeatures
+				.map((feature) => {
+					const snapped = nearestPointOnLine(
+						feature as unknown as Feature<LineString>,
+						[event.lngLat.lng, event.lngLat.lat],
+						{ units: 'meters' },
+					);
+
+					const [lon, lat] = snapped.geometry.coordinates;
+					const projected = event.target.project([lon, lat]);
+
+					const screenDistance = Math.hypot(
+						projected.x - event.point.x,
+						projected.y - event.point.y,
+					);
+
+					return {
+						lat,
+						lon,
+						screenDistance,
+					};
+				})
+				.filter(candidate => candidate.screenDistance <= tolerancePx)
+				.sort((a, b) => a.screenDistance - b.screenDistance);
+
+			return candidates.at(0) ?? null;
+		},
+		[
+			getAnchorSnapTolerancePx,
+			getExistingBaseRoadLayerIds,
+			getQueryBoxAroundPoint,
+		],
+	);
+
 	//
 	// B. Handle actions
 
 	useEffect(() => {
-		// Register features for sources in this overlay component
-		if (lineData) mapViewContext.actions.registerOverlaySource(`${id}:pattern-shape:source:line`, lineData);
-		if (stopsData) mapViewContext.actions.registerOverlaySource(`${id}:pattern-shape:source:stops`, stopsData);
+		const map = mapViewContext.ref.map.current;
+		if (!map) return;
+
+		setMapZoom(map.getZoom());
+
+		const handleZoom = () => setMapZoom(map.getZoom());
+		map.on('zoom', handleZoom);
 		return () => {
-			mapViewContext.actions.unregisterOverlaySource(`${id}:pattern-shape:source:line`);
-			mapViewContext.actions.unregisterOverlaySource(`${id}:pattern-shape:source:stops`);
+			map.off('zoom', handleZoom);
+		};
+	}, [mapViewContext.ref.map]);
+
+	useEffect(() => {
+		// Register features for sources in this overlay component
+		if (lineData)
+			mapViewContext.actions.registerOverlaySource(
+				`${id}:pattern-shape:source:line`,
+				lineData,
+			);
+		if (stopsData)
+			mapViewContext.actions.registerOverlaySource(
+				`${id}:pattern-shape:source:stops`,
+				stopsData,
+			);
+		return () => {
+			mapViewContext.actions.unregisterOverlaySource(
+				`${id}:pattern-shape:source:line`,
+			);
+			mapViewContext.actions.unregisterOverlaySource(
+				`${id}:pattern-shape:source:stops`,
+			);
 		};
 	}, [id, lineData, mapViewContext.actions, stopsData]);
 
-	const handleMouseMoveEvent = useCallback((event: MapMouseEvent) => {
-		if (draftAnchor?.mode === 'dragging') {
-			setDraftAnchor({
-				lat: event.lngLat.lat,
-				lon: event.lngLat.lng,
-				mode: 'dragging',
-				segment: draftAnchor.segment,
-			});
+	const handleMouseMoveEvent = useCallback(
+		(event: MapMouseEvent) => {
+			if (draftAnchor?.mode === 'dragging') {
+				const snappedRoadAnchor = getSnappedBaseRoadAnchor(event);
 
-			event.target.getCanvas().style.cursor = 'none';
-			return;
-		}
+				if (!snappedRoadAnchor) {
+					setMapCursor('invalid-anchor');
+					return;
+				}
 
-		const relevantFeature = event.target
-			.queryRenderedFeatures(event.point)
-			.find(feature => interactiveLayerIds.includes(feature.layer.id));
+				setDraftAnchor({
+					...snappedRoadAnchor,
+					mode: 'dragging',
+					segment: draftAnchor?.segment,
+				});
 
-		if (!relevantFeature) {
-			setHoveredFeature(null);
+				setMapCursor('dragging-anchor');
+				return;
+			}
+
+			const existingInteractiveLayerIds = getExistingLayerIds(interactiveLayerIds);
+
+			const relevantFeature = existingInteractiveLayerIds.length > 0
+				? event.target
+					.queryRenderedFeatures(event.point, {
+						layers: existingInteractiveLayerIds,
+					})
+					.at(0)
+				: undefined;
+
+			if (!relevantFeature) {
+				clearStopHoverState();
+				setHoveredFeature(null);
+				setDraftAnchor(null);
+				setHoveredAnchorId(null);
+				setMapCursor('');
+				event.target.dragPan?.enable?.();
+				return;
+			}
+
+			if (
+				enableAnchorPreview &&
+				relevantFeature.layer.id === anchorPreviewLayerId
+			) {
+				clearStopHoverState();
+				setHoveredFeature(null);
+
+				const snappedAnchor = getSnappedAnchor(event, relevantFeature);
+
+				if (!snappedAnchor) {
+					setDraftAnchor(null);
+					setHoveredAnchorId(null);
+					setMapCursor('');
+					event.target.dragPan?.enable?.();
+					return;
+				}
+
+				setMapCursor('anchor');
+
+				// existing anchor hover check
+				if (anchorsData?.length) {
+					const hitRadius = getAnchorSnapTolerancePx(event.target.getZoom());
+
+					const anchorMatch = anchorsData.find((anchor) => {
+						const projected = event.target.project([anchor.lon, anchor.lat]);
+						const dx = projected.x - event.point.x;
+						const dy = projected.y - event.point.y;
+						return Math.hypot(dx, dy) < hitRadius;
+					});
+
+					if (anchorMatch) {
+						setDraftAnchor(null);
+						setHoveredAnchorId(anchorMatch._id);
+						return;
+					}
+				}
+
+				setHoveredAnchorId(null);
+
+				setDraftAnchor({
+					...snappedAnchor,
+					mode: 'hover',
+				});
+
+				return;
+			}
+
+			// Must be a stop feature.
 			setDraftAnchor(null);
-			event.target.getCanvas().style.cursor = '';
-			return;
-		}
+			setMapCursor('anchor');
+			setHoveredFeature(
+				relevantFeature as unknown as Feature<
+					Point,
+					MapOverlayPatternShapeStopsDataProps
+				>,
+			);
 
-		if (relevantFeature.layer.id === anchorPreviewLayerId) {
+			const featureId =
+				typeof relevantFeature.id === 'number' ? relevantFeature.id : null;
+
+			if (featureId !== null && featureId !== prevHoveredStopIdRef.current) {
+				clearStopHoverState();
+				event.target.setFeatureState(
+					{ id: featureId, source: stopsSourceId },
+					{ hover: true },
+				);
+				prevHoveredStopIdRef.current = featureId;
+			}
+		},
+		[anchorPreviewLayerId, anchorsData, clearStopHoverState, draftAnchor?.mode, draftAnchor?.segment, enableAnchorPreview, getAnchorSnapTolerancePx, getExistingLayerIds, getSnappedAnchor, getSnappedBaseRoadAnchor, interactiveLayerIds, setMapCursor, stopsSourceId],
+	);
+
+	const handleMouseDownEvent = useCallback(
+		(event: MapMouseEvent) => {
+			if (
+				!enableAnchorPreview ||
+				draftAnchor?.mode !== 'hover' ||
+				hoveredAnchorId !== null
+			)
+				return;
+
+			const relevantFeature = event.target
+				.queryRenderedFeatures(event.point)
+				.find(feature => feature.layer.id === anchorPreviewLayerId);
+
+			if (!relevantFeature) return;
+
+			event.preventDefault();
+
+			setMapCursor('dragging-anchor');
+
 			setHoveredFeature(null);
 
+			const snappedAnchor = getSnappedAnchor(event, relevantFeature);
+
+			if (!snappedAnchor) return;
+
 			setDraftAnchor({
-				lat: event.lngLat.lat,
-				lon: event.lngLat.lng,
+				...snappedAnchor,
+				mode: 'dragging',
+			});
+		},
+		[anchorPreviewLayerId, draftAnchor?.mode, enableAnchorPreview, getSnappedAnchor, hoveredAnchorId, setMapCursor],
+	);
+
+	const handleMouseUpEvent = useCallback(
+		(event: MapMouseEvent) => {
+			if (draftAnchor?.mode !== 'dragging') return;
+
+			event.target.dragPan?.enable?.();
+
+			const snappedRoadAnchor = getSnappedBaseRoadAnchor(event);
+
+			if (!snappedRoadAnchor) {
+				setDraftAnchor(null);
+				setDraggingAnchorId(null);
+				setMapCursor('');
+				return;
+			}
+
+			const droppedAnchor = {
+				...snappedRoadAnchor,
+				segment: draftAnchor.segment,
+			};
+
+			setDraftAnchor({
+				...droppedAnchor,
 				mode: 'hover',
-				segment: getFeatureSegment(relevantFeature),
 			});
 
-			event.target.getCanvas().style.cursor = 'none';
-			return;
-		}
+			setMapCursor('anchor');
 
-		setDraftAnchor(null);
-		event.target.getCanvas().style.cursor = '';
+			if (draggingAnchorId) {
+				onAnchorMove?.(draggingAnchorId, droppedAnchor);
+				setDraggingAnchorId(null);
+			} else {
+				onAnchorDrop?.(droppedAnchor);
+			}
+		},
+		[
+			draftAnchor,
+			draggingAnchorId,
+			getSnappedBaseRoadAnchor,
+			onAnchorDrop,
+			onAnchorMove,
+			setMapCursor,
+		],
+	);
 
-		setHoveredFeature(relevantFeature as unknown as Feature<Point, MapOverlayPatternShapeStopsDataProps>);
-	}, [anchorPreviewLayerId, draftAnchor, interactiveLayerIds]);
+	const handleAnchorMarkerMouseDown = useCallback(
+		(anchor: { _id: string, lat: number, lon: number }, e: ReactMouseEvent) => {
+			if (!enableAnchorPreview) return;
 
-	const handleMouseDownEvent = useCallback((event: MapMouseEvent) => {
-		if (!enableAnchorPreview || draftAnchor?.mode !== 'hover') return;
+			e.stopPropagation();
 
-		const relevantFeature = event.target
-			.queryRenderedFeatures(event.point)
-			.find(feature => feature.layer.id === anchorPreviewLayerId);
+			const map = mapViewContext.ref.map.current;
+			if (!map) return;
 
-		if (!relevantFeature) return;
-
-		event.preventDefault();
-
-		event.target.dragPan?.disable?.();
-		event.target.getCanvas().style.cursor = 'none';
-
-		setHoveredFeature(null);
-
-		setDraftAnchor({
-			lat: event.lngLat.lat,
-			lon: event.lngLat.lng,
-			mode: 'dragging',
-			segment: draftAnchor.segment,
-		});
-	}, [anchorPreviewLayerId, draftAnchor, enableAnchorPreview]);
-
-	const handleMouseUpEvent = useCallback((event: MapMouseEvent) => {
-		if (draftAnchor?.mode !== 'dragging') return;
-
-		event.target.dragPan?.enable?.();
-		event.target.getCanvas().style.cursor = '';
-
-		const droppedAnchor = {
-			lat: event.lngLat.lat,
-			lon: event.lngLat.lng,
-			segment: draftAnchor.segment,
-		};
-
-		setDraftAnchor({
-			...droppedAnchor,
-			mode: 'hover',
-		});
-
-		onAnchorDrop?.(droppedAnchor);
-	}, [draftAnchor, onAnchorDrop]);
+			map.dragPan?.disable?.();
+			setDraggingAnchorId(anchor._id);
+			setHoveredAnchorId(null);
+			setMapCursor('dragging-anchor');
+			setDraftAnchor({
+				lat: anchor.lat,
+				lon: anchor.lon,
+				mode: 'dragging',
+			});
+		},
+		[enableAnchorPreview, mapViewContext.ref.map, setMapCursor],
+	);
 
 	useEffect(() => {
 		const map = mapViewContext.ref.map.current;
@@ -262,8 +658,11 @@ export function MapOverlayPatternShape({ enableAnchorPreview = false, id, lineCo
 
 			map.dragPan?.enable?.();
 			map.getCanvas().style.cursor = '';
+			map.getCanvasContainer().style.cursor = '';
+			clearStopHoverState();
 		};
 	}, [
+		clearStopHoverState,
 		handleMouseDownEvent,
 		handleMouseMoveEvent,
 		handleMouseUpEvent,
@@ -279,7 +678,6 @@ export function MapOverlayPatternShape({ enableAnchorPreview = false, id, lineCo
 
 	return (
 		<>
-
 			{hoveredFeature && stopsData && (
 				<Popup
 					anchor="bottom"
@@ -291,9 +689,14 @@ export function MapOverlayPatternShape({ enableAnchorPreview = false, id, lineCo
 				>
 					<div className={styles.popup}>
 						<span className={styles.id}>#{hoveredFeature.properties.id}</span>
-						<span className={styles.name}>{hoveredFeature.properties.name}</span>
+						<span className={styles.name}>
+							{hoveredFeature.properties.name}
+						</span>
 						<Divider />
-						<span className={styles.value}>Sequência: {hoveredFeature.properties.sequence}/{stopsData.features.length}</span>
+						<span className={styles.value}>
+							Sequência: {hoveredFeature.properties.sequence}/
+							{stopsData.features.length}
+						</span>
 					</div>
 				</Popup>
 			)}
@@ -304,14 +707,42 @@ export function MapOverlayPatternShape({ enableAnchorPreview = false, id, lineCo
 					latitude={draftAnchor.lat}
 					longitude={draftAnchor.lon}
 				>
-					<div
-						className={styles.anchorPreview}
-						data-mode={draftAnchor.mode}
-					/>
+					<div className={styles.anchorPreview} data-mode={draftAnchor.mode} style={{ height: anchorMarkerSizePx, width: anchorMarkerSizePx }} />
 				</Marker>
 			)}
 
-			<Source data={lineData} id={`${id}:pattern-shape:source:line`} type="geojson" generateId>
+			{anchorsData?.map(anchor => (
+				<Fragment key={anchor._id}>
+					{draggingAnchorId !== anchor._id && (
+						<Marker anchor="center" latitude={anchor.lat} longitude={anchor.lon}>
+							<HoverCard closeDelay={150} openDelay={80} position="top" shadow="md" width={160} withArrow>
+								<HoverCard.Target>
+									<div
+										className={styles.anchorMarker}
+										data-hovered={hoveredAnchorId === anchor._id}
+										onMouseDown={enableAnchorPreview ? e => handleAnchorMarkerMouseDown(anchor, e) : undefined}
+										style={{ height: anchorMarkerSizePx, width: anchorMarkerSizePx }}
+									/>
+								</HoverCard.Target>
+								<HoverCard.Dropdown p={4}>
+									<button
+										className={styles.anchorRemoveButton}
+										onClick={() => onAnchorRemove?.(anchor._id)}
+									>
+										Remover desvio
+									</button>
+								</HoverCard.Dropdown>
+							</HoverCard>
+						</Marker>
+					)}
+				</Fragment>
+			))}
+
+			<Source
+				data={lineData}
+				id={`${id}:pattern-shape:source:line`}
+				type="geojson"
+			>
 				<Layer
 					id={`${id}:pattern-shape:layer:line-shadow`}
 					source={`${id}:pattern-shape:source:line`}
@@ -381,7 +812,15 @@ export function MapOverlayPatternShape({ enableAnchorPreview = false, id, lineCo
 							thicknessConfig.directionIcon[1],
 						),
 						'symbol-placement': 'line',
-						'symbol-spacing': ['interpolate', ['linear'], ['zoom'], 10, 2, 20, 30],
+						'symbol-spacing': [
+							'interpolate',
+							['linear'],
+							['zoom'],
+							10,
+							2,
+							20,
+							30,
+						],
 						'visibility': visible ? 'visible' : 'none',
 					}}
 					paint={{
@@ -403,14 +842,22 @@ export function MapOverlayPatternShape({ enableAnchorPreview = false, id, lineCo
 						paint={{
 							'line-color': '#000000',
 							'line-opacity': 0,
-							'line-width': zoomInterpolate(20, 60),
+							'line-width': zoomInterpolate(
+								ANCHOR_SNAP_TOLERANCE_PX.min,
+								ANCHOR_SNAP_TOLERANCE_PX.max,
+							),
 						}}
 					/>
 				)}
 			</Source>
 
 			{stopsData && (
-				<Source data={stopsData} id={`${id}:pattern-shape:source:stops`} type="geojson" generateId>
+				<Source
+					data={stopsData}
+					id={`${id}:pattern-shape:source:stops`}
+					type="geojson"
+					generateId
+				>
 					<Layer
 						id={`${id}:pattern-shape:layer:stops-shadow`}
 						source={`${id}:pattern-shape:source:stops`}
@@ -421,12 +868,32 @@ export function MapOverlayPatternShape({ enableAnchorPreview = false, id, lineCo
 						paint={{
 							'circle-blur': 1,
 							'circle-color': '#000000',
-							'circle-opacity': 0.3,
+							'circle-opacity': [
+								'case',
+								['boolean', ['feature-state', 'hover'], false],
+								0.5,
+								0.3,
+							] as DataDrivenPropertyValueSpecification<number>,
 							'circle-pitch-alignment': 'map',
-							'circle-radius': zoomInterpolate(
-								thicknessConfig.stopShadow[0],
-								thicknessConfig.stopShadow[1],
-							),
+							'circle-radius': [
+								'interpolate',
+								['linear'],
+								['zoom'],
+								10,
+								[
+									'case',
+									['boolean', ['feature-state', 'hover'], false],
+									thicknessConfig.stopShadow[0] * 1.6,
+									thicknessConfig.stopShadow[0],
+								],
+								25,
+								[
+									'case',
+									['boolean', ['feature-state', 'hover'], false],
+									thicknessConfig.stopShadow[1] * 1.6,
+									thicknessConfig.stopShadow[1],
+								],
+							] as DataDrivenPropertyValueSpecification<number>,
 						}}
 					/>
 					<Layer
@@ -439,16 +906,45 @@ export function MapOverlayPatternShape({ enableAnchorPreview = false, id, lineCo
 						paint={{
 							'circle-color': primaryHexColor,
 							'circle-pitch-alignment': 'map',
-							'circle-radius': zoomInterpolate(
-								thicknessConfig.stop[0],
-								thicknessConfig.stop[1],
-							),
+							'circle-radius': [
+								'interpolate',
+								['linear'],
+								['zoom'],
+								10,
+								[
+									'case',
+									['boolean', ['feature-state', 'hover'], false],
+									thicknessConfig.stop[0] * 1.4,
+									thicknessConfig.stop[0],
+								],
+								25,
+								[
+									'case',
+									['boolean', ['feature-state', 'hover'], false],
+									thicknessConfig.stop[1] * 1.4,
+									thicknessConfig.stop[1],
+								],
+							] as DataDrivenPropertyValueSpecification<number>,
 							'circle-stroke-color': '#ffffff',
-							'circle-stroke-width': zoomInterpolate(
-								thicknessConfig.stopStroke[0],
-								thicknessConfig.stopStroke[1],
-							),
-
+							'circle-stroke-width': [
+								'interpolate',
+								['linear'],
+								['zoom'],
+								10,
+								[
+									'case',
+									['boolean', ['feature-state', 'hover'], false],
+									thicknessConfig.stopStroke[0] * 3,
+									thicknessConfig.stopStroke[0],
+								],
+								25,
+								[
+									'case',
+									['boolean', ['feature-state', 'hover'], false],
+									thicknessConfig.stopStroke[1] * 3,
+									thicknessConfig.stopStroke[1],
+								],
+							] as DataDrivenPropertyValueSpecification<number>,
 						}}
 					/>
 					<Layer
