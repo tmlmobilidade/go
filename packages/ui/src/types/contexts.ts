@@ -1,6 +1,8 @@
 /* * */
 
-import { UseFilterStateStringReturnType } from '../hooks/use-filter-state-string';
+import { type UseFormReturn } from 'react-hook-form';
+
+import { type UseFilterStateStringReturnType } from '../hooks/use-filter-state-string';
 
 /**
  * Use this interface to type the state of **List** contexts.
@@ -16,6 +18,7 @@ export interface ListContextStateTemplate {
 	flags: {
 		error: Error | undefined
 		isLoading: boolean
+		isValidating?: boolean
 	}
 }
 
@@ -23,9 +26,10 @@ export interface ListContextStateTemplate {
  * Use this interface to type the state of **Create** contexts.
  * It provides an `actions` section, with a create method
  * and a `flags` section, with error and loading flags.
- * You should add a `data: { ... }` section and expand these defaults as needed.
+ * You should add a `data: { ... }` and `form: { ... }` sections
+ * and expand these defaults as needed.
  */
-export interface CreateContextStateTemplate {
+export interface CreateContextStateTemplate<T> {
 	actions: {
 		create: () => void
 	}
@@ -35,6 +39,9 @@ export interface CreateContextStateTemplate {
 		isCreating?: boolean
 		isLoading: boolean
 	}
+	form: {
+		instance: UseFormReturn<T>
+	}
 }
 
 /**
@@ -43,21 +50,28 @@ export interface CreateContextStateTemplate {
  * and a `flags` section, with error, isSaving and loading flags.
  * You should add a `data: { ... }` section and expand these defaults as needed.
  */
-export interface DetailContextStateTemplate {
+export interface DetailContextStateTemplate<T> {
 	actions: {
 		delete?: () => void
+		duplicate?: () => void
 		lock?: () => void
 		save: () => void
 	}
 	flags: {
 		canDelete?: boolean
+		canDuplicate?: boolean
 		canLock?: boolean
 		canSave?: boolean
 		error: Error | undefined
 		isDeleting?: boolean
+		isDuplicating?: boolean
 		isLoading: boolean
 		isLocking?: boolean
 		isReadOnly?: boolean
 		isSaving?: boolean
+		isValidating?: boolean
+	}
+	form: {
+		instance: UseFormReturn<T>
 	}
 }
