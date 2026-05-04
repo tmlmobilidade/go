@@ -29,7 +29,7 @@ export interface ListContextStateTemplate {
  * You should add a `data: { ... }` and `form: { ... }` sections
  * and expand these defaults as needed.
  */
-export interface CreateContextStateTemplate<T> {
+export interface CreateContextStateTemplate<T = any> {
 	actions: {
 		create: () => void
 	}
@@ -39,7 +39,7 @@ export interface CreateContextStateTemplate<T> {
 		isCreating?: boolean
 		isLoading: boolean
 	}
-	form: {
+	form?: {
 		instance: UseFormReturn<T>
 	}
 }
@@ -50,7 +50,7 @@ export interface CreateContextStateTemplate<T> {
  * and a `flags` section, with error, isSaving and loading flags.
  * You should add a `data: { ... }` section and expand these defaults as needed.
  */
-export interface DetailContextStateTemplate<T> {
+export interface DetailContextStateTemplate<T = any> {
 	actions: {
 		delete?: () => void
 		duplicate?: () => void
@@ -71,7 +71,7 @@ export interface DetailContextStateTemplate<T> {
 		isSaving?: boolean
 		isValidating?: boolean
 	}
-	form: {
+	form?: {
 		instance: UseFormReturn<T>
 	}
 }
