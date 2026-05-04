@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /* * */
 
 import { normalizeString } from '@tmlmobilidade/strings';
@@ -14,7 +16,7 @@ import { getValueAtPath } from '@tmlmobilidade/utils';
  */
 export function accessorSearch<T>(record: T, accessor: keyof T, query: string) {
 	// Get the value at the specified accessor path
-	const valueAtPath = getValueAtPath(record, accessor);
+	const valueAtPath = getValueAtPath(record, accessor as any);
 	// If there is no value return false
 	if (!valueAtPath) return false;
 	// Convert the value to a string and normalize it
