@@ -130,8 +130,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 
 		if (response.ok) {
 			useToast.success({ message: 'As imagens foram carregadas com sucesso', title: 'Sucesso' });
-		}
-		else {
+		} else {
 			useToast.error({ message: result.error || 'Erro ao carregar imagens', title: 'Erro' });
 		}
 	};
