@@ -52,6 +52,7 @@ export function UsersListContextProvider({ children }: PropsWithChildren) {
 
 	const rolesContext = useRolesContext();
 	const organizationsContext = useOrganizationsContext();
+
 	//
 	// B. Setup filters
 
