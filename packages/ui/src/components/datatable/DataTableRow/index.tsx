@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 'use client';
 
 /* * */
@@ -55,9 +57,9 @@ export function DataTableRow<T = Record<string, unknown>>({ columns, isSelected,
 			className={styles.row}
 			data-is-clickable={!!onRowClick}
 			data-is-selected={isSelected}
-			onClick={() => onRowClick && onRowClick(record)}
-			onContextMenu={() => onRowContextMenu && onRowContextMenu(record)}
-			onDoubleClick={() => onRowDoubleClick && onRowDoubleClick(record)}
+			onClick={() => onRowClick?.(record)}
+			onContextMenu={() => onRowContextMenu?.(record)}
+			onDoubleClick={() => onRowDoubleClick?.(record)}
 		>
 			{columns.map((column, colIndex) => (
 				<div
@@ -67,9 +69,9 @@ export function DataTableRow<T = Record<string, unknown>>({ columns, isSelected,
 				>
 					{column.render
 						? column.render(record)
-						: getValueAtPath(record, column.accessor) === null
+						: getValueAtPath(record, column.accessor as any) === null
 							? null
-							: String(getValueAtPath(record, column.accessor))}
+							: String(getValueAtPath(record, column.accessor as any))}
 				</div>
 			))}
 		</div>
