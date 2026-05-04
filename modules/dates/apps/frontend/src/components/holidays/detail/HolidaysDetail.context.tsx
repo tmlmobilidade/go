@@ -54,15 +54,15 @@ export const HolidaysDetailContextProvider = ({ children, holidayId }: PropsWith
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<UpdateHolidayDto>(UpdateHolidaySchema, holidayData);
+	const { form } = useTypicalForm<UpdateHolidayDto>(UpdateHolidaySchema, holidayData);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Holiday>(API_ROUTES.dates.HOLIDAYS_DETAIL(holidayId), 'PUT', formRef.current.getValues()),
+		fetchFn: async () => await fetchData<Holiday>(API_ROUTES.dates.HOLIDAYS_DETAIL(holidayId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			holidayMutate(updatedItem);
 			holidaysListMutate();
 		},
@@ -71,7 +71,7 @@ export const HolidaysDetailContextProvider = ({ children, holidayId }: PropsWith
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Holiday>(API_ROUTES.dates.HOLIDAYS_DETAIL(holidayId), 'DELETE', holidayData),
 		onSuccess: () => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			holidaysListMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.dates.HOLIDAYS_LIST));
 		},
@@ -80,7 +80,7 @@ export const HolidaysDetailContextProvider = ({ children, holidayId }: PropsWith
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Holiday>(API_ROUTES.dates.HOLIDAYS_DETAIL_LOCK(holidayId)),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			holidayMutate(updatedItem);
 			holidaysListMutate();
 		},
@@ -122,12 +122,12 @@ export const HolidaysDetailContextProvider = ({ children, holidayId }: PropsWith
 		hasError: !!holidayError,
 		isDeleted: null,
 		isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.isDirty(),
 		isLoading: holidayLoading,
 		isLocked: holidayData?.is_locked,
 		isLocking,
 		isSaving: isSaving,
-		isValid: formRef.current.isValid(),
+		isValid: form.isValid(),
 		permissions: {
 			delete: permissions.delete,
 			lock: permissions.lock,
@@ -139,14 +139,14 @@ export const HolidaysDetailContextProvider = ({ children, holidayId }: PropsWith
 	//
 	// F. Define context value
 
-	const contextValue: HolidaysDetailContextState = {
+	const contextValue: HolidaysDetailContextState = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
 			lock: handleLock,
 			save: handleSave,
 		},
 		data: {
-			form: formRef.current,
+			form,
 			holiday: holidayData,
 			id: holidayId,
 		},
@@ -161,7 +161,14 @@ export const HolidaysDetailContextProvider = ({ children, holidayId }: PropsWith
 			isReadOnly,
 			isSaving: isSaving,
 		},
-	};
+	}), [
+		holidayData,
+		holidayError,
+		holidayLoading,
+		holidayId,
+		form,
+		isSaving,
+	]);
 
 	//
 	// G. Render components
