@@ -5,7 +5,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateVehicleDto, CreateVehicleSchema, PermissionCatalog, type Vehicle } from '@tmlmobilidade/types';
 import { useAgenciesContext, type UseFormReturnType, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react';
+import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -61,7 +61,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 
 	const { mutate: allVehiclesMutate } = useSWR<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST);
 
-	const { formRef } = useTypicalForm<CreateVehicleDto>(CreateVehicleSchema);
+	const { form } = useTypicalForm<CreateVehicleDto>(CreateVehicleSchema);
 	const agencies = useAgenciesContext();
 	const meContext = useMeContext();
 
@@ -235,25 +235,38 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// D. Define context value
 
-	const contextValue = {
-		actions: {
-			createVehicle: handleCreateOrUpdateAll,
-			setImportFile: handleSetImportFile,
-		},
-		data: {
-			counters: {
-				created: createdCount,
-				updated: updatedCount,
+	const contextValue = useMemo(
+		() => ({
+			actions: {
+				createVehicle: handleCreateOrUpdateAll,
+				setImportFile: handleSetImportFile,
 			},
-			form: formRef.current,
+			data: {
+				counters: {
+					created: createdCount,
+					updated: updatedCount,
+				},
+				form,
+				importPreview,
+			},
+			flags: {
+				error: isError,
+				isloading,
+				isSaving,
+			},
+		}),
+		[
+			createdCount,
+			updatedCount,
+			form,
 			importPreview,
-		},
-		flags: {
-			error: isError,
+			isError,
 			isloading,
 			isSaving,
-		},
-	};
+			handleCreateOrUpdateAll,
+			handleSetImportFile,
+		],
+	);
 
 	//
 	// E. Render components

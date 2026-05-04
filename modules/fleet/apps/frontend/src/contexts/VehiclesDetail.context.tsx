@@ -7,7 +7,7 @@ import { SimplifiedVehicleEvent, type UpdateVehicleDto, UpdateVehicleSchema, typ
 import { UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData, unauthenticatedSwrFetcher } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -65,7 +65,7 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<UpdateVehicleDto>(UpdateVehicleSchema, vehicleData);
+	const { form } = useTypicalForm<UpdateVehicleDto>(UpdateVehicleSchema, vehicleData);
 
 	//
 	// D. Transform data
@@ -87,7 +87,7 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 		});
 
 		try {
-			const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_DETAIL(vehicleId), 'PUT', formRef.current.getValues());
+			const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_DETAIL(vehicleId), 'PUT', form.getValues());
 			if (response.error) {
 				return useToast.update(toastId, {
 					loading: false,
@@ -102,7 +102,7 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 				title: 'Veículo guardado com sucesso',
 				type: 'success',
 			});
-			formRef.current.resetDirty();
+			form.resetDirty();
 		} catch (error) {
 			useToast.update(toastId, {
 				loading: false,
@@ -168,14 +168,14 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 	//
 	// F. Define context value
 
-	const contextValue: VehiclesDetailContextState = {
+	const contextValue: VehiclesDetailContextState = useMemo(() => ({
 		actions: {
 			deleteVehicle: handleDeleteVehicle,
 			saveVehicle: handleSaveVehicle,
 			toggleLock: handleToggleLock,
 		},
 		data: {
-			form: formRef.current,
+			form,
 			id: vehicleId,
 			position: vehiclePositions,
 			vehicle: vehicleData,
@@ -186,7 +186,7 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 			read_only: vehicleData?.is_locked || vehicleLoading || isSaving,
 			saving: isSaving,
 		},
-	};
+	}), [form, vehicleId, vehiclePositions, vehicleData, vehicleError, vehicleLoading, isSaving]);
 
 	//
 	// G. Render components

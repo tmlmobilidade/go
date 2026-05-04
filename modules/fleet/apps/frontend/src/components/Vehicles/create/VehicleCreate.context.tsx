@@ -6,7 +6,7 @@ import { type CreateVehicleDto, CreateVehicleSchema, type Vehicle } from '@tmlmo
 import { keepUrlParams, type UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -57,7 +57,7 @@ export const VehicleCreateContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<CreateVehicleDto>(CreateVehicleSchema);
+	const { form } = useTypicalForm<CreateVehicleDto>(CreateVehicleSchema);
 
 	//
 	// D. Handle actions
@@ -65,7 +65,7 @@ export const VehicleCreateContextProvider = ({ children }: PropsWithChildren) =>
 	const handleCreateVehicle = async () => {
 		setIsError(null);
 		setIsSaving(true);
-		const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_LIST, 'POST', formRef.current.getValues());
+		const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({ message: response.error, title: 'Erro ao criar veículo' });
@@ -80,7 +80,7 @@ export const VehicleCreateContextProvider = ({ children }: PropsWithChildren) =>
 			setIsSaving(false);
 			return;
 		}
-		formRef.current.reset();
+		form.reset();
 		allVehiclesMutate();
 		setIsSaving(false);
 		closeCreateVehicleModal();
@@ -91,18 +91,24 @@ export const VehicleCreateContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// E. Define context value
 
-	const contextValue: VehicleCreateContextState = {
-		actions: {
-			createVehicle: handleCreateVehicle,
-		},
-		data: {
-			form: formRef.current,
-		},
-		flags: {
-			error: isError,
-			isSaving,
-		},
-	};
+	const contextValue: VehicleCreateContextState = useMemo(() => {
+		return {
+			actions: {
+				createVehicle: handleCreateVehicle,
+			},
+			data: {
+				form,
+			},
+			flags: {
+				error: isError,
+				isSaving,
+			},
+		};
+	}, [
+		form,
+		isError,
+		isSaving,
+	]);
 
 	//
 	// F. Render components
