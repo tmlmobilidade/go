@@ -6,7 +6,7 @@ import { type Annotation, type CreateAnnotationDto, CreateAnnotationSchema } fro
 import { keepUrlParams, type UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -55,14 +55,14 @@ export const AnnotationCreateContextProvider = ({ children }: PropsWithChildren)
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<CreateAnnotationDto>(CreateAnnotationSchema);
+	const { form } = useTypicalForm<CreateAnnotationDto>(CreateAnnotationSchema);
 
 	//
 	// D. Handle actions
 
 	const handleCreateAnnotation = async () => {
 		setIsSaving(true);
-		const response = await fetchData<Annotation>(API_ROUTES.dates.ANNOTATIONS_LIST, 'POST', formRef.current.getValues());
+		const response = await fetchData<Annotation>(API_ROUTES.dates.ANNOTATIONS_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({ message: response.error, title: 'Erro ao criar anotação' });
@@ -76,7 +76,7 @@ export const AnnotationCreateContextProvider = ({ children }: PropsWithChildren)
 			setIsSaving(false);
 			return;
 		}
-		formRef.current.reset();
+		form.reset();
 		allAnnotationsMutate();
 		setIsSaving(false);
 		closeCreateAnnotationModal();
@@ -87,17 +87,22 @@ export const AnnotationCreateContextProvider = ({ children }: PropsWithChildren)
 	//
 	// E. Define context value
 
-	const contextValue: AnnotationCreateContextState = {
-		actions: {
-			createAnnotation: handleCreateAnnotation,
-		},
-		data: {
-			form: formRef.current,
-		},
-		flags: {
-			isSaving,
-		},
-	};
+	const contextValue: AnnotationCreateContextState = useMemo(() => {
+		return {
+			actions: {
+				createAnnotation: handleCreateAnnotation,
+			},
+			data: {
+				form,
+			},
+			flags: {
+				isSaving,
+			},
+		};
+	}, [
+		form,
+		isSaving,
+	]);
 
 	//
 	// F. Render components
