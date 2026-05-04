@@ -7,7 +7,7 @@ import { type ActionsOf, type Permission, PermissionCatalog, PermissionSchema, t
 import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -56,15 +56,15 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<UpdateRoleDto>(UpdateRoleSchema, roleData);
+	const { form } = useTypicalForm<UpdateRoleDto>(UpdateRoleSchema, roleData);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Role>(API_ROUTES.auth.ROLES_DETAIL(roleId), 'PUT', formRef.current.getValues()),
+		fetchFn: async () => await fetchData<Role>(API_ROUTES.auth.ROLES_DETAIL(roleId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			meContext.mutate.me();
 			roleMutate(updatedItem);
 			allRolesMutate();
@@ -83,7 +83,7 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Role>(API_ROUTES.auth.ROLES_DETAIL_LOCK(roleId)),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			meContext.mutate.me();
 			roleMutate(updatedItem);
 			allRolesMutate();
@@ -92,29 +92,29 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 
 	const handlePermissionToggle = (scope: string, action: string) => {
 		// Get latest form values
-		const latestValues = formRef.current.getValues();
+		const latestValues = form.getValues();
 		// Check if a permission entry with the same scope and action already exists
 		if (latestValues.permissions?.find(p => p.scope === scope && p.action === action)) {
 			const updatedPermissions = latestValues.permissions.filter(p => p.scope !== scope || p.action !== action);
-			formRef.current.setFieldValue('permissions', updatedPermissions);
+			form.setFieldValue('permissions', updatedPermissions);
 			return;
 		}
 		// If it doesn't exist, add a new permission entry
 		const permissionValidated = PermissionSchema.safeParse({ action: action, scope: scope });
 		if (!permissionValidated.success) return alert('Erro ao adicionar permissão: ' + JSON.stringify(permissionValidated.error));
-		formRef.current.setFieldValue('permissions', [...latestValues.permissions ?? [], permissionValidated.data]);
+		form.setFieldValue('permissions', [...latestValues.permissions ?? [], permissionValidated.data]);
 	};
 
 	function handlePermissionResourceToggle<S extends Permission['scope']>(scope: S, action: ActionsOf<S>, resource: Record<string, unknown>) {
 		// Use the PermissionCatalog method to update permission resources
 		const updatedPermissions = PermissionCatalog.updatePermissionResource(
-			formRef.current.getValues().permissions ?? [],
+			form.getValues().permissions ?? [],
 			scope,
 			action,
 			resource,
 		);
-		// Update the form with the new permissions array
-		formRef.current.setFieldValue('permissions', updatedPermissions);
+			// Update the form with the new permissions array
+		form.setFieldValue('permissions', updatedPermissions);
 	};
 
 	//
@@ -132,36 +132,36 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	const { canSave } = useFlagCanSave({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.roles.scope, PermissionCatalog.all.roles.actions.update),
 		isDeleting: isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.isDirty(),
 		isLoading: roleLoading,
 		isLocked: roleData?.is_locked,
 		isLocking: isLocking,
-		isValid: formRef.current.isValid(),
+		isValid: form.isValid(),
 	});
 
 	const { canLock } = useFlagCanLock({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.roles.scope, PermissionCatalog.all.roles.actions.update),
 		isDeleting: isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.isDirty(),
 		isLoading: roleLoading,
 		isLocking: isLocking,
-		isValid: formRef.current.isValid(),
+		isValid: form.isValid(),
 	});
 
 	const { canDelete } = useFlagCanDelete({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.roles.scope, PermissionCatalog.all.roles.actions.update),
 		isDeleting: isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.isDirty(),
 		isLoading: roleLoading,
 		isLocked: roleData?.is_locked,
 		isLocking: isLocking,
-		isValid: formRef.current.isValid(),
+		isValid: form.isValid(),
 	});
 
 	//
 	// F. Define context value
 
-	const contextValue: RoleDetailContextState = {
+	const contextValue: RoleDetailContextState = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
 			handlePermissionResourceToggle,
@@ -170,7 +170,7 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 			save: handleSave,
 		},
 		data: {
-			form: formRef.current,
+			form,
 			id: roleId,
 			role: roleData,
 		},
@@ -185,7 +185,20 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 			isReadOnly,
 			isSaving,
 		},
-	};
+	}), [
+		canDelete,
+		canLock,
+		canSave,
+		roleError,
+		isDeleting,
+		roleLoading,
+		isLocking,
+		isReadOnly,
+		isSaving,
+		form,
+		roleData,
+		roleId,
+	]);
 
 	//
 	// G. Render components
