@@ -5,12 +5,14 @@ import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { alerts } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type CreateAlertDto, type ServiceAlertResponse } from '@tmlmobilidade/types';
+import { type CreateAlertDto, type ServiceAlertResponse, UnixTimestamp } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const __filename = fileURLToPath(import.meta.url);
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const __dirname = path.dirname(__filename);
 
 /* * */
@@ -42,26 +44,28 @@ async function main() {
 			}
 
 			//
-			const { description, title } = describeAlert({
+			const alertDescribeResult = await describeAlert({
+				active_period_end_date: serviceAlert.alert.active_period[0].end as UnixTimestamp,
+				active_period_start_date: serviceAlert.alert.active_period[0].start as UnixTimestamp,
+				agency_id: '43',
 				cause: serviceAlert.alert.cause as CreateAlertDto['cause'],
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				data: serviceAlert.alert as any,
 				effect: serviceAlert.alert.effect as CreateAlertDto['effect'],
 				reference_type: 'rides',
 				references: serviceAlert.alert.informed_entity.map(entity => ({
 					child_ids: [],
 					parent_id: entity.trip?.trip_id ?? '',
 				})),
-				type: 'rides',
+				user_instructions: '',
 			});
 
 			const createAlertDto: CreateAlertDto = {
 				active_period_end_date: null,
 				active_period_start_date: undefined,
 				agency_id: '43',
+				auto_texts: true,
 				cause: serviceAlert.alert.cause as CreateAlertDto['cause'],
 				coordinates: null,
-				description: description.pt,
+				description: alertDescribeResult.pt.description,
 				effect: serviceAlert.alert.effect as CreateAlertDto['effect'],
 				external_id: serviceAlert.id,
 				file_id: null,
@@ -76,7 +80,8 @@ async function main() {
 					child_ids: [],
 					parent_id: entity.trip?.trip_id ?? '',
 				})),
-				title: title.pt,
+				title: alertDescribeResult.pt.title,
+				user_instructions: '',
 			};
 
 			const alertRealtime = await alerts.insertOne(createAlertDto);
