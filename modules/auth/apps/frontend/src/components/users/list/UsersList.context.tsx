@@ -8,8 +8,8 @@ import { type UserNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type User } from '@tmlmobilidade/types';
-import { useFilterStateList, UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
+import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -52,7 +52,6 @@ export function UsersListContextProvider({ children }: PropsWithChildren) {
 
 	const rolesContext = useRolesContext();
 	const organizationsContext = useOrganizationsContext();
-
 	//
 	// B. Setup filters
 
@@ -95,20 +94,20 @@ export function UsersListContextProvider({ children }: PropsWithChildren) {
 		// Skip if no data is available
 		if (!searchResultsData) return [];
 		// 1. Convert filter arrays to sets for O(1) membership checks
-		// const organizationIdsSet = new Set(filterOrganizationIds.value);
-		// const roleIdsSet = new Set(filterRoleIds.value);
+		const organizationIdsSet = new Set(filterOrganizationIds.value);
+		const roleIdsSet = new Set(filterRoleIds.value);
 		return searchResultsData.filter((item: UserNormalized) => {
 			// Filter by organization_ids
-			if (!filterOrganizationIds.value.includes(item.organization_id)) return false;
+			if (item.organization_id && !organizationIdsSet.has(item.organization_id)) return false;
 			// Filter by role_ids
-			if (!filterRoleIds.value.some(roleId => item.role_ids.includes(roleId))) return false;
+			if (item.role_ids.length && !item.role_ids.some(roleId => roleIdsSet.has(roleId))) return false;
 			// Return true if all filters pass
 			return true;
 		});
 	}, [filterOrganizationIds.value, filterRoleIds.value, searchResultsData]);
 
 	//
-	// D. Define context value
+	// E. Define context value
 
 	const contextValue: UsersListContextState = {
 		data: {
@@ -127,7 +126,7 @@ export function UsersListContextProvider({ children }: PropsWithChildren) {
 	};
 
 	//
-	//	E. Render components
+	// F. Render components
 
 	return (
 		<UsersListContext.Provider value={contextValue}>

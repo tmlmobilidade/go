@@ -7,11 +7,10 @@ import { IconCheck, IconX } from '@tabler/icons-react';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PasswordRequirementsSchema } from '@tmlmobilidade/types';
 import { Session } from '@tmlmobilidade/types';
-import { PasswordInput } from '@tmlmobilidade/ui';
+import { PasswordInput, useQueryState } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
-import { useQueryState } from 'nuqs';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

@@ -12,9 +12,9 @@ export function UsersListFilterRole() {
 	//
 	// A. Setup variables
 
-	const usersListContext = useUsersListContext();
-
 	const { t } = useTranslation();
+
+	const usersListContext = useUsersListContext();
 
 	//
 	// B. Render components

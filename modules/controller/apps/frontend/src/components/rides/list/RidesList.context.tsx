@@ -3,14 +3,12 @@
 /* * */
 
 import { useRideFavoritesContext } from '@/contexts/RideFavorites.context';
-import { useDebouncedValue } from '@mantine/hooks';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type OperationalStatus, PermissionCatalog, type RideNormalized, RideNormalizedSchema } from '@tmlmobilidade/types';
 import { DelayStatusSchema, OperationalStatusSchema } from '@tmlmobilidade/types';
 import { RIDE_ANALYSIS_GRADE_OPTIONS, type UnixTimestamp } from '@tmlmobilidade/types';
-import { useDataAgencies, useDataRides, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
-import { parseAsInteger, useQueryState } from 'nuqs';
+import { parseAsInteger, useDataAgencies, useDataRides, useDebouncedValue, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useQueryState } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
