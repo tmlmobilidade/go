@@ -155,7 +155,7 @@ export function DateTimeInput(props: DateTimeInputProps) {
 			console.log('DateTimeInput: Invalid date format', error);
 			return;
 		}
-	}, [dateInputValue, timePickerValue, props.onChange, timezone]);
+	}, [dateInputValue, timePickerValue, props.onChange, timezone, props.value]);
 
 	//
 	// C. Render components
