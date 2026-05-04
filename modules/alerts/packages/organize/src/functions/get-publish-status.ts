@@ -39,8 +39,7 @@ export function getPublishStatus(alertData: Alert): PublishStatus {
 	}
 
 	//
-	// If the alert does not match any known publish status,
-	// return 'draft' as a fallback.
+	// Return the determined publish status
 
 	return result;
 }
