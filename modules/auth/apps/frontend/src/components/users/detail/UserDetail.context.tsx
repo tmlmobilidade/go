@@ -8,7 +8,7 @@ import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFl
 import { fetchData } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -58,15 +58,15 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<UpdateUserDto>(UpdateUserSchema, userData);
+	const { form } = useTypicalForm<UpdateUserDto>(UpdateUserSchema, userData);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<User>(API_ROUTES.auth.USERS_DETAIL(userId), 'PUT', formRef.current.getValues()),
+		fetchFn: async () => await fetchData<User>(API_ROUTES.auth.USERS_DETAIL(userId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			meContext.mutate.me();
 			userMutate(updatedItem);
 			allUsersMutate();
@@ -85,7 +85,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<User>(API_ROUTES.auth.USERS_DETAIL_LOCK(userId)),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			meContext.mutate.me();
 			userMutate(updatedItem);
 			allUsersMutate();
@@ -94,34 +94,34 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 
 	const handlePermissionToggle = (scope: string, action: string) => {
 		// Get latest form values
-		const latestValues = formRef.current.getValues();
+		const latestValues = form.getValues();
 		// Check if a permission entry with the same scope and action already exists
 		if (latestValues.permissions?.find(p => p.scope === scope && p.action === action)) {
 			const updatedPermissions = latestValues.permissions.filter(p => p.scope !== scope || p.action !== action);
-			formRef.current.setFieldValue('permissions', updatedPermissions);
+			form.setFieldValue('permissions', updatedPermissions);
 			return;
 		}
 		// If it doesn't exist, add a new permission entry
 		const permissionValidated = PermissionSchema.safeParse({ action: action, scope: scope });
 		if (!permissionValidated.success) return alert('Erro ao adicionar permissão: ' + JSON.stringify(permissionValidated.error));
-		formRef.current.setFieldValue('permissions', [...latestValues.permissions ?? [], permissionValidated.data]);
+		form.setFieldValue('permissions', [...latestValues.permissions ?? [], permissionValidated.data]);
 	};
 
 	function handlePermissionResourceToggle<S extends Permission['scope']>(scope: S, action: ActionsOf<S>, resource: Record<string, unknown>) {
 		// Use the PermissionCatalog method to update permission resources
 		const updatedPermissions = PermissionCatalog.updatePermissionResource(
-			formRef.current.getValues().permissions ?? [],
+			form.getValues().permissions ?? [],
 			scope,
 			action,
 			resource,
 		);
 		// Update the form with the new permissions array
-		formRef.current.setFieldValue('permissions', updatedPermissions);
+		form.setFieldValue('permissions', updatedPermissions);
 	};
 
 	function handleChangePassword(value: string) {
 		const passwordHash = bcrypt.hashSync(value);
-		formRef.current.setFieldValue('password_hash', passwordHash);
+		form.setFieldValue('password_hash', passwordHash);
 	}
 
 	//
@@ -139,36 +139,36 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 	const { canSave } = useFlagCanSave({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.users.scope, PermissionCatalog.all.users.actions.update),
 		isDeleting: isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.isDirty(),
 		isLoading: userLoading,
 		isLocked: userData?.is_locked,
 		isLocking: isLocking,
-		isValid: formRef.current.isValid(),
+		isValid: form.isValid(),
 	});
 
 	const { canLock } = useFlagCanLock({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.users.scope, PermissionCatalog.all.users.actions.update),
 		isDeleting: isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.isDirty(),
 		isLoading: userLoading,
 		isLocking: isLocking,
-		isValid: formRef.current.isValid(),
+		isValid: form.isValid(),
 	});
 
 	const { canDelete } = useFlagCanDelete({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.users.scope, PermissionCatalog.all.users.actions.update),
 		isDeleting: isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.isDirty(),
 		isLoading: userLoading,
 		isLocked: userData?.is_locked,
 		isLocking: isLocking,
-		isValid: formRef.current.isValid(),
+		isValid: form.isValid(),
 	});
 
 	//
 	// F. Define context value
 
-	const contextValue: UserDetailContextState = {
+	const contextValue: UserDetailContextState = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
 			handleChangePassword,
@@ -178,7 +178,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 			save: handleSave,
 		},
 		data: {
-			form: formRef.current,
+			form,
 			id: userId === 'new' ? undefined : userId,
 			user: userData,
 		},
@@ -193,7 +193,20 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 			isReadOnly,
 			isSaving,
 		},
-	};
+	}), [
+		canDelete,
+		canLock,
+		canSave,
+		userError,
+		isDeleting,
+		userLoading,
+		isLocking,
+		isReadOnly,
+		isSaving,
+		form,
+		userData,
+		userId,
+	]);
 
 	//
 	// G. Render components
