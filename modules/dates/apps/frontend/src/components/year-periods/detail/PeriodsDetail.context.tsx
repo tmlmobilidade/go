@@ -54,15 +54,15 @@ export const PeriodsDetailContextProvider = ({ children, yearPeriodId }: PropsWi
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<UpdateYearPeriodDto>(UpdateYearPeriodSchema, periodData);
+	const { form } = useTypicalForm<UpdateYearPeriodDto>(UpdateYearPeriodSchema, periodData);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<YearPeriod>(API_ROUTES.dates.YEAR_PERIODS_DETAIL(yearPeriodId), 'PUT', formRef.current.getValues()),
+		fetchFn: async () => await fetchData<YearPeriod>(API_ROUTES.dates.YEAR_PERIODS_DETAIL(yearPeriodId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			periodMutate(updatedItem);
 			periodsListMutate();
 		},
@@ -71,7 +71,7 @@ export const PeriodsDetailContextProvider = ({ children, yearPeriodId }: PropsWi
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
 		fetchFn: async () => await fetchData<YearPeriod>(API_ROUTES.dates.YEAR_PERIODS_DETAIL(yearPeriodId), 'DELETE', periodData),
 		onSuccess: () => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			periodsListMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.dates.YEAR_PERIODS_LIST));
 		},
@@ -80,7 +80,7 @@ export const PeriodsDetailContextProvider = ({ children, yearPeriodId }: PropsWi
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<YearPeriod>(API_ROUTES.dates.YEAR_PERIODS_DETAIL_LOCK(yearPeriodId)),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			periodMutate(updatedItem);
 			periodsListMutate();
 		},
@@ -122,12 +122,12 @@ export const PeriodsDetailContextProvider = ({ children, yearPeriodId }: PropsWi
 		hasError: !!periodError,
 		isDeleted: null,
 		isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.isDirty(),
 		isLoading: periodLoading,
 		isLocked: periodData?.is_locked,
 		isLocking,
 		isSaving: isSaving,
-		isValid: formRef.current.isValid(),
+		isValid: form.isValid(),
 		permissions: {
 			delete: permissions.delete,
 			lock: permissions.lock,
@@ -139,14 +139,14 @@ export const PeriodsDetailContextProvider = ({ children, yearPeriodId }: PropsWi
 	//
 	// F. Define context value
 
-	const contextValue: PeriodsDetailContextState = {
+	const contextValue: PeriodsDetailContextState = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
 			lock: handleLock,
 			save: handleSave,
 		},
 		data: {
-			form: formRef.current,
+			form,
 			id: yearPeriodId,
 			period: periodData,
 		},
@@ -161,7 +161,23 @@ export const PeriodsDetailContextProvider = ({ children, yearPeriodId }: PropsWi
 			isReadOnly,
 			isSaving: isSaving,
 		},
-	};
+	}), [
+		periodData,
+		periodError,
+		periodLoading,
+		yearPeriodId,
+		form,
+		isSaving,
+		isDeleting,
+		isLocking,
+		canDelete,
+		canLock,
+		canSave,
+		isReadOnly,
+		handleDelete,
+		handleLock,
+		handleSave,
+	]);
 
 	//
 	// G. Render components
