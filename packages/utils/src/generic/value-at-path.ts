@@ -44,6 +44,18 @@ export type PathValue<T, P extends string> =
 				: never;
 
 /**
+ * Utility function that returns the value at a given path in an object.
+ * @param obj The object to retrieve the value from.
+ * @param path The path to the value in the object.
+ * @returns The value at the given path or undefined if the path is invalid.
+ */
+export function getValueAtPath<T, P extends DotPath<T>>(obj: T, path: P): PathValue<T, P> {
+	if (!path) return undefined as PathValue<T, P>;
+	const pathArray = (path as string).match(/([^[.\]])+/g) as string[];
+	return pathArray.reduce((prevObj: unknown, key) => prevObj && (prevObj as Record<string, unknown>)[key], obj) as PathValue<T, P>;
+}
+
+/**
  * Sets a value at a specified dot-separated path within an object.
  * If intermediate objects or arrays do not exist, they are created.
  * @param obj The object to set the value in.
