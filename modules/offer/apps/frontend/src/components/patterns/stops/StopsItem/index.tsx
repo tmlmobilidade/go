@@ -2,9 +2,9 @@
 
 /* * */
 
-import { IconArrowBarToDown, IconArrowBarUp, IconClock, IconClockPause, IconEdit, IconFocus2, IconTrash } from '@tabler/icons-react';
+import { IconArrowBarToDown, IconArrowBarUp, IconClock, IconClockPause, IconDots, IconEdit, IconTrash } from '@tabler/icons-react';
 import { Path } from '@tmlmobilidade/types';
-import { Button, Section, Tag, Text, useLocationsContext } from '@tmlmobilidade/ui';
+import { IconButton, Menu, Section, Tag, Text, useLocationsContext } from '@tmlmobilidade/ui';
 import { useMemo, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -92,10 +92,6 @@ export function StopsItem({ pathItem, rowIndex }: { pathItem: Path, rowIndex: nu
 		// stopsEditorContext.setEditingStop(rowIndex);
 	};
 
-	const handleCenter = () => {
-		// stopsEditorContext.actions.centerStop(rowIndex);
-	};
-
 	const handleDelete = () => {
 		stopsEditorContext.actions.removeStop(rowIndex);
 	};
@@ -123,20 +119,33 @@ export function StopsItem({ pathItem, rowIndex }: { pathItem: Path, rowIndex: nu
 
 							<Section flexDirection="row" gap="sm" padding="none">
 								<Tag icon={<IconClockPause />} label={`${defaultRule?.path[rowIndex]?.dwell_time} s`} tooltip="Tempo de paragem" variant="muted" />
-								<Tag icon={<IconClock />} label={stopItem?.timepoint ? 'Ponto horário' : 'Sem ponto horário'} tooltip="O horário é exato nesta paragem" variant={stopItem?.timepoint ? 'muted' : 'danger'} />
-								<Tag icon={<IconArrowBarToDown />} label={stopItem?.allow_pickup ? 'Embarque' : 'Sem embarque'} variant={!stopItem?.allow_pickup ? 'muted' : 'danger'} />
-								<Tag icon={<IconArrowBarUp />} label={stopItem?.allow_drop_off ? 'Desembarque' : 'Sem desembarque'} variant={stopItem?.allow_drop_off ? 'muted' : 'danger'} />
-							</Section>
-
-							<Section flexDirection="row" gap="sm" padding="none">
-								<Button label="Editar" leftSection={<IconEdit />} onClick={handleEdit} variant="transparent" />
-								<Button label="Centrar" leftSection={<IconFocus2 />} onClick={handleCenter} variant="transparent" />
-								<Button label="Eliminar" leftSection={<IconTrash />} onClick={handleDelete}	variant="transparent" />
+								<Tag icon={<IconClock />} tooltip={`O horário ${stopItem?.timepoint ? 'é' : 'não é'} exato nesta paragem`} variant={stopItem?.timepoint ? 'muted' : 'danger'} />
+								<Tag icon={<IconArrowBarToDown />} tooltip={`O embarque ${stopItem?.allow_pickup ? 'é' : 'não é'} permitido nesta paragem`} variant={stopItem?.allow_pickup ? 'muted' : 'danger'} />
+								<Tag icon={<IconArrowBarUp />} tooltip={`O desembarque ${stopItem?.allow_drop_off ? 'é' : 'não é'} permitido nesta paragem`} variant={stopItem?.allow_drop_off ? 'muted' : 'danger'} />
 							</Section>
 						</div>
 					</div>
 				</div>
 			</Section>
+
+			{/* ACTIONS MENU */}
+			{isExpanded && (
+				<Menu position="bottom-end" shadow="md" width={160}>
+					<Menu.Target>
+						<div className={styles.menuButton}>
+							<IconButton color="var(--color-system-text-200)" icon={<IconDots />} onClick={() => {}} />
+						</div>
+					</Menu.Target>
+					<Menu.Dropdown>
+						<Menu.Item leftSection={<IconEdit size={14} />} onClick={handleEdit}>
+							Editar
+						</Menu.Item>
+						<Menu.Item color="red" leftSection={<IconTrash size={14} />} onClick={handleDelete}>
+							Eliminar
+						</Menu.Item>
+					</Menu.Dropdown>
+				</Menu>
+			)}
 		</div>
 	);
 }
