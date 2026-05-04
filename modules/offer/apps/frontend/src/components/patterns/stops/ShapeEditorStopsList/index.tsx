@@ -2,7 +2,6 @@
 
 /* * */
 
-import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { StopsItem } from '@/components/patterns/stops/StopsItem';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { IconCirclePlus, IconX } from '@tabler/icons-react';
@@ -16,8 +15,36 @@ import { useStopsEditorContext } from '../ShapeEditor.context';
 
 /* * */
 
+function SegmentInfo({ afterStopId, beforeStopId, distance, isLoading }: {
+	afterStopId: number
+	beforeStopId: number
+	distance: number
+	isLoading: boolean
+}) {
+	const stopsEditorContext = useStopsEditorContext();
+
+	const anchorCount = stopsEditorContext.data.anchors?.filter(
+		a => a.after_stop_id === afterStopId && a.before_stop_id === beforeStopId,
+	).length ?? 0;
+
+	return (
+		<>
+			<Text className={styles.info} data-loading={isLoading}>
+				{distance} m
+			</Text>
+
+			{anchorCount > 0 && (
+				<Text className={styles.info} data-loading={isLoading}>
+					· {anchorCount} {anchorCount === 1 ? 'desvio' : 'desvios'}
+				</Text>
+			)}
+		</>
+	);
+}
+
+/* * */
+
 export function StopsList() {
-	const patternDetailContext = usePatternDetailContext();
 	const stopsEditorContext = useStopsEditorContext();
 	const stopsContext = useStopsContext();
 
@@ -26,27 +53,18 @@ export function StopsList() {
 	const [highlightedStopId, setHighlightedStopId] = useState<null | string>(null);
 
 	const path = stopsEditorContext.data.path;
-	const defaultRule = patternDetailContext.data.stopsParameterRules?.find(rule => rule.kind === 'default');
 
 	const stopOptions = stopsContext.data.raw.map(stop => ({
 		label: `${stop.name} (#${stop._id})`,
 		value: String(stop._id),
-	})) ?? [];
+	}));
 
-	const handleReorder = (
-		newPath: Path[],
-		event: { newIndex: number, oldIndex: number },
-	) => {
+	const handleReorder = (newPath: Path[], event: { newIndex: number, oldIndex: number }) => {
 		const moved = path[event.oldIndex];
-
 		if (moved) {
 			setHighlightedStopId(moved._id);
-
-			setTimeout(() => {
-				setHighlightedStopId(null);
-			}, 900);
+			setTimeout(() => setHighlightedStopId(null), 900);
 		}
-
 		void stopsEditorContext.actions.reorderStops(newPath);
 	};
 
@@ -62,12 +80,9 @@ export function StopsList() {
 
 	const handleSelectStop = (stopId: null | string) => {
 		if (!stopId || addStopIndex === null) return;
-
 		const selectedStop = stopsContext.data.raw.find(stop => stop._id === Number(stopId));
 		if (!selectedStop) return;
-
 		void stopsEditorContext.actions.addStop(selectedStop, addStopIndex + 1);
-
 		handleCancelAddStop();
 	};
 
@@ -80,67 +95,67 @@ export function StopsList() {
 					getId={pathItem => pathItem._id}
 					items={path}
 					onReorder={handleReorder}
-					renderItem={({ dragHandle, index, isLast, item: pathItem }) => (
-						<Section
-							flexDirection="row"
-							gap="xs"
-							padding="none"
-							className={
-								pathItem._id === highlightedStopId
-									? styles.justDropped
-									: undefined
-							}
-						>
-							{dragHandle}
+					renderItem={({ dragHandle, index, isLast, item: pathItem }) => {
+						const nextPathItem = path[index + 1];
+						const isAddingHere = addStopIndex === index;
 
-							<Section padding="none">
-								<StopsItem pathItem={pathItem} rowIndex={index} />
+						return (
+							<Section
+								className={pathItem._id === highlightedStopId ? styles.justDropped : undefined}
+								flexDirection="row"
+								gap="xs"
+								padding="none"
+							>
+								{dragHandle}
 
-								{!isLast && (
-									<div className={styles.connectionInfo}>
-										{addStopIndex === index ? (
-											<>
-												<div className={styles.addStopSelect}>
-													<Select
-														data={stopOptions}
-														onChange={handleSelectStop}
-														placeholder="Pesquisar paragem..."
-														value={selectedStopId}
+								<Section padding="none">
+									<StopsItem pathItem={pathItem} rowIndex={index} />
+
+									{!isLast && (
+										<div className={styles.connectionInfo}>
+											{isAddingHere ? (
+												<>
+													<div className={styles.addStopSelect}>
+														<Select
+															data={stopOptions}
+															onChange={handleSelectStop}
+															placeholder="Pesquisar paragem..."
+															value={selectedStopId}
+														/>
+													</div>
+
+													<IconButton
+														color="var(--color-system-text-200)"
+														icon={<IconX size={16} />}
+														onClick={handleCancelAddStop}
+														tooltip="Cancelar"
 													/>
-												</div>
+												</>
+											) : (
+												<>
+													<IconButton
+														color="var(--color-system-text-200)"
+														icon={<IconCirclePlus size={16} />}
+														onClick={() => handleStartAddStop(index)}
+														tooltip="Adicionar paragem"
+													/>
 
-												<IconButton
-													color="var(--color-system-text-200)"
-													icon={<IconX size={16} />}
-													onClick={handleCancelAddStop}
-													tooltip="Cancelar"
-												/>
-											</>
-										) : (
-											<>
-												<IconButton
-													color="var(--color-system-text-200)"
-													icon={<IconCirclePlus size={16} />}
-													onClick={() => handleStartAddStop(index)}
-													tooltip="Adicionar paragem"
-												/>
-
-												<Text className={styles.info} data-loading={stopsEditorContext.flags.isLoadingRoute}>
-													{path[index + 1]?.distance_delta ?? 0} m
-												</Text>
-
-												{/* <Text className={styles.info}>|</Text>
-
-														<Text className={styles.info}>
-															{defaultRule?.path[index + 1]?.avg_speed} km/h
-														</Text> */}
-											</>
-										)}
-									</div>
-								)}
+													{nextPathItem && (
+														<SegmentInfo
+															afterStopId={pathItem.stop_id}
+															beforeStopId={nextPathItem.stop_id}
+															distance={nextPathItem.distance_delta ?? 0}
+															isLoading={stopsEditorContext.flags.isLoadingRoute}
+														/>
+													)}
+												</>
+											)}
+										</div>
+									)}
+								</Section>
 							</Section>
-						</Section>
-					)}
+						);
+					}}
 				/>
 			</Section>
 		</div>
