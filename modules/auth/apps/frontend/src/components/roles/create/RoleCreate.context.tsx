@@ -8,7 +8,7 @@ import { CreateRoleDto, CreateRoleSchema, Role } from '@tmlmobilidade/types';
 import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -57,14 +57,14 @@ export const RoleCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<CreateRoleDto>(CreateRoleSchema);
+	const { form } = useTypicalForm<CreateRoleDto>(CreateRoleSchema);
 
 	//
 	// D. Handle actions
 
 	const handleCreateRole = async () => {
 		setIsSaving(true);
-		const response = await fetchData<Role>(API_ROUTES.auth.ROLES_LIST, 'POST', formRef.current.getValues());
+		const response = await fetchData<Role>(API_ROUTES.auth.ROLES_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({ message: response.error, title: 'Erro ao criar grupo de permissões' });
@@ -78,7 +78,7 @@ export const RoleCreateContextProvider = ({ children }: PropsWithChildren) => {
 			setIsSaving(false);
 			return;
 		}
-		formRef.current.reset();
+		form.reset();
 		allRolesMutate();
 		setIsSaving(false);
 		closeCreateRoleModal();
@@ -89,17 +89,20 @@ export const RoleCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// E. Define context value
 
-	const contextValue: RoleCreateContextState = {
+	const contextValue: RoleCreateContextState = useMemo(() => ({
 		actions: {
 			saveRole: handleCreateRole,
 		},
 		data: {
-			form: formRef.current,
+			form,
 		},
 		flags: {
 			isSaving,
 		},
-	};
+	}), [
+		form,
+		isSaving,
+	]);
 
 	//
 	// F. Render components
