@@ -13,6 +13,7 @@ export function UsersListHeader() {
 
 	//
 	// A. Setup variables
+
 	const { t } = useTranslation();
 
 	const usersListContext = useUsersListContext();
@@ -24,7 +25,7 @@ export function UsersListHeader() {
 		<Toolbar>
 			<Label size="lg" caps singleLine>{t('default:users.list.Header.title')}</Label>
 			<Spacer />
-			<SearchInput onChange={usersListContext.actions.setFilterSearch} value={usersListContext.filters.search} />
+			<SearchInput onChange={usersListContext.filters.search.set} value={usersListContext.filters.search.value} />
 			<Button icon={<IconPlus size={20} />} label={t('default:users.list.Header.NewUserButton.label')} onClick={openCreateUserModal} />
 		</Toolbar>
 	);
