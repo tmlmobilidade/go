@@ -2,10 +2,10 @@
 
 /* * */
 
-import { zodResolver } from '@hookform/resolvers/zod';
+// import { zodResolver } from '@hookform/resolvers/zod';
 import { Logger } from '@tmlmobilidade/logger';
 import { useEffect } from 'react';
-import { DefaultValues, useForm, type UseFormReturn } from 'react-hook-form';
+import { type DefaultValues, useForm, type UseFormReturn } from 'react-hook-form';
 import { type ZodSchema } from 'zod';
 
 import { usePreventNavigation } from './use-prevent-navigation';
@@ -29,7 +29,7 @@ interface UseContextFormProps<T> {
  * @param defaultValues Optional initial values to set when creating new forms.
  * @returns The form methods and state from React Hook Form.
  */
-export function useContextForm<T>({ apiData, defaultValues, schema }: UseContextFormProps<T>): UseFormReturn<T> {
+export function useContextForm<T>({ apiData, defaultValues }: UseContextFormProps<T>): UseFormReturn<T> {
 	//
 
 	//

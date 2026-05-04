@@ -7,6 +7,8 @@ import { AlertDetailSectionTextsAi } from '@/components/detail/AlertDetailSectio
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Collapsible, CoordinatesInput, Grid, ImageUpload, Section, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
+import { Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,6 +17,8 @@ export function AlertDetailSectionTexts() {
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
 
 	const meContext = useMeContext();
 	const alertDetailContext = useAlertDetailContext();
@@ -49,43 +53,68 @@ export function AlertDetailSectionTexts() {
 			<Section gap="md">
 				<Grid gap="md">
 
-					<TextInput
-						key={alertDetailContext.data.form.key('title')}
-						description="É importante que o título seja curto e claro, para que não apareça cortado no site, apps, etc."
-						label="Título Curto"
-						maxLength={255}
-						readOnly={!hasPermissionToEdit}
-						withAsterisk
-						{...alertDetailContext.data.form.getInputProps('title')}
+					<Controller
+						control={alertDetailContext.form.instance.control}
+						name="title"
+						render={({ field, fieldState }) => (
+							<TextInput
+								error={fieldState.error?.message}
+								label={t('default:alerts.create.summary.title.label')}
+								onBlur={field.onBlur}
+								onChange={e => field.onChange(e.currentTarget.value)}
+								readOnly={!hasPermissionToEdit}
+								value={field.value ?? ''}
+							/>
+						)}
 					/>
 
-					<Textarea
-						key={alertDetailContext.data.form.key('description')}
-						description="Um bom alerta explica a situação de forma breve e clara, explicita as suas causas e como está a ser mitigado, e apresenta uma ou mais soluções de como o passageiro poderá ultrapassar esta situação."
-						label="Descrição"
-						maxRows={10}
-						minRows={4}
-						readOnly={!hasPermissionToEdit}
-						autosize
-						withAsterisk
-						{...alertDetailContext.data.form.getInputProps('description')}
+					<Controller
+						control={alertDetailContext.form.instance.control}
+						name="description"
+						render={({ field, fieldState }) => (
+							<Textarea
+								error={fieldState.error?.message}
+								label={t('default:alerts.create.summary.description.label')}
+								minRows={4}
+								onBlur={field.onBlur}
+								onChange={e => field.onChange(e.currentTarget.value)}
+								readOnly={!hasPermissionToEdit}
+								value={field.value ?? ''}
+								autosize
+							/>
+						)}
 					/>
 
 					<AlertDetailSectionTextsAi />
 
-					<CoordinatesInput
-						key={alertDetailContext.data.form.key('coordinates')}
-						label="Coordenadas Geográficas"
-						{...alertDetailContext.data.form.getInputProps('coordinates')}
+					<Controller
+						control={alertDetailContext.form.instance.control}
+						name="coordinates"
+						render={({ field }) => (
+							<CoordinatesInput
+								key="key"
+								defaultValue={field.value}
+								label={t('default:alerts.create.summary.coordinates.label')}
+								onChange={field.onChange}
+							/>
+						)}
 					/>
 
-					<TextInput
-						key={alertDetailContext.data.form.key('info_url')}
-						description="Opcionalmente inclua o URL de um website onde é possivel obter mais informação"
-						label="Link Adicional"
-						leftSection={<IconLink size={18} />}
-						placeholder="https://www.cm-setubal.com/..."
-						{...alertDetailContext.data.form.getInputProps('info_url')}
+					<Controller
+						control={alertDetailContext.form.instance.control}
+						name="info_url"
+						render={({ field, fieldState }) => (
+							<TextInput
+								description={t('default:alerts.create.summary.info_url.description')}
+								error={fieldState.error?.message}
+								label={t('default:alerts.create.summary.info_url.label')}
+								leftSection={<IconLink />}
+								onBlur={field.onBlur}
+								onChange={e => field.onChange(e.currentTarget.value)}
+								placeholder="https://www.cm-setubal.com/..."
+								value={field.value ?? ''}
+							/>
+						)}
 					/>
 
 					<ImageUpload

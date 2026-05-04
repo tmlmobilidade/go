@@ -7,6 +7,7 @@ import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, PermissionCatalog } from '@tmlmobilidade/types';
 import { Collapsible, Label, openConfirmModal, Section, Select, useDataAgencies } from '@tmlmobilidade/ui';
+import { Controller } from 'react-hook-form';
 
 /* * */
 
@@ -23,11 +24,18 @@ export function AlertDetailSectionReferences() {
 		scope: PermissionCatalog.all.alerts.scope,
 	});
 
+	const agencyIdValue = alertDetailContext.form.instance.watch('agency_id');
+	const municipalityIdsValue = alertDetailContext.form.instance.watch('municipality_ids');
+	const activePeriodStartDateValue = alertDetailContext.form.instance.watch('active_period_start_date');
+	const activePeriodEndDateValue = alertDetailContext.form.instance.watch('active_period_end_date');
+	const referenceTypeValue = alertDetailContext.form.instance.watch('reference_type');
+	const referencesValue = alertDetailContext.form.instance.watch('references');
+
 	//
 	// B. Handle actions
 
-	const handleChangeAgencyId = (value: Alert['agency_id']) => {
-		if (alertDetailContext.data.form.getValues().references?.length > 0) {
+	const handleChangeAgencyId = (value: Alert['agency_id'], fieldOnChange: (v: Alert['agency_id']) => void) => {
+		if (alertDetailContext.form.instance.getValues('references')?.length > 0) {
 			openConfirmModal({
 				cancelProps: { variant: 'danger' },
 				centered: true,
@@ -35,23 +43,23 @@ export function AlertDetailSectionReferences() {
 				closeOnClickOutside: true,
 				labels: { cancel: 'Cancelar', confirm: 'Continuar' },
 				onConfirm: () => {
-					alertDetailContext.data.form.setFieldValue('agency_id', value);
-					alertDetailContext.data.form.setFieldValue('references', []);
+					fieldOnChange(value);
+					alertDetailContext.form.instance.setValue('references', []);
 				},
 				title: 'Tem a certeza que pretende mudar de operador?',
 			});
 		} else {
-			alertDetailContext.data.form.setFieldValue('agency_id', value);
-			alertDetailContext.data.form.setFieldValue('references', []);
+			fieldOnChange(value);
+			alertDetailContext.form.instance.setValue('references', []);
 		}
 	};
 
 	const handleChangeReferenceType = (value: Alert['reference_type']) => {
-		alertDetailContext.data.form.setFieldValue('reference_type', value);
+		alertDetailContext.form.instance.setValue('reference_type', value);
 	};
 
 	const handleChangeReferences = (references: Alert['references']) => {
-		alertDetailContext.data.form.setFieldValue('references', references);
+		alertDetailContext.form.instance.setValue('references', references);
 	};
 
 	//
@@ -66,29 +74,35 @@ export function AlertDetailSectionReferences() {
 
 			{agenciesOptions.length > 1 && (
 				<Section>
-					<Select
-						key={alertDetailContext.data.form.key('agency_id')}
-						clearable={false}
-						data={agenciesOptions}
-						label="Operador afetado"
-						w="100%"
-						{...alertDetailContext.data.form.getInputProps('agency_id')}
-						onChange={handleChangeAgencyId}
+					<Controller
+						control={alertDetailContext.form.instance.control}
+						name="agency_id"
+						render={({ field, fieldState }) => (
+							<Select
+								clearable={false}
+								data={agenciesOptions}
+								error={fieldState.error?.message}
+								label="Operador afetado"
+								onBlur={field.onBlur}
+								onChange={value => handleChangeAgencyId(value, field.onChange)}
+								value={field.value}
+							/>
+						)}
 					/>
 				</Section>
 			)}
 
 			<ReferencesEditor
-				activePeriodEndDate={alertDetailContext.data.form.getValues().active_period_end_date}
-				activePeriodStartDate={alertDetailContext.data.form.getValues().active_period_start_date}
+				activePeriodEndDate={activePeriodEndDateValue}
+				activePeriodStartDate={activePeriodStartDateValue}
 				availableAgenciesOptions={agenciesOptions}
 				enabledReferenceTypes={['agency', 'lines', 'rides', 'stops']}
 				onChangeReferences={handleChangeReferences}
 				onChangeReferenceType={handleChangeReferenceType}
-				selectedAgencyId={alertDetailContext.data.form.getValues().agency_id}
-				selectedMunicipalityIds={alertDetailContext.data.form.getValues().municipality_ids}
-				selectedReferences={alertDetailContext.data.form.getValues().references}
-				selectedReferenceType={alertDetailContext.data.form.getValues().reference_type}
+				selectedAgencyId={agencyIdValue}
+				selectedMunicipalityIds={municipalityIdsValue}
+				selectedReferences={referencesValue}
+				selectedReferenceType={referenceTypeValue}
 			/>
 
 		</Collapsible>

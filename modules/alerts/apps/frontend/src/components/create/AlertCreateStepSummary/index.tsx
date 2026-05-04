@@ -86,7 +86,7 @@ export function AlertCreateStepSummary() {
 				<Controller
 					control={alertCreateContext.form.instance.control}
 					name="coordinates"
-					render={({ field, fieldState }) => (
+					render={({ field }) => (
 						<CoordinatesInput
 							key="key"
 							defaultValue={field.value}

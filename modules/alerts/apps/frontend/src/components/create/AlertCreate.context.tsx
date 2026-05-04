@@ -5,7 +5,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, PermissionCatalog } from '@tmlmobilidade/types';
 import { type CreateContextStateTemplate, keepUrlParams, useContextForm, useDataAgencies, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';

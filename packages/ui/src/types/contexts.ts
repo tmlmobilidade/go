@@ -50,7 +50,7 @@ export interface CreateContextStateTemplate<T> {
  * and a `flags` section, with error, isSaving and loading flags.
  * You should add a `data: { ... }` section and expand these defaults as needed.
  */
-export interface DetailContextStateTemplate {
+export interface DetailContextStateTemplate<T> {
 	actions: {
 		delete?: () => void
 		duplicate?: () => void
@@ -70,5 +70,8 @@ export interface DetailContextStateTemplate {
 		isReadOnly?: boolean
 		isSaving?: boolean
 		isValidating?: boolean
+	}
+	form: {
+		instance: UseFormReturn<T>
 	}
 }

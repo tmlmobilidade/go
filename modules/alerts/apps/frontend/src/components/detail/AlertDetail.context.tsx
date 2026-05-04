@@ -3,27 +3,26 @@
 /* * */
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type Alert, type File as FileType, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, keepUrlParams, useDataAgencies, useDataOperationalLines, useDataOperationalStops, useDataRides, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm, useTypicalFormWatch } from '@tmlmobilidade/ui';
+import { type Alert, type File as FileType, PermissionCatalog, type UpdateAlertDto } from '@tmlmobilidade/types';
+import { type DetailContextStateTemplate, keepUrlParams, useContextForm, useDataAgencies, useDataOperationalLines, useDataOperationalStops, useDataRides, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
-interface AlertDetailContextState extends DetailContextStateTemplate {
-	actions: DetailContextStateTemplate['actions'] & {
+interface AlertDetailContextState extends DetailContextStateTemplate<UpdateAlertDto> {
+	actions: DetailContextStateTemplate<UpdateAlertDto>['actions'] & {
 		deleteImage: () => void
 		setImageFile: (file: File) => void
 	}
 	data: {
 		alert: Alert | undefined
-		form: UseFormReturnType<UpdateAlertDto>
 		id: string | undefined
 		image: FileType | undefined
 	}
-	flags: DetailContextStateTemplate['flags'] & {
+	flags: DetailContextStateTemplate<UpdateAlertDto>['flags'] & {
 		isDeletingImage: boolean
 		isDirty: boolean
 		isUploadingImage: boolean
@@ -65,124 +64,55 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<UpdateAlertDto>(UpdateAlertSchema, alertData);
+	const form = useContextForm<UpdateAlertDto>({
+		apiData: alertData,
+		// schema: UpdateAlertSchema,
+	});
 
-	const watchedFormValues = useTypicalFormWatch(formRef.current, [
-		'cause',
-		'effect',
-		'agency_id',
-		'auto_texts',
-		'active_period_start_date',
-		'active_period_end_date',
-		'reference_type',
-		'references',
-		'publish_status',
-	]);
+	const agencyIdValue = form.watch('agency_id');
+	const activePeriodStartDateValue = form.watch('active_period_start_date');
+	const activePeriodEndDateValue = form.watch('active_period_end_date');
 
 	//
 	// C. Transform data
 
-	const { isLoading: agenciesLoading, raw: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.create],
 		scope: PermissionCatalog.all.alerts.scope,
 	});
 
-	const { isLoading: operationalLinesLoading, raw: operationalLinesData } = useDataOperationalLines(API_ROUTES.alerts.OPERATION_LINES, {
+	const { isLoading: operationalLinesLoading } = useDataOperationalLines(API_ROUTES.alerts.OPERATION_LINES, {
 		filters: {
-			agency_ids: watchedFormValues.agency_id ? [watchedFormValues.agency_id] : [],
-			date_end: watchedFormValues.active_period_end_date,
-			date_start: watchedFormValues.active_period_start_date,
+			agency_ids: agencyIdValue ? [agencyIdValue] : [],
+			date_end: activePeriodEndDateValue,
+			date_start: activePeriodStartDateValue,
 		},
 	});
 
-	const { raw: operationalStopsData } = useDataOperationalStops(API_ROUTES.alerts.OPERATION_STOPS, {
+	const { isLoading: operationalStopsLoading } = useDataOperationalStops(API_ROUTES.alerts.OPERATION_STOPS, {
 		filters: {
-			agency_ids: watchedFormValues.agency_id ? [watchedFormValues.agency_id] : [],
-			date_end: watchedFormValues.active_period_end_date,
-			date_start: watchedFormValues.active_period_start_date,
+			agency_ids: agencyIdValue ? [agencyIdValue] : [],
+			date_end: activePeriodEndDateValue,
+			date_start: activePeriodStartDateValue,
 		},
 	});
 
-	const { isLoading: ridesLoading, raw: ridesData } = useDataRides(API_ROUTES.alerts.RIDES_LIST, {
+	const { isLoading: ridesLoading } = useDataRides(API_ROUTES.alerts.RIDES_LIST, {
 		filters: {
-			agency_ids: watchedFormValues.agency_id ? [watchedFormValues.agency_id] : [],
-			date_end: watchedFormValues.active_period_end_date,
-			date_start: watchedFormValues.active_period_start_date,
+			agency_ids: agencyIdValue ? [agencyIdValue] : [],
+			date_end: activePeriodEndDateValue,
+			date_start: activePeriodStartDateValue,
 			operational_statuses: ['running', 'missed', 'scheduled'],
 		},
 	});
-
-	// useEffect(() => {
-	// 	// Skip if auto texts is not enabled
-	// 	if (!watchedFormValues.auto_texts) return;
-	// 	// Skip if required fields for templating are not filled
-	// 	if (!watchedFormValues.cause) return;
-	// 	if (!watchedFormValues.effect) return;
-	// 	if (!watchedFormValues.reference_type) return;
-	// 	if (!watchedFormValues.references?.length) return;
-	// 	// Generate alert templating and set title and description based on it
-	// 	let alertTemplating: DescribeAlertReturnType;
-	// 	if (watchedFormValues.reference_type === 'agency') {
-	// 		// Filter agenciesData to find the selected agency based on parent_id in references
-	// 		const selectedAgencyData = agenciesData.find(agency => String(agency._id) === String(watchedFormValues.references[0].parent_id));
-	// 		if (!selectedAgencyData) return;
-	// 		// Generate alert templating
-	// 		alertTemplating = describeAlert({
-	// 			cause: watchedFormValues.cause,
-	// 			data: selectedAgencyData,
-	// 			effect: watchedFormValues.effect,
-	// 			reference_type: 'agency',
-	// 			references: watchedFormValues.references,
-	// 		});
-	// 	} else if (watchedFormValues.reference_type === 'lines') {
-	// 		// Filter operationalLinesData to find the selected lines based on parent_id in references
-	// 		const selectedOperationalLinesData = operationalLinesData.filter(line => watchedFormValues.references.some(ref => String(ref.parent_id) === String(line.line_id)));
-	// 		if (!selectedOperationalLinesData.length) return;
-	// 		// Generate alert templating
-	// 		alertTemplating = describeAlert({
-	// 			cause: watchedFormValues.cause,
-	// 			data: selectedOperationalLinesData,
-	// 			effect: watchedFormValues.effect,
-	// 			reference_type: 'lines',
-	// 			references: watchedFormValues.references,
-	// 		});
-	// 	} else if (watchedFormValues.reference_type === 'rides') {
-	// 		// Filter ridesData to find the selected rides based on parent_id in references
-	// 		const selectedRidesData = ridesData.filter(ride => watchedFormValues.references.some(ref => String(ref.parent_id) === String(ride._id)));
-	// 		if (!selectedRidesData.length) return;
-	// 		// Generate alert templating
-	// 		alertTemplating = describeAlert({
-	// 			cause: watchedFormValues.cause,
-	// 			data: selectedRidesData,
-	// 			effect: watchedFormValues.effect,
-	// 			reference_type: 'rides',
-	// 			references: watchedFormValues.references,
-	// 		});
-	// 	} else if (watchedFormValues.reference_type === 'stops') {
-	// 		// Filter operationalStopsData to find the selected stops based on parent_id in references
-	// 		const selectedStopsData = operationalStopsData.filter(stop => watchedFormValues.references.some(ref => String(ref.parent_id) === String(stop.stop_id)));
-	// 		if (!selectedStopsData.length) return;
-	// 		// Generate alert templating
-	// 		alertTemplating = describeAlert({
-	// 			cause: watchedFormValues.cause,
-	// 			data: selectedStopsData,
-	// 			effect: watchedFormValues.effect,
-	// 			reference_type: 'stops',
-	// 			references: watchedFormValues.references,
-	// 		});
-	// 	}
-	// 	if (!alertTemplating) return;
-	// 	formRef.current.setFieldValue('description', alertTemplating.description.pt);
-	// 	formRef.current.setFieldValue('title', alertTemplating.title.pt);
-	// }, [agenciesData, formRef, operationalLinesData, operationalStopsData, ridesData, watchedFormValues.auto_texts, watchedFormValues.cause, watchedFormValues.effect, watchedFormValues.reference_type, watchedFormValues.references]);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', formRef.current.getValues()),
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.reset(updatedItem);
 			alertMutate(updatedItem);
 			alertImageMutate();
 			alertsListMutate();
@@ -200,7 +130,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_LOCK(alertId)),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.reset(updatedItem);
 			alertMutate(updatedItem);
 			alertImageMutate();
 			alertsListMutate();
@@ -221,7 +151,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		onSuccess: () => {
 			handleSave();
 			setImageFile(undefined);
-			formRef.current.resetDirty();
+			form.reset();
 			alertMutate();
 			alertImageMutate();
 			alertsListMutate();
@@ -231,7 +161,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	const { action: handleDeleteImage, isLoading: isDeletingImage } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), 'DELETE'),
 		onSuccess: () => {
-			formRef.current.resetDirty();
+			form.reset();
 			alertMutate();
 			alertImageMutate();
 			alertsListMutate();
@@ -284,11 +214,11 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			},
 		]),
 		isDeleting: isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.formState.isDirty,
 		isLoading: alertLoading,
 		isLocked: alertData?.is_locked,
 		isLocking: isLocking,
-		isValid: formRef.current.isValid(),
+		isValid: form.formState.isValid,
 	});
 
 	const { canLock } = useFlagCanLock({
@@ -307,10 +237,10 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			},
 		]),
 		isDeleting: isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.formState.isDirty,
 		isLoading: alertLoading,
 		isLocking: isLocking,
-		isValid: formRef.current.isValid(),
+		isValid: form.formState.isValid,
 	});
 
 	const { canDelete } = useFlagCanDelete({
@@ -329,11 +259,11 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			},
 		]),
 		isDeleting: isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.formState.isDirty,
 		isLoading: alertLoading,
 		isLocked: alertData?.is_locked,
 		isLocking: isLocking,
-		isValid: formRef.current.isValid(),
+		isValid: form.formState.isValid,
 	});
 
 	const { canDuplicate } = useFlagCanDuplicate({
@@ -352,16 +282,16 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			},
 		]),
 		isDeleting: isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.formState.isDirty,
 		isLoading: alertLoading,
 		isLocking: isLocking,
-		isValid: formRef.current.isValid(),
+		isValid: form.formState.isValid,
 	});
 
 	//
 	// E. Define context value
 
-	const contextValue: AlertDetailContextState = {
+	const contextValue: AlertDetailContextState = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
 			deleteImage: handleDeleteImage,
@@ -372,7 +302,6 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		},
 		data: {
 			alert: alertData,
-			form: formRef.current,
 			id: alertId,
 			image: alertImage,
 		},
@@ -384,16 +313,19 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			error: alertError,
 			isDeleting,
 			isDeletingImage,
-			isDirty: formRef.current.isDirty(),
+			isDirty: form.formState.isDirty,
 			isDuplicating,
-			isLoading: alertLoading || agenciesLoading || operationalLinesLoading || ridesLoading,
+			isLoading: alertLoading || agenciesLoading || operationalLinesLoading || operationalStopsLoading || ridesLoading,
 			isLocking,
 			isReadOnly,
 			isSaving,
 			isUploadingImage,
 			isValidating: alertValidating,
 		},
-	};
+		form: {
+			instance: form,
+		},
+	}), [agenciesLoading, alertData, alertError, alertId, alertImage, alertLoading, alertValidating, canDelete, canDuplicate, canLock, canSave, form, handleDelete, handleDeleteImage, handleDuplicate, handleLock, handleSave, isDeleting, isDeletingImage, isDuplicating, isLocking, isReadOnly, isSaving, isUploadingImage, operationalLinesLoading, operationalStopsLoading, ridesLoading]);
 
 	//
 	// F. Render components

@@ -7,6 +7,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type I18nCode, PermissionCatalog } from '@tmlmobilidade/types';
 import { Button, Section, Surface, Switch, TextInput, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
+import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -67,23 +68,25 @@ export function AlertDetailSectionTextsAi() {
 
 	const { action: generateText, isLoading: isLoadingGeneratingText } = useHandleUpdate<DescribeAlertReturnType>({
 		fetchFn: async () => {
+			// Get latest form values
+			const formValues = alertDetailContext.form.instance.getValues();
 			// Skip if auto texts is not enabled
-			if (!alertDetailContext.data.form.getValues().auto_texts) return;
+			if (!formValues.auto_texts) return;
 			// Skip if required fields for templating are not filled
-			if (!alertDetailContext.data.form.getValues().cause) return;
-			if (!alertDetailContext.data.form.getValues().effect) return;
-			if (!alertDetailContext.data.form.getValues().reference_type) return;
-			if (!alertDetailContext.data.form.getValues().references?.length) return;
+			if (!formValues.cause) return;
+			if (!formValues.effect) return;
+			if (!formValues.reference_type) return;
+			if (!formValues.references?.length) return;
 			// Generate alert templating and set title and description based on i
 			return await fetchData<DescribeAlertReturnType>(API_ROUTES.alerts.ALERTS_DESCRIBE, 'POST', {
-				active_period_end_date: alertDetailContext.data.form.getValues().active_period_end_date,
-				active_period_start_date: alertDetailContext.data.form.getValues().active_period_start_date,
-				agency_id: alertDetailContext.data.form.getValues().agency_id,
-				cause: alertDetailContext.data.form.getValues().cause,
-				effect: alertDetailContext.data.form.getValues().effect,
-				reference_type: alertDetailContext.data.form.getValues().reference_type,
-				references: alertDetailContext.data.form.getValues().references,
-				user_instructions: alertDetailContext.data.form.getValues().user_instructions,
+				active_period_end_date: formValues.active_period_end_date,
+				active_period_start_date: formValues.active_period_start_date,
+				agency_id: formValues.agency_id,
+				cause: formValues.cause,
+				effect: formValues.effect,
+				reference_type: formValues.reference_type,
+				references: formValues.references,
+				user_instructions: formValues.user_instructions,
 			});
 		},
 		onError: (error) => {
@@ -91,8 +94,8 @@ export function AlertDetailSectionTextsAi() {
 			console.error('Error generating alert description', { error });
 		},
 		onSuccess: (data) => {
-			alertDetailContext.data.form.setFieldValue('description', data.pt.description);
-			alertDetailContext.data.form.setFieldValue('title', data.pt.title);
+			alertDetailContext.form.instance.setValue('description', data.pt.description);
+			alertDetailContext.form.instance.setValue('title', data.pt.title);
 		},
 	});
 
@@ -109,23 +112,36 @@ export function AlertDetailSectionTextsAi() {
 			<Section gap="md">
 
 				{(hasPermissionToCreate || hasPermissionToEditTexts) && (
-					<Switch
-						key={alertDetailContext.data.form.key('auto_texts')}
-						label={t('default:alerts.create.summary.auto_texts.label')}
-						{...alertDetailContext.data.form.getInputProps('auto_texts', { type: 'checkbox' })}
+					<Controller
+						control={alertDetailContext.form.instance.control}
+						name="auto_texts"
+						render={({ field }) => (
+							<Switch
+								checked={field.value ?? false}
+								label={t('default:alerts.create.summary.auto_texts.label')}
+								onChange={e => field.onChange(e.currentTarget.checked)}
+							/>
+						)}
 					/>
 				)}
 
-				{(alertDetailContext.data.form.getValues().auto_texts && hasPermissionToCreate) && (
+				{(alertDetailContext.form.instance.getValues().auto_texts && hasPermissionToCreate) && (
 					<>
-						<TextInput
-							key={alertDetailContext.data.form.key('user_instructions')}
-							disabled={isLoadingGeneratingText}
-							label={t('default:alerts.create.summary.user_instructions.label')}
-							placeholder={t('default:alerts.create.summary.user_instructions.placeholder')}
-							readOnly={isLoadingGeneratingText}
-							w="100%"
-							{...alertDetailContext.data.form.getInputProps('user_instructions')}
+						<Controller
+							control={alertDetailContext.form.instance.control}
+							name="user_instructions"
+							render={({ field }) => (
+								<TextInput
+									disabled={isLoadingGeneratingText}
+									label={t('default:alerts.create.summary.user_instructions.label')}
+									onBlur={field.onBlur}
+									onChange={e => field.onChange(e.currentTarget.value)}
+									placeholder={t('default:alerts.create.summary.user_instructions.placeholder')}
+									readOnly={isLoadingGeneratingText}
+									value={field.value ?? ''}
+									w="100%"
+								/>
+							)}
 						/>
 						<Button
 							label={t('default:alerts.create.summary.generate_text.label')}

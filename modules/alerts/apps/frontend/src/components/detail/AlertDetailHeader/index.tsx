@@ -11,8 +11,12 @@ import { useMemo } from 'react';
 
 /* * */
 
+let renderCount = 0;
+
 export function AlertDetailHeader() {
 	//
+
+	renderCount++;
 
 	//
 	// A. Setup variables
@@ -20,6 +24,8 @@ export function AlertDetailHeader() {
 	const router = useRouter();
 	const meContext = useMeContext();
 	const alertDetailContext = useAlertDetailContext();
+
+	const publishStatusValue = alertDetailContext.form.instance.watch('publish_status');
 
 	//
 	// B. Transform data
@@ -60,10 +66,12 @@ export function AlertDetailHeader() {
 
 			<IdTag id={alertDetailContext.data.id} copyOnClick />
 
+			<p>Render Count: {renderCount}</p>
+
 			<PublishStatusTag
 				disabled={!hasPermissionToChangePublishStatus}
-				onChange={value => alertDetailContext.data.form.setFieldValue('publish_status', value)}
-				value={alertDetailContext.data.form.values.publish_status}
+				onChange={value => alertDetailContext.form.instance.setValue('publish_status', value)}
+				value={publishStatusValue}
 			/>
 
 			<Spacer />

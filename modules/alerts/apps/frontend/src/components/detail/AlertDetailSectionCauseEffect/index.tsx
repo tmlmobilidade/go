@@ -5,6 +5,7 @@
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { AlertCauseSchema, AlertEffectSchema } from '@tmlmobilidade/types';
 import { AlertCauseIcons, AlertEffectIcons, Collapsible, Grid, Section, Select } from '@tmlmobilidade/ui';
+import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -44,19 +45,33 @@ export function AlertDetailSectionCauseEffect() {
 		>
 			<Section>
 				<Grid columns="ab" gap="md">
-					<Select
-						key={alertDetailContext.data.form.key('cause')}
-						data={causeItems}
-						description="O que aconteceu"
-						label="Causa"
-						{...alertDetailContext.data.form.getInputProps('cause')}
+					<Controller
+						control={alertDetailContext.form.instance.control}
+						name="cause"
+						render={({ field, fieldState }) => (
+							<Select
+								data={causeItems}
+								description="O que aconteceu"
+								error={fieldState.error?.message}
+								label="Causa"
+								onChange={field.onChange}
+								value={field.value}
+							/>
+						)}
 					/>
-					<Select
-						key={alertDetailContext.data.form.key('effect')}
-						data={effectItems}
-						description="O que aconteceu como consequência"
-						label="Efeito"
-						{...alertDetailContext.data.form.getInputProps('effect')}
+					<Controller
+						control={alertDetailContext.form.instance.control}
+						name="effect"
+						render={({ field, fieldState }) => (
+							<Select
+								data={effectItems}
+								description="O que aconteceu como consequência"
+								error={fieldState.error?.message}
+								label="Efeito"
+								onChange={field.onChange}
+								value={field.value}
+							/>
+						)}
 					/>
 				</Grid>
 			</Section>
