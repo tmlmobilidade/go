@@ -8,7 +8,7 @@ import { type CreatePatternDto, CreatePatternSchema, Pattern, Route } from '@tml
 import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -55,15 +55,15 @@ export const PatternCreateContextProvider = ({ children, lineId, routeId }: Prop
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<CreatePatternDto>(CreatePatternSchema, undefined, { line_id: lineId, route_id: routeId });
+	const { form } = useTypicalForm<CreatePatternDto>(CreatePatternSchema, undefined, { line_id: lineId, route_id: routeId });
 
 	//
 	// D. Handle actions
 
 	const { action: handleCreate, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_LIST, 'POST', formRef.current.getValues()),
+		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_LIST, 'POST', form.getValues()),
 		onSuccess: (newItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			routeMutate();
 			closeCreatePatternModal();
 			router.push(keepUrlParams(PAGE_ROUTES.offer.PATTERN_DETAIL(lineId, routeId, newItem._id)));
@@ -73,17 +73,20 @@ export const PatternCreateContextProvider = ({ children, lineId, routeId }: Prop
 	//
 	// E. Define context value
 
-	const contextValue: PatternCreateContextState = {
+	const contextValue: PatternCreateContextState = useMemo(() => ({
 		actions: {
 			create: handleCreate,
 		},
 		data: {
-			form: formRef.current,
+			form,
 		},
 		flags: {
 			isSaving,
 		},
-	};
+	}), [
+		form,
+		isSaving,
+	]);
 
 	//
 	// H. Render components

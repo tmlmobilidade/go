@@ -54,15 +54,15 @@ export const FareDetailContextProvider = ({ children, fareId }: PropsWithChildre
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<UpdateFareDto>(UpdateFareSchema, fareData);
+	const { form } = useTypicalForm<UpdateFareDto>(UpdateFareSchema, fareData);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Fare>(API_ROUTES.offer.FARES_DETAIL(fareId), 'PUT', formRef.current.getValues()),
+		fetchFn: async () => await fetchData<Fare>(API_ROUTES.offer.FARES_DETAIL(fareId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			fareMutate(updatedItem);
 			faresListMutate();
 		},
@@ -71,7 +71,7 @@ export const FareDetailContextProvider = ({ children, fareId }: PropsWithChildre
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Fare>(API_ROUTES.offer.FARES_DETAIL(fareId), 'DELETE', fareData),
 		onSuccess: () => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			faresListMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.offer.FARES_LIST));
 		},
@@ -80,7 +80,7 @@ export const FareDetailContextProvider = ({ children, fareId }: PropsWithChildre
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Fare>(API_ROUTES.offer.FARES_DETAIL_LOCK(fareId)),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			fareMutate(updatedItem);
 			faresListMutate();
 		},
@@ -122,12 +122,12 @@ export const FareDetailContextProvider = ({ children, fareId }: PropsWithChildre
 		hasError: !!fareError,
 		isDeleted: null,
 		isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.isDirty(),
 		isLoading: fareLoading,
 		isLocked: fareData?.is_locked,
 		isLocking,
 		isSaving: isSaving,
-		isValid: formRef.current.isValid(),
+		isValid: form.isValid(),
 		permissions: {
 			delete: permissions.delete,
 			lock: permissions.lock,
@@ -139,7 +139,7 @@ export const FareDetailContextProvider = ({ children, fareId }: PropsWithChildre
 	//
 	// F. Define context value
 
-	const contextValue: FareDetailContextState = {
+	const contextValue: FareDetailContextState = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
 			lock: handleLock,
@@ -147,7 +147,7 @@ export const FareDetailContextProvider = ({ children, fareId }: PropsWithChildre
 		},
 		data: {
 			fare: fareData,
-			form: formRef.current,
+			form,
 			id: fareId,
 		},
 		flags: {
@@ -161,7 +161,14 @@ export const FareDetailContextProvider = ({ children, fareId }: PropsWithChildre
 			isReadOnly,
 			isSaving: isSaving,
 		},
-	};
+	}), [
+		fareData,
+		fareError,
+		fareLoading,
+		fareId,
+		form,
+		isSaving,
+	]);
 
 	//
 	// G. Render components

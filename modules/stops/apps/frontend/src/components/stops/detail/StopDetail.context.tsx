@@ -7,7 +7,7 @@ import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-stops-pckg-o
 import { PermissionCatalog, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, type PropsWithChildren, useContext } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -50,29 +50,31 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<UpdateStopDto>(UpdateStopSchema, stopData);
+	const { form } = useTypicalForm<UpdateStopDto>(UpdateStopSchema, stopData);
+
+	console.log(form.errors);
 
 	//
 	// D. Transform data
 
-	formRef.current.watch('name', ({ value }) => {
+	form.watch('name', ({ value }) => {
 		// Skip if no name is set
 		if (typeof value !== 'string') return;
 		// Build the abbreviated and TTS names
 		const shortName = getStopShortName(value);
 		const ttsName = getStopTtsName(value);
 		// Set the form values
-		formRef.current.setFieldValue('short_name', shortName);
-		formRef.current.setFieldValue('tts_name', ttsName);
+		form.setFieldValue('short_name', shortName);
+		form.setFieldValue('tts_name', ttsName);
 	});
 
 	//
 	// E. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'PUT', formRef.current.getValues()),
+		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			stopMutate(updatedItem);
 			allStopsMutate();
 		},
@@ -81,7 +83,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'DELETE'),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			stopMutate(updatedItem);
 			allStopsMutate();
 		},
@@ -90,7 +92,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL_LOCK(stopId)),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			stopMutate(updatedItem);
 			allStopsMutate();
 		},
@@ -113,44 +115,44 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.update),
 		isDeleted: stopData?.is_deleted,
 		isDeleting: isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.isDirty(),
 		isLoading: stopLoading,
 		isLocked: stopData?.is_locked,
 		isLocking: isLocking,
-		isValid: formRef.current.isValid(),
+		isValid: form.isValid(),
 	});
 
 	const { canLock } = useFlagCanLock({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.update),
 		isDeleted: stopData?.is_deleted,
 		isDeleting: isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.isDirty(),
 		isLoading: stopLoading,
 		isLocking: isLocking,
-		isValid: formRef.current.isValid(),
+		isValid: form.isValid(),
 	});
 
 	const { canDelete } = useFlagCanDelete({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.update),
 		isDeleting: isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.isDirty(),
 		isLoading: stopLoading,
 		isLocked: stopData?.is_locked,
 		isLocking: isLocking,
-		isValid: formRef.current.isValid(),
+		isValid: form.isValid(),
 	});
 
 	//
 	// G. Define context value
 
-	const contextValue: StopDetailContextState = {
+	const contextValue: StopDetailContextState = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
 			lock: handleLock,
 			save: handleSave,
 		},
 		data: {
-			form: formRef.current,
+			form,
 			stop: stopData,
 		},
 		flags: {
@@ -164,7 +166,22 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			isReadOnly,
 			isSaving,
 		},
-	};
+	}), [
+		canDelete,
+		canLock,
+		canSave,
+		stopError,
+		isDeleting,
+		stopLoading,
+		isLocking,
+		isReadOnly,
+		isSaving,
+		form,
+		stopData,
+		handleDelete,
+		handleLock,
+		handleSave,
+	]);
 
 	//
 	// H. Render components

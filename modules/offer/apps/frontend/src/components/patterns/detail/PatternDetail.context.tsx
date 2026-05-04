@@ -38,7 +38,6 @@ interface PatternDetailContextState {
 		agency_id: string
 		form: UseFormReturnType<UpdatePatternDto>
 		id: string
-		lineId: string
 		mergedRules: ScheduleRule[]
 		pattern: null | Pattern
 		stopsParameterRules: StopsParameterExtended[]
@@ -145,12 +144,12 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		[patternData, manualRules],
 	);
 
-	const { formRef } = useTypicalForm<UpdatePatternDto>(UpdatePatternSchema, patternForForm as UpdatePatternDto);
+	const { form } = useTypicalForm<UpdatePatternDto>(UpdatePatternSchema, patternForForm as UpdatePatternDto);
 
 	// rules used for UI + preview
 	const rulesForUI = useMemo(
 		() => {
-			const allRules = [...(formRef.current.values.rules ?? []), ...derivedRules] as ScheduleRule[];
+			const allRules = [...(form.values.rules ?? []), ...derivedRules] as ScheduleRule[];
 			const periods = periodsContext.data.raw || [];
 
 			// Enhance each rule with generated name and short name
@@ -159,12 +158,12 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 				return { ...rule, name: long, shortName: short, tooltip };
 			});
 		},
-		[eventsContext.data.raw, formRef.current.values.rules, derivedRules, periodsContext.data.raw],
+		[eventsContext.data.raw, form.values.rules, derivedRules, periodsContext.data.raw],
 	);
 
 	// parameters used for UI + preview
 	const parametersForUI = useMemo(() => {
-		const allParameters = [...(formRef.current.values.parameters ?? [])] as StopsParameter[];
+		const allParameters = [...(form.values.parameters ?? [])] as StopsParameter[];
 		const periods = periodsContext.data.raw || [];
 		const basePath = patternData?.path ?? [];
 
@@ -181,38 +180,38 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 				travelTimes: parameterTravelTimes,
 			};
 		});
-	}, [formRef.current.values.parameters, periodsContext.data.raw, patternData?.path]);
+	}, [form.values.parameters, periodsContext.data.raw, patternData?.path]);
 
 	//
 	// E. Handle Schedule RULES actions
 
 	const handleAddRule = useCallback((rule: ManualRule) => {
-		const currentRules = (formRef.current.getValues().rules ?? []) as ManualRule[];
+		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
 		const ruleWithId = { ...rule, _id: generateRandomString({ length: 5 }) };
 		const newRules = [...currentRules, ruleWithId];
 
-		formRef.current.setFieldValue('rules', newRules);
-	}, [formRef]);
+		form.setFieldValue('rules', newRules);
+	}, [form]);
 
 	const handleEditRule = useCallback((rule: ManualRule) => {
 		if (!rule._id) {
 			console.error('Cannot edit rule without _id');
 			return;
 		}
-		const currentRules = (formRef.current.getValues().rules ?? []) as ManualRule[];
+		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
 		const newRules = currentRules.map(r =>
 			r._id === rule._id ? rule : r,
 		);
 
-		formRef.current.setFieldValue('rules', newRules);
-	}, [formRef]);
+		form.setFieldValue('rules', newRules);
+	}, [form]);
 
 	const handleDeleteRule = useCallback((ruleId: string) => {
-		const currentRules = (formRef.current.getValues().rules ?? []) as ManualRule[];
+		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
 		const newRules = currentRules.filter(r => r._id !== ruleId);
 
-		formRef.current.setFieldValue('rules', newRules);
-	}, [formRef]);
+		form.setFieldValue('rules', newRules);
+	}, [form]);
 
 	const handleOpenRuleModal = useCallback((rule?: ManualRule) => {
 		const onSubmit = (validatedRule: ManualRule) => {
@@ -242,32 +241,32 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	// F. Handle Schedule RULES actions
 
 	const handleAddStopParameter = useCallback((rule: StopsParameter) => {
-		const currentRules = (formRef.current.getValues().parameters ?? []) as StopsParameter[];
+		const currentRules = (form.getValues().parameters ?? []) as StopsParameter[];
 		const ruleWithId = { ...rule, _id: generateRandomString({ length: 5 }) };
 		const newRules = [...currentRules, ruleWithId];
 
-		formRef.current.setFieldValue('parameters', newRules);
-	}, [formRef]);
+		form.setFieldValue('parameters', newRules);
+	}, [form]);
 
 	const handleEditStopParameter = useCallback((rule: StopsParameter) => {
 		if (!rule._id) {
 			console.error('Cannot edit rule without _id');
 			return;
 		}
-		const currentRules = (formRef.current.getValues().parameters ?? []) as StopsParameter[];
+		const currentRules = (form.getValues().parameters ?? []) as StopsParameter[];
 		const newRules = currentRules.map(r =>
 			r._id === rule._id ? rule : r,
 		);
 
-		formRef.current.setFieldValue('parameters', newRules);
-	}, [formRef]);
+		form.setFieldValue('parameters', newRules);
+	}, [form]);
 
 	const handleDeleteStopParameter = useCallback((ruleId: string) => {
-		const currentRules = (formRef.current.getValues().parameters ?? []) as StopsParameter[];
+		const currentRules = (form.getValues().parameters ?? []) as StopsParameter[];
 		const newRules = currentRules.filter(r => r._id !== ruleId);
 
-		formRef.current.setFieldValue('parameters', newRules);
-	}, [formRef]);
+		form.setFieldValue('parameters', newRules);
+	}, [form]);
 
 	const handleOpenStopsParameterModal = useCallback((rule?: StopsParameter) => {
 		const onSubmit = (validatedRule: StopsParameter) => {
@@ -309,9 +308,9 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	}, [patternId, patternMutate]);
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), 'PUT', formRef.current.getValues()),
+		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			void patternMutate(updatedItem);
 			void lineMutate();
 		},
@@ -320,7 +319,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), 'DELETE', patternData),
 		onSuccess: () => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			void lineMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.offer.LINES_LIST));
 		},
@@ -329,7 +328,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL_LOCK(patternId)),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			void patternMutate(updatedItem);
 			void lineMutate();
 		},
@@ -352,12 +351,12 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		hasError: !!patternError,
 		isDeleted: null,
 		isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.isDirty(),
 		isLoading: patternLoading,
 		isLocked: patternData?.is_locked,
 		isLocking,
 		isSaving: isSaving,
-		isValid: formRef.current.isValid(),
+		isValid: form.isValid(),
 		permissions: {
 			delete: permissions.delete,
 			lock: permissions.lock,
@@ -369,7 +368,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	//
 	// G. Define context value
 
-	const contextValue: PatternDetailContextState = {
+	const contextValue: PatternDetailContextState = useMemo(() => ({
 		actions: {
 			addComment,
 			addRule: handleAddRule,
@@ -385,7 +384,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		},
 		data: {
 			agency_id: lineData?.agency_id || '',
-			form: formRef.current,
+			form,
 			id: patternId,
 			lineId,
 			mergedRules: rulesForUI,
@@ -408,7 +407,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 			pattern_line: patternLineFC,
 			pattern_stops: patternStopsFC,
 		},
-	};
+	}), [addComment, handleAddRule, handleDelete, handleDeleteRule, handleEditRule, handleLock, patternMutate, handleOpenRuleModal, handleOpenRulesCalendarPreviewModal, handleOpenStopsParameterModal, handleSave, lineData?.agency_id, form, patternId, lineId, rulesForUI, patternData, parametersForUI, typologyData, canDelete, canLock, canSave, patternError, isDeleting, patternLoading, isLocking, isReadOnly, isSaving, patternLineFC, patternStopsFC]);
 
 	//
 	// H. Render components

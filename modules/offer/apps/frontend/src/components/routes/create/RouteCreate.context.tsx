@@ -8,7 +8,7 @@ import { type CreateRouteDto, CreateRouteSchema, Line, Route } from '@tmlmobilid
 import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -55,15 +55,15 @@ export const RouteCreateContextProvider = ({ children, lineId }: PropsWithChildr
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<CreateRouteDto>(CreateRouteSchema, undefined, { line_id: lineId });
+	const { form } = useTypicalForm<CreateRouteDto>(CreateRouteSchema, undefined, { line_id: lineId });
 
 	//
 	// D. Handle actions
 
 	const { action: handleCreate, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Route>(API_ROUTES.offer.ROUTES_LIST, 'POST', formRef.current.getValues()),
+		fetchFn: async () => await fetchData<Route>(API_ROUTES.offer.ROUTES_LIST, 'POST', form.getValues()),
 		onSuccess: (newItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			lineMutate();
 			closeCreateRouteModal();
 			router.push(keepUrlParams(PAGE_ROUTES.offer.ROUTE_DETAIL(lineId, newItem._id)));
@@ -73,17 +73,20 @@ export const RouteCreateContextProvider = ({ children, lineId }: PropsWithChildr
 	//
 	// E. Define context value
 
-	const contextValue: RouteCreateContextState = {
+	const contextValue: RouteCreateContextState = useMemo(() => ({
 		actions: {
 			create: handleCreate,
 		},
 		data: {
-			form: formRef.current,
+			form,
 		},
 		flags: {
 			isSaving,
 		},
-	};
+	}), [
+		form,
+		isSaving,
+	]);
 
 	//
 	// H. Render components

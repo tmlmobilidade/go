@@ -7,7 +7,7 @@ import { Line, PermissionCatalog, type UpdateLineDto, UpdateLineSchema } from '@
 import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -54,15 +54,15 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<UpdateLineDto>(UpdateLineSchema, lineData);
+	const { form } = useTypicalForm<UpdateLineDto>(UpdateLineSchema, lineData);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Line>(API_ROUTES.offer.LINES_DETAIL(lineId), 'PUT', formRef.current.getValues()),
+		fetchFn: async () => await fetchData<Line>(API_ROUTES.offer.LINES_DETAIL(lineId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			lineMutate(updatedItem);
 			linesListMutate();
 		},
@@ -71,7 +71,7 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Line>(API_ROUTES.offer.LINES_DETAIL(lineId), 'DELETE', lineData),
 		onSuccess: () => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			linesListMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.offer.LINES_LIST));
 		},
@@ -80,7 +80,7 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Line>(API_ROUTES.offer.LINES_DETAIL_LOCK(lineId)),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			lineMutate(updatedItem);
 			linesListMutate();
 		},
@@ -103,12 +103,12 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 		hasError: !!lineError,
 		isDeleted: null,
 		isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.isDirty(),
 		isLoading: lineLoading,
 		isLocked: lineData?.is_locked,
 		isLocking,
 		isSaving: isSaving,
-		isValid: formRef.current.isValid(),
+		isValid: form.isValid(),
 		permissions: {
 			delete: permissions.delete,
 			lock: permissions.lock,
@@ -120,14 +120,14 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 	//
 	// F. Define context value
 
-	const contextValue: LineDetailContextState = {
+	const contextValue: LineDetailContextState = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
 			lock: handleLock,
 			save: handleSave,
 		},
 		data: {
-			form: formRef.current,
+			form,
 			id: lineId,
 			line: lineData,
 		},
@@ -142,7 +142,14 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 			isReadOnly,
 			isSaving: isSaving,
 		},
-	};
+	}), [
+		lineData,
+		lineError,
+		lineLoading,
+		lineId,
+		form,
+		isSaving,
+	]);
 
 	//
 	// G. Render components

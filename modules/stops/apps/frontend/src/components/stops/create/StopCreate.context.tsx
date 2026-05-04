@@ -11,7 +11,7 @@ import { type CreateStopDto, CreateStopSchema, type Stop, StopSchema } from '@tm
 import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -74,7 +74,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<CreateStopDto>(CreateStopSchema);
+	const { form } = useTypicalForm<CreateStopDto>(CreateStopSchema);
 
 	//
 	// D. Handle actions
@@ -105,11 +105,11 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 			return;
 		}
 		// Update the form with the validated values
-		formRef.current.setValues({ latitude: validatedLatitude, longitude: validatedLongitude });
+		form.setValues({ latitude: validatedLatitude, longitude: validatedLongitude });
 		// Fetch the locations API for the given coordinates
 		(async () => {
 			const locationData = await locationsContext.actions.queryLocations(validatedLatitude, validatedLongitude);
-			formRef.current.setValues({
+			form.setValues({
 				district_id: locationData?.district?._id,
 				locality_id: locationData?.locality?._id,
 				municipality_id: locationData?.municipality?._id,
@@ -120,7 +120,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const validateCurrentStep = () => {
 		// Get latest form values
-		const currentValues = formRef.current.getValues();
+		const currentValues = form.getValues();
 		// By default, set the current step as invalid
 		setModalCurrentStepValidState(false);
 		// Validate Step 1
@@ -144,30 +144,30 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		}
 	};
 
-	formRef.current.watch('name', validateCurrentStep);
-	formRef.current.watch('short_name', validateCurrentStep);
-	formRef.current.watch('tts_name', validateCurrentStep);
-	formRef.current.watch('latitude', validateCurrentStep);
-	formRef.current.watch('longitude', validateCurrentStep);
-	formRef.current.watch('district_id', validateCurrentStep);
-	formRef.current.watch('municipality_id', validateCurrentStep);
-	formRef.current.watch('parish_id', validateCurrentStep);
-	useEffect(validateCurrentStep, [formRef, modalCurrentStepState]);
+	form.watch('name', validateCurrentStep);
+	form.watch('short_name', validateCurrentStep);
+	form.watch('tts_name', validateCurrentStep);
+	form.watch('latitude', validateCurrentStep);
+	form.watch('longitude', validateCurrentStep);
+	form.watch('district_id', validateCurrentStep);
+	form.watch('municipality_id', validateCurrentStep);
+	form.watch('parish_id', validateCurrentStep);
+	useEffect(validateCurrentStep, [modalCurrentStepState]);
 
-	formRef.current.watch('name', ({ value }) => {
+	form.watch('name', ({ value }) => {
 		// Skip if no name is set
 		if (typeof value !== 'string') return;
 		// Build the abbreviated and TTS names
 		const shortName = getStopShortName(value);
 		const ttsName = getStopTtsName(value);
 		// Set the form values
-		formRef.current.setFieldValue('short_name', shortName);
-		formRef.current.setFieldValue('tts_name', ttsName);
+		form.setFieldValue('short_name', shortName);
+		form.setFieldValue('tts_name', ttsName);
 	});
 
 	const handleCreateStop = async () => {
 		setIsSaving(true);
-		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_LIST, 'POST', formRef.current.getValues());
+		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({ message: response.error, title: 'Erro ao criar organização' });
@@ -181,7 +181,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 			setIsSaving(false);
 			return;
 		}
-		formRef.current.reset();
+		form.reset();
 		allStopsMutate();
 		setIsSaving(false);
 		closeCreateStopModal();
@@ -192,13 +192,13 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// E. Define context value
 
-	const contextValue: StopCreateContextState = {
+	const contextValue: StopCreateContextState = useMemo(() => ({
 		actions: {
 			createNewStop: handleCreateStop,
 			setLatLng,
 		},
 		data: {
-			form: formRef.current,
+			form,
 		},
 		flags: {
 			error: isError,
@@ -210,7 +210,13 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 			nextStep,
 			previousStep,
 		},
-	};
+	}), [
+		form,
+		isError,
+		isSaving,
+		modalCurrentStepState,
+		modalCurrentStepValidState,
+	]);
 
 	//
 	// F. Render components
