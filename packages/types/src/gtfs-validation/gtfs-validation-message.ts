@@ -10,7 +10,7 @@ export const GtfsValidationMessageSchema = z.object({
 	file_name: z.string(),
 	message: z.string(),
 	rows: z.array(z.number()),
-	rule_id: z.string(),
+	rule_id: z.string().optional(),
 	severity: SeverityLevelSchema,
 	validation_id: z.string(),
 });
