@@ -8,6 +8,7 @@ import { PermissionCatalog } from '@tmlmobilidade/types';
 import { CloseButton, DeleteButton, DuplicateButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusTag, SaveButton, Spacer, Toolbar, useMeContext } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
+import { useWatch } from 'react-hook-form';
 
 /* * */
 
@@ -25,7 +26,10 @@ export function AlertDetailHeader() {
 	const meContext = useMeContext();
 	const alertDetailContext = useAlertDetailContext();
 
-	const publishStatusValue = alertDetailContext.form.instance.watch('publish_status');
+	const publishStatusValue = useWatch({
+		control: alertDetailContext.form.instance.control,
+		name: 'publish_status',
+	});
 
 	//
 	// B. Transform data
@@ -70,7 +74,7 @@ export function AlertDetailHeader() {
 
 			<PublishStatusTag
 				disabled={!hasPermissionToChangePublishStatus}
-				onChange={value => alertDetailContext.form.instance.setValue('publish_status', value)}
+				onChange={value => alertDetailContext.form.instance.setValue('publish_status', value, { shouldDirty: true })}
 				value={publishStatusValue}
 			/>
 

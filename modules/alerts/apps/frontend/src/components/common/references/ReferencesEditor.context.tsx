@@ -6,7 +6,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Label, openConfirmModal, type SelectDataItem, useDataOperationalLines, useDataOperationalStops, useDataRides } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
 
@@ -100,7 +100,7 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 	//
 	// C. Handle actions
 
-	const changeReferenceType = (value: Alert['reference_type']) => {
+	const changeReferenceType = useCallback((value: Alert['reference_type']) => {
 		if (selectedReferences?.length > 0) {
 			openConfirmModal({
 				cancelProps: { variant: 'danger' },
@@ -118,47 +118,37 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 			onChangeReferenceType(value);
 			onChangeReferences([]);
 		}
-	};
+	}, [selectedReferences, onChangeReferenceType, onChangeReferences]);
 
-	const addReference = () => {
-		const updatedReferences = Array.from(selectedReferences || []);
-		updatedReferences.push({ child_ids: [], parent_id: '' });
+	const addReference = useCallback(() => {
+		onChangeReferences([...(selectedReferences || []), { child_ids: [], parent_id: '' }]);
+	}, [selectedReferences, onChangeReferences]);
+
+	const removeReference = useCallback((index: number) => {
+		onChangeReferences((selectedReferences || []).filter((_, i) => i !== index));
+	}, [selectedReferences, onChangeReferences]);
+
+	const updateReference = useCallback((index: number, field: 'child_ids' | 'parent_id', value: string | string[]) => {
+		const updatedReferences = (selectedReferences || []).map((ref, i) => {
+			if (i !== index) return ref;
+			if (field === 'parent_id') return { ...ref, child_ids: [], parent_id: value as string };
+			return { ...ref, child_ids: value as string[] };
+		});
 		onChangeReferences(updatedReferences);
-	};
+	}, [selectedReferences, onChangeReferences]);
 
-	const removeReference = (index: number) => {
-		const currentReferences = selectedReferences || [];
-		onChangeReferences(currentReferences.filter((_, i) => i !== index));
-	};
-
-	const updateReference = (index: number, field: 'child_ids' | 'parent_id', value: string | string[]) => {
-		if (field === 'parent_id') {
-			const updatedReferences = Array.from(selectedReferences);
-			updatedReferences[index].parent_id = value as string;
-			updatedReferences[index].child_ids = [];
-			onChangeReferences(updatedReferences);
-		} else {
-			const updatedReferences = Array.from(selectedReferences);
-			updatedReferences[index].child_ids = value as string[];
-			onChangeReferences(updatedReferences);
-		}
-	};
-
-	const toggleRideSelection = (rideId: string) => {
-		// Get existing references
+	const toggleRideSelection = useCallback((rideId: string) => {
 		const existingReferences = selectedReferences ?? [];
-		// If ride is already selected, remove it and return
-		if (existingReferences?.some(reference => reference.parent_id === rideId)) {
+		if (existingReferences.some(reference => reference.parent_id === rideId)) {
 			onChangeReferences(existingReferences.filter(reference => reference.parent_id !== rideId));
 			return;
 		}
-		// Otherwise, add it to the references array
 		onChangeReferences([...existingReferences, { child_ids: [], parent_id: rideId }]);
-	};
+	}, [selectedReferences, onChangeReferences]);
 
-	const removeAllRides = () => {
+	const removeAllRides = useCallback(() => {
 		onChangeReferences([]);
-	};
+	}, [onChangeReferences]);
 
 	useEffect(() => {
 		(async () => {
@@ -179,7 +169,7 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 	//
 	// D. Define State
 
-	const contextValue: ReferencesEditorContextState = {
+	const contextValue: ReferencesEditorContextState = useMemo(() => ({
 		actions: {
 			addReference,
 			changeReferenceType,
@@ -201,7 +191,25 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 		flags: {
 			isLoading: operationalLinesLoading || operationalStopsLoading || ridesLoading,
 		},
-	};
+	}), [
+		addReference,
+		changeReferenceType,
+		removeAllRides,
+		removeReference,
+		toggleRideSelection,
+		updateReference,
+		activePeriodEndDate,
+		activePeriodStartDate,
+		availableAgenciesOptions,
+		enabledReferenceTypes,
+		selectedAgencyId,
+		selectedReferenceType,
+		selectedReferences,
+		selectedRidesData,
+		operationalLinesLoading,
+		operationalStopsLoading,
+		ridesLoading,
+	]);
 
 	//
 	// E. Return state

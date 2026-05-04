@@ -7,7 +7,8 @@ import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, PermissionCatalog } from '@tmlmobilidade/types';
 import { Collapsible, Label, openConfirmModal, Section, Select, useDataAgencies } from '@tmlmobilidade/ui';
-import { Controller } from 'react-hook-form';
+import { useCallback } from 'react';
+import { Controller, useWatch } from 'react-hook-form';
 
 /* * */
 
@@ -24,12 +25,12 @@ export function AlertDetailSectionReferences() {
 		scope: PermissionCatalog.all.alerts.scope,
 	});
 
-	const agencyIdValue = alertDetailContext.form.instance.watch('agency_id');
-	const municipalityIdsValue = alertDetailContext.form.instance.watch('municipality_ids');
-	const activePeriodStartDateValue = alertDetailContext.form.instance.watch('active_period_start_date');
-	const activePeriodEndDateValue = alertDetailContext.form.instance.watch('active_period_end_date');
-	const referenceTypeValue = alertDetailContext.form.instance.watch('reference_type');
-	const referencesValue = alertDetailContext.form.instance.watch('references');
+	const agencyIdValue = useWatch({ control: alertDetailContext.form.instance.control, name: 'agency_id' });
+	const municipalityIdsValue = useWatch({ control: alertDetailContext.form.instance.control, name: 'municipality_ids' });
+	const activePeriodStartDateValue = useWatch({ control: alertDetailContext.form.instance.control, name: 'active_period_start_date' });
+	const activePeriodEndDateValue = useWatch({ control: alertDetailContext.form.instance.control, name: 'active_period_end_date' });
+	const referenceTypeValue = useWatch({ control: alertDetailContext.form.instance.control, name: 'reference_type' });
+	const referencesValue = useWatch({ control: alertDetailContext.form.instance.control, name: 'references' });
 
 	//
 	// B. Handle actions
@@ -44,23 +45,23 @@ export function AlertDetailSectionReferences() {
 				labels: { cancel: 'Cancelar', confirm: 'Continuar' },
 				onConfirm: () => {
 					fieldOnChange(value);
-					alertDetailContext.form.instance.setValue('references', []);
+					alertDetailContext.form.instance.setValue('references', [], { shouldDirty: true });
 				},
 				title: 'Tem a certeza que pretende mudar de operador?',
 			});
 		} else {
 			fieldOnChange(value);
-			alertDetailContext.form.instance.setValue('references', []);
+			alertDetailContext.form.instance.setValue('references', [], { shouldDirty: true });
 		}
 	};
 
-	const handleChangeReferenceType = (value: Alert['reference_type']) => {
-		alertDetailContext.form.instance.setValue('reference_type', value);
-	};
+	const handleChangeReferenceType = useCallback((value: Alert['reference_type']) => {
+		alertDetailContext.form.instance.setValue('reference_type', value, { shouldDirty: true });
+	}, [alertDetailContext.form.instance]);
 
-	const handleChangeReferences = (references: Alert['references']) => {
-		alertDetailContext.form.instance.setValue('references', references);
-	};
+	const handleChangeReferences = useCallback((references: Alert['references']) => {
+		alertDetailContext.form.instance.setValue('references', references, { shouldDirty: true });
+	}, [alertDetailContext.form.instance]);
 
 	//
 	// C. Render components
