@@ -104,6 +104,7 @@ export interface GtfsV29Writers {
 	afetacao: CsvWriter<ExportedAfetacaoRow>
 	agency: CsvWriter<GtfsTMLAgency>
 	calendar_dates: CsvWriter<ExportedCalendarDatesRow>
+	calendar_map?: CsvWriter<ExportedCalendarMapRow>
 	fare_attributes: CsvWriter<GtfsTMLFareAttributes>
 	fare_rules: CsvWriter<GtfsTMLFareRules>
 	feed_info: CsvWriter<GtfsTMLFeedInfo>
@@ -158,6 +159,15 @@ export interface ExportedCalendarDatesRow extends GTFS_CalendarDate {
 	period: string
 	holiday: 0 | 1
 	day_type: number
+}
+
+/**
+ * Calendar map row for numeric calendar codes
+ * Maps numeric service IDs back to their original text labels
+ */
+export interface ExportedCalendarMapRow {
+	service_id: string
+	service_label: string
 }
 
 /**
