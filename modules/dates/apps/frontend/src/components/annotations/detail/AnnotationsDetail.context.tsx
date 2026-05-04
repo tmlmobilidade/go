@@ -54,15 +54,15 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<UpdateAnnotationDto>(UpdateAnnotationSchema, annotationData);
+	const { form } = useTypicalForm<UpdateAnnotationDto>(UpdateAnnotationSchema, annotationData);
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Annotation>(API_ROUTES.dates.ANNOTATIONS_DETAIL(annotationId), 'PUT', formRef.current.getValues()),
+		fetchFn: async () => await fetchData<Annotation>(API_ROUTES.dates.ANNOTATIONS_DETAIL(annotationId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			annotationMutate(updatedItem);
 			annotationsListMutate();
 		},
@@ -71,7 +71,7 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Annotation>(API_ROUTES.dates.ANNOTATIONS_DETAIL(annotationId), 'DELETE', annotationData),
 		onSuccess: () => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			annotationsListMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.dates.ANNOTATIONS_LIST));
 		},
@@ -80,7 +80,7 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Annotation>(API_ROUTES.dates.ANNOTATIONS_DETAIL_LOCK(annotationId)),
 		onSuccess: (updatedItem) => {
-			formRef.current.resetDirty();
+			form.resetDirty();
 			annotationMutate(updatedItem);
 			annotationsListMutate();
 		},
@@ -122,12 +122,12 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 		hasError: !!annotationError,
 		isDeleted: null,
 		isDeleting,
-		isDirty: formRef.current.isDirty(),
+		isDirty: form.isDirty(),
 		isLoading: annotationLoading,
 		isLocked: annotationData?.is_locked,
 		isLocking,
 		isSaving: isSaving,
-		isValid: formRef.current.isValid(),
+		isValid: form.isValid(),
 		permissions: {
 			delete: permissions.delete,
 			lock: permissions.lock,
@@ -139,7 +139,7 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 	//
 	// F. Define context value
 
-	const contextValue: AnnotationsDetailContextState = {
+	const contextValue: AnnotationsDetailContextState = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
 			lock: handleLock,
@@ -147,7 +147,7 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 		},
 		data: {
 			annotation: annotationData,
-			form: formRef.current,
+			form,
 			id: annotationId,
 		},
 		flags: {
@@ -161,7 +161,14 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 			isReadOnly,
 			isSaving: isSaving,
 		},
-	};
+	}), [
+		annotationData,
+		annotationError,
+		annotationLoading,
+		annotationId,
+		form,
+		isSaving,
+	]);
 
 	//
 	// G. Render components
