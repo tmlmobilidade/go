@@ -105,7 +105,7 @@ export function UsersListContextProvider({ children }: PropsWithChildren) {
 			// Return true if all filters pass
 			return true;
 		});
-	}, [searchResultsData, filterOrganizationIds, filterRoleIds]);
+	}, [filterOrganizationIds.value, filterRoleIds.value, searchResultsData]);
 
 	//
 	// E. Define context value
