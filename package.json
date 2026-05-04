@@ -90,9 +90,9 @@
 		"generate-routes": "bash ./scripts/generate-routes.sh",
 
 		"helper:alerts:migrate-db": "dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-alerts-helpers-migrate-db",
-		"helper:controller:export-sams:prduction": "dotenv-run -f ./modules/controller/environments/production/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-controller-helpers-export-sams",
+		"helper:controller:export-sams:prd": "dotenv-run -f ./modules/controller/environments/production/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-controller-helpers-export-sams",
 		"helper:dates:seed-periods": "dotenv-run -f ./modules/dates/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-dates-helpers-seed-periods",
-		"helper:locations:seed-locations:prduction": "dotenv-run -f ./modules/locations/environments/production/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-locations-helpers-seed-locations",
+		"helper:locations:seed-locations:prd": "dotenv-run -f ./modules/locations/environments/production/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-locations-helpers-seed-locations",
 		"helper:locations:seed-locations:staging": "dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-locations-helpers-seed-locations",
 		"helper:offer:seed-fares": "dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-fares",
 		"helper:offer:seed-lines": "dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-lines",
