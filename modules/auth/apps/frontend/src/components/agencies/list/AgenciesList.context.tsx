@@ -5,20 +5,17 @@
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { type AgencyNormalized } from '@/types/normalized';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { useQueryState, useSearch } from '@tmlmobilidade/ui';
+import { useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
 
 interface AgenciesListContextState {
-	actions: {
-		setFilterSearch: (values: string) => void
-	}
 	data: {
 		filtered: AgencyNormalized[]
 	}
 	filters: {
-		search: string
+		search: UseFilterStateStringReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -40,7 +37,7 @@ export const useAgenciesListContext = () => {
 
 /* * */
 
-export const AgenciesListContextProvider = ({ children }: PropsWithChildren) => {
+export function AgenciesListContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
@@ -48,7 +45,7 @@ export const AgenciesListContextProvider = ({ children }: PropsWithChildren) => 
 
 	const agenciesContext = useAgenciesContext();
 
-	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
+	const filterSearch = useFilterStateString('search');
 
 	//
 	// B. Transform data
@@ -65,16 +62,13 @@ export const AgenciesListContextProvider = ({ children }: PropsWithChildren) => 
 	const searchResultsData = useSearch<AgencyNormalized>({
 		accessors: ['name_normalized'],
 		data: normalizedAgenciesData,
-		query: filterSearch,
+		query: filterSearch.value,
 	});
 
 	//
 	// C. Define context value
 
-	const contextValue: AgenciesListContextState = useMemo(() => ({
-		actions: {
-			setFilterSearch,
-		},
+	const contextValue: AgenciesListContextState = {
 		data: {
 			filtered: searchResultsData,
 		},
@@ -85,12 +79,7 @@ export const AgenciesListContextProvider = ({ children }: PropsWithChildren) => 
 			error: agenciesContext.flags.error,
 			loading: agenciesContext.flags.loading,
 		},
-	}), [
-		agenciesContext.flags.error,
-		agenciesContext.flags.loading,
-		searchResultsData,
-		filterSearch,
-	]);
+	};
 
 	//
 	// D. Render components
