@@ -39,7 +39,7 @@ export function ValidationsDetailSectionResult() {
 		},
 		{
 			accessor: 'message',
-			render: item => <div>{item.message} <a href={getGtfsScheduleDocUrl(item.rule_id)} target="_blank"> | Saber mais ...</a></div>,
+			render: item => <div>{item.message} <a href={getGtfsScheduleDocUrl(item.rule_id)} target="_blank"> | Saber mais</a></div>,
 			title: 'Mensagem',
 			width: 500,
 		},
