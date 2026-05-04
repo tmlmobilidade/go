@@ -46,7 +46,18 @@ export const PathSchema = z.object({
 
 /* * */
 
+const ShapeAnchorSchema = z.object({
+	_id: z.string(),
+	after_stop_id: StopIdSchema,
+	before_stop_id: StopIdSchema,
+	lat: z.number(),
+	lon: z.number(),
+	sequence: z.number().default(0),
+	type: z.enum(['via', 'through']).default('via'),
+});
+
 export const ShapeSchema = z.object({
+	anchors: z.array(ShapeAnchorSchema).optional().default([]),
 	extension: z.number(),
 	geojson: z.object({
 		geometry: z.object({
@@ -56,6 +67,7 @@ export const ShapeSchema = z.object({
 		properties: z.object({}).optional(),
 		type: z.string().default('Feature'),
 	}),
+	// source: z.enum(['imported', 'manual', 'valhalla']).default('imported'),
 });
 
 /* * */

@@ -4,9 +4,11 @@
 
 import { ApiResponse } from '@carrismetropolitana/api-types/common';
 import { type District, type Locality, type Municipality, type Parish } from '@carrismetropolitana/api-types/locations';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
+import { Zone } from '@tmlmobilidade/types';
 import { standardSwrFetcher } from '@tmlmobilidade/utils';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -31,6 +33,9 @@ interface LocationsContextState {
 		parish_ids: Parish['id'][]
 		parishes: Parish[]
 		parishes_map: Map<Parish['id'], Parish & { name_normalized: string }>
+		zone_ids: Zone['_id'][]
+		zones: Zone[]
+		zones_map: Map<Zone['_id'], Zone & { name_normalized: string }>
 	}
 	flags: {
 		is_loading: boolean
@@ -63,6 +68,7 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 	const { data: fetchedMunicipalitiesData, isLoading: fetchedMunicipalitiesLoading } = useSWR<ApiResponse<Municipality[]>, Error>(`${CMET_API}/locations/municipalities`, standardSwrFetcher);
 	const { data: fetchedParishesData, isLoading: fetchedParishesLoading } = useSWR<ApiResponse<Parish[]>, Error>(`${CMET_API}/locations/parishes`, standardSwrFetcher);
 	const { data: fetchedLocalitiesData, isLoading: fetchedLocalitiesLoading } = useSWR<ApiResponse<Locality[]>, Error>(`${CMET_API}/locations/localities`, standardSwrFetcher);
+	const { data: allZonesData, isLoading: fetchedZonesLoading } = useSWR<Zone[], Error>(API_ROUTES.offer.ZONES_LIST);
 
 	//
 	// B. Transform data
@@ -129,28 +135,38 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 	}, [allLocalitiesData]);
 
 	//
+
+	const allZonesMap = useMemo(() => {
+		return new Map(allZonesData?.map(item => [item._id, { ...item, name_normalized: normalizeString(item.name) }]));
+	}, [allZonesData]);
+
+	const allZoneIds = useMemo(() => {
+		return allZonesData?.map(item => item._id) ?? [];
+	}, [allZonesData]);
+
+	//
 	// C. Handle actions
 
-	const getDistrictById = (districtId: string): District | undefined => {
+	const getDistrictById = useCallback((districtId: string): District | undefined => {
 		return allDistrictsData.find(item => item.id === districtId);
-	};
+	}, [allDistrictsData]);
 
-	const getMunicipalityById = (municipalityId: string): Municipality | undefined => {
+	const getMunicipalityById = useCallback((municipalityId: string): Municipality | undefined => {
 		return allMunicipalitiesData.find(item => item.id === municipalityId);
-	};
+	}, [allMunicipalitiesData]);
 
-	const getParishById = (parishId: string): Parish | undefined => {
+	const getParishById = useCallback((parishId: string): Parish | undefined => {
 		return allParishesData.find(item => item.id === parishId);
-	};
+	}, [allParishesData]);
 
-	const getLocalityById = (localityId: string): Locality | undefined => {
+	const getLocalityById = useCallback((localityId: string): Locality | undefined => {
 		return allLocalitiesData?.find(item => item.id === localityId);
-	};
+	}, [allLocalitiesData]);
 
 	//
 	// D. Define context value
 
-	const contextValue: LocationsContextState = {
+	const contextValue: LocationsContextState = useMemo(() => ({
 		actions: {
 			getDistrictById,
 			getLocalityById,
@@ -170,11 +186,14 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 			parish_ids: allParishIds ?? [],
 			parishes: allParishesData ?? [],
 			parishes_map: allParishesMap || new Map(),
+			zone_ids: allZoneIds ?? [],
+			zones: allZonesData ?? [],
+			zones_map: allZonesMap || new Map(),
 		},
 		flags: {
-			is_loading: fetchedDistrictsLoading || fetchedMunicipalitiesLoading || fetchedParishesLoading || fetchedLocalitiesLoading,
+			is_loading: fetchedDistrictsLoading || fetchedMunicipalitiesLoading || fetchedParishesLoading || fetchedLocalitiesLoading || fetchedZonesLoading,
 		},
-	};
+	}), [getDistrictById, getLocalityById, getMunicipalityById, getParishById, allDistrictIds, allDistrictsData, allDistrictsMap, allLocalitiesData, allLocalitiesMap, allLocalityIds, allMunicipalitiesData, allMunicipalitiesMap, allMunicipalityIds, allParishIds, allParishesData, allParishesMap, allZoneIds, allZonesData, allZonesMap, fetchedDistrictsLoading, fetchedMunicipalitiesLoading, fetchedParishesLoading, fetchedLocalitiesLoading, fetchedZonesLoading]);
 
 	//
 	// E. Render components

@@ -38,6 +38,7 @@ interface PatternDetailContextState {
 		agency_id: string
 		form: UseFormReturnType<UpdatePatternDto>
 		id: string
+		lineId: string
 		mergedRules: ScheduleRule[]
 		pattern: null | Pattern
 		stopsParameterRules: StopsParameterExtended[]
@@ -84,50 +85,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	const typologyData = typologiesContext.data.raw.find(t => t._id === lineData?.typology);
 
 	//
-	// C. Transform data to GeoJSON
-
-	const patternLineFC: Feature<LineString, MapOverlayPatternShapeLineDataProps> | FeatureCollection<LineString, MapOverlayPatternShapeLineDataProps> | null = useMemo(() => {
-		if (!patternData?.shape?.geojson?.geometry?.coordinates) return null;
-
-		// The pattern shape is already a GeoJSON Feature, just add our custom properties
-		return {
-			geometry: {
-				coordinates: patternData.shape.geojson.geometry.coordinates,
-				type: 'LineString' as const,
-			},
-			properties: {
-				color: typologiesContext.data.raw.find(t => t._id === lineData?.typology)?.color,
-				id: patternData._id,
-			},
-			type: 'Feature' as const,
-		};
-	}, [patternData, typologiesContext.data.raw, lineData?.typology]);
-
-	const patternStopsFC: FeatureCollection<Point, MapOverlayPatternShapeStopsDataProps> | null = useMemo(() => {
-		const featureCollection = getBaseGeoJsonFeatureCollection<Point, MapOverlayPatternShapeStopsDataProps>();
-
-		if (!patternData?.path) return featureCollection;
-
-		featureCollection.features = patternData.path
-			.filter(pathItem => pathItem.stop)
-			.map((pathItem, index) => ({
-				geometry: {
-					coordinates: [pathItem.stop?.longitude, pathItem.stop?.latitude],
-					type: 'Point' as const,
-				},
-				properties: {
-					id: String(pathItem.stop?._id),
-					name: pathItem.stop?.name,
-					sequence: index + 1,
-				},
-				type: 'Feature' as const,
-			}));
-
-		return featureCollection;
-	}, [patternData]);
-
-	//
-	// D. Setup form
+	// C. Setup form
 
 	const manualRules = useMemo(
 		() => (patternData?.rules ?? []).filter((r): r is ManualRule => r.kind === 'manual'),
@@ -145,6 +103,55 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	);
 
 	const { form } = useTypicalForm<UpdatePatternDto>(UpdatePatternSchema, patternForForm as UpdatePatternDto);
+
+	//
+	// C. Editable pattern data
+
+	const editablePath = form.values.path ?? patternData?.path ?? [];
+	const editableShape = form.values.shape ?? patternData?.shape;
+
+	//
+	// D. Transform editable data to GeoJSON
+
+	const patternLineFC: Feature<LineString, MapOverlayPatternShapeLineDataProps> | FeatureCollection<LineString, MapOverlayPatternShapeLineDataProps> | null = useMemo(() => {
+		if (!editableShape?.geojson?.geometry?.coordinates) return null;
+
+		return {
+			geometry: {
+				coordinates: editableShape.geojson.geometry.coordinates,
+				type: 'LineString' as const,
+			},
+			properties: {
+				color: typologyData?.color,
+				id: patternData?._id ?? patternId,
+			},
+			type: 'Feature' as const,
+		};
+	}, [editableShape, typologyData?.color, patternData?._id, patternId]);
+
+	const patternStopsFC: FeatureCollection<Point, MapOverlayPatternShapeStopsDataProps> | null = useMemo(() => {
+		const featureCollection = getBaseGeoJsonFeatureCollection<Point, MapOverlayPatternShapeStopsDataProps>();
+
+		featureCollection.features = editablePath
+			.filter(pathItem => pathItem.stop)
+			.map((pathItem, index) => ({
+				geometry: {
+					coordinates: [
+						pathItem.stop.longitude,
+						pathItem.stop.latitude,
+					],
+					type: 'Point' as const,
+				},
+				properties: {
+					id: String(pathItem.stop._id),
+					name: pathItem.stop.name,
+					sequence: index + 1,
+				},
+				type: 'Feature' as const,
+			}));
+
+		return featureCollection;
+	}, [editablePath]);
 
 	// rules used for UI + preview
 	const rulesForUI = useMemo(
@@ -165,7 +172,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	const parametersForUI = useMemo(() => {
 		const allParameters = [...(form.values.parameters ?? [])] as StopsParameter[];
 		const periods = periodsContext.data.raw || [];
-		const basePath = patternData?.path ?? [];
+		const basePath = editablePath;
 
 		return allParameters.map((parameter) => {
 			const { long, short } = buildParameterSummary(parameter, { periods });
@@ -180,7 +187,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 				travelTimes: parameterTravelTimes,
 			};
 		});
-	}, [form.values.parameters, periodsContext.data.raw, patternData?.path]);
+	}, [form.values.parameters, periodsContext.data.raw, editablePath]);
 
 	//
 	// E. Handle Schedule RULES actions
