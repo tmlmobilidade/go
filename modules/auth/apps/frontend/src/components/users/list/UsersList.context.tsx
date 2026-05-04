@@ -57,8 +57,8 @@ export function UsersListContextProvider({ children }: PropsWithChildren) {
 	// B. Setup filters
 
 	const filterSearch = useFilterStateString('search');
-	const filterRoleIds = useFilterStateList('role_ids', rolesContext.data.raw.map(item => item._id));
-	const filterOrganizationIds = useFilterStateList('organization_ids', organizationsContext.data.raw.map(item => item._id));
+	const filterRoleIds = useFilterStateList('role_ids', rolesContext.data.raw.map(item => item._id), rolesContext.data.raw.map(item => ({ label: item.name, value: item._id })));
+	const filterOrganizationIds = useFilterStateList('organization_ids', organizationsContext.data.raw.map(item => item._id), organizationsContext.data.raw.map(item => ({ label: item.long_name, value: item._id })));
 
 	//
 	// C. Fetch data
