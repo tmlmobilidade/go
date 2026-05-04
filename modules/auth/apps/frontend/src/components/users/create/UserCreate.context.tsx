@@ -8,7 +8,7 @@ import { type CreateUserDto, CreateUserSchema, type User } from '@tmlmobilidade/
 import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -57,14 +57,14 @@ export const UserCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Setup form
 
-	const { formRef } = useTypicalForm<CreateUserDto>(CreateUserSchema);
+	const { form } = useTypicalForm<CreateUserDto>(CreateUserSchema);
 
 	//
 	// D. Handle actions
 
 	const handleCreateUser = async () => {
 		setIsSaving(true);
-		const response = await fetchData<User>(API_ROUTES.auth.USERS_LIST, 'POST', formRef.current.getValues());
+		const response = await fetchData<User>(API_ROUTES.auth.USERS_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({ message: response.error, title: 'Erro ao criar utilizador' });
@@ -78,7 +78,7 @@ export const UserCreateContextProvider = ({ children }: PropsWithChildren) => {
 			setIsSaving(false);
 			return;
 		}
-		formRef.current.reset();
+		form.reset();
 		allUsersMutate();
 		setIsSaving(false);
 		closeCreateUserModal();
@@ -89,17 +89,20 @@ export const UserCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// E. Define context value
 
-	const contextValue: UserCreateContextState = {
+	const contextValue: UserCreateContextState = useMemo(() => ({
 		actions: {
 			saveUser: handleCreateUser,
 		},
 		data: {
-			form: formRef.current,
+			form,
 		},
 		flags: {
 			isSaving,
 		},
-	};
+	}), [
+		form,
+		isSaving,
+	]);
 
 	//
 	// F. Render components
