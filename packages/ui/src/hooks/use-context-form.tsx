@@ -4,7 +4,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Logger } from '@tmlmobilidade/logger';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { type DefaultValues, useForm, type UseFormReturn } from 'react-hook-form';
 import { type ZodSchema } from 'zod';
 
@@ -41,6 +41,16 @@ export function useContextForm<T>({ apiData, defaultValues, schema }: UseContext
 		resolver: schema ? zodResolver(schema) : undefined,
 	});
 
+	const isFormDirty = useMemo(() => {
+		// This is necessary due to a mismatch between isDirty flag and dirtyFields
+		// in React Hook Form. isDirty is a boolean that indicates if any field is dirty,
+		// while dirtyFields is an object that tracks which specific fields are dirty.
+		// In some cases isDirty may not update correctly, while dirtyFields will still track changes.
+		// Therefore, we check the length of the keys in dirtyFields to determine if the form is dirty.
+		// More here: https://github.com/react-hook-form/react-hook-form/pull/13162
+		return Object.keys(form.formState.dirtyFields).length > 0;
+	}, [form.formState.dirtyFields]);
+
 	//
 	// Initialize form with API data
 
@@ -48,16 +58,16 @@ export function useContextForm<T>({ apiData, defaultValues, schema }: UseContext
 		// Skip if no API data
 		if (!apiData) return;
 		// Skip if form is dirty
-		if (form.formState.isDirty) return;
+		if (isFormDirty) return;
 		// Initialize form with API data
 		form.reset(apiData);
 		Logger.success(`Form initialized with values from API.`);
-	}, [apiData, form]);
+	}, [apiData, form, isFormDirty]);
 
 	//
 	// Prevent navigation if form is dirty
 
-	usePreventNavigation(form.formState.isDirty);
+	usePreventNavigation(isFormDirty);
 
 	//
 	// Return hook values and functions
