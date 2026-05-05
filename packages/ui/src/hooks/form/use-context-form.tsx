@@ -8,7 +8,7 @@ import { useEffect, useMemo } from 'react';
 import { type DefaultValues, useForm, type UseFormReturn } from 'react-hook-form';
 import { type ZodSchema } from 'zod';
 
-import { usePreventNavigation } from './use-prevent-navigation';
+import { usePreventNavigation } from '../use-prevent-navigation';
 
 /* * */
 
@@ -17,6 +17,11 @@ interface UseContextFormProps<T> {
 	defaultValues?: DefaultValues<T>
 	mode?: 'controlled' | 'uncontrolled'
 	schema?: ZodSchema<T>
+}
+
+interface UseContextFormReturn<T> {
+	form: UseFormReturn<T>
+	unblock: () => void
 }
 
 /**
@@ -29,7 +34,7 @@ interface UseContextFormProps<T> {
  * @param defaultValues Optional initial values to set when creating new forms.
  * @returns The form methods and state from React Hook Form.
  */
-export function useContextForm<T>({ apiData, defaultValues, schema }: UseContextFormProps<T>): UseFormReturn<T> {
+export function useContextForm<T>({ apiData, defaultValues, schema }: UseContextFormProps<T>): UseContextFormReturn<T> {
 	//
 
 	//
@@ -41,6 +46,7 @@ export function useContextForm<T>({ apiData, defaultValues, schema }: UseContext
 		resolver: schema ? zodResolver(schema) : undefined,
 	});
 
+	// const isFormDirty = Object.keys(form.formState.dirtyFields).length > 0;
 	const isFormDirty = useMemo(() => {
 		// This is necessary due to a mismatch between isDirty flag and dirtyFields
 		// in React Hook Form. isDirty is a boolean that indicates if any field is dirty,
@@ -67,7 +73,7 @@ export function useContextForm<T>({ apiData, defaultValues, schema }: UseContext
 	//
 	// Prevent navigation if form is dirty
 
-	usePreventNavigation(isFormDirty);
+	const unblock = usePreventNavigation(isFormDirty);
 
 	//
 	// Return hook values and functions
@@ -75,7 +81,7 @@ export function useContextForm<T>({ apiData, defaultValues, schema }: UseContext
 	// form.isDirty() reads from reactive dirty-tracking state, also reactive.
 	// Deriving these inline avoids stale state from useState/useEffect.
 
-	return form;
+	return { form, unblock };
 
 	//
 }
