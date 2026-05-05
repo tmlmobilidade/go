@@ -16,7 +16,7 @@ export function ShapeEditorContent() {
 	const stopsEditorContext = useStopsEditorContext();
 
 	const lineData = useMemo(() => {
-		const legs = stopsEditorContext.data.routeData?.legs ?? patternDetailContext.data.form.values.shape?.legs;
+		const legs = stopsEditorContext.data.routeData?.legs ?? stopsEditorContext.data.shape?.legs;
 
 		if (legs?.length) {
 			return {
@@ -39,7 +39,7 @@ export function ShapeEditorContent() {
 
 		return patternDetailContext.geojson.pattern_line;
 	}, [
-		patternDetailContext.data.form.values.shape?.legs,
+		stopsEditorContext.data.shape?.legs,
 		patternDetailContext.data.id,
 		patternDetailContext.data.typologyData?.color,
 		patternDetailContext.geojson.pattern_line,

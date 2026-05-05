@@ -5,7 +5,7 @@
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { Path, Stop } from '@tmlmobilidade/types';
+import { Path, PopulatedPath, Shape, Stop } from '@tmlmobilidade/types';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
@@ -58,6 +58,7 @@ interface StopsEditorContextState {
 		addShapeAnchor: (anchor: Omit<ShapeAnchor, '_id' | 'sequence'>) => Promise<void>
 		addStop: (stop: Stop, index: number) => Promise<void>
 		appendStop: (stop: Stop) => Promise<void>
+		cancel: () => void
 		convertShapeToEditable: () => Promise<void>
 		moveShapeAnchor: (anchorId: string, lat: number, lon: number) => Promise<void>
 		prependStop: (stop: Stop) => Promise<void>
@@ -73,6 +74,7 @@ interface StopsEditorContextState {
 		hasUnsavedChanges: boolean
 		path: Path[]
 		routeData: null | RoutePreviewResponse
+		shape: Shape | undefined
 	}
 	flags: {
 		isEditableShape: boolean
@@ -96,7 +98,7 @@ export function useStopsEditorContext() {
 
 /* * */
 
-function createPathItemFromStop(stop: Stop): Path {
+function createPathItemFromStop(stop: Stop): PopulatedPath {
 	return {
 		_id: generateRandomString({ length: 5 }),
 		allow_drop_off: true,
@@ -109,7 +111,7 @@ function createPathItemFromStop(stop: Stop): Path {
 	};
 }
 
-function applyRouteToPath(path: Path[], routeData: RoutePreviewResponse, points: RoutePreviewPoint[]): Path[] {
+function applyRouteToPath(path: PopulatedPath[], routeData: RoutePreviewResponse, points: RoutePreviewPoint[]): PopulatedPath[] {
 	const breakIndices = points
 		.map((p, i) => (p.type === 'break' ? i : -1))
 		.filter(i => i !== -1);
@@ -136,7 +138,7 @@ function applyRouteToPath(path: Path[], routeData: RoutePreviewResponse, points:
 	});
 }
 
-function buildRoutePreviewPoints(path: Path[], anchors: ShapeAnchor[]): RoutePreviewPoint[] {
+function buildRoutePreviewPoints(path: PopulatedPath[], anchors: ShapeAnchor[]): RoutePreviewPoint[] {
 	return path
 		.filter(pathItem => pathItem.stop)
 		.flatMap((pathItem, index, filteredPath) => {
@@ -173,20 +175,28 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 	const [routeData, setRouteData] = useState<null | RoutePreviewResponse>(null);
 	const [isLoadingRoute, setIsLoadingRoute] = useState(false);
 
-	const path = useMemo(() => patternDetailContext.data.form.values.path ?? [], [patternDetailContext.data.form.values.path]);
+	// Local intermediate state — only written back to the pattern form on submit
+	const [initialPath] = useState<PopulatedPath[]>(() =>
+		(patternDetailContext.data.form.values.path ?? patternDetailContext.data.pattern?.path ?? []) as PopulatedPath[],
+	);
+	const [initialShape] = useState<Shape | undefined>(() =>
+		patternDetailContext.data.form.values.shape,
+	);
 
-	const hasUnsavedChanges = useMemo(() => {
-		const dbPath = patternDetailContext.data.pattern?.path ?? [];
-		return JSON.stringify(path) !== JSON.stringify(dbPath);
-	}, [path, patternDetailContext.data.pattern?.path]);
+	const [localPath, setLocalPath] = useState<PopulatedPath[]>(initialPath);
+	const [localShape, setLocalShape] = useState<Shape | undefined>(initialShape);
 
-	const anchors = useMemo(() => {
-		return patternDetailContext.data.form.values.shape?.anchors;
-	}, [patternDetailContext.data.form.values.shape?.anchors]);
+	const path = localPath;
 
-	const isEditableShape = anchors?.length !== undefined;
+	const anchors = useMemo(() => localShape?.anchors ?? [], [localShape]);
 
-	const recomputeRoute = useCallback(async (nextPath: Path[], nextAnchors: ShapeAnchor[] = anchors) => {
+	const isEditableShape = localShape !== undefined;
+
+	const hasUnsavedChanges = useMemo(() =>
+		JSON.stringify(localPath) !== JSON.stringify(initialPath),
+	[localPath, initialPath]);
+
+	const recomputeRoute = useCallback(async (nextPath: PopulatedPath[], nextAnchors: ShapeAnchor[] = anchors) => {
 		try {
 			setIsLoadingRoute(true);
 
@@ -211,15 +221,14 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 
 			const updatedPath = applyRouteToPath(nextPath, res.data, points);
 
-			patternDetailContext.data.form.setFieldValue('path', updatedPath);
-
-			patternDetailContext.data.form.setFieldValue('shape', {
-				...(patternDetailContext.data.form.values.shape ?? {}),
+			setLocalPath(updatedPath);
+			setLocalShape(prev => ({
+				...(prev ?? {}),
 				anchors: nextAnchors,
 				extension: Math.round(res.data.distance),
 				geojson: res.data.geojson,
 				legs: res.data.legs,
-			});
+			}));
 
 			setRouteData(res.data);
 		} catch (error) {
@@ -230,7 +239,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 		} finally {
 			setIsLoadingRoute(false);
 		}
-	}, [anchors, patternDetailContext.data.form]);
+	}, [anchors]);
 
 	const convertShapeToEditable = useCallback(async () => {
 		await recomputeRoute(path, []);
@@ -250,18 +259,16 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 			},
 		];
 
-		patternDetailContext.data.form.setFieldValue('shape.anchors', nextAnchors);
-
 		await recomputeRoute(path, nextAnchors);
-	}, [anchors, path, patternDetailContext.data.form, recomputeRoute]);
+	}, [anchors, path, recomputeRoute]);
 
 	const addStop = useCallback(async (stop: Stop, index: number) => {
 		const nextPath = [...path];
 		nextPath.splice(index, 0, createPathItemFromStop(stop));
 
-		patternDetailContext.data.form.setFieldValue('path', nextPath);
+		setLocalPath(nextPath);
 		await recomputeRoute(nextPath, anchors);
-	}, [anchors, path, patternDetailContext.data.form, recomputeRoute]);
+	}, [anchors, path, recomputeRoute]);
 
 	const prependStop = useCallback(async (stop: Stop) => {
 		await addStop(stop, 0);
@@ -279,42 +286,44 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 			return anchor.after_stop_id !== removedPathItem?.stop_id && anchor.before_stop_id !== removedPathItem?.stop_id;
 		});
 
-		patternDetailContext.data.form.setFieldValue('path', nextPath);
+		setLocalPath(nextPath);
 		await recomputeRoute(nextPath, nextAnchors);
-	}, [anchors, path, patternDetailContext.data.form, recomputeRoute]);
+	}, [anchors, path, recomputeRoute]);
 
-	const reorderStops = useCallback(async (nextPath: Path[]) => {
+	const reorderStops = useCallback(async (nextPath: PopulatedPath[]) => {
 		const nextStopIds = new Set(nextPath.map(pathItem => pathItem.stop_id));
 
 		const nextAnchors = anchors.filter((anchor) => {
 			return nextStopIds.has(anchor.after_stop_id) && nextStopIds.has(anchor.before_stop_id);
 		});
 
-		patternDetailContext.data.form.setFieldValue('path', nextPath);
+		setLocalPath(nextPath);
 		await recomputeRoute(nextPath, nextAnchors);
-	}, [anchors, patternDetailContext.data.form, recomputeRoute]);
+	}, [anchors, recomputeRoute]);
 
 	const removeShapeAnchor = useCallback(async (anchorId: string) => {
 		const nextAnchors = anchors.filter(a => a._id !== anchorId);
-		patternDetailContext.data.form.setFieldValue('shape.anchors', nextAnchors);
 		await recomputeRoute(path, nextAnchors);
-	}, [anchors, path, patternDetailContext.data.form, recomputeRoute]);
+	}, [anchors, path, recomputeRoute]);
 
 	const moveShapeAnchor = useCallback(async (anchorId: string, lat: number, lon: number) => {
 		const nextAnchors = anchors.map(a => a._id === anchorId ? { ...a, lat, lon } : a);
-		patternDetailContext.data.form.setFieldValue('shape.anchors', nextAnchors);
 		await recomputeRoute(path, nextAnchors);
-	}, [anchors, path, patternDetailContext.data.form, recomputeRoute]);
+	}, [anchors, path, recomputeRoute]);
 
 	const revertPath = useCallback(() => {
-		const originalPattern = patternDetailContext.data.pattern;
-		if (!originalPattern) return;
-		patternDetailContext.data.form.setFieldValue('path', originalPattern.path ?? []);
-		patternDetailContext.data.form.setFieldValue('shape', originalPattern.shape);
+		setLocalPath(initialPath);
+		setLocalShape(initialShape);
 		setRouteData(null);
-	}, [patternDetailContext.data.pattern, patternDetailContext.data.form]);
+	}, [initialPath, initialShape]);
 
 	const submit = useCallback(() => {
+		patternDetailContext.data.form.setFieldValue('path', localPath);
+		patternDetailContext.data.form.setFieldValue('shape', localShape);
+		onClose();
+	}, [localPath, localShape, onClose, patternDetailContext.data.form]);
+
+	const cancel = useCallback(() => {
 		onClose();
 	}, [onClose]);
 
@@ -323,6 +332,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 			addShapeAnchor,
 			addStop,
 			appendStop,
+			cancel,
 			convertShapeToEditable,
 			moveShapeAnchor,
 			prependStop,
@@ -338,12 +348,13 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 			hasUnsavedChanges,
 			path,
 			routeData,
+			shape: localShape,
 		},
 		flags: {
 			isEditableShape,
 			isLoadingRoute,
 		},
-	}), [addShapeAnchor, addStop, appendStop, convertShapeToEditable, moveShapeAnchor, prependStop, recomputeRoute, removeShapeAnchor, removeStop, reorderStops, revertPath, submit, anchors, hasUnsavedChanges, path, routeData, isEditableShape, isLoadingRoute]);
+	}), [addShapeAnchor, addStop, appendStop, cancel, convertShapeToEditable, moveShapeAnchor, prependStop, recomputeRoute, removeShapeAnchor, removeStop, reorderStops, revertPath, submit, anchors, hasUnsavedChanges, path, routeData, localShape, isEditableShape, isLoadingRoute]);
 
 	return (
 		<StopsEditorContext.Provider value={contextValue}>

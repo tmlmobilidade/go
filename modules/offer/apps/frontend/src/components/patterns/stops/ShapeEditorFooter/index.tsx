@@ -2,8 +2,8 @@
 
 /* * */
 
-import { IconArrowBackUp, IconDeviceFloppy, IconRoute } from '@tabler/icons-react';
-import { Button, IconButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { IconDeviceFloppy, IconRoute } from '@tabler/icons-react';
+import { Button, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 import { useStopsEditorContext } from '../ShapeEditor.context';
 
@@ -26,13 +26,13 @@ export function ShapeEditorFooter() {
 	return (
 		<Toolbar>
 
-			<Button
+			{/* <Button
 				disabled={!stopsEditorContext.data.hasUnsavedChanges}
 				icon={<IconArrowBackUp />}
 				label="Reverter"
 				onClick={() => stopsEditorContext.actions.revertPath()}
 				variant="secondary"
-			/>
+			/> */}
 
 			<Button
 				icon={<IconRoute />}
@@ -43,16 +43,15 @@ export function ShapeEditorFooter() {
 			<Spacer />
 
 			<Button
+				label="Cancelar"
+				onClick={() => stopsEditorContext.actions.cancel()}
+				variant="danger"
+			/>
+			<Button
 				icon={<IconDeviceFloppy />}
 				label="Guardar"
 				onClick={() => stopsEditorContext.actions.submit()}
 			/>
-			{/* <Button
-				disabled={!ruleCreateContext.data.form.isValid()}
-				label={ruleCreateContext.flags.isEditing ? 'Editar' : 'Criar'}
-				onClick={ruleCreateContext.actions.submitRule}
-			/> */}
-
 		</Toolbar>
 	);
 
