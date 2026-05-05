@@ -140,7 +140,7 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 			// Fetch data for each selected ride
 			const result: RideNormalized[] = [];
 			for (const rideId of selectedReferences.map(reference => reference.parent_id)) {
-				const response = await fetchData<RideNormalized>(API_ROUTES.alerts.RIDES_DETAIL_RIDE(rideId));
+				const response = await fetchData<RideNormalized>(API_ROUTES.alerts.OPERATION_RIDES_RIDE(rideId));
 				if (!response.data) continue;
 				result.push(response.data);
 			}
