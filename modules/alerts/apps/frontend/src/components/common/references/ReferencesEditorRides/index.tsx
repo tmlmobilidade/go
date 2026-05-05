@@ -27,7 +27,7 @@ export function ReferencesEditorRides() {
 	//
 	// B. Fetch data
 
-	const { isLoading: filteredRidesLoading, raw: filteredRidesData } = useDataRides(API_ROUTES.alerts.RIDES_LIST, {
+	const { isLoading: filteredRidesLoading, raw: filteredRidesData } = useDataRides(API_ROUTES.alerts.OPERATION_RIDES, {
 		filters: {
 			agency_ids: [referencesEditorContext.data.selected_agency_id],
 			date_end: referencesEditorContext.data.active_period_end_date,
