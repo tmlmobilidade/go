@@ -12,12 +12,8 @@ import { useWatch } from 'react-hook-form';
 
 /* * */
 
-let renderCount = 0;
-
 export function AlertDetailHeader() {
 	//
-
-	renderCount++;
 
 	//
 	// A. Setup variables
@@ -69,8 +65,6 @@ export function AlertDetailHeader() {
 			<CloseButton onClick={handleClose} type="close" />
 
 			<IdTag id={alertDetailContext.data.id} copyOnClick />
-
-			<p>Render Count: {renderCount}</p>
 
 			<PublishStatusTag
 				disabled={!hasPermissionToChangePublishStatus}
