@@ -107,7 +107,7 @@ export function AlertCreateStepSummary() {
 	}, [generateText]);
 
 	//
-	// C. Render components
+	// D. Render components
 
 	return (
 		<Section gap="md">
@@ -162,6 +162,7 @@ export function AlertCreateStepSummary() {
 					name="title"
 					render={({ field, fieldState }) => (
 						<TextInput
+							disabled={isLoadingGeneratingText}
 							error={fieldState.error?.message}
 							label={t('default:alerts.create.summary.title.label')}
 							onBlur={field.onBlur}
@@ -177,6 +178,7 @@ export function AlertCreateStepSummary() {
 					name="description"
 					render={({ field, fieldState }) => (
 						<Textarea
+							disabled={isLoadingGeneratingText}
 							error={fieldState.error?.message}
 							label={t('default:alerts.create.summary.description.label')}
 							minRows={4}

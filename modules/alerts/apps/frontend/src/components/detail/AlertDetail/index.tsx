@@ -3,6 +3,7 @@
 /* * */
 
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
+import { AlertDetailFootnote } from '@/components/detail/AlertDetailFootnote';
 import { AlertDetailHeader } from '@/components/detail/AlertDetailHeader';
 import { AlertDetailSectionCauseEffect } from '@/components/detail/AlertDetailSectionCauseEffect';
 import { AlertDetailSectionDates } from '@/components/detail/AlertDetailSectionDates';
@@ -37,6 +38,7 @@ export function AlertDetail() {
 			<AlertDetailSectionDates />
 			<AlertDetailSectionCauseEffect />
 			<AlertDetailSectionReferences />
+			<AlertDetailFootnote />
 		</Pane>
 	);
 }
