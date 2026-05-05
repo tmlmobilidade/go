@@ -102,9 +102,11 @@ export function AlertCreateStepSummary() {
 
 	useEffect(() => {
 		if (initialGeneration.current) return;
+		if (alertCreateContext.form.instance.getValues('title')?.length) return;
+		if (alertCreateContext.form.instance.getValues('description')?.length) return;
 		initialGeneration.current = true;
 		(async () => await generateText())();
-	}, [generateText]);
+	}, [alertCreateContext.form.instance, generateText]);
 
 	//
 	// D. Render components

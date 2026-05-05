@@ -63,6 +63,7 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	const causeValue = useContextFormWatch({ control: form.control, name: 'cause' });
 	const effectValue = useContextFormWatch({ control: form.control, name: 'effect' });
 	const referenceTypeValue = useContextFormWatch({ control: form.control, name: 'reference_type' });
+	const referencesValue = useContextFormWatch({ control: form.control, name: 'references' });
 	const activePeriodStartDateValue = useContextFormWatch({ control: form.control, name: 'active_period_start_date' });
 	const activePeriodEndDateValue = useContextFormWatch({ control: form.control, name: 'active_period_end_date' });
 
@@ -130,9 +131,19 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	}, [effectValue, form]);
 
 	useEffect(() => {
+		// If auto_texts is enabled, reset texts when references change
+		if (!form.getValues('auto_texts')) return;
+		form.setValue('title', '');
+		form.setValue('description', '');
+		Logger.info('Reset title and description fields due to references change.');
+	}, [referencesValue, form]);
+
+	useEffect(() => {
 		// Skip if cause or effect are not set, as reference_type will be
 		// auto-set based on their combination when both are selected.
 		if (!causeValue || !effectValue) return;
+		// Skip if reference_type is already set, as we don't want to override user's selection.
+		if (referenceTypeValue) return;
 		// Extract the available reference types for the selected cause/effect combination.
 		const enabledTypes = alertCauseEffectReferenceTypeMap[causeValue]?.[effectValue] ?? [];
 		if (!enabledTypes.length) return;
@@ -146,8 +157,8 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		else if (enabledTypes.includes('rides') && (allowAllReferenceTypes || allowedReferenceTypes.includes('rides'))) form.setValue('reference_type', 'rides');
 		else if (enabledTypes.includes('agency') && (allowAllReferenceTypes || allowedReferenceTypes.includes('agency'))) form.setValue('reference_type', 'agency');
 		else Logger.info('No enabled reference types available to set as default.');
-		Logger.info('Updated reference_type options based on cause/effect change and user permissions.');
-	}, [causeValue, effectValue, form, meContext.data.user.permissions]);
+		Logger.info('Auto-selected reference_type options based on cause/effect change and user permissions.');
+	}, [causeValue, effectValue, form, meContext.data.user.permissions, referenceTypeValue]);
 
 	useEffect(() => {
 		// Skip if reference_type is not 'agency' or agency_id is not set
@@ -155,7 +166,7 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		// When reference_type is 'agency' or agency_id changes to non-empty,
 		// set references to the selected agency.
 		form.setValue('references', [{ child_ids: [], parent_id: form.getValues('agency_id') }]);
-		Logger.info('Set references to selected agency based on reference_type "agency" selection.');
+		Logger.info('Auto-selected Agency references based on reference_type "agency" selection.');
 	}, [form, referenceTypeValue, agencyIdValue]);
 
 	useEffect(() => {
