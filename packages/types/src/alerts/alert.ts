@@ -14,6 +14,7 @@ export const AlertSchema = DocumentSchema.extend({
 	active_period_end_date: UnixTimestampSchema.nullable().default(null),
 	active_period_start_date: UnixTimestampSchema,
 	agency_id: z.string(),
+	auto_texts: z.boolean().default(true),
 	cause: AlertCauseSchema,
 	coordinates: z.tuple([z.number(), z.number()]).nullable().default(null),
 	description: z.string(),
@@ -31,6 +32,7 @@ export const AlertSchema = DocumentSchema.extend({
 		parent_id: z.string(),
 	})).default([]),
 	title: z.string(),
+	user_instructions: z.string().default(''),
 });
 
 export const CreateAlertSchema = AlertSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });

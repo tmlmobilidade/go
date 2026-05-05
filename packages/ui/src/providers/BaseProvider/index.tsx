@@ -49,7 +49,12 @@ export function BaseProvider({ children, i18n, version }: PropsWithChildren<Base
 	// B. Render components
 
 	return (
-		<html data-mode="light" data-theme="ocean" lang="pt">
+		<html
+			data-mode="light"
+			data-scroll-behavior="smooth"
+			data-theme="ocean"
+			lang="pt"
+		>
 			<body>
 				<NuqsAdapter>
 					<VersionContextProvider version={version}>

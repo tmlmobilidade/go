@@ -5,7 +5,7 @@
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusTag, SaveButton, Spacer, Toolbar, useMeContext } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, DuplicateButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusTag, SaveButton, Spacer, Toolbar, useContextFormWatch, useMeContext } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
@@ -20,6 +20,8 @@ export function AlertDetailHeader() {
 	const router = useRouter();
 	const meContext = useMeContext();
 	const alertDetailContext = useAlertDetailContext();
+
+	const publishStatusValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'publish_status' });
 
 	//
 	// B. Transform data
@@ -41,28 +43,17 @@ export function AlertDetailHeader() {
 				value: alertDetailContext.data.alert.reference_type,
 			},
 		]);
-	}, [
-		meContext.data.user?.permissions,
-		alertDetailContext.data.alert.agency_id,
-		alertDetailContext.data.alert.reference_type,
-	]);
+	}, [meContext.actions, alertDetailContext.data.alert.agency_id, alertDetailContext.data.alert.reference_type]);
 
 	//
-	// B. Handle actions
+	// C. Handle actions
 
 	const handleClose = () => {
 		router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_LIST));
 	};
 
-	const handleDuplicate = () => {
-		if (!alertDetailContext.data.id) return;
-		const searchParams = new URLSearchParams(window.location.search);
-		searchParams.set('copy', alertDetailContext.data.id);
-		router.push(`${PAGE_ROUTES.alerts.ALERTS_LIST}?${searchParams.toString()}`);
-	};
-
 	//
-	// C. Render components
+	// D. Render components
 
 	return (
 		<Toolbar>
@@ -73,8 +64,8 @@ export function AlertDetailHeader() {
 
 			<PublishStatusTag
 				disabled={!hasPermissionToChangePublishStatus}
-				onChange={value => alertDetailContext.data.form.setFieldValue('publish_status', value)}
-				value={alertDetailContext.data.form.values.publish_status}
+				onChange={value => alertDetailContext.form.instance.setValue('publish_status', value, { shouldDirty: true })}
+				value={publishStatusValue}
 			/>
 
 			<Spacer />
@@ -83,23 +74,18 @@ export function AlertDetailHeader() {
 				action={PermissionCatalog.all.alerts.actions.create}
 				scope={PermissionCatalog.all.alerts.scope}
 			>
-				<Button
-					label="Duplicar"
-					onClick={handleDuplicate}
-					variant="secondary"
+				<DuplicateButton
+					isDisabled={!alertDetailContext.flags.canDuplicate}
+					isLoading={alertDetailContext.flags.isDuplicating}
+					onClick={alertDetailContext.actions.duplicate}
 				/>
 			</HasPermission>
 
-			<HasPermission
-				action={PermissionCatalog.all.alerts.actions.update}
-				scope={PermissionCatalog.all.alerts.scope}
-			>
-				<SaveButton
-					isDisabled={!alertDetailContext.flags.canSave}
-					isLoading={alertDetailContext.flags.isSaving}
-					onClick={alertDetailContext.actions.save}
-				/>
-			</HasPermission>
+			<SaveButton
+				isDisabled={!alertDetailContext.flags.canSave}
+				isLoading={alertDetailContext.flags.isSaving}
+				onClick={alertDetailContext.actions.save}
+			/>
 
 			<HasPermission
 				action={PermissionCatalog.all.alerts.actions.lock}

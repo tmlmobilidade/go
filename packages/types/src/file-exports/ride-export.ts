@@ -4,8 +4,8 @@ import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema } from '@/
 import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { AlertCauseSchema } from '@/alerts/cause.js';
 import { FileExportBaseSchema } from '@/file-exports/base.js';
-import { RideAcceptanceStatusSchema, RideJustificationSourceSchema } from '@/rides/ride-acceptance.js';
-import { RideAnalysisGradeWithNoneSchema } from '@/rides/ride-analysis.js';
+import { RideAcceptanceStatusSchema, RideJustificationSourceSchema } from '@/operation/rides/ride-acceptance.js';
+import { RideAnalysisGradeWithNoneSchema } from '@/operation/rides/ride-analysis.js';
 import { z } from 'zod';
 
 /* * */

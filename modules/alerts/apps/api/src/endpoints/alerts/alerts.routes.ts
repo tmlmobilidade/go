@@ -75,6 +75,18 @@ server.register(
 			AlertsController.lock,
 		);
 
+		instance.get(
+			'/:id/duplicate',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.create]) },
+			AlertsController.duplicate,
+		);
+
+		instance.post(
+			'/describe',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.create]) },
+			AlertsController.describe,
+		);
+
 		next();
 	},
 	{ prefix: namespace },

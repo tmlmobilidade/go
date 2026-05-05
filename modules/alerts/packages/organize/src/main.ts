@@ -1,7 +1,8 @@
 /* * */
 
-import { getPublishStatus } from '@/functions/get-publish-status.js';
-import { type Alert } from '@tmlmobilidade/types';
+import { getAutoTextValue } from '@/functions/get-auto-text-value.js';
+import { getPublishStatusValue } from '@/functions/get-publish-status-value.js';
+import { type Alert, AlertSchema } from '@tmlmobilidade/types';
 
 /**
  * Organizes an alert by applying various organization functions.
@@ -14,9 +15,21 @@ export async function organizeAlert(alertData: Alert): Promise<Alert> {
 	const updatedAlertData = { ...alertData };
 
 	//
-	// Get the publish status of the alert
+	// Get updated properties
 
-	updatedAlertData.publish_status = getPublishStatus(alertData);
+	updatedAlertData.publish_status = getPublishStatusValue(alertData);
+
+	updatedAlertData.auto_texts = getAutoTextValue(alertData);
+
+	//
+	// Attempt to parse the updated alert with Zod
+	// to ensure it adheres to the Alert schema.
+
+	const parseResult = AlertSchema.safeParse(updatedAlertData);
+
+	if (!parseResult.success) {
+		throw new Error(`Validation failed for updated alert data: ${parseResult.error.message}`);
+	}
 
 	//
 	// Return the organized alert data

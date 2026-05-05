@@ -18,18 +18,28 @@ const main = async () => {
 	//
 	// Get all Alert documents from the database
 
-	const allAlertsData = await alerts.findMany({}, { sort: { publish_start_date: -1 } });
+	const alertsQty = await alerts.count();
 
-	Logger.info(`Found ${allAlertsData.length} alerts.`);
+	const alertsCollection = await alerts.getCollection();
+
+	const allAlertsStream = alertsCollection
+		.find({}, { sort: { publish_start_date: -1 } })
+		.stream();
+
+	Logger.info(`Found ${alertsQty} alerts.`);
 
 	//
 	// Loop through all alerts and request updated attributes for each document
 
-	for (const [alertIndex, alertData] of allAlertsData.entries()) {
+	let counter = alertsQty;
+
+	for await (const alertData of allAlertsStream) {
 		try {
 			//
 
-			Logger.info(`[${allAlertsData.length - alertIndex}/${allAlertsData.length}] Processing Alert ${alertData._id}...`);
+			Logger.info(`[${counter}/${alertsQty}] Processing Alert ${alertData._id}...`);
+
+			counter--;
 
 			const organizedAlertData = await organizeAlert(alertData);
 

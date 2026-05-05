@@ -3,10 +3,11 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { describeAlert, type DescribeAlertProps, type DescribeAlertReturnType } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { alerts, files } from '@tmlmobilidade/interfaces';
 import { type RssRawImageInput } from '@tmlmobilidade/rss';
 import { createRssFeed } from '@tmlmobilidade/rss';
-import { type Alert, CreateAlertDto, type File, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { type Alert, type CreateAlertDto, CreateAlertSchema, type File, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -202,6 +203,40 @@ export class AlertsController {
 		const foundAlert = await alerts.findById(request.params.id);
 		if (!foundAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
 		reply.send({ data: foundAlert, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
+	 * Describes an alert by ID.
+	 * @param request Fastify request containing alert ID in params.
+	 * @param reply Fastify reply.
+	 */
+	static async describe(request: FastifyRequest<{ Body: DescribeAlertProps }>, reply: FastifyReply<DescribeAlertReturnType>) {
+		const describeResult = await describeAlert(request.body);
+		if (!describeResult) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to describe alert.');
+		reply.send({ data: describeResult, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
+	 * Duplicates an alert by ID.
+	 * @param request Fastify request containing alert ID in params.
+	 * @param reply Fastify reply.
+	 */
+	static async duplicate(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Alert>) {
+		// Retrieve the existing alert
+		const existingAlert = await alerts.findById(request.params.id);
+		if (!existingAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+		// Update necessary properties to indicate a copy
+		const duplicatedAlertData = CreateAlertSchema.parse({
+			...existingAlert,
+			created_by: request.me._id,
+			publish_status: 'draft',
+			title: `${existingAlert.title} (Cópia)`,
+			updated_by: request.me._id,
+		});
+		// Insert the duplicated alert into the database
+		// and send the duplicated alert to the client
+		const insertResult = await alerts.insertOne(duplicatedAlertData);
+		reply.send({ data: insertResult, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**

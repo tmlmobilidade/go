@@ -2,28 +2,23 @@
 
 /* * */
 
-import { type Line, type Stop } from '@carrismetropolitana/api-types/network';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
-import { Agency, type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, RideNormalized } from '@tmlmobilidade/types';
-import { type CreateContextStateTemplate, keepUrlParams, useDataAgencies, type UseFormReturnType, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType, useTypicalForm } from '@tmlmobilidade/ui';
+import { Logger } from '@tmlmobilidade/logger';
+import { type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, PermissionCatalog } from '@tmlmobilidade/types';
+import { type CreateContextStateTemplate, keepUrlParams, useContextForm, useContextFormWatch, useDataAgencies, useDataOperationalLines, useDataOperationalStops, useDataRides, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
-interface AlertCreateContextState extends CreateContextStateTemplate {
-	data: {
-		auto_texts: boolean
-		enabled_reference_types: Alert['reference_type'][]
-		form: UseFormReturnType<CreateAlertDto>
+interface AlertCreateContextState extends CreateContextStateTemplate<CreateAlertDto> {
+	form: CreateContextStateTemplate<CreateAlertDto>['form'] & {
 		multi_step: UseMultiStepReturnType
-		set_auto_texts: (value: boolean) => void
 	}
-};
+}
 
 /* * */
 
@@ -37,376 +32,246 @@ export function useAlertCreateContext() {
 	return context;
 }
 
-interface AgencyData {
-	display_name: string
-	id: string
-	name: string
-}
-
-interface StopData {
-	id: string
-	lines: LineData[]
-	long_name: string
-}
-
-interface LineData {
-	id: string
-	long_name: string
-	short_name: string
-	stops: StopData[]
-}
-
 /* * */
 
-export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
+export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
 	// A. Setup variables
 
 	const router = useRouter();
-	const searchParams = useSearchParams();
-
 	const meContext = useMeContext();
-	const copyAlertId = searchParams.get('copy');
-
-	const [autoTexts, setAutoTexts] = useState(true);
-	const [selectedReferencesData, setSelectedReferencesData] = useState<AgencyData[] | LineData[] | RideNormalized[] | StopData[]>([]);
-	const [hasAppliedCopyData, setHasAppliedCopyData] = useState(false);
 
 	//
-	// B. Fetch data
+	// B. Setup form
+
+	const { form, unblock } = useContextForm<CreateAlertDto>({
+		defaultValues: {
+			active_period_end_date: Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp,
+			active_period_start_date: Dates.now('Europe/Lisbon').minus({ minutes: 30 }).set({ millisecond: 0, second: 0 }).unix_timestamp,
+			auto_texts: true,
+			publish_end_date: Dates.now('Europe/Lisbon').endOf('day').unix_timestamp,
+			publish_start_date: Dates.now('Europe/Lisbon').startOf('day').unix_timestamp,
+			publish_status: 'published',
+			references: [],
+		},
+		// schema: CreateAlertSchema,
+	});
+
+	const agencyIdValue = useContextFormWatch({ control: form.control, name: 'agency_id' });
+	const causeValue = useContextFormWatch({ control: form.control, name: 'cause' });
+	const effectValue = useContextFormWatch({ control: form.control, name: 'effect' });
+	const referenceTypeValue = useContextFormWatch({ control: form.control, name: 'reference_type' });
+	const referencesValue = useContextFormWatch({ control: form.control, name: 'references' });
+	const activePeriodStartDateValue = useContextFormWatch({ control: form.control, name: 'active_period_start_date' });
+	const activePeriodEndDateValue = useContextFormWatch({ control: form.control, name: 'active_period_end_date' });
+
+	//
+	// C. Fetch data
 
 	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
-	const { data: copyAlertData, isLoading: copyAlertLoading } = useSWR<Alert>(copyAlertId ? API_ROUTES.alerts.ALERTS_DETAIL(copyAlertId) : null);
 
-	const { options: agenciesOptions, raw: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { filtered: agenciesData, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.create],
 		scope: PermissionCatalog.all.alerts.scope,
 	});
 
 	//
-	// C. Setup form
+	// Leave the following data fetching hooks in place as they are
+	// used for preloading the necessary data for the references step.
 
-	const { form } = useTypicalForm<CreateAlertDto>(CreateAlertSchema);
+	useDataOperationalLines(API_ROUTES.alerts.OPERATION_LINES, {
+		filters: {
+			agency_ids: agencyIdValue ? [agencyIdValue] : [],
+			date_end: activePeriodEndDateValue,
+			date_start: activePeriodStartDateValue,
+		},
+	});
 
-	const multiStep = useMultiStep({
-		steps: [
-			{
-				id: 'cause',
-				isValid: () => !!form.getValues().cause,
-				isVisible: true,
-				label: 'Causa',
-				order: 0,
-			},
-			{
-				id: 'effect',
-				isEnabled: () => !!form.getValues().cause,
-				isValid: () => !!form.getValues().effect,
-				isVisible: true,
-				label: 'Efeito',
-				order: 1,
-			},
-			{
-				id: 'dates',
-				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect,
-				isValid: () => !!form.getValues().active_period_start_date,
-				isVisible: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_dates),
-				label: 'Datas',
-				order: 2,
-			},
-			{
-				id: 'references',
-				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect && !!form.getValues().active_period_start_date,
-				isValid: () => !!form.getValues().reference_type && !!form.getValues().agency_id && !!form.getValues().references?.length,
-				isVisible: true,
-				label: 'Referências',
-				order: 3,
-			},
-			{
-				id: 'summary',
-				isEnabled: () => !!form.getValues().cause && !!form.getValues().effect && !!form.getValues().active_period_start_date && !!form.getValues().reference_type && !!form.getValues().agency_id && !!form.getValues().references?.length,
-				isVisible: true,
-				label: 'Resumo',
-				order: 4,
-			},
-		],
+	useDataOperationalStops(API_ROUTES.alerts.OPERATION_STOPS, {
+		filters: {
+			agency_ids: agencyIdValue ? [agencyIdValue] : [],
+			date_end: activePeriodEndDateValue,
+			date_start: activePeriodStartDateValue,
+		},
+	});
+
+	useDataRides(API_ROUTES.alerts.OPERATION_RIDES, {
+		filters: {
+			agency_ids: agencyIdValue ? [agencyIdValue] : [],
+			date_end: activePeriodEndDateValue,
+			date_start: activePeriodStartDateValue,
+			operational_statuses: ['running', 'missed', 'scheduled'],
+		},
 	});
 
 	//
-	// D. Handle actions
-
-	const enabledReferenceTypes = useMemo(() => {
-		const selectedCause = form.getValues().cause;
-		const selectedEffect = form.getValues().effect;
-		return alertCauseEffectReferenceTypeMap[selectedCause]?.[selectedEffect] ?? [];
-	}, [
-		form.getValues().cause,
-		form.getValues().effect,
-	]);
+	// D. Side effects
 
 	useEffect(() => {
-		if (copyAlertId) return;
-		if (!autoTexts) return;
-		if (multiStep.progress.current?.index !== multiStep.progress.steps.length - 1) return; // Only run when on the last step | if we go back and again to last step, this will run again
-		if (!form.getValues().cause || !form.getValues().effect || !form.getValues().reference_type || !form.getValues().references) return;
-		const references = form.getValues().references;
-		const alertTemplating = describeAlert({
-			cause: form.getValues().cause,
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			data: selectedReferencesData as any[],
-			effect: form.getValues().effect,
-			reference_type: form.getValues().reference_type,
-			references: references,
-			type: form.getValues().reference_type,
-		});
-		if (!alertTemplating) return;
-		form.setFieldValue('description', alertTemplating.description.pt);
-		form.setFieldValue('title', alertTemplating.title.pt);
-	}, [copyAlertId, autoTexts, multiStep.progress.current?.index]);
+		// Pre-select agency when only one is available
+		if (agenciesData?.length !== 1) return;
+		if (form.getValues('agency_id')) return;
+		form.setValue('agency_id', agenciesData[0]._id, { shouldDirty: false });
+		Logger.info('Auto-selected agency_id based on available agencies data.');
+	}, [agenciesData, form]);
 
 	useEffect(() => {
-		if (!copyAlertId || !copyAlertData || hasAppliedCopyData) return;
-
-		const copyAlertAsCreateData = CreateAlertSchema.parse(copyAlertData);
-		form.reset();
-		form.setValues(copyAlertAsCreateData);
-		form.validate();
-		form.resetDirty();
-		multiStep.actions.goTo('summary');
-		setHasAppliedCopyData(true);
-	}, [copyAlertData, copyAlertId, hasAppliedCopyData]);
+		// Reset effect field when cause changes
+		form.setValue('effect', undefined);
+		Logger.info('Reset effect field due to cause change.');
+	}, [causeValue, form]);
 
 	useEffect(() => {
-		// Skip if agency is already selected
-		if (form.getValues().agency_id) return;
-		// Pre-select agency if only one option is available
-		if (agenciesOptions?.length === 1) form.setFieldValue('agency_id', agenciesOptions[0].value);
-	}, [form.getValues().agency_id, agenciesOptions]);
+		// Reset reference_type and references when effect changes
+		form.setValue('reference_type', undefined);
+		form.setValue('references', []);
+		Logger.info('Reset reference_type and references fields due to effect change.');
+	}, [effectValue, form]);
 
 	useEffect(() => {
-		if (!form.getValues().publish_status) {
-			form.setFieldValue('publish_status', 'published');
-		}
-	}, [form.getValues().publish_status]);
+		// If auto_texts is enabled, reset texts when references change
+		if (!form.getValues('auto_texts')) return;
+		form.setValue('title', '');
+		form.setValue('description', '');
+		Logger.info('Reset title and description fields due to references change.');
+	}, [referencesValue, form]);
 
 	useEffect(() => {
-		if (!form.getValues().active_period_start_date) {
-			// Set active period start date to 5 minutes ago
-			form.setFieldValue('active_period_start_date', Dates.now('Europe/Lisbon').minus({ minutes: 5 }).set({ millisecond: 0, second: 0 }).unix_timestamp);
-			// Set publish start date to start of today to ensure alert is visible immediately
-			form.setFieldValue('publish_start_date', Dates.now('Europe/Lisbon').startOf('day').unix_timestamp);
-		}
-	}, [form.getValues().active_period_start_date]);
+		// Skip if cause or effect are not set, as reference_type will be
+		// auto-set based on their combination when both are selected.
+		if (!causeValue || !effectValue) return;
+		// Skip if reference_type is already set, as we don't want to override user's selection.
+		if (referenceTypeValue) return;
+		// Extract the available reference types for the selected cause/effect combination.
+		const enabledTypes = alertCauseEffectReferenceTypeMap[causeValue]?.[effectValue] ?? [];
+		if (!enabledTypes.length) return;
+		// Get user's permissions for alert creation to determine which reference types they can select.
+		const permissions = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
+		const allowAllReferenceTypes = permissions?.resources.reference_types.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+		const allowedReferenceTypes = permissions?.resources.reference_types ?? [];
+		// Auto-select the best reference_type based on permissions.
+		if (enabledTypes.includes('lines') && (allowAllReferenceTypes || allowedReferenceTypes.includes('lines'))) form.setValue('reference_type', 'lines');
+		else if (enabledTypes.includes('stops') && (allowAllReferenceTypes || allowedReferenceTypes.includes('stops'))) form.setValue('reference_type', 'stops');
+		else if (enabledTypes.includes('rides') && (allowAllReferenceTypes || allowedReferenceTypes.includes('rides'))) form.setValue('reference_type', 'rides');
+		else if (enabledTypes.includes('agency') && (allowAllReferenceTypes || allowedReferenceTypes.includes('agency'))) form.setValue('reference_type', 'agency');
+		else Logger.info('No enabled reference types available to set as default.');
+		Logger.info('Auto-selected reference_type options based on cause/effect change and user permissions.');
+	}, [causeValue, effectValue, form, meContext.data.user.permissions, referenceTypeValue]);
 
 	useEffect(() => {
-		if (!form.getValues().active_period_end_date) {
-			// Set active period end date to the end today
-			form.setFieldValue('active_period_end_date', Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp);
-			// Set publish end date to end of today
-			form.setFieldValue('publish_end_date', Dates.now('Europe/Lisbon').endOf('day').unix_timestamp);
-		}
-	}, [form.getValues().active_period_end_date]);
+		// Skip if reference_type is not 'agency' or agency_id is not set
+		if (referenceTypeValue !== 'agency' || !agencyIdValue) return;
+		// When reference_type is 'agency' or agency_id changes to non-empty,
+		// set references to the selected agency.
+		form.setValue('references', [{ child_ids: [], parent_id: form.getValues('agency_id') }]);
+		Logger.info('Auto-selected Agency references based on reference_type "agency" selection.');
+	}, [form, referenceTypeValue, agencyIdValue]);
 
 	useEffect(() => {
-		// Skip if reference type is already set
-		if (form.getValues().reference_type) return;
-		// Get permission definition for reference types
-		const createPermission = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
-		// Set the reference type based on alert cause/effect when possible
-		if (createPermission?.resources.reference_types.includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-			if (enabledReferenceTypes.includes('lines')) return form.setFieldValue('reference_type', 'lines');
-			if (enabledReferenceTypes.includes('stops')) return form.setFieldValue('reference_type', 'stops');
-			if (enabledReferenceTypes.includes('rides')) return form.setFieldValue('reference_type', 'rides');
-			if (enabledReferenceTypes.includes('agency')) return form.setFieldValue('reference_type', 'agency');
-			return console.warn('No enabled reference types available to set as default.');
-		}
-		// Set the reference type based on permissions
-		if (enabledReferenceTypes.includes('lines') && createPermission?.resources.reference_types.includes('lines')) return form.setFieldValue('reference_type', 'lines');
-		if (enabledReferenceTypes.includes('stops') && createPermission?.resources.reference_types.includes('stops')) return form.setFieldValue('reference_type', 'stops');
-		if (enabledReferenceTypes.includes('rides') && createPermission?.resources.reference_types.includes('rides')) return form.setFieldValue('reference_type', 'rides');
-		if (enabledReferenceTypes.includes('agency') && createPermission?.resources.reference_types.includes('agency')) return form.setFieldValue('reference_type', 'agency');
-	}, [form.getValues().reference_type, enabledReferenceTypes]);
+		// Skip if active_period_end_date is already set
+		if (activePeriodEndDateValue != null) return;
+		// Restore default end dates when active_period_end_date is cleared.
+		form.setValue('active_period_end_date', Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp);
+		form.setValue('publish_end_date', Dates.now('Europe/Lisbon').endOf('day').unix_timestamp);
+		Logger.info('Restored default end dates because active_period_end_date was cleared.');
+	}, [form, activePeriodEndDateValue]);
 
-	useEffect(() => {
-		// Skip if reference type is not agency
-		if (form.getValues().reference_type !== 'agency') return;
-		// Skip if no agency_id selected
-		if (!form.getValues().agency_id) return;
-		// Set selected references to the selected agency
-		form.setFieldValue('references', [{ child_ids: [], parent_id: form.getValues().agency_id }]);
-	}, [
-		form.getValues().reference_type,
-		form.getValues().agency_id,
-	]);
+	//
+	// E. Multi-step setup
+	// Steps are memoized so useMultiStep only recalculates when agencies or permissions change,
+	// not on every form value change.
 
-	useEffect(() => {
-		(async () => {
-			// Reset if no selected reference_type
-			if (!form.getValues().reference_type) return setSelectedReferencesData([]);
-			// Reset state if no selected references
-			if (!form.getValues().references?.length) return setSelectedReferencesData([]);
-			// Get a list of unique parent_ids
-			const parentIds = form.getValues().references.map(reference => reference.parent_id);
-			// Fetch data for agencies
-			if (form.getValues().reference_type === 'agency') {
-				const result: Agency[] = agenciesData.filter(agency => parentIds.includes(agency._id));
-				setSelectedReferencesData(result.map(agency => ({ display_name: agency.name, id: agency._id, name: agency.name })));
-			}
+	const steps = useMemo(() => [
+		{
+			id: 'cause',
+			isValid: () => !!form.getValues('cause'),
+			isVisible: true,
+			label: 'Causa',
+			order: 0,
+		},
+		{
+			id: 'effect',
+			isEnabled: () => !!form.getValues('cause'),
+			isValid: () => !!form.getValues('effect'),
+			isVisible: true,
+			label: 'Efeito',
+			order: 1,
+		},
+		{
+			id: 'agency',
+			isEnabled: () => !!form.getValues('cause') && !!form.getValues('effect'),
+			isValid: () => !!form.getValues('agency_id'),
+			isVisible: agenciesData?.length > 1,
+			label: 'Operador',
+			order: 2,
+		},
+		{
+			id: 'dates',
+			isEnabled: () => !!form.getValues('agency_id'),
+			isValid: () => !!form.getValues('active_period_start_date'),
+			isVisible: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_dates),
+			label: 'Datas',
+			order: 3,
+		},
+		{
+			id: 'references',
+			isEnabled: () => !!form.getValues('cause') && !!form.getValues('effect') && !!form.getValues('agency_id') && !!form.getValues('active_period_start_date'),
+			isValid: () => !!form.getValues('reference_type') && !!form.getValues('agency_id') && !!form.getValues('references')?.length,
+			isVisible: true,
+			label: 'Referências',
+			order: 4,
+		},
+		{
+			id: 'summary',
+			isEnabled: () => !!form.getValues('cause') && !!form.getValues('effect') && !!form.getValues('active_period_start_date') && !!form.getValues('reference_type') && !!form.getValues('agency_id') && !!form.getValues('references')?.length,
+			isValid: () => !!form.getValues('cause') && !!form.getValues('effect') && !!form.getValues('active_period_start_date') && !!form.getValues('reference_type') && !!form.getValues('agency_id') && !!form.getValues('references')?.length && !!form.getValues('title')?.length && !!form.getValues('description')?.length,
+			isVisible: true,
+			label: 'Resumo',
+			order: 5,
+		},
 
-			// Fetch data for lines
-			if (form.getValues().reference_type === 'lines') {
-				const response = await fetch('https://api.carrismetropolitana.pt/v2/lines');
-				const linesData = await response.json() as Line[];
-				const result: Line[] = linesData.filter(line => parentIds.includes(line.id));
+	], [agenciesData?.length, form, meContext.actions]);
 
-				// Get all unique child_ids (stop IDs) from references
-				const allChildIds = form.getValues().references
-					.filter(ref => parentIds.includes(ref.parent_id))
-					.flatMap(ref => ref.child_ids);
-				const uniqueChildIds = [...new Set(allChildIds)];
+	const multiStep = useMultiStep({ steps });
 
-				// Fetch stops data if there are child_ids
-				const stopsDataMap = new Map<string, Stop>();
-				if (uniqueChildIds.length > 0) {
-					const stopsResponse = await fetch('https://api.carrismetropolitana.pt/v2/stops');
-					const stopsData = await stopsResponse.json() as Stop[];
-					stopsData.filter(stop => uniqueChildIds.includes(stop.id)).forEach((stop) => {
-						stopsDataMap.set(stop.id, stop);
-					});
-				}
-
-				setSelectedReferencesData(result.map((line) => {
-					// Get child_ids for this specific line
-					const lineReference = form.getValues().references.find(ref => ref.parent_id === line.id);
-					const lineChildIds = lineReference?.child_ids ?? [];
-
-					// Map child_ids to StopData
-					const stops: StopData[] = lineChildIds
-						.map(stopId => stopsDataMap.get(stopId))
-						.filter((stop): stop is Stop => stop !== undefined)
-						.map(stop => ({
-							id: stop.id,
-							lines: [],
-							long_name: stop.long_name,
-						}));
-
-					return {
-						id: line.id,
-						long_name: line.long_name,
-						short_name: line.short_name,
-						stops,
-					};
-				}));
-			}
-			// Fetch data for stops
-			if (form.getValues().reference_type === 'stops') {
-				const response = await fetch('https://api.carrismetropolitana.pt/v2/stops');
-				const stopsData = await response.json() as Stop[];
-				const result: Stop[] = stopsData.filter(stop => parentIds.includes(stop.id));
-
-				const linesResponse = await fetch('https://api.carrismetropolitana.pt/v2/lines');
-				const linesData = await linesResponse.json() as Line[];
-				const selectedLines = linesData.filter(line => result.some(stop => stop.line_ids.includes(line.id)));
-
-				// Get all unique child_ids (stop IDs) from references
-				const allChildIds = form.getValues().references
-					.filter(ref => parentIds.includes(ref.parent_id))
-					.flatMap(ref => ref.child_ids);
-				const uniqueChildIds = [...new Set(allChildIds)];
-
-				// Fetch stops data if there are child_ids
-				const childStopsDataMap = new Map<string, Stop>();
-				if (uniqueChildIds.length > 0) {
-					const childStopsResponse = await fetch('https://api.carrismetropolitana.pt/v2/stops');
-					const childStopsData = await childStopsResponse.json() as Stop[];
-					childStopsData.filter(stop => uniqueChildIds.includes(stop.id)).forEach((stop) => {
-						childStopsDataMap.set(stop.id, stop);
-					});
-				}
-
-				setSelectedReferencesData(result.map((stop) => {
-					// Get child_ids for this specific stop
-					const stopReference = form.getValues().references.find(ref => ref.parent_id === stop.id);
-					const stopChildIds = stopReference?.child_ids ?? [];
-
-					// For each line associated with this stop, populate stops from child_ids
-					const linesWithStops = selectedLines
-						.filter(line => stop.line_ids.includes(line.id))
-						.map((line) => {
-							// Get stops that are child_ids and belong to this line
-							const lineStops: StopData[] = stopChildIds
-								.map(stopId => childStopsDataMap.get(stopId))
-								.filter((childStop): childStop is Stop => childStop !== undefined && childStop.line_ids.includes(line.id))
-								.map(childStop => ({
-									id: childStop.id,
-									lines: [],
-									long_name: childStop.long_name,
-								}));
-
-							return {
-								id: line.id,
-								long_name: line.long_name,
-								short_name: line.short_name,
-								stops: lineStops,
-							};
-						});
-
-					return {
-						id: stop.id,
-						lines: linesWithStops,
-						long_name: stop.long_name,
-					};
-				}));
-			}
-			// Fetch data for rides
-			if (form.getValues().reference_type === 'rides') {
-				const result: RideNormalized[] = [];
-				for (const rideId of parentIds) {
-					const response = await fetchData<RideNormalized>(API_ROUTES.alerts.RIDES_DETAIL_RIDE(rideId));
-					if (!response.data) continue;
-					result.push(response.data);
-				}
-				setSelectedReferencesData(result);
-			}
-		})();
-	}, [
-		form.getValues().reference_type,
-		form.getValues().references,
-	]);
+	//
+	// F. Submit action
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', form.getValues()),
 		onSuccess: (updatedItem) => {
+			form.reset();
+			unblock();
 			alertsListMutate();
 			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_DETAIL(updatedItem._id)));
 		},
 	});
 
 	//
-	// E. Define State
+	// G. Define state
+	// control, getValues, setValue are stable references from useForm and do not
+	// change between renders, so they are safe to include in the memoized value.
 
-	const contextValue: AlertCreateContextState = {
+	const contextValue = useMemo<AlertCreateContextState>(() => ({
 		actions: {
 			create: handleCreate,
-		},
-		data: {
-			auto_texts: autoTexts,
-			enabled_reference_types: enabledReferenceTypes,
-			form,
-			multi_step: multiStep,
-			set_auto_texts: setAutoTexts,
 		},
 		flags: {
 			canCreate: true,
 			error: undefined,
 			isCreating,
-			isLoading: copyAlertLoading,
+			isLoading: agenciesLoading,
 		},
-	};
+		form: {
+			instance: form,
+			multi_step: multiStep,
+		},
+	}), [agenciesLoading, form, handleCreate, isCreating, multiStep]);
 
 	//
-	// F. Return state
+	// H. Return state
 
 	return (
 		<AlertCreateContext.Provider value={contextValue}>
@@ -415,4 +280,4 @@ export const AlertCreateContextProvider = ({ children }: PropsWithChildren) => {
 	);
 
 	//
-};
+}

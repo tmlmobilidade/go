@@ -15,7 +15,10 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@tmlmobilidade/ai": "*",
+		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/interfaces": "*",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {

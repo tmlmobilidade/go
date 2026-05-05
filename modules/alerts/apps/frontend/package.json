@@ -17,7 +17,8 @@
 		"@tabler/icons-react": "3.41.1",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-alerts-pckg-describe": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"next": "16.2.4",
@@ -27,7 +28,6 @@
 		"swr": "2.4.1"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/api-types": "20260419.1736.4",
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/node": "25.6.0",
