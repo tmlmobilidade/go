@@ -4,8 +4,7 @@ import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { AlertCreateStepSummaryAi } from '@/components/create/AlertCreateStepSummaryAi';
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { CoordinatesInput, Grid, Section, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
-import { Controller } from 'react-hook-form';
+import { ContextFormController, CoordinatesInput, Grid, Section, Textarea, TextInput, useContextFormWatch, useMeContext } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -21,8 +20,8 @@ export function AlertCreateStepSummary() {
 	const meContext = useMeContext();
 	const alertCreateContext = useAlertCreateContext();
 
-	const agencyIdValue = alertCreateContext.form.instance.watch('agency_id');
-	const referenceTypeValue = alertCreateContext.form.instance.watch('reference_type');
+	const agencyIdValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'agency_id' });
+	const referenceTypeValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'reference_type' });
 
 	//
 	// B. Transform data
@@ -51,7 +50,7 @@ export function AlertCreateStepSummary() {
 
 				<AlertCreateStepSummaryAi />
 
-				<Controller
+				<ContextFormController
 					control={alertCreateContext.form.instance.control}
 					name="title"
 					render={({ field, fieldState }) => (
@@ -66,7 +65,7 @@ export function AlertCreateStepSummary() {
 					)}
 				/>
 
-				<Controller
+				<ContextFormController
 					control={alertCreateContext.form.instance.control}
 					name="description"
 					render={({ field, fieldState }) => (
@@ -83,7 +82,7 @@ export function AlertCreateStepSummary() {
 					)}
 				/>
 
-				<Controller
+				<ContextFormController
 					control={alertCreateContext.form.instance.control}
 					name="coordinates"
 					render={({ field }) => (
@@ -96,7 +95,7 @@ export function AlertCreateStepSummary() {
 					)}
 				/>
 
-				<Controller
+				<ContextFormController
 					control={alertCreateContext.form.instance.control}
 					name="info_url"
 					render={({ field, fieldState }) => (

@@ -5,10 +5,9 @@
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type I18nCode, PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, Section, Surface, Switch, TextInput, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
+import { Button, ContextFormController, Section, Surface, Switch, TextInput, useContextFormWatch, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useEffect, useRef } from 'react';
-import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -32,9 +31,9 @@ export function AlertCreateStepSummaryAi() {
 
 	const alertCreateContext = useAlertCreateContext();
 
-	const agencyIdValue = alertCreateContext.form.instance.watch('agency_id');
-	const referenceTypeValue = alertCreateContext.form.instance.watch('reference_type');
-	const autoTextsValue = alertCreateContext.form.instance.watch('auto_texts');
+	const agencyIdValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'agency_id' });
+	const referenceTypeValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'reference_type' });
+	const autoTextsValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'auto_texts' });
 
 	//
 	// B. Transform data
@@ -120,7 +119,7 @@ export function AlertCreateStepSummaryAi() {
 			<Section gap="md">
 
 				{(hasPermissionToCreate || hasPermissionToEditTexts) && (
-					<Controller
+					<ContextFormController
 						control={alertCreateContext.form.instance.control}
 						name="auto_texts"
 						render={({ field }) => (
@@ -136,7 +135,7 @@ export function AlertCreateStepSummaryAi() {
 
 				{(autoTextsValue && hasPermissionToCreate) && (
 					<>
-						<Controller
+						<ContextFormController
 							control={alertCreateContext.form.instance.control}
 							name="user_instructions"
 							render={({ field }) => (

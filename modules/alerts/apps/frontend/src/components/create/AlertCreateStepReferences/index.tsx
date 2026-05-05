@@ -6,7 +6,7 @@ import { ReferencesEditor } from '@/components/common/references/ReferencesEdito
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, alertCauseEffectReferenceTypeMap, PermissionCatalog } from '@tmlmobilidade/types';
-import { useDataAgencies } from '@tmlmobilidade/ui';
+import { useContextFormWatch, useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -24,14 +24,14 @@ export function AlertCreateStepReferences() {
 		scope: PermissionCatalog.all.alerts.scope,
 	});
 
-	const causeValue = alertCreateContext.form.instance.watch('cause');
-	const effectValue = alertCreateContext.form.instance.watch('effect');
-	const activePeriodEndDateValue = alertCreateContext.form.instance.watch('active_period_end_date');
-	const activePeriodStartDateValue = alertCreateContext.form.instance.watch('active_period_start_date');
-	const agencyIdValue = alertCreateContext.form.instance.watch('agency_id');
-	const municipalityIdsValue = alertCreateContext.form.instance.watch('municipality_ids');
-	const referencesValue = alertCreateContext.form.instance.watch('references');
-	const referenceTypeValue = alertCreateContext.form.instance.watch('reference_type');
+	const causeValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'cause' });
+	const effectValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'effect' });
+	const activePeriodEndDateValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'active_period_end_date' });
+	const activePeriodStartDateValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'active_period_start_date' });
+	const agencyIdValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'agency_id' });
+	const municipalityIdsValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'municipality_ids' });
+	const referencesValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'references' });
+	const referenceTypeValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'reference_type' });
 
 	//
 	// B. Transform data

@@ -5,8 +5,7 @@
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, PermissionCatalog } from '@tmlmobilidade/types';
-import { Grid, Label, openConfirmModal, Section, Select, useDataAgencies } from '@tmlmobilidade/ui';
-import { Controller } from 'react-hook-form';
+import { ContextFormController, Grid, Label, openConfirmModal, Section, Select, useDataAgencies } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -53,7 +52,7 @@ export function AlertCreateStepAgency() {
 		<Section>
 			<Grid gap="md">
 				{agenciesOptions.length > 1 && (
-					<Controller
+					<ContextFormController
 						control={alertCreateContext.form.instance.control}
 						name="agency_id"
 						render={({ field, fieldState }) => (

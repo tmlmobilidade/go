@@ -6,9 +6,8 @@ import { ReferencesEditor } from '@/components/common/references/ReferencesEdito
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, PermissionCatalog } from '@tmlmobilidade/types';
-import { Collapsible, Label, openConfirmModal, Section, Select, useDataAgencies } from '@tmlmobilidade/ui';
+import { Collapsible, ContextFormController, Label, openConfirmModal, Section, Select, useContextFormWatch, useDataAgencies } from '@tmlmobilidade/ui';
 import { useCallback } from 'react';
-import { Controller, useWatch } from 'react-hook-form';
 
 /* * */
 
@@ -25,12 +24,12 @@ export function AlertDetailSectionReferences() {
 		scope: PermissionCatalog.all.alerts.scope,
 	});
 
-	const agencyIdValue = useWatch({ control: alertDetailContext.form.instance.control, name: 'agency_id' });
-	const municipalityIdsValue = useWatch({ control: alertDetailContext.form.instance.control, name: 'municipality_ids' });
-	const activePeriodStartDateValue = useWatch({ control: alertDetailContext.form.instance.control, name: 'active_period_start_date' });
-	const activePeriodEndDateValue = useWatch({ control: alertDetailContext.form.instance.control, name: 'active_period_end_date' });
-	const referenceTypeValue = useWatch({ control: alertDetailContext.form.instance.control, name: 'reference_type' });
-	const referencesValue = useWatch({ control: alertDetailContext.form.instance.control, name: 'references' });
+	const agencyIdValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'agency_id' });
+	const municipalityIdsValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'municipality_ids' });
+	const activePeriodStartDateValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'active_period_start_date' });
+	const activePeriodEndDateValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'active_period_end_date' });
+	const referenceTypeValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'reference_type' });
+	const referencesValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'references' });
 
 	//
 	// B. Handle actions
@@ -75,7 +74,7 @@ export function AlertDetailSectionReferences() {
 
 			{agenciesOptions.length > 1 && (
 				<Section>
-					<Controller
+					<ContextFormController
 						control={alertDetailContext.form.instance.control}
 						name="agency_id"
 						render={({ field, fieldState }) => (

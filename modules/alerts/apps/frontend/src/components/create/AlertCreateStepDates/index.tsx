@@ -4,8 +4,7 @@
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { DateTimeInput, Divider, Grid, Label, Section, Text, useMeContext } from '@tmlmobilidade/ui';
-import { Controller } from 'react-hook-form';
+import { ContextFormController, DateTimeInput, Divider, Grid, Label, Section, Text, useContextFormWatch, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -18,8 +17,8 @@ export function AlertCreateStepDates() {
 	const meContext = useMeContext();
 	const alertCreateContext = useAlertCreateContext();
 
-	const agencyIdValue = alertCreateContext.form.instance.watch('agency_id');
-	const referenceTypeValue = alertCreateContext.form.instance.watch('reference_type');
+	const agencyIdValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'agency_id' });
+	const referenceTypeValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'reference_type' });
 
 	//
 	// B. Transform data
@@ -49,7 +48,7 @@ export function AlertCreateStepDates() {
 				<Label size="lg" caps>Período de Vigência</Label>
 				<Text size="sm" weight="medium">Período em que o alerta é válido. Distinto da visibilidade. O alerta pode estar visível mas não ser ainda válido (ex: um alerta para um corte de estrada é vísível uma semana antes, mas o corte em si é apenas durante 2 dias).</Text>
 				<Grid columns="ab" gap="md">
-					<Controller
+					<ContextFormController
 						control={alertCreateContext.form.instance.control}
 						name="active_period_start_date"
 						render={({ field, fieldState }) => (
@@ -62,7 +61,7 @@ export function AlertCreateStepDates() {
 							/>
 						)}
 					/>
-					<Controller
+					<ContextFormController
 						control={alertCreateContext.form.instance.control}
 						name="active_period_end_date"
 						render={({ field, fieldState }) => (
@@ -85,7 +84,7 @@ export function AlertCreateStepDates() {
 				<Label size="lg" caps>Agendamento</Label>
 				<Text size="sm" weight="medium">É possível agendar a permanência do alerta nos canais digitais. A visibilidade do alerta é diferente do seu período de vigência.</Text>
 				<Grid columns="ab" gap="md">
-					<Controller
+					<ContextFormController
 						control={alertCreateContext.form.instance.control}
 						name="publish_start_date"
 						render={({ field, fieldState }) => (
@@ -99,7 +98,7 @@ export function AlertCreateStepDates() {
 							/>
 						)}
 					/>
-					<Controller
+					<ContextFormController
 						control={alertCreateContext.form.instance.control}
 						name="publish_end_date"
 						render={({ field, fieldState }) => (

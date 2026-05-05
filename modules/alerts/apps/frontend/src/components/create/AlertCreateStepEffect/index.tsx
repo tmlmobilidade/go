@@ -2,7 +2,7 @@
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { alertCauseEffectReferenceTypeMap, type AlertEffect } from '@tmlmobilidade/types';
-import { AlertEffectIcons, Grid, LargeButton, Section } from '@tmlmobilidade/ui';
+import { AlertEffectIcons, Grid, LargeButton, Section, useContextFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -17,8 +17,8 @@ export function AlertCreateStepEffect() {
 
 	const alertCreateContext = useAlertCreateContext();
 
-	const causeValue = alertCreateContext.form.instance.watch('cause');
-	const effectValue = alertCreateContext.form.instance.watch('effect');
+	const causeValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'cause' });
+	const effectValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'effect' });
 
 	//
 	// B. Transform data

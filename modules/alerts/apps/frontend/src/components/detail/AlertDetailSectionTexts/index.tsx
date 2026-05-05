@@ -6,8 +6,7 @@ import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { AlertDetailSectionTextsAi } from '@/components/detail/AlertDetailSectionTextsAi';
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Collapsible, CoordinatesInput, Grid, ImageUpload, Section, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
-import { Controller } from 'react-hook-form';
+import { Collapsible, ContextFormController, CoordinatesInput, Grid, ImageUpload, Section, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -53,7 +52,7 @@ export function AlertDetailSectionTexts() {
 			<Section gap="md">
 				<Grid gap="md">
 
-					<Controller
+					<ContextFormController
 						control={alertDetailContext.form.instance.control}
 						name="title"
 						render={({ field, fieldState }) => (
@@ -68,7 +67,7 @@ export function AlertDetailSectionTexts() {
 						)}
 					/>
 
-					<Controller
+					<ContextFormController
 						control={alertDetailContext.form.instance.control}
 						name="description"
 						render={({ field, fieldState }) => (
@@ -87,7 +86,7 @@ export function AlertDetailSectionTexts() {
 
 					<AlertDetailSectionTextsAi />
 
-					<Controller
+					<ContextFormController
 						control={alertDetailContext.form.instance.control}
 						name="coordinates"
 						render={({ field }) => (
@@ -100,7 +99,7 @@ export function AlertDetailSectionTexts() {
 						)}
 					/>
 
-					<Controller
+					<ContextFormController
 						control={alertDetailContext.form.instance.control}
 						name="info_url"
 						render={({ field, fieldState }) => (

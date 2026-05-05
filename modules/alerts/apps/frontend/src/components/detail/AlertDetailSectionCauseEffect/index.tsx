@@ -4,8 +4,7 @@
 
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { AlertCauseSchema, AlertEffectSchema } from '@tmlmobilidade/types';
-import { AlertCauseIcons, AlertEffectIcons, Collapsible, Grid, Section, Select } from '@tmlmobilidade/ui';
-import { Controller } from 'react-hook-form';
+import { AlertCauseIcons, AlertEffectIcons, Collapsible, ContextFormController, Grid, Section, Select } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -45,7 +44,7 @@ export function AlertDetailSectionCauseEffect() {
 		>
 			<Section>
 				<Grid columns="ab" gap="md">
-					<Controller
+					<ContextFormController
 						control={alertDetailContext.form.instance.control}
 						name="cause"
 						render={({ field, fieldState }) => (
@@ -59,7 +58,7 @@ export function AlertDetailSectionCauseEffect() {
 							/>
 						)}
 					/>
-					<Controller
+					<ContextFormController
 						control={alertDetailContext.form.instance.control}
 						name="effect"
 						render={({ field, fieldState }) => (

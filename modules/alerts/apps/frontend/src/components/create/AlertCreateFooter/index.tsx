@@ -4,7 +4,7 @@
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, HasPermission, PublishStatusTag, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Button, HasPermission, PublishStatusTag, Spacer, Toolbar, useContextFormWatch } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -16,7 +16,7 @@ export function AlertCreateFooter() {
 
 	const alertCreateContext = useAlertCreateContext();
 
-	const publishStatusValue = alertCreateContext.form.instance.watch('publish_status');
+	const publishStatusValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'publish_status' });
 
 	//
 	// B. Render components

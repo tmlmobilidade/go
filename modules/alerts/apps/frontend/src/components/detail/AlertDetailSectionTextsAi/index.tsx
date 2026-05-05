@@ -5,9 +5,8 @@
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type I18nCode, PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, Section, Surface, Switch, TextInput, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
+import { Button, ContextFormController, Section, Surface, Switch, TextInput, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -112,7 +111,7 @@ export function AlertDetailSectionTextsAi() {
 			<Section gap="md">
 
 				{(hasPermissionToCreate || hasPermissionToEditTexts) && (
-					<Controller
+					<ContextFormController
 						control={alertDetailContext.form.instance.control}
 						name="auto_texts"
 						render={({ field }) => (
@@ -127,7 +126,7 @@ export function AlertDetailSectionTextsAi() {
 
 				{(alertDetailContext.form.instance.getValues().auto_texts && hasPermissionToCreate) && (
 					<>
-						<Controller
+						<ContextFormController
 							control={alertDetailContext.form.instance.control}
 							name="user_instructions"
 							render={({ field }) => (

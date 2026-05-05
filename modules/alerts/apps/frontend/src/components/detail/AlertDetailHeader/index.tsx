@@ -5,10 +5,9 @@
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { CloseButton, DeleteButton, DuplicateButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusTag, SaveButton, Spacer, Toolbar, useMeContext } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, DuplicateButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusTag, SaveButton, Spacer, Toolbar, useContextFormWatch, useMeContext } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
-import { useWatch } from 'react-hook-form';
 
 /* * */
 
@@ -22,10 +21,7 @@ export function AlertDetailHeader() {
 	const meContext = useMeContext();
 	const alertDetailContext = useAlertDetailContext();
 
-	const publishStatusValue = useWatch({
-		control: alertDetailContext.form.instance.control,
-		name: 'publish_status',
-	});
+	const publishStatusValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'publish_status' });
 
 	//
 	// B. Transform data
