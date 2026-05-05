@@ -11,6 +11,8 @@ import { type GtfsValidationMessage } from '@tmlmobilidade/types';
 import { Collapsible, DataTable, DataTableColumn, Divider, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
+import styles from './styles.module.css';
+
 /* * */
 
 export function ValidationsDetailSectionResult() {
@@ -40,7 +42,7 @@ export function ValidationsDetailSectionResult() {
 		},
 		{
 			accessor: 'message',
-			render: item => <div>{item.message} <a href={getGtfsScheduleDocUrl(item.rule_id)} rel="noopener noreferrer" target="_blank"> | SABER MAIS <IconExternalLink size={12} /></a></div>,
+			render: item => <div>{item.message} {' | '} <a className={styles.link} href={getGtfsScheduleDocUrl(item.rule_id)} rel="noopener noreferrer" target="_blank">Saber mais <IconExternalLink size={12} /></a></div>,
 			title: 'Mensagem',
 			width: 500,
 		},
