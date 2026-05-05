@@ -76,7 +76,11 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		scope: PermissionCatalog.all.alerts.scope,
 	});
 
-	const { isLoading: operationalLinesLoading } = useDataOperationalLines(API_ROUTES.alerts.OPERATION_LINES, {
+	//
+	// Leave the following data fetching hooks in place as they are
+	// used for preloading the necessary data for the references step.
+
+	useDataOperationalLines(API_ROUTES.alerts.OPERATION_LINES, {
 		filters: {
 			agency_ids: agencyIdValue ? [agencyIdValue] : [],
 			date_end: activePeriodEndDateValue,
@@ -84,7 +88,7 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		},
 	});
 
-	const { isLoading: operationalStopsLoading } = useDataOperationalStops(API_ROUTES.alerts.OPERATION_STOPS, {
+	useDataOperationalStops(API_ROUTES.alerts.OPERATION_STOPS, {
 		filters: {
 			agency_ids: agencyIdValue ? [agencyIdValue] : [],
 			date_end: activePeriodEndDateValue,
@@ -92,7 +96,7 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		},
 	});
 
-	const { isLoading: ridesLoading } = useDataRides(API_ROUTES.alerts.OPERATION_RIDES, {
+	useDataRides(API_ROUTES.alerts.OPERATION_RIDES, {
 		filters: {
 			agency_ids: agencyIdValue ? [agencyIdValue] : [],
 			date_end: activePeriodEndDateValue,
@@ -113,26 +117,20 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	}, [agenciesData, form]);
 
 	useEffect(() => {
-		// Skip if cause is not set
-		if (!causeValue) return;
-		// Skip if cause hasn't changed
-		if (causeValue === form.getValues('cause')) return;
-		// Reset downstream fields when cause changes.
+		// Reset effect field when cause changes
 		form.setValue('effect', undefined);
-		form.setValue('reference_type', undefined);
-		form.setValue('references', []);
-		Logger.info('Reset effect, reference_type and references fields due to cause change.');
+		Logger.info('Reset effect field due to cause change.');
 	}, [causeValue, form]);
 
 	useEffect(() => {
-		// Skip if effect is not set
-		if (!effectValue) return;
-		// Skip if effect hasn't changed
-		if (effectValue === form.getValues('effect')) return;
 		// Reset reference_type and references when effect changes
 		form.setValue('reference_type', undefined);
 		form.setValue('references', []);
-		// Skip if cause or effect is not set, as reference_type will be
+		Logger.info('Reset reference_type and references fields due to effect change.');
+	}, [effectValue, form]);
+
+	useEffect(() => {
+		// Skip if cause or effect are not set, as reference_type will be
 		// auto-set based on their combination when both are selected.
 		if (!causeValue || !effectValue) return;
 		// Extract the available reference types for the selected cause/effect combination.
@@ -217,7 +215,7 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		{
 			id: 'summary',
 			isEnabled: () => !!form.getValues('cause') && !!form.getValues('effect') && !!form.getValues('active_period_start_date') && !!form.getValues('reference_type') && !!form.getValues('agency_id') && !!form.getValues('references')?.length,
-			isValid: () => !!form.getValues('cause') && !!form.getValues('effect') && !!form.getValues('active_period_start_date') && !!form.getValues('reference_type') && !!form.getValues('agency_id') && !!form.getValues('references')?.length,
+			isValid: () => !!form.getValues('cause') && !!form.getValues('effect') && !!form.getValues('active_period_start_date') && !!form.getValues('reference_type') && !!form.getValues('agency_id') && !!form.getValues('references')?.length && !!form.getValues('title')?.length && !!form.getValues('description')?.length,
 			isVisible: true,
 			label: 'Resumo',
 			order: 5,
@@ -253,13 +251,13 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 			canCreate: true,
 			error: undefined,
 			isCreating,
-			isLoading: agenciesLoading || operationalLinesLoading || operationalStopsLoading || ridesLoading,
+			isLoading: agenciesLoading,
 		},
 		form: {
 			instance: form,
 			multi_step: multiStep,
 		},
-	}), [agenciesLoading, form, handleCreate, isCreating, multiStep, operationalLinesLoading, operationalStopsLoading, ridesLoading]);
+	}), [agenciesLoading, form, handleCreate, isCreating, multiStep]);
 
 	//
 	// H. Return state
