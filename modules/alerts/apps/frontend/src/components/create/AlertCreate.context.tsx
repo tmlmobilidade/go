@@ -92,7 +92,7 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		},
 	});
 
-	const { isLoading: ridesLoading } = useDataRides(API_ROUTES.alerts.RIDES_LIST, {
+	const { isLoading: ridesLoading } = useDataRides(API_ROUTES.alerts.OPERATION_RIDES, {
 		filters: {
 			agency_ids: agencyIdValue ? [agencyIdValue] : [],
 			date_end: activePeriodEndDateValue,
