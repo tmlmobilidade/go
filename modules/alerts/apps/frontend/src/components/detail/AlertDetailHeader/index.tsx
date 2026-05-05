@@ -81,16 +81,11 @@ export function AlertDetailHeader() {
 				/>
 			</HasPermission>
 
-			<HasPermission
-				action={PermissionCatalog.all.alerts.actions.update}
-				scope={PermissionCatalog.all.alerts.scope}
-			>
-				<SaveButton
-					isDisabled={!alertDetailContext.flags.canSave}
-					isLoading={alertDetailContext.flags.isSaving}
-					onClick={alertDetailContext.actions.save}
-				/>
-			</HasPermission>
+			<SaveButton
+				isDisabled={!alertDetailContext.flags.canSave}
+				isLoading={alertDetailContext.flags.isSaving}
+				onClick={alertDetailContext.actions.save}
+			/>
 
 			<HasPermission
 				action={PermissionCatalog.all.alerts.actions.lock}

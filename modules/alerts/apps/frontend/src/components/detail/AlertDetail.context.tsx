@@ -4,7 +4,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type File as FileType, PermissionCatalog, type UpdateAlertDto } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, keepUrlParams, useContextForm, useContextFormWatch, useDataAgencies, useDataOperationalLines, useDataOperationalStops, useDataRides, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
+import { type DetailContextStateTemplate, keepUrlParams, useContextForm, useDataAgencies, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
@@ -69,41 +69,12 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		// schema: UpdateAlertSchema,
 	});
 
-	const agencyIdValue = useContextFormWatch({ control: form.control, name: 'agency_id' });
-	const activePeriodStartDateValue = useContextFormWatch({ control: form.control, name: 'active_period_start_date' });
-	const activePeriodEndDateValue = useContextFormWatch({ control: form.control, name: 'active_period_end_date' });
-
 	//
 	// C. Transform data
 
 	const { isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.create],
 		scope: PermissionCatalog.all.alerts.scope,
-	});
-
-	const { isLoading: operationalLinesLoading } = useDataOperationalLines(API_ROUTES.alerts.OPERATION_LINES, {
-		filters: {
-			agency_ids: agencyIdValue ? [agencyIdValue] : [],
-			date_end: activePeriodEndDateValue,
-			date_start: activePeriodStartDateValue,
-		},
-	});
-
-	const { isLoading: operationalStopsLoading } = useDataOperationalStops(API_ROUTES.alerts.OPERATION_STOPS, {
-		filters: {
-			agency_ids: agencyIdValue ? [agencyIdValue] : [],
-			date_end: activePeriodEndDateValue,
-			date_start: activePeriodStartDateValue,
-		},
-	});
-
-	useDataRides(API_ROUTES.alerts.RIDES_LIST, {
-		filters: {
-			agency_ids: agencyIdValue ? [agencyIdValue] : [],
-			date_end: activePeriodEndDateValue,
-			date_start: activePeriodStartDateValue,
-			operational_statuses: ['running', 'missed', 'scheduled'],
-		},
 	});
 
 	//
@@ -315,7 +286,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			isDeletingImage,
 			isDirty: form.formState.isDirty,
 			isDuplicating,
-			isLoading: alertLoading || agenciesLoading || operationalLinesLoading || operationalStopsLoading,
+			isLoading: alertLoading || agenciesLoading,
 			isLocking,
 			isReadOnly,
 			isSaving,
@@ -325,7 +296,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		form: {
 			instance: form,
 		},
-	}), [agenciesLoading, alertData, alertError, alertId, alertImage, alertLoading, alertValidating, canDelete, canDuplicate, canLock, canSave, form, handleDelete, handleDeleteImage, handleDuplicate, handleLock, handleSave, isDeleting, isDeletingImage, isDuplicating, isLocking, isReadOnly, isSaving, isUploadingImage, operationalLinesLoading, operationalStopsLoading]);
+	}), [agenciesLoading, alertData, alertError, alertId, alertImage, alertLoading, alertValidating, canDelete, canDuplicate, canLock, canSave, form, handleDelete, handleDeleteImage, handleDuplicate, handleLock, handleSave, isDeleting, isDeletingImage, isDuplicating, isLocking, isReadOnly, isSaving, isUploadingImage]);
 
 	//
 	// F. Render components

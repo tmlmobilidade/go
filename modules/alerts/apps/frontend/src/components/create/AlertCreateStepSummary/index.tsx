@@ -51,7 +51,7 @@ export function AlertCreateStepSummary() {
 		},
 	]);
 
-	const hasPermissionToEditTexts = meContext.actions.hasPermissionResource([
+	const hasPermissionToUpdateTexts = meContext.actions.hasPermissionResource([
 		{
 			action: PermissionCatalog.all.alerts.actions.update_texts,
 			resource_key: 'agency_ids',
@@ -115,14 +115,14 @@ export function AlertCreateStepSummary() {
 
 				<Surface variant="bordered" withBackground>
 					<Section gap="md">
-						{(hasPermissionToCreate || hasPermissionToEditTexts) && (
+						{(hasPermissionToCreate || hasPermissionToUpdateTexts) && (
 							<ContextFormController
 								control={alertCreateContext.form.instance.control}
 								name="auto_texts"
 								render={({ field }) => (
 									<Switch
 										checked={field.value ?? false}
-										disabled={!hasPermissionToEditTexts}
+										disabled={!hasPermissionToUpdateTexts}
 										label={t('default:alerts.create.summary.auto_texts.label')}
 										onChange={e => field.onChange(e.currentTarget.checked)}
 									/>
@@ -167,7 +167,7 @@ export function AlertCreateStepSummary() {
 							label={t('default:alerts.create.summary.title.label')}
 							onBlur={field.onBlur}
 							onChange={e => field.onChange(e.currentTarget.value)}
-							readOnly={!hasPermissionToEditTexts}
+							readOnly={!hasPermissionToUpdateTexts}
 							value={field.value ?? ''}
 						/>
 					)}
@@ -184,7 +184,7 @@ export function AlertCreateStepSummary() {
 							minRows={4}
 							onBlur={field.onBlur}
 							onChange={e => field.onChange(e.currentTarget.value)}
-							readOnly={!hasPermissionToEditTexts}
+							readOnly={!hasPermissionToUpdateTexts}
 							value={field.value ?? ''}
 							autosize
 						/>
@@ -216,7 +216,7 @@ export function AlertCreateStepSummary() {
 							onBlur={field.onBlur}
 							onChange={e => field.onChange(e.currentTarget.value)}
 							placeholder="https://www.cm-setubal.com/..."
-							readOnly={!hasPermissionToEditTexts}
+							readOnly={!hasPermissionToUpdateTexts}
 							value={field.value ?? ''}
 						/>
 					)}

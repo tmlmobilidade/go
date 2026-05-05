@@ -3,11 +3,19 @@
 /* * */
 
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
-import { AlertDetailSectionTextsAi } from '@/components/detail/AlertDetailSectionTextsAi';
 import { IconLink } from '@tabler/icons-react';
-import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Collapsible, ContextFormController, CoordinatesInput, Grid, ImageUpload, Section, Textarea, TextInput, useMeContext } from '@tmlmobilidade/ui';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type I18nCode, PermissionCatalog } from '@tmlmobilidade/types';
+import { Button, Collapsible, ContextFormController, CoordinatesInput, Grid, ImageUpload, Section, Surface, Switch, Textarea, TextInput, useContextFormWatch, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
+import { fetchData } from '@tmlmobilidade/utils';
 import { useTranslation } from 'react-i18next';
+
+/* * */
+
+type DescribeAlertReturnType = Record<I18nCode, {
+	description: string
+	title: string
+}>;
 
 /* * */
 
@@ -22,10 +30,27 @@ export function AlertDetailSectionTexts() {
 	const meContext = useMeContext();
 	const alertDetailContext = useAlertDetailContext();
 
+	const autoTextsValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'auto_texts' });
+
 	//
 	// B. Transform data
 
-	const hasPermissionToEdit = meContext.actions.hasPermissionResource([
+	const hasPermissionToUpdate = meContext.actions.hasPermissionResource([
+		{
+			action: PermissionCatalog.all.alerts.actions.update,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.alerts.scope,
+			value: alertDetailContext.data.alert.agency_id,
+		},
+		{
+			action: PermissionCatalog.all.alerts.actions.update,
+			resource_key: 'reference_types',
+			scope: PermissionCatalog.all.alerts.scope,
+			value: alertDetailContext.data.alert.reference_type,
+		},
+	]);
+
+	const hasPermissionToUpdateTexts = meContext.actions.hasPermissionResource([
 		{
 			action: PermissionCatalog.all.alerts.actions.update_texts,
 			resource_key: 'agency_ids',
@@ -41,7 +66,43 @@ export function AlertDetailSectionTexts() {
 	]);
 
 	//
-	// C. Render components
+	// C. Handle actions
+
+	const { action: generateText, isLoading: isLoadingGeneratingText } = useHandleUpdate<DescribeAlertReturnType>({
+		fetchFn: async () => {
+			// Get latest form values
+			const formValues = alertDetailContext.form.instance.getValues();
+			// Skip if auto texts is not enabled
+			if (!formValues.auto_texts) return;
+			// Skip if required fields for templating are not filled
+			if (!formValues.cause) return;
+			if (!formValues.effect) return;
+			if (!formValues.reference_type) return;
+			if (!formValues.references?.length) return;
+			// Generate alert templating and set title and description based on i
+			return await fetchData<DescribeAlertReturnType>(API_ROUTES.alerts.ALERTS_DESCRIBE, 'POST', {
+				active_period_end_date: formValues.active_period_end_date,
+				active_period_start_date: formValues.active_period_start_date,
+				agency_id: formValues.agency_id,
+				cause: formValues.cause,
+				effect: formValues.effect,
+				reference_type: formValues.reference_type,
+				references: formValues.references,
+				user_instructions: formValues.user_instructions,
+			});
+		},
+		onError: (error) => {
+			// eslint-disable-next-line no-console
+			console.error('Error generating alert description', { error });
+		},
+		onSuccess: (data) => {
+			alertDetailContext.form.instance.setValue('description', data.pt.description, { shouldDirty: true });
+			alertDetailContext.form.instance.setValue('title', data.pt.title, { shouldDirty: true });
+		},
+	});
+
+	//
+	// D. Render components
 
 	return (
 		<Collapsible
@@ -50,6 +111,55 @@ export function AlertDetailSectionTexts() {
 			defaultOpen
 		>
 			<Section gap="md">
+
+				<Surface variant="bordered" withBackground>
+
+					<Section gap="md">
+
+						{(hasPermissionToUpdate || hasPermissionToUpdateTexts) && (
+							<ContextFormController
+								control={alertDetailContext.form.instance.control}
+								name="auto_texts"
+								render={({ field }) => (
+									<Switch
+										checked={field.value ?? false}
+										disabled={!hasPermissionToUpdateTexts && !hasPermissionToUpdate}
+										label={t('default:alerts.create.summary.auto_texts.label')}
+										onChange={e => field.onChange(e.currentTarget.checked)}
+									/>
+								)}
+							/>
+						)}
+
+						{(autoTextsValue) && (
+							<>
+								<ContextFormController
+									control={alertDetailContext.form.instance.control}
+									name="user_instructions"
+									render={({ field }) => (
+										<TextInput
+											disabled={isLoadingGeneratingText}
+											label={t('default:alerts.create.summary.user_instructions.label')}
+											onBlur={field.onBlur}
+											onChange={e => field.onChange(e.currentTarget.value)}
+											placeholder={t('default:alerts.create.summary.user_instructions.placeholder')}
+											readOnly={isLoadingGeneratingText}
+											value={field.value ?? ''}
+											w="100%"
+										/>
+									)}
+								/>
+								<Button
+									label={t('default:alerts.create.summary.generate_text.label')}
+									loading={isLoadingGeneratingText}
+									onClick={generateText}
+								/>
+							</>
+						)}
+
+					</Section>
+				</Surface>
+
 				<Grid gap="md">
 
 					<ContextFormController
@@ -61,7 +171,7 @@ export function AlertDetailSectionTexts() {
 								label={t('default:alerts.create.summary.title.label')}
 								onBlur={field.onBlur}
 								onChange={e => field.onChange(e.currentTarget.value)}
-								readOnly={!hasPermissionToEdit}
+								readOnly={!hasPermissionToUpdateTexts}
 								value={field.value ?? ''}
 							/>
 						)}
@@ -77,14 +187,12 @@ export function AlertDetailSectionTexts() {
 								minRows={4}
 								onBlur={field.onBlur}
 								onChange={e => field.onChange(e.currentTarget.value)}
-								readOnly={!hasPermissionToEdit}
+								readOnly={!hasPermissionToUpdateTexts}
 								value={field.value ?? ''}
 								autosize
 							/>
 						)}
 					/>
-
-					<AlertDetailSectionTextsAi />
 
 					<ContextFormController
 						control={alertDetailContext.form.instance.control}
