@@ -37,9 +37,9 @@ const main = async () => {
 		try {
 			//
 
-			counter--;
-
 			Logger.info(`[${counter}/${alertsQty}] Processing Alert ${alertData._id}...`);
+
+			counter--;
 
 			const organizedAlertData = await organizeAlert(alertData);
 
