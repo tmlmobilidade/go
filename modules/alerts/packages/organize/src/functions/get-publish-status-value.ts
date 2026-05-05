@@ -9,7 +9,7 @@ import { type Alert, type PublishStatus } from '@tmlmobilidade/types';
  * @param alertData The alert data object to evaluate.
  * @returns The publish status of the alert.
  */
-export function getPublishStatus(alertData: Alert): PublishStatus {
+export function getPublishStatusValue(alertData: Alert): PublishStatus {
 	//
 
 	//

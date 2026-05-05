@@ -1,6 +1,7 @@
 /* * */
 
-import { getPublishStatus } from '@/functions/get-publish-status.js';
+import { getAutoTextValue } from '@/functions/get-auto-text-value.js';
+import { getPublishStatusValue } from '@/functions/get-publish-status-value.js';
 import { type Alert } from '@tmlmobilidade/types';
 
 /**
@@ -14,9 +15,11 @@ export async function organizeAlert(alertData: Alert): Promise<Alert> {
 	const updatedAlertData = { ...alertData };
 
 	//
-	// Get the publish status of the alert
+	// Get updated properties
 
-	updatedAlertData.publish_status = getPublishStatus(alertData);
+	updatedAlertData.publish_status = getPublishStatusValue(alertData);
+
+	updatedAlertData.auto_texts = getAutoTextValue(alertData);
 
 	//
 	// Return the organized alert data
