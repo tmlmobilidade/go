@@ -5,7 +5,7 @@
 import { StopsItem } from '@/components/patterns/stops/StopsItem';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { IconCirclePlus, IconX } from '@tabler/icons-react';
-import { Path } from '@tmlmobilidade/types';
+import { PopulatedPath } from '@tmlmobilidade/types';
 import { DraggableList, IconButton, Section, Select, Text } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 
@@ -52,14 +52,14 @@ export function StopsList() {
 	const [selectedStopId, setSelectedStopId] = useState<null | string>(null);
 	const [highlightedStopId, setHighlightedStopId] = useState<null | string>(null);
 
-	const path = stopsEditorContext.data.path;
+	const path = stopsEditorContext.data.path as PopulatedPath[];
 
 	const stopOptions = stopsContext.data.raw.map(stop => ({
 		label: `${stop.name} (#${stop._id})`,
 		value: String(stop._id),
 	}));
 
-	const handleReorder = (newPath: Path[], event: { newIndex: number, oldIndex: number }) => {
+	const handleReorder = (newPath: PopulatedPath[], event: { newIndex: number, oldIndex: number }) => {
 		const moved = path[event.oldIndex];
 		if (moved) {
 			setHighlightedStopId(moved._id);
@@ -121,6 +121,11 @@ export function StopsList() {
 															onChange={handleSelectStop}
 															placeholder="Pesquisar paragem..."
 															value={selectedStopId}
+															styles={{
+																wrapper: {
+																	border: 'none',
+																},
+															}}
 														/>
 													</div>
 

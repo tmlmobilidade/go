@@ -5,7 +5,7 @@ import { DocumentSchema } from '@/_common/document.js';
 import { createGtfsMapper } from '@/gtfs-new/mapper.js';
 import { GtfsDirection } from '@/gtfs-new/trips.js';
 import { StopIdSchema } from '@/stops/stop-id.js';
-import { StopSchema } from '@/stops/stop.js';
+import { Stop } from '@/stops/stop.js';
 import { z } from 'zod';
 
 import { StopsParametersListSchema } from './parameters.js';
@@ -38,7 +38,6 @@ export const PathSchema = z.object({
 	allow_drop_off: z.boolean().default(true),
 	allow_pickup: z.boolean().default(true),
 	distance_delta: z.number().nullable().default(null),
-	stop: StopSchema.nullable().optional(),
 	stop_id: StopIdSchema,
 	timepoint: z.boolean().default(true),
 	zones: z.array(z.string()).optional(),
@@ -89,7 +88,6 @@ export const ShapeSchema = z.object({
 		type: z.string().default('Feature'),
 	}),
 	legs: z.array(ShapeLegSchema).optional(),
-	// source: z.enum(['imported', 'manual', 'valhalla']).default('imported'),
 });
 
 /* * */
@@ -139,10 +137,13 @@ export const UpdatePatternSchema = CreatePatternSchema
 export type Pattern = z.infer<typeof PatternSchema>;
 export type CreatePatternDto = z.infer<typeof CreatePatternSchema>;
 export type UpdatePatternDto = z.infer<typeof UpdatePatternSchema>;
+export type PopulatedPattern = Omit<Pattern, 'path'> & { path: PopulatedPath[] };
 
 export type PatternSimplified = z.infer<typeof PatternSimplifiedSchema>;
 
 export type Path = z.infer<typeof PathSchema>;
+export type PopulatedPath = Path & { stop: null | Stop };
+
 export type Shape = z.infer<typeof ShapeSchema>;
 
 /* * */

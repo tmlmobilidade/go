@@ -22,6 +22,7 @@
 	width: fit-content;
 	gap: var(--size-spacing-xs);
 	font-size: var(--font-size-lg);
+	width: 100%;
 }
 
 .info {
@@ -37,6 +38,10 @@
 
 .justDropped {
 	animation: droppedFade 900ms ease;
+}
+
+.addStopSelect {
+	flex-grow: 1;
 }
 
 @keyframes droppedFade {

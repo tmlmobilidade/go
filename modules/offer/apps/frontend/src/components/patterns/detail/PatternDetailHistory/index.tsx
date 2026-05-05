@@ -7,7 +7,7 @@ import { IconHistory } from '@tabler/icons-react';
 import { UpdatePatternDto } from '@tmlmobilidade/types';
 import { CommentInput, CommentItemField, CommentItemNote, TopbarMenu } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 /* * */
 
@@ -19,10 +19,18 @@ export function PatternDetailHistory() {
 
 	const patternDetailContext = usePatternDetailContext();
 
-	const handleRevert = (revertData: Partial<UpdatePatternDto>) => {
+	const [revertingIndex, setRevertingIndex] = useState<null | number>(null);
+
+	const handleRevert = useCallback(async (idx: number, revertData: Partial<UpdatePatternDto>) => {
+		setRevertingIndex(idx);
+		if (revertData.path) {
+			const enrichedPath = await patternDetailContext.actions.enrichPath(revertData.path);
+			revertData = { ...revertData, path: enrichedPath };
+		}
 		patternDetailContext.data.form.setValues(revertData);
 		useToast.info({ message: 'Campos revertidos. Clique em Guardar para persistir as alterações.' });
-	};
+		setRevertingIndex(null);
+	}, [patternDetailContext.data.form, patternDetailContext.actions]);
 
 	const commentItems = useMemo(() => {
 		const allComments = (patternDetailContext.data.pattern.comments || []);
@@ -33,7 +41,8 @@ export function PatternDetailHistory() {
 					<CommentItemField
 						key={idx}
 						comment={comment}
-						onRevert={handleRevert}
+						loading={revertingIndex === idx}
+						onRevert={revertData => handleRevert(idx, revertData)}
 					/>
 				);
 			}
@@ -52,7 +61,7 @@ export function PatternDetailHistory() {
 			...items,
 			<CommentInput key="comment-input" onSubmit={patternDetailContext.actions.addComment} />,
 		];
-	}, [patternDetailContext.data.pattern?.comments]);
+	}, [handleRevert, revertingIndex, patternDetailContext.actions.addComment, patternDetailContext.data.pattern.comments]);
 
 	//
 	// C. Render components

@@ -7,7 +7,7 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { lines, patterns, stops } from '@tmlmobilidade/interfaces';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { CreatePatternDto, NoteComment, type Pattern, PermissionCatalog, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
+import { CreatePatternDto, NoteComment, type Pattern, PermissionCatalog, PopulatedPath, PopulatedPattern, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -114,13 +114,13 @@ export class PatternsController {
 	 * @param request Fastify request containing pattern ID
 	 * @param reply Fastify reply
 	 */
-	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Pattern>) {
+	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<PopulatedPattern>) {
 		//
 
 		//
 		// Get the Pattern from the database
 
-		const patternData = await patterns.findById(request.params.id);
+		const patternData: null | Pattern = await patterns.findById(request.params.id);
 
 		if (!patternData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 
@@ -151,7 +151,7 @@ export class PatternsController {
 			const stopsMap = new Map(stopsData.map(stop => [stop._id, stop]));
 
 			// Populate the path with stop data
-			const populatedPath = patternData.path.map(pathItem => ({
+			const populatedPath: PopulatedPath[] = patternData.path.map(pathItem => ({
 				...pathItem,
 				stop: stopsMap.get(pathItem.stop_id) || null,
 			}));
@@ -168,7 +168,7 @@ export class PatternsController {
 		// Fetch the pattern data
 
 		return reply.send({
-			data: merged,
+			data: merged as PopulatedPattern,
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});
@@ -280,6 +280,7 @@ export class PatternsController {
 			parameters: [defaultParameter],
 			path: formattedPath,
 			shape: {
+				anchors: [],
 				extension: Math.round(shapeExtension),
 				geojson: {
 					geometry: {
