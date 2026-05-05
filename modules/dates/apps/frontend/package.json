@@ -15,11 +15,12 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@mantine/core": "9.0.2",
-		"@mantine/dates": "9.0.2",
+		"@mantine/core": "9.1.1",
+		"@mantine/dates": "9.1.1",
 		"@tabler/icons-react": "3.41.1",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",

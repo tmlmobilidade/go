@@ -35,6 +35,9 @@ function buildExportConfig(workdir: string, properties: GtfsExportProperties['pr
 			afetacao: new CsvWriter('afetacao.csv', `${workdir}/afetacao.csv`),
 			agency: new CsvWriter('agency.txt', `${workdir}/agency.txt`),
 			calendar_dates: new CsvWriter('calendar_dates.txt', `${workdir}/calendar_dates.txt`),
+			...(properties.numeric_calendar_codes && {
+				calendar_map: new CsvWriter('calendar_map.txt', `${workdir}/calendar_map.txt`),
+			}),
 			fare_attributes: new CsvWriter('fare_attributes.txt', `${workdir}/fare_attributes.txt`),
 			fare_rules: new CsvWriter('fare_rules.txt', `${workdir}/fare_rules.txt`),
 			feed_info: new CsvWriter('feed_info.txt', `${workdir}/feed_info.txt`),

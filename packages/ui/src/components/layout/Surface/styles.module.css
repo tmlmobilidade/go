@@ -39,26 +39,36 @@
 .root[data-variant='default'] {
 	background-color: var(--color-system-background-100);
 	border: 1px solid var(--color-system-border-100);
-	border-radius: 4px;
+	border-radius: 5px;
 	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 5%);
 }
 
 .root[data-variant='bordered'] {
 	background-color: var(--color-system-background-100);
 	border: 2px solid var(--color-system-border-100);
-	border-radius: 4px;
+	border-radius: 5px;
 }
 
 .root[data-variant='primary'] {
 	background-color: var(--color-system-background-100);
 	border: 2px solid var(--color-primary);
-	border-radius: 4px;
+	border-radius: 5px;
 }
 
 .root[data-variant='transparent'] {
 	background-color: transparent;
 }
 
+/* * */
+/* PROPS / WITH BACKGROUND */
+
+.root[data-with-background='true'] {
+	background-color: var(--color-system-background-200);
+}
+
+.root[data-variant='primary'][data-with-background='true'] {
+	background-color: var(--color-background);
+}
 
 /* * */
 /* PROPS / ELEVATED */

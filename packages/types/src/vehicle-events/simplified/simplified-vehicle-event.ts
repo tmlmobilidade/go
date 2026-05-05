@@ -1,6 +1,6 @@
 /* * */
 
-import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
 /* * */
@@ -10,7 +10,7 @@ export const SimplifiedVehicleEventSchema = z.object({
 	// Required Fields
 	_id: z.string(),
 	agency_id: z.string(),
-	created_at: UnixTimeStampSchema,
+	created_at: UnixTimestampSchema,
 	latitude: z.number()
 		.min(-90)
 		.max(90)
@@ -19,7 +19,7 @@ export const SimplifiedVehicleEventSchema = z.object({
 		.min(-180)
 		.max(180)
 		.refine(value => value.toFixed(6) === value.toString()),
-	received_at: UnixTimeStampSchema,
+	received_at: UnixTimestampSchema,
 	trip_id: z.string(),
 	vehicle_id: z.string(),
 

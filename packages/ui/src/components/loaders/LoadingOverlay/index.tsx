@@ -2,14 +2,14 @@
 
 import styles from './styles.module.css';
 
-import { Loader } from '../Loader';
+import { Loader, type LoaderProps } from '../Loader';
 
 /* * */
 
 interface LoadingOverlayProps {
 	dimmed?: boolean
 	fullscreen?: boolean
-	size?: 'lg' | 'md' | 'sm' | 'xl'
+	size?: LoaderProps['size']
 }
 
 export function LoadingOverlay({ dimmed, fullscreen, size = 'md' }: LoadingOverlayProps) {

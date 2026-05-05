@@ -1,6 +1,6 @@
 /* * */
 
-import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
 /* * */
@@ -12,7 +12,7 @@ export const SimplifiedApexBankingTapSchema = z.object({
 	banking_token: z.string(),
 	card_brand: z.number(),
 	card_pan: z.string(),
-	created_at: UnixTimeStampSchema,
+	created_at: UnixTimestampSchema,
 	device_id: z.string(),
 	event_type: z.number().nullable(),
 	is_ok: z.boolean(),
@@ -22,7 +22,7 @@ export const SimplifiedApexBankingTapSchema = z.object({
 	mac_sam_serial_number: z.number(),
 	pattern_id: z.string(),
 	product_id: z.string(),
-	received_at: UnixTimeStampSchema,
+	received_at: UnixTimestampSchema,
 	stop_id: z.string(),
 	trip_id: z.string(),
 	units_qty: z.number(),

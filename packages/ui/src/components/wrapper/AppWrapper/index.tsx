@@ -27,7 +27,7 @@ export function AppWrapper({ children }: PropsWithChildren) {
 
 	if (layoutContext.data.active_fullscreen) {
 		return (
-			<Suspense fallback={<Loader size="xl" />}>
+			<Suspense fallback={<Loader />}>
 				<div className={styles.container}>
 					<div className={styles.content}>{children}</div>
 				</div>
@@ -36,7 +36,7 @@ export function AppWrapper({ children }: PropsWithChildren) {
 	}
 
 	return (
-		<Suspense fallback={<Loader size="xl" />}>
+		<Suspense fallback={<Loader />}>
 			<div className={styles.container}>
 				<AppWrapperLogo />
 				<Topbar />

@@ -38,7 +38,7 @@ export function BaseProvider({ children, i18n, version }: PropsWithChildren<Base
 
 	const swrSettings: SWRConfiguration = {
 		fetcher: swrFetcher,
-		refreshInterval: 60_000, // 1 minute
+		refreshInterval: 600_000, // 10 minutes
 		refreshWhenHidden: true,
 		revalidateIfStale: true,
 		revalidateOnFocus: true,

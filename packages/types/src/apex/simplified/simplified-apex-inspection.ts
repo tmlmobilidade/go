@@ -1,6 +1,6 @@
 /* * */
 
-import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
 /* * */
@@ -13,7 +13,7 @@ export const SimplifiedApexInspectionSchema = z.object({
 	control_destination_stop_id: z.string(),
 	control_origin_stop_id: z.string(),
 	control_status: z.number(),
-	created_at: UnixTimeStampSchema,
+	created_at: UnixTimestampSchema,
 	device_id: z.string(),
 	environment_status: z.number(),
 	inspection_id: z.string().nullable(),
@@ -24,7 +24,7 @@ export const SimplifiedApexInspectionSchema = z.object({
 	mac_sam_serial_number: z.number(),
 	pattern_id: z.string(),
 	product_id: z.string(),
-	received_at: UnixTimeStampSchema,
+	received_at: UnixTimestampSchema,
 	trip_id: z.string(),
 	vehicle_id: z.number(),
 });

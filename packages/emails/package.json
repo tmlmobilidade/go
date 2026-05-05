@@ -35,16 +35,15 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@react-email/components": "1.0.12",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"nodemailer": "8.0.5",
+		"nodemailer": "8.0.7",
 		"react": "19.2.5",
-		"react-email": "6.0.0"
+		"react-email": "6.0.5"
 	},
 	"devDependencies": {
-		"@react-email/preview-server": "5.2.10",
+		"@react-email/ui": "6.0.5",
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "25.6.0",
 		"@types/nodemailer": "8.0.0",

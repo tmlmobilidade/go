@@ -14,9 +14,10 @@ export interface SurfaceProps {
 	overflow?: 'auto' | 'hidden' | 'scroll' | 'visible'
 	style?: React.CSSProperties
 	variant?: 'bordered' | 'default' | 'primary' | 'transparent'
+	withBackground?: boolean
 }
 
-export function Surface({ align = 'start', children, className, elevated, height = 'auto', justify = 'start', overflow = 'hidden', style, variant = 'default' }: SurfaceProps) {
+export function Surface({ align = 'start', children, className, elevated, height = 'auto', justify = 'start', overflow = 'hidden', style, variant = 'default', withBackground = false }: SurfaceProps) {
 	const combinedClassName = className ? `${styles.root} ${className}` : styles.root;
 
 	return (
@@ -28,6 +29,7 @@ export function Surface({ align = 'start', children, className, elevated, height
 			data-justify={justify}
 			data-overflow={overflow}
 			data-variant={variant}
+			data-with-background={withBackground}
 			style={style}
 		>
 			{children}
