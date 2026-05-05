@@ -6,7 +6,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, PermissionCatalog } from '@tmlmobilidade/types';
-import { type CreateContextStateTemplate, keepUrlParams, useContextForm, useDataAgencies, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType } from '@tmlmobilidade/ui';
+import { type CreateContextStateTemplate, keepUrlParams, useContextForm, useContextFormWatch, useDataAgencies, useDataOperationalLines, useDataOperationalStops, useDataRides, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
@@ -44,21 +44,9 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	const meContext = useMeContext();
 
 	//
-	// C. Fetch data
+	// B. Setup form
 
-	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
-
-	const { filtered: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.alerts.actions.create],
-		scope: PermissionCatalog.all.alerts.scope,
-	});
-
-	//
-	// B. Setup form with react-hook-form
-	// One-time initializations are handled via defaultValues instead of effects,
-	// eliminating the polling re-render cycle from useTypicalFormWatch.
-
-	const form = useContextForm<CreateAlertDto>({
+	const { form, unblock } = useContextForm<CreateAlertDto>({
 		defaultValues: {
 			active_period_end_date: Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp,
 			active_period_start_date: Dates.now('Europe/Lisbon').minus({ minutes: 30 }).set({ millisecond: 0, second: 0 }).unix_timestamp,
@@ -71,75 +59,115 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		// schema: CreateAlertSchema,
 	});
 
+	const agencyIdValue = useContextFormWatch({ control: form.control, name: 'agency_id' });
+	const causeValue = useContextFormWatch({ control: form.control, name: 'cause' });
+	const effectValue = useContextFormWatch({ control: form.control, name: 'effect' });
+	const referenceTypeValue = useContextFormWatch({ control: form.control, name: 'reference_type' });
+	const activePeriodStartDateValue = useContextFormWatch({ control: form.control, name: 'active_period_start_date' });
+	const activePeriodEndDateValue = useContextFormWatch({ control: form.control, name: 'active_period_end_date' });
+
+	//
+	// C. Fetch data
+
+	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
+
+	const { filtered: agenciesData, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.alerts.actions.create],
+		scope: PermissionCatalog.all.alerts.scope,
+	});
+
+	const { isLoading: operationalLinesLoading } = useDataOperationalLines(API_ROUTES.alerts.OPERATION_LINES, {
+		filters: {
+			agency_ids: agencyIdValue ? [agencyIdValue] : [],
+			date_end: activePeriodEndDateValue,
+			date_start: activePeriodStartDateValue,
+		},
+	});
+
+	const { isLoading: operationalStopsLoading } = useDataOperationalStops(API_ROUTES.alerts.OPERATION_STOPS, {
+		filters: {
+			agency_ids: agencyIdValue ? [agencyIdValue] : [],
+			date_end: activePeriodEndDateValue,
+			date_start: activePeriodStartDateValue,
+		},
+	});
+
+	const { isLoading: ridesLoading } = useDataRides(API_ROUTES.alerts.RIDES_LIST, {
+		filters: {
+			agency_ids: agencyIdValue ? [agencyIdValue] : [],
+			date_end: activePeriodEndDateValue,
+			date_start: activePeriodStartDateValue,
+			operational_statuses: ['running', 'missed', 'scheduled'],
+		},
+	});
+
 	//
 	// D. Side effects
 
 	useEffect(() => {
-		// Pre-select agency when only one is available.
-		// Reads getValues() imperatively so this effect
-		// only runs when agenciesData changes,
-		// not on every agency_id change.
+		// Pre-select agency when only one is available
 		if (agenciesData?.length !== 1) return;
 		if (form.getValues('agency_id')) return;
-		form.setValue('agency_id', agenciesData[0]._id);
+		form.setValue('agency_id', agenciesData[0]._id, { shouldDirty: false });
+		Logger.info('Auto-selected agency_id based on available agencies data.');
 	}, [agenciesData, form]);
 
-	// Reset downstream fields when cause changes.
 	useEffect(() => {
-		const sub = form.watch((_, { name }) => {
-			if (name !== 'cause') return;
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			form.setValue('effect', null as any);
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			form.setValue('reference_type', null as any);
-			form.setValue('references', []);
-		});
-		return () => sub.unsubscribe();
-	}, [form]);
+		// Skip if cause is not set
+		if (!causeValue) return;
+		// Skip if cause hasn't changed
+		if (causeValue === form.getValues('cause')) return;
+		// Reset downstream fields when cause changes.
+		form.setValue('effect', undefined);
+		form.setValue('reference_type', undefined);
+		form.setValue('references', []);
+		Logger.info('Reset effect, reference_type and references fields due to cause change.');
+	}, [causeValue, form]);
 
-	// Reset reference_type and references when effect changes,
-	// then auto-select the best reference_type based on permissions.
 	useEffect(() => {
-		const sub = form.watch((values, { name }) => {
-			if (name !== 'effect') return;
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			form.setValue('reference_type', null as any);
-			form.setValue('references', []);
-			if (!values.cause || !values.effect) return;
-			const enabledTypes = alertCauseEffectReferenceTypeMap[values.cause]?.[values.effect] ?? [];
-			if (!enabledTypes.length) return;
-			const perm = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
-			const canAll = perm?.resources.reference_types.includes(PermissionCatalog.ALLOW_ALL_FLAG);
-			const allowed = perm?.resources.reference_types ?? [];
-			if (enabledTypes.includes('lines') && (canAll || allowed.includes('lines'))) form.setValue('reference_type', 'lines');
-			else if (enabledTypes.includes('stops') && (canAll || allowed.includes('stops'))) form.setValue('reference_type', 'stops');
-			else if (enabledTypes.includes('rides') && (canAll || allowed.includes('rides'))) form.setValue('reference_type', 'rides');
-			else if (enabledTypes.includes('agency') && (canAll || allowed.includes('agency'))) form.setValue('reference_type', 'agency');
-			else Logger.info('No enabled reference types available to set as default.');
-		});
-		return () => sub.unsubscribe();
-	}, [form, meContext.data.user.permissions]);
+		// Skip if effect is not set
+		if (!effectValue) return;
+		// Skip if effect hasn't changed
+		if (effectValue === form.getValues('effect')) return;
+		// Reset reference_type and references when effect changes
+		form.setValue('reference_type', undefined);
+		form.setValue('references', []);
+		// Skip if cause or effect is not set, as reference_type will be
+		// auto-set based on their combination when both are selected.
+		if (!causeValue || !effectValue) return;
+		// Extract the available reference types for the selected cause/effect combination.
+		const enabledTypes = alertCauseEffectReferenceTypeMap[causeValue]?.[effectValue] ?? [];
+		if (!enabledTypes.length) return;
+		// Get user's permissions for alert creation to determine which reference types they can select.
+		const permissions = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
+		const allowAllReferenceTypes = permissions?.resources.reference_types.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+		const allowedReferenceTypes = permissions?.resources.reference_types ?? [];
+		// Auto-select the best reference_type based on permissions.
+		if (enabledTypes.includes('lines') && (allowAllReferenceTypes || allowedReferenceTypes.includes('lines'))) form.setValue('reference_type', 'lines');
+		else if (enabledTypes.includes('stops') && (allowAllReferenceTypes || allowedReferenceTypes.includes('stops'))) form.setValue('reference_type', 'stops');
+		else if (enabledTypes.includes('rides') && (allowAllReferenceTypes || allowedReferenceTypes.includes('rides'))) form.setValue('reference_type', 'rides');
+		else if (enabledTypes.includes('agency') && (allowAllReferenceTypes || allowedReferenceTypes.includes('agency'))) form.setValue('reference_type', 'agency');
+		else Logger.info('No enabled reference types available to set as default.');
+		Logger.info('Updated reference_type options based on cause/effect change and user permissions.');
+	}, [causeValue, effectValue, form, meContext.data.user.permissions]);
 
-	// When reference_type is 'agency' or agency_id changes while reference_type is 'agency',
-	// sync references to the selected agency.
 	useEffect(() => {
-		const sub = form.watch((values, { name }) => {
-			if (name !== 'reference_type' && name !== 'agency_id') return;
-			if (values.reference_type !== 'agency' || !values.agency_id) return;
-			form.setValue('references', [{ child_ids: [], parent_id: values.agency_id }]);
-		});
-		return () => sub.unsubscribe();
-	}, [form]);
+		// Skip if reference_type is not 'agency' or agency_id is not set
+		if (referenceTypeValue !== 'agency' || !agencyIdValue) return;
+		// When reference_type is 'agency' or agency_id changes to non-empty,
+		// set references to the selected agency.
+		form.setValue('references', [{ child_ids: [], parent_id: form.getValues('agency_id') }]);
+		Logger.info('Set references to selected agency based on reference_type "agency" selection.');
+	}, [form, referenceTypeValue, agencyIdValue]);
 
-	// Restore default end dates when active_period_end_date is cleared.
 	useEffect(() => {
-		const sub = form.watch((values, { name }) => {
-			if (name !== 'active_period_end_date' || values.active_period_end_date != null) return;
-			form.setValue('active_period_end_date', Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp);
-			form.setValue('publish_end_date', Dates.now('Europe/Lisbon').endOf('day').unix_timestamp);
-		});
-		return () => sub.unsubscribe();
-	}, [form]);
+		// Skip if active_period_end_date is already set
+		if (activePeriodEndDateValue != null) return;
+		// Restore default end dates when active_period_end_date is cleared.
+		form.setValue('active_period_end_date', Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp);
+		form.setValue('publish_end_date', Dates.now('Europe/Lisbon').endOf('day').unix_timestamp);
+		Logger.info('Restored default end dates because active_period_end_date was cleared.');
+	}, [form, activePeriodEndDateValue]);
 
 	//
 	// E. Multi-step setup
@@ -205,6 +233,8 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_LIST, 'POST', form.getValues()),
 		onSuccess: (updatedItem) => {
+			form.reset();
+			unblock();
 			alertsListMutate();
 			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_DETAIL(updatedItem._id)));
 		},
@@ -219,20 +249,17 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		actions: {
 			create: handleCreate,
 		},
-		data: {
-
-		},
 		flags: {
 			canCreate: true,
 			error: undefined,
 			isCreating,
-			isLoading: false,
+			isLoading: agenciesLoading || operationalLinesLoading || operationalStopsLoading || ridesLoading,
 		},
 		form: {
 			instance: form,
 			multi_step: multiStep,
 		},
-	}), [form, handleCreate, isCreating, multiStep]);
+	}), [agenciesLoading, form, handleCreate, isCreating, multiStep, operationalLinesLoading, operationalStopsLoading, ridesLoading]);
 
 	//
 	// H. Return state
