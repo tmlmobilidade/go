@@ -3,11 +3,11 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { describeAlert, DescribeAlertProps, DescribeAlertReturnType } from '@tmlmobilidade/go-alerts-pckg-describe';
+import { describeAlert, type DescribeAlertProps, type DescribeAlertReturnType } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { alerts, files } from '@tmlmobilidade/interfaces';
 import { type RssRawImageInput } from '@tmlmobilidade/rss';
 import { createRssFeed } from '@tmlmobilidade/rss';
-import { type Alert, CreateAlertDto, CreateAlertSchema, type File, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { type Alert, type CreateAlertDto, CreateAlertSchema, type File, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
 
 /* * */
 
