@@ -8,8 +8,8 @@ import { z } from 'zod';
 export const HashedTripWaypointSchema = z.object({
 	arrival_time: z.string(),
 	departure_time: z.string(),
-	drop_off_type: z.enum(['0', '1', '2', '3']),
-	pickup_type: z.enum(['0', '1', '2', '3']),
+	drop_off_type: z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)]),
+	pickup_type: z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)]),
 	shape_dist_traveled: z.number(),
 	stop_id: z.string(),
 	stop_lat: z.number(),

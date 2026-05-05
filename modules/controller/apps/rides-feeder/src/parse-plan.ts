@@ -7,7 +7,7 @@ import { files, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/i
 import { Logger } from '@tmlmobilidade/logger';
 import { SQLiteWriter } from '@tmlmobilidade/sqlite';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Shape, type GTFS_Shape_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Plan, type Ride, type UnixTimestamp, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
+import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Shape, type GTFS_Shape_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Plan, type Ride, type UnixTimestamp, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsPickupDropoffType, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@tmlmobilidade/writers';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
@@ -171,8 +171,7 @@ export async function parsePlan(planData: Plan) {
 		fs.rmSync(workdirPath, { force: true, recursive: true });
 		fs.mkdirSync(workdirPath, { recursive: true });
 		Logger.success('Prepared working directory.', 1);
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error(`Error preparing workdir path "${workdirPath}".`, error);
 		process.exit(1);
 	}
@@ -191,7 +190,7 @@ export async function parsePlan(planData: Plan) {
 	// and try to download, save and unzip it.
 
 	const operationFileData = await files.findById(planData.operation_file_id);
-	if (!operationFileData || !operationFileData.url) {
+	if (!operationFileData?.url) {
 		Logger.error(`No operation file found for plan "${planData._id}".`);
 		process.exit(1);
 	}
@@ -200,8 +199,7 @@ export async function parsePlan(planData: Plan) {
 		const downloadResponse = await fetch(operationFileData.url);
 		const downloadArrayBuffer = await downloadResponse.arrayBuffer();
 		fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error downloading the file.', error);
 		process.exit(1);
 	}
@@ -209,8 +207,7 @@ export async function parsePlan(planData: Plan) {
 	try {
 		await unzipFile(downloadFilePath, extractDirPath);
 		Logger.success(`Unzipped GTFS file from "${downloadFilePath}" to "${extractDirPath}".`, 1);
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error unzipping the file.', error);
 		process.exit(1);
 	}
@@ -296,14 +293,12 @@ export async function parsePlan(planData: Plan) {
 		if (fs.existsSync(`${extractDirPath}/calendar.txt`)) {
 			await parseCsvFile(`${extractDirPath}/calendar.txt`, parseEachRow);
 			Logger.success(`Finished processing "calendar.txt": ${savedCalendarDates.size} rows saved in ${calendarParseTimer.get()}.`, 1);
-		}
-		else {
+		} else {
 			Logger.info(`Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...`, 1);
 		}
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "calendar.txt" file.', error);
 		throw new Error('✖︎ Error processing "calendar.txt" file.');
 	}
@@ -350,15 +345,13 @@ export async function parsePlan(planData: Plan) {
 				if (validatedData.exception_type === 1) {
 					updatedCalendar.add(validatedData.date);
 					calendarDatesCounter++;
-				}
-				else if (validatedData.exception_type === 2) {
+				} else if (validatedData.exception_type === 2) {
 					updatedCalendar.delete(validatedData.date);
 					calendarDatesCounter--;
 				}
 				// Update the service_id with the new dates
 				savedCalendarDates.set(validatedData.service_id, Array.from(updatedCalendar));
-			}
-			else {
+			} else {
 				// If this is the first time we're seeing this service_id, then it is only necessary
 				// to initiate a new dates array if it is a service addition
 				if (validatedData.exception_type === 1) {
@@ -376,14 +369,12 @@ export async function parsePlan(planData: Plan) {
 		if (fs.existsSync(`${extractDirPath}/calendar_dates.txt`)) {
 			await parseCsvFile(`${extractDirPath}/calendar_dates.txt`, parseEachRow);
 			Logger.success(`Finished processing "calendar_dates.txt": ${savedCalendarDates.size} rows saved in ${calendarDatesParseTimer.get()}.`, 1);
-		}
-		else {
+		} else {
 			Logger.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`, 1);
 		}
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "calendar_dates.txt" file.', error);
 		throw new Error('✖︎ Error processing "calendar_dates.txt" file.');
 	}
@@ -430,8 +421,7 @@ export async function parsePlan(planData: Plan) {
 		Logger.success(`Finished processing "trips.txt": ${savedTrips.size} rows saved in ${tripsParseTimer.get()}.`, 1);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "trips.txt" file.', error);
 		throw new Error('✖︎ Error processing "trips.txt" file.');
 	}
@@ -470,8 +460,7 @@ export async function parsePlan(planData: Plan) {
 		Logger.success(`Finished processing "routes.txt": ${savedRoutes.size} rows saved in ${routesParseTimer.get()}.`, 1);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "routes.txt" file.', error);
 		throw new Error('✖︎ Error processing "routes.txt" file.');
 	}
@@ -515,8 +504,7 @@ export async function parsePlan(planData: Plan) {
 		Logger.success(`Finished processing "shapes.txt": ${savedShapes.size} rows saved in ${shapesParseTimer.get()}.`, 1);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "shapes.txt" file.', error);
 		throw new Error('✖︎ Error processing "shapes.txt" file.');
 	}
@@ -553,8 +541,7 @@ export async function parsePlan(planData: Plan) {
 		Logger.success(`Finished processing "stops.txt": ${savedStops.size} rows saved in ${stopsParseTimer.get()}.`, 1);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "stops.txt" file.', error);
 		throw new Error('✖︎ Error processing "stops.txt" file.');
 	}
@@ -602,8 +589,7 @@ export async function parsePlan(planData: Plan) {
 		Logger.success(`Finished processing "stop_times.txt": ${stopTimesCounter} rows saved in ${stopTimesParseTimer.get()}.`, 1);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "stop_times.txt" file.', error);
 		throw new Error('✖︎ Error processing "stop_times.txt" file.');
 	}
@@ -697,8 +683,8 @@ export async function parsePlan(planData: Plan) {
 				return {
 					arrival_time: stopTime.arrival_time,
 					departure_time: stopTime.departure_time,
-					drop_off_type: stopTime.drop_off_type,
-					pickup_type: stopTime.pickup_type,
+					drop_off_type: validateGtfsPickupDropoffType(stopTime.drop_off_type),
+					pickup_type: validateGtfsPickupDropoffType(stopTime.pickup_type),
 					shape_dist_traveled: normalizedShapeDistTraveled,
 					stop_id: stopTime.stop_id,
 					stop_lat: stopData.stop_lat,
@@ -822,7 +808,7 @@ export async function parsePlan(planData: Plan) {
 			// as well as other properties derived from the previously saved entities.
 			// Start by validating that this trip has a valid path.
 
-			if (!finalHashedTrip || !finalHashedTrip.path || finalHashedTrip.path.length === 0) {
+			if (!finalHashedTrip?.path || finalHashedTrip.path.length === 0) {
 				Logger.error(`Trip ${currentTrip.trip_id} has no path data. Skipping...`);
 				continue;
 			}
@@ -950,8 +936,7 @@ export async function parsePlan(planData: Plan) {
 		Logger.info(`Saved ${savedRideIds.size} Rides, ${hashedTripsCounter} Trips, ${hashedShapesCounter} Shapes in ${outputsTimer.get()}.`);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error transforming or saving Shapes, Trips or Rides to database.', error);
 		throw new Error('✖︎ Error transforming or saving Shapes, Trips or Rides to database.');
 	}
@@ -1016,8 +1001,7 @@ const setDirectoryPermissions = (dirPath, mode = 0o666) => {
 		const filePath = `${dirPath}/${file.name}`;
 		if (file.isDirectory()) {
 			setDirectoryPermissions(filePath, mode);
-		}
-		else {
+		} else {
 			fs.chmodSync(filePath, mode);
 		}
 	}
