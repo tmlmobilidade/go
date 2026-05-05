@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"@mantine/hooks": "9.1.1",
-		"@tabler/icons-react": "3.41.1",
+		"@tabler/icons-react": "3.42.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
