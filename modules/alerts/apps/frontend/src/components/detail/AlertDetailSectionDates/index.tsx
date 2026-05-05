@@ -20,7 +20,7 @@ export function AlertDetailSectionDates() {
 	//
 	// B. Transform data
 
-	const hasPermissionToEdit = meContext.actions.hasPermissionResource([
+	const hasPermissionToUpdateDates = meContext.actions.hasPermissionResource([
 		{
 			action: PermissionCatalog.all.alerts.actions.update_dates,
 			resource_key: 'agency_ids',
@@ -56,7 +56,7 @@ export function AlertDetailSectionDates() {
 								error={fieldState.error?.message}
 								label="Data de Início"
 								onChange={field.onChange}
-								readOnly={!hasPermissionToEdit}
+								readOnly={!hasPermissionToUpdateDates}
 								value={field.value}
 							/>
 						)}
@@ -69,7 +69,7 @@ export function AlertDetailSectionDates() {
 								error={fieldState.error?.message}
 								label="Data de Fim"
 								onChange={field.onChange}
-								readOnly={!hasPermissionToEdit}
+								readOnly={!hasPermissionToUpdateDates}
 								value={field.value}
 								clearable
 							/>
@@ -92,7 +92,7 @@ export function AlertDetailSectionDates() {
 								error={fieldState.error?.message}
 								label="Data de Início"
 								onChange={field.onChange}
-								readOnly={!hasPermissionToEdit}
+								readOnly={!hasPermissionToUpdateDates}
 								value={field.value}
 								clearable
 							/>
@@ -106,7 +106,7 @@ export function AlertDetailSectionDates() {
 								error={fieldState.error?.message}
 								label="Data de Fim"
 								onChange={field.onChange}
-								readOnly={!hasPermissionToEdit}
+								readOnly={!hasPermissionToUpdateDates}
 								value={field.value}
 								clearable
 							/>

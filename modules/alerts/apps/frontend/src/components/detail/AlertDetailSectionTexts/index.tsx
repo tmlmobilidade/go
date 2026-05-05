@@ -116,22 +116,20 @@ export function AlertDetailSectionTexts() {
 
 					<Section gap="md">
 
-						{(hasPermissionToUpdate || hasPermissionToUpdateTexts) && (
-							<ContextFormController
-								control={alertDetailContext.form.instance.control}
-								name="auto_texts"
-								render={({ field }) => (
-									<Switch
-										checked={field.value ?? false}
-										disabled={!hasPermissionToUpdateTexts && !hasPermissionToUpdate}
-										label={t('default:alerts.create.summary.auto_texts.label')}
-										onChange={e => field.onChange(e.currentTarget.checked)}
-									/>
-								)}
-							/>
-						)}
+						<ContextFormController
+							control={alertDetailContext.form.instance.control}
+							name="auto_texts"
+							render={({ field }) => (
+								<Switch
+									checked={field.value ?? false}
+									disabled={!hasPermissionToUpdateTexts && !hasPermissionToUpdate}
+									label={t('default:alerts.create.summary.auto_texts.label')}
+									onChange={e => field.onChange(e.currentTarget.checked)}
+								/>
+							)}
+						/>
 
-						{(autoTextsValue) && (
+						{autoTextsValue && (
 							<>
 								<ContextFormController
 									control={alertDetailContext.form.instance.control}
@@ -143,17 +141,19 @@ export function AlertDetailSectionTexts() {
 											onBlur={field.onBlur}
 											onChange={e => field.onChange(e.currentTarget.value)}
 											placeholder={t('default:alerts.create.summary.user_instructions.placeholder')}
-											readOnly={isLoadingGeneratingText}
+											readOnly={!hasPermissionToUpdateTexts && !hasPermissionToUpdate}
 											value={field.value ?? ''}
 											w="100%"
 										/>
 									)}
 								/>
-								<Button
-									label={t('default:alerts.create.summary.generate_text.label')}
-									loading={isLoadingGeneratingText}
-									onClick={generateText}
-								/>
+								{(hasPermissionToUpdateTexts || hasPermissionToUpdate) && (
+									<Button
+										label={t('default:alerts.create.summary.generate_text.label')}
+										loading={isLoadingGeneratingText}
+										onClick={generateText}
+									/>
+								)}
 							</>
 						)}
 
@@ -219,6 +219,7 @@ export function AlertDetailSectionTexts() {
 								onBlur={field.onBlur}
 								onChange={e => field.onChange(e.currentTarget.value)}
 								placeholder="https://www.cm-setubal.com/..."
+								readOnly={!hasPermissionToUpdateTexts}
 								value={field.value ?? ''}
 							/>
 						)}
