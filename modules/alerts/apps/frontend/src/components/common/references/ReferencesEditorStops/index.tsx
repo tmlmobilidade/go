@@ -57,12 +57,14 @@ export function ReferencesEditorStops() {
 				/>
 			))}
 
-			<Button
-				icon={<IconPlus />}
-				label="Adicionar Paragem"
-				onClick={referencesEditorContext.actions.addReference}
-				variant="secondary"
-			/>
+			{!referencesEditorContext.flags.isReadonly && (
+				<Button
+					icon={<IconPlus />}
+					label="Adicionar Paragem"
+					onClick={referencesEditorContext.actions.addReference}
+					variant="secondary"
+				/>
+			)}
 
 		</Section>
 	);

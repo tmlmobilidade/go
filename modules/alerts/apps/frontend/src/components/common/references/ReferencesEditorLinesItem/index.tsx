@@ -93,6 +93,7 @@ export function ReferencesEditorLinesItem({ index, onRemoveReference, onUpdateRe
 						label="Linha Afetada"
 						onChange={value => onUpdateReference(index, 'parent_id', value)}
 						onClear={() => onUpdateReference(index, 'child_ids', [])}
+						readOnly={referencesEditorContext.flags.isReadonly}
 						value={reference.parent_id}
 					/>
 					<Section flexDirection="row" gap="sm" padding="none">
@@ -104,6 +105,7 @@ export function ReferencesEditorLinesItem({ index, onRemoveReference, onUpdateRe
 							label="Paragens Afetadas"
 							limit={200}
 							onChange={value => onUpdateReference(index, 'child_ids', value)}
+							readOnly={referencesEditorContext.flags.isReadonly}
 							value={reference.child_ids}
 							w="100%"
 						/>
@@ -111,12 +113,14 @@ export function ReferencesEditorLinesItem({ index, onRemoveReference, onUpdateRe
 				</Grid>
 
 				<Section alignItems="flex-end" padding="none">
-					<Button
-						icon={<IconMinus />}
-						label="Remover Linha"
-						onClick={() => onRemoveReference(index)}
-						variant="danger"
-					/>
+					{!referencesEditorContext.flags.isReadonly && (
+						<Button
+							icon={<IconMinus />}
+							label="Remover Linha"
+							onClick={() => onRemoveReference(index)}
+							variant="danger"
+						/>
+					)}
 				</Section>
 
 			</Section>

@@ -57,12 +57,14 @@ export function ReferencesEditorLines() {
 				/>
 			))}
 
-			<Button
-				icon={<IconPlus />}
-				label="Adicionar Linha"
-				onClick={referencesEditorContext.actions.addReference}
-				variant="secondary"
-			/>
+			{!referencesEditorContext.flags.isReadonly && (
+				<Button
+					icon={<IconPlus />}
+					label="Adicionar Linha"
+					onClick={referencesEditorContext.actions.addReference}
+					variant="secondary"
+				/>
+			)}
 
 		</Section>
 	);

@@ -6,7 +6,7 @@ import { ReferencesEditor } from '@/components/common/references/ReferencesEdito
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, PermissionCatalog } from '@tmlmobilidade/types';
-import { Collapsible, ContextFormController, Label, openConfirmModal, Section, Select, useContextFormWatch, useDataAgencies } from '@tmlmobilidade/ui';
+import { Collapsible, ContextFormController, Label, openConfirmModal, Section, Select, useContextFormWatch, useDataAgencies, useMeContext } from '@tmlmobilidade/ui';
 import { useCallback } from 'react';
 
 /* * */
@@ -17,6 +17,7 @@ export function AlertDetailSectionReferences() {
 	//
 	// A. Setup variables
 
+	const meContext = useMeContext();
 	const alertDetailContext = useAlertDetailContext();
 
 	const { options: agenciesOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
@@ -30,6 +31,21 @@ export function AlertDetailSectionReferences() {
 	const activePeriodEndDateValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'active_period_end_date' });
 	const referenceTypeValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'reference_type' });
 	const referencesValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'references' });
+
+	const hasPermissionToEdit = meContext.actions.hasPermissionResource([
+		{
+			action: PermissionCatalog.all.alerts.actions.update,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.alerts.scope,
+			value: alertDetailContext.data.alert.agency_id,
+		},
+		{
+			action: PermissionCatalog.all.alerts.actions.update,
+			resource_key: 'reference_types',
+			scope: PermissionCatalog.all.alerts.scope,
+			value: alertDetailContext.data.alert.reference_type,
+		},
+	]);
 
 	//
 	// B. Handle actions
@@ -99,6 +115,7 @@ export function AlertDetailSectionReferences() {
 				enabledReferenceTypes={['agency', 'lines', 'rides', 'stops']}
 				onChangeReferences={handleChangeReferences}
 				onChangeReferenceType={handleChangeReferenceType}
+				readonly={!hasPermissionToEdit}
 				selectedAgencyId={agencyIdValue}
 				selectedMunicipalityIds={municipalityIdsValue}
 				selectedReferences={referencesValue}

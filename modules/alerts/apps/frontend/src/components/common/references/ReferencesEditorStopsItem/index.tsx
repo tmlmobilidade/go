@@ -85,6 +85,7 @@ export function ReferencesEditorStopsItem({ index, onRemoveReference, onUpdateRe
 						limit={25}
 						onChange={value => onUpdateReference(index, 'parent_id', value)}
 						onClear={() => onUpdateReference(index, 'child_ids', [])}
+						readOnly={referencesEditorContext.flags.isReadonly}
 						value={reference.parent_id}
 					/>
 					<Section flexDirection="row" gap="sm" padding="none">
@@ -95,18 +96,21 @@ export function ReferencesEditorStopsItem({ index, onRemoveReference, onUpdateRe
 							disabled={!reference.parent_id}
 							label="Linhas Afetadas"
 							onChange={value => onUpdateReference(index, 'child_ids', value)}
+							readOnly={referencesEditorContext.flags.isReadonly}
 							value={reference.child_ids}
 							w="100%"
 						/>
 					</Section>
 				</Grid>
 				<Section alignItems="flex-end" padding="none">
-					<Button
-						icon={<IconMinus />}
-						label="Remover Paragem"
-						onClick={() => onRemoveReference(index)}
-						variant="danger"
-					/>
+					{!referencesEditorContext.flags.isReadonly && (
+						<Button
+							icon={<IconMinus />}
+							label="Remover Paragem"
+							onClick={() => onRemoveReference(index)}
+							variant="danger"
+						/>
+					)}
 				</Section>
 			</Section>
 		</Surface>
