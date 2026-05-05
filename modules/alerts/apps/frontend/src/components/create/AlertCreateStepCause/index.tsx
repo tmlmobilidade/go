@@ -30,7 +30,7 @@ export function AlertCreateStepCause() {
 	// C. Handle actions
 
 	const handleSelectCause = (value: keyof typeof alertCauseEffectReferenceTypeMap) => {
-		alertCreateContext.form.instance.setValue('cause', value);
+		alertCreateContext.form.instance.setValue('cause', value, { shouldDirty: true });
 		alertCreateContext.form.multi_step.actions.next();
 	};
 

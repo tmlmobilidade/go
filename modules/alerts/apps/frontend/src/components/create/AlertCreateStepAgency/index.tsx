@@ -36,13 +36,13 @@ export function AlertCreateStepAgency() {
 				labels: { cancel: 'Cancelar', confirm: 'Continuar' },
 				onConfirm: () => {
 					fieldOnChange(value);
-					alertCreateContext.form.instance.setValue('references', []);
+					alertCreateContext.form.instance.setValue('references', [], { shouldDirty: true });
 				},
 				title: 'Tem a certeza que pretende mudar de operador?',
 			});
 		} else {
 			fieldOnChange(value);
-			alertCreateContext.form.instance.setValue('references', []);
+			alertCreateContext.form.instance.setValue('references', [], { shouldDirty: true });
 		}
 	};
 

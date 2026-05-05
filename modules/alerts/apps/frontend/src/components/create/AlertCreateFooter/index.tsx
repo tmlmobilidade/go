@@ -31,7 +31,7 @@ export function AlertCreateFooter() {
 				value={alertCreateContext.form.instance.getValues('agency_id')}
 			>
 				<PublishStatusTag
-					onChange={value => alertCreateContext.form.instance.setValue('publish_status', value)}
+					onChange={value => alertCreateContext.form.instance.setValue('publish_status', value, { shouldDirty: true })}
 					value={publishStatusValue}
 				/>
 			</HasPermission>

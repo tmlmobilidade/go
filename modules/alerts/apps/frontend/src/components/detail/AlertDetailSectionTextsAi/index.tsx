@@ -94,8 +94,8 @@ export function AlertDetailSectionTextsAi() {
 			console.error('Error generating alert description', { error });
 		},
 		onSuccess: (data) => {
-			alertDetailContext.form.instance.setValue('description', data.pt.description);
-			alertDetailContext.form.instance.setValue('title', data.pt.title);
+			alertDetailContext.form.instance.setValue('description', data.pt.description, { shouldDirty: true });
+			alertDetailContext.form.instance.setValue('title', data.pt.title, { shouldDirty: true });
 		},
 	});
 

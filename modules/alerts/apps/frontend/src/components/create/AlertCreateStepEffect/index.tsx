@@ -31,7 +31,7 @@ export function AlertCreateStepEffect() {
 	// C. Handle actions
 
 	const handleSelectEffect = (value: AlertEffect) => {
-		alertCreateContext.form.instance.setValue('effect', value);
+		alertCreateContext.form.instance.setValue('effect', value, { shouldDirty: true });
 		alertCreateContext.form.multi_step.actions.next();
 	};
 

@@ -96,8 +96,8 @@ export function AlertCreateStepSummaryAi() {
 			console.error('Error generating alert description', { error });
 		},
 		onSuccess: (data) => {
-			alertCreateContext.form.instance.setValue('description', data.pt.description);
-			alertCreateContext.form.instance.setValue('title', data.pt.title);
+			alertCreateContext.form.instance.setValue('description', data.pt.description, { shouldDirty: true });
+			alertCreateContext.form.instance.setValue('title', data.pt.title, { shouldDirty: true });
 		},
 	});
 

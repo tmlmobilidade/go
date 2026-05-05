@@ -46,11 +46,11 @@ export function AlertCreateStepReferences() {
 	// C. Handle actions
 
 	const handleChangeReferenceType = (value: Alert['reference_type']) => {
-		alertCreateContext.form.instance.setValue('reference_type', value);
+		alertCreateContext.form.instance.setValue('reference_type', value, { shouldDirty: true });
 	};
 
 	const handleChangeReferences = (value: Alert['references']) => {
-		alertCreateContext.form.instance.setValue('references', value);
+		alertCreateContext.form.instance.setValue('references', value, { shouldDirty: true });
 	};
 
 	//
