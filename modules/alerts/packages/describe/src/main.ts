@@ -1,6 +1,10 @@
 /* * */
 
-import { causePrompts, effectPrompts, initPrompts, referenceTypePrompts, titlePrompts, unsafePromptIdentifier, userPrompts } from '@/prompts.js';
+import { causePrompt } from '@/prompts/cause.js';
+import { effectPrompt } from '@/prompts/effect.js';
+import { initDescriptionPrompt, initTitlePrompt } from '@/prompts/init.js';
+import { referenceTypePrompt } from '@/prompts/reference-type.js';
+import { userInstructionDelimitersPrompt, userInstructionPrompt } from '@/prompts/user-instructions.js';
 import { PromptBuilder } from '@/utils.js';
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/ai';
 import { getOperationalLinesBatch, getOperationalStopsBatch } from '@tmlmobilidade/controllers';
@@ -176,12 +180,12 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 		//
 		// Get prompt parts for the current language
 
-		titlePrompt.add('intro', titlePrompts[i18nCode]);
+		titlePrompt.add('intro', initTitlePrompt[i18nCode]);
 
-		descriptionPrompt.add('intro', initPrompts[i18nCode]);
-		descriptionPrompt.add('intro', referenceTypePrompts[props.reference_type][i18nCode]);
-		descriptionPrompt.add('intro', causePrompts[props.cause][i18nCode]);
-		descriptionPrompt.add('intro', effectPrompts[props.effect][i18nCode]);
+		descriptionPrompt.add('intro', initDescriptionPrompt[i18nCode]);
+		descriptionPrompt.add('intro', referenceTypePrompt[props.reference_type][i18nCode]);
+		descriptionPrompt.add('intro', causePrompt[props.cause][i18nCode]);
+		descriptionPrompt.add('intro', effectPrompt[props.effect][i18nCode]);
 
 		//
 		// Add the user prompt if the user supplied any extra instructions
@@ -195,9 +199,9 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 				.replace(/!{2,}/g, m => m.split('').join('\\!'))
 				.replace(/#{2,}/g, m => m.split('').join('\\#'))
 				.replace(/`{3,}/g, m => m.split('').join('\\`'))
-				.replaceAll(unsafePromptIdentifier.start, '')
-				.replaceAll(unsafePromptIdentifier.end, '');
-			const userInstructionsPrompt = userPrompts[i18nCode].replaceAll('{{USER_INSTRUCTIONS}}', sanitizedUserInstructions);
+				.replaceAll(userInstructionDelimitersPrompt.start, '')
+				.replaceAll(userInstructionDelimitersPrompt.end, '');
+			const userInstructionsPrompt = userInstructionPrompt[i18nCode].replaceAll('{{USER_INSTRUCTIONS}}', sanitizedUserInstructions);
 			descriptionPrompt.add('body', userInstructionsPrompt);
 		}
 
