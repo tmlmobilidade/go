@@ -2,8 +2,10 @@
 
 /* * */
 
-import { IconDeviceFloppy, IconRoute } from '@tabler/icons-react';
-import { Button, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { IconArrowBackUp, IconArrowForwardUp, IconDeviceFloppy, IconRoute } from '@tabler/icons-react';
+import { Button, IconButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
+
+import styles from './styles.module.css';
 
 import { useStopsEditorContext } from '../ShapeEditor.context';
 
@@ -24,35 +26,45 @@ export function ShapeEditorFooter() {
 	// C. Render components
 
 	return (
-		<Toolbar>
+		<div className={styles.container}>
+			<Toolbar>
+				<Button
+					icon={<IconRoute />}
+					label="Recalcular percurso"
+					onClick={() => void stopsEditorContext.actions.convertShapeToEditable()}
+				/>
 
-			{/* <Button
-				disabled={!stopsEditorContext.data.hasUnsavedChanges}
-				icon={<IconArrowBackUp />}
-				label="Reverter"
-				onClick={() => stopsEditorContext.actions.revertPath()}
-				variant="secondary"
-			/> */}
+				<IconButton
+					disabled={!stopsEditorContext.flags.canUndo}
+					icon={<IconArrowBackUp size={18} />}
+					onClick={() => stopsEditorContext.actions.undo()}
+					tooltip="Desfazer"
+					variant="primary"
+				/>
 
-			<Button
-				icon={<IconRoute />}
-				label="Recalcular percurso"
-				onClick={() => void stopsEditorContext.actions.convertShapeToEditable()}
-			/>
+				<IconButton
+					disabled={!stopsEditorContext.flags.canRedo}
+					icon={<IconArrowForwardUp size={18} />}
+					onClick={() => stopsEditorContext.actions.redo()}
+					tooltip="Refazer"
+					variant="primary"
+				/>
 
-			<Spacer />
+				<Spacer />
 
-			<Button
-				label="Cancelar"
-				onClick={() => stopsEditorContext.actions.cancel()}
-				variant="danger"
-			/>
-			<Button
-				icon={<IconDeviceFloppy />}
-				label="Guardar"
-				onClick={() => stopsEditorContext.actions.submit()}
-			/>
-		</Toolbar>
+				<Button
+					label="Cancelar"
+					onClick={() => stopsEditorContext.actions.cancel()}
+					variant="danger"
+				/>
+
+				<Button
+					icon={<IconDeviceFloppy />}
+					label="Guardar"
+					onClick={() => stopsEditorContext.actions.submit()}
+				/>
+			</Toolbar>
+		</div>
 	);
 
 	//

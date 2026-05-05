@@ -8,7 +8,7 @@ import { generateRandomString } from '@tmlmobilidade/strings';
 import { Path, PopulatedPath, Shape, Stop } from '@tmlmobilidade/types';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useRef, useState } from 'react';
 
 /* * */
 
@@ -53,6 +53,11 @@ interface RoutePreviewResponse {
 	legs: RoutePreviewLeg[]
 }
 
+interface HistoryEntry {
+	path: PopulatedPath[]
+	shape: Shape | undefined
+}
+
 interface StopsEditorContextState {
 	actions: {
 		addShapeAnchor: (anchor: Omit<ShapeAnchor, '_id' | 'sequence'>) => Promise<void>
@@ -63,11 +68,13 @@ interface StopsEditorContextState {
 		moveShapeAnchor: (anchorId: string, lat: number, lon: number) => Promise<void>
 		prependStop: (stop: Stop) => Promise<void>
 		recomputeRoute: (path: Path[], anchors?: ShapeAnchor[]) => Promise<void>
+		redo: () => void
 		removeShapeAnchor: (anchorId: string) => Promise<void>
 		removeStop: (index: number) => Promise<void>
 		reorderStops: (path: Path[]) => Promise<void>
 		revertPath: () => void
 		submit: () => void
+		undo: () => void
 	}
 	data: {
 		anchors: ShapeAnchor[]
@@ -77,6 +84,8 @@ interface StopsEditorContextState {
 		shape: Shape | undefined
 	}
 	flags: {
+		canRedo: boolean
+		canUndo: boolean
 		isEditableShape: boolean
 		isLoadingRoute: boolean
 	}
@@ -186,6 +195,29 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 	const [localPath, setLocalPath] = useState<PopulatedPath[]>(initialPath);
 	const [localShape, setLocalShape] = useState<Shape | undefined>(initialShape);
 
+	// Keep a ref so recomputeRoute can read the latest shape without stale closures
+	const localShapeRef = useRef<Shape | undefined>(initialShape);
+	localShapeRef.current = localShape;
+
+	// History stack — stored in refs to avoid re-renders on push; a small state
+	// object is used only to make canUndo / canRedo reactive.
+	const historyRef = useRef<HistoryEntry[]>([{ path: initialPath, shape: initialShape }]);
+	const historyIndexRef = useRef(0);
+	const [historyMeta, setHistoryMeta] = useState({ index: 0, length: 1 });
+
+	const canUndo = historyMeta.index > 0;
+	const canRedo = historyMeta.index < historyMeta.length - 1;
+
+	const pushToHistory = useCallback((newPath: PopulatedPath[], newShape: Shape | undefined) => {
+		const newStack = historyRef.current.slice(0, historyIndexRef.current + 1);
+		newStack.push({ path: newPath, shape: newShape });
+		historyRef.current = newStack;
+		historyIndexRef.current = newStack.length - 1;
+		setLocalPath(newPath);
+		setLocalShape(newShape);
+		setHistoryMeta({ index: historyIndexRef.current, length: newStack.length });
+	}, []);
+
 	const path = localPath;
 
 	const anchors = useMemo(() => localShape?.anchors ?? [], [localShape]);
@@ -221,15 +253,15 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 
 			const updatedPath = applyRouteToPath(nextPath, res.data, points);
 
-			setLocalPath(updatedPath);
-			setLocalShape(prev => ({
-				...(prev ?? {}),
+			const updatedShape: Shape = {
+				...(localShapeRef.current ?? {}),
 				anchors: nextAnchors,
 				extension: Math.round(res.data.distance),
 				geojson: res.data.geojson,
 				legs: res.data.legs,
-			}));
+			};
 
+			pushToHistory(updatedPath, updatedShape);
 			setRouteData(res.data);
 		} catch (error) {
 			useToast.error({
@@ -239,7 +271,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 		} finally {
 			setIsLoadingRoute(false);
 		}
-	}, [anchors]);
+	}, [anchors, pushToHistory]);
 
 	const convertShapeToEditable = useCallback(async () => {
 		await recomputeRoute(path, []);
@@ -311,11 +343,30 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 		await recomputeRoute(path, nextAnchors);
 	}, [anchors, path, recomputeRoute]);
 
-	const revertPath = useCallback(() => {
-		setLocalPath(initialPath);
-		setLocalShape(initialShape);
+	const undo = useCallback(() => {
+		if (historyIndexRef.current <= 0) return;
+		historyIndexRef.current--;
+		const entry = historyRef.current[historyIndexRef.current];
+		setLocalPath(entry.path);
+		setLocalShape(entry.shape);
 		setRouteData(null);
-	}, [initialPath, initialShape]);
+		setHistoryMeta({ index: historyIndexRef.current, length: historyRef.current.length });
+	}, []);
+
+	const redo = useCallback(() => {
+		if (historyIndexRef.current >= historyRef.current.length - 1) return;
+		historyIndexRef.current++;
+		const entry = historyRef.current[historyIndexRef.current];
+		setLocalPath(entry.path);
+		setLocalShape(entry.shape);
+		setRouteData(null);
+		setHistoryMeta({ index: historyIndexRef.current, length: historyRef.current.length });
+	}, []);
+
+	const revertPath = useCallback(() => {
+		pushToHistory(initialPath, initialShape);
+		setRouteData(null);
+	}, [initialPath, initialShape, pushToHistory]);
 
 	const submit = useCallback(() => {
 		patternDetailContext.data.form.setFieldValue('path', localPath);
@@ -337,11 +388,13 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 			moveShapeAnchor,
 			prependStop,
 			recomputeRoute,
+			redo,
 			removeShapeAnchor,
 			removeStop,
 			reorderStops,
 			revertPath,
 			submit,
+			undo,
 		},
 		data: {
 			anchors,
@@ -351,10 +404,12 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 			shape: localShape,
 		},
 		flags: {
+			canRedo,
+			canUndo,
 			isEditableShape,
 			isLoadingRoute,
 		},
-	}), [addShapeAnchor, addStop, appendStop, cancel, convertShapeToEditable, moveShapeAnchor, prependStop, recomputeRoute, removeShapeAnchor, removeStop, reorderStops, revertPath, submit, anchors, hasUnsavedChanges, path, routeData, localShape, isEditableShape, isLoadingRoute]);
+	}), [addShapeAnchor, addStop, appendStop, cancel, convertShapeToEditable, moveShapeAnchor, prependStop, recomputeRoute, redo, removeShapeAnchor, removeStop, reorderStops, revertPath, submit, undo, anchors, canRedo, canUndo, hasUnsavedChanges, path, routeData, localShape, isEditableShape, isLoadingRoute]);
 
 	return (
 		<StopsEditorContext.Provider value={contextValue}>
