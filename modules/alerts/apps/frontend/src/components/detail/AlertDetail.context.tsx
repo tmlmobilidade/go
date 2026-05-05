@@ -4,7 +4,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type File as FileType, PermissionCatalog, type UpdateAlertDto } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, keepUrlParams, useContextForm, useDataAgencies, useDataOperationalLines, useDataOperationalStops, useDataRides, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
+import { type DetailContextStateTemplate, keepUrlParams, useContextForm, useContextFormWatch, useDataAgencies, useDataOperationalLines, useDataOperationalStops, useDataRides, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
@@ -64,14 +64,14 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	//
 	// C. Setup form
 
-	const form = useContextForm<UpdateAlertDto>({
+	const { form } = useContextForm<UpdateAlertDto>({
 		apiData: alertData,
 		// schema: UpdateAlertSchema,
 	});
 
-	const agencyIdValue = form.watch('agency_id');
-	const activePeriodStartDateValue = form.watch('active_period_start_date');
-	const activePeriodEndDateValue = form.watch('active_period_end_date');
+	const agencyIdValue = useContextFormWatch({ control: form.control, name: 'agency_id' });
+	const activePeriodStartDateValue = useContextFormWatch({ control: form.control, name: 'active_period_start_date' });
+	const activePeriodEndDateValue = useContextFormWatch({ control: form.control, name: 'active_period_end_date' });
 
 	//
 	// C. Transform data
@@ -97,7 +97,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		},
 	});
 
-	const { isLoading: ridesLoading } = useDataRides(API_ROUTES.alerts.RIDES_LIST, {
+	useDataRides(API_ROUTES.alerts.RIDES_LIST, {
 		filters: {
 			agency_ids: agencyIdValue ? [agencyIdValue] : [],
 			date_end: activePeriodEndDateValue,
@@ -315,7 +315,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			isDeletingImage,
 			isDirty: form.formState.isDirty,
 			isDuplicating,
-			isLoading: alertLoading || agenciesLoading || operationalLinesLoading || operationalStopsLoading || ridesLoading,
+			isLoading: alertLoading || agenciesLoading || operationalLinesLoading || operationalStopsLoading,
 			isLocking,
 			isReadOnly,
 			isSaving,
@@ -325,7 +325,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		form: {
 			instance: form,
 		},
-	}), [agenciesLoading, alertData, alertError, alertId, alertImage, alertLoading, alertValidating, canDelete, canDuplicate, canLock, canSave, form, handleDelete, handleDeleteImage, handleDuplicate, handleLock, handleSave, isDeleting, isDeletingImage, isDuplicating, isLocking, isReadOnly, isSaving, isUploadingImage, operationalLinesLoading, operationalStopsLoading, ridesLoading]);
+	}), [agenciesLoading, alertData, alertError, alertId, alertImage, alertLoading, alertValidating, canDelete, canDuplicate, canLock, canSave, form, handleDelete, handleDeleteImage, handleDuplicate, handleLock, handleSave, isDeleting, isDeletingImage, isDuplicating, isLocking, isReadOnly, isSaving, isUploadingImage, operationalLinesLoading, operationalStopsLoading]);
 
 	//
 	// F. Render components
