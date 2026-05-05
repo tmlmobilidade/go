@@ -34,7 +34,7 @@ export async function organizeAlert(alertData: Alert): Promise<Alert> {
 	//
 	// Return the organized alert data
 
-	return updatedAlertData;
+	return parseResult.data;
 
 	//
 }
