@@ -1,6 +1,6 @@
 /* * */
 
-import { causePrompts, effectPrompts, initPrompts, referenceTypePrompts, unsafePromptIdentifier, userPrompts } from '@/prompts.js';
+import { causePrompts, effectPrompts, initPrompts, referenceTypePrompts, titlePrompts, unsafePromptIdentifier, userPrompts } from '@/prompts.js';
 import { PromptBuilder } from '@/utils.js';
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/ai';
 import { getOperationalLinesBatch, getOperationalStopsBatch } from '@tmlmobilidade/controllers';
@@ -56,7 +56,8 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 	// Build the prompt part for the given reference type,
 	// by fetching the corresponding data based on the alert context.
 
-	const promptValue = new PromptBuilder();
+	const titlePrompt = new PromptBuilder();
+	const descriptionPrompt = new PromptBuilder();
 
 	if (props.reference_type === 'agency') {
 		// For 'agency' alert types, we expect only one reference,
@@ -64,8 +65,9 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 		const foundAgency = await agencies.findById(props.agency_id);
 		if (!foundAgency) throw new Error('Agency not found for the given reference');
 		// Add the agency data to the prompt
-		promptValue.add('body', `Agency Name: ${foundAgency.name}`);
-		promptValue.add('body', `Agency Website: ${foundAgency.website_url}`);
+		titlePrompt.add('body', `Alert for ${foundAgency.name}`);
+		descriptionPrompt.add('body', `Agency Name: ${foundAgency.name}`);
+		descriptionPrompt.add('body', `Agency Website: ${foundAgency.website_url}`);
 	}
 
 	if (props.reference_type === 'lines') {
@@ -84,7 +86,8 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 			const matchingLine = foundLines.find(line => String(line.line_id) === String(selectedReference.parent_id));
 			if (!matchingLine) throw new Error(`Operational Line not found for reference with parent_id ${selectedReference.parent_id}`);
 			// Add the line data to the prompt
-			promptValue.add('body', `Line: (${matchingLine.line_short_name}) ${matchingLine.line_long_name}`);
+			titlePrompt.add('body', `Line: ${matchingLine.line_short_name}`);
+			descriptionPrompt.add('body', `Line: (${matchingLine.line_short_name}) ${matchingLine.line_long_name}`);
 			// Check if this reference has any child IDs that should
 			// also be included in the prompt. In this case, 1 line -> only a few stops
 			if (selectedReference.child_ids?.length) {
@@ -92,10 +95,10 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 					.flatMap(ht => ht.path)
 					.filter(waypoint => selectedReference.child_ids?.includes(String(waypoint.stop_id)));
 				if (matchingWaypoints?.length) {
-					promptValue.add('body', '↳ Only on the following stops:');
+					descriptionPrompt.add('body', '↳ Only on the following stops:');
 					for (const waypoint of matchingWaypoints) {
-						promptValue.add('body', `#${waypoint.stop_sequence} stop in path:`);
-						promptValue.append('body', `[${waypoint.stop_id}] ${waypoint.stop_name}`);
+						descriptionPrompt.add('body', `#${waypoint.stop_sequence} stop in path:`);
+						descriptionPrompt.append('body', `[${waypoint.stop_id}] ${waypoint.stop_name}`);
 					}
 				}
 			}
@@ -111,7 +114,8 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 			// Transform start time into a human-readable format
 			const startTimeFormated = Dates.fromUnixTimestamp(rideData.start_time_scheduled).toFormat('HH:mm');
 			// Add the ride data to the prompt
-			promptValue.add('body', `Ride: ${rideData.line_id} to ${rideData.headsign} departing at ${startTimeFormated}`);
+			titlePrompt.add('body', `Ride: ${rideData.line_id} to ${rideData.headsign}`);
+			descriptionPrompt.add('body', `Ride: ${rideData.line_id} to ${rideData.headsign} departing at ${startTimeFormated}`);
 		}
 	}
 
@@ -129,16 +133,18 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 			const matchingStop = foundStops.find(stop => String(stop.stop_id) === String(selectedReference.parent_id));
 			if (!matchingStop) throw new Error(`Operational Stop not found for reference with parent_id ${selectedReference.parent_id}`);
 			// Add the stop data to the prompt
-			promptValue.add('body', `Stop: [${matchingStop.stop_id}] ${matchingStop.stop_name}`);
+			titlePrompt.add('body', `Stop: ${matchingStop.stop_name}`);
+			descriptionPrompt.add('body', `Stop: [${matchingStop.stop_id}] ${matchingStop.stop_name}`);
 			// Check if this reference has any child IDs that should
 			// also be included in the prompt. In this case, 1 stop -> only a few waypoints
 			if (selectedReference.child_ids?.length) {
 				const matchingLines = matchingStop.hashed_trips
 					.filter(line => selectedReference.child_ids?.includes(String(line.line_id)));
 				if (matchingLines?.length) {
-					promptValue.add('body', '↳ Only for the following lines:');
+					descriptionPrompt.add('body', '↳ Only for the following lines:');
 					for (const line of matchingLines) {
-						promptValue.add('body', `(${line.line_short_name}) ${line.line_long_name}`);
+						titlePrompt.add('body', `Line: ${line.line_short_name}`);
+						descriptionPrompt.add('body', `(${line.line_short_name}) ${line.line_long_name}`);
 					}
 				}
 			}
@@ -170,10 +176,12 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 		//
 		// Get prompt parts for the current language
 
-		promptValue.add('intro', initPrompts[i18nCode]);
-		promptValue.add('intro', referenceTypePrompts[props.reference_type][i18nCode]);
-		promptValue.add('intro', causePrompts[props.cause][i18nCode]);
-		promptValue.add('intro', effectPrompts[props.effect][i18nCode]);
+		titlePrompt.add('intro', titlePrompts[i18nCode]);
+
+		descriptionPrompt.add('intro', initPrompts[i18nCode]);
+		descriptionPrompt.add('intro', referenceTypePrompts[props.reference_type][i18nCode]);
+		descriptionPrompt.add('intro', causePrompts[props.cause][i18nCode]);
+		descriptionPrompt.add('intro', effectPrompts[props.effect][i18nCode]);
 
 		//
 		// Add the user prompt if the user supplied any extra instructions
@@ -190,16 +198,18 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 				.replaceAll(unsafePromptIdentifier.start, '')
 				.replaceAll(unsafePromptIdentifier.end, '');
 			const userInstructionsPrompt = userPrompts[i18nCode].replaceAll('{{USER_INSTRUCTIONS}}', sanitizedUserInstructions);
-			promptValue.add('body', userInstructionsPrompt);
+			descriptionPrompt.add('body', userInstructionsPrompt);
 		}
 
 		//
 		// Save the final prompt for the current language
 		// and reset the intro part for the next language iteration.
 
-		result['pt'].description = await aiProvider.run(promptValue.getCompressed());
+		result['pt'].title = await aiProvider.run(titlePrompt.getCompressed());
+		result['pt'].description = await aiProvider.run(descriptionPrompt.getCompressed());
 
-		promptValue.reset('intro');
+		titlePrompt.reset('intro');
+		descriptionPrompt.reset('intro');
 
 		//
 	}

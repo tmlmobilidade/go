@@ -28,6 +28,27 @@ export const initPrompts: Record<I18nCode, string> = {
 	`,
 };
 
+export const titlePrompts: Record<I18nCode, string> = {
+	en: '',
+	pt: `
+		Trabalhas numa empresa de transportes públicos, e estás encarregue de gerar um título curto,
+		claro e preciso para um Alerta de Serviço (Service Alert), em Português de Portugal.
+		Por favor devolve apenas o título, sem nenhum texto adicional como descrições ou formatação,
+		utilizando os parâmetros fornecidos e o exemplo como referência para o estilo da mensagem.
+		Adapta todos os textos em função do género e número de referências (singular ou plural, evitando marcas
+		de plural facultativas), agrupando-as quando necessário, e utilizando as expressões mais naturais
+		para cada caso. É importante que te coloques no lugar dos passageiros que irão ler o título,
+		que provavelmente estão numa paragem à espera do veículo sem informações atualizadas.
+		Deves ter em conta o impacto que o alerta tem nas suas viagens, em função da sua real gravidade,
+		evitando palavras que possam causar ansiedade ou preocupação desnecessária, e focando-te em transmitir
+		a informação de forma empática e útil para os passageiros.
+
+		Exemplo 1: "4001 | Serviço interrompido devido a obras"
+		Exemplo 2: "4001, 4002 | Atrasos significativos devido a acidente"
+		Exemplo 3: "4001 | Desvio de percurso devido a festas populares"
+	`,
+};
+
 export const unsafePromptIdentifier = {
 	end: '!!! FIM DA MENSAGEM INSEGURA !!!',
 	start: '!!! INÍCIO DA MENSAGEM INSEGURA !!!',
