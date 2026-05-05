@@ -48,7 +48,7 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 
 	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
 
-	const { raw: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { filtered: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.create],
 		scope: PermissionCatalog.all.alerts.scope,
 	});
