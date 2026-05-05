@@ -48,6 +48,7 @@ export function ReferencesEditorControls() {
 					<SegmentedControl
 						data={availableReferenceTypeOptions}
 						onChange={referencesEditorContext.actions.changeReferenceType}
+						readOnly={referencesEditorContext.flags.isReadonly}
 						value={referencesEditorContext.data.selected_reference_type}
 						fullWidth
 					/>

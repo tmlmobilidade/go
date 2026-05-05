@@ -4,7 +4,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Label, openConfirmModal, type SelectDataItem, useDataOperationalLines, useDataOperationalStops, useDataRides } from '@tmlmobilidade/ui';
+import { Label, openConfirmModal, type SelectDataItem } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -17,6 +17,7 @@ export interface ReferencesEditorContextProps {
 	enabledReferenceTypes: Alert['reference_type'][]
 	onChangeReferences: (references: Alert['references']) => void
 	onChangeReferenceType: (type: Alert['reference_type']) => void
+	readonly?: boolean
 	selectedAgencyId: Alert['agency_id']
 	selectedMunicipalityIds?: Alert['municipality_ids']
 	selectedReferences: Alert['references']
@@ -43,7 +44,7 @@ interface ReferencesEditorContextState {
 		selected_rides_data: RideNormalized[]
 	}
 	flags: {
-		isLoading: boolean
+		isReadonly: boolean
 	}
 };
 
@@ -61,7 +62,7 @@ export function useReferencesEditorContext() {
 
 /* * */
 
-export function ReferencesEditorContextProvider({ activePeriodEndDate, activePeriodStartDate, availableAgenciesOptions, children, enabledReferenceTypes, onChangeReferences, onChangeReferenceType, selectedAgencyId, selectedReferences, selectedReferenceType }: PropsWithChildren<ReferencesEditorContextProps>) {
+export function ReferencesEditorContextProvider({ activePeriodEndDate, activePeriodStartDate, availableAgenciesOptions, children, enabledReferenceTypes, onChangeReferences, onChangeReferenceType, readonly, selectedAgencyId, selectedReferences, selectedReferenceType }: PropsWithChildren<ReferencesEditorContextProps>) {
 	//
 
 	//
@@ -70,35 +71,7 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 	const [selectedRidesData, setSelectedRidesData] = useState<RideNormalized[]>([]);
 
 	//
-	// B. Fetch data
-
-	const { isLoading: operationalLinesLoading } = useDataOperationalLines(API_ROUTES.alerts.OPERATION_LINES, {
-		filters: {
-			agency_ids: [selectedAgencyId],
-			date_end: activePeriodEndDate,
-			date_start: activePeriodStartDate,
-		},
-	});
-
-	const { isLoading: operationalStopsLoading } = useDataOperationalStops(API_ROUTES.alerts.OPERATION_STOPS, {
-		filters: {
-			agency_ids: [selectedAgencyId],
-			date_end: activePeriodEndDate,
-			date_start: activePeriodStartDate,
-		},
-	});
-
-	const { isLoading: ridesLoading } = useDataRides(API_ROUTES.alerts.RIDES_LIST, {
-		filters: {
-			agency_ids: [selectedAgencyId],
-			date_end: activePeriodEndDate,
-			date_start: activePeriodStartDate,
-			operational_statuses: ['running', 'missed', 'scheduled'],
-		},
-	});
-
-	//
-	// C. Handle actions
+	// B. Handle actions
 
 	const changeReferenceType = useCallback((value: Alert['reference_type']) => {
 		if (selectedReferences?.length > 0) {
@@ -125,26 +98,35 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 	}, [selectedReferences, onChangeReferences]);
 
 	const removeReference = useCallback((index: number) => {
+		// Skip if readonly
+		if (readonly) return;
+		// Remove reference at index
 		onChangeReferences((selectedReferences || []).filter((_, i) => i !== index));
-	}, [selectedReferences, onChangeReferences]);
+	}, [readonly, selectedReferences, onChangeReferences]);
 
 	const updateReference = useCallback((index: number, field: 'child_ids' | 'parent_id', value: string | string[]) => {
+		// Skip if readonly
+		if (readonly) return;
+		// Update reference at index
 		const updatedReferences = (selectedReferences || []).map((ref, i) => {
 			if (i !== index) return ref;
 			if (field === 'parent_id') return { ...ref, child_ids: [], parent_id: value as string };
 			return { ...ref, child_ids: value as string[] };
 		});
 		onChangeReferences(updatedReferences);
-	}, [selectedReferences, onChangeReferences]);
+	}, [readonly, selectedReferences, onChangeReferences]);
 
 	const toggleRideSelection = useCallback((rideId: string) => {
+		// Skip if readonly
+		if (readonly) return;
+		// Toggle selection
 		const existingReferences = selectedReferences ?? [];
 		if (existingReferences.some(reference => reference.parent_id === rideId)) {
 			onChangeReferences(existingReferences.filter(reference => reference.parent_id !== rideId));
 			return;
 		}
 		onChangeReferences([...existingReferences, { child_ids: [], parent_id: rideId }]);
-	}, [selectedReferences, onChangeReferences]);
+	}, [readonly, selectedReferences, onChangeReferences]);
 
 	const removeAllRides = useCallback(() => {
 		onChangeReferences([]);
@@ -167,7 +149,7 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 	}, [selectedReferences, selectedReferenceType]);
 
 	//
-	// D. Define State
+	// C. Define State
 
 	const contextValue: ReferencesEditorContextState = useMemo(() => ({
 		actions: {
@@ -189,30 +171,12 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 			selected_rides_data: selectedRidesData,
 		},
 		flags: {
-			isLoading: operationalLinesLoading || operationalStopsLoading || ridesLoading,
+			isReadonly: readonly || false,
 		},
-	}), [
-		addReference,
-		changeReferenceType,
-		removeAllRides,
-		removeReference,
-		toggleRideSelection,
-		updateReference,
-		activePeriodEndDate,
-		activePeriodStartDate,
-		availableAgenciesOptions,
-		enabledReferenceTypes,
-		selectedAgencyId,
-		selectedReferenceType,
-		selectedReferences,
-		selectedRidesData,
-		operationalLinesLoading,
-		operationalStopsLoading,
-		ridesLoading,
-	]);
+	}), [activePeriodEndDate, activePeriodStartDate, addReference, availableAgenciesOptions, changeReferenceType, enabledReferenceTypes, readonly, removeAllRides, removeReference, selectedAgencyId, selectedReferenceType, selectedReferences, selectedRidesData, toggleRideSelection, updateReference]);
 
 	//
-	// E. Return state
+	// D. Return state
 
 	return (
 		<ReferencesEditorContext.Provider value={contextValue}>

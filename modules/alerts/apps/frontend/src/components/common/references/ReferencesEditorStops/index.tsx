@@ -5,7 +5,8 @@
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { ReferencesEditorStopsItem } from '@/components/common/references/ReferencesEditorStopsItem';
 import { IconPlus } from '@tabler/icons-react';
-import { Button, NoDataLabel, Section, Surface } from '@tmlmobilidade/ui';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { Button, LoadingSection, NoDataLabel, Section, Surface, useDataOperationalStops } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -18,7 +19,22 @@ export function ReferencesEditorStops() {
 	const referencesEditorContext = useReferencesEditorContext();
 
 	//
-	// B. Render components
+	// B. Fetch data
+
+	const { isLoading: operationalStopsLoading } = useDataOperationalStops(API_ROUTES.alerts.OPERATION_STOPS, {
+		filters: {
+			agency_ids: [referencesEditorContext.data.selected_agency_id],
+			date_end: referencesEditorContext.data.active_period_end_date,
+			date_start: referencesEditorContext.data.active_period_start_date,
+		},
+	});
+
+	//
+	// C. Render components
+
+	if (operationalStopsLoading) {
+		return <LoadingSection />;
+	}
 
 	return (
 		<Section gap="md">
