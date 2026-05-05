@@ -14,16 +14,13 @@ export async function calculatePassengersPerKm({ context }: TaskProps): Promise<
 
 	const ridesCollection = await rides.getCollection();
 
-	const startDateStr = Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').unix_timestamp;
-	const endDateStr = Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').unix_timestamp;
-
-	console.log(`Date range: ${startDateStr} to ${endDateStr}`);
+	console.log(`Date range: ${context.dates.start} to ${context.dates.end}`);
 
 	const pipeline = [
 		{
 			$match: {
 				agency_id: { $exists: true },
-				start_time_scheduled: { $gte: startDateStr, $lte: endDateStr },
+				operational_date: { $gte: context.dates.start, $lte: context.dates.end },
 			},
 		},
 		{
@@ -73,11 +70,6 @@ export async function calculatePassengersPerKm({ context }: TaskProps): Promise<
 	const results: PassengersPerKmResult[] = [];
 
 	for await (const doc of aggCursor) {
-		// // Total Passengers, Km, passengersPerKm DEBUG
-		// console.log(
-		// 	`[DEBUG] Agency: ${doc.agencyId} | Total Passengers: ${doc.totalPassengers} | Total Km: ${doc.totalKm} | passengersPerKm: ${doc.passengersPerKm}`,
-		// );
-
 		results.push({
 			agencyId: doc.agencyId,
 			passengersPerKm: doc.passengersPerKm,

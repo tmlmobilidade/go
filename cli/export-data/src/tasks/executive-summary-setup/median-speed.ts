@@ -31,8 +31,8 @@ export async function calculateMedianSpeed({ context, message }: TaskProps): Pro
 
 	const ridesCollection = await rides.getCollection();
 
-	const startDateStr = Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').unix_timestamp;
-	const endDateStr = Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').unix_timestamp;
+	// const startDateStr = Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').unix_timestamp;
+	// const endDateStr = Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').unix_timestamp;
 
 	const pipeline = [
 		{
@@ -42,7 +42,8 @@ export async function calculateMedianSpeed({ context, message }: TaskProps): Pro
 				end_time_observed: { $exists: true },
 				extension_scheduled: { $gt: 0 },
 				start_time_observed: { $exists: true },
-				start_time_scheduled: { $gte: startDateStr, $lte: endDateStr },
+				// start_time_scheduled: { $gte: startDateStr, $lte: endDateStr },
+				operational_date: { $gte: context.dates.start, $lte: context.dates.end },
 			},
 		},
 		{
