@@ -8,7 +8,6 @@ import { ReferencesEditorControls } from '@/components/common/references/Referen
 import { ReferencesEditorLines } from '@/components/common/references/ReferencesEditorLines';
 import { ReferencesEditorRides } from '@/components/common/references/ReferencesEditorRides';
 import { ReferencesEditorStops } from '@/components/common/references/ReferencesEditorStops';
-import { LoadingSection } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -22,10 +21,6 @@ export function ReferencesEditorMain() {
 
 	//
 	// B. Render components
-
-	if (referencesEditorContext.flags.isLoading) {
-		return <LoadingSection />;
-	}
 
 	return (
 		<>
