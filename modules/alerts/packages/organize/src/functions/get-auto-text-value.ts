@@ -9,7 +9,8 @@ import { type Alert } from '@tmlmobilidade/types';
  * @returns The `auto_texts` attribute of the alert.
  */
 export function getAutoTextValue(alertData: Alert): Alert['auto_texts'] {
-	if (alertData.auto_texts !== true && alertData.auto_texts !== false) {
-		return false;
-	}
+	// Return true if already true
+	if (alertData.auto_texts === true) return true;
+	// Return false otherwise
+	return false;
 }
