@@ -5,9 +5,13 @@
 import { SeverityTag } from '@/components/common/SeverityTag';
 import { ValidationsDetailSectionResultCellRows } from '@/components/validations/detail/ValidationsDetailSectionResultCellRows';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
+import { getGtfsScheduleDocUrl } from '@/lib/gtfs-schedule-doc-url';
+import { IconExternalLink } from '@tabler/icons-react';
 import { type GtfsValidationMessage } from '@tmlmobilidade/types';
 import { Collapsible, DataTable, DataTableColumn, Divider, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+
+import styles from './styles.module.css';
 
 /* * */
 
@@ -38,6 +42,7 @@ export function ValidationsDetailSectionResult() {
 		},
 		{
 			accessor: 'message',
+			render: item => <div>{item.message} {' | '} <a className={styles.link} href={getGtfsScheduleDocUrl(item.rule_id)} rel="noopener noreferrer" target="_blank">Saber mais <IconExternalLink size={12} /></a></div>,
 			title: 'Mensagem',
 			width: 500,
 		},
