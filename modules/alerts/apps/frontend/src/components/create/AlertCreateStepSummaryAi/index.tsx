@@ -114,10 +114,6 @@ export function AlertCreateStepSummaryAi() {
 	//
 	// D. Render components
 
-	if (!hasPermissionToEditTexts) {
-		return null;
-	}
-
 	return (
 		<Surface variant="bordered" withBackground>
 
@@ -132,6 +128,7 @@ export function AlertCreateStepSummaryAi() {
 								checked={field.value ?? false}
 								label={t('default:alerts.create.summary.auto_texts.label')}
 								onChange={e => field.onChange(e.currentTarget.checked)}
+								readOnly={!hasPermissionToEditTexts}
 							/>
 						)}
 					/>
