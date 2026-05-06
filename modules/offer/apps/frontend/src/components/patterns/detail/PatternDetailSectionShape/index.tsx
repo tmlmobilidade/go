@@ -2,17 +2,13 @@
 
 import StatCard from '@/components/common/StatCard';
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
-import { ShapeEditorModal } from '@/components/patterns/stops/ShapeEditor.modal';
-import { IconBrandSpeedtest, IconShape } from '@tabler/icons-react';
+import { ShapeEditorModal } from '@/components/patterns/shape/shape-editor/ShapeEditor.modal';
+import { IconFileZip, IconShape } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Agency } from '@tmlmobilidade/types';
 import { Button, Collapsible, Grid, MapOverlayPatternShape, MapView, Section } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 import useSWR from 'swr';
-
-import styles from './styles.module.css';
-
-// import { openShapeEditorModal } from '../../stops/ShapeEditor.modal';
 
 /* * */
 
@@ -24,6 +20,7 @@ export function PatternDetailSectionShape() {
 
 	const patternDetailContext = usePatternDetailContext();
 	const { data: agencyData } = useSWR<Agency, Error>(API_ROUTES.auth.AGENCIES_DETAIL(patternDetailContext.data.agency_id || ''));
+
 	const [isEditorOpen, setIsEditorOpen] = useState(false);
 
 	//
@@ -42,38 +39,23 @@ export function PatternDetailSectionShape() {
 		return `${shapeCostRaw.toFixed(2)} €`;
 	}, [agencyData, patternDetailContext.data.form.values]);
 
-	const travelTime = useMemo(() => {
-		if (!patternDetailContext.data.stopsParameterRules) return null;
-		const defaultRule = patternDetailContext.data.stopsParameterRules.find(r => r.kind === 'default');
-		return `${defaultRule?.travelTimes.totalTripSecondsWithStops.formatted || 0}`;
-	}, [patternDetailContext.data.stopsParameterRules]);
-
 	//
 	// C. Render components
 
 	return (
-		<Collapsible title="Percurso" defaultOpen>
-			<Section gap="sm">
-				<Grid columns="abc" gap="sm">
-					<StatCard title="Extensão" value={shapeExtensionCardValue} />
-					<StatCard title="Tempo de execução" value={travelTime} />
-					<StatCard title="Custo de cada viagem" value={shapeCost} />
-				</Grid>
-			</Section>
+		<Collapsible title="Sequência de paragens" defaultOpen>
+			{(shapeExtensionCardValue !== null || shapeCost !== null) && (
+				<Section gap="sm">
+					<Grid columns="abc" gap="sm">
+						<StatCard title="Extensão" value={shapeExtensionCardValue} />
+						<StatCard title="Custo de cada viagem" value={shapeCost} />
+					</Grid>
+				</Section>
+			)}
 
-			<Section flexDirection="row" gap="md">
-				<Button
-					label="Atualizar percurso"
-					leftSection={<IconShape />}
-					onClick={() => setIsEditorOpen(true)}
-				/>
-				<Button label="Editar parâmetros" leftSection={<IconBrandSpeedtest />} variant="secondary" />
-			</Section>
+			<Section gap="md" height="100%" padding="none" width="100%">
 
-			<ShapeEditorModal onClose={() => setIsEditorOpen(false)} opened={isEditorOpen} />
-
-			<div className={styles.mapWrapper}>
-				<MapView id="shapeMapView">
+				<MapView height={500} id="shapeMapView">
 					<MapOverlayPatternShape
 						id="pattern-shape"
 						lineColor={patternDetailContext.data.typologyData?.color || undefined}
@@ -81,7 +63,24 @@ export function PatternDetailSectionShape() {
 						stopsData={patternDetailContext.geojson.pattern_stops}
 					/>
 				</MapView>
-			</div>
+
+				<Section flexDirection="row" gap="sm">
+					<Button
+						label="Editar percurso"
+						leftSection={<IconShape />}
+						onClick={() => setIsEditorOpen(true)}
+					/>
+					<Button
+						label="Importar ficheiro GTFS"
+						leftSection={<IconFileZip />}
+						onClick={() => setIsEditorOpen(true)}
+						variant="secondary"
+					/>
+				</Section>
+
+				{/* SHAPE EDITOR MODAL */}
+				<ShapeEditorModal onClose={() => setIsEditorOpen(false)} opened={isEditorOpen} />
+			</Section>
 
 		</Collapsible>
 	);

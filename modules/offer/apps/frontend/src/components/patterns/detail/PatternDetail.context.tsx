@@ -4,7 +4,7 @@
 
 import { openCreateRuleModal } from '@/components/patterns/rules/create/RuleCreate.modal';
 import { openRulesCalendarPreviewModal } from '@/components/patterns/rules/list/RulesCalendarPreview.modal';
-import { openCreateParameterModal } from '@/components/patterns/stops/parameters/create/ParameterCreate.modal';
+import { openCreateParameterModal } from '@/components/patterns/shape/parameters/create/ParameterCreate.modal';
 import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { useTypologiesContext } from '@/contexts/Typologies.context';
