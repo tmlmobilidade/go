@@ -16,9 +16,9 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger": "*"
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
