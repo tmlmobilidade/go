@@ -17,12 +17,12 @@ export class OCIGenerativeAIProvider {
 
 	constructor() {
 		// Validate that all required environment variables are set
-		if (!process.env.OCI_FINGERPRINT) throw new Error('Missing required environment variables for OCI Generative AI Provider');
-		if (!process.env.OCI_PRIVATE_KEY_PATH && !process.env.OCI_PRIVATE_KEY) throw new Error('Missing required environment variables for OCI Generative AI Provider: either OCI_PRIVATE_KEY_PATH or OCI_PRIVATE_KEY must be set');
-		if (!process.env.OCI_REGION) throw new Error('Missing required environment variables for OCI Generative AI Provider');
-		if (!process.env.OCI_TENANCY) throw new Error('Missing required environment variables for OCI Generative AI Provider');
-		if (!process.env.OCI_USER) throw new Error('Missing required environment variables for OCI Generative AI Provider');
-		if (!process.env.OCI_COMPARTMENT) throw new Error('Missing required environment variables for OCI Generative AI Provider');
+		if (!process.env.OCI_FINGERPRINT) throw new Error('Missing OCI_FINGERPRINT environment variable for OCI Generative AI Provider');
+		if (!process.env.OCI_PRIVATE_KEY_PATH && !process.env.OCI_PRIVATE_KEY) throw new Error('Missing OCI_PRIVATE_KEY_PATH or OCI_PRIVATE_KEY environment variable for OCI Generative AI Provider');
+		if (!process.env.OCI_REGION) throw new Error('Missing OCI_REGION environment variable for OCI Generative AI Provider');
+		if (!process.env.OCI_TENANCY) throw new Error('Missing OCI_TENANCY environment variable for OCI Generative AI Provider');
+		if (!process.env.OCI_USER) throw new Error('Missing OCI_USER environment variable for OCI Generative AI Provider');
+		if (!process.env.OCI_COMPARTMENT) throw new Error('Missing OCI_COMPARTMENT environment variable for OCI Generative AI Provider');
 		// Build the OCI client using the environment variables for authentication
 		this.ociClient = new GenerativeAiInferenceClient({
 			authenticationDetailsProvider: new SimpleAuthenticationDetailsProvider(
