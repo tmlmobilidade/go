@@ -62,6 +62,7 @@ interface MapOverlayPatternShapeProps {
 	id: string
 	lineColor?: string
 	lineData: Feature<LineString, MapOverlayPatternShapeLineDataProps> | FeatureCollection<LineString, MapOverlayPatternShapeLineDataProps> | null
+	onAnchorDragPreview?: (event: MapOverlayPatternShapeAnchorDropEvent, draggingAnchorId: null | string) => void
 	onAnchorDrop?: (event: MapOverlayPatternShapeAnchorDropEvent) => void
 	onAnchorMove?: (anchorId: string, event: MapOverlayPatternShapeAnchorDropEvent) => void
 	onAnchorRemove?: (anchorId: string) => void
@@ -163,6 +164,7 @@ export function MapOverlayPatternShape({
 	id,
 	lineColor = '#000000',
 	lineData,
+	onAnchorDragPreview,
 	onAnchorDrop,
 	onAnchorMove,
 	onAnchorRemove,
@@ -214,6 +216,11 @@ export function MapOverlayPatternShape({
 	// Ref to suppress hitbox-layer interactions when cursor is over an anchor DOM marker.
 	// Track the last hovered stop feature id so we can clear its hover state.
 	const prevHoveredStopIdRef = useRef<null | number>(null);
+
+	// Debounce timer for live drag preview — fires onAnchorDragPreview after cursor
+	// pauses for DRAG_PREVIEW_DEBOUNCE_MS during a drag, avoiding per-frame API calls.
+	const DRAG_PREVIEW_DEBOUNCE_MS = 50;
+	const dragPreviewTimerRef = useRef<null | ReturnType<typeof setTimeout>>(null);
 
 	const stopsSourceId = useMemo(() => `${id}:pattern-shape:source:stops`, [id]);
 
@@ -433,20 +440,41 @@ export function MapOverlayPatternShape({
 	}, [id, lineData, mapViewContext.actions, stopsData]);
 
 	const handleMouseMoveEvent = useCallback(
+
 		(event: MapMouseEvent) => {
 			if (draftAnchor?.mode === 'dragging') {
 				const snappedRoadAnchor = getSnappedBaseRoadAnchor(event);
 
 				if (!snappedRoadAnchor) {
+					if (dragPreviewTimerRef.current !== null) {
+						clearTimeout(dragPreviewTimerRef.current);
+						dragPreviewTimerRef.current = null;
+					}
 					setMapCursor('invalid-anchor');
 					return;
 				}
 
+				const segmentForPreview = draftAnchor?.segment;
+				const draggingIdForPreview = draggingAnchorId;
+
 				setDraftAnchor({
 					...snappedRoadAnchor,
 					mode: 'dragging',
-					segment: draftAnchor?.segment,
+					segment: segmentForPreview,
 				});
+
+				if (onAnchorDragPreview) {
+					if (dragPreviewTimerRef.current !== null) {
+						clearTimeout(dragPreviewTimerRef.current);
+					}
+					dragPreviewTimerRef.current = setTimeout(() => {
+						dragPreviewTimerRef.current = null;
+						onAnchorDragPreview(
+							{ ...snappedRoadAnchor, segment: segmentForPreview },
+							draggingIdForPreview,
+						);
+					}, DRAG_PREVIEW_DEBOUNCE_MS);
+				}
 
 				setMapCursor('dragging-anchor');
 				return;
@@ -541,7 +569,7 @@ export function MapOverlayPatternShape({
 				prevHoveredStopIdRef.current = featureId;
 			}
 		},
-		[anchorPreviewLayerId, anchorsData, clearStopHoverState, draftAnchor?.mode, draftAnchor?.segment, enableAnchorPreview, getAnchorSnapTolerancePx, getExistingLayerIds, getSnappedAnchor, getSnappedBaseRoadAnchor, interactiveLayerIds, setMapCursor, stopsSourceId],
+		[anchorPreviewLayerId, anchorsData, clearStopHoverState, draggingAnchorId, draftAnchor?.mode, draftAnchor?.segment, enableAnchorPreview, getAnchorSnapTolerancePx, getExistingLayerIds, getSnappedAnchor, getSnappedBaseRoadAnchor, interactiveLayerIds, onAnchorDragPreview, setMapCursor, stopsSourceId],
 	);
 
 	const handleMouseDownEvent = useCallback(
@@ -580,6 +608,12 @@ export function MapOverlayPatternShape({
 	const handleMouseUpEvent = useCallback(
 		(event: MapMouseEvent) => {
 			if (draftAnchor?.mode !== 'dragging') return;
+
+			// Cancel any pending preview — the final committed position will land via onAnchorDrop/onAnchorMove
+			if (dragPreviewTimerRef.current !== null) {
+				clearTimeout(dragPreviewTimerRef.current);
+				dragPreviewTimerRef.current = null;
+			}
 
 			event.target.dragPan?.enable?.();
 
@@ -655,7 +689,6 @@ export function MapOverlayPatternShape({
 			map.off('mousemove', handleMouseMoveEvent);
 			map.off('mousedown', handleMouseDownEvent);
 			map.off('mouseup', handleMouseUpEvent);
-
 			map.dragPan?.enable?.();
 			map.getCanvas().style.cursor = '';
 			map.getCanvasContainer().style.cursor = '';
@@ -668,6 +701,16 @@ export function MapOverlayPatternShape({
 		handleMouseUpEvent,
 		mapViewContext.ref.map,
 	]);
+
+	// Clear the drag-preview debounce timer only on unmount.
+	useEffect(() => {
+		return () => {
+			if (dragPreviewTimerRef.current !== null) {
+				clearTimeout(dragPreviewTimerRef.current);
+				dragPreviewTimerRef.current = null;
+			}
+		};
+	}, []);
 
 	//
 	// C. Render components

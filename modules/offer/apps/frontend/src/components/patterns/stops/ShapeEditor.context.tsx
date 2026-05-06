@@ -65,8 +65,10 @@ interface StopsEditorContextState {
 		appendStop: (stop: Stop) => Promise<void>
 		cancel: () => void
 		convertShapeToEditable: () => Promise<void>
+		dismissMigrationWarning: () => void
 		moveShapeAnchor: (anchorId: string, lat: number, lon: number) => Promise<void>
 		prependStop: (stop: Stop) => Promise<void>
+		previewRoute: (path: Path[], anchors?: ShapeAnchor[]) => Promise<void>
 		recomputeRoute: (path: Path[], anchors?: ShapeAnchor[]) => Promise<void>
 		redo: () => void
 		removeShapeAnchor: (anchorId: string) => Promise<void>
@@ -88,6 +90,8 @@ interface StopsEditorContextState {
 		canUndo: boolean
 		isEditableShape: boolean
 		isLoadingRoute: boolean
+		migrationWarningVisible: boolean
+		needsMigration: boolean
 	}
 }
 
@@ -224,6 +228,18 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 
 	const isEditableShape = localShape !== undefined;
 
+	// A shape is "unmigrated" when imported from GTFS (has geometry) but has never
+	// been processed by Valhalla (no legs). No shape at all = blank slate, fully editable.
+	const needsMigration = localShape !== undefined && !(localShape.legs?.length);
+	const needsMigrationRef = useRef(false);
+	needsMigrationRef.current = needsMigration;
+
+	const [migrationWarningVisible, setMigrationWarningVisible] = useState(false);
+
+	const dismissMigrationWarning = useCallback(() => {
+		setMigrationWarningVisible(false);
+	}, []);
+
 	const hasUnsavedChanges = useMemo(() =>
 		JSON.stringify(localPath) !== JSON.stringify(initialPath),
 	[localPath, initialPath]);
@@ -238,7 +254,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 				API_ROUTES.offer.SHAPES_ROUTE_PREVIEW,
 				'POST',
 				{
-					costing: 'auto',
+					costing: 'bus', // later change this to be dynamic based on pattern typology
 					points,
 				},
 			);
@@ -273,11 +289,37 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 		}
 	}, [anchors, pushToHistory]);
 
+	const previewRoute = useCallback(async (nextPath: PopulatedPath[], nextAnchors: ShapeAnchor[] = anchors) => {
+		try {
+			const points = buildRoutePreviewPoints(nextPath, nextAnchors);
+
+			const res = await fetchData<RoutePreviewResponse>(
+				API_ROUTES.offer.SHAPES_ROUTE_PREVIEW,
+				'POST',
+				{
+					costing: 'bus',
+					points,
+				},
+			);
+
+			if (!res.isOk) return;
+
+			setRouteData(res.data);
+		} catch {
+			// Silent — preview failures are non-critical
+		}
+	}, [anchors]);
+
 	const convertShapeToEditable = useCallback(async () => {
+		setMigrationWarningVisible(false);
 		await recomputeRoute(path, []);
 	}, [path, recomputeRoute]);
 
 	const addShapeAnchor = useCallback(async (anchor: Omit<ShapeAnchor, '_id' | 'sequence'>) => {
+		if (needsMigrationRef.current) {
+			setMigrationWarningVisible(true);
+			return;
+		}
 		const segmentAnchorsCount = anchors.filter((existingAnchor) => {
 			return existingAnchor.after_stop_id === anchor.after_stop_id && existingAnchor.before_stop_id === anchor.before_stop_id;
 		}).length;
@@ -295,6 +337,10 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 	}, [anchors, path, recomputeRoute]);
 
 	const addStop = useCallback(async (stop: Stop, index: number) => {
+		if (needsMigrationRef.current) {
+			setMigrationWarningVisible(true);
+			return;
+		}
 		const nextPath = [...path];
 		nextPath.splice(index, 0, createPathItemFromStop(stop));
 
@@ -311,6 +357,10 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 	}, [addStop, path.length]);
 
 	const removeStop = useCallback(async (index: number) => {
+		if (needsMigrationRef.current) {
+			setMigrationWarningVisible(true);
+			return;
+		}
 		const nextPath = path.filter((_, pathIndex) => pathIndex !== index);
 		const removedPathItem = path[index];
 
@@ -323,6 +373,10 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 	}, [anchors, path, recomputeRoute]);
 
 	const reorderStops = useCallback(async (nextPath: PopulatedPath[]) => {
+		if (needsMigrationRef.current) {
+			setMigrationWarningVisible(true);
+			return;
+		}
 		const nextStopIds = new Set(nextPath.map(pathItem => pathItem.stop_id));
 
 		const nextAnchors = anchors.filter((anchor) => {
@@ -334,11 +388,19 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 	}, [anchors, recomputeRoute]);
 
 	const removeShapeAnchor = useCallback(async (anchorId: string) => {
+		if (needsMigrationRef.current) {
+			setMigrationWarningVisible(true);
+			return;
+		}
 		const nextAnchors = anchors.filter(a => a._id !== anchorId);
 		await recomputeRoute(path, nextAnchors);
 	}, [anchors, path, recomputeRoute]);
 
 	const moveShapeAnchor = useCallback(async (anchorId: string, lat: number, lon: number) => {
+		if (needsMigrationRef.current) {
+			setMigrationWarningVisible(true);
+			return;
+		}
 		const nextAnchors = anchors.map(a => a._id === anchorId ? { ...a, lat, lon } : a);
 		await recomputeRoute(path, nextAnchors);
 	}, [anchors, path, recomputeRoute]);
@@ -385,8 +447,10 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 			appendStop,
 			cancel,
 			convertShapeToEditable,
+			dismissMigrationWarning,
 			moveShapeAnchor,
 			prependStop,
+			previewRoute,
 			recomputeRoute,
 			redo,
 			removeShapeAnchor,
@@ -408,8 +472,10 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 			canUndo,
 			isEditableShape,
 			isLoadingRoute,
+			migrationWarningVisible,
+			needsMigration,
 		},
-	}), [addShapeAnchor, addStop, appendStop, cancel, convertShapeToEditable, moveShapeAnchor, prependStop, recomputeRoute, redo, removeShapeAnchor, removeStop, reorderStops, revertPath, submit, undo, anchors, canRedo, canUndo, hasUnsavedChanges, path, routeData, localShape, isEditableShape, isLoadingRoute]);
+	}), [addShapeAnchor, addStop, appendStop, cancel, convertShapeToEditable, dismissMigrationWarning, moveShapeAnchor, previewRoute, prependStop, recomputeRoute, redo, removeShapeAnchor, removeStop, reorderStops, revertPath, submit, undo, anchors, canRedo, canUndo, hasUnsavedChanges, migrationWarningVisible, needsMigration, path, routeData, localShape, isEditableShape, isLoadingRoute]);
 
 	return (
 		<StopsEditorContext.Provider value={contextValue}>
