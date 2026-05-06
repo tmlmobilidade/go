@@ -11,7 +11,7 @@
 --   - day_type                  : Weekday | Weekend
 -- =============================================================================
 
-INSERT INTO eta.node_travel_times_aggregates
+INSERT INTO eta.hist_node_travel_times_aggregation
 WITH
 
 -- -----------------------------------------------------------------------------
@@ -32,7 +32,7 @@ parsed_timestamps AS (
             fromUnixTimestamp64Milli(toInt64(created_at)) - INTERVAL 1 DAY,
             fromUnixTimestamp64Milli(toInt64(created_at))
         ) AS operational_ts
-    FROM eta.node_travel_times_samples
+    FROM eta.hist_node_travel_times
     WHERE travel_time_seconds > 0  -- discard zero/null samples (GPS noise, missing segments)
 ),
 
