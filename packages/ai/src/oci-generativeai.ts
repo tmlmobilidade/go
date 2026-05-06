@@ -17,24 +17,24 @@ export class OCIGenerativeAIProvider {
 
 	constructor() {
 		// Validate that all required environment variables are set
-		if (!process.env.OCI_FINGERPRINT) throw new Error('Missing OCI_FINGERPRINT environment variable for OCI Generative AI Provider');
-		if (!process.env.OCI_PRIVATE_KEY_PATH && !process.env.OCI_PRIVATE_KEY) throw new Error('Missing OCI_PRIVATE_KEY_PATH or OCI_PRIVATE_KEY environment variable for OCI Generative AI Provider');
-		if (!process.env.OCI_REGION) throw new Error('Missing OCI_REGION environment variable for OCI Generative AI Provider');
-		if (!process.env.OCI_TENANCY) throw new Error('Missing OCI_TENANCY environment variable for OCI Generative AI Provider');
-		if (!process.env.OCI_USER) throw new Error('Missing OCI_USER environment variable for OCI Generative AI Provider');
-		if (!process.env.OCI_COMPARTMENT) throw new Error('Missing OCI_COMPARTMENT environment variable for OCI Generative AI Provider');
+		if (!process.env.OCI_AI_FINGERPRINT) throw new Error('Missing OCI_AI_FINGERPRINT environment variable for OCI Generative AI Provider');
+		if (!process.env.OCI_AI_PRIVATE_KEY_PATH && !process.env.OCI_AI_PRIVATE_KEY) throw new Error('Missing OCI_AI_PRIVATE_KEY_PATH or OCI_AI_PRIVATE_KEY environment variable for OCI Generative AI Provider');
+		if (!process.env.OCI_AI_REGION) throw new Error('Missing OCI_AI_REGION environment variable for OCI Generative AI Provider');
+		if (!process.env.OCI_AI_TENANCY) throw new Error('Missing OCI_AI_TENANCY environment variable for OCI Generative AI Provider');
+		if (!process.env.OCI_AI_USER) throw new Error('Missing OCI_AI_USER environment variable for OCI Generative AI Provider');
+		if (!process.env.OCI_AI_COMPARTMENT) throw new Error('Missing OCI_AI_COMPARTMENT environment variable for OCI Generative AI Provider');
 		// Build the OCI client using the environment variables for authentication
 		this.ociClient = new GenerativeAiInferenceClient({
 			authenticationDetailsProvider: new SimpleAuthenticationDetailsProvider(
-				process.env.OCI_TENANCY,
-				process.env.OCI_USER,
-				process.env.OCI_FINGERPRINT,
-				process.env.OCI_PRIVATE_KEY_PATH ? readFileSync(process.env.OCI_PRIVATE_KEY_PATH, 'utf8') : process.env.OCI_PRIVATE_KEY,
+				process.env.OCI_AI_TENANCY,
+				process.env.OCI_AI_USER,
+				process.env.OCI_AI_FINGERPRINT,
+				process.env.OCI_AI_PRIVATE_KEY_PATH ? readFileSync(process.env.OCI_AI_PRIVATE_KEY_PATH, 'utf8') : process.env.OCI_AI_PRIVATE_KEY,
 				null,
-				Region.fromRegionId(process.env.OCI_REGION),
+				Region.fromRegionId(process.env.OCI_AI_REGION),
 			),
 		});
-		this.ociClient.endpoint = `https://inference.generativeai.${process.env.OCI_REGION}.oci.oraclecloud.com`;
+		this.ociClient.endpoint = `https://inference.generativeai.${process.env.OCI_AI_REGION}.oci.oraclecloud.com`;
 	}
 
 	/**
@@ -77,7 +77,7 @@ export class OCIGenerativeAIProvider {
 					topK: 0,
 					topP: 1,
 				},
-				compartmentId: process.env.OCI_COMPARTMENT,
+				compartmentId: process.env.OCI_AI_COMPARTMENT,
 				servingMode: {
 					modelId: this.modelOCID,
 					servingType: 'ON_DEMAND',
