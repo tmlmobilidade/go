@@ -26,7 +26,7 @@ export default function StatCard({ isLoading = false, link, title, type = 'copy'
 			<div className={styles.container}>
 				<div className={styles.wrapper}>
 					<Text size="xl">{title}</Text>
-					<Loader visible />
+					<Loader size="sm" visible />
 				</div>
 			</div>
 		);
