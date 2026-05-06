@@ -12,7 +12,7 @@ WITH
     --    Optimizations vs naive version:
     --      a) Geohash-7 cell equality is added to the join key. Each event is expanded
     --         (arrayJoin geohashesInBox) into the ~3-4 cells its bbox touches; the join
-    --         then probes (shape_id, geohash) buckets containing only ~30 nodes each
+    --         then probes (hashed_shape_id, geohash) buckets containing only ~30 nodes each
     --         (25 m chunks → ~30 per 153 m geohash-7 cell), instead of every node in
     --         the shape (could be thousands).
     --      b) Bbox stays as a residual filter — clips cell-boundary noise cheaply.
@@ -41,7 +41,7 @@ WITH
             min(greatCircleDistance(e.longitude, e.latitude, n.longitude, n.latitude)) AS dist
         FROM (
             -- Expand each event into (event, candidate_geohash7_cell) tuples so the
-            -- downstream join can use (shape_id, geohash) as a compound equality
+            -- downstream join can use (hashed_shape_id, geohash) as a compound equality
             -- hash-join key. precision 7 ≈ 153 m × 153 m, comfortably wider than
             -- max_dist_m (30 m); the bbox refine below trims residual noise.
             SELECT
@@ -66,7 +66,7 @@ WITH
             WHERE created_at > 0
         ) AS e
         INNER JOIN eta.hist_shape_nodes AS n
-            ON  e.hashed_shape_id = n.shape_id
+            ON  e.hashed_shape_id = n.hashed_shape_id
             AND e.cell            = n.geohash
             -- bbox residual: applied during hash-join probe, before GROUP BY.
             AND n.latitude  BETWEEN e.latitude  - bbox_deg AND e.latitude  + bbox_deg
@@ -232,7 +232,7 @@ WITH
 
 -- 6. ENRICH: attach per-node lat/lon from shape_nodes.
 --    Both retimed_nodes (effectively keyed by hashed_shape_id, node_index) and
---    shape_nodes (ORDER BY (shape_id, node_index)) are amenable to a sort-merge,
+--    shape_nodes (ORDER BY (hashed_shape_id, node_index)) are amenable to a sort-merge,
 --    avoiding a full hash table over shape_nodes in memory.
 SELECT
     rn.event_id,
@@ -249,11 +249,11 @@ FROM retimed_nodes AS rn
 INNER JOIN (
     -- Restrict shape_nodes to shapes actually present in this batch.
     -- Helps both hash and sort-merge by shrinking the right side.
-    SELECT shape_id, node_index, latitude, longitude
+    SELECT hashed_shape_id, node_index, latitude, longitude
     FROM eta.hist_shape_nodes
-    WHERE shape_id IN (SELECT DISTINCT hashed_shape_id FROM retimed_nodes)
+    WHERE hashed_shape_id IN (SELECT DISTINCT hashed_shape_id FROM retimed_nodes)
 ) AS sn
-    ON  rn.hashed_shape_id = sn.shape_id
+    ON  rn.hashed_shape_id = sn.hashed_shape_id
     AND rn.node_index      = sn.node_index
 SETTINGS
     join_algorithm = 'full_sorting_merge',

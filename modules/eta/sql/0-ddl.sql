@@ -5,11 +5,11 @@
 -- TRUNCATE TABLE eta.hist_shape_nodes;
 -- TRUNCATE TABLE eta.hist_node_travel_times;
 
--- Historical Tables
+-- =============================================================================
+-- Historical ride sets (Mongo → ClickHouse via loader)
+-- =============================================================================
 
--- List of rides the historical pipeline must process. Loader truncates + bulk-inserts
--- this set at the start of every historical run; mv_hist_node_travel_times_samples
--- joins against it to filter raw events.
+-- Historical window: rides whose samples feed transformation / aggregation.
 CREATE TABLE IF NOT EXISTS eta.hist_rides (
     _id String,
     hashed_shape_id String,
@@ -22,9 +22,7 @@ CREATE TABLE IF NOT EXISTS eta.hist_rides (
 ENGINE = ReplacingMergeTree()
 ORDER BY (_id);
 
--- List of rides the historical pipeline must process. Loader truncates + bulk-inserts
--- this set at the start of every historical run; mv_hist_node_travel_times_samples
--- joins against it to filter raw events.
+-- Current service window (same schema as hist_rides; used for live / near-term slices).
 CREATE TABLE IF NOT EXISTS eta.curr_rides (
     _id String,
     hashed_shape_id String,
@@ -37,6 +35,9 @@ CREATE TABLE IF NOT EXISTS eta.curr_rides (
 ENGINE = ReplacingMergeTree()
 ORDER BY (_id);
 
+-- =============================================================================
+-- Events & geometry
+-- =============================================================================
 
 CREATE TABLE IF NOT EXISTS eta.hist_vehicle_events (
     _id String,
@@ -65,6 +66,10 @@ ORDER BY (geohash, hashed_shape_id, node_index);
 
 ALTER TABLE eta.hist_shape_nodes
     MATERIALIZE INDEX idx_geohash;
+
+-- =============================================================================
+-- Transformation outputs
+-- =============================================================================
 
 CREATE TABLE IF NOT EXISTS eta.hist_node_travel_times (
     event_id String,
@@ -96,4 +101,4 @@ CREATE TABLE IF NOT EXISTS eta.hist_node_travel_times_aggregation (
 )
 ENGINE = MergeTree()
 ORDER BY
-( hashed_shape_id, node_index, operational_date, period, period_of_day, weekday, day_type);
+    (hashed_shape_id, node_index, operational_date, period, period_of_day, weekday, day_type);
