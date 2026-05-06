@@ -20,7 +20,7 @@ const main = async () => {
 	//
 	// Run all tasks sequentially
 
-	if (ITERATIONS_COUNTER % 100 === 0) await ensureStructure();
+	// if (ITERATIONS_COUNTER % 100 === 0) await ensureStructure();
 
 	await buildGtfsRtFeed();
 
