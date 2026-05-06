@@ -1,12 +1,6 @@
--- ! For development only: truncate tables manually when needed
--- TRUNCATE TABLE eta.hist_vehicle_events;
--- TRUNCATE TABLE eta.hist_rides;
--- TRUNCATE TABLE eta.curr_rides;
--- TRUNCATE TABLE eta.hist_shape_nodes;
--- TRUNCATE TABLE eta.hist_node_travel_times;
 
 -- =============================================================================
--- Historical ride sets (Mongo → ClickHouse via loader)
+-- Ride sets (Mongo → ClickHouse via loader)
 -- =============================================================================
 
 -- Historical window: rides whose samples feed transformation / aggregation.
@@ -68,7 +62,7 @@ ALTER TABLE eta.hist_shape_nodes
     MATERIALIZE INDEX idx_geohash;
 
 -- =============================================================================
--- Transformation outputs
+-- Node travel times transformation outputs
 -- =============================================================================
 
 CREATE TABLE IF NOT EXISTS eta.hist_node_travel_times (
