@@ -16,6 +16,7 @@ export const AppConfig = Object.freeze({
 	// App Pipeline Steps
 	pipelineSteps: {
 		insertCurrentWindowRides: true,
+		insertCurrentWindowWaypoints: true,
 		insertHistoricalRidesByDay: true,
 		insertHistoricalShapeNodes: true,
 		insertHistoricalVehicleEvents: true,

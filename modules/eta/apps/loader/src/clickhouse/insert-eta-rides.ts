@@ -9,7 +9,7 @@ export async function insertEtaRides(
 	ridesMapped: EtaRideRow[],
 	logLabel: string,
 ) {
-	Logger.progress(`Inserting ${ridesMapped.length} ${logLabel} into clickhouse`);
+	Logger.progress(`Inserting ${ridesMapped.length} ${logLabel} into clickhouse`, 1);
 	await clickhouseClient.insert({
 		format: 'JSONEachRow',
 		table,

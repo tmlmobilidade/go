@@ -96,3 +96,43 @@ CREATE TABLE IF NOT EXISTS eta.hist_node_travel_times_aggregation (
 ENGINE = MergeTree()
 ORDER BY
     (hashed_shape_id, node_index, operational_date, period, period_of_day, weekday, day_type);
+
+
+-- =============================================================================
+-- Waypoints
+-- =============================================================================
+
+CREATE TABLE IF NOT EXISTS eta.curr_waypoints
+(
+    arrival_time String,
+    departure_time String,
+    drop_off_type UInt8,
+    hashed_trip_id String,
+    pickup_type UInt8,
+    shape_dist_traveled Float64,
+    stop_id String,
+    stop_lat Float64,
+    stop_lon Float64,
+    stop_name String,
+    stop_sequence UInt16,
+    timepoint UInt8,
+)
+ENGINE = ReplacingMergeTree()
+ORDER BY (hashed_trip_id, stop_sequence, stop_id);
+
+-- Snapped waypoints: every stop on a trip resolved to its nearest shape node.
+CREATE TABLE IF NOT EXISTS eta.curr_waypoints_snapped
+(
+    hashed_trip_id String,
+    hashed_shape_id String,
+    stop_sequence UInt16,
+    stop_id String,
+    stop_name String,
+    stop_lat Float64,
+    stop_lon Float64,
+    node_index UInt32,
+    arrival_time String,
+    departure_time String
+)
+ENGINE = ReplacingMergeTree()
+ORDER BY (hashed_trip_id, stop_sequence, stop_id);

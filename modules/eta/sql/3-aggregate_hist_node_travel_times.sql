@@ -62,7 +62,7 @@ derived_fields AS (
 -- -----------------------------------------------------------------------------
 classified AS (
     SELECT
-        hashed_shape_id AS shape_id,
+        hashed_shape_id,
         node_index,
         operational_date,
         travel_time_seconds,
@@ -160,7 +160,7 @@ classified AS (
 -- calendar ranges and should not pollute any aggregate bucket.
 -- -----------------------------------------------------------------------------
 SELECT
-    shape_id,
+    hashed_shape_id,
     node_index,
     operational_date,
     period,
@@ -174,7 +174,7 @@ SELECT
 FROM classified
 WHERE period != 'Unknown'
 GROUP BY
-    shape_id,
+    hashed_shape_id,
     node_index,
     operational_date,
     period,
