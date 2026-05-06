@@ -52,6 +52,8 @@ export class GORedisClient {
 		Logger.info('[GORedisClient] Connecting to database...');
 		const connectionString = await this.getConnectionString();
 		this.client = createClient({ url: connectionString });
+		await this.client.connect();
+		Logger.info('[GORedisClient] Connected to database');
 	}
 
 	/**
@@ -60,7 +62,7 @@ export class GORedisClient {
 	 * connections, validating the necessary environment variables for each case.
 	 * This method is called internally by the service and should not be used directly.
 	 * @throws Will throw an error if required environment variables are missing or if the SSH tunnel setup fails.
-	 * @returns A promise that resolves to the ClickHouse connection string.
+	 * @returns A promise that resolves to the Redis connection string.
 	 */
 	private async getConnectionString(): Promise<string> {
 		//
