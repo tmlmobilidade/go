@@ -42,12 +42,6 @@ export function OfferBreadcrumbs({ items }: OfferBreadcrumbsProps) {
 		}
 	};
 
-	const handlePatternClick = () => {
-		if (items.patternId && items.routeId) {
-			router.push(PAGE_ROUTES.offer.PATTERN_DETAIL(items.lineId, items.routeId, items.patternId));
-		}
-	};
-
 	//
 	// C. Render components
 
@@ -68,7 +62,7 @@ export function OfferBreadcrumbs({ items }: OfferBreadcrumbsProps) {
 	// Show pattern if provided
 	if (items.patternId) {
 		breadcrumbItems.push(
-			<PatternTag key="pattern" onClick={handlePatternClick} pattern_id={items.patternId} />,
+			<PatternTag key="pattern" pattern_id={items.patternId} />,
 		);
 	}
 
