@@ -1,12 +1,14 @@
 /* * */
 
-import { organizeAlert } from '@tmlmobilidade/go-alerts-pckg-organize';
-import { alerts } from '@tmlmobilidade/interfaces';
+import { buildGtfsRtFeed } from '@/tasks/build-gtfs-rt-feed.js';
+import { ensureStructure } from '@/tasks/ensure-structure.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
+
+let ITERATIONS_COUNTER = 0;
 
 const main = async () => {
 	//
@@ -16,40 +18,16 @@ const main = async () => {
 	const globalTimer = new Timer();
 
 	//
-	// Get all Alert documents from the database
+	// Run all tasks sequentially
 
-	const alertsQty = await alerts.count();
+	// if (ITERATIONS_COUNTER % 100 === 0) await ensureStructure();
 
-	const alertsCollection = await alerts.getCollection();
-
-	const allAlertsStream = alertsCollection
-		.find({}, { sort: { publish_start_date: -1 } })
-		.stream();
-
-	Logger.info(`Found ${alertsQty} alerts.`);
+	await buildGtfsRtFeed();
 
 	//
-	// Loop through all alerts and request updated attributes for each document
+	// Log the total time taken for all tasks
 
-	let counter = alertsQty;
-
-	for await (const alertData of allAlertsStream) {
-		try {
-			//
-
-			Logger.info(`[${counter}/${alertsQty}] Processing Alert ${alertData._id}...`);
-
-			counter--;
-
-			const organizedAlertData = await organizeAlert(alertData);
-
-			await alerts.updateById(alertData._id, organizedAlertData);
-
-			//
-		} catch (error) {
-			Logger.error(`Error processing Alert ${alertData._id}:`, error);
-		}
-	}
+	ITERATIONS_COUNTER++;
 
 	Logger.terminate(`Organization completed in ${globalTimer.get()}`);
 
@@ -58,4 +36,4 @@ const main = async () => {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '5m' });
+await runOnInterval(main, { intervalMs: '30s' });
