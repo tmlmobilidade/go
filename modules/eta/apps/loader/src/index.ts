@@ -27,25 +27,33 @@ export async function main() {
 	const ridesQuery = buildRidesQuery();
 
 	//
-	// 0a. Apply DDL (create / ensure eta.* tables)
+	// 0. Bootstrap
 
-	if (AppConfig.pipelineSteps.runDdl) {
-		Logger.progress('Running 0a-ddl.sql');
-		await queryEachStatementFromFile(clickhouseClient, pipelinePath('0a-ddl.sql'));
-	}
+	if (AppConfig.pipelineSteps.runDdl || AppConfig.pipelineSteps.truncatePipelineTables) {
+		Logger.title('0. Bootstrap');
 
-	//
-	// 0b. Truncate pipeline tables (destructive; clears staged data)
+		if (AppConfig.pipelineSteps.runDdl) {
+			Logger.progress('Running 0a-ddl.sql');
+			await queryEachStatementFromFile(clickhouseClient, pipelinePath('0a-ddl.sql'));
+		}
 
-	if (AppConfig.pipelineSteps.truncatePipelineTables) {
-		Logger.progress('Running 0b-truncate.sql');
-		await queryEachStatementFromFile(clickhouseClient, pipelinePath('0b-truncate.sql'));
+		//
+		// 0b. Truncate pipeline tables (destructive; clears staged data)
+
+		if (AppConfig.pipelineSteps.truncatePipelineTables) {
+			Logger.progress('Running 0b-truncate.sql');
+			await queryEachStatementFromFile(clickhouseClient, pipelinePath('0b-truncate.sql'));
+		}
 	}
 
 	//
 	// 1. Insert current window rides into clickhouse
 
 	if (AppConfig.pipelineSteps.insertCurrentWindowRides) {
+		//
+
+		Logger.title('1. Insert current window rides into clickhouse');
+
 		const currentWindowRides = await fetchCurrentWindowRides(ridesQuery);
 		await insertEtaRides(clickhouseClient, 'eta.curr_rides', currentWindowRides.map(toEtaRideRow), 'current window rides');
 	}
@@ -55,6 +63,10 @@ export async function main() {
 
 	const disctictHashedShapeIds = new Set<string>();
 	if (AppConfig.pipelineSteps.insertHistoricalRidesByDay) {
+		//
+
+		Logger.title('2. Insert historical rides into clickhouse');
+
 		Logger.progress(`Getting historical rides for date range: ${Dates.now('Europe/Lisbon').minus({ days: AppConfig.historicalDataDaysBack }).iso} → ${Dates.now('Europe/Lisbon').iso}`);
 
 		for (let index = 0; index < AppConfig.historicalDataDaysBack; index++) {
@@ -84,7 +96,6 @@ export async function main() {
 	// 4. Sync historical shape nodes into clickhouse
 
 	if (AppConfig.pipelineSteps.insertHistoricalShapeNodes) {
-		Logger.progress(`Syncing historical shape nodes`);
 		await syncShapeNodes(clickhouseClient, Array.from(disctictHashedShapeIds));
 	}
 
@@ -92,6 +103,10 @@ export async function main() {
 	// 5. Run Transformatino Pipeline
 
 	if (AppConfig.pipelineSteps.runTransformationAndAggregationQueries) {
+		//
+
+		Logger.title('5. Run Node Travel Times Transformation & Aggregation');
+
 		//
 		Logger.progress(`Running 5a-build_hist_node_travel_times.sql query`);
 		await queryFromFile(clickhouseClient, pipelinePath('2-build_hist_node_travel_times.sql'));

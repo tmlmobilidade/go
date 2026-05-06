@@ -21,6 +21,8 @@ import geohash from 'ngeohash';
 export async function syncShapeNodes(clickhouseClient, hashedShapeIds: string[]): Promise<{ shapeNodesProcessed: number }> {
 	//
 
+	Logger.title('4. Sync historical shape nodes into clickhouse');
+
 	//
 	// Setup ClickHouse writer
 	const writer = new BatchWriter({
@@ -37,7 +39,6 @@ export async function syncShapeNodes(clickhouseClient, hashedShapeIds: string[])
 
 	//
 	// Get distinct hashed shape ids from rides
-	Logger.info(`Getting distinct hashed shape ids from rides`);
 	const hashedShapesCollection = await hashedShapes.getCollection();
 
 	//
