@@ -35,7 +35,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/utils": "*",
-		"amqplib": "1.0.5"
+		"amqplib": "1.0.6"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
