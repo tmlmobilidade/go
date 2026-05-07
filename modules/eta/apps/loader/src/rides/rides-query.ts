@@ -24,17 +24,8 @@ export async function fetchCurrentWindowRides(ridesQuery: Filter<Ride>) {
 				$lte: Dates.now('Europe/Lisbon').plus({ hours: 1 }).unix_timestamp,
 			},
 		} },
-		{ $sort: { start_time_scheduled: 1 } },
+		{ $sort: { start_time_scheduled: -1 } },
 	]);
-
-	console.log({ $match: {
-		...ridesQuery,
-		start_time_scheduled: {
-			$gte: Dates.now('Europe/Lisbon').minus({ hours: 1 }).unix_timestamp,
-			$lte: Dates.now('Europe/Lisbon').plus({ hours: 1 }).unix_timestamp,
-		},
-	} },
-	{ $sort: { start_time_scheduled: 1 } });
 
 	Logger.progress(`Found ${currentWindowRides.length} current window rides`);
 	return currentWindowRides;
