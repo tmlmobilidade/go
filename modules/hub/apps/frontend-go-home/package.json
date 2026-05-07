@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-locations-frontend",
+	"name": "@tmlmobilidade/go-exporter-frontend",
 	"version": "0.1.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -9,7 +9,7 @@
 	"private": true,
 	"scripts": {
 		"build": "next build",
-		"dev": "next dev -p 51005",
+		"dev": "next dev -p 51007",
 		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint ./src --fix",
 		"start": "next start"
