@@ -24,7 +24,12 @@ REFRESH EVERY 5 MINUTE
 TO eta.pred_node_etas
 AS
 WITH
-    toYYYYMMDD(now()) AS today_date,
+    toDate(now()) AS today_dt,
+    toUInt32(formatDateTime(today_dt - INTERVAL 1 DAY,  '%Y%m%d')) AS ymd_prev_1d,
+    toUInt32(formatDateTime(today_dt - INTERVAL 3 DAY,  '%Y%m%d')) AS ymd_prev_3d,
+    toUInt32(formatDateTime(today_dt - INTERVAL 7 DAY,  '%Y%m%d')) AS ymd_prev_7d,
+    toUInt32(formatDateTime(today_dt - INTERVAL 14 DAY, '%Y%m%d')) AS ymd_prev_14d,
+    toUInt32(formatDateTime(today_dt - INTERVAL 30 DAY, '%Y%m%d')) AS ymd_prev_30d,
     weights AS (
         SELECT
             toFloat64(1.00) AS w_last_3d,
@@ -46,7 +51,7 @@ WITH
             period_of_day,
             median_travel_time_seconds
         FROM eta.hist_node_travel_times_aggregation
-        WHERE operational_date BETWEEN today_date - 30 AND today_date - 1
+        WHERE operational_date BETWEEN ymd_prev_30d AND ymd_prev_1d
     ),
     targets AS (
         SELECT DISTINCT hashed_shape_id, node_index, period_of_day, weekday, day_type, period
@@ -57,12 +62,12 @@ WITH
             hashed_shape_id,
             node_index,
             period_of_day,
-            sumIf(median_travel_time_seconds, operational_date >= today_date - 3)
-                / nullIf(countIf(operational_date >= today_date - 3),  0) AS avg_prev_3d,
-            sumIf(median_travel_time_seconds, operational_date >= today_date - 7)
-                / nullIf(countIf(operational_date >= today_date - 7),  0) AS avg_prev_7d,
-            sumIf(median_travel_time_seconds, operational_date >= today_date - 14)
-                / nullIf(countIf(operational_date >= today_date - 14), 0) AS avg_prev_14d,
+            sumIf(median_travel_time_seconds, operational_date >= ymd_prev_3d)
+                / nullIf(countIf(operational_date >= ymd_prev_3d),  0) AS avg_prev_3d,
+            sumIf(median_travel_time_seconds, operational_date >= ymd_prev_7d)
+                / nullIf(countIf(operational_date >= ymd_prev_7d),  0) AS avg_prev_7d,
+            sumIf(median_travel_time_seconds, operational_date >= ymd_prev_14d)
+                / nullIf(countIf(operational_date >= ymd_prev_14d), 0) AS avg_prev_14d,
             avg(median_travel_time_seconds)                                AS avg_prev_30d
         FROM base
         GROUP BY hashed_shape_id, node_index, period_of_day
