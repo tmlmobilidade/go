@@ -1,11 +1,11 @@
 /* * */
 
-import { AlertsController } from '@/endpoints/v1/alerts/alerts.controller.js';
+import { PlansController } from '@/endpoints/v1/plans/plans.controller.js';
 import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */
 
-const namespace = '/v1/alerts';
+const namespace = '/v1/plans';
 
 /* * */
 
@@ -15,11 +15,9 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/', AlertsController.getJson);
+		instance.get('/gtfs', PlansController.getGtfs);
 
-		instance.get('.pb', AlertsController.getProtobuf);
-
-		instance.get('.rss', AlertsController.getRss);
+		instance.get('/approved', PlansController.getApproved);
 
 		next();
 	},
