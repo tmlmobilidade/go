@@ -100,14 +100,7 @@ export class GtfsController {
 			.header('cache-control', 'public, max-age=20')
 			.type('application/json')
 			.send({
-				data: {
-					entity: JSON.parse(cachedFeedMessageString),
-					header: {
-						gtfs_realtime_version: '2.0',
-						incrementality: 'FULL_DATASET',
-						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-					},
-				},
+				data: JSON.parse(cachedFeedMessageString),
 				error: null,
 				statusCode: HTTP_STATUS.OK,
 			});
