@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"@mantine/hooks": "9.1.1",
-		"@tabler/icons-react": "3.42.0",
+		"@tabler/icons-react": "3.43.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
@@ -29,11 +29,11 @@
 		"@vis.gl/react-maplibre": "8.1.1",
 		"luxon": "3.7.2",
 		"maplibre-gl": "5.24.0",
-		"next": "16.2.4",
+		"next": "16.2.5",
 		"nuqs": "2.8.9",
-		"react": "19.2.5",
-		"react-dom": "19.2.5",
-		"react-i18next": "17.0.6",
+		"react": "19.2.6",
+		"react-dom": "19.2.6",
+		"react-i18next": "17.0.7",
 		"recharts": "3.8.1",
 		"sharp": "0.34.5",
 		"swr": "2.4.1"
@@ -42,7 +42,7 @@
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/geojson": "7946.0.16",
 		"@types/luxon": "3.7.1",
-		"@types/node": "25.6.0",
+		"@types/node": "25.6.1",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",
 		"typescript": "5.9.3"
