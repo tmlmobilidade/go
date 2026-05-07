@@ -14,101 +14,46 @@ export class PlansController {
 	//
 
 	/**
-	 * Returns a GTFS feed with service alerts for Carris Metropolitana.
-	 * @param request The request object.
-	 * @param reply The reply object.
+	 * Retrieves all plans that are approved together with the URL to the operation file
+	 * This method is used to fetch plans that are ready for use in the system.
+	 * @param request Fastify request
+	 * @param reply Fastify reply
 	 */
-	static async getApproved(request: FastifyRequest, reply: FastifyReply<GtfsRtFeedMessage>) {
-		//
+	static async getApproved(request: FastifyRequest, reply: FastifyReply<Plan[]>) {
+		// Get all plans that are approved
+		const allPlans = await plans.all();
+		// For each plan, get the file URL
+		const plansWithFiles = await Promise.all(
+			allPlans.map(async (plan) => {
+				const file = await files.findById(plan.operation_file_id);
+				return { ...plan, operation_file_url: file.url };
+			}),
+		);
 
-		//
-		// Retrieve prepared GTFS-RT feed from cache
-
-		const cachedFeedMessageString = await apiCache.get('alerts:all');
-
-		if (!cachedFeedMessageString) {
-			Logger.error('No GTFS-RT feed found in cache. Returning empty feed message.');
-			return reply
-				.code(404)
-				.header('cache-control', 'public, max-age=20')
-				.send(getEmptyGtfsRtFeedMessage());
-		};
-
-		return reply
-			.code(200)
-			.header('cache-control', 'public, max-age=20')
-			.type('application/json')
-			.send({
-				data: {
-					entity: JSON.parse(cachedFeedMessageString),
-					header: {
-						gtfs_realtime_version: '2.0',
-						incrementality: 'FULL_DATASET',
-						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-					},
-				},
-				error: null,
-				statusCode: HTTP_STATUS.OK,
-			});
-
-		// const allItemsData = JSON.parse(allItemsTxt);
-		// const FeedMessage = gtfsRealtime.root.lookupType('transit_realtime.FeedMessage');
-		// const message = FeedMessage.fromObject(allItemsData);
-		// const buffer = FeedMessage.encode(message).finish();
-		// return reply
-		// 	.code(200)
-		// 	.header('cache-control', 'public, max-age=20')
-		// 	.type('application/octet-stream')
-		// 	.send(buffer);
+		// Send all plans
+		return reply.send({ data: plansWithFiles, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
-	 * Returns a GTFS feed with service alerts for Carris Metropolitana.
+	 * Download the latest GTFS merged file.
 	 * @param request The request object.
 	 * @param reply The reply object.
 	 */
-	static async getGtfs(request: FastifyRequest, reply: FastifyReply<GtfsRtFeedMessage>) {
-		//
-
-		//
-		// Retrieve prepared GTFS-RT feed from cache
-
-		const cachedFeedMessageString = await apiCache.get('alerts:all');
-
-		if (!cachedFeedMessageString) {
-			Logger.error('No GTFS-RT feed found in cache. Returning empty feed message.');
-			return reply
-				.code(404)
-				.header('cache-control', 'public, max-age=20')
-				.send(getEmptyGtfsRtFeedMessage());
-		};
-
-		return reply
-			.code(200)
-			.header('cache-control', 'public, max-age=20')
-			.type('application/json')
-			.send({
-				data: {
-					entity: JSON.parse(cachedFeedMessageString),
-					header: {
-						gtfs_realtime_version: '2.0',
-						incrementality: 'FULL_DATASET',
-						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-					},
-				},
-				error: null,
-				statusCode: HTTP_STATUS.OK,
-			});
-
-		// const allItemsData = JSON.parse(allItemsTxt);
-		// const FeedMessage = gtfsRealtime.root.lookupType('transit_realtime.FeedMessage');
-		// const message = FeedMessage.fromObject(allItemsData);
-		// const buffer = FeedMessage.encode(message).finish();
-		// return reply
-		// 	.code(200)
-		// 	.header('cache-control', 'public, max-age=20')
-		// 	.type('application/octet-stream')
-		// 	.send(buffer);
+	static async getGtfs(request: FastifyRequest, reply: FastifyReply<string>) {
+		// Retrieve file data from database
+		const foundFileData = await files.findById('gtfs-merged-latest');
+		if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
+		// Stream the file in the given URL to the client
+		const storageServiceResponse = await fetch(foundFileData.url);
+		if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
+		// Set headers and pipe the response body to the client
+		reply.header('Content-Disposition', `attachment; filename="gtfs-merged-latest.zip"`);
+		reply.header('Content-Type', 'application/zip');
+		// Set content length if available
+		const contentLength = storageServiceResponse.headers.get('Content-Length');
+		if (contentLength) reply.header('Content-Length', contentLength);
+		// Pipe the response body to the client
+		return reply.send(storageServiceResponse.body);
 	}
 
 	//

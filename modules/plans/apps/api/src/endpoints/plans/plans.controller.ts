@@ -336,27 +336,6 @@ export class PlansController {
 	}
 
 	/**
-	 * Retrieves all plans that are approved together with the URL to the operation file
-	 * This method is used to fetch plans that are ready for use in the system.
-	 * @param request Fastify request
-	 * @param reply Fastify reply
-	 */
-	static async getApprovedPlans(request: FastifyRequest, reply: FastifyReply<Plan[]>) {
-		// Get all plans that are approved
-		const allPlans = await plans.all();
-		// For each plan, get the file URL
-		const plansWithFiles = await Promise.all(
-			allPlans.map(async (plan) => {
-				const file = await files.findById(plan.operation_file_id);
-				return { ...plan, operation_file_url: file.url };
-			}),
-		);
-
-		// Send all plans
-		return reply.send({ data: plansWithFiles, error: null, statusCode: HTTP_STATUS.OK });
-	}
-
-	/**
 	 * Retrieves a single plan by ID
 	 * @param request Fastify request containing plan ID in params
 	 * @param reply Fastify reply
