@@ -290,11 +290,11 @@ export async function main() {
 	const fileStream = fs.createReadStream(`${exportConfig.workdir}/${exportConfig.version}.zip`);
 
 	await files.upload(fileStream, {
-		_id: 'gtfs-merged-latest',
+		_id: 'gtfs-latest',
 		created_by: 'system',
 		name: `${exportConfig.version}.zip`,
-		resource_id: 'gtfs-merged',
-		scope: 'exports',
+		resource_id: 'gtfs-latest',
+		scope: 'plans',
 		size: fs.statSync(`${exportConfig.workdir}/${exportConfig.version}.zip`).size,
 		type: Files.getFileExtensionFromMimeType(Files.getFileExtension(`${exportConfig.version}.zip`)),
 		updated_by: 'system',
