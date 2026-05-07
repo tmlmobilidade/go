@@ -199,6 +199,7 @@ export const API_ROUTES = Object.freeze({
 
 		// GTFS
 		GTFS_CARRIS_METROPOLITANA: `${getModuleConfig('alerts', 'api_url')}/gtfs/carris-metropolitana`,
+		GTFS_CM2: `${getModuleConfig('alerts', 'api_url')}/gtfs/cm2`,
 
 		// OPERATION
 		OPERATION_LINES: `${getModuleConfig('alerts', 'api_url')}/operation/lines`,

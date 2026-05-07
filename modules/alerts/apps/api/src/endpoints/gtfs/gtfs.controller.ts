@@ -5,6 +5,7 @@ import { apiCache } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { transformAlert } from '@tmlmobilidade/go-alerts-pckg-transform';
+import { getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
 import { alerts } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/types';
@@ -81,15 +82,6 @@ export class GtfsController {
 	static async carrisMetropolitana2(request: FastifyRequest, reply: FastifyReply<GtfsRtFeedMessage>) {
 		//
 
-		const emptyFeedMessage: GtfsRtFeedMessage = {
-			entity: [],
-			header: {
-				gtfs_realtime_version: '2.0',
-				incrementality: 'FULL_DATASET',
-				timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-			},
-		};
-
 		//
 		// Retrieve prepared GTFS-RT feed from cache
 
@@ -98,36 +90,26 @@ export class GtfsController {
 		if (!cachedFeedMessageString) {
 			Logger.error('No GTFS-RT feed found in cache. Returning empty feed message.');
 			return reply
-				.code(200)
+				.code(404)
 				.header('cache-control', 'public, max-age=20')
-				.send(emptyFeedMessage);
+				.send(getEmptyGtfsRtFeedMessage());
 		};
 
-		const allItemsData = JSON.parse(allItemsTxt);
-		const FeedMessage = gtfsRealtime.root.lookupType('transit_realtime.FeedMessage');
-		const message = FeedMessage.fromObject(allItemsData);
-		const buffer = FeedMessage.encode(message).finish();
 		return reply
 			.code(200)
 			.header('cache-control', 'public, max-age=20')
-			.type('application/octet-stream')
-			.send(buffer);
+			.type('application/json')
+			.send(cachedFeedMessageString);
 
-		//
-		// Send the GTFS-RT feed as the response
-
-		reply.send({
-			data: {
-				entity: transformResult,
-				header: {
-					gtfs_realtime_version: '2.0',
-					incrementality: 'FULL_DATASET',
-					timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-				},
-			},
-			error: null,
-			statusCode: HTTP_STATUS.OK,
-		});
+		// const allItemsData = JSON.parse(allItemsTxt);
+		// const FeedMessage = gtfsRealtime.root.lookupType('transit_realtime.FeedMessage');
+		// const message = FeedMessage.fromObject(allItemsData);
+		// const buffer = FeedMessage.encode(message).finish();
+		// return reply
+		// 	.code(200)
+		// 	.header('cache-control', 'public, max-age=20')
+		// 	.type('application/octet-stream')
+		// 	.send(buffer);
 	}
 
 	//

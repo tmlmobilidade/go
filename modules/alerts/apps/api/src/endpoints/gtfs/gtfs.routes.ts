@@ -21,7 +21,7 @@ server.register(
 		);
 
 		instance.get(
-			'/cm.pb',
+			'/cm2',
 			GtfsController.carrisMetropolitana2,
 		);
 
