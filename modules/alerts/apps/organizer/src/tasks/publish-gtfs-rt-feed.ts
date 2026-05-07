@@ -1,8 +1,8 @@
 /* * */
 
+import { transformAlertIntoGtfsRtEntity } from '@/transform/gtfs-rt/main.js';
 import { apiCache } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { transformAlert } from '@tmlmobilidade/go-alerts-pckg-transform';
 import { alerts } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -13,7 +13,7 @@ import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/ty
 export async function buildGtfsRtFeed() {
 	//
 
-	Logger.title('Starting build of GTFS-RT feed...');
+	Logger.title('Publishing GTFS-RT feed...');
 
 	const globalTimer = new Timer();
 
@@ -45,7 +45,7 @@ export async function buildGtfsRtFeed() {
 	//
 	// Transform alerts into GTFS-RT feed entities
 
-	const transformedItems = await Promise.all(findResult.map(transformAlert));
+	const transformedItems = await Promise.all(findResult.map(transformAlertIntoGtfsRtEntity));
 
 	const transformResult: GtfsRtFeedEntity[] = transformedItems.filter(Boolean);
 
@@ -63,9 +63,9 @@ export async function buildGtfsRtFeed() {
 		},
 	};
 
-	await apiCache.set('alerts:all', JSON.stringify(gtfsRtFeed));
+	await apiCache.set('hub:alerts:published:gtfs', JSON.stringify(gtfsRtFeed));
 
-	Logger.success(`Finished organizing alert structure (${globalTimer.get()})`);
+	Logger.success(`Finished publishing GTFS-RT feed (${globalTimer.get()})`);
 
 	//
 };

@@ -3,9 +3,9 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { encodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
+import { encodeGtfsRtFeed, getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert } from '@tmlmobilidade/types';
+import { type Alert, GtfsRtFeedMessage } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -17,13 +17,13 @@ export class AlertsController {
 	 * @param request The request object.
 	 * @param reply The reply object.
 	 */
-	static async getJson(request: FastifyRequest, reply: FastifyReply<Alert[]>) {
+	static async getJsonFeed(request: FastifyRequest, reply: FastifyReply<Alert[]>) {
 		//
 
 		const cachedData = await apiCache.get('hub:alerts:published:json');
 
 		if (!cachedData) {
-			Logger.error('[hub/v1/alerts:getJson()] No JSON feed found in cache. Returning empty array.');
+			Logger.error('[hub/v1/alerts:getJsonFeed()] No JSON feed found in cache. Returning empty array.');
 			return reply
 				.header('cache-control', 'public, max-age=20')
 				.code(HTTP_STATUS.NO_CONTENT)
@@ -45,17 +45,49 @@ export class AlertsController {
 	}
 
 	/**
-	 * Returns an RSS feed with service alerts for Carris Metropolitana.
+	 * Returns a GTFS-RT JSON feed with service alerts for Carris Metropolitana.
 	 * @param request The request object.
 	 * @param reply The reply object.
 	 */
-	static async getProtobuf(request: FastifyRequest, reply: FastifyReply<Buffer>) {
+	static async getGtfsRtJsonFeed(request: FastifyRequest, reply: FastifyReply<GtfsRtFeedMessage>) {
 		//
 
 		const cachedData = await apiCache.get('hub:alerts:published:gtfs');
 
 		if (!cachedData) {
-			Logger.error('[hub/v1/alerts:getProtobuf()] No GTFS-RT feed found in cache. Returning empty message.');
+			Logger.error('[hub/v1/alerts:getGtfsRtJsonFeed()] No GTFS-RT feed found in cache. Returning empty message.');
+			return reply
+				.code(HTTP_STATUS.NO_CONTENT)
+				.header('cache-control', 'public, max-age=20')
+				.send({
+					data: getEmptyGtfsRtFeedMessage(),
+					error: null,
+					status_code: HTTP_STATUS.NO_CONTENT,
+				});
+		};
+
+		return reply
+			.code(HTTP_STATUS.OK)
+			.header('cache-control', 'public, max-age=20')
+			.send({
+				data: JSON.parse(cachedData),
+				error: null,
+				status_code: HTTP_STATUS.OK,
+			});
+	}
+
+	/**
+	 * Returns a GTFS-RT Protobuf feed with service alerts for Carris Metropolitana.
+	 * @param request The request object.
+	 * @param reply The reply object.
+	 */
+	static async getGtfsRtProtobufFeed(request: FastifyRequest, reply: FastifyReply<Buffer>) {
+		//
+
+		const cachedData = await apiCache.get('hub:alerts:published:gtfs');
+
+		if (!cachedData) {
+			Logger.error('[hub/v1/alerts:getGtfsRtProtobufFeed()] No GTFS-RT feed found in cache. Returning empty message.');
 			return reply
 				.code(HTTP_STATUS.NO_CONTENT)
 				.header('cache-control', 'public, max-age=20')
@@ -77,13 +109,13 @@ export class AlertsController {
 	 * @param request The request object.
 	 * @param reply The reply object.
 	 */
-	static async getRss(request: FastifyRequest, reply: FastifyReply<string>) {
+	static async getRssFeed(request: FastifyRequest, reply: FastifyReply<string>) {
 		//
 
 		const cachedData = await apiCache.get('hub:alerts:published:rss');
 
 		if (!cachedData) {
-			Logger.error('[hub/v1/alerts:getRss()] No RSS feed found in cache. Returning empty message.');
+			Logger.error('[hub/v1/alerts:getRssFeed()] No RSS feed found in cache. Returning empty message.');
 			return reply
 				.code(HTTP_STATUS.NO_CONTENT)
 				.header('cache-control', 'public, max-age=20')

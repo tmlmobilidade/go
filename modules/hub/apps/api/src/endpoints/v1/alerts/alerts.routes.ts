@@ -15,11 +15,13 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/', AlertsController.getJson);
+		instance.get('/', AlertsController.getJsonFeed);
 
-		instance.get('.pb', AlertsController.getProtobuf);
+		instance.get('/gtfs', AlertsController.getGtfsRtJsonFeed);
 
-		instance.get('.rss', AlertsController.getRss);
+		instance.get('/gtfs.pb', AlertsController.getGtfsRtProtobufFeed);
+
+		instance.get('.rss', AlertsController.getRssFeed);
 
 		next();
 	},
