@@ -99,7 +99,18 @@ export class GtfsController {
 			.code(200)
 			.header('cache-control', 'public, max-age=20')
 			.type('application/json')
-			.send(cachedFeedMessageString);
+			.send({
+				data: {
+					entity: JSON.parse(cachedFeedMessageString),
+					header: {
+						gtfs_realtime_version: '2.0',
+						incrementality: 'FULL_DATASET',
+						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+					},
+				},
+				error: null,
+				statusCode: HTTP_STATUS.OK,
+			});
 
 		// const allItemsData = JSON.parse(allItemsTxt);
 		// const FeedMessage = gtfsRealtime.root.lookupType('transit_realtime.FeedMessage');
