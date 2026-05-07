@@ -41,53 +41,57 @@ const main = async () => {
 	// Transform each message into a RawVehicleEvent
 
 	for (const entity of decodedMessage.entity ?? []) {
+		try {
 		//
 
+			//
+			// Skip entities that do not have a vehicle field,
+			// as they are not relevant for our use case.
+
+			if (!entity.vehicle) continue;
+
+			//
+			// Hash the relevant fields of the vehicle event
+			// to create a unique identifier for the event.
+			// This allows us to identify duplicate events
+			// and avoid storing them multiple times in the database.
+
+			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventTtslV1> = {
+				agency_id: '4',
+				created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_timestamp,
+				entity_id: entity.id,
+				payload: {
+					header: decodedMessage.header,
+					vehicle: entity.vehicle,
+				},
+				version: 'ttsl-v1',
+			};
+
+			const hashableRawEventId = crypto
+				.createHash('sha256')
+				.update(JSON.stringify(hashableRawEvent))
+				.digest('hex');
+
+			//
+			// Write the new vehicle event document
+			// to the RawVehicleEvents collection
+
+			const alreadyExists = await rawVehicleEventsNew.findOne({ _id: hashableRawEventId });
+
+			if (alreadyExists) continue;
+
+			await rawVehicleEventsNew.insertOne({
+				...hashableRawEvent,
+				_id: hashableRawEventId,
+				received_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			});
+
+			saveCount++;
+
 		//
-		// Skip entities that do not have a vehicle field,
-		// as they are not relevant for our use case.
-
-		if (!entity.vehicle) continue;
-
-		//
-		// Hash the relevant fields of the vehicle event
-		// to create a unique identifier for the event.
-		// This allows us to identify duplicate events
-		// and avoid storing them multiple times in the database.
-
-		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventTtslV1> = {
-			agency_id: '4',
-			created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_timestamp,
-			entity_id: entity.id,
-			payload: {
-				header: decodedMessage.header,
-				vehicle: entity.vehicle,
-			},
-			version: 'ttsl-v1',
-		};
-
-		const hashableRawEventId = crypto
-			.createHash('sha256')
-			.update(JSON.stringify(hashableRawEvent))
-			.digest('hex');
-
-		//
-		// Write the new vehicle event document
-		// to the RawVehicleEvents collection
-
-		const alreadyExists = await rawVehicleEventsNew.findOne({ _id: hashableRawEventId });
-
-		if (alreadyExists) continue;
-
-		await rawVehicleEventsNew.insertOne({
-			...hashableRawEvent,
-			_id: hashableRawEventId,
-			received_at: Dates.now('Europe/Lisbon').unix_timestamp,
-		});
-
-		saveCount++;
-
-		//
+		} catch (error) {
+			Logger.error(`Error processing TTSL entity with ID ${entity.id}:`, error);
+		}
 	}
 
 	Logger.info(`[${ITERATION}] Saved ${saveCount} new Vehicle Events from TTSL data in ${timer.get()}.`);
