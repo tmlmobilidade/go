@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-plans-cleaner",
+	"name": "@tmlmobilidade/go-plans-organizer",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -17,6 +17,7 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
+		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/interfaces": "*",
