@@ -9,7 +9,7 @@ import { type Alert } from '@tmlmobilidade/types';
 
 /* * */
 
-export async function buildJsonFeed() {
+export async function publishJsonFeed() {
 	//
 
 	Logger.title('Starting build of JSON feed...');

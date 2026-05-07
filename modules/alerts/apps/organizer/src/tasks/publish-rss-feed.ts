@@ -14,7 +14,7 @@ const RSS_FEED_URL = 'https://www.carrismetropolitana.pt/alerts';
 
 /* * */
 
-export async function buildRssFeed() {
+export async function publishRssFeed() {
 	//
 
 	Logger.title('Starting build of RSS feed...');

@@ -10,7 +10,7 @@ import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/ty
 
 /* * */
 
-export async function buildGtfsRtFeed() {
+export async function publishGtfsRtFeed() {
 	//
 
 	Logger.title('Publishing GTFS-RT feed...');

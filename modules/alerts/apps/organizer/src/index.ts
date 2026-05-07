@@ -1,7 +1,9 @@
 /* * */
 
 import { ensureStructure } from '@/tasks/ensure-structure.js';
-import { buildGtfsRtFeed } from '@/tasks/publish-gtfs-rt-feed.js';
+import { publishGtfsRtFeed } from '@/tasks/publish-gtfs-rt-feed.js';
+import { publishJsonFeed } from '@/tasks/publish-json-feed.js';
+import { publishRssFeed } from '@/tasks/publish-rss-feed.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -20,9 +22,13 @@ const main = async () => {
 	//
 	// Run all tasks sequentially
 
-	// if (ITERATIONS_COUNTER % 100 === 0) await ensureStructure();
+	if (ITERATIONS_COUNTER % 10 === 0) await ensureStructure();
 
-	await buildGtfsRtFeed();
+	await publishGtfsRtFeed();
+
+	await publishJsonFeed();
+
+	await publishRssFeed();
 
 	//
 	// Log the total time taken for all tasks
