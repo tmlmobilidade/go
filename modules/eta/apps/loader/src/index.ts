@@ -33,6 +33,17 @@ export async function main() {
 	if (AppConfig.pipelineSteps.runDdl || AppConfig.pipelineSteps.truncatePipelineTables) {
 		Logger.title('0. Bootstrap');
 
+		//
+		// Truncate pipeline tables (destructive; deletes tables from database)
+
+		if (AppConfig.pipelineSteps.truncatePipelineTables) {
+			Logger.info('Running 0b-truncate.sql');
+			await queryEachStatementFromFile(clickhouseClient, pipelinePath('bootstrap/0b-truncate.sql'));
+		}
+
+		//
+		// Create tables
+
 		if (AppConfig.pipelineSteps.runDdl) {
 			Logger.info('Running 0a-ddl.sql', 1);
 			await queryEachStatementFromFile(clickhouseClient, pipelinePath('bootstrap/0a-create-tables.sql'));
@@ -47,14 +58,6 @@ export async function main() {
 
 			await queryEachStatementFromFile(clickhouseClient, pipelinePath('bootstrap/mv-predict-trip-stop-etas.sql'));
 			Logger.progress('Created mv-predict-trip-stop-etas', 1);
-		}
-
-		//
-		// 0b. Truncate pipeline tables (destructive; clears staged data)
-
-		if (AppConfig.pipelineSteps.truncatePipelineTables) {
-			Logger.info('Running 0b-truncate.sql');
-			await queryEachStatementFromFile(clickhouseClient, pipelinePath('bootstrap/0b-truncate.sql'));
 		}
 	}
 
