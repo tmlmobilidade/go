@@ -1,0 +1,565 @@
+{
+	"AlertsCarousel": {
+		"heading": "Alertas de Serviço"
+	},
+	"IconDisplay": {
+		"connections": {
+			"bike_parking": "Perto de Estacionamento de Bicicletas",
+			"boat": "Ligação com o Barco",
+			"bus": "Ligação com outros Autocarros",
+			"car_parking": "Perto de Estacionamento Automóvel",
+			"light_rail": "Ligação com o Metro de Superfície",
+			"subway": "Ligação com o Metro",
+			"train": "Ligação com o Comboio"
+		},
+		"facilities": {
+			"court": "Perto de um Tribunal",
+			"fire_station": "Perto de um Quartel de Bombeiros",
+			"health_center": "Perto de um Centro de Saúde ou Clínca",
+			"hospital": "Perto de um Hospital",
+			"park": "Perto de um Parque",
+			"police_station": "Perto de uma Esquadra de Polícia",
+			"school": "Perto de uma Escola",
+			"transit_office": "Perto de um Espaço navegante®",
+			"university": "Perto de uma Universidade"
+		},
+		"operators": {
+			"atlantic_ferries": "Atlantic Ferries (barcos de Tróia)",
+			"ccfl": "Carris municipal",
+			"cmet": "CMET",
+			"cp": "CP Comboios de Portugal",
+			"fertagus": "Fertagus (comboio da Ponte)",
+			"metro": "Metro de Lisboa",
+			"mobi_cascais": "MobiCascais",
+			"mts": "Metro Transportes do Sul",
+			"tcb": "Transportes Colectivos do Barreiro",
+			"ttsl": "Transtejo e Soflusa"
+		}
+	},
+	"SelectLine": {
+		"label": "Procurar linha por número, nome, localidade...",
+		"nothing_found": "Nenhum Resultado Encontrado",
+		"placeholder": "Procurar linha por número, nome, localidade..."
+	},
+	"SelectStop": {
+		"label": "Procurar paragem por nome, número, localidade...",
+		"nothing_found": "Nenhum Resultado Encontrado",
+		"placeholder": "Procurar paragem por nome, número, localidade..."
+	},
+	"alerts": {
+		"AlertActivePeriod": {
+			"end": "Fim: <parsedDate>{end, date, dayShort} {end, date, monthLong} {end, date, yearLong}</parsedDate>",
+			"start": "Início: <parsedDate>{start, date, dayShort} {start, date, monthLong} {start, date, yearLong}</parsedDate>"
+		},
+		"AlertCauseEffectIcon": {
+			"cause": {
+				"ABUSIVE_PARKING": "Estacionamento Abusivo",
+				"ACCIDENT": "Acidente",
+				"CONSTRUCTION": "Obras",
+				"DEMONSTRATION": "Evento / Manifestação",
+				"DRIVER_ABSENCE": "Problema Técnico",
+				"DRIVER_ISSUE": "Problema Técnico",
+				"HIGH_PASSENGER_LOAD": "Elevada Lotação",
+				"MEDICAL_EMERGENCY": "Emergência Médica",
+				"NETWORK_UPDATE": "Atualização da Rede",
+				"OTHER_CAUSE": "Outras Causas",
+				"POLICE_ACTIVITY": "Atividade Policial",
+				"PUBLIC_DISORDER": "Desacatos",
+				"ROAD_ISSUE": "Incidente na Via",
+				"STRIKE": "Greve",
+				"TECHNICAL_ISSUE": "Problema Técnico",
+				"TRAFFIC_JAM": "Trânsito",
+				"VEHICLE_ISSUE": "Problema Técnico",
+				"WEATHER": "Condições Meteorológicas"
+			},
+			"effect": {
+				"ACCESSIBILITY_ISSUE": "Impacto na Acessibilidade",
+				"ADDITIONAL_SERVICE": "Serviço Adicional",
+				"DETOUR": "Desvio",
+				"MODIFIED_SERVICE": "Serviço Modificado",
+				"NO_SERVICE": "Cancelamento",
+				"ON_BOARD_SALE_ISSUE": "Venda a Bordo Condicionada",
+				"REALTIME_INFO_ISSUE": "Impacto na Informação ao Público",
+				"REDUCED_SERVICE": "Encurtamento de Percurso",
+				"SIGNIFICANT_DELAYS": "Atrasos Significativos",
+				"STOP_MOVED": "Paragem Deslocada"
+			}
+		},
+		"AlertsDetail": {
+			"more_info": "Mais informações"
+		},
+		"AlertsDetailImageThumbnail": {
+			"open_full_image": "Abrir imagem numa nova janela"
+		},
+		"AlertsListEmpty": {
+			"default": {
+				"action_1": "Consultar Alertas Ativos Hoje",
+				"action_2": "Instalar a App",
+				"subtitle": "Instale a App Carris Metropolitana e receba notificações sobre alterações à rede.",
+				"title": "Nenhum alerta agendado"
+			}
+		},
+		"AlertsListGroup": {
+			"label": "{count, plural, one {Alerta ativo} other {Alertas ativos}}",
+			"titles": {
+				"future": "A partir de {value, date, dayShort} {value, date, monthLong} {value, date, yearLong}",
+				"past": "Desde {value, date, dayShort} {value, date, monthLong} {value, date, yearLong}",
+				"today": "A partir de hoje, {value, date, dayShort} {value, date, monthLong} {value, date, yearLong}",
+				"tomorrow": "A partir de amanhã, {value, date, dayShort} {value, date, monthLong} {value, date, yearLong}",
+				"yesterday": "Desde ontem, {value, date, dayShort} {value, date, monthLong} {value, date, yearLong}"
+			}
+		},
+		"AlertsListItem": {
+			"open": "Abrir"
+		},
+		"AlertsListToolbar": {
+			"by_date": {
+				"current": "Esta semana ({count})",
+				"future": "Futuros ({count})",
+				"map": "Mapa"
+			},
+			"filters": {
+				"by_line": {
+					"label": "Filtrar por linha",
+					"placeholder": "Filtrar por linha"
+				},
+				"by_stop": {
+					"label": "Filtrar por paragem",
+					"placeholder": "Filtrar por paragem"
+				},
+				"text_search": "Procurar alerta por título, descrição, localização..."
+			},
+			"found_items_counter": "{count, plural, =0 {Nenhum alerta encontrado.} one {Encontrado # alerta:} other {Encontrados # alertas:}}",
+			"heading": "Alertas de Serviço",
+			"subheading": "Fique a par de todas as alterações à rede. Mantenha-se informado sobre novas linhas, mudanças de percurso e ajustes de horários, assim como sobre eventos que possam afetar a sua viagem."
+		},
+		"SelectCause": {
+			"placeholder": "Filtrar por causa"
+		},
+		"SelectEffect": {
+			"placeholder": "Filtrar por efeito"
+		}
+	},
+	"common": {
+		"AppError": {
+			"goto_home": "Voltar à página principal",
+			"retry": "Nova tentativa em {value} segundos",
+			"subtitle": "Fomos notificados e iremos corrigir em breve. Obrigado pela sua compreensão.",
+			"title": "Ocorreu um erro inesperado"
+		},
+		"BackButton": {
+			"label": "Voltar"
+		},
+		"ExpandToggle": {
+			"is_hidden": {
+				"label": "Expandir Filtros"
+			},
+			"is_visible": {
+				"label": "Esconder Filtros"
+			}
+		},
+		"FavoriteToggle": {
+			"disabled": "É necessário permitir cookies para adicionar favoritos"
+		},
+		"NextArrivals": {
+			"arriving": "A chegar",
+			"hours": "h",
+			"minutes": "min"
+		},
+		"SelectOperationalDate": {
+			"today": "Hoje",
+			"tomorrow": "Amanhã"
+		},
+		"SelectPattern": {
+			"invalid_option": "Percurso inválido: {pattern_id}",
+			"label": "Percurso / Destino",
+			"option_label": "Início do percurso: {locality}",
+			"placeholder": "Selecionar Percurso / Destino..."
+		},
+		"TimetableExceptionsLink": {
+			"schedule": "Min.",
+			"variant": "<exceptionId>{exception_id})</exceptionId> Percurso <routeLongName>{route_long_name}</routeLongName> com destino a <patternHeadsign>{pattern_headsign}</patternHeadsign>"
+		},
+		"TimetableSchedules": {
+			"hours": "Hora",
+			"minutes": "Min."
+		},
+		"days": {
+			"formatted": "{date, date, ::EEEE, dd MMMM yyyy}"
+		},
+		"month": {
+			"april": "Abril",
+			"august": "Agosto",
+			"december": "Dezembro",
+			"february": "Fevereiro",
+			"january": "Janeiro",
+			"july": "Julho",
+			"june": "Junho",
+			"march": "Março",
+			"may": "Maio",
+			"november": "Novembro",
+			"october": "Outubro",
+			"september": "Setembro",
+			"short": {
+				"april": "Abr",
+				"august": "Ago",
+				"december": "Dez",
+				"february": "Fev",
+				"january": "Jan",
+				"july": "Jul",
+				"june": "Jun",
+				"march": "Mar",
+				"may": "Mai",
+				"november": "Nov",
+				"october": "Out",
+				"september": "Set"
+			}
+		},
+		"weekdays": {
+			"friday": "Sexta-feira",
+			"holiday": "Feriado",
+			"monday": "Segunda-feira",
+			"saturday": "Sábado",
+			"short": {
+				"friday": "Sex",
+				"monday": "Seg",
+				"saturday": "Sáb",
+				"sunday": "Dom",
+				"thursday": "Qui",
+				"tuesday": "Ter",
+				"wednesday": "Qua"
+			},
+			"sunday": "Domingo",
+			"thursday": "Quinta-feira",
+			"tuesday": "Terça-feira",
+			"wednesday": "Quarta-feira"
+		}
+	},
+	"home": {
+		"AlertsSection": {
+			"section_heading": "Alertas Recentes"
+		},
+		"HomePageFilterbar": {
+			"filters": {
+				"by_agency": {
+					"placeholder": "Todos os operadores"
+				},
+				"by_bikes": {
+					"options": {
+						"false": "Não",
+						"true": "Sim"
+					},
+					"placeholder": "Permite Bicicletas"
+				},
+				"by_make_model": {
+					"placeholder": "Marca e Modelo"
+				},
+				"by_propulsion": {
+					"placeholder": "Todos os tipos de propulsão"
+				},
+				"by_search": {
+					"placeholder": "Pesquisar por id, matrícula..."
+				},
+				"by_wheelchair": {
+					"options": {
+						"false": "Não",
+						"true": "Sim"
+					},
+					"placeholder": "Permite Mobilidade Reduzida"
+				}
+			},
+			"heading": "Filtros",
+			"modal": {
+				"title": "Filters"
+			},
+			"options": {
+				"Agency": {
+					"1": "Carris",
+					"15": "Fertagus",
+					"16": "Metro Transportes do Sul",
+					"2": "Metropolitano de Lisboa",
+					"21": "MobiCascais",
+					"3": "Comboios de Portugal",
+					"4": "Transtejo",
+					"41": "Viação Alvorada",
+					"42": "Rodoviária de Lisboa",
+					"43": "TST",
+					"44": "Alsa Todi",
+					"51": "TMP A1",
+					"52": "TMP A2",
+					"53": "TMP A3",
+					"54": "TMP A4",
+					"55": "TMP A5",
+					"8": "Transportes Coletivos do Barreiro"
+				},
+				"VehicleEmissionClass": {
+					"euro_1": "EURO 1",
+					"euro_2": "EURO 2",
+					"euro_3": "EURO 3",
+					"euro_4": "EURO 4",
+					"euro_5": "EURO 5",
+					"euro_6": "EURO 6"
+				},
+				"VehiclePropulsion": {
+					"diesel": "Diesel",
+					"electricity": "Eletricidade",
+					"hybrid": "Híbrido",
+					"lpg_auto": "GPL",
+					"natural_gas": "Gás Natural"
+				}
+
+			},
+			"sections": {
+				"alerts": "Alerts",
+				"lines": "Lines",
+				"stops": "Stops",
+				"vehicles": "Vehicles"
+			}
+		},
+		"HomePageToolbar": {
+			"heading": "Secções",
+			"modal": {
+				"title": "Filtros"
+			},
+			"sections": {
+				"alerts": "Alertas",
+				"lines": "Linhas",
+				"stops": "Paragens",
+				"vehicles": "Veiculos"
+			}
+		}
+	},
+	"layout": {
+		"NoDataLabel": {
+			"default": "No data available"
+		}
+	},
+	"line": {
+		"from_until": "Entre {start} e {end}",
+		"next_buses": "Próximas circulações",
+		"num_passengers": "passageiros transportados nesta linha nos últimos 15 dias",
+		"pick_route": "Escolha um percurso/destino...",
+		"route_explainer": "O que é o percurso/destino de uma linha?",
+		"scheduled_times": "Horários Planeados",
+		"schedules": "Horários",
+		"service_alerts": "Alertas de Serviço",
+		"stop_info": "Sobre a Paragem"
+	},
+	"lines": {
+		"AlertsCarousel": {
+			"heading": "Alertas de Serviço"
+		},
+		"LinesDetail": {
+			"heading": "Pesquisar Linhas",
+			"toggle_favorite_error": "Erro ao adicionar a linha aos favoritos. {error}"
+		},
+		"LinesDetailAlerts": {
+			"heading": "Alertas ativos para esta linha"
+		},
+		"LinesDetailPath": {
+			"no_data": "Selecione um Percurso / Destino",
+			"summary": "Linha <lineNumber>{line_number}</lineNumber> com destino a <destinationName>{destination_name}</destinationName> no dia <dayName>{day_name, date, long}</dayName>. <changeDay>Alterar dia ›</changeDay>"
+		},
+		"LinesListToolbar": {
+			"by_current_view": {
+				"all": "Todas as Linhas"
+			},
+			"by_search": {
+				"placeholder": "Pesquisar por nome, número..."
+			},
+			"found_items_counter": {
+				"all": "{count, plural, =0 {Nenhuma linha encontrada.} one {Encontrada # linha:} other {Encontradas # linhas:}}"
+			},
+			"heading": "Pesquisar Linhas"
+		},
+		"LinesListViewAll": {
+			"no_data": "Nenhuma linha encontrada para esta pesquisa"
+		},
+		"PathStopNextArrivals": {
+			"title": "Próximas circulações"
+		},
+		"PathWaypointTimetable": {
+			"next_date": "Esta linha não realiza viagens neste dia da semana. Próximo dia com horários: {value, date, dayShort} {value, date, monthLong} {value, date, yearLong}",
+			"no_data": "Horários indisponíveis para esta data.",
+			"title": "Horários planeados nesta paragem:"
+		},
+		"SelectActivePatternGroup": {
+			"placeholder": "Selecionar percurso/destino..."
+		},
+		"SelectActivePatternGroupExplainer": {
+			"toggle": "O que é o percurso/destino de uma linha?"
+		},
+		"collapse_filters": "Esconder Filtros",
+		"expand_filters": "Expandir Filtros"
+	},
+	"map": {
+		"MapViewStyleVehicles": {
+			"vehicles_counter": "{count, plural, =0 {Nenhum veículo em circulação} one {# veículo em circulação} other {# veículos em circulação}}"
+		},
+		"toolbar": {
+			"center_map": "Centrar Mapa",
+			"hide_alerts": "Ocultar Alertas",
+			"open_google_maps": "Abrir no Google Maps",
+			"show_alerts": "Mostrar Alertas",
+			"style": {
+				"map": "Mapa",
+				"satellite": "Satélite"
+			}
+		}
+	},
+	"options": {
+		"Agency": {
+			"1": "Carris",
+			"15": "Fertagus",
+			"16": "Metro Transportes do Sul",
+			"2": "Metropolitano de Lisboa",
+			"21": "MobiCascais",
+			"3": "Comboios de Portugal",
+			"4": "Transtejo",
+			"41": "Viação Alvorada",
+			"42": "Rodoviária de Lisboa",
+			"43": "TST",
+			"44": "Alsa Todi",
+			"51": "TMP A1",
+			"52": "TMP A2",
+			"53": "TMP A3",
+			"54": "TMP A4",
+			"55": "TMP A5",
+			"8": "Transportes Coletivos do Barreiro"
+		},
+		"VehicleEmissionClass": {
+			"euro_1": "EURO 1",
+			"euro_2": "EURO 2",
+			"euro_3": "EURO 3",
+			"euro_4": "EURO 4",
+			"euro_5": "EURO 5",
+			"euro_6": "EURO 6"
+		},
+		"VehiclePropulsion": {
+			"diesel": "Diesel",
+			"electricity": "Eletricidade",
+			"hybrid": "Híbrido",
+			"lpg_auto": "GPL",
+			"natural_gas": "Gás Natural"
+		}
+	},
+	"schedule": {
+		"hours": "Hora",
+		"minutes": "Min.",
+		"no_data": "Sem horários disponíveis",
+		"path": "Percurso"
+	},
+	"stops": {
+		"Page": {
+			"heading": "Pesquisar Paragens"
+		},
+		"Single": {
+			"heading": "Pesquisar Paragens",
+			"lines_that_pass_here": "Linhas que passam nesta paragem"
+		},
+		"StopsDetailAlerts": {
+			"heading": "Alertas ativos",
+			"subheading": "Alertas ativos para esta paragem ou para linhas que passam nesta paragem."
+		},
+		"StopsDetailContentTimetableHeader": {
+			"summary": "Horários estimados de passagem na paragem <stopName>{stop_name}</stopName> para o dia <dayName>{day_name, date, long}</dayName>. <changeDay>Alterar dia ›</changeDay>",
+			"trips_legend": {
+				"estimate": "Previsão",
+				"headsign": "Destino",
+				"line": "Linha"
+			}
+		},
+		"StopsDetailContentTimetableRealtime": {
+			"end_of_day": "Fim do Dia",
+			"no_service": "Sem Serviço Hoje",
+			"show_past_trips_toggle": {
+				"hide": "Esconder passagens anteriores",
+				"show": "Ver passagens anteriores"
+			}
+		},
+		"StopsDetailContentTimetableRow": {
+			"debug_modal": {
+				"title": "Estes dados representam trip IDs iguais para diferentes dias"
+			},
+			"localities": {
+				"label": "Passa por"
+			},
+			"open_line_page": "Ver percurso completo"
+		},
+		"StopsDetailContentTimetableSchedule": {
+			"end_of_day": "Fim do Dia",
+			"no_service": "Sem Serviço para o dia selecionado"
+		},
+		"StopsListToolbar": {
+			"filters": {
+				"by_current_view": {
+					"list": "Lista",
+					"map": "Mapa"
+				},
+				"by_search": {
+					"placeholder": "Pesquisar por nome, localidade..."
+				}
+			},
+			"found_items_counter": {
+				"all": "{count, plural, =0 {Nenhuma paragem encontrada.} one {Encontrada # paragem:} other {Encontradas # paragens:}}"
+			},
+			"heading": "Pesquisar Paragens"
+		},
+		"StopsListViewAll": {
+			"no_data": "Nenhuma paragem encontrada para esta pesquisa"
+		},
+		"collapse_filters": "Esconder Filtros",
+		"expand_filters": "Expandir Filtros"
+	},
+	"vehicles": {
+		"VehiclesList": {
+			"heading": "Frota",
+			"subheading": "Descubra os veículos que estão ao serviço neste momento e acompanhe em tempo real a operação completa da CMetropolitana."
+		},
+		"VehiclesListDetails": {
+			"bikes_allowed": "Permite bicicletas",
+			"contactless": "Aceita pagamentos com contactless",
+			"no_bikes_allowed": "Não permite bicicletas",
+			"no_contactless": "Não aceita pagamentos com contactless",
+			"no_data": "Selecione um veículo",
+			"no_wheelchair_accessible": "Não permite mobilidade reduzida",
+			"unknown": "Desconhecido",
+			"wheelchair_accessible": "Mobilidade reduzida"
+		},
+		"VehiclesListInfoBlock": {
+			"heading": "Informação do Veículo"
+		},
+		"VehiclesListToolbar": {
+			"filters": {
+				"by_agency": {
+					"placeholder": "Todos os operadores"
+				},
+				"by_bikes": {
+					"options": {
+						"false": "Não",
+						"true": "Sim"
+					},
+					"placeholder": "Permite Bicicletas"
+				},
+				"by_make_model": {
+					"placeholder": "Marca e Modelo"
+				},
+				"by_propulsion": {
+					"placeholder": "Todos os tipos de propulsão"
+				},
+				"by_search": {
+					"placeholder": "Pesquisar por id, matrícula..."
+				},
+				"by_wheelchair": {
+					"options": {
+						"false": "Não",
+						"true": "Sim"
+					},
+					"placeholder": "Permite Mobilidade Reduzida"
+				}
+			},
+			"found_items_counter": "{count, plural, =0 {Nenhum Veículo encontrado.} one {Encontrado # veículo:} other {Encontrados # veículos:}}",
+			"select_vehicle": "Selecione um veículo"
+		}
+	}
+}

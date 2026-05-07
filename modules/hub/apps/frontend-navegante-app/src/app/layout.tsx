@@ -1,47 +1,38 @@
 /* * */
 
-import pjson from '#/package.json';
-import { getModuleConfig } from '@tmlmobilidade/consts';
-import { AppProvider, BaseProvider } from '@tmlmobilidade/ui';
-import { Metadata } from 'next';
-import { cookies as nextCookies } from 'next/headers';
-import { redirect, RedirectType } from 'next/navigation';
+import { RootProviders } from '@/providers/root-providers';
+import { Inter } from 'next/font/google';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { type PropsWithChildren } from 'react';
 
 /* * */
 
-export const metadata: Metadata = {
-	description: 'Gestor de localizações.',
-	title: 'GO | Locais',
-};
+import '@/themes/_reset/reset.css';
 
 /* * */
 
-export default async function Layout({ children }: PropsWithChildren) {
-	//
+const inter = Inter({
+	display: 'swap',
+	subsets: ['latin'],
+	variable: '--font-inter',
+	weight: ['400', '500', '600', '700', '800'],
+});
 
-	//
-	// A. Setup variables
+/* * */
 
-	const cookies = await nextCookies();
-	const sessionToken = cookies.get('session_token')?.value;
-
-	if (!sessionToken) {
-		const authUrl = getModuleConfig('auth', 'frontend_url');
-		const appUrl = getModuleConfig('plans', 'frontend_url');
-		redirect(`${authUrl}/login?redirect=${encodeURI(appUrl)}`, RedirectType.replace);
-	}
-
-	//
-	// B. Render components
-
+export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider version={pjson.version}>
-			<AppProvider>
-				{children}
-			</AppProvider>
-		</BaseProvider>
+		<html className={inter.variable} lang="pt">
+			<head>
+				<meta content="transparent" name="theme-color" />
+			</head>
+			<body>
+				<NuqsAdapter>
+					<RootProviders>
+						{children}
+					</RootProviders>
+				</NuqsAdapter>
+			</body>
+		</html>
 	);
-
-	//
 }
