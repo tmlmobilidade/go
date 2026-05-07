@@ -195,7 +195,6 @@ export const API_ROUTES = Object.freeze({
 		ALERTS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${id}/image`,
 		ALERTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${id}/lock`,
 		ALERTS_LIST: `${getModuleConfig('alerts', 'api_url')}/alerts`,
-		ALERTS_RSS: `${getModuleConfig('alerts', 'api_url')}/alerts.rss`,
 
 		// OPERATION
 		OPERATION_LINES: `${getModuleConfig('alerts', 'api_url')}/operation/lines`,
@@ -344,8 +343,9 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('hub', 'api_url')}`,
 
 		// ALERTS
+		ALERTS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs`,
+		ALERTS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs.pb`,
 		ALERTS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/alerts`,
-		ALERTS_PB: `${getModuleConfig('hub', 'api_url')}/v1/alerts.pb`,
 		ALERTS_RSS: `${getModuleConfig('hub', 'api_url')}/v1/alerts.rss`,
 
 		// PLANS
