@@ -76,9 +76,8 @@ interface MapOverlayPatternShapeProps {
 
 type MapOverlayPatternShapeThickness = 'lg' | 'md' | 'sm';
 
-const BASE_ROAD_LAYER_IDS = [
+const BUS_CANDIDATE_ROAD_LAYER_IDS = [
 	'tunnel_motorway_link',
-	'tunnel_service_track',
 	'tunnel_link',
 	'tunnel_minor',
 	'tunnel_secondary_tertiary',
@@ -86,7 +85,6 @@ const BASE_ROAD_LAYER_IDS = [
 	'tunnel_motorway',
 
 	'road_motorway_link',
-	'road_service_track',
 	'road_link',
 	'road_minor',
 	'road_secondary_tertiary',
@@ -94,7 +92,6 @@ const BASE_ROAD_LAYER_IDS = [
 	'road_motorway',
 
 	'bridge_motorway_link',
-	'bridge_service_track',
 	'bridge_link',
 	'bridge_street',
 	'bridge_secondary_tertiary',
@@ -344,7 +341,7 @@ export function MapOverlayPatternShape({
 		const map = mapViewContext.ref.map.current;
 		if (!map) return [];
 
-		return BASE_ROAD_LAYER_IDS.filter(layerId => map.getLayer(layerId));
+		return BUS_CANDIDATE_ROAD_LAYER_IDS.filter(layerId => map.getLayer(layerId));
 	}, [mapViewContext.ref.map]);
 
 	const getSnappedBaseRoadAnchor = useCallback(
