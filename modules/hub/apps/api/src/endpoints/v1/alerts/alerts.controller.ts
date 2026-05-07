@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { apiCache } from '@tmlmobilidade/databases';
-import { createApiResponse, type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { encodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert } from '@tmlmobilidade/types';
@@ -27,13 +27,21 @@ export class AlertsController {
 			return reply
 				.header('cache-control', 'public, max-age=20')
 				.code(HTTP_STATUS.NO_CONTENT)
-				.send(createApiResponse([], null, HTTP_STATUS.NO_CONTENT));
+				.send({
+					data: [],
+					error: null,
+					status_code: HTTP_STATUS.NO_CONTENT,
+				});
 		};
 
 		return reply
 			.header('cache-control', 'public, max-age=20')
 			.code(HTTP_STATUS.OK)
-			.send(createApiResponse(JSON.parse(cachedData), null, HTTP_STATUS.OK));
+			.send({
+				data: JSON.parse(cachedData),
+				error: null,
+				status_code: HTTP_STATUS.OK,
+			});
 	}
 
 	/**

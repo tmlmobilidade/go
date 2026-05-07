@@ -1,12 +1,11 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { apiCache } from '@tmlmobilidade/databases';
-import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
+import { files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GtfsRtFeedMessage, Plan } from '@tmlmobilidade/types';
+import { type Plan } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -20,18 +19,30 @@ export class PlansController {
 	 * @param reply Fastify reply
 	 */
 	static async getApprovedPlans(request: FastifyRequest, reply: FastifyReply<Plan[]>) {
-		// Get all plans that are approved
-		const allPlans = await plans.all();
-		// For each plan, get the file URL
-		const plansWithFiles = await Promise.all(
-			allPlans.map(async (plan) => {
-				const file = await files.findById(plan.operation_file_id);
-				return { ...plan, operation_file_url: file.url };
-			}),
-		);
+		//
 
-		// Send all plans
-		return reply.send({ data: plansWithFiles, error: null, statusCode: HTTP_STATUS.OK });
+		const cachedData = await apiCache.get('hub:plans:approved:json');
+
+		if (!cachedData) {
+			Logger.error('[hub/v1/plans:getApprovedPlans()] No cached data found for approved plans');
+			return reply
+				.header('cache-control', 'public, max-age=60')
+				.code(HTTP_STATUS.NO_CONTENT)
+				.send({
+					data: [],
+					error: null,
+					status_code: HTTP_STATUS.NO_CONTENT,
+				});
+		};
+
+		return reply
+			.header('cache-control', 'public, max-age=60')
+			.code(HTTP_STATUS.OK)
+			.send({
+				data: JSON.parse(cachedData),
+				error: null,
+				status_code: HTTP_STATUS.OK,
+			});
 	}
 
 	/**
@@ -41,13 +52,22 @@ export class PlansController {
 	 */
 	static async getGtfs(request: FastifyRequest, reply: FastifyReply<string>) {
 		// Retrieve file data from database
-		const foundFileData = await files.findById('gtfs-merged-latest');
+		const foundFileData = await files.findById('gtfs-latest');
 		if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 		// Stream the file in the given URL to the client
 		const storageServiceResponse = await fetch(foundFileData.url);
-		if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
+		if (!storageServiceResponse.ok || !storageServiceResponse.body) {
+			Logger.error(`[hub/v1/plans:getGtfs()] Failed to fetch file from storage service. URL: ${foundFileData.url}, Status: ${storageServiceResponse.status}`);
+			return reply
+				.code(HTTP_STATUS.INTERNAL_SERVER_ERROR)
+				.send({
+					data: null,
+					error: 'Could not fetch file from storage service.',
+					status_code: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+				});
+		}
 		// Set headers and pipe the response body to the client
-		reply.header('Content-Disposition', `attachment; filename="gtfs-merged-latest.zip"`);
+		reply.header('Content-Disposition', `attachment; filename="gtfs-latest.zip"`);
 		reply.header('Content-Type', 'application/zip');
 		// Set content length if available
 		const contentLength = storageServiceResponse.headers.get('Content-Length');
@@ -63,13 +83,13 @@ export class PlansController {
 	 */
 	static async getGtfsCM(request: FastifyRequest, reply: FastifyReply<string>) {
 		// Retrieve file data from database
-		const foundFileData = await files.findById('gtfs-merged-latest');
+		const foundFileData = await files.findById('gtfs-cm-latest');
 		if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 		// Stream the file in the given URL to the client
 		const storageServiceResponse = await fetch(foundFileData.url);
 		if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
 		// Set headers and pipe the response body to the client
-		reply.header('Content-Disposition', `attachment; filename="gtfs-merged-latest.zip"`);
+		reply.header('Content-Disposition', `attachment; filename="gtfs-cm-latest.zip"`);
 		reply.header('Content-Type', 'application/zip');
 		// Set content length if available
 		const contentLength = storageServiceResponse.headers.get('Content-Length');
