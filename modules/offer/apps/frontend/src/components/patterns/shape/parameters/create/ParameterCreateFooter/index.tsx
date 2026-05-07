@@ -4,8 +4,7 @@
 
 import { useParameterCreateContext } from '@/components/patterns/shape/parameters/create/ParameterCreate.context';
 import { closeCreateParameterModal } from '@/components/patterns/shape/parameters/create/ParameterCreate.modal';
-import { IconClock } from '@tabler/icons-react';
-import { Button, Section, Toolbar } from '@tmlmobilidade/ui';
+import { Button, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -23,15 +22,7 @@ export function ParameterCreateFooter() {
 	return (
 		<Toolbar>
 
-			<Section alignItems="center" flexDirection="row" padding="none">
-				<IconClock size={20} />
-				<Button
-					c="var(--color-system-text-100)"
-					label={`Esta viagem demora aproximadamente ${parameterCreateContext.data.parameterForUI.travelTimes.totalTripSecondsWithStops.formatted}`}
-					style={{ textDecoration: 'underline' }}
-					variant="transparent"
-				/>
-			</Section>
+			<Spacer />
 
 			<Button label="Cancelar" onClick={closeCreateParameterModal} variant="danger" />
 			<Button

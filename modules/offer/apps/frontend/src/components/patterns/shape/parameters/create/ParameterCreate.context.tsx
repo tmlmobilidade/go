@@ -15,15 +15,25 @@ import { closeCreateParameterModal } from './ParameterCreate.modal';
 
 /* * */
 
+export type StopsParameterExtendedWithStats = StopsParameterExtended & {
+	avgCommercialSpeed: null | number
+	pureDwellSeconds: number
+	totalDistance: number
+};
+
 interface ParameterCreateContextState {
 	actions: {
+		applyDefaultSpeeds: () => void
+		applyFixedSpeed: (speedKmh: number) => void
+		applySpeedFactor: (factor: number) => void
 		deleteParameter?: () => void
 		submitParameter: () => void
 	}
 	data: {
+		defaultParameter?: StopsParameter
 		form: UseFormReturnType<StopsParameter>
 		mergedPath?: MergedPathItem[]
-		parameterForUI: StopsParameterExtended
+		parameterForUI: StopsParameterExtendedWithStats
 		path?: Path[]
 	}
 	flags: {
@@ -57,7 +67,7 @@ export function useParameterCreateContext() {
 
 /* * */
 
-export const ParameterCreateContextProvider = ({ children, initialValues, onDelete, onSubmit, path }: PropsWithChildren<{ initialValues?: StopsParameter, onDelete?: () => void, onSubmit: (rule: StopsParameter) => void, path?: Path[] }>) => {
+export const ParameterCreateContextProvider = ({ children, defaultParameter, initialValues, onDelete, onSubmit, path }: PropsWithChildren<{ defaultParameter?: StopsParameter, initialValues?: StopsParameter, onDelete?: () => void, onSubmit: (rule: StopsParameter) => void, path?: Path[] }>) => {
 	//
 
 	//
@@ -80,10 +90,10 @@ export const ParameterCreateContextProvider = ({ children, initialValues, onDele
 			dwell_time: 30,
 			stop_id: pathItem.stop_id,
 		})),
-		year_period_ids: [],
 		stop_sequence: [],
 		vehicle_type: '',
 		weekdays: [],
+		year_period_ids: [],
 	} as StopsParameter;
 
 	const form = useForm<StopsParameter>({
@@ -105,7 +115,12 @@ export const ParameterCreateContextProvider = ({ children, initialValues, onDele
 		const travelTimes = computeSegmentTravelTimes(mergedPath || []);
 		const { long, short } = buildParameterSummary(form.values, { periods });
 
-		return { ...form.values, name: long, shortName: short, travelTimes };
+		const totalDistance = (mergedPath || []).reduce((sum, item) => sum + (item.distance_delta ?? 0), 0);
+		const totalTripSeconds = travelTimes.totalTripSecondsWithStops.raw;
+		const pureDwellSeconds = travelTimes.totalTripSecondsWithStops.raw - travelTimes.totalTripSecondsWithoutStops.raw;
+		const avgCommercialSpeed = totalTripSeconds > 0 ? Math.round((totalDistance / 1000) / (totalTripSeconds / 3600) * 10) / 10 : null;
+
+		return { ...form.values, avgCommercialSpeed, name: long, pureDwellSeconds, shortName: short, totalDistance, travelTimes };
 	}, [form.values, mergedPath, periodsContext.data.raw]);
 
 	//
@@ -135,15 +150,46 @@ export const ParameterCreateContextProvider = ({ children, initialValues, onDele
 		}
 	}, [onDelete]);
 
+	const handleApplyDefaultSpeeds = useCallback(() => {
+		if (!defaultParameter) return;
+		const currentPath = form.getValues().path;
+		const defaultPathMap = new Map(defaultParameter.path.map(p => [p.stop_id, p]));
+		const newPath = currentPath.map((p) => {
+			const def = defaultPathMap.get(p.stop_id);
+			if (!def) return p;
+			return { ...p, avg_speed: def.avg_speed, dwell_time: def.dwell_time };
+		});
+		form.setFieldValue('path', newPath);
+	}, [defaultParameter, form]);
+
+	const handleApplyFixedSpeed = useCallback((speedKmh: number) => {
+		const currentPath = form.getValues().path;
+		const newPath = currentPath.map(p => ({ ...p, avg_speed: speedKmh }));
+		form.setFieldValue('path', newPath);
+	}, [form]);
+
+	const handleApplySpeedFactor = useCallback((factor: number) => {
+		const currentPath = form.getValues().path;
+		const newPath = currentPath.map(p => ({
+			...p,
+			avg_speed: Math.round(p.avg_speed * factor * 10) / 10,
+		}));
+		form.setFieldValue('path', newPath);
+	}, [form]);
+
 	//
 	// E. Define context value
 
 	const contextValue: ParameterCreateContextState = useMemo(() => ({
 		actions: {
+			applyDefaultSpeeds: handleApplyDefaultSpeeds,
+			applyFixedSpeed: handleApplyFixedSpeed,
+			applySpeedFactor: handleApplySpeedFactor,
 			deleteParameter: onDelete ? handleDeleteParameter : undefined,
 			submitParameter: handleSubmitParameter,
 		},
 		data: {
+			defaultParameter,
 			form,
 			mergedPath,
 			parameterForUI,
@@ -152,7 +198,7 @@ export const ParameterCreateContextProvider = ({ children, initialValues, onDele
 		flags: {
 			isEditing: Boolean(initialValues),
 		},
-	}), [form, handleDeleteParameter, handleSubmitParameter, initialValues, mergedPath, onDelete, parameterForUI, path]);
+	}), [defaultParameter, form, handleApplyDefaultSpeeds, handleApplyFixedSpeed, handleApplySpeedFactor, handleDeleteParameter, handleSubmitParameter, initialValues, mergedPath, onDelete, parameterForUI, path]);
 
 	//
 	// H. Render components

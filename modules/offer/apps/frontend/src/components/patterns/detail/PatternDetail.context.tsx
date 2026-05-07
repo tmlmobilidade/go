@@ -290,8 +290,9 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 		const onDelete = rule?._id ? () => handleDeleteStopParameter(rule._id) : undefined;
 
-		openCreateParameterModal(lineData?.agency_id || '', onSubmit, patternData.path, rule, onDelete);
-	}, [lineData?.agency_id, patternData, handleEditStopParameter, handleAddStopParameter, handleDeleteStopParameter]);
+		const defaultParameter = (form.getValues().parameters ?? []).find((p): p is StopsParameter => p.kind === 'default');
+		openCreateParameterModal(lineData?.agency_id || '', onSubmit, patternData.path, rule, onDelete, defaultParameter);
+	}, [lineData?.agency_id, patternData, handleEditStopParameter, handleAddStopParameter, handleDeleteStopParameter, form]);
 
 	//
 	// G. Handle comments actions

@@ -15,13 +15,14 @@ const MODAL_ID = 'create-parameter-modal';
 
 /* * */
 
-export const openCreateParameterModal = (agencyId: string, onSubmit: (rule: StopsParameter) => void, path, initialValues?: StopsParameter, onDelete?: () => void) => {
+export const openCreateParameterModal = (agencyId: string, onSubmit: (rule: StopsParameter) => void, path, initialValues?: StopsParameter, onDelete?: () => void, defaultParameter?: StopsParameter) => {
 	openModal({
 		children: (
 			<MeContextProvider>
 				<DataProviders agency_id={agencyId}>
 					<LocationsContextProvider>
 						<ParameterCreateContextProvider
+							defaultParameter={defaultParameter}
 							initialValues={initialValues}
 							onDelete={onDelete}
 							onSubmit={onSubmit}

@@ -43,7 +43,7 @@ export function PatternDetailSectionShape() {
 	// C. Render components
 
 	return (
-		<Collapsible title="Sequência de paragens" defaultOpen>
+		<Collapsible title="Sequência de paragens">
 			{(shapeExtensionCardValue !== null || shapeCost !== null) && (
 				<Section gap="sm">
 					<Grid columns="abc" gap="sm">

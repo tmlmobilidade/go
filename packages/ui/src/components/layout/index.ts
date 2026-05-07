@@ -1,3 +1,4 @@
+export * from './Collapse';
 export * from './Collapsible';
 export * from './Divider';
 export * from './DraggableList';
