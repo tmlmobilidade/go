@@ -1,6 +1,7 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
+import { apiCache } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { transformAlert } from '@tmlmobilidade/go-alerts-pckg-transform';
@@ -54,6 +55,63 @@ export class GtfsController {
 		const transformResult: GtfsRtFeedEntity[] = transformedItems.filter(Boolean);
 
 		Logger.info(`Transformed ${transformResult.length} alerts into GTFS-RT feed entities for Carris Metropolitana GTFS feed.`);
+
+		//
+		// Send the GTFS-RT feed as the response
+
+		reply.send({
+			data: {
+				entity: transformResult,
+				header: {
+					gtfs_realtime_version: '2.0',
+					incrementality: 'FULL_DATASET',
+					timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+				},
+			},
+			error: null,
+			statusCode: HTTP_STATUS.OK,
+		});
+	}
+
+	/**
+	 * Returns a GTFS feed with service alerts for Carris Metropolitana.
+	 * @param request The request object.
+	 * @param reply The reply object.
+	 */
+	static async carrisMetropolitana2(request: FastifyRequest, reply: FastifyReply<GtfsRtFeedMessage>) {
+		//
+
+		const emptyFeedMessage: GtfsRtFeedMessage = {
+			entity: [],
+			header: {
+				gtfs_realtime_version: '2.0',
+				incrementality: 'FULL_DATASET',
+				timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+			},
+		};
+
+		//
+		// Retrieve prepared GTFS-RT feed from cache
+
+		const cachedFeedMessageString = await apiCache.get('alerts:all');
+
+		if (!cachedFeedMessageString) {
+			Logger.error('No GTFS-RT feed found in cache. Returning empty feed message.');
+			return reply
+				.code(200)
+				.header('cache-control', 'public, max-age=20')
+				.send(emptyFeedMessage);
+		};
+
+		const allItemsData = JSON.parse(allItemsTxt);
+		const FeedMessage = gtfsRealtime.root.lookupType('transit_realtime.FeedMessage');
+		const message = FeedMessage.fromObject(allItemsData);
+		const buffer = FeedMessage.encode(message).finish();
+		return reply
+			.code(200)
+			.header('cache-control', 'public, max-age=20')
+			.type('application/octet-stream')
+			.send(buffer);
 
 		//
 		// Send the GTFS-RT feed as the response

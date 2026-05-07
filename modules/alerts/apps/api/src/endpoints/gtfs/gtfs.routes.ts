@@ -20,6 +20,11 @@ server.register(
 			GtfsController.carrisMetropolitana,
 		);
 
+		instance.get(
+			'/cm.pb',
+			GtfsController.carrisMetropolitana2,
+		);
+
 		next();
 	},
 	{ prefix: namespace },
