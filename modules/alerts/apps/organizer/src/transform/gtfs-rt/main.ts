@@ -1,5 +1,3 @@
-'use client';
-
 /* * */
 
 import { transformCause } from '@/transform/gtfs-rt/cause-effect/cause.js';

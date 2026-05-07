@@ -70,9 +70,9 @@ export async function buildJsonFeed() {
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:alerts:published:gtfs', JSON.stringify(result));
+	await apiCache.set('hub:alerts:published:json', JSON.stringify(result));
 
-	Logger.success(`Finished organizing alert structure (${globalTimer.get()})`);
+	Logger.success(`Finished publishing JSON feed (${globalTimer.get()})`);
 
 	//
 };

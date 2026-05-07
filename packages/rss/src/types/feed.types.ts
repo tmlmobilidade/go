@@ -33,5 +33,3 @@ export interface CreateRssFeedOptions {
 	link: string
 	title: string
 }
-
-/* * */
