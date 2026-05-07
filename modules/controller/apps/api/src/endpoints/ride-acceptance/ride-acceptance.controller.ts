@@ -28,6 +28,24 @@ export class RideAcceptanceController {
 	}
 
 	/**
+	 * Changes the payment request of a ride acceptance by trip ID
+	 */
+	static async changePaymentRequest(request: FastifyRequest<{ Body: { payment_required: UpdateRideAcceptanceDto['payment_required'] }, Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
+		//
+
+		const updateResult = await rideAcceptances.updateByRideId(request.params.id, {
+			payment_required: request.body.payment_required,
+			updated_by: request.me._id,
+		});
+
+		return reply.send({
+			data: updateResult,
+			error: null,
+			statusCode: HTTP_STATUS.OK,
+		});
+	}
+
+	/**
 	 * Adds a comment to a ride acceptance by trip ID
 	 */
 	static async comment(request: FastifyRequest<{ Body: NoteComment, Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {

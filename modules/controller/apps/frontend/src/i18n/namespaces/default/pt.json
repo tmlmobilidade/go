@@ -148,6 +148,9 @@
 					}
 				},
 				"title": "Justificação"
+			},
+			"RideAcceptancePaymentRequest": {
+				"title": "Estado de pagamento"
 			}
 		},
 		"analysis": {

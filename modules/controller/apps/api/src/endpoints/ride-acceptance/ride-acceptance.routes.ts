@@ -22,6 +22,12 @@ server.register(
 		);
 
 		instance.put(
+			'/change-payment-request',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.acceptance_payment_request]) },
+			RideAcceptanceController.changePaymentRequest,
+		);
+
+		instance.put(
 			'/change-status',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.acceptance_change_status]) },
 			RideAcceptanceController.changeStatus,

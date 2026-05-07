@@ -19,6 +19,7 @@ export const RidesPermissionSchema = z.object({
 		'audit_read',
 		'audit_update',
 		'acceptance_comment_activity',
+		'acceptance_payment_request',
 	]),
 	resources: z.object({
 		agency_ids: z.array(z.string()).default([]),

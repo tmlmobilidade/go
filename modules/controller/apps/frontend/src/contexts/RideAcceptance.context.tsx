@@ -14,7 +14,8 @@ import useSWR from 'swr';
 interface RideAcceptanceContextState {
 	actions: {
 		addComment: (comment: RideAcceptance['comments'][number]) => void
-		changeStatus: (status: RideAcceptance['acceptance_status']) => void
+		changePaymentRequest: (payment_required: RideAcceptance['payment_required']) => Promise<void>
+		changeStatus: (status: RideAcceptance['acceptance_status']) => Promise<void>
 		justify: (pto_message: string, justification_cause: AlertCause, manual_trip_id?: string) => void
 		toggleLock: (is_locked: RideAcceptance['is_locked']) => void
 	}
@@ -62,8 +63,7 @@ export const RideAcceptanceContextProvider = ({ children, rideId }) => {
 			}
 
 			acceptanceMutate();
-		}
-		catch (error) {
+		} catch (error) {
 			useToast.error({ message: error.message, title: 'Erro ao adicionar comentário' });
 		}
 	}
@@ -78,9 +78,23 @@ export const RideAcceptanceContextProvider = ({ children, rideId }) => {
 			}
 
 			acceptanceMutate();
-		}
-		catch (error) {
+		} catch (error) {
 			useToast.error({ message: error.message, title: 'Erro ao alterar status' });
+		}
+	}
+
+	async function changePaymentRequest(payment_required: RideAcceptance['payment_required']) {
+		try {
+			const paymentRequestResponse = await fetchData(API_ROUTES.controller.ACCEPTANCE_CHANGE_PAYMENT_REQUEST(rideId), 'PUT', { payment_required });
+
+			if (paymentRequestResponse.error) {
+				useToast.error({ message: paymentRequestResponse.error, title: 'Erro ao alterar estado de pagamento' });
+				return;
+			}
+
+			acceptanceMutate();
+		} catch (error) {
+			useToast.error({ message: error.message, title: 'Erro ao alterar estado de pagamento' });
 		}
 	}
 
@@ -108,6 +122,7 @@ export const RideAcceptanceContextProvider = ({ children, rideId }) => {
 	const contextValue: RideAcceptanceContextState = useMemo(() => ({
 		actions: {
 			addComment,
+			changePaymentRequest,
 			changeStatus,
 			justify,
 			toggleLock,
