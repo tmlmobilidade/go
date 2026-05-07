@@ -48,8 +48,7 @@ export function LinesDetailPathList() {
 				result
 					.get(objectKey)
 					?.push({ type: 'realtime', unixTs: arrivalData.estimated_arrival_unix * 1000 });
-			}
-			else {
+			} else {
 				result
 					.get(objectKey)
 					?.push({ type: 'scheduled', unixTs: arrivalData.scheduled_arrival_unix * 1000 });

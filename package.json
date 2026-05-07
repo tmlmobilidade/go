@@ -20,6 +20,7 @@
 		"build:eslint": "turbo build --filter=@tmlmobilidade/eslint",
 		"build:exporter": "ENVIRONMENT=dev dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-exporter-*",
 		"build:fleet": "ENVIRONMENT=dev dotenv-run -f ./modules/fleet/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-fleet-*",
+		"build:hub": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-hub-*",
 		"build:locations": "ENVIRONMENT=dev dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-locations-*",
 		"build:modules": "turbo build --filter=./modules/**/*",
 		"build:offer": "ENVIRONMENT=dev dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-offer-*",
