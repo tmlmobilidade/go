@@ -76,8 +76,6 @@ server.register(
 			PlansController.changeGtfsPlan,
 		);
 
-		instance.get('/approved', PlansController.getApprovedPlans);
-
 		instance.get('/drt-model/:id', PlansController.getDrtModel);
 
 		next();

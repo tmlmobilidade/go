@@ -1,7 +1,7 @@
 /* * */
 
-import { buildGtfsRtFeed } from '@/tasks/build-gtfs-rt-feed.js';
 import { ensureStructure } from '@/tasks/ensure-structure.js';
+import { buildGtfsRtFeed } from '@/tasks/publish-gtfs-rt-feed.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';

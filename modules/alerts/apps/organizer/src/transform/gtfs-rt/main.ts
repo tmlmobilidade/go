@@ -1,17 +1,15 @@
-'use client';
-
 /* * */
 
-import { transformCause } from '@/cause-effect/cause.js';
-import { transformEffect } from '@/cause-effect/effect.js';
-import { transformDescriptionText } from '@/content/description-text.js';
-import { transformHeaderText } from '@/content/header-text.js';
-import { transformImage } from '@/content/image.js';
-import { transformUrl } from '@/content/url.js';
-import { transformReferenceTypeAgency } from '@/reference-types/agency.js';
-import { transformReferenceTypeLines } from '@/reference-types/lines.js';
-import { transformReferenceTypeRides } from '@/reference-types/rides.js';
-import { transformReferenceTypeStops } from '@/reference-types/stops.js';
+import { transformCause } from '@/transform/gtfs-rt/cause-effect/cause.js';
+import { transformEffect } from '@/transform/gtfs-rt/cause-effect/effect.js';
+import { transformDescriptionText } from '@/transform/gtfs-rt/content/description-text.js';
+import { transformHeaderText } from '@/transform/gtfs-rt/content/header-text.js';
+import { transformImage } from '@/transform/gtfs-rt/content/image.js';
+import { transformUrl } from '@/transform/gtfs-rt/content/url.js';
+import { transformReferenceTypeAgency } from '@/transform/gtfs-rt/reference-types/agency.js';
+import { transformReferenceTypeLines } from '@/transform/gtfs-rt/reference-types/lines.js';
+import { transformReferenceTypeRides } from '@/transform/gtfs-rt/reference-types/rides.js';
+import { transformReferenceTypeStops } from '@/transform/gtfs-rt/reference-types/stops.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector, type GtfsRtFeedEntity } from '@tmlmobilidade/types';
 
@@ -26,7 +24,7 @@ import { type Alert, type GtfsRtEntitySelector, type GtfsRtFeedEntity } from '@t
  * @param alertData The Alert object to be transformed.
  * @returns A GTFS-RT Feed Entity object or undefined if the transformation fails.
  */
-export async function transformAlert(alertData: Alert): Promise<GtfsRtFeedEntity | undefined> {
+export async function transformAlertIntoGtfsRtEntity(alertData: Alert): Promise<GtfsRtFeedEntity | undefined> {
 	try {
 		//
 

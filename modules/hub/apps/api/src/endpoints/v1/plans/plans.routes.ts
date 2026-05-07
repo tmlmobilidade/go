@@ -1,11 +1,11 @@
 /* * */
 
-import { GtfsController } from '@/endpoints/gtfs/gtfs.controller.js';
+import { PlansController } from '@/endpoints/v1/plans/plans.controller.js';
 import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */
 
-const namespace = '/gtfs';
+const namespace = '/v1/plans';
 
 /* * */
 
@@ -15,15 +15,11 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get(
-			'/carris-metropolitana',
-			GtfsController.carrisMetropolitana,
-		);
+		instance.get('/', PlansController.getApprovedPlans);
 
-		instance.get(
-			'/cm2',
-			GtfsController.carrisMetropolitana2,
-		);
+		instance.get('/gtfs', PlansController.getGtfs);
+
+		instance.get('/gtfs/cm', PlansController.getGtfsCM);
 
 		next();
 	},

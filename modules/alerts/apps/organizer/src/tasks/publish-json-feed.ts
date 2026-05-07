@@ -2,18 +2,17 @@
 
 import { apiCache } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { transformAlert } from '@tmlmobilidade/go-alerts-pckg-transform';
-import { alerts } from '@tmlmobilidade/interfaces';
+import { alerts, files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/types';
+import { type Alert } from '@tmlmobilidade/types';
 
 /* * */
 
-export async function buildGtfsRtFeed() {
+export async function buildJsonFeed() {
 	//
 
-	Logger.title('Starting build of GTFS-RT feed...');
+	Logger.title('Starting build of JSON feed...');
 
 	const globalTimer = new Timer();
 
@@ -45,27 +44,35 @@ export async function buildGtfsRtFeed() {
 	//
 	// Transform alerts into GTFS-RT feed entities
 
-	const transformedItems = await Promise.all(findResult.map(transformAlert));
+	const result: (Alert & { image_url?: string })[] = [];
 
-	const transformResult: GtfsRtFeedEntity[] = transformedItems.filter(Boolean);
+	for (const alertData of findResult) {
+		//
 
-	Logger.info(`Transformed ${transformResult.length} alerts into GTFS-RT feed entities (${globalTimer.get()})`);
+		let imageUrl: string | undefined;
+
+		if (alertData.file_id) {
+			// Get the associated file data to prepare the image value
+			const fileData = await files.findById(alertData.file_id);
+			if (fileData?.url && fileData?.type) {
+				imageUrl = fileData.url;
+			}
+		}
+
+		result.push({
+			...alertData,
+			image_url: imageUrl,
+		});
+	}
+
+	Logger.info(`Transformed ${result.length} alerts into JSON feed entities (${globalTimer.get()})`);
 
 	//
 	// Save the result in API Cache
 
-	const gtfsRtFeed: GtfsRtFeedMessage = {
-		entity: transformResult,
-		header: {
-			gtfs_realtime_version: '2.0',
-			incrementality: 'FULL_DATASET',
-			timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-		},
-	};
+	await apiCache.set('hub:alerts:published:json', JSON.stringify(result));
 
-	await apiCache.set('alerts:all', JSON.stringify(gtfsRtFeed));
-
-	Logger.success(`Finished organizing alert structure (${globalTimer.get()})`);
+	Logger.success(`Finished publishing JSON feed (${globalTimer.get()})`);
 
 	//
 };

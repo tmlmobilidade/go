@@ -79,9 +79,8 @@ export const CommentSchema = z
 						path: ['curr_value'],
 					});
 				}
-			}
-			// If field is NOT 'multiple_fields', curr_value and prev_value must differ
-			else if (data.curr_value === data.prev_value) {
+			} else if (data.curr_value === data.prev_value) {
+				// If field is NOT 'multiple_fields', curr_value and prev_value must differ
 				ctx.addIssue({
 					code: z.ZodIssueCode.custom,
 					message: 'curr_value and prev_value must differ',

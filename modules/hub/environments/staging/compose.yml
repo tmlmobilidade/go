@@ -1,0 +1,170 @@
+# # #
+
+name: tmlmobilidade-go-apex-staging
+
+services:
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  watchtower:
+    image: nickfedor/watchtower
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 1gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_POLL_INTERVAL=10
+      - WATCHTOWER_CLEANUP=TRUE
+      - WATCHTOWER_REMOVE_VOLUMES=TRUE
+      - WATCHTOWER_INCLUDE_RESTARTING=TRUE
+      - WATCHTOWER_INCLUDE_STOPPED=TRUE
+      - WATCHTOWER_REVIVE_STOPPED=TRUE
+      - WATCHTOWER_TIMEOUT=120s
+      - WATCHTOWER_ROLLING_RESTART=TRUE
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  organizer:
+    image: ghcr.io/tmlmobilidade/go-apex-organizer:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  stream:
+    image: ghcr.io/tmlmobilidade/go-apex-stream:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+    extra_hosts:
+      - "prd-bilhetica-mongodb-01.tml.local:10.5.4.185"
+      - "prd-bilhetica-mongodb-02.tml.local:10.5.4.151"
+      - "prd-bilhetica-mongodb-03.tml.local:10.5.4.97"
+      - "prd-validations-mongodb-01.tml.local:10.5.4.124"
+      - "prd-validations-mongodb-02.tml.local:10.5.4.112"
+      - "prd-validations-mongodb-03.tml.local:10.5.4.206"
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sync-locations:
+    image: ghcr.io/tmlmobilidade/go-apex-sync-locations:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+    extra_hosts:
+      - "prd-validations-mongodb-01.tml.local:10.5.4.124"
+      - "prd-validations-mongodb-02.tml.local:10.5.4.112"
+      - "prd-validations-mongodb-03.tml.local:10.5.4.206"
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sync-on-board-refunds:
+    image: ghcr.io/tmlmobilidade/go-apex-sync-on-board-refunds:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+    extra_hosts:
+      - "prd-bilhetica-mongodb-01.tml.local:10.5.4.185"
+      - "prd-bilhetica-mongodb-02.tml.local:10.5.4.151"
+      - "prd-bilhetica-mongodb-03.tml.local:10.5.4.97"
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sync-on-board-sales:
+    image: ghcr.io/tmlmobilidade/go-apex-sync-on-board-sales:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+    extra_hosts:
+      - "prd-bilhetica-mongodb-01.tml.local:10.5.4.185"
+      - "prd-bilhetica-mongodb-02.tml.local:10.5.4.151"
+      - "prd-bilhetica-mongodb-03.tml.local:10.5.4.97"
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sync-validations:
+    image: ghcr.io/tmlmobilidade/go-apex-sync-validations:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+    extra_hosts:
+      - "prd-validations-mongodb-01.tml.local:10.5.4.124"
+      - "prd-validations-mongodb-02.tml.local:10.5.4.112"
+      - "prd-validations-mongodb-03.tml.local:10.5.4.206"

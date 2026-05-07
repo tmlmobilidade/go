@@ -195,11 +195,6 @@ export const API_ROUTES = Object.freeze({
 		ALERTS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${id}/image`,
 		ALERTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${id}/lock`,
 		ALERTS_LIST: `${getModuleConfig('alerts', 'api_url')}/alerts`,
-		ALERTS_RSS: `${getModuleConfig('alerts', 'api_url')}/alerts.rss`,
-
-		// GTFS
-		GTFS_CARRIS_METROPOLITANA: `${getModuleConfig('alerts', 'api_url')}/gtfs/carris-metropolitana`,
-		GTFS_CM2: `${getModuleConfig('alerts', 'api_url')}/gtfs/cm2`,
 
 		// OPERATION
 		OPERATION_LINES: `${getModuleConfig('alerts', 'api_url')}/operation/lines`,
@@ -325,9 +320,6 @@ export const API_ROUTES = Object.freeze({
 		// EXPORTER
 		EXPORTER_DETAIL_DOWNLOAD: (id: string) => `${getModuleConfig('exporter', 'api_url')}/exporter/${id}/download`,
 		EXPORTER_LIST: `${getModuleConfig('exporter', 'api_url')}/exporter`,
-
-		// GTFS-MERGED
-		GTFS_MERGED_DOWNLOAD: `${getModuleConfig('exporter', 'api_url')}/gtfs-merged/download`,
 	},
 
 	/* * */
@@ -342,6 +334,24 @@ export const API_ROUTES = Object.freeze({
 		VEHICLES_DETAIL_LOCK: (id: string) => `${getModuleConfig('fleet', 'api_url')}/vehicles/${id}/lock`,
 		VEHICLES_LIST: `${getModuleConfig('fleet', 'api_url')}/vehicles`,
 		VEHICLES_POSITIONS: `${getModuleConfig('fleet', 'api_url')}/vehicles/positions`,
+	},
+
+	/* * */
+	/* HUB */
+	hub: {
+		// BASE
+		BASE: `${getModuleConfig('hub', 'api_url')}`,
+
+		// ALERTS
+		ALERTS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs`,
+		ALERTS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs.pb`,
+		ALERTS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/alerts`,
+		ALERTS_RSS: `${getModuleConfig('hub', 'api_url')}/v1/alerts.rss`,
+
+		// PLANS
+		PLANS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/plans/gtfs`,
+		PLANS_GTFS_CM: `${getModuleConfig('hub', 'api_url')}/v1/plans/gtfs/cm`,
+		PLANS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/plans`,
 	},
 
 	/* * */
@@ -425,7 +435,6 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('plans', 'api_url')}`,
 
 		// PLANS
-		PLANS_APPROVED: `${getModuleConfig('plans', 'api_url')}/plans/approved`,
 		PLANS_DETAIL: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${id}`,
 		PLANS_DETAIL_CHANGE_GTFS: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${id}/change-gtfs`,
 		PLANS_DETAIL_CONTROLLER_REPROCESS: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${id}/controller-reprocess`,
