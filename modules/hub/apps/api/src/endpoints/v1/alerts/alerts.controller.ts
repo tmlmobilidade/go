@@ -2,11 +2,10 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { apiCache } from '@tmlmobilidade/databases';
-import { Dates } from '@tmlmobilidade/dates';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
+import { createApiResponse, type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { encodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
+import { type Alert } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -14,150 +13,80 @@ export class AlertsController {
 	//
 
 	/**
-	 * Returns a GTFS feed with service alerts for Carris Metropolitana.
+	 * Returns a JSON feed with service alerts for Carris Metropolitana.
 	 * @param request The request object.
 	 * @param reply The reply object.
 	 */
-	static async getJson(request: FastifyRequest, reply: FastifyReply<GtfsRtFeedMessage>) {
+	static async getJson(request: FastifyRequest, reply: FastifyReply<Alert[]>) {
 		//
 
-		//
-		// Retrieve prepared GTFS-RT feed from cache
+		const cachedData = await apiCache.get('hub:alerts:published:json');
 
-		const cachedFeedMessageString = await apiCache.get('alerts:all');
-
-		if (!cachedFeedMessageString) {
-			Logger.error('No GTFS-RT feed found in cache. Returning empty feed message.');
+		if (!cachedData) {
+			Logger.error('[hub/v1/alerts:getJson()] No JSON feed found in cache. Returning empty array.');
 			return reply
-				.code(404)
 				.header('cache-control', 'public, max-age=20')
-				.send(getEmptyGtfsRtFeedMessage());
+				.code(HTTP_STATUS.NO_CONTENT)
+				.send(createApiResponse([], null, HTTP_STATUS.NO_CONTENT));
 		};
 
 		return reply
-			.code(200)
 			.header('cache-control', 'public, max-age=20')
-			.type('application/json')
-			.send({
-				data: {
-					entity: JSON.parse(cachedFeedMessageString),
-					header: {
-						gtfs_realtime_version: '2.0',
-						incrementality: 'FULL_DATASET',
-						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-					},
-				},
-				error: null,
-				statusCode: HTTP_STATUS.OK,
-			});
-
-		// const allItemsData = JSON.parse(allItemsTxt);
-		// const FeedMessage = gtfsRealtime.root.lookupType('transit_realtime.FeedMessage');
-		// const message = FeedMessage.fromObject(allItemsData);
-		// const buffer = FeedMessage.encode(message).finish();
-		// return reply
-		// 	.code(200)
-		// 	.header('cache-control', 'public, max-age=20')
-		// 	.type('application/octet-stream')
-		// 	.send(buffer);
+			.code(HTTP_STATUS.OK)
+			.send(createApiResponse(JSON.parse(cachedData), null, HTTP_STATUS.OK));
 	}
 
 	/**
-	 * Returns a GTFS feed with service alerts for Carris Metropolitana.
+	 * Returns an RSS feed with service alerts for Carris Metropolitana.
 	 * @param request The request object.
 	 * @param reply The reply object.
 	 */
-	static async getProtobuf(request: FastifyRequest, reply: FastifyReply<GtfsRtFeedMessage>) {
+	static async getProtobuf(request: FastifyRequest, reply: FastifyReply<Buffer>) {
 		//
 
-		//
-		// Retrieve prepared GTFS-RT feed from cache
+		const cachedData = await apiCache.get('hub:alerts:published:gtfs');
 
-		const cachedFeedMessageString = await apiCache.get('alerts:all');
-
-		if (!cachedFeedMessageString) {
-			Logger.error('No GTFS-RT feed found in cache. Returning empty feed message.');
+		if (!cachedData) {
+			Logger.error('[hub/v1/alerts:getProtobuf()] No GTFS-RT feed found in cache. Returning empty message.');
 			return reply
-				.code(404)
+				.code(HTTP_STATUS.NO_CONTENT)
 				.header('cache-control', 'public, max-age=20')
-				.send(getEmptyGtfsRtFeedMessage());
+				.send();
 		};
 
-		return reply
-			.code(200)
-			.header('cache-control', 'public, max-age=20')
-			.type('application/json')
-			.send({
-				data: {
-					entity: JSON.parse(cachedFeedMessageString),
-					header: {
-						gtfs_realtime_version: '2.0',
-						incrementality: 'FULL_DATASET',
-						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-					},
-				},
-				error: null,
-				statusCode: HTTP_STATUS.OK,
-			});
+		const cachedDataParsed = JSON.parse(cachedData);
+		const encodedGtfsRtFeed = await encodeGtfsRtFeed(cachedDataParsed);
 
-		// const allItemsData = JSON.parse(allItemsTxt);
-		// const FeedMessage = gtfsRealtime.root.lookupType('transit_realtime.FeedMessage');
-		// const message = FeedMessage.fromObject(allItemsData);
-		// const buffer = FeedMessage.encode(message).finish();
-		// return reply
-		// 	.code(200)
-		// 	.header('cache-control', 'public, max-age=20')
-		// 	.type('application/octet-stream')
-		// 	.send(buffer);
+		return reply
+			.code(HTTP_STATUS.OK)
+			.header('cache-control', 'public, max-age=20')
+			.type('application/octet-stream')
+			.send(encodedGtfsRtFeed);
 	}
 
 	/**
-	 * Returns a GTFS feed with service alerts for Carris Metropolitana.
+	 * Returns an RSS feed with service alerts for Carris Metropolitana.
 	 * @param request The request object.
 	 * @param reply The reply object.
 	 */
-	static async getRss(request: FastifyRequest, reply: FastifyReply<GtfsRtFeedMessage>) {
+	static async getRss(request: FastifyRequest, reply: FastifyReply<string>) {
 		//
 
-		//
-		// Retrieve prepared GTFS-RT feed from cache
+		const cachedData = await apiCache.get('hub:alerts:published:rss');
 
-		const cachedFeedMessageString = await apiCache.get('alerts:all');
-
-		if (!cachedFeedMessageString) {
-			Logger.error('No GTFS-RT feed found in cache. Returning empty feed message.');
+		if (!cachedData) {
+			Logger.error('[hub/v1/alerts:getRss()] No RSS feed found in cache. Returning empty message.');
 			return reply
-				.code(404)
+				.code(HTTP_STATUS.NO_CONTENT)
 				.header('cache-control', 'public, max-age=20')
-				.send(getEmptyGtfsRtFeedMessage());
+				.send();
 		};
 
 		return reply
-			.code(200)
+			.code(HTTP_STATUS.OK)
 			.header('cache-control', 'public, max-age=20')
-			.type('application/json')
-			.send({
-				data: {
-					entity: JSON.parse(cachedFeedMessageString),
-					header: {
-						gtfs_realtime_version: '2.0',
-						incrementality: 'FULL_DATASET',
-						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-					},
-				},
-				error: null,
-				statusCode: HTTP_STATUS.OK,
-			});
-
-		// const allItemsData = JSON.parse(allItemsTxt);
-		// const FeedMessage = gtfsRealtime.root.lookupType('transit_realtime.FeedMessage');
-		// const message = FeedMessage.fromObject(allItemsData);
-		// const buffer = FeedMessage.encode(message).finish();
-		// return reply
-		// 	.code(200)
-		// 	.header('cache-control', 'public, max-age=20')
-		// 	.type('application/octet-stream')
-		// 	.send(buffer);
+			.type('application/rss+xml; charset=utf-8')
+			.send(cachedData);
 	}
 
 	//
