@@ -15,9 +15,11 @@ server.register(
 	(instance, opts, next) => {
 		//
 
+		instance.get('/', PlansController.getApprovedPlans);
+
 		instance.get('/gtfs', PlansController.getGtfs);
 
-		instance.get('/approved', PlansController.getApproved);
+		instance.get('/gtfs/cm', PlansController.getGtfsCM);
 
 		next();
 	},
