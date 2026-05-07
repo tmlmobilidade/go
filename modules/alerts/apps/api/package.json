@@ -26,6 +26,7 @@
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/go-alerts-pckg-describe": "*",
 		"@tmlmobilidade/go-alerts-pckg-transform": "*",
+		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/rss": "*"

@@ -1,9 +1,11 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
+import { apiCache } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { transformAlert } from '@tmlmobilidade/go-alerts-pckg-transform';
+import { getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
 import { alerts } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/types';
@@ -70,6 +72,44 @@ export class GtfsController {
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});
+	}
+
+	/**
+	 * Returns a GTFS feed with service alerts for Carris Metropolitana.
+	 * @param request The request object.
+	 * @param reply The reply object.
+	 */
+	static async carrisMetropolitana2(request: FastifyRequest, reply: FastifyReply<GtfsRtFeedMessage>) {
+		//
+
+		//
+		// Retrieve prepared GTFS-RT feed from cache
+
+		const cachedFeedMessageString = await apiCache.get('alerts:all');
+
+		if (!cachedFeedMessageString) {
+			Logger.error('No GTFS-RT feed found in cache. Returning empty feed message.');
+			return reply
+				.code(404)
+				.header('cache-control', 'public, max-age=20')
+				.send(getEmptyGtfsRtFeedMessage());
+		};
+
+		return reply
+			.code(200)
+			.header('cache-control', 'public, max-age=20')
+			.type('application/json')
+			.send(cachedFeedMessageString);
+
+		// const allItemsData = JSON.parse(allItemsTxt);
+		// const FeedMessage = gtfsRealtime.root.lookupType('transit_realtime.FeedMessage');
+		// const message = FeedMessage.fromObject(allItemsData);
+		// const buffer = FeedMessage.encode(message).finish();
+		// return reply
+		// 	.code(200)
+		// 	.header('cache-control', 'public, max-age=20')
+		// 	.type('application/octet-stream')
+		// 	.send(buffer);
 	}
 
 	//
