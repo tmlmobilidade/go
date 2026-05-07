@@ -1,31 +1,51 @@
 /* * */
 
-import pjson from '#/package.json';
-import { i18nResourceKeysPt } from '@/i18n/resources';
-import { DataProviders } from '@/providers/data-providers';
-import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
-import { type Metadata } from 'next';
+import { MapOptionsContextProvider } from '@/components/map/MapOptions.context';
+import { getModuleConfig } from '@tmlmobilidade/consts';
+import { LayoutContextProvider } from '@tmlmobilidade/ui';
+import { Metadata } from 'next';
+import { cookies as nextCookies } from 'next/headers';
+import { redirect, RedirectType } from 'next/navigation';
 import { type PropsWithChildren } from 'react';
 
 /* * */
 
 export const metadata: Metadata = {
-	description: 'Gestor de avisos e alertas ao público.',
-	title: 'GO | Alertas',
+	description: 'Gestor de localizações.',
+	title: 'GO | Locais',
 };
 
 /* * */
 
-export default async function RootLayout({ children }: PropsWithChildren) {
+export default async function Layout({ children }: PropsWithChildren) {
+	//
+
+	//
+	// A. Setup variables
+
+	const cookies = await nextCookies();
+	const sessionToken = cookies.get('session_token')?.value;
+
+	if (!sessionToken) {
+		const authUrl = getModuleConfig('auth', 'frontend_url');
+		const appUrl = getModuleConfig('plans', 'frontend_url');
+		redirect(`${authUrl}/login?redirect=${encodeURI(appUrl)}`, RedirectType.replace);
+	}
+
+	//
+	// B. Render components
+
 	return (
-		<BaseProvider i18n={{ pt: i18nResourceKeysPt }} version={pjson.version}>
-			<AppProvider>
-				<DataProviders>
-					<AppWrapper>
+		<html lang="en" suppressHydrationWarning>
+			<body>
+				<LayoutContextProvider>
+					<MapOptionsContextProvider>
 						{children}
-					</AppWrapper>
-				</DataProviders>
-			</AppProvider>
-		</BaseProvider>
+					</MapOptionsContextProvider>
+				</LayoutContextProvider>
+			</body>
+		</html>
 	);
+
+	//
 }

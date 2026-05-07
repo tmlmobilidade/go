@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-hub-frontend-go-home",
+	"name": "@tmlmobilidade/go-locations-frontend",
 	"version": "0.1.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -9,27 +9,27 @@
 	"private": true,
 	"scripts": {
 		"build": "next build",
-		"dev": "next dev -p 51001",
+		"dev": "next dev -p 51005",
 		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint --fix ./src"
+		"lint:fix": "eslint ./src --fix",
+		"start": "next start"
 	},
 	"dependencies": {
 		"@tabler/icons-react": "3.42.0",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/strings": "*",
+		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
+		"@vis.gl/react-maplibre": "8.1.1",
+		"clsx": "2.1.1",
+		"maplibre-gl": "5.24.0",
 		"next": "16.2.4",
 		"react": "19.2.5",
 		"react-dom": "19.2.5",
-		"react-i18next": "17.0.6",
 		"swr": "2.4.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
 		"@types/node": "25.6.0",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",
