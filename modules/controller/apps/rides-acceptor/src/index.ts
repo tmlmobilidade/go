@@ -37,6 +37,7 @@ async function createRideAcceptances(ride: Ride) {
 			created_by: 'system',
 			is_locked: false,
 			justification: null,
+			payment_required: allRequiredTestsArePass ? 'yes' : null,
 			ride_id: ride._id,
 		}, { returnResult: false });
 
@@ -59,6 +60,7 @@ async function updateRideAcceptances(ride: Ride, acceptance: RideAcceptance) {
 		await rideAcceptances.updateByRideId(ride._id, {
 			acceptance_status: allRequiredTestsArePass ? 'accepted' : 'justification_required',
 			analysis_summary: requiredTestsSummary,
+			payment_required: allRequiredTestsArePass ? 'yes' : null,
 		}, { returnResult: false });
 
 		Logger.info(`Updated acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.`);

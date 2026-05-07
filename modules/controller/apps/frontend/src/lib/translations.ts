@@ -38,6 +38,12 @@ export const ANALYSIS_GRADE_TRANSLATIONS: Record<string, string> = {
 	none: 'Nenhum',
 };
 
+// payment request translations
+export const PAYMENT_REQUEST_TRANSLATIONS: Record<string, string> = {
+	no: 'Não',
+	yes: 'Sim',
+};
+
 /* * */
 
 export function translateFilterKey(key: string): string {

@@ -267,6 +267,7 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('controller', 'api_url')}`,
 
 		// RIDE-ACCEPTANCE
+		ACCEPTANCE_CHANGE_PAYMENT_REQUEST: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${id}/acceptance/change-payment-request`,
 		ACCEPTANCE_CHANGE_STATUS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${id}/acceptance/change-status`,
 		ACCEPTANCE_COMMENT: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${id}/acceptance/comment`,
 		ACCEPTANCE_DETAIL: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${id}/acceptance`,

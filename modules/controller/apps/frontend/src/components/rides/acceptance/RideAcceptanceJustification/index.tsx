@@ -1,13 +1,13 @@
 'use client';
-
 /* * */
 
 import { AcceptanceStatusTag } from '@/components/common/AcceptanceStatusTag';
+import { RideAcceptancePaymentRequest } from '@/components/rides/acceptance/RideAcceptancePaymentRequest';
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { IconCheck, IconEdit } from '@tabler/icons-react';
-import { AlertCause, AlertCauseSchema, PermissionCatalog, RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/types';
+import { AlertCause, AlertCauseSchema, PermissionCatalog, type RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/types';
 import { Button, HasPermission, IconButton, Label, Section, Select, Text, Textarea, TextInput, useToast } from '@tmlmobilidade/ui';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -86,8 +86,7 @@ export function AcceptanceStatus({ grade }: { grade: RideAcceptance['acceptance_
 		try {
 			await actions.changeStatus(status);
 			setIsEditing(false);
-		}
-		catch (error) {
+		} catch (error) {
 			useToast.error({
 				message: error.message,
 				title: 'Erro ao alterar estado da aceitação',
@@ -142,24 +141,39 @@ export function AcceptanceStatus({ grade }: { grade: RideAcceptance['acceptance_
 export function RideAcceptanceJustification() {
 	const { actions, data } = useRideAcceptanceContext();
 	const { t } = useTranslation();
-	const { acceptance } = data;
+	const acceptance = data.acceptance;
 
-	if (!acceptance) return null;
+	const [message, setMessage] = useState('');
+	const [cause, setCause] = useState<AlertCause | undefined>(undefined);
+	const [manualTripId, setManualTripId] = useState('');
 
-	const { acceptance_status, justification } = acceptance;
+	useEffect(() => {
+		if (!acceptance) return;
 
-	const [message, setMessage] = useState(justification?.pto_message ?? '');
-	const [cause, setCause] = useState<AlertCause | undefined>(justification?.justification_cause);
-	const [manualTripId, setManualTripId] = useState(justification?.manual_trip_id ?? '');
+		const j = acceptance.justification;
+
+		setMessage(j?.pto_message ?? '');
+		setCause(j?.justification_cause);
+		setManualTripId(j?.manual_trip_id ?? '');
+	}, [acceptance?._id]);
+
+	const fallback = useMemo(() => (
+		<JustificationReadOnly cause={cause} manualTripId={manualTripId} message={message} />
+	), [cause, manualTripId, message]);
 
 	const handleSubmit = () => actions.justify(message, cause, manualTripId);
 
-	const fallback = useMemo(() => <JustificationReadOnly cause={cause} manualTripId={manualTripId} message={message} />, [cause, message, manualTripId]);
+	if (!acceptance) {
+		return null;
+	}
+
+	const { acceptance_status } = acceptance;
 
 	return (
 		<Section gap="md" width="100%">
 			<Label size="lg" caps>{t('default:rides.acceptance.RideAcceptanceJustification.title')}</Label>
 			<AcceptanceStatus grade={acceptance_status} />
+			<RideAcceptancePaymentRequest />
 			<HasPermission
 				action={acceptance_status !== RideAcceptanceStatusSchema.Values.justification_required ? 'NONE' : PermissionCatalog.all.rides.actions.acceptance_justify}
 				fallback={fallback}

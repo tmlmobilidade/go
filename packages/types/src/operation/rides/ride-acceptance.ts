@@ -20,6 +20,10 @@ export const RIDE_JUSTIFICATION_STATUS_TYPE_OPTIONS = ['locked_status', 'accepta
 export const RideJustificationStatusTypeSchema = z.enum(RIDE_JUSTIFICATION_STATUS_TYPE_OPTIONS);
 export type RideJustificationStatusType = z.infer<typeof RideJustificationStatusTypeSchema>;
 
+export const RIDE_PAYMENT_REQUIRED_OPTIONS = ['yes', 'no'] as const;
+export const RidePaymentRequiredSchema = z.enum(RIDE_PAYMENT_REQUIRED_OPTIONS);
+export type RidePaymentRequired = z.infer<typeof RidePaymentRequiredSchema>;
+
 /* * */
 
 export const RideJustificationSchema = DocumentSchema
@@ -41,6 +45,7 @@ export const RideAcceptanceSchema = DocumentSchema.extend({
 	comments: z.array(CommentSchema).default([]),
 	is_locked: z.boolean().default(false),
 	justification: RideJustificationSchema.nullable(),
+	payment_required: RidePaymentRequiredSchema.nullable(),
 	ride_id: z.string(),
 });
 
