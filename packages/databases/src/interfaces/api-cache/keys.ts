@@ -1,7 +1,9 @@
 /* * */
 
 export const ApiCacheKeyValues = [
-	'alerts:all',
+	'hub:alerts:published:json',
+	'hub:alerts:published:gtfs',
+	'hub:alerts:published:rss',
 ] as const;
 
 /* * */
