@@ -47,22 +47,26 @@ export async function publishJsonFeed() {
 	const result: (Alert & { image_url?: string })[] = [];
 
 	for (const alertData of findResult) {
+		try {
 		//
 
-		let imageUrl: string | undefined;
+			let imageUrl: string | undefined;
 
-		if (alertData.file_id) {
+			if (alertData.file_id) {
 			// Get the associated file data to prepare the image value
-			const fileData = await files.findById(alertData.file_id);
-			if (fileData?.url && fileData?.type) {
-				imageUrl = fileData.url;
+				const fileData = await files.findById(alertData.file_id);
+				if (fileData?.url && fileData?.type) {
+					imageUrl = fileData.url;
+				}
 			}
-		}
 
-		result.push({
-			...alertData,
-			image_url: imageUrl,
-		});
+			result.push({
+				...alertData,
+				image_url: imageUrl,
+			});
+		} catch (error) {
+			Logger.error(`Error processing alert with ID ${alertData._id}:`, error);
+		}
 	}
 
 	Logger.info(`Transformed ${result.length} alerts into JSON feed entities (${globalTimer.get()})`);
