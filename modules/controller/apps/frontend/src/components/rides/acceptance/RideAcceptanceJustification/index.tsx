@@ -151,10 +151,11 @@ export function RideAcceptanceJustification() {
 		if (!acceptance) return;
 
 		const j = acceptance.justification;
+
 		setMessage(j?.pto_message ?? '');
 		setCause(j?.justification_cause);
 		setManualTripId(j?.manual_trip_id ?? '');
-	}, [acceptance]);
+	}, [acceptance?._id]);
 
 	const fallback = useMemo(() => (
 		<JustificationReadOnly cause={cause} manualTripId={manualTripId} message={message} />
