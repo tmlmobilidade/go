@@ -1,0 +1,31 @@
+{
+	"alerts": {
+		"create": {
+			"summary": {
+				"auto_texts": {
+					"label": "Textos Automáticos"
+				},
+				"coordinates": {
+					"label": "Coordenadas Geográficas"
+				},
+				"description": {
+					"label": "Descrição"
+				},
+				"generate_text": {
+					"label": "Gerar Texto Automático"
+				},
+				"info_url": {
+					"description": "Opcionalmente inclua o URL de um website onde é possivel obter mais informação",
+					"label": "Link Adicional"
+				},
+				"title": {
+					"label": "Título"
+				},
+				"user_instructions": {
+					"label": "Informações adicionais para geração do texto automático (opcional)",
+					"placeholder": "Ex: Desvio pela Rua X, sentido Y, devido a Z."
+				}
+			}
+		}
+	}
+}
