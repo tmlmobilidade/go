@@ -1,4 +1,4 @@
-import type { EtaRideRow } from '@/rides/eta-ride-row.js';
+import type { EtaRideRow } from '@/lib/eta-ride-row.js';
 import type { ClickHouseClient } from '@clickhouse/client';
 
 import { Logger } from '@tmlmobilidade/logger';
