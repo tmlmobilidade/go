@@ -21,7 +21,7 @@
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"next": "16.2.6",
-		"next-intl": "4.11.0",
+		"next-intl": "4.11.1",
 		"react": "19.2.6",
 		"react-dom": "19.2.6",
 		"swr": "2.4.1"
@@ -29,7 +29,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.6.1",
+		"@types/node": "25.6.2",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",
 		"typescript": "5.9.3"

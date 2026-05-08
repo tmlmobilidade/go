@@ -63,7 +63,7 @@
 		"@turf/turf": "7.3.5",
 		"@types/geojson": "7946.0.16",
 		"@types/luxon": "3.7.1",
-		"@types/node": "25.6.1",
+		"@types/node": "25.6.2",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",
 		"postcss": "8.5.14",
