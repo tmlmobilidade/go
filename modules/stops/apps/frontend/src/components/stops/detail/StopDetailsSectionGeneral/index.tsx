@@ -1,9 +1,10 @@
 'use client';
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
+import { openCreateStopModal } from '@/contexts/StopDetailCoordinates.modal';
 import { Translations } from '@/lib/translations';
 import { LifecycleStatusSchema } from '@tmlmobilidade/types';
-import { Collapsible, Grid, ProposedChangesWrapper, Section, SegmentedControl, TextInput, ValueDisplay } from '@tmlmobilidade/ui';
+import { Button, Collapsible, Grid, ProposedChangesWrapper, Section, SegmentedControl, TextInput, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -49,6 +50,7 @@ export function StopDetailsSectionGeneral() {
 					<ValueDisplay label="Código Único da Paragem" value={stopDetailContext.data.stop?._id ?? 'N/A'} variant="bordered" />
 					<ValueDisplay label="Latitude" value={stopDetailContext.data.stop?.latitude ?? 'N/A'} variant="bordered" />
 					<ValueDisplay label="Longitude" value={stopDetailContext.data.stop?.longitude ?? 'N/A'} variant="bordered" />
+					<Button label="Editar Coordenadas" onClick={() => openCreateStopModal()} style={{ marginTop: '10px', width: '250px' }} />
 				</Grid>
 			</Section>
 
