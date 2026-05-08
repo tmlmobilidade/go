@@ -2,22 +2,21 @@
 
 /* * */
 
-import { type GtfsTrip } from '@/components/patterns/detail/PatternDetailSectionGtfs/index';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Pattern } from '@tmlmobilidade/types';
-import { Button, closeModal, Divider, Grid, openModal, Section, Text, useToast } from '@tmlmobilidade/ui';
+import { Button, closeModal, Divider, Grid, Section, Text, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useState } from 'react';
 
-/* * */
-
-const MODAL_ID = 'gtfs-import-confirmation-modal';
+import { GtfsTrip } from './GtfsImport.modal';
 
 /* * */
 
-interface GtfsImportConfirmationProps {
+interface GtfsStepConfirmationProps {
 	currentShapeExtension: number
 	currentStopCount: number
+	modalId: string
+	onBack: () => void
 	onLoad: (pattern: Pattern) => void
 	patternId: string
 	selectedTrip: GtfsTrip
@@ -25,24 +24,17 @@ interface GtfsImportConfirmationProps {
 
 /* * */
 
-function GtfsImportConfirmation({ currentShapeExtension, currentStopCount, onLoad, patternId, selectedTrip }: GtfsImportConfirmationProps) {
+export function GtfsStepConfirmation({ currentShapeExtension, currentStopCount, modalId, onBack, onLoad, patternId, selectedTrip }: GtfsStepConfirmationProps) {
 	//
-
-	//
-	// A. Setup variables
 
 	const [isImporting, setIsImporting] = useState(false);
+
 	const newStopCount = selectedTrip.path.length;
 	const newShapeExtension = selectedTrip.shape.points[selectedTrip.shape.points.length - 1]?.shape_dist_traveled || 0;
-
-	//
-	// B. Handle actions
 
 	const handleConfirmImport = async () => {
 		try {
 			setIsImporting(true);
-
-			// Import the pattern from GTFS
 			const result = await fetchData<Pattern>(
 				API_ROUTES.offer.PATTERNS_DETAIL_IMPORT_GTFS(patternId),
 				'POST',
@@ -51,17 +43,12 @@ function GtfsImportConfirmation({ currentShapeExtension, currentStopCount, onLoa
 					shape: selectedTrip.shape.points,
 				},
 			);
-
-			// Check for API error
 			if (result.error) {
 				useToast.error({ message: result.error });
 				setIsImporting(false);
 				return;
 			}
-
-			// Close modal and load data into form
-			closeGtfsImportConfirmationModal();
-			useToast.info({ message: 'Percurso carregado. Clique em Guardar para confirmar.' });
+			closeModal(modalId);
 			onLoad(result.data as Pattern);
 		} catch (error) {
 			console.log(error);
@@ -70,12 +57,9 @@ function GtfsImportConfirmation({ currentShapeExtension, currentStopCount, onLoa
 		}
 	};
 
-	//
-	// C. Render components
-
 	return (
 		<Section gap="md">
-			<Text>Tem a certeza que pretende importar este pattern?</Text>
+			<Text>Tem a certeza que pretende importar este percurso?</Text>
 			<Divider />
 			<div>
 				<Text fw={700}>COMO ESTÁ AGORA</Text>
@@ -90,7 +74,7 @@ function GtfsImportConfirmation({ currentShapeExtension, currentStopCount, onLoa
 			</div>
 			<Divider />
 			<Grid columns="ab" gap="sm">
-				<Button color="gray" label="Cancelar" onClick={closeGtfsImportConfirmationModal} variant="danger" />
+				<Button color="gray" label="Voltar" onClick={onBack} variant="danger" />
 				<Button label="Importar" loading={isImporting} onClick={handleConfirmImport} variant="primary" />
 			</Grid>
 		</Section>
@@ -98,20 +82,3 @@ function GtfsImportConfirmation({ currentShapeExtension, currentStopCount, onLoa
 
 	//
 }
-
-/* * */
-
-export const openGtfsImportConfirmationModal = (props: GtfsImportConfirmationProps) => {
-	openModal({
-		children: <GtfsImportConfirmation {...props} />,
-		modalId: MODAL_ID,
-		size: 'lg',
-		title: 'Importar percurso e shape?',
-	});
-};
-
-/* * */
-
-export const closeGtfsImportConfirmationModal = () => {
-	closeModal(MODAL_ID);
-};

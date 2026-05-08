@@ -2,11 +2,12 @@
 
 /* * */
 
-import { type GtfsRoute } from '@/components/patterns/detail/PatternDetailSectionGtfs/index';
 import { IconFileZip, IconUpload, IconX } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dropzone, Text } from '@tmlmobilidade/ui';
 import { useState } from 'react';
+
+import { GtfsRoute, GtfsTrip } from './GtfsImport.modal';
 
 /* * */
 
@@ -14,22 +15,16 @@ const MAX_FILE_SIZE = 100000000; // 100MB
 
 /* * */
 
-interface GtfsParserProps {
-	onParse: (data: GtfsRoute[]) => void
+interface GtfsStepDropzoneProps {
+	onNext: (trips: GtfsTrip[]) => void
 }
 
 /* * */
 
-export function GtfsParser({ onParse }: GtfsParserProps) {
+export function GtfsStepDropzone({ onNext }: GtfsStepDropzoneProps) {
 	//
-
-	//
-	// A. Setup variables
 
 	const [isUploading, setIsUploading] = useState(false);
-
-	//
-	// B. Handle actions
 
 	const handleUpload = async (files: File[]) => {
 		try {
@@ -38,16 +33,19 @@ export function GtfsParser({ onParse }: GtfsParserProps) {
 			formData.append('file', files[0]);
 			const res = await fetch(API_ROUTES.offer.GTFS_PARSE, { body: formData, credentials: 'include', method: 'POST' });
 			const data = await res.json();
-			onParse(data.data);
+			const parsed: GtfsTrip[] = [];
+			for (const route of (data.data as GtfsRoute[])) {
+				for (const trip of route.trips) {
+					parsed.push(trip);
+				}
+			}
+			onNext(parsed);
 			setIsUploading(false);
 		} catch (error) {
 			console.log(error);
 			setIsUploading(false);
 		}
 	};
-
-	//
-	// C. Render components
 
 	return (
 		<Dropzone
@@ -94,3 +92,4 @@ export function GtfsParser({ onParse }: GtfsParserProps) {
 
 	//
 }
+

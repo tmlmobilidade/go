@@ -2,9 +2,9 @@
 
 import StatCard from '@/components/common/StatCard';
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
-import { GtfsImportPopover } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsImportPopover';
+import { openGtfsImportModal } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsImport.modal';
 import { ShapeEditorModal } from '@/components/patterns/shape/shape-editor/ShapeEditor.modal';
-import { IconShape } from '@tabler/icons-react';
+import { IconFileZip, IconShape } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Agency, Pattern } from '@tmlmobilidade/types';
 import { Button, Collapsible, Grid, MapOverlayPatternShape, MapView, Section, useToast } from '@tmlmobilidade/ui';
@@ -50,6 +50,15 @@ export function PatternDetailSectionShape() {
 		useToast.info({ message: 'Percurso carregado. Clique em Guardar para confirmar.' });
 	};
 
+	const handleOpenGtfsImportModal = () => {
+		openGtfsImportModal({
+			currentShapeExtension: patternDetailContext.data.pattern?.shape?.extension || 0,
+			currentStopCount: patternDetailContext.data.pattern?.path?.length || 0,
+			onLoad: handleLoadPattern,
+			patternId: patternDetailContext.data.id,
+		});
+	};
+
 	//
 	// D. Render components
 
@@ -81,11 +90,11 @@ export function PatternDetailSectionShape() {
 						leftSection={<IconShape />}
 						onClick={() => setIsEditorOpen(true)}
 					/>
-					<GtfsImportPopover
-						currentShapeExtension={patternDetailContext.data.pattern?.shape?.extension || 0}
-						currentStopCount={patternDetailContext.data.pattern?.path?.length || 0}
-						onLoad={handleLoadPattern}
-						patternId={patternDetailContext.data.id}
+					<Button
+						label="Importar ficheiro GTFS"
+						leftSection={<IconFileZip />}
+						onClick={handleOpenGtfsImportModal}
+						variant="secondary"
 					/>
 				</Section>
 
