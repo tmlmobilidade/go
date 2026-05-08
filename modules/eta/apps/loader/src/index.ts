@@ -10,7 +10,7 @@ import { GOClickHouseClient, queryEachStatementFromFile, queryFromFile } from '@
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
 
 import { pipelinePath } from './lib/sql-paths.js';
 import { syncCurrentWaypoints } from './waypoints/sync-curr-waypoints.js';
@@ -125,14 +125,31 @@ export async function main() {
 		//
 
 		Logger.title('5. Run Node Travel Times Transformation & Aggregation');
+		const historicalWindowStart = Dates.now('Europe/Lisbon').minus({ days: AppConfig.historicalDataDaysBack }).unix_timestamp;
+		const historicalWindowEnd = Dates.now('Europe/Lisbon').unix_timestamp;
 
 		//
-		Logger.info(`Running 5a-build_hist_node_travel_times.sql query`);
-		await queryFromFile(clickhouseClient, pipelinePath('loader/2-build_hist_node_travel_times.sql'));
+		Logger.info(`Running 5a-build_hist_node_travel_times.sql query in chunks`);
+		await performInTimeChunks({
+			onChunk: async (chunk) => {
+				Logger.progress(
+					`[${chunk.index + 1}/${chunk.total}] 5a chunk ${Dates.fromUnixTimestamp(chunk.start).iso}[${chunk.start}] -> ${Dates.fromUnixTimestamp(chunk.end).iso}[${chunk.end}]`,
+				);
+				await queryFromFile(clickhouseClient, pipelinePath('loader/2-build_hist_node_travel_times.sql'), {
+					chunk_end: chunk.end,
+					chunk_start: chunk.start,
+				});
+			},
+			splitBy: { days: AppConfig.historicalTransformationChunkDays },
+			startDate: historicalWindowStart,
+		});
 
 		//
 		Logger.info(`Running 5b-aggregate_hist_node_travel_times.sql query`);
-		await queryFromFile(clickhouseClient, pipelinePath('loader/3-aggregate_hist_node_travel_times.sql'));
+		await queryFromFile(clickhouseClient, pipelinePath('loader/3-aggregate_hist_node_travel_times.sql'), {
+			window_end: historicalWindowEnd,
+			window_start: historicalWindowStart,
+		});
 	}
 
 	//

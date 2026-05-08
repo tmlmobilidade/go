@@ -61,9 +61,9 @@ WITH
                     )
                 ) AS cell
             FROM eta.hist_vehicle_events
-            -- CRITICAL: replace this placeholder with a real time range to prune partitions
-            -- and align with the (ride_id, hashed_shape_id, created_at) ORDER BY.
-            WHERE created_at > 0
+            WHERE
+                created_at >= {chunk_start}
+                AND created_at < {chunk_end}
         ) AS e
         INNER JOIN eta.hist_shape_nodes AS n
             ON  e.hashed_shape_id = n.hashed_shape_id

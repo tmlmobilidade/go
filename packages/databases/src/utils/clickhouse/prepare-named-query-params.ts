@@ -1,5 +1,6 @@
 /* * */
 
+import { getClickHouseParamType } from './get-clickhouse-param-type.js';
 import { validateSqlParam } from './validate-sql-param.js';
 
 /**
@@ -33,7 +34,7 @@ export function prepareNamedQueryParams(query: string, params?: Record<string, n
 		const value = providedParams[key];
 		queryParams[key] = value;
 
-		return `{${key}:${this.getClickHouseParamType(value)}}`;
+		return `{${key}:${getClickHouseParamType(value)}}`;
 	});
 
 	// Also include explicitly typed placeholders already present in query (e.g. {id:UInt64}).

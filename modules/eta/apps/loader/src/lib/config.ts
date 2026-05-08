@@ -1,6 +1,6 @@
 import type { TimeSlot } from '@tmlmobilidade/dates';
 
-const isDevelopment = false; // process.env.ENVIRONMENT === 'development';
+const isDevelopment = false;// process.env.ENVIRONMENT === 'development';
 
 export const AppConfig = Object.freeze({
 	// Agency and line configurations
@@ -10,6 +10,8 @@ export const AppConfig = Object.freeze({
 
 	// Data and time settings
 	historicalDataDaysBack: 30,
+	historicalTransformationChunkDays: 2,
+	historicalVehicleEventsChunkDays: 2,
 	syncInterval: '15m' as TimeSlot,
 
 	// Geometry settings
