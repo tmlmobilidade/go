@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Input, TextInput as MantineTextInput } from '@mantine/core';
 import { IconSearch } from '@tabler/icons-react';
 

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection, transformVehicleDataIntoGeoJsonFeature } from '@tmlmobilidade/geo';
 import { SimplifiedVehicleEvent } from '@tmlmobilidade/types';

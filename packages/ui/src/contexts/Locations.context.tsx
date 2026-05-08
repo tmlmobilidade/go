@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { ApiResponse } from '@carrismetropolitana/api-types/common';
 import { type District, type Locality, type Municipality, type Parish } from '@carrismetropolitana/api-types/locations';
 import { normalizeString } from '@tmlmobilidade/strings';

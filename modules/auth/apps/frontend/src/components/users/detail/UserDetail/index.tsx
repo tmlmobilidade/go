@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { PermissionSection } from '@/components/permissions/PermissionSection';
 import { useUserDetailContext } from '@/components/users/detail/UserDetail.context';
 import { UserDetailBasicInfo } from '@/components/users/detail/UserDetailBasicInfo';

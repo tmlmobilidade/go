@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { ReplayEvents } from '@/components/common/ReplayEvents';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { Collapsible, Divider, MapOverlayGeofences, MapOverlayObservedPath, MapOverlayScheduledPath, MapView, Section, Switch } from '@tmlmobilidade/ui';

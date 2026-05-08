@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog, type Vehicle } from '@tmlmobilidade/types';
 import { useDataAgencies, useFilterStateList, UseFilterStateListReturnType, useFilterStateString, UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Layer, Source } from '@vis.gl/react-maplibre';
 import { type FeatureCollection, type Point } from 'geojson';
 import { useEffect } from 'react';

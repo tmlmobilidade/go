@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { MetricCardSkeleton } from '@/components/layout/MetricCardSkeleton';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { AgencyTypeWithAll } from '@/constants';

@@ -1,9 +1,6 @@
-/* eslint-disable react/jsx-key */
 'use client';
 
-/* * */
-
-import { AnalysisStatusTag } from '@/components/common/AnalysisSams';
+import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
 import { OperationalDateTag } from '@/components/common/OperationalDateTag';
 import { StartTimeStatusTag } from '@/components/common/StartTimeStatusTag';
 import { useRidesListContext } from '@/components/rides/list/RidesList.context';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { closeCreateUserModal } from '@/components/users/create/UserCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateUserDto, CreateUserSchema, type User } from '@tmlmobilidade/types';

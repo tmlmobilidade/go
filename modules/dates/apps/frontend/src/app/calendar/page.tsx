@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { EventsCalendar, EventsCalendarProvider, Pane, Section } from '@tmlmobilidade/ui';
 
 /* * */

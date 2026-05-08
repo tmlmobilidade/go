@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { Translations } from '@/lib/translations';
 import { AvailabilityStatusSchema, StopRoadTypeSchema } from '@tmlmobilidade/types';

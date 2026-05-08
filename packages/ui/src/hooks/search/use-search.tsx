@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useDebouncedValue } from '@mantine/hooks';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { useMemo } from 'react';

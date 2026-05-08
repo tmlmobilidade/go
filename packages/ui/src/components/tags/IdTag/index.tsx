@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Tooltip } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
 import { forwardRef } from 'react';

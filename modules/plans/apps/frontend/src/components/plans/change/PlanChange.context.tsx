@@ -3,8 +3,6 @@
 
 'use client';
 
-/* * */
-
 import { closePlanChangeModal } from '@/components/plans/change/PlanChange.modal';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { GtfsValidation, type Plan } from '@tmlmobilidade/types';

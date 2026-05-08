@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useFareDetailContext } from '@/components/fares/detail/FareDetail.context';
 import { FareDetailHeader } from '@/components/fares/detail/FareDetailHeader';
 import { currencyOptions, paymentMethodsOptions, transfersOptions } from '@/types/fares';

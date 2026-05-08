@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePeriodCreateContext } from '@/components/year-periods/create/PeriodsCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog, YearPeriodSchema } from '@tmlmobilidade/types';

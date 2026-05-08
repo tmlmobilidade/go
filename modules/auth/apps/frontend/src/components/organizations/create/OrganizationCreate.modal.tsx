@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { OrganizationCreate } from '@/components/organizations/create/OrganizationCreate';
 import { OrganizationCreateContextProvider } from '@/components/organizations/create/OrganizationCreate.context';
 import { DataProviders } from '@/providers/data-providers';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRuleCreateContext } from '@/components/events/rules/RuleCreate.context';
 import { IconClockPlay } from '@tabler/icons-react';
 import { EventReplacementRule, HHMM } from '@tmlmobilidade/types';

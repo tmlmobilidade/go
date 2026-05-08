@@ -6,7 +6,7 @@ import { Paragraph } from '@/components/Paragraph/index.js';
 import { Wrapper } from '@/components/Wrapper/index.js';
 import { emailProvider } from '@/email.provider.js';
 import { type SendEmailProps } from '@/types.js';
-import { render } from '@react-email/components';
+import { render } from 'react-email';
 
 /* * */
 

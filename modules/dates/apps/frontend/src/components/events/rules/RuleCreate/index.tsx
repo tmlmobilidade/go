@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { RuleCreateBasicInfo } from '@/components/events/rules/RuleCreateBasicInfo';
 import { RuleCreateFooter } from '@/components/events/rules/RuleCreateFooter';
 import { RuleCreateHeader } from '@/components/events/rules/RuleCreateHeader';

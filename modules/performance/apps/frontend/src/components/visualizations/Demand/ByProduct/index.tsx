@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { StackedLineBarChart } from '@/components/charts/StackedLineBarChart';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { AgencyType } from '@/constants';

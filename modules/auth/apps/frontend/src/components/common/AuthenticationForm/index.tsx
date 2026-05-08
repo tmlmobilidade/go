@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconArrowRight } from '@tabler/icons-react';
 import { Button, EnvironmentTag, keepUrlParams, Label, Section, Surface, TMLogoDark, TMLogoLight, WhenMode } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';

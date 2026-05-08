@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { TimePicker as MantineTimePicker } from '@mantine/dates';
 import { IconClock, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';

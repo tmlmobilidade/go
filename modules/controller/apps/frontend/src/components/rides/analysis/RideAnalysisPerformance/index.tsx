@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Collapsible, Label, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { StopCreateContextProvider } from '@/components/stops/create/StopCreate.context';
 import { LocationsContextProvider } from '@/contexts/Locations.context';
 import { AppProvider } from '@tmlmobilidade/ui';

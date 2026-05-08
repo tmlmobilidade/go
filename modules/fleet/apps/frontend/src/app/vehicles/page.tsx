@@ -1,6 +1,4 @@
 'use client';
-
-/* * */
 import { useVehiclePositionContext } from '@/contexts/VehiclePosition.context';
 import { MapOverlayVehicles, MapView } from '@tmlmobilidade/ui';
 

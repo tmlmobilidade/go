@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import namespaceDefaultPt from '@/i18n/namespaces/default/pt.json' with { type: 'json' };
 import namespaceUnauthenticatedPt from '@/i18n/namespaces/unauthenticated/pt.json' with { type: 'json' };
 import { i18nResourceKeysPtShared } from '@tmlmobilidade/ui';

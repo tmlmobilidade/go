@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import DemandByTopic from '@/components/dashboards/DemandBy';
 import DashboardWrapper from '@/components/layout/DashboardWrapper';
 import { TOPICS, TOPICS_REGISTRY } from '@/constants';

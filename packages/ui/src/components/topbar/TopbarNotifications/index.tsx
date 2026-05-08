@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconBell, IconBellOff } from '@tabler/icons-react';
 
 import { useNotificationsContext } from '../../../contexts/Notifications.context';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useValidationCreateContext } from '@/components/validations/create/ValidationCreate.context';
 import { closeCreateValidationModal } from '@/components/validations/create/ValidationCreate.modal';
 import { Button, CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';

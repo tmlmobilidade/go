@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePeriodAssignContext } from '@/components/year-periods/calendar/PeriodAssign.context';
 import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
 import { IconAlertTriangle, IconCalendar } from '@tabler/icons-react';

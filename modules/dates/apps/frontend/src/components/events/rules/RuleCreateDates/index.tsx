@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRuleCreateContext } from '@/components/events/rules/RuleCreate.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { type OperationalDate } from '@tmlmobilidade/types';

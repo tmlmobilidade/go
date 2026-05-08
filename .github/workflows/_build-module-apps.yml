@@ -69,7 +69,7 @@ jobs:
           CUSTOM="modules/${{ inputs.module }}/apps/${{ matrix.app }}/Dockerfile"
           if [ -f "$CUSTOM" ]; then
             echo "path=$CUSTOM" >> $GITHUB_OUTPUT
-          elif [ "${{ matrix.app }}" = "frontend" ]; then
+          elif [[ "${{ matrix.app }}" == frontend* ]]; then
             echo "path=.github/templates/docker/frontend.dockerfile" >> $GITHUB_OUTPUT
           else
             echo "path=.github/templates/docker/nodejs.dockerfile" >> $GITHUB_OUTPUT

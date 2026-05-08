@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { generateColors } from '@/utils/metrics';
 import { getShortLabelFromDetailed } from '@/utils/metrics/formatDates';
 import { ProgressBarResult } from '@/utils/metrics/types/chartResults';

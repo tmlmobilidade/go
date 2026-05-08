@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { generateColors, generateEventReferenceLines, StackedResult } from '@/utils/metrics';
 import { getShortLabelFromDetailed } from '@/utils/metrics/formatDates';
 import { Dates } from '@tmlmobilidade/dates';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { useValidationCreateContext } from '@/components/validations/create/ValidationCreate.context';

@@ -1,35 +1,28 @@
 'use client';
 
-/* * */
-
 import { type AlertNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type Alert, AlertReferenceTypeSchema, AlertSchema, PermissionCatalog, PublishStatusSchema } from '@tmlmobilidade/types';
-import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 /* * */
 
-interface AlertsListContextState {
+interface AlertsListContextState extends ListContextStateTemplate {
 	data: {
 		filtered: Alert[]
 		raw: Alert[]
 	}
-	filters: {
+	filters: ListContextStateTemplate['filters'] & {
 		agency: UseFilterStateListReturnType
 		cause: UseFilterStateListReturnType
 		effect: UseFilterStateListReturnType
 		municipality: UseFilterStateListReturnType
 		publish_status: UseFilterStateListReturnType
 		reference_type: UseFilterStateListReturnType
-		search: UseFilterStateStringReturnType
-	}
-	flags: {
-		error: Error | undefined
-		loading: boolean
 	}
 }
 
@@ -47,7 +40,7 @@ export const useAlertsListContext = () => {
 
 /* * */
 
-export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
+export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
@@ -60,7 +53,7 @@ export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: allScheduledData, error: allScheduledError, isLoading: allScheduledLoading } = useSWR<Alert[], Error>(API_ROUTES.alerts.ALERTS_LIST);
+	const { data: allScheduledData, error: allScheduledError, isLoading: allScheduledLoading, isValidating: allScheduledValidating } = useSWR<Alert[], Error>(API_ROUTES.alerts.ALERTS_LIST);
 
 	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.read],
@@ -152,12 +145,14 @@ export const AlertsListContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		flags: {
 			error: allScheduledError,
-			loading: allScheduledLoading,
+			isLoading: allScheduledLoading,
+			isValidating: allScheduledValidating,
 		},
 	}), [
 		allScheduledData,
 		filterResultsData,
 		allScheduledLoading,
+		allScheduledValidating,
 		filterAlertReferenceType,
 		filterAgency,
 		allScheduledError,

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { GTFS_EXPORT_MODAL_ID } from '@/components/lines/export/GtfsExportModal';
 import { useForm } from '@mantine/form';
 import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
@@ -55,11 +53,11 @@ export const useGtfsExportModalContext = () => {
 
 /* * */
 
-const AGENCY_DEFAULT_DATES: Record<string, { clip_end: OperationalDate, clip_start: OperationalDate, feed_end: OperationalDate, feed_start: OperationalDate }> = {
+const AGENCY_DEFAULT_VALUES: Record<string, { clip_end: OperationalDate, clip_start: OperationalDate, feed_end: OperationalDate, feed_start: OperationalDate, numeric_calendar_codes?: boolean }> = {
 	41: { clip_end: '20261231' as OperationalDate, clip_start: '20260101' as OperationalDate, feed_end: '20261231' as OperationalDate, feed_start: '20260501' as OperationalDate },
 	42: { clip_end: '20261231' as OperationalDate, clip_start: '20260101' as OperationalDate, feed_end: '20261231' as OperationalDate, feed_start: '20260501' as OperationalDate },
 	43: { clip_end: '20260630' as OperationalDate, clip_start: '20250701' as OperationalDate, feed_end: '20260630' as OperationalDate, feed_start: '20260501' as OperationalDate },
-	44: { clip_end: '20270430' as OperationalDate, clip_start: '20260501' as OperationalDate, feed_end: '20270430' as OperationalDate, feed_start: '20260501' as OperationalDate },
+	44: { clip_end: '20270430' as OperationalDate, clip_start: '20260501' as OperationalDate, feed_end: '20270430' as OperationalDate, feed_start: '20260501' as OperationalDate, numeric_calendar_codes: true },
 };
 
 export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) => {
@@ -89,7 +87,7 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 
 	const setAgencyIds = useCallback((value: string[]) => {
 		if (value.length === 1) {
-			const defaults = AGENCY_DEFAULT_DATES[value[0]];
+			const defaults = AGENCY_DEFAULT_VALUES[value[0]];
 			if (defaults) {
 				form.setValues({
 					agency_ids: value,
@@ -97,6 +95,7 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 					clip_start_date: defaults.clip_start,
 					feed_end_date: defaults.feed_end,
 					feed_start_date: defaults.feed_start,
+					numeric_calendar_codes: defaults?.numeric_calendar_codes || false,
 				});
 				return;
 			}

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { openRideExportModal } from '@/components/rides/export/RidesExportModal';
 import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { RidesListLastUpdatedAt } from '@/components/rides/list/RidesListLastUpdatedAt';

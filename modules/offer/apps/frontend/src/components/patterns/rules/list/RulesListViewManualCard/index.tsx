@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { IconArrowRight, IconCalendarCancel, IconCalendarCheck } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';

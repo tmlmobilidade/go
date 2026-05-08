@@ -1,6 +1,6 @@
 /* * */
 
-import { Link } from '@react-email/components';
+import { Link } from 'react-email';
 
 import styles from './styles.js';
 

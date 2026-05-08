@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useLineCreateContext } from '@/components/lines/create/LineCreate.context';
 import { closeCreateLineModal } from '@/components/lines/create/LineCreate.modal';
 import { IconUpload } from '@tabler/icons-react';

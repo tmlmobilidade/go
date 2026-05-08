@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type Event, EventRule, Line, PermissionCatalog, type UpdateEventDto, UpdateEventSchema } from '@tmlmobilidade/types';

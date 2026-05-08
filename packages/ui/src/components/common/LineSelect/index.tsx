@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Line } from '@carrismetropolitana/api-types/network';
 import { ActionIcon, Combobox, Group, TextInput, useCombobox } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';

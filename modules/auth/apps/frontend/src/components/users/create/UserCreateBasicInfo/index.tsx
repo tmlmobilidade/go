@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useUserCreateContext } from '@/components/users/create/UserCreate.context';
 import { IconMail } from '@tabler/icons-react';
 import { CreateUserSchema } from '@tmlmobilidade/types';

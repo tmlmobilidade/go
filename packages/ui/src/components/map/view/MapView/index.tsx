@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type MapLayerMouseEvent, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 import { type CSSProperties, type PropsWithChildren } from 'react';
 

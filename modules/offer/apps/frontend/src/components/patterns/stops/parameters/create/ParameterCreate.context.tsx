@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { useForm } from '@mantine/form';

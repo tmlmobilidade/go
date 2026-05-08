@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useEventCreateContext } from '@/components/events/create/EventCreate.context';
 import { closeCreateEventModal } from '@/components/events/create/EventCreate.modal';
 import { IconUpload } from '@tabler/icons-react';

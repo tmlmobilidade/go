@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAlertsListContext } from '@/components/list/AlertsList.context';
 import { AlertsListCellCauseEffect } from '@/components/list/AlertsListCellCauseEffect';
 import { AlertsListCellDate } from '@/components/list/AlertsListCellDate';
@@ -14,7 +12,7 @@ import { AlertsListHeader } from '@/components/list/AlertsListHeader';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert } from '@tmlmobilidade/types';
-import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingOverlay, Pane, PublishStatusTag } from '@tmlmobilidade/ui';
+import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingSection, Pane, PublishStatusTag } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
 /* * */
@@ -108,28 +106,28 @@ export function AlertsList() {
 	//
 	// C. Render components
 
-	if (alertsListContext.flags.loading) {
-		return <LoadingOverlay />;
-	}
-
-	if (alertsListContext.flags.error) {
-		return <ErrorDisplay message={alertsListContext.flags.error.message} />;
-	}
-
 	return (
 		<Pane
 			header={[
-				<AlertsListHeader />,
-				<AlertsListFiltersBar />,
+				<AlertsListHeader key="header" />,
+				<AlertsListFiltersBar key="filters" />,
 			]}
 		>
-			<DataTable
-				columns={columns}
-				onRowClick={handleRowClick}
-				records={alertsListContext.data.filtered}
-				rowIdAccessor="_id"
-				selectedId={params.id}
-			/>
+
+			{alertsListContext.flags.isLoading && <LoadingSection fullHeight />}
+
+			{alertsListContext.flags.error && <ErrorDisplay message={alertsListContext.flags.error.message} />}
+
+			{!alertsListContext.flags.isLoading && !alertsListContext.flags.error && (
+				<DataTable
+					columns={columns}
+					onRowClick={handleRowClick}
+					records={alertsListContext.data.filtered}
+					rowIdAccessor="_id"
+					selectedId={params.id}
+				/>
+			)}
+
 		</Pane>
 	);
 

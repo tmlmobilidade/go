@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 import Link from 'next/link';
 import { useMemo, useRef, useState } from 'react';

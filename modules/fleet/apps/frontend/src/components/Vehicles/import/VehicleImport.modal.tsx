@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { VehicleImportContextProvider } from '@/contexts/VehicleImport.context';
 import { DataProviders } from '@/providers/data-providers';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';

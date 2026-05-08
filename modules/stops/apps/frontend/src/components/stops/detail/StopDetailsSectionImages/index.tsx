@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { UploadImage } from '@/components/common/UploadImage';
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { Collapsible, Section } from '@tmlmobilidade/ui';

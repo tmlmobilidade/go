@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
 import { PeriodsListCellAgency } from '@/components/year-periods/list/PeriodsListCellAgency';
 import { PeriodsListHeader } from '@/components/year-periods/list/PeriodsListHeader';

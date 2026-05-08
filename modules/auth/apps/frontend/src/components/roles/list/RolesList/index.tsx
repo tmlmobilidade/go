@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRolesListContext } from '@/components/roles/list/RolesList.context';
 import { RolesListHeader } from '@/components/roles/list/RolesListHeader';
 import { type RoleNormalized } from '@/types/normalized';

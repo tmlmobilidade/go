@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

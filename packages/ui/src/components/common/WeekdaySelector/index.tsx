@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IsoWeekday, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
 import React from 'react';
 

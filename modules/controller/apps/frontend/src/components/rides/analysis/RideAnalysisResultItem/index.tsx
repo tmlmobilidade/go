@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type Ride, type RideAnalysis } from '@tmlmobilidade/types';
 import { Label, Section, Surface, Tag, Text } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';

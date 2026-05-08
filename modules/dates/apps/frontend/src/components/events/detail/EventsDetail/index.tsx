@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { DatesSelector } from '@/components/events/detail/EventsDatesSelector';
 import { useEventsDetailContext } from '@/components/events/detail/EventsDetail.context';
 import { EventsDetailHeader } from '@/components/events/detail/EventsDetailHeader';

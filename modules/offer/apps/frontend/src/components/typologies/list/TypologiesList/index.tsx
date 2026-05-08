@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useTypologiesListContext } from '@/components/typologies/list/TypologiesList.context';
 import { TypologiesListCellAgencies } from '@/components/typologies/list/TypologiesListCellAgencies';
 import { TypologiesListFiltersBar } from '@/components/typologies/list/TypologiesListFiltersBar';

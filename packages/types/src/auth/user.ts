@@ -1,7 +1,7 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { PermissionSchema } from '@/permissions/index.js';
 import { z } from 'zod';
 
@@ -21,7 +21,7 @@ export type UserPreferenceValue = z.infer<typeof UserPreferenceValueSchema>;
 
 export const UserSchema_UNSAFE = DocumentSchema.extend({
 	email: z.string().email(),
-	email_verified: UnixTimeStampSchema.nullable().default(null),
+	email_verified: UnixTimestampSchema.nullable().default(null),
 	first_name: z.string().min(2),
 	last_name: z.string().min(2),
 	organization_id: z.string(),
@@ -30,7 +30,7 @@ export const UserSchema_UNSAFE = DocumentSchema.extend({
 	phone: z.string().nullable().default(null),
 	preferences: z.record(z.record(UserPreferenceValueSchema)).nullable().default(null),
 	role_ids: z.array(z.string()).default([]),
-	seen_last_at: UnixTimeStampSchema.nullable().default(null),
+	seen_last_at: UnixTimestampSchema.nullable().default(null),
 	session_ids: z.array(z.string()).default([]),
 	verification_token_ids: z.array(z.string()).default([]),
 });

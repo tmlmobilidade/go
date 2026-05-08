@@ -1,6 +1,6 @@
 /* * */
 
-import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
 import { ApexValidationStatus, ApexValidationStatusSchema } from './apex-validation-status.js';
@@ -13,7 +13,7 @@ export const SimplifiedApexValidationSchema = z.object({
 	apex_version: z.string(),
 	card_serial_number: z.string(),
 	category: z.enum(['prepaid', 'subscription', 'on_board_sale']).nullable(),
-	created_at: UnixTimeStampSchema,
+	created_at: UnixTimestampSchema,
 	device_id: z.string(),
 	event_type: z.number(),
 	is_ok: z.boolean(),
@@ -26,7 +26,7 @@ export const SimplifiedApexValidationSchema = z.object({
 	on_board_sale_id: z.string().nullable(),
 	pattern_id: z.string(),
 	product_id: z.string(),
-	received_at: UnixTimeStampSchema,
+	received_at: UnixTimestampSchema,
 	stop_id: z.string(),
 	trip_id: z.string(),
 	units_qty: z.number().nullable(),

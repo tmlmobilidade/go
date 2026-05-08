@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { openCreateLineModal } from '@/components/lines/create/LineCreate.modal';
 import { openGtfsExportModal } from '@/components/lines/export/GtfsExportModal';
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';

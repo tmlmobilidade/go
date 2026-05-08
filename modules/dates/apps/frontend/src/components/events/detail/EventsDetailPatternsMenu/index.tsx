@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconEye, IconRouteOff } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Event } from '@tmlmobilidade/types';

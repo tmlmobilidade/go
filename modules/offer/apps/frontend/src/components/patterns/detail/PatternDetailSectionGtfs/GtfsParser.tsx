@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type GtfsRoute } from '@/components/patterns/detail/PatternDetailSectionGtfs/index';
 import { IconFileZip, IconUpload, IconX } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';

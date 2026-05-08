@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { HoverCard } from '@mantine/core';
 import { Dates } from '@tmlmobilidade/dates';
 import { type UnixTimestamp } from '@tmlmobilidade/types';

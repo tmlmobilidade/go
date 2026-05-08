@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { RideAcceptanceCommentList } from '@/components/rides/acceptance/RideAcceptanceCommentList';
 import { RideAcceptanceJustification } from '@/components/rides/acceptance/RideAcceptanceJustification';
 import { RideAnalysisAnalysisResult } from '@/components/rides/analysis/RideAnalysisResult';

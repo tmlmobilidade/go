@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { Badge, Description, Label, Section } from '@tmlmobilidade/ui';
 

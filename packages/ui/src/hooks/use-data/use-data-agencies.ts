@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { ActionsOf, type Agency, Permission } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
 import useSWR from 'swr';

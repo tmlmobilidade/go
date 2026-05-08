@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useParameterCreateContext } from '@/components/patterns/stops/parameters/create/ParameterCreate.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { Section, SegmentedMultiSelect, SelectChipGroup, Text } from '@tmlmobilidade/ui';

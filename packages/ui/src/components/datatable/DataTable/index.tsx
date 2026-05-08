@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { DataTableContent } from '../DataTableContent';
 import { DataTableContextProvider } from '../DataTableContext';
 

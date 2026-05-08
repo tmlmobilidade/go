@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type PropsWithChildren, type ReactNode } from 'react';
 
 /**

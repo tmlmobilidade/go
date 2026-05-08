@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type PropsWithChildren } from 'react';
 
 import { ExportsContextProvider } from '../../contexts/exports.context';

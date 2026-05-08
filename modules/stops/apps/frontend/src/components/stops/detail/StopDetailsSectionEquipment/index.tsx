@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { StopDetailFacilityCheckbox } from '@/components/stops/detail/StopDetailFacilityCheckbox';
 import { Translations } from '@/lib/translations';
 import { StopFacilitySchema } from '@tmlmobilidade/types';

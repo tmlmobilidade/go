@@ -1,6 +1,6 @@
 /* * */
 
-import { Text } from '@react-email/components';
+import { Text } from 'react-email';
 
 import styles from './styles.js';
 

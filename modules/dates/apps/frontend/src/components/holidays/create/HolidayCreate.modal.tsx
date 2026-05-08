@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { HolidayCreate } from '@/components/holidays/create/HolidayCreate';
 import { HolidayCreateContextProvider } from '@/components/holidays/create/HolidayCreate.context';
 import { DataProviders } from '@/providers/data-providers';

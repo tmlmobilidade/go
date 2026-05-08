@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useQueryState } from 'nuqs';
 import { useEffect, useMemo } from 'react';
 

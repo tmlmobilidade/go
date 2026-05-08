@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { RidesListContextState } from '@/components/rides/list/RidesList.context';
 import { AgenciesContextProvider, useAgenciesContext } from '@/contexts/Agencies.context';
 import { RidesExportModalContextProvider, useRidesExportModalContext } from '@/contexts/RidesExport.context';

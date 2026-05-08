@@ -1,6 +1,6 @@
 /* * */
 
-import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
 /* * */
@@ -9,7 +9,7 @@ export const SimplifiedApexInspectionDecisionSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
-	created_at: UnixTimeStampSchema,
+	created_at: UnixTimestampSchema,
 	device_id: z.string(),
 	final_control_status: z.number(),
 	inspection_decision_id: z.string().nullable(),
@@ -17,7 +17,7 @@ export const SimplifiedApexInspectionDecisionSchema = z.object({
 	is_ok_pcgi: z.boolean(),
 	mac_ase_counter_value: z.number(),
 	mac_sam_serial_number: z.number(),
-	received_at: UnixTimeStampSchema,
+	received_at: UnixTimestampSchema,
 });
 
 /**

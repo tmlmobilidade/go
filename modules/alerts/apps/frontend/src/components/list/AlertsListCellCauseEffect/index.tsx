@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconArrowRight } from '@tabler/icons-react';
 import { type Alert } from '@tmlmobilidade/types';
 import { Tag } from '@tmlmobilidade/ui';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useZoneCreateContext } from '@/components/zones/create/ZoneCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog, ZoneSchema } from '@tmlmobilidade/types';

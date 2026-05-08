@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { VehicleCreateModalHeader } from '@/components/Vehicles/create/VehicleCreateModalHeader';
 import { Pane } from '@tmlmobilidade/ui';
 

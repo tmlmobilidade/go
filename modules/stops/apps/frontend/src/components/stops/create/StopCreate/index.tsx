@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { StopCreateModalAlerts } from '@/components/stops/create/StopCreateModalAlerts';
 import { StopCreateModalControls } from '@/components/stops/create/StopCreateModalControls';
 import { StopCreateModalHeader } from '@/components/stops/create/StopCreateModalHeader';

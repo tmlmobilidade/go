@@ -1,15 +1,11 @@
 'use client';
 
-/* * */
-
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { ReferencesEditorRidesFilters } from '@/components/common/references/ReferencesEditorRidesFilters';
-import { RidesListCellHeadsign } from '@/components/create/RidesListCellHeadsign';
-import { SeenStatusTag } from '@/components/create/SeenStatusTag';
-import { Dates } from '@tmlmobilidade/dates';
-import { type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Checkbox, DataTable, DataTableColumn, NoDataLabel, OperationalStatusTag, Section, Surface, Tag } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { ReferencesEditorRidesList } from '@/components/common/references/ReferencesEditorRidesList';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { useDataRides } from '@tmlmobilidade/ui';
+import { useEffect, useMemo, useState } from 'react';
 
 /* * */
 
@@ -21,81 +17,65 @@ export function ReferencesEditorRides() {
 
 	const referencesEditorContext = useReferencesEditorContext();
 
-	const formatTimestamp = (timestamp: UnixTimestamp) => {
-		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;
-	};
-
-	const columns: DataTableColumn<RideNormalized>[] = [
-		{
-			accessor: '_id',
-			render: item => <Checkbox checked={referencesEditorContext.data.selected_references?.some(reference => reference.parent_id === item._id) ?? false} />,
-			title: '',
-			width: 50,
-		},
-		{
-			accessor: 'seen_last_at',
-			render: item => <SeenStatusTag value={item.seen_status} />,
-			title: '',
-			width: 24,
-		},
-		{
-			accessor: 'operational_status',
-			render: item => <OperationalStatusTag value={item.operational_status} />,
-			title: 'Estado',
-			width: 150,
-		},
-		{
-			accessor: 'start_time_scheduled',
-			render: item => <Tag label={formatTimestamp(item.start_time_scheduled)} variant="muted" />,
-			title: 'Partida',
-			width: 80,
-		},
-		{
-			accessor: 'headsign',
-			render: item => <RidesListCellHeadsign headsign={item.headsign} patternId={item.pattern_id} />,
-			title: 'Pattern',
-			width: 500,
-		},
-	];
+	const [viewMode, setViewMode] = useState<'all' | 'selected'>('all');
+	const [searchFilterValue, setSearchFilterValue] = useState<string>();
+	const [lineIdsFilterValue, setLineIdsFilterValue] = useState<string[]>();
+	const [stopIdsFilterValue, setStopIdsFilterValue] = useState<string[]>();
 
 	//
-	// B. Transform data
+	// B. Fetch data
+
+	const { isLoading: filteredRidesLoading, raw: filteredRidesData } = useDataRides(API_ROUTES.alerts.OPERATION_RIDES, {
+		filters: {
+			agency_ids: [referencesEditorContext.data.selected_agency_id],
+			date_end: referencesEditorContext.data.active_period_end_date,
+			date_start: referencesEditorContext.data.active_period_start_date,
+			line_ids: lineIdsFilterValue,
+			operational_statuses: ['running', 'missed', 'scheduled'],
+			search: searchFilterValue,
+			stop_ids: stopIdsFilterValue,
+		},
+	});
+
+	//
+	// C. Transform data
 
 	const visibleRides = useMemo(() => {
-		if (referencesEditorContext.filters.view_mode.value === 'selected') {
-			return referencesEditorContext.data.selected_rides_data;
-		}
-		return referencesEditorContext.data.filtered_rides;
-	}, [referencesEditorContext.data.filtered_rides, referencesEditorContext.data.selected_references, referencesEditorContext.filters.view_mode.value]);
+		if (viewMode === 'all') return filteredRidesData;
+		return referencesEditorContext.data.selected_rides_data;
+	}, [filteredRidesData, referencesEditorContext.data.selected_rides_data, viewMode]);
 
 	//
-	// C. Render components
+	// D. Handle actions
+
+	useEffect(() => {
+		// Skip if no selected references
+		if (!referencesEditorContext.data.selected_references.length) return;
+		// Set filter mode to 'all' if there are no selected references
+		setViewMode('all');
+	}, [referencesEditorContext.data.selected_references.length]);
+
+	//
+	// E. Render components
 
 	return (
 		<>
 
-			<ReferencesEditorRidesFilters />
+			<ReferencesEditorRidesFilters
+				lineIdsFilterValue={lineIdsFilterValue}
+				searchFilterValue={searchFilterValue}
+				setLineIdsFilterValue={setLineIdsFilterValue}
+				setSearchFilterValue={setSearchFilterValue}
+				setStopIdsFilterValue={setStopIdsFilterValue}
+				setViewMode={setViewMode}
+				stopIdsFilterValue={stopIdsFilterValue}
+				viewMode={viewMode}
+			/>
 
-			{!visibleRides.length && (
-				<Section>
-					<Surface>
-						<Section alignItems="center">
-							<NoDataLabel text="Nenhuma circulação selecionada" />
-						</Section>
-					</Surface>
-				</Section>
-			)}
-
-			{visibleRides.length > 0 && (
-				<DataTable
-					columns={columns}
-					onRowClick={item => referencesEditorContext.actions.toggleRideSelection(item._id)}
-					records={visibleRides}
-					rowIdAccessor="_id"
-					selectedIds={referencesEditorContext.data.selected_references?.map(reference => reference.parent_id) ?? []}
-					withTopBorder
-				/>
-			)}
+			<ReferencesEditorRidesList
+				isLoading={filteredRidesLoading}
+				ridesData={visibleRides}
+			/>
 
 		</>
 	);
