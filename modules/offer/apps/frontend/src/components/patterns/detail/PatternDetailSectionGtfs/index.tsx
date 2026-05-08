@@ -13,6 +13,8 @@ import { useState } from 'react';
 
 export interface GtfsTrip {
 	path: {
+		avg_speed: number
+		dwell_time: number
 		shape_dist_traveled: number
 		stop_id: string
 		stop_sequence: number
@@ -58,8 +60,7 @@ export function PatternDetailSectionGtfs() {
 				}
 			}
 			setParseResult(trips);
-		} catch (error) {
-			console.log(error);
+		} catch {
 			setParseResult(null);
 		}
 	};
@@ -75,7 +76,7 @@ export function PatternDetailSectionGtfs() {
 		openGtfsImportConfirmationModal({
 			currentShapeExtension,
 			currentStopCount,
-			onSuccess: patternDetailContext.actions.mutate,
+			onLoad: patternDetailContext.actions.mutate,
 			patternId: patternDetailContext.data.id,
 			selectedTrip: trip,
 		});

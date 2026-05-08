@@ -18,14 +18,14 @@ const MODAL_ID = 'gtfs-import-confirmation-modal';
 interface GtfsImportConfirmationProps {
 	currentShapeExtension: number
 	currentStopCount: number
-	onSuccess: () => void
+	onLoad: (pattern: Pattern) => void
 	patternId: string
 	selectedTrip: GtfsTrip
 }
 
 /* * */
 
-function GtfsImportConfirmation({ currentShapeExtension, currentStopCount, onSuccess, patternId, selectedTrip }: GtfsImportConfirmationProps) {
+function GtfsImportConfirmation({ currentShapeExtension, currentStopCount, onLoad, patternId, selectedTrip }: GtfsImportConfirmationProps) {
 	//
 
 	//
@@ -59,10 +59,10 @@ function GtfsImportConfirmation({ currentShapeExtension, currentStopCount, onSuc
 				return;
 			}
 
-			// Close modal and trigger success callback
+			// Close modal and load data into form
 			closeGtfsImportConfirmationModal();
-			useToast.success({ message: 'Percurso importado com sucesso' });
-			onSuccess();
+			useToast.info({ message: 'Percurso carregado. Clique em Guardar para confirmar.' });
+			onLoad(result.data as Pattern);
 		} catch (error) {
 			console.log(error);
 			useToast.error({ message: 'Erro ao importar percurso' });
@@ -91,7 +91,7 @@ function GtfsImportConfirmation({ currentShapeExtension, currentStopCount, onSuc
 			<Divider />
 			<Grid columns="ab" gap="sm">
 				<Button color="gray" label="Cancelar" onClick={closeGtfsImportConfirmationModal} variant="danger" />
-				<Button label="Substituir percurso e shape" loading={isImporting} onClick={handleConfirmImport} variant="primary" />
+				<Button label="Importar" loading={isImporting} onClick={handleConfirmImport} variant="primary" />
 			</Grid>
 		</Section>
 	);
@@ -106,7 +106,7 @@ export const openGtfsImportConfirmationModal = (props: GtfsImportConfirmationPro
 		children: <GtfsImportConfirmation {...props} />,
 		modalId: MODAL_ID,
 		size: 'lg',
-		title: 'Substituir percurso e shape?',
+		title: 'Importar percurso e shape?',
 	});
 };
 

@@ -8,8 +8,6 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dropzone, Text } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 
-import { usePatternDetailContext } from '../PatternDetail.context';
-
 /* * */
 
 const MAX_FILE_SIZE = 100000000; // 100MB
@@ -29,7 +27,6 @@ export function GtfsParser({ onParse }: GtfsParserProps) {
 	// A. Setup variables
 
 	const [isUploading, setIsUploading] = useState(false);
-	const patternDetailContext = usePatternDetailContext();
 
 	//
 	// B. Handle actions
@@ -39,7 +36,6 @@ export function GtfsParser({ onParse }: GtfsParserProps) {
 			setIsUploading(true);
 			const formData = new FormData();
 			formData.append('file', files[0]);
-			formData.append('agency_id', patternDetailContext.data.agency_id);
 			const res = await fetch(API_ROUTES.offer.GTFS_PARSE, { body: formData, credentials: 'include', method: 'POST' });
 			const data = await res.json();
 			onParse(data.data);

@@ -2,11 +2,12 @@
 
 import StatCard from '@/components/common/StatCard';
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
+import { GtfsImportPopover } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsImportPopover';
 import { ShapeEditorModal } from '@/components/patterns/shape/shape-editor/ShapeEditor.modal';
-import { IconFileZip, IconShape } from '@tabler/icons-react';
+import { IconShape } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Agency } from '@tmlmobilidade/types';
-import { Button, Collapsible, Grid, MapOverlayPatternShape, MapView, Section } from '@tmlmobilidade/ui';
+import { Agency, Pattern } from '@tmlmobilidade/types';
+import { Button, Collapsible, Grid, MapOverlayPatternShape, MapView, Section, useToast } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -40,13 +41,23 @@ export function PatternDetailSectionShape() {
 	}, [agencyData, patternDetailContext.data.form.values]);
 
 	//
-	// C. Render components
+	// C. Handle actions
+
+	const handleLoadPattern = (pattern: Pattern) => {
+		patternDetailContext.data.form.setFieldValue('path', pattern.path);
+		patternDetailContext.data.form.setFieldValue('shape', pattern.shape);
+		patternDetailContext.data.form.setFieldValue('parameters', pattern.parameters);
+		useToast.info({ message: 'Percurso carregado. Clique em Guardar para confirmar.' });
+	};
+
+	//
+	// D. Render components
 
 	return (
-		<Collapsible title="Sequência de paragens">
+		<Collapsible title="Sequência de paragens" defaultOpen>
 			{(shapeExtensionCardValue !== null || shapeCost !== null) && (
 				<Section gap="sm">
-					<Grid columns="abc" gap="sm">
+					<Grid columns="ab" gap="sm">
 						<StatCard title="Extensão" value={shapeExtensionCardValue} />
 						<StatCard title="Custo de cada viagem" value={shapeCost} />
 					</Grid>
@@ -70,11 +81,11 @@ export function PatternDetailSectionShape() {
 						leftSection={<IconShape />}
 						onClick={() => setIsEditorOpen(true)}
 					/>
-					<Button
-						label="Importar ficheiro GTFS"
-						leftSection={<IconFileZip />}
-						onClick={() => setIsEditorOpen(true)}
-						variant="secondary"
+					<GtfsImportPopover
+						currentShapeExtension={patternDetailContext.data.pattern?.shape?.extension || 0}
+						currentStopCount={patternDetailContext.data.pattern?.path?.length || 0}
+						onLoad={handleLoadPattern}
+						patternId={patternDetailContext.data.id}
 					/>
 				</Section>
 

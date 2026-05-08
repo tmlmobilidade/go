@@ -181,7 +181,7 @@ export class PatternsController {
 	 * @param request Fastify request containing GTFS import data
 	 * @param reply Fastify reply
 	 */
-	static async importFromGtfs(request: FastifyRequest<{ Body: { path: { shape_dist_traveled: number, stop_id: string, stop_sequence: number }[], shape: { shape_dist_traveled: number, shape_pt_lat: number, shape_pt_lon: number, shape_pt_sequence: number }[] }, Params: { id: string } }>, reply: FastifyReply<Pattern>) {
+	static async importFromGtfs(request: FastifyRequest<{ Body: { path: { avg_speed: number, dwell_time: number, shape_dist_traveled: number, stop_id: string, stop_sequence: number }[], shape: { shape_dist_traveled: number, shape_pt_lat: number, shape_pt_lon: number, shape_pt_sequence: number }[] }, Params: { id: string } }>, reply: FastifyReply<PopulatedPattern>) {
 		//
 
 		//
@@ -233,6 +233,7 @@ export class PatternsController {
 
 		const sortedPath = request.body.path.sort((a, b) => a.stop_sequence - b.stop_sequence);
 		const formattedPath = [];
+		const populatedPath: PopulatedPath[] = [];
 		let prevDistance = 0;
 
 		for (const [pathIndex, pathItem] of sortedPath.entries()) {
@@ -251,7 +252,7 @@ export class PatternsController {
 			prevDistance = Math.round(pathItem.shape_dist_traveled);
 
 			// Add formatted path item
-			formattedPath.push({
+			const pathEntry = {
 				_id: originalPathStop?._id || `temp-${associatedStop._id}-${pathIndex}`,
 				allow_drop_off: originalPathStop?.allow_drop_off ?? true,
 				allow_pickup: originalPathStop?.allow_pickup ?? true,
@@ -259,26 +260,33 @@ export class PatternsController {
 				stop_id: associatedStop._id,
 				timepoint: originalPathStop?.timepoint ?? true,
 				zones: originalPathStop?.zones ?? [], // fix this later
-			});
+			};
+			formattedPath.push(pathEntry);
+			populatedPath.push({ ...pathEntry, stop: associatedStop });
 		}
 
-		// Set default values for avg_speed and dwell_time
+		// Build parameter path using avg_speed and dwell_time computed by the GTFS parser,
+		// falling back to existing parameter values for matching stops
+		const existingDefaultParam = patternData.parameters?.find(p => p.kind === 'default');
+		const existingSpeedMap = new Map(existingDefaultParam?.path.map(p => [p.stop_id, p]) ?? []);
+
 		const defaultParameter: StopsParameter = {
 			_id: generateRandomString({ length: 5 }),
 			kind: 'default',
-			path: formattedPath.map(p => ({
-				avg_speed: 0,
-				dwell_time: 30,
+			path: formattedPath.map((p, i) => ({
+				avg_speed: sortedPath[i].avg_speed || existingSpeedMap.get(p.stop_id)?.avg_speed || 0,
+				dwell_time: sortedPath[i].dwell_time ?? existingSpeedMap.get(p.stop_id)?.dwell_time ?? 30,
 				stop_id: p.stop_id,
 			})),
 		};
 
 		//
-		// Update the pattern with imported data
+		// Build the computed import result (without saving — the frontend loads it into the form and the user confirms via the save button)
 
-		const updatedPattern: Pattern = await patterns.updateById(patternData._id, {
+		const importResult: PopulatedPattern = {
+			...patternData,
 			parameters: [defaultParameter],
-			path: formattedPath,
+			path: populatedPath,
 			shape: {
 				anchors: [],
 				extension: Math.round(shapeExtension),
@@ -291,13 +299,13 @@ export class PatternsController {
 					type: 'Feature',
 				},
 			},
-		});
+		};
 
 		//
-		// Send the updated pattern data as the response
+		// Send the computed data as the response
 
 		reply.send({
-			data: updatedPattern,
+			data: importResult,
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});
