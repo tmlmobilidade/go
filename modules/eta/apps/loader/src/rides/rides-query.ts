@@ -7,10 +7,15 @@ import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 
 export function buildRidesQuery(): Filter<Ride> {
-	return {
+	const query: Filter<Ride> = {
 		agency_id: { $in: AppConfig.agencyIds },
-		line_id: AppConfig.useDevLineIds ? { $in: AppConfig.devLineIds } : undefined, // ! Development only: restrict to a hand-picked set of lines
 	};
+
+	if (AppConfig.useDevLineIds) {
+		query.line_id = { $in: AppConfig.devLineIds };
+	}
+
+	return query;
 }
 
 export async function fetchCurrentWindowRides(ridesQuery: Filter<Ride>) {
