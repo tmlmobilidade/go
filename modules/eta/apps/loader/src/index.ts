@@ -89,20 +89,24 @@ export async function main() {
 
 		Logger.info(`Getting historical rides for date range: ${Dates.now('Europe/Lisbon').minus({ days: AppConfig.historicalDataDaysBack }).iso} → ${Dates.now('Europe/Lisbon').iso}`);
 
+		const historicalRidesPromises = [];
 		for (let index = 0; index < AppConfig.historicalDataDaysBack; index++) {
-			//
+			historicalRidesPromises.push(
+				(async () => {
+					const historicalRides = await fetchHistoricalRidesForDayIndex(ridesQuery, index);
 
-			const historicalRides = await fetchHistoricalRidesForDayIndex(ridesQuery, index);
+					historicalRides.forEach((ride) => {
+						disctictHashedShapeIds.add(ride.hashed_shape_id);
+					});
 
-			historicalRides.forEach((ride) => {
-				disctictHashedShapeIds.add(ride.hashed_shape_id);
-			});
+					Logger.info(`Found ${historicalRides.length} historical rides`);
 
-			Logger.info(`Found ${historicalRides.length} historical rides`);
-
-			// Insert into clickhouse, _id, trip_id, hashed_shape_id
-			await insertEtaRides(clickhouseClient, 'eta.hist_rides', historicalRides.map(toEtaRideRow), 'historical rides');
+					// Insert into clickhouse, _id, trip_id, hashed_shape_id
+					await insertEtaRides(clickhouseClient, 'eta.hist_rides', historicalRides.map(toEtaRideRow), 'historical rides');
+				})(),
+			);
 		}
+		await Promise.all(historicalRidesPromises);
 	}
 
 	//
