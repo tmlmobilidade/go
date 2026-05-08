@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 'use client';
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
@@ -7,8 +6,9 @@ import { getSamSystemStatus } from '@/lib/sam-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Sam, type SystemStatus, SystemStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
 import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
+import { fetchData } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
-import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -22,10 +22,12 @@ export interface SamsListContextState {
 		setFavoritesEnabled: () => void
 		setFilterSeenFirstAt: (value: null | UnixTimestamp) => void
 		setFilterSeenLastAt: (value: null | UnixTimestamp) => void
+		trackVisibleSamIds: (ids: number[]) => void
 	}
 	data: {
 		filtered: SamsListItem[]
 		raw: SamsListItem[]
+		timelineById: Record<number, null | Sam['timeline_summary'] | undefined>
 	}
 	filters: {
 		agency: UseFilterStateListReturnType
@@ -46,6 +48,11 @@ export interface SamsListContextState {
 
 export const SamsListContext = createContext<SamsListContextState | undefined>(undefined);
 
+interface SamTimelineSummaryListItem {
+	_id: number
+	timeline_summary: null | Sam['timeline_summary']
+}
+
 export const useSamsListContext = () => {
 	const context = useContext(SamsListContext);
 	if (!context) {
@@ -62,8 +69,11 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	// A. Setup variables
 
 	const [favoritesEnabled, setFavoritesEnabled] = useState<boolean>(false);
+	const [timelineById, setTimelineById] = useState<Record<number, null | Sam['timeline_summary'] | undefined>>({});
 	const filterSearch = useFilterStateString('search');
 	const [debouncedFilterSearch, setDebouncedFilterSearch] = useState('');
+	const inflightTimelineIdsRef = useRef<Set<number>>(new Set());
+	const timelineByIdRef = useRef<Record<number, null | Sam['timeline_summary'] | undefined>>({});
 
 	const filterStatusOptions = useMemo(() => {
 		return SystemStatusSchema.options.map(status => ({
@@ -193,7 +203,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	const samsListUrl = useMemo(() => {
 		if (agenciesContext.flags.loading) return null;
-		const base = API_ROUTES.controller.SAMS_LIST;
+		const base = API_ROUTES.controller.SAMS_BASE;
 		return samsListQueryString ? `${base}?${samsListQueryString}` : base;
 	}, [agenciesContext.flags.loading, samsListQueryString]);
 
@@ -206,15 +216,84 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	//
 
-	const normalizedSamsData = useMemo(() => {
+	const normalizedSamsData = useMemo<SamsListItem[]>(() => {
 		return allSamsData.map(item => ({ ...item, latest_apex_version: normalizeApexVersion(item.latest_apex_version) }));
 	}, [allSamsData, normalizeApexVersion]);
 
+	useEffect(() => {
+		timelineByIdRef.current = timelineById;
+	}, [timelineById]);
+
+	const fetchAnalysisByIds = useCallback(async (samIds: number[]) => {
+		if (samIds.length === 0) return;
+
+		for (const samId of samIds)
+			inflightTimelineIdsRef.current.add(samId);
+
+		try {
+			const summaryResponse = await fetchData<SamTimelineSummaryListItem[]>(
+				API_ROUTES.controller.SAMS_TIMELINE_SUMMARY,
+				'POST',
+				{ ids: samIds },
+			);
+			if (!summaryResponse.isOk?.() || !summaryResponse.data) {
+				throw new Error(summaryResponse.error ?? 'Failed to fetch SAM timeline summary chunk.');
+			}
+			const summaryRows = summaryResponse.data;
+
+			setTimelineById((prev) => {
+				const next = { ...prev };
+				for (const samId of samIds)
+					if (next[samId] === undefined) next[samId] = null;
+				for (const row of summaryRows)
+					next[row._id] = row.timeline_summary ?? { months: [] };
+				return next;
+			});
+		} catch (error) {
+			console.error('[SamsList] Failed to fetch timeline summary.', { error, samIdsCount: samIds.length });
+			// Keep already-rendered rows; missing timeline can retry on later visibility events.
+		} finally {
+			for (const samId of samIds)
+				inflightTimelineIdsRef.current.delete(samId);
+		}
+	}, []);
+
+	const trackVisibleSamIds = useCallback((ids: number[]) => {
+		// Kept for backward compatibility with list row components.
+		void ids;
+	}, []);
+
+	useEffect(() => {
+		if (favoritesEnabled || normalizedSamsData.length === 0) return;
+
+		const missingIds = normalizedSamsData
+			.map(item => item._id)
+			.filter((samId) => {
+				if (timelineByIdRef.current[samId] !== undefined) return false;
+				if (inflightTimelineIdsRef.current.has(samId)) return false;
+				return true;
+			});
+
+		void fetchAnalysisByIds(missingIds);
+	}, [favoritesEnabled, fetchAnalysisByIds, normalizedSamsData]);
+
+	useEffect(() => {
+		setTimelineById({});
+		inflightTimelineIdsRef.current.clear();
+	}, [samsListUrl]);
+
 	//
 
-	const samsDataWithComputedStatus = useMemo(() => {
+	const samsDataWithComputedStatus = useMemo<SamsListItem[]>(() => {
 		return normalizedSamsData.map(item => ({ ...item, system_status: getSamSystemStatus(item) }));
 	}, [normalizedSamsData]);
+
+	const samsDataWithLazyTimeline = useMemo(() => {
+		return samsDataWithComputedStatus.map(item => ({
+			...item,
+			timeline_summary: timelineById[item._id],
+		}));
+	}, [samsDataWithComputedStatus, timelineById]);
 
 	const favoriteSamsNormalized = useMemo(
 		() =>
@@ -227,7 +306,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	//
 
-	const listSourceRows = favoritesEnabled ? favoriteSamsNormalized : samsDataWithComputedStatus;
+	const listSourceRows = favoritesEnabled ? favoriteSamsNormalized : samsDataWithLazyTimeline;
 
 	const filteredSamsData = useMemo(() => {
 		if (!filterStatus.isActive || !filterStatus.value.length)
@@ -247,10 +326,12 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 				setFavoritesEnabled: () => setFavoritesEnabled(!favoritesEnabled),
 				setFilterSeenFirstAt: value => setFilterSeenFirstAt(value as null | number),
 				setFilterSeenLastAt: value => setFilterSeenLastAt(value as null | number),
+				trackVisibleSamIds,
 			},
 			data: {
 				filtered: filteredSamsData,
-				raw: samsDataWithComputedStatus,
+				raw: samsDataWithLazyTimeline,
+				timelineById,
 			},
 			filters: {
 				agency: filterAgency,
@@ -277,9 +358,11 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 			filterSeenLastAt,
 			filteredSamsData,
 			listLoading,
-			samsDataWithComputedStatus,
+			samsDataWithLazyTimeline,
 			setFilterSeenFirstAt,
 			setFilterSeenLastAt,
+			timelineById,
+			trackVisibleSamIds,
 		],
 	);
 

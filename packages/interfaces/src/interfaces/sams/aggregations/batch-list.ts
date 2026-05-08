@@ -210,4 +210,58 @@ export function samsByIdAggregationPipeline(id: number): AggregationPipeline<Sam
 	] as AggregationPipeline<Sam>;
 }
 
-/* eslint-enable perfectionist/sort-objects */
+/**
+ * Returns stored timeline summary rows for explicit SAM `_id`s.
+ * Used for fast SAM list timeline hydration.
+ */
+export function samsByIdsTimelineSummaryAggregationPipeline({
+	agencyIds,
+	ids,
+	restrictByAgency,
+}: {
+	agencyIds?: string[]
+	ids: number[]
+	restrictByAgency: boolean
+}): AggregationPipeline<Sam> {
+	const matchAnd: Record<string, unknown>[] = [{ _id: { $in: ids } }];
+	if (restrictByAgency && agencyIds?.length)
+		matchAnd.push({ agency_id: { $in: agencyIds } });
+
+	return [
+		{ $match: { $and: matchAnd } },
+		{
+			$project: {
+				_id: 1,
+				timeline_summary: { $ifNull: ['$timeline_summary', { months: [] }] },
+			},
+		},
+	] as AggregationPipeline<Sam>;
+}
+/**
+ * Lightweight SAM list rows without timeline data (used for fast initial list loading).
+ */
+function samsListBaseProjectionStages(): AggregationPipeline<Sam> {
+	return [
+		{
+			$project: {
+				analysis: 0,
+				timeline_summary: 0,
+			},
+		},
+		{ $sort: { created_at: -1 } },
+	] as AggregationPipeline<Sam>;
+}
+
+/**
+ * Lightweight SAM list rows without timeline data (used for fast initial list loading).
+ */
+export function samsBatchBaseAggregationPipeline({
+	matchAnd,
+}: {
+	matchAnd: Record<string, unknown>[]
+}): AggregationPipeline<Sam> {
+	return [
+		...(matchAnd.length > 0 ? [{ $match: { $and: matchAnd } }] : []),
+		...samsListBaseProjectionStages(),
+	] as AggregationPipeline<Sam>;
+}

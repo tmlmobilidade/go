@@ -9,8 +9,7 @@ export type SamTimelineAccent = z.infer<typeof SamTimelineAccentSchema>;
 
 export const SamTimelineMonthSchema = z.object({
 	failed_count: z.number().int().nonnegative().default(0),
-	has_empty_days_in_range: z.boolean().optional(),
-	key: z.string(), // yyyy-MM
+	month: z.string(), // yyyy-MM
 	successful_count: z.number().int().nonnegative().default(0),
 });
 export type SamTimelineMonth = z.infer<typeof SamTimelineMonthSchema>;

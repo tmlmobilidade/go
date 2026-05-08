@@ -11,9 +11,25 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Sam } from '@tmlmobilidade/types';
 import { AgencyTag, DataTable, DataTableColumn, IdTag, keepUrlParams, Label, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 /* * */
+
+function SamsTimelineCell({ item }: { item: Sam | SamsListItem }) {
+	const samsListContext = useSamsListContext();
+
+	useEffect(() => {
+		samsListContext.actions.trackVisibleSamIds([item._id]);
+	}, [item._id, samsListContext.actions]);
+
+	return (
+		<AnalysisTimeLineRow
+			rangeEndTs={item.seen_last_at}
+			rangeStartTs={item.seen_first_at}
+			timelineSummary={item.timeline_summary}
+		/>
+	);
+}
 
 export function SamsList() {
 	//
@@ -71,13 +87,7 @@ export function SamsList() {
 		},
 		{
 			accessor: 'timeline_summary',
-			render: item => (
-				<AnalysisTimeLineRow
-					rangeEndTs={item.seen_last_at}
-					rangeStartTs={item.seen_first_at}
-					timelineSummary={item.timeline_summary}
-				/>
-			),
+			render: item => <SamsTimelineCell item={item} />,
 			title: 'Análises',
 			width: 600,
 		},

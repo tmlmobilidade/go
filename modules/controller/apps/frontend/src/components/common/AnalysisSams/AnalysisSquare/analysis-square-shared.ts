@@ -10,7 +10,7 @@ export const analysisSquareHasValues = (a: SamAnalysis) =>
 
 export const analysisSquareTitle = (a: SamAnalysis): string | undefined => {
 	if (!analysisSquareHasValues(a)) return undefined;
-	return [a.last_transaction_type, a.last_transaction_id].filter(Boolean).join(' · ');
+	return [a.last_transaction_type, a.last_transaction_id].filter(Boolean).join(' - ');
 };
 
 /** Label for day/month aggregates: how many analyses in that bucket. */
@@ -42,6 +42,6 @@ export function analysisTimelinePeriodTooltipLabel(args: {
 		successful: args.successful,
 		total: args.total,
 	});
-	return `${args.periodLabel} · ${detail}`;
+	return `${args.periodLabel} - ${detail}`;
 }
 

@@ -7,8 +7,9 @@ import { type SamTimelineAccent } from '@tmlmobilidade/types';
  * chip color uses {@link accentFromSuccessFailedCounts}.
  */
 export interface TimelineCountSource {
-	failed_count?: number
-	successful_count?: number
+	count?: unknown
+	failed_count?: unknown
+	successful_count?: unknown
 }
 
 /** Coerce API / BSON-friendly values to a non-negative int (handles Long-like objects). */
@@ -32,7 +33,14 @@ export function safeTimelineInt(value: unknown): number {
 export function normalizeTimelineCounts(item: TimelineCountSource): { failed: number, successful: number, total: number } {
 	const successful = safeTimelineInt(item.successful_count ?? 0);
 	const failed = safeTimelineInt(item.failed_count ?? 0);
-	return { failed, successful, total: successful + failed };
+	if (successful > 0 || failed > 0)
+		return { failed, successful, total: successful + failed };
+
+	const total = safeTimelineInt(item.count ?? 0);
+	if (total <= 0)
+		return { failed: 0, successful: 0, total: 0 };
+
+	return { failed: 0, successful: total, total };
 }
 
 /** Square / chip color from resolved totals. */

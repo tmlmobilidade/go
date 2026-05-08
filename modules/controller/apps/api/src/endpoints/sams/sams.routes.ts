@@ -23,6 +23,12 @@ server.register(
 		);
 
 		instance.get(
+			'/base',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.sams.scope, [PermissionCatalog.all.sams.actions.read]) },
+			(request: FastifyRequest<{ Querystring: GetSamsBatchQuery }>, reply: FastifyReply<SamListItem[]>) => SamsController.getBatchBase(request, reply),
+		);
+
+		instance.get(
 			'/apex-versions',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.sams.scope, [PermissionCatalog.all.sams.actions.read]) },
 			(request: FastifyRequest<{ Querystring: GetSamsBatchQuery }>, reply: FastifyReply<string[]>) => SamsController.getApexVersions(request, reply),
@@ -38,6 +44,18 @@ server.register(
 			'/favorites',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.sams.scope, [PermissionCatalog.all.sams.actions.read]) },
 			(request: FastifyRequest<{ Querystring: { ids: string } }>, reply: FastifyReply<SamListItem[]>) => SamsController.getSamByIds(request, reply, PermissionCatalog.all.sams.scope, PermissionCatalog.all.sams.actions.read),
+		);
+
+		instance.get(
+			'/timeline-summary',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.sams.scope, [PermissionCatalog.all.sams.actions.read]) },
+			(request: FastifyRequest<{ Querystring: { ids: string } }>, reply: FastifyReply<Array<{ _id: number, timeline_summary: SamListItem['timeline_summary'] }>>) => SamsController.getTimelineSummaryByIds(request, reply),
+		);
+
+		instance.post(
+			'/timeline-summary',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.sams.scope, [PermissionCatalog.all.sams.actions.read]) },
+			(request: FastifyRequest<{ Body: { ids?: number[] } }>, reply: FastifyReply<Array<{ _id: number, timeline_summary: SamListItem['timeline_summary'] }>>) => SamsController.postTimelineSummaryByIds(request, reply),
 		);
 
 		instance.get(

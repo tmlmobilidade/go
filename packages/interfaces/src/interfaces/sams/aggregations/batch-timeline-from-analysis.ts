@@ -164,9 +164,7 @@ export function samsTimelineSummaryFromBucketsExpr(): Record<string, unknown> {
 			$map: {
 				as: 'x',
 				in: {
-					count: { $add: ['$$x.s', '$$x.f'] },
 					failed_count: '$$x.f',
-					key: '$$x.m',
 					month: '$$x.m',
 					successful_count: '$$x.s',
 				},
@@ -181,39 +179,6 @@ export function samsTimelineSummaryFromBucketsExpr(): Record<string, unknown> {
 						},
 						sortBy: { m: 1 },
 					},
-				},
-			},
-		},
-		undated: {
-			$let: {
-				vars: {
-					u: {
-						$reduce: {
-							initialValue: { f: 0, s: 0 },
-							in: {
-								f: { $add: ['$$value.f', '$$this.f'] },
-								s: { $add: ['$$value.s', '$$this.s'] },
-							},
-							input: {
-								$filter: {
-									as: 'b',
-									cond: { $eq: ['$$b.m', null] },
-									input: '$buckets',
-								},
-							},
-						},
-					},
-				},
-				in: {
-					$cond: [
-						{ $eq: [{ $add: ['$$u.s', '$$u.f'] }, 0] },
-						null,
-						{
-							count: { $add: ['$$u.s', '$$u.f'] },
-							failed_count: '$$u.f',
-							successful_count: '$$u.s',
-						},
-					],
 				},
 			},
 		},

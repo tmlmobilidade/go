@@ -3,7 +3,7 @@
 /* * */
 
 import { cn } from '@/lib/utils';
-import { type SamTimelineSummary } from '@tmlmobilidade/types';
+import { type SamTimelineAccent, type SamTimelineSummary } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
 import { useMemo } from 'react';
 
@@ -11,7 +11,7 @@ import styles from './styles.module.css';
 
 import { AnalysisSquare } from '../AnalysisSquare';
 import { analysisTimelinePeriodTooltipLabel } from '../AnalysisSquare/analysis-square-shared';
-import { accentFromSuccessFailedCounts, normalizeTimelineCounts } from '../timeline-counts';
+import { accentFromSuccessFailedCounts, safeTimelineInt } from '../timeline-counts';
 
 /* * */
 
@@ -94,20 +94,19 @@ export interface AnalysisTimeLineRowProps {
 }
 
 interface MonthSection {
+	accent?: SamTimelineAccent
 	dayKey: string
 	failed_count: number
-	hasEmptyDaysInRange?: boolean
 	label: string
 	successful_count: number
 }
 
 interface MonthCounts {
 	failed_count: number
-	has_empty_days_in_range?: boolean
 	successful_count: number
 }
 
-/** One square per month; color from {@link accentFromSuccessFailedCounts} (API does not send accent). */
+/** One square per month; color prefers API `accent`, with local fallback from counts. */
 export function AnalysisTimeLineRow({ className, rangeEndTs, rangeStartTs, remarks, timelineSummary }: AnalysisTimeLineRowProps) {
 	const placeholderSections = useMemo((): MonthSection[] => {
 		return monthKeysBetweenMillis(rangeStartTs, rangeEndTs).map(monthKey => ({
@@ -131,14 +130,9 @@ export function AnalysisTimeLineRow({ className, rangeEndTs, rangeStartTs, remar
 						: String(rawKey),
 			);
 			if (!key) continue;
-			const { failed, successful } = normalizeTimelineCounts({
-				failed_count: item.failed_count,
-				successful_count: item.successful_count,
-			});
 			monthDataMap.set(key, {
-				failed_count: failed,
-				has_empty_days_in_range: (item as { has_empty_days_in_range?: boolean }).has_empty_days_in_range,
-				successful_count: successful,
+				failed_count: safeTimelineInt(item.failed_count),
+				successful_count: safeTimelineInt(item.successful_count),
 			});
 		}
 
@@ -155,9 +149,9 @@ export function AnalysisTimeLineRow({ className, rangeEndTs, rangeStartTs, remar
 		const monthSections: MonthSection[] = monthKeys.map((monthKey) => {
 			const monthData = monthDataMap.get(monthKey);
 			return {
+				accent: accentFromSuccessFailedCounts(monthData?.successful_count ?? 0, monthData?.failed_count ?? 0),
 				dayKey: monthKey,
 				failed_count: monthData?.failed_count ?? 0,
-				hasEmptyDaysInRange: monthData?.has_empty_days_in_range,
 				label: formatMonthChipLabel(monthKey),
 				successful_count: monthData?.successful_count ?? 0,
 			};
@@ -165,14 +159,12 @@ export function AnalysisTimeLineRow({ className, rangeEndTs, rangeStartTs, remar
 
 		if (timelineSummary.undated) {
 			const u = timelineSummary.undated;
-			const { failed, successful } = normalizeTimelineCounts({
-				failed_count: u.failed_count,
-				successful_count: u.successful_count,
-			});
+			const successful = safeTimelineInt(u.successful_count);
+			const failed = safeTimelineInt(u.failed_count);
 			monthSections.push({
+				accent: accentFromSuccessFailedCounts(successful, failed),
 				dayKey: 'Sem data',
 				failed_count: failed,
-				hasEmptyDaysInRange: false,
 				label: 'Sem data',
 				successful_count: successful,
 			});
@@ -206,13 +198,9 @@ export function AnalysisTimeLineRow({ className, rangeEndTs, rangeStartTs, remar
 		? summarySections.map(section => (
 			<AnalysisSquare
 				key={section.dayKey}
+				accent={section.accent ?? 'white'}
 				className={styles.monthSquare}
 				textLabel={section.label}
-				accent={
-					section.hasEmptyDaysInRange
-						? 'white'
-						: accentFromSuccessFailedCounts(section.successful_count, section.failed_count)
-				}
 				title={analysisTimelinePeriodTooltipLabel({
 					failed: section.failed_count,
 					periodLabel: section.label,
@@ -225,7 +213,7 @@ export function AnalysisTimeLineRow({ className, rangeEndTs, rangeStartTs, remar
 			? placeholderSections.map(section => (
 				<AnalysisSquare
 					key={section.dayKey}
-					accent={accentFromSuccessFailedCounts(section.successful_count, section.failed_count)}
+					accent={section.accent ?? 'white'}
 					className={styles.monthSquare}
 					textLabel={section.label}
 					title={analysisTimelinePeriodTooltipLabel({
