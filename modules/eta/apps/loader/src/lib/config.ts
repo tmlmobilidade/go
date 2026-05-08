@@ -1,6 +1,6 @@
 import type { TimeSlot } from '@tmlmobilidade/dates';
 
-const isDevelopment = false;// process.env.ENVIRONMENT === 'development';
+const isDevelopment = process.env.ENVIRONMENT === 'development';
 
 export const AppConfig = Object.freeze({
 	// Agency and line configurations
