@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { ReferencesEditorRidesFilters } from '@/components/common/references/ReferencesEditorRidesFilters';
 import { ReferencesEditorRidesList } from '@/components/common/references/ReferencesEditorRidesList';

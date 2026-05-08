@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useOrganizationCreateContext } from '@/components/organizations/create/OrganizationCreate.context';
 import { closeCreateOrganizationModal } from '@/components/organizations/create/OrganizationCreate.modal';
 import { IconUpload } from '@tabler/icons-react';

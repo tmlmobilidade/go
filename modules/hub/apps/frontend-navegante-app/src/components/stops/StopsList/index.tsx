@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { StopsListToolbar } from '@/components/stops/StopsListToolbar';
 import { StopsListViewAll } from '@/components/stops/StopsListViewAll';
 import { StopsListViewMap } from '@/components/stops/StopsListViewMap';

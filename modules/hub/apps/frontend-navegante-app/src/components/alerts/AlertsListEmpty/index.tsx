@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import Button from '@/components/common/Button';
 import { useAlertsListContext } from '@/contexts/AlertsList.context';
 import { IconCalendarEvent, IconDeviceMobileDown, IconSunset2 } from '@tabler/icons-react';

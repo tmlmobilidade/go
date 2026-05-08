@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { AuthenticationForm } from '@/components/common/AuthenticationForm';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Session } from '@tmlmobilidade/types';

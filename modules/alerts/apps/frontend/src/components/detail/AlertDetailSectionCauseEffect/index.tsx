@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { AlertCauseSchema, AlertEffectSchema, PermissionCatalog } from '@tmlmobilidade/types';
 import { AlertCauseIcons, AlertEffectIcons, Collapsible, ContextFormController, Grid, Section, Select, useMeContext } from '@tmlmobilidade/ui';

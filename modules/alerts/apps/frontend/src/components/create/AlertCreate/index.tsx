@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { AlertCreateFooter } from '@/components/create/AlertCreateFooter';
 import { AlertCreateHeader } from '@/components/create/AlertCreateHeader';

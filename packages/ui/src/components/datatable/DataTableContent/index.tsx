@@ -2,8 +2,6 @@
 
 'use client';
 
-/* * */
-
 import { getValueAtPath } from '@tmlmobilidade/utils';
 import { ViewportList } from 'react-viewport-list';
 

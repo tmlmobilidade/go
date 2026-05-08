@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { MapStyle } from '@/components/map/MapView';
 import * as turf from '@turf/turf';
 import { MapRef } from '@vis.gl/react-maplibre';

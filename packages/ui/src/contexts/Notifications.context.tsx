@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { API_ROUTES, getModuleConfig, HttpException } from '@tmlmobilidade/consts';
 import { Notification as TmlNotification } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';

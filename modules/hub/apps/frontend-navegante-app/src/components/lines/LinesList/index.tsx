@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { LinesListToolbar } from '@/components/lines/LinesListToolbar';
 import { LinesListViewAll } from '@/components/lines/LinesListViewAll';
 import { LinesListViewSkeleton } from '@/components/lines/LinesListViewSkeleton';

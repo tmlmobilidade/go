@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { StopsTableTableColumnDistance } from '@/components/patterns/stops/table/StopsTableColumnDistance';
 import { PathTableColumnStop } from '@/components/patterns/stops/table/StopsTableColumnStop';
 import { Path } from '@tmlmobilidade/types';

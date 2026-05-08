@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useUserCreateContext } from '@/components/users/create/UserCreate.context';
 import { closeCreateUserModal } from '@/components/users/create/UserCreate.modal';
 import { IconPlus } from '@tabler/icons-react';

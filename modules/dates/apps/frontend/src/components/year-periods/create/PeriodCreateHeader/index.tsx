@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { closeCreatePeriodModal } from '@/components/year-periods/create/PeriodCreate.modal';
 import { usePeriodCreateContext } from '@/components/year-periods/create/PeriodsCreate.context';
 import { IconUpload } from '@tabler/icons-react';

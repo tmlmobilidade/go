@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { StopCreateStep1Coordinates } from '@/components/stops/create/StopCreateStep1Coordinates';
 import { StopCreateStep1Locations } from '@/components/stops/create/StopCreateStep1Locations';
 import { StopCreateStep1Map } from '@/components/stops/create/StopCreateStep1Map';

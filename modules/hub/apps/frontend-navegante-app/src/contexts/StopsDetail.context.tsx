@@ -1,14 +1,13 @@
 'use client';
-/* * */
 
 import { useAlertsContext } from '@/contexts/Alerts.context';
 import { useEnvironmentContext } from '@/contexts/Environment.context';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { useStopsContext } from '@/contexts/Stops.context';
+import { getPublicVariable } from '@/settings/public-variables';
 import { type SimplifiedAlert } from '@/types/alerts.types';
 import { type Arrival } from '@/types/stops.types';
-import { getPublicVariable } from '@carrismetropolitana/navegante-tempo-real-shared-settings';
 import { type Line, NetworkPattern, NetworkShape, NetworkStop } from '@carrismetropolitana/navegante-tempo-real-shared-types';
 import { DateTime } from 'luxon';
 import { notFound } from 'next/navigation';
@@ -96,13 +95,12 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
  	*/
 
 	useEffect(() => {
-		if (!dataActiveStopIdState || !stopsContext.data.stops || !stopsContext.data.stops.length) return;
+		if (!dataActiveStopIdState || !stopsContext.data.stops?.length) return;
 		const foundStopData = stopsContext.actions.getStopById(dataActiveStopIdState);
 		if (foundStopData) {
 			setDataStopState(foundStopData);
 			window.history.replaceState({}, '', environmentContext.actions.getNormalizedHref(`/stops/${dataActiveStopIdState}`) + window.location.search);
-		}
-		else {
+		} else {
 			notFound();
 		}
 	}, [stopsContext.data.stops, dataActiveStopIdState, environmentContext.data.value]);
@@ -141,8 +139,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 						else return response.json();
 					});
 				setDataTimetableRealtimeState(realtimeData);
-			}
-			catch (error) {
+			} catch (error) {
 				console.error('Error fetching realtime data:', error);
 				setDataTimetableRealtimeState([]);
 			}
@@ -170,8 +167,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 					});
 				}));
 				setDataPatternsState(patternsData);
-			}
-			catch (error) {
+			} catch (error) {
 				console.error('Error fetching all pattern data:', error);
 			}
 		})();
@@ -200,8 +196,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 					};
 				}
 				setDataShapeState(shapeData);
-			}
-			catch (error) {
+			} catch (error) {
 				console.error('Error fetching shape data:', error);
 			}
 		})();

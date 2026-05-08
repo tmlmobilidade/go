@@ -1,10 +1,8 @@
 'use client';
 
-/* * */
-
+import { getPublicVariable } from '@/settings/public-variables';
 import { type SimplifiedVehicleEvent, type Vehicle, type VehicleRegistry, type VehiclesApiResponse } from '@/types/vehicles.types';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import { getPublicVariable } from '@carrismetropolitana/navegante-tempo-real-shared-settings';
 import { DateTime } from 'luxon';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';

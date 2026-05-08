@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { CloseButton, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 import { closeRulesCalendarPreviewModal } from '../RulesCalendarPreview.modal';

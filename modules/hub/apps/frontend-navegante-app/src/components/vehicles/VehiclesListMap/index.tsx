@@ -1,9 +1,5 @@
 'use client';
 
-/* * */
-
-import type { NetworkPattern, NetworkShape } from '@carrismetropolitana/navegante-tempo-real-shared-types';
-
 import { MapView } from '@/components/map/MapView';
 import { MapViewStyleAlertsLayerId, MapViewStyleAlertsSourceId } from '@/components/map/MapViewStyleAlerts';
 import { MapViewStylePath } from '@/components/map/MapViewStylePath';
@@ -12,9 +8,10 @@ import { useEnvironmentContext } from '@/contexts/Environment.context';
 import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/contexts/Stops.context';
 import { transformVehicleDataIntoGeoJsonFeature, useVehiclesContext } from '@/contexts/Vehicles.context';
 import { useVehiclesListContext } from '@/contexts/VehiclesList.context';
+import { getPublicVariable } from '@/settings/public-variables';
 import { centerMap, getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
 import getOperationalDate from '@/utils/operation';
-import { getPublicVariable } from '@carrismetropolitana/navegante-tempo-real-shared-settings';
+import { type NetworkPattern, type NetworkShape } from '@carrismetropolitana/navegante-tempo-real-shared-types';
 import { useMap } from '@vis.gl/react-maplibre';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
@@ -104,8 +101,7 @@ export function VehiclesListMap() {
 		if (vehiclesListContext.data.selected) {
 			const vehicleGeoJsonFeature = transformVehicleDataIntoGeoJsonFeature(vehiclesListContext.data.selected);
 			collection.features.push(vehicleGeoJsonFeature);
-		}
-		else {
+		} else {
 			vehiclesListContext.data.filtered.forEach((vehicle) => {
 				const vehicleGeoJsonFeature = transformVehicleDataIntoGeoJsonFeature(vehicle);
 				collection.features.push(vehicleGeoJsonFeature);
@@ -121,11 +117,9 @@ export function VehiclesListMap() {
 		setIsAutoZoom(false);
 		if (event.features.length !== 0 && event.features[0].source === 'default-source-vehicles') {
 			vehiclesListContext.actions.updateSelectedVehicle(event.features[0].properties.id);
-		}
-		else if (event.features.length !== 0 && event.features[0].source === MapViewStyleAlertsSourceId) {
+		} else if (event.features.length !== 0 && event.features[0].source === MapViewStyleAlertsSourceId) {
 			router.push(environmentContext.actions.getNormalizedHref(`/alerts/${event.features[0].properties.id}`));
-		}
-		else {
+		} else {
 			setActivePatternData(undefined);
 			setActiveShapeData(undefined);
 			vehiclesListContext.actions.updateSelectedVehicle(null);

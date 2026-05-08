@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { FoundItemsCounter } from '@/components/common/FoundItemsCounter';
 import { Section } from '@/components/layout/Section';
 import { Surface } from '@/components/layout/Surface';

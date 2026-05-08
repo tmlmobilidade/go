@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { AlertsCarousel } from '@/components/common/AlertsCarousel';
 import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 

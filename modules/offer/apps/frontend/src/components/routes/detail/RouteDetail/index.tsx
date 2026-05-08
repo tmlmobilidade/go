@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRouteDetailContext } from '@/components/routes/detail/RouteDetail.context';
 import { RouteDetailHeader } from '@/components/routes/detail/RouteDetailHeader';
 import { RouteDetailSectionConfig } from '@/components/routes/detail/RouteDetailSectionConfig';

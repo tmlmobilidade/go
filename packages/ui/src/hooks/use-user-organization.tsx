@@ -1,6 +1,4 @@
 'use client';
-
-/* * */
 import { getModuleConfig, HttpException } from '@tmlmobilidade/consts';
 import { type Organization } from '@tmlmobilidade/types';
 import { useEffect, useState } from 'react';

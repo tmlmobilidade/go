@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { closeCreateValidationModal } from '@/components/validations/create/ValidationCreate.modal';
 import { type WorkerMessage } from '@/types/worker';
 import { API_ROUTES } from '@tmlmobilidade/consts';

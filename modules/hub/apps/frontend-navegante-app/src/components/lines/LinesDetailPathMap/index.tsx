@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { MapView } from '@/components/map/MapView';
 import { MapViewStyleActiveStops, MapViewStyleActiveStopsPrimaryLayerId } from '@/components/map/MapViewStyleActiveStops';
 import { MapViewStylePath, MapViewStylePathInteractiveLayerId } from '@/components/map/MapViewStylePath';

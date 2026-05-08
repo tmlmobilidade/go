@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useParameterCreateContext } from '@/components/patterns/stops/parameters/create/ParameterCreate.context';
 import { WEEKDAYS } from '@tmlmobilidade/types';
 import { Section, SelectChipGroup, Text, WeekdaySelector } from '@tmlmobilidade/ui';

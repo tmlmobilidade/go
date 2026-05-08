@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useHolidayCreateContext } from '@/components/holidays/create/HolidayCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { HolidaySchema, PermissionCatalog } from '@tmlmobilidade/types';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { PatternCreate } from '@/components/patterns/create/PatternCreate';
 import { PatternCreateContextProvider } from '@/components/patterns/create/PatternCreate.context';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';

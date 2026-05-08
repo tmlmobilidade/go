@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { ReferencesEditorStopsItem } from '@/components/common/references/ReferencesEditorStopsItem';
 import { IconPlus } from '@tabler/icons-react';

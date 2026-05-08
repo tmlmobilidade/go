@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { StopDisplay } from '@/components/stops/StopDisplay';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { createDocCollection } from '@/hooks/useOtherSearch';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { ReferencesEditor } from '@/components/common/references/ReferencesEditor';
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';

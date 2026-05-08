@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { AgenciesContextProvider, LocationsContextProvider } from '@tmlmobilidade/ui';
 
 /* * */

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useDebouncedState } from '@mantine/hooks';
 import { type GetOperationalLinesBatchQuery, type OperationalLine, type UnixTimestamp } from '@tmlmobilidade/types';
 import { useEffect, useMemo } from 'react';

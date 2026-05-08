@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { AlertDetailFootnote } from '@/components/detail/AlertDetailFootnote';
 import { AlertDetailHeader } from '@/components/detail/AlertDetailHeader';

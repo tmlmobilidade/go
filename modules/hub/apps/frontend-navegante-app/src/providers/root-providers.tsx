@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { LocaleContextProvider } from '@/contexts/Locale.context';
 
 /* * */

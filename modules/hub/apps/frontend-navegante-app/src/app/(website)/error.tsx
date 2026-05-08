@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { AppError } from '@/components/common/AppError';
 
 /* * */

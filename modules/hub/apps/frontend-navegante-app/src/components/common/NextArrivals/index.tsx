@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import type { ArrivalStatus } from '@/types/stops.types';
 
 import { LiveIcon } from '@/components/common/LiveIcon';

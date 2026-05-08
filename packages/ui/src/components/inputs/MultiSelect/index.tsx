@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { MultiSelect as MantineMultiSelect, type MultiSelectProps as MantineMultiSelectProps } from '@mantine/core';
 
 import { useMultiSelectPaste } from '../../../hooks/useMultiSelectPaste';

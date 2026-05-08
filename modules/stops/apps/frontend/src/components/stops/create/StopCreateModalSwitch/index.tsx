@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
 import { StopCreateStep1 } from '@/components/stops/create/StopCreateStep1';
 import { StopCreateStep2 } from '@/components/stops/create/StopCreateStep2';

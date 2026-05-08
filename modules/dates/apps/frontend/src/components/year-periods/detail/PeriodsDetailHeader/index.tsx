@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePeriodsDetailContext } from '@/components/year-periods/detail/PeriodsDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';

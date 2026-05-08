@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import type { AlertGroupByDate } from '@/types/alerts.types';
 
 import AlertsListEmpty from '@/components/alerts/AlertsListEmpty';

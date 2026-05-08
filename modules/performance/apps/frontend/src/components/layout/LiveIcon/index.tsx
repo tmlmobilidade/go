@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Tooltip } from '@tmlmobilidade/ui';
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';

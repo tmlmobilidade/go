@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconCloudDown, IconCloudMinus } from '@tabler/icons-react';
 
 import { useExportsContext } from '../../../contexts/exports.context';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import TextPopover from '@/components/common/TextPopover';
 import { useMapOptionsContext } from '@/contexts/MapOptions.context';
 import { SegmentedControl, SegmentedControlItem } from '@mantine/core';

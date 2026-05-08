@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useCallback, useEffect, useState } from 'react';
 
 import { Description } from '../../common';

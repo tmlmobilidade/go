@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Layer, Popup, Source } from '@vis.gl/react-maplibre';
 import { type Feature, type FeatureCollection, type LineString, type Point } from 'geojson';
 import { MapMouseEvent } from 'maplibre-gl';

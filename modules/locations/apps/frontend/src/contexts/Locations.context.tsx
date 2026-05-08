@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useMapOptionsContext } from '@/components/map/MapOptions.context';
 import { type Location } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';

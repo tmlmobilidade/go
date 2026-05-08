@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { LineDisplay } from '@/components/lines/LineDisplay';
 import { createDocCollection } from '@/hooks/useOtherSearch';
 import { Line } from '@carrismetropolitana/navegante-tempo-real-shared-types';

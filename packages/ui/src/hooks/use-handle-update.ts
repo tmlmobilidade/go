@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type HttpResponse } from '@tmlmobilidade/utils';
 import { useCallback, useRef, useState } from 'react';
 

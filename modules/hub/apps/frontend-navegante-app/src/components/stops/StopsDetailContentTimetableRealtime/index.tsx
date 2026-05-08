@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { NoDataLabel } from '@/components/layout/NoDataLabel';
 import { StopsDetailContentTimetableClock } from '@/components/stops/StopsDetailContentTimetableClock';
 import { StopsDetailContentTimetableRow } from '@/components/stops/StopsDetailContentTimetableRow';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Menu, Stack } from '@mantine/core';
 import Link from 'next/link';
 import { type ReactNode } from 'react';

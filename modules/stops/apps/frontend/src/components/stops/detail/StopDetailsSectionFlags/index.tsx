@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { StopDetailsSectionFlagItem } from '@/components/stops/detail/StopDetailsSectionFlagItem';
 import { Button, Collapsible, Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';

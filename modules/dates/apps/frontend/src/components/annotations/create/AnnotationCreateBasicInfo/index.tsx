@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAnnotationCreateContext } from '@/components/annotations/create/AnnotationCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { AnnotationSchema, PermissionCatalog } from '@tmlmobilidade/types';

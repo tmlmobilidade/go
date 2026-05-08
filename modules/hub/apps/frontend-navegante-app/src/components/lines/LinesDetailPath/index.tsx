@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { NoDataLabel } from '@/components/layout/NoDataLabel';
 import { Section } from '@/components/layout/Section';
 import { Surface } from '@/components/layout/Surface';

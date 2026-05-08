@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAgenciesListContext } from '@/components/agencies/list/AgenciesList.context';
 import { AgenciesListHeader } from '@/components/agencies/list/AgenciesListHeader';
 import { type AgencyNormalized } from '@/types/normalized';

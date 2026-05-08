@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
 import { Label, openConfirmModal, type SelectDataItem } from '@tmlmobilidade/ui';

@@ -1,13 +1,11 @@
 'use client';
 
-/* * */
-
 import { useAlertsContext } from '@/contexts/Alerts.context';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { useStopsContext } from '@/contexts/Stops.context';
+import { getPublicVariable } from '@/settings/public-variables';
 import { type SimplifiedAlert } from '@/types/alerts.types';
-import { getPublicVariable } from '@carrismetropolitana/navegante-tempo-real-shared-settings';
 import { Line, NetworkPattern, NetworkRoute, NetworkShape, Waypoint } from '@carrismetropolitana/navegante-tempo-real-shared-types';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -17,7 +15,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 interface LinesDetailContextState {
 	actions: {
 		setActivePattern: (patternGroupId: string) => void
-		setActiveWaypoint: (stopId: string, stopSequence: number,) => void
+		setActiveWaypoint: (stopId: string, stopSequence: number) => void
 		setHighlightedTripIds: (tripIds: string[]) => void
 	}
 	data: {
@@ -93,7 +91,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 	}, [lineId, linesContext.data.lines]);
 
 	useEffect(() => {
-		if (!dataLineState || !dataLineState.route_ids) return;
+		if (!dataLineState?.route_ids) return;
 		dataLineState.route_ids.forEach((routeId) => {
 			const routeData = linesContext.actions.getRouteDataById(routeId);
 			if (!routeData) return;
@@ -121,8 +119,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 				});
 				const resultData = await Promise.all(fetchPromises);
 				setDataAllPatternsState(resultData);
-			}
-			catch (error) {
+			} catch (error) {
 				console.error('Error fetching pattern data:', error);
 			}
 		})();
@@ -150,8 +147,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 					};
 				}
 				setDataActiveShapeState(shapeData);
-			}
-			catch (error) {
+			} catch (error) {
 				console.error('Error fetching shape data:', error);
 			}
 		})();
@@ -231,7 +227,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 	 */
 	useEffect(() => {
 		// Return early if no patterns are available
-		if (!dataValidPatternsState || !dataValidPatternsState.length) return;
+		if (!dataValidPatternsState?.length) return;
 		// Preselect the first pattern of the valid patterns if there is no filter value
 		if (!filterActivePatternIdState) {
 			setActivePattern(dataValidPatternsState[0].version_id);

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { closeCreateRoleModal } from '@/components/roles/create/RoleCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CreateRoleDto, CreateRoleSchema, Role } from '@tmlmobilidade/types';

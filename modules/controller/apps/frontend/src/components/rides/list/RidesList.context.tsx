@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRideFavoritesContext } from '@/contexts/RideFavorites.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';

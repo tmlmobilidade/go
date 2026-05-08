@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { type AgencyNormalized } from '@/types/normalized';
 import { normalizeString } from '@tmlmobilidade/strings';

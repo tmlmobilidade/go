@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { RidesListCellHeadsign } from '@/components/create/RidesListCellHeadsign';
 import { Dates } from '@tmlmobilidade/dates';

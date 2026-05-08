@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { default as NextLink, type LinkProps as NextLinkProps } from 'next/link';
 
 /* * */

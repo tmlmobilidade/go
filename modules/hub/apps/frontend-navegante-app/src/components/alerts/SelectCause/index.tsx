@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { AlertCauseIcon } from '@/components/alerts/AlertCauseEffectIcon';
 import { AlertCause } from '@/types/alerts.types';
 import { Flex, Group, Select, SelectProps, Text } from '@mantine/core';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { EventCreate } from '@/components/events/create/EventCreate';
 import { EventCreateContextProvider } from '@/components/events/create/EventCreate.context';
 import { DataProviders } from '@/providers/data-providers';

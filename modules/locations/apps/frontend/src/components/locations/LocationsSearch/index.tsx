@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { Combobox, Description, Grid, Label, Section } from '@tmlmobilidade/ui';
 

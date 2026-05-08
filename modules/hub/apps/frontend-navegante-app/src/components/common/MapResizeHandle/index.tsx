@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useMapOptionsContext } from '@/contexts/MapOptions.context';
 import { useRef } from 'react';
 

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { LineBadge } from '@/components/lines/LineBadge';
 import { useEnvironmentContext } from '@/contexts/Environment.context';
 import { useLinesContext } from '@/contexts/Lines.context';

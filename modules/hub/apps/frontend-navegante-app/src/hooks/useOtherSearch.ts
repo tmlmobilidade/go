@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import ukkonen from 'ukkonen'; // Faster levenshtein distance
 
 /* * */

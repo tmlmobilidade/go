@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Collapsible, Section, TextInput, useMeContext } from '@tmlmobilidade/ui';

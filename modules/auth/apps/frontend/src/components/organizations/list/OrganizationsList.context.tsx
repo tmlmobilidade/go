@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { type OrganizationNormalized } from '@/types/normalized';
 import { normalizeString } from '@tmlmobilidade/strings';

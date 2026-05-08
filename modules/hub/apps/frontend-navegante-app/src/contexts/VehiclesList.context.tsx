@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
 import { useVehiclesContext } from '@/contexts/Vehicles.context';
 import { type Vehicle } from '@/types/vehicles.types';

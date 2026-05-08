@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Carousel } from '@mantine/carousel';
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';

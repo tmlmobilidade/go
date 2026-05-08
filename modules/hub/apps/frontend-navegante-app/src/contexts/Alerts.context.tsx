@@ -1,11 +1,9 @@
 'use client';
 
-/* * */
-
+import { getPublicVariable } from '@/settings/public-variables';
 import { type Alert, type SimplifiedAlert } from '@/types/alerts.types';
 import convertToSimplifiedAlert from '@/utils/convertToSimplifiedAlert';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import { getPublicVariable } from '@carrismetropolitana/navegante-tempo-real-shared-settings';
 import { useLocale } from 'next-intl';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';

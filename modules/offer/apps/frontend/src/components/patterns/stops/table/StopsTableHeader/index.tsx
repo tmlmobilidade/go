@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconArrowBarToDown, IconArrowBarUp, IconClock, IconSortAscendingNumbers } from '@tabler/icons-react';
 import { Tooltip } from '@tmlmobilidade/ui';
 

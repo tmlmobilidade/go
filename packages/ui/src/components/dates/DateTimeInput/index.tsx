@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Fieldset, Input } from '@mantine/core';
 import { DateInput as MantineDateInput, TimePicker as MantineTimePicker } from '@mantine/dates';
 import { IconCalendar, IconClock } from '@tabler/icons-react';

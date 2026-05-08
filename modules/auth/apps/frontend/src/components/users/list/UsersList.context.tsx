@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { useRolesContext } from '@/contexts/Roles.context';
 import { type UserNormalized } from '@/types/normalized';

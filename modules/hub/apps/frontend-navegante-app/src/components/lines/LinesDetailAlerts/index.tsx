@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { AlertsCarousel } from '@/components/common/AlertsCarousel';
 import { Section } from '@/components/layout/Section';
 import { Surface } from '@/components/layout/Surface';

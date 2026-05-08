@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { ReferencesEditorAgency } from '@/components/common/references/ReferencesEditorAgency';
 import { ReferencesEditorControls } from '@/components/common/references/ReferencesEditorControls';

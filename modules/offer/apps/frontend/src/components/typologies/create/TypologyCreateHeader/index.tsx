@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useTypologyCreateContext } from '@/components/typologies/create/TypologyCreate.context';
 import { closeCreateTypologyModal } from '@/components/typologies/create/TypologyCreate.modal';
 import { IconUpload } from '@tabler/icons-react';

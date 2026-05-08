@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { SegmentedControl } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';

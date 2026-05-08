@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useOrganizationsListContext } from '@/components/organizations/list/OrganizationsList.context';
 import { OrganizationsListHeader } from '@/components/organizations/list/OrganizationsListHeader';
 import { type OrganizationNormalized } from '@/types/normalized';

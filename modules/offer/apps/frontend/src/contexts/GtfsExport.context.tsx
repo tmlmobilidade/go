@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { GTFS_EXPORT_MODAL_ID } from '@/components/lines/export/GtfsExportModal';
 import { useForm } from '@mantine/form';
 import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
 import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/contexts/Stops.context';
 import { useVehiclesContext } from '@/contexts/Vehicles.context';

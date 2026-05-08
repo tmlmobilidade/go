@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { LineTag } from '@/components/common/LineTag';
 import { useLineDetailContext } from '@/components/lines/detail/LineDetail.context';
 import { IconUpload } from '@tabler/icons-react';

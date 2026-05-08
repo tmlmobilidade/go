@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useLinesContext } from '@/contexts/Lines.context';
 import { Line } from '@carrismetropolitana/navegante-tempo-real-shared-types';
 import { IconInfoTriangleFilled } from '@tabler/icons-react';

@@ -1,13 +1,11 @@
 'use client';
 
-/* * */
-
 import { NoDataLabel } from '@/components/layout/NoDataLabel';
 import { PathWaypoint } from '@/components/lines/PathWaypoint';
 import { useLinesDetailContext } from '@/contexts/LinesDetail.context';
+import { getPublicVariable } from '@/settings/public-variables';
 import { NextArrival } from '@/types/timetables.types';
 import { PatternRealtime } from '@/utils/types';
-import { getPublicVariable } from '@carrismetropolitana/navegante-tempo-real-shared-settings';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 

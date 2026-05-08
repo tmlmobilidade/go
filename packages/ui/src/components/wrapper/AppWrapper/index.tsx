@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type PropsWithChildren, Suspense } from 'react';
 
 import styles from './styles.module.css';

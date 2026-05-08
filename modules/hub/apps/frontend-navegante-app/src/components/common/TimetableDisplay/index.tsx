@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { TimetableExceptions } from '@/components/common/TimetableExceptions';
 import { TimetableSchedules } from '@/components/common/TimetableSchedules';
 import { type Timetable } from '@/types/timetables.types';

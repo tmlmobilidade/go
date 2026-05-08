@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Loader } from '@/components/common/Loader';
 import { Button } from '@mantine/core';
 import { useTranslations } from 'next-intl';

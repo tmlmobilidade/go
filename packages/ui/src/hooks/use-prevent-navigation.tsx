@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { useRouter } from 'next/navigation';

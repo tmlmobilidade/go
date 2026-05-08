@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useLocalStorage } from '@mantine/hooks';
 import { useSearchParams } from 'next/navigation';
 import { createContext, useContext, useEffect, useRef } from 'react';

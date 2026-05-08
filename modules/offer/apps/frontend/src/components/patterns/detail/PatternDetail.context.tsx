@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { openCreateRuleModal } from '@/components/patterns/rules/create/RuleCreate.modal';
 import { openRulesCalendarPreviewModal } from '@/components/patterns/rules/list/RulesCalendarPreview.modal';
 import { openCreateParameterModal } from '@/components/patterns/stops/parameters/create/ParameterCreate.modal';

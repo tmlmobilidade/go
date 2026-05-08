@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import type { EmblaCarouselType } from 'embla-carousel';
 
 import { Carousel } from '@mantine/carousel';

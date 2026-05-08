@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { SelectPattern } from '@/components/common/SelectPattern';
 import { useLinesDetailContext } from '@/contexts/LinesDetail.context';
 import { IconArrowBarToRight } from '@tabler/icons-react';

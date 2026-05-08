@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePlanChangeContext } from '@/components/plans/change/PlanChange.context';
 import { closePlanChangeModal } from '@/components/plans/change/PlanChange.modal';
 import { CloseButton, Label, SaveButton, Spacer, Toolbar } from '@tmlmobilidade/ui';

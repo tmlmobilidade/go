@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { LineCreate } from '@/components/lines/create/LineCreate';
 import { LineCreateContextProvider } from '@/components/lines/create/LineCreate.context';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { MetricCard } from '@/components/layout/MetricCard';
 import { DemandVisualization } from '@/components/visualizations/Demand/DemandVisualization';
 import { RecordDemand } from '@/components/visualizations/RecordDemand';

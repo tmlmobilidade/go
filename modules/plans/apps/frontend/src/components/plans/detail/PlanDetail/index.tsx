@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { PlanDetailFootnote } from '@/components/plans/detail/PlanDetailFootnote';
 import { PlanDetailHeader } from '@/components/plans/detail/PlanDetailHeader';

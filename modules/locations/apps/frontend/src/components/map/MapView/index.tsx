@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Section } from '@tmlmobilidade/ui';
 import Map, { FullscreenControl, GeolocateControl, MapLayerMouseEvent, MapRef, NavigationControl, ScaleControl, useMap, ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 

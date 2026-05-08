@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconArrowNarrowRight } from '@tabler/icons-react';
 import Link from 'next/link';
 import { type RefObject } from 'react';

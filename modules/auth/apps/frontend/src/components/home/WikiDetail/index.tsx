@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { WikiDetailHeader } from '@/components/home/WikiDetailHeader';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type WikiArticle } from '@tmlmobilidade/types';

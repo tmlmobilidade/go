@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import StatusCircle from '@/components/layout/StatusCircle';
 import { Tooltip } from '@tmlmobilidade/ui';
 

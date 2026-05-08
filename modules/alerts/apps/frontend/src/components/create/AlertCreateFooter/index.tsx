@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Button, HasPermission, PublishStatusTag, Spacer, Toolbar, useContextFormWatch } from '@tmlmobilidade/ui';

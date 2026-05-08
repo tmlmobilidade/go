@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { openAsignPeriodModal } from '@/components/year-periods/calendar/PeriodAssign.modal';
 import { CalendarKey } from '@tmlmobilidade/dates';
 import { EventsCalendar } from '@tmlmobilidade/ui';

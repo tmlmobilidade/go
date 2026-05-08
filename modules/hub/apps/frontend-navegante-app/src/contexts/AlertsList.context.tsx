@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import type { AlertCause, AlertEffect, SimplifiedAlert } from '@/types/alerts.types.js';
 
 import { agencyMatchesSelection, agencyMatchesTransports } from '@/utils/transportAgencies';

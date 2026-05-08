@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Checkbox, Description } from '@tmlmobilidade/ui';
 import { type KeyboardEvent, type PropsWithChildren } from 'react';
 

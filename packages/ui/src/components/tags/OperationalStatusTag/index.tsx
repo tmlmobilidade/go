@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconFlag3Filled, IconPlayerPlayFilled, IconPlayerTrackNextFilled, IconX } from '@tabler/icons-react';
 import { type OperationalStatus } from '@tmlmobilidade/types';
 import { useTranslation } from 'react-i18next';

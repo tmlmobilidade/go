@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useEventsDetailContext } from '@/components/events/detail/EventsDetail.context';
 import { Anchor } from '@mantine/core';
 import { type OperationalDate } from '@tmlmobilidade/types';

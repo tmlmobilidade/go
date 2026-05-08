@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { RideAnalysisApexLocations } from '@/components/rides/analysis/RideAnalysisApexLocations';
 import { RideAnalysisApexOnBoardRefunds } from '@/components/rides/analysis/RideAnalysisApexOnBoardRefunds';
 import { RideAnalysisApexOnBoardSales } from '@/components/rides/analysis/RideAnalysisApexOnBoardSales';

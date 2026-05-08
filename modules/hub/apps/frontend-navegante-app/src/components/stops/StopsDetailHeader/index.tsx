@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { BackButton } from '@/components/common/BackButton';
 import { CopyBadge } from '@/components/common/CopyBadge';
 import { IconDisplay } from '@/components/common/IconDisplay';

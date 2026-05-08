@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { AlertActivePeriodStart } from '@/components/alerts/AlertActivePeriod';
 import { AlertCauseIcon, AlertEffectIcon } from '@/components/alerts/AlertCauseEffectIcon';
 import { AlertInformedEntity } from '@/components/alerts/AlertInformedEntity';

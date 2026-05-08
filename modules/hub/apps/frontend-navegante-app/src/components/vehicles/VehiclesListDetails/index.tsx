@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { LicensePlate } from '@/components/common/LicensePlate';
 import { TooltipIcon } from '@/components/common/TooltipIcon';
 import { NoDataLabel } from '@/components/layout/NoDataLabel';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAlertsListContext } from '@/components/list/AlertsList.context';
 import { AlertsListCellCauseEffect } from '@/components/list/AlertsListCellCauseEffect';
 import { AlertsListCellDate } from '@/components/list/AlertsListCellDate';

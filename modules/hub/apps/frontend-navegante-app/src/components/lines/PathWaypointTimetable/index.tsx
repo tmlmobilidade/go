@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { TimetableDisplay } from '@/components/common/TimetableDisplay';
 import { useLinesDetailContext } from '@/contexts/LinesDetail.context';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';

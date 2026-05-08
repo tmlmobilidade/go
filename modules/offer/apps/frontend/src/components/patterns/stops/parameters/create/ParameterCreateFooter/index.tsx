@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useParameterCreateContext } from '@/components/patterns/stops/parameters/create/ParameterCreate.context';
 import { closeCreateParameterModal } from '@/components/patterns/stops/parameters/create/ParameterCreate.modal';
 import { IconClock } from '@tabler/icons-react';

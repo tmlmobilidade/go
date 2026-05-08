@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Section } from '@/components/layout/Section';
 import { LinesList } from '@/components/lines/LinesList';
 

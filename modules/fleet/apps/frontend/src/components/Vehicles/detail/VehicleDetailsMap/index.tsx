@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useVehiclesDetailContext } from '@/contexts/VehiclesDetail.context';
 import { getBaseGeoJsonFeatureCollection, transformVehicleDataIntoGeoJsonFeature } from '@tmlmobilidade/geo';
 import { Collapsible, MapOverlayVehicles, MapView } from '@tmlmobilidade/ui';

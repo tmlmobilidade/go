@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Image } from '@mantine/core';
 import { useEffect, useState } from 'react';
 

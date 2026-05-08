@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
 import { Layer, Source } from '@vis.gl/react-maplibre';
 

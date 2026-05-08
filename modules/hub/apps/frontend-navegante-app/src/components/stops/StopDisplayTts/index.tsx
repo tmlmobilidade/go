@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { audioTtsUrl } from '@/settings/urls.settings';
 import { IconPlayerPause, IconVolume } from '@tabler/icons-react';
 import { useEffect, useRef, useState } from 'react';

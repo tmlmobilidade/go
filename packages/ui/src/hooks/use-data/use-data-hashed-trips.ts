@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type GetRidesBatchQuery, type HashedTrip, type UnixTimestamp } from '@tmlmobilidade/types';
 import { type SelectDataItem, useDebouncedState } from '@tmlmobilidade/ui';
 import { useEffect, useMemo } from 'react';

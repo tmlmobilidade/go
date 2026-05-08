@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { Indicator, IndicatorProps, Loader } from '@tmlmobilidade/ui';
 import { DateTime } from 'luxon';

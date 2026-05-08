@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { BackButton } from '@/components/common/BackButton';
 import { ExpandToggle } from '@/components/common/ExpandToggle';
 import { FoundItemsCounter } from '@/components/common/FoundItemsCounter';

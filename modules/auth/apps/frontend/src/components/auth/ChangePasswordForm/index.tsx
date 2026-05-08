@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { AuthenticationForm } from '@/components/common/AuthenticationForm';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';

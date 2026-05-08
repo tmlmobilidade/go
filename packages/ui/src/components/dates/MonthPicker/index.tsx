@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { MonthPickerInput as MantineMonthPickerInput, MonthPickerInputProps as MantineMonthPickerInputProps } from '@mantine/dates';
 import { IconCalendar } from '@tabler/icons-react';
 

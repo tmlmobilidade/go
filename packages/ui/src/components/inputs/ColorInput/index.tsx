@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { ColorInput as MantineColorInput, ColorInputProps as MantineColorInputProps } from '@mantine/core';
 
 /* * */

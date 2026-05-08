@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { MantineProvider } from '@mantine/core';
 import { DatesProvider, type DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';

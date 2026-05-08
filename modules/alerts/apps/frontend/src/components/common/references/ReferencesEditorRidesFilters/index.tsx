@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { IconArrowLoopRight } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';

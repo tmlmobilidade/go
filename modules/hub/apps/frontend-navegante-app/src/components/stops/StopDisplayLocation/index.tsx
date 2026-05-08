@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { formatStopLocation } from '@/utils/formatStopLocation';
 
 import styles from './styles.module.css';

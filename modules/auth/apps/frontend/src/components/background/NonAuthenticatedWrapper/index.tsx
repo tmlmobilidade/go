@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Background4 } from '@/components/background/Background4';
 import { type PropsWithChildren } from 'react';
 

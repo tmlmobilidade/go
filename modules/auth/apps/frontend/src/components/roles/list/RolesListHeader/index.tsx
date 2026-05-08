@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { openCreateRoleModal } from '@/components/roles/create/RoleCreate.modal';
 import { useRolesListContext } from '@/components/roles/list/RolesList.context';
 import { IconPlus } from '@tabler/icons-react';

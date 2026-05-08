@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useValidationsListContext } from '@/components/validations/list/ValidationsList.context';
 import { ValidationsListCellDate } from '@/components/validations/list/ValidationsListCellCreatedAt';
 import { ValidationsListFiltersBar } from '@/components/validations/list/ValidationsListFiltersBar';

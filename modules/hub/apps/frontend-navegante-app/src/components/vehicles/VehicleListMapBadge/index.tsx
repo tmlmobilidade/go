@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import type { Line } from '@carrismetropolitana/navegante-tempo-real-shared-types';
 
 import classNames from 'classnames/bind';

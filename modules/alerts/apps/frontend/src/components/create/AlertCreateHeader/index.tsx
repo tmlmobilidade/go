@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { Stepper, type StepperDataItem, Toolbar } from '@tmlmobilidade/ui';
 

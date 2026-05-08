@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { ActionIcon } from '@mantine/core';
 import { IconArrowDownRhombus, IconArrowsUpDown, IconArrowUpRhombus } from '@tabler/icons-react';
 

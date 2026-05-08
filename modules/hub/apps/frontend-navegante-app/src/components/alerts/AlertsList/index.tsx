@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { AlertsListGroup } from '@/components/alerts/AlertsListGroup';
 import { AlertsListToolbar } from '@/components/alerts/AlertsListToolbar';
 import { useAlertsListContext } from '@/contexts/AlertsList.context';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useFaresListContext } from '@/components/fares/list/FaresList.context';
 import { FaresListCellAgencies } from '@/components/fares/list/FaresListCellAgencies';
 import { FaresListFiltersBar } from '@/components/fares/list/FaresListFiltersBar';

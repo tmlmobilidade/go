@@ -2,8 +2,6 @@
 
 'use client';
 
-/* * */
-
 import { getValueAtPath } from '@tmlmobilidade/utils';
 
 import styles from './styles.module.css';

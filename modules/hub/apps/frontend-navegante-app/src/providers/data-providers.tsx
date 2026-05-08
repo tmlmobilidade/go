@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { AlertsContextProvider } from '@/contexts/Alerts.context';
 import { LinesContextProvider } from '@/contexts/Lines.context';
 import { LocationsContextProvider } from '@/contexts/Locations.context';

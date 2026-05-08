@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { EnvironmentContextProvider } from '@/contexts/Environment.context';
 import { getCssVariableValue } from '@/utils/getCssVariableValue';
 import { MantineProvider, MantineProviderProps } from '@mantine/core';

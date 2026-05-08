@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Button } from '@mantine/core';
 import { IconTrafficCone } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';

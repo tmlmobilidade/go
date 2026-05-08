@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import type { Map as MapLibre } from 'maplibre-gl';
 
 import { useMapOptionsContext } from '@/contexts/MapOptions.context';

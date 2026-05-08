@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { UserCreate } from '@/components/users/create/UserCreate';
 import { UserCreateContextProvider } from '@/components/users/create/UserCreate.context';
 import { DataProviders } from '@/providers/data-providers';

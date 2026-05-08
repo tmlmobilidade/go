@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { LiveIcon } from '@/components/common/LiveIcon';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
 import { Layer, Source } from '@vis.gl/react-maplibre';

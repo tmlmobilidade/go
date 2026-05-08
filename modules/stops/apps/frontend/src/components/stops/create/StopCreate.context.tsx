@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { closeCreateStopModal } from '@/components/stops/create/StopCreate.modal';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';

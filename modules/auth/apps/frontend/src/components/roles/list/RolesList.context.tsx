@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRolesContext } from '@/contexts/Roles.context';
 import { type RoleNormalized } from '@/types/normalized';
 import { normalizeString } from '@tmlmobilidade/strings';

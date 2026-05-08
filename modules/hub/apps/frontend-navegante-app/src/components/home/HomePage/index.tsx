@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { HomePageHeader } from '@/components/header/HomePageHeader';
 import { AlertsSection } from '@/components/home/AlertsSection';
 import { HomePageFilterbar } from '@/components/home/HomePageFilterbar';

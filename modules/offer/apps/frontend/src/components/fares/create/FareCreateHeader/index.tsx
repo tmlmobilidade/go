@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useFareCreateContext } from '@/components/fares/create/FareCreate.context';
 import { closeCreateFareModal } from '@/components/fares/create/FareCreate.modal';
 import { IconUpload } from '@tabler/icons-react';

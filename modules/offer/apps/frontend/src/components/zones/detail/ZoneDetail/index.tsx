@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useZoneDetailContext } from '@/components/zones/detail/ZoneDetail.context';
 import { ZoneDetailHeader } from '@/components/zones/detail/ZoneDetailHeader';
 import { API_ROUTES } from '@tmlmobilidade/consts';

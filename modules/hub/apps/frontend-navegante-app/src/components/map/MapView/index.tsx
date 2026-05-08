@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { MapViewToolbar } from '@/components/map/MapViewToolbar';
 import { useMapOptionsContext } from '@/contexts/MapOptions.context';
 import { mapDefaultConfig } from '@/settings/map.settings';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { SegmentedControl as MantineSegmentedControl, type SegmentedControlProps as MantineSegmentedControlProps } from '@mantine/core';
 
 /* * */

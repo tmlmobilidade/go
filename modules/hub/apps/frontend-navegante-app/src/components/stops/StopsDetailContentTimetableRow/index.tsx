@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { NextArrivals } from '@/components/common/NextArrivals';
 import { LineDisplay } from '@/components/lines/LineDisplay';
 import { useLocationsContext } from '@/contexts/Locations.context';

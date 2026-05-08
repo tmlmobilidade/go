@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Dates } from '@tmlmobilidade/dates';
 import { type GtfsFeedInfo } from '@tmlmobilidade/types';
 import { Grid, ValueDisplay } from '@tmlmobilidade/ui';

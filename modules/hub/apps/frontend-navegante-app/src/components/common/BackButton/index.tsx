@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useEnvironmentContext } from '@/contexts/Environment.context';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';

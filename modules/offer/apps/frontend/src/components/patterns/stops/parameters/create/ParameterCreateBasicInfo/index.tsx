@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useParameterCreateContext } from '@/components/patterns/stops/parameters/create/ParameterCreate.context';
 import { ParameterCreateDayPeriod } from '@/components/patterns/stops/parameters/create/ParameterCreateDayPeriod';
 import { ParameterCreateTable } from '@/components/patterns/stops/parameters/create/ParameterCreateTable';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type CalendarEvent } from '@tmlmobilidade/types';
 import { EventsCalendar } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';

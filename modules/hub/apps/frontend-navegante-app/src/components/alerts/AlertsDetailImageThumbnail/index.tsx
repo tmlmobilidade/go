@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import Button from '@/components/common/Button';
 import { useEnvironmentContext } from '@/contexts/Environment.context';
 import { Image } from '@mantine/core';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';

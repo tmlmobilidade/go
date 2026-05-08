@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { BackButton } from '@/components/common/BackButton';
 import { SelectOperationalDate } from '@/components/common/SelectOperationalDate';
 import { Section } from '@/components/layout/Section';

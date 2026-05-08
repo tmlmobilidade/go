@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { IconPlayerPauseFilled, IconPlayerPlayFilled } from '@tabler/icons-react';
 import { Button, Section, Slider } from '@tmlmobilidade/ui';

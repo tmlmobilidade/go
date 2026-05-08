@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import '@mantine/carousel/styles.layer.css';
 import '@mantine/charts/styles.layer.css';
 import '@mantine/core/styles.layer.css';

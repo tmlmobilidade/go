@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { availableFormats, DEFAULT_LOCALE_CODE, defaultLocale, enabledLocales, getMatchingLocale, LOCALE_STORAGE_KEY } from '@/i18n/config';
 import { useLocalStorage } from '@mantine/hooks';
 import { NextIntlClientProvider } from 'next-intl';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Surface } from '@/components/layout/Surface';
 import { MapView } from '@/components/map/MapView';
 import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/MapViewStyleStops';
