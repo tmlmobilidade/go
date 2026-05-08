@@ -3,7 +3,7 @@ import { pipelinePath } from '@/lib/sql-paths.js';
 import { queryEachStatementFromFile } from '@tmlmobilidade/databases';
 import { Logger } from '@tmlmobilidade/logger';
 
-const CLEANUP_CURRENT_RIDES_SQL = 'cleanup/delete-out-of-window-curr-rides.sql';
+const CLEANUP_CURRENT_RIDES_SQL = 'cleanup/1-delete-out-of-window-curr-rides.sql';
 
 interface CleanupRowsResult {
 	rows_to_delete: number

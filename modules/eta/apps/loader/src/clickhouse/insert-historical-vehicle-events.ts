@@ -2,7 +2,7 @@ import { pipelinePath } from '@/lib/sql-paths.js';
 import { queryFromFile } from '@tmlmobilidade/databases';
 import { Logger } from '@tmlmobilidade/logger';
 
-const INSERT_HISTORICAL_VEHICLE_EVENTS_SQL_FILE = '1-insert-historical-vehicle-events.sql';
+const INSERT_HISTORICAL_VEHICLE_EVENTS_SQL_FILE = 'loader/1-insert-historical-vehicle-events.sql';
 
 export async function insertHistoricalVehicleEvents(clickhouseClient: Parameters<typeof queryFromFile>[0]) {
 	//

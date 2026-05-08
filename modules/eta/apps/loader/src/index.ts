@@ -128,11 +128,11 @@ export async function main() {
 
 		//
 		Logger.info(`Running 5a-build_hist_node_travel_times.sql query`);
-		await queryFromFile(clickhouseClient, pipelinePath('2-build_hist_node_travel_times.sql'));
+		await queryFromFile(clickhouseClient, pipelinePath('loader/2-build_hist_node_travel_times.sql'));
 
 		//
 		Logger.info(`Running 5b-aggregate_hist_node_travel_times.sql query`);
-		await queryFromFile(clickhouseClient, pipelinePath('3-aggregate_hist_node_travel_times.sql'));
+		await queryFromFile(clickhouseClient, pipelinePath('loader/3-aggregate_hist_node_travel_times.sql'));
 	}
 
 	//
@@ -142,7 +142,7 @@ export async function main() {
 		await syncCurrentWaypoints(clickhouseClient, Array.from(currentWindowDistinctHashedTrips));
 
 		Logger.info(`Snapping waypoints for current window`);
-		await queryFromFile(clickhouseClient, pipelinePath('4-snap-waypoints.sql'));
+		await queryFromFile(clickhouseClient, pipelinePath('loader/4-snap-waypoints.sql'));
 	}
 
 	//

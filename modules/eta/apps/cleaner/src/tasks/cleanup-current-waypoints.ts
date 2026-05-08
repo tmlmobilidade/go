@@ -2,7 +2,7 @@ import { pipelinePath } from '@/lib/sql-paths.js';
 import { queryEachStatementFromFile } from '@tmlmobilidade/databases';
 import { Logger } from '@tmlmobilidade/logger';
 
-const CLEANUP_CURRENT_WAYPOINTS_SQL = 'cleanup/delete-orphan-curr-waypoints.sql';
+const CLEANUP_CURRENT_WAYPOINTS_SQL = 'cleanup/3-delete-orphan-curr-waypoints.sql';
 
 interface CleanupRowsResult {
 	rows_to_delete: number
