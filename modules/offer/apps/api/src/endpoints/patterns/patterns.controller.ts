@@ -288,7 +288,6 @@ export class PatternsController {
 			parameters: [defaultParameter],
 			path: populatedPath,
 			shape: {
-				anchors: [],
 				extension: Math.round(shapeExtension),
 				geojson: {
 					geometry: {

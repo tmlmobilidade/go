@@ -4,7 +4,7 @@
 
 import { StopsTableTableColumnDistance } from '@/components/patterns/shape/table/StopsTableColumnDistance';
 import { PathTableColumnStop } from '@/components/patterns/shape/table/StopsTableColumnStop';
-import { Path } from '@tmlmobilidade/types';
+import { PopulatedPath } from '@tmlmobilidade/types';
 import { Checkbox, CheckboxProps, Text, Tooltip } from '@tmlmobilidade/ui';
 
 import styles from '../styles.module.css';
@@ -36,7 +36,7 @@ function CheckboxColumn({ tooltip, ...checkboxProps }: CheckboxProps & { tooltip
 
 /* * */
 
-export function StopsTableRow({ pathItem, rowIndex }: { pathItem: Path, rowIndex: number }) {
+export function StopsTableRow({ pathItem, rowIndex }: { pathItem: PopulatedPath, rowIndex: number }) {
 	//
 
 	//

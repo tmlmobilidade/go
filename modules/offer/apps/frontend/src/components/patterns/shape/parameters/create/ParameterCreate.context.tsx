@@ -6,7 +6,7 @@ import { usePeriodsContext } from '@/contexts/Periods.context';
 import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { useForm } from '@mantine/form';
 import { buildParameterSummary, computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
-import { type Path, StopsParameter, StopsParameterSchema } from '@tmlmobilidade/types';
+import { type Path, PopulatedPath, StopsParameter, StopsParameterSchema } from '@tmlmobilidade/types';
 import { type UseFormReturnType } from '@tmlmobilidade/ui';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
@@ -34,7 +34,7 @@ interface ParameterCreateContextState {
 		form: UseFormReturnType<StopsParameter>
 		mergedPath?: MergedPathItem[]
 		parameterForUI: StopsParameterExtendedWithStats
-		path?: Path[]
+		path?: PopulatedPath[]
 	}
 	flags: {
 		isEditing: boolean
@@ -67,7 +67,7 @@ export function useParameterCreateContext() {
 
 /* * */
 
-export const ParameterCreateContextProvider = ({ children, defaultParameter, initialValues, onDelete, onSubmit, path }: PropsWithChildren<{ defaultParameter?: StopsParameter, initialValues?: StopsParameter, onDelete?: () => void, onSubmit: (rule: StopsParameter) => void, path?: Path[] }>) => {
+export const ParameterCreateContextProvider = ({ children, defaultParameter, initialValues, onDelete, onSubmit, path }: PropsWithChildren<{ defaultParameter?: StopsParameter, initialValues?: StopsParameter, onDelete?: () => void, onSubmit: (rule: StopsParameter) => void, path?: PopulatedPath[] }>) => {
 	//
 
 	//

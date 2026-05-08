@@ -41,7 +41,7 @@ interface PatternDetailContextState {
 		id: string
 		lineId: string
 		mergedRules: ScheduleRule[]
-		pattern: null | Pattern
+		pattern: null | PopulatedPattern
 		stopsParameterRules: StopsParameterExtended[]
 		typologyData?: Typology
 	}

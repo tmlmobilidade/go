@@ -3,7 +3,7 @@
 /* * */
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Path } from '@tmlmobilidade/types';
+import { PopulatedPath } from '@tmlmobilidade/types';
 import { Text, useLocationsContext } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
@@ -12,7 +12,7 @@ import styles from '../styles.module.css';
 
 /* * */
 
-export function PathTableColumnStop({ pathItem }: { pathItem: Path }) {
+export function PathTableColumnStop({ pathItem }: { pathItem: PopulatedPath }) {
 	//
 
 	//

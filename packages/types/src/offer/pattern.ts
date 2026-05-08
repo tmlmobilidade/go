@@ -77,7 +77,7 @@ const ShapeLegSchema = z.object({
 });
 
 export const ShapeSchema = z.object({
-	anchors: z.array(ShapeAnchorSchema).optional().default([]),
+	anchors: z.array(ShapeAnchorSchema).optional(),
 	extension: z.number(),
 	geojson: z.object({
 		geometry: z.object({
