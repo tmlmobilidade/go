@@ -4,7 +4,7 @@ import { LineBadge } from '@/components/lines/LineBadge';
 import { useEnvironmentContext } from '@/contexts/Environment.context';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
-import { Line, NetworkStop } from '@carrismetropolitana/navegante-tempo-real-shared-types';
+import { type Line, type NetworkStop } from '@/types/api/network';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 

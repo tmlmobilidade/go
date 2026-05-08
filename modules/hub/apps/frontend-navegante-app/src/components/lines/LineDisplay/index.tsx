@@ -1,9 +1,8 @@
 /* * */
 
-import type { Line } from '@carrismetropolitana/navegante-tempo-real-shared-types';
-
 import { LineBadge } from '@/components/lines/LineBadge';
 import { LineName } from '@/components/lines/LineName';
+import { type Line } from '@/types/api/network';
 import { Skeleton } from '@mantine/core';
 
 import styles from './styles.module.css';

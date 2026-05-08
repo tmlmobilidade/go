@@ -2,7 +2,8 @@
 /* * */
 
 import { GlobalSettingsContextProvider } from '@/contexts/GlobalSettings.context';
-import { SWRConfig, SWRConfiguration } from 'swr';
+import { Suspense } from 'react';
+import { SWRConfig, type SWRConfiguration } from 'swr';
 
 /* * */
 
@@ -36,11 +37,13 @@ export function ConfigProviders({ children }) {
 	// B. Render components
 
 	return (
-		<SWRConfig value={swrSettings}>
-			<GlobalSettingsContextProvider>
-				{children}
-			</GlobalSettingsContextProvider>
-		</SWRConfig>
+		<Suspense fallback={<div>Loading configuration...</div>}>
+			<SWRConfig value={swrSettings}>
+				<GlobalSettingsContextProvider>
+					{children}
+				</GlobalSettingsContextProvider>
+			</SWRConfig>
+		</Suspense>
 	);
 
 	//

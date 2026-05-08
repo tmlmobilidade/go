@@ -53,7 +53,7 @@ export default function Component({ onChange, value, ...props }: SelectAlertEffe
 			leftSection={<IconBolt size={20} />}
 			onChange={onChange}
 			renderOption={renderSelectOption}
-			renderRoot={renderSelectRoot || undefined}
+			// renderRoot={renderSelectRoot || undefined}
 			value={value}
 			w="100%"
 			clearable

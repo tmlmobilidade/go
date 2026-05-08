@@ -1,7 +1,7 @@
 /* * */
 
+import { type NetworkPattern, type NetworkRoute } from '@/types/api/network';
 import { type Timetable } from '@/types/timetables.types';
-import { NetworkPattern, NetworkRoute } from '@carrismetropolitana/navegante-tempo-real-shared-types';
 
 /**
  * This function creates a timetable for a set of patterns of a line, for a specific stop and date.
@@ -139,11 +139,8 @@ export function createTimetable(primaryPatternGroup: NetworkPattern, secondaryPa
 
 				if (!minuteEntry) {
 					hourEntry.minutes.push({ exception_ids: [existingException.exception_id], minute_label: minute24, minute_value: minuteValue, trip_ids: trip.trip_ids });
-				}
-
-				// If the minute entry already exists, add the exception ID to it
-
-				else {
+				} else {
+					// If the minute entry already exists, add the exception ID to it
 					minuteEntry.exception_ids.push(existingException.exception_id);
 				}
 			});

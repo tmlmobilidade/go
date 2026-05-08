@@ -53,7 +53,7 @@ export default function Component({ onChange, value, ...props }: SelectAlertCaus
 			leftSection={<IconExclamationCircle size={20} />}
 			onChange={onChange}
 			renderOption={renderSelectOption}
-			renderRoot={renderSelectRoot || undefined}
+			// render={renderSelectRoot || undefined}
 			value={value}
 			w="100%"
 			clearable

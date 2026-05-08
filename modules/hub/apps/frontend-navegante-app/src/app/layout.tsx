@@ -3,7 +3,7 @@
 import { RootProviders } from '@/providers/root-providers';
 import { Inter } from 'next/font/google';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { type PropsWithChildren } from 'react';
+import { type PropsWithChildren, Suspense } from 'react';
 
 /* * */
 
@@ -27,11 +27,13 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 				<meta content="transparent" name="theme-color" />
 			</head>
 			<body>
-				<NuqsAdapter>
-					<RootProviders>
-						{children}
-					</RootProviders>
-				</NuqsAdapter>
+				<Suspense fallback={<div>Loading...</div>}>
+					<NuqsAdapter>
+						<RootProviders>
+							{children}
+						</RootProviders>
+					</NuqsAdapter>
+				</Suspense>
 			</body>
 		</html>
 	);

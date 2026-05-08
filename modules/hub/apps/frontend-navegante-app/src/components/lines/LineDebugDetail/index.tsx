@@ -1,7 +1,7 @@
 /* * */
 
 import { CopyBadge } from '@/components/common/CopyBadge';
-import { type NetworkPattern } from '@carrismetropolitana/navegante-tempo-real-shared-types';
+import { type NetworkPattern } from '@/types/api/network';
 
 import styles from './styles.module.css';
 

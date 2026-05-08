@@ -1,7 +1,6 @@
 /* * */
 
-import type { NetworkStop } from '@carrismetropolitana/navegante-tempo-real-shared-types';
-
+import { type NetworkStop } from '@/types/api/network';
 import { Skeleton } from '@mantine/core';
 
 import styles from './styles.module.css';

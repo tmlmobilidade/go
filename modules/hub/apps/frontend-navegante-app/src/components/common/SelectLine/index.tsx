@@ -2,7 +2,7 @@
 
 import { LineDisplay } from '@/components/lines/LineDisplay';
 import { createDocCollection } from '@/hooks/useOtherSearch';
-import { Line } from '@carrismetropolitana/navegante-tempo-real-shared-types';
+import { type Line } from '@/types/api/network';
 import { ActionIcon, Combobox, Group, TextInput, useCombobox } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconArrowLoopRight, IconSelector, IconX } from '@tabler/icons-react';

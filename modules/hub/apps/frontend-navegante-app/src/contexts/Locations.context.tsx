@@ -1,7 +1,11 @@
 'use client';
 
 import { getPublicVariable } from '@/settings/public-variables';
-import { type ApiResponse, type District, type Locality, type Municipality, type Parish } from '@carrismetropolitana/navegante-tempo-real-shared-types';
+import { type ApiResponse } from '@/types/api/common';
+import { type District } from '@/types/api/locations/districts.type';
+import { type Locality } from '@/types/api/locations/localities.type';
+import { type Municipality } from '@/types/api/locations/municipalities.type';
+import { type Parish } from '@/types/api/locations/parishes.type';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 

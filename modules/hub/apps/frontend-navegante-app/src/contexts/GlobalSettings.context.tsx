@@ -1,7 +1,6 @@
 'use client';
 
 import { useLocalStorage } from '@mantine/hooks';
-import { useSearchParams } from 'next/navigation';
 import { createContext, useContext, useEffect, useRef } from 'react';
 
 /* * */
@@ -74,26 +73,25 @@ export const GlobalSettingsContextProvider = ({ children }) => {
 		key: 'global-settings',
 	});
 
-	const searchParams = useSearchParams();
 	const initialized = useRef(false);
 
 	//
 	// Hydrate from URL
 
-	useEffect(() => {
-		if (initialized.current) return;
+	// useEffect(() => {
+	// 	if (initialized.current) return;
 
-		const sectionFromUrl = searchParams.get('section') as null | Section;
+	// 	const sectionFromUrl = searchParams.get('section') as null | Section;
 
-		if (sectionFromUrl) {
-			setSettings(prev => ({
-				...prev,
-				section: sectionFromUrl,
-			}));
-		}
+	// 	if (sectionFromUrl) {
+	// 		setSettings(prev => ({
+	// 			...prev,
+	// 			section: sectionFromUrl,
+	// 		}));
+	// 	}
 
-		initialized.current = true;
-	}, [searchParams, setSettings]);
+	// 	initialized.current = true;
+	// }, [searchParams, setSettings]);
 
 	//
 	// Sync to URL
@@ -105,8 +103,7 @@ export const GlobalSettingsContextProvider = ({ children }) => {
 
 		if (settings.section === 'lines') {
 			url.searchParams.delete('section');
-		}
-		else {
+		} else {
 			url.searchParams.set('section', settings.section);
 		}
 

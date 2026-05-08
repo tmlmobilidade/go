@@ -1,8 +1,8 @@
 'use client';
 
 import { getPublicVariable } from '@/settings/public-variables';
+import { type NetworkStop } from '@/types/api/network';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import { type NetworkStop } from '@carrismetropolitana/navegante-tempo-real-shared-types';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 

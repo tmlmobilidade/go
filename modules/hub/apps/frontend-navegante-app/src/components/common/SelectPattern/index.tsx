@@ -3,7 +3,7 @@
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { useStopsContext } from '@/contexts/Stops.context';
-import { NetworkPattern } from '@carrismetropolitana/navegante-tempo-real-shared-types';
+import { type NetworkPattern } from '@/types/api/network';
 import { ComboboxItem, ComboboxItemGroup, Flex, Group, Select, SelectProps, Text } from '@mantine/core';
 import { IconAlertTriangle } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
@@ -57,8 +57,7 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 
 			if (group) {
 				group.items.push(item);
-			}
-			else {
+			} else {
 				data.push({
 					group: patternGroupData.route_id,
 					items: [item],
@@ -86,7 +85,7 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 		//
 
 		const patternData = patterns.find(pattern => pattern.version_id === option.value);
-		if (!patternData || !patternData.path.length) {
+		if (!patternData?.path.length) {
 			return (
 				<Flex align="center" gap={5} justify="center">
 					<IconAlertTriangle size={14} />
@@ -143,7 +142,7 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 			label={t('label')}
 			onChange={onChange}
 			renderOption={renderSelectOption}
-			renderRoot={renderSelectRoot || undefined}
+			// renderRoot={renderSelectRoot || undefined}
 			value={value}
 			w="100%"
 			{...props}

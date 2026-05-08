@@ -3,7 +3,7 @@
 import { StopDisplay } from '@/components/stops/StopDisplay';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { createDocCollection } from '@/hooks/useOtherSearch';
-import { NetworkStop } from '@carrismetropolitana/navegante-tempo-real-shared-types';
+import { type NetworkStop } from '@/types/api/network';
 import { ActionIcon, Combobox, Group, TextInput, useCombobox } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconBusStop, IconSelector, IconX } from '@tabler/icons-react';

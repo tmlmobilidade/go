@@ -1,10 +1,9 @@
 /* * */
 
-import type { Waypoint } from '@carrismetropolitana/navegante-tempo-real-shared-types';
-
 import { IconDisplay } from '@/components/common/IconDisplay';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { useStopsContext } from '@/contexts/Stops.context';
+import { type Waypoint } from '@/types/api/network';
 import { formatStopLocation } from '@/utils/formatStopLocation';
 import { useClipboard } from '@mantine/hooks';
 import { IconCheck, IconCopy } from '@tabler/icons-react';

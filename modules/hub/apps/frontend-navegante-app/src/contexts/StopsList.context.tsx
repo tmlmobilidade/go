@@ -4,9 +4,9 @@ import { useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
 import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/contexts/Stops.context';
 import { useVehiclesContext } from '@/contexts/Vehicles.context';
 import { createDocCollection } from '@/hooks/useOtherSearch';
+import { type NetworkStop } from '@/types/api/network';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
 import { agencyMatchesSelection, agencyMatchesTransports } from '@/utils/transportAgencies';
-import { type NetworkStop } from '@carrismetropolitana/navegante-tempo-real-shared-types';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -66,8 +66,7 @@ export const StopsListContextProvider = ({ children }) => {
 			const existing = map.get(vehicle.line_id);
 			if (existing) {
 				existing.add(vehicle.agency_id);
-			}
-			else {
+			} else {
 				map.set(vehicle.line_id, new Set([vehicle.agency_id]));
 			}
 		});

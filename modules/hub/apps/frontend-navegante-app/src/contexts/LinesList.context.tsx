@@ -3,7 +3,7 @@
 import { useEnvironmentContext } from '@/contexts/Environment.context';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { createDocCollection } from '@/hooks/useOtherSearch';
-import { Line } from '@carrismetropolitana/navegante-tempo-real-shared-types';
+import { type Line } from '@/types/api/network';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 /* * */

@@ -6,7 +6,7 @@ import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { getPublicVariable } from '@/settings/public-variables';
 import { type SimplifiedAlert } from '@/types/alerts.types';
-import { Line, NetworkPattern, NetworkRoute, NetworkShape, Waypoint } from '@carrismetropolitana/navegante-tempo-real-shared-types';
+import { Line, NetworkPattern, NetworkRoute, NetworkShape, Waypoint } from '@/types/api/network';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useEffect, useState } from 'react';
 

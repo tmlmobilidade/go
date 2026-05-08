@@ -1,13 +1,12 @@
 /* * */
 
-import type { Waypoint } from '@carrismetropolitana/navegante-tempo-real-shared-types';
-
 import { PathWaypointHeader } from '@/components/lines/PathWaypointHeader';
 import { PathWaypointNextArrivals } from '@/components/lines/PathWaypointNextArrivals';
 import { PathWaypointSpine } from '@/components/lines/PathWaypointSpine';
 import { PathWaypointTimetable } from '@/components/lines/PathWaypointTimetable';
 import { useLinesDetailContext } from '@/contexts/LinesDetail.context';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
+import { type Waypoint } from '@/types/api/network';
 
 import styles from './styles.module.css';
 

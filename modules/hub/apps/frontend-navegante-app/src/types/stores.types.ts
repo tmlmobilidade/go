@@ -1,6 +1,6 @@
 /* * */
 
-import { Store } from '@carrismetropolitana/navegante-tempo-real-shared-types';
+import { type Store } from '@/types/api/facilities/stores.type';
 
 /* * */
 

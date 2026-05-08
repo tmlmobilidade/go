@@ -9,9 +9,9 @@ import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/contexts
 import { transformVehicleDataIntoGeoJsonFeature, useVehiclesContext } from '@/contexts/Vehicles.context';
 import { useVehiclesListContext } from '@/contexts/VehiclesList.context';
 import { getPublicVariable } from '@/settings/public-variables';
+import { type NetworkPattern, type NetworkShape } from '@/types/api/network';
 import { centerMap, getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
 import getOperationalDate from '@/utils/operation';
-import { type NetworkPattern, type NetworkShape } from '@carrismetropolitana/navegante-tempo-real-shared-types';
 import { useMap } from '@vis.gl/react-maplibre';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
