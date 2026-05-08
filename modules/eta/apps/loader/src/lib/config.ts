@@ -24,6 +24,6 @@ export const AppConfig = Object.freeze({
 		insertHistoricalVehicleEvents: true,
 		runDdl: true,
 		runTransformationAndAggregationQueries: true,
-		truncatePipelineTables: isDevelopment ? true : false,
+		truncatePipelineTables: false, // isDevelopment ? true : false,
 	},
 });

@@ -20,7 +20,7 @@ ORDER BY (hashed_shape_id, node_index, period_of_day, weekday, day_type, period)
 -- Refreshable MV: rebuilds eta.node_predictions every 5 minutes from the last
 -- 30 days of node_travel_times_aggregates.
 CREATE MATERIALIZED VIEW IF NOT EXISTS eta.mv_pred_node_etas
-REFRESH EVERY 5 MINUTE
+REFRESH EVERY 3 MINUTE
 TO eta.pred_node_etas
 AS
 WITH
