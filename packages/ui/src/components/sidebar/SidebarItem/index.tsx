@@ -1,31 +1,30 @@
 'use client';
 
-import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import Link from 'next/link';
 import { useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
-import { useMeContext } from '../../../contexts';
-import { useCurrentUrl } from '../../../hooks';
+import { useMeContext } from '../../../contexts/Me.context';
+import { useCurrentUrl } from '../../../hooks/use-current-url';
+import { sidebarApps } from '../Sidebar';
 import { SidebarItemTooltip } from '../SidebarItemTooltip';
 
 /* * */
 
-export interface SidebarItemProps {
-	href: string
-	icon: React.ReactNode
-	label: string
-	requiredPermissions: Permission[]
-}
+export type SidebarItemProps = typeof sidebarApps[number];
 
 /* * */
 
-export function SidebarItem({ href, icon, label, requiredPermissions }: SidebarItemProps) {
+export function SidebarItem({ _id, href, icon, permissions }: SidebarItemProps) {
 	//
 
 	//
 	// A. Setup Variables
+
+	const { t } = useTranslation();
 
 	const meContext = useMeContext();
 
@@ -39,16 +38,18 @@ export function SidebarItem({ href, icon, label, requiredPermissions }: SidebarI
 	// B. Transform data
 
 	const isEnabled = useMemo(() => {
+		// Allow if no permissions are required
+		if (!permissions.length) return true;
 		// Skip if user has no permissions
 		if (!meContext.data.user?.permissions) return false;
 		// For all possible permissions...
-		for (const permissionObject of requiredPermissions) {
+		for (const permissionObject of permissions) {
 			// ... check if the user is allowed to see this item
 			return PermissionCatalog.hasPermission(meContext.data.user?.permissions, permissionObject.scope, permissionObject.action);
 		}
 		// If no permissions matched
 		return false;
-	}, [meContext.data.user?.permissions, requiredPermissions]);
+	}, [meContext.data.user?.permissions, permissions]);
 
 	const isActive = useMemo(() => {
 		// Skip if window is not defined
@@ -100,7 +101,7 @@ export function SidebarItem({ href, icon, label, requiredPermissions }: SidebarI
 			</Link>
 			{hover && (
 				<SidebarItemTooltip
-					label={label}
+					label={t(`shared:components.sidebar.Sidebar.${_id}`)}
 					target={ref.current}
 				/>
 			)}
