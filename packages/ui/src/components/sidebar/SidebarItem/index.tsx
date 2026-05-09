@@ -42,13 +42,8 @@ export function SidebarItem({ _id, href, icon, permissions }: SidebarItemProps) 
 		if (!permissions.length) return true;
 		// Skip if user has no permissions
 		if (!meContext.data.user?.permissions) return false;
-		// For all possible permissions...
-		for (const permissionObject of permissions) {
-			// ... check if the user is allowed to see this item
-			return PermissionCatalog.hasPermission(meContext.data.user?.permissions, permissionObject.scope, permissionObject.action);
-		}
-		// If no permissions matched
-		return false;
+		// Check if the user has at least one of the required permissions
+		return permissions.some(permissionObject => PermissionCatalog.hasPermission(meContext.data.user?.permissions, permissionObject.scope, permissionObject.action));
 	}, [meContext.data.user?.permissions, permissions]);
 
 	const isActive = useMemo(() => {

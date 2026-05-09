@@ -15,7 +15,7 @@ export interface SidebarAppItemConfig {
 	_id: string
 	href: string
 	icon: JSX.Element
-	permissions: Permission[]
+	permissions: readonly Permission[]
 }
 
 export const sidebarApps = [
@@ -163,7 +163,7 @@ export const sidebarApps = [
 		icon: <IconBook size={26} />,
 		permissions: [],
 	},
-] as const satisfies SidebarAppItemConfig[];
+] as const satisfies readonly SidebarAppItemConfig[];
 
 /* * */
 
