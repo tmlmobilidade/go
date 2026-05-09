@@ -21,7 +21,7 @@
 		"@mantine/modals": "9.1.1",
 		"@mantine/notifications": "9.1.1",
 		"@next/third-parties": "16.2.6",
-		"@tabler/icons-react": "3.43.0",
+		"@tabler/icons-react": "3.44.0",
 		"@tmlmobilidade/utils": "20260418.1237.24",
 		"@turf/turf": "7.3.5",
 		"@vis.gl/react-maplibre": "8.1.1",
@@ -64,5 +64,5 @@
 		"react": "19.2.6",
 		"react-dom": "19.2.6"
 	},
-	"packageManager": "npm@11.14.0"
+	"packageManager": "npm@11.14.1"
 }

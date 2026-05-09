@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-navegante-sync-gtfs",
+	"name": "@tmlmobilidade/go-hub-sync-gtfs",
 	"version": "1.0.0",
 	"type": "module",
 	"files": [
@@ -20,10 +20,7 @@
 		"@helperkits/logger": "20250628.901.58",
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20251103.1250.18",
-		"@tmlmobilidade/go-navegante-shared-services": "*",
-		"@tmlmobilidade/go-navegante-shared-settings": "*",
-		"@tmlmobilidade/go-navegante-shared-utils": "*",
-		"@tmlmobilidade/sqlite": "^20260507.2220.24",
+		"@tmlmobilidade/sqlite": "*",
 		"@turf/turf": "7.3.5",
 		"adm-zip": "0.5.17",
 		"csv-parse": "6.2.1",
@@ -33,13 +30,11 @@
 		"papaparse": "5.5.3"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/eslint": "20250622.1204.50",
-		"@tmlmobilidade/go-navegante-shared-types": "*",
-		"@tmlmobilidade/go-navegante-shared-utils": "*",
-		"@tmlmobilidade/tsconfig": "20260418.1237.24",
+		"@tmlmobilidade/eslint": "*",
+		"@tmlmobilidade/tsconfig": "*",
 		"@types/adm-zip": "0.5.8",
 		"@types/luxon": "3.7.1",
-		"@types/node": "25.6.0",
+		"@types/node": "25.6.2",
 		"@types/papaparse": "5.5.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",

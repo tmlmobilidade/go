@@ -2,7 +2,7 @@
 
 /* * */
 
-import { css } from '@carrismetropolitana/eslint'
+import { css } from '@tmlmobilidade/eslint'
 
 /* * */
 

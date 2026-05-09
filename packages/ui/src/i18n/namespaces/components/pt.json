@@ -30,6 +30,32 @@
 			"nothing_found": "Nenhum resultado encontrado"
 		}
 	},
+	"sidebar": {
+		"Sidebar": {
+			"agencies": "Operadores",
+			"alerts": "Alertas",
+			"annotations": "Anotações",
+			"calendar": "Calendário",
+			"events": "Eventos & Exceções",
+			"fares": "Tarifas",
+			"gtfs_validations": "Validações GTFS",
+			"holidays": "Feriados",
+			"home": "Home",
+			"lines": "Linhas",
+			"organizations": "Organizações",
+			"performance": "Performance",
+			"plans": "Planos",
+			"reference": "Documentação",
+			"rides": "Circulações",
+			"roles": "Grupos de Permissões",
+			"stops": "Paragens",
+			"typologies": "Tipologias",
+			"users": "Utilizadores",
+			"vehicles": "Veículos",
+			"year_periods": "Períodos do Ano",
+			"zones": "Zonas"
+		}
+	},
 	"tags": {
 		"IdTag": {
 			"copied": "Copiado!",

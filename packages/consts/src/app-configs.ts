@@ -248,6 +248,26 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 		},
 	},
 
+	root: {
+		dev: {
+			api_port: 50000,
+			api_url: 'http://localhost:50000',
+			cors_origin: true,
+			frontend_port: 51000,
+			frontend_url: 'http://localhost:51000',
+		},
+		prd: {
+			api_url: 'https://go.tmlmobilidade.pt',
+			frontend_url: 'https://go.tmlmobilidade.pt',
+			...DEFAULT_PRD_CONFIG,
+		},
+		stg: {
+			api_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt`,
+			frontend_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt`,
+			...DEFAULT_STG_CONFIG,
+		},
+	},
+
 	stops: {
 		dev: {
 			api_port: 52003,
