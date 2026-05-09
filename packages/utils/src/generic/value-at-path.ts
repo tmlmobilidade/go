@@ -63,8 +63,17 @@ export function getValueAtPath<T, P extends DotPath<T>>(obj: T, path: P): PathVa
  * @param value The value to set at the specified path.
  * @returns The updated object with the value set at the specified path.
  */
+const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
 export function setValueAtPath<T extends object, P extends DotPath<T>>(obj: T, path: P, value: PathValue<T, P>): T {
 	const keys = (path as string).split('.');
+
+	for (const key of keys) {
+		if (UNSAFE_KEYS.has(key)) {
+			throw new Error(`Unsafe path segment: "${key}"`);
+		}
+	}
+
 	let current: any = obj;
 
 	keys.slice(0, -1).forEach((key) => {
