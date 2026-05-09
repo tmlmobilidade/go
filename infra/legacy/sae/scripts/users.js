@@ -17,6 +17,12 @@ db.createUser({
 });
 
 db.createUser({
+	pwd: USER_HUB_PASSWORD,
+	roles: [{ db: 'admin', role: 'hub' }],
+	user: 'hub',
+});
+
+db.createUser({
 	pwd: USER_STOPS_PASSWORD,
 	roles: [{ db: 'admin', role: 'stops' }],
 	user: 'stops',
