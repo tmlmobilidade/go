@@ -34,7 +34,7 @@
 		"@mantine/hooks": "9.1.1",
 		"@mantine/modals": "9.1.1",
 		"@mantine/notifications": "9.1.1",
-		"@tabler/icons-react": "3.43.0",
+		"@tabler/icons-react": "3.44.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
