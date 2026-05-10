@@ -21,7 +21,7 @@ server.register(
 		);
 
 		instance.get(
-			'/:trip_id',
+			'/:tripId',
 			EtaController.getByTripId,
 		);
 

@@ -46,10 +46,10 @@ export class EtaController {
 	 * @param request Fastify request with trip_id path parameter.
 	 * @param reply Fastify reply.
 	 */
-	static async getByTripId(request: FastifyRequest<{ Params: { trip_id: string } }>, reply: FastifyReply<Eta[]>) {
+	static async getByTripId(request: FastifyRequest<{ Params: { tripId: string } }>, reply: FastifyReply<Eta[]>) {
 		const clickhouseClient = await GOClickHouseClient.getClient();
 		const tripEtas = await queryFromFile<Eta>(clickhouseClient, EtaController.getByTripIdQuery, {
-			trip_id: request.params.trip_id,
+			trip_id: request.params.tripId,
 		});
 		reply.send({ data: tripEtas, error: null, statusCode: HTTP_STATUS.OK });
 	}
