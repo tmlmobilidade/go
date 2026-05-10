@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { API_ROUTES, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ActionsOf, type FileExport, GetScopePermissionsArgs, type HasPermissionResourceArgs, type Permission, PermissionCatalog, type ScopePermissions, type User, type UserPreferenceValue } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';

@@ -2,6 +2,7 @@ export * from '@/_common/comment.js';
 export * from '@/_common/document.js';
 export * from '@/_common/environment.js';
 export * from '@/_common/fastify.js';
+export * from '@/_common/i18n-code.js';
 export * from '@/_common/mongo.js';
 export * from '@/_common/operational-date.js';
 export * from '@/_common/position.js';

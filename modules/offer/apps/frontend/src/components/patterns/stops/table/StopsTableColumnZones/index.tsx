@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePatternDetailContext } from '@/components/patterns/detail//PatternDetail.context';
 import { IconRotate2, IconTicket } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';

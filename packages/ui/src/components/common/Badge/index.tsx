@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Badge as MantineBadge, BadgeProps as MantineBadgeProps } from '@mantine/core';
 import React from 'react';
 

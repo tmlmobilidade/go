@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { LoadingOverlay } from '@tmlmobilidade/ui';
 
 /* * */

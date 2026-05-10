@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Dates } from '@tmlmobilidade/dates';
 import { type UnixTimestamp } from '@tmlmobilidade/types';
 import { useMemo } from 'react';

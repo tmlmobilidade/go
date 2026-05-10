@@ -1,6 +1,4 @@
 'use client';
-
-/* * */
 import { useOrganizationsDetailContext } from '@/components/organizations/detail/OrganizationDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';

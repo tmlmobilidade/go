@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useHolidayCreateContext } from '@/components/holidays/create/HolidayCreate.context';
 import { closeCreateHolidayModal } from '@/components/holidays/create/HolidayCreate.modal';
 import { IconUpload } from '@tabler/icons-react';

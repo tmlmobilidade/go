@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { ActionIcon, FloatingPosition } from '@mantine/core';
 
 import { Tooltip } from '../../common/Tooltip';

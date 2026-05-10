@@ -1,12 +1,10 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { describeAlert, type DescribeAlertProps, type DescribeAlertReturnType } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { alerts, files } from '@tmlmobilidade/interfaces';
-import { type RssRawImageInput } from '@tmlmobilidade/rss';
-import { createRssFeed } from '@tmlmobilidade/rss';
-import { type Alert, CreateAlertDto, type File, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { type Alert, type CreateAlertDto, CreateAlertSchema, type File, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -106,93 +104,6 @@ export class AlertsController {
 	}
 
 	/**
-	 * Returns active published alerts as RSS feed XML.
-	 * @param request The request object.
-	 * @param reply The reply object.
-	 */
-	static async getRssFeed(_request: FastifyRequest, reply: FastifyReply<string>) {
-		const now = Dates.now('Europe/Lisbon').unix_timestamp;
-		const alertsPublicListUrl = 'https://www.carrismetropolitana.pt/alerts';
-		const allAlerts = await alerts.findMany(
-			{
-				$and: [
-					{
-						$or: [
-							{ publish_end_date: { $gte: now } },
-							{ publish_end_date: null },
-							{ publish_end_date: { $exists: false } },
-						],
-					},
-					{ publish_start_date: { $lte: now } },
-					{ publish_status: 'published' },
-				],
-			},
-			{ sort: { publish_start_date: -1 } },
-		);
-
-		if (!allAlerts.length) {
-			reply.status(HTTP_STATUS.NOT_FOUND).send('No alerts available.');
-			return;
-		}
-
-		const xmlItems = await Promise.all(allAlerts.map(async (alert) => {
-			const images: RssRawImageInput[] = [];
-			const fileIdOrder: string[] = [];
-			const seen = new Set<string>();
-
-			const attachedFiles = await files.findMany(
-				{ resource_id: alert._id, scope: 'alerts' },
-				{ sort: { created_at: 1 } },
-			);
-
-			if (alert.file_id) {
-				fileIdOrder.push(alert.file_id);
-				seen.add(alert.file_id);
-			}
-
-			for (const f of attachedFiles) {
-				if (!seen.has(f._id)) {
-					fileIdOrder.push(f._id);
-					seen.add(f._id);
-				}
-			}
-
-			for (const fileId of fileIdOrder) {
-				try {
-					const file = await files.findById(fileId);
-					if (!file?.url) continue;
-					images.push({
-						alt: alert.title,
-						type: file.type ?? null,
-						url: file.url,
-					});
-				} catch {
-					// DB row exists but object missing in storage — omit image, still emit the item
-				}
-			}
-
-			return {
-				description: alert.description,
-				images: images.length ? images : [],
-				link: `${alertsPublicListUrl}/${alert._id}`,
-				linkLabel: 'Ver o alerta completo em carrismetropolitana.pt',
-				publish_start_date: alert.publish_start_date,
-				title: alert.title,
-			};
-		}));
-
-		const xml = createRssFeed(xmlItems, {
-			copyright: 'Carris Metropolitana',
-			description: 'Alertas e atualizacoes da Carris Metropolitana.',
-			feedSelfUrl: `${alertsPublicListUrl}.rss`,
-			link: alertsPublicListUrl,
-			title: 'Carris Metropolitana - Alertas',
-		});
-
-		reply.type('application/rss+xml; charset=utf-8').send(xml);
-	}
-
-	/**
 	 * Toggles the lock status of an alert by ID.
 	 * @param request Fastify request containing alert ID in params.
 	 * @param reply Fastify reply.
@@ -202,6 +113,40 @@ export class AlertsController {
 		const foundAlert = await alerts.findById(request.params.id);
 		if (!foundAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
 		reply.send({ data: foundAlert, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
+	 * Describes an alert by ID.
+	 * @param request Fastify request containing alert ID in params.
+	 * @param reply Fastify reply.
+	 */
+	static async describe(request: FastifyRequest<{ Body: DescribeAlertProps }>, reply: FastifyReply<DescribeAlertReturnType>) {
+		const describeResult = await describeAlert(request.body);
+		if (!describeResult) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to describe alert.');
+		reply.send({ data: describeResult, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
+	 * Duplicates an alert by ID.
+	 * @param request Fastify request containing alert ID in params.
+	 * @param reply Fastify reply.
+	 */
+	static async duplicate(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Alert>) {
+		// Retrieve the existing alert
+		const existingAlert = await alerts.findById(request.params.id);
+		if (!existingAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+		// Update necessary properties to indicate a copy
+		const duplicatedAlertData = CreateAlertSchema.parse({
+			...existingAlert,
+			created_by: request.me._id,
+			publish_status: 'draft',
+			title: `${existingAlert.title} (Cópia)`,
+			updated_by: request.me._id,
+		});
+		// Insert the duplicated alert into the database
+		// and send the duplicated alert to the client
+		const insertResult = await alerts.insertOne(duplicatedAlertData);
+		reply.send({ data: insertResult, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**

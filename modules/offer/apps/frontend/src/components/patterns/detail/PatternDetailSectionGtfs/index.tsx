@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { openGtfsImportConfirmationModal } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsImportConfirmation.modal';
 import { GtfsParser } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsParser';

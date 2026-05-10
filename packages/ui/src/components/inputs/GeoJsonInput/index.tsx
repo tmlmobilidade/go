@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { FileInput, Stack } from '@mantine/core';
 
 import { Button } from '../../buttons';

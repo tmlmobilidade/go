@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { WEEKDAYS } from '@tmlmobilidade/types';
 import { Section, SelectChipGroup, Text, WeekdaySelector } from '@tmlmobilidade/ui';
 

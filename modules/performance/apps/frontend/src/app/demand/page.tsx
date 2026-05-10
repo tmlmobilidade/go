@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import TopicsWrapper from '@/components/layout/TopicsWrapper';
 import DemandTopic from '@/components/topics/Demand';
 import { TOPICS, TOPICS_REGISTRY } from '@/constants';

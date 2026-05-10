@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { UploadImage } from '@/components/common/UploadImage';
 import { useOrganizationsDetailContext } from '@/components/organizations/detail/OrganizationDetail.context';
 import { CreateOrganizationSchema } from '@tmlmobilidade/types';

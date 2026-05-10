@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Select as MantineSelect, type SelectProps as MantineSelectProps } from '@mantine/core';
 
 /* * */

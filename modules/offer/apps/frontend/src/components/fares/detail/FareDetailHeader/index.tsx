@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useFareDetailContext } from '@/components/fares/detail/FareDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';

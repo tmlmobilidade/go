@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useZoneDetailContext } from '@/components/zones/detail/ZoneDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';

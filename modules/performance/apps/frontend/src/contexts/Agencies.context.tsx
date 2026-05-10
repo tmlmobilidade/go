@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { AGENCIES, type AgencyType } from '@/constants';
 import { MetricsRoutes } from '@/routes';
 import { calculateSystemHealthIndex, getSystemStatusInfo, type StatusInfo } from '@/utils/systemStatus';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconPlayerPlayFilled } from '@tabler/icons-react';
 import { DateTime } from 'luxon';
 import { useEffect, useRef, useState } from 'react';

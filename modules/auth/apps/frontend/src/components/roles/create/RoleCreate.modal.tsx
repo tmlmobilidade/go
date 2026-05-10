@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { RoleCreate } from '@/components/roles/create/RoleCreate';
 import { RoleCreateContextProvider } from '@/components/roles/create/RoleCreate.context';
 import { DataProviders } from '@/providers/data-providers';

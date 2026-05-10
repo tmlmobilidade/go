@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Button as MantineButton, type ButtonProps as MantineButtonProps } from '@mantine/core';
 import Link from 'next/link';
 import React from 'react';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import {
 	IconCloud,

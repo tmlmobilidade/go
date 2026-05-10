@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useHolidaysListContext } from '@/components/holidays/list/HolidaysList.context';
 import { HolidaysListCellAgencies } from '@/components/holidays/list/HolidaysListCellAgencies';
 import { HolidaysListCellDates } from '@/components/holidays/list/HolidaysListCellDates';

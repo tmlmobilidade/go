@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { RideAcceptance } from '@/components/rides/acceptance/RideAcceptance';
 import { RideAnalysisAnalysis } from '@/components/rides/analysis/RideAnalysis';
 import { RideAnalysisViewNavigation } from '@/components/rides/analysis/RideAnalysisViewNavigation';

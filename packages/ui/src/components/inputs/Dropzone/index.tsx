@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { DropzoneAccept, DropzoneIdle, DropzoneReject, Dropzone as MantineDropzone, DropzoneProps as MantineDropzoneProps } from '@mantine/dropzone';
 
 /* * */

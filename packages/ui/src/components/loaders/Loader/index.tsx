@@ -1,13 +1,11 @@
 'use client';
 
-/* * */
-
 import styles from './styles.module.css';
 
 /* * */
 
 export interface LoaderProps {
-	size?: 'lg' | 'md' | 'sm' | 'xl'
+	size?: 'lg' | 'md' | 'sm'
 	visible?: boolean
 }
 

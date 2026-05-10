@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { ZoneCreate } from '@/components/zones/create/ZoneCreate';
 import { ZoneCreateContextProvider } from '@/components/zones/create/ZoneCreate.context';
 import { DataProviders } from '@/providers/data-providers';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { TagsInput as MantineTagsInput, type TagsInputProps as MantineTagsInputProps } from '@mantine/core';
 
 /* * */

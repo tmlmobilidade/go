@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type PlanNormalized, planValidityStatusOptions, planValidityStatusValues } from '@/types/normalized';
 import { getPlanValidityStatus } from '@/utils/get-plan-validity-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';

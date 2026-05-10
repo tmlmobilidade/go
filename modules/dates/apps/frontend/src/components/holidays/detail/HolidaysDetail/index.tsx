@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { DatesSelector } from '@/components/holidays/detail/HolidaysDatesSelector';
 import { useHolidaysDetailContext } from '@/components/holidays/detail/HolidaysDetail.context';
 import { HolidaysDetailHeader } from '@/components/holidays/detail/HolidaysDetailHeader';

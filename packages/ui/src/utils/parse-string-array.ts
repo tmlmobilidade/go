@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { createParser } from 'nuqs';
 
 /* * */

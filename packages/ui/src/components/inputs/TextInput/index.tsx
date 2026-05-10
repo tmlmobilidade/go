@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Center, TextInput as MantineTextInput, TextInputProps as MantineTextInputProps, Tooltip } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';

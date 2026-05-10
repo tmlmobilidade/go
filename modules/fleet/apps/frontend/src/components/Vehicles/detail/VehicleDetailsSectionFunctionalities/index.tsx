@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useVehiclesDetailContext } from '@/contexts/VehiclesDetail.context';
 import { Checkbox, Collapsible, ErrorDisplay, Grid, LoadingOverlay, Section } from '@tmlmobilidade/ui';
 

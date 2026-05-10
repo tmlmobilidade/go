@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAnnotationCreateContext } from '@/components/annotations/create/AnnotationCreate.context';
 import { closeCreateAnnotationModal } from '@/components/annotations/create/AnnotationCreate.modal';
 import { IconUpload } from '@tabler/icons-react';

@@ -1,11 +1,8 @@
 'use client';
 
-/* * */
-
 import { availableFormats, DEFAULT_LOCALE_CODE, defaultLocale, enabledLocales, getMatchingLocale, LOCALE_STORAGE_KEY } from '@/i18n/config';
-import { useLocalStorage } from '@mantine/hooks';
+import { useLocalStorage, useQueryState } from '@tmlmobilidade/ui';
 import { NextIntlClientProvider } from 'next-intl';
-import { useQueryState } from 'nuqs';
 import { createContext, useContext, useEffect, useMemo } from 'react';
 
 /* * */

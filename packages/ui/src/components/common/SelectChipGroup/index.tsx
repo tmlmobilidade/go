@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Chip, Group } from '@mantine/core';
 import React from 'react';
 

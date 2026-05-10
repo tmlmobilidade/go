@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconMoon, IconSun, IconSunset } from '@tabler/icons-react';
 import { groupTimesByDayPeriod } from '@tmlmobilidade/dates';
 import { DAY_PERIOD_LABELS, DayPeriod, HHMM } from '@tmlmobilidade/types';
@@ -55,11 +53,11 @@ export function DayPeriodsTimepoints({ children, onRemove, timepoints = [], vari
 		return (
 			<Section gap="md" padding="none">
 				{DAY_PERIODS.map(period => (
-					<Section key={period.key} gap="sm" padding="none">
+					<Section key={period.key} alignItems="flex-start" gap="sm" padding="none">
 						<Text c="var(--color-system-text-200)" className={styles.longTitle} size="xs">
 							{period.icon} {period.title}
 						</Text>
-						<Section flexDirection="row" flexWrap="wrap" gap="sm" padding="none">
+						<Section flexDirection="row" flexWrap="wrap" gap="xs" padding="none">
 							{groupedTimePoints[period.key].length === 0 && (
 								<Text c="var(--color-system-text-300)" size="xs">
 									Sem horários
@@ -80,11 +78,11 @@ export function DayPeriodsTimepoints({ children, onRemove, timepoints = [], vari
 	return (
 		<Section gap="xs" padding="none">
 			{DAY_PERIODS.filter(p => groupedTimePoints[p.key].length > 0).map(period => (
-				<Section key={period.key} alignItems="center" flexDirection="row" gap="xs" padding="none">
+				<Section key={period.key} alignItems="flex-start" flexDirection="row" gap="xs" padding="none">
 					<Text className={styles.compactTitle} size="xs">
 						{period.icon} {period.key}
 					</Text>
-					<Section flexDirection="row" flexWrap="wrap" gap="sm" padding="none">
+					<Section flexDirection="row" flexWrap="wrap" gap="xs" padding="none">
 						{groupedTimePoints[period.key].map(time => (
 							<React.Fragment key={time}>
 								{children ? children(time) : <TimeChip key={time} onRemove={onRemove ? () => onRemove?.(time) : undefined} time={time} />}

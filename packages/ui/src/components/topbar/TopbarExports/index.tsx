@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconCloudDown, IconCloudMinus } from '@tabler/icons-react';
 
 import { useExportsContext } from '../../../contexts/exports.context';
@@ -25,7 +23,7 @@ export function TopbarExports() {
 	// B. Render components
 
 	return (
-		<TopbarMenu counter={fileExports.length} icon={IconCloudDown} label="Exportações">
+		<TopbarMenu counter={fileExports.length} icon={IconCloudDown} label="Exportações" variant="danger">
 			{fileExports.length === 0
 				? <TopbarMenuNoContent icon={IconCloudMinus} text="Sem exportações disponíveis" />
 				: <TopbarMenuList data={fileExports} itemComponent={({ item }) => <TopbarExportsItem fileExport={item} />} title="Exportações" />}

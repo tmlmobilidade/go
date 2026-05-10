@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 

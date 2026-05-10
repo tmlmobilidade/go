@@ -2,7 +2,7 @@
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { alertCauseEffectReferenceTypeMap, type AlertEffect } from '@tmlmobilidade/types';
-import { AlertEffectIcons, Grid, LargeButton, Section } from '@tmlmobilidade/ui';
+import { AlertEffectIcons, Grid, LargeButton, Section, useContextFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -17,10 +17,13 @@ export function AlertCreateStepEffect() {
 
 	const alertCreateContext = useAlertCreateContext();
 
+	const causeValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'cause' });
+	const effectValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'effect' });
+
 	//
 	// B. Transform data
 
-	const preparedOptions = Object.keys(alertCauseEffectReferenceTypeMap[alertCreateContext.data.form.getValues().cause])
+	const preparedOptions = Object.keys(alertCauseEffectReferenceTypeMap[causeValue] ?? {})
 		.map((item: AlertEffect) => ({ icon: AlertEffectIcons[item], label: t(`shared:alerts.effects.${item}.title`) as string, value: item }))
 		.sort((a, b) => a.label.localeCompare(b.label));
 
@@ -28,8 +31,8 @@ export function AlertCreateStepEffect() {
 	// C. Handle actions
 
 	const handleSelectEffect = (value: AlertEffect) => {
-		alertCreateContext.data.form.setFieldValue('effect', value);
-		alertCreateContext.data.multi_step.actions.next();
+		alertCreateContext.form.instance.setValue('effect', value, { shouldDirty: true });
+		alertCreateContext.form.multi_step.actions.next();
 	};
 
 	//
@@ -42,7 +45,7 @@ export function AlertCreateStepEffect() {
 					<LargeButton
 						key={item.value}
 						icon={item.icon}
-						isActive={alertCreateContext.data.form.getValues().effect === item.value}
+						isActive={effectValue === item.value}
 						onClick={() => handleSelectEffect(item.value)}
 						orientation="horizontal"
 						title={item.label}

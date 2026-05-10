@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { FileComponent } from '@/components/common/FileComponent';
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';

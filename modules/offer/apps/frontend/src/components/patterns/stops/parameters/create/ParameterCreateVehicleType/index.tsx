@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Section, Select } from '@tmlmobilidade/ui';
 
 /* * */

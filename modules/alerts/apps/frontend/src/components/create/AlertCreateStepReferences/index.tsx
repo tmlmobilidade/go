@@ -1,12 +1,11 @@
 'use client';
 
-/* * */
-
 import { ReferencesEditor } from '@/components/common/references/ReferencesEditor';
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Alert, PermissionCatalog } from '@tmlmobilidade/types';
-import { useDataAgencies } from '@tmlmobilidade/ui';
+import { type Alert, alertCauseEffectReferenceTypeMap, PermissionCatalog } from '@tmlmobilidade/types';
+import { useContextFormWatch, useDataAgencies } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -23,37 +22,50 @@ export function AlertCreateStepReferences() {
 		scope: PermissionCatalog.all.alerts.scope,
 	});
 
-	//
-	// B. Handle actions
+	const causeValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'cause' });
+	const effectValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'effect' });
+	const activePeriodEndDateValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'active_period_end_date' });
+	const activePeriodStartDateValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'active_period_start_date' });
+	const agencyIdValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'agency_id' });
+	const municipalityIdsValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'municipality_ids' });
+	const referencesValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'references' });
+	const referenceTypeValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'reference_type' });
 
-	const handleChangeAgencyId = (value: Alert['agency_id']) => {
-		alertCreateContext.data.form.setFieldValue('agency_id', value);
-	};
+	//
+	// B. Transform data
+
+	const enabledReferenceTypes = useMemo(() => {
+		const causeMap = alertCauseEffectReferenceTypeMap[causeValue];
+		if (!causeMap) return [];
+		return causeMap[effectValue] ?? [];
+	}, [causeValue, effectValue]);
+
+	//
+	// C. Handle actions
 
 	const handleChangeReferenceType = (value: Alert['reference_type']) => {
-		alertCreateContext.data.form.setFieldValue('reference_type', value);
+		alertCreateContext.form.instance.setValue('reference_type', value, { shouldDirty: true });
 	};
 
-	const handleChangeReferences = (references: Alert['references']) => {
-		alertCreateContext.data.form.setFieldValue('references', references);
+	const handleChangeReferences = (value: Alert['references']) => {
+		alertCreateContext.form.instance.setValue('references', value, { shouldDirty: true });
 	};
 
 	//
-	// C. Render components
+	// D. Render components
 
 	return (
 		<ReferencesEditor
-			activePeriodEndDate={alertCreateContext.data.form.getValues().active_period_end_date}
-			activePeriodStartDate={alertCreateContext.data.form.getValues().active_period_start_date}
+			activePeriodEndDate={activePeriodEndDateValue}
+			activePeriodStartDate={activePeriodStartDateValue}
 			availableAgenciesOptions={agenciesOptions}
-			enabledReferenceTypes={alertCreateContext.data.enabled_reference_types}
-			onChangeAgencyId={handleChangeAgencyId}
+			enabledReferenceTypes={enabledReferenceTypes}
 			onChangeReferences={handleChangeReferences}
 			onChangeReferenceType={handleChangeReferenceType}
-			selectedAgencyId={alertCreateContext.data.form.getValues().agency_id}
-			selectedMunicipalityIds={alertCreateContext.data.form.getValues().municipality_ids}
-			selectedReferences={alertCreateContext.data.form.getValues().references}
-			selectedReferenceType={alertCreateContext.data.form.getValues().reference_type}
+			selectedAgencyId={agencyIdValue}
+			selectedMunicipalityIds={municipalityIdsValue}
+			selectedReferences={referencesValue}
+			selectedReferenceType={referenceTypeValue}
 		/>
 	);
 }

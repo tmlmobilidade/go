@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { AcceptanceStatusTag } from '@/components/common/AcceptanceStatusTag';
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { IconCheck, IconEdit } from '@tabler/icons-react';

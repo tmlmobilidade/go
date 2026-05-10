@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';

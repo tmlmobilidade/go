@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useEventsDetailContext } from '@/components/events/detail/EventsDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';

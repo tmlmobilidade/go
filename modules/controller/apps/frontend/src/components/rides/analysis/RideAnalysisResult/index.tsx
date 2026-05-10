@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { RideAnalysisAnalysisResultItem } from '@/components/rides/analysis/RideAnalysisResultItem';
 import { type Ride, type RideAnalysis } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Label, Section } from '@tmlmobilidade/ui';

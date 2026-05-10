@@ -143,6 +143,7 @@ export const alertCauseEffectReferenceTypeMap = {
 } as const satisfies Record<AlertCause, Partial<Record<AlertEffect, AlertReferenceType[]>>>;
 
 /* * */
+
 type ReferenceTypes<C extends keyof typeof alertCauseEffectReferenceTypeMap, E extends keyof typeof alertCauseEffectReferenceTypeMap[C]> = (typeof alertCauseEffectReferenceTypeMap)[C][E] extends readonly (infer R)[] ? R & string : never;
 
 type CauseEffectUnion<C extends keyof typeof alertCauseEffectReferenceTypeMap> = {

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { closeCreatePatternModal } from '@/components/patterns/create/PatternCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreatePatternDto, CreatePatternSchema, Pattern, Route } from '@tmlmobilidade/types';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { VehiclesListFiltersBar } from '@/components/Vehicles/list/VehiclesListFiltersBar';
 import { VehiclesListHeader } from '@/components/Vehicles/list/VehiclesListHeader';
 import { useVehiclesListContext } from '@/contexts/VehiclesList.context';

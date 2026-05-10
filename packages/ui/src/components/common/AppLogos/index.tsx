@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { WhenMode } from '../../layout/WhenMode';
 
 // CM ICON

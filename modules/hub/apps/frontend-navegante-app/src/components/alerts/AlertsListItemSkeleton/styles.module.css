@@ -1,0 +1,21 @@
+.container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	gap: var(--size-spacing-15);
+	padding: var(--size-spacing-20);
+	background-color: var(--color-system-background-100);
+}
+
+.icon {
+	width: 20px;
+	height: 20px;
+	border-radius: 999px;
+}
+
+.title {
+	width: 100%;
+	max-width: 500px;
+	height: 15px;
+}

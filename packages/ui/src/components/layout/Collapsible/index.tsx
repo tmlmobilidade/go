@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Accordion as MantineAccordion } from '@mantine/core';
 import { type PropsWithChildren, type ReactNode } from 'react';
 

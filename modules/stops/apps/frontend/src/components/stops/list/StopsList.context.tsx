@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { type StopNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { LocationsCoordinateInput } from '@/components/locations/LocationsCoordinateInput';
 import { LocationsFilters } from '@/components/locations/LocationsFilters';
 import { LocationsMapView } from '@/components/locations/LocationsMapView';

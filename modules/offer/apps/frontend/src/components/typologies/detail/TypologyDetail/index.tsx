@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useTypologyDetailContext } from '@/components/typologies/detail/TypologyDetail.context';
 import { TypologyDetailHeader } from '@/components/typologies/detail/TypologyDetailHeader';
 import { TypologyDetailSectionConfig } from '@/components/typologies/detail/TypologyDetailSectionConfig';

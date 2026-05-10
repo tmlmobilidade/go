@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { PeriodCreate } from '@/components/year-periods/create/PeriodCreate';
 import { PeriodCreateContextProvider } from '@/components/year-periods/create/PeriodsCreate.context';
 import { DataProviders } from '@/providers/data-providers';

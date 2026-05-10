@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useEventCreateContext } from '@/components/events/create/EventCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { EventSchema, PermissionCatalog } from '@tmlmobilidade/types';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { GtfsExportModalContextProvider, useGtfsExportModalContext } from '@/contexts/GtfsExport.context';
 import { LinesContextProvider, useLinesContext } from '@/contexts/Lines.context';
 import { IconFileDownload } from '@tabler/icons-react';

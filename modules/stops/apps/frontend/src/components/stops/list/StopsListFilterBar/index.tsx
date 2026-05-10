@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { StopsListFilterConnections } from '@/components/stops/list/StopsListFilterConnections';
 // import { StopsListFilterDistrict } from '@/components/stops/list/StopsListFilterDistrict';
 import { StopsListFilterEquipment } from '@/components/stops/list/StopsListFilterEquipment';

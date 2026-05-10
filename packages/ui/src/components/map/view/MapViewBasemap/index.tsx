@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { FullscreenControl, GeolocateControl, Map, type MapLayerMouseEvent, type MapWheelEvent, NavigationControl, ScaleControl, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 import { type CSSProperties, type PropsWithChildren, useCallback, useMemo } from 'react';
 

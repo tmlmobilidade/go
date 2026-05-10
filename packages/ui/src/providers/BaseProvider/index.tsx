@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { MantineProvider } from '@mantine/core';
 import { DatesProvider, type DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
@@ -38,7 +36,7 @@ export function BaseProvider({ children, i18n, version }: PropsWithChildren<Base
 
 	const swrSettings: SWRConfiguration = {
 		fetcher: swrFetcher,
-		refreshInterval: 60_000, // 1 minute
+		refreshInterval: 600_000, // 10 minutes
 		refreshWhenHidden: true,
 		revalidateIfStale: true,
 		revalidateOnFocus: true,
@@ -49,7 +47,12 @@ export function BaseProvider({ children, i18n, version }: PropsWithChildren<Base
 	// B. Render components
 
 	return (
-		<html data-mode="light" data-theme="ocean" lang="pt">
+		<html
+			data-mode="light"
+			data-scroll-behavior="smooth"
+			data-theme="ocean"
+			lang="pt"
+		>
 			<body>
 				<NuqsAdapter>
 					<VersionContextProvider version={version}>

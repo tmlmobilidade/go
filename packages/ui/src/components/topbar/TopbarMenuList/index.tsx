@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { createElement, useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -15,12 +13,13 @@ interface TopbarMenuListProps<T> {
 	data: T[]
 	itemComponent: React.ComponentType<{ item: T }>
 	maxDisplayedItems?: number
+	maxHeight?: number | string
 	title: string
 }
 
 /* * */
 
-export function TopbarMenuList<T>({ data, itemComponent, maxDisplayedItems, title }: TopbarMenuListProps<T>) {
+export function TopbarMenuList<T>({ data, itemComponent, maxDisplayedItems, maxHeight = 300, title }: TopbarMenuListProps<T>) {
 	//
 
 	//
@@ -38,7 +37,7 @@ export function TopbarMenuList<T>({ data, itemComponent, maxDisplayedItems, titl
 	}
 
 	return (
-		<Section flexDirection="column" gap="sm" maxHeight="300px" overflow="scroll" padding="sm" width="100%">
+		<Section flexDirection="column" gap="sm" maxHeight={maxHeight} overflow="scroll" padding="sm" width="100%">
 			<Label size="sm">({data.length}) {title}</Label>
 			{displayData.map((item, idx) => (
 				createElement(itemComponent, { item, key: idx })

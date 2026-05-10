@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRuleCreateContext } from '@/components/events/rules/RuleCreate.context';
 import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
 import { Section, SegmentedMultiSelect, SelectChipGroup, Text } from '@tmlmobilidade/ui';

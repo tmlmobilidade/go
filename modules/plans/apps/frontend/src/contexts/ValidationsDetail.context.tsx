@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type File, type GtfsValidation, type ProcessingStatus } from '@tmlmobilidade/types';
 import { useToast } from '@tmlmobilidade/ui';

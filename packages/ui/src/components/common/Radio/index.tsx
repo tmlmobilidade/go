@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Radio as MantineRadio, type RadioGroupProps as MantineRadioGroupProps, type RadioProps as MantineRadioProps } from '@mantine/core';
 
 /* * */

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';

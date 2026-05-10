@@ -21,7 +21,18 @@
 	padding: 0 var(--size-spacing-xs);
 	font-size: var(--font-size-xs);
 	color: var(--color-contrast);
-	background-color: var(--color-status-danger-primary);
 	border-radius: 14px;
 	box-shadow: 0 1px 3px 0 var(--color-shadow);
+}
+
+.counter.primary {
+	background-color: var(--color-primary);
+}
+
+.counter.danger {
+	background-color: var(--color-status-danger-primary);
+}
+
+.counter.neutral {
+	background-color: var(--color-system-text-200);
 }

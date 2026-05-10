@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRoleDetailContext } from '@/components/roles/detail/RoleDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';

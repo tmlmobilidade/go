@@ -3,7 +3,7 @@
 import { CommentSchema } from '@/_common/comment.js';
 import { DocumentSchema } from '@/_common/document.js';
 import { AvailabilityStatusSchema, ConditionStatusSchema, LifecycleStatusSchema } from '@/_common/status.js';
-import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { StopConnectionSchema } from '@/stops/connections.js';
 import { StopEquipmentSchema } from '@/stops/equipment.js';
 import { StopFacilitySchema } from '@/stops/facilities.js';
@@ -56,7 +56,7 @@ export const StopSchema = DocumentSchema.extend({
 
 	shelter_code: z.string().nullable().default(null),
 	shelter_frame_size: z.tuple([z.number(), z.number()]).nullable().default(null),
-	shelter_installation_date: UnixTimeStampSchema.nullable().default(null),
+	shelter_installation_date: UnixTimestampSchema.nullable().default(null),
 	shelter_maintainer: z.string().nullable().default(null),
 	shelter_make: z.string().nullable().default(null),
 	shelter_model: z.string().nullable().default(null),
@@ -65,10 +65,10 @@ export const StopSchema = DocumentSchema.extend({
 	//
 	// Checks
 
-	last_infrastructure_check: UnixTimeStampSchema.nullable().default(null),
-	last_infrastructure_maintenance: UnixTimeStampSchema.nullable().default(null),
-	last_schedules_check: UnixTimeStampSchema.nullable().default(null),
-	last_schedules_maintenance: UnixTimeStampSchema.nullable().default(null),
+	last_infrastructure_check: UnixTimestampSchema.nullable().default(null),
+	last_infrastructure_maintenance: UnixTimestampSchema.nullable().default(null),
+	last_schedules_check: UnixTimestampSchema.nullable().default(null),
+	last_schedules_maintenance: UnixTimestampSchema.nullable().default(null),
 
 	//
 	// Facilities
@@ -101,9 +101,20 @@ export const StopSchema = DocumentSchema.extend({
 	comments: z.array(CommentSchema).default([]),
 	observations: z.string().nullable().default(null),
 
+	//
+	// This field is not sent by the backend, but is useful to have in the frontend for easier access to the associated patterns of an event
+
+	associated_patterns: z.array(z.object({
+		_id: z.string(),
+		code: z.string(),
+		headsign: z.string(),
+		line_id: z.string(),
+		route_id: z.string(),
+	})).default([]),
+
 });
 
-export const CreateStopSchema = StopSchema.omit({ _id: true, created_at: true, updated_at: true });
+export const CreateStopSchema = StopSchema.omit({ _id: true, associated_patterns: true, created_at: true, updated_at: true });
 export const UpdateStopSchema = CreateStopSchema.omit({ created_by: true }).partial();
 
 export type Stop = z.infer<typeof StopSchema>;

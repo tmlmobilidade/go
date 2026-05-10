@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { DateTimePicker as MantineDateTimePicker } from '@mantine/dates';
 import { IconCalendar } from '@tabler/icons-react';
 import { Dates } from '@tmlmobilidade/dates';

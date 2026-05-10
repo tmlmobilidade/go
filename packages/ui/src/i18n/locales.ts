@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 export const DEFAULT_LOCALE_CODE = 'pt';
 
 /* * */

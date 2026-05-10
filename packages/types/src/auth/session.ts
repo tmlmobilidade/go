@@ -1,7 +1,7 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
 /* * */
@@ -9,7 +9,7 @@ import { z } from 'zod';
 export const SessionSchema = DocumentSchema
 	.omit({ is_locked: true })
 	.extend({
-		expires_at: UnixTimeStampSchema,
+		expires_at: UnixTimestampSchema,
 		token: z.string(),
 		user_id: z.string(),
 	});

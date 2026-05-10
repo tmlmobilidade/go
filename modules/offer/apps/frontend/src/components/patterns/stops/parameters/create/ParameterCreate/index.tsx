@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { ParameterCreateBasicInfo } from '@/components/patterns/stops/parameters/create/ParameterCreateBasicInfo';
 import { ParameterCreateFooter } from '@/components/patterns/stops/parameters/create/ParameterCreateFooter';
 import { ParameterCreateHeader } from '@/components/patterns/stops/parameters/create/ParameterCreateHeader';

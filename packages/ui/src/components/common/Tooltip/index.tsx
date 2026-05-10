@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Tooltip as MantineTooltip, TooltipProps as MantineTooltipProps } from '@mantine/core';
 
 /* * */

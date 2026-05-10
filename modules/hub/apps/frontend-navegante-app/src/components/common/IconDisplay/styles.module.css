@@ -1,0 +1,10 @@
+/* * */
+
+/* CONTAINER */
+
+.container {
+	display: flex;
+	width: 32px;
+	aspect-ratio: 1;
+	overflow: hidden;
+}

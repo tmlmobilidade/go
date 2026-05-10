@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { VehicleCreateContext } from '@/components/Vehicles/create/VehicleCreate.context';
 import { closeCreateVehicleModal } from '@/components/Vehicles/create/VehicleCreate.modal';
 import { IconUpload } from '@tabler/icons-react';

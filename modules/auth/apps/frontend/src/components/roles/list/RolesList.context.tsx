@@ -1,25 +1,19 @@
 'use client';
 
-/* * */
-
 import { useRolesContext } from '@/contexts/Roles.context';
 import { type RoleNormalized } from '@/types/normalized';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { useSearch } from '@tmlmobilidade/ui';
-import { useQueryState } from 'nuqs';
+import { useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
 
 interface RolesListContextState {
-	actions: {
-		setFilterSearch: (values: string) => void
-	}
 	data: {
 		filtered: RoleNormalized[]
 	}
 	filters: {
-		search: string
+		search: UseFilterStateStringReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -41,7 +35,7 @@ export const useRolesListContext = () => {
 
 /* * */
 
-export const RolesListContextProvider = ({ children }: PropsWithChildren) => {
+export function RolesListContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
@@ -49,7 +43,7 @@ export const RolesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const rolesContext = useRolesContext();
 
-	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
+	const filterSearch = useFilterStateString('search');
 
 	//
 	// B. Transform data
@@ -67,16 +61,13 @@ export const RolesListContextProvider = ({ children }: PropsWithChildren) => {
 	const searchResultsData = useSearch<RoleNormalized>({
 		accessors: ['name_normalized'],
 		data: normalizedRolesData,
-		query: filterSearch,
+		query: filterSearch.value,
 	});
 
 	//
 	// C. Define context value
 
-	const contextValue: RolesListContextState = useMemo(() => ({
-		actions: {
-			setFilterSearch,
-		},
+	const contextValue: RolesListContextState = {
 		data: {
 			filtered: searchResultsData,
 		},
@@ -87,12 +78,7 @@ export const RolesListContextProvider = ({ children }: PropsWithChildren) => {
 			error: rolesContext.flags.error,
 			loading: rolesContext.flags.loading,
 		},
-	}), [
-		rolesContext.flags.error,
-		rolesContext.flags.loading,
-		searchResultsData,
-		filterSearch,
-	]);
+	};
 
 	//
 	// D. Render components

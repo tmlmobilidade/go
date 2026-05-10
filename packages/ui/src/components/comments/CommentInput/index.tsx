@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconSend } from '@tabler/icons-react';
 import { useCallback, useState } from 'react';
 

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { DatesSelector } from '@/components/annotations/detail/AnnotationsDatesSelector';
 import { useAnnotationsDetailContext } from '@/components/annotations/detail/AnnotationsDetail.context';
 import { AnnotationsDetailHeader } from '@/components/annotations/detail/AnnotationsDetailHeader';

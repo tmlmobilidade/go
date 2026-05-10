@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { IconEqual, IconEqualNot } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';

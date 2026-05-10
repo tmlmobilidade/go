@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { LiveIcon } from '@/components/layout/LiveIcon';
 import { TrendChip } from '@/components/layout/TrendChip';
 import { Divider, Skeleton } from '@tmlmobilidade/ui';
