@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS eta.curr_waypoints
     stop_lon Float64,
     stop_name String,
     stop_sequence UInt16,
-    timepoint UInt8,
+    timepoint UInt8
 )
 ENGINE = ReplacingMergeTree()
 ORDER BY (hashed_trip_id, stop_sequence, stop_id);
