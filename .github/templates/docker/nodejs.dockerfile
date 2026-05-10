@@ -51,6 +51,12 @@ RUN npm ci
 
 COPY --from=pruner /app/out/full/ .
 
+# Turbo prune may omit modules/eta/sql; merge from build context when present.
+RUN --mount=type=bind,source=.,target=/ctx \
+    if [ -d "/ctx/modules/eta/sql" ]; then \
+      mkdir -p /app/modules/eta && cp -a /ctx/modules/eta/sql /app/modules/eta/; \
+    fi
+
 RUN npx @tmlmobilidade/repo-version --output=/app/modules/${MODULE}/apps/${APP}/package.json
 
 RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
