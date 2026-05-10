@@ -19,7 +19,7 @@ export function buildRidesQuery(): Filter<Ride> {
 }
 
 export async function fetchCurrentWindowRides(ridesQuery: Filter<Ride>) {
-	Logger.progress(`Getting current window rides for date range: ${Dates.now('Europe/Lisbon').minus({ hours: 1 }).iso} → ${Dates.now('Europe/Lisbon').plus({ hours: 2 }).iso}`);
+	Logger.progress(`Getting current window rides for date range: ${Dates.now('Europe/Lisbon').minus({ hours: 1 }).iso} → ${Dates.now('Europe/Lisbon').plus({ hours: 1 }).iso}`);
 
 	const currentWindowRides = await rides.aggregate([
 		{ $match: {
