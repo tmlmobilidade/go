@@ -167,8 +167,9 @@ export function StopDetailCoordinatesMap({ setDraftCoords }: { setDraftCoords: (
 				height={400}
 				id="stop-detail-coordinates-map"
 				onClick={handleMapClick}
-				toolbar={false}
+				searchPinFocusOnChange={false}
 				showSearchPin
+				toolbar={false}
 			>
 				<StopDetailCoordinatesMapTightFit
 					centerLat={savedStopAnchor?.latitude ?? null}

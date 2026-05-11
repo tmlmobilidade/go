@@ -43,13 +43,18 @@ export interface MapViewBasemapProps {
 	onMouseOut?: (e: MapLayerMouseEvent) => void
 	onMouseOver?: (e: MapLayerMouseEvent) => void
 	onWheel?: (e: MapWheelEvent) => void
+	/**
+	 * When true (default), pans/zooms the map when search-pin coordinates change.
+	 * Disable for click-to-place flows so selecting a point does not trigger a camera animation.
+	 */
+	searchPinFocusOnChange?: boolean
 	/** When false, hides the coordinate search pin from global map context (e.g. focused single-stop maps). */
 	showSearchPin?: boolean
 }
 
 /* * */
 
-export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [], layers = DEFAULT_LAYERS, onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onWheel, showSearchPin = true }: PropsWithChildren<MapViewBasemapProps>) {
+export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [], layers = DEFAULT_LAYERS, onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onWheel, searchPinFocusOnChange = true, showSearchPin = true }: PropsWithChildren<MapViewBasemapProps>) {
 	//
 
 	//
@@ -135,9 +140,9 @@ export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [],
 			{layers.scale && <ScaleControl />}
 			{showSearchPin && (
 				<MapOverlayPins
+					focusOnChange={searchPinFocusOnChange}
 					id="pins"
 					pinsData={mapContext.data.search_pin}
-					focusOnChange
 				/>
 			)}
 			<div className={styles.children}>

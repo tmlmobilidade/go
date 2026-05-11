@@ -36,6 +36,7 @@ function StopDetailCoordinatesModalBody() {
 
 	useEffect(() => {
 		if (!open) return;
+		mapContext.actions.toggleStyle('map');
 		const vals = form.getValues();
 		const latN = typeof vals.latitude === 'number' ? vals.latitude : Number(vals.latitude);
 		const lngN = typeof vals.longitude === 'number' ? vals.longitude : Number(vals.longitude);
