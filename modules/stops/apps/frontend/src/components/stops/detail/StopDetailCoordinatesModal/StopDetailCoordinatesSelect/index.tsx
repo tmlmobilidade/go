@@ -1,10 +1,9 @@
 'use client';
 
+/* * */
+
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
-import {
-	COORDINATES_PIN_DEBOUNCE_MS,
-	coordinatesToSearchQuery,
-} from '@/components/stops/detail/StopDetailCoordinatesModal/coordinates-query';
+import { COORDINATES_PIN_DEBOUNCE_MS, coordinatesToSearchQuery } from '@/components/stops/detail/StopDetailCoordinatesModal/coordinates-query';
 import { closeStopDetailCoordinatesModal } from '@/contexts/StopDetailCoordinates.modal';
 import { Button, CoordinatesInput, Divider, Grid, Section, useMapContext } from '@tmlmobilidade/ui';
 import { useEffect, useRef } from 'react';
