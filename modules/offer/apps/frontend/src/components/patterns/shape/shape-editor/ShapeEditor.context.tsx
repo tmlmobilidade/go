@@ -185,9 +185,12 @@ function buildRoutePreviewPoints(path: PopulatedPath[], anchors: ShapeAnchor[]):
 
 export function StopsEditorContextProvider({ children, onClose }: PropsWithChildren<{ onClose: () => void }>) {
 	const patternDetailContext = usePatternDetailContext();
-
 	const [routeData, setRouteData] = useState<null | RoutePreviewResponse>(null);
 	const [isLoadingRoute, setIsLoadingRoute] = useState(false);
+
+	// Stable ref so pushToHistory can sync parameters without stale closures
+	const formRef = useRef(patternDetailContext.data.form);
+	formRef.current = patternDetailContext.data.form;
 
 	// Local intermediate state — only written back to the pattern form on submit
 	const [initialPath] = useState<PopulatedPath[]>(() =>
@@ -221,6 +224,26 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 		setLocalPath(newPath);
 		setLocalShape(newShape);
 		setHistoryMeta({ index: historyIndexRef.current, length: newStack.length });
+
+		// Eagerly sync parameters whenever the path changes.
+		// Match by path item _id so circular lines with duplicate stop_ids are handled correctly.
+		const form = formRef.current;
+		const currentParameters = form.getValues().parameters ?? [];
+		// Use the history entry we just replaced as the "previous path" — the form's path
+		// is only written on submit and would be stale for repeated edits.
+		const previousPath = newStack[newStack.length - 2]?.path ?? [];
+		const updatedParameters = currentParameters.map((parameter) => {
+			const paramByPathId = new Map(
+				parameter.path.map((p, i) => [previousPath[i]?._id, p] as const),
+			);
+			return {
+				...parameter,
+				path: newPath.map(pathItem => (
+					paramByPathId.get(pathItem._id) ?? { avg_speed: 0, dwell_time: 30, stop_id: pathItem.stop_id }
+				)),
+			};
+		});
+		form.setFieldValue('parameters', updatedParameters);
 	}, []);
 
 	const path = localPath;
@@ -447,27 +470,6 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 	const submit = useCallback(() => {
 		patternDetailContext.data.form.setFieldValue('path', localPath);
 		patternDetailContext.data.form.setFieldValue('shape', localShape);
-
-		// Sync each parameter's path to match the new stop sequence.
-		// Match by _id (path item identity) so circular lines with duplicate stop_ids are handled correctly.
-		const currentParameters = patternDetailContext.data.form.getValues().parameters ?? [];
-		const updatedParameters = currentParameters.map((parameter) => {
-			const paramByPathId = new Map(
-				parameter.path.map((p, i) => {
-					const pathId = (patternDetailContext.data.form.getValues().path ?? [])[i]?._id;
-					return [pathId, p] as const;
-				}),
-			);
-			return {
-				...parameter,
-				path: localPath.map((pathItem) => {
-					const existing = paramByPathId.get(pathItem._id);
-					return existing ?? { avg_speed: 0, dwell_time: 30, stop_id: pathItem.stop_id };
-				}),
-			};
-		});
-		patternDetailContext.data.form.setFieldValue('parameters', updatedParameters);
-
 		onClose();
 	}, [localPath, localShape, onClose, patternDetailContext.data.form]);
 
