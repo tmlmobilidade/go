@@ -1,14 +1,14 @@
 /* * */
 
-import type { Stop as GtfsStopsExtended } from '@tmlmobilidade/go-navegante-shared-types';
+import type { Stop as GtfsStopsExtended } from '@tmlmobilidade/go-hub-pckg-types';
 
 import { getGtfsSqliteContext } from '@/modules/gtfsSqlite.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { SERVERDB } from '@tmlmobilidade/go-navegante-shared-services/SERVERDB';
-import { SERVERDB_KEYS } from '@tmlmobilidade/go-navegante-shared-settings';
-import { NetworkStop, StopOperationalStatus } from '@tmlmobilidade/go-navegante-shared-types';
-import { sortCollator } from '@tmlmobilidade/go-navegante-shared-utils';
+import { SERVERDB } from '@tmlmobilidade/go-hub-pckg-services/SERVERDB';
+import { SERVERDB_KEYS } from '@tmlmobilidade/go-hub-pckg-settings';
+import { NetworkStop, StopOperationalStatus } from '@tmlmobilidade/go-hub-pckg-types';
+import { sortCollator } from '@tmlmobilidade/go-hub-pckg-utils';
 
 /* * */
 

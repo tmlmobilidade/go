@@ -4,11 +4,11 @@ import { getGtfsSqliteContext } from '@/modules/gtfsSqlite.js';
 import tts from '@carrismetropolitana/tts';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { SERVERDB } from '@tmlmobilidade/go-navegante-shared-services/SERVERDB';
-import { SERVERDB_KEYS } from '@tmlmobilidade/go-navegante-shared-settings';
-import { NetworkPattern } from '@tmlmobilidade/go-navegante-shared-types';
-import { Alight, type Arrival, type CalendarDate, type Route as GtfsRoute, type StopTime as GtfsStopTime, type Trip as GtfsTrip, type Line, type NetworkRoute, type NetworkStop, type NetworkTrip, type Waypoint } from '@tmlmobilidade/go-navegante-shared-types';
-import { sortCollator } from '@tmlmobilidade/go-navegante-shared-utils';
+import { SERVERDB } from '@tmlmobilidade/go-hub-pckg-services/SERVERDB';
+import { SERVERDB_KEYS } from '@tmlmobilidade/go-hub-pckg-settings';
+import { type Arrival, type CalendarDate, type Route as GtfsRoute, type StopTime as GtfsStopTime, type Trip as GtfsTrip, type Line, type NetworkPattern, type NetworkRoute, type NetworkStop, type NetworkTrip, type Waypoint } from '@tmlmobilidade/go-hub-pckg-types';
+import { sortCollator } from '@tmlmobilidade/go-hub-pckg-utils';
+import { Alight } from 'gtfs-types';
 import crypto from 'node:crypto';
 /* * */
 
@@ -71,8 +71,7 @@ export const syncLinesRoutesPatterns = async () => {
 	allCalendarDatesRaw.forEach((item) => {
 		if (allCalendarDatesRawMap.has(item.service_id)) {
 			allCalendarDatesRawMap.get(item.service_id).push(item.date);
-		}
-		else {
+		} else {
 			allCalendarDatesRawMap.set(item.service_id, [item.date]);
 		}
 	});
@@ -255,8 +254,7 @@ export const syncLinesRoutesPatterns = async () => {
 
 			if (parsedPatternsForThisPatternGroup.has(currentPatternVersionHash)) {
 				currentPatternObject = parsedPatternsForThisPatternGroup.get(currentPatternVersionHash);
-			}
-			else {
+			} else {
 				currentPatternObject =	{
 					agency_id: routeRawData.agency_id,
 					color: routeRawData.route_color ? `#${routeRawData.route_color}` : '#000000',
@@ -324,8 +322,7 @@ export const syncLinesRoutesPatterns = async () => {
 
 			if (allTripGroupsForThisPattern.has(currentTripGroupHash)) {
 				currentTripGroupObject = allTripGroupsForThisPattern.get(currentTripGroupHash);
-			}
-			else {
+			} else {
 				currentTripGroupObject = {
 					schedule: stopTimesAsCompleteSchedule,
 					service_ids: [],
@@ -354,8 +351,7 @@ export const syncLinesRoutesPatterns = async () => {
 
 			if (allRoutesParsed.has(tripRawData.route_id)) {
 				currentRouteObject = allRoutesParsed.get(tripRawData.route_id);
-			}
-			else {
+			} else {
 				currentRouteObject = {
 					agency_id: routeRawData.agency_id,
 					color: routeRawData.route_color ? `#${routeRawData.route_color}` : '#000000',
@@ -394,8 +390,7 @@ export const syncLinesRoutesPatterns = async () => {
 
 			if (allLinesParsed.has(routeRawData.line_id)) {
 				currentLineObject = allLinesParsed.get(routeRawData.line_id);
-			}
-			else {
+			} else {
 				currentLineObject = {
 					agency_id: routeRawData.agency_id,
 					color: routeRawData.route_color ? `#${routeRawData.route_color}` : '#000000',

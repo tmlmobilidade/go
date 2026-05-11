@@ -55,7 +55,7 @@ const nextConfig: NextConfig = {
 		return [
 			{
 				basePath: false,
-				destination: '/exporter',
+				destination: '/hub',
 				permanent: true,
 				source: '/',
 			},

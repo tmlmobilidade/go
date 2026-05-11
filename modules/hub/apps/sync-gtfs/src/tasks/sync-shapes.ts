@@ -1,15 +1,18 @@
 /* * */
 
-import type { Shape as GtfsShapesExtended } from '@tmlmobilidade/go-navegante-shared-types';
-import type { NetworkShape, ShapePoint } from '@tmlmobilidade/go-navegante-shared-types';
+import type { NetworkShape, Shape, ShapePoint } from '@tmlmobilidade/go-hub-pckg-types';
 
 import { getGtfsSqliteContext } from '@/modules/gtfsSqlite.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { SERVERDB } from '@tmlmobilidade/go-navegante-shared-services/SERVERDB';
-import { SERVERDB_KEYS } from '@tmlmobilidade/go-navegante-shared-settings';
-import { sortCollator } from '@tmlmobilidade/go-navegante-shared-utils';
+import { SERVERDB } from '@tmlmobilidade/go-hub-pckg-services/SERVERDB';
+import { SERVERDB_KEYS } from '@tmlmobilidade/go-hub-pckg-settings';
+import { sortCollator } from '@tmlmobilidade/go-hub-pckg-utils';
 import * as turf from '@turf/turf';
+
+/* * */
+
+type GtfsShapesExtended = Shape;
 
 /* * */
 
@@ -49,8 +52,7 @@ export const syncShapes = async () => {
 
 		if (allShapesData.has(shapeIdKey)) {
 			shapeData = allShapesData.get(shapeIdKey);
-		}
-		else {
+		} else {
 			shapeData = {
 				extension: 0,
 				geojson: null,
