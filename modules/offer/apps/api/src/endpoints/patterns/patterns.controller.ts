@@ -65,9 +65,18 @@ export class PatternsController {
 		}
 
 		//
-		// Create the new pattern
+		// Create the new pattern, always seeding an empty default parameters entry
 
-		const newPattern = await patterns.insertOne(request.body);
+		const defaultParameter: StopsParameter = {
+			_id: generateRandomString({ length: 5 }),
+			kind: 'default',
+			path: [],
+		};
+
+		const newPattern = await patterns.insertOne({
+			...request.body,
+			parameters: [defaultParameter],
+		});
 
 		//
 		// Send the response

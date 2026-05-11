@@ -447,6 +447,27 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 	const submit = useCallback(() => {
 		patternDetailContext.data.form.setFieldValue('path', localPath);
 		patternDetailContext.data.form.setFieldValue('shape', localShape);
+
+		// Sync each parameter's path to match the new stop sequence.
+		// Match by _id (path item identity) so circular lines with duplicate stop_ids are handled correctly.
+		const currentParameters = patternDetailContext.data.form.getValues().parameters ?? [];
+		const updatedParameters = currentParameters.map((parameter) => {
+			const paramByPathId = new Map(
+				parameter.path.map((p, i) => {
+					const pathId = (patternDetailContext.data.form.getValues().path ?? [])[i]?._id;
+					return [pathId, p] as const;
+				}),
+			);
+			return {
+				...parameter,
+				path: localPath.map((pathItem) => {
+					const existing = paramByPathId.get(pathItem._id);
+					return existing ?? { avg_speed: 0, dwell_time: 30, stop_id: pathItem.stop_id };
+				}),
+			};
+		});
+		patternDetailContext.data.form.setFieldValue('parameters', updatedParameters);
+
 		onClose();
 	}, [localPath, localShape, onClose, patternDetailContext.data.form]);
 
