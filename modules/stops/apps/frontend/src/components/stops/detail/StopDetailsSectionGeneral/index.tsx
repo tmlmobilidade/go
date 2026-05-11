@@ -1,7 +1,7 @@
 'use client';
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
-import { openCreateStopModal } from '@/contexts/StopDetailCoordinates.modal';
+import { openStopDetailCoordinatesModal } from '@/contexts/StopDetailCoordinates.modal';
 import { Translations } from '@/lib/translations';
 import { LifecycleStatusSchema } from '@tmlmobilidade/types';
 import { Button, Collapsible, Grid, ProposedChangesWrapper, Section, SegmentedControl, TextInput, ValueDisplay } from '@tmlmobilidade/ui';
@@ -51,7 +51,7 @@ export function StopDetailsSectionGeneral() {
 					<ValueDisplay label="Latitude" value={stopDetailContext.data.stop?.latitude ?? 'N/A'} variant="bordered" />
 					<ValueDisplay label="Longitude" value={stopDetailContext.data.stop?.longitude ?? 'N/A'} variant="bordered" />
 				</Grid>
-				<Button label="Editar Coordenadas" onClick={() => openCreateStopModal()} style={{ alignSelf: 'flex-end', marginTop: '10px', width: '250px' }} variant="secondary" />
+				<Button label="Editar Coordenadas" onClick={() => openStopDetailCoordinatesModal(String(stopDetailContext.data.stop?._id))} style={{ alignSelf: 'flex-end', marginTop: '10px', width: '250px' }} variant="secondary" />
 			</Section>
 
 			<Section>

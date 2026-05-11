@@ -1,18 +1,24 @@
 'use client';
 
+import { StopDetailContextProvider } from '@/components/stops/detail/StopDetail.context';
+import { StopDetailCoordinatesModal } from '@/components/stops/detail/StopDetailCoordinatesModal';
 import { DataProviders } from '@/providers/data-providers';
 import { closeModal, openModal } from '@tmlmobilidade/ui';
 
 /* * */
 
-const MODAL_ID = 'create-stop-modal';
+const MODAL_ID = 'stop-detail-coordinates-modal';
 
 /* * */
 
-export const openCreateStopModal = () => {
+export const openStopDetailCoordinatesModal = (stopId: string) => {
 	openModal({
 		children: (
-			<DataProviders />
+			<DataProviders>
+				<StopDetailContextProvider stopId={stopId}>
+					<StopDetailCoordinatesModal />
+				</StopDetailContextProvider>
+			</DataProviders>
 		),
 		closeOnClickOutside: false,
 		closeOnEscape: false,
@@ -25,6 +31,6 @@ export const openCreateStopModal = () => {
 
 /* * */
 
-export const closeCreateStopModal = () => {
+export const closeStopDetailCoordinatesModal = () => {
 	closeModal(MODAL_ID);
 };

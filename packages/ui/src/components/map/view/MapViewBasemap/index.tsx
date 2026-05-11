@@ -43,11 +43,13 @@ export interface MapViewBasemapProps {
 	onMouseOut?: (e: MapLayerMouseEvent) => void
 	onMouseOver?: (e: MapLayerMouseEvent) => void
 	onWheel?: (e: MapWheelEvent) => void
+	/** When false, hides the coordinate search pin from global map context (e.g. focused single-stop maps). */
+	showSearchPin?: boolean
 }
 
 /* * */
 
-export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [], layers = DEFAULT_LAYERS, onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onWheel }: PropsWithChildren<MapViewBasemapProps>) {
+export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [], layers = DEFAULT_LAYERS, onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onWheel, showSearchPin = true }: PropsWithChildren<MapViewBasemapProps>) {
 	//
 
 	//
@@ -131,11 +133,13 @@ export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [],
 			{layers.fullscreen && <FullscreenControl />}
 			{layers.geolocate && <GeolocateControl />}
 			{layers.scale && <ScaleControl />}
-			<MapOverlayPins
-				id="pins"
-				pinsData={mapContext.data.search_pin}
-				focusOnChange
-			/>
+			{showSearchPin && (
+				<MapOverlayPins
+					id="pins"
+					pinsData={mapContext.data.search_pin}
+					focusOnChange
+				/>
+			)}
 			<div className={styles.children}>
 				<MapViewAttribution />
 				{children}
