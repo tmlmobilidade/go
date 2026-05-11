@@ -1,14 +1,30 @@
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const moduleDir = path.dirname(fileURLToPath(import.meta.url));
 
 /**
- * Resolves to `modules/eta/sql/`, regardless of whether this file runs from
- * `src/lib/` (dev via tsx) or `dist/lib/` (compiled). One level deeper than
- * `src/index.ts`, so one extra `..` vs the old resolution from `src/`.
+ * Resolves to `modules/eta/sql/`.
+ *
+ * - Dev / monorepo build: this file lives under `.../apps/loader/{src|dist}/lib/`, so four
+ *   `..` segments reach `modules/eta/`, then `sql/`.
+ * - Docker runner (`nodejs.dockerfile`): only `dist/` is copied to `/app/dist/`, so four `..`
+ *   from `/app/dist/lib` escape to `/sql` (wrong). There, SQL is under `/app/modules/eta/sql`.
  */
-const SQL_ROOT = path.resolve(moduleDir, '..', '..', '..', '..', 'sql');
+function resolveSqlRoot(): string {
+	const fromModuleTree = path.resolve(moduleDir, '..', '..', '..', '..', 'sql');
+	if (existsSync(fromModuleTree)) {
+		return fromModuleTree;
+	}
+	const fromAppWorkdir = path.resolve(process.cwd(), 'modules', 'eta', 'sql');
+	if (existsSync(fromAppWorkdir)) {
+		return fromAppWorkdir;
+	}
+	return fromModuleTree;
+}
+
+const SQL_ROOT = resolveSqlRoot();
 
 /**
  * Returns the absolute path to a pipeline `.sql` file shipped with the eta
