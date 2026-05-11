@@ -1,38 +1,28 @@
 'use client';
-/* * */
 
 import { HomePageFilterbarAgencies } from '@/components/home/HomePageFilterbarAgencies';
 import { HomePageFilterbarTransports } from '@/components/home/HomePageFilterbarTransports';
 import { Grid } from '@/components/layout/Grid';
-import { Modal } from '@mantine/core';
-import { useTranslations } from 'next-intl';
+import { Section } from '@/components/layout/Section';
+import { Surface } from '@/components/layout/Surface';
 
 /* * */
 
-interface HomePageFilterProps {
-	close: () => void
-	opened: boolean
-}
-/* * */
-
-export function HomePageFilterbar({ close, opened }: HomePageFilterProps) {
+export function HomePageFilterbar() {
 	//
 
 	//
-	// A. Setup variables
-
-	const t = useTranslations('home.HomePageFilterbar');
-
-	//
-	// B. Render Components
+	// A. Render Components
 
 	return (
-		<Modal onClose={close} opened={opened} size="lg" title={t('modal.title')}>
-			<Grid columns="a" withGap>
-				<HomePageFilterbarTransports />
-				<HomePageFilterbarAgencies />
-			</Grid>
-		</Modal>
+		<Surface>
+			<Section withPadding>
+				<Grid columns="ab">
+					<HomePageFilterbarTransports />
+					<HomePageFilterbarAgencies />
+				</Grid>
+			</Section>
+		</Surface>
 	);
 
 	//

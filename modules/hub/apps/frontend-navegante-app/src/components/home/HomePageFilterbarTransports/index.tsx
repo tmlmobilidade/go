@@ -1,20 +1,39 @@
 'use client';
 
-import Button from '@/components/common/Button';
+import TextPopover from '@/components/common/TextPopover';
 import { TransportOption, useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
 import { Group } from '@mantine/core';
+import { IconBuildingTunnel, IconBus, IconFerry, IconTrain } from '@tabler/icons-react';
+
+import styles from './styles.module.css';
 
 /* * */
 
 export function HomePageFilterbarTransports() {
+	//
+
+	//
+	// A. Setup variables
+
 	const { actions, filterbar } = useGlobalSettingsContext();
 
-	const transportOptions: { label: string, value: TransportOption }[] = [
-		{ label: 'Autocarro', value: 'bus' },
-		{ label: 'Metro', value: 'metro' },
-		{ label: 'Comboio', value: 'train' },
-		{ label: 'Barco', value: 'boat' },
+	//
+	// B. Transform data
+
+	const transportOptions: { icon: React.ReactNode, label: string, value: TransportOption }[] = [
+		{ icon: <IconBus size={24} />, label: 'Autocarro', value: 'bus' },
+		{ icon: <IconBuildingTunnel size={24} />, label: 'Metro', value: 'metro' },
+		{ icon: <IconTrain size={24} />, label: 'Comboio', value: 'train' },
+		{ icon: <IconFerry size={24} />, label: 'Barco', value: 'boat' },
 	];
+
+	//
+	// C. Handle actions
+
+	const handleTransportClick = (transport: TransportOption) => actions.updateTransports([...filterbar.transports, transport]);
+
+	//
+	// D. Render components
 
 	return (
 		<Group>
@@ -22,19 +41,11 @@ export function HomePageFilterbarTransports() {
 				const active = filterbar.transports.includes(opt.value);
 
 				return (
-					<Button
-						key={opt.value}
-						label={opt.label}
-						variant={active ? 'primary' : 'default'}
-						onClick={() => {
-							if (active) {
-								actions.updateTransports(filterbar.transports.filter(v => v !== opt.value));
-							}
-							else {
-								actions.updateTransports([...filterbar.transports, opt.value]);
-							}
-						}}
-					/>
+					<TextPopover key={opt.value} text={opt.label} textSize="md">
+						<div className={`${styles.icon} ${active ? styles.iconActive : ''}`} onClick={() => handleTransportClick(opt.value)}>
+							{opt.icon}
+						</div>
+					</TextPopover>
 				);
 			})}
 		</Group>
