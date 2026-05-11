@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { CloseButton as MantineCloseButton } from '@mantine/core';
 import { IconChevronLeft } from '@tabler/icons-react';
 

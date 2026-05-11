@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { IconHistory } from '@tabler/icons-react';
 import { UpdatePatternDto } from '@tmlmobilidade/types';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useOrganizationsDetailContext } from '@/components/organizations/detail/OrganizationDetail.context';
 import { iconMap } from '@/lib/icons';
 import { HomeLink } from '@tmlmobilidade/types';

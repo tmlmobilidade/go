@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import namespaceDefaultPt from '@/i18n/namespaces/default/pt.json' with { type: 'json' };
 import namespaceAnalysisPt from '@/i18n/namespaces/ride-analysis/pt.json' with { type: 'json' };
 import namespaceStatusPt from '@/i18n/namespaces/ride-status/pt.json' with { type: 'json' };

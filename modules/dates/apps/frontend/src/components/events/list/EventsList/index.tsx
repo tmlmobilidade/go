@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useEventsListContext } from '@/components/events/list/EventsList.context';
 import { EventsListCellAgencies } from '@/components/events/list/EventsListCellAgencies';
 import { EventsListCellDates } from '@/components/events/list/EventsListCellDates';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { Collapsible, Grid, Section, TagsInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';

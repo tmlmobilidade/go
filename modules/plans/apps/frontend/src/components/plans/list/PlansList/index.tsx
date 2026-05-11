@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePlansListContext } from '@/components/plans/list/PlansList.context';
 import { PlansListCellFeedDates } from '@/components/plans/list/PlansListCellFeedDates';
 import { PlansListFiltersBar } from '@/components/plans/list/PlansListFiltersBar';

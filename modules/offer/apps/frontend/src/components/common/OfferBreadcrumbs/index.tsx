@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { LineTag } from '@/components/common/LineTag';
 import { PatternTag } from '@/components/common/PatternTag';
 import { RouteTag } from '@/components/common/RouteTag';

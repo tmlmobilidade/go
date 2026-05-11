@@ -2,8 +2,6 @@
 
 'use client';
 
-/* * */
-
 import * as turf from '@turf/turf';
 import { MapRef } from '@vis.gl/react-maplibre';
 import maplibregl from 'maplibre-gl';

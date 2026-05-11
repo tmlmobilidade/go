@@ -1,11 +1,9 @@
 'use client';
 
-/* * */
-
 import { Fieldset, Input } from '@mantine/core';
 import { DateInput as MantineDateInput, TimePicker as MantineTimePicker } from '@mantine/dates';
 import { IconCalendar, IconClock } from '@tabler/icons-react';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates, TimezoneIdentified } from '@tmlmobilidade/dates';
 import { type UnixTimestamp, validateUnixTimestamp } from '@tmlmobilidade/types';
 import { useEffect, useState } from 'react';
 
@@ -68,6 +66,12 @@ export interface DateTimeInputProps {
 	readOnly?: boolean
 
 	/**
+	 * Timezone to use for the input.
+	 * @default 'Europe/Lisbon'
+	 */
+	timezone?: TimezoneIdentified
+
+	/**
 	 * The value of the input.
 	 * Use this field for controlled components.
 	 * @default null
@@ -92,6 +96,7 @@ export function DateTimeInput(props: DateTimeInputProps) {
 
 	const [dateInputValue, setDateInputValue] = useState<string>();
 	const [timePickerValue, setTimePickerValue] = useState<string>();
+	const timezone = props.timezone ?? 'Europe/Lisbon';
 
 	//
 	// B. Transform data
@@ -111,15 +116,16 @@ export function DateTimeInput(props: DateTimeInputProps) {
 			// Transform unix timestamp into date and time strings
 			const dateString = Dates
 				.fromUnixTimestamp(validatedUnixTimestamp)
+				.setZone(timezone, 'offset_only')
 				.toFormat('yyyy-MM-dd');
 			setDateInputValue(dateString);
 			// Transform unix timestamp into time string
 			const timeString = Dates
 				.fromUnixTimestamp(validatedUnixTimestamp)
+				.setZone(timezone, 'offset_only')
 				.toFormat('HH:mm:ss');
 			setTimePickerValue(timeString);
-		}
-		catch (error) {
+		} catch (error) {
 			console.error('DateInput: Invalid unix timestamp provided in value prop', error);
 			setDateInputValue(undefined);
 			setTimePickerValue(undefined);
@@ -138,17 +144,16 @@ export function DateTimeInput(props: DateTimeInputProps) {
 		try {
 			const formattedTimeValue = timePickerValue.length === 5 ? `${timePickerValue}:00` : timePickerValue;
 			const unixTimestamp = Dates
-				.fromFormat(`${dateInputValue} ${formattedTimeValue}`, 'yyyy-MM-dd HH:mm:ss', 'utc')
+				.fromFormat(`${dateInputValue} ${formattedTimeValue}`, 'yyyy-MM-dd HH:mm:ss', timezone)
 				.unix_timestamp;
 			const validatedUnixTimestamp = validateUnixTimestamp(unixTimestamp);
 			props.onChange(validatedUnixTimestamp);
 			return;
-		}
-		catch (error) {
+		} catch (error) {
 			console.log('DateTimeInput: Invalid date format', error);
 			return;
 		}
-	}, [dateInputValue, timePickerValue]);
+	}, [dateInputValue, timePickerValue, props.onChange, timezone, props.value]);
 
 	//
 	// C. Render components
@@ -163,6 +168,7 @@ export function DateTimeInput(props: DateTimeInputProps) {
 				error={props.error}
 				label={props.label}
 				leftSection={<IconCalendar size={20} />}
+				popoverProps={{ withinPortal: false }}
 				onChange={setDateInputValue}
 				placeholder={props.placeholder ?? 'Selecione uma data...'}
 				readOnly={props.readOnly}
@@ -178,6 +184,7 @@ export function DateTimeInput(props: DateTimeInputProps) {
 				leftSection={<IconClock size={20} />}
 				onChange={setTimePickerValue}
 				readOnly={props.readOnly}
+				popoverProps={{ withinPortal: false }}
 				value={timePickerValue}
 				withSeconds={props.withSeconds}
 				presets={[

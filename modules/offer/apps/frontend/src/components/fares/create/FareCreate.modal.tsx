@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { FareCreate } from '@/components/fares/create/FareCreate';
 import { FareCreateContextProvider } from '@/components/fares/create/FareCreate.context';
 import { DataProviders } from '@/providers/data-providers';

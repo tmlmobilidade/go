@@ -1,92 +1,221 @@
-'use client';
+/* * */
+
+import { causePrompt } from '@/prompts/cause.js';
+import { effectPrompt } from '@/prompts/effect.js';
+import { initDescriptionPrompt, initTitlePrompt } from '@/prompts/init.js';
+import { referenceTypePrompt } from '@/prompts/reference-type.js';
+import { userInstructionDelimitersPrompt, userInstructionPrompt } from '@/prompts/user-instructions.js';
+import { PromptBuilder } from '@/utils.js';
+import { OCIGenerativeAIProvider } from '@tmlmobilidade/ai';
+import { getOperationalLinesBatch, getOperationalStopsBatch } from '@tmlmobilidade/controllers';
+import { Dates } from '@tmlmobilidade/dates';
+import { agencies, rides } from '@tmlmobilidade/interfaces';
+import { type Agency, type Alert, type I18nCode, I18nCodeValues, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
 
-import { templateArticlesReplacements } from '@/templates/articles.js';
-import { alertI18nTemplates } from '@/templates/descriptions.js';
-import { templatePlaceholderReplacements } from '@/templates/placeholders.js';
-import { type DescribeAlertProps } from '@/types/describe-alert-props.js';
-import { type I18nCodes } from '@/types/types.js';
-
-/* * */
-
-export interface DescribeAlertReturnType {
-	description: Record<I18nCodes, string>
-	title: Record<I18nCodes, string>
+export interface DescribeAlertProps {
+	active_period_end_date: UnixTimestamp
+	active_period_start_date: UnixTimestamp
+	agency_id: Agency['_id']
+	cause: Alert['cause']
+	effect: Alert['effect']
+	reference_type: Alert['reference_type']
+	references: Alert['references']
+	user_instructions?: string
 }
 
-/* * */
+export type DescribeAlertReturnType = Record<I18nCode, {
+	description: string
+	title: string
+}>;
 
-export function describeAlert(props: DescribeAlertProps): DescribeAlertReturnType | undefined {
+/**
+ * Generates a description and title for an alert based on its properties.
+ * @param props The properties of the alert to be described.
+ * @returns An object containing the description and title of the alert
+ * in multiple languages, or undefined if required properties are missing.
+ */
+export async function describeAlert(props: DescribeAlertProps): Promise<DescribeAlertReturnType | undefined> {
 	//
 
 	//
 	// Validate required input properties
 
-	if (!props.cause || !props.effect || !props.reference_type || !props.references || !props.data) return;
+	if (!props.cause) throw new Error('Missing required property: cause');
+	if (!props.effect) throw new Error('Missing required property: effect');
+	if (!props.agency_id) throw new Error('Missing required property: agency_id');
+	if (!props.reference_type) throw new Error('Missing required property: reference_type');
+	if (!props.references) throw new Error('Missing required property: references');
+	if (!props.active_period_start_date) throw new Error('Missing required property: active_period_start_date');
+	if (!props.active_period_end_date) throw new Error('Missing required property: active_period_end_date');
 
-	console.log('HERE PROPS =======>', props);
+	if (props.references.length === 0) throw new Error('References array cannot be empty');
+
+	if (props.active_period_end_date <= props.active_period_start_date) throw new Error('active_period_end_date must be after active_period_start_date');
+
+	if (!['agency', 'lines', 'rides', 'stops'].includes(props.reference_type)) throw new Error('Invalid reference_type value');
+
+	//
+	// Build the prompt part for the given reference type,
+	// by fetching the corresponding data based on the alert context.
+
+	const titlePrompt = new PromptBuilder();
+	const descriptionPrompt = new PromptBuilder();
+
+	if (props.reference_type === 'agency') {
+		// For 'agency' alert types, we expect only one reference,
+		// and we fetch the agency data from the alert context.
+		const foundAgency = await agencies.findById(props.agency_id);
+		if (!foundAgency) throw new Error('Agency not found for the given reference');
+		// Add the agency data to the prompt
+		titlePrompt.add('body', `Alert for ${foundAgency.name}`);
+		descriptionPrompt.add('body', `Agency Name: ${foundAgency.name}`);
+		descriptionPrompt.add('body', `Agency Website: ${foundAgency.website_url}`);
+	}
+
+	if (props.reference_type === 'lines') {
+		// For 'lines' alert types, we fetch the operational lines data
+		// based on the agency_id from the alert context.
+		const foundLines = await getOperationalLinesBatch({
+			agency_ids: [props.agency_id],
+			// TODO: Filter by line IDs to avoid fetching unnecessary data
+			// line_ids: props.references.map(ref => ref.parent_id),
+			date_end: props.active_period_end_date,
+			date_start: props.active_period_start_date,
+		});
+		if (!foundLines?.length) throw new Error('No Operational Lines found for the given references');
+		for (const selectedReference of props.references) {
+			// Find the corresponding line for the current reference
+			const matchingLine = foundLines.find(line => String(line.line_id) === String(selectedReference.parent_id));
+			if (!matchingLine) throw new Error(`Operational Line not found for reference with parent_id ${selectedReference.parent_id}`);
+			// Add the line data to the prompt
+			titlePrompt.add('body', `Line: ${matchingLine.line_short_name}`);
+			descriptionPrompt.add('body', `Line: (${matchingLine.line_short_name}) ${matchingLine.line_long_name}`);
+			// Check if this reference has any child IDs that should
+			// also be included in the prompt. In this case, 1 line -> only a few stops
+			if (selectedReference.child_ids?.length) {
+				const matchingWaypoints = matchingLine.hashed_trips
+					.flatMap(ht => ht.path)
+					.filter(waypoint => selectedReference.child_ids?.includes(String(waypoint.stop_id)));
+				if (matchingWaypoints?.length) {
+					descriptionPrompt.add('body', '↳ Only on the following stops:');
+					for (const waypoint of matchingWaypoints) {
+						descriptionPrompt.add('body', `#${waypoint.stop_sequence} stop in path:`);
+						descriptionPrompt.append('body', `[${waypoint.stop_id}] ${waypoint.stop_name}`);
+					}
+				}
+			}
+		}
+	}
+
+	if (props.reference_type === 'rides') {
+		// We can fetch rides by ID directly
+		const foundRides = await rides.findMany({ _id: { $in: props.references.map(ref => ref.parent_id) } });
+		if (!foundRides?.length) throw new Error('Rides not found for the given references');
+		// Iterate over each ride reference
+		for (const rideData of foundRides) {
+			// Transform start time into a human-readable format
+			const startTimeFormated = Dates.fromUnixTimestamp(rideData.start_time_scheduled).toFormat('HH:mm');
+			// Add the ride data to the prompt
+			titlePrompt.add('body', `Ride: ${rideData.line_id} to ${rideData.headsign}`);
+			descriptionPrompt.add('body', `Ride: ${rideData.line_id} to ${rideData.headsign} departing at ${startTimeFormated}`);
+		}
+	}
+
+	if (props.reference_type === 'stops') {
+		// For 'stops' alert types, we fetch the operational stops data
+		// based on the agency_id from the alert context.
+		const foundStops = await getOperationalStopsBatch({
+			agency_ids: [props.agency_id],
+			date_end: props.active_period_end_date,
+			date_start: props.active_period_start_date,
+		});
+		if (!foundStops?.length) throw new Error('No Operational Stops found for the given references');
+		for (const selectedReference of props.references) {
+			// Find the corresponding stop for the current reference
+			const matchingStop = foundStops.find(stop => String(stop.stop_id) === String(selectedReference.parent_id));
+			if (!matchingStop) throw new Error(`Operational Stop not found for reference with parent_id ${selectedReference.parent_id}`);
+			// Add the stop data to the prompt
+			titlePrompt.add('body', `Stop: ${matchingStop.stop_name}`);
+			descriptionPrompt.add('body', `Stop: [${matchingStop.stop_id}] ${matchingStop.stop_name}`);
+			// Check if this reference has any child IDs that should
+			// also be included in the prompt. In this case, 1 stop -> only a few waypoints
+			if (selectedReference.child_ids?.length) {
+				const matchingLines = matchingStop.hashed_trips
+					.filter(line => selectedReference.child_ids?.includes(String(line.line_id)));
+				if (matchingLines?.length) {
+					descriptionPrompt.add('body', '↳ Only for the following lines:');
+					for (const line of matchingLines) {
+						titlePrompt.add('body', `Line: ${line.line_short_name}`);
+						descriptionPrompt.add('body', `(${line.line_short_name}) ${line.line_long_name}`);
+					}
+				}
+			}
+		}
+	}
 
 	//
 	// Setup result object
 
 	const result: DescribeAlertReturnType = {
-		description: { en: '', pt: '' },
-		title: { en: '', pt: '' },
+		en: { description: '', title: '' },
+		pt: { description: '', title: '' },
 	};
 
-	//
-	// Detect if the alert is singular or plural based on the reference type
-
-	const pluralKey = props.references.length > 1 ? 'plural' : 'singular';
+	const aiProvider = new OCIGenerativeAIProvider();
 
 	//
-	// Build the key to access the templates
+	// Iterate over all languages and build the prompt for each one, using the
+	// corresponding templates and the fetched data to replace the placeholders.
 
-	const templateKey = `${props.cause}:${props.effect}:${props.reference_type}`;
-
-	//
-	// Iterate over all strings in the result object and
-	// add the corresponding strings from the templates,
-	// and replace the placeholders with actual values.
-
-	for (const resultStringKey of Object.keys(result) as (keyof DescribeAlertReturnType)[]) {
+	for (const i18nCode of I18nCodeValues) {
 		//
 
-		// Each result string key has several i18n codes to populate
-		for (const i18nCode of Object.keys(result[resultStringKey]) as I18nCodes[]) {
-			//
+		//
+		// Skip non-supported languages for now
 
-			// Determine which template string we are populating, and if it is singular or plural.
-			// Even though we might need a plural string, if it does not exist we fallback to the singular one.
-			const templateStringType = alertI18nTemplates[templateKey][resultStringKey];
-			const templateStringCountableVariation = templateStringType[pluralKey] ? templateStringType[pluralKey] : templateStringType.singular;
+		if (i18nCode !== 'pt') continue;
 
-			// Skip if the template string variation is not defined
-			if (!templateStringCountableVariation) continue;
+		//
+		// Get prompt parts for the current language
 
-			// Set the base string from the templates in the result object
-			result[resultStringKey][i18nCode] = templateStringCountableVariation[i18nCode];
+		titlePrompt.add('intro', initTitlePrompt[i18nCode]);
 
-			// Each translated string has several placeholders that need to be replaced with actual values.
-			for (const placeholderKey of Object.keys(templatePlaceholderReplacements[props.reference_type])) {
-				//
+		descriptionPrompt.add('intro', initDescriptionPrompt[i18nCode]);
+		descriptionPrompt.add('intro', referenceTypePrompt[props.reference_type][i18nCode]);
+		descriptionPrompt.add('intro', causePrompt[props.cause][i18nCode]);
+		descriptionPrompt.add('intro', effectPrompt[props.effect][i18nCode]);
 
-				// Use the templates param builders to get the actual value for each placeholder
-				const replacementValue = templatePlaceholderReplacements[props.reference_type][placeholderKey](props.data);
+		//
+		// Add the user prompt if the user supplied any extra instructions
 
-				// Replace all occurrences of the placeholder in the string with the actual value
-				result[resultStringKey][i18nCode] = result[resultStringKey][i18nCode].replaceAll(placeholderKey, replacementValue);
-			}
-
-			// Each translated string has several articles that need to be replaced with actual values.
-			for (const articleKey of Object.keys(templateArticlesReplacements)) {
-				// Use the templates param builders to get the actual value for each article
-				const replacementValue = templateArticlesReplacements[articleKey][i18nCode];
-				// Replace all occurrences of the article in the string with the actual value
-				result[resultStringKey][i18nCode] = result[resultStringKey][i18nCode].replaceAll(articleKey, replacementValue);
-			}
+		if (props.user_instructions) {
+			const sanitizedUserInstructions = props.user_instructions
+				.normalize('NFKC')
+				.replaceAll('\n', ' ')
+				.replace(/[\u200B-\u200D\uFEFF]/g, '') // zero-width chars
+				.replace(/\s+/g, ' ')
+				.replace(/!{2,}/g, m => m.split('').join('\\!'))
+				.replace(/#{2,}/g, m => m.split('').join('\\#'))
+				.replace(/`{3,}/g, m => m.split('').join('\\`'))
+				.replaceAll(userInstructionDelimitersPrompt.start, '')
+				.replaceAll(userInstructionDelimitersPrompt.end, '');
+			const userInstructionsPrompt = userInstructionPrompt[i18nCode].replaceAll('{{USER_INSTRUCTIONS}}', sanitizedUserInstructions);
+			descriptionPrompt.add('body', userInstructionsPrompt);
 		}
+
+		//
+		// Save the final prompt for the current language
+		// and reset the intro part for the next language iteration.
+
+		result['pt'].title = await aiProvider.run(titlePrompt.getCompressed());
+		result['pt'].description = await aiProvider.run(descriptionPrompt.getCompressed());
+
+		titlePrompt.reset('intro');
+		descriptionPrompt.reset('intro');
+
+		//
 	}
 
 	//

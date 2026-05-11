@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IndicatorChip } from '@/components/layout/IndicatorChip';
 import { MetricCard } from '@/components/layout/MetricCard';
 import { MetricCardSkeleton } from '@/components/layout/MetricCardSkeleton';

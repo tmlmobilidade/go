@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type Alert } from '@tmlmobilidade/types';
 import { Tag } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';

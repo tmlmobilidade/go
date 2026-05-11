@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { AgencyDetailHeader } from '@/components/agencies/detail/AgencyDetailHeader';
 import { AgencyDetailBasicInfo } from '@/components/agencies/detail/AgencySectionBasicInfo';

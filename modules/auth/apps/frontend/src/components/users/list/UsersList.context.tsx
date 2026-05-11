@@ -1,34 +1,26 @@
 'use client';
 
-/* * */
-
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { useRolesContext } from '@/contexts/Roles.context';
 import { type UserNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type User } from '@tmlmobilidade/types';
-import { parseAsArrayOfStrings, useSearch } from '@tmlmobilidade/ui';
-import { useQueryState } from 'nuqs';
+import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
 interface UsersListContextState {
-	actions: {
-		setFilterOrganizationIds: (values: string[]) => void
-		setFilterRoleIds: (values: string[]) => void
-		setFilterSearch: (values: string) => void
-	}
 	data: {
 		filtered: UserNormalized[]
 		raw: User[]
 	}
 	filters: {
-		organization_ids: string[]
-		role_ids: string[]
-		search: string
+		organization_ids: UseFilterStateListReturnType
+		role_ids: UseFilterStateListReturnType
+		search: UseFilterStateStringReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -59,17 +51,20 @@ export function UsersListContextProvider({ children }: PropsWithChildren) {
 	const rolesContext = useRolesContext();
 	const organizationsContext = useOrganizationsContext();
 
-	const [filterOrganizationIds, setFilterOrganizationIds] = useQueryState('organization_ids', parseAsArrayOfStrings.withDefault(organizationsContext.data.raw.map(item => item._id)));
-	const [filterRoleIds, setFilterRoleIds] = useQueryState('role_ids', parseAsArrayOfStrings.withDefault(rolesContext.data.raw.map(item => item._id)));
-	const [filterSearch, setFilterSearch] = useQueryState('search', { defaultValue: '' });
+	//
+	// B. Setup filters
+
+	const filterSearch = useFilterStateString('search');
+	const filterRoleIds = useFilterStateList('role_ids', rolesContext.data.raw.map(item => item._id), rolesContext.data.raw.map(item => ({ label: item.name, value: item._id })));
+	const filterOrganizationIds = useFilterStateList('organization_ids', organizationsContext.data.raw.map(item => item._id), organizationsContext.data.raw.map(item => ({ label: item.long_name, value: item._id })));
 
 	//
-	// B. Fetch data
+	// C. Fetch data
 
 	const { data: allUsersData, error: allUsersError, isLoading: allUsersLoading } = useSWR<User[], Error>(API_ROUTES.auth.USERS_LIST);
 
 	//
-	// C. Transform data
+	// D. Transform data
 
 	const normalizedUsersData: UserNormalized[] = useMemo(() => {
 		// Skip if no data is available
@@ -91,34 +86,29 @@ export function UsersListContextProvider({ children }: PropsWithChildren) {
 	const searchResultsData = useSearch<UserNormalized>({
 		accessors: ['first_name_normalized', 'last_name_normalized', 'email', 'full_name_normalized'],
 		data: normalizedUsersData,
-		query: filterSearch,
+		query: filterSearch.value,
 	});
 
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
 		if (!searchResultsData) return [];
 		// 1. Convert filter arrays to sets for O(1) membership checks
-		const organizationIdsSet = new Set(filterOrganizationIds);
-		const roleIdsSet = new Set(filterRoleIds);
+		const organizationIdsSet = new Set(filterOrganizationIds.value);
+		const roleIdsSet = new Set(filterRoleIds.value);
 		return searchResultsData.filter((item: UserNormalized) => {
 			// Filter by organization_ids
-			// if (!organizationIdsSet.has(item.organization_id)) return false;
+			if (item.organization_id && !organizationIdsSet.has(item.organization_id)) return false;
 			// Filter by role_ids
-			// if (!item.role_ids.some(roleId => roleIdsSet.has(roleId))) return false;
+			if (item.role_ids.length && !item.role_ids.some(roleId => roleIdsSet.has(roleId))) return false;
 			// Return true if all filters pass
 			return true;
 		});
-	}, [searchResultsData, filterOrganizationIds, filterRoleIds]);
+	}, [filterOrganizationIds.value, filterRoleIds.value, searchResultsData]);
 
 	//
-	// D. Define context value
+	// E. Define context value
 
-	const contextValue: UsersListContextState = useMemo(() => ({
-		actions: {
-			setFilterOrganizationIds,
-			setFilterRoleIds,
-			setFilterSearch,
-		},
+	const contextValue: UsersListContextState = {
 		data: {
 			filtered: filterResultsData,
 			raw: allUsersData ?? [],
@@ -132,18 +122,10 @@ export function UsersListContextProvider({ children }: PropsWithChildren) {
 			error: allUsersError,
 			loading: allUsersLoading,
 		},
-	}), [
-		allUsersData,
-		allUsersError,
-		allUsersLoading,
-		filterResultsData,
-		filterOrganizationIds,
-		filterRoleIds,
-		filterSearch,
-	]);
+	};
 
 	//
-	//	E. Render components
+	// F. Render components
 
 	return (
 		<UsersListContext.Provider value={contextValue}>

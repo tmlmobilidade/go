@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useHolidaysDetailContext } from '@/components/holidays/detail/HolidaysDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';

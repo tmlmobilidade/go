@@ -2,7 +2,7 @@
 
 import { closeCreateHolidayModal } from '@/components/holidays/create/HolidayCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type Holiday, type CreateHolidayDto, CreateHolidaySchema } from '@tmlmobilidade/types';
+import { type CreateHolidayDto, CreateHolidaySchema, type Holiday } from '@tmlmobilidade/types';
 import { keepUrlParams, type UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';

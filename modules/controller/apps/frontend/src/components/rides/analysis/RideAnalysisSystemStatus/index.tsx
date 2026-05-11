@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { Tag, useMeContext } from '@tmlmobilidade/ui';
 

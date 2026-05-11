@@ -30,7 +30,7 @@ export async function fetchProtobuf<T>(
 		// Load the proto definition
 		const proto = new protobufjs.Root();
 		const loadedProto = proto.loadSync(path.resolve(protoPath), { keepCase: true });
-		const MessageType = loadedProto.lookupType(messageType);
+		const messageTypeObj = loadedProto.lookupType(messageType);
 
 		// Fetch the protobuf binary data
 		const response = await fetch(url);
@@ -43,8 +43,8 @@ export async function fetchProtobuf<T>(
 		const buffer = Buffer.from(arrayBuffer);
 
 		// Decode the protobuf message
-		const message = MessageType.decode(buffer);
-		const decodedMessage = MessageType.toObject(message, {
+		const message = messageTypeObj.decode(buffer);
+		const decodedMessage = messageTypeObj.toObject(message, {
 			arrays: true,
 			bytes: String,
 			defaults: true,

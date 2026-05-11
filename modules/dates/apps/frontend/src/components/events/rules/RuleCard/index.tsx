@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useEventsDetailContext } from '@/components/events/detail/EventsDetail.context';
 import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
 import { IconArrowRight, IconCalendarCancel, IconCalendarRepeat } from '@tabler/icons-react';

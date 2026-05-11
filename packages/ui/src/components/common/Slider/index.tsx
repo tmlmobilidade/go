@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Slider as MantineSlider, type SliderProps as MantineSliderProps } from '@mantine/core';
 
 /* * */

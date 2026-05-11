@@ -1,6 +1,6 @@
 /* * */
 
-import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
 /* * */
@@ -8,9 +8,9 @@ import { z } from 'zod';
 export const RawApexTransactionBaseSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
-	created_at: UnixTimeStampSchema,
+	created_at: UnixTimestampSchema,
 	is_ok: z.boolean(),
-	received_at: UnixTimeStampSchema,
+	received_at: UnixTimestampSchema,
 	transaction_id: z.string(),
 	version: z.string(),
 });

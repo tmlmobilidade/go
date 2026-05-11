@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { ProgressBarChart } from '@/components/charts/ProgressBarChart';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { AgencyType } from '@/constants';

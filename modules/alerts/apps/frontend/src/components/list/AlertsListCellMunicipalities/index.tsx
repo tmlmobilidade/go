@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { TagGroup, type TagProps, useLocationsContext } from '@tmlmobilidade/ui';
 
 /* * */

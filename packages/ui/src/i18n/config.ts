@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import i18next from 'i18next';
 import ICU from 'i18next-icu';
 import { initReactI18next } from 'react-i18next';

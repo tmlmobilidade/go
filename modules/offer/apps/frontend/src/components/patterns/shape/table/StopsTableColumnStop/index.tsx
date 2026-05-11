@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PopulatedPath } from '@tmlmobilidade/types';
 import { Text, useLocationsContext } from '@tmlmobilidade/ui';

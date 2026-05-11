@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { Label, Section } from '@tmlmobilidade/ui';
 

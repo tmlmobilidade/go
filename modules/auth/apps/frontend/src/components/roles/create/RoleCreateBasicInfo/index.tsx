@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRoleCreateContext } from '@/components/roles/create/RoleCreate.context';
 import { Grid, Section, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';

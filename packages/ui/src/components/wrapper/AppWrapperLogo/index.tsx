@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Image } from '@mantine/core';
 import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
 import useSWR from 'swr';

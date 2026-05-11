@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { EventsContextProvider } from '@/contexts/Events.context';
 import { HolidaysContextProvider } from '@/contexts/Holidays.context';
 import { PeriodsContextProvider } from '@/contexts/Periods.context';

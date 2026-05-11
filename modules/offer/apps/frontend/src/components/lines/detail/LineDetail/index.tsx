@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useLineDetailContext } from '@/components/lines/detail/LineDetail.context';
 import { LineDetailHeader } from '@/components/lines/detail/LineDetailHeader';
 import { LineDetailSectionConfig } from '@/components/lines/detail/LineDetailSectionConfig';

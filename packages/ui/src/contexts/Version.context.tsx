@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { createContext, type PropsWithChildren, useContext } from 'react';
 
 /* * */

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { PermissionSectionItem } from '@/components/permissions/PermissionSectionItem';
 import { PermissionConfigAction } from '@/lib/permissions';
 import { type Permission } from '@tmlmobilidade/types';

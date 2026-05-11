@@ -1,11 +1,8 @@
 'use client';
 
-/* * */
-
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Collapsible, DateTimeInput, Divider, Grid, Label, Section, Text, useMeContext } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { Collapsible, ContextFormController, DateTimeInput, Divider, Grid, Label, Section, Text, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -21,26 +18,19 @@ export function AlertDetailSectionDates() {
 	//
 	// B. Transform data
 
-	const hasPermissionToEdit = useMemo(() => {
-		const canEditThisAgency = meContext.actions.hasPermissionResource({
+	const hasPermissionToUpdateDates = meContext.actions.hasPermissionResource([
+		{
 			action: PermissionCatalog.all.alerts.actions.update_dates,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.alerts.scope,
 			value: alertDetailContext.data.alert.agency_id,
-		});
-		const canEditThisReferenceType = meContext.actions.hasPermissionResource({
+		},
+		{
 			action: PermissionCatalog.all.alerts.actions.update_dates,
 			resource_key: 'reference_types',
 			scope: PermissionCatalog.all.alerts.scope,
 			value: alertDetailContext.data.alert.reference_type,
-		});
-		// User can edit dates if they have permission
-		// for the agency and reference type.
-		return canEditThisAgency && canEditThisReferenceType;
-	}, [
-		meContext.data.user?.permissions,
-		alertDetailContext.data.alert.agency_id,
-		alertDetailContext.data.alert.reference_type,
+		},
 	]);
 
 	//
@@ -56,18 +46,32 @@ export function AlertDetailSectionDates() {
 				<Label size="md" caps>Período de Vigência</Label>
 				<Text size="sm" weight="medium">Período em que o alerta é válido. Distinto da visibilidade. O alerta pode estar visível mas não ser ainda válido (ex: um alerta para um corte de estrada é vísível uma semana antes, mas o corte em si é apenas durante 2 dias).</Text>
 				<Grid columns="ab" gap="md">
-					<DateTimeInput
-						key={alertDetailContext.data.form.key('active_period_start_date')}
-						label="Data de Início"
-						readOnly={!hasPermissionToEdit}
-						{...alertDetailContext.data.form.getInputProps('active_period_start_date')}
+					<ContextFormController
+						control={alertDetailContext.form.instance.control}
+						name="active_period_start_date"
+						render={({ field, fieldState }) => (
+							<DateTimeInput
+								error={fieldState.error?.message}
+								label="Data de Início"
+								onChange={field.onChange}
+								readOnly={!hasPermissionToUpdateDates}
+								value={field.value}
+							/>
+						)}
 					/>
-					<DateTimeInput
-						key={alertDetailContext.data.form.key('active_period_end_date')}
-						label="Data de Fim"
-						readOnly={!hasPermissionToEdit}
-						clearable
-						{...alertDetailContext.data.form.getInputProps('active_period_end_date')}
+					<ContextFormController
+						control={alertDetailContext.form.instance.control}
+						name="active_period_end_date"
+						render={({ field, fieldState }) => (
+							<DateTimeInput
+								error={fieldState.error?.message}
+								label="Data de Fim"
+								onChange={field.onChange}
+								readOnly={!hasPermissionToUpdateDates}
+								value={field.value}
+								clearable
+							/>
+						)}
 					/>
 				</Grid>
 			</Section>
@@ -78,19 +82,33 @@ export function AlertDetailSectionDates() {
 				<Label size="md" caps>Agendamento</Label>
 				<Text size="sm" weight="medium">É possível agendar a permanência do alerta nos canais digitais. A visibilidade do alerta é diferente do seu período de vigência.</Text>
 				<Grid columns="ab" gap="md">
-					<DateTimeInput
-						key={alertDetailContext.data.form.key('publish_start_date')}
-						label="Data de Início"
-						readOnly={!hasPermissionToEdit}
-						clearable
-						{...alertDetailContext.data.form.getInputProps('publish_start_date')}
+					<ContextFormController
+						control={alertDetailContext.form.instance.control}
+						name="publish_start_date"
+						render={({ field, fieldState }) => (
+							<DateTimeInput
+								error={fieldState.error?.message}
+								label="Data de Início"
+								onChange={field.onChange}
+								readOnly={!hasPermissionToUpdateDates}
+								value={field.value}
+								clearable
+							/>
+						)}
 					/>
-					<DateTimeInput
-						key={alertDetailContext.data.form.key('publish_end_date')}
-						label="Data de Fim"
-						readOnly={!hasPermissionToEdit}
-						clearable
-						{...alertDetailContext.data.form.getInputProps('publish_end_date')}
+					<ContextFormController
+						control={alertDetailContext.form.instance.control}
+						name="publish_end_date"
+						render={({ field, fieldState }) => (
+							<DateTimeInput
+								error={fieldState.error?.message}
+								label="Data de Fim"
+								onChange={field.onChange}
+								readOnly={!hasPermissionToUpdateDates}
+								value={field.value}
+								clearable
+							/>
+						)}
 					/>
 				</Grid>
 			</Section>

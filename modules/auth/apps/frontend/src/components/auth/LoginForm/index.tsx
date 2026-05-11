@@ -1,13 +1,10 @@
 'use client';
 
-/* * */
-
 import { AuthenticationForm } from '@/components/common/AuthenticationForm';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Session } from '@tmlmobilidade/types';
-import { PasswordInput, TextInput, useToast } from '@tmlmobilidade/ui';
+import { PasswordInput, TextInput, useQueryState, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

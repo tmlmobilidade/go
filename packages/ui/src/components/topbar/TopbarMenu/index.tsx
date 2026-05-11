@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { ActionIcon, Menu } from '@mantine/core';
 import { createElement, type PropsWithChildren } from 'react';
 

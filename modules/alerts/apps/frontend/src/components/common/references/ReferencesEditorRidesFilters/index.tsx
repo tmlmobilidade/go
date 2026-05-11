@@ -1,14 +1,26 @@
 'use client';
 
-/* * */
-
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { IconArrowLoopRight } from '@tabler/icons-react';
-import { Grid, MultiSelect, SearchInput, Section, SegmentedControl } from '@tmlmobilidade/ui';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { Grid, MultiSelect, SearchInput, Section, SegmentedControl, useDataOperationalLines } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function ReferencesEditorRidesFilters() {
+interface ReferencesEditorRidesFiltersProps {
+	lineIdsFilterValue: string[]
+	searchFilterValue: string
+	setLineIdsFilterValue: (value: string[] | undefined) => void
+	setSearchFilterValue: (value: string | undefined) => void
+	setStopIdsFilterValue: (value: string[] | undefined) => void
+	setViewMode: (value: 'all' | 'selected') => void
+	stopIdsFilterValue: string[]
+	viewMode: 'all' | 'selected'
+}
+
+/* * */
+
+export function ReferencesEditorRidesFilters({ lineIdsFilterValue, searchFilterValue, setLineIdsFilterValue, setSearchFilterValue, setStopIdsFilterValue, setViewMode, stopIdsFilterValue, viewMode }: ReferencesEditorRidesFiltersProps) {
 	//
 
 	//
@@ -17,38 +29,49 @@ export function ReferencesEditorRidesFilters() {
 	const referencesEditorContext = useReferencesEditorContext();
 
 	//
-	// B. Render components
+	// B. Fetch data
+
+	const { options: operationalLinesOptions } = useDataOperationalLines(API_ROUTES.alerts.OPERATION_LINES, {
+		filters: {
+			agency_ids: [referencesEditorContext.data.selected_agency_id],
+			date_end: referencesEditorContext.data.active_period_end_date,
+			date_start: referencesEditorContext.data.active_period_start_date,
+		},
+	});
+
+	//
+	// C. Render components
 
 	return (
 		<Section>
 			<Grid columns="a" gap="md">
 
 				<SegmentedControl
-					onChange={referencesEditorContext.filters.view_mode.set}
-					value={referencesEditorContext.filters.view_mode.value}
+					onChange={setViewMode}
+					value={viewMode}
 					data={[
-						{ label: `Ver todas as circulações (${referencesEditorContext.flags.isRidesLoading ? 'Loading...' : referencesEditorContext.data.filtered_rides?.length ?? 0})`, value: 'all' },
+						{ label: `Ver todas as circulações`, value: 'all' },
 						{ label: `Apenas as Selecionadas (${referencesEditorContext.data.selected_references.length ?? 0})`, value: 'selected' },
 					]}
 				/>
 
-				{referencesEditorContext.filters.view_mode.value === 'all' && (
+				{viewMode === 'all' && (
 					<>
-						<SearchInput onChange={referencesEditorContext.filters.search.set} value={referencesEditorContext.filters.search.value} />
+						<SearchInput onChange={setSearchFilterValue} value={searchFilterValue} />
 
 						<Grid columns="ab" gap="md">
 							<MultiSelect
-								data={referencesEditorContext.filters.lines.options}
+								data={operationalLinesOptions}
 								leftSection={<IconArrowLoopRight size={20} />}
-								onChange={referencesEditorContext.filters.lines.set}
+								onChange={setLineIdsFilterValue}
 								placeholder="Filtrar por linhas..."
-								value={referencesEditorContext.filters.lines.value}
+								value={lineIdsFilterValue}
 							/>
 							<MultiSelect
-								data={referencesEditorContext.filters.stops.options}
-								onChange={referencesEditorContext.filters.stops.set}
+								data={[]}
+								onChange={setStopIdsFilterValue}
 								placeholder="Filtrar por paragens..."
-								value={referencesEditorContext.filters.stops.value}
+								value={stopIdsFilterValue}
 							/>
 						</Grid>
 					</>

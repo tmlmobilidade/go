@@ -1,7 +1,7 @@
 /* * */
 
 import { Span } from '@/components/Span/index.js';
-import { Text } from '@react-email/components';
+import { Text } from 'react-email';
 
 import styles from './styles.js';
 

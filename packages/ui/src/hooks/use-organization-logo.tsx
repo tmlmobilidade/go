@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { getModuleConfig, HttpException } from '@tmlmobilidade/consts';
 import { useMemo } from 'react';
 import useSWR from 'swr';

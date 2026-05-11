@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { getModuleConfig } from '@tmlmobilidade/consts';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';

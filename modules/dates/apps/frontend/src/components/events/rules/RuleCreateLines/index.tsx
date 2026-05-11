@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRuleCreateContext } from '@/components/events/rules/RuleCreate.context';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { LinesMode } from '@tmlmobilidade/types';

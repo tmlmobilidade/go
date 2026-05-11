@@ -164,6 +164,25 @@ export class ServiceRegistry {
 	}
 
 	/**
+	 * Builds a mapping from text service IDs to numeric string IDs.
+	 * Services are sorted by date count descending (most dates = "1").
+	 * Ties are broken alphabetically by service ID for determinism.
+	 * @returns Map<textServiceId, numericId>
+	 */
+	buildNumericCalendarMapping(): Map<ServiceId, string> {
+		const sorted = Array.from(this.tokenServices.entries()).sort(([idA, datesA], [idB, datesB]) => {
+			const diff = datesB.size - datesA.size;
+			return diff !== 0 ? diff : idA.localeCompare(idB);
+		});
+
+		const mapping = new Map<ServiceId, string>();
+		for (const [i, [serviceId]] of sorted.entries()) {
+			mapping.set(serviceId, String(i + 1));
+		}
+		return mapping;
+	}
+
+	/**
 	 * Gets the number of unique services
 	 */
 	getServiceCount(): number {

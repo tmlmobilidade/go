@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { IconArrowRight } from '@tabler/icons-react';

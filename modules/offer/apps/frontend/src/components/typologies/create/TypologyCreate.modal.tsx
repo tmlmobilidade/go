@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { TypologyCreate } from '@/components/typologies/create/TypologyCreate';
 import { TypologyCreateContextProvider } from '@/components/typologies/create/TypologyCreate.context';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';

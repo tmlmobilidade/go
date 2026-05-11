@@ -21,18 +21,20 @@
 		"@fastify/websocket": "11.2.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/controllers": "*",
+		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/fastify": "*",
-		"@tmlmobilidade/go-alerts-pckg-transform": "*",
+		"@tmlmobilidade/go-alerts-pckg-describe": "*",
+		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/rss": "*"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/api-types": "20260419.1736.4",
+		"@carrismetropolitana/api-types": "20260507.1827.35",
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.6.0",
+		"@types/node": "25.6.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"

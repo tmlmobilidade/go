@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { ValidationCreate } from '@/components/validations/create/ValidationCreate';
 import { ValidationCreateContextProvider } from '@/components/validations/create/ValidationCreate.context';
 import { DataProviders } from '@/providers/data-providers';

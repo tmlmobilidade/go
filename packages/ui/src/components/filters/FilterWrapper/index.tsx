@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Popover } from '@mantine/core';
 import { forwardRef, type PropsWithChildren, useImperativeHandle, useState } from 'react';
 

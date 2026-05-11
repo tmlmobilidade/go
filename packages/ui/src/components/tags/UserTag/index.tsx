@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Dates } from '@tmlmobilidade/dates';
 import { useMemo } from 'react';
 

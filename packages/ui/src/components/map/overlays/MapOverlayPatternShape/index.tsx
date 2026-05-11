@@ -7,22 +7,9 @@ import type { DataDrivenPropertyValueSpecification } from 'maplibre-gl';
 import { HoverCard } from '@mantine/core';
 import { nearestPointOnLine } from '@turf/turf';
 import { Layer, Marker, Popup, Source } from '@vis.gl/react-maplibre';
-import {
-	type Feature,
-	type FeatureCollection,
-	type LineString,
-	type Point,
-} from 'geojson';
+import { type Feature, type FeatureCollection, type LineString, type Point } from 'geojson';
 import { MapMouseEvent } from 'maplibre-gl';
-import {
-	Fragment,
-	type MouseEvent as ReactMouseEvent,
-	useCallback,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
+import { Fragment, type MouseEvent as ReactMouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
 

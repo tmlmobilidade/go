@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { SegmentedControl, Switch } from '@mantine/core';
 import { IconCrosshair } from '@tabler/icons-react';
 

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { NoDataLabel } from '@tmlmobilidade/ui';
 
 /* * */

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { ReferencesEditorAgency } from '@/components/common/references/ReferencesEditorAgency';
 import { ReferencesEditorControls } from '@/components/common/references/ReferencesEditorControls';
@@ -27,10 +25,10 @@ export function ReferencesEditorMain() {
 
 			<ReferencesEditorControls />
 
-			{referencesEditorContext.data.selected_agency_id && referencesEditorContext.data.selected_reference_type === 'agency' && <ReferencesEditorAgency />}
-			{referencesEditorContext.data.selected_agency_id && referencesEditorContext.data.selected_reference_type === 'lines' && <ReferencesEditorLines />}
-			{referencesEditorContext.data.selected_agency_id && referencesEditorContext.data.selected_reference_type === 'stops' && <ReferencesEditorStops />}
-			{referencesEditorContext.data.selected_agency_id && referencesEditorContext.data.selected_reference_type === 'rides' && <ReferencesEditorRides />}
+			{referencesEditorContext.data.selected_reference_type === 'agency' && <ReferencesEditorAgency />}
+			{referencesEditorContext.data.selected_reference_type === 'lines' && <ReferencesEditorLines />}
+			{referencesEditorContext.data.selected_reference_type === 'stops' && <ReferencesEditorStops />}
+			{referencesEditorContext.data.selected_reference_type === 'rides' && <ReferencesEditorRides />}
 
 		</>
 	);

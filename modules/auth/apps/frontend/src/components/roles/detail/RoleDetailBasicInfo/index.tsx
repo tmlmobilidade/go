@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRoleDetailContext } from '@/components/roles/detail/RoleDetail.context';
 import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';

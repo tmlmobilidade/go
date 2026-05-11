@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useTypologyDetailContext } from '@/components/typologies/detail/TypologyDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';

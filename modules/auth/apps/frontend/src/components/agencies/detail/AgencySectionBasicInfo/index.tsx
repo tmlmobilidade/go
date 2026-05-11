@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { CreateAgencySchema } from '@tmlmobilidade/types';

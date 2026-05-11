@@ -2,7 +2,7 @@
 
 import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { alertCauseEffectReferenceTypeMap } from '@tmlmobilidade/types';
-import { AlertCauseIcons, Grid, LargeButton, Section } from '@tmlmobilidade/ui';
+import { AlertCauseIcons, Grid, LargeButton, Section, useContextFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -17,6 +17,8 @@ export function AlertCreateStepCause() {
 
 	const alertCreateContext = useAlertCreateContext();
 
+	const causeValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'cause' });
+
 	//
 	// B. Transform data
 
@@ -28,8 +30,8 @@ export function AlertCreateStepCause() {
 	// C. Handle actions
 
 	const handleSelectCause = (value: keyof typeof alertCauseEffectReferenceTypeMap) => {
-		alertCreateContext.data.form.setFieldValue('cause', value);
-		alertCreateContext.data.multi_step.actions.next();
+		alertCreateContext.form.instance.setValue('cause', value, { shouldDirty: true });
+		alertCreateContext.form.multi_step.actions.next();
 	};
 
 	//
@@ -42,7 +44,7 @@ export function AlertCreateStepCause() {
 					<LargeButton
 						key={item.value}
 						icon={item.icon}
-						isActive={alertCreateContext.data.form.getValues().cause === item.value}
+						isActive={causeValue === item.value}
 						onClick={() => handleSelectCause(item.value)}
 						orientation="horizontal"
 						title={item.label}

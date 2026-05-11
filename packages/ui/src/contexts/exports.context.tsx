@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
 import { CreateFileExportDto, FileExport, FileExportType } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';

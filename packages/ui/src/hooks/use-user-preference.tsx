@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useDebouncedCallback } from '@mantine/hooks';
 import { type UserPreferenceValue } from '@tmlmobilidade/types';
 import { useEffect, useRef, useState } from 'react';

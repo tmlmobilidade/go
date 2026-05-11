@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useUserDetailContext } from '@/components/users/detail/UserDetail.context';
 import { IconMail, IconPhone } from '@tabler/icons-react';
 import { CreateUserSchema } from '@tmlmobilidade/types';

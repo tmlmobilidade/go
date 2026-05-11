@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { DataProviders } from '@/providers/data-providers';
 import { StopsParameter } from '@tmlmobilidade/types';
 import { closeModal, LocationsContextProvider, MeContextProvider, openModal } from '@tmlmobilidade/ui';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { Path } from '@tmlmobilidade/types';
 import { NumberInput } from '@tmlmobilidade/ui';

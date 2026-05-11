@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Checkbox, ScrollArea } from '@mantine/core';
 import { useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';

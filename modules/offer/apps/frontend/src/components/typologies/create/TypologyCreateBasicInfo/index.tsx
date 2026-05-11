@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useTypologyCreateContext } from '@/components/typologies/create/TypologyCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog, TypologySchema } from '@tmlmobilidade/types';

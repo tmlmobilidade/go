@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAnnotationsDetailContext } from '@/components/annotations/detail/AnnotationsDetail.context';
 import { Calendar } from '@mantine/dates';
 import { type OperationalDate } from '@tmlmobilidade/types';

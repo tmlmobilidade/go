@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { StopsListFilterBar } from '@/components/stops/list/StopsListFilterBar';
 import { StopsListHeader } from '@/components/stops/list/StopsListHeader';

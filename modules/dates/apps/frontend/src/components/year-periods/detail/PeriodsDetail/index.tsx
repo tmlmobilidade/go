@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePeriodsDetailContext } from '@/components/year-periods/detail/PeriodsDetail.context';
 import { PeriodsDetailHeader } from '@/components/year-periods/detail/PeriodsDetailHeader';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';

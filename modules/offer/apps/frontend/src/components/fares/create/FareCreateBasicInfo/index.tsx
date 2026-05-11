@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useFareCreateContext } from '@/components/fares/create/FareCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { FareSchema, PermissionCatalog } from '@tmlmobilidade/types';

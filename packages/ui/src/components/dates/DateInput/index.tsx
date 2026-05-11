@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { DateInput as MantineDateInput, DateInputProps as MantineDateInputProps } from '@mantine/dates';
 import { IconCalendar } from '@tabler/icons-react';
 import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';

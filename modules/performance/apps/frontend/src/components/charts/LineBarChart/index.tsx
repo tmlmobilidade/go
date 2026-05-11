@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { generateEventReferenceLines, TimeSeriesResult } from '@/utils/metrics';
 import { getShortLabelFromDetailed } from '@/utils/metrics/formatDates';
 import { Dates } from '@tmlmobilidade/dates';

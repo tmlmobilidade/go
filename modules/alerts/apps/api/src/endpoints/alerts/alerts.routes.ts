@@ -23,11 +23,6 @@ server.register(
 		);
 
 		instance.get(
-			'.rss',
-			AlertsController.getRssFeed,
-		);
-
-		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
 			AlertsController.getById,
@@ -73,6 +68,18 @@ server.register(
 			'/:id/lock',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.lock]) },
 			AlertsController.lock,
+		);
+
+		instance.get(
+			'/:id/duplicate',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.create]) },
+			AlertsController.duplicate,
+		);
+
+		instance.post(
+			'/describe',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.create]) },
+			AlertsController.describe,
 		);
 
 		next();

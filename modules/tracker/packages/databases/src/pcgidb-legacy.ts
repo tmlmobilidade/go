@@ -123,7 +123,7 @@ class PCGIDBLegacyClass {
 				keepaliveCountMax: 3, // Retry 3 times before closing the connection
 				keepaliveInterval: 10_000, // Send keep-alive every 10 seconds
 				port: 22,
-				privateKey: process.env.PCGIDB_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.PCGIDB_TUNNEL_SSH_KEY_PATH) : undefined,
+				privateKey: process.env.PCGIDB_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.PCGIDB_TUNNEL_SSH_KEY_PATH) : process.env.PCGIDB_TUNNEL_SSH_KEY,
 				username: process.env.PCGIDB_TUNNEL_SSH_USERNAME,
 			},
 			tunnelOptions: {

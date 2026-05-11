@@ -1,12 +1,16 @@
 /* * */
 
-import { organizeAlert } from '@tmlmobilidade/go-alerts-pckg-organize';
-import { alerts } from '@tmlmobilidade/interfaces';
+import { ensureStructure } from '@/tasks/ensure-structure.js';
+import { publishGtfsRtFeed } from '@/tasks/publish-gtfs-rt-feed.js';
+import { publishJsonFeed } from '@/tasks/publish-json-feed.js';
+import { publishRssFeed } from '@/tasks/publish-rss-feed.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
+
+let ITERATIONS_COUNTER = 0;
 
 const main = async () => {
 	//
@@ -16,30 +20,20 @@ const main = async () => {
 	const globalTimer = new Timer();
 
 	//
-	// Get all Alert documents from the database
+	// Run all tasks sequentially
 
-	const allAlertsData = await alerts.findMany({}, { sort: { publish_start_date: -1 } });
+	if (ITERATIONS_COUNTER % 10 === 0) await ensureStructure();
 
-	Logger.info(`Found ${allAlertsData.length} alerts.`);
+	await publishGtfsRtFeed();
+
+	await publishJsonFeed();
+
+	await publishRssFeed();
 
 	//
-	// Loop through all alerts and request updated attributes for each document
+	// Log the total time taken for all tasks
 
-	for (const [alertIndex, alertData] of allAlertsData.entries()) {
-		try {
-			//
-
-			Logger.info(`[${allAlertsData.length - alertIndex}/${allAlertsData.length}] Processing Alert ${alertData._id}...`);
-
-			const organizedAlertData = await organizeAlert(alertData);
-
-			await alerts.updateById(alertData._id, organizedAlertData);
-
-			//
-		} catch (error) {
-			Logger.error(`Error processing Alert ${alertData._id}:`, error);
-		}
-	}
+	ITERATIONS_COUNTER++;
 
 	Logger.terminate(`Organization completed in ${globalTimer.get()}`);
 
@@ -48,4 +42,4 @@ const main = async () => {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '5m' });
+await runOnInterval(main, { intervalMs: '30s' });

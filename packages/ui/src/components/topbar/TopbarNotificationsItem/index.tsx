@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Notification } from '@tmlmobilidade/types';
 import React from 'react';
 

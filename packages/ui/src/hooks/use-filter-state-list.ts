@@ -1,11 +1,9 @@
 'use client';
 
-/* * */
-
 import { useQueryState } from 'nuqs';
 import { useEffect, useMemo } from 'react';
 
-import { SelectDataItem } from '../components/inputs/Select';
+import { type SelectDataItem } from '../components/inputs/Select';
 import { parseAsArrayOfStrings } from '../utils/parse-string-array';
 
 /* * */
@@ -45,9 +43,8 @@ export function useFilterStateList<T extends string>(key: string, defaults: T[],
 	}, [urlValue, defaults]);
 
 	const parsedOptions = useMemo(() => {
-		// Return empty array if
-		// no options are provided
-		if (!options) return [];
+		// Skip if no options are provided
+		if (!options?.length) return [];
 		// Map options to include checked status
 		return options.map(item => ({
 			...item,

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconCheck, IconCircleDashed, IconFileDownload, IconLoader2, IconX } from '@tabler/icons-react';
 import { FileExport } from '@tmlmobilidade/types';
 import { useMemo } from 'react';

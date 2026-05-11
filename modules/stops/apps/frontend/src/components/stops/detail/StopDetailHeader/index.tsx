@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { IconWorldShare } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';

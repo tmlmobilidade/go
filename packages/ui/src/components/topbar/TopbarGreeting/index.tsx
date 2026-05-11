@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Skeleton } from '@mantine/core';
 import { useState } from 'react';
 

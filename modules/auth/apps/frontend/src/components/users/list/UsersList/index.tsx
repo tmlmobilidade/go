@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useUsersListContext } from '@/components/users/list/UsersList.context';
 import { UsersListFilterBar } from '@/components/users/list/UsersListFilterBar';
 import { UsersListHeader } from '@/components/users/list/UsersListHeader';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useUserDetailContext } from '@/components/users/detail/UserDetail.context';
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { useRolesContext } from '@/contexts/Roles.context';

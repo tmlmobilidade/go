@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconInfoCircle } from '@tabler/icons-react';
 import { ApprovalStatus, ProposedChange } from '@tmlmobilidade/types';
 import { useEffect, useState } from 'react';
