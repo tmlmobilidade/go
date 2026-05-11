@@ -30,7 +30,7 @@ export function HomePageFilterbarTransports() {
 	//
 	// C. Handle actions
 
-	const handleTransportClick = (transport: TransportOption) => actions.toggleTransport(transport);
+	const handleTransportClick = (transport: TransportOption) => actions.updateTransports([transport]);
 
 	//
 	// D. Render components

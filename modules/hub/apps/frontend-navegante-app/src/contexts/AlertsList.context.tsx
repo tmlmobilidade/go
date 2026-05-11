@@ -122,8 +122,7 @@ export const AlertsListContextProvider = ({ children }) => {
 			if (filterByDateState === 'current') {
 				// If the alert start date is before one week from now, then the alert is considered 'current'.
 				return alertStartDateInSeconds <= oneWeekFromNowInUnixSeconds;
-			}
-			else {
+			} else {
 				// If the alert start date is after one week from now, then the alert is considered 'future'.
 				// Otherwise, it is considered 'current'.
 				return alertStartDateInSeconds > oneWeekFromNowInUnixSeconds;

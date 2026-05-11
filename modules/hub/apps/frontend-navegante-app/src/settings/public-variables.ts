@@ -17,7 +17,11 @@ export const PUBLIC_VARIABLES = Object.freeze({
 		prd: 'https://go.tmlmobilidade.pt',
 		stg: 'https://go.tmlmobilidade.pt',
 	},
-
+	hub_api_url: {
+		dev: 'http://localhost:52000',
+		prd: 'https://go.tmlmobilidade.pt/hub/api',
+		stg: 'https://go.tmlmobilidade.pt/hub/api',
+	},
 	server_url_frontend: {
 		dev: 'http://localhost:49002',
 		prd: 'https://navegante.pt',

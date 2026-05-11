@@ -8,14 +8,15 @@ import { fileURLToPath } from 'node:url';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 const monorepoAssetsDir = path.resolve(dirname, '../../../../assets');
+const naveganteBasePath = '/hub/navegante-app';
 
 /* * */
 
 const nextConfig: NextConfig = {
-	basePath: '/hub/navegante-app',
+	basePath: naveganteBasePath,
 	devIndicators: false,
 	env: {
-		NEXT_PUBLIC_BASE_PATH: '/hub/navegante-app',
+		NEXT_PUBLIC_BASE_PATH: naveganteBasePath,
 		NEXT_PUBLIC_ENVIRONMENT: process.env.ENVIRONMENT,
 	},
 	experimental: {
@@ -58,7 +59,7 @@ const nextConfig: NextConfig = {
 		return [
 			{
 				basePath: false,
-				destination: '/hub',
+				destination: naveganteBasePath,
 				permanent: true,
 				source: '/',
 			},
