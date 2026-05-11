@@ -66,6 +66,7 @@ interface StopsEditorContextState {
 		cancel: () => void
 		convertShapeToEditable: () => Promise<void>
 		dismissMigrationWarning: () => void
+		initializePath: (firstStop: Stop, secondStop: Stop) => Promise<void>
 		moveShapeAnchor: (anchorId: string, lat: number, lon: number) => Promise<void>
 		prependStop: (stop: Stop) => Promise<void>
 		previewRoute: (path: Path[], anchors?: ShapeAnchor[]) => Promise<void>
@@ -344,9 +345,18 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 		const nextPath = [...path];
 		nextPath.splice(index, 0, createPathItemFromStop(stop));
 
-		setLocalPath(nextPath);
+		if (nextPath.length < 2) {
+			pushToHistory(nextPath, localShape);
+			return;
+		}
+
 		await recomputeRoute(nextPath, anchors);
-	}, [anchors, path, recomputeRoute]);
+	}, [anchors, localShape, path, pushToHistory, recomputeRoute]);
+
+	const initializePath = useCallback(async (firstStop: Stop, secondStop: Stop) => {
+		const nextPath = [createPathItemFromStop(firstStop), createPathItemFromStop(secondStop)];
+		await recomputeRoute(nextPath, []);
+	}, [recomputeRoute]);
 
 	const prependStop = useCallback(async (stop: Stop) => {
 		await addStop(stop, 0);
@@ -368,9 +378,13 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 			return anchor.after_stop_id !== removedPathItem?.stop_id && anchor.before_stop_id !== removedPathItem?.stop_id;
 		});
 
-		setLocalPath(nextPath);
+		if (nextPath.length < 2) {
+			pushToHistory(nextPath, undefined);
+			return;
+		}
+
 		await recomputeRoute(nextPath, nextAnchors);
-	}, [anchors, path, recomputeRoute]);
+	}, [anchors, path, pushToHistory, recomputeRoute]);
 
 	const reorderStops = useCallback(async (nextPath: PopulatedPath[]) => {
 		if (needsMigrationRef.current) {
@@ -448,6 +462,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 			cancel,
 			convertShapeToEditable,
 			dismissMigrationWarning,
+			initializePath,
 			moveShapeAnchor,
 			prependStop,
 			previewRoute,
@@ -475,7 +490,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 			migrationWarningVisible,
 			needsMigration,
 		},
-	}), [addShapeAnchor, addStop, appendStop, cancel, convertShapeToEditable, dismissMigrationWarning, moveShapeAnchor, previewRoute, prependStop, recomputeRoute, redo, removeShapeAnchor, removeStop, reorderStops, revertPath, submit, undo, anchors, canRedo, canUndo, hasUnsavedChanges, migrationWarningVisible, needsMigration, path, routeData, localShape, isEditableShape, isLoadingRoute]);
+	}), [addShapeAnchor, addStop, appendStop, cancel, convertShapeToEditable, dismissMigrationWarning, initializePath, moveShapeAnchor, previewRoute, prependStop, recomputeRoute, redo, removeShapeAnchor, removeStop, reorderStops, revertPath, submit, undo, anchors, canRedo, canUndo, hasUnsavedChanges, migrationWarningVisible, needsMigration, path, routeData, localShape, isEditableShape, isLoadingRoute]);
 
 	return (
 		<StopsEditorContext.Provider value={contextValue}>

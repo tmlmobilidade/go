@@ -1,20 +1,28 @@
 /* * */
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
+import { useStopsContext } from '@/contexts/Stops.context';
 import { PopulatedPath } from '@tmlmobilidade/types';
-import { MapOverlayPatternShape, MapView, Section, Text, useToast } from '@tmlmobilidade/ui';
+import { MapOverlayPatternShape, MapView, Section, useToast } from '@tmlmobilidade/ui';
 import { useCallback, useMemo } from 'react';
 
 import styles from './styles.module.css';
 
 import { useStopsEditorContext } from '../ShapeEditor.context';
+import { InitialStopSelector } from '../ShapeEditorInitialSelector';
 import { StopsList } from '../ShapeEditorStopsList';
 
 /* * */
 
 export function ShapeEditorContent() {
+	//
+
+	//
+	// A. Setup variables
+
 	const patternDetailContext = usePatternDetailContext();
 	const stopsEditorContext = useStopsEditorContext();
+	const stopsContext = useStopsContext();
 
 	const lineData = useMemo(() => {
 		const legs = stopsEditorContext.data.routeData?.legs ?? stopsEditorContext.data.shape?.legs;
@@ -46,6 +54,27 @@ export function ShapeEditorContent() {
 		patternDetailContext.geojson.pattern_line,
 		stopsEditorContext.data.routeData,
 	]);
+
+	const stopsData = useMemo(() => ({
+		features: (stopsEditorContext.data.path as PopulatedPath[])
+			.filter(pathItem => pathItem.stop)
+			.map((pathItem, index) => ({
+				geometry: {
+					coordinates: [pathItem.stop.longitude, pathItem.stop.latitude] as [number, number],
+					type: 'Point' as const,
+				},
+				properties: {
+					id: String(pathItem.stop._id),
+					name: pathItem.stop.name,
+					sequence: index + 1,
+				},
+				type: 'Feature' as const,
+			})),
+		type: 'FeatureCollection' as const,
+	}), [stopsEditorContext.data.path]);
+
+	//
+	// B. Handle actions
 
 	const handleAnchorDrop = async (anchor: {
 		lat: number
@@ -118,29 +147,24 @@ export function ShapeEditorContent() {
 		}
 	}, [stopsEditorContext.actions, stopsEditorContext.data]);
 
-	const stopsData = useMemo(() => ({
-		features: (stopsEditorContext.data.path as PopulatedPath[])
-			.filter(pathItem => pathItem.stop)
-			.map((pathItem, index) => ({
-				geometry: {
-					coordinates: [pathItem.stop.longitude, pathItem.stop.latitude] as [number, number],
-					type: 'Point' as const,
-				},
-				properties: {
-					id: String(pathItem.stop._id),
-					name: pathItem.stop.name,
-					sequence: index + 1,
-				},
-				type: 'Feature' as const,
-			})),
-		type: 'FeatureCollection' as const,
-	}), [stopsEditorContext.data.path]);
+	//
+	// C. Render components
 
 	if (!stopsEditorContext.data.path.length) {
+		const stopOptions = stopsContext.data.raw.map(stop => ({
+			label: `${stop.name} (#${stop._id})`,
+			value: String(stop._id),
+		}));
+
 		return (
-			<Section>
-				<Text>Nenhuma paragem associada a este pattern.</Text>
-			</Section>
+			<InitialStopSelector
+				isLoading={stopsEditorContext.flags.isLoadingRoute}
+				lineColor={patternDetailContext.data.typologyData?.color || undefined}
+				lineData={patternDetailContext.geojson.pattern_line}
+				onInitialize={(s1, s2) => void stopsEditorContext.actions.initializePath(s1, s2)}
+				stopOptions={stopOptions}
+				stopsRaw={stopsContext.data.raw}
+			/>
 		);
 	}
 

@@ -157,6 +157,42 @@ export function StopsList() {
 											)}
 										</div>
 									)}
+
+									{isLast && (
+										<div className={styles.connectionInfo}>
+											{isAddingHere ? (
+												<>
+													<div className={styles.addStopSelect}>
+														<Select
+															data={stopOptions}
+															onChange={handleSelectStop}
+															placeholder="Pesquisar paragem..."
+															value={selectedStopId}
+															styles={{
+																wrapper: {
+																	border: 'none',
+																},
+															}}
+														/>
+													</div>
+
+													<IconButton
+														color="var(--color-system-text-200)"
+														icon={<IconX size={16} />}
+														onClick={handleCancelAddStop}
+														tooltip="Cancelar"
+													/>
+												</>
+											) : (
+												<IconButton
+													color="var(--color-system-text-200)"
+													icon={<IconCirclePlus size={16} />}
+													onClick={() => handleStartAddStop(index)}
+													tooltip="Adicionar paragem no fim"
+												/>
+											)}
+										</div>
+									)}
 								</Section>
 							</Section>
 						);

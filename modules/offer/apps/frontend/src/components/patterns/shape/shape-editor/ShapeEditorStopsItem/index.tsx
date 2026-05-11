@@ -24,7 +24,12 @@ export function ShapeEditorStopsItem({ pathItem, rowIndex }: { pathItem: Populat
 	const locationsContext = useLocationsContext();
 	const stopsEditorContext = useStopsEditorContext();
 
-	const stopItem = patternDetailContext.data.form.getValues().path[rowIndex];
+	const enterTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+	const exitTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+	const [isExpanded, setIsExpanded] = useState(false);
+
+	const stopItem = patternDetailContext.data.form.getValues().path?.[rowIndex];
 
 	const stopLocationInfo = useMemo(() => {
 		if (!pathItem.stop) return null;
@@ -48,9 +53,25 @@ export function ShapeEditorStopsItem({ pathItem, rowIndex }: { pathItem: Populat
 		return `${localityName}, ${municipalityName}`;
 	}, [pathItem.stop, locationsContext.data.municipalities_map, locationsContext.data.localitites_map]);
 
-	const enterTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-	const exitTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-	const [isExpanded, setIsExpanded] = useState(false);
+	//
+	// B. Handle actions
+
+	const handleDelete = () => {
+		stopsEditorContext.actions.removeStop(rowIndex);
+	};
+
+	const handleToogle = (field: 'allow_drop_off' | 'allow_pickup' | 'timepoint') => {
+		const currentValue = stopItem ? stopItem[field] : undefined;
+		if (currentValue === undefined) return;
+
+		patternDetailContext.data.form.setFieldValue('path', patternDetailContext.data.form.getValues().path.map((item, index) => {
+			if (index !== rowIndex) return item;
+			return {
+				...item,
+				[field]: !currentValue,
+			};
+		}));
+	};
 
 	const clearEnterTimeout = () => {
 		if (enterTimeoutRef.current) {
@@ -85,27 +106,7 @@ export function ShapeEditorStopsItem({ pathItem, rowIndex }: { pathItem: Populat
 	};
 
 	//
-	// B. Handle actions
-
-	const handleDelete = () => {
-		stopsEditorContext.actions.removeStop(rowIndex);
-	};
-
-	const handleToogle = (field: 'allow_drop_off' | 'allow_pickup' | 'timepoint') => {
-		const currentValue = stopItem ? stopItem[field] : undefined;
-		if (currentValue === undefined) return;
-
-		patternDetailContext.data.form.setFieldValue('path', patternDetailContext.data.form.getValues().path.map((item, index) => {
-			if (index !== rowIndex) return item;
-			return {
-				...item,
-				[field]: !currentValue,
-			};
-		}));
-	};
-
-	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<div
