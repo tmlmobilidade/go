@@ -1,6 +1,13 @@
 /* * */
 
 import { type NextConfig } from 'next';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+/* * */
+
+const dirname = path.dirname(fileURLToPath(import.meta.url));
+const monorepoAssetsDir = path.resolve(dirname, '../../../../assets');
 
 /* * */
 
@@ -17,8 +24,6 @@ const nextConfig: NextConfig = {
 	async headers() {
 		return [
 			{
-				// Match everything except paths that contain a dot (e.g., .js, .png, .xml)
-				// Also ignore _next/ and api/ paths. This essentially tries to match only regular pages (HTML and RSC).
 				headers: [
 					{
 						key: 'Cache-Control',
@@ -28,8 +33,6 @@ const nextConfig: NextConfig = {
 				source: '/((?!_next/|api/|.*\\..*).*)',
 			},
 			{
-				// This matches static assets from the /public/assets directory. It is used to serve
-				// images, fonts, and other static assets that are manually placed in the folder.
 				headers: [
 					{
 						key: 'Cache-Control',
@@ -60,6 +63,18 @@ const nextConfig: NextConfig = {
 				source: '/',
 			},
 		];
+	},
+	turbopack: {
+		resolveAlias: {
+			'@assets': monorepoAssetsDir,
+		},
+	},
+	webpack(config) {
+		config.resolve.alias = {
+			...config.resolve.alias,
+			'@assets': monorepoAssetsDir,
+		};
+		return config;
 	},
 };
 

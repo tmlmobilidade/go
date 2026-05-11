@@ -58,6 +58,7 @@
 		"dev:exporter-merged": "ENVIRONMENT=dev dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-export-gtfs-merged",
 		"dev:fleet": "ENVIRONMENT=dev dotenv-run -f ./modules/fleet/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-fleet-*",
 		"dev:hub": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-*",
+		"dev:hub:sync-gtfs": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-sync-gtfs",
 		"dev:locations": "ENVIRONMENT=dev dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-locations-*",
 		"dev:offer": "ENVIRONMENT=dev dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-offer-* --filter=!@tmlmobilidade/go-offer-gtfs-exporter --filter=!@tmlmobilidade/go-offer-gtfs-importer",
 		"dev:offer:gtfs-exporter": "ENVIRONMENT=dev dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-offer-gtfs-exporter",
