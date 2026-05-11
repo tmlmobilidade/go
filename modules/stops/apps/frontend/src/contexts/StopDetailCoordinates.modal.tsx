@@ -1,6 +1,6 @@
 'use client';
 
-import { StopDetailCoordinatesModal } from '@/components/stops/detail/StopDetailCoordinatesModal';
+import { StopDetailCoordinatesModal } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesModal';
 import { type Stop, type UpdateStopDto } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, Modal, type UseFormReturnType } from '@tmlmobilidade/ui';
 import { createContext, useContext } from 'react';

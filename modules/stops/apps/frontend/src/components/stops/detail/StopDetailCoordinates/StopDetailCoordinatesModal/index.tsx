@@ -2,9 +2,9 @@
 
 /* * */
 
-import { coordinatesToSearchQuery, getStopCoordinateEditRadiusWarningMessage, isLatLngOutsideEditRadius, STOP_COORDINATE_EDIT_RADIUS_METERS, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_ID, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_TITLE } from '@/components/stops/detail/StopDetailCoordinatesModal/coordinates-query';
-import { StopDetailCoordinatesMap } from '@/components/stops/detail/StopDetailCoordinatesModal/StopDetailCoordinatesMap';
-import { StopDetailCoordinatesSelect } from '@/components/stops/detail/StopDetailCoordinatesModal/StopDetailCoordinatesSelect';
+import { StopDetailCoordinatesMap } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesMap';
+import { coordinatesToSearchQuery, getStopCoordinateEditRadiusWarningMessage, isLatLngOutsideEditRadius, STOP_COORDINATE_EDIT_RADIUS_METERS, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_ID, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_TITLE } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesModal/coordinates-query';
+import { StopDetailCoordinatesSelect } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesSelect';
 import { useStopDetailContext } from '@/contexts/StopDetailCoordinates.modal';
 import { Divider, Label, MapContextProvider, Pane, Spacer, Toolbar, useMapContext, useToast } from '@tmlmobilidade/ui';
 import { useCallback, useEffect, useState } from 'react';
