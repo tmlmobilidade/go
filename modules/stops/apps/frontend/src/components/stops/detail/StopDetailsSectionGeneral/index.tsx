@@ -50,8 +50,8 @@ export function StopDetailsSectionGeneral() {
 					<ValueDisplay label="Código Único da Paragem" value={stopDetailContext.data.stop?._id ?? 'N/A'} variant="bordered" />
 					<ValueDisplay label="Latitude" value={stopDetailContext.data.stop?.latitude ?? 'N/A'} variant="bordered" />
 					<ValueDisplay label="Longitude" value={stopDetailContext.data.stop?.longitude ?? 'N/A'} variant="bordered" />
-					<Button label="Editar Coordenadas" onClick={() => openCreateStopModal()} style={{ marginTop: '10px', width: '250px' }} />
 				</Grid>
+				<Button label="Editar Coordenadas" onClick={() => openCreateStopModal()} style={{ alignSelf: 'flex-end', marginTop: '10px', width: '250px' }} variant="secondary" />
 			</Section>
 
 			<Section>
