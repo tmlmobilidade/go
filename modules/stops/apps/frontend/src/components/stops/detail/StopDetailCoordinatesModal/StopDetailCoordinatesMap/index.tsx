@@ -168,8 +168,8 @@ export function StopDetailCoordinatesMap({ setDraftCoords }: { setDraftCoords: (
 				id="stop-detail-coordinates-map"
 				onClick={handleMapClick}
 				searchPinFocusOnChange={false}
-				showSearchPin
 				toolbar={false}
+				showSearchPin
 			>
 				<StopDetailCoordinatesMapTightFit
 					centerLat={savedStopAnchor?.latitude ?? null}
