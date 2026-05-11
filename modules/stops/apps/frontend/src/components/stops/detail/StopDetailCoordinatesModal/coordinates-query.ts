@@ -10,26 +10,6 @@ export const COORDINATES_PIN_DEBOUNCE_MS = 400;
 /** How far (meters) editors may move a stop from its saved coordinates in the modal. */
 export const STOP_COORDINATE_EDIT_RADIUS_METERS = 50;
 
-/**
- * If the point is farther than `maxMeters` from the center, snaps it to the circle edge
- * (same bearing, geodesic distance approximated via {@link getDistanceBetweenPositions}).
- */
-export function clampLatLngWithinMetersFrom(
-	centerLat: number,
-	centerLng: number,
-	lat: number,
-	lng: number,
-	maxMeters: number,
-): { lat: number, lng: number } {
-	const dist = getDistanceBetweenPositions([centerLng, centerLat], [lng, lat]);
-	if (dist <= maxMeters) return { lat, lng };
-	const ratio = maxMeters / dist;
-	return {
-		lat: centerLat + (lat - centerLat) * ratio,
-		lng: centerLng + (lng - centerLng) * ratio,
-	};
-}
-
 /** Whether the given point lies outside the allowed edit disk. */
 export function isLatLngOutsideEditRadius(
 	centerLat: number,

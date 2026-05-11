@@ -2,15 +2,20 @@
 
 /* * */
 
-import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { COORDINATES_PIN_DEBOUNCE_MS, coordinatesToSearchQuery, getStopCoordinateEditRadiusWarningMessage, isLatLngOutsideEditRadius, STOP_COORDINATE_EDIT_RADIUS_METERS, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_ID, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_TITLE } from '@/components/stops/detail/StopDetailCoordinatesModal/coordinates-query';
-import { closeStopDetailCoordinatesModal } from '@/contexts/StopDetailCoordinates.modal';
+import { useStopDetailContext } from '@/contexts/StopDetailCoordinates.modal';
 import { Button, CoordinatesInput, Divider, Grid, Section, useMapContext, useToast } from '@tmlmobilidade/ui';
 import { useEffect, useRef } from 'react';
 
 /* * */
 
-export function StopDetailCoordinatesSelect() {
+interface StopDetailCoordinatesSelectProps {
+	draft: [number, number]
+	onConfirmDraft: () => void
+	setDraftCoords: (latitude: number, longitude: number) => void
+}
+
+export function StopDetailCoordinatesSelect({ draft, onConfirmDraft, setDraftCoords }: StopDetailCoordinatesSelectProps) {
 	//
 
 	//
@@ -24,11 +29,8 @@ export function StopDetailCoordinatesSelect() {
 	//
 	// B. Handle actions
 
-	const handleSetCoordinates = (value: [number, number]) => {
-		const [latRaw, lngRaw] = value;
-		const lat = typeof latRaw === 'number' ? latRaw : Number(latRaw);
-		const lng = typeof lngRaw === 'number' ? lngRaw : Number(lngRaw);
-		if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+	const isDraftLngLatAllowed = (lat: number, lng: number): boolean => {
+		if (!Number.isFinite(lat) || !Number.isFinite(lng)) return false;
 		const stop = stopDetailContext.data.stop;
 		const latitudeN = typeof stop?.latitude === 'number' ? stop.latitude : Number(stop?.latitude);
 		const longitudeN = typeof stop?.longitude === 'number' ? stop.longitude : Number(stop?.longitude);
@@ -44,11 +46,18 @@ export function StopDetailCoordinatesSelect() {
 						title: STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_TITLE,
 					});
 				}, 400);
-				return;
+				return false;
 			}
 		}
-		stopDetailContext.data.form.setFieldValue('latitude', lat);
-		stopDetailContext.data.form.setFieldValue('longitude', lng);
+		return true;
+	};
+
+	const handleDraftCoordinatesChange = (value: [number, number]) => {
+		const [latRaw, lngRaw] = value;
+		const lat = typeof latRaw === 'number' ? latRaw : Number(latRaw);
+		const lng = typeof lngRaw === 'number' ? lngRaw : Number(lngRaw);
+		if (!isDraftLngLatAllowed(lat, lng)) return;
+		setDraftCoords(lat, lng);
 		if (pinDelayRef.current) clearTimeout(pinDelayRef.current);
 		pinDelayRef.current = setTimeout(() => {
 			pinDelayRef.current = null;
@@ -66,15 +75,14 @@ export function StopDetailCoordinatesSelect() {
 	//
 	// C. Render components
 
-	const latitude = stopDetailContext.data.form.values.latitude;
-	const longitude = stopDetailContext.data.form.values.longitude;
+	const [latitude, longitude] = draft;
 
 	return (
 		<Section gap="md" padding="md">
 			<CoordinatesInput
-				key={stopDetailContext.data.form.key('latitude')}
+				key="stop-detail-coordinates-map-draft"
 				disabled={stopDetailContext.flags.isReadOnly}
-				onChange={handleSetCoordinates}
+				onChange={handleDraftCoordinatesChange}
 				value={[
 					typeof latitude === 'number' ? latitude : 0,
 					typeof longitude === 'number' ? longitude : 0,
@@ -82,8 +90,13 @@ export function StopDetailCoordinatesSelect() {
 			/>
 			<Divider />
 			<Grid columns="ab" gap="sm">
-				<Button label="Cancelar" onClick={closeStopDetailCoordinatesModal} type="button" variant="secondary" />
-				<Button label="Definir coordenadas" onClick={() => handleSetCoordinates([Number(latitude), Number(longitude)])} type="button" />
+				<Button label="Cancelar" onClick={stopDetailContext.actions.closeCoordinatesEditor} type="button" variant="secondary" />
+				<Button
+					disabled={stopDetailContext.flags.isReadOnly}
+					label="Definir coordenadas"
+					onClick={onConfirmDraft}
+					type="button"
+				/>
 			</Grid>
 		</Section>
 	);

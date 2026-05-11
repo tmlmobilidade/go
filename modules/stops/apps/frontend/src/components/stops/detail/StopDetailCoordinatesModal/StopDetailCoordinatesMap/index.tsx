@@ -2,16 +2,13 @@
 
 /* * */
 
-import type { UpdateStopDto } from '@tmlmobilidade/types';
-
-import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { coordinatesToSearchQuery, getEditRadiusCircleFeatureCollection, getEditRadiusOutsideMaskFeatureCollection, getStopCoordinateEditRadiusWarningMessage, isLatLngOutsideEditRadius, STOP_COORDINATE_EDIT_RADIUS_METERS, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_ID, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_TITLE } from '@/components/stops/detail/StopDetailCoordinatesModal/coordinates-query';
-import { type UseFormReturnType } from '@mantine/form';
+import { useStopDetailContext } from '@/contexts/StopDetailCoordinates.modal';
 import { getBaseGeoJsonFeatureCollection, METERS_PER_DEGREE } from '@tmlmobilidade/geo';
 import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapOverlayPolygon, MapView, useMapContext, useMapViewContext, useToast } from '@tmlmobilidade/ui';
 import { type MapLayerMouseEvent } from '@vis.gl/react-maplibre';
 import { type Point } from 'geojson';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 /* * */
 
@@ -22,26 +19,22 @@ function toFiniteLngLat(latitude: unknown, longitude: unknown): null | { latitud
 	return { latitude: latitudeN, longitude: longitudeN };
 }
 
-/** Updates map search-pin context (`showSearchPin`). Same logic as typed coordinates in StopDetailCoordinatesSelect. */
-function syncSearchPinFromForm(form: UseFormReturnType<UpdateStopDto>, handleSearch: (value: string) => void) {
-	handleSearch(coordinatesToSearchQuery(form.getValues().latitude, form.getValues().longitude));
-}
-
 /** Framing margin beyond {@link STOP_COORDINATE_EDIT_RADIUS_METERS} so the blue ring fits comfortably. */
 const EDIT_RADIUS_MAP_FIT_EXTENT_FACTOR = 1.35;
 
 /** Fits the map tightly on the ~50 m editable disk (must render inside {@link MapView}). */
-function StopDetailCoordinatesMapTightFit({
-	centerLat,
-	centerLng,
-	stopId,
-}: {
-	centerLat: null | number
-	centerLng: null | number
-	stopId: string | undefined
-}) {
+function StopDetailCoordinatesMapTightFit({ centerLat, centerLng, stopId }: { centerLat: null | number, centerLng: null | number, stopId: string | undefined }) {
+	//
+
+	//
+	// A. Setup variables
+
 	const mapViewContext = useMapViewContext();
 
+	//
+	// B. Transform data
+
+	/** Fits the map tightly on the ~50 m editable disk (must render inside {@link MapView}). */
 	useEffect(() => {
 		if (!stopId || centerLat == null || centerLng == null) return;
 		if (!Number.isFinite(centerLat) || !Number.isFinite(centerLng)) return;
@@ -82,7 +75,7 @@ function StopDetailCoordinatesMapTightFit({
 
 /* * */
 
-export function StopDetailCoordinatesMap() {
+export function StopDetailCoordinatesMap({ setDraftCoords }: { setDraftCoords: (latitude: number, longitude: number) => void }) {
 	//
 
 	//
@@ -90,11 +83,6 @@ export function StopDetailCoordinatesMap() {
 
 	const stopDetailContext = useStopDetailContext();
 	const mapContext = useMapContext();
-	const { form } = stopDetailContext.data;
-
-	const bumpSearchPin = useCallback(() => {
-		syncSearchPinFromForm(form, mapContext.actions.handleSearch);
-	}, [form, mapContext.actions.handleSearch]);
 
 	//
 	// B. Transform data
@@ -144,12 +132,6 @@ export function StopDetailCoordinatesMap() {
 		[stopDetailContext.data.stop],
 	);
 
-	/** Pin after field edits is debounced in StopDetailCoordinatesSelect; keep immediate sync on mount / stop change. */
-
-	useEffect(() => {
-		bumpSearchPin();
-	}, [bumpSearchPin, stopDetailContext.data.stop?._id]);
-
 	//
 	// C. Handle actions
 
@@ -166,8 +148,7 @@ export function StopDetailCoordinatesMap() {
 			});
 			return;
 		}
-		form.setFieldValue('latitude', lat);
-		form.setFieldValue('longitude', lng);
+		setDraftCoords(lat, lng);
 		mapContext.actions.handleSearch(coordinatesToSearchQuery(lat, lng));
 	};
 

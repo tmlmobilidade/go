@@ -1,36 +1,60 @@
 'use client';
 
-import { StopDetailContextProvider } from '@/components/stops/detail/StopDetail.context';
 import { StopDetailCoordinatesModal } from '@/components/stops/detail/StopDetailCoordinatesModal';
-import { DataProviders } from '@/providers/data-providers';
-import { closeModal, openModal } from '@tmlmobilidade/ui';
+import { type Stop, type UpdateStopDto } from '@tmlmobilidade/types';
+import { type DetailContextStateTemplate, Modal, type UseFormReturnType } from '@tmlmobilidade/ui';
+import { createContext, useContext } from 'react';
 
 /* * */
 
-const MODAL_ID = 'stop-detail-coordinates-modal';
+export interface StopDetailContextState extends DetailContextStateTemplate {
+	actions: DetailContextStateTemplate['actions'] & {
+		closeCoordinatesEditor: () => void
+		openCoordinatesEditor: () => void
+	}
+	data: {
+		form: UseFormReturnType<UpdateStopDto>
+		stop: Stop | undefined
+	}
+	flags: DetailContextStateTemplate['flags'] & {
+		isCoordinatesEditorOpen: boolean
+	}
+}
 
 /* * */
 
-export const openStopDetailCoordinatesModal = (stopId: string) => {
-	openModal({
-		children: (
-			<DataProviders>
-				<StopDetailContextProvider stopId={stopId}>
-					<StopDetailCoordinatesModal />
-				</StopDetailContextProvider>
-			</DataProviders>
-		),
-		closeOnClickOutside: false,
-		closeOnEscape: false,
-		modalId: MODAL_ID,
-		padding: 0,
-		size: 'xl',
-		withCloseButton: false,
-	});
-};
+export const StopDetailContext = createContext<StopDetailContextState | undefined>(undefined);
 
 /* * */
 
-export const closeStopDetailCoordinatesModal = () => {
-	closeModal(MODAL_ID);
-};
+export function useStopDetailContext() {
+	const context = useContext(StopDetailContext);
+	if (!context) {
+		throw new Error('useStopDetailContext must be used within an StopDetailContextProvider');
+	}
+	return context;
+}
+
+/* * */
+
+export function StopDetailCoordinatesEditorModal() {
+	//
+
+	const { actions, flags } = useStopDetailContext();
+
+	return (
+		<Modal
+			closeOnClickOutside={false}
+			closeOnEscape={false}
+			onClose={actions.closeCoordinatesEditor}
+			opened={flags.isCoordinatesEditorOpen}
+			padding={0}
+			size="xl"
+			withCloseButton={false}
+		>
+			<StopDetailCoordinatesModal />
+		</Modal>
+	);
+
+	//
+}

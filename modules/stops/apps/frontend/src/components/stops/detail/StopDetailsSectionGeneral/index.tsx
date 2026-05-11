@@ -1,7 +1,6 @@
 'use client';
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
-import { openStopDetailCoordinatesModal } from '@/contexts/StopDetailCoordinates.modal';
 import { Translations } from '@/lib/translations';
 import { LifecycleStatusSchema } from '@tmlmobilidade/types';
 import { Button, Collapsible, Grid, ProposedChangesWrapper, Section, SegmentedControl, TextInput, ValueDisplay } from '@tmlmobilidade/ui';
@@ -48,10 +47,10 @@ export function StopDetailsSectionGeneral() {
 			<Section>
 				<Grid columns="abc" gap="md">
 					<ValueDisplay label="Código Único da Paragem" value={stopDetailContext.data.stop?._id ?? 'N/A'} variant="bordered" />
-					<ValueDisplay label="Latitude" value={stopDetailContext.data.stop?.latitude ?? 'N/A'} variant="bordered" />
-					<ValueDisplay label="Longitude" value={stopDetailContext.data.stop?.longitude ?? 'N/A'} variant="bordered" />
+					<ValueDisplay label="Latitude" value={stopDetailContext.data.form.values.latitude ?? 'N/A'} variant="bordered" />
+					<ValueDisplay label="Longitude" value={stopDetailContext.data.form.values.longitude ?? 'N/A'} variant="bordered" />
 				</Grid>
-				<Button label="Editar Coordenadas" onClick={() => openStopDetailCoordinatesModal(String(stopDetailContext.data.stop?._id))} style={{ alignSelf: 'flex-end', marginTop: '10px', width: '250px' }} variant="secondary" />
+				<Button label="Editar Coordenadas" onClick={stopDetailContext.actions.openCoordinatesEditor} style={{ alignSelf: 'flex-end', marginTop: '10px', width: '250px' }} variant="secondary" />
 			</Section>
 
 			<Section>
