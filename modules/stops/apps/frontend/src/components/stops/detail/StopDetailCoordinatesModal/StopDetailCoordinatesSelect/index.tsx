@@ -5,7 +5,8 @@ import {
 	COORDINATES_PIN_DEBOUNCE_MS,
 	coordinatesToSearchQuery,
 } from '@/components/stops/detail/StopDetailCoordinatesModal/coordinates-query';
-import { CoordinatesInput, Section, useMapContext } from '@tmlmobilidade/ui';
+import { closeStopDetailCoordinatesModal } from '@/contexts/StopDetailCoordinates.modal';
+import { Button, CoordinatesInput, Divider, Grid, Section, useMapContext } from '@tmlmobilidade/ui';
 import { useEffect, useRef } from 'react';
 
 /* * */
@@ -56,6 +57,11 @@ export function StopDetailCoordinatesSelect() {
 					typeof longitude === 'number' ? longitude : 0,
 				]}
 			/>
+			<Divider />
+			<Grid columns="ab" gap="sm">
+				<Button label="Cancelar" onClick={closeStopDetailCoordinatesModal} type="button" variant="secondary" />
+				<Button label="Definir coordenadas" onClick={() => handleSetCoordinates([latitude, longitude])} type="button" />
+			</Grid>
 		</Section>
 	);
 
