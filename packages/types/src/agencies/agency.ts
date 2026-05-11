@@ -2,18 +2,18 @@
 
 import { DocumentSchema } from '@/_common/document.js';
 import { OperationalDateSchema } from '@/_common/operational-date.js';
+import { AgencyAlertMapSchema } from '@/agencies/alert-map.js';
+import { AgencyFinancialsSchema } from '@/agencies/financials.js';
 import { z } from 'zod';
 
 /* * */
 
 export const AgencySchema = DocumentSchema.extend({
+	alerts_map: AgencyAlertMapSchema,
 	contact_emails_pta: z.array(z.string().email()).default([]),
 	contact_emails_pto: z.array(z.string().email()).default([]),
 	fare_url: z.string().url(),
-	financials: z.object({
-		price_per_km: z.coerce.number(),
-		vkm_per_month: z.array(z.coerce.number()).length(12),
-	}),
+	financials: AgencyFinancialsSchema,
 	name: z.string(),
 	operation_start_date: OperationalDateSchema.nullable().default(null),
 	phone: z.string(),
