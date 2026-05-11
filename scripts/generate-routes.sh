@@ -632,5 +632,8 @@ EOF
 mkdir -p "$(dirname "$OUTPUT_FILE")"
 cp "${TEMP_FILE}" "${OUTPUT_FILE}"
 
+# Lint the output file
+npm --workspace @tmlmobilidade/consts run lint:fix
+
 printf "${GREEN}Routes generated successfully at: ${OUTPUT_FILE}${NC}\n"
 

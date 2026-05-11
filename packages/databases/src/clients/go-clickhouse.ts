@@ -52,6 +52,12 @@ export class GOClickHouseClient {
 		Logger.info('[GOClickHouseClient] Connecting to database...');
 		const connectionString = await this.getConnectionString();
 		this.client = createClient({
+			clickhouse_settings: {
+				connect_timeout: 360 * 1000,
+				http_receive_timeout: 360 * 1000,
+				http_send_timeout: 360 * 1000,
+				max_execution_time: 360 * 1000,
+			},
 			keep_alive: { enabled: false },
 			log: {
 				level: ClickHouseLogLevel.OFF,
