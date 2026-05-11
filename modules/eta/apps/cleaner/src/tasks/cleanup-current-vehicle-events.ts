@@ -16,7 +16,6 @@ export async function cleanupCurrentVehicleEvents(clickhouseClient: Parameters<t
 		clickhouseClient,
 		pipelinePath(CLEANUP_CURRENT_VEHICLE_EVENTS_SQL),
 		{
-			window_hours_after: AppConfig.windowHoursAfter,
 			window_hours_before: AppConfig.windowHoursBefore,
 		},
 	);

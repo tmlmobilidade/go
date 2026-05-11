@@ -16,7 +16,6 @@ export async function cleanupCurrentRides(clickhouseClient: Parameters<typeof qu
 		clickhouseClient,
 		pipelinePath(CLEANUP_CURRENT_RIDES_SQL),
 		{
-			window_hours_after: AppConfig.windowHoursAfter,
 			window_hours_before: AppConfig.windowHoursBefore,
 		},
 	);

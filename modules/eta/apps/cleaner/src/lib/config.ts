@@ -7,6 +7,5 @@ export const AppConfig = Object.freeze({
 		cleanupCurrentVehicleEvents: true,
 		cleanupCurrentWaypoints: true,
 	},
-	windowHoursAfter: 1,
 	windowHoursBefore: 1,
 });
