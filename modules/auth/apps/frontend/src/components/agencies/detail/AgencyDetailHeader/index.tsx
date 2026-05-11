@@ -3,7 +3,7 @@
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { HasPermission, IdTag, keepUrlParams, LockButton, SaveButton } from '@tmlmobilidade/ui';
+import { HasPermission, IdTag, keepUrlParams, LockButton, SaveButton, useContextFormWatch } from '@tmlmobilidade/ui';
 import { CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -17,6 +17,8 @@ export function AgencyDetailHeader() {
 
 	const router = useRouter();
 	const agencyDetailContext = useAgencyDetailContext();
+
+	const agencyNameValue = useContextFormWatch({ control: agencyDetailContext.form.instance.control, name: 'name' });
 
 	//
 	// B. Handle actions
@@ -33,7 +35,7 @@ export function AgencyDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 			<IdTag id={agencyDetailContext.data.id} copyOnClick />
-			<Label size="lg" singleLine>{agencyDetailContext.data.form.values.name}</Label>
+			<Label size="lg" singleLine>{agencyNameValue}</Label>
 
 			<Spacer />
 

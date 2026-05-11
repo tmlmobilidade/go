@@ -1,19 +1,18 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Agency, PermissionCatalog, UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { type Agency, PermissionCatalog, type UpdateAgencyDto } from '@tmlmobilidade/types';
+import { type DetailContextStateTemplate, useContextForm, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
-interface AgencyDetailContextState extends DetailContextStateTemplate {
+interface AgencyDetailContextState extends DetailContextStateTemplate<UpdateAgencyDto> {
 	data: {
-		agency: Agency | null
-		form: UseFormReturnType<UpdateAgencyDto>
-		id: string
+		agency: Agency | undefined
+		id: string | undefined
 	}
 }
 
@@ -48,7 +47,10 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<UpdateAgencyDto>(UpdateAgencySchema, agencyData);
+	const { form } = useContextForm<UpdateAgencyDto>({
+		apiData: agencyData,
+		// schema: UpdateAgencySchema,
+	});
 
 	//
 	// D. Handle actions
@@ -56,7 +58,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Agency>(API_ROUTES.auth.AGENCIES_DETAIL(agencyId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			form.reset(updatedItem);
 			agencyMutate(updatedItem);
 			allAgenciesMutate();
 		},
@@ -65,7 +67,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Agency>(API_ROUTES.auth.AGENCIES_DETAIL_LOCK(agencyId)),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			form.reset(updatedItem);
 			agencyMutate(updatedItem);
 			allAgenciesMutate();
 		},
@@ -84,19 +86,19 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 
 	const { canSave } = useFlagCanSave({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.agencies.scope, PermissionCatalog.all.agencies.actions.update),
-		isDirty: form.isDirty(),
+		isDirty: form.formState.isDirty,
 		isLoading: agencyLoading,
 		isLocked: agencyData?.is_locked,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: form.formState.isValid,
 	});
 
 	const { canLock } = useFlagCanLock({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.agencies.scope, PermissionCatalog.all.agencies.actions.update),
-		isDirty: form.isDirty(),
+		isDirty: form.formState.isDirty,
 		isLoading: agencyLoading,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: form.formState.isValid,
 	});
 
 	//
@@ -109,7 +111,6 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 		},
 		data: {
 			agency: agencyData,
-			form,
 			id: agencyId,
 		},
 		flags: {
@@ -121,18 +122,10 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 			isReadOnly,
 			isSaving,
 		},
-	}), [
-		canLock,
-		canSave,
-		agencyError,
-		agencyLoading,
-		isLocking,
-		isReadOnly,
-		isSaving,
-		form,
-		agencyData,
-		agencyId,
-	]);
+		form: {
+			instance: form,
+		},
+	}), [handleLock, handleSave, agencyData, agencyId, canLock, canSave, agencyError, agencyLoading, isLocking, isReadOnly, isSaving, form]);
 
 	//
 	// F. Render components

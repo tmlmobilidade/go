@@ -4,24 +4,38 @@
 			"text": "Selecione uma Agência"
 		},
 		"detail": {
-			"SectionBasicInfo": {
-				"description": "Detalhes como nome, email, telefone, URL e timezone da agência.",
+			"SectionAlertsMap": {
+				"description": "Informação Financeira",
 				"fields": {
-					"email": {
-						"label": "Email da Agência",
-						"placeholder": "email@example.com"
+					"price_per_km": {
+						"label": "Preço por km",
+						"placeholder": "1.50"
 					},
+					"total_vkm_per_year": {
+						"label": "Total de km por ano",
+						"placeholder": "1000000"
+					}
+				},
+				"title": "Informação financeira da agência"
+			},
+			"SectionBasicInfo": {
+				"description": "Nome, email, telefone, URL e fuso horário.",
+				"fields": {
 					"fare_url": {
-						"label": "URL de Tarifário da Agência",
-						"placeholder": "https://www.carrismetropolitana.pt/tar"
+						"label": "URL p/ informações de tarifas",
+						"placeholder": "https://www.carrismetropolitana.pt/tarifas"
 					},
 					"name": {
 						"label": "Nome do Operador",
 						"placeholder": "Carris Metropolitana"
 					},
 					"phone": {
-						"label": "Telemóvel da Agência",
+						"label": "Contacto Telefónico",
 						"placeholder": "912345678"
+					},
+					"public_email": {
+						"label": "Email Público",
+						"placeholder": "email@example.com"
 					},
 					"short_name": {
 						"label": "Nome Curto",
@@ -30,28 +44,28 @@
 					"timezone": {
 						"label": "Fuso Horário"
 					},
-					"website": {
-						"label": "URL da Agência",
+					"website_url": {
+						"label": "Website",
 						"placeholder": "https://www.carrismetropolitana.pt"
 					}
 				},
-				"title": "Informação financeira da agência"
+				"title": "Detalhes do Operador"
 			},
 			"SectionContacts": {
-				"description": "Informação de contatos da agência",
+				"description": "Notificações e Contactos",
 				"fields": {
 					"contact_emails_pta": {
-						"label": "Notificações serão enviadas para os emails de contacto da TML.",
-						"title": "Emails de contacto da Autoridade"
+						"description": "Notificações serão enviadas para os emails de contacto da Autoridade.",
+						"label": "Emails de contacto da Autoridade"
 					},
 					"contact_emails_pto": {
-						"label": "Notificações serão enviadas para os emails de contacto da agência.",
-						"title": "Emails de contacto do Operador"
+						"description": "Notificações serão enviadas para os seguintes emails de contacto do operador.",
+						"label": "Emails de contacto do Operador"
 					}
 				},
-				"title": "Informação de contatos"
+				"title": "Contatos"
 			},
-			"SectionFinancial": {
+			"SectionFinancials": {
 				"description": "Informação Financeira",
 				"fields": {
 					"price_per_km": {
@@ -73,11 +87,34 @@
 						"label": "Inserir regras de validação do GTFS"
 					},
 					"file_content": {
-						"button": "Transferir regras ",
-						"label": "Download regras de validação do GTFS"
+						"button": "Transferir regras",
+						"label": "Download regras de validação do GTFS",
+						"no_content": "Nenhuma regra de validação definida"
 					}
 				},
-				"title": "Regras de validação do GTFS"
+				"title": "Regras de validação do GTFS",
+				"toasts": {
+					"error": {
+						"message": "Não foi possível ler o ficheiro JSON. Verifique o conteúdo.",
+						"title": "Erro ao processar ficheiro."
+					},
+					"file_type": {
+						"message": "O ficheiro submetido excede o limite permitido.",
+						"title": "Tipo de ficheiro inválido."
+					},
+					"max_size": {
+						"message": "O ficheiro submetido excede o limite permitido.",
+						"title": "Ficheiro demasiado grande."
+					},
+					"read_only": {
+						"message": "O documento está em modo de visualização.",
+						"title": "Não é possível atualizar as regras de validação."
+					},
+					"success": {
+						"message": "O ficheiro submetido foi aceite. Guarde as alterações para ativar.",
+						"title": "Regras carregadas."
+					}
+				}
 			},
 			"header": {
 				"save": "Guardar"
@@ -601,10 +638,6 @@
 		"create": {
 			"BasicInfo": {
 				"fields": {
-					"email": {
-						"label": "Email",
-						"placeholder": "user@example.com"
-					},
 					"first_name": {
 						"label": "Primeiro Nome",
 						"placeholder": "..."
@@ -612,6 +645,10 @@
 					"last_name": {
 						"label": "Último Nome",
 						"placeholder": "..."
+					},
+					"public_email": {
+						"label": "Email",
+						"placeholder": "user@example.com"
 					}
 				}
 			},
