@@ -4,13 +4,13 @@ import { getBaseGeoJsonFeatureCollection, getDistanceBetweenPositions, isValidCo
 
 /* * */
 
-/** Delay (ms) before moving the search pin after editing coordinate fields. */
+// Delay (ms) before moving the search pin after editing coordinate fields.
 export const COORDINATES_PIN_DEBOUNCE_MS = 400;
 
-/** How far (meters) editors may move a stop from its saved coordinates in the modal. */
+// How far (meters) editors may move a stop from its saved coordinates in the modal.
 export const STOP_COORDINATE_EDIT_RADIUS_METERS = 50;
 
-/** Whether the given point lies outside the allowed edit disk. */
+// Whether the given point lies outside the allowed edit disk.
 export function isLatLngOutsideEditRadius(
 	centerLat: number,
 	centerLng: number,
@@ -44,9 +44,7 @@ const WORLD_DIM_MASK_OUTER_RING: [number, number][] = [
 	[-180, -85],
 ];
 
-/**
- * Enforces ring winding so MapLibre treats holes correctly (same rules as @mapbox/geojson-rewind, RFC 7946).
- */
+// Enforces ring winding so MapLibre treats holes correctly (same rules as @mapbox/geojson-rewind, RFC 7946).
 function rewindRing(ring: [number, number][], dir: boolean): void {
 	if (ring.length < 2) return;
 	let area = 0;
@@ -60,6 +58,7 @@ function rewindRing(ring: [number, number][], dir: boolean): void {
 	if ((area >= 0) !== !!dir) ring.reverse();
 }
 
+// Enforces ring winding so MapLibre treats holes correctly (same rules as @mapbox/geojson-rewind, RFC 7946).
 function rewindPolygonRingsForMapLibre(rings: [number, number][][]): void {
 	if (rings.length === 0) return;
 	const outer = rings[0];
@@ -71,7 +70,7 @@ function rewindPolygonRingsForMapLibre(rings: [number, number][][]): void {
 	}
 }
 
-/** Closed ring [lng, lat] approximating a geodesic circle (`radiusMeters`) around the center. */
+// Closed ring [lng, lat] approximating a geodesic circle (`radiusMeters`) around the center.
 function buildEditRadiusCircleRing(
 	centerLat: number,
 	centerLng: number,
@@ -145,6 +144,7 @@ export function getEditRadiusCircleFeatureCollection(
 	return fc;
 }
 
+// Converts a pair of latitude and longitude to a finite number.
 function toFiniteLngLat(latitude: unknown, longitude: unknown): null | { latitude: number, longitude: number } {
 	const latitudeN = typeof latitude === 'number' ? latitude : Number(latitude);
 	const longitudeN = typeof longitude === 'number' ? longitude : Number(longitude);
@@ -152,7 +152,7 @@ function toFiniteLngLat(latitude: unknown, longitude: unknown): null | { latitud
 	return { latitude: latitudeN, longitude: longitudeN };
 }
 
-/** Formats a pair for map search-pin context; '' if values are unusable / outside Portugal. */
+// Formats a pair for map search-pin context; '' if values are unusable / outside Portugal.
 export function coordinatesToSearchQuery(latitude: unknown, longitude: unknown): string {
 	const coords = toFiniteLngLat(latitude, longitude);
 	if (!coords || !isValidCoordinatePair(coords.latitude, coords.longitude)) return '';
