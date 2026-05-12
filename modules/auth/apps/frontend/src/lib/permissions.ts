@@ -172,6 +172,7 @@ const stopActions: PermissionConfig = {
 		{ action: 'update', description: 'Permite editar uma paragem', label: 'Editar' },
 		{ action: 'delete', description: 'Permite eliminar uma paragem', label: 'Eliminar' },
 		{ action: 'lock', description: 'Permite bloquear/desbloquear uma paragem', label: 'Bloquear/Desbloquear' },
+		{ action: 'edit_coordinates', description: 'Permite editar as coordenadas de uma paragem', label: 'Editar Coordenadas' },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de paragens.',
 	scope: PermissionCatalog.all.stops.scope,
