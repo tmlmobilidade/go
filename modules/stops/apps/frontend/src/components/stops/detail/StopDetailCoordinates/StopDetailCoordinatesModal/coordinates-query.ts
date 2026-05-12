@@ -145,7 +145,7 @@ export function getEditRadiusCircleFeatureCollection(
 }
 
 // Converts a pair of latitude and longitude to a finite number.
-function toFiniteLngLat(latitude: unknown, longitude: unknown): null | { latitude: number, longitude: number } {
+export function toFiniteLngLat(latitude: unknown, longitude: unknown): null | { latitude: number, longitude: number } {
 	const latitudeN = typeof latitude === 'number' ? latitude : Number(latitude);
 	const longitudeN = typeof longitude === 'number' ? longitude : Number(longitude);
 	if (!Number.isFinite(latitudeN) || !Number.isFinite(longitudeN)) return null;

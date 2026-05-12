@@ -2,6 +2,7 @@
 
 /* * */
 
+import { toFiniteLngLat } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesModal/coordinates-query';
 import { coordinatesToSearchQuery, getEditRadiusCircleFeatureCollection, getEditRadiusOutsideMaskFeatureCollection, getStopCoordinateEditRadiusWarningMessage, isLatLngOutsideEditRadius, STOP_COORDINATE_EDIT_RADIUS_METERS, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_ID, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_TITLE } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesModal/coordinates-query';
 import { useStopDetailContext } from '@/contexts/StopDetailCoordinates.modal';
 import { getBaseGeoJsonFeatureCollection, METERS_PER_DEGREE } from '@tmlmobilidade/geo';
@@ -11,13 +12,6 @@ import { type Point } from 'geojson';
 import { useEffect, useMemo } from 'react';
 
 /* * */
-
-function toFiniteLngLat(latitude: unknown, longitude: unknown): null | { latitude: number, longitude: number } {
-	const latitudeN = typeof latitude === 'number' ? latitude : Number(latitude);
-	const longitudeN = typeof longitude === 'number' ? longitude : Number(longitude);
-	if (!Number.isFinite(latitudeN) || !Number.isFinite(longitudeN)) return null;
-	return { latitude: latitudeN, longitude: longitudeN };
-}
 
 /** Framing margin beyond {@link STOP_COORDINATE_EDIT_RADIUS_METERS} so the blue ring fits comfortably. */
 const EDIT_RADIUS_MAP_FIT_EXTENT_FACTOR = 1.35;
