@@ -14,7 +14,7 @@ import { useCallback, useEffect, useState } from 'react';
 /** Separate preference scope so modal search-pin / toolbar state does not overwrite the detail page map. */
 const DETAIL_COORDINATES_MAP_SCOPE = 'map:stop-detail-coordinates-modal';
 
-function StopDetailCoordinatesModalBody() {
+export function StopDetailCoordinatesModalBody() {
 	//
 
 	//

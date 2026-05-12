@@ -40,7 +40,13 @@ export function useStopDetailContext() {
 export function StopDetailCoordinatesEditorModal() {
 	//
 
+	//
+	// A. Setup variables
+
 	const { actions, flags } = useStopDetailContext();
+
+	//
+	// B. Render components
 
 	return (
 		<Modal
