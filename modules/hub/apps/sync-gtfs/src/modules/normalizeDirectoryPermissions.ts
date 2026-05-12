@@ -10,8 +10,7 @@ const normalizeDirectoryPermissions = (dirPath, mode = 0o666) => {
 		const filePath = `${dirPath}/${file.name}`;
 		if (file.isDirectory()) {
 			normalizeDirectoryPermissions(filePath, mode);
-		}
-		else {
+		} else {
 			fs.chmodSync(filePath, mode);
 		}
 	}

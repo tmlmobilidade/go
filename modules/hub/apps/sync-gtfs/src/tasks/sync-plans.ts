@@ -3,8 +3,8 @@
 import { getGtfsSqliteContext } from '@/modules/gtfsSqlite.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
+import { SERVERDB_KEYS } from '@tmlmobilidade/databases';
 import { SERVERDB } from '@tmlmobilidade/go-hub-pckg-services/SERVERDB';
-import { SERVERDB_KEYS } from '@tmlmobilidade/go-hub-pckg-settings';
 import { type Plan } from '@tmlmobilidade/go-hub-pckg-types';
 import { sortCollator } from '@tmlmobilidade/go-hub-pckg-utils';
 

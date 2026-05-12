@@ -3,8 +3,7 @@
 import { getGtfsSqliteContext } from '@/modules/gtfsSqlite.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { SERVERDB } from '@tmlmobilidade/go-hub-pckg-services/SERVERDB';
-import { SERVERDB_KEYS } from '@tmlmobilidade/go-hub-pckg-settings';
+import { apiCache, SERVERDB_KEYS } from '@tmlmobilidade/databases';
 import { convertGTFSBoolToBoolean, type NetworkDate } from '@tmlmobilidade/go-hub-pckg-types';
 import { sortCollator } from '@tmlmobilidade/go-hub-pckg-utils';
 
@@ -54,7 +53,13 @@ export const syncDates = async () => {
 	// Save to the database
 
 	allDatesData.sort((a, b) => sortCollator.compare(a.id, b.id));
-	await SERVERDB.set(SERVERDB_KEYS.NETWORK.DATES, JSON.stringify(allDatesData));
+	const datesJson = JSON.stringify(allDatesData);
+	await apiCache.set(SERVERDB_KEYS.NETWORK.DATES, datesJson);
+	try {
+		await apiCache.set('hub:network:dates:json', datesJson);
+	} catch (error) {
+		LOGGER.error('syncDates: apiCache.set(hub:network:dates:json) failed', error);
+	}
 
 	LOGGER.success(`Done updating ${updatedDatesCounter} Dates (${globalTimer.get()})`);
 

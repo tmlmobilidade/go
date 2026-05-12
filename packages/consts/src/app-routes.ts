@@ -9,6 +9,15 @@ import { getModuleConfig } from './app-configs.js';
 
 export const PAGE_ROUTES = Object.freeze({
 
+	root: {
+		// BASE
+		BASE: `${getModuleConfig('root', 'frontend_url')}`,
+
+		// REFERENCE
+		REFERENCE_LIST: `${getModuleConfig('root', 'frontend_url')}/reference`,
+	},
+
+
 	alerts: {
 		// BASE
 		BASE: `${getModuleConfig('alerts', 'frontend_url')}`,
@@ -17,6 +26,7 @@ export const PAGE_ROUTES = Object.freeze({
 		ALERTS_DETAIL: (id: string) => `${getModuleConfig('alerts', 'frontend_url')}/${id}`,
 		ALERTS_LIST: `${getModuleConfig('alerts', 'frontend_url')}`,
 	},
+
 
 	auth: {
 		// BASE
@@ -52,6 +62,7 @@ export const PAGE_ROUTES = Object.freeze({
 		USERS_LIST: `${getModuleConfig('auth', 'frontend_url')}/users`,
 	},
 
+
 	controller: {
 		// BASE
 		BASE: `${getModuleConfig('controller', 'frontend_url')}`,
@@ -60,6 +71,7 @@ export const PAGE_ROUTES = Object.freeze({
 		RIDES_DETAIL: (id: string) => `${getModuleConfig('controller', 'frontend_url')}/rides/${id}`,
 		RIDES_LIST: `${getModuleConfig('controller', 'frontend_url')}/rides`,
 	},
+
 
 	dates: {
 		// BASE
@@ -85,6 +97,7 @@ export const PAGE_ROUTES = Object.freeze({
 		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'frontend_url')}/year-periods`,
 	},
 
+
 	fleet: {
 		// BASE
 		BASE: `${getModuleConfig('fleet', 'frontend_url')}`,
@@ -93,6 +106,7 @@ export const PAGE_ROUTES = Object.freeze({
 		VEHICLES_DETAIL: (id: string) => `${getModuleConfig('fleet', 'frontend_url')}/vehicles/${id}`,
 		VEHICLES_LIST: `${getModuleConfig('fleet', 'frontend_url')}/vehicles`,
 	},
+
 
 	offer: {
 		// BASE
@@ -121,6 +135,7 @@ export const PAGE_ROUTES = Object.freeze({
 		ZONES_LIST: `${getModuleConfig('offer', 'frontend_url')}/zones`,
 	},
 
+
 	performance: {
 		// BASE
 		BASE: `${getModuleConfig('performance', 'frontend_url')}`,
@@ -141,6 +156,7 @@ export const PAGE_ROUTES = Object.freeze({
 		SUPPLY_LIST: `${getModuleConfig('performance', 'frontend_url')}/supply`,
 	},
 
+
 	plans: {
 		// BASE
 		BASE: `${getModuleConfig('plans', 'frontend_url')}`,
@@ -154,13 +170,6 @@ export const PAGE_ROUTES = Object.freeze({
 		VALIDATIONS_LIST: `${getModuleConfig('plans', 'frontend_url')}/validations`,
 	},
 
-	root: {
-		// BASE
-		BASE: `${getModuleConfig('root', 'frontend_url')}`,
-
-		// REFERENCE
-		REFERENCE_LIST: `${getModuleConfig('root', 'frontend_url')}/reference`,
-	},
 
 	stops: {
 		// BASE
@@ -193,6 +202,7 @@ export const API_ROUTES = Object.freeze({
 		OPERATION_RIDES_WS: `${getModuleConfig('alerts', 'api_url')}/operation/rides/ws`,
 		OPERATION_STOPS: `${getModuleConfig('alerts', 'api_url')}/operation/stops`,
 	},
+
 
 	auth: {
 		// BASE
@@ -243,6 +253,7 @@ export const API_ROUTES = Object.freeze({
 		WIKI_LIST: `${getModuleConfig('auth', 'api_url')}/wiki`,
 	},
 
+
 	controller: {
 		// BASE
 		BASE: `${getModuleConfig('controller', 'api_url')}`,
@@ -268,6 +279,7 @@ export const API_ROUTES = Object.freeze({
 		RIDES_LIST: `${getModuleConfig('controller', 'api_url')}/rides`,
 		RIDES_WS: `${getModuleConfig('controller', 'api_url')}/rides/ws`,
 	},
+
 
 	dates: {
 		// BASE
@@ -295,6 +307,7 @@ export const API_ROUTES = Object.freeze({
 		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'api_url')}/year-periods`,
 	},
 
+
 	exporter: {
 		// BASE
 		BASE: `${getModuleConfig('exporter', 'api_url')}`,
@@ -303,6 +316,7 @@ export const API_ROUTES = Object.freeze({
 		EXPORTER_DETAIL_DOWNLOAD: (id: string) => `${getModuleConfig('exporter', 'api_url')}/exporter/${id}/download`,
 		EXPORTER_LIST: `${getModuleConfig('exporter', 'api_url')}/exporter`,
 	},
+
 
 	fleet: {
 		// BASE
@@ -316,6 +330,7 @@ export const API_ROUTES = Object.freeze({
 		VEHICLES_POSITIONS: `${getModuleConfig('fleet', 'api_url')}/vehicles/positions`,
 	},
 
+
 	hub: {
 		// BASE
 		BASE: `${getModuleConfig('hub', 'api_url')}`,
@@ -326,11 +341,63 @@ export const API_ROUTES = Object.freeze({
 		ALERTS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/alerts`,
 		ALERTS_RSS: `${getModuleConfig('hub', 'api_url')}/v1/alerts.rss`,
 
+		// ARRIVALS
+		ARRIVALS_ARRIVALS_BY_PATTERN: (id: string) => `${getModuleConfig('hub', 'api_url')}/arrivals/arrivals/by_pattern/${id}`,
+		ARRIVALS_ARRIVALS_BY_STOP: (id: string) => `${getModuleConfig('hub', 'api_url')}/arrivals/arrivals/by_stop/${id}`,
+
+		// DISTRICTS
+		DISTRICTS_DISTRICTS: `${getModuleConfig('hub', 'api_url')}/districts/districts`,
+
+		// FACILITIES
+		FACILITIES_BOAT_STATIONS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/boat_stations`,
+		FACILITIES_HELPDESKS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/helpdesks`,
+		FACILITIES_LIGHT_RAIL_STATIONS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/light_rail_stations`,
+		FACILITIES_LIST: `${getModuleConfig('hub', 'api_url')}/v1/facilities`,
+		FACILITIES_PIPS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/pips`,
+		FACILITIES_SCHOOLS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/schools`,
+		FACILITIES_STORES: `${getModuleConfig('hub', 'api_url')}/v1/facilities/stores`,
+		FACILITIES_SUBWAY_STATIONS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/subway_stations`,
+		FACILITIES_TRAIN_STATIONS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/train_stations`,
+
+		// FEEDS
+		FEEDS_DATES: `${getModuleConfig('hub', 'api_url')}/feeds/dates`,
+		FEEDS_GTFS_STATIC: `${getModuleConfig('hub', 'api_url')}/feeds/gtfs-static`,
+		FEEDS_LINES: `${getModuleConfig('hub', 'api_url')}/feeds/lines`,
+		FEEDS_PERIODS: `${getModuleConfig('hub', 'api_url')}/feeds/periods`,
+		FEEDS_ROUTES: `${getModuleConfig('hub', 'api_url')}/feeds/routes`,
+		FEEDS_STOPS: `${getModuleConfig('hub', 'api_url')}/feeds/stops`,
+
+		// LOCALITIES
+		LOCALITIES_LOCALITIES: `${getModuleConfig('hub', 'api_url')}/localities/localities`,
+
+		// MESSAGE
+		MESSAGE_MESSAGE: `${getModuleConfig('hub', 'api_url')}/message/message`,
+
+		// MUNICIPALITIES
+		MUNICIPALITIES_MUNICIPALITIES: `${getModuleConfig('hub', 'api_url')}/municipalities/municipalities`,
+
+		// PARISHES
+		PARISHES_PARISHES: `${getModuleConfig('hub', 'api_url')}/parishes/parishes`,
+
+		// PATTERNS
+		PATTERNS_PATTERNS: (id: string) => `${getModuleConfig('hub', 'api_url')}/patterns/patterns/${id}`,
+
 		// PLANS
 		PLANS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/plans/gtfs`,
 		PLANS_GTFS_CM: `${getModuleConfig('hub', 'api_url')}/v1/plans/gtfs/cm`,
 		PLANS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/plans`,
+
+		// SHAPES
+		SHAPES_SHAPES: (id: string) => `${getModuleConfig('hub', 'api_url')}/shapes/shapes/${id}`,
+
+		// TIME
+		TIME_TIME: `${getModuleConfig('hub', 'api_url')}/time/time`,
+
+		// VEHICLES
+		VEHICLES_VEHICLES: `${getModuleConfig('hub', 'api_url')}/vehicles/vehicles`,
+		VEHICLES_VEHICLES_PB: `${getModuleConfig('hub', 'api_url')}/vehicles/vehicles.pb`,
 	},
+
 
 	locations: {
 		// BASE
@@ -343,6 +410,7 @@ export const API_ROUTES = Object.freeze({
 		LOCATIONS_MUNICIPALITIES: `${getModuleConfig('locations', 'api_url')}/locations/municipalities`,
 		LOCATIONS_PARISHES: `${getModuleConfig('locations', 'api_url')}/locations/parishes`,
 	},
+
 
 	offer: {
 		// BASE
@@ -385,6 +453,7 @@ export const API_ROUTES = Object.freeze({
 		ZONES_LIST: `${getModuleConfig('offer', 'api_url')}/zones`,
 	},
 
+
 	performance: {
 		// BASE
 		BASE: `${getModuleConfig('performance', 'api_url')}`,
@@ -399,6 +468,7 @@ export const API_ROUTES = Object.freeze({
 		NETWORK_LINES: `${getModuleConfig('performance', 'api_url')}/network/lines`,
 		NETWORK_PATTERNS: `${getModuleConfig('performance', 'api_url')}/network/patterns`,
 	},
+
 
 	plans: {
 		// BASE
@@ -423,6 +493,7 @@ export const API_ROUTES = Object.freeze({
 		VALIDATIONS_DETAIL_REQUEST_APPROVAL: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${id}/request-approval`,
 		VALIDATIONS_LIST: `${getModuleConfig('plans', 'api_url')}/validations`,
 	},
+
 
 	stops: {
 		// BASE

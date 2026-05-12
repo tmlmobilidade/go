@@ -63,8 +63,6 @@ export const AlertsContextProvider = ({ children }) => {
 		// if (!allAlertsData) return;
 		const allSimplifiedAlerts = allAlertsData?.map(alert => convertToSimplifiedAlert(alert, currentLocale));
 		setDataSimplifiedState(allSimplifiedAlerts || []);
-		// THE CORRECT SPELLING IS REFERRER
-		// analyticsContext.actions.capture(ampli => ampli.captureAlertsReferer({ page_referrer: document.referrer }));
 	}, [allAlertsData]);
 
 	// Transform data into geojson
