@@ -27,16 +27,14 @@ export const ApiCacheKeyValues = [
 	'hub:network:stops:json',
 	'hub:network:lines:json',
 	'hub:network:routes:json',
+	'hub:network:plans:json',
 	'hub:network:vehicles:json',
 	'hub:network:vehicles:protobuf:json',
 	'hub:network:patterns:{patternId}:json',
 	'hub:network:shapes:{shapeId}:json',
 ] as const;
 
-export type ApiCacheKey = `hub:network:patterns:${string}:json` | `hub:network:shapes:${string}:json` | typeof ApiCacheKeyValues[number];
-
-const HUB_NETWORK_PATTERN_JSON_KEY = /^hub:network:patterns:[^:]+:json$/;
-const HUB_NETWORK_SHAPE_JSON_KEY = /^hub:network:shapes:[^:]+:json$/;
+export type ApiCacheKey = typeof ApiCacheKeyValues[number];
 
 export function resolveApiCacheKey(key: ApiCacheKey, params?: ApiCacheKeyParams): string {
 	const resolvedKey = key.replace(/\{([^{}]+)\}/g, (_match, paramName: string) => {
@@ -53,8 +51,4 @@ export function resolveApiCacheKey(key: ApiCacheKey, params?: ApiCacheKeyParams)
 	}
 
 	return resolvedKey;
-}
-
-export function isAllowedHubApiCacheKey(key: string): key is ApiCacheKey {
-	return (ApiCacheKeyValues as readonly string[]).includes(key) || HUB_NETWORK_PATTERN_JSON_KEY.test(key) || HUB_NETWORK_SHAPE_JSON_KEY.test(key);
 }

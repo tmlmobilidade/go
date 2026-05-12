@@ -1,7 +1,7 @@
 /* * */
 
 import { GORedisClient } from '@/clients/go-redis.js';
-import { type ApiCacheKey, type ApiCacheKeyParams, isAllowedHubApiCacheKey, resolveApiCacheKey } from '@/interfaces/api-cache/keys.js';
+import { type ApiCacheKey, type ApiCacheKeyParams, resolveApiCacheKey } from '@/interfaces/api-cache/keys.js';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type RedisClientType } from 'redis';
 
@@ -59,6 +59,15 @@ class ApiCacheClass {
 	}
 
 	/**
+	 * Deletes multiple cache entries.
+	 * @param keys The list of keys to delete.
+	 */
+	public async deleteMany(keys: string[]) {
+		if (!keys.length) return;
+		await this.client.del(keys);
+	}
+
+	/**
 	 * Retrieves a cache entry by its key.
 	 * @param key The key of the cache entry to retrieve.
 	 * @param params Optional params to replace `{named}` tokens in the key.
@@ -74,6 +83,19 @@ class ApiCacheClass {
 	}
 
 	/**
+	 * Scans cache keys by pattern.
+	 * @param pattern The redis pattern to match.
+	 * @returns A promise resolving with all matching keys.
+	 */
+	public async scan(pattern: string): Promise<string[]> {
+		const keys: string[] = [];
+		for await (const key of this.client.scanIterator({ MATCH: pattern, TYPE: 'string' })) {
+			keys.push(String(key));
+		}
+		return keys;
+	}
+
+	/**
 	 * Saves a cache entry with an optional time-to-live (TTL).
 	 * @param key The key of the cache entry to save.
 	 * @param value The value of the cache entry to save. Must be a string.
@@ -81,14 +103,12 @@ class ApiCacheClass {
 	 * If not provided, the entry will persist indefinitely.
 	 * @param params Optional params to replace `{named}` tokens in the key.
 	 */
-	public async set(key: ApiCacheKey, value: string, ttl?: number, params?: ApiCacheKeyParams) {
-		const parsedKey = resolveApiCacheKey(key, params);
+	public async set(key: ApiCacheKey, value: string, options: { params?: ApiCacheKeyParams, ttl?: number }) {
+		const parsedKey = resolveApiCacheKey(key, options?.params);
 		// Validate value type before setting cache
 		if (typeof value !== 'string') throw new Error(`[ApiCache] Value must be a string. Got "${typeof value}" for key "${parsedKey}".`);
-		// Check if key is valid before setting cache
-		if (!isAllowedHubApiCacheKey(parsedKey)) throw new Error(`[ApiCache] Invalid cache key "${parsedKey}".`);
 		// Set cache with optional TTL
-		if (ttl) await this.client.set(parsedKey, value, { expiration: { type: 'EX', value: ttl } });
+		if (options?.ttl) await this.client.set(parsedKey, value, { expiration: { type: 'EX', value: options.ttl } });
 		else await this.client.set(parsedKey, value);
 	}
 

@@ -3,8 +3,7 @@
 import { getGtfsSqliteContext } from '@/modules/gtfsSqlite.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { SERVERDB_KEYS } from '@tmlmobilidade/databases';
-import { SERVERDB } from '@tmlmobilidade/go-hub-pckg-services/SERVERDB';
+import { apiCache } from '@tmlmobilidade/databases';
 import { type DateRange, type NetworkPeriod } from '@tmlmobilidade/go-hub-pckg-types';
 import { sortCollator } from '@tmlmobilidade/go-hub-pckg-utils';
 import { DateTime } from 'luxon';
@@ -97,7 +96,12 @@ export const syncPeriods = async () => {
 	//
 	// Save the array to the database
 
-	await SERVERDB.set(SERVERDB_KEYS.NETWORK.PERIODS, JSON.stringify(allPeriodsParsed));
+	const periodsJson = JSON.stringify(allPeriodsParsed);
+	try {
+		await apiCache.set('hub:network:periods:json', periodsJson, {});
+	} catch (error) {
+		LOGGER.error('syncPeriods: apiCache.set(hub:network:periods:json) failed', error);
+	}
 
 	LOGGER.success(`Done updating ${allPeriodsParsed.length} Periods (${globalTimer.get()})`);
 

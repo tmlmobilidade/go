@@ -4,8 +4,7 @@ import { getGtfsSqliteContext } from '@/modules/gtfsSqlite.js';
 import tts from '@carrismetropolitana/tts';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { SERVERDB_KEYS } from '@tmlmobilidade/databases';
-import { SERVERDB } from '@tmlmobilidade/go-hub-pckg-services/SERVERDB';
+import { apiCache } from '@tmlmobilidade/databases';
 import { type Arrival, type CalendarDate, type Route as GtfsRoute, type StopTime as GtfsStopTime, type Trip as GtfsTrip, type Line, type NetworkPattern, type NetworkRoute, type NetworkStop, type NetworkTrip, type Waypoint } from '@tmlmobilidade/go-hub-pckg-types';
 import { sortCollator } from '@tmlmobilidade/go-hub-pckg-utils';
 import { Alight } from 'gtfs-types';
@@ -57,7 +56,7 @@ export const syncLinesRoutesPatterns = async () => {
 	const { db } = getGtfsSqliteContext();
 
 	// For Stops
-	const allStopsParsedTxt = await SERVERDB.get(SERVERDB_KEYS.NETWORK.STOPS) as string;
+	const allStopsParsedTxt = await apiCache.get('hub:network:stops:json') as string;
 	const allStopsParsedJson: NetworkStop[] = JSON.parse(allStopsParsedTxt);
 	const allStopsParsedMap = new Map(allStopsParsedJson.map(item => [item.id, item]));
 
@@ -440,8 +439,9 @@ export const syncLinesRoutesPatterns = async () => {
 
 		const finalizedPatternGroupsData: NetworkPattern[] = Array.from(parsedPatternsForThisPatternGroup.values()).map((item: NetworkPattern) => ({ ...item, trips: Object.values(item.trips) }));
 
-		await SERVERDB.set(SERVERDB_KEYS.NETWORK.PATTERNS.ID(patternId), JSON.stringify(finalizedPatternGroupsData));
-		updatedPatternKeys.add(SERVERDB_KEYS.NETWORK.PATTERNS.ID(patternId));
+		const patternJson = JSON.stringify(finalizedPatternGroupsData);
+		await apiCache.set('hub:network:patterns:{patternId}:json', patternJson, { params: { patternId } });
+		updatedPatternKeys.add(`hub:network:patterns:${patternId}:json`);
 
 		// LOGGER.info(`Updated pattern_id "${patternId}" (${intraPatternTimer.get()})`);
 
@@ -453,14 +453,11 @@ export const syncLinesRoutesPatterns = async () => {
 	//
 	// Delete stale patterns
 
-	const allPatternKeysInTheDatabase: string[] = [];
-	for await (const key of SERVERDB.scanIterator({ MATCH: `${SERVERDB_KEYS.NETWORK.PATTERNS.BASE}:*`, TYPE: 'string' })) {
-		allPatternKeysInTheDatabase.push(String(key));
-	}
+	const allPatternKeysInTheDatabase = await apiCache.scan('hub:network:patterns:*:json');
 
 	const stalePatternKeys = allPatternKeysInTheDatabase.filter(key => !updatedPatternKeys.has(key));
 	if (stalePatternKeys.length) {
-		await SERVERDB.del(stalePatternKeys);
+		await apiCache.deleteMany(stalePatternKeys);
 	}
 
 	LOGGER.info(`Deleted ${stalePatternKeys.length} stale Patterns`);
@@ -469,14 +466,16 @@ export const syncLinesRoutesPatterns = async () => {
 	// Save all routes to the database
 
 	const finalizedAllRoutesData: NetworkRoute[] = Array.from(allRoutesParsed.values()).sort((a, b) => sortCollator.compare(a.id, b.id));
-	await SERVERDB.set(SERVERDB_KEYS.NETWORK.ROUTES, JSON.stringify(finalizedAllRoutesData));
+	const routesJson = JSON.stringify(finalizedAllRoutesData);
+	await apiCache.set('hub:network:routes:json', routesJson, {});
 	LOGGER.info(`Updated ${finalizedAllRoutesData.length} Routes`);
 
 	//
 	// Save all lines to the database
 
 	const finalizedAllLinesData: Line[] = Array.from(allLinesParsed.values()).sort((a, b) => sortCollator.compare(a.id, b.id));
-	await SERVERDB.set(SERVERDB_KEYS.NETWORK.LINES, JSON.stringify(finalizedAllLinesData));
+	const linesJson = JSON.stringify(finalizedAllLinesData);
+	await apiCache.set('hub:network:lines:json', linesJson, {});
 	LOGGER.info(`Updated ${finalizedAllLinesData.length} Lines`);
 
 	//

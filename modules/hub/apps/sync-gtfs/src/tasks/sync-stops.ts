@@ -5,8 +5,7 @@ import type { Stop as GtfsStopsExtended } from '@tmlmobilidade/go-hub-pckg-types
 import { getGtfsSqliteContext } from '@/modules/gtfsSqlite.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { SERVERDB_KEYS } from '@tmlmobilidade/databases';
-import { SERVERDB } from '@tmlmobilidade/go-hub-pckg-services/SERVERDB';
+import { apiCache } from '@tmlmobilidade/databases';
 import { NetworkStop, StopOperationalStatus } from '@tmlmobilidade/go-hub-pckg-types';
 import { sortCollator } from '@tmlmobilidade/go-hub-pckg-utils';
 
@@ -144,7 +143,7 @@ export const syncStops = async () => {
 	// Save to the database
 
 	allStopsData.sort((a, b) => sortCollator.compare(a.id, b.id));
-	await SERVERDB.set(SERVERDB_KEYS.NETWORK.STOPS, JSON.stringify(allStopsData));
+	await apiCache.set('hub:network:stops:json', JSON.stringify(allStopsData), {});
 
 	LOGGER.success(`Done updating ${updatedStopsCounter} Stops (${globalTimer.get()})`);
 
