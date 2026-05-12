@@ -87,7 +87,7 @@ export function StopDetailCoordinatesMap({ setDraftCoords }: { setDraftCoords: (
 	//
 	// B. Transform data
 
-	/** Saved stop position (API). Does not move while editing — only updates after refetch/save. */
+	// Saved stop position (API). Does not move while editing — only updates after refetch/save.
 	const staticStopGeojsonFC = useMemo(() => {
 		const baseGeoJson = getBaseGeoJsonFeatureCollection<Point, MapOverlayMultipleStopsDataProps>();
 		const stop = stopDetailContext.data.stop;
@@ -108,7 +108,7 @@ export function StopDetailCoordinatesMap({ setDraftCoords }: { setDraftCoords: (
 		return baseGeoJson;
 	}, [stopDetailContext.data.stop]);
 
-	/** Dimmed “outside allowed range” mask; hole matches the editable disk. */
+	// Dimmed “outside allowed range” mask; hole matches the editable disk.
 	const editRadiusOutsideMaskGeojson = useMemo(() => {
 		const stop = stopDetailContext.data.stop;
 		if (!stop?._id) return null;
@@ -117,7 +117,7 @@ export function StopDetailCoordinatesMap({ setDraftCoords }: { setDraftCoords: (
 		return getEditRadiusOutsideMaskFeatureCollection(coords.latitude, coords.longitude, STOP_COORDINATE_EDIT_RADIUS_METERS);
 	}, [stopDetailContext.data.stop]);
 
-	/** Stroke-only polygon along the editable radius (fill handled by {@link editRadiusOutsideMaskGeojson}). */
+	// Stroke-only polygon along the editable radius (fill handled by {@link editRadiusOutsideMaskGeojson}).
 	const editRadiusCircleGeojson = useMemo(() => {
 		const stop = stopDetailContext.data.stop;
 		if (!stop?._id) return null;
@@ -126,7 +126,7 @@ export function StopDetailCoordinatesMap({ setDraftCoords }: { setDraftCoords: (
 		return getEditRadiusCircleFeatureCollection(coords.latitude, coords.longitude, STOP_COORDINATE_EDIT_RADIUS_METERS);
 	}, [stopDetailContext.data.stop]);
 
-	/** Saved stop anchor for tight camera fit on the edit radius. */
+	// Saved stop anchor for tight camera fit on the edit radius.
 	const savedStopAnchor = useMemo(
 		() => toFiniteLngLat(stopDetailContext.data.stop?.latitude, stopDetailContext.data.stop?.longitude),
 		[stopDetailContext.data.stop],
@@ -159,7 +159,8 @@ export function StopDetailCoordinatesMap({ setDraftCoords }: { setDraftCoords: (
 
 	//
 	// D. Render components
-	/* Wrapper: MapView uses height:100%; inside Pane flex+overflow, percentage height breaks row sizing. */
+
+	// Wrapper: MapView uses height:100%; inside Pane flex+overflow, percentage height breaks row sizing.
 	return (
 		<div style={{ flexShrink: 0, width: '100%' }}>
 			<MapView

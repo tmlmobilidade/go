@@ -17,6 +17,9 @@ const DETAIL_COORDINATES_MAP_SCOPE = 'map:stop-detail-coordinates-modal';
 function StopDetailCoordinatesModalBody() {
 	//
 
+	//
+	// A. Setup variables
+
 	const stopDetailContext = useStopDetailContext();
 	const mapContext = useMapContext();
 	const open = stopDetailContext.flags.isCoordinatesEditorOpen;
@@ -34,6 +37,9 @@ function StopDetailCoordinatesModalBody() {
 		];
 	});
 
+	//
+	// B. Handle actions
+
 	useEffect(() => {
 		if (!open) return;
 		mapContext.actions.toggleStyle('map');
@@ -46,6 +52,8 @@ function StopDetailCoordinatesModalBody() {
 		// Intentionally only when the editor opens — avoid resetting draft after map clicks / context updates.
 		// eslint-disable-next-line react-hooks/exhaustive-deps -- form + mapContext are stable; we only want init on open
 	}, [open]);
+
+	//
 
 	const setDraftCoords = useCallback((lat: number, lng: number) => {
 		setDraft([lat, lng]);
@@ -72,6 +80,9 @@ function StopDetailCoordinatesModalBody() {
 		mapContext.actions.handleSearch(coordinatesToSearchQuery(lat, lng));
 		stopDetailContext.actions.closeCoordinatesEditor();
 	}, [draft, form, mapContext.actions, stop, stopDetailContext.actions]);
+
+	//
+	// C. Render components
 
 	return (
 		<>
