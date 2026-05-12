@@ -1,8 +1,8 @@
 import { pipelinePath } from '@/lib/sql-paths.js';
-import { queryEachStatementFromFile, splitClickHouseStatements } from '@tmlmobilidade/databases';
+import { queryEachStatementFromFile } from '@tmlmobilidade/databases';
 import { Logger } from '@tmlmobilidade/logger';
-import { readFile } from 'node:fs/promises';
 
+const KEEP_TABLE = 'eta._cleaner_hist_rides_keep';
 const CLEANUP_HIST_RIDES_SQL = 'cleanup/4-delete-out-of-window-hist-rides.sql';
 
 interface CleanupRowsResult {
@@ -10,14 +10,14 @@ interface CleanupRowsResult {
 }
 
 /**
- * Removes any rows from `eta.hist_rides` whose `_id` is not present in
- * `keepRideIds` — the set of rides Mongo currently considers in-window
- * across `[0, historicalDataDaysBack)` days.
+ * Removes rows from `eta.hist_rides` whose `_id` is not present in
+ * `keepRideIds` — the set Mongo currently considers in-window across
+ * `[0, historicalDataDaysBack)` days.
  *
- * `query_params` for the Array(String) placeholder is not supported by the
- * shared `queryEachStatementFromFile` wrapper (its param type is restricted
- * to scalars), so the SQL file is split and each statement is run directly
- * against the client.
+ * `keepRideIds` is staged into a dedicated table (`eta._cleaner_hist_rides_keep`)
+ * rather than bound as `query_params`, because ClickHouse passes parameters
+ * through the request URL and large arrays trip "HTTP request URI invalid
+ * or too long". The staging table is truncated and repopulated every run.
  */
 export async function cleanupHistoricalRides(
 	clickhouseClient: Parameters<typeof queryEachStatementFromFile>[0],
@@ -31,22 +31,22 @@ export async function cleanupHistoricalRides(
 		return 0;
 	}
 
-	const sql = await readFile(pipelinePath(CLEANUP_HIST_RIDES_SQL), 'utf-8');
-	const statements = splitClickHouseStatements(sql);
+	await clickhouseClient.command({
+		query: `CREATE TABLE IF NOT EXISTS ${KEEP_TABLE} (_id String) ENGINE = MergeTree() ORDER BY _id`,
+	});
+	await clickhouseClient.command({ query: `TRUNCATE TABLE ${KEEP_TABLE}` });
+	await clickhouseClient.insert({
+		format: 'JSONEachRow',
+		table: KEEP_TABLE,
+		values: keepRideIds.map(_id => ({ _id })),
+	});
 
-	let rowsToDelete = 0;
-	for (const statement of statements) {
-		const resultSet = await clickhouseClient.query({
-			format: 'JSONEachRow',
-			query: statement,
-			query_params: { keep_ride_ids: keepRideIds },
-		});
-		const rows = await resultSet.json<CleanupRowsResult>();
-		if (rows[0]?.rows_to_delete !== undefined) {
-			rowsToDelete = Number(rows[0].rows_to_delete);
-		}
-	}
+	const result = await queryEachStatementFromFile<CleanupRowsResult>(
+		clickhouseClient,
+		pipelinePath(CLEANUP_HIST_RIDES_SQL),
+	);
 
+	const rowsToDelete = result[0]?.rows_to_delete ?? 0;
 	Logger.progress(`Deleted ${rowsToDelete} out-of-window historical rides`);
 	return rowsToDelete;
 }
