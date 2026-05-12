@@ -21,8 +21,10 @@
 	"dependencies": {
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
