@@ -162,7 +162,6 @@ export function StopDetailCoordinatesMap({ setDraftCoords }: { setDraftCoords: (
 				height={400}
 				id="stop-detail-coordinates-map"
 				onClick={handleMapClick}
-				searchPinFocusOnChange={false}
 				toolbar={false}
 				showSearchPin
 			>

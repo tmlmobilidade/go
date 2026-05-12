@@ -26,19 +26,14 @@ interface MapViewProps {
 	onMouseLeave?: (e: MapLayerMouseEvent) => void
 	onMouseOut?: (e: MapLayerMouseEvent) => void
 	onMouseOver?: (e: MapLayerMouseEvent) => void
-	/**
-	 * When false, the map does not pan when the search pin moves (e.g. click-to-set coordinates).
-	 * @default true
-	 */
-	searchPinFocusOnChange?: boolean
-	/** When false, hides the toolbar search coordinate pin layer. */
+	/** When false, hides the search coordinate pin layer. */
 	showSearchPin?: boolean
 	toolbar?: boolean
 }
 
 /* * */
 
-export function MapView({ children, cursor, height, id, interactiveLayerIds = [], layers, onClick, onDrag, onDragEnd, onDragStart, onMouseDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, searchPinFocusOnChange = true, showSearchPin = true, toolbar = true }: PropsWithChildren<MapViewProps>) {
+export function MapView({ children, cursor, height, id, interactiveLayerIds = [], layers, onClick, onDrag, onDragEnd, onDragStart, onMouseDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, showSearchPin = true, toolbar = true }: PropsWithChildren<MapViewProps>) {
 	return (
 		<MapViewContextProvider>
 			<div
@@ -59,7 +54,6 @@ export function MapView({ children, cursor, height, id, interactiveLayerIds = []
 					onMouseLeave={onMouseLeave}
 					onMouseOut={onMouseOut}
 					onMouseOver={onMouseOver}
-					searchPinFocusOnChange={searchPinFocusOnChange}
 					showSearchPin={showSearchPin}
 				>
 					{children}
