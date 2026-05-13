@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: controller-coordinator
+  namespace: go-controller
+  labels:
+    app: controller-coordinator
+    app.kubernetes.io/name: controller-coordinator
+    app.kubernetes.io/component: coordinator
+    app.kubernetes.io/part-of: go-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: controller-coordinator
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: controller-coordinator
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: coordinator
+          image: ghcr.io/tmlmobilidade/go-controller-coordinator:k8s
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 5050
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: controller-secret
+          livenessProbe:
+            httpGet:
+              path: /rides
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 15
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /rides
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi

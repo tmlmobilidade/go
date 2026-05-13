@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exporter-api
+  namespace: go-exporter
+  labels:
+    app: exporter-api
+    app.kubernetes.io/name: exporter-api
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: go-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: exporter-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: exporter-api
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values: [exporter-api]
+                topologyKey: kubernetes.io/hostname
+      containers:
+        - name: api
+          image: ghcr.io/tmlmobilidade/go-exporter-api:k8s
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 5050
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: exporter-secret
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 15
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi

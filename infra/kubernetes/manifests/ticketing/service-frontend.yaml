@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  # Name must match the upstream in the baked-in nginx config: "server frontend:3000"
+  name: frontend
+  namespace: go-ticketing
+  labels:
+    app: ticketing-frontend
+    app.kubernetes.io/name: ticketing-frontend
+    app.kubernetes.io/part-of: go-ticketing
+spec:
+  type: ClusterIP
+  selector:
+    app: ticketing-frontend
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http
+      protocol: TCP

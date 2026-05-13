@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: offer-nginx
+  namespace: go-offer
+  labels:
+    app: offer-nginx
+    app.kubernetes.io/name: offer-nginx
+    app.kubernetes.io/part-of: go-offer
+spec:
+  type: NodePort
+  selector:
+    app: offer-nginx
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 30086
+      protocol: TCP

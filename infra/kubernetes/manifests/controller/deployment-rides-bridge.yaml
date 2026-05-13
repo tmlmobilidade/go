@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: controller-rides-bridge
+  namespace: go-controller
+  labels:
+    app: controller-rides-bridge
+    app.kubernetes.io/name: controller-rides-bridge
+    app.kubernetes.io/component: worker
+    app.kubernetes.io/part-of: go-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: controller-rides-bridge
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
+  template:
+    metadata:
+      labels:
+        app: controller-rides-bridge
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: rides-bridge
+          image: ghcr.io/tmlmobilidade/go-controller-rides-bridge:k8s
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: controller-secret
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

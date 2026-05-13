@@ -1,0 +1,111 @@
+name: sae-db-primary-production
+
+networks:
+  mongonet:
+
+services:
+  #
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  watchtower:
+    image: nickfedor/watchtower
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 1gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_POLL_INTERVAL=60
+      - WATCHTOWER_CLEANUP=TRUE
+      - WATCHTOWER_INCLUDE_STOPPED=TRUE
+      - WATCHTOWER_REVIVE_STOPPED=TRUE
+      - WATCHTOWER_ROLLING_RESTART=TRUE
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  database:
+    image: mongo:latest
+    restart: unless-stopped
+    volumes:
+      - ./secrets/replica.key:/data/replica.key:ro
+      - ./db-data:/data/db
+    networks:
+      - mongonet
+    ports:
+      - "27017:27017"
+    env_file:
+      - ./secrets/.env
+    entrypoint:
+      - bash
+      - -c
+      - |
+          chmod 400 /data/replica.key
+          chown 999:999 /data/replica.key
+          exec docker-entrypoint.sh $$@
+    command: mongod --replSet rs0 --auth --keyFile /data/replica.key --bind_ip_all
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://localhost:27017/ --quiet
+      interval: 5s
+      timeout: 30s
+      retries: 30
+      start_period: 10s
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672 # amqp
+      - 15672:15672 # management
+    env_file:
+      - ./secrets/.env
+    restart: always
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  init:
+    image: mongo:latest
+    restart: unless-stopped
+    env_file:
+      - ./secrets/.env
+    volumes:
+      - ./init.sh:/docker-entrypoint-initdb.d/init.sh:ro
+    networks:
+      - mongonet
+    depends_on:
+      database:
+        condition: service_healthy
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  backupd:
+    image: ghcr.io/tmlmobilidade/backupd:production
+    networks:
+      - mongonet
+    volumes:
+      - ./backupd-data:/data/backups
+      - ./secrets:/secrets
+    environment:
+      - CONFIG_PATH=/secrets/backupd.yaml
+    depends_on:
+      database:
+        condition: service_healthy

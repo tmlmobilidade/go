@@ -1,0 +1,58 @@
+# # #
+
+name: go-db-development
+
+# # #
+
+volumes:
+  go-db-development:
+
+# # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # #
+
+services:
+  #
+
+  database:
+    image: mongo
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    ports:
+      - 37001:27017
+    volumes:
+      - ./mock.dump:/dump/db.dump
+      - ./replica.key:/data/replica.key
+      - ./init.sh:/docker-entrypoint-initdb.d/setup.sh
+      - go-db-development:/data/db
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        chmod 400 /data/replica.key
+        chown 999:999 /data/replica.key
+        exec docker-entrypoint.sh $$@
+    command: mongod --bind_ip_all --auth --replSet rs0 --keyFile /data/replica.key
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  # rabbitmq:
+  #   image: rabbitmq:3-management
+  #   ports:
+  #     - 5672:5672 # amqp
+  #     - 15672:15672 # management
+  #   restart: always
+  #   environment:
+  #     - RABBITMQ_DEFAULT_USER=user
+  #     - RABBITMQ_DEFAULT_PASS=password
+  #   healthcheck:
+  #     test: ["CMD", "rabbitmq-diagnostics", "ping"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
