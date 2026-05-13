@@ -6,23 +6,18 @@ import { DateTime } from 'luxon';
 
 /* * */
 
-function pickLocalizedTranslation(
-	translations: undefined | { language: string, text: string }[],
-	currentLocale: string,
-): string {
-	if (!translations?.length) return '';
-	const lang = currentLocale.split('-')[0];
-	const match = translations.find(item => item.language === lang)?.text;
-	const first = translations[0]?.text;
-	return match ?? first ?? '';
-}
-
-/* * */
-
 export default (alertData: Alert, currentLocale = 'pt'): SimplifiedAlert => {
 	//
-	const localizedHeaderText = pickLocalizedTranslation(alertData.header_text?.translation, currentLocale);
-	const localizedDescriptionText = pickLocalizedTranslation(alertData.description_text?.translation, currentLocale);
+	// Find the localized header text
+	let localizedHeaderText: string;
+	const headerTextLocaleMatch = alertData.header_text.translation.find(item => item.language === currentLocale.split('-')[0]);
+	if (!headerTextLocaleMatch) localizedHeaderText = alertData.header_text.translation[0].text;
+	else localizedHeaderText = headerTextLocaleMatch.text;
+	// Find the localized description text
+	let localizedDescriptionText: string;
+	const descriptionTextLocaleMatch = alertData.description_text.translation.find(item => item.language === currentLocale.split('-')[0]);
+	if (!descriptionTextLocaleMatch) localizedDescriptionText = alertData.description_text.translation[0].text;
+	else localizedDescriptionText = descriptionTextLocaleMatch.text;
 	// Find the localized image URL
 	let localizedImageUrl: null | string = null;
 	if (alertData.image?.localized_image?.length) {

@@ -14,12 +14,12 @@ import useSWR from 'swr';
 
 interface AlertsContextState {
 	actions: {
-		getAlertById: (alertId: string) => null | SimplifiedAlert
-		getAlertsByLineId: (lineId: string) => SimplifiedAlert[]
-		getAlertsByStopId: (stopId: string) => SimplifiedAlert[]
+		getAlertById: (alertId: string) => Alert | null
+		getAlertsByLineId: (lineId: string) => Alert[]
+		getAlertsByStopId: (stopId: string) => Alert[]
 	}
 	data: {
-		alerts: SimplifiedAlert[]
+		alerts: Alert[]
 		featureCollection: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>
 	}
 	flags: {
@@ -50,7 +50,7 @@ export const AlertsContextProvider = ({ children }) => {
 	const currentLocale = useLocale();
 	// const analyticsContext = useAnalyticsContext();
 
-	const [alertsState, setAlertsState] = useState<SimplifiedAlert[]>([]);
+	const [alertsState, setAlertsState] = useState<Alert[]>([]);
 	const [dataFeatureCollectionState, setDataFeatureCollectionState] = useState<GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>>(getBaseGeoJsonFeatureCollection());
 	//
 	const { data: alertsResponse, isLoading: allAlertsLoading } = useSWR<{ data: Alert[] }, Error>(`${getPublicVariable('hub_api_url')}/v1/alerts`, { refreshInterval: 180000 }); // 3 minutes
@@ -61,7 +61,7 @@ export const AlertsContextProvider = ({ children }) => {
 	useEffect(() => {
 		if (!alertsResponse || allAlertsLoading) return;
 		const list = alertsResponse.data ?? [];
-		setAlertsState(list.map(alert => convertToSimplifiedAlert(alert, currentLocale)));
+		setAlertsState(list);
 	}, [alertsResponse, allAlertsLoading, currentLocale]);
 
 	// Transform data into geojson
@@ -78,11 +78,11 @@ export const AlertsContextProvider = ({ children }) => {
 	//
 	// D. Handle actions
 
-	const getAlertById = (alertId: string): null | SimplifiedAlert => {
-		return alertsState.find(item => item.alert_id.toLowerCase() === alertId.toLowerCase()) || null;
+	const getAlertById = (alertId: string): Alert | null => {
+		return alertsState.find(item => item.alert_id === alertId) || null;
 	};
 
-	const getAlertsByLineId = (lineId: string): SimplifiedAlert[] => {
+	const getAlertsByLineId = (lineId: string): Alert[] => {
 		// TODO: Update this to use informed_entity.lineId instead of routeId
 		// This is a temporary solution to filter by lineId until the API is updated
 		return alertsState.filter((resolvedAlert) => {
@@ -94,7 +94,7 @@ export const AlertsContextProvider = ({ children }) => {
 		});
 	};
 
-	const getAlertsByStopId = (stopId: string): SimplifiedAlert[] => {
+	const getAlertsByStopId = (stopId: string): Alert[] => {
 		return alertsState.filter(resolvedAlert => resolvedAlert.informed_entity.some(informedEntity => informedEntity.stop_id === stopId));
 	};
 
@@ -130,7 +130,7 @@ export const AlertsContextProvider = ({ children }) => {
 
 /* * */
 
-export function transformAlertDataIntoGeoJsonFeature(alertData: SimplifiedAlert): GeoJSON.Feature<GeoJSON.Point, GeoJSON.GeoJsonProperties> {
+export function transformAlertDataIntoGeoJsonFeature(alertData: Alert): GeoJSON.Feature<GeoJSON.Point, GeoJSON.GeoJsonProperties> {
 	if (!alertData.coordinates) return null;
 	return {
 		geometry: {

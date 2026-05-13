@@ -45,7 +45,7 @@ export enum AlertEffect {
  * Please use a SimplifiedAlert as many convenience operations are already correctly applied.
  */
 export interface Alert {
-	active_period: TimeRange
+	active_period: TimeRange[]
 	alert_id: string
 	cause: AlertCause
 	coordinates: [number, number]
