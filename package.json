@@ -51,6 +51,9 @@
 		"dev:controller:rides-feeder:prd": "ENVIRONMENT=dev dotenv-run -f ./modules/controller/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-rides-feeder",
 		"dev:controller:ui": "ENVIRONMENT=dev dotenv-run -f ./modules/controller/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-api --filter=@tmlmobilidade/go-controller-frontend",
 		"dev:dates": "ENVIRONMENT=dev dotenv-run -f ./modules/dates/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-dates-*",
+
+		"dev:eta": "ENVIRONMENT=development dotenv-run -f ./modules/eta/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-eta-*",
+
 		"dev:exporter": "ENVIRONMENT=dev dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-*",
 		"dev:exporter-api": "ENVIRONMENT=dev dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-api",
 		"dev:exporter-merged": "ENVIRONMENT=dev dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-export-gtfs-merged",

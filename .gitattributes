@@ -1,5 +1,19 @@
-*.sh    text eol=lf
-*.yaml  text eol=lf
-*.yml   text eol=lf
-*.hcl   text eol=lf
-*.tf    text eol=lf
+# Force LF for all text files
+* text=auto eol=lf
+
+# YAML should always be LF
+*.yaml text eol=lf
+*.yml text eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+
+# Go files
+*.go text eol=lf
+
+# Markdown
+*.md text eol=lf
+
+# Windows scripts can keep CRLF
+*.bat text eol=crlf
+*.ps1 text eol=crlf

@@ -307,6 +307,14 @@ export const API_ROUTES = Object.freeze({
 		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'api_url')}/year-periods`,
 	},
 
+	eta: {
+		// BASE
+		BASE: `${getModuleConfig('eta', 'api_url')}`,
+
+		// ETA
+		ETA_DETAIL: (tripId: string) => `${getModuleConfig('eta', 'api_url')}/eta/${tripId}`,
+		ETA_LIST: `${getModuleConfig('eta', 'api_url')}/eta`,
+	},
 
 	exporter: {
 		// BASE
