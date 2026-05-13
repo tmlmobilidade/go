@@ -1,5 +1,0 @@
-# Ingress is no longer used for this service.
-# External traffic is handled by the nginx proxy VM in pub-go,
-# which forwards requests to the gateway NodePort (30080) on the worker nodes.
-#
-# The OCI Native Ingress Controller add-on can be disabled if not used elsewhere.
