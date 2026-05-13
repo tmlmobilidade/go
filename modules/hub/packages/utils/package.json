@@ -16,7 +16,6 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-hub-pckg-settings": "*",
 		"@tmlmobilidade/go-hub-pckg-types": "*",
 		"@turf/turf": "7.3.5",
 		"luxon": "3.7.2",

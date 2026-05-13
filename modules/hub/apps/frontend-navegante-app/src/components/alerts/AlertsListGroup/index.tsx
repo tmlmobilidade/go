@@ -1,6 +1,6 @@
 'use client';
 
-import type { AlertGroupByDate } from '@/types/alerts.types';
+import type { AlertGroupByDate } from '@tmlmobilidade/go-hub-pckg-types';
 
 import AlertsListEmpty from '@/components/alerts/AlertsListEmpty';
 import { AlertListItem } from '@/components/alerts/AlertsListItem';

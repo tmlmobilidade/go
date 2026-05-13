@@ -6,9 +6,9 @@ import { useLinesContext } from '@/contexts/Lines.context';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { getPublicVariable } from '@/settings/public-variables';
-import { type SimplifiedAlert } from '@/types/alerts.types';
 import { type Line, type NetworkPattern, type NetworkShape, type NetworkStop } from '@/types/api/network';
 import { type Arrival } from '@/types/stops.types';
+import { type SimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-types';
 import { DateTime } from 'luxon';
 import { notFound } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -331,18 +331,18 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	}, [dataPatternsState, operationalDateContext.data.selected_date]);
 
 	useEffect(() => {
-		if (!alertsContext.data.simplified) return;
-		const activeAlerts = alertsContext.data.simplified.filter((simplifiedAlertData) => {
-			return simplifiedAlertData.informed_entity.some((informedEntity) => {
+		if (!alertsContext.data.alerts) return;
+		const activeAlerts = alertsContext.data.alerts.filter((row) => {
+			return row.informed_entity.some((informedEntity) => {
 				if (!informedEntity.stop_id && !informedEntity.route_id) return false;
 				const hasMatchingStop = informedEntity.stop_id === dataActiveStopIdState;
 				const hasMatchingRoute = dataStopState?.route_ids.includes(informedEntity.route_id || '');
-				const isActive = simplifiedAlertData.end_date ? simplifiedAlertData.end_date >= new Date() : true;
+				const isActive = row.end_date ? row.end_date >= new Date() : true;
 				return (hasMatchingStop || hasMatchingRoute) && isActive;
 			});
 		});
 		setDataActiveAlertsState(activeAlerts);
-	}, [alertsContext.data.simplified, dataStopState, dataActiveStopIdState]);
+	}, [alertsContext.data.alerts, dataStopState, dataActiveStopIdState]);
 
 	//
 	// D. Handle actions

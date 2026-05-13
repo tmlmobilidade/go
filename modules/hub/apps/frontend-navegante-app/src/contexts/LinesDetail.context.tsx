@@ -5,8 +5,8 @@ import { useLinesContext } from '@/contexts/Lines.context';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { getPublicVariable } from '@/settings/public-variables';
-import { type SimplifiedAlert } from '@/types/alerts.types';
 import { Line, NetworkPattern, NetworkRoute, NetworkShape, Waypoint } from '@/types/api/network';
+import { type SimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-types';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -186,14 +186,14 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 	}, [dataAllPatternsState, operationalDateContext.data.selected_date]);
 
 	useEffect(() => {
-		if (!alertsContext.data.simplified) return;
+		if (!alertsContext.data.alerts) return;
 
-		const activeAlerts = alertsContext.data.simplified.filter((simplifiedAlertData) => {
-			const isActive = (simplifiedAlertData.end_date && !isNaN(simplifiedAlertData.end_date.getTime())) ? new Date(simplifiedAlertData.end_date).getTime() >= new Date().getTime() : true;
+		const activeAlerts = alertsContext.data.alerts.filter((row) => {
+			const isActive = (row.end_date && !isNaN(row.end_date.getTime())) ? new Date(row.end_date).getTime() >= new Date().getTime() : true;
 
 			if (!isActive) return false;
 
-			return simplifiedAlertData.informed_entity.some((informedEntity) => {
+			return row.informed_entity.some((informedEntity) => {
 				const normalizedLineId = lineId?.trim();
 				const lineOperatorDigit = normalizedLineId?.match(/\d/)?.[0];
 				const informedAgencyId = informedEntity.agency_id?.trim();
@@ -216,7 +216,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 		});
 
 		setDataActiveAlertsState(activeAlerts);
-	}, [alertsContext.data.simplified, lineId, dataLineState, dataAllPatternsState]);
+	}, [alertsContext.data.alerts, lineId, dataLineState, dataAllPatternsState]);
 
 	//
 	// D. Handle actions

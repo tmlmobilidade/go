@@ -33,7 +33,7 @@ export function AlertListItem({ alertId }: Props) {
 	//
 	// B. Transform data
 
-	const simplifiedAlertData = alertsContext.actions.getSimplifiedAlertById(alertId);
+	const resolvedAlert = alertsContext.actions.getAlertById(alertId);
 
 	const alertHref = environmentContext.actions.getNormalizedHref(`/alerts/${alertId}`);
 
@@ -42,14 +42,14 @@ export function AlertListItem({ alertId }: Props) {
 
 	return (
 		<Accordion.Item value={alertId}>
-			<Accordion.Control icon={<AlertEffectIcon effect={simplifiedAlertData?.effect} />}>{simplifiedAlertData?.title}</Accordion.Control>
+			<Accordion.Control icon={<AlertEffectIcon effect={resolvedAlert?.effect} />}>{resolvedAlert?.title}</Accordion.Control>
 			<Accordion.Panel classNames={{ content: styles.contentWrapper }}>
 				<div className={styles.infoBar}>
-					<AlertActivePeriodStart date={simplifiedAlertData?.start_date} size="sm" />
-					<AlertActivePeriodEnd date={simplifiedAlertData?.end_date} size="sm" />
+					<AlertActivePeriodStart date={resolvedAlert?.start_date} size="sm" />
+					<AlertActivePeriodEnd date={resolvedAlert?.end_date} size="sm" />
 				</div>
-				<p className={styles.description}>{simplifiedAlertData?.description}</p>
-				{simplifiedAlertData?.image_url && <AlertsListItemImageThumbnail alertId={simplifiedAlertData?.alert_id || ''} alertTitle={simplifiedAlertData?.title || ''} alt={simplifiedAlertData?.title} href={`/alerts/${alertId}`} src={simplifiedAlertData.image_url} />}
+				<p className={styles.description}>{resolvedAlert?.description}</p>
+				{resolvedAlert?.image_url && <AlertsListItemImageThumbnail alertId={resolvedAlert?.alert_id || ''} alertTitle={resolvedAlert?.title || ''} alt={resolvedAlert?.title} href={`/alerts/${alertId}`} src={resolvedAlert.image_url} />}
 				<div>
 					<Button href={alertHref} icon={<IconArrowUpRight size={16} />} label={t('open')} variant="pill" />
 				</div>

@@ -1,7 +1,7 @@
 /* * */
 
 import { AlertActivePeriodStart } from '@/components/alerts/AlertActivePeriod';
-import { type SimplifiedAlert } from '@/types/alerts.types';
+import { type SimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-types';
 import { IconCircleArrowRightFilled } from '@tabler/icons-react';
 import Link from 'next/link';
 

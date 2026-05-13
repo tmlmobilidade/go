@@ -1,6 +1,6 @@
 /* * */
 
-import { AlertCause, AlertEffect } from '@/types/alerts.types';
+import { AlertCause, AlertEffect } from '@tmlmobilidade/go-hub-pckg-types';
 
 // Helper function to get severity level for a cause
 export function getCauseSeverityLevel(cause: AlertCause): number {

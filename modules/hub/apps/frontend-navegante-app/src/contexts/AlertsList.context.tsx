@@ -1,6 +1,6 @@
 'use client';
 
-import type { AlertCause, AlertEffect, SimplifiedAlert } from '@/types/alerts.types.js';
+import type { AlertCause, AlertEffect, SimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-types';
 
 import { agencyMatchesSelection, agencyMatchesTransports } from '@/utils/transportAgencies';
 import { DateTime } from 'luxon';
@@ -93,7 +93,7 @@ export const AlertsListContextProvider = ({ children }) => {
 	const filterByAgency = globalSettingsContext.filterbar.by_agency;
 	const filterByTransports = globalSettingsContext.filterbar.transports;
 
-	const allAlertsData = useMemo(() => alertsContext.data.simplified, [alertsContext.data.simplified]);
+	const allAlertsData = useMemo(() => alertsContext.data.alerts, [alertsContext.data.alerts]);
 
 	//
 	// C. Transform data

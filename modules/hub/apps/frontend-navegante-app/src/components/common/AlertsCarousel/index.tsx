@@ -2,7 +2,7 @@
 
 import { AlertsCarouselSlide } from '@/components/common/AlertsCarouselSlide';
 import Carousel from '@/components/common/Carousel';
-import { type SimplifiedAlert } from '@/types/alerts.types';
+import { type SimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-types';
 
 /* * */
 

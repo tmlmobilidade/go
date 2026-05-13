@@ -35,7 +35,7 @@ export function AlertsDetail({ alertId }: Props) {
 	//
 	// B. Fetch data
 
-	const simplifiedAlertData = alertsContext.actions.getSimplifiedAlertById(alertId);
+	const alert = alertsContext.actions.getAlertById(alertId);
 
 	//
 	// C. Transform data
@@ -43,12 +43,12 @@ export function AlertsDetail({ alertId }: Props) {
 	const uniqueInformedEntityLineIds = useMemo(() => {
 		const set = new Set<string>();
 
-		simplifiedAlertData?.informed_entity.forEach((entity) => {
+		alert?.informed_entity.forEach((entity) => {
 			const lineId = entity.route_id?.split('_')[0];
 			if (lineId) set.add(lineId);
 		});
 		return Array.from(set);
-	}, [simplifiedAlertData]);
+	}, [alert]);
 
 	//
 	// D. Render components
@@ -60,14 +60,14 @@ export function AlertsDetail({ alertId }: Props) {
 				<Section withBottomDivider withPadding>
 					<BackButton href="/?section=alerts" />
 				</Section>
-				<Section heading={simplifiedAlertData?.title} withBottomDivider withPadding>
+				<Section heading={alert?.title} withBottomDivider withPadding>
 					<div className={styles.infoBar}>
-						{simplifiedAlertData?.cause && <AlertCauseIcon cause={simplifiedAlertData.cause} withText />}
-						{simplifiedAlertData?.effect && <AlertEffectIcon effect={simplifiedAlertData.effect} withText />}
-						{simplifiedAlertData?.start_date && <AlertActivePeriodStart date={simplifiedAlertData.start_date} />}
+						{alert?.cause && <AlertCauseIcon cause={alert.cause} withText />}
+						{alert?.effect && <AlertEffectIcon effect={alert.effect} withText />}
+						{alert?.start_date && <AlertActivePeriodStart date={alert.start_date} />}
 					</div>
 				</Section>
-				{simplifiedAlertData?.informed_entity && (
+				{alert?.informed_entity && (
 					<Section withPadding>
 						<div className={styles.infoBar}>
 							{uniqueInformedEntityLineIds.map((lineId, index) => (
@@ -81,9 +81,9 @@ export function AlertsDetail({ alertId }: Props) {
 			<Surface>
 				<Section withPadding>
 					<div className={styles.contentWrapper}>
-						{simplifiedAlertData?.description && <p className={styles.description}>{simplifiedAlertData.description}</p>}
-						{simplifiedAlertData?.image_url && <AlertsDetailImageThumbnail imageUrl={simplifiedAlertData?.image_url} title={simplifiedAlertData?.title} />}
-						{simplifiedAlertData?.url && <Button href={simplifiedAlertData.url || '#'} icon={<IconExternalLink size={18} />} label={t('more_info')} />}
+						{alert?.description && <p className={styles.description}>{alert.description}</p>}
+						{alert?.image_url && <AlertsDetailImageThumbnail imageUrl={alert?.image_url} title={alert?.title} />}
+						{alert?.url && <Button href={alert.url || '#'} icon={<IconExternalLink size={18} />} label={t('more_info')} />}
 					</div>
 				</Section>
 			</Surface>
