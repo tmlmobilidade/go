@@ -21,19 +21,19 @@ export interface SshTunnelServiceOptions {
 
 export class SshTunnelService {
 	private static _instance: SshTunnelService;
-	get server(): Server | undefined {
-		return this._server;
-	}
 
 	private _server: Server;
 	private config: SshConfig;
 	private options: SshTunnelServiceOptions;
-
 	private retries = 0;
 
 	constructor(config: SshConfig, options?: SshTunnelServiceOptions) {
 		this.config = config;
 		if (options) this.options = options;
+	}
+
+	get server(): Server | undefined {
+		return this._server;
 	}
 
 	/**

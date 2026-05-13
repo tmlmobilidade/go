@@ -9,6 +9,7 @@ interface GroupStage {
 		_id: Record<string, any> | string
 	}
 }
+interface ReplaceRootStage { $replaceRoot: { newRoot: Record<string, any> | string } }
 interface SortStage<T> { $sort: Partial<Record<keyof T, -1 | 1> | Record<string, -1 | 1>> }
 interface LimitStage { $limit: number }
 interface SkipStage { $skip: number }
@@ -23,6 +24,7 @@ type AggregationStage<T> =
   | LookupStage
   | MatchStage<T>
   | ProjectStage<T>
+  | ReplaceRootStage
   | SkipStage
   | SortStage<T>
   | UnwindStage;
