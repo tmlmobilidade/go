@@ -34,9 +34,9 @@ export function AgencyDetail() {
 		<Pane header={[<AgencyDetailHeader key="header" />]}>
 			<AgencyDetailBasicInfo />
 			<AgencySectionFinancials />
-			<AgencySectionContacts />
-			<AgencySectionValidationRules />
-			<AgencySectionAlertsMap />
+			{/* <AgencySectionContacts /> */}
+			{/* <AgencySectionValidationRules /> */}
+			{/* <AgencySectionAlertsMap /> */}
 		</Pane>
 	);
 

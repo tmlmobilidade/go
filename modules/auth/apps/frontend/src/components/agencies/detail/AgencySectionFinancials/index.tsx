@@ -77,7 +77,7 @@ export function AgencySectionFinancials() {
 									onChange={field.onChange}
 									placeholder="100000"
 									readOnly={agencyDetailContext.flags.isReadOnly}
-									step={0.01}
+									step={1}
 									value={field.value}
 								/>
 							)}

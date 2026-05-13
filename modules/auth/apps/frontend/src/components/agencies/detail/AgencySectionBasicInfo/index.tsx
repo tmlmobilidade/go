@@ -33,13 +33,13 @@ export function AgencyDetailBasicInfo() {
 						name="name"
 						render={({ field, fieldState }) => (
 							<TextInput
+								defaultValue={field.value}
 								error={fieldState.error?.message}
 								label={t('default:agencies.detail.SectionBasicInfo.fields.name.label')}
 								maxLength={CreateAgencySchema.shape.name.maxLength}
 								onChange={field.onChange}
 								placeholder={t('default:agencies.detail.SectionBasicInfo.fields.name.placeholder')}
 								readOnly={agencyDetailContext.flags.isReadOnly}
-								value={field.value}
 								withAsterisk={!CreateAgencySchema.shape.name.isOptional()}
 							/>
 						)}
@@ -49,13 +49,13 @@ export function AgencyDetailBasicInfo() {
 						name="short_name"
 						render={({ field, fieldState }) => (
 							<TextInput
+								defaultValue={field.value}
 								error={fieldState.error?.message}
 								label={t('default:agencies.detail.SectionBasicInfo.fields.short_name.label')}
 								maxLength={CreateAgencySchema.shape.short_name.maxLength}
 								onChange={field.onChange}
 								placeholder={t('default:agencies.detail.SectionBasicInfo.fields.short_name.placeholder')}
 								readOnly={agencyDetailContext.flags.isReadOnly}
-								value={field.value}
 								withAsterisk={!CreateAgencySchema.shape.short_name.isOptional()}
 							/>
 						)}
@@ -67,6 +67,7 @@ export function AgencyDetailBasicInfo() {
 						name="public_email"
 						render={({ field, fieldState }) => (
 							<TextInput
+								defaultValue={field.value}
 								error={fieldState.error?.message}
 								label={t('default:agencies.detail.SectionBasicInfo.fields.public_email.label')}
 								maxLength={CreateAgencySchema.shape.public_email.maxLength}
@@ -74,7 +75,6 @@ export function AgencyDetailBasicInfo() {
 								placeholder={t('default:agencies.detail.SectionBasicInfo.fields.public_email.placeholder')}
 								readOnly={agencyDetailContext.flags.isReadOnly}
 								type="email"
-								value={field.value}
 								withAsterisk={!CreateAgencySchema.shape.public_email.isOptional()}
 							/>
 						)}
@@ -84,6 +84,7 @@ export function AgencyDetailBasicInfo() {
 						name="phone"
 						render={({ field, fieldState }) => (
 							<TextInput
+								defaultValue={field.value}
 								error={fieldState.error?.message}
 								label={t('default:agencies.detail.SectionBasicInfo.fields.phone.label')}
 								maxLength={CreateAgencySchema.shape.phone.maxLength}
@@ -91,7 +92,6 @@ export function AgencyDetailBasicInfo() {
 								placeholder={t('default:agencies.detail.SectionBasicInfo.fields.phone.placeholder')}
 								readOnly={agencyDetailContext.flags.isReadOnly}
 								type="tel"
-								value={field.value}
 								withAsterisk={!CreateAgencySchema.shape.phone.isOptional()}
 							/>
 						)}
@@ -101,6 +101,7 @@ export function AgencyDetailBasicInfo() {
 						name="website_url"
 						render={({ field, fieldState }) => (
 							<TextInput
+								defaultValue={field.value}
 								error={fieldState.error?.message}
 								label={t('default:agencies.detail.SectionBasicInfo.fields.website_url.label')}
 								maxLength={CreateAgencySchema.shape.website_url.maxLength}
@@ -108,7 +109,6 @@ export function AgencyDetailBasicInfo() {
 								placeholder={t('default:agencies.detail.SectionBasicInfo.fields.website_url.placeholder')}
 								readOnly={agencyDetailContext.flags.isReadOnly}
 								type="url"
-								value={field.value}
 								withAsterisk={!CreateAgencySchema.shape.website_url.isOptional()}
 							/>
 						)}
@@ -118,6 +118,7 @@ export function AgencyDetailBasicInfo() {
 						name="fare_url"
 						render={({ field, fieldState }) => (
 							<TextInput
+								defaultValue={field.value}
 								error={fieldState.error?.message}
 								label={t('default:agencies.detail.SectionBasicInfo.fields.fare_url.label')}
 								maxLength={CreateAgencySchema.shape.fare_url.maxLength}
@@ -125,7 +126,6 @@ export function AgencyDetailBasicInfo() {
 								placeholder={t('default:agencies.detail.SectionBasicInfo.fields.fare_url.placeholder')}
 								readOnly={agencyDetailContext.flags.isReadOnly}
 								type="url"
-								value={field.value}
 								withAsterisk={!CreateAgencySchema.shape.fare_url.isOptional()}
 							/>
 						)}
@@ -135,6 +135,7 @@ export function AgencyDetailBasicInfo() {
 						name="timezone"
 						render={({ field, fieldState }) => (
 							<Select
+								defaultValue={field.value}
 								error={fieldState.error?.message}
 								label={t('default:agencies.detail.SectionBasicInfo.fields.timezone.label')}
 								onChange={field.onChange}
