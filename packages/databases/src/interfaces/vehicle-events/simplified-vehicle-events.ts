@@ -1,4 +1,7 @@
-/* * */
+/**
+ * Simplified Vehicle Events represent a simplified version of the raw vehicle events.
+ * These are stored in ClickHouse for performance and scalability reasons.
+*/
 
 import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
