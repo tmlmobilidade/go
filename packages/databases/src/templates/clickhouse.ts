@@ -18,6 +18,13 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 	protected readonly abstract tableName: string;
 
 	protected readonly engine: ClickHouseTableEngine = 'MergeTree';
+	/**
+	 * When `true` (default), `init()` runs `ensureDatabase()` + `ensureTable()` so
+	 * the schema is created from this class. Set to `false` for tables whose schema
+	 * is owned externally (e.g. by a `.sql` DDL file applied at startup); the
+	 * interface then becomes a typed insert/query helper only.
+	 */
+	protected readonly manageSchema: boolean = true;
 	protected readonly orderBy: string = '_id';
 	protected readonly partitionBy: null | string = null;
 
@@ -137,12 +144,17 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 		// Validate required properties before attempting to connect
 		if (!this.databaseName) throw new Error('CLICKHOUSE: databaseName is required.');
 		if (!this.tableName) throw new Error('CLICKHOUSE: tableName is required.');
-		if (!this.schema || Object.entries(this.schema).length === 0) throw new Error('CLICKHOUSE: schema is required and cannot be empty.');
+		if (this.manageSchema && (!this.schema || Object.entries(this.schema).length === 0)) {
+			throw new Error('CLICKHOUSE: schema is required and cannot be empty.');
+		}
 		// Connect to the ClickHouse client
 		this.client = await this.connectToClient();
-		// Ensure the database and table exist, and perform any additional setup
-		await this.ensureDatabase();
-		await this.ensureTable();
+		// Only own the schema when this interface is the source of truth.
+		// External DDL owners (see `manageSchema`) skip this entirely.
+		if (this.manageSchema) {
+			await this.ensureDatabase();
+			await this.ensureTable();
+		}
 		await this.postInit();
 	}
 
@@ -221,8 +233,8 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 			CREATE TABLE IF NOT EXISTS "${this.databaseName}"."${this.tableName}" (
 				${Object.entries<ClickHouseColumn>(this.schema).map(([key, column]) => `${key} ${column.type}`).join(', ')}
 			) ENGINE = ${this.getEngineString()}
-			${this.orderBy ? `ORDER BY ${this.orderBy}` : ''}
-			${this.partitionBy ? `PARTITION BY ${this.partitionBy}` : ''}
+			${this.orderBy ? `ORDER BY (${this.orderBy})` : ''}
+			${this.partitionBy ? `PARTITION BY (${this.partitionBy})` : ''}
 		`;
 		// Perform the query to create the table
 		try {
@@ -263,6 +275,8 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 		switch (this.engine) {
 			case 'MergeTree':
 				return `MergeTree()`;
+			case 'ReplacingMergeTree':
+				return `ReplacingMergeTree()`;
 			default:
 				throw new Error(`CLICKHOUSE [${this.databaseName}/${this.tableName}]: Unsupported engine type: ${this.engine}`);
 		}

@@ -353,6 +353,15 @@ import { getModuleConfig } from './app-configs.js';
 /* * */
 
 export const PAGE_ROUTES = Object.freeze({
+
+	root: {
+		// BASE
+		BASE: `${getModuleConfig('root', 'frontend_url')}`,
+
+		// REFERENCE
+		REFERENCE_LIST: `${getModuleConfig('root', 'frontend_url')}/reference`,
+	},
+
 EOF
 
 # Process each module
@@ -455,8 +464,7 @@ generate_routes_for_type() {
 
         # Convert module name to comment format (uppercase)
         module_comment_upper=$(echo "$module_name" | tr '[:lower:]' '[:upper:]')
-        echo "	/* * */" >> "$output_file"
-        echo "	/* ${module_comment_upper} */" >> "$output_file"
+        echo "" >> "$output_file"
         echo "	${module_name}: {" >> "$output_file"
 
         # Add BASE route at the beginning of each module group
@@ -623,6 +631,9 @@ EOF
 # Write to output file
 mkdir -p "$(dirname "$OUTPUT_FILE")"
 cp "${TEMP_FILE}" "${OUTPUT_FILE}"
+
+# Lint the output file
+npm --workspace @tmlmobilidade/consts run lint:fix
 
 printf "${GREEN}Routes generated successfully at: ${OUTPUT_FILE}${NC}\n"
 

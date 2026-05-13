@@ -8,8 +8,7 @@ import { getModuleConfig } from './app-configs.js';
 /* * */
 
 export const PAGE_ROUTES = Object.freeze({
-	/* * */
-	/* ALERTS */
+
 	alerts: {
 		// BASE
 		BASE: `${getModuleConfig('alerts', 'frontend_url')}`,
@@ -19,8 +18,6 @@ export const PAGE_ROUTES = Object.freeze({
 		ALERTS_LIST: `${getModuleConfig('alerts', 'frontend_url')}`,
 	},
 
-	/* * */
-	/* AUTH */
 	auth: {
 		// BASE
 		BASE: `${getModuleConfig('auth', 'frontend_url')}`,
@@ -55,8 +52,6 @@ export const PAGE_ROUTES = Object.freeze({
 		USERS_LIST: `${getModuleConfig('auth', 'frontend_url')}/users`,
 	},
 
-	/* * */
-	/* CONTROLLER */
 	controller: {
 		// BASE
 		BASE: `${getModuleConfig('controller', 'frontend_url')}`,
@@ -70,8 +65,6 @@ export const PAGE_ROUTES = Object.freeze({
 		SAMS_LIST: `${getModuleConfig('controller', 'frontend_url')}/sams`,
 	},
 
-	/* * */
-	/* DATES */
 	dates: {
 		// BASE
 		BASE: `${getModuleConfig('dates', 'frontend_url')}`,
@@ -96,8 +89,6 @@ export const PAGE_ROUTES = Object.freeze({
 		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'frontend_url')}/year-periods`,
 	},
 
-	/* * */
-	/* FLEET */
 	fleet: {
 		// BASE
 		BASE: `${getModuleConfig('fleet', 'frontend_url')}`,
@@ -107,8 +98,6 @@ export const PAGE_ROUTES = Object.freeze({
 		VEHICLES_LIST: `${getModuleConfig('fleet', 'frontend_url')}/vehicles`,
 	},
 
-	/* * */
-	/* OFFER */
 	offer: {
 		// BASE
 		BASE: `${getModuleConfig('offer', 'frontend_url')}`,
@@ -136,8 +125,6 @@ export const PAGE_ROUTES = Object.freeze({
 		ZONES_LIST: `${getModuleConfig('offer', 'frontend_url')}/zones`,
 	},
 
-	/* * */
-	/* PERFORMANCE */
 	performance: {
 		// BASE
 		BASE: `${getModuleConfig('performance', 'frontend_url')}`,
@@ -158,8 +145,6 @@ export const PAGE_ROUTES = Object.freeze({
 		SUPPLY_LIST: `${getModuleConfig('performance', 'frontend_url')}/supply`,
 	},
 
-	/* * */
-	/* PLANS */
 	plans: {
 		// BASE
 		BASE: `${getModuleConfig('plans', 'frontend_url')}`,
@@ -173,8 +158,14 @@ export const PAGE_ROUTES = Object.freeze({
 		VALIDATIONS_LIST: `${getModuleConfig('plans', 'frontend_url')}/validations`,
 	},
 
-	/* * */
-	/* STOPS */
+	root: {
+		// BASE
+		BASE: `${getModuleConfig('root', 'frontend_url')}`,
+
+		// REFERENCE
+		REFERENCE_LIST: `${getModuleConfig('root', 'frontend_url')}/reference`,
+	},
+
 	stops: {
 		// BASE
 		BASE: `${getModuleConfig('stops', 'frontend_url')}`,
@@ -186,8 +177,7 @@ export const PAGE_ROUTES = Object.freeze({
 } as const);
 
 export const API_ROUTES = Object.freeze({
-	/* * */
-	/* ALERTS */
+
 	alerts: {
 		// BASE
 		BASE: `${getModuleConfig('alerts', 'api_url')}`,
@@ -208,8 +198,6 @@ export const API_ROUTES = Object.freeze({
 		OPERATION_STOPS: `${getModuleConfig('alerts', 'api_url')}/operation/stops`,
 	},
 
-	/* * */
-	/* AUTH */
 	auth: {
 		// BASE
 		BASE: `${getModuleConfig('auth', 'api_url')}`,
@@ -259,8 +247,6 @@ export const API_ROUTES = Object.freeze({
 		WIKI_LIST: `${getModuleConfig('auth', 'api_url')}/wiki`,
 	},
 
-	/* * */
-	/* CONTROLLER */
 	controller: {
 		// BASE
 		BASE: `${getModuleConfig('controller', 'api_url')}`,
@@ -296,8 +282,6 @@ export const API_ROUTES = Object.freeze({
 		SAMS_TIMELINE_SUMMARY: `${getModuleConfig('controller', 'api_url')}/sams/timeline-summary`,
 	},
 
-	/* * */
-	/* DATES */
 	dates: {
 		// BASE
 		BASE: `${getModuleConfig('dates', 'api_url')}`,
@@ -324,8 +308,15 @@ export const API_ROUTES = Object.freeze({
 		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'api_url')}/year-periods`,
 	},
 
-	/* * */
-	/* EXPORTER */
+	eta: {
+		// BASE
+		BASE: `${getModuleConfig('eta', 'api_url')}`,
+
+		// ETA
+		ETA_DETAIL: (tripId: string) => `${getModuleConfig('eta', 'api_url')}/eta/${tripId}`,
+		ETA_LIST: `${getModuleConfig('eta', 'api_url')}/eta`,
+	},
+
 	exporter: {
 		// BASE
 		BASE: `${getModuleConfig('exporter', 'api_url')}`,
@@ -335,8 +326,6 @@ export const API_ROUTES = Object.freeze({
 		EXPORTER_LIST: `${getModuleConfig('exporter', 'api_url')}/exporter`,
 	},
 
-	/* * */
-	/* FLEET */
 	fleet: {
 		// BASE
 		BASE: `${getModuleConfig('fleet', 'api_url')}`,
@@ -349,8 +338,6 @@ export const API_ROUTES = Object.freeze({
 		VEHICLES_POSITIONS: `${getModuleConfig('fleet', 'api_url')}/vehicles/positions`,
 	},
 
-	/* * */
-	/* HUB */
 	hub: {
 		// BASE
 		BASE: `${getModuleConfig('hub', 'api_url')}`,
@@ -367,8 +354,6 @@ export const API_ROUTES = Object.freeze({
 		PLANS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/plans`,
 	},
 
-	/* * */
-	/* LOCATIONS */
 	locations: {
 		// BASE
 		BASE: `${getModuleConfig('locations', 'api_url')}`,
@@ -381,8 +366,6 @@ export const API_ROUTES = Object.freeze({
 		LOCATIONS_PARISHES: `${getModuleConfig('locations', 'api_url')}/locations/parishes`,
 	},
 
-	/* * */
-	/* OFFER */
 	offer: {
 		// BASE
 		BASE: `${getModuleConfig('offer', 'api_url')}`,
@@ -424,8 +407,6 @@ export const API_ROUTES = Object.freeze({
 		ZONES_LIST: `${getModuleConfig('offer', 'api_url')}/zones`,
 	},
 
-	/* * */
-	/* PERFORMANCE */
 	performance: {
 		// BASE
 		BASE: `${getModuleConfig('performance', 'api_url')}`,
@@ -441,8 +422,6 @@ export const API_ROUTES = Object.freeze({
 		NETWORK_PATTERNS: `${getModuleConfig('performance', 'api_url')}/network/patterns`,
 	},
 
-	/* * */
-	/* PLANS */
 	plans: {
 		// BASE
 		BASE: `${getModuleConfig('plans', 'api_url')}`,
@@ -467,8 +446,6 @@ export const API_ROUTES = Object.freeze({
 		VALIDATIONS_LIST: `${getModuleConfig('plans', 'api_url')}/validations`,
 	},
 
-	/* * */
-	/* STOPS */
 	stops: {
 		// BASE
 		BASE: `${getModuleConfig('stops', 'api_url')}`,

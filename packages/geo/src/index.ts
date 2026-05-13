@@ -5,6 +5,7 @@ export * from '@/coordinates.js';
 export * from '@/cut-line-at-length.js';
 export * from '@/geojson-collections.js';
 export * from '@/get-geofence-on-point.js';
+export * from '@/hashed-shapes-to-geojson.js';
 export * from '@/is-point-in-polygon.js';
 export * from '@/measurements.js';
 export * from '@/vehicle-event-to-geojson.js';

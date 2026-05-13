@@ -52,12 +52,21 @@ db.createRole({
 
 db.createRole({
 	privileges: [
+		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'files', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'plans', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'gtfs_validations', db: 'production' } },
 	],
 	role: 'plans',
 	roles: [{ db: 'admin', role: 'common' }],
+});
+
+db.createRole({
+	privileges: [
+		{ actions: ['find'], resource: { collection: 'files', db: 'production' } },
+	],
+	role: 'hub',
+	roles: [],
 });
 
 db.createRole({
@@ -207,6 +216,9 @@ db.createRole({
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'fares', db: 'production' } },
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'zones', db: 'production' } },
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'events', db: 'production' } },
+		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'annotations', db: 'production' } },
+		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'holidays', db: 'production' } },
+		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'year_periods', db: 'production' } },
 	],
 	role: 'dgc-user',
 	roles: [],
