@@ -7,6 +7,7 @@ import { AlertsCarousel } from '@/components/common/AlertsCarousel';
 import { Section } from '@/components/layout/Section';
 import { Surface } from '@/components/layout/Surface';
 import { useAlertsContext } from '@/contexts/Alerts.context';
+import { getAlertStartDateOrEpoch } from '@/utils/alerts';
 import { DateTime } from 'luxon';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
@@ -27,11 +28,11 @@ export function AlertsSection() {
 
 	const alertsActiveTodayAndTomorrow = useMemo(() => {
 		// Sort alerts by start date descending
-		const sortedAlerts = [...alertsContext.data.alerts].sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime());
+		const sortedAlerts = [...alertsContext.data.alerts].sort((a, b) => getAlertStartDateOrEpoch(b).getTime() - getAlertStartDateOrEpoch(a).getTime());
 		// Filter alerts to only include alerts that start today or tomorrow
 		const filteredAlerts = sortedAlerts.filter((alert) => {
 			const today = DateTime.now().startOf('day').toJSDate();
-			const alertDate = new Date(alert.start_date);
+			const alertDate = getAlertStartDateOrEpoch(alert);
 			return alertDate >= today;
 		});
 

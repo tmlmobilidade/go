@@ -8,7 +8,8 @@ import { useStopsContext } from '@/contexts/Stops.context';
 import { getPublicVariable } from '@/settings/public-variables';
 import { type Line, type NetworkPattern, type NetworkShape, type NetworkStop } from '@/types/api/network';
 import { type Arrival } from '@/types/stops.types';
-import { type SimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-types';
+import { isAlertActiveNow } from '@/utils/alerts';
+import { type Alert } from '@tmlmobilidade/go-hub-pckg-types';
 import { DateTime } from 'luxon';
 import { notFound } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -22,7 +23,7 @@ interface StopsDetailContextState {
 		setActiveTripId: (tripId: string, stopSequence: number) => void
 	}
 	data: {
-		active_alerts: SimplifiedAlert[] | undefined
+		active_alerts: Alert[] | undefined
 		active_pattern_group: NetworkPattern | undefined
 		active_shape: NetworkShape | undefined
 		active_stop_id: string
@@ -82,7 +83,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const [dataTimetableRealtimeFutureState, setDataTimetableRealtimeFutureState] = useState<Arrival[] | undefined>(undefined);
 	const [dataTimetableScheduleState, setDataTimetableScheduleState] = useState<Arrival[] | undefined>(undefined);
 	const [dataActivePatternState, setDataActivePatternState] = useState<NetworkPattern | undefined>(undefined);
-	const [dataActiveAlertsState, setDataActiveAlertsState] = useState<SimplifiedAlert[] | undefined>(undefined);
+	const [dataActiveAlertsState, setDataActiveAlertsState] = useState<Alert[] | undefined>(undefined);
 	const [dataActiveTripIdState, setDataActiveTripIdState] = useState<string | undefined>(undefined);
 	const [dataActiveStopSequenceState, setDataActiveStopSequenceState] = useState<number | undefined>(undefined);
 
@@ -337,8 +338,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 				if (!informedEntity.stop_id && !informedEntity.route_id) return false;
 				const hasMatchingStop = informedEntity.stop_id === dataActiveStopIdState;
 				const hasMatchingRoute = dataStopState?.route_ids.includes(informedEntity.route_id || '');
-				const isActive = row.end_date ? row.end_date >= new Date() : true;
-				return (hasMatchingStop || hasMatchingRoute) && isActive;
+				return (hasMatchingStop || hasMatchingRoute) && isAlertActiveNow(row);
 			});
 		});
 		setDataActiveAlertsState(activeAlerts);

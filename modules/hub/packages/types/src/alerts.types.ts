@@ -85,7 +85,7 @@ export interface SimplifiedAlert {
 /* * */
 
 export interface AlertGroupByDate {
-	items: SimplifiedAlert[]
+	items: Alert[]
 	label?: string
 	title: string
 	value: string

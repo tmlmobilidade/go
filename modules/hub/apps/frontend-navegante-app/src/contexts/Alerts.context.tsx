@@ -1,14 +1,10 @@
 'use client';
 
 import { getPublicVariable } from '@/settings/public-variables';
-import convertToSimplifiedAlert from '@/utils/convertToSimplifiedAlert';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import { type Alert, type SimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-types';
-import { useLocale } from 'next-intl';
+import { type Alert } from '@tmlmobilidade/go-hub-pckg-types';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
-
-// import { useAnalyticsContext } from './Analytics.context';
 
 /* * */
 
@@ -47,7 +43,6 @@ export const AlertsContextProvider = ({ children }) => {
 	//
 	// A. Setup variables
 
-	const currentLocale = useLocale();
 	// const analyticsContext = useAnalyticsContext();
 
 	const [alertsState, setAlertsState] = useState<Alert[]>([]);
@@ -62,7 +57,7 @@ export const AlertsContextProvider = ({ children }) => {
 		if (!alertsResponse || allAlertsLoading) return;
 		const list = alertsResponse.data ?? [];
 		setAlertsState(list);
-	}, [alertsResponse, allAlertsLoading, currentLocale]);
+	}, [alertsResponse, allAlertsLoading]);
 
 	// Transform data into geojson
 	useEffect(() => {

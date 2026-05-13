@@ -9,8 +9,9 @@ import Button from '@/components/common/Button';
 import { Section } from '@/components/layout/Section';
 import { Surface } from '@/components/layout/Surface';
 import { useAlertsContext } from '@/contexts/Alerts.context';
+import { getAlertDescription, getAlertImageUrl, getAlertMoreInfoUrl, getAlertStartDate, getAlertTitle } from '@/utils/alerts';
 import { IconExternalLink } from '@tabler/icons-react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';
@@ -30,6 +31,7 @@ export function AlertsDetail({ alertId }: Props) {
 	// A. Setup variables
 
 	const t = useTranslations('alerts.AlertsDetail');
+	const locale = useLocale();
 	const alertsContext = useAlertsContext();
 
 	//
@@ -44,11 +46,26 @@ export function AlertsDetail({ alertId }: Props) {
 		const set = new Set<string>();
 
 		alert?.informed_entity.forEach((entity) => {
+			if (entity.line_id?.trim()) {
+				set.add(entity.line_id.trim());
+				return;
+			}
 			const lineId = entity.route_id?.split('_')[0];
 			if (lineId) set.add(lineId);
 		});
 		return Array.from(set);
 	}, [alert]);
+
+	const view = useMemo(() => {
+		if (!alert) return null;
+		return {
+			description: getAlertDescription(alert, locale),
+			imageUrl: getAlertImageUrl(alert, locale),
+			moreInfoUrl: getAlertMoreInfoUrl(alert, locale),
+			startDate: getAlertStartDate(alert),
+			title: getAlertTitle(alert, locale),
+		};
+	}, [alert, locale]);
 
 	//
 	// D. Render components
@@ -60,11 +77,11 @@ export function AlertsDetail({ alertId }: Props) {
 				<Section withBottomDivider withPadding>
 					<BackButton href="/?section=alerts" />
 				</Section>
-				<Section heading={alert?.title} withBottomDivider withPadding>
+				<Section heading={view?.title} withBottomDivider withPadding>
 					<div className={styles.infoBar}>
 						{alert?.cause && <AlertCauseIcon cause={alert.cause} withText />}
 						{alert?.effect && <AlertEffectIcon effect={alert.effect} withText />}
-						{alert?.start_date && <AlertActivePeriodStart date={alert.start_date} />}
+						{view?.startDate && <AlertActivePeriodStart date={view.startDate} />}
 					</div>
 				</Section>
 				{alert?.informed_entity && (
@@ -81,9 +98,9 @@ export function AlertsDetail({ alertId }: Props) {
 			<Surface>
 				<Section withPadding>
 					<div className={styles.contentWrapper}>
-						{alert?.description && <p className={styles.description}>{alert.description}</p>}
-						{alert?.image_url && <AlertsDetailImageThumbnail imageUrl={alert?.image_url} title={alert?.title} />}
-						{alert?.url && <Button href={alert.url || '#'} icon={<IconExternalLink size={18} />} label={t('more_info')} />}
+						{view?.description && <p className={styles.description}>{view.description}</p>}
+						{view?.imageUrl && <AlertsDetailImageThumbnail imageUrl={view.imageUrl} title={view.title} />}
+						{view?.moreInfoUrl && <Button href={view.moreInfoUrl} icon={<IconExternalLink size={18} />} label={t('more_info')} />}
 					</div>
 				</Section>
 			</Surface>
