@@ -22,7 +22,6 @@
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/fastify": "*",
-		"@tmlmobilidade/go-hub-pckg-services": "*",
 		"@tmlmobilidade/go-hub-pckg-types": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/interfaces": "*",

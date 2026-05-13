@@ -104,7 +104,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 			try {
 				if (!dataLineState) return;
 				const fetchPromises = dataLineState.pattern_ids.map((patternId) => {
-					return fetch(`${getPublicVariable('api_url')}/patterns/${patternId}`)
+					return fetch(`${getPublicVariable('hub_api_url')}/v1/network/patterns/${patternId}`)
 						.then(response => response.json())
 						.then((patternData) => {
 							return patternData.map((patternGroup) => {
@@ -133,7 +133,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 		if (!dataActivePatternState) return;
 		(async () => {
 			try {
-				const shapeData = await fetch(`${getPublicVariable('api_url')}/shapes/${dataActivePatternState.shape_id}`).then((response) => {
+				const shapeData = await fetch(`${getPublicVariable('hub_api_url')}/v1/network/shapes/${dataActivePatternState.shape_id}`).then((response) => {
 					if (!response.ok) console.log(`Failed to fetch shape data for shapeId: ${dataActivePatternState.shape_id}`);
 					else return response.json();
 				});

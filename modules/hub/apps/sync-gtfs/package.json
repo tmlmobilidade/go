@@ -21,7 +21,6 @@
 		"@helperkits/timer": "20240627.34.23",
 		"@helperkits/writer": "20251103.1250.18",
 		"@tmlmobilidade/databases": "*",
-		"@tmlmobilidade/go-hub-pckg-services": "*",
 		"@tmlmobilidade/go-hub-pckg-types": "*",
 		"@tmlmobilidade/go-hub-pckg-utils": "*",
 		"@tmlmobilidade/sqlite": "*",

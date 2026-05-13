@@ -1,9 +1,9 @@
 'use client';
 
+import { getPublicVariable } from '@/settings/public-variables';
 import { type Alert, type SimplifiedAlert } from '@/types/alerts.types';
 import convertToSimplifiedAlert from '@/utils/convertToSimplifiedAlert';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import { Routes } from '@/utils/routes';
 import { useLocale } from 'next-intl';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
@@ -54,7 +54,7 @@ export const AlertsContextProvider = ({ children }) => {
 	const [dataSimplifiedState, setDataSimplifiedState] = useState<SimplifiedAlert[]>([]);
 	const [dataFeatureCollectionState, setDataFeatureCollectionState] = useState<GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>>(getBaseGeoJsonFeatureCollection());
 	//
-	const { data: allAlertsData, isLoading: allAlertsLoading } = useSWR<Alert[], Error>(`${Routes.API}/v1/alerts`, { refreshInterval: 180000 }); // 3 minutes
+	const { data: allAlertsData, isLoading: allAlertsLoading } = useSWR<Alert[], Error>(`${getPublicVariable('hub_api_url')}/v1/alerts`, { refreshInterval: 180000 }); // 3 minutes
 
 	//
 	// C. Transform data

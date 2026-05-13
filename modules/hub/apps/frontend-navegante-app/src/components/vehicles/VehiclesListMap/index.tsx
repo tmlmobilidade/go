@@ -44,7 +44,7 @@ export function VehiclesListMap() {
 			if (!vehiclesListContext.data.selected) return;
 			if (vehiclesListContext.data.selected.pattern_id) {
 				const todayOperationalDate = getOperationalDate();
-				const fetchedPatternResponse = await fetch(`${getPublicVariable('api_url')}/patterns/${vehiclesListContext.data.selected.pattern_id}`);
+				const fetchedPatternResponse = await fetch(`${getPublicVariable('hub_api_url')}/v1/network/patterns/${vehiclesListContext.data.selected.pattern_id}`);
 				const fetchedPatternData = await fetchedPatternResponse.json();
 				const activePatternVersion = fetchedPatternData.find(item => item.valid_on.includes(todayOperationalDate));
 				setActivePatternData(activePatternVersion);
@@ -58,7 +58,7 @@ export function VehiclesListMap() {
 				setActiveShapeData(undefined);
 				return;
 			}
-			const fetchedShapeResponse = await fetch(`${getPublicVariable('api_url')}/shapes/${activePatternData.shape_id}`);
+			const fetchedShapeResponse = await fetch(`${getPublicVariable('hub_api_url')}/v1/network/shapes/${activePatternData.shape_id}`);
 			if (!fetchedShapeResponse.ok) return;
 			const fetchedShapeData = await fetchedShapeResponse.json();
 			setActiveShapeData(fetchedShapeData);
