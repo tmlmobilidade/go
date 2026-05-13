@@ -8,6 +8,8 @@ import useSWR from 'swr';
 
 /* * */
 
+const DEBUG_ALERTS = process.env.NODE_ENV !== 'production';
+
 interface AlertsContextState {
 	actions: {
 		getAlertById: (alertId: string) => Alert | null
@@ -56,16 +58,39 @@ export const AlertsContextProvider = ({ children }) => {
 	useEffect(() => {
 		if (!alertsResponse || allAlertsLoading) return;
 		const list = alertsResponse.data ?? [];
+		if (DEBUG_ALERTS) {
+			console.info('[AlertsContext] /v1/alerts payload', JSON.stringify({
+				items: list.length,
+				sample: list.slice(0, 3).map(item => ({
+					alert_id: item.alert_id,
+					cause: item.cause,
+					coordinates: item.coordinates,
+				})),
+			}, null, 2));
+		}
 		setAlertsState(list);
 	}, [alertsResponse, allAlertsLoading]);
 
 	// Transform data into geojson
 	useEffect(() => {
 		const collection = getBaseGeoJsonFeatureCollection();
+		let withCoordinates = 0;
+		let withoutCoordinates = 0;
 		alertsState.forEach((alert) => {
+			if (Array.isArray(alert.coordinates) && alert.coordinates.length === 2) withCoordinates++;
+			else withoutCoordinates++;
 			const alertFC = transformAlertDataIntoGeoJsonFeature(alert);
 			if (alertFC) collection.features.push(alertFC);
 		});
+		if (DEBUG_ALERTS) {
+			console.info('[AlertsContext] transformed GeoJSON', JSON.stringify({
+				alerts: alertsState.length,
+				featureCount: collection.features.length,
+				sampleFeature: collection.features[0]?.geometry?.coordinates,
+				withCoordinates,
+				withoutCoordinates,
+			}, null, 2));
+		}
 
 		setDataFeatureCollectionState(collection);
 	}, [alertsState]);
