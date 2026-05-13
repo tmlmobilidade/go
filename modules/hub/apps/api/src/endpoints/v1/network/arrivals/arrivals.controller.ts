@@ -15,6 +15,24 @@ interface RequestSchema {
 	}
 }
 
+interface PatternWaypoint {
+	stop_id: string
+}
+
+interface PatternForEta {
+	path: PatternWaypoint[]
+	valid_on?: string[]
+}
+
+interface PlanInCache {
+	agency_id: string
+	id: string
+	valid_range: {
+		end?: string
+		start: string
+	}
+}
+
 const STOP_ID_PARAM_PATTERN = /^[\w.-]{1,128}$/;
 
 /* * */
@@ -25,18 +43,29 @@ export class ArrivalsController {
 		const currentPlanIds = await getCurrentPlanIds();
 
 		const patternId = request.params.id;
-		const foundPatternTxt = await readThroughHubJson('hub:network:patterns:{patternId}', `hub/v1/network/arrivals:getArrivalsByPattern(${patternId})`, { patternId },
+		const foundPatternTxt = await readThroughHubJson(
+			'hub:network:patterns:{patternId}',
+			SERVERDB_KEYS.NETWORK.PATTERNS.ID(patternId),
+			`hub/v1/network/arrivals:getArrivalsByPattern(${patternId})`,
+			{ patternId },
 		);
 		if (!foundPatternTxt) {
 			return reply.status(404).send([]);
 		}
 
-		const foundPatternData = JSON.parse(foundPatternTxt);
-		if (!foundPatternData) {
+		let foundPatternData: unknown;
+		try {
+			foundPatternData = JSON.parse(foundPatternTxt);
+		} catch {
+			return reply.status(404).send([]);
+		}
+		if (!Array.isArray(foundPatternData)) {
 			return reply.status(404).send([]);
 		}
 
-		const activePatternsData = foundPatternData.filter(pattern => pattern.valid_on?.includes(todayDateString));
+		const patterns = foundPatternData as PatternForEta[];
+
+		const activePatternsData = patterns.filter(pattern => pattern.valid_on?.includes(todayDateString));
 		if (!activePatternsData.length) {
 			return reply
 				.code(200)
@@ -149,18 +178,23 @@ async function getCurrentPlanIds(): Promise<Record<string, string>> {
 	const currentPlanIds: Record<string, string> = {};
 
 	const allPlansTxt = await readThroughHubJson(
-		'hub:network:plans:json',
+		'hub:network:plans',
 		SERVERDB_KEYS.NETWORK.PLANS,
 		'hub/v1/network/arrivals:getCurrentPlanIds()',
 	);
 	if (!allPlansTxt) return currentPlanIds;
 
-	const allPlansData = JSON.parse(allPlansTxt);
-	if (!allPlansData) return currentPlanIds;
+	let allPlansData: unknown;
+	try {
+		allPlansData = JSON.parse(allPlansTxt);
+	} catch {
+		return currentPlanIds;
+	}
+	if (!Array.isArray(allPlansData)) return currentPlanIds;
 
 	const todayOperationDate = normalizePlanDateString(getOperationalDay());
 
-	for (const planData of allPlansData) {
+	for (const planData of allPlansData as PlanInCache[]) {
 		const start = normalizePlanDateString(planData.valid_range.start);
 		const end = planData.valid_range.end ? normalizePlanDateString(planData.valid_range.end) : undefined;
 		if (todayOperationDate < start) continue;

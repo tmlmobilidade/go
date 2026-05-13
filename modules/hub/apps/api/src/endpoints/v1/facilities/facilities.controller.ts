@@ -10,39 +10,39 @@ import { StopFacility } from '@tmlmobilidade/types';
 
 export class FacilitiesController {
 	static async getBoatStations(request: FastifyRequest, reply: FastifyReply<StopFacility[]>) {
-		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities:boat_stations:json', 'getBoatStations()');
+		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities:boat_stations', 'getBoatStations()');
 	}
 
 	static async getFacilities(request: FastifyRequest, reply: FastifyReply<StopFacility[]>) {
-		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities:json', 'getFacilities()');
+		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities', 'getFacilities()');
 	}
 
 	static async getHelpdesks(request: FastifyRequest, reply: FastifyReply<StopFacility[]>) {
-		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities:helpdesks:json', 'getHelpdesks()');
+		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities:helpdesk', 'getHelpdesks()');
 	}
 
 	static async getLightRailStations(request: FastifyRequest, reply: FastifyReply<StopFacility[]>) {
-		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities:light_rail_stations:json', 'getLightRailStations()');
+		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities:light_rail_stations', 'getLightRailStations()');
 	}
 
 	static async getPips(request: FastifyRequest, reply: FastifyReply<StopFacility[]>) {
-		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities:pips:json', 'getPips()');
+		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities:pips', 'getPips()');
 	}
 
 	static async getSchools(request: FastifyRequest, reply: FastifyReply<unknown>) {
-		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities:schools:json', 'getSchools()');
+		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities:schools', 'getSchools()');
 	}
 
 	static async getStores(request: FastifyRequest, reply: FastifyReply<unknown>) {
-		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities:stores:json', 'getStores()', 30);
+		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities:stores', 'getStores()', 30);
 	}
 
 	static async getSubwayStations(request: FastifyRequest, reply: FastifyReply<StopFacility[]>) {
-		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities:subway_stations:json', 'getSubwayStations()');
+		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities:subway_stations', 'getSubwayStations()');
 	}
 
 	static async getTrainStations(request: FastifyRequest, reply: FastifyReply<StopFacility[]>) {
-		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities:train_stations:json', 'getTrainStations()');
+		return FacilitiesController.sendCachedFacilityJson(reply, 'hub:facilities:train_stations', 'getTrainStations()');
 	}
 
 	private static async sendCachedFacilityJson(reply: FastifyReply<StopFacility[] | unknown>, cacheKey: ApiCacheKey, methodName: string, successMaxAgeSeconds = 3600) {

@@ -13,7 +13,7 @@ import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 export class VehiclesController {
 	static async getVehiclesJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
 		const raw = await readThroughHubJson(
-			'hub:network:vehicles:json',
+			'hub:network:vehicles',
 			SERVERDB_KEYS.NETWORK.VEHICLES.ALL,
 			'hub/v1/network/vehicles:getVehiclesJson()',
 		);
@@ -39,7 +39,7 @@ export class VehiclesController {
 
 	static async getVehiclesProtobuf(request: FastifyRequest, reply: FastifyReply<unknown>) {
 		const raw = await readThroughHubJson(
-			'hub:network:vehicles:protobuf:json',
+			'hub:network:vehicles:protobuf',
 			SERVERDB_KEYS.NETWORK.VEHICLES.PROTOBUF,
 			'hub/v1/network/vehicles:getVehiclesProtobuf()',
 		);
