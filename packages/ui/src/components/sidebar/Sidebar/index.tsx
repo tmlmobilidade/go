@@ -1,6 +1,6 @@
 'use client';
 
-import { IconAlertTriangle, IconBeach, IconBuildings, IconBus, IconBusStop, IconCalendarEvent, IconCalendarStar, IconClock, IconDeviceSim, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBeach, IconBook, IconBuildings, IconBus, IconBusStop, IconCalendarEvent, IconCalendarStar, IconClock, IconDeviceSim, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 import { type JSX } from 'react';
@@ -68,7 +68,6 @@ export const sidebarApps = [
 		_id: 'sams',
 		href: PAGE_ROUTES.controller.SAMS_LIST,
 		icon: <IconDeviceSim size={26} />,
-		label: 'SAMS',
 		permissions: [{ action: PermissionCatalog.all.sams.actions.read, scope: PermissionCatalog.all.sams.scope }],
 	},
 	{
@@ -164,7 +163,7 @@ export const sidebarApps = [
 		icon: <IconBook size={26} />,
 		permissions: [],
 	},
-] as const satisfies readonly SidebarAppItemConfig[];
+] satisfies readonly SidebarAppItemConfig[];
 
 /* * */
 
