@@ -1,7 +1,7 @@
 /* * */
 
 import { SystemStatusSchema } from '@/_common/system-status.js';
-import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { FileExportBaseSchema } from '@/file-exports/base.js';
 import { SamAnalysisSchema } from '@/sams/sam-analysis.js';
 import { z } from 'zod';
@@ -22,13 +22,13 @@ export const SamsAnalysisExportPropertiesSchema = z.object({
 		_id: z.array(z.number()).optional().nullable(),
 		agency_ids: z.array(z.string()).optional().nullable(),
 		apex_versions: z.array(z.string()).optional().nullable(),
-		end_time: UnixTimeStampSchema.optional().nullable(),
+		end_time: UnixTimestampSchema.optional().nullable(),
 		favorites_only: z.boolean().optional().nullable(),
 		sam_ids: z.array(z.number()).optional().nullable(),
 		search: z.string().optional().nullable(),
-		seen_first_at: UnixTimeStampSchema.optional().nullable(),
-		seen_last_at: UnixTimeStampSchema.optional().nullable(),
-		start_time: UnixTimeStampSchema.optional().nullable(),
+		seen_first_at: UnixTimestampSchema.optional().nullable(),
+		seen_last_at: UnixTimestampSchema.optional().nullable(),
+		start_time: UnixTimestampSchema.optional().nullable(),
 		statuses: z.array(SystemStatusSchema).optional().nullable(),
 	}),
 	type: z.literal('sams_analysis'),
