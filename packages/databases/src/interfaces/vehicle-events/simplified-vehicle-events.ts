@@ -44,7 +44,7 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 	public override readonly engine: ClickHouseTableEngine = 'ReplacingMergeTree';
 	public override readonly orderBy = '(operational_date, trip_id, vehicle_id, agency_id, created_at)';
 	public override readonly partitionBy = 'toYYYYMM(fromUnixTimestamp64Milli(created_at))';
-	public override readonly primaryKey = '(operational_day, trip_id, vehicle_id)';
+	public override readonly primaryKey = '(operational_date, trip_id, vehicle_id)';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'simplified_vehicle_events';
 
