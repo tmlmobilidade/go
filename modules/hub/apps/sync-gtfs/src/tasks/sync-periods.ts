@@ -98,9 +98,9 @@ export const syncPeriods = async () => {
 
 	const periodsJson = JSON.stringify(allPeriodsParsed);
 	try {
-		await apiCache.set('hub:network:periods:json', periodsJson, {});
+		await apiCache.set('hub:network:periods', periodsJson, {});
 	} catch (error) {
-		LOGGER.error('syncPeriods: apiCache.set(hub:network:periods:json) failed', error);
+		LOGGER.error('syncPeriods: apiCache.set(hub:network:periods) failed', error);
 	}
 
 	LOGGER.success(`Done updating ${allPeriodsParsed.length} Periods (${globalTimer.get()})`);

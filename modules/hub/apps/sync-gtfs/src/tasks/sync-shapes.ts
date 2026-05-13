@@ -42,7 +42,7 @@ export const syncShapes = async () => {
 		// Create a unique key for the shape to be used in the database.
 		// By defining this key here, we can avoid having to create a separate variable to hold them.
 
-		const shapeIdKey = `hub:network:shapes:${resultRow.shape_id}:json`;
+		const shapeIdKey = `hub:network:shapes:${resultRow.shape_id}`;
 
 		//
 		// Check if a shape object already exists, or create a new one.
@@ -109,7 +109,7 @@ export const syncShapes = async () => {
 		// Update or create new document
 
 		const shapeJson = JSON.stringify(shapeData);
-		await apiCache.set('hub:network:shapes:{shapeId}:json', shapeJson, { params: { shapeId: shapeData.shape_id } });
+		await apiCache.set('hub:network:shapes:{shapeId}', shapeJson, { params: { shapeId: shapeData.shape_id } });
 
 		//
 	}
@@ -121,7 +121,7 @@ export const syncShapes = async () => {
 
 	const removeStaleShapesTimer = new TIMETRACKER();
 
-	const allExistingShapeKeys = await apiCache.scan('hub:network:shapes:*:json');
+	const allExistingShapeKeys = await apiCache.scan('hub:network:shapes:*');
 
 	const staleShapeKeys = allExistingShapeKeys.filter(id => !allShapesData.has(id));
 	if (staleShapeKeys.length) {

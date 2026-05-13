@@ -55,9 +55,9 @@ export const syncDates = async () => {
 	allDatesData.sort((a, b) => sortCollator.compare(a.id, b.id));
 	const datesJson = JSON.stringify(allDatesData);
 	try {
-		await apiCache.set('hub:network:dates:json', datesJson, {});
+		await apiCache.set('hub:network:dates', datesJson, {});
 	} catch (error) {
-		LOGGER.error('syncDates: apiCache.set(hub:network:dates:json) failed', error);
+		LOGGER.error('syncDates: apiCache.set(hub:network:dates) failed', error);
 	}
 
 	LOGGER.success(`Done updating ${updatedDatesCounter} Dates (${globalTimer.get()})`);

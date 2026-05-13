@@ -143,7 +143,7 @@ export const syncStops = async () => {
 	// Save to the database
 
 	allStopsData.sort((a, b) => sortCollator.compare(a.id, b.id));
-	await apiCache.set('hub:network:stops:json', JSON.stringify(allStopsData), {});
+	await apiCache.set('hub:network:stops', JSON.stringify(allStopsData), {});
 
 	LOGGER.success(`Done updating ${updatedStopsCounter} Stops (${globalTimer.get()})`);
 
