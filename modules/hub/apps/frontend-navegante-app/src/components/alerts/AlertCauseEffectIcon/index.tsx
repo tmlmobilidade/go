@@ -1,6 +1,6 @@
 /* * */
 
-import type { AlertCause, AlertEffect } from '@/types/alerts.types';
+import type { AlertCause, AlertEffect } from '@tmlmobilidade/go-hub-pckg-types';
 
 import { getCauseSeverityLevel, getEffectSeverityLevel } from '@/utils/alerts';
 import { IconAccessible, IconAmbulance, IconArrowBigUpLines, IconBarrierBlock, IconCalendarEvent, IconCarCrash, IconCircleArrowDown, IconCircleMinus, IconClock2, IconClockExclamation, IconCloudStorm, IconFish, IconInfoTriangle, IconRoadOff, IconRouteAltRight, IconServerCog, IconSettings, IconSpeakerphone, IconTool, IconTrafficCone } from '@tabler/icons-react';

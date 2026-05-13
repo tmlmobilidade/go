@@ -335,10 +335,61 @@ export const API_ROUTES = Object.freeze({
 		ALERTS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/alerts`,
 		ALERTS_RSS: `${getModuleConfig('hub', 'api_url')}/v1/alerts.rss`,
 
+		// ARRIVALS
+		ARRIVALS_ARRIVALS_BY_PATTERN: (id: string) => `${getModuleConfig('hub', 'api_url')}/arrivals/arrivals/by_pattern/${id}`,
+		ARRIVALS_ARRIVALS_BY_STOP: (id: string) => `${getModuleConfig('hub', 'api_url')}/arrivals/arrivals/by_stop/${id}`,
+
+		// DISTRICTS
+		DISTRICTS_DISTRICTS: `${getModuleConfig('hub', 'api_url')}/districts/districts`,
+
+		// FACILITIES
+		FACILITIES_BOAT_STATIONS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/boat_stations`,
+		FACILITIES_HELPDESKS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/helpdesks`,
+		FACILITIES_LIGHT_RAIL_STATIONS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/light_rail_stations`,
+		FACILITIES_LIST: `${getModuleConfig('hub', 'api_url')}/v1/facilities`,
+		FACILITIES_PIPS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/pips`,
+		FACILITIES_SCHOOLS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/schools`,
+		FACILITIES_STORES: `${getModuleConfig('hub', 'api_url')}/v1/facilities/stores`,
+		FACILITIES_SUBWAY_STATIONS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/subway_stations`,
+		FACILITIES_TRAIN_STATIONS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/train_stations`,
+
+		// FEEDS
+		FEEDS_DATES: `${getModuleConfig('hub', 'api_url')}/feeds/dates`,
+		FEEDS_GTFS_STATIC: `${getModuleConfig('hub', 'api_url')}/feeds/gtfs-static`,
+		FEEDS_LINES: `${getModuleConfig('hub', 'api_url')}/feeds/lines`,
+		FEEDS_PERIODS: `${getModuleConfig('hub', 'api_url')}/feeds/periods`,
+		FEEDS_ROUTES: `${getModuleConfig('hub', 'api_url')}/feeds/routes`,
+		FEEDS_STOPS: `${getModuleConfig('hub', 'api_url')}/feeds/stops`,
+
+		// LOCALITIES
+		LOCALITIES_LOCALITIES: `${getModuleConfig('hub', 'api_url')}/localities/localities`,
+
+		// MESSAGE
+		MESSAGE_MESSAGE: `${getModuleConfig('hub', 'api_url')}/message/message`,
+
+		// MUNICIPALITIES
+		MUNICIPALITIES_MUNICIPALITIES: `${getModuleConfig('hub', 'api_url')}/municipalities/municipalities`,
+
+		// PARISHES
+		PARISHES_PARISHES: `${getModuleConfig('hub', 'api_url')}/parishes/parishes`,
+
+		// PATTERNS
+		PATTERNS_PATTERNS: (id: string) => `${getModuleConfig('hub', 'api_url')}/patterns/patterns/${id}`,
+
 		// PLANS
 		PLANS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/plans/gtfs`,
 		PLANS_GTFS_CM: `${getModuleConfig('hub', 'api_url')}/v1/plans/gtfs/cm`,
 		PLANS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/plans`,
+
+		// SHAPES
+		SHAPES_SHAPES: (id: string) => `${getModuleConfig('hub', 'api_url')}/shapes/shapes/${id}`,
+
+		// TIME
+		TIME_TIME: `${getModuleConfig('hub', 'api_url')}/time/time`,
+
+		// VEHICLES
+		VEHICLES_VEHICLES: `${getModuleConfig('hub', 'api_url')}/vehicles/vehicles`,
+		VEHICLES_VEHICLES_PB: `${getModuleConfig('hub', 'api_url')}/vehicles/vehicles.pb`,
 	},
 
 	locations: {

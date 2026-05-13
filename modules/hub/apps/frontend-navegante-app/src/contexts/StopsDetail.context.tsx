@@ -6,9 +6,10 @@ import { useLinesContext } from '@/contexts/Lines.context';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { getPublicVariable } from '@/settings/public-variables';
-import { type SimplifiedAlert } from '@/types/alerts.types';
 import { type Line, type NetworkPattern, type NetworkShape, type NetworkStop } from '@/types/api/network';
 import { type Arrival } from '@/types/stops.types';
+import { isAlertActiveNow } from '@/utils/alerts';
+import { type Alert } from '@tmlmobilidade/go-hub-pckg-types';
 import { DateTime } from 'luxon';
 import { notFound } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -22,7 +23,7 @@ interface StopsDetailContextState {
 		setActiveTripId: (tripId: string, stopSequence: number) => void
 	}
 	data: {
-		active_alerts: SimplifiedAlert[] | undefined
+		active_alerts: Alert[] | undefined
 		active_pattern_group: NetworkPattern | undefined
 		active_shape: NetworkShape | undefined
 		active_stop_id: string
@@ -82,7 +83,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const [dataTimetableRealtimeFutureState, setDataTimetableRealtimeFutureState] = useState<Arrival[] | undefined>(undefined);
 	const [dataTimetableScheduleState, setDataTimetableScheduleState] = useState<Arrival[] | undefined>(undefined);
 	const [dataActivePatternState, setDataActivePatternState] = useState<NetworkPattern | undefined>(undefined);
-	const [dataActiveAlertsState, setDataActiveAlertsState] = useState<SimplifiedAlert[] | undefined>(undefined);
+	const [dataActiveAlertsState, setDataActiveAlertsState] = useState<Alert[] | undefined>(undefined);
 	const [dataActiveTripIdState, setDataActiveTripIdState] = useState<string | undefined>(undefined);
 	const [dataActiveStopSequenceState, setDataActiveStopSequenceState] = useState<number | undefined>(undefined);
 
@@ -133,7 +134,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		const fetchData = async () => {
 			try {
 				if (!dataActiveStopIdState) return;
-				const realtimeData = await fetch(`${getPublicVariable('api_url')}/arrivals/by_stop/${dataActiveStopIdState}`)
+				const realtimeData = await fetch(`${getPublicVariable('hub_api_url')}/v1/network/arrivals/by_stop/${dataActiveStopIdState}`)
 					.then((response) => {
 						if (!response.ok) console.log(`Failed to fetch realtime data for stopId: ${dataActiveStopIdState}`);
 						else return response.json();
@@ -161,7 +162,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		(async () => {
 			try {
 				const patternsData = await Promise.all(dataStopState.pattern_ids.map((patternId) => {
-					return fetch(`${getPublicVariable('api_url')}/patterns/${patternId}`).then((response) => {
+					return fetch(`${getPublicVariable('hub_api_url')}/v1/network/patterns/${patternId}`).then((response) => {
 						if (!response.ok) console.log(`Failed to fetch pattern data for patternId: ${patternId}`);
 						else return response.json();
 					});
@@ -182,7 +183,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		if (!dataActivePatternState) return;
 		(async () => {
 			try {
-				const shapeData = await fetch(`${getPublicVariable('api_url')}/shapes/${dataActivePatternState.shape_id}`).then((response) => {
+				const shapeData = await fetch(`${getPublicVariable('hub_api_url')}/v1/network/shapes/${dataActivePatternState.shape_id}`).then((response) => {
 					if (!response.ok) console.log(`Failed to fetch shape data for shapeId: ${dataActivePatternState.shape_id}`);
 					else return response.json();
 				});
@@ -331,18 +332,17 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	}, [dataPatternsState, operationalDateContext.data.selected_date]);
 
 	useEffect(() => {
-		if (!alertsContext.data.simplified) return;
-		const activeAlerts = alertsContext.data.simplified.filter((simplifiedAlertData) => {
-			return simplifiedAlertData.informed_entity.some((informedEntity) => {
+		if (!alertsContext.data.alerts) return;
+		const activeAlerts = alertsContext.data.alerts.filter((row) => {
+			return row.informed_entity.some((informedEntity) => {
 				if (!informedEntity.stop_id && !informedEntity.route_id) return false;
 				const hasMatchingStop = informedEntity.stop_id === dataActiveStopIdState;
 				const hasMatchingRoute = dataStopState?.route_ids.includes(informedEntity.route_id || '');
-				const isActive = simplifiedAlertData.end_date ? simplifiedAlertData.end_date >= new Date() : true;
-				return (hasMatchingStop || hasMatchingRoute) && isActive;
+				return (hasMatchingStop || hasMatchingRoute) && isAlertActiveNow(row);
 			});
 		});
 		setDataActiveAlertsState(activeAlerts);
-	}, [alertsContext.data.simplified, dataStopState, dataActiveStopIdState]);
+	}, [alertsContext.data.alerts, dataStopState, dataActiveStopIdState]);
 
 	//
 	// D. Handle actions

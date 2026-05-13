@@ -1,7 +1,7 @@
 'use client';
 
 import { AlertEffectIcon } from '@/components/alerts/AlertCauseEffectIcon';
-import { AlertEffect } from '@/types/alerts.types';
+import { AlertEffect } from '@tmlmobilidade/go-hub-pckg-types';
 import { Flex, Group, Select, SelectProps, Text } from '@mantine/core';
 import { IconBolt } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';

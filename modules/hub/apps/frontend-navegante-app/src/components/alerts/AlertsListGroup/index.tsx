@@ -1,6 +1,6 @@
 'use client';
 
-import type { AlertGroupByDate } from '@/types/alerts.types';
+import type { AlertGroupByDate } from '@tmlmobilidade/go-hub-pckg-types';
 
 import AlertsListEmpty from '@/components/alerts/AlertsListEmpty';
 import { AlertListItem } from '@/components/alerts/AlertsListItem';
@@ -9,6 +9,7 @@ import { GroupedListItem } from '@/components/layout/GroupedListItem';
 import GroupedListSkeleton from '@/components/layout/GroupedListSkeleton';
 import { Surface } from '@/components/layout/Surface';
 import { useAlertsListContext } from '@/contexts/AlertsList.context';
+import { getAlertStartDateOrEpoch } from '@/utils/alerts';
 import collator from '@/utils/collator';
 import { Accordion } from '@mantine/core';
 import { DateTime } from 'luxon';
@@ -34,29 +35,24 @@ export function AlertsListGroup() {
 		if (!alertsListContext.data) return [];
 		//
 		const groupedAlerts: AlertGroupByDate[] = alertsListContext.data.filtered.reduce((result: AlertGroupByDate[], item) => {
-			const alertStartDateObject = DateTime.fromJSDate(item.start_date);
+			const alertStartDateObject = DateTime.fromJSDate(getAlertStartDateOrEpoch(item));
 			const alertStartDateString = alertStartDateObject.toFormat('yyyyMMdd');
 			const existingGroup = result.find(group => group.value === alertStartDateString);
 			if (existingGroup) {
 				existingGroup.items.push(item);
-			}
-			else {
+			} else {
 				let formattedGroupLabel = '';
 				const today = DateTime.local().startOf('day');
 				const alertStartDateObjectCompare = alertStartDateObject.startOf('day');
 				if (alertStartDateObjectCompare.equals(today)) {
 					formattedGroupLabel = t('titles.today', { value: alertStartDateObject.toJSDate() });
-				}
-				else if (alertStartDateObjectCompare.equals(today.plus({ days: 1 }))) {
+				} else if (alertStartDateObjectCompare.equals(today.plus({ days: 1 }))) {
 					formattedGroupLabel = t('titles.tomorrow', { value: alertStartDateObject.toJSDate() });
-				}
-				else if (alertStartDateObjectCompare.equals(today.minus({ days: 1 }))) {
+				} else if (alertStartDateObjectCompare.equals(today.minus({ days: 1 }))) {
 					formattedGroupLabel = t('titles.yesterday', { value: alertStartDateObject.toJSDate() });
-				}
-				else if (alertStartDateObjectCompare < today.minus({ days: 1 })) {
+				} else if (alertStartDateObjectCompare < today.minus({ days: 1 })) {
 					formattedGroupLabel = t('titles.past', { value: alertStartDateObject.toJSDate() });
-				}
-				else {
+				} else {
 					formattedGroupLabel = t('titles.future', { value: alertStartDateObject.toJSDate() });
 				}
 				result.push({

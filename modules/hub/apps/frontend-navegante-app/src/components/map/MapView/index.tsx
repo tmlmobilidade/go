@@ -1,5 +1,6 @@
 'use client';
 
+import { MAP_LOAD_ASSETS } from '@/components/map/mapLoadAssets';
 import { MapViewToolbar } from '@/components/map/MapViewToolbar';
 import { useMapOptionsContext } from '@/contexts/MapOptions.context';
 import { mapDefaultConfig } from '@/settings/map.settings';
@@ -7,33 +8,6 @@ import Map, { FullscreenControl, GeolocateControl, MapRef, NavigationControl, Sc
 import { useCallback, useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
-
-/* * */
-
-const MAP_LOAD_ASSETS = [
-	{ name: 'icon-car-crash', sdf: false, url: '/assets/map/car-crash.png' },
-	{ name: 'icon-barrier-block', sdf: false, url: '/assets/map/barrier-block.png' },
-	{ name: 'icon-speakerphone', sdf: false, url: '/assets/map/speakerphone.png' },
-	{ name: 'icon-calendar-event', sdf: false, url: '/assets/map/calendar-event.png' },
-	{ name: 'icon-tool', sdf: false, url: '/assets/map/tool.png' },
-	{ name: 'icon-ambulance', sdf: false, url: '/assets/map/ambulance.png' },
-	{ name: 'icon-cloud-storm', sdf: false, url: '/assets/map/cloud-storm.png' },
-	{ name: 'icon-info-triangle', sdf: false, url: '/assets/map/info-triangle.png' },
-	/* * */
-	{ name: 'cmet-bus-delay', sdf: false, url: '/assets/map/bus-delay.png' },
-	{ name: 'cmet-bus-regular', sdf: false, url: '/assets/map/bus-regular.png' },
-	{ name: 'cmet-bus-cut', sdf: false, url: '/assets/map/bus-cut.png' },
-	{ name: 'ttsl-boat-regular', sdf: false, url: '/assets/map/boat-regular.png' },
-	{ name: 'carris-bus-regular', sdf: true, url: '/assets/map/bus-carris.png' },
-	{ name: 'mobi-bus-regular', sdf: false, url: '/assets/map/bus-mobi.png' },
-	{ name: 'cmet-bus-error', sdf: false, url: '/assets/map/bus-error.png' },
-	{ name: 'cmet-needle-pin', sdf: false, url: '/assets/map/needle-pin.png' },
-	{ name: 'cmet-shape-direction', sdf: true, url: '/assets/map/shape-direction.png' },
-	{ name: 'cmet-stop-selected', sdf: false, url: '/assets/map/stop-selected.png' },
-	{ name: 'cmet-store-busy', sdf: false, url: '/assets/map/store-busy.png' },
-	{ name: 'cmet-store-closed', sdf: false, url: '/assets/map/store-closed.png' },
-	{ name: 'cmet-store-open', sdf: false, url: '/assets/map/store-open.png' },
-];
 
 /* * */
 
@@ -85,7 +59,7 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 	// B. Transform data
 
 	useEffect(() => {
-		if (!id || !allMaps || !allMaps[id]) return;
+		if (!id || !allMaps?.[id]) return;
 		const mapObject = allMaps[id];
 		mapOptionsContext.actions.setMap(mapObject);
 		for (const mapLoadAsset of MAP_LOAD_ASSETS) {

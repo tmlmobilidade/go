@@ -3,10 +3,9 @@
 import { getGtfsSqliteContext } from '@/modules/gtfsSqlite.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { SERVERDB } from '@tmlmobilidade/go-navegante-shared-services/SERVERDB';
-import { SERVERDB_KEYS } from '@tmlmobilidade/go-navegante-shared-settings';
-import { type Plan } from '@tmlmobilidade/go-navegante-shared-types';
-import { sortCollator } from '@tmlmobilidade/go-navegante-shared-utils';
+import { apiCache } from '@tmlmobilidade/databases';
+import { type Plan } from '@tmlmobilidade/go-hub-pckg-types';
+import { sortCollator } from '@tmlmobilidade/go-hub-pckg-utils';
 
 /* * */
 
@@ -54,7 +53,7 @@ export const syncPlans = async () => {
 	// Save to the database
 
 	allPlansData.sort((a, b) => sortCollator.compare(a.valid_range.start, b.valid_range.start));
-	await SERVERDB.set(SERVERDB_KEYS.NETWORK.PLANS, JSON.stringify(allPlansData));
+	await apiCache.set('hub:network:plans:json', JSON.stringify(allPlansData), {});
 
 	LOGGER.success(`Done updating ${updatedPlansCounter} Plans (${globalTimer.get()})`);
 

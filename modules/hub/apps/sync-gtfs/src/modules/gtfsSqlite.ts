@@ -17,7 +17,7 @@ interface GtfsSqliteContext {
 
 /* * */
 
-let gtfsSqliteContext: GtfsSqliteContext | null = null;
+let GTFS_SQLITE_CONTEXT: GtfsSqliteContext | null = null;
 
 /* * */
 
@@ -34,19 +34,19 @@ export function initGtfsSqliteContext() {
 		tables.set(gtfsFile._key, table);
 	}
 
-	gtfsSqliteContext = {
+	GTFS_SQLITE_CONTEXT = {
 		database,
 		db: database.databaseInstance,
 		tables,
 	};
 
-	return gtfsSqliteContext;
+	return GTFS_SQLITE_CONTEXT;
 }
 
 export function getGtfsSqliteContext() {
-	if (!gtfsSqliteContext) {
+	if (!GTFS_SQLITE_CONTEXT) {
 		throw new Error('GTFS SQLite context not initialized.');
 	}
 
-	return gtfsSqliteContext;
+	return GTFS_SQLITE_CONTEXT;
 }
