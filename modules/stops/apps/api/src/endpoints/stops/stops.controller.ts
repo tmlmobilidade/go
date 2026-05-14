@@ -4,11 +4,13 @@ import { generateStopId } from '@/utils/generate-stop-id.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { patterns, stops } from '@tmlmobilidade/interfaces';
-import { CreateStopSchema, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
+import { Logger } from '@tmlmobilidade/logger';
+import { type CreateStopDto, CreateStopSchema, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
 
 /**
  * This is an example controller that is using the stops interface.
  */
+
 export class StopsController {
 	//
 
@@ -17,10 +19,26 @@ export class StopsController {
 	 * @param request Fastify request containing stop data in body
 	 * @param reply Fastify reply
 	 */
-	static async create(request: FastifyRequest, reply: FastifyReply<Stop>) {
+	static async create(request: FastifyRequest<{ Body: CreateStopDto }>, reply: FastifyReply<Stop>) {
 		const data = CreateStopSchema.parse(request.body);
 		const newStopId = await generateStopId();
 		const result = await stops.insertOne({ ...data, _id: newStopId }, { unsafe: true });
+
+		Logger.info([
+			{ t: `${request.method} ${request.url}` },
+			{ a: 'left', t: ' Stop created' },
+			{ a: 'left', t: ` stopId=${newStopId}` },
+			{ a: 'left', t: ` userId=${request.me._id}` },
+		], {
+			action: 'create',
+			email: request.me.email,
+			feature: 'stops',
+			message: `${request.method} /stops/${newStopId} - Stop created`,
+			requestId: request.id,
+			stopId: newStopId,
+			updatedBy: request.me._id,
+		});
+
 		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED });
 	}
 
@@ -124,5 +142,15 @@ export class StopsController {
 		// Perform the update
 		const data = await stops.updateById(Number(request.params.id), request.body);
 		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
+
+		Logger.info([], {
+			action: 'update',
+			email: request.me.email,
+			feature: 'stops',
+			message: `${request.method} /stops/${request.params.id} - Stop updated`,
+			requestId: request.id,
+			stopId: request.params.id,
+			updatedBy: request.me._id,
+		});
 	}
 }

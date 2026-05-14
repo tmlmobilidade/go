@@ -1,5 +1,8 @@
 /* * */
 
+import { logError } from './LogError/index.js';
+import { logInfo, type LogInfoContext } from './LogInfo/logInfo.js';
+
 interface LoggerColumn {
 
 	/**
@@ -47,8 +50,13 @@ class LoggersClass {
 	 */
 	error(message: LoggerMessage, error?: Error, spacesAfter?: number, spacesBefore?: number) {
 		if (spacesBefore && spacesBefore > 0) this.spacer(spacesBefore);
-		if (Array.isArray(message)) console.error(`✘ ${this.formatColumns(message)}`, error ?? '');
-		else console.error(`✘ ${message}`, error ?? '');
+		const formattedMessage = Array.isArray(message) ? this.formatColumns(message) : message;
+		logError(error ?? new Error(formattedMessage), {
+			action: 'error',
+			feature: 'logger',
+			message: formattedMessage,
+		});
+		console.error(`✘ ${formattedMessage}`, error ?? '');
 		if (spacesAfter && spacesAfter > 0) this.spacer(spacesAfter);
 	}
 
@@ -58,10 +66,16 @@ class LoggersClass {
 	 * @param spacesAfter Optional number of blank lines to add after the message.
 	 * @param spacesBefore Optional number of blank lines to add before the message.
 	 */
-	info(message: LoggerMessage, spacesAfter?: number, spacesBefore?: number) {
-		if (spacesBefore && spacesBefore > 0) this.spacer(spacesBefore);
-		if (Array.isArray(message)) console.log(`→ ${this.formatColumns(message)}`);
-		else console.log(`→ ${message}`);
+	info(message?: LoggerMessage, contextOrSpacesAfter?: LogInfoContext | number, spacesAfterOrBefore?: number, spacesBefore?: number) {
+		const context = typeof contextOrSpacesAfter === 'object' && contextOrSpacesAfter !== null ? contextOrSpacesAfter : undefined;
+		const spacesAfter = typeof contextOrSpacesAfter === 'number' ? contextOrSpacesAfter : spacesAfterOrBefore;
+		const normalizedSpacesBefore = typeof contextOrSpacesAfter === 'number' ? spacesAfterOrBefore : spacesBefore;
+		if (normalizedSpacesBefore && normalizedSpacesBefore > 0) this.spacer(normalizedSpacesBefore);
+		const formattedMessage = message
+			? Array.isArray(message) ? this.formatColumns(message) : message
+			: context?.message ?? '';
+		if (context) logInfo(context);
+		console.log(`→ ${formattedMessage ?? ''}`);
 		if (spacesAfter && spacesAfter > 0) this.spacer(spacesAfter);
 	}
 
