@@ -50,9 +50,10 @@ export class StopsController {
 
 		const queryFilters: Filter<Stop> = {};
 
-		if ('resources' in userStopPermissions && 'agency_ids' in userStopPermissions.resources) {
-			if (!userStopPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-				queryFilters.flags = { $elemMatch: { agency_ids: { $in: userStopPermissions.resources['agency_ids'] } } };
+		if ('resources' in userStopPermissions && userStopPermissions.resources) {
+			const resources = userStopPermissions.resources;
+			if ('agency_ids' in resources && !resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+				queryFilters.flags = { $elemMatch: { agency_ids: { $in: resources['agency_ids'] } } };
 			}
 		}
 		const data = await stops.findMany(queryFilters, {
