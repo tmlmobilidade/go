@@ -10,6 +10,103 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
+const LISBON_TZ = 'Europe/Lisbon';
+interface SamTimelineSummary {
+	months: Array<{
+		failed_count: number
+		key: string
+		successful_count: number
+	}>
+	undated?: {
+		failed_count: number
+		successful_count: number
+	}
+}
+const YEAR_MONTH_FORMATTER = new Intl.DateTimeFormat('en-CA', {
+	month: '2-digit',
+	timeZone: LISBON_TZ,
+	year: 'numeric',
+});
+
+function getMonthKeyFromTimestamp(unixTimestamp: number): null | string {
+	if (!Number.isFinite(unixTimestamp)) return null;
+	const parts = YEAR_MONTH_FORMATTER.formatToParts(new Date(unixTimestamp));
+	const year = parts.find(part => part.type === 'year')?.value;
+	const month = parts.find(part => part.type === 'month')?.value;
+	if (!year || !month) return null;
+	return `${year}-${month}`;
+}
+
+function getAnalysisMonthKeys(analysis: SamAnalysis): string[] {
+	if (analysis.start_time == null && analysis.end_time == null) return [];
+
+	const startTs = analysis.start_time ?? analysis.end_time;
+	const endTs = analysis.end_time ?? analysis.start_time;
+
+	if (startTs == null || endTs == null) return [];
+
+	const from = Math.min(startTs, endTs);
+	const to = Math.max(startTs, endTs);
+
+	const monthKeys = new Set<string>();
+	let cursor = Dates.fromUnixTimestamp(from).setZone(LISBON_TZ, 'offset_only').startOf('month');
+	const last = Dates.fromUnixTimestamp(to).setZone(LISBON_TZ, 'offset_only').startOf('month');
+
+	while (cursor.unix_timestamp <= last.unix_timestamp) {
+		const monthKey = getMonthKeyFromTimestamp(cursor.unix_timestamp);
+		if (monthKey) monthKeys.add(monthKey);
+		cursor = cursor.plus({ months: 1 });
+	}
+
+	return [...monthKeys];
+}
+
+function buildTimelineSummary(analyses: SamAnalysis[]): SamTimelineSummary {
+	interface Counters { invalid: number, valid: number }
+
+	const monthCounters = new Map<string, Counters>();
+	let undatedValid = 0;
+	let undatedInvalid = 0;
+
+	for (const analysis of analyses) {
+		const isValid = analysis.first_transaction_id != null && analysis.last_transaction_id != null;
+		const monthKeys = getAnalysisMonthKeys(analysis);
+
+		if (monthKeys.length === 0) {
+			if (isValid) undatedValid++;
+			else undatedInvalid++;
+			continue;
+		}
+
+		for (const monthKey of monthKeys) {
+			const counters = monthCounters.get(monthKey) ?? { invalid: 0, valid: 0 };
+			if (isValid) counters.valid++;
+			else counters.invalid++;
+			monthCounters.set(monthKey, counters);
+		}
+	}
+
+	const months = [...monthCounters.entries()]
+		.sort(([a], [b]) => a.localeCompare(b))
+		.map(([key, counters]) => ({
+			failed_count: counters.invalid,
+			key,
+			successful_count: counters.valid,
+		}));
+
+	const undatedCount = undatedValid + undatedInvalid;
+	const undated = undatedCount > 0
+		? {
+			failed_count: undatedInvalid,
+			successful_count: undatedValid,
+		}
+		: undefined;
+
+	return { months, undated };
+}
+
+/* * */
+
 async function main() {
 	try {
 		//
@@ -150,7 +247,8 @@ async function main() {
 
 				if (!sortedTransactions.length) {
 					Logger.error(`No transactions found for SAM "${samData._id}" for the given time range. (${analysisTimer.get()})`);
-					await sams.updateById(samData._id, { analysis: [], remarks: 'No transactions found for given time range.', system_status: 'complete' });
+					const noTxUpdate = { analysis: [], remarks: 'No transactions found for given time range.', system_status: 'complete', timeline_summary: { months: [] } };
+					await sams.updateById(samData._id, noTxUpdate as Partial<CreateSamDto>);
 					Logger.spacer(1);
 					continue;
 				}
@@ -165,7 +263,8 @@ async function main() {
 
 				if (!allTransactionsMatch) {
 					Logger.error(`SAM ${samData._id} has transactions with different Agency ID. (${analysisTimer.get()})`);
-					await sams.updateById(samData._id, { analysis: [], remarks: 'Transactions with different Agency IDs found.', system_status: 'error' });
+					const agencyErrorUpdate = { analysis: [], remarks: 'Transactions with different Agency IDs found.', system_status: 'error', timeline_summary: { months: [] } };
+					await sams.updateById(samData._id, agencyErrorUpdate as Partial<CreateSamDto>);
 					Logger.spacer(1);
 					continue;
 				}
@@ -178,7 +277,8 @@ async function main() {
 
 				if (!allMacAseCounterValuesValid) {
 					Logger.error(`SAM ${samData._id} has transactions with invalid mac_ase_counter_value. (${analysisTimer.get()})`);
-					await sams.updateById(samData._id, { analysis: [], remarks: 'Transactions with invalid mac_ase_counter_value found.', system_status: 'error' });
+					const counterErrorUpdate = { analysis: [], remarks: 'Transactions with invalid mac_ase_counter_value found.', system_status: 'error', timeline_summary: { months: [] } };
+					await sams.updateById(samData._id, counterErrorUpdate as Partial<CreateSamDto>);
 					Logger.spacer(1);
 					continue;
 				}
@@ -200,7 +300,8 @@ async function main() {
 
 				if (duplicateAseCounterValues.length > 0) {
 					Logger.error(`SAM ${samData._id} has ${duplicateAseCounterValues.length} transactions with duplicate mac_ase_counter_value. (${analysisTimer.get()})`);
-					await sams.updateById(samData._id, { analysis: [], remarks: 'Transactions with duplicate mac_ase_counter_value found.', system_status: 'error' });
+					const duplicateCounterUpdate = { analysis: [], remarks: 'Transactions with duplicate mac_ase_counter_value found.', system_status: 'error', timeline_summary: { months: [] } };
+					await sams.updateById(samData._id, duplicateCounterUpdate as Partial<CreateSamDto>);
 					Logger.spacer(1);
 					continue;
 				}
@@ -311,7 +412,7 @@ async function main() {
 				//
 				// Update the SAM with the new data.
 
-				const updatedSamData: CreateSamDto = {
+				const updatedSamData = {
 					_id: samData._id,
 					agency_id: agencyId,
 					analysis: samAnalysisGroups,
@@ -320,19 +421,21 @@ async function main() {
 					seen_first_at: firstTransaction.created_at,
 					seen_last_at: latestTransaction.created_at,
 					system_status: 'complete',
+					timeline_summary: buildTimelineSummary(samAnalysisGroups),
 					transactions_expected: transactionsExpected,
 					transactions_found: transactionsFound,
 					transactions_missing: transactionsMissing,
 				};
 
-				await sams.updateById(samData._id, updatedSamData);
+				await sams.updateById(samData._id, updatedSamData as CreateSamDto);
 
 				Logger.success(`Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing} (${analysisTimer.get()})`, 1);
 
 			//
 			} catch (error) {
 				Logger.error(`Error processing SAM "${samData._id}": ${error.message}`);
-				await sams.updateById(samData._id, { remarks: `Error processing SAM "${samData._id}": ${error.message}`, system_status: 'error' });
+				const processingErrorUpdate = { remarks: `Error processing SAM "${samData._id}": ${error.message}`, system_status: 'error', timeline_summary: { months: [] } };
+				await sams.updateById(samData._id, processingErrorUpdate as Partial<CreateSamDto>);
 			} finally {
 				counter--;
 			}

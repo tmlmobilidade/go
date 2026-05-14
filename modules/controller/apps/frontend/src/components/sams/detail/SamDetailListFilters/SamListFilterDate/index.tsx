@@ -1,0 +1,41 @@
+'use client';
+
+/* * */
+
+import { useSamsDetailContext } from '@/contexts/SamDetail.context';
+import { FilterTypeDateRange } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+/* * */
+
+export function SamsDetailListFilterDate() {
+	//
+
+	// A. Setup variables
+
+	const { t } = useTranslation();
+	const samDetailContext = useSamsDetailContext();
+
+	//
+	// B. Transform data
+
+	const { analysisFilterEndTime, analysisFilterStartTime } = samDetailContext.ui;
+	const hasCompleteRange = analysisFilterStartTime != null && analysisFilterEndTime != null;
+	const isActiveFromCalendar = samDetailContext.ui.selectedDayKey != null;
+	const active = isActiveFromCalendar || hasCompleteRange || analysisFilterStartTime != null || analysisFilterEndTime != null;
+
+	//
+	// C. Render components
+
+	return (
+		<FilterTypeDateRange
+			active={active}
+			endDate={analysisFilterEndTime}
+			label={t('default:sams.detail.SamsDetailList.SamsDetailListFilterDate.label')}
+			onEndDateChange={samDetailContext.actions.setAnalysisFilterEnd}
+			onStartDateChange={samDetailContext.actions.setAnalysisFilterStart}
+			startDate={analysisFilterStartTime}
+			clearable
+		/>
+	);
+}

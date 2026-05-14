@@ -523,5 +523,102 @@
 				"title": "Exportar Circulações"
 			}
 		}
+	},
+	"sams": {
+		"detail": {
+			"SamsDetailBasicInfos": {
+				"description": "Informações básicas do SAM",
+				"fields": {
+					"agency_id": {
+						"label": "Operador"
+					},
+					"latest_apex_version": {
+						"label": "Versão APEX utilizada"
+					},
+					"seen_first_at": {
+						"label": "Primeira vista"
+					},
+					"seen_last_at": {
+						"label": "Última vista"
+					},
+					"status": {
+						"label": "Estado do SAM"
+					},
+					"system_status": {
+						"label": "Estado do SAM no sistema"
+					},
+					"transactions_expected": {
+						"label": "Transações esperadas"
+					},
+					"transactions_found": {
+						"label": "Transações encontradas"
+					},
+					"transactions_missing": {
+						"label": "Transações em falta"
+					}
+				},
+				"title": "Informações Básicas"
+			},
+			"SamsDetailCalendar": {
+				"day": {
+					"label": "Diário"
+				},
+				"description": "Calendário das análises do SAM",
+				"month": {
+					"label": "Mensal"
+				},
+				"title": "Calendário de Análises"
+			},
+			"SamsDetailList": {
+				"SamsDetailListFilterApexVersion": {
+					"label": "Versão APEX (transações)"
+				},
+				"SamsDetailListFilterDate": {
+					"label": "Intervalo de análise"
+				},
+				"description": "Lista de análises realizadas do SAM",
+				"title": "Lista de análises"
+			}
+		},
+		"export": {
+			"SamsExportModal": {
+				"ExportButton": {
+					"label": "Exportar análises"
+				},
+				"title": "Exportar Análises"
+			}
+		},
+		"list": {
+			"SamsFiltersApexVersion": {
+				"label": "Versão APEX"
+			},
+			"SamsFiltersDate": {
+				"label": "Datas de visualização"
+			},
+			"SamsFiltersStatus": {
+				"label": "Estado",
+				"options": {
+					"complete": "Completo",
+					"error": "Erro",
+					"incomplete": "Incompleto",
+					"waiting": "Aguardando"
+				}
+			},
+			"SamsListFilterAgency": {
+				"label": "Operador"
+			},
+			"SamsListFilterFavorites": {
+				"label": "Favoritos"
+			},
+			"SamsListHeader": {
+				"title": "SAMs"
+			},
+			"SamsListStatus": {
+				"completed": "Completo",
+				"failed": "Falhou",
+				"processing": "Em processamento",
+				"waiting": "Aguardando"
+			}
+		}
 	}
 }
