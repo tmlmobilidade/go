@@ -1,6 +1,6 @@
 /* * */
 
-import { SystemStatusSchema } from '@/_common/system-status.js';
+import { SystemStatusSchema } from '@/_common/status.js';
 import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { FileExportBaseSchema } from '@/file-exports/base.js';
 import { SamAnalysisSchema } from '@/sams/sam-analysis.js';
