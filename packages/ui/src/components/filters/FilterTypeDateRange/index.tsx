@@ -33,12 +33,14 @@ export function FilterTypeDateRange({ active, clearable = false, disabled, endDa
 			<Section gap="sm" height="auto" padding="md" width="auto">
 				<Label size="md">Data de Início</Label>
 				<DateTimeInput
+					clearable={clearable}
 					onChange={onStartDateChange}
 					value={startDate}
 				/>
 				<Spacer />
 				<Label size="md">Data de Fim</Label>
 				<DateTimeInput
+					clearable={clearable}
 					onChange={onEndDateChange}
 					value={endDate}
 				/>

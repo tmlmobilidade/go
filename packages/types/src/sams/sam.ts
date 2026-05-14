@@ -1,7 +1,7 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { SystemStatusSchema } from '@/_common/system-status.js';
+import { SystemStatusSchema } from '@/_common/status.js';
 import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { SamAnalysisSchema } from '@/sams/sam-analysis.js';
 import { SamTimelineSummarySchema } from '@/sams/sam-timeline-summary.js';
