@@ -1,3 +1,4 @@
+import { Dates } from '@tmlmobilidade/dates';
 import { type ClassValue, clsx } from 'clsx';
 import { DateTime } from 'luxon';
 
@@ -45,4 +46,14 @@ export function formatDate(input: number | string): string {
  */
 export function tryParseDateToTimestamp(input: string): number | undefined {
 	return DateTime.fromISO(input).toMillis();
+}
+
+/**
+ * Formats a Unix timestamp into a date string.
+ * @param {number | undefined} input - The Unix timestamp to format.
+ * @returns {string} - The formatted date string.
+ */
+export function formatUnixTimestampToDateString(input: number | undefined) {
+	if (!input) return '-';
+	return Dates.fromUnixTimestamp(input).toFormat('dd/MM/yyyy HH:mm');
 }

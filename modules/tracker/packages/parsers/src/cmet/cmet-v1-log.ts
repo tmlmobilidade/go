@@ -1,5 +1,6 @@
 /* * */
 
+import { Dates } from '@tmlmobilidade/dates';
 import { isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
 import { type RawVehicleEventCmetV1Log, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { roundToInt } from '@tmlmobilidade/utils';
@@ -28,6 +29,7 @@ export function parseRawVehicleEventCmetV1Log(doc: RawVehicleEventCmetV1Log): nu
 		latitude: latitude,
 		longitude: longitude,
 		odometer: roundToInt(vehicle.position.odometer),
+		operational_date: Dates.fromUnixTimestamp(doc.created_at).operational_date,
 		pattern_id: vehicle.trip?.patternId,
 		received_at: doc.received_at,
 		speed: roundToInt(vehicle.position.speed),

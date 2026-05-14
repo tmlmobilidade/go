@@ -100,10 +100,33 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			api_url: 'https://go.tmlmobilidade.pt/dates/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/dates',
 			...DEFAULT_PRD_CONFIG,
+			cors_origin: true,
 		},
 		stg: {
 			api_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/dates/api`,
 			frontend_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/dates`,
+			...DEFAULT_STG_CONFIG,
+			cors_origin: true,
+		},
+	},
+
+	eta: {
+		dev: {
+			api_port: 52099,
+			api_url: 'http://localhost:52099',
+			cors_origin: true,
+			frontend_port: 51099,
+			frontend_url: 'http://localhost:51099/eta',
+		},
+		prd: {
+			api_url: 'https://go.tmlmobilidade.pt/eta/api',
+			cors_origin: DEFAULT_PRD_CONFIG.cors_origin,
+			frontend_url: 'https://go.tmlmobilidade.pt/eta',
+			...DEFAULT_PRD_CONFIG,
+		},
+		stg: {
+			api_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/eta/api`,
+			frontend_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/eta`,
 			...DEFAULT_STG_CONFIG,
 		},
 	},
