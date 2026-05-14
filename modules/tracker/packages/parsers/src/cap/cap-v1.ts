@@ -1,5 +1,6 @@
 /* * */
 
+import { Dates } from '@tmlmobilidade/dates';
 import { clampCoordinate } from '@tmlmobilidade/geo';
 import { type RawVehicleEventCapV1, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { roundToInt } from '@tmlmobilidade/utils';
@@ -24,6 +25,7 @@ export const parseRawVehicleEventCapV1 = (doc: RawVehicleEventCapV1): null | Sim
 		latitude: latitude,
 		longitude: longitude,
 		odometer: null,
+		operational_date: Dates.fromUnixTimestamp(doc.created_at).operational_date,
 		pattern_id: null,
 		received_at: doc.received_at,
 		speed: roundToInt(vehicle.position.speed),

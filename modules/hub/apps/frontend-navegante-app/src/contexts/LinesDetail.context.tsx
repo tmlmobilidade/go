@@ -5,8 +5,9 @@ import { useLinesContext } from '@/contexts/Lines.context';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { getPublicVariable } from '@/settings/public-variables';
-import { type SimplifiedAlert } from '@/types/alerts.types';
 import { Line, NetworkPattern, NetworkRoute, NetworkShape, Waypoint } from '@/types/api/network';
+import { isAlertActiveNow } from '@/utils/alerts';
+import { type Alert } from '@tmlmobilidade/go-hub-pckg-types';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -19,7 +20,7 @@ interface LinesDetailContextState {
 		setHighlightedTripIds: (tripIds: string[]) => void
 	}
 	data: {
-		active_alerts: SimplifiedAlert[] | undefined
+		active_alerts: Alert[] | undefined
 		active_pattern: NetworkPattern | null
 		active_shape: NetworkShape | null
 		active_waypoint: null | Waypoint
@@ -104,7 +105,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 			try {
 				if (!dataLineState) return;
 				const fetchPromises = dataLineState.pattern_ids.map((patternId) => {
-					return fetch(`${getPublicVariable('api_url')}/patterns/${patternId}`)
+					return fetch(`${getPublicVariable('hub_api_url')}/v1/network/patterns/${patternId}`)
 						.then(response => response.json())
 						.then((patternData) => {
 							return patternData.map((patternGroup) => {
@@ -133,7 +134,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 		if (!dataActivePatternState) return;
 		(async () => {
 			try {
-				const shapeData = await fetch(`${getPublicVariable('api_url')}/shapes/${dataActivePatternState.shape_id}`).then((response) => {
+				const shapeData = await fetch(`${getPublicVariable('hub_api_url')}/v1/network/shapes/${dataActivePatternState.shape_id}`).then((response) => {
 					if (!response.ok) console.log(`Failed to fetch shape data for shapeId: ${dataActivePatternState.shape_id}`);
 					else return response.json();
 				});
@@ -186,14 +187,12 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 	}, [dataAllPatternsState, operationalDateContext.data.selected_date]);
 
 	useEffect(() => {
-		if (!alertsContext.data.simplified) return;
+		if (!alertsContext.data.alerts) return;
 
-		const activeAlerts = alertsContext.data.simplified.filter((simplifiedAlertData) => {
-			const isActive = (simplifiedAlertData.end_date && !isNaN(simplifiedAlertData.end_date.getTime())) ? new Date(simplifiedAlertData.end_date).getTime() >= new Date().getTime() : true;
+		const activeAlerts = alertsContext.data.alerts.filter((row) => {
+			if (!isAlertActiveNow(row)) return false;
 
-			if (!isActive) return false;
-
-			return simplifiedAlertData.informed_entity.some((informedEntity) => {
+			return row.informed_entity.some((informedEntity) => {
 				const normalizedLineId = lineId?.trim();
 				const lineOperatorDigit = normalizedLineId?.match(/\d/)?.[0];
 				const informedAgencyId = informedEntity.agency_id?.trim();
@@ -216,7 +215,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 		});
 
 		setDataActiveAlertsState(activeAlerts);
-	}, [alertsContext.data.simplified, lineId, dataLineState, dataAllPatternsState]);
+	}, [alertsContext.data.alerts, lineId, dataLineState, dataAllPatternsState]);
 
 	//
 	// D. Handle actions

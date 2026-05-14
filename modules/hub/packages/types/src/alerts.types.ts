@@ -1,6 +1,6 @@
 /* * */
 
-import { EntitySelector, TimeRange, TranslatedImage, TranslatedString } from '@/types/gtfsrt.types.js';
+import type { EntitySelector, TimeRange, TranslatedImage, TranslatedString } from './gtfsrt.js';
 
 /* * */
 
@@ -45,7 +45,7 @@ export enum AlertEffect {
  * Please use a SimplifiedAlert as many convenience operations are already correctly applied.
  */
 export interface Alert {
-	active_period: TimeRange
+	active_period: TimeRange[]
 	alert_id: string
 	cause: AlertCause
 	coordinates: [number, number]
@@ -85,7 +85,7 @@ export interface SimplifiedAlert {
 /* * */
 
 export interface AlertGroupByDate {
-	items: SimplifiedAlert[]
+	items: Alert[]
 	label?: string
 	title: string
 	value: string

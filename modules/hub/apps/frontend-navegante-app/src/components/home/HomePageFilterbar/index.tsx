@@ -1,21 +1,23 @@
 'use client';
-/* * */
 
 import { HomePageFilterbarAgencies } from '@/components/home/HomePageFilterbarAgencies';
 import { HomePageFilterbarTransports } from '@/components/home/HomePageFilterbarTransports';
 import { Grid } from '@/components/layout/Grid';
-import { Modal } from '@mantine/core';
+import { Section } from '@/components/layout/Section';
+import { Surface } from '@/components/layout/Surface';
+import { Drawer } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 
 /* * */
 
-interface HomePageFilterProps {
+interface HomePageFilterbarProps {
 	close: () => void
 	opened: boolean
 }
+
 /* * */
 
-export function HomePageFilterbar({ close, opened }: HomePageFilterProps) {
+export function HomePageFilterbar({ close, opened }: HomePageFilterbarProps) {
 	//
 
 	//
@@ -27,12 +29,16 @@ export function HomePageFilterbar({ close, opened }: HomePageFilterProps) {
 	// B. Render Components
 
 	return (
-		<Modal onClose={close} opened={opened} size="lg" title={t('modal.title')}>
-			<Grid columns="a" withGap>
-				<HomePageFilterbarTransports />
-				<HomePageFilterbarAgencies />
-			</Grid>
-		</Modal>
+		<Drawer onClose={close} opened={opened} position="bottom" size="85%" title={t('heading')}>
+			<Surface>
+				<Section withPadding>
+					<Grid columns="ab">
+						<HomePageFilterbarTransports />
+						<HomePageFilterbarAgencies />
+					</Grid>
+				</Section>
+			</Surface>
+		</Drawer>
 	);
 
 	//
