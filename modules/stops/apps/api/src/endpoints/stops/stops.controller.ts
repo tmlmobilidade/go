@@ -19,7 +19,37 @@ export class StopsController {
 	 */
 	static async create(request: FastifyRequest, reply: FastifyReply<Stop>) {
 		const data = CreateStopSchema.parse(request.body);
+
+		//
+		// Get the resource permissions for stops for the current user.
+
+		const userStopPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.create);
+
+		if (!userStopPermissions) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create stops');
+		}
+
+		//
+		// Validate that user has permission for ALL of this stop's agencies
+
+		const hasPermissionForAllAgencies = PermissionCatalog.hasPermissionResourceAll({
+			action: PermissionCatalog.all.stops.actions.create,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.stops.scope,
+			value: userStopPermissions.resources?.agency_ids ?? [],
+		});
+
+		if (!hasPermissionForAllAgencies) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create stops for these agencies. You must have permission for all agencies involved.');
+		}
+
 		const newStopId = await generateStopId();
+
+		if (data.flags.some(flag => flag.agency_ids.some(agencyId => !userStopPermissions.resources?.agency_ids?.includes(agencyId)))) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create stops for these agencies. You must have permission for all agencies involved.');
+		}
+
 		const result = await stops.insertOne({ ...data, _id: newStopId }, { unsafe: true });
 		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED });
 	}
@@ -31,8 +61,40 @@ export class StopsController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		await stops.toggleDeleteById(request.params.id);
+
+		//
+		// Get the resource permissions for stops for the current user.
+
+		const userStopPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.delete);
+
+		if (!userStopPermissions) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete stops');
+		}
+
+		//
+		// Validate that user has permission for ALL of this stop's agencies
+
+		const hasPermissionForAllAgencies = PermissionCatalog.hasPermissionResourceAll({
+			action: PermissionCatalog.all.stops.actions.delete,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.stops.scope,
+			value: userStopPermissions.resources?.agency_ids ?? [],
+		});
+
+		if (!hasPermissionForAllAgencies) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this stop. You must have permission for all agencies involved.');
+		}
+
+		//
+
 		const foundStop = await stops.findById(request.params.id);
 		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+
+		if (foundStop.flags.some(flag => flag.agency_ids.some(agencyId => !userStopPermissions.resources?.agency_ids?.includes(agencyId)))) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this stop. You must have permission for all agencies involved.');
+		}
+
 		reply.send({ data: foundStop, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -80,8 +142,20 @@ export class StopsController {
 	 * @param reply Fastify reply.
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
+		//
+		// Get the resource permissions for stops for the current user.
+
+		const userStopPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.read);
+
+		if (!userStopPermissions) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read stops');
+		}
 		const foundStop = await stops.findById(Number(request.params.id));
 		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+
+		if (foundStop.flags.some(flag => flag.agency_ids.some(agencyId => !userStopPermissions.resources?.agency_ids?.includes(agencyId)))) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this stop. You must have permission for all agencies involved.');
+		}
 
 		//
 		// Get pattern ids that reference this event in manual pattern rules
@@ -115,9 +189,22 @@ export class StopsController {
 	 * @param reply Fastify reply.
 	 */
 	static async lock(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
+		//
+		// Get the resource permissions for stops for the current user.
+
+		const userStopPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.lock);
+
+		if (!userStopPermissions) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock stops');
+		}
 		await stops.toggleLockById(request.params.id);
 		const foundStop = await stops.findById(request.params.id);
 		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+
+		if (foundStop.flags.some(flag => flag.agency_ids.some(agencyId => !userStopPermissions.resources?.agency_ids?.includes(agencyId)))) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock this stop. You must have permission for all agencies involved.');
+		}
+
 		reply.send({ data: foundStop, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -127,9 +214,23 @@ export class StopsController {
 	 * @param reply Fastify reply
 	 */
 	static async update(request: FastifyRequest<{ Body: UpdateStopDto, Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
+		//
+		// Get the resource permissions for stops for the current user.
+
+		const userStopPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.update);
+
+		if (!userStopPermissions) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update stops');
+		}
+
 		// Check if the stop exists before attempting to update
 		const foundStop = await stops.findById(Number(request.params.id));
 		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+
+		if (foundStop.flags.some(flag => flag.agency_ids.some(agencyId => !userStopPermissions.resources?.agency_ids?.includes(agencyId)))) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this stop. You must have permission for all agencies involved.');
+		}
+
 		// Ensure the flag IDs are saved in the legacy IDs array
 		const flagIds = request.body.flags?.map(flag => flag.stop_id) || [];
 		const existingLegacyIds = new Set(foundStop.legacy_ids || []);
