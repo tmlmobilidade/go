@@ -17,6 +17,7 @@ const tableSchema: ClickHouseSchema<SimplifiedVehicleEvent> = {
 	created_at: { type: 'Int64' },
 	latitude: { type: 'Float64' },
 	longitude: { type: 'Float64' },
+	operational_date: { type: 'Date' },
 	received_at: { type: 'Int64' },
 	trip_id: { type: 'String' },
 	vehicle_id: { type: 'String' },
@@ -41,9 +42,9 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 
 	public override readonly databaseName = 'operation';
 	public override readonly engine: ClickHouseTableEngine = 'ReplacingMergeTree';
-	public override readonly orderBy = '(trip_id, vehicle_id, agency_id, created_at)';
+	public override readonly orderBy = '(operational_date, trip_id, vehicle_id, agency_id, created_at)';
 	public override readonly partitionBy = 'toYYYYMM(fromUnixTimestamp64Milli(created_at))';
-	public override readonly primaryKey = '(trip_id, vehicle_id)';
+	public override readonly primaryKey = '(operational_date, trip_id, vehicle_id)';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'simplified_vehicle_events';
 
