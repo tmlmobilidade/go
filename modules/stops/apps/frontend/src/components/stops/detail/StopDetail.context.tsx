@@ -1,33 +1,17 @@
 'use client';
 
+import { StopDetailContext, type StopDetailContextState, StopDetailCoordinatesEditorModal, useStopDetailContext } from '@/contexts/StopDetailCoordinates.modal';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-stops-pckg-organize';
 import { PermissionCatalog, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { type PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
-interface StopDetailContextState extends DetailContextStateTemplate {
-	data: {
-		form: UseFormReturnType<UpdateStopDto>
-		stop: Stop | undefined
-	}
-}
-
-/* * */
-
-const StopDetailContext = createContext<StopDetailContextState | undefined>(undefined);
-
-export const useStopDetailContext = () => {
-	const context = useContext(StopDetailContext);
-	if (!context) {
-		throw new Error('useStopDetailContext must be used within an StopDetailContextProvider');
-	}
-	return context;
-};
+export { useStopDetailContext };
 
 /* * */
 
@@ -38,6 +22,9 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	// A. Setup variables
 
 	const meContext = useMeContext();
+	const [isCoordinatesEditorOpen, setCoordinatesEditorOpen] = useState(false);
+	const openCoordinatesEditor = useCallback(() => setCoordinatesEditorOpen(true), []);
+	const closeCoordinatesEditor = useCallback(() => setCoordinatesEditorOpen(false), []);
 
 	//
 	// B. Fetch data
@@ -49,8 +36,6 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	// C. Setup form
 
 	const { form } = useTypicalForm<UpdateStopDto>(UpdateStopSchema, stopData);
-
-	console.log(form.errors);
 
 	//
 	// D. Transform data
@@ -143,10 +128,16 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	//
 	// G. Define context value
 
+	const formValuesSignature = JSON.stringify(form.values);
+
+	// `form` ref is stable; include serialized values so consumers re-render when fields change (e.g. coords modal).
+	/* eslint-disable react-hooks/exhaustive-deps -- form.values identity alone is not a reliable dependency */
 	const contextValue: StopDetailContextState = useMemo(() => ({
 		actions: {
+			closeCoordinatesEditor,
 			delete: handleDelete,
 			lock: handleLock,
+			openCoordinatesEditor,
 			save: handleSave,
 		},
 		data: {
@@ -158,6 +149,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			canLock,
 			canSave,
 			error: stopError,
+			isCoordinatesEditorOpen,
 			isDeleting,
 			isLoading: stopLoading,
 			isLocking,
@@ -165,6 +157,9 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			isSaving,
 		},
 	}), [
+		closeCoordinatesEditor,
+		openCoordinatesEditor,
+		isCoordinatesEditorOpen,
 		canDelete,
 		canLock,
 		canSave,
@@ -176,10 +171,12 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		isSaving,
 		form,
 		stopData,
+		formValuesSignature,
 		handleDelete,
 		handleLock,
 		handleSave,
 	]);
+	/* eslint-enable react-hooks/exhaustive-deps */
 
 	//
 	// H. Render components
@@ -187,6 +184,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	return (
 		<StopDetailContext.Provider value={contextValue}>
 			{children}
+			<StopDetailCoordinatesEditorModal />
 		</StopDetailContext.Provider>
 	);
 

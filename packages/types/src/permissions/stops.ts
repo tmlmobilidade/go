@@ -11,6 +11,7 @@ export const StopsPermissionSchema = z.object({
 		'read',
 		'lock',
 		'update',
+		'edit_coordinates',
 	]),
 	resources: z.object({
 		agency_ids: z.array(z.string()).default([]),
