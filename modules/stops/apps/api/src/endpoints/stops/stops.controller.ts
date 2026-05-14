@@ -3,9 +3,8 @@
 import { generateStopId } from '@/utils/generate-stop-id.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { patterns, stops } from '@tmlmobilidade/interfaces';
-import { CreateStopSchema, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
-import { PermissionCatalog } from '@tmlmobilidade/types/dist/permissions/index.js';
+import { type Filter, patterns, stops } from '@tmlmobilidade/interfaces';
+import { CreateStopSchema, PermissionCatalog, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
 
 /**
  * This is an example controller that is using the stops interface.
@@ -49,15 +48,15 @@ export class StopsController {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read stops');
 		}
 
-		const queryFilters = {};
+		const queryFilters: Filter<Stop> = {};
 
 		if ('resources' in userStopPermissions && 'agency_ids' in userStopPermissions.resources) {
 			if (!userStopPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-				queryFilters['flags.agency_ids'] = { $in: userStopPermissions.resources['agency_ids'] };
+				queryFilters.flags = { $elemMatch: { agency_ids: { $in: userStopPermissions.resources['agency_ids'] } } };
 			}
 		}
-		const data = await stops.findMany({}, {
-			projection: { _id: 1, flags: { agency_ids: { $in: userStopPermissions.resources['agency_ids'] } }, is_deleted: 1, latitude: 1, legacy_ids: 1, lifecycle_status: 1, longitude: 1, municipality_id: 1, name: 1, system_status: 1 },
+		const data = await stops.findMany(queryFilters, {
+			projection: { _id: 1, flags: 1, is_deleted: 1, latitude: 1, legacy_ids: 1, lifecycle_status: 1, longitude: 1, municipality_id: 1, name: 1, system_status: 1 },
 			sort: { created_at: -1 },
 		});
 		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
