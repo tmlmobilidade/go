@@ -62,11 +62,7 @@ export const AlertsContextProvider = ({ children }) => {
 	// Transform data into geojson
 	useEffect(() => {
 		const collection = getBaseGeoJsonFeatureCollection();
-		let withCoordinates = 0;
-		let withoutCoordinates = 0;
 		alertsState.forEach((alert) => {
-			if (Array.isArray(alert.coordinates) && alert.coordinates.length === 2) withCoordinates++;
-			else withoutCoordinates++;
 			const alertFC = transformAlertDataIntoGeoJsonFeature(alert);
 			if (alertFC) collection.features.push(alertFC);
 		});

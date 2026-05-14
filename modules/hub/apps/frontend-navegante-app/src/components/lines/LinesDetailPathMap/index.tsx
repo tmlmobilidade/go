@@ -31,7 +31,7 @@ export function LinesDetailPathMap() {
 	const activeVehiclesFeatureCollection = useMemo(() => {
 		if (!linesDetailContext.data.active_pattern?.id) return;
 		return vehiclesContext.actions.getVehiclesByPatternIdGeoJsonFC(linesDetailContext.data.active_pattern?.id);
-	}, [linesDetailContext.data.active_pattern, vehiclesContext.data.vehicles]);
+	}, [linesDetailContext.data.active_pattern?.id, vehiclesContext.actions]);
 
 	const activePathFeatureCollection = useMemo(() => {
 		if (!linesDetailContext.data.active_pattern?.path) return;
@@ -49,7 +49,7 @@ export function LinesDetailPathMap() {
 			collection.features.push(result);
 		});
 		return collection;
-	}, [linesDetailContext.data.active_pattern, vehiclesContext.data.vehicles]);
+	}, [linesDetailContext.data.active_pattern?.color, linesDetailContext.data.active_pattern.path, linesDetailContext.data.active_pattern?.text_color, stopsContext.actions]);
 
 	const activeStopFeatureCollection = useMemo(() => {
 		// Exit early if there is no active pattern or active waypoint
@@ -68,7 +68,7 @@ export function LinesDetailPathMap() {
 		collection.features.push(result);
 		return collection;
 		//
-	}, [linesDetailContext.data.active_waypoint, linesDetailContext.data.active_pattern]);
+	}, [linesDetailContext.data.active_waypoint, linesDetailContext.data.active_pattern, stopsContext.actions]);
 
 	//
 	// C. Handle Actions
@@ -82,12 +82,11 @@ export function LinesDetailPathMap() {
 			const stopData = stopsContext.actions.getStopById(linesDetailContext.data.active_waypoint.stop_id);
 			if (!stopData) return;
 			moveMap(linesDetailMap, [stopData.lon, stopData.lat]);
-		}
-		else {
+		} else {
 			if (!linesDetailContext.data.active_shape?.geojson) return;
 			centerMap(linesDetailMap, [linesDetailContext.data.active_shape.geojson], { padding: 60 });
 		}
-	}, [linesDetailMap, linesDetailContext.data.active_waypoint, linesDetailContext.data.active_shape]);
+	}, [linesDetailMap, linesDetailContext.data.active_waypoint, linesDetailContext.data.active_shape, linesDetailContext.flags.is_interactive_mode, stopsContext.actions]);
 
 	function handleLayerClick(event) {
 		if (!linesDetailMap) return;
