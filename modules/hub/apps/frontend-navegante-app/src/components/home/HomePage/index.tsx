@@ -7,7 +7,6 @@ import { LinesSection } from '@/components/home/LinesSection';
 import { StopsSection } from '@/components/home/StopsSection';
 import { VehiclesSection } from '@/components/home/VehiclesSection';
 import { useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
-import { useDisclosure } from '@mantine/hooks';
 
 /* * */
 
