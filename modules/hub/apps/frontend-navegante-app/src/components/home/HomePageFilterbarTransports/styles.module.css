@@ -12,10 +12,6 @@
 	transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
 }
 
-.icon:hover {
-opacity: 0.8;
-}
-
 .iconActive {
 	color: var(--color-system-text-100);
 	background: var(--color-brand);
@@ -26,4 +22,10 @@ opacity: 0.8;
 	color: var(--color-system-text-100);
 	background: var(--color-system-background-100);
 	border-color: var(--color-system-border-100);
+}
+
+.transportsWrapper{
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
 }

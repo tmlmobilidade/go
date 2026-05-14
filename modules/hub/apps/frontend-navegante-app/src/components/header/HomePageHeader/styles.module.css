@@ -1,5 +1,5 @@
 /* * */
-/* HEADER (sticky shell) */
+/* HEADER */
 
 .header {
 	position: sticky;
@@ -27,11 +27,4 @@
 	gap: var(--size-spacing-10);
 	align-items: center;
 	width: 100%;
-}
-
-.filterButton {
-	color: var(--color-system-text-100);
-	background-color: var(--color-system-background-100);
-	border: 1px solid var(--color-system-border-100);
-	border-radius: var(--size-spacing-5);
 }

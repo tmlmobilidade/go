@@ -1,6 +1,6 @@
 'use client';
 
-import { HomePageFilterbarAgencies } from '@/components/home/HomePageFilterbarAgencies';
+// import { HomePageFilterbarAgencies } from '@/components/home/HomePageFilterbarAgencies';
 import { HomePageFilterbarTransports } from '@/components/home/HomePageFilterbarTransports';
 import { Grid } from '@/components/layout/Grid';
 import { Section } from '@/components/layout/Section';
@@ -16,10 +16,10 @@ export function HomePageFilterbar() {
 
 	return (
 		<Surface>
-			<Section withPadding>
+			<Section>
 				<Grid columns="ab">
 					<HomePageFilterbarTransports />
-					<HomePageFilterbarAgencies />
+					{/* <HomePageFilterbarAgencies /> */}
 				</Grid>
 			</Section>
 		</Surface>

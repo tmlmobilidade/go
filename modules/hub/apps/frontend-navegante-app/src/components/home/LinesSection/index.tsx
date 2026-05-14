@@ -12,7 +12,7 @@ export function LinesSection() {
 	// A. Render components
 
 	return (
-		<Section href="/?section=lines" withGap>
+		<Section href="/?section=lines">
 			<LinesList />
 		</Section>
 	);
