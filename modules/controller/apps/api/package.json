@@ -26,6 +26,7 @@
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/normalizers": "*",
+		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {

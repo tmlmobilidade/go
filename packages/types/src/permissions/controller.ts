@@ -33,6 +33,7 @@ export type RidesPermission = z.infer<typeof RidesPermissionSchema>;
 export const SamsPermissionSchema = z.object({
 	action: z.enum([
 		'read',
+		'export',
 	]),
 	scope: z.literal('sams'),
 });

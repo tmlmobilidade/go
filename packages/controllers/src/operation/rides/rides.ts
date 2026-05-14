@@ -84,8 +84,6 @@ export class RidesSharedController {
 
 		const ridesBatch = await rides.aggregate(pipeline);
 
-		console.log('RidesSharedController.getBatch - ridesBatch count:', ridesBatch?.length ?? 0);
-
 		//
 		// Send the response
 
