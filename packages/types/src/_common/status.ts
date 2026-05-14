@@ -71,3 +71,10 @@ export type AvailabilityStatus = z.infer<typeof AvailabilityStatusSchema>;
 export const ValidityStatusValues = ['valid', 'invalid', 'unknown'] as const;
 export const ValidityStatusSchema = z.enum(ValidityStatusValues);
 export type ValidityStatus = z.infer<typeof ValidityStatusSchema>;
+
+/* * */
+/* SYSTEM STATUS */
+
+export const SystemStatusValues = ['waiting', 'incomplete', 'complete', 'error'] as const;
+export const SystemStatusSchema = z.enum(SystemStatusValues);
+export type SystemStatus = z.infer<typeof SystemStatusSchema>;

@@ -59,6 +59,10 @@ export const PAGE_ROUTES = Object.freeze({
 		// RIDES
 		RIDES_DETAIL: (id: string) => `${getModuleConfig('controller', 'frontend_url')}/rides/${id}`,
 		RIDES_LIST: `${getModuleConfig('controller', 'frontend_url')}/rides`,
+
+		// SAMS
+		SAMS_DETAIL: (id: string) => `${getModuleConfig('controller', 'frontend_url')}/sams/${id}`,
+		SAMS_LIST: `${getModuleConfig('controller', 'frontend_url')}/sams`,
 	},
 
 	dates: {
@@ -267,6 +271,15 @@ export const API_ROUTES = Object.freeze({
 		RIDES_FAVORITES: `${getModuleConfig('controller', 'api_url')}/rides/favorites`,
 		RIDES_LIST: `${getModuleConfig('controller', 'api_url')}/rides`,
 		RIDES_WS: `${getModuleConfig('controller', 'api_url')}/rides/ws`,
+
+		// SAMS
+		SAMS_APEX_VERSIONS: `${getModuleConfig('controller', 'api_url')}/sams/apex-versions`,
+		SAMS_BASE: `${getModuleConfig('controller', 'api_url')}/sams/base`,
+		SAMS_DETAIL: (id: string) => `${getModuleConfig('controller', 'api_url')}/sams/${id}`,
+		SAMS_EXPORT_ANALYSIS: `${getModuleConfig('controller', 'api_url')}/sams/export/analysis`,
+		SAMS_FAVORITES: `${getModuleConfig('controller', 'api_url')}/sams/favorites`,
+		SAMS_LIST: `${getModuleConfig('controller', 'api_url')}/sams`,
+		SAMS_TIMELINE_SUMMARY: `${getModuleConfig('controller', 'api_url')}/sams/timeline-summary`,
 	},
 
 	dates: {
