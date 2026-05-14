@@ -1,12 +1,13 @@
 /* * */
 
+import { AnalysisCalendar } from '@/components/common/AnalysisSams/AnalysisCalendar';
 import { useSamsDetailContext } from '@/contexts/SamDetail.context';
-import { AnalysisCalender, Collapsible, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
-export function SamsDetailCalender() {
+export function SamsDetailCalendar() {
 	//
 
 	//
@@ -21,11 +22,11 @@ export function SamsDetailCalender() {
 
 	return (
 		<Collapsible
-			description={t('default:sams.detail.SamsDetailCalender.description')}
-			title={t('default:sams.detail.SamsDetailCalender.title')}
+			description={t('default:sams.detail.SamsDetailCalendar.description')}
+			title={t('default:sams.detail.SamsDetailCalendar.title')}
 		>
 			<Section gap="md">
-				<AnalysisCalender
+				<AnalysisCalendar
 					analyses={samDetailContext.data.sam?.analysis ?? []}
 					onDayClick={samDetailContext.actions.applyAnalysisFilterFromCalendarDay}
 					rangeEndTs={samDetailContext.data.sam?.seen_last_at}

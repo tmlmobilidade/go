@@ -14,7 +14,7 @@ import { buildMonthSections, buildSections, type DayAccent, type DaySection, SEM
 
 /* * */
 
-export interface AnalysisCalenderProps {
+export interface AnalysisCalendarProps {
 	analyses: SamAnalysis[]
 	className?: string
 	onDayClick?: (dayKey: string) => void
@@ -33,7 +33,7 @@ const monthKeyFromDayKey = (dayKey: string): null | string => {
 
 const toSquareAccent = (accent: DayAccent): 'green' | 'orange' | 'red' | 'white' => accent;
 
-export function AnalysisCalender({ analyses, className, onDayClick, rangeEndTs, rangeStartTs }: AnalysisCalenderProps) {
+export function AnalysisCalendar({ analyses, className, onDayClick, rangeEndTs, rangeStartTs }: AnalysisCalendarProps) {
 	const sections = useMemo(() => buildMonthSections(analyses ?? [], { rangeEndTs, rangeStartTs }), [analyses, rangeEndTs, rangeStartTs]);
 	const allDaySections = useMemo(() => buildSections(analyses ?? [], { rangeEndTs, rangeStartTs }), [analyses, rangeEndTs, rangeStartTs]);
 	const monthDaySectionsByKey = useMemo(() => {
