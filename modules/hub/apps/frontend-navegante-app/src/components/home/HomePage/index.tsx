@@ -18,15 +18,14 @@ export function HomePage() {
 	// A. Setup Variables
 
 	const globalSettingsContext = useGlobalSettingsContext();
-	const [opened, { close, open }] = useDisclosure(false);
 
 	//
 	// B. Render Components
 
 	return (
 		<>
-			<HomePageHeader openFilter={open} />
-			<HomePageFilterbar close={close} opened={opened} />
+			<HomePageHeader />
+			<HomePageFilterbar />
 			{globalSettingsContext.section === 'alerts' && <AlertsSection />}
 			{globalSettingsContext.section === 'lines' && <LinesSection />}
 			{globalSettingsContext.section === 'stops' && <StopsSection />}
