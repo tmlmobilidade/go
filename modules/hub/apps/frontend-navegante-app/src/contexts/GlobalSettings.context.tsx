@@ -2,7 +2,7 @@
 
 import { nextTransportsAfterToggle, normalizeTransportsSelection } from '@/utils/transportAgencies';
 import { useLocalStorage } from '@mantine/hooks';
-import { createContext, useContext, useRef } from 'react';
+import { createContext, useContext } from 'react';
 
 /* * */
 
