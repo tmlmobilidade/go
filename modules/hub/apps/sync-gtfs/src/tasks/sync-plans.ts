@@ -53,7 +53,7 @@ export const syncPlans = async () => {
 	// Save to the database
 
 	allPlansData.sort((a, b) => sortCollator.compare(a.valid_range.start, b.valid_range.start));
-	await apiCache.set('hub:network:plans:json', JSON.stringify(allPlansData), {});
+	await apiCache.set('hub:network:plans', JSON.stringify(allPlansData), {});
 
 	LOGGER.success(`Done updating ${updatedPlansCounter} Plans (${globalTimer.get()})`);
 

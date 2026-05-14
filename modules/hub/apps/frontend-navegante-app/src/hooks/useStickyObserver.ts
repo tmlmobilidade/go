@@ -35,13 +35,28 @@ export const useStickyObserver = (rootMargin?: RootMarginProps, threshold: numbe
 	//
 	// B. Transform data
 
-	const preparedRootMargin = { ...defaultRootMargin, ...rootMargin };
+	const preparedRootMargin = { ...defaultRootMargin };
+	if (rootMargin) {
+		for (const key of ['top', 'right', 'bottom', 'left'] as const) {
+			const value = rootMargin[key];
+			if (value !== undefined && value !== null && value !== '') {
+				preparedRootMargin[key] = value;
+			}
+		}
+	}
 	const preparedOffsetValue = { ...defaultOffsetValue, ...offsetValue };
 
-	if (preparedRootMargin.top) preparedRootMargin.top = `${parseInt(preparedRootMargin.top) * (negativeValues ? -1 : 1) + (preparedOffsetValue.top ?? 0)}px`;
-	if (preparedRootMargin.right) preparedRootMargin.right = `${parseInt(preparedRootMargin.right) * (negativeValues ? -1 : 1) + (preparedOffsetValue.right ?? 0)}px`;
-	if (preparedRootMargin.left) preparedRootMargin.left = `${parseInt(preparedRootMargin.left) * (negativeValues ? -1 : 1) + (preparedOffsetValue.left ?? 0)}px`;
-	if (preparedRootMargin.bottom) preparedRootMargin.bottom = `${parseInt(preparedRootMargin.bottom) * (negativeValues ? -1 : 1) + (preparedOffsetValue.bottom ?? 0)}px`;
+	const toObserverMarginPx = (raw: string, offset: number | undefined) => {
+		const parsed = Number.parseInt(raw, 10);
+		if (!Number.isFinite(parsed)) return '0px';
+		const combined = parsed * (negativeValues ? -1 : 1) + (offset ?? 0);
+		return `${combined}px`;
+	};
+
+	if (preparedRootMargin.top) preparedRootMargin.top = toObserverMarginPx(preparedRootMargin.top, preparedOffsetValue.top);
+	if (preparedRootMargin.right) preparedRootMargin.right = toObserverMarginPx(preparedRootMargin.right, preparedOffsetValue.right);
+	if (preparedRootMargin.left) preparedRootMargin.left = toObserverMarginPx(preparedRootMargin.left, preparedOffsetValue.left);
+	if (preparedRootMargin.bottom) preparedRootMargin.bottom = toObserverMarginPx(preparedRootMargin.bottom, preparedOffsetValue.bottom);
 
 	//
 	// C. Setup hook

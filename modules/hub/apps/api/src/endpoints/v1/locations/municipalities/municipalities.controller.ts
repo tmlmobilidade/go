@@ -10,7 +10,7 @@ export class MunicipalitiesController {
 	static async getMunicipalities(request: FastifyRequest, reply: FastifyReply<unknown>) {
 		return sendLocationFeed<Record<string, unknown>>(
 			reply,
-			'hub:locations:municipalities:json',
+			'hub:locations:municipalities',
 			SERVERDB_KEYS.LOCATIONS.MUNICIPALITIES,
 			'hub/v1/locations/municipalities:getMunicipalities()',
 		);

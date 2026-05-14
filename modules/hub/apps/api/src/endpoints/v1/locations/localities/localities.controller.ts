@@ -10,7 +10,7 @@ export class LocalitiesController {
 	static async getLocalities(request: FastifyRequest, reply: FastifyReply<unknown>) {
 		return sendLocationFeed<Record<string, unknown>>(
 			reply,
-			'hub:locations:localities:json',
+			'hub:locations:localities',
 			SERVERDB_KEYS.LOCATIONS.LOCALITIES,
 			'hub/v1/locations/localities:getLocalities()',
 		);
