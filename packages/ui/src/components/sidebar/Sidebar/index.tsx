@@ -6,13 +6,16 @@ import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 import { type JSX } from 'react';
 
 import styles from './styles.module.css';
+import { i18nResourceKeysPtShared } from '../../../i18n/resources';
 
 import { SidebarItem } from '../SidebarItem';
 
 /* * */
 
+type SidebarAppId = keyof typeof i18nResourceKeysPtShared.shared.components.sidebar.Sidebar;
+
 export interface SidebarAppItemConfig {
-	_id: string
+	_id: SidebarAppId
 	href: string
 	icon: JSX.Element
 	permissions: readonly Permission[]

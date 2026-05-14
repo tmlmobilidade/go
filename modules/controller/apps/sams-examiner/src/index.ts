@@ -5,23 +5,12 @@ import { Dates } from '@tmlmobilidade/dates';
 import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type CreateSamDto, Sam, type SamAnalysis } from '@tmlmobilidade/types';
+import { type CreateSamDto, Sam, type SamAnalysis, type SamTimelineSummary, UpdateSamDto } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
 const LISBON_TZ = 'Europe/Lisbon';
-interface SamTimelineSummary {
-	months: Array<{
-		failed_count: number
-		key: string
-		successful_count: number
-	}>
-	undated?: {
-		failed_count: number
-		successful_count: number
-	}
-}
 const YEAR_MONTH_FORMATTER = new Intl.DateTimeFormat('en-CA', {
 	month: '2-digit',
 	timeZone: LISBON_TZ,
@@ -90,7 +79,7 @@ function buildTimelineSummary(analyses: SamAnalysis[]): SamTimelineSummary {
 		.sort(([a], [b]) => a.localeCompare(b))
 		.map(([key, counters]) => ({
 			failed_count: counters.invalid,
-			key,
+			month: key,
 			successful_count: counters.valid,
 		}));
 
@@ -132,7 +121,7 @@ async function main() {
 
 		await sams.updateMany(
 			{ /* ALL DOCUMENTS */ },
-			{ system_status: 'processing' },
+			{ system_status: 'incomplete' },
 			{ returnResults: false },
 		);
 
@@ -412,7 +401,7 @@ async function main() {
 				//
 				// Update the SAM with the new data.
 
-				const updatedSamData = {
+				const updatedSamData: UpdateSamDto = {
 					_id: samData._id,
 					agency_id: agencyId,
 					analysis: samAnalysisGroups,
@@ -427,7 +416,7 @@ async function main() {
 					transactions_missing: transactionsMissing,
 				};
 
-				await sams.updateById(samData._id, updatedSamData as CreateSamDto);
+				await sams.updateById(samData._id, updatedSamData);
 
 				Logger.success(`Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing} (${analysisTimer.get()})`, 1);
 
