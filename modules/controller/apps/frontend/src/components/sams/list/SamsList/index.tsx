@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 'use client';
 
 import { AnalysisTimeLineRow } from '@/components/common/AnalysisSams/AnalysisTimeLine';
@@ -110,8 +109,8 @@ export function SamsList() {
 
 	return (
 		<Pane header={[
-			<SamsListHeader />,
-			<SamsFilters />,
+			<SamsListHeader key="header" />,
+			<SamsFilters key="filters" />,
 		]}
 		>
 			<DataTable

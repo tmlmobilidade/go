@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 'use client';
 
 /* * */
@@ -12,7 +11,7 @@ import { Pane } from '@tmlmobilidade/ui';
 export function SamsDetail() {
 	return (
 		<Pane header={[
-			<SamsDetailHeader />,
+			<SamsDetailHeader key="header" />,
 		]}
 		>
 			<SamsDetailBasicInfos />
