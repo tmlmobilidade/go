@@ -21,9 +21,7 @@ interface AlertsListContextState {
 		updateFilterByEffect: (value: AlertEffect | null) => void
 		updateFilterByLineId: (value: string) => void
 		updateFilterBySearchQuery: (value: string) => void
-		updateFilterByStopId: (value: string) => void
-		// updateFilterByMunicipalityId: (value: string) => void
-	}
+		updateFilterByStopId: (value: string) => void	}
 	counters: {
 		by_date: {
 			current: number

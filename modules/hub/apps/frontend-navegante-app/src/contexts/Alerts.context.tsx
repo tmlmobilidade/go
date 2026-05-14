@@ -78,13 +78,10 @@ export const AlertsContextProvider = ({ children }) => {
 	};
 
 	const getAlertsByLineId = (lineId: string): Alert[] => {
-		// TODO: Update this to use informed_entity.lineId instead of routeId
-		// This is a temporary solution to filter by lineId until the API is updated
 		return alertsState.filter((resolvedAlert) => {
-			// Include this element if any informed_entity...
 			return resolvedAlert.informed_entity.some((informedEntity) => {
-				// ...has a routeId that starts with the lineId
-				return informedEntity.route_id?.startsWith(lineId);
+				if (informedEntity.line_id != null && String(informedEntity.line_id) === String(lineId)) return true;
+				return informedEntity.route_id?.startsWith(lineId) ?? false;
 			});
 		});
 	};

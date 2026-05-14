@@ -28,7 +28,7 @@ export function AlertsListViewMap() {
 
 	useEffect(() => {
 		// Exit early if there are no alerts or map
-		if (!alertsContext.data.featureCollection || !alertsContext.data.featureCollection.features.length || !alertsListMap) return;
+		if (!alertsContext.data.featureCollection?.features.length || !alertsListMap) return;
 
 		// When there are search filters, center the map on the cluster with the most points
 		const clusterPoints = turf.clustersKmeans(alertsContext.data.featureCollection, { mutate: true, numberOfClusters: 2 });

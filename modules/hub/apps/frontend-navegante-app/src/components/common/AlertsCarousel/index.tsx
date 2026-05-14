@@ -4,8 +4,6 @@ import type { Alert } from '@tmlmobilidade/go-hub-pckg-types';
 
 import { AlertsCarouselSlide } from '@/components/common/AlertsCarouselSlide';
 import Carousel from '@/components/common/Carousel';
-import { getAlertDescription } from '@/utils/alerts';
-import { useLocale } from 'next-intl';
 
 /* * */
 
@@ -17,12 +15,8 @@ interface Props {
 /* * */
 
 export function AlertsCarousel({ alerts, target = '_self' }: Props) {
-	//
-
-	const locale = useLocale();
-
-	const carouselSlides = alerts?.map(slideItem => ({
-		_id: slideItem.alert_id + getAlertDescription(slideItem, locale),
+	const carouselSlides = alerts?.map((slideItem, index) => ({
+		_id: `${slideItem.alert_id}-${index}`,
 		component: (
 			<AlertsCarouselSlide alert={slideItem} target={target} />
 		),
@@ -31,6 +25,4 @@ export function AlertsCarousel({ alerts, target = '_self' }: Props) {
 	return (
 		<Carousel slides={carouselSlides} />
 	);
-
-	//
 }

@@ -99,9 +99,7 @@ class ApiCacheClass {
 	 * Saves a cache entry with an optional time-to-live (TTL).
 	 * @param key The key of the cache entry to save.
 	 * @param value The value of the cache entry to save. Must be a string.
-	 * @param ttl Optional time-to-live for the cache entry in seconds.
-	 * If not provided, the entry will persist indefinitely.
-	 * @param params Optional params to replace `{named}` tokens in the key.
+	 * @param options Optional params / TTL. Omit when neither applies.
 	 */
 	public async set(key: ApiCacheKey, value: string, options?: { params?: ApiCacheKeyParams, ttl?: number }) {
 		const parsedKey = resolveApiCacheKey(key, options?.params);

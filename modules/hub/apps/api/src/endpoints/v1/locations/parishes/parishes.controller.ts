@@ -10,7 +10,7 @@ export class ParishesController {
 	static async getParishes(request: FastifyRequest, reply: FastifyReply<unknown>) {
 		return sendLocationFeed<Record<string, unknown>>(
 			reply,
-			'hub:locations:parishes:json',
+			'hub:locations:parishes',
 			SERVERDB_KEYS.LOCATIONS.PARISHES,
 			'hub/v1/locations/parishes:getParishes()',
 		);

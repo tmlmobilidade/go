@@ -56,7 +56,7 @@ export const syncLinesRoutesPatterns = async () => {
 	const { db } = getGtfsSqliteContext();
 
 	// For Stops
-	const allStopsParsedTxt = await apiCache.get('hub:network:stops:json') as string;
+	const allStopsParsedTxt = await apiCache.get('hub:network:stops') as string;
 	const allStopsParsedJson: NetworkStop[] = JSON.parse(allStopsParsedTxt);
 	const allStopsParsedMap = new Map(allStopsParsedJson.map(item => [item.id, item]));
 
@@ -440,8 +440,8 @@ export const syncLinesRoutesPatterns = async () => {
 		const finalizedPatternGroupsData: NetworkPattern[] = Array.from(parsedPatternsForThisPatternGroup.values()).map((item: NetworkPattern) => ({ ...item, trips: Object.values(item.trips) }));
 
 		const patternJson = JSON.stringify(finalizedPatternGroupsData);
-		await apiCache.set('hub:network:patterns:{patternId}:json', patternJson, { params: { patternId } });
-		updatedPatternKeys.add(`hub:network:patterns:${patternId}:json`);
+		await apiCache.set('hub:network:patterns:{patternId}', patternJson, { params: { patternId } });
+		updatedPatternKeys.add(`hub:network:patterns:${patternId}`);
 
 		// LOGGER.info(`Updated pattern_id "${patternId}" (${intraPatternTimer.get()})`);
 
@@ -453,7 +453,7 @@ export const syncLinesRoutesPatterns = async () => {
 	//
 	// Delete stale patterns
 
-	const allPatternKeysInTheDatabase = await apiCache.scan('hub:network:patterns:*:json');
+	const allPatternKeysInTheDatabase = await apiCache.scan('hub:network:patterns:*');
 
 	const stalePatternKeys = allPatternKeysInTheDatabase.filter(key => !updatedPatternKeys.has(key));
 	if (stalePatternKeys.length) {
@@ -467,7 +467,7 @@ export const syncLinesRoutesPatterns = async () => {
 
 	const finalizedAllRoutesData: NetworkRoute[] = Array.from(allRoutesParsed.values()).sort((a, b) => sortCollator.compare(a.id, b.id));
 	const routesJson = JSON.stringify(finalizedAllRoutesData);
-	await apiCache.set('hub:network:routes:json', routesJson, {});
+	await apiCache.set('hub:network:routes', routesJson, {});
 	LOGGER.info(`Updated ${finalizedAllRoutesData.length} Routes`);
 
 	//
@@ -475,7 +475,7 @@ export const syncLinesRoutesPatterns = async () => {
 
 	const finalizedAllLinesData: Line[] = Array.from(allLinesParsed.values()).sort((a, b) => sortCollator.compare(a.id, b.id));
 	const linesJson = JSON.stringify(finalizedAllLinesData);
-	await apiCache.set('hub:network:lines:json', linesJson, {});
+	await apiCache.set('hub:network:lines', linesJson, {});
 	LOGGER.info(`Updated ${finalizedAllLinesData.length} Lines`);
 
 	//
