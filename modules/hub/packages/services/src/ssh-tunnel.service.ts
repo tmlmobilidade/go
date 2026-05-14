@@ -16,19 +16,19 @@ export interface SshTunnelServiceOptions {
 
 export class SshTunnelService {
 	private static _instance: SshTunnelService;
-	get server(): Server | undefined {
-		return this._server;
-	}
 
 	private _server: Server;
 	private config: SshConfig;
 	private options: SshTunnelServiceOptions;
-
 	private retries = 0;
 
 	constructor(config: SshConfig, options?: SshTunnelServiceOptions) {
 		this.config = config;
 		if (options) this.options = options;
+	}
+
+	get server(): Server | undefined {
+		return this._server;
 	}
 
 	/**
@@ -67,6 +67,7 @@ export class SshTunnelService {
 			const [server] = await createTunnel(this.config.tunnelOptions, this.config.serverOptions, this.config.sshOptions, this.config.forwardOptions);
 			console.log(`⤷ SSH Tunnel connected to host port ${(server.address() as AddressInfo).port}`);
 
+			this.retries = 0;
 			this._server = server;
 
 			server.on('error', (error) => {
@@ -76,23 +77,23 @@ export class SshTunnelService {
 			server.on('close', () => {
 				console.log(`⤷ SSH Tunnel closed.`);
 			});
-		}
-		catch (error) {
-			if (error.code === 'EADDRINUSE') {
+		} catch (error: unknown) {
+			const code = error !== null && typeof error === 'object' && 'code' in error
+				? (error as NodeJS.ErrnoException).code
+				: undefined;
+			if (code === 'EADDRINUSE') {
 				console.log(`⤷ ERROR: Port "${this.config.serverOptions.port}" already in use. Retrying with a different port...`);
 				if (this.config.serverOptions.port) this.config.serverOptions.port++;
-				return;
+				return await this.connect();
 			}
 
 			console.log(`⤷ ERROR: Failed to connect to SSH Tunnel.`, error);
 			if (this.retries < (this.options?.maxRetries || 3)) {
 				this.retries++;
 				console.log(`⤷ Retrying SSH connection...`);
-				this.connect();
+				return await this.connect();
 			}
-			else {
-				throw new Error('Error connecting to SSH tunnel', error);
-			}
+			throw new Error('Error connecting to SSH tunnel', { cause: error });
 		}
 	}
 
@@ -106,8 +107,7 @@ export class SshTunnelService {
 		try {
 			this._server.close();
 			console.log(`⤷ SSH Tunnel disconnected.`);
-		}
-		catch (error) {
+		} catch (error) {
 			console.log(`⤷ ERROR: Failed to disconnect from SSH Tunnel.`, error);
 		}
 	}
@@ -120,6 +120,6 @@ export class SshTunnelService {
      */
 	async reconnect() {
 		await this.disconnect();
-		this.connect();
+		await this.connect();
 	}
 }

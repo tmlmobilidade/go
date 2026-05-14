@@ -109,17 +109,20 @@ function mongoRowToHubAlert(row: JsonObject): Alert {
  * Cache `hub:alerts:published:json` historically stored Mongo alert documents.
  * Navegante expects GTFS-shaped {@link Alert} (header_text, active_period in seconds, alert_id, …).
  */
-export function normalizePublishedJsonAlerts(raw: unknown): Alert[] {
-	if (!Array.isArray(raw)) return [];
+export function normalizePublishedJsonAlerts(raw): Alert[] {
+	if (!raw) return [];
 
 	return raw.map((item) => {
-		const row = item as JsonObject;
+		const row = item;
+
 		if (isAlreadyHubShaped(row)) {
-			return row as unknown as Alert;
+			return row as Alert;
 		}
+
 		if (isMongoJsonAlert(row)) {
 			return mongoRowToHubAlert(row);
 		}
-		return row as unknown as Alert;
+
+		return row as Alert;
 	});
 }

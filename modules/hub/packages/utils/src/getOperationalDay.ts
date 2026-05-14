@@ -4,6 +4,10 @@ import { DateTime } from 'luxon';
 
 /* * */
 
+const OPERATIONAL_DAY_ZONE = 'Europe/Lisbon';
+
+/* * */
+
 export function getOperationalDay(timestamp?: string, format?: string): string {
 	//
 
@@ -11,9 +15,9 @@ export function getOperationalDay(timestamp?: string, format?: string): string {
 	let dateObject: DateTime;
 
 	if (!timestamp || !format) {
-		dateObject = DateTime.now();
+		dateObject = DateTime.now().setZone(OPERATIONAL_DAY_ZONE);
 	} else {
-		dateObject = DateTime.fromFormat(timestamp, format);
+		dateObject = DateTime.fromFormat(timestamp, format, { zone: OPERATIONAL_DAY_ZONE });
 	}
 
 	// Check if the time is between 00:00 and 03:59

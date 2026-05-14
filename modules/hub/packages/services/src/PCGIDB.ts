@@ -9,33 +9,35 @@ import { SshConfig, SshTunnelService, SshTunnelServiceOptions } from './ssh-tunn
 
 /* * */
 
-const sshConfig: SshConfig = {
-	forwardOptions: {
-		dstAddr: process.env.PCGIDB_TUNNEL_REMOTE_HOST,
-		dstPort: Number(process.env.PCGIDB_TUNNEL_REMOTE_PORT),
-		srcAddr: process.env.PCGIDB_TUNNEL_LOCAL_HOST,
-		srcPort: Number(process.env.PCGIDB_TUNNEL_LOCAL_PORT),
-	},
-	serverOptions: {
-		port: Number(process.env.PCGIDB_TUNNEL_LOCAL_PORT),
-	},
-	sshOptions: {
-		host: process.env.PCGIDB_SSH_HOST,
-		keepaliveCountMax: 3, // Retry 3 times before closing the connection
-		keepaliveInterval: 10000, // Send keep-alive every 10 seconds
-		port: process.env.PCGIDB_SSH_PORT,
-		privateKey: readFileSync(process.env.PCGIDB_SSH_KEY_PATH ?? ''),
-		username: process.env.PCGIDB_SSH_USERNAME,
-	},
-	tunnelOptions: {
-		autoClose: false,
-		reconnectOnError: true,
-	},
-};
-
 const sshOptions: SshTunnelServiceOptions = {
 	maxRetries: 3,
 };
+
+function buildSshConfig(privateKey: Buffer): SshConfig {
+	return {
+		forwardOptions: {
+			dstAddr: process.env.PCGIDB_TUNNEL_REMOTE_HOST,
+			dstPort: Number(process.env.PCGIDB_TUNNEL_REMOTE_PORT),
+			srcAddr: process.env.PCGIDB_TUNNEL_LOCAL_HOST,
+			srcPort: Number(process.env.PCGIDB_TUNNEL_LOCAL_PORT),
+		},
+		serverOptions: {
+			port: Number(process.env.PCGIDB_TUNNEL_LOCAL_PORT),
+		},
+		sshOptions: {
+			host: process.env.PCGIDB_SSH_HOST,
+			keepaliveCountMax: 3, // Retry 3 times before closing the connection
+			keepaliveInterval: 10000, // Send keep-alive every 10 seconds
+			port: process.env.PCGIDB_SSH_PORT,
+			privateKey,
+			username: process.env.PCGIDB_SSH_USERNAME,
+		},
+		tunnelOptions: {
+			autoClose: false,
+			reconnectOnError: true,
+		},
+	};
+}
 
 class PCGIDBClass {
 	private static _instance: PCGIDBClass;
@@ -46,7 +48,7 @@ class PCGIDBClass {
 	private validationsManagementDatabase: Db;
 
 	private constructor() {
-		this.sshTunnelService = new SshTunnelService(sshConfig, sshOptions);
+		//
 	}
 
 	get validationEntityCollection(): Collection {
@@ -67,6 +69,19 @@ class PCGIDBClass {
 
 	async connect() {
 		try {
+			const keyPath = process.env.PCGIDB_SSH_KEY_PATH?.trim();
+			if (!keyPath) {
+				throw new Error('Missing PCGIDB_SSH_KEY_PATH environment variable.');
+			}
+			let privateKey: Buffer;
+			try {
+				privateKey = readFileSync(keyPath);
+			} catch (cause) {
+				throw new Error(`Failed to read PCGIDB SSH private key at ${keyPath}`, { cause });
+			}
+
+			this.sshTunnelService = new SshTunnelService(buildSshConfig(privateKey), sshOptions);
+
 			// Connect to the SSH tunnel
 			await this.sshTunnelService.connect();
 
@@ -90,7 +105,7 @@ class PCGIDBClass {
 				console.log(`⤷ Connected to PCGIDB.`);
 			}
 		} catch (error) {
-			throw new Error('Error connecting to PCGIDB', error);
+			throw new Error('Error connecting to PCGIDB', { cause: error });
 		}
 	}
 }

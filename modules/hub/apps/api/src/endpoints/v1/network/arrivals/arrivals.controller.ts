@@ -39,21 +39,20 @@ const STOP_ID_PARAM_PATTERN = /^[\w.-]{1,128}$/;
 
 export class ArrivalsController {
 	static async getArrivalsByPattern(request: FastifyRequest<RequestSchema>, reply: FastifyReply<unknown>) {
+		//
+
 		const todayDateString = DateTime.now().setZone('Europe/Lisbon').toFormat('yyyyMMdd');
 		const currentPlanIds = await getCurrentPlanIds();
 
 		const patternId = request.params.id;
-		const foundPatternTxt = await readThroughHubJson(
-			'hub:network:patterns:{patternId}',
-			SERVERDB_KEYS.NETWORK.PATTERNS.ID(patternId),
-			`hub/v1/network/arrivals:getArrivalsByPattern(${patternId})`,
-			{ patternId },
-		);
+		const foundPatternTxt = await readThroughHubJson('hub:network:patterns:{patternId}', SERVERDB_KEYS.NETWORK.PATTERNS.ID(patternId), `hub/v1/network/arrivals:getArrivalsByPattern(${patternId})`, { patternId });
+
 		if (!foundPatternTxt) {
 			return reply.status(404).send([]);
 		}
 
 		let foundPatternData: unknown;
+
 		try {
 			foundPatternData = JSON.parse(foundPatternTxt);
 		} catch {
@@ -66,6 +65,7 @@ export class ArrivalsController {
 		const patterns = foundPatternData as PatternForEta[];
 
 		const activePatternsData = patterns.filter(pattern => pattern.valid_on?.includes(todayDateString));
+
 		if (!activePatternsData.length) {
 			return reply
 				.code(200)
@@ -85,22 +85,27 @@ export class ArrivalsController {
 
 		const result = rows
 			.filter(item => item.patternId === patternId)
-			.map(item => ({
-				estimated_arrival: item.stopArrivalEta || item.stopDepartureEta,
-				estimated_arrival_unix: DATES.convert24HourPlusOperationTimeStringToUnixTimestamp(item.stopArrivalEta) ?? DATES.convert24HourPlusOperationTimeStringToUnixTimestamp(item.stopDepartureEta) ?? 0,
-				headsign: item.tripHeadsign,
-				line_id: item.lineId,
-				observed_arrival: item.stopObservedArrivalTime || item.stopObservedDepartureTime,
-				observed_arrival_unix: DATES.convert24HourPlusOperationTimeStringToUnixTimestamp(item.stopObservedArrivalTime) ?? DATES.convert24HourPlusOperationTimeStringToUnixTimestamp(item.stopObservedDepartureTime) ?? 0,
-				pattern_id: item.patternId,
-				route_id: item.routeId,
-				scheduled_arrival: item.stopScheduledArrivalTime || item.stopScheduledDepartureTime,
-				scheduled_arrival_unix: DATES.convert24HourPlusOperationTimeStringToUnixTimestamp(item.stopScheduledArrivalTime) ?? DATES.convert24HourPlusOperationTimeStringToUnixTimestamp(item.stopScheduledDepartureTime) ?? 0,
-				stop_id: item.stopId,
-				stop_sequence: item.stopSequence,
-				trip_id: `[${currentPlanIds[item.agencyId] ?? ''}]${item.tripId}`,
-				vehicle_id: item.observedVehicleId,
-			}));
+			.map((item) => {
+				const estimatedArrival = item.stopArrivalEta || item.stopDepartureEta;
+				const observedArrival = item.stopObservedArrivalTime || item.stopObservedDepartureTime;
+				const scheduledArrival = item.stopScheduledArrivalTime || item.stopScheduledDepartureTime;
+				return {
+					estimated_arrival: estimatedArrival,
+					estimated_arrival_unix: DATES.convert24HourPlusOperationTimeStringToUnixTimestamp(estimatedArrival) ?? 0,
+					headsign: item.tripHeadsign,
+					line_id: item.lineId,
+					observed_arrival: observedArrival,
+					observed_arrival_unix: DATES.convert24HourPlusOperationTimeStringToUnixTimestamp(observedArrival) ?? 0,
+					pattern_id: item.patternId,
+					route_id: item.routeId,
+					scheduled_arrival: scheduledArrival,
+					scheduled_arrival_unix: DATES.convert24HourPlusOperationTimeStringToUnixTimestamp(scheduledArrival) ?? 0,
+					stop_id: item.stopId,
+					stop_sequence: item.stopSequence,
+					trip_id: currentPlanIds[item.agencyId] ? `[${currentPlanIds[item.agencyId]}]${item.tripId}` : item.tripId,
+					vehicle_id: item.observedVehicleId,
+				};
+			});
 
 		return reply
 			.code(200)
@@ -109,6 +114,8 @@ export class ArrivalsController {
 	}
 
 	static async getArrivalsByStop(request: FastifyRequest<RequestSchema>, reply: FastifyReply<unknown>) {
+		//
+
 		const stopParamId = request.params.id;
 		if (!STOP_ID_PARAM_PATTERN.test(stopParamId)) {
 			return reply.status(400).send([]);
@@ -126,18 +133,21 @@ export class ArrivalsController {
 		}
 
 		const result = rows.map((estimate) => {
-			const compensatedEstimatedArrival = DATES.compensate24HourRegularStringInto24HourPlusOperationTimeString(estimate.stopArrivalEta) || DATES.compensate24HourRegularStringInto24HourPlusOperationTimeString(estimate.stopDepartureEta);
+			const arrivalEta = estimate.stopArrivalEta || estimate.stopDepartureEta;
+			const compensatedEstimatedArrival = DATES.compensate24HourRegularStringInto24HourPlusOperationTimeString(arrivalEta);
+			const observedArrival = estimate.stopObservedArrivalTime || estimate.stopObservedDepartureTime;
+			const scheduledArrival = estimate.stopScheduledArrivalTime || estimate.stopScheduledDepartureTime;
 			return {
 				estimated_arrival: compensatedEstimatedArrival,
 				estimated_arrival_unix: DATES.convert24HourPlusOperationTimeStringToUnixTimestamp(compensatedEstimatedArrival ?? undefined) ?? 0,
 				headsign: estimate.tripHeadsign,
 				line_id: estimate.lineId,
-				observed_arrival: estimate.stopObservedArrivalTime || estimate.stopObservedDepartureTime,
-				observed_arrival_unix: DATES.convert24HourPlusOperationTimeStringToUnixTimestamp(estimate.stopObservedArrivalTime) ?? DATES.convert24HourPlusOperationTimeStringToUnixTimestamp(estimate.stopObservedDepartureTime) ?? 0,
+				observed_arrival: observedArrival,
+				observed_arrival_unix: DATES.convert24HourPlusOperationTimeStringToUnixTimestamp(observedArrival) ?? 0,
 				pattern_id: estimate.patternId,
 				route_id: estimate.routeId,
-				scheduled_arrival: estimate.stopScheduledArrivalTime || estimate.stopScheduledDepartureTime,
-				scheduled_arrival_unix: DATES.convert24HourPlusOperationTimeStringToUnixTimestamp(estimate.stopScheduledArrivalTime) ?? DATES.convert24HourPlusOperationTimeStringToUnixTimestamp(estimate.stopScheduledDepartureTime) ?? 0,
+				scheduled_arrival: scheduledArrival,
+				scheduled_arrival_unix: DATES.convert24HourPlusOperationTimeStringToUnixTimestamp(scheduledArrival) ?? 0,
 				stop_id: stopParamId,
 				stop_sequence: estimate.stopSequence,
 				trip_id: `[${currentPlanIds[estimate.agencyId] ?? ''}]${estimate.tripId}`,
