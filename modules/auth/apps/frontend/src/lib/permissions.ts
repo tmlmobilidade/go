@@ -167,12 +167,12 @@ const organizationActions: PermissionConfig = {
 
 const stopActions: PermissionConfig = {
 	actions: [
-		{ action: 'read', description: 'Permite ver paragens', label: 'Ver' },
-		{ action: 'create', description: 'Permite criar uma paragem', label: 'Criar' },
-		{ action: 'update', description: 'Permite editar uma paragem', label: 'Editar' },
-		{ action: 'delete', description: 'Permite eliminar uma paragem', label: 'Eliminar' },
-		{ action: 'lock', description: 'Permite bloquear/desbloquear uma paragem', label: 'Bloquear/Desbloquear' },
-		{ action: 'edit_coordinates', description: 'Permite editar as coordenadas de uma paragem', label: 'Editar Coordenadas' },
+		{ action: 'read', description: 'Permite ver paragens', label: 'Ver', resources: ['AGENCIES'] },
+		{ action: 'create', description: 'Permite criar uma paragem', label: 'Criar', resources: ['AGENCIES'] },
+		{ action: 'update', description: 'Permite editar uma paragem', label: 'Editar', resources: ['AGENCIES'] },
+		{ action: 'delete', description: 'Permite eliminar uma paragem', label: 'Eliminar', resources: ['AGENCIES'] },
+		{ action: 'lock', description: 'Permite bloquear/desbloquear uma paragem', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+		{ action: 'edit_coordinates', description: 'Permite editar as coordenadas de uma paragem', label: 'Editar Coordenadas', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de paragens.',
 	scope: PermissionCatalog.all.stops.scope,
