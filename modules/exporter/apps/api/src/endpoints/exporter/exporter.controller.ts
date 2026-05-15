@@ -2,30 +2,69 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { fileExports, files } from '@tmlmobilidade/interfaces';
-import { type CreateFileExportDto, type FileExport, PermissionCatalog, type StopExportProperties } from '@tmlmobilidade/types';
+import { fileExports, files, type Filter, stops } from '@tmlmobilidade/interfaces';
+import { type CreateFileExportDto, type FileExport, PermissionCatalog, type Stop, type StopExportProperties } from '@tmlmobilidade/types';
 
 /* * */
 
 export class ExporterController {
 	//
-	private static validateStopExportPermissions(request: FastifyRequest<{ Body: CreateFileExportDto<{ properties: Record<string, unknown>, type: string }> }>) {
+	private static getAllowedAgencyIdsForStopExport(request: FastifyRequest): null | string[] {
+		const stopExportPermission = PermissionCatalog.get(request.permissions, PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.export);
+		if (!stopExportPermission || !('resources' in stopExportPermission) || !stopExportPermission.resources) return [];
+
+		const agencyIds = stopExportPermission.resources['agency_ids'];
+		if (!Array.isArray(agencyIds)) return [];
+		if (agencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG)) return null;
+
+		return agencyIds;
+	}
+
+	private static async validateStopExportPermissions(request: FastifyRequest<{ Body: CreateFileExportDto<{ properties: Record<string, unknown>, type: string }> }>) {
 		if (request.body.type !== 'stop') return;
 
 		const stopProperties = request.body.properties as Partial<StopExportProperties['properties']>;
-		const requestedAgencyIds = [...new Set((stopProperties.flags ?? []).flatMap(flag => flag.agency_ids ?? []))];
-		if (!requestedAgencyIds.length) return;
+		const allowedAgencyIds = ExporterController.getAllowedAgencyIdsForStopExport(request);
+		if (allowedAgencyIds === null) return;
 
-		const hasPermissionForAllRequestedAgencies = PermissionCatalog.hasPermissionResourceAll({
-			action: PermissionCatalog.all.stops.actions.export,
-			permissions: request.permissions,
-			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.stops.scope,
-			value: requestedAgencyIds,
-		});
+		const directFilters: Filter<Stop> = {};
 
-		if (!hasPermissionForAllRequestedAgencies) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, `You do not have permission to export stops for agency_ids: [${requestedAgencyIds.join(', ')}].`);
+		if (stopProperties.connections?.length) directFilters.connections = { $in: stopProperties.connections };
+		if (stopProperties.equipment?.length) directFilters.equipment = { $in: stopProperties.equipment };
+		if (stopProperties.facilities?.length) directFilters.facilities = { $in: stopProperties.facilities };
+		if (stopProperties.flags?.length) directFilters.flags = { $in: stopProperties.flags };
+		if (stopProperties.jurisdiction?.length) directFilters.jurisdiction = { $in: stopProperties.jurisdiction };
+		if (stopProperties.lifecycle_statuses?.length) directFilters.lifecycle_status = { $in: stopProperties.lifecycle_statuses };
+
+		const searchQuery = stopProperties.search?.trim();
+		let searchFilter: Filter<Stop> | null = null;
+		if (searchQuery) {
+			const searchRegex = new RegExp(searchQuery, 'i');
+			searchFilter = {
+				$or: [
+					{ _id: Number(searchQuery) || -1 },
+					{ legacy_id: searchRegex },
+					{ legacy_ids: searchRegex },
+					{ name: searchRegex },
+					{ short_name: searchRegex },
+					{ tts_name: searchRegex },
+				],
+			};
+		}
+
+		const andFilters = [directFilters, searchFilter].filter(Boolean) as Filter<Stop>[];
+		const filters: Filter<Stop> = andFilters.length > 1 ? { $and: andFilters } : andFilters[0] ?? {};
+		const stopsCollection = await stops.getCollection();
+		const stopsCursor = stopsCollection.find(filters, { batchSize: 1000, projection: { _id: 1, flags: 1 } });
+
+		for await (const stop of stopsCursor) {
+			const stopAgencyIds = [...new Set(stop.flags.flatMap(flag => flag.agency_ids))];
+			if (!stopAgencyIds.length) continue;
+
+			const hasPermissionForStop = stopAgencyIds.some(agencyId => allowedAgencyIds.includes(agencyId));
+			if (!hasPermissionForStop) {
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, `You do not have permission to export stops for agency_ids: [${stopAgencyIds.join(', ')}].`);
+			}
 		}
 	}
 
@@ -36,7 +75,7 @@ export class ExporterController {
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	static async create(request: FastifyRequest<{ Body: CreateFileExportDto<any> }>, reply: FastifyReply<FileExport>) {
-		ExporterController.validateStopExportPermissions(request);
+		await ExporterController.validateStopExportPermissions(request);
 		const fileExportData = await fileExports.insertOne({ ...request.body, created_by: request.me._id, updated_by: request.me._id });
 		return reply.send({ data: fileExportData, error: null, statusCode: HTTP_STATUS.CREATED });
 	}

@@ -13,6 +13,44 @@ import { assertCanExportStopFromFlags, parseStops, type StopExportCsvData } from
 
 /* * */
 
+function buildDirectFilters(properties: StopExportProperties['properties']): Filter<Stop> {
+	const directFilters: Filter<Stop> = {};
+
+	if (properties.connections?.length) directFilters.connections = { $in: properties.connections };
+	if (properties.equipment?.length) directFilters.equipment = { $in: properties.equipment };
+	if (properties.facilities?.length) directFilters.facilities = { $in: properties.facilities };
+	if (properties.flags?.length) directFilters.flags = { $in: properties.flags };
+	if (properties.jurisdiction?.length) directFilters.jurisdiction = { $in: properties.jurisdiction };
+	if (properties.lifecycle_statuses?.length) directFilters.lifecycle_status = { $in: properties.lifecycle_statuses };
+
+	return directFilters;
+}
+
+function buildSearchFilter(searchQuery: string): Filter<Stop> {
+	const searchRegex = new RegExp(searchQuery, 'i');
+	return {
+		$or: [
+			{ _id: Number(searchQuery) || -1 },
+			{ legacy_id: searchRegex },
+			{ legacy_ids: searchRegex },
+			{ name: searchRegex },
+			{ short_name: searchRegex },
+			{ tts_name: searchRegex },
+		],
+	};
+}
+
+function buildStopExportFilters(properties: StopExportProperties['properties']): Filter<Stop> {
+	const directFilters = buildDirectFilters(properties);
+	const searchQuery = properties.search?.trim();
+	const searchFilter = searchQuery ? buildSearchFilter(searchQuery) : null;
+
+	const andFilters = [directFilters, searchFilter].filter(Boolean) as Filter<Stop>[];
+	return andFilters.length > 1 ? { $and: andFilters } : andFilters[0] ?? {};
+}
+
+/* * */
+
 /**
  * Exports a batch of stops to a CSV file.
  * @param fileExport - The file export object.
@@ -34,52 +72,9 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 	//
 	// Build filters from export properties
 	const properties = fileExport.properties as StopExportProperties['properties'];
-	const searchQuery = properties.search?.trim();
-	const directFilters: Filter<Stop> = {};
-
-	if (properties.connections?.length) {
-		directFilters.connections = { $in: properties.connections };
-	}
-
-	if (properties.equipment?.length) {
-		directFilters.equipment = { $in: properties.equipment };
-	}
-
-	if (properties.facilities?.length) {
-		directFilters.facilities = { $in: properties.facilities };
-	}
-
-	if (properties.flags?.length) {
-		directFilters.flags = { $in: properties.flags };
-	}
-
-	if (properties.jurisdiction?.length) {
-		directFilters.jurisdiction = { $in: properties.jurisdiction };
-	}
-
-	if (properties.lifecycle_statuses?.length) {
-		directFilters.lifecycle_status = { $in: properties.lifecycle_statuses };
-	}
-
-	let searchFilter: Filter<Stop> | null = null;
-	if (searchQuery) {
-		const searchRegex = new RegExp(searchQuery, 'i');
-		searchFilter = {
-			$or: [
-				{ _id: Number(searchQuery) || -1 },
-				{ legacy_id: searchRegex },
-				{ legacy_ids: searchRegex },
-				{ name: searchRegex },
-				{ short_name: searchRegex },
-				{ tts_name: searchRegex },
-			],
-		};
-	}
 
 	const myPermissions = await authProvider.getPermissionsFromUserId(fileExport.created_by);
-
-	const andFilters = [directFilters, searchFilter].filter(Boolean) as Filter<Stop>[];
-	const filters: Filter<Stop> = andFilters.length > 1 ? { $and: andFilters } : andFilters[0] ?? {};
+	const filters = buildStopExportFilters(properties);
 
 	const stopsCollection = await stops.getCollection();
 	const stopsCursor = stopsCollection.find(filters, { batchSize: 5000 });

@@ -1,6 +1,7 @@
 import { type Permission, PermissionCatalog, type Stop, type StopExportData } from '@tmlmobilidade/types';
 
 export type StopExportCsvData = Omit<StopExportData, 'flags'>;
+
 /**
  * The ordered fields of the stop export CSV data.
  * The order is important because it determines the order of the fields in the CSV file.
@@ -63,8 +64,20 @@ export const STOP_EXPORT_ORDERED_FIELDS = [
 	'has_stop_sign',
 ] as const satisfies ReadonlyArray<keyof StopExportCsvData>;
 
+/* * */
+
+interface ParseStopRow {
+	_id?: null | number
+	stop: Stop
+}
+
 function getUniqueStopAgencyIds(stop: Stop): string[] {
 	return [...new Set(stop.flags.flatMap(flag => flag.agency_ids))];
+}
+
+function toOrderedCsvData(source: StopExportCsvData): StopExportCsvData {
+	const orderedEntries = STOP_EXPORT_ORDERED_FIELDS.map(field => [field, source[field]] as const);
+	return Object.fromEntries(orderedEntries) as StopExportCsvData;
 }
 
 export function assertCanExportStopFromFlags(stop: Stop, permissions: Permission[]): void {
@@ -86,10 +99,12 @@ export function assertCanExportStopFromFlags(stop: Stop, permissions: Permission
 	}
 }
 
-export function parseStops(row: { _id?: null | number, stop: Stop }): StopExportCsvData {
+/* * */
+
+export function parseStops(row: ParseStopRow): StopExportCsvData {
 	const { _id, stop } = row;
 
-	const source: StopExportCsvData = {
+	return toOrderedCsvData({
 		_id: _id ?? stop._id,
 		bench_status: stop.bench_status,
 		connections: stop.connections,
@@ -130,8 +145,5 @@ export function parseStops(row: { _id?: null | number, stop: Stop }): StopExport
 		shelter_status: stop.shelter_status,
 		short_name: stop.short_name,
 		tts_name: stop.tts_name,
-	};
-
-	const orderedEntries = STOP_EXPORT_ORDERED_FIELDS.map(field => [field, source[field]] as const);
-	return Object.fromEntries(orderedEntries) as StopExportCsvData;
+	});
 }
