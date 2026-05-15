@@ -1,11 +1,12 @@
 'use client';
 
 import { getPublicVariable } from '@/settings/public-variables';
-import { agencyMatchesSelection, agencyMatchesTransports } from '@/utils/transportAgencies';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
+import { agencyMatchesSelection, agencyMatchesTransports } from '@/utils/transportAgencies';
 import { type Alert } from '@tmlmobilidade/go-hub-pckg-types';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
+
 import { useGlobalSettingsContext } from './GlobalSettings.context';
 
 /* * */
