@@ -82,6 +82,25 @@ export function canExportStopFromFlags(stop: Stop, permissions: Permission[]): b
 	});
 }
 
+export function assertCanExportStopFromFlags(stop: Stop, permissions: Permission[]): void {
+	if (!stop.flags.length) return;
+
+	const stopAgencyIds = [...new Set(stop.flags.flatMap(flag => flag.agency_ids))];
+	if (!stopAgencyIds.length) return;
+
+	const hasPermission = PermissionCatalog.hasPermissionResource({
+		action: PermissionCatalog.all.stops.actions.export,
+		permissions,
+		resource_key: 'agency_ids',
+		scope: PermissionCatalog.all.stops.scope,
+		value: stopAgencyIds,
+	});
+
+	if (!hasPermission) {
+		throw new Error(`You do not have permission to export stops for agency_ids: [${stopAgencyIds.join(', ')}].`);
+	}
+}
+
 export function parseStops(row: { _id?: null | number, stop: Stop }): StopExportCsvData {
 	const { _id, stop } = row;
 

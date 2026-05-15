@@ -9,7 +9,7 @@ import { CsvWriter } from '@tmlmobilidade/writers';
 import os from 'os';
 import path from 'path';
 
-import { canExportStopFromFlags, parseStops, type StopExportCsvData } from './lib/parse-stops.js';
+import { assertCanExportStopFromFlags, canExportStopFromFlags, parseStops, type StopExportCsvData } from './lib/parse-stops.js';
 
 /* * */
 
@@ -77,10 +77,24 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 	}
 
 	const myPermissions = await authProvider.getPermissionsFromUserId(fileExport.created_by);
+	const requestedAgencyIds = [...new Set((properties.flags ?? []).flatMap(flag => flag.agency_ids))];
+	if (requestedAgencyIds.length > 0) {
+		const canExportRequestedAgencyIds = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.stops.actions.export,
+			permissions: myPermissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.stops.scope,
+			value: requestedAgencyIds,
+		});
+		if (!canExportRequestedAgencyIds) {
+			throw new Error(`You do not have permission to export stops for agency_ids: [${requestedAgencyIds.join(', ')}].`);
+		}
+	}
+
 	const stopsPermission = PermissionCatalog.get(myPermissions, PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.export);
 
 	let permissionFilter: Filter<Stop> | null = null;
-	if ('resources' in stopsPermission && stopsPermission.scope === PermissionCatalog.all.stops.scope && stopsPermission.resources) {
+	if (stopsPermission && 'resources' in stopsPermission && stopsPermission.scope === PermissionCatalog.all.stops.scope && stopsPermission.resources) {
 		if (stopsPermission.resources['agency_ids'] && !stopsPermission.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
 			permissionFilter = {
 				$or: [
@@ -106,7 +120,9 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 	let count = 0;
 	for await (const stop of stopsCursor) {
 		const canExportStop = canExportStopFromFlags(stop, myPermissions);
-		if (!canExportStop) continue;
+		if (!canExportStop) {
+			assertCanExportStopFromFlags(stop, myPermissions);
+		}
 
 		await csvWriter.write(parseStops({ _id: stop._id, stop }));
 		count++;
