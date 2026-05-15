@@ -1,6 +1,6 @@
 /* * */
 
-import { authProvider, fileExports, stops } from '@tmlmobilidade/interfaces';
+import { fileExports, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
@@ -9,7 +9,7 @@ import { CsvWriter } from '@tmlmobilidade/writers';
 import os from 'os';
 import path from 'path';
 
-import { assertCanExportStopFromFlags, getStopExportPermissionDecision, parseStops, type StopExportCsvData } from './lib/parse-stops.js';
+import { parseStops, type StopExportCsvData } from './lib/parse-stops.js';
 
 /* * */
 
@@ -43,8 +43,6 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 	const properties = fileExport.properties as StopExportProperties['properties'];
 	const stopIds = getStopIdsFromExportProperties(properties);
 
-	const myPermissions = await authProvider.getPermissionsFromUserId(fileExport.created_by);
-
 	const stopsCollection = await stops.getCollection();
 	const stopsCursor = stopsCollection.find({ _id: { $in: stopIds } }, { batchSize: 5000 });
 
@@ -55,12 +53,6 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 
 	let count = 0;
 	for await (const stop of stopsCursor) {
-		const decision = getStopExportPermissionDecision(stop, myPermissions);
-		if (decision === 'skip_silent') continue;
-		if (decision === 'deny_with_error') {
-			assertCanExportStopFromFlags(stop, myPermissions);
-		}
-
 		await csvWriter.write(parseStops({ _id: stop._id, stop }));
 		count++;
 	}

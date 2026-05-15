@@ -1,7 +1,6 @@
-import { type Permission, PermissionCatalog, type Stop, type StopExportData } from '@tmlmobilidade/types';
+import { type Stop, type StopExportData } from '@tmlmobilidade/types';
 
 export type StopExportCsvData = Omit<StopExportData, 'flags'>;
-export type StopExportPermissionDecision = 'allow' | 'deny_with_error' | 'skip_silent';
 
 /**
  * The ordered fields of the stop export CSV data.
@@ -72,58 +71,9 @@ interface ParseStopRow {
 	stop: Stop
 }
 
-function getUniqueStopAgencyIds(stop: Stop): string[] {
-	return [...new Set(stop.flags.flatMap(flag => flag.agency_ids).map(String))];
-}
-
 function toOrderedCsvData(source: StopExportCsvData): StopExportCsvData {
 	const orderedEntries = STOP_EXPORT_ORDERED_FIELDS.map(field => [field, source[field]] as const);
 	return Object.fromEntries(orderedEntries) as StopExportCsvData;
-}
-
-function getStopActionAgencyIds(permissions: Permission[], action: 'export' | 'read'): null | string[] {
-	const stopPermission = PermissionCatalog.get(permissions, PermissionCatalog.all.stops.scope, action);
-	if (!stopPermission || !('resources' in stopPermission) || !stopPermission.resources) return [];
-
-	const agencyIds = stopPermission.resources['agency_ids'];
-	if (!Array.isArray(agencyIds)) return [];
-	if (agencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG)) return null;
-
-	return agencyIds.map(String);
-}
-
-function intersectAgencyIds(first: null | string[], second: null | string[]): null | string[] {
-	if (first === null) return second;
-	if (second === null) return first;
-
-	const secondSet = new Set(second);
-	return first.filter(agencyId => secondSet.has(agencyId));
-}
-
-function getAllowedAgencyIdsForStopExport(permissions: Permission[]): null | string[] {
-	const readAgencyIds = getStopActionAgencyIds(permissions, 'read');
-	const exportAgencyIds = getStopActionAgencyIds(permissions, 'export');
-	return intersectAgencyIds(readAgencyIds, exportAgencyIds);
-}
-
-export function getStopExportPermissionDecision(stop: Stop, permissions: Permission[]): StopExportPermissionDecision {
-	const stopAgencyIds = getUniqueStopAgencyIds(stop);
-	if (!stopAgencyIds.length) return 'skip_silent';
-
-	const allowedAgencyIds = getAllowedAgencyIdsForStopExport(permissions);
-	if (allowedAgencyIds === null) return 'allow';
-
-	const allowedAgencyIdsSet = new Set(allowedAgencyIds);
-	const hasPermission = stopAgencyIds.some(agencyId => allowedAgencyIdsSet.has(agencyId));
-	return hasPermission ? 'allow' : 'deny_with_error';
-}
-
-export function assertCanExportStopFromFlags(stop: Stop, permissions: Permission[]): void {
-	const decision = getStopExportPermissionDecision(stop, permissions);
-	if (decision === 'deny_with_error') {
-		const stopAgencyIds = getUniqueStopAgencyIds(stop);
-		throw new Error(`You do not have permission to export stops for agency_ids: [${stopAgencyIds.join(', ')}].`);
-	}
 }
 
 /* * */
