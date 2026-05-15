@@ -82,25 +82,6 @@ export const FlatStopSchema = z.object({
 	has_shelter: AvailabilityStatusSchema.default('unknown'),
 	has_stop_sign: AvailabilityStatusSchema.default('unknown'),
 
-	/* IMAGES & FILES */
-	/* * */
-	file_ids: z.array(z.string()).default([]),
-	image_ids: z.array(z.string()).default([]),
-
-	/* NOTES & COMMENTS */
-	/* * */
-	comments: z.array(CommentSchema).default([]),
-	observations: z.string().nullable().default(null),
-
-	/* ASSOCIATED PATTERNS */
-	/* * */
-	associated_patterns: z.array(z.object({
-		_id: z.string(),
-		code: z.string(),
-		headsign: z.string(),
-		line_id: z.string(),
-		route_id: z.string(),
-	})).default([]),
 });
 
 /* PROPERTIES SCHEMA */
