@@ -24,7 +24,6 @@ export function AgencyDetailBasicInfo() {
 		<Collapsible
 			description={t('default:agencies.detail.SectionBasicInfo.description')}
 			title={t('default:agencies.detail.SectionBasicInfo.title')}
-			defaultOpen
 		>
 			<Section gap="lg">
 				<Grid columns="aab" gap="lg">

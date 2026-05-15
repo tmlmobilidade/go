@@ -5,7 +5,7 @@
 		},
 		"detail": {
 			"SectionAlertsMap": {
-				"description": "Informação Financeira",
+				"description": "Mapeamento de causas, efeitos e tipos de referência para Alertas de Serviço.",
 				"fields": {
 					"price_per_km": {
 						"label": "Preço por km",
@@ -16,7 +16,7 @@
 						"placeholder": "1000000"
 					}
 				},
-				"title": "Informação financeira da agência"
+				"title": "Alertas"
 			},
 			"SectionBasicInfo": {
 				"description": "Nome, email, telefone, URL e fuso horário.",
