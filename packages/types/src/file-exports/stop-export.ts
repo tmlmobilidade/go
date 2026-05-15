@@ -99,6 +99,8 @@ export const StopExportPropertiesSchema = z.object({
 		lifecycle_statuses: z.array(LifecycleStatusSchema).optional().nullable(),
 
 		search: z.string().optional().nullable(),
+
+		stop_ids: z.array(StopIdSchema).optional().nullable(),
 	}),
 	type: z.literal('stop'),
 });

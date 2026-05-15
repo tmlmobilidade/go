@@ -95,6 +95,7 @@ export const StopListExportContextProvider = ({ children }: PropsWithChildren) =
 		const activeEquipment = stopsListContext.filters.equipment.value as StopExportProperties['properties']['equipment'];
 		const activeFacilities = stopsListContext.filters.facilities.value as StopExportProperties['properties']['facilities'];
 		const activeLifecycleStatuses = stopsListContext.filters.lifecycle_status.value as StopExportProperties['properties']['lifecycle_statuses'];
+		const stopIds = stopsListContext.data.filtered.map(stop => stop._id);
 
 		return {
 			connections: stopsListContext.filters.connections.isActive && stopsListContext.filters.connections.value.length > 0
@@ -110,8 +111,10 @@ export const StopListExportContextProvider = ({ children }: PropsWithChildren) =
 				? activeLifecycleStatuses
 				: undefined,
 			search: hasSearch ? searchValue : undefined,
+			stop_ids: stopIds,
 		};
 	}, [
+		stopsListContext.data.filtered,
 		stopsListContext.filters.connections.isActive,
 		stopsListContext.filters.connections.value,
 		stopsListContext.filters.equipment.isActive,
