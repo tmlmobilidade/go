@@ -75,14 +75,14 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 	}
 
 	const myPermissions = await authProvider.getPermissionsFromUserId(fileExport.created_by);
-	const stopsPermission = PermissionCatalog.get(myPermissions, PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.read);
+	const stopsPermission = PermissionCatalog.get(myPermissions, PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.export);
 
 	let permissionFilter: Filter<Stop> | null = null;
-	if ('resource' in stopsPermission && stopsPermission.scope === PermissionCatalog.all.stops.scope) {
-		if (stopsPermission.resource['agency_ids'] && !stopsPermission.resource['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
+	if ('resources' in stopsPermission && stopsPermission.scope === PermissionCatalog.all.stops.scope && stopsPermission.resources) {
+		if (stopsPermission.resources['agency_ids'] && !stopsPermission.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
 			permissionFilter = {
 				$or: [
-					{ flags: { $elemMatch: { agency_ids: { $in: stopsPermission.resource['agency_ids'] } } } },
+					{ flags: { $elemMatch: { agency_ids: { $in: stopsPermission.resources['agency_ids'] } } } },
 					{ flags: { $size: 0 } },
 				],
 			};
@@ -102,6 +102,17 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 
 	let count = 0;
 	for await (const stop of stopsCursor) {
+		if (stop.flags.length > 0) {
+			const canExportStop = PermissionCatalog.hasPermissionResource({
+				action: PermissionCatalog.all.stops.actions.export,
+				permissions: myPermissions,
+				resource_key: 'agency_ids',
+				scope: PermissionCatalog.all.stops.scope,
+				value: stop.flags.flatMap(flag => flag.agency_ids),
+			});
+			if (!canExportStop) continue;
+		}
+
 		await csvWriter.write(parseStops({ _id: stop._id, stop }));
 		count++;
 	}
