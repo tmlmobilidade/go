@@ -63,29 +63,14 @@ export const STOP_EXPORT_ORDERED_FIELDS = [
 	'has_stop_sign',
 ] as const satisfies ReadonlyArray<keyof StopExportCsvData>;
 
-/**
- * Checks if a stop can be exported based on the stop flag agency constraints.
- * Flags are only used for authorization and are intentionally not exported in CSV rows.
- */
-export function canExportStopFromFlags(stop: Stop, permissions: Permission[]): boolean {
-	if (!stop.flags.length) return true;
-
-	const stopAgencyIds = stop.flags.flatMap(flag => flag.agency_ids);
-	if (!stopAgencyIds.length) return true;
-
-	return PermissionCatalog.hasPermissionResource({
-		action: PermissionCatalog.all.stops.actions.export,
-		permissions,
-		resource_key: 'agency_ids',
-		scope: PermissionCatalog.all.stops.scope,
-		value: stopAgencyIds,
-	});
+function getUniqueStopAgencyIds(stop: Stop): string[] {
+	return [...new Set(stop.flags.flatMap(flag => flag.agency_ids))];
 }
 
 export function assertCanExportStopFromFlags(stop: Stop, permissions: Permission[]): void {
 	if (!stop.flags.length) return;
 
-	const stopAgencyIds = [...new Set(stop.flags.flatMap(flag => flag.agency_ids))];
+	const stopAgencyIds = getUniqueStopAgencyIds(stop);
 	if (!stopAgencyIds.length) return;
 
 	const hasPermission = PermissionCatalog.hasPermissionResource({
