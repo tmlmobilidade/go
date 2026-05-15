@@ -2,7 +2,7 @@
 
 import { closeStopListExportModal } from '@/components/stops/list/StopListExportModal/StopListExport.modal';
 import { useStopListExportContext } from '@/contexts/StopListExport.contex';
-import { Button, Grid, Label, Pane, Section, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
+import { Button, Divider, Grid, Label, Pane, Section, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -15,7 +15,7 @@ export function StopListExportModal() {
 	const stopListExportContext = useStopListExportContext();
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Pane
@@ -29,7 +29,7 @@ export function StopListExportModal() {
 			<Section gap="sm">
 				<Label size="sm" caps>Filtros ativos na lista</Label>
 				{stopListExportContext.filters.length === 0 && (
-					<Text size="sm">Sem filtros ativos. A exportação irá usar todas as paragens da lista atual.</Text>
+					<Label size="sm">Sem filtros ativos. A exportação irá usar todas as paragens da lista atual.</Label>
 				)}
 				{stopListExportContext.filters.map(({ label, value }) => (
 					<div key={label}>
@@ -37,7 +37,9 @@ export function StopListExportModal() {
 						<Text size="sm">{value}</Text>
 					</div>
 				))}
-
+			</Section>
+			<Divider />
+			<Section gap="sm">
 				<Grid columns="ab" gap="sm">
 					<Button label="Cancelar" onClick={closeStopListExportModal} type="button" variant="secondary" />
 					<Button
