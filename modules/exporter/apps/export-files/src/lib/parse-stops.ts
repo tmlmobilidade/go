@@ -1,6 +1,27 @@
-import { type Stop, type StopExportData } from '@tmlmobilidade/types';
+import { type Permission, PermissionCatalog, type Stop, type StopExportData } from '@tmlmobilidade/types';
 
-export function parseStops(row: { _id?: null | number, stop: Stop }): StopExportData {
+export type StopExportCsvData = Omit<StopExportData, 'flags'>;
+
+/**
+ * Checks if a stop can be exported based on the stop flag agency constraints.
+ * Flags are only used for authorization and are intentionally not exported in CSV rows.
+ */
+export function canExportStopFromFlags(stop: Stop, permissions: Permission[]): boolean {
+	if (!stop.flags.length) return true;
+
+	const stopAgencyIds = stop.flags.flatMap(flag => flag.agency_ids);
+	if (!stopAgencyIds.length) return true;
+
+	return PermissionCatalog.hasPermissionResource({
+		action: PermissionCatalog.all.stops.actions.export,
+		permissions,
+		resource_key: 'agency_ids',
+		scope: PermissionCatalog.all.stops.scope,
+		value: stopAgencyIds,
+	});
+}
+
+export function parseStops(row: { _id?: null | number, stop: Stop }): StopExportCsvData {
 	const { _id, stop } = row;
 
 	return {
@@ -11,14 +32,12 @@ export function parseStops(row: { _id?: null | number, stop: Stop }): StopExport
 		electricity_status: stop.electricity_status,
 		equipment: stop.equipment,
 		facilities: stop.facilities,
-		flags: stop.flags,
 		has_bench: stop.has_bench,
 		has_mupi: stop.has_mupi,
 		has_network_map: stop.has_network_map,
 		has_schedules: stop.has_schedules,
 		has_shelter: stop.has_shelter,
 		has_stop_sign: stop.has_stop_sign,
-		is_deleted: stop.is_deleted,
 		jurisdiction: stop.jurisdiction,
 		last_infrastructure_check: stop.last_infrastructure_check,
 		last_infrastructure_maintenance: stop.last_infrastructure_maintenance,

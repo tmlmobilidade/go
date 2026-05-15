@@ -4,12 +4,12 @@ import { authProvider, fileExports, type Filter, stops } from '@tmlmobilidade/in
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
-import { FileExport, PermissionCatalog, type Stop, type StopExportData, type StopExportProperties } from '@tmlmobilidade/types';
+import { FileExport, PermissionCatalog, type Stop, type StopExportProperties } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import os from 'os';
 import path from 'path';
 
-import { parseStops } from './lib/parse-stops.js';
+import { canExportStopFromFlags, parseStops, type StopExportCsvData } from './lib/parse-stops.js';
 
 /* * */
 
@@ -85,6 +85,7 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 			permissionFilter = {
 				$or: [
 					{ flags: { $elemMatch: { agency_ids: { $in: stopsPermission.resources['agency_ids'] } } } },
+					{ flags: { $elemMatch: { agency_ids: { $size: 0 } } } },
 					{ flags: { $size: 0 } },
 				],
 			};
@@ -100,20 +101,12 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 	//
 	// Write the stops batch to the file
 	const tempFilePath = path.join(os.tmpdir(), `${fileExport.file_name}_${generateRandomString()}.csv`);
-	const csvWriter = new CsvWriter<StopExportData>(fileExport.file_name, tempFilePath, { batch_size: 10000, include_bom: true });
+	const csvWriter = new CsvWriter<StopExportCsvData>(fileExport.file_name, tempFilePath, { batch_size: 10000, include_bom: true });
 
 	let count = 0;
 	for await (const stop of stopsCursor) {
-		if (stop.flags.length > 0) {
-			const canExportStop = PermissionCatalog.hasPermissionResource({
-				action: PermissionCatalog.all.stops.actions.export,
-				permissions: myPermissions,
-				resource_key: 'agency_ids',
-				scope: PermissionCatalog.all.stops.scope,
-				value: stop.flags.flatMap(flag => flag.agency_ids),
-			});
-			if (!canExportStop) continue;
-		}
+		const canExportStop = canExportStopFromFlags(stop, myPermissions);
+		if (!canExportStop) continue;
 
 		await csvWriter.write(parseStops({ _id: stop._id, stop }));
 		count++;

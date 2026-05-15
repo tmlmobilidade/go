@@ -18,7 +18,7 @@ export const FlatStopSchema = z.object({
 	/* GENERAL */
 	/* * */
 	_id: StopIdSchema,
-	is_deleted: z.boolean().default(false),
+	flags: z.array(StopFlagSchema).default([]),
 	jurisdiction: StopJurisdictionSchema.default('unknown'),
 	legacy_id: z.string().nullable().default(null),
 	legacy_ids: z.array(z.string()).default([]),
