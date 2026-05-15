@@ -2,7 +2,7 @@
 
 import { getPublicVariable } from '@/settings/public-variables';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import { agencyMatchesSelection, agencyMatchesTransports } from '@/utils/transportAgencies';
+import { agencyMatchesSelection, agencyMatchesTransports, transportsSelectionIsAll } from '@/utils/transportAgencies';
 import { type Alert } from '@tmlmobilidade/go-hub-pckg-types';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -66,12 +66,16 @@ export const AlertsContextProvider = ({ children }) => {
 	}, [alertsResponse, allAlertsLoading]);
 
 	const filteredAlertsState = useMemo(() => {
-		if (filterByAgency.length === 0 && filterByTransports.length === 0) return alertsState;
+		const isAllAgencies = filterByAgency.length === 0;
+		const isAllTransports = transportsSelectionIsAll(filterByTransports);
+
+		if (isAllAgencies && isAllTransports) return alertsState;
+
 		return alertsState.filter((alert) => {
 			return alert.informed_entity.some((entity) => {
 				if (!entity.agency_id) return false;
-				if (!agencyMatchesSelection(entity.agency_id, filterByAgency)) return false;
-				if (!agencyMatchesTransports(entity.agency_id, filterByTransports)) return false;
+				if (!isAllAgencies && !agencyMatchesSelection(entity.agency_id, filterByAgency)) return false;
+				if (!isAllTransports && !agencyMatchesTransports(entity.agency_id, filterByTransports)) return false;
 				return true;
 			});
 		});

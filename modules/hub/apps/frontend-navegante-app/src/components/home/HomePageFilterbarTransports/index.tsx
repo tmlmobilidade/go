@@ -3,7 +3,6 @@
 import TextPopover from '@/components/common/TextPopover';
 import { TransportOption, useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
 import { transportsSelectionIsAll } from '@/utils/transportAgencies';
-import { Group } from '@mantine/core';
 import { IconApps, IconBuildingTunnel, IconBus, IconFerry, IconTrain } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 
@@ -49,17 +48,29 @@ export function HomePageFilterbarTransports() {
 	return (
 		<div className={styles.transportsWrapper}>
 			<TextPopover text={t('all')} textSize="md">
-				<div className={`${styles.icon} ${allSelected ? styles.iconActive : ''}`} onClick={handleAllClick}>
+				<button
+					aria-label={t('all')}
+					aria-pressed={allSelected}
+					className={`${styles.icon} ${allSelected ? styles.iconActive : ''}`}
+					onClick={handleAllClick}
+					type="button"
+				>
 					<IconApps size={24} />
-				</div>
+				</button>
 			</TextPopover>
 			{transportOptions.map((opt) => {
 				const active = allSelected || filterbar.transports.includes(opt.labelKey);
 				return (
 					<TextPopover key={opt.labelKey} text={t(opt.labelKey)} textSize="md">
-						<div className={`${styles.icon} ${active ? styles.iconActive : ''}`} onClick={() => handleTransportClick(opt.labelKey)}>
+						<button
+							aria-label={t(opt.labelKey)}
+							aria-pressed={active}
+							className={`${styles.icon} ${active ? styles.iconActive : ''}`}
+							onClick={() => handleTransportClick(opt.labelKey)}
+							type="button"
+						>
 							{opt.icon}
-						</div>
+						</button>
 					</TextPopover>
 				);
 			})}
