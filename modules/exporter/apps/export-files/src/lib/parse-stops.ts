@@ -1,6 +1,67 @@
 import { type Permission, PermissionCatalog, type Stop, type StopExportData } from '@tmlmobilidade/types';
 
 export type StopExportCsvData = Omit<StopExportData, 'flags'>;
+/**
+ * The ordered fields of the stop export CSV data.
+ * The order is important because it determines the order of the fields in the CSV file.
+ */
+export const STOP_EXPORT_ORDERED_FIELDS = [
+	// GENERAL
+	'_id',
+	'jurisdiction',
+	'legacy_id',
+	'legacy_ids',
+	'lifecycle_status',
+	'name',
+	'new_name',
+	'previous_go_id',
+	'short_name',
+	'tts_name',
+
+	// LOCATION
+	'district_id',
+	'latitude',
+	'locality_id',
+	'longitude',
+	'municipality_id',
+	'parish_id',
+
+	// INFRASTRUCTURE
+	'bench_status',
+	'electricity_status',
+	'pole_status',
+	'road_type',
+
+	// SHELTER
+	'shelter_code',
+	'shelter_frame_size',
+	'shelter_installation_date',
+	'shelter_maintainer',
+	'shelter_make',
+	'shelter_model',
+	'shelter_status',
+
+	// CHECKS
+	'last_infrastructure_check',
+	'last_infrastructure_maintenance',
+	'last_schedules_check',
+	'last_schedules_maintenance',
+
+	// FACILITIES
+	'connections',
+	'facilities',
+
+	// EQUIPMENTS
+	'equipment',
+
+	// HAS ...
+	'has_bench',
+	'has_mupi',
+	'has_network_map',
+	'has_schedules',
+	'has_shelter',
+	'has_stop_sign',
+] as const satisfies ReadonlyArray<keyof StopExportCsvData>;
 
 /**
  * Checks if a stop can be exported based on the stop flag agency constraints.
@@ -24,7 +85,7 @@ export function canExportStopFromFlags(stop: Stop, permissions: Permission[]): b
 export function parseStops(row: { _id?: null | number, stop: Stop }): StopExportCsvData {
 	const { _id, stop } = row;
 
-	return {
+	const source: StopExportCsvData = {
 		_id: _id ?? stop._id,
 		bench_status: stop.bench_status,
 		connections: stop.connections,
@@ -66,4 +127,7 @@ export function parseStops(row: { _id?: null | number, stop: Stop }): StopExport
 		short_name: stop.short_name,
 		tts_name: stop.tts_name,
 	};
+
+	const orderedEntries = STOP_EXPORT_ORDERED_FIELDS.map(field => [field, source[field]] as const);
+	return Object.fromEntries(orderedEntries) as StopExportCsvData;
 }
