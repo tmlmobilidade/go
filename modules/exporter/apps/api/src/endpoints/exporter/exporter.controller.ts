@@ -42,7 +42,7 @@ export class ExporterController {
 			const searchRegex = new RegExp(searchQuery, 'i');
 			searchFilter = {
 				$or: [
-					{ _id: Number(searchQuery) || -1 },
+					{ _id: isNaN(Number(searchQuery)) ? -1 : Number(searchQuery) },
 					{ legacy_id: searchRegex },
 					{ legacy_ids: searchRegex },
 					{ name: searchRegex },
@@ -55,16 +55,17 @@ export class ExporterController {
 		const andFilters = [directFilters, searchFilter].filter(Boolean) as Filter<Stop>[];
 		const filters: Filter<Stop> = andFilters.length > 1 ? { $and: andFilters } : andFilters[0] ?? {};
 		const stopsCollection = await stops.getCollection();
-		const stopsCursor = stopsCollection.find(filters, { batchSize: 1000, projection: { _id: 1, flags: 1 } });
+		const unauthorizedStop = await stopsCollection.findOne({
+			$and: [
+				filters,
+				{ 'flags.agency_ids': { $exists: true, $not: { $size: 0 } } },
+				{ 'flags.agency_ids': { $nin: allowedAgencyIds } },
+			],
+		}, { projection: { '_id': 1, 'flags.agency_ids': 1 } });
 
-		for await (const stop of stopsCursor) {
-			const stopAgencyIds = [...new Set(stop.flags.flatMap(flag => flag.agency_ids))];
-			if (!stopAgencyIds.length) continue;
-
-			const hasPermissionForStop = stopAgencyIds.some(agencyId => allowedAgencyIds.includes(agencyId));
-			if (!hasPermissionForStop) {
-				throw new HttpException(HTTP_STATUS.FORBIDDEN, `You do not have permission to export stops for agency_ids: [${stopAgencyIds.join(', ')}].`);
-			}
+		if (unauthorizedStop) {
+			const stopAgencyIds = [...new Set(unauthorizedStop.flags.flatMap(flag => flag.agency_ids))];
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You do not have permission to export stops for agency_ids: [' + stopAgencyIds.join(', ') + '].');
 		}
 	}
 
