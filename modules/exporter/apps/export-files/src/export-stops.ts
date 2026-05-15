@@ -67,6 +67,8 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 		searchFilter = {
 			$or: [
 				{ _id: Number(searchQuery) || -1 },
+				{ legacy_id: searchRegex },
+				{ legacy_ids: searchRegex },
 				{ name: searchRegex },
 				{ short_name: searchRegex },
 				{ tts_name: searchRegex },
