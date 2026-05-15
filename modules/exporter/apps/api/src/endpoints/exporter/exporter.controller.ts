@@ -39,7 +39,12 @@ export class ExporterController {
 		const searchQuery = stopProperties.search?.trim();
 		let searchFilter: Filter<Stop> | null = null;
 		if (searchQuery) {
-			const searchRegex = new RegExp(searchQuery, 'i');
+			// Escape special regex characters in the searchQuery to avoid RegExp injection or errors
+			function escapeRegExp(str: string) {
+				return str.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&');
+			}
+			const safeSearch = escapeRegExp(searchQuery);
+			const searchRegex = new RegExp(safeSearch, 'i');
 			searchFilter = {
 				$or: [
 					{ _id: isNaN(Number(searchQuery)) ? -1 : Number(searchQuery) },
