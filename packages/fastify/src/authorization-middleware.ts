@@ -34,7 +34,7 @@ export function authorizationMiddleware<S extends Permission['scope']>(scope?: S
 		if (!sessionToken) {
 			return reply
 				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
-				.send({ data: 'Session token is missing', error: null, statusCode: HTTP_STATUS.UNAUTHORIZED });
+				.send({ data: null, error: 'Session token is missing', statusCode: HTTP_STATUS.UNAUTHORIZED });
 		}
 
 		//
@@ -50,7 +50,7 @@ export function authorizationMiddleware<S extends Permission['scope']>(scope?: S
 			if (!userData || !permissionsData || !organizationData) {
 				return reply
 					.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
-					.send({ data: 'Session token is missing', error: null, statusCode: HTTP_STATUS.UNAUTHORIZED });
+					.send({ data: null, error: 'User, Permissions or Organization not found', statusCode: HTTP_STATUS.UNAUTHORIZED });
 			}
 
 			request.me = userData;
@@ -60,7 +60,7 @@ export function authorizationMiddleware<S extends Permission['scope']>(scope?: S
 			console.error('Authorization Middleware Error:', error);
 			return reply
 				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
-				.send({ data: 'Session token is missing', error: null, statusCode: HTTP_STATUS.UNAUTHORIZED });
+				.send({ data: null, error: 'Authorization Middleware Error', statusCode: HTTP_STATUS.UNAUTHORIZED });
 		}
 
 		//
