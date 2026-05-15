@@ -31,35 +31,31 @@ export async function getOperationalLinesBatch(query: GetOperationalLinesBatchQu
 			},
 		},
 		{
-			$sort: {
-				start_time_scheduled: -1, // newest first
-			},
-		},
-		{
 			$group: {
 				_id: '$hashed_trip_id',
-				agency_id: { $first: '$agency_id' },
-				hashed_trip_id: { $first: '$hashed_trip_id' },
-				line_id: { $first: '$line_id' },
-				operational_date: { $first: '$operational_date' },
-				plan_id: { $first: '$plan_id' },
-				start_time_scheduled: { $first: '$start_time_scheduled' },
+				latest_ride: {
+					$top: {
+						output: {
+							agency_id: '$agency_id',
+							hashed_trip_id: '$hashed_trip_id',
+							operational_date: '$operational_date',
+							plan_id: '$plan_id',
+							start_time_scheduled: '$start_time_scheduled',
+						},
+						// deterministic tie-break if same timestamp appears multiple times
+						sortBy: { start_time_scheduled: -1, _id: -1 },
+					},
+				},
+			},
+		} as unknown as AggregationPipeline<PipelineResult>[number],
+		{
+			$replaceRoot: {
+				newRoot: '$latest_ride',
 			},
 		},
 		{
 			$sort: {
 				start_time_scheduled: -1,
-			},
-		},
-		{
-			$project: {
-				_id: 0,
-				agency_id: 1,
-				hashed_trip_id: 1,
-				line_id: 1,
-				operational_date: 1,
-				plan_id: 1,
-				start_time_scheduled: 1,
 			},
 		},
 		{
@@ -77,17 +73,13 @@ export async function getOperationalLinesBatch(query: GetOperationalLinesBatchQu
 			},
 		},
 		{
-			$sort: {
-				start_time_scheduled: -1,
-			},
-		},
-		{
 			$project: {
 				_id: 0,
 				agency_id: 1,
 				hashed_trip_doc: 1, // full joined document
 				operational_date: 1,
 				plan_id: 1,
+				start_time_scheduled: 1,
 			},
 		},
 	];
@@ -95,7 +87,7 @@ export async function getOperationalLinesBatch(query: GetOperationalLinesBatchQu
 	const ridesCollection = await rides.getCollection();
 
 	const pipelineResult = await ridesCollection
-		.aggregate<PipelineResult>(pipeline)
+		.aggregate<PipelineResult>(pipeline, { allowDiskUse: true })
 		.toArray();
 
 	Logger.info(`OperationalLinesController.getBatch - pipeline result count: ${pipelineResult?.length ?? 0}`);
