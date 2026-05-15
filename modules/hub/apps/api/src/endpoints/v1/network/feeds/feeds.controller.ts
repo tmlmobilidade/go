@@ -10,7 +10,7 @@ import { Logger } from '@tmlmobilidade/logger';
 
 export class FeedsController {
 	static async getDates(request: FastifyRequest, reply: FastifyReply<unknown>) {
-		return FeedsController.sendNetworkJson(reply, 'hub:network:dates:json', SERVERDB_KEYS.NETWORK.DATES, 'hub/v1/network/feeds:getDates()');
+		return FeedsController.sendNetworkJson(reply, 'hub:network:dates', SERVERDB_KEYS.NETWORK.DATES, 'hub/v1/network/feeds:getDates()');
 	}
 
 	static async getGtfsStaticZip(request: FastifyRequest, reply: FastifyReply<unknown>) {
@@ -26,24 +26,24 @@ export class FeedsController {
 	}
 
 	static async getLines(request: FastifyRequest, reply: FastifyReply<unknown>) {
-		return FeedsController.sendNetworkJson(reply, 'hub:network:lines:json', SERVERDB_KEYS.NETWORK.LINES, 'hub/v1/network/feeds:getLines()');
+		return FeedsController.sendNetworkJson(reply, 'hub:network:lines', SERVERDB_KEYS.NETWORK.LINES, 'hub/v1/network/feeds:getLines()');
 	}
 
 	static async getPeriods(request: FastifyRequest, reply: FastifyReply<unknown>) {
-		return FeedsController.sendNetworkJson(reply, 'hub:network:periods:json', SERVERDB_KEYS.NETWORK.PERIODS, 'hub/v1/network/feeds:getPeriods()');
+		return FeedsController.sendNetworkJson(reply, 'hub:network:periods', SERVERDB_KEYS.NETWORK.PERIODS, 'hub/v1/network/feeds:getPeriods()');
 	}
 
 	static async getRoutes(request: FastifyRequest, reply: FastifyReply<unknown>) {
-		return FeedsController.sendNetworkJson(reply, 'hub:network:routes:json', SERVERDB_KEYS.NETWORK.ROUTES, 'hub/v1/network/feeds:getRoutes()');
+		return FeedsController.sendNetworkJson(reply, 'hub:network:routes', SERVERDB_KEYS.NETWORK.ROUTES, 'hub/v1/network/feeds:getRoutes()');
 	}
 
 	static async getStops(request: FastifyRequest, reply: FastifyReply<unknown>) {
-		return FeedsController.sendNetworkJson(reply, 'hub:network:stops:json', SERVERDB_KEYS.NETWORK.STOPS, 'hub/v1/network/feeds:getStops()');
+		return FeedsController.sendNetworkJson(reply, 'hub:network:stops', SERVERDB_KEYS.NETWORK.STOPS, 'hub/v1/network/feeds:getStops()');
 	}
 
 	private static async sendNetworkJson(
 		reply: FastifyReply<unknown>,
-		cacheKey: 'hub:network:dates:json' | 'hub:network:lines:json' | 'hub:network:periods:json' | 'hub:network:routes:json' | 'hub:network:stops:json',
+		cacheKey: 'hub:network:dates' | 'hub:network:lines' | 'hub:network:periods' | 'hub:network:routes' | 'hub:network:stops',
 		serverKey: string,
 		logCtx: string,
 	) {

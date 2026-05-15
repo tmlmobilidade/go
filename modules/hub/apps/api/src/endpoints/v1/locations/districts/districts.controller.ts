@@ -10,7 +10,7 @@ export class DistrictsController {
 	static async getDistricts(request: FastifyRequest, reply: FastifyReply<unknown>) {
 		return sendLocationFeed<Record<string, unknown>>(
 			reply,
-			'hub:locations:districts:json',
+			'hub:locations:districts',
 			SERVERDB_KEYS.LOCATIONS.DISTRICTS,
 			'hub/v1/locations/districts:getDistricts()',
 		);

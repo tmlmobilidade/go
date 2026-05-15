@@ -58,6 +58,8 @@
 /* SLIDE WRAPPER */
 
 .slideWrapper {
+	min-width: 0;
+	max-width: 100%;
 	padding: 0;
 	padding-left: var(--size-spacing-20);
 	padding-bottom: var(--size-spacing-20);
