@@ -86,7 +86,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 
 	const { canSave } = useFlagCanSave({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.agencies.scope, PermissionCatalog.all.agencies.actions.update),
-		isDirty: form.formState.isDirty,
+		isDirty: Object.keys(form.formState.dirtyFields).length > 0,
 		isLoading: agencyLoading,
 		isLocked: agencyData?.is_locked,
 		isLocking: isLocking,
@@ -95,7 +95,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 
 	const { canLock } = useFlagCanLock({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.agencies.scope, PermissionCatalog.all.agencies.actions.update),
-		isDirty: form.formState.isDirty,
+		isDirty: Object.keys(form.formState.dirtyFields).length > 0,
 		isLoading: agencyLoading,
 		isLocking: isLocking,
 		isValid: form.formState.isValid,

@@ -1,7 +1,7 @@
 'use client';
 
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
-import { AlertCause, AlertCauseValues, AlertEffect, AlertEffectValues, AlertReferenceTypeValues } from '@tmlmobilidade/types';
+import { type AlertCause, AlertCauseValues, type AlertEffect, AlertEffectValues, type AlertReferenceType, AlertReferenceTypeValues } from '@tmlmobilidade/types';
 import { Button, Checkbox, Collapsible, ContextFormController, Grid, Inline, Label, Section, Surface, Table } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -17,19 +17,27 @@ export function AgencySectionAlertsMap() {
 	const agencyDetailContext = useAgencyDetailContext();
 
 	//
-	// B. Transform data
-
-	//
 	// B. Handle actions
 
 	const handleCauseClick = (causeValue: AlertCause) => {
 		// Skip if the form is read-only
 		if (agencyDetailContext.flags.isReadOnly) return;
+		// Count how many reference types are currently enabled,
+		// to determine whether to set them all to false or all to true.
+		let enabledCount = 0;
+		for (const effectValue of AlertEffectValues) {
+			for (const referenceTypeValue of AlertReferenceTypeValues) {
+				const isEnabled = agencyDetailContext.form.instance.getValues(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`);
+				if (isEnabled) enabledCount++;
+			}
+		}
+		// If all reference types are currently enabled, set them all to false.
+		// Otherwise, set them all to true.
+		const newValue = enabledCount === (AlertEffectValues.length * AlertReferenceTypeValues.length) ? false : true;
 		// Toggle the value of all reference types for the given cause and effect
 		for (const effectValue of AlertEffectValues) {
 			for (const referenceTypeValue of AlertReferenceTypeValues) {
-				const currentValue = agencyDetailContext.form.instance.getValues(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`);
-				agencyDetailContext.form.instance.setValue(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`, currentValue ? false : true);
+				agencyDetailContext.form.instance.setValue(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`, newValue, { shouldDirty: true });
 			}
 		}
 	};
@@ -37,19 +45,38 @@ export function AgencySectionAlertsMap() {
 	const handleEffectClick = (causeValue: AlertCause, effectValue: AlertEffect) => {
 		// Skip if the form is read-only
 		if (agencyDetailContext.flags.isReadOnly) return;
-		// Count how many reference types are currently true for the given cause and effect,
+		// Count how many reference types are currently enabled,
 		// to determine whether to set them all to false or all to true.
-		let trueCount = 0;
+		let enabledCount = 0;
 		for (const referenceTypeValue of AlertReferenceTypeValues) {
-			if (agencyDetailContext.form.instance.getValues(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`)) {
-				trueCount++;
-			}
+			const isEnabled = agencyDetailContext.form.instance.getValues(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`);
+			if (isEnabled) enabledCount++;
 		}
-		// If all reference types are currently true, set them all to false. Otherwise, set them all to true.
-		const newValue = trueCount === AlertReferenceTypeValues.length ? false : true;
+		// If all reference types are currently enabled, set them all to false.
+		// Otherwise, set them all to true.
+		const newValue = enabledCount === AlertReferenceTypeValues.length ? false : true;
 		// Toggle the value of all reference types for the given cause and effect
 		for (const referenceTypeValue of AlertReferenceTypeValues) {
-			agencyDetailContext.form.instance.setValue(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`, newValue);
+			agencyDetailContext.form.instance.setValue(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`, newValue, { shouldDirty: true });
+		}
+	};
+
+	const handleReferenceTypeClick = (causeValue: AlertCause, referenceTypeValue: AlertReferenceType) => {
+		// Skip if the form is read-only
+		if (agencyDetailContext.flags.isReadOnly) return;
+		// Count how many reference types are currently enabled,
+		// to determine whether to set them all to false or all to true.
+		let enabledCount = 0;
+		for (const effectValue of AlertEffectValues) {
+			const isEnabled = agencyDetailContext.form.instance.getValues(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`);
+			if (isEnabled) enabledCount++;
+		}
+		// If all reference types are currently enabled, set them all to false.
+		// Otherwise, set them all to true.
+		const newValue = enabledCount === AlertEffectValues.length ? false : true;
+		// Toggle the value of all reference types for the given cause and effect
+		for (const effectValue of AlertEffectValues) {
+			agencyDetailContext.form.instance.setValue(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`, newValue, { shouldDirty: true });
 		}
 	};
 
@@ -66,7 +93,7 @@ export function AgencySectionAlertsMap() {
 				<Grid columns="a" gap="lg">
 					{AlertCauseValues.map(causeValue => (
 						<Surface key={causeValue} variant="bordered">
-							<Section key={causeValue} gap="lg">
+							<Section key={causeValue} gap="lg" padding="none">
 								<Label>{causeValue}</Label>
 								<Button onClick={() => handleCauseClick(causeValue)}>{causeValue}</Button>
 								<Table>
@@ -74,7 +101,9 @@ export function AgencySectionAlertsMap() {
 										<Table.Tr>
 											<Table.Th>Effect</Table.Th>
 											{AlertReferenceTypeValues.map(referenceTypeValue => (
-												<Table.Th key={`${causeValue}-${referenceTypeValue}`}>{referenceTypeValue}</Table.Th>
+												<Table.Th key={`${causeValue}-${referenceTypeValue}`}>
+													<Inline onClick={() => handleReferenceTypeClick(causeValue, referenceTypeValue)} dotted>{referenceTypeValue}</Inline>
+												</Table.Th>
 											))}
 										</Table.Tr>
 									</Table.Thead>

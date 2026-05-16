@@ -39,16 +39,11 @@ export function AgencyDetailHeader() {
 
 			<Spacer />
 
-			<HasPermission
-				action={PermissionCatalog.all.agencies.actions.update}
-				scope={PermissionCatalog.all.agencies.scope}
-			>
-				<SaveButton
-					isDisabled={!agencyDetailContext.flags.canSave}
-					isLoading={agencyDetailContext.flags.isSaving}
-					onClick={agencyDetailContext.actions.save}
-				/>
-			</HasPermission>
+			<SaveButton
+				isDisabled={!agencyDetailContext.flags.canSave}
+				isLoading={agencyDetailContext.flags.isSaving}
+				onClick={agencyDetailContext.actions.save}
+			/>
 
 			<HasPermission
 				action={PermissionCatalog.all.agencies.actions.lock}
