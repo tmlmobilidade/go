@@ -109,7 +109,6 @@ export function AlertDetailSectionReferences() {
 			<ReferencesEditor
 				activePeriodEndDate={activePeriodEndDateValue}
 				activePeriodStartDate={activePeriodStartDateValue}
-				availableAgenciesOptions={agenciesOptions}
 				enabledReferenceTypes={['agency', 'lines', 'rides', 'stops']}
 				onChangeReferences={handleChangeReferences}
 				onChangeReferenceType={handleChangeReferenceType}

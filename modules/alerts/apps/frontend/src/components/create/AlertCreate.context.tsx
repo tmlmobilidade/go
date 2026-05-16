@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, alertCauseEffectReferenceTypeMap, type CreateAlertDto, PermissionCatalog } from '@tmlmobilidade/types';
+import { type Alert, AlertReferenceTypeValues, type CreateAlertDto, PermissionCatalog } from '@tmlmobilidade/types';
 import { type CreateContextStateTemplate, keepUrlParams, useContextForm, useContextFormWatch, useDataAgencies, useDataOperationalLines, useDataOperationalStops, useDataRides, useHandleUpdate, useMeContext, useMultiStep, type UseMultiStepReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -137,13 +137,17 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	}, [referencesValue, form]);
 
 	useEffect(() => {
-		// Skip if cause or effect are not set, as reference_type will be
-		// auto-set based on their combination when both are selected.
-		if (!causeValue || !effectValue) return;
-		// Skip if reference_type is already set, as we don't want to override user's selection.
+		// Skip if reference_type is already set,
+		// as we don't want to override user's selection.
 		if (referenceTypeValue) return;
-		// Extract the available reference types for the selected cause/effect combination.
-		const enabledTypes = alertCauseEffectReferenceTypeMap[causeValue]?.[effectValue] ?? [];
+		// Skip if agency, cause or effect are not set, as reference_type will be
+		// auto-set based on their combination when all are selected.
+		if (!agencyIdValue || !causeValue || !effectValue) return;
+		// Find the agency data that matches the selected agency_id.
+		const matchingAgencyData = agenciesData?.find(item => item._id === agencyIdValue);
+		if (!matchingAgencyData) return;
+		// Extract the available reference types for the selected agency/cause/effect combination.
+		const enabledTypes = AlertReferenceTypeValues.filter(referenceTypeValue => !!matchingAgencyData.alerts_map[causeValue][effectValue][referenceTypeValue]);
 		if (!enabledTypes.length) return;
 		// Get user's permissions for alert creation to determine which reference types they can select.
 		const permissions = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
@@ -156,7 +160,7 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		else if (enabledTypes.includes('agency') && (allowAllReferenceTypes || allowedReferenceTypes.includes('agency'))) form.setValue('reference_type', 'agency');
 		else Logger.info('No enabled reference types available to set as default.');
 		Logger.info('Auto-selected reference_type options based on cause/effect change and user permissions.');
-	}, [causeValue, effectValue, form, meContext.data.user.permissions, referenceTypeValue]);
+	}, [agenciesData, agencyIdValue, causeValue, effectValue, form, meContext.data.user.permissions, referenceTypeValue]);
 
 	useEffect(() => {
 		// Skip if reference_type is not 'agency' or agency_id is not set
@@ -183,31 +187,31 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 
 	const steps = useMemo(() => [
 		{
-			id: 'cause',
-			isValid: () => !!form.getValues('cause'),
-			isVisible: true,
-			label: 'Causa',
-			order: 0,
-		},
-		{
-			id: 'effect',
-			isEnabled: () => !!form.getValues('cause'),
-			isValid: () => !!form.getValues('effect'),
-			isVisible: true,
-			label: 'Efeito',
-			order: 1,
-		},
-		{
 			id: 'agency',
-			isEnabled: () => !!form.getValues('cause') && !!form.getValues('effect'),
 			isValid: () => !!form.getValues('agency_id'),
 			isVisible: agenciesData?.length > 1,
 			label: 'Operador',
+			order: 0,
+		},
+		{
+			id: 'cause',
+			isEnabled: () => !!form.getValues('agency_id'),
+			isValid: () => !!form.getValues('cause'),
+			isVisible: true,
+			label: 'Causa',
+			order: 1,
+		},
+		{
+			id: 'effect',
+			isEnabled: () => !!form.getValues('agency_id') && !!form.getValues('cause'),
+			isValid: () => !!form.getValues('effect'),
+			isVisible: true,
+			label: 'Efeito',
 			order: 2,
 		},
 		{
 			id: 'dates',
-			isEnabled: () => !!form.getValues('agency_id'),
+			isEnabled: () => !!form.getValues('agency_id') && !!form.getValues('cause') && !!form.getValues('effect'),
 			isValid: () => !!form.getValues('active_period_start_date'),
 			isVisible: meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_dates),
 			label: 'Datas',
