@@ -6,14 +6,9 @@
 		"detail": {
 			"SectionAlertsMap": {
 				"description": "Mapeamento de causas, efeitos e tipos de referência para Alertas de Serviço.",
-				"fields": {
-					"price_per_km": {
-						"label": "Preço por km",
-						"placeholder": "1.50"
-					},
-					"total_vkm_per_year": {
-						"label": "Total de km por ano",
-						"placeholder": "1000000"
+				"table": {
+					"header": {
+						"effect": "Efeito"
 					}
 				},
 				"title": "Alertas"

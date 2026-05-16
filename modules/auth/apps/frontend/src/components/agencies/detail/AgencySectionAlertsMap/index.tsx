@@ -2,7 +2,7 @@
 
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { type AlertCause, AlertCauseValues, type AlertEffect, AlertEffectValues, type AlertReferenceType, AlertReferenceTypeValues } from '@tmlmobilidade/types';
-import { Button, Checkbox, Collapsible, ContextFormController, Grid, Inline, Label, Section, Surface, Table } from '@tmlmobilidade/ui';
+import { Checkbox, Collapsible, ContextFormController, Divider, Grid, Inline, Section, Surface, Table } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -14,6 +14,7 @@ export function AgencySectionAlertsMap() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
+
 	const agencyDetailContext = useAgencyDetailContext();
 
 	//
@@ -93,16 +94,18 @@ export function AgencySectionAlertsMap() {
 				<Grid columns="a" gap="lg">
 					{AlertCauseValues.map(causeValue => (
 						<Surface key={causeValue} variant="bordered">
-							<Section key={causeValue} gap="lg" padding="none">
-								<Label>{causeValue}</Label>
-								<Button onClick={() => handleCauseClick(causeValue)}>{causeValue}</Button>
+							<Section key={causeValue} padding="none">
+								<Section>
+									<Inline onClick={() => handleCauseClick(causeValue)} dotted>{t(`shared:alerts.causes.${causeValue}.title`)}</Inline>
+								</Section>
+								<Divider />
 								<Table>
 									<Table.Thead>
 										<Table.Tr>
-											<Table.Th>Effect</Table.Th>
+											<Table.Th>{t('default:agencies.detail.SectionAlertsMap.table.header.effect')}</Table.Th>
 											{AlertReferenceTypeValues.map(referenceTypeValue => (
 												<Table.Th key={`${causeValue}-${referenceTypeValue}`}>
-													<Inline onClick={() => handleReferenceTypeClick(causeValue, referenceTypeValue)} dotted>{referenceTypeValue}</Inline>
+													<Inline onClick={() => handleReferenceTypeClick(causeValue, referenceTypeValue)} dotted>{t(`shared:alerts.reference_types.${referenceTypeValue}.title`)}</Inline>
 												</Table.Th>
 											))}
 										</Table.Tr>
@@ -111,7 +114,7 @@ export function AgencySectionAlertsMap() {
 										{AlertEffectValues.map(effectValue => (
 											<Table.Tr key={effectValue}>
 												<Table.Td>
-													<Inline onClick={() => handleEffectClick(causeValue, effectValue)} dotted>{effectValue}</Inline>
+													<Inline onClick={() => handleEffectClick(causeValue, effectValue)} dotted>{t(`shared:alerts.effects.${effectValue}.title`)}</Inline>
 												</Table.Td>
 												{AlertReferenceTypeValues.map(referenceTypeValue => (
 													<Table.Td key={`${causeValue}-${effectValue}-${referenceTypeValue}`}>
