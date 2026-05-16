@@ -12,6 +12,7 @@ export const SimplifiedVehicleEventSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	created_at: UnixTimestampSchema,
+	geohash: z.string(),
 	latitude: z.number()
 		.min(-90)
 		.max(90)
