@@ -88,7 +88,6 @@ export function AgencySectionAlertsMap() {
 		<Collapsible
 			description={t('default:agencies.detail.SectionAlertsMap.description')}
 			title={t('default:agencies.detail.SectionAlertsMap.title')}
-			defaultOpen
 		>
 			<Section gap="lg">
 				<Grid columns="a" gap="lg">
