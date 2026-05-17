@@ -42,7 +42,7 @@ export function AlertCreateStepCause() {
 		// Map to the format needed for rendering the buttons
 		// and sort alphabetically by label.
 		return AlertCauseValues
-			.filter(cause => Object.values(matchingAgencyData.alerts_map[cause] ?? {}).some(effect => !!Object.values(effect ?? {}).find(reference => !!reference)))
+			.filter(cause => Object.values(matchingAgencyData.alerts_map?.[cause] ?? {})?.some(effect => !!Object.values(effect ?? {})?.find(reference => !!reference)))
 			.map(item => ({ icon: AlertCauseIcons[item], label: t(`shared:alerts.causes.${item}.title`) as string, value: item }))
 			.sort((a, b) => a.label.localeCompare(b.label));
 	}, [t, agenciesData, agencyIdValue]);

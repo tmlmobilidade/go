@@ -147,7 +147,7 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		const matchingAgencyData = agenciesData?.find(item => item._id === agencyIdValue);
 		if (!matchingAgencyData) return;
 		// Extract the available reference types for the selected agency/cause/effect combination.
-		const enabledTypes = AlertReferenceTypeValues.filter(referenceTypeValue => !!matchingAgencyData.alerts_map[causeValue][effectValue][referenceTypeValue]);
+		const enabledTypes = AlertReferenceTypeValues.filter(referenceTypeValue => !!matchingAgencyData.alerts_map?.[causeValue]?.[effectValue]?.[referenceTypeValue]);
 		if (!enabledTypes.length) return;
 		// Get user's permissions for alert creation to determine which reference types they can select.
 		const permissions = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);

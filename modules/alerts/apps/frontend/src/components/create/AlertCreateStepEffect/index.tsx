@@ -42,7 +42,7 @@ export function AlertCreateStepEffect() {
 		// Map to the format needed for rendering the buttons
 		// and sort alphabetically by label.
 		return AlertEffectValues
-			.filter(effect => Object.values(matchingAgencyData.alerts_map[causeValue][effect] ?? {}).some(referenceType => !!referenceType))
+			.filter(effect => Object.values(matchingAgencyData.alerts_map?.[causeValue]?.[effect] ?? {})?.some(referenceType => !!referenceType))
 			.map(item => ({ icon: AlertEffectIcons[item], label: t(`shared:alerts.effects.${item}.title`) as string, value: item }))
 			.sort((a, b) => a.label.localeCompare(b.label));
 	}, [t, agenciesData, agencyIdValue, causeValue]);
