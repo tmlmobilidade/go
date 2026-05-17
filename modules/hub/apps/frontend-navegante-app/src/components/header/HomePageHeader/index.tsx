@@ -5,8 +5,7 @@ import { Section } from '@/components/layout/Section';
 import { Surface } from '@/components/layout/Surface';
 import { useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
 import { useStickyObserver } from '@/hooks/useStickyObserver';
-import { ActionIcon, SegmentedControl } from '@mantine/core';
-import { IconFilter } from '@tabler/icons-react';
+import { SegmentedControl } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 
 import styles from './styles.module.css';
@@ -17,7 +16,7 @@ export type HomePageSection = 'alerts' | 'lines' | 'stops' | 'vehicles';
 
 /* * */
 
-export function HomePageHeader({ openFilter }: { openFilter: () => void }) {
+export function HomePageHeader() {
 	//
 	// A. Setup variables
 
@@ -50,16 +49,6 @@ export function HomePageHeader({ openFilter }: { openFilter: () => void }) {
 							value={globalSettingsContext.section}
 							fullWidth
 						/>
-						<ActionIcon
-							onClick={openFilter}
-							size="xl"
-							variant="filled"
-							classNames={{
-								root: styles.filterButton,
-							}}
-						>
-							<IconFilter size={22} />
-						</ActionIcon>
 					</div>
 				</Section>
 			</Surface>

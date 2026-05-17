@@ -20,7 +20,7 @@ export function useFullscreenState(refreshRate?: number): [boolean | undefined, 
 
 	const updateFullscreenValue = () => {
 		if (typeof document === 'undefined') return;
-		setFullscreenValue(!!document.fullscreenElement);
+		setFullscreenValue(document.fullscreenElement === document.documentElement);
 	};
 
 	useEffect(() => {
