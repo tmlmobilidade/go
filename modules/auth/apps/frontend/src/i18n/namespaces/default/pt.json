@@ -16,6 +16,10 @@
 			"SectionBasicInfo": {
 				"description": "Nome, email, telefone, URL e fuso horário.",
 				"fields": {
+					"code": {
+						"label": "Código",
+						"placeholder": "44"
+					},
 					"fare_url": {
 						"label": "URL p/ informações de tarifas",
 						"placeholder": "https://www.carrismetropolitana.pt/tarifas"

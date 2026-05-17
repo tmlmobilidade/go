@@ -26,7 +26,7 @@ export function AgencyDetailBasicInfo() {
 			title={t('default:agencies.detail.SectionBasicInfo.title')}
 		>
 			<Section gap="lg">
-				<Grid columns="aab" gap="lg">
+				<Grid columns="aabc" gap="lg">
 					<ContextFormController
 						control={agencyDetailContext.form.instance.control}
 						name="name"
@@ -56,6 +56,22 @@ export function AgencyDetailBasicInfo() {
 								placeholder={t('default:agencies.detail.SectionBasicInfo.fields.short_name.placeholder')}
 								readOnly={agencyDetailContext.flags.isReadOnly}
 								withAsterisk={!CreateAgencySchema.shape.short_name.isOptional()}
+							/>
+						)}
+					/>
+					<ContextFormController
+						control={agencyDetailContext.form.instance.control}
+						name="code"
+						render={({ field, fieldState }) => (
+							<TextInput
+								defaultValue={field.value}
+								error={fieldState.error?.message}
+								label={t('default:agencies.detail.SectionBasicInfo.fields.code.label')}
+								maxLength={CreateAgencySchema.shape.code.maxLength}
+								onChange={field.onChange}
+								placeholder={t('default:agencies.detail.SectionBasicInfo.fields.code.placeholder')}
+								readOnly={agencyDetailContext.flags.isReadOnly}
+								withAsterisk={!CreateAgencySchema.shape.code.isOptional()}
 							/>
 						)}
 					/>
