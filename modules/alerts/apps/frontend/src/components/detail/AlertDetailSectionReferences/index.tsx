@@ -3,9 +3,9 @@
 import { ReferencesEditor } from '@/components/common/references/ReferencesEditor';
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Alert, PermissionCatalog } from '@tmlmobilidade/types';
+import { type Alert, AlertReferenceTypeValues, PermissionCatalog } from '@tmlmobilidade/types';
 import { Collapsible, ContextFormController, Label, openConfirmModal, Section, Select, useContextFormWatch, useDataAgencies, useMeContext } from '@tmlmobilidade/ui';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 /* * */
 
@@ -18,17 +18,37 @@ export function AlertDetailSectionReferences() {
 	const meContext = useMeContext();
 	const alertDetailContext = useAlertDetailContext();
 
-	const { options: agenciesOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.alerts.actions.read, PermissionCatalog.all.alerts.actions.update],
-		scope: PermissionCatalog.all.alerts.scope,
-	});
-
 	const agencyIdValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'agency_id' });
+	const causeValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'cause' });
+	const effectValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'effect' });
 	const municipalityIdsValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'municipality_ids' });
 	const activePeriodStartDateValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'active_period_start_date' });
 	const activePeriodEndDateValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'active_period_end_date' });
 	const referenceTypeValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'reference_type' });
 	const referencesValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'references' });
+
+	//
+	// B. Fetch data
+
+	const { filtered: agenciesData, options: agenciesOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.alerts.actions.read, PermissionCatalog.all.alerts.actions.update],
+		scope: PermissionCatalog.all.alerts.scope,
+	});
+
+	//
+	// C. Transform data
+
+	const preparedOptions = useMemo(() => {
+		// Find the agency data that matches the selected agency_id in the form.
+		const matchingAgencyData = agenciesData?.find(item => item._id === agencyIdValue);
+		if (!matchingAgencyData) return [];
+		// Only show effects that have at least one reference_type enabled (cause > effect > reference_type = true).
+		// Map to the format needed for rendering the buttons
+		// and sort alphabetically by label.
+		return AlertReferenceTypeValues
+			.filter(referenceTypeValue => !!matchingAgencyData.alerts_map?.[causeValue]?.[effectValue]?.[referenceTypeValue])
+			.sort((a, b) => a.localeCompare(b));
+	}, [agenciesData, agencyIdValue, causeValue, effectValue]);
 
 	const hasPermissionToEdit = meContext.actions.hasPermissionResource([
 		{
@@ -46,7 +66,7 @@ export function AlertDetailSectionReferences() {
 	]);
 
 	//
-	// B. Handle actions
+	// D. Handle actions
 
 	const handleChangeAgencyId = (value: Alert['agency_id'], fieldOnChange: (v: Alert['agency_id']) => void) => {
 		if (alertDetailContext.form.instance.getValues('references')?.length > 0) {
@@ -77,7 +97,7 @@ export function AlertDetailSectionReferences() {
 	}, [alertDetailContext.form.instance]);
 
 	//
-	// C. Render components
+	// E. Render components
 
 	return (
 		<Collapsible
@@ -109,7 +129,7 @@ export function AlertDetailSectionReferences() {
 			<ReferencesEditor
 				activePeriodEndDate={activePeriodEndDateValue}
 				activePeriodStartDate={activePeriodStartDateValue}
-				enabledReferenceTypes={['agency', 'lines', 'rides', 'stops']}
+				enabledReferenceTypes={preparedOptions}
 				onChangeReferences={handleChangeReferences}
 				onChangeReferenceType={handleChangeReferenceType}
 				readonly={!hasPermissionToEdit}
