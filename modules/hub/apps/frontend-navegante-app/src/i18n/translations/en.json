@@ -313,6 +313,13 @@
 				"lines": "Lines",
 				"stops": "Stops",
 				"vehicles": "Vehicles"
+			},
+			"transports": {
+				"all": "All",
+				"boat": "Ferry",
+				"bus": "Bus",
+				"metro": "Metro",
+				"train": "Train"
 			}
 		},
 		"HomePageToolbar": {

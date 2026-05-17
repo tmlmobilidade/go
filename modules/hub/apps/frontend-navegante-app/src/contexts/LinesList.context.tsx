@@ -1,9 +1,11 @@
 'use client';
 
 import { useEnvironmentContext } from '@/contexts/Environment.context';
+import { useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { createDocCollection } from '@/hooks/useOtherSearch';
 import { type Line } from '@/types/api/network';
+import { agencyMatchesSelection, agencyMatchesTransports, transportsSelectionIsAll } from '@/utils/transportAgencies';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 /* * */
@@ -53,8 +55,11 @@ export const LinesListContextProvider = ({ children }) => {
 	// A. Setup variables
 
 	const linesContext = useLinesContext();
+	const globalSettingsContext = useGlobalSettingsContext();
 	const environmentContext = useEnvironmentContext();
 	const isMupi = environmentContext.data.value === 'mupi';
+	const filterByAgency = globalSettingsContext.filterbar.by_agency;
+	const filterByTransports = globalSettingsContext.filterbar.transports;
 
 	const [dataFilteredState, setDataFilteredState] = useState<Line[]>([]);
 
@@ -115,6 +120,18 @@ export const LinesListContextProvider = ({ children }) => {
 		}
 
 		//
+		// Filter by by_agency / transports
+
+		const isAllAgencies = filterByAgency.length === 0;
+		const isAllTransports = transportsSelectionIsAll(filterByTransports);
+
+		if (!isAllAgencies || !isAllTransports) {
+			filterResult = filterResult.filter((line) => {
+				return (isAllAgencies || agencyMatchesSelection(line.agency_id, filterByAgency)) && (isAllTransports || agencyMatchesTransports(line.agency_id, filterByTransports));
+			});
+		}
+
+		//
 		// Return resulting items
 
 		return filterResult;
@@ -125,7 +142,7 @@ export const LinesListContextProvider = ({ children }) => {
 	useEffect(() => {
 		const filteredData = applyFiltersToData(linesContext.data.lines);
 		setDataFilteredState(filteredData);
-	}, [linesContext.data.lines, filterByAttributeState, filterByFacilityState, filterByMunicipalityOrLocalityState, filterBySearchState]);
+	}, [linesContext.data.lines, filterByAttributeState, filterByFacilityState, filterByMunicipalityOrLocalityState, filterBySearchState, filterByAgency, filterByTransports]);
 
 	//
 	// D. Handle actions
