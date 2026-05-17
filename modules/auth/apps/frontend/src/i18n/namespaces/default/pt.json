@@ -637,6 +637,10 @@
 		"create": {
 			"BasicInfo": {
 				"fields": {
+					"email": {
+						"label": "Email",
+						"placeholder": "user@example.com"
+					},
 					"first_name": {
 						"label": "Primeiro Nome",
 						"placeholder": "..."
@@ -644,10 +648,6 @@
 					"last_name": {
 						"label": "Último Nome",
 						"placeholder": "..."
-					},
-					"public_email": {
-						"label": "Email",
-						"placeholder": "user@example.com"
 					}
 				}
 			},
