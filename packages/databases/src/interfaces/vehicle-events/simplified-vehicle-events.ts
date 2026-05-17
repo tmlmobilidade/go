@@ -15,7 +15,7 @@ const tableSchema: ClickHouseSchema<SimplifiedVehicleEvent> = {
 	_id: { type: 'String' },
 	agency_id: { type: 'String' },
 	created_at: { type: 'Int64' },
-	geohash: { defaultValue: 'geohashEncode(longitude, latitude, 7)', type: 'String' },
+	geohash: { default: 'geohashEncode(longitude, latitude, 7)', type: 'String' },
 	latitude: { type: 'Float64' },
 	longitude: { type: 'Float64' },
 	operational_date: { type: 'Date' },
