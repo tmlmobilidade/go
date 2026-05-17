@@ -1,4 +1,5 @@
 export * from './Checkbox';
+export * from './Chip';
 export * from './ColorInput';
 export * from './CoordinatesInput';
 export * from './Dropzone';

@@ -67,6 +67,7 @@ import TimePickerOverride from './mantine/overrides/TimePicker.module.css';
 /* * */
 
 export const themeData: MantineThemeOverride = createTheme({
+
 	components: {
 
 		Accordion: Accordion.extend({
@@ -260,4 +261,7 @@ export const themeData: MantineThemeOverride = createTheme({
 		}),
 
 	},
+
+	cursorType: 'pointer',
+
 });

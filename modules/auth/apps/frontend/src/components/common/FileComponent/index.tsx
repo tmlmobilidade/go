@@ -62,7 +62,7 @@ export function FileComponent({ file, label }: FileComponentProps) {
 			const a = document.createElement('a');
 			a.href = url;
 			// Get short_name from form values (more reliable) or agency data, with fallback
-			const shortName = agencyDetailContext.data.form.getValues().short_name || agencyDetailContext.data.agency?.short_name || agencyDetailContext.data.agency?.name;
+			const shortName = agencyDetailContext.form.instance.getValues().short_name || agencyDetailContext.data.agency?.short_name || agencyDetailContext.data.agency?.name;
 			a.download = `${shortName}-validation-rules.json`;
 			document.body.appendChild(a);
 			a.click();

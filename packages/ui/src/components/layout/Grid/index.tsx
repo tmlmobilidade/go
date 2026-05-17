@@ -7,7 +7,7 @@ import styles from './styles.module.css';
 /* * */
 
 interface GridProps {
-	columns?: 'a' | 'aab' | 'ab' | 'abb' | 'abc' | 'abcd' | 'abcde'
+	columns?: 'a' | 'aab' | 'aabc' | 'ab' | 'abb' | 'abc' | 'abcd' | 'abcde'
 	gap?: 'lg' | 'md' | 'none' | 'sm' | 'xl' | 'xs'
 	hAlign?: 'center' | 'end' | 'start'
 	vAlign?: 'center' | 'end' | 'start'
