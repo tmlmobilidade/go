@@ -10,6 +10,7 @@ import { z } from 'zod';
 
 export const AgencySchema = DocumentSchema.extend({
 	alerts_map: AgencyAlertMapSchema,
+	code: z.string().max(20),
 	contact_emails_pta: z.array(z.string().email()).default([]),
 	contact_emails_pto: z.array(z.string().email()).default([]),
 	fare_url: z.string().url(),
