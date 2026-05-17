@@ -98,7 +98,7 @@ export function AgencySectionAlertsMap() {
 									<Inline onClick={() => handleCauseClick(causeValue)} dotted>{t(`shared:alerts.causes.${causeValue}.title`)}</Inline>
 								</Section>
 								<Divider />
-								<Table>
+								<Table highlightOnHover>
 									<Table.Thead>
 										<Table.Tr>
 											<Table.Th>{t('default:agencies.detail.SectionAlertsMap.table.header.effect')}</Table.Th>
