@@ -24,13 +24,13 @@
 		"next": "16.2.6",
 		"react": "19.2.6",
 		"react-dom": "19.2.6",
-		"react-i18next": "17.0.7",
+		"react-i18next": "17.0.8",
 		"swr": "2.4.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.6.2",
+		"@types/node": "25.8.0",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",
 		"typescript": "5.9.3"
