@@ -43,6 +43,7 @@ export async function getOperationalLinesBatch(query: GetOperationalLinesBatchQu
 							start_time_scheduled: '$start_time_scheduled',
 						},
 						// deterministic tie-break if same timestamp appears multiple times
+						// eslint-disable-next-line perfectionist/sort-objects
 						sortBy: { start_time_scheduled: -1, _id: -1 },
 					},
 				},
