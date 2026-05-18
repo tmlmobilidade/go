@@ -235,43 +235,8 @@
 			"wednesday": "Wednesday"
 		}
 	},
-	"home": {
-		"AlertsSection": {
-			"section_heading": "Recent Alerts"
-		},
-		"HomePageFilterbar": {
-			"filters": {
-				"by_agency": {
-					"placeholder": "Todos os operadores"
-				},
-				"by_bikes": {
-					"options": {
-						"false": "Não",
-						"true": "Sim"
-					},
-					"placeholder": "Permite Bicicletas"
-				},
-				"by_make_model": {
-					"placeholder": "Marca e Modelo"
-				},
-				"by_propulsion": {
-					"placeholder": "Todos os tipos de propulsão"
-				},
-				"by_search": {
-					"placeholder": "Pesquisar por id, matrícula..."
-				},
-				"by_wheelchair": {
-					"options": {
-						"false": "Não",
-						"true": "Sim"
-					},
-					"placeholder": "Permite Mobilidade Reduzida"
-				}
-			},
-			"heading": "Filters",
-			"modal": {
-				"title": "Filters"
-			},
+	"filters": {
+		"by_agency": {
 			"options": {
 				"Agency": {
 					"1": "Carris",
@@ -303,6 +268,7 @@
 					"natural_gas": "Natural Gas"
 				}
 			},
+			"placeholder": "All operators",
 			"sections": {
 				"alerts": "Alerts",
 				"lines": "Lines",
@@ -316,6 +282,43 @@
 				"metro": "Metro",
 				"train": "Train"
 			}
+		}
+	},
+	"home": {
+		"AlertsSection": {
+			"section_heading": "Recent Alerts"
+		},
+		"HomePageFilterbar": {
+			"filters": {
+				"by_bikes": {
+					"options": {
+						"false": "No",
+						"true": "Yes"
+					},
+					"placeholder": "Allows Bicycles"
+				},
+				"by_make_model": {
+					"placeholder": "Make and Model"
+				},
+				"by_propulsion": {
+					"placeholder": "All propulsion types"
+				},
+				"by_search": {
+					"placeholder": "Search by id, registration..."
+				},
+				"by_wheelchair": {
+					"options": {
+						"false": "No",
+						"true": "Yes"
+					},
+					"placeholder": "Allows Reduced Mobility"
+				}
+			},
+			"heading": "Filters",
+			"modal": {
+				"title": "Filters"
+			}
+
 		},
 		"HomePageToolbar": {
 			"heading": "Sections",

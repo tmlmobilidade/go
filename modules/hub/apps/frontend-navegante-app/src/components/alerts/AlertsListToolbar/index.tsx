@@ -62,7 +62,7 @@ export function AlertsListToolbar() {
 			</Section>
 			<Section heading={t('heading')} subheading={t('subheading')} withGap withPadding>
 				<SegmentedControl data={byCurrentStatusOptions} onChange={alertsContext.actions.updateFilterByDate} value={alertsContext.filters.by_date} w="100%" fullWidth />
-				{alertsContext.filters.by_date != 'map' && (
+				{alertsContext.filters.by_date !== 'map' && (
 					<>
 						<Input leftSection={<IconSearch size={20} />} onChange={handleFilterBySearchQuery} placeholder={t('filters.text_search')} value={searchQuery ?? ''} w="100%" />
 						<ExpandToggle defaultState={!!alertsContext.filters.line_id || !!alertsContext.filters.stop_id || !!alertsContext.filters.cause || !!alertsContext.filters.effect}>
