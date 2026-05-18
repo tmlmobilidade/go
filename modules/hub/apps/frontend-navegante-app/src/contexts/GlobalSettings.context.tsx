@@ -17,7 +17,6 @@ interface GlobalSettingsState {
 		updateFilterbar: (value: Partial<GlobalSettingsState['filterbar']>) => void
 		updateFilterByAgency: (values: string[]) => void
 		updateSection: (value: Section) => void
-		updateToolbar: (value: Partial<GlobalSettingsState['toolbar']>) => void
 		updateTransports: (values: TransportOption[]) => void
 	}
 	filterbar: {
@@ -26,9 +25,6 @@ interface GlobalSettingsState {
 		transports: TransportOption[]
 	}
 	section: Section
-	toolbar: {
-		view: 'list' | 'map'
-	}
 }
 
 interface GlobalSettingsStorage {
@@ -38,9 +34,6 @@ interface GlobalSettingsStorage {
 		transports: TransportOption[]
 	}
 	section: Section
-	toolbar: {
-		view: 'list' | 'map'
-	}
 }
 
 /* * */
@@ -71,9 +64,6 @@ export const GlobalSettingsContextProvider = ({ children }) => {
 				transports: [],
 			},
 			section: 'lines',
-			toolbar: {
-				view: 'list',
-			},
 		},
 		key: 'global-settings',
 	});
@@ -93,16 +83,6 @@ export const GlobalSettingsContextProvider = ({ children }) => {
 			...prev,
 			filterbar: {
 				...prev.filterbar,
-				...value,
-			},
-		}));
-	};
-
-	const updateToolbar = (value: Partial<GlobalSettingsState['toolbar']>) => {
-		setSettings(prev => ({
-			...prev,
-			toolbar: {
-				...prev.toolbar,
 				...value,
 			},
 		}));
@@ -148,7 +128,6 @@ export const GlobalSettingsContextProvider = ({ children }) => {
 			updateFilterbar,
 			updateFilterByAgency,
 			updateSection,
-			updateToolbar,
 			updateTransports,
 		},
 		filterbar: {
@@ -157,7 +136,6 @@ export const GlobalSettingsContextProvider = ({ children }) => {
 			transports: normalizeTransportsSelection(settings.filterbar.transports ?? []),
 		},
 		section: settings.section,
-		toolbar: settings.toolbar,
 	};
 
 	//

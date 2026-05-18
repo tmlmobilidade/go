@@ -48,13 +48,7 @@ export function HomePageFilterbarTransports() {
 	return (
 		<div className={styles.transportsWrapper}>
 			<TextPopover text={t('all')} textSize="md">
-				<button
-					aria-label={t('all')}
-					aria-pressed={allSelected}
-					className={`${styles.icon} ${allSelected ? styles.iconActive : ''}`}
-					onClick={handleAllClick}
-					type="button"
-				>
+				<button className={`${styles.icon} ${allSelected ? styles.iconActive : ''}`} onClick={handleAllClick}>
 					<IconApps size={24} />
 				</button>
 			</TextPopover>
@@ -62,13 +56,7 @@ export function HomePageFilterbarTransports() {
 				const active = allSelected || filterbar.transports.includes(opt.labelKey);
 				return (
 					<TextPopover key={opt.labelKey} text={t(opt.labelKey)} textSize="md">
-						<button
-							aria-label={t(opt.labelKey)}
-							aria-pressed={active}
-							className={`${styles.icon} ${active ? styles.iconActive : ''}`}
-							onClick={() => handleTransportClick(opt.labelKey)}
-							type="button"
-						>
+						<button className={`${styles.icon} ${active ? styles.iconActive : ''}`}onClick={() => handleTransportClick(opt.labelKey)}>
 							{opt.icon}
 						</button>
 					</TextPopover>
