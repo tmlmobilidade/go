@@ -7,7 +7,6 @@ export * from './expire-all-cookies.util.js';
 export * from './formatDates.js';
 export * from './formatLocation.js';
 export * from './formatStopLocation.js';
-export * from './get-image-base64.js';
 export * from './getCssVariableValue.js';
 export * from './getLexicalRoot.js';
 export * from './getOperationalDay.js';

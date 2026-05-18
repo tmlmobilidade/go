@@ -9,9 +9,8 @@ import Button from '@/components/common/Button';
 import { Section } from '@/components/layout/Section';
 import { Surface } from '@/components/layout/Surface';
 import { useAlertsContext } from '@/contexts/Alerts.context';
-import { getAlertDescription, getAlertImageUrl, getAlertMoreInfoUrl, getAlertStartDate, getAlertTitle } from '@/utils/alerts';
 import { IconExternalLink } from '@tabler/icons-react';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';
@@ -31,7 +30,6 @@ export function AlertsDetail({ alertId }: Props) {
 	// A. Setup variables
 
 	const t = useTranslations('alerts.AlertsDetail');
-	const locale = useLocale();
 	const alertsContext = useAlertsContext();
 
 	//
@@ -59,13 +57,13 @@ export function AlertsDetail({ alertId }: Props) {
 	const view = useMemo(() => {
 		if (!alert) return null;
 		return {
-			description: getAlertDescription(alert, locale),
-			imageUrl: getAlertImageUrl(alert, locale),
-			moreInfoUrl: getAlertMoreInfoUrl(alert, locale),
-			startDate: getAlertStartDate(alert),
-			title: getAlertTitle(alert, locale),
+			description: alert.description,
+			imageUrl: alert.image_url,
+			moreInfoUrl: alert.url,
+			startDate: alert.start_date,
+			title: alert.title,
 		};
-	}, [alert, locale]);
+	}, [alert]);
 
 	//
 	// D. Render components

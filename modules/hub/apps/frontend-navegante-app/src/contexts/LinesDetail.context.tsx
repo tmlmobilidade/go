@@ -6,8 +6,7 @@ import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { getPublicVariable } from '@/settings/public-variables';
 import { Line, NetworkPattern, NetworkRoute, NetworkShape, Waypoint } from '@/types/api/network';
-import { isAlertActiveNow } from '@/utils/alerts';
-import { type Alert } from '@tmlmobilidade/go-hub-pckg-types';
+import { type SimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-types';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -20,7 +19,7 @@ interface LinesDetailContextState {
 		setHighlightedTripIds: (tripIds: string[]) => void
 	}
 	data: {
-		active_alerts: Alert[] | undefined
+		active_alerts: SimplifiedAlert[] | undefined
 		active_pattern: NetworkPattern | null
 		active_shape: NetworkShape | null
 		active_waypoint: null | Waypoint
@@ -190,7 +189,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 		if (!alertsContext.data.alerts) return;
 
 		const activeAlerts = alertsContext.data.alerts.filter((row) => {
-			if (!isAlertActiveNow(row)) return false;
+			if (!alertsContext.actions.isAlertActiveNow(row)) return false;
 
 			return row.informed_entity.some((informedEntity) => {
 				const normalizedLineId = lineId?.trim();
