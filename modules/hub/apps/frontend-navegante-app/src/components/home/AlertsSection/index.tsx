@@ -5,7 +5,6 @@ import { AlertsListViewMap } from '@/components/alerts/AlertsListViewMap';
 
 import { AlertsCarousel } from '@/components/common/AlertsCarousel';
 import { Section } from '@/components/layout/Section';
-import { Surface } from '@/components/layout/Surface';
 import { useAlertsContext } from '@/contexts/Alerts.context';
 import { getAlertStartDateOrEpoch } from '@/utils/alerts';
 import { DateTime } from 'luxon';
@@ -45,11 +44,9 @@ export function AlertsSection() {
 
 	return (
 		<>
-			<Surface>
-				<Section heading={t('section_heading')} href="/alerts" withGap>
-					<AlertsCarousel alerts={alertsActiveTodayAndTomorrow} />
-				</Section>
-			</Surface>
+			<Section heading={t('section_heading')} href="/alerts">
+				<AlertsCarousel alerts={alertsActiveTodayAndTomorrow} />
+			</Section>
 			<Section>
 				<AlertsListViewMap />
 			</Section>
