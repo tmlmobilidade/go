@@ -91,6 +91,18 @@ export class StopsController {
 	 */
 	static async getValidId(request: FastifyRequest, reply: FastifyReply<StopId>) {
 		const newStopId = await generateStopId();
+		if (!newStopId) {
+			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not generate a new Stop ID');
+			Logger.error(error, {
+				action: 'getValidId',
+				email: request.me.email,
+				feature: 'stops',
+				message: 'Can not generate a new Stop ID',
+				request,
+			});
+			throw error;
+		}
+
 		reply.send({ data: newStopId, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -132,6 +144,19 @@ export class StopsController {
 				sort: { code: 1 },
 			},
 		);
+
+		if (!associatedPatterns) {
+			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, `Can not get associated patterns for stop with ID ${request.params.id}`);
+			Logger.error(error, {
+				action: 'getById',
+				email: request.me.email,
+				feature: 'stops',
+				message: `Can not get associated patterns for stop with ID ${request.params.id}`,
+				request,
+				stopId: request.params.id,
+			});
+			throw error;
+		}
 
 		reply.send({
 			data: { ...foundStop, associated_patterns: associatedPatterns },
