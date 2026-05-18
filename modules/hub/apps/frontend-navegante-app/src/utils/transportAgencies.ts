@@ -6,7 +6,7 @@ import { type TransportOption } from '@/contexts/GlobalSettings.context';
 
 export const TRANSPORT_AGENCY_IDS: Record<TransportOption, string[]> = {
 	boat: ['15'],
-	bus: ['4', '8', '21', '41', '42', '43', '44', '51', '52', '53', '54', '55'],
+	bus: ['4', '8', '21', '41', '42', '43', '44'],
 	metro: ['2', '16'],
 	train: ['1', '3'],
 };
@@ -17,21 +17,10 @@ export const ALL_TRANSPORT_OPTIONS = Object.keys(TRANSPORT_AGENCY_IDS) as Transp
 
 export const AGENCY_ID_TO_TRANSPORT: Record<string, TransportOption> = Object.entries(TRANSPORT_AGENCY_IDS).reduce<Record<string, TransportOption>>((acc, [transport, ids]) => {
 	ids.forEach((id) => {
-		acc[normalizeAgencyId(id)] = transport as TransportOption;
+		acc[id] = transport as TransportOption;
 	});
 	return acc;
 }, {});
-
-/* * */
-
-function normalizeAgencyId(agencyId: string | undefined): string | undefined {
-	if (!agencyId) return;
-	const trimmed = agencyId.trim();
-	if (!trimmed) return;
-	const asNumber = Number(trimmed);
-	if (!Number.isNaN(asNumber)) return asNumber.toString();
-	return trimmed;
-}
 
 /* * */
 
@@ -59,9 +48,8 @@ export function nextTransportsAfterToggle(prevList: TransportOption[], key: 'all
 
 export function agencyMatchesTransports(agencyId: string | undefined, transports: TransportOption[]): boolean {
 	if (transportsSelectionIsAll(transports)) return true;
-	const normalizedAgencyId = normalizeAgencyId(agencyId);
-	if (!normalizedAgencyId) return false;
-	const transport = AGENCY_ID_TO_TRANSPORT[normalizedAgencyId];
+	if (!agencyId) return false;
+	const transport = AGENCY_ID_TO_TRANSPORT[agencyId];
 	return transport ? transports.includes(transport) : false;
 }
 
@@ -69,7 +57,6 @@ export function agencyMatchesTransports(agencyId: string | undefined, transports
 
 export function agencyMatchesSelection(agencyId: string | undefined, selectedAgencyIds: string[]): boolean {
 	if (selectedAgencyIds.length === 0) return true;
-	const normalizedAgencyId = normalizeAgencyId(agencyId);
-	if (!normalizedAgencyId) return false;
-	return selectedAgencyIds.some(selectedId => normalizeAgencyId(selectedId) === normalizedAgencyId);
+	if (!agencyId) return false;
+	return selectedAgencyIds.some(selectedId => selectedId === agencyId);
 }

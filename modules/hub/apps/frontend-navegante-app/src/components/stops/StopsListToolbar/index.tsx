@@ -1,6 +1,8 @@
 'use client';
 
 import { FoundItemsCounter } from '@/components/common/FoundItemsCounter';
+import { HomePageFilterbarAgencies } from '@/components/home/HomePageFilterbarAgencies';
+import { Grid } from '@/components/layout/Grid';
 import { Section } from '@/components/layout/Section';
 import { Surface } from '@/components/layout/Surface';
 import { useStopsListContext } from '@/contexts/StopsList.context';
@@ -42,10 +44,11 @@ export function StopsListToolbar() {
 			<Section heading={t('heading')} withGap withPadding>
 				<SegmentedControl data={currentViewOptions} onChange={stopsListContext.actions.updateFilterByCurrentView} value={stopsListContext.filters.by_current_view} w="100%" fullWidth />
 				{(stopsListContext.filters.by_current_view === 'list' || stopsListContext.filters.by_current_view === 'map') && (
-					<>
+					<Grid columns="ab" withGap>
 						<TextInput leftSection={<IconArrowLoopRight size={20} />} onChange={handleTextInputChange} placeholder={t('filters.by_search.placeholder')} type="search" value={stopsListContext.filters.by_search} w="100%" />
+						<HomePageFilterbarAgencies />
 						<FoundItemsCounter text={t('found_items_counter.all', { count: stopsListContext.data.filtered.length })} />
-					</>
+					</Grid>
 				)}
 			</Section>
 		</Surface>

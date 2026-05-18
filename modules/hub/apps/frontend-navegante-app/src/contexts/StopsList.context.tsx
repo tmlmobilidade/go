@@ -185,6 +185,8 @@ export const StopsListContextProvider = ({ children }) => {
 				}
 				return false;
 			});
+
+			console.log('filterResult', filterResult.length);
 		}
 
 		//
