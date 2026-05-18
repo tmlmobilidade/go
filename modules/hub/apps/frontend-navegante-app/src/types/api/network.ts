@@ -134,9 +134,9 @@ export interface NetworkStop {
 }
 
 export enum StopOperationalStatus {
-	active = 'active',
-	seasonal = 'seasonal',
-	voided = 'voided',
+	Active = 'active',
+	Seasonal = 'seasonal',
+	Voided = 'voided',
 }
 
 /* * */
@@ -150,9 +150,9 @@ export interface NetworkDate {
 }
 
 export enum DateDayType {
-	saturday = 'saturday',
-	sundayHoliday = 'sunday_holiday',
-	weekday = 'weekday',
+	Saturday = 'saturday',
+	SundayHoliday = 'sunday_holiday',
+	Weekday = 'weekday',
 }
 
 /* * */

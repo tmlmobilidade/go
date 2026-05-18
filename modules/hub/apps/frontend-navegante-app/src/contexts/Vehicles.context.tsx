@@ -80,6 +80,7 @@ export const VehiclesContextProvider = ({ children }) => {
 			vehiclesById.set(normalizedId, {
 				...currentVehicle,
 				...position,
+				agency_id: position.agency_id ?? currentVehicle?.agency_id,
 				id: normalizedId,
 				lat: position.latitude,
 				lon: position.longitude,

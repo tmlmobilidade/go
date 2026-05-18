@@ -4,7 +4,7 @@ import { useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { createDocCollection } from '@/hooks/useOtherSearch';
 import { type Line } from '@/types/api/network';
-import { agencyMatchesSelection, agencyMatchesTransports, transportsSelectionIsAll } from '@/utils/transportAgencies';
+import { matchesGlobalAgencyTransportFilters, transportsSelectionIsAll } from '@/utils/transportAgencies';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 /* * */
@@ -120,7 +120,7 @@ export const LinesListContextProvider = ({ children }) => {
 
 		if (!isAllAgencies || !isAllTransports) {
 			filterResult = filterResult.filter((line) => {
-				return (isAllAgencies || agencyMatchesSelection(line.agency_id, filterByAgency)) && (isAllTransports || agencyMatchesTransports(line.agency_id, filterByTransports));
+				return matchesGlobalAgencyTransportFilters(line.agency_id, filterByAgency, filterByTransports);
 			});
 		}
 

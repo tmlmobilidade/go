@@ -5,8 +5,8 @@ import { type TransportOption } from '@/contexts/GlobalSettings.context';
 /* * */
 
 export const TRANSPORT_AGENCY_IDS: Record<TransportOption, string[]> = {
-	boat: ['15'],
-	bus: ['4', '8', '21', '41', '42', '43', '44'],
+	boat: ['4', '15'],
+	bus: ['8', '21', '41', '42', '43', '44'],
 	metro: ['2', '16'],
 	train: ['1', '3'],
 };
@@ -49,8 +49,7 @@ export function nextTransportsAfterToggle(prevList: TransportOption[], key: 'all
 export function agencyMatchesTransports(agencyId: string | undefined, transports: TransportOption[]): boolean {
 	if (transportsSelectionIsAll(transports)) return true;
 	if (!agencyId) return false;
-	const transport = AGENCY_ID_TO_TRANSPORT[agencyId];
-	return transport ? transports.includes(transport) : false;
+	return transports.some(transport => TRANSPORT_AGENCY_IDS[transport].includes(agencyId));
 }
 
 /* * */
@@ -59,4 +58,12 @@ export function agencyMatchesSelection(agencyId: string | undefined, selectedAge
 	if (selectedAgencyIds.length === 0) return true;
 	if (!agencyId) return false;
 	return selectedAgencyIds.some(selectedId => selectedId === agencyId);
+}
+
+export function matchesGlobalAgencyTransportFilters(
+	agencyId: string | undefined,
+	filterByAgency: string[],
+	filterByTransports: TransportOption[],
+): boolean {
+	return agencyMatchesSelection(agencyId, filterByAgency) && agencyMatchesTransports(agencyId, filterByTransports);
 }

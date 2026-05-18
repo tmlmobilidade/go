@@ -65,6 +65,7 @@ export const GlobalSettingsContextProvider = ({ children }) => {
 			},
 			section: 'lines',
 		},
+		getInitialValueInEffect: true,
 		key: 'global-settings',
 	});
 

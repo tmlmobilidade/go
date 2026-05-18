@@ -14,7 +14,7 @@ export class FeedsController {
 	}
 
 	static async getGtfsStaticZip(request: FastifyRequest, reply: FastifyReply<unknown>) {
-		const storageServiceResponse = await fetch('https://storage.carrismetropolitana.pt/static/gtfs-multi-operador.zip');
+		const storageServiceResponse = await fetch('https://go.tmlmobilidade.pt/hub/api/v1/plans/gtfs');
 		if (!storageServiceResponse.ok || !storageServiceResponse.body) {
 			return reply.code(500).send('Could not fetch file.');
 		}

@@ -88,8 +88,8 @@ export default async () => {
 		//
 		// Import GTFS from source URL
 
-		LOGGER.info(`Downloading file from "https://storage.carrismetropolitana.pt/static/gtfs-multi-operador.zip"...`);
-		const downloadedCsvFile = await fetch('https://storage.carrismetropolitana.pt/static/gtfs-multi-operador.zip');
+		LOGGER.info(`Downloading file from "https://go.tmlmobilidade.pt/hub/api/v1/plans/gtfs"...`);
+		const downloadedCsvFile = await fetch('https://go.tmlmobilidade.pt/hub/api/v1/plans/gtfs');
 		const downloadedCsvArrayBuffer = await downloadedCsvFile.arrayBuffer();
 		fs.writeFileSync(RAW_FILE_PATH, Buffer.from(downloadedCsvArrayBuffer));
 
