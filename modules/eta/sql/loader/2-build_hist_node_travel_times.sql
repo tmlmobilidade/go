@@ -75,9 +75,11 @@ WITH
         HAVING dist <= max_dist_m
     ),
 
-    -- 2. FORWARD-ONLY FILTER: keep only events whose snapped index is monotonically
-    --    non-decreasing within a ride. Done with a running max so a single sub-select
-    --    (one window) replaces the lag-then-filter CTE pair.
+    -- 2. FORWARD-ONLY FILTER: keep events whose snapped index does not go backwards
+    --    versus previous raw event in timestamp order.
+    --    IMPORTANT: use lag() (local monotonicity), not running max().
+    --    A single outlier snap can jump far ahead; running max then "poisons" the ride
+    --    and discards almost all following valid events.
     forward_matched_events AS (
         SELECT
             event_id,
@@ -92,14 +94,13 @@ WITH
         FROM (
             SELECT
                 *,
-                max(nearest.1) OVER (
+                lag(nearest.1) OVER (
                     PARTITION BY ride_id
-                    ORDER BY created_at
-                    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-                ) AS run_max_idx
+                    ORDER BY created_at, event_id
+                ) AS prev_idx
             FROM matched_events
         )
-        WHERE nearest.1 = run_max_idx
+        WHERE prev_idx IS NULL OR nearest.1 >= prev_idx
     ),
 
     -- 3. PAIR + VALIDATE in one pass (segments + filtered_segments fused).
