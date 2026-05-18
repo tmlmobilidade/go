@@ -17,7 +17,7 @@ export function FilterByAgency() {
 
 	const t = useTranslations('filters');
 	const globalSettingsContext = useGlobalSettingsContext();
-	const optionsLabels = useTranslations('by_agency.options');
+	const optionsLabels = useTranslations('filters.by_agency.options');
 	const configuredAgencyIds = useMemo(() => [...new Set(Object.values(TRANSPORT_AGENCY_IDS).flat())], []);
 
 	//

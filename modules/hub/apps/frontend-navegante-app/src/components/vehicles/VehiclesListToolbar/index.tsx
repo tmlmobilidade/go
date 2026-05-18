@@ -20,7 +20,7 @@ export function VehiclesListToolbar() {
 	// A. Setup variables
 
 	const t = useTranslations('vehicles.VehiclesListToolbar');
-	const optionsLabels = useTranslations('home.HomePageFilterbar.options');
+	const optionsLabels = useTranslations('filters.by_agency.options');
 
 	const vehiclesListContext = useVehiclesListContext();
 
@@ -31,13 +31,13 @@ export function VehiclesListToolbar() {
 		if (!vehiclesListContext.data.raw) return [];
 		const allOptionsValues = new Set<string>(vehiclesListContext.data.raw.map(item => item.propulsion).filter(Boolean).map(String));
 		return Array.from(allOptionsValues).map(value => ({ label: optionsLabels(`VehiclePropulsion.${value}`), value: value })) || [];
-	}, [vehiclesListContext.data.raw]);
+	}, [optionsLabels, vehiclesListContext.data.raw]);
 
 	const agencyOptions = useMemo(() => {
 		if (!vehiclesListContext.data.raw) return [];
 		const allOptionsValues = new Set<string>(vehiclesListContext.data.raw.map(item => item.agency_id).filter(Boolean));
 		return Array.from(allOptionsValues).map(value => ({ label: optionsLabels(`Agency.${value}`), value: value })) || [];
-	}, [vehiclesListContext.data.raw]);
+	}, [optionsLabels, vehiclesListContext.data.raw]);
 
 	const makeAndModelOptions = useMemo(() => {
 		if (!vehiclesListContext.data.raw) return [];

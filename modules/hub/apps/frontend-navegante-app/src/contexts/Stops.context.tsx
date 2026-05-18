@@ -53,17 +53,13 @@ export const StopsContextProvider = ({ children }) => {
 	// C. Transform data
 
 	useEffect(() => {
-		// Check if all data is available
 		if (!allStopsData) return;
-		// Transform data into GeoJSON FeatureCollection
 		const collection = getBaseGeoJsonFeatureCollection();
 		allStopsData.forEach((stop) => {
 			const stopFC = transformStopDataIntoGeoJsonFeature(stop);
 			if (stopFC) collection.features.push(stopFC);
 		});
-		// Set state value
 		setDataStopsFCState(collection);
-		//
 	}, [allStopsData]);
 
 	//

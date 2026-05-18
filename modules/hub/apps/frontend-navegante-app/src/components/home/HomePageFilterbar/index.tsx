@@ -1,6 +1,6 @@
 'use client';
 
-import { HomePageFilterbarTransports } from '@/components/home/HomePageFilterbarTransports';
+import { FilterByTransports } from '@/components/home/FilterByTransports';
 import { Grid } from '@/components/layout/Grid';
 import { Section } from '@/components/layout/Section';
 import { Surface } from '@/components/layout/Surface';
@@ -17,7 +17,7 @@ export function HomePageFilterbar() {
 		<Surface>
 			<Section>
 				<Grid columns="ab">
-					<HomePageFilterbarTransports />
+					<FilterByTransports />
 				</Grid>
 			</Section>
 		</Surface>

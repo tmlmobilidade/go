@@ -10,13 +10,13 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function HomePageFilterbarTransports() {
+export function FilterByTransports() {
 	//
 
 	//
 	// A. Setup variables
 
-	const t = useTranslations('home.HomePageFilterbar.transports');
+	const t = useTranslations('filters.by_transports.options');
 	const { actions, filterbar } = useGlobalSettingsContext();
 
 	const allSelected = transportsSelectionIsAll(filterbar.transports);
