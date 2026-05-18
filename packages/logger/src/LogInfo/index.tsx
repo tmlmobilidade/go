@@ -8,10 +8,11 @@ export interface LogInfoContext {
 	email?: string
 	feature?: string
 	message: string
+	request?: FastifyRequest
 	stopId?: number
 }
 
-export const logInfo = (context: LogInfoContext & { request?: FastifyRequest }) => {
+export const logInfo = (context: LogInfoContext) => {
 	const { action, email, feature, message, request, stopId, ...extra } = context;
 	void getSentryClient().then((sentryClient) => {
 		if (!sentryClient) return;
