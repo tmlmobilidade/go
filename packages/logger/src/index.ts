@@ -1,8 +1,8 @@
 /* * */
 
-import { logError } from './LogError/index.js';
-import { type LogErrorContext } from './LogError/index.js';
-import { logInfo, type LogInfoContext } from './LogInfo/index.js';
+import { LoggerError } from './LoggerError/index.js';
+import { type LogErrorContext } from './LoggerError/index.js';
+import { LoggerInfo, type LogInfoContext } from './LoggerInfo/index.js';
 
 interface LoggerColumn {
 
@@ -70,7 +70,7 @@ class LoggersClass {
 				: Array.isArray(message) ? this.formatColumns(message) : message
 			: context?.message ?? '';
 		if (context) {
-			logError({
+			LoggerError({
 				...context,
 				error: error ?? context.error,
 				message: context.message ?? formattedMessage,
@@ -94,7 +94,7 @@ class LoggersClass {
 		const formattedMessage = message
 			? Array.isArray(message) ? this.formatColumns(message) : message
 			: context?.message ?? '';
-		if (context) logInfo(context);
+		if (context) LoggerInfo(context);
 		console.log(`→ ${formattedMessage ?? ''}`);
 		if (spacesAfter && spacesAfter > 0) this.spacer(spacesAfter);
 	}

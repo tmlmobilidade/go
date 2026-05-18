@@ -12,7 +12,7 @@ export interface LogInfoContext {
 	stopId?: number
 }
 
-export const logInfo = (context: LogInfoContext) => {
+export const LoggerInfo = (context: LogInfoContext) => {
 	const { action, email, feature, message, request, stopId, ...extra } = context;
 	void getSentryClient().then((sentryClient) => {
 		if (!sentryClient) return;

@@ -13,7 +13,7 @@ export interface LogErrorContext {
 	stopId?: number
 }
 
-export const logError = (context: LogErrorContext) => {
+export const LoggerError = (context: LogErrorContext) => {
 	const { action, email, error, feature, message, request, stopId, ...extra } = context;
 	void getSentryClient().then((sentryClient) => {
 		if (!sentryClient) return;
