@@ -35,7 +35,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",
 		"@tmlmobilidade/go-hub-pckg-types": "*",
-		"@tmlmobilidade/tsconfig": "20260418.1237.24",
+		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "25.8.0",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "6.0.3"
