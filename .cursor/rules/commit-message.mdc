@@ -12,7 +12,7 @@ If the skill is not available, follow this summary:
 - Format the subject exactly as `type(scope): description`.
 - Allowed types: `feat`, `fix`, `refactor`, `perf`, `test`, `docs`, `chore`, `ci`, `style`, `revert`, `wip`.
 - Prefer scopes listed in `commitlint.config.cjs`; do not invent a scope when a listed one fits.
-- The subject must be lowercase, imperative, at most 72 characters, and have no trailing period.
+- The subject must be imperative, at most 72 characters, and have no trailing period.
 - Use a blank line before any body or footer.
 - Use the body only when the motivation or context is not obvious from the subject.
 - Mention validation/config changes as `chore(config)` unless a more specific listed scope fits.

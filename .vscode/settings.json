@@ -43,7 +43,7 @@
 
 	"github.copilot.chat.commitMessageGeneration.instructions": [
 		{
-			"text": "Follow the TML conventional commit format exactly: type(scope): description. Types: feat, fix, refactor, perf, test, docs, chore, ci, style, revert, wip. Subject must be lowercase, imperative mood, max 72 characters, no trailing period. Add a blank line before body or footer if present. Never invent scopes — use only scopes defined in the repo's commitlint.config.cjs."
+			"text": "Follow the TML conventional commit format exactly: type(scope): description. Types: feat, fix, refactor, perf, test, docs, chore, ci, style, revert, wip. Type and scope must be lowercase. Subject must use imperative mood, max 72 characters, and no trailing period. Add a blank line before body or footer if present. Prefer scopes defined in the repo's commitlint.config.cjs; do not invent scopes when a listed scope fits."
 		}
 	],
 
