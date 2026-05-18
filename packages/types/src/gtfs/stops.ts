@@ -1,6 +1,6 @@
 /* * */
 
-import { type GTFS_Binary, GTFS_HasField, type GTFS_Ternary, validateGtfsBinary, validateGtfsTernary } from '@/gtfs/common.js';
+import { type GTFS_Binary, GTFS_HasField, type GTFS_Ternary, validateGtfsBinary, validateGtfsHasField, validateGtfsTernary } from '@/gtfs/common.js';
 
 /**
  * Represents a GTFS (General Transit Feed Specification) Location Type.
@@ -182,13 +182,13 @@ export function validateGtfsStopExtended(rawData: GTFS_Stop_Extended_Raw): GTFS_
 	// Transform the raw data into the output format
 	return {
 		...stop,
-		has_bench: validateGtfsBinary(rawData.has_bench),
-		has_network_map: validateGtfsBinary(rawData.has_network_map),
-		has_pip_real_time: validateGtfsBinary(rawData.has_pip_real_time),
-		has_schedules: validateGtfsBinary(rawData.has_schedules),
+		has_bench: validateGtfsHasField(rawData.has_bench),
+		has_network_map: validateGtfsHasField(rawData.has_network_map),
+		has_pip_real_time: validateGtfsHasField(rawData.has_pip_real_time),
+		has_schedules: validateGtfsHasField(rawData.has_schedules),
 		has_shelter: validateGtfsBinary(rawData.has_shelter),
-		has_stop_sign: validateGtfsBinary(rawData.has_stop_sign),
-		has_tariffs_information: validateGtfsBinary(rawData.has_tariffs_information),
+		has_stop_sign: validateGtfsHasField(rawData.has_stop_sign),
+		has_tariffs_information: validateGtfsHasField(rawData.has_tariffs_information),
 		municipality_id: rawData.municipality_id,
 		parish_id: rawData.parish_id,
 		public_visible: validateGtfsBinary(rawData.public_visible),
