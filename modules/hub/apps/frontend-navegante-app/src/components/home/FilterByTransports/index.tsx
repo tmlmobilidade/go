@@ -1,8 +1,7 @@
 'use client';
 
 import TextPopover from '@/components/common/TextPopover';
-import { TransportOption, useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
-import { transportsSelectionIsAll } from '@/utils/transportAgencies';
+import { TransportOption, transportsSelectionIsAll, useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
 import { IconApps, IconBuildingTunnel, IconBus, IconFerry, IconTrain } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 

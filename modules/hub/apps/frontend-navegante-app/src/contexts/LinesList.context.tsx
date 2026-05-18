@@ -1,10 +1,9 @@
 'use client';
 
-import { useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
+import { matchesGlobalAgencyTransportFilters, transportsSelectionIsAll, useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { createDocCollection } from '@/hooks/useOtherSearch';
 import { type Line } from '@/types/api/network';
-import { matchesGlobalAgencyTransportFilters, transportsSelectionIsAll } from '@/utils/transportAgencies';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 /* * */

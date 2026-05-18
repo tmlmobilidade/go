@@ -2,12 +2,11 @@
 
 import { useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
 import { useLinesContext } from '@/contexts/Lines.context';
-import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/contexts/Stops.context';
+import { buildRefToAgencyIdMap, stopMatchesAgencyTransportFilters, transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/contexts/Stops.context';
 import { createDocCollection } from '@/hooks/useOtherSearch';
 import { type NetworkStop } from '@/types/api/network';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import { buildRefToAgencyIdMap, stopMatchesAgencyTransportFilters } from '@/utils/stopAgencyFilter';
-import { transportsSelectionIsAll } from '@/utils/transportAgencies';
+import { transportsSelectionIsAll } from './GlobalSettings.context';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */

@@ -2,7 +2,6 @@
 
 import { getPublicVariable } from '@/settings/public-variables';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import { agencyMatchesSelection, agencyMatchesTransports, transportsSelectionIsAll } from '@/utils/transportAgencies';
 import { Dates } from '@tmlmobilidade/dates';
 import { type Alert, type SimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-types';
 import { convertToSimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-utils';
@@ -10,7 +9,7 @@ import { useLocale } from 'next-intl';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useGlobalSettingsContext } from './GlobalSettings.context';
+import { agencyMatchesSelection, agencyMatchesTransports, transportsSelectionIsAll, useGlobalSettingsContext } from './GlobalSettings.context';
 
 /* * */
 

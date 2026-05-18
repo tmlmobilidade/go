@@ -2,8 +2,7 @@
 /* * */
 
 import { AGENCY_LOGO_BY_ID, AGENCY_LOGO_FALLBACK } from '@/components/home/agencyLogoUrls';
-import { useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
-import { TRANSPORT_AGENCY_IDS } from '@/utils/transportAgencies';
+import { TRANSPORT_AGENCY_IDS, useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
 import { Group, Image, MultiSelect, Text } from '@mantine/core';
 import { IconHomeHeart } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';

@@ -1,9 +1,8 @@
 'use client';
 
-import { useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
+import { matchesGlobalAgencyTransportFilters, transportsSelectionIsAll, useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
 import { useVehiclesContext } from '@/contexts/Vehicles.context';
 import { type Vehicle } from '@/types/vehicles.types';
-import { matchesGlobalAgencyTransportFilters, transportsSelectionIsAll } from '@/utils/transportAgencies';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
