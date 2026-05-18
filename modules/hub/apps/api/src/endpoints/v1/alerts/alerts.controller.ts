@@ -1,11 +1,13 @@
 /* * */
 
+import { normalizePublishedJsonAlerts } from '@/endpoints/v1/alerts/normalize-published-json-alerts.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type Alert as HubJsonAlert } from '@tmlmobilidade/go-hub-pckg-types';
 import { encodeGtfsRtFeed, getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, GtfsRtFeedMessage } from '@tmlmobilidade/types';
+import { GtfsRtFeedMessage } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -17,7 +19,7 @@ export class AlertsController {
 	 * @param request The request object.
 	 * @param reply The reply object.
 	 */
-	static async getJsonFeed(request: FastifyRequest, reply: FastifyReply<Alert[]>) {
+	static async getJsonFeed(request: FastifyRequest, reply: FastifyReply<HubJsonAlert[]>) {
 		//
 
 		const cachedData = await apiCache.get('hub:alerts:published:json');
@@ -34,11 +36,14 @@ export class AlertsController {
 				});
 		};
 
+		const parsed = JSON.parse(cachedData) as unknown;
+		const data = normalizePublishedJsonAlerts(parsed);
+
 		return reply
 			.header('cache-control', 'public, max-age=20')
 			.code(HTTP_STATUS.OK)
 			.send({
-				data: JSON.parse(cachedData),
+				data,
 				error: null,
 				status_code: HTTP_STATUS.OK,
 			});

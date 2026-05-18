@@ -7,7 +7,8 @@
  * for resolution/entrypoints. Everything else in that package directory (sources,
  * tests, configs, extra tooling) is usually unnecessary at runtime in a container.
  * This script walks selected roots and, for each directory that looks like a built
- * workspace package, deletes all siblings except `package.json` and `dist/`.
+ * workspace package, deletes all siblings except `package.json`, `dist/`,
+ * `assets/`, and `public/`.
  *
  * Roots
  * -------
@@ -22,8 +23,9 @@
  *    "workspace package" when it contains BOTH:
  *    - a regular file named `package.json`, and
  *    - a subdirectory named `dist/`.
- * 3. If it is a workspace package, remove every child whose name is NOT `package.json`
- *    or `dist` (recursive `rm` with `force`, so nested trees disappear entirely).
+ * 3. If it is a workspace package, remove every child whose name is NOT in the keep
+ *    list (`package.json`, `dist`, `assets`, `public`; recursive `rm` with `force`,
+ *    so nested trees disappear entirely).
  * 4. Re-read the directory (so subsequent logic sees only what remains), then recurse
  *    into subdirectories (again skipping symlinks). Non-workspace directories are only
  *    recursed into; nothing is deleted there.
@@ -44,7 +46,7 @@ import path from "node:path";
 const ROOTS = process.argv.length > 2
 	? process.argv.slice(2)
 	: ["packages", "modules"];
-const KEEP_ENTRIES = new Set(["package.json", "dist"]);
+const KEEP_ENTRIES = new Set(["package.json", "dist", "assets", "public"]);
 
 function walk(dir) {
 	let entries = [];

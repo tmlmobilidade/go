@@ -15,8 +15,9 @@ export function parseSam(item: AggregationResultItem): CreateSamDto {
 		seen_first_at: null,
 		seen_last_at: null,
 		system_status: 'waiting',
+		timeline_summary: { months: [] },
 		transactions_expected: null,
 		transactions_found: null,
 		transactions_missing: null,
-	};
+	} as CreateSamDto;
 }

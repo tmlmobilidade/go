@@ -6,7 +6,7 @@ import { useVehiclesContext } from '@/contexts/Vehicles.context';
 import { createDocCollection } from '@/hooks/useOtherSearch';
 import { type NetworkStop } from '@/types/api/network';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import { agencyMatchesSelection, agencyMatchesTransports } from '@/utils/transportAgencies';
+import { agencyMatchesSelection, agencyMatchesTransports, transportsSelectionIsAll } from '@/utils/transportAgencies';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -148,7 +148,10 @@ export const StopsListContextProvider = ({ children }) => {
 		//
 		// Filter by by_agency / transports (derived via Vehicles snapshot)
 
-		if (filterByAgency.length > 0 || filterByTransports.length > 0) {
+		const isAllAgencies = filterByAgency.length === 0;
+		const isAllTransports = transportsSelectionIsAll(filterByTransports);
+
+		if (!isAllAgencies || !isAllTransports) {
 			filterResult = filterResult.filter((stop) => {
 				const rawStop = stop as {
 					agency_ids?: string[]
@@ -176,8 +179,8 @@ export const StopsListContextProvider = ({ children }) => {
 				}
 				if (candidateAgencyIds.size === 0) return false;
 				for (const agencyId of candidateAgencyIds) {
-					if (!agencyMatchesSelection(agencyId, filterByAgency)) continue;
-					if (!agencyMatchesTransports(agencyId, filterByTransports)) continue;
+					if (!isAllAgencies && !agencyMatchesSelection(agencyId, filterByAgency)) continue;
+					if (!isAllTransports && !agencyMatchesTransports(agencyId, filterByTransports)) continue;
 					return true;
 				}
 				return false;

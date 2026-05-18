@@ -3,7 +3,8 @@
 	"compilerOptions": {
 		"paths": {
 			"#/package.json": ["./package.json"],
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@assets/*": ["../../../../assets/*"]
 		},
 		"plugins": [
 			{ "name": "next" }

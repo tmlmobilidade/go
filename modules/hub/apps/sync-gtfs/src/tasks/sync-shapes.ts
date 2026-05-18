@@ -1,15 +1,17 @@
 /* * */
 
-import type { Shape as GtfsShapesExtended } from '@tmlmobilidade/go-navegante-shared-types';
-import type { NetworkShape, ShapePoint } from '@tmlmobilidade/go-navegante-shared-types';
+import type { NetworkShape, Shape, ShapePoint } from '@tmlmobilidade/go-hub-pckg-types';
 
 import { getGtfsSqliteContext } from '@/modules/gtfsSqlite.js';
 import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
-import { SERVERDB } from '@tmlmobilidade/go-navegante-shared-services/SERVERDB';
-import { SERVERDB_KEYS } from '@tmlmobilidade/go-navegante-shared-settings';
-import { sortCollator } from '@tmlmobilidade/go-navegante-shared-utils';
+import { apiCache } from '@tmlmobilidade/databases';
+import { sortCollator } from '@tmlmobilidade/go-hub-pckg-utils';
 import * as turf from '@turf/turf';
+
+/* * */
+
+type GtfsShapesExtended = Shape;
 
 /* * */
 
@@ -40,7 +42,7 @@ export const syncShapes = async () => {
 		// Create a unique key for the shape to be used in the database.
 		// By defining this key here, we can avoid having to create a separate variable to hold them.
 
-		const shapeIdKey = SERVERDB_KEYS.NETWORK.SHAPES.ID(resultRow.shape_id);
+		const shapeIdKey = `hub:network:shapes:${resultRow.shape_id}`;
 
 		//
 		// Check if a shape object already exists, or create a new one.
@@ -49,8 +51,7 @@ export const syncShapes = async () => {
 
 		if (allShapesData.has(shapeIdKey)) {
 			shapeData = allShapesData.get(shapeIdKey);
-		}
-		else {
+		} else {
 			shapeData = {
 				extension: 0,
 				geojson: null,
@@ -107,29 +108,27 @@ export const syncShapes = async () => {
 		//
 		// Update or create new document
 
-		await SERVERDB.set(SERVERDB_KEYS.NETWORK.SHAPES.ID(shapeData.shape_id), JSON.stringify(shapeData));
+		const shapeJson = JSON.stringify(shapeData);
+		await apiCache.set('hub:network:shapes:{shapeId}', shapeJson, { params: { shapeId: shapeData.shape_id } });
 
 		//
 	}
 
-	LOGGER.info(`Saved ${allShapesData.size} Shapes to SERVERDB (${saveShapesTimer.get()})`);
+	LOGGER.info(`Saved ${allShapesData.size} Shapes to apiCache (${saveShapesTimer.get()})`);
 
 	//
 	// Remove stale shapes
 
 	const removeStaleShapesTimer = new TIMETRACKER();
 
-	const allExistingShapeKeys: string[] = [];
-	for await (const key of SERVERDB.scanIterator({ MATCH: `${SERVERDB_KEYS.NETWORK.SHAPES.BASE}:*`, TYPE: 'string' })) {
-		allExistingShapeKeys.push(String(key));
-	}
+	const allExistingShapeKeys = await apiCache.scan('hub:network:shapes:*');
 
 	const staleShapeKeys = allExistingShapeKeys.filter(id => !allShapesData.has(id));
 	if (staleShapeKeys.length) {
-		await SERVERDB.del(staleShapeKeys);
+		await apiCache.deleteMany(staleShapeKeys);
 	}
 
-	LOGGER.info(`Deleted ${staleShapeKeys.length} stale Shapes from SERVERDB (${removeStaleShapesTimer.get()})`);
+	LOGGER.info(`Deleted ${staleShapeKeys.length} stale Shapes from apiCache (${removeStaleShapesTimer.get()})`);
 
 	//
 

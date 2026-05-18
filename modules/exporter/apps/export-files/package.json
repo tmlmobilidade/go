@@ -22,6 +22,7 @@
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*"
@@ -29,9 +30,9 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.6.2",
+		"@types/node": "25.8.0",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.21.0",
+		"tsx": "4.22.1",
 		"typescript": "5.9.3"
 	}
 }

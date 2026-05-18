@@ -2,6 +2,14 @@
 /* INLINE / DOTTED */
 
 .inline[data-dotted="true"] {
+	cursor: help;
 	border-bottom-style: dotted;
 	border-bottom-width: 1px;
+}
+
+/* * */
+/* INLINE / CLICKABLE */
+
+.inline[data-clickable="true"] {
+	cursor: pointer;
 }
