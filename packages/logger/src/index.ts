@@ -49,28 +49,27 @@ class LoggersClass {
 	/**
 	 * Loggers an error message in the console.
 	 * @param message Error message to display.
-	 * @param error Optional error object to display.
+	 * @param contextOrErrorOrSpacesAfter Optional error context, error object, or spacing.
 	 * @param spacesAfter Optional number of blank lines to add after the message.
 	 * @param spacesBefore Optional number of blank lines to add before the message.
 	 */
 	error(
-		message: Error | LoggerMessage,
-		errorOrContext?: Error | LogErrorContext,
-		spacesAfter?: number,
+		message?: Error | LoggerMessage,
+		contextOrErrorOrSpacesAfter?: Error | LogErrorContext | number,
+		spacesAfterOrBefore?: number,
 		spacesBefore?: number,
 	) {
-		if (spacesBefore && spacesBefore > 0) this.spacer(spacesBefore);
-		const context = this.isLogErrorContext(errorOrContext) ? errorOrContext : undefined;
-		const error = errorOrContext instanceof Error ? errorOrContext : message instanceof Error ? message : undefined;
-		const formattedMessage = message instanceof Error
-			? message.message
-			: Array.isArray(message) ? this.formatColumns(message) : message;
-		logError(error ?? new Error(formattedMessage), {
-			action: 'error',
-			feature: 'logger',
-			message: context?.message ?? formattedMessage,
-			...context,
-		});
+		const context = this.isLogErrorContext(contextOrErrorOrSpacesAfter) ? contextOrErrorOrSpacesAfter : undefined;
+		const error = contextOrErrorOrSpacesAfter instanceof Error ? contextOrErrorOrSpacesAfter : message instanceof Error ? message : undefined;
+		const spacesAfter = typeof contextOrErrorOrSpacesAfter === 'number' ? contextOrErrorOrSpacesAfter : spacesAfterOrBefore;
+		const normalizedSpacesBefore = typeof contextOrErrorOrSpacesAfter === 'number' ? spacesAfterOrBefore : spacesBefore;
+		if (normalizedSpacesBefore && normalizedSpacesBefore > 0) this.spacer(normalizedSpacesBefore);
+		const formattedMessage = message
+			? message instanceof Error
+				? message.message
+				: Array.isArray(message) ? this.formatColumns(message) : message
+			: context?.message ?? '';
+		if (context) logError(context);
 		console.error(`✘ ${formattedMessage}`, error ?? '');
 		if (spacesAfter && spacesAfter > 0) this.spacer(spacesAfter);
 	}

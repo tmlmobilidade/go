@@ -13,14 +13,14 @@ export interface LogErrorContext {
 	stopId?: number
 }
 
-export const logError = (errorOrContext: unknown, context: LogErrorContext) => {
-	const { action, email, feature, message, request, stopId, ...extra } = context;
+export const logError = (context: LogErrorContext) => {
+	const { action, email, error, feature, message, request, stopId, ...extra } = context;
 	void getSentryClient().then((sentryClient) => {
 		if (!sentryClient) return;
-		sentryClient.captureException(errorOrContext instanceof Error ? errorOrContext : new Error(message), {
+		sentryClient.captureException(error instanceof Error ? error : new Error(message), {
 			...extra,
 			endpoint: request?.url,
-			level: 'error',
+			error,
 			message,
 			method: request?.method,
 			tags: {

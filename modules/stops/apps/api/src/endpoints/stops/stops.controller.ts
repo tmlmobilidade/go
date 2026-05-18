@@ -85,7 +85,7 @@ export class StopsController {
 				action: 'getById',
 				email: request.me.email,
 				feature: 'stops',
-				message: `Stop not found - ${request.params.id}`,
+				message: `Can not find stop with ID ${request.params.id}`,
 				request,
 				stopId: request.params.id,
 			});
