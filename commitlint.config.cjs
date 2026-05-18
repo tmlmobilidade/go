@@ -72,6 +72,7 @@ module.exports = {
         'config',   // project configuration
         'ci',       // CI/CD pipeline
         'docs',     // documentation and skills
+        'skills',  // new go skills or updates to existing ones
       ],
     ],
 
