@@ -69,7 +69,13 @@ class LoggersClass {
 				? message.message
 				: Array.isArray(message) ? this.formatColumns(message) : message
 			: context?.message ?? '';
-		if (context) logError(context);
+		if (context) {
+			logError({
+				...context,
+				error: error ?? context.error,
+				message: context.message ?? formattedMessage,
+			});
+		}
 		console.error(`✘ ${formattedMessage}`, error ?? '');
 		if (spacesAfter && spacesAfter > 0) this.spacer(spacesAfter);
 	}

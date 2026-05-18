@@ -9,7 +9,7 @@ export interface LogErrorContext {
 	error?: Error
 	feature?: string
 	message: string
-	request?: FastifyRequest
+	request: FastifyRequest
 	stopId?: number
 }
 
@@ -19,10 +19,10 @@ export const logError = (context: LogErrorContext) => {
 		if (!sentryClient) return;
 		sentryClient.captureException(error instanceof Error ? error : new Error(message), {
 			...extra,
-			endpoint: request?.url,
-			error,
+			endpoint: request.url,
 			message,
-			method: request?.method,
+			method: request.method,
+			originalErrorMessage: error instanceof Error ? error.message : undefined,
 			tags: {
 				action,
 				email,

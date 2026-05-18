@@ -44,7 +44,18 @@ export class StopsController {
 	static async delete(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		await stops.toggleDeleteById(request.params.id);
 		const foundStop = await stops.findById(request.params.id);
-		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		if (!foundStop) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+			Logger.error(error, {
+				action: 'delete',
+				email: request.me.email,
+				feature: 'stops',
+				message: `Can not find stop with ID ${request.params.id}`,
+				request,
+				stopId: request.params.id,
+			});
+			throw error;
+		}
 		reply.send({ data: foundStop, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -58,6 +69,17 @@ export class StopsController {
 			projection: { _id: 1, flags: 1, is_deleted: 1, latitude: 1, legacy_ids: 1, lifecycle_status: 1, longitude: 1, municipality_id: 1, name: 1 },
 			sort: { created_at: -1 },
 		});
+		if (!data) {
+			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not get stops');
+			Logger.error(error, {
+				action: 'getAll',
+				email: request.me.email,
+				feature: 'stops',
+				message: 'Can not get stops',
+				request,
+			});
+			throw error;
+		}
 		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -126,7 +148,18 @@ export class StopsController {
 	static async lock(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		await stops.toggleLockById(request.params.id);
 		const foundStop = await stops.findById(request.params.id);
-		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		if (!foundStop) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+			Logger.error(error, {
+				action: 'lock',
+				email: request.me.email,
+				feature: 'stops',
+				message: `Can not find stop with ID ${request.params.id}`,
+				request,
+				stopId: request.params.id,
+			});
+			throw error;
+		}
 		reply.send({ data: foundStop, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -138,7 +171,18 @@ export class StopsController {
 	static async update(request: FastifyRequest<{ Body: UpdateStopDto, Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		// Check if the stop exists before attempting to update
 		const foundStop = await stops.findById(Number(request.params.id));
-		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		if (!foundStop) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+			Logger.error(error, {
+				action: 'update',
+				email: request.me.email,
+				feature: 'stops',
+				message: `Can not find stop with ID ${request.params.id}`,
+				request,
+				stopId: request.params.id,
+			});
+			throw error;
+		}
 		// Ensure the flag IDs are saved in the legacy IDs array
 		const flagIds = request.body.flags?.map(flag => flag.stop_id) || [];
 		const existingLegacyIds = new Set(foundStop.legacy_ids || []);
