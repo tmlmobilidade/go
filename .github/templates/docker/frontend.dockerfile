@@ -55,6 +55,7 @@ ARG APP
 WORKDIR /app
 
 COPY .github/templates/docker/scripts /app/.docker/scripts
+COPY assets /app/assets
 
 # First install the dependencies (as they change less often)
 COPY --from=pruner /app/out/json/ .
