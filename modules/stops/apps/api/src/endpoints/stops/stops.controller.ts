@@ -24,19 +24,13 @@ export class StopsController {
 		const newStopId = await generateStopId();
 		const result = await stops.insertOne({ ...data, _id: newStopId }, { unsafe: true });
 
-		Logger.info([
-			{ t: `${request.method} ${request.url}` },
-			{ a: 'left', t: ' Stop created' },
-			{ a: 'left', t: ` stopId=${newStopId}` },
-			{ a: 'left', t: ` userId=${request.me._id}` },
-		], {
+		Logger.info([], {
 			action: 'create',
 			email: request.me.email,
 			feature: 'stops',
-			message: `${request.method} /stops/${newStopId} - Stop created`,
-			requestId: request.id,
+			message: `Stop created - ${newStopId}`,
+			request,
 			stopId: newStopId,
-			updatedBy: request.me._id,
 		});
 
 		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED });
@@ -147,10 +141,9 @@ export class StopsController {
 			action: 'update',
 			email: request.me.email,
 			feature: 'stops',
-			message: `${request.method} /stops/${request.params.id} - Stop updated`,
-			requestId: request.id,
+			message: `Stop updated - ${request.params.id}`,
+			request,
 			stopId: request.params.id,
-			updatedBy: request.me._id,
 		});
 	}
 }

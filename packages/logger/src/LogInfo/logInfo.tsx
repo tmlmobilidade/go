@@ -1,3 +1,5 @@
+import { type FastifyRequest } from 'fastify';
+
 import { getSentryClient } from '../sentry-loader.js';
 
 export interface LogInfoContext {
@@ -6,25 +8,24 @@ export interface LogInfoContext {
 	email?: string
 	feature?: string
 	message: string
-	requestId?: string
 	stopId?: number
-	updatedBy?: string
 }
 
-export const logInfo = (context: LogInfoContext) => {
-	const { action, email, feature, message, requestId, stopId, updatedBy, ...extra } = context;
+export const logInfo = (context: LogInfoContext & { request?: FastifyRequest }) => {
+	const { action, email, feature, message, request, stopId, ...extra } = context;
 	void getSentryClient().then((sentryClient) => {
 		if (!sentryClient) return;
 		sentryClient.captureMessage(message, {
-			extra,
+			...extra,
+			endpoint: request?.url,
 			level: 'info',
+			message,
+			method: request?.method,
 			tags: {
 				action,
 				email,
 				feature,
-				requestId,
 				stopId,
-				updatedBy,
 			},
 		});
 	});
