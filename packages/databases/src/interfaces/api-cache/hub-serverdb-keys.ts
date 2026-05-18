@@ -37,7 +37,10 @@ export const SERVERDB_KEYS = Object.freeze({
 			BASE: 'network:shapes',
 			ID: (id: string) => `network:shapes:${id}`,
 		},
-		STOPS: 'network:stops',
+		STOPS: {
+			BASE: 'network:stops',
+			ID: (id: string) => `network:stops:${id}`,
+		},
 		VEHICLES: {
 			ALL: 'network:vehicles:all',
 			PROTOBUF: 'network:vehicles:protobuf',

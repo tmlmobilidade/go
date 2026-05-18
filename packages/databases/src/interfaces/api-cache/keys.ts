@@ -25,6 +25,7 @@ export const ApiCacheKeyValues = [
 	'hub:network:dates',
 	'hub:network:periods',
 	'hub:network:stops',
+	'hub:network:stops:{stopId}',
 	'hub:network:lines',
 	'hub:network:routes',
 	'hub:network:plans',

@@ -58,6 +58,7 @@ export const syncStops = async () => {
 	// For each item, update its entry in the database
 
 	const allStopsData: NetworkStop[] = [];
+	const updatedStopKeys = new Set<string>();
 	let updatedStopsCounter = 0;
 
 	for (const stop of allStops) {
@@ -134,6 +135,10 @@ export const syncStops = async () => {
 
 		allStopsData.push(parsedStop);
 
+		const stopJson = JSON.stringify(parsedStop);
+		await apiCache.set('hub:network:stops:{stopId}', stopJson, { params: { stopId: parsedStop.id } });
+		updatedStopKeys.add(`hub:network:stops:${parsedStop.id}`);
+
 		updatedStopsCounter++;
 
 		//
@@ -144,6 +149,12 @@ export const syncStops = async () => {
 
 	allStopsData.sort((a, b) => sortCollator.compare(a.id, b.id));
 	await apiCache.set('hub:network:stops', JSON.stringify(allStopsData), {});
+
+	const allStopKeysInTheDatabase = await apiCache.scan('hub:network:stops:*');
+	const staleStopKeys = allStopKeysInTheDatabase.filter(key => !updatedStopKeys.has(key) && key !== 'hub:network:stops');
+	if (staleStopKeys.length) {
+		await apiCache.deleteMany(staleStopKeys);
+	}
 
 	LOGGER.success(`Done updating ${updatedStopsCounter} Stops (${globalTimer.get()})`);
 

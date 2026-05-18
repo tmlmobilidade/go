@@ -104,7 +104,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		} else {
 			notFound();
 		}
-	}, [stopsContext.data.stops, dataActiveStopIdState, environmentContext.data.value]);
+	}, [stopsContext.data.stops, dataActiveStopIdState, environmentContext.data.value, stopsContext.actions, environmentContext.actions]);
 
 	/**
  	* Fetch line data for the selected stop.
@@ -118,7 +118,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			.map(lineId => linesContext.actions.getLineDataById(lineId))
 			.filter(lineData => lineData !== undefined);
 		setDataLinesState(linesData);
-	}, [dataStopState]);
+	}, [dataStopState, linesContext.actions]);
 
 	/**
 
@@ -359,7 +359,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		}
 		setDataActiveTripIdState(tripId);
 		setDataActiveStopSequenceState(stopSequence);
-		// analyticsContext.actions.capture(ampli => ampli.stopTripClicked({ trip_id: tripId }));
 	};
 
 	const resetActiveTripId = () => {

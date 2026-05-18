@@ -38,7 +38,7 @@ export class FeedsController {
 	}
 
 	static async getStops(request: FastifyRequest, reply: FastifyReply<unknown>) {
-		return FeedsController.sendNetworkJson(reply, 'hub:network:stops', SERVERDB_KEYS.NETWORK.STOPS, 'hub/v1/network/feeds:getStops()');
+		return FeedsController.sendNetworkJson(reply, 'hub:network:stops', SERVERDB_KEYS.NETWORK.STOPS.BASE, 'hub/v1/network/feeds:getStops()');
 	}
 
 	private static async sendNetworkJson(

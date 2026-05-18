@@ -60,10 +60,6 @@ export function agencyMatchesSelection(agencyId: string | undefined, selectedAge
 	return selectedAgencyIds.some(selectedId => selectedId === agencyId);
 }
 
-export function matchesGlobalAgencyTransportFilters(
-	agencyId: string | undefined,
-	filterByAgency: string[],
-	filterByTransports: TransportOption[],
-): boolean {
+export function matchesGlobalAgencyTransportFilters(agencyId: string | undefined, filterByAgency: string[], filterByTransports: TransportOption[]) {
 	return agencyMatchesSelection(agencyId, filterByAgency) && agencyMatchesTransports(agencyId, filterByTransports);
 }
