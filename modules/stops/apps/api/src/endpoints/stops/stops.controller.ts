@@ -79,7 +79,18 @@ export class StopsController {
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		const foundStop = await stops.findById(Number(request.params.id));
-		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		if (!foundStop) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+			Logger.error(error, {
+				action: 'getById',
+				email: request.me.email,
+				feature: 'stops',
+				message: `Stop not found - ${request.params.id}`,
+				request,
+				stopId: request.params.id,
+			});
+			throw error;
+		}
 
 		//
 		// Get pattern ids that reference this event in manual pattern rules

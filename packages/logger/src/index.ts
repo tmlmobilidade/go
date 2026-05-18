@@ -1,6 +1,7 @@
 /* * */
 
 import { logError } from './LogError/index.js';
+import { type LogErrorContext } from './LogError/index.js';
 import { logInfo, type LogInfoContext } from './LogInfo/index.js';
 
 interface LoggerColumn {
@@ -29,6 +30,10 @@ type LoggerMessage = (LoggerColumn | string)[] | string;
 class LoggersClass {
 	//
 
+	private isLogErrorContext(value: unknown): value is LogErrorContext {
+		return typeof value === 'object' && value !== null && !(value instanceof Error);
+	}
+
 	/**
 	 * Loggers a divider line in the console.
 	 * @param message Optional message to display.
@@ -48,13 +53,23 @@ class LoggersClass {
 	 * @param spacesAfter Optional number of blank lines to add after the message.
 	 * @param spacesBefore Optional number of blank lines to add before the message.
 	 */
-	error(message: LoggerMessage, error?: Error, spacesAfter?: number, spacesBefore?: number) {
+	error(
+		message: Error | LoggerMessage,
+		errorOrContext?: Error | LogErrorContext,
+		spacesAfter?: number,
+		spacesBefore?: number,
+	) {
 		if (spacesBefore && spacesBefore > 0) this.spacer(spacesBefore);
-		const formattedMessage = Array.isArray(message) ? this.formatColumns(message) : message;
+		const context = this.isLogErrorContext(errorOrContext) ? errorOrContext : undefined;
+		const error = errorOrContext instanceof Error ? errorOrContext : message instanceof Error ? message : undefined;
+		const formattedMessage = message instanceof Error
+			? message.message
+			: Array.isArray(message) ? this.formatColumns(message) : message;
 		logError(error ?? new Error(formattedMessage), {
 			action: 'error',
 			feature: 'logger',
-			message: formattedMessage,
+			message: context?.message ?? formattedMessage,
+			...context,
 		});
 		console.error(`✘ ${formattedMessage}`, error ?? '');
 		if (spacesAfter && spacesAfter > 0) this.spacer(spacesAfter);
