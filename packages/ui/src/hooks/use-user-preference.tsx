@@ -2,18 +2,24 @@
 
 import { useDebouncedCallback } from '@mantine/hooks';
 import { type UserPreferenceValue } from '@tmlmobilidade/types';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useMeContext } from '../contexts/Me.context';
 
+/* * */
+
+function isEqual(a: unknown, b: unknown) {
+	return JSON.stringify(a) === JSON.stringify(b);
+}
+
 /**
  * A hook to manage user preferences as state.
- * @param scope The scope of the preference.
- * @param key The key of the preference.
- * @param defaultValue The optional default value of the preference.
- * @returns The current preference value and a function to update it.
  */
-export function useUserPreference<T extends UserPreferenceValue>(scope: string, key: string, defaultValue: T): [T, (value: T) => void] {
+export function useUserPreference<T extends UserPreferenceValue>(
+	scope: string,
+	key: string,
+	defaultValue: T,
+): [T, (value: T, options?: { save?: boolean }) => void, (value: T) => void] {
 	//
 
 	//
@@ -21,29 +27,64 @@ export function useUserPreference<T extends UserPreferenceValue>(scope: string, 
 
 	const meContext = useMeContext();
 
-	const [preferenceValue, setPreferenceValue] = useState<T>();
+	const [preferenceValue, setPreferenceValue] = useState<T>(defaultValue);
+
+	const hasLocalUpdateRef = useRef(false);
+	const latestLocalValueRef = useRef<T>(defaultValue);
 
 	//
-	// B. Handle actions
+	// B. Sync from user data
 
 	useEffect(() => {
-		const value = meContext.actions.getPreference<T>(scope, key);
-		setPreferenceValue(value);
-	}, [meContext.data.user]);
+		const valueFromUser = meContext.actions.getPreference<T>(scope, key) ?? defaultValue;
+
+		/**
+		 * If we just changed this preference locally, do not let an older `/me`
+		 * response overwrite the optimistic UI value.
+		 */
+		if (hasLocalUpdateRef.current) {
+			if (isEqual(valueFromUser, latestLocalValueRef.current)) {
+				hasLocalUpdateRef.current = false;
+			}
+
+			return;
+		}
+
+		setPreferenceValue(valueFromUser);
+		latestLocalValueRef.current = valueFromUser;
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [meContext.data.user, scope, key]);
+
+	//
+	// C. Handle actions
 
 	const savePreferenceValueDebounced = useDebouncedCallback((value: T) => {
 		meContext.actions.updatePreference(scope, key, value);
 	}, 500);
 
-	const handleSetPreferenceValue = (value: T) => {
+	const savePreferenceValueNow = (value: T) => {
+		hasLocalUpdateRef.current = true;
+		latestLocalValueRef.current = value;
+
+		savePreferenceValueDebounced.cancel();
+		meContext.actions.updatePreference(scope, key, value);
+	};
+
+	const handleSetPreferenceValue = (value: T, options?: { save?: boolean }) => {
+		hasLocalUpdateRef.current = true;
+		latestLocalValueRef.current = value;
+
 		setPreferenceValue(value);
+
+		if (options?.save === false) return;
+
 		savePreferenceValueDebounced(value);
 	};
 
 	//
-	// C. Render components
+	// D. Return
 
-	return [preferenceValue ?? defaultValue, handleSetPreferenceValue];
+	return [preferenceValue, handleSetPreferenceValue, savePreferenceValueNow];
 
 	//
 }
