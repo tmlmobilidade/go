@@ -18,7 +18,7 @@ import { getSentryClient } from '../sentry-loader.js';
  * @property {string} [email] - Optional user email associated with the event.
  * @property {string} [feature] - Optional feature/context for the log event.
  * @property {FastifyRequest} [request] - Optional Fastify request object for additional context.
- * @property {number} [stopId] - Optional related stop ID.
+ * @property {unknown} [value] - Optional related value.
  * @property {unknown} [key] - Additional custom metadata.
  */
 export interface LogInfoContext {
@@ -28,7 +28,7 @@ export interface LogInfoContext {
 	feature?: string
 	message: string
 	request?: FastifyRequest
-	stopId?: number
+	value?: unknown
 }
 
 /**
@@ -38,7 +38,7 @@ export interface LogInfoContext {
  * @param {LogInfoContext} context - Information to be reported. Must include a 'message' property.
  */
 export const LoggerInfo = (context: LogInfoContext) => {
-	const { action, email, feature, message, request, stopId, ...extra } = context;
+	const { action, email, feature, message, request, value, ...extra } = context;
 	void getSentryClient().then((sentryClient) => {
 		if (!sentryClient) return;
 		sentryClient.captureMessage(message, {
@@ -51,7 +51,7 @@ export const LoggerInfo = (context: LogInfoContext) => {
 				action,
 				email,
 				feature,
-				stopId,
+				value,
 			},
 		});
 	});

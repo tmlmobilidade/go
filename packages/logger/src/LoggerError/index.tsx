@@ -20,7 +20,7 @@ import { getSentryClient } from '../sentry-loader.js';
  * @property {string} [feature] - Application feature involved in the error.
  * @property {string} message - Error message or description.
  * @property {FastifyRequest} request - The FastifyRequest instance (for endpoint/method context).
- * @property {number} [stopId] - Optionally tie the error to a specific stopId entity.
+ * @property {unknown} [value] - Optionally tie the error to a specific value.
  * @property {object} [key: string] - Any additional relevant context fields.
  */
 export interface LogErrorContext {
@@ -31,7 +31,7 @@ export interface LogErrorContext {
 	feature?: string
 	message: string
 	request: FastifyRequest
-	stopId?: number
+	value?: unknown
 }
 
 /**
@@ -49,11 +49,11 @@ export interface LogErrorContext {
  *   request,
  *   action: 'create',
  *   email: user.email,
- *   stopId: 123456
+ *   value: { stopId: 123456 }
  * });
  */
 export const LoggerError = (context: LogErrorContext): void => {
-	const { action, email, error, feature, message, request, stopId, ...extra } = context;
+	const { action, email, error, feature, message, request, value, ...extra } = context;
 	void getSentryClient().then((sentryClient) => {
 		if (!sentryClient) return;
 		sentryClient.captureException(error instanceof Error ? error : new Error(message), {
@@ -66,7 +66,7 @@ export const LoggerError = (context: LogErrorContext): void => {
 				action,
 				email,
 				feature,
-				stopId,
+				value,
 			},
 		});
 	});

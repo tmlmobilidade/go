@@ -30,7 +30,7 @@ export class StopsController {
 			feature: 'stops',
 			message: `Stop created - ${newStopId}`,
 			request,
-			stopId: newStopId,
+			value: { stopId: newStopId },
 		});
 
 		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED });
@@ -52,7 +52,7 @@ export class StopsController {
 				feature: 'stops',
 				message: `Can not find stop with ID ${request.params.id}`,
 				request,
-				stopId: request.params.id,
+				value: { stopId: request.params.id },
 			});
 			throw error;
 		}
@@ -121,7 +121,7 @@ export class StopsController {
 				feature: 'stops',
 				message: `Can not find stop with ID ${request.params.id}`,
 				request,
-				stopId: request.params.id,
+				value: { stopId: request.params.id },
 			});
 			throw error;
 		}
@@ -153,7 +153,7 @@ export class StopsController {
 				feature: 'stops',
 				message: `Can not get associated patterns for stop with ID ${request.params.id}`,
 				request,
-				stopId: request.params.id,
+				value: { stopId: request.params.id },
 			});
 			throw error;
 		}
@@ -181,7 +181,7 @@ export class StopsController {
 				feature: 'stops',
 				message: `Can not find stop with ID ${request.params.id}`,
 				request,
-				stopId: request.params.id,
+				value: { stopId: request.params.id },
 			});
 			throw error;
 		}
@@ -204,7 +204,7 @@ export class StopsController {
 				feature: 'stops',
 				message: `Can not find stop with ID ${request.params.id}`,
 				request,
-				stopId: request.params.id,
+				value: { stopId: request.params.id },
 			});
 			throw error;
 		}
@@ -223,7 +223,7 @@ export class StopsController {
 			feature: 'stops',
 			message: `Stop updated - ${request.params.id}`,
 			request,
-			stopId: request.params.id,
+			value: { stopId: request.params.id },
 		});
 	}
 }
