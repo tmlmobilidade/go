@@ -121,7 +121,7 @@ export class StopsController {
 				feature: 'stops',
 				message: error.message,
 				request,
-				value: { stopId: request.params.id },
+				value: request.params.id,
 			});
 			throw error;
 		}
