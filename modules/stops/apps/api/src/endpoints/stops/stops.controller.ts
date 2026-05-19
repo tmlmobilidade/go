@@ -45,12 +45,12 @@ export class StopsController {
 		await stops.toggleDeleteById(request.params.id);
 		const foundStop = await stops.findById(request.params.id);
 		if (!foundStop) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Can not find stop with ID ${request.params.id}`);
 			Logger.error(error, {
 				action: 'delete',
 				email: request.me.email,
 				feature: 'stops',
-				message: `Can not find stop with ID ${request.params.id}`,
+				message: error.message,
 				request,
 				value: { stopId: request.params.id },
 			});
@@ -70,12 +70,12 @@ export class StopsController {
 			sort: { created_at: -1 },
 		});
 		if (!data) {
-			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not get stops');
+			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not get stops from database');
 			Logger.error(error, {
 				action: 'getAll',
 				email: request.me.email,
 				feature: 'stops',
-				message: 'Can not get stops',
+				message: error.message,
 				request,
 			});
 			throw error;
@@ -92,12 +92,12 @@ export class StopsController {
 	static async getValidId(request: FastifyRequest, reply: FastifyReply<StopId>) {
 		const newStopId = await generateStopId();
 		if (!newStopId) {
-			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not generate a new Stop ID');
+			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not generate a new stop ID');
 			Logger.error(error, {
 				action: 'getValidId',
 				email: request.me.email,
 				feature: 'stops',
-				message: 'Can not generate a new Stop ID',
+				message: error.message,
 				request,
 			});
 			throw error;
@@ -114,12 +114,12 @@ export class StopsController {
 	static async getById(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		const foundStop = await stops.findById(Number(request.params.id));
 		if (!foundStop) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Can not find stop with ID ${request.params.id}`);
 			Logger.error(error, {
 				action: 'getById',
 				email: request.me.email,
 				feature: 'stops',
-				message: `Can not find stop with ID ${request.params.id}`,
+				message: error.message,
 				request,
 				value: { stopId: request.params.id },
 			});
@@ -151,7 +151,7 @@ export class StopsController {
 				action: 'getById',
 				email: request.me.email,
 				feature: 'stops',
-				message: `Can not get associated patterns for stop with ID ${request.params.id}`,
+				message: error.message,
 				request,
 				value: { stopId: request.params.id },
 			});
@@ -197,12 +197,12 @@ export class StopsController {
 		// Check if the stop exists before attempting to update
 		const foundStop = await stops.findById(Number(request.params.id));
 		if (!foundStop) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Can not find stop with ID ${request.params.id}`);
 			Logger.error(error, {
 				action: 'update',
 				email: request.me.email,
 				feature: 'stops',
-				message: `Can not find stop with ID ${request.params.id}`,
+				message: error.message,
 				request,
 				value: { stopId: request.params.id },
 			});
