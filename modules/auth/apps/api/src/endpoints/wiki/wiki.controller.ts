@@ -3,6 +3,7 @@
 import { transformMarkdownToWikiArticle } from '@/utils/transform-md-to-wiki.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { Logger } from '@tmlmobilidade/logger';
 import { type WikiArticle } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 import { dirname, resolve } from 'path';
@@ -21,7 +22,15 @@ export class WikiController {
 			const contentDirPath = resolve(dirname(fileURLToPath(import.meta.url)), '../../content/');
 
 			if (!fs.existsSync(contentDirPath)) {
-				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: 'Content directory not found' });
+				const error = new Error('Content directory not found');
+				Logger.error(error, {
+					action: 'getAll',
+					email: request.me.email,
+					feature: 'wiki',
+					message: error.message,
+					request,
+				});
+				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: error.message });
 				return;
 			}
 
@@ -33,7 +42,15 @@ export class WikiController {
 				.filter(file => file.endsWith('.md'));
 
 			if (allMdFiles.length === 0) {
-				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: 'No markdown files found' });
+				const error = new Error('No markdown files found');
+				Logger.error(error, {
+					action: 'getAll',
+					email: request.me.email,
+					feature: 'wiki',
+					message: error.message,
+					request,
+				});
+				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: error.message });
 				return;
 			}
 
@@ -65,6 +82,13 @@ export class WikiController {
 
 			//
 		} catch (error) {
+			Logger.error(error, {
+				action: 'getAll',
+				email: request.me.email,
+				feature: 'wiki',
+				message: error.message,
+				request,
+			});
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
@@ -92,7 +116,16 @@ export class WikiController {
 			const contentDirPath = resolve(dirname(fileURLToPath(import.meta.url)), '../../content/');
 
 			if (!fs.existsSync(contentDirPath)) {
-				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: 'Content directory not found' });
+				const error = new Error('Content directory not found');
+				Logger.error(error, {
+					action: 'getById',
+					email: request.me.email,
+					feature: 'wiki',
+					message: error.message,
+					request,
+					value: fileName,
+				});
+				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: error.message });
 				return;
 			}
 
@@ -102,7 +135,16 @@ export class WikiController {
 			const filePath = resolve(contentDirPath, fileName);
 
 			if (!fs.existsSync(filePath)) {
-				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: 'Article not found' });
+				const error = new Error('Article not found');
+				Logger.error(error, {
+					action: 'getById',
+					email: request.me.email,
+					feature: 'wiki',
+					message: error.message,
+					request,
+					value: fileName,
+				});
+				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: error.message });
 				return;
 			}
 
@@ -120,6 +162,14 @@ export class WikiController {
 
 			//
 		} catch (error) {
+			Logger.error(error, {
+				action: 'getById',
+				email: request.me.email,
+				feature: 'wiki',
+				message: error.message,
+				request,
+				value: request.params.id,
+			});
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
