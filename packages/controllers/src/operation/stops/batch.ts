@@ -2,13 +2,13 @@
 
 import { AggregationPipeline, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GetOperationalStopsBatchQuery, type HashedTrip, type OperationalDate, type OperationalStop } from '@tmlmobilidade/types';
+import { type GetOperationalStopsBatchQuery, type HashedPattern, type OperationalDate, type OperationalStop } from '@tmlmobilidade/types';
 
 /* * */
 
 interface PipelineResult {
 	agency_id: string
-	hashed_pattern_doc: HashedTrip
+	hashed_pattern_doc: HashedPattern
 	operational_date: OperationalDate
 	plan_id: string
 }
