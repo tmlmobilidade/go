@@ -3,7 +3,7 @@
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { IconCornerDownRight, IconMinus } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Alert, HashedTripWaypoint } from '@tmlmobilidade/types';
+import { type Alert, HashedPatternWaypoint } from '@tmlmobilidade/types';
 import { Button, Grid, MultiSelect, Section, Select, type SelectDataItem, Surface, useDataOperationalLines } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -40,7 +40,7 @@ export function ReferencesEditorLinesItem({ index, onRemoveReference, onUpdateRe
 	//
 	// C. Transform data
 
-	const hashedTripWaypointsAsSelectData: SelectDataItem[] = useMemo(() => {
+	const hashedPatternWaypointsAsSelectData: SelectDataItem[] = useMemo(() => {
 		// Skip if parent_id is not set
 		if (!reference.parent_id) return [];
 		// Skip if there is not data
@@ -49,10 +49,10 @@ export function ReferencesEditorLinesItem({ index, onRemoveReference, onUpdateRe
 		const matchingLine = operationalLinesData.find(item => String(item.line_id) === String(reference.parent_id));
 		if (!matchingLine) return [];
 		// Setup a map to store unique stops
-		const uniqueStopsMap = new Map<string, { pattern_id: string, waypoint: HashedTripWaypoint }[]>();
+		const uniqueStopsMap = new Map<string, { pattern_id: string, waypoint: HashedPatternWaypoint }[]>();
 		// Group waypoints by stop_id, as we want unique stop options.
-		matchingLine.hashed_trips.forEach((hashedTripItem) => {
-			hashedTripItem.path.forEach((waypointItem) => {
+		matchingLine.hashed_patterns.forEach((hashedPatternItem) => {
+			hashedPatternItem.path.forEach((waypointItem) => {
 				// Check if the stop_id is already in the map.
 				// If not, add it with the corresponding label and value.
 				if (!uniqueStopsMap.has(String(waypointItem.stop_id))) {
@@ -61,7 +61,7 @@ export function ReferencesEditorLinesItem({ index, onRemoveReference, onUpdateRe
 				// Append the current pattern_id and stop_sequence to the label
 				// of the existing entry, to provide more context in the option label.
 				uniqueStopsMap.get(String(waypointItem.stop_id)).push({
-					pattern_id: hashedTripItem.pattern_id,
+					pattern_id: hashedPatternItem.pattern_id,
 					waypoint: waypointItem,
 				});
 			});
@@ -97,7 +97,7 @@ export function ReferencesEditorLinesItem({ index, onRemoveReference, onUpdateRe
 					<Section flexDirection="row" gap="sm" padding="none">
 						<IconCornerDownRight color="var(--color-system-text-300)" size={30} />
 						<MultiSelect
-							data={hashedTripWaypointsAsSelectData}
+							data={hashedPatternWaypointsAsSelectData}
 							description="Selecione as paragens que serão afetadas pelo alerta"
 							disabled={!reference.parent_id}
 							label="Paragens Afetadas"
