@@ -63,28 +63,28 @@ export class PCGIRawClient {
 			serverSelectionTimeoutMS: 10_000,
 		});
 		this.client.on('connectionPoolCreated', () => {
-			console.log('[PCGIRawClient] Database connection pool created.');
+			Logger.info('[PCGIRawClient] Database connection pool created.');
 		});
 		this.client.on('topologyDescriptionChanged', () => {
-			console.log('[PCGIRawClient] Database topology description changed.');
+			Logger.info('[PCGIRawClient] Database topology description changed.');
 		});
 		this.client.on('serverDescriptionChanged', () => {
-			console.log('[PCGIRawClient] Database server description changed.');
+			Logger.info('[PCGIRawClient] Database server description changed.');
 		});
 		this.client.on('open', () => {
-			console.log('[PCGIRawClient] Database connection opened.');
+			Logger.info('[PCGIRawClient] Database connection opened.');
 		});
 		this.client.on('connectionReady', () => {
-			console.log('[PCGIRawClient] Database connection is ready.');
+			Logger.info('[PCGIRawClient] Database connection is ready.');
 		});
 		this.client.on('close', () => {
-			console.warn('[PCGIRawClient] Database connection closed unexpectedly.');
+			Logger.error('[PCGIRawClient] Database connection closed unexpectedly.');
 		});
 		this.client.on('reconnect', () => {
-			console.log('[PCGIRawClient] Database reconnected.');
+			Logger.info('[PCGIRawClient] Database reconnected.');
 		});
 		this.client.on('error', (error) => {
-			console.error('[PCGIRawClient] Database connection error:', error);
+			Logger.error('[PCGIRawClient] Database connection error:', error);
 		});
 		await this.client.connect();
 	}

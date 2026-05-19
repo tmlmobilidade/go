@@ -62,11 +62,29 @@ export class PCGIValidationsClient {
 			retryWrites: true,
 			serverSelectionTimeoutMS: 10_000,
 		});
+		this.client.on('connectionPoolCreated', () => {
+			Logger.info('[PCGIValidationsClient] Database connection pool created.');
+		});
+		this.client.on('topologyDescriptionChanged', () => {
+			Logger.info('[PCGIValidationsClient] Database topology description changed.');
+		});
+		this.client.on('serverDescriptionChanged', () => {
+			Logger.info('[PCGIValidationsClient] Database server description changed.');
+		});
+		this.client.on('open', () => {
+			Logger.info('[PCGIValidationsClient] Database connection opened.');
+		});
+		this.client.on('connectionReady', () => {
+			Logger.info('[PCGIValidationsClient] Database connection is ready.');
+		});
 		this.client.on('close', () => {
-			console.warn('[PCGIValidationsClient] Database connection closed unexpectedly.');
+			Logger.error('[PCGIValidationsClient] Database connection closed unexpectedly.');
 		});
 		this.client.on('reconnect', () => {
-			console.log('[PCGIValidationsClient] Database reconnected.');
+			Logger.info('[PCGIValidationsClient] Database reconnected.');
+		});
+		this.client.on('error', (error) => {
+			Logger.error('[PCGIValidationsClient] Database connection error:', error);
 		});
 		await this.client.connect();
 	}

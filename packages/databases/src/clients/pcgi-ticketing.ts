@@ -62,11 +62,29 @@ export class PCGITicketingClient {
 			retryWrites: true,
 			serverSelectionTimeoutMS: 10_000,
 		});
+		this.client.on('connectionPoolCreated', () => {
+			Logger.info('[PCGITicketingClient] Database connection pool created.');
+		});
+		this.client.on('topologyDescriptionChanged', () => {
+			Logger.info('[PCGITicketingClient] Database topology description changed.');
+		});
+		this.client.on('serverDescriptionChanged', () => {
+			Logger.info('[PCGITicketingClient] Database server description changed.');
+		});
+		this.client.on('open', () => {
+			Logger.info('[PCGITicketingClient] Database connection opened.');
+		});
+		this.client.on('connectionReady', () => {
+			Logger.info('[PCGITicketingClient] Database connection is ready.');
+		});
 		this.client.on('close', () => {
-			console.warn('[PCGITicketingClient] Database connection closed unexpectedly.');
+			Logger.error('[PCGITicketingClient] Database connection closed unexpectedly.');
 		});
 		this.client.on('reconnect', () => {
-			console.log('[PCGITicketingClient] Database reconnected.');
+			Logger.info('[PCGITicketingClient] Database reconnected.');
+		});
+		this.client.on('error', (error) => {
+			Logger.error('[PCGITicketingClient] Database connection error:', error);
 		});
 		await this.client.connect();
 	}

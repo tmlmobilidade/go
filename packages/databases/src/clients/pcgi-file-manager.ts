@@ -62,11 +62,29 @@ export class PCGIFileManagerClient {
 			retryWrites: true,
 			serverSelectionTimeoutMS: 10_000,
 		});
+		this.client.on('connectionPoolCreated', () => {
+			Logger.info('[PCGIFileManagerClient] Database connection pool created.');
+		});
+		this.client.on('topologyDescriptionChanged', () => {
+			Logger.info('[PCGIFileManagerClient] Database topology description changed.');
+		});
+		this.client.on('serverDescriptionChanged', () => {
+			Logger.info('[PCGIFileManagerClient] Database server description changed.');
+		});
+		this.client.on('open', () => {
+			Logger.info('[PCGIFileManagerClient] Database connection opened.');
+		});
+		this.client.on('connectionReady', () => {
+			Logger.info('[PCGIFileManagerClient] Database connection is ready.');
+		});
 		this.client.on('close', () => {
-			console.warn('[PCGIFileManagerClient] Database connection closed unexpectedly.');
+			Logger.error('[PCGIFileManagerClient] Database connection closed unexpectedly.');
 		});
 		this.client.on('reconnect', () => {
-			console.log('[PCGIFileManagerClient] Database reconnected.');
+			Logger.info('[PCGIFileManagerClient] Database reconnected.');
+		});
+		this.client.on('error', (error) => {
+			Logger.error('[PCGIFileManagerClient] Database connection error:', error);
 		});
 		await this.client.connect();
 	}
