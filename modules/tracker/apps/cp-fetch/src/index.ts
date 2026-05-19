@@ -84,7 +84,12 @@ const main = async () => {
 			entity_id: entity.id,
 			payload: {
 				header: decodedMessage.header,
-				vehicle: entity.vehicle,
+				vehicle: {
+					...entity.vehicle,
+					vehicle: {
+						id: entity.id,
+					},
+				},
 			},
 			version: 'cp-v1',
 		};
