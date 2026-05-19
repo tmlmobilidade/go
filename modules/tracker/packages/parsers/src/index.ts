@@ -4,6 +4,7 @@ import { parseRawVehicleEventCapV1 } from '@/cap/cap-v1.js';
 import { parseRawVehicleEventCcflV1 } from '@/ccfl/ccfl-v1.js';
 import { parseRawVehicleEventCmetV1Core } from '@/cmet/cmet-v1-core.js';
 import { parseRawVehicleEventCmetV1Log } from '@/cmet/cmet-v1-log.js';
+import { parseRawVehicleEventCpV1 } from '@/cp/cap-v1.js';
 import { parseRawVehicleEventTtslV1 } from '@/ttsl/ttsl-v1.js';
 import { type RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
@@ -14,5 +15,6 @@ export const PARSER_MAP: Record<RawVehicleEvent['version'], (vehicleEvent: RawVe
 	'ccfl-v1': parseRawVehicleEventCcflV1,
 	'cmet-v1-core': parseRawVehicleEventCmetV1Core,
 	'cmet-v1-log': parseRawVehicleEventCmetV1Log,
+	'cp-v1': parseRawVehicleEventCpV1,
 	'ttsl-v1': parseRawVehicleEventTtslV1,
 };
