@@ -109,6 +109,7 @@ export class AgenciesController {
 
 		Logger.info([], {
 			action: 'update',
+			email: request.me.email,
 			feature: 'agencies',
 			message: `Agency updated - ${request.params.id}`,
 			request,
