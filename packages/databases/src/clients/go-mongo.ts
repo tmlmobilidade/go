@@ -56,7 +56,10 @@ export class GOMongoClient {
 			directConnection: process.env.GO_MONGO_TUNNEL_ENABLED === 'true',
 			maxPoolSize: 20,
 			minPoolSize: 2,
-			readPreference: 'nearest',
+			readPreference: 'primary',
+			replicaSet: process.env.GO_MONGO_RS_NAME,
+			retryReads: true,
+			retryWrites: true,
 			serverSelectionTimeoutMS: 10_000,
 		});
 		this.client.on('close', () => {
@@ -96,6 +99,10 @@ export class GOMongoClient {
 
 		if (!process.env.GO_MONGO_HOST_3 || !process.env.GO_MONGO_PORT_3) {
 			throw new Error('Missing GO_MONGO_HOST_3 or GO_MONGO_PORT_3');
+		}
+
+		if (!process.env.GO_MONGO_RS_NAME) {
+			throw new Error('Missing GO_MONGO_RS_NAME');
 		}
 
 		if (process.env.GO_MONGO_TUNNEL_ENABLED === 'false') {

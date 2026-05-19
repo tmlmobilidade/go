@@ -56,7 +56,10 @@ export class PCGIFileManagerClient {
 			directConnection: process.env.PCGI_FILE_MANAGER_TUNNEL_ENABLED === 'true',
 			maxPoolSize: 20,
 			minPoolSize: 2,
-			readPreference: 'nearest',
+			readPreference: 'primary',
+			replicaSet: process.env.PCGI_FILE_MANAGER_RS_NAME,
+			retryReads: true,
+			retryWrites: true,
 			serverSelectionTimeoutMS: 10_000,
 		});
 		this.client.on('close', () => {
@@ -96,6 +99,10 @@ export class PCGIFileManagerClient {
 
 		if (!process.env.PCGI_FILE_MANAGER_HOST_3 || !process.env.PCGI_FILE_MANAGER_PORT_3) {
 			throw new Error('Missing PCGI_FILE_MANAGER_HOST_3 or PCGI_FILE_MANAGER_PORT_3');
+		}
+
+		if (!process.env.PCGI_FILE_MANAGER_RS_NAME) {
+			throw new Error('Missing PCGI_FILE_MANAGER_RS_NAME');
 		}
 
 		if (process.env.PCGI_FILE_MANAGER_TUNNEL_ENABLED === 'false') {
