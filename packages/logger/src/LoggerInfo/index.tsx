@@ -1,25 +1,27 @@
 /**
- * LoggerInfo utility for logging information messages to Sentry.
+ * LoggerInfo utility for logging informational messages to Sentry.
  *
- * This function sends structured messages to Sentry via captureMessage.
- * It is designed to be used on Fastify backends.
+ * Logs a structured informational message to Sentry using captureMessage.
+ * Intended for usage in Fastify backend contexts, where route/method and user context
+ * may be available to enrich log messages.
  *
  * @module LoggerInfo
  */
+
 import { type FastifyRequest } from 'fastify';
 
 import { getSentryClient } from '../sentry-loader.js';
 
 /**
- * The context for informational log messages.
+ * Structured context for LoggerInfo.
  *
- * @property {string} message - The log message (required).
- * @property {string} [action] - Optional action associated with the event.
- * @property {string} [email] - Optional user email associated with the event.
- * @property {string} [feature] - Optional feature/context for the log event.
- * @property {FastifyRequest} [request] - Optional Fastify request object for additional context.
- * @property {unknown} [value] - Optional related value.
- * @property {unknown} [key] - Additional custom metadata.
+ * @property {string} message            - The main log message (required).
+ * @property {string} [action]           - The action in progress when logging (optional).
+ * @property {string} [email]            - User email associated with the event (optional).
+ * @property {string} [feature]          - Application feature/module for this log (optional).
+ * @property {FastifyRequest} [request]  - (Optional) The Fastify request for method/route context.
+ * @property {unknown} [value]           - (Optional) Related entity id, reference, or other value.
+ * @property {object} [key: string]      - (Optional) Any extra metadata fields for log context.
  */
 export interface LogInfoContext {
 	[key: string]: unknown
@@ -32,24 +34,30 @@ export interface LogInfoContext {
 }
 
 /**
- * Sends an informational log message to Sentry with structured context.
- * If a Sentry client is available, includes endpoint, method, tags, and any extra metadata.
+ * Sends a structured informational message to Sentry, if available.
  *
- * @param {LogInfoContext} context - Information to be reported. Must include a 'message' property.
+ * Adds method, route, context tags and any supplemental metadata.
+ * If `request` is present, attempts to enrich with method and route.
+ *
+ * @param {LogInfoContext} context - Log context (must include `message`)
  */
 export const LoggerInfo = (context: LogInfoContext) => {
 	const { action, email, feature, message, request, value, ...extra } = context;
-	const routeUrl = request ? (request as FastifyRequest & { routeOptions?: { url?: string } }).routeOptions?.url : undefined;
+	const routeUrl =
+		request ? (request as FastifyRequest & { routeOptions?: { url?: string } }).routeOptions?.url : undefined;
 	const transactionName = request ? `${request.method} ${routeUrl ?? request.url}` : undefined;
-	const normalizedValueTag = value === undefined || value === null
-		? undefined
-		: typeof value === 'string' ? value : JSON.stringify(value);
+	const normalizedValueTag =
+		value === undefined || value === null
+			? undefined
+			: typeof value === 'string'
+				? value
+				: JSON.stringify(value);
 	void getSentryClient().then((sentryClient) => {
 		if (!sentryClient) return;
 		sentryClient.captureMessage(message, {
 			extra: {
 				...extra,
-				endpoint: request?.url,
+				endpoint: routeUrl ?? request?.url,
 				message,
 				method: request?.method,
 				value,

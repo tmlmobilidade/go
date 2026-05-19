@@ -94,7 +94,12 @@ class LoggersClass {
 		const formattedMessage = message
 			? Array.isArray(message) ? this.formatColumns(message) : message
 			: context?.message ?? '';
-		if (context) LoggerInfo(context);
+		if (context) {
+			LoggerInfo({
+				...context,
+				message: context.message ?? formattedMessage,
+			});
+		}
 		console.log(`→ ${formattedMessage ?? ''}`);
 		if (spacesAfter && spacesAfter > 0) this.spacer(spacesAfter);
 	}

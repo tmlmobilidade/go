@@ -3,6 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { roles } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { type CreateRoleDto, type Role, type UpdateRoleDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -24,7 +25,29 @@ export class RolesController {
 		request.body.updated_by = request.me._id;
 
 		const role = await roles.insertOne(request.body);
+
+		if (!role) {
+			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error creating role');
+			Logger.error(error, {
+				action: 'create',
+				email: request.me.email,
+				feature: 'roles',
+				message: error.message,
+				request,
+			});
+			throw error;
+		}
+
 		reply.send({ data: role, error: null, statusCode: HTTP_STATUS.CREATED });
+
+		Logger.info([], {
+			action: 'create',
+			email: request.me.email,
+			feature: 'roles',
+			message: `Role created - ${role._id}`,
+			request,
+			value: role._id,
+		});
 	}
 
 	/**
@@ -33,8 +56,30 @@ export class RolesController {
 	 * @param {FastifyReply} reply - The reply object
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
-		await roles.deleteById(request.params.id);
+		const result = await roles.deleteById(request.params.id);
+		if (!result) {
+			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error deleting role');
+			Logger.error(error, {
+				action: 'delete',
+				email: request.me.email,
+				feature: 'roles',
+				message: error.message,
+				request,
+				value: request.params.id,
+			});
+			throw error;
+		}
+
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
+
+		Logger.info([], {
+			action: 'delete',
+			email: request.me.email,
+			feature: 'roles',
+			message: `Role deleted - ${request.params.id}`,
+			request,
+			value: request.params.id,
+		});
 	}
 
 	/**
@@ -44,6 +89,19 @@ export class RolesController {
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Role[]>) {
 		const allRolesData = await roles.findMany({}, { sort: { name: 1 } });
+
+		if (!allRolesData) {
+			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error getting roles');
+			Logger.error(error, {
+				action: 'getAll',
+				email: request.me.email,
+				feature: 'roles',
+				message: error.message,
+				request,
+			});
+			throw error;
+		}
+
 		reply.send({ data: allRolesData, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -55,7 +113,18 @@ export class RolesController {
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Role>) {
 		const role = await roles.findById(request.params.id);
 
-		if (!role) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Role not found');
+		if (!role) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Role not found');
+			Logger.error(error, {
+				action: 'getById',
+				email: request.me.email,
+				feature: 'roles',
+				message: error.message,
+				request,
+				value: request.params.id,
+			});
+			throw error;
+		}
 
 		reply.send({ data: role, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -68,8 +137,29 @@ export class RolesController {
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Role>) {
 		await roles.toggleLockById(request.params.id);
 		const foundRole = await roles.findById(request.params.id);
-		if (!foundRole) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Role not found');
+		if (!foundRole) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Role not found');
+			Logger.error(error, {
+				action: 'lock',
+				email: request.me.email,
+				feature: 'roles',
+				message: error.message,
+				request,
+				value: request.params.id,
+			});
+			throw error;
+		}
+
 		reply.send({ data: foundRole, error: null, statusCode: HTTP_STATUS.OK });
+
+		Logger.info([], {
+			action: 'lock',
+			email: request.me.email,
+			feature: 'roles',
+			message: `Role locked - ${request.params.id}`,
+			request,
+			value: request.params.id,
+		});
 	}
 
 	/**
@@ -85,6 +175,29 @@ export class RolesController {
 		request.body.updated_by = request.me._id;
 
 		const role = await roles.updateById(request.params.id, request.body);
+
+		if (!role) {
+			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error updating role');
+			Logger.error(error, {
+				action: 'update',
+				email: request.me.email,
+				feature: 'roles',
+				message: error.message,
+				request,
+				value: request.params.id,
+			});
+			throw error;
+		}
+
 		reply.send({ data: role, error: null, statusCode: HTTP_STATUS.OK });
+
+		Logger.info([], {
+			action: 'update',
+			email: request.me.email,
+			feature: 'roles',
+			message: `Role updated - ${request.params.id}`,
+			request,
+			value: request.params.id,
+		});
 	}
 }
