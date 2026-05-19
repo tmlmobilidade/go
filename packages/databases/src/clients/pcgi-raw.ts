@@ -62,6 +62,15 @@ export class PCGIRawClient {
 			retryWrites: true,
 			serverSelectionTimeoutMS: 10_000,
 		});
+		this.client.on('connectionPoolCreated', () => {
+			console.log('[PCGIRawClient] Database connection pool created.');
+		});
+		this.client.on('topologyDescriptionChanged', () => {
+			console.log('[PCGIRawClient] Database topology description changed.');
+		});
+		this.client.on('serverDescriptionChanged', () => {
+			console.log('[PCGIRawClient] Database server description changed.');
+		});
 		this.client.on('open', () => {
 			console.log('[PCGIRawClient] Database connection opened.');
 		});
@@ -73,6 +82,9 @@ export class PCGIRawClient {
 		});
 		this.client.on('reconnect', () => {
 			console.log('[PCGIRawClient] Database reconnected.');
+		});
+		this.client.on('error', (error) => {
+			console.error('[PCGIRawClient] Database connection error:', error);
 		});
 		await this.client.connect();
 	}
