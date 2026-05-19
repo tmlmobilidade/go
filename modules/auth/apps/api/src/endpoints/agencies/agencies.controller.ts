@@ -19,9 +19,10 @@ export class AgenciesController {
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Agency[]>) {
 		const allAgencies = await agencies.findMany({}, { projection: { validation_rules: 0 }, sort: { _id: 1 } });
 		if (!allAgencies) {
-			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not get agencies from database');
+			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error getting agencies from database');
 			Logger.error(error, {
 				action: 'getAll',
+				email: request.me.email,
 				feature: 'agencies',
 				message: error.message,
 				request,
@@ -39,9 +40,10 @@ export class AgenciesController {
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Agency>) {
 		const agencyData = await agencies.findById(request.params.id);
 		if (!agencyData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Can not find agency with ID ${request.params.id}`);
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Error finding agency with ID ${request.params.id}`);
 			Logger.error(error, {
 				action: 'getById',
+				email: request.me.email,
 				feature: 'agencies',
 				message: error.message,
 				request,
@@ -61,9 +63,10 @@ export class AgenciesController {
 		await agencies.toggleLockById(request.params.id);
 		const foundAgency = await agencies.findById(request.params.id);
 		if (!foundAgency) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Can not find agency with ID ${request.params.id}`);
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Error finding agency with ID ${request.params.id}`);
 			Logger.error(error, {
 				action: 'lock',
+				email: request.me.email,
 				feature: 'agencies',
 				message: error.message,
 				request,
@@ -75,6 +78,7 @@ export class AgenciesController {
 
 		Logger.info([], {
 			action: 'lock',
+			email: request.me.email,
 			feature: 'agencies',
 			message: `Agency locked - ${request.params.id}`,
 			request,
@@ -94,6 +98,7 @@ export class AgenciesController {
 			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, validatedAgency.error.message);
 			Logger.error(error, {
 				action: 'update',
+				email: request.me.email,
 				feature: 'agencies',
 				message: error.message,
 				request,

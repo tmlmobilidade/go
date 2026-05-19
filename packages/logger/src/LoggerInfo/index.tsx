@@ -39,20 +39,29 @@ export interface LogInfoContext {
  */
 export const LoggerInfo = (context: LogInfoContext) => {
 	const { action, email, feature, message, request, value, ...extra } = context;
+	const routeUrl = request ? (request as FastifyRequest & { routeOptions?: { url?: string } }).routeOptions?.url : undefined;
+	const transactionName = request ? `${request.method} ${routeUrl ?? request.url}` : undefined;
+	const normalizedValueTag = value === undefined || value === null
+		? undefined
+		: typeof value === 'string' ? value : JSON.stringify(value);
 	void getSentryClient().then((sentryClient) => {
 		if (!sentryClient) return;
 		sentryClient.captureMessage(message, {
-			...extra,
-			endpoint: request?.url,
+			extra: {
+				...extra,
+				endpoint: request?.url,
+				message,
+				method: request?.method,
+				value,
+			},
 			level: 'info',
-			message,
-			method: request?.method,
 			tags: {
 				action,
 				email,
 				feature,
-				value,
+				value: normalizedValueTag,
 			},
+			transactionName,
 		});
 	});
 };

@@ -41,7 +41,7 @@ export class OrganizationsController {
 			feature: 'organizations',
 			message: `Organization created - ${result._id}`,
 			request,
-			value: { organizationId: result._id },
+			value: result._id,
 		});
 	}
 
@@ -91,7 +91,7 @@ export class OrganizationsController {
 					feature: 'organizations',
 					message: 'Error deleting light logo',
 					request,
-					value: { organizationId: request.params.id },
+					value: request.params.id,
 				});
 				throw error;
 			}
@@ -106,7 +106,7 @@ export class OrganizationsController {
 			feature: 'organizations',
 			message: `Organization deleted - ${request.params.id}`,
 			request,
-			value: { organizationId: request.params.id },
+			value: request.params.id,
 		});
 	}
 
@@ -355,7 +355,7 @@ export class OrganizationsController {
 			feature: 'organizations',
 			message: `Organization logos uploaded - ${id}`,
 			request,
-			value: { organizationId: id },
+			value: id,
 		});
 	}
 

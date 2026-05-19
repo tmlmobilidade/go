@@ -54,20 +54,29 @@ export interface LogErrorContext {
  */
 export const LoggerError = (context: LogErrorContext): void => {
 	const { action, email, error, feature, message, request, value, ...extra } = context;
+	const routeUrl = (request as FastifyRequest & { routeOptions?: { url?: string } }).routeOptions?.url;
+	const transactionName = `${request.method} ${routeUrl ?? request.url}`;
+	const normalizedValueTag = value === undefined || value === null
+		? undefined
+		: typeof value === 'string' ? value : JSON.stringify(value);
 	void getSentryClient().then((sentryClient) => {
 		if (!sentryClient) return;
 		sentryClient.captureException(error instanceof Error ? error : new Error(message), {
-			...extra,
-			endpoint: request.url,
-			message,
-			method: request.method,
-			originalErrorMessage: error instanceof Error ? error.message : undefined,
+			extra: {
+				...extra,
+				endpoint: request.url,
+				message,
+				method: request.method,
+				originalErrorMessage: error instanceof Error ? error.message : undefined,
+				value,
+			},
 			tags: {
 				action,
 				email,
 				feature,
-				value,
+				value: normalizedValueTag,
 			},
+			transactionName,
 		});
 	});
 };
