@@ -1,15 +1,15 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { DocumentSchema, type HashedTrip } from '@tmlmobilidade/types';
+import { DocumentSchema, type HashedPattern } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
 
-class HashedTripsClass extends MongoCollectionClass<HashedTrip, HashedTrip, HashedTrip> {
-	private static _instance: HashedTripsClass;
+class HashedPatternsClass extends MongoCollectionClass<HashedPattern, HashedPattern, HashedPattern> {
+	private static _instance: HashedPatternsClass;
 
 	protected override createSchema: z.ZodSchema = DocumentSchema;
 	protected override updateSchema: z.ZodSchema = DocumentSchema;
@@ -19,12 +19,12 @@ class HashedTripsClass extends MongoCollectionClass<HashedTrip, HashedTrip, Hash
 	}
 
 	public static async getInstance() {
-		if (!HashedTripsClass._instance) {
-			const instance = new HashedTripsClass();
+		if (!HashedPatternsClass._instance) {
+			const instance = new HashedPatternsClass();
 			await instance.connect();
-			HashedTripsClass._instance = instance;
+			HashedPatternsClass._instance = instance;
 		}
-		return HashedTripsClass._instance;
+		return HashedPatternsClass._instance;
 	}
 
 	protected getCollectionIndexes(): IndexDescription[] {
@@ -35,7 +35,7 @@ class HashedTripsClass extends MongoCollectionClass<HashedTrip, HashedTrip, Hash
 	}
 
 	protected getCollectionName(): string {
-		return 'hashed_trips';
+		return 'hashed_patterns';
 	}
 
 	protected getEnvName(): string {
@@ -45,4 +45,4 @@ class HashedTripsClass extends MongoCollectionClass<HashedTrip, HashedTrip, Hash
 
 /* * */
 
-export const hashedTrips = asyncSingletonProxy(HashedTripsClass);
+export const hashedPatterns = asyncSingletonProxy(HashedPatternsClass);

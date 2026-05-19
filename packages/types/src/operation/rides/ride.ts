@@ -41,6 +41,7 @@ export const RideSchema = DocumentSchema
 		end_time_scheduled: UnixTimestampSchema,
 		extension_observed: z.number().nullable(),
 		extension_scheduled: z.number(),
+		hashed_pattern_id: z.string(),
 		hashed_shape_id: z.string(),
 		hashed_trip_id: z.string(),
 		headsign: z.string(),

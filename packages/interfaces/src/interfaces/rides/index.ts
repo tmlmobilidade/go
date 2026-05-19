@@ -1,3 +1,4 @@
+export * from '@/interfaces/rides/hashed-patterns.js';
 export * from '@/interfaces/rides/hashed-shapes.js';
 export * from '@/interfaces/rides/hashed-trips.js';
 export * from '@/interfaces/rides/pipelines.js';
