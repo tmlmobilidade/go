@@ -88,7 +88,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 		const lineData = linesContext.actions.getLineDataById(lineId);
 		if (!lineData) return;
 		setDataLineState(lineData);
-	}, [lineId, linesContext.data.lines]);
+	}, [lineId, linesContext.actions, linesContext.data.lines]);
 
 	useEffect(() => {
 		if (!dataLineState?.route_ids) return;
@@ -97,7 +97,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 			if (!routeData) return;
 			setDataRoutesState(prev => [...prev, routeData]);
 		});
-	}, [dataLineState, linesContext.data.routes]);
+	}, [dataLineState, linesContext.actions, linesContext.data.routes]);
 
 	useEffect(() => {
 		(async () => {
@@ -123,7 +123,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 				console.error('Error fetching pattern data:', error);
 			}
 		})();
-	}, [dataLineState, stopsContext.data.stops]);
+	}, [dataLineState, stopsContext.actions, stopsContext.data.stops]);
 
 	/**
 	 * TASK: Fetch shape data for the active pattern.
@@ -190,16 +190,17 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 
 		const activeAlerts = alertsContext.data.alerts.filter((row) => {
 			if (!alertsContext.actions.isAlertActiveNow(row)) return false;
-
 			return row.informed_entity.some((informedEntity) => {
 				const normalizedLineId = lineId?.trim();
-				const lineOperatorDigit = normalizedLineId?.match(/\d/)?.[0];
+				const lineAgencyId = dataLineState?.agency_id?.trim();
 				const informedAgencyId = informedEntity.agency_id?.trim();
-				const informedOperatorDigit = informedAgencyId?.slice(-1);
-				const hasMatchingArea = informedOperatorDigit != null && lineOperatorDigit != null && informedOperatorDigit === lineOperatorDigit;
-				const areaOk = !informedAgencyId || hasMatchingArea;
 
-				if (!areaOk) return false;
+				if (informedAgencyId) {
+					const lineArea = normalizedLineId?.match(/\d/)?.[0] ?? lineAgencyId?.slice(-1);
+					const isCmAreaAgency = ['41', '42', '43', '44'].includes(informedAgencyId);
+					const agencyOk = informedAgencyId === lineAgencyId || (isCmAreaAgency && lineArea === informedAgencyId.slice(-1));
+					if (!agencyOk) return false;
+				}
 
 				if (informedEntity.line_id != null) return informedEntity.line_id.trim() === normalizedLineId;
 
@@ -214,7 +215,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 		});
 
 		setDataActiveAlertsState(activeAlerts);
-	}, [alertsContext.data.alerts, lineId, dataLineState, dataAllPatternsState]);
+	}, [alertsContext.data.alerts, lineId, dataLineState, dataAllPatternsState, alertsContext.actions]);
 
 	//
 	// D. Handle actions
@@ -286,7 +287,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 		setFilterActiveWaypointStopIdState(null);
 		setFilterActiveWaypointStopSequenceState(null);
 		//
-	}, [dataActivePatternState, filterActiveWaypointStopIdState, filterActiveWaypointStopSequenceState]);
+	}, [dataActivePatternState, filterActiveWaypointStopIdState, filterActiveWaypointStopSequenceState, setFilterActiveWaypointStopIdState, setFilterActiveWaypointStopSequenceState]);
 
 	/**
 	 * Set the active pattern based on the pattern version id.
