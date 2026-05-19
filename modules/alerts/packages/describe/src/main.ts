@@ -96,7 +96,7 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 			// also be included in the prompt. In this case, 1 line -> only a few stops
 			if (selectedReference.child_ids?.length) {
 				const matchingWaypoints = matchingLine.hashed_patterns
-					.flatMap(ht => ht.path)
+					.flatMap(hp => hp.path)
 					.filter(waypoint => selectedReference.child_ids?.includes(String(waypoint.stop_id)));
 				if (matchingWaypoints?.length) {
 					descriptionPrompt.add('body', '↳ Only on the following stops:');
