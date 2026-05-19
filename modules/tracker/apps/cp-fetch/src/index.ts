@@ -167,12 +167,12 @@ const main = async () => {
 			port: TUNNEL_PORT,
 		},
 		sshOptions: {
-			agent: process.env.GO_TUNNEL_SSH_KEY_PATH ? undefined : process.env.SSH_AUTH_SOCK,
+			agent: process.env.GO_TUNNEL_SSH_KEY_PATH || process.env.GO_TUNNEL_SSH_KEY ? undefined : process.env.SSH_AUTH_SOCK,
 			host: process.env.GO_TUNNEL_SSH_HOST,
 			keepaliveCountMax: 3,
 			keepaliveInterval: 10_000,
 			port: 22,
-			privateKey: process.env.GO_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.GO_TUNNEL_SSH_KEY_PATH) : undefined,
+			privateKey: process.env.GO_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.GO_TUNNEL_SSH_KEY_PATH) : process.env.GO_TUNNEL_SSH_KEY,
 			username: process.env.GO_TUNNEL_SSH_USERNAME,
 		},
 		tunnelOptions: {
