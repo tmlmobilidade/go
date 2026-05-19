@@ -2,13 +2,13 @@
 
 import { AggregationPipeline, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GetOperationalStopsBatchQuery, type HashedTrip, type OperationalDate, type OperationalStop } from '@tmlmobilidade/types';
+import { type GetOperationalStopsBatchQuery, type HashedPattern, type OperationalDate, type OperationalStop } from '@tmlmobilidade/types';
 
 /* * */
 
 interface PipelineResult {
 	agency_id: string
-	hashed_trip_doc: HashedTrip
+	hashed_pattern_doc: HashedPattern
 	operational_date: OperationalDate
 	plan_id: string
 }
@@ -19,7 +19,7 @@ export async function getOperationalStopsBatch(query: GetOperationalStopsBatchQu
 	//
 
 	//
-	// Use Rides as the baseline to fetch distinct hashed_trip_ids matching the query parameters.
+	// Use Rides as the baseline to fetch distinct hashed_pattern_ids matching the query parameters.
 	// Rides are the glue between the different entities (Patterns, Lines, Stops, etc...) that compose an Operation,
 	// Stream the rides to build the Operation Stops batch on the fly, avoiding loading everything in memory at once.
 
@@ -32,12 +32,12 @@ export async function getOperationalStopsBatch(query: GetOperationalStopsBatchQu
 		},
 		{
 			$group: {
-				_id: '$hashed_trip_id',
+				_id: '$hashed_pattern_id',
 				latest_ride: {
 					$top: {
 						output: {
 							agency_id: '$agency_id',
-							hashed_trip_id: '$hashed_trip_id',
+							hashed_pattern_id: '$hashed_pattern_id',
 							operational_date: '$operational_date',
 							plan_id: '$plan_id',
 							start_time_scheduled: '$start_time_scheduled',
@@ -61,15 +61,15 @@ export async function getOperationalStopsBatch(query: GetOperationalStopsBatchQu
 		},
 		{
 			$lookup: {
-				as: 'hashed_trip_doc',
+				as: 'hashed_pattern_doc',
 				foreignField: '_id',
-				from: 'hashed_trips',
-				localField: 'hashed_trip_id',
+				from: 'hashed_patterns',
+				localField: 'hashed_pattern_id',
 			},
 		},
 		{
 			$unwind: {
-				path: '$hashed_trip_doc',
+				path: '$hashed_pattern_doc',
 				preserveNullAndEmptyArrays: true,
 			},
 		},
@@ -77,7 +77,7 @@ export async function getOperationalStopsBatch(query: GetOperationalStopsBatchQu
 			$project: {
 				_id: 0,
 				agency_id: 1,
-				hashed_trip_doc: 1, // full joined document
+				hashed_pattern_doc: 1, // full joined document
 				operational_date: 1,
 				plan_id: 1,
 				start_time_scheduled: 1,
@@ -96,17 +96,17 @@ export async function getOperationalStopsBatch(query: GetOperationalStopsBatchQu
 	//
 	// Setup the final Map to keep track of the Operation Stops,
 	// using the stop_id as the key to avoid duplicates,
-	// since multiple hashed_trip_ids can belong to the same stop_id.
+	// since multiple hashed_pattern_ids can belong to the same stop_id.
 
 	const operationalStopsMap = new Map<OperationalStop['stop_id'], OperationalStop>();
 
 	pipelineResult.forEach((item) => {
-		item.hashed_trip_doc.path.forEach((waypoint) => {
+		item.hashed_pattern_doc.path.forEach((waypoint) => {
 			// Initialize the stop in the map if it doesn't exist yet
 			if (!operationalStopsMap.has(waypoint.stop_id)) {
 				operationalStopsMap.set(waypoint.stop_id, {
 					agency_ids: [],
-					hashed_trips: [],
+					hashed_patterns: [],
 					last_operational_date: item.operational_date,
 					last_plan_id: item.plan_id,
 					line_ids: [],
@@ -120,10 +120,10 @@ export async function getOperationalStopsBatch(query: GetOperationalStopsBatchQu
 			const savedOperationalStop = operationalStopsMap.get(waypoint.stop_id);
 			// Update the object with the latest fields
 			savedOperationalStop.agency_ids = Array.from(new Set([...savedOperationalStop.agency_ids, item.agency_id]));
-			savedOperationalStop.line_ids = Array.from(new Set([...savedOperationalStop.line_ids, item.hashed_trip_doc.line_id]));
-			savedOperationalStop.route_ids = Array.from(new Set([...savedOperationalStop.route_ids, item.hashed_trip_doc.route_id]));
-			savedOperationalStop.pattern_ids = Array.from(new Set([...savedOperationalStop.pattern_ids, item.hashed_trip_doc.pattern_id]));
-			savedOperationalStop.hashed_trips.push(item.hashed_trip_doc);
+			savedOperationalStop.line_ids = Array.from(new Set([...savedOperationalStop.line_ids, item.hashed_pattern_doc.line_id]));
+			savedOperationalStop.route_ids = Array.from(new Set([...savedOperationalStop.route_ids, item.hashed_pattern_doc.route_id]));
+			savedOperationalStop.pattern_ids = Array.from(new Set([...savedOperationalStop.pattern_ids, item.hashed_pattern_doc.pattern_id]));
+			savedOperationalStop.hashed_patterns.push(item.hashed_pattern_doc);
 		});
 	});
 
