@@ -56,7 +56,7 @@ export class PCGIFileManagerClient {
 			directConnection: process.env.PCGI_FILE_MANAGER_TUNNEL_ENABLED === 'true',
 			maxPoolSize: 20,
 			minPoolSize: 2,
-			readPreference: 'secondaryPreferred',
+			readPreference: 'nearest',
 			serverSelectionTimeoutMS: 10_000,
 		});
 		this.client.on('close', () => {
