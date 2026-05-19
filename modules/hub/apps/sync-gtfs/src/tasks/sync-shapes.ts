@@ -104,7 +104,6 @@ export const syncShapes = async () => {
 		const shapeExtensionKm = turf.length(shapeData.geojson, { units: 'kilometers' });
 		const shapeExtensionInMeters = shapeExtensionKm ? shapeExtensionKm * 1000 : 0;
 		shapeData.extension = Math.floor(shapeExtensionInMeters);
-
 		//
 		// Update or create new document
 

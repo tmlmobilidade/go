@@ -169,15 +169,14 @@ export default async () => {
 
 		/* * */
 
-		if (ENABLED_MODULES.includes('stops_parser')) {
-			await syncStops();
-			LOGGER.spacer(1);
-		}
-
-		/* * */
-
 		if (ENABLED_MODULES.includes('shapes_parser')) {
 			await syncShapes();
+			LOGGER.spacer(1);
+		}
+		/* * */
+
+		if (ENABLED_MODULES.includes('stops_parser')) {
+			await syncStops();
 			LOGGER.spacer(1);
 		}
 

@@ -55,7 +55,7 @@ export function StopsDetailContentTimetableRow({ arrivalData, status }: Props) {
 			return;
 		}
 		stopsDetailContext.actions.setActiveTripId(arrivalData.trip_id, arrivalData.stop_sequence);
-	}, [arrivalData.trip_id, arrivalData.stop_sequence, stopsDetailContext.actions.setActiveTripId]);
+	}, [isSelected, stopsDetailContext.actions, arrivalData.trip_id, arrivalData.stop_sequence]);
 
 	//
 	// D. Render components
