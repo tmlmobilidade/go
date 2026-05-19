@@ -62,6 +62,12 @@ export class PCGIRawClient {
 			retryWrites: true,
 			serverSelectionTimeoutMS: 10_000,
 		});
+		this.client.on('open', () => {
+			console.log('[PCGIRawClient] Database connection opened.');
+		});
+		this.client.on('connectionReady', () => {
+			console.log('[PCGIRawClient] Database connection is ready.');
+		});
 		this.client.on('close', () => {
 			console.warn('[PCGIRawClient] Database connection closed unexpectedly.');
 		});
