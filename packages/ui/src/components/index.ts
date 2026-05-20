@@ -15,6 +15,5 @@ export * from './modals';
 export * from './panes';
 export * from './proposedChanges';
 export * from './tags';
-export * from './topbar';
 export * from './upload';
 export * from './wrapper';

@@ -1,6 +1,8 @@
 'use client';
 
-import { ActionIcon, Menu } from '@mantine/core';
+/* * */
+
+import { ActionIcon, Menu as MantineMenu, type MenuProps as MantineMenuProps } from '@mantine/core';
 import { createElement, type PropsWithChildren } from 'react';
 
 import styles from './styles.module.css';
@@ -9,17 +11,18 @@ import { Tooltip } from '../../common/Tooltip';
 
 /* * */
 
-interface TopbarMenuProps {
+interface MenuProps {
 	counter?: number
 	icon: React.ElementType
 	label?: string
+	menuPosition?: MantineMenuProps['position']
 	variant?: 'danger' | 'neutral' | 'primary'
 	width?: number | string
 }
 
 /* * */
 
-export function TopbarMenu({ children, counter, icon, label, variant = 'neutral', width }: PropsWithChildren<TopbarMenuProps>) {
+export function Menu({ children, counter, icon, label, menuPosition = 'bottom-end', variant = 'neutral', width }: PropsWithChildren<MenuProps>) {
 	//
 
 	//
@@ -49,8 +52,8 @@ export function TopbarMenu({ children, counter, icon, label, variant = 'neutral'
 	);
 
 	return (
-		<Menu offset={0} position="bottom-end" shadow="lg" width={width} withArrow>
-			<Menu.Target>
+		<MantineMenu offset={0} position={menuPosition} shadow="lg" width={width} withArrow>
+			<MantineMenu.Target>
 				{label ? (
 					<Tooltip label={label} position="bottom" withArrow>
 						{actionButton}
@@ -58,10 +61,10 @@ export function TopbarMenu({ children, counter, icon, label, variant = 'neutral'
 				) : (
 					actionButton
 				)}
-			</Menu.Target>
-			<Menu.Dropdown>
+			</MantineMenu.Target>
+			<MantineMenu.Dropdown>
 				{children}
-			</Menu.Dropdown>
-		</Menu>
+			</MantineMenu.Dropdown>
+		</MantineMenu>
 	);
 }

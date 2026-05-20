@@ -11,7 +11,14 @@ import { Label } from '../../display';
 import { Section } from '../../layout';
 
 /* * */
-export function TopbarExportsItem({ fileExport }: { fileExport: FileExport }) {
+
+export interface SidebarExportsItemProps {
+	fileExport: FileExport
+}
+
+/* * */
+
+export function SidebarExportsItem({ fileExport }: SidebarExportsItemProps) {
 	//
 
 	//
@@ -19,6 +26,7 @@ export function TopbarExportsItem({ fileExport }: { fileExport: FileExport }) {
 	const exportsContext = useExportsContext();
 
 	const icon = useMemo(() => {
+		// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 		switch (fileExport.processing_status) {
 			case 'complete':
 				return <IconCheck color="var(--color-status-success-primary)" size={28} />;

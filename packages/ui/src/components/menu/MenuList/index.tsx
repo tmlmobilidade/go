@@ -1,5 +1,7 @@
 'use client';
 
+/* * */
+
 import { createElement, useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -9,7 +11,7 @@ import { Section } from '../../layout/Section';
 
 /* * */
 
-interface TopbarMenuListProps<T> {
+interface MenuListProps<T> {
 	data: T[]
 	itemComponent: React.ComponentType<{ item: T }>
 	maxDisplayedItems?: number
@@ -19,7 +21,7 @@ interface TopbarMenuListProps<T> {
 
 /* * */
 
-export function TopbarMenuList<T>({ data, itemComponent, maxDisplayedItems, maxHeight = 300, title }: TopbarMenuListProps<T>) {
+export function MenuList<T>({ data, itemComponent, maxDisplayedItems, maxHeight = 300, title }: MenuListProps<T>) {
 	//
 
 	//

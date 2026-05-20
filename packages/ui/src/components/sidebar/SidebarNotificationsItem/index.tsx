@@ -9,18 +9,24 @@ import { useNotificationsContext } from '../../../contexts/Notifications.context
 import { DeleteButton } from '../../buttons/DeleteButton';
 import { Label } from '../../display/Label';
 import { Section } from '../../layout/Section';
-import { sidebarApps } from '../../sidebar/Sidebar';
+import { getSidebarScopeRepresentativeIcon } from '../Sidebar';
 
 /* * */
 
-export function TopbarNotificationsItem({ notification }: { notification: Notification }) {
+export interface SidebarNotificationsItemProps {
+	notification: Notification
+}
+
+/* * */
+
+export function SidebarNotificationsItem({ notification }: SidebarNotificationsItemProps) {
 	//
 
 	//
 	// A. Setup variables
 
 	const notificationsContext = useNotificationsContext();
-	const icon = sidebarApps.find(app => app._id === notification.scope)?.icon;
+	const icon = getSidebarScopeRepresentativeIcon(notification.scope);
 
 	if (!notification.payload) {
 		return null;
