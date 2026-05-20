@@ -1,6 +1,6 @@
 /* * */
 
-/** Keep in sync with `--sidebar-*` tokens in Sidebar/styles.module.css */
+/** Keep in sync with `--sidebar-*` tokens in `Sidebar/styles.module.css` (`.sidebarShell`) and `SidebarPanel/styles.module.css` (`.sidebarPanel`). */
 export const SIDEBAR_SCROLL_PADDING_PX = 5;
 
 export const SIDEBAR_ICON_SIZE_PX = 20;
@@ -16,7 +16,7 @@ export const SIDEBAR_COLLAPSED_WIDTH = Math.max(
 
 export const SIDEBAR_RAIL_WIDTH_DEFAULT = 280;
 
-export const SIDEBAR_RAIL_WIDTH_MIN = 200;
+export const SIDEBAR_RAIL_WIDTH_MIN = 250;
 
 export const SIDEBAR_RAIL_WIDTH_MAX = 560;
 

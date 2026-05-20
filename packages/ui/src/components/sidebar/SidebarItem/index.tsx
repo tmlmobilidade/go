@@ -8,7 +8,7 @@ import styles from './styles.module.css';
 
 import { useMeContext } from '../../../contexts/Me.context';
 import { useCurrentUrl } from '../../../hooks/use-current-url';
-import { type SidebarLeafItemConfig } from '../Sidebar';
+import { type SidebarLeafItemConfig } from '../sidebar-navigation.config';
 import { useSidebarMode } from '../SidebarMode.context';
 
 /* * */
