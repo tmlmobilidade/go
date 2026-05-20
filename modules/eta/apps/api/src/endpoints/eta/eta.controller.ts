@@ -1,9 +1,8 @@
 /* * */
 
 import { pipelinePath } from '@/lib/sql-paths.js';
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { GOClickHouseClient, queryFromFile } from '@tmlmobilidade/databases';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { GOClickHouseClient, queryFromFile } from '@tmlmobilidade/clickhouse-client';
+import { type FastifyRequest } from '@tmlmobilidade/fastify';
 
 /* * */
 
