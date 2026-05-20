@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/node';
 
-import { LoggerError } from '../Logger/LoggerError/index.js';
+import { LoggerError } from '../logger/LoggerError/index.js';
 
 export class GoSentryClient {
 	//

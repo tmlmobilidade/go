@@ -1,7 +1,7 @@
 /* * */
 
-import { type LogErrorContext, LoggerError } from './Logger/LoggerError/index.js';
-import { LoggerInfo, type LogInfoContext } from './Logger/LoggerInfo/index.js';
+import { type LogErrorContext, LoggerError } from './logger/LoggerError/index.js';
+import { LoggerInfo, type LogInfoContext } from './logger/LoggerInfo/index.js';
 
 interface LoggerColumn {
 

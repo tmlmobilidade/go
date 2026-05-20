@@ -10,7 +10,7 @@
 
 import { type FastifyRequest } from 'fastify';
 
-import { getSentryClient } from '../../Client/sentry-loader.js';
+import { getSentryClient } from '../../client/sentry-loader.js';
 
 /**
  * Structured context for LoggerInfo.
