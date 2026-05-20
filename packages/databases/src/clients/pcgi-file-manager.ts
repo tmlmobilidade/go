@@ -56,14 +56,35 @@ export class PCGIFileManagerClient {
 			directConnection: process.env.PCGI_FILE_MANAGER_TUNNEL_ENABLED === 'true',
 			maxPoolSize: 20,
 			minPoolSize: 2,
-			readPreference: 'secondaryPreferred',
+			readPreference: 'primary',
+			replicaSet: process.env.PCGI_FILE_MANAGER_RS_NAME,
+			retryReads: true,
+			retryWrites: true,
 			serverSelectionTimeoutMS: 10_000,
 		});
+		this.client.on('connectionPoolCreated', () => {
+			Logger.info('[PCGIFileManagerClient] Database connection pool created.');
+		});
+		this.client.on('topologyDescriptionChanged', () => {
+			Logger.info('[PCGIFileManagerClient] Database topology description changed.');
+		});
+		this.client.on('serverDescriptionChanged', () => {
+			Logger.info('[PCGIFileManagerClient] Database server description changed.');
+		});
+		this.client.on('open', () => {
+			Logger.info('[PCGIFileManagerClient] Database connection opened.');
+		});
+		this.client.on('connectionReady', () => {
+			Logger.info('[PCGIFileManagerClient] Database connection is ready.');
+		});
 		this.client.on('close', () => {
-			console.warn('[PCGIFileManagerClient] Database connection closed unexpectedly.');
+			Logger.error('[PCGIFileManagerClient] Database connection closed unexpectedly.');
 		});
 		this.client.on('reconnect', () => {
-			console.log('[PCGIFileManagerClient] Database reconnected.');
+			Logger.info('[PCGIFileManagerClient] Database reconnected.');
+		});
+		this.client.on('error', (error) => {
+			Logger.error('[PCGIFileManagerClient] Database connection error:', error);
 		});
 		await this.client.connect();
 	}
@@ -96,6 +117,10 @@ export class PCGIFileManagerClient {
 
 		if (!process.env.PCGI_FILE_MANAGER_HOST_3 || !process.env.PCGI_FILE_MANAGER_PORT_3) {
 			throw new Error('Missing PCGI_FILE_MANAGER_HOST_3 or PCGI_FILE_MANAGER_PORT_3');
+		}
+
+		if (!process.env.PCGI_FILE_MANAGER_RS_NAME) {
+			throw new Error('Missing PCGI_FILE_MANAGER_RS_NAME');
 		}
 
 		if (process.env.PCGI_FILE_MANAGER_TUNNEL_ENABLED === 'false') {

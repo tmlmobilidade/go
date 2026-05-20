@@ -1,7 +1,8 @@
 'use client';
 
+import { nextTransportsAfterToggle, normalizeTransportsSelection } from '@/utils/transportAgencies';
 import { useLocalStorage } from '@mantine/hooks';
-import { createContext, useContext, useEffect, useRef } from 'react';
+import { createContext, useContext } from 'react';
 
 /* * */
 
@@ -12,6 +13,7 @@ export type TransportOption = 'boat' | 'bus' | 'metro' | 'train';
 
 interface GlobalSettingsState {
 	actions: {
+		toggleTransportOption: (key: 'all' | TransportOption) => void
 		updateFilterbar: (value: Partial<GlobalSettingsState['filterbar']>) => void
 		updateFilterByAgency: (values: string[]) => void
 		updateSection: (value: Section) => void
@@ -58,6 +60,9 @@ export function useGlobalSettingsContext() {
 export const GlobalSettingsContextProvider = ({ children }) => {
 	//
 
+	//
+	// A. Setup Variables
+
 	const [settings, setSettings] = useLocalStorage<GlobalSettingsStorage>({
 		defaultValue: {
 			filterbar: {
@@ -73,45 +78,8 @@ export const GlobalSettingsContextProvider = ({ children }) => {
 		key: 'global-settings',
 	});
 
-	const initialized = useRef(false);
-
 	//
-	// Hydrate from URL
-
-	// useEffect(() => {
-	// 	if (initialized.current) return;
-
-	// 	const sectionFromUrl = searchParams.get('section') as null | Section;
-
-	// 	if (sectionFromUrl) {
-	// 		setSettings(prev => ({
-	// 			...prev,
-	// 			section: sectionFromUrl,
-	// 		}));
-	// 	}
-
-	// 	initialized.current = true;
-	// }, [searchParams, setSettings]);
-
-	//
-	// Sync to URL
-
-	useEffect(() => {
-		if (!initialized.current) return;
-
-		const url = new URL(window.location.href);
-
-		if (settings.section === 'lines') {
-			url.searchParams.delete('section');
-		} else {
-			url.searchParams.set('section', settings.section);
-		}
-
-		window.history.replaceState({}, '', url);
-	}, [settings.section]);
-
-	//
-	// Actions
+	// B. Handle Actions
 
 	const updateSection = (value: Section) => {
 		setSettings(prev => ({
@@ -145,7 +113,17 @@ export const GlobalSettingsContextProvider = ({ children }) => {
 			...prev,
 			filterbar: {
 				...prev.filterbar,
-				transports: values,
+				transports: normalizeTransportsSelection(values),
+			},
+		}));
+	};
+
+	const toggleTransportOption = (key: 'all' | TransportOption) => {
+		setSettings(prev => ({
+			...prev,
+			filterbar: {
+				...prev.filterbar,
+				transports: nextTransportsAfterToggle(prev.filterbar.transports ?? [], key),
 			},
 		}));
 	};
@@ -162,10 +140,11 @@ export const GlobalSettingsContextProvider = ({ children }) => {
 	};
 
 	//
-	// Context value
+	// C. Context value
 
 	const contextValue: GlobalSettingsState = {
 		actions: {
+			toggleTransportOption,
 			updateFilterbar,
 			updateFilterByAgency,
 			updateSection,
@@ -175,18 +154,20 @@ export const GlobalSettingsContextProvider = ({ children }) => {
 		filterbar: {
 			by_agency: settings.filterbar.by_agency ?? [],
 			search: settings.filterbar.search ?? '',
-			transports: settings.filterbar.transports ?? [],
+			transports: normalizeTransportsSelection(settings.filterbar.transports ?? []),
 		},
 		section: settings.section,
 		toolbar: settings.toolbar,
 	};
 
 	//
-	// Render
+	// D. Render Components
 
 	return (
 		<GlobalSettingsContext.Provider value={contextValue}>
 			{children}
 		</GlobalSettingsContext.Provider>
 	);
+
+	//
 };

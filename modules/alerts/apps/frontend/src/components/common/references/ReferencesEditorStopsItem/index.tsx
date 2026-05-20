@@ -40,7 +40,7 @@ export function ReferencesEditorStopsItem({ index, onRemoveReference, onUpdateRe
 	//
 	// C. Transform data
 
-	const hashedTripsAsSelectData: SelectDataItem[] = useMemo(() => {
+	const hashedPatternsAsSelectData: SelectDataItem[] = useMemo(() => {
 		// Skip if parent_id is not set
 		if (!reference.parent_id) return [];
 		// Skip if there is not data
@@ -51,14 +51,14 @@ export function ReferencesEditorStopsItem({ index, onRemoveReference, onUpdateRe
 		// Setup a map to store unique stops
 		const uniqueLinesMap = new Map<string, { line_id: string, line_long_name: string, line_short_name: string }>();
 		// Group waypoints by stop_id, as we want unique stop options.
-		matchingStop.hashed_trips.forEach((hashedTripItem) => {
+		matchingStop.hashed_patterns.forEach((hashedPatternItem) => {
 			// Skip if the line_id is already in the uniqueLinesMap.
-			if (uniqueLinesMap.has(String(hashedTripItem.line_id))) return;
+			if (uniqueLinesMap.has(String(hashedPatternItem.line_id))) return;
 			// If not, add it with the corresponding label and value.
-			uniqueLinesMap.set(String(hashedTripItem.line_id), {
-				line_id: String(hashedTripItem.line_id),
-				line_long_name: hashedTripItem.line_long_name,
-				line_short_name: hashedTripItem.line_short_name,
+			uniqueLinesMap.set(String(hashedPatternItem.line_id), {
+				line_id: String(hashedPatternItem.line_id),
+				line_long_name: hashedPatternItem.line_long_name,
+				line_short_name: hashedPatternItem.line_short_name,
 			});
 		});
 		// Return the unique stops as an array of SelectDataItem.
@@ -89,7 +89,7 @@ export function ReferencesEditorStopsItem({ index, onRemoveReference, onUpdateRe
 					<Section flexDirection="row" gap="sm" padding="none">
 						<IconCornerDownRight color="var(--color-system-text-300)" size={30} />
 						<MultiSelect
-							data={hashedTripsAsSelectData}
+							data={hashedPatternsAsSelectData}
 							description="Selecione as linhas que serão afetadas pelo alerta"
 							disabled={!reference.parent_id}
 							label="Linhas Afetadas"

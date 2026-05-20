@@ -13,6 +13,7 @@ const naveganteBasePath = '/hub/navegante-app';
 /* * */
 
 const nextConfig: NextConfig = {
+	allowedDevOrigins: ['192.168.1.152'],
 	basePath: naveganteBasePath,
 	devIndicators: false,
 	env: {

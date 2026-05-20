@@ -75,6 +75,10 @@
 	grid-template-columns: 2fr 1fr;
 }
 
+.container[data-columns='aabc'] {
+	grid-template-columns: 2fr 1fr 1fr;
+}
+
 .container[data-columns='ab'] {
 	grid-template-columns: 1fr 1fr;
 }

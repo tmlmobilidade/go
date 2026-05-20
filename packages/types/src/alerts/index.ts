@@ -1,5 +1,4 @@
 export * from '@/alerts/alert.js';
-export * from '@/alerts/cause-effect-map.js';
 export * from '@/alerts/cause.js';
 export * from '@/alerts/effect.js';
 export * from '@/alerts/query.js';

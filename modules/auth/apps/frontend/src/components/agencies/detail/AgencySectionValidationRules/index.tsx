@@ -9,11 +9,12 @@ import { useTranslation } from 'react-i18next';
 
 const MAX_FILE_SIZE = 1024 * 1024; // 1MB
 
-export function AgencyValidationRules() {
+export function AgencySectionValidationRules() {
 	//
 
 	//
 	// A. Setup variables
+
 	const agencyDetailContext = useAgencyDetailContext();
 	const { t } = useTranslation();
 
@@ -22,50 +23,37 @@ export function AgencyValidationRules() {
 
 	const handleFileChange = (file: File) => {
 		// Respect read-only / locked state
-		if (agencyDetailContext.flags.isReadOnly) {
-			useToast.error({
-				message: t('default:agencies.detail.header.save'),
-				title: t('default:agencies.detail.SectionValidationRules.title'),
-			});
-			return;
-		}
-
+		if (agencyDetailContext.flags.isReadOnly) return useToast.error({
+			message: t('default:agencies.detail.SectionValidationRules.toasts.read_only.message'),
+			title: t('default:agencies.detail.SectionValidationRules.toasts.read_only.title'),
+		});
 		// Check if the file size is greater than 1MB
-		if (file.size > MAX_FILE_SIZE) {
-			useToast.error({
-				message: 'O tamanho do ficheiro excede o limite permitido.',
-				title: 'Erro ao carregar ficheiro',
-			});
-			return;
-		}
-
+		if (file.size > MAX_FILE_SIZE) return useToast.error({
+			message: t('default:agencies.detail.SectionValidationRules.toasts.max_size.message'),
+			title: t('default:agencies.detail.SectionValidationRules.toasts.max_size.title'),
+		});
 		// Only allow JSON files
-		if (!file.name.endsWith('.json')) {
-			useToast.error({
-				message: 'Apenas ficheiros JSON são suportados.',
-				title: 'Tipo de ficheiro inválido',
-			});
-			return;
-		}
-
+		if (!file.name.endsWith('.json')) return useToast.error({
+			message: t('default:agencies.detail.SectionValidationRules.toasts.file_type.message'),
+			title: t('default:agencies.detail.SectionValidationRules.toasts.file_type.title'),
+		});
 		// Read the file content
 		const reader = new FileReader();
 		reader.onload = (event) => {
 			try {
 				const content = event.target?.result as string;
 				const fileContent = JSON.parse(content);
-
 				// Update form state with validation rules
-				agencyDetailContext.data.form.setFieldValue('validation_rules', fileContent);
-
-				useToast.success({
-					message: 'Regras de validação carregadas.',
-					title: 'Regras carregadas',
+				agencyDetailContext.form.instance.setValue('validation_rules', fileContent);
+				// Show success message
+				return useToast.success({
+					message: t('default:agencies.detail.SectionValidationRules.toasts.success.message'),
+					title: t('default:agencies.detail.SectionValidationRules.toasts.success.title'),
 				});
 			} catch {
-				useToast.error({
-					message: 'Não foi possível ler o ficheiro JSON. Verifique o conteúdo.',
-					title: 'Erro ao processar ficheiro',
+				return useToast.error({
+					message: t('default:agencies.detail.SectionValidationRules.toasts.error.message'),
+					title: t('default:agencies.detail.SectionValidationRules.toasts.error.title'),
 				});
 			}
 		};
@@ -94,7 +82,12 @@ export function AgencyValidationRules() {
 
 				<Section alignItems="center" gap="sm">
 					<Label>{t('default:agencies.detail.SectionValidationRules.fields.file_content.label')}</Label>
-					{agencyDetailContext.data.agency.validation_rules ? (<FileComponent file={agencyDetailContext.data.agency.validation_rules} label={t('default:agencies.detail.SectionValidationRules.fields.file_content.button')} />) : (<Label>Nenhuma regra de validação definida</Label>)}
+					{agencyDetailContext.data.agency.validation_rules ? (
+						<FileComponent
+							file={agencyDetailContext.data.agency.validation_rules}
+							label={t('default:agencies.detail.SectionValidationRules.fields.file_content.button')}
+						/>
+					) : <Label>{t('default:agencies.detail.SectionValidationRules.fields.file_content.no_content')}</Label>}
 				</Section>
 			</Grid>
 		</Collapsible>

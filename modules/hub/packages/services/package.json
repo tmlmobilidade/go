@@ -26,8 +26,8 @@
 		"@tmlmobilidade/go-hub-pckg-utils": "*",
 		"jwt-decode": "4.0.0",
 		"luxon": "3.7.2",
-		"mongodb": "7.1.1",
-		"pg": "8.20.0",
+		"mongodb": "7.2.0",
+		"pg": "8.21.0",
 		"redis": "5.12.1",
 		"trino-client": "0.2.9",
 		"tunnel-ssh": "5.2.0"
@@ -35,8 +35,8 @@
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",
 		"@tmlmobilidade/go-hub-pckg-types": "*",
-		"@tmlmobilidade/tsconfig": "20260418.1237.24",
-		"@types/node": "25.6.0",
+		"@tmlmobilidade/tsconfig": "*",
+		"@types/node": "25.9.1",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "6.0.3"
 	}

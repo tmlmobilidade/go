@@ -25,6 +25,11 @@ server.register(
 			EtaController.getByTripId,
 		);
 
+		instance.get(
+			'/stop/:stopId',
+			EtaController.getByStopId,
+		);
+
 		next();
 	},
 	{ prefix: NAMESPACE },

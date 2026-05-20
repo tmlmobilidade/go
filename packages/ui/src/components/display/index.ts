@@ -7,6 +7,7 @@ export * from './Label';
 export * from './NoDataLabel';
 export * from './SeenStatusIndicator';
 export * from './Stepper';
+export * from './Table';
 export * from './Tabs';
 export * from './Text';
 export * from './ValueDisplay';
