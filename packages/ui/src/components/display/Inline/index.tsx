@@ -17,12 +17,14 @@ interface InlineProps extends React.ComponentPropsWithoutRef<'span'> {
  * can be enabled via the `dotted` prop to indicate that additional information
  * is available on hover.
  */
-export const Inline = forwardRef<HTMLSpanElement, InlineProps>(({ dotted, ...props }, ref) => (
+export const Inline = forwardRef<HTMLSpanElement, InlineProps>(({ dotted, onClick, ...props }, ref) => (
 	<span
 		ref={ref}
 		{...props}
 		className={`${styles.inline} ${props.className || ''}`}
+		data-clickable={!!onClick}
 		data-dotted={dotted}
+		onClick={onClick}
 	>
 		{props.children}
 	</span>

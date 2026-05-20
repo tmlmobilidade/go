@@ -28,6 +28,7 @@ interface Eta {
 export class EtaController {
 	//
 	private static readonly getAllQuery = pipelinePath('api/1-select-pred-trip-stop-etas.sql');
+	private static readonly getByStopIdQuery = pipelinePath('api/3-select-pred-trip-stop-etas-by-stop-id.sql');
 	private static readonly getByTripIdQuery = pipelinePath('api/2-select-pred-trip-stop-etas-by-trip-id.sql');
 
 	/**
@@ -52,6 +53,19 @@ export class EtaController {
 			trip_id: request.params.tripId,
 		});
 		reply.send({ data: tripEtas, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
+	 * Returns eta.pred_trip_stop_etas rows by stop_id.
+	 * @param request Fastify request with stop_id path parameter.
+	 * @param reply Fastify reply.
+	 */
+	static async getByStopId(request: FastifyRequest<{ Params: { stopId: string } }>, reply: FastifyReply<Eta[]>) {
+		const clickhouseClient = await GOClickHouseClient.getClient();
+		const stopEtas = await queryFromFile<Eta>(clickhouseClient, EtaController.getByStopIdQuery, {
+			stop_id: request.params.stopId,
+		});
+		reply.send({ data: stopEtas, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	//

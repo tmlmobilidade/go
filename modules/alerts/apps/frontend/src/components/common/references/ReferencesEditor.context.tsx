@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Label, openConfirmModal, type SelectDataItem } from '@tmlmobilidade/ui';
+import { Label, openConfirmModal } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -11,7 +11,6 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useEffe
 export interface ReferencesEditorContextProps {
 	activePeriodEndDate: undefined | UnixTimestamp
 	activePeriodStartDate: undefined | UnixTimestamp
-	availableAgenciesOptions: SelectDataItem[]
 	enabledReferenceTypes: Alert['reference_type'][]
 	onChangeReferences: (references: Alert['references']) => void
 	onChangeReferenceType: (type: Alert['reference_type']) => void
@@ -34,7 +33,6 @@ interface ReferencesEditorContextState {
 	data: {
 		active_period_end_date: UnixTimestamp
 		active_period_start_date: UnixTimestamp
-		available_agencies_options: SelectDataItem[]
 		enabled_reference_types: Alert['reference_type'][]
 		selected_agency_id: Alert['agency_id']
 		selected_reference_type: Alert['reference_type']
@@ -60,7 +58,7 @@ export function useReferencesEditorContext() {
 
 /* * */
 
-export function ReferencesEditorContextProvider({ activePeriodEndDate, activePeriodStartDate, availableAgenciesOptions, children, enabledReferenceTypes, onChangeReferences, onChangeReferenceType, readonly, selectedAgencyId, selectedReferences, selectedReferenceType }: PropsWithChildren<ReferencesEditorContextProps>) {
+export function ReferencesEditorContextProvider({ activePeriodEndDate, activePeriodStartDate, children, enabledReferenceTypes, onChangeReferences, onChangeReferenceType, readonly, selectedAgencyId, selectedReferences, selectedReferenceType }: PropsWithChildren<ReferencesEditorContextProps>) {
 	//
 
 	//
@@ -161,7 +159,6 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 		data: {
 			active_period_end_date: activePeriodEndDate,
 			active_period_start_date: activePeriodStartDate,
-			available_agencies_options: availableAgenciesOptions,
 			enabled_reference_types: enabledReferenceTypes || [],
 			selected_agency_id: selectedAgencyId,
 			selected_reference_type: selectedReferenceType,
@@ -171,7 +168,7 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 		flags: {
 			isReadonly: readonly || false,
 		},
-	}), [activePeriodEndDate, activePeriodStartDate, addReference, availableAgenciesOptions, changeReferenceType, enabledReferenceTypes, readonly, removeAllRides, removeReference, selectedAgencyId, selectedReferenceType, selectedReferences, selectedRidesData, toggleRideSelection, updateReference]);
+	}), [activePeriodEndDate, activePeriodStartDate, addReference, changeReferenceType, enabledReferenceTypes, readonly, removeAllRides, removeReference, selectedAgencyId, selectedReferenceType, selectedReferences, selectedRidesData, toggleRideSelection, updateReference]);
 
 	//
 	// D. Return state

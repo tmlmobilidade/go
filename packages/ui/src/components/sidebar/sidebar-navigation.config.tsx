@@ -7,10 +7,11 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 import { type JSX } from 'react';
 
-/* * */
+import { i18nResourceKeysPtShared } from '../../i18n';
 
+/* * */
 export interface SidebarLeafItemConfig {
-	_id: string
+	_id: keyof typeof i18nResourceKeysPtShared.shared.components.sidebar.Sidebar
 	href: string
 	icon: JSX.Element
 	permissions: readonly Permission[]
@@ -18,7 +19,7 @@ export interface SidebarLeafItemConfig {
 }
 
 export interface SidebarGroupItemConfig {
-	_id: string
+	_id: keyof typeof i18nResourceKeysPtShared.shared.components.sidebar.SidebarGroups
 	children: readonly SidebarNodeConfig[]
 	permissions?: readonly Permission[]
 	type: 'group'

@@ -315,6 +315,7 @@ export const API_ROUTES = Object.freeze({
 		// ETA
 		ETA_DETAIL: (tripId: string) => `${getModuleConfig('eta', 'api_url')}/eta/${tripId}`,
 		ETA_LIST: `${getModuleConfig('eta', 'api_url')}/eta`,
+		ETA_STOP: (stopId: string) => `${getModuleConfig('eta', 'api_url')}/eta/stop/${stopId}`,
 	},
 
 	exporter: {

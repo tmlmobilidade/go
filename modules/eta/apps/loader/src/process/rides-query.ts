@@ -11,8 +11,8 @@ export function buildRidesQuery(): Filter<Ride> {
 		agency_id: { $in: AppConfig.agencyIds },
 	};
 
-	if (AppConfig.useDevLineIds) {
-		query.line_id = { $in: AppConfig.devLineIds };
+	if (AppConfig.development.isDevelopment) {
+		query.line_id = { $in: AppConfig.development.lineIds };
 	}
 
 	return query;
@@ -25,8 +25,8 @@ export async function fetchCurrentWindowRides(ridesQuery: Filter<Ride>) {
 		{ $match: {
 			...ridesQuery,
 			start_time_scheduled: {
-				$gte: Dates.now('Europe/Lisbon').minus({ hours: 1 }).unix_timestamp,
-				$lte: Dates.now('Europe/Lisbon').plus({ hours: 1 }).unix_timestamp,
+				$gte: AppConfig.development.isDevelopment ? AppConfig.development.timeStart.unix_timestamp : Dates.now('Europe/Lisbon').minus({ hours: 1 }).unix_timestamp,
+				$lte: AppConfig.development.isDevelopment ? AppConfig.development.timeEnd.unix_timestamp : Dates.now('Europe/Lisbon').plus({ hours: 1 }).unix_timestamp,
 			},
 		} },
 		{ $sort: { start_time_scheduled: -1 } },
@@ -37,8 +37,8 @@ export async function fetchCurrentWindowRides(ridesQuery: Filter<Ride>) {
 }
 
 export async function fetchHistoricalRidesForDayIndex(ridesQuery: Filter<Ride>, dayIndex: number) {
-	const start = Dates.now('Europe/Lisbon').minus({ days: dayIndex, hours: 1 });
-	const end = Dates.now('Europe/Lisbon').minus({ days: dayIndex }).plus({ hours: 2 });
+	const start = AppConfig.development.isDevelopment ? AppConfig.development.timeStart.minus({ days: dayIndex, hours: 1 }) : Dates.now('Europe/Lisbon').minus({ days: dayIndex, hours: 1 });
+	const end = AppConfig.development.isDevelopment ? AppConfig.development.timeEnd.minus({ days: dayIndex }).plus({ hours: 2 }) : Dates.now('Europe/Lisbon').minus({ days: dayIndex }).plus({ hours: 2 });
 
 	Logger.progress(`Getting historical rides for date range: ${start.iso} → ${end.iso}`);
 

@@ -3,7 +3,7 @@
 import type { Alert, AlertCause, AlertEffect } from '@tmlmobilidade/go-hub-pckg-types';
 
 import { getAlertDescription, getAlertStartDateOrEpoch, getAlertTitle } from '@/utils/alerts';
-import { agencyMatchesSelection, agencyMatchesTransports } from '@/utils/transportAgencies';
+import { agencyMatchesSelection, agencyMatchesTransports, transportsSelectionIsAll } from '@/utils/transportAgencies';
 import { DateTime } from 'luxon';
 import { useLocale } from 'next-intl';
 import { useQueryState } from 'nuqs';
@@ -21,9 +21,7 @@ interface AlertsListContextState {
 		updateFilterByEffect: (value: AlertEffect | null) => void
 		updateFilterByLineId: (value: string) => void
 		updateFilterBySearchQuery: (value: string) => void
-		updateFilterByStopId: (value: string) => void
-		// updateFilterByMunicipalityId: (value: string) => void
-	}
+		updateFilterByStopId: (value: string) => void	}
 	counters: {
 		by_date: {
 			current: number
@@ -147,11 +145,14 @@ export const AlertsListContextProvider = ({ children }) => {
 			filterResult = filterResult.filter(alert => alert.effect === filterByEffectState);
 		}
 
-		if (filterByAgency.length > 0 || filterByTransports.length > 0) {
+		const isAllAgencies = filterByAgency.length === 0;
+		const isAllTransports = transportsSelectionIsAll(filterByTransports);
+
+		if (!isAllAgencies || !isAllTransports) {
 			filterResult = filterResult.filter((alert) => {
 				return alert.informed_entity.some((entity) => {
 					if (!entity.agency_id) return false;
-					return agencyMatchesSelection(entity.agency_id, filterByAgency) && agencyMatchesTransports(entity.agency_id, filterByTransports);
+					return (isAllAgencies || agencyMatchesSelection(entity.agency_id, filterByAgency)) && (isAllTransports || agencyMatchesTransports(entity.agency_id, filterByTransports));
 				});
 			});
 		}

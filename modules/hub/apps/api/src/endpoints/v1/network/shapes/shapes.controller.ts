@@ -17,7 +17,7 @@ interface RequestSchema {
 export class ShapesController {
 	static async getShapeById(request: FastifyRequest<RequestSchema>, reply: FastifyReply<unknown>) {
 		const id = request.params.id;
-		const cacheKey = 'hub:network:shapes:{shapeId}:json';
+		const cacheKey = 'hub:network:shapes:{shapeId}';
 		const singleItemTxt = await readThroughHubJson(cacheKey, SERVERDB_KEYS.NETWORK.SHAPES.ID(id), `hub/v1/network/shapes:getShapeById(${id})`, { shapeId: id });
 		if (!singleItemTxt) return reply.code(404).send({});
 		return reply

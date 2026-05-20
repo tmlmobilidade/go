@@ -4,13 +4,15 @@ import { type Environment, getCurrentEnvironment } from '@tmlmobilidade/types';
 
 /* * */
 
-interface ModuleConfigGroup {
+type FrontendNamedUrlKey = `frontend_${string}_url`;
+
+type ModuleConfigGroup = Partial<Record<FrontendNamedUrlKey, null | string>> & {
 	api_port: number
 	api_url: string
 	cors_origin: RegExp | string | true
 	frontend_port: null | number
-	frontend_url: null | string
-}
+	frontend_url?: null | string
+};
 
 /* * */
 
@@ -176,8 +178,8 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			api_port: 52000,
 			api_url: 'http://localhost:52000',
 			cors_origin: true,
+			frontend_navegante_app_url: 'http://localhost:51100/hub',
 			frontend_port: 51000,
-			frontend_url: 'http://localhost:51000/hub',
 		},
 		prd: {
 			api_url: 'https://go.tmlmobilidade.pt/hub/api',
@@ -310,14 +312,14 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			...DEFAULT_STG_CONFIG,
 		},
 	},
-} as const;
+} as const satisfies Record<string, Record<Environment, ModuleConfigGroup>>;
 
 /* * */
 
 /**
  * Retrieves the value of a specific property from the module configuration for a given module and environment.
  * @param module The module ID.
- * @param property The property of the module configuration to retrieve (e.g., 'api_url', 'frontend_url').
+ * @param property The property of the module configuration to retrieve (e.g., 'api_url', 'frontend_url', 'frontend_navegante_app_url').
  * @param environment The environment to get the property for. If not provided, it will use the ENVIRONMENT environment variable.
  * @returns The value of the specified property for the given module and environment.
  */

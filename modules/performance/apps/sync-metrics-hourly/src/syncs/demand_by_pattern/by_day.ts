@@ -1,5 +1,6 @@
 /* * */
 
+import { dayLabelFromStartIso } from '@/utils/day-label.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { CalendarEntry, fetchCalendarData } from '@tmlmobilidade/go-performance-pckg-dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
@@ -36,6 +37,10 @@ export const syncDemandByPatternByDay = async () => {
 	// Load calendar JSON
 
 	const calendarJson = await fetchCalendarData();
+
+	if (!calendarJson.length) {
+		throw new Error('Calendar data unavailable — cannot build demand_by_pattern_by_day metrics');
+	}
 
 	//
 	// Build a map for fast lookup
@@ -83,7 +88,7 @@ export const syncDemandByPatternByDay = async () => {
 		limit(async () => {
 			const chunkTimer = new Timer();
 
-			const dayLabel = new Date(chunkData.start).toISOString().slice(0, 10);
+			const dayLabel = dayLabelFromStartIso(chunkData.startIso);
 
 			const validationsAgg = await validationsCollection.aggregate([
 				{
@@ -111,6 +116,13 @@ export const syncDemandByPatternByDay = async () => {
 	const allChunksResults = await Promise.all(dayPromises);
 
 	for (const { dayLabel, validationsAgg } of allChunksResults) {
+		const calendarProps = calendarMap.get(dayLabel);
+
+		if (!calendarProps) {
+			Logger.info(`No calendar entry for ${dayLabel}, skipping day`);
+			continue;
+		}
+
 		for (const validation of validationsAgg) {
 			const pattern_id = validation._id ?? 'no-pattern';
 
@@ -124,7 +136,6 @@ export const syncDemandByPatternByDay = async () => {
 				});
 			}
 			const patternDoc = patternMap.get(pattern_id);
-			const calendarProps = calendarMap.get(dayLabel);
 
 			patternDoc.data[dayLabel] = {
 				day_type: calendarProps.day_type,
@@ -141,7 +152,11 @@ export const syncDemandByPatternByDay = async () => {
 	//
 	// Insert all metrics
 
-	await metrics.insertMany(results);
+	if (results.length === 0) {
+		Logger.info('No metric documents to insert — skipping insertMany');
+	} else {
+		await metrics.insertMany(results);
+	}
 
 	logMetricToFile({
 		approach: { description: 'Loop by day, aggregate on mongo (parallel)', key: 'loop_day_parallel' },

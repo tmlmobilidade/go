@@ -10,6 +10,7 @@ export * from './formatStopLocation.js';
 export * from './get-image-base64.js';
 export * from './getCssVariableValue.js';
 export * from './getLexicalRoot.js';
+export * from './getOperationalDay.js';
 export * from './htmlDecoder.js';
 export * from './operation.js';
 export * from './parseCampaignBody.js';

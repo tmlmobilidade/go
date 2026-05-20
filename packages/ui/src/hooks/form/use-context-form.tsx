@@ -44,7 +44,6 @@ export function useContextForm<T>({ apiData, defaultValues, schema }: UseContext
 		resolver: schema ? zodResolver(schema) : undefined,
 	});
 
-	// const isFormDirty = Object.keys(form.formState.dirtyFields).length > 0;
 	const isFormDirty = useMemo(() => {
 		// This is necessary due to a mismatch between isDirty flag and dirtyFields
 		// in React Hook Form. isDirty is a boolean that indicates if any field is dirty,

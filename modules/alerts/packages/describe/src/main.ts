@@ -95,8 +95,8 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 			// Check if this reference has any child IDs that should
 			// also be included in the prompt. In this case, 1 line -> only a few stops
 			if (selectedReference.child_ids?.length) {
-				const matchingWaypoints = matchingLine.hashed_trips
-					.flatMap(ht => ht.path)
+				const matchingWaypoints = matchingLine.hashed_patterns
+					.flatMap(hp => hp.path)
 					.filter(waypoint => selectedReference.child_ids?.includes(String(waypoint.stop_id)));
 				if (matchingWaypoints?.length) {
 					descriptionPrompt.add('body', '↳ Only on the following stops:');
@@ -142,7 +142,7 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 			// Check if this reference has any child IDs that should
 			// also be included in the prompt. In this case, 1 stop -> only a few waypoints
 			if (selectedReference.child_ids?.length) {
-				const matchingLines = matchingStop.hashed_trips
+				const matchingLines = matchingStop.hashed_patterns
 					.filter(line => selectedReference.child_ids?.includes(String(line.line_id)));
 				if (matchingLines?.length) {
 					descriptionPrompt.add('body', '↳ Only for the following lines:');

@@ -36,6 +36,7 @@ export interface SidebarProps {
 	onCollapsedChange: (collapsed: boolean) => void
 	onWidthPxChange: (widthPx: number) => void
 	widthPx: number
+
 }
 
 /* * */

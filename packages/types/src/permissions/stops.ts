@@ -11,6 +11,7 @@ export const StopsPermissionSchema = z.object({
 		'read',
 		'lock',
 		'update',
+		'export',
 		'edit_coordinates',
 	]),
 	resources: z.object({

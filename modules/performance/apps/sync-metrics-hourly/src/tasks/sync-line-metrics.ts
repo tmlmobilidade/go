@@ -6,6 +6,7 @@ import { syncDemandByLineByYear } from '@/syncs/demand_by_line/by_year.js';
 import { computeMeanDemandByLineByMonth } from '@/syncs/demand_by_line/mean_by_month.js';
 import { computeTop30DayPerformanceByLine } from '@/syncs/demand_by_line/top_30day_performance.js';
 import { computeTopMeanDemandByLineByMonth } from '@/syncs/demand_by_line/top_mean_by_month.js';
+import { MetricSyncRunner } from '@/utils/run-metric.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -13,23 +14,20 @@ import { Timer } from '@tmlmobilidade/timer';
 
 export const syncLineMetrics = async (): Promise<void> => {
 	const timer = new Timer();
+	const runner = new MetricSyncRunner('Line metrics');
 
 	Logger.title('Starting Line Demand Metrics Sync');
 	Logger.divider();
 
-	try {
-		await syncDemandByLineByDay();
-		await syncDemandByLineByMonth();
-		await syncDemandByLineByYear();
+	await runner.run('demand_by_line_by_day', syncDemandByLineByDay);
+	await runner.run('demand_by_line_by_month', syncDemandByLineByMonth);
+	await runner.run('demand_by_line_by_year', syncDemandByLineByYear);
 
-		await computeMeanDemandByLineByMonth();
-		await computeTopMeanDemandByLineByMonth();
-		await computeTop30DayPerformanceByLine();
+	await runner.runParallel([
+		{ fn: computeMeanDemandByLineByMonth, name: 'mean_demand_by_line_by_month' },
+		{ fn: computeTopMeanDemandByLineByMonth, name: 'top_mean_demand_by_line_by_month' },
+		{ fn: computeTop30DayPerformanceByLine, name: 'top_lines_30day_performance' },
+	]);
 
-		Logger.success(`Finished Line Demand Metrics Sync (${timer.get()})`);
-	} catch (error) {
-		Logger.error('Failed to sync Line Demand Metrics');
-		Logger.error(error);
-		throw error;
-	}
+	runner.finish({ successMessage: `Finished Line Demand Metrics Sync (${timer.get()})` });
 };
