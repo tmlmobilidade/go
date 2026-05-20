@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const RawVehicleEventCapV1PayloadSchema = z.object({
+export const RawVehicleEventMobiV1PayloadSchema = z.object({
 	header: z.object({
 		feed_version: z.string().nullish(),
 		gtfs_realtime_version: z.string(),
@@ -37,13 +37,13 @@ export const RawVehicleEventCapV1PayloadSchema = z.object({
 	}),
 });
 
-export type RawVehicleEventCapV1Payload = z.infer<typeof RawVehicleEventCapV1PayloadSchema>;
+export type RawVehicleEventMobiV1Payload = z.infer<typeof RawVehicleEventMobiV1PayloadSchema>;
 
 /* * */
 
-export const RawVehicleEventCapV1Schema = RawVehicleEventBaseSchema.extend({
-	payload: RawVehicleEventCapV1PayloadSchema,
-	version: z.literal('cap-v1'),
+export const RawVehicleEventMobiV1Schema = RawVehicleEventBaseSchema.extend({
+	payload: RawVehicleEventMobiV1PayloadSchema,
+	version: z.literal('mobi-v1'),
 });
 
-export type RawVehicleEventCapV1 = z.infer<typeof RawVehicleEventCapV1Schema>;
+export type RawVehicleEventMobiV1 = z.infer<typeof RawVehicleEventMobiV1Schema>;

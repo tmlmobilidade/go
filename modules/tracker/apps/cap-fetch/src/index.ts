@@ -74,7 +74,7 @@ const main = async () => {
 				vehicle: entity.vehicle,
 
 			},
-			version: 'cap-v1',
+			version: 'mobi-v1',
 		};
 
 		const hashableRawEventId = crypto
