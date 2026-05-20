@@ -11,7 +11,13 @@ SELECT
     e.vehicle_id                                                             AS vehicle_id,
     e.stop_id                                                                AS stop_id,
     e.stop_sequence                                                          AS stop_sequence,
-    splitByChar('|', substringIndex(e.trip_id, ']', -1))[1]                      AS pattern_id,
+    arrayStringConcat(
+        arraySlice(
+            splitByChar('_', splitByChar('|', substringIndex(e.trip_id, ']', -1))[1]),
+            1, 3
+        ),
+        '_'
+    )                                                                        AS pattern_id,
     splitByChar('_', splitByChar('|', substringIndex(e.trip_id, ']', -1))[1])[1] AS line_id,
     arrayStringConcat(
         arraySlice(

@@ -11,7 +11,13 @@ SELECT
     e.vehicle_id                                                                 AS vehicle_id,
     e.stop_id                                                                    AS stop_id,
     e.stop_sequence                                                              AS stop_sequence,
-    splitByChar('|', substringIndex(e.trip_id, ']', -1))[1]                      AS pattern_id,
+    arrayStringConcat(
+        arraySlice(
+            splitByChar('_', splitByChar('|', substringIndex(e.trip_id, ']', -1))[1]),
+            1, 3
+        ),
+        '_'
+    )                                                                            AS pattern_id,
     splitByChar('_', splitByChar('|', substringIndex(e.trip_id, ']', -1))[1])[1] AS line_id,
     arrayStringConcat(
         arraySlice(
@@ -64,6 +70,12 @@ LEFT JOIN eta.curr_rides AS r
     ON r.trip_id = e.trip_id
 LEFT JOIN trip_summary AS ts
     ON ts.hashed_trip_id = e.hashed_trip_id
-WHERE splitByChar('|', substringIndex(e.trip_id, ']', -1))[1] = {pattern_id:String}
+WHERE arrayStringConcat(
+    arraySlice(
+        splitByChar('_', splitByChar('|', substringIndex(e.trip_id, ']', -1))[1]),
+        1, 3
+    ),
+    '_'
+) = {pattern_id:String}
 ORDER BY e.trip_id, e.vehicle_id, e.stop_sequence
 LIMIT 1 BY trip_id, stop_id
