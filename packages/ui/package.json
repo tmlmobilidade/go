@@ -63,10 +63,10 @@
 		"@turf/turf": "7.3.5",
 		"@types/geojson": "7946.0.16",
 		"@types/luxon": "3.7.1",
-		"@types/node": "25.8.0",
-		"@types/react": "19.2.14",
+		"@types/node": "25.9.1",
+		"@types/react": "19.2.15",
 		"@types/react-dom": "19.2.3",
-		"postcss": "8.5.14",
+		"postcss": "8.5.15",
 		"typescript": "5.9.3"
 	}
 }

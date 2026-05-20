@@ -27,7 +27,7 @@
 		"jwt-decode": "4.0.0",
 		"luxon": "3.7.2",
 		"mongodb": "7.2.0",
-		"pg": "8.20.0",
+		"pg": "8.21.0",
 		"redis": "5.12.1",
 		"trino-client": "0.2.9",
 		"tunnel-ssh": "5.2.0"
@@ -36,7 +36,7 @@
 		"@tmlmobilidade/eslint": "*",
 		"@tmlmobilidade/go-hub-pckg-types": "*",
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.8.0",
+		"@types/node": "25.9.1",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "6.0.3"
 	}
