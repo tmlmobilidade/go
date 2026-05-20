@@ -41,7 +41,7 @@ export class EtaController {
 	static async getAll(_request: FastifyRequest, reply: any) {
 		const clickhouseClient = await GOClickHouseClient.getClient();
 		const allEtas = await queryFromFile<Eta>(clickhouseClient, EtaController.getAllQuery);
-		reply.send(allEtas);
+		reply.send(allEtas).header('cache-control', 'public, max-age=20');
 	}
 
 	/**
@@ -54,7 +54,7 @@ export class EtaController {
 		const tripEtas = await queryFromFile<Eta>(clickhouseClient, EtaController.getByTripIdQuery, {
 			trip_id: request.params.tripId,
 		});
-		reply.send(tripEtas);
+		reply.send(tripEtas).header('cache-control', 'public, max-age=20');
 	}
 
 	/**
@@ -67,7 +67,7 @@ export class EtaController {
 		const patternEtas = await queryFromFile<Eta>(clickhouseClient, EtaController.getByPatternIdQuery, {
 			pattern_id: request.params.patternId,
 		});
-		reply.send(patternEtas);
+		reply.send(patternEtas).header('cache-control', 'public, max-age=20');
 	}
 
 	/**
@@ -80,7 +80,7 @@ export class EtaController {
 		const stopEtas = await queryFromFile<Eta>(clickhouseClient, EtaController.getByStopIdQuery, {
 			stop_id: request.params.stopId,
 		});
-		reply.send(stopEtas);
+		reply.send(stopEtas).header('cache-control', 'public, max-age=20');
 	}
 
 	//
