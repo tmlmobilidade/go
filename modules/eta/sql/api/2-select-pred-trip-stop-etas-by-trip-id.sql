@@ -7,7 +7,7 @@ WITH trip_summary AS (
     GROUP BY hashed_trip_id
 )
 SELECT
-    e.trip_id                                                                AS trip_id,
+    if(empty(r._id), e.trip_id, concat('[', splitByChar('-', r._id)[1], ']', e.trip_id)) AS trip_id,
     e.vehicle_id                                                             AS vehicle_id,
     e.stop_id                                                                AS stop_id,
     e.stop_sequence                                                          AS stop_sequence,
