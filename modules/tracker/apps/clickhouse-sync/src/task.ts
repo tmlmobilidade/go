@@ -100,8 +100,9 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
 			const parser = PARSER_MAP[sourceDbDocument.version];
+			if (!parser) return Logger.error(`No parser found for version ${sourceDbDocument.version}. Skipping document with _id "${sourceDbDocument._id}"...`);
 			const parseResult = parser(sourceDbDocument);
-			if (!parseResult) return; // Skip if parsing failed
+			if (!parseResult) return Logger.error(`Failed to parse document with _id "${sourceDbDocument._id}". Skipping...`);
 			await writer.write(parseResult, { flushCallback: invalidateRides });
 		},
 

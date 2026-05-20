@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-tracker-cap-fetch",
+	"name": "@tmlmobilidade/go-tracker-mobi-fetch",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -28,9 +28,9 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.8.0",
+		"@types/node": "25.9.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.1",
+		"tsx": "4.22.3",
 		"typescript": "5.9.3"
 	}
 }

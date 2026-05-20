@@ -30,9 +30,9 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.8.0",
+		"@types/node": "25.9.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.1",
+		"tsx": "4.22.3",
 		"typescript": "5.9.3"
 	}
 }
