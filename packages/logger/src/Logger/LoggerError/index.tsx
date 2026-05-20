@@ -56,18 +56,22 @@ export const LoggerError = (context: LogErrorContext): void => {
 	const { action, email, error, feature, message, request, value, ...extra } = context;
 	const routeUrl = request ? (request as FastifyRequest & { routeOptions?: { url?: string } }).routeOptions?.url : undefined;
 	const transactionName = request ? `${request.method} ${routeUrl ?? request.url}` : undefined;
+	const normalizedError = error instanceof Error ? error : new Error(message);
 	const normalizedValueTag = value === undefined || value === null
 		? undefined
 		: typeof value === 'string' ? value : JSON.stringify(value);
+
+	// Send the error to Sentry (LoggerError)
 	void getSentryClient().then((sentryClient) => {
 		if (!sentryClient) return;
-		sentryClient.captureException(error instanceof Error ? error : new Error(message), {
+		sentryClient.captureMessage(normalizedError.message, {
+			...context,
+			error: normalizedError,
 			extra: {
 				...extra,
 				endpoint: routeUrl ?? request?.url,
 				message,
 				method: request?.method,
-				originalErrorMessage: error instanceof Error ? error.message : undefined,
 				value,
 			},
 			tags: {

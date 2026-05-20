@@ -43,8 +43,7 @@ export interface LogInfoContext {
  */
 export const LoggerInfo = (context: LogInfoContext) => {
 	const { action, email, feature, message, request, value, ...extra } = context;
-	const routeUrl =
-		request ? (request as FastifyRequest & { routeOptions?: { url?: string } }).routeOptions?.url : undefined;
+	const routeUrl = request ? (request as FastifyRequest & { routeOptions?: { url?: string } }).routeOptions?.url : undefined;
 	const transactionName = request ? `${request.method} ${routeUrl ?? request.url}` : undefined;
 	const normalizedValueTag =
 		value === undefined || value === null
@@ -52,9 +51,12 @@ export const LoggerInfo = (context: LogInfoContext) => {
 			: typeof value === 'string'
 				? value
 				: JSON.stringify(value);
+
+	// Send the information to Sentry (LoggerInfo)
 	void getSentryClient().then((sentryClient) => {
 		if (!sentryClient) return;
-		sentryClient.captureMessage(message, {
+		sentryClient.captureMessage(context.message, {
+			...context,
 			extra: {
 				...extra,
 				endpoint: routeUrl ?? request?.url,
