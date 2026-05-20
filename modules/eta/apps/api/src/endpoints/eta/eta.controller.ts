@@ -8,16 +8,17 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 /* * */
 
 interface Eta {
-	current_node_index: number
-	eta_at: null | string
-	eta_seconds: null | number
-	hashed_shape_id: string
-	hashed_trip_id: string
-	position_created_at: number
-	refreshed_at: string
+	estimated_arrival: null | string
+	estimated_arrival_unix: null | number
+	headsign: null | string
+	line_id: string
+	observed_arrival: null | string
+	observed_arrival_unix: null | number
+	pattern_id: string
+	route_id: string
+	scheduled_arrival: null | string
+	scheduled_arrival_unix: null | number
 	stop_id: string
-	stop_name: string
-	stop_node_index: number
 	stop_sequence: number
 	trip_id: string
 	vehicle_id: string
@@ -36,10 +37,10 @@ export class EtaController {
 	 * @param _request Fastify request.
 	 * @param reply Fastify reply.
 	 */
-	static async getAll(_request: FastifyRequest, reply: FastifyReply<Eta[]>) {
+	static async getAll(_request: FastifyRequest, reply: any) {
 		const clickhouseClient = await GOClickHouseClient.getClient();
 		const allEtas = await queryFromFile<Eta>(clickhouseClient, EtaController.getAllQuery);
-		reply.send({ data: allEtas, error: null, statusCode: HTTP_STATUS.OK });
+		reply.send(allEtas);
 	}
 
 	/**
@@ -47,12 +48,12 @@ export class EtaController {
 	 * @param request Fastify request with trip_id path parameter.
 	 * @param reply Fastify reply.
 	 */
-	static async getByTripId(request: FastifyRequest<{ Params: { tripId: string } }>, reply: FastifyReply<Eta[]>) {
+	static async getByTripId(request: FastifyRequest<{ Params: { tripId: string } }>, reply: any) {
 		const clickhouseClient = await GOClickHouseClient.getClient();
 		const tripEtas = await queryFromFile<Eta>(clickhouseClient, EtaController.getByTripIdQuery, {
 			trip_id: request.params.tripId,
 		});
-		reply.send({ data: tripEtas, error: null, statusCode: HTTP_STATUS.OK });
+		reply.send(tripEtas);
 	}
 
 	/**
@@ -60,12 +61,12 @@ export class EtaController {
 	 * @param request Fastify request with stop_id path parameter.
 	 * @param reply Fastify reply.
 	 */
-	static async getByStopId(request: FastifyRequest<{ Params: { stopId: string } }>, reply: FastifyReply<Eta[]>) {
+	static async getByStopId(request: FastifyRequest<{ Params: { stopId: string } }>, reply: any) {
 		const clickhouseClient = await GOClickHouseClient.getClient();
 		const stopEtas = await queryFromFile<Eta>(clickhouseClient, EtaController.getByStopIdQuery, {
 			stop_id: request.params.stopId,
 		});
-		reply.send({ data: stopEtas, error: null, statusCode: HTTP_STATUS.OK });
+		reply.send(stopEtas);
 	}
 
 	//
