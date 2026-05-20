@@ -75,7 +75,7 @@ export class CPAuthClient {
 		//
 		// Get the authentication URL, which also sets up the SSH tunnel if needed.
 
-		await this.getAuthenticationUrl();
+		const port = await this.getAuthenticationPort();
 
 		//
 		// Make the POST request to the Authentication API through the SSH tunnel,
@@ -99,7 +99,7 @@ export class CPAuthClient {
 				host: 'localhost',
 				method: 'POST',
 				path: process.env.TRACKER_CP_AUTH_PATH,
-				port: Number(process.env.TRACKER_CP_TUNNEL_LOCAL_PORT),
+				port: port,
 				rejectUnauthorized: false,
 				servername: process.env.TRACKER_CP_AUTH_HOST,
 			};
@@ -144,7 +144,7 @@ export class CPAuthClient {
 	 * @throws Will throw an error if required environment variables are missing or if the SSH tunnel setup fails.
 	 * @returns A promise that resolves to the authentication URL.
 	 */
-	private async getAuthenticationUrl(): Promise<string> {
+	private async getAuthenticationPort(): Promise<number> {
 		//
 
 		//
@@ -182,7 +182,7 @@ export class CPAuthClient {
 				keepaliveCountMax: 20,
 				keepaliveInterval: 10_000,
 				port: 22,
-				privateKey: process.env.TRACKER_CP_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.TRACKER_CP_TUNNEL_SSH_KEY_PATH) : undefined,
+				privateKey: process.env.TRACKER_CP_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.TRACKER_CP_TUNNEL_SSH_KEY_PATH) : process.env.TRACKER_CP_TUNNEL_SSH_KEY,
 				username: process.env.TRACKER_CP_TUNNEL_SSH_USERNAME,
 			},
 			tunnelOptions: {
@@ -208,7 +208,7 @@ export class CPAuthClient {
 			throw new Error('[CPAuthClient] Failed to retrieve SSH tunnel address.');
 		}
 
-		return `https://${process.env.TRACKER_CP_AUTH_HOST}:${addr.port}${process.env.TRACKER_CP_AUTH_PATH}`;
+		return addr.port;
 	}
 
 	//
