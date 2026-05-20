@@ -1,3 +1,6 @@
+/* * */
+
+import { cpAuthClient } from '@/auth.js';
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
@@ -7,17 +10,9 @@ import { type HashableRawVehicleEvent, type RawVehicleEventCpV1 } from '@tmlmobi
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 
-import { refreshToken, shouldRefreshToken, type TokenResponse } from './fetch-token.js';
-import { openTunnel } from './tunnel.js';
-
-/* * */
-
-const API_URL = 'https://api-gateway.cp.pt/cp/partner/gtfs-partners/realtime/VehiclePositions.pb';
-
 /* * */
 
 let ITERATION = 0;
-let API_TOKEN: TokenResponse | undefined = undefined;
 
 /* * */
 
@@ -28,25 +23,20 @@ const main = async () => {
 	let saveCount = 0;
 
 	//
-	// Open SSH tunnel for CP auth and refresh token when needed.
-
-	const tunnelPort = await openTunnel();
-
-	//
 	// Fetch the CP Vehicle Events data from API and decode it.
 
 	Logger.info(`[${ITERATION}] Fetching CP data from API...`, 0, 1);
 
-	if (shouldRefreshToken(API_TOKEN)) API_TOKEN = await refreshToken(tunnelPort);
+	const apiToken = await cpAuthClient.getToken();
 
 	//
 	// Fetch the CP Vehicle Events data from API and decode it.
 
-	const response = await fetch(API_URL, {
+	const response = await fetch(process.env.TRACKER_CP_API_URL, {
 		headers: {
-			'Authorization': `Bearer ${API_TOKEN.access_token}`,
-			'x-cp-connect-id': process.env.CP_API_KEY || '',
-			'x-cp-connect-secret': process.env.CP_API_SECRET || '',
+			'Authorization': `Bearer ${apiToken}`,
+			'x-cp-connect-id': process.env.TRACKER_CP_API_KEY,
+			'x-cp-connect-secret': process.env.TRACKER_CP_API_SECRET,
 		},
 	});
 
@@ -125,4 +115,4 @@ const main = async () => {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '30s', throwOnError: true });
+await runOnInterval(main, { intervalMs: '1s', throwOnError: true });
