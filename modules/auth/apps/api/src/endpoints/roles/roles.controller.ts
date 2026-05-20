@@ -28,7 +28,7 @@ export class RolesController {
 
 		if (!role) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error creating role');
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'create',
 				email: request.me.email,
 				feature: 'roles',
@@ -39,15 +39,6 @@ export class RolesController {
 		}
 
 		reply.send({ data: role, error: null, statusCode: HTTP_STATUS.CREATED });
-
-		Logger.info([], {
-			action: 'create',
-			email: request.me.email,
-			feature: 'roles',
-			message: `Role created - ${role._id}`,
-			request,
-			value: role._id,
-		});
 	}
 
 	/**
@@ -59,7 +50,7 @@ export class RolesController {
 		const result = await roles.deleteById(request.params.id);
 		if (!result) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error deleting role');
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'delete',
 				email: request.me.email,
 				feature: 'roles',
@@ -71,15 +62,6 @@ export class RolesController {
 		}
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
-
-		Logger.info([], {
-			action: 'delete',
-			email: request.me.email,
-			feature: 'roles',
-			message: `Role deleted - ${request.params.id}`,
-			request,
-			value: request.params.id,
-		});
 	}
 
 	/**
@@ -92,7 +74,7 @@ export class RolesController {
 
 		if (!allRolesData) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error getting roles');
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'getAll',
 				email: request.me.email,
 				feature: 'roles',
@@ -115,7 +97,7 @@ export class RolesController {
 
 		if (!role) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Role not found');
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'getById',
 				email: request.me.email,
 				feature: 'roles',
@@ -139,7 +121,7 @@ export class RolesController {
 		const foundRole = await roles.findById(request.params.id);
 		if (!foundRole) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Role not found');
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'lock',
 				email: request.me.email,
 				feature: 'roles',
@@ -151,15 +133,6 @@ export class RolesController {
 		}
 
 		reply.send({ data: foundRole, error: null, statusCode: HTTP_STATUS.OK });
-
-		Logger.info([], {
-			action: 'lock',
-			email: request.me.email,
-			feature: 'roles',
-			message: `Role locked - ${request.params.id}`,
-			request,
-			value: request.params.id,
-		});
 	}
 
 	/**
@@ -178,7 +151,7 @@ export class RolesController {
 
 		if (!role) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error updating role');
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'update',
 				email: request.me.email,
 				feature: 'roles',
@@ -190,14 +163,5 @@ export class RolesController {
 		}
 
 		reply.send({ data: role, error: null, statusCode: HTTP_STATUS.OK });
-
-		Logger.info([], {
-			action: 'update',
-			email: request.me.email,
-			feature: 'roles',
-			message: `Role updated - ${request.params.id}`,
-			request,
-			value: request.params.id,
-		});
 	}
 }

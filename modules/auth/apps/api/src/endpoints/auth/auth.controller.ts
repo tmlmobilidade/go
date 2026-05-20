@@ -23,7 +23,7 @@ export class AuthController {
 		// If the token is invalid or expired, throw an error
 		if (!tokenResult || tokenResult.expires_at < Dates.now('utc').unix_timestamp) {
 			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid or expired token');
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'changePassword',
 				feature: 'auth',
 				message: error.message,
@@ -37,14 +37,6 @@ export class AuthController {
 		await verificationTokens.deleteOne({ token: { $eq: request.body.token } });
 		// Send a success response
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
-
-		Logger.info([], {
-			action: 'changePassword',
-			feature: 'auth',
-			message: `Password changed for user ID: ${tokenResult.user_id}`,
-			request,
-			value: { userId: tokenResult.user_id },
-		});
 	}
 
 	/**
@@ -55,7 +47,7 @@ export class AuthController {
 		const result = LoginDtoSchema.safeParse(request.body);
 		if (!result.success) {
 			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, result.error.message);
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'login',
 				email: request.body?.email,
 				feature: 'auth',
@@ -72,7 +64,7 @@ export class AuthController {
 			});
 		} catch (error) {
 			if (error instanceof HttpException) {
-				Logger.error(error, {
+				Logger.error([], {
 					action: 'login',
 					email: result.data.email,
 					feature: 'auth',
@@ -92,15 +84,6 @@ export class AuthController {
 		});
 		// Send the session data in the response
 		reply.send({ data: newSession, error: null, statusCode: HTTP_STATUS.OK });
-
-		Logger.info([], {
-			action: 'login',
-			email: result.data.email,
-			feature: 'auth',
-			message: `User logged in: ${newSession.user_id}`,
-			request,
-			value: { userId: newSession.user_id },
-		});
 	}
 
 	/**
@@ -131,7 +114,7 @@ export class AuthController {
 		const foundUser = await users.findByEmail(request.body.email);
 		if (!foundUser) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `User not found with email ${request.body.email}`);
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'sendPasswordResetEmail',
 				email: request.body.email,
 				feature: 'auth',
@@ -159,15 +142,6 @@ export class AuthController {
 		});
 		// Send a success response
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
-
-		Logger.info([], {
-			action: 'sendPasswordResetEmail',
-			email: request.body.email,
-			feature: 'auth',
-			message: `Password reset email sent to "${request.body.email}" for User ID ${foundUser._id}`,
-			request,
-			value: { userId: foundUser._id },
-		});
 	}
 
 	//

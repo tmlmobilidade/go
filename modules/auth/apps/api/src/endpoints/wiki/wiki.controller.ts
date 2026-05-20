@@ -23,7 +23,7 @@ export class WikiController {
 
 			if (!fs.existsSync(contentDirPath)) {
 				const error = new Error('Content directory not found');
-				Logger.error(error, {
+				Logger.error([], {
 					action: 'getAll',
 					email: request.me.email,
 					feature: 'wiki',
@@ -43,7 +43,7 @@ export class WikiController {
 
 			if (allMdFiles.length === 0) {
 				const error = new Error('No markdown files found');
-				Logger.error(error, {
+				Logger.error([], {
 					action: 'getAll',
 					email: request.me.email,
 					feature: 'wiki',
@@ -82,7 +82,7 @@ export class WikiController {
 
 			//
 		} catch (error) {
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'getAll',
 				email: request.me.email,
 				feature: 'wiki',
@@ -117,7 +117,7 @@ export class WikiController {
 
 			if (!fs.existsSync(contentDirPath)) {
 				const error = new Error('Content directory not found');
-				Logger.error(error, {
+				Logger.error([], {
 					action: 'getById',
 					email: request.me.email,
 					feature: 'wiki',
@@ -136,7 +136,7 @@ export class WikiController {
 
 			if (!fs.existsSync(filePath)) {
 				const error = new Error('Article not found');
-				Logger.error(error, {
+				Logger.error([], {
 					action: 'getById',
 					email: request.me.email,
 					feature: 'wiki',
@@ -162,7 +162,7 @@ export class WikiController {
 
 			//
 		} catch (error) {
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'getById',
 				email: request.me.email,
 				feature: 'wiki',

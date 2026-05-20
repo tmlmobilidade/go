@@ -46,7 +46,7 @@ export class StopsController {
 		const foundStop = await stops.findById(request.params.id);
 		if (!foundStop) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Can not find stop with ID ${request.params.id}`);
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'delete',
 				email: request.me.email,
 				feature: 'stops',
@@ -71,7 +71,7 @@ export class StopsController {
 		});
 		if (!data) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not get stops from database');
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'getAll',
 				email: request.me.email,
 				feature: 'stops',
@@ -93,7 +93,7 @@ export class StopsController {
 		const newStopId = await generateStopId();
 		if (!newStopId) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not generate a new stop ID');
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'getValidId',
 				email: request.me.email,
 				feature: 'stops',
@@ -115,7 +115,7 @@ export class StopsController {
 		const foundStop = await stops.findById(Number(request.params.id));
 		if (!foundStop) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Can not find stop with ID ${request.params.id}`);
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'getById',
 				email: request.me.email,
 				feature: 'stops',
@@ -147,7 +147,7 @@ export class StopsController {
 
 		if (!associatedPatterns) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, `Can not get associated patterns for stop with ID ${request.params.id}`);
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'getById',
 				email: request.me.email,
 				feature: 'stops',
@@ -175,7 +175,7 @@ export class StopsController {
 		const foundStop = await stops.findById(request.params.id);
 		if (!foundStop) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'lock',
 				email: request.me.email,
 				feature: 'stops',
@@ -198,7 +198,7 @@ export class StopsController {
 		const foundStop = await stops.findById(Number(request.params.id));
 		if (!foundStop) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Can not find stop with ID ${request.params.id}`);
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'update',
 				email: request.me.email,
 				feature: 'stops',

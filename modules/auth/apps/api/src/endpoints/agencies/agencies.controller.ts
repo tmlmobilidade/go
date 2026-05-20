@@ -20,7 +20,7 @@ export class AgenciesController {
 		const allAgencies = await agencies.findMany({}, { projection: { validation_rules: 0 }, sort: { _id: 1 } });
 		if (!allAgencies) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error getting agencies from database');
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'getAll',
 				email: request.me.email,
 				feature: 'agencies',
@@ -41,7 +41,7 @@ export class AgenciesController {
 		const agencyData = await agencies.findById(request.params.id);
 		if (!agencyData) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Error finding agency with ID ${request.params.id}`);
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'getById',
 				email: request.me.email,
 				feature: 'agencies',
@@ -64,7 +64,7 @@ export class AgenciesController {
 		const foundAgency = await agencies.findById(request.params.id);
 		if (!foundAgency) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Error finding agency with ID ${request.params.id}`);
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'lock',
 				email: request.me.email,
 				feature: 'agencies',
@@ -75,15 +75,6 @@ export class AgenciesController {
 			throw error;
 		}
 		reply.send({ data: foundAgency, error: null, statusCode: HTTP_STATUS.OK });
-
-		Logger.info([], {
-			action: 'lock',
-			email: request.me.email,
-			feature: 'agencies',
-			message: `Agency locked - ${request.params.id}`,
-			request,
-			value: request.params.id,
-		});
 	}
 
 	/**
@@ -96,7 +87,7 @@ export class AgenciesController {
 		const validatedAgency = UpdateAgencySchema.safeParse(request.body);
 		if (!validatedAgency.success) {
 			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, validatedAgency.error.message);
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'update',
 				email: request.me.email,
 				feature: 'agencies',
@@ -111,15 +102,6 @@ export class AgenciesController {
 		// Update the agency in the database
 		const updatedAgencyData = await agencies.updateById(request.params.id, validatedAgency.data);
 		reply.send({ data: updatedAgencyData, error: null, statusCode: HTTP_STATUS.OK });
-
-		Logger.info([], {
-			action: 'update',
-			email: request.me.email,
-			feature: 'agencies',
-			message: `Agency updated - ${request.params.id}`,
-			request,
-			value: request.params.id,
-		});
 	}
 
 	//

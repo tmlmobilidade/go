@@ -19,7 +19,7 @@ export class ProposedChangesController {
 		const result = await proposedChanges.insertOne({ ...data, created_by: request.me._id, updated_by: request.me._id });
 		if (!result) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error creating proposed change');
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'create',
 				email: request.me.email,
 				feature: 'proposedChanges',
@@ -30,15 +30,6 @@ export class ProposedChangesController {
 		}
 
 		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED });
-
-		Logger.info([], {
-			action: 'create',
-			email: request.me.email,
-			feature: 'proposedChanges',
-			message: `Proposed change created - ${result._id}`,
-			request,
-			value: result._id,
-		});
 	}
 
 	/**
@@ -51,7 +42,7 @@ export class ProposedChangesController {
 		const result = await proposedChanges.deleteById(id);
 		if (!result) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error deleting proposed change');
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'delete',
 				email: request.me.email,
 				feature: 'proposedChanges',
@@ -62,15 +53,6 @@ export class ProposedChangesController {
 			throw error;
 		}
 		reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
-
-		Logger.info([], {
-			action: 'delete',
-			email: request.me.email,
-			feature: 'proposedChanges',
-			message: `Proposed change deleted - ${id}`,
-			request,
-			value: request.params.id,
-		});
 	}
 
 	/**
@@ -85,7 +67,7 @@ export class ProposedChangesController {
 
 		if (!data) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error getting proposed changes');
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'getAll',
 				email: request.me.email,
 				feature: 'proposedChanges',
@@ -95,15 +77,6 @@ export class ProposedChangesController {
 			throw error;
 		}
 		reply.send({ data: await enrichUserRefs(data), error: null, statusCode: HTTP_STATUS.OK });
-
-		Logger.info([], {
-			action: 'getAll',
-			email: request.me.email,
-			feature: 'proposedChanges',
-			message: `Proposed changes retrieved - ${data.length}`,
-			request,
-			value: data.length,
-		});
 	}
 
 	/**
@@ -117,7 +90,7 @@ export class ProposedChangesController {
 
 		if (!proposedChange) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Proposed Change not found');
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'getById',
 				email: request.me.email,
 				feature: 'proposedChanges',
@@ -140,7 +113,7 @@ export class ProposedChangesController {
 		const data = await proposedChanges.updateById(id, request.body);
 		if (!data) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error updating proposed change');
-			Logger.error(error, {
+			Logger.error([], {
 				action: 'update',
 				email: request.me.email,
 				feature: 'proposedChanges',
@@ -152,14 +125,5 @@ export class ProposedChangesController {
 		}
 
 		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
-
-		Logger.info([], {
-			action: 'update',
-			email: request.me.email,
-			feature: 'proposedChanges',
-			message: `Proposed change updated - ${id}`,
-			request,
-			value: id,
-		});
 	}
 }
