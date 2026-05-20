@@ -1,22 +1,18 @@
 name: "Discover Modules"
-description: "Discovers which modules and apps to build based on changed files"
+description: "Filters modules to build based on changed files. Modules touched build alone; any package change builds all modules."
 
 inputs:
   modules-apps:
     description: "Newline-separated list of modules and their apps (format: module:app, one app per line)"
     required: true
   selected-module:
-    description: "Selected module from workflow_dispatch (or all)"
+    description: "Selected module from workflow_dispatch (or 'all')"
     required: false
     default: "all"
   build-all:
     description: "Whether manual dispatch should build all modules"
     required: false
     default: "true"
-  fetch-depth:
-    description: "Depth to fetch when checking out repository"
-    required: false
-    default: "2"
 
 outputs:
   modules:
@@ -29,11 +25,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      with:
-        fetch-depth: ${{ github.event_name == 'push' && '0' || inputs.fetch-depth }}
-
     - name: Get changed files
       id: changed
       uses: tj-actions/changed-files@v47
@@ -52,21 +43,21 @@ runs:
         BASE_SHA="${{ github.event.before || github.event.pull_request.base.sha || '' }}"
         CURRENT_SHA="${{ github.sha }}"
 
-        # Get all changed files including deletions (A=Added, M=Modified, D=Deleted, R=Renamed)
-        # Use git diff to ensure deleted files are captured
+        # Use git diff to ensure deleted files are captured too (A/M/D/R).
         if [ -n "$BASE_SHA" ]; then
-          CHANGED=$(git diff --name-only --diff-filter=AMDR ${BASE_SHA} ${CURRENT_SHA} 2>/dev/null | grep -E '^(modules|packages)/' || true)
+          CHANGED=$(git diff --name-only --diff-filter=AMDR "$BASE_SHA" "$CURRENT_SHA" 2>/dev/null | grep -E '^(modules|packages)/' || true)
         else
-          # If no base SHA, compare with HEAD (for initial commits or manual runs)
-          CHANGED=$(git diff --name-only --diff-filter=AMDR HEAD ${CURRENT_SHA} 2>/dev/null | grep -E '^(modules|packages)/' || true)
+          CHANGED=$(git diff --name-only --diff-filter=AMDR HEAD "$CURRENT_SHA" 2>/dev/null | grep -E '^(modules|packages)/' || true)
         fi
 
         if [ -n "$CHANGED" ]; then
-          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGED" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          {
+            echo "changed_files<<EOF"
+            echo "$CHANGED"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
         else
-          echo "changed_files=" >> $GITHUB_OUTPUT
+          echo "changed_files=" >> "$GITHUB_OUTPUT"
         fi
 
     - name: Discover modules and apps
@@ -97,32 +88,29 @@ runs:
 
           const allModules = Object.entries(moduleAppsMap).map(([module, apps]) => ({
             module,
-            apps
+            apps,
           }));
 
-          // Parse changed files from tj-actions/changed-files (newline-separated string)
-          const changedFilesFromAction = (process.env.CHANGED_FILES || '')
+          // tj-actions/changed-files reports newline-separated paths.
+          const changedFromAction = (process.env.CHANGED_FILES || '')
             .split('\n')
             .filter(Boolean);
 
-          // Parse changed files from git diff (includes deletions)
-          const changedFilesFromGit = (process.env.GIT_DIFF_FILES || '')
+          // git diff also catches deletions that the action sometimes misses.
+          const changedFromGit = (process.env.GIT_DIFF_FILES || '')
             .split('\n')
             .filter(Boolean);
 
-          // Combine both sources and deduplicate
-          const changedFilesSet = new Set([
-            ...changedFilesFromAction,
-            ...changedFilesFromGit
-          ]);
-          const changedFiles = Array.from(changedFilesSet);
+          const changedFiles = Array.from(new Set([...changedFromAction, ...changedFromGit]));
 
           const isManual = context.eventName === 'workflow_dispatch';
           const selectedModule = (process.env.SELECTED_MODULE || 'all').trim().toLowerCase();
           const manualBuildAll = (process.env.BUILD_ALL || 'true') === 'true';
           const hasSpecificManualModule = isManual && selectedModule !== '' && selectedModule !== 'all';
-          const buildAll = (isManual && !hasSpecificManualModule && manualBuildAll) ||
-            changedFiles.some(f => f.startsWith('packages/'));
+
+          // Any shared-package change forces a full rebuild.
+          const packagesChanged = changedFiles.some(f => f.startsWith('packages/'));
+          const buildAll = (isManual && !hasSpecificManualModule && manualBuildAll) || packagesChanged;
 
           const modulesToBuild = [];
           const moduleApps = {};
@@ -137,6 +125,7 @@ runs:
               modulesToBuild.push(module);
               moduleApps[module] = apps;
             } else {
+              // Environment files don't affect built images.
               const changed = changedFiles.some(f =>
                 f.startsWith(`modules/${module}/`) && !f.includes('environments/')
               );
@@ -150,6 +139,7 @@ runs:
           core.setOutput('modules', JSON.stringify(modulesToBuild));
           core.setOutput('modules-apps', JSON.stringify(moduleApps));
 
-          console.log('Modules to build:', modulesToBuild);
-          console.log('Modules and apps:', moduleApps);
-
+          core.info(`packages changed: ${packagesChanged}`);
+          core.info(`build all: ${buildAll}`);
+          core.info(`modules to build: ${JSON.stringify(modulesToBuild)}`);
+          core.info(`modules and apps: ${JSON.stringify(moduleApps)}`);
