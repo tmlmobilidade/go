@@ -1,6 +1,6 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import * as Sentry from '@sentry/node';
-import { Logger } from '@tmlmobilidade/logger';
+
+import { LoggerError } from '../Logger/LoggerError/index.js';
 
 export class GoSentryClient {
 	//
@@ -10,13 +10,13 @@ export class GoSentryClient {
 	private client: typeof Sentry;
 
 	/**
-	 * Disallow direct instantiation of the service.
-	 * Use getClient() instead to ensure singleton behavior.
+	 * Disallow direct instantiation of the services.
+	 * Use GoSentryClient.getClient() instead to ensure singleton behavior.
 	 */
 	private constructor() {}
 
 	/**
-	 * Returns the singleton instance of the subclass.
+	 * Returns the singleton instance of the service.
 	 */
 	public static async getClient() {
 		// If no instance exists, create one and store the promise.
@@ -39,11 +39,14 @@ export class GoSentryClient {
 
 	/**
 	 * Connects to Sentry, setting up the client instance.
-	 * This method is called internally by the service and should not be used directly.
+	 * This method is called internally by the GoSentryClient and should not be used directly.
 	 */
 	private async connect() {
 		if (!process.env.SENTRY_DSN) throw new Error('Missing SENTRY_DSN');
-		Logger.info('[GoSentryClient] Connecting to Sentry...');
+		LoggerError({
+			message: '[GoSentryClient] Connecting to Sentry...',
+			request: null,
+		});
 		Sentry.init({
 			dsn: process.env.SENTRY_DSN,
 			environment: process.env.ENVIRONMENT,

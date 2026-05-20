@@ -9,7 +9,7 @@
 
 import { type FastifyRequest } from 'fastify';
 
-import { getSentryClient } from '../sentry-loader.js';
+import { getSentryClient } from '../../Client/sentry-loader.js';
 
 /**
  * Context object for structured error logging.

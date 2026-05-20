@@ -1,8 +1,7 @@
 /* * */
 
-import { LoggerError } from './LoggerError/index.js';
-import { type LogErrorContext } from './LoggerError/index.js';
-import { LoggerInfo, type LogInfoContext } from './LoggerInfo/index.js';
+import { type LogErrorContext, LoggerError } from './Logger/LoggerError/index.js';
+import { LoggerInfo, type LogInfoContext } from './Logger/LoggerInfo/index.js';
 
 interface LoggerColumn {
 
@@ -69,10 +68,18 @@ class LoggersClass {
 				? message.message
 				: Array.isArray(message) ? this.formatColumns(message) : message
 			: context?.message ?? '';
+		const errorFromCaller = !error && context
+			? (() => {
+				const callerError = new Error(context.message ?? formattedMessage);
+				// Keep Sentry's top frame at the logger callsite (e.g., controller), not inside Logger.error.
+				if (typeof Error.captureStackTrace === 'function') Error.captureStackTrace(callerError, this.error);
+				return callerError;
+			})()
+			: undefined;
 		if (context) {
 			LoggerError({
 				...context,
-				error: error ?? context.error,
+				error: error ?? context.error ?? errorFromCaller,
 				message: context.message ?? formattedMessage,
 			});
 		}
@@ -197,3 +204,13 @@ class LoggersClass {
  * Logger class for structured logging.
  */
 export const Logger = new LoggersClass();
+
+/**
+ * Logger error context interface.
+ */
+export type { LogErrorContext };
+
+/**
+ * Logger info context interface.
+ */
+export type { LogInfoContext };
