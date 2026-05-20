@@ -1,7 +1,7 @@
 /* * */
 
 import { pipelinePath } from '@/lib/sql-paths.js';
-import { GOClickHouseClient, queryFromFile } from '@tmlmobilidade/clickhouse-client';
+import { GOClickHouseClient, queryFromFile } from '@tmlmobilidade/databases';
 import { type FastifyRequest } from '@tmlmobilidade/fastify';
 
 /* * */
@@ -40,7 +40,7 @@ export class EtaController {
 	static async getAll(_request: FastifyRequest, reply: any) {
 		const clickhouseClient = await GOClickHouseClient.getClient();
 		const allEtas = await queryFromFile<Eta>(clickhouseClient, EtaController.getAllQuery);
-		reply.send(allEtas).header('cache-control', 'public, max-age=20');
+		reply.send(allEtas);
 	}
 
 	/**
