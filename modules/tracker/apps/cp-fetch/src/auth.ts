@@ -195,12 +195,14 @@ export class CPAuthClient {
 			maxRetries: 3,
 		};
 
-		this.tunnel = new SshTunnelService(sshConfig, sshOptions);
+		if (!this.tunnel) {
+			this.tunnel = new SshTunnelService(sshConfig, sshOptions);
+			await this.tunnel.connect();
+		}
 
 		Logger.info('[CPAuthClient] Setting up SSH Tunnel...');
 
-		const connection = await this.tunnel.connect();
-		const addr = connection.address();
+		const addr = this.tunnel.server.address();
 
 		if (!addr || typeof addr !== 'object') {
 			throw new Error('[CPAuthClient] Failed to retrieve SSH tunnel address.');
