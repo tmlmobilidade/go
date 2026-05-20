@@ -4,14 +4,9 @@
  */
 interface SentryModule {
 	/**
-	 * Reports an Exception (Error or unknown) to Sentry with optional structured context.
+	 * Reports a message (title and context) to Sentry.
 	 */
-	captureException: (error: unknown, context?: unknown) => void
-
-	/**
-	 * Reports an informational message to Sentry with optional structured context.
-	 */
-	captureMessage: (message: string, context?: unknown) => void
+	captureMessage: (title: string, context?: unknown) => void
 
 	/**
 	 * Internal: Gets the currently initialized Sentry client,

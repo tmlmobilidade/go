@@ -74,6 +74,7 @@ export const LoggerError = (context: LogErrorContext): void => {
 				method: request?.method,
 				value,
 			},
+			level: 'error',
 			tags: {
 				action,
 				email,
