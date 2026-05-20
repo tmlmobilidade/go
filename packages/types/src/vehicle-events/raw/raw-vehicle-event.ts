@@ -1,17 +1,17 @@
 /* * */
 
-import { RawVehicleEventCapV1Schema } from '@/vehicle-events/raw/cap/v1.js';
 import { RawVehicleEventCcflV1Schema } from '@/vehicle-events/raw/ccfl/v1.js';
 import { RawVehicleEventCmetV1CoreSchema } from '@/vehicle-events/raw/cmet/v1-core.js';
 import { RawVehicleEventCmetV1LogSchema } from '@/vehicle-events/raw/cmet/v1-log.js';
 import { RawVehicleEventCpV1Schema } from '@/vehicle-events/raw/cp/v1.js';
+import { RawVehicleEventMobiV1Schema } from '@/vehicle-events/raw/mobi/v1.js';
 import { RawVehicleEventTtslV1Schema } from '@/vehicle-events/raw/ttsl/v1.js';
 import { z } from 'zod';
 
 /* * */
 
 export const RawVehicleEventSchema = z.discriminatedUnion('version', [
-	RawVehicleEventCapV1Schema,
+	RawVehicleEventMobiV1Schema,
 	RawVehicleEventCcflV1Schema,
 	RawVehicleEventCmetV1CoreSchema,
 	RawVehicleEventCmetV1LogSchema,

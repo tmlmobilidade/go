@@ -3,7 +3,7 @@
 import { parseRawVehicleEventCcflV1 } from '@/ccfl/ccfl-v1.js';
 import { parseRawVehicleEventCmetV1Core } from '@/cmet/cmet-v1-core.js';
 import { parseRawVehicleEventCmetV1Log } from '@/cmet/cmet-v1-log.js';
-import { parseRawVehicleEventCpV1 } from '@/cp/mobi-v1.js';
+import { parseRawVehicleEventCpV1 } from '@/cp/cp-v1.js';
 import { parseRawVehicleEventMobiV1 } from '@/mobi/mobi-v1.js';
 import { parseRawVehicleEventTtslV1 } from '@/ttsl/ttsl-v1.js';
 import { type RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
