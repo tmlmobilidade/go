@@ -1,6 +1,16 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+/* * */
+
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+
+import { useMeContext } from '../../contexts';
+import { useUserPreference } from '../../hooks';
+
+/* * */
+
+const SIDEBAR_PREFERENCE_SCOPE = 'ui';
+const SIDEBAR_OPEN_GROUP_IDS_KEY = 'sidebar_open_group_ids';
 
 /* * */
 
@@ -10,7 +20,7 @@ export interface SidebarGroupOpenContextValue {
 	toggleGroup: (groupId: string) => void
 }
 
-const SidebarGroupOpenContext = createContext<SidebarGroupOpenContextValue | null>(null);
+const SidebarGroupOpenContext = createContext<null | SidebarGroupOpenContextValue>(null);
 
 /* * */
 
@@ -20,41 +30,75 @@ export interface SidebarGroupOpenProviderProps {
 }
 
 export function SidebarGroupOpenProvider({ children, defaultOpenGroupIds = [] }: SidebarGroupOpenProviderProps) {
-	const [openByGroupId, setOpenByGroupId] = useState<Record<string, boolean>>(() => {
-		const initial: Record<string, boolean> = {};
-		for (const id of defaultOpenGroupIds) initial[id] = true;
-		return initial;
-	});
+	//
+
+	//
+	// A. Setup variables
+
+	const meContext = useMeContext();
+	const [openGroupIds, setOpenGroupIds] = useUserPreference<string[]>(
+		SIDEBAR_PREFERENCE_SCOPE,
+		SIDEBAR_OPEN_GROUP_IDS_KEY,
+		[],
+	);
+
+	const hasSeededInitialOpenGroupsRef = useRef(false);
+
+	//
+	// B. Handle actions
+
+	useEffect(() => {
+		const saved = meContext.actions.getPreference<string[]>(SIDEBAR_PREFERENCE_SCOPE, SIDEBAR_OPEN_GROUP_IDS_KEY);
+		if (saved !== undefined) return;
+		if (hasSeededInitialOpenGroupsRef.current) return;
+		if (!defaultOpenGroupIds.length) return;
+
+		hasSeededInitialOpenGroupsRef.current = true;
+		setOpenGroupIds([...defaultOpenGroupIds], { save: false });
+	}, [defaultOpenGroupIds, meContext.actions, meContext.data.user, setOpenGroupIds]);
 
 	useEffect(() => {
 		if (!defaultOpenGroupIds.length) return;
 
-		setOpenByGroupId((prev) => {
-			const next = { ...prev };
-			for (const id of defaultOpenGroupIds) {
-				if (next[id] === undefined) next[id] = true;
-			}
-			return next;
-		});
-	}, [defaultOpenGroupIds]);
+		const missing = defaultOpenGroupIds.filter(id => !openGroupIds.includes(id));
+		if (!missing.length) return;
+
+		setOpenGroupIds([...openGroupIds, ...missing]);
+	}, [defaultOpenGroupIds, openGroupIds, setOpenGroupIds]);
+
+	//
+	// C. Handle callbacks
 
 	const isGroupOpen = useCallback((groupId: string) => {
-		return openByGroupId[groupId] ?? false;
-	}, [openByGroupId]);
+		return openGroupIds.includes(groupId);
+	}, [openGroupIds]);
 
 	const setGroupOpen = useCallback((groupId: string, open: boolean) => {
-		setOpenByGroupId(prev => ({ ...prev, [groupId]: open }));
-	}, []);
+		if (open) {
+			if (openGroupIds.includes(groupId)) return;
+			setOpenGroupIds([...openGroupIds, groupId]);
+			return;
+		}
+
+		if (!openGroupIds.includes(groupId)) return;
+		setOpenGroupIds(openGroupIds.filter(id => id !== groupId));
+	}, [openGroupIds, setOpenGroupIds]);
 
 	const toggleGroup = useCallback((groupId: string) => {
-		setOpenByGroupId(prev => ({ ...prev, [groupId]: !(prev[groupId] ?? false) }));
-	}, []);
+		setGroupOpen(groupId, !openGroupIds.includes(groupId));
+	}, [openGroupIds, setGroupOpen]);
+
+	//
+	// D. Return
 
 	const value = useMemo(() => ({
 		isGroupOpen,
 		setGroupOpen,
 		toggleGroup,
 	}), [isGroupOpen, setGroupOpen, toggleGroup]);
+
+	//
+	// E. Render components
 
 	return (
 		<SidebarGroupOpenContext.Provider value={value}>
