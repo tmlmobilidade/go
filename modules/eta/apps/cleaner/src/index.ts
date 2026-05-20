@@ -4,6 +4,8 @@ import { AppConfig } from '@/lib/config.js';
 import { cleanupCurrentRides } from '@/tasks/cleanup-current-rides.js';
 import { cleanupCurrentVehicleEvents } from '@/tasks/cleanup-current-vehicle-events.js';
 import { cleanupCurrentWaypoints } from '@/tasks/cleanup-current-waypoints.js';
+import { cleanupHistoricalNodeTravelTimesAggregation } from '@/tasks/cleanup-historical-node-travel-times-aggregation.js';
+import { cleanupHistoricalNodeTravelTimes } from '@/tasks/cleanup-historical-node-travel-times.js';
 import { cleanupHistoricalRides } from '@/tasks/cleanup-historical-rides.js';
 import { cleanupHistoricalVehicleEvents } from '@/tasks/cleanup-historical-vehicle-events.js';
 import { GOClickHouseClient } from '@tmlmobilidade/databases';
@@ -81,6 +83,20 @@ export async function main() {
 
 	if (AppConfig.pipelineSteps.cleanupHistoricalVehicleEvents) {
 		await cleanupHistoricalVehicleEvents(clickhouseClient);
+	}
+
+	//
+	// Cleanup historical node travel times
+
+	if (AppConfig.pipelineSteps.cleanupHistoricalNodeTravelTimes) {
+		await cleanupHistoricalNodeTravelTimes(clickhouseClient);
+	}
+
+	//
+	// Cleanup historical node travel times aggregation
+
+	if (AppConfig.pipelineSteps.cleanupHistoricalNodeTravelTimesAggregation) {
+		await cleanupHistoricalNodeTravelTimesAggregation(clickhouseClient);
 	}
 
 	Logger.success(`Cleaner completed in ${globalTimer.get()} seconds`);
