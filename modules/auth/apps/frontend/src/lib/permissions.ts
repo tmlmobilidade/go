@@ -172,6 +172,7 @@ const stopActions: PermissionConfig = {
 		{ action: 'update', description: 'Permite editar uma paragem', label: 'Editar', resources: ['AGENCIES'] },
 		{ action: 'delete', description: 'Permite eliminar uma paragem', label: 'Eliminar', resources: ['AGENCIES'] },
 		{ action: 'lock', description: 'Permite bloquear/desbloquear uma paragem', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+		{ action: 'export', description: 'Permite exportar paragens', label: 'Exportar', resources: ['AGENCIES'] },
 		{ action: 'edit_coordinates', description: 'Permite editar as coordenadas de uma paragem', label: 'Editar Coordenadas', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de paragens.',
