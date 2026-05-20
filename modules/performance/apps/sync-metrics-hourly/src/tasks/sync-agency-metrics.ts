@@ -8,6 +8,7 @@ import { computeTopDemandByAgencyByDayType } from '@/syncs/demand_by_agency/top_
 import { syncSupplyByAgencyByDay } from '@/syncs/supply_by_agency/by_day.js';
 import { syncSupplyByAgencyByMonth } from '@/syncs/supply_by_agency/by_month.js';
 import { syncSupplyByAgencyByYear } from '@/syncs/supply_by_agency/by_year.js';
+import { MetricSyncRunner } from '@/utils/run-metric.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -15,26 +16,23 @@ import { Timer } from '@tmlmobilidade/timer';
 
 export const syncAgencyMetrics = async (): Promise<void> => {
 	const timer = new Timer();
+	const runner = new MetricSyncRunner('Agency metrics');
 
 	Logger.title('Starting Agency Demand Metrics Sync');
 	Logger.divider();
 
-	try {
-		await syncDemandByAgencyByDay();
-		await syncDemandByAgencyByMonth();
-		await syncDemandByAgencyByYear();
+	await runner.run('demand_by_agency_by_day', syncDemandByAgencyByDay);
+	await runner.run('demand_by_agency_by_month', syncDemandByAgencyByMonth);
+	await runner.run('demand_by_agency_by_year', syncDemandByAgencyByYear);
 
-		await computeTopDemandByAgency();
-		await computeTopDemandByAgencyByDayType();
+	await runner.runParallel([
+		{ fn: computeTopDemandByAgency, name: 'top_demand_by_agency' },
+		{ fn: computeTopDemandByAgencyByDayType, name: 'top_demand_by_agency_by_day_type' },
+	]);
 
-		await syncSupplyByAgencyByDay();
-		await syncSupplyByAgencyByMonth();
-		await syncSupplyByAgencyByYear();
+	await runner.run('supply_by_agency_by_day', syncSupplyByAgencyByDay);
+	await runner.run('supply_by_agency_by_month', syncSupplyByAgencyByMonth);
+	await runner.run('supply_by_agency_by_year', syncSupplyByAgencyByYear);
 
-		Logger.success(`Finished Agency Demand Metrics Sync (${timer.get()})`);
-	} catch (error) {
-		Logger.error('Failed to sync Agency Demand Metrics');
-		Logger.error(error);
-		throw error;
-	}
+	runner.finish({ successMessage: `Finished Agency Demand Metrics Sync (${timer.get()})` });
 };
