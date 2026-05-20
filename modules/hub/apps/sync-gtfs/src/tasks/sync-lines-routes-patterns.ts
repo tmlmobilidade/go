@@ -9,7 +9,31 @@ import { type Arrival, type CalendarDate, type Route as GtfsRoute, type StopTime
 import { sortCollator } from '@tmlmobilidade/go-hub-pckg-utils';
 import { Alight } from 'gtfs-types';
 import crypto from 'node:crypto';
+
 /* * */
+
+interface PatternStopLookup {
+	district_id: null | string
+	facilities: string[]
+	locality_id: null | string
+	municipality_id: null | string
+}
+
+interface SqliteStopLookupRow {
+	district_id: null | string
+	locality_id: null | string
+	municipality_id: null | string
+	near_fire_station: number
+	near_health_clinic: number
+	near_historic_building: number
+	near_hospital: number
+	near_police_station: number
+	near_school: number
+	near_shopping: number
+	near_transit_office: number
+	near_university: number
+	stop_id: string
+}
 
 export const syncLinesRoutesPatterns = async () => {
 	//
@@ -55,10 +79,60 @@ export const syncLinesRoutesPatterns = async () => {
 	const fetchRawDataTimer = new TIMETRACKER();
 	const { db } = getGtfsSqliteContext();
 
-	// For Stops
-	const allStopsParsedTxt = await apiCache.get('hub:network:stops') as string;
-	const allStopsParsedJson: NetworkStop[] = JSON.parse(allStopsParsedTxt);
-	const allStopsParsedMap = new Map(allStopsParsedJson.map(item => [item.id, item]));
+	// For Stops (source of truth: same-run SQLite stops)
+	const allStopsFromSqliteRaw = db.prepare(`
+		SELECT
+			stop_id,
+			district_id,
+			municipality_id,
+			locality_id,
+			near_health_clinic,
+			near_hospital,
+			near_university,
+			near_school,
+			near_police_station,
+			near_fire_station,
+			near_shopping,
+			near_historic_building,
+			near_transit_office
+		FROM
+			stops
+	`).all() as SqliteStopLookupRow[];
+
+	const allStopsFromSqliteMap = new Map<string, PatternStopLookup>();
+	for (const stopRow of allStopsFromSqliteRaw) {
+		const facilities: string[] = [];
+		if (stopRow.near_health_clinic) facilities.push('health_clinic');
+		if (stopRow.near_hospital) facilities.push('hospital');
+		if (stopRow.near_university) facilities.push('university');
+		if (stopRow.near_school) facilities.push('school');
+		if (stopRow.near_police_station) facilities.push('police_station');
+		if (stopRow.near_fire_station) facilities.push('fire_station');
+		if (stopRow.near_shopping) facilities.push('shopping');
+		if (stopRow.near_historic_building) facilities.push('historic_building');
+		if (stopRow.near_transit_office) facilities.push('transit_office');
+
+		allStopsFromSqliteMap.set(String(stopRow.stop_id), {
+			district_id: stopRow.district_id,
+			facilities,
+			locality_id: stopRow.locality_id,
+			municipality_id: stopRow.municipality_id,
+		});
+	}
+
+	// Optional fallback (legacy cache feed)
+	const allStopsParsedTxt = await apiCache.get('hub:network:stops') as null | string;
+	const allStopsParsedJson: NetworkStop[] = allStopsParsedTxt ? JSON.parse(allStopsParsedTxt) : [];
+	const allStopsFromCacheMap = new Map(
+		allStopsParsedJson.map((item): [string, PatternStopLookup] => [String(item.id), {
+			district_id: item.district_id,
+			facilities: item.facilities ?? [],
+			locality_id: item.locality_id,
+			municipality_id: item.municipality_id,
+		}]),
+	);
+
+	LOGGER.info(`[pattern-import] Stops lookup source sqlite=${allStopsFromSqliteMap.size} cache_fallback=${allStopsFromCacheMap.size}`);
 
 	// For Routes
 	const allRoutesRaw = db.prepare('SELECT * FROM routes').all() as GtfsRoute[];
@@ -105,6 +179,9 @@ export const syncLinesRoutesPatterns = async () => {
 		// Setup a variable to hold the parsed pattern groups
 
 		const parsedPatternsForThisPatternGroup = new Map<string, NetworkPattern>();
+		let patternStopTimesTotal = 0;
+		let patternResolvedStopsTotal = 0;
+		let patternMissedStopsTotal = 0;
 
 		//
 		// For each trip belonging to the current pattern ID,
@@ -118,6 +195,7 @@ export const syncLinesRoutesPatterns = async () => {
 			// Get the stop_times data associated with the current trip
 
 			const stopTimesRaw = db.prepare('SELECT * FROM stop_times WHERE trip_id = ? ORDER BY stop_sequence').all(tripRawData.trip_id) as GtfsStopTime[];
+			patternStopTimesTotal += stopTimesRaw.length;
 
 			//
 			// With the same set of data (stop_times sequence of stops) we can find out different information.
@@ -155,15 +233,20 @@ export const syncLinesRoutesPatterns = async () => {
 				//
 				// Get the stop data associated with the current stop_time
 
-				const stopParsedData: NetworkStop = allStopsParsedMap.get(stopTimeRawData.stop_id);
-				if (!stopParsedData) continue;
+				const stopId = String(stopTimeRawData.stop_id);
+				const stopParsedData = allStopsFromSqliteMap.get(stopId) ?? allStopsFromCacheMap.get(stopId);
+				if (!stopParsedData) {
+					patternMissedStopsTotal++;
+					continue;
+				}
+				patternResolvedStopsTotal++;
 
 				//
 				// Buld the simplified path with only the stop_id and stop_sequence.
 				// This will be used to dictacte if this trip belongs to an existing or a new pattern group.
 
 				stopTimesAsSimplifiedPath.push({
-					id: stopTimeRawData.stop_id,
+					id: stopId,
 					stop_sequence: stopTimeRawData.stop_sequence,
 				});
 
@@ -176,7 +259,7 @@ export const syncLinesRoutesPatterns = async () => {
 					allow_pickup: stopTimeRawData.pickup_type !== Alight.NOT_AVAILABLE,
 					distance: Number(stopTimeRawData.shape_dist_traveled),
 					distance_delta: 0,
-					stop_id: stopTimeRawData.stop_id,
+					stop_id: stopId,
 					stop_sequence: stopTimeRawData.stop_sequence,
 				});
 
@@ -186,7 +269,7 @@ export const syncLinesRoutesPatterns = async () => {
 
 				stopTimesAsSimplifiedSchedule.push({
 					arrival_time: stopTimeRawData.arrival_time,
-					stop_id: stopTimeRawData.stop_id,
+					stop_id: stopId,
 					stop_sequence: stopTimeRawData.stop_sequence,
 				});
 
@@ -197,7 +280,7 @@ export const syncLinesRoutesPatterns = async () => {
 				stopTimesAsCompleteSchedule.push({
 					arrival_time: stopTimeRawData.arrival_time,
 					arrival_time_24h: transformOperationTimeStringIntoDisplayTimeString(stopTimeRawData.arrival_time),
-					stop_id: stopTimeRawData.stop_id,
+					stop_id: stopId,
 					stop_sequence: stopTimeRawData.stop_sequence,
 				});
 
@@ -438,6 +521,11 @@ export const syncLinesRoutesPatterns = async () => {
 		// to an array of trips. Also, the pattern groups themselves should be an array for the current pattern ID.
 
 		const finalizedPatternGroupsData: NetworkPattern[] = Array.from(parsedPatternsForThisPatternGroup.values()).map((item: NetworkPattern) => ({ ...item, trips: Object.values(item.trips) }));
+		const savedPathLength = finalizedPatternGroupsData.reduce((acc, item) => acc + item.path.length, 0);
+
+		const patternSummaryMessage = `[pattern-import] pattern=${patternId} stop_times_total=${patternStopTimesTotal} resolved_stops_total=${patternResolvedStopsTotal} missed_stops_total=${patternMissedStopsTotal} path_len_saved=${savedPathLength}`;
+		if (patternMissedStopsTotal > 0) LOGGER.error(patternSummaryMessage);
+		else LOGGER.info(patternSummaryMessage);
 
 		const patternJson = JSON.stringify(finalizedPatternGroupsData);
 		await apiCache.set('hub:network:patterns:{patternId}', patternJson, { params: { patternId } });

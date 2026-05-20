@@ -53,6 +53,36 @@ export const syncStops = async () => {
 				stop_id
 		) r ON s.stop_id = r.stop_id;
 	`).all() as QueryResult[];
+	const missingStopIdsFromStopTimes = db.prepare(`
+		SELECT
+			COUNT(DISTINCT st.stop_id) AS total
+		FROM
+			stop_times st
+		LEFT JOIN
+			stops s ON s.stop_id = st.stop_id
+		WHERE
+			s.stop_id IS NULL
+	`).get() as { total: number };
+
+	const missingStopIdsSample = db.prepare(`
+		SELECT DISTINCT
+			st.stop_id
+		FROM
+			stop_times st
+		LEFT JOIN
+			stops s ON s.stop_id = st.stop_id
+		WHERE
+			s.stop_id IS NULL
+		ORDER BY
+			st.stop_id
+		LIMIT 5
+	`).all() as { stop_id: string }[];
+
+	if (missingStopIdsFromStopTimes.total > 0) {
+		LOGGER.error(`[pattern-import] stop_times references ${missingStopIdsFromStopTimes.total} stop_ids not found in stops table (sample: ${missingStopIdsSample.map(item => item.stop_id).join(', ')})`);
+	} else {
+		LOGGER.info('[pattern-import] stop_times and stops tables are consistent (no missing stop_ids)');
+	}
 
 	//
 	// For each item, update its entry in the database
@@ -149,6 +179,7 @@ export const syncStops = async () => {
 
 	allStopsData.sort((a, b) => sortCollator.compare(a.id, b.id));
 	await apiCache.set('hub:network:stops', JSON.stringify(allStopsData), {});
+	LOGGER.info(`[pattern-import] Stops rows loaded=${allStops.length} written=${allStopsData.length}`);
 
 	const allStopKeysInTheDatabase = await apiCache.scan('hub:network:stops:*');
 	const staleStopKeys = allStopKeysInTheDatabase.filter(key => !updatedStopKeys.has(key) && key !== 'hub:network:stops');
