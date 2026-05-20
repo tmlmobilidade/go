@@ -66,3 +66,4 @@ LEFT JOIN trip_summary AS ts
     ON ts.hashed_trip_id = e.hashed_trip_id
 WHERE e.stop_id = {stop_id:String}
 ORDER BY e.trip_id, e.vehicle_id, e.stop_sequence
+LIMIT 1 BY trip_id, stop_id
