@@ -5,7 +5,7 @@ import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */
 
-const NAMESPACE = '/eta';
+const NAMESPACE = '/arrivals';
 
 /* * */
 
