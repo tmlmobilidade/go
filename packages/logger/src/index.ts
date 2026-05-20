@@ -58,24 +58,35 @@ class LoggersClass {
 		spacesAfterOrBefore?: number,
 		spacesBefore?: number,
 	) {
+		// Logs an error message to the console and sends error details to Sentry if context is provided.
 		const context = this.isLogErrorContext(contextOrErrorOrSpacesAfter) ? contextOrErrorOrSpacesAfter : undefined;
-		const error = contextOrErrorOrSpacesAfter instanceof Error ? contextOrErrorOrSpacesAfter : message instanceof Error ? message : undefined;
+		const error = contextOrErrorOrSpacesAfter instanceof Error
+			? contextOrErrorOrSpacesAfter
+			: message instanceof Error
+				? message
+				: undefined;
 		const spacesAfter = typeof contextOrErrorOrSpacesAfter === 'number' ? contextOrErrorOrSpacesAfter : spacesAfterOrBefore;
 		const normalizedSpacesBefore = typeof contextOrErrorOrSpacesAfter === 'number' ? spacesAfterOrBefore : spacesBefore;
 		if (normalizedSpacesBefore && normalizedSpacesBefore > 0) this.spacer(normalizedSpacesBefore);
 		const formattedMessage = message
 			? message instanceof Error
 				? message.message
-				: Array.isArray(message) ? this.formatColumns(message) : message
+				: Array.isArray(message)
+					? this.formatColumns(message)
+					: message
 			: context?.message ?? '';
+
+		// If there is context but no error object, create an error to capture the right stack
 		const errorFromCaller = !error && context
 			? (() => {
 				const callerError = new Error(context.message ?? formattedMessage);
-				// Keep Sentry's top frame at the logger callsite (e.g., controller), not inside Logger.error.
+				// Sets error stack trace to the callsite
 				if (typeof Error.captureStackTrace === 'function') Error.captureStackTrace(callerError, this.error);
 				return callerError;
 			})()
 			: undefined;
+
+		// If context exists, send the error to Sentry (LoggerError)
 		if (context) {
 			LoggerError({
 				...context,
@@ -83,31 +94,57 @@ class LoggersClass {
 				message: context.message ?? formattedMessage,
 			});
 		}
+
+		// Output error to the console
 		console.error(`✘ ${formattedMessage}`, error ?? '');
+
+		// Add blank lines after, if requested
 		if (spacesAfter && spacesAfter > 0) this.spacer(spacesAfter);
 	}
 
 	/**
-	 * Loggers an informational message in the console.
-	 * @param message Informational message to display.
-	 * @param spacesAfter Optional number of blank lines to add after the message.
-	 * @param spacesBefore Optional number of blank lines to add before the message.
+	 * Logs an informational message to the console, and to Sentry if context is given.
+	 *
+	 * @param message The message to display.
+	 * @param contextOrSpacesAfter An optional context object (for Sentry) or number of blank lines after the message.
+	 * @param spacesAfterOrBefore If previous param is context, this is blank lines after. If previous param is number, this is blank lines before.
+	 * @param spacesBefore Blank lines before the message (used only if previous params are not numbers).
 	 */
-	info(message?: LoggerMessage, contextOrSpacesAfter?: LogInfoContext | number, spacesAfterOrBefore?: number, spacesBefore?: number) {
+	info(
+		message?: LoggerMessage,
+		contextOrSpacesAfter?: LogInfoContext | number,
+		spacesAfterOrBefore?: number,
+		spacesBefore?: number,
+	) {
+		// Logs an informational message to the console and sends information to Sentry if context is provided.
 		const context = typeof contextOrSpacesAfter === 'object' && contextOrSpacesAfter !== null ? contextOrSpacesAfter : undefined;
 		const spacesAfter = typeof contextOrSpacesAfter === 'number' ? contextOrSpacesAfter : spacesAfterOrBefore;
 		const normalizedSpacesBefore = typeof contextOrSpacesAfter === 'number' ? spacesAfterOrBefore : spacesBefore;
+
+		// Add blank lines before, if requested
 		if (normalizedSpacesBefore && normalizedSpacesBefore > 0) this.spacer(normalizedSpacesBefore);
+
+		// Prepare the formatted message
 		const formattedMessage = message
-			? Array.isArray(message) ? this.formatColumns(message) : message
+			? message instanceof Error
+				? message.message
+				: Array.isArray(message)
+					? this.formatColumns(message)
+					: message
 			: context?.message ?? '';
+
+		// If context exists, send the information to Sentry (LoggerInfo)
 		if (context) {
 			LoggerInfo({
 				...context,
 				message: context.message ?? formattedMessage,
 			});
 		}
+
+		// Output information to the console
 		console.log(`→ ${formattedMessage ?? ''}`);
+
+		// Add blank lines after, if requested
 		if (spacesAfter && spacesAfter > 0) this.spacer(spacesAfter);
 	}
 
