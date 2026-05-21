@@ -1,8 +1,11 @@
 /* * */
 
-import { type LogErrorContext, LoggerError } from './logger/LoggerError/index.js';
-import { LoggerInfo, type LogInfoContext } from './logger/LoggerInfo/index.js';
+import { ErrorIssue, type ErrorIssueContext } from './Issues/ErrorIssue.js';
+import { InfoIssue, type InfoIssueContext } from './Issues/InfoIssue.js';
+import { LoggerError } from './logger/loggerError.js';
+import { LoggerInfo } from './logger/loggerInfo.js';
 
+/* * */
 interface LoggerColumn {
 
 	/**
@@ -23,13 +26,61 @@ interface LoggerColumn {
 }
 
 type LoggerMessage = (LoggerColumn | string)[] | string;
+type LoggerErrorInputContext = Record<string, unknown> & {
+	error?: Error
+	message?: string
+	service?: string
+	silentConsole?: boolean
+};
+type LoggerInfoInputContext = Record<string, unknown> & {
+	message?: string
+	service?: string
+};
 
 /* * */
 
 class LoggersClass {
 	//
 
-	private isLogErrorContext(value: unknown): value is LogErrorContext {
+	/**
+	 * Logs an error message to the console and sends error details to Sentry if context is provided.
+	 * @param context The context object containing the error message and context.
+	 */
+	logError(context: LoggerErrorInputContext) {
+		LoggerError({
+			...context,
+			message: context.message ?? 'Unknown error',
+			service: context.service ?? this.getDefaultService(),
+		});
+	}
+
+	/**
+	 * Logs an info message to the console and sends info details to Sentry if context is provided.
+	 * @param context The context object containing the info message and context.
+	 */
+	logInfo(context: LoggerInfoInputContext) {
+		LoggerInfo({
+			...context,
+			message: context.message ?? 'Unknown info',
+			service: context.service ?? this.getDefaultService(),
+		});
+	}
+
+	/**
+	 * Emits all logger methods once for testing.
+	 * @param service Service name used for Sentry tagging.
+	 */
+	showAll(service: string) {
+		const feature = 'logger-test';
+		this.info('Logger.info test', { feature, message: 'Logger.info test', service });
+		this.logInfo({ feature, message: 'Logger.logInfo test', service });
+	}
+
+	private getDefaultService() {
+		return process.env.SERVICE_NAME ?? process.env.npm_package_name ?? 'unknown-service';
+	}
+
+	private isErrorIssueContext(value: unknown): value is LoggerErrorInputContext {
 		return typeof value === 'object' && value !== null && !(value instanceof Error);
 	}
 
@@ -54,12 +105,12 @@ class LoggersClass {
 	 */
 	error(
 		message?: Error | LoggerMessage,
-		contextOrErrorOrSpacesAfter?: Error | LogErrorContext | number,
+		contextOrErrorOrSpacesAfter?: Error | LoggerErrorInputContext | number,
 		spacesAfterOrBefore?: number,
 		spacesBefore?: number,
 	) {
 		// Logs an error message to the console and sends error details to Sentry if context is provided.
-		const context = this.isLogErrorContext(contextOrErrorOrSpacesAfter) ? contextOrErrorOrSpacesAfter : undefined;
+		const context = this.isErrorIssueContext(contextOrErrorOrSpacesAfter) ? contextOrErrorOrSpacesAfter : undefined;
 		const error = contextOrErrorOrSpacesAfter instanceof Error
 			? contextOrErrorOrSpacesAfter
 			: message instanceof Error
@@ -79,7 +130,8 @@ class LoggersClass {
 		// If there is context but no error object, create an error to capture the right stack
 		const errorFromCaller = !error && context
 			? (() => {
-				const callerError = new Error(context.message ?? formattedMessage);
+				const contextMessage = typeof context.message === 'string' ? context.message : formattedMessage;
+				const callerError = new Error(contextMessage);
 				// Sets error stack trace to the callsite
 				if (typeof Error.captureStackTrace === 'function') Error.captureStackTrace(callerError, this.error);
 				return callerError;
@@ -88,15 +140,19 @@ class LoggersClass {
 
 		// If context exists, send the error to Sentry (LoggerError)
 		if (context) {
-			LoggerError({
+			const contextMessage = typeof context.message === 'string' ? context.message : formattedMessage;
+			ErrorIssue({
 				...context,
 				error: error ?? context.error ?? errorFromCaller,
-				message: context.message ?? formattedMessage,
+				message: contextMessage,
+				service: context.service ?? this.getDefaultService(),
 			});
 		}
 
-		// Output error to the console
-		console.error(`✘ ${formattedMessage}`, error ?? '');
+		// Output error to the console unless explicitly silenced by the caller.
+		if (!context?.silentConsole) {
+			console.error(`✘ ${formattedMessage}`, error ?? '');
+		}
 
 		// Add blank lines after, if requested
 		if (spacesAfter && spacesAfter > 0) this.spacer(spacesAfter);
@@ -112,7 +168,7 @@ class LoggersClass {
 	 */
 	info(
 		message?: LoggerMessage,
-		contextOrSpacesAfter?: LogInfoContext | number,
+		contextOrSpacesAfter?: LoggerInfoInputContext | number,
 		spacesAfterOrBefore?: number,
 		spacesBefore?: number,
 	) {
@@ -135,9 +191,11 @@ class LoggersClass {
 
 		// If context exists, send the information to Sentry (LoggerInfo)
 		if (context) {
-			LoggerInfo({
+			const contextMessage = typeof context.message === 'string' ? context.message : formattedMessage;
+			InfoIssue({
 				...context,
-				message: context.message ?? formattedMessage,
+				message: contextMessage,
+				service: context.service ?? this.getDefaultService(),
 			});
 		}
 
@@ -245,9 +303,9 @@ export const Logger = new LoggersClass();
 /**
  * Logger error context interface.
  */
-export type { LogErrorContext };
+export type { ErrorIssueContext };
 
 /**
  * Logger info context interface.
  */
-export type { LogInfoContext };
+export type { InfoIssueContext };
