@@ -11,6 +11,7 @@ export * from './inputs';
 export * from './layout';
 export * from './loaders';
 export * from './map';
+export * from './menu';
 export * from './modals';
 export * from './panes';
 export * from './proposedChanges';
