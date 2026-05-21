@@ -8,7 +8,7 @@ import { Text } from '../../display/Text';
 
 /* * */
 
-interface TopbarMenuItemProps {
+interface MenuItemProps {
 	description?: ReactNode
 	href?: string
 	onClick?: () => void
@@ -19,14 +19,14 @@ interface TopbarMenuItemProps {
 
 /* * */
 
-export function TopbarMenuItem({
+export function MenuItem({
 	description,
 	href,
 	onClick,
 	rel,
 	target,
 	title,
-}: TopbarMenuItemProps) {
+}: MenuItemProps) {
 	return (
 		<Menu.Item
 			component={href ? Link : 'button'}

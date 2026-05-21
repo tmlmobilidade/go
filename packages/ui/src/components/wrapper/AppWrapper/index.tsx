@@ -5,10 +5,10 @@ import { type PropsWithChildren, Suspense } from 'react';
 import styles from './styles.module.css';
 
 import { useLayoutContext } from '../../../contexts/Layout.context';
+import { useUserPreference } from '../../../hooks/use-user-preference';
 import { LoadingSection } from '../../loaders/LoadingSection';
 import { Sidebar } from '../../sidebar/Sidebar';
-import { Topbar } from '../../topbar/Topbar';
-import { AppWrapperLogo } from '../AppWrapperLogo';
+import { clampSidebarRailWidth, SIDEBAR_RAIL_WIDTH_DEFAULT } from '../../sidebar/sidebar-rail-width';
 
 /* * */
 
@@ -19,6 +19,15 @@ export function AppWrapper({ children }: PropsWithChildren) {
 	// A. Setup variables
 
 	const layoutContext = useLayoutContext();
+
+	const [sidebarHidden, setSidebarHidden] = useUserPreference<boolean>('ui', 'sidebar_hidden', false);
+	const [sidebarWidthPref, setSidebarWidthPref] = useUserPreference<number>('ui', 'sidebar_width_px', SIDEBAR_RAIL_WIDTH_DEFAULT);
+
+	const sidebarWidthPx = clampSidebarRailWidth(sidebarWidthPref);
+
+	const handleSidebarWidthChange = (widthPx: number) => {
+		setSidebarWidthPref(clampSidebarRailWidth(widthPx));
+	};
 
 	//
 	// B. Render components
@@ -36,9 +45,12 @@ export function AppWrapper({ children }: PropsWithChildren) {
 	return (
 		<Suspense fallback={<LoadingSection fullHeight />}>
 			<div className={styles.container}>
-				<AppWrapperLogo />
-				<Topbar />
-				<Sidebar />
+				<Sidebar
+					collapsed={sidebarHidden}
+					onCollapsedChange={setSidebarHidden}
+					onWidthPxChange={handleSidebarWidthChange}
+					widthPx={sidebarWidthPx}
+				/>
 				<div className={styles.content}>{children}</div>
 			</div>
 		</Suspense>

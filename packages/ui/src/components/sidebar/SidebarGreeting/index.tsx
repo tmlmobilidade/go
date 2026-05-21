@@ -8,11 +8,13 @@ import { Label } from '../../display/Label';
 
 /* * */
 
-const AVAILABLE_GREETINGS = ['Olá', 'Hi', 'Hey', 'Oi', 'Hallo', 'Hola', 'Ciao', 'Hej'];
+export interface SidebarGreetingProps {
+	availableGreetings?: string[]
+}
 
 /* * */
 
-export function TopbarGreeting() {
+export function SidebarGreeting({ availableGreetings = ['Olá', 'Hi', 'Hey', 'Oi', 'Hallo', 'Hola', 'Ciao', 'Hej'] }: SidebarGreetingProps) {
 	//
 
 	//
@@ -20,7 +22,7 @@ export function TopbarGreeting() {
 
 	const meContext = useMeContext();
 
-	const [drawnGreeting] = useState(AVAILABLE_GREETINGS[(AVAILABLE_GREETINGS.length * Math.random()) | 0]);
+	const [drawnGreeting] = useState(availableGreetings[(availableGreetings.length * Math.random()) | 0]);
 
 	//
 	// B. Render components
