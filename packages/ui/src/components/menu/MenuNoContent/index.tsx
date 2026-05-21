@@ -1,17 +1,19 @@
 'use client';
 
+/* * */
+
 import React from 'react';
 
 import { Section } from '../../layout/Section';
 
 /* * */
 
-interface TopbarMenuNoContentProps {
+interface MenuNoContentProps {
 	icon: React.ElementType
 	text: string
 }
 
-export function TopbarMenuNoContent({ icon, text }: TopbarMenuNoContentProps) {
+export function MenuNoContent({ icon, text }: MenuNoContentProps) {
 	//
 
 	//

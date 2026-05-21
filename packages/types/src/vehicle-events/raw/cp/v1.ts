@@ -22,7 +22,7 @@ export const RawVehicleEventCpV1PayloadSchema = z.object({
 		}),
 		timestamp: z.number().nullish(),
 		trip: z.object({
-			schedule_relationship: z.enum(['SCHEDULED', 'NOT_SCHEDULED']).nullish(),
+			schedule_relationship: z.enum(['SCHEDULED', 'NOT_SCHEDULED', 'CANCELED']).nullish(),
 			trip_id: z.string(),
 		}),
 		vehicle: z.object({
