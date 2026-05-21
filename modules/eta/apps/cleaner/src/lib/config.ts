@@ -7,6 +7,8 @@ export const AppConfig = Object.freeze({
 		cleanupCurrentRides: true,
 		cleanupCurrentVehicleEvents: true,
 		cleanupCurrentWaypoints: true,
+		cleanupHistoricalNodeTravelTimes: true,
+		cleanupHistoricalNodeTravelTimesAggregation: true,
 		cleanupHistoricalRides: true,
 		cleanupHistoricalShapes: true,
 		cleanupHistoricalVehicleEvents: true,
