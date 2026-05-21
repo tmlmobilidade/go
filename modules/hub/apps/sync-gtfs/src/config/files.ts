@@ -92,6 +92,36 @@ const allGtfsFiles: GtfsFile[] = [
 	},
 
 	{
+		_key: 'calendar',
+		batch_size: 10000,
+		columns: [
+			{ indexed: true, name: 'service_id', type: 'TEXT' },
+			{ name: 'monday', type: 'TEXT' },
+			{ name: 'tuesday', type: 'TEXT' },
+			{ name: 'wednesday', type: 'TEXT' },
+			{ name: 'thursday', type: 'TEXT' },
+			{ name: 'friday', type: 'TEXT' },
+			{ name: 'saturday', type: 'TEXT' },
+			{ name: 'sunday', type: 'TEXT' },
+			{ name: 'start_date', type: 'TEXT' },
+			{ name: 'end_date', type: 'TEXT' },
+		],
+		extension: 'txt',
+		headers: [
+			'service_id',
+			'monday',
+			'tuesday',
+			'wednesday',
+			'thursday',
+			'friday',
+			'saturday',
+			'sunday',
+			'start_date',
+			'end_date',
+		],
+	},
+
+	{
 		_key: 'calendar_dates',
 		batch_size: 10000,
 		columns: [
