@@ -2,8 +2,7 @@
 
 import { ErrorIssue, type ErrorIssueContext } from './Issues/ErrorIssue.js';
 import { InfoIssue, type InfoIssueContext } from './Issues/InfoIssue.js';
-import { LoggerError } from './logger/loggerError.js';
-import { LoggerInfo } from './logger/loggerInfo.js';
+import { Logs, LogsContext } from './logs.js';
 
 /* * */
 interface LoggerColumn {
@@ -43,23 +42,11 @@ class LoggersClass {
 	//
 
 	/**
-	 * Logs an error message to the console and sends error details to Sentry if context is provided.
-	 * @param context The context object containing the error message and context.
-	 */
-	logError(context: LoggerErrorInputContext) {
-		LoggerError({
-			...context,
-			message: context.message ?? 'Unknown error',
-			service: context.service ?? this.getDefaultService(),
-		});
-	}
-
-	/**
 	 * Logs an info message to the console and sends info details to Sentry if context is provided.
 	 * @param context The context object containing the info message and context.
 	 */
-	logInfo(context: LoggerInfoInputContext) {
-		LoggerInfo({
+	logs(context: Omit<LogsContext, 'message'> & { message: string }) {
+		Logs({
 			...context,
 			message: context.message ?? 'Unknown info',
 			service: context.service ?? this.getDefaultService(),
@@ -70,10 +57,9 @@ class LoggersClass {
 	 * Emits all logger methods once for testing.
 	 * @param service Service name used for Sentry tagging.
 	 */
-	showAll(service: string) {
-		const feature = 'logger-test';
-		this.info('Logger.info test', { feature, message: 'Logger.info test', service });
-		this.logInfo({ feature, message: 'Logger.logInfo test', service });
+	showAll(logsContext: LogsContext) {
+		this.info('Logger.info test', { message: 'Logger.info test', ...logsContext });
+		this.logs({ message: 'Logger.logs test', ...logsContext });
 	}
 
 	private getDefaultService() {

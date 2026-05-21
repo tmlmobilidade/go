@@ -10,5 +10,5 @@ export function ensureLoggerStartup() {
 	initSentry().catch(() => {
 		Logger.error(new Error('Error initializing Sentry:'), { message: 'Error initializing Sentry:', service: 'alerts-frontend' });
 	});
-	Logger.showAll('alerts-frontend');
+	Logger.showAll({ message: 'Alerts frontend initialized', module: 'alerts', severity: 'info', tag: 'frontend' });
 }

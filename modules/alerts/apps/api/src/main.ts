@@ -24,7 +24,7 @@ import { initSentry } from '@tmlmobilidade/logger/server';
 	initSentry().catch(() => {
 		Logger.error(new Error('Error initializing Sentry:'), { message: 'Error initializing Sentry:', service: 'alerts-api' });
 	});
-	Logger.showAll('alerts-api');
+	Logger.showAll({ message: 'Alerts API initialized', module: 'alerts', severity: 'info', tag: 'API' });
 
 	await fastifyService.start();
 

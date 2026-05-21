@@ -12,13 +12,6 @@ import { type Alert, type CreateAlertDto, CreateAlertSchema, type File, Permissi
 export class AlertsController {
 	//
 
-	static {
-		Logger.logInfo({
-			message: 'Alerts controller initialized',
-			service: 'alerts-api',
-		});
-	}
-
 	/**
 	 * Insert a new scheduled Alert into the database.
 	 * @param request The request object containing the alert data in the body.
