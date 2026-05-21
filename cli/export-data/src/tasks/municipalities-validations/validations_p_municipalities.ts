@@ -1,17 +1,9 @@
+import { type ExportType, type TaskProps } from '@/types.js';
+import { Dates } from '@tmlmobilidade/dates';
+import { fetchCalendarData } from '@tmlmobilidade/go-performance-pckg-dates';
+import { municipalities, simplifiedApexValidations, stops } from '@tmlmobilidade/interfaces';
 import ExcelJS from 'exceljs';
 import fs from 'node:fs';
-
-import { type ExportType, type TaskProps } from '@/types.js';
-
-import { Dates } from '@tmlmobilidade/dates';
-
-import {
-	municipalities,
-	simplifiedApexValidations,
-	stops,
-} from '@tmlmobilidade/interfaces';
-
-import { fetchCalendarData } from '@tmlmobilidade/go-performance-pckg-dates';
 
 /* * */
 
@@ -80,11 +72,11 @@ export async function exportValidationsPMunicipalities({
 	const municipalitiesData = await municipalitiesCol
 		.find({})
 		.toArray() as Array<{
-			_id: string
-			properties?: {
-				name?: string
-			}
-		}>;
+		_id: string
+		properties?: {
+			name?: string
+		}
+	}>;
 
 	const municipalityMap = new Map<string, string>();
 
@@ -149,9 +141,9 @@ export async function exportValidationsPMunicipalities({
 		.fromOperationalDate(context.dates.start, 'Europe/Lisbon')
 		.set({
 			hour: 4,
+			millisecond: 0,
 			minute: 0,
 			second: 0,
-			millisecond: 0,
 		})
 		.unix_timestamp;
 
@@ -160,9 +152,9 @@ export async function exportValidationsPMunicipalities({
 		.plus({ days: 1 })
 		.set({
 			hour: 4,
+			millisecond: 0,
 			minute: 0,
 			second: 0,
-			millisecond: 0,
 		})
 		.unix_timestamp;
 
@@ -179,42 +171,42 @@ export async function exportValidationsPMunicipalities({
 						agency_id: {
 							$in: ['41', '42', '43', '44'],
 						},
-						is_passenger: true,
 						created_at: {
 							$gte: startTimestamp,
 							$lt: endTimestamp,
 						},
+						is_passenger: true,
 					},
 				},
 				{
 					$addFields: {
 						operational_date: {
 							$let: {
+								in: {
+									$dateToString: {
+										date: {
+											$cond: {
+												else: '$$eventDate',
+												if: { $lt: ['$$hour', 4] },
+												then: {
+													$dateSubtract: {
+														amount: 1,
+														startDate: '$$eventDate',
+														unit: 'day',
+													},
+												},
+											},
+										},
+										format: '%Y%m%d',
+										timezone: 'Europe/Lisbon',
+									},
+								},
 								vars: {
+									eventDate: { $toDate: '$created_at' },
 									hour: {
 										$hour: {
 											date: { $toDate: '$created_at' },
 											timezone: 'Europe/Lisbon',
-										},
-									},
-									eventDate: { $toDate: '$created_at' },
-								},
-								in: {
-									$dateToString: {
-										format: '%Y%m%d',
-										timezone: 'Europe/Lisbon',
-										date: {
-											$cond: {
-												if: { $lt: ['$$hour', 4] },
-												then: {
-													$dateSubtract: {
-														startDate: '$$eventDate',
-														unit: 'day',
-														amount: 1,
-													},
-												},
-												else: '$$eventDate',
-											},
 										},
 									},
 								},
@@ -225,9 +217,9 @@ export async function exportValidationsPMunicipalities({
 				{
 					$group: {
 						_id: {
-							stop_id: '$stop_id',
 							agency_id: '$agency_id',
 							date: '$operational_date',
+							stop_id: '$stop_id',
 						},
 						validations: { $sum: 1 },
 					},
@@ -300,9 +292,9 @@ export async function exportValidationsPMunicipalities({
 		worksheet.addRow({
 			day,
 			day_type: calendarInfo?.day_type || '',
-			period: calendarInfo?.period || '',
-			operator,
 			municipality,
+			operator,
+			period: calendarInfo?.period || '',
 			validations: validationsCount,
 		});
 	}
