@@ -11,7 +11,7 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@amplitude/analytics-browser": "2.42.3",
+		"@amplitude/analytics-browser": "2.42.4",
 		"@mantine/carousel": "9.2.1",
 		"@mantine/charts": "9.2.1",
 		"@mantine/core": "9.2.1",
@@ -65,5 +65,5 @@
 		"react": "19.2.6",
 		"react-dom": "19.2.6"
 	},
-	"packageManager": "npm@11.14.1"
+	"packageManager": "npm@11.15.0"
 }
