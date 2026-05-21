@@ -12,6 +12,10 @@ import calendarEvent from '@assets/global/map/calendar-event.png';
 import carCrash from '@assets/global/map/car-crash.png';
 import cloudStorm from '@assets/global/map/cloud-storm.png';
 import infoTriangle from '@assets/global/map/info-triangle.png';
+import mapLineDirectionOffsetPadding from '@assets/global/map/map-line-direction-offset-padding.png';
+import mapLineDirectionOffset from '@assets/global/map/map-line-direction-offset.png';
+import mapLineDirection from '@assets/global/map/map-line-direction.png';
+import mapPin from '@assets/global/map/map-pin.png';
 import needlePin from '@assets/global/map/needle-pin.png';
 import shapeDirection from '@assets/global/map/shape-direction.png';
 import speakerphone from '@assets/global/map/speakerphone.png';
@@ -26,6 +30,11 @@ import tool from '@assets/global/map/tool.png';
 const u = imageAssetUrl;
 
 export const MAP_LOAD_ASSETS = [
+	{ name: 'map-pin', sdf: false, url: u(mapPin) },
+	{ name: 'map-line-direction', sdf: true, url: u(mapLineDirection) },
+	{ name: 'map-line-direction-offset', sdf: true, url: u(mapLineDirectionOffset) },
+	{ name: 'map-line-direction-offset-padding', sdf: true, url: u(mapLineDirectionOffsetPadding) },
+	/* * */
 	{ name: 'icon-car-crash', sdf: false, url: u(carCrash) },
 	{ name: 'icon-barrier-block', sdf: false, url: u(barrierBlock) },
 	{ name: 'icon-speakerphone', sdf: false, url: u(speakerphone) },
