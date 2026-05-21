@@ -12,6 +12,11 @@ function isEqual(a: unknown, b: unknown) {
 	return JSON.stringify(a) === JSON.stringify(b);
 }
 
+export interface SetUserPreferenceOptions {
+	/** `false` skips persistence; `true` (default) debounces persistence (~500ms). */
+	save?: boolean
+}
+
 /**
  * A hook to manage user preferences as state.
  */
@@ -19,7 +24,7 @@ export function useUserPreference<T extends UserPreferenceValue>(
 	scope: string,
 	key: string,
 	defaultValue: T,
-): [T, (value: T, options?: { save?: boolean }) => void, (value: T) => void] {
+): [T, (value: T, options?: SetUserPreferenceOptions) => void] {
 	//
 
 	//
@@ -62,15 +67,7 @@ export function useUserPreference<T extends UserPreferenceValue>(
 		meContext.actions.updatePreference(scope, key, value);
 	}, 500);
 
-	const savePreferenceValueNow = (value: T) => {
-		hasLocalUpdateRef.current = true;
-		latestLocalValueRef.current = value;
-
-		savePreferenceValueDebounced.cancel();
-		meContext.actions.updatePreference(scope, key, value);
-	};
-
-	const handleSetPreferenceValue = (value: T, options?: { save?: boolean }) => {
+	const handleSetPreferenceValue = (value: T, options?: SetUserPreferenceOptions) => {
 		hasLocalUpdateRef.current = true;
 		latestLocalValueRef.current = value;
 
@@ -84,7 +81,7 @@ export function useUserPreference<T extends UserPreferenceValue>(
 	//
 	// D. Return
 
-	return [preferenceValue, handleSetPreferenceValue, savePreferenceValueNow];
+	return [preferenceValue, handleSetPreferenceValue];
 
 	//
 }
