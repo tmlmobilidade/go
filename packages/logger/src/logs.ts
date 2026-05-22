@@ -38,17 +38,17 @@ export interface LogsContext {
  *   message: 'Created alert successfully',
  *   module: 'alerts',
  *   severity: 'info',
- *   tag: 'API',
+ *   app: 'API',
  *   alertId: 123
  * });
  */
 export const Logs = (context: LogsContext): void => {
-	const { message, module, severity, tag } = context;
+	const { app, message, module, severity } = context;
 	logger.info(message, {
 		...context,
+		app,
 		message,
 		module,
 		severity,
-		tag,
 	});
 };
