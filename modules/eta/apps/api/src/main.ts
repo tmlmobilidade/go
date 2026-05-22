@@ -10,7 +10,7 @@ import { FastifyService } from '@tmlmobilidade/fastify';
 	//
 
 	const fastifyService = FastifyService.getInstance({
-		origin: getModuleConfig('eta', 'cors_origin'),
+		origin: true,
 		port: getModuleConfig('eta', 'api_port'),
 	});
 

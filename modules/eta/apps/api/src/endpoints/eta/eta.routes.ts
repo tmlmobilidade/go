@@ -5,7 +5,7 @@ import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */
 
-const NAMESPACE = '/eta';
+const NAMESPACE = '/arrivals';
 
 /* * */
 
@@ -26,8 +26,13 @@ server.register(
 		);
 
 		instance.get(
-			'/stop/:stopId',
+			'/by_stop/:stopId',
 			EtaController.getByStopId,
+		);
+
+		instance.get(
+			'/by_pattern/:patternId',
+			EtaController.getByPatternId,
 		);
 
 		next();

@@ -1,0 +1,10 @@
+---
+description: GO monorepo structure and shared packages — always loaded for all work in this repo
+globs:
+alwaysApply: true
+---
+
+@skills/monorepo.md
+@skills/packages.md
+
+You are working inside the GO monorepo — TML's core platform for managing public transport operations. Always use the established module structure, naming conventions, and shared packages described above. Never introduce external packages that duplicate what @tmlmobilidade/* already provides.

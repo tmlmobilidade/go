@@ -313,9 +313,10 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('eta', 'api_url')}`,
 
 		// ETA
-		ETA_DETAIL: (tripId: string) => `${getModuleConfig('eta', 'api_url')}/eta/${tripId}`,
-		ETA_LIST: `${getModuleConfig('eta', 'api_url')}/eta`,
-		ETA_STOP: (stopId: string) => `${getModuleConfig('eta', 'api_url')}/eta/stop/${stopId}`,
+		ARRIVALS_BY_PATTERN: (patternId: string) => `${getModuleConfig('eta', 'api_url')}/arrivals/by_pattern/${patternId}`,
+		ARRIVALS_BY_STOP: (stopId: string) => `${getModuleConfig('eta', 'api_url')}/arrivals/by_stop/${stopId}`,
+		ARRIVALS_DETAIL: (tripId: string) => `${getModuleConfig('eta', 'api_url')}/arrivals/${tripId}`,
+		ARRIVALS_LIST: `${getModuleConfig('eta', 'api_url')}/arrivals`,
 	},
 
 	exporter: {

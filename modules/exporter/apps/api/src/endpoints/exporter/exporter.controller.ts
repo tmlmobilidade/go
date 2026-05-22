@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { fileExports, files } from '@tmlmobilidade/interfaces';
 import { type CreateFileExportDto, type FileExport } from '@tmlmobilidade/types';
@@ -9,7 +9,6 @@ import { type CreateFileExportDto, type FileExport } from '@tmlmobilidade/types'
 
 export class ExporterController {
 	//
-
 	/**
 	 * Returns an Agency by ID.
 	 * @param request The request object
