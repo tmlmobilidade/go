@@ -10,7 +10,9 @@ import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 
 /* * */
 
-export class VehiclesController {
+export class RealtimeController {
+	//
+
 	static async getVehiclesJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
 		const raw = await readThroughHubJson(
 			'hub:network:vehicles',
@@ -65,4 +67,6 @@ export class VehiclesController {
 			.code(HTTP_STATUS.OK)
 			.send(Buffer.from(buffer));
 	}
+
+	//
 }
