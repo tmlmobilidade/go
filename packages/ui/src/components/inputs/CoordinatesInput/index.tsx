@@ -86,6 +86,8 @@ export function CoordinatesInput({
 	 */
 	const [coordinates, setCoordinates] = useState<CoordinatesTuple>(value ?? defaultValue ?? [undefined, undefined]);
 	const [focusedIndex, setFocusedIndex] = useState<0 | 1 | null>(null);
+	const coordinatesRef = useRef(coordinates);
+	coordinatesRef.current = coordinates;
 	const onChangeDelayRef = useRef<null | ReturnType<typeof setTimeout>>(null);
 
 	//
@@ -150,9 +152,22 @@ export function CoordinatesInput({
 		return parsed;
 	}, []);
 
+	const notifyChange = useCallback((newCoords: CoordinatesTuple) => {
+		if (newCoords[0] === undefined && newCoords[1] === undefined) {
+			onChange?.(undefined);
+			return;
+		}
+		onChange?.(newCoords);
+	}, [onChange]);
+
+	const applyCoordinates = useCallback((nextCoords: CoordinatesTuple) => {
+		setCoordinates(nextCoords);
+		notifyChange(nextCoords);
+	}, [notifyChange]);
+
 	const commitCoordinates = useCallback((newCoords: CoordinatesTuple) => {
-		setCoordinates(newCoords);
-	}, []);
+		applyCoordinates(newCoords);
+	}, [applyCoordinates]);
 
 	const getDecimalInputProps = useCallback((index: 0 | 1) => {
 		if (focusedIndex === index) return {};
@@ -168,11 +183,8 @@ export function CoordinatesInput({
 	}, []);
 
 	const commitCoordinateAtIndex = useCallback((index: 0 | 1, valueAtIndex: number | undefined) => {
-		setCoordinates((prev) => {
-			const nextCoords = buildCoordsAtIndex(prev, index, valueAtIndex);
-			return nextCoords;
-		});
-	}, []);
+		applyCoordinates(buildCoordsAtIndex(coordinatesRef.current, index, valueAtIndex));
+	}, [applyCoordinates]);
 
 	//
 

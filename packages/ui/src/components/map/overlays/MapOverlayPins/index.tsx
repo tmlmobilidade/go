@@ -49,21 +49,28 @@ export function MapOverlayPins({ focusOnChange, id, pinsData, visible = true }: 
 		if (!focusOnChange) return;
 		// Skip while the map is still loading
 		if (mapViewContext.flags.loading) return;
-		// Skip if no map is available
-		if (!mapViewContext.ref.map.current) return;
 		// Skip if no pin coordinates are available
 		if (!pinsData?.features.length) return;
-		// Disable auto zoom (to prevent collisions)
-		mapViewContext.actions.toggleAutoZoom(false);
-		// If there is more than one feature, center the map on them
-		if (pinsData.features.length > 1) {
-			centerMapView(mapViewContext.ref.map.current, pinsData.features);
-		}
-		// If there is only one feature, move the map to it
-		else if (pinsData.features[0]) {
-			moveMapView(mapViewContext.ref.map.current, pinsData.features[0].geometry.coordinates);
-		}
-	}, [focusOnChange, mapViewContext.actions, mapViewContext.flags.loading, mapViewContext.ref.map, pinsData]);
+
+		const timer = window.setTimeout(() => {
+			const map = mapViewContext.ref.map.current;
+			if (!map) return;
+
+			// Disable auto zoom (to prevent collisions)
+			mapViewContext.actions.toggleAutoZoom(false);
+			// If there is more than one feature, center the map on them
+			if (pinsData.features.length > 1) {
+				centerMapView(map, pinsData.features);
+			}
+			// If there is only one feature, move the map to it
+			else if (pinsData.features[0]) {
+				moveMapView(map, pinsData.features[0].geometry.coordinates);
+			}
+		}, 100);
+
+		return () => window.clearTimeout(timer);
+		// eslint-disable-next-line react-hooks/exhaustive-deps -- mapViewContext.actions/ref used inside timeout; listing them re-runs every frame
+	}, [focusOnChange, mapViewContext.flags.loading, pinsData]);
 
 	//
 	// C. Render components

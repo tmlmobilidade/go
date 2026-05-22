@@ -3,37 +3,11 @@
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { getBaseGeoJsonFeatureCollection, isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
-import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapOverlayPins, type MapOverlayPinsPointDataProps, MapView, moveMapView, useMapViewContext } from '@tmlmobilidade/ui';
+import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapOverlayPins, type MapOverlayPinsPointDataProps, MapView } from '@tmlmobilidade/ui';
 import { type Point } from 'geojson';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 
 /* * */
-
-interface StopCreateStep1MapFlyToCoordinatesProps {
-	latitude: number | undefined
-	longitude: number | undefined
-}
-
-function StopCreateStep1MapFlyToCoordinates({ latitude, longitude }: StopCreateStep1MapFlyToCoordinatesProps) {
-	const mapViewContext = useMapViewContext();
-
-	useEffect(() => {
-		// Wait until the map is ready and coordinates were committed to the form (on blur)
-		if (mapViewContext.flags.loading) return;
-
-		const validatedLatitude = isValidLatitude(latitude);
-		const validatedLongitude = isValidLongitude(longitude);
-		if (!validatedLatitude || !validatedLongitude) return;
-
-		const map = mapViewContext.ref.map.current;
-		if (!map) return;
-
-		mapViewContext.actions.toggleAutoZoom(false);
-		moveMapView(map, [validatedLongitude, validatedLatitude]);
-	}, [latitude, longitude, mapViewContext.actions, mapViewContext.flags.loading, mapViewContext.ref.map]);
-
-	return null;
-}
 
 export function StopCreateStep1Map() {
 	//
@@ -105,7 +79,6 @@ export function StopCreateStep1Map() {
 
 	return (
 		<MapView cursor="crosshair" height={400} id="create-stop-map" onClick={handleMapClick}>
-			<StopCreateStep1MapFlyToCoordinates latitude={latitude} longitude={longitude} />
 			<MapOverlayMultipleStops
 				data={stopsAsGeojsonFC}
 				id="stops-list"
@@ -114,6 +87,7 @@ export function StopCreateStep1Map() {
 			<MapOverlayPins
 				id="selected-coordinates"
 				pinsData={selectedCoordinatesMapData}
+				focusOnChange
 			/>
 		</MapView>
 	);
