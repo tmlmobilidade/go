@@ -5,7 +5,9 @@ import { DateTime } from 'luxon';
 
 /* * */
 
-export class TimeController {
+export class DebugController {
+	//
+
 	static async getTime(request: FastifyRequest, reply: FastifyReply<unknown>) {
 		return reply
 			.code(200)
@@ -19,4 +21,6 @@ export class TimeController {
 				}),
 			);
 	}
+
+	//
 }
