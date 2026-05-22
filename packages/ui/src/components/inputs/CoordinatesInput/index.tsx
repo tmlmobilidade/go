@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Description } from '../../common';
 import { Label } from '../../display';
@@ -10,6 +10,7 @@ import { NumberInput } from '../NumberInput';
 /* * */
 
 const clamp = (val: number, min: number, max: number) => Math.min(Math.max(val, min), max);
+const COORDINATES_CHANGE_DELAY_MS = 500;
 
 /* * */
 
@@ -23,9 +24,9 @@ interface CoordinatesInputProps {
 	 */
 	key: string
 	label?: string
-	onChange?: (changed: [number, number]) => void
+	onChange?: (changed: [number | undefined, number | undefined] | undefined) => void
 	onPaste?: (pastedValues: string[]) => void
-	value?: [number, number]
+	value?: [number | undefined, number | undefined] | undefined
 }
 
 /**
@@ -41,9 +42,9 @@ interface CoordinatesInputProps {
  *   - disabled?: boolean — Disables both input fields.
  *   - key: string — Unique key (required for correct re-mounting in forms).
  *   - label?: string — Field label (defaults to "Coordenadas").
- *   - onChange?: (changed: [number, number]) => void — Called when coordinates are changed.
+ *   - onChange?: (changed: [number | undefined, number | undefined] | undefined) => void — Called when coordinates change; `undefined` only when both are cleared.
  *   - onPaste?: (pastedValues: string[]) => void — Called when user pastes data.
- *   - value?: [number, number] — Controlled value.
+ *   - value?: [number | undefined, number | undefined] — Controlled value.
  *
  * Usage:
  *   <CoordinatesInput
@@ -66,9 +67,10 @@ export function CoordinatesInput({
 
 	/**
 	 * Store current Latitude and Longitude tuple.
-	 * Priority: controlled `value` > uncontrolled `defaultValue` > fallback [0, 0].
+	 * Priority: controlled `value` > uncontrolled `defaultValue` > fallback [undefined, undefined].
 	 */
-	const [coordinates, setCoordinates] = useState<[number, number]>(defaultValue ?? value ?? [0, 0]);
+	const [coordinates, setCoordinates] = useState<[number | undefined, number | undefined]>(value ?? defaultValue ?? [undefined, undefined]);
+	const onChangeDelayRef = useRef<null | ReturnType<typeof setTimeout>>(null);
 
 	//
 	// B. Setup effects & callbacks
@@ -77,17 +79,33 @@ export function CoordinatesInput({
 	 * Keeps state in sync with external (controlled) `value` prop.
 	 */
 	useEffect(() => {
-		if (value && (value[0] !== coordinates[0] || value[1] !== coordinates[1])) {
-			setCoordinates(value);
+		if (value === undefined) {
+			if (defaultValue === undefined) setCoordinates([undefined, undefined]);
+			return;
 		}
-	}, [coordinates, value]);
+		setCoordinates(value);
+	}, [defaultValue, value]);
+
+	useEffect(() => {
+		return () => {
+			if (onChangeDelayRef.current) clearTimeout(onChangeDelayRef.current);
+		};
+	}, []);
 
 	/**
 	 * Helper to update coordinates and propagate via onChange.
 	 */
-	const updateCoordinates = useCallback((newCoords: [number, number]) => {
+	const updateCoordinates = useCallback((newCoords: [number | undefined, number | undefined]) => {
 		setCoordinates(newCoords);
-		onChange?.(newCoords);
+		if (onChangeDelayRef.current) clearTimeout(onChangeDelayRef.current);
+		onChangeDelayRef.current = setTimeout(() => {
+			onChangeDelayRef.current = null;
+			if (newCoords[0] === undefined && newCoords[1] === undefined) {
+				onChange?.(undefined);
+				return;
+			}
+			onChange?.(newCoords);
+		}, COORDINATES_CHANGE_DELAY_MS);
 	}, [onChange]);
 
 	//
@@ -130,10 +148,12 @@ export function CoordinatesInput({
 	 */
 	const handleBlur = useCallback(
 		(index: number) => {
-			const clampedValue = index === 0 ? clamp(coordinates[0], -90, 90) : clamp(coordinates[1], -180, 180);
+			const currentValue = coordinates[index];
+			if (currentValue === undefined) return;
+			const clampedValue = index === 0 ? clamp(currentValue, -90, 90) : clamp(currentValue, -180, 180);
 
-			if (coordinates[index] !== clampedValue) {
-				const newCoords: [number, number] =
+			if (currentValue !== clampedValue) {
+				const newCoords: [number | undefined, number | undefined] =
 					index === 0 ? [clampedValue, coordinates[1]] : [coordinates[0], clampedValue];
 				updateCoordinates(newCoords);
 			}
@@ -158,12 +178,11 @@ export function CoordinatesInput({
 					placeholder="Latitude (-90 to 90)"
 					step={0.000001}
 					style={{ flex: 1 }}
-					value={coordinates[0] === 0 && coordinates[1] === 0 ? '' : coordinates[0]}
+					value={coordinates[0] ?? ''}
 					onChange={(val) => {
-						const newLat = Number(val);
-						if (!isNaN(newLat)) {
-							updateCoordinates([newLat, coordinates[1]]);
-						}
+						if (val === '' || val === undefined || val === null) return updateCoordinates([undefined, coordinates[1]]);
+						const newLat = typeof val === 'number' ? val : Number(val);
+						if (Number.isFinite(newLat)) return updateCoordinates([newLat, coordinates[1]]);
 					}}
 				/>
 				{/* Longitude input */}
@@ -175,12 +194,11 @@ export function CoordinatesInput({
 					placeholder="Longitude (-180 to 180)"
 					step={0.000001}
 					style={{ flex: 1 }}
-					value={coordinates[0] === 0 && coordinates[1] === 0 ? '' : coordinates[1]}
+					value={coordinates[1] ?? ''}
 					onChange={(val) => {
-						const newLng = Number(val);
-						if (!isNaN(newLng)) {
-							updateCoordinates([coordinates[0], newLng]);
-						}
+						if (val === '' || val === undefined || val === null) return updateCoordinates([coordinates[0], undefined]);
+						const newLng = typeof val === 'number' ? val : Number(val);
+						if (Number.isFinite(newLng)) return updateCoordinates([coordinates[0], newLng]);
 					}}
 				/>
 			</Section>
