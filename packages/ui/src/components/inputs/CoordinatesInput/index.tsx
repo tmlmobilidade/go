@@ -9,8 +9,21 @@ import { NumberInput } from '../NumberInput';
 
 /* * */
 
-const clamp = (val: number, min: number, max: number) => Math.min(Math.max(val, min), max);
-const COORDINATES_CHANGE_DELAY_MS = 500;
+const COORDINATE_DECIMALS = 6;
+const STEP = 10 ** -COORDINATE_DECIMALS;
+const roundCoordinate = (value: number) => parseFloat(value.toFixed(COORDINATE_DECIMALS));
+
+/* * */
+
+type CoordinatesTuple = [number | undefined, number | undefined];
+
+/* * */
+
+const buildCoordsAtIndex = (
+	prev: CoordinatesTuple,
+	index: 0 | 1,
+	valueAtIndex: number | undefined,
+): CoordinatesTuple => (index === 0 ? [valueAtIndex, prev[1]] : [prev[0], valueAtIndex]);
 
 /* * */
 
@@ -24,9 +37,9 @@ interface CoordinatesInputProps {
 	 */
 	key: string
 	label?: string
-	onChange?: (changed: [number | undefined, number | undefined] | undefined) => void
+	onChange?: (changed: CoordinatesTuple | undefined) => void
 	onPaste?: (pastedValues: string[]) => void
-	value?: [number | undefined, number | undefined] | undefined
+	value?: CoordinatesTuple | undefined
 }
 
 /**
@@ -34,7 +47,7 @@ interface CoordinatesInputProps {
  *
  * - Accepts both controlled (`value`) and uncontrolled (`defaultValue`) usage.
  * - Supports validation and clamping: latitude is restricted to -90..90, longitude to -180..180.
- * - Handles paste events for quickly populating fields from clipboard (CSV or space-separated).
+ * - Handles typed or pasted coordinate pairs separated by comma or tab.
  *
  * Props:
  *   - defaultValue?: [number, number] — Initial value if uncontrolled.
@@ -63,14 +76,19 @@ export function CoordinatesInput({
 	value,
 }: CoordinatesInputProps) {
 	//
+
+	//
 	// A. Setup variables
 
 	/**
 	 * Store current Latitude and Longitude tuple.
 	 * Priority: controlled `value` > uncontrolled `defaultValue` > fallback [undefined, undefined].
 	 */
-	const [coordinates, setCoordinates] = useState<[number | undefined, number | undefined]>(value ?? defaultValue ?? [undefined, undefined]);
+	const [coordinates, setCoordinates] = useState<CoordinatesTuple>(value ?? defaultValue ?? [undefined, undefined]);
+	const [focusedIndex, setFocusedIndex] = useState<0 | 1 | null>(null);
 	const onChangeDelayRef = useRef<null | ReturnType<typeof setTimeout>>(null);
+
+	//
 
 	//
 	// B. Setup effects & callbacks
@@ -83,83 +101,143 @@ export function CoordinatesInput({
 			if (defaultValue === undefined) setCoordinates([undefined, undefined]);
 			return;
 		}
-		setCoordinates(value);
+		setCoordinates([
+			value[0] === undefined ? undefined : roundCoordinate(value[0]),
+			value[1] === undefined ? undefined : roundCoordinate(value[1]),
+		]);
 	}, [defaultValue, value]);
 
 	useEffect(() => {
 		return () => {
-			if (onChangeDelayRef.current) clearTimeout(onChangeDelayRef.current);
+			const timeoutId = onChangeDelayRef.current;
+			if (timeoutId) clearTimeout(timeoutId);
 		};
 	}, []);
 
 	/**
-	 * Helper to update coordinates and propagate via onChange.
+	 * Parses a coordinate pair string in the following formats:
+	 * - `lat, lng`
+	 * - `lat lng` (with a space or a tab)
+	 * @param input The coordinate pair string to parse.
+	 * @returns The parsed coordinates as an array of two numbers, or null if the input is invalid.
 	 */
-	const updateCoordinates = useCallback((newCoords: [number | undefined, number | undefined]) => {
+	const parseCoordinatePair = useCallback((input: string): [number, number] | null => {
+		const values = input
+			.trim()
+			.split(/[,\t\s]+/)
+			.map(val => val.trim())
+			.filter(Boolean);
+		if (values.length < 2) return null;
+		const lat = Number(values[0]);
+		const lng = Number(values[1]);
+
+		if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+
+		return [roundCoordinate(lat), roundCoordinate(lng)];
+	}, []);
+
+	/**
+	 * Parses a single coordinate input value.
+	 * @param raw The coordinate input string to parse.
+	 * @returns Parsed value or undefined when the value is empty/invalid.
+	 */
+	const parseCoordinateInput = useCallback((raw: null | number | string | undefined): number | undefined => {
+		if (raw === '' || raw === undefined || raw === null) {
+			return undefined;
+		}
+		const parsed = typeof raw === 'number' ? raw : Number(raw);
+		if (!Number.isFinite(parsed)) return undefined;
+		return parsed;
+	}, []);
+
+	const commitCoordinates = useCallback((newCoords: CoordinatesTuple) => {
 		setCoordinates(newCoords);
-		if (onChangeDelayRef.current) clearTimeout(onChangeDelayRef.current);
-		onChangeDelayRef.current = setTimeout(() => {
-			onChangeDelayRef.current = null;
-			if (newCoords[0] === undefined && newCoords[1] === undefined) {
-				onChange?.(undefined);
-				return;
-			}
-			onChange?.(newCoords);
-		}, COORDINATES_CHANGE_DELAY_MS);
-	}, [onChange]);
+	}, []);
+
+	const getDecimalInputProps = useCallback((index: 0 | 1) => {
+		if (focusedIndex === index) return {};
+
+		return {
+			decimalScale: COORDINATE_DECIMALS,
+			fixedDecimalScale: true as const,
+		};
+	}, [focusedIndex]);
+
+	const handleFocus = useCallback((index: 0 | 1) => {
+		setFocusedIndex(index);
+	}, []);
+
+	const commitCoordinateAtIndex = useCallback((index: 0 | 1, valueAtIndex: number | undefined) => {
+		setCoordinates((prev) => {
+			const nextCoords = buildCoordsAtIndex(prev, index, valueAtIndex);
+			return nextCoords;
+		});
+	}, []);
+
+	//
 
 	//
 	// C. Handle paste and blur actions
 
 	/**
-	 * Paste handler: supports format "lat,lng" or "lat lng", with optional whitespace,
+	 * Paste handler: supports format "lat,lng" or "lat\tlng", with optional whitespace,
 	 * clamps and updates both values if valid. Optionally calls `onPaste`.
 	 */
 	const handlePaste = useCallback(
-		(event: React.ClipboardEvent<HTMLInputElement>) => {
-			event.preventDefault();
+		(index: 0 | 1, event: React.ClipboardEvent<HTMLInputElement>) => {
 			const pastedText = event.clipboardData.getData('text').trim();
 			if (!pastedText) return;
 
 			const pastedValues = pastedText
-				.split(/[, ]+/)
+				.split(/[,\t\s]+/)
 				.map(val => val.trim())
-				.filter(val => val.length > 0);
+				.filter(Boolean);
 
 			onPaste?.(pastedValues);
 
-			if (pastedValues.length >= 2) {
-				const lat = Number(pastedValues[0]);
-				const lng = Number(pastedValues[1]);
-
-				if (!isNaN(lat) && !isNaN(lng)) {
-					const clampedLat = clamp(lat, -90, 90);
-					const clampedLng = clamp(lng, -180, 180);
-					updateCoordinates([clampedLat, clampedLng]);
-				}
+			const pair = parseCoordinatePair(pastedText);
+			if (pair) {
+				event.preventDefault();
+				commitCoordinates(pair);
+				return;
 			}
+
+			const numericValue = Number(pastedText);
+			if (!Number.isFinite(numericValue)) return;
+
+			event.preventDefault();
+			commitCoordinateAtIndex(index, roundCoordinate(numericValue));
 		},
-		[updateCoordinates, onPaste],
+		[commitCoordinateAtIndex, commitCoordinates, onPaste, parseCoordinatePair],
 	);
 
 	/**
-	 * Called on blur (focus out) of either input field; clamps entered value into valid range.
+	 * Handles coordinate change events for direct typing.
+	 * @param index 0 for Latitude, 1 for Longitude
+	 * @param raw The coordinate input string to parse.
+	 */
+	const handleCoordinateChange = useCallback((index: 0 | 1, raw: null | number | string | undefined) => {
+		setCoordinates(prev => buildCoordsAtIndex(prev, index, parseCoordinateInput(raw)));
+	}, [parseCoordinateInput]);
+
+	/**
+	 * Called on blur (focus out) of either input field; confirms typed value is complete
+	 * and clamps entered value into the valid range.
 	 * @param index 0 for Latitude, 1 for Longitude
 	 */
 	const handleBlur = useCallback(
-		(index: number) => {
-			const currentValue = coordinates[index];
-			if (currentValue === undefined) return;
-			const clampedValue = index === 0 ? clamp(currentValue, -90, 90) : clamp(currentValue, -180, 180);
-
-			if (currentValue !== clampedValue) {
-				const newCoords: [number | undefined, number | undefined] =
-					index === 0 ? [clampedValue, coordinates[1]] : [coordinates[0], clampedValue];
-				updateCoordinates(newCoords);
-			}
+		(index: 0 | 1, event: React.FocusEvent<HTMLInputElement>) => {
+			const parsedValue = parseCoordinateInput(event.currentTarget.value.trim());
+			const committedValue = parsedValue === undefined
+				? undefined
+				: roundCoordinate(parsedValue);
+			commitCoordinateAtIndex(index, committedValue);
+			setFocusedIndex(prev => (prev === index ? null : prev));
 		},
-		[coordinates, updateCoordinates],
+		[commitCoordinateAtIndex, parseCoordinateInput],
 	);
+
+	//
 
 	//
 	// D. Render UI
@@ -173,33 +251,33 @@ export function CoordinatesInput({
 				<NumberInput
 					key="lat"
 					disabled={disabled}
-					onBlur={() => handleBlur(0)}
-					onPaste={handlePaste}
+					max={90}
+					min={-90}
+					onBlur={event => handleBlur(0, event)}
+					onChange={val => handleCoordinateChange(0, val)}
+					onFocus={() => handleFocus(0)}
+					onPaste={event => handlePaste(0, event)}
 					placeholder="Latitude (-90 to 90)"
-					step={0.000001}
+					step={STEP}
 					style={{ flex: 1 }}
 					value={coordinates[0] ?? ''}
-					onChange={(val) => {
-						if (val === '' || val === undefined || val === null) return updateCoordinates([undefined, coordinates[1]]);
-						const newLat = typeof val === 'number' ? val : Number(val);
-						if (Number.isFinite(newLat)) return updateCoordinates([newLat, coordinates[1]]);
-					}}
+					{...getDecimalInputProps(0)}
 				/>
 				{/* Longitude input */}
 				<NumberInput
 					key="lon"
 					disabled={disabled}
-					onBlur={() => handleBlur(1)}
-					onPaste={handlePaste}
+					max={180}
+					min={-180}
+					onBlur={event => handleBlur(1, event)}
+					onChange={val => handleCoordinateChange(1, val)}
+					onFocus={() => handleFocus(1)}
+					onPaste={event => handlePaste(1, event)}
 					placeholder="Longitude (-180 to 180)"
-					step={0.000001}
+					step={STEP}
 					style={{ flex: 1 }}
 					value={coordinates[1] ?? ''}
-					onChange={(val) => {
-						if (val === '' || val === undefined || val === null) return updateCoordinates([coordinates[0], undefined]);
-						const newLng = typeof val === 'number' ? val : Number(val);
-						if (Number.isFinite(newLng)) return updateCoordinates([coordinates[0], newLng]);
-					}}
+					{...getDecimalInputProps(1)}
 				/>
 			</Section>
 		</Section>
