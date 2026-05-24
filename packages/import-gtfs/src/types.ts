@@ -35,11 +35,10 @@ export interface GtfsSQLTables {
 }
 
 /**
- * Context object used throughout the GTFS import process.
- * It contains counters for various entities, references to GTFS SQL tables,
- * the original plan metadata, sets of referenced IDs, and paths for working directories.
+ * Initial context for the GTFS import process.
+ * Can be used to initialize the context for a new plan outside of the import process.
  */
-export interface ImportGtfsContext {
+export interface InitImportGtfsContext {
 	counters: {
 		calendar_dates: number
 		hashed_shapes: number
@@ -49,9 +48,17 @@ export interface ImportGtfsContext {
 		trips: number
 	}
 	gtfs: GtfsSQLTables
-	plan: Plan
 	referenced_route_ids: Set<string>
 	referenced_shape_ids: Set<string>
+}
+
+/**
+ * Context object used throughout the GTFS import process.
+ * It contains counters for various entities, references to GTFS SQL tables,
+ * the original plan metadata, sets of referenced IDs, and paths for working directories.
+ */
+export interface ImportGtfsContext extends InitImportGtfsContext {
+	plan: Plan
 	workdir: {
 		download_file_path: string
 		extract_dir_path: string

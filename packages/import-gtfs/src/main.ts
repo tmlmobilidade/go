@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsSQLTables, type ImportGtfsContext, type ImportGtfsToDatabaseConfig } from '@/types.js';
+import { type GtfsSQLTables, type ImportGtfsContext, type ImportGtfsToDatabaseConfig, type InitImportGtfsContext } from '@/types.js';
 import { downloadAndExtractGtfs } from '@/utils/extract-file.js';
 import { initGtfsSqlTables } from '@/utils/init-tables.js';
 import { Logger } from '@tmlmobilidade/logger';
@@ -23,7 +23,30 @@ import { processTripsFile } from '@/processors/trips.js';
  * @param config Optional configuration for the import process.
  * @returns A promise that resolves to the imported GTFS SQL tables.
  */
-export async function importGtfsToDatabase(plan: Plan, config: ImportGtfsToDatabaseConfig = {}): Promise<GtfsSQLTables> {
+export async function initImportGtfsToDatabaseContext(): Promise<InitImportGtfsContext> {
+	return {
+		counters: {
+			calendar_dates: 0,
+			hashed_shapes: 0,
+			hashed_trips: 0,
+			shapes: 0,
+			stop_times: 0,
+			trips: 0,
+		},
+		gtfs: initGtfsSqlTables(),
+		referenced_route_ids: new Set<string>(),
+		referenced_shape_ids: new Set<string>(),
+	};
+}
+
+/**
+ * Imports GTFS data into the database for a given plan.
+ * @param plan The plan containing GTFS feed information.
+ * @param config Optional configuration for the import process.
+ * @param initialContext Optional initial context for the import process.
+ * @returns A promise that resolves to the imported GTFS SQL tables.
+ */
+export async function importGtfsToDatabase(plan: Plan, config: ImportGtfsToDatabaseConfig = {}, initialContext?: InitImportGtfsContext): Promise<GtfsSQLTables> {
 	try {
 		//
 
@@ -32,21 +55,15 @@ export async function importGtfsToDatabase(plan: Plan, config: ImportGtfsToDatab
 		Logger.info(`Importing ${plan._id} GTFS to database...`);
 
 		//
-		// Initialize context for the current plan
+		// Initialize context for the current plan.
+		// If an initial context is provided, use it, otherwise create a new one.
+		// Then, add the plan and working directory to the context.
+
+		const initialContextData = initialContext ? initialContext : await initImportGtfsToDatabaseContext();
 
 		const context: ImportGtfsContext = {
-			counters: {
-				calendar_dates: 0,
-				hashed_shapes: 0,
-				hashed_trips: 0,
-				shapes: 0,
-				stop_times: 0,
-				trips: 0,
-			},
-			gtfs: initGtfsSqlTables(),
+			...initialContextData,
 			plan: plan,
-			referenced_route_ids: new Set<string>(),
-			referenced_shape_ids: new Set<string>(),
 			workdir: await downloadAndExtractGtfs(plan),
 		};
 

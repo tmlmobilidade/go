@@ -4,7 +4,7 @@ import { type MergedGtfsExportConfig } from '@/types.js';
 import { validatePlan } from '@/validate-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { Files } from '@tmlmobilidade/files';
-import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
+import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig, initImportGtfsToDatabaseContext } from '@tmlmobilidade/import-gtfs';
 import { files, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -106,15 +106,22 @@ export async function main() {
 	PREVIOUS_PLANS_LIST_HASH = currentPlansListHash;
 
 	//
-	// Mark as plans as 'waiting' in the database.
+	// Mark those plans as 'waiting' in the database.
 
 	for (const planData of allPlansData) {
-		await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'waiting', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
+		await plans.updateById(planData._id, { apps: { ...planData.apps, hub_schedules: { last_hash: null, status: 'waiting', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
 	}
+
+	//
+	// Set up the initial context for the import process.
+	// This will be used to store the GTFS data for each plan.
+
+	const initialImportGtfsContext = await initImportGtfsToDatabaseContext();
 
 	//
 	// For each plan, validate it and import its GTFS into
 	// a database and cut it according to the plan's feed_info dates.
+	// Use the initial context for the import process.
 
 	for (const [planIndex, planData] of allPlansData.entries()) {
 		try {
@@ -170,7 +177,7 @@ export async function main() {
 
 			const importTimer = new Timer();
 
-			const importedGtfsSql = await importGtfsToDatabase(planData, importConfig);
+			const importedGtfsSql = await importGtfsToDatabase(planData, importConfig, initialImportGtfsContext);
 
 			Logger.success(`Imported plan ${planData._id} in ${importTimer.get()}.`);
 
