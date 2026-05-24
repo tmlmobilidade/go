@@ -354,6 +354,9 @@ export const API_ROUTES = Object.freeze({
 		ARRIVALS_ARRIVALS_BY_PATTERN: (id: string) => `${getModuleConfig('hub', 'api_url')}/arrivals/arrivals/by_pattern/${id}`,
 		ARRIVALS_ARRIVALS_BY_STOP: (id: string) => `${getModuleConfig('hub', 'api_url')}/arrivals/arrivals/by_stop/${id}`,
 
+		// DEBUG
+		DEBUG_TIME: `${getModuleConfig('hub', 'api_url')}/v1/debug/time`,
+
 		// DISTRICTS
 		DISTRICTS_DISTRICTS: `${getModuleConfig('hub', 'api_url')}/districts/districts`,
 
@@ -379,11 +382,12 @@ export const API_ROUTES = Object.freeze({
 		// LOCALITIES
 		LOCALITIES_LOCALITIES: `${getModuleConfig('hub', 'api_url')}/localities/localities`,
 
-		// MESSAGE
-		MESSAGE_MESSAGE: `${getModuleConfig('hub', 'api_url')}/message/message`,
-
 		// MUNICIPALITIES
 		MUNICIPALITIES_MUNICIPALITIES: `${getModuleConfig('hub', 'api_url')}/municipalities/municipalities`,
+
+		// NETWORK
+		NETWORK_LINES: `${getModuleConfig('hub', 'api_url')}/v1/network/lines`,
+		NETWORK_STOPS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/stops/${id}`,
 
 		// PARISHES
 		PARISHES_PARISHES: `${getModuleConfig('hub', 'api_url')}/parishes/parishes`,
@@ -396,15 +400,12 @@ export const API_ROUTES = Object.freeze({
 		PLANS_GTFS_CM: `${getModuleConfig('hub', 'api_url')}/v1/plans/gtfs/cm`,
 		PLANS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/plans`,
 
+		// REALTIME
+		REALTIME_VEHICLES: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles`,
+		REALTIME_VEHICLES_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles.pb`,
+
 		// SHAPES
 		SHAPES_SHAPES: (id: string) => `${getModuleConfig('hub', 'api_url')}/shapes/shapes/${id}`,
-
-		// TIME
-		TIME_TIME: `${getModuleConfig('hub', 'api_url')}/time/time`,
-
-		// VEHICLES
-		VEHICLES_VEHICLES: `${getModuleConfig('hub', 'api_url')}/vehicles/vehicles`,
-		VEHICLES_VEHICLES_PB: `${getModuleConfig('hub', 'api_url')}/vehicles/vehicles.pb`,
 	},
 
 	locations: {

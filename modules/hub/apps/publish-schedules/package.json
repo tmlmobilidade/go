@@ -17,6 +17,7 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
+		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/import-gtfs": "*",

@@ -1,6 +1,7 @@
 /* * */
 
 import { SQLiteColumn, SQLiteDatabaseConfig, SQLiteTable } from '@/types.js';
+import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import BSQLite3, { type Database, Statement } from 'better-sqlite3';
 import fs from 'node:fs';
@@ -36,6 +37,7 @@ export class SQLiteDatabase {
 		if (!config.instancePath && !config.memory) {
 			config.instancePath = `/tmp/${config.instanceName}/${config.instanceName}.db`;
 			fs.mkdirSync(`/tmp/${config.instanceName}`, { recursive: true });
+			Logger.info(`[SQLITE] Created database at ${config.instancePath}`);
 		}
 
 		if (!config.databaseInstance) {
