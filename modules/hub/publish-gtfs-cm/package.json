@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-plans-publish-gtfs-cm",
+	"name": "@tmlmobilidade/go-hub-publish-gtfs-cm",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
