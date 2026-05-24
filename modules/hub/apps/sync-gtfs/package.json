@@ -1,0 +1,46 @@
+{
+	"name": "@tmlmobilidade/go-hub-sync-gtfs",
+	"version": "1.0.0",
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "npm run clean && tsc && resolve-tspaths",
+		"clean": "rm -rf dist",
+		"dev": "tsx watch ./src/index.ts",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"start": "node dist/index.js"
+	},
+	"dependencies": {
+		"@carrismetropolitana/tts": "20250418.51.6",
+		"@tmlmobilidade/databases": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-hub-pckg-types": "*",
+		"@tmlmobilidade/go-hub-pckg-utils": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/sqlite": "*",
+		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/utils": "*",
+		"@turf/turf": "7.3.5",
+		"adm-zip": "0.5.17",
+		"csv-parse": "6.2.1",
+		"csv-stringify": "6.7.0",
+		"extract-zip": "2.0.1",
+		"gtfs-types": "5.1.0",
+		"papaparse": "5.5.3"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/eslint": "*",
+		"@tmlmobilidade/tsconfig": "*",
+		"@types/adm-zip": "0.5.8",
+		"@types/node": "25.9.1",
+		"@types/papaparse": "5.5.2",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.22.3",
+		"typescript": "6.0.3"
+	}
+}
