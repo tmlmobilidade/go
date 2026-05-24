@@ -44,7 +44,8 @@ export async function downloadAndExtractGtfs(plan: Plan): Promise<ImportGtfsCont
 	// and try to download, save and unzip it.
 
 	const operationFileData = await files.findById(plan.operation_file_id);
-	if (!operationFileData || !operationFileData.url) {
+
+	if (!operationFileData?.url) {
 		Logger.error(`No operation file found for plan "${plan._id}".`);
 		process.exit(1);
 	}
