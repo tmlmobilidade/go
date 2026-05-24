@@ -173,7 +173,8 @@ SELECT
     round(avg(travel_time_seconds))                AS avg_travel_time_seconds,
     round(min(travel_time_seconds))                AS min_travel_time_seconds,
     round(max(travel_time_seconds))                AS max_travel_time_seconds,
-    round(quantileExact(0.5)(travel_time_seconds)) AS median_travel_time_seconds
+    round(quantileExact(0.5)(travel_time_seconds)) AS median_travel_time_seconds,
+    now()                                          AS inserted_at
 FROM classified
 WHERE period != 'Unknown'
 GROUP BY

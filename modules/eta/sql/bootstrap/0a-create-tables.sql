@@ -80,6 +80,16 @@ CREATE TABLE IF NOT EXISTS eta.hist_node_travel_times (
 ENGINE = ReplacingMergeTree()
 ORDER BY (ride_id, hashed_shape_id, node_index, hour);
 
+DROP TABLE IF EXISTS eta.hist_node_travel_times_aggregation;
+
+-- The loader (3-aggregate_hist_node_travel_times.sql) re-aggregates the last
+-- N days on every run, so identical (hashed_shape_id, node_index,
+-- operational_date, period, period_of_day, weekday, day_type) rows would
+-- otherwise pile up and skew the averages computed by mv-predict-node-etas.sql.
+--
+-- ReplacingMergeTree with `inserted_at` as the version keeps the latest row
+-- per ORDER BY key. Readers MUST use `FINAL` (or the equivalent setting) to
+-- get deduplicated results, because background merges run asynchronously.
 CREATE TABLE IF NOT EXISTS eta.hist_node_travel_times_aggregation (
     hashed_shape_id String,
     node_index UInt32,
@@ -91,9 +101,10 @@ CREATE TABLE IF NOT EXISTS eta.hist_node_travel_times_aggregation (
     avg_travel_time_seconds Float64,
     min_travel_time_seconds Float64,
     max_travel_time_seconds Float64,
-    median_travel_time_seconds Float64
+    median_travel_time_seconds Float64,
+    inserted_at DateTime DEFAULT now()
 )
-ENGINE = MergeTree()
+ENGINE = ReplacingMergeTree(inserted_at)
 ORDER BY
     (hashed_shape_id, node_index, operational_date, period, period_of_day, weekday, day_type);
 

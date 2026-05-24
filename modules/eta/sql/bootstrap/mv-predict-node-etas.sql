@@ -40,6 +40,10 @@ WITH
             toFloat64(0.80) AS w_same_day_type,
             toFloat64(0.70) AS w_same_period
     ),
+    -- FINAL forces query-time dedup on the ReplacingMergeTree so that
+    -- duplicate aggregation rows produced by overlapping loader runs do not
+    -- inflate the averages below. Without FINAL the MV would silently bias
+    -- the prediction toward whichever bucket happened to be reloaded most.
     base AS (
         SELECT
             hashed_shape_id,
@@ -50,7 +54,7 @@ WITH
             period,
             period_of_day,
             median_travel_time_seconds
-        FROM eta.hist_node_travel_times_aggregation
+        FROM eta.hist_node_travel_times_aggregation FINAL
         WHERE operational_date BETWEEN ymd_prev_30d AND ymd_prev_1d
     ),
     targets AS (
