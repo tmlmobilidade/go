@@ -66,8 +66,6 @@ export async function generateLinesRoutesPatterns(context: InitImportGtfsContext
 	// Get all distinct Pattern IDs from trips table
 	const allDistinctPatternIds = context.gtfs.trips.distinct('pattern_id');
 
-	console.log('allDistinctPatternIds', allDistinctPatternIds);
-
 	Logger.info(`Fetched ${allDistinctPatternIds.length} rows from NETWORKDB (${fetchRawDataTimer.get()})`);
 
 	//
