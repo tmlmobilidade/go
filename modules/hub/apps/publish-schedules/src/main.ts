@@ -11,6 +11,7 @@ import crypto from 'node:crypto';
 /* * */
 
 import { generateLinesRoutesPatterns } from './tasks/sync-lines-routes-patterns.js';
+import { generateStops } from './tasks/sync-stops.js';
 
 /* * */
 
@@ -124,6 +125,8 @@ export async function main() {
 
 	//
 	// Export GTFS files from the merged dataset
+
+	await generateStops(initialImportGtfsContext);
 
 	await generateLinesRoutesPatterns(initialImportGtfsContext);
 

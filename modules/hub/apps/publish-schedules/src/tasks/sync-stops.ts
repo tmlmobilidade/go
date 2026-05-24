@@ -1,35 +1,32 @@
 /* * */
 
-import type { Stop as GtfsStopsExtended } from '@tmlmobilidade/go-hub-pckg-types';
-
-import { getGtfsSqliteContext } from '@/modules/gtfsSqlite.js';
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { type Stop as GtfsStopsExtended } from '@carrismetropolitana/api-types/gtfs-extended';
+import { type Stop, StopOperationalStatus } from '@carrismetropolitana/api-types/network';
 import { apiCache } from '@tmlmobilidade/databases';
-import { NetworkStop, StopOperationalStatus } from '@tmlmobilidade/go-hub-pckg-types';
-import { sortCollator } from '@tmlmobilidade/go-hub-pckg-utils';
+import { type InitImportGtfsContext } from '@tmlmobilidade/import-gtfs';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
 interface QueryResult extends GtfsStopsExtended {
-	line_ids: null | string
-	pattern_ids: null | string
-	route_ids: null | string
+	line_ids: string[]
+	pattern_ids: string[]
+	route_ids: string[]
 }
 
 /* * */
 
-export const syncStops = async () => {
+export async function generateStops(context: InitImportGtfsContext) {
 	//
 
-	LOGGER.title(`Sync Stops`);
-	const globalTimer = new TIMETRACKER();
+	Logger.title(`Sync Stops`);
+	const globalTimer = new Timer();
 
 	//
 	// Fetch all Stops from NETWORKDB
 
-	const { db } = getGtfsSqliteContext();
-	const allStops = db.prepare(`
+	const allStops = context.gtfs.stops.query(`
 		SELECT
 			s.*,
 			r.route_ids,
@@ -52,46 +49,15 @@ export const syncStops = async () => {
 			GROUP BY
 				stop_id
 		) r ON s.stop_id = r.stop_id;
-	`).all() as QueryResult[];
-	const missingStopIdsFromStopTimes = db.prepare(`
-		SELECT
-			COUNT(DISTINCT st.stop_id) AS total
-		FROM
-			stop_times st
-		LEFT JOIN
-			stops s ON s.stop_id = st.stop_id
-		WHERE
-			s.stop_id IS NULL
-	`).get() as { total: number };
-
-	const missingStopIdsSample = db.prepare(`
-		SELECT DISTINCT
-			st.stop_id
-		FROM
-			stop_times st
-		LEFT JOIN
-			stops s ON s.stop_id = st.stop_id
-		WHERE
-			s.stop_id IS NULL
-		ORDER BY
-			st.stop_id
-		LIMIT 5
-	`).all() as { stop_id: string }[];
-
-	if (missingStopIdsFromStopTimes.total > 0) {
-		LOGGER.error(`[pattern-import] stop_times references ${missingStopIdsFromStopTimes.total} stop_ids not found in stops table (sample: ${missingStopIdsSample.map(item => item.stop_id).join(', ')})`);
-	} else {
-		LOGGER.info('[pattern-import] stop_times and stops tables are consistent (no missing stop_ids)');
-	}
+	`);
 
 	//
 	// For each item, update its entry in the database
 
-	const allStopsData: NetworkStop[] = [];
-	const updatedStopKeys = new Set<string>();
+	const allStopsData: Stop[] = [];
 	let updatedStopsCounter = 0;
 
-	for (const stop of allStops) {
+	for (const stop of allStops as QueryResult[]) {
 		//
 
 		//
@@ -140,13 +106,13 @@ export const syncStops = async () => {
 		//
 		// Build the final stop object
 
-		const parsedStop: NetworkStop = {
+		const parsedStop: Stop = {
 			district_id: stop.district_id,
 			district_name: stop.district_name,
 			facilities: facilities || [],
 			id: stop.stop_id,
 			lat: Number(stop.stop_lat),
-			line_ids: stop.line_ids ? JSON.parse(stop.line_ids) : [],
+			line_ids: stop.line_ids || [],
 			locality_id: stop.locality_id,
 			locality_name: stop.locality_name,
 			lon: Number(stop.stop_lon),
@@ -156,18 +122,14 @@ export const syncStops = async () => {
 			operational_status: parsedStopOperationalStatus,
 			parish_id: stop.parish_id,
 			parish_name: stop.parish_name,
-			pattern_ids: stop.pattern_ids ? JSON.parse(stop.pattern_ids) : [],
-			route_ids: stop.route_ids ? JSON.parse(stop.route_ids) : [],
+			pattern_ids: stop.pattern_ids || [],
+			route_ids: stop.route_ids || [],
 			short_name: stop.stop_short_name,
 			tts_name: stop.tts_stop_name,
 			wheelchair_boarding: stop.wheelchair_boarding === 1,
 		};
 
 		allStopsData.push(parsedStop);
-
-		const stopJson = JSON.stringify(parsedStop);
-		await apiCache.set('hub:network:stops:{stopId}', stopJson, { params: { stopId: parsedStop.id } });
-		updatedStopKeys.add(`hub:network:stops:${parsedStop.id}`);
 
 		updatedStopsCounter++;
 
@@ -177,17 +139,9 @@ export const syncStops = async () => {
 	//
 	// Save to the database
 
-	allStopsData.sort((a, b) => sortCollator.compare(a.id, b.id));
-	await apiCache.set('hub:network:stops', JSON.stringify(allStopsData), {});
-	LOGGER.info(`[pattern-import] Stops rows loaded=${allStops.length} written=${allStopsData.length}`);
+	await apiCache.set('hub:network:stops', JSON.stringify(allStopsData));
 
-	const allStopKeysInTheDatabase = await apiCache.scan('hub:network:stops:*');
-	const staleStopKeys = allStopKeysInTheDatabase.filter(key => !updatedStopKeys.has(key) && key !== 'hub:network:stops');
-	if (staleStopKeys.length) {
-		await apiCache.deleteMany(staleStopKeys);
-	}
-
-	LOGGER.success(`Done updating ${updatedStopsCounter} Stops (${globalTimer.get()})`);
+	Logger.success(`Done updating ${updatedStopsCounter} Stops (${globalTimer.get()})`);
 
 	//
 };
