@@ -64,10 +64,11 @@ export async function generateLinesRoutesPatterns(context: InitImportGtfsContext
 	const allRoutesRawMap = new Map<string, GTFS_Route_Extended>(allRoutesRaw.map(item => [item.route_id, item]));
 
 	// Get all distinct Pattern IDs from trips table
-	const allDistinctPatternIdsRaw = context.gtfs.trips.all(`SELECT DISTINCT pattern_id FROM trips`);
-	const allDistinctPatternIds = allDistinctPatternIdsRaw.map(item => item.pattern_id);
+	const allDistinctPatternIds = context.gtfs.trips.distinct('pattern_id');
 
-	Logger.info(`Fetched ${allDistinctPatternIdsRaw.length} rows from NETWORKDB (${fetchRawDataTimer.get()})`);
+	console.log('allDistinctPatternIds', allDistinctPatternIds);
+
+	Logger.info(`Fetched ${allDistinctPatternIds.length} rows from NETWORKDB (${fetchRawDataTimer.get()})`);
 
 	//
 	// For each distinct pattern_id, parse trips into patterns and schedules.
@@ -87,7 +88,7 @@ export async function generateLinesRoutesPatterns(context: InitImportGtfsContext
 		//
 		// Get all trips that match the current pattern ID
 
-		const allTripsForThisPatternRaw = context.gtfs.trips.all(`SELECT * FROM trips WHERE pattern_id = $1`, [patternId]);
+		const allTripsForThisPatternRaw = context.gtfs.trips.all('WHERE pattern_id = ?', [patternId]);
 
 		//
 		// Setup a variable to hold the parsed pattern groups
@@ -105,7 +106,7 @@ export async function generateLinesRoutesPatterns(context: InitImportGtfsContext
 			//
 			// Get the stop_times data associated with the current trip
 
-			const stopTimesRaw = context.gtfs.stop_times.all(`SELECT * FROM stop_times WHERE trip_id = $1 ORDER BY stop_sequence`, [tripRawData.trip_id]);
+			const stopTimesRaw = context.gtfs.stop_times.all(`WHERE trip_id = ? ORDER BY stop_sequence`, [tripRawData.trip_id]);
 
 			//
 			// With the same set of data (stop_times sequence of stops) we can find out different information.

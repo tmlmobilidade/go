@@ -10,7 +10,7 @@ import crypto from 'node:crypto';
 
 /* * */
 
-import { generateLines } from './tasks-new/lines.js';
+import { generateLinesRoutesPatterns } from './tasks/sync-lines-routes-patterns.js';
 
 /* * */
 
@@ -125,7 +125,7 @@ export async function main() {
 	//
 	// Export GTFS files from the merged dataset
 
-	await generateLines(initialImportGtfsContext);
+	await generateLinesRoutesPatterns(initialImportGtfsContext);
 
 	//
 	// Finalize the export process

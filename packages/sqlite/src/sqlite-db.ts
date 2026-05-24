@@ -144,6 +144,16 @@ export class SQLiteTableInstance<T> {
 	}
 
 	/**
+	 * Finds all distinct values for a column in the table.
+	 * @param column The column to find distinct values for.
+	 * @returns An array of distinct values.
+	 */
+	distinct<K extends keyof T>(col: K): T[K][] {
+		const sql = `SELECT DISTINCT ${String(col)} FROM ${this.tableName}`;
+		return this.databaseInstance.prepare(sql).all().map(row => row[String(col)]);
+	}
+
+	/**
 	 * Flush current buffer into DB synchronously.
 	 */
 	flush(): void {
@@ -194,7 +204,7 @@ export class SQLiteTableInstance<T> {
 	}
 
 	query(sqlQuery = '', params: (boolean | number | string)[] = []) {
-		return this.databaseInstance.prepare(sqlQuery).run(...params);
+		return this.databaseInstance.prepare(sqlQuery).all(...params);
 	}
 
 	/**
