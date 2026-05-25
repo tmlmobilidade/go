@@ -10,9 +10,9 @@ import { Timer } from '@tmlmobilidade/timer';
 /* * */
 
 interface QueryResult extends GtfsStopsExtended {
-	line_ids: string[]
-	pattern_ids: string[]
-	route_ids: string[]
+	line_ids: string
+	pattern_ids: string
+	route_ids: string
 }
 
 /* * */
@@ -112,7 +112,7 @@ export async function generateStops(context: InitImportGtfsContext) {
 			facilities: facilities || [],
 			id: stop.stop_id,
 			lat: Number(stop.stop_lat),
-			line_ids: stop.line_ids || [],
+			line_ids: JSON.parse(stop.line_ids || '[]'),
 			locality_id: stop.locality_id,
 			locality_name: stop.locality_name,
 			lon: Number(stop.stop_lon),
@@ -122,8 +122,8 @@ export async function generateStops(context: InitImportGtfsContext) {
 			operational_status: parsedStopOperationalStatus,
 			parish_id: stop.parish_id,
 			parish_name: stop.parish_name,
-			pattern_ids: stop.pattern_ids || [],
-			route_ids: stop.route_ids || [],
+			pattern_ids: JSON.parse(stop.pattern_ids || '[]'),
+			route_ids: JSON.parse(stop.route_ids || '[]'),
 			short_name: stop.stop_short_name,
 			tts_name: stop.tts_stop_name,
 			wheelchair_boarding: stop.wheelchair_boarding === 1,
