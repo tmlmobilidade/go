@@ -1,7 +1,6 @@
 /* * */
 
-import { readThroughHubJson } from '@/endpoints/v1/lib/hub-json-feed.js';
-import { SERVERDB_KEYS } from '@tmlmobilidade/databases';
+import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { DATES, PCGIAPI } from '@tmlmobilidade/go-hub-pckg-services';
 import { getOperationalDay } from '@tmlmobilidade/go-hub-pckg-utils';
@@ -45,7 +44,7 @@ export class ArrivalsController {
 		const currentPlanIds = await getCurrentPlanIds();
 
 		const patternId = request.params.id;
-		const foundPatternTxt = await readThroughHubJson('hub:network:patterns:{patternId}', SERVERDB_KEYS.NETWORK.PATTERNS.ID(patternId), `hub/v1/network/arrivals:getArrivalsByPattern(${patternId})`, { patternId });
+		const foundPatternTxt = await apiCache.get(`hub:network:patterns:${patternId}`);
 
 		if (!foundPatternTxt) {
 			return reply.status(404).send([]);
@@ -187,11 +186,7 @@ interface PcgiStopEtaRow {
 async function getCurrentPlanIds(): Promise<Record<string, string>> {
 	const currentPlanIds: Record<string, string> = {};
 
-	const allPlansTxt = await readThroughHubJson(
-		'hub:network:plans',
-		SERVERDB_KEYS.NETWORK.PLANS,
-		'hub/v1/network/arrivals:getCurrentPlanIds()',
-	);
+	const allPlansTxt = await apiCache.get('hub:network:plans');
 	if (!allPlansTxt) return currentPlanIds;
 
 	let allPlansData: unknown;

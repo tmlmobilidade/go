@@ -1,6 +1,6 @@
 /* * */
 
-import { ShapesController } from '@/endpoints/v1/network/shapes/shapes.controller.js';
+import { ShapesController } from '@/endpoints/v1/network-old/shapes/shapes.controller.js';
 import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */

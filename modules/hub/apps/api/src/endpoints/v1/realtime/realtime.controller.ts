@@ -1,8 +1,7 @@
 /* * */
 
-import { readThroughHubJson } from '@/endpoints/v1/lib/hub-json-feed.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { SERVERDB_KEYS } from '@tmlmobilidade/databases';
+import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { encodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
@@ -14,11 +13,7 @@ export class RealtimeController {
 	//
 
 	static async getVehiclesJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
-		const raw = await readThroughHubJson(
-			'hub:network:vehicles',
-			SERVERDB_KEYS.NETWORK.VEHICLES.ALL,
-			'hub/v1/network/vehicles:getVehiclesJson()',
-		);
+		const raw = await apiCache.get('hub:network:vehicles');
 		if (!raw) {
 			Logger.error('[hub/v1/network/vehicles:getVehiclesJson()] No data in cache or SERVERDB.');
 			return reply
@@ -40,11 +35,7 @@ export class RealtimeController {
 	}
 
 	static async getVehiclesProtobuf(request: FastifyRequest, reply: FastifyReply<unknown>) {
-		const raw = await readThroughHubJson(
-			'hub:network:vehicles:protobuf',
-			SERVERDB_KEYS.NETWORK.VEHICLES.PROTOBUF,
-			'hub/v1/network/vehicles:getVehiclesProtobuf()',
-		);
+		const raw = await apiCache.get('hub:network:vehicles:protobuf');
 		if (!raw) {
 			Logger.error('[hub/v1/network/vehicles:getVehiclesProtobuf()] No data in cache or SERVERDB.');
 			return reply

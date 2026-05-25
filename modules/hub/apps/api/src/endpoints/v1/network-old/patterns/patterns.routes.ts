@@ -1,6 +1,6 @@
 /* * */
 
-import { PatternsController } from '@/endpoints/v1/network/patterns/patterns.controller.js';
+import { PatternsController } from '@/endpoints/v1/network-old/patterns/patterns.controller.js';
 import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */

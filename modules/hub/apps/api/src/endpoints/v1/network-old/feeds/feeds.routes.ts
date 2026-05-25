@@ -1,6 +1,6 @@
 /* * */
 
-import { FeedsController } from '@/endpoints/v1/network/feeds/feeds.controller.js';
+import { FeedsController } from '@/endpoints/v1/network-old/feeds/feeds.controller.js';
 import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */

@@ -1,7 +1,6 @@
 /* * */
 
-import { readThroughHubJson } from '@/endpoints/v1/lib/hub-json-feed.js';
-import { SERVERDB_KEYS } from '@tmlmobilidade/databases';
+import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 
 /* * */
@@ -17,8 +16,7 @@ interface RequestSchema {
 export class ShapesController {
 	static async getShapeById(request: FastifyRequest<RequestSchema>, reply: FastifyReply<unknown>) {
 		const id = request.params.id;
-		const cacheKey = 'hub:network:shapes:{shapeId}';
-		const singleItemTxt = await readThroughHubJson(cacheKey, SERVERDB_KEYS.NETWORK.SHAPES.ID(id), `hub/v1/network/shapes:getShapeById(${id})`, { shapeId: id });
+		const singleItemTxt = await apiCache.get(`hub:network:shapes:${id}`);
 		if (!singleItemTxt) return reply.code(404).send({});
 		return reply
 			.code(200)

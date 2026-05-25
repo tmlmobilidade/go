@@ -1,8 +1,7 @@
 /* * */
 
-import { readThroughHubJson } from '@/endpoints/v1/lib/hub-json-feed.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { SERVERDB_KEYS } from '@tmlmobilidade/databases';
+import { apiCache, SERVERDB_KEYS } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -47,7 +46,7 @@ export class FeedsController {
 		serverKey: string,
 		logCtx: string,
 	) {
-		const raw = await readThroughHubJson(cacheKey, serverKey, logCtx);
+		const raw = await apiCache.get(cacheKey);
 		if (!raw) {
 			Logger.error(`[${logCtx}] No data in cache or SERVERDB.`);
 			return reply

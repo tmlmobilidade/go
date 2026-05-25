@@ -141,6 +141,11 @@ export async function main() {
 			await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'processing', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
 
 			//
+			// Get the operation file URL
+
+			const operationFileUrl = await files.getFileUrl({ file_id: planData.operation_file_id });
+
+			//
 			// Find out if this plan is a currently active plan.
 			// Active plans are those whose feed_info dates
 			// encompass the current date, and should be cut only at the end,
@@ -149,16 +154,21 @@ export async function main() {
 			let thisIsAnActivePlan = false;
 
 			const importConfig: ImportGtfsToDatabaseConfig = {
-				date_range: {
-					end: planData.gtfs_feed_info.feed_end_date,
-					start: planData.gtfs_feed_info.feed_start_date,
+				source: {
+					url: operationFileUrl,
+				},
+				time_range: {
+					date_range: {
+						end: planData.gtfs_feed_info.feed_end_date,
+						start: planData.gtfs_feed_info.feed_start_date,
+					},
 				},
 			};
 
 			if (currentOperationalDate >= planData.gtfs_feed_info.feed_start_date && currentOperationalDate <= planData.gtfs_feed_info.feed_end_date) {
 				// If the plan is currently active, set the start date
 				// to a far past date to be able to provide a full year of data.
-				importConfig.date_range.start = validateOperationalDate('20010101');
+				importConfig.time_range.date_range.start = validateOperationalDate('20010101');
 				// Update the flag
 				thisIsAnActivePlan = true;
 			}
@@ -170,7 +180,7 @@ export async function main() {
 
 			const importTimer = new Timer();
 
-			const importedGtfsSql = await importGtfsToDatabase(planData, importConfig);
+			const importedGtfsSql = await importGtfsToDatabase(importConfig);
 
 			Logger.success(`Imported plan ${planData._id} in ${importTimer.get()}.`);
 

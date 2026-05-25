@@ -1,8 +1,7 @@
 /* * */
 
-import { readThroughHubJson } from '@/endpoints/v1/lib/hub-json-feed.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { SERVERDB_KEYS } from '@tmlmobilidade/databases';
+import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -19,8 +18,7 @@ interface RequestSchema {
 export class PatternsController {
 	static async getPatternById(request: FastifyRequest<RequestSchema>, reply: FastifyReply<unknown>) {
 		const id = request.params.id;
-		const cacheKey = 'hub:network:patterns:{patternId}';
-		const payload = await readThroughHubJson(cacheKey, SERVERDB_KEYS.NETWORK.PATTERNS.ID(id), `hub/v1/network/patterns:getPatternById(${id})`, { patternId: id });
+		const payload = await apiCache.get(`hub:network:patterns:${id}`);
 		if (!payload) {
 			Logger.error(`[hub/v1/network/patterns:getPatternById(${id})] No JSON in cache or SERVERDB.`);
 			return reply
