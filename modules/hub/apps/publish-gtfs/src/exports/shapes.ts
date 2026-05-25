@@ -5,6 +5,7 @@ import { type ExportGtfsContext } from '@/types/context.js';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GTFS_Shape, type Plan } from '@tmlmobilidade/types';
+import { getPublicShapeId } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -28,7 +29,7 @@ export async function exportShapesFile(planData: Plan, sqlTables: GtfsSQLTables,
 	for await (const shapesItem of sqlTables.shapes.stream('ORDER BY shape_id, shape_pt_sequence ASC')) {
 		const shapeData: GTFS_Shape = shapesItem;
 		const parsedShapesRow: ExportedShapesRow = {
-			shape_id: `[${planData._id}]${shapeData.shape_id}`,
+			shape_id: getPublicShapeId(planData._id, planData.gtfs_agency.agency_id, shapeData.shape_id),
 			shape_pt_sequence: shapeData.shape_pt_sequence,
 			shape_dist_traveled: shapeData.shape_dist_traveled,
 			shape_pt_lat: shapeData.shape_pt_lat,

@@ -5,6 +5,7 @@ import { type ExportGtfsContext } from '@/types/context.js';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GTFS_StopTime, type Plan } from '@tmlmobilidade/types';
+import { getPublicTripId } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -34,7 +35,7 @@ export async function exportStopTimesFile(planData: Plan, sqlTables: GtfsSQLTabl
 	for await (const stopTimeItem of sqlTables.stop_times.stream('ORDER BY trip_id, stop_sequence ASC')) {
 		const stopTimeData: GTFS_StopTime = stopTimeItem;
 		const parsedStopTimesRow: ExportedStopTimesRow = {
-			trip_id: `[${planData._id}]${stopTimeData.trip_id}`,
+			trip_id: getPublicTripId(planData._id, planData.gtfs_agency.agency_id, stopTimeData.trip_id),
 			arrival_time: stopTimeData.arrival_time,
 			departure_time: stopTimeData.departure_time,
 			stop_id: stopTimeData.stop_id,
