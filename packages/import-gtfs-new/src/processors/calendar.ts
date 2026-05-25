@@ -1,6 +1,7 @@
 /* * */
 
-import { type ImportGtfsContext, type ImportGtfsToDatabaseConfig } from '@/types.js';
+import { type ImportGtfsToDatabaseConfig } from '@/types/config.js';
+import { type ImportGtfsContext } from '@/types/context.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
@@ -44,7 +45,7 @@ export async function processCalendarFile(context: ImportGtfsContext, config: Im
 			// is between the given start_date and end_date. Clip the service_id's
 			// start and end dates to the given start and end dates.
 
-			if (config.date_range?.start && config.date_range?.end) {
+			if ('date_range' in config && config.date_range?.start && config.date_range?.end) {
 				let serviceIdStartDate = validatedData.start_date;
 				let serviceIdEndDate = validatedData.end_date;
 
@@ -62,7 +63,7 @@ export async function processCalendarFile(context: ImportGtfsContext, config: Im
 			// If the config is of discrete-dates type, get the operational dates
 			// for this service_id that are in the given discrete dates array.
 
-			if (config.discrete_dates?.length) {
+			if ('discrete_dates' in config && config.discrete_dates?.length) {
 				config.discrete_dates.forEach((date) => {
 					if (date >= validatedData.start_date && date <= validatedData.end_date) {
 						allOperationalDatesInRange.push(date);

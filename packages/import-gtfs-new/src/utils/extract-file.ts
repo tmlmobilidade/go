@@ -1,77 +1,46 @@
 /* * */
 
-import { type ImportGtfsContext } from '@/types.js';
+import { type ImportGtfsContext } from '@/types/context.js';
 import { unzipFile } from '@/utils/unzip-file.js';
-import { files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Plan } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 
 /**
- * Downloads and extracts the GTFS files for the given plan.
- * @param plan The plan containing the operation_file_id to download and extract.
- * @returns The working directory containing the extracted GTFS files.
+ * Downloads and extracts the GTFS file from the given URL to the working directory.
+ * @param url The URL of the GTFS file to download and extract.
+ * @param context The context for the import run.
  */
-export async function downloadAndExtractGtfs(plan: Plan): Promise<ImportGtfsContext['workdir']> {
+export async function downloadAndExtractGtfs(url: string, context: ImportGtfsContext) {
 	//
-
-	// Return early if no operation file is found
-
-	if (!plan.operation_file_id) {
-		Logger.error(`No operation file found for plan "${plan._id}".`);
-		process.exit(1);
-	}
 
 	//
 	// Prepare the working directory
 
-	const workdirPath = `/tmp/${plan._id}`;
-	const downloadFilePath = `${workdirPath}/${plan.operation_file_id}.zip`;
-	const extractDirPath = `${workdirPath}/extracted`;
-
 	try {
-		fs.rmSync(workdirPath, { force: true, recursive: true });
-		fs.mkdirSync(workdirPath, { recursive: true });
-
-		Logger.success('Prepared working directory.', 1);
+		fs.rmSync(context.workdir.path, { force: true, recursive: true });
+		fs.mkdirSync(context.workdir.path, { recursive: true });
+		Logger.success(`Prepared working directory at "${context.workdir.path}".`, 1);
 	} catch (error) {
-		Logger.error(`Error preparing workdir path "${workdirPath}".`, error);
+		Logger.error(`Error preparing workdir path "${context.workdir.path}".`, error);
 		process.exit(1);
 	}
 
 	//
-	// Get the associated Operation GTFS archive URL,
-	// and try to download, save and unzip it.
-
-	const operationFileData = await files.findById(plan.operation_file_id);
-
-	if (!operationFileData?.url) {
-		Logger.error(`No operation file found for plan "${plan._id}".`);
-		process.exit(1);
-	}
+	// Download the GTFS file from the given URL,
+	// save it to the working directory, then unzip it.
 
 	try {
-		const downloadResponse = await fetch(operationFileData.url);
+		const downloadResponse = await fetch(url);
 		const downloadArrayBuffer = await downloadResponse.arrayBuffer();
-		fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
+		fs.writeFileSync(context.workdir.download_file_path, Buffer.from(downloadArrayBuffer));
 	} catch (error) {
-		Logger.error('Error downloading the file.', error);
-		process.exit(1);
+		throw new Error('Error downloading the file.', error);
 	}
 
 	try {
-		await unzipFile(downloadFilePath, extractDirPath);
-		Logger.success(`Unzipped GTFS file from "${downloadFilePath}" to "${extractDirPath}".`, 1);
+		await unzipFile(context.workdir.download_file_path, context.workdir.extract_dir_path);
+		Logger.success(`Unzipped GTFS file from "${context.workdir.download_file_path}" to "${context.workdir.extract_dir_path}".`, 1);
 	} catch (error) {
-		Logger.error('Error unzipping the file.', error);
-		process.exit(1);
+		throw new Error('Error unzipping the file.', error);
 	}
-
-	return {
-		download_file_path: downloadFilePath,
-		extract_dir_path: extractDirPath,
-		path: workdirPath,
-	};
-
-	//
 }
