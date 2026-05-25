@@ -1,4 +1,4 @@
--- Delete out-of-window rows from eta.hist_node_travel_times_aggregation.
+-- Delete out-of-window rows from {database}.hist_node_travel_times_aggregation.
 --
 -- The loader's aggregation step (3-aggregate_hist_node_travel_times.sql)
 -- inserts rows for the last `historicalDataDaysBack` days every run, so
@@ -15,10 +15,10 @@
 --
 -- Preview the number of rows that will be deleted:
 
-SELECT count() AS rows_to_delete FROM eta.hist_node_travel_times_aggregation
+SELECT count() AS rows_to_delete FROM {database}.hist_node_travel_times_aggregation
 WHERE operational_date < toYYYYMMDD(subtractDays(today(), {historical_data_days_back:UInt32}));
 
--- Delete all out-of-window rows from eta.hist_node_travel_times_aggregation:
+-- Delete all out-of-window rows from {database}.hist_node_travel_times_aggregation:
 
-ALTER TABLE eta.hist_node_travel_times_aggregation
+ALTER TABLE {database}.hist_node_travel_times_aggregation
 DELETE WHERE operational_date < toYYYYMMDD(subtractDays(today(), {historical_data_days_back:UInt32}));

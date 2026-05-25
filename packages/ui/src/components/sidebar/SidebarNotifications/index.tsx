@@ -4,6 +4,7 @@
 
 import { type MenuProps } from '@mantine/core';
 import { IconBell, IconBellOff } from '@tabler/icons-react';
+import { type Notification } from '@tmlmobilidade/types';
 
 import { useNotificationsContext } from '../../../contexts/Notifications.context';
 import { Menu } from '../../menu/Menu';
@@ -15,6 +16,12 @@ import { SidebarNotificationsItem } from '../SidebarNotificationsItem';
 
 export interface SidebarNotificationsProps {
 	menuPosition?: MenuProps['position']
+}
+
+/* * */
+
+function SidebarNotificationsMenuItem({ item }: { item: Notification }) {
+	return <SidebarNotificationsItem notification={item} />;
 }
 
 /* * */
@@ -37,8 +44,8 @@ export function SidebarNotifications({ menuPosition }: SidebarNotificationsProps
 	return (
 		<Menu counter={unreadNotifications.length} icon={IconBell} label="Notificações" menuPosition={menuPosition} variant="danger">
 
-			<MenuList data={unreadNotifications} itemComponent={({ item }) => <SidebarNotificationsItem notification={item} />} title="Não Lidas" />
-			<MenuList data={readNotifications} itemComponent={({ item }) => <SidebarNotificationsItem notification={item} />} title="Lidas" />
+			<MenuList data={unreadNotifications} getItemKey={item => item._id} itemComponent={SidebarNotificationsMenuItem} title="Não Lidas" />
+			<MenuList data={readNotifications} getItemKey={item => item._id} itemComponent={SidebarNotificationsMenuItem} title="Lidas" />
 
 			{notifications.length === 0 && (
 				<MenuNoContent icon={IconBellOff} text="Sem notificações disponíveis" />

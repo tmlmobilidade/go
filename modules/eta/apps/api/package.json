@@ -21,6 +21,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-eta-pckg-common": "*",
 		"@tmlmobilidade/interfaces": "*"
 	},
 	"devDependencies": {

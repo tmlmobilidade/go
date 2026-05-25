@@ -1,6 +1,5 @@
 import { AppConfig } from '@/lib/config.js';
-import { pipelinePath } from '@/lib/sql-paths.js';
-import { queryEachStatementFromFile } from '@tmlmobilidade/databases';
+import { pipelinePath, queryEachEtaStatementFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 
 const CLEANUP_HIST_NODE_TRAVEL_TIMES_AGG_SQL = 'cleanup/7-delete-out-of-window-hist-node-travel-times-aggregation.sql';
@@ -16,10 +15,10 @@ interface CleanupRowsResult {
  * to this table every run without dedup, so without pruning it grows
  * without bound.
  */
-export async function cleanupHistoricalNodeTravelTimesAggregation(clickhouseClient: Parameters<typeof queryEachStatementFromFile>[0]) {
+export async function cleanupHistoricalNodeTravelTimesAggregation(clickhouseClient: Parameters<typeof queryEachEtaStatementFromFile>[0]) {
 	Logger.title('7. Cleanup out-of-window historical node travel times aggregation');
 
-	const result = await queryEachStatementFromFile<CleanupRowsResult>(
+	const result = await queryEachEtaStatementFromFile<CleanupRowsResult>(
 		clickhouseClient,
 		pipelinePath(CLEANUP_HIST_NODE_TRAVEL_TIMES_AGG_SQL),
 		{

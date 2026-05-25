@@ -34,7 +34,7 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"protobufjs": "8.4.0"
+		"protobufjs": "8.4.2"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

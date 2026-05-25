@@ -1,6 +1,6 @@
 /* * */
 
-export type ApiCacheKeyParams = Record<string, boolean | number | string>;
+const dynamicKey = () => 'use-for-dynamic-key';
 
 export const ApiCacheKeyValues = [
 	'hub:alerts:published:json',
@@ -31,25 +31,8 @@ export const ApiCacheKeyValues = [
 	'hub:network:plans',
 	'hub:network:vehicles',
 	'hub:network:vehicles:protobuf',
-	'hub:network:patterns:{patternId}',
-	'hub:network:shapes:{shapeId}',
+	`hub:network:patterns:${dynamicKey()}`,
+	`hub:network:shapes:${dynamicKey()}`,
 ] as const;
 
 export type ApiCacheKey = typeof ApiCacheKeyValues[number];
-
-export function resolveApiCacheKey(key: ApiCacheKey, params?: ApiCacheKeyParams): string {
-	const resolvedKey = key.replace(/\{([^{}]+)\}/g, (_match, paramName: string) => {
-		const value = params?.[paramName];
-		if (typeof value === 'undefined' || value === null) {
-			throw new Error(`[ApiCache] Missing key param "${paramName}" for key "${key}".`);
-		}
-		return String(value);
-	});
-
-	const unresolvedParam = resolvedKey.match(/\{([^{}]+)\}/);
-	if (unresolvedParam) {
-		throw new Error(`[ApiCache] Missing key param "${unresolvedParam[1]}" for key "${key}".`);
-	}
-
-	return resolvedKey;
-}

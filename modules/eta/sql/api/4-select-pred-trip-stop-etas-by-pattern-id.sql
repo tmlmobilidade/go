@@ -3,7 +3,7 @@ WITH trip_summary AS (
         hashed_trip_id,
         argMin(arrival_time, stop_sequence) AS first_arrival_time,
         argMax(stop_name, stop_sequence)    AS last_stop_name
-    FROM eta.curr_waypoints_snapped
+    FROM {database}.curr_waypoints_snapped
     GROUP BY hashed_trip_id
 )
 SELECT
@@ -63,10 +63,10 @@ SELECT
         NULL,
         toNullable(toInt64(toUnixTimestamp(assumeNotNull(e.eta_at))))
     )                                                                            AS estimated_arrival_unix
-FROM eta.pred_trip_stop_etas AS e
-LEFT JOIN eta.curr_waypoints_snapped AS w
+FROM {database}.pred_trip_stop_etas AS e
+LEFT JOIN {database}.curr_waypoints_snapped AS w
     ON w.hashed_trip_id = e.hashed_trip_id AND w.stop_sequence = e.stop_sequence
-LEFT JOIN eta.curr_rides AS r
+LEFT JOIN {database}.curr_rides AS r
     ON r.trip_id = e.trip_id
 LEFT JOIN trip_summary AS ts
     ON ts.hashed_trip_id = e.hashed_trip_id

@@ -66,6 +66,8 @@ db.createRole({
 db.createRole({
 	privileges: [
 		{ actions: ['find'], resource: { collection: 'files', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
+		{ actions: ['find', 'update'], resource: { collection: 'plans', db: 'production' } },
 	],
 	role: 'hub',
 	roles: [],
