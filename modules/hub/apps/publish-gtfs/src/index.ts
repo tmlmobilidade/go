@@ -5,4 +5,4 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '1m', throwOnError: true });
+await runOnInterval(main, { intervalMs: '1m', throwOnError: false });

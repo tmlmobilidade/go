@@ -3,6 +3,7 @@
 
 import { type ExportGtfsContext } from '@/types/context.js';
 import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type GTFS_RouteType } from '@tmlmobilidade/types';
 import { getPublicLineId, getPublicRouteId } from '@tmlmobilidade/utils';
 
@@ -32,6 +33,10 @@ export interface ExportedRoutesRow {
 export async function exportRoutesFile(routesList: GTFS_Route_Extended[], context: ExportGtfsContext) {
 	//
 
+	const timer = new Timer();
+
+	Logger.info('Exporting routes.txt file...');
+
 	const sortedRoutesList = routesList.sort((a, b) => a.route_id.localeCompare(b.route_id));
 
 	for (const routeData of sortedRoutesList) {
@@ -55,5 +60,5 @@ export async function exportRoutesFile(routesList: GTFS_Route_Extended[], contex
 
 	await context.writers.routes.flush();
 
-	Logger.info('Exported routes.txt file.');
+	Logger.success(`Exported routes.txt file in ${timer.get()}.`);
 }

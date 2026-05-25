@@ -2,6 +2,7 @@
 
 import { type ExportGtfsContext } from '@/types/context.js';
 import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { type OperationalDate } from '@tmlmobilidade/types';
 
 /* * */
@@ -31,6 +32,10 @@ interface DateObjApiResponse {
 export async function exportDatesFile(context: ExportGtfsContext) {
 	//
 
+	const timer = new Timer();
+
+	Logger.info('Exporting dates.txt file...');
+
 	//
 	// Fetch dates from GO v1 API
 
@@ -53,5 +58,5 @@ export async function exportDatesFile(context: ExportGtfsContext) {
 
 	await context.writers.dates.flush();
 
-	Logger.info('Exported dates.txt file.');
+	Logger.success(`Exported dates.txt file in ${timer.get()}.`);
 }

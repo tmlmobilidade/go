@@ -3,6 +3,7 @@
 import { type ExportGtfsContext } from '@/types/context.js';
 import { locations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
@@ -19,6 +20,10 @@ export interface ExportedMunicipalitiesRow {
  */
 export async function exportMunicipalitiesFile(context: ExportGtfsContext) {
 	//
+
+	const timer = new Timer();
+
+	Logger.info('Exporting municipalities.txt file...');
 
 	//
 	// Get all the municipalities matching the specified IDs.
@@ -56,5 +61,5 @@ export async function exportMunicipalitiesFile(context: ExportGtfsContext) {
 
 	await context.writers.municipalities.flush();
 
-	Logger.info('Exported municipalities.txt file.');
+	Logger.success(`Exported municipalities.txt file in ${timer.get()}.`);
 }
