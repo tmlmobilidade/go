@@ -4,8 +4,8 @@ import { useLocationsContext } from '@/contexts/Locations.context';
 import { type StopNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { LifecycleStatusSchema, type Stop, StopConnectionSchema, StopEquipmentSchema, StopFacilitySchema } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
+import { LifecycleStatusSchema, PermissionCatalog, type Stop, StopConnectionSchema, StopEquipmentSchema, StopFacilitySchema } from '@tmlmobilidade/types';
+import { type ListContextStateTemplate, useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -17,6 +17,7 @@ interface StopsListContextState extends ListContextStateTemplate {
 		raw: Stop[]
 	}
 	filters: ListContextStateTemplate['filters'] & {
+		agency: UseFilterStateListReturnType
 		connections: UseFilterStateListReturnType
 		equipment: UseFilterStateListReturnType
 		facilities: UseFilterStateListReturnType
@@ -46,7 +47,13 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 
 	const locationsContext = useLocationsContext();
 
+	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.stops.actions.read],
+		scope: PermissionCatalog.all.stops.scope,
+	});
+
 	const filterSearch = useFilterStateString('search');
+	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
 	const filterFacilities = useFilterStateList('facilities', StopFacilitySchema.options, StopFacilitySchema.options.map(item => ({ label: item, value: item })));
 	const filterEquipment = useFilterStateList('equipment', StopEquipmentSchema.options, StopEquipmentSchema.options.map(item => ({ label: item, value: item })));
 	const filterConnections = useFilterStateList('connections', StopConnectionSchema.options, StopConnectionSchema.options.map(item => ({ label: item, value: item })));
@@ -94,18 +101,25 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		// Apply filter values
 		return searchResultsData
 			.filter((stopData: StopNormalized) => {
+				const matchesAgency = (!filterAgency.isActive && filterAgency.value.length === 0)
+					|| (
+						stopData.flags?.length
+							? stopData.flags.some(flag => flag.agency_ids.some(agencyId => filterAgency.value.includes(agencyId)))
+							: !filterAgency.isActive
+					);
 				const lifecycleStatusMatch = filterLifecycleStatus.value.includes(stopData.lifecycle_status);
 				const matchesFacilities = stopData.facilities?.length ? stopData.facilities.some(item => filterFacilities.value.includes(item)) : true;
 				const matchesEquipment = stopData.equipment?.length ? stopData.equipment.some(item => filterEquipment.value.includes(item)) : true;
 				const matchesConnections = stopData.connections?.length ? stopData.connections.some(item => filterConnections.value.includes(item)) : true;
 				// Evaluate conditions
-				return lifecycleStatusMatch && matchesFacilities && matchesEquipment && matchesConnections;
+				return matchesAgency && lifecycleStatusMatch && matchesFacilities && matchesEquipment && matchesConnections;
 			})
 			.sort((a, b) => {
 				return String(a._id).localeCompare(String(b._id));
 			});
 	}, [
 		searchResultsData,
+		filterAgency,
 		filterLifecycleStatus,
 		filterFacilities,
 		filterEquipment,
@@ -121,6 +135,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 			raw: allStopsData ?? [],
 		},
 		filters: {
+			agency: filterAgency,
 			connections: filterConnections,
 			equipment: filterEquipment,
 			facilities: filterFacilities,
