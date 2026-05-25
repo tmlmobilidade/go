@@ -5,7 +5,7 @@ import { type StopNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { LifecycleStatusSchema, type Stop, StopConnectionSchema, StopEquipmentSchema, StopFacilitySchema } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useAgenciesContext, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, useAgenciesContext, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -16,13 +16,12 @@ interface StopsListContextState extends ListContextStateTemplate {
 		filtered: StopNormalized[]
 		raw: Stop[]
 	}
-	filters: {
+	filters: ListContextStateTemplate['filters'] & {
 		agencies: UseFilterStateListReturnType
 		connections: UseFilterStateListReturnType
 		equipment: UseFilterStateListReturnType
 		facilities: UseFilterStateListReturnType
 		lifecycle_status: UseFilterStateListReturnType
-		search: UseFilterStateStringReturnType
 	}
 }
 

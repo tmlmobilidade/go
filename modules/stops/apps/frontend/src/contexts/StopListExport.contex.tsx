@@ -82,6 +82,7 @@ export const StopListExportContextProvider = ({ children }: PropsWithChildren) =
 
 		return filters;
 	}, [
+		agenciesContext.data.as_options,
 		stopsListContext.filters.connections.isActive,
 		stopsListContext.filters.connections.value,
 		stopsListContext.filters.agencies.isActive,
