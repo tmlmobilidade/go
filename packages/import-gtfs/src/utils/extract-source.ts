@@ -11,49 +11,40 @@ import fs from 'node:fs';
  * @param source The source of the GTFS data to extract.
  * @param context The context for the import run.
  */
-export async function extractGtfsSource(source: ImportGtfsToDatabaseConfig['source'], context: ImportGtfsContext) {
+export async function extractGtfsSource(context: ImportGtfsContext, config: ImportGtfsToDatabaseConfig) {
 	//
 
 	//
 	// Prepare the working directory
 
-	try {
-		fs.rmSync(context.workdir.path, { force: true, recursive: true });
-		fs.mkdirSync(context.workdir.path, { recursive: true });
-		Logger.success(`Prepared working directory at "${context.workdir.path}".`, 1);
-	} catch (error) {
-		Logger.error(`Error preparing workdir path "${context.workdir.path}".`, error);
-		process.exit(1);
-	}
+	fs.rmSync(context.workdir.path, { force: true, recursive: true });
+	fs.mkdirSync(context.workdir.path, { recursive: true });
+	Logger.success(`Prepared working directory at "${context.workdir.path}".`, 1);
 
 	//
 	// If source is a URL, download the GTFS file from the given URL,
-	// save it to the working directory, then unzip it.
+	// and save it to the working directory.
+	// If source is a path, copy the GTFS file from the given path to the working directory.
+	// Then unzip it.
 
-	if ('url' in source) {
-		try {
-			const downloadResponse = await fetch(source.url);
-			const downloadArrayBuffer = await downloadResponse.arrayBuffer();
-			fs.writeFileSync(context.workdir.download_file_path, Buffer.from(downloadArrayBuffer));
-		} catch (error) {
-			throw new Error('Error downloading the file.', error);
-		}
+	if ('url' in config.source) {
+		Logger.info(`Downloading GTFS file from URL: ${config.source.url}`);
+		const downloadResponse = await fetch(config.source.url);
+		const downloadArrayBuffer = await downloadResponse.arrayBuffer();
+		fs.writeFileSync(context.workdir.download_file_path, Buffer.from(downloadArrayBuffer));
+		Logger.success(`Downloaded GTFS file from URL: ${config.source.url}`);
 	}
 
-	//
-	// If source is a path, copy the GTFS file from the given path to the working directory.
-
-	if ('path' in source) {
-		fs.copyFileSync(source.path, context.workdir.download_file_path);
+	if ('path' in config.source) {
+		Logger.info(`Copying GTFS file from path: ${config.source.path}`);
+		fs.copyFileSync(config.source.path, context.workdir.download_file_path);
+		Logger.success(`Copied GTFS file from path: ${config.source.path}`);
 	}
 
 	//
 	// Unzip the GTFS file.
 
-	try {
-		await unzipFile(context.workdir.download_file_path, context.workdir.extract_dir_path);
-		Logger.success(`Unzipped GTFS file from "${context.workdir.download_file_path}" to "${context.workdir.extract_dir_path}".`, 1);
-	} catch (error) {
-		throw new Error('Error unzipping the file.', error);
-	}
+	Logger.info('Unzipping GTFS file...');
+	await unzipFile(context.workdir.download_file_path, context.workdir.extract_dir_path);
+	Logger.success(`Unzipped GTFS file from "${context.workdir.download_file_path}" to "${context.workdir.extract_dir_path}".`, 1);
 }
