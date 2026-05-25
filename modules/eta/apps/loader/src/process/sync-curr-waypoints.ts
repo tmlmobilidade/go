@@ -1,6 +1,6 @@
 /* * */
 
-import { qualifiedTable } from '@/lib/eta-database.js';
+import { qualifiedTable } from '@tmlmobilidade/go-eta-pckg-common';
 import { hashedTrips } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';

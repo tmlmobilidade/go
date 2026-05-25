@@ -3,19 +3,17 @@
 import { insertEtaRides } from '@/clickhouse/insert-eta-rides.js';
 import { insertHistoricalVehicleEvents } from '@/clickhouse/insert-historical-vehicle-events.js';
 import { AppConfig } from '@/lib/config.js';
-import { qualifiedTable } from '@/lib/eta-database.js';
-import { queryEachEtaStatementFromFile, queryEtaFromFile } from '@/lib/eta-query.js';
 import { toEtaRideRow } from '@/lib/eta-ride-row.js';
 import { buildHistNodeTravelTimes } from '@/process/build-hist-node-travel-times.js';
 import { buildRidesQuery, fetchCurrentWindowRides, fetchHistoricalRidesForDayIndex } from '@/process/rides-query.js';
 import { syncShapeNodes } from '@/process/sync-shape-nodes.js';
 import { GOClickHouseClient } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { pipelinePath, qualifiedTable, queryEachEtaStatementFromFile, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
-import { pipelinePath } from './lib/sql-paths.js';
 import { syncCurrentWaypoints } from './process/sync-curr-waypoints.js';
 
 /* * */

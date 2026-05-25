@@ -1,6 +1,4 @@
-import { qualifiedTable } from '@/lib/eta-database.js';
-import { queryEachEtaStatementFromFile } from '@/lib/eta-query.js';
-import { pipelinePath } from '@/lib/sql-paths.js';
+import { pipelinePath, qualifiedTable, queryEachEtaStatementFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 
 const KEEP_TABLE = qualifiedTable('_cleaner_hist_rides_keep');

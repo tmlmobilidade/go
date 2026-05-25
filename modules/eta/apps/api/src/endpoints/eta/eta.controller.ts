@@ -1,9 +1,8 @@
 /* * */
 
-import { pipelinePath } from '@/lib/sql-paths.js';
-import { queryEtaFromFile } from '@/lib/eta-query.js';
 import { GOClickHouseClient } from '@tmlmobilidade/databases';
 import { type FastifyRequest } from '@tmlmobilidade/fastify';
+import { pipelinePath, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 
 /* * */
 

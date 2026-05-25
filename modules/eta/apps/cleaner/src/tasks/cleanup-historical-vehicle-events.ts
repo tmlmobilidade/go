@@ -1,5 +1,4 @@
-import { pipelinePath } from '@/lib/sql-paths.js';
-import { queryEachEtaStatementFromFile } from '@/lib/eta-query.js';
+import { pipelinePath, queryEachEtaStatementFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 
 const CLEANUP_HIST_VEHICLE_EVENTS_SQL = 'cleanup/5-delete-orphan-hist-vehicle-events.sql';

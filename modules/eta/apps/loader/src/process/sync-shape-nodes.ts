@@ -1,7 +1,7 @@
 /* * */
 
 import { AppConfig } from '@/lib/config.js';
-import { qualifiedTable } from '@/lib/eta-database.js';
+import { qualifiedTable } from '@tmlmobilidade/go-eta-pckg-common';
 import { chunkLineByDistanceV2, hashedShapesToFeatureCollection } from '@tmlmobilidade/geo';
 import { hashedShapes } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';

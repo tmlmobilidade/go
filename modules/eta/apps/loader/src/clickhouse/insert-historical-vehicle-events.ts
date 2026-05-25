@@ -1,7 +1,6 @@
 import { AppConfig } from '@/lib/config.js';
-import { queryEtaFromFile } from '@/lib/eta-query.js';
-import { pipelinePath } from '@/lib/sql-paths.js';
 import { Dates } from '@tmlmobilidade/dates';
+import { pipelinePath, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 import { performInTimeChunks } from '@tmlmobilidade/utils';
 
