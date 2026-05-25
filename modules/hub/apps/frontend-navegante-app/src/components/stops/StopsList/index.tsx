@@ -1,32 +1,18 @@
 'use client';
 
-import { StopsListToolbar } from '@/components/stops/StopsListToolbar';
-import { StopsListViewAll } from '@/components/stops/StopsListViewAll';
-import { StopsListViewMap } from '@/components/stops/StopsListViewMap';
-import { StopsListViewSkeleton } from '@/components/stops/StopsListViewSkeleton';
-import { useStopsListContext } from '@/contexts/StopsList.context';
+import styles from './styles.module.css';
 
 /* * */
 
 export function StopsList() {
-	//
-
-	//
-	// A. Setup variables
-
-	const stopsListContext = useStopsListContext();
-
-	//
-	// B. Render components
-
 	return (
-		<>
-			<StopsListToolbar />
-			{stopsListContext.flags.is_loading && <StopsListViewSkeleton />}
-			{(!stopsListContext.flags.is_loading && stopsListContext.filters.by_current_view === 'list') && <StopsListViewAll />}
-			{(!stopsListContext.flags.is_loading && stopsListContext.filters.by_current_view === 'map') && <StopsListViewMap />}
-		</>
+		<div className={styles.container}>
+			{[...Array(100)].map((_, index) => (
+				<div key={index} className={styles.item}>
+					stops list
+					{index}
+				</div>
+			))}
+		</div>
 	);
-
-	//
 }

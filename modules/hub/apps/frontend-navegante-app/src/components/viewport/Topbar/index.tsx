@@ -1,21 +1,13 @@
 'use client';
-/* * */
 
 import styles from './styles.module.css';
 
 /* * */
 
-export function WebsiteViewport({ children }) {
-	//
-
-	//
-	// A. Render components
-
+export function Topbar() {
 	return (
 		<div className={styles.container}>
-			{children}
+			<p className={styles.text}>Dúvidas? Clica aqui para saber mais.</p>
 		</div>
 	);
-
-	//
 }

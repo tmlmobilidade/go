@@ -1,5 +1,4 @@
 'use client';
-/* * */
 
 import { HomePage } from '@/components/home/HomePage';
 import { AlertsListContextProvider } from '@/contexts/AlertsList.context';
@@ -10,11 +9,6 @@ import { VehiclesListContextProvider } from '@/contexts/VehiclesList.context';
 /* * */
 
 export default function Page() {
-	//
-
-	//
-	// B. Render Components
-
 	return (
 		<AlertsListContextProvider>
 			<LinesListContextProvider>
@@ -26,6 +20,4 @@ export default function Page() {
 			</LinesListContextProvider>
 		</AlertsListContextProvider>
 	);
-
-	//
 }

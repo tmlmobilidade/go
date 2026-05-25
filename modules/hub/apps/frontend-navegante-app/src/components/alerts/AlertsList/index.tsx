@@ -1,28 +1,18 @@
 'use client';
 
-import { AlertsListGroup } from '@/components/alerts/AlertsListGroup';
-import { AlertsListToolbar } from '@/components/alerts/AlertsListToolbar';
-import { useAlertsListContext } from '@/contexts/AlertsList.context';
-
-import { AlertsListViewMap } from '../AlertsListViewMap';
+import styles from './styles.module.css';
 
 /* * */
 
 export function AlertsList() {
-	//
-
-	//
-	// A. Setup variables
-
-	const alertsListContext = useAlertsListContext();
-
-	//
-	// B. Render components
-
 	return (
-		<>
-			<AlertsListToolbar />
-			{alertsListContext.filters.by_date === 'map' ? <AlertsListViewMap /> : <AlertsListGroup />}
-		</>
+		<div className={styles.container}>
+			{[...Array(100)].map((_, index) => (
+				<div key={index} className={styles.item}>
+					alerts list
+					{index}
+				</div>
+			))}
+		</div>
 	);
 }
