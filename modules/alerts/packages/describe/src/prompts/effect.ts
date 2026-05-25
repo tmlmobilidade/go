@@ -18,7 +18,13 @@ export const effectPrompt: Record<AlertEffect, Record<I18nCode, string>> = {
 	},
 	DETOUR: {
 		en: '',
-		pt: 'Efeito: Desvio de Percurso',
+		pt: `
+			Efeito: Desvio de Percurso.
+			Se a referência for uma linha ou viagem com paragens específicas afetadas, não digas que a linha
+			ou viagem "desvia nessas paragens"; diz antes que fará desvio de percurso e que essas
+			paragens não serão servidas / ficam temporariamente sem serviço, exceto se o contexto
+			indicar explicitamente outra leitura.
+		`,
 	},
 	MODIFIED_SERVICE: {
 		en: '',
@@ -26,7 +32,16 @@ export const effectPrompt: Record<AlertEffect, Record<I18nCode, string>> = {
 	},
 	NO_SERVICE: {
 		en: '',
-		pt: 'Efeito: Serviço Interrompido ou Cancelamento de Serviço (escolhe um)',
+		pt: `
+			Efeito: cancelamento ou não realização do serviço.
+			NUNCA uses "interrompido", "interrupções", "foram interrompidas" ou "serão retomadas".
+			Linhas: privilegia "Serviço suspenso", "o serviço da linha ... encontra-se suspenso"
+			ou "não se realizam viagens na linha ...".
+			Viagens (rides): privilegia "Viagem cancelada", "a viagem ... não se realiza"
+			ou "as viagens ... foram canceladas".
+			Paragens (stops): privilegia "Paragem não servida", "esta paragem não será servida"
+			ou "as paragens ... não serão servidas".
+		`,
 	},
 	ON_BOARD_SALE_ISSUE: {
 		en: '',

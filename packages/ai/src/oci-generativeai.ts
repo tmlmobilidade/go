@@ -9,6 +9,10 @@ import { GenerativeAiInferenceClient, requests } from 'oci-generativeaiinference
  * to use in our application. It currently only supports running a text prompt
  * through the "openai.gpt-oss-120b" model and getting a response.
  */
+export interface OCIGenerativeAIRunOptions {
+	temperature?: number
+}
+
 export class OCIGenerativeAIProvider {
 	//
 
@@ -43,9 +47,10 @@ export class OCIGenerativeAIProvider {
 	 * based on the open source Falcon-40B-Instruct-v2 architecture,
 	 * but with more parameters and trained on more data.
 	 * @param prompt The prompt to run through the model.
+	 * @param options Optional generation parameters (defaults match the OCI SDK baseline).
 	 * @returns The response from the model.
 	 */
-	async run(prompt: string): Promise<string> {
+	async run(prompt: string, options?: OCIGenerativeAIRunOptions): Promise<string> {
 		//
 
 		//
@@ -73,7 +78,7 @@ export class OCIGenerativeAIProvider {
 						},
 					],
 					presencePenalty: 0,
-					temperature: 1,
+					temperature: options?.temperature ?? 1,
 					topK: 0,
 					topP: 1,
 				},
