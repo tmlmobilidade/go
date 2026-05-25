@@ -36,16 +36,16 @@ export async function processCalendarDatesFile(context: ImportGtfsContext, confi
 			// Skip if this row's date is not between the given start and end dates
 			// if they are provided in the config.
 
-			if ('date_range' in config && config.date_range?.start && config.date_range?.end) {
-				if (validatedData.date < config.date_range.start || validatedData.date > config.date_range.end) return;
+			if ('time_range' in config && config.time_range.date_range?.start && config.time_range.date_range?.end) {
+				if (validatedData.date < config.time_range.date_range.start || validatedData.date > config.time_range.date_range.end) return;
 			}
 
 			//
 			// Skip if this row's date is not in the given discrete dates array
 			// if it is provided in the config.
 
-			if ('discrete_dates' in config && config.discrete_dates?.length) {
-				if (!config.discrete_dates.includes(validatedData.date)) return;
+			if ('time_range' in config && config.time_range.discrete_dates?.length) {
+				if (!config.time_range.discrete_dates.includes(validatedData.date)) return;
 			}
 
 			//

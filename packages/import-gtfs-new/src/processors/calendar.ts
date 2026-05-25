@@ -38,35 +38,35 @@ export async function processCalendarFile(context: ImportGtfsContext, config: Im
 			// Setup an array to keep track of the valid operational dates for this service_id
 			// for the given start_date and end_date or single dates from the config.
 
-			const allOperationalDatesInRange: OperationalDate[] = [];
+			const allOperationalDatesInRange = new Set<OperationalDate>();
 
 			//
 			// If the config is of date-range type, check if this service_id
 			// is between the given start_date and end_date. Clip the service_id's
 			// start and end dates to the given start and end dates.
 
-			if ('date_range' in config && config.date_range?.start && config.date_range?.end) {
+			if ('time_range' in config && config.time_range?.date_range?.start && config.time_range?.date_range?.end) {
 				let serviceIdStartDate = validatedData.start_date;
 				let serviceIdEndDate = validatedData.end_date;
 
-				if (serviceIdEndDate < config.date_range.start || serviceIdStartDate > config.date_range.end) return;
+				if (serviceIdEndDate < config.time_range.date_range.start || serviceIdStartDate > config.time_range.date_range.end) return;
 
-				if (serviceIdStartDate < config.date_range.start) serviceIdStartDate = config.date_range.start;
-				if (serviceIdEndDate > config.date_range.end) serviceIdEndDate = config.date_range.end;
+				if (serviceIdStartDate < config.time_range.date_range.start) serviceIdStartDate = config.time_range.date_range.start;
+				if (serviceIdEndDate > config.time_range.date_range.end) serviceIdEndDate = config.time_range.date_range.end;
 
 				const operationalDates = getOperationalDatesFromRange(serviceIdStartDate, serviceIdEndDate);
 
-				allOperationalDatesInRange.push(...operationalDates);
+				operationalDates.forEach(date => allOperationalDatesInRange.add(date));
 			}
 
 			//
 			// If the config is of discrete-dates type, get the operational dates
 			// for this service_id that are in the given discrete dates array.
 
-			if ('discrete_dates' in config && config.discrete_dates?.length) {
-				config.discrete_dates.forEach((date) => {
+			if ('time_range' in config && config.time_range?.discrete_dates?.length) {
+				config.time_range.discrete_dates.forEach((date) => {
 					if (date >= validatedData.start_date && date <= validatedData.end_date) {
-						allOperationalDatesInRange.push(date);
+						allOperationalDatesInRange.add(date);
 					}
 				});
 			}

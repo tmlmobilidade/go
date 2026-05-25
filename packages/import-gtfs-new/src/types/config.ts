@@ -3,25 +3,31 @@
 import { type OperationalDate } from '@tmlmobilidade/types';
 
 /**
- * Base configuration options for importing GTFS data into a database.
+ * Source type of the GTFS data to import.
  */
-interface BaseImportGtfsToDatabaseConfig {
-	download_url: string
-}
-
-interface ImportGtfsToDatabaseConfigWithDateRange extends BaseImportGtfsToDatabaseConfig {
-	date_range: {
-		end: OperationalDate
-		start: OperationalDate
-	}
-}
-
-interface ImportGtfsToDatabaseConfigWithDiscreteDates extends BaseImportGtfsToDatabaseConfig {
-	discrete_dates: OperationalDate[]
+type ImportGtfsToDatabaseConfigSource = {
+	path: string
+} | {
+	url: string
 };
 
 /**
- * Configuration options for importing GTFS data into a database.
- * Either a date range or a discrete dates array must be provided.
+ * Time range type of the GTFS data to import.
  */
-export type ImportGtfsToDatabaseConfig = ImportGtfsToDatabaseConfigWithDateRange | ImportGtfsToDatabaseConfigWithDiscreteDates;
+interface ImportGtfsToDatabaseConfigTimeRange {
+	date_range?: {
+		end: OperationalDate
+		start: OperationalDate
+	}
+	discrete_dates?: OperationalDate[]
+}
+
+/**
+ * Configuration options for importing GTFS data.
+ * Source is required, time range is optional.
+ */
+export interface ImportGtfsToDatabaseConfig {
+	source: ImportGtfsToDatabaseConfigSource
+	time_range?: ImportGtfsToDatabaseConfigTimeRange
+}
+

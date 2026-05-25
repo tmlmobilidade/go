@@ -10,7 +10,7 @@ import { processTripsFile } from '@/processors/trips.js';
 import { type ImportGtfsToDatabaseConfig } from '@/types/config.js';
 import { type ImportGtfsContext } from '@/types/context.js';
 import { type GtfsSQLTables } from '@/types/sql-tables.js';
-import { downloadAndExtractGtfs } from '@/utils/extract-file.js';
+import { extractGtfsSource } from '@/utils/extract-source.js';
 import { initImportGtfsContext } from '@/utils/init-context.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -38,7 +38,7 @@ export async function importGtfsToDatabase(config: ImportGtfsToDatabaseConfig, c
 		//
 		// Download and extract the GTFS file.
 
-		await downloadAndExtractGtfs(config.download_url, context);
+		await extractGtfsSource(config.source, context);
 
 		//
 		// Process GTFS files in the correct order
