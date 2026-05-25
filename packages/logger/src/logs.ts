@@ -13,18 +13,18 @@ import { logger } from '@sentry/core';
 /**
  * Context object for structured informational logging.
  *
+ * @property {string} [app]      - The application or service associated with this log entry.
  * @property {string} message    - The informational message to log. (required)
  * @property {string} [module]   - The module or subsystem associated with this log entry.
- * @property {string} [tag]      - Additional tag for categorization or filtering.
  * @property {string} [severity] - Informational severity level (e.g., "info", "warning", "error").
  * @property {object} [key: string] - Any additional metadata fields for richer logging context.
  */
 export interface LogsContext {
 	[key: string]: unknown
+	app?: string
 	message: string
 	module?: string
 	severity?: string
-	tag?: string
 }
 
 /**
