@@ -61,7 +61,7 @@ export const StopListExportContextProvider = ({ children }: PropsWithChildren) =
 		}
 
 		if (stopsListContext.filters.agencies.isActive && stopsListContext.filters.agencies.value.length > 0) {
-			filters.push({ label: 'Operadores', value: agenciesContext.data.as_options.filter(option => stopsListContext.filters.agencies.value.includes(option.value)).join(', ') });
+			filters.push({ label: 'Operadores', value: agenciesContext.data.as_options.filter(option => stopsListContext.filters.agencies.value.includes(option.value)).map(option => option.label).join(', ') });
 		}
 
 		if (stopsListContext.filters.lifecycle_status.isActive && stopsListContext.filters.lifecycle_status.value.length > 0) {
