@@ -5,8 +5,8 @@ import { useLinesContext } from '@/contexts/Lines.context';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { getPublicVariable } from '@/settings/public-variables';
-import { type SimplifiedAlert } from '@/types/alerts.types';
 import { Line, NetworkPattern, NetworkRoute, NetworkShape, Waypoint } from '@/types/api/network';
+import { type SimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-types';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -88,7 +88,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 		const lineData = linesContext.actions.getLineDataById(lineId);
 		if (!lineData) return;
 		setDataLineState(lineData);
-	}, [lineId, linesContext.data.lines]);
+	}, [lineId, linesContext.actions, linesContext.data.lines]);
 
 	useEffect(() => {
 		if (!dataLineState?.route_ids) return;
@@ -97,14 +97,14 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 			if (!routeData) return;
 			setDataRoutesState(prev => [...prev, routeData]);
 		});
-	}, [dataLineState, linesContext.data.routes]);
+	}, [dataLineState, linesContext.actions, linesContext.data.routes]);
 
 	useEffect(() => {
 		(async () => {
 			try {
 				if (!dataLineState) return;
 				const fetchPromises = dataLineState.pattern_ids.map((patternId) => {
-					return fetch(`${getPublicVariable('api_url')}/patterns/${patternId}`)
+					return fetch(`${getPublicVariable('hub_api_url')}/v1/network/patterns/${patternId}`)
 						.then(response => response.json())
 						.then((patternData) => {
 							return patternData.map((patternGroup) => {
@@ -123,7 +123,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 				console.error('Error fetching pattern data:', error);
 			}
 		})();
-	}, [dataLineState, stopsContext.data.stops]);
+	}, [dataLineState, stopsContext.actions, stopsContext.data.stops]);
 
 	/**
 	 * TASK: Fetch shape data for the active pattern.
@@ -133,7 +133,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 		if (!dataActivePatternState) return;
 		(async () => {
 			try {
-				const shapeData = await fetch(`${getPublicVariable('api_url')}/shapes/${dataActivePatternState.shape_id}`).then((response) => {
+				const shapeData = await fetch(`${getPublicVariable('hub_api_url')}/v1/network/shapes/${dataActivePatternState.shape_id}`).then((response) => {
 					if (!response.ok) console.log(`Failed to fetch shape data for shapeId: ${dataActivePatternState.shape_id}`);
 					else return response.json();
 				});
@@ -186,22 +186,21 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 	}, [dataAllPatternsState, operationalDateContext.data.selected_date]);
 
 	useEffect(() => {
-		if (!alertsContext.data.simplified) return;
+		if (!alertsContext.data.alerts) return;
 
-		const activeAlerts = alertsContext.data.simplified.filter((simplifiedAlertData) => {
-			const isActive = (simplifiedAlertData.end_date && !isNaN(simplifiedAlertData.end_date.getTime())) ? new Date(simplifiedAlertData.end_date).getTime() >= new Date().getTime() : true;
-
-			if (!isActive) return false;
-
-			return simplifiedAlertData.informed_entity.some((informedEntity) => {
+		const activeAlerts = alertsContext.data.alerts.filter((row) => {
+			if (!alertsContext.actions.isAlertActiveNow(row)) return false;
+			return row.informed_entity.some((informedEntity) => {
 				const normalizedLineId = lineId?.trim();
-				const lineOperatorDigit = normalizedLineId?.match(/\d/)?.[0];
+				const lineAgencyId = dataLineState?.agency_id?.trim();
 				const informedAgencyId = informedEntity.agency_id?.trim();
-				const informedOperatorDigit = informedAgencyId?.slice(-1);
-				const hasMatchingArea = informedOperatorDigit != null && lineOperatorDigit != null && informedOperatorDigit === lineOperatorDigit;
-				const areaOk = !informedAgencyId || hasMatchingArea;
 
-				if (!areaOk) return false;
+				if (informedAgencyId) {
+					const lineArea = normalizedLineId?.match(/\d/)?.[0] ?? lineAgencyId?.slice(-1);
+					const isCmAreaAgency = ['41', '42', '43', '44'].includes(informedAgencyId);
+					const agencyOk = informedAgencyId === lineAgencyId || (isCmAreaAgency && lineArea === informedAgencyId.slice(-1));
+					if (!agencyOk) return false;
+				}
 
 				if (informedEntity.line_id != null) return informedEntity.line_id.trim() === normalizedLineId;
 
@@ -216,7 +215,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 		});
 
 		setDataActiveAlertsState(activeAlerts);
-	}, [alertsContext.data.simplified, lineId, dataLineState, dataAllPatternsState]);
+	}, [alertsContext.data.alerts, lineId, dataLineState, dataAllPatternsState, alertsContext.actions]);
 
 	//
 	// D. Handle actions
@@ -288,7 +287,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 		setFilterActiveWaypointStopIdState(null);
 		setFilterActiveWaypointStopSequenceState(null);
 		//
-	}, [dataActivePatternState, filterActiveWaypointStopIdState, filterActiveWaypointStopSequenceState]);
+	}, [dataActivePatternState, filterActiveWaypointStopIdState, filterActiveWaypointStopSequenceState, setFilterActiveWaypointStopIdState, setFilterActiveWaypointStopSequenceState]);
 
 	/**
 	 * Set the active pattern based on the pattern version id.

@@ -48,8 +48,8 @@ export const LinesContextProvider = ({ children }) => {
 	//
 	// A. Fetch data
 
-	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<Line[], Error>(`${getPublicVariable('api_url')}/lines`, { refreshInterval: 900000 }); // 15 minutes
-	const { data: allRoutesData, isLoading: allRoutesLoading } = useSWR<NetworkRoute[], Error>(`${getPublicVariable('api_url')}/routes`, { refreshInterval: 900000 }); // 15 minutes
+	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<Line[], Error>(`${getPublicVariable('hub_api_url')}/v1/network/lines`, { refreshInterval: 900000 }); // 15 minutes
+	const { data: allRoutesData, isLoading: allRoutesLoading } = useSWR<NetworkRoute[], Error>(`${getPublicVariable('hub_api_url')}/v1/network/routes`, { refreshInterval: 900000 }); // 15 minutes
 
 	const normalizedLinesData = useMemo(() => {
 		return Array.isArray(allLinesData) ? allLinesData : [];
@@ -95,13 +95,7 @@ export const LinesContextProvider = ({ children }) => {
 		flags: {
 			is_loading: allLinesLoading || allRoutesLoading,
 		},
-	}), [
-		allLinesLoading,
-		allRoutesLoading,
-		normalizedLinesData,
-		normalizedRoutesData,
-
-	]);
+	}), [allLinesLoading, allRoutesLoading, getLineDataById, getRouteDataById, normalizedLinesData, normalizedRoutesData]);
 
 	//
 	// D. Render components

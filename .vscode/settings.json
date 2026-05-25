@@ -13,72 +13,6 @@
 	// Disable the default CSS formatter, use stylelint instead
 	"css.validate": false,
 
-	"dbcode.connections": [
-		{
-			"color": "#00A6FF",
-			"connectionId": "go-prd-clickhouse-1.tmlmobilidade.pt",
-			"connectionType": "host",
-			"driver": "clickhouse",
-			"host": "go-prd-clickhouse-1.tmlmobilidade.pt",
-			"introspection": {
-				"progressive": false
-			},
-			"name": "go-prd-clickhouse-1",
-			"password": "",
-			"pinnedConnectionTimeout": "0",
-			"port": 8123,
-			"postConnectionSqlType": "inline",
-			"readOnly": false,
-			"requestTimeout": 30,
-			"savePassword": "secretStorage",
-			"ssl": false,
-			"tunnelId": "3eCQ9qr_cOeniIfi2VD9b",
-			"username": "admin"
-		},
-		{
-			"color": "#00A6FF",
-			"connectionId": "go-prd-clickhouse-2.tmlmobilidade.pt",
-			"connectionType": "host",
-			"driver": "clickhouse",
-			"host": "go-prd-clickhouse-2.tmlmobilidade.pt",
-			"introspection": {
-				"progressive": false
-			},
-			"name": "go-prd-clickhouse-2",
-			"password": "",
-			"pinnedConnectionTimeout": "0",
-			"port": 8123,
-			"postConnectionSqlType": "inline",
-			"readOnly": false,
-			"requestTimeout": 30,
-			"savePassword": "secretStorage",
-			"ssl": false,
-			"tunnelId": "3eCQ9qr_cOeniIfi2VD9b",
-			"username": "admin"
-		},
-		{
-			"color": "#00A6FF",
-			"connectionId": "go-prd-clickhouse-3.tmlmobilidade.pt",
-			"connectionType": "host",
-			"driver": "clickhouse",
-			"host": "go-prd-clickhouse-3.tmlmobilidade.pt",
-			"introspection": {
-				"progressive": false
-			},
-			"name": "go-prd-clickhouse-3",
-			"password": "",
-			"pinnedConnectionTimeout": "0",
-			"port": 8123,
-			"postConnectionSqlType": "inline",
-			"readOnly": false,
-			"requestTimeout": 30,
-			"savePassword": "secretStorage",
-			"ssl": false,
-			"tunnelId": "3eCQ9qr_cOeniIfi2VD9b",
-			"username": "admin"
-		}
-	],
-
 	// Auto fix
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": "explicit"
@@ -106,6 +40,12 @@
 	],
 	"eslint.workingDirectories": [{ "mode": "auto" }],
 	"files.eol": "\n",
+
+	"github.copilot.chat.commitMessageGeneration.instructions": [
+		{
+			"text": "Follow the TML conventional commit format exactly: type(scope): description. Types: feat, fix, refactor, perf, test, docs, chore, ci, style, revert, wip. Type and scope must be lowercase. Subject must use imperative mood, max 72 characters, and no trailing period. Add a blank line before body or footer if present. Prefer scopes defined in the repo's commitlint.config.cjs; do not invent scopes when a listed scope fits."
+		}
+	],
 
 	"less.validate": false,
 	// Disable the default formatter, use eslint instead

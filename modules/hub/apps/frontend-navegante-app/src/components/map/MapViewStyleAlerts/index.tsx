@@ -38,11 +38,17 @@ export function MapViewStyleAlerts({ data = baseGeoJsonFeatureCollection, presen
 						['get', 'cause'],
 						'ACCIDENT', 'icon-car-crash',
 						'TECHNICAL_PROBLEM', 'icon-car-crash',
+						'VEHICLE_ISSUE', 'icon-car-crash',
+						'TRAFFIC_JAM', 'icon-car-crash',
 						'CONSTRUCTION', 'icon-barrier-block',
+						'ROAD_INCIDENT', 'icon-barrier-block',
+						'ROAD_ISSUE', 'icon-barrier-block',
 						'DEMONSTRATION', 'icon-speakerphone',
 						'STRIKE', 'icon-speakerphone',
 						'HOLIDAY', 'icon-calendar-event',
+						'NETWORK_UPDATE', 'icon-calendar-event',
 						'MAINTENANCE', 'icon-tool',
+						'SYSTEM_FAILURE', 'icon-tool',
 						'MEDICAL_EMERGENCY', 'icon-ambulance',
 						'POLICE_ACTIVITY', 'icon-ambulance',
 						'WEATHER', 'icon-cloud-storm',
@@ -52,15 +58,10 @@ export function MapViewStyleAlerts({ data = baseGeoJsonFeatureCollection, presen
 						'interpolate',
 						['linear'],
 						['zoom'],
-						10, 0.25,
-						20, 0.5,
+						10, 0.15,
+						20, 0.3,
 					],
-				}}
-				paint={{
-					'icon-color': '#fff',
-					'icon-halo-blur': 1,
-					'icon-halo-color': 'white',
-					'icon-halo-width': 1,
+					'symbol-placement': 'point',
 				}}
 			/>
 		</Source>

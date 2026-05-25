@@ -56,14 +56,35 @@ export class PCGIValidationsClient {
 			directConnection: process.env.PCGI_VALIDATIONS_TUNNEL_ENABLED === 'true',
 			maxPoolSize: 20,
 			minPoolSize: 2,
-			readPreference: 'secondaryPreferred',
+			readPreference: 'primary',
+			replicaSet: process.env.PCGI_VALIDATIONS_RS_NAME,
+			retryReads: true,
+			retryWrites: true,
 			serverSelectionTimeoutMS: 10_000,
 		});
+		this.client.on('connectionPoolCreated', () => {
+			Logger.info('[PCGIValidationsClient] Database connection pool created.');
+		});
+		this.client.on('topologyDescriptionChanged', () => {
+			Logger.info('[PCGIValidationsClient] Database topology description changed.');
+		});
+		this.client.on('serverDescriptionChanged', () => {
+			Logger.info('[PCGIValidationsClient] Database server description changed.');
+		});
+		this.client.on('open', () => {
+			Logger.info('[PCGIValidationsClient] Database connection opened.');
+		});
+		this.client.on('connectionReady', () => {
+			Logger.info('[PCGIValidationsClient] Database connection is ready.');
+		});
 		this.client.on('close', () => {
-			console.warn('[PCGIValidationsClient] Database connection closed unexpectedly.');
+			Logger.error('[PCGIValidationsClient] Database connection closed unexpectedly.');
 		});
 		this.client.on('reconnect', () => {
-			console.log('[PCGIValidationsClient] Database reconnected.');
+			Logger.info('[PCGIValidationsClient] Database reconnected.');
+		});
+		this.client.on('error', (error) => {
+			Logger.error('[PCGIValidationsClient] Database connection error:', error);
 		});
 		await this.client.connect();
 	}
@@ -96,6 +117,10 @@ export class PCGIValidationsClient {
 
 		if (!process.env.PCGI_VALIDATIONS_HOST_3 || !process.env.PCGI_VALIDATIONS_PORT_3) {
 			throw new Error('Missing PCGI_VALIDATIONS_HOST_3 or PCGI_VALIDATIONS_PORT_3');
+		}
+
+		if (!process.env.PCGI_VALIDATIONS_RS_NAME) {
+			throw new Error('Missing PCGI_VALIDATIONS_RS_NAME');
 		}
 
 		if (process.env.PCGI_VALIDATIONS_TUNNEL_ENABLED === 'false') {

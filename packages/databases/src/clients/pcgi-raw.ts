@@ -56,14 +56,35 @@ export class PCGIRawClient {
 			directConnection: process.env.PCGI_RAW_TUNNEL_ENABLED === 'true',
 			maxPoolSize: 20,
 			minPoolSize: 2,
-			readPreference: 'secondaryPreferred',
+			readPreference: 'primary',
+			replicaSet: process.env.PCGI_RAW_RS_NAME,
+			retryReads: true,
+			retryWrites: true,
 			serverSelectionTimeoutMS: 10_000,
 		});
+		this.client.on('connectionPoolCreated', () => {
+			Logger.info('[PCGIRawClient] Database connection pool created.');
+		});
+		this.client.on('topologyDescriptionChanged', () => {
+			Logger.info('[PCGIRawClient] Database topology description changed.');
+		});
+		this.client.on('serverDescriptionChanged', () => {
+			Logger.info('[PCGIRawClient] Database server description changed.');
+		});
+		this.client.on('open', () => {
+			Logger.info('[PCGIRawClient] Database connection opened.');
+		});
+		this.client.on('connectionReady', () => {
+			Logger.info('[PCGIRawClient] Database connection is ready.');
+		});
 		this.client.on('close', () => {
-			console.warn('[PCGIRawClient] Database connection closed unexpectedly.');
+			Logger.error('[PCGIRawClient] Database connection closed unexpectedly.');
 		});
 		this.client.on('reconnect', () => {
-			console.log('[PCGIRawClient] Database reconnected.');
+			Logger.info('[PCGIRawClient] Database reconnected.');
+		});
+		this.client.on('error', (error) => {
+			Logger.error('[PCGIRawClient] Database connection error:', error);
 		});
 		await this.client.connect();
 	}
@@ -96,6 +117,10 @@ export class PCGIRawClient {
 
 		if (!process.env.PCGI_RAW_HOST_3 || !process.env.PCGI_RAW_PORT_3) {
 			throw new Error('Missing PCGI_RAW_HOST_3 or PCGI_RAW_PORT_3');
+		}
+
+		if (!process.env.PCGI_RAW_RS_NAME) {
+			throw new Error('Missing PCGI_RAW_RS_NAME');
 		}
 
 		if (process.env.PCGI_RAW_TUNNEL_ENABLED === 'false') {

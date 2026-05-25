@@ -28,7 +28,12 @@ export default function Component({ alt, href, src, target }: AlertsListItemImag
 	return (
 		<Link className={styles.container} href={href} target={target}>
 			<IconCircleArrowUpRightFilled className={styles.icon} size={25} />
-			<Image alt={alt} className={styles.image} fallbackSrc="/assets/common/placeholder.png" src={src} />
+			<Image
+				alt={alt}
+				className={styles.image}
+				fallbackSrc={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/assets/common/placeholder.png`}
+				src={src}
+			/>
 		</Link>
 	);
 }

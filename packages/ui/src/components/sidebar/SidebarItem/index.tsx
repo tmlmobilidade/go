@@ -2,37 +2,34 @@
 
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import Link from 'next/link';
-import { useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
 import { useMeContext } from '../../../contexts/Me.context';
 import { useCurrentUrl } from '../../../hooks/use-current-url';
-import { sidebarApps } from '../Sidebar';
-import { SidebarItemTooltip } from '../SidebarItemTooltip';
+import { type SidebarLeafItemConfig } from '../sidebar-navigation.config';
+import { useSidebarMode } from '../SidebarMode.context';
 
 /* * */
 
-export type SidebarItemProps = typeof sidebarApps[number];
+export interface SidebarItemProps extends SidebarLeafItemConfig {
+	depth?: number
+	label: string
+}
 
 /* * */
 
-export function SidebarItem({ _id, href, icon, permissions }: SidebarItemProps) {
+export function SidebarItem({ depth = 0, href, icon, label, permissions }: SidebarItemProps) {
 	//
 
 	//
 	// A. Setup Variables
 
-	const { t } = useTranslation();
-
 	const meContext = useMeContext();
+	const { iconOnly } = useSidebarMode();
 
 	const currentUrl = useCurrentUrl();
-
-	const ref = useRef<HTMLAnchorElement>(null);
-
-	const [hover, setHover] = useState(false);
 
 	//
 	// B. Transform data
@@ -82,25 +79,18 @@ export function SidebarItem({ _id, href, icon, permissions }: SidebarItemProps) 
 	}
 
 	return (
-		<>
-			<Link
-				ref={ref}
-				className={styles.icon}
-				data-active={isActive}
-				data-disabled={!isEnabled}
-				href={hrefValue ?? '#'}
-				onMouseEnter={() => setHover(true)}
-				onMouseLeave={() => setHover(false)}
-			>
-				{icon}
-			</Link>
-			{hover && (
-				<SidebarItemTooltip
-					label={t(`shared:components.sidebar.Sidebar.${_id}`)}
-					target={ref.current}
-				/>
-			)}
-		</>
+		<Link
+			aria-label={label}
+			className={styles.item}
+			data-active={isActive}
+			data-collapsed={iconOnly}
+			data-depth={depth}
+			data-disabled={!isEnabled}
+			href={hrefValue ?? '#'}
+		>
+			<span className={styles.icon}>{icon}</span>
+			<span className={styles.label}>{label}</span>
+		</Link>
 	);
 
 	//

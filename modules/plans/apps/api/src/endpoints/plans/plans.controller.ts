@@ -148,6 +148,16 @@ export class PlansController {
 						status: 'waiting',
 						timestamp: null,
 					},
+					hub_gtfs: {
+						last_hash: null,
+						status: 'waiting',
+						timestamp: null,
+					},
+					hub_schedules: {
+						last_hash: null,
+						status: 'waiting',
+						timestamp: null,
+					},
 					merger: {
 						last_hash: null,
 						status: 'waiting',

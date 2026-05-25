@@ -44,7 +44,7 @@ export function PanesManager({ id, panes }: PanesManagerProps) {
 		[visiblePanes.length],
 	);
 
-	const [paneFractions, setPaneFractions, savePaneFractions] = useUserPreference<number[]>(
+	const [paneFractions, setPaneFractions] = useUserPreference<number[]>(
 		'panes',
 		`${id}:fractions`,
 		defaultPaneFractions,
@@ -154,8 +154,7 @@ export function PanesManager({ id, panes }: PanesManagerProps) {
 
 			const finalFractions = latestFractionsRef.current;
 
-			setPaneFractions(finalFractions, { save: false });
-			savePaneFractions(finalFractions);
+			setPaneFractions(finalFractions);
 
 			document.removeEventListener('mousemove', onMouseMove);
 			document.removeEventListener('mouseup', onMouseUp);

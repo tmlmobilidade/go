@@ -32,12 +32,8 @@ export function LinesListToolbar() {
 	return (
 		<Surface>
 			<Section heading={t('heading')} withGap withPadding>
-				{linesContext.filters.by_current_view === 'all' && (
-					<>
-						<TextInput leftSection={<IconArrowLoopRight size={20} />} onChange={handleTextInputChange} placeholder={t('by_search.placeholder')} type="search" value={linesContext.filters.by_search} w="100%" />
-						<FoundItemsCounter text={t('found_items_counter.all', { count: linesContext.data.filtered.length })} />
-					</>
-				)}
+				<TextInput leftSection={<IconArrowLoopRight size={20} />} onChange={handleTextInputChange} placeholder={t('by_search.placeholder')} type="search" value={linesContext.filters.by_search} w="100%" />
+				<FoundItemsCounter text={t('found_items_counter.all', { count: linesContext.data.filtered.length })} />
 			</Section>
 		</Surface>
 	);

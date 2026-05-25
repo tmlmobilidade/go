@@ -24,7 +24,7 @@ export function VehiclesListDetails() {
 	// A. Setup variables
 
 	const t = useTranslations('vehicles.VehiclesListDetails');
-	const optionLabels = useTranslations('options');
+	const optionLabels = useTranslations('filters.by_agency.options');
 
 	const linesContext = useLinesContext();
 	const vehiclesListContext = useVehiclesListContext();
@@ -34,7 +34,7 @@ export function VehiclesListDetails() {
 
 	const activeLineData = useMemo(() => {
 		return linesContext.actions.getLineDataById(vehiclesListContext.data.selected?.line_id || '');
-	}, [vehiclesListContext.data.selected?.line_id]);
+	}, [linesContext.actions, vehiclesListContext.data.selected?.line_id]);
 
 	const rows = [
 		{ label: 'ID', value: vehiclesListContext.data.selected?.id },

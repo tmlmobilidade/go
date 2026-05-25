@@ -7,23 +7,21 @@ import { type Environment, getCurrentEnvironment } from '@tmlmobilidade/types';
  * to be used in other applications from this repo.
  */
 export const PUBLIC_VARIABLES = Object.freeze({
-	api_url: {
-		dev: 'http://127.0.0.1:5050',
-		prd: 'https://api.carrismetropolitana.pt/v2',
-		stg: 'https://api.carrismetropolitana.pt/v2',
-	},
 	go_api_url: {
 		dev: 'https://go.tmlmobilidade.pt',
 		prd: 'https://go.tmlmobilidade.pt',
 		stg: 'https://go.tmlmobilidade.pt',
 	},
-
+	hub_api_url: {
+		dev: 'http://localhost:52000',
+		prd: 'https://go.tmlmobilidade.pt/hub/api',
+		stg: 'https://go.tmlmobilidade.pt/hub/api',
+	},
 	server_url_frontend: {
 		dev: 'http://localhost:49002',
 		prd: 'https://navegante.pt',
 		stg: 'https://staging.navegante.pt',
 	},
-
 });
 
 /**

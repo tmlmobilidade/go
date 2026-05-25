@@ -3,7 +3,7 @@
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { IconHistory } from '@tabler/icons-react';
 import { UpdatePatternDto } from '@tmlmobilidade/types';
-import { CommentInput, CommentItemField, CommentItemNote, TopbarMenu } from '@tmlmobilidade/ui';
+import { CommentInput, CommentItemField, CommentItemNote, Menu } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
 import { useCallback, useMemo, useState } from 'react';
 
@@ -67,7 +67,7 @@ export function PatternDetailHistory() {
 	if (!patternDetailContext.data.pattern) return null;
 
 	return (
-		<TopbarMenu icon={IconHistory} label="Histórico" variant="primary" width={400}>
+		<Menu icon={IconHistory} label="Histórico" variant="primary" width={400}>
 			{commentItems.length > 0 ? (
 				<div style={{ maxHeight: '600px', overflowY: 'auto', padding: '8px' }}>
 					{commentItems}
@@ -77,7 +77,7 @@ export function PatternDetailHistory() {
 					Nenhuma atividade registrada para este pattern.
 				</div>
 			)}
-		</TopbarMenu>
+		</Menu>
 	);
 
 	//

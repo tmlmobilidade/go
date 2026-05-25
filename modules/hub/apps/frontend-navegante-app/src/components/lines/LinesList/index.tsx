@@ -22,7 +22,7 @@ export function LinesList() {
 		<>
 			<LinesListToolbar />
 			{linesContext.flags.is_loading && <LinesListViewSkeleton />}
-			{(!linesContext.flags.is_loading && linesContext.filters.by_current_view === 'all') && <LinesListViewAll />}
+			{!linesContext.flags.is_loading && <LinesListViewAll />}
 		</>
 	);
 

@@ -60,6 +60,12 @@ RUN npm prune --omit-dev
 RUN node /app/.docker/scripts/trim-node-modules.js /app/node_modules
 RUN node /app/.docker/scripts/trim-workspaces.js /app/packages /app/modules
 
+# Turbo prune may omit modules/eta/sql; merge from build context when present.
+RUN --mount=type=bind,source=.,target=/ctx \
+    if [ -d "/ctx/modules/eta/sql" ]; then \
+      mkdir -p /app/modules/eta && cp -a /ctx/modules/eta/sql /app/modules/eta/; \
+    fi
+
 
 # # #
 # RUNNER STAGE

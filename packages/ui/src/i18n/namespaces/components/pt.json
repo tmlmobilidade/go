@@ -36,30 +36,51 @@
 			"alerts": "Alertas",
 			"annotations": "Anotações",
 			"calendar": "Calendário",
+			"collapse_sidebar_aria": "Recolher barra lateral",
 			"events": "Eventos & Exceções",
 			"fares": "Tarifas",
 			"gtfs_validations": "Validações GTFS",
+			"hide_sidebar_aria": "Recolher barra lateral",
 			"holidays": "Feriados",
 			"home": "Home",
 			"lines": "Linhas",
 			"organizations": "Organizações",
 			"performance": "Performance",
+			"pin_sidebar_aria": "Fixar barra lateral",
 			"plans": "Planos",
 			"reference": "Documentação",
+			"resize_rail_aria": "Redimensionar barra lateral",
 			"rides": "Circulações",
 			"roles": "Grupos de Permissões",
+			"sams": "SAMS",
 			"stops": "Paragens",
 			"typologies": "Tipologias",
+			"unpin_sidebar_aria": "Soltar barra lateral",
 			"users": "Utilizadores",
 			"vehicles": "Veículos",
 			"year_periods": "Períodos do Ano",
 			"zones": "Zonas"
+		},
+		"SidebarGroups": {
+			"administration": "Administração",
+			"calendar_management": "Calendário",
+			"fleet_management": "Frota",
+			"network_offer": "Oferta de Rede",
+			"operations": "Operação",
+			"overview": "Visão Geral",
+			"reference_tools": "Referência",
+			"service_planning": "Planeamento"
 		}
 	},
 	"tags": {
 		"IdTag": {
 			"copied": "Copiado!",
 			"copy": "Clique para copiar o ID"
+		}
+	},
+	"topbar": {
+		"Topbar": {
+			"show_sidebar_aria": "Mostrar barra lateral"
 		}
 	}
 }

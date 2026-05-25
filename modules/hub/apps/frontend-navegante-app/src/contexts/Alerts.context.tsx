@@ -1,27 +1,30 @@
 'use client';
 
 import { getPublicVariable } from '@/settings/public-variables';
-import { type Alert, type SimplifiedAlert } from '@/types/alerts.types';
-import convertToSimplifiedAlert from '@/utils/convertToSimplifiedAlert';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
+import { Dates } from '@tmlmobilidade/dates';
+import { type Alert, type SimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-types';
+import { convertToSimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-utils';
 import { useLocale } from 'next-intl';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
-// import { useAnalyticsContext } from './Analytics.context';
+import { agencyMatchesSelection, agencyMatchesTransports, transportsSelectionIsAll, useGlobalSettingsContext } from './GlobalSettings.context';
 
 /* * */
 
 interface AlertsContextState {
 	actions: {
-		getSimplifiedAlertById: (alertId: string) => null | SimplifiedAlert
-		getSimplifiedAlertsByLineId: (lineId: string) => SimplifiedAlert[]
-		getSimplifiedAlertsByStopId: (stopId: string) => SimplifiedAlert[]
+		getAlertById: (alertId: string) => null | SimplifiedAlert
+		getAlertsByLineId: (lineId: string) => SimplifiedAlert[]
+		getAlertsByStopId: (stopId: string) => SimplifiedAlert[]
+		isAlertActiveNow: (alert: SimplifiedAlert) => boolean
+		isAlertInThisWeek: (alert: SimplifiedAlert) => boolean
+		isAlertStartingAfterThisWeek: (alert: SimplifiedAlert) => boolean
 	}
 	data: {
-		alerts: Alert[]
+		alerts: SimplifiedAlert[]
 		featureCollection: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>
-		simplified: SimplifiedAlert[]
 	}
 	flags: {
 		is_loading: boolean
@@ -48,59 +51,91 @@ export const AlertsContextProvider = ({ children }) => {
 	//
 	// A. Setup variables
 
-	const currentLocale = useLocale();
-	// const analyticsContext = useAnalyticsContext();
+	const locale = useLocale();
+	const globalSettingsContext = useGlobalSettingsContext();
+	const filterByAgency = globalSettingsContext.filterbar.by_agency;
+	const filterByTransports = globalSettingsContext.filterbar.transports;
 
-	const [dataSimplifiedState, setDataSimplifiedState] = useState<SimplifiedAlert[]>([]);
-	const [dataFeatureCollectionState, setDataFeatureCollectionState] = useState<GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>>(getBaseGeoJsonFeatureCollection());
-	//
-	// B. Fetch data
-
-	const { data: allAlertsData, isLoading: allAlertsLoading } = useSWR<Alert[], Error>(`${getPublicVariable('api_url')}/alerts`, { refreshInterval: 180000 }); // 3 minutes
+	const { data: alertsResponse, isLoading: allAlertsLoading } = useSWR<{ data: Alert[] }, Error>(`${getPublicVariable('hub_api_url')}/v1/alerts`, { refreshInterval: 180000 }); // 3 minutes
 
 	//
 	// C. Transform data
 
-	useEffect(() => {
-		// if (!allAlertsData) return;
-		const allSimplifiedAlerts = allAlertsData?.map(alert => convertToSimplifiedAlert(alert, currentLocale));
-		setDataSimplifiedState(allSimplifiedAlerts || []);
-		// THE CORRECT SPELLING IS REFERRER
-		// analyticsContext.actions.capture(ampli => ampli.captureAlertsReferer({ page_referrer: document.referrer }));
-	}, [allAlertsData]);
+	const alertsState = useMemo(() => {
+		const alerts = alertsResponse?.data ?? [];
+		return alerts
+			.map(alert => convertToSimplifiedAlert(alert, locale))
+			.filter((alert): alert is SimplifiedAlert => alert !== null);
+	}, [alertsResponse, locale]);
 
-	// Transform data into geojson
-	useEffect(() => {
+	const filteredAlertsState = useMemo(() => {
+		const isAllAgencies = filterByAgency.length === 0;
+		const isAllTransports = transportsSelectionIsAll(filterByTransports);
+
+		if (isAllAgencies && isAllTransports) return alertsState;
+
+		return alertsState.filter((alert) => {
+			return alert.informed_entity.some((entity) => {
+				if (!entity.agency_id) return false;
+				if (!isAllAgencies && !agencyMatchesSelection(entity.agency_id, filterByAgency)) return false;
+				if (!isAllTransports && !agencyMatchesTransports(entity.agency_id, filterByTransports)) return false;
+				return true;
+			});
+		});
+	}, [alertsState, filterByAgency, filterByTransports]);
+
+	const dataFeatureCollectionState = useMemo(() => {
 		const collection = getBaseGeoJsonFeatureCollection();
-		dataSimplifiedState.forEach((alert) => {
+		filteredAlertsState.forEach((alert) => {
 			const alertFC = transformAlertDataIntoGeoJsonFeature(alert);
 			if (alertFC) collection.features.push(alertFC);
 		});
 
-		setDataFeatureCollectionState(collection);
-	}, [dataSimplifiedState]);
+		return collection;
+	}, [filteredAlertsState]);
 
 	//
 	// D. Handle actions
 
-	const getSimplifiedAlertById = (alertId: string): null | SimplifiedAlert => {
-		return dataSimplifiedState.find(item => item.alert_id.toLowerCase() === alertId.toLowerCase()) || null;
+	const getAlertById = (alertId: string): null | SimplifiedAlert => {
+		return filteredAlertsState.find(item => item.alert_id === alertId) || null;
 	};
 
-	const getSimplifiedAlertsByLineId = (lineId: string): SimplifiedAlert[] => {
-		// TODO: Update this to use informed_entity.lineId instead of routeId
-		// This is a temporary solution to filter by lineId until the API is updated
-		return dataSimplifiedState.filter((simplifiedAlert) => {
-			// Include this element if any informed_entity...
-			return simplifiedAlert.informed_entity.some((informedEntity) => {
-				// ...has a routeId that starts with the lineId
-				return informedEntity.route_id?.startsWith(lineId);
+	const getAlertsByLineId = (lineId: string): SimplifiedAlert[] => {
+		return filteredAlertsState.filter((resolvedAlert) => {
+			return resolvedAlert.informed_entity.some((informedEntity) => {
+				if (informedEntity.line_id != null && String(informedEntity.line_id) === String(lineId)) return true;
+				return informedEntity.route_id?.startsWith(lineId) ?? false;
 			});
 		});
 	};
 
-	const getSimplifiedAlertsByStopId = (stopId: string): SimplifiedAlert[] => {
-		return dataSimplifiedState.filter(simplifiedAlert => simplifiedAlert.informed_entity.some(informedEntity => informedEntity.stop_id === stopId));
+	const getAlertsByStopId = (stopId: string): SimplifiedAlert[] => {
+		return filteredAlertsState.filter(resolvedAlert => resolvedAlert.informed_entity.some(informedEntity => informedEntity.stop_id === stopId));
+	};
+
+	const isAlertActiveNow = (alert: SimplifiedAlert): boolean => {
+		if (!alert.end_date) return true;
+		return !Number.isNaN(alert.end_date.getTime()) && alert.end_date.getTime() >= Date.now();
+	};
+
+	const isAlertInThisWeek = (alert: SimplifiedAlert): boolean => {
+		const startTime = alert.start_date.getTime();
+		if (Number.isNaN(startTime)) return false;
+		const nowMs = Date.now();
+
+		const now = Dates.now('local');
+		const weekWindowStart = now.startOf('day').unix_timestamp;
+		const weekWindowEnd = now.plus({ weeks: 1 }).endOf('day').unix_timestamp;
+		const endTime = alert.end_date?.getTime();
+
+		return startTime <= nowMs && startTime <= weekWindowEnd && (typeof endTime !== 'number' || endTime >= weekWindowStart);
+	};
+
+	const isAlertStartingAfterThisWeek = (alert: SimplifiedAlert): boolean => {
+		const startTime = alert.start_date.getTime();
+		if (Number.isNaN(startTime)) return false;
+		return startTime > Date.now();
 	};
 
 	//
@@ -108,14 +143,16 @@ export const AlertsContextProvider = ({ children }) => {
 
 	const contextValue: AlertsContextState = {
 		actions: {
-			getSimplifiedAlertById,
-			getSimplifiedAlertsByLineId,
-			getSimplifiedAlertsByStopId,
+			getAlertById,
+			getAlertsByLineId,
+			getAlertsByStopId,
+			isAlertActiveNow,
+			isAlertInThisWeek,
+			isAlertStartingAfterThisWeek,
 		},
 		data: {
-			alerts: allAlertsData || [],
+			alerts: filteredAlertsState,
 			featureCollection: dataFeatureCollectionState,
-			simplified: dataSimplifiedState,
 		},
 		flags: {
 			is_loading: allAlertsLoading,

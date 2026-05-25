@@ -1,6 +1,6 @@
 'use client';
 
-import type { AlertGroupByDate } from '@/types/alerts.types';
+import type { AlertGroupByDate } from '@tmlmobilidade/go-hub-pckg-types';
 
 import AlertsListEmpty from '@/components/alerts/AlertsListEmpty';
 import { AlertListItem } from '@/components/alerts/AlertsListItem';
@@ -39,24 +39,19 @@ export function AlertsListGroup() {
 			const existingGroup = result.find(group => group.value === alertStartDateString);
 			if (existingGroup) {
 				existingGroup.items.push(item);
-			}
-			else {
+			} else {
 				let formattedGroupLabel = '';
 				const today = DateTime.local().startOf('day');
 				const alertStartDateObjectCompare = alertStartDateObject.startOf('day');
 				if (alertStartDateObjectCompare.equals(today)) {
 					formattedGroupLabel = t('titles.today', { value: alertStartDateObject.toJSDate() });
-				}
-				else if (alertStartDateObjectCompare.equals(today.plus({ days: 1 }))) {
+				} else if (alertStartDateObjectCompare.equals(today.plus({ days: 1 }))) {
 					formattedGroupLabel = t('titles.tomorrow', { value: alertStartDateObject.toJSDate() });
-				}
-				else if (alertStartDateObjectCompare.equals(today.minus({ days: 1 }))) {
+				} else if (alertStartDateObjectCompare.equals(today.minus({ days: 1 }))) {
 					formattedGroupLabel = t('titles.yesterday', { value: alertStartDateObject.toJSDate() });
-				}
-				else if (alertStartDateObjectCompare < today.minus({ days: 1 })) {
+				} else if (alertStartDateObjectCompare < today.minus({ days: 1 })) {
 					formattedGroupLabel = t('titles.past', { value: alertStartDateObject.toJSDate() });
-				}
-				else {
+				} else {
 					formattedGroupLabel = t('titles.future', { value: alertStartDateObject.toJSDate() });
 				}
 				result.push({

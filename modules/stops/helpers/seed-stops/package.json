@@ -27,10 +27,10 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.6.2",
+		"@types/node": "25.9.1",
 		"@types/papaparse": "5.5.2",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.21.0",
+		"tsx": "4.22.3",
 		"typescript": "5.9.3"
 	}
 }

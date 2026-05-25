@@ -1,0 +1,34 @@
+{
+	"name": "@tmlmobilidade/go-eta-api",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"type": "module",
+	"files": ["dist"],
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc && resolve-tspaths",
+		"dev": "tsx watch src/index.ts",
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint ./src --fix"
+	},
+	"dependencies": {
+		"@fastify/multipart": "10.0.0",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/databases": "*",
+		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-eta-pckg-common": "*",
+		"@tmlmobilidade/interfaces": "*"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/tsconfig": "*",
+		"@types/node": "25.9.1",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.22.3",
+		"typescript": "5.9.3"
+	}
+}

@@ -1,4 +1,8 @@
-/* * */
+/**
+ * Raw Vehicle Events represent the raw vehicle events as they are received from the data sources.
+ * These are stored in MongoDB for persistence and later processing.
+ * These documents are also different depending on the data source and version of the vehicle event.
+**/
 
 import { PCGIRawClient } from '@/clients/pcgi-raw.js';
 import { MongoInterfaceTemplate } from '@/templates/mongodb.js';

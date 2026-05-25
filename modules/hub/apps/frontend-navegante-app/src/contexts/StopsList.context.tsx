@@ -1,12 +1,12 @@
 'use client';
 
 import { useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
-import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/contexts/Stops.context';
-import { useVehiclesContext } from '@/contexts/Vehicles.context';
+import { useLinesContext } from '@/contexts/Lines.context';
+import { buildRefToAgencyIdMap, stopMatchesAgencyTransportFilters, transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/contexts/Stops.context';
 import { createDocCollection } from '@/hooks/useOtherSearch';
 import { type NetworkStop } from '@/types/api/network';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import { agencyMatchesSelection, agencyMatchesTransports } from '@/utils/transportAgencies';
+import { transportsSelectionIsAll } from './GlobalSettings.context';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -56,22 +56,13 @@ export const StopsListContextProvider = ({ children }) => {
 	// A. Setup variables
 
 	const stopsContext = useStopsContext();
-	const vehiclesContext = useVehiclesContext();
+	const linesContext = useLinesContext();
 	const globalSettingsContext = useGlobalSettingsContext();
 
-	const lineIdToAgencyIds = useMemo(() => {
-		const map = new Map<string, Set<string>>();
-		vehiclesContext.data.vehicles.forEach((vehicle) => {
-			if (!vehicle.line_id || !vehicle.agency_id) return;
-			const existing = map.get(vehicle.line_id);
-			if (existing) {
-				existing.add(vehicle.agency_id);
-			} else {
-				map.set(vehicle.line_id, new Set([vehicle.agency_id]));
-			}
-		});
-		return map;
-	}, [vehiclesContext.data.vehicles]);
+	const refToAgencyId = useMemo(
+		() => buildRefToAgencyIdMap(linesContext.data.lines, linesContext.data.routes),
+		[linesContext.data.lines, linesContext.data.routes],
+	);
 
 	const filterByAgency = globalSettingsContext.filterbar.by_agency;
 	const filterByTransports = globalSettingsContext.filterbar.transports;
@@ -146,41 +137,14 @@ export const StopsListContextProvider = ({ children }) => {
 		}
 
 		//
-		// Filter by by_agency / transports (derived via Vehicles snapshot)
+		// Filter by by_agency / transports
 
-		if (filterByAgency.length > 0 || filterByTransports.length > 0) {
+		const isAllAgencies = filterByAgency.length === 0;
+		const isAllTransports = transportsSelectionIsAll(filterByTransports);
+
+		if (!isAllAgencies || !isAllTransports) {
 			filterResult = filterResult.filter((stop) => {
-				const rawStop = stop as {
-					agency_ids?: string[]
-					flags?: { agency_ids?: string[] }[]
-					line_ids?: string[]
-				};
-				const lineIds = Array.isArray(stop.line_ids) ? stop.line_ids : [];
-				const candidateAgencyIds = new Set<string>();
-				if (Array.isArray(rawStop.agency_ids)) {
-					rawStop.agency_ids.filter(Boolean).forEach(id => candidateAgencyIds.add(id));
-				}
-				if (Array.isArray(rawStop.flags)) {
-					rawStop.flags.forEach((flag) => {
-						if (Array.isArray(flag.agency_ids)) {
-							flag.agency_ids.filter(Boolean).forEach(id => candidateAgencyIds.add(id));
-						}
-					});
-				}
-				for (const lineId of lineIds) {
-					const lineAgencies = lineIdToAgencyIds.get(lineId);
-					if (!lineAgencies) continue;
-					for (const agencyId of lineAgencies) {
-						candidateAgencyIds.add(agencyId);
-					}
-				}
-				if (candidateAgencyIds.size === 0) return false;
-				for (const agencyId of candidateAgencyIds) {
-					if (!agencyMatchesSelection(agencyId, filterByAgency)) continue;
-					if (!agencyMatchesTransports(agencyId, filterByTransports)) continue;
-					return true;
-				}
-				return false;
+				return stopMatchesAgencyTransportFilters(stop, refToAgencyId, filterByAgency, filterByTransports);
 			});
 		}
 
@@ -195,7 +159,7 @@ export const StopsListContextProvider = ({ children }) => {
 	useEffect(() => {
 		const filteredData = applyFiltersToData(stopsContext.data.stops);
 		setDataFilteredState(filteredData);
-	}, [stopsContext.data.stops, filterByAttributeState, filterByFacilityState, filterByMunicipalityOrLocalityState, filterBySearchState, filterByAgency, filterByTransports, lineIdToAgencyIds]);
+	}, [stopsContext.data.stops, filterByAttributeState, filterByFacilityState, filterByMunicipalityOrLocalityState, filterBySearchState, filterByAgency, filterByTransports, refToAgencyId]);
 
 	useEffect(() => {
 		// Check if all data is available

@@ -93,7 +93,7 @@ export function MapOverlayPins({ focusOnChange, id, pinsData, visible = true }: 
 						10, // min zoom level
 						0.1, // min radius
 						25, // max zoom level
-						1, // max radius
+						0.7, // max radius
 					],
 					'symbol-placement': 'point',
 					'visibility': visible ? 'visible' : 'none',

@@ -1,6 +1,7 @@
 /* * */
 
 import { SQLiteColumn, SQLiteDatabaseConfig, SQLiteTable } from '@/types.js';
+import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import BSQLite3, { type Database, Statement } from 'better-sqlite3';
 import fs from 'node:fs';
@@ -36,6 +37,7 @@ export class SQLiteDatabase {
 		if (!config.instancePath && !config.memory) {
 			config.instancePath = `/tmp/${config.instanceName}/${config.instanceName}.db`;
 			fs.mkdirSync(`/tmp/${config.instanceName}`, { recursive: true });
+			Logger.info(`[SQLITE] Created database at ${config.instancePath}`);
 		}
 
 		if (!config.databaseInstance) {
@@ -142,6 +144,16 @@ export class SQLiteTableInstance<T> {
 	}
 
 	/**
+	 * Finds all distinct values for a column in the table.
+	 * @param column The column to find distinct values for.
+	 * @returns An array of distinct values.
+	 */
+	distinct<K extends keyof T>(col: K): T[K][] {
+		const sql = `SELECT DISTINCT ${String(col)} FROM ${this.tableName}`;
+		return this.databaseInstance.prepare(sql).all().map(row => row[String(col)]);
+	}
+
+	/**
 	 * Flush current buffer into DB synchronously.
 	 */
 	flush(): void {
@@ -192,7 +204,7 @@ export class SQLiteTableInstance<T> {
 	}
 
 	query(sqlQuery = '', params: (boolean | number | string)[] = []) {
-		return this.databaseInstance.prepare(sqlQuery).run(...params);
+		return this.databaseInstance.prepare(sqlQuery).all(...params);
 	}
 
 	/**

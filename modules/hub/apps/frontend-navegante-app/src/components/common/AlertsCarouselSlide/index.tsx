@@ -1,7 +1,8 @@
-/* * */
+'use client';
+
+import type { SimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-types';
 
 import { AlertActivePeriodStart } from '@/components/alerts/AlertActivePeriod';
-import { type SimplifiedAlert } from '@/types/alerts.types';
 import { IconCircleArrowRightFilled } from '@tabler/icons-react';
 import Link from 'next/link';
 

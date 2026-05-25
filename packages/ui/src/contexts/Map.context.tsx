@@ -45,15 +45,20 @@ export function useMapContext() {
 
 /* * */
 
-export const MapContextProvider = ({ children }: PropsWithChildren) => {
+interface MapContextProviderProps extends PropsWithChildren {
+	/** Isolates search / style preferences from other maps (e.g. modal vs page). Default `'map'`. */
+	preferenceScope?: string
+}
+
+export const MapContextProvider = ({ children, preferenceScope = 'map' }: MapContextProviderProps) => {
 	//
 
 	//
 	// A. Setup variables
 
-	const [dataSearch, setDataSearch] = useUserPreference<string>('map', 'data:search', '');
-	const [flagStyle, setFlagStyle] = useUserPreference<MapStyle>('map', 'flags:style', 'map');
-	const [flagScrollZoom, setFlagScrollZoom] = useUserPreference<boolean>('map', 'flags:scroll-zoom', true);
+	const [dataSearch, setDataSearch] = useUserPreference<string>(preferenceScope, 'data:search', '');
+	const [flagStyle, setFlagStyle] = useUserPreference<MapStyle>(preferenceScope, 'flags:style', 'map');
+	const [flagScrollZoom, setFlagScrollZoom] = useUserPreference<boolean>(preferenceScope, 'flags:scroll-zoom', true);
 
 	//
 	// B. Transform data

@@ -10,10 +10,9 @@ import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsFile } from '@/exports/trips.js';
 import { type ExportToHitouchConfig } from '@/types.js';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { plans } from '@tmlmobilidade/interfaces';
+import { files, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { validateOperationalDate } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 
 // import { getFormattedDates } from './get-names.js';
@@ -55,16 +54,15 @@ await (async function main() {
 		//
 		// Import the Plan into a local SQLite database
 
+		const operationFileUrl = await files.getFileUrl({ file_id: planData.operation_file_id });
+
 		const importConfig: ImportGtfsToDatabaseConfig = {
-			date_range: {
-				end: validateOperationalDate('20501231'),
-				start: validateOperationalDate('19900101'),
-				// end: validateOperationalDate('20251231'),
-				// start: validateOperationalDate('20250101'),
+			source: {
+				url: operationFileUrl,
 			},
 		};
 
-		const sqlGtfs = await importGtfsToDatabase(planData, importConfig);
+		const sqlGtfs = await importGtfsToDatabase(importConfig);
 
 		//
 		// Setup the export config

@@ -1,6 +1,15 @@
 {
 	"alerts": {
 		"create": {
+			"causes": {
+				"no_data": "Nenhuma causa disponível"
+			},
+			"effects": {
+				"no_data": "Nenhum efeito disponível"
+			},
+			"references": {
+				"no_data": "Nenhum tipo de referência disponível"
+			},
 			"summary": {
 				"auto_texts": {
 					"label": "Textos Automáticos"

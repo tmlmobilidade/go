@@ -100,6 +100,8 @@ class RidesClass extends MongoCollectionClass<Ride, CreateRideDto, UpdateRideDto
 			{ background: true, key: { operational_date: 1, system_status: 1 } },
 			{ background: true, key: { start_time_scheduled: 1 } },
 			{ background: true, key: { system_status: 1 } },
+			{ background: true, key: { agency_id: 1, start_time_scheduled: -1, hashed_trip_id: 1 } },
+			{ background: true, key: { hashed_trip_id: 1, start_time_scheduled: -1 } },
 			// eslint-disable-next-line perfectionist/sort-objects
 			{ background: true, key: { system_status: 1, start_time_scheduled: 1 } },
 			// eslint-disable-next-line perfectionist/sort-objects

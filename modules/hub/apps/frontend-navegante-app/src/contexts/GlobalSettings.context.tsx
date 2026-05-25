@@ -1,21 +1,75 @@
 'use client';
 
 import { useLocalStorage } from '@mantine/hooks';
-import { createContext, useContext, useEffect, useRef } from 'react';
+import { createContext, useContext } from 'react';
 
 /* * */
 
 export type Section = 'alerts' | 'lines' | 'stops' | 'vehicles';
 export type TransportOption = 'boat' | 'bus' | 'metro' | 'train';
 
+export const TRANSPORT_AGENCY_IDS: Record<TransportOption, string[]> = {
+	boat: ['4', '15'],
+	bus: ['8', '21', '41', '42', '43', '44'],
+	metro: ['2', '16'],
+	train: ['1', '3'],
+};
+
+export const ALL_TRANSPORT_OPTIONS = Object.keys(TRANSPORT_AGENCY_IDS) as TransportOption[];
+
+export const AGENCY_ID_TO_TRANSPORT: Record<string, TransportOption> = Object.entries(TRANSPORT_AGENCY_IDS).reduce<Record<string, TransportOption>>((acc, [transport, ids]) => {
+	ids.forEach((id) => {
+		acc[id] = transport as TransportOption;
+	});
+	return acc;
+}, {});
+
+export function transportsSelectionIsAll(transports: TransportOption[]): boolean {
+	if (transports.length === 0) return true;
+	if (transports.length !== ALL_TRANSPORT_OPTIONS.length) return false;
+	return ALL_TRANSPORT_OPTIONS.every(mode => transports.includes(mode));
+}
+
+export function normalizeTransportsSelection(values: TransportOption[]): TransportOption[] {
+	const unique = [...new Set(values)];
+	if (transportsSelectionIsAll(unique)) return [];
+	return [...unique].sort((a, b) => ALL_TRANSPORT_OPTIONS.indexOf(a) - ALL_TRANSPORT_OPTIONS.indexOf(b));
+}
+
+export function nextTransportsAfterToggle(prevList: TransportOption[], key: 'all' | TransportOption): TransportOption[] {
+	if (key === 'all') return [];
+	const current = normalizeTransportsSelection(prevList);
+	if (transportsSelectionIsAll(current)) return [key];
+	const next = new Set(current);
+	if (next.has(key)) next.delete(key);
+	else next.add(key);
+	return normalizeTransportsSelection([...next]);
+}
+
+export function agencyMatchesTransports(agencyId: string | undefined, transports: TransportOption[]): boolean {
+	if (transportsSelectionIsAll(transports)) return true;
+	if (!agencyId) return false;
+	return transports.some(transport => TRANSPORT_AGENCY_IDS[transport].includes(agencyId));
+}
+
+export function agencyMatchesSelection(agencyId: string | undefined, selectedAgencyIds: string[]): boolean {
+	if (selectedAgencyIds.length === 0) return true;
+	if (!agencyId) return false;
+	return selectedAgencyIds.some(selectedId => selectedId === agencyId);
+}
+
+export function matchesGlobalAgencyTransportFilters(agencyId: string | undefined, filterByAgency: string[], filterByTransports: TransportOption[]) {
+	return agencyMatchesSelection(agencyId, filterByAgency) && agencyMatchesTransports(agencyId, filterByTransports);
+}
+
 /* * */
 
 interface GlobalSettingsState {
 	actions: {
+		toggleTransportOption: (key: 'all' | TransportOption) => void
 		updateFilterbar: (value: Partial<GlobalSettingsState['filterbar']>) => void
 		updateFilterByAgency: (values: string[]) => void
 		updateSection: (value: Section) => void
-		updateToolbar: (value: Partial<GlobalSettingsState['toolbar']>) => void
 		updateTransports: (values: TransportOption[]) => void
 	}
 	filterbar: {
@@ -24,9 +78,6 @@ interface GlobalSettingsState {
 		transports: TransportOption[]
 	}
 	section: Section
-	toolbar: {
-		view: 'list' | 'map'
-	}
 }
 
 interface GlobalSettingsStorage {
@@ -36,9 +87,6 @@ interface GlobalSettingsStorage {
 		transports: TransportOption[]
 	}
 	section: Section
-	toolbar: {
-		view: 'list' | 'map'
-	}
 }
 
 /* * */
@@ -58,6 +106,9 @@ export function useGlobalSettingsContext() {
 export const GlobalSettingsContextProvider = ({ children }) => {
 	//
 
+	//
+	// A. Setup Variables
+
 	const [settings, setSettings] = useLocalStorage<GlobalSettingsStorage>({
 		defaultValue: {
 			filterbar: {
@@ -66,52 +117,13 @@ export const GlobalSettingsContextProvider = ({ children }) => {
 				transports: [],
 			},
 			section: 'lines',
-			toolbar: {
-				view: 'list',
-			},
 		},
+		getInitialValueInEffect: true,
 		key: 'global-settings',
 	});
 
-	const initialized = useRef(false);
-
 	//
-	// Hydrate from URL
-
-	// useEffect(() => {
-	// 	if (initialized.current) return;
-
-	// 	const sectionFromUrl = searchParams.get('section') as null | Section;
-
-	// 	if (sectionFromUrl) {
-	// 		setSettings(prev => ({
-	// 			...prev,
-	// 			section: sectionFromUrl,
-	// 		}));
-	// 	}
-
-	// 	initialized.current = true;
-	// }, [searchParams, setSettings]);
-
-	//
-	// Sync to URL
-
-	useEffect(() => {
-		if (!initialized.current) return;
-
-		const url = new URL(window.location.href);
-
-		if (settings.section === 'lines') {
-			url.searchParams.delete('section');
-		} else {
-			url.searchParams.set('section', settings.section);
-		}
-
-		window.history.replaceState({}, '', url);
-	}, [settings.section]);
-
-	//
-	// Actions
+	// B. Handle Actions
 
 	const updateSection = (value: Section) => {
 		setSettings(prev => ({
@@ -130,22 +142,22 @@ export const GlobalSettingsContextProvider = ({ children }) => {
 		}));
 	};
 
-	const updateToolbar = (value: Partial<GlobalSettingsState['toolbar']>) => {
-		setSettings(prev => ({
-			...prev,
-			toolbar: {
-				...prev.toolbar,
-				...value,
-			},
-		}));
-	};
-
 	const updateTransports = (values: TransportOption[]) => {
 		setSettings(prev => ({
 			...prev,
 			filterbar: {
 				...prev.filterbar,
-				transports: values,
+				transports: normalizeTransportsSelection(values),
+			},
+		}));
+	};
+
+	const toggleTransportOption = (key: 'all' | TransportOption) => {
+		setSettings(prev => ({
+			...prev,
+			filterbar: {
+				...prev.filterbar,
+				transports: nextTransportsAfterToggle(prev.filterbar.transports ?? [], key),
 			},
 		}));
 	};
@@ -162,31 +174,32 @@ export const GlobalSettingsContextProvider = ({ children }) => {
 	};
 
 	//
-	// Context value
+	// C. Context value
 
 	const contextValue: GlobalSettingsState = {
 		actions: {
+			toggleTransportOption,
 			updateFilterbar,
 			updateFilterByAgency,
 			updateSection,
-			updateToolbar,
 			updateTransports,
 		},
 		filterbar: {
 			by_agency: settings.filterbar.by_agency ?? [],
 			search: settings.filterbar.search ?? '',
-			transports: settings.filterbar.transports ?? [],
+			transports: normalizeTransportsSelection(settings.filterbar.transports ?? []),
 		},
 		section: settings.section,
-		toolbar: settings.toolbar,
 	};
 
 	//
-	// Render
+	// D. Render Components
 
 	return (
 		<GlobalSettingsContext.Provider value={contextValue}>
 			{children}
 		</GlobalSettingsContext.Provider>
 	);
+
+	//
 };
