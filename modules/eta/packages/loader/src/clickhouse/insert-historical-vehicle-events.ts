@@ -23,7 +23,7 @@ function operationalDateBoundsForChunk(chunkStart: number, chunkEnd: number) {
 	};
 }
 
-export async function insertHistoricalVehicleEvents(clickhouseClient: Parameters<typeof queryEtaFromFile>[0]) {
+export async function insertHistoricalVehicleEvents(clickhouseClient: Parameters<typeof queryEtaFromFile>[0], config: AppConfig) {
 	//
 
 	Logger.title('3. Insert historical rides vehicle events into clickhouse');
@@ -38,8 +38,8 @@ export async function insertHistoricalVehicleEvents(clickhouseClient: Parameters
 				...operationalDates,
 			});
 		},
-		splitBy: { days: AppConfig.historicalVehicleEventsChunkDays },
-		startDate: Dates.now('Europe/Lisbon').minus({ days: AppConfig.historicalDataDaysBack }).unix_timestamp,
+		splitBy: { days: config.historicalVehicleEventsChunkDays },
+		startDate: Dates.now('Europe/Lisbon').minus({ days: config.historicalDataDaysBack }).unix_timestamp,
 	});
 
 	Logger.progress(`Inserted historical rides vehicle events into clickhouse`);
