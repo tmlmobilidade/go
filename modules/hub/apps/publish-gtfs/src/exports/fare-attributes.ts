@@ -1,6 +1,6 @@
 /* eslint-disable perfectionist/sort-objects */
 
-import { type MergedGtfsExportConfig } from '@/types.js';
+import { type ExportGtfsContext } from '@/types/context.js';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -24,9 +24,9 @@ interface FareAttributeObjApiResponse {
 
 /**
  * Export the fare_attributes.txt file.
- * @param exportConfig The export configuration.
+ * @param context The export context.
  */
-export async function exportFareAttributesFile(agencyIds: string[], exportConfig: MergedGtfsExportConfig) {
+export async function exportFareAttributesFile(agencyIds: string[], context: ExportGtfsContext) {
 	//
 
 	//
@@ -48,11 +48,11 @@ export async function exportFareAttributesFile(agencyIds: string[], exportConfig
 				currency_type: fareAttributeData.currency_type,
 				transfers: fareAttributeData.transfers,
 			};
-			await exportConfig.writers.fare_attributes.write(parsedFareAttributesRow);
+			await context.writers.fare_attributes.write(parsedFareAttributesRow);
 		}
 	}
 
-	await exportConfig.writers.fare_attributes.flush();
+	await context.writers.fare_attributes.flush();
 
 	Logger.info('Exported fare_attributes.txt file.');
 }

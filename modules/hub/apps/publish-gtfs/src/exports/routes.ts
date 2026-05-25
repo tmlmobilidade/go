@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 /* eslint-disable perfectionist/sort-interfaces */
 
-import { type MergedGtfsExportConfig } from '@/types.js';
+import { type ExportGtfsContext } from '@/types/context.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GTFS_Route_Extended, type GTFS_RouteType } from '@tmlmobilidade/types';
 
@@ -23,9 +23,12 @@ export interface ExportedRoutesRow {
 	school: 0 | 1
 }
 
-/* * */
-
-export async function exportRoutesFile(routesList: GTFS_Route_Extended[], exportConfig: MergedGtfsExportConfig) {
+/**
+ * Export the routes.txt file.
+ * @param routesList The list of routes to export.
+ * @param context The export context.
+ */
+export async function exportRoutesFile(routesList: GTFS_Route_Extended[], context: ExportGtfsContext) {
 	//
 
 	const sortedRoutesList = routesList.sort((a, b) => a.route_id.localeCompare(b.route_id));
@@ -46,10 +49,10 @@ export async function exportRoutesFile(routesList: GTFS_Route_Extended[], export
 			circular: routeData.circular,
 			school: routeData.school,
 		};
-		await exportConfig.writers.routes.write(parsedRouteRow);
+		await context.writers.routes.write(parsedRouteRow);
 	}
 
-	await exportConfig.writers.routes.flush();
+	await context.writers.routes.flush();
 
 	Logger.info('Exported routes.txt file.');
 }

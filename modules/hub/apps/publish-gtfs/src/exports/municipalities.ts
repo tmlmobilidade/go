@@ -1,6 +1,6 @@
 /* * */
 
-import { type MergedGtfsExportConfig } from '@/types.js';
+import { type ExportGtfsContext } from '@/types/context.js';
 import { locations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -15,9 +15,9 @@ export interface ExportedMunicipalitiesRow {
 
 /**
  * Export the municipalities.txt file.
- * @param exportConfig The export configuration.
+ * @param context The export context.
  */
-export async function exportMunicipalitiesFile(exportConfig: MergedGtfsExportConfig) {
+export async function exportMunicipalitiesFile(context: ExportGtfsContext) {
 	//
 
 	//
@@ -51,10 +51,10 @@ export async function exportMunicipalitiesFile(exportConfig: MergedGtfsExportCon
 			municipality_name: municipalityData.name,
 		};
 		// Write the row to the municipalities.txt file
-		await exportConfig.writers.municipalities.write(parsedMunicipalitiesRow);
+		await context.writers.municipalities.write(parsedMunicipalitiesRow);
 	}
 
-	await exportConfig.writers.municipalities.flush();
+	await context.writers.municipalities.flush();
 
 	Logger.info('Exported municipalities.txt file.');
 }

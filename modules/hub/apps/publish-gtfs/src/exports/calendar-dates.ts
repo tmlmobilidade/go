@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 /* eslint-disable perfectionist/sort-interfaces */
 
-import { type MergedGtfsExportConfig } from '@/types.js';
+import { type ExportGtfsContext } from '@/types/context.js';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { type OperationalDate, type Plan } from '@tmlmobilidade/types';
@@ -14,9 +14,13 @@ export interface ExportedCalendarDatesRow {
 	exception_type: 1 // Only type 1 (added) is supported in merged exports
 }
 
-/* * */
-
-export async function exportCalendarDatesRows(planData: Plan, sqlTables: GtfsSQLTables, exportConfig: MergedGtfsExportConfig) {
+/**
+ * Export the calendar_dates.txt file.
+ * @param planData The plan data.
+ * @param sqlTables The SQL tables.
+ * @param context The export context.
+ */
+export async function exportCalendarDatesFile(planData: Plan, sqlTables: GtfsSQLTables, context: ExportGtfsContext) {
 	//
 
 	for (const [serviceId, operationalDatesList] of Object.entries(sqlTables.calendar_dates)) {
@@ -26,11 +30,11 @@ export async function exportCalendarDatesRows(planData: Plan, sqlTables: GtfsSQL
 				date: operationalDate,
 				exception_type: 1,
 			};
-			await exportConfig.writers.calendar_dates.write(parsedCalendarDatesRow);
+			await context.writers.calendar_dates.write(parsedCalendarDatesRow);
 		}
 	}
 
-	await exportConfig.writers.calendar_dates.flush();
+	await context.writers.calendar_dates.flush();
 
 	Logger.info('Exported calendar_dates.txt file.');
 }

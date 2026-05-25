@@ -1,6 +1,6 @@
 /* eslint-disable perfectionist/sort-objects */
 
-import { type MergedGtfsExportConfig } from '@/types.js';
+import { type ExportGtfsContext } from '@/types/context.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { type OperationalDate } from '@tmlmobilidade/types';
 
@@ -26,9 +26,9 @@ interface DateObjApiResponse {
 
 /**
  * Export the dates.txt file.
- * @param exportConfig The export configuration.
+ * @param context The export context.
  */
-export async function exportDatesFile(exportConfig: MergedGtfsExportConfig) {
+export async function exportDatesFile(context: ExportGtfsContext) {
 	//
 
 	//
@@ -48,10 +48,10 @@ export async function exportDatesFile(exportConfig: MergedGtfsExportConfig) {
 			holiday: dateData.holiday,
 			notes: dateData.holiday_name,
 		};
-		await exportConfig.writers.dates.write(parsedDatesRow);
+		await context.writers.dates.write(parsedDatesRow);
 	}
 
-	await exportConfig.writers.dates.flush();
+	await context.writers.dates.flush();
 
 	Logger.info('Exported dates.txt file.');
 }

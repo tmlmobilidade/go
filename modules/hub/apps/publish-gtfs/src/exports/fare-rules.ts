@@ -1,4 +1,6 @@
-import { type MergedGtfsExportConfig } from '@/types.js';
+/* * */
+
+import { type ExportGtfsContext } from '@/types/context.js';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -15,9 +17,9 @@ interface FareRuleObjApiResponse {
 
 /**
  * Export the fare_attributes.txt file.
- * @param exportConfig The export configuration.
+ * @param context The export context.
  */
-export async function exportFareRulesFile(routeIds: string[], exportConfig: MergedGtfsExportConfig) {
+export async function exportFareRulesFile(routeIds: string[], context: ExportGtfsContext) {
 	//
 
 	//
@@ -40,10 +42,10 @@ export async function exportFareRulesFile(routeIds: string[], exportConfig: Merg
 			route_id: fareRuleData.route_id,
 		};
 		// Write data row
-		await exportConfig.writers.fare_rules.write(parsedFareRulesRow);
+		await context.writers.fare_rules.write(parsedFareRulesRow);
 	}
 
-	await exportConfig.writers.fare_rules.flush();
+	await context.writers.fare_rules.flush();
 
 	Logger.info('Exported fare_rules.txt file.');
 }

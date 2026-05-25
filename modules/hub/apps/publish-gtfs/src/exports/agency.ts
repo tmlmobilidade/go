@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 /* eslint-disable perfectionist/sort-interfaces */
 
-import { type MergedGtfsExportConfig } from '@/types.js';
+import { type ExportGtfsContext } from '@/types/context.js';
 import { agencies } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -22,9 +22,9 @@ export interface ExportedAgencyRow {
 /**
  * Export the agency.txt file.
  * @param agencyIds The list of agency IDs to export.
- * @param exportConfig The export configuration.
+ * @param context The export context.
  */
-export async function exportAgencyFile(agencyIds: string[], exportConfig: MergedGtfsExportConfig) {
+export async function exportAgencyFile(agencyIds: string[], context: ExportGtfsContext) {
 	//
 
 	//
@@ -47,10 +47,10 @@ export async function exportAgencyFile(agencyIds: string[], exportConfig: Merged
 			agency_timezone: agencyData.timezone,
 			cemv_support: 0,
 		};
-		await exportConfig.writers.agency.write(parsedAgencyRow);
+		await context.writers.agency.write(parsedAgencyRow);
 	}
 
-	await exportConfig.writers.agency.flush();
+	await context.writers.agency.flush();
 
 	Logger.info('Exported agency.txt file.');
 }

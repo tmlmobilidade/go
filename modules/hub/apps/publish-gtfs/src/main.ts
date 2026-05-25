@@ -1,6 +1,6 @@
 /* * */
 
-import { type MergedGtfsExportConfig } from '@/types.js';
+import { initExportGtfsContext } from '@/utils/init-contex.js';
 import { validatePlan } from '@/validate-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { Files } from '@tmlmobilidade/files';
@@ -9,7 +9,6 @@ import { files, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
-import { CsvWriter } from '@tmlmobilidade/writers';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
@@ -17,7 +16,7 @@ import { ZipFile } from 'yazl';
 /* * */
 
 import { exportAgencyFile } from '@/exports/agency.js';
-import { exportCalendarDatesRows } from '@/exports/calendar-dates.js';
+import { exportCalendarDatesFile } from '@/exports/calendar-dates.js';
 import { exportDatesFile } from '@/exports/dates.js';
 import { exportFareAttributesFile } from '@/exports/fare-attributes.js';
 import { exportFareRulesFile } from '@/exports/fare-rules.js';
@@ -26,10 +25,10 @@ import { exportMunicipalitiesFile } from '@/exports/municipalities.js';
 import { exportPeriodsFile } from '@/exports/periods.js';
 import { exportPlansFile } from '@/exports/plans.js';
 import { exportRoutesFile } from '@/exports/routes.js';
-import { exportShapesRows } from '@/exports/shapes.js';
-import { exportStopTimesRows } from '@/exports/stop-times.js';
+import { exportShapesFile } from '@/exports/shapes.js';
+import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
-import { exportTripsRows } from '@/exports/trips.js';
+import { exportTripsFile } from '@/exports/trips.js';
 
 /* * */
 
@@ -43,33 +42,24 @@ export async function main() {
 	const globalTimer = new Timer();
 
 	//
-	// Setup the global export config object
-	// that will be used throughout the export process.
-	// This includes the working directory, the version string,
-	// and the CSV writers for each GTFS file.
+	// Initialize context for the export process.
 
-	const exportVersion = Dates.now('Europe/Lisbon').toFormat('yyyyLLdd-HHmm-ss');
+	const context = initExportGtfsContext();
 
-	const exportConfig: MergedGtfsExportConfig = {
-		version: exportVersion,
-		workdir: `/tmp/${exportVersion}`,
-		writers: {
-			agency: new CsvWriter('agency.txt', `/tmp/${exportVersion}/agency.txt`, { batch_size: 100000 }),
-			calendar_dates: new CsvWriter('calendar_dates.txt', `/tmp/${exportVersion}/calendar_dates.txt`, { batch_size: 100000 }),
-			dates: new CsvWriter('dates.txt', `/tmp/${exportVersion}/dates.txt`, { batch_size: 100000 }),
-			fare_attributes: new CsvWriter('fare_attributes.txt', `/tmp/${exportVersion}/fare_attributes.txt`, { batch_size: 100000 }),
-			fare_rules: new CsvWriter('fare_rules.txt', `/tmp/${exportVersion}/fare_rules.txt`, { batch_size: 100000 }),
-			feed_info: new CsvWriter('feed_info.txt', `/tmp/${exportVersion}/feed_info.txt`, { batch_size: 100000 }),
-			municipalities: new CsvWriter('municipalities.txt', `/tmp/${exportVersion}/municipalities.txt`, { batch_size: 100000 }),
-			periods: new CsvWriter('periods.txt', `/tmp/${exportVersion}/periods.txt`, { batch_size: 100000 }),
-			plans: new CsvWriter('plans.txt', `/tmp/${exportVersion}/plans.txt`, { batch_size: 100000 }),
-			routes: new CsvWriter('routes.txt', `/tmp/${exportVersion}/routes.txt`, { batch_size: 100000 }),
-			shapes: new CsvWriter('shapes.txt', `/tmp/${exportVersion}/shapes.txt`, { batch_size: 100000 }),
-			stop_times: new CsvWriter('stop_times.txt', `/tmp/${exportVersion}/stop_times.txt`, { batch_size: 100000 }),
-			stops: new CsvWriter('stops.txt', `/tmp/${exportVersion}/stops.txt`, { batch_size: 100000 }),
-			trips: new CsvWriter('trips.txt', `/tmp/${exportVersion}/trips.txt`, { batch_size: 100000 }),
-		},
-	};
+	//
+	// Prepare the working directory.
+
+	try {
+		fs.rmSync(context.workdir.path, { force: true, recursive: true });
+		fs.mkdirSync(context.workdir.path, { recursive: true });
+		Logger.success(`Prepared working directory at "${context.workdir.path}".`, 1);
+	} catch (error) {
+		Logger.error(`Error preparing workdir path "${context.workdir.path}".`, error);
+		process.exit(1);
+	}
+
+	//
+	// Setup the necessary variables for the export process.
 
 	let farthestDateFound: OperationalDate;
 
@@ -190,10 +180,10 @@ export async function main() {
 
 			const exportTimer = new Timer();
 
-			await exportTripsRows(planData, importedGtfsSql, exportConfig);
-			await exportStopTimesRows(planData, importedGtfsSql, exportConfig);
-			await exportShapesRows(planData, importedGtfsSql, exportConfig);
-			await exportCalendarDatesRows(planData, importedGtfsSql, exportConfig);
+			await exportTripsFile(planData, importedGtfsSql, context);
+			await exportStopTimesFile(planData, importedGtfsSql, context);
+			await exportShapesFile(planData, importedGtfsSql, context);
+			await exportCalendarDatesFile(planData, importedGtfsSql, context);
 
 			Logger.success(`Exported plan ${planData._id} files in ${exportTimer.get()}.`);
 
@@ -230,7 +220,7 @@ export async function main() {
 			//
 			// Finally, write the plan entry into the plans.txt file.
 
-			await exportPlansFile(planData.gtfs_agency.agency_id, planData._id, planData.gtfs_feed_info.feed_start_date, planData.gtfs_feed_info.feed_end_date, exportConfig);
+			await exportPlansFile(planData.gtfs_agency.agency_id, planData._id, planData.gtfs_feed_info.feed_start_date, planData.gtfs_feed_info.feed_end_date, context);
 
 			//
 			// Mark the plan as complete in the database.
@@ -259,15 +249,15 @@ export async function main() {
 	//
 	// Export GTFS files from the merged dataset
 
-	await exportStopsFile(exportConfig);
-	await exportDatesFile(exportConfig);
-	await exportPeriodsFile(exportConfig);
-	await exportMunicipalitiesFile(exportConfig);
-	await exportFareAttributesFile(Array.from(referencedAgencyIds), exportConfig);
-	await exportFareRulesFile(Object.keys(routesMarkedForFinalExport), exportConfig);
-	await exportRoutesFile(Object.values(routesMarkedForFinalExport), exportConfig);
-	await exportAgencyFile(Array.from(referencedAgencyIds), exportConfig);
-	await exportFeedInfoFile(currentOperationalDate, farthestDateFound, exportConfig);
+	await exportStopsFile(context);
+	await exportDatesFile(context);
+	await exportPeriodsFile(context);
+	await exportMunicipalitiesFile(context);
+	await exportFareAttributesFile(Array.from(referencedAgencyIds), context);
+	await exportFareRulesFile(Object.keys(routesMarkedForFinalExport), context);
+	await exportRoutesFile(Object.values(routesMarkedForFinalExport), context);
+	await exportAgencyFile(Array.from(referencedAgencyIds), context);
+	await exportFeedInfoFile(currentOperationalDate, farthestDateFound, context);
 
 	//
 	// Zip the exported GTFS files into a single archive.
@@ -279,12 +269,12 @@ export async function main() {
 
 	await new Promise<void>((resolve) => {
 		// Read the working directory contents
-		const workdirDirContents = fs.readdirSync(exportConfig.workdir, { withFileTypes: true });
+		const workdirDirContents = fs.readdirSync(context.workdir.path, { withFileTypes: true });
 		// Add each file to the zip
-		workdirDirContents.forEach(outputDirFile => outputZip.addFile(`${exportConfig.workdir}/${outputDirFile.name}`, outputDirFile.name));
+		workdirDirContents.forEach(outputDirFile => outputZip.addFile(`${context.workdir.path}/${outputDirFile.name}`, outputDirFile.name));
 		// Setup a write stream to the final zip file
 		outputZip.outputStream
-			.pipe(fs.createWriteStream(`${exportConfig.workdir}/${exportConfig.version}.zip`))
+			.pipe(fs.createWriteStream(`${context.workdir.path}/${context.run_id}.zip`))
 			.on('close', resolve);
 		// Finalize the zip creation, which triggers
 		// the piping and writing process.
@@ -297,16 +287,16 @@ export async function main() {
 	// Upload the GTFS zip file to the Files collection,
 	// which handles storage and retrieval.
 
-	const fileStream = fs.createReadStream(`${exportConfig.workdir}/${exportConfig.version}.zip`);
+	const fileStream = fs.createReadStream(`${context.workdir.path}/${context.run_id}.zip`);
 
 	await files.upload(fileStream, {
 		_id: 'gtfs-latest',
 		created_by: 'system',
-		name: `${exportConfig.version}.zip`,
+		name: `${context.run_id}.zip`,
 		resource_id: 'gtfs-latest',
 		scope: 'plans',
-		size: fs.statSync(`${exportConfig.workdir}/${exportConfig.version}.zip`).size,
-		type: Files.getFileExtensionFromMimeType(Files.getFileExtension(`${exportConfig.version}.zip`)),
+		size: fs.statSync(`${context.workdir.path}/${context.run_id}.zip`).size,
+		type: Files.getFileExtensionFromMimeType(Files.getFileExtension(`${context.run_id}.zip`)),
 		updated_by: 'system',
 	}, { override: true });
 

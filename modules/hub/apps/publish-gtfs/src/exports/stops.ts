@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 /* eslint-disable perfectionist/sort-interfaces */
 
-import { type MergedGtfsExportConfig } from '@/types.js';
+import { type ExportGtfsContext } from '@/types/context.js';
 import { locations, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -31,7 +31,7 @@ export interface ExportedStopsRow {
 
 /* * */
 
-export async function exportStopsFile(exportConfig: MergedGtfsExportConfig) {
+export async function exportStopsFile(context: ExportGtfsContext) {
 	//
 
 	const allStopsList = await stops.findMany(
@@ -77,10 +77,10 @@ export async function exportStopsFile(exportConfig: MergedGtfsExportConfig) {
 			platform_code: '',
 		};
 
-		await exportConfig.writers.stops.write(parsedStopsRow);
+		await context.writers.stops.write(parsedStopsRow);
 	}
 
-	await exportConfig.writers.stops.flush();
+	await context.writers.stops.flush();
 
 	Logger.info('Exported stops.txt file.');
 }

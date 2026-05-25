@@ -14,27 +14,29 @@ import { ExportedShapesRow } from '@/exports/shapes.js';
 import { ExportedStopTimesRow } from '@/exports/stop-times.js';
 import { ExportedStopsRow } from '@/exports/stops.js';
 import { ExportedTripsRow } from '@/exports/trips.js';
-import { type CsvWriter } from '@tmlmobilidade/writers';
+import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 
-export interface MergedGtfsExportConfig {
-	version: string
-	workdir: string
+export interface ExportGtfsContext {
+	run_id: string
+	workdir: {
+		path: string
+	}
 	writers: {
-		agency: CsvWriter<ExportedAgencyRow>
-		calendar_dates: CsvWriter<ExportedCalendarDatesRow>
-		dates: CsvWriter<ExportedDatesRow>
-		fare_attributes: CsvWriter<ExportedFareAttributesRow>
-		fare_rules: CsvWriter<ExportedFareRulesRow>
-		feed_info: CsvWriter<ExportedFeedInfoRow>
-		municipalities: CsvWriter<ExportedMunicipalitiesRow>
-		periods: CsvWriter<ExportedPeriodsRow>
-		plans: CsvWriter<ExportedPlansRow>
-		routes: CsvWriter<ExportedRoutesRow>
-		shapes: CsvWriter<ExportedShapesRow>
-		stop_times: CsvWriter<ExportedStopTimesRow>
-		stops: CsvWriter<ExportedStopsRow>
-		trips: CsvWriter<ExportedTripsRow>
+		agency: BatchWriter<ExportedAgencyRow>
+		calendar_dates: BatchWriter<ExportedCalendarDatesRow>
+		dates: BatchWriter<ExportedDatesRow>
+		fare_attributes: BatchWriter<ExportedFareAttributesRow>
+		fare_rules: BatchWriter<ExportedFareRulesRow>
+		feed_info: BatchWriter<ExportedFeedInfoRow>
+		municipalities: BatchWriter<ExportedMunicipalitiesRow>
+		periods: BatchWriter<ExportedPeriodsRow>
+		plans: BatchWriter<ExportedPlansRow>
+		routes: BatchWriter<ExportedRoutesRow>
+		shapes: BatchWriter<ExportedShapesRow>
+		stop_times: BatchWriter<ExportedStopTimesRow>
+		stops: BatchWriter<ExportedStopsRow>
+		trips: BatchWriter<ExportedTripsRow>
 	}
 }

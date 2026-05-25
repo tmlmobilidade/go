@@ -2,7 +2,7 @@
 
 import { type ImportGtfsContext } from '@/types/context.js';
 import { initGtfsSqlTables } from '@/utils/init-tables.js';
-import { generateRandomString } from '@tmlmobilidade/strings';
+import { Dates } from '@tmlmobilidade/dates';
 
 /**
  * Initializes the context for the GTFS import process.
@@ -12,10 +12,10 @@ export function initImportGtfsContext(): ImportGtfsContext {
 	//
 
 	//
-	// Generate a random ID to be used as the
+	// Generate a timestamp string to be used as the
 	// identifier for this import run.
 
-	const runId = generateRandomString();
+	const runId = Dates.now('Europe/Lisbon').toFormat('yyyyLLdd-HHmm-ss');
 
 	//
 	// Use the run ID to prepare the working directory.

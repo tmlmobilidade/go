@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 /* eslint-disable perfectionist/sort-interfaces */
 
-import { type MergedGtfsExportConfig } from '@/types.js';
+import { type ExportGtfsContext } from '@/types/context.js';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GTFS_Trip_Extended, type Plan } from '@tmlmobilidade/types';
@@ -22,9 +22,13 @@ export interface ExportedTripsRow {
 	calendar_desc: string
 }
 
-/* * */
-
-export async function exportTripsRows(planData: Plan, sqlTables: GtfsSQLTables, exportConfig: MergedGtfsExportConfig) {
+/**
+ * Export the trips.txt file.
+ * @param planData The plan data.
+ * @param sqlTables The SQL tables.
+ * @param context The export context.
+ */
+export async function exportTripsFile(planData: Plan, sqlTables: GtfsSQLTables, context: ExportGtfsContext) {
 	//
 
 	for await (const tripItem of sqlTables.trips.stream('ORDER BY trip_id ASC')) {
@@ -42,10 +46,10 @@ export async function exportTripsRows(planData: Plan, sqlTables: GtfsSQLTables, 
 			cars_allowed: 0,
 			calendar_desc: '',
 		};
-		await exportConfig.writers.trips.write(parsedTripsRow);
+		await context.writers.trips.write(parsedTripsRow);
 	}
 
-	await exportConfig.writers.trips.flush();
+	await context.writers.trips.flush();
 
 	Logger.info('Exported trip.txt file.');
 }

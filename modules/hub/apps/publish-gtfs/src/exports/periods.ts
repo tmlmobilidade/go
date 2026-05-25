@@ -1,6 +1,6 @@
 /* * */
 
-import { type MergedGtfsExportConfig } from '@/types.js';
+import { type ExportGtfsContext } from '@/types/context.js';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -12,9 +12,9 @@ export interface ExportedPeriodsRow {
 
 /**
  * Export the periods.txt file.
- * @param exportConfig The export configuration.
+ * @param context The export context.
  */
-export async function exportPeriodsFile(exportConfig: MergedGtfsExportConfig) {
+export async function exportPeriodsFile(context: ExportGtfsContext) {
 	//
 
 	const parsedPeriodsRows: ExportedPeriodsRow[] = [
@@ -23,9 +23,9 @@ export async function exportPeriodsFile(exportConfig: MergedGtfsExportConfig) {
 		{ period_id: 3, period_name: 'Verão' },
 	];
 
-	await exportConfig.writers.periods.write(parsedPeriodsRows);
+	await context.writers.periods.write(parsedPeriodsRows);
 
-	await exportConfig.writers.periods.flush();
+	await context.writers.periods.flush();
 
 	Logger.info('Exported periods.txt file.');
 }

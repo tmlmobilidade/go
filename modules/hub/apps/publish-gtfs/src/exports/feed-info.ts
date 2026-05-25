@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 /* eslint-disable perfectionist/sort-interfaces */
 
-import { type MergedGtfsExportConfig } from '@/types.js';
+import { type ExportGtfsContext } from '@/types/context.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { type OperationalDate } from '@tmlmobilidade/types';
 
@@ -23,13 +23,13 @@ export interface ExportedFeedInfoRow {
  * Export the feed_info.txt file.
  * @param startDate The feed start date.
  * @param endDate The feed end date.
- * @param exportConfig The export configuration.
+ * @param context The export context.
  */
-export async function exportFeedInfoFile(startDate: OperationalDate, endDate: OperationalDate, exportConfig: MergedGtfsExportConfig) {
+export async function exportFeedInfoFile(startDate: OperationalDate, endDate: OperationalDate, context: ExportGtfsContext) {
 	//
 
 	const parsedFeedInfoRow: ExportedFeedInfoRow = {
-		feed_version: exportConfig.version,
+		feed_version: context.run_id,
 		feed_start_date: startDate,
 		feed_end_date: endDate,
 		feed_publisher_name: 'TML - Transportes Metropolitanos de Lisboa',
@@ -40,9 +40,9 @@ export async function exportFeedInfoFile(startDate: OperationalDate, endDate: Op
 		default_lang: 'pt',
 	};
 
-	await exportConfig.writers.feed_info.write(parsedFeedInfoRow);
+	await context.writers.feed_info.write(parsedFeedInfoRow);
 
-	await exportConfig.writers.feed_info.flush();
+	await context.writers.feed_info.flush();
 
 	Logger.info('Exported feed_info.txt file.');
 }

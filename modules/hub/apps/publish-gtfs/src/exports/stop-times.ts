@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 /* eslint-disable perfectionist/sort-interfaces */
 
-import { type MergedGtfsExportConfig } from '@/types.js';
+import { type ExportGtfsContext } from '@/types/context.js';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GTFS_StopTime, type Plan } from '@tmlmobilidade/types';
@@ -22,9 +22,13 @@ export interface ExportedStopTimesRow {
 	timepoint: 0 | 1
 }
 
-/* * */
-
-export async function exportStopTimesRows(planData: Plan, sqlTables: GtfsSQLTables, exportConfig: MergedGtfsExportConfig) {
+/**
+ * Export the stop_times.txt file.
+ * @param planData The plan data.
+ * @param sqlTables The SQL tables.
+ * @param context The export context.
+ */
+export async function exportStopTimesFile(planData: Plan, sqlTables: GtfsSQLTables, context: ExportGtfsContext) {
 	//
 
 	for await (const stopTimeItem of sqlTables.stop_times.stream('ORDER BY trip_id, stop_sequence ASC')) {
@@ -42,10 +46,10 @@ export async function exportStopTimesRows(planData: Plan, sqlTables: GtfsSQLTabl
 			shape_dist_traveled: stopTimeData.shape_dist_traveled ?? 0,
 			timepoint: stopTimeData.timepoint ?? 0,
 		};
-		await exportConfig.writers.stop_times.write(parsedStopTimesRow);
+		await context.writers.stop_times.write(parsedStopTimesRow);
 	}
 
-	await exportConfig.writers.stop_times.flush();
+	await context.writers.stop_times.flush();
 
 	Logger.info('Exported stop_times.txt file.');
 }

@@ -1,6 +1,6 @@
 /* eslint-disable perfectionist/sort-objects */
 
-import { type MergedGtfsExportConfig } from '@/types.js';
+import { type ExportGtfsContext } from '@/types/context.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { type OperationalDate } from '@tmlmobilidade/types';
 
@@ -19,9 +19,9 @@ export interface ExportedPlansRow {
  * @param planId The plan ID.
  * @param planStartDate The plan start date.
  * @param planEndDate The plan end date.
- * @param exportConfig The export configuration.
+ * @param context The export context.
  */
-export async function exportPlansFile(agencyId: string, planId: string, planStartDate: OperationalDate, planEndDate: OperationalDate, exportConfig: MergedGtfsExportConfig) {
+export async function exportPlansFile(agencyId: string, planId: string, planStartDate: OperationalDate, planEndDate: OperationalDate, context: ExportGtfsContext) {
 	//
 
 	const parsedPlansRow: ExportedPlansRow = {
@@ -31,9 +31,9 @@ export async function exportPlansFile(agencyId: string, planId: string, planStar
 		plan_start_date: planStartDate,
 	};
 
-	await exportConfig.writers.plans.write(parsedPlansRow);
+	await context.writers.plans.write(parsedPlansRow);
 
-	await exportConfig.writers.plans.flush();
+	await context.writers.plans.flush();
 
 	Logger.info('Exported plans.txt file.');
 }

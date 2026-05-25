@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 /* eslint-disable perfectionist/sort-interfaces */
 
-import { type MergedGtfsExportConfig } from '@/types.js';
+import { type ExportGtfsContext } from '@/types/context.js';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GTFS_Shape, type Plan } from '@tmlmobilidade/types';
@@ -16,9 +16,13 @@ export interface ExportedShapesRow {
 	shape_pt_lon: number
 }
 
-/* * */
-
-export async function exportShapesRows(planData: Plan, sqlTables: GtfsSQLTables, exportConfig: MergedGtfsExportConfig) {
+/**
+ * Export the shapes.txt file.
+ * @param planData The plan data.
+ * @param sqlTables The SQL tables.
+ * @param context The export context.
+ */
+export async function exportShapesFile(planData: Plan, sqlTables: GtfsSQLTables, context: ExportGtfsContext) {
 	//
 
 	for await (const shapesItem of sqlTables.shapes.stream('ORDER BY shape_id, shape_pt_sequence ASC')) {
@@ -30,10 +34,10 @@ export async function exportShapesRows(planData: Plan, sqlTables: GtfsSQLTables,
 			shape_pt_lat: shapeData.shape_pt_lat,
 			shape_pt_lon: shapeData.shape_pt_lon,
 		};
-		await exportConfig.writers.shapes.write(parsedShapesRow);
+		await context.writers.shapes.write(parsedShapesRow);
 	}
 
-	await exportConfig.writers.shapes.flush();
+	await context.writers.shapes.flush();
 
 	Logger.info('Exported shapes.txt file.');
 }
