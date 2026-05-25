@@ -1,10 +1,10 @@
 'use client';
 
 import { agencyMatchesSelection, agencyMatchesTransports, type TransportOption, transportsSelectionIsAll } from '@/contexts/GlobalSettings.context';
-import { getPublicVariable } from '@/settings/public-variables';
 import { type Line, type NetworkRoute, type NetworkStop } from '@/types/api/network';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -48,7 +48,7 @@ export const StopsContextProvider = ({ children }) => {
 	//
 	// B. Fetch data
 
-	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<NetworkStop[]>(`${getPublicVariable('hub_api_url')}/v1/network/stops`, { refreshInterval: 900000 }); // 15 minutes
+	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<NetworkStop[]>(API_ROUTES.hub.NETWORK_STOPS, { refreshInterval: 900000 }); // 15 minutes
 
 	//
 	// C. Transform data
@@ -82,7 +82,7 @@ export const StopsContextProvider = ({ children }) => {
 	//
 	// E. Define context value
 
-	const contextValue: StopsContextState = {
+	const contextValue: StopsContextState = useMemo(() => ({
 		actions: {
 			getStopById,
 			getStopByIdGeoJsonFC,
@@ -94,7 +94,7 @@ export const StopsContextProvider = ({ children }) => {
 		flags: {
 			is_loading: allStopsLoading,
 		},
-	};
+	}), [allStopsData, allStopsLoading, dataStopsFCState]);
 
 	//
 	// F. Render components

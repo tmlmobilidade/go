@@ -6,8 +6,9 @@ import { buildRefToAgencyIdMap, stopMatchesAgencyTransportFilters, transformStop
 import { createDocCollection } from '@/hooks/useOtherSearch';
 import { type NetworkStop } from '@/types/api/network';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import { transportsSelectionIsAll } from './GlobalSettings.context';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+
+import { transportsSelectionIsAll } from './GlobalSettings.context';
 
 /* * */
 
