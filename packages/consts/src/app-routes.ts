@@ -387,7 +387,8 @@ export const API_ROUTES = Object.freeze({
 
 		// NETWORK
 		NETWORK_LINES: `${getModuleConfig('hub', 'api_url')}/v1/network/lines`,
-		NETWORK_STOPS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/stops/${id}`,
+		NETWORK_PATTERNS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/patterns/${id}`,
+		NETWORK_STOPS: `${getModuleConfig('hub', 'api_url')}/v1/network/stops`,
 
 		// PARISHES
 		PARISHES_PARISHES: `${getModuleConfig('hub', 'api_url')}/parishes/parishes`,
@@ -406,16 +407,6 @@ export const API_ROUTES = Object.freeze({
 
 		// SHAPES
 		SHAPES_SHAPES: (id: string) => `${getModuleConfig('hub', 'api_url')}/shapes/shapes/${id}`,
-
-		// STOPS
-		STOPS_STOPS: (id: string) => `${getModuleConfig('hub', 'api_url')}/stops/stops/${id}`,
-
-		// TIME
-		TIME_TIME: `${getModuleConfig('hub', 'api_url')}/time/time`,
-
-		// VEHICLES
-		VEHICLES_VEHICLES: `${getModuleConfig('hub', 'api_url')}/vehicles/vehicles`,
-		VEHICLES_VEHICLES_PB: `${getModuleConfig('hub', 'api_url')}/vehicles/vehicles.pb`,
 	},
 
 	locations: {
