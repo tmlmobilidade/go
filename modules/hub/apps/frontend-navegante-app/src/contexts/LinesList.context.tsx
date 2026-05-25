@@ -1,11 +1,9 @@
 'use client';
 
-import { useEnvironmentContext } from '@/contexts/Environment.context';
-import { useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
+import { matchesGlobalAgencyTransportFilters, transportsSelectionIsAll, useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { createDocCollection } from '@/hooks/useOtherSearch';
 import { type Line } from '@/types/api/network';
-import { agencyMatchesSelection, agencyMatchesTransports, transportsSelectionIsAll } from '@/utils/transportAgencies';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 /* * */
@@ -13,7 +11,6 @@ import { createContext, useContext, useEffect, useState } from 'react';
 interface LinesListContextState {
 	actions: {
 		updateFilterByAttribute: (value: string) => void
-		updateFilterByCurrentView: (value: string) => void
 		updateFilterByFacility: (value: string) => void
 		updateFilterByMunicipalityOrLocality: (value: string) => void
 		updateFilterBySearch: (value: string) => void
@@ -24,7 +21,6 @@ interface LinesListContextState {
 	}
 	filters: {
 		by_attribute: null | string
-		by_current_view: 'all' | 'favorites'
 		by_facility: null | string
 		by_municipality_or_locality: null | string
 		by_search: string
@@ -56,15 +52,12 @@ export const LinesListContextProvider = ({ children }) => {
 
 	const linesContext = useLinesContext();
 	const globalSettingsContext = useGlobalSettingsContext();
-	const environmentContext = useEnvironmentContext();
-	const isMupi = environmentContext.data.value === 'mupi';
 	const filterByAgency = globalSettingsContext.filterbar.by_agency;
 	const filterByTransports = globalSettingsContext.filterbar.transports;
 
 	const [dataFilteredState, setDataFilteredState] = useState<Line[]>([]);
 
 	const [filterByAttributeState, setFilterByAttributeState] = useState <LinesListContextState['filters']['by_attribute']>(null);
-	const [filterByCurrentViewState, setFilterByCurrentViewState] = useState <LinesListContextState['filters']['by_current_view']>('all');
 	const [filterByFacilityState, setFilterByFacilityState] = useState <LinesListContextState['filters']['by_facility']>(null);
 	const [filterByMunicipalityOrLocalityState, setFilterByMunicipalityOrLocalityState] = useState <LinesListContextState['filters']['by_municipality_or_locality']>(null);
 	const [filterBySearchState, setFilterBySearchState] = useState <LinesListContextState['filters']['by_search']>('');
@@ -108,7 +101,6 @@ export const LinesListContextProvider = ({ children }) => {
 		// Filter by by_search
 
 		if (filterBySearchState) {
-			// Give extra weight to favorite lines
 			const searchHook = createDocCollection(filterResult.map(line => ({ ...line })), {
 				id: 4,
 				// locality_ids: 1,
@@ -127,7 +119,7 @@ export const LinesListContextProvider = ({ children }) => {
 
 		if (!isAllAgencies || !isAllTransports) {
 			filterResult = filterResult.filter((line) => {
-				return (isAllAgencies || agencyMatchesSelection(line.agency_id, filterByAgency)) && (isAllTransports || agencyMatchesTransports(line.agency_id, filterByTransports));
+				return matchesGlobalAgencyTransportFilters(line.agency_id, filterByAgency, filterByTransports);
 			});
 		}
 
@@ -151,11 +143,6 @@ export const LinesListContextProvider = ({ children }) => {
 		setFilterByAttributeState(value || null);
 	};
 
-	const updateFilterByCurrentView = (value: LinesListContextState['filters']['by_current_view']) => {
-		if (isMupi && value === 'favorites') return;
-		setFilterByCurrentViewState(value);
-	};
-
 	const updateFilterByFacility = (value: LinesListContextState['filters']['by_facility']) => {
 		setFilterByFacilityState(value || null);
 	};
@@ -174,7 +161,6 @@ export const LinesListContextProvider = ({ children }) => {
 	const contextValue: LinesListContextState = {
 		actions: {
 			updateFilterByAttribute,
-			updateFilterByCurrentView,
 			updateFilterByFacility,
 			updateFilterByMunicipalityOrLocality,
 			updateFilterBySearch,
@@ -185,7 +171,6 @@ export const LinesListContextProvider = ({ children }) => {
 		},
 		filters: {
 			by_attribute: filterByAttributeState,
-			by_current_view: filterByCurrentViewState,
 			by_facility: filterByFacilityState,
 			by_municipality_or_locality: filterByMunicipalityOrLocalityState,
 			by_search: filterBySearchState,

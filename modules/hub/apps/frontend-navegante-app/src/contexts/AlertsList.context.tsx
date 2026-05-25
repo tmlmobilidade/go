@@ -1,16 +1,11 @@
 'use client';
 
-import type { Alert, AlertCause, AlertEffect } from '@tmlmobilidade/go-hub-pckg-types';
+import type { AlertCause, AlertEffect, SimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-types';
 
-import { getAlertDescription, getAlertStartDateOrEpoch, getAlertTitle } from '@/utils/alerts';
-import { agencyMatchesSelection, agencyMatchesTransports, transportsSelectionIsAll } from '@/utils/transportAgencies';
-import { DateTime } from 'luxon';
-import { useLocale } from 'next-intl';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useMemo, useState } from 'react';
 
 import { useAlertsContext } from './Alerts.context';
-import { useGlobalSettingsContext } from './GlobalSettings.context';
 
 /* * */
 
@@ -29,8 +24,8 @@ interface AlertsListContextState {
 		}
 	}
 	data: {
-		filtered: Alert[]
-		raw: Alert[]
+		filtered: SimplifiedAlert[]
+		raw: SimplifiedAlert[]
 	}
 	filters: {
 		by_date: 'current' | 'future' | 'map'
@@ -66,8 +61,6 @@ export const AlertsListContextProvider = ({ children }) => {
 	//
 	// A. Setup variables
 
-	const locale = useLocale();
-
 	const [filterByDateState, setFilterByDateState] = useState <AlertsListContextState['filters']['by_date']>('current');
 	const [filterByLineIdState, setFilterByLineIdState] = useQueryState('line_id');
 	const [filterBySearchQueryState, setFilterBySearchQueryState] = useQueryState('search_query');
@@ -88,11 +81,6 @@ export const AlertsListContextProvider = ({ children }) => {
 	// B. Fetch data
 
 	const alertsContext = useAlertsContext();
-	const globalSettingsContext = useGlobalSettingsContext();
-
-	const filterByAgency = globalSettingsContext.filterbar.by_agency;
-	const filterByTransports = globalSettingsContext.filterbar.transports;
-
 	const allAlertsData = useMemo(() => alertsContext.data.alerts, [alertsContext.data.alerts]);
 
 	//
@@ -100,24 +88,17 @@ export const AlertsListContextProvider = ({ children }) => {
 
 	const currentWeekAlerts = useMemo(() => {
 		if (!allAlertsData?.length) return 0;
-		const oneWeekFromNowInUnixSeconds = DateTime.now().plus({ week: 1 }).endOf('day').toUnixInteger();
-		return allAlertsData.filter((item) => {
-			const alertStartDateInSeconds = DateTime.fromJSDate(getAlertStartDateOrEpoch(item)).toUnixInteger();
-			return alertStartDateInSeconds <= oneWeekFromNowInUnixSeconds;
-		}).length;
+		return allAlertsData.filter(alertsContext.actions.isAlertInThisWeek).length;
 	}, [allAlertsData]);
 
 	const dataFilteredState = useMemo(() => {
-		let filterResult: Alert[] = [...(allAlertsData || [])];
-
-		const oneWeekFromNowInUnixSeconds = DateTime.now().plus({ week: 1 }).endOf('day').toUnixInteger();
+		let filterResult: SimplifiedAlert[] = [...(allAlertsData || [])];
 
 		filterResult = filterResult.filter((item) => {
-			const alertStartDateInSeconds = DateTime.fromJSDate(getAlertStartDateOrEpoch(item)).toUnixInteger();
 			if (filterByDateState === 'current') {
-				return alertStartDateInSeconds <= oneWeekFromNowInUnixSeconds;
+				return alertsContext.actions.isAlertInThisWeek(item);
 			}
-			return alertStartDateInSeconds > oneWeekFromNowInUnixSeconds;
+			return alertsContext.actions.isAlertStartingAfterThisWeek(item);
 		});
 
 		if (filterByLineIdState) {
@@ -131,8 +112,8 @@ export const AlertsListContextProvider = ({ children }) => {
 		if (filterBySearchQueryState) {
 			filterResult = filterResult.filter((alert) => {
 				const searchQuery = filterBySearchQueryState.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-				const title = getAlertTitle(alert, locale).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-				const description = getAlertDescription(alert, locale).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+				const title = alert.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+				const description = alert.description.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 				return title.includes(searchQuery) || description.includes(searchQuery);
 			});
 		}
@@ -145,20 +126,8 @@ export const AlertsListContextProvider = ({ children }) => {
 			filterResult = filterResult.filter(alert => alert.effect === filterByEffectState);
 		}
 
-		const isAllAgencies = filterByAgency.length === 0;
-		const isAllTransports = transportsSelectionIsAll(filterByTransports);
-
-		if (!isAllAgencies || !isAllTransports) {
-			filterResult = filterResult.filter((alert) => {
-				return alert.informed_entity.some((entity) => {
-					if (!entity.agency_id) return false;
-					return (isAllAgencies || agencyMatchesSelection(entity.agency_id, filterByAgency)) && (isAllTransports || agencyMatchesTransports(entity.agency_id, filterByTransports));
-				});
-			});
-		}
-
 		return filterResult;
-	}, [allAlertsData, filterByAgency, filterByCauseState, filterByDateState, filterByEffectState, filterByLineIdState, filterBySearchQueryState, filterByStopIdState, filterByTransports, locale]);
+	}, [allAlertsData, alertsContext.actions, filterByCauseState, filterByDateState, filterByEffectState, filterByLineIdState, filterBySearchQueryState, filterByStopIdState]);
 
 	//
 	// D. Handle actions

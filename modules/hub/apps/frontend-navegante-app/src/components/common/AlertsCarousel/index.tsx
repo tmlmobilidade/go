@@ -1,6 +1,6 @@
 'use client';
 
-import type { Alert } from '@tmlmobilidade/go-hub-pckg-types';
+import type { SimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-types';
 
 import { AlertsCarouselSlide } from '@/components/common/AlertsCarouselSlide';
 import Carousel from '@/components/common/Carousel';
@@ -8,7 +8,7 @@ import Carousel from '@/components/common/Carousel';
 /* * */
 
 interface Props {
-	alerts: Alert[]
+	alerts: SimplifiedAlert[]
 	target?: '_blank' | '_self'
 }
 

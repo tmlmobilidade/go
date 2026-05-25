@@ -6,10 +6,9 @@ import AlertsListItemImageThumbnail from '@/components/alerts/AlertsListItemImag
 import Button from '@/components/common/Button';
 import { useAlertsContext } from '@/contexts/Alerts.context';
 import { useEnvironmentContext } from '@/contexts/Environment.context';
-import { getAlertDescription, getAlertEndDate, getAlertImageUrl, getAlertStartDate, getAlertTitle } from '@/utils/alerts';
 import { Accordion } from '@mantine/core';
 import { IconArrowUpRight } from '@tabler/icons-react';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';
@@ -29,7 +28,6 @@ export function AlertListItem({ alertId }: Props) {
 	// A. Setup variables
 
 	const t = useTranslations('alerts.AlertsListItem');
-	const locale = useLocale();
 	const alertsContext = useAlertsContext();
 	const environmentContext = useEnvironmentContext();
 
@@ -41,13 +39,13 @@ export function AlertListItem({ alertId }: Props) {
 	const view = useMemo(() => {
 		if (!resolvedAlert) return null;
 		return {
-			description: getAlertDescription(resolvedAlert, locale),
-			endDate: getAlertEndDate(resolvedAlert),
-			imageUrl: getAlertImageUrl(resolvedAlert, locale),
-			startDate: getAlertStartDate(resolvedAlert),
-			title: getAlertTitle(resolvedAlert, locale),
+			description: resolvedAlert.description,
+			endDate: resolvedAlert.end_date,
+			imageUrl: resolvedAlert.image_url,
+			startDate: resolvedAlert.start_date,
+			title: resolvedAlert.title,
 		};
-	}, [resolvedAlert, locale]);
+	}, [resolvedAlert]);
 
 	const alertHref = environmentContext.actions.getNormalizedHref(`/alerts/${alertId}`);
 

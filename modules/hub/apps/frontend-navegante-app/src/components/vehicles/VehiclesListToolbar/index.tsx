@@ -3,11 +3,13 @@
 
 import { ExpandToggle } from '@/components/common/ExpandToggle';
 import { FoundItemsCounter } from '@/components/common/FoundItemsCounter';
+import { AGENCY_LOGO_BY_ID, AGENCY_LOGO_FALLBACK } from '@/components/home/agencyLogoUrls';
 import { Grid } from '@/components/layout/Grid';
 import { Section } from '@/components/layout/Section';
 import { useVehiclesListContext } from '@/contexts/VehiclesList.context';
-import { MultiSelect, Select, TextInput } from '@mantine/core';
+import { Group, Image, MultiSelect, Select, Text, TextInput } from '@mantine/core';
 import { IconBike, IconBolt, IconDisabled2, IconHomeHeart, IconSearch, IconTriangle } from '@tabler/icons-react';
+import { TRANSPORT_AGENCY_IDS } from '@tmlmobilidade/go-hub-pckg-utils';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 
@@ -20,9 +22,11 @@ export function VehiclesListToolbar() {
 	// A. Setup variables
 
 	const t = useTranslations('vehicles.VehiclesListToolbar');
-	const optionsLabels = useTranslations('home.HomePageFilterbar.options');
+	const optionsLabels = useTranslations('filters.by_agency.options');
 
 	const vehiclesListContext = useVehiclesListContext();
+
+	const configuredAgencyIds = useMemo(() => [...new Set(Object.values(TRANSPORT_AGENCY_IDS).flat())], []);
 
 	//
 	// B. Transform data
@@ -31,13 +35,11 @@ export function VehiclesListToolbar() {
 		if (!vehiclesListContext.data.raw) return [];
 		const allOptionsValues = new Set<string>(vehiclesListContext.data.raw.map(item => item.propulsion).filter(Boolean).map(String));
 		return Array.from(allOptionsValues).map(value => ({ label: optionsLabels(`VehiclePropulsion.${value}`), value: value })) || [];
-	}, [vehiclesListContext.data.raw]);
+	}, [optionsLabels, vehiclesListContext.data.raw]);
 
 	const agencyOptions = useMemo(() => {
-		if (!vehiclesListContext.data.raw) return [];
-		const allOptionsValues = new Set<string>(vehiclesListContext.data.raw.map(item => item.agency_id).filter(Boolean));
-		return Array.from(allOptionsValues).map(value => ({ label: optionsLabels(`Agency.${value}`), value: value })) || [];
-	}, [vehiclesListContext.data.raw]);
+		return configuredAgencyIds.map(value => ({ label: optionsLabels(`Agency.${value}`), value }));
+	}, [configuredAgencyIds, optionsLabels]);
 
 	const makeAndModelOptions = useMemo(() => {
 		if (!vehiclesListContext.data.raw) return [];
@@ -122,6 +124,12 @@ export function VehiclesListToolbar() {
 						onChange={vehiclesListContext.actions.updateFilterByAgency}
 						placeholder={t('filters.by_agency.placeholder')}
 						value={vehiclesListContext.filters.by_agency ? vehiclesListContext.filters.by_agency?.split(';') : []}
+						renderOption={({ option }) => (
+							<Group gap="xs">
+								<Image alt={option.label} fallbackSrc={AGENCY_LOGO_FALLBACK} fit="contain" h={16} src={AGENCY_LOGO_BY_ID[option.value] ?? AGENCY_LOGO_FALLBACK} w={36} />
+								<Text size="sm">{option.label}</Text>
+							</Group>
+						)}
 						clearable
 						searchable
 					/>

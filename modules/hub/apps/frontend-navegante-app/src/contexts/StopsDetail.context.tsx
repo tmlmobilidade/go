@@ -8,8 +8,7 @@ import { useStopsContext } from '@/contexts/Stops.context';
 import { getPublicVariable } from '@/settings/public-variables';
 import { type Line, type NetworkPattern, type NetworkShape, type NetworkStop } from '@/types/api/network';
 import { type Arrival } from '@/types/stops.types';
-import { isAlertActiveNow } from '@/utils/alerts';
-import { type Alert } from '@tmlmobilidade/go-hub-pckg-types';
+import { type SimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-types';
 import { DateTime } from 'luxon';
 import { notFound } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -23,7 +22,7 @@ interface StopsDetailContextState {
 		setActiveTripId: (tripId: string, stopSequence: number) => void
 	}
 	data: {
-		active_alerts: Alert[] | undefined
+		active_alerts: SimplifiedAlert[] | undefined
 		active_pattern_group: NetworkPattern | undefined
 		active_shape: NetworkShape | undefined
 		active_stop_id: string
@@ -83,7 +82,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const [dataTimetableRealtimeFutureState, setDataTimetableRealtimeFutureState] = useState<Arrival[] | undefined>(undefined);
 	const [dataTimetableScheduleState, setDataTimetableScheduleState] = useState<Arrival[] | undefined>(undefined);
 	const [dataActivePatternState, setDataActivePatternState] = useState<NetworkPattern | undefined>(undefined);
-	const [dataActiveAlertsState, setDataActiveAlertsState] = useState<Alert[] | undefined>(undefined);
+	const [dataActiveAlertsState, setDataActiveAlertsState] = useState<SimplifiedAlert[] | undefined>(undefined);
 	const [dataActiveTripIdState, setDataActiveTripIdState] = useState<string | undefined>(undefined);
 	const [dataActiveStopSequenceState, setDataActiveStopSequenceState] = useState<number | undefined>(undefined);
 
@@ -104,7 +103,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		} else {
 			notFound();
 		}
-	}, [stopsContext.data.stops, dataActiveStopIdState, environmentContext.data.value]);
+	}, [stopsContext.data.stops, dataActiveStopIdState, environmentContext.data.value, stopsContext.actions, environmentContext.actions]);
 
 	/**
  	* Fetch line data for the selected stop.
@@ -118,7 +117,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			.map(lineId => linesContext.actions.getLineDataById(lineId))
 			.filter(lineData => lineData !== undefined);
 		setDataLinesState(linesData);
-	}, [dataStopState]);
+	}, [dataStopState, linesContext.actions]);
 
 	/**
 
@@ -338,11 +337,11 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 				if (!informedEntity.stop_id && !informedEntity.route_id) return false;
 				const hasMatchingStop = informedEntity.stop_id === dataActiveStopIdState;
 				const hasMatchingRoute = dataStopState?.route_ids.includes(informedEntity.route_id || '');
-				return (hasMatchingStop || hasMatchingRoute) && isAlertActiveNow(row);
+				return (hasMatchingStop || hasMatchingRoute) && alertsContext.actions.isAlertActiveNow(row);
 			});
 		});
 		setDataActiveAlertsState(activeAlerts);
-	}, [alertsContext.data.alerts, dataStopState, dataActiveStopIdState]);
+	}, [alertsContext.actions, alertsContext.data.alerts, dataStopState, dataActiveStopIdState]);
 
 	//
 	// D. Handle actions
@@ -359,7 +358,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		}
 		setDataActiveTripIdState(tripId);
 		setDataActiveStopSequenceState(stopSequence);
-		// analyticsContext.actions.capture(ampli => ampli.stopTripClicked({ trip_id: tripId }));
 	};
 
 	const resetActiveTripId = () => {

@@ -1,9 +1,8 @@
 'use client';
 
-import { useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
+import { matchesGlobalAgencyTransportFilters, transportsSelectionIsAll, useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
 import { useVehiclesContext } from '@/contexts/Vehicles.context';
 import { type Vehicle } from '@/types/vehicles.types';
-import { agencyMatchesSelection, agencyMatchesTransports, transportsSelectionIsAll } from '@/utils/transportAgencies';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -113,8 +112,7 @@ export const VehiclesListContextProvider = ({ children }) => {
 
 		if (!isAllAgencies || !isAllTransports) {
 			filterResult = filterResult.filter((item) => {
-				return (isAllAgencies || agencyMatchesSelection(item.agency_id?.toString(), filterByAgency))
-					&& (isAllTransports || agencyMatchesTransports(item.agency_id?.toString(), filterByTransports));
+				return matchesGlobalAgencyTransportFilters(item.agency_id, filterByAgency, filterByTransports);
 			});
 		}
 

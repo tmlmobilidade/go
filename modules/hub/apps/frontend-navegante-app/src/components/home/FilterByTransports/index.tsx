@@ -1,8 +1,7 @@
 'use client';
 
 import TextPopover from '@/components/common/TextPopover';
-import { TransportOption, useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
-import { transportsSelectionIsAll } from '@/utils/transportAgencies';
+import { TransportOption, transportsSelectionIsAll, useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
 import { IconApps, IconBuildingTunnel, IconBus, IconFerry, IconTrain } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 
@@ -10,13 +9,13 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function HomePageFilterbarTransports() {
+export function FilterByTransports() {
 	//
 
 	//
 	// A. Setup variables
 
-	const t = useTranslations('home.HomePageFilterbar.transports');
+	const t = useTranslations('filters.by_transports.options');
 	const { actions, filterbar } = useGlobalSettingsContext();
 
 	const allSelected = transportsSelectionIsAll(filterbar.transports);
@@ -48,13 +47,7 @@ export function HomePageFilterbarTransports() {
 	return (
 		<div className={styles.transportsWrapper}>
 			<TextPopover text={t('all')} textSize="md">
-				<button
-					aria-label={t('all')}
-					aria-pressed={allSelected}
-					className={`${styles.icon} ${allSelected ? styles.iconActive : ''}`}
-					onClick={handleAllClick}
-					type="button"
-				>
+				<button className={`${styles.icon} ${allSelected ? styles.iconActive : ''}`} onClick={handleAllClick}>
 					<IconApps size={24} />
 				</button>
 			</TextPopover>
@@ -62,13 +55,7 @@ export function HomePageFilterbarTransports() {
 				const active = allSelected || filterbar.transports.includes(opt.labelKey);
 				return (
 					<TextPopover key={opt.labelKey} text={t(opt.labelKey)} textSize="md">
-						<button
-							aria-label={t(opt.labelKey)}
-							aria-pressed={active}
-							className={`${styles.icon} ${active ? styles.iconActive : ''}`}
-							onClick={() => handleTransportClick(opt.labelKey)}
-							type="button"
-						>
+						<button className={`${styles.icon} ${active ? styles.iconActive : ''}`}onClick={() => handleTransportClick(opt.labelKey)}>
 							{opt.icon}
 						</button>
 					</TextPopover>

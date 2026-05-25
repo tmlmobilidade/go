@@ -1,9 +1,9 @@
 'use client';
 
 import { AlertCauseIcon } from '@/components/alerts/AlertCauseEffectIcon';
-import { AlertCause } from '@tmlmobilidade/go-hub-pckg-types';
 import { Flex, Group, Select, SelectProps, Text } from '@mantine/core';
 import { IconExclamationCircle } from '@tabler/icons-react';
+import { AlertCause } from '@tmlmobilidade/go-hub-pckg-types';
 import { useTranslations } from 'next-intl';
 
 import styles from './styles.module.css';

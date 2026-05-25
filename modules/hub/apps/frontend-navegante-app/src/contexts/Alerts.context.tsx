@@ -2,23 +2,28 @@
 
 import { getPublicVariable } from '@/settings/public-variables';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import { agencyMatchesSelection, agencyMatchesTransports, transportsSelectionIsAll } from '@/utils/transportAgencies';
-import { type Alert } from '@tmlmobilidade/go-hub-pckg-types';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { Dates } from '@tmlmobilidade/dates';
+import { type Alert, type SimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-types';
+import { convertToSimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-utils';
+import { useLocale } from 'next-intl';
+import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useGlobalSettingsContext } from './GlobalSettings.context';
+import { agencyMatchesSelection, agencyMatchesTransports, transportsSelectionIsAll, useGlobalSettingsContext } from './GlobalSettings.context';
 
 /* * */
 
 interface AlertsContextState {
 	actions: {
-		getAlertById: (alertId: string) => Alert | null
-		getAlertsByLineId: (lineId: string) => Alert[]
-		getAlertsByStopId: (stopId: string) => Alert[]
+		getAlertById: (alertId: string) => null | SimplifiedAlert
+		getAlertsByLineId: (lineId: string) => SimplifiedAlert[]
+		getAlertsByStopId: (stopId: string) => SimplifiedAlert[]
+		isAlertActiveNow: (alert: SimplifiedAlert) => boolean
+		isAlertInThisWeek: (alert: SimplifiedAlert) => boolean
+		isAlertStartingAfterThisWeek: (alert: SimplifiedAlert) => boolean
 	}
 	data: {
-		alerts: Alert[]
+		alerts: SimplifiedAlert[]
 		featureCollection: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>
 	}
 	flags: {
@@ -46,24 +51,22 @@ export const AlertsContextProvider = ({ children }) => {
 	//
 	// A. Setup variables
 
-	// const analyticsContext = useAnalyticsContext();
+	const locale = useLocale();
 	const globalSettingsContext = useGlobalSettingsContext();
 	const filterByAgency = globalSettingsContext.filterbar.by_agency;
 	const filterByTransports = globalSettingsContext.filterbar.transports;
 
-	const [alertsState, setAlertsState] = useState<Alert[]>([]);
-	const [dataFeatureCollectionState, setDataFeatureCollectionState] = useState<GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>>(getBaseGeoJsonFeatureCollection());
-	//
 	const { data: alertsResponse, isLoading: allAlertsLoading } = useSWR<{ data: Alert[] }, Error>(`${getPublicVariable('hub_api_url')}/v1/alerts`, { refreshInterval: 180000 }); // 3 minutes
 
 	//
 	// C. Transform data
 
-	useEffect(() => {
-		if (!alertsResponse || allAlertsLoading) return;
-		const list = alertsResponse.data ?? [];
-		setAlertsState(list);
-	}, [alertsResponse, allAlertsLoading]);
+	const alertsState = useMemo(() => {
+		const alerts = alertsResponse?.data ?? [];
+		return alerts
+			.map(alert => convertToSimplifiedAlert(alert, locale))
+			.filter((alert): alert is SimplifiedAlert => alert !== null);
+	}, [alertsResponse, locale]);
 
 	const filteredAlertsState = useMemo(() => {
 		const isAllAgencies = filterByAgency.length === 0;
@@ -81,25 +84,24 @@ export const AlertsContextProvider = ({ children }) => {
 		});
 	}, [alertsState, filterByAgency, filterByTransports]);
 
-	// Transform data into geojson
-	useEffect(() => {
+	const dataFeatureCollectionState = useMemo(() => {
 		const collection = getBaseGeoJsonFeatureCollection();
 		filteredAlertsState.forEach((alert) => {
 			const alertFC = transformAlertDataIntoGeoJsonFeature(alert);
 			if (alertFC) collection.features.push(alertFC);
 		});
 
-		setDataFeatureCollectionState(collection);
+		return collection;
 	}, [filteredAlertsState]);
 
 	//
 	// D. Handle actions
 
-	const getAlertById = (alertId: string): Alert | null => {
+	const getAlertById = (alertId: string): null | SimplifiedAlert => {
 		return filteredAlertsState.find(item => item.alert_id === alertId) || null;
 	};
 
-	const getAlertsByLineId = (lineId: string): Alert[] => {
+	const getAlertsByLineId = (lineId: string): SimplifiedAlert[] => {
 		return filteredAlertsState.filter((resolvedAlert) => {
 			return resolvedAlert.informed_entity.some((informedEntity) => {
 				if (informedEntity.line_id != null && String(informedEntity.line_id) === String(lineId)) return true;
@@ -108,8 +110,32 @@ export const AlertsContextProvider = ({ children }) => {
 		});
 	};
 
-	const getAlertsByStopId = (stopId: string): Alert[] => {
+	const getAlertsByStopId = (stopId: string): SimplifiedAlert[] => {
 		return filteredAlertsState.filter(resolvedAlert => resolvedAlert.informed_entity.some(informedEntity => informedEntity.stop_id === stopId));
+	};
+
+	const isAlertActiveNow = (alert: SimplifiedAlert): boolean => {
+		if (!alert.end_date) return true;
+		return !Number.isNaN(alert.end_date.getTime()) && alert.end_date.getTime() >= Date.now();
+	};
+
+	const isAlertInThisWeek = (alert: SimplifiedAlert): boolean => {
+		const startTime = alert.start_date.getTime();
+		if (Number.isNaN(startTime)) return false;
+		const nowMs = Date.now();
+
+		const now = Dates.now('local');
+		const weekWindowStart = now.startOf('day').unix_timestamp;
+		const weekWindowEnd = now.plus({ weeks: 1 }).endOf('day').unix_timestamp;
+		const endTime = alert.end_date?.getTime();
+
+		return startTime <= nowMs && startTime <= weekWindowEnd && (typeof endTime !== 'number' || endTime >= weekWindowStart);
+	};
+
+	const isAlertStartingAfterThisWeek = (alert: SimplifiedAlert): boolean => {
+		const startTime = alert.start_date.getTime();
+		if (Number.isNaN(startTime)) return false;
+		return startTime > Date.now();
 	};
 
 	//
@@ -120,6 +146,9 @@ export const AlertsContextProvider = ({ children }) => {
 			getAlertById,
 			getAlertsByLineId,
 			getAlertsByStopId,
+			isAlertActiveNow,
+			isAlertInThisWeek,
+			isAlertStartingAfterThisWeek,
 		},
 		data: {
 			alerts: filteredAlertsState,
@@ -144,7 +173,7 @@ export const AlertsContextProvider = ({ children }) => {
 
 /* * */
 
-export function transformAlertDataIntoGeoJsonFeature(alertData: Alert): GeoJSON.Feature<GeoJSON.Point, GeoJSON.GeoJsonProperties> {
+export function transformAlertDataIntoGeoJsonFeature(alertData: SimplifiedAlert): GeoJSON.Feature<GeoJSON.Point, GeoJSON.GeoJsonProperties> {
 	if (!alertData.coordinates) return null;
 	return {
 		geometry: {

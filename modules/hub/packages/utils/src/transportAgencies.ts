@@ -6,7 +6,7 @@ import { type TransportOption } from '@tmlmobilidade/go-hub-pckg-types';
 
 export const TRANSPORT_AGENCY_IDS: Record<TransportOption, string[]> = {
 	boat: ['15'],
-	bus: ['4', '8', '21', '41', '42', '43', '44', '51', '52', '53', '54', '55'],
+	bus: ['4', '8', '21', '41', '42', '43', '44'],
 	metro: ['2', '16'],
 	train: ['1', '3'],
 };

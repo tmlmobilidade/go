@@ -235,43 +235,8 @@
 			"wednesday": "Quarta-feira"
 		}
 	},
-	"home": {
-		"AlertsSection": {
-			"section_heading": "Alertas Recentes"
-		},
-		"HomePageFilterbar": {
-			"filters": {
-				"by_agency": {
-					"placeholder": "Todos os operadores"
-				},
-				"by_bikes": {
-					"options": {
-						"false": "Não",
-						"true": "Sim"
-					},
-					"placeholder": "Permite Bicicletas"
-				},
-				"by_make_model": {
-					"placeholder": "Marca e Modelo"
-				},
-				"by_propulsion": {
-					"placeholder": "Todos os tipos de propulsão"
-				},
-				"by_search": {
-					"placeholder": "Pesquisar por id, matrícula..."
-				},
-				"by_wheelchair": {
-					"options": {
-						"false": "Não",
-						"true": "Sim"
-					},
-					"placeholder": "Permite Mobilidade Reduzida"
-				}
-			},
-			"heading": "Filtros",
-			"modal": {
-				"title": "Filters"
-			},
+	"filters": {
+		"by_agency": {
 			"options": {
 				"Agency": {
 					"1": "Carris",
@@ -285,11 +250,6 @@
 					"42": "Rodoviária de Lisboa",
 					"43": "TST",
 					"44": "Alsa Todi",
-					"51": "TMP A1",
-					"52": "TMP A2",
-					"53": "TMP A3",
-					"54": "TMP A4",
-					"55": "TMP A5",
 					"8": "Transportes Coletivos do Barreiro"
 				},
 				"VehicleEmissionClass": {
@@ -309,19 +269,22 @@
 				}
 
 			},
-			"sections": {
-				"alerts": "Alerts",
-				"lines": "Lines",
-				"stops": "Stops",
-				"vehicles": "Vehicles"
-			},
-			"transports": {
+			"placeholder": "Todos os operadores"
+		},
+		"by_transports": {
+			"options": {
 				"all": "Todos",
 				"boat": "Barco",
 				"bus": "Autocarro",
 				"metro": "Metro",
 				"train": "Comboio"
-			}
+			},
+			"placeholder": "Todos os transportes"
+		}
+	},
+	"home": {
+		"AlertsSection": {
+			"section_heading": "Alertas Recentes"
 		},
 		"HomePageToolbar": {
 			"heading": "Secções",
@@ -412,42 +375,6 @@
 				"map": "Mapa",
 				"satellite": "Satélite"
 			}
-		}
-	},
-	"options": {
-		"Agency": {
-			"1": "Carris",
-			"15": "Fertagus",
-			"16": "Metro Transportes do Sul",
-			"2": "Metropolitano de Lisboa",
-			"21": "MobiCascais",
-			"3": "Comboios de Portugal",
-			"4": "Transtejo",
-			"41": "Viação Alvorada",
-			"42": "Rodoviária de Lisboa",
-			"43": "TST",
-			"44": "Alsa Todi",
-			"51": "TMP A1",
-			"52": "TMP A2",
-			"53": "TMP A3",
-			"54": "TMP A4",
-			"55": "TMP A5",
-			"8": "Transportes Coletivos do Barreiro"
-		},
-		"VehicleEmissionClass": {
-			"euro_1": "EURO 1",
-			"euro_2": "EURO 2",
-			"euro_3": "EURO 3",
-			"euro_4": "EURO 4",
-			"euro_5": "EURO 5",
-			"euro_6": "EURO 6"
-		},
-		"VehiclePropulsion": {
-			"diesel": "Diesel",
-			"electricity": "Eletricidade",
-			"hybrid": "Híbrido",
-			"lpg_auto": "GPL",
-			"natural_gas": "Gás Natural"
 		}
 	},
 	"schedule": {

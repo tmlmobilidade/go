@@ -95,13 +95,7 @@ export const LinesContextProvider = ({ children }) => {
 		flags: {
 			is_loading: allLinesLoading || allRoutesLoading,
 		},
-	}), [
-		allLinesLoading,
-		allRoutesLoading,
-		normalizedLinesData,
-		normalizedRoutesData,
-
-	]);
+	}), [allLinesLoading, allRoutesLoading, getLineDataById, getRouteDataById, normalizedLinesData, normalizedRoutesData]);
 
 	//
 	// D. Render components

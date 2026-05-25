@@ -13,5 +13,6 @@
 @media (width <= 650px) {
 	.container {
 		padding: 0;
+		margin-bottom: 60px;
 	}
 }

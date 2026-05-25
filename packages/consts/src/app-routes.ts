@@ -406,6 +406,16 @@ export const API_ROUTES = Object.freeze({
 
 		// SHAPES
 		SHAPES_SHAPES: (id: string) => `${getModuleConfig('hub', 'api_url')}/shapes/shapes/${id}`,
+
+		// STOPS
+		STOPS_STOPS: (id: string) => `${getModuleConfig('hub', 'api_url')}/stops/stops/${id}`,
+
+		// TIME
+		TIME_TIME: `${getModuleConfig('hub', 'api_url')}/time/time`,
+
+		// VEHICLES
+		VEHICLES_VEHICLES: `${getModuleConfig('hub', 'api_url')}/vehicles/vehicles`,
+		VEHICLES_VEHICLES_PB: `${getModuleConfig('hub', 'api_url')}/vehicles/vehicles.pb`,
 	},
 
 	locations: {

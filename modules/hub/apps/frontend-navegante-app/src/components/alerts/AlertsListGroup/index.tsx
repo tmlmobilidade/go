@@ -9,7 +9,6 @@ import { GroupedListItem } from '@/components/layout/GroupedListItem';
 import GroupedListSkeleton from '@/components/layout/GroupedListSkeleton';
 import { Surface } from '@/components/layout/Surface';
 import { useAlertsListContext } from '@/contexts/AlertsList.context';
-import { getAlertStartDateOrEpoch } from '@/utils/alerts';
 import collator from '@/utils/collator';
 import { Accordion } from '@mantine/core';
 import { DateTime } from 'luxon';
@@ -35,7 +34,7 @@ export function AlertsListGroup() {
 		if (!alertsListContext.data) return [];
 		//
 		const groupedAlerts: AlertGroupByDate[] = alertsListContext.data.filtered.reduce((result: AlertGroupByDate[], item) => {
-			const alertStartDateObject = DateTime.fromJSDate(getAlertStartDateOrEpoch(item));
+			const alertStartDateObject = DateTime.fromJSDate(item.start_date);
 			const alertStartDateString = alertStartDateObject.toFormat('yyyyMMdd');
 			const existingGroup = result.find(group => group.value === alertStartDateString);
 			if (existingGroup) {
