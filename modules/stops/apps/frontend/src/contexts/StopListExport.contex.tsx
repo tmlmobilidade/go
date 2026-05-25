@@ -3,8 +3,8 @@
 /* * */
 
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
-import { CreateFileExportDto, StopExportProperties } from '@tmlmobilidade/types';
-import { closeModal, useExportsContext, useToast } from '@tmlmobilidade/ui';
+import { CreateFileExportDto, type StopExportProperties } from '@tmlmobilidade/types';
+import { closeModal, useAgenciesContext, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 /* * */
@@ -43,6 +43,7 @@ export const StopListExportContextProvider = ({ children }: PropsWithChildren) =
 
 	//
 	// A. Setup variables
+	const agenciesContext = useAgenciesContext();
 
 	const exports = useExportsContext();
 	const stopsListContext = useStopsListContext();
@@ -57,6 +58,10 @@ export const StopListExportContextProvider = ({ children }: PropsWithChildren) =
 
 		if (searchValue.length > 0) {
 			filters.push({ label: 'Pesquisa', value: searchValue });
+		}
+
+		if (stopsListContext.filters.agencies.isActive && stopsListContext.filters.agencies.value.length > 0) {
+			filters.push({ label: 'Operadores', value: agenciesContext.data.as_options.filter(option => stopsListContext.filters.agencies.value.includes(option.value)).join(', ') });
 		}
 
 		if (stopsListContext.filters.lifecycle_status.isActive && stopsListContext.filters.lifecycle_status.value.length > 0) {
@@ -79,6 +84,8 @@ export const StopListExportContextProvider = ({ children }: PropsWithChildren) =
 	}, [
 		stopsListContext.filters.connections.isActive,
 		stopsListContext.filters.connections.value,
+		stopsListContext.filters.agencies.isActive,
+		stopsListContext.filters.agencies.value,
 		stopsListContext.filters.equipment.isActive,
 		stopsListContext.filters.equipment.value,
 		stopsListContext.filters.facilities.isActive,
