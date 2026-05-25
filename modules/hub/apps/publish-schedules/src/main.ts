@@ -117,7 +117,7 @@ export async function main() {
 
 			//
 		} catch (error) {
-			await plans.updateById(planData._id,	{ apps: { ...planData.apps, hub_schedules: { last_hash: null, status: 'error', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
+			await plans.updateById(planData._id, { apps: { ...planData.apps, hub_schedules: { last_hash: null, status: 'error', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
 			Logger.error(`Error processing plan ${planData._id}`, error);
 			Logger.divider();
 		}
