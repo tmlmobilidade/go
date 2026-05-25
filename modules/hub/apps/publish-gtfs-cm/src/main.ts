@@ -19,8 +19,6 @@ import { ZipFile } from 'yazl';
 import { exportAgencyFile } from '@/exports/agency.js';
 import { exportCalendarDatesRows } from '@/exports/calendar-dates.js';
 import { exportDatesFile } from '@/exports/dates.js';
-import { exportFareAttributesFile } from '@/exports/fare-attributes.js';
-import { exportFareRulesFile } from '@/exports/fare-rules.js';
 import { exportFeedInfoFile } from '@/exports/feed-info.js';
 import { exportMunicipalitiesFile } from '@/exports/municipalities.js';
 import { exportPeriodsFile } from '@/exports/periods.js';
@@ -263,8 +261,6 @@ export async function main() {
 	await exportDatesFile(exportConfig);
 	await exportPeriodsFile(exportConfig);
 	await exportMunicipalitiesFile(exportConfig);
-	await exportFareAttributesFile(Array.from(referencedAgencyIds), exportConfig);
-	await exportFareRulesFile(Object.keys(routesMarkedForFinalExport), exportConfig);
 	await exportRoutesFile(Object.values(routesMarkedForFinalExport), exportConfig);
 	await exportAgencyFile(Array.from(referencedAgencyIds), exportConfig);
 	await exportFeedInfoFile(currentOperationalDate, farthestDateFound, exportConfig);

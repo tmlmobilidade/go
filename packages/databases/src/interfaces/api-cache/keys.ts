@@ -4,8 +4,11 @@ const dynamicKey = () => 'use-for-dynamic-key';
 
 export const ApiCacheKeyValues = [
 	'hub:alerts:published:json',
+	'hub:alerts:published:json:cm',
 	'hub:alerts:published:gtfs',
+	'hub:alerts:published:gtfs:cm',
 	'hub:alerts:published:rss',
+	'hub:alerts:published:rss:cm',
 	'hub:plans:approved:json',
 	'hub:plans:gtfs',
 	'hub:plans:gtfs:cm',
