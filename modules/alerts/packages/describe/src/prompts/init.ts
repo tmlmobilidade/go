@@ -3,58 +3,67 @@
 import { type I18nCode } from '@tmlmobilidade/types';
 
 /**
- * Initial part of the prompt, common to all templates, that sets the context
- * and instructions for the generation of the alert descriptions.
+ * Initial part of the prompt for generating title and description together.
  */
 export const initDescriptionPrompt: Record<I18nCode, string> = {
 	en: `
-		You work for a public transit company. Generate a short Service Alert title and description
-		in British English from the provided context. Return ONLY a valid JSON object with keys
-		"title" and "description" (no markdown, no extra text). Title and description must be consistent:
-		same cause, effect, references, tone, and severity — the description may elaborate but must not contradict the title.
+		You generate short Service Alert titles and descriptions for a public transport platform
+		used by multiple operators (bus, metro, etc.). Use the operator label provided in the context.
+		Write in British English. Return ONLY a valid JSON object with keys "title" and "description"
+		(no markdown, no extra text). Title and description must be consistent.
 	`,
 	pt: `
-		Trabalhas numa empresa de transportes públicos. Gera um título curto e uma descrição para um Alerta
-		de Serviço (Service Alert), em Português de Portugal, a partir do contexto fornecido (incluindo causa e efeito).
-		Devolve APENAS um objeto JSON válido com as chaves "title" e "description" (sem markdown, sem texto extra).
-		O título e a descrição devem ser consistentes entre si: mesma causa, mesmo efeito, mesmas referências,
-		mesmo tom e gravidade — a descrição pode ser mais completa mas não pode contradizer o título.
-		Adapta todos os textos em função do género e número de referências (singular ou plural, evitando marcas
-		de plural facultativas), agrupando-as quando necessário. Coloca-te no lugar dos passageiros à espera
-		do veículo: transmite a informação de forma empática e útil, evitando ansiedade desnecessária.
+		Geras títulos e descrições curtos para Alertas de Serviço numa plataforma de transportes
+		utilizada por vários operadores (autocarros, metro, etc.). Usa os rótulos e detalhes
+		fornecidos no contexto.
+		Escreve em Português de Portugal. Devolve APENAS um objeto JSON válido com as chaves "title" e "description"
+		(sem markdown, sem texto extra). Título e descrição consistentes: mesma causa, efeito, referências e gravidade.
+		O efeito fornecido é autoritativo e obrigatório: não o substituas por outro.
+		Qualquer detalhe do contexto que restrinja o âmbito do alerta deve estar refletido no resultado final:
+		paragens específicas, linhas específicas, viagens específicas, destinos, troços afetados, operador e local.
+		Não ignores um detalhe mais específico para escrever uma versão genérica do alerta.
+		Não inventes detalhes de localização se eles não estiverem explicitamente no contexto.
+		Privilegia sempre formulações naturais em Português de Portugal. Não combines mecanicamente
+		o nome da referência com o rótulo do efeito nem copies modelos de frase de forma literal.
+		Se uma construção soar artificial, reescreve-a com bom senso mantendo o mesmo significado.
+		A descrição deve terminar sempre com uma frase final breve, empática e útil para o passageiro.
+		Esse fecho deve reconhecer o impacto do alerta, mas ajustar o tom à causa para não atribuir
+		culpa indevida ao operador quando a situação é externa ao seu controlo.
+		A única exceção é a formulação exata de datas e horas, que pode ser adaptada com bom senso
+		para soar natural e útil ao passageiro.
+		A causa na descrição ("Devido a …"); no título sobretudo o efeito em forma nominal.
+		Adapta género e número (singular/plural). Tom empático e útil, sem alarmismo desnecessário.
 	`,
 };
 
 /**
- * Initial part of the prompt, common to all templates, that sets the context
- * and instructions for the generation of the alert titles.
+ * @deprecated Use initDescriptionPrompt; kept for compatibility if referenced elsewhere.
  */
 export const initTitlePrompt: Record<I18nCode, string> = {
 	en: '',
-	pt: `
-		Trabalhas numa empresa de transportes públicos, e estás encarregue de gerar um título curto,
-		claro e preciso para um Alerta de Serviço (Service Alert), em Português de Portugal.
-		Por favor devolve apenas o título, sem nenhum texto adicional como descrições ou formatação,
-		utilizando os parâmetros fornecidos (incluindo causa e efeito) e o modelo sugerido como referência.
-		Adapta todos os textos em função do género e número de referências (singular ou plural, evitando marcas
-		de plural facultativas), agrupando-as quando necessário, e utilizando as expressões mais naturais
-		para cada caso. É importante que te coloques no lugar dos passageiros que irão ler o título,
-		que provavelmente estão numa paragem à espera do veículo sem informações atualizadas.
-		Deves ter em conta o impacto que o alerta tem nas suas viagens, em função da sua real gravidade,
-		evitando palavras que possam causar ansiedade ou preocupação desnecessária, e focando-te em transmitir
-		a informação de forma empática e útil para os passageiros.
-	`,
+	pt: '',
 };
 
 /**
- * Suggested title format using cause and effect nomenclature from the prompt context.
+ * Title structure examples (see brandingPrompt for full rules).
  */
 export const titleFormatTemplatePrompt: Record<I18nCode, string> = {
 	en: '',
 	pt: `
-		Modelo sugerido para o título (adapta género, número e vocabulário da causa/efeito indicados):
-		"{LINE} | {EFFECT} devido a {CAUSE}"
-		Exemplos: "4001 | Serviço interrompido devido a obras" ; "4001, 4002 | Atrasos significativos devido a acidente"
-		; "4001 | Desvio de percurso devido a festas populares"
+		Título: curto, claro, específico e em forma nominal.
+		Não uses "devido a {causa}" no título.
+		Usa estas estruturas como guia de concisão e clareza, não como molde rígido:
+		- Um único âmbito antes do efeito: "{LINHA ou LISTA}: {Efeito em poucas palavras}", "{PARAGEM}: {Efeito}" ou "{Title operator label}: {Efeito}".
+		- Vários âmbitos antes do efeito: usa "|" apenas para separar esses âmbitos, e ":" apenas uma vez antes do efeito final.
+		- Exemplos corretos: "1001: Desvio de percurso", "1206, 1236: Viagens canceladas", "1719 | Colégio Militar (Metro) P6: Paragem não servida".
+		- Rede (agency): "{Title operator label ou rótulo curto do operador}: {Efeito}".
+		Se uma formulação equivalente soar mais natural e continuar curta, clara e específica, prefere a formulação natural.
+		Se houver linhas/circulações identificadas, elas têm prioridade no título; não uses área ou operador.
+		LOCAL só deve aparecer quando estiver explicitamente no contexto e for uma localização útil para o passageiro.
+		"Área N" não é LOCAL para títulos de linhas, viagens ou paragens.
+		LINHAS = códigos curtos separados por vírgulas e "e" antes do último.
+		Para rides, o título deve mencionar as linhas/circulações afetadas.
+		Se houver vários âmbitos antes do efeito, ordena-os do mais geral para o mais específico.
+		Se houver linhas e paragens no mesmo título, escreve primeiro a linha ou lista de linhas e depois a paragem.
 	`,
 };

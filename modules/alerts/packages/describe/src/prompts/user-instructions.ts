@@ -27,6 +27,15 @@ export const userInstructionPrompt: Record<I18nCode, string> = {
 		da descrição final. Não menciones informações que possam perjuriar a imagem de pessoas ou empresas.
 		O foco é gerar uma descrição curta, clara e útil para os passageiros, e não entrar em detalhes sobre
 		particularidades da culpa de determinada situação.
+		As instruções do utilizador complementam o contexto principal; não o substituem.
+		Não omitas linhas, circulações, paragens afetadas ou outras restrições já presentes no contexto
+		só porque o utilizador acrescentou detalhes sobre um percurso alternativo ou um ponto de referência.
+		Se as instruções do utilizador acrescentarem informação prática e útil para os passageiros
+		sobre o percurso alternativo, novas paragens servidas, ruas de passagem, terminais ou pontos
+		de referência relevantes, deves tê-las em consideração e integrá-las no resultado final
+		de forma natural, sem rigidez e sem copiar a instrução de forma bruta.
+		Quando essa informação ajudar a explicar um desvio de percurso ou uma alteração localizada,
+		deve aparecer na descrição final, desde que seja coerente com o restante contexto.
 		${userInstructionDelimitersPrompt.start}
 		{ from: 'user', content: '{{USER_INSTRUCTIONS}}' }
 		${userInstructionDelimitersPrompt.end}
