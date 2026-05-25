@@ -3,7 +3,7 @@
 import { Alight } from '@carrismetropolitana/api-types/gtfs-core';
 import { type Arrival, type Line, type Pattern, type Route, type Stop, type Trip, type Waypoint } from '@carrismetropolitana/api-types/network';
 import { apiCache } from '@tmlmobilidade/databases';
-import { type InitImportGtfsContext } from '@tmlmobilidade/import-gtfs';
+import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs-new';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { GTFS_Route_Extended } from '@tmlmobilidade/types';
@@ -11,7 +11,7 @@ import crypto from 'node:crypto';
 
 /* * */
 
-export async function generateLinesRoutesPatterns(context: InitImportGtfsContext) {
+export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables) {
 	//
 
 	/* * *
@@ -60,11 +60,11 @@ export async function generateLinesRoutesPatterns(context: InitImportGtfsContext
 	const allStopsParsedMap = new Map(allStopsParsedJson.map(item => [item.id, item]));
 
 	// For Routes
-	const allRoutesRaw = context.gtfs.routes.all();
+	const allRoutesRaw = importedGtfsSql.routes.all();
 	const allRoutesRawMap = new Map<string, GTFS_Route_Extended>(allRoutesRaw.map(item => [item.route_id, item]));
 
 	// Get all distinct Pattern IDs from trips table
-	const allDistinctPatternIds = context.gtfs.trips.distinct('pattern_id');
+	const allDistinctPatternIds = importedGtfsSql.trips.distinct('pattern_id');
 
 	Logger.info(`Fetched ${allDistinctPatternIds.length} rows from NETWORKDB (${fetchRawDataTimer.get()})`);
 
@@ -86,7 +86,7 @@ export async function generateLinesRoutesPatterns(context: InitImportGtfsContext
 		//
 		// Get all trips that match the current pattern ID
 
-		const allTripsForThisPatternRaw = context.gtfs.trips.all('WHERE pattern_id = ?', [patternId]);
+		const allTripsForThisPatternRaw = importedGtfsSql.trips.all('WHERE pattern_id = ?', [patternId]);
 
 		//
 		// Setup a variable to hold the parsed pattern groups
@@ -104,7 +104,7 @@ export async function generateLinesRoutesPatterns(context: InitImportGtfsContext
 			//
 			// Get the stop_times data associated with the current trip
 
-			const stopTimesRaw = context.gtfs.stop_times.all(`WHERE trip_id = ? ORDER BY stop_sequence`, [tripRawData.trip_id]);
+			const stopTimesRaw = importedGtfsSql.stop_times.all(`WHERE trip_id = ? ORDER BY stop_sequence`, [tripRawData.trip_id]);
 
 			//
 			// With the same set of data (stop_times sequence of stops) we can find out different information.
@@ -268,7 +268,7 @@ export async function generateLinesRoutesPatterns(context: InitImportGtfsContext
 			//
 			// Add to the current pattern group (new or exising) the data retrieved from the current trip
 
-			currentPatternObject.valid_on = Array.from(new Set([...context.gtfs.calendar_dates[tripRawData.service_id], ...currentPatternObject.valid_on]));
+			currentPatternObject.valid_on = Array.from(new Set([...importedGtfsSql.calendar_dates[tripRawData.service_id], ...currentPatternObject.valid_on]));
 			currentPatternObject.facilities = Array.from(new Set([...currentPatternObject.facilities, ...facilitiesList]));
 
 			currentPatternObject.region_ids = Array.from(new Set([...currentPatternObject.region_ids, ...regionIdsList]));
@@ -320,7 +320,7 @@ export async function generateLinesRoutesPatterns(context: InitImportGtfsContext
 			//
 			// Add to the current trip group (new or exising) the data retrieved from the current trip
 
-			currentTripGroupObject.valid_on = Array.from(new Set([...context.gtfs.calendar_dates[tripRawData.service_id], ...currentTripGroupObject.valid_on]));
+			currentTripGroupObject.valid_on = Array.from(new Set([...importedGtfsSql.calendar_dates[tripRawData.service_id], ...currentTripGroupObject.valid_on]));
 			currentTripGroupObject.service_ids = Array.from(new Set([tripRawData.service_id, ...currentTripGroupObject.service_ids]));
 			currentTripGroupObject.trip_ids = Array.from(new Set([tripRawData.trip_id, ...currentTripGroupObject.trip_ids]));
 

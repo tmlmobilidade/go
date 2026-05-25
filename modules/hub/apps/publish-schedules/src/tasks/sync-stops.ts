@@ -3,7 +3,7 @@
 import { type Stop as GtfsStopsExtended } from '@carrismetropolitana/api-types/gtfs-extended';
 import { type Stop, StopOperationalStatus } from '@carrismetropolitana/api-types/network';
 import { apiCache } from '@tmlmobilidade/databases';
-import { type InitImportGtfsContext } from '@tmlmobilidade/import-gtfs';
+import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs-new';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -17,7 +17,7 @@ interface QueryResult extends GtfsStopsExtended {
 
 /* * */
 
-export async function generateStops(context: InitImportGtfsContext) {
+export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	//
 
 	Logger.title(`Sync Stops`);
@@ -26,7 +26,7 @@ export async function generateStops(context: InitImportGtfsContext) {
 	//
 	// Fetch all Stops from NETWORKDB
 
-	const allStops = context.gtfs.stops.query(`
+	const allStops = importedGtfsSql.stops.query(`
 		SELECT
 			s.*,
 			r.route_ids,
