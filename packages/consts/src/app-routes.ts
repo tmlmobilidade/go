@@ -387,7 +387,8 @@ export const API_ROUTES = Object.freeze({
 
 		// NETWORK
 		NETWORK_LINES: `${getModuleConfig('hub', 'api_url')}/v1/network/lines`,
-		NETWORK_STOPS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/stops/${id}`,
+		NETWORK_PATTERNS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/patterns/${id}`,
+		NETWORK_STOPS: `${getModuleConfig('hub', 'api_url')}/v1/network/stops`,
 
 		// PARISHES
 		PARISHES_PARISHES: `${getModuleConfig('hub', 'api_url')}/parishes/parishes`,
