@@ -66,7 +66,7 @@ export async function publishRssFeed() {
 		title: 'Carris Metropolitana - Alertas',
 	});
 
-	await apiCache.set('hub:alerts:published:rss', rssFeed);
+	await apiCache.set('hub:alerts:published:rss:cm', rssFeed);
 
 	Logger.success(`Finished publishing RSS feed (${globalTimer.get()})`);
 
