@@ -3,7 +3,7 @@
 import { Alight } from '@carrismetropolitana/api-types/gtfs-core';
 import { type Arrival, type Line, type Pattern, type Route, type Stop, type Trip, type Waypoint } from '@carrismetropolitana/api-types/network';
 import { apiCache } from '@tmlmobilidade/databases';
-import { type GtfsSQLTables } from '../../../../../../packages/import-gtfs/dist/index.js';
+import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { GTFS_Route_Extended } from '@tmlmobilidade/types';
