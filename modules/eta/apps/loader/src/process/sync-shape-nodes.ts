@@ -1,6 +1,7 @@
 /* * */
 
 import { AppConfig } from '@/lib/config.js';
+import { qualifiedTable } from '@/lib/eta-database.js';
 import { chunkLineByDistanceV2, hashedShapesToFeatureCollection } from '@tmlmobilidade/geo';
 import { hashedShapes } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -30,11 +31,11 @@ export async function syncShapeNodes(clickhouseClient, hashedShapeIds: string[])
 		insertFn: async (data) => {
 			await clickhouseClient.insert({
 				format: 'JSONEachRow',
-				table: 'eta.hist_shape_nodes',
+				table: qualifiedTable('hist_shape_nodes'),
 				values: data,
 			});
 		},
-		title: 'eta.hist_shape_nodes',
+		title: qualifiedTable('hist_shape_nodes'),
 	});
 
 	//

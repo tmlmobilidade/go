@@ -5,7 +5,7 @@ import { Logger } from '@tmlmobilidade/logger';
 
 export async function insertEtaRides(
 	clickhouseClient: ClickHouseClient,
-	table: 'eta.curr_rides' | 'eta.hist_rides',
+	table: string,
 	ridesMapped: EtaRideRow[],
 	logLabel: string,
 ) {

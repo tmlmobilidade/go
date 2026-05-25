@@ -1,7 +1,8 @@
 /* * */
 
 import { pipelinePath } from '@/lib/sql-paths.js';
-import { GOClickHouseClient, queryFromFile } from '@tmlmobilidade/databases';
+import { queryEtaFromFile } from '@/lib/eta-query.js';
+import { GOClickHouseClient } from '@tmlmobilidade/databases';
 import { type FastifyRequest } from '@tmlmobilidade/fastify';
 
 /* * */
@@ -39,7 +40,7 @@ export class EtaController {
 	 */
 	static async getAll(_request: FastifyRequest, reply: any) {
 		const clickhouseClient = await GOClickHouseClient.getClient();
-		const allEtas = await queryFromFile<Eta>(clickhouseClient, EtaController.getAllQuery);
+		const allEtas = await queryEtaFromFile<Eta>(clickhouseClient, EtaController.getAllQuery);
 		reply.send(allEtas);
 	}
 
@@ -50,7 +51,7 @@ export class EtaController {
 	 */
 	static async getByTripId(request: FastifyRequest<{ Params: { tripId: string } }>, reply: any) {
 		const clickhouseClient = await GOClickHouseClient.getClient();
-		const tripEtas = await queryFromFile<Eta>(clickhouseClient, EtaController.getByTripIdQuery, {
+		const tripEtas = await queryEtaFromFile<Eta>(clickhouseClient, EtaController.getByTripIdQuery, {
 			trip_id: request.params.tripId,
 		});
 		reply.send(tripEtas).header('cache-control', 'public, max-age=20');
@@ -63,7 +64,7 @@ export class EtaController {
 	 */
 	static async getByPatternId(request: FastifyRequest<{ Params: { patternId: string } }>, reply: any) {
 		const clickhouseClient = await GOClickHouseClient.getClient();
-		const patternEtas = await queryFromFile<Eta>(clickhouseClient, EtaController.getByPatternIdQuery, {
+		const patternEtas = await queryEtaFromFile<Eta>(clickhouseClient, EtaController.getByPatternIdQuery, {
 			pattern_id: request.params.patternId,
 		});
 		reply.send(patternEtas).header('cache-control', 'public, max-age=20');
@@ -76,7 +77,7 @@ export class EtaController {
 	 */
 	static async getByStopId(request: FastifyRequest<{ Params: { stopId: string } }>, reply: any) {
 		const clickhouseClient = await GOClickHouseClient.getClient();
-		const stopEtas = await queryFromFile<Eta>(clickhouseClient, EtaController.getByStopIdQuery, {
+		const stopEtas = await queryEtaFromFile<Eta>(clickhouseClient, EtaController.getByStopIdQuery, {
 			stop_id: request.params.stopId,
 		});
 		reply.send(stopEtas).header('cache-control', 'public, max-age=20');

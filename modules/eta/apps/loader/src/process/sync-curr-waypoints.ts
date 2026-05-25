@@ -1,5 +1,6 @@
 /* * */
 
+import { qualifiedTable } from '@/lib/eta-database.js';
 import { hashedTrips } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -16,11 +17,11 @@ export async function syncCurrentWaypoints(clickhouseClient: any, hashedTripIds:
 		insertFn: async (data) => {
 			await clickhouseClient.insert({
 				format: 'JSONEachRow',
-				table: 'eta.curr_waypoints',
+				table: qualifiedTable('curr_waypoints'),
 				values: data,
 			});
 		},
-		title: 'eta.curr_waypoints',
+		title: qualifiedTable('curr_waypoints'),
 	});
 
 	const hashedTripsCollection = await hashedTrips.getCollection();
