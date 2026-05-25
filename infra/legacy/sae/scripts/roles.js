@@ -69,6 +69,7 @@ db.createRole({
 		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'alerts', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'census', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'agencies', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'districts', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'localities', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'municipalities', db: 'production' } },
