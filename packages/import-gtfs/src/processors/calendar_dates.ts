@@ -1,6 +1,7 @@
 /* * */
 
-import { type ImportGtfsContext, type ImportGtfsToDatabaseConfig } from '@/types.js';
+import { type ImportGtfsToDatabaseConfig } from '@/types/config.js';
+import { type ImportGtfsContext } from '@/types/context.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -35,16 +36,16 @@ export async function processCalendarDatesFile(context: ImportGtfsContext, confi
 			// Skip if this row's date is not between the given start and end dates
 			// if they are provided in the config.
 
-			if (config.date_range?.start && config.date_range?.end) {
-				if (validatedData.date < config.date_range.start || validatedData.date > config.date_range.end) return;
+			if ('time_range' in config && config.time_range.date_range?.start && config.time_range.date_range?.end) {
+				if (validatedData.date < config.time_range.date_range.start || validatedData.date > config.time_range.date_range.end) return;
 			}
 
 			//
 			// Skip if this row's date is not in the given discrete dates array
 			// if it is provided in the config.
 
-			if (config.discrete_dates?.length) {
-				if (!config.discrete_dates.includes(validatedData.date)) return;
+			if ('time_range' in config && config.time_range.discrete_dates?.length) {
+				if (!config.time_range.discrete_dates.includes(validatedData.date)) return;
 			}
 
 			//

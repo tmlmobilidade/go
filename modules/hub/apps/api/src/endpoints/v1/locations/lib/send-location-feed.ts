@@ -1,8 +1,7 @@
 /* * */
 
-import { readThroughHubJson } from '@/endpoints/v1/lib/hub-json-feed.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type ApiCacheKey } from '@tmlmobilidade/databases';
+import { apiCache, type ApiCacheKey } from '@tmlmobilidade/databases';
 import { type FastifyReply } from '@tmlmobilidade/fastify';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -15,7 +14,7 @@ interface LocationsApiPayload<T> {
 }
 
 export async function sendLocationFeed<T>(reply: FastifyReply<unknown>, cacheKey: ApiCacheKey, serverKey: string, logCtx: string) {
-	const raw = await readThroughHubJson(cacheKey, serverKey, logCtx);
+	const raw = await apiCache.get(cacheKey);
 	if (!raw) {
 		Logger.error(`[${logCtx}] No data in cache or SERVERDB.`);
 		const empty: LocationsApiPayload<T> = { data: [], status: 'success', timestamp: Date.now() };

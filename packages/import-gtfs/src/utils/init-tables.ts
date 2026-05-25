@@ -1,20 +1,20 @@
 /* * */
 
-import { type ImportGtfsContext } from '@/types.js';
+import { type GtfsSQLTables } from '@/types/sql-tables.js';
 import { SQLiteDatabase } from '@tmlmobilidade/sqlite';
 import { type OperationalDate } from '@tmlmobilidade/types';
 import { type GTFS_Route_Extended, type GTFS_Shape, type GTFS_Stop_Extended, type GTFS_StopTime, type GTFS_Trip_Extended } from '@tmlmobilidade/types';
 
 /**
  * Initializes GTFS SQL tables and writers.
- * @returns An object containing initialized GTFS SQL tables and writers.
+ * @returns The initialized GTFS SQL tables.
  */
-export function initGtfsSqlTables(): ImportGtfsContext['gtfs'] {
+export function initGtfsSqlTables(): GtfsSQLTables {
 	//
 
 	const calendarDatesMap: Record<string, OperationalDate[]> = {};
 
-	const database = new SQLiteDatabase({ memory: true });
+	const database = new SQLiteDatabase({ memory: false });
 
 	const tripsTable = database.registerTable<GTFS_Trip_Extended>('trips', {
 		batch_size: 10000,
