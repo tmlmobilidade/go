@@ -3,7 +3,7 @@
 import { type Stop as GtfsStopsExtended } from '@carrismetropolitana/api-types/gtfs-extended';
 import { type Stop, StopOperationalStatus } from '@carrismetropolitana/api-types/network';
 import { apiCache } from '@tmlmobilidade/databases';
-import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs-new';
+import { type GtfsSQLTables } from '../../../../../../packages/import-gtfs/dist/index.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 

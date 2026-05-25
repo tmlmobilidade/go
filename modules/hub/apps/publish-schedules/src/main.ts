@@ -2,7 +2,7 @@
 
 import { generateLinesRoutesPatterns } from '@/tasks/sync-lines-routes-patterns.js';
 import { generateStops } from '@/tasks/sync-stops.js';
-import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs-new';
+import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 

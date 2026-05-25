@@ -20,7 +20,7 @@
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/files": "*",
-		"@tmlmobilidade/import-gtfs-new": "*",
+		"@tmlmobilidade/import-gtfs": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",

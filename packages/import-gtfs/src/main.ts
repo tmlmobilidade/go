@@ -1,14 +1,5 @@
 /* * */
 
-import { type GtfsSQLTables, type ImportGtfsContext, type ImportGtfsToDatabaseConfig, type InitImportGtfsContext } from '@/types.js';
-import { downloadAndExtractGtfs } from '@/utils/extract-file.js';
-import { initGtfsSqlTables } from '@/utils/init-tables.js';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
-import { type Plan } from '@tmlmobilidade/types';
-
-/* * */
-
 import { processCalendarFile } from '@/processors/calendar.js';
 import { processCalendarDatesFile } from '@/processors/calendar_dates.js';
 import { processRoutesFile } from '@/processors/routes.js';
@@ -16,63 +7,38 @@ import { processShapesFile } from '@/processors/shapes.js';
 import { processStopTimesFile } from '@/processors/stop_times.js';
 import { processStopsFile } from '@/processors/stops.js';
 import { processTripsFile } from '@/processors/trips.js';
+import { type ImportGtfsToDatabaseConfig } from '@/types/config.js';
+import { type ImportGtfsContext } from '@/types/context.js';
+import { type GtfsSQLTables } from '@/types/sql-tables.js';
+import { extractGtfsSource } from '@/utils/extract-source.js';
+import { initImportGtfsContext } from '@/utils/init-context.js';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 
 /**
  * Imports GTFS data into the database for a given plan.
- * @param plan The plan containing GTFS feed information.
- * @param config Optional configuration for the import process.
- * @returns A promise that resolves to the imported GTFS SQL tables.
+ * @param config The configuration for the import process.
+ * @param customContext Optional existing context for the import process.
+ * @returns The SQL tables containing the imported GTFS data.
  */
-export async function initImportGtfsToDatabaseContext(): Promise<InitImportGtfsContext> {
-	return {
-		counters: {
-			calendar_dates: 0,
-			hashed_shapes: 0,
-			hashed_trips: 0,
-			shapes: 0,
-			stop_times: 0,
-			trips: 0,
-		},
-		gtfs: initGtfsSqlTables(),
-		referenced_route_ids: new Set<string>(),
-		referenced_shape_ids: new Set<string>(),
-	};
-}
-
-/**
- * Imports GTFS data into the database for a given plan.
- * @param plan The plan containing GTFS feed information.
- * @param config Optional configuration for the import process.
- * @param initialContext Optional initial context for the import process.
- * @returns A promise that resolves to the imported GTFS SQL tables.
- */
-export async function importGtfsToDatabase(plan: Plan, config: ImportGtfsToDatabaseConfig = {}, initialContext?: InitImportGtfsContext): Promise<GtfsSQLTables> {
+export async function importGtfsToDatabase(config: ImportGtfsToDatabaseConfig, customContext?: ImportGtfsContext): Promise<GtfsSQLTables> {
 	try {
 		//
 
 		const globalTimer = new Timer();
 
-		Logger.info(`Importing ${plan._id} GTFS to database...`);
+		Logger.info(`Starting GTFS import process...`);
 
 		//
-		// Initialize context for the current plan.
+		// Initialize context for the import process.
 		// If an initial context is provided, use it, otherwise create a new one.
-		// Then, add the plan and working directory to the context.
 
-		const initialContextData = initialContext ? initialContext : await initImportGtfsToDatabaseContext();
-
-		const context: ImportGtfsContext = {
-			...initialContextData,
-			plan: plan,
-			workdir: await downloadAndExtractGtfs(plan),
-		};
+		const context = customContext ? customContext : initImportGtfsContext();
 
 		//
-		// Validate GTFS feed info
+		// Download and extract the GTFS file.
 
-		if (!plan.gtfs_feed_info?.feed_start_date || !plan.gtfs_feed_info?.feed_end_date) {
-			throw new Error(`Plan "${plan._id}" is missing GTFS feed start and/or end date.`);
-		}
+		await extractGtfsSource(config.source, context);
 
 		//
 		// Process GTFS files in the correct order
@@ -86,16 +52,13 @@ export async function importGtfsToDatabase(plan: Plan, config: ImportGtfsToDatab
 		await processStopsFile(context);
 		await processStopTimesFile(context);
 
-		Logger.success(`Finished importing GTFS to database for plan "${plan._id}" in ${globalTimer.get()}.`, 0);
-		Logger.divider();
-
-		Logger.terminate(`Finished importing GTFS to database in ${globalTimer.get()}.`);
+		Logger.success(`Finished importing GTFS to database in ${globalTimer.get()}.`);
 
 		return context.gtfs;
 
 		//
 	} catch (error) {
-		Logger.error('Error parsing plan.', error);
+		Logger.error('Error importing GTFS to database.', error);
 		throw error;
 	}
 }
