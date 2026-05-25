@@ -2,7 +2,7 @@
 
 /* * */
 
-import { createElement, useMemo, useState } from 'react';
+import { createElement, type Key, useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
 
@@ -13,6 +13,7 @@ import { Section } from '../../layout/Section';
 
 interface MenuListProps<T> {
 	data: T[]
+	getItemKey: (item: T, index: number) => Key
 	itemComponent: React.ComponentType<{ item: T }>
 	maxDisplayedItems?: number
 	maxHeight?: number | string
@@ -21,7 +22,7 @@ interface MenuListProps<T> {
 
 /* * */
 
-export function MenuList<T>({ data, itemComponent, maxDisplayedItems, maxHeight = 300, title }: MenuListProps<T>) {
+export function MenuList<T>({ data, getItemKey, itemComponent, maxDisplayedItems, maxHeight = 300, title }: MenuListProps<T>) {
 	//
 
 	//
@@ -42,7 +43,7 @@ export function MenuList<T>({ data, itemComponent, maxDisplayedItems, maxHeight 
 		<Section flexDirection="column" gap="sm" maxHeight={maxHeight} overflow="scroll" padding="sm" width="100%">
 			<Label size="sm">({data.length}) {title}</Label>
 			{displayData.map((item, idx) => (
-				createElement(itemComponent, { item, key: idx })
+				createElement(itemComponent, { item, key: getItemKey(item, idx) })
 			))}
 
 			{(data.length > (maxDisplayedItems ?? Infinity)) && (
