@@ -23,6 +23,8 @@ export interface MapOverlayPatternShapeLineDataProps {
 	color?: string
 	from_index?: number
 	id: string
+	stop_from_index?: number
+	stop_to_index?: number
 	to_index?: number
 }
 
@@ -250,8 +252,8 @@ export function MapOverlayPatternShape({
 	const getFeatureSegment = (feature: {
 		properties?: Record<string, unknown>
 	}) => {
-		const fromIndex = Number(feature.properties?.from_index);
-		const toIndex = Number(feature.properties?.to_index);
+		const fromIndex = Number(feature.properties?.stop_from_index ?? feature.properties?.from_index);
+		const toIndex = Number(feature.properties?.stop_to_index ?? feature.properties?.to_index);
 
 		if (Number.isNaN(fromIndex) || Number.isNaN(toIndex)) {
 			return undefined;

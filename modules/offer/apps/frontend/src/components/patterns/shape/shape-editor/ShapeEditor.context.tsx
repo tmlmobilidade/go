@@ -10,22 +10,12 @@ import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useRef, useState } from 'react';
 
+import { buildRoutePreviewModel, type RoutePreviewAnchor, type RoutePreviewPoint } from '../../../../utils/route-preview';
+
 /* * */
 
-interface ShapeAnchor {
+interface ShapeAnchor extends RoutePreviewAnchor {
 	_id: string
-	after_stop_id: number
-	before_stop_id: number
-	lat: number
-	lon: number
-	sequence: number
-	type: 'through' | 'via'
-}
-
-interface RoutePreviewPoint {
-	lat: number
-	lon: number
-	type: 'break' | 'through' | 'via'
 }
 
 interface RoutePreviewLeg {
@@ -152,37 +142,6 @@ function applyRouteToPath(path: PopulatedPath[], routeData: RoutePreviewResponse
 	});
 }
 
-function buildRoutePreviewPoints(path: PopulatedPath[], anchors: ShapeAnchor[]): RoutePreviewPoint[] {
-	return path
-		.filter(pathItem => pathItem.stop)
-		.flatMap((pathItem, index, filteredPath) => {
-			const stopPoint: RoutePreviewPoint = {
-				lat: pathItem.stop?.latitude ?? 0,
-				lon: pathItem.stop?.longitude ?? 0,
-				type: 'break',
-			};
-
-			const nextPathItem = filteredPath[index + 1];
-
-			if (!nextPathItem) {
-				return [stopPoint];
-			}
-
-			const segmentAnchors = anchors
-				.filter(anchor => anchor.after_stop_id === pathItem.stop_id && anchor.before_stop_id === nextPathItem.stop_id)
-				.sort((a, b) => a.sequence - b.sequence)
-				.map<RoutePreviewPoint>(anchor => ({
-					lat: anchor.lat,
-					lon: anchor.lon,
-					type: anchor.type,
-				}));
-
-			return [stopPoint, ...segmentAnchors];
-		});
-}
-
-/* * */
-
 export function StopsEditorContextProvider({ children, onClose }: PropsWithChildren<{ onClose: () => void }>) {
 	const patternDetailContext = usePatternDetailContext();
 	const [routeData, setRouteData] = useState<null | RoutePreviewResponse>(null);
@@ -272,7 +231,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 		try {
 			setIsLoadingRoute(true);
 
-			const points = buildRoutePreviewPoints(nextPath, nextAnchors);
+			const { points } = buildRoutePreviewModel(nextPath, nextAnchors);
 
 			const res = await fetchData<RoutePreviewResponse>(
 				API_ROUTES.offer.SHAPES_ROUTE_PREVIEW,
@@ -315,7 +274,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 
 	const previewRoute = useCallback(async (nextPath: PopulatedPath[], nextAnchors: ShapeAnchor[] = anchors) => {
 		try {
-			const points = buildRoutePreviewPoints(nextPath, nextAnchors);
+			const { points } = buildRoutePreviewModel(nextPath, nextAnchors);
 
 			const res = await fetchData<RoutePreviewResponse>(
 				API_ROUTES.offer.SHAPES_ROUTE_PREVIEW,

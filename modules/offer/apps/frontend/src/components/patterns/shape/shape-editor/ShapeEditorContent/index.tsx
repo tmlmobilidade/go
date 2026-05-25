@@ -8,6 +8,7 @@ import { useCallback, useMemo } from 'react';
 
 import styles from './styles.module.css';
 
+import { buildRoutePreviewModel } from '../../../../../utils/route-preview';
 import { useStopsEditorContext } from '../ShapeEditor.context';
 import { InitialStopSelector } from '../ShapeEditorInitialSelector';
 import { StopsList } from '../ShapeEditorStopsList';
@@ -26,6 +27,15 @@ export function ShapeEditorContent() {
 
 	const lineData = useMemo(() => {
 		const legs = stopsEditorContext.data.routeData?.legs ?? stopsEditorContext.data.shape?.legs;
+		const routePreviewLegSegments = new Map(
+			buildRoutePreviewModel(
+				stopsEditorContext.data.path as PopulatedPath[],
+				stopsEditorContext.data.anchors,
+			).legSegments.map(segment => [
+				`${segment.leg_from_index}:${segment.leg_to_index}`,
+				segment,
+			]),
+		);
 
 		if (legs?.length) {
 			return {
@@ -38,6 +48,8 @@ export function ShapeEditorContent() {
 						color: patternDetailContext.data.typologyData?.color,
 						from_index: leg.from_index,
 						id: `${patternDetailContext.data.id}:${leg.from_index}-${leg.to_index}`,
+						stop_from_index: routePreviewLegSegments.get(`${leg.from_index}:${leg.to_index}`)?.stop_from_index,
+						stop_to_index: routePreviewLegSegments.get(`${leg.from_index}:${leg.to_index}`)?.stop_to_index,
 						to_index: leg.to_index,
 					},
 					type: 'Feature' as const,
@@ -52,6 +64,8 @@ export function ShapeEditorContent() {
 		patternDetailContext.data.id,
 		patternDetailContext.data.typologyData?.color,
 		patternDetailContext.geojson.pattern_line,
+		stopsEditorContext.data.anchors,
+		stopsEditorContext.data.path,
 		stopsEditorContext.data.routeData,
 	]);
 
