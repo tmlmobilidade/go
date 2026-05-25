@@ -1,0 +1,54 @@
+{
+	"name": "GO Monorepo",
+	"build": {
+		"context": "..",
+		"dockerfile": "Dockerfile"
+	},
+	"workspaceFolder": "/workspaces/go",
+	"remoteUser": "node",
+	"containerEnv": {
+		"ENVIRONMENT": "dev",
+		"NODE_ENV": "development",
+		"NPM_CONFIG_UPDATE_NOTIFIER": "false",
+		"TURBO_TELEMETRY_DISABLED": "1"
+	},
+	"mounts": [
+		"source=go-npm-cache,target=/home/node/.npm,type=volume",
+		"source=go-root-node-modules,target=${containerWorkspaceFolder}/node_modules,type=volume",
+		"source=go-turbo-cache,target=${containerWorkspaceFolder}/.turbo,type=volume"
+	],
+	"postCreateCommand": "npm install",
+	"postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}",
+	"forwardPorts": [3000, 3001, 5173, 9229],
+	"portsAttributes": {
+		"3000": {
+			"label": "Frontend"
+		},
+		"3001": {
+			"label": "API"
+		},
+		"5173": {
+			"label": "Vite"
+		},
+		"9229": {
+			"label": "Node inspector"
+		}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"dbcode.dbcode",
+				"dbaeumer.vscode-eslint"
+			],
+			"settings": {
+				"editor.tabSize": 4,
+				"eslint.workingDirectories": [
+					{
+						"mode": "auto"
+					}
+				],
+				"terminal.integrated.defaultProfile.linux": "bash"
+			}
+		}
+	}
+}

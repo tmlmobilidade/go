@@ -10,6 +10,17 @@
 
 3. `npm run dev:{module}` to start the desired module.
 
+### Dev container
+
+This repository includes a `.devcontainer` setup for Cursor and VS Code. Reopen
+the workspace in the container to get a consistent Node.js, npm, Turborepo, and
+ESLint environment. The container runs `npm install` on creation and keeps npm,
+`node_modules`, and Turborepo caches in Docker volumes.
+
+Module secret files remain gitignored under each module's `environments/` tree.
+Copy the relevant `.env.example` file or use the `env-sync` CLI before running a
+module that requires secrets.
+
 ## Dump
 
 mongodump \
