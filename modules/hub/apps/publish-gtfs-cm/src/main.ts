@@ -55,8 +55,6 @@ export async function main() {
 			agency: new CsvWriter('agency.txt', `/tmp/${exportVersion}/agency.txt`, { batch_size: 100000 }),
 			calendar_dates: new CsvWriter('calendar_dates.txt', `/tmp/${exportVersion}/calendar_dates.txt`, { batch_size: 100000 }),
 			dates: new CsvWriter('dates.txt', `/tmp/${exportVersion}/dates.txt`, { batch_size: 100000 }),
-			fare_attributes: new CsvWriter('fare_attributes.txt', `/tmp/${exportVersion}/fare_attributes.txt`, { batch_size: 100000 }),
-			fare_rules: new CsvWriter('fare_rules.txt', `/tmp/${exportVersion}/fare_rules.txt`, { batch_size: 100000 }),
 			feed_info: new CsvWriter('feed_info.txt', `/tmp/${exportVersion}/feed_info.txt`, { batch_size: 100000 }),
 			municipalities: new CsvWriter('municipalities.txt', `/tmp/${exportVersion}/municipalities.txt`, { batch_size: 100000 }),
 			periods: new CsvWriter('periods.txt', `/tmp/${exportVersion}/periods.txt`, { batch_size: 100000 }),

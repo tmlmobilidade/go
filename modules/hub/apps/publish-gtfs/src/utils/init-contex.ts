@@ -63,28 +63,6 @@ export function initExportGtfsContext(): ExportGtfsContext {
 			},
 			title: 'dates',
 		}),
-		fare_attributes: new BatchWriter({
-			batch_size: 100_000,
-			insertFn: async (data) => {
-				const dirPath = `${workdirContext.path}/fare_attributes.txt`;
-				const fileAlreadyExists = fs.existsSync(dirPath);
-				let csvData = Papa.unparse(data, { header: !fileAlreadyExists, newline: '\n', skipEmptyLines: 'greedy' });
-				if (fileAlreadyExists) csvData = '\n' + csvData;
-				fs.appendFileSync(dirPath, csvData, { encoding: 'utf-8', flush: true });
-			},
-			title: 'fare_attributes',
-		}),
-		fare_rules: new BatchWriter({
-			batch_size: 100_000,
-			insertFn: async (data) => {
-				const dirPath = `${workdirContext.path}/fare_rules.txt`;
-				const fileAlreadyExists = fs.existsSync(dirPath);
-				let csvData = Papa.unparse(data, { header: !fileAlreadyExists, newline: '\n', skipEmptyLines: 'greedy' });
-				if (fileAlreadyExists) csvData = '\n' + csvData;
-				fs.appendFileSync(dirPath, csvData, { encoding: 'utf-8', flush: true });
-			},
-			title: 'fare_rules',
-		}),
 		feed_info: new BatchWriter({
 			batch_size: 100_000,
 			insertFn: async (data) => {
