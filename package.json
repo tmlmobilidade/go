@@ -17,6 +17,7 @@
 		"build:controller": "ENVIRONMENT=dev dotenv-run -f ./modules/controller/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-controller-*",
 		"build:dates": "ENVIRONMENT=dev dotenv-run -f ./modules/dates/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-dates-*",
 		"build:eslint": "turbo build --filter=@tmlmobilidade/eslint",
+		"build:eta:packages": "ENVIRONMENT=dev dotenv-run -f ./modules/eta/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-eta-pckg-*",
 		"build:exporter": "ENVIRONMENT=dev dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-exporter-*",
 		"build:fleet": "ENVIRONMENT=dev dotenv-run -f ./modules/fleet/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-fleet-*",
 		"build:hub": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-hub-*",
@@ -51,10 +52,8 @@
 		"dev:controller:rides-feeder:prd": "ENVIRONMENT=dev dotenv-run -f ./modules/controller/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-rides-feeder",
 		"dev:controller:ui": "ENVIRONMENT=dev dotenv-run -f ./modules/controller/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-api --filter=@tmlmobilidade/go-controller-frontend",
 		"dev:dates": "ENVIRONMENT=dev dotenv-run -f ./modules/dates/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-dates-*",
-
-		"dev:eta": "ENVIRONMENT=dev dotenv-run -f ./modules/eta/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-eta-*",
-		"dev:eta:api": "ENVIRONMENT=dev dotenv-run -f ./modules/eta/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-eta-api",
-
+		"dev:eta": "npm run build:eta:packages && ENVIRONMENT=dev dotenv-run -f ./modules/eta/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-eta-*",
+		"dev:eta:api": "npm run build:eta:packages && ENVIRONMENT=dev dotenv-run -f ./modules/eta/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-eta-api",
 		"dev:exporter": "ENVIRONMENT=dev dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-*",
 		"dev:exporter-api": "ENVIRONMENT=dev dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-api",
 		"dev:exporter-merged": "ENVIRONMENT=dev dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-export-gtfs-merged",

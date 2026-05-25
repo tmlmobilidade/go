@@ -13,7 +13,7 @@ const moduleDir = path.dirname(fileURLToPath(import.meta.url));
  *   from `/app/dist` escape to `/sql` (wrong). There, SQL is under `/app/modules/eta/sql`.
  */
 function resolveSqlRoot(): string {
-	const fromModuleTree = path.resolve(moduleDir, '..', '..', 'sql');
+	const fromModuleTree = path.resolve(moduleDir, '..', '..', '..', 'sql');
 	if (existsSync(fromModuleTree)) {
 		return fromModuleTree;
 	}
