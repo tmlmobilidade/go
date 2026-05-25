@@ -5,6 +5,7 @@ import { type ExportGtfsContext } from '@/types/context.js';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { type OperationalDate, type Plan } from '@tmlmobilidade/types';
+import { getPublicServiceId } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -26,7 +27,7 @@ export async function exportCalendarDatesFile(planData: Plan, sqlTables: GtfsSQL
 	for (const [serviceId, operationalDatesList] of Object.entries(sqlTables.calendar_dates)) {
 		for (const operationalDate of operationalDatesList.sort()) {
 			const parsedCalendarDatesRow: ExportedCalendarDatesRow = {
-				service_id: `[${planData._id}]${serviceId}`,
+				service_id: getPublicServiceId(planData._id, planData.gtfs_agency.agency_id, serviceId),
 				date: operationalDate,
 				exception_type: 1,
 			};

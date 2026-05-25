@@ -4,12 +4,13 @@
 import { type ExportGtfsContext } from '@/types/context.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GTFS_Route_Extended, type GTFS_RouteType } from '@tmlmobilidade/types';
+import { getPublicLineId } from '@tmlmobilidade/utils';
 
 /* * */
 
 export interface ExportedRoutesRow {
 	agency_id: string
-	line_id: number
+	line_id: string
 	line_short_name: string
 	line_long_name: string
 	route_id: string
@@ -36,7 +37,7 @@ export async function exportRoutesFile(routesList: GTFS_Route_Extended[], contex
 	for (const routeData of sortedRoutesList) {
 		const parsedRouteRow: ExportedRoutesRow = {
 			agency_id: routeData.agency_id,
-			line_id: routeData.line_id,
+			line_id: getPublicLineId(routeData.agency_id, routeData.line_id),
 			line_short_name: routeData.line_short_name,
 			line_long_name: routeData.line_long_name,
 			route_id: routeData.route_id,
