@@ -69,7 +69,6 @@ export function MapOverlayPins({ focusOnChange, id, pinsData, visible = true }: 
 		}, 100);
 
 		return () => window.clearTimeout(timer);
-		// eslint-disable-next-line react-hooks/exhaustive-deps -- mapViewContext.actions/ref used inside timeout; listing them re-runs every frame
 	}, [focusOnChange, mapViewContext.flags.loading, pinsData]);
 
 	//

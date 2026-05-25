@@ -99,15 +99,15 @@ export function CoordinatesInput({
 	 * Keeps state in sync with external (controlled) `value` prop.
 	 */
 	useEffect(() => {
-		if (value === undefined) {
-			if (defaultValue === undefined) setCoordinates([undefined, undefined]);
-			return;
+		if (value !== undefined) {
+			const nextLat = value[0] === undefined ? undefined : roundCoordinate(value[0]);
+			const nextLng = value[1] === undefined ? undefined : roundCoordinate(value[1]);
+			setCoordinates((prev: CoordinatesTuple) => {
+				if (prev[0] === nextLat && prev[1] === nextLng) return prev;
+				return [nextLat, nextLng];
+			});
 		}
-		setCoordinates([
-			value[0] === undefined ? undefined : roundCoordinate(value[0]),
-			value[1] === undefined ? undefined : roundCoordinate(value[1]),
-		]);
-	}, [defaultValue, value]);
+	}, [value]);
 
 	useEffect(() => {
 		return () => {
