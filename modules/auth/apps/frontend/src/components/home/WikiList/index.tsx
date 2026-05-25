@@ -4,7 +4,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 /* * */
 
 import { type WikiArticle } from '@tmlmobilidade/types';
-import { DataTable, DataTableColumn, ErrorDisplay, LoadingOverlay, TagGroup } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, ErrorDisplay, Label, LoadingOverlay, SearchInput, Section, Spacer, TagGroup, Toolbar, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
@@ -20,6 +20,8 @@ export function WikiList() {
 	const { t } = useTranslation();
 
 	const router = useRouter();
+
+	const filterSearch = useFilterStateString('search');
 
 	const columns: DataTableColumn<WikiArticle>[] = [
 		{
@@ -40,6 +42,12 @@ export function WikiList() {
 
 	const { data: allWikiData, error: allWikiError, isLoading: allWikiLoading } = useSWR<WikiArticle[], Error>(API_ROUTES.auth.WIKI_LIST);
 
+	const filteredWikiData = useSearch<WikiArticle>({
+		accessors: ['title', 'tags', 'html'],
+		data: allWikiData ?? [],
+		query: filterSearch.value,
+	});
+
 	//
 	// C. Handle actions
 
@@ -59,11 +67,22 @@ export function WikiList() {
 	}
 
 	return (
-		<DataTable
-			columns={columns}
-			onRowClick={handleRowClick}
-			records={allWikiData}
-		/>
+		<Section gap="md" padding="lg">
+			<Toolbar>
+				<Label size="lg" caps singleLine>{t('default:home.Wiki.list.Header.title')}</Label>
+				<Spacer />
+				<SearchInput
+					onChange={filterSearch.set}
+					placeholder={t('default:home.Wiki.list.Header.SearchInput.placeholder')}
+					value={filterSearch.value}
+				/>
+			</Toolbar>
+			<DataTable
+				columns={columns}
+				onRowClick={handleRowClick}
+				records={filteredWikiData}
+			/>
+		</Section>
 	);
 
 	//

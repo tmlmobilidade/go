@@ -160,6 +160,12 @@
 	"home": {
 		"Wiki": {
 			"list": {
+				"Header": {
+					"SearchInput": {
+						"placeholder": "Pesquisar artigos..."
+					},
+					"title": "Wiki"
+				},
 				"columns": {
 					"category": {
 						"label": "Categorias"
