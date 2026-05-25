@@ -101,12 +101,11 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		// Apply filter values
 		return searchResultsData
 			.filter((stopData: StopNormalized) => {
-				const matchesAgency = (!filterAgency.isActive && filterAgency.value.length === 0)
-					|| (
-						stopData.flags?.length
-							? stopData.flags.some(flag => flag.agency_ids.some(agencyId => filterAgency.value.includes(agencyId)))
-							: !filterAgency.isActive
-					);
+				const matchesAgency = (() => {
+					if (!filterAgency.isActive && filterAgency.value.length === 0) return true;
+					if (!stopData.flags?.length) return !filterAgency.isActive;
+					return stopData.flags.some(flag => flag.agency_ids.some(agencyId => filterAgency.value.includes(agencyId)));
+				})();
 				const lifecycleStatusMatch = filterLifecycleStatus.value.includes(stopData.lifecycle_status);
 				const matchesFacilities = stopData.facilities?.length ? stopData.facilities.some(item => filterFacilities.value.includes(item)) : true;
 				const matchesEquipment = stopData.equipment?.length ? stopData.equipment.some(item => filterEquipment.value.includes(item)) : true;
