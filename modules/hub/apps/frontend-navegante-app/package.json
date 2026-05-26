@@ -29,7 +29,7 @@
 		"@turf/turf": "7.3.5",
 		"@vis.gl/react-maplibre": "8.1.1",
 		"classnames": "2.5.1",
-		"dayjs": "1.11.20",
+		"dayjs": "1.11.21",
 		"embla-carousel-autoplay": "8.6.0",
 		"embla-carousel-react": "8.6.0",
 		"embla-carousel-wheel-gestures": "8.1.0",
