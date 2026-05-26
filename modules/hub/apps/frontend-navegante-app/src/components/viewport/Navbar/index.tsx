@@ -17,7 +17,7 @@ export function Navbar() {
 	// A. Setup variables
 
 	const [activeTab, setActiveTab] = useLocalStorage({
-		defaultValue: 'home',
+		defaultValue: 'stops',
 		key: 'active-tab',
 	});
 

@@ -24,6 +24,7 @@
 		"@tabler/icons-react": "3.44.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-hub-pckg-types": "*",
 		"@tmlmobilidade/go-hub-pckg-utils": "*",
 		"@tmlmobilidade/ui": "*",

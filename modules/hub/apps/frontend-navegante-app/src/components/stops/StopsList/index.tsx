@@ -1,16 +1,27 @@
 'use client';
 
+import { useStopsContext } from '@/contexts/Stops.context';
+
 import styles from './styles.module.css';
 
 /* * */
 
 export function StopsList() {
+	//
+
+	//
+	// A. Setup variables
+
+	const stopsContext = useStopsContext();
+
+	//
+	// B. Render components
+
 	return (
 		<div className={styles.container}>
-			{[...Array(100)].map((_, index) => (
+			{stopsContext.data.stops.map((stop, index) => (
 				<div key={index} className={styles.item}>
-					stops list
-					{index}
+					{stop.id} - {stop.long_name}
 				</div>
 			))}
 		</div>

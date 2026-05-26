@@ -4,7 +4,7 @@ import { getPublicVariable } from '@/settings/public-variables';
 import { type SimplifiedVehicleEvent, type Vehicle, type VehicleRegistry, type VehiclesApiResponse } from '@/types/vehicles.types';
 import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
 import { DateTime } from 'luxon';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -44,7 +44,7 @@ export function useVehiclesContext() {
 
 /* * */
 
-export const VehiclesContextProvider = ({ children }) => {
+export function VehiclesContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//

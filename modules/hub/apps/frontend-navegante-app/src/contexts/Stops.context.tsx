@@ -2,9 +2,9 @@
 
 import { agencyMatchesSelection, agencyMatchesTransports, type TransportOption, transportsSelectionIsAll } from '@/contexts/GlobalSettings.context';
 import { type Line, type NetworkRoute, type NetworkStop } from '@/types/api/network';
-import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -15,8 +15,8 @@ interface StopsContextState {
 		getStopByIdGeoJsonFC: (stopId: string) => GeoJSON.FeatureCollection | undefined
 	}
 	data: {
+		fc: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
 		stops: NetworkStop[]
-		stops_fc: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties> | undefined
 	}
 	flags: {
 		is_loading: boolean
@@ -37,30 +37,25 @@ export function useStopsContext() {
 
 /* * */
 
-export const StopsContextProvider = ({ children }) => {
+export function StopsContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
-	// A. Setup variables
+	// A. Fetch data
 
-	const [dataStopsFCState, setDataStopsFCState] = useState<StopsContextState['data']['stops_fc']>();
-
-	//
-	// B. Fetch data
-
-	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<NetworkStop[]>(API_ROUTES.hub.NETWORK_STOPS, { refreshInterval: 900000 }); // 15 minutes
+	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<NetworkStop[]>(API_ROUTES.hub.NETWORK_STOPS); // 15 minutes
 
 	//
-	// C. Transform data
+	// B. Transform data
 
-	useEffect(() => {
-		if (!allStopsData) return;
+	const dataFeatureCollectionState = useMemo(() => {
 		const collection = getBaseGeoJsonFeatureCollection();
+		if (!allStopsData) return collection;
 		allStopsData.forEach((stop) => {
 			const stopFC = transformStopDataIntoGeoJsonFeature(stop);
 			if (stopFC) collection.features.push(stopFC);
 		});
-		setDataStopsFCState(collection);
+		return collection;
 	}, [allStopsData]);
 
 	//
@@ -82,19 +77,19 @@ export const StopsContextProvider = ({ children }) => {
 	//
 	// E. Define context value
 
-	const contextValue: StopsContextState = useMemo(() => ({
+	const contextValue: StopsContextState = {
 		actions: {
 			getStopById,
 			getStopByIdGeoJsonFC,
 		},
 		data: {
+			fc: dataFeatureCollectionState,
 			stops: allStopsData ?? [],
-			stops_fc: dataStopsFCState,
 		},
 		flags: {
 			is_loading: allStopsLoading,
 		},
-	}), [allStopsData, allStopsLoading, dataStopsFCState]);
+	};
 
 	//
 	// F. Render components
