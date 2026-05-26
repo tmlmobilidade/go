@@ -1,0 +1,113 @@
+.root {
+	display: flex;
+	flex-direction: column;
+	min-height: 200px;
+}
+
+.filtersPanel {
+	background-color: var(--color-system-background-200);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-sm);
+	margin: var(--size-spacing-md);
+	overflow: hidden;
+}
+
+.actionsRow {
+	display: flex;
+	justify-content: flex-start;
+	width: 100%;
+}
+
+.resultsState {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: var(--size-spacing-md);
+	padding: var(--size-spacing-xl) 0;
+	width: 100%;
+	min-height: 180px;
+	text-align: center;
+}
+
+.resultsStack {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-md);
+	width: 100%;
+}
+
+.summary {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
+	padding: var(--size-spacing-md);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-sm);
+	background-color: var(--color-system-background-200);
+}
+
+.summaryHeader {
+	display: flex;
+	align-items: center;
+	gap: var(--size-spacing-sm);
+}
+
+.sectionPanel {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-md);
+	width: 100%;
+	padding: var(--size-spacing-md);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-sm);
+	background-color: var(--color-system-background-200);
+}
+
+.breakdownBlock {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	padding-top: var(--size-spacing-sm);
+	border-top: 1px solid var(--color-system-border-100);
+}
+
+.periodSection {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-md);
+	padding: var(--size-spacing-sm);
+	background-color: var(--color-system-background-200);
+}
+
+.periodTotalCard {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
+	padding: var(--size-spacing-md);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-sm);
+	background-color: var(--color-system-background-100);
+}
+
+.periodBreakdownGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: var(--size-spacing-sm);
+}
+
+.metricsGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: var(--size-spacing-sm);
+}
+
+.metricCard {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
+	padding: var(--size-spacing-md);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-sm);
+	background-color: var(--color-system-background-100);
+}
