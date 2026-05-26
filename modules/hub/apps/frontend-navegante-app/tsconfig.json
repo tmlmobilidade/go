@@ -16,7 +16,7 @@
 		"**/*.ts",
 		"**/*.tsx",
 		".next/types/**/*.ts"
-	],
+, "../backup/contexts/AlertsList.context.tsx", "../backup/contexts/Environment.context.tsx", "../backup/contexts/GlobalSettings.context.tsx", "../backup/contexts/LinesDetail.context.tsx", "../backup/contexts/LinesList.context.tsx", "../backup/contexts/Locale.context.tsx", "../backup/contexts/MapOptions.context.tsx", "../backup/contexts/StopsDetail.context.tsx", "../backup/contexts/StopsList.context.tsx", "../backup/contexts/VehiclesList.context.tsx"	],
 	"exclude": [
 		"node_modules"
 	]

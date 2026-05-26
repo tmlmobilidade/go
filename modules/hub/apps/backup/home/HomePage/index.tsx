@@ -7,7 +7,7 @@ import { StopsSection } from '@/components/home/StopsSection';
 import { VehiclesSection } from '@/components/home/VehiclesSection';
 import { useGlobalSettingsContext } from '@/contexts/GlobalSettings.context';
 
-import { HomePageHeader } from '../../../../backup/header/HomePageHeader';
+import { HomePageHeader } from '../../header/HomePageHeader';
 
 /* * */
 

@@ -5,7 +5,7 @@ import type { AlertCause, AlertEffect, SimplifiedAlert } from '@tmlmobilidade/go
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useMemo, useState } from 'react';
 
-import { useAlertsContext } from './Alerts.context';
+import { useAlertsContext } from '../../frontend-navegante-app/src/contexts/Alerts.context';
 
 /* * */
 
