@@ -26,8 +26,9 @@ export function Navbar() {
 
 	return (
 		<Tabs
-			classNames={{ panel: styles.panel, root: styles.root }}
+			classNames={{ panel: styles.panel, root: styles.root, tab: styles.tab, tabLabel: styles.tabLabel }}
 			onChange={setActiveTab}
+			radius="xs"
 			value={activeTab}
 		>
 
