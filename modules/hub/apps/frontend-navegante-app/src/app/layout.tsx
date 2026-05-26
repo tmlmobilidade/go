@@ -6,6 +6,7 @@ import { BaseProvider } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 
 import '@/styles/navegante/font.css';
+import '@/styles/navegante/color.css';
 
 /* * */
 
