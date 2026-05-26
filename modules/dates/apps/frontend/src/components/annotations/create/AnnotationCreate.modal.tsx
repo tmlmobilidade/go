@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { AnnotationCreate } from '@/components/annotations/create/AnnotationCreate';
 import { AnnotationCreateContextProvider } from '@/components/annotations/create/AnnotationCreate.context';
 import { DataProviders } from '@/providers/data-providers';

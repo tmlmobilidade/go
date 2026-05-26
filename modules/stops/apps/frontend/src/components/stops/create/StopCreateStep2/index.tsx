@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { StopCreateStep2Inputs } from '@/components/stops/create/StopCreateStep2Inputs';
 import { StopCreateStep2Instructions } from '@/components/stops/create/StopCreateStep2Instructions';
 import { Divider } from '@tmlmobilidade/ui';

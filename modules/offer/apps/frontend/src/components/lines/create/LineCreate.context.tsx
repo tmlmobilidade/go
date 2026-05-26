@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { closeCreateLineModal } from '@/components/lines/create/LineCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateLineDto, CreateLineSchema, Line } from '@tmlmobilidade/types';

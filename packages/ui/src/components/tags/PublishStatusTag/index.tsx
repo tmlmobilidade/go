@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type PublishStatus, PublishStatusSchema } from '@tmlmobilidade/types';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

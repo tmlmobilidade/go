@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { WEEKDAYS } from '@tmlmobilidade/types';
 import { Section, SelectChipGroup, Text, WeekdaySelector } from '@tmlmobilidade/ui';

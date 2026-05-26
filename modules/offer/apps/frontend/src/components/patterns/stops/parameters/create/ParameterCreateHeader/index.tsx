@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useParameterCreateContext } from '@/components/patterns/stops/parameters/create/ParameterCreate.context';
 import { closeCreateParameterModal } from '@/components/patterns/stops/parameters/create/ParameterCreate.modal';
 import { CloseButton, DeleteButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';

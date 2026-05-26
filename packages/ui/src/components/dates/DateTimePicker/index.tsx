@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { DateTimePicker as MantineDateTimePicker } from '@mantine/dates';
 import { IconCalendar } from '@tabler/icons-react';
 import { Dates } from '@tmlmobilidade/dates';
@@ -107,6 +105,7 @@ export function DateTimePicker({ clearable, description, disabled, fullWidth, la
 			onChange={handleChange}
 			placeholder={placeholder}
 			popoverProps={{ withinPortal: false }}
+			rightSectionPointerEvents={clearable ? 'all' : undefined}
 			style={{ width: fullWidth ? '100%' : undefined }}
 			value={valueAsString}
 			valueFormat="YYYY-MM-DD HH:mm"

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { LineTag } from '@/components/common/LineTag';
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { LinesListCellAgency } from '@/components/lines/list/LinesListCellAgency';

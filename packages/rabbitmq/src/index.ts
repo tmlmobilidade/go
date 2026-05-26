@@ -1,7 +1,7 @@
 /* * */
 
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
-import { connect as amqpConnect, Channel, ChannelModel, Options, Replies } from 'amqplib';
+import { connect as amqpConnect, type Channel, type Options, type RecoveringChannelModel, type Replies } from 'amqplib';
 
 /* * */
 
@@ -14,7 +14,7 @@ export interface RabbitMQConfig {
 export class RabbitMQConnector {
 	private channel?: Channel;
 	private config: RabbitMQConfig;
-	private connection?: ChannelModel;
+	private connection?: RecoveringChannelModel;
 
 	constructor(config: RabbitMQConfig) {
 		this.config = config;

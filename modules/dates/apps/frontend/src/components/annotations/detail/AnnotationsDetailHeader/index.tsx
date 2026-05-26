@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAnnotationsDetailContext } from '@/components/annotations/detail/AnnotationsDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { ApexValidationIsPassengerTag } from '@/components/common/ApexValidationIsPassengerTag';
 import { ApexValidationStatusTag } from '@/components/common/ApexValidationStatusTag';
 import { TimestampTag } from '@/components/common/TimestampTag';

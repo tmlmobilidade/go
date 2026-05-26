@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapView } from '@tmlmobilidade/ui';
@@ -9,6 +7,11 @@ import { type Point } from 'geojson';
 import { useMemo } from 'react';
 
 /* * */
+
+function toFiniteCoord(value: unknown): null | number {
+	const n = typeof value === 'number' ? value : Number(value);
+	return Number.isFinite(n) ? n : null;
+}
 
 export function StopDetailsSectionMap() {
 	//
@@ -24,23 +27,31 @@ export function StopDetailsSectionMap() {
 	const stopAsGeojsonFC = useMemo(() => {
 		// Prepare an empty feature collection
 		const baseGeoJson = getBaseGeoJsonFeatureCollection<Point, MapOverlayMultipleStopsDataProps>();
+		const stop = stopDetailContext.data.stop;
+		const { form } = stopDetailContext.data;
+
 		// Skip if no data is provided
-		if (!stopDetailContext.data.stop) return baseGeoJson;
-		// Add the features to the base GeoJSON
+		if (!stop?._id) return baseGeoJson;
+
+		// Get the coordinates
+		const lat = toFiniteCoord(form.values.latitude) ?? toFiniteCoord(stop.latitude);
+		const lng = toFiniteCoord(form.values.longitude) ?? toFiniteCoord(stop.longitude);
+		if (lat == null || lng == null) return baseGeoJson;
+
+		// Add the feature to the collection
 		baseGeoJson.features = [{
 			geometry: {
-				coordinates: [stopDetailContext.data.stop.longitude, stopDetailContext.data.stop.latitude],
+				coordinates: [lng, lat],
 				type: 'Point',
 			},
 			properties: {
-				id: String(stopDetailContext.data.stop._id),
-				name: stopDetailContext.data.stop.name,
+				id: String(stop._id),
+				name: typeof form.values.name === 'string' ? form.values.name : stop.name,
 			},
 			type: 'Feature',
 		}];
-		// Return the collection
 		return baseGeoJson;
-	}, [stopDetailContext.data.stop]);
+	}, [stopDetailContext.data]);
 
 	//
 	// C. Handle actions

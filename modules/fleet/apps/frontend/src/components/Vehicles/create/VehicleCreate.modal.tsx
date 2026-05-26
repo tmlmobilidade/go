@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { VehicleCreate } from '@/components/Vehicles/create/VehicleCreate';
 import { VehicleCreateContextProvider } from '@/components/Vehicles/create/VehicleCreate.context';
 import { DataProviders } from '@/providers/data-providers';

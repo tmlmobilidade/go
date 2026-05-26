@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { TimestampTag } from '@/components/common/TimestampTag';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';

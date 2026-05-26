@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { PatternDetailHeader } from '@/components/patterns/detail/PatternDetailHeader';
 import { PatternDetailSectionConfig } from '@/components/patterns/detail/PatternDetailSectionConfig';

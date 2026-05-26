@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useZonesListContext } from '@/components/zones/list/ZonesList.context';
 import { ZonesListCellAgencies } from '@/components/zones/list/ZonesListCellAgencies';
 import { ZonesListFiltersBar } from '@/components/zones/list/ZonesListFiltersBar';

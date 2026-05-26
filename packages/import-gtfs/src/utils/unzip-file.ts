@@ -1,18 +1,21 @@
 /* * */
 
-import extract from 'extract-zip';
-import fs from 'fs';
+import fs from 'node:fs';
+import unzipper from 'unzipper';
 
 /* * */
 
-export const unzipFile = async (zipFilePath, outputDir) => {
-	await extract(zipFilePath, { dir: outputDir });
+export async function unzipFile(zipFilePath: string, outputDir: string) {
+	await fs
+		.createReadStream(zipFilePath)
+		.pipe(unzipper.Extract({ path: outputDir }))
+		.promise();
 	setDirectoryPermissions(outputDir);
-};
+}
 
 /* * */
 
-export const setDirectoryPermissions = (dirPath, mode = 0o666) => {
+export function setDirectoryPermissions(dirPath: string, mode = 0o666) {
 	const files = fs.readdirSync(dirPath, { withFileTypes: true });
 	for (const file of files) {
 		const filePath = `${dirPath}/${file.name}`;
@@ -22,4 +25,4 @@ export const setDirectoryPermissions = (dirPath, mode = 0o666) => {
 			fs.chmodSync(filePath, mode);
 		}
 	}
-};
+}

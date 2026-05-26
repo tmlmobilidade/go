@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type GtfsTrip } from '@/components/patterns/detail/PatternDetailSectionGtfs/index';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Pattern } from '@tmlmobilidade/types';

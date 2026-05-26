@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { FullscreenControl, GeolocateControl, Map, type MapLayerMouseEvent, type MapWheelEvent, NavigationControl, ScaleControl, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 import { type CSSProperties, type PropsWithChildren, useCallback, useMemo } from 'react';
 
@@ -45,11 +43,18 @@ export interface MapViewBasemapProps {
 	onMouseOut?: (e: MapLayerMouseEvent) => void
 	onMouseOver?: (e: MapLayerMouseEvent) => void
 	onWheel?: (e: MapWheelEvent) => void
+	/**
+	 * When true (default), pans/zooms the map when search-pin coordinates change.
+	 * Disable for click-to-place flows so selecting a point does not trigger a camera animation.
+	 */
+	searchPinFocusOnChange?: boolean
+	/** When false, hides the coordinate search pin from global map context (e.g. focused single-stop maps). */
+	showSearchPin?: boolean
 }
 
 /* * */
 
-export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [], layers = DEFAULT_LAYERS, onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onWheel }: PropsWithChildren<MapViewBasemapProps>) {
+export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [], layers = DEFAULT_LAYERS, onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onWheel, searchPinFocusOnChange = true, showSearchPin = true }: PropsWithChildren<MapViewBasemapProps>) {
 	//
 
 	//
@@ -133,11 +138,13 @@ export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [],
 			{layers.fullscreen && <FullscreenControl />}
 			{layers.geolocate && <GeolocateControl />}
 			{layers.scale && <ScaleControl />}
-			<MapOverlayPins
-				id="pins"
-				pinsData={mapContext.data.search_pin}
-				focusOnChange
-			/>
+			{showSearchPin && (
+				<MapOverlayPins
+					focusOnChange={searchPinFocusOnChange}
+					id="pins"
+					pinsData={mapContext.data.search_pin}
+				/>
+			)}
 			<div className={styles.children}>
 				<MapViewAttribution />
 				{children}

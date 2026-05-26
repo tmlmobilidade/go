@@ -1,0 +1,9 @@
+---
+description: GO frontend conventions — loads for module frontend app files
+globs: **/apps/frontend/**/*.tsx,**/apps/frontend/**/*.ts,**/apps/frontend/**/*.module.css
+alwaysApply: false
+---
+
+@skills/frontend.md
+
+You are working on a GO module's frontend app. Apply GO-specific frontend conventions on top of base TML conventions: use `DetailContextStateTemplate` from `@tmlmobilidade/ui`, fetch via SWR with `API_ROUTES`, use `useContextForm`, flag hooks (`useFlagReadOnly`, `useFlagCanSave`), and permissions via `PermissionCatalog`. Never use Mantine components directly — always go through `@tmlmobilidade/ui`.

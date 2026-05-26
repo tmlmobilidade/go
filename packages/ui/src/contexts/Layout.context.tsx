@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useColorScheme } from '@mantine/hooks';
 import { IconAB2, IconMoonFilled, IconSunFilled } from '@tabler/icons-react';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';

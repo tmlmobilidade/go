@@ -1,8 +1,11 @@
-/* * */
+/**
+ * Simplified Vehicle Events represent a simplified version of the raw vehicle events.
+ * These are stored in ClickHouse for performance and scalability reasons.
+**/
 
 import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
-import { type ClickHouseSchema } from '@/types/index.js';
+import { type ClickHouseSchema, ClickHouseTableEngine } from '@/types/index.js';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
@@ -12,8 +15,10 @@ const tableSchema: ClickHouseSchema<SimplifiedVehicleEvent> = {
 	_id: { type: 'String' },
 	agency_id: { type: 'String' },
 	created_at: { type: 'Int64' },
+	geohash: { default: 'geohashEncode(longitude, latitude, 7)', type: 'String' },
 	latitude: { type: 'Float64' },
 	longitude: { type: 'Float64' },
+	operational_date: { type: 'Date' },
 	received_at: { type: 'Int64' },
 	trip_id: { type: 'String' },
 	vehicle_id: { type: 'String' },
@@ -37,8 +42,10 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 	private static _instance: null | Promise<SimplifiedVehicleEventsNewClass> = null;
 
 	public override readonly databaseName = 'operation';
-	public override readonly orderBy = '(created_at, trip_id)';
-	public override readonly partitionBy = 'toYYYYMMDD(fromUnixTimestamp64Milli(created_at))';
+	public override readonly engine: ClickHouseTableEngine = 'ReplacingMergeTree';
+	public override readonly orderBy = '(operational_date, trip_id, vehicle_id, agency_id, created_at)';
+	public override readonly partitionBy = 'toYYYYMM(fromUnixTimestamp64Milli(created_at))';
+	public override readonly primaryKey = '(operational_date, trip_id, vehicle_id)';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'simplified_vehicle_events';
 

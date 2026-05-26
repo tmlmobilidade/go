@@ -5,7 +5,6 @@
 	width: 100%;
 	padding: 6px;
 	padding-right: 10px;
-	cursor: pointer;
 	border-radius: 3px;
 }
 
@@ -24,7 +23,6 @@
 /* INPUT */
 
 .input {
-	cursor: pointer;
 	outline: 2px solid var(--color-system-text-300);
 	background-color: var(--color-system-background-100);
 	border-radius: var(--border-radius-sm);
@@ -70,7 +68,6 @@
 	font-weight: var(--font-weight-semibold);
 	line-height: 1;
 	color: var(--color-system-text-100);
-	cursor: pointer;
 }
 
 /* * */

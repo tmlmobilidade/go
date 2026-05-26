@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { ValidationsDetailFootnote } from '@/components/validations/detail/ValidationsDetailFootnote';
 import { ValidationsDetailHeader } from '@/components/validations/detail/ValidationsDetailHeader';
 import { ValidationsDetailSectionAgency } from '@/components/validations/detail/ValidationsDetailSectionAgency';

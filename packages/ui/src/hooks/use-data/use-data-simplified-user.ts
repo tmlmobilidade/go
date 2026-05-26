@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type SimplifiedUser } from '@tmlmobilidade/types';
 import useSWR from 'swr';

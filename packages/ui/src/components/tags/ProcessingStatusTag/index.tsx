@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type ProcessingStatus, ProcessingStatusSchema } from '@tmlmobilidade/types';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { RuleCreate } from '@/components/patterns/rules/create/RuleCreate';
 import { RuleCreateContextProvider } from '@/components/patterns/rules/create/RuleCreate.context';
 import { DataProviders } from '@/providers/data-providers';

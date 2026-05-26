@@ -1,6 +1,6 @@
 /* * */
 
-import { cleanupOrphanHashedShapes, cleanupOrphanHashedTrips, cleanupOrphanRidesGlobally } from '@/cleanup.js';
+import { cleanupOrphanHashedPatterns, cleanupOrphanHashedShapes, cleanupOrphanHashedTrips, cleanupOrphanRidesGlobally } from '@/cleanup.js';
 import { parsePlan } from '@/parse-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { plans } from '@tmlmobilidade/interfaces';
@@ -39,8 +39,8 @@ async function main() {
 				//
 				// Only process Plans for specific agency IDs
 
-				if (!['4', '41', '42', '43', '44'].includes(currentPlan.gtfs_agency?.agency_id)) {
-					Logger.error(`Skip processing: gtfs_agency is '${currentPlan.gtfs_agency?.agency_id}'. Only '4', '41', '42', '43', or '44' are allowed.`);
+				if (!['1', '2', '4', '8', '15', '16', '21', '41', '42', '43', '44'].includes(currentPlan.gtfs_agency?.agency_id)) {
+					Logger.error(`Skip processing: gtfs_agency is '${currentPlan.gtfs_agency?.agency_id}'. Only '1', '2', '4', '8', '15', '16', '21', '41', '42', '43', or '44' are allowed.`);
 					await plans.updateById(currentPlan._id, { apps: { ...currentPlan.apps, controller: { last_hash: null, status: 'skipped', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } });
 					continue;
 				}
@@ -97,6 +97,7 @@ async function main() {
 		// Perform the cleanup operations after processing all plans
 
 		await cleanupOrphanRidesGlobally();
+		await cleanupOrphanHashedPatterns();
 		await cleanupOrphanHashedShapes();
 		await cleanupOrphanHashedTrips();
 

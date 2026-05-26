@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
 import { CoordinatesInput, Section } from '@tmlmobilidade/ui';
 

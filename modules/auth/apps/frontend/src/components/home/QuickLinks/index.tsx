@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { iconMap } from '@/lib/icons';
 import { IconFileInfo } from '@tabler/icons-react';

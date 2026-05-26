@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import type { CalendarEvent } from '@tmlmobilidade/types';
 
 import { CalendarKey, Dates, generateMonthGrid, keyToYYYYMMDD, type MonthGrid, parseCalendarKey } from '@tmlmobilidade/dates';

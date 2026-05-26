@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { RuleCreateEvents } from '@/components/patterns/rules/create/RuleCreateEvents';
 import { RuleCreateMonths } from '@/components/patterns/rules/create/RuleCreateMonths';

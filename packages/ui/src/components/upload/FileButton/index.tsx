@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconArrowBigUpLinesFilled } from '@tabler/icons-react';
 import { type ReactNode, useState } from 'react';
 

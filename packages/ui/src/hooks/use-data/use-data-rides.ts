@@ -1,14 +1,57 @@
 'use client';
 
 import { Dates } from '@tmlmobilidade/dates';
-/* * */
-
+import { Logger } from '@tmlmobilidade/logger';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { type GetRidesBatchQuery, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
 import { type SelectDataItem, useDebouncedState, useStateRef } from '@tmlmobilidade/ui';
 import { type HttpResponse } from '@tmlmobilidade/utils';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
+
+/* * */
+
+// Module-level WebSocket connection pool
+// shared across all hook instances for the same URL.
+const wsInstances = new Map<string, WebSocket>();
+const wsListeners = new Map<string, Set<(event: MessageEvent<string>) => void>>();
+
+function subscribeToWebSocket(wsUrlString: string, onMessage: (event: MessageEvent<string>) => void) {
+	// Skip if URL is invalid
+	if (!wsUrlString) return () => {};
+	// Open a new WebSocket connection if one doesn't exist for the URL
+	Logger.info(`Opening WebSocket connection... ${wsUrlString}`);
+	const socket = new WebSocket(wsUrlString);
+	const listeners = new Set<(event: MessageEvent<string>) => void>();
+	wsListeners.set(wsUrlString, listeners);
+
+	socket.addEventListener('open', () => {
+		if (socket.readyState === WebSocket.OPEN) socket.send('init');
+	});
+	socket.addEventListener('message', (event: MessageEvent<string>) => {
+		listeners.forEach(fn => fn(event));
+	});
+	socket.addEventListener('error', (event: Event) => {
+		// eslint-disable-next-line no-console
+		console.warn('WebSocket error:', event);
+	});
+	socket.addEventListener('close', (event: CloseEvent) => {
+		Logger.info(`WebSocket closed: ${event.code}, ${event.reason}`);
+		wsInstances.delete(wsUrlString);
+		wsListeners.delete(wsUrlString);
+	});
+
+	wsInstances.set(wsUrlString, socket);
+
+	wsListeners.get(wsUrlString).add(onMessage);
+
+	return () => {
+		wsListeners.get(wsUrlString)?.delete(onMessage);
+		if (wsListeners.get(wsUrlString)?.size === 0) {
+			wsInstances.get(wsUrlString)?.close();
+		}
+	};
+}
 
 /* * */
 
@@ -34,8 +77,6 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 	//
 	// A. Setup variables
 
-	const webSocketRef = useRef<null | WebSocket>(null);
-
 	const [queryStringParams, setQueryStringParams] = useDebouncedState<null | string>(null, 500);
 
 	const [lastUpdatedAt, setLastUpdatedAt] = useState<null | UnixTimestamp>(null);
@@ -45,24 +86,13 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 	//
 	// B. Fetch data
 
-	const { data: fetchedRidesData, error: fetchedRidesError, isLoading: fetchedRidesLoading } = useSWR<RideNormalized[], Error>((apiUrl && queryStringParams) && `${apiUrl}?${queryStringParams}`, { refreshInterval: 60_000 });
+	const { data: fetchedRidesData, error: fetchedRidesError, isLoading: fetchedRidesLoading } = useSWR<RideNormalized[], Error>((apiUrl && queryStringParams) && `${apiUrl}?${queryStringParams}`);
 
 	useEffect(() => {
-		// Skip if webSocket is already initialized
-		if (webSocketRef.current) return;
-		// Initialize WebSocket connection
-		console.log('Opening WebSocket connection...', `${apiUrl}/ws`);
+		// Create WebSocket URL based on API URL
 		const wsUrl = new URL(`${apiUrl}/ws`);
 		wsUrl.protocol = wsUrl.protocol === 'https:' ? 'wss:' : 'ws:';
-		const socket = new WebSocket(wsUrl.toString());
-		webSocketRef.current = socket;
-
-		const handleWebsocketInit = () => {
-			if (!webSocketRef.current) return;
-			if (webSocketRef.current.readyState !== webSocketRef.current.OPEN) return;
-			webSocketRef.current.send('init');
-		};
-
+		// Setup a handler for incoming WebSocket messages
 		const handleIncomingMessage = (event: MessageEvent<string>) => {
 			try {
 				const eventData: HttpResponse<RideNormalized> = JSON.parse(event.data);
@@ -78,31 +108,11 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 				ridesData.set(next);
 				setLastUpdatedAt(Dates.now('Europe/Lisbon').unix_timestamp);
 			} catch (error) {
-				console.error('WebSocket message parse error:', error);
+				Logger.error('WebSocket message parse error:', error);
 			}
 		};
-
-		const handleWebsocketError = (event: Event) => {
-			console.error('WebSocket error:', event);
-		};
-
-		const handleWebsocketClose = (event: CloseEvent) => {
-			console.warn('WebSocket closed:', event.code, event.reason);
-		};
-
-		socket.addEventListener('open', handleWebsocketInit);
-		socket.addEventListener('message', handleIncomingMessage);
-		socket.addEventListener('error', handleWebsocketError);
-		socket.addEventListener('close', handleWebsocketClose);
-
-		return () => {
-			socket.removeEventListener('open', handleWebsocketInit);
-			socket.removeEventListener('message', handleIncomingMessage);
-			socket.removeEventListener('error', handleWebsocketError);
-			socket.removeEventListener('close', handleWebsocketClose);
-			socket.close();
-			webSocketRef.current = null;
-		};
+		// Subscribe to WebSocket messages and return an unsubscribe function
+		return subscribeToWebSocket(wsUrl.toString(), handleIncomingMessage);
 	}, []);
 
 	//
@@ -136,19 +146,7 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 		// Build query string params and set state
 		const result = new URLSearchParams(Object.fromEntries(filtersMap)).toString();
 		setQueryStringParams(result);
-	}, [
-		props?.filters?.search,
-		props?.filters?.agency_ids,
-		props?.filters?.date_start,
-		props?.filters?.date_end,
-		props?.filters?.acceptance_status,
-		props?.filters?.analysis_ended_at_last_stop_grade,
-		props?.filters?.analysis_expected_apex_validation_interval,
-		props?.filters?.analysis_simple_three_vehicle_events_grade,
-		props?.filters?.analysis_transaction_sequentiality,
-		props?.filters?.delay_statuses,
-		props?.filters?.operational_statuses,
-	]);
+	}, [props.filters]);
 
 	const optionsData = useMemo(() => {
 		if (!ridesData.state) return [];

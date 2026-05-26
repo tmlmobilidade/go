@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRuleCreateContext } from '@/components/events/rules/RuleCreate.context';
 import { closeCreateRuleModal } from '@/components/events/rules/RuleCreate.modal';
 import { CloseButton, DeleteButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';

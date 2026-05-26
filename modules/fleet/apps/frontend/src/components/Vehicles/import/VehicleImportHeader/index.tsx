@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { closeImportVehicleModal } from '@/components/Vehicles/import/VehicleImport.modal';
 import { CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 

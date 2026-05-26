@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { closeCreateRouteModal } from '@/components/routes/create/RouteCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateRouteDto, CreateRouteSchema, Line, Route } from '@tmlmobilidade/types';

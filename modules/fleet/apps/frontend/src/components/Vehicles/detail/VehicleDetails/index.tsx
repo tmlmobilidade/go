@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Pane } from '@tmlmobilidade/ui';
 
 import { VehicleDetailsHeader } from '../VehicleDetailsHeader';

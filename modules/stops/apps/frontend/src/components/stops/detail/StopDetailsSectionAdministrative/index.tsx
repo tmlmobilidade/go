@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { Translations } from '@/lib/translations';

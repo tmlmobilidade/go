@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePatternCreateContext } from '@/components/patterns/create/PatternCreate.context';
 import { closeCreatePatternModal } from '@/components/patterns/create/PatternCreate.modal';
 import { IconUpload } from '@tabler/icons-react';

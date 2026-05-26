@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useVehiclesDetailContext } from '@/contexts/VehiclesDetail.context';
 import { Translations } from '@/lib/translations';
 import { VehicleEmissionSchema, VehiclePropulsionSchema, VehicleTypologySchema } from '@tmlmobilidade/types';

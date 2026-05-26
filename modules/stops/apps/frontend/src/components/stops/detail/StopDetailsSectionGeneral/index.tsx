@@ -1,11 +1,12 @@
 'use client';
 
-/* * */
-
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { Translations } from '@/lib/translations';
+import { IconEdit } from '@tabler/icons-react';
 import { LifecycleStatusSchema } from '@tmlmobilidade/types';
-import { Collapsible, Grid, ProposedChangesWrapper, Section, SegmentedControl, TextInput, ValueDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, ProposedChangesWrapper, Section, SegmentedControl, TextInput, useMeContext, ValueDisplay } from '@tmlmobilidade/ui';
+
+import styles from './styles.module.css';
 
 /* * */
 
@@ -16,6 +17,9 @@ export function StopDetailsSectionGeneral() {
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
+	const meContext = useMeContext();
+
+	const canEditStopCoordinates = meContext.actions.hasPermission('stops', 'edit_coordinates') && !stopDetailContext.flags.isReadOnly;
 
 	//
 	// B. Transform data
@@ -49,8 +53,22 @@ export function StopDetailsSectionGeneral() {
 			<Section>
 				<Grid columns="abc" gap="md">
 					<ValueDisplay label="Código Único da Paragem" value={stopDetailContext.data.stop?._id ?? 'N/A'} variant="bordered" />
-					<ValueDisplay label="Latitude" value={stopDetailContext.data.stop?.latitude ?? 'N/A'} variant="bordered" />
-					<ValueDisplay label="Longitude" value={stopDetailContext.data.stop?.longitude ?? 'N/A'} variant="bordered" />
+					<ValueDisplay
+						className={canEditStopCoordinates ? styles['coords-label'] : undefined}
+						icon={canEditStopCoordinates ? <IconEdit size={16} /> : undefined}
+						label="Latitude"
+						onClick={canEditStopCoordinates ? stopDetailContext.actions.openCoordinatesEditor : undefined}
+						value={stopDetailContext.data.form.values.latitude ?? 'N/A'}
+						variant="bordered"
+					/>
+					<ValueDisplay
+						className={canEditStopCoordinates ? styles['coords-label'] : undefined}
+						icon={canEditStopCoordinates ? <IconEdit size={16} /> : undefined}
+						label="Longitude"
+						onClick={canEditStopCoordinates ? stopDetailContext.actions.openCoordinatesEditor : undefined}
+						value={stopDetailContext.data.form.values.longitude ?? 'N/A'}
+						variant="bordered"
+					/>
 				</Grid>
 			</Section>
 

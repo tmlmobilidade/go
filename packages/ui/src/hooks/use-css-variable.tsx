@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useEffect, useState } from 'react';
 
 import { getCssVariableValue } from '../utils/get-variable-value';

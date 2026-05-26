@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconFileZip } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 

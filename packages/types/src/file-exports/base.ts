@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const FileExportTypes = ['gtfs', 'ride'] as const;
+export const FileExportTypes = ['gtfs', 'ride', 'sams_analysis', 'stop'] as const;
 export const FileExportTypeSchema = z.enum(FileExportTypes);
 export type FileExportType = z.infer<typeof FileExportTypeSchema>;
 

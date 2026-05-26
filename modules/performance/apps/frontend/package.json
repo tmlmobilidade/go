@@ -15,22 +15,22 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.41.1",
+		"@tabler/icons-react": "3.44.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
-		"next": "16.2.4",
-		"next-intl": "4.9.1",
-		"react": "19.2.5",
-		"react-dom": "19.2.5",
+		"next": "16.2.6",
+		"next-intl": "4.12.0",
+		"react": "19.2.6",
+		"react-dom": "19.2.6",
 		"swr": "2.4.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.6.0",
-		"@types/react": "19.2.14",
+		"@types/node": "25.9.1",
+		"@types/react": "19.2.15",
 		"@types/react-dom": "19.2.3",
 		"typescript": "5.9.3"
 	}

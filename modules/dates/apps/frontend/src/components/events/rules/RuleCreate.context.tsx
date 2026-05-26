@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
 import { useForm } from '@mantine/form';
 import { EventRule, EventRuleSchema, HHMM } from '@tmlmobilidade/types';

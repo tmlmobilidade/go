@@ -12,6 +12,8 @@ import { z } from 'zod';
 export const PlanSchema = DocumentSchema.extend({
 	apps: z.object({
 		controller: PlanAppStatusSchema,
+		hub_gtfs: PlanAppStatusSchema,
+		hub_schedules: PlanAppStatusSchema,
 		merger: PlanAppStatusSchema,
 	}).default({}),
 	gtfs_agency: GtfsAgencySchema,

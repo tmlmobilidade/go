@@ -1,0 +1,27 @@
+-- Delete out-of-window historical rides from {database}.hist_rides.
+--
+-- The cleaner mirrors the loader's historical fetch: for each `dayIndex` in
+-- [0 .. historicalDataDaysBack) it pulls every ride from Mongo whose
+-- `start_time_scheduled` falls inside that day's 3h window. The union of
+-- those `_id` values is the set of rides currently considered in-window.
+--
+-- That set is staged (by the cleaner task) into
+-- `{database}._cleaner_hist_rides_keep`, a small MergeTree table that is
+-- truncated and repopulated every run. We reference it as a subquery here
+-- instead of binding the ids via `query_params`, because the URL-encoded
+-- ClickHouse HTTP parameter list overflows for large keep sets
+-- ("HTTP request URI invalid or too long").
+--
+-- Preview the number of historical rides that will be deleted:
+
+SELECT count() AS rows_to_delete FROM {database}.hist_rides
+WHERE _id NOT IN (
+    SELECT _id FROM {database}._cleaner_hist_rides_keep
+);
+
+-- Delete all out-of-window historical rides from {database}.hist_rides:
+
+ALTER TABLE {database}.hist_rides
+DELETE WHERE _id NOT IN (
+    SELECT _id FROM {database}._cleaner_hist_rides_keep
+);

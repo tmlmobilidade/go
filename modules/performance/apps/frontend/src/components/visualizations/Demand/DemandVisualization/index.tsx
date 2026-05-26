@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { LineBarChart } from '@/components/charts/LineBarChart';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { AgencyType } from '@/constants';

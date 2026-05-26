@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconBus } from '@tabler/icons-react';
 import { type RideNormalized } from '@tmlmobilidade/types';
 import { TagGroup, TagProps } from '@tmlmobilidade/ui';

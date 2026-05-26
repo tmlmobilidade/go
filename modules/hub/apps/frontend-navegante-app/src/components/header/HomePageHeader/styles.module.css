@@ -1,0 +1,30 @@
+/* * */
+/* HEADER */
+
+.header {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	width: 100%;
+	transition: box-shadow 400ms ease;
+}
+
+.header.isSticky {
+	box-shadow: 0 0 40px 0 rgb(0 0 0 / 7%);
+}
+
+@media (width <= 650px) {
+	.header.isSticky {
+		box-shadow: none;
+	}
+}
+
+/* * */
+/* TOOLBAR */
+
+.toolbarRow {
+	display: flex;
+	gap: var(--size-spacing-10);
+	align-items: center;
+	width: 100%;
+}

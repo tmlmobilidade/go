@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { PeriodAssign } from '@/components/year-periods/calendar/PeriodAssign';
 import { PeriodAssignContextProvider } from '@/components/year-periods/calendar/PeriodAssign.context';
 import { DataProviders } from '@/providers/data-providers';

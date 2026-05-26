@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useZoneCreateContext } from '@/components/zones/create/ZoneCreate.context';
 import { closeCreateZoneModal } from '@/components/zones/create/ZoneCreate.modal';
 import { IconUpload } from '@tabler/icons-react';

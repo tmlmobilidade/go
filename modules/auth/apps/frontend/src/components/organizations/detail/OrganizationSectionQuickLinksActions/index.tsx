@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { HomeLink } from '@tmlmobilidade/types';
 import { Button, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';

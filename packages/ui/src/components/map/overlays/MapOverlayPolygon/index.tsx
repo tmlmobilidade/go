@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Layer, Source } from '@vis.gl/react-maplibre';
 import { FeatureCollection, type Polygon } from 'geojson';
 import { useEffect } from 'react';
@@ -21,6 +19,11 @@ export interface MapOverlayPolygonProps {
 	id: string
 	lineOpacity?: number
 	lineWidth?: number
+	/**
+	 * When false, this polygon is still drawn but is omitted from {@link MapViewContext}'s
+	 * auto-fit bounds (e.g. a world-sized “dim outside” mask should not reset zoom).
+	 */
+	registerForAutoZoom?: boolean
 	visible?: boolean
 }
 
@@ -31,6 +34,7 @@ export function MapOverlayPolygon({
 	id,
 	lineOpacity = 1,
 	lineWidth = 3,
+	registerForAutoZoom = true,
 	visible = true,
 }: MapOverlayPolygonProps) {
 	//
@@ -44,11 +48,13 @@ export function MapOverlayPolygon({
 	// B. Handle actions
 
 	useEffect(() => {
-		if (data) mapViewContext.actions.registerOverlaySource(`${id}:polygon:source`, data);
+		if (!data || !registerForAutoZoom) return;
+		const sourceKey = `${id}:polygon:source`;
+		mapViewContext.actions.registerOverlaySource(sourceKey, data);
 		return () => {
-			mapViewContext.actions.unregisterOverlaySource(`${id}:polygon:source`);
+			mapViewContext.actions.unregisterOverlaySource(sourceKey);
 		};
-	}, [data]);
+	}, [data, id, registerForAutoZoom, mapViewContext.actions]);
 
 	//
 	// C. Render components

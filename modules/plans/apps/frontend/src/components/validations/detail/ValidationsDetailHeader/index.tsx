@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
-/* * */
-
 import { openApprovePlanModal } from '@/components/validations/detail/ApprovePlanModal';
 import { openRequestApprovalModalModal } from '@/components/validations/detail/RequestApprovalModal';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';

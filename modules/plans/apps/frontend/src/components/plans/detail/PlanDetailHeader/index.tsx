@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { openPlanChangeModal } from '@/components/plans/change/PlanChange.modal';
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { IconRefresh } from '@tabler/icons-react';

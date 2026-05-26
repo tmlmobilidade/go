@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { QuickLinks } from '@/components/home/QuickLinks';
 import { WelcomeMessage } from '@/components/home/WelcomeMessage';
 import { WikiList } from '@/components/home/WikiList';
@@ -22,7 +20,6 @@ export function HomePage() {
 	// B. Transform data
 
 	const hasQuickLinksPermission = meContext.actions.hasPermission(PermissionCatalog.all.home.scope, PermissionCatalog.all.home.actions.read_links);
-
 	const hasWikiListPermission = meContext.actions.hasPermission(PermissionCatalog.all.home.scope, PermissionCatalog.all.home.actions.read_wiki);
 
 	//

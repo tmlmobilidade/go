@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { closeCreateRuleModal } from '@/components/patterns/rules/create/RuleCreate.modal';
 import { IconCalendar } from '@tabler/icons-react';

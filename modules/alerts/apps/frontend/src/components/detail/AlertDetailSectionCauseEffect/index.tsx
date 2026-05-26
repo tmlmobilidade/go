@@ -1,10 +1,8 @@
 'use client';
 
-/* * */
-
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
-import { AlertCauseSchema, AlertEffectSchema } from '@tmlmobilidade/types';
-import { AlertCauseIcons, AlertEffectIcons, Collapsible, Grid, Section, Select } from '@tmlmobilidade/ui';
+import { AlertCauseSchema, AlertEffectSchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { AlertCauseIcons, AlertEffectIcons, Collapsible, ContextFormController, Grid, Section, Select, useMeContext } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -17,10 +15,26 @@ export function AlertDetailSectionCauseEffect() {
 
 	const { t } = useTranslation();
 
+	const meContext = useMeContext();
 	const alertDetailContext = useAlertDetailContext();
 
 	//
 	// B. Transform data
+
+	const hasPermissionToUpdate = meContext.actions.hasPermissionResource([
+		{
+			action: PermissionCatalog.all.alerts.actions.update,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.alerts.scope,
+			value: alertDetailContext.data.alert.agency_id,
+		},
+		{
+			action: PermissionCatalog.all.alerts.actions.update,
+			resource_key: 'reference_types',
+			scope: PermissionCatalog.all.alerts.scope,
+			value: alertDetailContext.data.alert.reference_type,
+		},
+	]);
 
 	const causeItems = AlertCauseSchema.options.map(cause => ({
 		icon: AlertCauseIcons[cause],
@@ -44,19 +58,35 @@ export function AlertDetailSectionCauseEffect() {
 		>
 			<Section>
 				<Grid columns="ab" gap="md">
-					<Select
-						key={alertDetailContext.data.form.key('cause')}
-						data={causeItems}
-						description="O que aconteceu"
-						label="Causa"
-						{...alertDetailContext.data.form.getInputProps('cause')}
+					<ContextFormController
+						control={alertDetailContext.form.instance.control}
+						name="cause"
+						render={({ field, fieldState }) => (
+							<Select
+								data={causeItems}
+								description="O que aconteceu"
+								error={fieldState.error?.message}
+								label="Causa"
+								onChange={field.onChange}
+								readOnly={!hasPermissionToUpdate}
+								value={field.value}
+							/>
+						)}
 					/>
-					<Select
-						key={alertDetailContext.data.form.key('effect')}
-						data={effectItems}
-						description="O que aconteceu como consequência"
-						label="Efeito"
-						{...alertDetailContext.data.form.getInputProps('effect')}
+					<ContextFormController
+						control={alertDetailContext.form.instance.control}
+						name="effect"
+						render={({ field, fieldState }) => (
+							<Select
+								data={effectItems}
+								description="O que aconteceu como consequência"
+								error={fieldState.error?.message}
+								label="Efeito"
+								onChange={field.onChange}
+								readOnly={!hasPermissionToUpdate}
+								value={field.value}
+							/>
+						)}
 					/>
 				</Grid>
 			</Section>

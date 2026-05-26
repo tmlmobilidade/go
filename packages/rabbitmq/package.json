@@ -35,12 +35,12 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/utils": "*",
-		"amqplib": "1.0.3"
+		"amqplib": "2.0.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/amqplib": "0.10.8",
-		"@types/node": "25.6.0",
+		"@types/node": "25.9.1",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",
 		"typescript": "5.9.3"

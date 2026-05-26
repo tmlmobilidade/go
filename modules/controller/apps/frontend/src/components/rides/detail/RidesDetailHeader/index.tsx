@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
 import { RideAnalysisSystemStatus } from '@/components/rides/analysis/RideAnalysisSystemStatus';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';

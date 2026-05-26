@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { YearPickerInput as MantineYearPickerInput, YearPickerInputProps as MantineYearPickerInputProps } from '@mantine/dates';
 import { IconCalendar } from '@tabler/icons-react';
 

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Switch as MantineSwitch, type SwitchProps as MantineSwitchProps } from '@mantine/core';
 
 /* * */

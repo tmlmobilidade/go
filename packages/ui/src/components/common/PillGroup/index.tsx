@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Pill } from '@mantine/core';
 import { IconCheck, IconPlus, IconX } from '@tabler/icons-react';
 import { useMemo } from 'react';

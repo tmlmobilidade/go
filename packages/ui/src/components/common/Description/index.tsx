@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type PropsWithChildren } from 'react';
 
 import styles from './styles.module.css';

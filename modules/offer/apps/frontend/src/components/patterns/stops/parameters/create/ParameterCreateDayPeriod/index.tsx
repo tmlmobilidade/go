@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useParameterCreateContext } from '@/components/patterns/stops/parameters/create/ParameterCreate.context';
 import { DAY_PERIOD_LABELS, DayPeriod } from '@tmlmobilidade/types';
 import { Section, SegmentedMultiSelect, Text } from '@tmlmobilidade/ui';

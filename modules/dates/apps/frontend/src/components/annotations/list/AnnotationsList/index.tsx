@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useAnnotationsListContext } from '@/components/annotations/list/AnnotationsList.context';
 import { AnnotationsListCellAgencies } from '@/components/annotations/list/AnnotationsListCellAgencies';
 import { AnnotationsListCellDates } from '@/components/annotations/list/AnnotationsListCellDates';

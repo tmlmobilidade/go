@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useVehiclesDetailContext } from '@/contexts/VehiclesDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';

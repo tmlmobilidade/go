@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import Badge, { type BadgeProps } from '../Badge';
 
 /* * */

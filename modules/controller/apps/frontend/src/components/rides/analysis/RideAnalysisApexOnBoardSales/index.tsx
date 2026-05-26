@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { ApexCardTypeTag } from '@/components/common/ApexCardTypeTag';
 import { ApexPaymentMethodTag } from '@/components/common/ApexPaymentMethodTag';
 import { CurrencyTag } from '@/components/common/CurrencyTag';

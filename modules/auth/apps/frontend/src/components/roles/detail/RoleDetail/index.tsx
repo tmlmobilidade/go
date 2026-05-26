@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { PermissionSection } from '@/components/permissions/PermissionSection';
 import { useRoleDetailContext } from '@/components/roles/detail/RoleDetail.context';
 import { RoleDetailBasicInfo } from '@/components/roles/detail/RoleDetailBasicInfo';

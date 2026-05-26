@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { closeCreateOrganizationModal } from '@/components/organizations/create/OrganizationCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CreateOrganizationDto, CreateOrganizationSchema, Organization } from '@tmlmobilidade/types';

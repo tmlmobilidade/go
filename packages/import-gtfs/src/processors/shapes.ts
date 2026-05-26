@@ -1,6 +1,6 @@
 /* * */
 
-import { type ImportGtfsContext } from '@/types.js';
+import { type ImportGtfsContext } from '@/types/context.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';

@@ -1,56 +1,47 @@
 'use client';
 
-/* * */
-
-import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import Link from 'next/link';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
-import { useMeContext } from '../../../contexts';
-import { useCurrentUrl } from '../../../hooks';
-import { SidebarItemTooltip } from '../SidebarItemTooltip';
+import { useMeContext } from '../../../contexts/Me.context';
+import { useCurrentUrl } from '../../../hooks/use-current-url';
+import { type SidebarLeafItemConfig } from '../sidebar-navigation.config';
+import { useSidebarMode } from '../SidebarMode.context';
 
 /* * */
 
-export interface SidebarItemProps {
-	href: string
-	icon: React.ReactNode
+export interface SidebarItemProps extends SidebarLeafItemConfig {
+	depth?: number
 	label: string
-	requiredPermissions: Permission[]
 }
 
 /* * */
 
-export function SidebarItem({ href, icon, label, requiredPermissions }: SidebarItemProps) {
+export function SidebarItem({ depth = 0, href, icon, label, permissions }: SidebarItemProps) {
 	//
 
 	//
 	// A. Setup Variables
 
 	const meContext = useMeContext();
+	const { iconOnly } = useSidebarMode();
 
 	const currentUrl = useCurrentUrl();
-
-	const ref = useRef<HTMLAnchorElement>(null);
-
-	const [hover, setHover] = useState(false);
 
 	//
 	// B. Transform data
 
 	const isEnabled = useMemo(() => {
+		// Allow if no permissions are required
+		if (!permissions.length) return true;
 		// Skip if user has no permissions
 		if (!meContext.data.user?.permissions) return false;
-		// For all possible permissions...
-		for (const permissionObject of requiredPermissions) {
-			// ... check if the user is allowed to see this item
-			return PermissionCatalog.hasPermission(meContext.data.user?.permissions, permissionObject.scope, permissionObject.action);
-		}
-		// If no permissions matched
-		return false;
-	}, [meContext.data.user?.permissions, requiredPermissions]);
+		// Check if the user has at least one of the required permissions
+		return permissions.some(permissionObject => PermissionCatalog.hasPermission(meContext.data.user?.permissions, permissionObject.scope, permissionObject.action));
+	}, [meContext.data.user?.permissions, permissions]);
 
 	const isActive = useMemo(() => {
 		// Skip if window is not defined
@@ -88,25 +79,18 @@ export function SidebarItem({ href, icon, label, requiredPermissions }: SidebarI
 	}
 
 	return (
-		<>
-			<Link
-				ref={ref}
-				className={styles.icon}
-				data-active={isActive}
-				data-disabled={!isEnabled}
-				href={hrefValue ?? '#'}
-				onMouseEnter={() => setHover(true)}
-				onMouseLeave={() => setHover(false)}
-			>
-				{icon}
-			</Link>
-			{hover && (
-				<SidebarItemTooltip
-					label={label}
-					target={ref.current}
-				/>
-			)}
-		</>
+		<Link
+			aria-label={label}
+			className={styles.item}
+			data-active={isActive}
+			data-collapsed={iconOnly}
+			data-depth={depth}
+			data-disabled={!isEnabled}
+			href={hrefValue ?? '#'}
+		>
+			<span className={styles.icon}>{icon}</span>
+			<span className={styles.label}>{label}</span>
+		</Link>
 	);
 
 	//

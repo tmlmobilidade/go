@@ -1,0 +1,19 @@
+---
+description: TML conventional commit messages — applies when generating or reviewing commit messages
+globs:
+alwaysApply: true
+---
+
+When generating commit messages, use the installed `tml-commit` skill if it is available.
+
+If the skill is not available, follow this summary:
+
+- Inspect the staged diff first. If nothing is staged, inspect the working diff.
+- Format the subject exactly as `type(scope): description`.
+- Allowed types: `feat`, `fix`, `refactor`, `perf`, `test`, `docs`, `chore`, `ci`, `style`, `revert`, `wip`.
+- Prefer scopes listed in `commitlint.config.cjs`; do not invent a scope when a listed one fits.
+- The subject must be imperative, at most 72 characters, and have no trailing period.
+- Use a blank line before any body or footer.
+- Use the body only when the motivation or context is not obvious from the subject.
+- Mention validation/config changes as `chore(config)` unless a more specific listed scope fits.
+- Mention skill/rule/documentation-only changes as `docs(docs)` unless a more specific listed scope fits.

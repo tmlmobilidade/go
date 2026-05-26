@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog, type Typology, type UpdateTypologyDto, UpdateTypologySchema } from '@tmlmobilidade/types';
 import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';

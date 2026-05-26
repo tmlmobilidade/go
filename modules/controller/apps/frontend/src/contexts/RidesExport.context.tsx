@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { RIDES_EXPORT_MODAL_ID } from '@/components/rides/export/RidesExportModal';
 import { RidesListContextState } from '@/components/rides/list/RidesList.context';
 import { Dates } from '@tmlmobilidade/dates';

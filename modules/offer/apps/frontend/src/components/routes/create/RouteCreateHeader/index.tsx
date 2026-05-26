@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useRouteCreateContext } from '@/components/routes/create/RouteCreate.context';
 import { closeCreateRouteModal } from '@/components/routes/create/RouteCreate.modal';
 import { IconUpload } from '@tabler/icons-react';

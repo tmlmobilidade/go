@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CreateOrganizationSchema, type Organization, PermissionCatalog, type UpdateOrganizationDto } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
@@ -130,8 +128,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 
 		if (response.ok) {
 			useToast.success({ message: 'As imagens foram carregadas com sucesso', title: 'Sucesso' });
-		}
-		else {
+		} else {
 			useToast.error({ message: result.error || 'Erro ao carregar imagens', title: 'Erro' });
 		}
 	};

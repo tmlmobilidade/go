@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconMoon, IconSun, IconSunset } from '@tabler/icons-react';
 import { groupTimesByDayPeriod } from '@tmlmobilidade/dates';
 import { DAY_PERIOD_LABELS, DayPeriod, HHMM } from '@tmlmobilidade/types';

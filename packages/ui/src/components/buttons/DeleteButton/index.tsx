@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { ActionIcon } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { IconRestore, IconTrash } from '@tabler/icons-react';

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import AreasHome from '@/components/layout/AreasHome';
 import { AGENCIES } from '@/constants';
 

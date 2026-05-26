@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePeriodAssignContext } from '@/components/year-periods/calendar/PeriodAssign.context';
 import { closeAsignPeriodModal } from '@/components/year-periods/calendar/PeriodAssign.modal';
 import { IconUpload } from '@tabler/icons-react';

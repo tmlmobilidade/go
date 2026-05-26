@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { Checkbox, Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 

@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { RouteCreate } from '@/components/routes/create/RouteCreate';
 import { RouteCreateContextProvider } from '@/components/routes/create/RouteCreate.context';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';

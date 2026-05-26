@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type EventNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';

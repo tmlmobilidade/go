@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { IconChevronRight } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { RouteSimplified } from '@tmlmobilidade/types';

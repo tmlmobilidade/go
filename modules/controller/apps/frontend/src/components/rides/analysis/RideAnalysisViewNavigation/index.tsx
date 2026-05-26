@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { RideAnalysisViewOptions, useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { SegmentedControl, Spacer, Toolbar, useMeContext } from '@tmlmobilidade/ui';

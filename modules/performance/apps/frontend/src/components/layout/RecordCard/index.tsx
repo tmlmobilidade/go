@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { AnimatedNumber } from '@/components/layout/AnimatedNumber';
 import { IndicatorChip } from '@/components/layout/IndicatorChip';
 import { LiveIcon } from '@/components/layout/LiveIcon';

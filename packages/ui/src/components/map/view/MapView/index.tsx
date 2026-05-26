@@ -1,13 +1,11 @@
 'use client';
 
-/* * */
-
 import { type MapLayerMouseEvent, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 import { type CSSProperties, type PropsWithChildren } from 'react';
 
 import styles from './styles.module.css';
 
-import { MapViewBasemap, MapViewBasemapLayers } from '../MapViewBasemap';
+import { MapViewBasemap, type MapViewBasemapLayers } from '../MapViewBasemap';
 import { MapViewContextProvider } from '../MapViewContext';
 import { MapViewToolbar } from '../MapViewToolbar';
 
@@ -28,12 +26,14 @@ interface MapViewProps {
 	onMouseLeave?: (e: MapLayerMouseEvent) => void
 	onMouseOut?: (e: MapLayerMouseEvent) => void
 	onMouseOver?: (e: MapLayerMouseEvent) => void
+	/** When false, hides the search coordinate pin layer. */
+	showSearchPin?: boolean
 	toolbar?: boolean
 }
 
 /* * */
 
-export function MapView({ children, cursor, height, id, interactiveLayerIds = [], layers, onClick, onDrag, onDragEnd, onDragStart, onMouseDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, toolbar = true }: PropsWithChildren<MapViewProps>) {
+export function MapView({ children, cursor, height, id, interactiveLayerIds = [], layers, onClick, onDrag, onDragEnd, onDragStart, onMouseDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, showSearchPin = true, toolbar = true }: PropsWithChildren<MapViewProps>) {
 	return (
 		<MapViewContextProvider>
 			<div
@@ -54,6 +54,7 @@ export function MapView({ children, cursor, height, id, interactiveLayerIds = []
 					onMouseLeave={onMouseLeave}
 					onMouseOut={onMouseOut}
 					onMouseOver={onMouseOver}
+					showSearchPin={showSearchPin}
 				>
 					{children}
 				</MapViewBasemap>

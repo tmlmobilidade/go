@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { OfferBreadcrumbs } from '@/components/common/OfferBreadcrumbs';
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { PatternDetailHistory } from '@/components/patterns/detail/PatternDetailHistory';

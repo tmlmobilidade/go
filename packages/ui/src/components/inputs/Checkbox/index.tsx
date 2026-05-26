@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { Checkbox as MantineCheckbox, type CheckboxGroupProps as MantineCheckboxGroupProps, type CheckboxProps as MantineCheckboxProps } from '@mantine/core';
 
 /* * */

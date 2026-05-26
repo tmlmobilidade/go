@@ -1,9 +1,10 @@
 /* * */
 
 import { DocumentSchema } from '@/_common/document.js';
-import { ProcessingStatusSchema } from '@/_common/status.js';
-import { UnixTimeStampSchema } from '@/_common/unix-timestamp.js';
+import { SystemStatusSchema } from '@/_common/status.js';
+import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { SamAnalysisSchema } from '@/sams/sam-analysis.js';
+import { SamTimelineSummarySchema } from '@/sams/sam-timeline-summary.js';
 import { z } from 'zod';
 
 /* * */
@@ -16,9 +17,10 @@ export const SamSchema = DocumentSchema
 		analysis: z.array(SamAnalysisSchema).default([]),
 		latest_apex_version: z.string().nullable(),
 		remarks: z.string().nullable().default(null),
-		seen_first_at: UnixTimeStampSchema.nullable(),
-		seen_last_at: UnixTimeStampSchema.nullable(),
-		system_status: ProcessingStatusSchema.default('waiting'),
+		seen_first_at: UnixTimestampSchema.nullable(),
+		seen_last_at: UnixTimestampSchema.nullable(),
+		system_status: SystemStatusSchema.default('waiting'),
+		timeline_summary: SamTimelineSummarySchema.default({ months: [] }).optional().nullable(),
 		transactions_expected: z.number().nullable(),
 		transactions_found: z.number().nullable(),
 		transactions_missing: z.number().nullable(),
@@ -37,3 +39,4 @@ export const UpdateSamSchema = CreateSamSchema.partial();
 export type Sam = z.infer<typeof SamSchema>;
 export type CreateSamDto = z.infer<typeof CreateSamSchema>;
 export type UpdateSamDto = z.infer<typeof UpdateSamSchema>;
+export type SamListItem = Omit<Sam, 'analysis'>;

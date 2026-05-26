@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useHolidaysDetailContext } from '@/components/holidays/detail/HolidaysDetail.context';
 import { Pill } from '@mantine/core';
 import { Calendar } from '@mantine/dates';

@@ -1,11 +1,9 @@
 'use client';
 
-/* * */
-
 import { IconEye, IconRouteOff } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Event } from '@tmlmobilidade/types';
-import { TopbarMenu, TopbarMenuItem, TopbarMenuList, TopbarMenuNoContent } from '@tmlmobilidade/ui';
+import { Menu, MenuItem, MenuList, MenuNoContent } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -15,9 +13,23 @@ interface StopDetailPatternsMenuProps {
 
 /* * */
 
+function StopDetailPatternsMenuItem({ item: pattern }: { item: Event['associated_patterns'][number] }) {
+	return (
+		<MenuItem
+			description={pattern.headsign}
+			href={PAGE_ROUTES.offer.PATTERN_DETAIL(pattern.line_id, pattern._id, pattern.route_id)}
+			rel="noopener noreferrer"
+			target="_blank"
+			title={pattern.code}
+		/>
+	);
+}
+
+/* * */
+
 export function StopDetailPatternsMenu({ patterns = [] }: StopDetailPatternsMenuProps) {
 	return (
-		<TopbarMenu
+		<Menu
 			counter={patterns.length}
 			icon={IconEye}
 			label="Ver patterns associados"
@@ -25,26 +37,19 @@ export function StopDetailPatternsMenu({ patterns = [] }: StopDetailPatternsMenu
 			width={320}
 		>
 			{patterns.length === 0 ? (
-				<TopbarMenuNoContent
+				<MenuNoContent
 					icon={IconRouteOff}
 					text="Sem patterns associados"
 				/>
 			) : (
-				<TopbarMenuList
+				<MenuList
 					data={patterns}
+					getItemKey={pattern => pattern._id}
+					itemComponent={StopDetailPatternsMenuItem}
 					maxHeight={500}
 					title="Patterns associados"
-					itemComponent={({ item: pattern }) => (
-						<TopbarMenuItem
-							description={pattern.headsign}
-							href={PAGE_ROUTES.offer.PATTERN_DETAIL(pattern.line_id, pattern._id, pattern.route_id)}
-							rel="noopener noreferrer"
-							target="_blank"
-							title={pattern.code}
-						/>
-					)}
 				/>
 			)}
-		</TopbarMenu>
+		</Menu>
 	);
 }

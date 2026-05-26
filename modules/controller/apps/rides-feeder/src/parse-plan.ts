@@ -3,11 +3,11 @@
 import { cleanupOrphanRidesForPlan } from '@/cleanup.js';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
-import { files, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
+import { files, hashedPatterns, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { SQLiteWriter } from '@tmlmobilidade/sqlite';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Shape, type GTFS_Shape_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Plan, type Ride, type UnixTimestamp, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
+import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Shape, type GTFS_Shape_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type HashedPattern, type HashedPatternWaypoint, type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Plan, type Ride, type UnixTimestamp, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsPickupDropoffType, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@tmlmobilidade/writers';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
@@ -34,16 +34,19 @@ export async function parsePlan(planData: Plan) {
 	let shapesCounter = 0;
 	let stopTimesCounter = 0;
 
+	let hashedPatternsCounter = 0;
 	let hashedShapesCounter = 0;
 	let hashedTripsCounter = 0;
 
 	//
 	// Connect to databases and setup MongoDB Writers
 
+	const hashedPatternsCollection = await hashedPatterns.getCollection();
 	const hashedShapesCollection = await hashedShapes.getCollection();
 	const hashedTripsCollection = await hashedTrips.getCollection();
 	const ridesCollection = await rides.getCollection();
 
+	const hashedPatternsDbWritter = new MongoDbWriter<HashedPattern>({ batch_size: 1000, collection: hashedPatternsCollection });
 	const hashedShapesDbWritter = new MongoDbWriter<HashedShape>({ batch_size: 1000, collection: hashedShapesCollection });
 	const hashedTripsDbWritter = new MongoDbWriter<HashedTrip>({ batch_size: 1000, collection: hashedTripsCollection });
 	const ridesDbWritter = new MongoDbWriter<Ride>({ batch_size: 10000, collection: ridesCollection });
@@ -171,8 +174,7 @@ export async function parsePlan(planData: Plan) {
 		fs.rmSync(workdirPath, { force: true, recursive: true });
 		fs.mkdirSync(workdirPath, { recursive: true });
 		Logger.success('Prepared working directory.', 1);
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error(`Error preparing workdir path "${workdirPath}".`, error);
 		process.exit(1);
 	}
@@ -191,7 +193,7 @@ export async function parsePlan(planData: Plan) {
 	// and try to download, save and unzip it.
 
 	const operationFileData = await files.findById(planData.operation_file_id);
-	if (!operationFileData || !operationFileData.url) {
+	if (!operationFileData?.url) {
 		Logger.error(`No operation file found for plan "${planData._id}".`);
 		process.exit(1);
 	}
@@ -200,8 +202,7 @@ export async function parsePlan(planData: Plan) {
 		const downloadResponse = await fetch(operationFileData.url);
 		const downloadArrayBuffer = await downloadResponse.arrayBuffer();
 		fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error downloading the file.', error);
 		process.exit(1);
 	}
@@ -209,8 +210,7 @@ export async function parsePlan(planData: Plan) {
 	try {
 		await unzipFile(downloadFilePath, extractDirPath);
 		Logger.success(`Unzipped GTFS file from "${downloadFilePath}" to "${extractDirPath}".`, 1);
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error unzipping the file.', error);
 		process.exit(1);
 	}
@@ -296,14 +296,12 @@ export async function parsePlan(planData: Plan) {
 		if (fs.existsSync(`${extractDirPath}/calendar.txt`)) {
 			await parseCsvFile(`${extractDirPath}/calendar.txt`, parseEachRow);
 			Logger.success(`Finished processing "calendar.txt": ${savedCalendarDates.size} rows saved in ${calendarParseTimer.get()}.`, 1);
-		}
-		else {
+		} else {
 			Logger.info(`Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...`, 1);
 		}
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "calendar.txt" file.', error);
 		throw new Error('✖︎ Error processing "calendar.txt" file.');
 	}
@@ -350,15 +348,13 @@ export async function parsePlan(planData: Plan) {
 				if (validatedData.exception_type === 1) {
 					updatedCalendar.add(validatedData.date);
 					calendarDatesCounter++;
-				}
-				else if (validatedData.exception_type === 2) {
+				} else if (validatedData.exception_type === 2) {
 					updatedCalendar.delete(validatedData.date);
 					calendarDatesCounter--;
 				}
 				// Update the service_id with the new dates
 				savedCalendarDates.set(validatedData.service_id, Array.from(updatedCalendar));
-			}
-			else {
+			} else {
 				// If this is the first time we're seeing this service_id, then it is only necessary
 				// to initiate a new dates array if it is a service addition
 				if (validatedData.exception_type === 1) {
@@ -376,14 +372,12 @@ export async function parsePlan(planData: Plan) {
 		if (fs.existsSync(`${extractDirPath}/calendar_dates.txt`)) {
 			await parseCsvFile(`${extractDirPath}/calendar_dates.txt`, parseEachRow);
 			Logger.success(`Finished processing "calendar_dates.txt": ${savedCalendarDates.size} rows saved in ${calendarDatesParseTimer.get()}.`, 1);
-		}
-		else {
+		} else {
 			Logger.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`, 1);
 		}
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "calendar_dates.txt" file.', error);
 		throw new Error('✖︎ Error processing "calendar_dates.txt" file.');
 	}
@@ -430,8 +424,7 @@ export async function parsePlan(planData: Plan) {
 		Logger.success(`Finished processing "trips.txt": ${savedTrips.size} rows saved in ${tripsParseTimer.get()}.`, 1);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "trips.txt" file.', error);
 		throw new Error('✖︎ Error processing "trips.txt" file.');
 	}
@@ -470,8 +463,7 @@ export async function parsePlan(planData: Plan) {
 		Logger.success(`Finished processing "routes.txt": ${savedRoutes.size} rows saved in ${routesParseTimer.get()}.`, 1);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "routes.txt" file.', error);
 		throw new Error('✖︎ Error processing "routes.txt" file.');
 	}
@@ -515,8 +507,7 @@ export async function parsePlan(planData: Plan) {
 		Logger.success(`Finished processing "shapes.txt": ${savedShapes.size} rows saved in ${shapesParseTimer.get()}.`, 1);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "shapes.txt" file.', error);
 		throw new Error('✖︎ Error processing "shapes.txt" file.');
 	}
@@ -553,8 +544,7 @@ export async function parsePlan(planData: Plan) {
 		Logger.success(`Finished processing "stops.txt": ${savedStops.size} rows saved in ${stopsParseTimer.get()}.`, 1);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "stops.txt" file.', error);
 		throw new Error('✖︎ Error processing "stops.txt" file.');
 	}
@@ -602,8 +592,7 @@ export async function parsePlan(planData: Plan) {
 		Logger.success(`Finished processing "stop_times.txt": ${stopTimesCounter} rows saved in ${stopTimesParseTimer.get()}.`, 1);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error processing "stop_times.txt" file.', error);
 		throw new Error('✖︎ Error processing "stop_times.txt" file.');
 	}
@@ -612,17 +601,17 @@ export async function parsePlan(planData: Plan) {
 	/* OUTPUT FILES */
 
 	//
-	// Build the Ride, HashedTrip and HashedShape objects and save them to the database.
+	// Build the Ride, HashedPattern, HashedTrip and HashedShape objects and save them.
 	// Each trip will have a Ride object created for each day it is scheduled to run.
-	// For HashedTrips and HashedShapes, the content is hashed to prevent duplicates
-	// and unnecessary database operations.
+	// For HashedPatterns, HashedTrips and HashedShapes, the content is hashed to prevent
+	// duplicates and unnecessary database operations.
 
 	try {
 		//
 
 		const outputsTimer = new Timer();
 
-		Logger.title(`Generating HashedTrips, HashedShapes and Rides:`);
+		Logger.title(`Generating HashedPatterns, HashedTrips, HashedShapes and Rides:`);
 
 		Logger.info(`Dates: ${calendarDatesCounter} for ${savedCalendarDates.size} service_ids`);
 		Logger.info(`Trips: ${tripsCounter}`);
@@ -681,6 +670,82 @@ export async function parsePlan(planData: Plan) {
 			const lastStopTime = sortedStopTimesData[sortedStopTimesData.length - 1];
 
 			/* * */
+			/* HASHED PATTERN */
+
+			//
+			// Build the HashedPattern data, including formatting the path data by combining
+			// properties from stop_times and stops. Sort it by stop_sequence.
+
+			const formattedHashedPatternPath: HashedPatternWaypoint[] = sortedStopTimesData.map((stopTime) => {
+				// Get the stop data for this stop_time
+				const stopData = savedStops.get('stop_id', stopTime.stop_id);
+				if (!stopData) throw new Error(`Stop "${stopTime.stop_id}" not found for trip "${currentTrip.trip_id}" for Plan "${planData._id}".`);
+				// Normalize the shape_dist_traveled to meters, if necessary
+				const normalizedShapeDistTraveled = toMetersFromKilometersOrMeters(stopTime.shape_dist_traveled, lastStopTime.shape_dist_traveled);
+				// Return the formatted path data for this stop_time
+				return {
+					drop_off_type: validateGtfsPickupDropoffType(stopTime.drop_off_type),
+					pickup_type: validateGtfsPickupDropoffType(stopTime.pickup_type),
+					shape_dist_traveled: normalizedShapeDistTraveled,
+					stop_id: stopTime.stop_id,
+					stop_lat: stopData.stop_lat,
+					stop_lon: stopData.stop_lon,
+					stop_name: stopData.stop_name,
+					stop_sequence: stopTime.stop_sequence,
+					timepoint: stopTime.timepoint,
+				};
+			});
+
+			const sortedHashedPatternPath = formattedHashedPatternPath.sort((a, b) => {
+				return a.stop_sequence - b.stop_sequence;
+			});
+
+			//
+			// To prevent duplicates, hash the object contents and check
+			// if it already exists in the database. The hash value is
+			// actually the _id of the HashedPattern document.
+
+			const hashableHashedPattern: Omit<HashedPattern, '_id' | 'created_at' | 'updated_at'> = {
+				agency_id: routeData.agency_id,
+				line_id: routeData.line_id,
+				line_long_name: routeData.line_long_name,
+				line_short_name: routeData.line_short_name,
+				path: sortedHashedPatternPath,
+				pattern_id: currentTrip.pattern_id,
+				route_color: routeData.route_color,
+				route_id: currentTrip.route_id,
+				route_long_name: routeData.route_long_name,
+				route_short_name: routeData.route_short_name,
+				route_text_color: routeData.route_text_color,
+				trip_headsign: currentTrip.trip_headsign,
+			};
+
+			const hashableHashedPatternStringified = JSON.stringify(hashableHashedPattern);
+
+			const uniqueIdValueForHashedPattern = crypto
+				.createHash('sha256')
+				.update(hashableHashedPatternStringified)
+				.digest('hex');
+
+			//
+			// Check if there is already a document with this unique ID value.
+			// If it does not exist, save it to the database.
+
+			const currentHashedPatternAlreadyExists = await hashedPatterns.existsById(uniqueIdValueForHashedPattern);
+
+			const finalHashedPattern: HashedPattern = {
+				...hashableHashedPattern,
+				_id: uniqueIdValueForHashedPattern,
+				created_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_timestamp,
+			};
+
+			if (!currentHashedPatternAlreadyExists) {
+				await hashedPatternsDbWritter.write(finalHashedPattern, { filter: { _id: finalHashedPattern._id }, upsert: true });
+				hashedPatternsCounter++;
+			}
+
+			/* * */
 			/* HASHED TRIP */
 
 			//
@@ -697,8 +762,8 @@ export async function parsePlan(planData: Plan) {
 				return {
 					arrival_time: stopTime.arrival_time,
 					departure_time: stopTime.departure_time,
-					drop_off_type: stopTime.drop_off_type,
-					pickup_type: stopTime.pickup_type,
+					drop_off_type: validateGtfsPickupDropoffType(stopTime.drop_off_type),
+					pickup_type: validateGtfsPickupDropoffType(stopTime.pickup_type),
 					shape_dist_traveled: normalizedShapeDistTraveled,
 					stop_id: stopTime.stop_id,
 					stop_lat: stopData.stop_lat,
@@ -822,7 +887,7 @@ export async function parsePlan(planData: Plan) {
 			// as well as other properties derived from the previously saved entities.
 			// Start by validating that this trip has a valid path.
 
-			if (!finalHashedTrip || !finalHashedTrip.path || finalHashedTrip.path.length === 0) {
+			if (!finalHashedTrip?.path || finalHashedTrip.path.length === 0) {
 				Logger.error(`Trip ${currentTrip.trip_id} has no path data. Skipping...`);
 				continue;
 			}
@@ -873,6 +938,7 @@ export async function parsePlan(planData: Plan) {
 					end_time_scheduled: endTimeScheduledDate,
 					extension_observed: null,
 					extension_scheduled: extensionScheduledInMeters,
+					hashed_pattern_id: finalHashedPattern._id,
 					hashed_shape_id: finalHashedShape._id,
 					hashed_trip_id: finalHashedTrip._id,
 					headsign: currentTrip.trip_headsign,
@@ -929,8 +995,9 @@ export async function parsePlan(planData: Plan) {
 		// Flush the writers to save all the data to the database
 		// before changing the Plan status to 'success'.
 
-		await hashedTripsDbWritter.flush();
+		await hashedPatternsDbWritter.flush();
 		await hashedShapesDbWritter.flush();
+		await hashedTripsDbWritter.flush();
 		await ridesDbWritter.flush();
 
 		//
@@ -947,11 +1014,10 @@ export async function parsePlan(planData: Plan) {
 		//
 		// Log progress
 
-		Logger.info(`Saved ${savedRideIds.size} Rides, ${hashedTripsCounter} Trips, ${hashedShapesCounter} Shapes in ${outputsTimer.get()}.`);
+		Logger.info(`Saved ${savedRideIds.size} Rides, ${hashedPatternsCounter} HashedPatterns, ${hashedTripsCounter} HashedTrips, ${hashedShapesCounter} HashedShapes in ${outputsTimer.get()}.`);
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error('Error transforming or saving Shapes, Trips or Rides to database.', error);
 		throw new Error('✖︎ Error transforming or saving Shapes, Trips or Rides to database.');
 	}
@@ -1016,8 +1082,7 @@ const setDirectoryPermissions = (dirPath, mode = 0o666) => {
 		const filePath = `${dirPath}/${file.name}`;
 		if (file.isDirectory()) {
 			setDirectoryPermissions(filePath, mode);
-		}
-		else {
+		} else {
 			fs.chmodSync(filePath, mode);
 		}
 	}

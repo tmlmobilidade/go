@@ -3,6 +3,7 @@
 export * from '@/exports/afetacao.js';
 export * from '@/exports/agency.js';
 export * from '@/exports/calendar-dates.js';
+export * from '@/exports/calendar-map.js';
 export * from '@/exports/fares.js';
 export * from '@/exports/routes.js';
 export * from '@/exports/shapes.js';

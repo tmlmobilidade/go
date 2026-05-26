@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { usePlanChangeContext } from '@/components/plans/change/PlanChange.context';
 import { PlanChangeHeader } from '@/components/plans/change/PlanChangeHeader';
 import { IconCheck } from '@tabler/icons-react';

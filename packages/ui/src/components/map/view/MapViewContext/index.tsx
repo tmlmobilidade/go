@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { type MapRef } from '@vis.gl/react-maplibre';
 import { type Feature, type FeatureCollection, type GeoJsonProperties, type Geometry } from 'geojson';
 import { type MapLibreEvent } from 'maplibre-gl';

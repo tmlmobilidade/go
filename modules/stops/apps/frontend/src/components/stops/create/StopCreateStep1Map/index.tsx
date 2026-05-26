@@ -1,7 +1,5 @@
 'use client';
 
-/* * */
-
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { getBaseGeoJsonFeatureCollection, isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
