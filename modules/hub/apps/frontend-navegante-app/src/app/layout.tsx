@@ -5,6 +5,8 @@ import { i18nResourceKeysPt } from '@/i18n/resources';
 import { BaseProvider } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 
+import '@/styles/navegante/font.css';
+
 /* * */
 
 export default async function RootLayout({ children }: PropsWithChildren) {
