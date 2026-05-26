@@ -3,6 +3,7 @@
 import type { CliArgs } from '@/types.js';
 
 import { buildLoaderConfig } from '@/build-config.js';
+import { fetchRouteNodes, fetchStopWaypoints, fetchTripHashes } from '@/fetch-context.js';
 import { fetchEventsForTrip } from '@/fetch-events.js';
 import { parseTripRef } from '@/parse-trip-ref.js';
 import { replayEvents } from '@/replay-events.js';
@@ -96,7 +97,7 @@ function parseCliArgs(): CliArgs {
 	// E. Parse the output directory (under modules/eta/output, not cwd)
 
 	const etaModuleRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
-	const defaultOutputDir = path.join(etaModuleRoot, 'output', 'ride-analyzer', `${sanitizedTripId}-${Date.now()}`);
+	const defaultOutputDir = path.join(etaModuleRoot, '.output', 'ride-analyzer', `${sanitizedTripId}-${Date.now()}`);
 
 	//
 	// F. Return the parsed arguments
@@ -159,18 +160,33 @@ async function main() {
 	const snapshots = await replayEvents(clickhouseClient, args.tripRef, events);
 
 	//
-	// F. Write the output
+	// F. Fetch the geometry context for the viewer (route polyline + stops)
 
-	await writeOutput({
-		args,
-		completedAt: new Date().toISOString(),
-		eventCount: events.length,
-		snapshotCount: snapshots.length,
-		startedAt,
-	}, snapshots);
+	const tripContext = await fetchTripHashes(clickhouseClient, args.tripRef.tripId);
+	const [route, stops] = await Promise.all([
+		fetchRouteNodes(clickhouseClient, tripContext.hashedShapeId),
+		fetchStopWaypoints(clickhouseClient, tripContext.hashedTripId),
+	]);
 
 	//
-	// G. Log the completion
+	// G. Write the output
+
+	await writeOutput({
+		metadata: {
+			args,
+			completedAt: new Date().toISOString(),
+			eventCount: events.length,
+			snapshotCount: snapshots.length,
+			startedAt,
+			tripContext,
+		},
+		route,
+		snapshots,
+		stops,
+	});
+
+	//
+	// H. Log the completion
 
 	Logger.success(`ride-analyzer completed in ${totalTimer.get()} seconds`);
 }

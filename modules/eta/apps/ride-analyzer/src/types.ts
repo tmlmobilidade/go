@@ -55,3 +55,27 @@ export interface ReplaySnapshot {
 	event: SimplifiedVehicleEvent
 	event_index: number
 }
+
+export interface RouteNode {
+	latitude: number
+	longitude: number
+	node_index: number
+}
+
+export interface StopWaypoint {
+	arrival_time: string
+	departure_time: string
+	hashed_shape_id: string
+	hashed_trip_id: string
+	node_index: number
+	stop_id: string
+	stop_lat: number
+	stop_lon: number
+	stop_name: string
+	stop_sequence: number
+}
+
+export interface TripContext {
+	hashedShapeId: string
+	hashedTripId: string
+}

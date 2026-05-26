@@ -1,6 +1,6 @@
 /* * */
 
-import type { CliArgs, ReplaySnapshot } from '@/types.js';
+import type { CliArgs, ReplaySnapshot, RouteNode, StopWaypoint, TripContext } from '@/types.js';
 
 import { Logger } from '@tmlmobilidade/logger';
 import { CsvWriter } from '@tmlmobilidade/writers';
@@ -15,6 +15,7 @@ interface RunMetadata {
 	eventCount: number
 	snapshotCount: number
 	startedAt: string
+	tripContext: TripContext
 }
 
 interface FlatEtaRow {
@@ -34,6 +35,13 @@ interface FlatEtaRow {
 	stop_sequence: number
 	trip_id: string
 	vehicle_id: string
+}
+
+interface WriteOutputArgs {
+	metadata: RunMetadata
+	route: RouteNode[]
+	snapshots: ReplaySnapshot[]
+	stops: StopWaypoint[]
 }
 
 function ensureDir(dir: string) {
@@ -69,14 +77,21 @@ function flattenSnapshots(snapshots: ReplaySnapshot[]): FlatEtaRow[] {
 
 /**
  * Persists the analyzer run output to disk:
- *  - `summary.json` keeps the full per-event snapshots for ad hoc inspection.
- *  - `etas.csv` is a flat (event × stop) table convenient for spreadsheets.
+ *  - `summary.json`  — full per-event snapshots + run metadata.
+ *  - `route.json`    — ordered shape-node polyline for the trip.
+ *  - `stops.json`    — snapped stop waypoints for the trip.
+ *  - `etas.csv`      — flat (event × stop) table convenient for spreadsheets.
+ *
+ * Also logs the open-ready URL of the static viewer at
+ * `modules/eta/docs/ride-analyzer.html?run=<run-id>`.
  */
-export async function writeOutput(metadata: RunMetadata, snapshots: ReplaySnapshot[]) {
+export async function writeOutput({ metadata, route, snapshots, stops }: WriteOutputArgs) {
 	const outputDir = metadata.args.outputDir;
 	ensureDir(outputDir);
 
 	const summaryPath = path.join(outputDir, 'summary.json');
+	const routePath = path.join(outputDir, 'route.json');
+	const stopsPath = path.join(outputDir, 'stops.json');
 	const csvPath = path.join(outputDir, 'etas.csv');
 
 	const summary = {
@@ -86,6 +101,12 @@ export async function writeOutput(metadata: RunMetadata, snapshots: ReplaySnapsh
 	fs.writeFileSync(summaryPath, JSON.stringify(summary, null, 2), { encoding: 'utf-8' });
 	Logger.info(`Wrote ${summaryPath}`);
 
+	fs.writeFileSync(routePath, JSON.stringify(route), { encoding: 'utf-8' });
+	Logger.info(`Wrote ${routePath} (${route.length} nodes)`);
+
+	fs.writeFileSync(stopsPath, JSON.stringify(stops, null, 2), { encoding: 'utf-8' });
+	Logger.info(`Wrote ${stopsPath} (${stops.length} stops)`);
+
 	const flatRows = flattenSnapshots(snapshots);
 	const csvWriter = new CsvWriter<FlatEtaRow>('ride-analyzer', csvPath, { batch_size: 100000, logs: false });
 	if (flatRows.length > 0) {
@@ -93,4 +114,11 @@ export async function writeOutput(metadata: RunMetadata, snapshots: ReplaySnapsh
 		await csvWriter.flush();
 	}
 	Logger.info(`Wrote ${csvPath} (${flatRows.length} rows)`);
+
+	const runId = path.basename(outputDir);
+	Logger.success(
+		`Open the viewer at: modules/eta/docs/ride-analyzer.html?run=${runId}\n`
+		+ `  (serve from repo root, e.g. \`python3 -m http.server 8080 --directory modules/eta\`,\n`
+		+ `   then http://localhost:8080/docs/ride-analyzer.html?run=${runId})`,
+	);
 }

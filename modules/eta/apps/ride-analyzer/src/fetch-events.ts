@@ -28,7 +28,6 @@ export async function fetchEventsForTrip(clickhouseClient: ClickHouseClient, tri
 			WHERE trip_id = {trip_id:String}
 			  AND operational_date = {operational_date:Date}
 			ORDER BY created_at ASC
-			LIMIT 5
 		`,
 		query_params: {
 			operational_date: tripRef.operationalDateClickHouse,

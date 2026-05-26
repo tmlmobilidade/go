@@ -37,7 +37,24 @@ npm run test:eta:ride -- \
 | File | Description |
 |------|-------------|
 | `summary.json` | Run metadata (CLI args, timings, event counts) plus the full per-event snapshots, including the inserted `curr_vehicle_events` row and the enriched ETA list. |
+| `route.json` | Ordered shape nodes (`node_index`, `latitude`, `longitude`) for the trip's `hashed_shape_id`. |
+| `stops.json` | Snapped waypoints from `curr_waypoints_snapped` for the trip's `hashed_trip_id`. |
 | `etas.csv` | Flat `(event × stop)` table with `event_index`, `event_id`, `event_created_at`, `node_index`, `stop_sequence`, `stop_id`, scheduled / observed / estimated arrival columns, and `eta_seconds`. |
+
+## Viewing a run
+
+Serve the `modules/eta` folder, then open the static viewer:
+
+```bash
+# from repo root
+python3 -m http.server 8080 --directory modules/eta
+
+# in another terminal
+open "http://localhost:8080/docs/ride-analyzer.html?run=<run-id>"
+```
+
+`<run-id>` is the output folder name under `modules/eta/output/ride-analyzer/`.
+You can also pass `?dir=../output/ride-analyzer/<run-id>` explicitly.
 
 ## Requirements
 
