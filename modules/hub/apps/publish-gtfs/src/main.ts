@@ -261,6 +261,8 @@ export async function main() {
 
 	const zipTimer = new Timer();
 
+	Logger.info('Zipping GTFS export...');
+
 	const outputZip = new ZipFile();
 
 	await new Promise<void>((resolve) => {
@@ -282,6 +284,8 @@ export async function main() {
 	//
 	// Upload the GTFS zip file to the Files collection,
 	// which handles storage and retrieval.
+
+	Logger.info('Uploading GTFS zip file to Files collection...');
 
 	const fileStream = fs.createReadStream(`${context.workdir.path}/${context.run_id}.zip`);
 

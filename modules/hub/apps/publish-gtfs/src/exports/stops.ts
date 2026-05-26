@@ -4,6 +4,7 @@
 import { type ExportGtfsContext } from '@/types/context.js';
 import { locations, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
@@ -33,6 +34,10 @@ export interface ExportedStopsRow {
 
 export async function exportStopsFile(context: ExportGtfsContext) {
 	//
+
+	const timer = new Timer();
+
+	Logger.info('Exporting stops.txt file...');
 
 	const allStopsList = await stops.findMany(
 		{ district_id: { $in: ['07', '11', '15'] } }, // Évora, Lisboa and Setúbal districts
@@ -82,5 +87,5 @@ export async function exportStopsFile(context: ExportGtfsContext) {
 
 	await context.writers.stops.flush();
 
-	Logger.info('Exported stops.txt file.');
+	Logger.success(`Exported stops.txt file in ${timer.get()}.`);
 }

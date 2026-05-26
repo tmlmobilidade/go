@@ -4,6 +4,7 @@
 import { type ExportGtfsContext } from '@/types/context.js';
 import { agencies } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
@@ -26,6 +27,10 @@ export interface ExportedAgencyRow {
  */
 export async function exportAgencyFile(agencyIds: string[], context: ExportGtfsContext) {
 	//
+
+	const timer = new Timer();
+
+	Logger.info('Exporting agency.txt file...');
 
 	//
 	// Get agencies data from the database.
@@ -52,5 +57,5 @@ export async function exportAgencyFile(agencyIds: string[], context: ExportGtfsC
 
 	await context.writers.agency.flush();
 
-	Logger.info('Exported agency.txt file.');
+	Logger.success(`Exported agency.txt file in ${timer.get()}.`);
 }
