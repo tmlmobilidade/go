@@ -4,4 +4,5 @@ import '@/endpoints/typologies/typologies.routes';
 import '@/endpoints/patterns/patterns.routes';
 import '@/endpoints/gtfs/gtfs.routes';
 import '@/endpoints/fares/fares.routes';
+import '@/endpoints/vkm/vkm.routes';
 import '@/endpoints/zones/zones.routes';
