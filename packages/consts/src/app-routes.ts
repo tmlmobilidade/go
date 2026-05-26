@@ -375,8 +375,13 @@ export const API_ROUTES = Object.freeze({
 		PLANS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/plans`,
 
 		// REALTIME
-		REALTIME_VEHICLES: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles`,
-		REALTIME_VEHICLES_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles.pb`,
+		REALTIME_ETA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta`,
+		REALTIME_ETA_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs`,
+		REALTIME_ETA_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs.pb`,
+		REALTIME_VEHICLES_METADATA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/metadata`,
+		REALTIME_VEHICLES_POSITIONS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions`,
+		REALTIME_VEHICLES_POSITIONS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs`,
+		REALTIME_VEHICLES_POSITIONS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs.pb`,
 	},
 
 	locations: {

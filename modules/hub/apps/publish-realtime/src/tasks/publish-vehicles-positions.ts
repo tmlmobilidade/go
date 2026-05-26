@@ -6,10 +6,10 @@ import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
-export async function publishVehiclePositions() {
+export async function publishVehiclesPositions() {
 	//
 
-	Logger.title('Publishing latest vehicle positions...');
+	Logger.title('Publishing latest vehicles positions...');
 
 	const globalTimer = new Timer();
 
@@ -23,14 +23,14 @@ export async function publishVehiclePositions() {
 		driver_id: undefined,
 	}));
 
-	Logger.info(`Retrieved ${latestVehiclePositionsStripped.length} latest vehicle positions...`);
+	Logger.info(`Retrieved ${latestVehiclePositionsStripped.length} latest vehicles positions...`);
 
 	//
 	// Save the result in API Cache
 
 	await apiCache.set('hub:realtime:vehicles:positions:json', JSON.stringify(latestVehiclePositionsStripped));
 
-	Logger.success(`Finished publishing latest vehicle positions JSON (${globalTimer.get()})`);
+	Logger.success(`Finished publishing latest vehicles positions (${globalTimer.get()})`);
 
 	//
 };

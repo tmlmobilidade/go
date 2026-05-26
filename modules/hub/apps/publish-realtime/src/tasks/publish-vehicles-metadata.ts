@@ -7,10 +7,10 @@ import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
-export async function publishVehicleMetadata() {
+export async function publishVehiclesMetadata() {
 	//
 
-	Logger.title('Publishing vehicle metadata...');
+	Logger.title('Publishing vehicles metadata...');
 
 	const globalTimer = new Timer();
 
@@ -19,14 +19,14 @@ export async function publishVehicleMetadata() {
 
 	const vehicleMetadata = await vehicles.all();
 
-	Logger.info(`Retrieved ${vehicleMetadata.length} vehicle metadata...`);
+	Logger.info(`Retrieved ${vehicleMetadata.length} vehicles metadata...`);
 
 	//
 	// Save the result in API Cache
 
 	await apiCache.set('hub:realtime:vehicles:metadata:json', JSON.stringify(vehicleMetadata));
 
-	Logger.success(`Finished publishing vehicle metadata JSON (${globalTimer.get()})`);
+	Logger.success(`Finished publishing vehicles metadata (${globalTimer.get()})`);
 
 	//
 };
