@@ -1,9 +1,9 @@
 'use client';
 
-import { AlertActivePeriodStart } from '@/components/alerts/AlertActivePeriod';
-import { AlertCauseIcon, AlertEffectIcon } from '@/components/alerts/AlertCauseEffectIcon';
-import { AlertInformedEntity } from '@/components/alerts/AlertInformedEntity';
-import { AlertsDetailImageThumbnail } from '@/components/alerts/AlertsDetailImageThumbnail';
+import { AlertActivePeriodStart } from '@/components/alerts2/AlertActivePeriod';
+import { AlertCauseIcon, AlertEffectIcon } from '@/components/alerts2/AlertCauseEffectIcon';
+import { AlertInformedEntity } from '@/components/alerts2/AlertInformedEntity';
+import { AlertsDetailImageThumbnail } from '@/components/alerts2/AlertsDetailImageThumbnail';
 import { BackButton } from '@/components/common/BackButton';
 import Button from '@/components/common/Button';
 import { Section } from '@/components/layout/Section';

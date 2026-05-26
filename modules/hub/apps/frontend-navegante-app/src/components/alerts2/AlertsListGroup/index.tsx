@@ -2,9 +2,9 @@
 
 import type { AlertGroupByDate } from '@tmlmobilidade/go-hub-pckg-types';
 
-import AlertsListEmpty from '@/components/alerts/AlertsListEmpty';
-import { AlertListItem } from '@/components/alerts/AlertsListItem';
-import AlertsListItemSkeleton from '@/components/alerts/AlertsListItemSkeleton';
+import AlertsListEmpty from '@/components/alerts2/AlertsListEmpty';
+import { AlertListItem } from '@/components/alerts2/AlertsListItem';
+import AlertsListItemSkeleton from '@/components/alerts2/AlertsListItemSkeleton';
 import { GroupedListItem } from '@/components/layout/GroupedListItem';
 import GroupedListSkeleton from '@/components/layout/GroupedListSkeleton';
 import { Surface } from '@/components/layout/Surface';
