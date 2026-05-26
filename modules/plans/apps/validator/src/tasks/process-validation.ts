@@ -8,7 +8,7 @@ import { getTmpWorkdirPath } from '@tmlmobilidade/files';
 import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
 import { agencies, files, gtfsValidations, users } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GtfsValidation } from '@tmlmobilidade/types';
+import { type GtfsValidationSummary, type GtfsValidation } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import pjson from 'pjson' with { type: 'json' };
@@ -104,7 +104,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		await gtfsValidations.updateById(gtfsValidation._id, {
 			processing_status: 'complete',
-			summary: gtfsValidationResult.summary,
+			summary: gtfsValidationResult.summary as GtfsValidationSummary,
 			validity_status: gtfsValidationResult.summary.total_errors === 0 ? 'valid' : 'invalid',
 		});
 
