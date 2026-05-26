@@ -5,7 +5,7 @@ import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { getTmpWorkdirPath } from '@tmlmobilidade/files';
-import { GTFSValidator } from '@tmlmobilidade/gtfs-validator';
+import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
 import { agencies, files, gtfsValidations, users } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GtfsValidation } from '@tmlmobilidade/types';
@@ -88,12 +88,12 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		Logger.info(`Custom validation rules saved to: ${gtfsValidationRulesPath}`);
 
 		//
-		// Perform the GTFS validation using the GTFSValidator library
+		// Perform the GTFS validation using the GtfsValidator library
 		// and update the GTFS validation document in MongoDB with the results.
 
 		Logger.info('Performing the actual GTFS validation...');
 
-		const gtfsValidationResult = await GTFSValidator(gtfsFilePath, {
+		const gtfsValidationResult = await GtfsValidator(gtfsFilePath, {
 			lang: 'pt',
 			log_level: 'debug',
 			out_file: gtfsValidationResultPath,
