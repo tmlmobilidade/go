@@ -34,7 +34,7 @@ export const syncDemandByProductByLineByDay = async () => {
 	//
 	// Load calendar JSON
 
-	const calendarJson = await fetchCalendarData();
+	const calendarJson = await Dates.fetchCalendarData();
 
 	//
 	// Build a map for fast lookup
