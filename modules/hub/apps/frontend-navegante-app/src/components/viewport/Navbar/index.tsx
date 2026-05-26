@@ -2,7 +2,7 @@
 
 import { AlertsList } from '@/components/alerts/AlertsList';
 import { LinesList } from '@/components/lines/LinesList';
-import { StopsList } from '@/components/stops/StopsList';
+import { StopsList } from '../../stops/StopsList';
 import { Tabs } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 

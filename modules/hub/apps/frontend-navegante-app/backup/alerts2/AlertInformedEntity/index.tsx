@@ -1,6 +1,6 @@
 'use client';
 
-import { LineBadge } from '@/components/lines2/LineBadge';
+import { LineBadge } from '../../lines2/LineBadge';
 import { useEnvironmentContext } from '@/contexts/Environment.context';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
