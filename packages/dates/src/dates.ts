@@ -15,6 +15,14 @@ interface DatesConstructor {
 	unix_timestamp: UnixTimestamp
 }
 
+export interface CalendarEntry {
+	date: string
+	day_type: '1' | '2' | '3'
+	holiday: '0' | '1'
+	notes: string
+	period: '1' | '2' | '3'
+}
+
 /* * */
 
 export class Dates {
@@ -182,6 +190,23 @@ export class Dates {
 			std_window: this.prototype.getStandardWindowInterval(dateTime.toISO()),
 			unix_timestamp: dateTime.toMillis() as UnixTimestamp,
 		});
+	}
+
+	/**
+	 * Fetches calendar data from the public API
+	 * Returns an empty array if the request fails
+	 */
+	static async fetchCalendarData(): Promise<CalendarEntry[]> {
+		let calendarJson: CalendarEntry[] = [];
+
+		try {
+			const response = await fetch('https://go.carrismetropolitana.pt/api/dates/public');
+			calendarJson = !response.ok ? [] : await response.json() as CalendarEntry[];
+		} catch (error) {
+			console.error('Error fetching calendar data:', error);
+		}
+
+		return calendarJson;
 	}
 
 	/**

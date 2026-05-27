@@ -1,8 +1,7 @@
 /* * */
 
 import { dayLabelFromStartIso } from '@/utils/day-label.js';
-import { Dates } from '@tmlmobilidade/dates';
-import { CalendarEntry, fetchCalendarData } from '@tmlmobilidade/go-performance-pckg-dates';
+import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -36,7 +35,7 @@ export const syncDemandByPatternByDay = async () => {
 	//
 	// Load calendar JSON
 
-	const calendarJson = await fetchCalendarData();
+	const calendarJson = await Dates.fetchCalendarData();
 
 	if (!calendarJson.length) {
 		throw new Error('Calendar data unavailable — cannot build demand_by_pattern_by_day metrics');

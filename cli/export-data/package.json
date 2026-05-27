@@ -42,7 +42,8 @@
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/writers": "*"
+		"@tmlmobilidade/writers": "*",
+		"exceljs": "^4.4.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

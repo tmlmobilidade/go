@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
 	"layout": {
 		"NoDataLabel": {
 			"no_data": "Nenhum dado disponível"
@@ -24,6 +25,773 @@
 				"alerts": "Alertas",
 				"lines": "Linhas",
 				"stops": "Paragens"
+=======
+	"agencies": {
+		"NoDataLabel": {
+			"text": "Selecione uma Agência"
+		},
+		"detail": {
+			"SectionAlertsMap": {
+				"description": "Mapeamento de causas, efeitos e tipos de referência para Alertas de Serviço.",
+				"table": {
+					"header": {
+						"effect": "Efeito"
+					}
+				},
+				"title": "Alertas"
+			},
+			"SectionBasicInfo": {
+				"description": "Nome, email, telefone, URL e fuso horário.",
+				"fields": {
+					"code": {
+						"label": "Código",
+						"placeholder": "44"
+					},
+					"fare_url": {
+						"label": "URL p/ informações de tarifas",
+						"placeholder": "https://www.carrismetropolitana.pt/tarifas"
+					},
+					"name": {
+						"label": "Nome do Operador",
+						"placeholder": "Carris Metropolitana"
+					},
+					"phone": {
+						"label": "Contacto Telefónico",
+						"placeholder": "912345678"
+					},
+					"public_email": {
+						"label": "Email Público",
+						"placeholder": "email@example.com"
+					},
+					"short_name": {
+						"label": "Nome Curto",
+						"placeholder": "CM"
+					},
+					"timezone": {
+						"label": "Fuso Horário"
+					},
+					"website_url": {
+						"label": "Website",
+						"placeholder": "https://www.carrismetropolitana.pt"
+					}
+				},
+				"title": "Detalhes do Operador"
+			},
+			"SectionContacts": {
+				"description": "Notificações e Contactos",
+				"fields": {
+					"contact_emails_pta": {
+						"description": "Notificações serão enviadas para os emails de contacto da Autoridade.",
+						"label": "Emails de contacto da Autoridade"
+					},
+					"contact_emails_pto": {
+						"description": "Notificações serão enviadas para os seguintes emails de contacto do operador.",
+						"label": "Emails de contacto do Operador"
+					}
+				},
+				"title": "Contatos"
+			},
+			"SectionFinancials": {
+				"description": "Informação Financeira",
+				"fields": {
+					"price_per_km": {
+						"label": "Preço por km",
+						"placeholder": "1.50"
+					},
+					"total_vkm_per_year": {
+						"label": "Total de km por ano",
+						"placeholder": "1000000"
+					}
+				},
+				"title": "Informação financeira da agência"
+			},
+			"SectionValidationRules": {
+				"description": "Ficheiro de regras de validação do GTFS",
+				"fields": {
+					"file": {
+						"button": "Carregar regras",
+						"label": "Inserir regras de validação do GTFS"
+					},
+					"file_content": {
+						"button": "Transferir regras",
+						"label": "Download regras de validação do GTFS",
+						"no_content": "Nenhuma regra de validação definida"
+					}
+				},
+				"title": "Regras de validação do GTFS",
+				"toasts": {
+					"error": {
+						"message": "Não foi possível ler o ficheiro JSON. Verifique o conteúdo.",
+						"title": "Erro ao processar ficheiro."
+					},
+					"file_type": {
+						"message": "O ficheiro submetido excede o limite permitido.",
+						"title": "Tipo de ficheiro inválido."
+					},
+					"max_size": {
+						"message": "O ficheiro submetido excede o limite permitido.",
+						"title": "Ficheiro demasiado grande."
+					},
+					"read_only": {
+						"message": "O documento está em modo de visualização.",
+						"title": "Não é possível atualizar as regras de validação."
+					},
+					"success": {
+						"message": "O ficheiro submetido foi aceite. Guarde as alterações para ativar.",
+						"title": "Regras carregadas."
+					}
+				}
+			},
+			"header": {
+				"save": "Guardar"
+			}
+		},
+		"list": {
+			"Header": {
+				"title": "Operadores"
+			},
+			"Table": {
+				"columns": {
+					"id": "#ID",
+					"name": "Nome"
+				}
+			}
+		}
+	},
+	"common": {
+		"FileComponent": {
+			"downloadError": "Erro ao transferir ficheiro",
+			"downloadFailed": "Não foi possível gerar o ficheiro JSON.",
+			"downloadStarted": "Download iniciado com sucesso.",
+			"downloadTitle": "A transferir ficheiro"
+		},
+		"IconChooser": {
+			"label": "Ícones"
+		},
+		"UploadImage": {
+			"DeleteButton": {
+				"confirm": {
+					"message": "Tem certeza que deseja apagar a imagem?",
+					"title": "Apagar imagem"
+				}
+			},
+			"Error": {
+				"message": "O tamanho do ficheiro execede o limite permitido",
+				"title": "Erro ao carregar imagem"
+			},
+			"FileButton": {
+				"label": "Carregar imagem"
+			}
+		}
+	},
+	"home": {
+		"Wiki": {
+			"list": {
+				"columns": {
+					"category": {
+						"label": "Categorias"
+					},
+					"title": {
+						"label": "Título"
+					}
+				}
+			}
+		}
+	},
+	"organizations": {
+		"NoDataLabel": {
+			"text": "Selecione uma Organização"
+		},
+		"create": {
+			"Header": {
+				"PublishButton": {
+					"label": "Publicar"
+				},
+				"title": "Criar Organização"
+			},
+			"SectionBasicInfo": {
+				"fields": {
+					"long_name": {
+						"label": "Nome da organização",
+						"placeholder": "Carris Metropolitana"
+					},
+					"short_name": {
+						"label": "Sigla",
+						"placeholder": "CM"
+					}
+				}
+			}
+		},
+		"detail": {
+			"Header": {
+				"DeleteButton": {
+					"Confirm": {
+						"message": "Tem a certeza que pretende eliminar esta organização? Esta ação é irreversível.",
+						"title": "Eliminar Organização"
+					},
+					"NewOrganizationButton": {
+						"label": "Nova organização"
+					}
+				}
+			},
+			"QuickLinks": {
+				"AddQuickLinkButton": {
+					"label": "Adicionar Link Rápido"
+				},
+				"NoOrganizationLabel": {
+					"label": "Crie primeiro a organização para adicionar links rápidos."
+				},
+				"description": "Links rápidos que aparecem na página inicial.",
+				"table": {
+					"columns": {
+						"actions": {
+							"label": "Ações"
+						},
+						"icon": {
+							"label": "Ícone"
+						},
+						"link": {
+							"label": "Link"
+						},
+						"name": {
+							"label": "Nome"
+						}
+					}
+				},
+				"title": "Links Rápidos"
+			},
+			"QuickLinksModal": {
+				"Error": {
+					"message": "Por favor preencha todos os campos",
+					"title": "Por favor, insira uma URL válida"
+				},
+				"Fields": {
+					"cancel": {
+						"label": "Cancelar"
+					},
+					"link": {
+						"label": "Link"
+					},
+					"save": {
+						"label": "Guardar"
+					},
+					"title": {
+						"label": "Nome"
+					}
+				}
+			},
+			"SectionBasicInfo": {
+				"description": "Detalhes como nome, sigla, logótipo, links da página inicial.",
+				"fields": {
+					"logo_dark": {
+						"label": "Logótipo em Modo Escuro"
+					},
+					"logo_light": {
+						"label": "Logótipo em Modo Claro"
+					},
+					"long_name": {
+						"label": "Nome da Organização",
+						"placeholder": "Carris Metropolitana"
+					},
+					"short_name": {
+						"label": "Sigla",
+						"placeholder": "CM"
+					}
+				},
+				"title": "Informações gerais"
+			}
+		},
+		"list": {
+			"header": {
+				"NewOrganizationButton": {
+					"label": "Nova organização"
+				},
+				"title": "Organizações"
+			},
+			"table": {
+				"columns": {
+					"id": {
+						"label": "#ID"
+					},
+					"name": {
+						"label": "Nome"
+					}
+				}
+			}
+		}
+	},
+	"permissions": {
+		"AgencyPermissionMultiselect": {
+			"all": "Todas as agências",
+			"description": "Operadores ao qual o utilizador tem acesso para esta acção.",
+			"label": "Operadores"
+
+		},
+		"AlertReferenceTypePermissionMultiselect": {
+			"alertReferenceTypeOptionsWithAllowAll": {
+				"all": "Tipos de referência",
+				"lines": "Linhas",
+				"rides": "Circulações",
+				"stops": "Paragens"
+			},
+			"all": "Todo o tipo de referências",
+			"description": "Selecione os tipos de referência que este utilizador poderá utilizar.",
+			"label": "Tipos de referência"
+		},
+		"SectionItems": {
+			"label": "Permissão Herdada pelo grupo de permissões"
+		},
+		"agencyActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de operadores.",
+			"descriptions": {
+				"create": "Permite criar um operador",
+				"delete": "Permite eliminar um operador",
+				"read": "Permite ver operadores",
+				"toggleLock": "Permite bloquear/desbloquear um operador",
+				"update": "Permite editar um operador"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"toggleLock": "Bloquear/desbloquear",
+				"update": "Editar"
+			},
+			"title": "Permissões de Operadores"
+		},
+		"alertActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de alertas.",
+			"descriptions": {
+				"create": "Permite criar um alerta",
+				"delete": "Permite eliminar um alerta",
+				"read": "Permite ver alertas",
+				"toggleLock": "Permite bloquear/desbloquear um alerta",
+				"update": "Permite editar um alerta"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"toggleLock": "Bloquear/desbloquear",
+				"update": "Editar"
+			},
+			"title": "Permissões de Alertas"
+		},
+		"annotationsActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de anotações.",
+			"title": "Permissões de Anotações"
+		},
+		"datesActions": {
+			"descriptions": {
+				"createAnnotations": "Permite criar uma anotação",
+				"deleteAnnotations": "Permite eliminar uma anotação",
+				"readAnnotations": "Permite ver anotações",
+				"toggleLockAnnotations": "Permite bloquear/desbloquear uma anotação",
+				"updateAnnotations": "Permite editar uma anotação"
+			},
+			"labels": {
+				"createAnnotations": "Criar anotação",
+				"deleteAnnotations": "Eliminar anotação",
+				"readAnnotations": "Ver anotações",
+				"toggleLockAnnotations": "Bloquear/desbloquear",
+				"updateAnnotations": "Editar anotação"
+			}
+		},
+		"gtfsValidationActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de validações GTFS.",
+			"descriptions": {
+				"create": "Permite criar uma validação",
+				"read": "Permite ver validações",
+				"requestApproval": "Permite solicitar aprovação de uma validação"
+			},
+			"labels": {
+				"create": "Criar",
+				"read": "Ver",
+				"requestApproval": "Solicitar aprovação"
+			},
+			"title": "Permissões de Validações (GTFS)"
+		},
+		"homeActions": {
+			"description": "As ações que o utilizador pode realizar na home.",
+			"descriptions": {
+				"seeQuickLinks": "Permite ver links rápidos",
+				"seeWikiLinks": "Permite ver wiki"
+			},
+			"labels": {
+				"seeQuickLinks": "Ver links rápidos",
+				"seeWikiLinks": "Ver wiki"
+			},
+			"title": "Permissões da Home"
+		},
+		"organizationActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de organizações.",
+			"descriptions": {
+				"create": "Permite criar uma organização",
+				"delete": "Permite eliminar uma organização",
+				"read": "Permite ver organizações",
+				"toggleLock": "Permite bloquear/desbloquear uma organização",
+				"update": "Permite editar uma organização"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"toggleLock": "Bloquear/desbloquear",
+				"update": "Editar"
+			},
+			"title": "Permissões de Organizações"
+		},
+		"performanceActions": {
+			"description": "As ações que o utilizador pode realizar na visualização de métricas.",
+			"descriptions": {
+				"read": "Permite ver métricas"
+			},
+			"labels": {
+				"read": "Ver"
+			},
+			"title": "Permissões de Métricas"
+		},
+		"periodsActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de períodos.",
+			"descriptions": {
+				"create": "Permite criar um período",
+				"delete": "Permite eliminar um período",
+				"read": "Permite ver períodos",
+				"toggleLock": "Permite bloquear/desbloquear um período",
+				"update": "Permite editar um período"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"toggleLock": "Bloquear/desbloquear",
+				"update": "Editar"
+			},
+			"title": "Permissões de Períodos"
+		},
+		"planActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de planos.",
+			"descriptions": {
+				"create": "Permite criar um plano",
+				"delete": "Permite eliminar um plano",
+				"read": "Permite ver um plano específico",
+				"readController": "Permite ver a configuração dos SLAs de um plano",
+				"readPcgiLegacy": "Permite ver os dados da PCGI Legacy",
+				"toggleLock": "Permite bloquear/desbloquear um plano",
+				"update": "Permite editar um plano",
+				"updateController": "Permite configurar os SLAs de um plano",
+				"updateFeedInfoDates": "Permite editar as datas de informação do feed",
+				"updateGtfsPlan": "Permite alterar o GTFS de um plano",
+				"updatePcgiLegacy": "Permite editar os dados da PCGI Legacy"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"readController": "Ver SLA Controller",
+				"readPcgiLegacy": "Ver PCGI Legacy",
+				"toggleLock": "Bloquear/Desbloquear",
+				"update": "Editar",
+				"updateController": "Editar SLA Controller",
+				"updateFeedInfoDates": "Editar Datas de Validade",
+				"updateGtfsPlan": "Alterar GTFS",
+				"updatePcgiLegacy": "Editar PCGI Legacy"
+			},
+			"title": "Permissões de Planos"
+		},
+		"realtimeActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de alertas de tempo real.",
+			"descriptions": {
+				"create": "Permite criar um alerta de tempo real ",
+				"delete": "Permite eliminar um alerta de tempo real",
+				"read": "Permite ver alertas em tempo real",
+				"toggleLock": "Permite bloquear/desbloquear um alerta de tempo real",
+				"update": "Permite editar um alerta de tempo real"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"toggleLock": "Bloquear/desbloquear",
+				"update": "Editar"
+			},
+			"title": "Permissões de Alertas de Tempo Real"
+		},
+		"rideActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de viagens.",
+			"descriptions": {
+				"acceptanceChangeStatus": "Permite alterar o estado de uma justificação de uma viagem",
+				"acceptanceJustify": "Permite justificar uma viagem",
+				"acceptanceLock": "Permite bloquear/desbloquear uma justificação de uma viagem",
+				"acceptanceRead": "Permite ver uma justificação de uma viagem",
+				"analsysLock": "Permite bloquear/desbloquear uma análise de uma viagem",
+				"analysisRead": "Permite ver uma análise de uma viagem",
+				"analysisReprocess": "Permite reprocessar uma análise de uma viagem",
+				"analysisUpdate": "Permite editar uma análise de uma viagem",
+				"auditLock": "Permite bloquear/desbloquear uma auditoria de uma viagem",
+				"auditRead": "Permite ver uma auditoria de uma viagem",
+				"auditUpdate": "Permite editar uma auditoria de uma viagem"
+			},
+			"labels": {
+				"acceptanceChangeStatus": "Aceitação - Alterar estado",
+				"acceptanceJustify": "Aceitação - Justificar",
+				"acceptanceLock": "Aceitação - Bloquear/Desbloquear",
+				"acceptanceRead": "Aceitação - Ver",
+				"analsysLock": "Análise - Bloquear/Desbloquear",
+				"analysisRead": "Análise - Ver",
+				"analysisReprocess": "Análise - Reprocessar",
+				"analysisUpdate": "Análise - Editar",
+				"auditLock": "Auditoria - Bloquear/Desbloquear",
+				"auditRead": "Auditoria - Ver",
+				"auditUpdate": "Auditoria - Editar"
+			},
+			"title": "Permissões de Viagens"
+		},
+		"roleActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de grupos de permissões.",
+			"descriptions": {
+				"create": "Permite criar um grupo de permissões",
+				"delete": "Permite eliminar um grupo de permissões",
+				"read": "Permite ver grupos de permissões",
+				"toggleLock": "Permite bloquear/desbloquear um grupo de permissões",
+				"update": "Permite editar um grupo de permissões"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"toggleLock": "Bloquear/desbloquear",
+				"update": "Editar"
+			},
+			"title": "Permissões de Grupos de Permissões"
+		},
+		"stopActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de paragens.",
+			"descriptions": {
+				"create": "Permite criar uma paragem",
+				"delete": "Permite eliminar uma paragem",
+				"read": "Permite ver paragens",
+				"toggleLock": "Permite bloquear/desbloquear uma paragem",
+				"update": "Permite editar uma paragem"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"toggleLock": "Bloquear/Desbloquear",
+				"update": "Editar"
+			},
+			"title": "Permissões de Paragens"
+		},
+		"userActions": {
+			"description": "As ações que o utilizador pode realizar na gestão de utilizadores.",
+			"descriptions": {
+				"create": "Permite criar um utilizador",
+				"delete": "Permite eliminar um utilizador",
+				"read": "Permite ver utilizadores",
+				"toggleLock": "Permite bloquear/desbloquear um utilizador",
+				"update": "Permite editar um utilizador"
+			},
+			"labels": {
+				"create": "Criar",
+				"delete": "Eliminar",
+				"read": "Ver",
+				"toggleLock": "Bloquear/desbloquear",
+				"update": "Editar"
+			},
+			"title": "Permissões de Utilizadores"
+		}
+	},
+	"roles": {
+		"create": {
+			"BasicInfo": {
+				"fields": {
+					"name": {
+						"label": "Nome do Grupo",
+						"placeholder": "..."
+					}
+				}
+			},
+			"Header": {
+				"NewRoleButton": {
+					"label": "Novo Grupo de Permissões"
+				},
+				"SaveButton": {
+					"label": "Criar"
+				}
+			}
+		},
+		"detail": {
+			"BasicInfo": {
+				"description": "Informação básica do utilizador",
+				"fields": {
+					"name": {
+						"label": "Nome do grupo",
+						"placeholder": "..."
+					}
+				},
+				"title": "Informação Básica"
+			},
+			"header": {
+				"DeleteButton": {
+					"confirm": {
+						"message": "Tem a certeza que pretende eliminar este grupo de permissões? Esta ação é irreversível.",
+						"title": "Eliminar Grupo de Permissões"
+					}
+				},
+				"NewRoleButton": {
+					"label": "Novo Grupo de Permissões"
+				}
+			}
+		},
+		"list": {
+			"Header": {
+				"NewRoleButton": {
+					"label": "Novo Grupo de Permissões"
+				},
+				"Table": {
+					"columns": {
+						"id": "#ID",
+						"name": "Nome",
+						"permissions": "Permissões"
+					}
+				},
+				"title": "Grupos de Permissões"
+			}
+		}
+	},
+	"users": {
+		"create": {
+			"BasicInfo": {
+				"fields": {
+					"email": {
+						"label": "Email",
+						"placeholder": "user@example.com"
+					},
+					"first_name": {
+						"label": "Primeiro Nome",
+						"placeholder": "..."
+					},
+					"last_name": {
+						"label": "Último Nome",
+						"placeholder": "..."
+					}
+				}
+			},
+			"Header": {
+				"NewUserButton": {
+					"label": "Novo Utilizador"
+				},
+				"SaveButton": {
+					"label": "Criar"
+				}
+			},
+			"OrganizationAndRoles": {
+				"fields": {
+					"organization": {
+						"label": "Organização",
+						"placeholder": "Selecione uma opção..."
+					},
+					"roles": {
+						"label": "Roles",
+						"placeholder": "Selecione uma opção..."
+					}
+				}
+			}
+		},
+		"detail": {
+			"BasicInfo": {
+				"description": "Informação básica do utilizador",
+				"fields": {
+					"email": {
+						"label": "Email",
+						"placeholder": "user@example.com"
+					},
+					"first_name": {
+						"label": "Primeiro Nome",
+						"placeholder": "..."
+					},
+					"last_name": {
+						"label": "Último Nome",
+						"placeholder": "..."
+					},
+					"password": {
+						"label": "Palavra-passe",
+						"placeholder": "..."
+					},
+					"phone": {
+						"label": "Telemóvel",
+						"placeholder": "912345678"
+					}
+				},
+				"title": "Informação Básica"
+			},
+			"Header": {
+				"DeleteButton": {
+					"confirm": {
+						"message": "Tem a certeza que pretende eliminar este utilizador? Esta ação é irreversível.",
+						"title": "Eliminar Utilizador"
+					}
+				},
+				"NewUserButton": {
+					"label": "Novo Utizador"
+				}
+			},
+			"RolesAndOrganization": {
+				"description": "O conjunto de permissões que o utilizador tem atribuído no sistema e as organizações a que pertence.",
+				"fields": {
+					"organization": {
+						"label": "Organização",
+						"placeholder": "Selecione uma opção..."
+					},
+					"roles": {
+						"label": "Roles",
+						"placeholder": "Selecione uma opção..."
+					}
+				},
+				"title": "Roles & Organizações"
+			}
+		},
+		"list": {
+			"FilterBar": {
+				"organization": {
+					"label": "Organização"
+				},
+				"role": {
+					"label": "Grupos"
+				}
+			},
+			"Header": {
+				"NewUserButton": {
+					"label": "Novo Utilizador"
+				},
+				"title": "Utilizadores"
+			},
+			"Idle": {
+				"text": "Selecione um Utilizador"
+			},
+			"Table": {
+				"columns": {
+					"email": {
+						"label": "Email"
+					},
+					"id": {
+						"label": "#ID"
+					},
+					"lastSeenAt": {
+						"label": "Última Visita"
+					},
+					"name": {
+						"label": "Nome"
+					},
+					"organizationId": {
+						"label": "Organização"
+					},
+					"roleIds": {
+						"label": "Grupos"
+					}
+				}
+>>>>>>> prd
 			}
 		}
 	}

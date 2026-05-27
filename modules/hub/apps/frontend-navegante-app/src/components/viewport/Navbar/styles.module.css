@@ -3,7 +3,11 @@
 
 .root {
 	display: grid;
+<<<<<<< HEAD
 	grid-template-rows: auto auto 1fr;
+=======
+	grid-template-rows: auto 1fr;
+>>>>>>> prd
 	grid-template-columns: 1fr;
 	align-items: flex-start;
 	justify-content: flex-start;
@@ -19,15 +23,25 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+<<<<<<< HEAD
 	padding: 10px;
 	background-color: var(--color-system-background-100);
+=======
+	padding: 8px;
+	background-color: var(--color-system-background-100);
+	border-bottom: 1px solid var(--color-system-border-100);
+>>>>>>> prd
 }
 
 .tabLabel {
 	display: flex;
 	flex: 0 0 auto;
+<<<<<<< HEAD
 	padding: 4px 12px;
 	font-size: 18px;
+=======
+	padding: 3px 12px;
+>>>>>>> prd
 	font-weight: 500;
 	color: var(--color-system-text-100);
 	border-radius: 999px;
@@ -38,6 +52,7 @@
 }
 
 /* * */
+<<<<<<< HEAD
 /* TRANSIT MODES BAR */
 
 .transitModesBar {
@@ -60,6 +75,8 @@
 }
 
 /* * */
+=======
+>>>>>>> prd
 /* PANEL */
 
 .panel {
