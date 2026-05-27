@@ -354,19 +354,20 @@ export const API_ROUTES = Object.freeze({
 		DEBUG_TIME: `${getModuleConfig('hub', 'api_url')}/v1/debug/time`,
 
 		// FACILITIES
-		FACILITIES_BOAT_STATIONS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/boat_stations`,
-		FACILITIES_HELPDESKS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/helpdesks`,
-		FACILITIES_LIGHT_RAIL_STATIONS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/light_rail_stations`,
-		FACILITIES_LIST: `${getModuleConfig('hub', 'api_url')}/v1/facilities`,
-		FACILITIES_PIPS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/pips`,
-		FACILITIES_SCHOOLS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/schools`,
-		FACILITIES_STORES: `${getModuleConfig('hub', 'api_url')}/v1/facilities/stores`,
-		FACILITIES_SUBWAY_STATIONS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/subway_stations`,
-		FACILITIES_TRAIN_STATIONS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/train_stations`,
+		FACILITIES_BOAT_STATIONS: `${getModuleConfig('hub', 'api_url')}/facilities/boat_stations`,
+		FACILITIES_HELPDESKS: `${getModuleConfig('hub', 'api_url')}/facilities/helpdesks`,
+		FACILITIES_LIGHT_RAIL_STATIONS: `${getModuleConfig('hub', 'api_url')}/facilities/light_rail_stations`,
+		FACILITIES_LIST: `${getModuleConfig('hub', 'api_url')}/facilities`,
+		FACILITIES_PIPS: `${getModuleConfig('hub', 'api_url')}/facilities/pips`,
+		FACILITIES_SCHOOLS: `${getModuleConfig('hub', 'api_url')}/facilities/schools`,
+		FACILITIES_STORES: `${getModuleConfig('hub', 'api_url')}/facilities/stores`,
+		FACILITIES_SUBWAY_STATIONS: `${getModuleConfig('hub', 'api_url')}/facilities/subway_stations`,
+		FACILITIES_TRAIN_STATIONS: `${getModuleConfig('hub', 'api_url')}/facilities/train_stations`,
 
 		// NETWORK
 		NETWORK_LINES: `${getModuleConfig('hub', 'api_url')}/v1/network/lines`,
 		NETWORK_PATTERNS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/patterns/${id}`,
+		NETWORK_ROUTES: `${getModuleConfig('hub', 'api_url')}/v1/network/routes`,
 		NETWORK_STOPS: `${getModuleConfig('hub', 'api_url')}/v1/network/stops`,
 
 		// PLANS

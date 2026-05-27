@@ -44,6 +44,38 @@ export class NetworkController {
 	}
 
 	/**
+	 * Retrieves all routes from cache.
+	 * @param request Fastify request
+	 * @param reply Fastify reply
+	 */
+	static async getRoutes(request: FastifyRequest, reply: FastifyReply<HubLine[]>) {
+		//
+
+		const cachedData = await apiCache.get('hub:network:routes');
+
+		if (!cachedData) {
+			Logger.error('[hub/v1/network:getRoutes()] No cached data found for routes');
+			return reply
+				.header('cache-control', 'public, max-age=60')
+				.code(HTTP_STATUS.NO_CONTENT)
+				.send({
+					data: [],
+					error: null,
+					status_code: HTTP_STATUS.NO_CONTENT,
+				});
+		};
+
+		return reply
+			.header('cache-control', 'public, max-age=60')
+			.code(HTTP_STATUS.OK)
+			.send({
+				data: JSON.parse(cachedData),
+				error: null,
+				status_code: HTTP_STATUS.OK,
+			});
+	}
+
+	/**
 	 * Retrieves all lines from cache.
 	 * @param request Fastify request
 	 * @param reply Fastify reply
