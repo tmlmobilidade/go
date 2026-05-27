@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+'use client';
+=======
 /* * */
+>>>>>>> prd
 
 import styles from './styles.module.css';
 

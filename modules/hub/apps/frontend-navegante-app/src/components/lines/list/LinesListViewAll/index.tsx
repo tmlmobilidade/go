@@ -4,10 +4,9 @@ import { NoDataLabel } from '@/components/layout/NoDataLabel';
 import { RegularListItem } from '@/components/layout/RegularListItem';
 import { Section } from '@/components/layout/Section';
 import { Surface } from '@/components/layout/Surface';
-import { LineDisplay } from '@/components/lines/LineDisplay';
-import { useEnvironmentContext } from '@/contexts/Environment.context';
-import { useLinesListContext } from '@/contexts/LinesList.context';
-import { useTranslations } from 'next-intl';
+import { LineDisplay } from '@/components/lines/common/LineDisplay';
+import { useLinesListContext } from '@/components/lines/list/LinesList.context';
+import { useTranslation } from 'react-i18next';
 import { ViewportList } from 'react-viewport-list';
 
 /* * */
@@ -18,9 +17,10 @@ export function LinesListViewAll() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const linesListContext = useLinesListContext();
-	const t = useTranslations('lines.LinesListViewAll');
-	const environmentContext = useEnvironmentContext();
+
 	const getLineId = (line: { _id?: string, id?: string }) => line.id || line._id || '';
 
 	//
@@ -30,7 +30,7 @@ export function LinesListViewAll() {
 		return (
 			<Surface variant="persistent" forceOverflow>
 				<Section>
-					<NoDataLabel text={t('no_data')} withMinHeight />
+					<NoDataLabel text={t('default:lines.LinesListViewAll.no_data')} withMinHeight />
 				</Section>
 			</Surface>
 		);
@@ -44,7 +44,7 @@ export function LinesListViewAll() {
 						const lineId = getLineId(item);
 						if (!lineId) return null;
 						return (
-							<RegularListItem key={lineId} href={environmentContext.actions.getNormalizedHref(`/lines/${lineId}`)}>
+							<RegularListItem key={lineId} href={`/lines/${lineId}`}>
 								<LineDisplay lineData={item} />
 							</RegularListItem>
 						);
