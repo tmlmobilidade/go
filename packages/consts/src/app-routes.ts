@@ -354,19 +354,20 @@ export const API_ROUTES = Object.freeze({
 		DEBUG_TIME: `${getModuleConfig('hub', 'api_url')}/v1/debug/time`,
 
 		// FACILITIES
-		FACILITIES_BOAT_STATIONS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/boat_stations`,
-		FACILITIES_HELPDESKS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/helpdesks`,
-		FACILITIES_LIGHT_RAIL_STATIONS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/light_rail_stations`,
-		FACILITIES_LIST: `${getModuleConfig('hub', 'api_url')}/v1/facilities`,
-		FACILITIES_PIPS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/pips`,
-		FACILITIES_SCHOOLS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/schools`,
-		FACILITIES_STORES: `${getModuleConfig('hub', 'api_url')}/v1/facilities/stores`,
-		FACILITIES_SUBWAY_STATIONS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/subway_stations`,
-		FACILITIES_TRAIN_STATIONS: `${getModuleConfig('hub', 'api_url')}/v1/facilities/train_stations`,
+		FACILITIES_BOAT_STATIONS: `${getModuleConfig('hub', 'api_url')}/facilities/boat_stations`,
+		FACILITIES_HELPDESKS: `${getModuleConfig('hub', 'api_url')}/facilities/helpdesks`,
+		FACILITIES_LIGHT_RAIL_STATIONS: `${getModuleConfig('hub', 'api_url')}/facilities/light_rail_stations`,
+		FACILITIES_LIST: `${getModuleConfig('hub', 'api_url')}/facilities`,
+		FACILITIES_PIPS: `${getModuleConfig('hub', 'api_url')}/facilities/pips`,
+		FACILITIES_SCHOOLS: `${getModuleConfig('hub', 'api_url')}/facilities/schools`,
+		FACILITIES_STORES: `${getModuleConfig('hub', 'api_url')}/facilities/stores`,
+		FACILITIES_SUBWAY_STATIONS: `${getModuleConfig('hub', 'api_url')}/facilities/subway_stations`,
+		FACILITIES_TRAIN_STATIONS: `${getModuleConfig('hub', 'api_url')}/facilities/train_stations`,
 
 		// NETWORK
 		NETWORK_LINES: `${getModuleConfig('hub', 'api_url')}/v1/network/lines`,
 		NETWORK_PATTERNS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/patterns/${id}`,
+		NETWORK_ROUTES: `${getModuleConfig('hub', 'api_url')}/v1/network/routes`,
 		NETWORK_STOPS: `${getModuleConfig('hub', 'api_url')}/v1/network/stops`,
 
 		// PLANS
@@ -375,8 +376,13 @@ export const API_ROUTES = Object.freeze({
 		PLANS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/plans`,
 
 		// REALTIME
-		REALTIME_VEHICLES: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles`,
-		REALTIME_VEHICLES_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles.pb`,
+		REALTIME_ETA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta`,
+		REALTIME_ETA_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs`,
+		REALTIME_ETA_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs.pb`,
+		REALTIME_VEHICLES_METADATA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/metadata`,
+		REALTIME_VEHICLES_POSITIONS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions`,
+		REALTIME_VEHICLES_POSITIONS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs`,
+		REALTIME_VEHICLES_POSITIONS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs.pb`,
 	},
 
 	locations: {
