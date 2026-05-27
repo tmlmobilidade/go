@@ -358,6 +358,7 @@
               <th>Stop</th>
               <th>Sched</th>
               <th>Est</th>
+              <th>ETA</th>
               <th>Delta</th>
             </tr>
           </thead>
@@ -415,6 +416,23 @@ function formatSec(sec) {
   const n = Number(sec);
   const sign = n >= 0 ? '+' : '-';
   return sign + Math.abs(Math.round(n)) + 's';
+}
+
+function etaSecondsUntilArrival(eta, eventCreatedAtMs) {
+  if (eta.eta_seconds != null && !Number.isNaN(Number(eta.eta_seconds))) {
+    return Number(eta.eta_seconds);
+  }
+  if (eta.estimated_arrival_unix != null && eventCreatedAtMs != null) {
+    return Number(eta.estimated_arrival_unix) - Number(eventCreatedAtMs) / 1000;
+  }
+  return null;
+}
+
+function formatEtaMinutes(eta, eventCreatedAtMs) {
+  const sec = etaSecondsUntilArrival(eta, eventCreatedAtMs);
+  if (sec == null || Number.isNaN(sec)) return '-';
+  if (sec < 60) return 'Arriving';
+  return Math.round(sec / 60) + ' min';
 }
 
 function haversine(lat1, lon1, lat2, lon2) {
@@ -654,20 +672,24 @@ function renderInspector() {
   const btnMore = document.getElementById('btn-more-etas');
   etaSummary.textContent = `${etas.length} ETA rows`;
   if (!etas.length) {
-    tbody.innerHTML = '<tr><td colspan="4" class="empty">No ETAs for this event.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="empty">No ETAs for this event.</td></tr>';
     btnMore.style.display = 'none';
     return;
   }
 
+  const eventCreatedAtMs = ev.created_at;
   tbody.innerHTML = visible.map(eta => {
     const delta = eta.estimated_arrival_unix != null && eta.scheduled_arrival_unix != null
       ? eta.estimated_arrival_unix - eta.scheduled_arrival_unix
       : null;
     const deltaCls = delta == null ? '' : delta >= 0 ? 'eta-late' : 'eta-early';
+    const etaMin = formatEtaMinutes(eta, eventCreatedAtMs);
+    const etaMinCls = etaMin === 'Arriving' ? 'eta-early' : '';
     return `<tr data-stop-id="${esc(eta.stop_id)}">
       <td><span class="eta-dot" style="background:#ffd47a"></span>${esc(eta.stop_sequence)} · ${esc(eta.stop_id)}</td>
       <td class="mono">${esc(eta.scheduled_arrival ?? '-')}</td>
       <td class="mono">${esc(eta.estimated_arrival ?? '-')}</td>
+      <td class="mono ${etaMinCls}">${esc(etaMin)}</td>
       <td class="mono ${deltaCls}">${esc(formatSec(delta))}</td>
     </tr>`;
   }).join('');
