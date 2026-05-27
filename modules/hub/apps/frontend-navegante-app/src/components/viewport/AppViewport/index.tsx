@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 'use client';
-=======
-/* * */
->>>>>>> prd
 
 import { Navbar } from '@/components/viewport/Navbar';
 import { Topbar } from '@/components/viewport/Topbar';

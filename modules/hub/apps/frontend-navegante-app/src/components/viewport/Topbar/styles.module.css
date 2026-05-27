@@ -7,11 +7,7 @@
 	align-items: center;
 	justify-content: space-between;
 	width: 100%;
-<<<<<<< HEAD
 	padding: 10px 20px;
-=======
-	padding: 6px 20px;
->>>>>>> prd
 	background-color: black;
 }
 
@@ -20,11 +16,7 @@
 
 .text {
 	width: 100%;
-<<<<<<< HEAD
 	font-size: 14px;
-=======
-	font-size: 12px;
->>>>>>> prd
 	font-weight: 700;
 	color: white;
 	text-align: center;
