@@ -31,7 +31,7 @@ export function LinesListToolbar() {
 
 	return (
 		<Surface>
-			<Section heading={t('default:lines.LinesListToolbar.heading')} withGap withPadding>
+			<Section withGap withPadding>
 				<TextInput leftSection={<IconArrowLoopRight size={20} />} onChange={handleTextInputChange} placeholder={t('default:lines.LinesListToolbar.by_search.placeholder')} type="search" value={linesContext.filters.by_search} w="100%" />
 				<FoundItemsCounter text={t('default:lines.LinesListToolbar.found_items_counter.all', { count: linesContext.data.filtered.length })} />
 			</Section>
