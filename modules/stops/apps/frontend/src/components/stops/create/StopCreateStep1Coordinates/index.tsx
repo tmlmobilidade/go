@@ -17,26 +17,11 @@ export function StopCreateStep1Coordinates() {
 	// B. Handle actions
 
 	const handleSetCoordinates = (value: [number | undefined, number | undefined] | undefined) => {
-		if (!value) {
-			stopCreateContext.data.form.setFieldValue('latitude', undefined as never);
-			stopCreateContext.data.form.setFieldValue('longitude', undefined as never);
-			return;
-		}
+		if (!value) return;
 		const [lat, lng] = value;
-		if (lat !== undefined && lng !== undefined) {
-			stopCreateContext.actions.setLatLng(lat, lng);
-			return;
-		}
-		if (lat === undefined) {
-			stopCreateContext.data.form.setFieldValue('latitude', undefined as never);
-		} else {
-			stopCreateContext.data.form.setFieldValue('latitude', lat as never);
-		}
-		if (lng === undefined) {
-			stopCreateContext.data.form.setFieldValue('longitude', undefined as never);
-		} else {
-			stopCreateContext.data.form.setFieldValue('longitude', lng as never);
-		}
+		if (lat === undefined || lng === undefined) return;
+		if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return;
+		return stopCreateContext.actions.setLatLng(lat, lng);
 	};
 
 	//
