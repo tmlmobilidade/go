@@ -7,4 +7,4 @@ import { AppConfig } from './config.js';
 
 /* * */
 
-runOnInterval(loadEta(AppConfig), { intervalMs: AppConfig.syncInterval });
+await runOnInterval(() => loadEta(AppConfig), { intervalMs: AppConfig.syncInterval });
