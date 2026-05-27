@@ -1,7 +1,7 @@
 /* * */
 
-import { LineBadge } from '@/components/lines/LineBadge';
-import { LineName } from '@/components/lines/LineName';
+import { LineBadge } from '@/components/lines/common/LineBadge';
+import { LineName } from '@/components/lines/common/LineName';
 import { type Line } from '@/types/api/network';
 import { Skeleton } from '@mantine/core';
 

@@ -6,9 +6,10 @@ import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { NuqsAdapter } from 'nuqs/adapters/next';
-import { type PropsWithChildren } from 'react';
+import { type PropsWithChildren, Suspense } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
+import { LoadingSection } from '../../components/loaders/LoadingSection';
 import { type LocaleContextProps, LocaleContextProvider } from '../../contexts/Locale.context';
 import { type VersionContextProps, VersionContextProvider } from '../../contexts/Version.context';
 import { themeData } from '../../styles/theme';
@@ -55,20 +56,22 @@ export function BaseProvider({ children, i18n, version }: PropsWithChildren<Base
 		>
 			<body>
 				<NuqsAdapter>
-					<VersionContextProvider version={version}>
-						<SWRConfig value={swrSettings}>
-							<LocaleContextProvider i18n={i18n}>
-								<MantineProvider defaultColorScheme="auto" theme={themeData}>
-									<DatesProvider settings={mantineDatesSettings}>
-										<ModalsProvider>
-											<Notifications position="bottom-right" />
-											{children}
-										</ModalsProvider>
-									</DatesProvider>
-								</MantineProvider>
-							</LocaleContextProvider>
-						</SWRConfig>
-					</VersionContextProvider>
+					<Suspense fallback={<LoadingSection fullHeight />}>
+						<VersionContextProvider version={version}>
+							<SWRConfig value={swrSettings}>
+								<LocaleContextProvider i18n={i18n}>
+									<MantineProvider defaultColorScheme="auto" theme={themeData}>
+										<DatesProvider settings={mantineDatesSettings}>
+											<ModalsProvider>
+												<Notifications position="bottom-right" />
+												{children}
+											</ModalsProvider>
+										</DatesProvider>
+									</MantineProvider>
+								</LocaleContextProvider>
+							</SWRConfig>
+						</VersionContextProvider>
+					</Suspense>
 				</NuqsAdapter>
 			</body>
 		</html>

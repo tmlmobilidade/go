@@ -1,4 +1,4 @@
-/* * */
+'use client';
 
 import { Navbar } from '@/components/viewport/Navbar';
 import { Topbar } from '@/components/viewport/Topbar';

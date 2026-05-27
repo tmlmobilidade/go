@@ -1,7 +1,7 @@
 'use client';
 
 import { AlertsList } from '@/components/alerts/AlertsList';
-import { LinesList } from '@/components/lines/LinesList';
+import { LinesList } from '@/components/lines/list/LinesList';
 import { StopsList } from '@/components/stops/StopsList';
 import { useTransitModes } from '@/hooks/use-transit-modes';
 import { Tabs } from '@mantine/core';

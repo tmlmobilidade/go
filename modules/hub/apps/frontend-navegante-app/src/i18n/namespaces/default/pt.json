@@ -1,4 +1,23 @@
 {
+	"layout": {
+		"NoDataLabel": {
+			"no_data": "Nenhum dado disponível"
+		}
+	},
+	"lines": {
+		"LinesListToolbar": {
+			"by_search": {
+				"placeholder": "Pesquisar por nome, número..."
+			},
+			"found_items_counter": {
+				"all": "{count, plural, =0 {Nenhuma linha encontrada.} one {Encontrada # linha:} other {Encontradas # linhas:}}"
+			},
+			"heading": "Pesquisar Linhas"
+		},
+		"LinesListViewAll": {
+			"no_data": "Nenhuma linha encontrada para esta pesquisa"
+		}
+	},
 	"viewport": {
 		"Navbar": {
 			"tabs": {
