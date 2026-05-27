@@ -1,6 +1,5 @@
 import { type ExportType, type TaskProps } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { fetchCalendarData } from '@tmlmobilidade/go-performance-pckg-dates';
 import { municipalities, simplifiedApexValidations, stops } from '@tmlmobilidade/interfaces';
 import ExcelJS from 'exceljs';
 import fs from 'node:fs';
@@ -47,7 +46,7 @@ export async function exportValidationsPMunicipalities({
 
 	message('A obter calendário...');
 
-	const calendar = await fetchCalendarData();
+	const calendar = await Dates.fetchCalendarData();
 
 	const calendarMap = new Map<
 		string,

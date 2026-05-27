@@ -1,7 +1,5 @@
-// ! THIS IS NOT WORKING, BECAUSE THE @tmlmobilidade/go-performance-pckg-dates is not a published package yet.
 import { type TaskProps } from '@/types.js';
-import { Dates } from '@tmlmobilidade/dates';
-import { type CalendarEntry, fetchCalendarData } from '@tmlmobilidade/go-performance-pckg-dates';
+import { Dates, type CalendarEntry } from '@tmlmobilidade/dates';
 import { rides } from '@tmlmobilidade/interfaces';
 
 export interface AgencyAverageRidesByDayTypeResult {
@@ -18,7 +16,7 @@ export async function calculateAverageRidesByAgencyByDayType(
 	const ridesCollection = await rides.getCollection();
 
 	// Load calendar JSON
-	const calendarJson = await fetchCalendarData();
+	const calendarJson = await Dates.fetchCalendarData();
 
 	// Build calendar map: operational_date -> CalendarEntry
 	const calendarMap = new Map<string, CalendarEntry>();

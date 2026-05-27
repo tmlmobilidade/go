@@ -39,7 +39,6 @@
 		"@clack/prompts": "1.4.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-performance-pckg-dates": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/timer": "*",
