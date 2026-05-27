@@ -54,14 +54,8 @@ export async function exportValidationsAggregated({ context, groupFields, messag
 	};
 
 	filterQuery.created_at = {
-		$gte: Dates
-			.fromOperationalDate(context.dates.start, 'Europe/Lisbon')
-			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
-			.unix_timestamp,
-		$lt: Dates
-			.fromOperationalDate(context.dates.end, 'Europe/Lisbon')
-			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
-			.unix_timestamp,
+		$gte: Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').unix_timestamp,
+		$lt: Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').unix_timestamp,
 	};
 
 	if (context.filters.agency_ids.length) {
@@ -121,6 +115,7 @@ export async function exportValidationsAggregated({ context, groupFields, messag
 
 		const operationalDate = Dates
 			.fromUnixTimestamp(document.created_at)
+			.setZone('Europe/Lisbon', 'offset_only')
 			.operational_date;
 
 		// Build the key from date + all selected group fields
@@ -158,12 +153,12 @@ export async function exportValidationsAggregated({ context, groupFields, messag
 	message(`A escrever os resultados no ficheiro CSV...`);
 
 	// Write results in batches to avoid stack overflow with large datasets
-	const WRITE_BATCH_SIZE = 10000;
+	const writeBatchSize = 10000;
 	const resultKeys = Object.keys(result);
 	const totalResults = resultKeys.length;
 
-	for (let i = 0; i < totalResults; i += WRITE_BATCH_SIZE) {
-		const batch = resultKeys.slice(i, i + WRITE_BATCH_SIZE).map(key => result[key]);
+	for (let i = 0; i < totalResults; i += writeBatchSize) {
+		const batch = resultKeys.slice(i, i + writeBatchSize).map(key => result[key]);
 		await csvWriter.write(batch);
 
 		if (i % 50000 === 0 && i > 0) {
