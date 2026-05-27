@@ -39,10 +39,12 @@
 		"@clack/prompts": "1.4.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-performance-pckg-dates": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/writers": "*"
+		"@tmlmobilidade/writers": "*",
+		"exceljs": "^4.4.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

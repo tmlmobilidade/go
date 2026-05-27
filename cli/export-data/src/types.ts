@@ -12,9 +12,18 @@ export const exportTypeLabels = {
 	'validations-aggregated': '1.1. Validações agregadas (escolher campos)',
 	'validations-raw': '1.0. Validações em bruto',
 	'vehicle-events-raw': '3.0. Vehicle Events em bruto',
+	'validations-p-municipalities': '7.0. Validações por município',
 } as const;
 
 export type ExportType = keyof typeof exportTypeLabels;
+
+/**
+ * Export types that don't require entity filters (agency, line, stop, etc.).
+ * These exports may still require dates.
+ */
+export const exportTypesWithoutEntityFilters: ExportType[] = [
+	'validations-p-municipalities',
+];
 
 /**
  * Export types that don't require filters or dates.
