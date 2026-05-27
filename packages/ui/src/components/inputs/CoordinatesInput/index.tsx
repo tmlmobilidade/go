@@ -1,23 +1,19 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Description } from '../../common';
 import { Label } from '../../display';
 import { Section } from '../../layout/Section';
 import { NumberInput } from '../NumberInput';
 
-/* * */
-
 const COORDINATE_DECIMALS = 6;
 const STEP = 10 ** -COORDINATE_DECIMALS;
-const roundCoordinate = (value: number) => parseFloat(value.toFixed(COORDINATE_DECIMALS));
-
-/* * */
 
 type CoordinatesTuple = [number | undefined, number | undefined];
+type CoordinateInputRaw = null | number | string | undefined;
 
-/* * */
+const roundCoordinate = (value: number) => parseFloat(value.toFixed(COORDINATE_DECIMALS));
 
 const buildCoordsAtIndex = (
 	prev: CoordinatesTuple,
@@ -25,17 +21,10 @@ const buildCoordsAtIndex = (
 	valueAtIndex: number | undefined,
 ): CoordinatesTuple => (index === 0 ? [valueAtIndex, prev[1]] : [prev[0], valueAtIndex]);
 
-/* * */
-
 interface CoordinatesInputProps {
 	defaultValue?: [number, number]
 	description?: string
 	disabled?: boolean
-	/**
-	 * The `key` prop is required to ensure correct re-mounting behavior.
-	 * Use the `form.key('fieldName')` method to generate a unique key based on the form state.
-	 */
-	key: string
 	label?: string
 	onChange?: (changed: CoordinatesTuple | undefined) => void
 	onPaste?: (pastedValues: string[]) => void
@@ -43,28 +32,9 @@ interface CoordinatesInputProps {
 }
 
 /**
- * CoordinatesInput is a composite input component for latitude and longitude coordinates.
- *
- * - Accepts both controlled (`value`) and uncontrolled (`defaultValue`) usage.
- * - Supports validation and clamping: latitude is restricted to -90..90, longitude to -180..180.
- * - Handles typed or pasted coordinate pairs separated by comma or tab.
- *
- * Props:
- *   - defaultValue?: [number, number] — Initial value if uncontrolled.
- *   - description?: string — Optional field description.
- *   - disabled?: boolean — Disables both input fields.
- *   - key: string — Unique key (required for correct re-mounting in forms).
- *   - label?: string — Field label (defaults to "Coordenadas").
- *   - onChange?: (changed: [number | undefined, number | undefined] | undefined) => void — Called when coordinates change; `undefined` only when both are cleared.
- *   - onPaste?: (pastedValues: string[]) => void — Called when user pastes data.
- *   - value?: [number | undefined, number | undefined] — Controlled value.
- *
- * Usage:
- *   <CoordinatesInput
- *     label="Coordenadas"
- *     value={[38.7, -9.2]}
- *     onChange={handleCoords}
- *   />
+ * Composite input for latitude/longitude coordinates.
+ * Supports controlled and uncontrolled usage, rounds committed values to 6 decimals,
+ * and keeps permissive numeric behavior for typed/pasted input.
  */
 export function CoordinatesInput({
 	defaultValue,
@@ -75,193 +45,128 @@ export function CoordinatesInput({
 	onPaste,
 	value,
 }: CoordinatesInputProps) {
-	//
-
-	//
-	// A. Setup variables
-
-	/**
-	 * Store current Latitude and Longitude tuple.
-	 * Priority: controlled `value` > uncontrolled `defaultValue` > fallback [undefined, undefined].
-	 */
 	const [coordinates, setCoordinates] = useState<CoordinatesTuple>(value ?? defaultValue ?? [undefined, undefined]);
 	const [focusedIndex, setFocusedIndex] = useState<0 | 1 | null>(null);
-	const coordinatesRef = useRef(coordinates);
-	coordinatesRef.current = coordinates;
-	const onChangeDelayRef = useRef<null | ReturnType<typeof setTimeout>>(null);
 
-	//
-
-	//
-	// B. Setup effects & callbacks
-
-	/**
-	 * Keeps state in sync with external (controlled) `value` prop.
-	 */
 	useEffect(() => {
-		if (value !== undefined) {
-			const nextLat = value[0] === undefined ? undefined : roundCoordinate(value[0]);
-			const nextLng = value[1] === undefined ? undefined : roundCoordinate(value[1]);
-			setCoordinates((prev: CoordinatesTuple) => {
-				if (prev[0] === nextLat && prev[1] === nextLng) return prev;
-				return [nextLat, nextLng];
-			});
-		}
+		if (value === undefined) return;
+
+		const nextLat = value[0] === undefined ? undefined : roundCoordinate(value[0]);
+		const nextLng = value[1] === undefined ? undefined : roundCoordinate(value[1]);
+
+		setCoordinates((prev) => {
+			if (prev[0] === nextLat && prev[1] === nextLng) return prev;
+			return [nextLat, nextLng];
+		});
 	}, [value]);
 
-	useEffect(() => {
-		return () => {
-			const timeoutId = onChangeDelayRef.current;
-			if (timeoutId) clearTimeout(timeoutId);
-		};
-	}, []);
-
-	/**
-	 * Parses a coordinate pair string in the following formats:
-	 * - `lat, lng`
-	 * - `lat lng` (with a space or a tab)
-	 * @param input The coordinate pair string to parse.
-	 * @returns The parsed coordinates as an array of two numbers, or null if the input is invalid.
-	 */
-	const parseCoordinatePair = useCallback((input: string): [number, number] | null => {
-		const values = input
+	function parseCoordinatePair(input: string): [number, number] | null {
+		const parts = input
 			.trim()
 			.split(/[,\t\s]+/)
-			.map(val => val.trim())
+			.map(part => part.trim())
 			.filter(Boolean);
-		if (values.length < 2) return null;
-		const lat = Number(values[0]);
-		const lng = Number(values[1]);
 
+		if (parts.length < 2) return null;
+
+		const lat = Number(parts[0]);
+		const lng = Number(parts[1]);
 		if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
 
 		return [roundCoordinate(lat), roundCoordinate(lng)];
-	}, []);
+	}
 
-	/**
-	 * Parses a single coordinate input value.
-	 * @param raw The coordinate input string to parse.
-	 * @returns Parsed value or undefined when the value is empty/invalid.
-	 */
-	const parseCoordinateInput = useCallback((raw: null | number | string | undefined): number | undefined => {
-		if (raw === '' || raw === undefined || raw === null) {
-			return undefined;
-		}
+	function parseCoordinateInput(raw: CoordinateInputRaw): number | undefined {
+		if (raw === '' || raw === undefined || raw === null) return undefined;
+
 		const parsed = typeof raw === 'number' ? raw : Number(raw);
 		if (!Number.isFinite(parsed)) return undefined;
-		return parsed;
-	}, []);
 
-	const notifyChange = useCallback((newCoords: CoordinatesTuple) => {
-		if (newCoords[0] === undefined && newCoords[1] === undefined) {
-			onChange?.(undefined);
+		return parsed;
+	}
+
+	function notifyChange(nextCoordinates: CoordinatesTuple): void {
+		if (!onChange) return;
+
+		if (nextCoordinates[0] === undefined && nextCoordinates[1] === undefined) {
+			onChange(undefined);
 			return;
 		}
-		onChange?.(newCoords);
-	}, [onChange]);
 
-	const applyCoordinates = useCallback((nextCoords: CoordinatesTuple) => {
-		setCoordinates(nextCoords);
-		notifyChange(nextCoords);
-	}, [notifyChange]);
+		onChange(nextCoordinates);
+	}
 
-	const commitCoordinates = useCallback((newCoords: CoordinatesTuple) => {
-		applyCoordinates(newCoords);
-	}, [applyCoordinates]);
+	function commitCoordinates(nextCoordinates: CoordinatesTuple): void {
+		setCoordinates(nextCoordinates);
+		notifyChange(nextCoordinates);
+	}
 
-	const getDecimalInputProps = useCallback((index: 0 | 1) => {
+	function commitCoordinateAtIndex(index: 0 | 1, valueAtIndex: number | undefined): void {
+		setCoordinates((prev) => {
+			const nextCoordinates = buildCoordsAtIndex(prev, index, valueAtIndex);
+			notifyChange(nextCoordinates);
+			return nextCoordinates;
+		});
+	}
+
+	function handleCoordinateChange(index: 0 | 1, raw: CoordinateInputRaw): void {
+		setCoordinates(prev => buildCoordsAtIndex(prev, index, parseCoordinateInput(raw)));
+	}
+
+	function handleBlur(index: 0 | 1, event: React.FocusEvent<HTMLInputElement>): void {
+		const parsedValue = parseCoordinateInput(event.currentTarget.value.trim());
+		const committedValue = parsedValue === undefined
+			? undefined
+			: roundCoordinate(parsedValue);
+
+		commitCoordinateAtIndex(index, committedValue);
+		setFocusedIndex(prev => (prev === index ? null : prev));
+	}
+
+	function handlePaste(index: 0 | 1, event: React.ClipboardEvent<HTMLInputElement>): void {
+		const pastedText = event.clipboardData.getData('text').trim();
+		if (!pastedText) return;
+
+		const pastedValues = pastedText
+			.split(/[,\t\s]+/)
+			.map(value => value.trim())
+			.filter(Boolean);
+		onPaste?.(pastedValues);
+
+		const coordinatePair = parseCoordinatePair(pastedText);
+		if (coordinatePair) {
+			event.preventDefault();
+			commitCoordinates(coordinatePair);
+			return;
+		}
+
+		const numericValue = Number(pastedText);
+		if (!Number.isFinite(numericValue)) return;
+
+		event.preventDefault();
+		commitCoordinateAtIndex(index, roundCoordinate(numericValue));
+	}
+
+	function getDecimalInputProps(index: 0 | 1) {
 		if (focusedIndex === index) return {};
 
 		return {
 			decimalScale: COORDINATE_DECIMALS,
-			fixedDecimalScale: true as const,
+			fixedDecimalScale: true,
 		};
-	}, [focusedIndex]);
+	}
 
-	const handleFocus = useCallback((index: 0 | 1) => {
+	function handleFocus(index: 0 | 1): void {
 		setFocusedIndex(index);
-	}, []);
-
-	const commitCoordinateAtIndex = useCallback((index: 0 | 1, valueAtIndex: number | undefined) => {
-		applyCoordinates(buildCoordsAtIndex(coordinatesRef.current, index, valueAtIndex));
-	}, [applyCoordinates]);
-
-	//
-
-	//
-	// C. Handle paste and blur actions
-
-	/**
-	 * Paste handler: supports format "lat,lng" or "lat\tlng", with optional whitespace,
-	 * clamps and updates both values if valid. Optionally calls `onPaste`.
-	 */
-	const handlePaste = useCallback(
-		(index: 0 | 1, event: React.ClipboardEvent<HTMLInputElement>) => {
-			const pastedText = event.clipboardData.getData('text').trim();
-			if (!pastedText) return;
-
-			const pastedValues = pastedText
-				.split(/[,\t\s]+/)
-				.map(val => val.trim())
-				.filter(Boolean);
-
-			onPaste?.(pastedValues);
-
-			const pair = parseCoordinatePair(pastedText);
-			if (pair) {
-				event.preventDefault();
-				commitCoordinates(pair);
-				return;
-			}
-
-			const numericValue = Number(pastedText);
-			if (!Number.isFinite(numericValue)) return;
-
-			event.preventDefault();
-			commitCoordinateAtIndex(index, roundCoordinate(numericValue));
-		},
-		[commitCoordinateAtIndex, commitCoordinates, onPaste, parseCoordinatePair],
-	);
-
-	/**
-	 * Handles coordinate change events for direct typing.
-	 * @param index 0 for Latitude, 1 for Longitude
-	 * @param raw The coordinate input string to parse.
-	 */
-	const handleCoordinateChange = useCallback((index: 0 | 1, raw: null | number | string | undefined) => {
-		setCoordinates(prev => buildCoordsAtIndex(prev, index, parseCoordinateInput(raw)));
-	}, [parseCoordinateInput]);
-
-	/**
-	 * Called on blur (focus out) of either input field; confirms typed value is complete
-	 * and clamps entered value into the valid range.
-	 * @param index 0 for Latitude, 1 for Longitude
-	 */
-	const handleBlur = useCallback(
-		(index: 0 | 1, event: React.FocusEvent<HTMLInputElement>) => {
-			const parsedValue = parseCoordinateInput(event.currentTarget.value.trim());
-			const committedValue = parsedValue === undefined
-				? undefined
-				: roundCoordinate(parsedValue);
-			commitCoordinateAtIndex(index, committedValue);
-			setFocusedIndex(prev => (prev === index ? null : prev));
-		},
-		[commitCoordinateAtIndex, parseCoordinateInput],
-	);
-
-	//
-
-	//
-	// D. Render UI
+	}
 
 	return (
 		<Section flexDirection="column" gap="xs" padding="none">
 			<Label>{label}</Label>
 			{description && <Description>{description}</Description>}
+
 			<Section flexDirection="row" gap="sm" padding="none">
-				{/* Latitude input */}
 				<NumberInput
-					key="lat"
 					disabled={disabled}
 					max={90}
 					min={-90}
@@ -275,9 +180,7 @@ export function CoordinatesInput({
 					value={coordinates[0] ?? ''}
 					{...getDecimalInputProps(0)}
 				/>
-				{/* Longitude input */}
 				<NumberInput
-					key="lon"
 					disabled={disabled}
 					max={180}
 					min={-180}
