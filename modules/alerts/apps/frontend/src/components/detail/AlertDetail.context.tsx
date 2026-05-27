@@ -81,7 +81,13 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', form.getValues()),
+		fetchFn: async () => {
+			const values = form.getValues();
+			return await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', {
+				...values,
+				file_id: undefined,
+			});
+		},
 		onSuccess: (updatedItem) => {
 			form.reset(updatedItem);
 			alertMutate(updatedItem);
@@ -119,23 +125,18 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 
 	const { action: handleUploadImage, isLoading: isUploadingImage } = useHandleUpdate({
 		fetchFn: async () => imageFile && await uploadFile(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), imageFile),
-		onSuccess: () => {
-			handleSave();
+		onSuccess: async () => {
 			setImageFile(undefined);
-			form.reset();
+			await alertImageMutate();
 			alertMutate();
-			alertImageMutate();
-			alertsListMutate();
 		},
 	});
 
 	const { action: handleDeleteImage, isLoading: isDeletingImage } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), 'DELETE'),
-		onSuccess: () => {
-			form.reset();
+		onSuccess: async () => {
+			await alertImageMutate();
 			alertMutate();
-			alertImageMutate();
-			alertsListMutate();
 		},
 	});
 
