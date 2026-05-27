@@ -66,6 +66,8 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		apiData: alertData,
 		// schema: UpdateAlertSchema,
 	});
+	const isFormDirty = Object.keys(form.formState.dirtyFields).length > 0;
+	const isValid = form.formState.isValid;
 
 	//
 	// C. Transform data
@@ -183,11 +185,11 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			},
 		]),
 		isDeleting: isDeleting,
-		isDirty: form.formState.isDirty,
+		isDirty: isFormDirty,
 		isLoading: alertLoading,
 		isLocked: alertData?.is_locked,
 		isLocking: isLocking,
-		isValid: form.formState.isValid,
+		isValid: isValid,
 	});
 
 	const { canLock } = useFlagCanLock({
@@ -206,10 +208,10 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			},
 		]),
 		isDeleting: isDeleting,
-		isDirty: form.formState.isDirty,
+		isDirty: isFormDirty,
 		isLoading: alertLoading,
 		isLocking: isLocking,
-		isValid: form.formState.isValid,
+		isValid: isValid,
 	});
 
 	const { canDelete } = useFlagCanDelete({
@@ -228,11 +230,11 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			},
 		]),
 		isDeleting: isDeleting,
-		isDirty: form.formState.isDirty,
+		isDirty: isFormDirty,
 		isLoading: alertLoading,
 		isLocked: alertData?.is_locked,
 		isLocking: isLocking,
-		isValid: form.formState.isValid,
+		isValid: isValid,
 	});
 
 	const { canDuplicate } = useFlagCanDuplicate({
@@ -251,10 +253,10 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			},
 		]),
 		isDeleting: isDeleting,
-		isDirty: form.formState.isDirty,
+		isDirty: isFormDirty,
 		isLoading: alertLoading,
 		isLocking: isLocking,
-		isValid: form.formState.isValid,
+		isValid: isValid,
 	});
 
 	//
@@ -282,7 +284,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			error: alertError,
 			isDeleting,
 			isDeletingImage,
-			isDirty: form.formState.isDirty,
+			isDirty: isFormDirty,
 			isDuplicating,
 			isLoading: alertLoading || agenciesLoading,
 			isLocking,
@@ -294,7 +296,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		form: {
 			instance: form,
 		},
-	}), [agenciesLoading, alertData, alertError, alertId, alertImage, alertLoading, alertValidating, canDelete, canDuplicate, canLock, canSave, form, handleDelete, handleDeleteImage, handleDuplicate, handleLock, handleSave, isDeleting, isDeletingImage, isDuplicating, isLocking, isReadOnly, isSaving, isUploadingImage]);
+	}), [agenciesLoading, alertData, alertError, alertId, alertImage, alertLoading, alertValidating, canDelete, canDuplicate, canLock, canSave, form, handleDelete, handleDeleteImage, handleDuplicate, handleLock, handleSave, isDeleting, isDeletingImage, isDuplicating, isFormDirty, isLocking, isReadOnly, isSaving, isUploadingImage]);
 
 	//
 	// F. Render components
