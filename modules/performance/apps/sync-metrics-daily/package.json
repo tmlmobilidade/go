@@ -19,7 +19,6 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-performance-pckg-dates": "*",
 		"@tmlmobilidade/go-performance-pckg-log": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",

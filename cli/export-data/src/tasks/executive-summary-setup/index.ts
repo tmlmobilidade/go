@@ -3,7 +3,7 @@ import { type TaskProps } from '@/types.js';
 import { log } from 'node:console';
 import fs from 'node:fs';
 
-// import { calculateAverageRidesByAgencyByDayType } from './avg-trips-day.js';
+import { calculateAverageRidesByAgencyByDayType } from './avg-trips-day.js';
 import { calculateObservedTrips } from './empty-runs.js';
 import { calculateSupplyMetrics } from './km.js';
 import { calculateMedianSpeed } from './median-speed.js';
@@ -42,7 +42,7 @@ interface ExecutiveSummaryAgencyTotals {
 	passengersPerKm?: number
 	pax_affected_by_delay?: number
 	pax_affected_by_failures?: number
-	product_id: { 'id-prod-navegante-65': number, 'id-prod-navegante-metro': number, 'id-prod-navegante-metro-sub23-grat': number, 'others': number }
+	product_id: { 'id-prod-navegante-65': number, 'id-prod-navegante-metro': number, 'id-prod-navegante-metro-418-gratuito': number, 'id-prod-navegante-metro-sub23-grat': number, 'others': number }
 	totalPassengers: { value: number }
 	trips: { completed: number, completedPct?: number, planned: number, withPassengers: number, zeroPassengers: { count: number, percentage?: number } }
 }
@@ -200,6 +200,7 @@ export async function exportExecutiveSummary({ context, message }: TaskProps): P
 				km: { observed: 0, scheduled: 0, observedPct: 0 },
 				product_id: {
 					'id-prod-navegante-metro': 0,
+					'id-prod-navegante-metro-418-gratuito': 0,
 					'id-prod-navegante-metro-sub23-grat': 0,
 					'id-prod-navegante-65': 0,
 					'others': 0,
@@ -242,10 +243,13 @@ export async function exportExecutiveSummary({ context, message }: TaskProps): P
 		const metro = byProduct['id-prod-navegante-metro'] ?? 0;
 		const sub23 = byProduct['id-prod-navegante-metro-sub23-grat'] ?? 0;
 		const p65 = byProduct['id-prod-navegante-65'] ?? 0;
+		const metro418 = byProduct['id-prod-navegante-metro-418-gratuito'] ?? 0; ;
+
 		const totalProducts = Object.values(byProduct).reduce((a, b) => a + b, 0);
-		const others = totalProducts - (metro + sub23 + p65);
+		const others = totalProducts - (metro + sub23 + p65 + metro418);
 
 		t.product_id['id-prod-navegante-metro'] += metro;
+		t.product_id['id-prod-navegante-metro-418-gratuito'] += metro418;
 		t.product_id['id-prod-navegante-metro-sub23-grat'] += sub23;
 		t.product_id['id-prod-navegante-65'] += p65;
 		t.product_id.others += others;
@@ -294,13 +298,13 @@ export async function exportExecutiveSummary({ context, message }: TaskProps): P
 	}
 
 	// Add avg_trips_day_type
-	// const avgRidesByDayType = await calculateAverageRidesByAgencyByDayType({ context, message });
-	// for (const row of avgRidesByDayType) {
-	// 	const agencyTotals = totalsByAgency[row.agencyId];
-	// 	if (!agencyTotals) continue;
-	// 	const dayTypeKey = `avg_trips_day_type ${row.dayType}` as const;
-	// 	agencyTotals[dayTypeKey] = row.averageRides;
-	// }
+	const avgRidesByDayType = await calculateAverageRidesByAgencyByDayType({ context, message });
+	for (const row of avgRidesByDayType) {
+		const agencyTotals = totalsByAgency[row.agencyId];
+		if (!agencyTotals) continue;
+		const dayTypeKey = `avg_trips_day_type ${row.dayType}` as const;
+		agencyTotals[dayTypeKey] = row.averageRides;
+	}
 
 	// Build final output
 	const finalOutput = {
