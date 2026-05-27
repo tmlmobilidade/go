@@ -1,6 +1,10 @@
+/* * */
+
 import type { TimeSlot } from '@tmlmobilidade/dates';
 
 import { Dates } from '@tmlmobilidade/dates';
+
+/* * */
 
 const isDevelopment = process.env.ENVIRONMENT === 'dev';
 

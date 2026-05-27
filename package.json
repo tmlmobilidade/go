@@ -117,7 +117,8 @@
 		"lint:fix": "turbo lint:fix",
 		"pckg:dev:emails": "ENVIRONMENT=dev turbo run dev --filter=@tmlmobilidade/emails",
 		"prepare": "husky",
-		"rinse": "npx --yes @tmlmobilidade/repo-rinse"
+		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
+		"test:eta:ride": "npm run build:eta:packages && ENVIRONMENT=dev dotenv-run -f ./modules/eta/environments/staging/secrets/.env -- npm run start -w @tmlmobilidade/go-eta-ride-analyzer --"
 
 	},
 	"devDependencies": {

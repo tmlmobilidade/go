@@ -1,8 +1,8 @@
 /* * */
 
 import { AppConfig } from '@/lib/config.js';
-import { qualifiedTable } from '@tmlmobilidade/go-eta-pckg-common';
 import { chunkLineByDistanceV2, hashedShapesToFeatureCollection } from '@tmlmobilidade/geo';
+import { qualifiedTable, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { hashedShapes } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -19,7 +19,7 @@ import geohash from 'ngeohash';
  *
  * Returns total number of shape nodes processed and written.
  */
-export async function syncShapeNodes(clickhouseClient, hashedShapeIds: string[]): Promise<{ shapeNodesProcessed: number }> {
+export async function syncShapeNodes(clickhouseClient: Parameters<typeof queryEtaFromFile>[0], hashedShapeIds: string[], config: AppConfig): Promise<{ shapeNodesProcessed: number }> {
 	//
 
 	Logger.title('4. Sync historical shape nodes into clickhouse');
@@ -56,7 +56,7 @@ export async function syncShapeNodes(clickhouseClient, hashedShapeIds: string[])
 	let shapeNodesProcessed = 0;
 	for await (const hashedShape of hashedShapesCursor) {
 		const geojson = hashedShapesToFeatureCollection(hashedShape);
-		const chunks = chunkLineByDistanceV2(geojson.features[0].geometry, AppConfig.shapeNodeChunkLength);
+		const chunks = chunkLineByDistanceV2(geojson.features[0].geometry, config.shapeNodeChunkLength);
 
 		for (const [idx, chunk] of chunks.coordinates.entries()) {
 			shapeNodesProcessed++;
