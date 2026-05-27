@@ -48,8 +48,8 @@ export function LinesContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<Line[], Error>(API_ROUTES.hub.NETWORK_LINES);
-	const { data: allRoutesData, isLoading: allRoutesLoading } = useSWR<NetworkRoute[], Error>(API_ROUTES.hub.NETWORK_ROUTES);
+	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<Line[], Error>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_LINES });
+	const { data: allRoutesData, isLoading: allRoutesLoading } = useSWR<NetworkRoute[], Error>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_ROUTES });
 
 	const normalizedLinesData = useMemo(() => {
 		return Array.isArray(allLinesData) ? allLinesData : [];

@@ -42,7 +42,7 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<NetworkStop[]>(API_ROUTES.hub.NETWORK_STOPS); // 15 minutes
+	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<NetworkStop[]>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_STOPS }); // 15 minutes
 
 	//
 	// B. Transform data

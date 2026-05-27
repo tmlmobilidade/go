@@ -50,8 +50,8 @@ export function VehiclesContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: fetchedVehiclesData, isLoading: allVehiclesLoading } = useSWR<VehiclesApiResponse<VehicleRegistry[]>, Error>(API_ROUTES.hub.REALTIME_VEHICLES_METADATA);
-	const { data: fetchedPositionsData, isLoading: allPositionsLoading } = useSWR<VehiclesApiResponse<SimplifiedVehicleEvent[]>, Error>(API_ROUTES.hub.REALTIME_VEHICLES_POSITIONS, { refreshInterval: 5000 }); // 5 seconds
+	const { data: fetchedVehiclesData, isLoading: allVehiclesLoading } = useSWR<VehiclesApiResponse<VehicleRegistry[]>, Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_VEHICLES_METADATA });
+	const { data: fetchedPositionsData, isLoading: allPositionsLoading } = useSWR<VehiclesApiResponse<SimplifiedVehicleEvent[]>, Error>({ credentials: 'omit', refreshInterval: 5000, url: API_ROUTES.hub.REALTIME_VEHICLES_POSITIONS }); // 5 seconds
 
 	const normalizedRegistryVehicles = useMemo(() => {
 		return fetchedVehiclesData?.data ?? [];

@@ -43,7 +43,7 @@ export function AlertsContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: allAlertsData, isLoading: allAlertsLoading } = useSWR<Alert[]>(API_ROUTES.hub.ALERTS_LIST);
+	const { data: allAlertsData, isLoading: allAlertsLoading } = useSWR<Alert[]>({ credentials: 'omit', url: API_ROUTES.hub.ALERTS_LIST });
 
 	//
 	// B. Transform data
