@@ -431,10 +431,10 @@ function parseSourceBase() {
   const dir = params.get('dir');
   if (dir) return dir.endsWith('/') ? dir.slice(0, -1) : dir;
   const run = params.get('run');
-  if (run) return `../output/ride-analyzer/${run}`;
+  if (run) return `../.output/ride-analyzer/${run}`;
   const picked = prompt('Run id? (folder inside modules/eta/output/ride-analyzer)');
   if (!picked) throw new Error('No run selected.');
-  return `../output/ride-analyzer/${picked}`;
+  return `../.output/ride-analyzer/${picked}`;
 }
 
 async function loadJson(path) {
