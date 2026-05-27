@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-eta-loader",
+	"name": "@tmlmobilidade/go-eta-pckg-loader",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -19,8 +19,13 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
+		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-eta-pckg-loader": "*",
+		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-eta-pckg-common": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"ngeohash": "^0.6.3"
 	},

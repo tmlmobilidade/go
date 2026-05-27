@@ -203,7 +203,10 @@ WITH
     ),
 
     -- 5. RE-TIME: per-node travel time = gap to the next emitted node timestamp
-    --    on the (ride, shape) timeline. Last node in a (ride, shape) gets 0.
+    --    within the same filtered segment (event_id). Last node in a segment gets 0.
+    --    Partitioning by event_id prevents lead() from bridging dropped segments
+    --    (slow GPS gaps, failed speed/bearing checks) and attributing multi-minute
+    --    dwell time to individual 25 m shape nodes.
     retimed_nodes AS (
         SELECT
             event_id,
@@ -224,7 +227,7 @@ WITH
             SELECT
                 *,
                 lead(created_at) OVER (
-                    PARTITION BY ride_id, hashed_shape_id
+                    PARTITION BY ride_id, hashed_shape_id, event_id
                     ORDER BY node_index
                 ) AS next_created_at
             FROM expanded_nodes

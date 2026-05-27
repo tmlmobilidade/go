@@ -1,13 +1,15 @@
 /* * */
 
-import { qualifiedTable } from '@tmlmobilidade/go-eta-pckg-common';
+import type { AppConfig } from '@/lib/config.js';
+
+import { qualifiedTable, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { hashedTrips } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 
-export async function syncCurrentWaypoints(clickhouseClient: any, hashedTripIds: string[]) {
+export async function syncCurrentWaypoints(clickhouseClient: Parameters<typeof queryEtaFromFile>[0], hashedTripIds: string[], config: AppConfig) {
 	//
 
 	Logger.title('6. Insert current window waypoints into clickhouse');

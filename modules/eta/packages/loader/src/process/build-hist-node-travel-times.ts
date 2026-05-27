@@ -1,6 +1,7 @@
 /* * */
 
-import { AppConfig } from '@/lib/config.js';
+import type { AppConfig } from '@/lib/config.js';
+
 import { Dates } from '@tmlmobilidade/dates';
 import { pipelinePath, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
@@ -9,7 +10,7 @@ import { performInTimeChunks } from '@tmlmobilidade/utils';
 
 /* * */
 
-export async function buildHistNodeTravelTimes(clickhouseClient, windowStart: UnixTimestamp) {
+export async function buildHistNodeTravelTimes(clickhouseClient: Parameters<typeof queryEtaFromFile>[0], windowStart: UnixTimestamp, config: AppConfig) {
 	await performInTimeChunks({
 		onChunk: async (chunk) => {
 			Logger.progress(
@@ -20,7 +21,7 @@ export async function buildHistNodeTravelTimes(clickhouseClient, windowStart: Un
 				chunk_start: chunk.start,
 			});
 		},
-		splitBy: { days: AppConfig.historicalTransformationChunkDays },
+		splitBy: { days: config.historicalTransformationChunkDays },
 		startDate: windowStart,
 	});
 }
