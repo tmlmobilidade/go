@@ -1,9 +1,8 @@
 'use client';
 
-import { LinesListToolbar } from '@/components/lines/LinesListToolbar';
-import { LinesListViewAll } from '@/components/lines/LinesListViewAll';
-import { LinesListViewSkeleton } from '@/components/lines/LinesListViewSkeleton';
-import { useLinesListContext } from '@/contexts/LinesList.context';
+import { useLinesContext } from '@/contexts/Lines.context';
+
+import styles from './styles.module.css';
 
 /* * */
 
@@ -13,18 +12,18 @@ export function LinesList() {
 	//
 	// A. Setup variables
 
-	const linesContext = useLinesListContext();
+	const linesContext = useLinesContext();
 
 	//
 	// B. Render components
 
 	return (
-		<>
-			<LinesListToolbar />
-			{linesContext.flags.is_loading && <LinesListViewSkeleton />}
-			{(!linesContext.flags.is_loading && linesContext.filters.by_current_view === 'all') && <LinesListViewAll />}
-		</>
+		<div className={styles.container}>
+			{linesContext.data.lines.map((line, index) => (
+				<div key={index} className={styles.item}>
+					{line.short_name} - {line.long_name}
+				</div>
+			))}
+		</div>
 	);
-
-	//
 }

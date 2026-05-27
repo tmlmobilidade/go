@@ -4,6 +4,7 @@ import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type Ride } from '@tmlmobilidade/types';
+import { log } from 'node:console';
 
 /* Types */
 
@@ -35,7 +36,6 @@ async function processDailyRides(
 	stream: Iterable<Ride>,
 	results: DailyResults,
 	agencies: string[],
-	agency43Trips: string[],
 ) {
 	for (const rideData of stream) {
 		const agency = rideData.agency_id;
@@ -53,7 +53,12 @@ async function processDailyRides(
 			results.total.early_rides++;
 		}
 
-		if (expectedStart >= 5) {
+		if (expectedStart > -1 && expectedStart <= 5) {
+			results.agencies[agency].ontime_rides++;
+			results.total.ontime_rides++;
+		}
+
+		if (expectedStart > 5) {
 			results.agencies[agency].five_min_delays++;
 			results.total.five_min_delays++;
 
@@ -62,15 +67,6 @@ async function processDailyRides(
 				= (results.agencies[agency]['pax-affected-by-delay'] ?? 0) + passengers;
 			results.total['pax-affected-by-delay']
 				= (results.total['pax-affected-by-delay'] ?? 0) + passengers;
-
-			if (agency === '43') {
-				agency43Trips.push(rideData.trip_id);
-			}
-		}
-
-		if (expectedStart > -1 && expectedStart < 5) {
-			results.agencies[agency].ontime_rides++;
-			results.total.ontime_rides++;
 		}
 	}
 }
@@ -92,21 +88,24 @@ function calculatePercentages(metrics: RideMetrics) {
 export const calculateDailyServiceCompliance = async (context: ExportContext) => {
 	const agencies = ['41', '42', '43', '44'];
 	const ridesCollection = await rides.getCollection();
-	const agency43Trips: string[] = [];
 
 	const processingTimer = new Timer();
 	let countProcessed = 0;
 
 	const resultsByDay: Record<string, DailyResults> = {};
 
-	const startDate = Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').unix_timestamp;
-	const endDate = Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').unix_timestamp;
+	// const ridesQuery = {
+	// 	operational_date: { $gte: context.dates.start, $lte: context.dates.end },
+	// };
 
 	const ridesQuery = {
-		start_time_scheduled: {
-			$gte: startDate,
-			$lte: endDate,
+		$expr: {
+			$or: [
+				{ $eq: ['$analysis.SIMPLE_ONE_APEX_VALIDATION.grade', 'pass'] },
+				{ $eq: ['$analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade', 'pass'] },
+			],
 		},
+		operational_date: { $gte: context.dates.start, $lte: context.dates.end },
 	};
 
 	const allRidesStream = ridesCollection.find(ridesQuery).batchSize(100_000).stream();
@@ -133,7 +132,7 @@ export const calculateDailyServiceCompliance = async (context: ExportContext) =>
 			});
 		}
 
-		await processDailyRides([rideData], resultsByDay[dayOperationalStr], agencies, agency43Trips);
+		await processDailyRides([rideData], resultsByDay[dayOperationalStr], agencies);
 
 		countProcessed++;
 		if (countProcessed % 100 === 0) {
@@ -163,10 +162,6 @@ export const calculateDailyServiceCompliance = async (context: ExportContext) =>
 			total: totalWithPct,
 		};
 	}
-
-	/* LOG: Export agency 43 trips */
-	// fs.writeFileSync('agency_43_trips.json', JSON.stringify(agency43Trips, null, 2));
-	// Logger.info(`Exported ${agency43Trips.length} trip_id for agency 43 to agency_43_trips.json`);
 
 	return formattedResults;
 };

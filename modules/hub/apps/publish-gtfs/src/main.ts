@@ -18,8 +18,6 @@ import { ZipFile } from 'yazl';
 import { exportAgencyFile } from '@/exports/agency.js';
 import { exportCalendarDatesFile } from '@/exports/calendar-dates.js';
 import { exportDatesFile } from '@/exports/dates.js';
-import { exportFareAttributesFile } from '@/exports/fare-attributes.js';
-import { exportFareRulesFile } from '@/exports/fare-rules.js';
 import { exportFeedInfoFile } from '@/exports/feed-info.js';
 import { exportMunicipalitiesFile } from '@/exports/municipalities.js';
 import { exportPeriodsFile } from '@/exports/periods.js';
@@ -253,8 +251,6 @@ export async function main() {
 	await exportDatesFile(context);
 	await exportPeriodsFile(context);
 	await exportMunicipalitiesFile(context);
-	await exportFareAttributesFile(Array.from(referencedAgencyIds), context);
-	await exportFareRulesFile(Object.keys(routesMarkedForFinalExport), context);
 	await exportRoutesFile(Object.values(routesMarkedForFinalExport), context);
 	await exportAgencyFile(Array.from(referencedAgencyIds), context);
 	await exportFeedInfoFile(currentOperationalDate, farthestDateFound, context);
@@ -264,6 +260,8 @@ export async function main() {
 	// YAZL is used here for its focus on performance and low memory usage.
 
 	const zipTimer = new Timer();
+
+	Logger.info('Zipping GTFS export...');
 
 	const outputZip = new ZipFile();
 
@@ -286,6 +284,8 @@ export async function main() {
 	//
 	// Upload the GTFS zip file to the Files collection,
 	// which handles storage and retrieval.
+
+	Logger.info('Uploading GTFS zip file to Files collection...');
 
 	const fileStream = fs.createReadStream(`${context.workdir.path}/${context.run_id}.zip`);
 

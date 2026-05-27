@@ -38,7 +38,7 @@ export async function importGtfsToDatabase(config: ImportGtfsToDatabaseConfig, c
 		//
 		// Download and extract the GTFS file.
 
-		await extractGtfsSource(config.source, context);
+		await extractGtfsSource(context, config);
 
 		//
 		// Process GTFS files in the correct order

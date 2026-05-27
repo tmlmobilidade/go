@@ -3,7 +3,7 @@
 ## Detect directories with the following structure:
 ## modules/{MODULE}/apps/frontend/
 
-find modules -type d -path "*/apps/frontend" | while read -r dir; do
+find modules -type d -path "*/apps/frontend" -o -path "*/apps/frontend-navegante-app" | while read -r dir; do
 
     public_dir="$dir/public"
     echo "Setting up symlink at $public_dir"

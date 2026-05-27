@@ -65,9 +65,17 @@ db.createRole({
 
 db.createRole({
 	privileges: [
-		{ actions: ['find'], resource: { collection: 'files', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'alerts', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'census', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'agencies', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'districts', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'localities', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'municipalities', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'parishes', db: 'production' } },
 		{ actions: ['find', 'update'], resource: { collection: 'plans', db: 'production' } },
+		{ actions: ['find', 'changeStream'], resource: { collection: 'rides', db: 'production' } },
+		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'files', db: 'production' } },
 	],
 	role: 'hub',
 	roles: [],

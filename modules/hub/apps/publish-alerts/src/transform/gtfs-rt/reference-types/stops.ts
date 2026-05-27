@@ -3,6 +3,7 @@
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
+import { getPublicRouteId } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -91,7 +92,7 @@ export async function transformReferenceTypeStops(alertData: Alert): Promise<Gtf
 			for (const routeId of uniqueRouteIds) {
 				result.push({
 					agency_id: alertData.agency_id,
-					route_id: routeId,
+					route_id: getPublicRouteId(alertData.agency_id, routeId),
 					stop_id: reference.parent_id,
 				});
 			}

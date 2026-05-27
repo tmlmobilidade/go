@@ -3,8 +3,6 @@
 import { ExportedAgencyRow } from '@/exports/agency.js';
 import { ExportedCalendarDatesRow } from '@/exports/calendar-dates.js';
 import { ExportedDatesRow } from '@/exports/dates.js';
-import { ExportedFareAttributesRow } from '@/exports/fare-attributes.js';
-import { ExportedFareRulesRow } from '@/exports/fare-rules.js';
 import { ExportedFeedInfoRow } from '@/exports/feed-info.js';
 import { ExportedMunicipalitiesRow } from '@/exports/municipalities.js';
 import { ExportedPeriodsRow } from '@/exports/periods.js';
@@ -27,8 +25,6 @@ export interface ExportGtfsContext {
 		agency: BatchWriter<ExportedAgencyRow>
 		calendar_dates: BatchWriter<ExportedCalendarDatesRow>
 		dates: BatchWriter<ExportedDatesRow>
-		fare_attributes: BatchWriter<ExportedFareAttributesRow>
-		fare_rules: BatchWriter<ExportedFareRulesRow>
 		feed_info: BatchWriter<ExportedFeedInfoRow>
 		municipalities: BatchWriter<ExportedMunicipalitiesRow>
 		periods: BatchWriter<ExportedPeriodsRow>

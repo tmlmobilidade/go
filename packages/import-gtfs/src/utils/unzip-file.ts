@@ -1,12 +1,15 @@
 /* * */
 
-import extract from 'extract-zip';
-import fs from 'fs';
+import fs from 'node:fs';
+import unzipper from 'unzipper';
 
 /* * */
 
 export async function unzipFile(zipFilePath: string, outputDir: string) {
-	await extract(zipFilePath, { dir: outputDir });
+	await fs
+		.createReadStream(zipFilePath)
+		.pipe(unzipper.Extract({ path: outputDir }))
+		.promise();
 	setDirectoryPermissions(outputDir);
 }
 

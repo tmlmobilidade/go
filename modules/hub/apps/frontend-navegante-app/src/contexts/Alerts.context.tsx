@@ -1,13 +1,10 @@
 'use client';
 
-import { getPublicVariable } from '@/settings/public-variables';
-import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import { agencyMatchesSelection, agencyMatchesTransports, transportsSelectionIsAll } from '@/utils/transportAgencies';
-import { type Alert } from '@tmlmobilidade/go-hub-pckg-types';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { type Alert } from '@tmlmobilidade/types';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
-
-import { useGlobalSettingsContext } from './GlobalSettings.context';
 
 /* * */
 
@@ -19,7 +16,7 @@ interface AlertsContextState {
 	}
 	data: {
 		alerts: Alert[]
-		featureCollection: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>
+		fc: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
 	}
 	flags: {
 		is_loading: boolean
@@ -40,80 +37,52 @@ export function useAlertsContext() {
 
 /* * */
 
-export const AlertsContextProvider = ({ children }) => {
+export function AlertsContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
-	// A. Setup variables
+	// A. Fetch data
 
-	// const analyticsContext = useAnalyticsContext();
-	const globalSettingsContext = useGlobalSettingsContext();
-	const filterByAgency = globalSettingsContext.filterbar.by_agency;
-	const filterByTransports = globalSettingsContext.filterbar.transports;
-
-	const [alertsState, setAlertsState] = useState<Alert[]>([]);
-	const [dataFeatureCollectionState, setDataFeatureCollectionState] = useState<GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>>(getBaseGeoJsonFeatureCollection());
-	//
-	const { data: alertsResponse, isLoading: allAlertsLoading } = useSWR<{ data: Alert[] }, Error>(`${getPublicVariable('hub_api_url')}/v1/alerts`, { refreshInterval: 180000 }); // 3 minutes
+	const { data: allAlertsData, isLoading: allAlertsLoading } = useSWR<Alert[]>({ credentials: 'omit', url: API_ROUTES.hub.ALERTS_LIST });
 
 	//
-	// C. Transform data
+	// B. Transform data
 
-	useEffect(() => {
-		if (!alertsResponse || allAlertsLoading) return;
-		const list = alertsResponse.data ?? [];
-		setAlertsState(list);
-	}, [alertsResponse, allAlertsLoading]);
-
-	const filteredAlertsState = useMemo(() => {
-		const isAllAgencies = filterByAgency.length === 0;
-		const isAllTransports = transportsSelectionIsAll(filterByTransports);
-
-		if (isAllAgencies && isAllTransports) return alertsState;
-
-		return alertsState.filter((alert) => {
-			return alert.informed_entity.some((entity) => {
-				if (!entity.agency_id) return false;
-				if (!isAllAgencies && !agencyMatchesSelection(entity.agency_id, filterByAgency)) return false;
-				if (!isAllTransports && !agencyMatchesTransports(entity.agency_id, filterByTransports)) return false;
-				return true;
-			});
-		});
-	}, [alertsState, filterByAgency, filterByTransports]);
-
-	// Transform data into geojson
-	useEffect(() => {
+	const dataFeatureCollectionState = useMemo(() => {
 		const collection = getBaseGeoJsonFeatureCollection();
-		filteredAlertsState.forEach((alert) => {
-			const alertFC = transformAlertDataIntoGeoJsonFeature(alert);
+		if (!allAlertsData) return collection;
+		allAlertsData.forEach((item) => {
+			const alertFC = transformAlertDataIntoGeoJsonFeature(item);
 			if (alertFC) collection.features.push(alertFC);
 		});
-
-		setDataFeatureCollectionState(collection);
-	}, [filteredAlertsState]);
+		return collection;
+	}, [allAlertsData]);
 
 	//
-	// D. Handle actions
+	// C. Handle actions
 
 	const getAlertById = (alertId: string): Alert | null => {
-		return filteredAlertsState.find(item => item.alert_id === alertId) || null;
+		return allAlertsData?.find(item => item._id === alertId) || null;
 	};
 
 	const getAlertsByLineId = (lineId: string): Alert[] => {
-		return filteredAlertsState.filter((resolvedAlert) => {
-			return resolvedAlert.informed_entity.some((informedEntity) => {
-				if (informedEntity.line_id != null && String(informedEntity.line_id) === String(lineId)) return true;
-				return informedEntity.route_id?.startsWith(lineId) ?? false;
-			});
-		});
+		return allAlertsData?.filter((item) => {
+			if (item.reference_type === 'lines') return item.references.some(reference => reference.parent_id === lineId);
+			if (item.reference_type === 'stops') return item.references.some(reference => reference.child_ids.includes(lineId));
+			return false;
+		}) || [];
 	};
 
-	const getAlertsByStopId = (stopId: string): Alert[] => {
-		return filteredAlertsState.filter(resolvedAlert => resolvedAlert.informed_entity.some(informedEntity => informedEntity.stop_id === stopId));
+	const getAlertsByStopId = (lineId: string): Alert[] => {
+		return allAlertsData?.filter((item) => {
+			if (item.reference_type === 'stops') return item.references.some(reference => reference.parent_id === lineId);
+			if (item.reference_type === 'lines') return item.references.some(reference => reference.child_ids.includes(lineId));
+			return false;
+		}) || [];
 	};
 
 	//
-	// E. Define context value
+	// D. Define context value
 
 	const contextValue: AlertsContextState = {
 		actions: {
@@ -122,8 +91,8 @@ export const AlertsContextProvider = ({ children }) => {
 			getAlertsByStopId,
 		},
 		data: {
-			alerts: filteredAlertsState,
-			featureCollection: dataFeatureCollectionState,
+			alerts: allAlertsData || [],
+			fc: dataFeatureCollectionState,
 		},
 		flags: {
 			is_loading: allAlertsLoading,
@@ -131,7 +100,7 @@ export const AlertsContextProvider = ({ children }) => {
 	};
 
 	//
-	// F. Render components
+	// E. Render components
 
 	return (
 		<AlertsContext.Provider value={contextValue}>
@@ -145,7 +114,9 @@ export const AlertsContextProvider = ({ children }) => {
 /* * */
 
 export function transformAlertDataIntoGeoJsonFeature(alertData: Alert): GeoJSON.Feature<GeoJSON.Point, GeoJSON.GeoJsonProperties> {
-	if (!alertData.coordinates) return null;
+	// Skip alerts without coordinates
+	if (!alertData.coordinates?.length) return null;
+	// Transform alert data into a GeoJSON feature
 	return {
 		geometry: {
 			coordinates: [alertData.coordinates[1], alertData.coordinates[0]],
@@ -153,8 +124,10 @@ export function transformAlertDataIntoGeoJsonFeature(alertData: Alert): GeoJSON.
 		},
 		properties: {
 			cause: alertData.cause,
+			description: alertData.description,
 			effect: alertData.effect,
-			id: alertData.alert_id,
+			id: alertData._id,
+			title: alertData.title,
 		},
 		type: 'Feature',
 	};

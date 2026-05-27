@@ -18,6 +18,7 @@ server.register(
 		instance.get('/stops', NetworkController.getStops);
 
 		instance.get('/lines', NetworkController.getLines);
+		instance.get('/routes', NetworkController.getRoutes);
 
 		instance.get('/patterns/:id', NetworkController.getPatterns);
 

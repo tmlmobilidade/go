@@ -1,9 +1,9 @@
 'use client';
 
-import { getPublicVariable } from '@/settings/public-variables';
 import { type NetworkStop } from '@/types/api/network';
-import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -14,8 +14,8 @@ interface StopsContextState {
 		getStopByIdGeoJsonFC: (stopId: string) => GeoJSON.FeatureCollection | undefined
 	}
 	data: {
+		fc: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
 		stops: NetworkStop[]
-		stops_fc: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties> | undefined
 	}
 	flags: {
 		is_loading: boolean
@@ -36,34 +36,25 @@ export function useStopsContext() {
 
 /* * */
 
-export const StopsContextProvider = ({ children }) => {
+export function StopsContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
-	// A. Setup variables
+	// A. Fetch data
 
-	const [dataStopsFCState, setDataStopsFCState] = useState<StopsContextState['data']['stops_fc']>();
-
-	//
-	// B. Fetch data
-
-	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<NetworkStop[]>(`${getPublicVariable('hub_api_url')}/v1/network/stops`, { refreshInterval: 900000 }); // 15 minutes
+	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<NetworkStop[]>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_STOPS }); // 15 minutes
 
 	//
-	// C. Transform data
+	// B. Transform data
 
-	useEffect(() => {
-		// Check if all data is available
-		if (!allStopsData) return;
-		// Transform data into GeoJSON FeatureCollection
+	const dataFeatureCollectionState = useMemo(() => {
 		const collection = getBaseGeoJsonFeatureCollection();
+		if (!allStopsData) return collection;
 		allStopsData.forEach((stop) => {
 			const stopFC = transformStopDataIntoGeoJsonFeature(stop);
 			if (stopFC) collection.features.push(stopFC);
 		});
-		// Set state value
-		setDataStopsFCState(collection);
-		//
+		return collection;
 	}, [allStopsData]);
 
 	//
@@ -91,8 +82,8 @@ export const StopsContextProvider = ({ children }) => {
 			getStopByIdGeoJsonFC,
 		},
 		data: {
+			fc: dataFeatureCollectionState,
 			stops: allStopsData ?? [],
-			stops_fc: dataStopsFCState,
 		},
 		flags: {
 			is_loading: allStopsLoading,

@@ -1,8 +1,8 @@
 'use client';
 
-import { getPublicVariable } from '@/settings/public-variables';
 import { type Line, type NetworkRoute } from '@/types/api/network';
-import { createContext, useContext, useMemo } from 'react';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -42,14 +42,14 @@ export function useLinesContext() {
 
 /* * */
 
-export const LinesContextProvider = ({ children }) => {
+export function LinesContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
 	// A. Fetch data
 
-	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<Line[], Error>(`${getPublicVariable('hub_api_url')}/v1/network/lines`, { refreshInterval: 900000 }); // 15 minutes
-	const { data: allRoutesData, isLoading: allRoutesLoading } = useSWR<NetworkRoute[], Error>(`${getPublicVariable('hub_api_url')}/v1/network/routes`, { refreshInterval: 900000 }); // 15 minutes
+	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<Line[], Error>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_LINES });
+	const { data: allRoutesData, isLoading: allRoutesLoading } = useSWR<NetworkRoute[], Error>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_ROUTES });
 
 	const normalizedLinesData = useMemo(() => {
 		return Array.isArray(allLinesData) ? allLinesData : [];
@@ -83,7 +83,7 @@ export const LinesContextProvider = ({ children }) => {
 	//
 	// C. Define context value
 
-	const contextValue: LinesContextState = useMemo(() => ({
+	const contextValue: LinesContextState = {
 		actions: {
 			getLineDataById,
 			getRouteDataById,
@@ -95,13 +95,7 @@ export const LinesContextProvider = ({ children }) => {
 		flags: {
 			is_loading: allLinesLoading || allRoutesLoading,
 		},
-	}), [
-		allLinesLoading,
-		allRoutesLoading,
-		normalizedLinesData,
-		normalizedRoutesData,
-
-	]);
+	};
 
 	//
 	// D. Render components

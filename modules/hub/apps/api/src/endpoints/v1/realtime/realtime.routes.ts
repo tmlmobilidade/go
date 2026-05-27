@@ -15,9 +15,14 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/vehicles', RealtimeController.getVehiclesJson);
+		instance.get('/vehicles/metadata', RealtimeController.getVehiclesMetadataJson);
+		instance.get('/vehicles/positions', RealtimeController.getVehiclesPositionsJson);
+		instance.get('/vehicles/positions/gtfs', RealtimeController.getVehiclesPositionsGtfsRtJson);
+		instance.get('/vehicles/positions/gtfs.pb', RealtimeController.getVehiclesPositionsGtfsRtProtobuf);
 
-		instance.get('/vehicles.pb', RealtimeController.getVehiclesProtobuf);
+		instance.get('/eta', RealtimeController.getEtaJson);
+		instance.get('/eta/gtfs', RealtimeController.getEtaGtfsRtJson);
+		instance.get('/eta/gtfs.pb', RealtimeController.getEtaGtfsRtProtobuf);
 
 		next();
 	},

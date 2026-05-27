@@ -13,6 +13,8 @@ export async function main() {
 
 	const globalTimer = new Timer();
 
+	Logger.info(`Starting publish schedules process...`);
+
 	//
 	// Set up the import config
 
