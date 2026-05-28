@@ -24,14 +24,11 @@ export const syncSupplyByAgencyByDay = async () => {
 	const METRIC = 'supply_by_agency_by_day';
 
 	//
-	// Delete existing metrics (CM agencies only)
+	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info(`Clearing existing '${METRIC}' metrics for CM agencies...`);
-	await metrics.deleteMany({
-		'metric': METRIC,
-		'properties.agency_id': { $in: [...CM_AGENCY_IDS] },
-	});
+	Logger.info(`Clearing existing '${METRIC}' metrics...`);
+	await metrics.deleteMany({ metric: METRIC });
 	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
 
 	//
@@ -169,7 +166,6 @@ export const syncSupplyByAgencyByDay = async () => {
 								extension_scheduled: { $ifNull: ['$extension_scheduled', 0] },
 								grade: '$analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade',
 
-								// revenue components
 								// divide apex_on_board_sales_amount and passengers_observed_prepaid_amount fields by 100 before summing
 								apex_on_board_sales_amount: {
 									$divide: [{ $ifNull: ['$apex_on_board_sales_amount', 0] }, 100],
@@ -178,12 +174,27 @@ export const syncSupplyByAgencyByDay = async () => {
 									$divide: [{ $ifNull: ['$passengers_observed_prepaid_amount', 0] }, 100],
 								},
 								passengers_observed_subscription_qty: { $ifNull: ['$passengers_observed_subscription_qty', 0] },
+								apex_validations_qty: { $ifNull: ['$apex_validations_qty', 0] },
+								apex_on_board_sales_qty: { $ifNull: ['$apex_on_board_sales_qty', 0] },
+								passengers_observed: { $ifNull: ['$passengers_observed', 0] },
+							},
+						},
+						{
+							$addFields: {
+								has_realtime_events: { $eq: ['$grade', 'pass'] },
+								has_ticketing: {
+									$or: [
+										{ $gt: ['$apex_validations_qty', 0] },
+										{ $gt: ['$apex_on_board_sales_qty', 0] },
+										{ $gt: ['$passengers_observed', 0] },
+									],
+								},
 							},
 						},
 						{
 							$addFields: {
 								is_valid: {
-									$and: [{ $eq: ['$grade', 'pass'] }],
+									$or: ['$has_realtime_events', '$has_ticketing'],
 								},
 								revenue_row: {
 									$add: [
