@@ -7,18 +7,47 @@ import { Description } from '../../common';
 import { Section } from '../../layout/Section';
 import { NumberInput } from '../NumberInput';
 
+/**
+ * Type alias for a tuple representing latitude and longitude coordinates.
+ * Each value can be a number or undefined.
+ */
 type Coords = [number | undefined, number | undefined];
+
+/**
+ * Type alias for raw input values which can be null, number, string, or undefined.
+ */
 type Raw = null | number | string | undefined;
 
+/**
+ * Returns a copy of the given coordinates tuple with the specified index (0 = lat, 1 = lng) patched to the new value.
+ * @param coords The original coordinates tuple.
+ * @param index 0 for latitude, 1 for longitude.
+ * @param value The new value to insert.
+ * @returns A new coordinates tuple with the patched value.
+ */
 const patch = (coords: Coords, index: 0 | 1, value: number | undefined): Coords =>
 	index === 0 ? [value, coords[1]] : [coords[0], value];
 
+/**
+ * Attempts to parse a raw value (string, number, or null/undefined) as a finite number.
+ * Returns undefined if the value cannot be reliably converted to a number.
+ * @param raw The raw value to parse.
+ * @returns The parsed number if valid, otherwise undefined.
+ */
 const parseRaw = (raw: Raw): number | undefined => {
 	if (raw === '' || raw == null) return undefined;
 	const n = typeof raw === 'number' ? raw : Number(raw);
 	return Number.isFinite(n) ? n : undefined;
 };
 
+/**
+ * Attempts to split a pasted text string into two coordinate parts.
+ * Accepts tab or comma delimiters and trims whitespace.
+ * Returns a tuple if two valid parts are found, otherwise null.
+ *
+ * @param text The pasted string.
+ * @returns A tuple of [latitude, longitude] as strings, or null if not a valid format.
+ */
 const splitPastedCoords = (text: string): [string, string] | null => {
 	const trimmed = text.trim();
 	const separator = trimmed.includes('\t') ? '\t' : trimmed.includes(',') ? ',' : null;
@@ -28,12 +57,23 @@ const splitPastedCoords = (text: string): [string, string] | null => {
 	return parts.length === 2 ? [parts[0], parts[1]] : null;
 };
 
+/**
+ * Rounds/clamps a coordinate using clampCoordinate helper.
+ * Returns the rounded number or undefined if the input is undefined or the clamp returns nullish.
+ * @param value The coordinate value to round/clamp.
+ * @returns The rounded value or undefined.
+ */
 const roundCoord = (value: number | undefined): number | undefined => {
 	if (value === undefined) return undefined;
 	const rounded = clampCoordinate(value);
 	return rounded ?? undefined;
 };
 
+/**
+ * Applies coordinate rounding/clamping to both latitude and longitude in a tuple.
+ * @param coords The coordinates tuple.
+ * @returns A new tuple with each coordinate rounded/clamped.
+ */
 const roundCoords = (coords: Coords): Coords => [
 	roundCoord(coords[0]),
 	roundCoord(coords[1]),
