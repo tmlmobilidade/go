@@ -52,18 +52,20 @@ interface CoordinatesInputProps {
  * Supports controlled and uncontrolled usage, rounds committed values to 6 decimals,
  * and keeps permissive numeric behavior for typed/pasted input.
  */
-export function CoordinatesInput({
-	description,
-	disabled = false,
-	onChange,
-	onPaste,
-	value,
-}: CoordinatesInputProps) {
+export function CoordinatesInput({ description, disabled = false, onChange, onPaste, value }: CoordinatesInputProps) {
+	//
+
+	//
+	// A. Setup variables
+
 	const initial = value ?? [undefined, undefined];
 	const draftRef = useRef<Coords>(initial);
 	const inputsRef = useRef<HTMLDivElement>(null);
 	const isEditingRef = useRef(false);
 	const [coords, setCoords] = useState<Coords>(initial);
+
+	//
+	// B. Handle effects
 
 	useEffect(() => {
 		if (isEditingRef.current) return;
@@ -74,6 +76,9 @@ export function CoordinatesInput({
 		draftRef.current = next;
 		setCoords(next);
 	}, [value]);
+
+	//
+	// C. Handle actions
 
 	const updateCoords = (next: Coords) => {
 		draftRef.current = next;
@@ -108,6 +113,9 @@ export function CoordinatesInput({
 		updateCoords([parseRaw(parts[0]), parseRaw(parts[1])]);
 		onPaste?.(parts);
 	}, [onPaste]);
+
+	//
+	// D. Render components
 
 	return (
 		<Section flexDirection="column" gap="xs" padding="none">
