@@ -73,13 +73,29 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 	 * @param secondsAgo - The number of seconds in the past to consider for retrieving recent positions. Defaults to 90 seconds.
 	 * @returns A promise resolving to an array of SimplifiedVehicleEvent objects, each representing the latest event for a vehicle within the specified period.
 	 *
-	 * The method filters out events where any of vehicle_id, agency_id, or trip_id are empty or null,
-	 * and also ensures latitude and longitude are not zero. Only the most recent event per vehicle is returned.
+	 * When the latest event has no bearing, the immediately previous event's bearing is used if that
+	 * event is at most 5 minutes older; otherwise bearing stays null.
 	 */
 	public async getPositions(secondsAgo: number = 90): Promise<SimplifiedVehicleEvent[]> {
+		const bearingInferenceLookbackSeconds = 300;
+		const bearingInferenceMaxGapMs = bearingInferenceLookbackSeconds * 1000;
 		const query = `
 			SELECT *
-			FROM "${this.databaseName}"."${this.tableName}"
+			FROM (
+				SELECT
+					* REPLACE(
+						if(
+							bearing IS NULL
+							AND lagInFrame(created_at) OVER w IS NOT NULL
+							AND (created_at - lagInFrame(created_at) OVER w) <= ${bearingInferenceMaxGapMs},
+							lagInFrame(bearing) OVER w,
+							bearing
+						) AS bearing
+					)
+				FROM "${this.databaseName}"."${this.tableName}"
+				WHERE created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL ${secondsAgo + bearingInferenceLookbackSeconds} SECOND)
+				WINDOW w AS (PARTITION BY vehicle_id, agency_id ORDER BY created_at)
+			)
 			WHERE created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL ${secondsAgo} SECOND)
 			ORDER BY created_at DESC
 			LIMIT 1 BY vehicle_id, agency_id
