@@ -73,8 +73,8 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 	 * @param secondsAgo - The number of seconds in the past to consider for retrieving recent positions. Defaults to 90 seconds.
 	 * @returns A promise resolving to an array of SimplifiedVehicleEvent objects, each representing the latest event for a vehicle within the specified period.
 	 *
-	 * When the latest event has no bearing, the immediately previous event's bearing is used if that
-	 * event is at most 5 minutes older; otherwise bearing stays null.
+	 * When bearing is missing, it is computed from the previous position of the same agency_id/vehicle_id
+	 * pair if that event is at most 5 minutes older and the coordinates changed.
 	 */
 	public async getPositions(secondsAgo: number = 90): Promise<SimplifiedVehicleEvent[]> {
 		const bearingInferenceLookbackSeconds = 300;
@@ -84,21 +84,35 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 			FROM (
 				SELECT
 					* REPLACE(
-						if(
-							bearing IS NULL
-							AND lagInFrame(created_at) OVER w IS NOT NULL
-							AND (created_at - lagInFrame(created_at) OVER w) <= ${bearingInferenceMaxGapMs},
-							lagInFrame(bearing) OVER w,
-							bearing
+						coalesce(
+							bearing,
+							if(
+								lagInFrame(created_at) OVER w IS NOT NULL
+								AND (created_at - lagInFrame(created_at) OVER w) <= ${bearingInferenceMaxGapMs}
+								AND (
+									abs(latitude - lagInFrame(latitude) OVER w) > 0.000001
+									OR abs(longitude - lagInFrame(longitude) OVER w) > 0.000001
+								),
+								toInt64(round(mod(
+									360 + degrees(atan2(
+										sin(radians(longitude - lagInFrame(longitude) OVER w)) * cos(radians(latitude)),
+										cos(radians(lagInFrame(latitude) OVER w)) * sin(radians(latitude))
+											- sin(radians(lagInFrame(latitude) OVER w)) * cos(radians(latitude))
+												* cos(radians(longitude - lagInFrame(longitude) OVER w))
+									)),
+									360
+								))),
+								NULL
+							)
 						) AS bearing
 					)
 				FROM "${this.databaseName}"."${this.tableName}"
 				WHERE created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL ${secondsAgo + bearingInferenceLookbackSeconds} SECOND)
-				WINDOW w AS (PARTITION BY vehicle_id, agency_id ORDER BY created_at)
+				WINDOW w AS (PARTITION BY agency_id, vehicle_id ORDER BY created_at)
 			)
 			WHERE created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL ${secondsAgo} SECOND)
 			ORDER BY created_at DESC
-			LIMIT 1 BY vehicle_id, agency_id
+			LIMIT 1 BY agency_id, vehicle_id
 		`;
 
 		const result = await this.queryFromString<SimplifiedVehicleEvent>(query);
