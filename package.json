@@ -93,6 +93,8 @@
 		"dev:tracker:cm-sync-log": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-sync-log",
 		"dev:tracker:cp-fetch": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cp-fetch",
 		"dev:tracker:cp-fetch:prd": "npm run build:tracker:packages && ENVIRONMENT=prd dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cp-fetch",
+		"dev:tracker:crtm-aisa-fetch": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-crtm-aisa-fetch",
+		"dev:tracker:crtm-aisa-fetch:prd": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-crtm-aisa-fetch",
 		"dev:tracker:mobi-fetch": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-mobi-fetch",
 		"dev:tracker:mobi-fetch:prd": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-mobi-fetch",
 		"dev:tracker:prd": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-*",
