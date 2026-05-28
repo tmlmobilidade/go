@@ -4,10 +4,7 @@ import { type CreateAlertDto } from '@tmlmobilidade/types';
 
 type DraftCoordinates = [number | undefined, number | undefined];
 
-const hasFiniteNumber = (value: unknown): value is number => (
-	typeof value === 'number'
-	&& Number.isFinite(value)
-);
+const hasFiniteNumber = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
 
 /**
  * Coordinates are optional in alert create/detail forms.
@@ -26,6 +23,11 @@ export function isValidOptionalAlertCoordinates(coordinates: CreateAlertDto['coo
 	return true;
 }
 
+/**
+ * Normalizes the coordinates input to the expected format.
+ * @param coordinates The coordinates input.
+ * @returns The normalized coordinates.
+ */
 export function normalizeAlertCoordinatesInput(coordinates: DraftCoordinates | undefined): CreateAlertDto['coordinates'] | DraftCoordinates {
 	if (!coordinates) return null;
 
