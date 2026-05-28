@@ -65,8 +65,6 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	const activePeriodStartDateValue = useContextFormWatch({ control: form.control, name: 'active_period_start_date' });
 	const activePeriodEndDateValue = useContextFormWatch({ control: form.control, name: 'active_period_end_date' });
 
-	console.log('agencyIdValue', agencyIdValue);
-
 	//
 	// C. Fetch data
 
@@ -112,7 +110,6 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 	useEffect(() => {
 		// Pre-select agency when only one is available
 		if (agenciesData?.length !== 1) return;
-		console.log('agenciesData here');
 		if (form.getValues('agency_id')) return;
 		form.setValue('agency_id', agenciesData[0]._id, { shouldDirty: false });
 		Logger.info('Auto-selected agency_id based on available agencies data.');
