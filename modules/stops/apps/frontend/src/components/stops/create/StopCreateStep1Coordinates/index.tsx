@@ -1,7 +1,11 @@
 'use client';
 
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
+import { isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
 import { CoordinatesInput, Section } from '@tmlmobilidade/ui';
+import { useCallback, useRef } from 'react';
+
+type Coords = [number | undefined, number | undefined];
 
 /* * */
 
@@ -12,34 +16,38 @@ export function StopCreateStep1Coordinates() {
 	// A. Setup variables
 
 	const stopCreateContext = useStopCreateContext();
+	const [latitude, longitude] = stopCreateContext.data.coordinates;
+	const setLatLngRef = useRef(stopCreateContext.actions.setLatLng);
+	setLatLngRef.current = stopCreateContext.actions.setLatLng;
 
 	//
 	// B. Handle actions
 
-	const handleSetCoordinates = (value: [number | undefined, number | undefined] | undefined) => {
+	const handleSetCoordinates = useCallback((value: Coords | undefined) => {
 		if (!value) return;
+
 		const [lat, lng] = value;
 		if (lat === undefined || lng === undefined) return;
-		if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return;
-		return stopCreateContext.actions.setLatLng(lat, lng);
-	};
+
+		const validatedLatitude = isValidLatitude(lat);
+		const validatedLongitude = isValidLongitude(lng);
+
+		setLatLngRef.current(
+			validatedLatitude || lat,
+			validatedLongitude || lng,
+		);
+	}, []);
 
 	//
 	// C. Render components
 
-	const latitude = stopCreateContext.data.form.values.latitude;
-	const longitude = stopCreateContext.data.form.values.longitude;
-	const value = !Number.isFinite(latitude) && !Number.isFinite(longitude)
+	const value: Coords | undefined = latitude === undefined && longitude === undefined
 		? undefined
-		: [
-			Number.isFinite(latitude) ? latitude : undefined,
-			Number.isFinite(longitude) ? longitude : undefined,
-		] as [number | undefined, number | undefined];
+		: [latitude, longitude];
 
 	return (
 		<Section gap="md">
 			<CoordinatesInput
-				key={stopCreateContext.data.form.key('coordinates')}
 				onChange={handleSetCoordinates}
 				value={value}
 			/>

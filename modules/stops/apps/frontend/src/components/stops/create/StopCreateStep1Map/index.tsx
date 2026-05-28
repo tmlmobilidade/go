@@ -17,19 +17,15 @@ export function StopCreateStep1Map() {
 
 	const stopCreateContext = useStopCreateContext();
 	const stopsListContext = useStopsListContext();
-
-	const latitude = stopCreateContext.data.form.values.latitude;
-	const longitude = stopCreateContext.data.form.values.longitude;
+	const [latitude, longitude] = stopCreateContext.data.coordinates;
 
 	//
 	// B. Transform data
 
 	const stopsAsGeojsonFC = useMemo(() => {
-		// Prepare an empty feature collection
 		const baseGeoJson = getBaseGeoJsonFeatureCollection<Point, MapOverlayMultipleStopsDataProps>();
-		// Skip if no data is provided
 		if (!stopsListContext.data.filtered) return baseGeoJson;
-		// Add the features to the base GeoJSON
+
 		baseGeoJson.features = stopsListContext.data.filtered.map(item => ({
 			geometry: {
 				coordinates: [item.longitude, item.latitude],
@@ -41,18 +37,16 @@ export function StopCreateStep1Map() {
 			},
 			type: 'Feature',
 		}));
-		// Return the collection
+
 		return baseGeoJson;
 	}, [stopsListContext.data.filtered]);
 
 	const selectedCoordinatesMapData = useMemo(() => {
-		// Prepare an empty feature collection
 		const baseGeoJson = getBaseGeoJsonFeatureCollection<Point, MapOverlayPinsPointDataProps>();
-		const validatedLatitude = isValidLatitude(latitude);
-		const validatedLongitude = isValidLongitude(longitude);
-		// Skip if no data is provided
+		const validatedLatitude = isValidLatitude(latitude ?? NaN);
+		const validatedLongitude = isValidLongitude(longitude ?? NaN);
 		if (!validatedLatitude || !validatedLongitude) return baseGeoJson;
-		// Add the features to the base GeoJSON
+
 		baseGeoJson.features = [{
 			geometry: {
 				coordinates: [validatedLongitude, validatedLatitude],
@@ -63,7 +57,7 @@ export function StopCreateStep1Map() {
 			},
 			type: 'Feature',
 		}];
-		// Return the collection
+
 		return baseGeoJson;
 	}, [latitude, longitude]);
 
