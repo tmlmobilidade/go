@@ -67,7 +67,10 @@ const main = async () => {
 				created_at: Dates.fromSeconds(timestampSeconds).unix_timestamp,
 				entity_id: entity.id,
 				payload: {
-					header: decodedMessage.header,
+					header: {
+						...decodedMessage.header,
+						timestamp: timestampSeconds,
+					},
 					vehicle: entity.vehicle,
 				},
 				version: 'tcb-v1',
