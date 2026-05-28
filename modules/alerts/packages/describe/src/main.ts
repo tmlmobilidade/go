@@ -377,9 +377,8 @@ export async function describeAlert(props: DescribeAlertProps): Promise<Describe
 
 	const aiProvider = new OCIGenerativeAIProvider();
 	const prompt = buildPromptForLanguage(props, contextData, i18nCode);
-	const generated = parseAlertGeneratedCopy(
-		await aiProvider.run(prompt.compressed, { temperature: 0.3 }),
-	);
+	const aiResult = await aiProvider.run(prompt.compressed, { temperature: 0.3 });
+	const generated = parseAlertGeneratedCopy(aiResult);
 	result['pt'].title = generated.title;
 	result['pt'].description = generated.description;
 

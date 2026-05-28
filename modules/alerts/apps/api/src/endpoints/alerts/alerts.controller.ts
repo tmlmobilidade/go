@@ -121,7 +121,9 @@ export class AlertsController {
 	 * @param reply Fastify reply.
 	 */
 	static async describe(request: FastifyRequest<{ Body: DescribeAlertProps }>, reply: FastifyReply<DescribeAlertReturnType>) {
+		console.log('request.body', 'here');
 		const describeResult = await describeAlert(request.body);
+		console.log('describeResult', describeResult);
 		if (!describeResult) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to describe alert.');
 		reply.send({ data: describeResult, error: null, statusCode: HTTP_STATUS.OK });
 	}
