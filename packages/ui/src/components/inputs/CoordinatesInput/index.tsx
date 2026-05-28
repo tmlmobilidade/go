@@ -4,6 +4,7 @@ import { clampCoordinate } from '@tmlmobilidade/geo';
 import { type ClipboardEvent, type FocusEvent, useCallback, useEffect, useRef, useState } from 'react';
 
 import { Description } from '../../common';
+import { Label } from '../../display/Label';
 import { Section } from '../../layout/Section';
 import { NumberInput } from '../NumberInput';
 
@@ -82,6 +83,7 @@ const roundCoords = (coords: Coords): Coords => [
 interface CoordinatesInputProps {
 	description?: string
 	disabled?: boolean
+	label?: string
 	onChange?: (changed: Coords | undefined) => void
 	onPaste?: (pastedValues: string[]) => void
 	value?: Coords | undefined
@@ -92,7 +94,7 @@ interface CoordinatesInputProps {
  * Supports controlled and uncontrolled usage, rounds committed values to 6 decimals,
  * and keeps permissive numeric behavior for typed/pasted input.
  */
-export function CoordinatesInput({ description, disabled = false, onChange, onPaste, value }: CoordinatesInputProps) {
+export function CoordinatesInput({ description, disabled = false, label, onChange, onPaste, value }: CoordinatesInputProps) {
 	//
 
 	//
@@ -159,8 +161,8 @@ export function CoordinatesInput({ description, disabled = false, onChange, onPa
 
 	return (
 		<Section flexDirection="column" gap="xs" padding="none">
+			{label && <Label>{label}</Label>}
 			{description && <Description>{description}</Description>}
-
 			<div ref={inputsRef} data-coordinates-input="" style={{ display: 'flex', flex: 1, gap: 'var(--size-spacing-sm)', width: '100%' }}>
 				<NumberInput
 					disabled={disabled}
