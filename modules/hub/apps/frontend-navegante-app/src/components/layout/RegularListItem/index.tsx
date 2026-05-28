@@ -8,7 +8,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-interface Props {
+interface RegularListItemProps {
 	children?: React.ReactNode
 	href: string
 	icon?: React.ReactNode
@@ -19,7 +19,7 @@ interface Props {
 
 /* * */
 
-export function RegularListItem({ children, href, icon, refFn, style }: Props) {
+export function RegularListItem({ children, href, icon, refFn, style }: RegularListItemProps) {
 	return (
 		<Link ref={refFn || undefined} className={`${styles.container} ${href === '#' && styles.disableLink}`} href={href} style={style}>
 			{icon && (
