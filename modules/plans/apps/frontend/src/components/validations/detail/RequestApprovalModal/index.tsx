@@ -82,7 +82,7 @@ export default function RequestApprovalModal() {
 					<Button
 						label="Solicitar aprovação à TML"
 						loading={plansCreateContext.flags.loading}
-						onClick={void plansCreateContext.actions.requestApproval}
+						onClick={plansCreateContext.actions.requestApproval}
 					/>
 				</Grid>
 			</Section>
