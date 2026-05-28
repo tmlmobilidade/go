@@ -129,7 +129,7 @@
 		"husky": "9.1.7",
 		"turbo": "2.9.15"
 	},
-	"packageManager": "npm@11.15.0",
+	"packageManager": "npm@11.16.0",
 	"workspaces": [
 		"!**/.next",
 		"modules/**/*",
