@@ -5,7 +5,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type HashableRawVehicleEvent, type RawVehicleEventTcbV1 } from '@tmlmobilidade/types';
+import { GtfsRtFeedMessage, type HashableRawVehicleEvent, type RawVehicleEventTcbV1 } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 
@@ -31,30 +31,30 @@ const main = async () => {
 
 	Logger.info(`[${ITERATION}] Fetching TCB data from API...`, 0, 1);
 
-	const response = await fetch(API_URL);
-	const arrayBuffer = await response.arrayBuffer();
-	const decodedMessage = await decodeGtfsRtFeed(arrayBuffer);
+	let decodedMessage: GtfsRtFeedMessage | null = null;
+	try {
+		const response = await fetch(API_URL);
+		const arrayBuffer = await response.arrayBuffer();
+		decodedMessage = await decodeGtfsRtFeed(arrayBuffer);
+	} catch (error) {
+		Logger.error(`[${ITERATION}] Error decoding TCB data:`, error);
+		return;
+	}
 
 	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the TCB data.`);
 
 	//
 	// Transform each message into a RawVehicleEvent
 
+	const candidateEvents: Array<{ _id: string, document: RawVehicleEventTcbV1 }> = [];
+
 	for (const entity of decodedMessage.entity ?? []) {
 		try {
 		//
 
-			//
-			// Skip entities that do not have a vehicle field,
-			// as they are not relevant for our use case.
+			if (!entity.vehicle?.trip) continue;
 
-			if (!entity.vehicle) continue;
-
-			//
-			// Skip entities that do not have a trip field,
-			// as they are not relevant for our use case.
-
-			if (!entity.vehicle.trip) continue;
+			const timestampSeconds = entity.vehicle.timestamp ?? decodedMessage.header.timestamp;
 
 			//
 			// Hash the relevant fields of the vehicle event
@@ -64,7 +64,7 @@ const main = async () => {
 
 			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventTcbV1> = {
 				agency_id: '8',
-				created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_timestamp,
+				created_at: Dates.fromSeconds(timestampSeconds).unix_timestamp,
 				entity_id: entity.id,
 				payload: {
 					header: decodedMessage.header,
@@ -78,25 +78,41 @@ const main = async () => {
 				.update(JSON.stringify(hashableRawEvent))
 				.digest('hex');
 
-			//
-			// Write the new vehicle event document
-			// to the RawVehicleEvents collection
-
-			const alreadyExists = await rawVehicleEventsNew.findOne({ _id: hashableRawEventId });
-
-			if (alreadyExists) continue;
-
-			await rawVehicleEventsNew.insertOne({
-				...hashableRawEvent,
+			candidateEvents.push({
 				_id: hashableRawEventId,
-				received_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				document: {
+					...hashableRawEvent,
+					_id: hashableRawEventId,
+					received_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				},
 			});
-
-			saveCount++;
 
 		//
 		} catch (error) {
 			Logger.error(`[${ITERATION}] Error processing vehicle event entity with ID ${entity.id}:`, error);
+		}
+	}
+
+	//
+	// Save the new vehicle events to the database
+
+	if (candidateEvents.length > 0) {
+		try {
+			const candidateIds = candidateEvents.map(event => event._id);
+			const existingDocs = await rawVehicleEventsNew.findMany(
+				{ _id: { $in: candidateIds } },
+				{ projection: { _id: 1 } },
+			);
+			const existingIds = new Set(existingDocs.map(doc => doc._id));
+
+			const newEvents = candidateEvents.filter(event => !existingIds.has(event._id));
+
+			if (newEvents.length > 0) {
+				await rawVehicleEventsNew.insertMany(newEvents.map(event => event.document));
+				saveCount = newEvents.length;
+			}
+		} catch (error) {
+			Logger.error(`[${ITERATION}] Error saving vehicle events to database:`, error);
 		}
 	}
 
