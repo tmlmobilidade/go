@@ -66,8 +66,6 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		apiData: alertData,
 		// schema: UpdateAlertSchema,
 	});
-	const isFormDirty = Object.keys(form.formState.dirtyFields).length > 0;
-	const isValid = form.formState.isValid;
 
 	//
 	// C. Transform data
@@ -81,13 +79,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => {
-			const values = form.getValues();
-			return await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', {
-				...values,
-				file_id: undefined,
-			});
-		},
+		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
 			form.reset(updatedItem);
 			alertMutate(updatedItem);
@@ -127,16 +119,14 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		fetchFn: async () => imageFile && await uploadFile(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), imageFile),
 		onSuccess: async () => {
 			setImageFile(undefined);
-			await alertImageMutate();
-			alertMutate();
+			await Promise.all([alertImageMutate(), alertMutate()]);
 		},
 	});
 
 	const { action: handleDeleteImage, isLoading: isDeletingImage } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), 'DELETE'),
 		onSuccess: async () => {
-			await alertImageMutate();
-			alertMutate();
+			await Promise.all([alertImageMutate(), alertMutate()]);
 		},
 	});
 
@@ -186,11 +176,11 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			},
 		]),
 		isDeleting: isDeleting,
-		isDirty: isFormDirty,
+		isDirty: form.formState.isDirty,
 		isLoading: alertLoading,
 		isLocked: alertData?.is_locked,
 		isLocking: isLocking,
-		isValid: isValid,
+		isValid: form.formState.isValid,
 	});
 
 	const { canLock } = useFlagCanLock({
@@ -209,10 +199,10 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			},
 		]),
 		isDeleting: isDeleting,
-		isDirty: isFormDirty,
+		isDirty: form.formState.isDirty,
 		isLoading: alertLoading,
 		isLocking: isLocking,
-		isValid: isValid,
+		isValid: form.formState.isValid,
 	});
 
 	const { canDelete } = useFlagCanDelete({
@@ -231,11 +221,11 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			},
 		]),
 		isDeleting: isDeleting,
-		isDirty: isFormDirty,
+		isDirty: form.formState.isDirty,
 		isLoading: alertLoading,
 		isLocked: alertData?.is_locked,
 		isLocking: isLocking,
-		isValid: isValid,
+		isValid: form.formState.isValid,
 	});
 
 	const { canDuplicate } = useFlagCanDuplicate({
@@ -254,10 +244,10 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			},
 		]),
 		isDeleting: isDeleting,
-		isDirty: isFormDirty,
+		isDirty: form.formState.isDirty,
 		isLoading: alertLoading,
 		isLocking: isLocking,
-		isValid: isValid,
+		isValid: form.formState.isValid,
 	});
 
 	//
@@ -285,7 +275,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 			error: alertError,
 			isDeleting,
 			isDeletingImage,
-			isDirty: isFormDirty,
+			isDirty: form.formState.isDirty,
 			isDuplicating,
 			isLoading: alertLoading || agenciesLoading,
 			isLocking,
@@ -297,7 +287,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		form: {
 			instance: form,
 		},
-	}), [agenciesLoading, alertData, alertError, alertId, alertImage, alertLoading, alertValidating, canDelete, canDuplicate, canLock, canSave, form, handleDelete, handleDeleteImage, handleDuplicate, handleLock, handleSave, isDeleting, isDeletingImage, isDuplicating, isFormDirty, isLocking, isReadOnly, isSaving, isUploadingImage]);
+	}), [agenciesLoading, alertData, alertError, alertId, alertImage, alertLoading, alertValidating, canDelete, canDuplicate, canLock, canSave, form, handleDelete, handleDeleteImage, handleDuplicate, handleLock, handleSave, isDeleting, isDeletingImage, isDuplicating, form.formState.isDirty, isLocking, isReadOnly, isSaving, isUploadingImage]);
 
 	//
 	// F. Render components
