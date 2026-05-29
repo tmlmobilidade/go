@@ -20,6 +20,7 @@ export function StopDetailsSectionGeneral() {
 	const meContext = useMeContext();
 
 	const canEditStopCoordinates = meContext.actions.hasPermission('stops', 'edit_coordinates') && !stopDetailContext.flags.isReadOnly;
+	const canEditStopName = meContext.actions.hasPermission('stops', 'edit_name') && !stopDetailContext.flags.isReadOnly;
 
 	//
 	// B. Transform data
@@ -104,8 +105,16 @@ export function StopDetailsSectionGeneral() {
 
 			<Section>
 				<Grid columns="ab" gap="md">
-					<ValueDisplay label="Nome Curto" value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'} variant="bordered" />
-					<ValueDisplay label="Nome TTS" value={stopDetailContext.data.form.getValues()?.tts_name ?? 'N/A'} variant="bordered" />
+					<ValueDisplay
+						label="Nome Curto"
+						value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'}
+						variant="bordered"
+					/>
+					<ValueDisplay
+						label="Nome TTS"
+						value={stopDetailContext.data.form.getValues()?.tts_name ?? 'N/A'}
+						variant="bordered"
+					/>
 				</Grid>
 			</Section>
 
