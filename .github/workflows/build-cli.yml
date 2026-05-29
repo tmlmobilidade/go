@@ -66,6 +66,9 @@ jobs:
               --filter '^@tmlmobilidade/' \
               --packageFile="cli/${cli_app}/package.json"
           done <<< "${CLI_APPS}"
+      
+      - name: Install dependencies
+        run: npm install --package-lock-only --ignore-scripts
 
       - name: Upload modified workspace
         uses: actions/upload-artifact@v4
@@ -138,7 +141,6 @@ jobs:
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org/'
-          package-manager-cache: false
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
