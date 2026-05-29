@@ -40,31 +40,41 @@ jobs:
           node-version: '24'
           package-manager-cache: false
 
-      - name: Update package.json TML dependencies
+      - name: Normalize wildcard deps
         run: |
           while IFS= read -r cli_app; do
             [[ -z "$cli_app" ]] && continue
-            echo "Processing $cli_app"
+      
             node -e "
               const fs = require('fs');
               const path = \`cli/${cli_app}/package.json\`;
-
               const pkg = JSON.parse(fs.readFileSync(path, 'utf8'));
-
+      
               for (const section of ['dependencies','devDependencies','peerDependencies']) {
                 if (!pkg[section]) continue;
+      
                 for (const k of Object.keys(pkg[section])) {
                   if (pkg[section][k] === '*') {
-                    pkg[section][k] = '0';
+                    pkg[section][k] = '0.0.0';
                   }
                 }
               }
+      
               fs.writeFileSync(path, JSON.stringify(pkg, null, 2));
             "
+          done <<< "${CLI_APPS}"
+
+      - name: Upgrade dependencies
+        run: |
+          while IFS= read -r cli_app; do
+            [[ -z "$cli_app" ]] && continue
+      
             npx npm-check-updates \
               -u \
-              --filter '^@tmlmobilidade/' \
-              --packageFile="cli/${cli_app}/package.json"
+              --target latest \
+              --filter '/^@tmlmobilidade/' \
+              --packageFile "cli/${cli_app}/package.json"
+      
           done <<< "${CLI_APPS}"
       
       - name: Install dependencies
