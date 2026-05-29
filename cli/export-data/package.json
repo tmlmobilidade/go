@@ -40,6 +40,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/writers": "*",
