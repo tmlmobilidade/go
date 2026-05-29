@@ -1,6 +1,7 @@
 /* * */
 
 import { SYSTEM_ERROR_MESSAGES } from '@/consts/system-errors.js';
+import { preRequestStops } from '@/tasks/pre-request-stops.js';
 import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';
@@ -8,7 +9,7 @@ import { getTmpWorkdirPath } from '@tmlmobilidade/files';
 import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
 import { agencies, files, gtfsValidations, users } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GtfsValidationSummary, type GtfsValidation } from '@tmlmobilidade/types';
+import { type GtfsValidation, type GtfsValidationSummary } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import pjson from 'pjson' with { type: 'json' };
@@ -44,6 +45,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		const gtfsFilePath = join(tempWorkdirPath, `${gtfsValidation.file_id}.zip`);
 		const gtfsValidationRulesPath = join(tempWorkdirPath, `rules_${gtfsValidation._id}.json`);
+		const gtfsValidationStopsPath = join(tempWorkdirPath, `stops_${gtfsValidation._id}.json`);
 		const gtfsValidationResultPath = join(tempWorkdirPath, `result_${gtfsValidation._id}.json`);
 
 		//
@@ -86,6 +88,22 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		fs.writeFileSync(gtfsValidationRulesPath, rulesContent, { encoding: 'utf-8' });
 
 		Logger.info(`Custom validation rules saved to: ${gtfsValidationRulesPath}`);
+
+		//
+		// Pre-render agency stops to a temporary file so they can be consumed
+		// by the validator runtime workflow.
+
+		const preRequestedStops = await preRequestStops({
+			agencyId: gtfsValidation.gtfs_agency.agency_id,
+			outputPath: gtfsValidationStopsPath,
+		});
+		Logger.info(`Custom validation stops saved to: ${preRequestedStops.outputPath} (${preRequestedStops.totalStops} stops)`);
+
+		console.log('preRequestedStops', preRequestedStops);
+		console.log('gtfsValidationStopsPath', gtfsValidationStopsPath);
+
+		// wait 2 minutes
+		await new Promise(resolve => setTimeout(resolve, 120000));
 
 		//
 		// Perform the GTFS validation using the GtfsValidator library

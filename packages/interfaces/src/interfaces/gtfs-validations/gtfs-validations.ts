@@ -1,6 +1,7 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
+import { gtfsValidationStopsPipeline } from '@/interfaces/gtfs-validations/pipelines.js';
 import { type CreateGtfsValidationDto, CreateGtfsValidationSchema, type GtfsValidation, type UpdateGtfsValidationDto, UpdateGtfsValidationSchema } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type IndexDescription } from 'mongodb';
@@ -33,6 +34,20 @@ class GtfValidationsClass extends MongoCollectionClass<GtfsValidation, CreateGtf
 	 */
 	async findByAgencyId(agencyId: string) {
 		return this.mongoCollection.find({ agency_id: agencyId }).toArray();
+	}
+
+	/**
+	 * Finds Stops that should be pre-requested for a GTFS Validation agency.
+	 * Includes agency-scoped stops and shared stops without flags.
+	 * @param agencyId The agency ID to search stops for.
+	 * @returns A promise that resolves to an array of matching stops.
+	 */
+	async findStopsForValidation(agencyId: string) {
+		return await this.mongoConnector.client
+			.db('production')
+			.collection('stops')
+			.aggregate(gtfsValidationStopsPipeline(agencyId))
+			.toArray();
 	}
 
 	protected getCollectionIndexes(): IndexDescription[] {
