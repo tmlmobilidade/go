@@ -43,8 +43,8 @@ jobs:
       - name: Update package.json TML dependencies
         run: |
           while IFS= read -r cli_app; do
+            [[ -z "$cli_app" ]] && continue
             echo "Processing $cli_app"
-
             node -e "
               const fs = require('fs');
               const path = \`cli/${cli_app}/package.json\`;
@@ -53,22 +53,18 @@ jobs:
 
               for (const section of ['dependencies','devDependencies','peerDependencies']) {
                 if (!pkg[section]) continue;
-
                 for (const k of Object.keys(pkg[section])) {
                   if (pkg[section][k] === '*') {
                     pkg[section][k] = '0';
                   }
                 }
               }
-
               fs.writeFileSync(path, JSON.stringify(pkg, null, 2));
             "
-
             npx npm-check-updates \
               -u \
               --filter '^@tmlmobilidade/' \
               --packageFile="cli/${cli_app}/package.json"
-
           done <<< "${CLI_APPS}"
 
       - name: Upload modified workspace
