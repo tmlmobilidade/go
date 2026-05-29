@@ -44,11 +44,6 @@
 		"skipped": "Omitido",
 		"waiting": "Em espera"
 	},
-	"validity_status": {
-		"valid": "Válido",
-		"invalid": "Inválido",
-		"unknown": "Desconhecido"
-	},
 	"publish_status": {
 		"archived": "Arquivado",
 		"draft": "Rascunho",
@@ -77,5 +72,10 @@
 		"Skipped": "Ignorado",
 		"Unknown": "Desconhecido",
 		"Waiting": "Em espera"
+	},
+	"validity_status": {
+		"invalid": "Inválido",
+		"unknown": "Desconhecido",
+		"valid": "Válido"
 	}
 }

@@ -32,7 +32,7 @@ export function AlertDetailFootnote() {
 
 	return (
 		<Section>
-			<Label size="sm">Alerto criado por <UserTag userId={alertDetailContext.data.alert.created_by} variant="inline" /> a {formattedDateString}</Label>
+			<Label size="sm">Alerta criado por <UserTag userId={alertDetailContext.data.alert.created_by} variant="inline" /> a {formattedDateString}</Label>
 		</Section>
 	);
 

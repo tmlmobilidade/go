@@ -18,6 +18,24 @@
 			"no_data": "Nenhuma linha encontrada para esta pesquisa"
 		}
 	},
+	"stops": {
+		"StopsListToolbar": {
+			"by_current_view": {
+				"list": "Lista",
+				"map": "Mapa"
+			},
+			"by_search": {
+				"placeholder": "Pesquisar por nome, número..."
+			},
+			"found_items_counter": {
+				"all": "{{count}}"
+			},
+			"heading": "Pesquisar Paragens"
+		},
+		"StopsListViewAll": {
+			"no_data": "Nenhuma paragem encontrada para esta pesquisa"
+		}
+	},
 	"viewport": {
 		"Navbar": {
 			"tabs": {
