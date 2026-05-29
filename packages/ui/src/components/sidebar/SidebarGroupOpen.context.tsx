@@ -57,15 +57,6 @@ export function SidebarGroupOpenProvider({ children, defaultOpenGroupIds = [] }:
 		setOpenGroupIds([...defaultOpenGroupIds], { save: false });
 	}, [defaultOpenGroupIds, meContext.actions, meContext.data.user, setOpenGroupIds]);
 
-	useEffect(() => {
-		if (!defaultOpenGroupIds.length) return;
-
-		const missing = defaultOpenGroupIds.filter(id => !openGroupIds.includes(id));
-		if (!missing.length) return;
-
-		setOpenGroupIds([...openGroupIds, ...missing]);
-	}, [defaultOpenGroupIds, openGroupIds, setOpenGroupIds]);
-
 	//
 	// C. Handle callbacks
 
