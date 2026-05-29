@@ -45,7 +45,7 @@ export function StopsListToolbar() {
 				<Grid columns="ab" withGap>
 					<TextInput leftSection={<IconArrowLoopRight size={20} />} onChange={handleTextInputChange} placeholder={t('default:stops.StopsListToolbar.by_search.placeholder')} type="search" value={stopsListContext.filters.by_search} w="100%" />
 					{/* <FilterByAgency /> */}
-					<FoundItemsCounter text={t('default:stops.StopsListToolbar.found_items_counter.all', { count: stopsListContext.data.filtered.length })} />
+					{/* <FoundItemsCounter text={t('default:stops.StopsListToolbar.found_items_counter.all', { count: stopsListContext.data.filtered.length })} /> */}
 				</Grid>
 			)}
 		</Section>
