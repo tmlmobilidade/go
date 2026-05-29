@@ -99,12 +99,6 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		});
 		Logger.info(`Custom validation stops saved to: ${preRequestedStops.outputPath} (${preRequestedStops.totalStops} stops)`);
 
-		console.log('preRequestedStops', preRequestedStops);
-		console.log('gtfsValidationStopsPath', gtfsValidationStopsPath);
-
-		// wait 2 minutes
-		await new Promise(resolve => setTimeout(resolve, 120000));
-
 		//
 		// Perform the GTFS validation using the GtfsValidator library
 		// and update the GTFS validation document in MongoDB with the results.
