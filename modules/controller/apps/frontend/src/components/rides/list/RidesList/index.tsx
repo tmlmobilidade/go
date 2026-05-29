@@ -13,7 +13,7 @@ import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
-import { DataTable, DataTableColumn, ErrorDisplay, OperationalStatusTag, Pane, SeenStatusIndicator, Tag } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, ErrorDisplay, OperationalStatusTag, Pane, Section, SeenStatusIndicator, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -34,6 +34,23 @@ export function RidesList() {
 
 	const formatTimestamp = (timestamp: UnixTimestamp) => {
 		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;
+	};
+
+	const formatDuration = (startTimestamp: null | UnixTimestamp, endTimestamp: null | UnixTimestamp) => {
+		if (!startTimestamp || !endTimestamp) return null;
+
+		return `${Math.round((endTimestamp - startTimestamp) / 60000)} min`;
+	};
+
+	const formatDurationDeviation = (item: RideNormalized) => {
+		if (!item.start_time_observed || !item.end_time_observed) return null;
+
+		const plannedDuration = item.end_time_scheduled - item.start_time_scheduled;
+		const observedDuration = item.end_time_observed - item.start_time_observed;
+		const deviationInMinutes = Math.round((observedDuration - plannedDuration) / 60000);
+
+		if (deviationInMinutes === 0) return '0 min';
+		return `${deviationInMinutes > 0 ? '+' : ''}${deviationInMinutes} min`;
 	};
 
 	const columns: DataTableColumn<RideNormalized>[] = [
@@ -75,7 +92,13 @@ export function RidesList() {
 		},
 		{
 			accessor: 'start_time_observed',
-			render: item => <StartTimeStatusTag startTimeObserved={formatTimestamp(item.start_time_observed)} status={item.start_delay_status} />,
+			render: item => (
+				<StartTimeStatusTag
+					delayValue={item.start_delay_value_display}
+					startTimeObserved={formatTimestamp(item.start_time_observed)}
+					status={item.start_delay_status}
+				/>
+			),
 			title: t('default:list.RidesList.columns.start_time_observed.label'),
 			width: 180,
 		},
@@ -87,10 +110,49 @@ export function RidesList() {
 		},
 		{
 			accessor: 'end_time_observed',
-			render: item => item.operational_status === 'ended' ? <StartTimeStatusTag startTimeObserved={formatTimestamp(item.end_time_observed)} status={item.end_delay_status} /> : null,
+			render: item => item.operational_status === 'ended'
+				? (
+					<StartTimeStatusTag
+						delayValue={item.end_delay_value_display}
+						startTimeObserved={formatTimestamp(item.end_time_observed)}
+						status={item.end_delay_status}
+					/>
+				)
+				: null,
 			title: t('default:list.RidesList.columns.end_time_observed.label'),
 			width: 180,
 		},
+
+		{
+			accessor: 'end_time_scheduled',
+			render: (item) => {
+				const duration = formatDuration(item.start_time_scheduled, item.end_time_scheduled);
+				if (!duration) return null;
+
+				return <Tag label={duration} variant="muted" />;
+			},
+			title: t('default:list.RidesList.columns.duration_scheduled.label'),
+			width: 80,
+		},
+		{
+			accessor: 'end_time_observed',
+			render: (item) => {
+				const duration = formatDuration(item.start_time_observed, item.end_time_observed);
+				const deviation = formatDurationDeviation(item);
+
+				if (!duration && !deviation) return null;
+
+				return (
+					<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
+						{duration && <Tag label={duration} variant="secondary" />}
+						{deviation && <Tag label={deviation} variant="warning" />}
+					</Section>
+				);
+			},
+			title: t('default:list.RidesList.columns.duration_observed.label'),
+			width: 160,
+		},
+
 		{
 			accessor: 'driver_ids',
 			render: item => <RidesListCellDrivers value={item.driver_ids} />,
