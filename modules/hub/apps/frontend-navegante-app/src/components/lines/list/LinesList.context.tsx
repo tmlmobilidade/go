@@ -38,7 +38,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	const filterSearch = useFilterStateString('search');
 
 	//
-	// C. Transform data
+	// B. Transform data
 
 	const searchResultsData = useSearch<HubLine>({
 		accessors: ['long_name', 'short_name', 'tts_name'],
@@ -47,7 +47,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	});
 
 	//
-	// E. Define context value
+	// C. Define context value
 
 	const contextValue: LinesListContextState = {
 		data: {
@@ -58,12 +58,12 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		flags: {
 			error: undefined,
-			isLoading: linesContext.flags.is_loading,
+			isLoading: linesContext.flags.isLoading,
 		},
 	};
 
 	//
-	// F. Render components
+	// D. Render components
 
 	return (
 		<LinesListContext.Provider value={contextValue}>

@@ -76,7 +76,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		},
 		flags: {
 			error: undefined,
-			isLoading: alertsContext.flags.is_loading,
+			isLoading: alertsContext.flags.isLoading,
 		},
 	};
 

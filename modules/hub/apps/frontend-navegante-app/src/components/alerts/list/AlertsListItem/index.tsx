@@ -52,14 +52,16 @@ export function AlertListItem({ alertId }: Props) {
 
 	return (
 		<Accordion.Item value={alertId}>
-			{/* <Accordion.Control icon={<AlertEffectIcon effect={resolvedAlert?.effect} />}>{view?.title}</Accordion.Control>
+			<Accordion.Control icon={<AlertEffectIcon effect={resolvedAlert?.effect} />}>
+				{/* {view?.title} */}
+			</Accordion.Control>
 			<Accordion.Panel classNames={{ content: styles.contentWrapper }}>
 				<div className={styles.infoBar}>
-					{view?.startDate && <AlertActivePeriodStart date={view.startDate} size="sm" />}
-					<AlertActivePeriodEnd date={view?.endDate} size="sm" />
+					{/* {view?.startDate && <AlertActivePeriodStart date={view.startDate} size="sm" />} */}
+					{/* <AlertActivePeriodEnd date={view?.endDate} size="sm" /> */}
 				</div>
-				<p className={styles.description}>{view?.description}</p>
-				{view?.imageUrl && (
+				{/* <p className={styles.description}>{view?.description}</p> */}
+				{/* {view?.imageUrl && (
 					<AlertsListItemImageThumbnail
 						alertId={resolvedAlert?.alert_id || ''}
 						alertTitle={view.title}
@@ -67,11 +69,11 @@ export function AlertListItem({ alertId }: Props) {
 						href={`/alerts/${alertId}`}
 						src={view.imageUrl}
 					/>
-				)}
+				)} */}
 				<div>
-					<Button href={alertHref} icon={<IconArrowUpRight size={16} />} label={t('open')} variant="pill" />
+					{/* <Button href={alertHref} icon={<IconArrowUpRight size={16} />} label={t('open')} variant="pill" /> */}
 				</div>
-			</Accordion.Panel> */}
+			</Accordion.Panel>
 		</Accordion.Item>
 	);
 

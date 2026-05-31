@@ -1,8 +1,8 @@
 'use client';
 
-import { type NetworkStop } from '@/types/api/network';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { type HubStop } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -10,15 +10,16 @@ import useSWR from 'swr';
 
 interface StopsContextState {
 	actions: {
-		getStopById: (stopId: string) => NetworkStop | undefined
+		getStopById: (stopId: string) => HubStop | undefined
 		getStopByIdGeoJsonFC: (stopId: string) => GeoJSON.FeatureCollection | undefined
 	}
 	data: {
 		fc: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
-		stops: NetworkStop[]
+		stops: HubStop[]
 	}
 	flags: {
-		is_loading: boolean
+		error: Error | undefined
+		isLoading: boolean
 	}
 }
 
@@ -42,7 +43,7 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<NetworkStop[]>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_STOPS }); // 15 minutes
+	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<HubStop[]>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_STOPS }); // 15 minutes
 
 	//
 	// B. Transform data
@@ -60,8 +61,8 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 	//
 	// D. Handle actions
 
-	const getStopById = (stopId: string): NetworkStop | undefined => {
-		return allStopsData?.find(stop => stop.id === stopId);
+	const getStopById = (stopId: number | string): HubStop | undefined => {
+		return allStopsData?.find(stop => String(stop._id) === String(stopId));
 	};
 
 	const getStopByIdGeoJsonFC = (stopId: string): GeoJSON.FeatureCollection | undefined => {
@@ -86,7 +87,8 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 			stops: allStopsData ?? [],
 		},
 		flags: {
-			is_loading: allStopsLoading,
+			error: undefined,
+			isLoading: allStopsLoading,
 		},
 	};
 
@@ -98,25 +100,17 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 			{children}
 		</StopsContext.Provider>
 	);
-
-	//
 };
 
 /* * */
 
-export function transformStopDataIntoGeoJsonFeature(stopData: NetworkStop): GeoJSON.Feature<GeoJSON.Point, GeoJSON.GeoJsonProperties> {
+export function transformStopDataIntoGeoJsonFeature(stopData: HubStop): GeoJSON.Feature<GeoJSON.Point, GeoJSON.GeoJsonProperties> {
 	const feature: GeoJSON.Feature<GeoJSON.Point, GeoJSON.GeoJsonProperties> = {
 		geometry: {
-			coordinates: [stopData.lon, stopData.lat],
+			coordinates: [stopData.longitude, stopData.latitude],
 			type: 'Point',
 		},
-		properties: {
-			current_status: stopData.operational_status,
-			id: stopData.id,
-			lat: stopData.lat,
-			lon: stopData.lon,
-			long_name: stopData.long_name,
-		},
+		properties: stopData,
 		type: 'Feature',
 	};
 

@@ -19,7 +19,8 @@ interface AlertsContextState {
 		fc: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
 	}
 	flags: {
-		is_loading: boolean
+		error: Error | undefined
+		isLoading: boolean
 	}
 }
 
@@ -95,7 +96,8 @@ export function AlertsContextProvider({ children }: PropsWithChildren) {
 			fc: dataFeatureCollectionState,
 		},
 		flags: {
-			is_loading: allAlertsLoading,
+			error: undefined,
+			isLoading: allAlertsLoading,
 		},
 	};
 
@@ -107,8 +109,6 @@ export function AlertsContextProvider({ children }: PropsWithChildren) {
 			{children}
 		</AlertsContext.Provider>
 	);
-
-	//
 };
 
 /* * */
