@@ -1,7 +1,7 @@
 'use client';
 
 import { LiveIcon } from '@/components/common/LiveIcon';
-import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
+import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { Layer, Source } from '@vis.gl/react-maplibre';
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
@@ -154,8 +154,7 @@ export function MapViewStyleVehicles({ presentBeforeId, showCounter, vehiclesDat
 
 			if (progress < 1) {
 				animationFrame.current = requestAnimationFrame(animate);
-			}
-			else {
+			} else {
 				previousDataRef.current = vehiclesData;
 				animationStart.current = null;
 			}

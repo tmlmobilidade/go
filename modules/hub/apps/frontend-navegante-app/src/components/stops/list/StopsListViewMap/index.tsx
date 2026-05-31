@@ -1,7 +1,9 @@
 'use client';
 
+import { MapView } from '@/components/map/MapView';
+import { MapViewStyleStops } from '@/components/map/MapViewStyleStops';
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
-import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapView, Section } from '@tmlmobilidade/ui';
+import { Section } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -30,21 +32,14 @@ export function StopsListViewMap() {
 		}
 	}, [stopsListContext.data.fc, stopsListContext.filters.search.value]);
 
-	const handleStopClick = (value: MapOverlayMultipleStopsDataProps) => {
-		router.push(`/stops/${value.id}`);
-	};
-
 	//
 	// C. Render components
 
 	return (
 		<Section>
 			<MapView id="stops-list">
-				<MapOverlayMultipleStops
-					data={stopsListContext.data.fc}
-					id="stops-list"
-					onClick={handleStopClick}
-					visible
+				<MapViewStyleStops
+					stopsData={stopsListContext.data.fc}
 				/>
 			</MapView>
 		</Section>

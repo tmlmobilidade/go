@@ -47,6 +47,14 @@
 			"no_data": "Nenhuma linha encontrada para esta pesquisa"
 		}
 	},
+	"map": {
+		"MapViewToolbar": {
+			"style": {
+				"map": "Mapa",
+				"satellite": "Satélite"
+			}
+		}
+	},
 	"stops": {
 		"StopsListToolbar": {
 			"by_current_view": {

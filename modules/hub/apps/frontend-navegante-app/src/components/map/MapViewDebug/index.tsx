@@ -44,8 +44,7 @@ export function MapViewDebug({ className }: Props) {
 				setZoom(maplibreMap.getZoom());
 				setBearing(maplibreMap.getBearing());
 				setPitch(maplibreMap.getPitch());
-			}
-			catch {
+			} catch {
 				// ignore
 			}
 		};
@@ -62,8 +61,7 @@ export function MapViewDebug({ className }: Props) {
 				maplibreMap.off('zoom', updateFromMap);
 				maplibreMap.off('rotate', updateFromMap);
 				maplibreMap.off('pitch', updateFromMap);
-			}
-			catch {
+			} catch {
 				// ignore
 			}
 		};

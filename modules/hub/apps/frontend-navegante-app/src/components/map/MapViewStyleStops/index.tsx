@@ -1,6 +1,6 @@
 'use client';
 
-import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
+import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { Layer, Source } from '@vis.gl/react-maplibre';
 
 /* * */

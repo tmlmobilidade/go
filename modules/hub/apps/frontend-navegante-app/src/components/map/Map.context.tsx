@@ -1,91 +1,53 @@
 'use client';
 
-import { MapStyle } from '@/components/map/MapView';
+import { type MapStyle } from '@/components/map/MapView';
 import * as turf from '@turf/turf';
-import { MapRef } from '@vis.gl/react-maplibre';
+import { type MapRef } from '@vis.gl/react-maplibre';
 import maplibregl from 'maplibre-gl';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 /* * */
 
-const LOCAL_STORAGE_KEYS = {
-	viewport_height: 'map|viewport_height',
-};
-
-const DEFAULT_OPTIONS = {
-	viewport_height: { max: 600, min: 300 },
-};
-
-/* * */
-
-interface MapOptionsContextState {
+interface MapContextState {
 	actions: {
 		centerMap: (source?: string) => void
 		setMap: (map: MapRef) => void
 		setStyle: (value: MapStyle) => void
-		setViewportHeight: (value: number) => void
 	}
 	data: {
 		map: MapRef | undefined
 		style: string
-		viewport_height: null | number
 	}
 	flags: {
-		is_loading: boolean
+		isLoading: boolean
 	}
 }
 
 /* * */
 
-const MapOptionsContext = createContext<MapOptionsContextState | undefined>(undefined);
+const MapContext = createContext<MapContextState | undefined>(undefined);
 
-export function useMapOptionsContext() {
-	const context = useContext(MapOptionsContext);
+export function useMapContext() {
+	const context = useContext(MapContext);
 	if (!context) {
-		throw new Error('useMapOptionsContext must be used within a MapOptionsContextProvider');
+		throw new Error('useMapContext must be used within a MapContextProvider');
 	}
 	return context;
 }
 
 /* * */
 
-export const MapOptionsContextProvider = ({ children }) => {
+export const MapContextProvider = ({ children }) => {
 	//
 
 	//
 	// A. Setup variables
 
-	const [dataViewportHeightState, setDataViewportHeightState] = useState<MapOptionsContextState['data']['viewport_height']>(null);
-	const [dataStyleState, setDataStyleState] = useState<MapOptionsContextState['data']['style']>('map');
-	const [dataMapState, setDataMapState] = useState<MapOptionsContextState['data']['map']>(undefined);
+	const [dataStyleState, setDataStyleState] = useState<MapContextState['data']['style']>('map');
+	const [dataMapState, setDataMapState] = useState<MapContextState['data']['map']>(undefined);
 
 	//
-	// B. Transform data
-
-	useEffect(() => {
-		// Get viewport height from local storage
-		if (typeof window === 'undefined') return;
-		const viewportHeightLocal = localStorage.getItem(LOCAL_STORAGE_KEYS.viewport_height);
-		if (viewportHeightLocal) {
-			setDataViewportHeightState(Number(viewportHeightLocal));
-		}
-	}, []);
-
-	useEffect(() => {
-		// Save viewport height to local storage
-		if (typeof window === 'undefined' || dataViewportHeightState === null) return;
-		const viewportHeightTxt = String(dataViewportHeightState);
-		localStorage.setItem(LOCAL_STORAGE_KEYS.viewport_height, viewportHeightTxt);
-	}, [dataViewportHeightState]);
-
-	//
-	// C. Handle actions
-
-	const setViewportHeight = (value: number) => {
-		if (value < DEFAULT_OPTIONS.viewport_height.min) value = DEFAULT_OPTIONS.viewport_height.min;
-		if (value > DEFAULT_OPTIONS.viewport_height.max) value = DEFAULT_OPTIONS.viewport_height.max;
-		setDataViewportHeightState(value);
-	};
+	// B. Handle actions
 
 	const setStyle = (value: MapStyle) => {
 		setDataStyleState(value);
@@ -118,33 +80,29 @@ export const MapOptionsContextProvider = ({ children }) => {
 	};
 
 	//
-	// D. Define context value
+	// C. Define context value
 
-	const contextValue: MapOptionsContextState = {
+	const contextValue: MapContextState = {
 		actions: {
 			centerMap,
 			setMap,
 			setStyle,
-			setViewportHeight,
 		},
 		data: {
 			map: dataMapState,
 			style: dataStyleState,
-			viewport_height: dataViewportHeightState,
 		},
 		flags: {
-			is_loading: false,
+			isLoading: false,
 		},
 	};
 
 	//
-	// E. Render components
+	// D. Render components
 
 	return (
-		<MapOptionsContext.Provider value={contextValue}>
+		<MapContext.Provider value={contextValue}>
 			{children}
-		</MapOptionsContext.Provider>
+		</MapContext.Provider>
 	);
-
-	//
 };

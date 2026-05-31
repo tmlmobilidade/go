@@ -1,9 +1,9 @@
 'use client';
 
+import { useMapContext } from '@/components/map/Map.context';
+import { mapDefaultConfig } from '@/components/map/Map.settings';
 import { MAP_LOAD_ASSETS } from '@/components/map/mapLoadAssets';
 import { MapViewToolbar } from '@/components/map/MapViewToolbar';
-import { useMapOptionsContext } from '@/contexts/MapOptions.context';
-import { mapDefaultConfig } from '@/settings/map.settings';
 import Map, { FullscreenControl, GeolocateControl, MapRef, NavigationControl, ScaleControl, useMap } from '@vis.gl/react-maplibre';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -51,7 +51,7 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 
 	const allMaps = useMap();
 
-	const mapOptionsContext = useMapOptionsContext();
+	const mapContext = useMapContext();
 
 	const [cursor, setCursor] = useState<string>('auto');
 
@@ -61,7 +61,7 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 	useEffect(() => {
 		if (!id || !allMaps?.[id]) return;
 		const mapObject = allMaps[id];
-		mapOptionsContext.actions.setMap(mapObject);
+		mapContext.actions.setMap(mapObject);
 		for (const mapLoadAsset of MAP_LOAD_ASSETS) {
 			mapObject.loadImage(mapLoadAsset.url).then((image) => {
 				if (!mapObject.hasImage(mapLoadAsset.name)) {
@@ -71,7 +71,7 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 		}
 	}, [allMaps, id]);
 
-	const mapStyleValue = mapStyle ?? mapOptionsContext.data.style;
+	const mapStyleValue = mapStyle ?? mapContext.data.style;
 
 	//
 	// C. Handle actions
