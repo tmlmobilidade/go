@@ -5,7 +5,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { alerts, files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type Alert } from '@tmlmobilidade/types';
+import { type HubAlert, HubAlertSchema } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -44,7 +44,7 @@ export async function publishJsonFeed() {
 	//
 	// Transform alerts into GTFS-RT feed entities
 
-	const result: (Alert & { image_url?: string })[] = [];
+	const result: HubAlert[] = [];
 
 	for (const alertData of findResult) {
 		try {
@@ -53,17 +53,15 @@ export async function publishJsonFeed() {
 			let imageUrl: string | undefined;
 
 			if (alertData.file_id) {
-			// Get the associated file data to prepare the image value
+				// Get the associated file data to prepare the image value
 				const fileData = await files.findById(alertData.file_id);
 				if (fileData?.url && fileData?.type) {
 					imageUrl = fileData.url;
 				}
 			}
 
-			result.push({
-				...alertData,
-				image_url: imageUrl,
-			});
+			const parsedAlert = HubAlertSchema.parse({ ...alertData, image_url: imageUrl });
+			result.push(parsedAlert);
 		} catch (error) {
 			Logger.error(`Error processing alert with ID ${alertData._id}:`, error);
 		}

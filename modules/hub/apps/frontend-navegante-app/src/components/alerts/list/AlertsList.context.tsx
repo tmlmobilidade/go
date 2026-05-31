@@ -3,8 +3,7 @@
 import { useAlertsContext } from '@/contexts/Alerts.context';
 import { type AlertGroup } from '@/types/alerts/alert-group';
 import { Dates } from '@tmlmobilidade/dates';
-import { type Alert } from '@tmlmobilidade/types';
-import { useQueryState } from 'nuqs';
+import { type HubAlert } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 
 /* * */
@@ -12,15 +11,15 @@ import { createContext, type PropsWithChildren, useContext, useMemo, useState } 
 interface AlertsListContextState {
 	actions: {
 		updateFilterByDate: (value: string) => void
-		updateFilterBySearchQuery: (value: string) => void
+		updateFilterBySearch: (value: string) => void
 	}
 	data: {
-		filtered: Alert[]
+		filtered: HubAlert[]
 		grouped: AlertGroup[]
 	}
 	filters: {
 		by_date: 'current' | 'future' | 'map'
-		search_query: null | string
+		by_search: string
 	}
 	flags: {
 		is_loading: boolean
@@ -49,16 +48,14 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 
 	const alertsContext = useAlertsContext();
 
-	console.log(alertsContext.data.alerts);
-
 	const [filterByDateState, setFilterByDateState] = useState <AlertsListContextState['filters']['by_date']>('current');
-	const [filterBySearchQueryState, setFilterBySearchQueryState] = useQueryState('search_query');
+	const [filterBySearchState, setFilterBySearchState] = useState <AlertsListContextState['filters']['by_search']>('');
 
 	//
 	// C. Transform data
 
 	const groupedAlerts = useMemo(() => {
-		return alertsContext.data.alerts.reduce((acc: AlertGroup[], alert: Alert): AlertGroup[] => {
+		return alertsContext.data.alerts.reduce((acc: AlertGroup[], alert: HubAlert): AlertGroup[] => {
 			if (!alert.active_period_start_date) return acc;
 			const date = Dates.fromUnixTimestamp(alert.active_period_start_date).toFormat('yyyyMMdd');
 			const existingGroup = acc.find(group => group.value === date);
@@ -72,7 +69,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	}, [alertsContext.data.alerts]);
 
 	const dataFilteredState = useMemo(() => {
-		const filterResult: Alert[] = [...(alertsContext.data.alerts || [])];
+		const filterResult: HubAlert[] = [...(alertsContext.data.alerts || [])];
 
 		// filterResult = filterResult.filter((item) => {
 		// 	if (filterByDateState === 'current') {
@@ -99,8 +96,8 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		setFilterByDateState(value);
 	};
 
-	const updateFilterBySearchQuery = (value: AlertsListContextState['filters']['search_query']) => {
-		setFilterBySearchQueryState(value);
+	const updateFilterBySearch = (value: AlertsListContextState['filters']['by_search']) => {
+		setFilterBySearchState(value);
 	};
 
 	//
@@ -109,7 +106,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	const contextValue: AlertsListContextState = {
 		actions: {
 			updateFilterByDate,
-			updateFilterBySearchQuery,
+			updateFilterBySearch,
 		},
 		data: {
 			filtered: dataFilteredState,
@@ -117,7 +114,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		},
 		filters: {
 			by_date: filterByDateState,
-			search_query: filterBySearchQueryState,
+			by_search: filterBySearchState,
 		},
 		flags: {
 			is_loading: alertsContext.flags.is_loading,
