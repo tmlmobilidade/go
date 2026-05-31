@@ -1,4 +1,27 @@
 {
+	"alerts": {
+		"AlertsListToolbar": {
+			"by_date": {
+				"current": "Esta semana",
+				"future": "Futuros",
+				"map": "Mapa"
+			},
+			"filters": {
+				"by_line": {
+					"label": "Filtrar por linha",
+					"placeholder": "Filtrar por linha"
+				},
+				"by_stop": {
+					"label": "Filtrar por paragem",
+					"placeholder": "Filtrar por paragem"
+				},
+				"text_search": "Procurar alerta por título, descrição, localização..."
+			},
+			"found_items_counter": "{count, plural, =0 {Nenhum alerta encontrado.} one {Encontrado # alerta:} other {Encontrados # alertas:}}",
+			"heading": "Alertas de Serviço",
+			"subheading": "Fique a par de todas as alterações à rede. Mantenha-se informado sobre novas linhas, mudanças de percurso e ajustes de horários, assim como sobre eventos que possam afetar a sua viagem."
+		}
+	},
 	"layout": {
 		"NoDataLabel": {
 			"no_data": "Nenhum dado disponível"

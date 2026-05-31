@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertsList } from '@/components/alerts/AlertsList';
+import { AlertsList } from '@/components/alerts/list/AlertsList';
 import { LinesList } from '@/components/lines/list/LinesList';
 import { StopsList } from '@/components/stops/list/StopsList';
 import { useTransitModes } from '@/hooks/use-transit-modes';

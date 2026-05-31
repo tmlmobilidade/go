@@ -1,11 +1,9 @@
 'use client';
 
-import type { AlertCause, AlertEffect, SimplifiedAlert } from '@tmlmobilidade/go-hub-pckg-types';
-
+import { useAlertsContext } from '@/contexts/Alerts.context';
+import { type Alert, type AlertCause, type AlertEffect } from '@tmlmobilidade/types';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useMemo, useState } from 'react';
-
-import { useAlertsContext } from '../../frontend-navegante-app/src/contexts/Alerts.context';
 
 /* * */
 
@@ -24,8 +22,8 @@ interface AlertsListContextState {
 		}
 	}
 	data: {
-		filtered: SimplifiedAlert[]
-		raw: SimplifiedAlert[]
+		filtered: Alert[]
+		raw: Alert[]
 	}
 	filters: {
 		by_date: 'current' | 'future' | 'map'
@@ -75,8 +73,6 @@ export const AlertsListContextProvider = ({ children }) => {
 	});
 	// const [filterByMunicipalityIdState, setFilterByMunicipalityIdState] = useQueryState('municipality_id');
 
-	const [isLoading] = useState(false);
-
 	//
 	// B. Fetch data
 
@@ -86,45 +82,45 @@ export const AlertsListContextProvider = ({ children }) => {
 	//
 	// C. Transform data
 
-	const currentWeekAlerts = useMemo(() => {
-		if (!allAlertsData?.length) return 0;
-		return allAlertsData.filter(alertsContext.actions.isAlertInThisWeek).length;
-	}, [allAlertsData]);
+	// const currentWeekAlerts = useMemo(() => {
+	// 	if (!allAlertsData?.length) return 0;
+	// 	return allAlertsData.filter(alertsContext.actions.isAlertInThisWeek).length;
+	// }, [allAlertsData]);
 
 	const dataFilteredState = useMemo(() => {
-		let filterResult: SimplifiedAlert[] = [...(allAlertsData || [])];
+		const filterResult: Alert[] = [...(allAlertsData || [])];
 
-		filterResult = filterResult.filter((item) => {
-			if (filterByDateState === 'current') {
-				return alertsContext.actions.isAlertInThisWeek(item);
-			}
-			return alertsContext.actions.isAlertStartingAfterThisWeek(item);
-		});
+		// filterResult = filterResult.filter((item) => {
+		// 	if (filterByDateState === 'current') {
+		// 		return alertsContext.actions.isAlertInThisWeek(item);
+		// 	}
+		// 	return alertsContext.actions.isAlertStartingAfterThisWeek(item);
+		// });
 
-		if (filterByLineIdState) {
-			filterResult = filterResult.filter(alert => alert.informed_entity.some(entity => entity.line_id === filterByLineIdState));
-		}
+		// if (filterByLineIdState) {
+		// 	filterResult = filterResult.filter(alert => alert.informed_entity.some(entity => entity.line_id === filterByLineIdState));
+		// }
 
-		if (filterByStopIdState) {
-			filterResult = filterResult.filter(alert => alert.informed_entity.some(entity => entity.stop_id === filterByStopIdState));
-		}
+		// if (filterByStopIdState) {
+		// 	filterResult = filterResult.filter(alert => alert.informed_entity.some(entity => entity.stop_id === filterByStopIdState));
+		// }
 
-		if (filterBySearchQueryState) {
-			filterResult = filterResult.filter((alert) => {
-				const searchQuery = filterBySearchQueryState.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-				const title = alert.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-				const description = alert.description.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-				return title.includes(searchQuery) || description.includes(searchQuery);
-			});
-		}
+		// if (filterBySearchQueryState) {
+		// 	filterResult = filterResult.filter((alert) => {
+		// 		const searchQuery = filterBySearchQueryState.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+		// 		const title = alert.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+		// 		const description = alert.description.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+		// 		return title.includes(searchQuery) || description.includes(searchQuery);
+		// 	});
+		// }
 
-		if (filterByCauseState) {
-			filterResult = filterResult.filter(alert => alert.cause === filterByCauseState);
-		}
+		// if (filterByCauseState) {
+		// 	filterResult = filterResult.filter(alert => alert.cause === filterByCauseState);
+		// }
 
-		if (filterByEffectState) {
-			filterResult = filterResult.filter(alert => alert.effect === filterByEffectState);
-		}
+		// if (filterByEffectState) {
+		// 	filterResult = filterResult.filter(alert => alert.effect === filterByEffectState);
+		// }
 
 		return filterResult;
 	}, [allAlertsData, alertsContext.actions, filterByCauseState, filterByDateState, filterByEffectState, filterByLineIdState, filterBySearchQueryState, filterByStopIdState]);
@@ -170,8 +166,8 @@ export const AlertsListContextProvider = ({ children }) => {
 		},
 		counters: {
 			by_date: {
-				current: currentWeekAlerts,
-				future: Math.max(0, (allAlertsData?.length ?? 0) - currentWeekAlerts),
+				current: 0, // currentWeekAlerts,
+				future: 0, // Math.max(0, (allAlertsData?.length ?? 0) - currentWeekAlerts),
 			},
 		},
 		data: {
@@ -187,7 +183,7 @@ export const AlertsListContextProvider = ({ children }) => {
 			stop_id: filterByStopIdState,
 		},
 		flags: {
-			is_loading: isLoading,
+			is_loading: alertsContext.flags.is_loading,
 		},
 	};
 

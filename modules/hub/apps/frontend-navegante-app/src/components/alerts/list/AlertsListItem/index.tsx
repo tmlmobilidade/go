@@ -8,8 +8,8 @@ import { useAlertsContext } from '@/contexts/Alerts.context';
 import { useEnvironmentContext } from '@/contexts/Environment.context';
 import { Accordion } from '@mantine/core';
 import { IconArrowUpRight } from '@tabler/icons-react';
-import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -27,7 +27,7 @@ export function AlertListItem({ alertId }: Props) {
 	//
 	// A. Setup variables
 
-	const t = useTranslations('alerts.AlertsListItem');
+	const { t } = useTranslation();
 	const alertsContext = useAlertsContext();
 	const environmentContext = useEnvironmentContext();
 
