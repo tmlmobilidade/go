@@ -31,8 +31,7 @@ export function AlertsListToolbar() {
 
 	return (
 		<Section>
-			<SearchInput onChange={alertsListContext.actions.updateFilterBySearch} value={alertsListContext.filters.by_search} />
-			<SegmentedControl data={byCurrentStatusOptions} onChange={alertsListContext.actions.updateFilterByDate} value={alertsListContext.filters.by_date} w="100%" fullWidth />
+			<SearchInput onChange={alertsListContext.filters.search.set} value={alertsListContext.filters.search.value} />
 		</Section>
 	);
 }

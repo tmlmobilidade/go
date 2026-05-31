@@ -4,25 +4,15 @@ import { useAlertsContext } from '@/contexts/Alerts.context';
 import { type AlertGroup } from '@/types/alerts/alert-group';
 import { Dates } from '@tmlmobilidade/dates';
 import { type HubAlert } from '@tmlmobilidade/types';
-import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { type ListContextStateTemplate, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
 
-interface AlertsListContextState {
-	actions: {
-		updateFilterByDate: (value: string) => void
-		updateFilterBySearch: (value: string) => void
-	}
+interface AlertsListContextState extends ListContextStateTemplate {
 	data: {
 		filtered: HubAlert[]
 		grouped: AlertGroup[]
-	}
-	filters: {
-		by_date: 'current' | 'future' | 'map'
-		by_search: string
-	}
-	flags: {
-		is_loading: boolean
 	}
 }
 
@@ -48,11 +38,16 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 
 	const alertsContext = useAlertsContext();
 
-	const [filterByDateState, setFilterByDateState] = useState <AlertsListContextState['filters']['by_date']>('current');
-	const [filterBySearchState, setFilterBySearchState] = useState <AlertsListContextState['filters']['by_search']>('');
+	const filterSearch = useFilterStateString('search');
 
 	//
-	// C. Transform data
+	// B. Transform data
+
+	const searchResultsData = useSearch<HubAlert>({
+		accessors: ['title', 'description'],
+		data: alertsContext.data.alerts,
+		query: filterSearch.value,
+	});
 
 	const groupedAlerts = useMemo(() => {
 		return alertsContext.data.alerts.reduce((acc: AlertGroup[], alert: HubAlert): AlertGroup[] => {
@@ -68,67 +63,29 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		}, []);
 	}, [alertsContext.data.alerts]);
 
-	const dataFilteredState = useMemo(() => {
-		const filterResult: HubAlert[] = [...(alertsContext.data.alerts || [])];
-
-		// filterResult = filterResult.filter((item) => {
-		// 	if (filterByDateState === 'current') {
-		// 		return alertsContext.actions.isAlertInThisWeek(item);
-		// 	}
-		// 	return alertsContext.actions.isAlertStartingAfterThisWeek(item);
-		// });
-
-		// if (filterBySearchQueryState) {
-		// 	filterResult = filterResult.filter((alert) => {
-		// 		const searchQuery = filterBySearchQueryState.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-		// 		const title = alert.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-		// 		const description = alert.description.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-		// 		return title.includes(searchQuery) || description.includes(searchQuery);
-		// 	});
-		// }
-		return filterResult;
-	}, [alertsContext.data.alerts]);
-
 	//
-	// D. Handle actions
-
-	const updateFilterByDate = (value: AlertsListContextState['filters']['by_date']) => {
-		setFilterByDateState(value);
-	};
-
-	const updateFilterBySearch = (value: AlertsListContextState['filters']['by_search']) => {
-		setFilterBySearchState(value);
-	};
-
-	//
-	// E. Define context value
+	// C. Define context value
 
 	const contextValue: AlertsListContextState = {
-		actions: {
-			updateFilterByDate,
-			updateFilterBySearch,
-		},
 		data: {
-			filtered: dataFilteredState,
+			filtered: searchResultsData,
 			grouped: groupedAlerts,
 		},
 		filters: {
-			by_date: filterByDateState,
-			by_search: filterBySearchState,
+			search: filterSearch,
 		},
 		flags: {
-			is_loading: alertsContext.flags.is_loading,
+			error: undefined,
+			isLoading: alertsContext.flags.is_loading,
 		},
 	};
 
 	//
-	// F. Render components
+	// D. Render components
 
 	return (
 		<AlertsListContext.Provider value={contextValue}>
 			{children}
 		</AlertsListContext.Provider>
 	);
-
-	//
 };

@@ -1,7 +1,8 @@
 'use client';
 
-import { type Line, type NetworkRoute } from '@/types/api/network';
+import { type NetworkRoute } from '@/types/api/network';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type HubLine } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -9,11 +10,11 @@ import useSWR from 'swr';
 
 interface LinesContextState {
 	actions: {
-		getLineDataById: (lineId: string) => Line | undefined
+		getLineDataById: (lineId: string) => HubLine | undefined
 		getRouteDataById: (routeId: string) => NetworkRoute | undefined
 	}
 	data: {
-		lines: Line[]
+		lines: HubLine[]
 		routes: NetworkRoute[]
 	}
 	flags: {
@@ -48,7 +49,7 @@ export function LinesContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<Line[], Error>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_LINES });
+	const { data: allLinesData, isLoading: allLinesLoading } = useSWR<HubLine[], Error>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_LINES });
 	const { data: allRoutesData, isLoading: allRoutesLoading } = useSWR<NetworkRoute[], Error>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_ROUTES });
 
 	const normalizedLinesData = useMemo(() => {

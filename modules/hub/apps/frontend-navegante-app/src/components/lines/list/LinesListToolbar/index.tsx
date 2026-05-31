@@ -18,7 +18,7 @@ export function LinesListToolbar() {
 
 	return (
 		<Section>
-			<SearchInput onChange={linesListContext.actions.updateFilterBySearch} value={linesListContext.filters.by_search} />
+			<SearchInput onChange={linesListContext.filters.search.set} value={linesListContext.filters.search.value} />
 		</Section>
 	);
 }
