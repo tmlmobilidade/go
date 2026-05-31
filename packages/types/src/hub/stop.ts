@@ -19,7 +19,10 @@ export const HubStopSchema = StopSchema.pick({
 	short_name: true,
 	tts_name: true,
 }).extend({
-
+	district_name: z.string(),
+	locality_name: z.string(),
+	municipality_name: z.string(),
+	parish_name: z.string(),
 });
 
 /**
