@@ -3,7 +3,7 @@
 import { AlertActivePeriodEnd, AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
 import { AlertEffectIcon } from '@/components/alerts/common/AlertCauseEffectIcon';
 import AlertsListItemImageThumbnail from '@/components/alerts/list/AlertsListItemImageThumbnail';
-import { useAlertsContext } from '@/contexts/Alerts.context';
+import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { Accordion } from '@mantine/core';
 import { IconArrowUpRight } from '@tabler/icons-react';
 import { useMemo } from 'react';

@@ -1,8 +1,8 @@
 'use client';
 
 import { LineBadge } from '@/components/lines/common/LineBadge';
-import { useLinesContext } from '@/contexts/Lines.context';
-import { useStopsContext } from '@/contexts/Stops.context';
+import { useLinesContext } from '@/components/lines/Lines.context';
+import { useStopsContext } from '@/components/stops/Stops.context';
 import { type NetworkStop } from '@/types/api/network';
 import { type HubLine } from '@tmlmobilidade/types';
 import { useRouter } from 'next/navigation';

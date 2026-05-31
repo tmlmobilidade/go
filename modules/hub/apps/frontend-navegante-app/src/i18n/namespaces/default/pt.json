@@ -61,7 +61,7 @@
 			},
 			"heading": "Pesquisar Paragens"
 		},
-		"StopsListViewAll": {
+		"StopsListViewList": {
 			"no_data": "Nenhuma paragem encontrada para esta pesquisa"
 		}
 	},

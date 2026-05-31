@@ -1,6 +1,6 @@
 'use client';
 
-import { useLinesContext } from '@/contexts/Lines.context';
+import { useLinesContext } from '@/components/lines/Lines.context';
 import { type HubLine } from '@tmlmobilidade/types';
 import { type ListContextStateTemplate, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext } from 'react';

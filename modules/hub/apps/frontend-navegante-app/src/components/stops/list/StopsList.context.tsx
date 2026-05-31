@@ -1,17 +1,21 @@
 'use client';
 
-import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/contexts/Stops.context';
+import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/components/stops/Stops.context';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubStop } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, type MapOverlayMultipleStopsDataProps, useFilterStateString, useLocalStorage, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
 
 interface StopsListContextState extends ListContextStateTemplate {
 	data: {
-		fc: GeoJSON.FeatureCollection
+		fc: GeoJSON.FeatureCollection<GeoJSON.Point, MapOverlayMultipleStopsDataProps>
 		filtered: HubStop[]
+	}
+	view: {
+		current: 'list' | 'map'
+		toggle: (view: 'list' | 'map') => void
 	}
 }
 
@@ -39,6 +43,11 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 
 	const filterSearch = useFilterStateString('search');
 
+	const [currentView, setCurrentView] = useLocalStorage<'list' | 'map'>({
+		defaultValue: 'list',
+		key: 'stops-current-view',
+	});
+
 	//
 	// B. Transform data
 
@@ -50,12 +59,18 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 
 	const dataFeatureCollection = useMemo(() => {
 		// Check if all data is available
-		if (!searchResultsData?.length) return getBaseGeoJsonFeatureCollection();
+		if (!searchResultsData?.length) return getBaseGeoJsonFeatureCollection<GeoJSON.Point, MapOverlayMultipleStopsDataProps>();
 		// Initialize worker if not already initialized
-		const collection: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties> = getBaseGeoJsonFeatureCollection();
+		const collection: GeoJSON.FeatureCollection<GeoJSON.Point, MapOverlayMultipleStopsDataProps> = getBaseGeoJsonFeatureCollection<GeoJSON.Point, MapOverlayMultipleStopsDataProps>();
 		searchResultsData.forEach((stop) => {
 			const stopFC = transformStopDataIntoGeoJsonFeature(stop);
-			if (stopFC) collection.features.push(stopFC);
+			if (stopFC) collection.features.push({
+				...stopFC,
+				properties: {
+					id: String(stop._id),
+					name: stop.name,
+				},
+			});
 		});
 		return collection;
 	}, [searchResultsData]);
@@ -74,6 +89,10 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 		flags: {
 			error: undefined,
 			isLoading: stopsContext.flags.isLoading,
+		},
+		view: {
+			current: currentView,
+			toggle: setCurrentView,
 		},
 	};
 
