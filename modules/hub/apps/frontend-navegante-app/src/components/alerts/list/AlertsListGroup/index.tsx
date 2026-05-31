@@ -1,19 +1,16 @@
 'use client';
 
-import type { AlertGroupByDate } from '@tmlmobilidade/go-hub-pckg-types';
-
-import AlertsListEmpty from '@/components/alerts2/AlertsListEmpty';
-import { AlertListItem } from '@/components/alerts2/AlertsListItem';
-import AlertsListItemSkeleton from '@/components/alerts2/AlertsListItemSkeleton';
+import { useAlertsListContext } from '@/components/alerts/list/AlertsList.context';
+import AlertsListEmpty from '@/components/alerts/list/AlertsListEmpty';
+import { AlertListItem } from '@/components/alerts/list/AlertsListItem';
 import { GroupedListItem } from '@/components/layout/GroupedListItem';
 import GroupedListSkeleton from '@/components/layout/GroupedListSkeleton';
-import { Surface } from '@/components/layout/Surface';
-import { useAlertsListContext } from '@/contexts/AlertsList.context';
-import collator from '@/utils/collator';
 import { Accordion } from '@mantine/core';
-import { DateTime } from 'luxon';
-import { useTranslations } from 'next-intl';
+// import { type AlertGroupByDate } from '@tmlmobilidade/go-hub-pckg-types';
+import { Section } from '@tmlmobilidade/ui';
+// import { DateTime } from 'luxon';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -23,8 +20,9 @@ export function AlertsListGroup() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const alertsListContext = useAlertsListContext();
-	const t = useTranslations('alerts.AlertsListGroup');
 
 	//
 	// B. Transform data
@@ -33,39 +31,39 @@ export function AlertsListGroup() {
 		//
 		if (!alertsListContext.data) return [];
 		//
-		const groupedAlerts: AlertGroupByDate[] = alertsListContext.data.filtered.reduce((result: AlertGroupByDate[], item) => {
-			const alertStartDateObject = DateTime.fromJSDate(item.start_date);
-			const alertStartDateString = alertStartDateObject.toFormat('yyyyMMdd');
-			const existingGroup = result.find(group => group.value === alertStartDateString);
-			if (existingGroup) {
-				existingGroup.items.push(item);
-			} else {
-				let formattedGroupLabel = '';
-				const today = DateTime.local().startOf('day');
-				const alertStartDateObjectCompare = alertStartDateObject.startOf('day');
-				if (alertStartDateObjectCompare.equals(today)) {
-					formattedGroupLabel = t('titles.today', { value: alertStartDateObject.toJSDate() });
-				} else if (alertStartDateObjectCompare.equals(today.plus({ days: 1 }))) {
-					formattedGroupLabel = t('titles.tomorrow', { value: alertStartDateObject.toJSDate() });
-				} else if (alertStartDateObjectCompare.equals(today.minus({ days: 1 }))) {
-					formattedGroupLabel = t('titles.yesterday', { value: alertStartDateObject.toJSDate() });
-				} else if (alertStartDateObjectCompare < today.minus({ days: 1 })) {
-					formattedGroupLabel = t('titles.past', { value: alertStartDateObject.toJSDate() });
-				} else {
-					formattedGroupLabel = t('titles.future', { value: alertStartDateObject.toJSDate() });
-				}
-				result.push({
-					items: [item],
-					title: formattedGroupLabel,
-					value: alertStartDateString,
-				});
-			}
-			return result;
-		}, []) || [];
+		// const groupedAlerts: AlertGroupByDate[] = alertsListContext.data.filtered.reduce((result: AlertGroupByDate[], item) => {
+		// 	const alertStartDateObject = DateTime.fromJSDate(item.start_date);
+		// 	const alertStartDateString = alertStartDateObject.toFormat('yyyyMMdd');
+		// 	const existingGroup = result.find(group => group.value === alertStartDateString);
+		// 	if (existingGroup) {
+		// 		existingGroup.items.push(item);
+		// 	} else {
+		// 		let formattedGroupLabel = '';
+		// 		const today = DateTime.local().startOf('day');
+		// 		const alertStartDateObjectCompare = alertStartDateObject.startOf('day');
+		// 		if (alertStartDateObjectCompare.equals(today)) {
+		// 			formattedGroupLabel = t('titles.today', { value: alertStartDateObject.toJSDate() });
+		// 		} else if (alertStartDateObjectCompare.equals(today.plus({ days: 1 }))) {
+		// 			formattedGroupLabel = t('titles.tomorrow', { value: alertStartDateObject.toJSDate() });
+		// 		} else if (alertStartDateObjectCompare.equals(today.minus({ days: 1 }))) {
+		// 			formattedGroupLabel = t('titles.yesterday', { value: alertStartDateObject.toJSDate() });
+		// 		} else if (alertStartDateObjectCompare < today.minus({ days: 1 })) {
+		// 			formattedGroupLabel = t('titles.past', { value: alertStartDateObject.toJSDate() });
+		// 		} else {
+		// 			formattedGroupLabel = t('titles.future', { value: alertStartDateObject.toJSDate() });
+		// 		}
+		// 		result.push({
+		// 			items: [item],
+		// 			title: formattedGroupLabel,
+		// 			value: alertStartDateString,
+		// 		});
+		// 	}
+		// 	return result;
+		// }, []) || [];
 		//
-		const sortedGroups = groupedAlerts.sort((a, b) => collator.compare(b.value, a.value));
+		// const sortedGroups = groupedAlerts.sort((a, b) => collator.compare(b.value, a.value));
 		//
-		return sortedGroups;
+		return []; // sortedGroups;
 		//
 	}, [alertsListContext.data]);
 
@@ -74,17 +72,17 @@ export function AlertsListGroup() {
 
 	if (alertsListContext.flags.is_loading) {
 		return (
-			<Surface>
-				<GroupedListSkeleton groupCount={3} itemCount={2} itemSkeleton={<AlertsListItemSkeleton />} />
-			</Surface>
+			<Section>
+				{/* <GroupedListSkeleton groupCount={3} itemCount={2} itemSkeleton={<AlertsListItemSkeleton />} /> */}
+			</Section>
 		);
 	}
 
 	if (allAlertsGroupedByStartDate.length > 0) {
 		return (
-			<Surface>
+			<Section>
 				{allAlertsGroupedByStartDate.map(alertGroup => (
-					<GroupedListItem key={alertGroup.value} label={t('label', { count: alertGroup.items.length })} title={alertGroup.title}>
+					<GroupedListItem key={alertGroup.value} label={t('default:alerts.AlertsListToolbar.by_date.current')} title={alertGroup.title}>
 						<Accordion>
 							{alertGroup.items.map(alert => (
 								<AlertListItem key={alert.alert_id} alertId={alert.alert_id} />
@@ -92,14 +90,14 @@ export function AlertsListGroup() {
 						</Accordion>
 					</GroupedListItem>
 				))}
-			</Surface>
+			</Section>
 		);
 	}
 
 	return (
-		<Surface>
+		<Section>
 			<AlertsListEmpty />
-		</Surface>
+		</Section>
 	);
 
 	//

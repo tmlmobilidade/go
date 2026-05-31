@@ -1,11 +1,9 @@
 'use client';
 
-import { AlertActivePeriodEnd, AlertActivePeriodStart } from '@/components/alerts/AlertActivePeriod';
-import { AlertEffectIcon } from '@/components/alerts/AlertCauseEffectIcon';
-import AlertsListItemImageThumbnail from '@/components/alerts/AlertsListItemImageThumbnail';
-import Button from '@/components/common/Button';
+import { AlertActivePeriodEnd, AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
+import { AlertEffectIcon } from '@/components/alerts/common/AlertCauseEffectIcon';
+import AlertsListItemImageThumbnail from '@/components/alerts/list/AlertsListItemImageThumbnail';
 import { useAlertsContext } from '@/contexts/Alerts.context';
-import { useEnvironmentContext } from '@/contexts/Environment.context';
 import { Accordion } from '@mantine/core';
 import { IconArrowUpRight } from '@tabler/icons-react';
 import { useMemo } from 'react';
@@ -28,33 +26,33 @@ export function AlertListItem({ alertId }: Props) {
 	// A. Setup variables
 
 	const { t } = useTranslation();
+
 	const alertsContext = useAlertsContext();
-	const environmentContext = useEnvironmentContext();
 
 	//
 	// B. Transform data
 
 	const resolvedAlert = alertsContext.actions.getAlertById(alertId);
 
-	const view = useMemo(() => {
-		if (!resolvedAlert) return null;
-		return {
-			description: resolvedAlert.description,
-			endDate: resolvedAlert.end_date,
-			imageUrl: resolvedAlert.image_url,
-			startDate: resolvedAlert.start_date,
-			title: resolvedAlert.title,
-		};
-	}, [resolvedAlert]);
+	// const view = useMemo(() => {
+	// 	if (!resolvedAlert) return null;
+	// 	return {
+	// 		description: resolvedAlert.description,
+	// 		endDate: resolvedAlert.end_date,
+	// 		imageUrl: resolvedAlert.image_url,
+	// 		startDate: resolvedAlert.start_date,
+	// 		title: resolvedAlert.title,
+	// 	};
+	// }, [resolvedAlert]);
 
-	const alertHref = environmentContext.actions.getNormalizedHref(`/alerts/${alertId}`);
+	// const alertHref = environmentContext.actions.getNormalizedHref(`/alerts/${alertId}`);
 
 	//
 	// C. Render components
 
 	return (
 		<Accordion.Item value={alertId}>
-			<Accordion.Control icon={<AlertEffectIcon effect={resolvedAlert?.effect} />}>{view?.title}</Accordion.Control>
+			{/* <Accordion.Control icon={<AlertEffectIcon effect={resolvedAlert?.effect} />}>{view?.title}</Accordion.Control>
 			<Accordion.Panel classNames={{ content: styles.contentWrapper }}>
 				<div className={styles.infoBar}>
 					{view?.startDate && <AlertActivePeriodStart date={view.startDate} size="sm" />}
@@ -73,7 +71,7 @@ export function AlertListItem({ alertId }: Props) {
 				<div>
 					<Button href={alertHref} icon={<IconArrowUpRight size={16} />} label={t('open')} variant="pill" />
 				</div>
-			</Accordion.Panel>
+			</Accordion.Panel> */}
 		</Accordion.Item>
 	);
 

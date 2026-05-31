@@ -1,5 +1,11 @@
 {
 	"alerts": {
+		"AlertsListEmpty": {
+			"action_1": "Ver alertas do passado",
+			"action_2": "Ver alertas do futuro",
+			"subtitle": "Fique a par de todas as alterações à rede. Mantenha-se informado sobre novas linhas, mudanças de percurso e ajustes de horários, assim como sobre eventos que possam afetar a sua viagem.",
+			"title": "Nenhum alerta encontrado"
+		},
 		"AlertsListToolbar": {
 			"by_date": {
 				"current": "Esta semana",
