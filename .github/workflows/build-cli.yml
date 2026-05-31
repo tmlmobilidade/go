@@ -1,8 +1,4 @@
-# # #
-
 name: 'Build CLI apps'
-
-# # #
 
 on:
   workflow_dispatch:
@@ -16,8 +12,6 @@ on:
       - '.github/actions/**/*'
       - '.github/templates/**/*'
 
-# # #
-
 env:
   CLI_APPS: |
     backupd
@@ -27,15 +21,15 @@ env:
     repo-version
     env-sync
 
-# # #
-
 jobs:
 
-  generate-package-lock:
-    name: Generate package-lock.json
+# =========================================================
+# 1. MUTATE PACKAGE.JSON + UPDATE DEPENDENCIES
+# =========================================================
+  prepare-workspace:
+    name: Prepare workspace (update deps)
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -46,93 +40,133 @@ jobs:
           node-version: '24'
           package-manager-cache: false
 
+      - name: Normalize wildcard deps
+        run: |
+          while IFS= read -r cli_app; do
+            [[ -z "$cli_app" ]] && continue
+      
+            node -e "
+              const fs = require('fs');
+              const path = \`cli/${cli_app}/package.json\`;
+              const pkg = JSON.parse(fs.readFileSync(path, 'utf8'));
+      
+              for (const section of ['dependencies','devDependencies','peerDependencies']) {
+                if (!pkg[section]) continue;
+      
+                for (const k of Object.keys(pkg[section])) {
+                  if (pkg[section][k] === '*') {
+                    pkg[section][k] = '0.0.0';
+                  }
+                }
+              }
+      
+              fs.writeFileSync(path, JSON.stringify(pkg, null, 2));
+            "
+          done <<< "${CLI_APPS}"
+
+      - name: Upgrade dependencies
+        run: |
+          while IFS= read -r cli_app; do
+            [[ -z "$cli_app" ]] && continue
+      
+            npx npm-check-updates \
+              -u \
+              --target latest \
+              --filter '/^@tmlmobilidade/' \
+              --packageFile "cli/${cli_app}/package.json"
+      
+          done <<< "${CLI_APPS}"
+      
       - name: Install dependencies
         run: npm install --package-lock-only --ignore-scripts
 
-      - name: Save package-lock.json as artifact
-        uses: actions/upload-artifact@v7
+      - name: Upload modified workspace
+        uses: actions/upload-artifact@v4
         with:
-          name: package-lock.json
-          path: package-lock.json
-          retention-days: 1
+          name: workspace
+          path: .
 
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
+# =========================================================
+# 2. VERSION GENERATION
+# =========================================================
+  version-number:
+    name: Version Number
+    runs-on: ubuntu-latest
 
+    outputs:
+      version_number: ${{ steps.gen.outputs.version_number }}
+
+    steps:
+      - id: gen
+        run: |
+          version="$(date +%Y%m%d).$(date +%H%M).$(date +%S)"
+          echo "version_number=$version" >> "$GITHUB_OUTPUT"
+
+# =========================================================
+# 3. MATRIX PREPARATION
+# =========================================================
   prepare-matrix:
     name: Prepare publish matrix
     runs-on: ubuntu-latest
-    needs: generate-package-lock
     outputs:
       cli_apps: ${{ steps.matrix.outputs.cli_apps }}
+
     steps:
-      - name: Generate matrix from CLI_APPS
+      - name: Generate matrix
         id: matrix
         run: |
-          apps=$(printf '%s\n' "${CLI_APPS}" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//' | sed '/^$/d' | sed 's/.*/"&"/' | paste -sd "," -)
+          apps=$(printf '%s\n' "${CLI_APPS}" \
+            | sed 's/^[[:space:]]*//; s/[[:space:]]*$//' \
+            | sed '/^$/d' \
+            | sed 's/.*/"&"/' \
+            | paste -sd "," -)
+
           echo "cli_apps=[${apps}]" >> "$GITHUB_OUTPUT"
 
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
-  version-number:
-    name: 'Version Number'
-    runs-on: ubuntu-latest
-    steps:
-      - id: generate-version-number
-        run: |
-          version="$(date +%Y%m%d).$(date +%H%M).$(date +%S)"
-          echo "Generated version: $version"
-          echo "version_number=$version" >> "$GITHUB_OUTPUT"
-    outputs:
-      version_number: ${{ steps.generate-version-number.outputs.version_number }}
-
-  # # # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # # # # # # # # # # # # # #
-
+# =========================================================
+# 4. PUBLISH
+# =========================================================
   publish:
-    name: 'Publish package'
+    name: Publish package
     runs-on: ubuntu-latest
-    needs: [prepare-matrix, version-number]
+
+    needs: [prepare-matrix, version-number, prepare-workspace]
+
     strategy:
       fail-fast: false
       matrix:
         cli_app: ${{ fromJSON(needs.prepare-matrix.outputs.cli_apps) }}
-    steps:
 
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+
+      - name: Download modified workspace
+        uses: actions/download-artifact@v4
+        with:
+          name: workspace
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '24'
-          package-manager-cache: false
           registry-url: 'https://registry.npmjs.org/'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-      - name: Setup Turbo
+      - name: Install Turbo
         run: npm install -g turbo@^2
 
-      - name: Download package-lock.json artifact
-        uses: actions/download-artifact@v8
-        with:
-          name: package-lock.json
-          path: .
-
-      - name: Install workspace dependencies
-        working-directory: .
+      - name: Install dependencies
         run: npm ci
 
       - name: Build CLI app
-        working-directory: .
         run: turbo run build --filter=./cli/${{ matrix.cli_app }}
 
-      - name: Bump package version
+      - name: Bump version
         working-directory: cli/${{ matrix.cli_app }}
         run: npm version --no-git-tag-version ${{ needs.version-number.outputs.version_number }}
 
-      - name: Publish package to NPM
+      - name: Publish package
         working-directory: cli/${{ matrix.cli_app }}
         run: npm publish --access public

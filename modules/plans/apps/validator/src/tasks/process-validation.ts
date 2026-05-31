@@ -8,7 +8,7 @@ import { getTmpWorkdirPath } from '@tmlmobilidade/files';
 import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
 import { agencies, files, gtfsValidations, users } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GtfsValidationSummary, type GtfsValidation } from '@tmlmobilidade/types';
+import { type GtfsValidation, type GtfsValidationSummary } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import pjson from 'pjson' with { type: 'json' };
@@ -147,14 +147,6 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 			}
 		} catch (error) {
 			Logger.error('Error sending validation result email:', error);
-			await sendSystemErrorEmail({
-				data: {
-					errorMessage: error instanceof Error ? error.message : String(error),
-					serviceName: pjson.name,
-					timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-				},
-				to: SYSTEM_CONTACT_EMAIL,
-			});
 		}
 
 		//
