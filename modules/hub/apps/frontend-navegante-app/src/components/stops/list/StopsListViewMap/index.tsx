@@ -3,8 +3,6 @@
 import { MapView } from '@/components/map/MapView';
 import { MapViewStyleStops } from '@/components/map/MapViewStyleStops';
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
-import { Section } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 /* * */
@@ -14,8 +12,6 @@ export function StopsListViewMap() {
 
 	//
 	// A. Setup variables
-
-	const router = useRouter();
 
 	const stopsListContext = useStopsListContext();
 
@@ -36,12 +32,10 @@ export function StopsListViewMap() {
 	// C. Render components
 
 	return (
-		<Section>
-			<MapView id="stops-list">
-				<MapViewStyleStops
-					stopsData={stopsListContext.data.fc}
-				/>
-			</MapView>
-		</Section>
+		<MapView id="stops-list">
+			<MapViewStyleStops
+				stopsData={stopsListContext.data.fc}
+			/>
+		</MapView>
 	);
 }

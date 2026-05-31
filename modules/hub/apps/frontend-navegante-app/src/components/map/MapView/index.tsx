@@ -3,7 +3,6 @@
 import { useMapContext } from '@/components/map/Map.context';
 import { mapDefaultConfig } from '@/components/map/Map.settings';
 import { MAP_LOAD_ASSETS } from '@/components/map/mapLoadAssets';
-import { MapViewToolbar } from '@/components/map/MapViewToolbar';
 import Map, { FullscreenControl, GeolocateControl, MapRef, NavigationControl, ScaleControl, useMap } from '@vis.gl/react-maplibre';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -43,7 +42,7 @@ interface MapViewProps {
 
 /* * */
 
-export function MapView({ autoZoom, children, fullscreen = true, geolocate = true, id, interactiveLayerIds = [], mapStyle, navigation = true, onCenterMap, onClick, onDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onMoveEnd, onMoveStart, onZoom, scale = false, scrollZoom = true, showCenterButton = false, toolbarExtras }: MapViewProps) {
+export function MapView({ children, fullscreen = true, geolocate = true, id, interactiveLayerIds = [], mapStyle, navigation = true, onClick, onDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onMoveEnd, onMoveStart, onZoom, scale = false, scrollZoom = true }: MapViewProps) {
 	//
 
 	//
@@ -69,7 +68,7 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 				}
 			});
 		}
-	}, [allMaps, id]);
+	}, [allMaps, id, mapContext.actions]);
 
 	const mapStyleValue = mapStyle ?? mapContext.data.style;
 
@@ -79,36 +78,28 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 	const handleOnMouseEnter = useCallback((event) => {
 		setCursor('pointer');
 		if (onMouseEnter) onMouseEnter(event);
-	}, []);
+	}, [onMouseEnter]);
 
 	const handleOnMouseLeave = useCallback((event) => {
 		setCursor('auto');
 		if (onMouseLeave) onMouseLeave(event);
-	}, []);
+	}, [onMouseLeave]);
 
 	const handleOnMoveStart = useCallback((event) => {
 		setCursor('grab');
 		if (onMoveStart) onMoveStart(event);
-	}, []);
+	}, [onMoveStart]);
 
 	const handleOnMoveEnd = useCallback((event) => {
 		setCursor('auto');
 		if (onMoveEnd) onMoveEnd(event);
-	}, []);
+	}, [onMoveEnd]);
 
 	//
 	// D. Render components
 
 	return (
 		<div className={styles.container}>
-
-			<MapViewToolbar
-				autoZoom={autoZoom}
-				className={styles.toolbar}
-				onCenterMap={onCenterMap}
-				showCenterButton={showCenterButton}
-				toolbarExtras={toolbarExtras}
-			/>
 
 			<Map
 				attributionControl={false}

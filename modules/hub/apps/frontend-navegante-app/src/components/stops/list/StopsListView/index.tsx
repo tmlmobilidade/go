@@ -3,7 +3,6 @@
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { StopsListViewList } from '@/components/stops/list/StopsListViewList';
 import { StopsListViewMap } from '@/components/stops/list/StopsListViewMap';
-import { MapContextProvider, MapViewContextProvider } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -22,9 +21,7 @@ export function StopsListView() {
 		return <StopsListViewList />;
 	} else {
 		return (
-			<MapViewContextProvider>
-				<StopsListViewMap />
-			</MapViewContextProvider>
+			<StopsListViewMap />
 		);
 	}
 }

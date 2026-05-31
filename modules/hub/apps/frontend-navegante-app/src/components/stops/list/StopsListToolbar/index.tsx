@@ -29,7 +29,7 @@ export function StopsListToolbar() {
 	// C. Render components
 
 	return (
-		<Section>
+		<Section gap="md">
 			<SearchInput onChange={stopsListContext.filters.search.set} value={stopsListContext.filters.search.value} />
 			<SegmentedControl data={currentViewOptions} onChange={stopsListContext.view.toggle} value={stopsListContext.view.current} w="100%" fullWidth />
 		</Section>
