@@ -2,8 +2,8 @@
 
 import { LineBadge } from '@/components/lines/common/LineBadge';
 import { LineName } from '@/components/lines/common/LineName';
-import { type Line } from '@/types/api/network';
 import { Skeleton } from '@mantine/core';
+import { type HubLine } from '@tmlmobilidade/types';
 
 import styles from './styles.module.css';
 
@@ -11,7 +11,7 @@ import styles from './styles.module.css';
 
 interface Props {
 	color?: string
-	lineData?: Line
+	lineData?: HubLine
 	longName?: string
 	shortName?: string
 	size?: 'lg' | 'md'
