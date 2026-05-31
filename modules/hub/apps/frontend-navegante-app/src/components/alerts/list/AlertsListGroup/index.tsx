@@ -23,7 +23,7 @@ export function AlertsListGroup() {
 	//
 	// C. Render components
 
-	if (alertsListContext.flags.is_loading) {
+	if (alertsListContext.flags.isLoading) {
 		return (
 			<Section>
 				{/* <GroupedListSkeleton groupCount={3} itemCount={2} itemSkeleton={<AlertsListItemSkeleton />} /> */}

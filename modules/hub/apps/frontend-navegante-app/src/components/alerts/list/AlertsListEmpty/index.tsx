@@ -27,7 +27,7 @@ export default function Component() {
 			<h1 className={styles.title}>{t('default:alerts.AlertsListEmpty.title')}</h1>
 			<h2 className={styles.subtitle}>{t('default:alerts.AlertsListEmpty.subtitle')}</h2>
 			<div className={styles.actionWrapper}>
-				<Button icon={<IconCalendarEvent size={18} />} label={t('default:alerts.AlertsListEmpty.action_1')} onClick={() => alertsContext.actions.updateFilterByDate('current')} />
+				{/* <Button icon={<IconCalendarEvent size={18} />} label={t('default:alerts.AlertsListEmpty.action_1')} onClick={() => alertsContext.actions.updateFilterByDate('current')} /> */}
 				<Button href="/app" icon={<IconDeviceMobileDown size={18} />} label={t('default:alerts.AlertsListEmpty.action_2')} />
 			</div>
 		</div>
