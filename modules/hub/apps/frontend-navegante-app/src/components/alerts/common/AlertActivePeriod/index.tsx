@@ -1,6 +1,6 @@
 /* * */
 
-import { useTranslations } from 'next-intl';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -24,13 +24,13 @@ export function AlertActivePeriodEnd({ date, size = 'md' }: AlertActivePeriodEnd
 	//
 	// A. Setup variables
 
-	const t = useTranslations('alerts.AlertActivePeriod');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	if (date && !isNaN(date.getTime())) {
-		return <p className={`${styles.text} ${styles[size]}`}>{t.rich('end', { end: date, parsedDate: chunks => <strong>{chunks}</strong> })}</p>;
+		// return <p className={`${styles.text} ${styles[size]}`}>{t('end', { end: date, parsedDate: chunks => <strong>{chunks}</strong> })}</p>;
 	}
 
 	//
@@ -44,13 +44,13 @@ export function AlertActivePeriodStart({ date, size = 'md' }: AlertActivePeriodS
 	//
 	// A. Setup variables
 
-	const t = useTranslations('alerts.AlertActivePeriod');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
 	if (date && !isNaN(date.getTime())) {
-		return <p className={`${styles.text} ${styles[size]}`}>{t.rich('start', { parsedDate: chunks => <strong>{chunks}</strong>, start: date })}</p>;
+		// return <p className={`${styles.text} ${styles[size]}`}>{t.rich('start', { parsedDate: chunks => <strong>{chunks}</strong>, start: date })}</p>;
 	}
 
 	//

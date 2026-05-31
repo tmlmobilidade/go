@@ -3,7 +3,8 @@
 import { LineBadge } from '@/components/lines/common/LineBadge';
 import { useLinesContext } from '@/contexts/Lines.context';
 import { useStopsContext } from '@/contexts/Stops.context';
-import { type Line, type NetworkStop } from '@/types/api/network';
+import { type NetworkStop } from '@/types/api/network';
+import { type HubLine } from '@tmlmobilidade/types';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
@@ -30,7 +31,7 @@ export function AlertInformedEntity({ lineId, routeId, stopId }: Props) {
 	//
 	// B. Transform data
 
-	const lineData = useMemo<Line | undefined>(() => {
+	const lineData = useMemo<HubLine | undefined>(() => {
 		return linesContext.data.lines?.find(line => line.id === lineId || line.route_ids.some(itemId => itemId === routeId));
 	}, [linesContext.data.lines]);
 
