@@ -11,7 +11,7 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@amplitude/analytics-browser": "2.42.4",
+		"@amplitude/analytics-browser": "2.42.5",
 		"@mantine/carousel": "9.2.2",
 		"@mantine/charts": "9.2.2",
 		"@mantine/core": "9.2.2",
