@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type Alert } from '@tmlmobilidade/types';
+import { type HubAlert } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -10,12 +10,12 @@ import useSWR from 'swr';
 
 interface AlertsContextState {
 	actions: {
-		getAlertById: (alertId: string) => Alert | null
-		getAlertsByLineId: (lineId: string) => Alert[]
-		getAlertsByStopId: (stopId: string) => Alert[]
+		getAlertById: (alertId: string) => HubAlert | null
+		getAlertsByLineId: (lineId: string) => HubAlert[]
+		getAlertsByStopId: (stopId: string) => HubAlert[]
 	}
 	data: {
-		alerts: Alert[]
+		alerts: HubAlert[]
 		fc: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
 	}
 	flags: {
@@ -43,7 +43,7 @@ export function AlertsContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: allAlertsData, isLoading: allAlertsLoading } = useSWR<Alert[]>({ credentials: 'omit', url: API_ROUTES.hub.ALERTS_LIST });
+	const { data: allAlertsData, isLoading: allAlertsLoading } = useSWR<HubAlert[]>({ credentials: 'omit', url: API_ROUTES.hub.ALERTS_LIST });
 
 	//
 	// B. Transform data
@@ -61,11 +61,11 @@ export function AlertsContextProvider({ children }: PropsWithChildren) {
 	//
 	// C. Handle actions
 
-	const getAlertById = (alertId: string): Alert | null => {
+	const getAlertById = (alertId: string): HubAlert | null => {
 		return allAlertsData?.find(item => item._id === alertId) || null;
 	};
 
-	const getAlertsByLineId = (lineId: string): Alert[] => {
+	const getAlertsByLineId = (lineId: string): HubAlert[] => {
 		return allAlertsData?.filter((item) => {
 			if (item.reference_type === 'lines') return item.references.some(reference => reference.parent_id === lineId);
 			if (item.reference_type === 'stops') return item.references.some(reference => reference.child_ids.includes(lineId));
@@ -73,7 +73,7 @@ export function AlertsContextProvider({ children }: PropsWithChildren) {
 		}) || [];
 	};
 
-	const getAlertsByStopId = (lineId: string): Alert[] => {
+	const getAlertsByStopId = (lineId: string): HubAlert[] => {
 		return allAlertsData?.filter((item) => {
 			if (item.reference_type === 'stops') return item.references.some(reference => reference.parent_id === lineId);
 			if (item.reference_type === 'lines') return item.references.some(reference => reference.child_ids.includes(lineId));
@@ -113,7 +113,7 @@ export function AlertsContextProvider({ children }: PropsWithChildren) {
 
 /* * */
 
-export function transformAlertDataIntoGeoJsonFeature(alertData: Alert): GeoJSON.Feature<GeoJSON.Point, GeoJSON.GeoJsonProperties> {
+export function transformAlertDataIntoGeoJsonFeature(alertData: HubAlert): GeoJSON.Feature<GeoJSON.Point, GeoJSON.GeoJsonProperties> {
 	// Skip alerts without coordinates
 	if (!alertData.coordinates?.length) return null;
 	// Transform alert data into a GeoJSON feature

@@ -6,6 +6,7 @@ import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { AlertCauseSchema } from '@/alerts/cause.js';
 import { AlertEffectSchema } from '@/alerts/effect.js';
 import { AlertReferenceTypeSchema } from '@/alerts/reference-type.js';
+import { AlertReferenceSchema } from '@/alerts/reference.js';
 import { z } from 'zod';
 
 /* * */
@@ -27,10 +28,7 @@ export const AlertSchema = DocumentSchema.extend({
 	publish_start_date: UnixTimestampSchema.nullable().default(null),
 	publish_status: PublishStatusSchema.default('draft'),
 	reference_type: AlertReferenceTypeSchema,
-	references: z.array(z.object({
-		child_ids: z.array(z.string()),
-		parent_id: z.string(),
-	})).default([]),
+	references: z.array(AlertReferenceSchema).default([]),
 	title: z.string(),
 	user_instructions: z.string().default(''),
 });

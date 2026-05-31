@@ -1,6 +1,5 @@
 /* * */
 
-import { normalizePublishedJsonAlerts } from '@/endpoints/v1/alerts/normalize-published-json-alerts.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
@@ -36,14 +35,11 @@ export class AlertsController {
 				});
 		};
 
-		const parsed = JSON.parse(cachedData) as unknown;
-		const data = normalizePublishedJsonAlerts(parsed);
-
 		return reply
 			.header('cache-control', 'public, max-age=20')
 			.code(HTTP_STATUS.OK)
 			.send({
-				data,
+				data: JSON.parse(cachedData),
 				error: null,
 				status_code: HTTP_STATUS.OK,
 			});

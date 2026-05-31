@@ -1,31 +1,15 @@
 'use client';
 
 import { useLinesContext } from '@/contexts/Lines.context';
-import { createDocCollection } from '@/hooks/use-search';
-import { type Line } from '@/types/api/network';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { type HubLine } from '@tmlmobilidade/types';
+import { type ListContextStateTemplate, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
+import { createContext, type PropsWithChildren, useContext } from 'react';
 
 /* * */
 
-interface LinesListContextState {
-	actions: {
-		updateFilterByAttribute: (value: string) => void
-		updateFilterByFacility: (value: string) => void
-		updateFilterByMunicipalityOrLocality: (value: string) => void
-		updateFilterBySearch: (value: string) => void
-	}
+interface LinesListContextState extends ListContextStateTemplate {
 	data: {
-		filtered: Line[]
-		raw: Line[]
-	}
-	filters: {
-		by_attribute: null | string
-		by_facility: null | string
-		by_municipality_or_locality: null | string
-		by_search: string
-	}
-	flags: {
-		is_loading: boolean
+		filtered: HubLine[]
 	}
 }
 
@@ -43,7 +27,7 @@ export function useLinesListContext() {
 
 /* * */
 
-export const LinesListContextProvider = ({ children }) => {
+export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
@@ -51,119 +35,30 @@ export const LinesListContextProvider = ({ children }) => {
 
 	const linesContext = useLinesContext();
 
-	const [dataFilteredState, setDataFilteredState] = useState<Line[]>([]);
-
-	const [filterByAttributeState, setFilterByAttributeState] = useState <LinesListContextState['filters']['by_attribute']>(null);
-	const [filterByFacilityState, setFilterByFacilityState] = useState <LinesListContextState['filters']['by_facility']>(null);
-	const [filterByMunicipalityOrLocalityState, setFilterByMunicipalityOrLocalityState] = useState <LinesListContextState['filters']['by_municipality_or_locality']>(null);
-	const [filterBySearchState, setFilterBySearchState] = useState <LinesListContextState['filters']['by_search']>('');
+	const filterSearch = useFilterStateString('search');
 
 	//
 	// C. Transform data
 
-	const applyFiltersToData = (allData: Line[] = []) => {
-		//
-
-		let filterResult = allData;
-
-		//
-		// Filter by_attribute
-
-		if (filterByAttributeState) {
-			filterResult = filterResult.filter(() => {
-				return true;
-			});
-		}
-
-		//
-		// Filter by_facility
-
-		if (filterByFacilityState) {
-			filterResult = filterResult.filter(() => {
-				return true;
-			});
-		}
-
-		//
-		// Filter by by_municipality_or_locality
-
-		if (filterByMunicipalityOrLocalityState) {
-			filterResult = filterResult.filter(() => {
-				return true; // line.municipality_id === filtersState.by_municipality;
-			});
-		}
-
-		//
-		// Filter by by_search
-
-		if (filterBySearchState) {
-			const searchHook = createDocCollection(filterResult.map(line => ({ ...line })), {
-				id: 4,
-				// locality_ids: 1,
-				long_name: 2,
-				short_name: 4,
-				tts_name: 3,
-			});
-			filterResult = searchHook.search(filterBySearchState);
-		}
-
-		//
-		// Filter by by_agency / transports
-
-		//
-		// Return resulting items
-
-		return filterResult;
-
-		//
-	};
-
-	useEffect(() => {
-		const filteredData = applyFiltersToData(linesContext.data.lines);
-		setDataFilteredState(filteredData);
-	}, [linesContext.data.lines, filterByAttributeState, filterByFacilityState, filterByMunicipalityOrLocalityState, filterBySearchState]);
-
-	//
-	// D. Handle actions
-
-	const updateFilterByAttribute = (value: LinesListContextState['filters']['by_attribute']) => {
-		setFilterByAttributeState(value || null);
-	};
-
-	const updateFilterByFacility = (value: LinesListContextState['filters']['by_facility']) => {
-		setFilterByFacilityState(value || null);
-	};
-
-	const updateFilterByMunicipalityOrLocality = (value: LinesListContextState['filters']['by_municipality_or_locality']) => {
-		setFilterByMunicipalityOrLocalityState(value || null);
-	};
-
-	const updateFilterBySearch = (value: LinesListContextState['filters']['by_search']) => {
-		setFilterBySearchState(value);
-	};
+	const searchResultsData = useSearch<HubLine>({
+		accessors: ['long_name', 'short_name', 'tts_name'],
+		data: linesContext.data.lines,
+		query: filterSearch.value,
+	});
 
 	//
 	// E. Define context value
 
 	const contextValue: LinesListContextState = {
-		actions: {
-			updateFilterByAttribute,
-			updateFilterByFacility,
-			updateFilterByMunicipalityOrLocality,
-			updateFilterBySearch,
-		},
 		data: {
-			filtered: dataFilteredState,
-			raw: linesContext.data.lines || [],
+			filtered: searchResultsData,
 		},
 		filters: {
-			by_attribute: filterByAttributeState,
-			by_facility: filterByFacilityState,
-			by_municipality_or_locality: filterByMunicipalityOrLocalityState,
-			by_search: filterBySearchState,
+			search: filterSearch,
 		},
 		flags: {
-			is_loading: linesContext.flags.is_loading,
+			error: undefined,
+			isLoading: linesContext.flags.is_loading,
 		},
 	};
 
