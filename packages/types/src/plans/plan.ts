@@ -22,6 +22,7 @@ export const PlanSchema = DocumentSchema.extend({
 	is_locked: z.boolean().default(false),
 	operation_file_id: z.string(),
 	pcgi_legacy: PlanPcgiLegacySchema,
+	validation_id: z.string().default(''),
 });
 
 export const CreatePlanSchema = PlanSchema.omit({ _id: true, created_at: true, updated_at: true });
@@ -40,4 +41,5 @@ export interface HashablePlanMetadata {
 	gtfs_agency: Plan['gtfs_agency']
 	gtfs_feed_info: Plan['gtfs_feed_info']
 	operation_file_id: Plan['operation_file_id']
+	validation_id: Plan['validation_id']
 }
