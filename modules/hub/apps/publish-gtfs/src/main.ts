@@ -247,11 +247,11 @@ export async function main() {
 	//
 	// Export GTFS files from the merged dataset
 
-	await exportStopsFile(context);
 	await exportDatesFile(context);
 	await exportPeriodsFile(context);
 	await exportMunicipalitiesFile(context);
 	await exportRoutesFile(Object.values(routesMarkedForFinalExport), context);
+	await exportStopsFile(Array.from(referencedAgencyIds), context);
 	await exportAgencyFile(Array.from(referencedAgencyIds), context);
 	await exportFeedInfoFile(currentOperationalDate, farthestDateFound, context);
 

@@ -32,7 +32,7 @@ export interface ExportedStopsRow {
 
 /* * */
 
-export async function exportStopsFile(context: ExportGtfsContext) {
+export async function exportStopsFile(agencyIds: string[], context: ExportGtfsContext) {
 	//
 
 	const timer = new Timer();
@@ -40,7 +40,7 @@ export async function exportStopsFile(context: ExportGtfsContext) {
 	Logger.info('Exporting stops.txt file...');
 
 	const allStopsList = await stops.findMany(
-		{ 'flags.agency_ids': { $in: ['1', '2', '3', '4', '8', '15', '16', '21', '41', '42', '43', '44'] } },
+		{ 'flags.agency_ids': { $in: agencyIds } },
 		{ sort: { _id: 1 } },
 	);
 

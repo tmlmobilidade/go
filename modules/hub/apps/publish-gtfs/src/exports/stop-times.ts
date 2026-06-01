@@ -38,7 +38,7 @@ export async function exportStopTimesFile(planData: Plan, sqlTables: GtfsSQLTabl
 	// and build a map of legacy_ids to stop_id
 
 	const allStopsData = await stops.findMany(
-		{ 'flags.agency_ids': { $in: planData.gtfs_agency.agency_id } },
+		{ 'flags.agency_ids': { $in: [planData.gtfs_agency.agency_id] } },
 		{ sort: { _id: 1 }, projection: { _id: 1, legacy_ids: 1 } },
 	);
 
