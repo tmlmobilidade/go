@@ -50,7 +50,7 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 		{ _id: { $in: municipalityIds } },
 		{ projection: { _id: 1, properties: 1 } },
 	);
-	const municipalitiesMap = new Map(municipalitiesList.map(municipality => [municipality._id, municipality.name]));
+	const municipalitiesMap = new Map(municipalitiesList.map(municipality => [municipality._id, municipality.properties?.name]));
 
 	//
 	// Write the stops batch to the file
