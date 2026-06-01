@@ -10,6 +10,16 @@
 			"subtitle": "Fique a par de todas as alterações à rede. Mantenha-se informado sobre novas linhas, mudanças de percurso e ajustes de horários, assim como sobre eventos que possam afetar a sua viagem.",
 			"title": "Nenhum alerta encontrado"
 		},
+		"AlertsListGroup": {
+			"label": "{count, plural, one {Alerta ativo} other {Alertas ativos}}",
+			"titles": {
+				"future": "A partir de {value}",
+				"past": "Desde {value}",
+				"today": "A partir de hoje, {value}",
+				"tomorrow": "A partir de amanhã, {value}",
+				"yesterday": "Desde ontem, {value}"
+			}
+		},
 		"AlertsListToolbar": {
 			"by_date": {
 				"current": "Esta semana ({count})",
