@@ -1,9 +1,8 @@
 'use client';
 
+import { useMapContext } from '@/components/map/Map.context';
+import { mapDefaultConfig } from '@/components/map/Map.settings';
 import { MAP_LOAD_ASSETS } from '@/components/map/mapLoadAssets';
-import { MapViewToolbar } from '@/components/map/MapViewToolbar';
-import { useMapOptionsContext } from '@/contexts/MapOptions.context';
-import { mapDefaultConfig } from '@/settings/map.settings';
 import Map, { FullscreenControl, GeolocateControl, MapRef, NavigationControl, ScaleControl, useMap } from '@vis.gl/react-maplibre';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -43,7 +42,7 @@ interface MapViewProps {
 
 /* * */
 
-export function MapView({ autoZoom, children, fullscreen = true, geolocate = true, id, interactiveLayerIds = [], mapStyle, navigation = true, onCenterMap, onClick, onDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onMoveEnd, onMoveStart, onZoom, scale = false, scrollZoom = true, showCenterButton = false, toolbarExtras }: MapViewProps) {
+export function MapView({ children, fullscreen = true, geolocate = true, id, interactiveLayerIds = [], mapStyle, navigation = true, onClick, onDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onMoveEnd, onMoveStart, onZoom, scale = false, scrollZoom = true }: MapViewProps) {
 	//
 
 	//
@@ -51,7 +50,7 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 
 	const allMaps = useMap();
 
-	const mapOptionsContext = useMapOptionsContext();
+	const mapContext = useMapContext();
 
 	const [cursor, setCursor] = useState<string>('auto');
 
@@ -61,7 +60,7 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 	useEffect(() => {
 		if (!id || !allMaps?.[id]) return;
 		const mapObject = allMaps[id];
-		mapOptionsContext.actions.setMap(mapObject);
+		mapContext.actions.setMap(mapObject);
 		for (const mapLoadAsset of MAP_LOAD_ASSETS) {
 			mapObject.loadImage(mapLoadAsset.url).then((image) => {
 				if (!mapObject.hasImage(mapLoadAsset.name)) {
@@ -69,9 +68,9 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 				}
 			});
 		}
-	}, [allMaps, id]);
+	}, [allMaps, id, mapContext.actions]);
 
-	const mapStyleValue = mapStyle ?? mapOptionsContext.data.style;
+	const mapStyleValue = mapStyle ?? mapContext.data.style;
 
 	//
 	// C. Handle actions
@@ -79,36 +78,28 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 	const handleOnMouseEnter = useCallback((event) => {
 		setCursor('pointer');
 		if (onMouseEnter) onMouseEnter(event);
-	}, []);
+	}, [onMouseEnter]);
 
 	const handleOnMouseLeave = useCallback((event) => {
 		setCursor('auto');
 		if (onMouseLeave) onMouseLeave(event);
-	}, []);
+	}, [onMouseLeave]);
 
 	const handleOnMoveStart = useCallback((event) => {
 		setCursor('grab');
 		if (onMoveStart) onMoveStart(event);
-	}, []);
+	}, [onMoveStart]);
 
 	const handleOnMoveEnd = useCallback((event) => {
 		setCursor('auto');
 		if (onMoveEnd) onMoveEnd(event);
-	}, []);
+	}, [onMoveEnd]);
 
 	//
 	// D. Render components
 
 	return (
 		<div className={styles.container}>
-
-			<MapViewToolbar
-				autoZoom={autoZoom}
-				className={styles.toolbar}
-				onCenterMap={onCenterMap}
-				showCenterButton={showCenterButton}
-				toolbarExtras={toolbarExtras}
-			/>
 
 			<Map
 				attributionControl={false}

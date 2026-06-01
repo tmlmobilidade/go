@@ -1,6 +1,6 @@
 'use client';
 
-import { useAlertsContext } from '@/contexts/Alerts.context';
+import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { type AlertGroup } from '@/types/alerts/alert-group';
 import { Dates } from '@tmlmobilidade/dates';
 import { type HubAlert } from '@tmlmobilidade/types';
@@ -76,7 +76,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		},
 		flags: {
 			error: undefined,
-			isLoading: alertsContext.flags.is_loading,
+			isLoading: alertsContext.flags.isLoading,
 		},
 	};
 

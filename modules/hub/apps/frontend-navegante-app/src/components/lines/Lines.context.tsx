@@ -18,7 +18,8 @@ interface LinesContextState {
 		routes: NetworkRoute[]
 	}
 	flags: {
-		is_loading: boolean
+		error: Error | undefined
+		isLoading: boolean
 	}
 }
 
@@ -94,7 +95,8 @@ export function LinesContextProvider({ children }: PropsWithChildren) {
 			routes: normalizedRoutesData,
 		},
 		flags: {
-			is_loading: allLinesLoading || allRoutesLoading,
+			error: undefined,
+			isLoading: allLinesLoading || allRoutesLoading,
 		},
 	};
 
@@ -106,6 +108,4 @@ export function LinesContextProvider({ children }: PropsWithChildren) {
 			{children}
 		</LinesContext.Provider>
 	);
-
-	//
 };

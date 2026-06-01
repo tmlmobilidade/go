@@ -1,34 +1,21 @@
 'use client';
 
-import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/contexts/Stops.context';
-import { createDocCollection } from '@/hooks/use-search';
-import { type NetworkStop } from '@/types/api/network';
+import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/components/stops/Stops.context';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { type HubStop } from '@tmlmobilidade/types';
+import { type ListContextStateTemplate, type MapOverlayMultipleStopsDataProps, useFilterStateString, useLocalStorage, useSearch } from '@tmlmobilidade/ui';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
 
-interface StopsListContextState {
-	actions: {
-		updateFilterByAttribute: (value: string) => void
-		updateFilterByCurrentView: (value: string) => void
-		updateFilterByFacility: (value: string) => void
-		updateFilterByMunicipalityOrLocality: (value: string) => void
-		updateFilterBySearch: (value: string) => void
-	}
+interface StopsListContextState extends ListContextStateTemplate {
 	data: {
-		filtered: NetworkStop[]
-		filtered_fc: GeoJSON.FeatureCollection
+		fc: GeoJSON.FeatureCollection<GeoJSON.Point, MapOverlayMultipleStopsDataProps>
+		filtered: HubStop[]
 	}
-	filters: {
-		by_attribute: null | string
-		by_current_view: 'list' | 'map'
-		by_facility: null | string
-		by_municipality_or_locality: null | string
-		by_search: string
-	}
-	flags: {
-		is_loading: boolean
+	view: {
+		current: 'list' | 'map'
+		toggle: (view: 'list' | 'map') => void
 	}
 }
 
@@ -46,7 +33,7 @@ export function useStopsListContext() {
 
 /* * */
 
-export const StopsListContextProvider = ({ children }) => {
+export function StopsListContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
@@ -54,163 +41,67 @@ export const StopsListContextProvider = ({ children }) => {
 
 	const stopsContext = useStopsContext();
 
-	const [dataFilteredState, setDataFilteredState] = useState<NetworkStop[]>([]);
-	const [dataFilteredGeojsonFCState, setDataFilteredGeojsonFCState] = useState<GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties>>();
+	const filterSearch = useFilterStateString('search');
 
-	const [filterByAttributeState, setFilterByAttributeState] = useState <StopsListContextState['filters']['by_attribute']>(null);
-	const [filterByCurrentViewState, setFilterByCurrentViewState] = useState <StopsListContextState['filters']['by_current_view']>('map');
-	const [filterByFacilityState, setFilterByFacilityState] = useState <StopsListContextState['filters']['by_facility']>(null);
-	const [filterByMunicipalityOrLocalityState, setFilterByMunicipalityOrLocalityState] = useState <StopsListContextState['filters']['by_municipality_or_locality']>(null);
-	const [filterBySearchState, setFilterBySearchState] = useState <StopsListContextState['filters']['by_search']>('');
+	const [currentView, setCurrentView] = useLocalStorage<'list' | 'map'>({
+		defaultValue: 'list',
+		key: 'stops-current-view',
+	});
 
 	//
 	// B. Transform data
 
-	const searchHook = useMemo(() => {
-		// Prepare data for search function
-		const preparedSearchCollection = stopsContext.data.stops.map((item) => {
-			return {
-				...item,
-			};
-		});
-		return createDocCollection(preparedSearchCollection, {
-			id: 2,
-			// locality_name: 1.5,
-			long_name: 1,
-			short_name: 1,
-			tts_name: 1.5,
-		}, {
-			threshold: 1.7,
-		});
-	}, [stopsContext.data.stops]);
+	const searchResultsData = useSearch<HubStop>({
+		accessors: ['name', 'short_name', 'tts_name'],
+		data: stopsContext.data.stops,
+		query: filterSearch.value,
+	});
 
-	const applyFiltersToData = (allData: NetworkStop[] = []) => {
-		//
-
-		let filterResult = allData;
-
-		//
-		// Filter by by_search
-
-		if (filterBySearchState) {
-			filterResult = searchHook.search(filterBySearchState) || filterResult;
-		}
-
-		//
-		// Filter by_attribute
-
-		if (filterByAttributeState) {
-			filterResult = filterResult.filter(() => {
-				return true;
-			});
-		}
-
-		//
-		// Filter by_facility
-
-		if (filterByFacilityState) {
-			filterResult = filterResult.filter(() => {
-				return true;
-			});
-		}
-
-		//
-		// Filter by by_municipality_or_locality
-
-		if (filterByMunicipalityOrLocalityState) {
-			filterResult = filterResult.filter(() => {
-				return true; // line.municipality_id === filtersState.by_municipality;
-			});
-		}
-
-		//
-		// Filter by by_agency / transports
-
-		//
-		// Return resulting items
-
-		return filterResult;
-
-		//
-	};
-
-	useEffect(() => {
-		const filteredData = applyFiltersToData(stopsContext.data.stops);
-		setDataFilteredState(filteredData);
-	}, [stopsContext.data.stops, filterByAttributeState, filterByFacilityState, filterByMunicipalityOrLocalityState, filterBySearchState]);
-
-	useEffect(() => {
+	const dataFeatureCollection = useMemo(() => {
 		// Check if all data is available
-		if (!dataFilteredState) return;
+		if (!searchResultsData?.length) return getBaseGeoJsonFeatureCollection<GeoJSON.Point, MapOverlayMultipleStopsDataProps>();
 		// Initialize worker if not already initialized
-		const collection: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties> = getBaseGeoJsonFeatureCollection();
-		dataFilteredState.forEach((stop) => {
+		const collection: GeoJSON.FeatureCollection<GeoJSON.Point, MapOverlayMultipleStopsDataProps> = getBaseGeoJsonFeatureCollection<GeoJSON.Point, MapOverlayMultipleStopsDataProps>();
+		searchResultsData.forEach((stop) => {
 			const stopFC = transformStopDataIntoGeoJsonFeature(stop);
-			if (stopFC) collection.features.push(stopFC);
+			if (stopFC) collection.features.push({
+				...stopFC,
+				properties: {
+					id: String(stop._id),
+					name: stop.name,
+				},
+			});
 		});
-		// Set state value
-		setDataFilteredGeojsonFCState(collection);
-		//
-	}, [dataFilteredState]);
+		return collection;
+	}, [searchResultsData]);
 
 	//
-	// C. Handle actions
-
-	const updateFilterByAttribute = (value: StopsListContextState['filters']['by_attribute']) => {
-		setFilterByAttributeState(value || null);
-	};
-
-	const updateFilterByCurrentView = (value: StopsListContextState['filters']['by_current_view']) => {
-		setFilterByCurrentViewState(value);
-	};
-
-	const updateFilterByFacility = (value: StopsListContextState['filters']['by_facility']) => {
-		setFilterByFacilityState(value || null);
-	};
-
-	const updateFilterByMunicipalityOrLocality = (value: StopsListContextState['filters']['by_municipality_or_locality']) => {
-		setFilterByMunicipalityOrLocalityState(value || null);
-	};
-
-	const updateFilterBySearch = (value: StopsListContextState['filters']['by_search']) => {
-		setFilterBySearchState(value);
-	};
-
-	//
-	// D. Define context value
+	// C. Define context value
 
 	const contextValue: StopsListContextState = {
-		actions: {
-			updateFilterByAttribute,
-			updateFilterByCurrentView,
-			updateFilterByFacility,
-			updateFilterByMunicipalityOrLocality,
-			updateFilterBySearch,
-		},
 		data: {
-			filtered: dataFilteredState,
-			filtered_fc: dataFilteredGeojsonFCState || getBaseGeoJsonFeatureCollection(),
+			fc: dataFeatureCollection,
+			filtered: searchResultsData,
 		},
 		filters: {
-			by_attribute: filterByAttributeState,
-			by_current_view: filterByCurrentViewState,
-			by_facility: filterByFacilityState,
-			by_municipality_or_locality: filterByMunicipalityOrLocalityState,
-			by_search: filterBySearchState,
+			search: filterSearch,
 		},
 		flags: {
-			is_loading: stopsContext.flags.is_loading,
+			error: undefined,
+			isLoading: stopsContext.flags.isLoading,
+		},
+		view: {
+			current: currentView,
+			toggle: setCurrentView,
 		},
 	};
 
 	//
-	// E. Render components
+	// D. Render components
 
 	return (
 		<StopsListContext.Provider value={contextValue}>
 			{children}
 		</StopsListContext.Provider>
 	);
-
-	//
 };

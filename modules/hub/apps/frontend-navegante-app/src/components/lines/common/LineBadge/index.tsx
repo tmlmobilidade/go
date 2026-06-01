@@ -1,6 +1,6 @@
 'use client';
 
-import { useLinesContext } from '@/contexts/Lines.context';
+import { useLinesContext } from '@/components/lines/Lines.context';
 import { IconInfoTriangleFilled } from '@tabler/icons-react';
 import { type HubLine } from '@tmlmobilidade/types';
 import classNames from 'classnames/bind';

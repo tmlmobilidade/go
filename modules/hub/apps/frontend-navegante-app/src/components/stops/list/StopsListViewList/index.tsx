@@ -10,7 +10,7 @@ import { ViewportList } from 'react-viewport-list';
 
 /* * */
 
-export function StopsListViewAll() {
+export function StopsListViewList() {
 	//
 
 	//
@@ -26,7 +26,7 @@ export function StopsListViewAll() {
 	if (!stopsListContext.data.filtered.length) {
 		return (
 			<Section>
-				<NoDataLabel text={t('default:stops.StopsListViewAll.no_data')} withMinHeight />
+				<NoDataLabel text={t('default:stops.StopsListViewList.no_data')} withMinHeight />
 			</Section>
 		);
 	}
@@ -35,13 +35,11 @@ export function StopsListViewAll() {
 		<Section padding="none">
 			<ViewportList itemMargin={0} items={stopsListContext.data.filtered}>
 				{item => (
-					<RegularListItem key={item.id} href={`/stops/${item.id}`}>
+					<RegularListItem key={item._id} href={`/stops/${item._id}`}>
 						<StopDisplay stopData={item} />
 					</RegularListItem>
 				)}
 			</ViewportList>
 		</Section>
 	);
-
-	//
 }
