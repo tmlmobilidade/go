@@ -1,8 +1,7 @@
 {
 	"alerts": {
 		"AlertActivePeriod": {
-			"end": "Fim: <parsedDate>{end, date, dayShort} {end, date, monthLong} {end, date, yearLong}</parsedDate>",
-			"start": "Início: <parsedDate>{start, date, dayShort} {start, date, monthLong} {start, date, yearLong}</parsedDate>"
+			"start": "Início: {value, date, dayShort} {value, date, monthLong} {value, date, yearLong}"
 		},
 		"AlertsListEmpty": {
 			"action_1": "Ver alertas do passado",
