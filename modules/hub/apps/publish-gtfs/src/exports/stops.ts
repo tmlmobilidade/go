@@ -9,9 +9,9 @@ import { Timer } from '@tmlmobilidade/timer';
 /* * */
 
 export interface ExportedStopsRow {
-	stop_id: string
-	stop_id_new: number
-	stop_code: string
+	stop_id: number
+	legacy_ids: string[]
+	stop_code: number
 	stop_name: string
 	tts_stop_name: string
 	stop_lat: number
@@ -40,20 +40,12 @@ export async function exportStopsFile(context: ExportGtfsContext) {
 	Logger.info('Exporting stops.txt file...');
 
 	const allStopsList = await stops.findMany(
-		{ district_id: { $in: ['07', '11', '15'] } }, // Évora, Lisboa and Setúbal districts
+		{ 'flags.agency_ids': { $in: ['1', '2', '3', '4', '8', '15', '16', '21', '41', '42', '43', '44'] } },
 		{ sort: { _id: 1 } },
 	);
 
 	for (const stopData of allStopsList) {
 		//
-
-		const matchingFlagData = stopData.flags?.find((flag) => {
-			const matches41 = flag.agency_ids.includes('41');
-			const matches42 = flag.agency_ids.includes('42');
-			const matches43 = flag.agency_ids.includes('43');
-			const matches44 = flag.agency_ids.includes('44');
-			return matches41 || matches42 || matches43 || matches44;
-		});
 
 		const matchingDistrictData = await locations.findDistrictById(stopData.district_id);
 		const matchingMunicipalityData = await locations.findMunicipalityById(stopData.municipality_id);
@@ -61,9 +53,9 @@ export async function exportStopsFile(context: ExportGtfsContext) {
 		const matchingLocalityData = await locations.findLocalityById(stopData.locality_id);
 
 		const parsedStopsRow: ExportedStopsRow = {
-			stop_id: matchingFlagData?.stop_id ?? String(stopData._id),
-			stop_id_new: stopData._id,
-			stop_code: matchingFlagData?.stop_id ?? String(stopData._id),
+			stop_id: stopData._id,
+			stop_code: stopData._id,
+			legacy_ids: stopData.legacy_ids,
 			stop_name: stopData.name,
 			tts_stop_name: stopData.tts_name ?? '',
 			municipality_id: stopData.municipality_id ?? '',
