@@ -24,12 +24,11 @@ export function FloatingHelpButton() {
 		<>
 			<Affix className={styles.affix} zIndex={200}>
 				<ActionIcon
-					className={styles.button}
-					color="var(--color-primary)"
+					classNames={{ root: styles.button }}
 					onClick={() => setIsOpen(true)}
-					variant="primary"
+					variant="muted"
 				>
-					<IconHelpCircle size={24} />
+					<IconHelpCircle color="var(--color-system-text-100)" size={24} />
 				</ActionIcon>
 			</Affix>
 			<FloatingHelpButtonModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
