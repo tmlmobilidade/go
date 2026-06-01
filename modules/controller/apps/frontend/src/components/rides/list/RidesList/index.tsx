@@ -39,7 +39,7 @@ export function RidesList() {
 	const formatDuration = (startTimestamp: null | UnixTimestamp, endTimestamp: null | UnixTimestamp) => {
 		if (!startTimestamp || !endTimestamp) return null;
 
-		return `${Math.round((endTimestamp - startTimestamp) / 60000)} min`;
+		return Math.round((endTimestamp - startTimestamp) / 60) + ' min';
 	};
 
 	const formatDurationDeviation = (item: RideNormalized) => {
