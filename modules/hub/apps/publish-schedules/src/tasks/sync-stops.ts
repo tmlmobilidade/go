@@ -1,15 +1,14 @@
 /* * */
 
-import { type Stop as GtfsStopsExtended } from '@carrismetropolitana/api-types/gtfs-extended';
-import { type Stop, StopOperationalStatus } from '@carrismetropolitana/api-types/network';
 import { apiCache } from '@tmlmobilidade/databases';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { type HubStop, HubStopSchema } from '@tmlmobilidade/types';
 
 /* * */
 
-interface QueryResult extends GtfsStopsExtended {
+interface QueryResult extends HubStop {
 	line_ids: string
 	pattern_ids: string
 	route_ids: string
@@ -54,7 +53,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	//
 	// For each item, update its entry in the database
 
-	const allStopsData: Stop[] = [];
+	const allStopsData: HubStop[] = [];
 	let updatedStopsCounter = 0;
 
 	for (const stop of allStops as QueryResult[]) {
@@ -63,71 +62,30 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 		//
 		// Discover which facilities this stop is near to
 
-		const facilities = [];
+		// const facilities = [];
 
-		if (stop.near_health_clinic) facilities.push('health_clinic');
-		if (stop.near_hospital) facilities.push('hospital');
-		if (stop.near_university) facilities.push('university');
-		if (stop.near_school) facilities.push('school');
-		if (stop.near_police_station) facilities.push('police_station');
-		if (stop.near_fire_station) facilities.push('fire_station');
-		if (stop.near_shopping) facilities.push('shopping');
-		if (stop.near_historic_building) facilities.push('historic_building');
-		if (stop.near_transit_office) facilities.push('transit_office');
-		if (stop.subway) facilities.push('subway');
-		if (stop.light_rail) facilities.push('light_rail');
-		if (stop.train) facilities.push('train');
-		if (stop.boat) facilities.push('boat');
-		if (stop.airport) facilities.push('airport');
-		if (stop.bike_sharing) facilities.push('bike_sharing');
-		if (stop.bike_parking) facilities.push('bike_parking');
-		if (stop.car_parking) facilities.push('car_parking');
-
-		//
-		// Convert stop operational status
-
-		let parsedStopOperationalStatus: StopOperationalStatus | undefined;
-
-		switch (stop.operational_status) {
-			case 'ACTIVE':
-				parsedStopOperationalStatus = StopOperationalStatus.active;
-				break;
-			case 'SEASONAL':
-				parsedStopOperationalStatus = StopOperationalStatus.seasonal;
-				break;
-			case 'VOIDED':
-				parsedStopOperationalStatus = StopOperationalStatus.voided;
-				break;
-			default:
-				parsedStopOperationalStatus = undefined;
-				break;
-		}
+		// if (stop.near_health_clinic) facilities.push('health_clinic');
+		// if (stop.near_hospital) facilities.push('hospital');
+		// if (stop.near_university) facilities.push('university');
+		// if (stop.near_school) facilities.push('school');
+		// if (stop.near_police_station) facilities.push('police_station');
+		// if (stop.near_fire_station) facilities.push('fire_station');
+		// if (stop.near_shopping) facilities.push('shopping');
+		// if (stop.near_historic_building) facilities.push('historic_building');
+		// if (stop.near_transit_office) facilities.push('transit_office');
+		// if (stop.subway) facilities.push('subway');
+		// if (stop.light_rail) facilities.push('light_rail');
+		// if (stop.train) facilities.push('train');
+		// if (stop.boat) facilities.push('boat');
+		// if (stop.airport) facilities.push('airport');
+		// if (stop.bike_sharing) facilities.push('bike_sharing');
+		// if (stop.bike_parking) facilities.push('bike_parking');
+		// if (stop.car_parking) facilities.push('car_parking');
 
 		//
 		// Build the final stop object
 
-		const parsedStop: Stop = {
-			district_id: stop.district_id,
-			district_name: stop.district_name,
-			facilities: facilities || [],
-			id: stop.stop_id,
-			lat: Number(stop.stop_lat),
-			line_ids: JSON.parse(stop.line_ids || '[]'),
-			locality_id: stop.locality_id,
-			locality_name: stop.locality_name,
-			lon: Number(stop.stop_lon),
-			long_name: stop.stop_name,
-			municipality_id: stop.municipality_id,
-			municipality_name: stop.municipality_name,
-			operational_status: parsedStopOperationalStatus,
-			parish_id: stop.parish_id,
-			parish_name: stop.parish_name,
-			pattern_ids: JSON.parse(stop.pattern_ids || '[]'),
-			route_ids: JSON.parse(stop.route_ids || '[]'),
-			short_name: stop.stop_short_name,
-			tts_name: stop.tts_stop_name,
-			wheelchair_boarding: stop.wheelchair_boarding === 1,
-		};
+		const parsedStop = HubStopSchema.parse(stop);
 
 		allStopsData.push(parsedStop);
 
