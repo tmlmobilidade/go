@@ -1,9 +1,9 @@
 'use client';
 
+import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { AlertActivePeriodEnd, AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
 import { AlertEffectIcon } from '@/components/alerts/common/AlertCauseEffectIcon';
 import AlertsListItemImageThumbnail from '@/components/alerts/list/AlertsListItemImageThumbnail';
-import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { Accordion } from '@mantine/core';
 import { IconArrowUpRight } from '@tabler/icons-react';
 import { useMemo } from 'react';
@@ -13,13 +13,13 @@ import styles from './styles.module.css';
 
 /* * */
 
-interface Props {
+interface AlertListItemProps {
 	alertId: string
 }
 
 /* * */
 
-export function AlertListItem({ alertId }: Props) {
+export function AlertListItem({ alertId }: AlertListItemProps) {
 	//
 
 	//
