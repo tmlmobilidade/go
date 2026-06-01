@@ -1,9 +1,10 @@
 'use client';
 
 import { useLinesContext } from '@/components/lines/Lines.context';
+import { useTransitModes } from '@/hooks/use-transit-modes';
 import { type HubLine } from '@tmlmobilidade/types';
 import { type ListContextStateTemplate, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useContext } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
 
@@ -35,6 +36,8 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const linesContext = useLinesContext();
 
+	const { activeAgencyIds } = useTransitModes();
+
 	const filterSearch = useFilterStateString('search');
 
 	//
@@ -46,12 +49,18 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 		query: filterSearch.value,
 	});
 
+	const filteredData = useMemo(() => {
+		return searchResultsData?.filter((line) => {
+			return activeAgencyIds.includes(line.agency_id);
+		});
+	}, [searchResultsData, activeAgencyIds]);
+
 	//
 	// C. Define context value
 
 	const contextValue: LinesListContextState = {
 		data: {
-			filtered: searchResultsData,
+			filtered: filteredData,
 		},
 		filters: {
 			search: filterSearch,

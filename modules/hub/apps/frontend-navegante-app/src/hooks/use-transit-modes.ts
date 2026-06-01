@@ -2,8 +2,21 @@
 
 import { useLocalStorage } from '@mantine/hooks';
 import { type TransitMode, TransitModeValues } from '@tmlmobilidade/types';
+import { useMemo } from 'react';
+
+/* * */
+
+const AGENCY_IDS_MAP: Record<TransitMode, string[]> = {
+	bus: ['1', '8', '21', '41', '42', '43', '44'],
+	ferry: ['4'],
+	subway: ['2', '16'],
+	train: ['3', '15'],
+};
+
+/* * */
 
 interface UseTransitModesReturnType {
+	activeAgencyIds: string[]
 	activeTransitModes: TransitMode[]
 	availableTransitModes: TransitMode[]
 	toggleTransitMode: (mode: TransitMode) => void
@@ -25,6 +38,13 @@ export function useTransitModes(): UseTransitModesReturnType {
 	});
 
 	//
+	// B. Transform data
+
+	const activeAgencyIds = useMemo(() => {
+		return Array.from(new Set(activeTransitModes.flatMap(mode => AGENCY_IDS_MAP[mode])));
+	}, [activeTransitModes]);
+
+	//
 	// B. Handle actions
 
 	const toggleTransitMode = (mode: TransitMode) => {
@@ -42,6 +62,7 @@ export function useTransitModes(): UseTransitModesReturnType {
 	// D. Return data
 
 	return {
+		activeAgencyIds: activeAgencyIds,
 		activeTransitModes: activeTransitModes,
 		availableTransitModes: [...TransitModeValues],
 		toggleTransitMode,
