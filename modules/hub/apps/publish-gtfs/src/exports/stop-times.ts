@@ -53,7 +53,10 @@ export async function exportStopTimesFile(planData: Plan, sqlTables: GtfsSQLTabl
 	for await (const stopTimeItem of sqlTables.stop_times.stream('ORDER BY trip_id, stop_sequence ASC')) {
 		const stopTimeData: GTFS_StopTime = stopTimeItem;
 		const matchingStopId = allStopsMap.get(stopTimeData.stop_id);
-		if (!matchingStopId) continue;
+		if (!matchingStopId) {
+			Logger.error(`Stop time ${stopTimeData.stop_id} not found in stops map.`);
+			continue;
+		}
 		const parsedStopTimesRow: ExportedStopTimesRow = {
 			trip_id: getPublicTripId(planData._id, planData.gtfs_agency.agency_id, stopTimeData.trip_id),
 			arrival_time: stopTimeData.arrival_time,

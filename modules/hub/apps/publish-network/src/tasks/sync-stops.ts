@@ -61,42 +61,47 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	let updatedStopsCounter = 0;
 
 	for (const stop of allStops as QueryResult[]) {
+		try {
 		//
 
+			//
+			// Build the final stop object
+
+			const validatedStop: HubStop = {
+				_id: Number(stop.stop_id),
+				agency_ids: JSON.parse(stop.agency_ids),
+				district_id: stop.district_id,
+				district_name: stop.district_name,
+				flags: [],
+				latitude: stop.stop_lat,
+				legacy_ids: [],
+				lifecycle_status: 'active',
+				line_ids: JSON.parse(stop.line_ids),
+				locality_id: stop.locality_id,
+				locality_name: stop.locality_name,
+				longitude: stop.stop_lon,
+				municipality_id: stop.municipality_id,
+				municipality_name: stop.municipality_name,
+				name: stop.stop_name,
+				parish_id: stop.parish_id,
+				parish_name: stop.parish_name,
+				pattern_ids: JSON.parse(stop.pattern_ids),
+				route_ids: JSON.parse(stop.route_ids),
+				short_name: stop.stop_short_name ?? stop.stop_name,
+				tts_name: stop.tts_stop_name,
+			};
+
+			const parsedStop = HubStopSchema.parse(validatedStop);
+
+			exportedStopsData.push(parsedStop);
+
+			updatedStopsCounter++;
+
 		//
-		// Build the final stop object
-
-		const validatedStop: HubStop = {
-			_id: Number(stop.stop_id),
-			agency_ids: JSON.parse(stop.agency_ids),
-			district_id: stop.district_id,
-			district_name: stop.district_name,
-			flags: [],
-			latitude: stop.stop_lat,
-			legacy_ids: [],
-			lifecycle_status: 'active',
-			line_ids: JSON.parse(stop.line_ids),
-			locality_id: stop.locality_id,
-			locality_name: stop.locality_name,
-			longitude: stop.stop_lon,
-			municipality_id: stop.municipality_id,
-			municipality_name: stop.municipality_name,
-			name: stop.stop_name,
-			parish_id: stop.parish_id,
-			parish_name: stop.parish_name,
-			pattern_ids: JSON.parse(stop.pattern_ids),
-			route_ids: JSON.parse(stop.route_ids),
-			short_name: stop.stop_short_name ?? stop.stop_name,
-			tts_name: stop.tts_stop_name,
-		};
-
-		const parsedStop = HubStopSchema.parse(validatedStop);
-
-		exportedStopsData.push(parsedStop);
-
-		updatedStopsCounter++;
-
-		//
+		} catch (error) {
+			Logger.error(`Error processing stop ${stop.stop_id}:`, error);
+			continue;
+		}
 	}
 
 	//
