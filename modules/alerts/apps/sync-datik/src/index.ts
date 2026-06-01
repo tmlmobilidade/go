@@ -30,7 +30,7 @@ async function main() {
 		initSentry().catch(() => {
 			Logger.error(new Error('Error initializing Sentry:'), { message: 'Error initializing Sentry:', service: 'alerts-sync-datik' });
 		});
-		Logger.showAll({ message: 'Alerts sync Datik initialized', module: 'alerts', severity: 'info', tag: 'sync-datik' });
+		Logger.showAll({ app: 'sync-datik', message: 'Alerts sync Datik initialized', module: 'alerts', severity: 'info' });
 		LOGGER_STARTED = true;
 	}
 

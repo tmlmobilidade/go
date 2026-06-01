@@ -22,7 +22,7 @@ const main = async () => {
 		initSentry().catch(() => {
 			Logger.error(new Error('Error initializing Sentry:'), { message: 'Error initializing Sentry:', service: 'alerts-organizer' });
 		});
-		Logger.showAll({ message: 'Alerts organizer initialized', module: 'alerts', severity: 'info', tag: 'organizer' });
+		Logger.showAll({ app: 'organizer', message: 'Alerts organizer initialized', module: 'alerts', severity: 'info' });
 		LOGGER_STARTED = true;
 	}
 

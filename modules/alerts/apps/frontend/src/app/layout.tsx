@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 /* * */
 
 export default async function RootLayout({ children }: PropsWithChildren) {
-	ensureLoggerStartup();
+	await ensureLoggerStartup();
 
 	return (
 		<BaseProvider i18n={{ pt: i18nResourceKeysPt }} version={pjson.version}>
