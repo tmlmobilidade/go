@@ -32,9 +32,7 @@ export function AlertsListViewMap() {
 
 	return (
 		<MapView id="alerts-list">
-			<MapViewStyleAlerts
-				data={alertsContext.data.fc}
-			/>
+			<MapViewStyleAlerts data={alertsContext.data.fc} />
 		</MapView>
 	);
 }

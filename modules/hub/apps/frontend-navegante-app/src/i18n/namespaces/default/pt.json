@@ -1,5 +1,9 @@
 {
 	"alerts": {
+		"AlertActivePeriod": {
+			"end": "Fim: <parsedDate>{end, date, dayShort} {end, date, monthLong} {end, date, yearLong}</parsedDate>",
+			"start": "Início: <parsedDate>{start, date, dayShort} {start, date, monthLong} {start, date, yearLong}</parsedDate>"
+		},
 		"AlertsListEmpty": {
 			"action_1": "Ver alertas do passado",
 			"action_2": "Ver alertas do futuro",
@@ -13,6 +17,10 @@
 				"map": "Mapa"
 			},
 			"filters": {
+				"by_current_view": {
+					"list": "Lista",
+					"map": "Mapa"
+				},
 				"by_line": {
 					"label": "Filtrar por linha",
 					"placeholder": "Filtrar por linha"

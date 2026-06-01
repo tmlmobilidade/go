@@ -20,10 +20,9 @@ export function AlertsListToolbar() {
 	//
 	// B. Transform data
 
-	const byCurrentStatusOptions = [
-		{ label: t('default:alerts.AlertsListToolbar.by_date.current'), value: 'current' },
-		{ label: t('default:alerts.AlertsListToolbar.by_date.future'), value: 'future' },
-		{ label: t('default:alerts.AlertsListToolbar.by_date.map'), value: 'map' },
+	const currentViewOptions = [
+		{ label: t('default:alerts.AlertsListToolbar.filters.by_current_view.map'), value: 'map' },
+		{ label: t('default:alerts.AlertsListToolbar.filters.by_current_view.list'), value: 'list' },
 	];
 
 	//
@@ -32,6 +31,7 @@ export function AlertsListToolbar() {
 	return (
 		<Section>
 			<SearchInput onChange={alertsListContext.filters.search.set} value={alertsListContext.filters.search.value} />
+			<SegmentedControl data={currentViewOptions} onChange={alertsListContext.view.toggle} value={alertsListContext.view.current} w="100%" fullWidth />
 		</Section>
 	);
 }
