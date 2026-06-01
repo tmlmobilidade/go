@@ -11,8 +11,8 @@ import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Ext
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@tmlmobilidade/writers';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
-import extract from 'extract-zip';
-import fs from 'fs';
+import fs from 'node:fs';
+import unzipper from 'unzipper';
 
 /* * */
 
@@ -192,22 +192,29 @@ export async function parsePlan(planData: Plan) {
 	// Get the associated Operation GTFS archive URL,
 	// and try to download, save and unzip it.
 
+	Logger.info(`Fetching operation file from "${planData.operation_file_id}".`);
+
 	const operationFileData = await files.findById(planData.operation_file_id);
+
 	if (!operationFileData?.url) {
 		Logger.error(`No operation file found for plan "${planData._id}".`);
 		process.exit(1);
 	}
 
+	Logger.info(`Downloading operation file from "${operationFileData.url}".`);
+
 	try {
 		const downloadResponse = await fetch(operationFileData.url);
 		const downloadArrayBuffer = await downloadResponse.arrayBuffer();
 		fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
+		Logger.success(`Downloaded operation file to "${downloadFilePath}".`);
 	} catch (error) {
 		Logger.error('Error downloading the file.', error);
 		process.exit(1);
 	}
 
 	try {
+		Logger.info(`Unzipping operation file from "${downloadFilePath}" to "${extractDirPath}".`);
 		await unzipFile(downloadFilePath, extractDirPath);
 		Logger.success(`Unzipped GTFS file from "${downloadFilePath}" to "${extractDirPath}".`, 1);
 	} catch (error) {
@@ -1069,10 +1076,13 @@ async function parseCsvFile(filePath: string, rowParser: (rowData: any) => Promi
 
 /* * */
 
-const unzipFile = async (zipFilePath, outputDir) => {
-	await extract(zipFilePath, { dir: outputDir });
+export async function unzipFile(zipFilePath: string, outputDir: string) {
+	await fs
+		.createReadStream(zipFilePath)
+		.pipe(unzipper.Extract({ path: outputDir }))
+		.promise();
 	setDirectoryPermissions(outputDir);
-};
+}
 
 /* * */
 
