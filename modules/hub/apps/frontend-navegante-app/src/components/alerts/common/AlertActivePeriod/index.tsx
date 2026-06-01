@@ -31,7 +31,7 @@ export function AlertActivePeriodEnd({ date, size = 'md' }: AlertActivePeriodEnd
 	// B. Render components
 
 	if (date && !isNaN(date)) {
-		return <p className={`${styles.text} ${styles[size]}`}>{t('default:alerts.AlertActivePeriod.end', '', { value: date })}</p>;
+		return <p className={`${styles.text} ${styles[size]}`}>{t('default:alerts.AlertActivePeriod.start', '', { value: date })}</p>;
 	}
 
 	//

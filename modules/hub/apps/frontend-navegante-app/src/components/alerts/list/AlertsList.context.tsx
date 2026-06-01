@@ -6,18 +6,25 @@ import { type AlertGroup } from '@/types/alerts/alert-group';
 import { Dates } from '@tmlmobilidade/dates';
 import { type HubAlert } from '@tmlmobilidade/types';
 import { type ListContextStateTemplate, useFilterStateString, useLocalStorage, useSearch } from '@tmlmobilidade/ui';
+import { DateTime } from 'luxon';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
 
 interface AlertsListContextState extends ListContextStateTemplate {
+	counters: {
+		by_date: {
+			current: number
+			future: number
+		}
+	}
 	data: {
 		filtered: HubAlert[]
 		grouped: AlertGroup[]
 	}
 	view: {
-		current: 'list' | 'map'
-		toggle: (view: 'list' | 'map') => void
+		current: 'current' | 'future' | 'map'
+		toggle: (view: 'current' | 'future' | 'map') => void
 	}
 }
 
@@ -47,13 +54,19 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 
 	const filterSearch = useFilterStateString('search');
 
-	const [currentView, setCurrentView] = useLocalStorage<'list' | 'map'>({
-		defaultValue: 'list',
+	const [currentView, setCurrentView] = useLocalStorage<'current' | 'future' | 'map'>({
+		defaultValue: 'current',
 		key: 'alerts-current-view',
 	});
 
 	//
 	// B. Transform data
+	const currentWeekAlerts = alertsContext.data.alerts?.filter((item) => {
+		const oneWeekFromNowInUnixSeconds = DateTime.now().plus({ week: 1 }).endOf('day').toUnixInteger();
+		const alertStartDateInSeconds = Dates.fromUnixTimestamp(item.active_period_start_date).unix_timestamp;
+		// If the alert start date is before one week from now, then the alert is considered 'current'.
+		return alertStartDateInSeconds <= oneWeekFromNowInUnixSeconds;
+	}).length;
 
 	const searchResultsData = useSearch<HubAlert>({
 		accessors: ['title', 'description'],
@@ -85,6 +98,12 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	// C. Define context value
 
 	const contextValue: AlertsListContextState = {
+		counters: {
+			by_date: {
+				current: currentWeekAlerts,
+				future: alertsContext.data.alerts?.length - currentWeekAlerts,
+			},
+		},
 		data: {
 			filtered: filteredData,
 			grouped: groupedAlerts,

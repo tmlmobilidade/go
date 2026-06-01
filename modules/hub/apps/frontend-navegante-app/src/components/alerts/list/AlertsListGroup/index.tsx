@@ -16,7 +16,7 @@ export function AlertsListGroup() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
+	const { i18n, t } = useTranslation();
 
 	const alertsListContext = useAlertsListContext();
 
@@ -40,7 +40,7 @@ export function AlertsListGroup() {
 			const tomorrow = today.plus({ days: 1 });
 			const yesterday = today.minus({ days: 1 });
 			const alertStartDateCompare = alertStartDate.startOf('day');
-			const formattedDate = alertStartDate.toFormat('d LLLL yyyy', { locale: 'pt-PT' });
+			const formattedDate = alertStartDate.toFormat('d LLLL yyyy', { locale: i18n.language });
 
 			let formattedGroupLabel = '';
 			if (alertStartDateCompare.unix_timestamp === today.unix_timestamp) {
@@ -65,7 +65,7 @@ export function AlertsListGroup() {
 		}, []);
 
 		return groupedAlerts.sort((a, b) => b.value.localeCompare(a.value));
-	}, [alertsListContext.data.filtered, t]);
+	}, [alertsListContext.data.filtered, i18n.language, t]);
 	//
 	// C. Render components
 

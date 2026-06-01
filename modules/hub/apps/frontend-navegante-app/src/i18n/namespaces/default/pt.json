@@ -1,7 +1,7 @@
 {
 	"alerts": {
 		"AlertActivePeriod": {
-			"start": "Início: {value, date, dayShort} {value, date, monthLong} {value, date, yearLong}"
+			"start": "Início: {value, date, dayShort}"
 		},
 		"AlertsListEmpty": {
 			"action_1": "Ver alertas do passado",
@@ -21,7 +21,7 @@
 		},
 		"AlertsListToolbar": {
 			"by_date": {
-				"current": "Esta semana ({count})",
+				"current": "Agora ({count})",
 				"future": "Futuros ({count})",
 				"map": "Mapa"
 			},

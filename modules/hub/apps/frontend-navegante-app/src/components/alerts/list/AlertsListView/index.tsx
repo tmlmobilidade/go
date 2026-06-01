@@ -17,7 +17,7 @@ export function AlertsListView() {
 	//
 	// B. Render components
 
-	if (alertsListContext.view.current === 'list') {
+	if (alertsListContext.view.current === 'current') {
 		return <AlertsListViewList />;
 	} else {
 		return (
