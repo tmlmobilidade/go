@@ -19,10 +19,11 @@ export function StopDetailNameEditorModal() {
 
 	return (
 		<Modal
-			closeOnClickOutside={false}
-			closeOnEscape={false}
+			closeOnClickOutside={true}
+			closeOnEscape={true}
 			onClose={actions.closeNameEditor}
-			opened={flags.isNameEditorOpen}
+			// opened={flags.isNameEditorOpen}
+			opened={true}
 			padding={0}
 			size="xl"
 			withCloseButton={false}

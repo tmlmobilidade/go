@@ -87,18 +87,27 @@ export function StopDetailsSectionGeneral() {
 
 			<Section>
 				<Grid columns="a" gap="md">
-
-					<ProposedChangesWrapper
+					{/* <ProposedChangesWrapper
 						inputName="name"
 						label="Nome Único da Paragem"
 						relatedId={String(stopDetailContext.data.stop?._id)}
 						scope="stop"
-					>
-						<TextInput
+					> */}
+					{/* <TextInput
+							onClick={canEditStopName ? stopDetailContext.actions.openNameEditor : undefined}
 							readOnly={stopDetailContext.flags.isReadOnly}
+							rightSection={canEditStopName ? <IconEdit size={16} /> : undefined}
 							{...stopDetailContext.data.form.getInputProps('name')}
-						/>
-					</ProposedChangesWrapper>
+						/> */}
+					{/* </ProposedChangesWrapper> */}
+
+					<ValueDisplay
+						icon={canEditStopName ? <IconEdit size={16} /> : undefined}
+						label="Nome Único da Paragem"
+						onClick={canEditStopName ? stopDetailContext.actions.openNameEditor : undefined}
+						value={stopDetailContext.data.form.getValues()?.name ?? 'N/A'}
+						variant="bordered"
+					/>
 
 				</Grid>
 			</Section>
@@ -106,18 +115,17 @@ export function StopDetailsSectionGeneral() {
 			<Section>
 				<Grid columns="ab" gap="md">
 					<ValueDisplay
+						icon={canEditStopName ? <IconEdit size={16} /> : undefined}
 						label="Nome Curto"
 						value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'}
 						variant="bordered"
 					/>
 					<ValueDisplay
-						className={canEditStopName ? styles['coords-label'] : undefined}
 						icon={canEditStopName ? <IconEdit size={16} /> : undefined}
 						label="Nome TTS"
 						onClick={canEditStopName ? stopDetailContext.actions.openNameEditor : undefined}
 						value={stopDetailContext.data.form.values.tts_name ?? 'N/A'}
 						variant="bordered"
-						{...stopDetailContext.data.form.getInputProps('tts_name')}
 					/>
 				</Grid>
 			</Section>

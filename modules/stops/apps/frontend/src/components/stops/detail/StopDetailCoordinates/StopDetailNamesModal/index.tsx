@@ -3,7 +3,7 @@
 /* * */
 
 import { useStopDetailContext } from '@/contexts/StopDetailCoordinates.modal';
-import { Label, Pane, Section, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Grid, Label, Pane, Section, Spacer, TextInput, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -13,32 +13,34 @@ export function StopDetailNamesModalBody() {
 	//
 	// A. Setup variables
 
-	useStopDetailContext();
+	const stopDetailContext = useStopDetailContext();
 
 	//
 	// B. Render components
 
 	return (
-		<>
-			<Section>
-				{/* <Grid columns="ab" gap="md">
-					<ValueDisplay
-						label="Nome Curto"
-						value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'}
-						variant="bordered"
-					/>
-					<ValueDisplay
-						className={canEditStopName ? styles['coords-label'] : undefined}
-						icon={canEditStopName ? <IconEdit size={16} /> : undefined}
-						label="Nome TTS"
-						onClick={canEditStopName ? stopDetailContext.actions.openNameEditor : undefined}
-						value={stopDetailContext.data.form.values.tts_name ?? 'N/A'}
-						variant="bordered"
-						{...stopDetailContext.data.form.getInputProps('tts_name')}
-					/>
-				</Grid> */}
-			</Section>
-		</>
+		<Section>
+			<Grid columns="a" gap="md">
+				<TextInput
+					label="Nome Único da Paragem"
+					value={stopDetailContext.data.form.getValues()?.name ?? 'N/A'}
+					variant="bordered"
+				/>
+			</Grid>
+			<Grid columns="ab" gap="md">
+				<TextInput
+					label="Nome Curto"
+					value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'}
+					variant="bordered"
+				/>
+
+				<TextInput
+					label="Nome TTS"
+					value={stopDetailContext.data.form.getValues()?.tts_name ?? 'N/A'}
+					variant="bordered"
+				/>
+			</Grid>
+		</Section>
 	);
 
 	//
@@ -51,7 +53,7 @@ export function StopDetailNameModal() {
 		<Pane
 			header={[
 				<Toolbar key="stop-detail-names-toolbar">
-					<Label size="lg" singleLine>Editar Nomes</Label>
+					<Label size="lg" singleLine>Editar Nomes da Paragem</Label>
 					<Spacer />
 				</Toolbar>,
 			]}
