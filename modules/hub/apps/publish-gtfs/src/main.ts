@@ -19,8 +19,6 @@ import { exportAgencyFile } from '@/exports/agency.js';
 import { exportCalendarDatesFile } from '@/exports/calendar-dates.js';
 import { exportDatesFile } from '@/exports/dates.js';
 import { exportFeedInfoFile } from '@/exports/feed-info.js';
-import { exportMunicipalitiesFile } from '@/exports/municipalities.js';
-import { exportPeriodsFile } from '@/exports/periods.js';
 import { exportPlansFile } from '@/exports/plans.js';
 import { exportRoutesFile } from '@/exports/routes.js';
 import { exportShapesFile } from '@/exports/shapes.js';
@@ -70,7 +68,7 @@ export async function main() {
 	// Retrieve all Plans from the database
 	// and iterate on each one.
 
-	const allPlansData = await plans.findMany({ _id: '0MKJ2' }, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
+	const allPlansData = await plans.findMany({ _id: 'KMFBF' }, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
 
 	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
@@ -238,7 +236,7 @@ export async function main() {
 
 			//
 		} catch (error) {
-			await plans.updateById(planData._id,	{ apps: { ...planData.apps, hub_gtfs: { last_hash: null, status: 'error', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
+			await plans.updateById(planData._id, { apps: { ...planData.apps, hub_gtfs: { last_hash: null, status: 'error', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
 			Logger.error(`Error processing plan ${planData._id}`, error);
 			Logger.divider();
 		}
@@ -248,8 +246,6 @@ export async function main() {
 	// Export GTFS files from the merged dataset
 
 	await exportDatesFile(context);
-	await exportPeriodsFile(context);
-	await exportMunicipalitiesFile(context);
 	await exportRoutesFile(Object.values(routesMarkedForFinalExport), context);
 	await exportStopsFile(Array.from(referencedAgencyIds), context);
 	await exportAgencyFile(Array.from(referencedAgencyIds), context);
