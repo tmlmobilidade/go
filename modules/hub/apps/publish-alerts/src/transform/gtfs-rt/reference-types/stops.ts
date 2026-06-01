@@ -7,7 +7,7 @@ import { getPublicRouteId } from '@tmlmobilidade/utils';
 
 /* * */
 
-export async function transformReferenceTypeStops(alertData: Alert): Promise<GtfsRtEntitySelector[] | undefined> {
+export async function transformReferenceTypeStopsIntoGtfsRt(alertData: Alert): Promise<GtfsRtEntitySelector[] | undefined> {
 	//
 
 	//

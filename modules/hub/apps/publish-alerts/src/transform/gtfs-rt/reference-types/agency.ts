@@ -5,7 +5,7 @@ import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
 
 /* * */
 
-export async function transformReferenceTypeAgency(alertData: Alert): Promise<GtfsRtEntitySelector[] | undefined> {
+export async function transformReferenceTypeAgencyIntoGtfsRt(alertData: Alert): Promise<GtfsRtEntitySelector[] | undefined> {
 	//
 
 	//
