@@ -1,0 +1,19 @@
+/* * */
+/* AFFIX */
+
+.affix {
+	right: 20px;
+	bottom: 20px;
+}
+
+/* * */
+/* BUTTON */
+
+.button {
+	width: 56px;
+	min-width: 56px;
+	height: 56px;
+	min-height: 56px;
+	border-radius: 999px;
+	box-shadow: 0 4px 12px rgb(0 0 0 / 25%);
+}

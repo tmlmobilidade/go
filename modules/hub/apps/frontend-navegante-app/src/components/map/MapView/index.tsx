@@ -4,6 +4,7 @@ import { useMapContext } from '@/components/map/Map.context';
 import { mapDefaultConfig } from '@/components/map/Map.settings';
 import { MAP_LOAD_ASSETS } from '@/components/map/mapLoadAssets';
 import Map, { FullscreenControl, GeolocateControl, MapRef, NavigationControl, ScaleControl, useMap } from '@vis.gl/react-maplibre';
+import { type MapLibreEvent } from 'maplibre-gl';
 import { useCallback, useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -59,16 +60,30 @@ export function MapView({ children, fullscreen = true, geolocate = true, id, int
 
 	useEffect(() => {
 		if (!id || !allMaps?.[id]) return;
-		const mapObject = allMaps[id];
-		mapContext.actions.setMap(mapObject);
-		for (const mapLoadAsset of MAP_LOAD_ASSETS) {
-			mapObject.loadImage(mapLoadAsset.url).then((image) => {
-				if (!mapObject.hasImage(mapLoadAsset.name)) {
-					mapObject.addImage(mapLoadAsset.name, image.data, { sdf: mapLoadAsset.sdf });
-				}
-			});
-		}
+		mapContext.actions.setMap(allMaps[id]);
 	}, [allMaps, id, mapContext.actions]);
+
+	const loadMapAsset = useCallback((map: MapLibreEvent['target'], mapLoadAsset: typeof MAP_LOAD_ASSETS[number]) => {
+		if (map.hasImage(mapLoadAsset.name)) return;
+		map.loadImage(mapLoadAsset.url).then((image) => {
+			if (!map.hasImage(mapLoadAsset.name)) {
+				map.addImage(mapLoadAsset.name, image.data, { sdf: mapLoadAsset.sdf });
+			}
+		}).catch(() => {});
+	}, []);
+
+	const handleMapLoad = useCallback((event: MapLibreEvent) => {
+		const map = event.target;
+
+		for (const mapLoadAsset of MAP_LOAD_ASSETS) {
+			loadMapAsset(map, mapLoadAsset);
+		}
+
+		map.on('styleimagemissing', (missingEvent: { id: string }) => {
+			const mapLoadAsset = MAP_LOAD_ASSETS.find(item => item.name === missingEvent.id);
+			if (mapLoadAsset) loadMapAsset(map, mapLoadAsset);
+		});
+	}, [loadMapAsset]);
 
 	const mapStyleValue = mapStyle ?? mapContext.data.style;
 
@@ -113,6 +128,7 @@ export function MapView({ children, fullscreen = true, geolocate = true, id, int
 				minZoom={mapDefaultConfig.minZoom}
 				onClick={onClick}
 				onDrag={onDrag}
+				onLoad={handleMapLoad}
 				onMouseEnter={handleOnMouseEnter}
 				onMouseLeave={handleOnMouseLeave}
 				onMouseOut={onMouseOut}
