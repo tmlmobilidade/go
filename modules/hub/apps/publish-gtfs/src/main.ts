@@ -69,7 +69,17 @@ export async function main() {
 	// and iterate on each one.
 
 	const allPlansData = await plans.findMany(
-		{ 'gtfs_agency.agency_id': { $in: ['1', '2', '3', '4', '15', '41', '42', '43', '44'] } },
+		{ 'gtfs_agency.agency_id': { $in: [
+			'1',
+			'2',
+			// '3',
+			'4',
+			'15',
+			'41',
+			'42',
+			'43',
+			'44',
+		] } },
 		{ sort: { 'gtfs_feed_info.feed_start_date': 1 } },
 	);
 
