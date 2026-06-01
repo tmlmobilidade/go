@@ -1,9 +1,10 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { rides } from '@tmlmobilidade/interfaces';
+import { rides, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector, UnixTimestamp } from '@tmlmobilidade/types';
+import { getPublicRouteId } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -80,7 +81,7 @@ export async function transformReferenceTypeLines(alertData: Alert): Promise<Gtf
 
 			const parsedEntitySelector: GtfsRtEntitySelector = {
 				agency_id: alertData.agency_id,
-				route_id: routeId,
+				route_id: getPublicRouteId(alertData.agency_id, routeId),
 			};
 
 			if (!reference.child_ids?.length) {
@@ -94,9 +95,17 @@ export async function transformReferenceTypeLines(alertData: Alert): Promise<Gtf
 			// add an EntitySelector object for each stop ID.
 
 			for (const childId of reference.child_ids) {
+				const foundStopData = await stops.findOne({
+					'flags.agency_ids': { $in: [alertData.agency_id] },
+					'flags.stop_id': childId,
+				});
+				if (!foundStopData) {
+					Logger.error(`[Alert ID: ${alertData._id}] Stop ID ${childId} not found for agency ID ${alertData.agency_id}.`);
+					continue;
+				}
 				result.push({
 					...parsedEntitySelector,
-					stop_id: childId,
+					stop_id: String(foundStopData._id),
 				});
 			}
 
