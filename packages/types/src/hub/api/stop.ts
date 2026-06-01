@@ -9,6 +9,7 @@ import { z } from 'zod';
 
 export const HubStopSchema = z.object({
 	_id: StopIdSchema,
+	agency_ids: z.array(z.string()),
 	district_id: z.string(),
 	district_name: z.string(),
 	flags: z.array(StopFlagSchema),

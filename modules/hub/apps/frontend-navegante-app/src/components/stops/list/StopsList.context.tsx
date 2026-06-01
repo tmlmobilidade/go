@@ -1,6 +1,7 @@
 'use client';
 
 import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/components/stops/Stops.context';
+import { useTransitModes } from '@/hooks/use-transit-modes';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubStop } from '@tmlmobilidade/types';
 import { type ListContextStateTemplate, type MapOverlayMultipleStopsDataProps, useFilterStateString, useLocalStorage, useSearch } from '@tmlmobilidade/ui';
@@ -41,6 +42,8 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 
 	const stopsContext = useStopsContext();
 
+	const { activeAgencyIds } = useTransitModes();
+
 	const filterSearch = useFilterStateString('search');
 
 	const [currentView, setCurrentView] = useLocalStorage<'list' | 'map'>({
@@ -57,12 +60,18 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 		query: filterSearch.value,
 	});
 
+	const filteredData = useMemo(() => {
+		return searchResultsData?.filter((stop) => {
+			return activeAgencyIds.some(agencyId => stop.agency_ids?.includes(agencyId));
+		});
+	}, [searchResultsData, activeAgencyIds]);
+
 	const dataFeatureCollection = useMemo(() => {
 		// Check if all data is available
-		if (!searchResultsData?.length) return getBaseGeoJsonFeatureCollection<GeoJSON.Point, MapOverlayMultipleStopsDataProps>();
+		if (!filteredData?.length) return getBaseGeoJsonFeatureCollection<GeoJSON.Point, MapOverlayMultipleStopsDataProps>();
 		// Initialize worker if not already initialized
 		const collection: GeoJSON.FeatureCollection<GeoJSON.Point, MapOverlayMultipleStopsDataProps> = getBaseGeoJsonFeatureCollection<GeoJSON.Point, MapOverlayMultipleStopsDataProps>();
-		searchResultsData.forEach((stop) => {
+		filteredData.forEach((stop) => {
 			const stopFC = transformStopDataIntoGeoJsonFeature(stop);
 			if (stopFC) collection.features.push({
 				...stopFC,
@@ -73,7 +82,7 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 			});
 		});
 		return collection;
-	}, [searchResultsData]);
+	}, [filteredData]);
 
 	//
 	// C. Define context value
@@ -81,7 +90,7 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 	const contextValue: StopsListContextState = {
 		data: {
 			fc: dataFeatureCollection,
-			filtered: searchResultsData,
+			filtered: filteredData,
 		},
 		filters: {
 			search: filterSearch,

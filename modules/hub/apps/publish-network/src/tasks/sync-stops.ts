@@ -9,6 +9,7 @@ import { type GTFS_Stop_Extended, type HubStop, HubStopSchema } from '@tmlmobili
 /* * */
 
 interface QueryResult extends GTFS_Stop_Extended {
+	agency_ids: string
 	line_ids: string
 	pattern_ids: string
 	route_ids: string
@@ -29,14 +30,16 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	const allStops = importedGtfsSql.stops.query(`
 		SELECT
 			s.*,
-			r.route_ids,
+			r.agency_ids,
 			r.line_ids,
+			r.route_ids,
 			r.pattern_ids
 		FROM
 			stops s
 		LEFT JOIN (
 			SELECT
 				stop_id,
+				json_group_array(DISTINCT r.agency_id) AS agency_ids,
 				json_group_array(DISTINCT r.route_short_name) AS line_ids,
 				json_group_array(DISTINCT r.route_id) AS route_ids,
 				json_group_array(DISTINCT t.pattern_id) AS pattern_ids
@@ -65,6 +68,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 
 		const validatedStop: HubStop = {
 			_id: Number(stop.stop_id),
+			agency_ids: JSON.parse(stop.agency_ids),
 			district_id: stop.district_id,
 			district_name: stop.district_name,
 			flags: [],
