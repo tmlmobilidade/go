@@ -18,7 +18,7 @@ export function FloatingHelpButton() {
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<>

@@ -94,6 +94,12 @@
 		}
 	},
 	"viewport": {
+		"FloatingHelpButton": {
+			"modal": {
+				"no_data": "Nenhuma pergunta frequente disponível de momento.",
+				"title": "Perguntas frequentes"
+			}
+		},
 		"Navbar": {
 			"tabs": {
 				"alerts": "Alertas",
