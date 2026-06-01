@@ -4,20 +4,12 @@ import { apiCache } from '@tmlmobilidade/databases';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GtfsStop, type HubStop, HubStopSchema } from '@tmlmobilidade/types';
+import { type GTFS_Stop_Extended, type HubStop, HubStopSchema } from '@tmlmobilidade/types';
 
 /* * */
 
-interface QueryResult extends GtfsStop {
-	district_id: string
-	district_name: string
+interface QueryResult extends GTFS_Stop_Extended {
 	line_ids: string
-	locality_id: string
-	locality_name: string
-	municipality_id: string
-	municipality_name: string
-	parish_id: string
-	parish_name: string
 	pattern_ids: string
 	route_ids: string
 }
@@ -31,7 +23,8 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	const globalTimer = new Timer();
 
 	//
-	// Fetch all Stops from NETWORKDB
+	// Aggregate stops with their associated routes, lines and patterns
+	// from the imported GTFS database
 
 	const allStops = importedGtfsSql.stops.query(`
 		SELECT
@@ -61,34 +54,11 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	//
 	// For each item, update its entry in the database
 
-	const allStopsData: HubStop[] = [];
+	const exportedStopsData: HubStop[] = [];
 	let updatedStopsCounter = 0;
 
 	for (const stop of allStops as QueryResult[]) {
 		//
-
-		//
-		// Discover which facilities this stop is near to
-
-		// const facilities = [];
-
-		// if (stop.near_health_clinic) facilities.push('health_clinic');
-		// if (stop.near_hospital) facilities.push('hospital');
-		// if (stop.near_university) facilities.push('university');
-		// if (stop.near_school) facilities.push('school');
-		// if (stop.near_police_station) facilities.push('police_station');
-		// if (stop.near_fire_station) facilities.push('fire_station');
-		// if (stop.near_shopping) facilities.push('shopping');
-		// if (stop.near_historic_building) facilities.push('historic_building');
-		// if (stop.near_transit_office) facilities.push('transit_office');
-		// if (stop.subway) facilities.push('subway');
-		// if (stop.light_rail) facilities.push('light_rail');
-		// if (stop.train) facilities.push('train');
-		// if (stop.boat) facilities.push('boat');
-		// if (stop.airport) facilities.push('airport');
-		// if (stop.bike_sharing) facilities.push('bike_sharing');
-		// if (stop.bike_parking) facilities.push('bike_parking');
-		// if (stop.car_parking) facilities.push('car_parking');
 
 		//
 		// Build the final stop object
@@ -101,7 +71,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 			latitude: stop.stop_lat,
 			legacy_ids: [],
 			lifecycle_status: 'active',
-			line_ids: stop.line_ids.split(','),
+			line_ids: JSON.parse(stop.line_ids),
 			locality_id: stop.locality_id,
 			locality_name: stop.locality_name,
 			longitude: stop.stop_lon,
@@ -110,15 +80,15 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 			name: stop.stop_name,
 			parish_id: stop.parish_id,
 			parish_name: stop.parish_name,
-			pattern_ids: stop.pattern_ids.split(','),
-			route_ids: stop.route_ids.split(','),
-			short_name: stop.stop_name,
+			pattern_ids: JSON.parse(stop.pattern_ids),
+			route_ids: JSON.parse(stop.route_ids),
+			short_name: stop.stop_short_name ?? stop.stop_name,
 			tts_name: stop.tts_stop_name,
 		};
 
 		const parsedStop = HubStopSchema.parse(validatedStop);
 
-		allStopsData.push(parsedStop);
+		exportedStopsData.push(parsedStop);
 
 		updatedStopsCounter++;
 
@@ -128,7 +98,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	//
 	// Save to the database
 
-	await apiCache.set('hub:network:stops', JSON.stringify(allStopsData));
+	await apiCache.set('hub:network:stops', JSON.stringify(exportedStopsData));
 
 	Logger.success(`Done updating ${updatedStopsCounter} Stops (${globalTimer.get()})`);
 
