@@ -47,10 +47,10 @@ export function RidesList() {
 
 		const plannedDuration = item.end_time_scheduled - item.start_time_scheduled;
 		const observedDuration = item.end_time_observed - item.start_time_observed;
-		const deviationInMinutes = Math.round((observedDuration - plannedDuration) / 60000);
+		const deviationInMinutes = Math.round((observedDuration - plannedDuration) / 60);
 
-		if (deviationInMinutes === 0) return '0 min';
-		return `${deviationInMinutes > 0 ? '+' : ''}${deviationInMinutes} min`;
+		if (deviationInMinutes === 0) return ' 0 min';
+		return (deviationInMinutes > 0 ? '+' : '') + deviationInMinutes + ' min';
 	};
 
 	const columns: DataTableColumn<RideNormalized>[] = [
