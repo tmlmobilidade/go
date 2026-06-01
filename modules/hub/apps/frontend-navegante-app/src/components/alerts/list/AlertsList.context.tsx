@@ -1,6 +1,7 @@
 'use client';
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
+import { useTransitModes } from '@/hooks/use-transit-modes';
 import { type AlertGroup } from '@/types/alerts/alert-group';
 import { Dates } from '@tmlmobilidade/dates';
 import { type HubAlert } from '@tmlmobilidade/types';
@@ -42,6 +43,8 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 
 	const alertsContext = useAlertsContext();
 
+	const { activeAgencyIds } = useTransitModes();
+
 	const filterSearch = useFilterStateString('search');
 
 	const [currentView, setCurrentView] = useLocalStorage<'list' | 'map'>({
@@ -58,8 +61,14 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		query: filterSearch.value,
 	});
 
+	const filteredData = useMemo(() => {
+		return searchResultsData?.filter((alert) => {
+			return activeAgencyIds.includes(alert.agency_id);
+		});
+	}, [searchResultsData, activeAgencyIds]);
+
 	const groupedAlerts = useMemo(() => {
-		return alertsContext.data.alerts.reduce((acc: AlertGroup[], alert: HubAlert): AlertGroup[] => {
+		return filteredData.reduce((acc: AlertGroup[], alert: HubAlert): AlertGroup[] => {
 			if (!alert.active_period_start_date) return acc;
 			const date = Dates.fromUnixTimestamp(alert.active_period_start_date).toFormat('yyyyMMdd');
 			const existingGroup = acc.find(group => group.value === date);
@@ -70,14 +79,14 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			}
 			return acc;
 		}, []);
-	}, [alertsContext.data.alerts]);
+	}, [filteredData]);
 
 	//
 	// C. Define context value
 
 	const contextValue: AlertsListContextState = {
 		data: {
-			filtered: searchResultsData,
+			filtered: filteredData,
 			grouped: groupedAlerts,
 		},
 		filters: {
