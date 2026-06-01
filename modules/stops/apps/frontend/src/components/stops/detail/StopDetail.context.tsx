@@ -1,6 +1,7 @@
 'use client';
 
 import { StopDetailContext, type StopDetailContextState, StopDetailCoordinatesEditorModal, useStopDetailContext } from '@/contexts/StopDetailCoordinates.modal';
+import { StopDetailNameEditorModal } from '@/contexts/StopDetailName.modal';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-stops-pckg-organize';
 import { PermissionCatalog, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
@@ -22,9 +23,14 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	// A. Setup variables
 
 	const meContext = useMeContext();
+
 	const [isCoordinatesEditorOpen, setCoordinatesEditorOpen] = useState(false);
 	const openCoordinatesEditor = useCallback(() => setCoordinatesEditorOpen(true), []);
 	const closeCoordinatesEditor = useCallback(() => setCoordinatesEditorOpen(false), []);
+
+	const [isNameEditorOpen, setNameEditorOpen] = useState(false);
+	const openNameEditor = useCallback(() => setNameEditorOpen(true), []);
+	const closeNameEditor = useCallback(() => setNameEditorOpen(false), []);
 
 	//
 	// B. Fetch data
@@ -135,9 +141,11 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	const contextValue: StopDetailContextState = useMemo(() => ({
 		actions: {
 			closeCoordinatesEditor,
+			closeNameEditor,
 			delete: handleDelete,
 			lock: handleLock,
 			openCoordinatesEditor,
+			openNameEditor,
 			save: handleSave,
 		},
 		data: {
@@ -153,12 +161,15 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			isDeleting,
 			isLoading: stopLoading,
 			isLocking,
+			isNameEditorOpen,
 			isReadOnly,
 			isSaving,
 		},
 	}), [
 		closeCoordinatesEditor,
+		closeNameEditor,
 		openCoordinatesEditor,
+		openNameEditor,
 		isCoordinatesEditorOpen,
 		canDelete,
 		canLock,
@@ -185,6 +196,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		<StopDetailContext.Provider value={contextValue}>
 			{children}
 			<StopDetailCoordinatesEditorModal />
+			<StopDetailNameEditorModal />
 		</StopDetailContext.Provider>
 	);
 

@@ -10,7 +10,9 @@ import { createContext, useContext } from 'react';
 export interface StopDetailContextState extends DetailContextStateTemplate {
 	actions: DetailContextStateTemplate['actions'] & {
 		closeCoordinatesEditor: () => void
+		closeNameEditor: () => void
 		openCoordinatesEditor: () => void
+		openNameEditor: () => void
 	}
 	data: {
 		form: UseFormReturnType<UpdateStopDto>
@@ -18,6 +20,7 @@ export interface StopDetailContextState extends DetailContextStateTemplate {
 	}
 	flags: DetailContextStateTemplate['flags'] & {
 		isCoordinatesEditorOpen: boolean
+		isNameEditorOpen: boolean
 	}
 }
 

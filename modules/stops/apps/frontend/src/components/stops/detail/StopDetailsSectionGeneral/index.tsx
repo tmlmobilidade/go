@@ -111,9 +111,13 @@ export function StopDetailsSectionGeneral() {
 						variant="bordered"
 					/>
 					<ValueDisplay
+						className={canEditStopName ? styles['coords-label'] : undefined}
+						icon={canEditStopName ? <IconEdit size={16} /> : undefined}
 						label="Nome TTS"
-						value={stopDetailContext.data.form.getValues()?.tts_name ?? 'N/A'}
+						onClick={canEditStopName ? stopDetailContext.actions.openNameEditor : undefined}
+						value={stopDetailContext.data.form.values.tts_name ?? 'N/A'}
 						variant="bordered"
+						{...stopDetailContext.data.form.getInputProps('tts_name')}
 					/>
 				</Grid>
 			</Section>
