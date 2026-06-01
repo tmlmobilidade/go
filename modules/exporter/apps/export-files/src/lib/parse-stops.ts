@@ -26,8 +26,8 @@ export const STOP_EXPORT_ORDERED_FIELDS = [
 	'latitude',
 	'locality_id',
 	'longitude',
-	'municipality_id',
 	'municipality_name',
+	'municipality_id',
 	'parish_id',
 
 	// INFRASTRUCTURE
