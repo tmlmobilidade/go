@@ -29,7 +29,7 @@ export function AlertsListToolbar() {
 	// C. Render components
 
 	return (
-		<Section>
+		<Section gap="md">
 			<SearchInput onChange={alertsListContext.filters.search.set} value={alertsListContext.filters.search.value} />
 			<SegmentedControl data={currentViewOptions} onChange={alertsListContext.view.toggle} value={alertsListContext.view.current} w="100%" fullWidth />
 		</Section>

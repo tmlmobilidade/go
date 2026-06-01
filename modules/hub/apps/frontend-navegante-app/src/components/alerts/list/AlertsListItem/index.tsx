@@ -39,8 +39,8 @@ export function AlertListItem({ alertId }: AlertListItemProps) {
 			</Accordion.Control>
 			<Accordion.Panel classNames={{ content: styles.contentWrapper }}>
 				<div className={styles.infoBar}>
-					{/* {resolvedAlert?.active_period_start_date && <AlertActivePeriodStart date={resolvedAlert.active_period_start_date} size="sm" />} */}
-					{/* {resolvedAlert?.active_period_end_date && <AlertActivePeriodEnd date={resolvedAlert.active_period_end_date} size="sm" />} */}
+					{resolvedAlert?.active_period_start_date && <AlertActivePeriodStart date={resolvedAlert.active_period_start_date} size="sm" />}
+					{resolvedAlert?.active_period_end_date && <AlertActivePeriodEnd date={resolvedAlert.active_period_end_date} size="sm" />}
 				</div>
 				<p className={styles.description}>{resolvedAlert?.description}</p>
 				{resolvedAlert?.image_url && (
