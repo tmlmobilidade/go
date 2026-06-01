@@ -97,7 +97,7 @@ export async function main() {
 	// Mark as plans as 'waiting' in the database.
 
 	for (const planData of allPlansData) {
-		await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'waiting', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
+		await plans.updateById(planData._id, { apps: { ...planData.apps, hub_gtfs: { last_hash: null, status: 'waiting', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
 	}
 
 	//
