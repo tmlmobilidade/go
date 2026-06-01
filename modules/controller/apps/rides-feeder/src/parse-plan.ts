@@ -714,7 +714,7 @@ export async function parsePlan(planData: Plan) {
 
 			const hashableHashedPattern: Omit<HashedPattern, '_id' | 'created_at' | 'updated_at'> = {
 				agency_id: routeData.agency_id,
-				line_id: routeData.line_id,
+				line_id: Number(routeData.line_id),
 				line_long_name: routeData.line_long_name,
 				line_short_name: routeData.line_short_name,
 				path: sortedHashedPatternPath,
@@ -792,7 +792,7 @@ export async function parsePlan(planData: Plan) {
 
 			const hashableHashedTrip: Omit<HashedTrip, '_id' | 'created_at' | 'updated_at'> = {
 				agency_id: routeData.agency_id,
-				line_id: routeData.line_id,
+				line_id: Number(routeData.line_id),
 				line_long_name: routeData.line_long_name,
 				line_short_name: routeData.line_short_name,
 				path: sortedHashedTripPath,
@@ -949,7 +949,7 @@ export async function parsePlan(planData: Plan) {
 					hashed_shape_id: finalHashedShape._id,
 					hashed_trip_id: finalHashedTrip._id,
 					headsign: currentTrip.trip_headsign,
-					line_id: routeData.line_id,
+					line_id: Number(routeData.line_id),
 					operational_date: calendarDate,
 					passengers_estimated: null,
 					passengers_observed: null,
