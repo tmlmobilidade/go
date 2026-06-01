@@ -18,13 +18,11 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<BaseProvider version={pjson.version}>
-			<AppProvider>
+			<DataProviders>
 				<AppWrapper>
-					<DataProviders>
-						{children}
-					</DataProviders>
+					{children}
 				</AppWrapper>
-			</AppProvider>
+			</DataProviders>
 		</BaseProvider>
 	);
 }
