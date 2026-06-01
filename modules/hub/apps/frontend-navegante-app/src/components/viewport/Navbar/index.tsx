@@ -1,8 +1,8 @@
 'use client';
 
-import { AlertsList } from '@/components/alerts/AlertsList';
+import { AlertsList } from '@/components/alerts/list/AlertsList';
 import { LinesList } from '@/components/lines/list/LinesList';
-import { StopsList } from '@/components/stops/StopsList';
+import { StopsList } from '@/components/stops/list/StopsList';
 import { useTransitModes } from '@/hooks/use-transit-modes';
 import { Tabs } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';

@@ -26,21 +26,9 @@ export async function exportMunicipalitiesFile(context: ExportGtfsContext) {
 	Logger.info('Exporting municipalities.txt file...');
 
 	//
-	// Get all the municipalities matching the specified IDs.
-	// These IDs are hardcoded, for now, to match only amL municipalities.
+	// Get all the municipalities data
 
-	const allAmlMunicipalities = await locations.findMunicipalities({
-		_id: {
-			$in: [
-				'1502', '1503', '1115', '1504',
-				'1105', '1106', '1107', '1109',
-				'1506', '1507', '1116', '1110',
-				'1508', '1510', '1511', '1512',
-				'1111', '1114', '0712', '1101',
-				'1102', '1113', '1112',
-			],
-		},
-	});
+	const allAmlMunicipalities = await locations.findMunicipalities({}, { projection: { _id: 1, district_id: 1, name: 1 } });
 
 	//
 	// Add each municipality to the municipalities.txt file.

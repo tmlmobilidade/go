@@ -2,10 +2,9 @@
 
 import { NoDataLabel } from '@/components/layout/NoDataLabel';
 import { RegularListItem } from '@/components/layout/RegularListItem';
-import { Section } from '@/components/layout/Section';
-import { Surface } from '@/components/layout/Surface';
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
+import { Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 import { ViewportList } from 'react-viewport-list';
 
@@ -28,30 +27,26 @@ export function LinesListViewAll() {
 
 	if (!linesListContext.data.filtered.length) {
 		return (
-			<Surface variant="persistent" forceOverflow>
-				<Section>
-					<NoDataLabel text={t('default:lines.LinesListViewAll.no_data')} withMinHeight />
-				</Section>
-			</Surface>
+			<Section>
+				<NoDataLabel text={t('default:lines.LinesListViewAll.no_data')} withMinHeight />
+			</Section>
 		);
 	}
 
 	return (
-		<Surface variant="persistent" forceOverflow>
-			<Section>
-				<ViewportList itemMargin={0} items={linesListContext.data.filtered}>
-					{(item) => {
-						const lineId = getLineId(item);
-						if (!lineId) return null;
-						return (
-							<RegularListItem key={lineId} href={`/lines/${lineId}`}>
-								<LineDisplay lineData={item} />
-							</RegularListItem>
-						);
-					}}
-				</ViewportList>
-			</Section>
-		</Surface>
+		<Section padding="none">
+			<ViewportList itemMargin={0} items={linesListContext.data.filtered}>
+				{(item) => {
+					const lineId = getLineId(item);
+					if (!lineId) return null;
+					return (
+						<RegularListItem key={lineId} href={`/lines/${lineId}`}>
+							<LineDisplay lineData={item} />
+						</RegularListItem>
+					);
+				}}
+			</ViewportList>
+		</Section>
 	);
 
 	//

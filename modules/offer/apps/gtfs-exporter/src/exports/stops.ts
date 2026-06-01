@@ -40,7 +40,7 @@ export function parseStop(
 			level_id: '',
 			platform_code: '',
 			stop_id_stepp: '0',
-			municipality: municipalityData?.name || '',
+			municipality: municipalityData?._id || '',
 			region: municipalityData?.district_id || '',
 			real_time_information: '',
 			schedule: '',

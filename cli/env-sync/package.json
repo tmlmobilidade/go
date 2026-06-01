@@ -28,7 +28,7 @@
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"dependencies": {
-		"@clack/prompts": "1.4.0",
+		"@clack/prompts": "1.5.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/types": "*",
 		"archiver": "8.0.0",
@@ -41,6 +41,6 @@
 		"@types/archiver": "7.0.0",
 		"@types/node": "25.9.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.3"
+		"tsx": "4.22.4"
 	}
 }

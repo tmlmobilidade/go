@@ -1,8 +1,8 @@
 'use client';
 
-import { useLinesContext } from '@/contexts/Lines.context';
-import { type Line } from '@/types/api/network';
+import { useLinesContext } from '@/components/lines/Lines.context';
 import { IconInfoTriangleFilled } from '@tabler/icons-react';
+import { type HubLine } from '@tmlmobilidade/types';
 import classNames from 'classnames/bind';
 
 import styles from './styles.module.css';
@@ -11,7 +11,7 @@ import styles from './styles.module.css';
 
 interface Props {
 	color?: string
-	lineData?: Line
+	lineData?: HubLine
 	lineId?: string
 	onClick?: () => void
 	shortName?: string

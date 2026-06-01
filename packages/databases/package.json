@@ -34,13 +34,13 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@clickhouse/client": "1.18.5",
+		"@clickhouse/client": "1.19.0",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"mongodb": "7.2.0",
-		"redis": "5.12.1",
+		"redis": "6.0.0",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
