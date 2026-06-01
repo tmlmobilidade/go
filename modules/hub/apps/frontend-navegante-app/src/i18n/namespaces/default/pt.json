@@ -26,6 +26,9 @@
 			"found_items_counter": "{count, plural, =0 {Nenhum alerta encontrado.} one {Encontrado # alerta:} other {Encontrados # alertas:}}",
 			"heading": "Alertas de Serviço",
 			"subheading": "Fique a par de todas as alterações à rede. Mantenha-se informado sobre novas linhas, mudanças de percurso e ajustes de horários, assim como sobre eventos que possam afetar a sua viagem."
+		},
+		"AlertsListViewList": {
+			"no_data": "Nenhum alerta encontrado para esta pesquisa"
 		}
 	},
 	"layout": {
