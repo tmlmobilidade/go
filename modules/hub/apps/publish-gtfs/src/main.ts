@@ -70,7 +70,7 @@ export async function main() {
 	// Retrieve all Plans from the database
 	// and iterate on each one.
 
-	const allPlansData = await plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
+	const allPlansData = await plans.findMany({ _id: '0MKJ2' }, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
 
 	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
