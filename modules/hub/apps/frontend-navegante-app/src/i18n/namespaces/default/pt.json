@@ -12,8 +12,8 @@
 		},
 		"AlertsListToolbar": {
 			"by_date": {
-				"current": "Esta semana",
-				"future": "Futuros",
+				"current": "Esta semana ({count})",
+				"future": "Futuros ({count})",
 				"map": "Mapa"
 			},
 			"filters": {

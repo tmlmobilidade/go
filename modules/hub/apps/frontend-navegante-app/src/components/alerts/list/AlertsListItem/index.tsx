@@ -2,7 +2,7 @@
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { AlertActivePeriodEnd, AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
-import { AlertEffectIcon } from '@/components/alerts/common/AlertCauseEffectIcon';
+import { AlertEffectIcon } from '@/components/alerts/common/AlertEffectIcon';
 import { AlertsListItemImageThumbnail } from '@/components/alerts/list/AlertsListItemImageThumbnail';
 import { Accordion } from '@mantine/core';
 
