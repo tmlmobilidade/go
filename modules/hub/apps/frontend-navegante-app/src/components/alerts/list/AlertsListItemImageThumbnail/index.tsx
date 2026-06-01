@@ -13,7 +13,7 @@ interface AlertsListItemImageThumbnailProps {
 
 /* * */
 
-export default function Component({ alt, src }: AlertsListItemImageThumbnailProps) {
+export function AlertsListItemImageThumbnail({ alt, src }: AlertsListItemImageThumbnailProps) {
 	//
 
 	//
