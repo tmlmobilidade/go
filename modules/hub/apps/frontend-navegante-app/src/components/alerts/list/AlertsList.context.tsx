@@ -4,7 +4,7 @@ import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { type AlertGroup } from '@/types/alerts/alert-group';
 import { Dates } from '@tmlmobilidade/dates';
 import { type HubAlert } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, useFilterStateString, useLocalStorage, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
@@ -13,6 +13,10 @@ interface AlertsListContextState extends ListContextStateTemplate {
 	data: {
 		filtered: HubAlert[]
 		grouped: AlertGroup[]
+	}
+	view: {
+		current: 'list' | 'map'
+		toggle: (view: 'list' | 'map') => void
 	}
 }
 
@@ -39,6 +43,11 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	const alertsContext = useAlertsContext();
 
 	const filterSearch = useFilterStateString('search');
+
+	const [currentView, setCurrentView] = useLocalStorage<'list' | 'map'>({
+		defaultValue: 'list',
+		key: 'alerts-current-view',
+	});
 
 	//
 	// B. Transform data
@@ -77,6 +86,10 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		flags: {
 			error: undefined,
 			isLoading: alertsContext.flags.isLoading,
+		},
+		view: {
+			current: currentView,
+			toggle: setCurrentView,
 		},
 	};
 
