@@ -4,12 +4,20 @@ import { apiCache } from '@tmlmobilidade/databases';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type HubStop, HubStopSchema } from '@tmlmobilidade/types';
+import { type GtfsStop, type HubStop, HubStopSchema } from '@tmlmobilidade/types';
 
 /* * */
 
-interface QueryResult extends HubStop {
+interface QueryResult extends GtfsStop {
+	district_id: string
+	district_name: string
 	line_ids: string
+	locality_id: string
+	locality_name: string
+	municipality_id: string
+	municipality_name: string
+	parish_id: string
+	parish_name: string
 	pattern_ids: string
 	route_ids: string
 }
@@ -85,7 +93,30 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 		//
 		// Build the final stop object
 
-		const parsedStop = HubStopSchema.parse(stop);
+		const validatedStop: HubStop = {
+			_id: Number(stop.stop_id),
+			district_id: stop.district_id,
+			district_name: stop.district_name,
+			flags: [],
+			latitude: stop.stop_lat,
+			legacy_ids: [],
+			lifecycle_status: 'active',
+			line_ids: stop.line_ids.split(','),
+			locality_id: stop.locality_id,
+			locality_name: stop.locality_name,
+			longitude: stop.stop_lon,
+			municipality_id: stop.municipality_id,
+			municipality_name: stop.municipality_name,
+			name: stop.stop_name,
+			parish_id: stop.parish_id,
+			parish_name: stop.parish_name,
+			pattern_ids: stop.pattern_ids.split(','),
+			route_ids: stop.route_ids.split(','),
+			short_name: stop.stop_name,
+			tts_name: stop.tts_stop_name,
+		};
+
+		const parsedStop = HubStopSchema.parse(validatedStop);
 
 		allStopsData.push(parsedStop);
 

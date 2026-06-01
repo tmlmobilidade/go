@@ -1,34 +1,10 @@
 /* eslint-disable perfectionist/sort-objects */
-/* eslint-disable perfectionist/sort-interfaces */
 
 import { type ExportGtfsContext } from '@/types/context.js';
 import { locations, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-
-/* * */
-
-export interface ExportedStopsRow {
-	stop_id: number
-	legacy_ids: string[]
-	stop_code: number
-	stop_name: string
-	tts_stop_name: string
-	stop_lat: number
-	stop_lon: number
-	municipality_id: string
-	municipality_name: string
-	district_id: string
-	district_name: string
-	parish_id: string
-	parish_name: string
-	locality_id: string
-	locality_name: string
-	wheelchair_boarding: 0 | 1 | 2
-	location_type: 0 | 1 | 2 | 3 | 4
-	parent_station: ''
-	platform_code: ''
-}
+import { type HubGtfsExportStops, HubGtfsExportStopsSchema } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -52,10 +28,10 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 		const matchingParishData = await locations.findParishById(stopData.parish_id);
 		const matchingLocalityData = await locations.findLocalityById(stopData.locality_id);
 
-		const parsedStopsRow: ExportedStopsRow = {
+		const parsedStopsRow: HubGtfsExportStops = {
 			stop_id: stopData._id,
 			stop_code: stopData._id,
-			legacy_ids: stopData.legacy_ids,
+			legacy_ids: stopData.legacy_ids.join('|'),
 			stop_name: stopData.name,
 			tts_stop_name: stopData.tts_name ?? '',
 			municipality_id: stopData.municipality_id ?? '',
@@ -68,13 +44,15 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 			locality_name: matchingLocalityData?.name ?? '',
 			stop_lat: stopData.latitude,
 			stop_lon: stopData.longitude,
-			wheelchair_boarding: 0,
-			location_type: 0,
+			wheelchair_boarding: '0',
+			location_type: '0',
 			parent_station: '',
 			platform_code: '',
 		};
 
-		await context.writers.stops.write(parsedStopsRow);
+		const validatedStopsRow = HubGtfsExportStopsSchema.parse(parsedStopsRow);
+
+		await context.writers.stops.write(validatedStopsRow);
 	}
 
 	await context.writers.stops.flush();

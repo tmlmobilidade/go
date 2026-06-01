@@ -16,13 +16,17 @@ export const HubStopSchema = StopSchema.pick({
 	longitude: true,
 	municipality_id: true,
 	name: true,
+	parish_id: true,
 	short_name: true,
 	tts_name: true,
 }).extend({
 	district_name: z.string(),
+	line_ids: z.array(z.string()),
 	locality_name: z.string(),
 	municipality_name: z.string(),
 	parish_name: z.string(),
+	pattern_ids: z.array(z.string()),
+	route_ids: z.array(z.string()),
 });
 
 /**
