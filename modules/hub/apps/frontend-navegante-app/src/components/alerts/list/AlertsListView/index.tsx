@@ -17,11 +17,9 @@ export function AlertsListView() {
 	//
 	// B. Render components
 
-	if (alertsListContext.view.current === 'current') {
-		return <AlertsListViewList />;
-	} else {
-		return (
-			<AlertsListViewMap />
-		);
+	if (alertsListContext.view.current === 'map') {
+		return <AlertsListViewMap />;
 	}
+
+	return <AlertsListViewList />;
 }
