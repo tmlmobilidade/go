@@ -2,7 +2,7 @@
 
 import useSWR from 'swr';
 
-const HUB_FAQS_URL = `${process.env.NEXT_PUBLIC_CARRIS_BACKOFFICE_URL ?? 'http://localhost:49001'}/admin/public-api/faqs-navegante`;
+const HUB_FAQS_URL = 'https://carrismetropolitana.pt/admin/public-api/faqs-navegante';
 
 export interface NaveganteFaq {
 	answer: string
