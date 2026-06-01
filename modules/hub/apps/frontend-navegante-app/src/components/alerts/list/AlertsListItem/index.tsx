@@ -34,7 +34,7 @@ export function AlertListItem({ alertId }: AlertListItemProps) {
 
 	return (
 		<Accordion.Item value={alertId}>
-			<Accordion.Control icon={<AlertEffectIcon effect={resolvedAlert?.effect} />}>
+			<Accordion.Control classNames={{ control: styles.item }} icon={<AlertEffectIcon effect={resolvedAlert?.effect} />}>
 				{resolvedAlert?.title}
 			</Accordion.Control>
 			<Accordion.Panel classNames={{ content: styles.contentWrapper }}>

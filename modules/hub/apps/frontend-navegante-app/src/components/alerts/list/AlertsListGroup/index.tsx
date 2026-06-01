@@ -5,7 +5,6 @@ import { AlertListItem } from '@/components/alerts/list/AlertsListItem';
 import { GroupedListItem } from '@/components/layout/GroupedListItem';
 import { Accordion } from '@mantine/core';
 import { Dates } from '@tmlmobilidade/dates';
-import { Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -70,17 +69,13 @@ export function AlertsListGroup() {
 	//
 	// C. Render components
 
-	return (
-		<Section>
-			{allAlertsGroupedByStartDate.map(alertGroup => (
-				<GroupedListItem key={alertGroup.value} label={t('default:alerts.AlertsListGroup.label', '', { count: alertGroup.items.length })} title={alertGroup.title}>
-					<Accordion>
-						{alertGroup.items.map(alert => (
-							<AlertListItem key={alert._id} alertId={alert._id} />
-						))}
-					</Accordion>
-				</GroupedListItem>
-			))}
-		</Section>
-	);
+	return allAlertsGroupedByStartDate.map(alertGroup => (
+		<GroupedListItem key={alertGroup.value} label={t('default:alerts.AlertsListGroup.label', '', { count: alertGroup.items.length })} title={alertGroup.title}>
+			<Accordion>
+				{alertGroup.items.map(alert => (
+					<AlertListItem key={alert._id} alertId={alert._id} />
+				))}
+			</Accordion>
+		</GroupedListItem>
+	));
 }
