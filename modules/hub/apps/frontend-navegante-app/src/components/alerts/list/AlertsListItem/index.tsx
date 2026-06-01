@@ -5,9 +5,6 @@ import { AlertActivePeriodEnd, AlertActivePeriodStart } from '@/components/alert
 import { AlertEffectIcon } from '@/components/alerts/common/AlertCauseEffectIcon';
 import AlertsListItemImageThumbnail from '@/components/alerts/list/AlertsListItemImageThumbnail';
 import { Accordion } from '@mantine/core';
-import { IconArrowUpRight } from '@tabler/icons-react';
-import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -25,8 +22,6 @@ export function AlertListItem({ alertId }: AlertListItemProps) {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
-
 	const alertsContext = useAlertsContext();
 
 	//
@@ -34,45 +29,26 @@ export function AlertListItem({ alertId }: AlertListItemProps) {
 
 	const resolvedAlert = alertsContext.actions.getAlertById(alertId);
 
-	// const view = useMemo(() => {
-	// 	if (!resolvedAlert) return null;
-	// 	return {
-	// 		description: resolvedAlert.description,
-	// 		endDate: resolvedAlert.end_date,
-	// 		imageUrl: resolvedAlert.image_url,
-	// 		startDate: resolvedAlert.start_date,
-	// 		title: resolvedAlert.title,
-	// 	};
-	// }, [resolvedAlert]);
-
-	// const alertHref = environmentContext.actions.getNormalizedHref(`/alerts/${alertId}`);
-
 	//
 	// C. Render components
 
 	return (
 		<Accordion.Item value={alertId}>
 			<Accordion.Control icon={<AlertEffectIcon effect={resolvedAlert?.effect} />}>
-				{/* {view?.title} */}
+				{resolvedAlert?.title}
 			</Accordion.Control>
 			<Accordion.Panel classNames={{ content: styles.contentWrapper }}>
 				<div className={styles.infoBar}>
-					{/* {view?.startDate && <AlertActivePeriodStart date={view.startDate} size="sm" />} */}
-					{/* <AlertActivePeriodEnd date={view?.endDate} size="sm" /> */}
+					{/* {resolvedAlert?.start_date && <AlertActivePeriodStart date={resolvedAlert.start_date} size="sm" />}
+					{resolvedAlert?.end_date && <AlertActivePeriodEnd date={resolvedAlert.end_date} size="sm" />} */}
 				</div>
-				{/* <p className={styles.description}>{view?.description}</p> */}
-				{/* {view?.imageUrl && (
+				<p className={styles.description}>{resolvedAlert?.description}</p>
+				{resolvedAlert?.image_url && (
 					<AlertsListItemImageThumbnail
-						alertId={resolvedAlert?.alert_id || ''}
-						alertTitle={view.title}
-						alt={view.title}
-						href={`/alerts/${alertId}`}
-						src={view.imageUrl}
+						alt={resolvedAlert?.title || ''}
+						src={resolvedAlert?.image_url || ''}
 					/>
-				)} */}
-				<div>
-					{/* <Button href={alertHref} icon={<IconArrowUpRight size={16} />} label={t('open')} variant="pill" /> */}
-				</div>
+				)}
 			</Accordion.Panel>
 		</Accordion.Item>
 	);

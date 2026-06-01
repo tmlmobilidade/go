@@ -18,7 +18,6 @@ export function AlertsListGroup() {
 	const { t } = useTranslation();
 
 	const alertsListContext = useAlertsListContext();
-
 	//
 	// B. Render components
 
