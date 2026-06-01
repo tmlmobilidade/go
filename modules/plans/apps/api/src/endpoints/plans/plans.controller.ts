@@ -575,7 +575,7 @@ export class PlansController {
 					feed_start_date: validatedFeedStartDate,
 				},
 				operation_file_id: updateFileResult._id,
-				validation_id: planData.validation_id,
+				validation_id: planData.validation_id || '',
 			};
 
 			const hashValue = createHash('sha256')

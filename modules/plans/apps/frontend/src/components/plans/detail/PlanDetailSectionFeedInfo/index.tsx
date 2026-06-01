@@ -40,7 +40,7 @@ export function PlanDetailSectionFeedInfo() {
 			</Section>
 
 			<Section gap="sm">
-				<ValueDisplay label="validation_id" value={planDetailContext.data.plan?.validation_id || 'N/A'} />
+				<ValueDisplay label="ID de validação" value={planDetailContext.data.plan?.validation_id || 'N/A'} />
 			</Section>
 
 			<Section gap="sm">
