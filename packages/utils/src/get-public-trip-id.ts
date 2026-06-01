@@ -76,7 +76,7 @@ export function getPublicServiceId(planId: string, agencyId: string, serviceId: 
  * @param lineId The ID of the line.
  * @returns The public line ID.
  */
-export function getPublicLineId(agencyId: string, lineId: number | string): string {
+export function getPublicLineId(agencyId: string, lineId: string): string {
 	// Validate that the agency ID is a non-empty string
 	if (typeof agencyId !== 'string' || !agencyId.trim()) {
 		throw new Error('Invalid agency ID: must be a non-empty string.');
