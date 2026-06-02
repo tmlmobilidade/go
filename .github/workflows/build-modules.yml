@@ -3,13 +3,8 @@ name: Build Modules
 on:
   workflow_dispatch:
     inputs:
-      modules:
-        description: 'Comma-separated modules (empty = today’s auto/dispatch rules)'
-        required: false
-        default: ''
-        type: string
       module:
-        description: 'Legacy single module (or "all"); ignored when modules is set'
+        description: 'Specific module to build (or "all")'
         required: false
         default: 'all'
         type: string
@@ -25,9 +20,6 @@ on:
       - 'modules/**'
       - 'packages/**'
       - '.github/workflows/build-modules.yml'
-      - '.github/workflows/_build-modules-pipeline.yml'
-      - '.github/workflows/build-modules-request.yml'
-      - '.github/workflows/pr-module-picker.yml'
       - '.github/actions/**/*'
       - '.github/templates/**/*'
   pull_request:
@@ -42,26 +34,81 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  # PR push / prd push: unchanged — diff-based discovery (module change → that module; packages/** → all).
-  pipeline:
-    name: Build Modules
-    if: github.event.action != 'closed'
-    uses: ./.github/workflows/_build-modules-pipeline.yml
-    with:
-      selected-modules: ${{ github.event_name == 'workflow_dispatch' && inputs.modules || '' }}
-      selected-module: ${{ github.event_name == 'workflow_dispatch' && inputs.module || 'all' }}
-      build-all: ${{ github.event_name != 'workflow_dispatch' || inputs.build_all }}
-      fetch-depth: ${{ github.event_name == 'push' && '0' || '2' }}
-      image-tag: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
-      environment: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
-      notify-infra: ${{ github.event_name == 'pull_request' }}
-      pr-number: ${{ github.event.pull_request.number || '' }}
-      pr-action: ${{ github.event.action || '' }}
-    secrets: inherit
 
-  notify-infra-closed:
-    name: Notify Infrastructure (PR closed)
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+  # # #
+  # Auto-discover modules and module->apps mapping from filesystem,
+  # then filter down to the modules that actually need to build:
+  # - Module file changed -> build only that module.
+  # - Shared package changed -> build every module.
+  # - Manual dispatch -> honour the `module` and `build_all` inputs.
+
+  discover:
+    name: Discover Modules
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-24.04-arm
+    outputs:
+      modules: ${{ steps.discover.outputs.modules }}
+      modules-apps: ${{ steps.discover.outputs.modules-apps }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: ${{ github.event_name == 'push' && '0' || '2' }}
+
+      - id: scan
+        shell: bash
+        run: |
+          MAPPING=$(find modules/*/apps/* -maxdepth 0 -type d | sort | sed 's|modules/||; s|/apps/|:|')
+          {
+            echo "modules-apps<<EOF"
+            echo "$MAPPING"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - id: discover
+        uses: ./.github/actions/discover-modules
+        with:
+          modules-apps: ${{ steps.scan.outputs.modules-apps }}
+          selected-module: ${{ inputs.module || 'all' }}
+          build-all: ${{ inputs.build_all || 'true' }}
+
+  # # #
+  # Generate package-lock.json once,
+  # shared across all builds.
+
+  package-lock:
+    name: Generate package-lock.json
+    needs: discover
+    if: needs.discover.outputs.modules != '[]'
+    runs-on: ubuntu-24.04-arm
+    steps:
+
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          package-manager-cache: false
+
+      - run: npm install --package-lock-only --ignore-scripts
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: package-lock
+          path: package-lock.json
+          retention-days: 1
+
+  # # #
+  # If the current workflow is triggered by a pull request,
+  # eagerly notify the go-infra repo to generate a preview environment,
+  # even if some of the builds fail. This allows faster feedback for PR authors.
+
+  notify-infra:
+    name: Notify Infrastructure
+    needs: [package-lock]
+    if: |
+      always() &&
+      github.event_name == 'pull_request' &&
+      (github.event.action == 'closed' || needs.package-lock.result == 'success')
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: peter-evans/repository-dispatch@v3
@@ -74,3 +121,22 @@ jobs:
               "pr_number": ${{ github.event.pull_request.number }},
               "pr_action": "${{ github.event.action }}"
             }
+
+  # # #
+  # Build and push Docker images for each module that needs it.
+
+  build-module:
+    name: Build ${{ matrix.module }}
+    needs: [discover, package-lock]
+    if: needs.discover.outputs.modules != '[]'
+    uses: ./.github/workflows/_build-module-apps.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        module: ${{ fromJson(needs.discover.outputs.modules) }}
+    with:
+      module: ${{ matrix.module }}
+      modules-apps: ${{ needs.discover.outputs.modules-apps }}
+      image-tag: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
+      environment: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
+    secrets: inherit
