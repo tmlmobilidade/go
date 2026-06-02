@@ -5,8 +5,13 @@
 	gap: var(--size-spacing-md);
 	align-items: center;
 	justify-content: flex-start;
-    width: 100%;
-    border-radius: var(--border-radius-xs);
+	width: 100%;
+	margin-top: 20px;
+	border-radius: var(--border-radius-xs);
+}
+
+.container:first-child {
+	margin-top: 0;
 }
 
 /* * */
@@ -14,9 +19,6 @@
 
 .logo {
 	width: 90px;
-	height: 50px;
-    margin: var(--size-spacing-sm) var(--size-spacing-md);
-	object-fit: cover;
-	object-position: center;
-	border-radius: var(--border-radius-xs);
+	height: 60px;
+	margin-left: 22px;
 }
