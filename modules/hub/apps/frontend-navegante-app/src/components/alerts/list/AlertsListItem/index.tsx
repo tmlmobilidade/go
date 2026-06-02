@@ -1,7 +1,7 @@
 'use client';
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
-import { AlertActivePeriodEnd, AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
+import { AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
 import { AlertEffectIcon } from '@/components/alerts/common/AlertEffectIcon';
 import { AlertsListItemImageThumbnail } from '@/components/alerts/list/AlertsListItemImageThumbnail';
 import { Accordion } from '@mantine/core';
@@ -40,7 +40,6 @@ export function AlertListItem({ alertId }: AlertListItemProps) {
 			<Accordion.Panel classNames={{ content: styles.contentWrapper }}>
 				<div className={styles.infoBar}>
 					{resolvedAlert?.active_period_start_date && <AlertActivePeriodStart date={resolvedAlert.active_period_start_date} size="sm" />}
-					{resolvedAlert?.active_period_end_date && <AlertActivePeriodEnd date={resolvedAlert.active_period_end_date} size="sm" />}
 				</div>
 				<p className={styles.description}>{resolvedAlert?.description}</p>
 				{resolvedAlert?.image_url && (

@@ -1,7 +1,7 @@
 'use client';
 
+import { FloatingHelpButton } from '@/components/viewport/FloatingHelpButton';
 import { Navbar } from '@/components/viewport/Navbar';
-import { Topbar } from '@/components/viewport/Topbar';
 
 import styles from './styles.module.css';
 
@@ -9,9 +9,11 @@ import styles from './styles.module.css';
 
 export function AppViewport() {
 	return (
-		<div className={styles.viewport}>
-			<Topbar />
-			<Navbar />
-		</div>
+		<>
+			<div className={styles.viewport}>
+				<Navbar />
+			</div>
+			<FloatingHelpButton />
+		</>
 	);
 }

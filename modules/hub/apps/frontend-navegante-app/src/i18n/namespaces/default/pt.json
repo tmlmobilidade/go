@@ -1,8 +1,7 @@
 {
 	"alerts": {
 		"AlertActivePeriod": {
-			"end": "Fim: <parsedDate>{end, date, dayShort} {end, date, monthLong} {end, date, yearLong}</parsedDate>",
-			"start": "Início: <parsedDate>{start, date, dayShort} {start, date, monthLong} {start, date, yearLong}</parsedDate>"
+			"start": "Início: {value, date, dayShort}"
 		},
 		"AlertsListEmpty": {
 			"action_1": "Ver alertas do passado",
@@ -21,10 +20,28 @@
 			}
 		},
 		"AlertsListToolbar": {
+			"SelectLine": {
+				"label": "Procurar linha por número, nome, localidade...",
+				"nothing_found": "Nenhum Resultado Encontrado",
+				"placeholder": "Procurar linha por número, nome, localidade..."
+			},
+			"SelectStop": {
+				"label": "Procurar paragem por nome, número, localidade...",
+				"nothing_found": "Nenhum Resultado Encontrado",
+				"placeholder": "Procurar paragem por nome, número, localidade..."
+			},
 			"by_date": {
-				"current": "Esta semana ({count})",
+				"current": "Agora ({count})",
 				"future": "Futuros ({count})",
 				"map": "Mapa"
+			},
+			"expand_toggle": {
+				"is_hidden": {
+					"label": "Ver Filtros"
+				},
+				"is_visible": {
+					"label": "Ocultar Filtros"
+				}
 			},
 			"filters": {
 				"by_current_view": {
@@ -37,6 +54,7 @@
 				},
 				"by_stop": {
 					"label": "Filtrar por paragem",
+
 					"placeholder": "Filtrar por paragem"
 				},
 				"text_search": "Procurar alerta por título, descrição, localização..."
@@ -47,6 +65,12 @@
 		},
 		"AlertsListViewList": {
 			"no_data": "Nenhum alerta encontrado para esta pesquisa"
+		},
+		"SelectCause": {
+			"placeholder": "Filtrar por causa"
+		},
+		"SelectEffect": {
+			"placeholder": "Filtrar por efeito"
 		}
 	},
 	"layout": {
@@ -95,6 +119,12 @@
 		}
 	},
 	"viewport": {
+		"FloatingHelpButton": {
+			"modal": {
+				"no_data": "Nenhuma pergunta frequente disponível de momento.",
+				"title": "Perguntas frequentes"
+			}
+		},
 		"Navbar": {
 			"tabs": {
 				"alerts": "Alertas",
