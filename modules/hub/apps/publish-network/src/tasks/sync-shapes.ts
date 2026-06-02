@@ -1,11 +1,10 @@
 /* * */
 
-import type { Shape, ShapePoint } from '@carrismetropolitana/api-types/network';
-
 import { apiCache } from '@tmlmobilidade/databases';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { type HubShape, type HubShapePoint } from '@tmlmobilidade/types';
 import * as turf from '@turf/turf';
 
 /* * */
@@ -28,7 +27,7 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 
 	const groupShapesTimer = new Timer();
 
-	const allShapesData = new Map<string, Shape>();
+	const allShapesData = new Map<string, HubShape>();
 
 	for (const shapeRaw of allShapesRaw) {
 		//
@@ -36,23 +35,24 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 		//
 		// Check if a shape object already exists, or create a new one.
 
-		let shapeData: Shape;
+		let shapeData: HubShape;
 
 		if (allShapesData.has(shapeRaw.shape_id)) {
 			shapeData = allShapesData.get(shapeRaw.shape_id);
 		} else {
 			shapeData = {
+				_id: shapeRaw.shape_id,
+				agency_id: '',
 				extension: 0,
 				geojson: null,
 				points: [],
-				shape_id: shapeRaw.shape_id,
 			};
 		}
 
 		//
 		// Add the point to the shape
 
-		const parsedPoint: ShapePoint = {
+		const parsedPoint: HubShapePoint = {
 			shape_dist_traveled: shapeRaw.shape_dist_traveled,
 			shape_pt_lat: shapeRaw.shape_pt_lat,
 			shape_pt_lon: shapeRaw.shape_pt_lon,
@@ -98,7 +98,7 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 		//
 		// Update or create new document
 
-		await apiCache.set(`hub:network:shapes:${shapeData.shape_id}`, JSON.stringify(shapeData));
+		await apiCache.set(`hub:network:shapes:${shapeData._id}`, JSON.stringify(shapeData));
 		// await apiCache.set(SERVERDB_KEYS.NETWORK.SHAPES.ID(shapeData.shape_id), JSON.stringify(shapeData));
 
 		//

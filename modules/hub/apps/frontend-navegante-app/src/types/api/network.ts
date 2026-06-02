@@ -1,29 +1,5 @@
 /* * */
 
-import type { Feature, LineString } from 'geojson';
-
-/* * */
-
-export interface Line {
-	agency_id: string
-	color: string
-	district_ids: string[]
-	facilities: string[]
-	id: string
-	locality_ids: string[]
-	long_name: string
-	municipality_ids: string[]
-	pattern_ids: string[]
-	region_ids: string[]
-	route_ids: string[]
-	short_name: string
-	stop_ids: string[]
-	text_color: string
-	tts_name: string
-}
-
-/* * */
-
 export interface HubRoute {
 	agency_id: string
 	color: string
@@ -90,22 +66,6 @@ export interface HubArrival {
 	arrival_time_24h: string
 	stop_id: string
 	stop_sequence: number
-}
-
-/* * */
-
-export interface HubShape {
-	extension: number
-	geojson: Feature<LineString>
-	points: HubShapePoint[]
-	shape_id: string
-}
-
-export interface HubShapePoint {
-	shape_dist_traveled: number
-	shape_pt_lat: number
-	shape_pt_lon: number
-	shape_pt_sequence: number
 }
 
 /* * */

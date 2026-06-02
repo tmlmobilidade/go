@@ -48,9 +48,9 @@ export function LinesListViewAll() {
 					<ViewportList itemMargin={0} items={group.lines}>
 						{(line, index) => (
 							<RegularListItem
-								key={line.id}
+								key={line._id}
 								ariaLabel={t(`default:lines.LinesListViewAll.items.aria_label`, '', { index: index + 1, tts_name: line.tts_name })}
-								href={`/lines/${line.id}`}
+								href={`/lines/${line._id}`}
 							>
 								<LineDisplay lineData={line} />
 							</RegularListItem>

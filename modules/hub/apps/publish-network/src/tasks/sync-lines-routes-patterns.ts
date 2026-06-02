@@ -379,11 +379,11 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 				currentLineObject = allLinesParsed.get(String(routeRawData.line_id));
 			} else {
 				currentLineObject = {
+					_id: String(routeRawData.line_id),
 					agency_id: routeRawData.agency_id,
 					color: routeRawData.route_color ? `#${routeRawData.route_color}` : '#000000',
 					district_ids: [],
 					facilities: [],
-					id: String(routeRawData.line_id),
 					locality_ids: [],
 					long_name: routeRawData.line_long_name,
 					municipality_ids: [],

@@ -1,21 +1,21 @@
 /* * */
 
-import { type Line } from '@/types/api/network';
+import { type HubLine } from '@tmlmobilidade/types';
 
 import styles from './styles.module.css';
 
 /* * */
 
-interface Props {
+interface LineNameProps {
 	align?: 'center' | 'left' | 'right'
-	lineData?: Line
+	lineData?: HubLine
 	longName?: string
 	size?: 'lg' | 'md'
 }
 
 /* * */
 
-export function LineName({ align = 'left', lineData, longName, size = 'md' }: Props) {
+export function LineName({ align = 'left', lineData, longName, size = 'md' }: LineNameProps) {
 	return (
 		<div className={styles.name} data-align={align} data-size={size}>
 			{lineData?.long_name || longName || '• • •'}

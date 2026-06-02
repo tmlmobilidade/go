@@ -37,7 +37,7 @@ export function SelectLine({ data = [], nothingFound, onSelectLineId, placeholde
 	const [searchQuery, setSearchQuery] = useState('');
 
 	const selectedLineData = useMemo(() => {
-		return data.find(item => item.id === selectedLineId);
+		return data.find(item => item._id === selectedLineId);
 	}, [selectedLineId, data]);
 
 	//
@@ -137,7 +137,7 @@ export function SelectLine({ data = [], nothingFound, onSelectLineId, placeholde
 					{allLinesDataFilteredBySearchQuery.length === 0
 						? <Combobox.Empty>{nothingFound || t('default:alerts.AlertsListToolbar.SelectLine.nothing_found')}</Combobox.Empty>
 						: allLinesDataFilteredBySearchQuery.map(item => (
-							<Combobox.Option key={item.id} className={item.id === selectedLineData?.id ? styles.selected : ''} value={item.id}>
+							<Combobox.Option key={item._id} className={item._id === selectedLineData?._id ? styles.selected : ''} value={item._id}>
 								<div className={styles.comboboxOption}>
 									<LineDisplay lineData={item} />
 								</div>
