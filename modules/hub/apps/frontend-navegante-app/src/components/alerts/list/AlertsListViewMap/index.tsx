@@ -1,6 +1,6 @@
 'use client';
 
-import { useAlertsContext } from '@/components/alerts/Alerts.context';
+import { useAlertsListContext } from '@/components/alerts/list/AlertsList.context';
 import { MapView } from '@/components/map/MapView';
 import { MapViewStyleAlerts, MapViewStyleAlertsLayerId } from '@/components/map/MapViewStyleAlerts';
 import { Popup } from '@vis.gl/react-maplibre';
@@ -26,7 +26,7 @@ export function AlertsListViewMap() {
 	//
 	// A. Setup variables
 
-	const alertsContext = useAlertsContext();
+	const alertsListContext = useAlertsListContext();
 
 	const [selectedAlert, setSelectedAlert] = useState<null | SelectedAlertPopup>(null);
 
@@ -64,7 +64,7 @@ export function AlertsListViewMap() {
 			interactiveLayerIds={[MapViewStyleAlertsLayerId]}
 			onClick={handleMapClick}
 		>
-			<MapViewStyleAlerts data={alertsContext.data.fc} />
+			<MapViewStyleAlerts data={alertsListContext.data.fc} />
 			{selectedAlert && (
 				<Popup
 					anchor="bottom"
