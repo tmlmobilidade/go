@@ -22,7 +22,7 @@ export function StopDisplay({ size = 'md', skeletonWidth = 200, stopData }: Stop
 		? (
 			<div className={`${styles.container} ${styles[size]}`}>
 				<StopDisplayName longName={stopData.name} />
-				<StopDisplayLocation localityName={stopData.district_id} municipalityName={stopData.municipality_id} />
+				<StopDisplayLocation localityName={stopData.locality_name} municipalityName={stopData.municipality_name} />
 			</div>
 		)
 		: (

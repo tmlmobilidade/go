@@ -1,6 +1,7 @@
 /* * */
 
 export interface HubLine {
+	agency_id: string
 	color: string
 	district_ids: string[]
 	facilities: string[]

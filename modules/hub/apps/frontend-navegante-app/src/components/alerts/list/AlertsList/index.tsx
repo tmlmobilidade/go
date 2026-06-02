@@ -1,18 +1,23 @@
 'use client';
 
 import { AlertsListContextProvider } from '@/components/alerts/list/AlertsList.context';
-import { AlertsListGroup } from '@/components/alerts/list/AlertsListGroup';
 import { AlertsListToolbar } from '@/components/alerts/list/AlertsListToolbar';
-// import { AlertsListViewMap } from '@/components/alerts/list/AlertsListViewMap';
+import { AlertsListView } from '@/components/alerts/list/AlertsListView';
 
 /* * */
 
 export function AlertsList() {
+	//
+
+	//
+	// A. Render components
+
 	return (
 		<AlertsListContextProvider>
 			<AlertsListToolbar />
-			{/* <AlertsListViewMap /> */}
-			<AlertsListGroup />
+			<AlertsListView />
 		</AlertsListContextProvider>
 	);
+
+	//
 }

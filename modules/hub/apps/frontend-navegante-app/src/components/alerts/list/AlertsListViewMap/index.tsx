@@ -1,72 +1,90 @@
-// 'use client';
+'use client';
 
-// import { MapView } from '@/components/map/MapView';
-// import { MapViewStyleAlerts, MapViewStyleAlertsLayerId } from '@/components/map/MapViewStyleAlerts';
-// import { useAlertsContext } from '@/contexts/Alerts.context';
-// import { useEnvironmentContext } from '@/contexts/Environment.context';
-// import { centerMap } from '@/utils/map.utils';
-// import * as turf from '@turf/turf';
-// import { MapMouseEvent, useMap } from '@vis.gl/react-maplibre';
-// import { useRouter } from 'next/navigation';
-// import { useEffect } from 'react';
+import { useAlertsContext } from '@/components/alerts/Alerts.context';
+import { MapView } from '@/components/map/MapView';
+import { MapViewStyleAlerts, MapViewStyleAlertsLayerId } from '@/components/map/MapViewStyleAlerts';
+import { Popup } from '@vis.gl/react-maplibre';
+import { type MapLayerMouseEvent } from 'maplibre-gl';
+import { useCallback, useState } from 'react';
 
-// /* * */
+import styles from './styles.module.css';
 
-// export function AlertsListViewMap() {
-// 	//
+/* * */
 
-// 	//
-// 	// A. Setup variables
+interface SelectedAlertPopup {
+	description: string
+	latitude: number
+	longitude: number
+	title: string
+}
 
-// 	const { alertsListMap } = useMap();
-// 	const router = useRouter();
-// 	const alertsContext = useAlertsContext();
-// 	const environmentContext = useEnvironmentContext();
-// 	//
-// 	// B. Handle actions
+/* * */
 
-// 	useEffect(() => {
-// 		// Exit early if there are no alerts or map
-// 		if (!alertsContext.data.featureCollection?.features.length || !alertsListMap) return;
+export function AlertsListViewMap() {
+	//
 
-// 		// When there are search filters, center the map on the cluster with the most points
-// 		const clusterPoints = turf.clustersKmeans(alertsContext.data.featureCollection, { mutate: true, numberOfClusters: 2 });
-// 		const clusterPointsCount = clusterPoints.features.reduce((acc, feature) => {
-// 			if (typeof feature.properties.cluster !== 'number') return acc;
-// 			const clusterId = feature.properties.cluster;
-// 			if (!acc[clusterId]) acc[clusterId] = 0;
-// 			acc[clusterId]++;
-// 			return acc;
-// 		}, {});
-// 		const clusterId = Object.keys(clusterPointsCount).reduce((a, b) => (clusterPointsCount[a] > clusterPointsCount[b] ? a : b));
-// 		const filteredClusterPoints = clusterPoints.features.filter(feature => feature.properties.cluster === Number(clusterId));
-// 		centerMap(alertsListMap, filteredClusterPoints);
-// 		//
-// 	}, [alertsContext.data.featureCollection, alertsListMap]);
+	//
+	// A. Setup variables
 
-// 	function handleLayerClick(event: MapMouseEvent) {
-// 		const feature = event.features?.[0];
-// 		if (!feature) return;
-// 		const alertId = feature.properties.id;
-// 		router.push(environmentContext.actions.getNormalizedHref(`/alerts/${alertId}`));
-// 	}
+	const alertsContext = useAlertsContext();
 
-// 	//
-// 	// C. Render components
+	const [selectedAlert, setSelectedAlert] = useState<null | SelectedAlertPopup>(null);
 
-// 	return (
-// 		<Surface variant="persistent" forceOverflow>
-// 			<div style={{ height: 600 }}>
-// 				<MapView
-// 					id="alertsListMap"
-// 					interactiveLayerIds={[MapViewStyleAlertsLayerId]}
-// 					onClick={handleLayerClick}
-// 				>
-// 					<MapViewStyleAlerts data={alertsContext.data.featureCollection} />
-// 				</MapView>
-// 			</div>
-// 		</Surface>
-// 	);
+	//
+	// B. Handle actions
 
-// 	//
-// }
+	const handleMapClick = useCallback((event: MapLayerMouseEvent) => {
+		const alertFeature = event.features?.find(
+			feature => feature.layer?.id === MapViewStyleAlertsLayerId,
+		);
+
+		if (alertFeature?.geometry?.type !== 'Point') {
+			setSelectedAlert(null);
+			return;
+		}
+
+		const [longitude, latitude] = alertFeature.geometry.coordinates;
+		const title = typeof alertFeature.properties?.title === 'string' ? alertFeature.properties.title : '';
+		const description = typeof alertFeature.properties?.description === 'string' ? alertFeature.properties.description : '';
+
+		setSelectedAlert({
+			description,
+			latitude,
+			longitude,
+			title,
+		});
+	}, []);
+
+	//
+	// C. Render components
+
+	return (
+		<MapView
+			id="alerts-list"
+			interactiveLayerIds={[MapViewStyleAlertsLayerId]}
+			onClick={handleMapClick}
+		>
+			<MapViewStyleAlerts data={alertsContext.data.fc} />
+			{selectedAlert && (
+				<Popup
+					anchor="bottom"
+					latitude={selectedAlert.latitude}
+					longitude={selectedAlert.longitude}
+					maxWidth="320px"
+					offset={12}
+					onClose={() => setSelectedAlert(null)}
+					closeButton
+				>
+					<div className={styles.popup}>
+						{selectedAlert.title && (
+							<span className={styles.title}>{selectedAlert.title}</span>
+						)}
+						{selectedAlert.description && (
+							<p className={styles.description}>{selectedAlert.description}</p>
+						)}
+					</div>
+				</Popup>
+			)}
+		</MapView>
+	);
+}

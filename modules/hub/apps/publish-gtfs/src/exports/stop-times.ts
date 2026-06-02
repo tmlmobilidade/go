@@ -39,21 +39,24 @@ export async function exportStopTimesFile(planData: Plan, sqlTables: GtfsSQLTabl
 
 	const allStopsData = await stops.findMany(
 		{ 'flags.agency_ids': { $in: [planData.gtfs_agency.agency_id] } },
-		{ sort: { _id: 1 }, projection: { _id: 1, legacy_ids: 1 } },
+		{ sort: { _id: 1 }, projection: { _id: 1, legacy_ids: 1, flags: 1 } },
 	);
 
 	const allStopsMap = new Map<string, number>();
 
 	for (const stopData of allStopsData) {
-		for (const legacyId of stopData.legacy_ids) {
-			allStopsMap.set(legacyId, stopData._id);
+		for (const flag of stopData.flags) {
+			allStopsMap.set(flag.stop_id, stopData._id);
 		}
 	}
 
 	for await (const stopTimeItem of sqlTables.stop_times.stream('ORDER BY trip_id, stop_sequence ASC')) {
 		const stopTimeData: GTFS_StopTime = stopTimeItem;
 		const matchingStopId = allStopsMap.get(stopTimeData.stop_id);
-		if (!matchingStopId) continue;
+		if (!matchingStopId) {
+			Logger.error(`Stop time ${stopTimeData.stop_id} not found in stops map.`);
+			continue;
+		}
 		const parsedStopTimesRow: ExportedStopTimesRow = {
 			trip_id: getPublicTripId(planData._id, planData.gtfs_agency.agency_id, stopTimeData.trip_id),
 			arrival_time: stopTimeData.arrival_time,

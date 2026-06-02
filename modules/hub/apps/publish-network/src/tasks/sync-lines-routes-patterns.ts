@@ -1,12 +1,12 @@
 /* * */
 
 import { Alight } from '@carrismetropolitana/api-types/gtfs-core';
-import { type Arrival, type Line, type Pattern, type Route, type Stop, type Trip, type Waypoint } from '@carrismetropolitana/api-types/network';
+import { type Arrival, type Pattern, type Route, type Stop, type Trip, type Waypoint } from '@carrismetropolitana/api-types/network';
 import { apiCache } from '@tmlmobilidade/databases';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { GTFS_Route_Extended } from '@tmlmobilidade/types';
+import { type GTFS_Route_Extended, type HubLine } from '@tmlmobilidade/types';
 import crypto from 'node:crypto';
 
 /* * */
@@ -76,7 +76,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 
 	const processPatternsTimer = new Timer();
 
-	const allLinesParsed = new Map<string, Line>();
+	const allLinesParsed = new Map<string, HubLine>();
 	const allRoutesParsed = new Map<string, Route>();
 	const updatedPatternKeys = new Set<string>();
 
@@ -370,12 +370,13 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 			//
 			// Create the line object if it doesn't exist yet
 
-			let currentLineObject: Line;
+			let currentLineObject: HubLine;
 
 			if (allLinesParsed.has(String(routeRawData.line_id))) {
 				currentLineObject = allLinesParsed.get(String(routeRawData.line_id));
 			} else {
 				currentLineObject = {
+					agency_id: routeRawData.agency_id,
 					color: routeRawData.route_color ? `#${routeRawData.route_color}` : '#000000',
 					district_ids: [],
 					facilities: [],
@@ -459,7 +460,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 	//
 	// Save all lines to the database
 
-	const finalizedAllLinesData: Line[] = Array.from(allLinesParsed.values()); // .sort((a, b) => sortCollator.compare(a.id, b.id));
+	const finalizedAllLinesData: HubLine[] = Array.from(allLinesParsed.values()); // .sort((a, b) => sortCollator.compare(a.id, b.id));
 	await apiCache.set('hub:network:lines', JSON.stringify(finalizedAllLinesData));
 	Logger.info(`Updated ${finalizedAllLinesData.length} Lines`);
 
