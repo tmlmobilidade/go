@@ -26,10 +26,13 @@
 /* DESCRIPTION */
 
 .description {
-	max-width: 300px;
+	max-width: 100%;
+	padding-right: 20px;
+	padding-bottom: 20px;
 	font-size: var(--font-size-text);
 	font-weight: 400;
 	color: var(--color-system-text-200);
+	white-space: pre-wrap;
 }
 
 /* * */
