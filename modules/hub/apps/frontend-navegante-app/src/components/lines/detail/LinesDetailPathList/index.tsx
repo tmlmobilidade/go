@@ -56,14 +56,16 @@ export function LinesDetailPathList() {
 					?.push({ type: 'scheduled', unixTs: arrivalData.scheduled_arrival_unix * 1000 });
 			}
 		});
-		for (const key of Object.keys(result)) {
+		for (const key of result.keys()) {
 			result.get(key)?.sort((a, b) => a.unixTs - b.unixTs);
 		}
 		return result;
 	}, [patternRealtimeData, linesDetailContext.data.active_pattern?.id]);
 
 	const sortedStops = useMemo(() => {
-		return linesDetailContext.data.active_pattern?.path.sort((a, b) => a.stop_sequence - b.stop_sequence);
+		return linesDetailContext.data.active_pattern?.path
+			? [...linesDetailContext.data.active_pattern.path].sort((a, b) => a.stop_sequence - b.stop_sequence)
+			: undefined;
 	}, [linesDetailContext.data.active_pattern?.path]);
 
 	//

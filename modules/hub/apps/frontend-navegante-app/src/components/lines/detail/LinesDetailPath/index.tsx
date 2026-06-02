@@ -3,7 +3,7 @@
 import { NoDataLabel } from '@/components/layout/NoDataLabel';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { LinesDetailPathList } from '@/components/lines/detail/LinesDetailPathList';
-// import { LinesDetailPathMap } from '@/components/lines/detail/LinesDetailPathMap';
+import { LinesDetailPathMap } from '@/components/lines/detail/LinesDetailPathMap';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { getCssVariableValue } from '@/hooks/get-css-variabble';
 import { useStickyObserver } from '@/hooks/use-sticky-observer';
@@ -33,7 +33,7 @@ export function LinesDetailPath() {
 	if (!linesDetailContext.data.active_pattern || !operationalDateContext.data.selected_date) {
 		return (
 			<Surface>
-				<NoDataLabel text={t('default:lines.LinesDetailPath.no_data')} withMinHeight />
+				<NoDataLabel text={t('default:lines.LinesDetailPath.no_data')} />
 			</Surface>
 		);
 	}
@@ -59,14 +59,13 @@ export function LinesDetailPath() {
 				)}
 			</div>
 
-			<Section>
-				<div className={styles.container}>
-					<LinesDetailPathList />
-					<div className={styles.mapWrapper}>
-						{/* <LinesDetailPathMap /> */}
-					</div>
+			<div className={styles.container}>
+				<LinesDetailPathList />
+				<div className={styles.mapWrapper}>
+					<LinesDetailPathMap />
 				</div>
-			</Section>
+			</div>
+
 		</Surface>
 	);
 
