@@ -39,7 +39,6 @@ export function SelectActivePatternGroup() {
 			patterns={validPatternGroupsSelectOptions}
 			placeholder={t('default:lines.SelectActivePatternGroup.placeholder')}
 			value={linesDetailContext.data.active_pattern?.version_id || null}
-			clearable
 			searchable
 		/>
 	);

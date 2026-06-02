@@ -35,12 +35,19 @@
 }
 
 /* * */
+/* OPERATIONAL DATE SELECTOR */
+
+.operationalDateSelectorWrapper {
+	width: 100%;
+}
+
+/* * */
 /* CONTAINER */
 
 .container {
 	display: grid;
 	grid-template-columns: auto 1fr;
-	gap: var(--size-spacing-10) var(--size-spacing-20);
+	gap: 10px 20px;
 	align-items: flex-end;
 	justify-content: center;
 	width: 100%;
