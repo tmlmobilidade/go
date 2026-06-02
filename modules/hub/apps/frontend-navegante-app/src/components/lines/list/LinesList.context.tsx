@@ -4,17 +4,29 @@ import { useLinesContext } from '@/components/lines/Lines.context';
 import { useTransitModes } from '@/hooks/use-transit-modes';
 import { type HubLine } from '@tmlmobilidade/types';
 import { type ListContextStateTemplate, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 
 /* * */
+
+const DEFAULT_QTY_PER_AGENCY = 5;
 
 const DESIRED_AGENCY_ORDER = ['4', '2', '16', '15', 'CM', '1', '8'];
 
 /* * */
 
+interface LinesListGroupData {
+	agency_id: string
+	lines: HubLine[]
+	qty: number
+}
+
 interface LinesListContextState extends ListContextStateTemplate {
+	actions: {
+		increaseQtyPerAgency: (agencyId: string) => void
+	}
 	data: {
-		filtered: { agency_id: string, lines: HubLine[] }[]
+		filtered: LinesListGroupData[]
+		qtyPerAgency: Record<string, number>
 	}
 }
 
@@ -44,6 +56,8 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const filterSearch = useFilterStateString('search');
 
+	const [qtyPerAgency, setQtyPerAgency] = useState<Record<string, number>>({});
+
 	//
 	// B. Transform data
 
@@ -53,7 +67,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 		query: filterSearch.value,
 	});
 
-	const filteredData: { agency_id: string, lines: HubLine[] }[] = useMemo(() => {
+	const filteredData: LinesListGroupData[] = useMemo(() => {
 		// Filter data by active agency IDs
 		const filteredDataByActiveAgencyIds = searchResultsData?.filter((line) => {
 			return activeAgencyIds.includes(line.agency_id);
@@ -73,16 +87,31 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 				lines: groupedDataByAgencyId[agencyId].sort((a, b) => {
 					const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
 					return collator.compare(a.short_name || '', b.short_name || '');
-				}) || [],
+				}).slice(0, !filterSearch.value.length ? (qtyPerAgency[agencyId] || DEFAULT_QTY_PER_AGENCY) : groupedDataByAgencyId[agencyId].length) || [],
+				qty: groupedDataByAgencyId[agencyId].length,
 			}));
-	}, [searchResultsData, activeAgencyIds]);
+	}, [activeAgencyIds, filterSearch.value.length, qtyPerAgency, searchResultsData]);
 
 	//
-	// C. Define context value
+	// C. Handle actions
+
+	const increaseQtyPerAgency = (agencyId: string) => {
+		setQtyPerAgency(prev => ({
+			...prev,
+			[agencyId]: (prev[agencyId] || DEFAULT_QTY_PER_AGENCY) + 30,
+		}));
+	};
+
+	//
+	// D. Define context value
 
 	const contextValue: LinesListContextState = {
+		actions: {
+			increaseQtyPerAgency,
+		},
 		data: {
 			filtered: filteredData,
+			qtyPerAgency,
 		},
 		filters: {
 			search: filterSearch,
@@ -94,13 +123,11 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	//
-	// D. Render components
+	// E. Render components
 
 	return (
 		<LinesListContext.Provider value={contextValue}>
 			{children}
 		</LinesListContext.Provider>
 	);
-
-	//
 };
