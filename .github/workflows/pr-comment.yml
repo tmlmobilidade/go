@@ -2,7 +2,7 @@ name: PR Comment Bot
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, reopened]
 
 permissions:
   pull-requests: write
@@ -10,18 +10,57 @@ permissions:
 
 jobs:
   comment:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
 
     steps:
-      - name: Comment PR environment
-        uses: actions/github-script@v7
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          sparse-checkout: modules
+          sparse-checkout-cone-mode: false
+
+      - name: List buildable modules
+        id: modules
+        shell: bash
+        run: |
+          MODULES=$(ls -1 modules | sort)
+          {
+            echo "list<<EOF"
+            echo "$MODULES" | sed 's/^/- `/' | sed 's/$/`/'
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Comment PR environment and builds
+        uses: actions/github-script@v8
         with:
           script: |
             const prNumber = context.payload.pull_request.number;
+            const moduleList = `${{ steps.modules.outputs.list }}`.trim();
 
-            github.rest.issues.createComment({
+            const body = [
+              `Behold! Your PR has ascended to its own environment:`,
+              '',
+              `https://pr-${prNumber}.go-stg.tmlmobilidade.pt/`,
+              '',
+              'Test wisely, deploy bravely.',
+              '',
+              '---',
+              '',
+              '### Build modules on demand',
+              '',
+              'Comment on this PR to build a single module (images tagged `pr-' + prNumber + '`):',
+              '',
+              '```',
+              '/build <module>',
+              '```',
+              '',
+              '**Available modules:**',
+              moduleList,
+            ].join('\n');
+
+            await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: prNumber,
-              body: `Behold! Your PR has ascended to its own environment:\n\nhttps://pr-${prNumber}.go-stg.tmlmobilidade.pt/\n\nTest wisely, deploy bravely`
+              body,
             });

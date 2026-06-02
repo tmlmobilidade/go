@@ -1,0 +1,113 @@
+name: Build Command
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  actions: write
+  pull-requests: write
+
+jobs:
+  build:
+    if: |
+      github.event.issue.pull_request &&
+      startsWith(github.event.comment.body, '/build')
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Parse command and load PR
+        id: pr
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const body = context.payload.comment.body.trim();
+            const match = body.match(/^\/build\s+(\S+)/i);
+            if (!match) {
+              core.setFailed('Usage: /build <module>');
+              return;
+            }
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+
+            core.setOutput('module', match[1].toLowerCase());
+            core.setOutput('head_ref', pr.head.ref);
+            core.setOutput('pr_number', String(pr.number));
+
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ steps.pr.outputs.head_ref }}
+          sparse-checkout: modules
+          sparse-checkout-cone-mode: false
+
+      - name: Validate module
+        id: validate
+        shell: bash
+        run: |
+          MODULE="${{ steps.pr.outputs.module }}"
+          if [ ! -d "modules/${MODULE}/apps" ]; then
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+            echo "available<<EOF" >> "$GITHUB_OUTPUT"
+            ls -1 modules | sort >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "valid=true" >> "$GITHUB_OUTPUT"
+
+      - name: Reply when module unknown
+        if: steps.validate.outputs.valid != 'true'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const available = `${{ steps.validate.outputs.available }}`.trim().split('\n').filter(Boolean);
+            const list = available.map(m => `- \`${m}\``).join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: [
+                `Unknown module \`${{ steps.pr.outputs.module }}\`.`,
+                '',
+                'Available modules:',
+                list,
+                '',
+                'Usage: `/build <module>`',
+              ].join('\n'),
+            });
+
+      - name: Dispatch module build
+        if: steps.validate.outputs.valid == 'true'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const module = '${{ steps.pr.outputs.module }}';
+            const prNumber = '${{ steps.pr.outputs.pr_number }}';
+            const headRef = '${{ steps.pr.outputs.head_ref }}';
+
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'build-modules.yml',
+              ref: headRef,
+              inputs: {
+                module,
+                build_all: 'false',
+                pr_number: prNumber,
+              },
+            });
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: [
+                `Building module \`${module}\` for this PR.`,
+                '',
+                'Track progress in the [Build Modules](https://github.com/${{ github.repository }}/actions/workflows/build-modules.yml) workflow.',
+              ].join('\n'),
+            });
+
