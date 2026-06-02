@@ -1,11 +1,9 @@
 'use client';
 
 import { NoDataLabel } from '@/components/layout/NoDataLabel';
-import { PathWaypoint } from '@/components/lines/PathWaypoint';
-import { useLinesDetailContext } from '@/contexts/LinesDetail.context';
-import { getPublicVariable } from '@/settings/public-variables';
-import { NextArrival } from '@/types/timetables.types';
-import { PatternRealtime } from '@/utils/types';
+import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
+import { PathWaypoint } from '@/components/lines/detail/PathWaypoint';
+import { getModuleConfig } from '@tmlmobilidade/consts';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -24,7 +22,7 @@ export function LinesDetailPathList() {
 	//
 	// B. Fetch data
 
-	const { data: patternRealtimeData } = useSWR<PatternRealtime[]>(linesDetailContext.data.active_pattern?.id && `${getPublicVariable('hub_api_url')}/v1/network/arrivals/by_pattern/${linesDetailContext.data.active_pattern.id}`, { refreshInterval: 10000 });
+	const { data: patternRealtimeData } = useSWR<PatternRealtime[]>(linesDetailContext.data.active_pattern?.id && `${getModuleConfig('hub', 'api_url')}/v1/network/arrivals/by_pattern/${linesDetailContext.data.active_pattern.id}`, { refreshInterval: 10000 });
 
 	//
 	// C. Transform data

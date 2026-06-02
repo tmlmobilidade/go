@@ -1,6 +1,6 @@
 'use client';
 
-// import { BackButton } from '@/components/common/BackButton';
+import { BackButton } from '@/components/common/BackButton';
 import { LineBadge } from '@/components/lines/common/LineBadge';
 import { SelectOperationalDate } from '@/components/lines/common/SelectOperationalDate';
 import { LineDisplayTts } from '@/components/lines/detail/LineDisplayTts';
@@ -34,7 +34,7 @@ export function LinesDetailHeader() {
 			<Surface>
 
 				<Section>
-					{/* <BackButton href="/?section=lines" /> */}
+					<BackButton href="/?section=lines" />
 				</Section>
 
 				<Section>

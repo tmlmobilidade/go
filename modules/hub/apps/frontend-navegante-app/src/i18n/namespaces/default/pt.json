@@ -73,6 +73,11 @@
 			"placeholder": "Filtrar por efeito"
 		}
 	},
+	"common": {
+		"BackButton": {
+			"label": "Voltar"
+		}
+	},
 	"layout": {
 		"NoDataLabel": {
 			"no_data": "Nenhum dado disponível"
@@ -81,6 +86,10 @@
 	"lines": {
 		"LinesDetailAlerts": {
 			"heading": "Alertas ativos para esta linha"
+		},
+		"LinesDetailPath": {
+			"no_data": "Selecione um Percurso / Destino",
+			"summary": "Linha <lineNumber>{line_number}</lineNumber> com destino a <destinationName>{destination_name}</destinationName> no dia <dayName>{day_name, date, long}</dayName>. <changeDay>Alterar dia ›</changeDay>"
 		},
 		"LinesListToolbar": {
 			"by_search": {

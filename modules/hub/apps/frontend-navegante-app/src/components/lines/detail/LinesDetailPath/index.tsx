@@ -1,15 +1,14 @@
 'use client';
 
 import { NoDataLabel } from '@/components/layout/NoDataLabel';
-import { Section } from '@/components/layout/Section';
-import { Surface } from '@/components/layout/Surface';
-import { LinesDetailPathList } from '@/components/lines/LinesDetailPathList';
-import { LinesDetailPathMap } from '@/components/lines/LinesDetailPathMap';
-import { useLinesDetailContext } from '@/contexts/LinesDetail.context';
+import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
+import { LinesDetailPathList } from '@/components/lines/detail/LinesDetailPathList';
+import { LinesDetailPathMap } from '@/components/lines/detail/LinesDetailPathMap';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
-import { useStickyObserver } from '@/hooks/useStickyObserver';
-import { getCssVariableValue } from '@/utils/getCssVariableValue';
-import { useTranslations } from 'next-intl';
+import { getCssVariableValue } from '@/hooks/get-css-variabble';
+import { useStickyObserver } from '@/hooks/use-sticky-observer';
+import { Section, Surface } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -21,7 +20,7 @@ export function LinesDetailPath() {
 	//
 	// A. Setup variables
 
-	const t = useTranslations('lines.LinesDetailPath');
+	const { t } = useTranslation();
 
 	const linesDetailContext = useLinesDetailContext();
 	const operationalDateContext = useOperationalDateContext();
@@ -34,7 +33,7 @@ export function LinesDetailPath() {
 	if (!linesDetailContext.data.active_pattern || !operationalDateContext.data.selected_date) {
 		return (
 			<Surface>
-				<NoDataLabel text={t('no_data')} withMinHeight />
+				<NoDataLabel text={t('default:lines.LinesDetailPath.no_data')} withMinHeight />
 			</Surface>
 		);
 	}
@@ -46,7 +45,7 @@ export function LinesDetailPath() {
 				{isSticky && (
 					<>
 						<p className={styles.linesSummaryWrapper}>
-							{t.rich('summary', {
+							{t('default:lines.LinesDetailPath.summary', '', {
 								changeDay: chunks => <a className={styles.changeDay} href="#">{chunks}</a>,
 								day_name: operationalDateContext.data.selected_date.js_date,
 								dayName: chunks => <span className={styles.dayName}>{chunks}</span>,
@@ -62,9 +61,9 @@ export function LinesDetailPath() {
 
 			<Section>
 				<div className={styles.container}>
-					<LinesDetailPathList />
+					{/* <LinesDetailPathList /> */}
 					<div className={styles.mapWrapper}>
-						<LinesDetailPathMap />
+						{/* <LinesDetailPathMap /> */}
 					</div>
 				</div>
 			</Section>

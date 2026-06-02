@@ -1,13 +1,14 @@
 'use client';
 
+import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { MapView } from '@/components/map/MapView';
 import { MapViewStyleActiveStops, MapViewStyleActiveStopsPrimaryLayerId } from '@/components/map/MapViewStyleActiveStops';
 import { MapViewStylePath, MapViewStylePathInteractiveLayerId } from '@/components/map/MapViewStylePath';
 import { MapViewStyleVehicles, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/MapViewStyleVehicles';
-import { useLinesDetailContext } from '@/contexts/LinesDetail.context';
-import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/contexts/Stops.context';
+import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/contexts/Vehicles.context';
-import { centerMap, getBaseGeoJsonFeatureCollection, moveMap } from '@/utils/map.utils';
+import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+// import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { useMap } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo } from 'react';
 
