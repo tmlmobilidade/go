@@ -9,7 +9,7 @@ import { LinesDetailPath } from '@/components/lines/detail/LinesDetailPath';
 export function LinesDetail() {
 	return (
 		<>
-			{/* <LinesDetailHeader /> */}
+			<LinesDetailHeader />
 			<LinesDetailAlerts />
 			{/* <LinesDetailPath /> */}
 		</>

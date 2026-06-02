@@ -9,16 +9,15 @@ import Carousel from '@/components/lines/common/Carousel';
 
 interface Props {
 	alerts: HubAlert[]
-	target?: '_blank' | '_self'
 }
 
 /* * */
 
-export function AlertsCarousel({ alerts, target = '_self' }: Props) {
+export function AlertsCarousel({ alerts }: Props) {
 	const carouselSlides = alerts?.map((slideItem, index) => ({
 		_id: `${slideItem._id}-${index}`,
 		component: (
-			<AlertsCarouselSlide alert={slideItem} target={target} />
+			<AlertsCarouselSlide alert={slideItem} />
 		),
 	}));
 

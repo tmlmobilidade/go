@@ -7,8 +7,9 @@ import { LinesDetailContextProvider } from '@/components/lines/detail/LinesDetai
 
 export default async function Page({ params }) {
 	const { line_id } = await params;
+	const decodedLineId = decodeURIComponent(line_id);
 	return (
-		<LinesDetailContextProvider lineId={line_id}>
+		<LinesDetailContextProvider lineId={decodedLineId}>
 			<LinesDetail />
 		</LinesDetailContextProvider>
 	);
