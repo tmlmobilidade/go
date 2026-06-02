@@ -31,7 +31,7 @@ export async function processTripsFile(context: ImportGtfsContext): Promise<void
 			context.referenced_route_ids.add(validatedData.route_id);
 			context.referenced_shape_ids.add(validatedData.shape_id);
 			// Log progress
-			if (context.counters.trips % 10000 === 0) Logger.info(`Parsed ${context.counters.trips} trips.txt rows so far.`);
+			if (context.counters.trips % 10000 === 0) Logger.info(`Parsed ${context.counters.trips} trips.txt rows so far (${tripsParseTimer.get()})`);
 			// Increment the counter
 			context.counters.trips++;
 		};
