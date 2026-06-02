@@ -1037,16 +1037,9 @@ export async function parsePlan(planData: Plan) {
 	//
 	// Mark this plan as 'complete' to indicate that it was processed successfully
 
-	await plans.updateById(planData._id, {
-		apps: {
-			...planData.apps,
-			controller: {
-				last_hash: planData.hash,
-				status: 'complete',
-				timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-			},
-		},
-	});
+	const plansCollection = await plans.getCollection();
+
+	await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.controller.last_hash': planData.hash, 'apps.controller.status': 'complete', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 
 	Logger.success(`Finished processing plan "${planData._id}". (${globalTimer.get()})`);
 
