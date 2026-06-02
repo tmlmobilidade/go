@@ -19,11 +19,6 @@ on:
         description: "Build environment value"
         required: true
         type: string
-      ref:
-        description: "Git ref to checkout (PR head SHA when building from a PR)"
-        required: false
-        type: string
-        default: ""
 
 jobs:
 
@@ -67,8 +62,6 @@ jobs:
         app: ${{ fromJson(needs.get-apps.outputs.apps) }}
     steps:
       - uses: actions/checkout@v5
-        with:
-          ref: ${{ inputs.ref || github.sha }}
 
       - name: Determine Dockerfile
         id: dockerfile

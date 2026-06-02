@@ -35,6 +35,13 @@ concurrency:
 
 jobs:
 
+  # # #
+  # Auto-discover modules and module->apps mapping from filesystem,
+  # then filter down to the modules that actually need to build:
+  # - Module file changed -> build only that module.
+  # - Shared package changed -> build every module.
+  # - Manual dispatch -> honour the `module` and `build_all` inputs.
+
   discover:
     name: Discover Modules
     if: github.event.action != 'closed'
@@ -64,6 +71,10 @@ jobs:
           selected-module: ${{ inputs.module || 'all' }}
           build-all: ${{ inputs.build_all || 'true' }}
 
+  # # #
+  # Generate package-lock.json once,
+  # shared across all builds.
+
   package-lock:
     name: Generate package-lock.json
     needs: discover
@@ -86,6 +97,11 @@ jobs:
           path: package-lock.json
           retention-days: 1
 
+  # # #
+  # If the current workflow is triggered by a pull request,
+  # eagerly notify the go-infra repo to generate a preview environment,
+  # even if some of the builds fail. This allows faster feedback for PR authors.
+
   notify-infra:
     name: Notify Infrastructure
     needs: [package-lock]
@@ -105,6 +121,9 @@ jobs:
               "pr_number": ${{ github.event.pull_request.number }},
               "pr_action": "${{ github.event.action }}"
             }
+
+  # # #
+  # Build and push Docker images for each module that needs it.
 
   build-module:
     name: Build ${{ matrix.module }}
