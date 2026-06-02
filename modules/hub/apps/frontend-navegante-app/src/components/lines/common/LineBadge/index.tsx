@@ -9,7 +9,7 @@ import styles from './styles.module.css';
 /* * */
 
 interface LineBadgeProps {
-	agencyId: string
+	agencyId?: string
 	color?: string
 	lineData?: HubLine
 	lineId?: string
