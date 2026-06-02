@@ -104,9 +104,10 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 			try {
 				if (!dataLineState) return;
 				const fetchPromises = dataLineState.pattern_ids.map((patternId) => {
-					return fetch(`${API_ROUTES.hub.NETWORK_PATTERNS}/${patternId}`)
+					return fetch(API_ROUTES.hub.NETWORK_PATTERNS(patternId))
 						.then(response => response.json())
-						.then((patternData) => {
+						.then((patternPayload) => {
+							const patternData = Array.isArray(patternPayload) ? patternPayload : patternPayload.data ?? [];
 							return patternData.map((patternGroup) => {
 								patternGroup.path = patternGroup.path.map((waypoint) => {
 									const stopData = stopsContext.actions.getStopById(waypoint.stop_id);
@@ -133,10 +134,11 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 		if (!dataActivePatternState) return;
 		(async () => {
 			try {
-				const shapeData = await fetch(`${API_ROUTES.hub.NETWORK_PATTERNS}/${dataActivePatternState.shape_id}`).then((response) => {
+				const shapeUrl = API_ROUTES.hub.NETWORK_PATTERNS(dataActivePatternState.shape_id).replace('/patterns/', '/shapes/');
+				const shapeData = await fetch(shapeUrl).then((response) => {
 					if (!response.ok) console.log(`Failed to fetch shape data for shapeId: ${dataActivePatternState.shape_id}`);
 					else return response.json();
-				});
+				}).then(shapePayload => shapePayload?.data ?? shapePayload);
 				if (shapeData) {
 					shapeData.geojson = {
 						...shapeData.geojson,
