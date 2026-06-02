@@ -12,7 +12,9 @@ export function LineGroup({ agencyId, children }: { agencyId: string, children: 
 	return (
 		<div className={styles.container}>
 			<Image alt={`${AGENCY_NAMES_MAP[agencyId].full} Logo`} className={styles.logo} height={60} src={AGENCY_LOGO_MAP[agencyId]} width={90} />
-			{children}
+			<div className={styles.childrenWrapper}>
+				{children}
+			</div>
 		</div>
 	);
 }
