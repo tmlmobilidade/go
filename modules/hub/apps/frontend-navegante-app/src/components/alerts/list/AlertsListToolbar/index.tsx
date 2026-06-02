@@ -7,8 +7,8 @@
 // import { SelectStop } from '@/components/alerts/common/SelectStop';
 import { useAlertsListContext } from '@/components/alerts/list/AlertsList.context';
 // import { FoundItemsCounter } from '@/components/layout/FoundItemsCounter';
-import { useLinesContext } from '@/components/lines/Lines.context';
-import { useStopsContext } from '@/components/stops/Stops.context';
+// import { useLinesContext } from '@/components/lines/Lines.context';
+// import { useStopsContext } from '@/components/stops/Stops.context';
 import { SegmentedControl } from '@mantine/core';
 import { SearchInput, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
