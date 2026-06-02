@@ -11,7 +11,7 @@ export function LinesDetail() {
 		<>
 			<LinesDetailHeader />
 			<LinesDetailAlerts />
-			{/* <LinesDetailPath /> */}
+			<LinesDetailPath />
 		</>
 	);
 }

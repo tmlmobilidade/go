@@ -4,12 +4,21 @@ import { NoDataLabel } from '@/components/layout/NoDataLabel';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { PathWaypoint } from '@/components/lines/detail/PathWaypoint';
 import { getModuleConfig } from '@tmlmobilidade/consts';
+import { HubPatternRealtime } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
 /* * */
+
+interface NextArrival {
+	estimated_arrival_hours: number
+	estimated_arrival_minutes: number
+	estimated_arrival_seconds: number
+	estimated_arrival_unix: number
+	label: string
+}
 
 export function LinesDetailPathList() {
 	//
@@ -22,7 +31,7 @@ export function LinesDetailPathList() {
 	//
 	// B. Fetch data
 
-	const { data: patternRealtimeData } = useSWR<PatternRealtime[]>(linesDetailContext.data.active_pattern?.id && `${getModuleConfig('hub', 'api_url')}/v1/network/arrivals/by_pattern/${linesDetailContext.data.active_pattern.id}`, { refreshInterval: 10000 });
+	const { data: patternRealtimeData } = useSWR<HubPatternRealtime[]>(linesDetailContext.data.active_pattern?.id && `${getModuleConfig('hub', 'api_url')}/v1/network/arrivals/by_pattern/${linesDetailContext.data.active_pattern.id}`, { refreshInterval: 10000 });
 
 	//
 	// C. Transform data
@@ -51,7 +60,7 @@ export function LinesDetailPathList() {
 			}
 		});
 		for (const key of Object.keys(result)) {
-			result.get(key)?.sort((a, b) => a.unixTs - b.unixTs);
+			result.get(key)?.sort((a, b) => a.estimated_arrival_unix - b.estimated_arrival_unix);
 		}
 		return result;
 	}, [patternRealtimeData, linesDetailContext.data.active_pattern?.id]);
