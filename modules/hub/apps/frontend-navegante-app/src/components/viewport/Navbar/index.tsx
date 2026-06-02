@@ -33,7 +33,7 @@ export function Navbar() {
 
 	return (
 		<Tabs
-			classNames={{ panel: styles.panel, root: styles.root, tab: styles.tab, tabLabel: styles.tabLabel }}
+			classNames={{ list: styles.list, panel: styles.panel, root: styles.root, tab: styles.tab, tabLabel: styles.tabLabel }}
 			color="transparent"
 			onChange={setActiveTab}
 			radius="xs"
