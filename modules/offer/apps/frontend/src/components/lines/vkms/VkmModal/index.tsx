@@ -20,9 +20,8 @@ const calculationMethodOptions: SegmentedControlDataItem[] = [
 ];
 
 const extensionSourceOptions: { label: string, value: VkmExtensionSource }[] = [
-	{ label: 'Shape', value: 'shape' },
+	{ label: 'GO (recomendado)', value: 'go' },
 	{ label: 'Stop times', value: 'stop_times' },
-	{ label: 'GO', value: 'go' },
 ];
 
 const methodLabels = {
@@ -32,8 +31,12 @@ const methodLabels = {
 
 const sourceLabels = {
 	go: 'GO',
-	shape: 'Shape',
 	stop_times: 'Stop times',
+} as const;
+
+const sourceDescriptions = {
+	go: 'Usa a extensão atualmente guardada no percurso e corresponde ao equivalente da antiga opção recomendada de shape (GO v1).',
+	stop_times: 'Soma as distâncias entre paragens (`distance_delta`) ao longo do percurso.',
 } as const;
 
 const integerFormatter = new Intl.NumberFormat('pt-PT');
@@ -150,10 +153,10 @@ function VkmModal() {
 				<Divider />
 
 				<Section gap="sm">
-					<Label size="sm" caps>Método de cálculo</Label>
-					<Text c="dimmed" size="sm">Escolha se quer calcular um ano móvel a partir da data inicial ou um intervalo fechado.</Text>
 					<SegmentedControl
 						data={calculationMethodOptions}
+						description="Escolha se quer calcular um ano móvel a partir da data inicial ou um intervalo fechado."
+						label="Método de cálculo"
 						onChange={value => context.actions.setCalculationMethod(value as typeof context.data.form.values.calculation_method)}
 						value={context.data.form.values.calculation_method}
 						fullWidth
@@ -163,10 +166,10 @@ function VkmModal() {
 				<Divider />
 
 				<Section gap="sm">
-					<Label size="sm" caps>Fonte da extensão</Label>
-					<Text c="dimmed" size="sm">Defina qual a fonte usada para medir a distância de cada percurso.</Text>
 					<SegmentedControl
 						data={extensionSourceOptions}
+						description={sourceDescriptions[context.data.form.values.extension_source]}
+						label="Fonte da extensão"
 						onChange={value => context.data.form.setFieldValue('extension_source', value as VkmExtensionSource)}
 						value={context.data.form.values.extension_source}
 						fullWidth

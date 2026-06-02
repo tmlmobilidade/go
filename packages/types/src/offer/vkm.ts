@@ -12,9 +12,8 @@ export const VkmCalculationMethodSchema = z.enum(VkmCalculationMethodValues);
 export type VkmCalculationMethod = z.infer<typeof VkmCalculationMethodSchema>;
 
 export const VkmExtensionSourceValues = [
-	'shape',
-	'stop_times',
 	'go',
+	'stop_times',
 ] as const;
 
 export const VkmExtensionSourceSchema = z.enum(VkmExtensionSourceValues);

@@ -14,6 +14,13 @@ interface CalculateAgencyVkmArgs {
 	request: CalculateVkmDto
 }
 
+interface CalculationContext {
+	endDate: Dates
+	metadataByDate: Map<OperationalDate, DayMetadata>
+	operationalDates: OperationalDate[]
+	relevantPeriods: YearPeriod[]
+}
+
 interface DayMetadata {
 	dayType: LegacyVkmDayType
 	periodId: null | string
@@ -117,8 +124,8 @@ export function getPatternExtensionMeters(pattern: Pattern, source: CalculateVkm
 		return (pattern.path ?? []).reduce((total, item) => total + Number(item.distance_delta ?? 0), 0);
 	}
 
-	// The current GO pattern model stores the normalized shape length in `shape.extension`.
-	// Legacy `shape` and `go` sources both map to this field until raw GTFS shape distances are stored separately again.
+	// `go` uses the extension currently persisted in the pattern shape. That value can come
+	// from GTFS import or from a later Valhalla-based recompute in the GO shape editor.
 	return Number(pattern.shape?.extension ?? 0);
 }
 
@@ -182,6 +189,51 @@ function buildDayMetadata(operationalDates: OperationalDate[], holidays: Holiday
 	return { metadataByDate, relevantPeriods };
 }
 
+function resolveCalculationEndDate(request: Pick<CalculateVkmDto, 'calculation_method' | 'end_date' | 'start_date'>) {
+	const startDate = Dates.fromOperationalDate(request.start_date, 'Europe/Lisbon');
+	const endDate = request.calculation_method === 'rolling_year'
+		? startDate.plus({ years: 1 })
+		: Dates.fromOperationalDate(request.end_date ?? request.start_date, 'Europe/Lisbon');
+
+	return { endDate, startDate };
+}
+
+function buildCalculationContext(
+	request: Pick<CalculateVkmDto, 'calculation_method' | 'end_date' | 'start_date'>,
+	holidays: Holiday[],
+	periods: YearPeriod[],
+): CalculationContext {
+	const { endDate, startDate } = resolveCalculationEndDate(request);
+	const operationalDates = buildOperationalDateRange(startDate.js_date, endDate.js_date);
+	const { metadataByDate, relevantPeriods } = buildDayMetadata(operationalDates, holidays, periods);
+
+	return {
+		endDate,
+		metadataByDate,
+		operationalDates,
+		relevantPeriods,
+	};
+}
+
+function buildCalculationInputs(
+	agency: Agency,
+	request: Pick<CalculateVkmDto, 'calculation_method' | 'start_date'>,
+	endDate: Dates,
+) {
+	const totalVkmPerYear = agency.financials.vkm_per_month.reduce((sum, value) => sum + Number(value ?? 0), 0);
+	const pricePerKm = Number(agency.financials.price_per_km ?? 0);
+
+	return {
+		agency_id: agency._id,
+		agency_name: agency.name,
+		calculation_method: request.calculation_method,
+		end_date: endDate.operational_date,
+		price_per_km: pricePerKm,
+		start_date: request.start_date,
+		total_vkm_per_year: totalVkmPerYear,
+	};
+}
+
 /* * */
 
 export function calculateAgencyVkm({ agency, events, holidays, patterns, periods, request }: CalculateAgencyVkmArgs): VkmCalculationResult {
@@ -189,13 +241,7 @@ export function calculateAgencyVkm({ agency, events, holidays, patterns, periods
 
 	// Setup variables
 
-	const startDate = Dates.fromOperationalDate(request.start_date, 'Europe/Lisbon');
-	const endDate = request.calculation_method === 'rolling_year'
-		? startDate.plus({ years: 1 })
-		: Dates.fromOperationalDate(request.end_date ?? request.start_date, 'Europe/Lisbon');
-
-	const operationalDates = buildOperationalDateRange(startDate.js_date, endDate.js_date);
-	const { metadataByDate, relevantPeriods } = buildDayMetadata(operationalDates, holidays, periods);
+	const { endDate, metadataByDate, operationalDates, relevantPeriods } = buildCalculationContext(request, holidays, periods);
 	const accumulator = createAccumulator(relevantPeriods);
 
 	// Calculate VKM
@@ -228,27 +274,18 @@ export function calculateAgencyVkm({ agency, events, holidays, patterns, periods
 		}
 	}
 
-	const totalVkmPerYear = agency.financials.vkm_per_month.reduce((sum, value) => sum + Number(value ?? 0), 0);
 	const totalDistanceKm = metersToKilometers(accumulator.total_from_distance);
-	const pricePerKm = Number(agency.financials.price_per_km ?? 0);
+	const inputs = buildCalculationInputs(agency, request, endDate);
 
 	return {
 		day_type_one: metersToKilometers(accumulator.day_type_one),
 		day_type_three: metersToKilometers(accumulator.day_type_three),
 		day_type_two: metersToKilometers(accumulator.day_type_two),
-		inputs: {
-			agency_id: agency._id,
-			agency_name: agency.name,
-			calculation_method: request.calculation_method,
-			end_date: endDate.operational_date,
-			price_per_km: pricePerKm,
-			start_date: request.start_date,
-			total_vkm_per_year: totalVkmPerYear,
-		},
+		inputs,
 		periods: buildPeriodResults(accumulator.periods),
 		total_from_distance: totalDistanceKm,
 		total_from_shape: 0,
-		total_in_euros: totalDistanceKm * pricePerKm,
-		total_relative_to_contract: totalVkmPerYear ? totalDistanceKm / totalVkmPerYear : 0,
+		total_in_euros: totalDistanceKm * inputs.price_per_km,
+		total_relative_to_contract: inputs.total_vkm_per_year ? totalDistanceKm / inputs.total_vkm_per_year : 0,
 	};
 }

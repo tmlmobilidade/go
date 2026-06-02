@@ -57,7 +57,7 @@ export const VkmModalContextProvider = ({ children }: PropsWithChildren) => {
 			agency_id: null,
 			calculation_method: 'rolling_year',
 			end_date: null,
-			extension_source: 'shape',
+			extension_source: 'go',
 			start_date: null,
 		},
 		mode: 'controlled',
