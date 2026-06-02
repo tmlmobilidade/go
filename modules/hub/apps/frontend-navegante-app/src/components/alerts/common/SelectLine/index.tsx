@@ -2,8 +2,6 @@
 
 /* * */
 
-import type { Line } from '@carrismetropolitana/api-types/network';
-
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
 import { createDocCollection } from '@/hooks/useOtherSearch';
 import { ActionIcon, Combobox, Group, TextInput, useCombobox } from '@mantine/core';

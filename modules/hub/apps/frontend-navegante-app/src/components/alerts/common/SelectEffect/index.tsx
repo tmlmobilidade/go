@@ -5,7 +5,7 @@
 import { AlertEffectIcon } from '@/components/alerts/common/AlertEffectIcon';
 import { Flex, Group, Select, SelectProps, Text } from '@mantine/core';
 import { IconBolt } from '@tabler/icons-react';
-import { AlertEffect } from '@tmlmobilidade/types';
+import { AlertEffect, AlertEffectSchema } from '@tmlmobilidade/types';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -54,11 +54,10 @@ export default function Component({ onChange, value, ...props }: SelectAlertEffe
 	return (
 		<Select
 			allowDeselect={false}
-			data={Object.values(AlertEffect)}
+			data={AlertEffectSchema.options}
 			leftSection={<IconBolt size={20} />}
 			onChange={onChange}
 			renderOption={renderSelectOption}
-			renderRoot={renderSelectRoot || undefined}
 			value={value}
 			w="100%"
 			clearable

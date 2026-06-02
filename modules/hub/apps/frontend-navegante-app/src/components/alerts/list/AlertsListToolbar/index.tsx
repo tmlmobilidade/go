@@ -48,7 +48,7 @@ export function AlertsListToolbar() {
 
 			<AlertExpandToggle defaultState={!!alertsListContext.filters.line_id || !!alertsListContext.filters.stop_id || !!alertsListContext.filters.cause || !!alertsListContext.filters.effect}>
 				<div className={styles.selectsWrapper}>
-					<SelectLine
+					{/* <SelectLine
 						data={linesContext.data.lines}
 						label={t('default:alerts.AlertsListToolbar.filters.by_line.label')}
 						onSelectLineId={alertsListContext.actions.updateFilterByLineId}
@@ -63,7 +63,7 @@ export function AlertsListToolbar() {
 						placeholder={t('default:alerts.AlertsListToolbar.filters.by_stop.placeholder')}
 						selectedStopId={alertsListContext.filters.stop_id}
 						variant="default"
-					/>
+					/> */}
 					<SelectCause onChange={alertsListContext.actions.updateFilterByCause} value={alertsListContext.filters.cause} />
 					<SelectEffect onChange={alertsListContext.actions.updateFilterByEffect} value={alertsListContext.filters.effect} />
 				</div>
