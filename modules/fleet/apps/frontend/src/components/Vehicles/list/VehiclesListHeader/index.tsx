@@ -33,7 +33,7 @@ export function VehiclesListHeader() {
 			<HasPermission action={PermissionCatalog.all.vehicles.actions.create} scope={PermissionCatalog.all.vehicles.scope}>
 				<Button label="Importar veículo" leftSection={<IconUpload />} onClick={openImportVehicleModal} />
 			</HasPermission>
-			<IconButton icon={<IconFileDownload />} onClick={openVehicleListExportModal} tooltip="Exportar veículos" variant="secondary" />
+			<IconButton icon={<IconFileDownload />} onClick={() => openVehicleListExportModal(vehiclesListContext)} tooltip="Exportar veículos" variant="secondary" />
 		</Toolbar>
 	);
 
