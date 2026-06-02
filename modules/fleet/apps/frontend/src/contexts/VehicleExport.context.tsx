@@ -2,10 +2,11 @@
 
 /* * */
 
-import { useVehiclesListContext } from '@/contexts/VehiclesList.context';
 import { CreateFileExportDto, type VehicleExportProperties } from '@tmlmobilidade/types';
 import { closeModal, useAgenciesContext, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
+
+import { VehicleListContextState } from './VehiclesList.context';
 
 /* * */
 
@@ -38,8 +39,7 @@ export function useVehicleListExportContext() {
 	return context;
 }
 
-export const VehicleListExportContextProvider = ({ children, vehiclesListContext }:
-PropsWithChildren<{ vehiclesListContext: any }>) => {
+export const VehicleListExportContextProvider = ({ children, vehiclesListContext }: PropsWithChildren<{ vehiclesListContext: VehicleListContextState }>) => {
 	//
 
 	//

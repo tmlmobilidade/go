@@ -2,7 +2,7 @@
 
 import pjson from '#/package.json';
 import { DataProviders } from '@/providers/data-providers';
-import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
+import { AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { type PropsWithChildren } from 'react';
 
