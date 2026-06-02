@@ -62,16 +62,12 @@ export function VehicleListExportModal() {
 
 /* * */
 
-export const openVehicleListExportModal = () => {
+export const openVehicleListExportModal = (vehiclesListContext: any) => {
 	openModal({
 		children: (
-			<DataProviders>
-				<VehiclesListContextProvider>
-					<VehicleListExportContextProvider>
-						<VehicleListExportModal />
-					</VehicleListExportContextProvider>
-				</VehiclesListContextProvider>
-			</DataProviders>
+			<VehicleListExportContextProvider vehiclesListContext={vehiclesListContext}>
+				<VehicleListExportModal />
+			</VehicleListExportContextProvider>
 		),
 		closeOnClickOutside: false,
 		closeOnEscape: false,
