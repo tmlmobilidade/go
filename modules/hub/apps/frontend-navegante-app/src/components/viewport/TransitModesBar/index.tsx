@@ -27,7 +27,7 @@ export function TransitModesBar() {
 				<div
 					key={mode}
 					aria-checked={activeTransitModes.includes(mode)}
-					aria-label={t('default:viewport.TransitModesBar.aria_label', '', { mode })}
+					aria-label={t(`default:viewport.TransitModesBar.aria_label.${mode}`)}
 					className={styles.button}
 					data-active={activeTransitModes.includes(mode)}
 					onClick={() => toggleTransitMode(mode)}

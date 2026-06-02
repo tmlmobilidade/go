@@ -197,6 +197,14 @@
 				"lines": "Linhas",
 				"stops": "Paragens"
 			}
+		},
+		"TransitModesBar": {
+			"aria_label": {
+				"bus": "Autocarros",
+				"ferry": "Barco",
+				"subway": "Metro",
+				"train": "Comboios"
+			}
 		}
 	}
 }
