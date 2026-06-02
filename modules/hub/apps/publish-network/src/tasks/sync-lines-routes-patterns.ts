@@ -441,17 +441,15 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 	//
 	// Delete stale patterns
 
-	// const allPatternKeysInTheDatabase: string[] = [];
-	// for await (const key of SERVERDB.scanIterator({ MATCH: `${SERVERDB_KEYS.NETWORK.PATTERNS.BASE}:*`, TYPE: 'string' })) {
-	// 	allPatternKeysInTheDatabase.push(String(key));
-	// }
+	const removeStalePatternsTimer = new Timer();
 
-	// const stalePatternKeys = allPatternKeysInTheDatabase.filter(key => !updatedPatternKeys.has(key));
-	// if (stalePatternKeys.length) {
-	// 	await SERVERDB.del(stalePatternKeys);
-	// }
+	Logger.info(`Removing stale Patterns from cache...`);
 
-	// Logger.info(`Deleted ${stalePatternKeys.length} stale Patterns`);
+	const allPatternKeysInTheDatabase = await apiCache.scan(`hub:network:patterns:*`);
+	const stalePatternKeys = allPatternKeysInTheDatabase.filter(key => !updatedPatternKeys.has(key));
+	if (stalePatternKeys.length) await apiCache.deleteMany(stalePatternKeys);
+
+	Logger.info(`Deleted ${stalePatternKeys.length} stale Patterns (${removeStalePatternsTimer.get()})`);
 
 	//
 	// Save all routes to the database

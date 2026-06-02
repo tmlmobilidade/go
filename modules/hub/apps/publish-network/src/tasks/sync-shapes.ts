@@ -1,6 +1,6 @@
 /* * */
 
-import { apiCache } from '@tmlmobilidade/databases';
+import { apiCache, type ApiCacheKey } from '@tmlmobilidade/databases';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -33,12 +33,18 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 		//
 
 		//
+		// Use the cache key as the key for the Map,
+		// as it will be used to compare and delete stale shapes.
+
+		const cacheKey: ApiCacheKey = `hub:network:shapes:${shapeRaw.shape_id}`;
+
+		//
 		// Check if a shape object already exists, or create a new one.
 
 		let shapeData: HubShape;
 
-		if (allShapesData.has(shapeRaw.shape_id)) {
-			shapeData = allShapesData.get(shapeRaw.shape_id);
+		if (allShapesData.has(cacheKey)) {
+			shapeData = allShapesData.get(cacheKey);
 		} else {
 			shapeData = {
 				_id: shapeRaw.shape_id,
@@ -61,7 +67,7 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 
 		shapeData.points.push(parsedPoint);
 
-		allShapesData.set(shapeRaw.shape_id, shapeData);
+		allShapesData.set(cacheKey, shapeData);
 
 	//
 	}
@@ -111,11 +117,13 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 
 	const removeStaleShapesTimer = new Timer();
 
+	Logger.info(`Removing stale Shapes from cache...`);
+
 	const allExistingShapeKeys = await apiCache.scan(`hub:network:shapes:*`);
 	const staleShapeKeys = allExistingShapeKeys.filter(key => !allShapesData.has(key));
 	if (staleShapeKeys.length) await apiCache.deleteMany(staleShapeKeys);
 
-	Logger.info(`Deleted ${staleShapeKeys.length} stale Shapes from SERVERDB (${removeStaleShapesTimer.get()})`);
+	Logger.info(`Deleted ${staleShapeKeys.length} stale Shapes from cache (${removeStaleShapesTimer.get()})`);
 
 	//
 
