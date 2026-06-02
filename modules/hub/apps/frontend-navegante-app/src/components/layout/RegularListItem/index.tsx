@@ -46,6 +46,7 @@ export function RegularListItem({ ariaLabel, children, href, icon, refFn, style 
 			className={styles.container}
 			data-disabled={href === '#'}
 			onClick={handleClick}
+			role="link"
 			style={style}
 		>
 			{icon && (
