@@ -79,6 +79,9 @@
 		}
 	},
 	"lines": {
+		"LinesDetailAlerts": {
+			"heading": "Alertas ativos para esta linha"
+		},
 		"LinesListToolbar": {
 			"by_search": {
 				"placeholder": "Pesquisar por nome, número..."
