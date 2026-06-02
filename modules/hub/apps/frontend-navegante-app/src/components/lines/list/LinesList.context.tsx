@@ -10,7 +10,7 @@ import { createContext, type PropsWithChildren, useContext, useMemo } from 'reac
 
 interface LinesListContextState extends ListContextStateTemplate {
 	data: {
-		filtered: HubLine[]
+		filtered: Record<string, HubLine[]>
 	}
 }
 
@@ -52,7 +52,11 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	const filteredData = useMemo(() => {
 		return searchResultsData?.filter((line) => {
 			return activeAgencyIds.includes(line.agency_id);
-		});
+		}).reduce((acc: Record<string, HubLine[]>, line) => {
+			const agencyIdKey = ['41', '42', '43', '44'].includes(line.agency_id) ? 'CM' : line.agency_id;
+			acc[agencyIdKey] = [...(acc[agencyIdKey] || []), line];
+			return acc;
+		}, {} as Record<string, HubLine[]>);
 	}, [searchResultsData, activeAgencyIds]);
 
 	//
