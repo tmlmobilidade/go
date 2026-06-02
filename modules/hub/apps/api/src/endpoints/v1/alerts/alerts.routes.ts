@@ -19,6 +19,8 @@ server.register(
 
 		instance.get('/gtfs', AlertsController.getGtfsRtJsonFeed);
 
+		instance.get('/gtfs-cm', AlertsController.getGtfsRtJsonFeedCm);
+
 		instance.get('/gtfs.pb', AlertsController.getGtfsRtProtobufFeed);
 
 		instance.get('.rss', AlertsController.getRssFeed);
