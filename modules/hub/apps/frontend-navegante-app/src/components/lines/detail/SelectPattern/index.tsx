@@ -23,6 +23,16 @@ interface CustomComboboxItem extends ComboboxItem {
 	pattern_id: string
 }
 
+const PLACEHOLDER_HEADSIGN = 'HeadSign to be defined';
+
+function getPatternTitle(pattern: HubPattern, routeLongName?: string) {
+	if (pattern.headsign && pattern.headsign !== PLACEHOLDER_HEADSIGN) {
+		return pattern.headsign;
+	}
+
+	return pattern.long_name || routeLongName || pattern.headsign;
+}
+
 /* * */
 
 export function SelectPattern({ date_filter, onChange, patterns, value, ...props }: Props) {
@@ -39,19 +49,34 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 	//
 	// B. Transform data
 
-	const validPatternsSelectOptions = useMemo(() => {
+	const patternsForSelect = useMemo(() => {
 		if (!patterns) return [];
+
+		const withPath = patterns.filter(pattern => pattern.path.length > 0);
+		const base = withPath.length > 0 ? withPath : patterns;
+		const selected = value ? patterns.find(pattern => pattern.version_id === value) : undefined;
+
+		if (selected && !base.some(pattern => pattern.version_id === value)) {
+			return [...base, selected];
+		}
+
+		return base;
+	}, [patterns, value]);
+
+	const validPatternsSelectOptions = useMemo(() => {
+		if (!patternsForSelect.length) return [];
 
 		let data: ComboboxItemGroup<CustomComboboxItem>[] = [];
 
 		// Filter patterns by date
-		patterns.map((patternGroupData) => {
+		patternsForSelect.map((patternGroupData) => {
 			const group = data.find(group => group.group === patternGroupData.route_id);
+			const routeData = linesContext.actions.getRouteDataById(patternGroupData.route_id);
 
 			const item = {
 				direction_id: patternGroupData.direction_id,
-				disabled: date_filter ? !patternGroupData.valid_on.includes(date_filter) : false,
-				label: patternGroupData.headsign,
+				disabled: (date_filter ? !patternGroupData.valid_on.includes(date_filter) : false) || !patternGroupData.path.length,
+				label: getPatternTitle(patternGroupData, routeData?.long_name),
 				pattern_id: patternGroupData.id,
 				value: patternGroupData.version_id,
 			};
@@ -77,7 +102,7 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 		});
 
 		return data;
-	}, [date_filter, linesContext.actions, patterns]);
+	}, [date_filter, linesContext.actions, patternsForSelect]);
 
 	//
 	// C. Render components
@@ -85,7 +110,7 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 	const renderSelectOption: SelectProps['renderOption'] = ({ option }: { option: CustomComboboxItem }) => {
 		//
 
-		const patternData = patterns.find(pattern => pattern.version_id === option.value);
+		const patternData = patternsForSelect.find(pattern => pattern.version_id === option.value);
 		if (!patternData?.path.length) {
 			return (
 				<Flex align="center" gap={5} justify="center">
@@ -98,11 +123,13 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 		const firstStopData = stopsContext.actions.getStopById(patternData.path[0].stop_id);
 		const firstStopLocation = formatStopLocation(firstStopData?.locality_name, firstStopData?.municipality_name);
 
+		const routeData = linesContext.actions.getRouteDataById(patternData.route_id);
+
 		return (
 			<Group key={option.value} gap={2}>
 				<Flex direction="column">
 					<Flex align="flex-end" gap={5}>
-						<Text fw="bold">{patternData.headsign}</Text>
+						<Text fw="bold">{getPatternTitle(patternData, routeData?.long_name)}</Text>
 					</Flex>
 					<Text size="xs">{t('default:lines.SelectPattern.option_label', '', { locality: firstStopLocation || '' })}</Text>
 				</Flex>
@@ -110,12 +137,20 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 		);
 	};
 
+	const selectedPattern = patterns.find(pattern => pattern.version_id === value);
+	const selectedRoute = selectedPattern ? linesContext.actions.getRouteDataById(selectedPattern.route_id) : undefined;
+	const selectDescription = selectedPattern && !selectedPattern.path.length ?
+		t('default:lines.SelectPattern.invalid_option', '', { pattern_id: selectedPattern.id })
+		: selectedRoute?.long_name;
+
 	return (
 		<Select
 			allowDeselect={false}
 			data={validPatternsSelectOptions}
+			description={selectDescription}
 			label={t('default:lines.SelectPattern.label')}
 			onChange={onChange}
+			placeholder={t('default:lines.SelectPattern.placeholder')}
 			renderOption={renderSelectOption}
 			value={value}
 			w="100%"
