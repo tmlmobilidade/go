@@ -38,7 +38,8 @@ export function useVehicleListExportContext() {
 	return context;
 }
 
-export const VehicleListExportContextProvider = ({ children }: PropsWithChildren) => {
+export const VehicleListExportContextProvider = ({ children, vehiclesListContext }:
+PropsWithChildren<{ vehiclesListContext: any }>) => {
 	//
 
 	//
@@ -47,7 +48,6 @@ export const VehicleListExportContextProvider = ({ children }: PropsWithChildren
 	const agenciesContext = useAgenciesContext();
 
 	const exports = useExportsContext();
-	const vehiclesListContext = useVehiclesListContext();
 	const [loading, setLoading] = useState(false);
 
 	//
