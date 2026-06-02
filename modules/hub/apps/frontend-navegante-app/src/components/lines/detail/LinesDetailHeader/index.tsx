@@ -1,11 +1,11 @@
 'use client';
 
-import { BackButton } from '@/components/common/BackButton';
-import { SelectOperationalDate } from '@/components/common/SelectOperationalDate';
-import { LineDisplayTts } from '@/components/lines/detail/LineDisplayTts';
+// import { BackButton } from '@/components/common/BackButton';
 import { LineBadge } from '@/components/lines/common/LineBadge';
-import { SelectActivePatternGroup } from '@/components/lines/SelectActivePatternGroup';
-import { useLinesDetailContext } from '@/contexts/LinesDetail.context';
+import { SelectOperationalDate } from '@/components/lines/common/SelectOperationalDate';
+import { LineDisplayTts } from '@/components/lines/detail/LineDisplayTts';
+import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
+import { SelectActivePatternGroup } from '@/components/lines/detail/SelectActivePatternGroup';
 import { Section, Surface } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -33,11 +33,11 @@ export function LinesDetailHeader() {
 		<>
 			<Surface>
 
-				<Section withBottomDivider withPadding>
-					<BackButton href="/?section=lines" />
+				<Section>
+					{/* <BackButton href="/?section=lines" /> */}
 				</Section>
 
-				<Section withBottomDivider withPadding>
+				<Section>
 					<div className={styles.headingSection}>
 						<div className={styles.headingSectionRow}>
 							<LineBadge lineData={linesDetailContext.data.line} size="lg" />
@@ -49,7 +49,7 @@ export function LinesDetailHeader() {
 					</div>
 				</Section>
 
-				<Section withPadding>
+				<Section>
 					<div className={styles.container}>
 						<div className={styles.operationalDateSelectorWrapper}>
 							<SelectOperationalDate />

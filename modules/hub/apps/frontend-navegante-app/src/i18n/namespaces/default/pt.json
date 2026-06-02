@@ -93,6 +93,11 @@
 		},
 		"LinesListViewAll": {
 			"no_data": "Nenhuma linha encontrada para esta pesquisa"
+		},
+		"SelectOperationalDate": {
+			"custom_date": "Data personalizada",
+			"today": "Hoje",
+			"tomorrow": "Amanhã"
 		}
 	},
 	"map": {
