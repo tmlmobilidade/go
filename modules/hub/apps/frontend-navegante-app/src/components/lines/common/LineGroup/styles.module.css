@@ -1,0 +1,22 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	gap: var(--size-spacing-md);
+	align-items: center;
+	justify-content: flex-start;
+    width: 100%;
+    border-radius: var(--border-radius-xs);
+}
+
+/* * */
+/* LOGO */
+
+.logo {
+	width: 90px;
+	height: 50px;
+    margin: var(--size-spacing-sm) var(--size-spacing-md);
+	object-fit: cover;
+	object-position: center;
+	border-radius: var(--border-radius-xs);
+}
