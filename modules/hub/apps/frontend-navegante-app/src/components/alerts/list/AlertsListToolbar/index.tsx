@@ -45,7 +45,6 @@ export function AlertsListToolbar() {
 		<Section gap="md">
 			<SearchInput onChange={alertsListContext.filters.search.set} value={alertsListContext.filters.search.value} />
 			<SegmentedControl data={currentViewOptions} onChange={alertsListContext.actions.toggle} value={alertsListContext.view.current} w="100%" fullWidth />
-
 			<AlertExpandToggle defaultState={!!alertsListContext.filters.line_id || !!alertsListContext.filters.stop_id || !!alertsListContext.filters.cause || !!alertsListContext.filters.effect}>
 				<div className={styles.selectsWrapper}>
 					<SelectLine
@@ -69,7 +68,6 @@ export function AlertsListToolbar() {
 				</div>
 			</AlertExpandToggle>
 			<FoundItemsCounter text={t('default:alerts.AlertsListToolbar.found_items_counter', '', { count: alertsListContext.data.filtered.length })} />
-
 		</Section>
 	);
 }
