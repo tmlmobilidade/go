@@ -1,6 +1,5 @@
 'use client';
 
-import { audioTtsUrl } from '@/settings/urls.settings';
 import { IconPlayerPause, IconVolume } from '@tabler/icons-react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -27,7 +26,7 @@ export function LineDisplayTts({ patternId }: Props) {
 	// B. Transform data
 
 	useEffect(() => {
-		audioPlayer.current = new Audio(`${audioTtsUrl}/patterns/${patternId}.mp3`);
+		audioPlayer.current = new Audio(`https://storage.carrismetropolitana.pt/static/tts/live/patterns/${patternId}.mp3`);
 	}, [patternId]);
 
 	useEffect(() => {
@@ -51,8 +50,7 @@ export function LineDisplayTts({ patternId }: Props) {
 	const handleToogleAudio = () => {
 		if (isPlaying) {
 			audioPlayer.current?.pause();
-		}
-		else {
+		} else {
 			audioPlayer.current?.load();
 			audioPlayer.current?.play();
 		}

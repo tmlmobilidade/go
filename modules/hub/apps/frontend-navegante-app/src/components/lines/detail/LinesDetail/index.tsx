@@ -10,7 +10,7 @@ export function LinesDetail() {
 	return (
 		<>
 			<LinesDetailHeader />
-			<LinesDetailAlerts />
+			{/* <LinesDetailAlerts /> */}
 			{/* <LinesDetailPath /> */}
 		</>
 	);

@@ -1,10 +1,10 @@
 'use client';
 
-import { SelectPattern } from '@/components/common/SelectPattern';
-import { useLinesDetailContext } from '@/contexts/LinesDetail.context';
+import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
+import { SelectPattern } from '@/components/lines/detail/SelectPattern';
 import { IconArrowBarToRight } from '@tabler/icons-react';
-import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,7 +14,7 @@ export function SelectActivePatternGroup() {
 	//
 	// A. Setup variables
 
-	const t = useTranslations('lines.SelectActivePatternGroup');
+	const { t } = useTranslation();
 	const linesDetailContext = useLinesDetailContext();
 
 	//
@@ -37,7 +37,7 @@ export function SelectActivePatternGroup() {
 			leftSection={<IconArrowBarToRight size={20} />}
 			onChange={linesDetailContext.actions.setActivePattern}
 			patterns={validPatternGroupsSelectOptions}
-			placeholder={t('placeholder')}
+			placeholder={t('default:lines.SelectActivePatternGroup.placeholder')}
 			value={linesDetailContext.data.active_pattern?.version_id || null}
 			clearable
 			searchable

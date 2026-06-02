@@ -94,10 +94,22 @@
 		"LinesListViewAll": {
 			"no_data": "Nenhuma linha encontrada para esta pesquisa"
 		},
+		"SelectActivePatternGroup": {
+			"placeholder": "Selecionar percurso/destino..."
+		},
+		"SelectActivePatternGroupExplainer": {
+			"toggle": "O que é o percurso/destino de uma linha?"
+		},
 		"SelectOperationalDate": {
 			"custom_date": "Data personalizada",
 			"today": "Hoje",
 			"tomorrow": "Amanhã"
+		},
+		"SelectPattern": {
+			"invalid_option": "Percurso inválido: {pattern_id}",
+			"label": "Percurso / Destino",
+			"option_label": "Início do percurso: {locality}",
+			"placeholder": "Selecionar Percurso / Destino..."
 		}
 	},
 	"map": {
