@@ -23,18 +23,19 @@ jobs:
         id: modules
         shell: bash
         run: |
-          JSON=$(ls -1 modules | sort | jq -Rsc 'split("\n") | map(select(length > 0))')
-          echo "json=$JSON" >> "$GITHUB_OUTPUT"
+          MODULES=$(ls -1 modules | sort)
+          {
+            echo "list<<EOF"
+            echo "$MODULES" | sed 's/^/- `/' | sed 's/$/`/'
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Comment PR environment and builds
         uses: actions/github-script@v8
-        env:
-          MODULES_JSON: ${{ steps.modules.outputs.json }}
         with:
           script: |
             const prNumber = context.payload.pull_request.number;
-            const modules = JSON.parse(process.env.MODULES_JSON || '[]');
-            const moduleList = modules.map((m) => `- \`${m}\``).join('\n');
+            const moduleList = `${{ steps.modules.outputs.list }}`.trim();
 
             const body = [
               `Behold! Your PR has ascended to its own environment:`,

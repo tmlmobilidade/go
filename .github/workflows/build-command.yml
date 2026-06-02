@@ -61,19 +61,16 @@ jobs:
       - name: Reply when module unknown
         if: steps.validate.outputs.valid != 'true'
         uses: actions/github-script@v8
-        env:
-          MODULE: ${{ steps.pr.outputs.module }}
-          AVAILABLE: ${{ steps.validate.outputs.available }}
         with:
           script: |
-            const available = (process.env.AVAILABLE || '').split('\n').filter(Boolean);
-            const list = available.map((m) => `- \`${m}\``).join('\n');
+            const available = `${{ steps.validate.outputs.available }}`.trim().split('\n').filter(Boolean);
+            const list = available.map(m => `- \`${m}\``).join('\n');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
               body: [
-                `Unknown module \`${process.env.MODULE}\`.`,
+                `Unknown module \`${{ steps.pr.outputs.module }}\`.`,
                 '',
                 'Available modules:',
                 list,
@@ -85,15 +82,11 @@ jobs:
       - name: Dispatch module build
         if: steps.validate.outputs.valid == 'true'
         uses: actions/github-script@v8
-        env:
-          MODULE: ${{ steps.pr.outputs.module }}
-          PR_NUMBER: ${{ steps.pr.outputs.pr_number }}
-          HEAD_REF: ${{ steps.pr.outputs.head_ref }}
         with:
           script: |
-            const module = process.env.MODULE;
-            const prNumber = process.env.PR_NUMBER;
-            const headRef = process.env.HEAD_REF;
+            const module = '${{ steps.pr.outputs.module }}';
+            const prNumber = '${{ steps.pr.outputs.pr_number }}';
+            const headRef = '${{ steps.pr.outputs.head_ref }}';
 
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
