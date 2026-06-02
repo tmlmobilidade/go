@@ -74,6 +74,7 @@ db.createRole({
 		{ actions: ['find'], resource: { collection: 'localities', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'municipalities', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'parishes', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'vehicles', db: 'production' } },
 		{ actions: ['find', 'update'], resource: { collection: 'plans', db: 'production' } },
 		{ actions: ['find', 'changeStream'], resource: { collection: 'rides', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'files', db: 'production' } },
