@@ -9,6 +9,7 @@ import { files, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
+import { getPublicRouteId } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
@@ -196,8 +197,9 @@ export async function main() {
 
 			for await (const routeItem of importedGtfsSql.routes.stream()) {
 				const routeData: GTFS_Route_Extended = routeItem;
-				if (thisIsAnActivePlan || !routesMarkedForFinalExport[routeData.route_id]) {
-					routesMarkedForFinalExport[routeData.route_id] = routeData;
+				const publicRouteId = getPublicRouteId(planData.gtfs_agency.agency_id, routeData.route_id);
+				if (thisIsAnActivePlan || !routesMarkedForFinalExport[publicRouteId]) {
+					routesMarkedForFinalExport[publicRouteId] = routeData;
 				}
 			}
 
