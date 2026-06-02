@@ -11,6 +11,7 @@ import fs from 'fs';
 import { exportRidesFile } from './export-rides.js';
 import { exportSamsAnalysisFile } from './export-sams-analysis.js';
 import { exportStopsFile } from './export-stops.js';
+import { exportVehiclesFile } from './export-vehicles.js';
 
 /* * */
 
@@ -40,6 +41,9 @@ async function main() {
 					break;
 				case 'stop':
 					pathToFile = await exportStopsFile(fileExport);
+					break;
+				case 'vehicle':
+					pathToFile = await exportVehiclesFile(fileExport);
 					break;
 				case 'gtfs':
 				default:
