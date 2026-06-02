@@ -8,9 +8,13 @@ import { createContext, type PropsWithChildren, useContext, useMemo } from 'reac
 
 /* * */
 
+const DESIRED_AGENCY_ORDER = ['4', '2', '16', '15', 'CM', '1', '8'];
+
+/* * */
+
 interface LinesListContextState extends ListContextStateTemplate {
 	data: {
-		filtered: Record<string, HubLine[]>
+		filtered: { agency_id: string, lines: HubLine[] }[]
 	}
 }
 
@@ -49,14 +53,28 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 		query: filterSearch.value,
 	});
 
-	const filteredData = useMemo(() => {
-		return searchResultsData?.filter((line) => {
+	const filteredData: { agency_id: string, lines: HubLine[] }[] = useMemo(() => {
+		// Filter data by active agency IDs
+		const filteredDataByActiveAgencyIds = searchResultsData?.filter((line) => {
 			return activeAgencyIds.includes(line.agency_id);
-		}).reduce((acc: Record<string, HubLine[]>, line) => {
+		});
+		// Group data by agency ID
+		const groupedDataByAgencyId = filteredDataByActiveAgencyIds?.reduce((acc: Record<string, HubLine[]>, line) => {
+			// Normalize agency ID for CM agencies
 			const agencyIdKey = ['41', '42', '43', '44'].includes(line.agency_id) ? 'CM' : line.agency_id;
 			acc[agencyIdKey] = [...(acc[agencyIdKey] || []), line];
 			return acc;
 		}, {} as Record<string, HubLine[]>);
+		// Sort data by agency ID
+		return DESIRED_AGENCY_ORDER
+			.filter(agencyId => agencyId in groupedDataByAgencyId)
+			.map(agencyId => ({
+				agency_id: agencyId,
+				lines: groupedDataByAgencyId[agencyId].sort((a, b) => {
+					const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+					return collator.compare(a.short_name || '', b.short_name || '');
+				}) || [],
+			}));
 	}, [searchResultsData, activeAgencyIds]);
 
 	//
