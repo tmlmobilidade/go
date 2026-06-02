@@ -14,15 +14,18 @@
 	border-radius: 999px;
 }
 
-.badge.md {
-	min-width: 65px;
-	max-width: 65px;
+/* * */
+/* PROPS / SIZE */
+
+.badge[data-size='md'] {
+	min-width: 55px;
+	max-width: 55px;
 	min-height: 26px;
 	max-height: 26px;
 	font-size: 16px;
 }
 
-.badge.lg {
+.badge[data-size='lg'] {
 	min-width: 85px;
 	max-width: 85px;
 	min-height: 34px;
@@ -30,16 +33,30 @@
 	font-size: 22px;
 }
 
-.badge.clickable {
+/* * */
+/* PROPS / CLICKABLE */
+
+.badge[data-clickable='true'] {
 	cursor: pointer;
 	transition: all 200ms ease;
 }
 
-.badge.clickable:hover {
-	box-shadow: 0 0 10px rgb(0 0 0 / 10%);
-	transform: scale(1.05);
+/* * */
+/* PROPS / AGENCY ID */
+
+.badge[data-agency-id='41'],
+.badge[data-agency-id='42'],
+.badge[data-agency-id='43'],
+.badge[data-agency-id='44'] {
+	min-width: 65px;
+	max-width: 65px;
 }
 
+.badge[data-agency-id='15'] {
+	min-width: 90px;
+	max-width: 90px;
+	letter-spacing: -0.5px;
+}
 
 /* * */
 /* ALERT ICON */

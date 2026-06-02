@@ -125,6 +125,12 @@
 			"no_data": "Selecione um Percurso / Destino",
 			"summary": "Linha <lineNumber>{line_number}</lineNumber> com destino a <destinationName>{destination_name}</destinationName> no dia <dayName>{day_name, date, long}</dayName>. <changeDay>Alterar dia ›</changeDay>"
 		},
+		"LinesListGroup": {
+			"logo": {
+				"alt": "Linhas do operador: {agency_name}"
+			},
+			"show_more": "Ver mais linhas deste operador..."
+		},
 		"LinesListToolbar": {
 			"by_search": {
 				"placeholder": "Pesquisar por nome, número..."
@@ -135,6 +141,9 @@
 			"heading": "Pesquisar Linhas"
 		},
 		"LinesListViewAll": {
+			"items": {
+				"aria_label": "{index}º: {tts_name}"
+			},
 			"no_data": "Nenhuma linha encontrada para esta pesquisa"
 		},
 		"SelectActivePatternGroup": {
@@ -193,6 +202,14 @@
 				"alerts": "Alertas",
 				"lines": "Linhas",
 				"stops": "Paragens"
+			}
+		},
+		"TransitModesBar": {
+			"aria_label": {
+				"bus": "Autocarros",
+				"ferry": "Barco",
+				"subway": "Metro",
+				"train": "Comboios"
 			}
 		}
 	}

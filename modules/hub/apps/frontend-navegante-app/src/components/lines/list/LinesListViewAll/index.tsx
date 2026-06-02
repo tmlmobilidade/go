@@ -3,9 +3,9 @@
 import { NoDataLabel } from '@/components/layout/NoDataLabel';
 import { RegularListItem } from '@/components/layout/RegularListItem';
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
-import { LineGroup } from '@/components/lines/common/LineGroup';
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
-import { Section } from '@tmlmobilidade/ui';
+import { LinesListGroup } from '@/components/lines/list/LinesListGroup';
+import { LoadingSection, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 import { ViewportList } from 'react-viewport-list';
 
@@ -21,12 +21,14 @@ export function LinesListViewAll() {
 
 	const linesListContext = useLinesListContext();
 
-	const getLineId = (line: { _id?: string, id?: string }) => line.id || line._id || '';
-
 	//
 	// B. Render components
 
-	if (!Object.keys(linesListContext.data.filtered).length) {
+	if (linesListContext.flags.isLoading) {
+		return <LoadingSection fullHeight />;
+	}
+
+	if (!linesListContext.data.filtered.length) {
 		return (
 			<Section>
 				<NoDataLabel text={t('default:lines.LinesListViewAll.no_data')} withMinHeight />
@@ -36,23 +38,26 @@ export function LinesListViewAll() {
 
 	return (
 		<Section padding="none">
-			{Object.keys(linesListContext.data.filtered).map((agencyId) => {
-				return (
-					<LineGroup key={agencyId} agencyId={agencyId}>
-						<ViewportList itemMargin={0} items={linesListContext.data.filtered[agencyId]}>
-							{(item) => {
-								const lineId = getLineId(item);
-								if (!lineId) return null;
-								return (
-									<RegularListItem key={lineId} href={`/lines/${lineId}`}>
-										<LineDisplay lineData={item} />
-									</RegularListItem>
-								);
-							}}
-						</ViewportList>
-					</LineGroup>
-				);
-			})}
+			{linesListContext.data.filtered.map(group => (
+				<LinesListGroup
+					key={group.agency_id}
+					agencyId={group.agency_id}
+					onShowMoreLines={() => linesListContext.actions.increaseQtyPerAgency(group.agency_id)}
+					withShowMoreButton={group.lines.length < group.qty}
+				>
+					<ViewportList itemMargin={0} items={group.lines}>
+						{(line, index) => (
+							<RegularListItem
+								key={line.id}
+								ariaLabel={t(`default:lines.LinesListViewAll.items.aria_label`, '', { index: index + 1, tts_name: line.tts_name })}
+								href={`/lines/${line.id}`}
+							>
+								<LineDisplay lineData={line} />
+							</RegularListItem>
+						)}
+					</ViewportList>
+				</LinesListGroup>
+			))}
 		</Section>
 	);
 

@@ -9,7 +9,8 @@ import styles from './styles.module.css';
 
 /* * */
 
-interface Props {
+interface LineDisplayProps {
+	agencyId?: string
 	color?: string
 	lineData?: HubLine
 	longName?: string
@@ -21,13 +22,13 @@ interface Props {
 
 /* * */
 
-export function LineDisplay({ color, lineData, longName, shortName, size = 'md', textColor, width = 200 }: Props) {
+export function LineDisplay({ agencyId, color, lineData, longName, shortName, size = 'md', textColor, width = 200 }: LineDisplayProps) {
 	//
 
 	if (lineData) {
 		return (
 			<div className={styles.container}>
-				<LineBadge color={lineData.color} shortName={lineData.short_name} size={size} textColor={lineData.text_color} />
+				<LineBadge agencyId={lineData.agency_id} color={lineData.color} shortName={lineData.short_name} size={size} textColor={lineData.text_color} />
 				<LineName longName={lineData.long_name} />
 			</div>
 		);
@@ -36,7 +37,7 @@ export function LineDisplay({ color, lineData, longName, shortName, size = 'md',
 	if (longName && shortName && color && textColor) {
 		return (
 			<div className={styles.container}>
-				<LineBadge color={color} shortName={shortName} size={size} textColor={textColor} />
+				<LineBadge agencyId={agencyId} color={color} shortName={shortName} size={size} textColor={textColor} />
 				<LineName longName={longName} />
 			</div>
 		);

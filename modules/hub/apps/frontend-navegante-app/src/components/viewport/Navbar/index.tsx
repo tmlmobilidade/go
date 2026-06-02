@@ -3,10 +3,9 @@
 import { AlertsList } from '@/components/alerts/list/AlertsList';
 import { LinesList } from '@/components/lines/list/LinesList';
 import { StopsList } from '@/components/stops/list/StopsList';
-import { useTransitModes } from '@/hooks/use-transit-modes';
+import { TransitModesBar } from '@/components/viewport/TransitModesBar';
 import { Tabs } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { IconBuildingTunnel, IconBus, IconFerry, IconTrain } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -26,8 +25,6 @@ export function Navbar() {
 		key: 'active-tab',
 	});
 
-	const { activeTransitModes, availableTransitModes, toggleTransitMode } = useTransitModes();
-
 	//
 	// B. Render components
 
@@ -46,21 +43,7 @@ export function Navbar() {
 				<Tabs.Tab value="alerts">{t('default:viewport.Navbar.tabs.alerts')}</Tabs.Tab>
 			</Tabs.List>
 
-			<div className={styles.transitModesBar}>
-				{availableTransitModes.map(mode => (
-					<div
-						key={mode}
-						className={styles.transitModeButton}
-						data-active={activeTransitModes.includes(mode)}
-						onClick={() => toggleTransitMode(mode)}
-					>
-						{mode === 'bus' && <IconBus size={24} />}
-						{mode === 'subway' && <IconBuildingTunnel size={24} />}
-						{mode === 'train' && <IconTrain size={24} />}
-						{mode === 'ferry' && <IconFerry size={24} />}
-					</div>
-				))}
-			</div>
+			<TransitModesBar />
 
 			<Tabs.Panel value="lines">
 				<LinesList />

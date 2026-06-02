@@ -1,0 +1,41 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	gap: var(--size-spacing-md);
+	align-items: center;
+	justify-content: flex-start;
+	width: 100%;
+	margin-top: 20px;
+}
+
+.container:first-child {
+	margin-top: 0;
+}
+
+/* * */
+/* LOGO */
+
+.logo {
+	width: 90px;
+	height: 60px;
+	margin-left: 22px;
+}
+
+/* * */
+/* CHILDREN WRAPPER */
+
+.childrenWrapper {
+	border-top: 1px solid var(--color-system-border-100);
+	border-bottom: 1px solid var(--color-system-border-100);
+}
+
+/* * */
+/* SHOW MORE BUTTON */
+
+.showMoreButton {
+	padding: 10px 20px;
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-semibold);
+	color: var(--color-system-text-200);
+}
