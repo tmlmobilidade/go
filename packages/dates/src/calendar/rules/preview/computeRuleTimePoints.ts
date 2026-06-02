@@ -4,6 +4,7 @@ import { calendarKey, calendarWeekday } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
 
 import { computeActiveRules } from '../calculation/index.js';
+import { isForcedRetargetDay, resolveEffectiveReplacement } from '../export-attribution/replacement.js';
 import { buildOperationalDateRange } from '../utils/date.js';
 
 // USED IN RulesScheduleView
@@ -14,7 +15,7 @@ import { buildOperationalDateRange } from '../utils/date.js';
  *
  * - Manual include rules: return their timepoints directly
  * - Manual exclude rules: return their timepoints directly
- * - Event replacement rules: return timepoints that apply on the target weekdays
+ * - Event replacement rules: return operating timepoints on forced-retarget dates only
  * - Event restriction rules: return timepoints that are removed on the affected weekdays
  */
 export function computeRuleTimePoints(
@@ -45,31 +46,21 @@ export function computeRuleTimePoints(
 		affectedWeekdays.add(calendarWeekday(key, holidays));
 	}
 
-	// For replacement rules: return timepoints from the TARGET weekdays
+	// For replacement rules: operating schedule on dates forcibly retargeted (e.g. Tue → Sat)
 	if (rule.kind === 'event_replacement') {
-		const addedTimepoints = new Set<string>();
+		const labelTimepoints = new Set<string>();
 
 		for (const date of rule.dates ?? []) {
-			const withRule = computeActiveRules(date, allRules, periods, holidays, options);
-			const withoutRule = computeActiveRules(
-				date,
-				allRules.filter(r => r._id !== rule._id),
-				periods,
-				holidays,
-				options,
-			);
+			const effectiveReplacement = resolveEffectiveReplacement(date, rule, holidays);
+			if (!isForcedRetargetDay(date, effectiveReplacement, holidays)) continue;
 
-			const withSet = new Set(withRule.timepoints);
-			const withoutSet = new Set(withoutRule.timepoints);
-
-			for (const tp of withSet) {
-				if (!withoutSet.has(tp)) {
-					addedTimepoints.add(tp);
-				}
+			const operating = computeActiveRules(date, allRules, periods, holidays, options);
+			for (const tp of operating.timepoints) {
+				labelTimepoints.add(tp);
 			}
 		}
 
-		return addedTimepoints;
+		return labelTimepoints;
 	}
 
 	// For restriction rules: compute what was removed on affected weekdays
