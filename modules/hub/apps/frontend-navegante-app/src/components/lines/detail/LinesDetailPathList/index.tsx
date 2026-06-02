@@ -12,14 +12,6 @@ import styles from './styles.module.css';
 
 /* * */
 
-interface NextArrival {
-	estimated_arrival_hours: number
-	estimated_arrival_minutes: number
-	estimated_arrival_seconds: number
-	estimated_arrival_unix: number
-	label: string
-}
-
 export function LinesDetailPathList() {
 	//
 
@@ -36,13 +28,13 @@ export function LinesDetailPathList() {
 	//
 	// C. Transform data
 
-	const preparedRealtimeData = useMemo<Map<string, NextArrival[]> | undefined>(() => {
+	const preparedRealtimeData = useMemo<Map<string, HubPatternRealtime[]> | undefined>(() => {
 		// Return early if there is no patternRealtimeData
 		if (!patternRealtimeData) return;
 		// Filter arrrivals for the current pattern
 		const arrivalsForCurrentPattern = patternRealtimeData?.filter(arrivalData => arrivalData.pattern_id === linesDetailContext.data.active_pattern?.id) || [];
 		// Organize arrivals by Stop ID
-		const result = new Map<string, NextArrival[]>();
+		const result = new Map<string, HubPatternRealtime[]>();
 		arrivalsForCurrentPattern.forEach((arrivalData) => {
 			// Setup the object key
 			const objectKey = `${arrivalData.stop_id}-${arrivalData.stop_sequence}`;

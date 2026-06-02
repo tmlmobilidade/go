@@ -1,12 +1,13 @@
 /* * */
 
-import { PathWaypointHeader } from '@/components/lines/PathWaypointHeader';
-import { PathWaypointNextArrivals } from '@/components/lines/PathWaypointNextArrivals';
-import { PathWaypointSpine } from '@/components/lines/PathWaypointSpine';
-import { PathWaypointTimetable } from '@/components/lines/PathWaypointTimetable';
-import { useLinesDetailContext } from '@/contexts/LinesDetail.context';
+import type { HubWaypoint } from '@tmlmobilidade/types';
+
+import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
+import { PathWaypointHeader } from '@/components/lines/detail/PathWaypointHeader';
+import { PathWaypointNextArrivals } from '@/components/lines/detail/PathWaypointNextArrivals';
+import { PathWaypointSpine } from '@/components/lines/detail/PathWaypointSpine';
+import { PathWaypointTimetable } from '@/components/lines/detail/PathWaypointTimetable';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
-import { type Waypoint } from '@/types/api/network';
 
 import styles from './styles.module.css';
 
@@ -18,7 +19,7 @@ interface Props {
 	isFirstStop?: boolean
 	isLastStop?: boolean
 	isSelected: boolean
-	waypointData: Waypoint
+	waypointData: HubWaypoint
 }
 
 /* * */
