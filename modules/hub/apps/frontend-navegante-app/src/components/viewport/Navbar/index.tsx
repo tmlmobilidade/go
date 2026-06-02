@@ -50,9 +50,12 @@ export function Navbar() {
 				{availableTransitModes.map(mode => (
 					<div
 						key={mode}
+						aria-checked={activeTransitModes.includes(mode)}
+						aria-label="bus, boat"
 						className={styles.transitModeButton}
 						data-active={activeTransitModes.includes(mode)}
 						onClick={() => toggleTransitMode(mode)}
+						role="checkbox"
 					>
 						{mode === 'bus' && <IconBus size={24} />}
 						{mode === 'subway' && <IconBuildingTunnel size={24} />}
