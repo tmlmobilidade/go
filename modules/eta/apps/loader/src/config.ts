@@ -21,7 +21,7 @@ export const AppConfig = Object.freeze({
 
 	// Data and time settings
 	historicalDataDaysBack: 30,
-	historicalTransformationChunkDays: 2,
+	historicalTransformationChunkDays: 1,
 	historicalVehicleEventsChunkDays: 2,
 	syncInterval: '15m' as TimeSlot,
 
