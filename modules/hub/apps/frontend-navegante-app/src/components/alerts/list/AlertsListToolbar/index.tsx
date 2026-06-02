@@ -6,7 +6,6 @@ import SelectEffect from '@/components/alerts/common/SelectEffect';
 import { SelectLine } from '@/components/alerts/common/SelectLine';
 import { SelectStop } from '@/components/alerts/common/SelectStop';
 import { useAlertsListContext } from '@/components/alerts/list/AlertsList.context';
-import { FoundItemsCounter } from '@/components/layout/FoundItemsCounter';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { SegmentedControl } from '@mantine/core';
@@ -67,7 +66,6 @@ export function AlertsListToolbar() {
 					<SelectEffect onChange={alertsListContext.actions.updateFilterByEffect} value={alertsListContext.filters.effect} />
 				</div>
 			</AlertExpandToggle>
-			<FoundItemsCounter text={t('default:alerts.AlertsListToolbar.found_items_counter', '', { count: alertsListContext.data.filtered.length })} />
 		</Section>
 	);
 }
