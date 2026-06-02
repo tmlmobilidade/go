@@ -17,6 +17,7 @@ export const RawVehicleEventCpV1PayloadSchema = z.object({
 		current_status: z.enum(['INCOMING_AT', 'STOPPED_AT', 'IN_TRANSIT_TO']).nullish(),
 		occupancy_status: GtfsRtOccupancyStatusSchema.nullish(),
 		position: z.object({
+			bearing: z.number().nullish(),
 			latitude: z.number(),
 			longitude: z.number(),
 		}),

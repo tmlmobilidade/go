@@ -1,15 +1,15 @@
 /* * */
 
-import { type ImportGtfsContext } from '@/types.js';
+import { type GtfsSQLTables } from '@/types/sql-tables.js';
 import { SQLiteDatabase } from '@tmlmobilidade/sqlite';
 import { type OperationalDate } from '@tmlmobilidade/types';
 import { type GTFS_Route_Extended, type GTFS_Shape, type GTFS_Stop_Extended, type GTFS_StopTime, type GTFS_Trip_Extended } from '@tmlmobilidade/types';
 
 /**
  * Initializes GTFS SQL tables and writers.
- * @returns An object containing initialized GTFS SQL tables and writers.
+ * @returns The initialized GTFS SQL tables.
  */
-export function initGtfsSqlTables(): ImportGtfsContext['gtfs'] {
+export function initGtfsSqlTables(): GtfsSQLTables {
 	//
 
 	const calendarDatesMap: Record<string, OperationalDate[]> = {};
@@ -93,14 +93,19 @@ export function initGtfsSqlTables(): ImportGtfsContext['gtfs'] {
 			{ indexed: false, name: 'has_shelter', type: 'INTEGER' },
 			{ indexed: false, name: 'has_stop_sign', type: 'INTEGER' },
 			{ indexed: false, name: 'has_tariffs_information', type: 'INTEGER' },
-			{ indexed: false, name: 'municipality_id', type: 'TEXT' },
-			{ indexed: false, name: 'parish_id', type: 'TEXT' },
 			{ indexed: false, name: 'public_visible', type: 'INTEGER' },
-			{ indexed: false, name: 'region_id', type: 'TEXT' },
 			{ indexed: false, name: 'shelter_code', type: 'TEXT' },
 			{ indexed: false, name: 'shelter_maintainer', type: 'TEXT' },
 			{ indexed: false, name: 'stop_short_name', type: 'TEXT' },
 			{ indexed: false, name: 'tts_stop_name', type: 'TEXT' },
+			{ indexed: false, name: 'district_id', type: 'TEXT' },
+			{ indexed: false, name: 'district_name', type: 'TEXT' },
+			{ indexed: false, name: 'municipality_id', type: 'TEXT' },
+			{ indexed: false, name: 'municipality_name', type: 'TEXT' },
+			{ indexed: false, name: 'parish_id', type: 'TEXT' },
+			{ indexed: false, name: 'parish_name', type: 'TEXT' },
+			{ indexed: false, name: 'locality_id', type: 'TEXT' },
+			{ indexed: false, name: 'locality_name', type: 'TEXT' },
 		],
 	});
 

@@ -1,0 +1,10 @@
+.clickable {
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+}
+
+.dimmed {
+	opacity: 0.45;
+}

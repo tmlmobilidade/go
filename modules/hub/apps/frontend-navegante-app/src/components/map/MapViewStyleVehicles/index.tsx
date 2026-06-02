@@ -1,10 +1,10 @@
 'use client';
 
-import { LiveIcon } from '@/components/common/LiveIcon';
-import { getBaseGeoJsonFeatureCollection } from '@/utils/map.utils';
+// import { LiveIcon } from '@/components/common/LiveIcon';
+import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { Layer, Source } from '@vis.gl/react-maplibre';
-import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -18,7 +18,7 @@ export const MapViewStyleVehiclesInteractiveLayerId = 'default-layer-vehicles-re
 interface Props {
 	presentBeforeId?: string
 	showCounter?: 'always' | 'positive'
-	vehiclesData?: GeoJSON.FeatureCollection<GeoJSON.Point>
+	vehiclesData?: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
 }
 
 /* * */
@@ -113,7 +113,7 @@ export function MapViewStyleVehicles({ presentBeforeId, showCounter, vehiclesDat
 	//
 	// A. Setup variables
 
-	const t = useTranslations('map.MapViewStyleVehicles');
+	const { t } = useTranslation();
 
 	const [animatedData, setAnimatedData] = useState(vehiclesData);
 	const previousDataRef = useRef<GeoJSON.FeatureCollection>(vehiclesData);
@@ -144,7 +144,7 @@ export function MapViewStyleVehicles({ presentBeforeId, showCounter, vehiclesDat
 			const interpolatedFeatures = vehiclesData.features.map((endFeature) => {
 				const id = endFeature.id;
 				const startFeature = id != null ? startMap.get(id) as GeoJSON.Feature<GeoJSON.Point> : undefined;
-				return interpolateProps(startFeature, endFeature, easedProgress);
+				return interpolateProps(startFeature, endFeature as GeoJSON.Feature<GeoJSON.Point>, easedProgress);
 			});
 
 			setAnimatedData({
@@ -154,8 +154,7 @@ export function MapViewStyleVehicles({ presentBeforeId, showCounter, vehiclesDat
 
 			if (progress < 1) {
 				animationFrame.current = requestAnimationFrame(animate);
-			}
-			else {
+			} else {
 				previousDataRef.current = vehiclesData;
 				animationStart.current = null;
 			}
@@ -297,15 +296,15 @@ export function MapViewStyleVehicles({ presentBeforeId, showCounter, vehiclesDat
 
 			{showCounter === 'always' && (
 				<div className={`${styles.vehiclesCounter} ${vehiclesData.features.length === 0 && styles.zeroCount}`}>
-					<LiveIcon className={styles.vehiclesCounterIcon} color={vehiclesData.features.length === 0 ? 'var(--color-system-text-300)' : ''} />
-					{t('vehicles_counter', { count: vehiclesData.features.length })}
+					{/* <LiveIcon className={styles.vehiclesCounterIcon} color={vehiclesData.features.length === 0 ? 'var(--color-system-text-300)' : ''} />
+					{t('default:map.MapViewStyleVehicles.vehicles_counter', { count: vehiclesData.features.length })} */}
 				</div>
 			)}
 
 			{showCounter === 'positive' && vehiclesData.features.length > 0 && (
 				<div className={styles.vehiclesCounter}>
-					<LiveIcon />
-					{t('vehicles_counter', { count: vehiclesData.features.length })}
+					{/* <LiveIcon />
+					{t('default:map.MapViewStyleVehicles.vehicles_counter', { count: vehiclesData.features.length })} */}
 				</div>
 			)}
 

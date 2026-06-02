@@ -19,12 +19,8 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/geo": "*",
-		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/go-eta-pckg-loader": "*",
 		"@tmlmobilidade/utils": "*",
 		"ngeohash": "^0.6.3"
 	},
@@ -33,7 +29,7 @@
 		"@tmlmobilidade/types": "*",
 		"@types/node": "25.9.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.3",
+		"tsx": "4.22.4",
 		"typescript": "5.9.3"
 	}
 }

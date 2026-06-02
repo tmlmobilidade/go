@@ -2,6 +2,7 @@
 
 import { type MenuProps } from '@mantine/core';
 import { IconCloudDown, IconCloudMinus } from '@tabler/icons-react';
+import { type FileExport } from '@tmlmobilidade/types';
 
 import { useExportsContext } from '../../../contexts/exports.context';
 import { Menu } from '../../menu/Menu';
@@ -13,6 +14,12 @@ import { SidebarExportsItem } from '../SidebarExportsItem';
 
 export interface SidebarExportsProps {
 	menuPosition?: MenuProps['position']
+}
+
+/* * */
+
+function SidebarExportsMenuItem({ item }: { item: FileExport }) {
+	return <SidebarExportsItem fileExport={item} />;
 }
 
 /* * */
@@ -33,7 +40,7 @@ export function SidebarExports({ menuPosition }: SidebarExportsProps = {}) {
 		<Menu counter={fileExports.length} icon={IconCloudDown} label="Exportações" menuPosition={menuPosition} variant="danger">
 			{fileExports.length === 0
 				? <MenuNoContent icon={IconCloudMinus} text="Sem exportações disponíveis" />
-				: <MenuList data={fileExports} itemComponent={({ item }) => <SidebarExportsItem fileExport={item} />} title="Exportações" />}
+				: <MenuList data={fileExports} getItemKey={item => item._id} itemComponent={SidebarExportsMenuItem} title="Exportações" />}
 		</Menu>
 	);
 

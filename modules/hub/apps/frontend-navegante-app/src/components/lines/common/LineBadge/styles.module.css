@@ -1,0 +1,59 @@
+/* * */
+/* BADGE */
+
+.badge {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 700;
+	line-height: 1;
+	color: var(--color-system-background-100);
+	letter-spacing: 1px;
+	background-color: var(--color-system-text-200);
+	border-radius: 999px;
+}
+
+.badge.md {
+	min-width: 65px;
+	max-width: 65px;
+	min-height: 26px;
+	max-height: 26px;
+	font-size: 16px;
+}
+
+.badge.lg {
+	min-width: 85px;
+	max-width: 85px;
+	min-height: 34px;
+	max-height: 34px;
+	font-size: 22px;
+}
+
+.badge.clickable {
+	cursor: pointer;
+	transition: all 200ms ease;
+}
+
+.badge.clickable:hover {
+	box-shadow: 0 0 10px rgb(0 0 0 / 10%);
+	transform: scale(1.05);
+}
+
+
+/* * */
+/* ALERT ICON */
+
+.alertIcon {
+	position: absolute;
+	top: -10px;
+	right: -10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	color: var(--color-status-info-text);
+	background-color: var(--color-primary-white);
+	border-radius: 999px;
+}

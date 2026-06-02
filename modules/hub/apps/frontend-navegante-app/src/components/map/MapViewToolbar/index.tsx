@@ -1,13 +1,13 @@
 'use client';
 
-import TextPopover from '@/components/common/TextPopover';
-import { useMapOptionsContext } from '@/contexts/MapOptions.context';
+import { useMapContext } from '@/components/map/Map.context';
 import { SegmentedControl, SegmentedControlItem } from '@mantine/core';
-import { IconArrowsMinimize, IconMapShare, IconZoomScan } from '@tabler/icons-react';
 import classNames from 'classnames';
-import { useTranslations } from 'next-intl';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
+
+import { MapStyle } from '../MapView';
 
 /* * */
 
@@ -27,20 +27,24 @@ export function MapViewToolbar({ autoZoom, className, onCenterMap, showCenterBut
 	//
 	// A. Setup variables
 
-	const t = useTranslations('map.toolbar');
+	const { t } = useTranslation();
 
-	const mapOptionsContext = useMapOptionsContext();
+	const mapContext = useMapContext();
 
 	const mapStyles: SegmentedControlItem[] = [
-		{ label: t('style.map'), value: 'map' },
-		{ label: t('style.satellite'), value: 'satellite' },
+		{ label: t('default:map.MapViewToolbar.style.map'), value: 'map' },
+		{ label: t('default:map.MapViewToolbar.style.satellite'), value: 'satellite' },
 	];
 
 	//
 	// B. Handle actions
 
+	const handleSetStyle = (value: MapStyle) => {
+		mapContext.actions.setStyle(value);
+	};
+
 	const handleOpenInGoogle = () => {
-		const map = mapOptionsContext.data.map;
+		const map = mapContext.data.map;
 		if (!map) return;
 
 		const center = map.getCenter();
@@ -53,19 +57,19 @@ export function MapViewToolbar({ autoZoom, className, onCenterMap, showCenterBut
 	return (
 		<div className={classNames(styles.container, className)}>
 			<div className={styles.left}>
-				<SegmentedControl classNames={{ label: styles.segmentedControlLabel }} data={mapStyles} onChange={mapOptionsContext.actions.setStyle} value={mapOptionsContext.data.style} />
-				{showCenterButton && onCenterMap && (
+				<SegmentedControl classNames={{ label: styles.segmentedControlLabel }} data={mapStyles} onChange={handleSetStyle} value={mapContext.data.style} />
+				{/* {showCenterButton && onCenterMap && (
 					<button className={styles.button} onClick={onCenterMap}>
 						<TextPopover text={t('center_map')} textSize="md">
 							{autoZoom ? <IconZoomScan /> : <IconArrowsMinimize />}
 						</TextPopover>
 					</button>
-				)}
-				<button className={styles.button} onClick={handleOpenInGoogle}>
+				)} */}
+				{/* <button className={styles.button} onClick={handleOpenInGoogle}>
 					<TextPopover text={t('open_google_maps')} textSize="md">
 						<IconMapShare />
 					</TextPopover>
-				</button>
+				</button> */}
 			</div>
 			{toolbarExtras}
 		</div>

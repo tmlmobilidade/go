@@ -7,7 +7,7 @@ import { getGtfsScheduleDocUrl } from '@/lib/gtfs-schedule-doc-url';
 import { IconExternalLink } from '@tabler/icons-react';
 import { type GtfsValidationMessage } from '@tmlmobilidade/types';
 import { Collapsible, DataTable, DataTableColumn, Divider, Section } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
 
@@ -20,6 +20,7 @@ export function ValidationsDetailSectionResult() {
 	// A. Setup variables
 
 	const validationsDetailContext = useValidationsDetailContext();
+	const [selectedSeverity, setSelectedSeverity] = useState<'error' | 'warning' | null>(null);
 
 	const columns: DataTableColumn<GtfsValidationMessage>[] = [
 		{
@@ -55,20 +56,23 @@ export function ValidationsDetailSectionResult() {
 	//
 	// B. Transform data
 
-	const errorCountLabel = useMemo(() => {
-		const totalErrors = validationsDetailContext.data.validation?.summary?.total_errors ?? 0;
-		return totalErrors === 1 ? `${totalErrors} Erro` : `${totalErrors} Erros`;
-	}, [validationsDetailContext.data.validation]);
+	const severityCountLabels = useMemo(() => {
+		const summary = validationsDetailContext.data.validation?.summary;
+		const totalErrors = summary?.total_errors ?? 0;
+		const totalWarnings = summary?.total_warnings ?? 0;
 
-	const warningCountLabel = useMemo(() => {
-		const totalWarnings = validationsDetailContext.data.validation?.summary?.total_warnings ?? 0;
-		return totalWarnings === 1 ? `${totalWarnings} Aviso` : `${totalWarnings} Avisos`;
+		return {
+			error: totalErrors === 1 ? `${totalErrors} Erro` : `${totalErrors} Erros`,
+			warning: totalWarnings === 1 ? `${totalWarnings} Aviso` : `${totalWarnings} Avisos`,
+		};
 	}, [validationsDetailContext.data.validation]);
 
 	const filteredMessages = useMemo(() => {
 		const messages = validationsDetailContext.data.validation?.summary?.messages ?? [];
-		return messages.filter(message => message.severity !== 'ignore');
-	}, [validationsDetailContext.data.validation]);
+		const messagesWithoutIgnored = messages.filter(message => message.severity !== 'ignore');
+		if (!selectedSeverity) return messagesWithoutIgnored;
+		return messagesWithoutIgnored.filter(message => message.severity === selectedSeverity);
+	}, [selectedSeverity, validationsDetailContext.data.validation]);
 
 	//
 	// C. Render components
@@ -84,8 +88,20 @@ export function ValidationsDetailSectionResult() {
 			title="Resultado da Validação"
 		>
 			<Section flexDirection="row" gap="md">
-				<SeverityTag label={errorCountLabel} severity="error" />
-				<SeverityTag label={warningCountLabel} severity="warning" />
+				<SeverityTag
+					dimmed={selectedSeverity === 'warning'}
+					label={severityCountLabels.error}
+					onClick={() => setSelectedSeverity(prev => prev === 'error' ? null : 'error')}
+					selected={selectedSeverity === 'error'}
+					severity="error"
+				/>
+				<SeverityTag
+					dimmed={selectedSeverity === 'error'}
+					label={severityCountLabels.warning}
+					onClick={() => setSelectedSeverity(prev => prev === 'warning' ? null : 'warning')}
+					selected={selectedSeverity === 'warning'}
+					severity="warning"
+				/>
 			</Section>
 			<Divider />
 			<div style={{ overflowX: 'auto' }}>

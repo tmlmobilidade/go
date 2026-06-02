@@ -33,10 +33,11 @@
 		"luxon": "3.7.2"
 	},
 	"devDependencies": {
+		"@tmlmobilidade/eslint": "*",
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "25.9.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.3",
+		"tsx": "4.22.4",
 		"typescript": "5.9.3"
 	}
 }

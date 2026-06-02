@@ -15,8 +15,8 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@mantine/core": "9.2.1",
-		"@mantine/dates": "9.2.1",
+		"@mantine/core": "9.2.2",
+		"@mantine/dates": "9.2.2",
 		"@tabler/icons-react": "3.44.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
@@ -25,7 +25,7 @@
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"clsx": "2.1.1",
-		"dayjs": "1.11.20",
+		"dayjs": "1.11.21",
 		"jszip": "3.10.1",
 		"next": "16.2.6",
 		"papaparse": "5.5.3",

@@ -42,6 +42,7 @@ build
 .content-collections
 .source
 coverage
+.output
 
 # OS
 .DS_Store

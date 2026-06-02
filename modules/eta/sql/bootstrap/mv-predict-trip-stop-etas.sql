@@ -1,8 +1,8 @@
 -- Live ETA per stop + refreshable MV.
--- Depends: eta.live_vehicle_positions, eta.curr_rides, eta.curr_waypoints_snapped,
---          eta.node_predictions (02-node-predictions-mv.sql).
+-- Depends: {database}.live_vehicle_positions, {database}.curr_rides, {database}.curr_waypoints_snapped,
+--          {database}.node_predictions (02-node-predictions-mv.sql).
 
-CREATE TABLE IF NOT EXISTS eta.pred_trip_stop_etas
+CREATE TABLE IF NOT EXISTS {database}.pred_trip_stop_etas
 (
     trip_id String,
     vehicle_id String,
@@ -21,9 +21,9 @@ CREATE TABLE IF NOT EXISTS eta.pred_trip_stop_etas
 ENGINE = ReplacingMergeTree(refreshed_at)
 ORDER BY (trip_id, vehicle_id, stop_sequence);
 
-CREATE MATERIALIZED VIEW IF NOT EXISTS eta.mv_pred_trip_stop_etas
+CREATE MATERIALIZED VIEW IF NOT EXISTS {database}.mv_pred_trip_stop_etas
 REFRESH EVERY 30 SECOND
-TO eta.pred_trip_stop_etas
+TO {database}.pred_trip_stop_etas
 AS
 WITH
     latest_pos AS (
@@ -33,7 +33,7 @@ WITH
             argMax(hashed_shape_id, created_at) AS hashed_shape_id,
             argMax(node_index, created_at)      AS current_node_index,
             max(created_at)                     AS position_created_at
-        FROM eta.curr_vehicle_events
+        FROM {database}.curr_vehicle_events
         WHERE created_at >= toUnixTimestamp64Milli(now64(3)) - 30 * 60 * 1000
         GROUP BY trip_id, vehicle_id
     ),
@@ -47,7 +47,7 @@ WITH
             lp.position_created_at AS position_created_at,
             fromUnixTimestamp64Milli(lp.position_created_at) AS pos_dt
         FROM latest_pos AS lp
-        INNER JOIN eta.curr_rides AS d ON lp.trip_id = d.trip_id
+        INNER JOIN {database}.curr_rides AS d ON lp.trip_id = d.trip_id
     ),
     pos_with_op_dt AS (
         SELECT
@@ -161,7 +161,7 @@ WITH
             e.node_index           AS node_index,
             e.created_at           AS created_at
         FROM pos_full AS pf
-        INNER JOIN eta.curr_vehicle_events AS e
+        INNER JOIN {database}.curr_vehicle_events AS e
             ON e.trip_id = pf.trip_id
            AND e.vehicle_id = pf.vehicle_id
         WHERE e.created_at BETWEEN pf.position_created_at - 10 * 60 * 1000
@@ -246,7 +246,7 @@ WITH
             lo.observed_seconds    AS observed_seconds,
             sum(p.predicted_travel_time_seconds) AS baseline_seconds
         FROM live_observed AS lo
-        LEFT JOIN eta.pred_node_etas AS p
+        LEFT JOIN {database}.pred_node_etas AS p
             ON p.hashed_shape_id = lo.hashed_shape_id
            AND p.period_of_day   = lo.period_of_day
            AND p.weekday         = lo.weekday
@@ -307,7 +307,7 @@ WITH
             w.stop_name            AS stop_name,
             w.node_index           AS stop_node_index
         FROM pos_full AS pf
-        INNER JOIN eta.curr_waypoints_snapped AS w
+        INNER JOIN {database}.curr_waypoints_snapped AS w
             ON pf.hashed_trip_id = w.hashed_trip_id
         WHERE w.node_index >= pf.current_node_index
           AND pf.period != 'Unknown'
@@ -330,7 +330,7 @@ WITH
                 AND p.node_index <= u.stop_node_index
             ) AS eta_seconds
         FROM upcoming AS u
-        LEFT JOIN eta.pred_node_etas AS p
+        LEFT JOIN {database}.pred_node_etas AS p
             ON p.hashed_shape_id      = u.hashed_shape_id
            AND p.period_of_day = u.period_of_day
            AND p.weekday       = u.weekday

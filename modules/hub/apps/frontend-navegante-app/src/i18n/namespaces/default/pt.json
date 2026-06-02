@@ -1,0 +1,136 @@
+{
+	"alerts": {
+		"AlertActivePeriod": {
+			"start": "Início: {value, date, dayShort}"
+		},
+		"AlertsListEmpty": {
+			"action_1": "Ver alertas do passado",
+			"action_2": "Ver alertas do futuro",
+			"subtitle": "Fique a par de todas as alterações à rede. Mantenha-se informado sobre novas linhas, mudanças de percurso e ajustes de horários, assim como sobre eventos que possam afetar a sua viagem.",
+			"title": "Nenhum alerta encontrado"
+		},
+		"AlertsListGroup": {
+			"label": "{count, plural, one {Alerta ativo} other {Alertas ativos}}",
+			"titles": {
+				"future": "A partir de {value}",
+				"past": "Desde {value}",
+				"today": "A partir de hoje, {value}",
+				"tomorrow": "A partir de amanhã, {value}",
+				"yesterday": "Desde ontem, {value}"
+			}
+		},
+		"AlertsListToolbar": {
+			"SelectLine": {
+				"label": "Procurar linha por número, nome, localidade...",
+				"nothing_found": "Nenhum Resultado Encontrado",
+				"placeholder": "Procurar linha por número, nome, localidade..."
+			},
+			"SelectStop": {
+				"label": "Procurar paragem por nome, número, localidade...",
+				"nothing_found": "Nenhum Resultado Encontrado",
+				"placeholder": "Procurar paragem por nome, número, localidade..."
+			},
+			"by_date": {
+				"current": "Agora ({count})",
+				"future": "Futuros ({count})",
+				"map": "Mapa"
+			},
+			"expand_toggle": {
+				"is_hidden": {
+					"label": "Ver Filtros"
+				},
+				"is_visible": {
+					"label": "Ocultar Filtros"
+				}
+			},
+			"filters": {
+				"by_current_view": {
+					"list": "Lista",
+					"map": "Mapa"
+				},
+				"by_line": {
+					"label": "Filtrar por linha",
+					"placeholder": "Filtrar por linha"
+				},
+				"by_stop": {
+					"label": "Filtrar por paragem",
+
+					"placeholder": "Filtrar por paragem"
+				},
+				"text_search": "Procurar alerta por título, descrição, localização..."
+			},
+			"found_items_counter": "{count, plural, =0 {Nenhum alerta encontrado.} one {Encontrado # alerta:} other {Encontrados # alertas:}}",
+			"heading": "Alertas de Serviço",
+			"subheading": "Fique a par de todas as alterações à rede. Mantenha-se informado sobre novas linhas, mudanças de percurso e ajustes de horários, assim como sobre eventos que possam afetar a sua viagem."
+		},
+		"AlertsListViewList": {
+			"no_data": "Nenhum alerta encontrado para esta pesquisa"
+		},
+		"SelectCause": {
+			"placeholder": "Filtrar por causa"
+		},
+		"SelectEffect": {
+			"placeholder": "Filtrar por efeito"
+		}
+	},
+	"layout": {
+		"NoDataLabel": {
+			"no_data": "Nenhum dado disponível"
+		}
+	},
+	"lines": {
+		"LinesListToolbar": {
+			"by_search": {
+				"placeholder": "Pesquisar por nome, número..."
+			},
+			"found_items_counter": {
+				"all": "{count, plural, =0 {Nenhuma linha encontrada.} one {Encontrada # linha:} other {Encontradas # linhas:}}"
+			},
+			"heading": "Pesquisar Linhas"
+		},
+		"LinesListViewAll": {
+			"no_data": "Nenhuma linha encontrada para esta pesquisa"
+		}
+	},
+	"map": {
+		"MapViewToolbar": {
+			"style": {
+				"map": "Mapa",
+				"satellite": "Satélite"
+			}
+		}
+	},
+	"stops": {
+		"StopsListToolbar": {
+			"by_current_view": {
+				"list": "Lista",
+				"map": "Mapa"
+			},
+			"by_search": {
+				"placeholder": "Pesquisar por nome, número..."
+			},
+			"found_items_counter": {
+				"all": "{{count}}"
+			},
+			"heading": "Pesquisar Paragens"
+		},
+		"StopsListViewList": {
+			"no_data": "Nenhuma paragem encontrada para esta pesquisa"
+		}
+	},
+	"viewport": {
+		"FloatingHelpButton": {
+			"modal": {
+				"no_data": "Nenhuma pergunta frequente disponível de momento.",
+				"title": "Perguntas frequentes"
+			}
+		},
+		"Navbar": {
+			"tabs": {
+				"alerts": "Alertas",
+				"lines": "Linhas",
+				"stops": "Paragens"
+			}
+		}
+	}
+}

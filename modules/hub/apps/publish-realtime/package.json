@@ -1,0 +1,36 @@
+{
+	"name": "@tmlmobilidade/go-hub-publish-realtime",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"type": "module",
+	"files": ["dist"],
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc && resolve-tspaths",
+		"dev": "tsx watch src/index.ts",
+		"lint": "eslint . --fix && tsc --noEmit",
+		"lint:fix": "eslint . --fix"
+	},
+	"dependencies": {
+		"@tmlmobilidade/databases": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/rss": "*",
+		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/utils": "*"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
+		"@types/node": "25.9.1",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.22.4",
+		"typescript": "5.9.3"
+	}
+}

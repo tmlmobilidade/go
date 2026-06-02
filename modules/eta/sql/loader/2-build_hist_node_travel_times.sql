@@ -1,4 +1,4 @@
-INSERT INTO eta.hist_node_travel_times
+INSERT INTO {database}.hist_node_travel_times
 WITH
     25     AS segment_length_m,
     30     AS max_dist_m,
@@ -24,7 +24,7 @@ WITH
     --         avoids hashing on Float64 lat/lon and other wide keys.
     --    Recommended DDL companion (one-time): a data-skipping index on geohash to
     --    prune granules on the shape_nodes side, e.g.
-    --      ALTER TABLE eta.hist_shape_nodes
+    --      ALTER TABLE {database}.hist_shape_nodes
     --        ADD INDEX idx_geohash geohash TYPE bloom_filter GRANULARITY 1;
     matched_events AS (
         SELECT
@@ -60,12 +60,12 @@ WITH
                         7
                     )
                 ) AS cell
-            FROM eta.hist_vehicle_events
+            FROM {database}.hist_vehicle_events
             WHERE
                 created_at >= {chunk_start}
                 AND created_at < {chunk_end}
         ) AS e
-        INNER JOIN eta.hist_shape_nodes AS n
+        INNER JOIN {database}.hist_shape_nodes AS n
             ON  e.hashed_shape_id = n.hashed_shape_id
             AND e.cell            = n.geohash
             -- bbox residual: applied during hash-join probe, before GROUP BY.
@@ -203,7 +203,10 @@ WITH
     ),
 
     -- 5. RE-TIME: per-node travel time = gap to the next emitted node timestamp
-    --    on the (ride, shape) timeline. Last node in a (ride, shape) gets 0.
+    --    within the same filtered segment (event_id). Last node in a segment gets 0.
+    --    Partitioning by event_id prevents lead() from bridging dropped segments
+    --    (slow GPS gaps, failed speed/bearing checks) and attributing multi-minute
+    --    dwell time to individual 25 m shape nodes.
     retimed_nodes AS (
         SELECT
             event_id,
@@ -224,7 +227,7 @@ WITH
             SELECT
                 *,
                 lead(created_at) OVER (
-                    PARTITION BY ride_id, hashed_shape_id
+                    PARTITION BY ride_id, hashed_shape_id, event_id
                     ORDER BY node_index
                 ) AS next_created_at
             FROM expanded_nodes
@@ -251,7 +254,7 @@ INNER JOIN (
     -- Restrict shape_nodes to shapes actually present in this batch.
     -- Helps both hash and sort-merge by shrinking the right side.
     SELECT hashed_shape_id, node_index, latitude, longitude
-    FROM eta.hist_shape_nodes
+    FROM {database}.hist_shape_nodes
     WHERE hashed_shape_id IN (SELECT DISTINCT hashed_shape_id FROM retimed_nodes)
 ) AS sn
     ON  rn.hashed_shape_id = sn.hashed_shape_id

@@ -119,23 +119,16 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 
 	const { action: handleUploadImage, isLoading: isUploadingImage } = useHandleUpdate({
 		fetchFn: async () => imageFile && await uploadFile(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), imageFile),
-		onSuccess: () => {
-			handleSave();
+		onSuccess: async () => {
 			setImageFile(undefined);
-			form.reset();
-			alertMutate();
-			alertImageMutate();
-			alertsListMutate();
+			await Promise.all([alertImageMutate(), alertMutate()]);
 		},
 	});
 
 	const { action: handleDeleteImage, isLoading: isDeletingImage } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), 'DELETE'),
-		onSuccess: () => {
-			form.reset();
-			alertMutate();
-			alertImageMutate();
-			alertsListMutate();
+		onSuccess: async () => {
+			await Promise.all([alertImageMutate(), alertMutate()]);
 		},
 	});
 
@@ -306,7 +299,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		form: {
 			instance: form,
 		},
-	}), [agenciesLoading, alertData, alertError, alertId, alertImage, alertLoading, alertValidating, canDelete, canDuplicate, canLock, canSave, form, handleDelete, handleDeleteImage, handleDuplicate, handleLock, handleSave, isDeleting, isDeletingImage, isDuplicating, isLocking, isReadOnly, isSaving, isUploadingImage]);
+	}), [agenciesLoading, alertData, alertError, alertId, alertImage, alertLoading, alertValidating, canDelete, canDuplicate, canLock, canSave, form, handleDelete, handleDeleteImage, handleDuplicate, handleLock, handleSave, isDeleting, isDeletingImage, isDuplicating, form.formState.isDirty, isLocking, isReadOnly, isSaving, isUploadingImage]);
 
 	//
 	// F. Render components

@@ -35,16 +35,13 @@ export async function calculatePlannedTrips({ context, message }: TaskProps): Pr
 
 	const ridesCollection = await rides.getCollection();
 
-	const startDateStr = Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').unix_timestamp;
-	const endDateStr = Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').unix_timestamp;
-
-	message(`Date range: ${startDateStr} to ${endDateStr}`);
+	message(`Date range: ${context.dates.start} to ${context.dates.end}`);
 
 	const pipeline = [
 		{
 			$match: {
 				agency_id: { $exists: true },
-				start_time_scheduled: { $gte: startDateStr, $lte: endDateStr },
+				operational_date: { $gte: context.dates.start, $lte: context.dates.end },
 			},
 		},
 		{
@@ -90,16 +87,13 @@ export async function calculateCompletedTrips({ context, message }: TaskProps): 
 
 	const ridesCollection = await rides.getCollection();
 
-	const startDateStr = Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').toFormat('yyyyMMdd');
-	const endDateStr = Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').toFormat('yyyyMMdd');
-
-	message(`Date range: ${startDateStr} to ${endDateStr}`);
+	message(`Date range: ${context.dates.start} to ${context.dates.end}`);
 
 	const pipeline = [
 		{
 			$match: {
 				agency_id: { $exists: true },
-				operational_date: { $gte: startDateStr, $lte: endDateStr },
+				operational_date: { $gte: context.dates.start, $lte: context.dates.end },
 			},
 		},
 		{

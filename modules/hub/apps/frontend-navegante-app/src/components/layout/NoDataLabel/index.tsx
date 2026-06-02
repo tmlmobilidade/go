@@ -1,6 +1,6 @@
 /* * */
 
-import { useTranslations } from 'next-intl';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -20,12 +20,12 @@ export function NoDataLabel({ fill, text, withMinHeight }: NoDataLabelProps) {
 	//
 	// A. Setup variables
 
-	const t = useTranslations('layout.NoDataLabel');
+	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
-	return <div className={`${styles.container} ${fill && styles.fill} ${withMinHeight && styles.withMinHeight}`}>{text || t('default')}</div>;
+	return <div className={`${styles.container} ${fill && styles.fill} ${withMinHeight && styles.withMinHeight}`}>{text || t('default:layout.NoDataLabel.no_data')}</div>;
 
 	//
 }

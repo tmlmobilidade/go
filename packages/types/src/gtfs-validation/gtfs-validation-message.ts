@@ -10,9 +10,8 @@ export const GtfsValidationMessageSchema = z.object({
 	file_name: z.string(),
 	message: z.string(),
 	rows: z.array(z.number()),
-	rule_id: z.string().optional(),
+	rule_id: z.string(),
 	severity: SeverityLevelSchema,
-	validation_id: z.string(),
 });
 
 export type GtfsValidationMessage = z.infer<typeof GtfsValidationMessageSchema>;

@@ -1,5 +1,4 @@
-import { pipelinePath } from '@/lib/sql-paths.js';
-import { queryEachStatementFromFile } from '@tmlmobilidade/databases';
+import { pipelinePath, queryEachEtaStatementFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 
 const CLEANUP_HIST_NODE_TRAVEL_TIMES_SQL = 'cleanup/6-delete-orphan-hist-node-travel-times.sql';
@@ -14,10 +13,10 @@ interface CleanupRowsResult {
  * so the orphan predicate (`ride_id NOT IN (SELECT _id FROM eta.hist_rides)`)
  * is evaluated against the pruned ride set.
  */
-export async function cleanupHistoricalNodeTravelTimes(clickhouseClient: Parameters<typeof queryEachStatementFromFile>[0]) {
+export async function cleanupHistoricalNodeTravelTimes(clickhouseClient: Parameters<typeof queryEachEtaStatementFromFile>[0]) {
 	Logger.title('6. Cleanup orphan historical node travel times');
 
-	const result = await queryEachStatementFromFile<CleanupRowsResult>(
+	const result = await queryEachEtaStatementFromFile<CleanupRowsResult>(
 		clickhouseClient,
 		pipelinePath(CLEANUP_HIST_NODE_TRAVEL_TIMES_SQL),
 	);

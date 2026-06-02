@@ -1,40 +1,26 @@
 /* * */
 
-import { RootProviders } from '@/providers/root-providers';
-import { Inter } from 'next/font/google';
-import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { type PropsWithChildren, Suspense } from 'react';
+import pjson from '#/package.json';
+import { MapContextProvider } from '@/components/map/Map.context';
+import { i18nResourceKeysPt } from '@/i18n/resources';
+import { DataProviders } from '@/providers/data-providers';
+import { BaseProvider } from '@tmlmobilidade/ui';
+import { type PropsWithChildren } from 'react';
 
-/* * */
-
-import '@/themes/_reset/reset.css';
-
-/* * */
-
-const inter = Inter({
-	display: 'swap',
-	subsets: ['latin'],
-	variable: '--font-inter',
-	weight: ['400', '500', '600', '700', '800'],
-});
+import '@/styles/reset.css';
+import '@/styles/navegante/font.css';
+import '@/styles/navegante/color.css';
 
 /* * */
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<html className={inter.variable} lang="pt">
-			<head>
-				<meta content="transparent" name="theme-color" />
-			</head>
-			<body>
-				<Suspense fallback={<div>Loading...</div>}>
-					<NuqsAdapter>
-						<RootProviders>
-							{children}
-						</RootProviders>
-					</NuqsAdapter>
-				</Suspense>
-			</body>
-		</html>
+		<BaseProvider i18n={{ pt: i18nResourceKeysPt }} version={pjson.version}>
+			<DataProviders>
+				<MapContextProvider>
+					{children}
+				</MapContextProvider>
+			</DataProviders>
+		</BaseProvider>
 	);
 }

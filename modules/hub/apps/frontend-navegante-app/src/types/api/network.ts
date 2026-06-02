@@ -110,37 +110,6 @@ export interface ShapePoint {
 
 /* * */
 
-export interface NetworkStop {
-	district_id: string
-	district_name: string
-	facilities: string[]
-	id: string
-	lat: number
-	line_ids: string[]
-	locality_id?: string
-	locality_name?: string
-	lon: number
-	long_name: string
-	municipality_id: string
-	municipality_name: string
-	operational_status: StopOperationalStatus
-	parish_id: string
-	parish_name: string
-	pattern_ids: string[]
-	route_ids: string[]
-	short_name: string
-	tts_name: string
-	wheelchair_boarding: boolean
-}
-
-export enum StopOperationalStatus {
-	active = 'active',
-	seasonal = 'seasonal',
-	voided = 'voided',
-}
-
-/* * */
-
 export interface NetworkDate {
 	day_type: DateDayType
 	description: string
@@ -150,9 +119,9 @@ export interface NetworkDate {
 }
 
 export enum DateDayType {
-	saturday = 'saturday',
-	sundayHoliday = 'sunday_holiday',
-	weekday = 'weekday',
+	Saturday = 'saturday',
+	SundayHoliday = 'sunday_holiday',
+	Weekday = 'weekday',
 }
 
 /* * */

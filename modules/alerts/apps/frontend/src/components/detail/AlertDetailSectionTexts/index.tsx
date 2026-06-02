@@ -224,14 +224,13 @@ export function AlertDetailSectionTexts() {
 						)}
 					/>
 
-					<ImageUpload
-						label="Imagem"
-						onChange={alertDetailContext.actions.setImageFile}
-						onDelete={alertDetailContext.actions.deleteImage}
-						value={alertDetailContext.data.image?.url}
-					/>
-
 				</Grid>
+				<ImageUpload
+					label="Imagem"
+					onChange={alertDetailContext.actions.setImageFile}
+					onDelete={alertDetailContext.actions.deleteImage}
+					value={alertDetailContext.data.image?.url}
+				/>
 			</Section>
 		</Collapsible>
 	);

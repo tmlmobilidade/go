@@ -1,0 +1,13 @@
+/* * *
+ * WHAT IS THIS?
+ * This file has all color definitions used in the project
+ * for light and dark modes, except theme colors.
+ * For theme colors, check ./themes/*.css files.
+ */
+
+:root {
+
+	/* BRAND */
+	--color-brand-navegante: #ffdd01;
+
+}

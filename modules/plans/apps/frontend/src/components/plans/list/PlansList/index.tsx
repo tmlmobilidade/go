@@ -74,7 +74,21 @@ export function PlansList() {
 						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
 				/>
 			),
-			title: 'Inf. Público',
+			title: 'GTFS CM',
+			width: 135,
+		},
+		{
+			accessor: 'apps',
+			render: item => (
+				<ProcessingStatusTag
+					value={item.apps?.hub_gtfs?.status}
+					tooltip={item.apps?.hub_gtfs?.timestamp && Dates
+						.fromUnixTimestamp(item.apps?.hub_gtfs?.timestamp)
+						.setZone('Europe/Lisbon', 'offset_only')
+						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
+				/>
+			),
+			title: 'Hub GTFS',
 			width: 135,
 		},
 	];
