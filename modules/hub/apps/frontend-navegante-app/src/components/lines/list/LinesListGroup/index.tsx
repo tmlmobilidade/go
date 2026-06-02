@@ -30,7 +30,13 @@ export function LinesListGroup({ agencyId, children, onShowMoreLines, withShowMo
 
 	return (
 		<div className={styles.container}>
-			<Image alt={`${AGENCY_NAMES_MAP[agencyId].full} Logo`} className={styles.logo} height={60} src={AGENCY_LOGO_MAP[agencyId]} width={90} />
+			<Image
+				alt={t(`default:lines.LinesListGroup.logo.alt`, '', { agency_name: AGENCY_NAMES_MAP[agencyId].full })}
+				className={styles.logo}
+				height={60}
+				src={AGENCY_LOGO_MAP[agencyId]}
+				width={90}
+			/>
 			<div className={styles.childrenWrapper}>
 				{children}
 			</div>

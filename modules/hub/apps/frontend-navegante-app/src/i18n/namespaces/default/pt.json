@@ -126,6 +126,9 @@
 			"summary": "Linha <lineNumber>{line_number}</lineNumber> com destino a <destinationName>{destination_name}</destinationName> no dia <dayName>{day_name, date, long}</dayName>. <changeDay>Alterar dia ›</changeDay>"
 		},
 		"LinesListGroup": {
+			"logo": {
+				"alt": "Linhas do operador: {agency_name}"
+			},
 			"show_more": "Ver mais linhas deste operador..."
 		},
 		"LinesListToolbar": {
