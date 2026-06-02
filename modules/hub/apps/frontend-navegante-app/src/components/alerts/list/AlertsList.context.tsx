@@ -4,9 +4,9 @@ import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useTransitModes } from '@/hooks/use-transit-modes';
 import { type AlertGroup } from '@/types/alerts/alert-group';
 import { Dates } from '@tmlmobilidade/dates';
-import { type HubAlert } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useFilterStateString, useLocalStorage, useSearch } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { AlertCause, AlertEffect, type HubAlert } from '@tmlmobilidade/types';
+import { type ListContextStateTemplate, useFilterStateString, UseFilterStateStringReturnType, useLocalStorage, useQueryState, useSearch } from '@tmlmobilidade/ui';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -14,6 +14,11 @@ import { useTranslation } from 'react-i18next';
 interface AlertsListContextState extends ListContextStateTemplate {
 	actions: {
 		toggle: (view: 'current' | 'future' | 'map') => void
+		updateFilterByCause: (value: AlertCause | null) => void
+		updateFilterByEffect: (value: AlertEffect | null) => void
+		updateFilterByLineId: (value: string) => void
+		// updateFilterBySearch: (value: string) => void
+		updateFilterByStopId: (value: string) => void
 	}
 	counters: {
 		by_date: {
@@ -24,6 +29,13 @@ interface AlertsListContextState extends ListContextStateTemplate {
 	data: {
 		filtered: HubAlert[]
 		grouped: AlertGroup[]
+	}
+	filters: {
+		cause: AlertCause | null
+		effect: AlertEffect | null
+		line_id: null | string
+		search: UseFilterStateStringReturnType
+		stop_id: null | string
 	}
 	view: {
 		current: 'current' | 'future' | 'map'
@@ -58,18 +70,25 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 
 	const filterSearch = useFilterStateString('search');
 
-	const [currentView, setCurrentView] = useLocalStorage<'current' | 'future' | 'map'>({
-		defaultValue: 'current',
-		key: 'alerts-current-view',
+	const [dataFilteredState, setDataFilteredState] = useState<HubAlert[]>([]);
+
+	const [currentView, setCurrentView] = useLocalStorage<'current' | 'future' | 'map'>({ defaultValue: 'current', key: 'alerts-current-view' });
+	const [filterByLineIdState, setFilterByLineIdState] = useQueryState('line_id');
+	const [filterBySearchQueryState, setFilterBySearchQueryState] = useQueryState('search_query');
+	const [filterByStopIdState, setFilterByStopIdState] = useQueryState('stop_id');
+	const [filterByCauseState, setFilterByCauseState] = useQueryState('cause', {
+		parse: (value: string) => value as AlertCause | null,
+		serialize: (value: AlertCause | null) => value as string,
+	});
+	const [filterByEffectState, setFilterByEffectState] = useQueryState('effect', {
+		parse: (value: string) => value as AlertEffect | null,
+		serialize: (value: AlertEffect | null) => value as string,
 	});
 
 	//
 	// B. Transform data
 
-	const oneWeekFromNowMs = useMemo(
-		() => Dates.now('Europe/Lisbon').plus({ weeks: 1 }).endOf('day').unix_timestamp,
-		[],
-	);
+	const oneWeekFromNowMs = useMemo(() => Dates.now('Europe/Lisbon').plus({ weeks: 1 }).endOf('day').unix_timestamp, []);
 
 	const searchResultsData = useSearch<HubAlert>({
 		accessors: ['title', 'description'],
@@ -152,12 +171,99 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		return grouped.sort((a, b) => b.value.localeCompare(a.value));
 	}, [viewFilteredData, i18n.language, t]);
 
+	// Filters
+
+	const applyFiltersToData = () => {
+		//
+
+		let filterResult: HubAlert[] = baseFilteredData || [];
+
+		//
+		// Filter by_date
+
+		if (currentView === 'current') {
+			filterResult = filterResult.filter(alert => alert.active_period_start_date <= oneWeekFromNowMs);
+		} else if (currentView === 'future') {
+			filterResult = filterResult.filter(alert => alert.active_period_start_date > oneWeekFromNowMs);
+		}
+
+		if (filterByLineIdState) {
+			filterResult = filterResult.filter(alert => alert.references.some(reference => reference.parent_id === filterByLineIdState));
+		}
+
+		if (filterByStopIdState) {
+			filterResult = filterResult.filter(alert => alert.references.some(reference => reference.child_ids.includes(filterByStopIdState)));
+		}
+
+		// TODO: municipalityId does not exist in the informed_entity, needs to be added in API
+		// if (filterByMunicipalityIdState) {
+		// 	filterResult = filterResult.filter(alert => alert.informed_entity.some(entity => entity.municipalityId === filterByMunicipalityIdState));
+		// }
+
+		if (filterBySearchQueryState) {
+			filterResult = filterResult.filter((alert) => {
+				const searchQuery = filterBySearchQueryState.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+				return (
+					alert.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(searchQuery)
+					|| alert.description.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(searchQuery)
+				);
+			});
+		}
+
+		if (filterByCauseState) {
+			filterResult = filterResult.filter(alert => alert.cause === filterByCauseState);
+		}
+
+		if (filterByEffectState) {
+			filterResult = filterResult.filter(alert => alert.effect === filterByEffectState);
+		}
+
+		//
+		// Save filter result to state
+		return filterResult;
+
+		//
+	};
+
+	useEffect(() => {
+		const filteredAlerts = applyFiltersToData();
+		setDataFilteredState(filteredAlerts);
+	}, [baseFilteredData, currentView, filterByLineIdState, filterByStopIdState, filterBySearchQueryState, filterByCauseState, filterByEffectState]);
+
 	//
-	// C. Define context value
+	// D. Handle actions
+
+	const updateFilterByLineId = (value: AlertsListContextState['filters']['line_id']) => {
+		setFilterByLineIdState(value);
+	};
+
+	const updateFilterByStopId = (value: AlertsListContextState['filters']['stop_id']) => {
+		setFilterByStopIdState(value);
+	};
+
+	// const updateFilterBySearch = (value: AlertsListContextState['filters']['search']) => {
+	// 	setFilterBySearchQueryState(value);
+	// };
+
+	const updateFilterByCause = (value: AlertsListContextState['filters']['cause']) => {
+		setFilterByCauseState(value);
+	};
+
+	const updateFilterByEffect = (value: AlertsListContextState['filters']['effect']) => {
+		setFilterByEffectState(value);
+	};
+
+	//
+	// D. Define context value
 
 	const contextValue: AlertsListContextState = {
 		actions: {
 			toggle: setCurrentView,
+			updateFilterByCause,
+			updateFilterByEffect,
+			updateFilterByLineId,
+			// updateFilterBySearch,
+			updateFilterByStopId,
 		},
 		counters: {
 			by_date: {
@@ -166,11 +272,15 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			},
 		},
 		data: {
-			filtered: viewFilteredData,
+			filtered: dataFilteredState,
 			grouped: groupedAlerts,
 		},
 		filters: {
+			cause: filterByCauseState,
+			effect: filterByEffectState,
+			line_id: filterByLineIdState,
 			search: filterSearch,
+			stop_id: filterByStopIdState,
 		},
 		flags: {
 			error: undefined,

@@ -353,9 +353,6 @@ export const API_ROUTES = Object.freeze({
 		// DEBUG
 		DEBUG_TIME: `${getModuleConfig('hub', 'api_url')}/v1/debug/time`,
 
-		// FAQS
-		FAQS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/faqs`,
-
 		// FACILITIES
 		FACILITIES_BOAT_STATIONS: `${getModuleConfig('hub', 'api_url')}/facilities/boat_stations`,
 		FACILITIES_HELPDESKS: `${getModuleConfig('hub', 'api_url')}/facilities/helpdesks`,
