@@ -9,8 +9,17 @@ import { type CalculateVkmDto, CalculateVkmSchema, PermissionCatalog, type VkmCa
 /* * */
 
 export class VkmController {
+	/**
+	 * Calculates vehicle-kilometres for an agency over a rolling year or fixed date range.
+	 */
 	static async calculate(request: FastifyRequest<{ Body: CalculateVkmDto }>, reply: FastifyReply<VkmCalculationResult>) {
-		const payload = CalculateVkmSchema.parse(request.body);
+		const parsed = CalculateVkmSchema.safeParse(request.body);
+
+		if (!parsed.success) {
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, parsed.error.message);
+		}
+
+		const payload = parsed.data;
 
 		const userLinePermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.lines.scope, PermissionCatalog.all.lines.actions.read);
 

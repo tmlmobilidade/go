@@ -1,3 +1,4 @@
+import type { GtfsIncludeContribution } from '../src/calendar/rules/export-attribution/types.js';
 import type { Event, EventReplacementRule, HHMM, ManualRule, OperationalDate, ScheduleRule, UnixTimestamp, YearPeriod } from '@tmlmobilidade/types';
 
 import { hhmm } from '@tmlmobilidade/types';
@@ -109,6 +110,22 @@ function rules(...extra: ScheduleRule[]): ScheduleRule[] {
 	return [weekdayRule, saturdayRule, allDuRule, carnivalReplacement, ...extra];
 }
 
+/** SCENARIOS P5 — operating contribution timepoints match `computeActiveRules`. */
+function assertOperatingMatchesComputeActiveRules(
+	date: OperationalDate,
+	allRules: ScheduleRule[],
+	contributions: GtfsIncludeContribution[],
+	options?: { events?: Event[], periods?: YearPeriod[] },
+) {
+	const active = computeActiveRules(date, allRules, options?.periods ?? periods, holidays, options);
+	const contributionOperating = contributions
+		.filter(c => c.kind === 'operating')
+		.map(c => c.timepoint)
+		.sort();
+
+	assert.deepEqual(contributionOperating, [...active.timepoints].sort());
+}
+
 describe('resolveEffectiveReplacement', () => {
 	it('keeps target weekdays when same_weekday is false', () => {
 		const effective = resolveEffectiveReplacement(d('20260217'), carnivalReplacement, holidays);
@@ -166,6 +183,12 @@ describe('collectGtfsIncludeContributionsForDate', () => {
 		assert.ok(contributions.some(c => c.kind === 'base_off' && c.rule._id === 'early_weekday' && c.excludeRule?._id === 'carn_replacement' && c.timepoint === '06:40'));
 		assert.ok(contributions.some(c => c.kind === 'operating' && c.rule._id === 'carn_replacement' && c.timepoint === '06:45'));
 		assert.equal(contributions.filter(c => c.kind === 'operating' && c.timepoint === '06:40').length, 0);
+		assertOperatingMatchesComputeActiveRules(
+			date,
+			[earlyWeekday, saturdayRuleLocal, carnivalReplacement],
+			contributions,
+			{ events: [carnivalEvent] },
+		);
 	});
 
 	it('FR-03: shared timepoint gets replacement operating and base_off, not plain base operating', () => {
@@ -189,8 +212,7 @@ describe('collectGtfsIncludeContributionsForDate', () => {
 			c => c.rule._id === 'weekday' && c.excludeRule?._id === 'carn_replacement' && c.timepoint === '11:00',
 		));
 
-		const active = computeActiveRules(date, rules(), periods, holidays, { events: [carnivalEvent] });
-		assert.deepEqual(active.timepoints.sort(), ['11:00', '12:00']);
+		assertOperatingMatchesComputeActiveRules(date, rules(), contributions, { events: [carnivalEvent] });
 	});
 
 	it('FR-04: does not use replacement token when calendar-day manual already covers all operating timepoints', () => {
@@ -213,9 +235,15 @@ describe('collectGtfsIncludeContributionsForDate', () => {
 		assert.equal(operating.length, 2);
 		assert.ok(operating.every(c => c.rule._id === 'weekday_plus'));
 		assert.equal(operating.some(c => c.rule._id === 'carn_replacement'), false);
+		assertOperatingMatchesComputeActiveRules(
+			date,
+			[saturdayRule, weekdayPlus, carnivalReplacement],
+			contributions,
+			{ events: [carnivalEvent] },
+		);
 	});
 
-	it('uses manual rules for operating on natural Saturday during Carnival', () => {
+	it('FR-05: uses manual rules for operating on natural Saturday during Carnival', () => {
 		const date = d('20260221');
 		const contributions = collectGtfsIncludeContributionsForDate(date, rules(), periods, holidays, {
 			events: [carnivalEvent],
@@ -223,6 +251,32 @@ describe('collectGtfsIncludeContributionsForDate', () => {
 
 		assert.ok(contributions.some(c => c.kind === 'operating' && c.rule._id === 'saturday'));
 		assert.equal(contributions.some(c => c.kind === 'operating' && c.rule._id === 'carn_replacement'), false);
+		assertOperatingMatchesComputeActiveRules(date, rules(), contributions, { events: [carnivalEvent] });
+	});
+
+	it('SW-01: same_weekday replacement emits manual tokens only, not replacement row', () => {
+		const sameWeekdayReplacement = testEventReplacement({
+			...carnivalReplacement,
+			same_weekday: true,
+		});
+		const date = d('20260217');
+
+		const contributions = collectGtfsIncludeContributionsForDate(
+			date,
+			[weekdayRule, sameWeekdayReplacement],
+			periods,
+			holidays,
+			{ events: [carnivalEvent] },
+		);
+
+		assert.equal(contributions.some(c => c.kind === 'operating' && c.rule._id === 'carn_replacement'), false);
+		assert.ok(contributions.some(c => c.kind === 'operating' && c.rule._id === 'weekday'));
+		assertOperatingMatchesComputeActiveRules(
+			date,
+			[weekdayRule, sameWeekdayReplacement],
+			contributions,
+			{ events: [carnivalEvent] },
+		);
 	});
 
 	it('applies event_id displacement on normal days', () => {
@@ -320,8 +374,7 @@ describe('collectGtfsIncludeContributionsForDate', () => {
 			1,
 		);
 
-		const active = computeActiveRules(date, [escDu, escVerDu], periods, holidays);
-		assert.ok(active.timepoints.includes('20:30'));
+		assertOperatingMatchesComputeActiveRules(date, [escDu, escVerDu], contributions);
 	});
 
 	it('ND-05: event manual operating + general base_off on shared timepoint (Santo António)', () => {
@@ -376,10 +429,12 @@ describe('collectGtfsIncludeContributionsForDate', () => {
 			c => c.kind === 'operating' && c.rule._id === 'all_sab_dom' && c.timepoint === '08:05',
 		));
 
-		const active = computeActiveRules(date, [weekendGeneral, santoManual], [junePeriod], holidays, {
-			events: [santoEvent],
-		});
-		assert.deepEqual(active.timepoints.sort(), ['06:05', '08:05']);
+		assertOperatingMatchesComputeActiveRules(
+			date,
+			[weekendGeneral, santoManual],
+			contributions,
+			{ events: [santoEvent], periods: [junePeriod] },
+		);
 	});
 });
 
