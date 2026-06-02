@@ -198,8 +198,9 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 				const informedAgencyId = reference.parent_id?.trim();
 
 				if (informedAgencyId) {
-					const lineArea = normalizedLineId?.match(/\d/)?.[0] ?? lineAgencyId?.slice(-1);
-					const agencyOk = informedAgencyId === lineAgencyId || lineArea === informedAgencyId.slice(-1);
+					// Extract the agency id inside brackets, e.g. `[44]4403` -> `44`
+					const informedBracketAgency = informedAgencyId.match(/^\[([^\]]+)\]/)?.[1] ?? informedAgencyId;
+					const agencyOk = informedBracketAgency === lineAgencyId;
 					if (!agencyOk) return false;
 				}
 
@@ -228,9 +229,10 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 	useEffect(() => {
 		// Return early if no patterns are available
 		if (!dataValidPatternsState?.length) return;
-		// Preselect the first pattern of the valid patterns if there is no filter value
+		// Preselect the first pattern with a path, falling back to the first pattern
 		if (!filterActivePatternIdState) {
-			setActivePattern(dataValidPatternsState[0].version_id);
+			const firstWithPath = dataValidPatternsState.find(pattern => pattern.path.length > 0);
+			setActivePattern((firstWithPath ?? dataValidPatternsState[0]).version_id);
 		}
 	}, [dataValidPatternsState, filterActivePatternIdState]);
 

@@ -36,15 +36,21 @@ export function SelectOperationalDate() {
 		{
 			label: (
 				<DatePickerInput
-					classNames={{ input: styles.datePickerInput, section: styles.datePickerSection, wrapper: styles.datePickerWrapper }}
 					data-selected={!operationalDateContext.flags.is_today_selected && !operationalDateContext.flags.is_tomorrow_selected}
 					dropdownType="modal"
-					leftSection={<IconCalendarEvent />}
+					leftSection={<IconCalendarEvent className={styles.datePickerIcon} size={22} stroke={1.75} />}
+					leftSectionWidth={38}
 					onChange={operationalDateContext.actions.updateSelectedDateFromFormat}
-					size="lg"
+					size="xl"
 					value={operationalDateContext.data.selected_date?.js_date}
 					valueFormat="DD MMM YYYY"
 					variant="unstyled"
+					classNames={{
+						input: styles.datePickerInput,
+						root: styles.datePickerRoot,
+						section: styles.datePickerSection,
+						wrapper: styles.datePickerWrapper,
+					}}
 				/>
 			),
 			value: 'custom_date',
@@ -82,12 +88,15 @@ export function SelectOperationalDate() {
 		<SegmentedControl
 			data={segementedControlOptions}
 			onChange={handleSegmentedControlChange}
+			size="xl"
 			value={selectedSegmentedControlOption}
 			w="100%"
 			classNames={{
 				control: styles.segmentedControlDateInputOverrideControl,
 				label: styles.segmentedControlDateInputOverrideLabel,
+				root: styles.segmentedControlRoot,
 			}}
+			fullWidth
 		/>
 	);
 
