@@ -28,7 +28,7 @@ export function FloatingHelpButton() {
 					onClick={() => setIsOpen(true)}
 					variant="muted"
 				>
-					<IconHelpCircle color="var(--color-system-text-100)" size={24} />
+					<IconHelpCircle color="var(--color-system-text-100)" size={40} />
 				</ActionIcon>
 			</Affix>
 			<FloatingHelpButtonModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
