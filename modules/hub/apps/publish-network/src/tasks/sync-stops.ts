@@ -62,7 +62,27 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 
 	for (const stop of allStops as QueryResult[]) {
 		try {
-		//
+			//
+
+			if (!stop.agency_ids?.length) {
+				Logger.error(`Skip processing: stop ${stop.stop_id} has no agency IDs.`);
+				continue;
+			}
+
+			if (!stop.line_ids?.length) {
+				Logger.error(`Skip processing: stop ${stop.stop_id} has no line IDs.`);
+				continue;
+			}
+
+			if (!stop.route_ids?.length) {
+				Logger.error(`Skip processing: stop ${stop.stop_id} has no route IDs.`);
+				continue;
+			}
+
+			if (!stop.pattern_ids?.length) {
+				Logger.error(`Skip processing: stop ${stop.stop_id} has no pattern IDs.`);
+				continue;
+			}
 
 			//
 			// Build the final stop object
@@ -97,9 +117,10 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 
 			updatedStopsCounter++;
 
-		//
+			//
 		} catch (error) {
 			Logger.error(`Error processing stop ${stop.stop_id}:`, error);
+			console.log(stop);
 			continue;
 		}
 	}
