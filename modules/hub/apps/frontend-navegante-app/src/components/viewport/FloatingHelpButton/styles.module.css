@@ -14,15 +14,15 @@
 	min-width: 56px;
 	height: 56px;
 	min-height: 56px;
-	background-color: var(--color-brand-navegante);
 	color: var(--color-system-text-100);
+	background-color: var(--color-brand-navegante);
 	border-color: transparent;
 	border-radius: 999px;
 	box-shadow: 0 4px 12px rgb(0 0 0 / 25%);
 }
 
 .button[data-variant='muted'] {
-	background-color: var(--color-brand-navegante);
 	color: var(--color-system-text-100);
+	background-color: var(--color-brand-navegante);
 	border-color: transparent;
 }
