@@ -13,11 +13,6 @@ on:
         required: false
         default: true
         type: boolean
-      pr_number:
-        description: 'Pull request number (from /build comment); tags images as pr-<n>'
-        required: false
-        default: ''
-        type: string
   push:
     branches:
       - prd
@@ -35,8 +30,8 @@ on:
       - closed
 
 concurrency:
-  group: build-${{ github.event.pull_request.number || github.event.inputs.pr_number || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' || github.event.inputs.pr_number != '' }}
+  group: build-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
 
@@ -112,7 +107,7 @@ jobs:
     needs: [package-lock]
     if: |
       always() &&
-      (github.event_name == 'pull_request' || github.event.inputs.pr_number != '') &&
+      github.event_name == 'pull_request' &&
       (github.event.action == 'closed' || needs.package-lock.result == 'success')
     runs-on: ubuntu-24.04-arm
     steps:
@@ -123,8 +118,8 @@ jobs:
           event-type: preview-pr
           client-payload: >-
             {
-              "pr_number": ${{ github.event.pull_request.number || github.event.inputs.pr_number }},
-              "pr_action": "${{ github.event.action || 'synchronize' }}"
+              "pr_number": ${{ github.event.pull_request.number }},
+              "pr_action": "${{ github.event.action }}"
             }
 
   # # #
@@ -142,6 +137,6 @@ jobs:
     with:
       module: ${{ matrix.module }}
       modules-apps: ${{ needs.discover.outputs.modules-apps }}
-      image-tag: ${{ (github.event.pull_request.number || github.event.inputs.pr_number) && format('pr-{0}', github.event.pull_request.number || github.event.inputs.pr_number) || github.ref_name }}
-      environment: ${{ (github.event.pull_request.number || github.event.inputs.pr_number) && format('pr-{0}', github.event.pull_request.number || github.event.inputs.pr_number) || github.ref_name }}
+      image-tag: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
+      environment: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
     secrets: inherit
