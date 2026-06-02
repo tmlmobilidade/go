@@ -1,0 +1,84 @@
+name: PR Module Picker
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+
+permissions:
+  pull-requests: read
+  issues: write
+
+jobs:
+  post-picker:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v5
+
+      - id: scan
+        shell: bash
+        run: |
+          MODULES=$(find modules -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort)
+          {
+            echo "modules<<EOF"
+            echo "$MODULES"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Post module picker comment
+        uses: actions/github-script@v8
+        env:
+          MODULE_LIST: ${{ steps.scan.outputs.modules }}
+        with:
+          script: |
+            const marker = '<!-- go-modules-build-picker -->';
+            const prNumber = context.payload.pull_request.number;
+            const modules = (process.env.MODULE_LIST || '')
+              .split('\n')
+              .map((line) => line.trim())
+              .filter(Boolean);
+
+            const checklist = modules.map((module) => `- [ ] ${module}`).join('\n');
+
+            const body = [
+              marker,
+              '',
+              '### Optional: build specific modules',
+              '',
+              '**Default (no action needed):** each push still builds only modules changed in the PR (same as today).',
+              '',
+              '**To build extra modules** (e.g. dependency not in your diff):',
+              '1. Edit **this comment** and check the modules (`[x]`).',
+              '2. Comment `/build-modules` on the PR.',
+              '',
+              'Only checked modules are built for that request — not the full monorepo.',
+              '',
+              checklist,
+            ].join('\n');
+
+            const { owner, repo } = context.repo;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number: prNumber,
+              per_page: 100,
+            });
+
+            const existing = comments.find((comment) => comment.body?.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body,
+              });
+            }

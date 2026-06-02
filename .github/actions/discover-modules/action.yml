@@ -5,6 +5,10 @@ inputs:
   modules-apps:
     description: "Newline-separated list of modules and their apps (format: module:app, one app per line)"
     required: true
+  selected-modules:
+    description: "Comma-separated modules; when set, only these build (manual picker / dispatch)"
+    required: false
+    default: ""
   selected-module:
     description: "Selected module from workflow_dispatch (or 'all')"
     required: false
@@ -67,6 +71,7 @@ runs:
         MODULES_APPS: ${{ inputs.modules-apps }}
         CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
         GIT_DIFF_FILES: ${{ steps.git-diff.outputs.changed_files }}
+        SELECTED_MODULES: ${{ inputs.selected-modules }}
         SELECTED_MODULE: ${{ inputs.selected-module }}
         BUILD_ALL: ${{ inputs.build-all }}
       with:
@@ -103,20 +108,34 @@ runs:
 
           const changedFiles = Array.from(new Set([...changedFromAction, ...changedFromGit]));
 
+          const selectedModules = (process.env.SELECTED_MODULES || '')
+            .split(',')
+            .map((name) => name.trim().toLowerCase())
+            .filter(Boolean);
+          const hasSelectedModules = selectedModules.length > 0;
+
           const isManual = context.eventName === 'workflow_dispatch';
           const selectedModule = (process.env.SELECTED_MODULE || 'all').trim().toLowerCase();
           const manualBuildAll = (process.env.BUILD_ALL || 'true') === 'true';
-          const hasSpecificManualModule = isManual && selectedModule !== '' && selectedModule !== 'all';
+          const hasSpecificManualModule =
+            !hasSelectedModules && isManual && selectedModule !== '' && selectedModule !== 'all';
 
-          // Any shared-package change forces a full rebuild.
+          // Any shared-package change forces a full rebuild (not when user picked specific modules).
           const packagesChanged = changedFiles.some(f => f.startsWith('packages/'));
-          const buildAll = (isManual && !hasSpecificManualModule && manualBuildAll) || packagesChanged;
+          const buildAll =
+            !hasSelectedModules &&
+            ((isManual && !hasSpecificManualModule && manualBuildAll) || packagesChanged);
 
           const modulesToBuild = [];
           const moduleApps = {};
 
           for (const { module, apps } of allModules) {
-            if (hasSpecificManualModule) {
+            if (hasSelectedModules) {
+              if (selectedModules.includes(module)) {
+                modulesToBuild.push(module);
+                moduleApps[module] = apps;
+              }
+            } else if (hasSpecificManualModule) {
               if (module === selectedModule) {
                 modulesToBuild.push(module);
                 moduleApps[module] = apps;
@@ -136,9 +155,19 @@ runs:
             }
           }
 
+          if (hasSelectedModules) {
+            const unknown = selectedModules.filter(
+              (name) => !allModules.some(({ module }) => module === name),
+            );
+            if (unknown.length > 0) {
+              core.warning(`Unknown module(s) ignored: ${unknown.join(', ')}`);
+            }
+          }
+
           core.setOutput('modules', JSON.stringify(modulesToBuild));
           core.setOutput('modules-apps', JSON.stringify(moduleApps));
 
+          core.info(`selected modules: ${JSON.stringify(selectedModules)}`);
           core.info(`packages changed: ${packagesChanged}`);
           core.info(`build all: ${buildAll}`);
           core.info(`modules to build: ${JSON.stringify(modulesToBuild)}`);
