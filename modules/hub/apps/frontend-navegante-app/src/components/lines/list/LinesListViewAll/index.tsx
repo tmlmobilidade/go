@@ -46,8 +46,12 @@ export function LinesListViewAll() {
 					withShowMoreButton={group.lines.length < group.qty}
 				>
 					<ViewportList itemMargin={0} items={group.lines}>
-						{line => (
-							<RegularListItem key={line.id} href={`/lines/${line.id}`}>
+						{(line, index) => (
+							<RegularListItem
+								key={line.id}
+								ariaLabel={t(`default:lines.LinesListViewAll.items.aria_label`, '', { index: index + 1, tts_name: line.tts_name })}
+								href={`/lines/${line.id}`}
+							>
 								<LineDisplay lineData={line} />
 							</RegularListItem>
 						)}

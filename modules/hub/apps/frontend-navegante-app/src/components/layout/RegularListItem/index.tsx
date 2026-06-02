@@ -1,7 +1,7 @@
 'use client';
 
 import { IconArrowNarrowRight } from '@tabler/icons-react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { type RefObject } from 'react';
 
 import styles from './styles.module.css';
@@ -9,19 +9,45 @@ import styles from './styles.module.css';
 /* * */
 
 interface RegularListItemProps {
+	ariaLabel?: string
 	children?: React.ReactNode
 	href: string
 	icon?: React.ReactNode
 	onClick?: () => void
-	refFn?: RefObject<HTMLAnchorElement>
+	refFn?: RefObject<HTMLDivElement>
 	style?: React.CSSProperties
 }
 
 /* * */
 
-export function RegularListItem({ children, href, icon, refFn, style }: RegularListItemProps) {
+export function RegularListItem({ ariaLabel, children, href, icon, refFn, style }: RegularListItemProps) {
+	//
+
+	//
+	// A. Setup variables
+
+	const router = useRouter();
+
+	//
+	// B. Handle actions
+
+	const handleClick = () => {
+		if (href === '#') return;
+		router.push(href);
+	};
+
+	//
+	// C. Render components
+
 	return (
-		<Link ref={refFn || undefined} className={`${styles.container} ${href === '#' && styles.disableLink}`} href={href} style={style}>
+		<div
+			ref={refFn || undefined}
+			aria-label={ariaLabel}
+			className={styles.container}
+			data-disabled={href === '#'}
+			onClick={handleClick}
+			style={style}
+		>
 			{icon && (
 				<div className={styles.iconWrapper}>
 					{icon}
@@ -37,6 +63,6 @@ export function RegularListItem({ children, href, icon, refFn, style }: RegularL
 					<IconArrowNarrowRight size={20} />
 				</div>
 			)}
-		</Link>
+		</div>
 	);
 }

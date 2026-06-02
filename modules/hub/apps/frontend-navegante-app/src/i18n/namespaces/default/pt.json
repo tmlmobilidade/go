@@ -141,6 +141,9 @@
 			"heading": "Pesquisar Linhas"
 		},
 		"LinesListViewAll": {
+			"items": {
+				"aria_label": "{index}º: {tts_name}"
+			},
 			"no_data": "Nenhuma linha encontrada para esta pesquisa"
 		},
 		"SelectActivePatternGroup": {
