@@ -27,6 +27,7 @@
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
+		"@turf/turf": "7.3.5",
 		"gtfs-types": "5.1.0",
 		"yazl": "3.3.1"
 	},

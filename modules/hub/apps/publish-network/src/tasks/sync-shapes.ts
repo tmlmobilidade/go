@@ -1,0 +1,125 @@
+/* * */
+
+import type { Shape, ShapePoint } from '@carrismetropolitana/api-types/network';
+
+import { apiCache } from '@tmlmobilidade/databases';
+import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
+import * as turf from '@turf/turf';
+
+/* * */
+
+export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
+	//
+
+	Logger.title(`Sync Shapes`);
+	const globalTimer = new Timer();
+
+	//
+	// Fetch all Shapes from NETWORKDB
+
+	const fetchRawDataTimer = new Timer();
+	const allShapesRaw = importedGtfsSql.shapes.all();
+	Logger.info(`Fetched ${allShapesRaw.length} rows from GTFS (${fetchRawDataTimer.get()})`);
+
+	//
+	// Group all rows by shape_id
+
+	const groupShapesTimer = new Timer();
+
+	const allShapesData = new Map<string, Shape>();
+
+	for (const shapeRaw of allShapesRaw) {
+		//
+
+		//
+		// Check if a shape object already exists, or create a new one.
+
+		let shapeData: Shape;
+
+		if (allShapesData.has(shapeRaw.shape_id)) {
+			shapeData = allShapesData.get(shapeRaw.shape_id);
+		} else {
+			shapeData = {
+				extension: 0,
+				geojson: null,
+				points: [],
+				shape_id: shapeRaw.shape_id,
+			};
+		}
+
+		//
+		// Add the point to the shape
+
+		const parsedPoint: ShapePoint = {
+			shape_dist_traveled: shapeRaw.shape_dist_traveled,
+			shape_pt_lat: shapeRaw.shape_pt_lat,
+			shape_pt_lon: shapeRaw.shape_pt_lon,
+			shape_pt_sequence: shapeRaw.shape_pt_sequence,
+		};
+
+		shapeData.points.push(parsedPoint);
+
+		allShapesData.set(shapeRaw.shape_id, shapeData);
+
+	//
+	}
+
+	Logger.info(`Created ${allShapesData.size} Shapes from raw data (${groupShapesTimer.get()})`);
+
+	//
+	// For each grouped shape, calculate the extension and create a geojson object.
+	// Then, update the entry in the database.
+
+	const saveShapesTimer = new Timer();
+
+	for (const shapeData of allShapesData.values()) {
+		//
+
+		//
+		// Sort points to match sequence
+
+		const sortCollator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
+		shapeData.points.sort((a, b) => sortCollator.compare(String(a.shape_pt_sequence), String(b.shape_pt_sequence)));
+
+		//
+		// Create geojson feature using turf
+
+		shapeData.geojson = turf.lineString(shapeData.points.map(point => [point.shape_pt_lon, point.shape_pt_lat]));
+
+		//
+		// Calculate shape extension
+
+		const shapeExtensionKm = turf.length(shapeData.geojson, { units: 'kilometers' });
+		const shapeExtensionInMeters = shapeExtensionKm ? shapeExtensionKm * 1000 : 0;
+		shapeData.extension = Math.floor(shapeExtensionInMeters);
+
+		//
+		// Update or create new document
+
+		await apiCache.set(`hub:network:shapes:${shapeData.shape_id}`, JSON.stringify(shapeData));
+		// await apiCache.set(SERVERDB_KEYS.NETWORK.SHAPES.ID(shapeData.shape_id), JSON.stringify(shapeData));
+
+		//
+	}
+
+	Logger.info(`Saved ${allShapesData.size} Shapes to SERVERDB (${saveShapesTimer.get()})`);
+
+	//
+	// Remove stale shapes
+
+	const removeStaleShapesTimer = new Timer();
+
+	const allExistingShapeKeys = await apiCache.scan(`hub:network:shapes:*`);
+	const staleShapeKeys = allExistingShapeKeys.filter(key => !allShapesData.has(key));
+	if (staleShapeKeys.length) await apiCache.deleteMany(staleShapeKeys);
+
+	Logger.info(`Deleted ${staleShapeKeys.length} stale Shapes from SERVERDB (${removeStaleShapesTimer.get()})`);
+
+	//
+
+	Logger.success(`Done updating Shapes (${globalTimer.get()})`);
+
+	//
+};

@@ -1,6 +1,7 @@
 /* * */
 
 import { generateLinesRoutesPatterns } from '@/tasks/sync-lines-routes-patterns.js';
+import { generateShapes } from '@/tasks/sync-shapes.js';
 import { generateStops } from '@/tasks/sync-stops.js';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
@@ -30,6 +31,8 @@ export async function main() {
 	// Export GTFS files from the merged dataset
 
 	await generateStops(importedGtfsSql);
+
+	await generateShapes(importedGtfsSql);
 
 	await generateLinesRoutesPatterns(importedGtfsSql);
 
