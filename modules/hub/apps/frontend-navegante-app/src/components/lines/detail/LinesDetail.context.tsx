@@ -4,8 +4,9 @@ import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
+import { HubPattern, HubRoute, HubShape, HubWaypoint } from '@/types/api/network';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubAlert, type HubLine, type HubPattern, type HubRoute, type HubShape, type HubWaypoint } from '@tmlmobilidade/types';
+import { HubAlert, HubLine } from '@tmlmobilidade/types';
 import { useQueryState } from 'nuqs';
 import { createContext, useContext, useEffect, useState } from 'react';
 
