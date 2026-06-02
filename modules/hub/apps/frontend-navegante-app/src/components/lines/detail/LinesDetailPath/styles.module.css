@@ -23,11 +23,9 @@
 
 .mapWrapper {
 	position: sticky;
-	top: var(--size-height-header);
 	grid-area: b;
 	height: 100%;
 	max-height: calc(100vh - var(--size-height-header));;
-	border-left: 1px solid var(--color-system-border-100);
 }
 
 @media (width < 1000px) {
