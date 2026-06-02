@@ -198,8 +198,9 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 				const informedAgencyId = reference.parent_id?.trim();
 
 				if (informedAgencyId) {
-					const lineArea = normalizedLineId?.match(/\d/)?.[0] ?? lineAgencyId?.slice(-1);
-					const agencyOk = informedAgencyId === lineAgencyId || lineArea === informedAgencyId.slice(-1);
+					// Extract the agency id inside brackets, e.g. `[44]4403` -> `44`
+					const informedBracketAgency = informedAgencyId.match(/^\[([^\]]+)\]/)?.[1] ?? informedAgencyId;
+					const agencyOk = informedBracketAgency === lineAgencyId;
 					if (!agencyOk) return false;
 				}
 

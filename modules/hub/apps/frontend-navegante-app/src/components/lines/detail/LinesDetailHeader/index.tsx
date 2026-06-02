@@ -31,11 +31,9 @@ export function LinesDetailHeader() {
 	return (
 		<>
 			<Surface>
-
 				<Section>
 					<BackButton href="/?section=lines" />
 				</Section>
-
 				<Section>
 					<div className={styles.headingSection}>
 						<div className={styles.headingSectionRow}>
@@ -59,7 +57,6 @@ export function LinesDetailHeader() {
 					</div>
 				</Section>
 			</Surface>
-
 		</>
 	);
 
