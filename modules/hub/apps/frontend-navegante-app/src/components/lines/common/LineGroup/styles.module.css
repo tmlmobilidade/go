@@ -6,7 +6,12 @@
 	align-items: center;
 	justify-content: flex-start;
 	width: 100%;
+	margin-top: 20px;
 	border-radius: var(--border-radius-xs);
+}
+
+.container:first-child {
+	margin-top: 0;
 }
 
 /* * */
@@ -15,6 +20,5 @@
 .logo {
 	width: 90px;
 	height: 60px;
-	margin-top: 20px;
 	margin-left: 22px;
 }
