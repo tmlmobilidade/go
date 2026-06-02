@@ -3,9 +3,10 @@
 /* * */
 
 import { AlertEffectIcon } from '@/components/alerts/common/AlertEffectIcon';
-import { Flex, Group, Select, SelectProps, Text } from '@mantine/core';
+import { Flex, Group, Select, type SelectProps } from '@mantine/core';
 import { IconBolt } from '@tabler/icons-react';
 import { AlertEffect, AlertEffectSchema } from '@tmlmobilidade/types';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -16,52 +17,46 @@ type SelectAlertEffectProps = SelectProps;
 
 export default function Component({ onChange, value, ...props }: SelectAlertEffectProps) {
 	//
+
+	//
 	// A. Setup variables
 
 	const { t } = useTranslation();
 
-	//
-	// B. Transform data
+	const effectOptions = useMemo(
+		() => AlertEffectSchema.options.map(effect => ({
+			label: t(`shared:alerts.effects.${effect}.title`),
+			value: effect,
+		})),
+		[t],
+	);
 
 	//
-	// C. Render components
+	// B. Render components
+
 	const renderSelectOption: SelectProps['renderOption'] = ({ option }) => {
 		return (
 			<Group gap={2}>
 				<Flex direction="column">
-					{/* Route Long Name */}
 					<AlertEffectIcon className={styles.icon} effect={option.value as AlertEffect} withText />
 				</Flex>
 			</Group>
 		);
 	};
 
-	const renderSelectRoot = (props) => {
-		if (!value) return (
-			<div {...props}>
-				<Text className={styles.placeholder}>{t('default:alerts.SelectEffect.placeholder')}</Text>
-			</div>
-		);
-
-		return (
-			<div {...props}>
-				{/* Route Long Name */}
-				<AlertEffectIcon className={styles.icon} effect={value as AlertEffect} withText />
-			</div>
-		);
-	};
-
 	return (
 		<Select
-			allowDeselect={false}
-			data={AlertEffectSchema.options}
-			leftSection={<IconBolt size={20} />}
+			data={effectOptions}
 			onChange={onChange}
+			placeholder={t('default:alerts.SelectEffect.placeholder')}
 			renderOption={renderSelectOption}
 			value={value}
 			w="100%"
-			clearable
 			{...props}
+			leftSection={
+				value ? <AlertEffectIcon effect={value as AlertEffect} /> : <IconBolt size={20} />
+			}
+			clearable
 		/>
 	);
 }
