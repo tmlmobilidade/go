@@ -3,12 +3,10 @@
 /* * */
 
 import { StopDisplay } from '@/components/stops/common/StopDisplay';
-import { useStopsContext } from '@/components/stops/Stops.context';
-import { createDocCollection } from '@/hooks/useOtherSearch';
 import { ActionIcon, Combobox, Group, TextInput, useCombobox } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
 import { IconBusStop, IconSelector, IconX } from '@tabler/icons-react';
 import { type HubStop } from '@tmlmobilidade/types';
+import { useSearch } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -35,30 +33,8 @@ export function SelectStop({ data = [], label, nothingFound, onSelectStopId, pla
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const [searchQuery, setSearchQuery] = useState('');
-	const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 200);
-
-	const stopsContext = useStopsContext();
-
 	const comboboxStore = useCombobox();
-
-	//
-	// B. Transform data
-
-	const { search } = useMemo(() => {
-		// Prepare data for search function
-		const preparedSearchCollection = stopsContext.data.stops.map((item) => {
-			return {
-				...item,
-			};
-		});
-		return createDocCollection(preparedSearchCollection, {
-			id: 2,
-			long_name: 1,
-			short_name: 1,
-			tts_name: 1.5,
-		});
-	}, [data]);
+	const [searchQuery, setSearchQuery] = useState('');
 
 	const selectedStopData = useMemo(() => {
 		return data.find(item => String(item._id) === selectedStopId);
@@ -67,10 +43,16 @@ export function SelectStop({ data = [], label, nothingFound, onSelectStopId, pla
 	//
 	// C. Search
 
+	const searchResultsData = useSearch<HubStop>({
+		accessors: ['name', 'short_name', 'tts_name'],
+		data,
+		debounce: 200,
+		query: searchQuery,
+	});
+
 	const allStopsDataFilteredBySearchQuery = useMemo(() => {
-		const filteredData = debouncedSearchQuery ? search(debouncedSearchQuery) : data;
-		return filteredData.slice(0, 100);
-	}, [debouncedSearchQuery, search, data]);
+		return searchResultsData.slice(0, 100);
+	}, [searchResultsData]);
 
 	//
 	// D. Handle actions
@@ -156,7 +138,7 @@ export function SelectStop({ data = [], label, nothingFound, onSelectStopId, pla
 					{allStopsDataFilteredBySearchQuery.length === 0
 						? <Combobox.Empty>{nothingFound || t('default:alerts.AlertsListToolbar.SelectStop.nothing_found')}</Combobox.Empty>
 						: allStopsDataFilteredBySearchQuery.map(item => (
-							<Combobox.Option key={item.id} className={item.id === selectedStopData?._id ? styles.selected : ''} value={item.id}>
+							<Combobox.Option key={String(item._id)} className={String(item._id) === selectedStopId ? styles.selected : ''} value={String(item._id)}>
 								<div className={styles.comboboxOption}>
 									<StopDisplay stopData={item} />
 								</div>

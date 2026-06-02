@@ -3,11 +3,10 @@
 /* * */
 
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
-import { createDocCollection } from '@/hooks/useOtherSearch';
 import { ActionIcon, Combobox, Group, TextInput, useCombobox } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
 import { IconArrowLoopRight, IconSelector, IconX } from '@tabler/icons-react';
 import { HubLine } from '@tmlmobilidade/types';
+import { useSearch } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -36,20 +35,6 @@ export function SelectLine({ data = [], nothingFound, onSelectLineId, placeholde
 	const { t } = useTranslation();
 	const comboboxStore = useCombobox();
 	const [searchQuery, setSearchQuery] = useState('');
-	const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 200);
-
-	//
-	// B. Transform data
-
-	const { search } = useMemo(() => {
-		return createDocCollection(data, {
-			id: 2,
-			locality_ids: 1,
-			long_name: 0.8,
-			short_name: 0.7,
-			tts_name: 0.8,
-		});
-	}, [data]);
 
 	const selectedLineData = useMemo(() => {
 		return data.find(item => item.id === selectedLineId);
@@ -58,10 +43,16 @@ export function SelectLine({ data = [], nothingFound, onSelectLineId, placeholde
 	//
 	// C. Search
 
+	const searchResultsData = useSearch<HubLine>({
+		accessors: ['long_name', 'short_name', 'tts_name'],
+		data,
+		debounce: 200,
+		query: searchQuery,
+	});
+
 	const allLinesDataFilteredBySearchQuery = useMemo(() => {
-		const filteredData = debouncedSearchQuery ? search(debouncedSearchQuery) : data;
-		return filteredData.slice(0, 100);
-	}, [debouncedSearchQuery, search, data]);
+		return searchResultsData.slice(0, 100);
+	}, [searchResultsData]);
 
 	//
 	// D. Handle actions
