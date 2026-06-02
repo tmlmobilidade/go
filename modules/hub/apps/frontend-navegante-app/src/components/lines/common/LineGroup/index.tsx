@@ -11,7 +11,7 @@ import styles from './styles.module.css';
 export function LineGroup({ agencyId, children }: { agencyId: string, children: React.ReactNode }) {
 	return (
 		<div className={styles.container}>
-			<Image alt={`${AGENCY_NAMES_MAP[agencyId].full} Logo`} className={styles.logo} height={32} src={AGENCY_LOGO_MAP[agencyId]} width={32} />
+			<Image alt={`${AGENCY_NAMES_MAP[agencyId].full} Logo`} className={styles.logo} height={60} src={AGENCY_LOGO_MAP[agencyId]} width={90} />
 			{children}
 		</div>
 	);
