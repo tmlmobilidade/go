@@ -29,6 +29,7 @@ export async function publishJsonFeed() {
 						{ publish_end_date: undefined },
 						{ publish_end_date: { $exists: false } },
 					],
+					agency_id: { $in: ['41', '42', '43', '44'] },
 					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
 					publish_status: 'published',
 				},
