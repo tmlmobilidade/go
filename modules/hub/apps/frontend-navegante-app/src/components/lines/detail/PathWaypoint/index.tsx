@@ -4,9 +4,9 @@ import type { HubWaypoint } from '@tmlmobilidade/types';
 
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { PathWaypointHeader } from '@/components/lines/detail/PathWaypointHeader';
-import { PathWaypointNextArrivals } from '@/components/lines/detail/PathWaypointNextArrivals';
+// import { PathWaypointNextArrivals } from '@/components/lines/detail/PathWaypointNextArrivals';
 import { PathWaypointSpine } from '@/components/lines/detail/PathWaypointSpine';
-import { PathWaypointTimetable } from '@/components/lines/detail/PathWaypointTimetable';
+// import { PathWaypointTimetable } from '@/components/lines/detail/PathWaypointTimetable';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 
 import styles from './styles.module.css';
@@ -72,16 +72,16 @@ export function PathWaypoint({ arrivals, id, isFirstStop, isLastStop, isSelected
 					waypointData={waypointData}
 				/>
 
-				{isSelected && operationalDateContext.flags.is_today_selected && (
+				{/* {isSelected && operationalDateContext.flags.is_today_selected && (
 					<PathWaypointNextArrivals
 						realtimeArrivals={realtimeArrivals}
 						scheduledArrivals={scheduledArrivals}
 					/>
-				)}
+				)} */}
 
-				{isSelected && (
+				{/* {isSelected && (
 					<PathWaypointTimetable />
-				)}
+				)} */}
 			</div>
 		</div>
 	);

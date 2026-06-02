@@ -1,13 +1,13 @@
 /* * */
 
 import { IconDisplay } from '@/components/common/IconDisplay';
+import { useStopsContext } from '@/components/stops/Stops.context';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
-import { useStopsContext } from '@/contexts/Stops.context';
-import { type Waypoint } from '@/types/api/network';
-import { formatStopLocation } from '@/utils/formatStopLocation';
+import { formatStopLocation } from '@/utils/format-stop-location';
 import { useClipboard } from '@mantine/hooks';
 import { IconCheck, IconCopy } from '@tabler/icons-react';
 import { IconArrowUpRight } from '@tabler/icons-react';
+import { type HubWaypoint } from '@tmlmobilidade/types';
 import Link from 'next/link';
 
 import styles from './styles.module.css';
@@ -18,7 +18,7 @@ interface Props {
 	isFirstStop?: boolean
 	isLastStop?: boolean
 	isSelected: boolean
-	waypointData: Waypoint
+	waypointData: HubWaypoint
 }
 
 /* * */
@@ -57,7 +57,7 @@ export function PathWaypointHeader({ isFirstStop, isLastStop, isSelected, waypoi
 		<div className={`${styles.container} ${isFirstStop && styles.isFirstStop} ${isLastStop && styles.isLastStop} ${isSelected && styles.isSelected}`}>
 
 			<p className={styles.stopName}>
-				{stopData.long_name}
+				{stopData.name}
 				{isSelected && (
 					<Link
 						className={styles.stopNameUrl}
@@ -72,14 +72,14 @@ export function PathWaypointHeader({ isFirstStop, isLastStop, isSelected, waypoi
 			<div className={styles.subHeaderWrapper}>
 				<p className={styles.stopLocation}>{formatStopLocation(stopData.locality_name, stopData.municipality_name)}</p>
 				<p className={`${styles.stopId} ${stopIdClipboard.copied && styles.isCopied}`} onClick={handleClickStopId}>
-					#{stopData.id}
+					#{stopData._id}
 					{stopIdClipboard.copied ? <IconCheck className={styles.stopIdCopyIcon} /> : <IconCopy className={styles.stopIdCopyIcon} />}
 				</p>
 			</div>
-			{isSelected && stopData.facilities.length > 0 && (
+			{isSelected && stopData.flags.length > 0 && (
 				<div className={styles.facilitiesWrapper}>
-					{stopData.facilities.map(facility => (
-						<IconDisplay key={facility} category="facilities" name={facility} />
+					{stopData.flags.map(flag => (
+						<IconDisplay key={flag.short_name} category="facilities" name={flag.short_name} />
 					))}
 				</div>
 			)}

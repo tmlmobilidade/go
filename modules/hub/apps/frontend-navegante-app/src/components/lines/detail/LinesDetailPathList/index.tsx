@@ -12,6 +12,11 @@ import styles from './styles.module.css';
 
 /* * */
 
+interface NextArrival {
+	type: 'realtime' | 'scheduled'
+	unixTs: number
+}
+
 export function LinesDetailPathList() {
 	//
 
@@ -28,13 +33,13 @@ export function LinesDetailPathList() {
 	//
 	// C. Transform data
 
-	const preparedRealtimeData = useMemo<Map<string, HubPatternRealtime[]> | undefined>(() => {
+	const preparedRealtimeData = useMemo<Map<string, NextArrival[]> | undefined>(() => {
 		// Return early if there is no patternRealtimeData
 		if (!patternRealtimeData) return;
 		// Filter arrrivals for the current pattern
 		const arrivalsForCurrentPattern = patternRealtimeData?.filter(arrivalData => arrivalData.pattern_id === linesDetailContext.data.active_pattern?.id) || [];
 		// Organize arrivals by Stop ID
-		const result = new Map<string, HubPatternRealtime[]>();
+		const result = new Map<string, NextArrival[]>();
 		arrivalsForCurrentPattern.forEach((arrivalData) => {
 			// Setup the object key
 			const objectKey = `${arrivalData.stop_id}-${arrivalData.stop_sequence}`;
@@ -52,7 +57,7 @@ export function LinesDetailPathList() {
 			}
 		});
 		for (const key of Object.keys(result)) {
-			result.get(key)?.sort((a, b) => a.estimated_arrival_unix - b.estimated_arrival_unix);
+			result.get(key)?.sort((a, b) => a.unixTs - b.unixTs);
 		}
 		return result;
 	}, [patternRealtimeData, linesDetailContext.data.active_pattern?.id]);
