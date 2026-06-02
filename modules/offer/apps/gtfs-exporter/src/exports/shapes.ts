@@ -2,7 +2,7 @@
 /* * */
 
 import { type GtfsV29ExportConfig } from '@/types.js';
-import { GTFS_Shape, Shape } from '@tmlmobilidade/types';
+import { GTFS_Shape, metersToGtfsKm, Shape, shapeDistTraveledMetersAtPoint } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -15,17 +15,19 @@ import { GTFS_Shape, Shape } from '@tmlmobilidade/types';
 export function parseShape(shapeId: string, shapeData: Shape): GTFS_Shape[] {
 	try {
 		const parsedShape: GTFS_Shape[] = [];
+		const coordinates = shapeData.geojson.geometry.coordinates;
+		const pointCount = coordinates.length;
+		const extensionMeters = Number(shapeData.extension ?? 0);
 
-		for (const shapePoint of shapeData.geojson.geometry.coordinates) {
+		for (let pointIndex = 0; pointIndex < pointCount; pointIndex++) {
+			const shapePoint = coordinates[pointIndex];
 			const lat = shapePoint[1]; // GeoJSON is [lon, lat]
 			const lon = shapePoint[0];
-			const sequence = parsedShape.length + 1;
-			const distTraveled = shapeData.extension
-				? (sequence - 1) / shapeData.geojson.geometry.coordinates.length * shapeData.extension
-				: 0;
+			const sequence = pointIndex + 1;
+			const distMeters = shapeDistTraveledMetersAtPoint(extensionMeters, pointIndex, pointCount);
 			const shapePtLat = Number(lat.toFixed(6));
 			const shapePtLon = Number(lon.toFixed(6));
-			const shapeDistTraveled = Number((distTraveled / 1000).toFixed(6));
+			const shapeDistTraveled = metersToGtfsKm(distMeters);
 
 			parsedShape.push({
 				shape_id: shapeId,
