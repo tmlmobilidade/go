@@ -17,7 +17,7 @@ interface AlertsListContextState extends ListContextStateTemplate {
 		updateFilterByCause: (value: AlertCause | null) => void
 		updateFilterByEffect: (value: AlertEffect | null) => void
 		updateFilterByLineId: (value: string) => void
-		// updateFilterBySearch: (value: string) => void
+		updateFilterBySearch: (value: UseFilterStateStringReturnType) => void
 		updateFilterByStopId: (value: string) => void
 	}
 	counters: {
@@ -241,9 +241,9 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		setFilterByStopIdState(value);
 	};
 
-	// const updateFilterBySearch = (value: AlertsListContextState['filters']['search']) => {
-	// 	setFilterBySearchQueryState(value);
-	// };
+	const updateFilterBySearch = (result: UseFilterStateStringReturnType) => {
+		setFilterBySearchQueryState(result.value);
+	};
 
 	const updateFilterByCause = (value: AlertsListContextState['filters']['cause']) => {
 		setFilterByCauseState(value);
@@ -262,7 +262,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			updateFilterByCause,
 			updateFilterByEffect,
 			updateFilterByLineId,
-			// updateFilterBySearch,
+			updateFilterBySearch,
 			updateFilterByStopId,
 		},
 		counters: {
