@@ -7,6 +7,7 @@ import { FertagusClient } from './clients/fertagus/index.js';
 import { MlClient } from './clients/ml/index.js';
 import { MobiClient } from './clients/mobi/index.js';
 import { TcbClient } from './clients/tcb/index.js';
+import { TtslClient } from './clients/ttsl/index.js';
 
 /**
  * Collection of external transport agency clients.
@@ -21,6 +22,7 @@ import { TcbClient } from './clients/tcb/index.js';
  * - mobi: MobiCascais API Client
  * - ml: Metro Lisboa (ML) API Client
  * - tcb: Transportes Colectivos do Barreiro (TCB) API Client
+ * - ttsl: Transtejo Soflusa (TTSL) API Client
  */
 export const externalClients = Object.freeze({
 	ccfl: CcflClient,
@@ -30,4 +32,5 @@ export const externalClients = Object.freeze({
 	ml: MlClient,
 	mobi: MobiClient,
 	tcb: TcbClient,
+	ttsl: TtslClient,
 });
