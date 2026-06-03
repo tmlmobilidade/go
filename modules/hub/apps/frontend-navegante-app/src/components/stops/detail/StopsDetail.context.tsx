@@ -232,62 +232,59 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
  	* Prepare timetable realtime data for the selected stop.
  	*/
 
-	useEffect(() => {
-		const prepareTimetableRealtimeData = () => {
-			if (!dataTimetableRealtimeState) return;
-			const nowInUnixSeconds = DateTime.now().toSeconds();
-			const timetableRealtimePastResult = dataTimetableRealtimeState
-				.filter((arrival) => {
-					// If the arrival has an observed arrival time,
-					// then it means the vehicle has already passed the stop.
+	// useEffect(() => {
+	// 	const prepareTimetableRealtimeData = () => {
+	// 		if (!dataTimetableRealtimeState) return;
+	// 		const nowInUnixSeconds = DateTime.now().toSeconds();
+	// 		const timetableRealtimePastResult = dataTimetableRealtimeState
+	// 			.filter((arrival) => {
+	// 				// If the arrival has an observed arrival time,
+	// 				// then it means the vehicle has already passed the stop.
 
-					if (arrival.observed_arrival_unix) return true;
-					// Include it in the past if the estimated arrival time is in the past.
-					return (arrival.estimated_arrival_unix || arrival.scheduled_arrival_unix) < nowInUnixSeconds;
-				})
+	// 				if (arrival.observed_arrival_unix) return true;
+	// 				// Include it in the past if the estimated arrival time is in the past.
+	// 				return (arrival.estimated_arrival_unix || arrival.scheduled_arrival_unix) < nowInUnixSeconds;
+	// 			})
 
-				.filter((arrival) => {
-					const lastStopSequence = dataValidPatternsState
-						?.find(patternGroup => patternGroup.id === arrival.pattern_id)?.path
-						.sort((a, b) => a.stop_sequence - b.stop_sequence)
-						.slice(-1)[0]?.stop_sequence;
-					return arrival.stop_sequence !== lastStopSequence;
-				})
-				.sort((a, b) => {
-					const minimumArrivalA = a.observed_arrival_unix || a.scheduled_arrival_unix;
-					const minimumArrivalB = b.observed_arrival_unix || b.scheduled_arrival_unix;
-					return minimumArrivalA - minimumArrivalB;
-				});
-			const timetableRealtimeFutureResult = dataTimetableRealtimeState
-				.filter((arrival) => {
-					// If the arrival has an observed arrival time,
-					// then it means the vehicle has already passed the stop.
-					if (arrival.observed_arrival_unix) return false;
-					// Include it in the future if the estimated arrival time is in the future.
-					return (arrival.estimated_arrival_unix || arrival.scheduled_arrival_unix) >= nowInUnixSeconds;
-				})
-				.filter((arrival) => {
-					// When debug is off, skip last-stop arrivals (show them only in debug mode).
-					if (debugContext.flags.is_debug_mode) return true;
-
-					const lastStopSequence = dataValidPatternsState
-						?.find(patternGroup => patternGroup.id === arrival.pattern_id)?.path
-						.sort((a, b) => a.stop_sequence - b.stop_sequence)
-						.slice(-1)[0]?.stop_sequence;
-					return arrival.stop_sequence !== lastStopSequence;
-				})
-				.sort((a, b) => {
-					const minimumArrivalA = a.estimated_arrival_unix || a.scheduled_arrival_unix;
-					const minimumArrivalB = b.estimated_arrival_unix || b.scheduled_arrival_unix;
-					return minimumArrivalA - minimumArrivalB;
-				});
-			setDataTimetableRealtimePastState(timetableRealtimePastResult || []);
-			setDataTimetableRealtimeFutureState(timetableRealtimeFutureResult || []);
-		};
-		prepareTimetableRealtimeData();
-		const interval = setInterval(prepareTimetableRealtimeData, 1000);
-		return () => clearInterval(interval);
-	}, [dataTimetableRealtimeState, dataValidPatternsState]);
+	// 			.filter((arrival) => {
+	// 				const lastStopSequence = dataValidPatternsState
+	// 					?.find(patternGroup => patternGroup.id === arrival.pattern_id)?.path
+	// 					.sort((a, b) => a.stop_sequence - b.stop_sequence)
+	// 					.slice(-1)[0]?.stop_sequence;
+	// 				return arrival.stop_sequence !== lastStopSequence;
+	// 			})
+	// 			.sort((a, b) => {
+	// 				const minimumArrivalA = a.observed_arrival_unix || a.scheduled_arrival_unix;
+	// 				const minimumArrivalB = b.observed_arrival_unix || b.scheduled_arrival_unix;
+	// 				return minimumArrivalA - minimumArrivalB;
+	// 			});
+	// 		const timetableRealtimeFutureResult = dataTimetableRealtimeState
+	// 			.filter((arrival) => {
+	// 				// If the arrival has an observed arrival time,
+	// 				// then it means the vehicle has already passed the stop.
+	// 				if (arrival.observed_arrival_unix) return false;
+	// 				// Include it in the future if the estimated arrival time is in the future.
+	// 				return (arrival.estimated_arrival_unix || arrival.scheduled_arrival_unix) >= nowInUnixSeconds;
+	// 			})
+	// 			.filter((arrival) => {
+	// 				const lastStopSequence = dataValidPatternsState
+	// 					?.find(patternGroup => patternGroup.id === arrival.pattern_id)?.path
+	// 					.sort((a, b) => a.stop_sequence - b.stop_sequence)
+	// 					.slice(-1)[0]?.stop_sequence;
+	// 				return arrival.stop_sequence !== lastStopSequence;
+	// 			})
+	// 			.sort((a, b) => {
+	// 				const minimumArrivalA = a.estimated_arrival_unix || a.scheduled_arrival_unix;
+	// 				const minimumArrivalB = b.estimated_arrival_unix || b.scheduled_arrival_unix;
+	// 				return minimumArrivalA - minimumArrivalB;
+	// 			});
+	// 		setDataTimetableRealtimePastState(timetableRealtimePastResult || []);
+	// 		setDataTimetableRealtimeFutureState(timetableRealtimeFutureResult || []);
+	// 	};
+	// 	prepareTimetableRealtimeData();
+	// 	const interval = setInterval(prepareTimetableRealtimeData, 1000);
+	// 	return () => clearInterval(interval);
+	// }, [dataTimetableRealtimeState, dataValidPatternsState]);
 
 	/**
  	* Prepare timetable schedule data for the selected stop.
@@ -297,7 +294,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		// Return if no valid pattern groups or operational day is selected
 		if (!operationalDateContext.data.selected_date || !dataValidPatternsState) return;
 
-		const validScheduledTrips: NextArrival[] = [];
+		const validScheduledTrips: HubArrival[] = [];
 
 		for (const patternGroup of dataValidPatternsState || []) {
 			const lastStopSequence = patternGroup.path
@@ -322,26 +319,30 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 						.plus({ hours: arrivalHours, minute: arrivalMinutes, second: arrivalSeconds })
 						.toUnixInteger();
 					validScheduledTrips.push({
-						estimated_arrival: null,
-						estimated_arrival_unix: null,
-						headsign: patternGroup.headsign,
-						line_id: patternGroup.line_id,
-						observed_arrival: null,
-						observed_arrival_unix: null,
-						pattern_id: patternGroup.id,
-						related_trip_ids: trip.trip_ids,
-						route_id: patternGroup.route_id,
-						scheduled_arrival: stopTime.arrival_time_24h,
-						scheduled_arrival_unix: arrivalUnixTimestamp,
+						arrival_time: stopTime.arrival_time,
+						arrival_time_24h: stopTime.arrival_time_24h,
+						stop_id: dataActiveStopIdState,
 						stop_sequence: stopTime.stop_sequence,
-						trip_id: trip.trip_ids.length ? trip.trip_ids[0] : '',
-						vehicle_id: null,
+						// estimated_arrival: null,
+						// estimated_arrival_unix: null,
+						// headsign: patternGroup.headsign,
+						// line_id: patternGroup.line_id,
+						// observed_arrival: null,
+						// observed_arrival_unix: null,
+						// pattern_id: patternGroup.id,
+						// related_trip_ids: trip.trip_ids,
+						// route_id: patternGroup.route_id,
+						// scheduled_arrival: stopTime.arrival_time_24h,
+						// scheduled_arrival_unix: arrivalUnixTimestamp,
+						// stop_sequence: stopTime.stop_sequence,
+						// trip_id: trip.trip_ids.length ? trip.trip_ids[0] : '',
+						// vehicle_id: null,
 					});
 				}
 			}
 		}
 
-		validScheduledTrips.sort((a, b) => (a.scheduled_arrival_unix - b.scheduled_arrival_unix));
+		// validScheduledTrips.sort((a, b) => (a.scheduled_arrival_unix - b.scheduled_arrival_unix));
 
 		setDataTimetableScheduleState(validScheduledTrips);
 	}, [operationalDateContext.data.selected_date, dataValidPatternsState, dataActiveStopIdState]);
@@ -364,18 +365,17 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	}, [dataPatternsState, operationalDateContext.data.selected_date]);
 
 	useEffect(() => {
-		if (!alertsContext.data.simplified) return;
-		const activeAlerts = alertsContext.data.simplified.filter((simplifiedAlertData) => {
-			return simplifiedAlertData.informed_entity.some((informedEntity) => {
-				if (!informedEntity.stop_id && !informedEntity.route_id) return false;
-				const hasMatchingStop = informedEntity.stop_id === dataActiveStopIdState;
-				const hasMatchingRoute = dataStopState?.route_ids.includes(informedEntity.route_id || '');
-				const isActive = simplifiedAlertData.end_date ? simplifiedAlertData.end_date >= new Date() : true;
-				return (hasMatchingStop || hasMatchingRoute) && isActive;
+		if (!alertsContext.data.alerts) return;
+		const activeAlerts = alertsContext.data.alerts.filter((alert) => {
+			return alert.references.some((reference) => {
+				if (!reference.parent_id && !reference.child_ids.length) return false;
+				const hasMatchingStop = reference.parent_id === dataActiveStopIdState;
+				const hasMatchingRoute = dataStopState?.route_ids.includes(reference.child_ids[0] || '');
+				return (hasMatchingStop || hasMatchingRoute) && alert.active_period_start_date <= DateTime.now().toUnixInteger() && alert.active_period_end_date >= DateTime.now().toUnixInteger();
 			});
 		});
 		setDataActiveAlertsState(activeAlerts);
-	}, [alertsContext.data.simplified, dataStopState, dataActiveStopIdState]);
+	}, [alertsContext.data.alerts, dataStopState, dataActiveStopIdState]);
 
 	//
 	// D. Handle actions
@@ -407,18 +407,18 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
 				event.preventDefault();
 				// If not today, select from the schedule trips array
-				if (!operationalDateContext.flags.is_today_selected) {
-					const activeTripTimetableScheduleIndex = dataTimetableScheduleState?.findIndex(arrival => arrival.trip_id === dataActiveTripIdState);
-					if (activeTripTimetableScheduleIndex !== undefined && activeTripTimetableScheduleIndex > -1) {
-						const foundArrivalData = dataTimetableScheduleState?.[activeTripTimetableScheduleIndex + (event.key === 'ArrowUp' ? -1 : 1)];
-						if (foundArrivalData) {
-							setActiveTripId(foundArrivalData.trip_id, foundArrivalData.stop_sequence);
-							return;
-						}
-					}
-				}
-				//
+				// if (!operationalDateContext.flags.is_today_selected) {
+				// const activeTripTimetableScheduleIndex = dataTimetableScheduleState?.findIndex(arrival => arrival.trip_id === dataActiveTripIdState);
+				// if (activeTripTimetableScheduleIndex !== undefined && activeTripTimetableScheduleIndex > -1) {
+				// 	const foundArrivalData = dataTimetableScheduleState?.[activeTripTimetableScheduleIndex + (event.key === 'ArrowUp' ? -1 : 1)];
+				// 	if (foundArrivalData) {
+				// 		// setActiveTripId(foundArrivalData.trip_id, foundArrivalData.stop_sequence);
+				// 		return;
+				// 	}
+				// }
 			}
+			//
+			// }
 		};
 		document.addEventListener('keydown', handleKeyPress);
 		return () => document.removeEventListener('keydown', handleKeyPress);
