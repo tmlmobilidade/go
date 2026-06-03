@@ -128,12 +128,13 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		const fetchData = async () => {
 			try {
 				if (!dataActiveStopIdState) return;
-				const realtimeData = await fetch(`${API_ROUTES.eta.ARRIVALS_BY_STOP(dataActiveStopIdState)}`)
+				const realtimeData = await fetch('https://go.tmlmobilidade.pt/hub/api/v1/realtime/eta/')
 					.then((response) => {
 						if (!response.ok) console.log(`Failed to fetch realtime data for stopId: ${dataActiveStopIdState}`);
 						else return response.json();
 					});
-				setDataTimetableRealtimeState(realtimeData);
+				const realtimeDataByStop = realtimeData.filter((arrival: HubArrival) => arrival.stop_id === dataActiveStopIdState);
+				setDataTimetableRealtimeState(realtimeDataByStop);
 			} catch (error) {
 				console.error('Error fetching realtime data:', error);
 				setDataTimetableRealtimeState([]);
@@ -151,26 +152,26 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	* It fetches line data for each line associated with the stop and updates the state.
 	*/
 
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				if (!dataActiveStopIdState) return;
-				const realtimeData = await fetch(`${API_ROUTES.eta.ARRIVALS_BY_STOP(dataActiveStopIdState)}`)
-					.then((response) => {
-						if (!response.ok) console.log(`Failed to fetch realtime data for stopId: ${dataActiveStopIdState}`);
-						else return response.json();
-					});
-				setDataArrivalsGo(realtimeData);
-			} catch (error) {
-				console.error('Error fetching realtime data:', error);
-				setDataArrivalsGo([]);
-			}
-		};
-		//
-		fetchData();
-		const interval = setInterval(fetchData, 10000);
-		return () => clearInterval(interval);
-	}, [dataActiveStopIdState]);
+	// useEffect(() => {
+	// 	const fetchData = async () => {
+	// 		try {
+	// 			if (!dataActiveStopIdState) return;
+	// 			const realtimeData = await fetch('https://go.tmlmobilidade.pt/hub/api/v1/realtime/eta/)
+	// 				.then((response) => {
+	// 					if (!response.ok) console.log(`Failed to fetch realtime data for stopId: ${dataActiveStopIdState}`);
+	// 					else return response.json();
+	// 				});
+	// 			setDataArrivalsGo(realtimeData);
+	// 		} catch (error) {
+	// 			console.error('Error fetching realtime data:', error);
+	// 			setDataArrivalsGo([]);
+	// 		}
+	// 	};
+	//
+	// 	fetchData();
+	// 	const interval = setInterval(fetchData, 10000);
+	// 	return () => clearInterval(interval);
+	// }, [dataActiveStopIdState]);
 
 	/**
  	* Fetch pattern data for the selected stop.
@@ -183,10 +184,18 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		(async () => {
 			try {
 				const patternsData = await Promise.all(dataStopState.pattern_ids.map((patternId) => {
-					return fetch(`${API_ROUTES.hub.NETWORK_PATTERNS(patternId)}`).then((response) => {
-						if (!response.ok) console.log(`Failed to fetch pattern data for patternId: ${patternId}`);
-						else return response.json();
-					});
+					return fetch(API_ROUTES.hub.NETWORK_PATTERNS(patternId))
+						.then((response) => {
+							if (!response.ok) {
+								console.log(`Failed to fetch pattern data for patternId: ${patternId}`);
+								return [];
+							}
+							return response.json();
+						})
+						.then((patternPayload) => {
+							const patternData = Array.isArray(patternPayload) ? patternPayload : patternPayload?.data ?? [];
+							return Array.isArray(patternData) ? patternData : patternData ? [patternData] : [];
+						});
 				}));
 				setDataPatternsState(patternsData);
 			} catch (error) {
@@ -229,64 +238,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	// C. Transform data
 
 	/**
- 	* Prepare timetable realtime data for the selected stop.
- 	*/
-
-	// useEffect(() => {
-	// 	const prepareTimetableRealtimeData = () => {
-	// 		if (!dataTimetableRealtimeState) return;
-	// 		const nowInUnixSeconds = DateTime.now().toSeconds();
-	// 		const timetableRealtimePastResult = dataTimetableRealtimeState
-	// 			.filter((arrival) => {
-	// 				// If the arrival has an observed arrival time,
-	// 				// then it means the vehicle has already passed the stop.
-
-	// 				if (arrival.observed_arrival_unix) return true;
-	// 				// Include it in the past if the estimated arrival time is in the past.
-	// 				return (arrival.estimated_arrival_unix || arrival.scheduled_arrival_unix) < nowInUnixSeconds;
-	// 			})
-
-	// 			.filter((arrival) => {
-	// 				const lastStopSequence = dataValidPatternsState
-	// 					?.find(patternGroup => patternGroup.id === arrival.pattern_id)?.path
-	// 					.sort((a, b) => a.stop_sequence - b.stop_sequence)
-	// 					.slice(-1)[0]?.stop_sequence;
-	// 				return arrival.stop_sequence !== lastStopSequence;
-	// 			})
-	// 			.sort((a, b) => {
-	// 				const minimumArrivalA = a.observed_arrival_unix || a.scheduled_arrival_unix;
-	// 				const minimumArrivalB = b.observed_arrival_unix || b.scheduled_arrival_unix;
-	// 				return minimumArrivalA - minimumArrivalB;
-	// 			});
-	// 		const timetableRealtimeFutureResult = dataTimetableRealtimeState
-	// 			.filter((arrival) => {
-	// 				// If the arrival has an observed arrival time,
-	// 				// then it means the vehicle has already passed the stop.
-	// 				if (arrival.observed_arrival_unix) return false;
-	// 				// Include it in the future if the estimated arrival time is in the future.
-	// 				return (arrival.estimated_arrival_unix || arrival.scheduled_arrival_unix) >= nowInUnixSeconds;
-	// 			})
-	// 			.filter((arrival) => {
-	// 				const lastStopSequence = dataValidPatternsState
-	// 					?.find(patternGroup => patternGroup.id === arrival.pattern_id)?.path
-	// 					.sort((a, b) => a.stop_sequence - b.stop_sequence)
-	// 					.slice(-1)[0]?.stop_sequence;
-	// 				return arrival.stop_sequence !== lastStopSequence;
-	// 			})
-	// 			.sort((a, b) => {
-	// 				const minimumArrivalA = a.estimated_arrival_unix || a.scheduled_arrival_unix;
-	// 				const minimumArrivalB = b.estimated_arrival_unix || b.scheduled_arrival_unix;
-	// 				return minimumArrivalA - minimumArrivalB;
-	// 			});
-	// 		setDataTimetableRealtimePastState(timetableRealtimePastResult || []);
-	// 		setDataTimetableRealtimeFutureState(timetableRealtimeFutureResult || []);
-	// 	};
-	// 	prepareTimetableRealtimeData();
-	// 	const interval = setInterval(prepareTimetableRealtimeData, 1000);
-	// 	return () => clearInterval(interval);
-	// }, [dataTimetableRealtimeState, dataValidPatternsState]);
-
-	/**
  	* Prepare timetable schedule data for the selected stop.
  	*/
 
@@ -312,37 +263,18 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 					// Convert the arrival time into a unix timestamp.
 					// The arrival time is in 24h+ format, so we need to split it into hours, minutes, and seconds.
 					// Remember that if the hour is greater than 24, it means the arrival time is on the next day, and we need to add one day to the timestamp.
-					const [arrivalHours, arrivalMinutes, arrivalSeconds] = stopTime.arrival_time.split(':').map(Number);
-					const arrivalUnixTimestamp = DateTime
-						.fromFormat(operationalDateContext.data.selected_date.operational_date, 'yyyyMMdd')
-						.set({ hour: 0, minute: 0, second: 0 })
-						.plus({ hours: arrivalHours, minute: arrivalMinutes, second: arrivalSeconds })
-						.toUnixInteger();
 					validScheduledTrips.push({
 						arrival_time: stopTime.arrival_time,
 						arrival_time_24h: stopTime.arrival_time_24h,
 						stop_id: dataActiveStopIdState,
 						stop_sequence: stopTime.stop_sequence,
-						// estimated_arrival: null,
-						// estimated_arrival_unix: null,
-						// headsign: patternGroup.headsign,
-						// line_id: patternGroup.line_id,
-						// observed_arrival: null,
-						// observed_arrival_unix: null,
-						// pattern_id: patternGroup.id,
-						// related_trip_ids: trip.trip_ids,
-						// route_id: patternGroup.route_id,
-						// scheduled_arrival: stopTime.arrival_time_24h,
-						// scheduled_arrival_unix: arrivalUnixTimestamp,
-						// stop_sequence: stopTime.stop_sequence,
-						// trip_id: trip.trip_ids.length ? trip.trip_ids[0] : '',
-						// vehicle_id: null,
+						trip_id: stopTime.trip_id,
 					});
 				}
 			}
 		}
 
-		// validScheduledTrips.sort((a, b) => (a.scheduled_arrival_unix - b.scheduled_arrival_unix));
+		validScheduledTrips.sort((a, b) => (a.arrival_time.localeCompare(b.arrival_time)));
 
 		setDataTimetableScheduleState(validScheduledTrips);
 	}, [operationalDateContext.data.selected_date, dataValidPatternsState, dataActiveStopIdState]);
@@ -351,18 +283,14 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
  	* Fill state with valid pattern groups for the selected operational day.
 	*/
 
-	// useEffect(() => {
-	// 	if (!dataPatternsState || !operationalDateContext.data.selected_date) return;
-	// 	const activePatterns: HubPattern[] = [];
-	// 	for (const pattern of dataPatternsState) {
-	// 		for (const patternGroup of pattern) {
-	// 			if (patternGroup.valid_on.includes(operationalDateContext.data.selected_date.operational_date)) {
-	// 				activePatterns.push(patternGroup);
-	// 			}
-	// 		}
-	// 	}
-	// 	setDataValidPatternsState(activePatterns);
-	// }, [dataPatternsState, operationalDateContext.data.selected_date]);
+	useEffect(() => {
+		if (!dataPatternsState || !operationalDateContext.data.selected_date) return;
+		const selectedDate = operationalDateContext.data.selected_date.operational_date;
+		const activePatterns = dataPatternsState
+			.flat()
+			.filter(patternGroup => patternGroup.valid_on.includes(selectedDate));
+		setDataValidPatternsState(activePatterns);
+	}, [dataPatternsState, operationalDateContext.data.selected_date]);
 
 	useEffect(() => {
 		if (!alertsContext.data.alerts) return;
@@ -407,18 +335,17 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
 				event.preventDefault();
 				// If not today, select from the schedule trips array
-				// if (!operationalDateContext.flags.is_today_selected) {
-				// const activeTripTimetableScheduleIndex = dataTimetableScheduleState?.findIndex(arrival => arrival.trip_id === dataActiveTripIdState);
-				// if (activeTripTimetableScheduleIndex !== undefined && activeTripTimetableScheduleIndex > -1) {
-				// 	const foundArrivalData = dataTimetableScheduleState?.[activeTripTimetableScheduleIndex + (event.key === 'ArrowUp' ? -1 : 1)];
-				// 	if (foundArrivalData) {
-				// 		// setActiveTripId(foundArrivalData.trip_id, foundArrivalData.stop_sequence);
-				// 		return;
-				// 	}
-				// }
+				if (!operationalDateContext.flags.is_today_selected) {
+					const activeTripTimetableScheduleIndex = dataTimetableScheduleState?.findIndex(arrival => arrival.trip_id === dataActiveTripIdState);
+					if (activeTripTimetableScheduleIndex !== undefined && activeTripTimetableScheduleIndex > -1) {
+						const foundArrivalData = dataTimetableScheduleState?.[activeTripTimetableScheduleIndex + (event.key === 'ArrowUp' ? -1 : 1)];
+						if (foundArrivalData) {
+							setActiveTripId(foundArrivalData.trip_id, foundArrivalData.stop_sequence);
+							return;
+						}
+					}
+				}
 			}
-			//
-			// }
 		};
 		document.addEventListener('keydown', handleKeyPress);
 		return () => document.removeEventListener('keydown', handleKeyPress);

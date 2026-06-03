@@ -31,7 +31,8 @@ export function StopsDetailContentTimetable() {
 	return (
 		<div className={styles.container}>
 			{operationalDateContext.flags.is_today_selected
-				? <StopsDetailContentTimetableRealtime />
+				//
+				? <StopsDetailContentTimetableSchedule />
 				: <StopsDetailContentTimetableSchedule />}
 		</div>
 	);

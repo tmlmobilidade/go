@@ -2,7 +2,7 @@
 
 import { NoDataLabel } from '@/components/layout/NoDataLabel';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
-// import { StopsDetailContentTimetableRow } from '@/components/stops/detail/StopsDetailContentTimetableRow';
+import { StopsDetailContentTimetableRow } from '@/components/stops/detail/StopsDetailContentTimetableRow';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -28,13 +28,13 @@ export function StopsDetailContentTimetableSchedule() {
 
 	return (
 		<>
-			{/* {stopsDetailContext.data.timetable_schedule.map(item => (
+			{stopsDetailContext.data.timetable_schedule.map(item => (
 				<StopsDetailContentTimetableRow
 					key={`${item.trip_id}-${item.stop_sequence}`}
 					arrivalData={item}
-					status="scheduled"
+					status="future"
 				/>
-			))} */}
+			))}
 			<NoDataLabel text={t('default:stops.StopsDetailContentTimetableSchedule.end_of_day')} withMinHeight />
 		</>
 	);
