@@ -73,7 +73,7 @@ export function StopsDetailContentTimetableRow({ arrivalData, status }: Props) {
 				<LineDisplay
 					color={thisPattern.color}
 					longName={thisPattern.headsign}
-					shortName={thisPattern.line_id}
+					shortName={thisPattern.line_id.slice(thisPattern.line_id.lastIndexOf(']') + 1)}
 					textColor={thisPattern.text_color}
 				/>
 				<NextArrivals

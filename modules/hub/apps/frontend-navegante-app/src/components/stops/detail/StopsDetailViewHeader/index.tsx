@@ -43,9 +43,6 @@ export function StopsDetailViewHeader() {
 				</div>
 				<StopDisplayLocation localityName={stopsDetailContext.data.stop.locality_name} municipalityName={stopsDetailContext.data.stop.municipality_name} size="lg" />
 
-			</Section>
-			<Section padding="md">
-
 				{stopsDetailContext.data.stop.flags.length > 0 && (
 					<>
 						{stopsDetailContext.data.stop.flags.map((flag, index) => (
