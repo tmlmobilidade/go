@@ -5,6 +5,8 @@ import { pipelinePath, querySqlFromFile } from '@tmlmobilidade/go-hub-pckg-sql';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { fetchCpTripUpdates } from './cp-fetch.js';
+
 /* * */
 
 interface EtaGtfs {
@@ -24,10 +26,9 @@ export async function publishEtaGtfs() {
 	//
 	// Retrieve GTFS-RT TripUpdate rows from ClickHouse
 
+	Logger.info(`Retrieving Estimated Time of Arrivals from ClickHouse...`);
 	const clickhouseClient = await GOClickHouseClient.getClient();
 	const allTrips = await querySqlFromFile<EtaGtfs>(clickhouseClient, pipelinePath('select-eta-gtfs.sql'));
-
-	Logger.info(`Retrieved ${allTrips.length} GTFS-RT trip updates...`);
 
 	//
 	// Wrap in GTFS-RT feed envelope and parse trip_update JSON for nesting
@@ -43,6 +44,14 @@ export async function publishEtaGtfs() {
 			timestamp: Math.floor(Date.now() / 1000),
 		},
 	};
+
+	//
+	// CP Trip Updates (Already in GTFS-RT format)
+
+	Logger.info(`Retrieving Estimated Time of Arrivals from CP API...`);
+	const cpTrips = await fetchCpTripUpdates();
+
+	feed.entity.push(...cpTrips);
 
 	//
 	// Save the result in API Cache
