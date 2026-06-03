@@ -146,6 +146,14 @@
 			},
 			"no_data": "Nenhuma linha encontrada para esta pesquisa"
 		},
+		"PathStopNextArrivals": {
+			"title": "Próximas circulações"
+		},
+		"PathWaypointTimetable": {
+			"next_date": "Esta linha não realiza viagens neste dia da semana. Próximo dia com horários: {value, date, dayShort} {value, date, monthLong} {value, date, yearLong}",
+			"no_data": "Horários indisponíveis para esta data.",
+			"title": "Horários planeados nesta paragem:"
+		},
 		"SelectActivePatternGroup": {
 			"placeholder": "Selecionar percurso/destino..."
 		},
@@ -162,6 +170,14 @@
 			"label": "Percurso / Destino",
 			"option_label": "Início do percurso: {locality}",
 			"placeholder": "Selecionar Percurso / Destino..."
+		},
+		"TimetableExceptionsLink": {
+			"schedule": "Min.",
+			"variant": "<0>{exception_id})</0> Percurso <1>{route_long_name}</1> com destino a <2>{pattern_headsign}</2>"
+		},
+		"TimetableSchedules": {
+			"hours": "Hora",
+			"minutes": "Min."
 		}
 	},
 	"map": {
