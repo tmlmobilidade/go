@@ -4,7 +4,7 @@
 .container {
 	display: flex;
 	flex-flow: row wrap;
-	row-gap: var(--size-spacing-15);
+	row-gap: 15px;
 }
 
 /* * */
@@ -31,13 +31,13 @@
 .column:first-child .hour,
 .column:first-child .minute {
 	justify-content: flex-start;
-	padding-right: var(--size-spacing-10);
-	padding-left: var(--size-spacing-15);
+	padding-right: 10px;
+	padding-left: 15px;
 }
 
 .column:last-child .hour,
 .column:last-child .minute {
-	padding-right: var(--size-spacing-15);
+	padding-right: 15px;
 }
 
 /* * */
@@ -100,12 +100,12 @@
 
 .column:first-child .minute {
 	justify-content: flex-start;
-	padding-right: var(--size-spacing-10);
-	padding-left: var(--size-spacing-15);
+	padding-right: 10px;
+	padding-left: 15px;
 }
 
 .column:last-child .minute {
-	padding-right: var(--size-spacing-15);
+	padding-right: 15px;
 }
 
 .minute.withException {
