@@ -31,7 +31,7 @@ export function useActiveView<T>(key: string, availableViews: T[]): UseActiveVie
 	};
 
 	//
-	// D. Return data
+	// C. Return data
 
 	return {
 		activeView,

@@ -1,14 +1,9 @@
 'use client';
 
-import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
-import { LinesDetailAlerts } from '@/components/lines/detail/LinesDetailAlerts';
-import { LinesDetailHeader } from '@/components/lines/detail/LinesDetailHeader';
-import { LinesDetailNavigation } from '@/components/lines/detail/LinesDetailNavigation';
-import { LinesDetailPath } from '@/components/lines/detail/LinesDetailPath';
-import { LinesDetailToolbar } from '@/components/lines/detail/LinesDetailToolbar';
-import { LoadingSection, Surface } from '@tmlmobilidade/ui';
-
-import { LinesDetailPathMap } from '../LinesDetailPathMap';
+import { LinesDetailContextProvider } from '@/components/lines/detail/LinesDetail.context';
+import { LinesDetailView } from '@/components/lines/detail/LinesDetailView';
+import { useSelectedLine } from '@/hooks/use-selected-line';
+import { Drawer } from '@mantine/core';
 
 /* * */
 
@@ -18,29 +13,25 @@ export function LinesDetail() {
 	//
 	// A. Setup variables
 
-	const linesDetailContext = useLinesDetailContext();
+	const { selectedLineId, selectLineId } = useSelectedLine();
 
 	//
 	// B. Render componentss
 
-	if (linesDetailContext.flags.is_loading) {
-		return <LoadingSection fullHeight />;
-	}
-
 	return (
-		<>
-
-			<LinesDetailPathMap />
-
-			<Surface>
-				<LinesDetailNavigation />
-				<LinesDetailHeader />
-				<LinesDetailToolbar />
-			</Surface>
-
-			<LinesDetailAlerts />
-			<LinesDetailPath />
-
-		</>
+		<Drawer
+			onClose={() => selectLineId(null)}
+			opened={!!selectedLineId}
+			padding={0}
+			position="bottom"
+			size="95%"
+			withCloseButton={false}
+		>
+			{selectedLineId && (
+				<LinesDetailContextProvider lineId={selectedLineId}>
+					<LinesDetailView />
+				</LinesDetailContextProvider>
+			)}
+		</Drawer>
 	);
 }
