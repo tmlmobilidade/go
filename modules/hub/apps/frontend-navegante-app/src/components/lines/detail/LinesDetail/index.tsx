@@ -29,9 +29,11 @@ export function LinesDetail() {
 		<>
 
 			<Surface>
+
 				<LinesDetailNavigation />
 				<LinesDetailHeader />
 				<LinesDetailToolbar />
+
 			</Surface>
 
 			<LinesDetailAlerts />
