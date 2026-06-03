@@ -16,7 +16,7 @@ import { useEffect, useMemo } from 'react';
 
 /* * */
 
-export function StopsDetailContentMap() {
+export function StopsDetailViewMap() {
 	//
 
 	//

@@ -1,18 +1,28 @@
 /* * */
-/* HEADING SECTION */
+/* CONTENT */
 
-.headingSection {
-	display: flex;
-	flex-direction: column;
-	gap: 15px;
-	align-items: flex-start;
-	justify-content: flex-start;
+.content {
+	background-color: transparent;
+	border-top-left-radius: 35px;
+	border-top-right-radius: 35px;
 }
 
-.headingSectionRow {
-	display: flex;
-	flex-direction: row;
-	gap: 15px;
-	align-items: center;
-	justify-content: flex-start;
+/* * */
+/* HEADER */
+
+.header {
+	background-color: transparent;
+}
+
+/* * */
+/* BODY */
+
+.body {
+	position: relative;
+	min-height: 100%;
+	margin-top: -70px;
+	overflow: hidden;
+	background-color: var(--color-system-background-200);
+	border-top-left-radius: 35px;
+	border-top-right-radius: 35px;
 }

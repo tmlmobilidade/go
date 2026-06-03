@@ -1,6 +1,7 @@
 'use client';
 
 import { LinesDetail } from '@/components/lines/detail/LinesDetail';
+import { StopsDetail } from '@/components/stops/detail/StopsDetail';
 import { FloatingHelpButton } from '@/components/viewport/FloatingHelpButton';
 import { Navbar } from '@/components/viewport/Navbar';
 import { useColorScheme } from '@mantine/hooks';
@@ -37,6 +38,7 @@ export function AppViewport() {
 			</div>
 			<FloatingHelpButton />
 			<LinesDetail />
+			<StopsDetail />
 		</>
 	);
 }

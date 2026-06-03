@@ -1,21 +1,17 @@
 'use client';
 
-/* * */
-
-import { BackButton } from '@/components/common/BackButton';
 import { CopyBadge } from '@/components/common/CopyBadge';
 import { IconDisplay } from '@/components/common/IconDisplay';
 import { LineBadge } from '@/components/lines/common/LineBadge';
 import { StopDisplayLocation } from '@/components/stops/common/StopDisplayLocation';
-import { StopDisplayName } from '@/components/stops/common/StopDisplayName';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
-import { Section, Surface } from '@tmlmobilidade/ui';
+import { Section, StopDisplayName, Surface } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
 /* * */
 
-export function StopsDetailHeader() {
+export function StopsDetailViewHeader() {
 	//
 
 	//
@@ -24,20 +20,11 @@ export function StopsDetailHeader() {
 	const stopsDetailContext = useStopsDetailContext();
 
 	//
-	// B. Render components
-
-	if (!stopsDetailContext.data.stop) {
-		return null;
-	}
+	// B. Render componentss
 
 	return (
-		<Surface>
-
-			<Section padding="md">
-				<BackButton href="/?section=stops" />
-			</Section>
-
-			<Section padding="md">
+		<Surface variant="plain">
+			<Section gap="sm">
 
 				<div className={styles.badgesWrapper}>
 					<CopyBadge
@@ -79,10 +66,8 @@ export function StopsDetailHeader() {
 						</div>
 					))}
 				</div>
-			</Section>
 
+			</Section>
 		</Surface>
 	);
-
-	//
 }
