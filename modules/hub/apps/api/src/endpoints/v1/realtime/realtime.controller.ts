@@ -39,12 +39,14 @@ export class RealtimeController {
 				.code(HTTP_STATUS.NO_CONTENT)
 				.send();
 		}
+		const allItemsData = JSON.parse(raw) as GtfsRtFeedMessage;
+		const buffer = await encodeGtfsRtFeed(allItemsData);
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=5')
 			.type('application/octet-stream')
 			.code(HTTP_STATUS.OK)
-			.send(Buffer.from(raw));
+			.send(Buffer.from(buffer));
 	}
 
 	static async getEtaJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
