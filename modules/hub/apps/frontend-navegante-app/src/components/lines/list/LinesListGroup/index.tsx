@@ -37,9 +37,7 @@ export function LinesListGroup({ agencyId, children, onShowMoreLines, withShowMo
 				src={AGENCY_LOGO_MAP[agencyId]}
 				width={90}
 			/>
-			<div className={styles.childrenWrapper}>
-				{children}
-			</div>
+			{children}
 			{withShowMoreButton && <div className={styles.showMoreButton} onClick={onShowMoreLines}>{t('default:lines.LinesListGroup.show_more')}</div>}
 		</div>
 	);

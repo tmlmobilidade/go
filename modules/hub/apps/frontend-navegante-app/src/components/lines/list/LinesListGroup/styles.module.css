@@ -23,13 +23,6 @@
 }
 
 /* * */
-/* CHILDREN WRAPPER */
-
-.childrenWrapper {
-	border-top: 1px solid var(--color-system-border-100);
-}
-
-/* * */
 /* SHOW MORE BUTTON */
 
 .showMoreButton {
