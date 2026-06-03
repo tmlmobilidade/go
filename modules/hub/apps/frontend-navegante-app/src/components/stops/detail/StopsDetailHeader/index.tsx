@@ -4,18 +4,13 @@
 
 import { BackButton } from '@/components/common/BackButton';
 import { CopyBadge } from '@/components/common/CopyBadge';
-import { FavoriteToggle } from '@/components/common/FavoriteToggle';
 import { IconDisplay } from '@/components/common/IconDisplay';
-import { Section } from '@/components/layout/Section';
-import { Surface } from '@/components/layout/Surface';
-import { LineBadge } from '@/components/lines/LineBadge';
-import { StopDisplayLocation } from '@/components/stops/StopDisplayLocation';
-import { StopDisplayName } from '@/components/stops/StopDisplayName';
-import { StopDisplayTts } from '@/components/stops/StopDisplayTts';
-import { useEnvironmentContext } from '@/contexts/Environment.context';
-import { useProfileContext } from '@/contexts/Profile.context';
-import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
-import toast from '@/utils/toast';
+import { LineBadge } from '@/components/lines/common/LineBadge';
+import { StopDisplayLocation } from '@/components/stops/common/StopDisplayLocation';
+import { StopDisplayName } from '@/components/stops/common/StopDisplayName';
+import { StopDisplayTts } from '@/components/stops/common/StopDisplayTts';
+import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
+import { Section, Surface } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -27,26 +22,10 @@ export function StopsDetailHeader() {
 	//
 	// A. Setup variables
 
-	const profileContext = useProfileContext();
 	const stopsDetailContext = useStopsDetailContext();
-	const environmentContext = useEnvironmentContext();
-	const isMupi = environmentContext.data.value === 'mupi';
 
 	//
-	// B. Handle actions
-
-	const handleToggleFavorite = () => {
-		if (!stopsDetailContext.data.stop) return;
-		try {
-			profileContext.actions.toggleFavoriteStop(stopsDetailContext.data.stop.id);
-		}
-		catch (error) {
-			toast.error({ message: 'Error: ' + error.message });
-		}
-	};
-
-	//
-	// C. Render components
+	// B. Render components
 
 	if (!stopsDetailContext.data.stop) {
 		return null;
@@ -55,50 +34,50 @@ export function StopsDetailHeader() {
 	return (
 		<Surface>
 
-			<Section withBottomDivider withPadding>
+			<Section padding="md">
 				<BackButton href="/stops" />
 			</Section>
 
-			<Section withGap withPadding>
+			<Section padding="md">
 
 				<div className={styles.badgesWrapper}>
 					<CopyBadge
-						label={'#' + stopsDetailContext.data.stop.id}
-						value={stopsDetailContext.data.stop.id}
+						label={'#' + stopsDetailContext.data.stop._id}
+						value={stopsDetailContext.data.stop._id}
 					/>
 					<CopyBadge
 						hasBorder={false}
-						label={`${stopsDetailContext.data.stop.lat}, ${stopsDetailContext.data.stop.lon}`}
-						value={stopsDetailContext.data.stop.lat + ',' + stopsDetailContext.data.stop.lon}
+						label={`${stopsDetailContext.data.stop.latitude}, ${stopsDetailContext.data.stop.longitude}`}
+						value={stopsDetailContext.data.stop.latitude + ',' + stopsDetailContext.data.stop.longitude}
 					/>
 				</div>
 
 				<div className={styles.headingWrapper}>
 					<div className={styles.nameWrapper}>
-						<StopDisplayName longName={stopsDetailContext.data.stop.long_name} size="lg" />
-						<StopDisplayTts stopId={stopsDetailContext.data.stop.id} />
-						{!isMupi && <FavoriteToggle color="var(--color-brand)" isActive={stopsDetailContext.flags.is_favorite} onToggle={handleToggleFavorite} />}
+						<StopDisplayName longName={stopsDetailContext.data.stop.name} size="lg" />
+						<StopDisplayTts stopId={stopsDetailContext.data.stop._id.toString()} />
 					</div>
 					<StopDisplayLocation localityName={stopsDetailContext.data.stop.locality_name} municipalityName={stopsDetailContext.data.stop.municipality_name} size="lg" />
 				</div>
 
 			</Section>
-
-			<Section>
+			<Section padding="md">
 				<div className={styles.iconsWrapper}>
-					{stopsDetailContext.data.stop.facilities.length > 0 && (
+
+					{stopsDetailContext.data.stop.flags.length > 0 && (
 						<>
-							{stopsDetailContext.data.stop.facilities.map((facility, index) => (
+							{stopsDetailContext.data.stop.flags.map((flag, index) => (
 								<div key={index} className={styles.iconFacilityWrapper}>
-									<IconDisplay key={facility} category="facilities" name={facility} />
+									<IconDisplay key={flag.short_name} category="facilities" name={flag.short_name} />
 								</div>
 							))}
 							<div className={styles.iconsDivider} />
 						</>
 					)}
-					{stopsDetailContext.data.lines && stopsDetailContext.data.lines.map(line => (
-						<div key={line.id} className={styles.iconLineBadgeWrapper}>
-							<LineBadge key={line.id} lineData={line} />
+
+					{stopsDetailContext.data.lines?.map(line => (
+						<div key={line._id} className={styles.iconLineBadgeWrapper}>
+							<LineBadge key={line._id} lineData={line} />
 						</div>
 					))}
 				</div>
