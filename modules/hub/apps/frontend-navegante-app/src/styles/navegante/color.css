@@ -7,9 +7,19 @@
 
 :root {
 
-	/* BRAND */
-
+	/* BRAND / NAVEGANTE */
 	--color-brand-navegante: #ffdd01;
+
+}
+
+:root[data-mode="light"] {
+
+	/* THEME */
+	--color-primary: red;
+	--color-secondary: green;
+	--color-background: yellow;
+	--color-contrast: blue;
+	--color-shadow: purple;
 
 	/* SYSTEM / BACKGROUND */
 	--color-system-background-100: #FFF;
@@ -29,6 +39,13 @@
 }
 
 :root[data-mode="dark"] {
+
+	/* THEME */
+	--color-primary: #282832;
+	--color-secondary: #1e1e28;
+	--color-background: #0a0a14;
+	--color-contrast: #fff;
+	--color-shadow: #00000040;
 
 	/* SYSTEM / BACKGROUND */
 	--color-system-background-100: #3C3C46;
