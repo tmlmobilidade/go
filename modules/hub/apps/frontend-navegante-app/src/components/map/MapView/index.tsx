@@ -4,7 +4,7 @@ import { useMapContext } from '@/components/map/Map.context';
 import { mapDefaultConfig } from '@/components/map/Map.settings';
 import { loadMapAssets } from '@/components/map/mapLoadAssets';
 import Map, { FullscreenControl, GeolocateControl, MapRef, NavigationControl, ScaleControl, useMap } from '@vis.gl/react-maplibre';
-import { type MapLibreEvent } from 'maplibre-gl';
+import { type ControlPosition, type MapLibreEvent } from 'maplibre-gl';
 import { useCallback, useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -16,6 +16,7 @@ export type MapStyle = 'map' | 'satellite';
 interface MapViewProps {
 	autoZoom?: boolean
 	children: React.ReactNode
+	controlsPosition?: ControlPosition
 	fullscreen?: boolean
 	geolocate?: boolean
 	id?: string
@@ -43,7 +44,7 @@ interface MapViewProps {
 
 /* * */
 
-export function MapView({ children, fullscreen = true, geolocate = true, id, interactiveLayerIds = [], mapStyle, navigation = true, onClick, onDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onMoveEnd, onMoveStart, onZoom, scale = false, scrollZoom = true }: MapViewProps) {
+export function MapView({ children, controlsPosition, fullscreen = true, geolocate = true, id, interactiveLayerIds = [], mapStyle, navigation = true, onClick, onDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onMoveEnd, onMoveStart, onZoom, scale = false, scrollZoom = true }: MapViewProps) {
 	//
 
 	//
@@ -123,10 +124,10 @@ export function MapView({ children, fullscreen = true, geolocate = true, id, int
 				style={{ height: '100%', width: '100%' }}
 			>
 
-				{navigation && <NavigationControl />}
-				{fullscreen && <FullscreenControl />}
-				{geolocate && <GeolocateControl />}
-				{scale && <ScaleControl />}
+				{navigation && <NavigationControl position={controlsPosition} />}
+				{fullscreen && <FullscreenControl position={controlsPosition} />}
+				{geolocate && <GeolocateControl position={controlsPosition} />}
+				{scale && <ScaleControl position={controlsPosition} />}
 
 				<div className={styles.childrenWrapper}>
 					{children}

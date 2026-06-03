@@ -16,7 +16,9 @@ interface StopsListContextState extends ListContextStateTemplate {
 	}
 	view: {
 		current: 'list' | 'map'
-		toggle: (view: 'list' | 'map') => void
+		showVehicles: boolean
+		toggleShowVehicles: () => void
+		toggleView: () => void
 	}
 }
 
@@ -49,6 +51,11 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 	const [currentView, setCurrentView] = useLocalStorage<'list' | 'map'>({
 		defaultValue: 'list',
 		key: 'stops-current-view',
+	});
+
+	const [showVehicles, setShowVehicles] = useLocalStorage<boolean>({
+		defaultValue: true,
+		key: 'stops-show-vehicles',
 	});
 
 	//
@@ -85,6 +92,17 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 	}, [filteredData]);
 
 	//
+	// C. Handle actions
+
+	const toggleView = () => {
+		setCurrentView(prev => prev === 'list' ? 'map' : 'list');
+	};
+
+	const toggleShowVehicles = () => {
+		setShowVehicles(prev => !prev);
+	};
+
+	//
 	// C. Define context value
 
 	const contextValue: StopsListContextState = {
@@ -101,7 +119,9 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 		},
 		view: {
 			current: currentView,
-			toggle: setCurrentView,
+			showVehicles: showVehicles,
+			toggleShowVehicles: toggleShowVehicles,
+			toggleView: toggleView,
 		},
 	};
 
