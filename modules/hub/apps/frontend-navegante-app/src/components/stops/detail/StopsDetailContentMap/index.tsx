@@ -7,8 +7,8 @@ import { MapViewStyleActiveStops, MapViewStyleActiveStopsPrimaryLayerId } from '
 import { MapViewStylePath, MapViewStylePathPrimaryLayerId } from '@/components/map/MapViewStylePath';
 import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/MapViewStyleStops';
 import { MapViewStyleVehicles, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/MapViewStyleVehicles';
-import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/contexts/Stops.context';
-import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
+import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
+import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/contexts/Vehicles.context';
 import { centerMap, getBaseGeoJsonFeatureCollection, moveMap } from '@/utils/map.utils';
 import { useMap } from '@vis.gl/react-maplibre';
@@ -67,7 +67,7 @@ export function StopsDetailContentMap() {
 
 	useEffect(() => {
 		if (!stopsDetailContext.data.stop || !stopsMap) return;
-		const coordinates = [stopsDetailContext.data.stop.lon, stopsDetailContext.data.stop.lat];
+		const coordinates = [stopsDetailContext.data.stop.longitude, stopsDetailContext.data.stop.latitude];
 		if (coordinates.some(isNaN)) return;
 		moveMap(stopsMap, coordinates);
 		if (stopsDetailContext.data.active_trip_id) {
@@ -89,11 +89,9 @@ export function StopsDetailContentMap() {
 		for (const feature of features) {
 			if (feature.properties.id === stopsDetailContext.data.active_stop_id) {
 				continue;
-			}
-			else if (feature.layer.id !== MapViewStyleStopsInteractiveLayerId) {
+			} else if (feature.layer.id !== MapViewStyleStopsInteractiveLayerId) {
 				continue;
-			}
-			else {
+			} else {
 				stopsDetailContext.actions.setActiveStopId(feature.properties.id);
 				return;
 			}
@@ -127,7 +125,7 @@ export function StopsDetailContentMap() {
 
 			<MapViewStyleStops
 				presentBeforeId={MapViewStylePathPrimaryLayerId}
-				stopsData={stopsContext.data.stops_fc}
+				stopsData={stopsContext.data.fc}
 				style={stopsDetailContext.data.active_shape ? 'muted' : 'primary'}
 			/>
 

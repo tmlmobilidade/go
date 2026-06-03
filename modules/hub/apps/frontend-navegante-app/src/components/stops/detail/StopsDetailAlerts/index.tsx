@@ -5,7 +5,7 @@
 import { AlertsCarousel } from '@/components/lines/common/AlertsCarousel';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { Section, Surface } from '@tmlmobilidade/ui';
-
+import { useTranslation } from 'react-i18next';
 
 /* * */
 

@@ -3,11 +3,11 @@
 /* * */
 
 import { NoDataLabel } from '@/components/layout/NoDataLabel';
-import { StopsDetailContentTimetableClock } from '@/components/stops/StopsDetailContentTimetableClock';
-import { StopsDetailContentTimetableRow } from '@/components/stops/StopsDetailContentTimetableRow';
-import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
-import { useTranslations } from 'next-intl';
+import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
+import { StopsDetailContentTimetableClock } from '@/components/stops/detail/StopsDetailContentTimetableClock';
+import { StopsDetailContentTimetableRow } from '@/components/stops/detail/StopsDetailContentTimetableRow';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -19,7 +19,7 @@ export function StopsDetailContentTimetableRealtime() {
 	//
 	// A. Setup variables
 
-	const t = useTranslations('stops.StopsDetailContentTimetableRealtime');
+	const { t } = useTranslation();
 	const stopsDetailContext = useStopsDetailContext();
 
 	const [showPastTrips, setShowPastTrips] = useState(false);
@@ -41,7 +41,7 @@ export function StopsDetailContentTimetableRealtime() {
 
 	if ((!stopsDetailContext.data.timetable_realtime_past || stopsDetailContext.data.timetable_realtime_past?.length === 0) && (!stopsDetailContext.data.timetable_realtime_future || stopsDetailContext.data.timetable_realtime_future?.length === 0)) {
 		return (
-			<NoDataLabel text={t('no_service')} withMinHeight />
+			<NoDataLabel text={t('default:stops.StopsDetailContentTimetableRealtime.no_service')} withMinHeight />
 		);
 	}
 
@@ -49,7 +49,7 @@ export function StopsDetailContentTimetableRealtime() {
 		<>
 
 			<p className={styles.showPastTripsToggle} onClick={handleToggleShowPastTrips}>
-				{showPastTrips ? t('show_past_trips_toggle.hide') : t('show_past_trips_toggle.show')}
+				{showPastTrips ? t('default:stops.StopsDetailContentTimetableRealtime.show_past_trips_toggle.hide') : t('default:stops.StopsDetailContentTimetableRealtime.show_past_trips_toggle.show')}
 			</p>
 
 			{!showPastTrips && mostRecentPastTrip && (
@@ -61,7 +61,7 @@ export function StopsDetailContentTimetableRealtime() {
 				</div>
 			)}
 
-			{showPastTrips && stopsDetailContext.data.timetable_realtime_past?.length && stopsDetailContext.data.timetable_realtime_past.map(tripData => (
+			{/* {showPastTrips && stopsDetailContext.data.timetable_realtime_past?.length && stopsDetailContext.data.timetable_realtime_past.map(tripData => (
 				<div key={`${tripData.trip_id}-${tripData.stop_sequence}`}>
 					<StopsDetailContentTimetableRow
 						arrivalData={tripData}
@@ -83,7 +83,7 @@ export function StopsDetailContentTimetableRealtime() {
 					))}
 					<NoDataLabel text={t('end_of_day')} withMinHeight />
 				</>
-			)}
+			)} */}
 
 		</>
 	);

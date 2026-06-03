@@ -1,11 +1,11 @@
 /* * */
 
-import { SelectOperationalDate } from '@/components/common/SelectOperationalDate';
+import { SelectOperationalDate } from '@/components/lines/common/SelectOperationalDate';
+import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
-import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
-import { useStickyObserver } from '@/hooks/useStickyObserver';
-import { getCssVariableValue } from '@/utils/getCssVariableValue';
-import { useTranslations } from 'next-intl';
+import { getCssVariableValue } from '@/hooks/get-css-variabble';
+import { useStickyObserver } from '@/hooks/use-sticky-observer';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -17,7 +17,7 @@ export function StopsDetailContentTimetableHeader() {
 	//
 	// A. Setup variables
 
-	const t = useTranslations('stops.StopsDetailContentTimetableHeader');
+	const { t } = useTranslation();
 	const stopsDetailContext = useStopsDetailContext();
 	const operationalDateContext = useOperationalDateContext();
 
@@ -41,11 +41,11 @@ export function StopsDetailContentTimetableHeader() {
 			{isSticky && (
 				<>
 					<p className={styles.stopSummaryWrapper}>
-						{t.rich('summary', {
+						{t('default:stops.StopsDetailContentTimetableHeader.summary', '', {
 							changeDay: chunks => <a className={styles.changeDay} href="#">{chunks}</a>,
 							day_name: operationalDateContext.data.selected_date.js_date,
 							dayName: chunks => <span className={styles.dayName}>{chunks}</span>,
-							stop_name: stopsDetailContext.data.stop?.long_name || '-',
+							stop_name: stopsDetailContext.data.stop?.name || '-',
 							stopName: chunks => <span className={styles.stopName}>{chunks}</span>,
 						})}
 					</p>
@@ -53,9 +53,9 @@ export function StopsDetailContentTimetableHeader() {
 			)}
 
 			<div className={styles.tripsLegend}>
-				<div className={styles.tripsLegendColumn}>{t('trips_legend.line')}</div>
-				<div className={styles.tripsLegendColumn}>{t('trips_legend.headsign')}</div>
-				<div className={styles.tripsLegendColumn}>{t('trips_legend.estimate')}</div>
+				<div className={styles.tripsLegendColumn}>{t('default:stops.StopsDetailContentTimetableHeader.trips_legend.line')}</div>
+				<div className={styles.tripsLegendColumn}>{t('default:stops.StopsDetailContentTimetableHeader.trips_legend.headsign')}</div>
+				<div className={styles.tripsLegendColumn}>{t('default:stops.StopsDetailContentTimetableHeader.trips_legend.estimate')}</div>
 			</div>
 
 		</div>

@@ -2,11 +2,10 @@
 
 /* * */
 
-import { Section } from '@/components/layout/Section';
-import { Surface } from '@/components/layout/Surface';
-import { StopsDetailContentMap } from '@/components/stops/StopsDetailContentMap';
-import { StopsDetailContentTimetable } from '@/components/stops/StopsDetailContentTimetable';
-import { StopsDetailContentTimetableHeader } from '@/components/stops/StopsDetailContentTimetableHeader';
+import { StopsDetailContentMap } from '@/components/stops/detail/StopsDetailContentMap';
+import { StopsDetailContentTimetable } from '@/components/stops/detail/StopsDetailContentTimetable';
+import { StopsDetailContentTimetableHeader } from '@/components/stops/detail/StopsDetailContentTimetableHeader';
+import { Section, Surface } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 

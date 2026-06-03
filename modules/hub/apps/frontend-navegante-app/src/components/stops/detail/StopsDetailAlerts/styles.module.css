@@ -4,15 +4,15 @@
 .headingSection {
 	display: flex;
 	flex-direction: column;
-	justify-content: flex-start;
+	gap: 15px;
 	align-items: flex-start;
-	gap: var(--size-spacing-15);
+	justify-content: flex-start;
 }
 
 .headingSectionRow {
 	display: flex;
 	flex-direction: row;
-	justify-content: flex-start;
+	gap: 15px;
 	align-items: center;
-	gap: var(--size-spacing-15);
+	justify-content: flex-start;
 }

@@ -1,10 +1,10 @@
 /* * */
 
-import { StopsDetailContentTimetableRealtime } from '@/components/stops/StopsDetailContentTimetableRealtime';
-import { StopsDetailContentTimetableSchedule } from '@/components/stops/StopsDetailContentTimetableSchedule';
-import { StopsDetailContentTimetableSkeleton } from '@/components/stops/StopsDetailContentTimetableSkeleton';
+import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
+import { StopsDetailContentTimetableRealtime } from '@/components/stops/detail/StopsDetailContentTimetableRealtime';
+import { StopsDetailContentTimetableSchedule } from '@/components/stops/detail/StopsDetailContentTimetableSchedule';
+import { StopsDetailContentTimetableSkeleton } from '@/components/stops/detail/StopsDetailContentTimetableSkeleton';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
-import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
 
 import styles from './styles.module.css';
 
