@@ -7,8 +7,8 @@ import { Section } from '@tmlmobilidade/ui';
 
 export function LinesDetailNavigation() {
 	return (
-		<Section>
-			<BackButton href="/" />
+		<Section padding="md">
+			<BackButton href="/?section=lines" />
 		</Section>
 	);
 }

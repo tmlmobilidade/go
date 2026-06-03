@@ -34,7 +34,7 @@ export function StopsDetailHeader() {
 		<Surface>
 
 			<Section padding="md">
-				<BackButton href="/stops" />
+				<BackButton href="/?section=stops" />
 			</Section>
 
 			<Section padding="md">
