@@ -1,6 +1,6 @@
 'use client';
 
-import { IconArrowNarrowRight } from '@tabler/icons-react';
+import { IconChevronRight } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { type RefObject } from 'react';
 
@@ -61,7 +61,7 @@ export function RegularListItem({ ariaLabel, children, href, icon, refFn, style 
 			)}
 			{href !== '#' && (
 				<div className={styles.arrowWrapper}>
-					<IconArrowNarrowRight size={20} />
+					<IconChevronRight size={20} />
 				</div>
 			)}
 		</div>
