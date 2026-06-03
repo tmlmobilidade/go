@@ -32,7 +32,7 @@ export function LinesDetailHeader() {
 		<>
 			<Surface>
 				<Section>
-					<BackButton href="/?section=lines" />
+					<BackButton href="/" />
 				</Section>
 				<Section>
 					<div className={styles.headingSection}>
