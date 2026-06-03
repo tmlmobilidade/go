@@ -2,7 +2,9 @@
 
 import { MapView } from '@/components/map/MapView';
 import { MapViewStyleStops } from '@/components/map/MapViewStyleStops';
+import { MapViewStyleVehicles } from '@/components/map/MapViewStyleVehicles';
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
+import { useVehiclesContext } from '@/contexts/Vehicles.context';
 import { useEffect } from 'react';
 
 /* * */
@@ -13,8 +15,8 @@ export function StopsListViewMap() {
 	//
 	// A. Setup variables
 
+	const vehiclesContext = useVehiclesContext();
 	const stopsListContext = useStopsListContext();
-
 	//
 	// B. Handle actions
 
@@ -32,10 +34,16 @@ export function StopsListViewMap() {
 	// C. Render components
 
 	return (
-		<MapView id="stops-list">
+		<MapView controlsPosition="bottom-left" id="stops-list">
 			<MapViewStyleStops
 				stopsData={stopsListContext.data.fc}
 			/>
+			{stopsListContext.view.showVehicles && (
+				<MapViewStyleVehicles
+					showCounter="always"
+					vehiclesData={vehiclesContext.data.fc}
+				/>
+			)}
 		</MapView>
 	);
 }

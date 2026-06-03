@@ -128,20 +128,32 @@ export class RealtimeController {
 	}
 
 	static async getVehiclesPositionsJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
-		const raw = await apiCache.get('hub:realtime:vehicles:positions:json');
-		if (!raw) {
-			Logger.error('[hub/v1/realtime:getVehiclesPositionsJson()] No data in cache.');
+		//
+
+		const cachedData = await apiCache.get('hub:realtime:vehicles:positions:json');
+
+		if (!cachedData) {
+			Logger.error('[hub/v1/realtime:getVehiclesPositionsJson()] No cached data found for vehicles positions');
 			return reply
 				.header('access-control-allow-origin', '*')
-				.header('cache-control', 'public, max-age=5')
+				.header('cache-control', 'public, max-age=3')
 				.code(HTTP_STATUS.NO_CONTENT)
-				.send();
-		}
+				.send({
+					data: [],
+					error: null,
+					status_code: HTTP_STATUS.NO_CONTENT,
+				});
+		};
+
 		return reply
 			.header('access-control-allow-origin', '*')
-			.header('cache-control', 'public, max-age=5')
+			.header('cache-control', 'public, max-age=3')
 			.code(HTTP_STATUS.OK)
-			.send(JSON.parse(raw));
+			.send({
+				data: JSON.parse(cachedData),
+				error: null,
+				status_code: HTTP_STATUS.OK,
+			});
 	}
 
 	//

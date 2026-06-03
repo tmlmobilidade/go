@@ -1,9 +1,11 @@
 'use client';
 
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
-import { SegmentedControl } from '@mantine/core';
+import { IconBus, IconBusOff, IconList } from '@tabler/icons-react';
 import { SearchInput, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import styles from './styles.module.css';
 
 /* * */
 
@@ -29,9 +31,18 @@ export function StopsListToolbar() {
 	// C. Render components
 
 	return (
-		<Section gap="md">
-			<SearchInput onChange={stopsListContext.filters.search.set} value={stopsListContext.filters.search.value} />
-			<SegmentedControl data={currentViewOptions} onChange={stopsListContext.view.toggle} value={stopsListContext.view.current} w="100%" fullWidth />
-		</Section>
+		<div className={styles.container}>
+			<Section gap="md">
+				<div className={styles.toolbar}>
+					<SearchInput onChange={stopsListContext.filters.search.set} value={stopsListContext.filters.search.value} />
+					<div className={styles.toggle} onClick={stopsListContext.view.toggleView}>
+						<IconList size={20} />
+					</div>
+					<div className={styles.toggle} onClick={stopsListContext.view.toggleShowVehicles}>
+						{stopsListContext.view.showVehicles ? <IconBus size={20} /> : <IconBusOff size={20} />}
+					</div>
+				</div>
+			</Section>
+		</div>
 	);
 }
