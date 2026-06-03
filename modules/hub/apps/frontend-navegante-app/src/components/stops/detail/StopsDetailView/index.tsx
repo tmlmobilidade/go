@@ -7,6 +7,8 @@ import { StopsDetailViewMap } from '@/components/stops/detail/StopsDetailViewMap
 import { Space } from '@mantine/core';
 import { Divider, LoadingSection, Section } from '@tmlmobilidade/ui';
 
+import { StopsDetailContent } from '../StopsDetailContent';
+
 /* * */
 
 export function StopsDetailView() {
@@ -35,6 +37,7 @@ export function StopsDetailView() {
 			<StopsDetailViewHeader />
 			<Divider />
 			<StopsDetailAlerts />
+			<StopsDetailContent />
 		</Section>
 	);
 }

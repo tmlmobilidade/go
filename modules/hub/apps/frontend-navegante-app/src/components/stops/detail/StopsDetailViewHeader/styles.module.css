@@ -15,7 +15,6 @@
 .nameWrapper {
 	display: flex;
 	flex-flow: row wrap-reverse;
-	gap: 5px 15px;
 	align-items: center;
 	justify-content: flex-start;
-}
+}	
