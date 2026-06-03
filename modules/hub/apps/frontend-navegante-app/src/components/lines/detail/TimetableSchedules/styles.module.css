@@ -44,9 +44,9 @@
 /* HOURS */
 
 .hour {
-	font-weight: var(--font-weight-extrabold);
-	color: var(--color-primary-white);
-	background-color: var(--color-primary-black);
+	font-weight: 800;
+	color: #fff;
+	background-color: #000;
 }
 
 .column:first-child .hour {
@@ -125,11 +125,11 @@
 .minute.isHighlighted {
 	margin: 2px;
 	color: var(--color-system-text-100);
-	background-color: var(--color-brand);
+	background-color: var(--color-brand-navegante);
 	border-radius: 100%;
 
 	&[data-is-dark="true"] {
-		color: var(--color-brand);
+		color: var(--color-brand-navegante);
 		background-color: var(--color-system-background-100)
 	}
 }
