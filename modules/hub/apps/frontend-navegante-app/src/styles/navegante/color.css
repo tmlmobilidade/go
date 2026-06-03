@@ -15,11 +15,11 @@
 :root[data-mode="light"] {
 
 	/* THEME */
-	--color-primary: red;
-	--color-secondary: green;
-	--color-background: yellow;
-	--color-contrast: blue;
-	--color-shadow: purple;
+	--color-primary: #9696A0;
+	--color-secondary: #84848d;
+	--color-background: #F0F0F0;
+	--color-contrast: #fff;
+	--color-shadow: rgb(0 0 0 / 25%);
 
 	/* SYSTEM / BACKGROUND */
 	--color-system-background-100: #FFF;
