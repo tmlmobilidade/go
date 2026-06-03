@@ -17,7 +17,7 @@ interface Props {
 
 /* * */
 
-export function PathWaypointSpine({ backgroundColor, isFirstStop, isLastStop, isSelected }: Props) {
+export function PathWaypointSpine({ backgroundColor, foregroundColor, isFirstStop, isLastStop, isSelected }: Props) {
 	//
 
 	//
@@ -27,7 +27,9 @@ export function PathWaypointSpine({ backgroundColor, isFirstStop, isLastStop, is
 		<div
 			className={`${styles.container} ${isFirstStop && styles.isFirstStop} ${isLastStop && styles.isLastStop} ${isSelected && styles.isSelected}`}
 			style={{ backgroundColor: backgroundColor }}
-		/>
+		>
+			<div className={styles.marker} style={{ backgroundColor: foregroundColor }} />
+		</div>
 	);
 
 	//

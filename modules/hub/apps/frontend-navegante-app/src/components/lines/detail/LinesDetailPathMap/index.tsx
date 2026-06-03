@@ -43,9 +43,9 @@ export function LinesDetailPathMap() {
 			const result = transformStopDataIntoGeoJsonFeature(stopData);
 			result.properties = {
 				...result.properties,
-				// color: linesDetailContext.data.active_pattern?.color,
-				// sequence: pathStop.stop_sequence,
-				// text_color: linesDetailContext.data.active_pattern?.text_color,
+				color: linesDetailContext.data.active_pattern?.color,
+				sequence: pathStop.stop_sequence,
+				text_color: linesDetailContext.data.active_pattern?.text_color,
 			};
 			collection.features.push(result);
 		});
@@ -61,8 +61,8 @@ export function LinesDetailPathMap() {
 		const result = transformStopDataIntoGeoJsonFeature(foundStop);
 		result.properties = {
 			...result.properties,
-			// color: linesDetailContext.data.active_pattern.color,
-			// text_color: linesDetailContext.data.active_pattern.text_color,
+			color: linesDetailContext.data.active_pattern.color,
+			text_color: linesDetailContext.data.active_pattern.text_color,
 		};
 		// Create a new feature collection and add the active waypoint feature to it
 		const collection = getBaseGeoJsonFeatureCollection();

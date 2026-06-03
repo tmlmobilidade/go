@@ -5,6 +5,15 @@ import { z } from 'zod';
 
 /* * */
 
+export const HubShapeGeoJsonSchema = z.object({
+	geometry: z.object({
+		coordinates: z.array(z.tuple([z.number(), z.number()])),
+		type: z.literal('LineString'),
+	}),
+	properties: z.record(z.string(), z.any()).optional(),
+	type: z.literal('Feature'),
+});
+
 export const HubShapePointSchema = z.object({
 	shape_dist_traveled: z.number(),
 	shape_pt_lat: z.number(),
@@ -23,13 +32,18 @@ export const HubShapeSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	extension: z.number(),
+	geojson: HubShapeGeoJsonSchema,
 	points: z.array(HubShapePointSchema),
 });
 
 /**
+ * GeoJSON feature for a hub network shape line.
+ */
+export type HubShapeGeoJson = Feature<LineString>;
+
+/**
  * Publishable shape data for the Hub Shapes API.
  */
-export type HubShape = z.infer<typeof HubShapeSchema> & {
-	geojson: Feature<LineString>
+export type HubShape = Omit<z.infer<typeof HubShapeSchema>, 'geojson'> & {
+	geojson: HubShapeGeoJson
 };
-
