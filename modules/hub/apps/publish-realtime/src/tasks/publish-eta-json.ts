@@ -18,7 +18,7 @@ export async function publishEtaJson() {
 	// Retrieve ETA from the database
 
 	const clickhouseClient = await GOClickHouseClient.getClient();
-	const allEtas = await querySqlFromFile(clickhouseClient, pipelinePath('realtime/select-arrivals.sql'));
+	const allEtas = await querySqlFromFile(clickhouseClient, pipelinePath('select-arrivals.sql'));
 
 	Logger.info(`Retrieved ${allEtas.length} ETA...`);
 
