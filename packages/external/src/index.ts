@@ -6,6 +6,7 @@ import { CrtmAisaClient } from './clients/crtm-aisa/index.js';
 import { FertagusClient } from './clients/fertagus/index.js';
 import { MlClient } from './clients/ml/index.js';
 import { MobiClient } from './clients/mobi/index.js';
+import { TcbClient } from './clients/tcb/index.js';
 
 /**
  * Collection of external transport agency clients.
@@ -19,6 +20,7 @@ import { MobiClient } from './clients/mobi/index.js';
  * - crtmAisa: Consorcio Regional de Transportes de Madrid (AISACRTM) API Client
  * - mobi: MobiCascais API Client
  * - ml: Metro Lisboa (ML) API Client
+ * - tcb: Transportes Colectivos do Barreiro (TCB) API Client
  */
 export const externalClients = Object.freeze({
 	ccfl: CcflClient,
@@ -27,4 +29,5 @@ export const externalClients = Object.freeze({
 	fertagus: FertagusClient,
 	ml: MlClient,
 	mobi: MobiClient,
+	tcb: TcbClient,
 });
