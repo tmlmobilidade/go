@@ -1,0 +1,158 @@
+name: Build Command
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  actions: write
+  pull-requests: write
+
+jobs:
+  build:
+    if: |
+      github.event.issue.pull_request &&
+      startsWith(github.event.comment.body, '/build') &&
+      github.event.comment.user.type != 'Bot'
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Parse command and load PR
+        id: pr
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const body = context.payload.comment.body.trim();
+            const match = body.match(/^\/build\s+(.+)$/is);
+            if (!match) {
+              core.setFailed('Usage: /build <module> [module...]');
+              return;
+            }
+
+            const modules = [...new Set(
+              match[1]
+                .trim()
+                .split(/\s+/)
+                .map((name) => name.toLowerCase())
+                .filter(Boolean),
+            )];
+
+            if (!modules.length) {
+              core.setFailed('Usage: /build <module> [module...]');
+              return;
+            }
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+
+            core.setOutput('modules', modules.join(','));
+            core.setOutput('head_ref', pr.head.ref);
+            core.setOutput('pr_number', String(pr.number));
+
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ steps.pr.outputs.head_ref }}
+          sparse-checkout: modules
+          sparse-checkout-cone-mode: false
+
+      - name: Validate modules
+        id: validate
+        shell: bash
+        run: |
+          REQUESTED="${{ steps.pr.outputs.modules }}"
+          VALID=()
+          INVALID=()
+
+          IFS=',' read -ra NAMES <<< "$REQUESTED"
+          for MODULE in "${NAMES[@]}"; do
+            if [ -d "modules/${MODULE}/apps" ]; then
+              VALID+=("$MODULE")
+            else
+              INVALID+=("$MODULE")
+            fi
+          done
+
+          if [ "${#VALID[@]}" -gt 0 ]; then
+            VALID_CSV=$(IFS=,; echo "${VALID[*]}")
+            echo "valid_modules=$VALID_CSV" >> "$GITHUB_OUTPUT"
+          else
+            echo "valid_modules=" >> "$GITHUB_OUTPUT"
+          fi
+
+          if [ "${#INVALID[@]}" -gt 0 ]; then
+            INVALID_CSV=$(IFS=,; echo "${INVALID[*]}")
+            echo "invalid_modules=$INVALID_CSV" >> "$GITHUB_OUTPUT"
+          else
+            echo "invalid_modules=" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "available<<EOF" >> "$GITHUB_OUTPUT"
+          ls -1 modules | sort >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Reply when no valid modules
+        if: steps.validate.outputs.valid_modules == ''
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const invalid = `${{ steps.validate.outputs.invalid_modules }}`.split(',').filter(Boolean);
+            const available = `${{ steps.validate.outputs.available }}`.trim().split('\n').filter(Boolean);
+            const list = available.map((m) => `- \`${m}\``).join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: [
+                invalid.length ? `Unknown module(s): ${invalid.map((m) => `\`${m}\``).join(', ')}.` : 'No modules specified.',
+                '',
+                '**Available modules:**',
+                list,
+                '',
+                'Usage: `/build <module> [module...]`',
+              ].join('\n'),
+            });
+
+      - name: Dispatch module builds
+        if: steps.validate.outputs.valid_modules != ''
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const modules = '${{ steps.validate.outputs.valid_modules }}';
+            const invalid = `${{ steps.validate.outputs.invalid_modules }}`.split(',').filter(Boolean);
+            const prNumber = '${{ steps.pr.outputs.pr_number }}';
+            const headRef = '${{ steps.pr.outputs.head_ref }}';
+            const built = modules.split(',').map((m) => `\`${m}\``).join(', ');
+
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'build-modules.yml',
+              ref: headRef,
+              inputs: {
+                modules,
+                module: 'all',
+                build_all: 'false',
+                pr_number: prNumber,
+              },
+            });
+
+            const lines = [
+              `Building module(s): ${built} for this PR.`,
+              '',
+              'Track progress in the [Build Modules](https://github.com/${{ github.repository }}/actions/workflows/build-modules.yml) workflow.',
+            ];
+
+            if (invalid.length) {
+              lines.splice(1, 0, `Skipped unknown module(s): ${invalid.map((m) => `\`${m}\``).join(', ')}.`, '');
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: lines.join('\n'),
+            });

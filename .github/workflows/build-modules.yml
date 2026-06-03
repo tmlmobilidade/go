@@ -13,6 +13,16 @@ on:
         required: false
         default: true
         type: boolean
+      modules:
+        description: 'Comma-separated modules (from /build comment)'
+        required: false
+        default: ''
+        type: string
+      pr_number:
+        description: 'Pull request number (from /build comment); tags images as pr-<n>'
+        required: false
+        default: ''
+        type: string
   push:
     branches:
       - prd
@@ -30,8 +40,8 @@ on:
       - closed
 
 concurrency:
-  group: build-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: build-${{ github.event.pull_request.number || github.event.inputs.pr_number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || github.event.inputs.pr_number != '' }}
 
 jobs:
 
@@ -68,6 +78,7 @@ jobs:
         uses: ./.github/actions/discover-modules
         with:
           modules-apps: ${{ steps.scan.outputs.modules-apps }}
+          selected-modules: ${{ inputs.modules }}
           selected-module: ${{ inputs.module || 'all' }}
           build-all: ${{ inputs.build_all || 'true' }}
 
@@ -107,7 +118,7 @@ jobs:
     needs: [package-lock]
     if: |
       always() &&
-      github.event_name == 'pull_request' &&
+      (github.event_name == 'pull_request' || github.event.inputs.pr_number != '') &&
       (github.event.action == 'closed' || needs.package-lock.result == 'success')
     runs-on: ubuntu-24.04-arm
     steps:
@@ -118,8 +129,8 @@ jobs:
           event-type: preview-pr
           client-payload: >-
             {
-              "pr_number": ${{ github.event.pull_request.number }},
-              "pr_action": "${{ github.event.action }}"
+              "pr_number": ${{ github.event.pull_request.number || github.event.inputs.pr_number }},
+              "pr_action": "${{ github.event.action || 'synchronize' }}"
             }
 
   # # #
@@ -137,6 +148,6 @@ jobs:
     with:
       module: ${{ matrix.module }}
       modules-apps: ${{ needs.discover.outputs.modules-apps }}
-      image-tag: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
-      environment: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
+      image-tag: ${{ (github.event.pull_request.number || github.event.inputs.pr_number) && format('pr-{0}', github.event.pull_request.number || github.event.inputs.pr_number) || github.ref_name }}
+      environment: ${{ (github.event.pull_request.number || github.event.inputs.pr_number) && format('pr-{0}', github.event.pull_request.number || github.event.inputs.pr_number) || github.ref_name }}
     secrets: inherit
