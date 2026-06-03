@@ -1,12 +1,12 @@
 'use client';
 
-import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
-import { LinesDetailAlerts } from '@/components/lines/detail/LinesDetailAlerts';
-import { LinesDetailHeader } from '@/components/lines/detail/LinesDetailHeader';
-import { LinesDetailNavigation } from '@/components/lines/detail/LinesDetailNavigation';
-import { LinesDetailPath } from '@/components/lines/detail/LinesDetailPath';
-import { LinesDetailToolbar } from '@/components/lines/detail/LinesDetailToolbar';
-import { LoadingSection, Surface } from '@tmlmobilidade/ui';
+import { LinesDetailContextProvider } from '@/components/lines/detail/LinesDetail.context';
+import { LinesDetailView } from '@/components/lines/detail/LinesDetailView';
+import { LinesDetailViewClose } from '@/components/lines/detail/LinesDetailViewClose';
+import { useSelectedLine } from '@/hooks/use-selected-line';
+import { Drawer } from '@mantine/core';
+
+import styles from './styles.module.css';
 
 /* * */
 
@@ -16,29 +16,38 @@ export function LinesDetail() {
 	//
 	// A. Setup variables
 
-	const linesDetailContext = useLinesDetailContext();
+	const { selectedLineId, selectLineId } = useSelectedLine();
 
 	//
 	// B. Render componentss
 
-	if (linesDetailContext.flags.is_loading) {
-		return <LoadingSection fullHeight />;
-	}
-
 	return (
-		<>
+		<Drawer.Root
+			onClose={() => selectLineId(null)}
+			opened={!!selectedLineId}
+			padding={0}
+			position="bottom"
+			size="95%"
+		>
 
-			<Surface>
+			<Drawer.Overlay />
 
-				<LinesDetailNavigation />
-				<LinesDetailHeader />
-				<LinesDetailToolbar />
+			<Drawer.Content classNames={{ content: styles.content }}>
 
-			</Surface>
+				<Drawer.Header classNames={{ header: styles.header }}>
+					<LinesDetailViewClose />
+				</Drawer.Header>
 
-			<LinesDetailAlerts />
-			<LinesDetailPath />
+				<Drawer.Body classNames={{ body: styles.body }}>
+					{selectedLineId && (
+						<LinesDetailContextProvider lineId={selectedLineId}>
+							<LinesDetailView />
+						</LinesDetailContextProvider>
+					)}
+				</Drawer.Body>
 
-		</>
+			</Drawer.Content>
+
+		</Drawer.Root>
 	);
 }

@@ -11,7 +11,7 @@ import styles from './styles.module.css';
 interface RegularListItemProps {
 	ariaLabel?: string
 	children?: React.ReactNode
-	href: string
+	href?: string
 	icon?: React.ReactNode
 	onClick?: () => void
 	refFn?: RefObject<HTMLDivElement>
@@ -20,7 +20,7 @@ interface RegularListItemProps {
 
 /* * */
 
-export function RegularListItem({ ariaLabel, children, href, icon, refFn, style }: RegularListItemProps) {
+export function RegularListItem({ ariaLabel, children, href, icon, onClick, refFn, style }: RegularListItemProps) {
 	//
 
 	//
@@ -32,8 +32,9 @@ export function RegularListItem({ ariaLabel, children, href, icon, refFn, style 
 	// B. Handle actions
 
 	const handleClick = () => {
-		if (href === '#') return;
-		router.push(href);
+		if (onClick) onClick();
+		else if (!href || href === '#') return;
+		else router.push(href);
 	};
 
 	//

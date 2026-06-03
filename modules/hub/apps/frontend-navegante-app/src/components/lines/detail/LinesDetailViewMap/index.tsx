@@ -6,15 +6,19 @@ import { MapViewStyleActiveStops, MapViewStyleActiveStopsPrimaryLayerId } from '
 import { MapViewStylePath, MapViewStylePathInteractiveLayerId } from '@/components/map/MapViewStylePath';
 import { MapViewStyleVehicles, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/MapViewStyleVehicles';
 import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/components/stops/Stops.context';
+import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { useVehiclesContext } from '@/contexts/Vehicles.context';
 import { centerMap, moveMap } from '@/utils/map.utils';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
 import { useMap } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo } from 'react';
 
+import styles from './styles.module.css';
+
 /* * */
 
-export function LinesDetailPathMap() {
+export function LinesDetailViewMap() {
 	//
 
 	//
@@ -23,6 +27,7 @@ export function LinesDetailPathMap() {
 	const stopsContext = useStopsContext();
 	const vehiclesContext = useVehiclesContext();
 	const linesDetailContext = useLinesDetailContext();
+	const operationalDateContext = useOperationalDateContext();
 
 	const { linesDetailMap } = useMap();
 
@@ -50,7 +55,7 @@ export function LinesDetailPathMap() {
 			collection.features.push(result);
 		});
 		return collection;
-	}, [linesDetailContext.data.active_pattern?.color, linesDetailContext.data.active_pattern.path, linesDetailContext.data.active_pattern?.text_color, stopsContext.actions]);
+	}, [linesDetailContext.data.active_pattern?.color, linesDetailContext.data.active_pattern?.path, linesDetailContext.data.active_pattern?.text_color, stopsContext.actions]);
 
 	const activeStopFeatureCollection = useMemo(() => {
 		// Exit early if there is no active pattern or active waypoint
@@ -109,31 +114,42 @@ export function LinesDetailPathMap() {
 	//
 	// D. Render copmonents
 
+	if (!linesDetailContext.data.active_pattern || !operationalDateContext.data.selected_date) {
+		return (
+			<Surface>
+				<NoDataLabel text="No data" />
+			</Surface>
+		);
+	}
+
 	return (
-		<MapView
-			id="linesDetailMap"
-			interactiveLayerIds={[MapViewStylePathInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId]}
-			onCenterMap={handleCenterMap}
-			onClick={handleLayerClick}
-		>
+		<div className={styles.container}>
+			<MapView
+				controlsPosition="bottom-right"
+				id="linesDetailMap"
+				interactiveLayerIds={[MapViewStylePathInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId]}
+				onCenterMap={handleCenterMap}
+				onClick={handleLayerClick}
+			>
 
-			<MapViewStyleVehicles
-				showCounter="always"
-				vehiclesData={activeVehiclesFeatureCollection}
-			/>
+				<MapViewStyleVehicles
+					showCounter="always"
+					vehiclesData={activeVehiclesFeatureCollection}
+				/>
 
-			<MapViewStyleActiveStops
-				presentBeforeId={MapViewStyleVehiclesPrimaryLayerId}
-				stopsData={activeStopFeatureCollection}
-			/>
+				<MapViewStyleActiveStops
+					presentBeforeId={MapViewStyleVehiclesPrimaryLayerId}
+					stopsData={activeStopFeatureCollection}
+				/>
 
-			<MapViewStylePath
-				presentBeforeId={MapViewStyleActiveStopsPrimaryLayerId}
-				shapeData={linesDetailContext.data.active_shape?.geojson}
-				waypointsData={activePathFeatureCollection}
-			/>
+				<MapViewStylePath
+					presentBeforeId={MapViewStyleActiveStopsPrimaryLayerId}
+					shapeData={linesDetailContext.data.active_shape?.geojson}
+					waypointsData={activePathFeatureCollection}
+				/>
 
-		</MapView>
+			</MapView>
+		</div>
 	);
 
 	//

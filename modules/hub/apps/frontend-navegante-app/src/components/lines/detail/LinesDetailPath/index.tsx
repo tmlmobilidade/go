@@ -3,10 +3,7 @@
 import { NoDataLabel } from '@/components/layout/NoDataLabel';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { LinesDetailPathList } from '@/components/lines/detail/LinesDetailPathList';
-import { LinesDetailPathMap } from '@/components/lines/detail/LinesDetailPathMap';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
-import { getCssVariableValue } from '@/hooks/get-css-variabble';
-import { useStickyObserver } from '@/hooks/use-sticky-observer';
 import { Surface } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -24,8 +21,6 @@ export function LinesDetailPath() {
 
 	const linesDetailContext = useLinesDetailContext();
 	const operationalDateContext = useOperationalDateContext();
-	const headerHeight = getCssVariableValue('--size-height-header');
-	const { isSticky, ref: stickyElementRef } = useStickyObserver({ top: headerHeight }, [1], { top: -1 });
 
 	//
 	// B. Render components
@@ -41,30 +36,21 @@ export function LinesDetailPath() {
 	return (
 		<Surface>
 
-			<div ref={stickyElementRef} className={`${styles.containerSummary} ${isSticky ? styles.isSticky : ''}`}>
-				{isSticky && (
-					<>
-						<p className={styles.linesSummaryWrapper}>
-							{t('default:lines.LinesDetailPath.summary', '', {
-								changeDay: chunks => <a className={styles.changeDay} href="#">{chunks}</a>,
-								day_name: operationalDateContext.data.selected_date.js_date,
-								dayName: chunks => <span className={styles.dayName}>{chunks}</span>,
-								destination_name: linesDetailContext.data.active_pattern?.headsign,
-								destinationName: chunks => <span className={styles.destinationName}>{chunks}</span>,
-								line_number: linesDetailContext.data.active_pattern?.line_id,
-								lineNumber: chunks => <span className={styles.lineNumber}>{chunks}</span>,
-							})}
-						</p>
-					</>
-				)}
+			<div className={styles.containerSummary}>
+				{/* <p className={styles.linesSummaryWrapper}>
+					{t('default:lines.LinesDetailPath.summary', '', {
+						changeDay: chunks => <a className={styles.changeDay} href="#">{chunks}</a>,
+						day_name: operationalDateContext.data.selected_date.js_date,
+						dayName: chunks => <span className={styles.dayName}>{chunks}</span>,
+						destination_name: linesDetailContext.data.active_pattern?.headsign,
+						destinationName: chunks => <span className={styles.destinationName}>{chunks}</span>,
+						line_number: linesDetailContext.data.active_pattern?.line_id,
+						lineNumber: chunks => <span className={styles.lineNumber}>{chunks}</span>,
+					})}
+				</p> */}
 			</div>
 
-			<div className={styles.container}>
-				<LinesDetailPathList />
-				<div className={styles.mapWrapper}>
-					<LinesDetailPathMap />
-				</div>
-			</div>
+			<LinesDetailPathList />
 
 		</Surface>
 	);

@@ -33,9 +33,9 @@ export function LinesListGroup({ agencyId, children, onShowMoreLines, withShowMo
 			<Image
 				alt={t(`default:lines.LinesListGroup.logo.alt`, '', { agency_name: AGENCY_NAMES_MAP[agencyId].full })}
 				className={styles.logo}
-				height={60}
+				height={40}
 				src={AGENCY_LOGO_MAP[agencyId]}
-				width={90}
+				width={60}
 			/>
 			{children}
 			{withShowMoreButton && <div className={styles.showMoreButton} onClick={onShowMoreLines}>{t('default:lines.LinesListGroup.show_more')}</div>}

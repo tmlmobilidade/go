@@ -57,6 +57,7 @@ stops AS (
         ON r.trip_id = e.trip_id
     LEFT JOIN trip_summary AS ts
         ON ts.hashed_trip_id = e.hashed_trip_id
+    WHERE estimated_arrival_unix IS NOT NULL
     ORDER BY trip_id, stop_sequence, stop_id
     LIMIT 1 BY trip_id, stop_id
 ),

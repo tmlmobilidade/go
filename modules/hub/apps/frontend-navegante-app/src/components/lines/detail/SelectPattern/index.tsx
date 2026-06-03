@@ -137,17 +137,11 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 		);
 	};
 
-	const selectedPattern = patterns.find(pattern => pattern.version_id === value);
-	const selectedRoute = selectedPattern ? linesContext.actions.getRouteDataById(selectedPattern.route_id) : undefined;
-	const selectDescription = selectedPattern && !selectedPattern.path.length ?
-		t('default:lines.SelectPattern.invalid_option', '', { pattern_id: selectedPattern.id })
-		: selectedRoute?.long_name;
-
 	return (
 		<Select
 			allowDeselect={false}
 			data={validPatternsSelectOptions}
-			description={selectDescription}
+			// description={selectDescription}
 			label={t('default:lines.SelectPattern.label')}
 			onChange={onChange}
 			placeholder={t('default:lines.SelectPattern.placeholder')}

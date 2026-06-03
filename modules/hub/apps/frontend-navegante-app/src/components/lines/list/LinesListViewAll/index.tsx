@@ -5,6 +5,7 @@ import { RegularListItem } from '@/components/layout/RegularListItem';
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { LinesListGroup } from '@/components/lines/list/LinesListGroup';
+import { useSelectedLine } from '@/hooks/use-selected-line';
 import { Space } from '@mantine/core';
 import { LoadingSection, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +22,8 @@ export function LinesListViewAll() {
 	const { t } = useTranslation();
 
 	const linesListContext = useLinesListContext();
+
+	const { selectLineId } = useSelectedLine();
 
 	//
 	// B. Render components
@@ -51,7 +54,7 @@ export function LinesListViewAll() {
 							<RegularListItem
 								key={line._id}
 								ariaLabel={t(`default:lines.LinesListViewAll.items.aria_label`, '', { index: index + 1, tts_name: line.tts_name })}
-								href={`/lines/${line._id}`}
+								onClick={() => selectLineId(line._id)}
 							>
 								<LineDisplay lineData={line} />
 							</RegularListItem>
