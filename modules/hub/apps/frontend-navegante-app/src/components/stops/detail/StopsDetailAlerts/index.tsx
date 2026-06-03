@@ -2,11 +2,10 @@
 
 /* * */
 
-import { AlertsCarousel } from '@/components/common/AlertsCarousel';
-import { Section } from '@/components/layout/Section';
-import { Surface } from '@/components/layout/Surface';
-import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
-import { useTranslations } from 'next-intl';
+import { AlertsCarousel } from '@/components/lines/common/AlertsCarousel';
+import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
+import { Section, Surface } from '@tmlmobilidade/ui';
+
 
 /* * */
 
@@ -16,7 +15,7 @@ export function StopsDetailAlerts() {
 	//
 	// A. Setup variables
 
-	const t = useTranslations('stops.StopsDetailAlerts');
+	const { t } = useTranslation();
 	const stopsDetailContext = useStopsDetailContext();
 
 	//
@@ -27,8 +26,10 @@ export function StopsDetailAlerts() {
 	}
 
 	return (
-		<Surface variant="alerts">
-			<Section heading={t('heading')} subheading={t('subheading')} withGap>
+		<Surface variant="bordered">
+			<Section padding="md">
+				<h2>{t('default:stops.StopsDetailAlerts.heading')}</h2>
+				<p>{t('default:stops.StopsDetailAlerts.subheading')}</p>
 				<AlertsCarousel alerts={stopsDetailContext.data.active_alerts} />
 			</Section>
 		</Surface>
