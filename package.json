@@ -123,6 +123,7 @@
 		"turbo": "2.9.11"
 	},
 	"dependencies": {
-		"@sentry/core": "^10.53.1"
+		"@sentry/core": "^10.53.1",
+		"@sentry/nextjs": "^10.56.0"
 	}
 }

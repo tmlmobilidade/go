@@ -1,8 +1,9 @@
 /* * */
 
-import { ErrorIssue, type ErrorIssueContext } from './Issues/ErrorIssue.js';
-import { InfoIssue, type InfoIssueContext } from './Issues/InfoIssue.js';
-import { Logs, LogsContext } from './logs.js';
+import { ErrorIssue, type ErrorIssueContext } from './issues/ErrorIssue.js';
+import { InfoIssue, type InfoIssueContext } from './issues/InfoIssue.js';
+import { LogsNextjs, LogsNextjsContext } from './logs/logs-nextjs.js';
+import { LogsNode, type LogsNodeContext } from './logs/logs-node.js';
 
 /* * */
 interface LoggerColumn {
@@ -45,21 +46,20 @@ class LoggersClass {
 	 * Logs an info message to the console and sends info details to Sentry if context is provided.
 	 * @param context The context object containing the info message and context.
 	 */
-	logs(context: Omit<LogsContext, 'message'> & { message: string }) {
-		Logs({
+	logsNode(context: Omit<LogsNodeContext, 'message'> & { message: string }) {
+		LogsNode({
 			...context,
 			message: context.message ?? 'Unknown info',
 			service: context.service ?? this.getDefaultService(),
 		});
 	}
 
-	/**
-	 * Emits all logger methods once for testing.
-	 * @param service Service name used for Sentry tagging.
-	 */
-	showAll(logsContext: LogsContext) {
-		this.info('Logger.info test', { message: 'Logger.info test', ...logsContext });
-		this.logs({ message: 'Logger.logs test', ...logsContext });
+	logsNextjs(context: Omit<LogsNextjsContext, 'message'> & { message: string }) {
+		LogsNextjs({
+			...context,
+			message: context.message ?? 'Unknown info',
+			service: context.service ?? this.getDefaultService(),
+		});
 	}
 
 	private getDefaultService() {

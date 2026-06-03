@@ -32,9 +32,13 @@
 			"types": "./dist/index.d.ts",
 			"default": "./dist/index.js"
 		},
-		"./server": {
-			"types": "./dist/server.d.ts",
-			"default": "./dist/server.js"
+		"./sentry/nextjs": {
+			"types": "./dist/sentry/sentry-nextjs.d.ts",
+			"default": "./dist/sentry/sentry-nextjs.js"
+		},
+		"./sentry/node": {
+			"types": "./dist/sentry/sentry-node.d.ts",
+			"default": "./dist/sentry/sentry-node.js"
 		}
 	},
 	"scripts": {
@@ -45,6 +49,7 @@
 	},
 	"dependencies": {
 		"@sentry/core": "^10.53.1",
+		"@sentry/nextjs": "^10.53.1",
 		"@sentry/node": "^10.53.1"
 	},
 	"devDependencies": {
