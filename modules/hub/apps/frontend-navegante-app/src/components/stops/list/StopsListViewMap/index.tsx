@@ -7,6 +7,8 @@ import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { useVehiclesContext } from '@/contexts/Vehicles.context';
 import { useEffect } from 'react';
 
+import { StopsListViewMapVehiclesToggle } from '../StopsListViewMapVehiclesToggle';
+
 /* * */
 
 export function StopsListViewMap() {
@@ -17,6 +19,7 @@ export function StopsListViewMap() {
 
 	const vehiclesContext = useVehiclesContext();
 	const stopsListContext = useStopsListContext();
+
 	//
 	// B. Handle actions
 
@@ -34,16 +37,19 @@ export function StopsListViewMap() {
 	// C. Render components
 
 	return (
-		<MapView controlsPosition="bottom-left" id="stops-list">
-			<MapViewStyleStops
-				stopsData={stopsListContext.data.fc}
-			/>
-			{stopsListContext.view.showVehicles && (
-				<MapViewStyleVehicles
-					showCounter="always"
-					vehiclesData={vehiclesContext.data.fc}
+		<>
+			<MapView controlsPosition="bottom-left" id="stops-list">
+				<MapViewStyleStops
+					stopsData={stopsListContext.data.fc}
 				/>
-			)}
-		</MapView>
+				{stopsListContext.view.showVehicles && (
+					<MapViewStyleVehicles
+						showCounter="always"
+						vehiclesData={vehiclesContext.data.fc}
+					/>
+				)}
+			</MapView>
+			<StopsListViewMapVehiclesToggle />
+		</>
 	);
 }
