@@ -5,6 +5,7 @@ import { RegularListItem } from '@/components/layout/RegularListItem';
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { LinesListGroup } from '@/components/lines/list/LinesListGroup';
+import { Space } from '@mantine/core';
 import { LoadingSection, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 import { ViewportList } from 'react-viewport-list';
@@ -58,6 +59,7 @@ export function LinesListViewAll() {
 					</ViewportList>
 				</LinesListGroup>
 			))}
+			<Space h="90px" />
 		</Section>
 	);
 
