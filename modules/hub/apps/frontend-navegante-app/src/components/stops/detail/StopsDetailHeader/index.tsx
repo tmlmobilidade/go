@@ -8,7 +8,6 @@ import { IconDisplay } from '@/components/common/IconDisplay';
 import { LineBadge } from '@/components/lines/common/LineBadge';
 import { StopDisplayLocation } from '@/components/stops/common/StopDisplayLocation';
 import { StopDisplayName } from '@/components/stops/common/StopDisplayName';
-import { StopDisplayTts } from '@/components/stops/common/StopDisplayTts';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { Section, Surface } from '@tmlmobilidade/ui';
 
@@ -55,7 +54,6 @@ export function StopsDetailHeader() {
 				<div className={styles.headingWrapper}>
 					<div className={styles.nameWrapper}>
 						<StopDisplayName longName={stopsDetailContext.data.stop.name} size="lg" />
-						<StopDisplayTts stopId={stopsDetailContext.data.stop._id.toString()} />
 					</div>
 					<StopDisplayLocation localityName={stopsDetailContext.data.stop.locality_name} municipalityName={stopsDetailContext.data.stop.municipality_name} size="lg" />
 				</div>

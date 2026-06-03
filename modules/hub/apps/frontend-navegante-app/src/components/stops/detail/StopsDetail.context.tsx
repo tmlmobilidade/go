@@ -351,18 +351,18 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
  	* Fill state with valid pattern groups for the selected operational day.
 	*/
 
-	useEffect(() => {
-		if (!dataPatternsState || !operationalDateContext.data.selected_date) return;
-		const activePatterns: HubPattern[] = [];
-		for (const pattern of dataPatternsState) {
-			for (const patternGroup of pattern) {
-				if (patternGroup.valid_on.includes(operationalDateContext.data.selected_date.operational_date)) {
-					activePatterns.push(patternGroup);
-				}
-			}
-		}
-		setDataValidPatternsState(activePatterns);
-	}, [dataPatternsState, operationalDateContext.data.selected_date]);
+	// useEffect(() => {
+	// 	if (!dataPatternsState || !operationalDateContext.data.selected_date) return;
+	// 	const activePatterns: HubPattern[] = [];
+	// 	for (const pattern of dataPatternsState) {
+	// 		for (const patternGroup of pattern) {
+	// 			if (patternGroup.valid_on.includes(operationalDateContext.data.selected_date.operational_date)) {
+	// 				activePatterns.push(patternGroup);
+	// 			}
+	// 		}
+	// 	}
+	// 	setDataValidPatternsState(activePatterns);
+	// }, [dataPatternsState, operationalDateContext.data.selected_date]);
 
 	useEffect(() => {
 		if (!alertsContext.data.alerts) return;
