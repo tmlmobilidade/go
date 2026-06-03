@@ -5,9 +5,8 @@ import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
-import { type Line, type Pattern, type Shape, type Stop } from '@carrismetropolitana/api-types/network';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubAlert, NextArrival } from '@tmlmobilidade/types';
+import { type HubAlert, HubArrival } from '@tmlmobilidade/types';
 import { type HubLine, type HubPattern, type HubShape, type HubStop } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
 import { notFound } from 'next/navigation';
@@ -31,18 +30,17 @@ interface StopsDetailContextState {
 		lines: HubLine[] | undefined
 		patterns: HubPattern[][] | undefined
 		stop: HubStop | undefined
-		timetable_realtime: NextArrival[] | undefined
-		timetable_realtime_future: NextArrival[] | undefined
-		timetable_realtime_go: NextArrival[] | undefined
-		timetable_realtime_past: NextArrival[] | undefined
-		timetable_schedule: NextArrival[] | undefined
+		timetable_realtime: HubArrival[] | undefined
+		timetable_realtime_future: HubArrival[] | undefined
+		timetable_realtime_go: HubArrival[] | undefined
+		timetable_realtime_past: HubArrival[] | undefined
+		timetable_schedule: HubArrival[] | undefined
 		valid_pattern_groups: HubPattern[] | undefined
 	}
 	filters: {
 		none: string | undefined
 	}
 	flags: {
-		is_favorite: boolean
 		is_loading: boolean
 		is_loading_timetable: boolean
 	}
@@ -72,22 +70,21 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const linesContext = useLinesContext();
 	const alertsContext = useAlertsContext();
 	const operationalDateContext = useOperationalDateContext();
-	const [dataStopState, setDataStopState] = useState<Stop | undefined>(undefined);
+	const [dataStopState, setDataStopState] = useState<HubStop | undefined>(undefined);
 	const [dataActiveStopIdState, setDataActiveStopIdState] = useState<string>(stopId);
-	const [dataLinesState, setDataLinesState] = useState<Line[] | undefined>(undefined);
-	const [dataPatternsState, setDataPatternsState] = useState<Pattern[][] | undefined>(undefined);
-	const [dataValidPatternsState, setDataValidPatternsState] = useState<Pattern[] | undefined>(undefined);
-	const [dataShapeState, setDataShapeState] = useState<Shape | undefined>(undefined);
-	const [dataArrivalsGo, setDataArrivalsGo] = useState<NextArrival[] | undefined>(undefined);
-	const [dataTimetableRealtimeState, setDataTimetableRealtimeState] = useState<NextArrival[] | undefined>(undefined);
-	const [dataTimetableRealtimePastState, setDataTimetableRealtimePastState] = useState<NextArrival[] | undefined>(undefined);
-	const [dataTimetableRealtimeFutureState, setDataTimetableRealtimeFutureState] = useState<NextArrival[] | undefined>(undefined);
-	const [dataTimetableScheduleState, setDataTimetableScheduleState] = useState<NextArrival[] | undefined>(undefined);
-	const [dataActivePatternState, setDataActivePatternState] = useState<Pattern | undefined>(undefined);
+	const [dataLinesState, setDataLinesState] = useState<HubLine[] | undefined>(undefined);
+	const [dataPatternsState, setDataPatternsState] = useState<HubPattern[][] | undefined>(undefined);
+	const [dataValidPatternsState, setDataValidPatternsState] = useState<HubPattern[] | undefined>(undefined);
+	const [dataShapeState, setDataShapeState] = useState<HubShape | undefined>(undefined);
+	const [dataArrivalsGo, setDataArrivalsGo] = useState<HubArrival[] | undefined>(undefined);
+	const [dataTimetableRealtimeState, setDataTimetableRealtimeState] = useState<HubArrival[] | undefined>(undefined);
+	const [dataTimetableRealtimePastState, setDataTimetableRealtimePastState] = useState<HubArrival[] | undefined>(undefined);
+	const [dataTimetableRealtimeFutureState, setDataTimetableRealtimeFutureState] = useState<HubArrival[] | undefined>(undefined);
+	const [dataTimetableScheduleState, setDataTimetableScheduleState] = useState<HubArrival[] | undefined>(undefined);
+	const [dataActivePatternState, setDataActivePatternState] = useState<HubPattern | undefined>(undefined);
 	const [dataActiveAlertsState, setDataActiveAlertsState] = useState<HubAlert[] | undefined>(undefined);
 	const [dataActiveTripIdState, setDataActiveTripIdState] = useState<string | undefined>(undefined);
 	const [dataActiveStopSequenceState, setDataActiveStopSequenceState] = useState<number | undefined>(undefined);
-	const [flagIsFavoriteState, setFlagIsFavoriteState] = useState<boolean>(false);
 
 	//
 	// B. Fetch data
@@ -243,6 +240,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 				.filter((arrival) => {
 					// If the arrival has an observed arrival time,
 					// then it means the vehicle has already passed the stop.
+
 					if (arrival.observed_arrival_unix) return true;
 					// Include it in the past if the estimated arrival time is in the past.
 					return (arrival.estimated_arrival_unix || arrival.scheduled_arrival_unix) < nowInUnixSeconds;
@@ -456,7 +454,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			none: undefined,
 		},
 		flags: {
-			is_favorite: flagIsFavoriteState,
 			is_loading: dataPatternsState === undefined,
 			is_loading_timetable: dataPatternsState === undefined || dataTimetableRealtimeState === undefined,
 		},

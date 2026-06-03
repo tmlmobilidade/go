@@ -7,9 +7,9 @@ import { StopsDetailContextProvider } from '@/components/stops/detail/StopsDetai
 
 export default async function Page({ params }) {
 	const { stop_id } = await params;
-	const decodedStopId = decodeURIComponent(stop_id);
+
 	return (
-		<StopsDetailContextProvider stopId={decodedStopId}>
+		<StopsDetailContextProvider stopId={stop_id}>
 			<StopsDetail />
 		</StopsDetailContextProvider>
 	);

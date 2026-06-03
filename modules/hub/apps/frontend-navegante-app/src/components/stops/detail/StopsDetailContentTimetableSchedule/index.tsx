@@ -1,9 +1,9 @@
 /* * */
 
 import { NoDataLabel } from '@/components/layout/NoDataLabel';
-import { StopsDetailContentTimetableRow } from '@/components/stops/StopsDetailContentTimetableRow';
-import { useStopsDetailContext } from '@/contexts/StopsDetail.context';
-import { useTranslations } from 'next-intl';
+import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
+// import { StopsDetailContentTimetableRow } from '@/components/stops/detail/StopsDetailContentTimetableRow';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -13,7 +13,7 @@ export function StopsDetailContentTimetableSchedule() {
 	//
 	// A. Setup variables
 
-	const t = useTranslations('stops.StopsDetailContentTimetableSchedule');
+	const { t } = useTranslation();
 
 	const stopsDetailContext = useStopsDetailContext();
 
@@ -22,20 +22,20 @@ export function StopsDetailContentTimetableSchedule() {
 
 	if (!stopsDetailContext.data.timetable_schedule || stopsDetailContext.data.timetable_schedule?.length === 0) {
 		return (
-			<NoDataLabel text={t('no_service')} withMinHeight />
+			<NoDataLabel text={t('default:stops.StopsDetailContentTimetableSchedule.no_service')} withMinHeight />
 		);
 	}
 
 	return (
 		<>
-			{stopsDetailContext.data.timetable_schedule.map(item => (
+			{/* {stopsDetailContext.data.timetable_schedule.map(item => (
 				<StopsDetailContentTimetableRow
 					key={`${item.trip_id}-${item.stop_sequence}`}
 					arrivalData={item}
 					status="scheduled"
 				/>
-			))}
-			<NoDataLabel text={t('end_of_day')} withMinHeight />
+			))} */}
+			<NoDataLabel text={t('default:stops.StopsDetailContentTimetableSchedule.end_of_day')} withMinHeight />
 		</>
 	);
 
