@@ -47,3 +47,7 @@
 .isSelected .detailsWrapper {
 	padding: 20px 0;
 }
+
+.isFirstStop.isSelected .detailsWrapper {
+	padding-top: 2px;
+}
