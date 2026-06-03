@@ -18,7 +18,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function LinesDetailPathMap() {
+export function LinesDetailViewMap() {
 	//
 
 	//
@@ -125,6 +125,7 @@ export function LinesDetailPathMap() {
 	return (
 		<div className={styles.container}>
 			<MapView
+				controlsPosition="bottom-right"
 				id="linesDetailMap"
 				interactiveLayerIds={[MapViewStylePathInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId]}
 				onCenterMap={handleCenterMap}
