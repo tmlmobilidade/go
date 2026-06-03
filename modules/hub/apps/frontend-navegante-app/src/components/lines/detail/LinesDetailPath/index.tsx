@@ -7,7 +7,7 @@ import { LinesDetailPathMap } from '@/components/lines/detail/LinesDetailPathMap
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { getCssVariableValue } from '@/hooks/get-css-variabble';
 import { useStickyObserver } from '@/hooks/use-sticky-observer';
-import { Section, Surface } from '@tmlmobilidade/ui';
+import { Surface } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
