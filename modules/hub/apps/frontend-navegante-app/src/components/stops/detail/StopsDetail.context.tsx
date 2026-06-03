@@ -248,27 +248,19 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		const validScheduledTrips: HubArrival[] = [];
 
 		for (const patternGroup of dataValidPatternsState || []) {
-			const lastStopSequence = patternGroup.path
-				.sort((a, b) => a.stop_sequence - b.stop_sequence)
-				.slice(-1)[0]?.stop_sequence;
-			// Find the trips for the given pattern
 			for (const trip of patternGroup.trips) {
-				// Skip if trip is not valid for the selected operational day
 				if (!trip.valid_on.includes(operationalDateContext.data.selected_date.operational_date)) continue;
-				// Find the schedule for the given Stop ID
 				for (const stopTime of trip.schedule) {
-					// Skip if not for the selected stop
 					if (stopTime.stop_id !== dataActiveStopIdState) continue;
 
-					// Convert the arrival time into a unix timestamp.
-					// The arrival time is in 24h+ format, so we need to split it into hours, minutes, and seconds.
-					// Remember that if the hour is greater than 24, it means the arrival time is on the next day, and we need to add one day to the timestamp.
 					validScheduledTrips.push({
 						arrival_time: stopTime.arrival_time,
 						arrival_time_24h: stopTime.arrival_time_24h,
+						line_id: patternGroup.line_id,
+						pattern_id: patternGroup.id,
 						stop_id: dataActiveStopIdState,
 						stop_sequence: stopTime.stop_sequence,
-						trip_id: stopTime.trip_id,
+						trip_id: trip.trip_ids[0] ?? stopTime.trip_id ?? '',
 					});
 				}
 			}

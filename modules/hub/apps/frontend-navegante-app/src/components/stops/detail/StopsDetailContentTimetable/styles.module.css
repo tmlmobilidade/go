@@ -5,11 +5,11 @@
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	padding: var(--size-spacing-15);
+	padding: 15px;
 }
 
 @media (width < 1000px){
 	.container{
-		gap: var(--size-spacing-10);
+		gap: 10px;
 	}
 }

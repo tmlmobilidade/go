@@ -189,6 +189,11 @@
 		}
 	},
 	"stops": {
+		"NextArrivals": {
+			"arriving": "A chegar",
+			"hours": "h",
+			"minutes": "min"
+		},
 		"StopsDetailAlerts": {
 			"heading": "Alertas ativos",
 			"subheading": "Alertas ativos para esta paragem ou para linhas que passam nesta paragem."

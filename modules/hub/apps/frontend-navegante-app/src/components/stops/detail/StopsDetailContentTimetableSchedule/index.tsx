@@ -30,7 +30,7 @@ export function StopsDetailContentTimetableSchedule() {
 		<>
 			{stopsDetailContext.data.timetable_schedule.map(item => (
 				<StopsDetailContentTimetableRow
-					key={`${item.trip_id}-${item.stop_sequence}`}
+					key={`${item.pattern_id}-${item.trip_id}-${item.stop_sequence}-${item.arrival_time}`}
 					arrivalData={item}
 					status="future"
 				/>
