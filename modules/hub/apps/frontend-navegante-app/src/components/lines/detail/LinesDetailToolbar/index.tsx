@@ -2,15 +2,17 @@
 
 import { SelectOperationalDate } from '@/components/lines/common/SelectOperationalDate';
 import { SelectActivePatternGroup } from '@/components/lines/detail/SelectActivePatternGroup';
-import { Section } from '@tmlmobilidade/ui';
+import { Section, Surface } from '@tmlmobilidade/ui';
 
 /* * */
 
 export function LinesDetailToolbar() {
 	return (
-		<Section>
-			<SelectOperationalDate />
-			<SelectActivePatternGroup />
-		</Section>
+		<Surface variant="plain">
+			<Section gap="xs">
+				<SelectOperationalDate />
+				<SelectActivePatternGroup />
+			</Section>
+		</Surface>
 	);
 }

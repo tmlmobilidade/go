@@ -7,21 +7,14 @@
 	gap: 15px;
 	align-items: center;
 	justify-content: center;
+	margin-top: 10px;
 }
 
 /* * */
 /* LINE NAME */
 
 .lineName {
-	display: -webkit-box;
-	align-items: center;
-	justify-content: flex-start;
-	width: 100%;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	-webkit-line-clamp: 3;
 	font-size: 20px;
 	font-weight: var(--font-weight-bold);
 	color: var(--color-system-text-100);
-	-webkit-box-orient: vertical;
 }

@@ -19,8 +19,8 @@
 
 .body {
 	position: relative;
-	min-height: 100vh;
-	margin-top: -90px;
+	min-height: 100%;
+	margin-top: -70px;
 	overflow: hidden;
 	background-color: var(--color-system-background-200);
 	border-top-left-radius: 35px;

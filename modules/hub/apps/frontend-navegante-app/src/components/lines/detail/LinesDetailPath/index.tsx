@@ -37,7 +37,7 @@ export function LinesDetailPath() {
 		<Surface>
 
 			<div className={styles.containerSummary}>
-				<p className={styles.linesSummaryWrapper}>
+				{/* <p className={styles.linesSummaryWrapper}>
 					{t('default:lines.LinesDetailPath.summary', '', {
 						changeDay: chunks => <a className={styles.changeDay} href="#">{chunks}</a>,
 						day_name: operationalDateContext.data.selected_date.js_date,
@@ -47,7 +47,7 @@ export function LinesDetailPath() {
 						line_number: linesDetailContext.data.active_pattern?.line_id,
 						lineNumber: chunks => <span className={styles.lineNumber}>{chunks}</span>,
 					})}
-				</p>
+				</p> */}
 			</div>
 
 			<LinesDetailPathList />
