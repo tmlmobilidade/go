@@ -12,8 +12,11 @@ import { useMapViewContext } from '../../view/MapViewContext';
 /* * */
 
 export interface MapOverlayMultipleStopsDataProps {
+	color?: string
 	id: string
 	name: string
+	sequence?: number
+	text_color?: string
 }
 
 /* * */

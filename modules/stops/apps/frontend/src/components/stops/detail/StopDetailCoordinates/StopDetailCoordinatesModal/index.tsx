@@ -26,14 +26,14 @@ export function StopDetailCoordinatesModalBody() {
 	const { form } = stopDetailContext.data;
 	const stop = stopDetailContext.data.stop;
 
-	const [draft, setDraft] = useState<[number, number]>(() => {
+	const [draft, setDraft] = useState<[number | undefined, number | undefined]>(() => {
 		const lat = form.values.latitude;
 		const lng = form.values.longitude;
 		const latN = typeof lat === 'number' ? lat : Number(lat);
 		const lngN = typeof lng === 'number' ? lng : Number(lng);
 		return [
-			Number.isFinite(latN) ? latN : 0,
-			Number.isFinite(lngN) ? lngN : 0,
+			Number.isFinite(latN) ? latN : undefined,
+			Number.isFinite(lngN) ? lngN : undefined,
 		];
 	});
 
@@ -46,7 +46,11 @@ export function StopDetailCoordinatesModalBody() {
 		const vals = form.getValues();
 		const latN = typeof vals.latitude === 'number' ? vals.latitude : Number(vals.latitude);
 		const lngN = typeof vals.longitude === 'number' ? vals.longitude : Number(vals.longitude);
-		if (!Number.isFinite(latN) || !Number.isFinite(lngN)) return;
+		if (!Number.isFinite(latN) || !Number.isFinite(lngN)) {
+			setDraft([undefined, undefined]);
+			mapContext.actions.handleSearch('');
+			return;
+		}
 		setDraft([latN, lngN]);
 		mapContext.actions.handleSearch(coordinatesToSearchQuery(latN, lngN));
 		// Intentionally only when the editor opens — avoid resetting draft after map clicks / context updates.
@@ -55,7 +59,7 @@ export function StopDetailCoordinatesModalBody() {
 
 	//
 
-	const setDraftCoords = useCallback((lat: number, lng: number) => {
+	const setDraftCoords = useCallback((lat: number | undefined, lng: number | undefined) => {
 		setDraft([lat, lng]);
 	}, []);
 

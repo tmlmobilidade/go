@@ -41,7 +41,9 @@ export function useTransitModes(): UseTransitModesReturnType {
 	// B. Transform data
 
 	const activeAgencyIds = useMemo(() => {
-		return Array.from(new Set(activeTransitModes.flatMap(mode => AGENCY_IDS_MAP[mode])));
+		const result = Array.from(new Set(activeTransitModes.flatMap(mode => AGENCY_IDS_MAP[mode])));
+		if (!result.length) return Object.values(AGENCY_IDS_MAP).flat().filter(Boolean);
+		return result;
 	}, [activeTransitModes]);
 
 	//
@@ -53,6 +55,8 @@ export function useTransitModes(): UseTransitModesReturnType {
 			const finalTransitModes = new Set([...prev]);
 			if (finalTransitModes.has(mode)) finalTransitModes.delete(mode);
 			else finalTransitModes.add(mode);
+			// If all are to be selected, select the one that is not the current one
+			if (finalTransitModes.size === TransitModeValues.length) return [mode];
 			// Return the final transit modes as an array
 			return Array.from(finalTransitModes);
 		});

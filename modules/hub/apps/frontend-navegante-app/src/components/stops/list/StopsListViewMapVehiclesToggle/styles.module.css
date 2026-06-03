@@ -1,0 +1,36 @@
+/* * */
+/* BUTTON */
+
+.button {
+	position: fixed;
+	right: 90px;
+	bottom: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 50px;
+	height: 50px;
+	border: 3px solid transparent;
+	border-radius: 999px;
+	box-shadow: 0 4px 20px rgb(0 0 0 / 10%);
+	transition: 100ms all ease;
+}
+
+.button:active {
+	transform: scale(0.95);
+}
+
+/* * */
+/* PROPS / ENABLED */
+
+.button[data-enabled="true"] {
+	color: black;
+	background-color: var(--color-brand-navegante);
+	border-color: black;
+}
+
+.button[data-enabled="false"] {
+	color: var(--color-system-text-300);
+	background-color: var(--color-system-background-200);
+	border-color: var(--color-system-border-200);
+}

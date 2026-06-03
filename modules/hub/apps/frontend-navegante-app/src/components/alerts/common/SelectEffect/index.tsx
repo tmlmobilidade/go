@@ -1,68 +1,62 @@
-// 'use client';
+'use client';
 
-// /* * */
+/* * */
 
-// import { AlertEffectIcon } from '@/components/alerts/common/AlertEffectIcon';
-// import { Flex, Group, Select, SelectProps, Text } from '@mantine/core';
-// import { IconBolt } from '@tabler/icons-react';
-// import { AlertEffect } from '@tmlmobilidade/types';
-// import { useTranslation } from 'react-i18next';
+import { AlertEffectIcon } from '@/components/alerts/common/AlertEffectIcon';
+import { Flex, Group, Select, type SelectProps } from '@mantine/core';
+import { IconBolt } from '@tabler/icons-react';
+import { AlertEffect, AlertEffectSchema } from '@tmlmobilidade/types';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
-// import styles from './styles.module.css';
+import styles from './styles.module.css';
 
-// /* * */
+/* * */
 
-// type SelectAlertEffectProps = SelectProps;
+type SelectAlertEffectProps = SelectProps;
 
-// export default function Component({ onChange, value, ...props }: SelectAlertEffectProps) {
-// 	//
-// 	// A. Setup variables
+export default function Component({ onChange, value, ...props }: SelectAlertEffectProps) {
+	//
 
-// 	const { t } = useTranslation();
+	//
+	// A. Setup variables
 
-// 	//
-// 	// B. Transform data
+	const { t } = useTranslation();
 
-// 	//
-// 	// C. Render components
-// 	const renderSelectOption: SelectProps['renderOption'] = ({ option }) => {
-// 		return (
-// 			<Group gap={2}>
-// 				<Flex direction="column">
-// 					{/* Route Long Name */}
-// 					<AlertEffectIcon className={styles.icon} effect={option.value as AlertEffect} withText />
-// 				</Flex>
-// 			</Group>
-// 		);
-// 	};
+	const effectOptions = useMemo(
+		() => AlertEffectSchema.options.map(effect => ({
+			label: t(`shared:alerts.effects.${effect}.title`),
+			value: effect,
+		})),
+		[t],
+	);
 
-// 	const renderSelectRoot = (props) => {
-// 		if (!value) return (
-// 			<div {...props}>
-// 				<Text className={styles.placeholder}>{t('default:alerts.SelectEffect.placeholder')}</Text>
-// 			</div>
-// 		);
+	//
+	// B. Render components
 
-// 		return (
-// 			<div {...props}>
-// 				{/* Route Long Name */}
-// 				<AlertEffectIcon className={styles.icon} effect={value as AlertEffect} withText />
-// 			</div>
-// 		);
-// 	};
+	const renderSelectOption: SelectProps['renderOption'] = ({ option }) => {
+		return (
+			<Group gap={2}>
+				<Flex direction="column">
+					<AlertEffectIcon className={styles.icon} effect={option.value as AlertEffect} withText />
+				</Flex>
+			</Group>
+		);
+	};
 
-// 	return (
-// 		<Select
-// 			allowDeselect={false}
-// 			data={Object.values(AlertEffect)}
-// 			leftSection={<IconBolt size={20} />}
-// 			onChange={onChange}
-// 			renderOption={renderSelectOption}
-// 			renderRoot={renderSelectRoot || undefined}
-// 			value={value}
-// 			w="100%"
-// 			clearable
-// 			{...props}
-// 		/>
-// 	);
-// }
+	return (
+		<Select
+			data={effectOptions}
+			onChange={onChange}
+			placeholder={t('default:alerts.SelectEffect.placeholder')}
+			renderOption={renderSelectOption}
+			value={value}
+			w="100%"
+			{...props}
+			leftSection={
+				value ? <AlertEffectIcon effect={value as AlertEffect} /> : <IconBolt size={20} />
+			}
+			clearable
+		/>
+	);
+}

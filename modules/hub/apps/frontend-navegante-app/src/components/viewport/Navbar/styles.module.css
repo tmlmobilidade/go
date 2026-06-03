@@ -12,6 +12,10 @@
 	overflow: hidden;
 }
 
+.list {
+	z-index: 2;
+}
+
 /* * */
 /* TAB */
 
@@ -34,28 +38,7 @@
 }
 
 .tab[data-active="true"] .tabLabel {
-	background-color: var(--color-brand-navegante);
-}
-
-/* * */
-/* TRANSIT MODES BAR */
-
-.transitModesBar {
-	display: flex;
-	flex-direction: row;
-	gap: 1px;
-	background-color: var(--color-system-background-100);
-}
-
-.transitModeButton {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 100%;
-	padding: 8px;
-}
-
-.transitModeButton[data-active="true"] {
+	color: black;
 	background-color: var(--color-brand-navegante);
 }
 
@@ -63,6 +46,7 @@
 /* PANEL */
 
 .panel {
+	z-index: 0;
 	width: 100%;
 	height: 100%;
 	overflow-y: auto;

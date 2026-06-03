@@ -73,12 +73,64 @@
 			"placeholder": "Filtrar por efeito"
 		}
 	},
+	"common": {
+		"BackButton": {
+			"label": "Voltar"
+		},
+		"IconDisplay": {
+			"connections": {
+				"bike_parking": "Perto de Estacionamento de Bicicletas",
+				"boat": "Ligação com o Barco",
+				"bus": "Ligação com outros Autocarros",
+				"car_parking": "Perto de Estacionamento Automóvel",
+				"light_rail": "Ligação com o Metro de Superfície",
+				"subway": "Ligação com o Metro",
+				"train": "Ligação com o Comboio"
+			},
+			"facilities": {
+				"court": "Perto de um Tribunal",
+				"fire_station": "Perto de um Quartel de Bombeiros",
+				"health_center": "Perto de um Centro de Saúde ou Clínca",
+				"hospital": "Perto de um Hospital",
+				"park": "Perto de um Parque",
+				"police_station": "Perto de uma Esquadra de Polícia",
+				"school": "Perto de uma Escola",
+				"transit_office": "Perto de um Espaço navegante®",
+				"university": "Perto de uma Universidade"
+			},
+			"operators": {
+				"atlantic_ferries": "Atlantic Ferries (barcos de Tróia)",
+				"ccfl": "Carris municipal",
+				"cmet": "CMET",
+				"cp": "CP Comboios de Portugal",
+				"fertagus": "Fertagus (comboio da Ponte)",
+				"metro": "Metro de Lisboa",
+				"mobi_cascais": "MobiCascais",
+				"mts": "Metro Transportes do Sul",
+				"tcb": "Transportes Colectivos do Barreiro",
+				"ttsl": "Transtejo e Soflusa"
+			}
+		}
+	},
 	"layout": {
 		"NoDataLabel": {
 			"no_data": "Nenhum dado disponível"
 		}
 	},
 	"lines": {
+		"LinesDetailAlerts": {
+			"heading": "Alertas ativos para esta linha"
+		},
+		"LinesDetailPath": {
+			"no_data": "Selecione um Percurso / Destino",
+			"summary": "Linha <lineNumber>{line_number}</lineNumber> com destino a <destinationName>{destination_name}</destinationName> no dia <dayName>{day_name, date, long}</dayName>. <changeDay>Alterar dia ›</changeDay>"
+		},
+		"LinesListGroup": {
+			"logo": {
+				"alt": "Linhas do operador: {agency_name}"
+			},
+			"show_more": "Ver mais linhas deste operador..."
+		},
 		"LinesListToolbar": {
 			"by_search": {
 				"placeholder": "Pesquisar por nome, número..."
@@ -89,7 +141,43 @@
 			"heading": "Pesquisar Linhas"
 		},
 		"LinesListViewAll": {
+			"items": {
+				"aria_label": "{index}º: {tts_name}"
+			},
 			"no_data": "Nenhuma linha encontrada para esta pesquisa"
+		},
+		"PathStopNextArrivals": {
+			"title": "Próximas circulações"
+		},
+		"PathWaypointTimetable": {
+			"next_date": "Esta linha não realiza viagens neste dia da semana. Próximo dia com horários: {value, date, dayShort} {value, date, monthLong} {value, date, yearLong}",
+			"no_data": "Horários indisponíveis para esta data.",
+			"title": "Horários planeados nesta paragem:"
+		},
+		"SelectActivePatternGroup": {
+			"placeholder": "Selecionar percurso/destino..."
+		},
+		"SelectActivePatternGroupExplainer": {
+			"toggle": "O que é o percurso/destino de uma linha?"
+		},
+		"SelectOperationalDate": {
+			"custom_date": "Data personalizada",
+			"today": "Hoje",
+			"tomorrow": "Amanhã"
+		},
+		"SelectPattern": {
+			"invalid_option": "Percurso inválido: {pattern_id}",
+			"label": "Percurso / Destino",
+			"option_label": "Início do percurso: {locality}",
+			"placeholder": "Selecionar Percurso / Destino..."
+		},
+		"TimetableExceptionsLink": {
+			"schedule": "Min.",
+			"variant": "<0>{exception_id})</0> Percurso <1>{route_long_name}</1> com destino a <2>{pattern_headsign}</2>"
+		},
+		"TimetableSchedules": {
+			"hours": "Hora",
+			"minutes": "Min."
 		}
 	},
 	"map": {
@@ -130,6 +218,14 @@
 				"alerts": "Alertas",
 				"lines": "Linhas",
 				"stops": "Paragens"
+			}
+		},
+		"TransitModesBar": {
+			"aria_label": {
+				"bus": "Autocarros",
+				"ferry": "Barco",
+				"subway": "Metro",
+				"train": "Comboios"
 			}
 		}
 	}

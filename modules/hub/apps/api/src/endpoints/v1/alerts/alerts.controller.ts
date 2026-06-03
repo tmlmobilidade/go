@@ -78,6 +78,38 @@ export class AlertsController {
 	}
 
 	/**
+	 * Returns a GTFS-RT JSON feed with service alerts for Carris Metropolitana.
+	 * @param request The request object.
+	 * @param reply The reply object.
+	 */
+	static async getGtfsRtJsonFeedCm(request: FastifyRequest, reply: FastifyReply<GtfsRtFeedMessage>) {
+		//
+
+		const cachedData = await apiCache.get('hub:alerts:published:gtfs:cm');
+
+		if (!cachedData) {
+			Logger.error('[hub/v1/alerts:getGtfsRtJsonFeedCm()] No GTFS-RT feed found in cache. Returning empty message.');
+			return reply
+				.code(HTTP_STATUS.NO_CONTENT)
+				.header('cache-control', 'public, max-age=20')
+				.send({
+					data: getEmptyGtfsRtFeedMessage(),
+					error: null,
+					status_code: HTTP_STATUS.NO_CONTENT,
+				});
+		};
+
+		return reply
+			.code(HTTP_STATUS.OK)
+			.header('cache-control', 'public, max-age=20')
+			.send({
+				data: JSON.parse(cachedData),
+				error: null,
+				status_code: HTTP_STATUS.OK,
+			});
+	}
+
+	/**
 	 * Returns a GTFS-RT Protobuf feed with service alerts for Carris Metropolitana.
 	 * @param request The request object.
 	 * @param reply The reply object.

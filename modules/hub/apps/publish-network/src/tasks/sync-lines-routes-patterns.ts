@@ -1,12 +1,12 @@
 /* * */
 
 import { Alight } from '@carrismetropolitana/api-types/gtfs-core';
-import { type Arrival, type Pattern, type Route, type Stop, type Trip, type Waypoint } from '@carrismetropolitana/api-types/network';
+import { type Arrival, type Pattern, type Route, type Trip, type Waypoint } from '@carrismetropolitana/api-types/network';
 import { apiCache } from '@tmlmobilidade/databases';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Route_Extended, type HubLine } from '@tmlmobilidade/types';
+import { type GTFS_Route_Extended, type HubLine, type HubStop } from '@tmlmobilidade/types';
 import crypto from 'node:crypto';
 
 /* * */
@@ -56,8 +56,8 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 
 	// For Stops
 	const allStopsParsedTxt = await apiCache.get('hub:network:stops');
-	const allStopsParsedJson: Stop[] = JSON.parse(allStopsParsedTxt);
-	const allStopsParsedMap = new Map(allStopsParsedJson.map(item => [item.id, item]));
+	const allStopsParsedJson: HubStop[] = JSON.parse(allStopsParsedTxt);
+	const allStopsParsedMap = new Map(allStopsParsedJson.map(item => [item._id, item]));
 
 	// For Routes
 	const allRoutesRaw = importedGtfsSql.routes.all();
@@ -66,7 +66,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 	// Get all distinct Pattern IDs from trips table
 	const allDistinctPatternIds = importedGtfsSql.trips.distinct('pattern_id');
 
-	Logger.info(`Fetched ${allDistinctPatternIds.length} rows from NETWORKDB (${fetchRawDataTimer.get()})`);
+	Logger.info(`Fetched ${allDistinctPatternIds.length} rows from GTFS (${fetchRawDataTimer.get()})`);
 
 	//
 	// For each distinct pattern_id, parse trips into patterns and schedules.
@@ -142,8 +142,11 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 				//
 				// Get the stop data associated with the current stop_time
 
-				const stopParsedData: Stop = allStopsParsedMap.get(stopTimeRawData.stop_id);
-				if (!stopParsedData) continue;
+				const stopParsedData: HubStop = allStopsParsedMap.get(Number(stopTimeRawData.stop_id));
+				if (!stopParsedData) {
+					Logger.error(`Stop not found: ${stopTimeRawData.stop_id}`);
+					continue;
+				}
 
 				//
 				// Buld the simplified path with only the stop_id and stop_sequence.
@@ -191,7 +194,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 				//
 				// Add the facilities served by the current stop to the list
 
-				stopParsedData.facilities.forEach(item => facilitiesList.add(item));
+				// stopParsedData.facilities.forEach(item => facilitiesList.add(item));
 
 				//
 				// Add the current stop location to the list
@@ -376,11 +379,11 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 				currentLineObject = allLinesParsed.get(String(routeRawData.line_id));
 			} else {
 				currentLineObject = {
+					_id: String(routeRawData.line_id),
 					agency_id: routeRawData.agency_id,
 					color: routeRawData.route_color ? `#${routeRawData.route_color}` : '#000000',
 					district_ids: [],
 					facilities: [],
-					id: String(routeRawData.line_id),
 					locality_ids: [],
 					long_name: routeRawData.line_long_name,
 					municipality_ids: [],
@@ -438,17 +441,15 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 	//
 	// Delete stale patterns
 
-	// const allPatternKeysInTheDatabase: string[] = [];
-	// for await (const key of SERVERDB.scanIterator({ MATCH: `${SERVERDB_KEYS.NETWORK.PATTERNS.BASE}:*`, TYPE: 'string' })) {
-	// 	allPatternKeysInTheDatabase.push(String(key));
-	// }
+	const removeStalePatternsTimer = new Timer();
 
-	// const stalePatternKeys = allPatternKeysInTheDatabase.filter(key => !updatedPatternKeys.has(key));
-	// if (stalePatternKeys.length) {
-	// 	await SERVERDB.del(stalePatternKeys);
-	// }
+	Logger.info(`Removing stale Patterns from cache...`);
 
-	// Logger.info(`Deleted ${stalePatternKeys.length} stale Patterns`);
+	const allPatternKeysInTheDatabase = await apiCache.scan(`hub:network:patterns:*`);
+	const stalePatternKeys = allPatternKeysInTheDatabase.filter(key => !updatedPatternKeys.has(key));
+	if (stalePatternKeys.length) await apiCache.deleteMany(stalePatternKeys);
+
+	Logger.info(`Deleted ${stalePatternKeys.length} stale Patterns (${removeStalePatternsTimer.get()})`);
 
 	//
 	// Save all routes to the database

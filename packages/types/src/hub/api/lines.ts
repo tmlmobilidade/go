@@ -1,19 +1,28 @@
 /* * */
 
-export interface HubLine {
-	agency_id: string
-	color: string
-	district_ids: string[]
-	facilities: string[]
-	id: string
-	locality_ids: string[]
-	long_name: string
-	municipality_ids: string[]
-	pattern_ids: string[]
-	region_ids: string[]
-	route_ids: string[]
-	short_name: string
-	stop_ids: [] // This value isn't used at the moment
-	text_color: string
-	tts_name: string
-}
+import { z } from 'zod';
+
+/* * */
+
+export const HubLineSchema = z.object({
+	_id: z.string(),
+	agency_id: z.string(),
+	color: z.string(),
+	district_ids: z.array(z.string()).default([]),
+	facilities: z.array(z.string()).default([]),
+	locality_ids: z.array(z.string()).default([]),
+	long_name: z.string(),
+	municipality_ids: z.array(z.string()).default([]),
+	pattern_ids: z.array(z.string()).default([]),
+	region_ids: z.array(z.string()).default([]),
+	route_ids: z.array(z.string()).default([]),
+	short_name: z.string(),
+	stop_ids: z.array(z.string()).default([]),
+	text_color: z.string(),
+	tts_name: z.string(),
+});
+
+/**
+ * Publishable line data for the Hub Lines API.
+ */
+export type HubLine = z.infer<typeof HubLineSchema>;
