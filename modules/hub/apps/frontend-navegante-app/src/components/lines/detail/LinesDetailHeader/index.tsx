@@ -24,17 +24,8 @@ export function LinesDetailHeader() {
 	return (
 		<Section>
 			<div className={styles.row}>
-				<LineBadge
-					lineData={linesDetailContext.data.line}
-					size="lg"
-				/>
-				<Image
-					alt=""
-					className={styles.logo}
-					height={60}
-					src={AGENCY_LOGO_MAP[linesDetailContext.data.line.agency_id]}
-					width={90}
-				/>
+				<LineBadge lineData={linesDetailContext.data.line}size="lg" />
+				<Image alt=""height={60}src={AGENCY_LOGO_MAP[linesDetailContext.data.line.agency_id]}width={90} />
 			</div>
 			<div className={styles.lineName}>
 				{linesDetailContext.data.line.long_name}

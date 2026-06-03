@@ -8,6 +8,8 @@ import { LinesDetailPath } from '@/components/lines/detail/LinesDetailPath';
 import { LinesDetailToolbar } from '@/components/lines/detail/LinesDetailToolbar';
 import { LoadingSection, Surface } from '@tmlmobilidade/ui';
 
+import { LinesDetailPathMap } from '../LinesDetailPathMap';
+
 /* * */
 
 export function LinesDetail() {
@@ -27,6 +29,8 @@ export function LinesDetail() {
 
 	return (
 		<>
+
+			<LinesDetailPathMap />
 
 			<Surface>
 				<LinesDetailNavigation />

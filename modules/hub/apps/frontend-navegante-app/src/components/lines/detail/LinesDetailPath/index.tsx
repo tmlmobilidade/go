@@ -61,9 +61,9 @@ export function LinesDetailPath() {
 
 			<div className={styles.container}>
 				<LinesDetailPathList />
-				<div className={styles.mapWrapper}>
+				{/* <div className={styles.mapWrapper}>
 					<LinesDetailPathMap />
-				</div>
+				</div> */}
 			</div>
 
 		</Surface>
