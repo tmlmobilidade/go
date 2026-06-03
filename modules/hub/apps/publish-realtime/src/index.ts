@@ -1,12 +1,12 @@
 /* * */
 
-import { publishEtaGtfs } from '@/tasks/publish-eta-gtfs.js';
-import { publishEtaJson } from '@/tasks/publish-eta-json.js';
 import { publishVehiclesMetadata } from '@/tasks/publish-vehicles-metadata.js';
 import { publishVehiclesPositions } from '@/tasks/publish-vehicles-positions.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
+
+import { publishEta } from './tasks/eta/index.js';
 
 /* * */
 
@@ -25,8 +25,7 @@ const main = async () => {
 	await publishVehiclesPositions();
 
 	if (ITERATION % 100 === 0) await publishVehiclesMetadata();
-	if (ITERATION % 100 === 0) await publishEtaJson();
-	if (ITERATION % 100 === 0) await publishEtaGtfs();
+	if (ITERATION % 100 === 0) await publishEta();
 
 	ITERATION++;
 

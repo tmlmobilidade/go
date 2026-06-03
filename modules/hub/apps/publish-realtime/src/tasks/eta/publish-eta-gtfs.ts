@@ -8,13 +8,9 @@ import { Timer } from '@tmlmobilidade/timer';
 /* * */
 
 interface EtaGtfs {
-	entity: {
-		id: string
-		trip_update: string
-	}[]
-	header: {
-		gtfs_realtime_version: string
-	}[]
+	trip_id: string
+	trip_update: string
+	vehicle_id: string
 }
 /* * */
 
@@ -51,7 +47,7 @@ export async function publishEtaGtfs() {
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:realtime:gtfs-rt:gtfs', JSON.stringify(feed));
+	await apiCache.set('hub:realtime:eta:gtfs', JSON.stringify(feed));
 
 	Logger.success(`Finished publishing GTFS-RT TripUpdate feed (${globalTimer.get()})`);
 
