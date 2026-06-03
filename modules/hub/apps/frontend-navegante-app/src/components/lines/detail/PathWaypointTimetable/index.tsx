@@ -3,7 +3,7 @@
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { TimetableDisplay } from '@/components/lines/detail/TimetableDisplay';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
-import { type Timetable } from '@/types/timetables.types';
+import { type Timetable } from  '@tmlmobilidade/types';
 import { createTimetable } from '@/utils/create-timetable';
 import { Dates } from '@tmlmobilidade/dates';
 import { useMemo } from 'react';

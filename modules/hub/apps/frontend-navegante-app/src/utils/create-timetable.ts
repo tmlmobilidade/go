@@ -1,6 +1,6 @@
 /* * */
 
-import { type Timetable } from '@/types/timetables.types';
+import { type Timetable } from  '@tmlmobilidade/types';
 import { type Pattern, type Route } from '@carrismetropolitana/api-types/network';
 
 /**

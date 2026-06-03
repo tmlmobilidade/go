@@ -1,9 +1,9 @@
 /* * */
 
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
-import { type Timetable } from '@/types/timetables.types';
-import { type Minute } from '@/types/timetables.types';
 import { useColorScheme } from '@mantine/hooks';
+import { type Timetable } from '@tmlmobilidade/types';
+import { type Minute } from '@tmlmobilidade/types';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';

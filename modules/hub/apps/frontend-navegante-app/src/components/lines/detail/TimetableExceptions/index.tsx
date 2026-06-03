@@ -1,6 +1,6 @@
 /* * */
 
-import type { Timetable } from '@/types/timetables.types';
+import type { Timetable } from '@tmlmobilidade/types';
 
 import { TimetableExceptionsLink } from '@/components/lines/detail/TimetableExceptionsLink';
 
