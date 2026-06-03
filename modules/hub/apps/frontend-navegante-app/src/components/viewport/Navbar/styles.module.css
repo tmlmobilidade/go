@@ -39,6 +39,7 @@
 }
 
 .tab[data-active="true"] .tabLabel {
+	color: black;
 	background-color: var(--color-brand-navegante);
 }
 

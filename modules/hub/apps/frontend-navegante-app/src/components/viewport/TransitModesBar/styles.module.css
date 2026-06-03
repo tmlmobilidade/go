@@ -21,5 +21,6 @@
 }
 
 .button[data-active="true"] {
+	color: black;
 	background-color: var(--color-brand-navegante);
 }

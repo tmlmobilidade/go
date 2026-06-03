@@ -10,7 +10,7 @@
 	justify-content: center;
 	width: 50px;
 	height: 50px;
-	color: var(--color-system-text-100);
+	color: black;
 	background-color: var(--color-brand-navegante);
 	border: 3px solid black;
 	border-radius: 999px;
