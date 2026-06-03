@@ -14,6 +14,8 @@ import { centerMap, getBaseGeoJsonFeatureCollection, moveMap } from '@/utils/map
 import { useMap } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo } from 'react';
 
+import styles from './styles.module.css';
+
 /* * */
 
 export function StopsDetailViewMap() {
@@ -102,34 +104,36 @@ export function StopsDetailViewMap() {
 	// E. Render components
 
 	return (
-		<MapView
-			id="stopsMap"
-			interactiveLayerIds={[MapViewStyleStopsInteractiveLayerId]}
-			onClick={handleLayerClick}
-		>
+		<div className={styles.container}>
+			<MapView
+				id="stopsMap"
+				interactiveLayerIds={[MapViewStyleStopsInteractiveLayerId]}
+				onClick={handleLayerClick}
+			>
 
-			<MapViewStyleVehicles
-				vehiclesData={activeVehicleGeoJson}
-			/>
+				<MapViewStyleVehicles
+					vehiclesData={activeVehicleGeoJson}
+				/>
 
-			<MapViewStyleActiveStops
-				presentBeforeId={MapViewStyleVehiclesPrimaryLayerId}
-				stopsData={activeStopGeoJson}
-			/>
+				<MapViewStyleActiveStops
+					presentBeforeId={MapViewStyleVehiclesPrimaryLayerId}
+					stopsData={activeStopGeoJson}
+				/>
 
-			<MapViewStylePath
-				presentBeforeId={MapViewStyleActiveStopsPrimaryLayerId}
-				shapeData={activePathShapeGeoJson}
-				waypointsData={activePathWaypointsGeoJson}
-			/>
+				<MapViewStylePath
+					presentBeforeId={MapViewStyleActiveStopsPrimaryLayerId}
+					shapeData={activePathShapeGeoJson}
+					waypointsData={activePathWaypointsGeoJson}
+				/>
 
-			<MapViewStyleStops
-				presentBeforeId={MapViewStylePathPrimaryLayerId}
-				stopsData={stopsContext.data.fc}
-				style={stopsDetailContext.data.active_shape ? 'muted' : 'primary'}
-			/>
+				<MapViewStyleStops
+					presentBeforeId={MapViewStylePathPrimaryLayerId}
+					stopsData={stopsContext.data.fc}
+					style={stopsDetailContext.data.active_shape ? 'muted' : 'primary'}
+				/>
 
-		</MapView>
+			</MapView>
+		</div>
 	);
 
 	//

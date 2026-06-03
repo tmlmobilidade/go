@@ -1,15 +1,4 @@
 /* * */
-/* CONTAINER */
-
-.container {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-	align-items: flex-start;
-	justify-content: flex-start;
-}
-
-/* * */
 /* BADGES WRAPPER */
 
 .badgesWrapper {
@@ -17,16 +6,6 @@
 	flex-direction: row;
 	gap: 5px;
     align-items: center;
-	justify-content: flex-start;
-}
-
-/* * */
-/* HEADING WRAPPER */
-
-.headingWrapper {
-	display: flex;
-	flex-direction: column;
-    align-items: flex-start;
 	justify-content: flex-start;
 }
 
@@ -39,42 +18,4 @@
 	gap: 5px 15px;
 	align-items: center;
 	justify-content: flex-start;
-}
-
-/* * */
-/* HEADING SECTION / ROW */
-
-.headingSectionRow {
-	display: flex;
-	flex-direction: row;
-	gap: 15px;
-	align-items: center;
-	justify-content: flex-start;
-}
-
-/* * */
-/* ICONS WRAPPER */
-
-.iconsWrapper {
-    display: flex;
-	flex-direction: row;
-	gap: 10px;
-    align-items: center;
-	justify-content: flex-start;
-	width: 100%;
-	padding: 20px;
-	padding-top: 0;
-	overflow: auto;
-}
-
-@media (width <= 768px) {
-	.iconsWrapper {
-		overflow: auto;
-	}
-}
-
-.iconsDivider {
-	min-width: 2px;
-	height: 20px;
-	background-color: var(--color-system-border-100);
 }
