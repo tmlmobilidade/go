@@ -1,0 +1,18 @@
+/* * */
+/* HEADING SECTION */
+
+.headingSection {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-15);
+	align-items: flex-start;
+	justify-content: flex-start;
+}
+
+.headingSectionRow {
+	display: flex;
+	flex-direction: row;
+	gap: var(--size-spacing-15);
+	align-items: center;
+	justify-content: flex-start;
+}
