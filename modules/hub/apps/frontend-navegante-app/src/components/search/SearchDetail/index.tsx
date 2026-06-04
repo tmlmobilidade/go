@@ -1,5 +1,6 @@
 'use client';
 
+import { LinesList } from '@/components/lines/list/LinesList';
 import { BottomSheet } from '@/components/viewport/BottomSheet';
 import { useBottomSheet } from '@/hooks/use-bottom-sheet';
 import { TextInput } from '@mantine/core';
@@ -29,7 +30,7 @@ export function SearchDetail() {
 			title={t('default:search.SearchDetail.title')}
 		>
 
-			<TextInput placeholder="Pesquisar por nome, número..." />
+			<LinesList />
 
 		</BottomSheet>
 	);

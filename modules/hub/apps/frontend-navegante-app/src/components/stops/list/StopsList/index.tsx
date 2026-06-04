@@ -12,7 +12,7 @@ export function StopsList() {
 	return (
 		<StopsListContextProvider>
 			<div className={styles.container}>
-				<StopsListToolbar />
+				{/* <StopsListToolbar /> */}
 				<StopsListView />
 			</div>
 		</StopsListContextProvider>

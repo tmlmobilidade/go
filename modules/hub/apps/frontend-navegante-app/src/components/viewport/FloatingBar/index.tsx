@@ -3,7 +3,6 @@
 import { FloatingBarButton } from '@/components/viewport/FloatingBarButton';
 import { useBottomSheet } from '@/hooks/use-bottom-sheet';
 import { IconAlertTriangle, IconQuestionMark, IconSearch } from '@tabler/icons-react';
-import { Spacer } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -32,8 +31,6 @@ export function FloatingBar() {
 				icon={<IconAlertTriangle size={28} />}
 				onClick={() => setActiveBottomSheet('alerts')}
 			/>
-
-			<Spacer size="full" />
 
 			<FloatingBarButton
 				icon={<IconSearch size={28} />}

@@ -4,6 +4,7 @@ import { AlertsList } from '@/components/alerts/list/AlertsList';
 import { HelpDetail } from '@/components/help/HelpDetail';
 import { LinesDetail } from '@/components/lines/detail/LinesDetail';
 import { SearchDetail } from '@/components/search/SearchDetail';
+import { StopsList } from '@/components/stops/list/StopsList';
 import { FloatingBar } from '@/components/viewport/FloatingBar';
 import { NavigationBar } from '@/components/viewport/NavigationBar';
 import { useColorScheme } from '@mantine/hooks';
@@ -33,7 +34,8 @@ export function AppViewport() {
 
 	return (
 		<>
-			<NavigationBar />
+			{/* <NavigationBar /> */}
+			<StopsList />
 			<FloatingBar />
 			<LinesDetail />
 			<HelpDetail />

@@ -3,8 +3,8 @@
 
 .button {
 	position: fixed;
-	right: 90px;
-	bottom: 20px;
+	top: 20px;
+	left: 20px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
