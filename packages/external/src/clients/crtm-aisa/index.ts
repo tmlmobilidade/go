@@ -6,7 +6,20 @@ import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 /* * */
 
 const BASE_URL = process.env.CRTM_AISA_API_URL;
-const fetcher = async (endpoint: string) => await fetch(`${BASE_URL}${endpoint}`);
+
+async function fetcher(endpoint: string): Promise<Response> {
+	if (!BASE_URL) {
+		throw new Error('Missing CRTM_AISA_API_URL environment variable.');
+	}
+
+	const response = await fetch(`${BASE_URL}${endpoint}`);
+
+	if (!response.ok) {
+		throw new Error(`Request failed (${response.status}): ${response.statusText}`);
+	}
+
+	return response;
+}
 
 const endpoints = {
 	schedule: '/GTFS-SC/gtfs_sc.zip',

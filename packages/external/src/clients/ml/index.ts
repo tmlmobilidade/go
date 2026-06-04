@@ -11,6 +11,10 @@ const BASE_URL = process.env.ML_API_URL;
 const ALERTS_URL = process.env.ML_ALERTS_URL;
 
 async function fetcher(endpoint: string): Promise<Response> {
+	if (!BASE_URL) {
+		throw new Error('Missing ML_API_URL environment variable.');
+	}
+
 	const apiToken = await mlAuthClient.getToken();
 
 	const response = await fetch(`${BASE_URL}${endpoint}`, {
@@ -18,6 +22,10 @@ async function fetcher(endpoint: string): Promise<Response> {
 			Authorization: `Bearer ${apiToken}`,
 		},
 	});
+
+	if (!response.ok) {
+		throw new Error(`Request failed (${response.status}): ${response.statusText}`);
+	}
 
 	return response;
 }

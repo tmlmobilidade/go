@@ -10,6 +10,10 @@ import { cpAuthClient } from './auth.js';
 const BASE_URL = process.env.CP_API_URL;
 
 async function fetcher(endpoint: string): Promise<Response> {
+	if (!BASE_URL) {
+		throw new Error('Missing CP_API_URL environment variable.');
+	}
+
 	//
 	// Get the API token
 
@@ -25,6 +29,10 @@ async function fetcher(endpoint: string): Promise<Response> {
 			'x-cp-connect-secret': process.env.CP_API_SECRET,
 		},
 	});
+
+	if (!response.ok) {
+		throw new Error(`Request failed (${response.status}): ${response.statusText}`);
+	}
 
 	return response;
 }

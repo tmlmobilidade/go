@@ -8,6 +8,10 @@ import { TrainsResponse } from './types.js';
 const BASE_URL = process.env.FERTAGUS_API_URL;
 
 async function fetcher(endpoint: string): Promise<Response> {
+	if (!BASE_URL) {
+		throw new Error('Missing FERTAGUS_API_URL environment variable.');
+	}
+
 	const apiToken = await fertagusAuthClient.getToken();
 
 	const response = await fetch(`${BASE_URL}${endpoint}`, {
@@ -15,6 +19,10 @@ async function fetcher(endpoint: string): Promise<Response> {
 			Authorization: `Bearer ${apiToken}`,
 		},
 	});
+
+	if (!response.ok) {
+		throw new Error(`Request failed (${response.status}): ${response.statusText}`);
+	}
 
 	return response;
 }
