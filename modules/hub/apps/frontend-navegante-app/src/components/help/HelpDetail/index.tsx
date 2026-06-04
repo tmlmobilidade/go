@@ -45,11 +45,11 @@ export function HelpDetail() {
 		<BottomSheet
 			onClose={() => setActiveBottomSheet(null)}
 			opened={activeBottomSheet === 'help'}
-			title={t('default:help.HelpDetailTitle.title')}
+			title={t('default:help.HelpDetail.title')}
 		>
 
 			{!allFaqsLoading && !allFaqsData && (
-				<NoDataLabel text={t('default:help.HelpDetailTitle.no_data')} withMinHeight />
+				<NoDataLabel text={t('default:help.HelpDetail.no_data')} withMinHeight />
 			)}
 
 			{!allFaqsLoading && allFaqsData?.length > 0 && (

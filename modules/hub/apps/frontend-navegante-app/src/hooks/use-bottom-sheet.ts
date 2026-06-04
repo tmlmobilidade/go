@@ -4,7 +4,7 @@ import { useLocalStorage } from '@mantine/hooks';
 
 /* * */
 
-type BottomSheetType = 'help' | 'line-detail' | 'search' | 'stop-detail' | null;
+type BottomSheetType = 'alerts' | 'help' | 'line-detail' | 'search' | 'stop-detail' | null;
 
 interface UseBottomSheetReturnType {
 	activeBottomSheet: BottomSheetType

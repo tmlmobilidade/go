@@ -2,7 +2,8 @@
 
 import { FloatingBarButton } from '@/components/viewport/FloatingBarButton';
 import { useBottomSheet } from '@/hooks/use-bottom-sheet';
-import { IconQuestionMark, IconSearch } from '@tabler/icons-react';
+import { IconAlertTriangle, IconQuestionMark, IconSearch } from '@tabler/icons-react';
+import { Spacer } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -21,14 +22,24 @@ export function FloatingBar() {
 
 	return (
 		<div className={styles.container}>
-			<FloatingBarButton
-				icon={<IconSearch size={24} />}
-				onClick={() => setActiveBottomSheet('search')}
-			/>
+
+			<Spacer size="full" />
+
 			<FloatingBarButton
 				icon={<IconQuestionMark size={30} />}
 				onClick={() => setActiveBottomSheet('help')}
 			/>
+
+			<FloatingBarButton
+				icon={<IconAlertTriangle size={24} />}
+				onClick={() => setActiveBottomSheet('alerts')}
+			/>
+
+			<FloatingBarButton
+				icon={<IconSearch size={24} />}
+				onClick={() => setActiveBottomSheet('search')}
+			/>
+
 		</div>
 	);
 }
