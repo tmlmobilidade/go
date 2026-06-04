@@ -11,7 +11,7 @@
 	min-width: var(--size);
 	height: var(--size);
 	min-height: var(--size);
-	color: var(--color-system-text-300);
+	color: var(--color-system-text-200);
 	pointer-events: all;
 	background-color: var(--color-system-background-100);
 	border: 2px solid var(--color-system-border-100);
