@@ -13,6 +13,7 @@ export const MapViewStyleAlertsSourceId = 'default-source-alerts-all';
 interface Props {
 	data?: GeoJSON.FeatureCollection
 	presentBeforeId?: string
+	visible?: boolean
 }
 
 /* * */
@@ -21,7 +22,7 @@ const baseGeoJsonFeatureCollection = getBaseGeoJsonFeatureCollection();
 
 /* * */
 
-export function MapViewStyleAlerts({ data = baseGeoJsonFeatureCollection, presentBeforeId }: Props) {
+export function MapViewStyleAlerts({ data = baseGeoJsonFeatureCollection, presentBeforeId, visible = true }: Props) {
 	return (
 		<Source data={data} generateId={true} id={MapViewStyleAlertsSourceId} type="geojson">
 			<Layer
@@ -62,6 +63,7 @@ export function MapViewStyleAlerts({ data = baseGeoJsonFeatureCollection, presen
 						20, 0.3,
 					],
 					'symbol-placement': 'point',
+					'visibility': visible ? 'visible' : 'none',
 				}}
 			/>
 		</Source>

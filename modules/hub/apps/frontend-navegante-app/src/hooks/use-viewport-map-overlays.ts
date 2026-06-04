@@ -4,24 +4,24 @@ import { useLocalStorage } from '@mantine/hooks';
 
 /* * */
 
-type SourceType = 'alerts' | 'stops' | 'vehicles';
+type ViewportMapOverlayType = 'alerts' | 'stops' | 'vehicles';
 
-interface UseViewportMapSourcesReturnType {
-	activeViewportMapSources: SourceType[]
-	toggleViewportMapSource: (source: SourceType) => void
+interface UseViewportMapOverlaysReturnType {
+	activeViewportMapOverlays: ViewportMapOverlayType[]
+	toggleViewportMapOverlay: (overlay: ViewportMapOverlayType) => void
 }
 
 /**
  * A hook that provides the active bottom sheet view and a function to set it.
  * @returns An object with the active bottom sheet view and a function to set it.
  */
-export function useViewportMapSources(): UseViewportMapSourcesReturnType {
+export function useViewportMapOverlays(): UseViewportMapOverlaysReturnType {
 	//
 
 	//
 	// A. Setup variables
 
-	const [activeViewportMapSources, setActiveViewportMapSources] = useLocalStorage<SourceType[]>({
+	const [activeViewportMapOverlays, setActiveViewportMapOverlays] = useLocalStorage<ViewportMapOverlayType[]>({
 		defaultValue: ['alerts', 'stops', 'vehicles'],
 		key: 'active-viewport-map-sources',
 	});
@@ -29,8 +29,8 @@ export function useViewportMapSources(): UseViewportMapSourcesReturnType {
 	//
 	// B. Handle actions
 
-	const toggleViewportMapSource = (source: SourceType) => {
-		setActiveViewportMapSources((prev) => {
+	const toggleViewportMapOverlay = (source: ViewportMapOverlayType) => {
+		setActiveViewportMapOverlays((prev) => {
 			// Create a new set with the previous sources
 			const result = new Set([...prev]);
 			// Toggle the source
@@ -45,7 +45,7 @@ export function useViewportMapSources(): UseViewportMapSourcesReturnType {
 	// C. Return data
 
 	return {
-		activeViewportMapSources,
-		toggleViewportMapSource,
+		activeViewportMapOverlays,
+		toggleViewportMapOverlay,
 	};
 }

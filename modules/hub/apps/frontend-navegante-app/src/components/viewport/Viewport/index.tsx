@@ -6,7 +6,7 @@ import { LinesDetail } from '@/components/lines/detail/LinesDetail';
 import { SearchDetail } from '@/components/search/SearchDetail';
 import { FloatingBar } from '@/components/viewport/FloatingBar';
 import { ViewportMap } from '@/components/viewport/ViewportMap';
-import { ViewportMapSourcesControl } from '@/components/viewport/ViewportMapSourcesControl';
+import { ViewportMapOverlaysControl } from '@/components/viewport/ViewportMapOverlaysControl';
 import { useColorScheme } from '@mantine/hooks';
 import { useEffect } from 'react';
 
@@ -36,7 +36,7 @@ export function Viewport() {
 		<>
 
 			<ViewportMap />
-			<ViewportMapSourcesControl />
+			<ViewportMapOverlaysControl />
 
 			<FloatingBar />
 			<LinesDetail />
