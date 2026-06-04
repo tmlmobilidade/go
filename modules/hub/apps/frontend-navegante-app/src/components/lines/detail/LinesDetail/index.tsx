@@ -21,7 +21,7 @@ export function LinesDetail() {
 	return (
 		<BottomSheet
 			onClose={closeActiveBottomSheet}
-			opened={activeBottomSheet?.view === 'line-detail'}
+			opened={activeBottomSheet?.view === 'lines-detail'}
 		>
 			{activeBottomSheet?.entityId && (
 				<LinesDetailContextProvider lineId={activeBottomSheet.entityId}>

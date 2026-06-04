@@ -25,7 +25,7 @@ export function AlertsList() {
 	return (
 		<BottomSheet
 			onClose={closeActiveBottomSheet}
-			opened={activeBottomSheet?.view === 'alerts'}
+			opened={activeBottomSheet?.view === 'alerts-list'}
 			title={t('default:alerts.AlertsList.title')}
 		>
 			<AlertsListContextProvider>

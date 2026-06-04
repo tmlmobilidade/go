@@ -54,7 +54,7 @@ export function LinesListViewAll() {
 							<RegularListItem
 								key={line._id}
 								ariaLabel={t(`default:lines.LinesListViewAll.items.aria_label`, '', { index: index + 1, tts_name: line.tts_name })}
-								onClick={() => setActiveBottomSheet({ entityId: line._id, view: 'line-detail' })}
+								onClick={() => setActiveBottomSheet({ entityId: line._id, view: 'lines-detail' })}
 							>
 								<LineDisplay lineData={line} />
 							</RegularListItem>

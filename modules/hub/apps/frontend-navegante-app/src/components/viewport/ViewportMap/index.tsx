@@ -4,7 +4,7 @@ import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { MapView } from '@/components/map/MapView';
 import { MapViewStyleAlerts } from '@/components/map/MapViewStyleAlerts';
 import { MapViewStyleStops } from '@/components/map/MapViewStyleStops';
-import { MapViewStyleVehicles, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/MapViewStyleVehicles';
+import { MapViewOverlayVehicles, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { useBottomSheet } from '@/hooks/use-bottom-sheet';
@@ -31,26 +31,13 @@ export function ViewportMap() {
 	// C. Handle actions
 
 	const handleMapClick = (event: MapLayerMouseEvent) => {
-		const feature = event.features[0];
-		console.log(event.features);
-		if (!feature) return;
-		if (feature.source === 'default-source-vehicles') {
-			setActiveBottomSheet({
-				entityId: feature.properties.vehicle_id,
-				view: 'vehicle-detail',
-			});
-		}
-		// if (feature.source === 'default-source-alerts') {
-		// 	setActiveBottomSheet({
-		// 		entityId: String(feature.id),
-		// 		view: 'alert-detail',
-		// 	});
-		// }
-		if (feature.source === 'default-source-stops') {
-			setActiveBottomSheet({
-				entityId: String(feature.id),
-				view: 'stop-detail',
-			});
+		if (!event.features?.length) return;
+		if (event.features[0].source === 'default-source-stops') {
+			setActiveBottomSheet({ entityId: String(event.features[0].id), view: 'stops-list' });
+		} else if (event.features[0].source === 'default-source-alerts') {
+			setActiveBottomSheet({ entityId: String(event.features[0].id), view: 'alerts-detail' });
+		} else if (event.features[0].source === 'default-source-vehicles') {
+			setActiveBottomSheet({ entityId: String(event.features[0].id), view: 'vehicles-detail' });
 		}
 	};
 
@@ -67,7 +54,7 @@ export function ViewportMap() {
 				stopsData={stopsContext.data.fc}
 				visible={activeViewportMapOverlays.includes('stops')}
 			/>
-			<MapViewStyleVehicles
+			<MapViewOverlayVehicles
 				showCounter="always"
 				vehiclesData={vehiclesContext.data.fc}
 				visible={activeViewportMapOverlays.includes('vehicles')}

@@ -4,10 +4,10 @@ import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.con
 import { MapView } from '@/components/map/MapView';
 import { MapViewStyleActiveStops, MapViewStyleActiveStopsPrimaryLayerId } from '@/components/map/MapViewStyleActiveStops';
 import { MapViewStylePath, MapViewStylePathInteractiveLayerId } from '@/components/map/MapViewStylePath';
-import { MapViewStyleVehicles, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/MapViewStyleVehicles';
+import { MapViewOverlayVehicles, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
 import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/components/stops/Stops.context';
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
+import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { centerMap, moveMap } from '@/utils/map.utils';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
@@ -131,7 +131,7 @@ export function LinesDetailViewMap() {
 				onClick={handleLayerClick}
 			>
 
-				<MapViewStyleVehicles
+				<MapViewOverlayVehicles
 					showCounter="always"
 					vehiclesData={activeVehiclesFeatureCollection}
 				/>

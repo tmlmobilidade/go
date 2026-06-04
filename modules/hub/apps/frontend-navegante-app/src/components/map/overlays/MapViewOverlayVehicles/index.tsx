@@ -16,7 +16,7 @@ export const MapViewStyleVehiclesInteractiveLayerId = 'default-layer-vehicles-re
 
 /* * */
 
-interface Props {
+interface MapViewOverlayVehiclesProps {
 	presentBeforeId?: string
 	showCounter?: 'always' | 'positive'
 	vehiclesData?: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
@@ -109,7 +109,7 @@ function interpolateProps(startFeature: GeoJSON.Feature<GeoJSON.Point> | undefin
 
 /* * */
 
-export function MapViewStyleVehicles({ presentBeforeId, showCounter, vehiclesData = baseGeoJsonFeatureCollection, visible = true }: Props) {
+export function MapViewOverlayVehicles({ presentBeforeId, showCounter, vehiclesData = baseGeoJsonFeatureCollection, visible = true }: MapViewOverlayVehiclesProps) {
 	//
 
 	//
@@ -230,35 +230,20 @@ export function MapViewStyleVehicles({ presentBeforeId, showCounter, vehiclesDat
 						'icon-anchor': 'center',
 						'icon-ignore-placement': true,
 						'icon-image': [
-							'case',
-							[
-								'>=',
-								['index-of', ['to-string', ['get', 'agency_id']], ['literal', ['4', '15']]],
-								0,
-							],
-							'ttsl-boat-regular',
-							[
-								'==',
-								['to-string', ['get', 'agency_id']],
-								'1',
-							],
-							'carris-bus-regular',
-							[
-								'==',
-								['to-string', ['get', 'agency_id']],
-								'21',
-							],
-							'mobi-bus-regular',
-							[
-								'case',
-								[
-									'==',
-									['to-string', ['get', 'contactless']],
-									'true',
-								],
-								'cmet-bus-cut',
-								'cmet-bus-regular',
-							],
+							'match',
+							['to-string', ['get', 'agency_id']],
+							'1', 'ccfl-vehicle-default-light',
+							'3', 'cp-vehicle-default-light',
+							'4', 'ttsl-vehicle-default-light',
+							'8', 'tcb-vehicle-default-light',
+							'15', 'fertagus-vehicle-default-light',
+							'16', 'mts-vehicle-default-light',
+							'21', 'mobi-vehicle-default-light',
+							'41', 'cmet-vehicle-default-light',
+							'42', 'cmet-vehicle-default-light',
+							'43', 'cmet-vehicle-default-light',
+							'44', 'cmet-vehicle-default-light',
+							'cmet-vehicle-default-light',
 						],
 						'icon-offset': [0, 0],
 						'icon-rotate': ['get', 'bearing'],
@@ -268,25 +253,9 @@ export function MapViewStyleVehicles({ presentBeforeId, showCounter, vehiclesDat
 							['linear'],
 							['zoom'],
 							10,
-							['case',
-								['==', ['to-string', ['get', 'agency_id']], '1'],
-								0.045,
-								['==', ['to-string', ['get', 'agency_id']], '21'],
-								0.035,
-								['==', ['to-string', ['get', 'contactless']], 'true'],
-								0.06,
-								0.037,
-							],
-							20,
-							['case',
-								['==', ['to-string', ['get', 'agency_id']], '1'],
-								0.135,
-								['==', ['to-string', ['get', 'agency_id']], '21'],
-								0.105,
-								['==', ['to-string', ['get', 'contactless']], 'true'],
-								0.19,
-								0.112,
-							],
+							0.05,
+							30,
+							0.5,
 						],
 						'symbol-placement': 'point',
 						'visibility': visible ? 'visible' : 'none',

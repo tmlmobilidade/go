@@ -29,7 +29,7 @@ export function FloatingBar() {
 
 			<FloatingBarButton
 				icon={<IconAlertTriangle size={28} />}
-				onClick={() => setActiveBottomSheet({ view: 'alerts' })}
+				onClick={() => setActiveBottomSheet({ view: 'alerts-list' })}
 			/>
 
 			<FloatingBarButton

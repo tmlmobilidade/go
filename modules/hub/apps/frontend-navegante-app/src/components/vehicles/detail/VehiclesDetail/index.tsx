@@ -21,7 +21,7 @@ export function VehiclesDetail() {
 	return (
 		<BottomSheet
 			onClose={closeActiveBottomSheet}
-			opened={activeBottomSheet?.view === 'vehicle-detail'}
+			opened={activeBottomSheet?.view === 'vehicles-detail'}
 			size="half"
 			title="Veículo"
 		>
