@@ -76,7 +76,7 @@ RUN --mount=type=bind,source=.,target=/ctx \
 # Copy only what's needed for runtime: node_modules, workspace
 # packages (trimmed to package.json + dist), and the app's dist.
 
-FROM node:24-slim AS runner
+FROM gcr.io/distroless/nodejs24-debian13 AS runner
 
 WORKDIR /app
 
