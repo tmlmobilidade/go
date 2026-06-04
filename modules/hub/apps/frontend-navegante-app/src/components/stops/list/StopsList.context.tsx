@@ -1,10 +1,9 @@
 'use client';
 
 import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/components/stops/Stops.context';
-import { useTransitModes } from '@/hooks/use-transit-modes';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubStop } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, type MapOverlayMultipleStopsDataProps, useFilterStateString, useLocalStorage, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, type MapOverlayMultipleStopsDataProps, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
@@ -13,12 +12,6 @@ interface StopsListContextState extends ListContextStateTemplate {
 	data: {
 		fc: GeoJSON.FeatureCollection<GeoJSON.Point, MapOverlayMultipleStopsDataProps>
 		filtered: HubStop[]
-	}
-	view: {
-		current: 'list' | 'map'
-		showVehicles: boolean
-		toggleShowVehicles: () => void
-		toggleView: () => void
 	}
 }
 
@@ -44,19 +37,7 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 
 	const stopsContext = useStopsContext();
 
-	const { activeAgencyIds } = useTransitModes();
-
 	const filterSearch = useFilterStateString('search');
-
-	const [currentView, setCurrentView] = useLocalStorage<'list' | 'map'>({
-		defaultValue: 'list',
-		key: 'stops-current-view',
-	});
-
-	const [showVehicles, setShowVehicles] = useLocalStorage<boolean>({
-		defaultValue: true,
-		key: 'stops-show-vehicles',
-	});
 
 	//
 	// B. Transform data
@@ -68,10 +49,8 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 	});
 
 	const filteredData = useMemo(() => {
-		return searchResultsData?.filter((stop) => {
-			return activeAgencyIds.some(agencyId => stop.agency_ids?.includes(agencyId));
-		});
-	}, [searchResultsData, activeAgencyIds]);
+		return searchResultsData;
+	}, [searchResultsData]);
 
 	const dataFeatureCollection = useMemo(() => {
 		// Check if all data is available
@@ -92,17 +71,6 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 	}, [filteredData]);
 
 	//
-	// C. Handle actions
-
-	const toggleView = () => {
-		setCurrentView(prev => prev === 'list' ? 'map' : 'list');
-	};
-
-	const toggleShowVehicles = () => {
-		setShowVehicles(prev => !prev);
-	};
-
-	//
 	// C. Define context value
 
 	const contextValue: StopsListContextState = {
@@ -116,12 +84,6 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 		flags: {
 			error: undefined,
 			isLoading: stopsContext.flags.isLoading,
-		},
-		view: {
-			current: 'map',
-			showVehicles: showVehicles,
-			toggleShowVehicles: toggleShowVehicles,
-			toggleView: toggleView,
 		},
 	};
 
