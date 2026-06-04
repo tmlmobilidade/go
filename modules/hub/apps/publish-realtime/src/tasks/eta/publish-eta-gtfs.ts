@@ -1,11 +1,10 @@
 /* * */
 
 import { apiCache, GOClickHouseClient } from '@tmlmobilidade/databases';
+import { externalClients } from '@tmlmobilidade/external';
 import { pipelinePath, querySqlFromFile } from '@tmlmobilidade/go-hub-pckg-sql';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-
-import { fetchCpTripUpdates } from './cp-fetch.js';
 
 /* * */
 
@@ -49,9 +48,12 @@ export async function publishEtaGtfs() {
 	// CP Trip Updates (Already in GTFS-RT format)
 
 	Logger.info(`Retrieving Estimated Time of Arrivals from CP API...`);
-	const cpTrips = await fetchCpTripUpdates();
+	const cpTrips = await externalClients.cp.tripUpdates();
 
-	feed.entity.push(...cpTrips);
+	feed.entity.push(...cpTrips.entity.map(entity => ({
+		id: entity.id,
+		trip_update: entity.trip_update,
+	})));
 
 	//
 	// Save the result in API Cache
