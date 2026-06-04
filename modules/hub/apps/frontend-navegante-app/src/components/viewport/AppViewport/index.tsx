@@ -1,5 +1,6 @@
 'use client';
 
+import { AlertsList } from '@/components/alerts/list/AlertsList';
 import { HelpDetail } from '@/components/help/HelpDetail';
 import { LinesDetail } from '@/components/lines/detail/LinesDetail';
 import { SearchDetail } from '@/components/search/SearchDetail';
@@ -36,6 +37,7 @@ export function AppViewport() {
 			<FloatingBar />
 			<LinesDetail />
 			<HelpDetail />
+			<AlertsList />
 			<SearchDetail />
 		</>
 	);

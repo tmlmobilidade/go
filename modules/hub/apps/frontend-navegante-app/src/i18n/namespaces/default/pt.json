@@ -3,6 +3,9 @@
 		"AlertActivePeriod": {
 			"start": "Início: {value, date, dayShort}"
 		},
+		"AlertsList": {
+			"title": "Alertas de Serviço"
+		},
 		"AlertsListEmpty": {
 			"action_1": "Ver alertas do passado",
 			"action_2": "Ver alertas do futuro",
