@@ -125,7 +125,6 @@ export function LinesDetailViewMap() {
 	return (
 		<div className={styles.container}>
 			<MapView
-				controlsPosition="bottom-right"
 				id="linesDetailMap"
 				interactiveLayerIds={[MapViewStylePathInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId]}
 				onCenterMap={handleCenterMap}

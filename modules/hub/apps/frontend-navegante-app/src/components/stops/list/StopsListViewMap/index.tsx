@@ -38,7 +38,7 @@ export function StopsListViewMap() {
 
 	return (
 		<>
-			<MapView controlsPosition="top-right" id="stops-list">
+			<MapView id="stops-list">
 				<MapViewStyleStops
 					stopsData={stopsListContext.data.fc}
 				/>
