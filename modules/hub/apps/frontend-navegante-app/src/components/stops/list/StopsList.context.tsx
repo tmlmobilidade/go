@@ -118,7 +118,7 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 			isLoading: stopsContext.flags.isLoading,
 		},
 		view: {
-			current: currentView,
+			current: 'map',
 			showVehicles: showVehicles,
 			toggleShowVehicles: toggleShowVehicles,
 			toggleView: toggleView,
