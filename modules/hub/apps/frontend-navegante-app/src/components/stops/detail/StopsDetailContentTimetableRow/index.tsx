@@ -3,12 +3,15 @@
 /* * */
 
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
-import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
-// import { useLocationsContext } from '@/components/stops/Locations.context';
 import { NextArrivals } from '@/components/stops/detail/NextArrivals';
+import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
+import { useLocationsContext } from '@/contexts/Locations.context';
+import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { type HubArrival } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
+import Link from 'next/link';
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -27,7 +30,12 @@ export function StopsDetailContentTimetableRow({ arrivalData, status }: Props) {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const stopsDetailContext = useStopsDetailContext();
+	const locationsContext = useLocationsContext();
+	const operationalDateContext = useOperationalDateContext();
+
+	const selectedDate = operationalDateContext.data.selected_date;
 
 	//
 	// B. Transform data
@@ -83,25 +91,27 @@ export function StopsDetailContentTimetableRow({ arrivalData, status }: Props) {
 					withIcon={true}
 				/>
 			</div>
-			{/*
+
 			{isSelected && (
-				<div className={styles.details}>
-					<Link className={styles.openLinePage} href={`/lines/${arrivalData.line_id}?&day=${selectedDate?.operational_date}&active_pattern_id=${thisPattern?.id}`} onClick={e => e.stopPropagation()} target="_blank">{t('open_line_page')}</Link>
-					{thisPattern.locality_ids.length > 0 && (
-						<div className={styles.localitiesListWrapper}>
-							<p className={styles.localitiesLabel}>{t('default:stops.StopsDetailContentTimetableRow.localities.label')}</p>
-							<p>
-								{thisPattern.locality_ids.map((localityId, index) => (
-									<span key={index}>
-										{index > 0 && <span className={styles.localitySeparator}> • </span>}
-										<span className={styles.localityName}>{locationsContext.actions.getLocalityById(localityId)?.name}</span>
-									</span>
-								))}
-							</p>
-						</div>
-					)}
-				</div>
-			)} */}
+				<>
+					<Link className={styles.openLinePage} href={`/lines/${arrivalData.line_id}?&day=${selectedDate?.operational_date}&active_pattern_id=${thisPattern?.id}`} onClick={e => e.stopPropagation()} target="_blank">{t('default:stops.StopsDetailContentTimetableRow.open_line_page')}</Link>
+					<div className={styles.details}>
+						{thisPattern.locality_ids.length > 0 && (
+							<div className={styles.localitiesListWrapper}>
+								<p className={styles.localitiesLabel}>{t('default:stops.StopsDetailContentTimetableRow.localities.label')}</p>
+								<p>
+									{thisPattern.locality_ids.map((localityId, index) => (
+										<span key={index}>
+											{index > 0 && <span className={styles.localitySeparator}> • </span>}
+											<span className={styles.localityName}>{locationsContext.actions.getLocalityById(localityId)?.name}</span>
+										</span>
+									))}
+								</p>
+							</div>
+						)}
+					</div>
+				</>
+			)}
 
 		</div>
 	);

@@ -4,8 +4,8 @@
 
 import { NoDataLabel } from '@/components/layout/NoDataLabel';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
-// import { StopsDetailContentTimetableClock } from '@/components/stops/detail/StopsDetailContentTimetableClock';
-// import { StopsDetailContentTimetableRow } from '@/components/stops/detail/StopsDetailContentTimetableRow';
+import { StopsDetailContentTimetableClock } from '@/components/stops/detail/StopsDetailContentTimetableClock';
+import { StopsDetailContentTimetableRow } from '@/components/stops/detail/StopsDetailContentTimetableRow';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -54,15 +54,15 @@ export function StopsDetailContentTimetableRealtime() {
 
 			{!showPastTrips && mostRecentPastTrip && (
 				<div>
-					{/* <StopsDetailContentTimetableRow
+					<StopsDetailContentTimetableRow
 						arrivalData={mostRecentPastTrip}
 						status="passed"
-					/> */}
+					/>
 					hello
 				</div>
 			)}
 
-			{/* {showPastTrips && stopsDetailContext.data.timetable_realtime_past?.length && stopsDetailContext.data.timetable_realtime_past.map(tripData => (
+			{showPastTrips && stopsDetailContext.data.timetable_realtime_past?.length && stopsDetailContext.data.timetable_realtime_past.map(tripData => (
 				<div key={`${tripData.trip_id}-${tripData.stop_sequence}`}>
 					<StopsDetailContentTimetableRow
 						arrivalData={tripData}
@@ -79,12 +79,12 @@ export function StopsDetailContentTimetableRealtime() {
 						<StopsDetailContentTimetableRow
 							key={`${tripData.trip_id}-${tripData.stop_sequence}`}
 							arrivalData={tripData}
-							status={tripData.estimated_arrival_unix ? 'realtime' : 'scheduled'}
+							status={tripData.arrival_time ? 'future' : 'passed'}
 						/>
 					))}
-					<NoDataLabel text={t('end_of_day')} withMinHeight />
+					<NoDataLabel text={t('default:stops.StopsDetailContentTimetableRealtime.end_of_day')} withMinHeight />
 				</>
-			)} */}
+			)}
 
 		</>
 	);

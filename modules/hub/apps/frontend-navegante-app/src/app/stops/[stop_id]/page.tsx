@@ -2,7 +2,6 @@
 
 import { StopsDetail } from '@/components/stops/detail/StopsDetail';
 import { StopsDetailContextProvider } from '@/components/stops/detail/StopsDetail.context';
-
 /* * */
 
 export default async function Page({ params }) {
