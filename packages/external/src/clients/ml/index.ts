@@ -3,7 +3,6 @@
 import { type GtfsRtFeedMessage, ServiceAlertResponse } from '@tmlmobilidade/types';
 
 import { mlAuthClient } from './auth.js';
-import { curlFetcher } from './curl-fetcher.js';
 import { BaseResponse, DESTINATION_MAP, EstadoLinha, InfoEstacao, TempoEspera, TempoEsperaRawItem } from './types.js';
 
 /* * */
@@ -18,11 +17,17 @@ async function fetcher<T>(endpoint: string): Promise<T> {
 
 	const apiToken = await mlAuthClient.getToken();
 
-	return await curlFetcher<T>(`${BASE_URL}${endpoint}`, {
+	const response = await fetch(`${BASE_URL}${endpoint}`, {
 		headers: {
 			Authorization: `Bearer ${apiToken}`,
 		},
 	});
+
+	if (!response.ok) {
+		throw new Error(`Request failed (${response.status}): ${response.statusText}`);
+	}
+
+	return response.json() as T;
 }
 
 /* * */

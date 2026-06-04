@@ -4,8 +4,6 @@ import { Logger } from '@tmlmobilidade/logger';
 import { SshTunnelService } from '@tmlmobilidade/ssh';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
-import { curlFetcher } from './curl-fetcher.js';
-
 /* * */
 
 interface MLTokenResponse {
@@ -81,7 +79,7 @@ export class MLAuthClient {
 			username: process.env.ML_USERNAME,
 		}).toString();
 
-		const data = await curlFetcher<MLTokenResponse>(process.env.ML_AUTH_URL, {
+		const response = await fetch(process.env.ML_AUTH_URL, {
 			body: requestBody,
 			headers: {
 				'Authorization': `Basic ${Buffer.from(`${process.env.ML_CLIENT_ID}:${process.env.ML_CLIENT_SECRET}`).toString('base64')}`,
@@ -89,6 +87,12 @@ export class MLAuthClient {
 			},
 			method: 'POST',
 		});
+
+		if (!response.ok) {
+			throw new Error(`[MLAuthClient] Token request failed (${response.status}): ${response.statusText}`);
+		}
+
+		const data = await response.json() as MLTokenResponse;
 
 		//
 		// With the response data, set the token and calculate the expiration time
