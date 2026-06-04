@@ -4,9 +4,9 @@ import { AlertsList } from '@/components/alerts/list/AlertsList';
 import { HelpDetail } from '@/components/help/HelpDetail';
 import { LinesDetail } from '@/components/lines/detail/LinesDetail';
 import { SearchDetail } from '@/components/search/SearchDetail';
-import { StopsListContextProvider } from '@/components/stops/list/StopsList.context';
 import { FloatingBar } from '@/components/viewport/FloatingBar';
 import { ViewportMap } from '@/components/viewport/ViewportMap';
+import { ViewportMapSourcesControl } from '@/components/viewport/ViewportMapSourcesControl';
 import { useColorScheme } from '@mantine/hooks';
 import { useEffect } from 'react';
 
@@ -35,9 +35,8 @@ export function Viewport() {
 	return (
 		<>
 
-			<StopsListContextProvider>
-				<ViewportMap />
-			</StopsListContextProvider>
+			<ViewportMap />
+			<ViewportMapSourcesControl />
 
 			<FloatingBar />
 			<LinesDetail />

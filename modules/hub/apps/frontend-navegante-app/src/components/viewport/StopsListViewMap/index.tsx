@@ -7,7 +7,7 @@ import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { useVehiclesContext } from '@/contexts/Vehicles.context';
 import { useEffect } from 'react';
 
-import { StopsListViewMapVehiclesToggle } from '../ViewportMapToggle';
+import { StopsListViewMapVehiclesToggle } from '../ViewportMapSourcesControl';
 
 /* * */
 

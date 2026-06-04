@@ -4,8 +4,8 @@ import { MapView } from '@/components/map/MapView';
 import { MapViewStyleStops } from '@/components/map/MapViewStyleStops';
 import { MapViewStyleVehicles } from '@/components/map/MapViewStyleVehicles';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { ViewportMapToggle } from '@/components/viewport/ViewportMapToggle';
 import { useVehiclesContext } from '@/contexts/Vehicles.context';
+import { useViewportMapSources } from '@/hooks/use-viewport-map-sources';
 
 /* * */
 
@@ -18,22 +18,22 @@ export function ViewportMap() {
 	const stopsContext = useStopsContext();
 	const vehiclesContext = useVehiclesContext();
 
+	const { activeViewportMapSources } = useViewportMapSources();
+
 	//
 	// B. Render components
 
 	return (
-		<>
-			<MapView id="viewport-map">
-				<MapViewStyleStops
-					stopsData={stopsContext.data.fc}
-					visible={stopsContext.data.fc?.features.length > 0}
-				/>
-				<MapViewStyleVehicles
-					showCounter="always"
-					vehiclesData={vehiclesContext.data.fc}
-				/>
-			</MapView>
-			<ViewportMapToggle />
-		</>
+		<MapView id="viewport-map">
+			<MapViewStyleStops
+				stopsData={stopsContext.data.fc}
+				visible={activeViewportMapSources.includes('stops')}
+			/>
+			<MapViewStyleVehicles
+				showCounter="always"
+				vehiclesData={vehiclesContext.data.fc}
+				visible={activeViewportMapSources.includes('vehicles')}
+			/>
+		</MapView>
 	);
 }
