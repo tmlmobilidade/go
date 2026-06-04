@@ -1,12 +1,11 @@
 'use client';
 
+import { HelpDetail } from '@/components/help/HelpDetail';
 import { LinesDetail } from '@/components/lines/detail/LinesDetail';
-import { FloatingHelpButton } from '@/components/viewport/FloatingHelpButton';
-import { Navbar } from '@/components/viewport/Navbar';
+import { FloatingBar } from '@/components/viewport/FloatingBar';
+import { NavigationBar } from '@/components/viewport/NavigationBar';
 import { useColorScheme } from '@mantine/hooks';
 import { useEffect } from 'react';
-
-import styles from './styles.module.css';
 
 /* * */
 
@@ -32,11 +31,10 @@ export function AppViewport() {
 
 	return (
 		<>
-			<div className={styles.viewport}>
-				<Navbar />
-			</div>
-			<FloatingHelpButton />
+			<NavigationBar />
+			<FloatingBar />
 			<LinesDetail />
+			<HelpDetail />
 		</>
 	);
 }

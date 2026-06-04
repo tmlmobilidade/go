@@ -112,6 +112,12 @@
 			}
 		}
 	},
+	"help": {
+		"HelpDetailTitle": {
+			"no_data": "Nenhuma pergunta frequente disponível de momento.",
+			"title": "Ajuda"
+		}
+	},
 	"layout": {
 		"NoDataLabel": {
 			"no_data": "Nenhum dado disponível"
@@ -207,13 +213,7 @@
 		}
 	},
 	"viewport": {
-		"FloatingHelpButton": {
-			"modal": {
-				"no_data": "Nenhuma pergunta frequente disponível de momento.",
-				"title": "Perguntas frequentes"
-			}
-		},
-		"Navbar": {
+		"NavigationBar": {
 			"tabs": {
 				"alerts": "Alertas",
 				"lines": "Linhas",

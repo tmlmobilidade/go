@@ -2,13 +2,12 @@
 /* BUTTON */
 
 .button {
-	z-index: 11;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	width: 50px;
 	height: 50px;
-	margin: 10px;
+	pointer-events: all;
 	background-color: var(--color-system-background-100);
 	border: 2px solid var(--color-system-border-100);
 	border-radius: 100%;

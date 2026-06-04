@@ -12,7 +12,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function Navbar() {
+export function NavigationBar() {
 	//
 
 	//
@@ -38,9 +38,9 @@ export function Navbar() {
 		>
 
 			<Tabs.List grow>
-				<Tabs.Tab value="lines">{t('default:viewport.Navbar.tabs.lines')}</Tabs.Tab>
-				<Tabs.Tab value="stops">{t('default:viewport.Navbar.tabs.stops')}</Tabs.Tab>
-				<Tabs.Tab value="alerts">{t('default:viewport.Navbar.tabs.alerts')}</Tabs.Tab>
+				<Tabs.Tab value="lines">{t('default:viewport.NavigationBar.tabs.lines')}</Tabs.Tab>
+				<Tabs.Tab value="stops">{t('default:viewport.NavigationBar.tabs.stops')}</Tabs.Tab>
+				<Tabs.Tab value="alerts">{t('default:viewport.NavigationBar.tabs.alerts')}</Tabs.Tab>
 			</Tabs.List>
 
 			<TransitModesBar />
