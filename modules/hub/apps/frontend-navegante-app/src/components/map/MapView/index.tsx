@@ -124,9 +124,9 @@ export function MapView({ children, controlsPosition, fullscreen = true, geoloca
 				style={{ height: '100%', width: '100%' }}
 			>
 
-				{navigation && <NavigationControl position={controlsPosition} />}
+				{/* {navigation && <NavigationControl position={controlsPosition} />} */}
 				{fullscreen && <FullscreenControl position={controlsPosition} />}
-				{geolocate && <GeolocateControl position={controlsPosition} />}
+				{/* {geolocate && <GeolocateControl position={controlsPosition} />} */}
 				{scale && <ScaleControl position={controlsPosition} />}
 
 				<div className={styles.childrenWrapper}>
