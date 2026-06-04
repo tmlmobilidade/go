@@ -23,20 +23,20 @@ export function FloatingBar() {
 	return (
 		<div className={styles.container}>
 
-			<Spacer size="full" />
-
 			<FloatingBarButton
 				icon={<IconQuestionMark size={30} />}
 				onClick={() => setActiveBottomSheet('help')}
 			/>
 
 			<FloatingBarButton
-				icon={<IconAlertTriangle size={24} />}
+				icon={<IconAlertTriangle size={28} />}
 				onClick={() => setActiveBottomSheet('alerts')}
 			/>
 
+			<Spacer size="full" />
+
 			<FloatingBarButton
-				icon={<IconSearch size={24} />}
+				icon={<IconSearch size={28} />}
 				onClick={() => setActiveBottomSheet('search')}
 			/>
 

@@ -2,13 +2,14 @@
 /* BUTTON */
 
 .button {
+	--size: 60px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 50px;
-	min-width: 50px;
-	height: 50px;
-	min-height: 50px;
+	width: var(--size);
+	min-width: var(--size);
+	height: var(--size);
+	min-height: var(--size);
 	color: var(--color-system-text-300);
 	pointer-events: all;
 	background-color: var(--color-system-background-100);
