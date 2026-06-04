@@ -69,13 +69,13 @@ export async function publishEtaGtfs() {
 	//
 	// ML Trip Updates (Already in GTFS-RT format)
 
-	Logger.info(`Retrieving Estimated Time of Arrivals from ML API...`);
-	const mlTrips = await externalClients.ml.tripUpdates();
+	// Logger.info(`Retrieving Estimated Time of Arrivals from ML API...`);
+	// const mlTrips = await externalClients.ml.tripUpdates();
 
-	feed.entity.push(...mlTrips.entity.map(entity => ({
-		id: entity.id,
-		trip_update: entity.trip_update,
-	})));
+	// feed.entity.push(...mlTrips.entity.map(entity => ({
+	// 	id: entity.id,
+	// 	trip_update: entity.trip_update,
+	// })));
 
 	//
 	// Save the result in API Cache
