@@ -37,15 +37,14 @@
 /* CONTAINER / IS SELECTED */
 
 .isSelected {
-	background-color: var(--color-system-background-200);
-	border-bottom-color: transparent;
+	padding: 10px;
+	background-color: var(--color-brand-navegante);
 	border-radius: 10px;
 	transform: scale(1.02);
 }
 
 /* * */
 /* SUMMARY */
-å
 .summary {
 	display: grid;
 	grid-template-columns: 1fr auto auto;	
