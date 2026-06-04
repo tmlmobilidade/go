@@ -2,11 +2,8 @@
 
 import { LinesDetailContextProvider } from '@/components/lines/detail/LinesDetail.context';
 import { LinesDetailView } from '@/components/lines/detail/LinesDetailView';
-import { LinesDetailViewClose } from '@/components/lines/detail/LinesDetailViewClose';
-import { useSelectedLine } from '@/hooks/use-selected-line';
-import { Drawer } from '@mantine/core';
-
-import styles from './styles.module.css';
+import { BottomSheet } from '@/components/viewport/BottomSheet';
+import { useBottomSheet } from '@/hooks/use-bottom-sheet';
 
 /* * */
 
@@ -16,38 +13,21 @@ export function LinesDetail() {
 	//
 	// A. Setup variables
 
-	const { selectedLineId, selectLineId } = useSelectedLine();
+	const { activeBottomSheet, closeActiveBottomSheet } = useBottomSheet();
 
 	//
 	// B. Render componentss
 
 	return (
-		<Drawer.Root
-			onClose={() => selectLineId(null)}
-			opened={!!selectedLineId}
-			padding={0}
-			position="bottom"
-			size="95%"
+		<BottomSheet
+			onClose={closeActiveBottomSheet}
+			opened={activeBottomSheet?.view === 'line-detail'}
 		>
-
-			<Drawer.Overlay />
-
-			<Drawer.Content classNames={{ content: styles.content }}>
-
-				<Drawer.Header classNames={{ header: styles.header }}>
-					<LinesDetailViewClose />
-				</Drawer.Header>
-
-				<Drawer.Body classNames={{ body: styles.body }}>
-					{selectedLineId && (
-						<LinesDetailContextProvider lineId={selectedLineId}>
-							<LinesDetailView />
-						</LinesDetailContextProvider>
-					)}
-				</Drawer.Body>
-
-			</Drawer.Content>
-
-		</Drawer.Root>
+			{activeBottomSheet?.entityId && (
+				<LinesDetailContextProvider lineId={activeBottomSheet.entityId}>
+					<LinesDetailView />
+				</LinesDetailContextProvider>
+			)}
+		</BottomSheet>
 	);
 }

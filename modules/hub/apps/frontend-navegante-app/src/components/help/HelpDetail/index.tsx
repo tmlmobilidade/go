@@ -27,7 +27,7 @@ export function HelpDetail() {
 
 	const { t } = useTranslation();
 
-	const { activeBottomSheet, setActiveBottomSheet } = useBottomSheet();
+	const { activeBottomSheet, closeActiveBottomSheet } = useBottomSheet();
 
 	//
 	// B. Fetch data
@@ -43,8 +43,8 @@ export function HelpDetail() {
 
 	return (
 		<BottomSheet
-			onClose={() => setActiveBottomSheet(null)}
-			opened={activeBottomSheet === 'help'}
+			onClose={closeActiveBottomSheet}
+			opened={activeBottomSheet?.view === 'help'}
 			title={t('default:help.HelpDetail.title')}
 		>
 

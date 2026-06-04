@@ -3,10 +3,7 @@
 import { LinesList } from '@/components/lines/list/LinesList';
 import { BottomSheet } from '@/components/viewport/BottomSheet';
 import { useBottomSheet } from '@/hooks/use-bottom-sheet';
-import { TextInput } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
-
-import styles from './styles.module.css';
 
 /* * */
 
@@ -18,15 +15,15 @@ export function SearchDetail() {
 
 	const { t } = useTranslation();
 
-	const { activeBottomSheet, setActiveBottomSheet } = useBottomSheet();
+	const { activeBottomSheet, closeActiveBottomSheet } = useBottomSheet();
 
 	//
 	// B. Render components
 
 	return (
 		<BottomSheet
-			onClose={() => setActiveBottomSheet(null)}
-			opened={activeBottomSheet === 'search'}
+			onClose={closeActiveBottomSheet}
+			opened={activeBottomSheet?.view === 'search'}
 			title={t('default:search.SearchDetail.title')}
 		>
 

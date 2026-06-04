@@ -24,17 +24,17 @@ export function FloatingBar() {
 
 			<FloatingBarButton
 				icon={<IconQuestionMark size={30} />}
-				onClick={() => setActiveBottomSheet('help')}
+				onClick={() => setActiveBottomSheet({ view: 'help' })}
 			/>
 
 			<FloatingBarButton
 				icon={<IconAlertTriangle size={28} />}
-				onClick={() => setActiveBottomSheet('alerts')}
+				onClick={() => setActiveBottomSheet({ view: 'alerts' })}
 			/>
 
 			<FloatingBarButton
 				icon={<IconSearch size={28} />}
-				onClick={() => setActiveBottomSheet('search')}
+				onClick={() => setActiveBottomSheet({ view: 'search' })}
 			/>
 
 		</div>
