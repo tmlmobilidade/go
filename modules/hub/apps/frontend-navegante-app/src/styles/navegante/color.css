@@ -36,6 +36,9 @@
 	--color-system-text-300: #9696A0;
 	--color-system-text-400: #D2D2DC;
 
+	/* STATUS / SUCCESS */
+	--color-status-success-primary: #00B932;
+
 }
 
 :root[data-mode="dark"] {
@@ -61,5 +64,8 @@
 	--color-system-text-200: #C8C8D2;
 	--color-system-text-300: #8C8C96;
 	--color-system-text-400: #64646E;
+
+	/* STATUS / SUCCESS */
+	--color-status-success-primary: #00B932;
 
 }

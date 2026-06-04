@@ -4,6 +4,7 @@
 
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
 import { NextArrivals } from '@/components/stops/detail/NextArrivals';
+import { isRealtimeArrival, type StopTimetableRealtimeArrival } from '@/components/stops/detail/parse-eta-gtfs';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { useLocationsContext } from '@/contexts/Locations.context';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
@@ -18,8 +19,8 @@ import styles from './styles.module.css';
 /* * */
 
 interface Props {
-	arrivalData: HubArrival
-	status: 'future' | 'passed'
+	arrivalData: HubArrival | StopTimetableRealtimeArrival
+	status: 'future' | 'passed' | 'realtime' | 'scheduled'
 }
 
 /* * */
@@ -52,9 +53,13 @@ export function StopsDetailContentTimetableRow({ arrivalData, status }: Props) {
 	);
 
 	const scheduledArrivalUnix = useMemo(() => {
+		if (isRealtimeArrival(arrivalData)) {
+			return arrivalData.scheduled_arrival_unix;
+		}
+
 		const [hours, minutes, seconds = 0] = arrivalData.arrival_time_24h.split(':').map(Number);
 		return DateTime.local().set({ hour: hours, millisecond: 0, minute: minutes, second: seconds }).toUnixInteger();
-	}, [arrivalData.arrival_time_24h]);
+	}, [arrivalData]);
 
 	//
 	// C. Handle actions
@@ -74,6 +79,62 @@ export function StopsDetailContentTimetableRow({ arrivalData, status }: Props) {
 		return null;
 	}
 
+	// Realtime row — GTFS parsed arrival with unix timestamps
+	if (isRealtimeArrival(arrivalData)) {
+		const estimatedUnix = arrivalData.estimated_arrival_unix || arrivalData.scheduled_arrival_unix;
+		const hasLiveEta = status === 'realtime' && arrivalData.estimated_arrival_unix != null && arrivalData.estimated_arrival_unix !== arrivalData.scheduled_arrival_unix;
+
+		return (
+			<div className={`${styles.container} ${styles[status]} ${isSelected && styles.isSelected}`} onClick={handleSelectTrip}>
+
+				<div className={styles.summary}>
+					<LineDisplay
+						color={thisPattern.color}
+						longName={thisPattern.headsign}
+						shortName={thisPattern.line_id.slice(thisPattern.line_id.lastIndexOf(']') + 1)}
+						textColor={thisPattern.text_color}
+					/>
+					{status === 'passed' ? (
+						<NextArrivals
+							arrivals={[arrivalData.observed_arrival_unix || arrivalData.scheduled_arrival_unix]}
+							status="passed"
+						/>
+					) : (
+						<NextArrivals
+							arrivals={[estimatedUnix]}
+							scheduledArrivals={hasLiveEta ? [arrivalData.scheduled_arrival_unix] : undefined}
+							status={status === 'realtime' ? 'realtime' : 'scheduled'}
+							tripId={arrivalData.trip_id}
+						/>
+					)}
+				</div>
+
+				{isSelected && (
+					<>
+						<Link className={styles.openLinePage} href={`/lines/${arrivalData.line_id}?&day=${selectedDate?.operational_date}&active_pattern_id=${thisPattern?.id}`} onClick={e => e.stopPropagation()} target="_blank">{t('default:stops.StopsDetailContentTimetableRow.open_line_page')}</Link>
+						<div className={styles.details}>
+							{thisPattern.locality_ids.length > 0 && (
+								<div className={styles.localitiesListWrapper}>
+									<p className={styles.localitiesLabel}>{t('default:stops.StopsDetailContentTimetableRow.localities.label')}</p>
+									<p>
+										{thisPattern.locality_ids.map((localityId, index) => (
+											<span key={index}>
+												{index > 0 && <span className={styles.localitySeparator}> • </span>}
+												<span className={styles.localityName}>{locationsContext.actions.getLocalityById(localityId)?.name}</span>
+											</span>
+										))}
+									</p>
+								</div>
+							)}
+						</div>
+					</>
+				)}
+
+			</div>
+		);
+	}
+
+	// Schedule row — static arrival time from pattern
 	return (
 		<div className={`${styles.container} ${styles[status]} ${isSelected && styles.isSelected}`} onClick={handleSelectTrip}>
 
@@ -86,7 +147,7 @@ export function StopsDetailContentTimetableRow({ arrivalData, status }: Props) {
 				/>
 				<NextArrivals
 					arrivals={[scheduledArrivalUnix]}
-					status="scheduled"
+					status={status === 'passed' ? 'passed' : 'scheduled'}
 					tripId={arrivalData.trip_id}
 					withIcon={true}
 				/>

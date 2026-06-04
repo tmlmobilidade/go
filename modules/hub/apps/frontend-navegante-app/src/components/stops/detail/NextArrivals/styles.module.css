@@ -8,6 +8,19 @@
 	align-items: center;
 }
 
+.withScheduled {
+	flex-direction: column;
+	gap: 2px;
+	align-items: flex-end;
+}
+
+.primary {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+	align-items: center;
+}
+
 /* * */
 /* ICON */
 
@@ -49,7 +62,14 @@
 
 .realtime .arrival {
 	font-weight: var(--font-weight-bold);
-	color: var(--color-realtime-100);
+	color: var(--color-status-success-primary);
+}
+
+.scheduledSecondary {
+	font-size: 12px;
+	font-weight: var(--font-weight-semibold);
+	font-variant-numeric: tabular-nums;
+	color: var(--color-system-text-200);
 }
 
 .scheduled .arrival {

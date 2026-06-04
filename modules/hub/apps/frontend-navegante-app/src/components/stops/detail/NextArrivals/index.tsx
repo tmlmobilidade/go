@@ -24,6 +24,7 @@ interface NextArrival {
 interface Props {
 	allowPastArrivals?: boolean
 	arrivals: number[]
+	scheduledArrivals?: number[]
 	status: 'canceled' | 'passed' | 'realtime' | 'scheduled'
 	tripId?: string
 	withIcon?: boolean
@@ -31,32 +32,11 @@ interface Props {
 
 /* * */
 
-// Debug-only sub-component: shows the matching GO API ETA alongside the
-// production realtime arrival. Renders nothing when debug mode is off or
-// when no matching GO arrival exists for the given trip.
-// function DebugGoArrival({ tripId }: { tripId?: string }) {
-// 	const stopsDetailContext = useStopsDetailContext();
-
-// 	const goArrival = stopsDetailContext.data.timetable_realtime_go?.find(arrival => arrival.trip_id === tripId);
-// 	const goUnix = goArrival?.observed_arrival_unix ?? goArrival?.scheduled_arrival_unix;
-// 	if (!goUnix) return null;
-
-// 	const nowInSeconds = DateTime.now().toSeconds();
-// 	const minutesUntilArrival = Math.floor((goUnix - nowInSeconds) / 60);
-// 	const label = minutesUntilArrival <= 0
-// 		? '<1 min'
-// 		: `${minutesUntilArrival} min`;
-
-// 	return (
-// 		<p className={styles.debugGo} title="GO ETA (debug)">
-// 			{label}
-// 		</p>
-// 	);
-// }
+const LIVE_ETA_COLOR = 'var(--color-status-success-primary)';
 
 /* * */
 
-export function NextArrivals({ allowPastArrivals = true, arrivals, status, tripId, withIcon = true }: Props) {
+export function NextArrivals({ allowPastArrivals = true, arrivals, scheduledArrivals, status, tripId, withIcon = true }: Props) {
 	//
 
 	//
@@ -85,8 +65,7 @@ export function NextArrivals({ allowPastArrivals = true, arrivals, status, tripI
 				const minutesUntilArrival = Math.floor(secondsUntilArrival / 60);
 				const hoursUntilArrival = Math.floor(minutesUntilArrival / 60);
 
-				// For realtime arrivals we calculate a relative time to the current time
-				// (ex: "a chegar", "5 min", "1 hora", "1 hora 30 min")
+				// Live ETA — relative time (ex: "5 min", "1 hora")
 				if (status === 'realtime') {
 				//
 					let labelResult = '';
@@ -110,8 +89,7 @@ export function NextArrivals({ allowPastArrivals = true, arrivals, status, tripI
 					});
 				}
 
-				// For scheduled arrivals we just display the absolute arrival value in hours and minutes
-				// (ex: "13:45", "14:30")
+				// Scheduled — absolute HH:mm
 				if (status === 'scheduled' || status === 'passed' || status === 'canceled') {
 					allFormattedArrivalsResult.push({
 						estimated_arrival_hours: hoursUntilArrival,
@@ -135,7 +113,7 @@ export function NextArrivals({ allowPastArrivals = true, arrivals, status, tripI
 		return () => clearInterval(interval);
 
 		//
-	}, [arrivals, status]);
+	}, [allowPastArrivals, arrivals, status, t]);
 
 	//
 	// C. Render components
@@ -146,20 +124,27 @@ export function NextArrivals({ allowPastArrivals = true, arrivals, status, tripI
 
 	if (status === 'realtime') {
 		return (
-			<div className={`${styles.container} ${styles.realtime}`}>
-				{withIcon && (
-					<div className={styles.icon}>
-						<LiveIcon />
+			<div className={`${styles.container} ${styles.realtime} ${scheduledArrivals?.length ? styles.withScheduled : ''}`}>
+				<div className={styles.primary}>
+					{withIcon && (
+						<div className={styles.icon}>
+							<LiveIcon color={LIVE_ETA_COLOR} />
+						</div>
+					)}
+					<div className={styles.list}>
+						{allFormattedArrivals.map(formattedArrival => (
+							<p key={formattedArrival.estimated_arrival_unix} className={styles.arrival}>
+								{formattedArrival.label}
+							</p>
+						))}
+						{/* <DebugGoArrival tripId={tripId} /> */}
 					</div>
-				)}
-				<div className={styles.list}>
-					{allFormattedArrivals.map(formattedArrival => (
-						<p key={formattedArrival.estimated_arrival_unix} className={styles.arrival}>
-							{formattedArrival.label}
-						</p>
-					))}
-					{/* <DebugGoArrival tripId={tripId} /> */}
 				</div>
+				{scheduledArrivals?.map(unix => (
+					<p key={unix} className={styles.scheduledSecondary}>
+						{DateTime.fromSeconds(unix).toFormat('HH:mm')}
+					</p>
+				))}
 			</div>
 		);
 	}
