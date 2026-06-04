@@ -67,6 +67,17 @@ export async function publishEtaGtfs() {
 	})));
 
 	//
+	// ML Trip Updates (Already in GTFS-RT format)
+
+	Logger.info(`Retrieving Estimated Time of Arrivals from ML API...`);
+	const mlTrips = await externalClients.ml.tripUpdates();
+
+	feed.entity.push(...mlTrips.entity.map(entity => ({
+		id: entity.id,
+		trip_update: entity.trip_update,
+	})));
+
+	//
 	// Save the result in API Cache
 
 	await apiCache.set('hub:realtime:eta:gtfs', JSON.stringify(feed));
