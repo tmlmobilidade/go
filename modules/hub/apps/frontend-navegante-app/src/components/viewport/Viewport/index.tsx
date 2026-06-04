@@ -4,6 +4,7 @@ import { AlertsList } from '@/components/alerts/list/AlertsList';
 import { HelpDetail } from '@/components/help/HelpDetail';
 import { LinesDetail } from '@/components/lines/detail/LinesDetail';
 import { SearchDetail } from '@/components/search/SearchDetail';
+import { VehiclesDetail } from '@/components/vehicles/detail/VehiclesDetail';
 import { FloatingBar } from '@/components/viewport/FloatingBar';
 import { ViewportMap } from '@/components/viewport/ViewportMap';
 import { ViewportMapOverlaysControl } from '@/components/viewport/ViewportMapOverlaysControl';
@@ -34,16 +35,14 @@ export function Viewport() {
 
 	return (
 		<>
-
 			<ViewportMap />
 			<ViewportMapOverlaysControl />
-
 			<FloatingBar />
+			<VehiclesDetail />
 			<LinesDetail />
 			<HelpDetail />
 			<AlertsList />
 			<SearchDetail />
-
 		</>
 	);
 }

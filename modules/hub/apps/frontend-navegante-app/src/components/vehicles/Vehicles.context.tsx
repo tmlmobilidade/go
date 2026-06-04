@@ -154,7 +154,7 @@ export function transformVehicleDataIntoGeoJsonFeature(vehicleData: SimplifiedVe
 			coordinates: [vehicleData.longitude || 0, vehicleData.latitude || 0],
 			type: 'Point',
 		},
-		id: vehicleData._id,
+		id: `[${vehicleData.agency_id}]${vehicleData.vehicle_id}`,
 		properties: vehicleData,
 		type: 'Feature',
 	};

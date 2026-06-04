@@ -7,7 +7,7 @@ import { MapViewStylePath, MapViewStylePathInteractiveLayerId } from '@/componen
 import { MapViewStyleVehicles, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/MapViewStyleVehicles';
 import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/components/stops/Stops.context';
 import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
-import { useVehiclesContext } from '@/contexts/Vehicles.context';
+import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { centerMap, moveMap } from '@/utils/map.utils';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
