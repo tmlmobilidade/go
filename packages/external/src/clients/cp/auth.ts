@@ -85,8 +85,8 @@ export class CPAuthClient {
 			//
 
 			const requestBody = new URLSearchParams({
-				client_id: process.env.TRACKER_CP_AUTH_CLIENT_ID,
-				client_secret: process.env.TRACKER_CP_AUTH_CLIENT_SECRET,
+				client_id: process.env.CP_AUTH_CLIENT_ID,
+				client_secret: process.env.CP_AUTH_CLIENT_SECRET,
 				grant_type: 'client_credentials',
 			}).toString();
 
@@ -94,14 +94,14 @@ export class CPAuthClient {
 				headers: {
 					'Content-Length': Buffer.byteLength(requestBody),
 					'Content-Type': 'application/x-www-form-urlencoded',
-					'host': process.env.TRACKER_CP_AUTH_HOST,
+					'host': process.env.CP_AUTH_HOST,
 				},
 				host: 'localhost',
 				method: 'POST',
-				path: process.env.TRACKER_CP_AUTH_PATH,
+				path: process.env.CP_AUTH_PATH,
 				port: port,
 				rejectUnauthorized: false,
-				servername: process.env.TRACKER_CP_AUTH_HOST,
+				servername: process.env.CP_AUTH_HOST,
 			};
 
 			const callback: (res: IncomingMessage) => void = (response) => {
@@ -150,40 +150,40 @@ export class CPAuthClient {
 		//
 		// Validate required environment variables
 
-		if (!process.env.TRACKER_CP_AUTH_HOST || !process.env.TRACKER_CP_AUTH_PATH) {
-			throw new Error('Missing TRACKER_CP_AUTH_HOST or TRACKER_CP_AUTH_PATH environment variables.');
+		if (!process.env.CP_AUTH_HOST || !process.env.CP_AUTH_PATH) {
+			throw new Error('Missing CP_AUTH_HOST or CP_AUTH_PATH environment variables.');
 		}
 
-		if (!process.env.TRACKER_CP_AUTH_CLIENT_ID || !process.env.TRACKER_CP_AUTH_CLIENT_SECRET) {
-			throw new Error('Missing TRACKER_CP_AUTH_CLIENT_ID or TRACKER_CP_AUTH_CLIENT_SECRET environment variables.');
+		if (!process.env.CP_AUTH_CLIENT_ID || !process.env.CP_AUTH_CLIENT_SECRET) {
+			throw new Error('Missing CP_AUTH_CLIENT_ID or CP_AUTH_CLIENT_SECRET environment variables.');
 		}
 
-		if (!process.env.TRACKER_CP_TUNNEL_LOCAL_PORT) {
-			throw new Error('Missing TRACKER_CP_TUNNEL_LOCAL_PORT environment variable.');
+		if (!process.env.CP_TUNNEL_LOCAL_PORT) {
+			throw new Error('Missing CP_TUNNEL_LOCAL_PORT environment variable.');
 		}
 
-		if (!process.env.TRACKER_CP_TUNNEL_SSH_HOST || !process.env.TRACKER_CP_TUNNEL_SSH_USERNAME) {
-			throw new Error('Missing TRACKER_CP_TUNNEL_SSH_HOST or TRACKER_CP_TUNNEL_SSH_USERNAME environment variables.');
+		if (!process.env.CP_TUNNEL_SSH_HOST || !process.env.CP_TUNNEL_SSH_USERNAME) {
+			throw new Error('Missing CP_TUNNEL_SSH_HOST or CP_TUNNEL_SSH_USERNAME environment variables.');
 		}
 
 		const sshConfig: SshConfig = {
 			forwardOptions: {
-				dstAddr: process.env.TRACKER_CP_AUTH_HOST,
+				dstAddr: process.env.CP_AUTH_HOST,
 				dstPort: 443,
 				srcAddr: 'localhost',
-				srcPort: Number(process.env.TRACKER_CP_TUNNEL_LOCAL_PORT),
+				srcPort: Number(process.env.CP_TUNNEL_LOCAL_PORT),
 			},
 			serverOptions: {
-				port: Number(process.env.TRACKER_CP_TUNNEL_LOCAL_PORT),
+				port: Number(process.env.CP_TUNNEL_LOCAL_PORT),
 			},
 			sshOptions: {
-				agent: process.env.TRACKER_CP_TUNNEL_SSH_KEY_PATH ? undefined : process.env.SSH_AUTH_SOCK,
-				host: process.env.TRACKER_CP_TUNNEL_SSH_HOST,
+				agent: process.env.CP_TUNNEL_SSH_KEY_PATH ? undefined : process.env.SSH_AUTH_SOCK,
+				host: process.env.CP_TUNNEL_SSH_HOST,
 				keepaliveCountMax: 20,
 				keepaliveInterval: 10_000,
 				port: 22,
-				privateKey: process.env.TRACKER_CP_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.TRACKER_CP_TUNNEL_SSH_KEY_PATH) : process.env.TRACKER_CP_TUNNEL_SSH_KEY,
-				username: process.env.TRACKER_CP_TUNNEL_SSH_USERNAME,
+				privateKey: process.env.CP_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.CP_TUNNEL_SSH_KEY_PATH) : process.env.CP_TUNNEL_SSH_KEY,
+				username: process.env.CP_TUNNEL_SSH_USERNAME,
 			},
 			tunnelOptions: {
 				autoClose: false,
