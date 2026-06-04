@@ -4,14 +4,15 @@ import { AlertsList } from '@/components/alerts/list/AlertsList';
 import { HelpDetail } from '@/components/help/HelpDetail';
 import { LinesDetail } from '@/components/lines/detail/LinesDetail';
 import { SearchDetail } from '@/components/search/SearchDetail';
-import { StopsList } from '@/components/stops/list/StopsList';
+import { StopsListContextProvider } from '@/components/stops/list/StopsList.context';
 import { FloatingBar } from '@/components/viewport/FloatingBar';
+import { ViewportMap } from '@/components/viewport/ViewportMap';
 import { useColorScheme } from '@mantine/hooks';
 import { useEffect } from 'react';
 
 /* * */
 
-export function AppViewport() {
+export function Viewport() {
 	//
 
 	//
@@ -33,12 +34,17 @@ export function AppViewport() {
 
 	return (
 		<>
-			<StopsList />
+
+			<StopsListContextProvider>
+				<ViewportMap />
+			</StopsListContextProvider>
+
 			<FloatingBar />
 			<LinesDetail />
 			<HelpDetail />
 			<AlertsList />
 			<SearchDetail />
+
 		</>
 	);
 }

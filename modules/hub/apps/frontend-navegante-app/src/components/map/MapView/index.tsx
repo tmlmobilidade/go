@@ -3,8 +3,8 @@
 import { useMapContext } from '@/components/map/Map.context';
 import { mapDefaultConfig } from '@/components/map/Map.settings';
 import { loadMapAssets } from '@/components/map/mapLoadAssets';
-import Map, { FullscreenControl, GeolocateControl, MapRef, NavigationControl, ScaleControl, useMap } from '@vis.gl/react-maplibre';
-import { type ControlPosition, type MapLibreEvent } from 'maplibre-gl';
+import Map, { MapRef, useMap } from '@vis.gl/react-maplibre';
+import { type MapLibreEvent } from 'maplibre-gl';
 import { useCallback, useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -16,14 +16,10 @@ export type MapStyle = 'map' | 'satellite';
 interface MapViewProps {
 	autoZoom?: boolean
 	children: React.ReactNode
-	controlsPosition?: ControlPosition
-	fullscreen?: boolean
-	geolocate?: boolean
 	id?: string
 	interactiveLayerIds?: string[]
 	mapObject?: MapRef
 	mapStyle?: MapStyle
-	navigation?: boolean
 	onCenterMap?: () => void
 	onClick?: (arg0) => void
 	onDrag?: (arg0) => void
@@ -36,7 +32,6 @@ interface MapViewProps {
 	onMoveStart?: (arg0) => void
 	onZoom?: (arg0) => void
 	primarySourceId?: string
-	scale?: boolean
 	scrollZoom?: boolean
 	showCenterButton?: boolean
 	toolbarExtras?: React.ReactNode
@@ -44,7 +39,7 @@ interface MapViewProps {
 
 /* * */
 
-export function MapView({ children, controlsPosition, fullscreen = true, geolocate = true, id, interactiveLayerIds = [], mapStyle, navigation = true, onClick, onDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onMoveEnd, onMoveStart, onZoom, scale = false, scrollZoom = true }: MapViewProps) {
+export function MapView({ children, id, interactiveLayerIds = [], mapStyle, onClick, onDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onMoveEnd, onMoveStart, onZoom, scrollZoom = true }: MapViewProps) {
 	//
 
 	//
@@ -123,11 +118,6 @@ export function MapView({ children, controlsPosition, fullscreen = true, geoloca
 				scrollZoom={scrollZoom}
 				style={{ height: '100%', width: '100%' }}
 			>
-
-				{/* {navigation && <NavigationControl position={controlsPosition} />} */}
-				{fullscreen && <FullscreenControl position={controlsPosition} />}
-				{/* {geolocate && <GeolocateControl position={controlsPosition} />} */}
-				{scale && <ScaleControl position={controlsPosition} />}
 
 				<div className={styles.childrenWrapper}>
 					{children}

@@ -1,6 +1,7 @@
 'use client';
 
 // import { LiveIcon } from '@/components/common/LiveIcon';
+import { LiveIcon } from '@/components/common/LiveIcon';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { Layer, Source } from '@vis.gl/react-maplibre';
 import { useEffect, useRef, useState } from 'react';
@@ -19,6 +20,7 @@ interface Props {
 	presentBeforeId?: string
 	showCounter?: 'always' | 'positive'
 	vehiclesData?: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
+	visible?: boolean
 }
 
 /* * */
@@ -107,7 +109,7 @@ function interpolateProps(startFeature: GeoJSON.Feature<GeoJSON.Point> | undefin
 
 /* * */
 
-export function MapViewStyleVehicles({ presentBeforeId, showCounter, vehiclesData = baseGeoJsonFeatureCollection }: Props) {
+export function MapViewStyleVehicles({ presentBeforeId, showCounter, vehiclesData = baseGeoJsonFeatureCollection, visible = true }: Props) {
 	//
 
 	//
@@ -202,6 +204,7 @@ export function MapViewStyleVehicles({ presentBeforeId, showCounter, vehiclesDat
 							0.15,
 						],
 						'symbol-placement': 'point',
+						'visibility': visible ? 'visible' : 'none',
 					}}
 					paint={{
 						'icon-opacity': [
@@ -286,6 +289,7 @@ export function MapViewStyleVehicles({ presentBeforeId, showCounter, vehiclesDat
 							],
 						],
 						'symbol-placement': 'point',
+						'visibility': visible ? 'visible' : 'none',
 					}}
 					paint={{
 						'icon-opacity': ['get', 'opacity'],
@@ -296,15 +300,15 @@ export function MapViewStyleVehicles({ presentBeforeId, showCounter, vehiclesDat
 
 			{showCounter === 'always' && (
 				<div className={`${styles.vehiclesCounter} ${vehiclesData.features.length === 0 && styles.zeroCount}`}>
-					{/* <LiveIcon className={styles.vehiclesCounterIcon} color={vehiclesData.features.length === 0 ? 'var(--color-system-text-300)' : ''} />
-					{t('default:map.MapViewStyleVehicles.vehicles_counter', { count: vehiclesData.features.length })} */}
+					<LiveIcon className={styles.vehiclesCounterIcon} color={!vehiclesData.features.length && 'var(--color-system-text-300)'} />
+					{t('default:map.MapViewStyleVehicles.vehicles_counter', '', { count: vehiclesData.features.length })}
 				</div>
 			)}
 
 			{showCounter === 'positive' && vehiclesData.features.length > 0 && (
 				<div className={styles.vehiclesCounter}>
-					{/* <LiveIcon />
-					{t('default:map.MapViewStyleVehicles.vehicles_counter', { count: vehiclesData.features.length })} */}
+					<LiveIcon />
+					{t('default:map.MapViewStyleVehicles.vehicles_counter', '', { count: vehiclesData.features.length })}
 				</div>
 			)}
 

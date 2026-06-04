@@ -1,9 +1,9 @@
 /* * */
 
-import { AppViewport } from '@/components/viewport/AppViewport';
+import { Viewport } from '@/components/viewport/Viewport';
 
 /* * */
 
 export default function Page() {
-	return <AppViewport />;
+	return <Viewport />;
 }
