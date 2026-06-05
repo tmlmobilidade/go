@@ -1,9 +1,9 @@
 'use client';
 
 import { ActionBarButton } from '@/components/common/action-bar/ActionBarButton';
-import { useBaseMap } from '@/components/common/base-map/use-base-map';
+import { ActionBarUserLocation } from '@/components/common/action-bar/ActionBarUserLocation';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
-import { IconAlertTriangle, IconLocation, IconQuestionMark, IconSearch } from '@tabler/icons-react';
+import { IconAlertTriangle, IconQuestionMark, IconSearch } from '@tabler/icons-react';
 import { Spacer } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -17,7 +17,6 @@ export function ActionBar() {
 	// A. Setup variables
 
 	const { setActiveBottomSheet } = useBottomSheet();
-	const { centerMapOnUserLocation } = useBaseMap();
 
 	//
 	// B. Render components
@@ -30,10 +29,7 @@ export function ActionBar() {
 				onClick={() => setActiveBottomSheet({ view: 'help' })}
 			/>
 
-			<Spacer
-				orientation="vertical"
-				size="full"
-			/>
+			<Spacer orientation="vertical" size="full" />
 
 			<ActionBarButton
 				icon={<IconAlertTriangle size={28} />}
@@ -45,10 +41,7 @@ export function ActionBar() {
 				onClick={() => setActiveBottomSheet({ view: 'search' })}
 			/>
 
-			<ActionBarButton
-				icon={<IconLocation size={28} />}
-				onClick={centerMapOnUserLocation}
-			/>
+			<ActionBarUserLocation />
 
 		</div>
 	);

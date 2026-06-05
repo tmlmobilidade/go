@@ -9,7 +9,14 @@
 
 	/* BRAND / NAVEGANTE */
 	--color-brand-navegante: #ffdd01;
-	--color-brand-navegante-2: #ffc800;
+
+	/* STATUS / ACTIVE */
+	--color-status-active-primary: #006EFF;
+	--color-status-active-border: #0059cd;
+	--color-status-active-contrast: rgb(255 255 255);
+
+	/* STATUS / LIVE */
+	--color-status-live-primary: #00CD32;
 
 }
 
@@ -36,9 +43,6 @@
 	--color-system-text-200: #5A5A64;
 	--color-system-text-300: #9696A0;
 	--color-system-text-400: #D2D2DC;
-
-	/* STATUS / SUCCESS */
-	--color-status-success-primary: #00B932;
 
 	/* COLOR / ALERTS */
 	--color-alerts-0: #3D85C6;
@@ -71,9 +75,6 @@
 	--color-system-text-200: #C8C8D2;
 	--color-system-text-300: #8C8C96;
 	--color-system-text-400: #64646E;
-
-	/* STATUS / SUCCESS */
-	--color-status-success-primary: #00B932;
 
 	/* COLOR / ALERTS */
 	--color-alerts-0: #3D85C6;
