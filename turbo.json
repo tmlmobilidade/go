@@ -1,18 +1,12 @@
 {
 	"$schema": "https://turbo.build/schema.json",
-	"concurrency": "12",
+	"concurrency": "10",
 	"envMode": "loose",
-	"globalEnv": [
-		"NODE_ENV"
-	],
+	"globalEnv": ["NODE_ENV"],
 	"tasks": {
 		"build": {
-			"dependsOn": [
-				"^build"
-			],
-			"outputs": [
-				"dist/**"
-			]
+			"dependsOn": ["^build"],
+			"outputs": ["dist/**"]
 		},
 		"dev": {
 			"cache": false,
@@ -25,9 +19,7 @@
 			"persistent": true
 		},
 		"watch": {
-			"outputs": [
-				"dist/**"
-			],
+			"outputs": ["dist/**"],
 			"persistent": true
 		}
 	},

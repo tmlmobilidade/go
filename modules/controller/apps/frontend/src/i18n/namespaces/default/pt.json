@@ -79,9 +79,6 @@
 		"RidesListFilterOperationalStatus": {
 			"label": "Estado"
 		},
-		"RidesListFilterTicketingStatus": {
-			"label": "Validações"
-		},
 		"RidesListHeader": {
 			"export": "Exportar circulações",
 			"title": "Circulações"

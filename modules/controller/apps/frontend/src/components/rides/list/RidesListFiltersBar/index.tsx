@@ -10,7 +10,6 @@ import { RidesListFilterDateRange } from '@/components/rides/list/RidesListFilte
 import { RidesListFilterDelayStatus } from '@/components/rides/list/RidesListFilterDelayStatus';
 import { RidesListFilterFavorites } from '@/components/rides/list/RidesListFilterFavorites';
 import { RidesListFilterOperationalStatus } from '@/components/rides/list/RidesListFilterOperationalStatus';
-import { RidesListFilterTicketingStatus } from '@/components/rides/list/RidesListFilterTicketingStatus';
 import { FiltersBar } from '@tmlmobilidade/ui';
 
 /* * */
@@ -28,7 +27,6 @@ export function RidesListFiltersBar() {
 			<RidesListFilterAnalysisEndedAtLastStop />
 			<RidesListFilterAnalysisExpectedApexValidationInterval />
 			<RidesListFilterAnalysisTransactionSequentiality />
-			<RidesListFilterTicketingStatus />
 		</FiltersBar>
 	);
 }
