@@ -70,6 +70,18 @@ export function BaseMap() {
 		return collection;
 	}, [alertsContext.data.fc, focusedAlertId]);
 
+	const vehiclesMapData = useMemo(() => {
+		if (!focusedVehicleId) return vehiclesContext.data.fc;
+
+		const collection = getBaseGeoJsonFeatureCollection();
+
+		vehiclesContext.data.fc.features.forEach((feature) => {
+			if (feature.properties?.vehicle_id === focusedVehicleId) collection.features.push(feature);
+		});
+
+		return collection;
+	}, [vehiclesContext.data.fc, focusedVehicleId]);
+
 	useEffect(() => {
 		if (!viewportMap || !focusedAlertId || !activeBaseMapOverlays.includes('alerts')) return;
 
@@ -147,7 +159,7 @@ export function BaseMap() {
 				/>
 			)}
 			<MapViewOverlayVehicles
-				vehiclesData={vehiclesContext.data.fc}
+				vehiclesData={vehiclesMapData}
 				visible={activeBaseMapOverlays.includes('vehicles')}
 			/>
 			<MapViewStyleAlerts
