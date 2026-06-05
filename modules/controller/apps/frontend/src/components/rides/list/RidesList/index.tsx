@@ -127,6 +127,7 @@ export function RidesList() {
 			title: 'Seq. APEX',
 			width: 120,
 		},
+
 	];
 
 	//

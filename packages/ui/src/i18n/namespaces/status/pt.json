@@ -72,5 +72,13 @@
 		"Skipped": "Ignorado",
 		"Unknown": "Desconhecido",
 		"Waiting": "Em espera"
+	},
+	"ticketing_status": {
+		"has_Ticketing": "Com bilhética",
+		"no_Ticketing": "Sem bilhética"
+	"validity_status": {
+		"invalid": "Inválido",
+		"unknown": "Desconhecido",
+		"valid": "Válido"
 	}
 }
