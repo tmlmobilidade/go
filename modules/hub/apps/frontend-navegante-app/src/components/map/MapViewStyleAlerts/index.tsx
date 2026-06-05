@@ -7,6 +7,7 @@ import { Layer, Source } from '@vis.gl/react-maplibre';
 
 export const MapViewStyleAlertsLayerId = 'default-layer-alerts-all';
 export const MapViewStyleAlertsSourceId = 'default-source-alerts-all';
+export const MapViewStyleAlertsInteractiveLayerId = 'default-layer-alerts-all';
 
 /* * */
 
@@ -24,7 +25,7 @@ const baseGeoJsonFeatureCollection = getBaseGeoJsonFeatureCollection();
 
 export function MapViewStyleAlerts({ data = baseGeoJsonFeatureCollection, presentBeforeId, visible = true }: Props) {
 	return (
-		<Source data={data} generateId={true} id={MapViewStyleAlertsSourceId} type="geojson">
+		<Source data={data} generateId={false} id={MapViewStyleAlertsSourceId} type="geojson">
 			<Layer
 				beforeId={presentBeforeId}
 				id={MapViewStyleAlertsLayerId}

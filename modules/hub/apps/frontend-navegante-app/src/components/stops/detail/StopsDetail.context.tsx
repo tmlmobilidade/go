@@ -9,7 +9,6 @@ import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HubAlert, HubArrival, type HubGtfsRtFeedMessage, type HubLine, type HubPattern, type HubShape, type HubStop } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
-import { notFound } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 /* * */
@@ -17,7 +16,6 @@ import { createContext, useContext, useEffect, useState } from 'react';
 interface StopsDetailContextState {
 	actions: {
 		resetActiveTripId: () => void
-		setActiveStopId: (stopId: string) => void
 		setActiveTripId: (tripId: string, stopSequence: number) => void
 	}
 	data: {
@@ -71,7 +69,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const alertsContext = useAlertsContext();
 	const operationalDateContext = useOperationalDateContext();
 	const [dataStopState, setDataStopState] = useState<HubStop | undefined>(undefined);
-	const [dataActiveStopIdState, setDataActiveStopIdState] = useState<string>(stopId);
 	const [dataLinesState, setDataLinesState] = useState<HubLine[] | undefined>(undefined);
 	const [dataPatternsState, setDataPatternsState] = useState<HubPattern[][] | undefined>(undefined);
 	const [dataValidPatternsState, setDataValidPatternsState] = useState<HubPattern[] | undefined>(undefined);
@@ -95,14 +92,10 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
  	*/
 
 	useEffect(() => {
-		if (!dataActiveStopIdState || !stopsContext.data.stops?.length) return;
-		const foundStopData = stopsContext.actions.getStopById(dataActiveStopIdState);
-		if (foundStopData) {
-			setDataStopState(foundStopData);
-		} else {
-			notFound();
-		}
-	}, [stopsContext.data.stops, dataActiveStopIdState]);
+		if (!stopId || !stopsContext.data.stops?.length) return;
+		const foundStopData = stopsContext.actions.getStopById(stopId);
+		if (foundStopData) setDataStopState(foundStopData);
+	}, [stopsContext.data.stops, stopId]);
 
 	/**
  	* Fetch line data for the selected stop.
@@ -125,12 +118,12 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				if (!dataActiveStopIdState) return;
+				if (!stopId) return;
 
 				// 1. Fetch GTFS-RT JSON feed
 				const response = await fetch('https://go.tmlmobilidade.pt/hub/api/v1/realtime/eta/gtfs');
 				if (!response.ok) {
-					console.log(`Failed to fetch realtime data for stopId: ${dataActiveStopIdState}`);
+					console.log(`Failed to fetch realtime data for stopId: ${stopId}`);
 					return;
 				}
 
@@ -138,7 +131,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 				const feed: HubGtfsRtFeedMessage = await response.json();
 				const arrivals = parseEtaGtfsForStop(
 					feed.entity,
-					dataActiveStopIdState,
+					stopId,
 					dataValidPatternsState,
 				);
 
@@ -153,7 +146,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		fetchData();
 		const interval = setInterval(fetchData, 10000);
 		return () => clearInterval(interval);
-	}, [dataActiveStopIdState, dataValidPatternsState]);
+	}, [stopId, dataValidPatternsState]);
 
 	/**
 	* Fetch realtime arrivals data for the selected stop from GO API.
@@ -164,10 +157,10 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	// useEffect(() => {
 	// 	const fetchData = async () => {
 	// 		try {
-	// 			if (!dataActiveStopIdState) return;
+	// 			if (!stopId) return;
 	// 			const realtimeData = await fetch('https://go.tmlmobilidade.pt/hub/api/v1/realtime/eta/)
 	// 				.then((response) => {
-	// 					if (!response.ok) console.log(`Failed to fetch realtime data for stopId: ${dataActiveStopIdState}`);
+	// 					if (!response.ok) console.log(`Failed to fetch realtime data for stopId: ${stopId}`);
 	// 					else return response.json();
 	// 				});
 	// 			setDataArrivalsGo(realtimeData);
@@ -180,7 +173,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	// 	fetchData();
 	// 	const interval = setInterval(fetchData, 10000);
 	// 	return () => clearInterval(interval);
-	// }, [dataActiveStopIdState]);
+	// }, [stopId]);
 
 	/**
  	* Fetch pattern data for the selected stop.
@@ -298,14 +291,14 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			for (const trip of patternGroup.trips) {
 				if (!trip.valid_on.includes(operationalDateContext.data.selected_date.operational_date)) continue;
 				for (const stopTime of trip.schedule) {
-					if (String(stopTime.stop_id) !== String(dataActiveStopIdState)) continue;
+					if (String(stopTime.stop_id) !== String(stopId)) continue;
 
 					validScheduledTrips.push({
 						arrival_time: stopTime.arrival_time,
 						arrival_time_24h: stopTime.arrival_time_24h,
 						line_id: patternGroup.line_id,
 						pattern_id: patternGroup.id,
-						stop_id: dataActiveStopIdState,
+						stop_id: stopId,
 						stop_sequence: stopTime.stop_sequence,
 						trip_id: trip.trip_ids[0] ?? stopTime.trip_id ?? '',
 					});
@@ -316,7 +309,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		validScheduledTrips.sort((a, b) => (a.arrival_time.localeCompare(b.arrival_time)));
 
 		setDataTimetableScheduleState(validScheduledTrips);
-	}, [operationalDateContext.data.selected_date, dataValidPatternsState, dataActiveStopIdState]);
+	}, [operationalDateContext.data.selected_date, dataValidPatternsState, stopId]);
 
 	/**
  	* Fill state with valid pattern groups for the selected operational day.
@@ -336,21 +329,16 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		const activeAlerts = alertsContext.data.alerts.filter((alert) => {
 			return alert.references.some((reference) => {
 				if (!reference.parent_id && !reference.child_ids.length) return false;
-				const hasMatchingStop = reference.parent_id === dataActiveStopIdState;
+				const hasMatchingStop = reference.parent_id === stopId;
 				const hasMatchingRoute = dataStopState?.route_ids.includes(reference.child_ids[0] || '');
 				return (hasMatchingStop || hasMatchingRoute) && alert.active_period_start_date <= DateTime.now().toUnixInteger() && alert.active_period_end_date >= DateTime.now().toUnixInteger();
 			});
 		});
 		setDataActiveAlertsState(activeAlerts);
-	}, [alertsContext.data.alerts, dataStopState, dataActiveStopIdState]);
+	}, [alertsContext.data.alerts, dataStopState, stopId]);
 
 	//
 	// D. Handle actions
-
-	const setActiveStopId = (stopId: string) => {
-		resetActiveTripId();
-		setDataActiveStopIdState(stopId);
-	};
 
 	const setActiveTripId = (tripId: string, stopSequence: number) => {
 		const activePattern = dataValidPatternsState?.find(patternGroup => patternGroup.trips.find(trip => trip.trip_ids.includes(tripId)));
@@ -368,42 +356,19 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		setDataActiveStopSequenceState(undefined);
 	};
 
-	useEffect(() => {
-		// Setup a keyboard listener for up and down arrow keys to navigate through the timetable.
-		const handleKeyPress = (event: KeyboardEvent) => {
-			if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-				event.preventDefault();
-				// If not today, select from the schedule trips array
-				if (!operationalDateContext.flags.is_today_selected) {
-					const activeTripTimetableScheduleIndex = dataTimetableScheduleState?.findIndex(arrival => arrival.trip_id === dataActiveTripIdState);
-					if (activeTripTimetableScheduleIndex !== undefined && activeTripTimetableScheduleIndex > -1) {
-						const foundArrivalData = dataTimetableScheduleState?.[activeTripTimetableScheduleIndex + (event.key === 'ArrowUp' ? -1 : 1)];
-						if (foundArrivalData) {
-							setActiveTripId(foundArrivalData.trip_id, foundArrivalData.stop_sequence);
-							return;
-						}
-					}
-				}
-			}
-		};
-		document.addEventListener('keydown', handleKeyPress);
-		return () => document.removeEventListener('keydown', handleKeyPress);
-	}, [dataActiveStopSequenceState, dataTimetableScheduleState]);
-
 	//
 	// E. Define context value
 
 	const contextValue: StopsDetailContextState = {
 		actions: {
 			resetActiveTripId,
-			setActiveStopId,
 			setActiveTripId,
 		},
 		data: {
 			active_alerts: dataActiveAlertsState,
 			active_pattern_group: dataActivePatternState,
 			active_shape: dataShapeState,
-			active_stop_id: dataActiveStopIdState,
+			active_stop_id: stopId,
 			active_stop_sequence: dataActiveStopSequenceState,
 			active_trip_id: dataActiveTripIdState,
 			lines: dataLinesState,

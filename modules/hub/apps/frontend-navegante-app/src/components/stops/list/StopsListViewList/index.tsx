@@ -4,7 +4,7 @@ import { NoDataLabel } from '@/components/layout/NoDataLabel';
 import { RegularListItem } from '@/components/layout/RegularListItem';
 import { StopDisplay } from '@/components/stops/common/StopDisplay';
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
-import { useSelectedStop } from '@/hooks/use-selected-stop';
+import { useBottomSheet } from '@/hooks/use-bottom-sheet';
 import { Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 import { ViewportList } from 'react-viewport-list';
@@ -21,7 +21,7 @@ export function StopsListViewList() {
 
 	const stopsListContext = useStopsListContext();
 
-	const { selectStopId } = useSelectedStop();
+	const { setActiveBottomSheet } = useBottomSheet();
 
 	//
 	// B. Render components
@@ -38,7 +38,7 @@ export function StopsListViewList() {
 		<Section padding="none">
 			<ViewportList itemMargin={0} items={stopsListContext.data.filtered}>
 				{item => (
-					<RegularListItem key={item._id} onClick={() => selectStopId(String(item._id))}>
+					<RegularListItem key={item._id} onClick={() => setActiveBottomSheet({ entityId: String(item._id), view: 'stops-detail' })}>
 						<StopDisplay stopData={item} />
 					</RegularListItem>
 				)}
