@@ -1,6 +1,6 @@
 import { AggregationPipeline } from '@/common/aggregation-pipeline.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { DelayStatus, OperationalStatus, Ride, RideAcceptanceStatus, RideAnalysisGradeWithNone, SeenStatus, UnixTimestamp } from '@tmlmobilidade/types';
+import { DelayStatus, OperationalStatus, Ride, RideAcceptanceStatus, RideAnalysisGradeWithNone, SeenStatus, TicketingStatus, UnixTimestamp } from '@tmlmobilidade/types';
 
 //
 // Time thresholds
@@ -208,6 +208,25 @@ export function ridesPipelineOperationalStatus({ filter }: { filter?: { operatio
 	return pipeline;
 }
 
+	export function ridesPipelineticketingStatus({ filter }: { filter?: { ticketing_status?: TicketingStatus[] } } = {}): AggregationPipeline<Ride> {
+		const pipeline: AggregationPipeline<Ride> = []
+			if(filter?.ticketing_status?.length) return pipeline; 
+		
+			const includesHasTicketing = filter.ticketing_status.includes('has_Ticketing');
+			const includesNoTicketing = filter.ticketing_status.includes('no_Ticketing');
+
+			if (includesHasTicketing && !includesNoTicketing) return pipeline;
+
+			if (includesHasTicketing ){
+				pipeline.push({ $match: { apex_validations_qty: { $gte: 1 } } });
+			}
+
+			if (includesNoTicketing) {
+				pipeline.push({ $match: { apex_validations_qty: { $eq: 0 } } });
+			}
+			return pipeline;
+	}
+
 /**
  * Creates MongoDB aggregation pipeline stages to calculate and categorize seen statuses.
  *
@@ -328,6 +347,7 @@ interface RidesPipelineFilter {
 	search?: string
 	seen_statuses?: SeenStatus[]
 	stop_ids?: string[]
+	ticketing_status?: TicketingStatus[]
 }
 
 type FieldCondition = Record<string, unknown>;
@@ -553,6 +573,7 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 	pipeline.push(...ridesPipelineDelayStatus({ filter: { end_delay_status: filter.delay_statuses, start_delay_status: filter.delay_statuses } }));
 	pipeline.push(...ridesPipelineOperationalStatus({ filter: { operational_status: filter.operational_statuses } }));
 	pipeline.push(...ridesPipelineSeenStatus({ filter: { seen_status: filter.seen_statuses } }));
+	pipeline.push(...ridePipelineTicketingStatus({ filter: { ticketing_status: filter.ticketing_status } }));
 
 	return pipeline;
 }
