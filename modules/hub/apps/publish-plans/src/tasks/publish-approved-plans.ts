@@ -41,6 +41,7 @@ export async function publishApprovedPlans() {
 			// Parse the plan data
 			const parsedPlan = HubPlanSchema.safeParse({
 				...planData,
+				agency_id: planData.gtfs_agency?.agency_id,
 				is_active: isActive,
 				operation_file_url: operationFile.url,
 			});
