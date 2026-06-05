@@ -42,6 +42,7 @@ export async function publishVehiclesPositions() {
 			// Parse the vehicle position data
 			const parsedVehiclePosition = HubVehiclePositionSchema.safeParse({
 				...vehicleEventData,
+				calendar_date: vehicleEventData.operational_date,
 				trip_id: getPublicTripId(activePlanIdForAgency, vehicleEventData.agency_id, vehicleEventData.trip_id),
 				vehicle_id: getPublicVehicleId(vehicleEventData.agency_id, vehicleEventData.vehicle_id),
 			});
