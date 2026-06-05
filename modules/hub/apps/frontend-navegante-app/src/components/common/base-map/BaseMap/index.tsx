@@ -6,13 +6,18 @@ import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-shee
 import { MapView } from '@/components/map/MapView';
 import { MapViewOverlayVehicles, MapViewStyleVehiclesInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
 import { MapViewStyleAlerts, MapViewStyleAlertsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
+import { MapViewStylePath } from '@/components/map/overlays/MapViewStylePath';
 import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleStops';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
-import { moveMap } from '@/utils/map.utils';
+import { type HubPattern } from '@/types/api/network';
+import { centerMap, moveMap } from '@/utils/map.utils';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { type HubShape } from '@tmlmobilidade/types';
 import { MapLayerMouseEvent, useMap } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo } from 'react';
+import useSWR from 'swr';
 
 /* * */
 
@@ -32,9 +37,24 @@ export function BaseMap() {
 
 	const { 'viewport-map': viewportMap } = useMap();
 
-	const focusedAlertId = activeBottomSheet?.view === 'alerts-detail'
-		? activeBottomSheet.entityId
-		: null;
+	const focusedAlertId = activeBottomSheet?.view === 'alerts-detail' ? activeBottomSheet.entityId : null;
+	const focusedVehicleId = activeBottomSheet?.view === 'vehicles-detail' ? activeBottomSheet.entityId : null;
+
+	const focusedVehiclePatternId = useMemo(() => {
+		if (!focusedVehicleId) return null;
+
+		return vehiclesContext.data.vehicles.find(vehicle => vehicle.vehicle_id === focusedVehicleId)?.pattern_id ?? null;
+	}, [focusedVehicleId, vehiclesContext.data.vehicles]);
+
+	const { data: patterns } = useSWR<HubPattern[]>(
+		focusedVehiclePatternId ? { credentials: 'omit', url: API_ROUTES.hub.NETWORK_PATTERNS(focusedVehiclePatternId) } : null,
+	);
+
+	const pattern = patterns?.[0];
+
+	const { data: shape } = useSWR<HubShape>(
+		pattern?.shape_id ? { credentials: 'omit', url: API_ROUTES.hub.NETWORK_SHAPES(pattern.shape_id) } : null,
+	);
 
 	const alertsMapData = useMemo(() => {
 		if (!focusedAlertId) return alertsContext.data.fc;
@@ -61,6 +81,14 @@ export function BaseMap() {
 
 		moveMap(viewportMap, focusedFeature.geometry.coordinates);
 	}, [viewportMap, focusedAlertId, alertsMapData.features, activeBaseMapOverlays]);
+
+	useEffect(() => {
+		if (!viewportMap || !shape?.geojson) return;
+
+		centerMap(viewportMap, [shape.geojson], {
+			padding: { bottom: 320, left: 80, right: 80, top: 80 },
+		});
+	}, [viewportMap, shape?.geojson]);
 
 	//
 	// C. Handle actions
@@ -106,12 +134,24 @@ export function BaseMap() {
 				stopsData={stopsContext.data.fc}
 				visible={activeBaseMapOverlays.includes('stops')}
 			/>
+			{shape?.geojson && pattern && (
+				<MapViewStylePath
+					presentBeforeId={MapViewStyleVehiclesPrimaryLayerId}
+					shapeData={{
+						...shape.geojson,
+						properties: {
+							color: pattern.color,
+							text_color: pattern.text_color,
+						},
+					}}
+				/>
+			)}
 			<MapViewOverlayVehicles
 				vehiclesData={vehiclesContext.data.fc}
 				visible={activeBaseMapOverlays.includes('vehicles')}
 			/>
 			<MapViewStyleAlerts
-				data={alertsContext.data.fc}
+				data={alertsMapData}
 				visible={activeBaseMapOverlays.includes('alerts')}
 			/>
 		</MapView>
