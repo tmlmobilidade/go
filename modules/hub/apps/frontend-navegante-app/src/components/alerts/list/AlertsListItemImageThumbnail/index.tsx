@@ -17,7 +17,7 @@ export function AlertsListItemImageThumbnail({ alt, src }: AlertsListItemImageTh
 	//
 
 	//
-	// C. Render components
+	// A. Render components
 
 	return (
 		<Image

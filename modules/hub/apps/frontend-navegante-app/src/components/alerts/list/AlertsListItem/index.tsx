@@ -43,7 +43,9 @@ export function AlertListItem({ alertId }: AlertListItemProps) {
 				</div>
 				<p className={styles.description}>{resolvedAlert?.description}</p>
 				{resolvedAlert?.image_url && (
-					<AlertsListItemImageThumbnail alt={resolvedAlert?.title}src={resolvedAlert?.image_url} />
+					<div className={styles.imageWrapper}>
+						<AlertsListItemImageThumbnail alt={resolvedAlert.title} src={resolvedAlert.image_url} />
+					</div>
 				)}
 			</Accordion.Panel>
 		</Accordion.Item>

@@ -2,6 +2,7 @@
 /* IMAGE */
 
 .image {
+	width: 100%;
 	overflow: hidden;
 	border: 1px solid var(--color-system-border-200);
 	border-radius: 5px;
