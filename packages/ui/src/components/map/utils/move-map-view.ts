@@ -6,11 +6,17 @@ import { type Position } from 'geojson';
 
 /* * */
 
-const MOVE_SETTINGS = {
+const DEFAULT_OPTIONS: MoveMapViewOptions = {
+	padding: 3,
 	speed: 4000,
 	zoom: 12,
-	zoom_margin: 3,
 };
+
+interface MoveMapViewOptions {
+	padding?: number
+	speed?: number
+	zoom?: number
+}
 
 /**
  *
@@ -18,7 +24,7 @@ const MOVE_SETTINGS = {
  * @param coordinates The destination coordinates to move the map to.
  * @param options Optional settings to customize the movement.
  */
-export function moveMapView(mapObject: MapRef, coordinates: Position) {
+export function moveMapView(mapObject: MapRef, coordinates: Position, options?: MoveMapViewOptions) {
 	//
 
 	//
@@ -30,11 +36,16 @@ export function moveMapView(mapObject: MapRef, coordinates: Position) {
 	if (typeof coordinates[0] !== 'number' || typeof coordinates[1] !== 'number') return;
 
 	//
+	// Override default options with the given options
+
+	options = { ...DEFAULT_OPTIONS, ...options };
+
+	//
 	// Get current zoom level and calculate the zoom thresholds
 
 	const currentZoom = mapObject.getZoom();
-	const currentZoomWithMargin = currentZoom + MOVE_SETTINGS.zoom_margin;
-	const thresholdZoomWithMargin = MOVE_SETTINGS.zoom + MOVE_SETTINGS.zoom_margin;
+	const currentZoomWithMargin = currentZoom + options.padding;
+	const thresholdZoomWithMargin = options.zoom + options.padding;
 
 	//
 	// Get and validate the map bounds
@@ -61,16 +72,15 @@ export function moveMapView(mapObject: MapRef, coordinates: Position) {
 		// ...then simply ease to it.
 		mapObject.easeTo({
 			center: { lat: coordinates[1], lng: coordinates[0] },
-			duration: MOVE_SETTINGS.speed * 0.25,
+			duration: options.speed * 0.25,
 			zoom: currentZoom,
 		});
-	}
-	else {
+	} else {
 		// If the zoom is too far, or the given coordinates
 		// are not visible, then fly to it.
 		mapObject.flyTo({
 			center: { lat: coordinates[1], lng: coordinates[0] },
-			duration: MOVE_SETTINGS.speed,
+			duration: options.speed,
 			zoom: thresholdZoomWithMargin,
 		});
 	}
