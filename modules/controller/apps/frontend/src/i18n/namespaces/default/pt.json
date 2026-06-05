@@ -80,7 +80,7 @@
 			"label": "Estado"
 		},
 		"RidesListFilterTicketingStatus": {
-			"label": "Bilhética"
+			"label": "Validações"
 		},
 		"RidesListHeader": {
 			"export": "Exportar circulações",
