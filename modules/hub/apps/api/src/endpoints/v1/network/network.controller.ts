@@ -3,9 +3,8 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { NetworkShape } from '@tmlmobilidade/go-hub-pckg-types';
 import { Logger } from '@tmlmobilidade/logger';
-import { type HubLine } from '@tmlmobilidade/types';
+import { type HubLine, type HubShape } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -145,7 +144,7 @@ export class NetworkController {
 	 * @param request Fastify request
 	 * @param reply Fastify reply
 	 */
-	static async getShapes(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<NetworkShape>) {
+	static async getShapes(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HubShape>) {
 		//
 
 		const cachedData = await apiCache.get(`hub:network:shapes:${request.params.id}`);

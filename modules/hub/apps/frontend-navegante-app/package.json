@@ -1,32 +1,32 @@
 {
 	"name": "@tmlmobilidade/go-hub-frontend-navegante-app",
 	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
 	"private": true,
 	"scripts": {
 		"build": "next build",
-		"check-translations": "tsx src/i18n/check-translations.ts",
 		"dev": "next dev -p 51100",
 		"lint": "eslint ./src && tsc --noEmit",
-		"lint-fix": "eslint ./src --fix",
-		"start": "next start"
+		"lint:fix": "eslint --fix ./src"
 	},
 	"dependencies": {
-		"@amplitude/analytics-browser": "2.42.5",
-		"@mantine/carousel": "9.2.2",
-		"@mantine/charts": "9.2.2",
-		"@mantine/core": "9.2.2",
-		"@mantine/dates": "9.2.2",
-		"@mantine/form": "9.2.2",
-		"@mantine/hooks": "9.2.2",
-		"@mantine/modals": "9.2.2",
-		"@mantine/notifications": "9.2.2",
-		"@next/third-parties": "16.2.6",
+		"@amplitude/analytics-browser": "2.43.0",
+		"@mantine/carousel": "9.3.0",
+		"@mantine/charts": "9.3.0",
+		"@mantine/core": "9.3.0",
+		"@mantine/dates": "9.3.0",
+		"@mantine/form": "9.3.0",
+		"@mantine/hooks": "9.3.0",
+		"@mantine/modals": "9.3.0",
+		"@mantine/notifications": "9.3.0",
 		"@tabler/icons-react": "3.44.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
-		"@tmlmobilidade/go-hub-pckg-types": "*",
-		"@tmlmobilidade/go-hub-pckg-utils": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
@@ -37,38 +37,26 @@
 		"embla-carousel-autoplay": "8.6.0",
 		"embla-carousel-react": "8.6.0",
 		"embla-carousel-wheel-gestures": "8.1.0",
-		"luxon": "3.7.2",
 		"maplibre-gl": "5.24.0",
-		"next": "16.2.6",
+		"next": "16.2.7",
 		"nuqs": "2.8.9",
-		"react": "19.2.6",
-		"react-dom": "19.2.6",
+		"react": "19.2.7",
+		"react-dom": "19.2.7",
 		"react-i18next": "17.0.8",
 		"react-lottie-player": "2.1.0",
 		"react-viewport-list": "7.1.2",
-		"recharts": "3.8.1",
 		"sharp": "0.34.5",
-		"swr": "2.4.1",
-		"ukkonen": "2.2.0"
+		"swr": "2.4.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/geojson": "7946.0.16",
-		"@types/luxon": "3.7.1",
 		"@types/node": "25.9.1",
-		"@types/react": "19.2.15",
+		"@types/react": "19.2.17",
 		"@types/react-dom": "19.2.3",
-		"postcss": "8.5.15",
-		"postcss-preset-mantine": "1.18.0",
-		"postcss-simple-vars": "7.0.1",
-		"typescript": "6.0.3",
-		"typescript-plugin-css-modules": "5.2.0"
-	},
-	"overrides": {
-		"react": "19.2.6",
-		"react-dom": "19.2.6"
+		"typescript": "6.0.3"
 	},
 	"packageManager": "npm@11.16.0"
 }
