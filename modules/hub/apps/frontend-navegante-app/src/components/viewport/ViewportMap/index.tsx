@@ -37,7 +37,7 @@ export function ViewportMap() {
 		} else if (event.features[0].source === 'default-source-alerts') {
 			setActiveBottomSheet({ entityId: String(event.features[0].id), view: 'alerts-detail' });
 		} else if (event.features[0].source === 'default-source-vehicles') {
-			setActiveBottomSheet({ entityId: String(event.features[0].id), view: 'vehicles-detail' });
+			setActiveBottomSheet({ entityId: String(event.features[0].properties.vehicle_id), view: 'vehicles-detail' });
 		}
 	};
 
