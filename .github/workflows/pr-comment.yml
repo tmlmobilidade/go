@@ -23,5 +23,16 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: prNumber,
-              body: `Behold! Your PR has ascended to its own environment:\n\nhttps://pr-${prNumber}.go-stg.tmlmobilidade.pt/\n\nTest wisely, deploy bravely`
+              body: [
+                'Behold! Your PR has ascended to its own environment:',
+                '',
+                `https://pr-${prNumber}.go-stg.tmlmobilidade.pt/`,
+                '',
+                'Need a rebuild? Comment on this PR:',
+                '- `/build <module>` — build one module',
+                '- `/build <module> <module>` — build multiple modules',
+                '- `/build all` — build every module',
+                '',
+                'Test wisely, deploy bravely',
+              ].join('\n')
             });
