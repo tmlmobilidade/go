@@ -32,12 +32,26 @@ export function ViewportMap() {
 
 	const handleMapClick = (event: MapLayerMouseEvent) => {
 		if (!event.features?.length) return;
-		if (event.features[0].layer?.id === MapViewStyleStopsInteractiveLayerId) {
-			setActiveBottomSheet({ entityId: String(event.features[0].properties._id), view: 'stops-detail' }, { replace: true });
-		} else if (event.features[0].layer?.id === MapViewStyleAlertsInteractiveLayerId) {
-			setActiveBottomSheet({ entityId: String(event.features[0].properties._id), view: 'alerts-detail' }, { replace: true });
-		} else if (event.features[0].layer?.id === MapViewStyleVehiclesInteractiveLayerId) {
-			setActiveBottomSheet({ entityId: String(event.features[0].properties.vehicle_id), view: 'vehicles-detail' }, { replace: true });
+
+		const feature = event.features[0];
+		const layerId = feature.layer?.id;
+
+		if (layerId === MapViewStyleStopsInteractiveLayerId) {
+			setActiveBottomSheet({ entityId: String(feature.properties._id), view: 'stops-detail' }, { replace: true });
+			return;
+		}
+
+		if (layerId === MapViewStyleAlertsInteractiveLayerId) {
+			const alertId = feature.properties.id ?? feature.properties._id;
+
+			if (!alertId) return;
+
+			setActiveBottomSheet({ entityId: String(alertId), view: 'alerts-detail' }, { replace: true });
+			return;
+		}
+
+		if (layerId === MapViewStyleVehiclesInteractiveLayerId) {
+			setActiveBottomSheet({ entityId: String(feature.properties.vehicle_id), view: 'vehicles-detail' }, { replace: true });
 		}
 	};
 
@@ -47,7 +61,7 @@ export function ViewportMap() {
 	return (
 		<MapView
 			id="viewport-map"
-			interactiveLayerIds={[MapViewStyleVehiclesPrimaryLayerId, MapViewStyleStopsInteractiveLayerId]}
+			interactiveLayerIds={[MapViewStyleVehiclesPrimaryLayerId, MapViewStyleStopsInteractiveLayerId, MapViewStyleAlertsInteractiveLayerId]}
 			onClick={handleMapClick}
 		>
 			<MapViewStyleStops

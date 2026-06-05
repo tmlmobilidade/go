@@ -1,5 +1,6 @@
 'use client';
 
+import { AlertsDetail } from '@/components/alerts/detail/AlertsDetail';
 import { AlertsList } from '@/components/alerts/list/AlertsList';
 import { ActionBar } from '@/components/common/action-bar/ActionBar';
 import { VehiclesCounter } from '@/components/common/display/VehiclesCounter';
@@ -47,6 +48,7 @@ export function Viewport() {
 			<LinesDetail />
 			<StopsDetail />
 			<HelpDetail />
+			<AlertsDetail />
 			<AlertsList />
 			<SearchDetail />
 			<VehiclesCounter count={vehiclesContext.data.fc?.features?.length} />
