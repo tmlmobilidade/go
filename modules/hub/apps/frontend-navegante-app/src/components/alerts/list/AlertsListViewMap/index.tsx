@@ -4,10 +4,10 @@ import { useAlertsListContext } from '@/components/alerts/list/AlertsList.contex
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { MapView } from '@/components/map/MapView';
 import { MapViewStyleAlerts, MapViewStyleAlertsLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
+import { moveMap } from '@/utils/map.utils';
+import { useMap } from '@vis.gl/react-maplibre';
 import { type MapLayerMouseEvent } from 'maplibre-gl';
 import { useCallback } from 'react';
-
-import styles from './styles.module.css';
 
 /* * */
 
@@ -19,6 +19,7 @@ export function AlertsListViewMap() {
 
 	const alertsListContext = useAlertsListContext();
 	const { setActiveBottomSheet } = useBottomSheet();
+	const { alertsListMap } = useMap();
 
 	//
 	// B. Handle actions
@@ -34,17 +35,20 @@ export function AlertsListViewMap() {
 
 		const alertId = alertFeature.properties?.id ?? alertFeature.properties?._id;
 
-		if (!alertId) return;
+		if (!alertId || alertFeature.geometry?.type !== 'Point') return;
 
+		const [longitude, latitude] = alertFeature.geometry.coordinates;
+
+		moveMap(alertsListMap, [longitude, latitude]);
 		setActiveBottomSheet({ entityId: String(alertId), view: 'alerts-detail' }, { replace: true });
-	}, [setActiveBottomSheet]);
+	}, [alertsListMap, setActiveBottomSheet]);
 
 	//
 	// C. Render components
 
 	return (
 		<MapView
-			id="alerts-list"
+			id="alertsListMap"
 			interactiveLayerIds={[MapViewStyleAlertsLayerId]}
 			onClick={handleMapClick}
 		>

@@ -2,9 +2,13 @@
 
 /* * */
 import { AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
-import { AlertEffectIcon } from '@/components/alerts/common/AlertEffectIcon';
+import { AlertsListItemImageThumbnail } from '@/components/alerts/list/AlertsListItemImageThumbnail';
 import { type HubAlert } from '@tmlmobilidade/types';
 import { Section } from '@tmlmobilidade/ui';
+
+import styles from './styles.module.css';
+
+/* * */
 
 interface AlertDetailContentProps {
 	alert: HubAlert
@@ -22,11 +26,19 @@ export function AlertDetailContent({ alert }: AlertDetailContentProps) {
 
 	return (
 		<Section padding="md">
-			
+
 			{alert.active_period_start_date && (
 				<AlertActivePeriodStart date={alert.active_period_start_date} size="sm" />
 			)}
-			<p>{alert.description}</p>
+
+			<p className={styles.description}>{alert.description}</p>
+
+			{alert.image_url && (
+				<div className={styles.imageWrapper}>
+					<AlertsListItemImageThumbnail alt={alert.title} src={alert.image_url} />
+				</div>
+			)}
+
 		</Section>
 	);
 

@@ -36,7 +36,7 @@ export function AlertsDetailView({ alert }: AlertsDetailViewProps) {
 	return (
 		<Section padding="none">
 			<AlertDetailViewHeader effect={alert?.effect} title={alert?.title} />
-			<AlertDetailContent alert={alert} />;
+			<AlertDetailContent alert={alert} />
 		</Section>
 	);
 }
