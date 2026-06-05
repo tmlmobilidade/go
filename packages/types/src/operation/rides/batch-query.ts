@@ -81,7 +81,6 @@ export const GetRidesBatchQuerySchema = z.object({
 	favorites: z
 		.boolean()
 		.optional(),
-
 	ticketing_status: z
 		.preprocess((val: string) => (val && typeof val === 'string') ? val.split(',').map(status => status.trim()) : [], z.array(TicketingStatusSchema))
 		.optional(),
