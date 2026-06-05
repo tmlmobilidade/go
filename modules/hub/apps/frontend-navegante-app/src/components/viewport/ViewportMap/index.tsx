@@ -2,9 +2,9 @@
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { MapView } from '@/components/map/MapView';
-import { MapViewStyleAlerts, MapViewStyleAlertsInteractiveLayerId } from '@/components/map/MapViewStyleAlerts';
-import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/MapViewStyleStops';
 import { MapViewOverlayVehicles, MapViewStyleVehiclesInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
+import { MapViewStyleAlerts, MapViewStyleAlertsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
+import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleStops';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { useBottomSheet } from '@/hooks/use-bottom-sheet';
