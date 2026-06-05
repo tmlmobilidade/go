@@ -209,6 +209,7 @@ db.updateRole('tracker', {
 		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'hashed_shapes', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'hashed_patterns', db: 'production' } },
 	],
 	roles: [],
 });
