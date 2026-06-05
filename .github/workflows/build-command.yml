@@ -1,0 +1,41 @@
+name: PR Module Build
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  actions: write
+
+jobs:
+  build:
+    if: github.event.issue.pull_request && startsWith(github.event.comment.body, '/build')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch module build
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const module = context.payload.comment.body.replace(/^\/build\s*/i, '').trim();
+            if (!module) {
+              core.setFailed('Usage: /build <module>');
+              return;
+            }
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'build-modules.yml',
+              ref: pr.head.ref,
+              inputs: {
+                module,
+                build_all: 'false',
+                pr_number: String(context.issue.number),
+              },
+            });
