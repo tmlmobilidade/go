@@ -1,5 +1,6 @@
 'use client';
 
+import { AlertsDetail } from '@/components/alerts/detail/AlertsDetail';
 import { AlertsList } from '@/components/alerts/list/AlertsList';
 import { ActionBar } from '@/components/common/action-bar/ActionBar';
 import { BaseMap } from '@/components/common/base-map/BaseMap';
@@ -48,6 +49,7 @@ export default function Page() {
 			<StopsDetail />
 			<HelpDetail />
 			<AlertsList />
+			<AlertsDetail />
 			<SearchDetail />
 			<VehiclesCounter count={vehiclesContext.data.fc?.features?.length} />
 		</>

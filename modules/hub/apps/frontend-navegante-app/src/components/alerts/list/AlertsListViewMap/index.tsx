@@ -81,8 +81,15 @@ export function AlertsListViewMap() {
 		const [longitude, latitude] = alertFeature.geometry.coordinates;
 
 		moveMap(event.target, [longitude, latitude]);
-		setActiveBottomSheet({ entityId: String(alertId), view: 'alerts-detail' });
-	}, [setActiveBottomSheet]);
+
+		const alertEntityId = String(alertId);
+
+		if (activeBottomSheet?.view === 'alerts-detail' && activeBottomSheet.entityId === alertEntityId) {
+			return;
+		}
+
+		setActiveBottomSheet({ entityId: alertEntityId, view: 'alerts-detail' });
+	}, [activeBottomSheet, setActiveBottomSheet]);
 
 	//
 	// D. Render components
