@@ -27,6 +27,7 @@
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-hub-pckg-types": "*",
 		"@tmlmobilidade/go-hub-pckg-utils": "*",
+		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"@turf/turf": "7.3.5",
