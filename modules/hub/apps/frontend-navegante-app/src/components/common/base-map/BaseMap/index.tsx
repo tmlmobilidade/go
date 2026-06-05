@@ -46,7 +46,7 @@ export function BaseMap() {
 
 	return (
 		<MapView
-			id="viewport-map"
+			id="base-map"
 			interactiveLayerIds={[MapViewStyleVehiclesPrimaryLayerId, MapViewStyleStopsInteractiveLayerId]}
 			onClick={handleMapClick}
 		>
