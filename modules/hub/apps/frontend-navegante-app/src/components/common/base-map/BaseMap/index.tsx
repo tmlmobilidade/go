@@ -1,6 +1,7 @@
 'use client';
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
+import { useBaseMap } from '@/components/common/base-map/use-base-map';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { MapView } from '@/components/map/MapView';
 import { MapViewOverlayVehicles, MapViewStyleVehiclesInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
@@ -8,12 +9,11 @@ import { MapViewStyleAlerts, MapViewStyleAlertsInteractiveLayerId } from '@/comp
 import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleStops';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
-import { useViewportMapOverlays } from '@/hooks/use-viewport-map-overlays';
 import { MapLayerMouseEvent } from '@vis.gl/react-maplibre';
 
 /* * */
 
-export function ViewportMap() {
+export function BaseMap() {
 	//
 
 	//
@@ -25,7 +25,7 @@ export function ViewportMap() {
 
 	const { setActiveBottomSheet } = useBottomSheet();
 
-	const { activeViewportMapOverlays } = useViewportMapOverlays();
+	const { activeBaseMapOverlays } = useBaseMap();
 
 	//
 	// C. Handle actions
@@ -52,15 +52,15 @@ export function ViewportMap() {
 		>
 			<MapViewStyleStops
 				stopsData={stopsContext.data.fc}
-				visible={activeViewportMapOverlays.includes('stops')}
+				visible={activeBaseMapOverlays.includes('stops')}
 			/>
 			<MapViewOverlayVehicles
 				vehiclesData={vehiclesContext.data.fc}
-				visible={activeViewportMapOverlays.includes('vehicles')}
+				visible={activeBaseMapOverlays.includes('vehicles')}
 			/>
 			<MapViewStyleAlerts
 				data={alertsContext.data.fc}
-				visible={activeViewportMapOverlays.includes('alerts')}
+				visible={activeBaseMapOverlays.includes('alerts')}
 			/>
 		</MapView>
 	);
