@@ -208,24 +208,24 @@ export function ridesPipelineOperationalStatus({ filter }: { filter?: { operatio
 	return pipeline;
 }
 
-	export function ridesPipelineticketingStatus({ filter }: { filter?: { ticketing_status?: TicketingStatus[] } } = {}): AggregationPipeline<Ride> {
-		const pipeline: AggregationPipeline<Ride> = []
-			if(filter?.ticketing_status?.length) return pipeline; 
-		
-			const includesHasTicketing = filter.ticketing_status.includes('has_Ticketing');
-			const includesNoTicketing = filter.ticketing_status.includes('no_Ticketing');
+export function ridesPipelineticketingStatus({ filter }: { filter?: { ticketing_status?: TicketingStatus[] } } = {}): AggregationPipeline<Ride> {
+	const pipeline: AggregationPipeline<Ride> = [];
+	if (filter?.ticketing_status?.length) return pipeline;
 
-			if (includesHasTicketing && !includesNoTicketing) return pipeline;
+	const includesHasTicketing = filter.ticketing_status.includes('has_ticketing');
+	const includesNoTicketing = filter.ticketing_status.includes('no_ticketing');
 
-			if (includesHasTicketing ){
-				pipeline.push({ $match: { apex_validations_qty: { $gte: 1 } } });
-			}
+	if (includesHasTicketing && !includesNoTicketing) return pipeline;
 
-			if (includesNoTicketing) {
-				pipeline.push({ $match: { apex_validations_qty: { $eq: 0 } } });
-			}
-			return pipeline;
+	if (includesHasTicketing) {
+		pipeline.push({ $match: { apex_validations_qty: { $gte: 1 } } });
 	}
+
+	if (includesNoTicketing) {
+		pipeline.push({ $match: { apex_validations_qty: { $eq: 0 } } });
+	}
+	return pipeline;
+}
 
 /**
  * Creates MongoDB aggregation pipeline stages to calculate and categorize seen statuses.
