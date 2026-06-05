@@ -190,9 +190,6 @@
 		}
 	},
 	"map": {
-		"MapViewStyleVehicles": {
-			"vehicles_counter": "{count, plural, =0 {Nenhum veículo em circulação} one {# veículo em circulação} other {# veículos em circulação}}"
-		},
 		"MapViewToolbar": {
 			"style": {
 				"map": "Mapa",
@@ -262,6 +259,11 @@
 		},
 		"StopsListViewList": {
 			"no_data": "Nenhuma paragem encontrada para esta pesquisa"
+		}
+	},
+	"vehicles": {
+		"VehiclesCounter": {
+			"label": "{count, plural, zero {Nenhum veículo em movimento} one {# veículo em movimento} other {# veículos em movimento}}"
 		}
 	},
 	"viewport": {

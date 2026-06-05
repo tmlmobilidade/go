@@ -4,16 +4,15 @@ import styles from './style.module.css';
 
 /* * */
 
-interface Props {
-	className?: string
+interface LiveIconProps {
 	color?: string
 }
 
 /* * */
 
-export function LiveIcon({ className, color = 'var(--color-brand-navegante)' }: Props) {
+export function LiveIcon({ color = 'var(--color-brand-navegante)' }: LiveIconProps) {
 	return (
-		<div className={`${styles.container} ${!!className && className}`}>
+		<div className={styles.container}>
 			<div className={styles.ripple} style={{ backgroundColor: color }} />
 			<div className={styles.dot} style={{ backgroundColor: color }} />
 		</div>
