@@ -1,6 +1,6 @@
 'use client';
 
-import { LiveIcon } from '@/components/common/LiveIcon';
+import { LiveIcon } from '@/components/common/display/LiveIcon';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';

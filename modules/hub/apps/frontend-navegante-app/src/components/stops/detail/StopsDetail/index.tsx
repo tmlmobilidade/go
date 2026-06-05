@@ -2,7 +2,7 @@
 
 import { StopsDetailContextProvider } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailView } from '@/components/stops/detail/StopsDetailView';
-import { BottomSheet } from '@/components/viewport/BottomSheet';
+import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { useBottomSheet } from '@/hooks/use-bottom-sheet';
 import { useTranslation } from 'react-i18next';
 

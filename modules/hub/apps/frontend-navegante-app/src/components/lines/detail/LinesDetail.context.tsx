@@ -3,7 +3,7 @@
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
+import { useOperationalDateContext } from '@/components/common/operational-date/OperationalDate.context';
 import { HubPattern, HubRoute, HubWaypoint } from '@/types/api/network';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HubAlert, type HubLine, type HubShape } from '@tmlmobilidade/types';

@@ -1,10 +1,10 @@
 'use client';
 
-import { CopyBadge } from '@/components/common/CopyBadge';
-import { IconDisplay } from '@/components/common/IconDisplay';
+import { IconDisplay } from '@/components/common/display/IconDisplay';
+import { SelectOperationalDate } from '@/components/common/operational-date/SelectOperationalDate';
 import { LineBadge } from '@/components/lines/common/LineBadge';
-import { SelectOperationalDate } from '@/components/lines/common/SelectOperationalDate';
 import { StopDisplayLocation } from '@/components/stops/common/StopDisplayLocation';
+import { CopyBadge } from '@/components/stops/detail/CopyBadge';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { Section, StopDisplayName, Surface } from '@tmlmobilidade/ui';
 

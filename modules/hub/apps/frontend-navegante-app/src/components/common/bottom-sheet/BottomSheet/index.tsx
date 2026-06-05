@@ -1,6 +1,6 @@
 'use client';
 
-import { BottomSheetClose } from '@/components/viewport/BottomSheetClose';
+import { BottomSheetClose } from '@/components/common/bottom-sheet/BottomSheetClose';
 import { Drawer } from '@mantine/core';
 import { type PropsWithChildren } from 'react';
 

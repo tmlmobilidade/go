@@ -2,7 +2,7 @@
 
 import { VehiclesDetailContextProvider } from '@/components/vehicles/detail/VehiclesDetail.context';
 import { VehiclesDetailView } from '@/components/vehicles/detail/VehiclesDetailView';
-import { BottomSheet } from '@/components/viewport/BottomSheet';
+import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { useBottomSheet } from '@/hooks/use-bottom-sheet';
 
 /* * */
