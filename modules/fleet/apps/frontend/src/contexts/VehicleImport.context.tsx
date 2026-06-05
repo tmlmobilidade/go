@@ -4,7 +4,7 @@ import { parseTxtFile } from '@/utils/parseTxtFile';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateVehicleDto, CreateVehicleSchema, PermissionCatalog, type Vehicle } from '@tmlmobilidade/types';
 import { useAgenciesContext, type UseFormReturnType, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { fetchData, unauthenticatedSwrFetcher } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -40,6 +40,45 @@ export function useVehicleImportContext() {
 		throw new Error('useVehicleImportContext must be used within VehicleImportContextProvider');
 	return context;
 }
+
+const getVehicleAgencyHistory = (vehicle: CreateVehicleDto | Vehicle): CreateVehicleDto['agency_history'] => {
+	if ((vehicle.agency_history ?? []).length > 0) {
+		return vehicle.agency_history;
+	}
+
+	return [
+		{
+			agency_id: vehicle.agency_id,
+			start_date: vehicle.start_date,
+			vehicle_id: vehicle.vehicle_id,
+		},
+	];
+};
+
+const mergeVehicleAgencyHistory = (existing: Vehicle, incoming: CreateVehicleDto): CreateVehicleDto['agency_history'] => {
+	const mergedHistory = [...getVehicleAgencyHistory(existing)];
+
+	for (const incomingHistoryItem of getVehicleAgencyHistory(incoming)) {
+		const alreadyExists = mergedHistory.some(existingHistoryItem => (
+			existingHistoryItem.agency_id === incomingHistoryItem.agency_id
+			&& existingHistoryItem.vehicle_id === incomingHistoryItem.vehicle_id
+		));
+
+		if (!alreadyExists) {
+			mergedHistory.push(incomingHistoryItem);
+		}
+	}
+
+	return mergedHistory;
+};
+
+const isSameImportValue = (a: unknown, b: unknown) => {
+	if (Array.isArray(a) || Array.isArray(b)) {
+		return JSON.stringify(a) === JSON.stringify(b);
+	}
+
+	return a === b;
+};
 
 /* * */
 
@@ -81,7 +120,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 	const diffVehicle = useCallback((existing: Vehicle, incoming: CreateVehicleDto) => {
 		const changes: VehicleImportPreview['changes'] = {};
 		for (const key of Object.keys(incoming) as (keyof CreateVehicleDto)[]) {
-			if (incoming[key] !== existing[key]) {
+			if (!isSameImportValue(incoming[key], existing[key])) {
 				changes[key] = {
 					newValue: incoming[key],
 					oldValue: existing[key],
@@ -104,7 +143,10 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 
 		try {
 			const vehiclesFromFile = await parseTxtFile(file);
-			const existingResponse = await fetchData<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST, 'GET');
+			const existingVehiclesData = await unauthenticatedSwrFetcher<Vehicle[]>(API_ROUTES.fleet.VEHICLES_LIST);
+			if (!Array.isArray(existingVehiclesData)) {
+				throw new Error('Invalid vehicles response');
+			}
 
 			if (vehiclesFromFile.length === 0) {
 				setIsError(new Error('Invalid or empty file'));
@@ -120,7 +162,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 					setIsError(new Error(`Invalid agency for vehicle ${vehicle._id}`));
 				}
 
-				const existing = existingResponse.data.find(v => v._id === vehicle._id);
+				const existing = existingVehiclesData.find(v => v._id === vehicle._id);
 
 				if (!existing) {
 					// CREATE permission
@@ -133,11 +175,6 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 					continue;
 				}
 
-				// UPDATE validations
-				if (existing.agency_id !== vehicle.agency_id) {
-					setIsError(new Error(`Vehicle ${vehicle._id} belongs to another agency`));
-				}
-
 				if (!hasUpdatePermission(vehicle.agency_id)) {
 					setIsError(new Error(`No permission to update vehicle ${vehicle._id}`));
 				}
@@ -146,13 +183,18 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 					setIsError(new Error(`vehicle ${vehicle._id} is locked to change`));
 				}
 
-				const changes = diffVehicle(existing, vehicle);
+				const vehicleWithAgencyHistory = {
+					...vehicle,
+					agency_history: mergeVehicleAgencyHistory(existing, vehicle),
+				};
+
+				const changes = diffVehicle(existing, vehicleWithAgencyHistory);
 				if (changes) {
 					updateCounter++;
 					preview.push({
 						changes,
 						mode: 'UPDATE',
-						vehicle,
+						vehicle: vehicleWithAgencyHistory,
 					});
 				}
 			}
@@ -160,7 +202,7 @@ export const VehicleImportContextProvider = ({ children }: PropsWithChildren) =>
 			setImportPreview(preview);
 			setCreatedCount(createCounter);
 			setUpdatedCount(updateCounter);
-			setExistingVehicles(existingResponse.data);
+			setExistingVehicles(existingVehiclesData);
 
 			if (createCounter === 0 && updateCounter === 0) setIsError(new Error(`Don't have vehicles to create or update in your file`));
 

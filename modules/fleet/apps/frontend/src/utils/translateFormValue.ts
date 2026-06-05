@@ -1,21 +1,23 @@
 import { Translations } from '@/lib/translations';
-import { useAgenciesContext } from '@tmlmobilidade/ui';
 
 import { formatDate } from './formatDate';
 
 /* * */
 
-export function translateFormValue(field: string, value: unknown): string {
-	if (value === undefined || value === null) return '-';
+interface TranslateFormAgency {
+	_id: string
+	name: string
+}
 
-	const agenciesContext = useAgenciesContext();
+export function translateFormValue(field: string, value: unknown, agencies: TranslateFormAgency[] = []): string {
+	if (value === undefined || value === null) return '-';
 
 	const stringValue = String(value);
 
 	switch (field) {
 		// Agency
 		case 'agency_id':
-			return agenciesContext.data.raw.find(agency => agency._id === stringValue)?.name ?? '-';
+			return agencies.find(agency => agency._id === stringValue)?.name ?? '-';
 
 		// Boolean fields
 		case 'bicycles':

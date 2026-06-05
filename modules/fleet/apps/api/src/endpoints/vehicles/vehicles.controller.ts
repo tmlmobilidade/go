@@ -135,8 +135,13 @@ export class VehiclesController {
 
 		//
 		// Get the Vehicle from the database
-		if (Array.isArray(request.params.id)) {
-			const vehicleData = await vehicles.findMany({ _id: { $in: request.params.id } });
+		const vehicleIds = Array.isArray(request.params.id) ? request.params.id : request.params.id.split(',').filter(Boolean);
+		if (vehicleIds.length === 0) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid vehicle ID');
+
+		if (vehicleIds.length > 1) {
+			if (!Array.isArray(request.body)) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid request body');
+
+			const vehicleData = await vehicles.findMany({ _id: { $in: vehicleIds } });
 
 			if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicles not found');
 
@@ -150,8 +155,10 @@ export class VehiclesController {
 			//
 			// Update the vehicles
 
-			for (const vehicle of vehicleData) {
-				await vehicles.updateById(vehicle._id, vehicle);
+			for (const vehicleId of vehicleIds) {
+				const vehicleBody = request.body.find(vehicle => vehicle._id === vehicleId);
+				if (!vehicleBody) throw new HttpException(HTTP_STATUS.BAD_REQUEST, `Missing update body for vehicle ${vehicleId}`);
+				await vehicles.updateById(vehicleId, vehicleBody);
 			}
 
 			//
@@ -163,9 +170,12 @@ export class VehiclesController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} else {
-			const vehicleData = await vehicles.findById(request.params.id);
+			const vehicleId = vehicleIds[0];
+			const vehicleData = await vehicles.findById(vehicleId);
 
 			if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
+
+			if (Array.isArray(request.body)) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid request body');
 
 			//
 			// Check if the user has permission to update vehicles
@@ -177,7 +187,7 @@ export class VehiclesController {
 			//
 			// Update the vehicle
 
-			const updatedVehicle = await vehicles.updateById(vehicleData._id, vehicleData);
+			const updatedVehicle = await vehicles.updateById(vehicleId, request.body);
 
 			//
 			// Send the updated vehicle data as the response

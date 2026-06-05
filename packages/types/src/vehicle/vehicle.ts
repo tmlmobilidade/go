@@ -10,8 +10,15 @@ import { VehicleTypologySchema } from './typology.js';
 
 /* * */
 
+const VehicleAgencyHistorySchema = z.object({
+	agency_id: z.string(),
+	start_date: OperationalDateSchema.optional(),
+	vehicle_id: z.string(),
+});
+
 export const vehicleSchema = DocumentSchema.extend({
 	// Vehicle identification
+	agency_history: z.array(VehicleAgencyHistorySchema).default([]),
 	agency_id: z.string(),
 	license_plate: z.string(),
 	make: z.string(),

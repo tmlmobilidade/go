@@ -34,7 +34,7 @@ export function VehicleDetailsHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
-			<IdTag id={vehiclesDetailContext.data.vehicle?._id} copyOnClick />
+			<IdTag id={vehiclesDetailContext.data.vehicle?.license_plate} copyOnClick />
 
 			<Spacer />
 
