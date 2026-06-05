@@ -59,16 +59,16 @@ export function MapView({ children, id, interactiveLayerIds = [], mapStyle, onCl
 		mapContext.actions.setMap(allMaps[id]);
 	}, [allMaps, id, mapContext.actions]);
 
-	const handleOnLoad = useCallback((event: MapLibreEvent) => {
-		loadMapAssets(event.target, MAP_ASSETS_ALERT_ICONS);
-		loadMapAssets(event.target, MAP_ASSETS_MISC);
-		loadMapAssets(event.target, MAP_ASSETS_VEHICLES);
-	}, []);
-
 	const mapStyleValue = mapStyle ?? mapContext.data.style;
 
 	//
 	// C. Handle actions
+
+	const handleOnLoad = (event: MapLibreEvent) => {
+		loadMapAssets(event.target, MAP_ASSETS_ALERT_ICONS);
+		loadMapAssets(event.target, MAP_ASSETS_MISC);
+		loadMapAssets(event.target, MAP_ASSETS_VEHICLES);
+	};
 
 	const handleOnMouseEnter = useCallback((event) => {
 		setCursor('pointer');

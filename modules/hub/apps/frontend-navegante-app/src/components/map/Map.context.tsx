@@ -8,15 +8,19 @@ import { createContext, type PropsWithChildren, useContext, useState } from 'rea
 
 /* * */
 
+export type UserLocationCoordinates = [longitude: number, latitude: number];
+
 interface MapContextState {
 	actions: {
 		centerMap: (source?: string) => void
 		setMap: (map: MapRef) => void
 		setStyle: (value: MapStyle) => void
+		setUserLocation: (location: null | UserLocationCoordinates) => void
 	}
 	data: {
 		map: MapRef | undefined
 		style: string
+		userLocation: null | UserLocationCoordinates
 	}
 	flags: {
 		isLoading: boolean
@@ -45,6 +49,7 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 
 	const [dataStyleState, setDataStyleState] = useState<MapContextState['data']['style']>('map');
 	const [dataMapState, setDataMapState] = useState<MapContextState['data']['map']>(undefined);
+	const [dataUserLocationState, setDataUserLocationState] = useState<MapContextState['data']['userLocation']>(null);
 
 	//
 	// B. Handle actions
@@ -55,6 +60,10 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 
 	const setMap = (map: MapRef) => {
 		setDataMapState(map);
+	};
+
+	const setUserLocation = (location: null | UserLocationCoordinates) => {
+		setDataUserLocationState(location);
 	};
 
 	const centerMap = (sourceId: string) => {
@@ -87,10 +96,12 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 			centerMap,
 			setMap,
 			setStyle,
+			setUserLocation,
 		},
 		data: {
 			map: dataMapState,
 			style: dataStyleState,
+			userLocation: dataUserLocationState,
 		},
 		flags: {
 			isLoading: false,

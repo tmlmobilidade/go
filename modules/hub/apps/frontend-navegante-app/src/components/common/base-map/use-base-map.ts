@@ -9,15 +9,15 @@ import { useCallback, useState } from 'react';
 
 type BaseMapOverlayType = 'alerts' | 'stops' | 'vehicles';
 
-type UserLocation = [longitude: number, latitude: number];
+import { type UserLocationCoordinates } from '@/components/map/Map.context';
 
 interface UseBaseMapReturnType {
 	activeBaseMapOverlays: BaseMapOverlayType[]
 	centerMapOnUserLocation: () => Promise<void>
 	isRequestingUserLocation: boolean
-	requestUserLocation: () => Promise<UserLocation>
+	requestUserLocation: () => Promise<UserLocationCoordinates>
 	toggleBaseMapOverlay: (overlay: BaseMapOverlayType) => void
-	userLocation: null | UserLocation
+	userLocation: null | UserLocationCoordinates
 	userLocationError: null | string
 }
 
@@ -53,7 +53,7 @@ export function useBaseMap(): UseBaseMapReturnType {
 		key: 'active-viewport-map-sources',
 	});
 
-	const [userLocation, setUserLocation] = useState<null | UserLocation>(null);
+	const userLocation = mapContext.data.userLocation;
 	const [isRequestingUserLocation, setIsRequestingUserLocation] = useState(false);
 	const [userLocationError, setUserLocationError] = useState<null | string>(null);
 
@@ -72,7 +72,7 @@ export function useBaseMap(): UseBaseMapReturnType {
 		});
 	};
 
-	const requestUserLocation = useCallback((): Promise<UserLocation> => {
+	const requestUserLocation = useCallback((): Promise<UserLocationCoordinates> => {
 		return new Promise((resolve, reject) => {
 			if (!navigator.geolocation) {
 				const message = 'Geolocation is not supported';
@@ -86,11 +86,11 @@ export function useBaseMap(): UseBaseMapReturnType {
 
 			navigator.geolocation.getCurrentPosition(
 				(position) => {
-					const coordinates: UserLocation = [
+					const coordinates: UserLocationCoordinates = [
 						position.coords.longitude,
 						position.coords.latitude,
 					];
-					setUserLocation(coordinates);
+					mapContext.actions.setUserLocation(coordinates);
 					setIsRequestingUserLocation(false);
 					resolve(coordinates);
 				},
@@ -107,7 +107,7 @@ export function useBaseMap(): UseBaseMapReturnType {
 				},
 			);
 		});
-	}, []);
+	}, [mapContext.actions]);
 
 	const centerMapOnUserLocation = useCallback(async () => {
 		if (!mapContext.data.map) return;
