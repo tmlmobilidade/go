@@ -4,12 +4,15 @@ import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useBaseMap } from '@/components/common/base-map/use-base-map';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { MapView } from '@/components/map/MapView';
+import { MapViewOverlayUserLocation } from '@/components/map/overlays/MapViewOverlayUserLocation';
 import { MapViewOverlayVehicles, MapViewStyleVehiclesInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
 import { MapViewStyleAlerts, MapViewStyleAlertsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
 import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleStops';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { MapLayerMouseEvent } from '@vis.gl/react-maplibre';
+
+import { useUserLocation } from '../use-user-location';
 
 /* * */
 
@@ -23,9 +26,9 @@ export function BaseMap() {
 	const alertsContext = useAlertsContext();
 	const vehiclesContext = useVehiclesContext();
 
-	const { setActiveBottomSheet } = useBottomSheet();
-
+	const { userLocationCoordinates } = useUserLocation();
 	const { activeBaseMapOverlays } = useBaseMap();
+	const { setActiveBottomSheet } = useBottomSheet();
 
 	//
 	// C. Handle actions
@@ -62,6 +65,7 @@ export function BaseMap() {
 				data={alertsContext.data.fc}
 				visible={activeBaseMapOverlays.includes('alerts')}
 			/>
+			<MapViewOverlayUserLocation coordinates={userLocationCoordinates} />
 		</MapView>
 	);
 }
