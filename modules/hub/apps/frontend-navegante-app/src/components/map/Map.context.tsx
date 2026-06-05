@@ -4,7 +4,7 @@ import { type MapStyle } from '@/components/map/MapView';
 import * as turf from '@turf/turf';
 import { type MapRef } from '@vis.gl/react-maplibre';
 import maplibregl from 'maplibre-gl';
-import { createContext, useContext, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useState } from 'react';
 
 /* * */
 
@@ -37,7 +37,7 @@ export function useMapContext() {
 
 /* * */
 
-export const MapContextProvider = ({ children }) => {
+export function MapContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
@@ -105,4 +105,4 @@ export const MapContextProvider = ({ children }) => {
 			{children}
 		</MapContext.Provider>
 	);
-};
+}
