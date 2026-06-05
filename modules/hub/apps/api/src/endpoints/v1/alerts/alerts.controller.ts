@@ -3,10 +3,9 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type Alert as HubJsonAlert } from '@tmlmobilidade/go-hub-pckg-types';
 import { encodeGtfsRtFeed, getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
-import { GtfsRtFeedMessage } from '@tmlmobilidade/types';
+import { type GtfsRtFeedMessage, type HubAlert } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -18,7 +17,7 @@ export class AlertsController {
 	 * @param request The request object.
 	 * @param reply The reply object.
 	 */
-	static async getJsonFeed(request: FastifyRequest, reply: FastifyReply<HubJsonAlert[]>) {
+	static async getJsonFeed(request: FastifyRequest, reply: FastifyReply<HubAlert[]>) {
 		//
 
 		const cachedData = await apiCache.get('hub:alerts:published:json');

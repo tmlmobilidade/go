@@ -1,6 +1,5 @@
 'use client';
 
-import { type VehicleRegistry, type VehiclesApiResponse } from '@/types/vehicles.types';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubVehiclePosition } from '@tmlmobilidade/types';
@@ -49,7 +48,6 @@ export function VehiclesContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { isLoading: allVehiclesMetadataLoading } = useSWR<VehiclesApiResponse<VehicleRegistry[]>, Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_VEHICLES_METADATA });
 	const { data: allVehiclesPositionsData, isLoading: allVehiclesPositionsLoading } = useSWR<HubVehiclePosition[], Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_VEHICLES_POSITIONS }, { refreshInterval: 1_000 }); // 1 second
 
 	//
@@ -130,7 +128,7 @@ export function VehiclesContextProvider({ children }: PropsWithChildren) {
 			vehicles: allVehiclesPositionsData || [],
 		},
 		flags: {
-			is_loading: allVehiclesMetadataLoading || allVehiclesPositionsLoading,
+			is_loading: allVehiclesPositionsLoading,
 		},
 	};
 

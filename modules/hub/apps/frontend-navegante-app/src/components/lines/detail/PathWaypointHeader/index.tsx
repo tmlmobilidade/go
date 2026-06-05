@@ -1,6 +1,5 @@
 /* * */
 
-import { IconDisplay } from '@/components/common/display/IconDisplay';
 import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { formatStopLocation } from '@/utils/format-stop-location';
@@ -76,15 +75,6 @@ export function PathWaypointHeader({ isFirstStop, isLastStop, isSelected, waypoi
 					{stopIdClipboard.copied ? <IconCheck className={styles.stopIdCopyIcon} /> : <IconCopy className={styles.stopIdCopyIcon} />}
 				</p>
 			</div>
-			{isSelected && stopData.flags.length > 0 && (
-				<div className={styles.facilitiesWrapper}>
-					{stopData.flags.map(flag => (
-						<IconDisplay key={flag.short_name} category="facilities" name={flag.short_name} />
-					))}
-				</div>
-			)}
 		</div>
 	);
-
-	//
 }
