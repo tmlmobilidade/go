@@ -3,8 +3,10 @@
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { CopyBadge } from '@/components/stops/detail/CopyBadge';
 import { useVehiclesDetailContext } from '@/components/vehicles/detail/VehiclesDetail.context';
+import { AGENCY_LOGO_MAP } from '@/lib/agency-logos-map';
 import { Dates } from '@tmlmobilidade/dates';
 import { LineBadge, LineName, Section } from '@tmlmobilidade/ui';
+import Image from 'next/image';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -45,10 +47,18 @@ export function VehiclesDetailView() {
 	return (
 		<Section>
 			<div className={styles.vehicleInfoWrapper}>
-				<LineBadge color={activeLineData?.color} shortName={activeLineData?.short_name} size="full-width" textColor={activeLineData?.text_color} />
+
+				<div className={styles.lineInfoWrapper}>
+					<LineBadge color={activeLineData?.color} shortName={activeLineData?.short_name} size="full-width" textColor={activeLineData?.text_color} />
+					<Image alt="" height={40} src={AGENCY_LOGO_MAP[activeLineData?.agency_id]} width={60} />
+				</div>
+
 				<LineName align="center" longName={activeLineData?.long_name} />
+
 				<CopyBadge value={vehiclesDetailContext.data.vehicle?.vehicle_id} />
+
 				<p className={styles.lastSeenLabel}>{t('default:vehicles.VehiclesDetailView.seen_seconds_ago', '', { count: differenceInSeconds })}</p>
+
 			</div>
 		</Section>
 	);

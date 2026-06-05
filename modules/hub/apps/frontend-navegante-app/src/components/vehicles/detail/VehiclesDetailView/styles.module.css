@@ -12,3 +12,11 @@
 	font-weight: var(--font-weight-semibold);
 	color: var(--color-system-text-300);
 }
+
+.lineInfoWrapper {
+	display: flex;
+	flex-direction: row;
+	gap: 10px;
+	align-items: center;
+	justify-content: center;
+}
