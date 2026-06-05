@@ -180,7 +180,7 @@ export function MapViewOverlayVehicles({ presentBeforeId, showCounter, vehiclesD
 	return (
 		<>
 
-			<Source data={animatedData} generateId={true} id="default-source-vehicles" type="geojson">
+			<Source data={animatedData} generateId={false} id="default-source-vehicles" type="geojson">
 
 				<Layer
 					beforeId={presentBeforeId}

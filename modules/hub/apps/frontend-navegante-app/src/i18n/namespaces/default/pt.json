@@ -211,6 +211,9 @@
 			"hours": "h",
 			"minutes": "min"
 		},
+		"StopsDetail": {
+			"title": "Paragem"
+		},
 		"StopsDetailAlerts": {
 			"heading": "Alertas ativos",
 			"subheading": "Alertas ativos para esta paragem ou para linhas que passam nesta paragem."

@@ -1,5 +1,6 @@
 'use client';
 
+import { type HubStop } from '@tmlmobilidade/types';
 import { Layer, type MapMouseEvent, Popup, Source } from '@vis.gl/react-maplibre';
 import { type Feature, type FeatureCollection, type Point } from 'geojson';
 import { useEffect, useState } from 'react';

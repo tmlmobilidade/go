@@ -24,7 +24,7 @@ export function BottomSheet({ children, onClose, opened, size = 'full', title }:
 			position="bottom"
 			size={size === 'full' ? '95%' : '45%'}
 		>
-			<Drawer.Overlay />
+			{size === 'full' && <Drawer.Overlay />}
 			<Drawer.Content classNames={{ content: styles.content }}>
 				<Drawer.Header classNames={{ header: styles.header }} data-with-title={!!title}>
 					<BottomSheetClose onClick={onClose} />
