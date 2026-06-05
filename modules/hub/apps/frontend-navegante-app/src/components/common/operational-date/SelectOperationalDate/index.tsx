@@ -17,14 +17,14 @@ export function SelectOperationalDate() {
 
 	const { t } = useTranslation();
 
-	const { isTodaySelected, isTomorrowSelected, selectedOperationalDate, selectedOperationalDateAsJsDate, setOperationalDateFromFormat, setOperationalDateToToday, setOperationalDateToTomorrow } = useOperationalDate();
+	const [modalIsOpen, setModalIsOpen] = useState(false);
 
-	const [opened, setOpened] = useState(false);
+	const { isTodaySelected, isTomorrowSelected, selectedOperationalDate, setOperationalDateFromFormat, setOperationalDateToToday, setOperationalDateToTomorrow } = useOperationalDate();
 
 	//
 	// B. Transform data
 
-	const selectedOperationalDateFormatted = useMemo(() => {
+	const selectedOperationalDateDisplay = useMemo(() => {
 		if (!selectedOperationalDate) return '';
 		return Dates
 			.fromOperationalDate(selectedOperationalDate, 'Europe/Lisbon')
@@ -32,11 +32,19 @@ export function SelectOperationalDate() {
 			.toFormat('d MMM yy');
 	}, [selectedOperationalDate]);
 
+	const selectedOperationalDatePicker = useMemo(() => {
+		if (!selectedOperationalDate) return null;
+		return Dates
+			.fromOperationalDate(selectedOperationalDate, 'Europe/Lisbon')
+			.set({ hour: 15 })
+			.toFormat('yyyy-MM-dd');
+	}, [selectedOperationalDate]);
+
 	const segementedControlOptions = useMemo(() => [
 		{ label: t('default:lines.SelectOperationalDate.today'), value: 'today' },
 		{ label: t('default:lines.SelectOperationalDate.tomorrow'), value: 'tomorrow' },
-		{ label: <span onClick={() => setOpened(true)}>{selectedOperationalDateFormatted}</span>, value: 'custom_date' },
-	], [selectedOperationalDateFormatted, t]);
+		{ label: <span onClick={() => setModalIsOpen(true)}>{selectedOperationalDateDisplay}</span>, value: 'custom_date' },
+	], [selectedOperationalDateDisplay, t]);
 
 	const selectedSegmentedControlOption = useMemo(() => {
 		if (isTodaySelected) return 'today';
@@ -51,12 +59,12 @@ export function SelectOperationalDate() {
 	const handleSegmentedControlChange = (value: string) => {
 		if (value === 'today') setOperationalDateToToday();
 		else if (value === 'tomorrow') setOperationalDateToTomorrow();
-		else if (value === 'custom_date') setOpened(true);
+		else if (value === 'custom_date') setModalIsOpen(true);
 	};
 
 	const handleSelectOperationalDateFromModal = (value: string) => {
 		setOperationalDateFromFormat(value, 'yyyy-MM-dd');
-		setOpened(false);
+		setModalIsOpen(false);
 	};
 
 	//
@@ -66,8 +74,8 @@ export function SelectOperationalDate() {
 		<>
 
 			<Modal
-				onClose={() => setOpened(false)}
-				opened={opened}
+				onClose={() => setModalIsOpen(false)}
+				opened={modalIsOpen}
 				padding={0}
 				size="auto"
 				withCloseButton={false}
@@ -75,7 +83,7 @@ export function SelectOperationalDate() {
 				<DatePicker
 					onChange={handleSelectOperationalDateFromModal}
 					size="lg"
-					value={selectedOperationalDateAsJsDate}
+					value={selectedOperationalDatePicker}
 				/>
 			</Modal>
 

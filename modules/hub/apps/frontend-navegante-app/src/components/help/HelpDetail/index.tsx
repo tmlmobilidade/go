@@ -1,8 +1,8 @@
 'use client';
 
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
+import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { NoDataLabel } from '@/components/common/display/NoDataLabel';
-import { useBottomSheet } from '@/hooks/use-bottom-sheet';
 import { Accordion } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';

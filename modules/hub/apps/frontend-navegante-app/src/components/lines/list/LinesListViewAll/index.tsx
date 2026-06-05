@@ -1,11 +1,11 @@
 /* * */
 
+import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { NoDataLabel } from '@/components/common/display/NoDataLabel';
 import { RegularListItem } from '@/components/common/lists/RegularListItem';
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { LinesListGroup } from '@/components/lines/list/LinesListGroup';
-import { useBottomSheet } from '@/hooks/use-bottom-sheet';
 import { Space } from '@mantine/core';
 import { LoadingSection, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';

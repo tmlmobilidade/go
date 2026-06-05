@@ -1,13 +1,13 @@
 'use client';
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
+import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { MapView } from '@/components/map/MapView';
 import { MapViewOverlayVehicles, MapViewStyleVehiclesInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
 import { MapViewStyleAlerts, MapViewStyleAlertsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
 import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleStops';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
-import { useBottomSheet } from '@/hooks/use-bottom-sheet';
 import { useViewportMapOverlays } from '@/hooks/use-viewport-map-overlays';
 import { MapLayerMouseEvent } from '@vis.gl/react-maplibre';
 

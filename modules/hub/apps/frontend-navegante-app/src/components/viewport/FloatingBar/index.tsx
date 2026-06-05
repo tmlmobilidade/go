@@ -1,7 +1,7 @@
 'use client';
 
+import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { FloatingBarButton } from '@/components/viewport/FloatingBarButton';
-import { useBottomSheet } from '@/hooks/use-bottom-sheet';
 import { IconAlertTriangle, IconQuestionMark, IconSearch } from '@tabler/icons-react';
 
 import styles from './styles.module.css';
