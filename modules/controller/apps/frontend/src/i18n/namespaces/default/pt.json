@@ -80,7 +80,11 @@
 			"label": "Estado"
 		},
 		"RidesListFilterTicketingStatus": {
-			"label": "Bilhética"
+			"label": "Bilhética",
+			"options": {
+				"has_ticketing": "Com bilhética",
+				"no_ticketing": "Sem bilhética"
+			}
 		},
 		"RidesListHeader": {
 			"export": "Exportar circulações",
