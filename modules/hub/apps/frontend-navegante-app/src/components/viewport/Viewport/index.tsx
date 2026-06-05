@@ -1,14 +1,14 @@
 'use client';
 
 import { AlertsList } from '@/components/alerts/list/AlertsList';
+import { ActionBar } from '@/components/common/action-bar/ActionBar';
+import { VehiclesCounter } from '@/components/common/display/VehiclesCounter';
 import { HelpDetail } from '@/components/help/HelpDetail';
 import { LinesDetail } from '@/components/lines/detail/LinesDetail';
 import { SearchDetail } from '@/components/search/SearchDetail';
 import { StopsDetail } from '@/components/stops/detail/StopsDetail';
-import { VehiclesCounter } from '@/components/vehicles/common/VehiclesCounter';
 import { VehiclesDetail } from '@/components/vehicles/detail/VehiclesDetail';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
-import { FloatingBar } from '@/components/viewport/FloatingBar';
 import { ViewportMap } from '@/components/viewport/ViewportMap';
 import { ViewportMapOverlaysControl } from '@/components/viewport/ViewportMapOverlaysControl';
 import { useColorScheme } from '@mantine/hooks';
@@ -42,7 +42,7 @@ export function Viewport() {
 		<>
 			<ViewportMap />
 			<ViewportMapOverlaysControl />
-			<FloatingBar />
+			<ActionBar />
 			<VehiclesDetail />
 			<LinesDetail />
 			<StopsDetail />

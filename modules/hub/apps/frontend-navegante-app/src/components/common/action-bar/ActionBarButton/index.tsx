@@ -4,7 +4,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-interface FloatingBarButtonProps {
+interface ActionBarButtonProps {
 	badgeCount?: number
 	icon: React.ReactNode
 	onClick: () => void
@@ -12,7 +12,7 @@ interface FloatingBarButtonProps {
 
 /* * */
 
-export function FloatingBarButton({ badgeCount, icon, onClick }: FloatingBarButtonProps) {
+export function ActionBarButton({ badgeCount, icon, onClick }: ActionBarButtonProps) {
 	return (
 		<div className={styles.button} onClick={onClick}>
 			{badgeCount && <div className={styles.badge}>{badgeCount}</div>}

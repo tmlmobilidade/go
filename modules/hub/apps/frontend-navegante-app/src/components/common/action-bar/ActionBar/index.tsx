@@ -1,14 +1,14 @@
 'use client';
 
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
-import { FloatingBarButton } from '@/components/viewport/FloatingBarButton';
+import { ActionBarButton } from '@/components/common/action-bar/ActionBarButton';
 import { IconAlertTriangle, IconQuestionMark, IconSearch } from '@tabler/icons-react';
 
 import styles from './styles.module.css';
 
 /* * */
 
-export function FloatingBar() {
+export function ActionBar() {
 	//
 
 	//
@@ -22,17 +22,17 @@ export function FloatingBar() {
 	return (
 		<div className={styles.container}>
 
-			<FloatingBarButton
+			<ActionBarButton
 				icon={<IconQuestionMark size={30} />}
 				onClick={() => setActiveBottomSheet({ view: 'help' })}
 			/>
 
-			<FloatingBarButton
+			<ActionBarButton
 				icon={<IconAlertTriangle size={28} />}
 				onClick={() => setActiveBottomSheet({ view: 'alerts-list' })}
 			/>
 
-			<FloatingBarButton
+			<ActionBarButton
 				icon={<IconSearch size={28} />}
 				onClick={() => setActiveBottomSheet({ view: 'search' })}
 			/>
