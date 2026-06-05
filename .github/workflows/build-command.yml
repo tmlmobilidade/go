@@ -1,8 +1,8 @@
 name: PR Module Build
 
 on:
-  pull_request:
-    types: [labeled]
+  issue_comment:
+    types: [created]
   workflow_dispatch:
     inputs:
       pr_number:
@@ -10,7 +10,7 @@ on:
         required: true
         type: string
       module:
-        description: 'Module to build (e.g. auth)'
+        description: 'Module(s) to build — space or comma separated, or "all"'
         required: true
         type: string
 
@@ -22,54 +22,65 @@ permissions:
 jobs:
   build:
     if: |
-      (github.event_name == 'pull_request' && startsWith(github.event.label.name, 'build-')) ||
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request && startsWith(github.event.comment.body, '/build')) ||
       github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - name: Resolve build target
-        id: target
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "pr_number=${{ inputs.pr_number }}" >> "$GITHUB_OUTPUT"
-            echo "module=${{ inputs.module }}" >> "$GITHUB_OUTPUT"
-            echo "ref=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
-          else
-            LABEL="${{ github.event.label.name }}"
-            echo "pr_number=${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
-            echo "module=${LABEL#build-}" >> "$GITHUB_OUTPUT"
-            echo "ref=${{ github.event.pull_request.head.ref }}" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Dispatch module build
         uses: actions/github-script@v7
         with:
           script: |
-            const module = `${{ steps.target.outputs.module }}`.trim();
-            const prNumber = Number(`${{ steps.target.outputs.pr_number }}`);
-            const ref = `${{ steps.target.outputs.ref }}`.trim();
+            const isManual = context.eventName === 'workflow_dispatch';
+            const args = isManual
+              ? context.payload.inputs.module.trim()
+              : context.payload.comment.body.replace(/^\/build\s*/i, '').trim();
+            const prNumber = isManual
+              ? Number(context.payload.inputs.pr_number)
+              : context.issue.number;
 
-            if (!module) {
-              core.setFailed('Usage: /build <module> or label build-<module>');
+            if (!args) {
+              core.setFailed('Usage: /build <module> or /build <module> <module> or /build all');
               return;
             }
 
-            await github.rest.actions.createWorkflowDispatch({
+            const buildAll = args.toLowerCase() === 'all';
+            const modules = buildAll
+              ? ['all']
+              : args.split(/[\s,]+/).map(name => name.trim()).filter(Boolean);
+
+            const { data: pr } = await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'build-modules.yml',
-              ref,
-              inputs: {
-                module,
-                build_all: 'false',
-                pr_number: String(prNumber),
-              },
+              pull_number: prNumber,
             });
 
-            if (context.eventName === 'pull_request') {
+            for (const module of modules) {
+              await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'build-modules.yml',
+                ref: pr.head.ref,
+                inputs: {
+                  module,
+                  build_all: buildAll ? 'true' : 'false',
+                  pr_number: String(prNumber),
+                },
+              });
+            }
+
+            if (!isManual) {
+              await github.rest.reactions.createForIssueComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: context.payload.comment.id,
+                content: 'rocket',
+              });
+
+              const label = buildAll ? 'all modules' : modules.map(name => `\`${name}\``).join(', ');
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: prNumber,
-                body: `Build started for \`${module}\`. Remove and re-add label \`build-${module}\` to rebuild.`,
+                body: `Build started for ${label}.`,
               });
             }
