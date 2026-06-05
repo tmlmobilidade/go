@@ -95,7 +95,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const filterAnalysisExpectedApexValidationInterval = useFilterStateList('analysis_expected_apex_validation_interval', [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'], [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'].map(item => ({ label: item, value: item })));
 	const filterAnalysisTransactionSequentiality = useFilterStateList('analysis_transaction_sequentiality', [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'], [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'].map(item => ({ label: item, value: item })));
 	const filterAcceptanceStatus = useFilterStateList('acceptance_status', RideNormalizedSchema.shape.acceptance_status.options, RideNormalizedSchema.shape.acceptance_status.options.map(item => ({ label: t(`ride_status:acceptance_status.${item}`), value: item })));
-	const filterTicketingStatus = useFilterStateList ('ticketing_status', TicketingStatusSchema.options, TicketingStatusSchema.options.map(item => ({ label: item, value: item })));
+	const filterTicketingStatus = useFilterStateList('ticketing_status', TicketingStatusSchema.options, TicketingStatusSchema.options.map(item => ({ label: t(`default:list.RidesListFilterTicketingStatus.options.${item}`), value: item })));
 
 	const { error: ridesError, isLoading: ridesLoading, lastUpdatedAt: ridesLastUpdatedAt, raw: ridesData } = useDataRides(API_ROUTES.controller.RIDES_LIST, {
 		filters: {
