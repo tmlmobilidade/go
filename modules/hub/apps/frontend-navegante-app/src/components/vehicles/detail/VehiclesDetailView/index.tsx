@@ -1,7 +1,14 @@
 'use client';
 
-import { VehiclesDetailsContent } from '@/components/vehicles/detail/VehiclesDetailsContent';
-import { Section } from '@tmlmobilidade/ui';
+import { useLinesContext } from '@/components/lines/Lines.context';
+import { CopyBadge } from '@/components/stops/detail/CopyBadge';
+import { useVehiclesDetailContext } from '@/components/vehicles/detail/VehiclesDetail.context';
+import { Dates } from '@tmlmobilidade/dates';
+import { LineBadge, LineName, Section } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import styles from './styles.module.css';
 
 /* * */
 
@@ -9,11 +16,40 @@ export function VehiclesDetailView() {
 	//
 
 	//
-	// A. Render componentss
+	// A. Setup variables
+
+	const { t } = useTranslation();
+
+	const linesContext = useLinesContext();
+	const vehiclesDetailContext = useVehiclesDetailContext();
+
+	//
+	// B. Fetch data
+
+	const activeLineData = useMemo(() => {
+		if (!vehiclesDetailContext.data.vehicle?.line_id) return;
+		return linesContext.data.lines.find(line => line._id === vehiclesDetailContext.data.vehicle?.line_id);
+	}, [linesContext.data.lines, vehiclesDetailContext.data.vehicle?.line_id]);
+
+	const differenceInSeconds = useMemo(() => {
+		if (!vehiclesDetailContext.data.vehicle?.created_at) return;
+		const nowUnixTimestamp = Dates.now('Europe/Lisbon').unix_timestamp;
+		const differenceInMilliseconds = nowUnixTimestamp - vehiclesDetailContext.data.vehicle?.created_at;
+		const differenceInSeconds = differenceInMilliseconds / 1000;
+		return differenceInSeconds;
+	}, [vehiclesDetailContext.data.vehicle?.created_at]);
+
+	//
+	// C. Render components
 
 	return (
-		<Section flexDirection="column" padding="none">
-			<VehiclesDetailsContent />
+		<Section>
+			<div className={styles.vehicleInfoWrapper}>
+				<LineBadge color={activeLineData?.color} shortName={activeLineData?.short_name} size="full-width" textColor={activeLineData?.text_color} />
+				<LineName align="center" longName={activeLineData?.long_name} />
+				<CopyBadge value={vehiclesDetailContext.data.vehicle?.vehicle_id} />
+				<p className={styles.lastSeenLabel}>{t('default:vehicles.VehiclesDetailView.seen_seconds_ago', '', { count: differenceInSeconds })}</p>
+			</div>
 		</Section>
 	);
 }

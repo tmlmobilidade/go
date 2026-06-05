@@ -265,7 +265,7 @@
 		"VehiclesCounter": {
 			"label": "{count, plural, zero {Nenhum veículo em movimento} one {# veículo em movimento} other {# veículos em movimento}}"
 		},
-		"VehiclesDetailsContent": {
+		"VehiclesDetailView": {
 			"seen_just_now": "Visto agora",
 			"seen_minutes_ago": "Visto há {count, plural, one {# minuto} other {# minutos}}"
 		},

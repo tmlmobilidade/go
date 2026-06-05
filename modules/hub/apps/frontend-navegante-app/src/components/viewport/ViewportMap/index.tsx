@@ -35,9 +35,9 @@ export function ViewportMap() {
 		if (event.features[0].layer?.id === MapViewStyleStopsInteractiveLayerId) {
 			setActiveBottomSheet({ entityId: String(event.features[0].properties._id), view: 'stops-detail' }, { replace: true });
 		} else if (event.features[0].layer?.id === MapViewStyleAlertsInteractiveLayerId) {
-			setActiveBottomSheet({ entityId: String(event.features[0].properties._id), view: 'alerts-detail' });
+			setActiveBottomSheet({ entityId: String(event.features[0].properties._id), view: 'alerts-detail' }, { replace: true });
 		} else if (event.features[0].layer?.id === MapViewStyleVehiclesInteractiveLayerId) {
-			setActiveBottomSheet({ entityId: String(event.features[0].properties.vehicle_id), view: 'vehicles-detail' });
+			setActiveBottomSheet({ entityId: String(event.features[0].properties.vehicle_id), view: 'vehicles-detail' }, { replace: true });
 		}
 	};
 
