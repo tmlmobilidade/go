@@ -46,19 +46,23 @@ class LoggersClass {
 	 * Logs an info message to the console and sends info details to Sentry if context is provided.
 	 * @param context The context object containing the info message and context.
 	 */
-	logsNode(context: Omit<LogsNodeContext, 'message'> & { message: string }) {
+	logsNode(context: Omit<LogsNodeContext, 'message' | 'app' | 'module' | 'severity'> & { message: string, app: string, module: string, severity: string }) {
 		LogsNode({
 			...context,
-			message: context.message ?? 'Unknown info',
-			service: context.service ?? this.getDefaultService(),
+			message: context.message,
+			app: context.app,
+			module: context.module,
+			severity: context.severity ?? 'info',
 		});
 	}
 
-	logsNextjs(context: Omit<LogsNextjsContext, 'message'> & { message: string }) {
+	logsNextjs(context: Omit<LogsNextjsContext, 'message' | 'app' | 'module' | 'severity'> & { message: string, app: string, module: string, severity: string }) {
 		LogsNextjs({
 			...context,
-			message: context.message ?? 'Unknown info',
-			service: context.service ?? this.getDefaultService(),
+			message: context.message,
+			app: context.app,
+			module: context.module,
+			severity: context.severity ?? 'info',
 		});
 	}
 
