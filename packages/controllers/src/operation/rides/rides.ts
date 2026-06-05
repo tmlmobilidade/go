@@ -1,6 +1,6 @@
 /* * */
 
-import * as watchJs from '@/operation/rides/watch.js';
+import { type RideChangeListener, ridesChangeStream } from '@/operation/rides/watch.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
@@ -72,6 +72,7 @@ export class RidesSharedController {
 			search: parsedQuery.search,
 			seen_statuses: parsedQuery.seen_statuses,
 			stop_ids: parsedQuery.stop_ids,
+			ticketing_status: parsedQuery.ticketing_status,
 		});
 
 		//
@@ -179,7 +180,7 @@ export class RidesSharedController {
 		//
 		// Create a listener that sends updates to this WebSocket client
 
-		const listener: watchJs.RideChangeListener = (message) => {
+		const listener: RideChangeListener = (message) => {
 			if (socket.readyState === socket.OPEN && socket.bufferedAmount < 1_000_000) {
 				socket.send(JSON.stringify(message));
 			}
@@ -189,13 +190,13 @@ export class RidesSharedController {
 		// Subscribe to the singleton change stream immediately.
 		// Sockets do not emit 'open' or 'connection' events server-side.
 
-		watchJs.ridesChangeStream.subscribe(listener);
+		ridesChangeStream.subscribe(listener);
 
 		//
 		// Cleanup the subscription to the singleton change stream
 
 		const cleanup = () => {
-			watchJs.ridesChangeStream.unsubscribe(listener);
+			ridesChangeStream.unsubscribe(listener);
 		};
 
 		socket.on('close', cleanup);

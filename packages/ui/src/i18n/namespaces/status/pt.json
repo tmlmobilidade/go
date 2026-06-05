@@ -72,5 +72,10 @@
 		"Skipped": "Ignorado",
 		"Unknown": "Desconhecido",
 		"Waiting": "Em espera"
+	},
+	"validity_status": {
+		"invalid": "Inválido",
+		"unknown": "Desconhecido",
+		"valid": "Válido"
 	}
 }
