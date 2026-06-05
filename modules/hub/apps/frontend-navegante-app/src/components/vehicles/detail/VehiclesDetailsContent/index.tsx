@@ -3,9 +3,13 @@
 /* * */
 
 import { useLinesContext } from '@/components/lines/Lines.context';
+import { CopyBadge } from '@/components/stops/detail/CopyBadge';
 import { useVehiclesDetailContext } from '@/components/vehicles/detail/VehiclesDetail.context';
-import { LineDisplay, Section } from '@tmlmobilidade/ui'; ;
+import { LineBadge, LineName, Section } from '@tmlmobilidade/ui';
+import { getPublicLineId } from '@tmlmobilidade/utils';
+import { useMemo } from 'react';
 
+import styles from './styles.module.css';
 /* * */
 
 export function VehiclesDetailsContent() {
@@ -16,33 +20,29 @@ export function VehiclesDetailsContent() {
 
 	const linesContext = useLinesContext();
 	const vehiclesDetailContext = useVehiclesDetailContext();
+	const vehicle = vehiclesDetailContext.data.vehicle;
 
 	//
 	// B. Fetch data
 
-	const activeLineData = linesContext.data.lines.find(line => line._id === vehiclesDetailContext.data.selected?.line_id?.trim());
+	const activeLineData = useMemo(() => {
+		if (!vehicle?.agency_id || !vehicle.line_id) return;
 
-	console.log(vehiclesDetailContext.data.vehicle?.line_id);
-	console.log('linesContext.data.lines', linesContext.data.lines);
-	console.log(activeLineData);
+		const publicLineId = getPublicLineId(vehicle.agency_id, vehicle.line_id.trim());
+
+		return linesContext.data.lines.find(line => line._id === publicLineId);
+	}, [linesContext.data.lines, vehicle?.agency_id, vehicle?.line_id]);
 
 	//
 	// C. Render components
 
 	return (
 		<Section padding="md">
-
-			<LineDisplay color={activeLineData?.color} longName={activeLineData?.long_name} shortName={activeLineData?.short_name} textColor={activeLineData?.text_color} />
-
-			<p>vehicle_id: {vehiclesDetailContext.data.vehicle?.vehicle_id}</p>
-			<p>agency_id: {vehiclesDetailContext.data.vehicle?.agency_id}</p>
-			<p>trip_id: {vehiclesDetailContext.data.vehicle?.trip_id}</p>
-			<p>stop_id: {vehiclesDetailContext.data.vehicle?.stop_id}</p>
-			<p>received_at: {vehiclesDetailContext.data.vehicle?.received_at}</p>
-			<p>created_at: {vehiclesDetailContext.data.vehicle?.created_at}</p>
-			<p>line_id: {vehiclesDetailContext.data.vehicle?.line_id}</p>
-			<p>pattern_id: {vehiclesDetailContext.data.vehicle?.pattern_id}</p>
-			<p>ride_id: {vehiclesDetailContext.data.vehicle?.ride_id}</p>
+			<div className={styles.vehicleInfoWrapper}>
+				<LineBadge color={activeLineData?.color} shortName={activeLineData?.short_name} textColor={activeLineData?.text_color} />
+				<LineName longName={activeLineData?.long_name} />
+				<CopyBadge value={vehicle?.vehicle_id} />
+			</div>
 		</Section>
 	);
 
