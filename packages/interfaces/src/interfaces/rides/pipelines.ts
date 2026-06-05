@@ -208,25 +208,6 @@ export function ridesPipelineOperationalStatus({ filter }: { filter?: { operatio
 	return pipeline;
 }
 
-export function ridesPipelineticketingStatus({ filter }: { filter?: { ticketing_status?: TicketingStatus[] } } = {}): AggregationPipeline<Ride> {
-	const pipeline: AggregationPipeline<Ride> = [];
-	if (filter?.ticketing_status?.length) return pipeline;
-
-	const includesHasTicketing = filter.ticketing_status.includes('has_ticketing');
-	const includesNoTicketing = filter.ticketing_status.includes('no_ticketing');
-
-	if (includesHasTicketing && !includesNoTicketing) return pipeline;
-
-	if (includesHasTicketing) {
-		pipeline.push({ $match: { apex_validations_qty: { $gte: 1 } } });
-	}
-
-	if (includesNoTicketing) {
-		pipeline.push({ $match: { apex_validations_qty: { $eq: 0 } } });
-	}
-	return pipeline;
-}
-
 /**
  * Creates MongoDB aggregation pipeline stages to calculate and categorize seen statuses.
  *
@@ -293,6 +274,27 @@ export function ridesPipelineSeenStatus({ filter }: { filter?: { seen_status?: S
 	// Stage 5: Filter by seen status if provided
 	if (filter?.seen_status) {
 		pipeline.push({ $match: { seen_status: { $in: filter.seen_status } } });
+	}
+
+	return pipeline;
+}
+
+export function ridesPipelineTicketingStatus({ filter }: { filter?: { ticketing_status?: TicketingStatus[] } } = {}): AggregationPipeline<Ride> {
+	const pipeline: AggregationPipeline<Ride> = [];
+	if (filter?.ticketing_status?.length) return pipeline;
+
+	const includesHasTicketing = filter.ticketing_status.includes('has_ticketing');
+	const includesNoTicketing = filter.ticketing_status.includes('no_ticketing');
+
+	// If both are present, match all documents (no filter needed)
+	if (includesHasTicketing && !includesNoTicketing) return pipeline;
+
+	if (includesHasTicketing) {
+		pipeline.push({ $match: { apex_validations_qty: { $gte: 1 } } });
+	}
+
+	if (includesNoTicketing) {
+		pipeline.push({ $match: { apex_validations_qty: { $eq: 0 } } });
 	}
 
 	return pipeline;
@@ -539,7 +541,7 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 	pipeline.push(...ridesPipelineDelayStatus({ filter: { end_delay_status: filter.delay_statuses, start_delay_status: filter.delay_statuses } }));
 	pipeline.push(...ridesPipelineOperationalStatus({ filter: { operational_status: filter.operational_statuses } }));
 	pipeline.push(...ridesPipelineSeenStatus({ filter: { seen_status: filter.seen_statuses } }));
-	pipeline.push(...ridePipelineTicketingStatus({ filter: { ticketing_status: filter.ticketing_status } }));
+	pipeline.push(...ridesPipelineTicketingStatus({ filter: { ticketing_status: filter.ticketing_status } }));
 
 	return pipeline;
 }
