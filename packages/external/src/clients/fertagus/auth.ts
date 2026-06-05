@@ -72,9 +72,9 @@ export class FertagusAuthClient {
 		// and handle the response, extracting the access token or throwing an error if the request fails.
 
 		const requestBody = new URLSearchParams({
+			client_id: process.env.FERTAGUS_AUTH_USERNAME,
+			client_secret: process.env.FERTAGUS_AUTH_PASSWORD,
 			grant_type: 'client_credentials',
-			password: process.env.FERTAGUS_AUTH_PASSWORD,
-			username: process.env.FERTAGUS_AUTH_USERNAME,
 		}).toString();
 
 		const response = await fetch(process.env.FERTAGUS_AUTH_URL, {

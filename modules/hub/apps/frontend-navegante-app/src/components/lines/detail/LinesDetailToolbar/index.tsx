@@ -1,6 +1,6 @@
 'use client';
 
-import { SelectOperationalDate } from '@/components/lines/common/SelectOperationalDate';
+import { SelectOperationalDate } from '@/components/common/operational-date/SelectOperationalDate';
 import { SelectActivePatternGroup } from '@/components/lines/detail/SelectActivePatternGroup';
 import { Section, Surface } from '@tmlmobilidade/ui';
 

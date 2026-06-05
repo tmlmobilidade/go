@@ -1,6 +1,6 @@
 /* * */
 
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
+import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -14,12 +14,12 @@ export function StopsDetailContentTimetableHeader() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const operationalDateContext = useOperationalDateContext();
+	const operationalDate = useOperationalDate();
 
 	//
 	// B. Render components
 
-	if (!operationalDateContext.data.selected_date) {
+	if (!operationalDate.selectedOperationalDate) {
 		return null;
 	}
 

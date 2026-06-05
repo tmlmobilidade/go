@@ -1,7 +1,7 @@
 'use client';
 
-import { NoDataLabel } from '@/components/layout/NoDataLabel';
-import { BottomSheet } from '@/components/viewport/BottomSheet';
+import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
+import { NoDataLabel } from '@/components/common/display/NoDataLabel';
 import { useBottomSheet } from '@/hooks/use-bottom-sheet';
 import { Accordion } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
@@ -32,14 +32,10 @@ export function HelpDetail() {
 	//
 	// B. Fetch data
 
-	const { data: allFaqsData, isLoading: allFaqsLoading } = useSWR<NaveganteFaq[], Error>({
-		credentials: 'omit',
-		url: 'https://carrismetropolitana.pt/admin/public-api/faqs-navegante',
-		useProperApiResponse: false,
-	});
+	const { data: allFaqsData, isLoading: allFaqsLoading } = useSWR<NaveganteFaq[], Error>({ credentials: 'omit', url: 'https://carrismetropolitana.pt/admin/public-api/faqs-navegante', useProperApiResponse: false }, { refreshInterval: 300_000 });
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<BottomSheet

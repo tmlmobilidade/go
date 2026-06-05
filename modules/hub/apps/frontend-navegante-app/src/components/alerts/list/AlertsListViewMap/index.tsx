@@ -2,7 +2,7 @@
 
 import { useAlertsListContext } from '@/components/alerts/list/AlertsList.context';
 import { MapView } from '@/components/map/MapView';
-import { MapViewStyleAlerts, MapViewStyleAlertsLayerId } from '@/components/map/MapViewStyleAlerts';
+import { MapViewStyleAlerts, MapViewStyleAlertsLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
 import { Popup } from '@vis.gl/react-maplibre';
 import { type MapLayerMouseEvent } from 'maplibre-gl';
 import { useCallback, useState } from 'react';

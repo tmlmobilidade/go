@@ -1,9 +1,9 @@
 'use client';
 
-import { NoDataLabel } from '@/components/layout/NoDataLabel';
+import { NoDataLabel } from '@/components/common/display/NoDataLabel';
+import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { LinesDetailPathList } from '@/components/lines/detail/LinesDetailPathList';
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { Surface } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -20,12 +20,12 @@ export function LinesDetailPath() {
 	const { t } = useTranslation();
 
 	const linesDetailContext = useLinesDetailContext();
-	const operationalDateContext = useOperationalDateContext();
+	const operationalDate = useOperationalDate();
 
 	//
 	// B. Render components
 
-	if (!linesDetailContext.data.active_pattern || !operationalDateContext.data.selected_date) {
+	if (!linesDetailContext.data.active_pattern || !operationalDate.selectedOperationalDate) {
 		return (
 			<Surface>
 				<NoDataLabel text={t('default:lines.LinesDetailPath.no_data')} />

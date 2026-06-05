@@ -2,10 +2,10 @@
 /* * */
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
+import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { parseEtaGtfsForStop, type StopTimetableRealtimeArrival } from '@/components/stops/detail/parse-eta-gtfs';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HubAlert, HubArrival, type HubGtfsRtFeedMessage, type HubLine, type HubPattern, type HubShape, type HubStop } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
@@ -67,7 +67,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const stopsContext = useStopsContext();
 	const linesContext = useLinesContext();
 	const alertsContext = useAlertsContext();
-	const operationalDateContext = useOperationalDateContext();
+	const operationalDate = useOperationalDate();
 	const [dataStopState, setDataStopState] = useState<HubStop | undefined>(undefined);
 	const [dataLinesState, setDataLinesState] = useState<HubLine[] | undefined>(undefined);
 	const [dataPatternsState, setDataPatternsState] = useState<HubPattern[][] | undefined>(undefined);
@@ -106,10 +106,10 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	useEffect(() => {
 		if (!dataStopState) return;
 		const linesData = dataStopState.line_ids
-			.map(lineId => linesContext.actions.getLineDataById(lineId))
+			.map(lineId => linesContext.data.lines.find(line => line._id === lineId))
 			.filter(lineData => lineData !== undefined);
 		setDataLinesState(linesData);
-	}, [dataStopState]);
+	}, [dataStopState, linesContext.data.lines]);
 
 	/**
 	 * Fetch GTFS-RT ETA feed and parse arrivals for the selected stop.
@@ -283,13 +283,13 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 
 	useEffect(() => {
 		// Return if no valid pattern groups or operational day is selected
-		if (!operationalDateContext.data.selected_date || !dataValidPatternsState) return;
+		if (!operationalDate.selectedOperationalDate || !dataValidPatternsState) return;
 
 		const validScheduledTrips: HubArrival[] = [];
 
 		for (const patternGroup of dataValidPatternsState || []) {
 			for (const trip of patternGroup.trips) {
-				if (!trip.valid_on.includes(operationalDateContext.data.selected_date.operational_date)) continue;
+				if (!trip.valid_on.includes(operationalDate.selectedOperationalDate)) continue;
 				for (const stopTime of trip.schedule) {
 					if (String(stopTime.stop_id) !== String(stopId)) continue;
 
@@ -309,20 +309,20 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		validScheduledTrips.sort((a, b) => (a.arrival_time.localeCompare(b.arrival_time)));
 
 		setDataTimetableScheduleState(validScheduledTrips);
-	}, [operationalDateContext.data.selected_date, dataValidPatternsState, stopId]);
+	}, [operationalDate.selectedOperationalDate, dataValidPatternsState, stopId]);
 
 	/**
  	* Fill state with valid pattern groups for the selected operational day.
 	*/
 
 	useEffect(() => {
-		if (!dataPatternsState || !operationalDateContext.data.selected_date) return;
-		const selectedDate = operationalDateContext.data.selected_date.operational_date;
+		if (!dataPatternsState || !operationalDate.selectedOperationalDate) return;
+		const selectedDate = operationalDate.selectedOperationalDate;
 		const activePatterns = dataPatternsState
 			.flat()
 			.filter(patternGroup => patternGroup.valid_on.includes(selectedDate));
 		setDataValidPatternsState(activePatterns);
-	}, [dataPatternsState, operationalDateContext.data.selected_date]);
+	}, [dataPatternsState, operationalDate.selectedOperationalDate]);
 
 	useEffect(() => {
 		if (!alertsContext.data.alerts) return;

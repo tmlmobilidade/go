@@ -2,9 +2,9 @@
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { MapView } from '@/components/map/MapView';
-import { MapViewStyleAlerts, MapViewStyleAlertsInteractiveLayerId } from '@/components/map/MapViewStyleAlerts';
-import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/MapViewStyleStops';
 import { MapViewOverlayVehicles, MapViewStyleVehiclesInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
+import { MapViewStyleAlerts, MapViewStyleAlertsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
+import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleStops';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { useBottomSheet } from '@/hooks/use-bottom-sheet';
@@ -33,11 +33,11 @@ export function ViewportMap() {
 	const handleMapClick = (event: MapLayerMouseEvent) => {
 		if (!event.features?.length) return;
 		if (event.features[0].layer?.id === MapViewStyleStopsInteractiveLayerId) {
-			setActiveBottomSheet({ entityId: String(event.features[0].id), view: 'stops-detail' }, { replace: true });
+			setActiveBottomSheet({ entityId: String(event.features[0].properties._id), view: 'stops-detail' }, { replace: true });
 		} else if (event.features[0].layer?.id === MapViewStyleAlertsInteractiveLayerId) {
-			setActiveBottomSheet({ entityId: String(event.features[0].id), view: 'alerts-detail' });
+			setActiveBottomSheet({ entityId: String(event.features[0].properties._id), view: 'alerts-detail' });
 		} else if (event.features[0].layer?.id === MapViewStyleVehiclesInteractiveLayerId) {
-			setActiveBottomSheet({ entityId: String(event.features[0].id), view: 'vehicles-detail' });
+			setActiveBottomSheet({ entityId: String(event.features[0].properties.vehicle_id), view: 'vehicles-detail' });
 		}
 	};
 
@@ -55,7 +55,6 @@ export function ViewportMap() {
 				visible={activeViewportMapOverlays.includes('stops')}
 			/>
 			<MapViewOverlayVehicles
-				showCounter="always"
 				vehiclesData={vehiclesContext.data.fc}
 				visible={activeViewportMapOverlays.includes('vehicles')}
 			/>

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { NoDataLabel } from '@/components/layout/NoDataLabel';
+import { NoDataLabel } from '@/components/common/display/NoDataLabel';
 import { getFutureRowStatus, isRealtimeArrival, normalizeTripIdForMatch, type StopTimetableRealtimeArrival } from '@/components/stops/detail/parse-eta-gtfs';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailContentTimetableClock } from '@/components/stops/detail/StopsDetailContentTimetableClock';

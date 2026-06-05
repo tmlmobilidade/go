@@ -21,18 +21,18 @@
 /* * */
 /* SEVERITY LEVEL */
 
-.severityLevel_0 {
+.severityLevel_low {
 	color: var(--color-alerts-0);
 }
 
-.severityLevel_1 {
+.severityLevel_info {
 	color: var(--color-alerts-1);
 }
 
-.severityLevel_2 {
+.severityLevel_medium {
 	color: var(--color-alerts-2);
 }
 
-.severityLevel_3 {
+.severityLevel_high {
 	color: var(--color-alerts-3);
 }

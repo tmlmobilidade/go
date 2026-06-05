@@ -1,7 +1,7 @@
 /* * */
 
-import { NoDataLabel } from '@/components/layout/NoDataLabel';
-import { RegularListItem } from '@/components/layout/RegularListItem';
+import { NoDataLabel } from '@/components/common/display/NoDataLabel';
+import { RegularListItem } from '@/components/common/lists/RegularListItem';
 import { StopDisplay } from '@/components/stops/common/StopDisplay';
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { useBottomSheet } from '@/hooks/use-bottom-sheet';

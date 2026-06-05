@@ -1,8 +1,8 @@
 /* * */
 
-import { IconDisplay } from '@/components/common/IconDisplay';
+import { IconDisplay } from '@/components/common/display/IconDisplay';
+import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { formatStopLocation } from '@/utils/format-stop-location';
 import { useClipboard } from '@mantine/hooks';
 import { IconCheck, IconCopy } from '@tabler/icons-react';
@@ -30,7 +30,7 @@ export function PathWaypointHeader({ isFirstStop, isLastStop, isSelected, waypoi
 	// A. Setup variables
 
 	const stopsContext = useStopsContext();
-	const operationalDateContext = useOperationalDateContext();
+	const operationalDate = useOperationalDate();
 
 	const stopIdClipboard = useClipboard();
 
@@ -61,7 +61,7 @@ export function PathWaypointHeader({ isFirstStop, isLastStop, isSelected, waypoi
 				{isSelected && (
 					<Link
 						className={styles.stopNameUrl}
-						href={`/stops/${waypointData.stop_id}?day=${operationalDateContext.data.selected_date?.operational_date}`}
+						href={`/stops/${waypointData.stop_id}?day=${operationalDate.selectedOperationalDate}`}
 						target="_blank"
 					>
 						<IconArrowUpRight size={16} />

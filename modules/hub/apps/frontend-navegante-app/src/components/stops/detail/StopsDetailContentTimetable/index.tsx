@@ -1,10 +1,10 @@
 /* * */
 
+import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailContentTimetableRealtime } from '@/components/stops/detail/StopsDetailContentTimetableRealtime';
 import { StopsDetailContentTimetableSchedule } from '@/components/stops/detail/StopsDetailContentTimetableSchedule';
 import { StopsDetailContentTimetableSkeleton } from '@/components/stops/detail/StopsDetailContentTimetableSkeleton';
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 
 import styles from './styles.module.css';
 
@@ -16,7 +16,7 @@ export function StopsDetailContentTimetable() {
 	//
 	// A. Setup variables
 
-	const operationalDateContext = useOperationalDateContext();
+	const operationalDate = useOperationalDate();
 	const stopsDetailContext = useStopsDetailContext();
 
 	//
@@ -30,7 +30,7 @@ export function StopsDetailContentTimetable() {
 
 	return (
 		<div className={styles.container}>
-			{operationalDateContext.flags.is_today_selected
+			{operationalDate.isTodaySelected
 				//
 				? <StopsDetailContentTimetableRealtime />
 				: <StopsDetailContentTimetableSchedule />}
