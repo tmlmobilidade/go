@@ -1,15 +1,11 @@
 'use client';
 
-/* * */
-
 import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
-import { SegmentedControl } from '@mantine/core';
-import { DatePickerInput } from '@mantine/dates';
-import { IconCalendarEvent } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { Modal, SegmentedControl } from '@mantine/core';
+import { DatePicker } from '@mantine/dates';
+import { Dates } from '@tmlmobilidade/dates';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import styles from './styles.module.css';
 
 /* * */
 
@@ -20,85 +16,85 @@ export function SelectOperationalDate() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const operationalDate = useOperationalDate();
 
-	const [selectedSegmentedControlOption, setSelectedSegmentedControlOption] = useState<string | undefined>();
+	const [modalIsOpen, setModalIsOpen] = useState(false);
 
-	const segementedControlOptions = [
-		{
-			label: t('default:lines.SelectOperationalDate.today'),
-			value: 'today',
-		},
-		{
-			label: t('default:lines.SelectOperationalDate.tomorrow'),
-			value: 'tomorrow',
-		},
-		{
-			label: (
-				<DatePickerInput
-					data-selected={!operationalDate.isTodaySelected && !operationalDate.isTomorrowSelected}
-					dropdownType="modal"
-					leftSection={<IconCalendarEvent className={styles.datePickerIcon} size={22} stroke={1.75} />}
-					leftSectionWidth={38}
-					onChange={operationalDate.setOperationalDateFromFormat}
-					size="xl"
-					value={operationalDate.selectedOperationalDateAsJsDate}
-					valueFormat="DD MMM YYYY"
-					variant="unstyled"
-					classNames={{
-						input: styles.datePickerInput,
-						root: styles.datePickerRoot,
-						section: styles.datePickerSection,
-						wrapper: styles.datePickerWrapper,
-					}}
-				/>
-			),
-			value: 'custom_date',
-		},
-	];
+	const { isTodaySelected, isTomorrowSelected, selectedOperationalDate, setOperationalDateFromFormat, setOperationalDateToToday, setOperationalDateToTomorrow } = useOperationalDate();
 
 	//
 	// B. Transform data
 
-	useEffect(() => {
-		if (operationalDate.isTodaySelected) {
-			setSelectedSegmentedControlOption('today');
-		} else if (operationalDate.isTomorrowSelected) {
-			setSelectedSegmentedControlOption('tomorrow');
-		} else if (!operationalDate.isTodaySelected && !operationalDate.isTomorrowSelected) {
-			setSelectedSegmentedControlOption('custom_date');
-		}
-	}, [operationalDate.isTodaySelected, operationalDate.isTomorrowSelected]);
+	const selectedOperationalDateDisplay = useMemo(() => {
+		if (!selectedOperationalDate) return '';
+		return Dates
+			.fromOperationalDate(selectedOperationalDate, 'Europe/Lisbon')
+			.set({ hour: 15 })
+			.toFormat('d MMM yy');
+	}, [selectedOperationalDate]);
+
+	const selectedOperationalDatePicker = useMemo(() => {
+		if (!selectedOperationalDate) return null;
+		return Dates
+			.fromOperationalDate(selectedOperationalDate, 'Europe/Lisbon')
+			.set({ hour: 15 })
+			.toFormat('yyyy-MM-dd');
+	}, [selectedOperationalDate]);
+
+	const segementedControlOptions = useMemo(() => [
+		{ label: t('default:lines.SelectOperationalDate.today'), value: 'today' },
+		{ label: t('default:lines.SelectOperationalDate.tomorrow'), value: 'tomorrow' },
+		{ label: <span onClick={() => setModalIsOpen(true)}>{selectedOperationalDateDisplay}</span>, value: 'custom_date' },
+	], [selectedOperationalDateDisplay, t]);
+
+	const selectedSegmentedControlOption = useMemo(() => {
+		if (isTodaySelected) return 'today';
+		if (isTomorrowSelected) return 'tomorrow';
+		if (!isTodaySelected && !isTomorrowSelected) return 'custom_date';
+		return undefined;
+	}, [isTodaySelected, isTomorrowSelected]);
 
 	//
 	// C. Handle actions
 
 	const handleSegmentedControlChange = (value: string) => {
-		if (value === 'today') {
-			operationalDate.setOperationalDateToToday();
-		} else if (value === 'tomorrow') {
-			operationalDate.setOperationalDateToTomorrow();
-		}
+		if (value === 'today') setOperationalDateToToday();
+		else if (value === 'tomorrow') setOperationalDateToTomorrow();
+		else if (value === 'custom_date') setModalIsOpen(true);
+	};
+
+	const handleSelectOperationalDateFromModal = (value: string) => {
+		setOperationalDateFromFormat(value, 'yyyy-MM-dd');
+		setModalIsOpen(false);
 	};
 
 	//
 	// D. Render components
 
 	return (
-		<SegmentedControl
-			data={segementedControlOptions}
-			onChange={handleSegmentedControlChange}
-			size="xl"
-			value={selectedSegmentedControlOption}
-			w="100%"
-			classNames={{
-				control: styles.segmentedControlDateInputOverrideControl,
-				label: styles.segmentedControlDateInputOverrideLabel,
-				root: styles.segmentedControlRoot,
-			}}
-			fullWidth
-		/>
-	);
+		<>
 
-	//
+			<Modal
+				onClose={() => setModalIsOpen(false)}
+				opened={modalIsOpen}
+				padding={0}
+				size="auto"
+				withCloseButton={false}
+			>
+				<DatePicker
+					onChange={handleSelectOperationalDateFromModal}
+					size="lg"
+					value={selectedOperationalDatePicker}
+				/>
+			</Modal>
+
+			<SegmentedControl
+				data={segementedControlOptions}
+				onChange={handleSegmentedControlChange}
+				size="md"
+				value={selectedSegmentedControlOption}
+				w="100%"
+			/>
+
+		</>
+	);
 }

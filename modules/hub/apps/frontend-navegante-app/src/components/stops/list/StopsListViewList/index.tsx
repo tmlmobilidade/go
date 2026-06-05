@@ -1,10 +1,10 @@
 /* * */
 
+import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { NoDataLabel } from '@/components/common/display/NoDataLabel';
 import { RegularListItem } from '@/components/common/lists/RegularListItem';
 import { StopDisplay } from '@/components/stops/common/StopDisplay';
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
-import { useBottomSheet } from '@/hooks/use-bottom-sheet';
 import { Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 import { ViewportList } from 'react-viewport-list';
