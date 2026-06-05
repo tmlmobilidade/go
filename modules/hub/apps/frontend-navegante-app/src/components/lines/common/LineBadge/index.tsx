@@ -33,7 +33,7 @@ export function LineBadge({ agencyId, color, lineData, lineId, onClick, shortNam
 	//
 	// B. Transform data
 
-	const fetchedLineData = lineId ? linesContext.actions.getLineDataById(lineId) : undefined;
+	const fetchedLineData = lineId ? linesContext.data.lines.find(line => line._id === lineId) : undefined;
 
 	//
 	// C. Render components

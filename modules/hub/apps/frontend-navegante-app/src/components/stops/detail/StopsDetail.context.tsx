@@ -2,10 +2,10 @@
 /* * */
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
+import { useOperationalDateContext } from '@/components/common/operational-date/OperationalDate.context';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { parseEtaGtfsForStop, type StopTimetableRealtimeArrival } from '@/components/stops/detail/parse-eta-gtfs';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { useOperationalDateContext } from '@/components/common/operational-date/OperationalDate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HubAlert, HubArrival, type HubGtfsRtFeedMessage, type HubLine, type HubPattern, type HubShape, type HubStop } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
@@ -106,10 +106,10 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	useEffect(() => {
 		if (!dataStopState) return;
 		const linesData = dataStopState.line_ids
-			.map(lineId => linesContext.actions.getLineDataById(lineId))
+			.map(lineId => linesContext.data.lines.find(line => line._id === lineId))
 			.filter(lineData => lineData !== undefined);
 		setDataLinesState(linesData);
-	}, [dataStopState]);
+	}, [dataStopState, linesContext.data.lines]);
 
 	/**
 	 * Fetch GTFS-RT ETA feed and parse arrivals for the selected stop.
