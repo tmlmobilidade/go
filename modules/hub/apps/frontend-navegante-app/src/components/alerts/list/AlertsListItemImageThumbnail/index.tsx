@@ -23,7 +23,6 @@ export function AlertsListItemImageThumbnail({ alt, src }: AlertsListItemImageTh
 		<Image
 			alt={alt}
 			className={styles.image}
-			fallbackSrc={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/assets/common/placeholder.png`}
 			src={src}
 		/>
 	);
