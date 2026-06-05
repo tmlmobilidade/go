@@ -7,4 +7,5 @@
 	line-height: 1.5;
 	color: var(--color-system-text-200);
 	white-space: pre-wrap;
+	margin-bottom: 15px;
 }

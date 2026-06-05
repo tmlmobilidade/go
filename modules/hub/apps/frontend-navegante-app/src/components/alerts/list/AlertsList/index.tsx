@@ -17,7 +17,7 @@ export function AlertsList() {
 
 	const { t } = useTranslation();
 
-	const { activeBottomSheet, closeActiveBottomSheet } = useBottomSheet();
+	const { closeActiveBottomSheet, isBottomSheetInStack } = useBottomSheet();
 
 	//
 	// A. Render components
@@ -25,7 +25,7 @@ export function AlertsList() {
 	return (
 		<BottomSheet
 			onClose={closeActiveBottomSheet}
-			opened={activeBottomSheet?.view === 'alerts-list'}
+			opened={isBottomSheetInStack('alerts-list')}
 			title={t('default:alerts.AlertsList.title')}
 		>
 			<AlertsListContextProvider>

@@ -9,7 +9,11 @@ import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/compon
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { useViewportMapOverlays } from '@/hooks/use-viewport-map-overlays';
+import { moveMap } from '@/utils/map.utils';
+import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { useMap } from '@vis.gl/react-maplibre';
 import { MapLayerMouseEvent } from '@vis.gl/react-maplibre';
+import { useEffect, useMemo } from 'react';
 
 /* * */
 
@@ -23,9 +27,41 @@ export function ViewportMap() {
 	const alertsContext = useAlertsContext();
 	const vehiclesContext = useVehiclesContext();
 
-	const { setActiveBottomSheet } = useBottomSheet();
+	const { activeBottomSheet, setActiveBottomSheet } = useBottomSheet();
 
 	const { activeViewportMapOverlays } = useViewportMapOverlays();
+
+	const { 'viewport-map': viewportMap } = useMap();
+
+	const focusedAlertId = activeBottomSheet?.view === 'alerts-detail'
+		? activeBottomSheet.entityId
+		: null;
+
+	const alertsMapData = useMemo(() => {
+		if (!focusedAlertId) return alertsContext.data.fc;
+
+		const collection = getBaseGeoJsonFeatureCollection();
+
+		alertsContext.data.fc.features.forEach((feature) => {
+			const featureId = feature.properties?.id ?? feature.properties?._id;
+
+			if (featureId === focusedAlertId) collection.features.push(feature);
+		});
+
+		return collection;
+	}, [alertsContext.data.fc, focusedAlertId]);
+
+	useEffect(() => {
+		if (!viewportMap || !focusedAlertId || !activeViewportMapOverlays.includes('alerts')) return;
+
+		const focusedFeature = alertsMapData.features.find(
+			feature => feature.geometry?.type === 'Point',
+		);
+
+		if (!focusedFeature || focusedFeature.geometry?.type !== 'Point') return;
+
+		moveMap(viewportMap, focusedFeature.geometry.coordinates);
+	}, [viewportMap, focusedAlertId, alertsMapData.features, activeViewportMapOverlays]);
 
 	//
 	// C. Handle actions
@@ -44,8 +80,11 @@ export function ViewportMap() {
 		if (layerId === MapViewStyleAlertsInteractiveLayerId) {
 			const alertId = feature.properties.id ?? feature.properties._id;
 
-			if (!alertId) return;
+			if (!alertId || feature.geometry?.type !== 'Point') return;
 
+			const [longitude, latitude] = feature.geometry.coordinates;
+
+			moveMap(event.target, [longitude, latitude]);
 			setActiveBottomSheet({ entityId: String(alertId), view: 'alerts-detail' }, { replace: true });
 			return;
 		}
@@ -73,7 +112,7 @@ export function ViewportMap() {
 				visible={activeViewportMapOverlays.includes('vehicles')}
 			/>
 			<MapViewStyleAlerts
-				data={alertsContext.data.fc}
+				data={alertsMapData}
 				visible={activeViewportMapOverlays.includes('alerts')}
 			/>
 		</MapView>
