@@ -96,10 +96,13 @@ jobs:
       - name: Reply when no valid modules
         if: steps.validate.outputs.valid_modules == ''
         uses: actions/github-script@v8
+        env:
+          INVALID_MODULES: ${{ steps.validate.outputs.invalid_modules }}
+          AVAILABLE_MODULES: ${{ steps.validate.outputs.available }}
         with:
           script: |
-            const invalid = `${{ steps.validate.outputs.invalid_modules }}`.split(',').filter(Boolean);
-            const available = `${{ steps.validate.outputs.available }}`.trim().split('\n').filter(Boolean);
+            const invalid = (process.env.INVALID_MODULES || '').split(',').filter(Boolean);
+            const available = (process.env.AVAILABLE_MODULES || '').trim().split('\n').filter(Boolean);
             const list = available.map((m) => `- \`${m}\``).join('\n');
 
             await github.rest.issues.createComment({
@@ -119,12 +122,18 @@ jobs:
       - name: Dispatch module builds
         if: steps.validate.outputs.valid_modules != ''
         uses: actions/github-script@v8
+        env:
+          VALID_MODULES: ${{ steps.validate.outputs.valid_modules }}
+          INVALID_MODULES: ${{ steps.validate.outputs.invalid_modules }}
+          PR_NUMBER: ${{ steps.pr.outputs.pr_number }}
+          HEAD_REF: ${{ steps.pr.outputs.head_ref }}
+          REPOSITORY: ${{ github.repository }}
         with:
           script: |
-            const modules = '${{ steps.validate.outputs.valid_modules }}';
-            const invalid = `${{ steps.validate.outputs.invalid_modules }}`.split(',').filter(Boolean);
-            const prNumber = '${{ steps.pr.outputs.pr_number }}';
-            const headRef = '${{ steps.pr.outputs.head_ref }}';
+            const modules = process.env.VALID_MODULES || '';
+            const invalid = (process.env.INVALID_MODULES || '').split(',').filter(Boolean);
+            const prNumber = process.env.PR_NUMBER || '';
+            const headRef = process.env.HEAD_REF || '';
             const built = modules.split(',').map((m) => `\`${m}\``).join(', ');
 
             await github.rest.actions.createWorkflowDispatch({
@@ -143,7 +152,7 @@ jobs:
             const lines = [
               `Building module(s): ${built} for this PR.`,
               '',
-              'Track progress in the [Build Modules](https://github.com/${{ github.repository }}/actions/workflows/build-modules.yml) workflow.',
+              `Track progress in the [Build Modules](https://github.com/${process.env.REPOSITORY}/actions/workflows/build-modules.yml) workflow.`,
             ];
 
             if (invalid.length) {

@@ -31,10 +31,12 @@ jobs:
 
       - name: Comment PR environment and builds
         uses: actions/github-script@v8
+        env:
+          MODULE_LIST: ${{ steps.modules.outputs.list }}
         with:
           script: |
             const prNumber = context.payload.pull_request.number;
-            const moduleList = `${{ steps.modules.outputs.list }}`.trim();
+            const moduleList = (process.env.MODULE_LIST || '').trim();
 
             const body = [
               `Behold! Your PR has ascended to its own environment:`,
