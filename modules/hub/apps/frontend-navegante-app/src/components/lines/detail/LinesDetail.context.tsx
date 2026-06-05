@@ -86,9 +86,9 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	}, [lineId, linesContext.data.lines]);
 
 	const availableRoutesData = useMemo(() => {
-		if (!selectedLineData?.route_ids.length) return;
+		if (!selectedLineData?.route_ids?.length) return;
 		return linesContext.data.routes.filter(item => selectedLineData.route_ids.includes(item.id));
-	}, [linesContext.data.routes, selectedLineData.route_ids]);
+	}, [linesContext.data.routes, selectedLineData?.route_ids]);
 
 	useEffect(() => {
 		(async () => {
