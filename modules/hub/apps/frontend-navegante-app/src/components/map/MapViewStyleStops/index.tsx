@@ -25,7 +25,7 @@ const baseGeoJsonFeatureCollection = getBaseGeoJsonFeatureCollection();
 
 export function MapViewStyleStops({ presentBeforeId, stopsData = baseGeoJsonFeatureCollection, style = 'primary', visible = true }: Props) {
 	return (
-		<Source data={stopsData} generateId={false} id="default-source-stops-all" type="geojson">
+		<Source data={stopsData} generateId={true} id="default-source-stops-all" type="geojson">
 
 			{style === 'primary' && (
 				<Layer

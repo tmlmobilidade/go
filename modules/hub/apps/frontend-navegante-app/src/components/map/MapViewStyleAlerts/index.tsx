@@ -25,7 +25,7 @@ const baseGeoJsonFeatureCollection = getBaseGeoJsonFeatureCollection();
 
 export function MapViewStyleAlerts({ data = baseGeoJsonFeatureCollection, presentBeforeId, visible = true }: Props) {
 	return (
-		<Source data={data} generateId={false} id={MapViewStyleAlertsSourceId} type="geojson">
+		<Source data={data} generateId={true} id={MapViewStyleAlertsSourceId} type="geojson">
 			<Layer
 				beforeId={presentBeforeId}
 				id={MapViewStyleAlertsLayerId}

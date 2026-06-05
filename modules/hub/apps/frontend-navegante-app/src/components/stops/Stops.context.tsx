@@ -110,7 +110,6 @@ export function transformStopDataIntoGeoJsonFeature(stopData: HubStop): GeoJSON.
 			coordinates: [stopData.longitude, stopData.latitude],
 			type: 'Point',
 		},
-		id: String(stopData._id),
 		properties: stopData,
 		type: 'Feature',
 	};
