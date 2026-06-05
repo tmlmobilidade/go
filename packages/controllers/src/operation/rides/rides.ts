@@ -72,6 +72,7 @@ export class RidesSharedController {
 			search: parsedQuery.search,
 			seen_statuses: parsedQuery.seen_statuses,
 			stop_ids: parsedQuery.stop_ids,
+			//
 			ticketing_status: parsedQuery.ticketing_status,
 		});
 
