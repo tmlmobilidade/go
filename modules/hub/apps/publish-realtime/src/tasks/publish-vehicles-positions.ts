@@ -6,7 +6,7 @@ import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type HubPlan, type HubVehiclePosition, HubVehiclePositionSchema, validateCalendarDate } from '@tmlmobilidade/types';
-import { getPublicTripId, getPublicVehicleId } from '@tmlmobilidade/utils';
+import { getPublicLineId, getPublicPatternId, getPublicTripId, getPublicVehicleId } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -60,8 +60,8 @@ export async function publishVehiclesPositions() {
 					...vehicleEventData,
 					calendar_date: validateCalendarDate(vehicleEventData.operational_date),
 					geohash: vehicleEventData.geohash ?? null,
-					line_id: String(associatedRide.line_id),
-					pattern_id: associatedRide.pattern_id,
+					line_id: getPublicLineId(vehicleEventData.agency_id, String(associatedRide.line_id)),
+					pattern_id: getPublicPatternId(vehicleEventData.agency_id, String(associatedRide.pattern_id)),
 					ride_id: associatedRide._id,
 					trip_id: getPublicTripId(activePlanIdForAgency, vehicleEventData.agency_id, vehicleEventData.trip_id),
 					vehicle_id: getPublicVehicleId(vehicleEventData.agency_id, vehicleEventData.vehicle_id),

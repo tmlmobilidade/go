@@ -30,9 +30,7 @@ export function VehiclesDetailsContent() {
 
 	const activeLineData = useMemo(() => {
 		if (!vehicle?.agency_id || !vehicle.line_id) return;
-
 		const publicLineId = getPublicLineId(vehicle.agency_id, vehicle.line_id.trim());
-
 		return linesContext.data.lines.find(line => line._id === publicLineId);
 	}, [linesContext.data.lines, vehicle?.agency_id, vehicle?.line_id]);
 
