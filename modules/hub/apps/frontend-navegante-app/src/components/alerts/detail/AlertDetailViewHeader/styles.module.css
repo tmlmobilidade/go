@@ -6,3 +6,14 @@
 	font-weight: var(--font-weight-bold);
 	color: var(--color-system-text-100);
 }
+
+/* * */
+/* ROW */
+
+.row {
+	display: flex;
+	flex-direction: row;
+	gap: 15px;
+	align-items: center;
+	justify-content: center;
+}

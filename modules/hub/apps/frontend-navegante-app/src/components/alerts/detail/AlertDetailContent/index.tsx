@@ -13,13 +13,22 @@ interface AlertDetailContentProps {
 /* * */
 
 export function AlertDetailContent({ alert }: AlertDetailContentProps) {
+	//
+
+	//
+	// B. Render components
+
+	if (!alert) return null;
+
 	return (
 		<Section padding="md">
-			<AlertEffectIcon effect={alert.effect} />
+			
 			{alert.active_period_start_date && (
 				<AlertActivePeriodStart date={alert.active_period_start_date} size="sm" />
 			)}
 			<p>{alert.description}</p>
 		</Section>
 	);
+
+	//
 }

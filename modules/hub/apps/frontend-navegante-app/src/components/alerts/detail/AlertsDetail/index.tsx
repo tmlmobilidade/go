@@ -16,7 +16,7 @@ export function AlertsDetail() {
 	const { activeBottomSheet, closeActiveBottomSheet } = useBottomSheet();
 	const alertsContext = useAlertsContext();
 
-	const alert = alertsContext.actions.getAlertById(activeBottomSheet.entityId);
+	const alert = activeBottomSheet?.entityId ? alertsContext.actions.getAlertById(activeBottomSheet.entityId) : null;
 
 	//
 	// B. Render components
