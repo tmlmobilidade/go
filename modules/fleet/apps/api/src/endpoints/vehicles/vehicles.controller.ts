@@ -142,8 +142,9 @@ export class VehiclesController {
 			if (!Array.isArray(request.body)) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid request body');
 
 			const vehicleData = await vehicles.findMany({ _id: { $in: vehicleIds } });
-
-			if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicles not found');
+			if (vehicleData.length !== vehicleIds.length) {
+				throw new HttpException(HTTP_STATUS.NOT_FOUND, 'One or more vehicles not found');
+			}
 
 			//
 			// Check if the user has permission to update vehicles
