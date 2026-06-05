@@ -49,7 +49,7 @@ export function VehiclesContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: allVehiclesMetadataData, isLoading: allVehiclesMetadataLoading } = useSWR<VehiclesApiResponse<VehicleRegistry[]>, Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_VEHICLES_METADATA });
+	const { isLoading: allVehiclesMetadataLoading } = useSWR<VehiclesApiResponse<VehicleRegistry[]>, Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_VEHICLES_METADATA });
 	const { data: allVehiclesPositionsData, isLoading: allVehiclesPositionsLoading } = useSWR<SimplifiedVehicleEvent[], Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_VEHICLES_POSITIONS }, { refreshInterval: 1_000 }); // 1 second
 
 	//
@@ -154,7 +154,7 @@ export function transformVehicleDataIntoGeoJsonFeature(vehicleData: SimplifiedVe
 			coordinates: [vehicleData.longitude || 0, vehicleData.latitude || 0],
 			type: 'Point',
 		},
-		id: `[${vehicleData.agency_id}]${vehicleData.vehicle_id}`,
+		id: vehicleData.vehicle_id,
 		properties: vehicleData,
 		type: 'Feature',
 	};

@@ -14,6 +14,7 @@ export const HubPlanSchema = z.object({
 	gtfs_agency: GtfsAgencySchema,
 	gtfs_feed_info: GtfsFeedInfoSchema,
 	hash: z.string(),
+	is_active: z.boolean().default(false),
 	operation_file_id: z.string(),
 	operation_file_url: z.string(),
 	updated_at: UnixTimestampSchema,

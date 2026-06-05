@@ -10,7 +10,6 @@ export const ApiCacheKeyValues = [
 	'hub:alerts:published:rss',
 	'hub:alerts:published:rss:cm',
 	'hub:plans:approved:json',
-	'hub:plans:active:json',
 	'hub:realtime:vehicles:metadata:json',
 	'hub:realtime:vehicles:positions:json',
 	'hub:realtime:vehicles:positions:gtfs',
