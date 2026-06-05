@@ -43,8 +43,11 @@ export interface HubTrip {
 export interface HubArrival {
 	arrival_time: string
 	arrival_time_24h: string
+	line_id: string
+	pattern_id: string
 	stop_id: string
 	stop_sequence: number
+	trip_id: string
 }
 
 export interface HubPatternRealtime {
