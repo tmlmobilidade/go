@@ -1,10 +1,10 @@
 'use client';
 
-import { AlertsContextProvider } from '@/contexts/Alerts.context';
-import { LinesContextProvider } from '@/contexts/Lines.context';
+import { AlertsContextProvider } from '@/components/alerts/Alerts.context';
+import { LinesContextProvider } from '@/components/lines/Lines.context';
+import { StopsContextProvider } from '@/components/stops/Stops.context';
 import { OperationalDateContextProvider } from '@/contexts/OperationalDate.context';
-import { StopsContextProvider } from '@/contexts/Stops.context';
-import { VehiclesContextProvider } from '@/contexts/Vehicles.context';
+import { VehiclesContextProvider } from '@/components/vehicles/Vehicles.context';
 import { type PropsWithChildren } from 'react';
 
 /* * */

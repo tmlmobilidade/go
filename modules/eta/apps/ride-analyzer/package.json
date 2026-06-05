@@ -19,7 +19,7 @@
 		"lint:fix": "eslint src --fix"
 	},
 	"dependencies": {
-		"@clickhouse/client": "1.18.5",
+		"@clickhouse/client": "1.19.0",
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-eta-pckg-common": "*",
@@ -34,7 +34,7 @@
 		"@tmlmobilidade/types": "*",
 		"@types/node": "25.9.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.3",
+		"tsx": "4.22.4",
 		"typescript": "5.9.3"
 	}
 }

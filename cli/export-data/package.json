@@ -36,10 +36,11 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@clack/prompts": "1.4.0",
+		"@clack/prompts": "1.5.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/writers": "*",

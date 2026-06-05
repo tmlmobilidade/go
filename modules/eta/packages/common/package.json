@@ -15,7 +15,7 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@clickhouse/client": "1.18.5",
+		"@clickhouse/client": "1.19.0",
 		"@tmlmobilidade/databases": "*"
 	},
 	"devDependencies": {

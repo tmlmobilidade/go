@@ -19,6 +19,7 @@
 	"dependencies": {
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/external": "*",
 		"@tmlmobilidade/go-tracker-pckg-shared": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/logger": "*",
@@ -31,7 +32,7 @@
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "25.9.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.3",
+		"tsx": "4.22.4",
 		"typescript": "5.9.3"
 	}
 }

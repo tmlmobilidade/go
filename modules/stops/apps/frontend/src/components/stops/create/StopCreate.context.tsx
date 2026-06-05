@@ -9,7 +9,7 @@ import { type CreateStopDto, CreateStopSchema, type Stop, StopSchema } from '@tm
 import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -20,6 +20,7 @@ interface StopCreateContextState {
 		setLatLng: (latitude: number, longitude: number) => void
 	}
 	data: {
+		coordinates: [number | undefined, number | undefined]
 		form: UseFormReturnType<CreateStopDto>
 	}
 	flags: {
@@ -63,6 +64,8 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const [modalCurrentStepState, setModalCurrentStepState] = useState<number>(1);
 	const [modalCurrentStepValidState, setModalCurrentStepValidState] = useState<boolean>(false);
+	const [coordinates, setCoordinates] = useState<[number | undefined, number | undefined]>([undefined, undefined]);
+	const lastLoadedCoordsRef = useRef<null | { lat: number, lng: number }>(null);
 
 	//
 	// B. Fetch data
@@ -91,30 +94,63 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		});
 	};
 
-	const setLatLng = (latitude: number, longitude: number) => {
-		// Reset any existing errors
+	const setLatLng = useCallback((latitude: number, longitude: number) => {
 		setIsError(null);
-		// Validate the input values
+
 		const validatedLatitude = isValidLatitude(latitude);
 		const validatedLongitude = isValidLongitude(longitude);
-		// If they are invalid set field errors
+
 		if (!validatedLatitude || !validatedLongitude) {
 			setIsError(new Error('Coordenadas inválidas. Por favor verifique os valores introduzidos.'));
 			return;
 		}
-		// Update the form with the validated values
+
+		const { latitude: currentLat, longitude: currentLng } = form.getValues();
+		if (currentLat === validatedLatitude && currentLng === validatedLongitude) return;
+
+		setCoordinates([validatedLatitude, validatedLongitude]);
 		form.setValues({ latitude: validatedLatitude, longitude: validatedLongitude });
-		// Fetch the locations API for the given coordinates
-		(async () => {
-			const locationData = await locationsContext.actions.queryLocations(validatedLatitude, validatedLongitude);
-			form.setValues({
-				district_id: locationData?.district?._id,
-				locality_id: locationData?.locality?._id,
-				municipality_id: locationData?.municipality?._id,
-				parish_id: locationData?.parish?._id,
-			});
-		})();
-	};
+	}, [form]);
+
+	useEffect(() => {
+		const validatedLatitude = isValidLatitude(coordinates[0] ?? NaN);
+		const validatedLongitude = isValidLongitude(coordinates[1] ?? NaN);
+		if (validatedLatitude === false || validatedLongitude === false) return;
+
+		const latitude = validatedLatitude;
+		const longitude = validatedLongitude;
+
+		if (lastLoadedCoordsRef.current?.lat === latitude && lastLoadedCoordsRef.current?.lng === longitude) return;
+		lastLoadedCoordsRef.current = { lat: latitude, lng: longitude };
+
+		let cancelled = false;
+
+		async function loadLocations() {
+			const locationData = await locationsContext.actions.queryLocations(latitude, longitude);
+			if (cancelled) return;
+
+			const current = form.getValues();
+			const district_id = locationData?.district?._id;
+			const locality_id = locationData?.locality?._id;
+			const municipality_id = locationData?.municipality?._id;
+			const parish_id = locationData?.parish?._id;
+
+			if (
+				current.district_id === district_id
+				&& current.locality_id === locality_id
+				&& current.municipality_id === municipality_id
+				&& current.parish_id === parish_id
+			) return;
+
+			form.setValues({ district_id, locality_id, municipality_id, parish_id });
+		}
+
+		void loadLocations();
+
+		return () => {
+			cancelled = true;
+		};
+	}, [coordinates, form, locationsContext.actions]);
 
 	const validateCurrentStep = () => {
 		// Get latest form values
@@ -180,6 +216,8 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 			return;
 		}
 		form.reset();
+		setCoordinates([undefined, undefined]);
+		lastLoadedCoordsRef.current = null;
 		allStopsMutate();
 		setIsSaving(false);
 		closeCreateStopModal();
@@ -196,6 +234,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 			setLatLng,
 		},
 		data: {
+			coordinates,
 			form,
 		},
 		flags: {
@@ -209,11 +248,13 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 			previousStep,
 		},
 	}), [
+		coordinates,
 		form,
 		isError,
 		isSaving,
 		modalCurrentStepState,
 		modalCurrentStepValidState,
+		setLatLng,
 	]);
 
 	//

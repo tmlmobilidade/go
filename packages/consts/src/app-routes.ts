@@ -337,7 +337,6 @@ export const API_ROUTES = Object.freeze({
 		VEHICLES_DETAIL_LAST_EVENT: (id: string) => `${getModuleConfig('fleet', 'api_url')}/vehicles/${id}/last-event`,
 		VEHICLES_DETAIL_LOCK: (id: string) => `${getModuleConfig('fleet', 'api_url')}/vehicles/${id}/lock`,
 		VEHICLES_LIST: `${getModuleConfig('fleet', 'api_url')}/vehicles`,
-		VEHICLES_POSITIONS: `${getModuleConfig('fleet', 'api_url')}/vehicles/positions`,
 	},
 
 	hub: {
@@ -346,6 +345,7 @@ export const API_ROUTES = Object.freeze({
 
 		// ALERTS
 		ALERTS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs`,
+		ALERTS_GTFS_CM: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs-cm`,
 		ALERTS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs.pb`,
 		ALERTS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/alerts`,
 		ALERTS_RSS: `${getModuleConfig('hub', 'api_url')}/v1/alerts.rss`,
@@ -368,6 +368,7 @@ export const API_ROUTES = Object.freeze({
 		NETWORK_LINES: `${getModuleConfig('hub', 'api_url')}/v1/network/lines`,
 		NETWORK_PATTERNS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/patterns/${id}`,
 		NETWORK_ROUTES: `${getModuleConfig('hub', 'api_url')}/v1/network/routes`,
+		NETWORK_SHAPES: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/shapes/${id}`,
 		NETWORK_STOPS: `${getModuleConfig('hub', 'api_url')}/v1/network/stops`,
 
 		// PLANS

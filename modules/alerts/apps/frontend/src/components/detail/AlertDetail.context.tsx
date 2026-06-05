@@ -1,8 +1,9 @@
 'use client';
 
+import { isValidOptionalAlertCoordinates } from '@/lib/alert-coordinates';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type File as FileType, PermissionCatalog, type UpdateAlertDto } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, keepUrlParams, useContextForm, useDataAgencies, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
+import { type DetailContextStateTemplate, keepUrlParams, useContextForm, useContextFormWatch, useDataAgencies, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
@@ -66,6 +67,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		apiData: alertData,
 		// schema: UpdateAlertSchema,
 	});
+	const coordinatesValue = useContextFormWatch({ control: form.control, name: 'coordinates' });
 
 	//
 	// C. Transform data
@@ -135,6 +137,16 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		handleUploadImage();
 	}, [handleUploadImage, imageFile]);
 
+	useEffect(() => {
+		if (!isValidOptionalAlertCoordinates(coordinatesValue)) {
+			useToast.error({ message: 'Coordenadas inválidas. Use latitude [-90, 90] e longitude [-180, 180].', title: 'Erro' });
+			form.setError('coordinates', { message: 'Coordenadas inválidas. Use latitude [-90, 90] e longitude [-180, 180].' });
+			return;
+		} else {
+			form.clearErrors('coordinates');
+		}
+	}, [coordinatesValue, form]);
+
 	//
 	// F. Setup flags
 
@@ -180,7 +192,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		isLoading: alertLoading,
 		isLocked: alertData?.is_locked,
 		isLocking: isLocking,
-		isValid: form.formState.isValid,
+		isValid: Object.keys(form.formState.errors).length === 0,
 	});
 
 	const { canLock } = useFlagCanLock({

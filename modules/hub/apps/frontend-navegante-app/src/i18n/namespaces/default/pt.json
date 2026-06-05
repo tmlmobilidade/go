@@ -1,10 +1,145 @@
 {
+	"alerts": {
+		"AlertActivePeriod": {
+			"start": "Início: {value, date, dayShort}"
+		},
+		"AlertsList": {
+			"title": "Alertas de Serviço"
+		},
+		"AlertsListEmpty": {
+			"action_1": "Ver alertas do passado",
+			"action_2": "Ver alertas do futuro",
+			"subtitle": "Fique a par de todas as alterações à rede. Mantenha-se informado sobre novas linhas, mudanças de percurso e ajustes de horários, assim como sobre eventos que possam afetar a sua viagem.",
+			"title": "Nenhum alerta encontrado"
+		},
+		"AlertsListGroup": {
+			"label": "{count, plural, one {Alerta ativo} other {Alertas ativos}}",
+			"titles": {
+				"future": "A partir de {value}",
+				"past": "Desde {value}",
+				"today": "A partir de hoje, {value}",
+				"tomorrow": "A partir de amanhã, {value}",
+				"yesterday": "Desde ontem, {value}"
+			}
+		},
+		"AlertsListToolbar": {
+			"SelectLine": {
+				"label": "Procurar linha por número, nome, localidade...",
+				"nothing_found": "Nenhum Resultado Encontrado",
+				"placeholder": "Procurar linha por número, nome, localidade..."
+			},
+			"SelectStop": {
+				"label": "Procurar paragem por nome, número, localidade...",
+				"nothing_found": "Nenhum Resultado Encontrado",
+				"placeholder": "Procurar paragem por nome, número, localidade..."
+			},
+			"by_date": {
+				"current": "Agora ({count})",
+				"future": "Futuros ({count})",
+				"map": "Mapa"
+			},
+			"expand_toggle": {
+				"is_hidden": {
+					"label": "Ver Filtros"
+				},
+				"is_visible": {
+					"label": "Ocultar Filtros"
+				}
+			},
+			"filters": {
+				"by_current_view": {
+					"list": "Lista",
+					"map": "Mapa"
+				},
+				"by_line": {
+					"label": "Filtrar por linha",
+					"placeholder": "Filtrar por linha"
+				},
+				"by_stop": {
+					"label": "Filtrar por paragem",
+
+					"placeholder": "Filtrar por paragem"
+				},
+				"text_search": "Procurar alerta por título, descrição, localização..."
+			},
+			"found_items_counter": "{count, plural, =0 {Nenhum alerta encontrado.} one {Encontrado # alerta:} other {Encontrados # alertas:}}",
+			"heading": "Alertas de Serviço",
+			"subheading": "Fique a par de todas as alterações à rede. Mantenha-se informado sobre novas linhas, mudanças de percurso e ajustes de horários, assim como sobre eventos que possam afetar a sua viagem."
+		},
+		"AlertsListViewList": {
+			"no_data": "Nenhum alerta encontrado para esta pesquisa"
+		},
+		"SelectCause": {
+			"placeholder": "Filtrar por causa"
+		},
+		"SelectEffect": {
+			"placeholder": "Filtrar por efeito"
+		}
+	},
+	"common": {
+		"BackButton": {
+			"label": "Voltar"
+		},
+		"IconDisplay": {
+			"connections": {
+				"bike_parking": "Perto de Estacionamento de Bicicletas",
+				"boat": "Ligação com o Barco",
+				"bus": "Ligação com outros Autocarros",
+				"car_parking": "Perto de Estacionamento Automóvel",
+				"light_rail": "Ligação com o Metro de Superfície",
+				"subway": "Ligação com o Metro",
+				"train": "Ligação com o Comboio"
+			},
+			"facilities": {
+				"court": "Perto de um Tribunal",
+				"fire_station": "Perto de um Quartel de Bombeiros",
+				"health_center": "Perto de um Centro de Saúde ou Clínca",
+				"hospital": "Perto de um Hospital",
+				"park": "Perto de um Parque",
+				"police_station": "Perto de uma Esquadra de Polícia",
+				"school": "Perto de uma Escola",
+				"transit_office": "Perto de um Espaço navegante®",
+				"university": "Perto de uma Universidade"
+			},
+			"operators": {
+				"atlantic_ferries": "Atlantic Ferries (barcos de Tróia)",
+				"ccfl": "Carris municipal",
+				"cmet": "CMET",
+				"cp": "CP Comboios de Portugal",
+				"fertagus": "Fertagus (comboio da Ponte)",
+				"metro": "Metro de Lisboa",
+				"mobi_cascais": "MobiCascais",
+				"mts": "Metro Transportes do Sul",
+				"tcb": "Transportes Colectivos do Barreiro",
+				"ttsl": "Transtejo e Soflusa"
+			}
+		}
+	},
+	"help": {
+		"HelpDetail": {
+			"no_data": "Nenhuma pergunta frequente disponível de momento.",
+			"title": "Ajuda"
+		}
+	},
 	"layout": {
 		"NoDataLabel": {
 			"no_data": "Nenhum dado disponível"
 		}
 	},
 	"lines": {
+		"LinesDetailAlerts": {
+			"heading": "Alertas ativos para esta linha"
+		},
+		"LinesDetailPath": {
+			"no_data": "Selecione um Percurso / Destino",
+			"summary": "Linha <lineNumber>{line_number}</lineNumber> com destino a <destinationName>{destination_name}</destinationName> no dia <dayName>{day_name, date, long}</dayName>. <changeDay>Alterar dia ›</changeDay>"
+		},
+		"LinesListGroup": {
+			"logo": {
+				"alt": "Linhas do operador: {agency_name}"
+			},
+			"show_more": "Ver mais linhas deste operador..."
+		},
 		"LinesListToolbar": {
 			"by_search": {
 				"placeholder": "Pesquisar por nome, número..."
@@ -15,15 +150,93 @@
 			"heading": "Pesquisar Linhas"
 		},
 		"LinesListViewAll": {
+			"items": {
+				"aria_label": "{index}º: {tts_name}"
+			},
 			"no_data": "Nenhuma linha encontrada para esta pesquisa"
+		},
+		"PathStopNextArrivals": {
+			"title": "Próximas circulações"
+		},
+		"PathWaypointTimetable": {
+			"next_date": "Esta linha não realiza viagens neste dia da semana. Próximo dia com horários: {value, date, dayShort} {value, date, monthLong} {value, date, yearLong}",
+			"no_data": "Horários indisponíveis para esta data.",
+			"title": "Horários planeados nesta paragem:"
+		},
+		"SelectActivePatternGroup": {
+			"placeholder": "Selecionar percurso/destino..."
+		},
+		"SelectActivePatternGroupExplainer": {
+			"toggle": "O que é o percurso/destino de uma linha?"
+		},
+		"SelectOperationalDate": {
+			"custom_date": "Data personalizada",
+			"today": "Hoje",
+			"tomorrow": "Amanhã"
+		},
+		"SelectPattern": {
+			"invalid_option": "Percurso inválido: {pattern_id}",
+			"label": "Percurso / Destino",
+			"option_label": "Início do percurso: {locality}",
+			"placeholder": "Selecionar Percurso / Destino..."
+		},
+		"TimetableExceptionsLink": {
+			"schedule": "Min.",
+			"variant": "<0>{exception_id})</0> Percurso <1>{route_long_name}</1> com destino a <2>{pattern_headsign}</2>"
+		},
+		"TimetableSchedules": {
+			"hours": "Hora",
+			"minutes": "Min."
+		}
+	},
+	"map": {
+		"MapViewStyleVehicles": {
+			"vehicles_counter": "{count, plural, =0 {Nenhum veículo em circulação} one {# veículo em circulação} other {# veículos em circulação}}"
+		},
+		"MapViewToolbar": {
+			"style": {
+				"map": "Mapa",
+				"satellite": "Satélite"
+			}
+		}
+	},
+	"search": {
+		"SearchDetail": {
+			"title": "Pesquisa"
+		}
+	},
+	"stops": {
+		"StopsListToolbar": {
+			"by_current_view": {
+				"list": "Lista",
+				"map": "Mapa"
+			},
+			"by_search": {
+				"placeholder": "Pesquisar por nome, número..."
+			},
+			"found_items_counter": {
+				"all": "{{count}}"
+			},
+			"heading": "Pesquisar Paragens"
+		},
+		"StopsListViewList": {
+			"no_data": "Nenhuma paragem encontrada para esta pesquisa"
 		}
 	},
 	"viewport": {
-		"Navbar": {
+		"NavigationBar": {
 			"tabs": {
 				"alerts": "Alertas",
 				"lines": "Linhas",
 				"stops": "Paragens"
+			}
+		},
+		"TransitModesBar": {
+			"aria_label": {
+				"bus": "Autocarros",
+				"ferry": "Barco",
+				"subway": "Metro",
+				"train": "Comboios"
 			}
 		}
 	}

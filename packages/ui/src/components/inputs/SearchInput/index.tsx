@@ -41,6 +41,7 @@ export function SearchInput({ onChange, placeholder = 'Pesquisar...', size = 'sm
 			rightSection={value?.length && <Input.ClearButton onClick={handleClear} />}
 			size={size}
 			value={value ?? ''}
+			w="100%"
 		/>
 	);
 

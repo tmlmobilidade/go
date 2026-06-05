@@ -44,11 +44,6 @@
 		"skipped": "Omitido",
 		"waiting": "Em espera"
 	},
-	"validity_status": {
-		"valid": "Válido",
-		"invalid": "Inválido",
-		"unknown": "Desconhecido"
-	},
 	"publish_status": {
 		"archived": "Arquivado",
 		"draft": "Rascunho",
@@ -81,5 +76,9 @@
 	"ticketing_status": {
 		"has_Ticketing": "Com bilhética",
 		"no_Ticketing": "Sem bilhética"
+	"validity_status": {
+		"invalid": "Inválido",
+		"unknown": "Desconhecido",
+		"valid": "Válido"
 	}
 }
