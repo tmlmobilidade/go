@@ -1,8 +1,8 @@
 /* * */
 
-import { IconDisplay } from '@/components/common/IconDisplay';
+import { IconDisplay } from '@/components/common/display/IconDisplay';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
+import { useOperationalDateContext } from '@/components/common/operational-date/OperationalDate.context';
 import { formatStopLocation } from '@/utils/format-stop-location';
 import { useClipboard } from '@mantine/hooks';
 import { IconCheck, IconCopy } from '@tabler/icons-react';

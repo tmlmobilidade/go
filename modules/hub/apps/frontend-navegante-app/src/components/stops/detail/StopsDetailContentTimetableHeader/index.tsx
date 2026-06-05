@@ -1,6 +1,6 @@
 /* * */
 
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
+import { useOperationalDateContext } from '@/components/common/operational-date/OperationalDate.context';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';

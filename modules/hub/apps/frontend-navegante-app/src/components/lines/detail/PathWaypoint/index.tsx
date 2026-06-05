@@ -7,7 +7,7 @@ import { PathWaypointHeader } from '@/components/lines/detail/PathWaypointHeader
 import { PathWaypointNextArrivals } from '@/components/lines/detail/PathWaypointNextArrivals';
 import { PathWaypointSpine } from '@/components/lines/detail/PathWaypointSpine';
 import { PathWaypointTimetable } from '@/components/lines/detail/PathWaypointTimetable';
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
+import { useOperationalDateContext } from '@/components/common/operational-date/OperationalDate.context';
 
 import styles from './styles.module.css';
 

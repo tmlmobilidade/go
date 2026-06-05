@@ -2,7 +2,7 @@
 
 import { useAlertsListContext } from '@/components/alerts/list/AlertsList.context';
 import { AlertListItem } from '@/components/alerts/list/AlertsListItem';
-import { GroupedListItem } from '@/components/layout/GroupedListItem';
+import { GroupedListItem } from '@/components/common/lists/GroupedListItem';
 import { Accordion } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 

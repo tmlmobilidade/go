@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
+import { useOperationalDateContext } from '@/components/common/operational-date/OperationalDate.context';
 import { SegmentedControl } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { IconCalendarEvent } from '@tabler/icons-react';
