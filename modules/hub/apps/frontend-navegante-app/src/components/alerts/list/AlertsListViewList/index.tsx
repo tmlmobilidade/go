@@ -2,7 +2,7 @@
 
 import { useAlertsListContext } from '@/components/alerts/list/AlertsList.context';
 import { AlertsListGroup } from '@/components/alerts/list/AlertsListGroup';
-import { NoDataLabel } from '@/components/layout/NoDataLabel';
+import { NoDataLabel } from '@/components/common/display/NoDataLabel';
 import { Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

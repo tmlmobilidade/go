@@ -1,6 +1,6 @@
 /* * */
 
-import { LiveIcon } from '@/components/common/LiveIcon';
+import { LiveIcon } from '@/components/common/display/LiveIcon';
 import { IconClockHour9 } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';

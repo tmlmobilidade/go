@@ -2,12 +2,11 @@
 
 /* * */
 
+import { useOperationalDateContext } from '@/components/common/operational-date/OperationalDate.context';
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
 import { NextArrivals } from '@/components/stops/detail/NextArrivals';
 import { isRealtimeArrival, type StopTimetableRealtimeArrival } from '@/components/stops/detail/parse-eta-gtfs';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
-import { useLocationsContext } from '@/contexts/Locations.context';
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { type HubArrival } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
 import Link from 'next/link';
@@ -33,7 +32,6 @@ export function StopsDetailContentTimetableRow({ arrivalData, status }: Props) {
 
 	const { t } = useTranslation();
 	const stopsDetailContext = useStopsDetailContext();
-	const locationsContext = useLocationsContext();
 	const operationalDateContext = useOperationalDateContext();
 
 	const selectedDate = operationalDateContext.data.selected_date;
@@ -120,7 +118,7 @@ export function StopsDetailContentTimetableRow({ arrivalData, status }: Props) {
 										{thisPattern.locality_ids.map((localityId, index) => (
 											<span key={index}>
 												{index > 0 && <span className={styles.localitySeparator}> • </span>}
-												<span className={styles.localityName}>{locationsContext.actions.getLocalityById(localityId)?.name}</span>
+												<span className={styles.localityName}>TBD</span>
 											</span>
 										))}
 									</p>
@@ -164,7 +162,7 @@ export function StopsDetailContentTimetableRow({ arrivalData, status }: Props) {
 									{thisPattern.locality_ids.map((localityId, index) => (
 										<span key={index}>
 											{index > 0 && <span className={styles.localitySeparator}> • </span>}
-											<span className={styles.localityName}>{locationsContext.actions.getLocalityById(localityId)?.name}</span>
+											<span className={styles.localityName}>TBD</span>
 										</span>
 									))}
 								</p>

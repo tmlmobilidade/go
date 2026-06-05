@@ -4,7 +4,7 @@ import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.con
 import { StopsDetailContentTimetableRealtime } from '@/components/stops/detail/StopsDetailContentTimetableRealtime';
 import { StopsDetailContentTimetableSchedule } from '@/components/stops/detail/StopsDetailContentTimetableSchedule';
 import { StopsDetailContentTimetableSkeleton } from '@/components/stops/detail/StopsDetailContentTimetableSkeleton';
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
+import { useOperationalDateContext } from '@/components/common/operational-date/OperationalDate.context';
 
 import styles from './styles.module.css';
 

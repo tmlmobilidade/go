@@ -40,6 +40,12 @@
 	/* STATUS / SUCCESS */
 	--color-status-success-primary: #00B932;
 
+	/* COLOR / ALERTS */
+	--color-alerts-0: #3D85C6;
+	--color-alerts-1: #00CD32;
+	--color-alerts-2: #F5A000;
+	--color-alerts-3: #E64B23;
+
 }
 
 :root[data-mode="dark"] {
@@ -68,5 +74,11 @@
 
 	/* STATUS / SUCCESS */
 	--color-status-success-primary: #00B932;
+
+	/* COLOR / ALERTS */
+	--color-alerts-0: #3D85C6;
+	--color-alerts-1: #00CD32;
+	--color-alerts-2: #F5A000;
+	--color-alerts-3: #E64B23;
 
 }

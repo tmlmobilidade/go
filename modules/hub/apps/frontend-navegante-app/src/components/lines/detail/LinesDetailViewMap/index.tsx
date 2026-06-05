@@ -1,13 +1,13 @@
 'use client';
 
+import { useOperationalDateContext } from '@/components/common/operational-date/OperationalDate.context';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { MapView } from '@/components/map/MapView';
-import { MapViewStyleActiveStops, MapViewStyleActiveStopsPrimaryLayerId } from '@/components/map/MapViewStyleActiveStops';
-import { MapViewStylePath, MapViewStylePathInteractiveLayerId } from '@/components/map/MapViewStylePath';
 import { MapViewOverlayVehicles, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
+import { MapViewStyleActiveStops, MapViewStyleActiveStopsPrimaryLayerId } from '@/components/map/overlays/MapViewStyleActiveStops';
+import { MapViewStylePath, MapViewStylePathInteractiveLayerId } from '@/components/map/overlays/MapViewStylePath';
 import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { centerMap, moveMap } from '@/utils/map.utils';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
@@ -48,9 +48,9 @@ export function LinesDetailViewMap() {
 			const result = transformStopDataIntoGeoJsonFeature(stopData);
 			result.properties = {
 				...result.properties,
-				color: linesDetailContext.data.active_pattern?.color,
-				sequence: pathStop.stop_sequence,
-				text_color: linesDetailContext.data.active_pattern?.text_color,
+				// color: linesDetailContext.data.active_pattern?.color,
+				// sequence: pathStop.stop_sequence,
+				// text_color: linesDetailContext.data.active_pattern?.text_color,
 			};
 			collection.features.push(result);
 		});
@@ -66,8 +66,8 @@ export function LinesDetailViewMap() {
 		const result = transformStopDataIntoGeoJsonFeature(foundStop);
 		result.properties = {
 			...result.properties,
-			color: linesDetailContext.data.active_pattern.color,
-			text_color: linesDetailContext.data.active_pattern.text_color,
+			// color: linesDetailContext.data.active_pattern.color,
+			// text_color: linesDetailContext.data.active_pattern.text_color,
 		};
 		// Create a new feature collection and add the active waypoint feature to it
 		const collection = getBaseGeoJsonFeatureCollection();
@@ -132,7 +132,6 @@ export function LinesDetailViewMap() {
 			>
 
 				<MapViewOverlayVehicles
-					showCounter="always"
 					vehiclesData={activeVehiclesFeatureCollection}
 				/>
 

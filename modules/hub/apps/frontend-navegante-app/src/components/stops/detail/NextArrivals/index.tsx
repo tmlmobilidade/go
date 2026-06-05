@@ -2,7 +2,7 @@
 
 /* * */
 
-import { LiveIcon } from '@/components/common/LiveIcon';
+import { LiveIcon } from '@/components/common/display/LiveIcon';
 // import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { IconAlertCircleFilled, IconClockHour9 } from '@tabler/icons-react';
 import { DateTime } from 'luxon';

@@ -1,7 +1,7 @@
 /* * */
 
-import { NoDataLabel } from '@/components/layout/NoDataLabel';
-import { RegularListItem } from '@/components/layout/RegularListItem';
+import { NoDataLabel } from '@/components/common/display/NoDataLabel';
+import { RegularListItem } from '@/components/common/lists/RegularListItem';
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { LinesListGroup } from '@/components/lines/list/LinesListGroup';

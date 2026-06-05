@@ -1,6 +1,6 @@
 /* * */
 
-import { NoDataLabel } from '@/components/layout/NoDataLabel';
+import { NoDataLabel } from '@/components/common/display/NoDataLabel';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailContentTimetableRow } from '@/components/stops/detail/StopsDetailContentTimetableRow';
 import { useTranslation } from 'react-i18next';

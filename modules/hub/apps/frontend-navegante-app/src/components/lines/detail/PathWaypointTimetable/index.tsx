@@ -2,7 +2,7 @@
 
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { TimetableDisplay } from '@/components/lines/detail/TimetableDisplay';
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
+import { useOperationalDateContext } from '@/components/common/operational-date/OperationalDate.context';
 import { type Timetable } from  '@tmlmobilidade/types';
 import { createTimetable } from '@/utils/create-timetable';
 import { Dates } from '@tmlmobilidade/dates';

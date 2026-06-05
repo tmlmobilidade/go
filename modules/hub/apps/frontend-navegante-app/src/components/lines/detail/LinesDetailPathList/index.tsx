@@ -1,6 +1,6 @@
 'use client';
 
-import { NoDataLabel } from '@/components/layout/NoDataLabel';
+import { NoDataLabel } from '@/components/common/display/NoDataLabel';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { PathWaypoint } from '@/components/lines/detail/PathWaypoint';
 import { getModuleConfig } from '@tmlmobilidade/consts';
