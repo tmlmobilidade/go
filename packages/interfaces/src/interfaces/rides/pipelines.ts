@@ -298,40 +298,6 @@ export function ridesPipelineSeenStatus({ filter }: { filter?: { seen_status?: S
 	return pipeline;
 }
 
-export function ridePipelineTicketingStatus({ filter }: { filter?: { ticketing_status?: TicketingStatus[] } } = {}): AggregationPipeline<Ride> {
-	if (!filter?.ticketing_status?.length) {
-		return [];
-	}
-
-	const pipeline: AggregationPipeline<Ride> = [
-		{
-			$addFields: {
-				ticketing_status: {
-					$cond: {
-						else: 'no_ticketing',
-						if: {
-							$and: [
-								{ $ifNull: ['$apex_validations_qty', false] },
-								{ $gt: ['$apex_validations_qty', 0] },
-							],
-						},
-						then: 'has_ticketing',
-					},
-				},
-			},
-		},
-		{
-			$match: {
-				ticketing_status: { $in: filter.ticketing_status },
-			},
-		},
-		{
-			$project: { ticketing_status: 0 },
-		},
-	];
-	return pipeline;
-}
-
 interface RidesPipelineFilter {
 	acceptance_status?: ('none' | RideAcceptanceStatus)[]
 	agency_ids?: string[]
@@ -347,7 +313,7 @@ interface RidesPipelineFilter {
 	search?: string
 	seen_statuses?: SeenStatus[]
 	stop_ids?: string[]
-	ticketing_status?: TicketingStatus[]
+	ticketing_statuses?: TicketingStatus[]
 }
 
 type FieldCondition = Record<string, unknown>;
@@ -573,7 +539,7 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 	pipeline.push(...ridesPipelineDelayStatus({ filter: { end_delay_status: filter.delay_statuses, start_delay_status: filter.delay_statuses } }));
 	pipeline.push(...ridesPipelineOperationalStatus({ filter: { operational_status: filter.operational_statuses } }));
 	pipeline.push(...ridesPipelineSeenStatus({ filter: { seen_status: filter.seen_statuses } }));
-	pipeline.push(...ridePipelineTicketingStatus({ filter: { ticketing_status: filter.ticketing_status } }));
+	pipeline.push(...ridesPipelineticketingStatus({ filter: { ticketing_status: filter.ticketing_statuses } }));
 
 	return pipeline;
 }
