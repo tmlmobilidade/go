@@ -1,7 +1,7 @@
 /* * */
 
+import { CalendarDateSchema } from '@/_common/index.js';
 import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
-import { OperationalDateSchema } from '@/index.js';
 import { z } from 'zod';
 
 /* * */
@@ -13,17 +13,19 @@ export const HubVehiclePositionSchema = z.object({
 
 	_id: z.string(),
 	agency_id: z.string(),
-	calendar_date: OperationalDateSchema,
+	calendar_date: CalendarDateSchema,
 	created_at: UnixTimestampSchema,
 	geohash: z.string().nullish(),
 	latitude: z.number()
 		.min(-90)
 		.max(90)
-		.refine(value => value.toFixed(6) === value.toString()),
+		.transform(value => value.toFixed(6))
+		.transform(value => parseFloat(value)),
 	longitude: z.number()
 		.min(-180)
 		.max(180)
-		.refine(value => value.toFixed(6) === value.toString()),
+		.transform(value => value.toFixed(6))
+		.transform(value => parseFloat(value)),
 	received_at: UnixTimestampSchema,
 	trip_id: z.string(),
 	vehicle_id: z.string(),
