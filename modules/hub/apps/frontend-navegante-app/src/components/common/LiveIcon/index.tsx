@@ -11,7 +11,7 @@ interface Props {
 
 /* * */
 
-export function LiveIcon({ className, color = 'var(--color-realtime-100)' }: Props) {
+export function LiveIcon({ className, color = 'var(--color-brand-navegante)' }: Props) {
 	return (
 		<div className={`${styles.container} ${!!className && className}`}>
 			<div className={styles.ripple} style={{ backgroundColor: color }} />

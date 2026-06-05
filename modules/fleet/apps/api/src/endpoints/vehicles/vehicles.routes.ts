@@ -56,11 +56,6 @@ server.register(
 			VehiclesController.getLastEvent,
 		);
 
-		instance.get(
-			'/positions',
-			VehiclesController.getPositions,
-		);
-
 		next();
 	},
 	{ prefix: NAMESPACE },

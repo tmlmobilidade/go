@@ -76,7 +76,7 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 			const item = {
 				direction_id: patternGroupData.direction_id,
 				disabled: (date_filter ? !patternGroupData.valid_on.includes(date_filter) : false) || !patternGroupData.path.length,
-				label: getPatternTitle(patternGroupData, routeData?.long_name),
+				label: `Destino: ${getPatternTitle(patternGroupData, routeData?.long_name)}`,
 				pattern_id: patternGroupData.id,
 				value: patternGroupData.version_id,
 			};
@@ -115,7 +115,7 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 			return (
 				<Flex align="center" gap={5} justify="center">
 					<IconAlertTriangle size={14} />
-					<Text size="xs">{t('default:lines.SelectPattern.invalid_option', '', { pattern_id: option.pattern_id })}</Text>
+					<Text size="xs">Percurso: {t('default:lines.SelectPattern.invalid_option', '', { pattern_id: option.pattern_id })}</Text>
 				</Flex>
 			);
 		};
@@ -137,18 +137,12 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 		);
 	};
 
-	const selectedPattern = patterns.find(pattern => pattern.version_id === value);
-	const selectedRoute = selectedPattern ? linesContext.actions.getRouteDataById(selectedPattern.route_id) : undefined;
-	const selectDescription = selectedPattern && !selectedPattern.path.length ?
-		t('default:lines.SelectPattern.invalid_option', '', { pattern_id: selectedPattern.id })
-		: selectedRoute?.long_name;
-
 	return (
 		<Select
 			allowDeselect={false}
 			data={validPatternsSelectOptions}
-			description={selectDescription}
-			label={t('default:lines.SelectPattern.label')}
+			// description={selectDescription}
+			// label={t('default:lines.SelectPattern.label')}
 			onChange={onChange}
 			placeholder={t('default:lines.SelectPattern.placeholder')}
 			renderOption={renderSelectOption}

@@ -26,8 +26,8 @@
 }
 
 .badge[data-size='lg'] {
-	min-width: 85px;
-	max-width: 85px;
+	min-width: 75px;
+	max-width: 75px;
 	min-height: 34px;
 	max-height: 34px;
 	font-size: 22px;
@@ -44,18 +44,31 @@
 /* * */
 /* PROPS / AGENCY ID */
 
-.badge[data-agency-id='41'],
-.badge[data-agency-id='42'],
-.badge[data-agency-id='43'],
-.badge[data-agency-id='44'] {
+.badge[data-size='md'][data-agency-id='41'],
+.badge[data-size='md'][data-agency-id='42'],
+.badge[data-size='md'][data-agency-id='43'],
+.badge[data-size='md'][data-agency-id='44'] {
 	min-width: 65px;
 	max-width: 65px;
 }
 
-.badge[data-agency-id='15'] {
+.badge[data-size='lg'][data-agency-id='41'],
+.badge[data-size='lg'][data-agency-id='42'],
+.badge[data-size='lg'][data-agency-id='43'],
+.badge[data-size='lg'][data-agency-id='44'] {
+	min-width: 85px;
+	max-width: 85px;
+}
+
+.badge[data-size='md'][data-agency-id='15'] {
 	min-width: 90px;
 	max-width: 90px;
-	font-size: 18px;
+	letter-spacing: -0.5px;
+}
+
+.badge[data-size='lg'][data-agency-id='15'] {
+	min-width: 120px;
+	max-width: 120px;
 	letter-spacing: -0.5px;
 }
 

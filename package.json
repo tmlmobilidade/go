@@ -64,6 +64,7 @@
 		"dev:hub:publish-alerts": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-alerts",
 		"dev:hub:publish-gtfs": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-gtfs",
 		"dev:hub:publish-network": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-network",
+		"dev:hub:publish-plans": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-plans",
 		"dev:hub:publish-realtime": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-realtime",
 		"dev:hub:ui": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-api --filter=@tmlmobilidade/go-hub-frontend-navegante-app",
 		"dev:locations": "ENVIRONMENT=dev dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-locations-*",

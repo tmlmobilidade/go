@@ -1,12 +1,11 @@
 /* * */
 
+import { publishEta } from '@/tasks/eta/index.js';
 import { publishVehiclesMetadata } from '@/tasks/publish-vehicles-metadata.js';
 import { publishVehiclesPositions } from '@/tasks/publish-vehicles-positions.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
-
-import { publishEta } from './tasks/eta/index.js';
 
 /* * */
 

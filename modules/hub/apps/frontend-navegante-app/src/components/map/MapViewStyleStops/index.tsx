@@ -14,6 +14,7 @@ interface Props {
 	presentBeforeId?: string
 	stopsData?: GeoJSON.FeatureCollection
 	style?: 'muted' | 'primary'
+	visible?: boolean
 }
 
 /* * */
@@ -22,7 +23,7 @@ const baseGeoJsonFeatureCollection = getBaseGeoJsonFeatureCollection();
 
 /* * */
 
-export function MapViewStyleStops({ presentBeforeId, stopsData = baseGeoJsonFeatureCollection, style = 'primary' }: Props) {
+export function MapViewStyleStops({ presentBeforeId, stopsData = baseGeoJsonFeatureCollection, style = 'primary', visible = true }: Props) {
 	return (
 		<Source data={stopsData} generateId={true} id="default-source-stops-all" type="geojson">
 
@@ -32,6 +33,9 @@ export function MapViewStyleStops({ presentBeforeId, stopsData = baseGeoJsonFeat
 					id="default-layer-stops-all"
 					source="default-source-stops-all"
 					type="circle"
+					layout={{
+						visibility: visible ? 'visible' : 'none',
+					}}
 					paint={{
 						'circle-color': [
 							'match',
@@ -78,6 +82,9 @@ export function MapViewStyleStops({ presentBeforeId, stopsData = baseGeoJsonFeat
 					id="default-layer-stops-all"
 					source="default-source-stops-all"
 					type="circle"
+					layout={{
+						visibility: visible ? 'visible' : 'none',
+					}}
 					paint={{
 						'circle-color': [
 							'match',

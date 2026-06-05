@@ -131,15 +131,19 @@ runs:
           const modulesToBuild = [];
           const moduleApps = {};
 
+          const fs = require('fs');
           for (const { module, apps } of allModules) {
-            if (hasSelectedModules) {
-              if (selectedModules.includes(module)) {
+            const filteredApps = apps.filter(app => fs.existsSync(`modules/${module}/apps/${app}/package.json`));
+            if (filteredApps.length === 0) continue;
+
+            if (hasSpecificManualModule) {
+              if (module === selectedModule) {
                 modulesToBuild.push(module);
-                moduleApps[module] = apps;
+                moduleApps[module] = filteredApps;
               }
             } else if (buildAll) {
               modulesToBuild.push(module);
-              moduleApps[module] = apps;
+              moduleApps[module] = filteredApps;
             } else {
               // Environment files don't affect built images.
               const changed = changedFiles.some(f =>
@@ -147,7 +151,7 @@ runs:
               );
               if (changed) {
                 modulesToBuild.push(module);
-                moduleApps[module] = apps;
+                moduleApps[module] = filteredApps;
               }
             }
           }

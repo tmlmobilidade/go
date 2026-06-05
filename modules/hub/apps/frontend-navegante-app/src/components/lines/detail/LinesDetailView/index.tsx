@@ -2,13 +2,12 @@
 
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { LinesDetailAlerts } from '@/components/lines/detail/LinesDetailAlerts';
-import { LinesDetailHeader } from '@/components/lines/detail/LinesDetailHeader';
-import { LinesDetailNavigation } from '@/components/lines/detail/LinesDetailNavigation';
 import { LinesDetailPath } from '@/components/lines/detail/LinesDetailPath';
 import { LinesDetailToolbar } from '@/components/lines/detail/LinesDetailToolbar';
-import { LoadingSection, Section, Surface } from '@tmlmobilidade/ui';
-
-import { LinesDetailPathMap } from '../LinesDetailPathMap';
+import { LinesDetailViewHeader } from '@/components/lines/detail/LinesDetailViewHeader';
+import { LinesDetailViewMap } from '@/components/lines/detail/LinesDetailViewMap';
+import { Space } from '@mantine/core';
+import { Divider, LoadingSection, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -24,23 +23,22 @@ export function LinesDetailView() {
 	// B. Render componentss
 
 	if (linesDetailContext.flags.is_loading) {
-		return <LoadingSection fullHeight />;
+		return (
+			<>
+				<Space h="90px" />
+				<LoadingSection />
+			</>
+		);
 	}
 
 	return (
 		<Section padding="none">
-
-			<LinesDetailPathMap />
-
-			<Surface>
-				<LinesDetailNavigation />
-				<LinesDetailHeader />
-				<LinesDetailToolbar />
-			</Surface>
-
+			<LinesDetailViewMap />
+			<LinesDetailViewHeader />
+			<Divider />
+			<LinesDetailToolbar />
 			<LinesDetailAlerts />
 			<LinesDetailPath />
-
 		</Section>
 	);
 }

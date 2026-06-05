@@ -1,9 +1,8 @@
 /* * */
 
-import { cpAuthClient } from '@/auth.js';
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
+import { externalClients } from '@tmlmobilidade/external';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type HashableRawVehicleEvent, type RawVehicleEventCpV1 } from '@tmlmobilidade/types';
@@ -27,21 +26,7 @@ const main = async () => {
 
 	Logger.info(`[${ITERATION}] Fetching CP data from API...`, 0, 1);
 
-	const apiToken = await cpAuthClient.getToken();
-
-	//
-	// Fetch the CP Vehicle Events data from API and decode it.
-
-	const response = await fetch(process.env.TRACKER_CP_API_URL, {
-		headers: {
-			'Authorization': `Bearer ${apiToken}`,
-			'x-cp-connect-id': process.env.TRACKER_CP_API_KEY,
-			'x-cp-connect-secret': process.env.TRACKER_CP_API_SECRET,
-		},
-	});
-
-	const arrayBuffer = await response.arrayBuffer();
-	const decodedMessage = await decodeGtfsRtFeed(arrayBuffer);
+	const decodedMessage = await externalClients.cp.vehiclePositions();
 
 	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the CP data.`);
 
