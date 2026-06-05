@@ -206,6 +206,44 @@
 		}
 	},
 	"stops": {
+		"NextArrivals": {
+			"arriving": "A chegar",
+			"hours": "h",
+			"minutes": "min"
+		},
+		"StopsDetailAlerts": {
+			"heading": "Alertas ativos",
+			"subheading": "Alertas ativos para esta paragem ou para linhas que passam nesta paragem."
+		},
+		"StopsDetailContentTimetableHeader": {
+			"summary": "Horários estimados de passagem na paragem <stopName>{stop_name}</stopName> para o dia <dayName>{day_name, date, long}</dayName>. <changeDay>Alterar dia ›</changeDay>",
+			"trips_legend": {
+				"estimate": "Previsão",
+				"headsign": "Destino",
+				"line": "Linha"
+			}
+		},
+		"StopsDetailContentTimetableRealtime": {
+			"end_of_day": "Fim do Dia",
+			"no_service": "Sem Serviço Hoje",
+			"show_past_trips_toggle": {
+				"hide": "Esconder passagens anteriores",
+				"show": "Ver passagens anteriores"
+			}
+		},
+		"StopsDetailContentTimetableRow": {
+			"debug_modal": {
+				"title": "Estes dados representam trip IDs iguais para diferentes dias"
+			},
+			"localities": {
+				"label": "Passa por"
+			},
+			"open_line_page": "Ver percurso completo"
+		},
+		"StopsDetailContentTimetableSchedule": {
+			"end_of_day": "Fim do Dia",
+			"no_service": "Sem Serviço para o dia selecionado"
+		},
 		"StopsListToolbar": {
 			"by_current_view": {
 				"list": "Lista",
