@@ -34,7 +34,6 @@ export function AlertsListToolbar() {
 	const currentViewOptions = [
 		{ label: t('default:alerts.AlertsListToolbar.by_date.current', '', { count: alertsListContext.counters.by_date.current }), value: 'current' },
 		{ label: t('default:alerts.AlertsListToolbar.by_date.future', '', { count: alertsListContext.counters.by_date.future }), value: 'future' },
-		{ label: t('default:alerts.AlertsListToolbar.filters.by_current_view.map'), value: 'map' },
 	];
 
 	//

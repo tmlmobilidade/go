@@ -1,7 +1,6 @@
 'use client';
 
 import { useLinesContext } from '@/components/lines/Lines.context';
-import { useTransitModes } from '@/hooks/use-transit-modes';
 import { type HubLine } from '@tmlmobilidade/types';
 import { type ListContextStateTemplate, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
@@ -52,8 +51,6 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const linesContext = useLinesContext();
 
-	const { activeAgencyIds } = useTransitModes();
-
 	const filterSearch = useFilterStateString('search');
 
 	const [qtyPerAgency, setQtyPerAgency] = useState<Record<string, number>>({});
@@ -68,12 +65,8 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	});
 
 	const filteredData: LinesListGroupData[] = useMemo(() => {
-		// Filter data by active agency IDs
-		const filteredDataByActiveAgencyIds = searchResultsData?.filter((line) => {
-			return activeAgencyIds.includes(line.agency_id);
-		});
 		// Group data by agency ID
-		const groupedDataByAgencyId = filteredDataByActiveAgencyIds?.reduce((acc: Record<string, HubLine[]>, line) => {
+		const groupedDataByAgencyId = searchResultsData?.reduce((acc: Record<string, HubLine[]>, line) => {
 			// Normalize agency ID for CM agencies
 			const agencyIdKey = ['41', '42', '43', '44'].includes(line.agency_id) ? 'CM' : line.agency_id;
 			acc[agencyIdKey] = [...(acc[agencyIdKey] || []), line];
@@ -90,7 +83,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 				}).slice(0, !filterSearch.value.length ? (qtyPerAgency[agencyId] || DEFAULT_QTY_PER_AGENCY) : groupedDataByAgencyId[agencyId].length) || [],
 				qty: groupedDataByAgencyId[agencyId].length,
 			}));
-	}, [activeAgencyIds, filterSearch.value.length, qtyPerAgency, searchResultsData]);
+	}, [filterSearch.value.length, qtyPerAgency, searchResultsData]);
 
 	//
 	// C. Handle actions

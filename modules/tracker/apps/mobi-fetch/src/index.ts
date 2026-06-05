@@ -2,16 +2,12 @@
 
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
+import { externalClients } from '@tmlmobilidade/external';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type HashableRawVehicleEvent, type RawVehicleEventMobiV1 } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
-
-/* * */
-
-const API_URL = 'https://cascais-rt.trenmo.com/api/v1/key/fcba5b10/agency/2/command/gtfs-rt/vehiclePositions';
 
 /* * */
 
@@ -31,13 +27,7 @@ const main = async () => {
 
 	Logger.info(`[${ITERATION}] Fetching MOBI data from API...`, 0, 1);
 
-	const response = await fetch(API_URL, {
-		headers: {
-			Authorization: `Basic ${Buffer.from(`${process.env.TRACKER_MOBI_API_USERNAME}:${process.env.TRACKER_MOBI_API_PASSWORD}`).toString('base64')}`,
-		},
-	});
-	const arrayBuffer = await response.arrayBuffer();
-	const decodedMessage = await decodeGtfsRtFeed(arrayBuffer);
+	const decodedMessage = await externalClients.mobi.vehiclePositions();
 
 	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the MOBI data.`);
 

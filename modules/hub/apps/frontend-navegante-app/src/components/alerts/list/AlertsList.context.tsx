@@ -1,7 +1,6 @@
 'use client';
 
 import { transformAlertDataIntoGeoJsonFeature, useAlertsContext } from '@/components/alerts/Alerts.context';
-import { useTransitModes } from '@/hooks/use-transit-modes';
 import { type AlertGroup } from '@/types/alerts/alert-group';
 import { Dates } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
@@ -65,8 +64,6 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 
 	const alertsContext = useAlertsContext();
 
-	const { activeAgencyIds } = useTransitModes();
-
 	const { i18n, t } = useTranslation();
 
 	const filterSearch = useFilterStateString('search');
@@ -95,8 +92,8 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	});
 
 	const baseFilteredData = useMemo(() => {
-		return (searchResultsData ?? []).filter(alert => activeAgencyIds.includes(alert.agency_id));
-	}, [searchResultsData, activeAgencyIds]);
+		return (searchResultsData ?? []);
+	}, [searchResultsData]);
 
 	const nonDateFilteredData = useMemo(() => {
 		let result = baseFilteredData;
