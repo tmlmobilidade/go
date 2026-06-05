@@ -28,7 +28,10 @@ jobs:
                 '',
                 `https://pr-${prNumber}.go-stg.tmlmobilidade.pt/`,
                 '',
-                'Need a rebuild? Comment `/build <module>` (e.g. `/build hub`).',
+                'Need a rebuild? Comment on this PR:',
+                '- `/build <module>` — build one module',
+                '- `/build <module> <module>` — build multiple modules',
+                '- `/build all` — build every module',
                 '',
                 'Test wisely, deploy bravely',
               ].join('\n')
