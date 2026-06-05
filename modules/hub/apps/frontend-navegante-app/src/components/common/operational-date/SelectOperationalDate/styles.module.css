@@ -1,0 +1,99 @@
+/* * */
+/* SEGMENTED CONTROL */
+
+.segmentedControlRoot {
+	width: 100%;
+}
+
+.segmentedControlDateInputOverrideControl {
+	min-width: 0;
+	box-shadow: none !important;
+}
+
+.segmentedControlDateInputOverrideControl::before,
+.segmentedControlDateInputOverrideControl::after {
+	display: none !important;
+	content: none !important;
+}
+
+.segmentedControlDateInputOverrideLabel {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 56px;
+	padding-inline: 35px;
+	font-size: 18px;
+	font-weight: var(--font-weight-semibold);
+	line-height: 1;
+	white-space: nowrap;
+}
+
+.segmentedControlDateInputOverrideControl:last-child .segmentedControlDateInputOverrideLabel {
+background: var(--color-system-background-100);
+}
+
+/* * */
+/* DATE PICKER */
+
+.datePickerRoot,
+.datePickerWrapper,
+.datePickerInput {
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	border: none;
+}
+
+.datePickerRoot {
+	display: flex;
+	align-items: stretch;
+}
+
+.datePickerInput {
+	box-sizing: border-box;
+	min-height: 0;
+	padding-block: 4px;
+	padding-inline: 38px 12px !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 15px;
+	font-weight: var(--font-weight-semibold);
+	color: var(--color-system-text-100);
+	text-align: start;
+	background: transparent;
+	border: none;
+}
+
+.datePickerSection,
+.datePickerIcon {
+	color: var(--color-system-text-200);
+}
+
+.segmentedControlDateInputOverrideControl[data-active="true"] .datePickerInput,
+.segmentedControlDateInputOverrideControl[data-active="true"] .datePickerSection,
+.segmentedControlDateInputOverrideControl[data-active="true"] .datePickerIcon {
+	color: var(--color-system-text-100);
+}
+
+@media (width <= 650px) {
+	.segmentedControlDateInputOverrideLabel {
+		min-height: 50px;
+		padding-inline: 12px;
+		font-size: 16px;
+	}
+
+	.datePickerInput {
+		font-size: 16px;
+	}
+}
+
+@media (width <= 350px) {
+	.segmentedControlDateInputOverrideLabel {
+		padding-block: 8px;
+	}
+
+	.segmentedControlDateInputOverrideControl:last-child .segmentedControlDateInputOverrideLabel {
+		padding: 4px;
+	}
+}

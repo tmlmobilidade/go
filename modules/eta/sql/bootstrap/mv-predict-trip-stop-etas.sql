@@ -1,8 +1,8 @@
 -- Live ETA per stop + refreshable MV.
--- Depends: eta.live_vehicle_positions, eta.curr_rides, eta.curr_waypoints_snapped,
---          eta.node_predictions (02-node-predictions-mv.sql).
+-- Depends: {database}.live_vehicle_positions, {database}.curr_rides, {database}.curr_waypoints_snapped,
+--          {database}.node_predictions (02-node-predictions-mv.sql).
 
-CREATE TABLE IF NOT EXISTS eta.pred_trip_stop_etas
+CREATE TABLE IF NOT EXISTS {database}.pred_trip_stop_etas
 (
     trip_id String,
     vehicle_id String,
@@ -21,9 +21,9 @@ CREATE TABLE IF NOT EXISTS eta.pred_trip_stop_etas
 ENGINE = ReplacingMergeTree(refreshed_at)
 ORDER BY (trip_id, vehicle_id, stop_sequence);
 
-CREATE MATERIALIZED VIEW IF NOT EXISTS eta.mv_pred_trip_stop_etas
+CREATE MATERIALIZED VIEW IF NOT EXISTS {database}.mv_pred_trip_stop_etas
 REFRESH EVERY 30 SECOND
-TO eta.pred_trip_stop_etas
+TO {database}.pred_trip_stop_etas
 AS
 WITH
     latest_pos AS (
@@ -33,7 +33,7 @@ WITH
             argMax(hashed_shape_id, created_at) AS hashed_shape_id,
             argMax(node_index, created_at)      AS current_node_index,
             max(created_at)                     AS position_created_at
-        FROM eta.curr_vehicle_events
+        FROM {database}.curr_vehicle_events
         WHERE created_at >= toUnixTimestamp64Milli(now64(3)) - 30 * 60 * 1000
         GROUP BY trip_id, vehicle_id
     ),
@@ -47,7 +47,7 @@ WITH
             lp.position_created_at AS position_created_at,
             fromUnixTimestamp64Milli(lp.position_created_at) AS pos_dt
         FROM latest_pos AS lp
-        INNER JOIN eta.curr_rides AS d ON lp.trip_id = d.trip_id
+        INNER JOIN {database}.curr_rides AS d ON lp.trip_id = d.trip_id
     ),
     pos_with_op_dt AS (
         SELECT
@@ -148,6 +148,148 @@ WITH
             ) AS period
         FROM pos_classified
     ),
+    recent_events AS (
+        SELECT
+            pf.trip_id             AS trip_id,
+            pf.vehicle_id          AS vehicle_id,
+            pf.hashed_shape_id     AS hashed_shape_id,
+            pf.period_of_day       AS period_of_day,
+            pf.weekday             AS weekday,
+            pf.day_type            AS day_type,
+            pf.period              AS period,
+            pf.position_created_at AS position_created_at,
+            e.node_index           AS node_index,
+            e.created_at           AS created_at
+        FROM pos_full AS pf
+        INNER JOIN {database}.curr_vehicle_events AS e
+            ON e.trip_id = pf.trip_id
+           AND e.vehicle_id = pf.vehicle_id
+        WHERE e.created_at BETWEEN pf.position_created_at - 10 * 60 * 1000
+                               AND pf.position_created_at
+    ),
+    event_steps AS (
+        SELECT
+            trip_id,
+            vehicle_id,
+            hashed_shape_id,
+            period_of_day,
+            weekday,
+            day_type,
+            period,
+            position_created_at,
+            node_index,
+            created_at,
+            lagInFrame(toNullable(node_index)) OVER (
+                PARTITION BY trip_id, vehicle_id
+                ORDER BY created_at
+            ) AS prev_node_index,
+            lagInFrame(toNullable(created_at)) OVER (
+                PARTITION BY trip_id, vehicle_id
+                ORDER BY created_at
+            ) AS prev_created_at
+        FROM recent_events
+    ),
+    live_observed AS (
+        SELECT
+            trip_id,
+            vehicle_id,
+            hashed_shape_id,
+            period_of_day,
+            weekday,
+            day_type,
+            period,
+            position_created_at,
+            countIf(
+                prev_node_index IS NOT NULL
+                AND prev_created_at IS NOT NULL
+                AND node_index > prev_node_index
+                AND created_at > prev_created_at
+            ) AS move_samples,
+            sumIf(
+                (created_at - prev_created_at) / 1000.0,
+                prev_node_index IS NOT NULL
+                AND prev_created_at IS NOT NULL
+                AND node_index > prev_node_index
+                AND created_at > prev_created_at
+            ) AS observed_seconds,
+            minIf(
+                prev_node_index,
+                prev_node_index IS NOT NULL
+                AND prev_created_at IS NOT NULL
+                AND node_index > prev_node_index
+                AND created_at > prev_created_at
+            ) AS start_node_index,
+            maxIf(
+                node_index,
+                prev_node_index IS NOT NULL
+                AND prev_created_at IS NOT NULL
+                AND node_index > prev_node_index
+                AND created_at > prev_created_at
+            ) AS end_node_index
+        FROM event_steps
+        GROUP BY
+            trip_id,
+            vehicle_id,
+            hashed_shape_id,
+            period_of_day,
+            weekday,
+            day_type,
+            period,
+            position_created_at
+    ),
+    live_baseline AS (
+        SELECT
+            lo.trip_id             AS trip_id,
+            lo.vehicle_id          AS vehicle_id,
+            lo.position_created_at AS position_created_at,
+            lo.move_samples        AS move_samples,
+            lo.observed_seconds    AS observed_seconds,
+            sum(p.predicted_travel_time_seconds) AS baseline_seconds
+        FROM live_observed AS lo
+        LEFT JOIN {database}.pred_node_etas AS p
+            ON p.hashed_shape_id = lo.hashed_shape_id
+           AND p.period_of_day   = lo.period_of_day
+           AND p.weekday         = lo.weekday
+           AND p.day_type        = lo.day_type
+           AND p.period          = lo.period
+           AND p.node_index >  lo.start_node_index
+           AND p.node_index <= lo.end_node_index
+        GROUP BY
+            lo.trip_id,
+            lo.vehicle_id,
+            lo.position_created_at,
+            lo.move_samples,
+            lo.observed_seconds
+    ),
+    live_factor AS (
+        SELECT
+            trip_id,
+            vehicle_id,
+            if(
+                move_samples > 0
+                AND observed_seconds > 0
+                AND baseline_seconds > 0
+                AND isFinite(observed_seconds / baseline_seconds),
+                greatest(
+                    toFloat64(0.7),
+                    least(
+                        toFloat64(1.4),
+                        1
+                        + (
+                            least(toFloat64(0.45), toFloat64(move_samples) / 8.0)
+                            * exp(
+                                -greatest(
+                                    toFloat64(0),
+                                    (toUnixTimestamp64Milli(now64(3)) - position_created_at) / 1000.0
+                                ) / 180.0
+                            )
+                        ) * ((observed_seconds / baseline_seconds) - 1)
+                    )
+                ),
+                toFloat64(1)
+            ) AS live_adjustment
+        FROM live_baseline
+    ),
     upcoming AS (
         SELECT
             pf.trip_id             AS trip_id,
@@ -165,7 +307,7 @@ WITH
             w.stop_name            AS stop_name,
             w.node_index           AS stop_node_index
         FROM pos_full AS pf
-        INNER JOIN eta.curr_waypoints_snapped AS w
+        INNER JOIN {database}.curr_waypoints_snapped AS w
             ON pf.hashed_trip_id = w.hashed_trip_id
         WHERE w.node_index >= pf.current_node_index
           AND pf.period != 'Unknown'
@@ -183,17 +325,20 @@ WITH
             u.stop_name           AS stop_name,
             u.stop_node_index     AS stop_node_index,
             sumIf(
-                p.predicted_travel_time_seconds,
+                p.predicted_travel_time_seconds * coalesce(lf.live_adjustment, toFloat64(1)),
                 p.node_index >  u.current_node_index
                 AND p.node_index <= u.stop_node_index
             ) AS eta_seconds
         FROM upcoming AS u
-        LEFT JOIN eta.pred_node_etas AS p
+        LEFT JOIN {database}.pred_node_etas AS p
             ON p.hashed_shape_id      = u.hashed_shape_id
            AND p.period_of_day = u.period_of_day
            AND p.weekday       = u.weekday
            AND p.day_type      = u.day_type
            AND p.period        = u.period
+        LEFT JOIN live_factor AS lf
+            ON lf.trip_id    = u.trip_id
+           AND lf.vehicle_id = u.vehicle_id
         GROUP BY
             u.trip_id,
             u.vehicle_id,

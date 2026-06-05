@@ -1,6 +1,6 @@
 /* * */
 
-import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
+import { hashedPatterns, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInChunks } from '@tmlmobilidade/utils';
@@ -183,6 +183,64 @@ export async function cleanupOrphanHashedTrips() {
 	});
 
 	Logger.success(`Hashed Trips cleanup complete. Deleted ${orphanHashedTripIds.size} orphan Hashed Trips. (${timer.get()})`);
+
+	//
+}
+
+/* * */
+
+/**
+ * Delete all HashedPatterns that are not referenced by any Ride.
+ */
+export async function cleanupOrphanHashedPatterns() {
+	//
+
+	const timer = new Timer();
+
+	Logger.spacer(1);
+	Logger.info(`Starting cleanup of orphan Hashed Patterns...`);
+
+	//
+	// Setup a stream for all Hashed Pattern IDs that are in use by Rides
+
+	const ridesCollection = await rides.getCollection();
+	const hashedPatternIdsInUseStream = ridesCollection.aggregate([{ $group: { _id: '$hashed_pattern_id' } }]).stream();
+
+	//
+	// Setup a stream of all Hashed Pattern IDs
+	// and collect them in two Sets.
+
+	const hashedPatternsCollection = await hashedPatterns.getCollection();
+	const allHashedPatternIdsStream = hashedPatternsCollection.aggregate([{ $group: { _id: '$_id' } }]).stream();
+
+	const hashedPatternIdsInUse = new Set<string>();
+	const orphanHashedPatternIds = new Set<string>();
+
+	for await (const item of allHashedPatternIdsStream) {
+		orphanHashedPatternIds.add(item._id);
+	}
+
+	for await (const item of hashedPatternIdsInUseStream) {
+		hashedPatternIdsInUse.add(item._id);
+	}
+
+	//
+	// Remove all Hashed Pattern IDs that are in use from the Set of orphan Hashed Pattern IDs.
+	// This will leave us with only the orphan Hashed Pattern IDs.
+
+	hashedPatternIdsInUse.forEach(hashedPatternIdInUse => orphanHashedPatternIds.delete(hashedPatternIdInUse));
+
+	Logger.info(`Hashed Patterns cleanup progress: In use: ${hashedPatternIdsInUse.size} | Orphan: ${orphanHashedPatternIds.size} (${timer.get()})`);
+
+	//
+	// Delete all orphan Hashed Patterns in chunks
+
+	await performInChunks(Array.from(orphanHashedPatternIds), async (chunk) => {
+		const result = await hashedPatterns.deleteMany({ _id: { $in: chunk } });
+		Logger.info(`Deleted ${result.deletedCount} orphan Hashed Patterns.`);
+	});
+
+	Logger.success(`Hashed Patterns cleanup complete. Deleted ${orphanHashedPatternIds.size} orphan Hashed Patterns. (${timer.get()})`);
 
 	//
 }

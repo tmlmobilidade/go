@@ -2,6 +2,17 @@ name: Build Modules
 
 on:
   workflow_dispatch:
+    inputs:
+      module:
+        description: 'Specific module to build (or "all")'
+        required: false
+        default: 'all'
+        type: string
+      build_all:
+        description: 'Build every module when no specific module is selected'
+        required: false
+        default: true
+        type: boolean
   push:
     branches:
       - prd
@@ -18,14 +29,14 @@ on:
       - synchronize
       - closed
 
-concurrency:
-  group: build-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-
 jobs:
 
   # # #
-  # Auto-discover modules and module->apps mapping from filesystem
+  # Auto-discover modules and module->apps mapping from filesystem,
+  # then filter down to the modules that actually need to build:
+  # - Module file changed -> build only that module.
+  # - Shared package changed -> build every module.
+  # - Manual dispatch -> honour the `module` and `build_all` inputs.
 
   discover:
     name: Discover Modules
@@ -37,27 +48,24 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          sparse-checkout: modules
-      - id: discover
+          fetch-depth: ${{ github.event_name == 'push' && '0' || '2' }}
+
+      - id: scan
+        shell: bash
         run: |
-          MODULES_APPS=$(
-            find modules/*/apps/* -maxdepth 0 -type d | sort | \
-            jq -Rsc '
-              split("\n")
-              | map(select(length > 0))
-              | map(split("/"))
-              | map({module: .[1], app: .[3]})
-              | group_by(.module)
-              | map({key: .[0].module, value: (map(.app))})
-              | from_entries
-            '
-          )
+          MAPPING=$(find modules/*/apps/* -maxdepth 0 -type d | sort | sed 's|modules/||; s|/apps/|:|')
+          {
+            echo "modules-apps<<EOF"
+            echo "$MAPPING"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
-          MODULES=$(echo "$MODULES_APPS" | jq -c 'keys')
-
-          echo "modules=$MODULES" >> $GITHUB_OUTPUT
-          echo "modules-apps=$MODULES_APPS" >> $GITHUB_OUTPUT
-          echo "$MODULES_APPS" | jq .
+      - id: discover
+        uses: ./.github/actions/discover-modules
+        with:
+          modules-apps: ${{ steps.scan.outputs.modules-apps }}
+          selected-module: ${{ inputs.module || 'all' }}
+          build-all: ${{ inputs.build_all || 'true' }}
 
   # # #
   # Generate package-lock.json once,
@@ -77,7 +85,7 @@ jobs:
           node-version: '24'
           package-manager-cache: false
 
-      - run: npm install --package-lock-only
+      - run: npm install --package-lock-only --ignore-scripts
 
       - uses: actions/upload-artifact@v7
         with:
@@ -111,7 +119,7 @@ jobs:
             }
 
   # # #
-  # Build and push Docker images for each module
+  # Build and push Docker images for each module that needs it.
 
   build-module:
     name: Build ${{ matrix.module }}

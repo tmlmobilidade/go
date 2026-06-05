@@ -1,6 +1,6 @@
 /* * */
 
-import { type GTFS_Binary, type GTFS_Ternary, validateGtfsBinary, validateGtfsTernary } from '@/gtfs/common.js';
+import { type GTFS_Binary, GTFS_HasField, type GTFS_Ternary, validateGtfsBinary, validateGtfsHasField, validateGtfsTernary } from '@/gtfs/common.js';
 
 /**
  * Represents a GTFS (General Transit Feed Specification) Location Type.
@@ -30,8 +30,7 @@ export function validateGtfsLocationType(value?: number | string): GTFS_Location
 	// Validate the route type value
 	if (typeof value === 'number') {
 		if (value >= 0 && value <= 4) return value as GTFS_LocationType;
-	}
-	else if (typeof value === 'string') {
+	} else if (typeof value === 'string') {
 		const numValue = parseInt(value, 10);
 		if (!isNaN(numValue) && numValue >= 0 && numValue <= 4) return numValue as GTFS_LocationType;
 	}
@@ -127,15 +126,21 @@ export function validateGtfsStop(rawData: GTFS_Stop_Raw): GTFS_Stop {
  * should be used for working with the GTFS-TML standard.
  */
 export interface GTFS_Stop_Extended extends GTFS_Stop {
-	has_bench?: GTFS_Binary
-	has_network_map?: GTFS_Binary
-	has_pip_real_time?: GTFS_Binary
-	has_schedules?: GTFS_Binary
-	has_shelter?: GTFS_Binary
-	has_stop_sign?: GTFS_Binary
-	has_tariffs_information?: GTFS_Binary
+	district_id?: string
+	district_name?: string
+	has_bench?: GTFS_HasField
+	has_network_map?: GTFS_HasField
+	has_pip_real_time?: GTFS_HasField
+	has_schedules?: GTFS_HasField
+	has_shelter?: GTFS_HasField
+	has_stop_sign?: GTFS_HasField
+	has_tariffs_information?: GTFS_HasField
+	locality_id?: string
+	locality_name?: string
 	municipality_id?: string
+	municipality_name?: string
 	parish_id?: string
+	parish_name?: string
 	public_visible?: GTFS_Binary
 	region_id?: string
 	shelter_code?: string
@@ -151,6 +156,8 @@ export interface GTFS_Stop_Extended extends GTFS_Stop {
  * and transformation into the `GTFS_Stop_Extended` format.
  */
 export interface GTFS_Stop_Extended_Raw extends GTFS_Stop_Raw {
+	district_id?: string
+	district_name?: string
 	has_bench?: string
 	has_network_map?: string
 	has_pip_real_time?: string
@@ -158,8 +165,12 @@ export interface GTFS_Stop_Extended_Raw extends GTFS_Stop_Raw {
 	has_shelter?: string
 	has_stop_sign?: string
 	has_tariffs_information?: string
+	locality_id?: string
+	locality_name?: string
 	municipality_id?: string
+	municipality_name?: string
 	parish_id?: string
+	parish_name?: string
 	public_visible?: string
 	region_id?: string
 	shelter_code?: string
@@ -183,15 +194,21 @@ export function validateGtfsStopExtended(rawData: GTFS_Stop_Extended_Raw): GTFS_
 	// Transform the raw data into the output format
 	return {
 		...stop,
-		has_bench: validateGtfsBinary(rawData.has_bench),
-		has_network_map: validateGtfsBinary(rawData.has_network_map),
-		has_pip_real_time: validateGtfsBinary(rawData.has_pip_real_time),
-		has_schedules: validateGtfsBinary(rawData.has_schedules),
+		district_id: rawData.district_id,
+		district_name: rawData.district_name,
+		has_bench: validateGtfsHasField(rawData.has_bench),
+		has_network_map: validateGtfsHasField(rawData.has_network_map),
+		has_pip_real_time: validateGtfsHasField(rawData.has_pip_real_time),
+		has_schedules: validateGtfsHasField(rawData.has_schedules),
 		has_shelter: validateGtfsBinary(rawData.has_shelter),
-		has_stop_sign: validateGtfsBinary(rawData.has_stop_sign),
-		has_tariffs_information: validateGtfsBinary(rawData.has_tariffs_information),
+		has_stop_sign: validateGtfsHasField(rawData.has_stop_sign),
+		has_tariffs_information: validateGtfsHasField(rawData.has_tariffs_information),
+		locality_id: rawData.locality_id,
+		locality_name: rawData.locality_name,
 		municipality_id: rawData.municipality_id,
+		municipality_name: rawData.municipality_name,
 		parish_id: rawData.parish_id,
+		parish_name: rawData.parish_name,
 		public_visible: validateGtfsBinary(rawData.public_visible),
 		region_id: rawData.region_id,
 		shelter_code: rawData.shelter_code,

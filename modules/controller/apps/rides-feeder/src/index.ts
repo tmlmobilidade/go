@@ -1,6 +1,6 @@
 /* * */
 
-import { cleanupOrphanHashedShapes, cleanupOrphanHashedTrips, cleanupOrphanRidesGlobally } from '@/cleanup.js';
+import { cleanupOrphanHashedPatterns, cleanupOrphanHashedShapes, cleanupOrphanHashedTrips, cleanupOrphanRidesGlobally } from '@/cleanup.js';
 import { parsePlan } from '@/parse-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { plans } from '@tmlmobilidade/interfaces';
@@ -20,6 +20,8 @@ async function main() {
 
 		//
 		// Get all Plans and iterate on each one
+
+		const plansCollection = await plans.getCollection();
 
 		const allPlansData = await plans.all();
 
@@ -41,7 +43,7 @@ async function main() {
 
 				if (!['1', '2', '4', '8', '15', '16', '21', '41', '42', '43', '44'].includes(currentPlan.gtfs_agency?.agency_id)) {
 					Logger.error(`Skip processing: gtfs_agency is '${currentPlan.gtfs_agency?.agency_id}'. Only '1', '2', '4', '8', '15', '16', '21', '41', '42', '43', or '44' are allowed.`);
-					await plans.updateById(currentPlan._id, { apps: { ...currentPlan.apps, controller: { last_hash: null, status: 'skipped', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } });
+					await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'skipped', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 					continue;
 				}
 
@@ -67,7 +69,7 @@ async function main() {
 
 				if (!currentPlan.operation_file_id) {
 					Logger.error(`Skip processing: No operation file found.`);
-					await plans.updateById(currentPlan._id, { apps: { ...currentPlan.apps, controller: { last_hash: null, status: 'error', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } });
+					await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'error', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 					continue;
 				}
 
@@ -75,7 +77,7 @@ async function main() {
 				// At this point, the plan will be processed.
 				// Mark it as 'processing' to prevent multiple concurrent runs.
 
-				await plans.updateById(currentPlan._id, { apps: { ...currentPlan.apps, controller: { ...currentPlan.apps.controller, status: 'processing' } } });
+				await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.status': 'processing' } });
 
 				Logger.success(`Processing started: feed_start_date: ${currentPlan.gtfs_feed_info.feed_start_date} | feed_end_date: ${currentPlan.gtfs_feed_info.feed_end_date}`);
 				Logger.spacer(1);
@@ -87,7 +89,7 @@ async function main() {
 
 				//
 			} catch (error) {
-				await plans.updateById(currentPlan._id, { apps: { ...currentPlan.apps, controller: { last_hash: null, status: 'error', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } });
+				await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'error', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 				Logger.error(`Error processing plan ${currentPlan._id}`, error);
 				Logger.divider();
 			}
@@ -97,6 +99,7 @@ async function main() {
 		// Perform the cleanup operations after processing all plans
 
 		await cleanupOrphanRidesGlobally();
+		await cleanupOrphanHashedPatterns();
 		await cleanupOrphanHashedShapes();
 		await cleanupOrphanHashedTrips();
 

@@ -1,6 +1,6 @@
 import { AggregationPipeline } from '@/common/aggregation-pipeline.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { DelayStatus, OperationalStatus, Ride, RideAcceptanceStatus, RideAnalysisGradeWithNone, SeenStatus, UnixTimestamp } from '@tmlmobilidade/types';
+import { DelayStatus, OperationalStatus, Ride, RideAcceptanceStatus, RideAnalysisGradeWithNone, SeenStatus, TicketingStatus, UnixTimestamp } from '@tmlmobilidade/types';
 
 //
 // Time thresholds
@@ -208,6 +208,25 @@ export function ridesPipelineOperationalStatus({ filter }: { filter?: { operatio
 	return pipeline;
 }
 
+export function ridesPipelineticketingStatus({ filter }: { filter?: { ticketing_status?: TicketingStatus[] } } = {}): AggregationPipeline<Ride> {
+	const pipeline: AggregationPipeline<Ride> = [];
+	if (filter?.ticketing_status?.length) return pipeline;
+
+	const includesHasTicketing = filter.ticketing_status.includes('has_ticketing');
+	const includesNoTicketing = filter.ticketing_status.includes('no_ticketing');
+
+	if (includesHasTicketing && !includesNoTicketing) return pipeline;
+
+	if (includesHasTicketing) {
+		pipeline.push({ $match: { apex_validations_qty: { $gte: 1 } } });
+	}
+
+	if (includesNoTicketing) {
+		pipeline.push({ $match: { apex_validations_qty: { $eq: 0 } } });
+	}
+	return pipeline;
+}
+
 /**
  * Creates MongoDB aggregation pipeline stages to calculate and categorize seen statuses.
  *
@@ -279,6 +298,40 @@ export function ridesPipelineSeenStatus({ filter }: { filter?: { seen_status?: S
 	return pipeline;
 }
 
+export function ridePipelineTicketingStatus({ filter }: { filter?: { ticketing_status?: TicketingStatus[] } } = {}): AggregationPipeline<Ride> {
+	if (!filter?.ticketing_status?.length) {
+		return [];
+	}
+
+	const pipeline: AggregationPipeline<Ride> = [
+		{
+			$addFields: {
+				ticketing_status: {
+					$cond: {
+						else: 'no_ticketing',
+						if: {
+							$and: [
+								{ $ifNull: ['$apex_validations_qty', false] },
+								{ $gt: ['$apex_validations_qty', 0] },
+							],
+						},
+						then: 'has_ticketing',
+					},
+				},
+			},
+		},
+		{
+			$match: {
+				ticketing_status: { $in: filter.ticketing_status },
+			},
+		},
+		{
+			$project: { ticketing_status: 0 },
+		},
+	];
+	return pipeline;
+}
+
 interface RidesPipelineFilter {
 	acceptance_status?: ('none' | RideAcceptanceStatus)[]
 	agency_ids?: string[]
@@ -294,6 +347,7 @@ interface RidesPipelineFilter {
 	search?: string
 	seen_statuses?: SeenStatus[]
 	stop_ids?: string[]
+	ticketing_status?: TicketingStatus[]
 }
 
 type FieldCondition = Record<string, unknown>;
@@ -519,6 +573,7 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 	pipeline.push(...ridesPipelineDelayStatus({ filter: { end_delay_status: filter.delay_statuses, start_delay_status: filter.delay_statuses } }));
 	pipeline.push(...ridesPipelineOperationalStatus({ filter: { operational_status: filter.operational_statuses } }));
 	pipeline.push(...ridesPipelineSeenStatus({ filter: { seen_status: filter.seen_statuses } }));
+	pipeline.push(...ridePipelineTicketingStatus({ filter: { ticketing_status: filter.ticketing_status } }));
 
 	return pipeline;
 }

@@ -1,39 +1,13 @@
 'use client';
 
-import { MapViewToolbar } from '@/components/map/MapViewToolbar';
-import { useMapOptionsContext } from '@/contexts/MapOptions.context';
-import { mapDefaultConfig } from '@/settings/map.settings';
-import Map, { FullscreenControl, GeolocateControl, MapRef, NavigationControl, ScaleControl, useMap } from '@vis.gl/react-maplibre';
+import { useMapContext } from '@/components/map/Map.context';
+import { mapDefaultConfig } from '@/components/map/Map.settings';
+import { loadMapAssets } from '@/components/map/mapLoadAssets';
+import Map, { MapRef, useMap } from '@vis.gl/react-maplibre';
+import { type MapLibreEvent } from 'maplibre-gl';
 import { useCallback, useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
-
-/* * */
-
-const MAP_LOAD_ASSETS = [
-	{ name: 'icon-car-crash', sdf: false, url: '/assets/map/car-crash.png' },
-	{ name: 'icon-barrier-block', sdf: false, url: '/assets/map/barrier-block.png' },
-	{ name: 'icon-speakerphone', sdf: false, url: '/assets/map/speakerphone.png' },
-	{ name: 'icon-calendar-event', sdf: false, url: '/assets/map/calendar-event.png' },
-	{ name: 'icon-tool', sdf: false, url: '/assets/map/tool.png' },
-	{ name: 'icon-ambulance', sdf: false, url: '/assets/map/ambulance.png' },
-	{ name: 'icon-cloud-storm', sdf: false, url: '/assets/map/cloud-storm.png' },
-	{ name: 'icon-info-triangle', sdf: false, url: '/assets/map/info-triangle.png' },
-	/* * */
-	{ name: 'cmet-bus-delay', sdf: false, url: '/assets/map/bus-delay.png' },
-	{ name: 'cmet-bus-regular', sdf: false, url: '/assets/map/bus-regular.png' },
-	{ name: 'cmet-bus-cut', sdf: false, url: '/assets/map/bus-cut.png' },
-	{ name: 'ttsl-boat-regular', sdf: false, url: '/assets/map/boat-regular.png' },
-	{ name: 'carris-bus-regular', sdf: true, url: '/assets/map/bus-carris.png' },
-	{ name: 'mobi-bus-regular', sdf: false, url: '/assets/map/bus-mobi.png' },
-	{ name: 'cmet-bus-error', sdf: false, url: '/assets/map/bus-error.png' },
-	{ name: 'cmet-needle-pin', sdf: false, url: '/assets/map/needle-pin.png' },
-	{ name: 'cmet-shape-direction', sdf: true, url: '/assets/map/shape-direction.png' },
-	{ name: 'cmet-stop-selected', sdf: false, url: '/assets/map/stop-selected.png' },
-	{ name: 'cmet-store-busy', sdf: false, url: '/assets/map/store-busy.png' },
-	{ name: 'cmet-store-closed', sdf: false, url: '/assets/map/store-closed.png' },
-	{ name: 'cmet-store-open', sdf: false, url: '/assets/map/store-open.png' },
-];
 
 /* * */
 
@@ -42,13 +16,10 @@ export type MapStyle = 'map' | 'satellite';
 interface MapViewProps {
 	autoZoom?: boolean
 	children: React.ReactNode
-	fullscreen?: boolean
-	geolocate?: boolean
 	id?: string
 	interactiveLayerIds?: string[]
 	mapObject?: MapRef
 	mapStyle?: MapStyle
-	navigation?: boolean
 	onCenterMap?: () => void
 	onClick?: (arg0) => void
 	onDrag?: (arg0) => void
@@ -61,7 +32,6 @@ interface MapViewProps {
 	onMoveStart?: (arg0) => void
 	onZoom?: (arg0) => void
 	primarySourceId?: string
-	scale?: boolean
 	scrollZoom?: boolean
 	showCenterButton?: boolean
 	toolbarExtras?: React.ReactNode
@@ -69,7 +39,7 @@ interface MapViewProps {
 
 /* * */
 
-export function MapView({ autoZoom, children, fullscreen = true, geolocate = true, id, interactiveLayerIds = [], mapStyle, navigation = true, onCenterMap, onClick, onDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onMoveEnd, onMoveStart, onZoom, scale = false, scrollZoom = true, showCenterButton = false, toolbarExtras }: MapViewProps) {
+export function MapView({ children, id, interactiveLayerIds = [], mapStyle, onClick, onDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onMoveEnd, onMoveStart, onZoom, scrollZoom = true }: MapViewProps) {
 	//
 
 	//
@@ -77,7 +47,7 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 
 	const allMaps = useMap();
 
-	const mapOptionsContext = useMapOptionsContext();
+	const mapContext = useMapContext();
 
 	const [cursor, setCursor] = useState<string>('auto');
 
@@ -85,19 +55,15 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 	// B. Transform data
 
 	useEffect(() => {
-		if (!id || !allMaps || !allMaps[id]) return;
-		const mapObject = allMaps[id];
-		mapOptionsContext.actions.setMap(mapObject);
-		for (const mapLoadAsset of MAP_LOAD_ASSETS) {
-			mapObject.loadImage(mapLoadAsset.url).then((image) => {
-				if (!mapObject.hasImage(mapLoadAsset.name)) {
-					mapObject.addImage(mapLoadAsset.name, image.data, { sdf: mapLoadAsset.sdf });
-				}
-			});
-		}
-	}, [allMaps, id]);
+		if (!id || !allMaps?.[id]) return;
+		mapContext.actions.setMap(allMaps[id]);
+	}, [allMaps, id, mapContext.actions]);
 
-	const mapStyleValue = mapStyle ?? mapOptionsContext.data.style;
+	const handleOnLoad = useCallback((event: MapLibreEvent) => {
+		loadMapAssets(event.target);
+	}, []);
+
+	const mapStyleValue = mapStyle ?? mapContext.data.style;
 
 	//
 	// C. Handle actions
@@ -105,36 +71,28 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 	const handleOnMouseEnter = useCallback((event) => {
 		setCursor('pointer');
 		if (onMouseEnter) onMouseEnter(event);
-	}, []);
+	}, [onMouseEnter]);
 
 	const handleOnMouseLeave = useCallback((event) => {
 		setCursor('auto');
 		if (onMouseLeave) onMouseLeave(event);
-	}, []);
+	}, [onMouseLeave]);
 
 	const handleOnMoveStart = useCallback((event) => {
 		setCursor('grab');
 		if (onMoveStart) onMoveStart(event);
-	}, []);
+	}, [onMoveStart]);
 
 	const handleOnMoveEnd = useCallback((event) => {
 		setCursor('auto');
 		if (onMoveEnd) onMoveEnd(event);
-	}, []);
+	}, [onMoveEnd]);
 
 	//
 	// D. Render components
 
 	return (
 		<div className={styles.container}>
-
-			<MapViewToolbar
-				autoZoom={autoZoom}
-				className={styles.toolbar}
-				onCenterMap={onCenterMap}
-				showCenterButton={showCenterButton}
-				toolbarExtras={toolbarExtras}
-			/>
 
 			<Map
 				attributionControl={false}
@@ -148,6 +106,7 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 				minZoom={mapDefaultConfig.minZoom}
 				onClick={onClick}
 				onDrag={onDrag}
+				onLoad={handleOnLoad}
 				onMouseEnter={handleOnMouseEnter}
 				onMouseLeave={handleOnMouseLeave}
 				onMouseOut={onMouseOut}
@@ -159,11 +118,6 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 				scrollZoom={scrollZoom}
 				style={{ height: '100%', width: '100%' }}
 			>
-
-				{navigation && <NavigationControl />}
-				{fullscreen && <FullscreenControl />}
-				{geolocate && <GeolocateControl />}
-				{scale && <ScaleControl />}
 
 				<div className={styles.childrenWrapper}>
 					{children}

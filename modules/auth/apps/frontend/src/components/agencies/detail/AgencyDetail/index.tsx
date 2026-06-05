@@ -2,10 +2,11 @@
 
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { AgencyDetailHeader } from '@/components/agencies/detail/AgencyDetailHeader';
+import { AgencySectionAlertsMap } from '@/components/agencies/detail/AgencySectionAlertsMap';
 import { AgencyDetailBasicInfo } from '@/components/agencies/detail/AgencySectionBasicInfo';
 import { AgencySectionContacts } from '@/components/agencies/detail/AgencySectionContacts';
-import { AgencySectionFinacial } from '@/components/agencies/detail/AgencySectionFinacial';
-import { AgencyValidationRules } from '@/components/agencies/detail/AgencyValidationRules';
+import { AgencySectionFinancials } from '@/components/agencies/detail/AgencySectionFinancials';
+import { AgencySectionValidationRules } from '@/components/agencies/detail/AgencySectionValidationRules';
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */
@@ -30,11 +31,12 @@ export function AgencyDetail() {
 	}
 
 	return (
-		<Pane header={[<AgencyDetailHeader />]}>
+		<Pane header={[<AgencyDetailHeader key="header" />]}>
 			<AgencyDetailBasicInfo />
-			<AgencySectionFinacial />
+			<AgencySectionFinancials />
 			<AgencySectionContacts />
-			<AgencyValidationRules />
+			<AgencySectionValidationRules />
+			<AgencySectionAlertsMap />
 		</Pane>
 	);
 

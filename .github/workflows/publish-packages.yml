@@ -95,7 +95,7 @@ jobs:
           package-manager-cache: false
 
       - name: Install dependencies
-        run: npm install --package-lock-only
+        run: npm install --package-lock-only --ignore-scripts
 
       - name: Save package-lock.json as artifact
         uses: actions/upload-artifact@v7

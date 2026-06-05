@@ -1,16 +1,14 @@
 'use client';
 
-import { MapOptionsContextProvider } from '@/contexts/MapOptions.context';
 import { MapProvider } from '@vis.gl/react-maplibre';
+import { type PropsWithChildren } from 'react';
 
 /* * */
 
-export function MapProviders({ children }) {
+export function MapProviders({ children }: PropsWithChildren) {
 	return (
-		<MapOptionsContextProvider>
-			<MapProvider>
-				{children}
-			</MapProvider>
-		</MapOptionsContextProvider>
+		<MapProvider>
+			{children}
+		</MapProvider>
 	);
 }

@@ -10,8 +10,17 @@ export const FILTER_KEY_TRANSLATIONS: Record<string, string> = {
 	analysis_expected_apex_validation_interval: 'Análise - Validações APEX (Int.)',
 	analysis_simple_three_vehicle_events_grade: 'Análise - 3 Momentos',
 	analysis_transaction_sequentiality: 'Análise - Sequencialidade',
+	apex_version: 'Versão APEX',
 	delay_status: 'Atraso',
+	end_time: 'Fim da análise',
 	operational_status: 'Estado',
+	sam_id: 'SAM',
+	search: 'Pesquisa',
+	seen_first_at: 'Primeira visualização',
+	seen_last_at: 'Última visualização',
+	start_time: 'Início da análise',
+	status: 'Estado',
+	ticketing: 'Bilhética',
 };
 
 // Operational status translations
@@ -38,6 +47,28 @@ export const ANALYSIS_GRADE_TRANSLATIONS: Record<string, string> = {
 	none: 'Nenhum',
 };
 
+// status system translations
+export const SAMS_STATUS_SYSTEM_TRANSLATIONS: Record<string, string> = {
+	complete: 'Completo',
+	error: 'Erro',
+	incomplete: 'Incompleto',
+	waiting: 'Aguardando',
+};
+
+// Status translations
+export const SAMS_STATUS_TRANSLATIONS: Record<string, string> = {
+	complete: 'Completo',
+	error: 'Erro',
+	incomplete: 'Incompleto',
+	waiting: 'Aguardando',
+};
+
+// Status ticketing
+export const TICKETING_STATUS_TRANSLATIONS: Record<string, string> = {
+	has_ticketing: 'Com Bilhética',
+	no_ticketing: 'Sem Bilhédetica',
+};
+
 /* * */
 
 export function translateFilterKey(key: string): string {
@@ -53,6 +84,9 @@ export function translateFilterValue(key: string, value: string): string {
 	}
 	if (key === 'analysis_simple_three_vehicle_events_grade' || key === 'analysis_ended_at_last_stop' || key === 'analysis_expected_apex_validation_interval' || key === 'analysis_transaction_sequentiality') {
 		return ANALYSIS_GRADE_TRANSLATIONS[value] || value;
+	}
+	if (key === 'sams_status' || key === 'status') {
+		return SAMS_STATUS_TRANSLATIONS[value] || value;
 	}
 	return value;
 }

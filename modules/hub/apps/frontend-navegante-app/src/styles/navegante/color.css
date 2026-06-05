@@ -1,0 +1,84 @@
+/* * *
+ * WHAT IS THIS?
+ * This file has all color definitions used in the project
+ * for light and dark modes, except theme colors.
+ * For theme colors, check ./themes/*.css files.
+ */
+
+:root {
+
+	/* BRAND / NAVEGANTE */
+	--color-brand-navegante: #ffdd01;
+	--color-brand-navegante-2: #ffc800;
+
+}
+
+:root[data-mode="light"] {
+
+	/* THEME */
+	--color-primary: #9696A0;
+	--color-secondary: #84848d;
+	--color-background: #F0F0F0;
+	--color-contrast: #fff;
+	--color-shadow: rgb(0 0 0 / 25%);
+
+	/* SYSTEM / BACKGROUND */
+	--color-system-background-100: #FFF;
+	--color-system-background-200: #FAFAFA;
+	--color-system-background-300: #F0F0F0;
+
+	/* SYSTEM / BORDER */
+	--color-system-border-100: #F0F0FA;
+	--color-system-border-200: #BEBEC8;
+
+	/* SYSTEM / TEXT */
+	--color-system-text-100: #000;
+	--color-system-text-200: #5A5A64;
+	--color-system-text-300: #9696A0;
+	--color-system-text-400: #D2D2DC;
+
+	/* STATUS / SUCCESS */
+	--color-status-success-primary: #00B932;
+
+	/* COLOR / ALERTS */
+	--color-alerts-0: #3D85C6;
+	--color-alerts-1: #00CD32;
+	--color-alerts-2: #F5A000;
+	--color-alerts-3: #E64B23;
+
+}
+
+:root[data-mode="dark"] {
+
+	/* THEME */
+	--color-primary: #282832;
+	--color-secondary: #1e1e28;
+	--color-background: #0a0a14;
+	--color-contrast: #fff;
+	--color-shadow: #00000040;
+
+	/* SYSTEM / BACKGROUND */
+	--color-system-background-100: #3C3C46;
+	--color-system-background-200: #32323C;
+	--color-system-background-300: #282832;
+
+	/* SYSTEM / BORDER */
+	--color-system-border-100: #50505A;
+	--color-system-border-200: #82828C;
+
+	/* SYSTEM / TEXT */
+	--color-system-text-100: #FFF;
+	--color-system-text-200: #C8C8D2;
+	--color-system-text-300: #8C8C96;
+	--color-system-text-400: #64646E;
+
+	/* STATUS / SUCCESS */
+	--color-status-success-primary: #00B932;
+
+	/* COLOR / ALERTS */
+	--color-alerts-0: #3D85C6;
+	--color-alerts-1: #00CD32;
+	--color-alerts-2: #F5A000;
+	--color-alerts-3: #E64B23;
+
+}

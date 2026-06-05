@@ -10,6 +10,7 @@ import { z } from 'zod';
 
 class VehiclesClass extends MongoCollectionClass<Vehicle, CreateVehicleDto, UpdateVehicleDto> {
 	private static _instance: VehiclesClass;
+
 	protected override createSchema: z.ZodSchema = CreateVehicleSchema;
 	protected override updateSchema: z.ZodSchema = UpdateVehicleSchema;
 

@@ -27,6 +27,7 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 	protected readonly manageSchema: boolean = true;
 	protected readonly orderBy: string = '_id';
 	protected readonly partitionBy: null | string = null;
+	protected readonly primaryKey: null | string = null;
 
 	private client: ClickHouseClient;
 
@@ -233,6 +234,7 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 			CREATE TABLE IF NOT EXISTS "${this.databaseName}"."${this.tableName}" (
 				${Object.entries<ClickHouseColumn>(this.schema).map(([key, column]) => `${key} ${column.type}`).join(', ')}
 			) ENGINE = ${this.getEngineString()}
+			${this.primaryKey ? `PRIMARY KEY (${this.primaryKey})` : ''}
 			${this.orderBy ? `ORDER BY (${this.orderBy})` : ''}
 			${this.partitionBy ? `PARTITION BY (${this.partitionBy})` : ''}
 		`;

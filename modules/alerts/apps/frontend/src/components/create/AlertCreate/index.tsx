@@ -38,14 +38,12 @@ export function AlertCreate() {
 
 	return (
 		<Pane footer={[<AlertCreateFooter key="footer" />]} header={[<AlertCreateHeader key="header" />]}>
+			{alertCreateContext.form.multi_step.progress.current?.id === 'agency' && <AlertCreateStepAgency />}
 			{alertCreateContext.form.multi_step.progress.current?.id === 'cause' && <AlertCreateStepCause />}
 			{alertCreateContext.form.multi_step.progress.current?.id === 'effect' && <AlertCreateStepEffect />}
-			{alertCreateContext.form.multi_step.progress.current?.id === 'agency' && <AlertCreateStepAgency />}
 			{alertCreateContext.form.multi_step.progress.current?.id === 'dates' && <AlertCreateStepDates />}
 			{alertCreateContext.form.multi_step.progress.current?.id === 'references' && <AlertCreateStepReferences />}
 			{alertCreateContext.form.multi_step.progress.current?.id === 'summary' && <AlertCreateStepSummary />}
 		</Pane>
 	);
-
-	//
 }

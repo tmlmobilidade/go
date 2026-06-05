@@ -1,0 +1,9 @@
+---
+description: GO backend conventions — loads for API routes, controllers, and API app files
+globs: **/*.routes.ts,**/*.controller.ts,**/apps/api/**/*.ts
+alwaysApply: false
+---
+
+@skills/backend.md
+
+You are working on a GO module's API app. Use Fastify via `@tmlmobilidade/fastify`, Zod schemas from `@tmlmobilidade/types`, MongoDB via `@tmlmobilidade/interfaces` and `@tmlmobilidade/mongo`. Controllers must be static classes. Routes register in `endpoints/[resource]/[resource].routes.ts`, handlers in `[resource].controller.ts`. Always use the standard response helpers and error codes defined in the skill above.

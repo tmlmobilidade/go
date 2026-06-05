@@ -1,15 +1,16 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { DocumentSchema, HashedTrip } from '@tmlmobilidade/types';
+import { DocumentSchema, type HashedTrip } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
-import { IndexDescription } from 'mongodb';
+import { type IndexDescription } from 'mongodb';
 import { z } from 'zod';
 
 /* * */
 
 class HashedTripsClass extends MongoCollectionClass<HashedTrip, HashedTrip, HashedTrip> {
 	private static _instance: HashedTripsClass;
+
 	protected override createSchema: z.ZodSchema = DocumentSchema;
 	protected override updateSchema: z.ZodSchema = DocumentSchema;
 

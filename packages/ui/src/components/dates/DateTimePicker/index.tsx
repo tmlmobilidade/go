@@ -105,6 +105,7 @@ export function DateTimePicker({ clearable, description, disabled, fullWidth, la
 			onChange={handleChange}
 			placeholder={placeholder}
 			popoverProps={{ withinPortal: false }}
+			rightSectionPointerEvents={clearable ? 'all' : undefined}
 			style={{ width: fullWidth ? '100%' : undefined }}
 			value={valueAsString}
 			valueFormat="YYYY-MM-DD HH:mm"

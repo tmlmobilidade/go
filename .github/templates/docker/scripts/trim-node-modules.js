@@ -26,6 +26,8 @@
  * - `.bin`: never entered and never removed. Skipping traversal here keeps npm/pnpm/yarn
  *   shim scripts and their wiring intact while still allowing cleanup inside the
  *   packages those shims point at (when those targets live under the same `root`).
+ * - `assets`: never entered and never removed. Many packages ship runtime images, fonts,
+ *   or other static files under an `assets/` subtree that must survive pruning.
  * - If a subdirectory's basename matches any of the prune list, the entire directory
  *   is removed recursively (`rm` with `force`) and not descended into. Names are
  *   exact, case-sensitive matches: `__tests__`, `test`, `tests`, `docs`, `doc`,
@@ -50,7 +52,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const SKIP_DIRS = new Set([".bin"]);
+const SKIP_DIRS = new Set([".bin", "assets"]);
 const PRUNE_DIRS = new Set([
 	"__tests__",
 	"test",

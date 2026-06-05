@@ -31,7 +31,7 @@ export const computeMeanDemandByLineByMonth = async () => {
 
 	const deleteTimer = new Timer();
 	Logger.info(`Clearing existing ${METRIC} metrics...`);
-	metricsCollection.deleteMany({ metric: METRIC });
+	await metricsCollection.deleteMany({ metric: METRIC });
 	Logger.info(`Cleared existing metrics (${deleteTimer.get()})`);
 
 	//

@@ -30,16 +30,16 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/writers": "*",
-		"commander": "14.0.3",
+		"commander": "15.0.0",
 		"csv-parse": "6.2.1",
 		"extract-zip": "2.0.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.6.2",
+		"@types/node": "25.9.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.21.0",
+		"tsx": "4.22.4",
 		"typescript": "5.9.3"
 	}
 }

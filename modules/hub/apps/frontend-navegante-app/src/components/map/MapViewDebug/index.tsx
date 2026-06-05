@@ -2,7 +2,7 @@
 
 import type { Map as MapLibre } from 'maplibre-gl';
 
-import { useMapOptionsContext } from '@/contexts/MapOptions.context';
+import { useMapContext } from '@/components/map/Map.context';
 import { useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -16,7 +16,7 @@ interface Props {
 export function MapViewDebug({ className }: Props) {
 	//
 	// A. Setup variables
-	const { data: { map } } = useMapOptionsContext();
+	const { data: { map } } = useMapContext();
 	const [zoom, setZoom] = useState<number>(0);
 	const [bearing, setBearing] = useState<number>(0);
 	const [pitch, setPitch] = useState<number>(0);
@@ -44,8 +44,7 @@ export function MapViewDebug({ className }: Props) {
 				setZoom(maplibreMap.getZoom());
 				setBearing(maplibreMap.getBearing());
 				setPitch(maplibreMap.getPitch());
-			}
-			catch {
+			} catch {
 				// ignore
 			}
 		};
@@ -62,8 +61,7 @@ export function MapViewDebug({ className }: Props) {
 				maplibreMap.off('zoom', updateFromMap);
 				maplibreMap.off('rotate', updateFromMap);
 				maplibreMap.off('pitch', updateFromMap);
-			}
-			catch {
+			} catch {
 				// ignore
 			}
 		};

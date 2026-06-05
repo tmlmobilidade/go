@@ -11,7 +11,7 @@
 --   - day_type                  : Weekday | Weekend
 -- =============================================================================
 
-INSERT INTO eta.hist_node_travel_times_aggregation
+INSERT INTO {database}.hist_node_travel_times_aggregation
 WITH
 
 -- -----------------------------------------------------------------------------
@@ -32,7 +32,7 @@ parsed_timestamps AS (
             fromUnixTimestamp64Milli(toInt64(created_at)) - INTERVAL 1 DAY,
             fromUnixTimestamp64Milli(toInt64(created_at))
         ) AS operational_ts
-    FROM eta.hist_node_travel_times
+    FROM {database}.hist_node_travel_times
     WHERE
         travel_time_seconds > 0  -- discard zero/null samples (GPS noise, missing segments)
         AND created_at >= {window_start}
@@ -173,7 +173,8 @@ SELECT
     round(avg(travel_time_seconds))                AS avg_travel_time_seconds,
     round(min(travel_time_seconds))                AS min_travel_time_seconds,
     round(max(travel_time_seconds))                AS max_travel_time_seconds,
-    round(quantileExact(0.5)(travel_time_seconds)) AS median_travel_time_seconds
+    round(quantileExact(0.5)(travel_time_seconds)) AS median_travel_time_seconds,
+    now()                                          AS inserted_at
 FROM classified
 WHERE period != 'Unknown'
 GROUP BY

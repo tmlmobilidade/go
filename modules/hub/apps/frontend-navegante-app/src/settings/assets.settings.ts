@@ -1,9 +1,3 @@
-/* * */
-
-/**
- * Icons used by alerts
- */
-
 export const IconsFacilities = Object.freeze({
 	court: '/icons/facilities/court.svg',
 	fire_station: '/icons/facilities/fire_station.svg',

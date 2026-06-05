@@ -1,9 +1,9 @@
 /* * */
 
-import { AppLoader } from '@/components/common/AppLoader';
+import { LoadingSection } from '@tmlmobilidade/ui';
 
 /* * */
 
 export default function Loading() {
-	return <AppLoader />;
+	return <LoadingSection fullHeight />;
 }

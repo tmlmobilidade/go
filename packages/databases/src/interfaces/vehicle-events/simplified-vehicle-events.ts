@@ -1,8 +1,11 @@
-/* * */
+/**
+ * Simplified Vehicle Events represent a simplified version of the raw vehicle events.
+ * These are stored in ClickHouse for performance and scalability reasons.
+**/
 
 import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
-import { type ClickHouseSchema } from '@/types/index.js';
+import { type ClickHouseSchema, ClickHouseTableEngine } from '@/types/index.js';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
@@ -12,8 +15,10 @@ const tableSchema: ClickHouseSchema<SimplifiedVehicleEvent> = {
 	_id: { type: 'String' },
 	agency_id: { type: 'String' },
 	created_at: { type: 'Int64' },
+	geohash: { default: 'geohashEncode(longitude, latitude, 7)', type: 'String' },
 	latitude: { type: 'Float64' },
 	longitude: { type: 'Float64' },
+	operational_date: { type: 'Date' },
 	received_at: { type: 'Int64' },
 	trip_id: { type: 'String' },
 	vehicle_id: { type: 'String' },
@@ -37,8 +42,10 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 	private static _instance: null | Promise<SimplifiedVehicleEventsNewClass> = null;
 
 	public override readonly databaseName = 'operation';
-	public override readonly orderBy = '(created_at, trip_id)';
-	public override readonly partitionBy = 'toYYYYMMDD(fromUnixTimestamp64Milli(created_at))';
+	public override readonly engine: ClickHouseTableEngine = 'ReplacingMergeTree';
+	public override readonly orderBy = '(operational_date, trip_id, vehicle_id, agency_id, created_at)';
+	public override readonly partitionBy = 'toYYYYMM(fromUnixTimestamp64Milli(created_at))';
+	public override readonly primaryKey = '(operational_date, trip_id, vehicle_id)';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'simplified_vehicle_events';
 
@@ -66,16 +73,46 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 	 * @param secondsAgo - The number of seconds in the past to consider for retrieving recent positions. Defaults to 90 seconds.
 	 * @returns A promise resolving to an array of SimplifiedVehicleEvent objects, each representing the latest event for a vehicle within the specified period.
 	 *
-	 * The method filters out events where any of vehicle_id, agency_id, or trip_id are empty or null,
-	 * and also ensures latitude and longitude are not zero. Only the most recent event per vehicle is returned.
+	 * When bearing is missing, it is computed from the previous position of the same agency_id/vehicle_id
+	 * pair if that event is at most 5 minutes older and the coordinates changed.
 	 */
 	public async getPositions(secondsAgo: number = 90): Promise<SimplifiedVehicleEvent[]> {
+		const bearingInferenceLookbackSeconds = 300;
+		const bearingInferenceMaxGapMs = bearingInferenceLookbackSeconds * 1000;
 		const query = `
 			SELECT *
-			FROM "${this.databaseName}"."${this.tableName}"
+			FROM (
+				SELECT
+					* REPLACE(
+						coalesce(
+							bearing,
+							if(
+								lagInFrame(created_at) OVER w IS NOT NULL
+								AND (created_at - lagInFrame(created_at) OVER w) <= ${bearingInferenceMaxGapMs}
+								AND (
+									abs(latitude - lagInFrame(latitude) OVER w) > 0.000001
+									OR abs(longitude - lagInFrame(longitude) OVER w) > 0.000001
+								),
+								toInt64(round(mod(
+									360 + degrees(atan2(
+										sin(radians(longitude - lagInFrame(longitude) OVER w)) * cos(radians(latitude)),
+										cos(radians(lagInFrame(latitude) OVER w)) * sin(radians(latitude))
+											- sin(radians(lagInFrame(latitude) OVER w)) * cos(radians(latitude))
+												* cos(radians(longitude - lagInFrame(longitude) OVER w))
+									)),
+									360
+								))),
+								NULL
+							)
+						) AS bearing
+					)
+				FROM "${this.databaseName}"."${this.tableName}"
+				WHERE created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL ${secondsAgo + bearingInferenceLookbackSeconds} SECOND)
+				WINDOW w AS (PARTITION BY agency_id, vehicle_id ORDER BY created_at)
+			)
 			WHERE created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL ${secondsAgo} SECOND)
 			ORDER BY created_at DESC
-			LIMIT 1 BY vehicle_id, agency_id
+			LIMIT 1 BY agency_id, vehicle_id
 		`;
 
 		const result = await this.queryFromString<SimplifiedVehicleEvent>(query);

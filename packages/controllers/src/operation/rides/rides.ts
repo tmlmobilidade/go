@@ -72,6 +72,7 @@ export class RidesSharedController {
 			search: parsedQuery.search,
 			seen_statuses: parsedQuery.seen_statuses,
 			stop_ids: parsedQuery.stop_ids,
+			ticketing_status: parsedQuery.ticketing_status,
 		});
 
 		//
@@ -83,8 +84,6 @@ export class RidesSharedController {
 		// Fetch the rides batch from the database
 
 		const ridesBatch = await rides.aggregate(pipeline);
-
-		console.log('RidesSharedController.getBatch - ridesBatch count:', ridesBatch?.length ?? 0);
 
 		//
 		// Send the response

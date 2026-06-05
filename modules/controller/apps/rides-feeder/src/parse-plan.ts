@@ -3,16 +3,16 @@
 import { cleanupOrphanRidesForPlan } from '@/cleanup.js';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
-import { files, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
+import { files, hashedPatterns, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { SQLiteWriter } from '@tmlmobilidade/sqlite';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Shape, type GTFS_Shape_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Plan, type Ride, type UnixTimestamp, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsPickupDropoffType, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
+import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Shape, type GTFS_Shape_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type HashedPattern, type HashedPatternWaypoint, type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Plan, type Ride, type UnixTimestamp, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsPickupDropoffType, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@tmlmobilidade/writers';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
-import extract from 'extract-zip';
-import fs from 'fs';
+import fs from 'node:fs';
+import unzipper from 'unzipper';
 
 /* * */
 
@@ -34,16 +34,19 @@ export async function parsePlan(planData: Plan) {
 	let shapesCounter = 0;
 	let stopTimesCounter = 0;
 
+	let hashedPatternsCounter = 0;
 	let hashedShapesCounter = 0;
 	let hashedTripsCounter = 0;
 
 	//
 	// Connect to databases and setup MongoDB Writers
 
+	const hashedPatternsCollection = await hashedPatterns.getCollection();
 	const hashedShapesCollection = await hashedShapes.getCollection();
 	const hashedTripsCollection = await hashedTrips.getCollection();
 	const ridesCollection = await rides.getCollection();
 
+	const hashedPatternsDbWritter = new MongoDbWriter<HashedPattern>({ batch_size: 1000, collection: hashedPatternsCollection });
 	const hashedShapesDbWritter = new MongoDbWriter<HashedShape>({ batch_size: 1000, collection: hashedShapesCollection });
 	const hashedTripsDbWritter = new MongoDbWriter<HashedTrip>({ batch_size: 1000, collection: hashedTripsCollection });
 	const ridesDbWritter = new MongoDbWriter<Ride>({ batch_size: 10000, collection: ridesCollection });
@@ -189,22 +192,29 @@ export async function parsePlan(planData: Plan) {
 	// Get the associated Operation GTFS archive URL,
 	// and try to download, save and unzip it.
 
+	Logger.info(`Fetching operation file from "${planData.operation_file_id}".`);
+
 	const operationFileData = await files.findById(planData.operation_file_id);
+
 	if (!operationFileData?.url) {
 		Logger.error(`No operation file found for plan "${planData._id}".`);
 		process.exit(1);
 	}
 
+	Logger.info(`Downloading operation file from "${operationFileData.url}".`);
+
 	try {
 		const downloadResponse = await fetch(operationFileData.url);
 		const downloadArrayBuffer = await downloadResponse.arrayBuffer();
 		fs.writeFileSync(downloadFilePath, Buffer.from(downloadArrayBuffer));
+		Logger.success(`Downloaded operation file to "${downloadFilePath}".`);
 	} catch (error) {
 		Logger.error('Error downloading the file.', error);
 		process.exit(1);
 	}
 
 	try {
+		Logger.info(`Unzipping operation file from "${downloadFilePath}" to "${extractDirPath}".`);
 		await unzipFile(downloadFilePath, extractDirPath);
 		Logger.success(`Unzipped GTFS file from "${downloadFilePath}" to "${extractDirPath}".`, 1);
 	} catch (error) {
@@ -598,17 +608,17 @@ export async function parsePlan(planData: Plan) {
 	/* OUTPUT FILES */
 
 	//
-	// Build the Ride, HashedTrip and HashedShape objects and save them to the database.
+	// Build the Ride, HashedPattern, HashedTrip and HashedShape objects and save them.
 	// Each trip will have a Ride object created for each day it is scheduled to run.
-	// For HashedTrips and HashedShapes, the content is hashed to prevent duplicates
-	// and unnecessary database operations.
+	// For HashedPatterns, HashedTrips and HashedShapes, the content is hashed to prevent
+	// duplicates and unnecessary database operations.
 
 	try {
 		//
 
 		const outputsTimer = new Timer();
 
-		Logger.title(`Generating HashedTrips, HashedShapes and Rides:`);
+		Logger.title(`Generating HashedPatterns, HashedTrips, HashedShapes and Rides:`);
 
 		Logger.info(`Dates: ${calendarDatesCounter} for ${savedCalendarDates.size} service_ids`);
 		Logger.info(`Trips: ${tripsCounter}`);
@@ -667,6 +677,82 @@ export async function parsePlan(planData: Plan) {
 			const lastStopTime = sortedStopTimesData[sortedStopTimesData.length - 1];
 
 			/* * */
+			/* HASHED PATTERN */
+
+			//
+			// Build the HashedPattern data, including formatting the path data by combining
+			// properties from stop_times and stops. Sort it by stop_sequence.
+
+			const formattedHashedPatternPath: HashedPatternWaypoint[] = sortedStopTimesData.map((stopTime) => {
+				// Get the stop data for this stop_time
+				const stopData = savedStops.get('stop_id', stopTime.stop_id);
+				if (!stopData) throw new Error(`Stop "${stopTime.stop_id}" not found for trip "${currentTrip.trip_id}" for Plan "${planData._id}".`);
+				// Normalize the shape_dist_traveled to meters, if necessary
+				const normalizedShapeDistTraveled = toMetersFromKilometersOrMeters(stopTime.shape_dist_traveled, lastStopTime.shape_dist_traveled);
+				// Return the formatted path data for this stop_time
+				return {
+					drop_off_type: validateGtfsPickupDropoffType(stopTime.drop_off_type),
+					pickup_type: validateGtfsPickupDropoffType(stopTime.pickup_type),
+					shape_dist_traveled: normalizedShapeDistTraveled,
+					stop_id: stopTime.stop_id,
+					stop_lat: stopData.stop_lat,
+					stop_lon: stopData.stop_lon,
+					stop_name: stopData.stop_name,
+					stop_sequence: stopTime.stop_sequence,
+					timepoint: stopTime.timepoint,
+				};
+			});
+
+			const sortedHashedPatternPath = formattedHashedPatternPath.sort((a, b) => {
+				return a.stop_sequence - b.stop_sequence;
+			});
+
+			//
+			// To prevent duplicates, hash the object contents and check
+			// if it already exists in the database. The hash value is
+			// actually the _id of the HashedPattern document.
+
+			const hashableHashedPattern: Omit<HashedPattern, '_id' | 'created_at' | 'updated_at'> = {
+				agency_id: routeData.agency_id,
+				line_id: Number(routeData.line_id),
+				line_long_name: routeData.line_long_name,
+				line_short_name: routeData.line_short_name,
+				path: sortedHashedPatternPath,
+				pattern_id: currentTrip.pattern_id,
+				route_color: routeData.route_color,
+				route_id: currentTrip.route_id,
+				route_long_name: routeData.route_long_name,
+				route_short_name: routeData.route_short_name,
+				route_text_color: routeData.route_text_color,
+				trip_headsign: currentTrip.trip_headsign,
+			};
+
+			const hashableHashedPatternStringified = JSON.stringify(hashableHashedPattern);
+
+			const uniqueIdValueForHashedPattern = crypto
+				.createHash('sha256')
+				.update(hashableHashedPatternStringified)
+				.digest('hex');
+
+			//
+			// Check if there is already a document with this unique ID value.
+			// If it does not exist, save it to the database.
+
+			const currentHashedPatternAlreadyExists = await hashedPatterns.existsById(uniqueIdValueForHashedPattern);
+
+			const finalHashedPattern: HashedPattern = {
+				...hashableHashedPattern,
+				_id: uniqueIdValueForHashedPattern,
+				created_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_timestamp,
+			};
+
+			if (!currentHashedPatternAlreadyExists) {
+				await hashedPatternsDbWritter.write(finalHashedPattern, { filter: { _id: finalHashedPattern._id }, upsert: true });
+				hashedPatternsCounter++;
+			}
+
+			/* * */
 			/* HASHED TRIP */
 
 			//
@@ -706,7 +792,7 @@ export async function parsePlan(planData: Plan) {
 
 			const hashableHashedTrip: Omit<HashedTrip, '_id' | 'created_at' | 'updated_at'> = {
 				agency_id: routeData.agency_id,
-				line_id: routeData.line_id,
+				line_id: Number(routeData.line_id),
 				line_long_name: routeData.line_long_name,
 				line_short_name: routeData.line_short_name,
 				path: sortedHashedTripPath,
@@ -859,10 +945,11 @@ export async function parsePlan(planData: Plan) {
 					end_time_scheduled: endTimeScheduledDate,
 					extension_observed: null,
 					extension_scheduled: extensionScheduledInMeters,
+					hashed_pattern_id: finalHashedPattern._id,
 					hashed_shape_id: finalHashedShape._id,
 					hashed_trip_id: finalHashedTrip._id,
 					headsign: currentTrip.trip_headsign,
-					line_id: routeData.line_id,
+					line_id: Number(routeData.line_id),
 					operational_date: calendarDate,
 					passengers_estimated: null,
 					passengers_observed: null,
@@ -915,8 +1002,9 @@ export async function parsePlan(planData: Plan) {
 		// Flush the writers to save all the data to the database
 		// before changing the Plan status to 'success'.
 
-		await hashedTripsDbWritter.flush();
+		await hashedPatternsDbWritter.flush();
 		await hashedShapesDbWritter.flush();
+		await hashedTripsDbWritter.flush();
 		await ridesDbWritter.flush();
 
 		//
@@ -933,7 +1021,7 @@ export async function parsePlan(planData: Plan) {
 		//
 		// Log progress
 
-		Logger.info(`Saved ${savedRideIds.size} Rides, ${hashedTripsCounter} Trips, ${hashedShapesCounter} Shapes in ${outputsTimer.get()}.`);
+		Logger.info(`Saved ${savedRideIds.size} Rides, ${hashedPatternsCounter} HashedPatterns, ${hashedTripsCounter} HashedTrips, ${hashedShapesCounter} HashedShapes in ${outputsTimer.get()}.`);
 
 		//
 	} catch (error) {
@@ -949,16 +1037,9 @@ export async function parsePlan(planData: Plan) {
 	//
 	// Mark this plan as 'complete' to indicate that it was processed successfully
 
-	await plans.updateById(planData._id, {
-		apps: {
-			...planData.apps,
-			controller: {
-				last_hash: planData.hash,
-				status: 'complete',
-				timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-			},
-		},
-	});
+	const plansCollection = await plans.getCollection();
+
+	await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.controller.last_hash': planData.hash, 'apps.controller.status': 'complete', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 
 	Logger.success(`Finished processing plan "${planData._id}". (${globalTimer.get()})`);
 
@@ -988,10 +1069,13 @@ async function parseCsvFile(filePath: string, rowParser: (rowData: any) => Promi
 
 /* * */
 
-const unzipFile = async (zipFilePath, outputDir) => {
-	await extract(zipFilePath, { dir: outputDir });
+export async function unzipFile(zipFilePath: string, outputDir: string) {
+	await fs
+		.createReadStream(zipFilePath)
+		.pipe(unzipper.Extract({ path: outputDir }))
+		.promise();
 	setDirectoryPermissions(outputDir);
-};
+}
 
 /* * */
 

@@ -8,6 +8,9 @@
 # Shell scripts
 *.sh text eol=lf
 
+# Husky hooks (must be LF on macOS/Linux)
+.husky/** text eol=lf
+
 # Go files
 *.go text eol=lf
 
