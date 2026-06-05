@@ -1,7 +1,7 @@
 /* * */
 
-import { ErrorIssue, type ErrorIssueContext } from './issues/ErrorIssue.js';
-import { InfoIssue, type InfoIssueContext } from './issues/InfoIssue.js';
+import { ErrorIssue, type ErrorIssueContext } from './Issues/ErrorIssue.js';
+import { InfoIssue, type InfoIssueContext } from './Issues/InfoIssue.js';
 import { LogsNextjs, LogsNextjsContext } from './logs/logs-nextjs.js';
 import { LogsNode, type LogsNodeContext } from './logs/logs-node.js';
 
@@ -46,21 +46,21 @@ class LoggersClass {
 	 * Logs an info message to the console and sends info details to Sentry if context is provided.
 	 * @param context The context object containing the info message and context.
 	 */
-	logsNode(context: Omit<LogsNodeContext, 'message' | 'app' | 'module' | 'severity'> & { message: string, app: string, module: string, severity: string }) {
-		LogsNode({
+	logsNextjs(context: Omit<LogsNextjsContext, 'app' | 'message' | 'module' | 'severity'> & { app: string, message: string, module: string, severity: string }) {
+		LogsNextjs({
 			...context,
-			message: context.message,
 			app: context.app,
+			message: context.message,
 			module: context.module,
 			severity: context.severity ?? 'info',
 		});
 	}
 
-	logsNextjs(context: Omit<LogsNextjsContext, 'message' | 'app' | 'module' | 'severity'> & { message: string, app: string, module: string, severity: string }) {
-		LogsNextjs({
+	logsNode(context: Omit<LogsNodeContext, 'app' | 'message' | 'module' | 'severity'> & { app: string, message: string, module: string, severity: string }) {
+		LogsNode({
 			...context,
-			message: context.message,
 			app: context.app,
+			message: context.message,
 			module: context.module,
 			severity: context.severity ?? 'info',
 		});
