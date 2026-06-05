@@ -24,6 +24,9 @@ export function VehiclesDetailView() {
 			<p>stop_id: {vehiclesDetailContext.data.vehicle?.stop_id}</p>
 			<p>received_at: {vehiclesDetailContext.data.vehicle?.received_at}</p>
 			<p>created_at: {vehiclesDetailContext.data.vehicle?.created_at}</p>
+			<p>line_id: {vehiclesDetailContext.data.vehicle?.line_id}</p>
+			<p>pattern_id: {vehiclesDetailContext.data.vehicle?.pattern_id}</p>
+			<p>ride_id: {vehiclesDetailContext.data.vehicle?.ride_id}</p>
 		</Section>
 	);
 }

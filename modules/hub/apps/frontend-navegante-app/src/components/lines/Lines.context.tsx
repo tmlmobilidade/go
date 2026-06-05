@@ -9,10 +9,6 @@ import useSWR from 'swr';
 /* * */
 
 interface LinesContextState {
-	actions: {
-		getLineDataById: (lineId: string) => HubLine | undefined
-		getRouteDataById: (routeId: string) => HubRoute | undefined
-	}
 	data: {
 		lines: HubLine[]
 		routes: HubRoute[]
@@ -86,10 +82,6 @@ export function LinesContextProvider({ children }: PropsWithChildren) {
 	// C. Define context value
 
 	const contextValue: LinesContextState = {
-		actions: {
-			getLineDataById,
-			getRouteDataById,
-		},
 		data: {
 			lines: normalizedLinesData,
 			routes: normalizedRoutesData,
