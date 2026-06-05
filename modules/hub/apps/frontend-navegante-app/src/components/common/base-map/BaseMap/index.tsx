@@ -9,7 +9,9 @@ import { MapViewStyleAlerts, MapViewStyleAlertsInteractiveLayerId } from '@/comp
 import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleStops';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
-import { MapLayerMouseEvent } from '@vis.gl/react-maplibre';
+import { moveMap } from '@/utils/map.utils';
+import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { MapLayerMouseEvent, useMap } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo } from 'react';
 
 /* * */
@@ -49,7 +51,7 @@ export function BaseMap() {
 	}, [alertsContext.data.fc, focusedAlertId]);
 
 	useEffect(() => {
-		if (!viewportMap || !focusedAlertId || !activeViewportMapOverlays.includes('alerts')) return;
+		if (!viewportMap || !focusedAlertId || !activeBaseMapOverlays.includes('alerts')) return;
 
 		const focusedFeature = alertsMapData.features.find(
 			feature => feature.geometry?.type === 'Point',
@@ -58,7 +60,7 @@ export function BaseMap() {
 		if (!focusedFeature || focusedFeature.geometry?.type !== 'Point') return;
 
 		moveMap(viewportMap, focusedFeature.geometry.coordinates);
-	}, [viewportMap, focusedAlertId, alertsMapData.features, activeViewportMapOverlays]);
+	}, [viewportMap, focusedAlertId, alertsMapData.features, activeBaseMapOverlays]);
 
 	//
 	// C. Handle actions
