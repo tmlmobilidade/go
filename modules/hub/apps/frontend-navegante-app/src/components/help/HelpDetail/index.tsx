@@ -32,11 +32,7 @@ export function HelpDetail() {
 	//
 	// B. Fetch data
 
-	const { data: allFaqsData, isLoading: allFaqsLoading } = useSWR<NaveganteFaq[], Error>({
-		credentials: 'omit',
-		url: 'https://carrismetropolitana.pt/admin/public-api/faqs-navegante',
-		useProperApiResponse: false,
-	});
+	const { data: allFaqsData, isLoading: allFaqsLoading } = useSWR<NaveganteFaq[], Error>({ credentials: 'omit', url: 'https://carrismetropolitana.pt/admin/public-api/faqs-navegante', useProperApiResponse: false }, { refreshInterval: 300_000 });
 
 	//
 	// B. Render components
