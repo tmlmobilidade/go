@@ -1,5 +1,6 @@
 /* * */
 
+import { getEffectSeverityLevel } from '@/utils/get-alert-severity-level';
 import { type AlertEffect, AlertEffectValues } from '@tmlmobilidade/types';
 import { AlertEffectIcons } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
@@ -25,10 +26,18 @@ export function AlertEffectIcon({ className, effect, size, withText = false }: A
 
 	const { t } = useTranslation();
 
+	const severityColor = {
+		high: styles.severityLevel_high,
+		info: styles.severityLevel_info,
+		low: styles.severityLevel_low,
+		medium: styles.severityLevel_medium,
+	};
+
 	//
 	// B. Transform data
 
 	const effectsWithIcons = AlertEffectValues.map(effect => ({
+		color: severityColor[getEffectSeverityLevel(effect)],
 		effect,
 		icon: AlertEffectIcons[effect],
 	}));
@@ -36,16 +45,22 @@ export function AlertEffectIcon({ className, effect, size, withText = false }: A
 	//
 	// C. Render components
 
-	if (withText && effect) {
+	const effectItem = effectsWithIcons.find(item => item.effect === effect);
+
+	if (withText && effect && effectItem) {
 		return (
-			<div className={`${styles.container} ${className && className}`}>
-				{effectsWithIcons.find(item => item.effect === effect)?.icon}
+			<div className={`${styles.container} ${className ?? ''} ${effectItem.color}`}>
+				{effectItem.icon}
 				<span className={styles.label}>{t(`shared:alerts.effects.${effect}.title`)}</span>
 			</div>
 		);
 	}
 
-	return effectsWithIcons.find(item => item.effect === effect)?.icon;
+	if (!effectItem) {
+		return null;
+	}
+
+	return <span className={effectItem.color}>{effectItem.icon}</span>;
 
 	//
 }
