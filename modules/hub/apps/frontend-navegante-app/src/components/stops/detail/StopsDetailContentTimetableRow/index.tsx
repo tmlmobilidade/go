@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useOperationalDateContext } from '@/components/common/operational-date/OperationalDate.context';
+import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
 import { NextArrivals } from '@/components/stops/detail/NextArrivals';
 import { isRealtimeArrival, type StopTimetableRealtimeArrival } from '@/components/stops/detail/parse-eta-gtfs';
@@ -32,9 +32,9 @@ export function StopsDetailContentTimetableRow({ arrivalData, status }: Props) {
 
 	const { t } = useTranslation();
 	const stopsDetailContext = useStopsDetailContext();
-	const operationalDateContext = useOperationalDateContext();
+	const operationalDate = useOperationalDate();
 
-	const selectedDate = operationalDateContext.data.selected_date;
+	const selectedDate = operationalDate.selectedOperationalDate;
 
 	//
 	// B. Transform data
@@ -109,7 +109,7 @@ export function StopsDetailContentTimetableRow({ arrivalData, status }: Props) {
 
 				{isSelected && (
 					<>
-						<Link className={styles.openLinePage} href={`/lines/${arrivalData.line_id}?&day=${selectedDate?.operational_date}&active_pattern_id=${thisPattern?.id}`} onClick={e => e.stopPropagation()} target="_blank">{t('default:stops.StopsDetailContentTimetableRow.open_line_page')}</Link>
+						<Link className={styles.openLinePage} href={`/lines/${arrivalData.line_id}?&day=${selectedDate}&active_pattern_id=${thisPattern?.id}`} onClick={e => e.stopPropagation()} target="_blank">{t('default:stops.StopsDetailContentTimetableRow.open_line_page')}</Link>
 						<div className={styles.details}>
 							{thisPattern.locality_ids.length > 0 && (
 								<div className={styles.localitiesListWrapper}>
@@ -153,7 +153,7 @@ export function StopsDetailContentTimetableRow({ arrivalData, status }: Props) {
 
 			{isSelected && (
 				<>
-					<Link className={styles.openLinePage} href={`/lines/${arrivalData.line_id}?&day=${selectedDate?.operational_date}&active_pattern_id=${thisPattern?.id}`} onClick={e => e.stopPropagation()} target="_blank">{t('default:stops.StopsDetailContentTimetableRow.open_line_page')}</Link>
+					<Link className={styles.openLinePage} href={`/lines/${arrivalData.line_id}?&day=${selectedDate}&active_pattern_id=${thisPattern?.id}`} onClick={e => e.stopPropagation()} target="_blank">{t('default:stops.StopsDetailContentTimetableRow.open_line_page')}</Link>
 					<div className={styles.details}>
 						{thisPattern.locality_ids.length > 0 && (
 							<div className={styles.localitiesListWrapper}>

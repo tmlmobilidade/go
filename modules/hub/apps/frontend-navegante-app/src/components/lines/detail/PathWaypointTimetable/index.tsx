@@ -1,11 +1,11 @@
 'use client';
 
+import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { TimetableDisplay } from '@/components/lines/detail/TimetableDisplay';
-import { useOperationalDateContext } from '@/components/common/operational-date/OperationalDate.context';
-import { type Timetable } from  '@tmlmobilidade/types';
 import { createTimetable } from '@/utils/create-timetable';
 import { Dates } from '@tmlmobilidade/dates';
+import { type Timetable } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -22,7 +22,7 @@ export function PathWaypointTimetable() {
 	const { t } = useTranslation();
 
 	const linesDetailContext = useLinesDetailContext();
-	const operationalDateContext = useOperationalDateContext();
+	const operationalDate = useOperationalDate();
 
 	const showVariantsOnTimetable = true;
 
@@ -36,7 +36,7 @@ export function PathWaypointTimetable() {
 		const mentionedRoutes = linesDetailContext.data.routes;
 		const selectedStopId = linesDetailContext.data.active_waypoint?.stop_id;
 		const selectedStopSequence = linesDetailContext.data.active_waypoint?.stop_sequence;
-		const selectedOperationalDate = operationalDateContext.data.selected_date?.operational_date;
+		const selectedOperationalDate = operationalDate.selectedOperationalDate;
 		// Check if all these variables are defined
 		if (!activePatternGroup || !mentionedRoutes || !selectedStopId || selectedStopSequence === undefined || !selectedOperationalDate) {
 			return null;
@@ -57,13 +57,13 @@ export function PathWaypointTimetable() {
 		} else {
 			return createTimetable(activePatternGroup, [], [], selectedStopId, selectedStopSequence, selectedOperationalDate);
 		}
-	}, [linesDetailContext.data.active_pattern, linesDetailContext.data.valid_patterns, linesDetailContext.data.routes, linesDetailContext.data.active_waypoint?.stop_id, linesDetailContext.data.active_waypoint?.stop_sequence, operationalDateContext.data.selected_date?.operational_date, showVariantsOnTimetable]);
+	}, [linesDetailContext.data.active_pattern, linesDetailContext.data.valid_patterns, linesDetailContext.data.routes, linesDetailContext.data.active_waypoint?.stop_id, linesDetailContext.data.active_waypoint?.stop_sequence, operationalDate.selectedOperationalDate, showVariantsOnTimetable]);
 
 	//
 	// C. Handle actions
 
 	function handleNextDateClick(date: Date) {
-		operationalDateContext.actions.updateSelectedDateFromJsDate(date);
+		operationalDate.setOperationalDateFromJsDate(date);
 	}
 
 	//

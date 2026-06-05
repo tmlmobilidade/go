@@ -2,12 +2,12 @@
 
 import type { HubWaypoint } from '@tmlmobilidade/types';
 
+import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { PathWaypointHeader } from '@/components/lines/detail/PathWaypointHeader';
 import { PathWaypointNextArrivals } from '@/components/lines/detail/PathWaypointNextArrivals';
 import { PathWaypointSpine } from '@/components/lines/detail/PathWaypointSpine';
 import { PathWaypointTimetable } from '@/components/lines/detail/PathWaypointTimetable';
-import { useOperationalDateContext } from '@/components/common/operational-date/OperationalDate.context';
 
 import styles from './styles.module.css';
 
@@ -31,7 +31,7 @@ export function PathWaypoint({ arrivals, id, isFirstStop, isLastStop, isSelected
 	// A. Setup variables
 
 	const linesDetailContext = useLinesDetailContext();
-	const operationalDateContext = useOperationalDateContext();
+	const operationalDate = useOperationalDate();
 
 	const now = Date.now();
 
@@ -72,7 +72,7 @@ export function PathWaypoint({ arrivals, id, isFirstStop, isLastStop, isSelected
 					waypointData={waypointData}
 				/>
 
-				{isSelected && operationalDateContext.flags.is_today_selected && (
+				{isSelected && operationalDate.isTodaySelected && (
 					<PathWaypointNextArrivals
 						realtimeArrivals={realtimeArrivals}
 						scheduledArrivals={scheduledArrivals}

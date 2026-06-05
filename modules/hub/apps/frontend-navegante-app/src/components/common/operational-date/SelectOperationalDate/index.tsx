@@ -2,7 +2,7 @@
 
 /* * */
 
-import { useOperationalDateContext } from '@/components/common/operational-date/OperationalDate.context';
+import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { SegmentedControl } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { IconCalendarEvent } from '@tabler/icons-react';
@@ -20,7 +20,7 @@ export function SelectOperationalDate() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const operationalDateContext = useOperationalDateContext();
+	const operationalDate = useOperationalDate();
 
 	const [selectedSegmentedControlOption, setSelectedSegmentedControlOption] = useState<string | undefined>();
 
@@ -36,13 +36,13 @@ export function SelectOperationalDate() {
 		{
 			label: (
 				<DatePickerInput
-					data-selected={!operationalDateContext.flags.is_today_selected && !operationalDateContext.flags.is_tomorrow_selected}
+					data-selected={!operationalDate.isTodaySelected && !operationalDate.isTomorrowSelected}
 					dropdownType="modal"
 					leftSection={<IconCalendarEvent className={styles.datePickerIcon} size={22} stroke={1.75} />}
 					leftSectionWidth={38}
-					onChange={operationalDateContext.actions.updateSelectedDateFromFormat}
+					onChange={operationalDate.setOperationalDateFromFormat}
 					size="xl"
-					value={operationalDateContext.data.selected_date?.js_date}
+					value={operationalDate.selectedOperationalDateAsJsDate}
 					valueFormat="DD MMM YYYY"
 					variant="unstyled"
 					classNames={{
@@ -61,23 +61,23 @@ export function SelectOperationalDate() {
 	// B. Transform data
 
 	useEffect(() => {
-		if (operationalDateContext.flags.is_today_selected) {
+		if (operationalDate.isTodaySelected) {
 			setSelectedSegmentedControlOption('today');
-		} else if (operationalDateContext.flags.is_tomorrow_selected) {
+		} else if (operationalDate.isTomorrowSelected) {
 			setSelectedSegmentedControlOption('tomorrow');
-		} else if (!operationalDateContext.flags.is_today_selected && !operationalDateContext.flags.is_tomorrow_selected) {
+		} else if (!operationalDate.isTodaySelected && !operationalDate.isTomorrowSelected) {
 			setSelectedSegmentedControlOption('custom_date');
 		}
-	}, [operationalDateContext.flags.is_today_selected, operationalDateContext.flags.is_tomorrow_selected]);
+	}, [operationalDate.isTodaySelected, operationalDate.isTomorrowSelected]);
 
 	//
 	// C. Handle actions
 
 	const handleSegmentedControlChange = (value: string) => {
 		if (value === 'today') {
-			operationalDateContext.actions.updateSelectedDateToToday();
+			operationalDate.setOperationalDateToToday();
 		} else if (value === 'tomorrow') {
-			operationalDateContext.actions.updateSelectedDateToTomorrow();
+			operationalDate.setOperationalDateToTomorrow();
 		}
 	};
 
