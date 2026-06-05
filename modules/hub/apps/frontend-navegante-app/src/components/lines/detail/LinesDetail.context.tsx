@@ -1,7 +1,7 @@
 'use client';
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
-import { useOperationalDateContext } from '@/components/common/operational-date/OperationalDate.context';
+import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { HubPattern, HubRoute, HubWaypoint } from '@/types/api/network';
@@ -62,7 +62,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	const linesContext = useLinesContext();
 	const stopsContext = useStopsContext();
 	const alertsContext = useAlertsContext();
-	const operationalDateContext = useOperationalDateContext();
+	const operationalDate = useOperationalDate();
 
 	const [dataAllPatternsState, setDataAllPatternsState] = useState<LinesDetailContextState['data']['all_patterns']>(null);
 	const [dataValidPatternsState, setDataValidPatternsState] = useState<LinesDetailContextState['data']['valid_patterns']>();
@@ -150,13 +150,13 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	// C. Transform data
 
 	useEffect(() => {
-		if (!dataAllPatternsState || !operationalDateContext.data.selected_date) return;
+		if (!dataAllPatternsState || !operationalDate.selectedOperationalDate) return;
 		const activePatterns: HubPattern[] = [];
 		for (const pattern of dataAllPatternsState) {
 			let closestDateSoFar: string = null;
 			let patternGroupWithClosestDate: HubPattern = null;
 			for (const patternGroup of pattern) {
-				const selectedDate = operationalDateContext.data.selected_date.operational_date;
+				const selectedDate = operationalDate.selectedOperationalDate;
 				if (!selectedDate) return;
 				// Find the closest valid date
 				const closestDate = patternGroup.valid_on.reduce((acc, curr) => {
@@ -176,7 +176,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 		}
 		const sortedPatterns = activePatterns.sort((a, b) => a.id.localeCompare(b.id));
 		setDataValidPatternsState(sortedPatterns);
-	}, [dataAllPatternsState, operationalDateContext.data.selected_date]);
+	}, [dataAllPatternsState, operationalDate.selectedOperationalDate]);
 
 	useEffect(() => {
 		if (!alertsContext.data.alerts) return;

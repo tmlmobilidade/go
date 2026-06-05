@@ -1,6 +1,6 @@
 'use client';
 
-import { useOperationalDateContext } from '@/components/common/operational-date/OperationalDate.context';
+import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { MapView } from '@/components/map/MapView';
 import { MapViewOverlayVehicles, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
@@ -27,7 +27,7 @@ export function LinesDetailViewMap() {
 	const stopsContext = useStopsContext();
 	const vehiclesContext = useVehiclesContext();
 	const linesDetailContext = useLinesDetailContext();
-	const operationalDateContext = useOperationalDateContext();
+	const operationalDate = useOperationalDate();
 
 	const { linesDetailMap } = useMap();
 
@@ -114,7 +114,7 @@ export function LinesDetailViewMap() {
 	//
 	// D. Render copmonents
 
-	if (!linesDetailContext.data.active_pattern || !operationalDateContext.data.selected_date) {
+	if (!linesDetailContext.data.active_pattern || !operationalDate.selectedOperationalDate) {
 		return (
 			<Surface>
 				<NoDataLabel text="No data" />
