@@ -19,6 +19,7 @@ interface SetActiveBottomSheetOptions {
 interface UseBottomSheetReturnType {
 	activeBottomSheet: BottomSheetNavigationType | null
 	closeActiveBottomSheet: () => void
+	isBottomSheetInStack: (view: BottomSheetType) => boolean
 	setActiveBottomSheet: (value: BottomSheetNavigationType, options?: SetActiveBottomSheetOptions) => void
 }
 
@@ -58,12 +59,17 @@ export function useBottomSheet(): UseBottomSheetReturnType {
 		setBottomSheetNavigation(prev => prev?.slice(0, -1));
 	};
 
+	const isBottomSheetInStack = (view: BottomSheetType) => {
+		return bottomSheetNavigation.some(entry => entry.view === view);
+	};
+
 	//
 	// D. Return data
 
 	return {
 		activeBottomSheet,
 		closeActiveBottomSheet,
+		isBottomSheetInStack,
 		setActiveBottomSheet,
 	};
 }

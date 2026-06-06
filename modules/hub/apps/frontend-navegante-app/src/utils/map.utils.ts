@@ -6,7 +6,7 @@ import * as turf from '@turf/turf';
 /* * */
 
 interface CenterMapOptions {
-	padding: number
+	padding?: number | { bottom?: number, left?: number, right?: number, top?: number }
 }
 
 /**
