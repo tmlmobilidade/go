@@ -51,18 +51,18 @@ export function useBaseMap(): UseBaseMapReturnType {
 	};
 
 	const moveMapToUserLocation = () => {
-		if (!userLocation?.coords.latitude || !userLocation?.coords.longitude) return;
+		if (!userLocation?.latitude || !userLocation?.longitude) return;
 		if (!mapContext.data.map) return;
-		const coordinates = [userLocation.coords.longitude, userLocation.coords.latitude];
-		const bearing = userLocationTrackingMode === 'follow-bearing' ? userLocation.coords.heading : undefined;
+		const coordinates = [userLocation.longitude, userLocation.latitude];
+		const bearing = userLocationTrackingMode === 'follow-bearing' ? userLocation.bearing : undefined;
 		moveMapView(mapContext.data.map, coordinates, { bearing, zoom: 15 });
 	};
 
 	useEffect(() => {
 		if (userLocationTrackingMode === 'disabled') return;
-		if (!userLocation?.coords.latitude || !userLocation?.coords.longitude) return;
+		if (!userLocation?.latitude || !userLocation?.longitude) return;
 		moveMapToUserLocation();
-	}, [userLocationTrackingMode, userLocation?.coords?.latitude, userLocation?.coords?.longitude, userLocation?.coords?.heading]);
+	}, [userLocationTrackingMode, userLocation]);
 
 	//
 	// C. Return data

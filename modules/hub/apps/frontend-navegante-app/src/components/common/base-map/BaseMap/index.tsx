@@ -70,8 +70,8 @@ export function BaseMap() {
 				visible={activeBaseMapOverlays.includes('alerts')}
 			/>
 			<MapViewOverlayUserLocation
-				latitude={userLocation?.coords.latitude}
-				longitude={userLocation?.coords.longitude}
+				latitude={userLocation?.latitude}
+				longitude={userLocation?.longitude}
 			/>
 		</MapView>
 	);
