@@ -22,7 +22,7 @@ export function MapViewOverlayUserLocation({ latitude, longitude, visible = true
 	return (
 		<Marker anchor="center" latitude={latitude} longitude={longitude}>
 			<div className={styles.marker} aria-hidden>
-				<span className={styles.ripple} />
+				<span className={styles.background} />
 				<span className={styles.ripple} />
 				<span className={styles.dot} />
 			</div>
