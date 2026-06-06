@@ -12,7 +12,6 @@ type BaseMapOverlayType = 'alerts' | 'stops' | 'vehicles';
 
 interface UseBaseMapReturnType {
 	activeBaseMapOverlays: BaseMapOverlayType[]
-	moveMapToUserLocation: () => void
 	toggleBaseMapOverlay: (overlay: BaseMapOverlayType) => void
 }
 
@@ -50,18 +49,13 @@ export function useBaseMap(): UseBaseMapReturnType {
 		});
 	};
 
-	const moveMapToUserLocation = () => {
+	useEffect(() => {
+		if (mapContext.data.map?.isEasing()) return;
+		if (mapContext.data.map?.isMoving()) return;
 		if (!userLocation?.latitude || !userLocation?.longitude) return;
-		if (!mapContext.data.map) return;
 		const coordinates = [userLocation.longitude, userLocation.latitude];
 		const bearing = userLocationTrackingMode === 'follow-bearing' ? userLocation.bearing : undefined;
-		moveMapView(mapContext.data.map, coordinates, { bearing, zoom: 15 });
-	};
-
-	useEffect(() => {
-		if (userLocationTrackingMode === 'disabled') return;
-		if (!userLocation?.latitude || !userLocation?.longitude) return;
-		moveMapToUserLocation();
+		moveMapView(mapContext.data.map, coordinates, { bearing, keepZoom: true });
 	}, [userLocationTrackingMode, userLocation]);
 
 	//
@@ -69,7 +63,6 @@ export function useBaseMap(): UseBaseMapReturnType {
 
 	return {
 		activeBaseMapOverlays,
-		moveMapToUserLocation,
 		toggleBaseMapOverlay,
 	};
 }

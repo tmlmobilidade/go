@@ -6,18 +6,19 @@ import { type Position } from 'geojson';
 
 /* * */
 
+interface MoveMapViewOptions {
+	bearing?: number
+	keepZoom?: boolean
+	padding?: number
+	speed?: number
+	zoom?: number
+}
+
 const DEFAULT_OPTIONS: MoveMapViewOptions = {
 	padding: 3,
 	speed: 4000,
 	zoom: 12,
 };
-
-interface MoveMapViewOptions {
-	bearing?: number
-	padding?: number
-	speed?: number
-	zoom?: number
-}
 
 /**
  *
@@ -76,7 +77,7 @@ export function moveMapView(mapObject: MapRef, coordinates: Position, options?: 
 			bearing: options.bearing ?? currentBearing,
 			center: { lat: coordinates[1], lng: coordinates[0] },
 			duration: options.speed * 0.25,
-			zoom: currentZoom,
+			zoom: options.keepZoom ? currentZoom : thresholdZoomWithMargin,
 		});
 	} else {
 		// If the zoom is too far, or the given coordinates
@@ -85,7 +86,7 @@ export function moveMapView(mapObject: MapRef, coordinates: Position, options?: 
 			bearing: options.bearing ?? currentBearing,
 			center: { lat: coordinates[1], lng: coordinates[0] },
 			duration: options.speed,
-			zoom: thresholdZoomWithMargin,
+			zoom: options.keepZoom ? currentZoom : thresholdZoomWithMargin,
 		});
 	}
 

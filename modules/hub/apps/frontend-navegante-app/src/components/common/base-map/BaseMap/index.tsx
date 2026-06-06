@@ -44,7 +44,7 @@ export function BaseMap() {
 	};
 
 	const handleMapDrag = () => {
-		setUserLocationTrackingMode('disabled');
+		setUserLocationTrackingMode('idle');
 	};
 
 	//

@@ -2,11 +2,11 @@
 
 import { useLocalStorage } from '@mantine/hooks';
 import { Logger } from '@tmlmobilidade/logger';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 /* * */
 
-export type UserLocationTrackingMode = 'disabled' | 'follow' | 'follow-bearing';
+export type UserLocationTrackingMode = 'follow' | 'follow-bearing' | 'idle';
 
 export interface UserLocation {
 	accuracy: null | number
@@ -16,11 +16,9 @@ export interface UserLocation {
 }
 
 interface UseUserLocationReturnType {
-	deviceOrientationError: null | string
+	availableUserLocationTrackingModes: UserLocationTrackingMode[]
 	setUserLocationTrackingMode: (mode: UserLocationTrackingMode) => void
-	toggleUserLocationTrackingMode: () => void
 	userLocation: null | UserLocation
-	userLocationError: null | string
 	userLocationTrackingMode: UserLocationTrackingMode
 }
 
@@ -45,15 +43,17 @@ export function useUserLocation(): UseUserLocationReturnType {
 	});
 
 	//
-	// B. Handle actions
+	// B. Transform data
 
-	const toggleUserLocationTrackingMode = () => {
-		setUserLocationTrackingMode((prev) => {
-			if (prev === 'follow') return 'follow-bearing';
-			if (prev === 'follow-bearing') return 'disabled';
-			return 'follow';
-		});
-	};
+	const availableUserLocationTrackingModes = useMemo(() => {
+		const modes = new Set<UserLocationTrackingMode>(['follow', 'follow-bearing', 'idle']);
+		if (userLocationError) modes.delete('follow');
+		if (userLocationError || deviceOrientationError) modes.delete('follow-bearing');
+		return Array.from(modes);
+	}, [userLocationError, deviceOrientationError]);
+
+	//
+	// C. Handle actions
 
 	useEffect(() => {
 		// Skip if geolocation is not supported
@@ -64,8 +64,6 @@ export function useUserLocation(): UseUserLocationReturnType {
 		// Set the callback functions to handle the success and error cases
 		const successCallback = (position: GeolocationPosition) => {
 			setUserLocationError(null);
-			// Skip if tracking mode is disabled
-			if (userLocationTrackingMode === 'disabled') return;
 			// Update user location
 			setUserLocation(prev => ({
 				...prev,
@@ -134,14 +132,12 @@ export function useUserLocation(): UseUserLocationReturnType {
 	}, []);
 
 	//
-	// C. Return data
+	// D. Return data
 
 	return {
-		deviceOrientationError,
+		availableUserLocationTrackingModes,
 		setUserLocationTrackingMode,
-		toggleUserLocationTrackingMode,
 		userLocation,
-		userLocationError,
 		userLocationTrackingMode,
 	};
 }
