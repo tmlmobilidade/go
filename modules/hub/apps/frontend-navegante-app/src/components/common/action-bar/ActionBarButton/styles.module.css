@@ -11,10 +11,8 @@
 	min-width: var(--size);
 	height: var(--size);
 	min-height: var(--size);
-	color: var(--color-system-text-200);
 	pointer-events: all;
-	background-color: var(--color-system-background-100);
-	border: 2px solid var(--color-system-border-100);
+	border: 2px solid transparent;
 	border-radius: 100%;
 	box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
 	transition: 100ms all ease;
@@ -42,4 +40,30 @@
 	background-color: var(--color-status-danger-primary);
 	border-radius: 20px;
 	box-shadow: 0 2px 5px 0 var(--color-status-danger-shadow);
+}
+
+/* * */
+/* PROPS / VARIANT */
+
+.button[data-variant='default'] {
+	color: var(--color-system-text-200);
+	background-color: var(--color-system-background-100);
+	border-color: var(--color-system-border-100);
+}
+
+.button[data-variant='active'] {
+	color: var(--color-status-active-contrast);
+	background-color: var(--color-status-active-primary);
+	border-color: var(--color-status-active-border);
+}
+
+.button[data-variant='disabled'] {
+	color: var(--color-system-text-400);
+	background-color: var(--color-system-background-100);
+	border-color: var(--color-system-border-100);
+	opacity: 0.9;
+}
+
+.button[data-variant='disabled']:active {
+	transform: none;
 }

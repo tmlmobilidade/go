@@ -24,7 +24,7 @@ export function VehiclesCounter({ count }: VehiclesCounterProps) {
 
 	return (
 		<div className={styles.container} data-zero-count={!count}>
-			<LiveIcon color={!count ? 'var(--color-system-text-300)' : 'var(--color-status-success-primary)'} />
+			<LiveIcon color={!count ? 'var(--color-system-text-300)' : 'var(--color-status-live-primary)'} />
 			<p className={styles.label}>{t('default:vehicles.VehiclesCounter.label', '', { count })}</p>
 		</div>
 	);

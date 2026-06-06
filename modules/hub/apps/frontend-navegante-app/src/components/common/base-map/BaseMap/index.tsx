@@ -4,10 +4,12 @@ import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useBaseMap } from '@/components/common/base-map/use-base-map';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { MapView } from '@/components/map/MapView';
+import { MapViewOverlayUserLocation } from '@/components/map/overlays/MapViewOverlayUserLocation';
 import { MapViewOverlayVehicles, MapViewStyleVehiclesInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
 import { MapViewStyleAlerts, MapViewStyleAlertsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
 import { MapViewStylePath } from '@/components/map/overlays/MapViewStylePath';
 import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleStops';
+import { useUserLocation } from '@/components/map/use-user-location';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { type HubPattern } from '@/types/api/network';
@@ -18,6 +20,7 @@ import { type HubShape } from '@tmlmobilidade/types';
 import { MapLayerMouseEvent, useMap } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
+import { type MapLayerMouseEvent } from '@vis.gl/react-maplibre';
 
 /* * */
 
@@ -33,7 +36,9 @@ export function BaseMap() {
 
 	const { activeBottomSheet, setActiveBottomSheet } = useBottomSheet();
 
+	const { setUserLocationTrackingMode, userLocation } = useUserLocation();
 	const { activeBaseMapOverlays } = useBaseMap();
+	const { setActiveBottomSheet } = useBottomSheet();
 
 	const { 'viewport-map': viewportMap } = useMap();
 
@@ -133,14 +138,19 @@ export function BaseMap() {
 		}
 	};
 
+	const handleMapDrag = () => {
+		setUserLocationTrackingMode('idle');
+	};
+
 	//
 	// B. Render components
 
 	return (
 		<MapView
-			id="viewport-map"
+			id="base-map"
 			interactiveLayerIds={[MapViewStyleVehiclesPrimaryLayerId, MapViewStyleStopsInteractiveLayerId, MapViewStyleAlertsInteractiveLayerId]}
 			onClick={handleMapClick}
+			onDrag={handleMapDrag}
 		>
 			<MapViewStyleStops
 				stopsData={stopsContext.data.fc}
@@ -165,6 +175,10 @@ export function BaseMap() {
 			<MapViewStyleAlerts
 				data={alertsMapData}
 				visible={activeBaseMapOverlays.includes('alerts')}
+			/>
+			<MapViewOverlayUserLocation
+				latitude={userLocation?.latitude}
+				longitude={userLocation?.longitude}
 			/>
 		</MapView>
 	);

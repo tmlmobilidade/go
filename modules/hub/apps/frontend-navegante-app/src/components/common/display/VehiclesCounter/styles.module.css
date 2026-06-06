@@ -23,7 +23,7 @@
 	font-size: 14px;
 	font-weight: 700;
 	line-height: 1;
-	color: var(--color-status-success-primary);
+	color: var(--color-status-live-primary);
 }
 
 .container[data-zero-count='true'] .label {

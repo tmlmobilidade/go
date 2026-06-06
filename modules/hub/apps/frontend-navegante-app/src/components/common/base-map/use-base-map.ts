@@ -1,6 +1,10 @@
 'use client';
 
+import { useMapContext } from '@/components/map/Map.context';
+import { useUserLocation } from '@/components/map/use-user-location';
 import { useLocalStorage } from '@mantine/hooks';
+import { moveMapView } from '@tmlmobilidade/ui';
+import { useEffect } from 'react';
 
 /* * */
 
@@ -12,14 +16,18 @@ interface UseBaseMapReturnType {
 }
 
 /**
- * A hook that provides the active bottom sheet view and a function to set it.
- * @returns An object with the active bottom sheet view and a function to set it.
+ * A hook that manages base map overlays and user location actions.
+ * @returns An object with overlay state, user location state, and map actions.
  */
 export function useBaseMap(): UseBaseMapReturnType {
 	//
 
 	//
 	// A. Setup variables
+
+	const mapContext = useMapContext();
+
+	const { userLocation, userLocationTrackingMode } = useUserLocation();
 
 	const [activeBaseMapOverlays, setActiveBaseMapOverlays] = useLocalStorage<BaseMapOverlayType[]>({
 		defaultValue: ['alerts', 'stops', 'vehicles'],
@@ -40,6 +48,18 @@ export function useBaseMap(): UseBaseMapReturnType {
 			return Array.from(result);
 		});
 	};
+
+	useEffect(() => {
+		// Skip if the user location tracking mode is idle
+		if (userLocationTrackingMode === 'idle') return;
+		// Skip if the user location is not available
+		if (!userLocation?.latitude || !userLocation?.longitude) return;
+		// Get the coordinates and bearing
+		const coordinates = [userLocation.longitude, userLocation.latitude];
+		const bearing = userLocationTrackingMode === 'follow-bearing' ? userLocation.bearing : undefined;
+		// Move the map view
+		moveMapView(mapContext.data.map, coordinates, { bearing });
+	}, [userLocationTrackingMode, userLocation]);
 
 	//
 	// C. Return data

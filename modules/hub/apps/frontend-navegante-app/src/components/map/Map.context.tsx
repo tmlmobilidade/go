@@ -4,19 +4,23 @@ import { type MapStyle } from '@/components/map/MapView';
 import * as turf from '@turf/turf';
 import { type MapRef } from '@vis.gl/react-maplibre';
 import maplibregl from 'maplibre-gl';
-import { createContext, useContext, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useState } from 'react';
 
 /* * */
+
+export type UserLocationCoordinates = [longitude: number, latitude: number];
 
 interface MapContextState {
 	actions: {
 		centerMap: (source?: string) => void
 		setMap: (map: MapRef) => void
 		setStyle: (value: MapStyle) => void
+		setUserLocation: (location: null | UserLocationCoordinates) => void
 	}
 	data: {
 		map: MapRef | undefined
 		style: string
+		userLocation: null | UserLocationCoordinates
 	}
 	flags: {
 		isLoading: boolean
@@ -37,7 +41,7 @@ export function useMapContext() {
 
 /* * */
 
-export const MapContextProvider = ({ children }) => {
+export function MapContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
@@ -45,6 +49,7 @@ export const MapContextProvider = ({ children }) => {
 
 	const [dataStyleState, setDataStyleState] = useState<MapContextState['data']['style']>('map');
 	const [dataMapState, setDataMapState] = useState<MapContextState['data']['map']>(undefined);
+	const [dataUserLocationState, setDataUserLocationState] = useState<MapContextState['data']['userLocation']>(null);
 
 	//
 	// B. Handle actions
@@ -55,6 +60,10 @@ export const MapContextProvider = ({ children }) => {
 
 	const setMap = (map: MapRef) => {
 		setDataMapState(map);
+	};
+
+	const setUserLocation = (location: null | UserLocationCoordinates) => {
+		setDataUserLocationState(location);
 	};
 
 	const centerMap = (sourceId: string) => {
@@ -87,10 +96,12 @@ export const MapContextProvider = ({ children }) => {
 			centerMap,
 			setMap,
 			setStyle,
+			setUserLocation,
 		},
 		data: {
 			map: dataMapState,
 			style: dataStyleState,
+			userLocation: dataUserLocationState,
 		},
 		flags: {
 			isLoading: false,
@@ -105,4 +116,4 @@ export const MapContextProvider = ({ children }) => {
 			{children}
 		</MapContext.Provider>
 	);
-};
+}
