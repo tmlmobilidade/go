@@ -8,11 +8,10 @@ import { MapViewOverlayUserLocation } from '@/components/map/overlays/MapViewOve
 import { MapViewOverlayVehicles, MapViewStyleVehiclesInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
 import { MapViewStyleAlerts, MapViewStyleAlertsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
 import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleStops';
+import { useUserLocation } from '@/components/map/use-user-location';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
-import { MapLayerMouseEvent } from '@vis.gl/react-maplibre';
-
-import { useUserLocation } from '../../../map/use-user-location';
+import { type MapLayerMouseEvent } from '@vis.gl/react-maplibre';
 
 /* * */
 
@@ -26,7 +25,7 @@ export function BaseMap() {
 	const alertsContext = useAlertsContext();
 	const vehiclesContext = useVehiclesContext();
 
-	const { userLocationCoordinates } = useUserLocation();
+	const { setUserLocationTrackingMode, userLocation } = useUserLocation();
 	const { activeBaseMapOverlays } = useBaseMap();
 	const { setActiveBottomSheet } = useBottomSheet();
 
@@ -44,6 +43,10 @@ export function BaseMap() {
 		}
 	};
 
+	const handleMapDrag = () => {
+		setUserLocationTrackingMode('disabled');
+	};
+
 	//
 	// B. Render components
 
@@ -52,6 +55,7 @@ export function BaseMap() {
 			id="base-map"
 			interactiveLayerIds={[MapViewStyleVehiclesPrimaryLayerId, MapViewStyleStopsInteractiveLayerId]}
 			onClick={handleMapClick}
+			onDrag={handleMapDrag}
 		>
 			<MapViewStyleStops
 				stopsData={stopsContext.data.fc}
@@ -65,7 +69,10 @@ export function BaseMap() {
 				data={alertsContext.data.fc}
 				visible={activeBaseMapOverlays.includes('alerts')}
 			/>
-			<MapViewOverlayUserLocation coordinates={userLocationCoordinates} />
+			<MapViewOverlayUserLocation
+				latitude={userLocation?.coords.latitude}
+				longitude={userLocation?.coords.longitude}
+			/>
 		</MapView>
 	);
 }

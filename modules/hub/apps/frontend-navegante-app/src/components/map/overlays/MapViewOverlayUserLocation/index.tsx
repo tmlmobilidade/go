@@ -1,6 +1,5 @@
 'use client';
 
-import { type UserLocationCoordinates } from '@/components/map/use-user-location';
 import { Marker } from '@vis.gl/react-maplibre';
 
 import styles from './styles.module.css';
@@ -8,19 +7,20 @@ import styles from './styles.module.css';
 /* * */
 
 interface MapViewOverlayUserLocationProps {
-	coordinates?: null | UserLocationCoordinates
+	latitude?: number
+	longitude?: number
 	visible?: boolean
 }
 
 /* * */
 
-export function MapViewOverlayUserLocation({ coordinates, visible = true }: MapViewOverlayUserLocationProps) {
-	if (!coordinates || !visible) {
+export function MapViewOverlayUserLocation({ latitude, longitude, visible = true }: MapViewOverlayUserLocationProps) {
+	if (!latitude || !longitude || !visible) {
 		return null;
 	}
 
 	return (
-		<Marker anchor="center" latitude={coordinates[1]} longitude={coordinates[0]}>
+		<Marker anchor="center" latitude={latitude} longitude={longitude}>
 			<div className={styles.marker} aria-hidden>
 				<span className={styles.ripple} />
 				<span className={styles.ripple} />

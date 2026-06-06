@@ -28,7 +28,7 @@ export function useBaseMap(): UseBaseMapReturnType {
 
 	const mapContext = useMapContext();
 
-	const { userLocationCoordinates, userLocationTrackingMode } = useUserLocation();
+	const { userLocation, userLocationTrackingMode } = useUserLocation();
 
 	const [activeBaseMapOverlays, setActiveBaseMapOverlays] = useLocalStorage<BaseMapOverlayType[]>({
 		defaultValue: ['alerts', 'stops', 'vehicles'],
@@ -51,16 +51,18 @@ export function useBaseMap(): UseBaseMapReturnType {
 	};
 
 	const moveMapToUserLocation = () => {
-		if (!userLocationCoordinates) return;
+		if (!userLocation?.coords.latitude || !userLocation?.coords.longitude) return;
 		if (!mapContext.data.map) return;
-		moveMapView(mapContext.data.map, userLocationCoordinates, { zoom: 15 });
+		const coordinates = [userLocation.coords.longitude, userLocation.coords.latitude];
+		const bearing = userLocationTrackingMode === 'follow-bearing' ? userLocation.coords.heading : undefined;
+		moveMapView(mapContext.data.map, coordinates, { bearing, zoom: 15 });
 	};
 
 	useEffect(() => {
 		if (userLocationTrackingMode === 'disabled') return;
-		if (!userLocationCoordinates) return;
+		if (!userLocation?.coords.latitude || !userLocation?.coords.longitude) return;
 		moveMapToUserLocation();
-	}, [userLocationTrackingMode, userLocationCoordinates]);
+	}, [userLocationTrackingMode, userLocation?.coords?.latitude, userLocation?.coords?.longitude, userLocation?.coords?.heading]);
 
 	//
 	// C. Return data

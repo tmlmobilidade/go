@@ -13,6 +13,7 @@ const DEFAULT_OPTIONS: MoveMapViewOptions = {
 };
 
 interface MoveMapViewOptions {
+	bearing?: number
 	padding?: number
 	speed?: number
 	zoom?: number
@@ -46,6 +47,7 @@ export function moveMapView(mapObject: MapRef, coordinates: Position, options?: 
 	const currentZoom = mapObject.getZoom();
 	const currentZoomWithMargin = currentZoom + options.padding;
 	const thresholdZoomWithMargin = options.zoom + options.padding;
+	const currentBearing = mapObject.getBearing();
 
 	//
 	// Get and validate the map bounds
@@ -71,6 +73,7 @@ export function moveMapView(mapObject: MapRef, coordinates: Position, options?: 
 	if (isVisible && currentZoomWithMargin > (thresholdZoomWithMargin * 1.15)) {
 		// ...then simply ease to it.
 		mapObject.easeTo({
+			bearing: options.bearing || currentBearing,
 			center: { lat: coordinates[1], lng: coordinates[0] },
 			duration: options.speed * 0.25,
 			zoom: currentZoom,
@@ -79,6 +82,7 @@ export function moveMapView(mapObject: MapRef, coordinates: Position, options?: 
 		// If the zoom is too far, or the given coordinates
 		// are not visible, then fly to it.
 		mapObject.flyTo({
+			bearing: options.bearing || currentBearing,
 			center: { lat: coordinates[1], lng: coordinates[0] },
 			duration: options.speed,
 			zoom: thresholdZoomWithMargin,

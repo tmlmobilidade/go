@@ -6,31 +6,14 @@ import { useEffect, useState } from 'react';
 
 /* * */
 
-export type UserLocationCoordinates = [longitude: number, latitude: number];
-
 export type UserLocationTrackingMode = 'disabled' | 'follow' | 'follow-bearing';
 
 interface UseUserLocationReturnType {
 	setUserLocationTrackingMode: (mode: UserLocationTrackingMode) => void
 	toggleUserLocationTrackingMode: () => void
-	userLocationCoordinates: null | UserLocationCoordinates
+	userLocation: GeolocationPosition | null
 	userLocationError: null | string
 	userLocationTrackingMode: UserLocationTrackingMode
-}
-
-/* * */
-
-function getGeolocationErrorMessage(error: GeolocationPositionError): string {
-	switch (error.code) {
-		case error.PERMISSION_DENIED:
-			return 'Location permission denied';
-		case error.POSITION_UNAVAILABLE:
-			return 'Location unavailable';
-		case error.TIMEOUT:
-			return 'Location request timed out';
-		default:
-			return 'Failed to get location';
-	}
 }
 
 /**
@@ -44,7 +27,7 @@ export function useUserLocation(): UseUserLocationReturnType {
 	// A. Setup variables
 
 	const [userLocationError, setUserLocationError] = useState<null | string>(null);
-	const [userLocationCoordinates, setUserLocationCoordinates] = useState<null | UserLocationCoordinates>(null);
+	const [userLocation, setUserLocation] = useState<GeolocationPosition | null>(null);
 
 	const [userLocationTrackingMode, setUserLocationTrackingMode] = useLocalStorage<UserLocationTrackingMode>({
 		defaultValue: 'follow',
@@ -73,14 +56,13 @@ export function useUserLocation(): UseUserLocationReturnType {
 			setUserLocationError(null);
 			// Skip if tracking mode is disabled
 			if (userLocationTrackingMode === 'disabled') return;
-			// Update coordinates
-			setUserLocationCoordinates([position.coords.longitude, position.coords.latitude]);
+			// Update user location
+			setUserLocation(position);
 			Logger.info(`User location coordinates updated to ${position.coords.longitude}, ${position.coords.latitude}`);
 		};
 		const errorCallback = (error: GeolocationPositionError) => {
-			const message = getGeolocationErrorMessage(error);
-			Logger.error(`User location error: ${message}`);
-			setUserLocationError(message);
+			Logger.error(`User location error: ${error.code} - ${error.message}`);
+			setUserLocationError(error.message);
 		};
 		// Watch for user location changes
 		const watchId = navigator.geolocation.watchPosition(successCallback, errorCallback, {
@@ -100,7 +82,7 @@ export function useUserLocation(): UseUserLocationReturnType {
 	return {
 		setUserLocationTrackingMode,
 		toggleUserLocationTrackingMode,
-		userLocationCoordinates,
+		userLocation,
 		userLocationError,
 		userLocationTrackingMode,
 	};
