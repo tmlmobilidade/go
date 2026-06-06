@@ -17,10 +17,9 @@ import { centerMap, moveMap } from '@/utils/map.utils';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubShape } from '@tmlmobilidade/types';
-import { MapLayerMouseEvent, useMap } from '@vis.gl/react-maplibre';
+import { type MapLayerMouseEvent, useMap } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
-import { type MapLayerMouseEvent } from '@vis.gl/react-maplibre';
 
 /* * */
 
@@ -38,7 +37,6 @@ export function BaseMap() {
 
 	const { setUserLocationTrackingMode, userLocation } = useUserLocation();
 	const { activeBaseMapOverlays } = useBaseMap();
-	const { setActiveBottomSheet } = useBottomSheet();
 
 	const { 'viewport-map': viewportMap } = useMap();
 
