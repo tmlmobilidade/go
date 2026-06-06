@@ -1,9 +1,10 @@
 'use client';
 
-import { useUserLocation } from '@/components/common/base-map/use-user-location';
 import { useMapContext } from '@/components/map/Map.context';
+import { useUserLocation } from '@/components/map/use-user-location';
 import { useLocalStorage } from '@mantine/hooks';
 import { moveMapView } from '@tmlmobilidade/ui';
+import { useEffect } from 'react';
 
 /* * */
 
@@ -11,7 +12,7 @@ type BaseMapOverlayType = 'alerts' | 'stops' | 'vehicles';
 
 interface UseBaseMapReturnType {
 	activeBaseMapOverlays: BaseMapOverlayType[]
-	centerMapOnUserLocation: () => void
+	moveMapToUserLocation: () => void
 	toggleBaseMapOverlay: (overlay: BaseMapOverlayType) => void
 }
 
@@ -27,7 +28,7 @@ export function useBaseMap(): UseBaseMapReturnType {
 
 	const mapContext = useMapContext();
 
-	const { userLocationCoordinates } = useUserLocation();
+	const { userLocationCoordinates, userLocationTrackingMode } = useUserLocation();
 
 	const [activeBaseMapOverlays, setActiveBaseMapOverlays] = useLocalStorage<BaseMapOverlayType[]>({
 		defaultValue: ['alerts', 'stops', 'vehicles'],
@@ -49,18 +50,24 @@ export function useBaseMap(): UseBaseMapReturnType {
 		});
 	};
 
-	const centerMapOnUserLocation = () => {
+	const moveMapToUserLocation = () => {
 		if (!userLocationCoordinates) return;
 		if (!mapContext.data.map) return;
 		moveMapView(mapContext.data.map, userLocationCoordinates, { zoom: 15 });
 	};
+
+	useEffect(() => {
+		if (userLocationTrackingMode === 'disabled') return;
+		if (!userLocationCoordinates) return;
+		moveMapToUserLocation();
+	}, [userLocationTrackingMode, userLocationCoordinates]);
 
 	//
 	// C. Return data
 
 	return {
 		activeBaseMapOverlays,
-		centerMapOnUserLocation,
+		moveMapToUserLocation,
 		toggleBaseMapOverlay,
 	};
 }

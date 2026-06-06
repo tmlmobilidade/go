@@ -1,7 +1,7 @@
 'use client';
 
 import { ActionBarButton } from '@/components/common/action-bar/ActionBarButton';
-import { useUserLocation } from '@/components/common/base-map/use-user-location';
+import { useUserLocation } from '@/components/map/use-user-location';
 import { IconCurrentLocation, IconCurrentLocationFilled, IconLocationOff, IconNavigationTop } from '@tabler/icons-react';
 
 /* * */

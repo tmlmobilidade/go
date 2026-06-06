@@ -1,6 +1,7 @@
 'use client';
 
 import { useLocalStorage } from '@mantine/hooks';
+import { Logger } from '@tmlmobilidade/logger';
 import { useEffect, useState } from 'react';
 
 /* * */
@@ -61,38 +62,36 @@ export function useUserLocation(): UseUserLocationReturnType {
 		});
 	};
 
-	const requestUserLocation = () => {
+	useEffect(() => {
 		// Skip if geolocation is not supported
 		if (!navigator.geolocation) {
 			setUserLocationError('Geolocation is not supported');
 			return;
 		}
-		// Set loading and clear error states
-		setUserLocationError(null);
 		// Set the callback functions to handle the success and error cases
 		const successCallback = (position: GeolocationPosition) => {
+			setUserLocationError(null);
+			// Skip if tracking mode is disabled
+			if (userLocationTrackingMode === 'disabled') return;
+			// Update coordinates
 			setUserLocationCoordinates([position.coords.longitude, position.coords.latitude]);
+			Logger.info(`User location coordinates updated to ${position.coords.longitude}, ${position.coords.latitude}`);
 		};
 		const errorCallback = (error: GeolocationPositionError) => {
 			const message = getGeolocationErrorMessage(error);
+			Logger.error(`User location error: ${message}`);
 			setUserLocationError(message);
 		};
-		// Request user location using the browser's geolocation API
-		navigator.geolocation.getCurrentPosition(successCallback, errorCallback, {
+		// Watch for user location changes
+		const watchId = navigator.geolocation.watchPosition(successCallback, errorCallback, {
 			enableHighAccuracy: true,
-			maximumAge: 0,
+			maximumAge: 1_000,
 			timeout: 10_000,
 		});
-	};
-
-	useEffect(() => {
-		let timeout: null | ReturnType<typeof setTimeout> = null;
-		const updateUserLocation = () => {
-			requestUserLocation();
-			timeout = setTimeout(updateUserLocation, 1_000);
+		// Clean up the watch when the component unmounts
+		return () => {
+			navigator.geolocation.clearWatch(watchId);
 		};
-		updateUserLocation();
-		return () => clearTimeout(timeout);
 	}, []);
 
 	//

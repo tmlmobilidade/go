@@ -12,7 +12,7 @@ import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { MapLayerMouseEvent } from '@vis.gl/react-maplibre';
 
-import { useUserLocation } from '../use-user-location';
+import { useUserLocation } from '../../../map/use-user-location';
 
 /* * */
 

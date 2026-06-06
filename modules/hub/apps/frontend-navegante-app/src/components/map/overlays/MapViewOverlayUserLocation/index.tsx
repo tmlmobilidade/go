@@ -1,6 +1,6 @@
 'use client';
 
-import { type UserLocationCoordinates } from '@/components/common/base-map/use-user-location';
+import { type UserLocationCoordinates } from '@/components/map/use-user-location';
 import { Marker } from '@vis.gl/react-maplibre';
 
 import styles from './styles.module.css';
