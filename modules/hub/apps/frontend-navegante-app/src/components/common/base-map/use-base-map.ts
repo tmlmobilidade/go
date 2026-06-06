@@ -50,12 +50,15 @@ export function useBaseMap(): UseBaseMapReturnType {
 	};
 
 	useEffect(() => {
-		if (mapContext.data.map?.isEasing()) return;
-		if (mapContext.data.map?.isMoving()) return;
+		// Skip if the user location tracking mode is idle
+		if (userLocationTrackingMode === 'idle') return;
+		// Skip if the user location is not available
 		if (!userLocation?.latitude || !userLocation?.longitude) return;
+		// Get the coordinates and bearing
 		const coordinates = [userLocation.longitude, userLocation.latitude];
 		const bearing = userLocationTrackingMode === 'follow-bearing' ? userLocation.bearing : undefined;
-		moveMapView(mapContext.data.map, coordinates, { bearing, keepZoom: true });
+		// Move the map view
+		moveMapView(mapContext.data.map, coordinates, { bearing });
 	}, [userLocationTrackingMode, userLocation]);
 
 	//

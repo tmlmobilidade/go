@@ -8,7 +8,6 @@ import { type Position } from 'geojson';
 
 interface MoveMapViewOptions {
 	bearing?: number
-	keepZoom?: boolean
 	padding?: number
 	speed?: number
 	zoom?: number
@@ -68,6 +67,11 @@ export function moveMapView(mapObject: MapRef, coordinates: Position, options?: 
 	const isVisible = turf.booleanIntersects(point, bbox);
 
 	//
+	// Check if the movement should be aborted
+
+	if (mapObject.isMoving() || mapObject.isEasing() || mapObject.isZooming()) mapObject.stop();
+
+	//
 	// If the given coordinates are visible and the zoom
 	// is not too far back (plus a little margin)...
 
@@ -77,7 +81,7 @@ export function moveMapView(mapObject: MapRef, coordinates: Position, options?: 
 			bearing: options.bearing ?? currentBearing,
 			center: { lat: coordinates[1], lng: coordinates[0] },
 			duration: options.speed * 0.25,
-			zoom: options.keepZoom ? currentZoom : thresholdZoomWithMargin,
+			zoom: thresholdZoomWithMargin,
 		});
 	} else {
 		// If the zoom is too far, or the given coordinates
@@ -86,7 +90,7 @@ export function moveMapView(mapObject: MapRef, coordinates: Position, options?: 
 			bearing: options.bearing ?? currentBearing,
 			center: { lat: coordinates[1], lng: coordinates[0] },
 			duration: options.speed,
-			zoom: options.keepZoom ? currentZoom : thresholdZoomWithMargin,
+			zoom: thresholdZoomWithMargin,
 		});
 	}
 

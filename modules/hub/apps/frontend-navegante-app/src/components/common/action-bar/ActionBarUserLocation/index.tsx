@@ -26,7 +26,7 @@ export function ActionBarUserLocation() {
 		if (!availableUserLocationTrackingModes.includes('follow')) return;
 		if (!userLocation?.latitude || !userLocation?.longitude) return;
 		const coordinates = [userLocation.longitude, userLocation.latitude];
-		moveMapView(mapContext.data.map, coordinates, { keepZoom: true });
+		moveMapView(mapContext.data.map, coordinates);
 		setUserLocationTrackingMode('follow');
 	};
 
