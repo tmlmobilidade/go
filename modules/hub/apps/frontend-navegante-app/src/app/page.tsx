@@ -7,6 +7,7 @@ import { BaseMapOverlaysControl } from '@/components/common/base-map/BaseMapOver
 import { VehiclesCounter } from '@/components/common/display/VehiclesCounter';
 import { HelpDetail } from '@/components/help/HelpDetail';
 import { LinesDetail } from '@/components/lines/detail/LinesDetail';
+import { useUserLocation } from '@/components/map/use-user-location';
 import { SearchDetail } from '@/components/search/SearchDetail';
 import { StopsDetail } from '@/components/stops/detail/StopsDetail';
 import { VehiclesDetail } from '@/components/vehicles/detail/VehiclesDetail';
@@ -25,6 +26,8 @@ export default function Page() {
 	const colorScheme = useColorScheme();
 
 	const vehiclesContext = useVehiclesContext();
+
+	const { userLocation } = useUserLocation();
 
 	//
 	// B. Handle actions
@@ -49,7 +52,10 @@ export default function Page() {
 			<HelpDetail />
 			<AlertsList />
 			<SearchDetail />
-			<VehiclesCounter count={vehiclesContext.data.fc?.features?.length} />
+			{/* <VehiclesCounter count={vehiclesContext.data.fc?.features?.length} /> */}
+			<VehiclesCounter count={userLocation?.coords?.heading} />
+			{/* <VehiclesCounter count={userLocation?.coords?.latitude} />
+			<VehiclesCounter count={userLocation?.coords?.longitude} /> */}
 		</>
 	);
 }
