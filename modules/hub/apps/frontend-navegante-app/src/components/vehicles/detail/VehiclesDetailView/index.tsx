@@ -4,11 +4,14 @@ import { useLinesContext } from '@/components/lines/Lines.context';
 import { CopyBadge } from '@/components/stops/detail/CopyBadge';
 import { useVehiclesDetailContext } from '@/components/vehicles/detail/VehiclesDetail.context';
 import { AGENCY_LOGO_MAP } from '@/lib/agency-logos-map';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
+import { HubPattern } from '@tmlmobilidade/types';
 import { LineBadge, LineName, Section } from '@tmlmobilidade/ui';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
@@ -27,6 +30,11 @@ export function VehiclesDetailView() {
 
 	//
 	// B. Fetch data
+
+	const { data: activePatternData } = useSWR<HubPattern[]>(vehiclesDetailContext.data.vehicle?.pattern_id && {
+		credentials: 'omit',
+		url: API_ROUTES.hub.NETWORK_PATTERNS(vehiclesDetailContext.data.vehicle.pattern_id),
+	});
 
 	const activeLineData = useMemo(() => {
 		if (!vehiclesDetailContext.data.vehicle?.line_id) return;
@@ -53,7 +61,7 @@ export function VehiclesDetailView() {
 					<Image alt="" height={40} src={AGENCY_LOGO_MAP[activeLineData?.agency_id]} width={60} />
 				</div>
 
-				<LineName align="center" longName={activeLineData?.long_name} />
+				<LineName align="center" longName={`Destino: ${activePatternData?.[0]?.headsign}`} />
 
 				<CopyBadge value={vehiclesDetailContext.data.vehicle?.vehicle_id} />
 
