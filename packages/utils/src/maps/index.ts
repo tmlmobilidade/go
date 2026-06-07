@@ -1,1 +1,1 @@
-export * from './push-to-map.js';
+export * from './push-array-to-map.js';
