@@ -13,7 +13,7 @@ import useSWR from 'swr';
 type TripUpdateByStop = Map<string, HubGtfsRtTripUpdate[]>;
 type TripUpdateByTrip = Map<string, HubGtfsRtTripUpdate[]>;
 
-interface EtaContextState {
+interface TripUpdatesContextState {
 	data: {
 		trip_update_by_stop: TripUpdateByStop
 		trip_update_by_trip: TripUpdateByTrip
@@ -27,28 +27,31 @@ interface EtaContextState {
 
 /* * */
 
-const EtaContext = createContext<EtaContextState | undefined>(undefined);
+const TripUpdatesContext = createContext<TripUpdatesContextState | undefined>(undefined);
 
-export function useEtaContext() {
-	const context = useContext(EtaContext);
+export function useTripUpdatesContext() {
+	const context = useContext(TripUpdatesContext);
 	if (!context) {
-		throw new Error('useEtaContext must be used within a EtaContextProvider');
+		throw new Error('useTripUpdatesContext must be used within a TripUpdatesContextProvider');
 	}
 	return context;
 }
 
 /* * */
 
-export const EtaContextProvider = ({ children }: PropsWithChildren) => {
+export const TripUpdatesContextProvider = ({ children }: PropsWithChildren) => {
 	//
+	console.log('[TripUpdatesContextProvider] Rendering...');
 
 	//
 	// A. Setup variables
-	const { data, error, isLoading } = useSWR<HubGtfsRtFeedMessage, Error>(API_ROUTES.hub.REALTIME_ETA_GTFS);
+	const { data, error, isLoading } = useSWR<HubGtfsRtFeedMessage, Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_TRIP_UPDATES }, { refreshInterval: 20_000 }); // 2 seconds
 
 	//
 	// B. Transform data
 	const { tripUpdatesByStop, tripUpdatesByTrip } = useMemo(() => {
+		console.log('[TripUpdatesContextProvider] Transform data...');
+		console.log('[TripUpdatesContextProvider] data', data);
 		if (!data?.entity?.length) return { tripUpdatesByStop: new Map(), tripUpdatesByTrip: new Map() };
 
 		for (const entity of data.entity) {
@@ -72,6 +75,8 @@ export const EtaContextProvider = ({ children }: PropsWithChildren) => {
 				pushArrayToMap(tripUpdatesByStop, stopUpdate.stop_id, tripUpdate);
 			}
 		}
+		console.log('[TripUpdatesContextProvider] tripUpdatesByStop', tripUpdatesByStop);
+		console.log('[TripUpdatesContextProvider] tripUpdatesByTrip', tripUpdatesByTrip);
 		return { tripUpdatesByStop, tripUpdatesByTrip };
 	}, [data]);
 
@@ -81,27 +86,27 @@ export const EtaContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// D. Define context value
 
-	const contextValue: EtaContextState = useMemo(() => {
+	const contextValue: TripUpdatesContextState = useMemo(() => {
 		return {
 			data: {
 				trip_update_by_stop: tripUpdatesByStop,
 				trip_update_by_trip: tripUpdatesByTrip,
-				trip_update_raw: data.entity,
+				trip_update_raw: data?.entity ?? [],
 			},
 			flags: {
 				error,
 				loading: isLoading,
 			},
 		};
-	}, [data.entity, error, isLoading, tripUpdatesByStop, tripUpdatesByTrip]);
+	}, [data, error, isLoading, tripUpdatesByStop, tripUpdatesByTrip]);
 
 	//
 	// E. Render components
 
 	return (
-		<EtaContext.Provider value={contextValue}>
+		<TripUpdatesContext.Provider value={contextValue}>
 			{children}
-		</EtaContext.Provider>
+		</TripUpdatesContext.Provider>
 	);
 
 	//
