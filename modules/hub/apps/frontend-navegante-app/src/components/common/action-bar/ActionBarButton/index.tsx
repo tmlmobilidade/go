@@ -5,19 +5,21 @@ import styles from './styles.module.css';
 /* * */
 
 interface ActionBarButtonProps {
+	ariaHint: string
+	ariaLabel: string
 	badgeCount?: number
 	icon: React.ReactNode
-	label: string
 	onClick?: () => void
 	variant?: 'active' | 'default' | 'disabled'
 }
 
 /* * */
 
-export function ActionBarButton({ badgeCount, icon, label, onClick, variant = 'default' }: ActionBarButtonProps) {
+export function ActionBarButton({ ariaHint, ariaLabel, badgeCount, icon, onClick, variant = 'default' }: ActionBarButtonProps) {
 	return (
 		<div
-			aria-label={label}
+			aria-label={ariaLabel}
+			aria-roledescription={ariaHint}
 			className={styles.button}
 			data-variant={variant}
 			onClick={onClick}
