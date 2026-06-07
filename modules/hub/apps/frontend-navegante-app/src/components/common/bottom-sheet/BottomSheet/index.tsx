@@ -2,7 +2,7 @@
 
 import { BottomSheetClose } from '@/components/common/bottom-sheet/BottomSheetClose';
 import { Drawer } from '@mantine/core';
-import { type PropsWithChildren } from 'react';
+import { type PropsWithChildren, useCallback, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
 
@@ -16,6 +16,15 @@ interface BottomSheetProps {
 }
 
 export function BottomSheet({ children, onClose, opened, size = 'full', title }: PropsWithChildren<BottomSheetProps>) {
+	const contentRef = useRef<HTMLDivElement>(null);
+	const [isScrolled, setIsScrolled] = useState(false);
+
+	const handleScroll = useCallback(() => {
+		const el = contentRef.current;
+		if (!el) return;
+		setIsScrolled(el.scrollTop > 10);
+	}, []);
+
 	return (
 		<Drawer.Root
 			onClose={onClose}
@@ -25,8 +34,8 @@ export function BottomSheet({ children, onClose, opened, size = 'full', title }:
 			size={size === 'full' ? '95%' : '55%'}
 		>
 			{size === 'full' && <Drawer.Overlay />}
-			<Drawer.Content classNames={{ content: styles.content }}>
-				<Drawer.Header classNames={{ header: styles.header }} data-with-title={!!title}>
+			<Drawer.Content ref={contentRef} classNames={{ content: styles.content }} onScroll={handleScroll}>
+				<Drawer.Header classNames={{ header: styles.header }} data-scrolled={isScrolled || undefined} data-with-title={!!title}>
 					<BottomSheetClose onClick={onClose} />
 					{title && <h1 className={styles.title}>{title}</h1>}
 				</Drawer.Header>

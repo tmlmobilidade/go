@@ -17,6 +17,7 @@
 	padding: 10px;
 	pointer-events: none;
 	background-color: transparent;
+	transition: background-color 200ms ease, backdrop-filter 200ms ease;
 }
 
 .header[data-with-title="true"] {
@@ -24,6 +25,16 @@
 	border-bottom: 1px solid var(--color-system-border-100);
 	border-top-left-radius: 35px;
 	border-top-right-radius: 35px;
+}
+
+.header[data-scrolled] {
+	background-color: color-mix(in srgb, var(--color-system-background-200) 25%, transparent);
+	backdrop-filter: blur(2px);
+}
+
+.header[data-with-title="true"][data-scrolled] {
+	background-color: color-mix(in srgb, var(--color-system-background-100) 25%, transparent);
+	border-bottom-color: transparent;
 }
 
 /* * */
