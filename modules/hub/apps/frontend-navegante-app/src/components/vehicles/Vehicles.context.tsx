@@ -24,7 +24,7 @@ interface VehiclesContextState {
 		vehicles: HubVehiclePosition[]
 	}
 	flags: {
-		is_loading: boolean
+		isLoading: boolean
 	}
 }
 
@@ -128,7 +128,7 @@ export function VehiclesContextProvider({ children }: PropsWithChildren) {
 			vehicles: allVehiclesPositionsData || [],
 		},
 		flags: {
-			is_loading: allVehiclesPositionsLoading,
+			isLoading: allVehiclesPositionsLoading,
 		},
 	};
 
