@@ -31,12 +31,13 @@ interface StopLineBadgeGroup {
 }
 
 interface MapViewOverlayStopLineBadgesProps {
+	limit?: number
 	visible?: boolean
 }
 
 /* * */
 
-export function MapViewOverlayStopLineBadges({ visible }: MapViewOverlayStopLineBadgesProps) {
+export function MapViewOverlayStopLineBadges({ limit = 4, visible }: MapViewOverlayStopLineBadgesProps) {
 	//
 
 	//
@@ -112,7 +113,7 @@ export function MapViewOverlayStopLineBadges({ visible }: MapViewOverlayStopLine
 			pitchAlignment="viewport"
 			rotationAlignment="viewport"
 		>
-			{badgeGroup.badges.slice(0, 3).map(badge => (
+			{badgeGroup.badges.slice(0, limit).map(badge => (
 				<div
 					key={badge._id}
 					className={styles.badge}
@@ -121,9 +122,9 @@ export function MapViewOverlayStopLineBadges({ visible }: MapViewOverlayStopLine
 					{badge.shortName}
 				</div>
 			))}
-			{badgeGroup.badges.length > 3 && (
+			{badgeGroup.badges.length > limit && (
 				<div className={styles.more}>
-					+{badgeGroup.badges.length - 3}
+					+{badgeGroup.badges.length - limit}
 				</div>
 			)}
 		</Marker>
