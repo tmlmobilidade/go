@@ -40,7 +40,7 @@ export function useBaseMap(): UseBaseMapReturnType {
 
 	const moveMap = (params: { isUserInitiated: boolean, latitude: number, longitude: number }) => {
 		if (params.isUserInitiated) mapContext.data.map.stop();
-		moveMapView(mapContext.data.map, [params.longitude, params.latitude], { bearing: userLocation?.bearing, zoom: 25 });
+		moveMapView(mapContext.data.map, [params.longitude, params.latitude]);
 	};
 
 	const toggleBaseMapOverlay = (source: BaseMapOverlayType) => {
