@@ -3,7 +3,6 @@
 /* * */
 
 import { LiveIcon } from '@/components/common/display/LiveIcon';
-// import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { IconAlertCircleFilled, IconClockHour9 } from '@tabler/icons-react';
 import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
@@ -36,7 +35,7 @@ const LIVE_ETA_COLOR = 'var(--color-status-success-primary)';
 
 /* * */
 
-export function NextArrivals({ allowPastArrivals = true, arrivals, scheduledArrivals, status, tripId, withIcon = true }: Props) {
+export function NextArrivals({ allowPastArrivals = true, arrivals, scheduledArrivals, status, withIcon = true }: Props) {
 	//
 
 	//
@@ -137,7 +136,6 @@ export function NextArrivals({ allowPastArrivals = true, arrivals, scheduledArri
 								{formattedArrival.label}
 							</p>
 						))}
-						{/* <DebugGoArrival tripId={tripId} /> */}
 					</div>
 				</div>
 				{scheduledArrivals?.map(unix => (
