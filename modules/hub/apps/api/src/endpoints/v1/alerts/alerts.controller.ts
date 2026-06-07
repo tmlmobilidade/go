@@ -25,6 +25,7 @@ export class AlertsController {
 		if (!cachedData) {
 			Logger.error('[hub/v1/alerts:getJsonFeed()] No JSON feed found in cache. Returning empty array.');
 			return reply
+				.header('access-control-allow-origin', '*')
 				.header('cache-control', 'public, max-age=20')
 				.code(HTTP_STATUS.NO_CONTENT)
 				.send({
@@ -35,6 +36,7 @@ export class AlertsController {
 		};
 
 		return reply
+			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=20')
 			.code(HTTP_STATUS.OK)
 			.send({
@@ -58,6 +60,7 @@ export class AlertsController {
 			Logger.error('[hub/v1/alerts:getGtfsRtJsonFeed()] No GTFS-RT feed found in cache. Returning empty message.');
 			return reply
 				.code(HTTP_STATUS.NO_CONTENT)
+				.header('access-control-allow-origin', '*')
 				.header('cache-control', 'public, max-age=20')
 				.send({
 					data: getEmptyGtfsRtFeedMessage(),
@@ -68,6 +71,7 @@ export class AlertsController {
 
 		return reply
 			.code(HTTP_STATUS.OK)
+			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=20')
 			.send({
 				data: JSON.parse(cachedData),
@@ -90,6 +94,7 @@ export class AlertsController {
 			Logger.error('[hub/v1/alerts:getGtfsRtJsonFeedCm()] No GTFS-RT feed found in cache. Returning empty message.');
 			return reply
 				.code(HTTP_STATUS.NO_CONTENT)
+				.header('access-control-allow-origin', '*')
 				.header('cache-control', 'public, max-age=20')
 				.send({
 					data: getEmptyGtfsRtFeedMessage(),
@@ -100,6 +105,7 @@ export class AlertsController {
 
 		return reply
 			.code(HTTP_STATUS.OK)
+			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=20')
 			.send({
 				data: JSON.parse(cachedData),
@@ -122,6 +128,7 @@ export class AlertsController {
 			Logger.error('[hub/v1/alerts:getGtfsRtProtobufFeed()] No GTFS-RT feed found in cache. Returning empty message.');
 			return reply
 				.code(HTTP_STATUS.NO_CONTENT)
+				.header('access-control-allow-origin', '*')
 				.header('cache-control', 'public, max-age=20')
 				.send();
 		};
@@ -131,6 +138,7 @@ export class AlertsController {
 
 		return reply
 			.code(HTTP_STATUS.OK)
+			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=20')
 			.type('application/octet-stream')
 			.send(encodedGtfsRtFeed);
@@ -150,12 +158,14 @@ export class AlertsController {
 			Logger.error('[hub/v1/alerts:getRssFeed()] No RSS feed found in cache. Returning empty message.');
 			return reply
 				.code(HTTP_STATUS.NO_CONTENT)
+				.header('access-control-allow-origin', '*')
 				.header('cache-control', 'public, max-age=20')
 				.send();
 		};
 
 		return reply
 			.code(HTTP_STATUS.OK)
+			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=20')
 			.type('application/rss+xml; charset=utf-8')
 			.send(cachedData);
