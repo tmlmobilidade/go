@@ -6,14 +6,13 @@ import { Layer, Source } from '@vis.gl/react-maplibre';
 /* * */
 
 export const MapViewStyleStopsPrimaryLayerId = 'default-layer-stops-all';
-export const MapViewStyleStopsInteractiveLayerId = 'default-layer-stops-all';
+export const MapViewStyleStopsInteractiveLayerId = 'default-layer-stops-regular';
 
 /* * */
 
 interface Props {
 	presentBeforeId?: string
 	stopsData?: GeoJSON.FeatureCollection
-	style?: 'muted' | 'primary'
 	visible?: boolean
 }
 
@@ -23,93 +22,78 @@ const baseGeoJsonFeatureCollection = getBaseGeoJsonFeatureCollection();
 
 /* * */
 
-export function MapViewStyleStops({ presentBeforeId, stopsData = baseGeoJsonFeatureCollection, style = 'primary', visible = true }: Props) {
+export function MapViewStyleStops({ presentBeforeId, stopsData = baseGeoJsonFeatureCollection, visible = true }: Props) {
 	return (
 		<Source data={stopsData} generateId={true} id="default-source-stops-all" type="geojson">
 
-			{style === 'primary' && (
-				<Layer
-					beforeId={presentBeforeId}
-					id="default-layer-stops-all"
-					source="default-source-stops-all"
-					type="circle"
-					layout={{
-						visibility: visible ? 'visible' : 'none',
-					}}
-					paint={{
-						'circle-color': '#ffffff',
-						'circle-pitch-alignment': 'map',
-						'circle-radius': [
-							'interpolate',
-							['linear'],
-							['zoom'],
-							9,
-							['case', ['boolean', ['feature-state', 'active'], false], 5, 1],
-							26,
-							['case', ['boolean', ['feature-state', 'active'], false], 25, 20],
-						],
-						'circle-stroke-color': '#ffffff',
-						'circle-stroke-width': [
-							'interpolate',
-							['linear'],
-							['zoom'],
-							9,
-							0.01,
-							26,
-							['case', ['boolean', ['feature-state', 'active'], false], 8, 7],
-						],
-					}}
-				/>
-			)}
+			<Layer
+				beforeId={presentBeforeId}
+				id="default-layer-stops-regular"
+				source="default-source-stops-all"
+				type="symbol"
+				layout={{
+					'icon-allow-overlap': true,
+					'icon-anchor': 'center',
+					'icon-ignore-placement': true,
+					'icon-image': 'map-navegante-stop-bus-idle',
+					'icon-offset': [0, 0],
+					'icon-size': [
+						'interpolate',
+						['linear'],
+						['zoom'],
+						12,
+						1,
+						15,
+						0.05,
+					],
+					'symbol-placement': 'point',
+					'visibility': visible ? 'visible' : 'none',
+				}}
+				paint={{
+					'icon-opacity': [
+						'interpolate',
+						['linear'],
+						['zoom'],
+						14,
+						0,
+						15,
+						1,
+					],
+				}}
+			/>
 
-			{style === 'muted' && (
-				<Layer
-					beforeId={presentBeforeId}
-					id="default-layer-stops-all"
-					source="default-source-stops-all"
-					type="circle"
-					layout={{
-						visibility: visible ? 'visible' : 'none',
-					}}
-					paint={{
-						'circle-color': [
-							'match',
-							['get', 'current_status'],
-							'inactive',
-							'#e6e6e6',
-							'#ffdd01',
-						],
-						'circle-pitch-alignment': 'map',
-						'circle-radius': [
-							'interpolate',
-							['linear'],
-							['zoom'],
-							9,
-							1,
-							26,
-							10,
-						],
-						'circle-stroke-color': [
-							'match',
-							['get', 'current_status'],
-							'inactive',
-							'#969696',
-							'voided',
-							'#cc5533',
-							'#000000',
-						],
-						'circle-stroke-width': [
-							'interpolate',
-							['linear'],
-							['zoom'],
-							9,
-							0.01,
-							26,
-							3,
-						],
-					}}
-				/>
-			)}
+			{/* <Layer
+				beforeId="default-layer-stops-regular"
+				id="default-layer-stops-circle"
+				source="default-source-stops-all"
+				type="circle"
+				layout={{
+					visibility: visible ? 'visible' : 'none',
+				}}
+				paint={{
+					'circle-color': '#ffffff',
+					'circle-pitch-alignment': 'map',
+					'circle-radius': [
+						'interpolate',
+						['linear'],
+						['zoom'],
+						9,
+						['case', ['boolean', ['feature-state', 'active'], false], 5, 1],
+						26,
+						['case', ['boolean', ['feature-state', 'active'], false], 25, 20],
+					],
+					'circle-stroke-color': '#ffffff',
+					'circle-stroke-width': [
+						'interpolate',
+						['linear'],
+						['zoom'],
+						9,
+						0.01,
+						26,
+						['case', ['boolean', ['feature-state', 'active'], false], 8, 7],
+					],
+				}}
+			/> */}
 
 		</Source>
 	);

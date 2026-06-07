@@ -2,7 +2,7 @@
 
 import { useMapContext } from '@/components/map/Map.context';
 import { mapDefaultConfig } from '@/components/map/Map.settings';
-import { loadMapAssets, MAP_ASSETS_ALERTS, MAP_ASSETS_MISC, MAP_ASSETS_SHAPES, MAP_ASSETS_VEHICLES } from '@tmlmobilidade/ui';
+import { loadMapAssets, MAP_ASSETS_ALERTS, MAP_ASSETS_MISC, MAP_ASSETS_SHAPES, MAP_ASSETS_STOPS, MAP_ASSETS_VEHICLES } from '@tmlmobilidade/ui';
 import Map, { MapRef, useMap } from '@vis.gl/react-maplibre';
 import { type MapLibreEvent } from 'maplibre-gl';
 import { useCallback, useEffect, useState } from 'react';
@@ -62,9 +62,10 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 	// C. Handle actions
 
 	const handleOnLoad = (event: MapLibreEvent) => {
-		loadMapAssets(event.target, MAP_ASSETS_MISC);
 		loadMapAssets(event.target, MAP_ASSETS_ALERTS);
+		loadMapAssets(event.target, MAP_ASSETS_MISC);
 		loadMapAssets(event.target, MAP_ASSETS_SHAPES);
+		loadMapAssets(event.target, MAP_ASSETS_STOPS);
 		loadMapAssets(event.target, MAP_ASSETS_VEHICLES);
 	};
 
