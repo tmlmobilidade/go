@@ -19,7 +19,6 @@ interface MapViewProps {
 	id?: string
 	interactiveLayerIds?: string[]
 	mapObject?: MapRef
-	mapStyle?: MapStyle
 	onCenterMap?: () => void
 	onClick?: (arg0) => void
 	onDrag?: (arg0) => void
@@ -39,7 +38,7 @@ interface MapViewProps {
 
 /* * */
 
-export function MapView({ children, id, interactiveLayerIds = [], mapStyle, onClick, onDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onMoveEnd, onMoveStart, onZoom, scrollZoom = true }: MapViewProps) {
+export function MapView({ children, id, interactiveLayerIds = [], onClick, onDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onMoveEnd, onMoveStart, onZoom, scrollZoom = true }: MapViewProps) {
 	//
 
 	//
@@ -58,8 +57,6 @@ export function MapView({ children, id, interactiveLayerIds = [], mapStyle, onCl
 		if (!id || !allMaps?.[id]) return;
 		mapContext.actions.setMap(allMaps[id]);
 	}, [allMaps, id, mapContext.actions]);
-
-	const mapStyleValue = mapStyle ?? mapContext.data.style;
 
 	//
 	// C. Handle actions
@@ -103,7 +100,7 @@ export function MapView({ children, id, interactiveLayerIds = [], mapStyle, onCl
 				initialViewState={mapDefaultConfig.initialViewState}
 				interactive={interactiveLayerIds ? true : false}
 				interactiveLayerIds={interactiveLayerIds}
-				mapStyle={mapDefaultConfig.styles[mapStyleValue as string]}
+				mapStyle={mapDefaultConfig.styles['map']}
 				maxZoom={mapDefaultConfig.maxZoom}
 				minZoom={mapDefaultConfig.minZoom}
 				onClick={onClick}

@@ -1,12 +1,9 @@
 'use client';
 
-import { type MapStyle } from '@/components/map/MapView';
 import { useUserLocation } from '@/components/map/use-user-location';
 import { useLocalStorage } from '@mantine/hooks';
 import { moveMapView } from '@tmlmobilidade/ui';
-import * as turf from '@turf/turf';
 import { type MapRef } from '@vis.gl/react-maplibre';
-import maplibregl from 'maplibre-gl';
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
 
 /* * */
@@ -15,16 +12,13 @@ type BaseMapOverlayType = 'alerts' | 'stops' | 'vehicles';
 
 interface MapContextState {
 	actions: {
-		centerMap: (source?: string) => void
 		moveMap: (params: { isUserInitiated: boolean, latitude: number, longitude: number }) => void
 		setMap: (map: MapRef) => void
-		setStyle: (value: MapStyle) => void
 		toggleBaseMapOverlay: (overlay: BaseMapOverlayType) => void
 	}
 	data: {
 		activeBaseMapOverlays: BaseMapOverlayType[]
 		map: MapRef | undefined
-		style: string
 	}
 	flags: {
 		isLoading: boolean
@@ -51,7 +45,6 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Setup variables
 
-	const [dataStyleState, setDataStyleState] = useState<MapContextState['data']['style']>('map');
 	const [dataMapState, setDataMapState] = useState<MapContextState['data']['map']>(undefined);
 
 	const { userLocation, userLocationTrackingMode } = useUserLocation();
@@ -64,39 +57,13 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 	//
 	// B. Handle actions
 
-	const setStyle = (value: MapStyle) => {
-		setDataStyleState(value);
-	};
-
 	const setMap = (map: MapRef) => {
 		setDataMapState(map);
 	};
 
-	const centerMap = (sourceId: string) => {
-		if (!dataMapState || !sourceId) return;
-
-		const sourceData = dataMapState.getSource(sourceId);
-		if (!sourceData) return;
-
-		const combine = turf.combine(sourceData.serialize().data);
-		const coordinates = combine.features[0].geometry.coordinates;
-
-		// Calculate bounds
-		const bounds = coordinates.reduce((bounds, coord) => {
-			return bounds.extend(coord as [number, number]);
-		}, new maplibregl.LngLatBounds(coordinates[0] as [number, number], coordinates[0] as [number, number]));
-
-		dataMapState.fitBounds(
-			bounds,
-			{ padding: 25 },
-		);
-
-		// return;
-	};
-
 	const moveMap = (params: { isUserInitiated: boolean, latitude: number, longitude: number }) => {
 		if (params.isUserInitiated) dataMapState?.stop();
-		moveMapView(dataMapState, [params.longitude, params.latitude]);
+		moveMapView(dataMapState, [params.longitude, params.latitude], { zoom: 15 });
 	};
 
 	const toggleBaseMapOverlay = (source: BaseMapOverlayType) => {
@@ -120,7 +87,7 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 		const coordinates = [userLocation.longitude, userLocation.latitude];
 		const bearing = userLocationTrackingMode === 'follow-bearing' ? userLocation.bearing : undefined;
 		// Move the map view
-		moveMapView(dataMapState, coordinates, { bearing });
+		moveMapView(dataMapState, coordinates, { bearing, zoom: 15 });
 	}, [userLocationTrackingMode, userLocation, dataMapState]);
 
 	//
@@ -128,16 +95,13 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 
 	const contextValue: MapContextState = {
 		actions: {
-			centerMap,
 			moveMap,
 			setMap,
-			setStyle,
 			toggleBaseMapOverlay,
 		},
 		data: {
 			activeBaseMapOverlays,
 			map: dataMapState,
-			style: dataStyleState,
 		},
 		flags: {
 			isLoading: false,
