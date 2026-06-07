@@ -12,10 +12,10 @@
 	border: 2px solid var(--color-system-border-100);
 	border-radius: 100%;
 	box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
-	transition: 100ms all ease;
+	transition: 200ms all ease;
 }
 
 .button:active {
 	opacity: 0.95;
-	transform: scale(0.85);
+	transform: scale(1.15);
 }

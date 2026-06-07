@@ -1,6 +1,5 @@
 'use client';
 
-import { useLocalStorage } from '@mantine/hooks';
 import { Logger } from '@tmlmobilidade/logger';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -37,10 +36,7 @@ export function useUserLocation(): UseUserLocationReturnType {
 	const [userLocationError, setUserLocationError] = useState<null | string>(null);
 	const [deviceOrientationError, setDeviceOrientationError] = useState<null | string>(null);
 
-	const [userLocationTrackingMode, setUserLocationTrackingMode] = useLocalStorage<UserLocationTrackingMode>({
-		defaultValue: 'follow',
-		key: 'user-location-tracking-mode',
-	});
+	const [userLocationTrackingMode, setUserLocationTrackingMode] = useState<UserLocationTrackingMode>('follow');
 
 	//
 	// B. Transform data
