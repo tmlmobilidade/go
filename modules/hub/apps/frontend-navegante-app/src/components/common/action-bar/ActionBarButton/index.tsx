@@ -18,8 +18,8 @@ interface ActionBarButtonProps {
 export function ActionBarButton({ ariaHint, ariaLabel, badgeCount, icon, onClick, variant = 'default' }: ActionBarButtonProps) {
 	return (
 		<div
+			aria-description={ariaHint}
 			aria-label={ariaLabel}
-			aria-roledescription={ariaHint}
 			className={styles.button}
 			data-variant={variant}
 			onClick={onClick}

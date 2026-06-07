@@ -22,13 +22,14 @@ export function BottomSheet({ children, onClose, opened, size = 'full', title }:
 			opened={opened}
 			padding={0}
 			position="bottom"
+			role="presentation"
 			size={size === 'full' ? '95%' : size === 'half' ? '55%' : '200px'}
 		>
 			{size === 'full' && <Drawer.Overlay />}
 			<Drawer.Content classNames={{ content: styles.content }}>
 				<Drawer.Header classNames={{ header: styles.header }} data-with-title={!!title}>
 					<BottomSheetClose onClick={onClose} />
-					{title && <h1 className={styles.title}>{title}</h1>}
+					{title && <h1 aria-hidden={false} className={styles.title}>{title}</h1>}
 				</Drawer.Header>
 				<Drawer.Body classNames={{ body: styles.body }} data-with-title={!!title}>
 					{!!opened && children}
