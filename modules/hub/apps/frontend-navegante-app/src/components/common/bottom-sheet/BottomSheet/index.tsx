@@ -22,7 +22,7 @@ export function BottomSheet({ children, onClose, opened, size = 'full', title }:
 			opened={opened}
 			padding={0}
 			position="bottom"
-			size={size === 'full' ? '95%' : '45%'}
+			size={size === 'full' ? '95%' : '55%'}
 		>
 			{size === 'full' && <Drawer.Overlay />}
 			<Drawer.Content classNames={{ content: styles.content }}>
