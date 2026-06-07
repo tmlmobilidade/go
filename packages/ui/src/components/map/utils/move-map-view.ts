@@ -69,7 +69,7 @@ export function moveMapView(mapObject: MapRef, coordinates: Position, options?: 
 	//
 	// Check if the movement should be aborted
 
-	if (mapObject.isMoving() || mapObject.isEasing() || mapObject.isZooming()) mapObject.stop();
+	if (mapObject.isMoving() || mapObject.isEasing() || mapObject.isZooming()) return;
 
 	//
 	// If the given coordinates are visible and the zoom
