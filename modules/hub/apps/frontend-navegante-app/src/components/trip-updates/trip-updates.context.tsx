@@ -14,6 +14,10 @@ type TripUpdateByStop = Map<string, HubGtfsRtTripUpdate[]>;
 type TripUpdateByTrip = Map<string, HubGtfsRtTripUpdate[]>;
 
 interface TripUpdatesContextState {
+	actions: {
+		getTripUpdatesByStop: (stopId: string) => HubGtfsRtTripUpdate[]
+		getTripUpdatesByTrip: (tripId: string) => HubGtfsRtTripUpdate[]
+	}
 	data: {
 		trip_update_by_stop: TripUpdateByStop
 		trip_update_by_trip: TripUpdateByTrip
@@ -41,7 +45,6 @@ export function useTripUpdatesContext() {
 
 export const TripUpdatesContextProvider = ({ children }: PropsWithChildren) => {
 	//
-	console.log('[TripUpdatesContextProvider] Rendering...');
 
 	//
 	// A. Setup variables
@@ -50,12 +53,18 @@ export const TripUpdatesContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Transform data
 	const { tripUpdatesByStop, tripUpdatesByTrip } = useMemo(() => {
-		console.log('[TripUpdatesContextProvider] Transform data...');
-		console.log('[TripUpdatesContextProvider] data', data);
-		if (!data?.entity?.length) return { tripUpdatesByStop: new Map(), tripUpdatesByTrip: new Map() };
-
-		for (const entity of data.entity) {
 		//
+
+		// Initialize the maps
+		const tripUpdatesByStop = new Map<string, HubGtfsRtTripUpdate[]>();
+		const tripUpdatesByTrip = new Map<string, HubGtfsRtTripUpdate[]>();
+
+		// If there is no data, return the empty maps
+		if (!data?.entity?.length) return { tripUpdatesByStop, tripUpdatesByTrip };
+
+		// Iterate over the entities
+		for (const entity of data.entity) {
+			// Get the trip update
 			const tripUpdate = entity.trip_update;
 			if (!tripUpdate?.stop_time_update?.length) continue;
 
@@ -75,19 +84,23 @@ export const TripUpdatesContextProvider = ({ children }: PropsWithChildren) => {
 				pushArrayToMap(tripUpdatesByStop, stopUpdate.stop_id, tripUpdate);
 			}
 		}
-		console.log('[TripUpdatesContextProvider] tripUpdatesByStop', tripUpdatesByStop);
-		console.log('[TripUpdatesContextProvider] tripUpdatesByTrip', tripUpdatesByTrip);
 		return { tripUpdatesByStop, tripUpdatesByTrip };
 	}, [data]);
 
 	//
 	// C. Handle actions
+	const getTripUpdatesByStop = (stopId: string): HubGtfsRtTripUpdate[] => tripUpdatesByStop.get(stopId) || [];
+	const getTripUpdatesByTrip = (tripId: string): HubGtfsRtTripUpdate[] => tripUpdatesByTrip.get(tripId) || [];
 
 	//
 	// D. Define context value
 
 	const contextValue: TripUpdatesContextState = useMemo(() => {
 		return {
+			actions: {
+				getTripUpdatesByStop,
+				getTripUpdatesByTrip,
+			},
 			data: {
 				trip_update_by_stop: tripUpdatesByStop,
 				trip_update_by_trip: tripUpdatesByTrip,
