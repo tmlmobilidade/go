@@ -12,7 +12,7 @@ export function StopsDetailContent() {
 	return (
 		<Surface>
 			<Section padding="md">
-				<StopsDetailContentTimetableHeader />
+				{/* <StopsDetailContentTimetableHeader /> */}
 				<StopsDetailContentTimetable />
 			</Section>
 		</Surface>

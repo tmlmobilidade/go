@@ -4,7 +4,6 @@ import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { StopsDetailContextProvider } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailView } from '@/components/stops/detail/StopsDetailView';
-import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -13,8 +12,6 @@ export function StopsDetail() {
 
 	//
 	// A. Setup variables
-
-	const { t } = useTranslation();
 
 	const { activeBottomSheet, closeActiveBottomSheet } = useBottomSheet();
 
@@ -26,7 +23,6 @@ export function StopsDetail() {
 			onClose={closeActiveBottomSheet}
 			opened={activeBottomSheet?.view === 'stops-detail'}
 			size="half"
-			title={t('default:stops.StopsDetail.title')}
 		>
 			<StopsDetailContextProvider stopId={activeBottomSheet?.entityId}>
 				<StopsDetailView />

@@ -34,7 +34,7 @@ export class NetworkController {
 		};
 
 		return reply
-			.header('cache-control', 'public, max-age=60')
+			.header('cache-control', 'public, max-age=3600')
 			.code(HTTP_STATUS.OK)
 			.send({
 				data: JSON.parse(cachedData),

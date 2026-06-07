@@ -5,7 +5,7 @@ import { LineBadge } from '@/components/lines/common/LineBadge';
 import { StopDisplayLocation } from '@/components/stops/common/StopDisplayLocation';
 import { CopyBadge } from '@/components/stops/detail/CopyBadge';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
-import { Section, StopDisplayName, Surface } from '@tmlmobilidade/ui';
+import { Section, Surface } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -25,6 +25,7 @@ export function StopsDetailViewHeader() {
 	return (
 		<Surface variant="plain">
 			<Section gap="sm">
+
 				<div className={styles.badgesWrapper}>
 					<CopyBadge
 						label={'#' + stopsDetailContext.data.stop._id}
@@ -37,9 +38,6 @@ export function StopsDetailViewHeader() {
 					/>
 				</div>
 
-				<div className={styles.nameWrapper}>
-					<StopDisplayName longName={stopsDetailContext.data.stop.name} size="lg" />
-				</div>
 				<StopDisplayLocation localityName={stopsDetailContext.data.stop.locality_name} municipalityName={stopsDetailContext.data.stop.municipality_name} size="lg" />
 
 				{stopsDetailContext.data.lines?.map(line => (

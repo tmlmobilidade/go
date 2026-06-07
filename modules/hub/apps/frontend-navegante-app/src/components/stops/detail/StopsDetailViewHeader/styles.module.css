@@ -1,4 +1,15 @@
 /* * */
+/* NAME WRAPPER */
+
+.nameWrapper {
+	display: grid;
+	grid-template-columns: 60px 1fr 60px;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+}
+
+/* * */
 /* BADGES WRAPPER */
 
 .badgesWrapper {
@@ -8,13 +19,3 @@
     align-items: center;
 	justify-content: flex-start;
 }
-
-/* * */
-/* NAME WRAPPER */
-
-.nameWrapper {
-	display: flex;
-	flex-flow: row wrap-reverse;
-	align-items: center;
-	justify-content: flex-start;
-}	
