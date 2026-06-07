@@ -3,7 +3,7 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { encodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
+import { encodeGtfsRtFeed, getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 
@@ -20,13 +20,21 @@ export class RealtimeController {
 				.header('access-control-allow-origin', '*')
 				.header('cache-control', 'public, max-age=5')
 				.code(HTTP_STATUS.NO_CONTENT)
-				.send();
+				.send({
+					data: getEmptyGtfsRtFeedMessage(),
+					error: null,
+					status_code: HTTP_STATUS.NO_CONTENT,
+				});
 		}
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=5')
 			.code(HTTP_STATUS.OK)
-			.send(JSON.parse(raw));
+			.send({
+				data: JSON.parse(raw),
+				error: null,
+				status_code: HTTP_STATUS.OK,
+			});
 	}
 
 	static async getEtaGtfsRtProtobuf(request: FastifyRequest, reply: FastifyReply<unknown>) {
