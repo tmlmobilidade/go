@@ -45,9 +45,8 @@ export function ActionBarUserLocation() {
 	if (availableUserLocationTrackingModes.length < 2) {
 		return (
 			<ActionBarButton
-				ariaHint={t('default:action-bar.ActionBarUserLocation.disabled.aria-hint')}
-				ariaLabel={t('default:action-bar.ActionBarUserLocation.disabled.aria-label')}
 				icon={<IconLocationOff size={28} />}
+				label={t('default:action-bar.ActionBarUserLocation.disabled.label')}
 				variant="disabled"
 			/>
 		);
@@ -56,9 +55,8 @@ export function ActionBarUserLocation() {
 	if (userLocationTrackingMode === 'idle') {
 		return (
 			<ActionBarButton
-				ariaHint={t('default:action-bar.ActionBarUserLocation.idle.aria-hint')}
-				ariaLabel={t('default:action-bar.ActionBarUserLocation.idle.aria-label')}
 				icon={<IconCurrentLocation size={28} />}
+				label={t('default:action-bar.ActionBarUserLocation.idle.label')}
 				onClick={handleIdleOrFollowBearingClick}
 			/>
 		);
@@ -67,9 +65,8 @@ export function ActionBarUserLocation() {
 	if (userLocationTrackingMode === 'follow') {
 		return (
 			<ActionBarButton
-				ariaHint={t('default:action-bar.ActionBarUserLocation.follow.aria-hint')}
-				ariaLabel={t('default:action-bar.ActionBarUserLocation.follow.aria-label')}
 				icon={<IconCurrentLocationFilled size={28} />}
+				label={t('default:action-bar.ActionBarUserLocation.follow.label')}
 				onClick={handleFollowClick}
 				variant="active"
 			/>
@@ -79,9 +76,8 @@ export function ActionBarUserLocation() {
 	if (userLocationTrackingMode === 'follow-bearing') {
 		return (
 			<ActionBarButton
-				ariaHint={t('default:action-bar.ActionBarUserLocation.follow-bearing.aria-hint')}
-				ariaLabel={t('default:action-bar.ActionBarUserLocation.follow-bearing.aria-label')}
 				icon={<IconNavigationTop size={32} />}
+				label={t('default:action-bar.ActionBarUserLocation.follow-bearing.label')}
 				onClick={handleIdleOrFollowBearingClick}
 				variant="active"
 			/>

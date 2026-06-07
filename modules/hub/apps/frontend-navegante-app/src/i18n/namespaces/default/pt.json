@@ -2,34 +2,27 @@
 	"action-bar": {
 		"ActionBar": {
 			"alerts": {
-				"aria-hint": "Consultar disrupções às linhas que afectam as suas viagens.",
-				"aria-label": "Alertas de Serviço"
+				"label": "Alertas de Serviço"
 			},
 			"help": {
-				"aria-hint": "Respostas a perguntas frequentes sobre a aplicação.",
-				"aria-label": "Perguntas Frequentes"
+				"label": "Perguntas Frequentes"
 			},
 			"search": {
-				"aria-hint": "Pesquisa global de todas as linhas, paragens e alertas.",
-				"aria-label": "Pesquisar"
+				"label": "Pesquisar"
 			}
 		},
 		"ActionBarUserLocation": {
 			"disabled": {
-				"aria-hint": "Se pretende utilizar a sua localização, tem de dar permissão nas definições.",
-				"aria-label": "Localização desativada"
+				"label": "Localização desativada"
 			},
 			"follow": {
-				"aria-hint": "Centrar o mapa na sua localização, e seguir a orientação do dispositivo.",
-				"aria-label": "Orientar Mapa"
+				"label": "Orientar Mapa"
 			},
 			"follow-bearing": {
-				"aria-hint": "Centrar o mapa na sua localização, desativando a orientação do dispositivo.",
-				"aria-label": "Centrar Mapa"
+				"label": "Centrar Mapa"
 			},
 			"idle": {
-				"aria-hint": "Centrar o mapa na sua localização.",
-				"aria-label": "Centrar mapa"
+				"label": "Centrar mapa"
 			}
 		}
 	},

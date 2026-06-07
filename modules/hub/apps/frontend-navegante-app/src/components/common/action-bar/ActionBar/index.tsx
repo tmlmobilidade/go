@@ -28,25 +28,22 @@ export function ActionBar() {
 		<div className={styles.container}>
 
 			<ActionBarButton
-				ariaHint={t('default:action-bar.ActionBar.help.aria-hint')}
-				ariaLabel={t('default:action-bar.ActionBar.help.aria-label')}
 				icon={<IconQuestionMark size={30} />}
+				label={t('default:action-bar.ActionBar.help.label')}
 				onClick={() => setActiveBottomSheet({ view: 'help' })}
 			/>
 
 			<Spacer orientation="vertical" size="full" />
 
 			<ActionBarButton
-				ariaHint={t('default:action-bar.ActionBar.alerts.aria-hint')}
-				ariaLabel={t('default:action-bar.ActionBar.alerts.aria-label')}
 				icon={<IconAlertTriangle size={28} />}
+				label={t('default:action-bar.ActionBar.alerts.label')}
 				onClick={() => setActiveBottomSheet({ view: 'alerts-list' })}
 			/>
 
 			<ActionBarButton
-				ariaHint={t('default:action-bar.ActionBar.search.aria-hint')}
-				ariaLabel={t('default:action-bar.ActionBar.search.aria-label')}
 				icon={<IconSearch size={28} />}
+				label={t('default:action-bar.ActionBar.search.label')}
 				onClick={() => setActiveBottomSheet({ view: 'search' })}
 			/>
 
