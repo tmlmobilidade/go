@@ -13,7 +13,6 @@ import { useUserLocation } from '@/components/map/use-user-location';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { type HubPattern } from '@/types/api/network';
-import { centerMap, moveMap } from '@/utils/map.utils';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubShape } from '@tmlmobilidade/types';
@@ -33,10 +32,9 @@ export function BaseMap() {
 	const alertsContext = useAlertsContext();
 	const vehiclesContext = useVehiclesContext();
 
-	const { activeBottomSheet, setActiveBottomSheet } = useBottomSheet();
-
-	const { setUserLocationTrackingMode, userLocation } = useUserLocation();
 	const { activeBaseMapOverlays } = useBaseMap();
+	const { setUserLocationTrackingMode, userLocation } = useUserLocation();
+	const { activeBottomSheet, setActiveBottomSheet } = useBottomSheet();
 
 	const { 'viewport-map': viewportMap } = useMap();
 
@@ -94,15 +92,15 @@ export function BaseMap() {
 
 		if (!focusedFeature || focusedFeature.geometry?.type !== 'Point') return;
 
-		moveMap(viewportMap, focusedFeature.geometry.coordinates);
+		// moveMap(viewportMap, focusedFeature.geometry.coordinates);
 	}, [viewportMap, focusedAlertId, alertsMapData.features, activeBaseMapOverlays]);
 
 	useEffect(() => {
 		if (!viewportMap || !shape?.geojson) return;
 
-		centerMap(viewportMap, [shape.geojson], {
-			padding: { bottom: 320, left: 80, right: 80, top: 80 },
-		});
+		// centerMap(viewportMap, [shape.geojson], {
+		// 	padding: { bottom: 320, left: 80, right: 80, top: 80 },
+		// });
 	}, [viewportMap, shape?.geojson]);
 
 	//
@@ -115,24 +113,21 @@ export function BaseMap() {
 		const layerId = feature.layer?.id;
 
 		if (layerId === MapViewStyleStopsInteractiveLayerId) {
+			if (!feature.properties._id) return;
 			setActiveBottomSheet({ entityId: String(feature.properties._id), view: 'stops-detail' }, { replace: true });
 			return;
 		}
 
 		if (layerId === MapViewStyleAlertsInteractiveLayerId) {
-			const alertId = feature.properties.id ?? feature.properties._id;
-
-			if (!alertId || feature.geometry?.type !== 'Point') return;
-
-			const [longitude, latitude] = feature.geometry.coordinates;
-
-			moveMap(event.target, [longitude, latitude]);
-			setActiveBottomSheet({ entityId: String(alertId), view: 'alerts-detail' }, { replace: true });
+			if (!feature.properties._id) return;
+			setActiveBottomSheet({ entityId: String(feature.properties._id), view: 'alerts-detail' }, { replace: true });
 			return;
 		}
 
 		if (layerId === MapViewStyleVehiclesInteractiveLayerId) {
+			if (!feature.properties.vehicle_id) return;
 			setActiveBottomSheet({ entityId: String(feature.properties.vehicle_id), view: 'vehicles-detail' }, { replace: true });
+			return;
 		}
 	};
 
