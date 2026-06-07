@@ -4,11 +4,12 @@ import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useMapContext } from '@/components/map/Map.context';
 import { MapView } from '@/components/map/MapView';
+import { MapViewOverlayStopLineBadges } from '@/components/map/overlays/MapViewOverlayStopLineBadges';
+import { MapViewOverlayStops, MapViewOverlayStopsInteractiveLayerId } from '@/components/map/overlays/MapViewOverlayStops';
 import { MapViewOverlayUserLocation } from '@/components/map/overlays/MapViewOverlayUserLocation';
 import { MapViewOverlayVehicles, MapViewStyleVehiclesInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
 import { MapViewStyleAlerts, MapViewStyleAlertsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
 import { MapViewStylePath } from '@/components/map/overlays/MapViewStylePath';
-import { MapViewStyleStops, MapViewStyleStopsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleStops';
 import { useUserLocation } from '@/components/map/use-user-location';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
@@ -112,7 +113,7 @@ export function BaseMap() {
 		const feature = event.features[0];
 		const layerId = feature.layer?.id;
 
-		if (layerId === MapViewStyleStopsInteractiveLayerId) {
+		if (layerId === MapViewOverlayStopsInteractiveLayerId) {
 			if (!feature.properties._id) return;
 			setActiveBottomSheet({ entityId: String(feature.properties._id), view: 'stops-detail' }, { replace: true });
 			return;
@@ -141,12 +142,19 @@ export function BaseMap() {
 	return (
 		<MapView
 			id="base-map"
-			interactiveLayerIds={[MapViewStyleVehiclesPrimaryLayerId, MapViewStyleStopsInteractiveLayerId, MapViewStyleAlertsInteractiveLayerId]}
 			onClick={handleMapClick}
 			onDrag={handleMapDrag}
+			interactiveLayerIds={[
+				MapViewStyleVehiclesPrimaryLayerId,
+				MapViewOverlayStopsInteractiveLayerId,
+				MapViewStyleAlertsInteractiveLayerId,
+			]}
 		>
-			<MapViewStyleStops
+			<MapViewOverlayStops
 				stopsData={stopsContext.data.fc}
+				visible={activeBaseMapOverlays.includes('stops')}
+			/>
+			<MapViewOverlayStopLineBadges
 				visible={activeBaseMapOverlays.includes('stops')}
 			/>
 			{shape?.geojson && pattern && (
