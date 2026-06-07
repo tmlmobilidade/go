@@ -19,3 +19,17 @@
     align-items: center;
 	justify-content: flex-start;
 }
+
+/* * */
+/* LINES WRAPPER */
+
+.linesWrapper {
+    display: flex;
+	flex-direction: row;
+	gap: var(--size-spacing-sm);
+    align-items: center;
+	justify-content: flex-start;
+	width: 100%;
+	padding-top: 0;
+	overflow: auto;
+}

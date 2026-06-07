@@ -40,11 +40,11 @@ export function StopsDetailViewHeader() {
 
 				<StopDisplayLocation localityName={stopsDetailContext.data.stop.locality_name} municipalityName={stopsDetailContext.data.stop.municipality_name} size="lg" />
 
-				{stopsDetailContext.data.lines?.map(line => (
-					<div key={line._id} className={styles.iconLineBadgeWrapper}>
+				<div className={styles.linesWrapper}>
+					{stopsDetailContext.data.lines?.map(line => (
 						<LineBadge key={line._id} lineData={line} />
-					</div>
-				))}
+					))}
+				</div>
 
 				<SelectOperationalDate />
 
