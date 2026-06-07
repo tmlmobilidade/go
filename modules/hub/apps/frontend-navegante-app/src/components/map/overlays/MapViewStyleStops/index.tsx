@@ -37,13 +37,7 @@ export function MapViewStyleStops({ presentBeforeId, stopsData = baseGeoJsonFeat
 						visibility: visible ? 'visible' : 'none',
 					}}
 					paint={{
-						'circle-color': [
-							'match',
-							['get', 'current_status'],
-							'inactive',
-							'#e6e6e6',
-							'#ffdd01',
-						],
+						'circle-color': '#ffffff',
 						'circle-pitch-alignment': 'map',
 						'circle-radius': [
 							'interpolate',
@@ -54,15 +48,7 @@ export function MapViewStyleStops({ presentBeforeId, stopsData = baseGeoJsonFeat
 							26,
 							['case', ['boolean', ['feature-state', 'active'], false], 25, 20],
 						],
-						'circle-stroke-color': [
-							'match',
-							['get', 'current_status'],
-							'inactive',
-							'#969696',
-							'voided',
-							'#cc5533',
-							'#000000',
-						],
+						'circle-stroke-color': '#ffffff',
 						'circle-stroke-width': [
 							'interpolate',
 							['linear'],
