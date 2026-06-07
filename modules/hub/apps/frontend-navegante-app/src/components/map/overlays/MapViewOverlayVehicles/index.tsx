@@ -235,7 +235,7 @@ export function MapViewOverlayVehicles({ presentBeforeId, vehiclesData = baseGeo
 					visibility: visible ? 'visible' : 'none',
 				}}
 				paint={{
-					'circle-color': '#D20F1E',
+					'circle-color': '#00CD32',
 					'circle-opacity': [
 						'interpolate',
 						['linear'],
@@ -246,7 +246,7 @@ export function MapViewOverlayVehicles({ presentBeforeId, vehiclesData = baseGeo
 						0,
 					],
 					'circle-pitch-alignment': 'map',
-					'circle-radius': 1.5,
+					'circle-radius': 1.8,
 				}}
 			/>
 
