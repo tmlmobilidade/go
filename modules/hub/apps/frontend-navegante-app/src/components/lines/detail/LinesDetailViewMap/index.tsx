@@ -3,7 +3,7 @@
 import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { MapView } from '@/components/map/MapView';
-import { MapViewOverlayVehicles, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
+import { MapViewOverlayVehicles, MapViewOverlayVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
 import { MapViewStyleActiveStops, MapViewStyleActiveStopsPrimaryLayerId } from '@/components/map/overlays/MapViewStyleActiveStops';
 import { MapViewStylePath, MapViewStylePathInteractiveLayerId } from '@/components/map/overlays/MapViewStylePath';
 import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/components/stops/Stops.context';
@@ -126,7 +126,7 @@ export function LinesDetailViewMap() {
 		<div className={styles.container}>
 			<MapView
 				id="linesDetailMap"
-				interactiveLayerIds={[MapViewStylePathInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId]}
+				interactiveLayerIds={[MapViewStylePathInteractiveLayerId, MapViewOverlayVehiclesPrimaryLayerId]}
 				onCenterMap={handleCenterMap}
 				onClick={handleLayerClick}
 			>
@@ -136,7 +136,7 @@ export function LinesDetailViewMap() {
 				/>
 
 				<MapViewStyleActiveStops
-					presentBeforeId={MapViewStyleVehiclesPrimaryLayerId}
+					presentBeforeId={MapViewOverlayVehiclesPrimaryLayerId}
 					stopsData={activeStopFeatureCollection}
 				/>
 

@@ -7,7 +7,8 @@ import { MapView } from '@/components/map/MapView';
 import { MapViewOverlayStopLineBadges } from '@/components/map/overlays/MapViewOverlayStopLineBadges';
 import { MapViewOverlayStops, MapViewOverlayStopsInteractiveLayerId } from '@/components/map/overlays/MapViewOverlayStops';
 import { MapViewOverlayUserLocation } from '@/components/map/overlays/MapViewOverlayUserLocation';
-import { MapViewOverlayVehicles, MapViewStyleVehiclesInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
+// import { MapViewOverlayVehicleLineBadges } from '@/components/map/overlays/MapViewOverlayVehicleLineBadges';
+import { MapViewOverlayVehicles, MapViewOverlayVehiclesInteractiveLayerId, MapViewOverlayVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
 import { MapViewStyleAlerts, MapViewStyleAlertsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
 import { MapViewStylePath } from '@/components/map/overlays/MapViewStylePath';
 import { useUserLocation } from '@/components/map/use-user-location';
@@ -124,7 +125,7 @@ export function BaseMap() {
 			return;
 		}
 
-		if (layerId === MapViewStyleVehiclesInteractiveLayerId) {
+		if (layerId === MapViewOverlayVehiclesInteractiveLayerId) {
 			if (!feature.properties.vehicle_id) return;
 			setActiveBottomSheet({ entityId: String(feature.properties.vehicle_id), view: 'vehicles-detail' }, { replace: true });
 			return;
@@ -144,11 +145,12 @@ export function BaseMap() {
 			onClick={handleMapClick}
 			onDrag={handleMapDrag}
 			interactiveLayerIds={[
-				MapViewStyleVehiclesPrimaryLayerId,
+				MapViewOverlayVehiclesPrimaryLayerId,
 				MapViewOverlayStopsInteractiveLayerId,
 				MapViewStyleAlertsInteractiveLayerId,
 			]}
 		>
+
 			<MapViewOverlayStops
 				stopsData={stopsContext.data.fc}
 				visible={activeBaseMapOverlays.includes('stops')}
@@ -156,9 +158,10 @@ export function BaseMap() {
 			<MapViewOverlayStopLineBadges
 				visible={activeBaseMapOverlays.includes('stops')}
 			/>
+
 			{shape?.geojson && pattern && (
 				<MapViewStylePath
-					presentBeforeId={MapViewStyleVehiclesPrimaryLayerId}
+					presentBeforeId={MapViewOverlayVehiclesPrimaryLayerId}
 					shapeData={{
 						...shape.geojson,
 						properties: {
@@ -168,10 +171,15 @@ export function BaseMap() {
 					}}
 				/>
 			)}
+
 			<MapViewOverlayVehicles
 				vehiclesData={vehiclesMapData}
 				visible={activeBaseMapOverlays.includes('vehicles')}
 			/>
+			{/* <MapViewOverlayVehicleLineBadges
+				visible={activeBaseMapOverlays.includes('vehicles')}
+			/> */}
+
 			<MapViewStyleAlerts
 				data={alertsMapData}
 				visible={activeBaseMapOverlays.includes('alerts')}
