@@ -1,8 +1,8 @@
 'use client';
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
-import { useBaseMap } from '@/components/common/base-map/use-base-map';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
+import { useMapContext } from '@/components/map/Map.context';
 import { MapView } from '@/components/map/MapView';
 import { MapViewOverlayUserLocation } from '@/components/map/overlays/MapViewOverlayUserLocation';
 import { MapViewOverlayVehicles, MapViewStyleVehiclesInteractiveLayerId, MapViewStyleVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
@@ -32,7 +32,7 @@ export function BaseMap() {
 	const alertsContext = useAlertsContext();
 	const vehiclesContext = useVehiclesContext();
 
-	const { activeBaseMapOverlays } = useBaseMap();
+	const { data: { activeBaseMapOverlays } } = useMapContext();
 	const { setUserLocationTrackingMode, userLocation } = useUserLocation();
 	const { activeBottomSheet, setActiveBottomSheet } = useBottomSheet();
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useBaseMap } from '@/components/common/base-map/use-base-map';
+import { useMapContext } from '@/components/map/Map.context';
 import { IconAlertTriangle, IconAlertTriangleOff, IconBus, IconBusOff, IconFlag2, IconFlag2Off } from '@tabler/icons-react';
 
 import styles from './styles.module.css';
@@ -13,7 +13,7 @@ export function BaseMapOverlaysControl() {
 	//
 	// A. Setup variables
 
-	const { activeBaseMapOverlays, toggleBaseMapOverlay } = useBaseMap();
+	const { actions: { toggleBaseMapOverlay }, data: { activeBaseMapOverlays } } = useMapContext();
 
 	//
 	// B. Render components

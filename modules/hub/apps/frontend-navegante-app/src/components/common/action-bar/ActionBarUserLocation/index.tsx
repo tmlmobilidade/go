@@ -1,7 +1,7 @@
 'use client';
 
 import { ActionBarButton } from '@/components/common/action-bar/ActionBarButton';
-import { useBaseMap } from '@/components/common/base-map/use-base-map';
+import { useMapContext } from '@/components/map/Map.context';
 import { useUserLocation } from '@/components/map/use-user-location';
 import { IconCurrentLocation, IconCurrentLocationFilled, IconLocationOff, IconNavigationTop } from '@tabler/icons-react';
 
@@ -13,7 +13,7 @@ export function ActionBarUserLocation() {
 	//
 	// A. Setup variables
 
-	const { moveMap } = useBaseMap();
+	const { actions: { moveMap } } = useMapContext();
 
 	const { availableUserLocationTrackingModes, setUserLocationTrackingMode, userLocation, userLocationTrackingMode } = useUserLocation();
 
