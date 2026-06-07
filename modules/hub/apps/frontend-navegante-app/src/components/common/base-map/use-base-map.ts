@@ -12,6 +12,7 @@ type BaseMapOverlayType = 'alerts' | 'stops' | 'vehicles';
 
 interface UseBaseMapReturnType {
 	activeBaseMapOverlays: BaseMapOverlayType[]
+	moveMap: (params: { isUserInitiated: boolean, latitude: number, longitude: number }) => void
 	toggleBaseMapOverlay: (overlay: BaseMapOverlayType) => void
 }
 
@@ -36,6 +37,11 @@ export function useBaseMap(): UseBaseMapReturnType {
 
 	//
 	// B. Handle actions
+
+	const moveMap = (params: { isUserInitiated: boolean, latitude: number, longitude: number }) => {
+		if (params.isUserInitiated) mapContext.data.map.stop();
+		moveMapView(mapContext.data.map, [params.longitude, params.latitude], { bearing: userLocation?.bearing, zoom: 25 });
+	};
 
 	const toggleBaseMapOverlay = (source: BaseMapOverlayType) => {
 		setActiveBaseMapOverlays((prev) => {
@@ -66,6 +72,7 @@ export function useBaseMap(): UseBaseMapReturnType {
 
 	return {
 		activeBaseMapOverlays,
+		moveMap,
 		toggleBaseMapOverlay,
 	};
 }

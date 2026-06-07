@@ -1,10 +1,9 @@
 'use client';
 
 import { ActionBarButton } from '@/components/common/action-bar/ActionBarButton';
-import { useMapContext } from '@/components/map/Map.context';
+import { useBaseMap } from '@/components/common/base-map/use-base-map';
 import { useUserLocation } from '@/components/map/use-user-location';
 import { IconCurrentLocation, IconCurrentLocationFilled, IconLocationOff, IconNavigationTop } from '@tabler/icons-react';
-import { moveMapView } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -14,7 +13,7 @@ export function ActionBarUserLocation() {
 	//
 	// A. Setup variables
 
-	const mapContext = useMapContext();
+	const { moveMap } = useBaseMap();
 
 	const { availableUserLocationTrackingModes, setUserLocationTrackingMode, userLocation, userLocationTrackingMode } = useUserLocation();
 
@@ -24,17 +23,15 @@ export function ActionBarUserLocation() {
 	const handleIdleOrFollowBearingClick = () => {
 		// If the next tracking mode is not available, do nothing
 		if (!availableUserLocationTrackingModes.includes('follow')) return;
-		if (!userLocation?.latitude || !userLocation?.longitude) return;
-		const coordinates = [userLocation.longitude, userLocation.latitude];
-		moveMapView(mapContext.data.map, coordinates);
+		// Move the map to the user location and update the tracking mode to follow
+		moveMap({ isUserInitiated: true, latitude: userLocation?.latitude, longitude: userLocation?.longitude });
 		setUserLocationTrackingMode('follow');
 	};
 
 	const handleFollowClick = () => {
-		if (!userLocation?.latitude || !userLocation?.longitude) return;
-		const coordinates = [userLocation.longitude, userLocation.latitude];
-		moveMapView(mapContext.data.map, coordinates, { bearing: userLocation.bearing, zoom: 25 });
-		// If the next tracking mode is not available, exit early
+		// Move the map to the user location first
+		moveMap({ isUserInitiated: true, latitude: userLocation?.latitude, longitude: userLocation?.longitude });
+		// If follow-bearing tracking mode is not available, exit early
 		if (!availableUserLocationTrackingModes.includes('follow-bearing')) return;
 		setUserLocationTrackingMode('follow-bearing');
 	};
