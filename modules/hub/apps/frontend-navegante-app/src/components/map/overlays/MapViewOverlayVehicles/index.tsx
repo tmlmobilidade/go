@@ -21,10 +21,10 @@ interface MapViewOverlayVehiclesProps {
 
 const baseGeoJsonFeatureCollection = getBaseGeoJsonFeatureCollection();
 
-const ANIMATION_DURATION = 800; // ms
+const ANIMATION_DURATION = 5_000; // ms
 
 function ease(t: number): number {
-	return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+	return t; // t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
 
 function interpolateCoords(start: number[], end: number[], t: number): number[] {
