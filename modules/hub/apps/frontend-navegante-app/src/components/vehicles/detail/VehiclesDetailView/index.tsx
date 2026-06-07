@@ -38,7 +38,7 @@ export function VehiclesDetailView() {
 		const nowUnixTimestamp = Dates.now('Europe/Lisbon').unix_timestamp;
 		const differenceInMilliseconds = nowUnixTimestamp - vehiclesDetailContext.data.vehicle?.created_at;
 		const differenceInSeconds = differenceInMilliseconds / 1000;
-		return differenceInSeconds;
+		return Math.round(differenceInSeconds);
 	}, [vehiclesDetailContext.data.vehicle?.created_at]);
 
 	//

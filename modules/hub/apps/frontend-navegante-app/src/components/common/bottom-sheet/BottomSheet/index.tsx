@@ -11,7 +11,7 @@ import styles from './styles.module.css';
 interface BottomSheetProps {
 	onClose: () => void
 	opened: boolean
-	size?: 'full' | 'half'
+	size?: 'full' | 'half' | 'short'
 	title?: string
 }
 
@@ -22,7 +22,7 @@ export function BottomSheet({ children, onClose, opened, size = 'full', title }:
 			opened={opened}
 			padding={0}
 			position="bottom"
-			size={size === 'full' ? '95%' : '55%'}
+			size={size === 'full' ? '95%' : size === 'half' ? '55%' : '200px'}
 		>
 			{size === 'full' && <Drawer.Overlay />}
 			<Drawer.Content classNames={{ content: styles.content }}>
