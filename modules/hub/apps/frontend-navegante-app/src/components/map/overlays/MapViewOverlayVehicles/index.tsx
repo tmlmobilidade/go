@@ -174,44 +174,6 @@ export function MapViewOverlayVehicles({ presentBeforeId, vehiclesData = baseGeo
 
 			<Layer
 				beforeId={presentBeforeId}
-				id="default-layer-vehicles-delay"
-				source="default-source-vehicles"
-				type="symbol"
-				layout={{
-					'icon-allow-overlap': true,
-					'icon-anchor': 'center',
-					'icon-ignore-placement': true,
-					'icon-image': 'cmet-bus-delay',
-					'icon-offset': [0, 0],
-					'icon-rotate': ['get', 'bearing'],
-					'icon-rotation-alignment': 'map',
-					'icon-size': ['interpolate',
-						['linear'],
-						['zoom'],
-						10,
-						0.05,
-						20,
-						0.15,
-					],
-					'symbol-placement': 'point',
-					'visibility': visible ? 'visible' : 'none',
-				}}
-				paint={{
-					'icon-opacity': [
-						'interpolate',
-						['linear'],
-						['get',
-							'delay'],
-						20,
-						0,
-						40,
-						1,
-					],
-				}}
-			/>
-
-			<Layer
-				beforeId="default-layer-vehicles-delay"
 				id="default-layer-vehicles-regular"
 				source="default-source-vehicles"
 				type="symbol"
@@ -249,9 +211,42 @@ export function MapViewOverlayVehicles({ presentBeforeId, vehiclesData = baseGeo
 					],
 					'symbol-placement': 'point',
 					'visibility': visible ? 'visible' : 'none',
+
 				}}
 				paint={{
-					'icon-opacity': ['get', 'opacity'],
+					'icon-opacity': [
+						'interpolate',
+						['linear'],
+						['zoom'],
+						12,
+						0,
+						13,
+						1,
+					],
+				}}
+			/>
+
+			<Layer
+				beforeId="default-layer-vehicles-regular"
+				id="default-layer-vehicles-dot"
+				source="default-source-vehicles"
+				type="circle"
+				layout={{
+					visibility: visible ? 'visible' : 'none',
+				}}
+				paint={{
+					'circle-color': '#D20F1E',
+					'circle-opacity': [
+						'interpolate',
+						['linear'],
+						['zoom'],
+						12,
+						1,
+						13,
+						0,
+					],
+					'circle-pitch-alignment': 'map',
+					'circle-radius': 1.5,
 				}}
 			/>
 
