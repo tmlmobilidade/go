@@ -7,8 +7,8 @@ import { useLinesContext } from '@/components/lines/Lines.context';
 import { parseEtaGtfsForStop, type StopTimetableRealtimeArrival } from '@/components/stops/detail/parse-eta-gtfs';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { type HubAlert, HubArrival, type HubGtfsRtFeedMessage, type HubLine, type HubPattern, type HubShape, type HubStop } from '@tmlmobilidade/types';
-import { DateTime } from 'luxon';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 /* * */
@@ -28,10 +28,6 @@ interface StopsDetailContextState {
 		lines: HubLine[] | undefined
 		patterns: HubPattern[][] | undefined
 		stop: HubStop | undefined
-		timetable_realtime: StopTimetableRealtimeArrival[] | undefined
-		timetable_realtime_future: StopTimetableRealtimeArrival[] | undefined
-		timetable_realtime_go: StopTimetableRealtimeArrival[] | undefined
-		timetable_realtime_past: StopTimetableRealtimeArrival[] | undefined
 		timetable_schedule: HubArrival[] | undefined
 		valid_pattern_groups: HubPattern[] | undefined
 	}
@@ -73,10 +69,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	const [dataPatternsState, setDataPatternsState] = useState<HubPattern[][] | undefined>(undefined);
 	const [dataValidPatternsState, setDataValidPatternsState] = useState<HubPattern[] | undefined>(undefined);
 	const [dataShapeState, setDataShapeState] = useState<HubShape | undefined>(undefined);
-	const [dataArrivalsGo, setDataArrivalsGo] = useState<StopTimetableRealtimeArrival[] | undefined>(undefined);
 	const [dataTimetableRealtimeState, setDataTimetableRealtimeState] = useState<StopTimetableRealtimeArrival[] | undefined>(undefined);
-	const [dataTimetableRealtimePastState, setDataTimetableRealtimePastState] = useState<StopTimetableRealtimeArrival[] | undefined>(undefined);
-	const [dataTimetableRealtimeFutureState, setDataTimetableRealtimeFutureState] = useState<StopTimetableRealtimeArrival[] | undefined>(undefined);
 	const [dataTimetableScheduleState, setDataTimetableScheduleState] = useState<HubArrival[] | undefined>(undefined);
 	const [dataActivePatternState, setDataActivePatternState] = useState<HubPattern | undefined>(undefined);
 	const [dataActiveAlertsState, setDataActiveAlertsState] = useState<HubAlert[] | undefined>(undefined);
@@ -147,33 +140,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		const interval = setInterval(fetchData, 10000);
 		return () => clearInterval(interval);
 	}, [stopId, dataValidPatternsState]);
-
-	/**
-	* Fetch realtime arrivals data for the selected stop from GO API.
-	* This effect runs whenever the `dataStopState` changes.
-	* It fetches line data for each line associated with the stop and updates the state.
-	*/
-
-	// useEffect(() => {
-	// 	const fetchData = async () => {
-	// 		try {
-	// 			if (!stopId) return;
-	// 			const realtimeData = await fetch('https://go.tmlmobilidade.pt/hub/api/v1/realtime/eta/)
-	// 				.then((response) => {
-	// 					if (!response.ok) console.log(`Failed to fetch realtime data for stopId: ${stopId}`);
-	// 					else return response.json();
-	// 				});
-	// 			setDataArrivalsGo(realtimeData);
-	// 		} catch (error) {
-	// 			console.error('Error fetching realtime data:', error);
-	// 			setDataArrivalsGo([]);
-	// 		}
-	// 	};
-	//
-	// 	fetchData();
-	// 	const interval = setInterval(fetchData, 10000);
-	// 	return () => clearInterval(interval);
-	// }, [stopId]);
 
 	/**
  	* Fetch pattern data for the selected stop.
@@ -248,29 +214,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 	useEffect(() => {
 		const prepareTimetableRealtimeData = () => {
 			if (!dataTimetableRealtimeState) return;
-			const nowInUnixSeconds = DateTime.now().toSeconds();
-			const timetableRealtimePastResult = dataTimetableRealtimeState
-				.filter((arrival) => {
-					if (arrival.observed_arrival_unix) return true;
-					return (arrival.estimated_arrival_unix || arrival.scheduled_arrival_unix) < nowInUnixSeconds;
-				})
-				.sort((a, b) => {
-					const minimumArrivalA = a.observed_arrival_unix || a.scheduled_arrival_unix;
-					const minimumArrivalB = b.observed_arrival_unix || b.scheduled_arrival_unix;
-					return minimumArrivalA - minimumArrivalB;
-				});
-			const timetableRealtimeFutureResult = dataTimetableRealtimeState
-				.filter((arrival) => {
-					if (arrival.observed_arrival_unix) return false;
-					return (arrival.estimated_arrival_unix || arrival.scheduled_arrival_unix) >= nowInUnixSeconds;
-				})
-				.sort((a, b) => {
-					const minimumArrivalA = a.estimated_arrival_unix || a.scheduled_arrival_unix;
-					const minimumArrivalB = b.estimated_arrival_unix || b.scheduled_arrival_unix;
-					return minimumArrivalA - minimumArrivalB;
-				});
-			setDataTimetableRealtimePastState(timetableRealtimePastResult || []);
-			setDataTimetableRealtimeFutureState(timetableRealtimeFutureResult || []);
 		};
 		prepareTimetableRealtimeData();
 		const interval = setInterval(prepareTimetableRealtimeData, 1000);
@@ -331,7 +274,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 				if (!reference.parent_id && !reference.child_ids.length) return false;
 				const hasMatchingStop = reference.parent_id === stopId;
 				const hasMatchingRoute = dataStopState?.route_ids.includes(reference.child_ids[0] || '');
-				return (hasMatchingStop || hasMatchingRoute) && alert.active_period_start_date <= DateTime.now().toUnixInteger() && alert.active_period_end_date >= DateTime.now().toUnixInteger();
+				return (hasMatchingStop || hasMatchingRoute) && alert.active_period_start_date <= Dates.now('local').unix_timestamp && alert.active_period_end_date >= Dates.now('local').unix_timestamp;
 			});
 		});
 		setDataActiveAlertsState(activeAlerts);
@@ -374,10 +317,6 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 			lines: dataLinesState,
 			patterns: dataPatternsState,
 			stop: dataStopState,
-			timetable_realtime: dataTimetableRealtimeState,
-			timetable_realtime_future: dataTimetableRealtimeFutureState,
-			timetable_realtime_go: dataArrivalsGo,
-			timetable_realtime_past: dataTimetableRealtimePastState,
 			timetable_schedule: dataTimetableScheduleState,
 			valid_pattern_groups: dataValidPatternsState,
 		},
