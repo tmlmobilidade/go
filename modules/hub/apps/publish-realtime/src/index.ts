@@ -1,6 +1,6 @@
 /* * */
 
-import { publishEta } from '@/tasks/eta/index.js';
+import { publishTripUpdates } from '@/tasks/publish-trip-updates.js';
 import { publishVehiclesMetadata } from '@/tasks/publish-vehicles-metadata.js';
 import { publishVehiclesPositions } from '@/tasks/publish-vehicles-positions.js';
 import { Logger } from '@tmlmobilidade/logger';
@@ -24,7 +24,7 @@ const main = async () => {
 	await publishVehiclesPositions();
 
 	if (ITERATION % 100 === 0) await publishVehiclesMetadata();
-	if (ITERATION % 100 === 0) await publishEta();
+	if (ITERATION % 100 === 0) await publishTripUpdates();
 
 	ITERATION++;
 
