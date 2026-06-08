@@ -43,6 +43,7 @@ export interface HubTrip {
 export interface HubArrival {
 	arrival_time: string
 	arrival_time_24h: string
+	is_realtime: boolean
 	line_id: string
 	pattern_id: string
 	stop_id: string

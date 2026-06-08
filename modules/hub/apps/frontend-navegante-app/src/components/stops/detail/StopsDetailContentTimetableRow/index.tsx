@@ -84,7 +84,6 @@ export function StopsDetailContentTimetableRow({ arrivalData, status }: Props) {
 
 		return (
 			<div className={`${styles.container} ${styles[status]} ${isSelected && styles.isSelected}`} onClick={handleSelectTrip}>
-
 				<div className={styles.summary}>
 					<LineDisplay
 						color={thisPattern.color}
@@ -145,7 +144,7 @@ export function StopsDetailContentTimetableRow({ arrivalData, status }: Props) {
 				/>
 				<NextArrivals
 					arrivals={[scheduledArrivalUnix]}
-					status={status === 'passed' ? 'passed' : 'scheduled'}
+					status={status === 'passed' ? 'passed' : arrivalData.is_realtime ? 'realtime' : 'scheduled'}
 					tripId={arrivalData.trip_id}
 					withIcon={true}
 				/>
