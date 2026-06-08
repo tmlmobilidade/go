@@ -7,6 +7,9 @@
 			"help": {
 				"label": "Perguntas Frequentes"
 			},
+			"reload": {
+				"label": "Recarregar"
+			},
 			"search": {
 				"label": "Pesquisar"
 			}
@@ -159,7 +162,9 @@
 		},
 		"LinesDetailPath": {
 			"no_data": "Selecione um Percurso / Destino",
-			"summary": "Linha <lineNumber>{line_number}</lineNumber> com destino a <destinationName>{destination_name}</destinationName> no dia <dayName>{day_name, date, long}</dayName>. <changeDay>Alterar dia ›</changeDay>"
+			"stop_details_name": "{index}ª paragem: {stop_name}",
+			"summary": "Linha <lineNumber>{line_number}</lineNumber> com destino a <destinationName>{destination_name}</destinationName> no dia <dayName>{day_name, date, long}</dayName>. <changeDay>Alterar dia ›</changeDay>",
+			"view_stop_details": "Ver detalhes da paragem"
 		},
 		"LinesListGroup": {
 			"logo": {
@@ -213,7 +218,8 @@
 		},
 		"TimetableSchedules": {
 			"hours": "Hora",
-			"minutes": "Min."
+			"minutes": "Min.",
+			"timestamp": "{hour} horas e {minute} minutos"
 		}
 	},
 	"map": {

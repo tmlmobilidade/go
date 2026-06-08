@@ -24,16 +24,13 @@ export function LinesDetailViewHeader() {
 	return (
 		<Surface variant="plain">
 			<Section gap="sm">
-
-				<div className={styles.row}>
+				<div aria-hidden={true} className={styles.row}>
 					<LineBadge lineData={linesDetailContext.data.line} size="lg" />
 					<Image alt="" height={40} src={AGENCY_LOGO_MAP[linesDetailContext.data.line.agency_id]} width={60} />
 				</div>
-
-				<h1 className={styles.lineName}>
+				<h1 aria-hidden={true} className={styles.lineName}>
 					{linesDetailContext.data.line.long_name}
 				</h1>
-
 			</Section>
 		</Surface>
 	);
