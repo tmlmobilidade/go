@@ -34,7 +34,7 @@ export function ActionBar() {
 			/>
 			<ActionBarButton
 				icon={<IconReload size={30} />}
-				label="reload"
+				label={t('default:action-bar.ActionBar.reload.label')}
 				onClick={() => window.location.reload()}
 			/>
 
