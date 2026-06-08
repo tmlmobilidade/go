@@ -93,7 +93,7 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 	// D. Render components
 
 	return (
-		<div className={styles.container}>
+		<div className={styles.container} aria-hidden>
 
 			<Map
 				attributionControl={false}

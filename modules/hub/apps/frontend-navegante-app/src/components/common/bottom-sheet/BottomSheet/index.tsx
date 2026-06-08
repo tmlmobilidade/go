@@ -11,7 +11,7 @@ import styles from './styles.module.css';
 interface BottomSheetProps {
 	onClose: () => void
 	opened: boolean
-	size?: 'full' | 'half'
+	size?: 'full' | 'half' | 'short'
 	title?: string
 }
 
@@ -31,13 +31,14 @@ export function BottomSheet({ children, onClose, opened, size = 'full', title }:
 			opened={opened}
 			padding={0}
 			position="bottom"
-			size={size === 'full' ? '95%' : '55%'}
+			role="presentation"
+			size={size === 'full' ? '95%' : size === 'half' ? '55%' : '200px'}
 		>
 			{size === 'full' && <Drawer.Overlay />}
 			<Drawer.Content ref={contentRef} classNames={{ content: styles.content }} onScroll={handleScroll}>
 				<Drawer.Header classNames={{ header: styles.header }} data-scrolled={isScrolled || undefined} data-with-title={!!title}>
 					<BottomSheetClose onClick={onClose} />
-					{title && <h1 className={styles.title}>{title}</h1>}
+					{title && <h1 aria-hidden={false} className={styles.title}>{title}</h1>}
 				</Drawer.Header>
 				<Drawer.Body classNames={{ body: styles.body }} data-with-title={!!title}>
 					{!!opened && children}

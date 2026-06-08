@@ -6,8 +6,8 @@ import { useEffect, useRef, useState } from 'react';
 
 /* * */
 
-export const MapViewStyleVehiclesPrimaryLayerId = 'default-layer-vehicles-regular';
-export const MapViewStyleVehiclesInteractiveLayerId = 'default-layer-vehicles-regular';
+export const MapViewOverlayVehiclesPrimaryLayerId = 'default-layer-vehicles-regular';
+export const MapViewOverlayVehiclesInteractiveLayerId = 'default-layer-vehicles-regular';
 
 /* * */
 

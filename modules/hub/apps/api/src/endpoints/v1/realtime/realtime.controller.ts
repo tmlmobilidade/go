@@ -73,7 +73,7 @@ export class RealtimeController {
 		}
 		return reply
 			.header('access-control-allow-origin', '*')
-			.header('cache-control', 'public, max-age=60')
+			.header('cache-control', 'public, max-age=5')
 			.code(HTTP_STATUS.OK)
 			.send(JSON.parse(raw));
 	}
@@ -96,7 +96,7 @@ export class RealtimeController {
 		const buffer = await encodeGtfsRtFeed(allItemsData);
 		return reply
 			.header('access-control-allow-origin', '*')
-			.header('cache-control', 'public, max-age=5')
+			.header('cache-control', 'public, max-age=3')
 			.type('application/octet-stream')
 			.code(HTTP_STATUS.OK)
 			.send(Buffer.from(buffer));
@@ -114,7 +114,7 @@ export class RealtimeController {
 		}
 		return reply
 			.header('access-control-allow-origin', '*')
-			.header('cache-control', 'public, max-age=5')
+			.header('cache-control', 'public, max-age=3')
 			.type('application/octet-stream')
 			.code(HTTP_STATUS.OK)
 			.send(Buffer.from(raw));
@@ -129,7 +129,7 @@ export class RealtimeController {
 			Logger.error('[hub/v1/realtime:getVehiclesPositionsJson()] No cached data found for vehicles positions');
 			return reply
 				.header('access-control-allow-origin', '*')
-				.header('cache-control', 'public, max-age=3')
+				.header('cache-control', 'public, max-age=5')
 				.code(HTTP_STATUS.NO_CONTENT)
 				.send({
 					data: [],

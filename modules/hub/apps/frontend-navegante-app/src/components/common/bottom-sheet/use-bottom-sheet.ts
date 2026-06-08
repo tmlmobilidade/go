@@ -1,6 +1,6 @@
 'use client';
 
-import { useLocalStorage } from '@mantine/hooks';
+import { useSessionStorage } from '@mantine/hooks';
 import { useMemo } from 'react';
 
 /* * */
@@ -33,7 +33,7 @@ export function useBottomSheet(): UseBottomSheetReturnType {
 	//
 	// A. Setup variables
 
-	const [bottomSheetNavigation, setBottomSheetNavigation] = useLocalStorage<BottomSheetNavigationType[]>({
+	const [bottomSheetNavigation, setBottomSheetNavigation] = useSessionStorage<BottomSheetNavigationType[]>({
 		defaultValue: [],
 		key: 'bottom-sheet-navigation',
 	});

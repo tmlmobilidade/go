@@ -12,7 +12,12 @@ interface BottomSheetCloseProps {
 
 export function BottomSheetClose({ onClick }: BottomSheetCloseProps) {
 	return (
-		<div className={styles.button} onClick={onClick}>
+		<div
+			aria-label="Fechar"
+			className={styles.button}
+			onClick={onClick}
+			role="button"
+		>
 			<IconX size={30} />
 		</div>
 	);

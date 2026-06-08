@@ -27,7 +27,7 @@ export function BaseMapOverlaysControl() {
 	// B. Render components
 
 	return (
-		<div className={styles.container}>
+		<div className={styles.container} aria-hidden>
 
 			<div
 				className={styles.button}

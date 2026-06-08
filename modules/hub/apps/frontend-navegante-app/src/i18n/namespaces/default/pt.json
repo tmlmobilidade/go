@@ -1,4 +1,31 @@
 {
+	"action-bar": {
+		"ActionBar": {
+			"alerts": {
+				"label": "Alertas de Serviço"
+			},
+			"help": {
+				"label": "Perguntas Frequentes"
+			},
+			"search": {
+				"label": "Pesquisar"
+			}
+		},
+		"ActionBarUserLocation": {
+			"disabled": {
+				"label": "Localização desativada"
+			},
+			"follow": {
+				"label": "Orientar Mapa"
+			},
+			"follow-bearing": {
+				"label": "Centrar Mapa"
+			},
+			"idle": {
+				"label": "Centrar mapa"
+			}
+		}
+	},
 	"alerts": {
 		"AlertActivePeriod": {
 			"start": "Início: {value, date, dayShort}"
