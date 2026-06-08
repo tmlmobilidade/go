@@ -35,8 +35,8 @@ export const AppConfig = Object.freeze({
 		insertHistoricalRidesByDay: true,
 		insertHistoricalShapeNodes: true,
 		insertHistoricalVehicleEvents: true,
-		runDdl: true,
+		runDdl: false, // true,
 		runTransformationAndAggregationQueries: true,
-		truncatePipelineTables: isDevelopment ? true : false,
+		truncatePipelineTables: false, // isDevelopment ? true : false,
 	},
 });
