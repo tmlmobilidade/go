@@ -4,7 +4,6 @@ import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.con
 import { StopsDetailAlerts } from '@/components/stops/detail/StopsDetailAlerts';
 import { StopsDetailContent } from '@/components/stops/detail/StopsDetailContent';
 import { StopsDetailViewHeader } from '@/components/stops/detail/StopsDetailViewHeader';
-import { StopsDetailViewName } from '@/components/stops/detail/StopsDetailViewName';
 import { Space } from '@mantine/core';
 import { Divider, LoadingSection, Section } from '@tmlmobilidade/ui';
 
@@ -32,7 +31,6 @@ export function StopsDetailView() {
 
 	return (
 		<Section padding="none">
-			<StopsDetailViewName />
 			<StopsDetailViewHeader />
 			<Divider />
 			<StopsDetailAlerts />

@@ -10,6 +10,7 @@ import styles from './styles.module.css';
 /* * */
 
 interface StopDisplayProps {
+	searchQuery?: string
 	size?: 'lg' | 'md'
 	skeletonWidth?: number
 	stopData?: HubStop
@@ -17,11 +18,11 @@ interface StopDisplayProps {
 
 /* * */
 
-export function StopDisplay({ size = 'md', skeletonWidth = 200, stopData }: StopDisplayProps) {
+export function StopDisplay({ searchQuery, size = 'md', skeletonWidth = 200, stopData }: StopDisplayProps) {
 	return stopData
 		? (
 			<div className={`${styles.container} ${styles[size]}`}>
-				<StopDisplayName longName={stopData.name} />
+				<StopDisplayName longName={stopData.name} searchQuery={searchQuery} />
 				<StopDisplayLocation localityName={stopData.locality_name} municipalityName={stopData.municipality_name} />
 			</div>
 		)

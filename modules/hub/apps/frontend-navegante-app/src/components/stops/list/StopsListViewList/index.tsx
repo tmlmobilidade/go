@@ -39,7 +39,7 @@ export function StopsListViewList() {
 			<ViewportList itemMargin={0} items={stopsListContext.data.filtered}>
 				{item => (
 					<RegularListItem key={item._id} onClick={() => setActiveBottomSheet({ entityId: String(item._id), view: 'stops-detail' })}>
-						<StopDisplay stopData={item} />
+						<StopDisplay searchQuery={stopsListContext.filters.search.value} stopData={item} />
 					</RegularListItem>
 				)}
 			</ViewportList>

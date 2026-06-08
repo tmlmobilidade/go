@@ -1,7 +1,8 @@
 'use client';
 
+/* * */
+
 import { BottomSheetClose } from '@/components/common/bottom-sheet/BottomSheetClose';
-import { Drawer } from '@mantine/core';
 import { type PropsWithChildren, useCallback, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -11,37 +12,88 @@ import styles from './styles.module.css';
 interface BottomSheetProps {
 	onClose: () => void
 	opened: boolean
-	size?: 'full' | 'half' | 'short'
+	size?: 'fit' | 'full' | 'half' | 'short'
 	title?: string
 }
 
-export function BottomSheet({ children, onClose, opened, size = 'full', title }: PropsWithChildren<BottomSheetProps>) {
-	const contentRef = useRef<HTMLDivElement>(null);
+/* * */
+
+export function BottomSheet({
+	children,
+	onClose,
+	opened,
+	size = 'fit',
+	title,
+}: PropsWithChildren<BottomSheetProps>) {
+	//
+
+	//
+	// A. Setup variables
+
+	const bodyRef = useRef<HTMLDivElement>(null);
+
 	const [isScrolled, setIsScrolled] = useState(false);
 
+	//
+	// B. Handle actions
+
 	const handleScroll = useCallback(() => {
-		const el = contentRef.current;
-		if (!el) return;
-		setIsScrolled(el.scrollTop > 10);
+		const element = bodyRef.current;
+
+		if (!element) return;
+
+		setIsScrolled(element.scrollTop > 8);
 	}, []);
+
+	//
+	// C. Render components
 
 	return (
 		<>
+			{size === 'full' && (
+				<div
+					className={styles.overlay}
+					data-opened={opened}
+					onClick={onClose}
+				/>
+			)}
 
-			{size === 'full' && <div className={styles.overlay} data-opened={opened} />}
-
-			<div className={styles.content} data-opened={opened} data-size={size}>
-				<BottomSheetClose onClick={onClose} />
-				{title && (
-					<div className={styles.header} data-with-title={!!title}>
-						<h1 className={styles.title}>{title}</h1>
+			<section
+				aria-hidden={!opened}
+				aria-modal="true"
+				className={styles.content}
+				data-opened={opened}
+				data-size={size}
+				role="dialog"
+			>
+				<header
+					className={styles.header}
+					data-scrolled={isScrolled}
+					data-with-title={!!title}
+				>
+					<div className={styles.headerLeft}>
+						<BottomSheetClose onClick={onClose} />
 					</div>
-				)}
-				<div className={styles.body} data-with-title={!!title}>
-					{!!opened && children}
-				</div>
-			</div>
 
+					{title && (
+						<h1 className={styles.title}>
+							{title}
+						</h1>
+					)}
+
+					<div className={styles.headerRight} />
+				</header>
+
+				<div
+					ref={bodyRef}
+					className={styles.body}
+					onScroll={handleScroll}
+				>
+					{opened && children}
+				</div>
+			</section>
 		</>
 	);
+
+	//
 }
