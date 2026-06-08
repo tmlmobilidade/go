@@ -4,12 +4,23 @@ import { cleanExpiredSessions } from '@/tasks/clean-sessions.js';
 import { cleanExpiredVerificationTokens } from '@/tasks/clean-verification-tokens.js';
 import { sanitizePermissions } from '@/tasks/sanitize-permissions.js';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
 async function main() {
+	//
+
+	try {
+		await initSentryNode();
+		Logger.info('Sentry Auth Cleaner initialized');
+		Logger.logsNode({ app: 'cleaner', message: 'Sentry Auth Cleaner initialized', module: 'auth', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry Auth Cleaner', { app: 'cleaner', message: 'Error initializing Sentry Auth Cleaner', module: 'auth', severity: 'error', value: error });
+	}
+
 	// Only run in production environment
 	if (process.env.ENVIRONMENT !== 'prd') {
 		Logger.info('Cleaner is disabled in non-prd environments');
