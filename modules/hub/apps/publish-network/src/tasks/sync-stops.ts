@@ -10,7 +10,6 @@ import { type GTFS_Stop_Extended, type HubStop, HubStopSchema } from '@tmlmobili
 
 interface QueryResult extends GTFS_Stop_Extended {
 	agency_ids: string
-	legacy_ids: string
 	line_ids: string
 	pattern_ids: string
 	route_ids: string
@@ -95,7 +94,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 				district_name: stop.district_name,
 				flags: [],
 				latitude: stop.stop_lat,
-				legacy_ids: [stop.legacy_ids],
+				legacy_ids: [],
 				lifecycle_status: 'active',
 				line_ids: JSON.parse(stop.line_ids),
 				locality_id: stop.locality_id,
