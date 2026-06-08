@@ -56,6 +56,7 @@ export const LogsNode = (context: LogsNodeContext): void => {
 	}
 
 	Sentry.logger.info(message, payload);
+	Sentry.getGlobalScope().setAttributes({ app, module });
 };
 
 function normalizeSeverity(severity: string | undefined): 'debug' | 'error' | 'info' | 'warn' {
