@@ -56,7 +56,7 @@ export function LinesListViewAll() {
 								ariaLabel={t(`default:lines.LinesListViewAll.items.aria_label`, '', { index: index + 1, tts_name: line.tts_name })}
 								onClick={() => setActiveBottomSheet({ entityId: line._id, view: 'lines-detail' })}
 							>
-								<LineDisplay lineData={line} />
+								<LineDisplay lineData={line} searchQuery={linesListContext.filters.search.value} />
 							</RegularListItem>
 						)}
 					</ViewportList>

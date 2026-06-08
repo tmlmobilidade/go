@@ -1,5 +1,6 @@
 'use client';
 
+import { ScrollChips } from '@/components/common/lists/ScrollChips';
 import { SelectOperationalDate } from '@/components/common/operational-date/SelectOperationalDate';
 import { LineBadge } from '@/components/lines/common/LineBadge';
 import { StopDisplayLocation } from '@/components/stops/common/StopDisplayLocation';
@@ -40,11 +41,11 @@ export function StopsDetailViewHeader() {
 
 				<StopDisplayLocation localityName={stopsDetailContext.data.stop.locality_name} municipalityName={stopsDetailContext.data.stop.municipality_name} size="lg" />
 
-				<div className={styles.linesWrapper}>
+				<ScrollChips>
 					{stopsDetailContext.data.lines?.map(line => (
 						<LineBadge key={line._id} lineData={line} />
 					))}
-				</div>
+				</ScrollChips>
 
 				<SelectOperationalDate />
 

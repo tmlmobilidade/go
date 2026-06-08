@@ -227,6 +227,13 @@
 	"search": {
 		"SearchDetail": {
 			"title": "Pesquisa"
+		},
+		"SearchToolbar": {
+			"types": {
+				"alerts": "Alertas",
+				"lines": "Linhas",
+				"stops": "Paragens"
+			}
 		}
 	},
 	"stops": {

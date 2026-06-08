@@ -118,10 +118,10 @@ export function StopsDetailContentTimetableRealtime() {
 		return mergeScheduleWithGtfs(
 			scheduleSplit.pastTrips,
 			scheduleSplit.futureTrips,
-			stopsDetailContext.data.timetable_realtime ?? [],
+			stopsDetailContext.data['timetable_realtime'] ?? [],
 		);
 	}, [
-		stopsDetailContext.data.timetable_realtime,
+		stopsDetailContext.data['timetable_realtime'],
 		stopsDetailContext.data.timetable_schedule,
 	]);
 

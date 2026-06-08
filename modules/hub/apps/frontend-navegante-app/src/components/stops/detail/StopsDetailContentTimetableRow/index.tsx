@@ -77,60 +77,6 @@ export function StopsDetailContentTimetableRow({ arrivalData, status }: Props) {
 		return null;
 	}
 
-	// Realtime row — GTFS parsed arrival with unix timestamps
-	if (isRealtimeArrival(arrivalData)) {
-		const estimatedUnix = arrivalData.estimated_arrival_unix || arrivalData.scheduled_arrival_unix;
-		const hasLiveEta = status === 'realtime' && arrivalData.estimated_arrival_unix != null && arrivalData.estimated_arrival_unix !== arrivalData.scheduled_arrival_unix;
-
-		return (
-			<div className={`${styles.container} ${styles[status]} ${isSelected && styles.isSelected}`} onClick={handleSelectTrip}>
-				<div className={styles.summary}>
-					<LineDisplay
-						color={thisPattern.color}
-						longName={thisPattern.headsign}
-						shortName={thisPattern.line_id.slice(thisPattern.line_id.lastIndexOf(']') + 1)}
-						textColor={thisPattern.text_color}
-					/>
-					{status === 'passed' ? (
-						<NextArrivals
-							arrivals={[arrivalData.observed_arrival_unix || arrivalData.scheduled_arrival_unix]}
-							status="passed"
-						/>
-					) : (
-						<NextArrivals
-							arrivals={[estimatedUnix]}
-							scheduledArrivals={hasLiveEta ? [arrivalData.scheduled_arrival_unix] : undefined}
-							status={status === 'realtime' ? 'realtime' : 'scheduled'}
-							tripId={arrivalData.trip_id}
-						/>
-					)}
-				</div>
-
-				{isSelected && (
-					<>
-						<Link className={styles.openLinePage} href={`/lines/${arrivalData.line_id}?&day=${selectedDate}&active_pattern_id=${thisPattern?.id}`} onClick={e => e.stopPropagation()} target="_blank">{t('default:stops.StopsDetailContentTimetableRow.open_line_page')}</Link>
-						<div className={styles.details}>
-							{thisPattern.locality_ids.length > 0 && (
-								<div className={styles.localitiesListWrapper}>
-									<p className={styles.localitiesLabel}>{t('default:stops.StopsDetailContentTimetableRow.localities.label')}</p>
-									<p>
-										{thisPattern.locality_ids.map((localityId, index) => (
-											<span key={index}>
-												{index > 0 && <span className={styles.localitySeparator}> • </span>}
-												<span className={styles.localityName}>TBD</span>
-											</span>
-										))}
-									</p>
-								</div>
-							)}
-						</div>
-					</>
-				)}
-
-			</div>
-		);
-	}
-
 	// Schedule row — static arrival time from pattern
 	return (
 		<div className={`${styles.container} ${styles[status]} ${isSelected && styles.isSelected}`} onClick={handleSelectTrip}>
@@ -139,7 +85,7 @@ export function StopsDetailContentTimetableRow({ arrivalData, status }: Props) {
 				<LineDisplay
 					color={thisPattern.color}
 					longName={thisPattern.headsign}
-					shortName={thisPattern.line_id.slice(thisPattern.line_id.lastIndexOf(']') + 1)}
+					shortName={thisPattern.short_name}
 					textColor={thisPattern.text_color}
 				/>
 				<NextArrivals

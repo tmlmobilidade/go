@@ -6,11 +6,11 @@ import { Dates } from '@tmlmobilidade/dates';
 
 /* * */
 
-const isDevelopment = process.env.ENVIRONMENT === 'dev';
+const isDevelopment = process.env.ENVIRONMENT === 'development';
 
 export const AppConfig = Object.freeze({
 	// Agency and line configurations
-	agencyIds: ['41', '42', '43', '44'],
+	agencyIds: ['1', '41', '42', '43', '44'],
 
 	development: {
 		isDevelopment,

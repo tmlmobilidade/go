@@ -1,4 +1,4 @@
-import archiver from 'archiver';
+import { ZipArchive } from 'archiver';
 import { exec } from 'child_process';
 import fs from 'fs';
 import { Collection, Db, DbOptions, MongoClient, MongoClientOptions } from 'mongodb';
@@ -18,12 +18,8 @@ export interface MongoDbConfig {
 
 export class MongoDbService implements IDatabaseService {
 	private static _instance: MongoDbService;
-	get client(): MongoClient {
-		return this._client;
-	}
 
 	private _client: MongoClient;
-
 	private _dumpOptions?: MongoDbConfig['dump_options'];
 	private _uri: string;
 
@@ -38,6 +34,10 @@ export class MongoDbService implements IDatabaseService {
 		this._client.on('reconnect', () => {
 			console.log('MongoDB reconnected.');
 		});
+	}
+
+	get client(): MongoClient {
+		return this._client;
 	}
 
 	/**
@@ -73,13 +73,12 @@ export class MongoDbService implements IDatabaseService {
 				if (error) {
 					console.error(`⤷ Error running mongodump: ${stderr}`);
 					reject(new Error(`Mongodump failed: ${stderr}`));
-				}
-				else {
+				} else {
 					console.log(`⤷ Mongodump completed successfully`);
 
 					// Create a file to stream archive data to.
 					const output = fs.createWriteStream(`${dumpDir}.zip`);
-					const archive = archiver('zip', {
+					const archive = new ZipArchive({
 						zlib: { level: 9 }, // Sets the compression level.
 					});
 
@@ -116,8 +115,7 @@ export class MongoDbService implements IDatabaseService {
 			try {
 				await this._client.connect();
 				console.log('⤷ Connected to MongoDB.');
-			}
-			catch (error) {
+			} catch (error) {
 				throw new Error('Error connecting to MongoDB', { cause: error });
 			}
 		}
@@ -163,8 +161,7 @@ export class MongoDbService implements IDatabaseService {
 		exec(command, (error, stdout, stderr) => {
 			if (error) {
 				console.error(`⤷ Error running mongorestore: ${stderr}`);
-			}
-			else {
+			} else {
 				console.log(`⤷ Mongorestore completed successfully:\n${stdout}`);
 			}
 		});

@@ -351,6 +351,7 @@ export const API_ROUTES = Object.freeze({
 		ALERTS_RSS: `${getModuleConfig('hub', 'api_url')}/v1/alerts.rss`,
 
 		// DEBUG
+		DEBUG_APP_ENABLED: `${getModuleConfig('hub', 'api_url')}/v1/debug/app-enabled`,
 		DEBUG_TIME: `${getModuleConfig('hub', 'api_url')}/v1/debug/time`,
 
 		// FACILITIES

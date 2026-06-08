@@ -3,6 +3,7 @@
 const dynamicKey = () => 'use-for-dynamic-key';
 
 export const ApiCacheKeyValues = [
+	'hub:navegante:app-enabled',
 	'hub:alerts:published:json',
 	'hub:alerts:published:json:cm',
 	'hub:alerts:published:gtfs',
