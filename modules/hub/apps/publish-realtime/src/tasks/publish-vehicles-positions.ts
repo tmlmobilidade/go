@@ -5,7 +5,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type HubPlan, type HubVehiclePosition, HubVehiclePositionSchema, Ride, validateCalendarDate } from '@tmlmobilidade/types';
+import { type HubPlan, type HubVehiclePosition, HubVehiclePositionSchema, validateCalendarDate } from '@tmlmobilidade/types';
 import { getPublicLineId, getPublicPatternId, getPublicTripId, getPublicVehicleId } from '@tmlmobilidade/utils';
 
 /* * */
