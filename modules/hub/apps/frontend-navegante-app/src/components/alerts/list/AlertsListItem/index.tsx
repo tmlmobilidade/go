@@ -1,31 +1,28 @@
 'use client';
 
-import { AlertActivePeriodEnd, AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
-import { AlertEffectIcon } from '@/components/alerts/common/AlertCauseEffectIcon';
-import AlertsListItemImageThumbnail from '@/components/alerts/list/AlertsListItemImageThumbnail';
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
+import { AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
+import { AlertEffectIcon } from '@/components/alerts/common/AlertEffectIcon';
+import { AlertsListItemImageThumbnail } from '@/components/alerts/list/AlertsListItemImageThumbnail';
 import { Accordion } from '@mantine/core';
-import { IconArrowUpRight } from '@tabler/icons-react';
-import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import { MantineHighlight } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
 /* * */
 
-interface Props {
+interface AlertListItemProps {
 	alertId: string
+	searchQuery?: string
 }
 
 /* * */
 
-export function AlertListItem({ alertId }: Props) {
+export function AlertListItem({ alertId, searchQuery }: AlertListItemProps) {
 	//
 
 	//
 	// A. Setup variables
-
-	const { t } = useTranslation();
 
 	const alertsContext = useAlertsContext();
 
@@ -34,45 +31,26 @@ export function AlertListItem({ alertId }: Props) {
 
 	const resolvedAlert = alertsContext.actions.getAlertById(alertId);
 
-	// const view = useMemo(() => {
-	// 	if (!resolvedAlert) return null;
-	// 	return {
-	// 		description: resolvedAlert.description,
-	// 		endDate: resolvedAlert.end_date,
-	// 		imageUrl: resolvedAlert.image_url,
-	// 		startDate: resolvedAlert.start_date,
-	// 		title: resolvedAlert.title,
-	// 	};
-	// }, [resolvedAlert]);
-
-	// const alertHref = environmentContext.actions.getNormalizedHref(`/alerts/${alertId}`);
-
 	//
 	// C. Render components
 
 	return (
 		<Accordion.Item value={alertId}>
-			<Accordion.Control icon={<AlertEffectIcon effect={resolvedAlert?.effect} />}>
-				{/* {view?.title} */}
+			<Accordion.Control classNames={{ control: styles.item }} icon={<AlertEffectIcon effect={resolvedAlert?.effect} />}>
+				<MantineHighlight component="span" highlight={searchQuery || ''}>
+					{resolvedAlert?.title || ''}
+				</MantineHighlight>
 			</Accordion.Control>
 			<Accordion.Panel classNames={{ content: styles.contentWrapper }}>
 				<div className={styles.infoBar}>
-					{/* {view?.startDate && <AlertActivePeriodStart date={view.startDate} size="sm" />} */}
-					{/* <AlertActivePeriodEnd date={view?.endDate} size="sm" /> */}
+					{resolvedAlert?.active_period_start_date && <AlertActivePeriodStart date={resolvedAlert.active_period_start_date} size="sm" />}
 				</div>
-				{/* <p className={styles.description}>{view?.description}</p> */}
-				{/* {view?.imageUrl && (
-					<AlertsListItemImageThumbnail
-						alertId={resolvedAlert?.alert_id || ''}
-						alertTitle={view.title}
-						alt={view.title}
-						href={`/alerts/${alertId}`}
-						src={view.imageUrl}
-					/>
-				)} */}
-				<div>
-					{/* <Button href={alertHref} icon={<IconArrowUpRight size={16} />} label={t('open')} variant="pill" /> */}
-				</div>
+				<p className={styles.description}>{resolvedAlert?.description}</p>
+				{resolvedAlert?.image_url && (
+					<div className={styles.imageWrapper}>
+						<AlertsListItemImageThumbnail alt={resolvedAlert.title} src={resolvedAlert.image_url} />
+					</div>
+				)}
 			</Accordion.Panel>
 		</Accordion.Item>
 	);

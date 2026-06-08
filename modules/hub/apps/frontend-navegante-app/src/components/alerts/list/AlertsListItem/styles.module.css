@@ -2,18 +2,14 @@
 /* CONTENT WRAPPER */
 
 .contentWrapper {
-	padding-left: calc(var(--size-spacing-20) + 35px);
 	display: flex;
 	flex-direction: column;
+	gap: 20px;
 	align-items: flex-start;
 	justify-content: flex-start;
-	gap: var(--size-spacing-20);
-}
-
-@media (max-width: 500px) {
-	.contentWrapper {
-		padding-left: calc(var(--size-spacing-15) + 35px);
-	}
+	width: 100%;
+	padding-left: 20px;
+	margin-bottom: 20px;
 }
 
 /* * */
@@ -22,31 +18,31 @@
 .infoBar {
 	display: flex;
 	flex-direction: row;
+	gap: 15px;
 	align-items: flex-start;
 	justify-content: flex-start;
-	gap: var(--size-spacing-15);
 }
 
 /* * */
 /* DESCRIPTION */
 
 .description {
+	max-width: 100%;
+	padding-right: 20px;
 	font-size: var(--font-size-text);
-	font-weight: var(--font-weight-text);
+	font-weight: 400;
 	color: var(--color-system-text-200);
-	max-width: var(--size-width-heading);
+	white-space: pre-wrap;
 }
 
 /* * */
-/* IMAGE */
+/* IMAGE WRAPPER */
 
-.image {
-	aspect-ratio: 16 / 9;
-	overflow: hidden;
+.imageWrapper {
 	width: 100%;
-	max-width: 200px;
-	border-radius: 5px;
-	border: 1px solid var(--color-system-border-100);
-	background-color: var(--color-brand);
-	filter: blur(10px);
+	padding-right: 20px;
+}
+
+.item {
+	padding: 20px;
 }

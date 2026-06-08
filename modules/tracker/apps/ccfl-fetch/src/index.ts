@@ -2,16 +2,12 @@
 
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
+import { externalClients } from '@tmlmobilidade/external';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type HashableRawVehicleEvent, type RawVehicleEventCcflV1 } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
-
-/* * */
-
-const API_URL = 'https://gateway.carris.pt/gateway/gtfs/api/v2.8/GTFS/realtime/vehiclepositions';
 
 /* * */
 
@@ -31,9 +27,7 @@ const main = async () => {
 
 	Logger.info(`[${ITERATION}] Fetching CCFL data from API...`, 0, 1);
 
-	const response = await fetch(API_URL);
-	const arrayBuffer = await response.arrayBuffer();
-	const decodedMessage = await decodeGtfsRtFeed(arrayBuffer);
+	const decodedMessage = await externalClients.ccfl.vehiclePositions();
 
 	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the CCFL data.`);
 
@@ -103,4 +97,4 @@ const main = async () => {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '1s', throwOnError: true });
+await runOnInterval(main, { intervalMs: '5s', throwOnError: false });

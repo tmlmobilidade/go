@@ -1,0 +1,39 @@
+{
+	"name": "@tmlmobilidade/go-tracker-fertagus-fetch",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"type": "module",
+	"files": ["dist"],
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc && resolve-tspaths",
+		"dev": "tsx watch src/index.ts",
+		"lint": "eslint . --fix && tsc --noEmit",
+		"lint:fix": "eslint . --fix"
+	},
+	"dependencies": {
+		"@tmlmobilidade/databases": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/external": "*",
+		"@tmlmobilidade/go-tracker-pckg-shared": "*",
+		"@tmlmobilidade/gtfs-rt": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/ssh": "*",
+		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/utils": "*"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/tsconfig": "*",
+		"@types/node": "25.9.2",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.22.4",
+		"typescript": "6.0.3"
+	}
+}

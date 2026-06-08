@@ -12,8 +12,9 @@ export function validatePlan(planData: Plan): boolean {
 	//
 	// Return false if the agency is not for the given IDs
 
-	if (!['1', '2', '4', '8', '15', '16', '21', '41', '42', '43', '44'].includes(planData.gtfs_agency?.agency_id)) {
-		Logger.error(`Skip processing: gtfs_agency is '${planData.gtfs_agency?.agency_id}'. Only '1', '2', '4', '8', '15', '16', '21', '41', '42', '43', or '44' are allowed.`);
+	// 3, 8, and 21 are currently disabled
+	if (!['1', '2', '3', '4', '8', '15', '16', '41', '42', '43', '44'].includes(planData.gtfs_agency?.agency_id)) {
+		Logger.error(`Skip processing: gtfs_agency is '${planData.gtfs_agency?.agency_id}'. Only '1', '2', '3', '4', '8', '15', '16', '41', '42', '43', or '44' are allowed.`);
 		return false;
 	}
 

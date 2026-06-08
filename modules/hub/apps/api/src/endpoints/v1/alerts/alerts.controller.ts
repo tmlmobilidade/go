@@ -3,10 +3,9 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type Alert as HubJsonAlert } from '@tmlmobilidade/go-hub-pckg-types';
 import { encodeGtfsRtFeed, getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
-import { GtfsRtFeedMessage } from '@tmlmobilidade/types';
+import { type GtfsRtFeedMessage, type HubAlert } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -18,7 +17,7 @@ export class AlertsController {
 	 * @param request The request object.
 	 * @param reply The reply object.
 	 */
-	static async getJsonFeed(request: FastifyRequest, reply: FastifyReply<HubJsonAlert[]>) {
+	static async getJsonFeed(request: FastifyRequest, reply: FastifyReply<HubAlert[]>) {
 		//
 
 		const cachedData = await apiCache.get('hub:alerts:published:json');
@@ -26,6 +25,7 @@ export class AlertsController {
 		if (!cachedData) {
 			Logger.error('[hub/v1/alerts:getJsonFeed()] No JSON feed found in cache. Returning empty array.');
 			return reply
+				.header('access-control-allow-origin', '*')
 				.header('cache-control', 'public, max-age=20')
 				.code(HTTP_STATUS.NO_CONTENT)
 				.send({
@@ -36,6 +36,7 @@ export class AlertsController {
 		};
 
 		return reply
+			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=20')
 			.code(HTTP_STATUS.OK)
 			.send({
@@ -59,6 +60,7 @@ export class AlertsController {
 			Logger.error('[hub/v1/alerts:getGtfsRtJsonFeed()] No GTFS-RT feed found in cache. Returning empty message.');
 			return reply
 				.code(HTTP_STATUS.NO_CONTENT)
+				.header('access-control-allow-origin', '*')
 				.header('cache-control', 'public, max-age=20')
 				.send({
 					data: getEmptyGtfsRtFeedMessage(),
@@ -69,6 +71,41 @@ export class AlertsController {
 
 		return reply
 			.code(HTTP_STATUS.OK)
+			.header('access-control-allow-origin', '*')
+			.header('cache-control', 'public, max-age=20')
+			.send({
+				data: JSON.parse(cachedData),
+				error: null,
+				status_code: HTTP_STATUS.OK,
+			});
+	}
+
+	/**
+	 * Returns a GTFS-RT JSON feed with service alerts for Carris Metropolitana.
+	 * @param request The request object.
+	 * @param reply The reply object.
+	 */
+	static async getGtfsRtJsonFeedCm(request: FastifyRequest, reply: FastifyReply<GtfsRtFeedMessage>) {
+		//
+
+		const cachedData = await apiCache.get('hub:alerts:published:gtfs:cm');
+
+		if (!cachedData) {
+			Logger.error('[hub/v1/alerts:getGtfsRtJsonFeedCm()] No GTFS-RT feed found in cache. Returning empty message.');
+			return reply
+				.code(HTTP_STATUS.NO_CONTENT)
+				.header('access-control-allow-origin', '*')
+				.header('cache-control', 'public, max-age=20')
+				.send({
+					data: getEmptyGtfsRtFeedMessage(),
+					error: null,
+					status_code: HTTP_STATUS.NO_CONTENT,
+				});
+		};
+
+		return reply
+			.code(HTTP_STATUS.OK)
+			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=20')
 			.send({
 				data: JSON.parse(cachedData),
@@ -91,6 +128,7 @@ export class AlertsController {
 			Logger.error('[hub/v1/alerts:getGtfsRtProtobufFeed()] No GTFS-RT feed found in cache. Returning empty message.');
 			return reply
 				.code(HTTP_STATUS.NO_CONTENT)
+				.header('access-control-allow-origin', '*')
 				.header('cache-control', 'public, max-age=20')
 				.send();
 		};
@@ -100,6 +138,7 @@ export class AlertsController {
 
 		return reply
 			.code(HTTP_STATUS.OK)
+			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=20')
 			.type('application/octet-stream')
 			.send(encodedGtfsRtFeed);
@@ -119,12 +158,14 @@ export class AlertsController {
 			Logger.error('[hub/v1/alerts:getRssFeed()] No RSS feed found in cache. Returning empty message.');
 			return reply
 				.code(HTTP_STATUS.NO_CONTENT)
+				.header('access-control-allow-origin', '*')
 				.header('cache-control', 'public, max-age=20')
 				.send();
 		};
 
 		return reply
 			.code(HTTP_STATUS.OK)
+			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=20')
 			.type('application/rss+xml; charset=utf-8')
 			.send(cachedData);

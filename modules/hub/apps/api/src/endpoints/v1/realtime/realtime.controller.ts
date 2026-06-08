@@ -3,7 +3,7 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { encodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
+import { encodeGtfsRtFeed, getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 
@@ -12,56 +12,49 @@ import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 export class RealtimeController {
 	//
 
-	static async getEtaGtfsRtJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
+	static async getTripUpdatesGtfsRtJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
 		const raw = await apiCache.get('hub:realtime:eta:gtfs');
 		if (!raw) {
-			Logger.error('[hub/v1/realtime:getEtaGtfsRtJson()] No data in cache.');
+			Logger.error('[hub/v1/realtime:getTripUpdatesGtfsRtJson()] No data in cache.');
 			return reply
 				.header('access-control-allow-origin', '*')
 				.header('cache-control', 'public, max-age=5')
 				.code(HTTP_STATUS.NO_CONTENT)
-				.send();
+				.send({
+					data: getEmptyGtfsRtFeedMessage(),
+					error: null,
+					status_code: HTTP_STATUS.NO_CONTENT,
+				});
 		}
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=5')
 			.code(HTTP_STATUS.OK)
-			.send(JSON.parse(raw));
+			.send({
+				data: JSON.parse(raw),
+				error: null,
+				status_code: HTTP_STATUS.OK,
+			});
 	}
 
-	static async getEtaGtfsRtProtobuf(request: FastifyRequest, reply: FastifyReply<unknown>) {
+	static async getTripUpdatesGtfsRtProtobuf(request: FastifyRequest, reply: FastifyReply<unknown>) {
 		const raw = await apiCache.get('hub:realtime:eta:gtfs');
 		if (!raw) {
-			Logger.error('[hub/v1/realtime:getEtaGtfsRtProtobuf()] No data in cache.');
+			Logger.error('[hub/v1/realtime:getTripUpdatesGtfsRtProtobuf()] No data in cache.');
 			return reply
 				.header('access-control-allow-origin', '*')
 				.header('cache-control', 'public, max-age=5')
 				.code(HTTP_STATUS.NO_CONTENT)
 				.send();
 		}
+		const allItemsData = JSON.parse(raw) as GtfsRtFeedMessage;
+		const buffer = await encodeGtfsRtFeed(allItemsData);
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=5')
 			.type('application/octet-stream')
 			.code(HTTP_STATUS.OK)
-			.send(Buffer.from(raw));
-	}
-
-	static async getEtaJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
-		const raw = await apiCache.get('hub:realtime:eta:json');
-		if (!raw) {
-			Logger.error('[hub/v1/realtime:getEtaJson()] No data in cache.');
-			return reply
-				.header('access-control-allow-origin', '*')
-				.header('cache-control', 'public, max-age=5')
-				.code(HTTP_STATUS.NO_CONTENT)
-				.send();
-		}
-		return reply
-			.header('access-control-allow-origin', '*')
-			.header('cache-control', 'public, max-age=5')
-			.code(HTTP_STATUS.OK)
-			.send(JSON.parse(raw));
+			.send(Buffer.from(buffer));
 	}
 
 	static async getVehiclesMetadataJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
@@ -80,7 +73,7 @@ export class RealtimeController {
 		}
 		return reply
 			.header('access-control-allow-origin', '*')
-			.header('cache-control', 'public, max-age=60')
+			.header('cache-control', 'public, max-age=5')
 			.code(HTTP_STATUS.OK)
 			.send(JSON.parse(raw));
 	}
@@ -103,7 +96,7 @@ export class RealtimeController {
 		const buffer = await encodeGtfsRtFeed(allItemsData);
 		return reply
 			.header('access-control-allow-origin', '*')
-			.header('cache-control', 'public, max-age=5')
+			.header('cache-control', 'public, max-age=3')
 			.type('application/octet-stream')
 			.code(HTTP_STATUS.OK)
 			.send(Buffer.from(buffer));
@@ -121,27 +114,39 @@ export class RealtimeController {
 		}
 		return reply
 			.header('access-control-allow-origin', '*')
-			.header('cache-control', 'public, max-age=5')
+			.header('cache-control', 'public, max-age=3')
 			.type('application/octet-stream')
 			.code(HTTP_STATUS.OK)
 			.send(Buffer.from(raw));
 	}
 
 	static async getVehiclesPositionsJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
-		const raw = await apiCache.get('hub:realtime:vehicles:positions:json');
-		if (!raw) {
-			Logger.error('[hub/v1/realtime:getVehiclesPositionsJson()] No data in cache.');
+		//
+
+		const cachedData = await apiCache.get('hub:realtime:vehicles:positions:json');
+
+		if (!cachedData) {
+			Logger.error('[hub/v1/realtime:getVehiclesPositionsJson()] No cached data found for vehicles positions');
 			return reply
 				.header('access-control-allow-origin', '*')
 				.header('cache-control', 'public, max-age=5')
 				.code(HTTP_STATUS.NO_CONTENT)
-				.send();
-		}
+				.send({
+					data: [],
+					error: null,
+					status_code: HTTP_STATUS.NO_CONTENT,
+				});
+		};
+
 		return reply
 			.header('access-control-allow-origin', '*')
-			.header('cache-control', 'public, max-age=5')
+			.header('cache-control', 'public, max-age=3')
 			.code(HTTP_STATUS.OK)
-			.send(JSON.parse(raw));
+			.send({
+				data: JSON.parse(cachedData),
+				error: null,
+				status_code: HTTP_STATUS.OK,
+			});
 	}
 
 	//

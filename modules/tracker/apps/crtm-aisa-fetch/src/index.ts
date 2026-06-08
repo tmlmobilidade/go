@@ -2,16 +2,12 @@
 
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
+import { externalClients } from '@tmlmobilidade/external';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { GtfsRtFeedMessage, type HashableRawVehicleEvent, type RawVehicleEventCrtmAisaV1 } from '@tmlmobilidade/types';
+import { type HashableRawVehicleEvent, type RawVehicleEventCrtmAisaV1 } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
-
-/* * */
-
-const API_URL = 'http://gtfs-rt-crtm.aisa-grupo.net:8080/GTFS-RT/vehiculosPosicion';
 
 /* * */
 
@@ -31,15 +27,7 @@ const main = async () => {
 
 	Logger.info(`[${ITERATION}] Fetching CRTM AISA data from API...`, 0, 1);
 
-	let decodedMessage: GtfsRtFeedMessage | null = null;
-	try {
-		const response = await fetch(API_URL);
-		const arrayBuffer = await response.arrayBuffer();
-		decodedMessage = await decodeGtfsRtFeed(arrayBuffer);
-	} catch (error) {
-		Logger.error(`[${ITERATION}] Error decoding CRTM AISA data:`, error);
-		return;
-	}
+	const decodedMessage = await externalClients.crtmAisa.vehiclePositions();
 
 	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the CRTM AISA data.`);
 

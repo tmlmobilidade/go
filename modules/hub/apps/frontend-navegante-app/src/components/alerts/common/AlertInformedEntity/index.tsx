@@ -31,18 +31,18 @@ export function AlertInformedEntity({ lineId, routeId, stopId }: Props) {
 	// B. Transform data
 
 	const lineData = useMemo<HubLine | undefined>(() => {
-		return linesContext.data.lines?.find(line => line.id === lineId || line.route_ids.some(itemId => itemId === routeId));
-	}, [linesContext.data.lines]);
+		return linesContext.data.lines?.find(line => line._id === lineId || line.route_ids.some(itemId => itemId === routeId));
+	}, [lineId, linesContext.data.lines, routeId]);
 
 	const stopData = useMemo<HubStop | undefined>(() => {
 		return stopsContext.data.stops?.find(stop => String(stop._id) === String(stopId));
-	}, [stopsContext.data.stops]);
+	}, [stopId, stopsContext.data.stops]);
 
 	//
 	// C. Handle actions
 
 	const handleLineBadgeClick = () => {
-		router.push(`/lines/${lineData?.id}`);
+		router.push(`/lines/${lineData?._id}`);
 	};
 
 	//

@@ -1,24 +1,29 @@
 /* * */
 
-import { type Line } from '@/types/api/network';
+import { type HubLine } from '@tmlmobilidade/types';
+import { MantineHighlight } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
 /* * */
 
-interface Props {
+interface LineNameProps {
 	align?: 'center' | 'left' | 'right'
-	lineData?: Line
+	lineData?: HubLine
 	longName?: string
+	searchQuery?: string
 	size?: 'lg' | 'md'
 }
 
 /* * */
 
-export function LineName({ align = 'left', lineData, longName, size = 'md' }: Props) {
+export function LineName({ align = 'left', lineData, longName, searchQuery, size = 'md' }: LineNameProps) {
+	const text = lineData?.long_name || longName || '• • •';
 	return (
 		<div className={styles.name} data-align={align} data-size={size}>
-			{lineData?.long_name || longName || '• • •'}
+			<MantineHighlight component="span" highlight={searchQuery || ''}>
+				{text}
+			</MantineHighlight>
 		</div>
 	);
 }

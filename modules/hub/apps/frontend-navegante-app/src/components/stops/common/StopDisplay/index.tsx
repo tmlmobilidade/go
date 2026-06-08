@@ -1,16 +1,16 @@
 /* * */
 
+import { StopDisplayLocation } from '@/components/stops/common/StopDisplayLocation';
+import { StopDisplayName } from '@/components/stops/common/StopDisplayName';
 import { Skeleton } from '@mantine/core';
 import { type HubStop } from '@tmlmobilidade/types';
 
 import styles from './styles.module.css';
 
-import { StopDisplayLocation } from '../StopDisplayLocation';
-import { StopDisplayName } from '../StopDisplayName';
-
 /* * */
 
-interface Props {
+interface StopDisplayProps {
+	searchQuery?: string
 	size?: 'lg' | 'md'
 	skeletonWidth?: number
 	stopData?: HubStop
@@ -18,12 +18,12 @@ interface Props {
 
 /* * */
 
-export function StopDisplay({ size = 'md', skeletonWidth = 200, stopData }: Props) {
+export function StopDisplay({ searchQuery, size = 'md', skeletonWidth = 200, stopData }: StopDisplayProps) {
 	return stopData
 		? (
 			<div className={`${styles.container} ${styles[size]}`}>
-				<StopDisplayName longName={stopData.name} />
-				<StopDisplayLocation localityName={stopData.district_id} municipalityName={stopData.municipality_id} />
+				<StopDisplayName longName={stopData.name} searchQuery={searchQuery} />
+				<StopDisplayLocation localityName={stopData.locality_name} municipalityName={stopData.municipality_name} />
 			</div>
 		)
 		: (
