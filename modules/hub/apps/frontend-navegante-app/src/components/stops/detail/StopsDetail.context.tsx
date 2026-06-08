@@ -185,11 +185,20 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 				for (const stopTime of trip.schedule) {
 					if (String(stopTime.stop_id) !== String(stopId)) continue;
 
-					console.log('[StopsDetailContextProvider] dataStopState:', dataStopState);
-
+					// Determine tripId, falling back to stopTime.trip_id, then to empty string
 					const tripId = trip.trip_ids[0] ?? stopTime.trip_id ?? '';
-					const realtimeArrival = tripUpdatesContext.actions.getStopTimeUpdateByTripsInStop(trip.trip_ids, dataStopState?.legacy_ids?.[0] ?? stopId);
-					const isRealtime = !!realtimeArrival?.arrival?.time;
+
+					// Retrieve legacy stop IDs for the current stopId; default to array with stopId
+					const legacyStopIds = stopsContext.actions.getLegacyStopIds(stopId) ?? [stopId];
+
+					// Get a realtime arrival update for any of the trip IDs and legacy stop IDs
+					const realtimeArrival = tripUpdatesContext.actions.getStopTimeUpdateByTripsInStop(
+						trip.trip_ids,
+						legacyStopIds,
+					);
+
+					// Is this arrival time based on realtime data?
+					const isRealtime = Boolean(realtimeArrival?.arrival?.time);
 
 					validScheduledTrips.push({
 						arrival_time: stopTime.arrival_time,
@@ -208,7 +217,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		validScheduledTrips.sort((a, b) => (a.arrival_time.localeCompare(b.arrival_time)));
 
 		setDataTimetableScheduleState(validScheduledTrips);
-	}, [operationalDate.selectedOperationalDate, dataValidPatternsState, stopId]);
+	}, [operationalDate.selectedOperationalDate, dataValidPatternsState, stopId, stopsContext.data.legacyStopsMap]);
 
 	/**
  	* Fill state with valid pattern groups for the selected operational day.

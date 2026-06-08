@@ -7,6 +7,8 @@ import { Dates } from '@tmlmobilidade/dates';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import styles from './styles.module.css';
+
 /* * */
 
 export function SelectOperationalDate() {
@@ -93,6 +95,10 @@ export function SelectOperationalDate() {
 				size="md"
 				value={selectedSegmentedControlOption}
 				w="100%"
+				classNames={{
+					control: styles.segmentedControlDateInputOverrideControl,
+					label: styles.segmentedControlDateInputOverrideLabel,
+				}}
 			/>
 
 		</>

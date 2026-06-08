@@ -28,6 +28,7 @@ export async function publishTripUpdates() {
 	Logger.info(`Retrieving Estimated Time of Arrivals from ClickHouse...`);
 	const clickhouseClient = await GOClickHouseClient.getClient();
 	const allTrips = await querySqlFromFile<ClickHouseEtaGtfsResponse>(clickhouseClient, pipelinePath('select-eta-gtfs.sql'));
+	Logger.info(`Found ${allTrips.length} trips`, 1);
 
 	//
 	// Wrap in GTFS-RT feed envelope and parse trip_update JSON for nesting
@@ -54,6 +55,7 @@ export async function publishTripUpdates() {
 		id: entity.id,
 		trip_update: entity.trip_update,
 	})));
+	Logger.info(`Found ${cpTrips.entity.length} CP trips`, 1);
 
 	//
 	// Mobi Trip Updates (Already in GTFS-RT format)
@@ -65,6 +67,7 @@ export async function publishTripUpdates() {
 		id: entity.id,
 		trip_update: entity.trip_update,
 	})));
+	Logger.info(`Found ${mobiTrips.entity.length} Mobi trips`, 1);
 
 	//
 	// ML Trip Updates (Already in GTFS-RT format)
@@ -76,6 +79,7 @@ export async function publishTripUpdates() {
 	// 	id: entity.id,
 	// 	trip_update: entity.trip_update,
 	// })));
+	// Logger.info(`Found ${mlTrips.entity.length} ML trips`, 1);
 
 	//
 	// Save the result in API Cache

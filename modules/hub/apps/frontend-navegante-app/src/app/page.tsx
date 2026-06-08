@@ -2,6 +2,7 @@
 
 import { AlertsDetail } from '@/components/alerts/detail/AlertsDetail';
 import { AlertsList } from '@/components/alerts/list/AlertsList';
+import { ComingSoon } from '@/components/ComingSoon';
 import { ActionBar } from '@/components/common/action-bar/ActionBar';
 import { BaseMap } from '@/components/common/base-map/BaseMap';
 import { BaseMapOverlaysControl } from '@/components/common/base-map/BaseMapOverlaysControl';
@@ -41,6 +42,7 @@ export default function Page() {
 
 	return (
 		<>
+			<ComingSoon />
 			<BaseMap />
 			<BaseMapOverlaysControl />
 			<ActionBar />
