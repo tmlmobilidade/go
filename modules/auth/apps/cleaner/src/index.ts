@@ -15,10 +15,10 @@ async function main() {
 
 	try {
 		await initSentryNode();
-		Logger.info('Sentry Auth Cleaner initialized');
-		Logger.logsNode({ app: 'cleaner', message: 'Sentry Auth Cleaner initialized', module: 'auth', severity: 'info' });
+		Logger.info('');
+		Logger.logsNode({ app: 'cleaner', message: 'Sentry Auth Cleaner initialized', module: 'home', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Auth Cleaner', { app: 'cleaner', message: 'Error initializing Sentry Auth Cleaner', module: 'auth', severity: 'error', value: error });
+		Logger.error('Error initializing Sentry Auth Cleaner', { app: 'cleaner', message: 'Error initializing Sentry Auth Cleaner', module: 'home', severity: 'error', value: error });
 	}
 
 	// Only run in production environment
