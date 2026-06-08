@@ -6,7 +6,7 @@ import { Dates } from '@tmlmobilidade/dates';
 
 /* * */
 
-const isDevelopment = process.env.ENVIRONMENT === 'dev';
+const isDevelopment = process.env.ENVIRONMENT === 'development';
 
 export const AppConfig = Object.freeze({
 	// Agency and line configurations
