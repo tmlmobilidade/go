@@ -11,14 +11,6 @@ import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 (async function () {
 	//
 
-	try {
-		await initSentryNode();
-		Logger.info('Sentry Alerts API initialized');
-		Logger.logsNode({ app: 'alerts', message: 'Sentry Alerts API initialized', module: 'api', severity: 'info' });
-	} catch (error) {
-		Logger.error('Error initializing Sentry Alerts API', { app: 'alerts', message: 'Error initializing Sentry Alerts API', module: 'api', severity: 'error', value: error });
-	}
-
 	const fastifyService = FastifyService.getInstance({
 		origin: getModuleConfig('alerts', 'cors_origin'),
 		port: getModuleConfig('alerts', 'api_port'),
@@ -30,5 +22,12 @@ import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 
 	await fastifyService.start();
 
+	try {
+		await initSentryNode();
+		Logger.info('Sentry Alerts API initialized');
+		Logger.logsNode({ app: 'alerts', message: 'Sentry Alerts API initialized', module: 'api', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry Alerts API', { app: 'alerts', message: 'Error initializing Sentry Alerts API', module: 'api', severity: 'error', value: error });
+	}
 	//
 })();
