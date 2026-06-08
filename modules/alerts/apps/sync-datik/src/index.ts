@@ -4,6 +4,7 @@ import { fetchProtobuf } from '@/protobuf.js';
 import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { alerts } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { type CreateAlertDto, type ServiceAlertResponse, UnixTimestamp } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -21,6 +22,16 @@ const DatikServiceAlertsUrl = 'https://api.control.optibus.co/opendata/v1/gtfs-r
 const ProtobufPath = path.resolve(__dirname, './gtfs-realtime.proto');
 
 async function main() {
+	//
+
+	try {
+		await initSentryNode();
+		Logger.info('');
+		Logger.logsNode({ app: 'sync-datik', message: 'Sentry Alerts Sync Datik initialized', module: 'alerts', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry Alerts Sync Datik', { app: 'sync-datik', message: 'Error initializing Sentry Alerts Sync Datik', module: 'alerts', severity: 'error', value: error });
+	}
+
 	//
 
 	const globalTimer = new Timer();

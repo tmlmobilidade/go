@@ -24,7 +24,7 @@ import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 
 	try {
 		await initSentryNode();
-		Logger.info('Sentry Alerts API initialized');
+		Logger.info('');
 		Logger.logsNode({ app: 'alerts', message: 'Sentry Alerts API initialized', module: 'api', severity: 'info', status: HTTP_STATUS.OK });
 	} catch (error) {
 		Logger.error('Error initializing Sentry Alerts API', { app: 'alerts', message: 'Error initializing Sentry Alerts API', module: 'api', severity: 'error', value: error });
