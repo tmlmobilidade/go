@@ -5,7 +5,7 @@ import { initSentryNextjs } from '@tmlmobilidade/logger/sentry/nextjs';
 
 /* * */
 
-(async function () {
+export async function initSentry() {
 	//
 
 	try {
@@ -17,4 +17,4 @@ import { initSentryNextjs } from '@tmlmobilidade/logger/sentry/nextjs';
 	}
 
 	//
-})();
+}
