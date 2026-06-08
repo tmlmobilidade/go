@@ -12,6 +12,7 @@ import styles from './styles.module.css';
 /* * */
 
 export interface NaveganteFaq {
+	_order: string
 	answer: string
 	id: string
 	question: string
@@ -50,7 +51,7 @@ export function HelpDetail() {
 
 			{!allFaqsLoading && allFaqsData?.length > 0 && (
 				<Accordion chevronPosition="right" classNames={{ control: styles.accordionControl, item: styles.accordionItem, label: styles.accordionLabel, root: styles.accordionRoot }} variant="separated">
-					{allFaqsData.map(faq => (
+					{[...allFaqsData].sort((a, b) => a._order.localeCompare(b._order)).map(faq => (
 						<Accordion.Item key={faq.id} value={faq.id}>
 							<Accordion.Control>{faq.question}</Accordion.Control>
 							<Accordion.Panel>
