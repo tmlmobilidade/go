@@ -4,7 +4,7 @@
 
 import pjson from '#/package.json';
 import { type Ampli, ampli } from '@/amplitude';
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 
 /* * */
 
@@ -42,6 +42,14 @@ export const AnalyticsContextProvider = ({ children }) => {
 
 	//
 	// A. Handle actions
+
+	useEffect(() => {
+		if (!ampli?.isLoaded) {
+			ampli.load({ client: { configuration: { appVersion: pjson.version, autocapture: false } }, environment: 'default' });
+			ampli.client.setOptOut(false);
+			capture((instance, props) => instance.pingNaveganteTempoReal(props));
+		}
+	}, [ampli?.isLoaded]);
 
 	const capture = (_callback: (instance: Ampli, props: DefaultEventProps) => void) => {
 		// Skip if Ampli is not loaded

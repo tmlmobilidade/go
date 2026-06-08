@@ -62,10 +62,6 @@ export interface PingNaveganteTempoRealProperties {
    * The version of the application that generated the event.
    */
   app_version: string;
-  /**
-   * This property indicates the location in the app (the pathname, the screen id) where the current event was generated at.
-   */
-  current_page: string;
 }
 
 export class Identify implements BaseEvent {
@@ -79,7 +75,7 @@ export class Identify implements BaseEvent {
 }
 
 export class PingNaveganteTempoReal implements BaseEvent {
-  event_type = 'Ping - Navegante Tempo Real';
+  event_type = 'Ping Navegante Tempo Real';
 
   constructor(
     public event_properties: PingNaveganteTempoRealProperties,
@@ -206,9 +202,9 @@ export class Ampli {
   }
 
   /**
-   * Ping - Navegante Tempo Real
+   * Ping Navegante Tempo Real
    *
-   * [View in Tracking Plan](https://data.eu.amplitude.com/tmlmobilidade/default/events/main/latest/Ping%20-%20Navegante%20Tempo%20Real)
+   * [View in Tracking Plan](https://data.eu.amplitude.com/tmlmobilidade/default/events/main/latest/Ping%20Navegante%20Tempo%20Real)
    *
    * Event to track when a user visits Navegante tempo real webview.
    *
