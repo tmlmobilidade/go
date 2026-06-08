@@ -20,7 +20,6 @@ export function ComingSoon() {
 		<div className={styles.container} data-app-enabled={appEnabled?.app_enabled || false}>
 			<h1>Disponível em breve</h1>
 			<p>Fique atento às novidades nas nossas redes!</p>
-			<p className={styles.dismiss}>dimsiss</p>
 		</div>
 	);
 }
