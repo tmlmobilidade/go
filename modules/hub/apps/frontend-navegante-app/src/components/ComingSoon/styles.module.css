@@ -1,0 +1,32 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	position: fixed;
+	right: 0;
+	bottom: 0;
+	z-index: 9999;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	padding: 15px;
+	pointer-events: none;
+	background-color: var(--color-system-background-100);
+}
+
+.container h1 {
+	font-size: 24px;
+	font-weight: 600;
+	color: var(--color-system-text-100);
+}
+
+.container p {
+	font-size: 18px;
+	line-height: 1.4;
+	color: var(--color-system-text-200);
+	text-align: center;
+}
