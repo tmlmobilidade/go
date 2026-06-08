@@ -6,6 +6,7 @@ import { createTableFromExample, dropExistingTable, insertBatch } from '@/utils.
 import { Dates } from '@tmlmobilidade/dates';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -18,6 +19,14 @@ const BATCH_SIZE = 500;
 export async function syncRides() {
 	try {
 		//
+
+		try {
+			await initSentryNode();
+			Logger.info('');
+			Logger.logsNode({ app: 'rides-bridge', message: 'Sentry Rides Bridge initialized', module: 'controller', severity: 'info' });
+		} catch (error) {
+			Logger.error('Error initializing Sentry Rides Bridge', { app: 'rides-bridge', message: 'Error initializing Sentry Rides Bridge', module: 'controller', severity: 'error', value: error });
+		}
 
 		Logger.init();
 		const globalTimer = new Timer();

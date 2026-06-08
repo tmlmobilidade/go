@@ -4,6 +4,7 @@ import { type AggregationResultItem } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { type CreateSamDto, Sam, type SamAnalysis, type SamTimelineSummary, UpdateSamDto } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -99,6 +100,14 @@ function buildTimelineSummary(analyses: SamAnalysis[]): SamTimelineSummary {
 async function main() {
 	try {
 		//
+
+		try {
+			await initSentryNode();
+			Logger.info('');
+			Logger.logsNode({ app: 'sams-examiner', message: 'Sentry Sams Examiner initialized', module: 'controller', severity: 'info' });
+		} catch (error) {
+			Logger.error('Error initializing Sentry Sams Examiner', { app: 'sams-examiner', message: 'Error initializing Sentry Sams Examiner', module: 'controller', severity: 'error', value: error });
+		}
 
 		Logger.init();
 

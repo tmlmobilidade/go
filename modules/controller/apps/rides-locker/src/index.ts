@@ -3,6 +3,7 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { rideAcceptances } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
@@ -14,6 +15,14 @@ const SYNC_DAYS_BACK = 90;
 async function main() {
 	try {
 		//
+
+		try {
+			await initSentryNode();
+			Logger.info('');
+			Logger.logsNode({ app: 'rides-locker', message: 'Sentry Rides Locker initialized', module: 'controller', severity: 'info' });
+		} catch (error) {
+			Logger.error('Error initializing Sentry Rides Locker', { app: 'rides-locker', message: 'Error initializing Sentry Rides Locker', module: 'controller', severity: 'error', value: error });
+		}
 
 		Logger.init();
 

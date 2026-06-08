@@ -5,6 +5,7 @@ import { parsePlan } from '@/parse-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -13,6 +14,14 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 async function main() {
 	try {
 		//
+
+		try {
+			await initSentryNode();
+			Logger.info('');
+			Logger.logsNode({ app: 'rides-feeder', message: 'Sentry Rides Feeder initialized', module: 'controller', severity: 'info' });
+		} catch (error) {
+			Logger.error('Error initializing Sentry Rides Feeder', { app: 'rides-feeder', message: 'Error initializing Sentry Rides Feeder', module: 'controller', severity: 'error', value: error });
+		}
 
 		Logger.init();
 

@@ -2,6 +2,7 @@
 
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -10,6 +11,14 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 async function reprocessStuckRides() {
 	try {
 		//
+
+		try {
+			await initSentryNode();
+			Logger.info('');
+			Logger.logsNode({ app: 'rides-cleaner', message: 'Sentry Rides Cleaner initialized', module: 'controller', severity: 'info' });
+		} catch (error) {
+			Logger.error('Error initializing Sentry Rides Cleaner', { app: 'rides-cleaner', message: 'Error initializing Sentry Rides Cleaner', module: 'controller', severity: 'error', value: error });
+		}
 
 		Logger.init();
 

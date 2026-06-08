@@ -5,6 +5,7 @@ import { augmentRide } from '@/utils/augment-ride.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { UpdateRideSchema } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -14,6 +15,14 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 export async function validateRides() {
 	try {
 		//
+
+		try {
+			await initSentryNode();
+			Logger.info('');
+			Logger.logsNode({ app: 'rides-examiner', message: 'Sentry Rides Examiner initialized', module: 'controller', severity: 'info' });
+		} catch (error) {
+			Logger.error('Error initializing Sentry Rides Examiner', { app: 'rides-examiner', message: 'Error initializing Sentry Rides Examiner', module: 'controller', severity: 'error', value: error });
+		}
 
 		Logger.init();
 
