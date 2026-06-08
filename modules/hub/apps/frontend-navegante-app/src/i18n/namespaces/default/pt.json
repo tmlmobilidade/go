@@ -163,7 +163,7 @@
 		},
 		"LinesListGroup": {
 			"logo": {
-				"alt": "Linhas do operador: {agency_name}"
+				"alt": "Linhas de: {agency_name}"
 			},
 			"show_more": "Ver mais linhas deste operador..."
 		},
