@@ -58,10 +58,10 @@ export function VehiclesDetailView() {
 
 				<div className={styles.lineInfoWrapper}>
 					<LineBadge color={activeLineData?.color} shortName={activeLineData?.short_name} size="full-width" textColor={activeLineData?.text_color} />
-					<Image alt="" height={40} src={AGENCY_LOGO_MAP[activeLineData?.agency_id]} width={60} />
+					<Image alt="" height={40} src={AGENCY_LOGO_MAP[vehiclesDetailContext.data.vehicle?.agency_id]} width={60} />
 				</div>
 
-				<LineName align="center" longName={`Destino: ${activePatternData?.[0]?.headsign}`} />
+				<LineName align="center" longName={`Destino: ${activePatternData?.[0]?.headsign ?? 'desconhecido'}`} />
 
 				<CopyBadge value={vehiclesDetailContext.data.vehicle?.vehicle_id} />
 
