@@ -8,14 +8,14 @@ import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
-interface EtaGtfs {
+interface ClickHouseEtaGtfsResponse {
 	trip_id: string
 	trip_update: string
 	vehicle_id: string
 }
 /* * */
 
-export async function publishEtaGtfs() {
+export async function publishTripUpdates() {
 	//
 
 	Logger.title('Publishing GTFS-RT TripUpdate feed...');
@@ -27,7 +27,7 @@ export async function publishEtaGtfs() {
 
 	Logger.info(`Retrieving Estimated Time of Arrivals from ClickHouse...`);
 	const clickhouseClient = await GOClickHouseClient.getClient();
-	const allTrips = await querySqlFromFile<EtaGtfs>(clickhouseClient, pipelinePath('select-eta-gtfs.sql'));
+	const allTrips = await querySqlFromFile<ClickHouseEtaGtfsResponse>(clickhouseClient, pipelinePath('select-eta-gtfs.sql'));
 
 	//
 	// Wrap in GTFS-RT feed envelope and parse trip_update JSON for nesting
