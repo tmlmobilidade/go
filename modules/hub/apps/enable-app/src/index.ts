@@ -8,7 +8,7 @@ import { Logger } from '@tmlmobilidade/logger';
 export async function main() {
 	//
 
-	const value = false;
+	const value = true;
 
 	Logger.title(`Setting app navegante to ${value}...`);
 
