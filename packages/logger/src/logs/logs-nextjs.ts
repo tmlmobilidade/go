@@ -16,6 +16,7 @@ export interface LogsNextjsContext {
 	message: string
 	module: string
 	severity?: string
+	status?: number
 }
 
 /**
@@ -26,7 +27,7 @@ export interface LogsNextjsContext {
  */
 
 export const LogsNextjs = (context: LogsNextjsContext): void => {
-	const { app, message, module, severity, ...extra } = context;
+	const { app, message, module, severity, status, ...extra } = context;
 	const locationData = normalizeLocationContext();
 	const payload = {
 		...extra,
@@ -35,6 +36,7 @@ export const LogsNextjs = (context: LogsNextjsContext): void => {
 		message,
 		module,
 		severity: normalizeSeverity(severity),
+		status,
 	};
 	const level = normalizeSeverity(severity);
 

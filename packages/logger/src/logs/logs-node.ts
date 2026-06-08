@@ -17,6 +17,7 @@ export interface LogsNodeContext {
 	message: string
 	module: string
 	severity?: string
+	status?: number
 }
 
 /**
@@ -26,7 +27,7 @@ export interface LogsNodeContext {
  * @returns {void}
  */
 export const LogsNode = (context: LogsNodeContext): void => {
-	const { app, message, module, request, severity, ...extra } = context;
+	const { app, message, module, request, severity, status, ...extra } = context;
 	const requestData = normalizeRequestContext(request);
 	const payload = {
 		...extra,
@@ -35,6 +36,7 @@ export const LogsNode = (context: LogsNodeContext): void => {
 		message,
 		module,
 		severity: normalizeSeverity(severity),
+		status,
 	};
 	const level = normalizeSeverity(severity);
 
