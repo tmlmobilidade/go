@@ -217,7 +217,7 @@ export const StopsDetailContextProvider = ({ children, stopId }: { children: Rea
 		validScheduledTrips.sort((a, b) => (a.arrival_time.localeCompare(b.arrival_time)));
 
 		setDataTimetableScheduleState(validScheduledTrips);
-	}, [operationalDate.selectedOperationalDate, dataValidPatternsState, stopId]);
+	}, [operationalDate.selectedOperationalDate, dataValidPatternsState, stopId, stopsContext.data.legacyStopsMap]);
 
 	/**
  	* Fill state with valid pattern groups for the selected operational day.
