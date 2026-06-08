@@ -30,3 +30,7 @@
 	color: var(--color-system-text-200);
 	text-align: center;
 }
+
+.container[data-app-enabled="true"] {
+	display: none;
+}
