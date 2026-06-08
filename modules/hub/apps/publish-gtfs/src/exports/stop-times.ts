@@ -54,7 +54,7 @@ export async function exportStopTimesFile(planData: Plan, sqlTables: GtfsSQLTabl
 		const stopTimeData: GTFS_StopTime = stopTimeItem;
 		const matchingStopId = allStopsMap.get(stopTimeData.stop_id);
 		if (!matchingStopId) {
-			Logger.error(`Stop time ${stopTimeData.stop_id} not found in stops map.`);
+			Logger.error(`Stop time ${stopTimeData.stop_id} not found in stops map for agency ${planData.gtfs_agency.agency_id}`);
 			continue;
 		}
 		const parsedStopTimesRow: ExportedStopTimesRow = {

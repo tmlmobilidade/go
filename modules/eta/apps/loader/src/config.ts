@@ -10,7 +10,7 @@ const isDevelopment = process.env.ENVIRONMENT === 'development';
 
 export const AppConfig = Object.freeze({
 	// Agency and line configurations
-	agencyIds: ['41', '42', '43', '44'],
+	agencyIds: ['1', '41', '42', '43', '44'],
 
 	development: {
 		isDevelopment,
@@ -35,8 +35,8 @@ export const AppConfig = Object.freeze({
 		insertHistoricalRidesByDay: true,
 		insertHistoricalShapeNodes: true,
 		insertHistoricalVehicleEvents: true,
-		runDdl: true,
+		runDdl: false, // true,
 		runTransformationAndAggregationQueries: true,
-		truncatePipelineTables: isDevelopment ? true : false,
+		truncatePipelineTables: false, // isDevelopment ? true : false,
 	},
 });
