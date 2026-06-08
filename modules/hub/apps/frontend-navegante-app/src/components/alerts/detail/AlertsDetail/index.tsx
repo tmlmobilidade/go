@@ -25,7 +25,6 @@ export function AlertsDetail() {
 		<BottomSheet
 			onClose={closeActiveBottomSheet}
 			opened={activeBottomSheet?.view === 'alerts-detail'}
-			size="half"
 			title="Alerta"
 		>
 			{activeBottomSheet?.entityId && alert && (

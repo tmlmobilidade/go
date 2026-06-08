@@ -7,6 +7,10 @@
 	min-width: 0;
 }
 
+.scrollChipsWrapper div {
+	touch-action: pan-x !important;
+}
+
 /* * */
 /* SCROLL CHIPS SCROLL */
 
@@ -18,7 +22,6 @@
 	min-width: 0;
 	overflow: auto hidden;
 	scrollbar-width: none;
-	-webkit-overflow-scrolling: touch;
 	mask-image: linear-gradient(
 		to right,
 		var(--scroll-chips-left-mask) 0,
@@ -26,6 +29,7 @@
 		black calc(100% - var(--scroll-chips-fade-size)),
 		var(--scroll-chips-right-mask) 100%
 	);
+	-webkit-overflow-scrolling: touch;
 }
 
 .scrollChipsScroll[data-fade-left='true'] {
@@ -49,5 +53,5 @@
 	gap: 8px;
 	width: max-content;
 	min-width: 100%;
-	padding-bottom: 4px;
+	padding-bottom: 4px;	
 }
