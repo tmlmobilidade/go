@@ -25,7 +25,7 @@ export function AlertsListGroup() {
 		<GroupedListItem key={alertGroup.value} label={t('default:alerts.AlertsListGroup.label', '', { count: alertGroup.items.length })} title={alertGroup.title}>
 			<Accordion>
 				{alertGroup.items.map(alert => (
-					<AlertListItem key={alert._id} alertId={alert._id} />
+					<AlertListItem key={alert._id} alertId={alert._id} searchQuery={alertsListContext.filters.search.value} />
 				))}
 			</Accordion>
 		</GroupedListItem>

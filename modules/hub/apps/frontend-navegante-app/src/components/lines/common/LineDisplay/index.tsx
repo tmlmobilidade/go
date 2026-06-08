@@ -14,6 +14,7 @@ interface LineDisplayProps {
 	color?: string
 	lineData?: HubLine
 	longName?: string
+	searchQuery?: string
 	shortName?: string
 	size?: 'lg' | 'md'
 	textColor?: string
@@ -22,14 +23,14 @@ interface LineDisplayProps {
 
 /* * */
 
-export function LineDisplay({ agencyId, color, lineData, longName, shortName, size = 'md', textColor, width = 200 }: LineDisplayProps) {
+export function LineDisplay({ agencyId, color, lineData, longName, searchQuery, shortName, size = 'md', textColor, width = 200 }: LineDisplayProps) {
 	//
 
 	if (lineData) {
 		return (
 			<div className={styles.container}>
 				<LineBadge agencyId={lineData.agency_id} color={lineData.color} shortName={lineData.short_name} size={size} textColor={lineData.text_color} />
-				<LineName longName={lineData.long_name} />
+				<LineName longName={lineData.long_name} searchQuery={searchQuery} />
 			</div>
 		);
 	}
@@ -38,7 +39,7 @@ export function LineDisplay({ agencyId, color, lineData, longName, shortName, si
 		return (
 			<div className={styles.container}>
 				<LineBadge agencyId={agencyId} color={color} shortName={shortName} size={size} textColor={textColor} />
-				<LineName longName={longName} />
+				<LineName longName={longName} searchQuery={searchQuery} />
 			</div>
 		);
 	}

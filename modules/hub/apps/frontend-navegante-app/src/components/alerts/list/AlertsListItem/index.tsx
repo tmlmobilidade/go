@@ -5,6 +5,7 @@ import { AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePe
 import { AlertEffectIcon } from '@/components/alerts/common/AlertEffectIcon';
 import { AlertsListItemImageThumbnail } from '@/components/alerts/list/AlertsListItemImageThumbnail';
 import { Accordion } from '@mantine/core';
+import { MantineHighlight } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -12,11 +13,12 @@ import styles from './styles.module.css';
 
 interface AlertListItemProps {
 	alertId: string
+	searchQuery?: string
 }
 
 /* * */
 
-export function AlertListItem({ alertId }: AlertListItemProps) {
+export function AlertListItem({ alertId, searchQuery }: AlertListItemProps) {
 	//
 
 	//
@@ -35,7 +37,9 @@ export function AlertListItem({ alertId }: AlertListItemProps) {
 	return (
 		<Accordion.Item value={alertId}>
 			<Accordion.Control classNames={{ control: styles.item }} icon={<AlertEffectIcon effect={resolvedAlert?.effect} />}>
-				{resolvedAlert?.title}
+				<MantineHighlight component="span" highlight={searchQuery || ''}>
+					{resolvedAlert?.title || ''}
+				</MantineHighlight>
 			</Accordion.Control>
 			<Accordion.Panel classNames={{ content: styles.contentWrapper }}>
 				<div className={styles.infoBar}>
