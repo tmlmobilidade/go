@@ -15,7 +15,7 @@ type TripUpdateByTrip = Map<string, HubGtfsRtTripUpdate[]>;
 
 interface TripUpdatesContextState {
 	actions: {
-		getStopTimeUpdateByTripsInStop: (tripIds: string[], stopId: string) => HubGtfsRtStopTimeUpdate | undefined
+		getStopTimeUpdateByTripsInStop: (tripIds: string[], stopIds: string[]) => HubGtfsRtStopTimeUpdate | undefined
 		getTripUpdatesByStop: (stopId: string) => HubGtfsRtTripUpdate[]
 		getTripUpdatesByTrip: (tripId: string) => HubGtfsRtTripUpdate[]
 	}
@@ -96,25 +96,19 @@ export const TripUpdatesContextProvider = ({ children }: PropsWithChildren) => {
 	const getTripUpdatesByStop = (stopId: string): HubGtfsRtTripUpdate[] => tripUpdatesByStop.get(stopId) || [];
 	const getTripUpdatesByTrip = (tripId: string): HubGtfsRtTripUpdate[] => tripUpdatesByTrip.get(tripId) || [];
 
-	const getStopTimeUpdateByTripsInStop = (tripIds: string[], stopId: string): HubGtfsRtStopTimeUpdate | undefined => {
-		const canLog = tripIds.includes('[KDTF6][41]1625_0_1_2400_2429_0_9');
-		if (canLog) console.log('getStopTimeUpdateByTripsInStop called with', { stopId, tripIds });
+	const getStopTimeUpdateByTripsInStop = (tripIds: string[], stopIds: string[]): HubGtfsRtStopTimeUpdate | undefined => {
 		for (const tripId of tripIds) {
 			const tripUpdates = getTripUpdatesByTrip(tripId);
-			if (canLog) console.log('Checking tripId', tripId, 'tripUpdates', tripUpdates);
 			const matchingTripUpdate = tripUpdates.find(tripUpdate =>
-				tripUpdate.stop_time_update?.some(stopUpdate => String(stopUpdate.stop_id) === String(stopId)),
+				tripUpdate.stop_time_update?.some(stopUpdate => stopIds.includes(String(stopUpdate.stop_id))),
 			);
-			if (canLog) console.log('Found matchingTripUpdate:', matchingTripUpdate);
 			const stopTimeUpdate = matchingTripUpdate?.stop_time_update
-				? matchingTripUpdate.stop_time_update.find(stopUpdate => String(stopUpdate.stop_id) === String(stopId))
+				? matchingTripUpdate.stop_time_update.find(stopUpdate => stopIds.includes(String(stopUpdate.stop_id)))
 				: undefined;
-			if (canLog) console.log('stopTimeUpdate for stopId', stopId, ':', stopTimeUpdate);
 			if (stopTimeUpdate) {
 				return stopTimeUpdate;
 			}
 		}
-		console.log('No stopTimeUpdate found for stopId', stopId, 'in', tripIds);
 		return undefined;
 	};
 
