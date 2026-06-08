@@ -43,21 +43,13 @@ export const AnalyticsContextProvider = ({ children }) => {
 	//
 	// A. Handle actions
 
-	useEffect(() => {
-		if (!ampli?.isLoaded) {
-			ampli.load({ client: { configuration: { appVersion: pjson.version, autocapture: false } }, environment: 'default' });
-			ampli.client.setOptOut(false);
-			capture((instance, props) => instance.pingNaveganteTempoReal(props));
-		}
-	}, [ampli?.isLoaded]);
-
-	const capture = (_callback: (instance: Ampli, props: DefaultEventProps) => void) => {
+	const capture = (callback: (instance: Ampli, props: DefaultEventProps) => void) => {
 		// Skip if Ampli is not loaded
 		if (!ampli?.isLoaded) return;
 		// Skip if window or document are not available
-		if (typeof window === 'undefined' && typeof document === 'undefined') return;
+		if (typeof window === 'undefined' || typeof document === 'undefined') return;
 		// Setup default properties for all events
-		const _defaultProps: DefaultEventProps = {
+		const defaultProps: DefaultEventProps = {
 			app_version: pjson.version,
 			domain: window.location.hostname,
 			locale: document.documentElement.lang,
@@ -66,8 +58,30 @@ export const AnalyticsContextProvider = ({ children }) => {
 			referring_domain: document.referrer ? new URL(document.referrer).hostname : '',
 		};
 		// Execute the callback with the default event properties
-		_callback(ampli, _defaultProps);
+		callback(ampli, defaultProps);
 	};
+
+	useEffect(() => {
+		if (!ampli.isLoaded) {
+			ampli.load({ client: { configuration: { appVersion: pjson.version, autocapture: false } }, environment: 'default' });
+			ampli.client.setOptOut(false);
+		}
+
+		// Ping on mount and every minute while the WebView session is open
+		const pingActiveSession = () => {
+			capture((instance, props) => {
+				instance.pingNaveganteTempoReal({ app_version: props.app_version });
+			});
+		};
+
+		pingActiveSession();
+
+		const intervalId = window.setInterval(pingActiveSession, 60_000);
+
+		return () => {
+			window.clearInterval(intervalId);
+		};
+	}, []);
 
 	//
 	// C. Define context value
