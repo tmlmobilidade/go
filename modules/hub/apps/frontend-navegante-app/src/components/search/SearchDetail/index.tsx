@@ -33,6 +33,7 @@ export function SearchDetail() {
 		<BottomSheet
 			onClose={closeActiveBottomSheet}
 			opened={activeBottomSheet?.view === 'search'}
+			size="full"
 			title={t('default:search.SearchDetail.title')}
 		>
 			<SearchToolbar onChangeSearchType={setSearchType} searchType={searchType} />
