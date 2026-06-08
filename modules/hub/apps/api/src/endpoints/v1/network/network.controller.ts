@@ -46,6 +46,40 @@ export class NetworkController {
 	}
 
 	/**
+	 * Retrieves the legacy stops map from cache.
+	 * @param request Fastify request
+	 * @param reply Fastify reply
+	 */
+	static async getLegacyStopsMap(request: FastifyRequest, reply: FastifyReply<HubLine[]>) {
+		//
+
+		const cachedData = await apiCache.get('hub:network:legacy-stops-map');
+
+		if (!cachedData) {
+			Logger.error('[hub/v1/network:getLegacyStopsMap()] No cached data found for legacy stops map');
+			return reply
+				.header('access-control-allow-origin', '*')
+				.header('cache-control', 'public, max-age=60')
+				.code(HTTP_STATUS.NO_CONTENT)
+				.send({
+					data: [],
+					error: null,
+					status_code: HTTP_STATUS.NO_CONTENT,
+				});
+		};
+
+		return reply
+			.header('access-control-allow-origin', '*')
+			.header('cache-control', 'public, max-age=3600')
+			.code(HTTP_STATUS.OK)
+			.send({
+				data: JSON.parse(cachedData),
+				error: null,
+				status_code: HTTP_STATUS.OK,
+			});
+	}
+
+	/**
 	 * Retrieves all routes from cache.
 	 * @param request Fastify request
 	 * @param reply Fastify reply

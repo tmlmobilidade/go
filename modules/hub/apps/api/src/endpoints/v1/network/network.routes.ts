@@ -17,6 +17,8 @@ server.register(
 
 		instance.get('/stops', NetworkController.getStops);
 
+		instance.get('/legacy-stops-map', NetworkController.getLegacyStopsMap);
+
 		instance.get('/lines', NetworkController.getLines);
 
 		instance.get('/routes', NetworkController.getRoutes);
