@@ -4,7 +4,7 @@
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { StopDetailPlayTTS } from '@/components/stops/detail/StopDetailPlayTTS';
-import { Button, Grid, Label, Pane, Section, Spacer, TextInput, Toolbar } from '@tmlmobilidade/ui';
+import { Button, Grid, Label, Modal, Pane, Section, Spacer, TextInput, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -65,19 +65,29 @@ export function StopDetailNamesModalBody() {
 export function StopDetailNamesModal() {
 	//
 
+	//
+	// A. Setup variables
+
+	const stopDetailContext = useStopDetailContext();
+
+	//
+	// B. Render components
+
 	return (
-		<Pane
-			header={[
-				<Toolbar key="stop-detail-names-toolbar">
-					<Label size="lg" singleLine>Editar Nomes da Paragem</Label>
-					<Spacer />
-				</Toolbar>,
-			]}
-		>
-			<div style={{ display: 'flex', flexDirection: 'column', minHeight: 0, width: '100%' }}>
-				<StopDetailNamesModalBody />
-			</div>
-		</Pane>
+		<Modal onClose={stopDetailContext.actions.closeNamesEditor} opened={stopDetailContext.flags.isNamesEditorOpen}>
+			<Pane
+				header={[
+					<Toolbar key="stop-detail-names-toolbar">
+						<Label size="lg" singleLine>Editar Nomes da Paragem</Label>
+						<Spacer />
+					</Toolbar>,
+				]}
+			>
+				<div style={{ display: 'flex', flexDirection: 'column', minHeight: 0, width: '100%' }}>
+					<StopDetailNamesModalBody />
+				</div>
+			</Pane>
+		</Modal>
 	);
 
 	//

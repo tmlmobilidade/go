@@ -6,7 +6,7 @@ import { useStopDetailContext } from '@/components/stops/detail/StopDetail.conte
 import { StopDetailCoordinatesMap } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesMap';
 import { coordinatesToSearchQuery, getStopCoordinateEditRadiusWarningMessage, isLatLngOutsideEditRadius, STOP_COORDINATE_EDIT_RADIUS_METERS, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_ID, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_TITLE } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesModal/coordinates-query';
 import { StopDetailCoordinatesSelect } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesSelect';
-import { Divider, Label, MapContextProvider, Pane, Spacer, Toolbar, useMapContext, useToast } from '@tmlmobilidade/ui';
+import { Divider, Label, MapContextProvider, Modal, Pane, Spacer, Toolbar, useMapContext, useToast } from '@tmlmobilidade/ui';
 import { useCallback, useEffect, useState } from 'react';
 
 /* * */
@@ -106,21 +106,32 @@ export function StopDetailCoordinatesModalBody() {
 export function StopDetailCoordinatesModal() {
 	//
 
+	//
+	// A. Setup variables
+
+	const stopDetailContext = useStopDetailContext();
+
+	//
+	// B. Render components
+
 	return (
-		<Pane
-			header={[
-				<Toolbar key="stop-detail-coordinates-toolbar">
-					<Label size="lg" singleLine>Editar coordenadas</Label>
-					<Spacer />
-				</Toolbar>,
-			]}
-		>
-			<div style={{ display: 'flex', flexDirection: 'column', minHeight: 0, width: '100%' }}>
-				<MapContextProvider preferenceScope={DETAIL_COORDINATES_MAP_SCOPE}>
-					<StopDetailCoordinatesModalBody />
-				</MapContextProvider>
-			</div>
-		</Pane>
+		<Modal onClose={stopDetailContext.actions.closeCoordinatesEditor} opened={stopDetailContext.flags.isCoordinatesEditorOpen}>
+
+			<Pane
+				header={[
+					<Toolbar key="stop-detail-coordinates-toolbar">
+						<Label size="lg" singleLine>Editar coordenadas</Label>
+						<Spacer />
+					</Toolbar>,
+				]}
+			>
+				<div style={{ display: 'flex', flexDirection: 'column', minHeight: 0, width: '100%' }}>
+					<MapContextProvider preferenceScope={DETAIL_COORDINATES_MAP_SCOPE}>
+						<StopDetailCoordinatesModalBody />
+					</MapContextProvider>
+				</div>
+			</Pane>
+		</Modal>
 	);
 
 	//
