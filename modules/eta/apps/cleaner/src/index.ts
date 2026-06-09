@@ -11,6 +11,7 @@ import { cleanupHistoricalVehicleEvents } from '@/tasks/cleanup-historical-vehic
 import { GOClickHouseClient } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -19,6 +20,17 @@ import { fetchHistoricalRidesForDayIndex } from './tasks/fetch-historical-rides-
 /* * */
 
 export async function main() {
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.info('');
+		Logger.logsNode({ app: 'cleaner', message: 'Sentry ETA Cleaner initialized', module: 'eta', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry ETA Cleaner', { app: 'cleaner', message: 'Error initializing Sentry ETA Cleaner', module: 'eta', severity: 'error', value: error });
+	}
+
 	//
 	// Initialize the logger
 

@@ -11,6 +11,7 @@ import { runLoaderPhase } from '@/run-loader.js';
 import { writeOutput } from '@/write-output.js';
 import { GOClickHouseClient } from '@tmlmobilidade/databases';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -118,26 +119,37 @@ async function main() {
 	//
 
 	//
-	// A. Initialize the logger
+	// A. Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.info('');
+		Logger.logsNode({ app: 'ride-analyzer', message: 'Sentry ETA Ride Analyzer initialized', module: 'eta', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry ETA Ride Analyzer', { app: 'ride-analyzer', message: 'Error initializing Sentry ETA Ride Analyzer', module: 'eta', severity: 'error', value: error });
+	}
+
+	//
+	// B. Initialize the logger
 
 	Logger.init();
 	const totalTimer = new Timer();
 	const startedAt = new Date().toISOString();
 
 	//
-	// B. Parse the command-line arguments
+	// C. Parse the command-line arguments
 
 	const args = parseCliArgs();
 	Logger.info(`ride-analyzer args: ${JSON.stringify(args)}`);
 
 	//
-	// C. Build the loader config
+	// D. Build the loader config
 
 	const config = buildLoaderConfig(args);
 	const clickhouseClient = await GOClickHouseClient.getClient();
 
 	//
-	// D. Run the loader phase
+	// E. Run the loader phase
 
 	if (args.skipLoader) {
 		Logger.info('Skipping loader phase (--skip-loader)');
@@ -146,7 +158,7 @@ async function main() {
 	}
 
 	//
-	// E. Fetch the events for the trip
+	// F. Fetch the events for the trip
 
 	const events = await fetchEventsForTrip(clickhouseClient, args.tripRef);
 	if (events.length === 0) {
@@ -160,7 +172,7 @@ async function main() {
 	const snapshots = await replayEvents(clickhouseClient, args.tripRef, events);
 
 	//
-	// F. Fetch the geometry context for the viewer (route polyline + stops)
+	// G. Fetch the geometry context for the viewer (route polyline + stops)
 
 	const tripContext = await fetchTripHashes(clickhouseClient, args.tripRef.tripId);
 	const [route, stops] = await Promise.all([
@@ -169,7 +181,7 @@ async function main() {
 	]);
 
 	//
-	// G. Write the output
+	// H. Write the output
 
 	await writeOutput({
 		metadata: {
@@ -186,7 +198,7 @@ async function main() {
 	});
 
 	//
-	// H. Log the completion
+	// I. Log the completion
 
 	Logger.success(`ride-analyzer completed in ${totalTimer.get()} seconds`);
 }
