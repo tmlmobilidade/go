@@ -24,15 +24,23 @@ const ProtobufPath = path.resolve(__dirname, './gtfs-realtime.proto');
 async function main() {
 	//
 
+	//
+	// Initialize Sentry
+
 	try {
 		await initSentryNode();
 		Logger.info('');
 		Logger.logsNode({ app: 'sync-datik', message: 'Sentry Alerts Sync Datik initialized', module: 'alerts', severity: 'info' });
-	} catch (error) {
-		Logger.error('Error initializing Sentry Alerts Sync Datik', { app: 'sync-datik', message: 'Error initializing Sentry Alerts Sync Datik', module: 'alerts', severity: 'error', value: error });
+	} catch {
+		Logger.error('Error initializing Sentry Alerts Sync Datik');
 	}
 
 	//
+
+	//
+	// Initialize the logger
+
+	Logger.init();
 
 	const globalTimer = new Timer();
 
