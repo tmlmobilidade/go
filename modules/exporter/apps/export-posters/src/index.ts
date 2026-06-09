@@ -12,6 +12,7 @@ import { type ExportToHitouchConfig } from '@/types.js';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { files, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
 
@@ -22,6 +23,18 @@ import fs from 'node:fs';
 await (async function main() {
 	try {
 		//
+
+		//
+		// Initialize Sentry
+
+		try {
+			await initSentryNode();
+			Logger.info('');
+			Logger.logsNode({ app: 'export-posters', message: 'Sentry Exporter Posters initialized', module: 'exporter', severity: 'info' });
+		} catch (error) {
+			Logger.error('Error initializing Sentry Exporter Posters');
+			throw error;
+		}
 
 		Logger.init();
 

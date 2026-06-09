@@ -2,6 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import os from 'node:os';
@@ -32,6 +33,16 @@ export const GLOBAL_CONTEXT: GlobalContext = {
 /* MAIN FUNCTION */
 async function main() {
 	try {
+		// Initialize Sentry
+		try {
+			await initSentryNode();
+			Logger.info('');
+			Logger.logsNode({ app: 'export-drt', message: 'Sentry Exporter DRT initialized', module: 'exporter', severity: 'info' });
+		} catch (error) {
+			Logger.error('Error initializing Sentry Exporter DRT');
+			throw error;
+		}
+
 		Logger.init();
 		const globalTimer = new Timer();
 
