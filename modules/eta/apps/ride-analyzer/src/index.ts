@@ -125,8 +125,8 @@ async function main() {
 		await initSentryNode();
 		Logger.info('');
 		Logger.logsNode({ app: 'ride-analyzer', message: 'Sentry ETA Ride Analyzer initialized', module: 'eta', severity: 'info' });
-	} catch (error) {
-		Logger.error('Error initializing Sentry ETA Ride Analyzer', { app: 'ride-analyzer', message: 'Error initializing Sentry ETA Ride Analyzer', module: 'eta', severity: 'error', value: error });
+	} catch {
+		Logger.error('Error initializing Sentry ETA Ride Analyzer');
 	}
 
 	//
