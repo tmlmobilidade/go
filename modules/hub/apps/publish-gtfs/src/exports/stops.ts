@@ -1,6 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 
 import { type ExportGtfsContext } from '@/types/context.js';
+import { clampCoordinate } from '@tmlmobilidade/geo';
 import { districts, localities, municipalities, parishes, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -60,8 +61,8 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 			parish_name: matchingParishName ?? '',
 			locality_id: stopData.locality_id ?? '',
 			locality_name: matchingLocalityName ?? '',
-			stop_lat: stopData.latitude,
-			stop_lon: stopData.longitude,
+			stop_lat: clampCoordinate(stopData.latitude),
+			stop_lon: clampCoordinate(stopData.longitude),
 			wheelchair_boarding: '0',
 			location_type: '0',
 			parent_station: '',
