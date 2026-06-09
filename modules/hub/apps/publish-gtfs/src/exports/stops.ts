@@ -18,17 +18,17 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 	//
 	// Build a map of location entities
 
-	const allDistrictsData = await districts.findMany({}, { projection: { _id: 1, name: 1 } });
-	const allDistrictsMap = new Map<string, string>(allDistrictsData.map(item => [item._id, item.name]));
+	const allDistrictsData = await districts.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
+	const allDistrictsMap = new Map<string, string>(allDistrictsData.map(item => [item._id, item?.['properties']?.['name']]));
 
-	const allMunicipalitiesData = await municipalities.findMany({}, { projection: { _id: 1, name: 1 } });
-	const allMunicipalitiesMap = new Map<string, string>(allMunicipalitiesData.map(item => [item._id, item.name]));
+	const allMunicipalitiesData = await municipalities.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
+	const allMunicipalitiesMap = new Map<string, string>(allMunicipalitiesData.map(item => [item._id, item?.['properties']?.['name']]));
 
-	const allParishesData = await parishes.findMany({}, { projection: { _id: 1, name: 1 } });
-	const allParishesMap = new Map<string, string>(allParishesData.map(item => [item._id, item.name]));
+	const allParishesData = await parishes.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
+	const allParishesMap = new Map<string, string>(allParishesData.map(item => [item._id, item?.['properties']?.['name']]));
 
-	const allLocalitiesData = await localities.findMany({}, { projection: { _id: 1, name: 1 } });
-	const allLocalitiesMap = new Map<string, string>(allLocalitiesData.map(item => [item._id, item.name]));
+	const allLocalitiesData = await localities.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
+	const allLocalitiesMap = new Map<string, string>(allLocalitiesData.map(item => [item._id, item?.['properties']?.['name']]));
 
 	//
 	// Get all the stops for the specified agency IDs
