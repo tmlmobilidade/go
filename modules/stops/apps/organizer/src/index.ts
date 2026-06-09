@@ -3,6 +3,7 @@
 import { organizeStop } from '@tmlmobilidade/go-stops-pckg-organize';
 import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -10,6 +11,19 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 
 async function main() {
 	//
+
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.logsNode({ app: 'organizer', message: 'Sentry Stops Organizer initialized', module: 'stops', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry Stops Organizer', error);
+	}
+
+	//
+	// Initialize the logger
 
 	Logger.init();
 
