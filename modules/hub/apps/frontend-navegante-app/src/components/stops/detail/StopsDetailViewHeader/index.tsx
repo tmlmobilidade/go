@@ -1,11 +1,10 @@
 'use client';
 
-import { ScrollChips } from '@/components/common/lists/ScrollChips';
 import { SelectOperationalDate } from '@/components/common/operational-date/SelectOperationalDate';
-import { LineBadge } from '@/components/lines/common/LineBadge';
 import { StopDisplayLocation } from '@/components/stops/common/StopDisplayLocation';
 import { CopyBadge } from '@/components/stops/detail/CopyBadge';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
+import { StopsDetailViewHeaderAssociatedLines } from '@/components/stops/detail/StopsDetailViewHeaderAssociatedLines';
 import { Section, Surface } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -39,13 +38,13 @@ export function StopsDetailViewHeader() {
 					/>
 				</div>
 
-				<StopDisplayLocation localityName={stopsDetailContext.data.stop.locality_name} municipalityName={stopsDetailContext.data.stop.municipality_name} size="lg" />
+				<StopDisplayLocation
+					localityName={stopsDetailContext.data.stop.locality_name || 'Lisboa'}
+					municipalityName={stopsDetailContext.data.stop.municipality_name}
+					size="lg"
+				/>
 
-				<ScrollChips>
-					{stopsDetailContext.data.lines?.map(line => (
-						<LineBadge key={line._id} lineData={line} />
-					))}
-				</ScrollChips>
+				<StopsDetailViewHeaderAssociatedLines />
 
 				<SelectOperationalDate />
 
