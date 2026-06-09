@@ -1,6 +1,8 @@
 /* * */
 
 import { lines, patterns, routes } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { INTERCHANGE_MODE } from '@tmlmobilidade/types';
 
 import { fetchAllEvents } from './fetchers/events.js';
@@ -16,9 +18,19 @@ import { printWarningSummary, warn, WARNING } from './warnings.js';
 
 export async function importGtfs(options: ImportOptions): Promise<ImportSummary> {
 	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.logsNode({ app: 'gtfs-importer', message: 'Sentry Offer GTFS Importer initialized', module: 'offer', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry Offer GTFS Importer', error);
+	}
+
+	//
 	// A. Start / log input
 
-	console.log('[gtfs-importer] Starting lines/routes import', {
+	Logger.info('[gtfs-importer] Starting lines/routes import', {
 		gtfsPath: options.gtfsPath,
 	});
 
@@ -88,7 +100,7 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 		const lineInput = buildLineFromRoute(primaryRoute, agencyId, typologyMap, primaryRoute.route_color, interchangeMode);
 		lineCodesInGtfs.add(lineInput.code);
 
-		console.log('[gtfs-importer] Processing line', {
+		Logger.info('[gtfs-importer] Processing line', {
 			agency_id: agencyId,
 			line_code: lineCodeKey,
 			line_id: primaryRoute.line_id,
@@ -104,7 +116,7 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 		const lineDoc = await lines.insertOne(lineInput);
 		linesCreated += 1;
 		const lineId = lineDoc._id;
-		console.log('[gtfs-importer] Line created', {
+		Logger.info('[gtfs-importer] Line created', {
 			code: lineInput.code,
 			line_id: lineDoc._id,
 		});
@@ -125,7 +137,7 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 			const routeDoc = await routes.insertOne(routeInput);
 			routesCreated += 1;
 			routeDocsByCode.set(routeInput.code, { _id: routeDoc._id });
-			console.log('[gtfs-importer] Route created', {
+			Logger.info('[gtfs-importer] Route created', {
 				code: routeInput.code,
 				line_id: lineId,
 			});
@@ -186,7 +198,7 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 		}
 	}
 
-	console.log('[gtfs-importer] Import finished', {
+	Logger.info('[gtfs-importer] Import finished', {
 		linesCreated,
 		linesInGtfs: lineCodesInGtfs.size,
 		patternsCreated,

@@ -18,7 +18,6 @@ export async function main() {
 
 	try {
 		await initSentryNode();
-		Logger.info('');
 		Logger.logsNode({ app: 'publish-network', message: 'Sentry Hub Publish Network initialized', module: 'hub', severity: 'info' });
 	} catch (error) {
 		Logger.error('Error initializing Sentry Hub Publish Network', error);

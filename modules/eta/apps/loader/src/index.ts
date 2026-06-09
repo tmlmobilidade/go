@@ -17,7 +17,6 @@ await (async function main() {
 
 	try {
 		await initSentryNode();
-		Logger.info('');
 		Logger.logsNode({ app: 'loader', message: 'Sentry ETA Loader initialized', module: 'eta', severity: 'info' });
 	} catch (error) {
 		Logger.error('Error initializing Sentry ETA Loader', error);
