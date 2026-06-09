@@ -1,7 +1,7 @@
 'use client';
 
+import { CopyBadge } from '@/components/common/display/CopyBadge';
 import { useLinesContext } from '@/components/lines/Lines.context';
-import { CopyBadge } from '@/components/stops/detail/CopyBadge';
 import { useVehiclesDetailContext } from '@/components/vehicles/detail/VehiclesDetail.context';
 import { getAgencyLogo } from '@/lib/agency-logos-map';
 import { API_ROUTES } from '@tmlmobilidade/consts';

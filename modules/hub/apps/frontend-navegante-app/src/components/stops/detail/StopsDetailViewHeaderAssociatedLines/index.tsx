@@ -50,7 +50,6 @@ export function StopsDetailViewHeaderAssociatedLines() {
 			<div className={styles.row}>
 				<Image
 					alt={t(`default:lines.LinesListGroup.logo.alt`, '', { agency_name: AGENCY_NAMES_MAP[group.agency_id].full })}
-					className={styles.logo}
 					height={60}
 					src={getAgencyLogo(group.agency_id, '120x120', 'light')}
 					width={60}
