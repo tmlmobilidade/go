@@ -1,6 +1,5 @@
 /* * */
 
-import { main } from '@/main.js';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Logger } from '@tmlmobilidade/logger';

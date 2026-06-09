@@ -1,10 +1,9 @@
 /* * */
 
-import { main } from '@/main.js';
-import { runOnInterval } from '@tmlmobilidade/utils';
-import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
+import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -22,7 +21,7 @@ const main = async () => {
 		Logger.error('Error initializing Sentry Hub Publish GTFS CM', error);
 	}
 
-    //
+	//
 	// Initialize the logger
 
 	Logger.init();

@@ -3,6 +3,7 @@ import { type ExportProgress, type GtfsV29ExportConfig } from '@/types.js';
 import { Files } from '@tmlmobilidade/files';
 import { fileExports, files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { type FileExport, type GtfsExportProperties, ProcessingStatusSchema } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import { CsvWriter } from '@tmlmobilidade/writers';
@@ -116,6 +117,21 @@ async function processExport(fileExport: FileExport) {
 /* * */
 
 async function main() {
+	//
+
+	//
+	// Initialize the logger
+
+	try {
+		await initSentryNode();
+		Logger.info('');
+		Logger.logsNode({ app: 'gtfs-exporter', message: 'Sentry GTFS Exporter initialized', module: 'offer', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry GTFS Exporter', error);
+	}
+
+	//
+	// Initialize the logger
 	Logger.init();
 
 	const waitingExports = await fileExports.findMany({
