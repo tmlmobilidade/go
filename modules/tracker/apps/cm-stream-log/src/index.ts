@@ -2,6 +2,8 @@
 
 import { processPcgiVehicleEventLog } from '@/process-pcgi-vehicle-event-log.js';
 import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 
 /* * */
 
@@ -10,13 +12,12 @@ import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
 
 	// Initialize Sentry
 
-	// TODO fix PCGI Connection for dont give error on connection
-	// try {
-	// 	await initSentryNode();
-	// 	Logger.logsNode({ app: 'cm-stream-log', message: 'Sentry Tracker CM Stream Log initialized', module: 'tracker', severity: 'info' });
-	// } catch (error) {
-	// 	Logger.error('Error initializing Sentry Tracker CM Stream Log', error);
-	// }
+	try {
+		await initSentryNode();
+		Logger.logsNode({ app: 'cm-stream-log', message: 'Sentry Tracker CM Stream Log initialized', module: 'tracker', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry Tracker CM Stream Log', error);
+	}
 
 	//
 	// Connect to the source database

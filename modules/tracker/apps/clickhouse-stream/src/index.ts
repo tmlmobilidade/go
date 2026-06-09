@@ -4,6 +4,7 @@ import { processVehicleEvent } from '@/task.js';
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 
 /* * */
 
@@ -12,13 +13,12 @@ import { Logger } from '@tmlmobilidade/logger';
 
 	// Initialize Sentry
 
-	// TODO fix clickhouse for dont give error on connection
-	// try {
-	// 	await initSentryNode();
-	// 	Logger.logsNode({ app: 'clickhouse-stream', message: 'Sentry Tracker Clickhouse Stream initialized', module: 'tracker', severity: 'info' });
-	// } catch (error) {
-	// 	Logger.error('Error initializing Sentry Tracker Clickhouse Stream', error);
-	// }
+	try {
+		await initSentryNode();
+		Logger.logsNode({ app: 'clickhouse-stream', message: 'Sentry Tracker Clickhouse Stream initialized', module: 'tracker', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry Tracker Clickhouse Stream', error);
+	}
 
 	//
 	// Watch for changes to the rawVehicleEventsNew collection
