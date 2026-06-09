@@ -6,6 +6,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { sendSystemErrorEmail } from '@tmlmobilidade/emails';
 import { gtfsValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { GtfsValidation } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -15,6 +16,18 @@ import pjson from 'pjson' with { type: 'json' };
 
 async function main() {
 	//
+
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.logsNode({ app: 'validator', message: 'Sentry Plans Validator initialized', module: 'plans', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry Plans Validator', error);
+	}
+
+	//
+	// Initialize the logger
 
 	Logger.init();
 
