@@ -16,12 +16,15 @@ async function main() {
 	try {
 		//
 
+		//
+		// Initialize Sentry
+
 		try {
 			await initSentryNode();
 			Logger.info('');
 			Logger.logsNode({ app: 'rides-locker', message: 'Sentry Rides Locker initialized', module: 'controller', severity: 'info' });
-		} catch (error) {
-			Logger.error('Error initializing Sentry Rides Locker', { app: 'rides-locker', message: 'Error initializing Sentry Rides Locker', module: 'controller', severity: 'error', value: error });
+		} catch {
+			Logger.error('Error initializing Sentry Rides Locker');
 		}
 
 		Logger.init();

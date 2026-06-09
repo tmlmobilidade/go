@@ -15,12 +15,15 @@ async function main() {
 	try {
 		//
 
+		//
+		// Initialize Sentry
+
 		try {
 			await initSentryNode();
 			Logger.info('');
 			Logger.logsNode({ app: 'sams-feeder', message: 'Sentry Sams Feeder initialized', module: 'controller', severity: 'info' });
-		} catch (error) {
-			Logger.error('Error initializing Sentry Sams Feeder', { app: 'sams-feeder', message: 'Error initializing Sentry Sams Feeder', module: 'controller', severity: 'error', value: error });
+		} catch {
+			Logger.error('Error initializing Sentry Sams Feeder');
 		}
 
 		Logger.init();

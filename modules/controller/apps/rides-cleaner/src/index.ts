@@ -12,12 +12,15 @@ async function reprocessStuckRides() {
 	try {
 		//
 
+		//
+		// Initialize Sentry
+
 		try {
 			await initSentryNode();
 			Logger.info('');
 			Logger.logsNode({ app: 'rides-cleaner', message: 'Sentry Rides Cleaner initialized', module: 'controller', severity: 'info' });
-		} catch (error) {
-			Logger.error('Error initializing Sentry Rides Cleaner', { app: 'rides-cleaner', message: 'Error initializing Sentry Rides Cleaner', module: 'controller', severity: 'error', value: error });
+		} catch {
+			Logger.error('Error initializing Sentry Rides Cleaner');
 		}
 
 		Logger.init();
