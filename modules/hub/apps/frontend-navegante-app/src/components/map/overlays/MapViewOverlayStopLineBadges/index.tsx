@@ -19,8 +19,8 @@ const LINE_BADGE_MIN_ZOOM = 16;
 interface StopLineBadge {
 	_id: string
 	color: string
-	shortName: string
-	textColor: string
+	short_name: string
+	text_color: string
 }
 
 interface StopLineBadgeGroup {
@@ -76,12 +76,12 @@ export function MapViewOverlayStopLineBadges({ limit = 4, visible }: MapViewOver
 				badges.push({
 					_id: `${String(stopFeature.properties._id)}-${lineId}`,
 					color: lineData.color,
-					shortName: lineData.short_name,
-					textColor: lineData.text_color,
+					short_name: lineData.short_name,
+					text_color: lineData.text_color,
 				});
 			});
 			badgeGroups.push({
-				badges: badges.sort((a, b) => a.shortName.localeCompare(b.shortName)),
+				badges: badges.sort((a, b) => a.short_name.localeCompare(b.short_name, undefined, { numeric: true })),
 				latitude: properties.latitude,
 				longitude: properties.longitude,
 				stop_id: String(properties._id),
@@ -117,9 +117,9 @@ export function MapViewOverlayStopLineBadges({ limit = 4, visible }: MapViewOver
 				<div
 					key={badge._id}
 					className={styles.badge}
-					style={{ backgroundColor: badge.color, color: badge.textColor }}
+					style={{ backgroundColor: badge.color, color: badge.text_color }}
 				>
-					{badge.shortName}
+					{badge.short_name}
 				</div>
 			))}
 			{badgeGroup.badges.length > limit && (
