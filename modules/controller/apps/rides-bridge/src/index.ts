@@ -27,11 +27,15 @@ export async function syncRides() {
 			await initSentryNode();
 			Logger.info('');
 			Logger.logsNode({ app: 'rides-bridge', message: 'Sentry Rides Bridge initialized', module: 'controller', severity: 'info' });
-		} catch {
-			Logger.error('Error initializing Sentry Rides Bridge');
+		} catch (error) {
+			Logger.error('Error initializing Sentry Rides Bridge', error);
 		}
 
+		//
+		// Initialize the logger
+
 		Logger.init();
+
 		const globalTimer = new Timer();
 
 		//

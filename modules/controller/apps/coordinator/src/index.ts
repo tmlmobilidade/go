@@ -10,12 +10,15 @@ import Fastify from 'fastify';
 await (async function init() {
 	//
 
+	//
+	// Initialize Sentry
+
 	try {
 		await initSentryNode();
 		Logger.info('');
 		Logger.logsNode({ app: 'coordinator', message: 'Sentry Coordinator initialized', module: 'controller', severity: 'info' });
-	} catch {
-		Logger.error('Error initializing Sentry Coordinator');
+	} catch (error) {
+		Logger.error('Error initializing Sentry Coordinator', error);
 	}
 
 	//

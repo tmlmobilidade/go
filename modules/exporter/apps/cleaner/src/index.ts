@@ -14,13 +14,17 @@ async function main() {
 
 	//
 	// Initialize Sentry
+
 	try {
 		await initSentryNode();
 		Logger.info('');
 		Logger.logsNode({ app: 'cleaner', message: 'Sentry Exporter Cleaner initialized', module: 'exporter', severity: 'info' });
-	} catch {
-		Logger.error('Error initializing Sentry Exporter Cleaner');
+	} catch (error) {
+		Logger.error('Error initializing Sentry Exporter Cleaner', error);
 	}
+
+	//
+	// Initialize the logger
 
 	Logger.init();
 	const globalTimer = new Timer();

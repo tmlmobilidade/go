@@ -32,16 +32,20 @@ export const GLOBAL_CONTEXT: GlobalContext = {
 /* * */
 /* MAIN FUNCTION */
 async function main() {
-	try {
-		// Initialize Sentry
-		try {
-			await initSentryNode();
-			Logger.info('');
-			Logger.logsNode({ app: 'export-drt', message: 'Sentry Exporter DRT initialized', module: 'exporter', severity: 'info' });
-		} catch {
-			Logger.error('Error initializing Sentry Exporter DRT');
-		}
+	//
 
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.info('');
+		Logger.logsNode({ app: 'export-drt', message: 'Sentry Exporter DRT initialized', module: 'exporter', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry Exporter DRT', error);
+	}
+
+	try {
 		Logger.init();
 		const globalTimer = new Timer();
 

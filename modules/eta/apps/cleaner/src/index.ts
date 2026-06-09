@@ -21,14 +21,16 @@ import { fetchHistoricalRidesForDayIndex } from './tasks/fetch-historical-rides-
 
 export async function main() {
 	//
+
+	//
 	// Initialize Sentry
 
 	try {
 		await initSentryNode();
 		Logger.info('');
 		Logger.logsNode({ app: 'cleaner', message: 'Sentry ETA Cleaner initialized', module: 'eta', severity: 'info' });
-	} catch {
-		Logger.error('Error initializing Sentry ETA Cleaner');
+	} catch (error) {
+		Logger.error('Error initializing Sentry ETA Cleaner', error);
 	}
 
 	//

@@ -31,11 +31,9 @@ async function main() {
 		await initSentryNode();
 		Logger.info('');
 		Logger.logsNode({ app: 'sync-datik', message: 'Sentry Alerts Sync Datik initialized', module: 'alerts', severity: 'info' });
-	} catch {
-		Logger.error('Error initializing Sentry Alerts Sync Datik');
+	} catch (error) {
+		Logger.error('Error initializing Sentry Alerts Sync Datik', error);
 	}
-
-	//
 
 	//
 	// Initialize the logger

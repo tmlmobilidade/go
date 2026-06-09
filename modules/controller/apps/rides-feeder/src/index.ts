@@ -22,9 +22,12 @@ async function main() {
 			await initSentryNode();
 			Logger.info('');
 			Logger.logsNode({ app: 'rides-feeder', message: 'Sentry Rides Feeder initialized', module: 'controller', severity: 'info' });
-		} catch {
-			Logger.error('Error initializing Sentry Rides Feeder');
+		} catch (error) {
+			Logger.error('Error initializing Sentry Rides Feeder', error);
 		}
+
+		//
+		// Initialize the logger
 
 		Logger.init();
 
