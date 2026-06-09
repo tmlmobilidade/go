@@ -5,7 +5,7 @@ import { type OperationalDate, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
 
-export const convertGTFSTimeStringAndOperationalDateToUnixTimestamp = (timeString: string, operationalDate: OperationalDate): UnixTimestamp => {
+export function convertGTFSTimeStringAndOperationalDateToUnixTimestamp(timeString: string, operationalDate: OperationalDate): UnixTimestamp {
 	//
 
 	// Return early if no time string is provided
