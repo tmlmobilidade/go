@@ -31,9 +31,8 @@ await (async function main() {
 			await initSentryNode();
 			Logger.info('');
 			Logger.logsNode({ app: 'export-posters', message: 'Sentry Exporter Posters initialized', module: 'exporter', severity: 'info' });
-		} catch (error) {
+		} catch {
 			Logger.error('Error initializing Sentry Exporter Posters');
-			throw error;
 		}
 
 		Logger.init();

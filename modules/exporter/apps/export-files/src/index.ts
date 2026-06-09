@@ -26,9 +26,8 @@ async function main() {
 		await initSentryNode();
 		Logger.info('');
 		Logger.logsNode({ app: 'export-files', message: 'Sentry Exporter Files initialized', module: 'exporter', severity: 'info' });
-	} catch (error) {
+	} catch {
 		Logger.error('Error initializing Sentry Exporter Files');
-		throw error;
 	}
 
 	Logger.init();
