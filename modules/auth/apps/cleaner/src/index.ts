@@ -13,12 +13,15 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 async function main() {
 	//
 
+	//
+	// Initialize Sentry
+
 	try {
 		await initSentryNode();
 		Logger.info('');
 		Logger.logsNode({ app: 'cleaner', message: 'Sentry Auth Cleaner initialized', module: 'home', severity: 'info' });
-	} catch (error) {
-		Logger.error('Error initializing Sentry Auth Cleaner', { app: 'cleaner', message: 'Error initializing Sentry Auth Cleaner', module: 'home', severity: 'error', value: error });
+	} catch {
+		Logger.error('Error initializing Sentry Auth Cleaner');
 	}
 
 	// Only run in production environment
