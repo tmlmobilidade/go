@@ -49,6 +49,12 @@ const main = async () => {
 		if (!entity.vehicle.trip) continue;
 
 		//
+		// Skip entities that do not have a position field,
+		// as they are not relevant for our use case.
+
+		if (!entity.vehicle.position) continue;
+
+		//
 		// Hash the relevant fields of the vehicle event
 		// to create a unique identifier for the event.
 		// This allows us to identify duplicate events
