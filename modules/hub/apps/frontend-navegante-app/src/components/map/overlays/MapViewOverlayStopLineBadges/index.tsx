@@ -12,7 +12,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-const LINE_BADGE_MIN_ZOOM = 20;
+const LINE_BADGE_MIN_ZOOM = 16;
 
 /* * */
 

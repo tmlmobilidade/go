@@ -44,7 +44,7 @@ export function MapViewOverlayStops({ presentBeforeId, stopsData = baseGeoJsonFe
 						14,
 						0.1,
 						20,
-						0.75,
+						1,
 					],
 					'symbol-placement': 'point',
 					'visibility': visible ? 'visible' : 'none',
