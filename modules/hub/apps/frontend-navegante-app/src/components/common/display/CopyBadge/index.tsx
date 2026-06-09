@@ -7,15 +7,15 @@ import styles from './styles.module.css';
 /* * */
 
 interface CopyBadgeProps {
-	hasBorder?: boolean
-	label?: string
+	label?: number | string
 	size?: 'lg' | 'md'
 	value: number | string
+	withBorder?: boolean
 }
 
 /* * */
 
-export function CopyBadge({ hasBorder = true, label, size = 'md', value }: CopyBadgeProps) {
+export function CopyBadge({ label, size = 'md', value, withBorder }: CopyBadgeProps) {
 	//
 
 	//
@@ -35,9 +35,9 @@ export function CopyBadge({ hasBorder = true, label, size = 'md', value }: CopyB
 
 	return (
 		<div
-			className={`${styles.container} ${hasBorder && styles.hasBorder} ${styles[size]}`}
-			data-has-border={hasBorder}
+			className={styles.container}
 			data-size={size}
+			data-with-border={withBorder}
 			onClick={handleCopy}
 		>
 			{clipboard.copied ? 'Copied' : label ? label : value}

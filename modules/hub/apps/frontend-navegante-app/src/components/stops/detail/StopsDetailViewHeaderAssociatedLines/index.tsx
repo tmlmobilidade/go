@@ -28,18 +28,22 @@ export function StopsDetailViewHeaderAssociatedLines() {
 	// B. Transform data
 
 	const linesByAgencyId = useMemo(() => {
-		const result: Record<string, { agency_id: string, lines: HubLine[] }> = {};
+		// Group lines by agency ID
+		const groups: Record<string, { agency_id: string, lines: HubLine[] }> = {};
 		stopsDetailContext.data.lines?.forEach((line) => {
 			// Merge CM agencies into a single agency
 			const agencyId = ['41', '42', '43', '44'].includes(line.agency_id) ? 'CM' : line.agency_id;
 			// Initialize the array for the agency ID if it doesn't exist
-			if (!result[agencyId]) result[agencyId] = { agency_id: agencyId, lines: [] };
+			if (!groups[agencyId]) groups[agencyId] = { agency_id: agencyId, lines: [] };
 			// Add the line to the array for the agency ID
-			result[agencyId].lines.push(line);
+			groups[agencyId].lines.push(line);
 		});
-		// Return the result as an array of objects
-		// sorted by the number of lines in ascending order
-		return Object.values(result).sort((a, b) => a.lines.length - b.lines.length);
+		// Return an array of groups with their lines sorted by short_name
+		// and each group sorted by the number of lines in ascending order
+		return Object
+			.values(groups)
+			.map(group => ({ ...group, lines: group.lines.sort((a, b) => a.short_name.localeCompare(b.short_name, undefined, { numeric: true })) }))
+			.sort((a, b) => a.lines.length - b.lines.length);
 	}, [stopsDetailContext.data.lines]);
 
 	//

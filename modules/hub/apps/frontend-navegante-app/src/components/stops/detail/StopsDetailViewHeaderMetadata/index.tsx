@@ -26,13 +26,13 @@ export function StopsDetailViewHeaderMetadata() {
 				size="lg"
 			/>
 			<CopyBadge
-				label={stopsDetailContext.data.stop._id.toString()}
+				label={stopsDetailContext.data.stop._id}
 				value={stopsDetailContext.data.stop._id}
+				withBorder
 			/>
 			<CopyBadge
-				hasBorder={false}
-				label={`${stopsDetailContext.data.stop.latitude}, ${stopsDetailContext.data.stop.longitude}`}
-				value={stopsDetailContext.data.stop.latitude + ',' + stopsDetailContext.data.stop.longitude}
+				label={`${stopsDetailContext.data.stop.latitude} ${stopsDetailContext.data.stop.longitude}`}
+				value={`${stopsDetailContext.data.stop.latitude}, ${stopsDetailContext.data.stop.longitude}`}
 			/>
 		</ScrollChips>
 	);
