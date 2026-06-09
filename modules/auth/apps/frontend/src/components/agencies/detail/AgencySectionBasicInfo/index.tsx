@@ -45,7 +45,7 @@ export function AgencyDetailBasicInfo() {
 					/>
 					<ContextFormController
 						control={agencyDetailContext.form.instance.control}
-						name="name"
+						name="public_name"
 						render={({ field, fieldState }) => (
 							<TextInput
 								defaultValue={field.value}
@@ -55,7 +55,7 @@ export function AgencyDetailBasicInfo() {
 								onChange={field.onChange}
 								placeholder={t('default:agencies.detail.SectionBasicInfo.fields.public_name.placeholder')}
 								readOnly={agencyDetailContext.flags.isReadOnly}
-								withAsterisk={!CreateAgencySchema.shape.name.isOptional()}
+								withAsterisk={!CreateAgencySchema.shape.public_name.isOptional()}
 							/>
 						)}
 					/>
