@@ -8,6 +8,19 @@ import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
 (async function init() {
 	//
 
+	// Initialize Sentry
+
+	// TODO fix PCGI Connection for dont give error on connection
+	// try {
+	// 	await initSentryNode();
+	// 	Logger.logsNode({ app: 'cm-stream-log', message: 'Sentry Tracker CM Stream Log initialized', module: 'tracker', severity: 'info' });
+	// } catch (error) {
+	// 	Logger.error('Error initializing Sentry Tracker CM Stream Log', error);
+	// }
+
+	//
+	// Connect to the source database
+
 	await pcgidbLegacy.connect();
 
 	//

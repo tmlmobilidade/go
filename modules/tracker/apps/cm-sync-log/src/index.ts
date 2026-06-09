@@ -13,6 +13,19 @@ async function main() {
 	try {
 		//
 
+		// Initialize Sentry
+
+		// TODO fix PCGI Connection for dont give error on connection
+		// try {
+		// 	await initSentryNode();
+		// 	Logger.logsNode({ app: 'cm-sync-log', message: 'Sentry Tracker CM Sync Log initialized', module: 'tracker', severity: 'info' });
+		// } catch (error) {
+		// 	Logger.error('Error initializing Sentry Tracker CM Sync Log', error);
+		// }
+
+		//
+		// Initialize the logger
+
 		Logger.init();
 
 		const globalTimer = new Timer();

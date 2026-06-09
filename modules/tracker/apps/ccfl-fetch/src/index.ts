@@ -4,6 +4,7 @@ import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { type HashableRawVehicleEvent, type RawVehicleEventCcflV1 } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -17,6 +18,15 @@ let ITERATION = 0;
 
 const main = async () => {
 	//
+
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.logsNode({ app: 'ccfl-fetch', message: 'Sentry Tracker CCFL Fetch initialized', module: 'tracker', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry Tracker CCFL Fetch', error);
+	}
 
 	const timer = new Timer();
 

@@ -10,6 +10,16 @@ import { Logger } from '@tmlmobilidade/logger';
 (async function init() {
 	//
 
+	// Initialize Sentry
+
+	// TODO fix clickhouse for dont give error on connection
+	// try {
+	// 	await initSentryNode();
+	// 	Logger.logsNode({ app: 'clickhouse-stream', message: 'Sentry Tracker Clickhouse Stream initialized', module: 'tracker', severity: 'info' });
+	// } catch (error) {
+	// 	Logger.error('Error initializing Sentry Tracker Clickhouse Stream', error);
+	// }
+
 	//
 	// Watch for changes to the rawVehicleEventsNew collection
 	// and integrate those documents immediately.

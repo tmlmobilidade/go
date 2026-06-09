@@ -12,6 +12,19 @@ async function main() {
 	try {
 		//
 
+		// Initialize Sentry
+
+		// TODO fix clickhouse for dont give error on connection
+		// try {
+		// 	await initSentryNode();
+		// 	Logger.logsNode({ app: 'clickhouse-sync', message: 'Sentry Tracker Clickhouse Sync initialized', module: 'tracker', severity: 'info' });
+		// } catch (error) {
+		// 	Logger.error('Error initializing Sentry Tracker Clickhouse Sync', error);
+		// }
+
+		//
+		// Initialize the logger
+
 		Logger.init();
 
 		const globalTimer = new Timer();

@@ -6,6 +6,7 @@ import { externalClients } from '@tmlmobilidade/external';
 import { TrainsResponse } from '@tmlmobilidade/external/dist/clients/fertagus/types.js';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { type HashableRawVehicleEvent, HashedPattern, RawVehicleEventFertagusV1, Ride } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -38,6 +39,18 @@ interface FoundRideDocument {
 
 const main = async () => {
 	//
+
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.logsNode({ app: 'fertagus-fetch', message: 'Sentry Tracker Fertagus Fetch initialized', module: 'tracker', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry Tracker Fertagus Fetch', error);
+	}
+
+	//
+	// Initialize the timer
 
 	const timer = new Timer();
 	let saveCount = 0;
