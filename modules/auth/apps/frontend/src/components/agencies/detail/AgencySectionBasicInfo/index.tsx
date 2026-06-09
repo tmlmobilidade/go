@@ -26,7 +26,7 @@ export function AgencyDetailBasicInfo() {
 			title={t('default:agencies.detail.SectionBasicInfo.title')}
 		>
 			<Section gap="lg">
-				<Grid columns="aabc" gap="lg">
+				<Grid columns="abcd" gap="lg">
 					<ContextFormController
 						control={agencyDetailContext.form.instance.control}
 						name="name"
