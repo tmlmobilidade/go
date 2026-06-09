@@ -1,6 +1,8 @@
 /* * */
 
 import { type GtfsRtFeedMessage, ServiceAlertResponse } from '@tmlmobilidade/types';
+import { IncomingMessage } from 'node:http';
+import https from 'node:https';
 
 import { mlAuthClient } from './auth.js';
 import { BaseResponse, DESTINATION_MAP, EstadoLinha, InfoEstacao, TempoEspera, TempoEsperaRawItem } from './types.js';
@@ -16,18 +18,44 @@ async function fetcher<T>(endpoint: string): Promise<T> {
 	}
 
 	const apiToken = await mlAuthClient.getToken();
+	return await new Promise<T>((resolve, reject) => {
+		//
 
-	const response = await fetch(`${BASE_URL}${endpoint}`, {
-		headers: {
-			Authorization: `Bearer ${apiToken}`,
-		},
+		const requestOptions: https.RequestOptions = {
+			allowPartialTrustChain: true,
+			headers: {
+				Authorization: `Bearer ${apiToken}`,
+			},
+			hostname: 'api.metrolisboa.pt',
+			method: 'GET',
+			path: `/estadoServicoML/1.0.1${endpoint}`,
+			port: 8243,
+			rejectUnauthorized: false,
+			servername: 'api.metrolisboa.pt',
+		};
+
+		const callback: (res: IncomingMessage) => void = (response) => {
+			const chunks: Buffer[] = [];
+			response.on('data', chunk => chunks.push(chunk));
+			response.on('end', () => {
+				const responseText = Buffer.concat(chunks).toString('utf8');
+				if (response.statusCode < 200 || response.statusCode >= 300) {
+					reject(new Error(`[MlClient] Request failed (${response.statusCode}): ${responseText.slice(0, 500)}`));
+					return;
+				}
+				try {
+					resolve(JSON.parse(responseText));
+				} catch {
+					reject(new Error(`[MlClient] Response is not JSON: ${responseText.slice(0, 500)}`));
+				}
+			});
+		};
+
+		const request = https.request(requestOptions, callback);
+
+		request.on('error', reject);
+		request.end();
 	});
-
-	if (!response.ok) {
-		throw new Error(`Request failed (${response.status}): ${response.statusText}`);
-	}
-
-	return response.json() as T;
 }
 
 /* * */

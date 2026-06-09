@@ -48,38 +48,38 @@ export async function publishTripUpdates() {
 	//
 	// CP Trip Updates (Already in GTFS-RT format)
 
-	Logger.info(`Retrieving Estimated Time of Arrivals from CP API...`);
-	const cpTrips = await externalClients.cp.tripUpdates();
+	// Logger.info(`Retrieving Estimated Time of Arrivals from CP API...`);
+	// const cpTrips = await externalClients.cp.tripUpdates();
 
-	feed.entity.push(...cpTrips.entity.map(entity => ({
-		id: entity.id,
-		trip_update: entity.trip_update,
-	})));
-	Logger.info(`Found ${cpTrips.entity.length} CP trips`, 1);
+	// feed.entity.push(...cpTrips.entity.map(entity => ({
+	// 	id: entity.id,
+	// 	trip_update: entity.trip_update,
+	// })));
+	// Logger.info(`Found ${cpTrips.entity.length} CP trips`, 1);
 
 	//
 	// Mobi Trip Updates (Already in GTFS-RT format)
 
-	Logger.info(`Retrieving Estimated Time of Arrivals from Mobi API...`);
-	const mobiTrips = await externalClients.mobi.tripUpdates();
+	// Logger.info(`Retrieving Estimated Time of Arrivals from Mobi API...`);
+	// const mobiTrips = await externalClients.mobi.tripUpdates();
 
-	feed.entity.push(...mobiTrips.entity.map(entity => ({
-		id: entity.id,
-		trip_update: entity.trip_update,
-	})));
-	Logger.info(`Found ${mobiTrips.entity.length} Mobi trips`, 1);
+	// feed.entity.push(...mobiTrips.entity.map(entity => ({
+	// 	id: entity.id,
+	// 	trip_update: entity.trip_update,
+	// })));
+	// Logger.info(`Found ${mobiTrips.entity.length} Mobi trips`, 1);
 
 	//
 	// ML Trip Updates (Already in GTFS-RT format)
 
-	// Logger.info(`Retrieving Estimated Time of Arrivals from ML API...`);
-	// const mlTrips = await externalClients.ml.tripUpdates();
+	Logger.info(`Retrieving Estimated Time of Arrivals from ML API...`);
+	const mlTrips = await externalClients.ml.tripUpdates();
 
-	// feed.entity.push(...mlTrips.entity.map(entity => ({
-	// 	id: entity.id,
-	// 	trip_update: entity.trip_update,
-	// })));
-	// Logger.info(`Found ${mlTrips.entity.length} ML trips`, 1);
+	feed.entity.push(...mlTrips.entity.map(entity => ({
+		id: entity.id,
+		trip_update: entity.trip_update,
+	})));
+	Logger.info(`Found ${mlTrips.entity.length} ML trips`, 1);
 
 	//
 	// Save the result in API Cache
