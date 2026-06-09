@@ -1,10 +1,12 @@
 'use client';
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
+import { StopDetailCoordinatesModal } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesModal';
+import { StopDetailNamesModal } from '@/components/stops/detail/StopDetailCoordinates/StopDetailNamesModal';
 import { Translations } from '@/lib/translations';
 import { IconEdit } from '@tabler/icons-react';
 import { LifecycleStatusSchema } from '@tmlmobilidade/types';
-import { Collapsible, Grid, ProposedChangesWrapper, Section, SegmentedControl, TextInput, useMeContext, ValueDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, SegmentedControl, useMeContext, ValueDisplay } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -87,24 +89,10 @@ export function StopDetailsSectionGeneral() {
 
 			<Section>
 				<Grid columns="a" gap="md">
-					{/* <ProposedChangesWrapper
-						inputName="name"
-						label="Nome Único da Paragem"
-						relatedId={String(stopDetailContext.data.stop?._id)}
-						scope="stop"
-					> */}
-					{/* <TextInput
-							onClick={canEditStopName ? stopDetailContext.actions.openNameEditor : undefined}
-							readOnly={stopDetailContext.flags.isReadOnly}
-							rightSection={canEditStopName ? <IconEdit size={16} /> : undefined}
-							{...stopDetailContext.data.form.getInputProps('name')}
-						/> */}
-					{/* </ProposedChangesWrapper> */}
-
 					<ValueDisplay
 						icon={canEditStopName ? <IconEdit size={16} /> : undefined}
 						label="Nome Único da Paragem"
-						onClick={canEditStopName ? stopDetailContext.actions.openNameEditor : undefined}
+						onClick={canEditStopName ? stopDetailContext.actions.openNamesEditor : undefined}
 						value={stopDetailContext.data.form.getValues()?.name ?? 'N/A'}
 						variant="bordered"
 					/>
@@ -123,12 +111,15 @@ export function StopDetailsSectionGeneral() {
 					<ValueDisplay
 						icon={canEditStopName ? <IconEdit size={16} /> : undefined}
 						label="Nome TTS"
-						onClick={canEditStopName ? stopDetailContext.actions.openNameEditor : undefined}
+						onClick={canEditStopName ? stopDetailContext.actions.openNamesEditor : undefined}
 						value={stopDetailContext.data.form.values.tts_name ?? 'N/A'}
 						variant="bordered"
 					/>
 				</Grid>
 			</Section>
+
+			{stopDetailContext.flags.isCoordinatesEditorOpen && <StopDetailCoordinatesModal />}
+			{stopDetailContext.flags.isNamesEditorOpen &&	<StopDetailNamesModal /> }
 
 		</Collapsible>
 	);

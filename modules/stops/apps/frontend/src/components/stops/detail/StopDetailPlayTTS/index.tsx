@@ -1,4 +1,4 @@
-import { useStopDetailContext } from '@/contexts/StopDetailCoordinates.modal';
+import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { audioTtsUrl } from '@/settings/urls.settings';
 import { IconPlayerPlay } from '@tabler/icons-react';
 import { Button } from '@tmlmobilidade/ui';

@@ -2,11 +2,9 @@
 
 /* * */
 
-import { useStopDetailContext } from '@/contexts/StopDetailCoordinates.modal';
-import { audioTtsUrl } from '@/settings/urls.settings';
+import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
+import { StopDetailPlayTTS } from '@/components/stops/detail/StopDetailPlayTTS';
 import { Button, Grid, Label, Pane, Section, Spacer, TextInput, Toolbar } from '@tmlmobilidade/ui';
-
-import { StopDetailPlayTTS } from '../../StopDetailPlayTTS';
 
 /* * */
 
@@ -28,6 +26,7 @@ export function StopDetailNamesModalBody() {
 				<Grid columns="a" gap="md">
 					<TextInput
 						label="Nome Único da Paragem"
+						onChange={event => stopDetailContext.data.form.setFieldValue('name', event.target.value)}
 						value={stopDetailContext.data.form.getValues()?.name ?? 'N/A'}
 						variant="bordered"
 					/>
@@ -35,12 +34,14 @@ export function StopDetailNamesModalBody() {
 				<Grid columns="ab" gap="md">
 					<TextInput
 						label="Nome Curto"
+						onChange={event => stopDetailContext.data.form.setFieldValue('short_name', event.target.value)}
 						value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'}
 						variant="bordered"
 					/>
 
 					<TextInput
 						label="Nome TTS"
+						onChange={event => stopDetailContext.data.form.setFieldValue('tts_name', event.target.value)}
 						value={stopDetailContext.data.form.getValues()?.tts_name ?? 'N/A'}
 						variant="bordered"
 					/>
@@ -50,8 +51,8 @@ export function StopDetailNamesModalBody() {
 
 			<Section>
 				<Grid columns="abc" gap="md">
-					<Button label="Cancelar" onClick={stopDetailContext.actions.closeNameEditor} />
-					<Button label="Salvar" onClick={stopDetailContext.actions.closeNameEditor} />
+					<Button label="Cancelar" onClick={stopDetailContext.actions.closeNamesEditor} />
+					<Button label="Salvar" onClick={stopDetailContext.actions.save} />
 					<StopDetailPlayTTS />
 				</Grid>
 			</Section>
@@ -61,7 +62,7 @@ export function StopDetailNamesModalBody() {
 	//
 }
 
-export function StopDetailNameModal() {
+export function StopDetailNamesModal() {
 	//
 
 	return (
