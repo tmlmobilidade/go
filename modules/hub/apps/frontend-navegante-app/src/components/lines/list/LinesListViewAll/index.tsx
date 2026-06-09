@@ -49,17 +49,18 @@ export function LinesListViewAll() {
 					onShowMoreLines={() => linesListContext.actions.increaseQtyPerAgency(group.agency_id)}
 					withShowMoreButton={group.lines.length < group.qty}
 				>
-					<ViewportList itemMargin={0} items={group.lines}>
-						{(line, index) => (
-							<RegularListItem
-								key={line._id}
-								ariaLabel={t(`default:lines.LinesListViewAll.items.aria_label`, '', { index: index + 1, tts_name: line.tts_name })}
-								onClick={() => setActiveBottomSheet({ entityId: line._id, view: 'lines-detail' })}
-							>
-								<LineDisplay lineData={line} searchQuery={linesListContext.filters.search.value} />
-							</RegularListItem>
-						)}
-					</ViewportList>
+					{group.lines.map((line, index) => (
+						<RegularListItem
+							key={line._id}
+							onClick={() => setActiveBottomSheet({ entityId: line._id, view: 'lines-detail' })}
+							ariaLabel={t(`default:lines.LinesListViewAll.items.aria_label`, '', {
+								index: index + 1,
+								tts_name: line.long_name,
+							})}
+						>
+							<LineDisplay lineData={line} searchQuery={linesListContext.filters.search.value} />
+						</RegularListItem>
+					))}
 				</LinesListGroup>
 			))}
 			<Space h="90px" />

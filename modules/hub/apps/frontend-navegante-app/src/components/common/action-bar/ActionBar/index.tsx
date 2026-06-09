@@ -3,7 +3,7 @@
 import { ActionBarButton } from '@/components/common/action-bar/ActionBarButton';
 import { ActionBarUserLocation } from '@/components/common/action-bar/ActionBarUserLocation';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
-import { IconAlertTriangle, IconQuestionMark, IconReload, IconSearch } from '@tabler/icons-react';
+import { IconAlertTriangle, IconQuestionMark, IconSearch } from '@tabler/icons-react';
 import { Spacer } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -31,11 +31,6 @@ export function ActionBar() {
 				icon={<IconQuestionMark size={30} />}
 				label={t('default:action-bar.ActionBar.help.label')}
 				onClick={() => setActiveBottomSheet({ view: 'help' })}
-			/>
-			<ActionBarButton
-				icon={<IconReload size={30} />}
-				label="reload"
-				onClick={() => window.location.reload()}
 			/>
 
 			<Spacer orientation="vertical" size="full" />
