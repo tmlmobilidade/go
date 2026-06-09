@@ -5,12 +5,29 @@ import { generateShapes } from '@/tasks/sync-shapes.js';
 import { generateStops } from '@/tasks/sync-stops.js';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
 export async function main() {
 	//
+
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.info('');
+		Logger.logsNode({ app: 'publish-network', message: 'Sentry Hub Publish Network initialized', module: 'hub', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry Hub Publish Network', error);
+	}
+
+	//
+	// Initialize the logger
+
+	Logger.init();
 
 	const globalTimer = new Timer();
 

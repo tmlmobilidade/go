@@ -7,6 +7,7 @@ import { Files } from '@tmlmobilidade/files';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { files, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
@@ -37,6 +38,22 @@ let PREVIOUS_PLANS_LIST_HASH: null | string = null;
 
 export async function main() {
 	//
+
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.info('');
+		Logger.logsNode({ app: 'publish-gtfs-cm', message: 'Sentry Hub Publish GTFS CM initialized', module: 'hub', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry Hub Publish GTFS CM', error);
+	}
+
+	//
+	// Initialize the logger
+
+	Logger.init();
 
 	const globalTimer = new Timer();
 

@@ -26,6 +26,7 @@ import { exportShapesFile } from '@/exports/shapes.js';
 import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsFile } from '@/exports/trips.js';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 
 /* * */
 
@@ -35,6 +36,22 @@ let PREVIOUS_PLANS_LIST_HASH: null | string = null;
 
 export async function main() {
 	//
+
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.info('');
+		Logger.logsNode({ app: 'publish-gtfs', message: 'Sentry Hub Publish GTFS initialized', module: 'hub', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry Hub Publish GTFS', error);
+	}
+
+	//
+	// Initialize the logger
+
+	Logger.init();
 
 	const globalTimer = new Timer();
 
