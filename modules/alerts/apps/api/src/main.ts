@@ -22,6 +22,8 @@ import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 
 	await fastifyService.start();
 
+	//
+	// Initialize Sentry
 	try {
 		await initSentryNode();
 		Logger.logsNode({ app: 'api', message: 'Sentry Alerts API initialized', module: 'alerts', severity: 'info', status: HTTP_STATUS.OK });
