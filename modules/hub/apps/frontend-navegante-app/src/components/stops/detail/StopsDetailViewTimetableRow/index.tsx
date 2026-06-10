@@ -17,6 +17,7 @@ interface StopsDetailViewTimetableRowProps {
 /* * */
 
 export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailViewTimetableRowProps) {
+	console.log('data:', data);
 	return (
 		<>
 
@@ -39,6 +40,7 @@ export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailView
 						shortName={data.short_name}
 						textColor={data.text_color}
 					/>
+					{data.arrival_estimated_ms || '-'}
 					<NextArrivals
 						arrivals={[data.arrival_scheduled_ms]}
 						scheduledArrivals={data.arrival_observed_ms ? [data.arrival_observed_ms] : undefined}

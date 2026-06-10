@@ -3,6 +3,7 @@
 import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
+import { PreparedTripUpdate, useTripUpdatesContext } from '@/components/trip-updates/TripUpdates.context';
 import { fetchPatterns } from '@/utils/fetch-patterns';
 import { Dates } from '@tmlmobilidade/dates';
 import { type HubLine, type HubPattern, type HubStop, type UnixTimestamp } from '@tmlmobilidade/types';
@@ -14,6 +15,7 @@ import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useSt
 export interface StopsDetailViewTimetableData {
 	_id: string
 	agency_id: string
+	arrival_delay_ms: number
 	arrival_effective_ms: null | UnixTimestamp
 	arrival_estimated_ms: null | UnixTimestamp
 	arrival_observed_ms: null | UnixTimestamp
@@ -75,6 +77,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 	const stopsContext = useStopsContext();
 	const linesContext = useLinesContext();
 	const operationalDate = useOperationalDate();
+	const tripUpdatesContext = useTripUpdatesContext();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -137,7 +140,19 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 					const uniqueIdValueForArrivalData = `${operationalDate.selectedOperationalDate}-${patternData.version_id}-${tripData.version_id}-${stopTime.stop_id}-${stopTime.stop_sequence}-${stopTime.arrival_time}`;
 					// Convert GTFS time string to Unix Timestamp
 					const scheduledArrivalMs = convertGTFSTimeStringAndOperationalDateToUnixTimestamp(stopTime.arrival_time, operationalDate.selectedOperationalDate);
-					const effectiveArrivalMs = scheduledArrivalMs; // TODO: Modify after detecting arrival and observed arrivals
+					// Fetch the trip update for this stop time
+					let tripUpdate: PreparedTripUpdate;
+					for (const tripId of tripData.trip_ids) {
+						if (tripUpdate) break;
+						// Set a unique key for this object based on
+						const key = `${tripId}-${stopTime.stop_id}-${stopTime.stop_sequence}`;
+						// Return the trip update for the stop
+						tripUpdate = tripUpdatesContext.data.map.get(key);
+					}
+					console.log('tripUpdate:', tripUpdate);
+					const estimatedArrivalMs = tripUpdate?.arrival_time;
+					const arrivalDelayMs = tripUpdate?.delay * 1000;
+					const effectiveArrivalMs = estimatedArrivalMs ?? scheduledArrivalMs;
 					// Detect the position of this stop time in the pattern
 					const isFirstStop = stopTime.stop_sequence === patternData.path[0].stop_sequence;
 					const isLastStop = stopTime.stop_sequence === patternData.path[patternData.path.length - 1].stop_sequence;
@@ -147,8 +162,9 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 					timetableDataForSelectedDate.push({
 						_id: uniqueIdValueForArrivalData,
 						agency_id: patternData.agency_id,
+						arrival_delay_ms: arrivalDelayMs,
 						arrival_effective_ms: effectiveArrivalMs,
-						arrival_estimated_ms: null,
+						arrival_estimated_ms: estimatedArrivalMs,
 						arrival_observed_ms: null,
 						arrival_scheduled_ms: scheduledArrivalMs,
 						color: patternData.color,
@@ -172,11 +188,11 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 		// Return the timetable data, sorted by scheduled arrival time
 		return timetableDataForSelectedDate.sort((a, b) => {
 			// Prefer observed over estimated over scheduled arrivals
-			const aArrivalMs = a.arrival_scheduled_ms;// a.arrival_observed_ms ?? a.arrival_estimated_ms ?? a.arrival_scheduled_ms;
-			const bArrivalMs = b.arrival_scheduled_ms;// b.arrival_observed_ms ?? b.arrival_estimated_ms ?? b.arrival_scheduled_ms;
+			const aArrivalMs = a.arrival_observed_ms ?? a.arrival_estimated_ms ?? a.arrival_scheduled_ms;
+			const bArrivalMs = b.arrival_observed_ms ?? b.arrival_estimated_ms ?? b.arrival_scheduled_ms;
 			return aArrivalMs - bArrivalMs;
 		});
-	}, [validPatternsData, operationalDate.selectedOperationalDate, stopId]);
+	}, [validPatternsData, operationalDate.selectedOperationalDate, stopId, tripUpdatesContext.data.map]);
 
 	//
 	// D. Handle actions

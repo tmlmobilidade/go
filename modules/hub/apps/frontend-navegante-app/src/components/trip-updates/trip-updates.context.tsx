@@ -5,7 +5,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { HubGtfsRtFeedMessage, HubGtfsRtStopTimeUpdate, type HubGtfsRtTripUpdate } from '@tmlmobilidade/types';
 import { pushArrayToMap } from '@tmlmobilidade/utils';
-import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -44,13 +44,15 @@ export function useTripUpdatesContext() {
 
 /* * */
 
-export const TripUpdatesContextProvider = ({ children }: PropsWithChildren) => {
+export function TripUpdatesContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
 	// A. Setup variables
 
 	const { data, error, isLoading } = useSWR<HubGtfsRtFeedMessage, Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_TRIP_UPDATES }, { refreshInterval: 20_000 }); // 2 seconds
+
+	console.log('data:', data);
 
 	//
 	// B. Transform data
@@ -87,9 +89,6 @@ export const TripUpdatesContextProvider = ({ children }: PropsWithChildren) => {
 				pushArrayToMap(tripUpdatesByStop, stopUpdate.stop_id, tripUpdate);
 			}
 		}
-
-		console.log('[TripUpdatesContextProvider] tripUpdatesByStop:', tripUpdatesByStop);
-		console.log('[TripUpdatesContextProvider] tripUpdatesByTrip:', tripUpdatesByTrip);
 		return { tripUpdatesByStop, tripUpdatesByTrip };
 	}, [data]);
 
