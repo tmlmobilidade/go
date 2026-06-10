@@ -28,9 +28,7 @@ export async function publishTripUpdates() {
 	//
 	// Fetch all stops and build a map of legacy_ids to stop_id
 
-	const allStopsData = await stops.findMany(
-		{ projection: { _id: 1, flags: 1 }, sort: { _id: 1 } },
-	);
+	const allStopsData = await stops.findMany({}, { projection: { _id: 1, flags: 1 }, sort: { _id: 1 } });
 
 	const allStopsMap = new Map<string, number>();
 
