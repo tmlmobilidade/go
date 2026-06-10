@@ -6,7 +6,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function StopsDetailTimetableSkeleton() {
+export function StopsDetailViewTimetableSkeleton() {
 	return (
 		<div className={styles.container}>
 			{Array.from({ length: 15 }).map((_, index) => (

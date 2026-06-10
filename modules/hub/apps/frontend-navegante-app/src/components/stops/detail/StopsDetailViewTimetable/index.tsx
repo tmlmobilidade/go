@@ -3,12 +3,12 @@
 import { NoDataLabel } from '@/components/common/display/NoDataLabel';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailTimetableRow } from '@/components/stops/detail/StopsDetailTimetableRow';
-import { StopsDetailTimetableSkeleton } from '@/components/stops/detail/StopsDetailTimetableSkeleton';
+import { StopsDetailViewTimetableSkeleton } from '@/components/stops/detail/StopsDetailViewTimetableSkeleton';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
-export function StopsDetailTimetable() {
+export function StopsDetailViewTimetable() {
 	//
 
 	//
@@ -22,7 +22,7 @@ export function StopsDetailTimetable() {
 	// B. Render components
 
 	if (stopsDetailContext.flags.is_loading) {
-		return <StopsDetailTimetableSkeleton />;
+		return <StopsDetailViewTimetableSkeleton />;
 	}
 
 	if (!stopsDetailContext.data.timetable?.length) {
