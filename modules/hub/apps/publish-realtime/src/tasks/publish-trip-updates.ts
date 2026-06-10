@@ -140,7 +140,7 @@ export async function publishTripUpdates() {
 		// Replace the stop_time_update with the parsed stop_time_update
 		entity.trip_update.stop_time_update = parsedStopTimeUpdates;
 		// Prepare the public trip ID
-		const publicTripId = getPublicTripId(activePlansIdsMap['21'], '2', entity.trip_update.trip.trip_id);
+		const publicTripId = getPublicTripId(activePlansIdsMap['2'], '2', entity.trip_update.trip.trip_id);
 		entity.id = publicTripId;
 		entity.trip_update.trip.trip_id = publicTripId;
 		// Add the trip update to the feed result
