@@ -20,10 +20,8 @@ interface LineNameProps {
 export function LineName({ align = 'left', lineData, longName, searchQuery, size = 'md' }: LineNameProps) {
 	const text = lineData?.long_name || longName || '• • •';
 	return (
-		<div className={styles.name} data-align={align} data-size={size}>
-			<MantineHighlight component="span" highlight={searchQuery || ''}>
-				{text}
-			</MantineHighlight>
-		</div>
+		<MantineHighlight classNames={{ root: styles.name }} component="span" data-align={align} data-size={size} highlight={searchQuery || ''}>
+			{text}
+		</MantineHighlight>
 	);
 }

@@ -49,10 +49,12 @@ export const TripUpdatesContextProvider = ({ children }: PropsWithChildren) => {
 
 	//
 	// A. Setup variables
+
 	const { data, error, isLoading } = useSWR<HubGtfsRtFeedMessage, Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_TRIP_UPDATES }, { refreshInterval: 20_000 }); // 2 seconds
 
 	//
 	// B. Transform data
+
 	const { tripUpdatesByStop, tripUpdatesByTrip } = useMemo(() => {
 		//
 
