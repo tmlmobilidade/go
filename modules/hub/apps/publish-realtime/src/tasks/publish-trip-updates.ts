@@ -7,7 +7,8 @@ import { pipelinePath, querySqlFromFile } from '@tmlmobilidade/go-hub-pckg-sql';
 import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GtfsRtFeedMessage, type HubGtfsRtStopTimeUpdate, type HubGtfsRtTripUpdate } from '@tmlmobilidade/types';
+import { type GtfsRtFeedMessage, type HubGtfsRtStopTimeUpdate, type HubGtfsRtTripUpdate, type HubPlan } from '@tmlmobilidade/types';
+import { getPublicTripId } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -24,6 +25,18 @@ export async function publishTripUpdates() {
 	Logger.title('Publishing GTFS-RT TripUpdate feed...');
 
 	const globalTimer = new Timer();
+
+	//
+	// Retrieve active plans from the database
+
+	const approvedPlans = await apiCache.get('hub:plans:approved:json');
+	if (!approvedPlans) throw new Error('No approved plans found in API Cache');
+
+	const approvedPlansData: HubPlan[] = JSON.parse(approvedPlans);
+	const activePlansData = approvedPlansData.filter(plan => plan.is_active);
+	if (!activePlansData.length) throw new Error('No active plans found in API Cache');
+
+	const activePlansIdsMap: Record<string, string> = Object.fromEntries(activePlansData.map(plan => [plan.agency_id, plan._id]));
 
 	//
 	// Fetch all stops and build a map of legacy_ids to stop_id
@@ -121,11 +134,15 @@ export async function publishTripUpdates() {
 		const parsedStopTimeUpdates: HubGtfsRtStopTimeUpdate[] = [];
 		entity.trip_update.stop_time_update?.forEach((stopUpdate) => {
 			const stopId = allStopsMap.get(stopUpdate.stop_id);
-			if (!stopId) return;
+			if (!stopId) return console.log('Stop not found', stopUpdate.stop_id);
 			parsedStopTimeUpdates.push({ ...stopUpdate, stop_id: String(stopId) });
 		});
 		// Replace the stop_time_update with the parsed stop_time_update
 		entity.trip_update.stop_time_update = parsedStopTimeUpdates;
+		// Prepare the public trip ID
+		const publicTripId = getPublicTripId(activePlansIdsMap['21'], '2', entity.trip_update.trip.trip_id);
+		entity.id = publicTripId;
+		entity.trip_update.trip.trip_id = publicTripId;
 		// Add the trip update to the feed result
 		feedResult.entity.push(entity);
 	});
