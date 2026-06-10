@@ -1,6 +1,5 @@
 /* * */
 
-import { Alight } from '@carrismetropolitana/api-types/gtfs-core';
 import { apiCache } from '@tmlmobilidade/databases';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
@@ -161,8 +160,8 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 				// This will be the path that is stored alongside this pattern group.
 
 				stopTimesAsCompletePath.push({
-					allow_drop_off: stopTimeRawData.drop_off_type !== Alight.NOT_AVAILABLE,
-					allow_pickup: stopTimeRawData.pickup_type !== Alight.NOT_AVAILABLE,
+					allow_drop_off: stopTimeRawData.drop_off_type !== 1, // Alight.NOT_AVAILABLE
+					allow_pickup: stopTimeRawData.pickup_type !== 1, // Alight.NOT_AVAILABLE
 					distance: Number(stopTimeRawData.shape_dist_traveled),
 					distance_delta: 0,
 					stop_id: stopTimeRawData.stop_id,
