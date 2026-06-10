@@ -1,12 +1,11 @@
 /* * */
 
 import { Alight } from '@carrismetropolitana/api-types/gtfs-core';
-import { type Arrival, type Pattern, type Route, type Trip, type Waypoint } from '@carrismetropolitana/api-types/network';
 import { apiCache } from '@tmlmobilidade/databases';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Route_Extended, type HubLine, type HubStop } from '@tmlmobilidade/types';
+import { type GTFS_Route_Extended, type HubArrival, type HubLine, type HubPattern, type HubRoute, type HubStop, type HubTrip, type HubWaypoint } from '@tmlmobilidade/types';
 import crypto from 'node:crypto';
 
 /* * */
@@ -77,7 +76,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 	const processPatternsTimer = new Timer();
 
 	const allLinesParsed = new Map<string, HubLine>();
-	const allRoutesParsed = new Map<string, Route>();
+	const allRoutesParsed = new Map<string, HubRoute>();
 	const updatedPatternKeys = new Set<string>();
 
 	for (const patternId of allDistinctPatternIds) {
@@ -91,7 +90,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 		//
 		// Setup a variable to hold the parsed pattern groups
 
-		const parsedPatternsForThisPatternGroup = new Map<string, Pattern>();
+		const parsedPatternsForThisPatternGroup = new Map<string, HubPattern>();
 
 		//
 		// For each trip belonging to the current pattern ID,
@@ -122,10 +121,10 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 			// a locality and a municipality ID. Instead of running these loops multiple times, we run it once and save all the necessary information immediately.
 
 			const stopTimesAsSimplifiedPath: { id: string, stop_sequence: number }[] = [];
-			const stopTimesAsCompletePath: Waypoint[] = [];
+			const stopTimesAsCompletePath: HubWaypoint[] = [];
 
 			const stopTimesAsSimplifiedSchedule: { arrival_time: string, stop_id: string, stop_sequence: number }[] = [];
-			const stopTimesAsCompleteSchedule: Arrival[] = [];
+			const stopTimesAsCompleteSchedule: HubArrival[] = [];
 
 			const facilitiesList = new Set<string>();
 
@@ -218,7 +217,8 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 			// This means that everytime any of these fields differs, a new pattern version will be created,
 			// and a different set of dates will be associated with it.
 
-			const currentPatternGroup: Partial<Pattern> = {
+			const currentPatternGroup: Partial<HubPattern> = {
+				agency_id: routeRawData.agency_id,
 				color: routeRawData.route_color ? `#${routeRawData.route_color}` : '#000000',
 				direction_id: tripRawData.direction_id,
 				headsign: tripRawData.trip_headsign,
@@ -239,12 +239,13 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 			// Check if this pattern version already exists, and create if it doesn't.
 			// The created pattern version will have all the complete information that was not used to differentiate between versions.
 
-			let currentPatternObject: Pattern;
+			let currentPatternObject: HubPattern;
 
 			if (parsedPatternsForThisPatternGroup.has(currentPatternVersionHash)) {
 				currentPatternObject = parsedPatternsForThisPatternGroup.get(currentPatternVersionHash);
 			} else {
 				currentPatternObject =	{
+					agency_id: routeRawData.agency_id,
 					color: routeRawData.route_color ? `#${routeRawData.route_color}` : '#000000',
 					direction_id: tripRawData.direction_id,
 					district_ids: [],

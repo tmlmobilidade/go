@@ -13,6 +13,7 @@ import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useSt
 
 export interface StopsDetailViewTimetableData {
 	_id: string
+	agency_id: string
 	arrival_effective_ms: null | UnixTimestamp
 	arrival_estimated_ms: null | UnixTimestamp
 	arrival_observed_ms: null | UnixTimestamp
@@ -145,6 +146,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 					// Add this stop time to the timetable array
 					timetableDataForSelectedDate.push({
 						_id: uniqueIdValueForArrivalData,
+						agency_id: ,
 						arrival_effective_ms: effectiveArrivalMs,
 						arrival_estimated_ms: null,
 						arrival_observed_ms: null,

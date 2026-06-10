@@ -23,6 +23,7 @@ export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailView
 			<div className={styles.container} data-with-clock={withClock}>
 				<div className={styles.summary}>
 					<LineDisplay
+						agencyId={data.agency_id}
 						color={data.color}
 						longName={data.headsign}
 						shortName={data.short_name}
