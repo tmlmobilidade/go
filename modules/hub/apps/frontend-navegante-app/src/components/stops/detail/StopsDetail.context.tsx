@@ -206,7 +206,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 			timetable: timetableDataForSelectedDate,
 		},
 		flags: {
-			is_loading: isLoading,
+			is_loading: isLoading || stopsContext.flags.isLoading || linesContext.flags.isLoading,
 		},
 	};
 
