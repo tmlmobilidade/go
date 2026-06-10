@@ -15,7 +15,6 @@ export function StopsDetailViewTimetableClock() {
 
 	const [currentTimeHours, setCurrentTimeHours] = useState('00');
 	const [currentTimeMinutes, setCurrentTimeMinutes] = useState('00');
-	const [currentTimeSeconds, setCurrentTimeSeconds] = useState('00');
 
 	//
 	// B. Transform data
@@ -25,7 +24,6 @@ export function StopsDetailViewTimetableClock() {
 			const currentTime = Dates.now('Europe/Lisbon');
 			setCurrentTimeHours(currentTime.toFormat('HH'));
 			setCurrentTimeMinutes(currentTime.toFormat('mm'));
-			setCurrentTimeSeconds(currentTime.toFormat('ss'));
 		}, 1000);
 		return () => clearInterval(interval);
 	}, []);
@@ -41,8 +39,6 @@ export function StopsDetailViewTimetableClock() {
 				{currentTimeHours}
 				<span>:</span>
 				{currentTimeMinutes}
-				<span>:</span>
-				{currentTimeSeconds}
 			</div>
 		</div>
 	);

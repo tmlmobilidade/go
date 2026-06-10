@@ -6,24 +6,22 @@
 	flex-direction: column;
 	width: 100%;
 	cursor: pointer;
-	border-bottom: 1px solid var(--color-system-border-100);
+	border-top: 1px solid var(--color-system-border-100);
 	border-radius: 0;
 	transition: all 200ms ease;
 }
 
-.container:last-child,
+.container:first-child,
 .container[data-with-clock='true'] {
-	border-bottom: none;
+	border-top: none;
 }
 
 .container:has(+ .isSelected) {
-  border-bottom-color: transparent;
+  border-top-color: transparent;
 }
 
-@media (width < 650px) {
-	.container {
-		border-bottom: unset;
-	}
+.container[data-is-past='true'] {
+	opacity: 0.35;
 }
 
 /* * */

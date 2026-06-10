@@ -20,7 +20,17 @@ export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailView
 	return (
 		<>
 
-			<div className={styles.container} data-with-clock={withClock}>
+			{withClock && (
+				<div className={styles.clockWrapper}>
+					<StopsDetailViewTimetableClock />
+				</div>
+			)}
+
+			<div
+				className={styles.container}
+				data-is-past={data.is_past}
+				data-with-clock={withClock}
+			>
 				<div className={styles.summary}>
 					<LineDisplay
 						agencyId={data.agency_id}
@@ -29,7 +39,6 @@ export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailView
 						shortName={data.short_name}
 						textColor={data.text_color}
 					/>
-					{data.arrival_scheduled_ms}
 					<NextArrivals
 						arrivals={[data.arrival_scheduled_ms]}
 						scheduledArrivals={data.arrival_observed_ms ? [data.arrival_observed_ms] : undefined}
@@ -38,12 +47,6 @@ export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailView
 					/>
 				</div>
 			</div>
-
-			{withClock && (
-				<div className={styles.clockWrapper}>
-					<StopsDetailViewTimetableClock />
-				</div>
-			)}
 
 		</>
 	);

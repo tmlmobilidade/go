@@ -5,7 +5,7 @@ import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { fetchPatterns } from '@/utils/fetch-patterns';
 import { Dates } from '@tmlmobilidade/dates';
-import { HubLine, type HubPattern, HubStop, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type HubLine, type HubPattern, type HubStop, type UnixTimestamp } from '@tmlmobilidade/types';
 import { convertGTFSTimeStringAndOperationalDateToUnixTimestamp } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -146,7 +146,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 					// Add this stop time to the timetable array
 					timetableDataForSelectedDate.push({
 						_id: uniqueIdValueForArrivalData,
-						agency_id: ,
+						agency_id: patternData.agency_id,
 						arrival_effective_ms: effectiveArrivalMs,
 						arrival_estimated_ms: null,
 						arrival_observed_ms: null,
@@ -158,7 +158,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 						is_past: isPast,
 						is_realtime: false,
 						line_id: patternData.line_id,
-						pattern_id: patternData.id,
+						pattern_id: patternData._id,
 						shape_id: patternData.shape_id,
 						short_name: patternData.short_name,
 						stop_sequence: stopTime.stop_sequence,
