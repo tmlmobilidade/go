@@ -34,8 +34,8 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"oci-common": "2.132.0",
-		"oci-generativeaiinference": "2.132.0"
+		"oci-common": "2.134.1",
+		"oci-generativeaiinference": "2.134.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

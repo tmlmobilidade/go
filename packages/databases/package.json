@@ -39,7 +39,7 @@
 		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"mongodb": "7.2.0",
+		"mongodb": "7.3.0",
 		"redis": "6.0.0",
 		"zod": "3.25.76"
 	},

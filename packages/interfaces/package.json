@@ -45,9 +45,9 @@
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
 		"bcryptjs": "3.0.3",
-		"mongodb": "7.2.0",
-		"oci-common": "2.132.0",
-		"oci-objectstorage": "2.132.0",
+		"mongodb": "7.3.0",
+		"oci-common": "2.134.1",
+		"oci-objectstorage": "2.134.1",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
