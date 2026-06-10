@@ -15,7 +15,7 @@
 /* * */
 /* IF SHOULD FILL CONTAINER */
 
-.fill {
+.container[data-fill='true'] {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -27,6 +27,7 @@
 /* * */
 /* WITH MIN HEIGHT */
 
-.withMinHeight {
-	padding: var(--size-spacing-30);
+.container[data-with-min-height='true'] {
+	padding-top: 30px;
+	padding-bottom: 30px;
 }

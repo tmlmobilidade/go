@@ -101,7 +101,11 @@ export function StopsDetailViewTimetable() {
 				))}
 			</div>
 
-			<NoDataLabel text={t('default:stops.StopsDetailContentTimetableSchedule.end_of_day')} withMinHeight />
+			<NoDataLabel
+				text={t('default:stops.StopsDetailContentTimetableSchedule.end_of_day')}
+				withMinHeight
+			/>
+
 		</Section>
 	);
 }
