@@ -84,7 +84,7 @@ export function TripUpdatesContextProvider({ children }: PropsWithChildren) {
 		return map;
 	}, [tripUpdatesData]);
 
-	console.log('tripUpdatesMap:', tripUpdatesMap);
+	// console.log('tripUpdatesMap:', tripUpdatesMap);
 
 	//
 	// C. Handle actions

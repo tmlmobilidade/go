@@ -148,8 +148,8 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 						const key = `${tripId}-${stopTime.stop_id}-${stopTime.stop_sequence}`;
 						// Return the trip update for the stop
 						tripUpdate = tripUpdatesContext.data.map.get(key);
+						// console.log('tripUpdate:', tripUpdate, key, tripUpdatesContext.data.map.keys());
 					}
-					console.log('tripUpdate:', tripUpdate);
 					const estimatedArrivalMs = tripUpdate?.arrival_time;
 					const arrivalDelayMs = tripUpdate?.delay * 1000;
 					const effectiveArrivalMs = estimatedArrivalMs ?? scheduledArrivalMs;
