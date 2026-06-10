@@ -1,10 +1,8 @@
 'use client';
 
-/* * */
-
 import { LiveIcon } from '@/components/common/display/LiveIcon';
 import { IconAlertCircleFilled, IconClockHour9 } from '@tabler/icons-react';
-import { DateTime } from 'luxon';
+import { Dates } from '@tmlmobilidade/dates';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -53,7 +51,7 @@ export function NextArrivals({ allowPastArrivals = true, arrivals, scheduledArri
 
 		const formatArrivals = () => {
 			//
-			const nowInSeconds = DateTime.now().toSeconds();
+			const nowInSeconds = Dates.now('Europe/Lisbon').unix_timestamp / 1000;
 			const allFormattedArrivalsResult: NextArrival[] = [];
 			//
 			for (const unixTimestamp of arrivals) {
@@ -95,7 +93,7 @@ export function NextArrivals({ allowPastArrivals = true, arrivals, scheduledArri
 						estimated_arrival_minutes: minutesUntilArrival,
 						estimated_arrival_seconds: secondsUntilArrival,
 						estimated_arrival_unix: unixTimestamp,
-						label: DateTime.fromSeconds(unixTimestamp).toFormat('HH:mm'),
+						label: Dates.fromUnixTimestamp(unixTimestamp).setZone('Europe/Lisbon', 'offset_only').toFormat('HH:mm'),
 					});
 				}
 			}
@@ -140,7 +138,7 @@ export function NextArrivals({ allowPastArrivals = true, arrivals, scheduledArri
 				</div>
 				{scheduledArrivals?.map(unix => (
 					<p key={unix} className={styles.scheduledSecondary}>
-						{DateTime.fromSeconds(unix).toFormat('HH:mm')}
+						{Dates.fromUnixTimestamp(unix).setZone('Europe/Lisbon', 'offset_only').toFormat('HH:mm')}
 					</p>
 				))}
 			</div>

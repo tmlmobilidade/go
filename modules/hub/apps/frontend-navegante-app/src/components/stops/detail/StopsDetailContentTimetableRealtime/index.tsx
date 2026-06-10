@@ -5,8 +5,8 @@
 import { NoDataLabel } from '@/components/common/display/NoDataLabel';
 import { getFutureRowStatus, isRealtimeArrival, normalizeTripIdForMatch, type StopTimetableRealtimeArrival } from '@/components/stops/detail/parse-eta-gtfs';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
-import { StopsDetailContentTimetableClock } from '@/components/stops/detail/StopsDetailContentTimetableClock';
-import { StopsDetailContentTimetableRow } from '@/components/stops/detail/StopsDetailContentTimetableRow';
+import { StopsDetailViewTimetableClock } from '@/components/stops/detail/StopsDetailViewTimetableClock';
+import { StopsDetailViewTimetableRow } from '@/components/stops/detail/StopsDetailViewTimetableRow';
 import { type HubArrival } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
@@ -19,7 +19,7 @@ import styles from './styles.module.css';
 /**
  * When GTFS has no rows for this stop, split static schedule into past and future trips.
  *
- * Called from: StopsDetailContentTimetableRealtime useMemo
+ * Called from: StopsDetailTimetableRealtime useMemo
  */
 function splitScheduleByNow(schedule: HubArrival[] | undefined): {
 	futureTrips: HubArrival[]
@@ -53,7 +53,7 @@ function splitScheduleByNow(schedule: HubArrival[] | undefined): {
 /**
  * Overlay GTFS rows onto schedule trips matched by trip_id + stop_sequence.
  *
- * Called from: StopsDetailContentTimetableRealtime useMemo
+ * Called from: StopsDetailTimetableRealtime useMemo
  */
 function mergeScheduleWithGtfs(
 	schedulePast: HubArrival[],
@@ -98,7 +98,7 @@ function mergeScheduleWithGtfs(
 
 /* * */
 
-export function StopsDetailContentTimetableRealtime() {
+export function StopsDetailTimetableRealtime() {
 	//
 
 	//
@@ -139,7 +139,7 @@ export function StopsDetailContentTimetableRealtime() {
 
 	if (pastTrips.length === 0 && futureTrips.length === 0) {
 		return (
-			<NoDataLabel text={t('default:stops.StopsDetailContentTimetableRealtime.no_service')} withMinHeight />
+			<NoDataLabel text={t('default:stops.StopsDetailTimetableRealtime.no_service')} withMinHeight />
 		);
 	}
 
@@ -147,12 +147,12 @@ export function StopsDetailContentTimetableRealtime() {
 		<>
 
 			<p className={styles.showPastTripsToggle} onClick={handleToggleShowPastTrips}>
-				{showPastTrips ? t('default:stops.StopsDetailContentTimetableRealtime.show_past_trips_toggle.hide') : t('default:stops.StopsDetailContentTimetableRealtime.show_past_trips_toggle.show')}
+				{showPastTrips ? t('default:stops.StopsDetailTimetableRealtime.show_past_trips_toggle.hide') : t('default:stops.StopsDetailTimetableRealtime.show_past_trips_toggle.show')}
 			</p>
 
 			{!showPastTrips && mostRecentPastTrip && (
 				<div>
-					<StopsDetailContentTimetableRow
+					<StopsDetailTimetableRow
 						arrivalData={mostRecentPastTrip}
 						status="passed"
 					/>
@@ -161,25 +161,25 @@ export function StopsDetailContentTimetableRealtime() {
 
 			{showPastTrips && pastTrips.length > 0 && pastTrips.map(tripData => (
 				<div key={`${tripData.trip_id}-${tripData.stop_sequence}-${isRealtimeArrival(tripData) ? 'rt' : (tripData as HubArrival).arrival_time}`}>
-					<StopsDetailContentTimetableRow
+					<StopsDetailTimetableRow
 						arrivalData={tripData}
 						status="passed"
 					/>
 				</div>
 			))}
 
-			<StopsDetailContentTimetableClock />
+			<StopsDetailViewTimetableClock />
 
 			{futureTrips.length > 0 && (
 				<>
 					{futureTrips.map(tripData => (
-						<StopsDetailContentTimetableRow
+						<StopsDetailTimetableRow
 							key={`${tripData.trip_id}-${tripData.stop_sequence}-${isRealtimeArrival(tripData) ? 'rt' : (tripData as HubArrival).arrival_time}`}
 							arrivalData={tripData}
 							status={getFutureRowStatus(tripData)}
 						/>
 					))}
-					<NoDataLabel text={t('default:stops.StopsDetailContentTimetableRealtime.end_of_day')} withMinHeight />
+					<NoDataLabel text={t('default:stops.StopsDetailTimetableRealtime.end_of_day')} withMinHeight />
 				</>
 			)}
 

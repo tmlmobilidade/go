@@ -1,7 +1,16 @@
 /* * */
 /* SHOW PAST TRIPS TOGGLE */
 
-.showPastTripsToggle {
+.arrivalsWrapper {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+/* * */
+/* SHOW PAST TRIPS TOGGLE */
+
+.toggleShowPastArrivals {
 	width: 100%;
 	padding: 5px;
 	font-size: 14px;
@@ -13,7 +22,7 @@
 	transition: all 200ms ease;
 }
 
-.showPastTripsToggle:hover {
+.toggleShowPastArrivals:hover {
 	color: var(--color-system-text-100);
 	background-color: var(--color-system-background-200);
 }

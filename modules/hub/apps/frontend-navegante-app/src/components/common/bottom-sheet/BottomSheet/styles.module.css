@@ -72,7 +72,7 @@
 	z-index: 10;
 	display: grid;
 	flex: 0 0 auto;
-	grid-template-columns: 50px minmax(0, 1fr) 50px;
+	grid-template-columns: 50px 1fr 50px;
 	gap: 10px;
 	align-items: center;
 	width: 100%;

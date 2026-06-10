@@ -30,7 +30,7 @@ export function StopsDetailViewHeaderAssociatedLines() {
 	const linesByAgencyId = useMemo(() => {
 		// Group lines by agency ID
 		const groups: Record<string, { agency_id: string, lines: HubLine[] }> = {};
-		stopsDetailContext.data.lines?.forEach((line) => {
+		stopsDetailContext.data.associated_lines?.forEach((line) => {
 			// Merge CM agencies into a single agency
 			const agencyId = ['41', '42', '43', '44'].includes(line.agency_id) ? 'CM' : line.agency_id;
 			// Initialize the array for the agency ID if it doesn't exist
@@ -44,7 +44,7 @@ export function StopsDetailViewHeaderAssociatedLines() {
 			.values(groups)
 			.map(group => ({ ...group, lines: group.lines.sort((a, b) => a.short_name.localeCompare(b.short_name, undefined, { numeric: true })) }))
 			.sort((a, b) => a.lines.length - b.lines.length);
-	}, [stopsDetailContext.data.lines]);
+	}, [stopsDetailContext.data.associated_lines]);
 
 	//
 	// B. Render componentss

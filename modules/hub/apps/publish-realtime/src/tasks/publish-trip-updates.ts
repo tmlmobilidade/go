@@ -1,10 +1,13 @@
 /* * */
 
 import { apiCache, GOClickHouseClient } from '@tmlmobilidade/databases';
+import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { pipelinePath, querySqlFromFile } from '@tmlmobilidade/go-hub-pckg-sql';
+import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { type GtfsRtFeedMessage, HubGtfsRtTripUpdate } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -23,27 +26,60 @@ export async function publishTripUpdates() {
 	const globalTimer = new Timer();
 
 	//
-	// Retrieve GTFS-RT TripUpdate rows from ClickHouse
+	// Fetch all stops and build a map of legacy_ids to stop_id
 
-	Logger.info(`Retrieving Estimated Time of Arrivals from ClickHouse...`);
-	const clickhouseClient = await GOClickHouseClient.getClient();
-	const allTrips = await querySqlFromFile<ClickHouseEtaGtfsResponse>(clickhouseClient, pipelinePath('select-eta-gtfs.sql'));
-	Logger.info(`Found ${allTrips.length} trips`, 1);
+	const allStopsData = await stops.findMany(
+		{ projection: { _id: 1, flags: 1 }, sort: { _id: 1 } },
+	);
+
+	const allStopsMap = new Map<string, number>();
+
+	for (const stopData of allStopsData) {
+		for (const flag of stopData.flags) {
+			allStopsMap.set(flag.stop_id, stopData._id);
+		}
+	}
 
 	//
-	// Wrap in GTFS-RT feed envelope and parse trip_update JSON for nesting
+	// Initialize a new GTFS-RT feed envelope
 
-	const feed = {
-		entity: allTrips.map(row => ({
-			id: row.trip_id,
-			trip_update: JSON.parse(row.trip_update),
-		})),
+	const feedResult: GtfsRtFeedMessage = {
+		entity: [],
 		header: {
 			gtfs_realtime_version: '2.0',
 			incrementality: 'FULL_DATASET',
-			timestamp: Math.floor(Date.now() / 1000),
+			timestamp: Dates.now('Europe/Lisbon').unix_timestamp / 1000,
 		},
 	};
+
+	//
+	// Retrieve GTFS-RT TripUpdate rows from ClickHouse
+	// and process the stop_time_update to replace the stop_id
+	// with the legacy_id from the stops map.
+
+	const clickhouseTimer = new Timer();
+
+	Logger.info(`Retrieving Estimated Time of Arrivals from ClickHouse...`);
+
+	const clickhouseClient = await GOClickHouseClient.getClient();
+
+	const allTripUpdates = await querySqlFromFile<ClickHouseEtaGtfsResponse>(clickhouseClient, pipelinePath('select-eta-gtfs.sql'));
+
+	allTripUpdates.forEach((row) => {
+		// Parse the trip update from the ClickHouse response
+		const tripUpdate: HubGtfsRtTripUpdate = JSON.parse(row.trip_update);
+		// Process the stop_time_update to replace the stop_id
+		// with the legacy_id from the stops map
+		for (const stopUpdate of tripUpdate.stop_time_update) {
+			const stopId = allStopsMap.get(stopUpdate.stop_id);
+			if (!stopId) continue;
+			stopUpdate.stop_id = String(stopId);
+		}
+		// Add the trip update to the feed result
+		feedResult.entity.push({ id: row.trip_id, trip_update: tripUpdate });
+	});
+
+	Logger.info(`Found ${allTripUpdates.length} trip updates in ${clickhouseTimer.get()}`, 1);
 
 	//
 	// CP Trip Updates (Already in GTFS-RT format)
@@ -72,19 +108,30 @@ export async function publishTripUpdates() {
 	//
 	// ML Trip Updates (Already in GTFS-RT format)
 
+	const mlTimer = new Timer();
+
 	Logger.info(`Retrieving Estimated Time of Arrivals from ML API...`);
+
 	const mlTrips = await externalClients.ml.tripUpdates();
 
-	feed.entity.push(...mlTrips.entity.map(entity => ({
-		id: entity.id,
-		trip_update: entity.trip_update,
-	})));
-	Logger.info(`Found ${mlTrips.entity.length} ML trips`, 1);
+	mlTrips.entity.forEach((entity) => {
+		// Process the stop_time_update to replace the stop_id
+		// with the legacy_id from the stops map
+		for (const stopUpdate of entity.trip_update.stop_time_update) {
+			const stopId = allStopsMap.get(stopUpdate.stop_id);
+			if (!stopId) continue;
+			stopUpdate.stop_id = String(stopId);
+		}
+		// Add the trip update to the feed result
+		feedResult.entity.push({ id: entity.id, trip_update: entity.trip_update });
+	});
+
+	Logger.info(`Found ${mlTrips.entity.length} ML trips in ${mlTimer.get()}`, 1);
 
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:realtime:eta:gtfs', JSON.stringify(feed));
+	await apiCache.set('hub:realtime:eta:gtfs', JSON.stringify(feedResult));
 
 	Logger.success(`Finished publishing GTFS-RT TripUpdate feed (${globalTimer.get()})`);
 
