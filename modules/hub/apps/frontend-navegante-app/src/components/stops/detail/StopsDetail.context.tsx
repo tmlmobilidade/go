@@ -18,7 +18,6 @@ export interface StopsDetailViewTimetableData {
 	arrival_delay_ms: number
 	arrival_effective_ms: null | UnixTimestamp
 	arrival_estimated_ms: null | UnixTimestamp
-	arrival_observed_ms: null | UnixTimestamp
 	arrival_scheduled_ms: UnixTimestamp
 	color: string
 	headsign: string
@@ -158,6 +157,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 					const isLastStop = stopTime.stop_sequence === patternData.path[patternData.path.length - 1].stop_sequence;
 					// Detect the temporal status of this stop time
 					const isPast = scheduledArrivalMs < Dates.now('Europe/Lisbon').unix_timestamp;
+					const isRealtime = !!estimatedArrivalMs;
 					// Add this stop time to the timetable array
 					timetableDataForSelectedDate.push({
 						_id: uniqueIdValueForArrivalData,
@@ -165,14 +165,13 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 						arrival_delay_ms: arrivalDelayMs,
 						arrival_effective_ms: effectiveArrivalMs,
 						arrival_estimated_ms: estimatedArrivalMs,
-						arrival_observed_ms: null,
 						arrival_scheduled_ms: scheduledArrivalMs,
 						color: patternData.color,
 						headsign: patternData.headsign,
 						is_first_stop: isFirstStop,
 						is_last_stop: isLastStop,
 						is_past: isPast,
-						is_realtime: false,
+						is_realtime: isRealtime,
 						line_id: patternData.line_id,
 						pattern_id: patternData._id,
 						shape_id: patternData.shape_id,
@@ -187,9 +186,9 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 		}
 		// Return the timetable data, sorted by scheduled arrival time
 		return timetableDataForSelectedDate.sort((a, b) => {
-			// Prefer observed over estimated over scheduled arrivals
-			const aArrivalMs = a.arrival_observed_ms ?? a.arrival_estimated_ms ?? a.arrival_scheduled_ms;
-			const bArrivalMs = b.arrival_observed_ms ?? b.arrival_estimated_ms ?? b.arrival_scheduled_ms;
+			// Prefer estimated over scheduled arrivals
+			const aArrivalMs = a.arrival_estimated_ms ?? a.arrival_scheduled_ms;
+			const bArrivalMs = b.arrival_estimated_ms ?? b.arrival_scheduled_ms;
 			return aArrivalMs - bArrivalMs;
 		});
 	}, [validPatternsData, operationalDate.selectedOperationalDate, stopId, tripUpdatesContext.data.map]);

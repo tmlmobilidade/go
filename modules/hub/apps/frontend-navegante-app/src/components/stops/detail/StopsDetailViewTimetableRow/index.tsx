@@ -1,9 +1,9 @@
 'use client';
 
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
-import { NextArrivals } from '@/components/stops/detail/NextArrivals';
 import { type StopsDetailViewTimetableData } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailViewTimetableClock } from '@/components/stops/detail/StopsDetailViewTimetableClock';
+import { StopsDetailViewTimetableRowArrival } from '@/components/stops/detail/StopsDetailViewTimetableRowArrival';
 
 import styles from './styles.module.css';
 
@@ -39,14 +39,7 @@ export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailView
 						shortName={data.short_name}
 						textColor={data.text_color}
 					/>
-					{/* {data.arrival_estimated_ms || '-'}
-					{data.stop_sequence || '-'} */}
-					<NextArrivals
-						arrivals={[data.arrival_scheduled_ms]}
-						scheduledArrivals={data.arrival_observed_ms ? [data.arrival_observed_ms] : undefined}
-						status={data.arrival_observed_ms ? 'realtime' : 'scheduled'}
-						tripId={data.trip_ids[0]}
-					/>
+					<StopsDetailViewTimetableRowArrival data={data} />
 				</div>
 			</div>
 
