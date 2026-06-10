@@ -14,7 +14,7 @@ let ITERATION = 0;
 const main = async () => {
 	//
 
-	Logger.init();
+	Logger.title(`[${ITERATION}] Publishing realtime data...`);
 
 	const globalTimer = new Timer();
 
@@ -31,7 +31,7 @@ const main = async () => {
 	//
 	// Log the total time taken for all tasks
 
-	Logger.terminate(`Publish realtime data completed in ${globalTimer.get()}`);
+	Logger.terminate(`[${ITERATION}] Publish realtime data completed in ${globalTimer.get()}`);
 
 	//
 };

@@ -7,7 +7,7 @@ import { pipelinePath, querySqlFromFile } from '@tmlmobilidade/go-hub-pckg-sql';
 import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GtfsRtFeedMessage, HubGtfsRtTripUpdate } from '@tmlmobilidade/types';
+import { type GtfsRtFeedMessage, type HubGtfsRtStopTimeUpdate, type HubGtfsRtTripUpdate } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -68,13 +68,16 @@ export async function publishTripUpdates() {
 	allTripUpdates.forEach((row) => {
 		// Parse the trip update from the ClickHouse response
 		const tripUpdate: HubGtfsRtTripUpdate = JSON.parse(row.trip_update);
-		// Process the stop_time_update to replace the stop_id
+		// Parse the stop_time_update to replace the stop_id
 		// with the legacy_id from the stops map
-		for (const stopUpdate of tripUpdate.stop_time_update) {
+		const parsedStopTimeUpdates: HubGtfsRtStopTimeUpdate[] = [];
+		tripUpdate.stop_time_update?.forEach((stopUpdate) => {
 			const stopId = allStopsMap.get(stopUpdate.stop_id);
-			if (!stopId) continue;
-			stopUpdate.stop_id = String(stopId);
-		}
+			if (!stopId) return;
+			parsedStopTimeUpdates.push({ ...stopUpdate, stop_id: String(stopId) });
+		});
+		// Replace the stop_time_update with the parsed stop_time_update
+		tripUpdate.stop_time_update = parsedStopTimeUpdates;
 		// Add the trip update to the feed result
 		feedResult.entity.push({ id: row.trip_id, trip_update: tripUpdate });
 	});
@@ -115,15 +118,18 @@ export async function publishTripUpdates() {
 	const mlTrips = await externalClients.ml.tripUpdates();
 
 	mlTrips.entity.forEach((entity) => {
-		// Process the stop_time_update to replace the stop_id
+		// Parse the stop_time_update to replace the stop_id
 		// with the legacy_id from the stops map
-		for (const stopUpdate of entity.trip_update.stop_time_update) {
+		const parsedStopTimeUpdates: HubGtfsRtStopTimeUpdate[] = [];
+		entity.trip_update.stop_time_update?.forEach((stopUpdate) => {
 			const stopId = allStopsMap.get(stopUpdate.stop_id);
-			if (!stopId) continue;
-			stopUpdate.stop_id = String(stopId);
-		}
+			if (!stopId) return;
+			parsedStopTimeUpdates.push({ ...stopUpdate, stop_id: String(stopId) });
+		});
+		// Replace the stop_time_update with the parsed stop_time_update
+		entity.trip_update.stop_time_update = parsedStopTimeUpdates;
 		// Add the trip update to the feed result
-		feedResult.entity.push({ id: entity.id, trip_update: entity.trip_update });
+		feedResult.entity.push(entity);
 	});
 
 	Logger.info(`Found ${mlTrips.entity.length} ML trips in ${mlTimer.get()}`, 1);
