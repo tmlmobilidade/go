@@ -33,9 +33,9 @@ export function StopsDetailViewTimetable() {
 		// Get now in Unix timestamp
 		const now = Dates.now('Europe/Lisbon').unix_timestamp;
 		// Check if the timetable starts after now or ends before now
-		if (stopsDetailContext.data.timetable[0].arrival_scheduled_ms > now) return;
-		if (stopsDetailContext.data.timetable[stopsDetailContext.data.timetable.length - 1].arrival_scheduled_ms < now) return;
-		// Find the index of the first item in the timetable that has a scheduled arrival time greater than now
+		if (stopsDetailContext.data.timetable[0].arrival_effective_ms > now) return;
+		if (stopsDetailContext.data.timetable[stopsDetailContext.data.timetable.length - 1].arrival_effective_ms < now) return;
+		// Find the first item in the timetable that has a scheduled arrival time greater than now
 		const firstItemAfterNow = stopsDetailContext.data.timetable.find(item => item.arrival_effective_ms > now);
 		return firstItemAfterNow?._id;
 	}, [stopsDetailContext.data.timetable]);
@@ -86,7 +86,7 @@ export function StopsDetailViewTimetable() {
 					<StopsDetailViewTimetableRow
 						key={item._id}
 						data={item}
-						withClock={item._id === timetableClockIdInsert}
+						withClock={false}
 					/>
 				))}
 			</div>

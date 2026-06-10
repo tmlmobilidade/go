@@ -147,16 +147,15 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 						const key = `${tripId}-${stopTime.stop_id}-${stopTime.stop_sequence}`;
 						// Return the trip update for the stop
 						tripUpdate = tripUpdatesContext.data.map.get(key);
-						// console.log('tripUpdate:', tripUpdate, key, tripUpdatesContext.data.map.keys());
 					}
 					const estimatedArrivalMs = tripUpdate?.arrival_time;
 					const arrivalDelayMs = tripUpdate?.delay * 1000;
-					const effectiveArrivalMs = estimatedArrivalMs ?? scheduledArrivalMs;
+					const effectiveArrivalMs = estimatedArrivalMs || scheduledArrivalMs;
 					// Detect the position of this stop time in the pattern
 					const isFirstStop = stopTime.stop_sequence === patternData.path[0].stop_sequence;
 					const isLastStop = stopTime.stop_sequence === patternData.path[patternData.path.length - 1].stop_sequence;
 					// Detect the temporal status of this stop time
-					const isPast = scheduledArrivalMs < Dates.now('Europe/Lisbon').unix_timestamp;
+					const isPast = effectiveArrivalMs < Dates.now('Europe/Lisbon').unix_timestamp;
 					const isRealtime = !!estimatedArrivalMs;
 					// Add this stop time to the timetable array
 					timetableDataForSelectedDate.push({
@@ -185,12 +184,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 			}
 		}
 		// Return the timetable data, sorted by scheduled arrival time
-		return timetableDataForSelectedDate.sort((a, b) => {
-			// Prefer estimated over scheduled arrivals
-			const aArrivalMs = a.arrival_estimated_ms ?? a.arrival_scheduled_ms;
-			const bArrivalMs = b.arrival_estimated_ms ?? b.arrival_scheduled_ms;
-			return aArrivalMs - bArrivalMs;
-		});
+		return timetableDataForSelectedDate.sort((a, b) => a.arrival_effective_ms - b.arrival_effective_ms);
 	}, [validPatternsData, operationalDate.selectedOperationalDate, stopId, tripUpdatesContext.data.map]);
 
 	//
