@@ -2,7 +2,7 @@
 
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailAlerts } from '@/components/stops/detail/StopsDetailAlerts';
-import { StopsDetailContent } from '@/components/stops/detail/StopsDetailContent';
+import { StopsDetailTimetable } from '@/components/stops/detail/StopsDetailTimetable';
 import { StopsDetailViewHeader } from '@/components/stops/detail/StopsDetailViewHeader';
 import { Divider, LoadingSection, Section } from '@tmlmobilidade/ui';
 
@@ -28,7 +28,7 @@ export function StopsDetailView() {
 			<StopsDetailViewHeader />
 			<Divider />
 			<StopsDetailAlerts />
-			<StopsDetailContent />
+			<StopsDetailTimetable />
 		</Section>
 	);
 }
