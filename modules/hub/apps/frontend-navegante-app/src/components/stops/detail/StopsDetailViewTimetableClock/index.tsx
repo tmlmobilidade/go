@@ -7,7 +7,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function StopsDetailTimetableClock() {
+export function StopsDetailViewTimetableClock() {
 	//
 
 	//
@@ -46,6 +46,4 @@ export function StopsDetailTimetableClock() {
 			</div>
 		</div>
 	);
-
-	//
 }

@@ -13,6 +13,7 @@ import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useSt
 
 export interface StopsDetailViewTimetableData {
 	_id: string
+	arrival_effective_ms: null | UnixTimestamp
 	arrival_estimated_ms: null | UnixTimestamp
 	arrival_observed_ms: null | UnixTimestamp
 	arrival_scheduled_ms: UnixTimestamp
@@ -133,8 +134,9 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 					if (String(stopTime.stop_id) !== String(stopId)) continue;
 					// Set a unique and stable ID for this arrival data
 					const uniqueIdValueForArrivalData = `${operationalDate.selectedOperationalDate}-${patternData.version_id}-${tripData.version_id}-${stopTime.stop_id}-${stopTime.stop_sequence}-${stopTime.arrival_time}`;
-					// Convert GTFS time string to Unix timestamp
+					// Convert GTFS time string to Unix Timestamp
 					const scheduledArrivalMs = convertGTFSTimeStringAndOperationalDateToUnixTimestamp(stopTime.arrival_time, operationalDate.selectedOperationalDate);
+					const effectiveArrivalMs = scheduledArrivalMs; // TODO: Modify after detecting arrival and observed arrivals
 					// Detect the position of this stop time in the pattern
 					const isFirstStop = stopTime.stop_sequence === patternData.path[0].stop_sequence;
 					const isLastStop = stopTime.stop_sequence === patternData.path[patternData.path.length - 1].stop_sequence;
@@ -143,6 +145,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 					// Add this stop time to the timetable array
 					timetableDataForSelectedDate.push({
 						_id: uniqueIdValueForArrivalData,
+						arrival_effective_ms: effectiveArrivalMs,
 						arrival_estimated_ms: null,
 						arrival_observed_ms: null,
 						arrival_scheduled_ms: scheduledArrivalMs,

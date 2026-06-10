@@ -6,13 +6,13 @@
 	flex-direction: column;
 	width: 100%;
 	cursor: pointer;
-	background-color: var(--color-system-background-100);
 	border-bottom: 1px solid var(--color-system-border-100);
 	border-radius: 0;
 	transition: all 200ms ease;
 }
 
-.container:last-child {
+.container:last-child,
+.container[data-with-clock='true'] {
 	border-bottom: none;
 }
 
@@ -45,12 +45,13 @@
 
 /* * */
 /* SUMMARY */
+
 .summary {
 	display: grid;
-	grid-template-columns: 1fr auto auto;	
+	grid-template-columns: 1fr auto auto;
 	align-items: center;
 	justify-content: space-between;
-	margin: 10px 0;
+	padding: 15px;
 }
 
 /* * */
@@ -62,7 +63,7 @@
 	gap: 5px;
 	align-items: flex-start;
 	justify-content: flex-start;
-	padding: 15px;
+	padding: 15px 0;
 	border-top: 1px solid var(--color-system-border-100);
 }
 
@@ -103,4 +104,12 @@
 .openLinePage:hover {
 	color: var(--color-system-text-300);
 	text-decoration: underline;
+}
+
+/* * */
+/* CLOCK WRAPPER */
+
+.clockWrapper {
+	width: 100%;
+	padding: 0 5px;
 }

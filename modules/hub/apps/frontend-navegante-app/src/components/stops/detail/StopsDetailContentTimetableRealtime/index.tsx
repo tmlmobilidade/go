@@ -5,8 +5,8 @@
 import { NoDataLabel } from '@/components/common/display/NoDataLabel';
 import { getFutureRowStatus, isRealtimeArrival, normalizeTripIdForMatch, type StopTimetableRealtimeArrival } from '@/components/stops/detail/parse-eta-gtfs';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
-import { StopsDetailTimetableClock } from '@/components/stops/detail/StopsDetailTimetableClock';
-import { StopsDetailTimetableRow } from '@/components/stops/detail/StopsDetailViewTimetableRow';
+import { StopsDetailViewTimetableClock } from '@/components/stops/detail/StopsDetailViewTimetableClock';
+import { StopsDetailViewTimetableRow } from '@/components/stops/detail/StopsDetailViewTimetableRow';
 import { type HubArrival } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
@@ -168,7 +168,7 @@ export function StopsDetailTimetableRealtime() {
 				</div>
 			))}
 
-			<StopsDetailTimetableClock />
+			<StopsDetailViewTimetableClock />
 
 			{futureTrips.length > 0 && (
 				<>
