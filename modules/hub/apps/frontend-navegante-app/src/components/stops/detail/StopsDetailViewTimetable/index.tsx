@@ -2,7 +2,7 @@
 
 import { NoDataLabel } from '@/components/common/display/NoDataLabel';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
-import { StopsDetailTimetableRow } from '@/components/stops/detail/StopsDetailTimetableRow';
+import { StopsDetailViewTimetableRow } from '@/components/stops/detail/StopsDetailViewTimetableRow';
 import { StopsDetailViewTimetableSkeleton } from '@/components/stops/detail/StopsDetailViewTimetableSkeleton';
 import { useTranslation } from 'react-i18next';
 
@@ -32,11 +32,9 @@ export function StopsDetailViewTimetable() {
 	return (
 		<>
 			{stopsDetailContext.data.timetable.map(item => (
-				<StopsDetailTimetableRow key={item._id} data={item} />
+				<StopsDetailViewTimetableRow key={item._id} data={item} />
 			))}
 			<NoDataLabel text={t('default:stops.StopsDetailContentTimetableSchedule.end_of_day')} withMinHeight />
 		</>
 	);
-
-	//
 }

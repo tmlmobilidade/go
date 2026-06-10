@@ -2,19 +2,19 @@
 
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
 import { NextArrivals } from '@/components/stops/detail/NextArrivals';
-import { type StopsDetailTimetableData } from '@/components/stops/detail/StopsDetail.context';
+import { type StopsDetailViewTimetableData } from '@/components/stops/detail/StopsDetail.context';
 
 import styles from './styles.module.css';
 
 /* * */
 
-interface StopsDetailTimetableRowProps {
-	data: StopsDetailTimetableData
+interface StopsDetailViewTimetableRowProps {
+	data: StopsDetailViewTimetableData
 }
 
 /* * */
 
-export function StopsDetailTimetableRow({ data }: StopsDetailTimetableRowProps) {
+export function StopsDetailViewTimetableRow({ data }: StopsDetailViewTimetableRowProps) {
 	return (
 		<div className={styles.container}>
 			<div className={styles.summary}>
@@ -32,7 +32,6 @@ export function StopsDetailTimetableRow({ data }: StopsDetailTimetableRowProps) 
 					tripId={data.trip_ids[0]}
 				/>
 			</div>
-
 		</div>
 	);
 }

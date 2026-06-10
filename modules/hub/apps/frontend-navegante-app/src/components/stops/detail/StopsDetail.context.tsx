@@ -11,7 +11,7 @@ import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useSt
 
 /* * */
 
-export interface StopsDetailTimetableData {
+export interface StopsDetailViewTimetableData {
 	_id: string
 	arrival_estimated_ms: null | UnixTimestamp
 	arrival_observed_ms: null | UnixTimestamp
@@ -43,7 +43,7 @@ interface StopsDetailContextState {
 		highlighted_stop_sequence: number
 		highlighted_trip_id: string
 		stop: HubStop
-		timetable: StopsDetailTimetableData[]
+		timetable: StopsDetailViewTimetableData[]
 	}
 	flags: {
 		is_loading: boolean
@@ -121,7 +121,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 		// Skip if no valid patterns data or no operational date is selected
 		if (!validPatternsData || !operationalDate.selectedOperationalDate) return;
 		// Initialize the timetable data for the selected date
-		const timetableDataForSelectedDate: StopsDetailTimetableData[] = [];
+		const timetableDataForSelectedDate: StopsDetailViewTimetableData[] = [];
 		// Loop through each valid pattern, and each trip of the pattern
 		for (const patternData of validPatternsData) {
 			for (const tripData of patternData.trips) {
