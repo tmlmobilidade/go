@@ -43,12 +43,12 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/writers": "*",
 		"exceljs": "^4.4.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
 		"@types/node": "25.9.3",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "6.0.3"
