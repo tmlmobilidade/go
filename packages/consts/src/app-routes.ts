@@ -308,17 +308,6 @@ export const API_ROUTES = Object.freeze({
 		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'api_url')}/year-periods`,
 	},
 
-	eta: {
-		// BASE
-		BASE: `${getModuleConfig('eta', 'api_url')}`,
-
-		// ETA
-		ARRIVALS_BY_PATTERN: (patternId: string) => `${getModuleConfig('eta', 'api_url')}/arrivals/by_pattern/${patternId}`,
-		ARRIVALS_BY_STOP: (stopId: string) => `${getModuleConfig('eta', 'api_url')}/arrivals/by_stop/${stopId}`,
-		ARRIVALS_DETAIL: (tripId: string) => `${getModuleConfig('eta', 'api_url')}/arrivals/${tripId}`,
-		ARRIVALS_LIST: `${getModuleConfig('eta', 'api_url')}/arrivals`,
-	},
-
 	exporter: {
 		// BASE
 		BASE: `${getModuleConfig('exporter', 'api_url')}`,
