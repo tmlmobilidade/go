@@ -6,8 +6,8 @@ import { calendarKey, calendarWeekday } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
 import { hhmm } from '@tmlmobilidade/types';
 
-import { computeActiveRules } from '../calculation/index.js';
 import { getTimepointsRemovedByEventRestriction } from '../calculation/filters.js';
+import { computeActiveRules } from '../calculation/index.js';
 import { findReplacementForDate, getActivePeriodId } from '../utils/date.js';
 import { shouldEmitReplacementOnForcedRetarget } from './canonical-registry.js';
 import { collectManualIncludesByRule, collectReplacementManualIncludesByRule } from './collectors.js';
