@@ -1,6 +1,6 @@
 /* * */
 
-import { RawApexTransactionRefundV30Schema } from '@/raw/on-board-refunds/refund-v3-0.js';
+import { RawApexTransactionRefundV30Schema } from '@/raw/on-board-refunds/raw-apex-on-board-refund-v3-0.js';
 import { z } from 'zod';
 
 /* * */
