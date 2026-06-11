@@ -8,6 +8,7 @@
 	"type": "module",
 	"main": "./dist/index.js",
 	"scripts": {
+
 		"build": "turbo build",
 		"build:alerts": "ENVIRONMENT=dev dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-alerts-*",
 		"build:alerts:packages": "ENVIRONMENT=dev dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-alerts-pckg-*",
@@ -144,6 +145,7 @@
 		"!**/.next",
 		"modules/**/*",
 		"packages/**/*",
+		"packages-new/**/*",
 		"cli/*"
 	],
 	"overrides": {
