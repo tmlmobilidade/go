@@ -16,12 +16,10 @@ import { Logger } from '@tmlmobilidade/logger';
 
 	const collection = await rawVehicleEventsNew.getCollection();
 
-	const changeStream = collection.watch(
-		// [{ $match: { 'fullDocument.created_at': { $gt: Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp }, 'operationType': 'insert' } }],
-	);
-
-	for await (const change of changeStream) {
-		//
+	collection
+		.watch()
+		.on('change', async (change) => {
+			//
 
 		//
 		// Validate that the operation is an insert or update. Otherwise, send an email to the emergency contact.

@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-apex-stream",
+	"name": "@tmlmobilidade/go-apex-on-board-refunds-sync",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -17,19 +17,23 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
+		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/databases": "*",
-		"@tmlmobilidade/go-apex-pckg-parsers": "*",
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-apex-pckg-shared": "*",
+		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"@tmlmobilidade/writers": "*"
+		"luxon": "3.7.2"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.9.1",
+		"@types/luxon": "3.7.1",
+		"@types/node": "25.9.2",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.3",
-		"typescript": "5.9.3"
+		"tsx": "4.22.4",
+		"typescript": "6.0.3"
 	}
 }
