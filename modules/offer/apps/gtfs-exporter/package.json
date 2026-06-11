@@ -17,7 +17,10 @@
 		"dev": "ENVIRONMENT=development dotenv-run -f ./modules/offer/environments/production/secrets/.env tsx watch src/index.ts",
 		"dev:local": "ENVIRONMENT=development dotenv-run -f ./modules/offer/environments/production/secrets/.env tsx src/local.ts",
 		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint --fix ."
+		"lint:fix": "eslint --fix .",
+		"rules:overlaps": "dotenv-run -f ../../environments/staging/secrets/.env -- tsx src/scripts/vkm-export-alignment/scan-overlapping-timepoints.ts",
+		"vkm:check": "dotenv-run -f ../../environments/staging/secrets/.env -- tsx src/scripts/vkm-export-alignment/compare-vkm-summary.ts",
+		"vkm:dates": "dotenv-run -f ../../environments/staging/secrets/.env -- tsx src/scripts/vkm-export-alignment/compare-circulation-dates.ts"
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
