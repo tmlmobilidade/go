@@ -35,11 +35,11 @@ export async function exportStopTimesFile(planData: Plan, sqlTables: GtfsSQLTabl
 
 	//
 	// Fetch all stops for the current agency
-	// and build a map of legacy_ids to stop_id
+	// and build a map of flag IDs to stop_id
 
 	const allStopsData = await stops.findMany(
 		{ 'flags.agency_ids': { $in: [planData.gtfs_agency.agency_id] } },
-		{ sort: { _id: 1 }, projection: { _id: 1, legacy_ids: 1, flags: 1 } },
+		{ sort: { _id: 1 }, projection: { _id: 1, flags: 1 } },
 	);
 
 	const allStopsMap = new Map<string, number>();

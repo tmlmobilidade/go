@@ -1,9 +1,9 @@
 'use client';
 
+import { CopyBadge } from '@/components/common/display/CopyBadge';
 import { useLinesContext } from '@/components/lines/Lines.context';
-import { CopyBadge } from '@/components/stops/detail/CopyBadge';
 import { useVehiclesDetailContext } from '@/components/vehicles/detail/VehiclesDetail.context';
-import { AGENCY_LOGO_MAP } from '@/lib/agency-logos-map';
+import { getAgencyLogo } from '@/lib/agency-logos-map';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { HubPattern } from '@tmlmobilidade/types';
@@ -58,7 +58,7 @@ export function VehiclesDetailView() {
 
 				<div className={styles.lineInfoWrapper}>
 					<LineBadge color={activeLineData?.color} shortName={activeLineData?.short_name} size="full-width" textColor={activeLineData?.text_color} />
-					<Image alt="" height={40} src={AGENCY_LOGO_MAP[vehiclesDetailContext.data.vehicle?.agency_id]} width={60} />
+					<Image alt="" height={40} src={getAgencyLogo(vehiclesDetailContext.data.vehicle?.agency_id, '180x120', 'light')} width={60} />
 				</div>
 
 				<LineName align="center" longName={`Destino: ${activePatternData?.[0]?.headsign ?? 'desconhecido'}`} />

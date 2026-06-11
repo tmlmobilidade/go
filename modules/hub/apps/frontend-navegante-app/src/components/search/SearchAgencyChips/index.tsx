@@ -1,7 +1,7 @@
 'use client';
 
 import { ScrollChips } from '@/components/common/lists/ScrollChips';
-import { AGENCY_LOGO_MAP } from '@/lib/agency-logos-map';
+import { getAgencyLogo } from '@/lib/agency-logos-map';
 import { AGENCY_NAMES_MAP } from '@/lib/agency-names-map';
 import { useFilterStateString } from '@tmlmobilidade/ui';
 import clsx from 'clsx';
@@ -45,7 +45,7 @@ export function SearchAgencyChips() {
 						<Image
 							alt=""
 							height={27}
-							src={AGENCY_LOGO_MAP[agencyId as keyof typeof AGENCY_LOGO_MAP]}
+							src={getAgencyLogo(agencyId, '180x120', 'light')}
 							width={40}
 						/>
 					</button>

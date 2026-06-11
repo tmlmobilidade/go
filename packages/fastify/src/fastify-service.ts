@@ -242,6 +242,10 @@ export class FastifyService {
 		this.server.get('/', (req, res) => {
 			res.send('Jusi was here!');
 		});
+
+		this.server.get('/health', (_, res) => {
+			res.status(HTTP_STATUS.OK).send({ status: 'ok' });
+		});
 	}
 
 	/**

@@ -10,7 +10,7 @@ interface LiveIconProps {
 
 /* * */
 
-export function LiveIcon({ color = 'var(--color-brand-navegante)' }: LiveIconProps) {
+export function LiveIcon({ color = 'var(--color-status-live-primary)' }: LiveIconProps) {
 	return (
 		<div className={styles.container}>
 			<div className={styles.ripple} style={{ backgroundColor: color }} />

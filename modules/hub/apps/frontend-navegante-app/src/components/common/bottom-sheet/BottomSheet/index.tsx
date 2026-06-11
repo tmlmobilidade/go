@@ -114,9 +114,7 @@ export function BottomSheet({
 					data-scrolled={isScrolled}
 					data-with-title={!!title}
 				>
-					<div className={styles.headerLeft}>
-						<BottomSheetClose ref={closeButtonRef} onClick={onClose} />
-					</div>
+					<div className={styles.headerLeft} />
 
 					{title && (
 						<h1 className={styles.title} id={titleId}>
@@ -124,7 +122,9 @@ export function BottomSheet({
 						</h1>
 					)}
 
-					<div className={styles.headerRight} />
+					<div className={styles.headerRight}>
+						<BottomSheetClose ref={closeButtonRef} onClick={onClose} />
+					</div>
 				</header>
 
 				<div

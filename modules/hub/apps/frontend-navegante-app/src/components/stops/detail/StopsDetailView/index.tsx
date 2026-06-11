@@ -2,9 +2,8 @@
 
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailAlerts } from '@/components/stops/detail/StopsDetailAlerts';
-import { StopsDetailContent } from '@/components/stops/detail/StopsDetailContent';
 import { StopsDetailViewHeader } from '@/components/stops/detail/StopsDetailViewHeader';
-import { Space } from '@mantine/core';
+import { StopsDetailViewTimetable } from '@/components/stops/detail/StopsDetailViewTimetable';
 import { Divider, LoadingSection, Section } from '@tmlmobilidade/ui';
 
 /* * */
@@ -21,12 +20,7 @@ export function StopsDetailView() {
 	// B. Render componentss
 
 	if (stopsDetailContext.flags.is_loading) {
-		return (
-			<>
-				<Space h="90px" />
-				<LoadingSection />
-			</>
-		);
+		return <LoadingSection fullHeight />;
 	}
 
 	return (
@@ -34,7 +28,7 @@ export function StopsDetailView() {
 			<StopsDetailViewHeader />
 			<Divider />
 			<StopsDetailAlerts />
-			<StopsDetailContent />
+			<StopsDetailViewTimetable />
 		</Section>
 	);
 }

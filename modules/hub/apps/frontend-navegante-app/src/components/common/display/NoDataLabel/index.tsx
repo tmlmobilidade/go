@@ -25,7 +25,13 @@ export function NoDataLabel({ fill, text, withMinHeight }: NoDataLabelProps) {
 	//
 	// B. Render components
 
-	return <div className={`${styles.container} ${fill && styles.fill} ${withMinHeight && styles.withMinHeight}`}>{text || t('default:layout.NoDataLabel.no_data')}</div>;
-
-	//
+	return (
+		<div
+			className={styles.container}
+			data-fill={fill}
+			data-with-min-height={withMinHeight}
+		>
+			{text || t('default:layout.NoDataLabel.no_data')}
+		</div>
+	);
 }

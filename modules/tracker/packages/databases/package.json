@@ -21,7 +21,7 @@
 		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"mongodb": "7.2.0"
+		"mongodb": "7.3.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

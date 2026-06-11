@@ -4,11 +4,10 @@ import { NoDataLabel } from '@/components/common/display/NoDataLabel';
 import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { PathWaypoint } from '@/components/lines/detail/PathWaypoint';
-import { normalizeTripIdForMatch } from '@/components/stops/detail/parse-eta-gtfs';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useTripUpdatesContext } from '@/components/trip-updates/trip-updates.context';
+import { Dates } from '@tmlmobilidade/dates';
 import { type HubGtfsRtFeedEntity, type HubGtfsRtTripUpdate } from '@tmlmobilidade/types';
-import { DateTime } from 'luxon';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';
@@ -62,10 +61,9 @@ export function LinesDetailPathList() {
 			return `${waypoint.stop_id}-${waypoint.stop_sequence}`;
 		}));
 		const validTripIds = new Set<string>();
-		activePattern.trips.forEach(trip => {
-			trip.trip_ids.forEach(tripId => {
+		activePattern.trips.forEach((trip) => {
+			trip.trip_ids.forEach((tripId) => {
 				validTripIds.add(tripId);
-				validTripIds.add(normalizeTripIdForMatch(tripId));
 			});
 		});
 
@@ -73,7 +71,7 @@ export function LinesDetailPathList() {
 			const tripUpdate = getTripUpdateFromEntity(entity);
 			const tripId = tripUpdate?.trip?.trip_id;
 			if (!tripId || !tripUpdate?.stop_time_update?.length) continue;
-			if (!validTripIds.has(tripId) && !validTripIds.has(normalizeTripIdForMatch(tripId))) continue;
+			if (!validTripIds.has(tripId)) continue;
 
 			for (const stopUpdate of tripUpdate.stop_time_update) {
 				const stopSequence = stopUpdate.stop_sequence;
@@ -110,7 +108,7 @@ export function LinesDetailPathList() {
 			for (const stopTime of trip.schedule) {
 				const stopKey = `${stopTime.stop_id}-${stopTime.stop_sequence}`;
 				const [hours, minutes, seconds = 0] = stopTime.arrival_time_24h.split(':').map(Number);
-				const unixTs = DateTime.local().set({ hour: hours, millisecond: 0, minute: minutes, second: seconds }).toMillis();
+				const unixTs = Dates.now('Europe/Lisbon').set({ hour: hours, millisecond: 0, minute: minutes, second: seconds }).unix_timestamp;
 				if (!result.get(stopKey)) result.set(stopKey, []);
 				result.get(stopKey)?.push({ type: 'scheduled', unixTs });
 			}
