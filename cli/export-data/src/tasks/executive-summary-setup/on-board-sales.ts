@@ -1,6 +1,7 @@
 import { type TaskProps } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { simplifiedApexOnBoardSales } from '@tmlmobilidade/interfaces';
+import { AggregationPipeline, Filter, simplifiedApexOnBoardSales } from '@tmlmobilidade/interfaces';
+import { SimpleOneApexValidation } from '@tmlmobilidade/types';
 
 /* Interface for the result */
 export interface OnBoardSalesMetricResult {

@@ -1,7 +1,7 @@
 /* * */
 
-import { type NetworkPattern, type NetworkRoute } from '@/types/api/network';
-import { type Timetable } from '@/types/timetables.types';
+import { type Pattern, type Route } from '@carrismetropolitana/api-types/network';
+import { type Timetable } from '@tmlmobilidade/types';
 
 /**
  * This function creates a timetable for a set of patterns of a line, for a specific stop and date.
@@ -16,7 +16,7 @@ import { type Timetable } from '@/types/timetables.types';
  * @returns The timetable for the given patterns and stop.
  */
 
-export function createTimetable(primaryPatternGroup: NetworkPattern, secondaryPatternGroups: NetworkPattern[], mentionedRoutes: NetworkRoute[], stopId: string, stopSequence: number, operationalDate: string): Timetable {
+export function createTimetable(primaryPatternGroup: Pattern, secondaryPatternGroups: Pattern[], mentionedRoutes: Route[], stopId: string, stopSequence: number, operationalDate: string): Timetable {
 //
 
 	// 1.
@@ -31,7 +31,7 @@ export function createTimetable(primaryPatternGroup: NetworkPattern, secondaryPa
 	// 2.
 	// Extract the currently valid Pattern Group from the primary and secondary patterns.
 	// To check if a pattern is valid for the given date, we need to check if the date is included in the pattern's dates array.
-	const validSecondaryPatternGroups: NetworkPattern[] = secondaryPatternGroups.flat().filter(patternGroup => patternGroup.valid_on.includes(operationalDate) && patternGroup.direction_id === primaryPatternGroup.direction_id);
+	const validSecondaryPatternGroups: Pattern[] = secondaryPatternGroups.flat().filter(patternGroup => patternGroup.valid_on.includes(operationalDate) && patternGroup.direction_id === primaryPatternGroup.direction_id);
 
 	// 3.
 	// Create the timetable for the primary pattern first

@@ -1,6 +1,6 @@
 /* * */
 
-import { type ImportGtfsContext } from '@/types.js';
+import { type ImportGtfsContext } from '@/types/context.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -28,7 +28,7 @@ export async function processShapesFile(context: ImportGtfsContext): Promise<voi
 			// Save the exported row
 			context.gtfs.shapes.write(validatedData);
 			// Log progress
-			if (context.counters.shapes % 100000 === 0) Logger.info(`Parsed ${context.counters.shapes} shapes.txt rows so far.`);
+			if (context.counters.shapes % 100000 === 0) Logger.info(`Parsed ${context.counters.shapes} shapes.txt rows so far (${shapesParseTimer.get()})`);
 			// Increment the counter
 			context.counters.shapes++;
 		};

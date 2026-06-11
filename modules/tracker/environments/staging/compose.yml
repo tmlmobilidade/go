@@ -149,6 +149,44 @@ services:
   # # # # # # # # # # # # # # # # # # # # #
   # # # # # # # # # # # # # # # # # # # # #
 
+  tcb-fetch:
+    image: ghcr.io/tmlmobilidade/go-tracker-tcb-fetch:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  crtm-aisa-fetch:
+    image: ghcr.io/tmlmobilidade/go-tracker-crtm-aisa-fetch:staging
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
   cap-fetch:
     image: ghcr.io/tmlmobilidade/go-tracker-cap-fetch:staging
     deploy:

@@ -1,0 +1,12 @@
+{
+	"mcpServers": {
+		"github": {
+			"args": ["-y", "@modelcontextprotocol/server-github"],
+			"command": "npx"
+		},
+		"linear": {
+			"args": ["-y", "mcp-remote", "https://mcp.linear.app/mcp"],
+			"command": "npx"
+		}
+	}
+}

@@ -1,9 +1,8 @@
 /* * */
 
-import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema } from '@/_common/status.js';
-import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { RideAcceptanceStatusSchema } from '@/operation/rides/ride-acceptance.js';
 import { RideAnalysisGradeSchema } from '@/operation/rides/ride-analysis.js';
+import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema, TicketingStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -80,6 +79,9 @@ export const GetRidesBatchQuerySchema = z.object({
 
 	favorites: z
 		.boolean()
+		.optional(),
+	ticketing_status: z
+		.preprocess((val: string) => (val && typeof val === 'string') ? val.split(',').map(status => status.trim()) : [], z.array(TicketingStatusSchema))
 		.optional(),
 });
 

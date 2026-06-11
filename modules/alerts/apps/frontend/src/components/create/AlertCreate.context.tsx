@@ -1,5 +1,6 @@
 'use client';
 
+import { isValidOptionalAlertCoordinates } from '@/lib/alert-coordinates';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
@@ -228,7 +229,17 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		{
 			id: 'summary',
 			isEnabled: () => !!form.getValues('cause') && !!form.getValues('effect') && !!form.getValues('active_period_start_date') && !!form.getValues('reference_type') && !!form.getValues('agency_id') && !!form.getValues('references')?.length,
-			isValid: () => !!form.getValues('cause') && !!form.getValues('effect') && !!form.getValues('active_period_start_date') && !!form.getValues('reference_type') && !!form.getValues('agency_id') && !!form.getValues('references')?.length && !!form.getValues('title')?.length && !!form.getValues('description')?.length,
+			isValid: () => (
+				!!form.getValues('cause')
+				&& !!form.getValues('effect')
+				&& !!form.getValues('active_period_start_date')
+				&& !!form.getValues('reference_type')
+				&& !!form.getValues('agency_id')
+				&& !!form.getValues('references')?.length
+				&& !!form.getValues('title')?.length
+				&& !!form.getValues('description')?.length
+				&& isValidOptionalAlertCoordinates(form.getValues('coordinates'))
+			),
 			isVisible: true,
 			label: 'Resumo',
 			order: 5,

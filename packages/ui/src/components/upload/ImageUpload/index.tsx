@@ -70,17 +70,20 @@ export function ImageUpload({
 	// C. Render components
 
 	return (
-		<div className={styles.container} style={{ maxHeight, maxWidth }}>
+		<div className={styles.container} style={{ maxWidth }}>
 			{label && <Label>{label}</Label>}
 			{previewImageUrl ? (
-				<ComponentWrapper>
-					<Image
-						alt="Preview"
-						fit="contain"
-						mih={200}
-						miw={200}
-						src={previewImageUrl}
-					/>
+				<div className={styles.preview} style={{ maxHeight, maxWidth }}>
+					<ComponentWrapper>
+						<Image
+							alt="Preview"
+							className={styles.image}
+							fit="contain"
+							mah={maxHeight}
+							maw="100%"
+							src={previewImageUrl}
+						/>
+					</ComponentWrapper>
 					{onDelete && (
 						<div className={styles.deleteContainer}>
 							<DeleteButton
@@ -91,7 +94,7 @@ export function ImageUpload({
 							/>
 						</div>
 					)}
-				</ComponentWrapper>
+				</div>
 			) : (
 				<FileButton
 					accept="image/*"

@@ -35,25 +35,25 @@
 	},
 	"dependencies": {
 		"@eslint/js": "9.39.3",
-		"@next/eslint-plugin-next": "16.2.6",
+		"@next/eslint-plugin-next": "16.2.9",
 		"@stylistic/eslint-plugin": "5.10.0",
 		"eslint": "9.39.3",
 		"eslint-plugin-import": "2.32.0",
-		"eslint-plugin-jsonc": "3.1.2",
+		"eslint-plugin-jsonc": "3.2.0",
 		"eslint-plugin-perfectionist": "5.9.0",
 		"eslint-plugin-react": "7.37.5",
 		"eslint-plugin-react-hooks": "7.1.1",
 		"globals": "17.6.0",
-		"stylelint": "17.11.1",
+		"stylelint": "17.13.0",
 		"stylelint-config-recess-order": "7.7.0",
 		"stylelint-config-standard": "40.0.0",
-		"typescript-eslint": "8.59.4"
+		"typescript-eslint": "8.61.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.9.1",
+		"@types/node": "25.9.3",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",
-		"typescript": "5.9.3"
+		"typescript": "6.0.3"
 	}
 }

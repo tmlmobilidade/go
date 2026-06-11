@@ -1,7 +1,7 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
-import { CalendarEntry, fetchCalendarData } from '@tmlmobilidade/go-performance-pckg-dates';
+import { dayLabelFromStartIso } from '@/utils/day-label.js';
+import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -35,7 +35,11 @@ export const syncDemandByAgencyByDay = async () => {
 	//
 	// Load calendar JSON
 
-	const calendarJson = await fetchCalendarData();
+	const calendarJson = await Dates.fetchCalendarData();
+
+	if (!calendarJson.length) {
+		throw new Error('Calendar data unavailable — cannot build demand_by_agency_by_day metrics');
+	}
 
 	//
 	// Build a map for fast lookup
@@ -88,7 +92,7 @@ export const syncDemandByAgencyByDay = async () => {
 		limit(async () => {
 			const chunkTimer = new Timer();
 
-			const dayLabel = new Date(chunkData.start).toISOString().slice(0, 10);
+			const dayLabel = dayLabelFromStartIso(chunkData.startIso);
 
 			const validationsAgg = await validationsCollection.aggregate([
 				{
@@ -116,6 +120,13 @@ export const syncDemandByAgencyByDay = async () => {
 	const allChunksResults = await Promise.all(dayPromises);
 
 	for (const { dayLabel, validationsAgg } of allChunksResults) {
+		const calendarProps = calendarMap.get(dayLabel);
+
+		if (!calendarProps) {
+			Logger.info(`No calendar entry for ${dayLabel}, skipping day`);
+			continue;
+		}
+
 		for (const validation of validationsAgg) {
 			const agency_id = validation._id ?? 'no-agency';
 
@@ -131,7 +142,6 @@ export const syncDemandByAgencyByDay = async () => {
 			}
 
 			const agencyDoc = agencyMap.get(agency_id);
-			const calendarProps = calendarMap.get(dayLabel);
 
 			// Update individual agency data
 			agencyDoc.data[dayLabel] = {
@@ -149,7 +159,11 @@ export const syncDemandByAgencyByDay = async () => {
 	//
 	// Insert all metrics
 
-	await metrics.insertMany(results);
+	if (results.length === 0) {
+		Logger.info('No metric documents to insert — skipping insertMany');
+	} else {
+		await metrics.insertMany(results);
+	}
 
 	logMetricToFile({
 		approach: { description: 'Loop by day, aggregate on mongo (parallel)', key: 'loop_day_parallel' },

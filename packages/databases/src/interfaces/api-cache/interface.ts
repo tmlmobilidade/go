@@ -1,7 +1,7 @@
 /* * */
 
 import { GORedisClient } from '@/clients/go-redis.js';
-import { type ApiCacheKey, type ApiCacheKeyParams, resolveApiCacheKey } from '@/interfaces/api-cache/keys.js';
+import { type ApiCacheKey } from '@/interfaces/api-cache/keys.js';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { type RedisClientType } from 'redis';
 
@@ -70,14 +70,12 @@ class ApiCacheClass {
 	/**
 	 * Retrieves a cache entry by its key.
 	 * @param key The key of the cache entry to retrieve.
-	 * @param params Optional params to replace `{named}` tokens in the key.
 	 * @returns A promise that resolves with the cache entry value,
 	 * or `null` if not found.
 	 * @throws Will throw an error if the retrieval process fails.
 	 */
-	public async get(key: ApiCacheKey, params?: ApiCacheKeyParams): Promise<null | string> {
-		const parsedKey = resolveApiCacheKey(key, params);
-		const result = await this.client.get(parsedKey);
+	public async get(key: ApiCacheKey): Promise<null | string> {
+		const result = await this.client.get(key);
 		if (typeof result !== 'string') return null;
 		return result;
 	}
@@ -88,26 +86,28 @@ class ApiCacheClass {
 	 * @returns A promise resolving with all matching keys.
 	 */
 	public async scan(pattern: string): Promise<string[]> {
-		const keys: string[] = [];
-		for await (const key of this.client.scanIterator({ MATCH: pattern, TYPE: 'string' })) {
-			keys.push(String(key));
+		const foundKeys = new Set<string>();
+		for await (const scanResult of this.client.scanIterator({ MATCH: pattern, TYPE: 'string' })) {
+			// Scan result is an array of keys because Redis just goes over all keys
+			// in the database without any specific order or pagination and returns
+			// only the ones that match the requested pattern.
+			scanResult.forEach(key => foundKeys.add(key));
 		}
-		return keys;
+		return Array.from(foundKeys);
 	}
 
 	/**
 	 * Saves a cache entry with an optional time-to-live (TTL).
 	 * @param key The key of the cache entry to save.
 	 * @param value The value of the cache entry to save. Must be a string.
-	 * @param options Optional params / TTL. Omit when neither applies.
+	 * @param ttl Optional time-to-live (TTL) in seconds. Omit when not needed.
 	 */
-	public async set(key: ApiCacheKey, value: string, options?: { params?: ApiCacheKeyParams, ttl?: number }) {
-		const parsedKey = resolveApiCacheKey(key, options?.params);
+	public async set(key: ApiCacheKey, value: string, ttl?: number) {
 		// Validate value type before setting cache
-		if (typeof value !== 'string') throw new Error(`[ApiCache] Value must be a string. Got "${typeof value}" for key "${parsedKey}".`);
+		if (typeof value !== 'string') throw new Error(`[ApiCache] Value must be a string. Got "${typeof value}" for key "${key}".`);
 		// Set cache with optional TTL
-		if (options?.ttl) await this.client.set(parsedKey, value, { expiration: { type: 'EX', value: options.ttl } });
-		else await this.client.set(parsedKey, value);
+		if (ttl) await this.client.set(key, value, { expiration: { type: 'EX', value: ttl } });
+		else await this.client.set(key, value);
 	}
 
 	protected connectToClient() {

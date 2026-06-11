@@ -56,7 +56,7 @@ export function useDataOperationalLines(apiUrl: string, props?: UseDataOperation
 		// Build query string params and set state
 		const result = new URLSearchParams(Object.fromEntries(filtersMap)).toString();
 		setQueryStringParams(result);
-	}, [props?.filters]);
+	}, [props?.filters.agency_ids, props?.filters.date_start, props?.filters.date_end]);
 
 	const optionsData = useMemo(() => {
 		if (!fetchedOperationalLinesData) return [];

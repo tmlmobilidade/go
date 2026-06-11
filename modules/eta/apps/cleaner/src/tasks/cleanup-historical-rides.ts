@@ -1,8 +1,8 @@
-import { pipelinePath } from '@/lib/sql-paths.js';
-import { queryEachStatementFromFile } from '@tmlmobilidade/databases';
+import { AppConfig } from '@/lib/config.js';
+import { pipelinePath, qualifiedTable, queryEachEtaStatementFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 
-const KEEP_TABLE = 'eta._cleaner_hist_rides_keep';
+const KEEP_TABLE = qualifiedTable(AppConfig.database, '_cleaner_hist_rides_keep');
 const CLEANUP_HIST_RIDES_SQL = 'cleanup/4-delete-out-of-window-hist-rides.sql';
 
 interface CleanupRowsResult {
@@ -20,7 +20,7 @@ interface CleanupRowsResult {
  * or too long". The staging table is truncated and repopulated every run.
  */
 export async function cleanupHistoricalRides(
-	clickhouseClient: Parameters<typeof queryEachStatementFromFile>[0],
+	clickhouseClient: Parameters<typeof queryEachEtaStatementFromFile>[0],
 	keepRideIds: string[],
 ) {
 	Logger.title('4. Cleanup out-of-window historical rides');
@@ -41,8 +41,9 @@ export async function cleanupHistoricalRides(
 		values: keepRideIds.map(_id => ({ _id })),
 	});
 
-	const result = await queryEachStatementFromFile<CleanupRowsResult>(
+	const result = await queryEachEtaStatementFromFile<CleanupRowsResult>(
 		clickhouseClient,
+		AppConfig.database,
 		pipelinePath(CLEANUP_HIST_RIDES_SQL),
 	);
 

@@ -38,27 +38,37 @@ function interpolateCoords(start: number[], end: number[], t: number): number[] 
 	];
 }
 
-function calculateBearing(start: number[], end: number[]): number {
-	// Coordinates are [longitude, latitude].
-	const startLng = start[0] * (Math.PI / 180);
-	const startLat = start[1] * (Math.PI / 180);
-	const endLng = end[0] * (Math.PI / 180);
-	const endLat = end[1] * (Math.PI / 180);
-
-	const y = Math.sin(endLng - startLng) * Math.cos(endLat);
-	const x = Math.cos(startLat) * Math.sin(endLat) - Math.sin(startLat) * Math.cos(endLat) * Math.cos(endLng - startLng);
-
-	const bearing = Math.atan2(y, x) * (180 / Math.PI);
-	return (bearing + 360) % 360;
-}
-
 function interpolateAngle(start: number, end: number, t: number): number {
 	const delta = ((((end - start) % 360) + 540) % 360) - 180;
 	return start + delta * t;
 }
 
+function parseBearing(value: unknown): null | number {
+	if (typeof value === 'number' && Number.isFinite(value)) return value;
+	if (typeof value === 'string') {
+		const parsed = Number(value);
+		if (Number.isFinite(parsed)) return parsed;
+	}
+	return null;
+}
+
+function getDeterministicBearing(feature: GeoJSON.Feature<GeoJSON.Point>): number {
+	const idPart = feature.id != null ? String(feature.id) : '';
+	const [lng, lat] = feature.geometry.coordinates;
+	const seed = `${idPart}:${lng.toFixed(6)}:${lat.toFixed(6)}`;
+
+	let hash = 0;
+	for (let i = 0; i < seed.length; i++) {
+		hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+		hash |= 0;
+	}
+
+	return ((hash % 360) + 360) % 360;
+}
+
 function interpolateProps(startFeature: GeoJSON.Feature<GeoJSON.Point> | undefined, endFeature: GeoJSON.Feature<GeoJSON.Point>, t: number): GeoJSON.Feature {
 	const endCoords = endFeature.geometry.coordinates;
+	const featureId = endFeature.id != null ? String(endFeature.id) : '';
 
 	const startCoords = startFeature
 		? (startFeature.geometry as GeoJSON.Point).coordinates
@@ -66,10 +76,12 @@ function interpolateProps(startFeature: GeoJSON.Feature<GeoJSON.Point> | undefin
 
 	const interpolatedCoords = interpolateCoords(startCoords, endCoords, t);
 
-	const hasMovement = startCoords[0] !== endCoords[0] || startCoords[1] !== endCoords[1];
-	const computedBearing = hasMovement ? calculateBearing(startCoords, endCoords) : undefined;
-	const endBearing = endFeature.properties?.bearing ?? computedBearing ?? 0;
-	const startBearing = startFeature?.properties?.bearing ?? endBearing;
+	const startBearingValue = parseBearing(startFeature?.properties?.bearing);
+	const endBearingValue = parseBearing(endFeature.properties?.bearing);
+	const fallbackBearing = getDeterministicBearing(endFeature);
+
+	const startBearing = startBearingValue ?? endBearingValue ?? fallbackBearing;
+	const endBearing = endBearingValue ?? startBearingValue ?? fallbackBearing;
 	const interpolatedBearing = interpolateAngle(startBearing, endBearing, t);
 
 	const endDelay = endFeature.properties?.delay ?? 0;
@@ -89,6 +101,7 @@ function interpolateProps(startFeature: GeoJSON.Feature<GeoJSON.Point> | undefin
 			...endFeature.properties,
 			bearing: interpolatedBearing,
 			delay: interpolatedDelay,
+			feature_id: featureId,
 			opacity: interpolatedOpacity,
 		},
 	};
@@ -218,10 +231,12 @@ export function MapOverlayVehicles({ presentBeforeId, showCounter, vehiclesData 
 							['to-string', ['get', 'agency_id']],
 							'4',
 							'ttsl-boat-regular',
+							'3',
+							'ttsl-boat-regular',
 							'1',
 							'carris-bus-regular',
 							'21',
-							'carris-bus-regular',
+							'mobi-bus-regular',
 							'cmet-bus-regular',
 						],
 						'icon-offset': [0, 0],
@@ -231,9 +246,23 @@ export function MapOverlayVehicles({ presentBeforeId, showCounter, vehiclesData 
 							['linear'],
 							['zoom'],
 							10,
-							0.05,
+							['match',
+								['to-string', ['get', 'agency_id']],
+								'1',
+								0.0475,
+								'21',
+								0.0475,
+								0.05,
+							],
 							20,
-							0.15,
+							['match',
+								['to-string', ['get', 'agency_id']],
+								'1',
+								0.1425,
+								'21',
+								0.1425,
+								0.15,
+							],
 						],
 						'symbol-placement': 'point',
 					}}
