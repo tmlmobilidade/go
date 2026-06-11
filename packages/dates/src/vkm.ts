@@ -1,11 +1,13 @@
-/* * */
+import type { Agency, CalculateVkmDto, Event, Holiday, LegacyVkmDayType, OperationalDate, Pattern, VkmCalculationResult, VkmPeriodResult, YearPeriod } from '@tmlmobilidade/types';
 
-import { buildOperationalDateRange, calendarWeekday, computeActiveRules, Dates, resolvePatternRules } from '@tmlmobilidade/dates';
-import { type Agency, type CalculateVkmDto, type Event, type Holiday, type LegacyVkmDayType, type OperationalDate, type Pattern, type VkmCalculationResult, type VkmPeriodResult, type YearPeriod } from '@tmlmobilidade/types';
+import { calendarWeekday } from '@/calendar/utils/index.js';
+import { Dates } from '@/dates.js';
+import { buildOperationalDateRange } from '@/calendar/rules/utils/date.js';
 
-/* * */
+import { computeActiveRules } from './calendar/rules/calculation/index.js';
+import { resolvePatternRules } from './calendar/rules/merging/index.js';
 
-interface CalculateAgencyVkmArgs {
+export interface CalculateAgencyVkmArgs {
 	agency: Agency
 	events: Event[]
 	holidays: Holiday[]
@@ -44,16 +46,11 @@ interface VkmAccumulator {
 	total_from_distance: number
 }
 
-/* * */
-
 const UNASSIGNED_PERIOD_KEY = '__unassigned__';
 const UNASSIGNED_PERIOD_NAME = 'Sem período definido';
 
-/* * */
-
 function resolveDayTypeBucket(date: OperationalDate, holidays: Holiday[]): LegacyVkmDayType {
 	const weekday = calendarWeekday(Dates.fromOperationalDate(date, 'Europe/Lisbon'), holidays);
-
 	if (weekday === 6) return '2';
 	if (weekday === 7) return '3';
 	return '1';
@@ -63,7 +60,6 @@ function sortPeriodsByStartDate(periods: YearPeriod[]) {
 	return [...periods].sort((left, right) => {
 		const leftStart = left.dates?.slice().sort()[0] ?? '99999999';
 		const rightStart = right.dates?.slice().sort()[0] ?? '99999999';
-
 		return leftStart.localeCompare(rightStart);
 	});
 }
@@ -82,79 +78,53 @@ function createPeriodAccumulator(period: null | YearPeriod, fallbackName = UNASS
 
 function createAccumulator(periods: YearPeriod[]): VkmAccumulator {
 	const periodAccumulators = new Map<string, PeriodAccumulator>();
-
 	for (const period of periods) {
 		periodAccumulators.set(period._id, createPeriodAccumulator(period));
 	}
-
-	return {
-		day_type_one: 0,
-		day_type_three: 0,
-		day_type_two: 0,
-		periods: periodAccumulators,
-		total_from_distance: 0,
-	};
+	return { day_type_one: 0, day_type_three: 0, day_type_two: 0, periods: periodAccumulators, total_from_distance: 0 };
 }
 
 function buildPeriodMetadata(operationalDates: OperationalDate[], periods: YearPeriod[]) {
 	const operationalDateSet = new Set(operationalDates);
 	const periodIdByDate = new Map<OperationalDate, string>();
-	const sortedPeriods = sortPeriodsByStartDate(periods);
 	const relevantPeriods: YearPeriod[] = [];
 
-	for (const period of sortedPeriods) {
+	for (const period of sortPeriodsByStartDate(periods)) {
 		const relevantDates = (period.dates ?? []).filter(date => operationalDateSet.has(date));
-
 		if (!relevantDates.length) continue;
-
 		relevantPeriods.push(period);
-
 		for (const date of relevantDates) {
-			if (!periodIdByDate.has(date)) {
-				periodIdByDate.set(date, period._id);
-			}
+			if (!periodIdByDate.has(date)) periodIdByDate.set(date, period._id);
 		}
 	}
 
 	return { periodIdByDate, relevantPeriods };
 }
 
-export function getPatternExtensionMeters(pattern: Pattern, source: CalculateVkmDto['extension_source']) {
-	if (source === 'stop_times') {
-		return (pattern.path ?? []).reduce((total, item) => total + Number(item.distance_delta ?? 0), 0);
-	}
-
-	// `go` uses the extension currently persisted in the pattern shape. That value can come
-	// from GTFS import or from a later Valhalla-based recompute in the GO shape editor.
-	return Number(pattern.shape?.extension ?? 0);
-}
-
-function addDistanceToDayType(periodAccumulator: PeriodAccumulator, distanceMeters: number, dayType: LegacyVkmDayType) {
-	periodAccumulator.total += distanceMeters;
-
-	if (dayType === '1') periodAccumulator.day_type_one += distanceMeters;
-	if (dayType === '2') periodAccumulator.day_type_two += distanceMeters;
-	if (dayType === '3') periodAccumulator.day_type_three += distanceMeters;
+function addDistanceToDayType(acc: PeriodAccumulator, distanceMeters: number, dayType: LegacyVkmDayType) {
+	acc.total += distanceMeters;
+	if (dayType === '1') acc.day_type_one += distanceMeters;
+	if (dayType === '2') acc.day_type_two += distanceMeters;
+	if (dayType === '3') acc.day_type_three += distanceMeters;
 }
 
 function addToAccumulator(accumulator: VkmAccumulator, distanceMeters: number, dayType: LegacyVkmDayType, periodId: null | string) {
 	accumulator.total_from_distance += distanceMeters;
-
 	if (dayType === '1') accumulator.day_type_one += distanceMeters;
 	if (dayType === '2') accumulator.day_type_two += distanceMeters;
 	if (dayType === '3') accumulator.day_type_three += distanceMeters;
 
-	const resolvedPeriodKey = periodId ?? UNASSIGNED_PERIOD_KEY;
-	const existingPeriodAccumulator = accumulator.periods.get(resolvedPeriodKey);
+	const key = periodId ?? UNASSIGNED_PERIOD_KEY;
+	const existing = accumulator.periods.get(key);
 
-	if (existingPeriodAccumulator) {
-		addDistanceToDayType(existingPeriodAccumulator, distanceMeters, dayType);
+	if (existing) {
+		addDistanceToDayType(existing, distanceMeters, dayType);
 		return;
 	}
 
-	const unassignedPeriodAccumulator = createPeriodAccumulator(null);
-	addDistanceToDayType(unassignedPeriodAccumulator, distanceMeters, dayType);
-	accumulator.periods.set(UNASSIGNED_PERIOD_KEY, unassignedPeriodAccumulator);
+	const unassigned = createPeriodAccumulator(null);
+	addDistanceToDayType(unassigned, distanceMeters, dayType);
+	accumulator.periods.set(UNASSIGNED_PERIOD_KEY, unassigned);
 }
 
 function metersToKilometers(value: number) {
@@ -163,7 +133,7 @@ function metersToKilometers(value: number) {
 
 function buildPeriodResults(periods: Map<string, PeriodAccumulator>): VkmPeriodResult[] {
 	return [...periods.entries()]
-		.filter(([periodKey, period]) => periodKey !== UNASSIGNED_PERIOD_KEY || period.total > 0)
+		.filter(([key, period]) => key !== UNASSIGNED_PERIOD_KEY || period.total > 0)
 		.map(([, period]) => ({
 			code: period.code,
 			day_type_one: metersToKilometers(period.day_type_one),
@@ -178,14 +148,12 @@ function buildPeriodResults(periods: Map<string, PeriodAccumulator>): VkmPeriodR
 function buildDayMetadata(operationalDates: OperationalDate[], holidays: Holiday[], periods: YearPeriod[]) {
 	const { periodIdByDate, relevantPeriods } = buildPeriodMetadata(operationalDates, periods);
 	const metadataByDate = new Map<OperationalDate, DayMetadata>();
-
 	for (const date of operationalDates) {
 		metadataByDate.set(date, {
 			dayType: resolveDayTypeBucket(date, holidays),
 			periodId: periodIdByDate.get(date) ?? null,
 		});
 	}
-
 	return { metadataByDate, relevantPeriods };
 }
 
@@ -194,7 +162,6 @@ function resolveCalculationEndDate(request: Pick<CalculateVkmDto, 'calculation_m
 	const endDate = request.calculation_method === 'rolling_year'
 		? startDate.plus({ years: 1 })
 		: Dates.fromOperationalDate(request.end_date ?? request.start_date, 'Europe/Lisbon');
-
 	return { endDate, startDate };
 }
 
@@ -206,13 +173,7 @@ function buildCalculationContext(
 	const { endDate, startDate } = resolveCalculationEndDate(request);
 	const operationalDates = buildOperationalDateRange(startDate.js_date, endDate.js_date);
 	const { metadataByDate, relevantPeriods } = buildDayMetadata(operationalDates, holidays, periods);
-
-	return {
-		endDate,
-		metadataByDate,
-		operationalDates,
-		relevantPeriods,
-	};
+	return { endDate, metadataByDate, operationalDates, relevantPeriods };
 }
 
 function buildCalculationInputs(
@@ -222,7 +183,6 @@ function buildCalculationInputs(
 ) {
 	const totalVkmPerYear = agency.financials.vkm_per_month.reduce((sum, value) => sum + Number(value ?? 0), 0);
 	const pricePerKm = Number(agency.financials.price_per_km ?? 0);
-
 	return {
 		agency_id: agency._id,
 		agency_name: agency.name,
@@ -234,43 +194,33 @@ function buildCalculationInputs(
 	};
 }
 
-/* * */
+export function getPatternExtensionMeters(pattern: Pattern, source: CalculateVkmDto['extension_source']): number {
+	if (source === 'stop_times') {
+		return (pattern.path ?? []).reduce((total, item) => total + Number(item.distance_delta ?? 0), 0);
+	}
+	return Number(pattern.shape?.extension ?? 0);
+}
 
 export function calculateAgencyVkm({ agency, events, holidays, patterns, periods, request }: CalculateAgencyVkmArgs): VkmCalculationResult {
-	//
-
-	// Setup variables
-
 	const { endDate, metadataByDate, operationalDates, relevantPeriods } = buildCalculationContext(request, holidays, periods);
 	const accumulator = createAccumulator(relevantPeriods);
 
-	// Calculate VKM
-
 	for (const pattern of patterns) {
-		// Get extension meters
 		const extensionMeters = getPatternExtensionMeters(pattern, request.extension_source);
-
 		if (!extensionMeters) continue;
 
-		// Get merged rules
 		const mergedRules = resolvePatternRules(pattern, events);
-
 		if (!mergedRules.length) continue;
 
-		// Loop through operational dates
 		for (const date of operationalDates) {
 			const activeRules = computeActiveRules(date, mergedRules, periods, holidays, { events });
 			const activeTripCount = activeRules.timepoints.length;
-
 			if (!activeTripCount) continue;
 
 			const dayMetadata = metadataByDate.get(date);
-
 			if (!dayMetadata) continue;
 
-			const distanceMeters = extensionMeters * activeTripCount;
-
-			addToAccumulator(accumulator, distanceMeters, dayMetadata.dayType, dayMetadata.periodId);
+			addToAccumulator(accumulator, extensionMeters * activeTripCount, dayMetadata.dayType, dayMetadata.periodId);
 		}
 	}
 
