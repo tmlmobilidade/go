@@ -1,6 +1,6 @@
 /* * */
 
-import { parsePcgiTransactionEntityIntoRawApexTransactionRefundV30 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { parsePcgiTransactionEntityIntoRawApexTransactionLocationV30, parsePcgiTransactionEntityIntoRawApexTransactionRefundV30, parsePcgiTransactionEntityIntoRawApexTransactionValidationV30 } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type PcgiTransactionEntity, type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
 
 /* * */
@@ -29,10 +29,9 @@ export function transformPcgiApexTransaction(pcgiTransactionEntity: PcgiTransact
 
 	if (documentTypeKey === '6|3.0') return parsePcgiTransactionEntityIntoRawApexTransactionRefundV30(pcgiTransactionEntity, decodedTransaction);
 
-	if (documentTypeKey === '11|3.0') return parsePcgiTransactionEntityIntoRawApexTransactionRefundV30(pcgiTransactionEntity, decodedTransaction);
-	if (documentTypeKey === '11|4.0') return parsePcgiTransactionEntityIntoRawApexTransactionRefundV30(pcgiTransactionEntity, decodedTransaction);
+	if (documentTypeKey === '11|3.0') return parsePcgiTransactionEntityIntoRawApexTransactionValidationV30(pcgiTransactionEntity, decodedTransaction);
 
-	if (documentTypeKey === '19|3.0') return parsePcgiTransactionEntityIntoRawApexTransactionRefundV30(pcgiTransactionEntity, decodedTransaction);
+	if (documentTypeKey === '19|3.0') return parsePcgiTransactionEntityIntoRawApexTransactionLocationV30(pcgiTransactionEntity, decodedTransaction);
 
 	//
 	// If no transformation is found, throw an error

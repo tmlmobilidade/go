@@ -12,6 +12,14 @@ export function parsePcgiTransactionEntityIntoRawApexTransactionValidationV30(pc
 	//
 	// Validate the document structure and content
 
+	const payload = RawApexTransactionValidationV30PayloadSchema.safeParse(decodedTransaction);
+
+	if (!payload.success) {
+		console.log(payload.error.errors);
+		console.log(decodedTransaction);
+		process.exit();
+	}
+
 	const result: RawApexTransactionValidationV30 = {
 		_id: pcgiTransactionEntity.transactionId,
 		agency_id: decodedTransaction.operatorInfo.operatorLongID,
@@ -23,5 +31,13 @@ export function parsePcgiTransactionEntityIntoRawApexTransactionValidationV30(pc
 		version: 'apex-validation-3.0',
 	};
 
-	return RawApexTransactionValidationV30Schema.parse(result);
+	const validated = RawApexTransactionValidationV30Schema.safeParse(result);
+
+	if (!validated.success) {
+		console.log(validated.error.errors);
+		console.log(decodedTransaction);
+		process.exit();
+	}
+
+	return validated.data;
 }

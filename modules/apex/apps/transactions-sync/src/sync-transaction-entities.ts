@@ -58,8 +58,6 @@ export async function syncTransactionEntities(timeChunk: PerformInTimeChunksItem
 		},
 	};
 
-	console.log(sourceQuery);
-
 	const sourceDbCount = await pcgiTransactionEntities.count(sourceQuery);
 
 	const destinationDbCount = await rawApexTransactions.count({
@@ -89,6 +87,7 @@ export async function syncTransactionEntities(timeChunk: PerformInTimeChunksItem
 
 	for await (const document of pcgidbTransactionEntitiesStream) {
 		try {
+			if (document.operatorLongId !== '41') continue;
 			const parsedDocument = transformPcgiApexTransaction(document);
 			await writer.write(parsedDocument);
 		} catch (error) {

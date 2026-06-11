@@ -50,7 +50,7 @@ export function parseRawApexTransactionValidationV30(doc: RawApexTransactionVali
 			on_board_refund_id: null,
 			on_board_sale_id: null,
 			pattern_id: doc.payload.serviceInfo.patternLongID,
-			product_id: doc.payload.validationInfo.productLongID,
+			product_id: doc.payload.validationInfo.productLongID ?? '-',
 			received_at: doc.created_at,
 			stop_id: doc.payload.serviceInfo.stopLongID,
 			trip_id: doc.payload.serviceInfo.journeyID,
