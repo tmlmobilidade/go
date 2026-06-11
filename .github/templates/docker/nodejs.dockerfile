@@ -92,6 +92,7 @@ ENV NODE_ENV=production
 COPY --from=builder /app/modules/${MODULE}/apps/${APP}/package.json ./package.json
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
+COPY --from=builder /app/packages-new ./packages-new
 COPY --from=builder /app/modules ./modules
 COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist ./dist
 
