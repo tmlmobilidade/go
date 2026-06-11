@@ -1,7 +1,7 @@
 /* * */
 
-import { HubTripSchema } from '@/hub/api/network/trip.js';
-import { HubWaypointSchema } from '@/hub/api/network/waypoint.js';
+import { HubTripSchema } from '@/api/network/trip.js';
+import { HubWaypointSchema } from '@/api/network/waypoint.js';
 import { z } from 'zod';
 
 /* * */

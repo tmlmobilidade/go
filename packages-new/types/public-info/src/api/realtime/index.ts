@@ -1,1 +1,1 @@
-export * from '@/hub/api/realtime/vehicle-position.js';
+export * from '@/api/realtime/vehicle-position.js';

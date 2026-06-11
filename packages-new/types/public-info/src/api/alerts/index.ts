@@ -1,1 +1,1 @@
-export * from '@/hub/api/alerts/alert.js';
+export * from '@/api/alerts/alert.js';

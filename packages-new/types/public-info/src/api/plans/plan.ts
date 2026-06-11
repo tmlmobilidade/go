@@ -1,8 +1,8 @@
 /* * */
 
-import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
-import { GtfsAgencySchema } from '@/gtfs/agency.js';
-import { GtfsFeedInfoSchema } from '@/gtfs/feed-info.js';
+import { UnixTimestampSchema } from '@tmlmobilidade/types';
+import { GtfsAgencySchema } from '@tmlmobilidade/types';
+import { GtfsFeedInfoSchema } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 /* * */

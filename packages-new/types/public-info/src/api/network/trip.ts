@@ -1,6 +1,6 @@
 /* * */
 
-import { HubScheduledArrivalSchema } from '@/hub/api/network/scheduled-arrival.js';
+import { HubScheduledArrivalSchema } from '@/api/network/scheduled-arrival.js';
 import { z } from 'zod';
 
 /* * */

@@ -1,6 +1,6 @@
 /* * */
 
-import { AlertSchema } from '@/alerts/alert.js';
+import { AlertSchema } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 /* * */

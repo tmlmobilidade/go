@@ -1,1 +1,1 @@
-export * from '@/hub/api/plans/plan.js';
+export * from '@/api/plans/plan.js';
