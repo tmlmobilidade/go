@@ -16,7 +16,7 @@ export interface LogsNextjsContext {
 	message: string
 	module: string
 	severity?: string
-	status?: number
+	status?: string
 }
 
 /**
