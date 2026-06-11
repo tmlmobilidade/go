@@ -1,16 +1,15 @@
 /* * */
 
-import { rawApexOnBoardRefunds, rawVehicleEventsNew } from '@tmlmobilidade/databases';
+import { pcgiTransactionEntities, rawApexTransactions } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RawApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
-import { pcgidbTicketing } from '@tmlmobilidade/interfaces';
+import { type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { BatchWriter, type PerformInTimeChunksItem } from '@tmlmobilidade/utils';
 
 /* * */
 
-const writer = new BatchWriter<RawApexOnBoardRefund>({
+const writer = new BatchWriter<RawApexTransaction>({
 	batch_size: 10_000,
 	insertFn: async (data) => {
 		const writeOps = data.map(doc => ({
@@ -20,17 +19,17 @@ const writer = new BatchWriter<RawApexOnBoardRefund>({
 				upsert: true,
 			},
 		}));
-		await rawApexOnBoardRefunds.bulkWrite(writeOps);
+		await rawApexTransactions.bulkWrite(writeOps);
 	},
-	title: 'CORE',
+	title: await rawApexTransactions.getCollectionName(),
 });
 
 /**
- * Syncs Vehicle Events from the Legacy PCGI database
+ * Syncs APEX Transactions from the PCGI database
  * to the MongoDB database for a given time chunk.
  * @param timeChunk The time chunk to sync the data for.
  */
-export async function syncApexOnBoardRefunds(timeChunk: PerformInTimeChunksItem) {
+export async function syncApexTransactions(timeChunk: PerformInTimeChunksItem) {
 	//
 
 	const chunkStartDate = Dates
@@ -58,22 +57,21 @@ export async function syncApexOnBoardRefunds(timeChunk: PerformInTimeChunksItem)
 		},
 	};
 
-	const sourceDbCount = await pcgidbTicketing.SalesEntity.countDocuments(sourceQuery);
+	const sourceDbCount = await pcgiTransactionEntities.count(sourceQuery);
 
-	const destinationDbCount = await rawVehicleEventsNew.count({
-		received_at: {
+	const destinationDbCount = await rawApexTransactions.count({
+		created_at: {
 			$gte: chunkStartDate.unix_timestamp,
 			$lte: chunkEndDate.unix_timestamp,
 		},
-		version: 'cmet-v1-core',
 	});
 
 	if (sourceDbCount === destinationDbCount) {
-		Logger.success(`[CORE] MATCH: Found the same number of documents in both databases: ${sourceDbCount} Source = ${destinationDbCount} Destination (${countStepTimer.get()})`);
+		Logger.success(`[APEX Tx] MATCH: Found the same number of documents in both databases: ${sourceDbCount} Source = ${destinationDbCount} Destination (${countStepTimer.get()})`);
 		return;
 	}
 
-	Logger.info(`[CORE] MISMATCH: Document count was different for both databases: ${sourceDbCount} Source != ${destinationDbCount} Destination (${countStepTimer.get()})`);
+	Logger.info(`[APEX Tx] MISMATCH: Document count was different for both databases: ${sourceDbCount} Source != ${destinationDbCount} Destination (${countStepTimer.get()})`);
 
 	//
 	// Sync all documents in the current timestamp chunk. We query the Source database for all documents
@@ -82,10 +80,12 @@ export async function syncApexOnBoardRefunds(timeChunk: PerformInTimeChunksItem)
 	// because they are impossible to calculate without fetching and parsing all documents,
 	// so we just upsert them in the Destination database and the DB takes care of deduplication.
 
-	const pcgidbLegacyCoreStream = pcgidbLegacy.VehicleEventsCore.find(sourceQuery).stream();
+	const pcgidbTransactionEntitiesCollection = await pcgiTransactionEntities.getCollection();
 
-	for await (const document of pcgidbLegacyCoreStream) {
-		const parsedDocuments = transformPcgiVehicleEventCore(document);
+	const pcgidbTransactionEntitiesStream = pcgidbTransactionEntitiesCollection.find(sourceQuery).stream();
+
+	for await (const document of pcgidbTransactionEntitiesStream) {
+		const parsedDocuments = parseRawApexTransaction(document);
 		for (const parsedDocument of parsedDocuments) {
 			await writer.write(parsedDocument);
 		}
