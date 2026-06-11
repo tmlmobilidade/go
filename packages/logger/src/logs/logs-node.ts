@@ -20,7 +20,7 @@ export interface LogsNodeContext {
 	path?: string
 	reqId?: string
 	severity?: string
-	status?: string
+	status?: number
 }
 
 /**
@@ -37,13 +37,13 @@ export const LogsNode = (context: LogsNodeContext): void => {
 		...requestData,
 		app,
 		message,
-		method,
 		module,
-		path,
-		reqId,
 		'sentry.origin': 'manual.log.tml',
 		'severity': normalizeSeverity(severity),
-		status,
+		...(method ? { method } : {}),
+		...(path ? { path } : {}),
+		...(reqId ? { reqId } : {}),
+		...(typeof status === 'number' ? { status } : {}),
 	};
 	const level = normalizeSeverity(severity);
 
@@ -81,10 +81,9 @@ function normalizeRequestContext(request: unknown): { endpoint?: string, method?
 	const method = typeof maybeRequest.method === 'string' ? maybeRequest.method : undefined;
 	const requestUrl = typeof maybeRequest.url === 'string' ? maybeRequest.url : undefined;
 	const routeUrl = typeof maybeRequest.routeOptions?.url === 'string' ? maybeRequest.routeOptions.url : undefined;
-
 	return {
-		endpoint: routeUrl ?? requestUrl,
-		method,
-		request: requestUrl,
+		...(routeUrl || requestUrl ? { endpoint: routeUrl ?? requestUrl } : {}),
+		...(method ? { method } : {}),
+		...(requestUrl ? { request: requestUrl } : {}),
 	};
 }

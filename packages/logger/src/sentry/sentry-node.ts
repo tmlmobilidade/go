@@ -8,7 +8,7 @@ export async function initSentryNode() {
 			Sentry.fastifyIntegration(),
 			Sentry.pinoIntegration({
 				error: { handled: true, levels: ['error', 'fatal'] },
-				log: { levels: ['info', 'warn', 'error', 'fatal', 'debug', 'trace'] },
+				log: { levels: [] },
 			}),
 		],
 	});
