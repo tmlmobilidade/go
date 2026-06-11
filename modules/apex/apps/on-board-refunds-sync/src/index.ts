@@ -1,6 +1,6 @@
 /* * */
 
-import { syncPcgidbCoreVehicleEvents } from '@/sync-on-board-refunds.js';
+import { syncPcgidbCoreVehicleEvents } from '@/sync-apex-on-board-refunds.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';

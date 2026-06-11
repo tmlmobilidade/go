@@ -1,15 +1,16 @@
 /* * */
 
-import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
+import { rawApexOnBoardRefunds, rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { type RawApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
+import { pcgidbTicketing } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type RawVehicleEvent } from '@tmlmobilidade/types';
 import { BatchWriter, type PerformInTimeChunksItem } from '@tmlmobilidade/utils';
 
 /* * */
 
-const writer = new BatchWriter<RawVehicleEvent>({
+const writer = new BatchWriter<RawApexOnBoardRefund>({
 	batch_size: 10_000,
 	insertFn: async (data) => {
 		const writeOps = data.map(doc => ({
@@ -19,7 +20,7 @@ const writer = new BatchWriter<RawVehicleEvent>({
 				upsert: true,
 			},
 		}));
-		await rawVehicleEventsNew.bulkWrite(writeOps);
+		await rawApexOnBoardRefunds.bulkWrite(writeOps);
 	},
 	title: 'CORE',
 });
@@ -57,7 +58,7 @@ export async function syncApexOnBoardRefunds(timeChunk: PerformInTimeChunksItem)
 		},
 	};
 
-	const sourceDbCount = await pcgidbLegacy.VehicleEventsCore.countDocuments(sourceQuery);
+	const sourceDbCount = await pcgidbTicketing.SalesEntity.countDocuments(sourceQuery);
 
 	const destinationDbCount = await rawVehicleEventsNew.count({
 		received_at: {

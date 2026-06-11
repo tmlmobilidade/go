@@ -4,7 +4,7 @@ import { RawApexTransactionBankingTapV40Schema } from '@/raw/banking-taps/bankin
 import { RawApexTransactionInspectionDecisionV20Schema } from '@/raw/inspections/inspection-decision-v2-0.js';
 import { RawApexTransactionInspectionV20Schema } from '@/raw/inspections/inspection-v2-0.js';
 import { RawApexTransactionLocationV30Schema } from '@/raw/locations/location-v3-0.js';
-import { RawApexTransactionRefundV30Schema } from '@/raw/on-board-refunds/raw-apex-on-board-refund-v3-0.js';
+import { RawApexTransactionRefundV30Schema } from '@/raw/on-board-refunds/on-board-refund-v3-0.js';
 import { RawApexTransactionSaleV30Schema } from '@/raw/sales/sale-v3-0.js';
 import { RawApexTransactionValidationV20Schema } from '@/raw/validations/validation-v2-0.js';
 import { RawApexTransactionValidationV30Schema } from '@/raw/validations/validation-v3-0.js';
