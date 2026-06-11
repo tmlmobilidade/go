@@ -6,11 +6,26 @@ import { processApexOnBoardSale } from '@/tasks/process-apex-on-board-sale.js';
 import { processApexValidation } from '@/tasks/process-apex-validation.js';
 import { processVehicleEvent } from '@/tasks/process-vehicle-event.js';
 import { pcgidbLegacy, pcgidbTicketing, pcgidbValidations } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 
 /* * */
 
 await (async function init() {
 	//
+
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.logsNode({ app: 'stream', message: 'Sentry Replicator Stream initialized', module: 'replicator', severity: 'info' });
+	} catch (error) {
+		Logger.error('Error initializing Sentry Replicator Stream', error);
+	}
+
+	//
+	// Connect to PCGI
 
 	await pcgidbLegacy.connect();
 	await pcgidbTicketing.connect();

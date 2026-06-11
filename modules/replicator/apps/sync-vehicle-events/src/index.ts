@@ -5,6 +5,7 @@ import { parseVehicleEvent } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
 import { pcgidbLegacy, rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -16,6 +17,19 @@ import { Interval } from 'luxon';
 async function syncVehicleEvents() {
 	try {
 		//
+
+		//
+		// Initialize Sentry
+
+		try {
+			await initSentryNode();
+			Logger.logsNode({ app: 'sync-vehicle-events', message: 'Sentry Replicator Sync Vehicle Events initialized', module: 'replicator', severity: 'info' });
+		} catch (error) {
+			Logger.error('Error initializing Sentry Replicator Sync Vehicle Events', error);
+		}
+
+		//
+		// Initialize the logger
 
 		Logger.init();
 

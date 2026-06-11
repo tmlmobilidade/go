@@ -5,6 +5,7 @@ import { parseSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-replicator-pck
 import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
 import { pcgidbTicketing, rides, simplifiedApexOnBoardSales } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -16,6 +17,19 @@ import { Interval } from 'luxon';
 async function syncApexOnBoardSales() {
 	try {
 		//
+
+		//
+		// Initialize Sentry
+
+		try {
+			await initSentryNode();
+			Logger.logsNode({ app: 'sync-apex-on-board-sales', message: 'Sentry Replicator Sync Apex On Board Sales initialized', module: 'replicator', severity: 'info' });
+		} catch (error) {
+			Logger.error('Error initializing Sentry Replicator Sync Apex On Board Sales', error);
+		}
+
+		//
+		// Initialize the logger
 
 		Logger.init();
 

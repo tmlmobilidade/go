@@ -5,6 +5,7 @@ import { parseSimplifiedApexLocation } from '@tmlmobilidade/go-replicator-pckg-p
 import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
 import { pcgidbValidations, rides, simplifiedApexLocations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -16,6 +17,19 @@ import { Interval } from 'luxon';
 async function syncApexLocations() {
 	try {
 		//
+
+		//
+		// Initialize Sentry
+
+		try {
+			await initSentryNode();
+			Logger.logsNode({ app: 'sync-apex-locations', message: 'Sentry Replicator Sync Apex Locations initialized', module: 'replicator', severity: 'info' });
+		} catch (error) {
+			Logger.error('Error initializing Sentry Replicator Sync Apex Locations', error);
+		}
+
+		//
+		// Initialize the logger
 
 		Logger.init();
 

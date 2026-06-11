@@ -5,6 +5,7 @@ import { parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-replicator-p
 import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
 import { pcgidbTicketing, rides, simplifiedApexOnBoardRefunds } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -16,6 +17,19 @@ import { Interval } from 'luxon';
 async function syncApexOnBoardRefunds() {
 	try {
 		//
+
+		//
+		// Initialize Sentry
+
+		try {
+			await initSentryNode();
+			Logger.logsNode({ app: 'sync-apex-on-board-refunds', message: 'Sentry Replicator Sync Apex On Board Refunds initialized', module: 'replicator', severity: 'info' });
+		} catch (error) {
+			Logger.error('Error initializing Sentry Replicator Sync Apex On Board Refunds', error);
+		}
+
+		//
+		// Initialize the logger
 
 		Logger.init();
 
