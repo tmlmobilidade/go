@@ -149,6 +149,7 @@ This is **not** FR-04 (replacement differs from weekday-only path → OFF + even
 | **On event Tuesday** | Manual Tuesday rules; replacement intersection uses Tuesday |
 | **Trip rows** | Manual tokens only (e.g. `FER_DU`); no `DIA_CARN` row |
 | **OFF tokens** | Only where normal displacement applies (`event_id` on manuals) |
+| **ND-03** | Same as normal days: one owner per shared timepoint among overlapping general manuals. The broader rule wins when its dates contain the other's (e.g. `ALL_DU-SAB` (Mon–Sat) owns `21:00` over `ALL_DU` (Mon–Fri) on `20260216`) |
 
 ---
 
@@ -174,7 +175,8 @@ This is **not** FR-04 (replacement differs from weekday-only path → OFF + even
 |--|--|
 | **Setup** | Two+ general `include` manuals match the same weekday×period (e.g. `ESC_DU` school + `ESC-VER_DU` “2 períodos”) and both list `20:30`. |
 | **Rules engine** | One timepoint `20:30`; both rule IDs in `appliedRuleIds`. |
-| **Export** | **One** `operating` row at `20:30` — owner = manual with **more timepoints** (primary schedule); **no** `base_off` for the other general on that timepoint. |
+| **Export** | **One** `operating` row at `20:30` (P1); **no** `base_off` for the other general on that timepoint. **Owner = the broader rule** when one rule's applicable dates strictly contain the other's (`weekdays`/`year_period_ids`/`months` all ⊆) — keeps its date set whole and emits one token instead of fragmenting. For equal or partially-overlapping scopes (like `ESC_DU` vs `ESC-VER_DU`, same weekday×period), the choice is ambiguous, so owner = manual with **more timepoints** (primary schedule), then `_id`. |
+| **Broader-wins example** | "all days `14:55`" + "weekdays `…14:55…`" share `14:55`. The all-days rule strictly contains the weekday rule, so it owns `14:55` on every day → one `ALL` token, not `ALL`(weekends) + `ALL_DU`(weekdays). |
 | **Unique timepoints** | Timepoints only on the secondary manual (e.g. `15:55`) still get their own `operating` row. |
 | **Anti-pattern (rejected)** | `ESC-VER_DU-OFF-ESC_DU` at `20:30` with neither plain `ESC_DU` nor plain `ESC-VER_DU` active on a day both apply (e.g. `20260105`). |
 
@@ -192,8 +194,8 @@ This is **not** FR-04 (replacement differs from weekday-only path → OFF + even
 | | |
 |--|--|
 | **Setup** | Plain manual operates on school weekdays (e.g. `ESC_DU|1000`); Carnival path also builds `ALL_DU-OFF-DIA_CARN|1000` from `base_off` on event dates. |
-| **Bug (rejected)** | `resolveTripRows` expands OFF to **canonical** `ALL_DU` − `DIA_CARN` → OFF row active on every weekday; overlaps plain `ESC_DU` (P1). |
-| **Export** | Plain row **claims** operational dates first; OFF row dates = `(canonical base − event)` **minus** dates claimed by plain rows at that timepoint. |
+| **Bug (rejected)** | `resolveTripRows` expands OFF to **canonical** `ALL_DU` − `DIA_CARN` for the **whole** rule×timepoint bucket when exclude overlap exists on **any** day → OFF row active on unrelated weekdays (e.g. férias `20260615` while exclude only on `20261224`). |
+| **Export** | Split include dates **per day**: plain row = operational dates with no exclude on that day; OFF row = canonical base − event for days where `base_off` fired. Plain row **claims** dates first at resolve time. |
 | **Example** | `1211_0_1` on `20260105` at `10:00`: only `ESC_DU` active; no `ALL_DU-OFF-DIA_CARN`. |
 
 ---
@@ -207,6 +209,17 @@ This is **not** FR-04 (replacement differs from weekday-only path → OFF + even
 | **Rules** | `event_restriction` on a date removes one or more timepoints from `computeActiveRules(D)` |
 | **Export** | Follow operating set from rules engine; no trip row for removed timepoints |
 | **Circulations** | `computeActiveRules(D).timepoints.length` (P5) |
+
+### ER-02 — Event manual exclude zeroes all timepoints on event date (A2_24 dezembro)
+
+| | |
+|--|--|
+| **Setup** | General weekday manuals (`ALL_DU`, `FER-VER_DU`, …) match the calendar day. Event-linked **exclude** manual (`event_id`, `operating_mode: exclude`) lists the event day’s timepoints and fires on `20261224`. |
+| **Rules engine** | `computeActiveRules` = **0** timepoints; exclude rule appears in applied rules. UI may still list the exclude manual under “Regras Aplicadas” with its timepoint count — that is the **removed** set, not active circulations. |
+| **Export attribution** | **0** `operating`; `base_off` pairs only (`BASE` displaced by event exclude). |
+| **Trip rows** | **No plain row** active on the event date (P5). `resolveTripRows` must not leave that date in plain `plainOperationalDates`. |
+| **GTFS calendar trap** | Trips use shared `service_id` tokens (`ALL_DU 2`). If another pattern registers `ALL_DU 2` with a calendar that still includes the event date, comparator counts this pattern’s trips on that date even when per-pattern resolve excluded it. Different date hashes must get disambiguated suffixes (`ALL_DU 2 2`) via `resolveRuleToken`. |
+| **Example** | `2725_0_2` on `20261224`: 0 in GO, 45 wrongly in comparator when `ALL_DU 2` calendar still lists `20261224`. |
 
 ---
 
@@ -246,6 +259,7 @@ Expected circulations ≈ **16** = replacement operating timepoints (`DIA_CARN` 
 - [x] ND-03: overlapping generals → primary schedule `operating` only; no same-day `base_off`.
 - [x] ND-04: plain row claims dates before OFF canonical expansion at same timepoint.
 - [x] ND-05: `mergeSubset` must not absorb event-specific includes into general weekend rows.
+- [x] ER-02: event exclude manual zeroes operating on event date; no plain trip active (P5).
 - [ ] Tests reference scenario IDs in this file.
 
 ---

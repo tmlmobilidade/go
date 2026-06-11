@@ -1,8 +1,8 @@
 import type { Agency, CalculateVkmDto, Event, Holiday, LegacyVkmDayType, OperationalDate, Pattern, VkmCalculationResult, VkmPeriodResult, YearPeriod } from '@tmlmobilidade/types';
 
+import { buildOperationalDateRange } from '@/calendar/rules/utils/date.js';
 import { calendarWeekday } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
-import { buildOperationalDateRange } from '@/calendar/rules/utils/date.js';
 
 import { computeActiveRules } from './calendar/rules/calculation/index.js';
 import { resolvePatternRules } from './calendar/rules/merging/index.js';

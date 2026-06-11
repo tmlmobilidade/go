@@ -1,5 +1,5 @@
 import type { GtfsIncludeContribution } from '../src/calendar/rules/export-attribution/types.js';
-import type { Event, EventReplacementRule, HHMM, ManualRule, OperationalDate, ScheduleRule, UnixTimestamp, YearPeriod } from '@tmlmobilidade/types';
+import type { Event, EventReplacementRule, HHMM, Holiday, ManualRule, OperationalDate, ScheduleRule, UnixTimestamp, YearPeriod } from '@tmlmobilidade/types';
 
 import { hhmm } from '@tmlmobilidade/types';
 import assert from 'node:assert/strict';
@@ -115,9 +115,15 @@ function assertOperatingMatchesComputeActiveRules(
 	date: OperationalDate,
 	allRules: ScheduleRule[],
 	contributions: GtfsIncludeContribution[],
-	options?: { events?: Event[], periods?: YearPeriod[] },
+	options?: { events?: Event[], holidays?: Holiday[], periods?: YearPeriod[] },
 ) {
-	const active = computeActiveRules(date, allRules, options?.periods ?? periods, holidays, options);
+	const active = computeActiveRules(
+		date,
+		allRules,
+		options?.periods ?? periods,
+		options?.holidays ?? holidays,
+		options,
+	);
 	const contributionOperating = contributions
 		.filter(c => c.kind === 'operating')
 		.map(c => c.timepoint)
@@ -279,6 +285,84 @@ describe('collectGtfsIncludeContributionsForDate', () => {
 		);
 	});
 
+	it('ND-03 on SW-01: same_weekday replacement dedupes overlapping general manuals — broader rule owns shared timepoint (ALL_DU + ALL_DU-SAB)', () => {
+		const allDu: ManualRule = {
+			_id: 'all_du',
+			kind: 'manual',
+			name: 'All weekdays',
+			operating_mode: 'include',
+			timepoints: [t('10:00'), t('11:00'), t('21:00')],
+			weekdays: [1, 2, 3, 4, 5],
+			year_period_ids: ['school'],
+		};
+
+		const allDuSab: ManualRule = {
+			_id: 'all_du_sab',
+			kind: 'manual',
+			name: 'Weekday + Saturday extra',
+			operating_mode: 'include',
+			timepoints: [t('21:00')],
+			weekdays: [1, 2, 3, 4, 5, 6],
+			year_period_ids: ['school'],
+		};
+
+		const carnivalExceptEvent = testEvent({
+			_id: 'carn_except_event',
+			code: 'FER_CARN_EXC',
+			dates: [d('20260216'), d('20260218')],
+			title: 'Carnival except day',
+		});
+
+		const sameWeekdayReplacement = testEventReplacement({
+			_id: 'carn_except_replacement',
+			dates: [d('20260216'), d('20260218')],
+			event: { id: 'carn_except_event', title: 'Carnival except day' },
+			same_weekday: true,
+			weekdays: [6],
+			year_period_ids: ['school'],
+		});
+
+		const periodWithExceptDays = testYearPeriod({
+			...schoolPeriod,
+			dates: [...schoolPeriod.dates, d('20260216'), d('20260218')],
+		});
+
+		const date = d('20260216');
+		const testRules = [allDu, allDuSab, sameWeekdayReplacement];
+		const contributions = collectGtfsIncludeContributionsForDate(
+			date,
+			testRules,
+			[periodWithExceptDays],
+			holidays,
+			{ events: [carnivalExceptEvent] },
+		);
+
+		// One owner per shared timepoint (P1). 21:00 lives in both rules, but ALL_DU-SAB
+		// (Mon–Sat) strictly contains ALL_DU (Mon–Fri), so the broader rule owns 21:00 and its
+		// date set stays whole (Mon–Sat under one token, not fragmented Mon–Fri + Sat).
+		assert.equal(
+			contributions.filter(c => c.kind === 'operating' && c.timepoint === '21:00').length,
+			1,
+		);
+		assert.ok(contributions.some(
+			c => c.kind === 'operating' && c.rule._id === 'all_du_sab' && c.timepoint === '21:00',
+		));
+		assert.equal(
+			contributions.some(c => c.kind === 'operating' && c.rule._id === 'all_du' && c.timepoint === '21:00'),
+			false,
+		);
+		// ALL_DU still owns the timepoints unique to it.
+		assert.ok(contributions.some(
+			c => c.kind === 'operating' && c.rule._id === 'all_du' && c.timepoint === '10:00',
+		));
+		assertOperatingMatchesComputeActiveRules(
+			date,
+			testRules,
+			contributions,
+			{ events: [carnivalExceptEvent], periods: [periodWithExceptDays] },
+		);
+	});
+
 	it('applies event_id displacement on normal days', () => {
 		const eventSpecific: ManualRule = {
 			_id: 'event_manual',
@@ -434,6 +518,158 @@ describe('collectGtfsIncludeContributionsForDate', () => {
 			[weekendGeneral, santoManual],
 			contributions,
 			{ events: [santoEvent], periods: [junePeriod] },
+		);
+	});
+
+	it('ER-01: event manual exclude on holiday emits base_off, not plain calendar operating (2303-style)', () => {
+		const jan1Holiday: Holiday = {
+			...documentFields,
+			_id: 'ny_day',
+			agency_ids: [],
+			dates: [d('20260101')],
+			title: 'Ano Novo',
+		};
+
+		const jan1Event = testEvent({
+			_id: 'jan_event',
+			code: '01_JAN_A2',
+			dates: [d('20260101')],
+			title: '01 de janeiro',
+		});
+
+		const domInclude: ManualRule = {
+			_id: 'dom_include',
+			kind: 'manual',
+			name: 'Dom',
+			operating_mode: 'include',
+			timepoints: [t('07:20'), t('07:50')],
+			weekdays: [7],
+			year_period_ids: ['school'],
+		};
+
+		const jan1Exclude: ManualRule = {
+			_id: 'jan_exclude',
+			event_id: 'jan_event',
+			kind: 'manual',
+			operating_mode: 'exclude',
+			timepoints: [t('07:20'), t('07:50')],
+			weekdays: [],
+			year_period_ids: [],
+		};
+
+		const janPeriod = testYearPeriod({
+			_id: 'school',
+			dates: [d('20260101'), d('20260104')],
+			name: 'School',
+		});
+
+		const jan1Contributions = collectGtfsIncludeContributionsForDate(
+			d('20260101'),
+			[domInclude, jan1Exclude],
+			[janPeriod],
+			[jan1Holiday],
+			{ events: [jan1Event] },
+		);
+
+		assert.equal(jan1Contributions.filter(c => c.kind === 'operating').length, 0);
+		assert.ok(jan1Contributions.every(
+			c => c.kind === 'base_off'
+				&& c.rule._id === 'dom_include'
+				&& c.excludeRule?._id === 'jan_exclude',
+		));
+
+		const sundayContributions = collectGtfsIncludeContributionsForDate(
+			d('20260104'),
+			[domInclude, jan1Exclude],
+			[janPeriod],
+			[jan1Holiday],
+			{ events: [jan1Event] },
+		);
+
+		assert.equal(sundayContributions.filter(c => c.kind === 'base_off').length, 0);
+		assert.ok(sundayContributions.every(c => c.kind === 'operating' && c.rule._id === 'dom_include'));
+
+		assertOperatingMatchesComputeActiveRules(
+			d('20260101'),
+			[domInclude, jan1Exclude],
+			jan1Contributions,
+			{ events: [jan1Event], holidays: [jan1Holiday], periods: [janPeriod] },
+		);
+		assertOperatingMatchesComputeActiveRules(
+			d('20260104'),
+			[domInclude, jan1Exclude],
+			sundayContributions,
+			{ events: [jan1Event], holidays: [jan1Holiday], periods: [janPeriod] },
+		);
+	});
+
+	it('ER-02: event exclude manual zeroes all weekday timepoints on event date (A2_24 dezembro)', () => {
+		const dec24Event = testEvent({
+			_id: 'dec24_event',
+			code: 'A2_24',
+			dates: [d('20261224')],
+			title: '24 dezembro',
+		});
+
+		const weekdayInclude: ManualRule = {
+			_id: 'all_du',
+			kind: 'manual',
+			name: 'Weekday',
+			operating_mode: 'include',
+			timepoints: [t('06:10'), t('06:30'), t('10:15')],
+			weekdays: [1, 2, 3, 4, 5],
+			year_period_ids: ['school'],
+		};
+
+		const dec24Exclude: ManualRule = {
+			_id: 'dec24_exclude',
+			event_id: 'dec24_event',
+			kind: 'manual',
+			name: '24 dezembro exclude',
+			operating_mode: 'exclude',
+			timepoints: [t('06:10'), t('06:30'), t('10:15')],
+			weekdays: [],
+			year_period_ids: [],
+		};
+
+		const decPeriod = testYearPeriod({
+			_id: 'school',
+			dates: [d('20261224'), d('20261223')],
+			name: 'School',
+		});
+
+		const date = d('20261224');
+		const active = computeActiveRules(
+			date,
+			[weekdayInclude, dec24Exclude],
+			[decPeriod],
+			holidays,
+			{ events: [dec24Event] },
+		);
+
+		assert.equal(active.timepoints.length, 0);
+
+		const contributions = collectGtfsIncludeContributionsForDate(
+			date,
+			[weekdayInclude, dec24Exclude],
+			[decPeriod],
+			holidays,
+			{ events: [dec24Event] },
+		);
+
+		assert.equal(contributions.filter(c => c.kind === 'operating').length, 0);
+		assert.equal(contributions.filter(c => c.kind === 'base_off').length, 3);
+		assert.ok(contributions.every(
+			c => c.kind === 'base_off'
+				&& c.rule._id === 'all_du'
+				&& c.excludeRule?._id === 'dec24_exclude',
+		));
+
+		assertOperatingMatchesComputeActiveRules(
+			date,
+			[weekdayInclude, dec24Exclude],
+			contributions,
+			{ events: [dec24Event], periods: [decPeriod] },
 		);
 	});
 });

@@ -31,7 +31,7 @@
 		"build": "tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json",
 		"lint": "eslint ./src/ ./tests/ && tsc --noEmit",
 		"lint:fix": "eslint ./src/ --fix",
-		"test": "tsx --test tests/export-attribution.test.ts",
+		"test": "tsx --test tests/*.test.ts",
 		"watch": "tsc-watch -p tsconfig.build.json --onSuccess 'resolve-tspaths -p tsconfig.build.json'"
 	},
 	"dependencies": {

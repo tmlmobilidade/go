@@ -1,7 +1,7 @@
 import { type GtfsV29ExportConfig } from '@/types.js';
 import { type ServiceId, type ServiceRegistry } from '@/utils/service-registry.js';
-import { buildCanonicalRuleDates, buildOperationalDateRange, buildRuleSummaryGtfs, calendarWeekday, collectGtfsIncludeContributionsForDate, computeActiveRules, Dates, getActivePeriodId, resolveDayPeriod, resolvePatternRules, yyyymmddToKey } from '@tmlmobilidade/dates';
-import { DayPeriod, type Event, GtfsBikesAllowed, GtfsTMLTrip, GtfsWheelchairBoarding, type HHMM, hhmm, type Holiday, type IsoWeekday, type ManualRule, type OperationalDate, type Pattern, patternDirectionMapper, type Route, type ScheduleRule, timeToMinutes, type YearPeriod } from '@tmlmobilidade/types';
+import { buildOperationalDateRange, buildRuleSummaryGtfs, calendarWeekday, type CanonicalDateCache, collectGtfsIncludeContributionsForDate, compareGeneralManualOwnershipPriority, computeActiveRules, computeOffRowDates, Dates, getActivePeriodId, getTimepointsRemovedByEventRestriction, resolveDayPeriod, resolvePatternRules, splitOperationalDatesByExcludeOverlap, yyyymmddToKey } from '@tmlmobilidade/dates';
+import { DayPeriod, type Event, GtfsBikesAllowed, GtfsTMLTrip, GtfsWheelchairBoarding, type HHMM, hhmm, type Holiday, type IsoWeekday, type ManualRule, type OperationalDate, type Pattern, patternDirectionMapper, type Route, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -35,16 +35,6 @@ export interface TripSchedule {
 }
 
 /* * */
-
-// Abstract this
-
-function isTimeInRange(time: HHMM, start: HHMM, end: HHMM): boolean {
-	const timeMinutes = timeToMinutes(time);
-	const startMinutes = timeToMinutes(start);
-	const endMinutes = timeToMinutes(end);
-
-	return timeMinutes >= startMinutes && timeMinutes < endMinutes;
-}
 
 function addScheduleDate(
 	schedules: Map<string, RuleTimepointSchedule>,
@@ -214,16 +204,11 @@ function collectExcludeTimepointsForDate(
 			continue;
 		}
 
-		// Event restriction rules remove whichever active include timepoints
-		// fall inside the restricted window for this date.
+		// Event restrictions: all day, explicit timepoints, or time window (same as computeActiveRules).
 		if (rule.kind === 'event_restriction') {
-			for (const timepoint of activeIncludeTimepoints) {
-				const affectsTimepoint = rule.all_day
-					? true
-					: !!rule.start_time && !!rule.end_time && isTimeInRange(timepoint, rule.start_time, rule.end_time);
+			if (!rule.dates?.includes(operationalDate)) continue;
 
-				if (!affectsTimepoint) continue;
-
+			for (const timepoint of getTimepointsRemovedByEventRestriction(rule, activeIncludeTimepoints)) {
 				addScheduleDate(schedules, {
 					date: operationalDate,
 					mode: 'exclude',
@@ -329,8 +314,6 @@ export function mergeSubsetIncludeSchedules(schedules: Map<string, RuleTimepoint
 	}
 }
 
-type CanonicalDateCache = Map<string, Set<OperationalDate>>;
-
 interface PendingTripRow {
 	dates: Set<OperationalDate>
 	includeSchedule: RuleTimepointSchedule
@@ -338,84 +321,43 @@ interface PendingTripRow {
 	overlappingExcludeSchedules: RuleTimepointSchedule[]
 }
 
-function computeResultingDatesForInclude(
-	includeSchedule: RuleTimepointSchedule,
-	excludeSchedules: RuleTimepointSchedule[],
-	canonicalCache: CanonicalDateCache,
-	exportDates: readonly OperationalDate[],
-	registryOptions: { events: Event[], holidays: Holiday[], periods: YearPeriod[] },
-): { dates: Set<OperationalDate>, overlappingExcludeSchedules: RuleTimepointSchedule[] } {
-	const overlappingExcludeSchedules = excludeSchedules.filter((excludeSchedule) => {
-		if (excludeSchedule.rule._id === includeSchedule.rule._id) return false;
-		for (const date of includeSchedule.dates) {
-			if (excludeSchedule.dates.has(date)) return true;
+/** P1: at most one plain trip row per (timepoint, date). Keeps the primary manual owner (ND-03). */
+function dedupePlainRowsOneTripPerDate(plainRows: PendingTripRow[]): PendingTripRow[] {
+	const sorted = [...plainRows].sort((a, b) => {
+		const aManual = a.includeSchedule.rule;
+		const bManual = b.includeSchedule.rule;
+		if (aManual.kind === 'manual' && bManual.kind === 'manual') {
+			const priority = compareGeneralManualOwnershipPriority(aManual, bManual);
+			if (priority !== 0) return priority;
 		}
-		return false;
+		return (aManual._id ?? '').localeCompare(bManual._id ?? '');
 	});
 
-	const useCanonicalDates = overlappingExcludeSchedules.length > 0;
+	const datesClaimed = new Set<OperationalDate>();
+	const deduped: PendingTripRow[] = [];
 
-	const resultingDates = new Set(
-		useCanonicalDates
-			? resolveCanonicalDates(
-				includeSchedule.rule,
-				includeSchedule.dates,
-				canonicalCache,
-				exportDates,
-				registryOptions,
-			)
-			: includeSchedule.dates,
-	);
+	for (const row of sorted) {
+		const dates = new Set([...row.dates].filter(date => !datesClaimed.has(date)));
+		if (dates.size === 0) continue;
 
-	for (const excludeSchedule of overlappingExcludeSchedules) {
-		const excludeDates = resolveCanonicalDates(
-			excludeSchedule.rule,
-			excludeSchedule.dates,
-			canonicalCache,
-			exportDates,
-			registryOptions,
-		);
-
-		for (const excludedDate of excludeDates) {
-			resultingDates.delete(excludedDate);
-		}
+		for (const date of dates) datesClaimed.add(date);
+		deduped.push({ ...row, dates });
 	}
 
-	return { dates: resultingDates, overlappingExcludeSchedules };
-}
-
-function resolveCanonicalDates(
-	rule: ScheduleRule,
-	accumulated: Set<OperationalDate>,
-	cache: CanonicalDateCache,
-	exportDates: readonly OperationalDate[],
-	registryOptions: { events: Event[], holidays: Holiday[], periods: YearPeriod[] },
-): Set<OperationalDate> {
-	if (rule.kind !== 'manual' && rule.kind !== 'event_replacement') {
-		return accumulated;
-	}
-
-	if (!cache.has(rule._id)) {
-		cache.set(
-			rule._id,
-			buildCanonicalRuleDates(rule, exportDates, registryOptions),
-		);
-	}
-
-	const canonical = cache.get(rule._id);
-	return canonical?.size ? canonical : accumulated;
+	return deduped;
 }
 
 /**
  * Resolves final exportable trip rows.
  *
  * Final semantics:
- * - one row per include rule + timepoint
- * - if any exclude rules overlap this include rule on this timepoint,
- *   the token becomes INCLUDE-OFF-ex1-ex2
- * - service dates use canonical definitions minus canonical excludes when OFF applies
- * - otherwise operational dates from the day walk (no canonical expansion)
+ * - one row per include rule + timepoint (+ plain/OFF split when exclude overlap is date-specific)
+ * - if exclude rules overlap this include on specific dates, those dates become OFF rows
+ *   (`INCLUDE-OFF-ex1-ex2`) with canonical base minus canonical excludes
+ * - dates without exclude overlap stay plain (operational day-walk dates, no canonical expansion)
  * - if resulting dates are empty, skip the row
+ *
+ * @see ND-04 in export-attribution/SCENARIOS.md
  */
 function resolveTripRows(
 	schedules: Map<string, RuleTimepointSchedule>,
@@ -444,28 +386,56 @@ function resolveTripRows(
 		const pendingRows: PendingTripRow[] = [];
 
 		for (const includeSchedule of includeSchedules) {
-			const { dates, overlappingExcludeSchedules } = computeResultingDatesForInclude(
-				includeSchedule,
+			const {
+				offOperationalDates,
+				overlappingExcludeSchedules,
+				plainOperationalDates,
+			} = splitOperationalDatesByExcludeOverlap(
+				includeSchedule.dates,
+				includeSchedule.rule._id,
 				excludeSchedules,
-				canonicalCache,
-				exportDates,
-				registryOptions,
 			);
 
-			if (dates.size === 0) continue;
+			if (plainOperationalDates.size > 0) {
+				pendingRows.push({
+					dates: plainOperationalDates,
+					includeSchedule,
+					isOffRow: false,
+					// overlappingExcludeSchedules: [],
+					overlappingExcludeSchedules: excludeSchedules.filter(ex =>
+						overlappingExcludeSchedules.some(o => o.rule._id === ex.rule._id),
+					),
+				});
+			}
 
-			pendingRows.push({
-				dates,
-				includeSchedule,
-				isOffRow: overlappingExcludeSchedules.length > 0,
-				overlappingExcludeSchedules,
-			});
+			if (offOperationalDates.size > 0 && overlappingExcludeSchedules.length > 0) {
+				const offDates = computeOffRowDates(
+					includeSchedule.rule,
+					overlappingExcludeSchedules,
+					canonicalCache,
+					exportDates,
+					registryOptions,
+					offOperationalDates,
+					includeSchedule.dates,
+				);
+
+				if (offDates.size > 0) {
+					pendingRows.push({
+						dates: offDates,
+						includeSchedule,
+						isOffRow: true,
+						overlappingExcludeSchedules: excludeSchedules.filter(ex =>
+							overlappingExcludeSchedules.some(o => o.rule._id === ex.rule._id),
+						),
+					});
+				}
+			}
 		}
 
 		// Plain operating rows claim dates first (P1). OFF rows use canonical base−event for
 		// calendar membership, but must not be active on days a plain row already owns at this
 		// timepoint (e.g. ESC_DU + ALL_DU-OFF-DIA_CARN on school weekdays).
-		const plainRows = pendingRows.filter(row => !row.isOffRow);
+		const plainRows = dedupePlainRowsOneTripPerDate(pendingRows.filter(row => !row.isOffRow));
 		const offRows = pendingRows.filter(row => row.isOffRow);
 		const datesClaimedByPlainRows = new Set<OperationalDate>();
 
@@ -537,6 +507,31 @@ function collectDateMetadata(
 }
 
 /* * */
+
+/** Debug helper: resolve trip rows for one pattern without writing GTFS files. */
+export function debugResolvePatternTripRows(
+	patternData: Pattern,
+	periods: YearPeriod[],
+	holidays: Holiday[],
+	events: Event[],
+	startDate: Dates,
+	endDate: Dates,
+	serviceRegistry: ServiceRegistry,
+): ResolvedTripRow[] {
+	const allRules = resolvePatternRules(patternData, events);
+	const schedules = buildTimepointSchedules(allRules, periods, holidays, events, startDate, endDate);
+	if (schedules.size === 0) return [];
+
+	mergeSubsetIncludeSchedules(schedules);
+
+	const exportDates = buildOperationalDateRange(startDate.js_date, endDate.js_date);
+	return resolveTripRows(schedules, serviceRegistry, {
+		events,
+		exportDates,
+		holidays,
+		periods,
+	});
+}
 
 /**
  * Exports trips for a pattern.
