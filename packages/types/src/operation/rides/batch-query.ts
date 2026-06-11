@@ -1,6 +1,6 @@
 /* * */
 
-import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema, TicketingStatusSchema } from '@/_common/status.js';
+import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema } from '@/_common/status.js';
 import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { RideAcceptanceStatusSchema } from '@/operation/rides/ride-acceptance.js';
 import { RideAnalysisGradeSchema } from '@/operation/rides/ride-analysis.js';
@@ -80,10 +80,6 @@ export const GetRidesBatchQuerySchema = z.object({
 
 	favorites: z
 		.boolean()
-		.optional(),
-
-	ticketing_status: z
-		.preprocess((val: string) => (val && typeof val === 'string') ? val.split(',').map(status => status.trim()) : [], z.array(TicketingStatusSchema))
 		.optional(),
 });
 

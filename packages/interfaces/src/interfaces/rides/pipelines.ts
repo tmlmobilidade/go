@@ -279,40 +279,6 @@ export function ridesPipelineSeenStatus({ filter }: { filter?: { seen_status?: S
 	return pipeline;
 }
 
-export function ridePipelineTicketingStatus({ filter }: { filter?: { ticketing_status?: TicketingStatus[] } } = {}): AggregationPipeline<Ride> {
-	if (!filter?.ticketing_status?.length) {
-		return [];
-	}
-
-	const pipeline: AggregationPipeline<Ride> = [
-		{
-			$addFields: {
-				ticketing_status: {
-					$cond: {
-						else: 'no_ticketing',
-						if: {
-							$and: [
-								{ $ifNull: ['$apex_validations_qty', false] },
-								{ $gt: ['$apex_validations_qty', 0] },
-							],
-						},
-						then: 'has_ticketing',
-					},
-				},
-			},
-		},
-		{
-			$match: {
-				ticketing_status: { $in: filter.ticketing_status },
-			},
-		},
-		{
-			$project: { ticketing_status: 0 },
-		},
-	];
-	return pipeline;
-}
-
 interface RidesPipelineFilter {
 	acceptance_status?: ('none' | RideAcceptanceStatus)[]
 	agency_ids?: string[]
