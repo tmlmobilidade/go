@@ -1,5 +1,6 @@
 /* * */
 
+import { transformPcgiApexTransaction } from '@/transform-pcgi-apex-transaction.js';
 import { pcgiTransactionEntities, rawApexTransactions } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
@@ -25,11 +26,11 @@ const writer = new BatchWriter<RawApexTransaction>({
 });
 
 /**
- * Syncs APEX Transactions from the PCGI database
+ * Syncs Transaction Entities from the PCGI database
  * to the MongoDB database for a given time chunk.
  * @param timeChunk The time chunk to sync the data for.
  */
-export async function syncApexTransactions(timeChunk: PerformInTimeChunksItem) {
+export async function syncTransactionEntities(timeChunk: PerformInTimeChunksItem) {
 	//
 
 	const chunkStartDate = Dates
@@ -41,7 +42,7 @@ export async function syncApexTransactions(timeChunk: PerformInTimeChunksItem) {
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	Logger.spacer(1);
-	Logger.divider(`CORE [${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
+	Logger.divider(`APEX Tx [${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
 
 	//
 	// Implement a simplified version of the replication process, since there is no possibility
@@ -85,9 +86,11 @@ export async function syncApexTransactions(timeChunk: PerformInTimeChunksItem) {
 	const pcgidbTransactionEntitiesStream = pcgidbTransactionEntitiesCollection.find(sourceQuery).stream();
 
 	for await (const document of pcgidbTransactionEntitiesStream) {
-		const parsedDocuments = parseRawApexTransaction(document);
-		for (const parsedDocument of parsedDocuments) {
+		try {
+			const parsedDocument = transformPcgiApexTransaction(document);
 			await writer.write(parsedDocument);
+		} catch (error) {
+			Logger.error(`Error transforming APEX Transaction: ${document.transactionId}`, error);
 		}
 	}
 

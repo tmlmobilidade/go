@@ -10,6 +10,7 @@ export const PcgiTransactionEntitySchema = z.object({
 	csvValue: z.string(),
 	decodeValue: z.string(),
 	fileId: z.string(),
+	isOK: z.boolean(),
 	transaction: z.string(),
 	transactionId: z.string(),
 });

@@ -1,65 +1,38 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
-import { type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
-import { type HashableRawVehicleEvent, type RawVehicleEvent, type RawVehicleEventCmetV1Core } from '@tmlmobilidade/types';
-import crypto from 'node:crypto';
+import { parsePcgiTransactionEntityIntoRawApexTransactionRefundV30 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { type PcgiTransactionEntity, type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
 
 /* * */
 
-export function transformPcgiApexTransaction(apexTransaction): RawApexTransaction[] {
+export function transformPcgiApexTransaction(pcgiTransactionEntity: PcgiTransactionEntity): RawApexTransaction {
 	//
 
-	const result: RawApexTransaction[] = [];
+	//
+	// Decode the transaction entity from the JSON string
+	// and set it as any payload type, as we don't know the type yet
+
+	const decodedTransaction: RawApexTransaction['payload'] = JSON.parse(pcgiTransactionEntity.decodeValue);
 
 	//
-	// Transform each message into a RawVehicleEvent
+	// Verify which type of transaction it is and set a key
+	// for the transaction type and version number to properly
+	// transform it into a typed RawApexTransaction
 
-	for (const entity of apexTransaction.content.entity ?? []) {
-		//
+	if (!decodedTransaction.transactionInfo?.apexTransactionType) throw new Error(`Missing apexTransactionType in transaction: ${pcgiTransactionEntity.transactionId}.`);
+	if (!decodedTransaction.transactionInfo?.apexTransactionVersion) throw new Error(`Missing apexTransactionVersion in transaction: ${pcgiTransactionEntity.transactionId}.`);
 
-		//
-		// Skip entities that do not have a vehicle field,
-		// as they are not relevant for our use case.
+	const transactionKey = `${decodedTransaction.transactionInfo.apexTransactionType}|${decodedTransaction.transactionInfo.apexTransactionVersion}`;
 
-		if (!entity.vehicle) continue;
+	//
+	// Setup a result object for the transaction
 
-		//
-		// Hash the relevant fields of the vehicle event
-		// to create a unique identifier for the event.
-		// This allows us to identify duplicate events
-		// and avoid storing them multiple times in the database.
+	if (transactionKey === '11|2.0') return parsePcgiTransactionEntityIntoRawApexTransactionRefundV30(pcgiTransactionEntity, decodedTransaction);
 
-		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventCmetV1Core> = {
-			agency_id: entity.vehicle.agencyId,
-			created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
-			entity_id: entity._id,
-			payload: {
-				header: pcgiVehicleEvent.content.header,
-				vehicle: entity.vehicle,
-			},
-			version: 'cmet-v1-core',
-		};
+	//
+	// If no transformation is found, throw an error
 
-		const hashableRawEventId = crypto
-			.createHash('sha256')
-			.update(JSON.stringify(hashableRawEvent))
-			.digest('hex');
-
-		//
-		// Write the new vehicle event document
-		// to the RawVehicleEvents collection
-
-		result.push({
-			...hashableRawEvent,
-			_id: hashableRawEventId,
-			received_at: Dates.fromUnixTimestamp(pcgiVehicleEvent.millis).unix_timestamp,
-		});
-
-		//
-	}
-
-	return result;
+	throw new Error(`No transformation found for key: ${transactionKey} in transaction: ${pcgiTransactionEntity.transactionId}.`);
 
 	//
 };

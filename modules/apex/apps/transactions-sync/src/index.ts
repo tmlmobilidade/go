@@ -1,6 +1,6 @@
 /* * */
 
-import { syncApexTransactions } from '@/sync-apex-transactions.js';
+import { syncTransactionEntities } from '@/sync-transaction-entities.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -28,7 +28,7 @@ async function main() {
 
 		await performInTimeChunks({
 			onChunk: async (chunk) => {
-				await syncApexTransactions(chunk);
+				await syncTransactionEntities(chunk);
 			},
 			splitBy: { hours: 1 },
 			startDate: earliestDate.unix_timestamp,
