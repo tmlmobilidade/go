@@ -1,7 +1,6 @@
 /* * */
 
-import { CalendarDateSchema } from '@/_common/index.js';
-import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
+import { CalendarDateSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

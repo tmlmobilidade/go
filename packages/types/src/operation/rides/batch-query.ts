@@ -1,9 +1,8 @@
 /* * */
 
-import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema, TicketingStatusSchema } from '@/_common/status.js';
-import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { RideAcceptanceStatusSchema } from '@/operation/rides/ride-acceptance.js';
 import { RideAnalysisGradeSchema } from '@/operation/rides/ride-analysis.js';
+import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema, TicketingStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

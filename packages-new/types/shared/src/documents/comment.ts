@@ -1,6 +1,6 @@
 /* * */
 
-import { DocumentSchema } from '@/_common/document.js';
+import { DocumentSchema } from '@/documents/document.js';
 import { z } from 'zod';
 
 /* * */
