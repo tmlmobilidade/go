@@ -37,6 +37,7 @@ export interface FastifyServiceOptions extends FastifyServerOptions {
 	 * @default '0.0.0.0'
 	 */
 	host?: string
+
 	/**
 	 * The module name for the Fastify server.
 	 * @default 'fastify'

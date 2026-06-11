@@ -20,7 +20,7 @@ export interface LogsNodeContext {
 	path?: string
 	reqId?: string
 	severity?: string
-	status?: number
+	status?: string
 }
 
 /**
@@ -43,7 +43,7 @@ export const LogsNode = (context: LogsNodeContext): void => {
 		...(method ? { method } : {}),
 		...(path ? { path } : {}),
 		...(reqId ? { reqId } : {}),
-		...(typeof status === 'number' ? { status } : {}),
+		...(typeof status === 'string' ? { status } : {}),
 	};
 	const level = normalizeSeverity(severity);
 
