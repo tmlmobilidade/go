@@ -17,7 +17,7 @@ import { Logger } from '@tmlmobilidade/logger';
 	const collection = await rawVehicleEventsNew.getCollection();
 
 	collection
-		.watch()
+		.watch(/* [{ $match: { 'fullDocument.created_at': { $gt: Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp }, 'operationType': 'insert' } }], */)
 		.on('change', async (change) => {
 			//
 
