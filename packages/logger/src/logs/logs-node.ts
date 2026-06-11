@@ -15,9 +15,12 @@ export interface LogsNodeContext {
 	[key: string]: unknown
 	app: string
 	message: string
+	method?: string
 	module: string
+	path?: string
+	reqId?: string
 	severity?: string
-	status?: number
+	status?: string
 }
 
 /**
@@ -27,15 +30,19 @@ export interface LogsNodeContext {
  * @returns {void}
  */
 export const LogsNode = (context: LogsNodeContext): void => {
-	const { app, message, module, request, severity, status, ...extra } = context;
+	const { app, message, method, module, path, reqId, request, severity, status, ...extra } = context;
 	const requestData = normalizeRequestContext(request);
 	const payload = {
 		...extra,
 		...requestData,
 		app,
 		message,
+		method,
 		module,
-		severity: normalizeSeverity(severity),
+		path,
+		reqId,
+		'sentry.origin': 'manual.log.tml',
+		'severity': normalizeSeverity(severity),
 		status,
 	};
 	const level = normalizeSeverity(severity);

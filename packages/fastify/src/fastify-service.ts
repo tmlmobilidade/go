@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* * */
 
 import '@fastify/cors';
@@ -10,6 +11,8 @@ import fastifyCookie from '@fastify/cookie';
 import fastifyCors from '@fastify/cors';
 import oneLineLogger from '@fastify/one-line-logger';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
+import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { HttpResponse, WithPagination } from '@tmlmobilidade/utils';
 import fastify, { FastifyLoggerOptions } from 'fastify';
 import { type FastifyInstance as FastifyInstanceType, type FastifyReply as FastifyReplyType } from 'fastify';
@@ -28,13 +31,17 @@ export type FastifyInstance = FastifyInstanceType<RawServerDefault, RawRequestDe
  * It extends FastifyServerOptions and adds optional properties for origin and port.
  */
 export interface FastifyServiceOptions extends FastifyServerOptions {
-
 	/**
 	 * The host on which the Fastify server will listen.
 	 * If not provided, it defaults to '0.0.0.0'.
 	 * @default '0.0.0.0'
 	 */
 	host?: string
+	/**
+	 * The module name for the Fastify server.
+	 * @default 'fastify'
+	 */
+	module?: string
 
 	/**
 	 * The origin for CORS requests.
@@ -57,6 +64,7 @@ const defaultFastifyServiceOptions: FastifyServiceOptions = {
 	bodyLimit: 1024 * 1024 * 10, // 10MB
 	host: '0.0.0.0',
 	logger: true,
+	module: 'fastify',
 	origin: true,
 	port: 5050,
 	routerOptions: {
@@ -64,13 +72,15 @@ const defaultFastifyServiceOptions: FastifyServiceOptions = {
 	},
 };
 
-const loggerOptions: FastifyLoggerOptions<RawServerDefault> = {
+const createLoggerOptions = (getModuleName: () => string): FastifyLoggerOptions<RawServerDefault> & { module?: string } => ({
 	level: 'debug',
+	module: getModuleName(),
 	stream: oneLineLogger({
 		colorize: true, // nice colors,
 		colorizeObjects: true,
 		messageFormat(log, messageKey, _, extras) {
 			const c = extras.colors;
+			const moduleName = getModuleName();
 
 			const palette = {
 				error: c.redBright,
@@ -155,10 +165,25 @@ const loggerOptions: FastifyLoggerOptions<RawServerDefault> = {
 				message,
 			];
 
-			return palette.pipe(parts.join(' | ')) + stackTrace;
+			const logMessage = palette.pipe(parts.join(' | ')) + stackTrace;
+			const shouldSendToSentry = message !== 'incoming request' && message !== 'request completed';
+
+			if (shouldSendToSentry) {
+				Logger.logsNode({
+					app: 'api',
+					message: message,
+					method: method,
+					module: moduleName,
+					path: path,
+					reqId: reqId,
+					severity: 'info',
+					status: statusCode,
+				});
+			}
+			return logMessage;
 		},
 	}),
-};
+});
 
 /**
  * FastifyService is a singleton class that provides a Fastify server instance.
@@ -181,8 +206,8 @@ export class FastifyService {
 	 */
 	private constructor(options: FastifyServiceOptions) {
 		const mergedOptions = { ...defaultFastifyServiceOptions, ...options };
-		this.server = fastify({ ...mergedOptions, logger: loggerOptions });
 		this.options = mergedOptions;
+		this.server = fastify({ ...mergedOptions, logger: createLoggerOptions(() => this.options.module ?? 'fastify') });
 		this._setupDefaultRoutes();
 		this._setupPlugins();
 	}
@@ -207,15 +232,26 @@ export class FastifyService {
 	 * @return A promise that resolves to the URL of the Fastify server.
 	 * @throws Will throw an error if the server fails to start.
 	 */
-	async start(): Promise<string> {
+	async start(moduleName?: string): Promise<string> {
+		if (moduleName) this.options.module = moduleName;
+
 		try {
-			const serverUrl = await this.server.listen({ host: this.options.host, port: this.options.port });
+			await initSentryNode();
+		} catch (error) {
+			this.server.log.error({ err: error }, 'Error sending startup log to Sentry.');
+		}
+
+		try {
+			const serverUrl = await this.server.listen({
+				host: this.options.host,
+				port: this.options.port,
+			});
+
 			this.server.log.info(`Server is running at ${serverUrl}`);
-			this.server.log.info(`CORS enabled for origin: ${this.options.origin}`);
-			this.server.log.info(`Listening on ${this.options.host}:${this.options.port}`);
+
 			return serverUrl;
 		} catch (error) {
-			this.server.log.error({ error, message: 'Error starting server.' });
+			this.server.log.error({ err: error }, 'Error starting server.');
 			process.exit(1);
 		}
 	}
@@ -291,9 +327,7 @@ export class FastifyService {
 			try {
 				const payloadJson = JSON.parse(payload as string) as HttpResponse<unknown>;
 				reply.code(payloadJson.statusCode ?? HTTP_STATUS.OK);
-			}
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			catch (error) {
+			} catch {
 				// Do nothing
 			} finally {
 				done();
