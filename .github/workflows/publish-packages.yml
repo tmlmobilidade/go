@@ -17,6 +17,7 @@ on:
       - prd
     paths:
       - 'packages/**'
+      - 'packages-new/**'
       - '.github/workflows/publish-packages.yml'
       - '.github/actions/**/*'
       - '.github/templates/**/*'
@@ -44,20 +45,24 @@ jobs:
             const path = require('path');
 
             const packagesDir = 'packages';
+            const packagesDirNew = 'packages-new';
             const packages = [];
 
             // Get all directories in packages/
             const entries = fs.readdirSync(packagesDir, { withFileTypes: true });
+            const entriesNew = fs.readdirSync(packagesDirNew, { withFileTypes: true });
+            entries.push(...entriesNew);
 
             for (const entry of entries) {
               if (!entry.isDirectory()) continue;
 
               const packagePath = path.join(packagesDir, entry.name, 'package.json');
+              const packagePathNew = path.join(packagesDirNew, entry.name, 'package.json');
 
-              if (!fs.existsSync(packagePath)) continue;
+              if (!fs.existsSync(packagePath) && !fs.existsSync(packagePathNew)) continue;
 
               try {
-                const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+                const packageJson = JSON.parse(fs.readFileSync(packagePathNew || packagePath, 'utf8'));
 
                 // Check if package has publishConfig (indicating it should be published)
                 if (packageJson.publishConfig) {
