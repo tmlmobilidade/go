@@ -22,17 +22,17 @@ export function transformPcgiApexTransaction(pcgiTransactionEntity: PcgiTransact
 	if (!decodedTransaction.transactionInfo?.apexTransactionType) throw new Error(`Missing apexTransactionType in transaction: ${pcgiTransactionEntity.transactionId}.`);
 	if (!decodedTransaction.transactionInfo?.apexTransactionVersion) throw new Error(`Missing apexTransactionVersion in transaction: ${pcgiTransactionEntity.transactionId}.`);
 
-	const transactionKey = `${decodedTransaction.transactionInfo.apexTransactionType}|${decodedTransaction.transactionInfo.apexTransactionVersion}`;
+	const documentTypeKey = `${decodedTransaction.transactionInfo.apexTransactionType}|${decodedTransaction.transactionInfo.apexTransactionVersion}`;
 
 	//
 	// Setup a result object for the transaction
 
-	if (transactionKey === '11|2.0') return parsePcgiTransactionEntityIntoRawApexTransactionRefundV30(pcgiTransactionEntity, decodedTransaction);
+	if (documentTypeKey === '6|3.0') return parsePcgiTransactionEntityIntoRawApexTransactionRefundV30(pcgiTransactionEntity, decodedTransaction);
 
 	//
 	// If no transformation is found, throw an error
 
-	throw new Error(`No transformation found for key: ${transactionKey} in transaction: ${pcgiTransactionEntity.transactionId}.`);
+	throw new Error(`No transformation found for key: ${documentTypeKey} in transaction: ${pcgiTransactionEntity.transactionId}.`);
 
 	//
 };
