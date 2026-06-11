@@ -7,19 +7,19 @@
 import { PCGIRawClient } from '@/clients/pcgi-raw.js';
 import { MongoInterfaceTemplate } from '@/templates/mongodb.js';
 import { type SimplifiedMongoIndex } from '@/types/mongo/index-description.js';
-import { type RawApexOnBoardRefund, RawApexOnBoardRefundSchema } from '@tmlmobilidade/go-types-apex';
+import { type RawApexTransaction, RawApexTransactionSchema } from '@tmlmobilidade/go-types-apex';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-class RawApexOnBoardRefundsClass extends MongoInterfaceTemplate<RawApexOnBoardRefund, RawApexOnBoardRefund, Partial<RawApexOnBoardRefund>> {
+class RawApexTransactionsClass extends MongoInterfaceTemplate<RawApexTransaction, RawApexTransaction, Partial<RawApexTransaction>> {
 	//
 
-	private static _instance: null | Promise<RawApexOnBoardRefundsClass> = null;
+	private static _instance: null | Promise<RawApexTransactionsClass> = null;
 
-	protected override readonly collectionName = 'raw_apex_on_board_refunds';
+	protected override readonly collectionName = 'raw_apex_transactions';
 	protected override readonly databaseName = 'raw';
-	protected override readonly indexDescription: SimplifiedMongoIndex<RawApexOnBoardRefund>[] = [
+	protected override readonly indexDescription: SimplifiedMongoIndex<RawApexTransaction>[] = [
 		{ key: { created_at: 1 } },
 		{ key: { agency_id: 1, created_at: 1 } },
 		// eslint-disable-next-line perfectionist/sort-objects
@@ -28,7 +28,7 @@ class RawApexOnBoardRefundsClass extends MongoInterfaceTemplate<RawApexOnBoardRe
 		{ key: { version: 1, received_at: 1 } },
 	];
 
-	protected override createSchema = RawApexOnBoardRefundSchema;
+	protected override createSchema = RawApexTransactionSchema;
 	protected override updateSchema = null;
 
 	/**
@@ -40,7 +40,7 @@ class RawApexOnBoardRefundsClass extends MongoInterfaceTemplate<RawApexOnBoardRe
 		// they will all await the same initialization process.
 		if (!this._instance) {
 			this._instance = (async () => {
-				const instance = new RawApexOnBoardRefundsClass();
+				const instance = new RawApexTransactionsClass();
 				// This behaves like the constructor,
 				// but allows for async initialization.
 				await instance.init();
@@ -61,4 +61,4 @@ class RawApexOnBoardRefundsClass extends MongoInterfaceTemplate<RawApexOnBoardRe
 
 /* * */
 
-export const rawApexOnBoardRefunds = asyncSingletonProxy(RawApexOnBoardRefundsClass);
+export const rawApexTransactions = asyncSingletonProxy(RawApexTransactionsClass);
