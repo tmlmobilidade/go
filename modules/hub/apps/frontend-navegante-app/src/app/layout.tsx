@@ -17,7 +17,7 @@ import '@/styles/navegante/color.css';
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider i18n={{ pt: i18nResourceKeysPt }} version={pjson.version}>
+		<BaseProvider i18n={{ pt: i18nResourceKeysPt }} module="hub" version={pjson.version}>
 			<DataProviders>
 				<MapProviders>
 					<MapContextProvider>

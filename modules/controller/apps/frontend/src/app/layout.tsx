@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider i18n={{ pt: i18nResourceKeysPt }} version={pjson.version}>
+		<BaseProvider i18n={{ pt: i18nResourceKeysPt }} module="controller" version={pjson.version}>
 			<AppProvider>
 				<DataProviders>
 					<AppWrapper>

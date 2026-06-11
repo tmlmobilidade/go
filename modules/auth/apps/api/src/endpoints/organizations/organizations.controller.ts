@@ -137,6 +137,7 @@ export class OrganizationsController {
 				feature: 'organizations',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;

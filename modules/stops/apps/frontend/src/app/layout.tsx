@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider version={pjson.version}>
+		<BaseProvider module="stops" version={pjson.version}>
 			<AppProvider>
 				<DataProviders>
 					<AppWrapper>

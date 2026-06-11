@@ -6,11 +6,6 @@ export async function initSentryNextjs() {
 		enableLogs: true,
 		integrations: [
 			Sentry.consoleLoggingIntegration(),
-			Sentry.fastifyIntegration(),
-			Sentry.pinoIntegration({
-				error: { handled: true, levels: ['error', 'fatal'] },
-				log: { levels: ['info', 'warn', 'error', 'fatal', 'debug', 'trace'] },
-			}),
 		],
 	});
 }
