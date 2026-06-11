@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 export const PcgiTransactionEntitySchema = z.object({
 	_id: z.string(),
-	createdAt: z.string(),
+	createdAt: z.date(),
 	csvValue: z.string(),
 	decodeValue: z.string(),
 	fileId: z.string(),

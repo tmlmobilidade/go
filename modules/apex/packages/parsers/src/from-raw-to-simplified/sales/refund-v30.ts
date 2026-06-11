@@ -2,7 +2,7 @@
 
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RawApexTransactionRefundV30, type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
+import { type RawApexTransactionRefundV30, type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
 
 /* * */
 

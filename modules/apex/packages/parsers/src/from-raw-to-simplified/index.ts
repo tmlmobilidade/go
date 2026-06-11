@@ -8,7 +8,7 @@ import { parseRawApexTransactionRefundV30 } from '@/from-raw-to-simplified/sales
 import { parseRawApexTransactionSaleV30 } from '@/from-raw-to-simplified/sales/sale-v30.js';
 import { parseRawApexTransactionValidationV20 } from '@/from-raw-to-simplified/validations/validation-v20.js';
 import { parseRawApexTransactionValidationV30 } from '@/from-raw-to-simplified/validations/validation-v30.js';
-import { type AnySimplifiedApex, type RawApexTransaction } from '@tmlmobilidade/types';
+import { type AnySimplifiedApex, type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
 
 /* * */
 

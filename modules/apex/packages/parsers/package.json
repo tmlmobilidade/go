@@ -20,10 +20,8 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-types-apex": "*",
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/types": "*"
+		"@tmlmobilidade/timer": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

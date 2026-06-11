@@ -2,7 +2,7 @@
 
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RawApexTransactionInspectionDecisionV20, type SimplifiedApexInspectionDecision } from '@tmlmobilidade/types';
+import { type RawApexTransactionInspectionDecisionV20, type SimplifiedApexInspectionDecision } from '@tmlmobilidade/go-types-apex';
 
 /* * */
 

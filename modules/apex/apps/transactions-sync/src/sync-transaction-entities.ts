@@ -52,11 +52,13 @@ export async function syncTransactionEntities(timeChunk: PerformInTimeChunksItem
 	const countStepTimer = new Timer();
 
 	const sourceQuery = {
-		millis: {
-			$gte: chunkStartDate.unix_timestamp,
-			$lte: chunkEndDate.unix_timestamp,
+		createdAt: {
+			$gte: chunkStartDate.js_date,
+			$lte: chunkEndDate.js_date,
 		},
 	};
+
+	console.log(sourceQuery);
 
 	const sourceDbCount = await pcgiTransactionEntities.count(sourceQuery);
 
@@ -90,7 +92,7 @@ export async function syncTransactionEntities(timeChunk: PerformInTimeChunksItem
 			const parsedDocument = transformPcgiApexTransaction(document);
 			await writer.write(parsedDocument);
 		} catch (error) {
-			Logger.error(`Error transforming APEX Transaction: ${document.transactionId}`, error);
+			Logger.error(`Error transforming APEX Transaction: ${document.transactionId} Reason: ${error.message}`);
 		}
 	}
 

@@ -29,6 +29,11 @@ export function transformPcgiApexTransaction(pcgiTransactionEntity: PcgiTransact
 
 	if (documentTypeKey === '6|3.0') return parsePcgiTransactionEntityIntoRawApexTransactionRefundV30(pcgiTransactionEntity, decodedTransaction);
 
+	if (documentTypeKey === '11|3.0') return parsePcgiTransactionEntityIntoRawApexTransactionRefundV30(pcgiTransactionEntity, decodedTransaction);
+	if (documentTypeKey === '11|4.0') return parsePcgiTransactionEntityIntoRawApexTransactionRefundV30(pcgiTransactionEntity, decodedTransaction);
+
+	if (documentTypeKey === '19|3.0') return parsePcgiTransactionEntityIntoRawApexTransactionRefundV30(pcgiTransactionEntity, decodedTransaction);
+
 	//
 	// If no transformation is found, throw an error
 

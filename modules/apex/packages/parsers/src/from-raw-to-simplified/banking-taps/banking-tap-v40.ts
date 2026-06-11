@@ -2,7 +2,7 @@
 
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RawApexTransactionBankingTapV40, type SimplifiedApexBankingTap } from '@tmlmobilidade/types';
+import { type RawApexTransactionBankingTapV40, type SimplifiedApexBankingTap } from '@tmlmobilidade/go-types-apex';
 
 /* * */
 

@@ -1,8 +1,8 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { PcgiTransactionEntity } from '@tmlmobilidade/go-types-apex';
-import { RawApexTransaction, type RawApexTransactionRefundV30, RawApexTransactionRefundV30PayloadSchema, RawApexTransactionRefundV30Schema } from '@tmlmobilidade/types';
+import { type PcgiTransactionEntity } from '@tmlmobilidade/go-types-apex';
+import { type RawApexTransaction, type RawApexTransactionRefundV30, RawApexTransactionRefundV30PayloadSchema, RawApexTransactionRefundV30Schema } from '@tmlmobilidade/go-types-apex';
 
 /* * */
 
@@ -18,7 +18,7 @@ export function parsePcgiTransactionEntityIntoRawApexTransactionRefundV30(pcgiTr
 		created_at: Dates.fromISO(decodedTransaction.transactionInfo.transactionDate).unix_timestamp,
 		is_ok: pcgiTransactionEntity.isOK,
 		payload: RawApexTransactionRefundV30PayloadSchema.parse(decodedTransaction),
-		received_at: Dates.fromISO(pcgiTransactionEntity.createdAt).unix_timestamp,
+		received_at: Dates.fromJSDate(pcgiTransactionEntity.createdAt).unix_timestamp,
 		transaction_id: pcgiTransactionEntity.transactionId,
 		version: 'apex-refund-3.0',
 	};
