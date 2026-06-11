@@ -26,7 +26,7 @@
 		"build:locations": "ENVIRONMENT=dev dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-locations-*",
 		"build:modules": "turbo build --filter=./modules/**/*",
 		"build:offer": "ENVIRONMENT=dev dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-offer-*",
-		"build:packages": "turbo build --filter=./packages/**/* && turbo build --filter=./packages-new/**/* && turbo build --filter=./modules/**/packages/**/* && turbo build --filter=./cli/**/* && npm run generate-routes",
+		"build:packages": "turbo build --filter=./packages-new/**/* && turbo build --filter=./packages/**/* && turbo build --filter=./modules/**/packages/**/* && turbo build --filter=./cli/**/* && npm run generate-routes",
 		"build:performance": "ENVIRONMENT=dev dotenv-run -f ./modules/performance/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-performance-*",
 		"build:plans": "ENVIRONMENT=dev dotenv-run -f ./modules/plans/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-plans-*",
 		"build:replicator": "ENVIRONMENT=dev dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-replicator-*",
@@ -34,7 +34,7 @@
 		"build:stops:packages": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-stops-pckg-*",
 		"build:tracker": "ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-tracker-*",
 		"build:tracker:packages": "ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-tracker-pckg-*",
-		"build:types": "turbo build --filter=@tmlmobilidade/types && turbo build --filter=@tmlmobilidade/go-types-*",
+		"build:types": "turbo build --filter=@tmlmobilidade/go-types-* --filter=@tmlmobilidade/types",
 
 		"dev:alerts": "npm run build:alerts:packages && ENVIRONMENT=dev dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
 		"dev:alerts:prd": "npm run build:alerts:packages && ENVIRONMENT=dev dotenv-run -f ./modules/alerts/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",

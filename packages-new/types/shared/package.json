@@ -34,8 +34,6 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@types/geojson": "7946.0.16",
-		"gtfs-types": "5.1.0",
 		"luxon": "3.7.2",
 		"zod": "3.25.76"
 	},

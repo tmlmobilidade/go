@@ -1,11 +1,10 @@
 /* * */
 
-import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema } from '@/_common/status.js';
-import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { AlertCauseSchema } from '@/alerts/cause.js';
 import { FileExportBaseSchema } from '@/file-exports/base.js';
 import { RideAcceptanceStatusSchema, RideJustificationSourceSchema } from '@/operation/rides/ride-acceptance.js';
 import { RideAnalysisGradeWithNoneSchema } from '@/operation/rides/ride-analysis.js';
+import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

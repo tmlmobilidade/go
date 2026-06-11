@@ -1,7 +1,7 @@
-import { OperationalDateSchema } from '@/_common/operational-date.js';
 import { HHMMSchema } from '@/dates/common.js';
 import { MONTHS } from '@/dates/months.js';
 import { WEEKDAYS } from '@/dates/weekdays.js';
+import { OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
