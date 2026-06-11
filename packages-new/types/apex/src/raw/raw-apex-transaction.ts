@@ -1,13 +1,13 @@
 /* * */
 
-import { RawApexTransactionBankingTapV40Schema } from '@/raw/banking-taps/banking-tap-v40.js';
-import { RawApexTransactionInspectionDecisionV20Schema } from '@/raw/inspections/inspection-decision-v20.js';
-import { RawApexTransactionInspectionV20Schema } from '@/raw/inspections/inspection-v20.js';
-import { RawApexTransactionLocationV30Schema } from '@/raw/locations/location-v30.js';
-import { RawApexTransactionRefundV30Schema } from '@/raw/sales/refund-v30.js';
-import { RawApexTransactionSaleV30Schema } from '@/raw/sales/sale-v30.js';
-import { RawApexTransactionValidationV20Schema } from '@/raw/validations/validation-v20.js';
-import { RawApexTransactionValidationV30Schema } from '@/raw/validations/validation-v30.js';
+import { RawApexTransactionBankingTapV40Schema } from '@/raw/banking-taps/banking-tap-v4-0.js';
+import { RawApexTransactionInspectionDecisionV20Schema } from '@/raw/inspections/inspection-decision-v2-0.js';
+import { RawApexTransactionInspectionV20Schema } from '@/raw/inspections/inspection-v2-0.js';
+import { RawApexTransactionLocationV30Schema } from '@/raw/locations/location-v3-0.js';
+import { RawApexTransactionRefundV30Schema } from '@/raw/sales/refund-v3-0.js';
+import { RawApexTransactionSaleV30Schema } from '@/raw/sales/sale-v3-0.js';
+import { RawApexTransactionValidationV20Schema } from '@/raw/validations/validation-v2-0.js';
+import { RawApexTransactionValidationV30Schema } from '@/raw/validations/validation-v3-0.js';
 import { z } from 'zod';
 
 /* * */
