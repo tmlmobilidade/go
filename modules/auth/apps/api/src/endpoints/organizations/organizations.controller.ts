@@ -277,7 +277,7 @@ export class OrganizationsController {
 							request,
 							value: request.params.id,
 						});
-						throw error;
+						continue;
 					}
 				}
 				updateFields.logo_dark = result._id;
