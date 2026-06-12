@@ -123,6 +123,7 @@ export function transformAlertDataIntoGeoJsonFeature(alertData: HubAlert): GeoJS
 			type: 'Point',
 		},
 		properties: {
+			_id: alertData._id,
 			cause: alertData.cause,
 			description: alertData.description,
 			effect: alertData.effect,

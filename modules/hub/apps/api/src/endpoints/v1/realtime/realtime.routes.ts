@@ -20,9 +20,8 @@ server.register(
 		instance.get('/vehicles/positions/gtfs', RealtimeController.getVehiclesPositionsGtfsRtJson);
 		instance.get('/vehicles/positions/gtfs.pb', RealtimeController.getVehiclesPositionsGtfsRtProtobuf);
 
-		instance.get('/eta', RealtimeController.getEtaJson);
-		instance.get('/eta/gtfs', RealtimeController.getEtaGtfsRtJson);
-		instance.get('/eta/gtfs.pb', RealtimeController.getEtaGtfsRtProtobuf);
+		instance.get('/trip-updates', RealtimeController.getTripUpdatesGtfsRtJson);
+		instance.get('/trip-updates.pb', RealtimeController.getTripUpdatesGtfsRtProtobuf);
 
 		next();
 	},

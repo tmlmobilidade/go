@@ -6,7 +6,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-interface Props {
+interface StopDisplayLocationProps {
 	localityName?: string
 	municipalityName?: string
 	size?: 'lg' | 'md'
@@ -14,14 +14,22 @@ interface Props {
 
 /* * */
 
-export function StopDisplayLocation({ localityName, municipalityName, size = 'md' }: Props) {
+export function StopDisplayLocation({ localityName, municipalityName, size = 'md' }: StopDisplayLocationProps) {
 	//
+
+	//
+	// A. Transform data
+
+	const location = formatStopLocation(localityName, municipalityName);
+
+	//
+	// B. Render components
+
+	if (!location) return null;
 
 	return (
 		<p className={`${styles.location} ${styles[size]}`}>
-			{formatStopLocation(localityName, municipalityName)}
+			{location}
 		</p>
 	);
-
-	//
 }

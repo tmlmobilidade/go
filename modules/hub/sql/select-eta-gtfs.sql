@@ -18,7 +18,7 @@ stops AS (
         if(
             empty(r._id),
             e.trip_id,
-            concat('[', splitByChar('-', r._id)[1], ']', e.trip_id)
+            concat('[', splitByChar('-', r._id)[1], ']', '[', splitByChar('-', r._id)[2], ']', e.trip_id)
         )                                                                        AS trip_id,
         e.vehicle_id                                                             AS vehicle_id,
         e.stop_id                                                                AS stop_id,

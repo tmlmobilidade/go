@@ -11,6 +11,10 @@ import { useTranslation } from 'react-i18next';
 
 /* * */
 
+const CM_AGENCY_IDS = new Set(['41', '42', '43', '44']);
+
+/* * */
+
 interface AlertsListContextState extends ListContextStateTemplate {
 	actions: {
 		toggle: (view: 'current' | 'future' | 'map') => void
@@ -31,6 +35,7 @@ interface AlertsListContextState extends ListContextStateTemplate {
 		grouped: AlertGroup[]
 	}
 	filters: {
+		agency: UseFilterStateStringReturnType
 		cause: AlertCause | null
 		effect: AlertEffect | null
 		line_id: null | string
@@ -67,6 +72,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	const { i18n, t } = useTranslation();
 
 	const filterSearch = useFilterStateString('search');
+	const filterAgency = useFilterStateString('agency');
 
 	const [currentView, setCurrentView] = useLocalStorage<'current' | 'future' | 'map'>({ defaultValue: 'current', key: 'alerts-current-view' });
 	const [filterByLineIdState, setFilterByLineIdState] = useQueryState('line_id');
@@ -92,8 +98,12 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	});
 
 	const baseFilteredData = useMemo(() => {
-		return (searchResultsData ?? []);
-	}, [searchResultsData]);
+		if (!filterAgency.value) return (searchResultsData ?? []);
+		return (searchResultsData ?? []).filter((alert) => {
+			const normalized = CM_AGENCY_IDS.has(alert.agency_id) ? 'CM' : alert.agency_id;
+			return normalized === filterAgency.value;
+		});
+	}, [filterAgency.value, searchResultsData]);
 
 	const nonDateFilteredData = useMemo(() => {
 		let result = baseFilteredData;
@@ -239,6 +249,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			grouped: groupedAlerts,
 		},
 		filters: {
+			agency: filterAgency,
 			cause: filterByCauseState,
 			effect: filterByEffectState,
 			line_id: filterByLineIdState,

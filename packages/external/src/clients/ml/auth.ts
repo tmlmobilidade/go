@@ -3,6 +3,8 @@
 import { Logger } from '@tmlmobilidade/logger';
 import { SshTunnelService } from '@tmlmobilidade/ssh';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
+import { IncomingMessage } from 'node:http';
+import https from 'node:https';
 
 /* * */
 
@@ -79,20 +81,46 @@ export class MLAuthClient {
 			username: process.env.ML_USERNAME,
 		}).toString();
 
-		const response = await fetch(process.env.ML_AUTH_URL, {
-			body: requestBody,
-			headers: {
-				'Authorization': `Basic ${Buffer.from(`${process.env.ML_CLIENT_ID}:${process.env.ML_CLIENT_SECRET}`).toString('base64')}`,
-				'Content-Type': 'application/x-www-form-urlencoded',
-			},
-			method: 'POST',
+		const data = await new Promise<MLTokenResponse>((resolve, reject) => {
+			//
+
+			const requestOptions: https.RequestOptions = {
+				allowPartialTrustChain: true,
+				headers: {
+					'Authorization': `Basic ${Buffer.from(`${process.env.ML_CLIENT_ID}:${process.env.ML_CLIENT_SECRET}`).toString('base64')}`,
+					'Content-Type': 'application/x-www-form-urlencoded',
+				},
+				hostname: 'api.metrolisboa.pt',
+				method: 'POST',
+				path: '/token',
+				port: 8243,
+				rejectUnauthorized: false,
+				servername: 'api.metrolisboa.pt',
+			};
+
+			const callback: (res: IncomingMessage) => void = (response) => {
+				const chunks: Buffer[] = [];
+				response.on('data', chunk => chunks.push(chunk));
+				response.on('end', () => {
+					const responseText = Buffer.concat(chunks).toString('utf8');
+					if (response.statusCode < 200 || response.statusCode >= 300) {
+						reject(new Error(`[MlClient] Request failed (${response.statusCode}): ${responseText.slice(0, 500)}`));
+						return;
+					}
+					try {
+						resolve(JSON.parse(responseText));
+					} catch {
+						reject(new Error(`[MlClient] Response is not JSON: ${responseText.slice(0, 500)}`));
+					}
+				});
+			};
+
+			const request = https.request(requestOptions, callback);
+
+			request.on('error', reject);
+			request.write(requestBody);
+			request.end();
 		});
-
-		if (!response.ok) {
-			throw new Error(`[MLAuthClient] Token request failed (${response.status}): ${response.statusText}`);
-		}
-
-		const data = await response.json() as MLTokenResponse;
 
 		//
 		// With the response data, set the token and calculate the expiration time

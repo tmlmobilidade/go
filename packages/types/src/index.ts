@@ -1,10 +1,3 @@
-/* * */
-/* This must be the first export because it is used in subsequente files */
-
-export * from '@/_common/index.js';
-
-/* * */
-
 export * from '@/agencies/index.js';
 export * from '@/alerts/index.js';
 export * from '@/apex/index.js';
@@ -35,3 +28,4 @@ export * from '@/stops/index.js';
 export * from '@/vehicle-events/index.js';
 export * from '@/vehicle/index.js';
 export * from '@/wiki.js';
+export * from '@tmlmobilidade/go-types-shared';

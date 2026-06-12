@@ -52,7 +52,7 @@ export class RoutesController {
 	}
 
 	/**
-	 * Deletes a route by ID
+	 * Deletes a route by ID and all patterns attached to it.
 	 * @param request Fastify request containing route ID
 	 * @param reply Fastify reply
 	 */
@@ -93,6 +93,7 @@ export class RoutesController {
 		//
 
 		await routes.deleteById(id);
+		await patterns.deleteMany({ route_id: id });
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}

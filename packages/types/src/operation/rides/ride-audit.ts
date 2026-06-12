@@ -1,7 +1,6 @@
 /* * */
 
-import { NoteCommentSchema } from '@/_common/comment.js';
-import { DocumentSchema } from '@/_common/document.js';
+import { DocumentSchema, NoteCommentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

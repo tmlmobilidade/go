@@ -6,6 +6,7 @@ import type { Dates, TimeSlot } from '@tmlmobilidade/dates';
 
 export interface AppConfig {
 	agencyIds: string[]
+	database: string
 	development: {
 		isDevelopment: boolean
 		lineIds: number[]

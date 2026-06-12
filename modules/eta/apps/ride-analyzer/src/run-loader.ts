@@ -22,7 +22,7 @@ export async function runLoaderPhase(clickhouseClient: ClickHouseClient, config:
 	Logger.title('Phase 1: Running ETA loader pipeline');
 	await loadEta(config);
 
-	const predNodeEtasMv = qualifiedTable('mv_pred_node_etas');
+	const predNodeEtasMv = qualifiedTable(config.database, 'mv_pred_node_etas');
 
 	Logger.info(`Refreshing ${predNodeEtasMv}`);
 	await clickhouseClient.command({ query: `SYSTEM REFRESH VIEW ${predNodeEtasMv}` });

@@ -1,0 +1,113 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	cursor: pointer;
+	border-top: 1px solid var(--color-system-border-100);
+	border-radius: 0;
+	transition: all 200ms ease;
+}
+
+.container:first-child,
+.container[data-with-clock='true'] {
+	border-top: none;
+}
+
+.container:has(+ .isSelected) {
+  border-top-color: transparent;
+}
+
+.container[data-is-past='true'] {
+	opacity: 0.35;
+}
+
+/* * */
+/* CONTAINER / PASSED */
+
+.container.passed {
+	opacity: 0.35;
+}
+
+/* * */
+/* CONTAINER / IS SELECTED */
+
+.isSelected {
+	padding: 10px;
+	background-color: var(--color-brand-navegante);
+	border-radius: 10px;
+	transform: scale(1.02);
+}
+
+/* * */
+/* SUMMARY */
+
+.summary {
+	display: grid;
+	grid-template-columns: 1fr auto auto;
+	align-items: center;
+	justify-content: space-between;
+	padding: 15px;
+}
+
+/* * */
+/* DETAILS */
+
+.details {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	align-items: flex-start;
+	justify-content: flex-start;
+	padding: 15px 0;
+	border-top: 1px solid var(--color-system-border-100);
+}
+
+/* * */
+/* LOCALITIES */
+
+.localitiesListWrapper {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-system-text-300);
+}
+
+.localitiesListLabel {
+	font-size: 12px;
+	font-weight: var(--font-weight-semibold);
+	color: var(--color-system-text-300);
+}
+
+.localitySeparator {
+  color: var(--color-system-border-200);
+}
+
+.localityName {
+  color: var(--color-system-text-200);
+}
+
+
+/* * */
+/* OPEN LINE PAGE */
+
+.openLinePage {
+	width: auto;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--color-system-text-200);
+}
+
+.openLinePage:hover {
+	color: var(--color-system-text-300);
+	text-decoration: underline;
+}
+
+/* * */
+/* CLOCK WRAPPER */
+
+.clockWrapper {
+	width: 100%;
+	padding: 0 5px;
+}

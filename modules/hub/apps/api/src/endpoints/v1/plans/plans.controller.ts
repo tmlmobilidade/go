@@ -26,7 +26,8 @@ export class PlansController {
 		if (!cachedData) {
 			Logger.error('[hub/v1/plans:getApprovedPlans()] No cached data found for approved plans');
 			return reply
-				.header('cache-control', 'public, max-age=60')
+				.header('access-control-allow-origin', '*')
+				.header('cache-control', 'public, max-age=300')
 				.code(HTTP_STATUS.NO_CONTENT)
 				.send({
 					data: [],
@@ -36,7 +37,8 @@ export class PlansController {
 		};
 
 		return reply
-			.header('cache-control', 'public, max-age=60')
+			.header('access-control-allow-origin', '*')
+			.header('cache-control', 'public, max-age=300')
 			.code(HTTP_STATUS.OK)
 			.send({
 				data: JSON.parse(cachedData),
@@ -74,6 +76,8 @@ export class PlansController {
 			});
 
 			return reply
+				.header('access-control-allow-origin', '*')
+				.header('cache-control', 'public, max-age=300')
 				.code(HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send({
 					data: null,
@@ -82,6 +86,8 @@ export class PlansController {
 				});
 		}
 		// Set headers and pipe the response body to the client
+		reply.header('access-control-allow-origin', '*');
+		reply.header('cache-control', 'public, max-age=300');
 		reply.header('Content-Disposition', `attachment; filename="gtfs-latest.zip"`);
 		reply.header('Content-Type', 'application/zip');
 		// Set content length if available
@@ -120,6 +126,8 @@ export class PlansController {
 			return reply.code(500).send('Could not fetch file.');
 		}
 		// Set headers and pipe the response body to the client
+		reply.header('access-control-allow-origin', '*');
+		reply.header('cache-control', 'public, max-age=300');
 		reply.header('Content-Disposition', `attachment; filename="gtfs-cm-latest.zip"`);
 		reply.header('Content-Type', 'application/zip');
 		// Set content length if available

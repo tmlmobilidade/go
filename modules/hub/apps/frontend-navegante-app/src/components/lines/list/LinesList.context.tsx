@@ -9,7 +9,7 @@ import { createContext, type PropsWithChildren, useContext, useMemo, useState } 
 
 const DEFAULT_QTY_PER_AGENCY = 5;
 
-const DESIRED_AGENCY_ORDER = ['4', '2', '16', '15', 'CM', '1', '8'];
+const DESIRED_AGENCY_ORDER = ['4', '2', '16', '15', '3', 'CM', '1', '21', '8'];
 
 /* * */
 

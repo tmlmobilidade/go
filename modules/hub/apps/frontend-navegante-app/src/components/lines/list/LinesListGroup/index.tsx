@@ -1,6 +1,6 @@
 /* * */
 
-import { AGENCY_LOGO_MAP } from '@/lib/agency-logos-map';
+import { getAgencyLogo } from '@/lib/agency-logos-map';
 import { AGENCY_NAMES_MAP } from '@/lib/agency-names-map';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
@@ -34,7 +34,7 @@ export function LinesListGroup({ agencyId, children, onShowMoreLines, withShowMo
 				alt={t(`default:lines.LinesListGroup.logo.alt`, '', { agency_name: AGENCY_NAMES_MAP[agencyId].full })}
 				className={styles.logo}
 				height={40}
-				src={AGENCY_LOGO_MAP[agencyId]}
+				src={getAgencyLogo(agencyId, '180x120', 'light')}
 				width={60}
 			/>
 			{children}

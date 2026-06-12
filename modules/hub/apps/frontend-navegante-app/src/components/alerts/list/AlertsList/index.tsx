@@ -4,7 +4,7 @@ import { AlertsListContextProvider } from '@/components/alerts/list/AlertsList.c
 import { AlertsListToolbar } from '@/components/alerts/list/AlertsListToolbar';
 import { AlertsListView } from '@/components/alerts/list/AlertsListView';
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
-import { useBottomSheet } from '@/hooks/use-bottom-sheet';
+import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -17,7 +17,7 @@ export function AlertsList() {
 
 	const { t } = useTranslation();
 
-	const { activeBottomSheet, closeActiveBottomSheet } = useBottomSheet();
+	const { closeActiveBottomSheet, isBottomSheetInStack } = useBottomSheet();
 
 	//
 	// A. Render components
@@ -25,7 +25,7 @@ export function AlertsList() {
 	return (
 		<BottomSheet
 			onClose={closeActiveBottomSheet}
-			opened={activeBottomSheet?.view === 'alerts-list'}
+			opened={isBottomSheetInStack('alerts-list')}
 			title={t('default:alerts.AlertsList.title')}
 		>
 			<AlertsListContextProvider>

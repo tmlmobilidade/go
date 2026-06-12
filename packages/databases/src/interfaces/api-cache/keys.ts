@@ -3,6 +3,7 @@
 const dynamicKey = () => 'use-for-dynamic-key';
 
 export const ApiCacheKeyValues = [
+	'hub:navegante:app-enabled',
 	'hub:alerts:published:json',
 	'hub:alerts:published:json:cm',
 	'hub:alerts:published:gtfs',
@@ -18,6 +19,7 @@ export const ApiCacheKeyValues = [
 	'hub:network:dates',
 	'hub:network:periods',
 	'hub:network:stops',
+	'hub:network:legacy-stops-map',
 	'hub:network:lines',
 	'hub:network:routes',
 	'hub:network:plans',

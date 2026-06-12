@@ -34,7 +34,7 @@ export function MapViewStyleActiveStops({ presentBeforeId, stopsData = baseGeoJs
 					'icon-allow-overlap': true,
 					'icon-anchor': 'bottom',
 					'icon-ignore-placement': true,
-					'icon-image': 'cmet-stop-selected',
+					'icon-image': 'map-navegante-stop-bus-selected',
 					'icon-offset': [0, 5],
 					'icon-size': [
 						'interpolate',

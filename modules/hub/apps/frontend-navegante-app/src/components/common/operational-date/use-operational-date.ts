@@ -1,6 +1,6 @@
 'use client';
 
-import { useLocalStorage } from '@mantine/hooks';
+import { useSessionStorage } from '@mantine/hooks';
 import { Dates } from '@tmlmobilidade/dates';
 import { type OperationalDate } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
@@ -31,7 +31,7 @@ export function useOperationalDate(): UseOperationalDateReturnType {
 	//
 	// A. Setup variables
 
-	const [selectedOperationalDate, setSelectedOperationalDate] = useLocalStorage<OperationalDate>({
+	const [selectedOperationalDate, setSelectedOperationalDate] = useSessionStorage<OperationalDate>({
 		defaultValue: Dates.now('Europe/Lisbon').operational_date,
 		key: 'operational-date',
 	});
