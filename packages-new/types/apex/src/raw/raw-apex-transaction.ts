@@ -8,6 +8,7 @@ import { RawApexTransactionRefundV30Schema } from '@/raw/refunds/refund-v3-0.js'
 import { RawApexTransactionSaleV30Schema } from '@/raw/sales/sale-v3-0.js';
 import { RawApexTransactionValidationV20Schema } from '@/raw/validations/validation-v2-0.js';
 import { RawApexTransactionValidationV30Schema } from '@/raw/validations/validation-v3-0.js';
+import { RawApexTransactionValidationV40Schema } from '@/raw/validations/validation-v4-0.js';
 import { z } from 'zod';
 
 /* * */
@@ -21,6 +22,7 @@ export const RawApexTransactionSchema = z.discriminatedUnion('version', [
 	RawApexTransactionSaleV30Schema,
 	RawApexTransactionValidationV20Schema,
 	RawApexTransactionValidationV30Schema,
+	RawApexTransactionValidationV40Schema,
 ]);
 
 /**

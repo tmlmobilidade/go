@@ -1,6 +1,6 @@
 /* * */
 
-import { parsePcgiTransactionEntityIntoRawApexTransactionLocationV30, parsePcgiTransactionEntityIntoRawApexTransactionRefundV30, parsePcgiTransactionEntityIntoRawApexTransactionValidationV30 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { parsePcgiTransactionEntityIntoRawApexTransactionInspectionDecisionV20, parsePcgiTransactionEntityIntoRawApexTransactionInspectionV20, parsePcgiTransactionEntityIntoRawApexTransactionLocationV30, parsePcgiTransactionEntityIntoRawApexTransactionRefundV30, parsePcgiTransactionEntityIntoRawApexTransactionSaleV30, parsePcgiTransactionEntityIntoRawApexTransactionValidationV30 } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type PcgiTransactionEntity, type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
 
 /* * */
@@ -25,7 +25,8 @@ export function transformPcgiApexTransaction(pcgiTransactionEntity: PcgiTransact
 	const documentTypeKey = `${decodedTransaction.transactionInfo.apexTransactionType}|${decodedTransaction.transactionInfo.apexTransactionVersion}`;
 
 	//
-	// Setup a result object for the transaction
+	// Transform the transaction into a typed RawApexTransaction
+	// using the appropriate transformation function
 
 	if (documentTypeKey === '3|3.0') return parsePcgiTransactionEntityIntoRawApexTransactionSaleV30(pcgiTransactionEntity, decodedTransaction);
 
@@ -33,10 +34,13 @@ export function transformPcgiApexTransaction(pcgiTransactionEntity: PcgiTransact
 
 	if (documentTypeKey === '11|3.0') return parsePcgiTransactionEntityIntoRawApexTransactionValidationV30(pcgiTransactionEntity, decodedTransaction);
 
+	if (documentTypeKey === '15|2.0') return parsePcgiTransactionEntityIntoRawApexTransactionInspectionV20(pcgiTransactionEntity, decodedTransaction);
+	if (documentTypeKey === '16|2.0') return parsePcgiTransactionEntityIntoRawApexTransactionInspectionDecisionV20(pcgiTransactionEntity, decodedTransaction);
+
 	if (documentTypeKey === '19|3.0') return parsePcgiTransactionEntityIntoRawApexTransactionLocationV30(pcgiTransactionEntity, decodedTransaction);
 
 	//
-	// If no transformation is found, throw an error
+	// If no transformation function is found, throw an error
 
 	throw new Error(`No transformation found for key: ${documentTypeKey} in transaction: ${pcgiTransactionEntity.transactionId}.`);
 

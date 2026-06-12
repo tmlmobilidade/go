@@ -8,6 +8,7 @@ import { parseRawApexTransactionRefundV30 } from '@/from-raw-to-simplified/sales
 import { parseRawApexTransactionSaleV30 } from '@/from-raw-to-simplified/sales/sale-v30.js';
 import { parseRawApexTransactionValidationV20 } from '@/from-raw-to-simplified/validations/validation-v20.js';
 import { parseRawApexTransactionValidationV30 } from '@/from-raw-to-simplified/validations/validation-v30.js';
+import { parseRawApexTransactionValidationV40 } from '@/from-raw-to-simplified/validations/validation-v40.js';
 import { type AnySimplifiedApex, type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
 
 /* * */
@@ -21,4 +22,5 @@ export const fromRawToSimplifiedMap: Record<RawApexTransaction['version'], (apex
 	'apex-sale-3.0': parseRawApexTransactionSaleV30,
 	'apex-validation-2.0': parseRawApexTransactionValidationV20,
 	'apex-validation-3.0': parseRawApexTransactionValidationV30,
+	'apex-validation-4.0': parseRawApexTransactionValidationV40,
 };
