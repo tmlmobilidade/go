@@ -4,8 +4,6 @@ import { MantineProvider, MantineProviderProps } from '@mantine/core';
 import { DatesProvider, type DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNextjs } from '@tmlmobilidade/logger/sentry/nextjs';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { NuqsAdapter } from 'nuqs/adapters/next';
 import { type PropsWithChildren, Suspense } from 'react';
@@ -20,11 +18,6 @@ import { themeData } from '../../styles/theme';
 
 type BaseProviderProps = LocaleContextProps & VersionContextProps & {
 	/**
-	 * The module name. This is used to identify the module in the logs.
-	 */
-	module?: string
-
-	/**
 	 * Please avoid using this prop. It is only intended for very specific use cases.
 	 * @dangerous
 	 */
@@ -37,7 +30,7 @@ type BaseProviderProps = LocaleContextProps & VersionContextProps & {
  * wrapped with this component, including non-authenticated parts. Set this on the Root layout,
  * without `<html>` or `<body>` HTML tags.
  */
-export function BaseProvider({ children, i18n, module, theme, version }: PropsWithChildren<BaseProviderProps>) {
+export function BaseProvider({ children, i18n, theme, version }: PropsWithChildren<BaseProviderProps>) {
 	//
 
 	//
@@ -57,16 +50,6 @@ export function BaseProvider({ children, i18n, module, theme, version }: PropsWi
 		revalidateOnFocus: true,
 		revalidateOnMount: true,
 	};
-
-	//
-	// C. Initialize Sentry
-
-	try {
-		initSentryNextjs();
-		Logger.logsNextjs({ app: 'frontend', message: 'Sentry Auth Frontend initialized', module: module ?? 'ui', severity: 'info' });
-	} catch (error) {
-		Logger.error('Error initializing Sentry Auth Frontend', error);
-	}
 
 	//
 	// B. Render components
