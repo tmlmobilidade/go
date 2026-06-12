@@ -17,13 +17,12 @@ export function AlertsListItemImageThumbnail({ alt, src }: AlertsListItemImageTh
 	//
 
 	//
-	// C. Render components
+	// A. Render components
 
 	return (
 		<Image
 			alt={alt}
 			className={styles.image}
-			fallbackSrc={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/assets/common/placeholder.png`}
 			src={src}
 		/>
 	);

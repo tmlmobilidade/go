@@ -1,6 +1,6 @@
 /* * */
 
-import { publishEta } from '@/tasks/eta/index.js';
+import { publishTripUpdates } from '@/tasks/publish-trip-updates.js';
 import { publishVehiclesMetadata } from '@/tasks/publish-vehicles-metadata.js';
 import { publishVehiclesPositions } from '@/tasks/publish-vehicles-positions.js';
 import { Logger } from '@tmlmobilidade/logger';
@@ -14,7 +14,7 @@ let ITERATION = 0;
 const main = async () => {
 	//
 
-	Logger.init();
+	Logger.title(`[${ITERATION}] Publishing realtime data...`);
 
 	const globalTimer = new Timer();
 
@@ -23,15 +23,15 @@ const main = async () => {
 
 	await publishVehiclesPositions();
 
-	if (ITERATION % 100 === 0) await publishVehiclesMetadata();
-	if (ITERATION % 100 === 0) await publishEta();
+	if (ITERATION % 30 === 0) await publishVehiclesMetadata(); // Every 30 iterations * 1s = 30 seconds
+	if (ITERATION % 30 === 0) await publishTripUpdates(); // Every 30 iterations * 1s = 30 seconds
 
 	ITERATION++;
 
 	//
 	// Log the total time taken for all tasks
 
-	Logger.terminate(`Publish realtime data completed in ${globalTimer.get()}`);
+	Logger.terminate(`[${ITERATION}] Publish realtime data completed in ${globalTimer.get()}`);
 
 	//
 };

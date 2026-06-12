@@ -1,24 +1,18 @@
 'use client';
 
-// import { LiveIcon } from '@/components/common/LiveIcon';
-import { LiveIcon } from '@/components/common/LiveIcon';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { Layer, Source } from '@vis.gl/react-maplibre';
 import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
-import styles from './styles.module.css';
 
 /* * */
 
-export const MapViewStyleVehiclesPrimaryLayerId = 'default-layer-vehicles-regular';
-export const MapViewStyleVehiclesInteractiveLayerId = 'default-layer-vehicles-regular';
+export const MapViewOverlayVehiclesPrimaryLayerId = 'default-layer-vehicles-regular';
+export const MapViewOverlayVehiclesInteractiveLayerId = 'default-layer-vehicles-regular';
 
 /* * */
 
 interface MapViewOverlayVehiclesProps {
 	presentBeforeId?: string
-	showCounter?: 'always' | 'positive'
 	vehiclesData?: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
 	visible?: boolean
 }
@@ -27,10 +21,10 @@ interface MapViewOverlayVehiclesProps {
 
 const baseGeoJsonFeatureCollection = getBaseGeoJsonFeatureCollection();
 
-const ANIMATION_DURATION = 800; // ms
+const ANIMATION_DURATION = 5_000; // ms
 
 function ease(t: number): number {
-	return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+	return t; // t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
 
 function interpolateCoords(start: number[], end: number[], t: number): number[] {
@@ -109,13 +103,11 @@ function interpolateProps(startFeature: GeoJSON.Feature<GeoJSON.Point> | undefin
 
 /* * */
 
-export function MapViewOverlayVehicles({ presentBeforeId, showCounter, vehiclesData = baseGeoJsonFeatureCollection, visible = true }: MapViewOverlayVehiclesProps) {
+export function MapViewOverlayVehicles({ presentBeforeId, vehiclesData = baseGeoJsonFeatureCollection, visible = true }: MapViewOverlayVehiclesProps) {
 	//
 
 	//
 	// A. Setup variables
-
-	const { t } = useTranslation();
 
 	const [animatedData, setAnimatedData] = useState(vehiclesData);
 	const previousDataRef = useRef<GeoJSON.FeatureCollection>(vehiclesData);
@@ -178,111 +170,86 @@ export function MapViewOverlayVehicles({ presentBeforeId, showCounter, vehiclesD
 	// B. Render components
 
 	return (
-		<>
+		<Source data={animatedData} generateId={true} id="default-source-vehicles" type="geojson">
 
-			<Source data={animatedData} generateId={true} id="default-source-vehicles" type="geojson">
+			<Layer
+				beforeId={presentBeforeId}
+				id="default-layer-vehicles-regular"
+				source="default-source-vehicles"
+				type="symbol"
+				layout={{
+					'icon-allow-overlap': true,
+					'icon-anchor': 'center',
+					'icon-ignore-placement': true,
+					'icon-image': [
+						'match',
+						['to-string', ['get', 'agency_id']],
+						'1', 'map-vehicle-ccfl-bus',
+						'3', 'map-vehicle-cp-train',
+						'4', 'map-vehicle-ttsl-boat',
+						'8', 'map-vehicle-tcb-bus',
+						'15', 'map-vehicle-fertagus-train',
+						'16', 'map-vehicle-mts-tram',
+						'21', 'map-vehicle-mobi-bus',
+						'41', 'map-vehicle-cmet-bus',
+						'42', 'map-vehicle-cmet-bus',
+						'43', 'map-vehicle-cmet-bus',
+						'44', 'map-vehicle-cmet-bus',
+						'map-vehicle-cmet-bus',
+					],
+					'icon-offset': [0, 0],
+					'icon-rotate': ['get', 'bearing'],
+					'icon-rotation-alignment': 'map',
+					'icon-size': [
+						'interpolate',
+						['linear'],
+						['zoom'],
+						10,
+						0.05,
+						30,
+						0.5,
+					],
+					'symbol-placement': 'point',
+					'visibility': visible ? 'visible' : 'none',
 
-				<Layer
-					beforeId={presentBeforeId}
-					id="default-layer-vehicles-delay"
-					source="default-source-vehicles"
-					type="symbol"
-					layout={{
-						'icon-allow-overlap': true,
-						'icon-anchor': 'center',
-						'icon-ignore-placement': true,
-						'icon-image': 'cmet-bus-delay',
-						'icon-offset': [0, 0],
-						'icon-rotate': ['get', 'bearing'],
-						'icon-rotation-alignment': 'map',
-						'icon-size': ['interpolate',
-							['linear'],
-							['zoom'],
-							10,
-							0.05,
-							20,
-							0.15,
-						],
-						'symbol-placement': 'point',
-						'visibility': visible ? 'visible' : 'none',
-					}}
-					paint={{
-						'icon-opacity': [
-							'interpolate',
-							['linear'],
-							['get',
-								'delay'],
-							20,
-							0,
-							40,
-							1,
-						],
-					}}
-				/>
+				}}
+				paint={{
+					'icon-opacity': [
+						'interpolate',
+						['linear'],
+						['zoom'],
+						12,
+						0,
+						13,
+						1,
+					],
+				}}
+			/>
 
-				<Layer
-					beforeId="default-layer-vehicles-delay"
-					id="default-layer-vehicles-regular"
-					source="default-source-vehicles"
-					type="symbol"
-					layout={{
-						'icon-allow-overlap': true,
-						'icon-anchor': 'center',
-						'icon-ignore-placement': true,
-						'icon-image': [
-							'match',
-							['to-string', ['get', 'agency_id']],
-							'1', 'ccfl-vehicle-default-light',
-							'3', 'cp-vehicle-default-light',
-							'4', 'ttsl-vehicle-default-light',
-							'8', 'tcb-vehicle-default-light',
-							'15', 'fertagus-vehicle-default-light',
-							'16', 'mts-vehicle-default-light',
-							'21', 'mobi-vehicle-default-light',
-							'41', 'cmet-vehicle-default-light',
-							'42', 'cmet-vehicle-default-light',
-							'43', 'cmet-vehicle-default-light',
-							'44', 'cmet-vehicle-default-light',
-							'cmet-vehicle-default-light',
-						],
-						'icon-offset': [0, 0],
-						'icon-rotate': ['get', 'bearing'],
-						'icon-rotation-alignment': 'map',
-						'icon-size': [
-							'interpolate',
-							['linear'],
-							['zoom'],
-							10,
-							0.05,
-							30,
-							0.5,
-						],
-						'symbol-placement': 'point',
-						'visibility': visible ? 'visible' : 'none',
-					}}
-					paint={{
-						'icon-opacity': ['get', 'opacity'],
-					}}
-				/>
+			<Layer
+				beforeId="default-layer-vehicles-regular"
+				id="default-layer-vehicles-dot"
+				source="default-source-vehicles"
+				type="circle"
+				layout={{
+					visibility: visible ? 'visible' : 'none',
+				}}
+				paint={{
+					'circle-color': '#00CD32',
+					'circle-opacity': [
+						'interpolate',
+						['linear'],
+						['zoom'],
+						12,
+						1,
+						13,
+						0,
+					],
+					'circle-pitch-alignment': 'map',
+					'circle-radius': 1.8,
+				}}
+			/>
 
-			</Source>
-
-			{showCounter === 'always' && (
-				<div className={`${styles.vehiclesCounter} ${vehiclesData.features.length === 0 && styles.zeroCount}`}>
-					<LiveIcon className={styles.vehiclesCounterIcon} color={!vehiclesData.features.length && 'var(--color-system-text-300)'} />
-					{t('default:map.MapViewStyleVehicles.vehicles_counter', '', { count: vehiclesData.features.length })}
-				</div>
-			)}
-
-			{showCounter === 'positive' && vehiclesData.features.length > 0 && (
-				<div className={styles.vehiclesCounter}>
-					<LiveIcon />
-					{t('default:map.MapViewStyleVehicles.vehicles_counter', '', { count: vehiclesData.features.length })}
-				</div>
-			)}
-
-		</>
+		</Source>
 	);
-
-	//
 }

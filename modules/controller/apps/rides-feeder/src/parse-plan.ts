@@ -8,6 +8,7 @@ import { Logger } from '@tmlmobilidade/logger';
 import { SQLiteWriter } from '@tmlmobilidade/sqlite';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Shape, type GTFS_Shape_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type HashedPattern, type HashedPatternWaypoint, type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Plan, type Ride, type UnixTimestamp, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsPickupDropoffType, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
+import { convertGTFSTimeStringAndOperationalDateToUnixTimestamp } from '@tmlmobilidade/utils';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@tmlmobilidade/writers';
 import crypto from 'crypto';
 import { parse as csvParser } from 'csv-parse';
@@ -1091,24 +1092,3 @@ const setDirectoryPermissions = (dirPath, mode = 0o666) => {
 	}
 };
 
-/* * */
-
-const convertGTFSTimeStringAndOperationalDateToUnixTimestamp = (timeString: string, operationalDate: OperationalDate): UnixTimestamp => {
-	//
-
-	// Return early if no time string is provided
-	if (!timeString || !operationalDate) throw new Error(`✖︎ No time string or operational date provided. timeString: ${timeString}, operationalDate: ${operationalDate}`);
-
-	// Check if the timestring is in the format HH:MM:SS
-	if (!/^\d{2}:\d{2}:\d{2}$/.test(timeString)) throw new Error(`✖︎ Invalid time string format. timeString: ${timeString}`);
-
-	// Extract the individual components of the time string (HH:MM:SS)
-	const [hoursOperation, minutesOperation, secondsOperation] = timeString.split(':').map(Number);
-
-	return Dates
-		.fromOperationalDate(operationalDate, 'Europe/Lisbon')
-		.set({ hour: hoursOperation, minute: minutesOperation, second: secondsOperation })
-		.unix_timestamp;
-
-	//
-};

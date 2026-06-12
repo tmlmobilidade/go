@@ -1,14 +1,14 @@
 'use client';
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
+import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { useOperationalDateContext } from '@/contexts/OperationalDate.context';
 import { HubPattern, HubRoute, HubWaypoint } from '@/types/api/network';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { Logger } from '@tmlmobilidade/logger';
 import { type HubAlert, type HubLine, type HubShape } from '@tmlmobilidade/types';
-import { useQueryState } from 'nuqs';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
 
@@ -54,7 +54,7 @@ export function useLinesDetailContext() {
 
 /* * */
 
-export const LinesDetailContextProvider = ({ children, lineId }) => {
+export function LinesDetailContextProvider({ children, lineId }: PropsWithChildren<{ lineId: string }>) {
 	//
 
 	//
@@ -63,10 +63,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 	const linesContext = useLinesContext();
 	const stopsContext = useStopsContext();
 	const alertsContext = useAlertsContext();
-	const operationalDateContext = useOperationalDateContext();
-
-	const [dataLineState, setDataLineState] = useState<LinesDetailContextState['data']['line']>();
-	const [dataRoutesState, setDataRoutesState] = useState<LinesDetailContextState['data']['routes']>([]);
+	const { selectedOperationalDate } = useOperationalDate();
 
 	const [dataAllPatternsState, setDataAllPatternsState] = useState<LinesDetailContextState['data']['all_patterns']>(null);
 	const [dataValidPatternsState, setDataValidPatternsState] = useState<LinesDetailContextState['data']['valid_patterns']>();
@@ -75,35 +72,30 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 	const [dataActiveShapeState, setDataActiveShapeState] = useState<LinesDetailContextState['data']['active_shape']>(null);
 	const [dataActiveWaypointState, setDataActiveWaypointState] = useState<LinesDetailContextState['data']['active_waypoint']>(null);
 	const [dataHighlightedTripIdsState, setDataHighlightedTripIdsState] = useState<LinesDetailContextState['data']['highlighted_trip_ids']>([]);
-	const [filterActivePatternIdState, setFilterActivePatternIdState] = useQueryState('active_pattern_id');
-	const [filterActiveWaypointStopIdState, setFilterActiveWaypointStopIdState] = useQueryState('active_waypoint_stop_id');
-	const [filterActiveWaypointStopSequenceState, setFilterActiveWaypointStopSequenceState] = useQueryState('active_waypoint_stop_sequence');
+	const [filterActivePatternIdState, setFilterActivePatternIdState] = useState<null | string>(null);
+	const [filterActiveWaypointStopIdState, setFilterActiveWaypointStopIdState] = useState('active_waypoint_stop_id');
+	const [filterActiveWaypointStopSequenceState, setFilterActiveWaypointStopSequenceState] = useState('active_waypoint_stop_sequence');
 
 	const [flagIsInteractiveModeState, setFlagIsInteractiveModeState] = useState<LinesDetailContextState['flags']['is_interactive_mode']>(false);
 
 	//
 	// B. Fetch data
 
-	useEffect(() => {
-		const lineData = linesContext.actions.getLineDataById(lineId);
-		if (!lineData) return;
-		setDataLineState(lineData);
-	}, [lineId, linesContext.actions, linesContext.data.lines]);
+	const selectedLineData = useMemo(() => {
+		if (!lineId) return;
+		return linesContext.data.lines.find(item => item._id === lineId);
+	}, [lineId, linesContext.data.lines]);
 
-	useEffect(() => {
-		if (!dataLineState?.route_ids) return;
-		dataLineState.route_ids.forEach((routeId) => {
-			const routeData = linesContext.actions.getRouteDataById(routeId);
-			if (!routeData) return;
-			setDataRoutesState(prev => [...prev, routeData]);
-		});
-	}, [dataLineState, linesContext.actions, linesContext.data.routes]);
+	const availableRoutesData = useMemo(() => {
+		if (!selectedLineData?.route_ids?.length) return;
+		return linesContext.data.routes.filter(item => selectedLineData.route_ids.includes(item.id));
+	}, [linesContext.data.routes, selectedLineData?.route_ids]);
 
 	useEffect(() => {
 		(async () => {
 			try {
-				if (!dataLineState) return;
-				const fetchPromises = dataLineState.pattern_ids.map((patternId) => {
+				if (!selectedLineData) return;
+				const fetchPromises = selectedLineData.pattern_ids.map((patternId) => {
 					return fetch(API_ROUTES.hub.NETWORK_PATTERNS(patternId))
 						.then(response => response.json())
 						.then((patternPayload) => {
@@ -121,10 +113,10 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 				const resultData = await Promise.all(fetchPromises);
 				setDataAllPatternsState(resultData);
 			} catch (error) {
-				console.error('Error fetching pattern data:', error);
+				Logger.error('Error fetching pattern data:', error);
 			}
 		})();
-	}, [dataLineState, stopsContext.actions, stopsContext.data.stops]);
+	}, [selectedLineData, stopsContext.actions, stopsContext.data.stops]);
 
 	/**
 	 * TASK: Fetch shape data for the active pattern.
@@ -136,7 +128,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 			try {
 				const shapeUrl = API_ROUTES.hub.NETWORK_PATTERNS(dataActivePatternState.shape_id).replace('/patterns/', '/shapes/');
 				const shapeData = await fetch(shapeUrl).then((response) => {
-					if (!response.ok) console.log(`Failed to fetch shape data for shapeId: ${dataActivePatternState.shape_id}`);
+					if (!response.ok) Logger.info(`Failed to fetch shape data for shapeId: ${dataActivePatternState.shape_id}`);
 					else return response.json();
 				}).then(shapePayload => shapePayload?.data ?? shapePayload);
 				if (shapeData) {
@@ -150,7 +142,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 				}
 				setDataActiveShapeState(shapeData);
 			} catch (error) {
-				console.error('Error fetching shape data:', error);
+				Logger.error('Error fetching shape data:', error);
 			}
 		})();
 	}, [dataActivePatternState]);
@@ -159,17 +151,16 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 	// C. Transform data
 
 	useEffect(() => {
-		if (!dataAllPatternsState || !operationalDateContext.data.selected_date) return;
+		if (!dataAllPatternsState || !selectedOperationalDate) return;
 		const activePatterns: HubPattern[] = [];
 		for (const pattern of dataAllPatternsState) {
 			let closestDateSoFar: string = null;
 			let patternGroupWithClosestDate: HubPattern = null;
 			for (const patternGroup of pattern) {
-				const selectedDate = operationalDateContext.data.selected_date.operational_date;
-				if (!selectedDate) return;
+				if (!selectedOperationalDate) return;
 				// Find the closest valid date
 				const closestDate = patternGroup.valid_on.reduce((acc, curr) => {
-					if (selectedDate <= curr && (acc === '' || curr < acc)) return curr;
+					if (selectedOperationalDate <= curr && (acc === '' || curr < acc)) return curr;
 					return acc;
 				}, '');
 				if (!closestDateSoFar) closestDateSoFar = closestDate;
@@ -185,7 +176,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 		}
 		const sortedPatterns = activePatterns.sort((a, b) => a.id.localeCompare(b.id));
 		setDataValidPatternsState(sortedPatterns);
-	}, [dataAllPatternsState, operationalDateContext.data.selected_date]);
+	}, [dataAllPatternsState, selectedOperationalDate]);
 
 	useEffect(() => {
 		if (!alertsContext.data.alerts) return;
@@ -194,7 +185,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 			if (!alertsContext.actions.getAlertById(row._id).active_period_start_date && alertsContext.actions.getAlertById(row._id).active_period_end_date) return false;
 			return row.references.some((reference) => {
 				const normalizedLineId = lineId?.trim();
-				const lineAgencyId = dataLineState?.agency_id?.trim();
+				const lineAgencyId = selectedLineData?.agency_id?.trim();
 				const informedAgencyId = reference.parent_id?.trim();
 
 				if (informedAgencyId) {
@@ -206,7 +197,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 
 				if (reference.parent_id != null) return reference.parent_id.trim() === normalizedLineId;
 
-				if (reference.child_ids.length > 0) return dataLineState?.route_ids?.includes(reference.child_ids[0]);
+				if (reference.child_ids.length > 0) return selectedLineData?.route_ids?.includes(reference.child_ids[0]);
 
 				if (reference.parent_id != null) {
 					return dataAllPatternsState?.some(pattern => pattern.some(patternGroup => patternGroup.path.some(waypoint => waypoint.stop_id === reference.parent_id)));
@@ -217,7 +208,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 		});
 
 		setDataActiveAlertsState(activeAlerts);
-	}, [alertsContext.data.alerts, lineId, dataLineState, dataAllPatternsState, alertsContext.actions]);
+	}, [alertsContext.data.alerts, lineId, selectedLineData, dataAllPatternsState, alertsContext.actions]);
 
 	//
 	// D. Handle actions
@@ -227,12 +218,15 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 	 * Return otherwise.
 	 */
 	useEffect(() => {
+		console.log('dataValidPatternsState', dataValidPatternsState);
+		console.log('filterActivePatternIdState', filterActivePatternIdState);
 		// Return early if no patterns are available
 		if (!dataValidPatternsState?.length) return;
 		// Preselect the first pattern with a path, falling back to the first pattern
 		if (!filterActivePatternIdState) {
 			const firstWithPath = dataValidPatternsState.find(pattern => pattern.path.length > 0);
 			setActivePattern((firstWithPath ?? dataValidPatternsState[0]).version_id);
+			console.log('firstWithPath', firstWithPath);
 		}
 	}, [dataValidPatternsState, filterActivePatternIdState]);
 
@@ -356,8 +350,8 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 			active_waypoint: dataActiveWaypointState,
 			all_patterns: dataAllPatternsState,
 			highlighted_trip_ids: dataHighlightedTripIdsState,
-			line: dataLineState,
-			routes: dataRoutesState,
+			line: selectedLineData,
+			routes: availableRoutesData,
 			valid_patterns: dataValidPatternsState,
 		},
 		filters: {
@@ -367,7 +361,7 @@ export const LinesDetailContextProvider = ({ children, lineId }) => {
 		},
 		flags: {
 			is_interactive_mode: flagIsInteractiveModeState,
-			is_loading: linesContext.flags.isLoading || stopsContext.flags.isLoading || dataRoutesState === null || dataAllPatternsState === null,
+			is_loading: linesContext.flags.isLoading || stopsContext.flags.isLoading || availableRoutesData === null || dataAllPatternsState === null,
 		},
 	};
 

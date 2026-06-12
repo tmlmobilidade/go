@@ -97,4 +97,4 @@ const main = async () => {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '1s', throwOnError: true });
+await runOnInterval(main, { intervalMs: '5s', throwOnError: false });

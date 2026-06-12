@@ -6,11 +6,17 @@ import { Dates } from '@tmlmobilidade/dates';
 
 /* * */
 
-const isDevelopment = process.env.ENVIRONMENT === 'dev';
+const isDevelopment = process.env.ENVIRONMENT === 'development';
+
+function getEtaDatabase(): string {
+	return process.env.ENVIRONMENT === 'dev' ? 'eta_dev' : 'eta';
+}
 
 export const AppConfig = Object.freeze({
 	// Agency and line configurations
-	agencyIds: ['41', '42', '43', '44'],
+	agencyIds: ['1', '8', '21', '41', '42', '43', '44'],
+
+	database: getEtaDatabase(),
 
 	development: {
 		isDevelopment,
@@ -35,8 +41,8 @@ export const AppConfig = Object.freeze({
 		insertHistoricalRidesByDay: true,
 		insertHistoricalShapeNodes: true,
 		insertHistoricalVehicleEvents: true,
-		runDdl: true,
+		runDdl: false, // true,
 		runTransformationAndAggregationQueries: true,
-		truncatePipelineTables: isDevelopment ? true : false,
+		truncatePipelineTables: false, // isDevelopment ? true : false,
 	},
 });

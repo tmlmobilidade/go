@@ -17,7 +17,7 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 	insertFn: async (data) => {
 		await simplifiedVehicleEventsNew.insert('JSONEachRow', data);
 	},
-	title: await simplifiedVehicleEventsNew.getTableName(),
+	title: `clickhouse-stream-${Math.random().toString(36).substring(2, 15)}`,
 });
 
 /**

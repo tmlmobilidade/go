@@ -1,4 +1,34 @@
 {
+	"action-bar": {
+		"ActionBar": {
+			"alerts": {
+				"label": "Alertas de Serviço"
+			},
+			"help": {
+				"label": "Perguntas Frequentes"
+			},
+			"reload": {
+				"label": "Recarregar"
+			},
+			"search": {
+				"label": "Pesquisar"
+			}
+		},
+		"ActionBarUserLocation": {
+			"disabled": {
+				"label": "Localização desativada"
+			},
+			"follow": {
+				"label": "Orientar Mapa"
+			},
+			"follow-bearing": {
+				"label": "Centrar Mapa"
+			},
+			"idle": {
+				"label": "Centrar mapa"
+			}
+		}
+	},
 	"alerts": {
 		"AlertActivePeriod": {
 			"start": "Início: {value, date, dayShort}"
@@ -132,11 +162,13 @@
 		},
 		"LinesDetailPath": {
 			"no_data": "Selecione um Percurso / Destino",
-			"summary": "Linha <lineNumber>{line_number}</lineNumber> com destino a <destinationName>{destination_name}</destinationName> no dia <dayName>{day_name, date, long}</dayName>. <changeDay>Alterar dia ›</changeDay>"
+			"stop_details_name": "{index}ª paragem: {stop_name}",
+			"summary": "Linha <lineNumber>{line_number}</lineNumber> com destino a <destinationName>{destination_name}</destinationName> no dia <dayName>{day_name, date, long}</dayName>. <changeDay>Alterar dia ›</changeDay>",
+			"view_stop_details": "Ver detalhes da paragem"
 		},
 		"LinesListGroup": {
 			"logo": {
-				"alt": "Linhas do operador: {agency_name}"
+				"alt": "Linhas de: {agency_name}"
 			},
 			"show_more": "Ver mais linhas deste operador..."
 		},
@@ -186,13 +218,11 @@
 		},
 		"TimetableSchedules": {
 			"hours": "Hora",
-			"minutes": "Min."
+			"minutes": "Min.",
+			"timestamp": "{hour} horas e {minute} minutos"
 		}
 	},
 	"map": {
-		"MapViewStyleVehicles": {
-			"vehicles_counter": "{count, plural, =0 {Nenhum veículo em circulação} one {# veículo em circulação} other {# veículos em circulação}}"
-		},
 		"MapViewToolbar": {
 			"style": {
 				"map": "Mapa",
@@ -203,9 +233,57 @@
 	"search": {
 		"SearchDetail": {
 			"title": "Pesquisa"
+		},
+		"SearchToolbar": {
+			"types": {
+				"alerts": "Alertas",
+				"lines": "Linhas",
+				"stops": "Paragens"
+			}
 		}
 	},
 	"stops": {
+		"NextArrivals": {
+			"arriving": "A chegar",
+			"hours": "h",
+			"minutes": "min"
+		},
+		"StopsDetail": {
+			"title": "Paragem"
+		},
+		"StopsDetailAlerts": {
+			"heading": "Alertas ativos",
+			"subheading": "Alertas ativos para esta paragem ou para linhas que passam nesta paragem."
+		},
+		"StopsDetailContentTimetableHeader": {
+			"summary": "Horários estimados de passagem na paragem <stopName>{stop_name}</stopName> para o dia <dayName>{day_name, date, long}</dayName>. <changeDay>Alterar dia ›</changeDay>",
+			"trips_legend": {
+				"estimate": "Previsão",
+				"headsign": "Destino",
+				"line": "Linha"
+			}
+		},
+		"StopsDetailContentTimetableRealtime": {
+			"end_of_day": "Fim do Dia",
+			"no_service": "Sem Serviço Hoje",
+			"show_past_trips_toggle": {
+				"hide": "Esconder passagens anteriores",
+				"show": "Ver passagens anteriores"
+			}
+		},
+		"StopsDetailContentTimetableRow": {
+			"debug_modal": {
+				"title": "Estes dados representam trip IDs iguais para diferentes dias"
+			},
+			"localities": {
+				"label": "Passa por"
+			},
+			"open_line_page": "Ver percurso completo"
+		},
+		"StopsDetailContentTimetableSchedule": {
+			"end_of_day": "Fim do Dia",
+			"no_service": "Sem Serviço para o dia selecionado"
+		},
 		"StopsListToolbar": {
 			"by_current_view": {
 				"list": "Lista",
@@ -221,6 +299,27 @@
 		},
 		"StopsListViewList": {
 			"no_data": "Nenhuma paragem encontrada para esta pesquisa"
+		}
+	},
+	"vehicles": {
+		"VehiclesCounter": {
+			"label": "{count, plural, zero {Nenhum veículo em movimento} one {# veículo em movimento} other {# veículos em movimento}}"
+		},
+		"VehiclesDetail": {
+			"title": "Veículo"
+		},
+		"VehiclesDetailView": {
+			"seen_seconds_ago": "Visto há {count, plural, one {# segundo} other {# segundos}}"
+		},
+		"VehiclesListDetails": {
+			"bikes_allowed": "Permite bicicletas",
+			"contactless": "Aceita pagamentos com contactless",
+			"no_bikes_allowed": "Não permite bicicletas",
+			"no_contactless": "Não aceita pagamentos com contactless",
+			"no_data": "Selecione um veículo",
+			"no_wheelchair_accessible": "Não permite mobilidade reduzida",
+			"unknown": "Desconhecido",
+			"wheelchair_accessible": "Mobilidade reduzida"
 		}
 	},
 	"viewport": {

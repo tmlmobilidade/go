@@ -1,11 +1,11 @@
 /* * */
 
-import { NoDataLabel } from '@/components/layout/NoDataLabel';
-import { RegularListItem } from '@/components/layout/RegularListItem';
+import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
+import { NoDataLabel } from '@/components/common/display/NoDataLabel';
+import { RegularListItem } from '@/components/common/lists/RegularListItem';
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { LinesListGroup } from '@/components/lines/list/LinesListGroup';
-import { useBottomSheet } from '@/hooks/use-bottom-sheet';
 import { Space } from '@mantine/core';
 import { LoadingSection, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
@@ -49,17 +49,18 @@ export function LinesListViewAll() {
 					onShowMoreLines={() => linesListContext.actions.increaseQtyPerAgency(group.agency_id)}
 					withShowMoreButton={group.lines.length < group.qty}
 				>
-					<ViewportList itemMargin={0} items={group.lines}>
-						{(line, index) => (
-							<RegularListItem
-								key={line._id}
-								ariaLabel={t(`default:lines.LinesListViewAll.items.aria_label`, '', { index: index + 1, tts_name: line.tts_name })}
-								onClick={() => setActiveBottomSheet({ entityId: line._id, view: 'lines-detail' })}
-							>
-								<LineDisplay lineData={line} />
-							</RegularListItem>
-						)}
-					</ViewportList>
+					{group.lines.map((line, index) => (
+						<RegularListItem
+							key={line._id}
+							onClick={() => setActiveBottomSheet({ entityId: line._id, view: 'lines-detail' })}
+							ariaLabel={t(`default:lines.LinesListViewAll.items.aria_label`, '', {
+								index: index + 1,
+								tts_name: line.long_name,
+							})}
+						>
+							<LineDisplay lineData={line} searchQuery={linesListContext.filters.search.value} />
+						</RegularListItem>
+					))}
 				</LinesListGroup>
 			))}
 			<Space h="90px" />

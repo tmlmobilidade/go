@@ -9,10 +9,6 @@ import useSWR from 'swr';
 /* * */
 
 interface LinesContextState {
-	actions: {
-		getLineDataById: (lineId: string) => HubLine | undefined
-		getRouteDataById: (routeId: string) => HubRoute | undefined
-	}
 	data: {
 		lines: HubLine[]
 		routes: HubRoute[]
@@ -27,20 +23,13 @@ interface LinesContextState {
 
 const LinesContext = createContext<LinesContextState | undefined>(undefined);
 
-function getEntityId(entity: null | undefined | { _id?: string, id?: string }): string | undefined {
-	if (!entity) return;
-	if (typeof entity.id === 'string' && entity.id.length > 0) return entity.id;
-	if (typeof entity._id === 'string' && entity._id.length > 0) return entity._id;
-	return;
-}
-
-export function useLinesContext() {
+export const useLinesContext = () => {
 	const context = useContext(LinesContext);
 	if (!context) {
-		throw new Error('useLinesContext must be used within a LinesContextProvider');
+		throw new Error('useLinesContext must be used within an LinesContextProvider');
 	}
 	return context;
-}
+};
 
 /* * */
 
@@ -62,34 +51,9 @@ export function LinesContextProvider({ children }: PropsWithChildren) {
 	}, [allRoutesData]);
 
 	//
-	// B. Handle actions
-
-	const getLineDataById = (lineId: string) => {
-		if (!lineId) return;
-		return normalizedLinesData.find((line) => {
-			const normalizedLineId = getEntityId(line);
-			if (!normalizedLineId) return false;
-			return normalizedLineId === lineId;
-		});
-	};
-
-	const getRouteDataById = (routeId: string) => {
-		if (!routeId) return;
-		return normalizedRoutesData.find((route) => {
-			const normalizedRouteId = getEntityId(route);
-			if (!normalizedRouteId) return false;
-			return normalizedRouteId === routeId;
-		});
-	};
-
-	//
-	// C. Define context value
+	// B. Define context value
 
 	const contextValue: LinesContextState = {
-		actions: {
-			getLineDataById,
-			getRouteDataById,
-		},
 		data: {
 			lines: normalizedLinesData,
 			routes: normalizedRoutesData,
@@ -101,7 +65,7 @@ export function LinesContextProvider({ children }: PropsWithChildren) {
 	};
 
 	//
-	// D. Render components
+	// C. Render components
 
 	return (
 		<LinesContext.Provider value={contextValue}>

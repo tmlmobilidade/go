@@ -11,11 +11,6 @@
 /* STOP NAME */
 
 .stopName{
-	display: flex;
-	flex-direction: row;
-	gap: var(--size-spacing-5);
-	align-items: baseline;
-	max-width: 400px;
 	font-size: 15px;
 	font-weight: var(--font-weight-bold);
     color: var(--color-system-text-100);

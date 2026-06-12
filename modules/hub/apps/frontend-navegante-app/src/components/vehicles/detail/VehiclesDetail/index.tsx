@@ -1,9 +1,9 @@
 'use client';
 
+import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
+import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { VehiclesDetailContextProvider } from '@/components/vehicles/detail/VehiclesDetail.context';
 import { VehiclesDetailView } from '@/components/vehicles/detail/VehiclesDetailView';
-import { BottomSheet } from '@/components/viewport/BottomSheet';
-import { useBottomSheet } from '@/hooks/use-bottom-sheet';
 
 /* * */
 
@@ -22,8 +22,7 @@ export function VehiclesDetail() {
 		<BottomSheet
 			onClose={closeActiveBottomSheet}
 			opened={activeBottomSheet?.view === 'vehicles-detail'}
-			size="half"
-			title="Veículo"
+			size="short"
 		>
 			{activeBottomSheet?.entityId && (
 				<VehiclesDetailContextProvider vehicleId={activeBottomSheet.entityId}>

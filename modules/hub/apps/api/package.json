@@ -22,22 +22,18 @@
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/fastify": "*",
-		"@tmlmobilidade/go-hub-pckg-services": "*",
-		"@tmlmobilidade/go-hub-pckg-types": "*",
-		"@tmlmobilidade/go-hub-pckg-utils": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/rss": "*",
-		"@tmlmobilidade/types": "*",
-		"luxon": "3.7.2"
+		"@tmlmobilidade/types": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.9.1",
+		"@types/node": "25.9.3",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.22.4",
-		"typescript": "5.9.3"
+		"typescript": "6.0.3"
 	}
 }

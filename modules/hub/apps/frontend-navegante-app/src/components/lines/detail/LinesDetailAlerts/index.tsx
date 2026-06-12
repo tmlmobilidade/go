@@ -21,7 +21,7 @@ export function LinesDetailAlerts() {
 	}
 
 	return (
-		<Surface>
+		<Surface variant="plain">
 			<Section>
 				<AlertsCarousel alerts={linesDetailContext.data.active_alerts} />
 			</Section>

@@ -1,5 +1,6 @@
 /* * */
 
+import { getCauseSeverityLevel } from '@/utils/get-alert-severity-level';
 import { type AlertCause, AlertCauseValues } from '@tmlmobilidade/types';
 import { AlertCauseIcons } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
@@ -24,27 +25,41 @@ export function AlertCauseIcon({ cause, className, size, withText = false }: Ale
 
 	const { t } = useTranslation();
 
+	const severityColor = {
+		high: styles.severityLevel_high,
+		info: styles.severityLevel_info,
+		low: styles.severityLevel_low,
+		medium: styles.severityLevel_medium,
+	};
+
 	//
 	// B. Transform data
 
 	const causesWithIcons = AlertCauseValues.map(cause => ({
 		cause,
+		color: severityColor[getCauseSeverityLevel(cause)],
 		icon: AlertCauseIcons[cause],
 	}));
 
 	//
 	// C. Render components
 
-	if (withText && cause) {
+	const causeItem = causesWithIcons.find(item => item.cause === cause);
+
+	if (withText && cause && causeItem) {
 		return (
-			<div className={`${styles.container} ${className && className}`}>
-				{causesWithIcons.find(item => item.cause === cause)?.icon}
+			<div className={`${styles.container} ${className ?? ''} ${causeItem.color}`}>
+				{causeItem.icon}
 				<span className={styles.label}>{t(`shared:alerts.causes.${cause}.title`)}</span>
 			</div>
 		);
 	}
 
-	return causesWithIcons.find(item => item.cause === cause)?.icon;
+	if (!causeItem) {
+		return null;
+	}
+
+	return <span className={causeItem.color}>{causeItem.icon}</span>;
 
 	//
 }

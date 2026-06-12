@@ -34,6 +34,7 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@tmlmobilidade/go-types-shared": "*",
 		"@types/geojson": "7946.0.16",
 		"gtfs-types": "5.1.0",
 		"luxon": "3.7.2",
@@ -42,9 +43,9 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/luxon": "3.7.1",
-		"@types/node": "25.9.1",
+		"@types/node": "25.9.3",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",
-		"typescript": "5.9.3"
+		"typescript": "6.0.3"
 	}
 }
