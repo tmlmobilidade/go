@@ -1,10 +1,9 @@
 /* * */
 
 import { simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
-import { parseSimplifiedApexLocation } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { invalidateRides } from '@tmlmobilidade/go-apex-pckg-shared';
+import { type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
-import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
 import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
@@ -40,7 +39,7 @@ export async function processApexLocation(databaseOperation) {
 	// and transform the vehicle timestamp into an operational date.
 	// Skip the operation if the document is not valid.
 
-	const newSimplifiedApexLocationDocument = parseSimplifiedApexLocation(databaseOperation.fullDocument);
+	const newSimplifiedApexLocationDocument = false; // parseSimplifiedApexLocation(databaseOperation.fullDocument);
 
 	if (!newSimplifiedApexLocationDocument) {
 		Logger.error(`Invalid APEX Location document, skipping operation: ${databaseOperation.fullDocument.transaction.transactionId}`);
@@ -55,10 +54,10 @@ export async function processApexLocation(databaseOperation) {
 	//
 	// Publish the heartbeats for each agency
 
-	if (newSimplifiedApexLocationDocument.agency_id === '41') await fetch('https://status.carrismetropolitana.pt/api/push/QRSatZitiBNIhTDneykCGV0PthvQoIUf');
-	if (newSimplifiedApexLocationDocument.agency_id === '42') await fetch('https://status.carrismetropolitana.pt/api/push/uZTfvExA1yCpNZIXIzgvCmHdSquNi0lV');
-	if (newSimplifiedApexLocationDocument.agency_id === '43') await fetch('https://status.carrismetropolitana.pt/api/push/Rp7hYCJKLL8h67IP07RDAXagwO5avchc');
-	if (newSimplifiedApexLocationDocument.agency_id === '44') await fetch('https://status.carrismetropolitana.pt/api/push/Mnm5Rn3tJAXYVWb6I51eTA4xfpXJ3vqq');
+	// if (newSimplifiedApexLocationDocument.agency_id === '41') await fetch('https://status.carrismetropolitana.pt/api/push/QRSatZitiBNIhTDneykCGV0PthvQoIUf');
+	// if (newSimplifiedApexLocationDocument.agency_id === '42') await fetch('https://status.carrismetropolitana.pt/api/push/uZTfvExA1yCpNZIXIzgvCmHdSquNi0lV');
+	// if (newSimplifiedApexLocationDocument.agency_id === '43') await fetch('https://status.carrismetropolitana.pt/api/push/Rp7hYCJKLL8h67IP07RDAXagwO5avchc');
+	// if (newSimplifiedApexLocationDocument.agency_id === '44') await fetch('https://status.carrismetropolitana.pt/api/push/Mnm5Rn3tJAXYVWb6I51eTA4xfpXJ3vqq');
 
 	//
 };

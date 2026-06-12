@@ -2,9 +2,9 @@
 
 import { pcgiValidations, simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { APEX_LOCATIONS_SETTINGS, invalidateRides, parseSimplifiedApexLocation } from '@tmlmobilidade/go-apex-pckg-shared';
+import { invalidateRides } from '@tmlmobilidade/go-apex-pckg-shared';
+import { type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
-import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 import { BatchWriter } from '@tmlmobilidade/utils';
 
@@ -42,9 +42,6 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 	// for the current timestamp chunk.
 
 	const pcgidbQuery = {
-		'transaction.apexTransactionType': APEX_LOCATIONS_SETTINGS.allowed_apex_transaction_type,
-		'transaction.apexTransactionVersion': { $in: APEX_LOCATIONS_SETTINGS.allowed_apex_transaction_versions },
-		'transaction.operatorLongID': { $in: APEX_LOCATIONS_SETTINGS.allowed_operator_long_ids },
 		'transaction.transactionDate': {
 			$gte: chunkStartDate.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
 			$lte: chunkEndDate.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
@@ -104,7 +101,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			const parseResult = parseSimplifiedApexLocation(sourceDbDocument);
+			const parseResult = false; // parseSimplifiedApexLocation(sourceDbDocument);
 			if (!parseResult) return; // Skip if parsing failed
 			await writer.write(parseResult, { flushCallback: invalidateRides });
 		},

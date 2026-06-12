@@ -1,9 +1,6 @@
 /* * */
 
 import { processApexLocation } from '@/tasks/process-apex-location.js';
-import { processApexOnBoardRefund } from '@/tasks/process-apex-on-board-refund.js';
-import { processApexOnBoardSale } from '@/tasks/process-apex-on-board-sale.js';
-import { processApexValidation } from '@/tasks/process-apex-validation.js';
 import { pcgiLocations, pcgiSales, pcgiValidations } from '@tmlmobilidade/databases';
 
 /* * */
@@ -27,14 +24,14 @@ import { pcgiLocations, pcgiSales, pcgiValidations } from '@tmlmobilidade/databa
 
 	const pcgiSalesCollection = await pcgiSales.getCollection();
 	const pcgiSalesChangeStream = pcgiSalesCollection.watch();
-	pcgiSalesChangeStream.on('change', processApexOnBoardSale);
-	pcgiSalesChangeStream.on('change', processApexOnBoardRefund);
+	// pcgiSalesChangeStream.on('change', processApexOnBoardSale);
+	// pcgiSalesChangeStream.on('change', processApexOnBoardRefund);
 
 	// VALIDATIONS
 
 	const pcgiValidationsCollection = await pcgiValidations.getCollection();
 	const pcgiValidationsChangeStream = pcgiValidationsCollection.watch();
-	pcgiValidationsChangeStream.on('change', processApexValidation);
+	// pcgiValidationsChangeStream.on('change', processApexValidation);
 
 	//
 })();
