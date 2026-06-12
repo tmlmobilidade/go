@@ -52,11 +52,15 @@ export class VkmController {
 		const agencyLines = await lines.findMany({ agency_id: payload.agency_id }, { projection: { _id: 1 } });
 		const lineIds = agencyLines.map(line => line._id);
 
+		const patternProjection = payload.extension_source === 'stop_times'
+			? { 'line_id': 1, 'path.distance_delta': 1, 'rules': 1 }
+			: { 'line_id': 1, 'rules': 1, 'shape.extension': 1 };
+
 		const [agencyPatterns, agencyPeriods, agencyHolidays, agencyEvents] = await Promise.all([
 			lineIds.length > 0
 				? patterns.findMany(
 					{ line_id: { $in: lineIds } },
-					{ projection: { line_id: 1, path: 1, rules: 1, shape: 1 } },
+					{ projection: patternProjection },
 				)
 				: Promise.resolve([]),
 			yearPeriods.findMany(
