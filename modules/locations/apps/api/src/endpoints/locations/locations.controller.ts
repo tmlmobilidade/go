@@ -1,8 +1,9 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, type FindOptions, locations } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { type District, type GetAllDistrictsQuery, GetAllDistrictsQuerySchema, type GetAllLocalitiesQuery, GetAllLocalitiesQuerySchema, type GetAllMunicipalitiesQuery, GetAllMunicipalitiesQuerySchema, type GetAllParishesQuery, GetAllParishesQuerySchema, type Locality, type Location, type Municipality, type Parish } from '@tmlmobilidade/types';
 import { validateQueryParams } from '@tmlmobilidade/utils';
 
@@ -20,16 +21,27 @@ export class LocationsController {
 				error: null,
 				status: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
-			console.log(error);
+		} catch (error) {
 			if (error instanceof HttpException) {
+				Logger.issue('error', error, {
+					action: 'findByCoordinates',
+					feature: 'locations',
+					request,
+				});
+
 				return reply.status(error.statusCode).send({
 					data: undefined,
 					error: error.message,
 					status: error.statusCode,
 				});
 			}
+
+			Logger.issue('error', error, {
+				action: 'findByCoordinates',
+				feature: 'locations',
+				request,
+			});
+
 			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: undefined,
 				error: 'Internal server error',
@@ -50,15 +62,26 @@ export class LocationsController {
 				error: null,
 				status: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			if (error instanceof HttpException) {
+				Logger.issue('error', error, {
+					action: 'getDistricts',
+					feature: 'locations',
+					request,
+				});
+
 				return reply.status(error.statusCode).send({
 					data: undefined,
 					error: error.message,
 					status: error.statusCode,
 				});
 			}
+
+			Logger.issue('error', error, {
+				action: 'getDistricts',
+				feature: 'locations',
+				request,
+			});
 
 			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: undefined,
@@ -96,15 +119,26 @@ export class LocationsController {
 				},
 				status: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			if (error instanceof HttpException) {
+				Logger.issue('error', error, {
+					action: 'getLocalities',
+					feature: 'locations',
+					request,
+				});
+
 				return reply.status(error.statusCode).send({
 					data: undefined,
 					error: error.message,
 					status: error.statusCode,
 				});
 			}
+
+			Logger.issue('error', error, {
+				action: 'getLocalities',
+				feature: 'locations',
+				request,
+			});
 
 			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: undefined,
@@ -128,15 +162,26 @@ export class LocationsController {
 				error: null,
 				status: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			if (error instanceof HttpException) {
+				Logger.issue('error', error, {
+					action: 'getMunicipalities',
+					feature: 'locations',
+					request,
+				});
+
 				return reply.status(error.statusCode).send({
 					data: undefined,
 					error: error.message,
 					status: error.statusCode,
 				});
 			}
+
+			Logger.issue('error', error, {
+				action: 'getMunicipalities',
+				feature: 'locations',
+				request,
+			});
 
 			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: undefined,
@@ -173,15 +218,26 @@ export class LocationsController {
 				},
 				status: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			if (error instanceof HttpException) {
+				Logger.issue('error', error, {
+					action: 'getParishes',
+					feature: 'locations',
+					request,
+				});
+
 				return reply.status(error.statusCode).send({
 					data: undefined,
 					error: error.message,
 					status: error.statusCode,
 				});
 			}
+
+			Logger.issue('error', error, {
+				action: 'getParishes',
+				feature: 'locations',
+				request,
+			});
 
 			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: undefined,
