@@ -95,7 +95,7 @@ class LoggersClass {
 	 */
 	error(
 		message?: Error | LoggerMessage,
-		contextOrErrorOrSpacesAfter?: Error | LoggerErrorInputContext | number,
+		contextOrErrorOrSpacesAfter?: Error | LoggerErrorInputContext | number | string,
 		spacesAfterOrBefore?: number,
 		spacesBefore?: number,
 	) {
@@ -158,7 +158,7 @@ class LoggersClass {
 	 */
 	info(
 		message?: LoggerMessage,
-		contextOrSpacesAfter?: LoggerInfoInputContext | number,
+		contextOrSpacesAfter?: LoggerInfoInputContext | number | string,
 		spacesAfterOrBefore?: number,
 		spacesBefore?: number,
 	) {
