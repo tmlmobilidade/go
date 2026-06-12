@@ -2,16 +2,12 @@
 
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
+import { externalClients } from '@tmlmobilidade/external';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type HashableRawVehicleEvent, type RawVehicleEventTtslV1 } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
-
-/* * */
-
-const API_URL = 'https://api.ttsl.pt/files/gtfs_rt_vehicles.pb';
 
 /* * */
 
@@ -31,9 +27,7 @@ const main = async () => {
 
 	Logger.info(`[${ITERATION}] Fetching TTSL data from API...`, 0, 1);
 
-	const response = await fetch(API_URL);
-	const arrayBuffer = await response.arrayBuffer();
-	const decodedMessage = await decodeGtfsRtFeed(arrayBuffer);
+	const decodedMessage = await externalClients.ttsl.vehiclePositions();
 
 	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the TTSL data.`);
 

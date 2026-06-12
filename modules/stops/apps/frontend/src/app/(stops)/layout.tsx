@@ -13,7 +13,7 @@ export default function Layout({ children }: PropsWithChildren) {
 			<PanesManager
 				id="stops-list"
 				panes={[
-					<StopsList />,
+					<StopsList key="stops-list" />,
 					children,
 				]}
 			/>

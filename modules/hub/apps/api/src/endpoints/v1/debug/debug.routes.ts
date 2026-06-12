@@ -17,6 +17,8 @@ server.register(
 
 		instance.get('/time', DebugController.getTime);
 
+		instance.get('/app-enabled', DebugController.getAppEnabled);
+
 		next();
 	},
 	{ prefix: namespace },

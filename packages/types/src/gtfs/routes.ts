@@ -31,8 +31,7 @@ export function validateGtfsRouteType(value: number | string): GTFS_RouteType {
 	// Validate the route type value
 	if (typeof value === 'number') {
 		if (value >= 0 && value <= 12) return value as GTFS_RouteType;
-	}
-	else if (typeof value === 'string') {
+	} else if (typeof value === 'string') {
 		const numValue = parseInt(value, 10);
 		if (!isNaN(numValue) && numValue >= 0 && numValue <= 12) return numValue as GTFS_RouteType;
 	}
@@ -163,7 +162,7 @@ export function validateGTFSPathType(value?: number | string): GTFS_PathType {
  */
 export interface GTFS_Route_Extended extends GTFS_Route {
 	circular?: GTFS_Binary
-	line_id: number
+	line_id: string
 	line_long_name: string
 	line_short_name: string
 	path_type?: GTFS_PathType
@@ -201,13 +200,11 @@ export function validateGtfsRouteExtended(rawData: GTFS_Route_Extended_Raw): GTF
 	if (!rawData.line_id) throw new Error('Missing required field "line_id" on GTFS Route.');
 	if (!rawData.line_long_name) throw new Error('Missing required field "line_long_name" on GTFS Route.');
 	if (!rawData.line_short_name) throw new Error('Missing required field "line_short_name" on GTFS Route.');
-	// Validate the type of fields
-	if (Number.isNaN(rawData.line_id)) throw new Error(`Invalid line_id: "${rawData.line_id}". It must be a valid number.`);
 	// Transform the raw data into the output format
 	return {
 		...route,
 		circular: validateGtfsBinary(rawData.circular),
-		line_id: Number(rawData.line_id),
+		line_id: rawData.line_id,
 		line_long_name: rawData.line_long_name,
 		line_short_name: rawData.line_short_name,
 		path_type: validateGTFSPathType(rawData.path_type),

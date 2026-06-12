@@ -3,6 +3,7 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { clampCoordinate } from '@tmlmobilidade/geo';
 import { type RawVehicleEventCpV1, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { roundToInt } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -15,7 +16,7 @@ export const parseRawVehicleEventCpV1 = (doc: RawVehicleEventCpV1): null | Simpl
 	return {
 		_id: doc._id,
 		agency_id: doc.agency_id,
-		bearing: null,
+		bearing: vehicle.position.bearing ? roundToInt(vehicle.position.bearing) : null,
 		created_at: doc.created_at,
 		current_status: vehicle.current_status ?? null,
 		door: null,

@@ -1,0 +1,123 @@
+/* * */
+/* OVERLAY */
+
+.overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 99;
+	visibility: hidden;
+	pointer-events: none;
+	touch-action: none;
+	background-color: rgb(0 0 0 / 30%);
+	opacity: 0;
+	transition:
+		opacity 250ms ease-in-out,
+		visibility 250ms ease-in-out;
+}
+
+.overlay[data-opened='true'] {
+	visibility: visible;
+	pointer-events: auto;
+	opacity: 1;
+}
+
+.content {
+	position: fixed;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 100;
+	display: flex;
+	visibility: hidden;
+	flex-direction: column;
+	width: 100%;
+	max-height: 95vh;
+	overflow: hidden;
+	background-color: var(--color-system-background-200);
+	border-top-left-radius: 35px;
+	border-top-right-radius: 35px;
+	opacity: 0;
+	transform: translateY(100%);
+	transition:
+		transform 250ms ease-in-out,
+		opacity 250ms ease-in-out,
+		visibility 250ms ease-in-out;
+}
+
+.content[data-opened='true'] {
+	visibility: visible;
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.content[data-size='full'] {
+	height: 95vh;
+}
+
+.content[data-size='half'] {
+	height: 55vh;
+}
+
+.content[data-size='short'] {
+	height: 32vh;
+}
+
+.content[data-size='fit'] {
+	height: auto;
+	max-height: 95vh;
+}
+
+.header {
+	position: relative;
+	z-index: 10;
+	display: grid;
+	flex: 0 0 auto;
+	grid-template-columns: 50px 1fr 50px;
+	gap: 10px;
+	align-items: center;
+	width: 100%;
+	padding: 12px;
+	background-color: var(--color-system-background-100);
+	border-bottom: 1px solid var(--color-system-border-100);
+	border-top-left-radius: 35px;
+	border-top-right-radius: 35px;
+}
+
+.headerLeft {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	min-width: 0;
+}
+
+.headerRight {
+	min-width: 0;
+}
+
+.title {
+	grid-column: 2;
+	width: 100%;
+	min-width: 0;
+	margin: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: clamp(16px, 4.25vw, 24px);
+	font-weight: 700;
+	line-height: 1.1;
+	color: var(--color-system-text-100);
+	text-align: center;
+	white-space: nowrap;
+}
+
+.body {
+	flex: 1;
+	min-height: 0;
+	overflow: hidden auto;
+	background-color: var(--color-system-background-200);
+	-webkit-overflow-scrolling: touch;
+}
+
+.content[data-size='fit'] .body {
+	flex: 0 1 auto;
+	max-height: calc(95vh - var(--bottom-sheet-header-height));
+}

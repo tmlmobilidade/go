@@ -76,7 +76,7 @@ export function getPublicServiceId(planId: string, agencyId: string, serviceId: 
  * @param lineId The ID of the line.
  * @returns The public line ID.
  */
-export function getPublicLineId(agencyId: string, lineId: number | string): string {
+export function getPublicLineId(agencyId: string, lineId: string): string {
 	// Validate that the agency ID is a non-empty string
 	if (typeof agencyId !== 'string' || !agencyId.trim()) {
 		throw new Error('Invalid agency ID: must be a non-empty string.');
@@ -144,4 +144,23 @@ export function getPublicFareId(agencyId: string, fareId: string): string {
 	}
 	// Construct the public fare ID using a consistent format
 	return `[${agencyId}]${fareId}`;
+}
+
+/**
+ * Enforces the public vehicle ID format.
+ * @param agencyId The ID of the agency this vehicle belongs to.
+ * @param vehicleId The ID of the vehicle.
+ * @returns The public vehicle ID.
+ */
+export function getPublicVehicleId(agencyId: string, vehicleId: string): string {
+	// Validate that the agency ID is a non-empty string
+	if (typeof agencyId !== 'string' || !agencyId.trim()) {
+		throw new Error('Invalid agency ID: must be a non-empty string.');
+	}
+	// Validate that the vehicle ID is a non-empty string
+	if (typeof vehicleId !== 'string' || !vehicleId.trim()) {
+		throw new Error('Invalid vehicle ID: must be a non-empty string.');
+	}
+	// Construct the public vehicle ID using a consistent format
+	return `[${agencyId}]${vehicleId}`;
 }

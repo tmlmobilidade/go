@@ -1,7 +1,6 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
-import { CalendarEntry, fetchCalendarData } from '@tmlmobilidade/go-performance-pckg-dates';
+import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -35,7 +34,7 @@ export const syncDemandByCategoryByPatternByDay = async () => {
 	//
 	// Load calendar JSON
 
-	const calendarJson = await fetchCalendarData();
+	const calendarJson = await Dates.fetchCalendarData();
 
 	//
 	// Build a map for fast lookup

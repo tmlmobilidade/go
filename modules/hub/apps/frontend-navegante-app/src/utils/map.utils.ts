@@ -1,12 +1,12 @@
 /* * */
 
-import { mapDefaultValues } from '@/settings/map.settings';
+import { mapDefaultValues } from '@/components/map/Map.settings';
 import * as turf from '@turf/turf';
 
 /* * */
 
 interface CenterMapOptions {
-	padding: number
+	padding?: number | { bottom?: number, left?: number, right?: number, top?: number }
 }
 
 /**
@@ -30,7 +30,7 @@ export const centerMap = (mapObject, features: GeoJSON.Feature<GeoJSON.Geometry,
 
 	const featureCollection = turf.featureCollection(features);
 	const featureCollectionEnvelope = turf.envelope(featureCollection);
-	if (!featureCollectionEnvelope || !featureCollectionEnvelope.bbox) return;
+	if (!featureCollectionEnvelope?.bbox) return;
 
 	//
 	// Center the map on the envelope
@@ -63,7 +63,7 @@ export const moveMap = (mapObject, coordinates: GeoJSON.Position) => {
 	// Validate the input parameters
 
 	if (!mapObject) return;
-	if (!coordinates || !coordinates.length) return;
+	if (!coordinates?.length) return;
 
 	//
 	// Get map current zoom level
@@ -84,31 +84,10 @@ export const moveMap = (mapObject, coordinates: GeoJSON.Position) => {
 	if (isInside && currentZoomWithMargin > (thresholdZoomWithMargin * 1.15)) {
 		// ...then simply ease to it.
 		mapObject.easeTo({ center: coordinates, duration: mapDefaultValues.speed * 0.25, zoom: currentZoom });
-	}
-	else {
+	} else {
 		// If the zoom is too far, or the given coordinates are not visible, then fly to it
 		mapObject.flyTo({ center: coordinates, duration: mapDefaultValues.speed, zoom: thresholdZoomWithMargin });
 	}
 
 	//
-};
-
-/* * */
-
-/**
- * Return a base GeoJSON Feature for LineString object
- * @returns A GeoJSON Feature for LineString object with an empty features array
- */
-
-export const getBaseGeoJsonFeatureLineString = (): GeoJSON.Feature => {
-	return { geometry: { coordinates: [], type: 'LineString' }, properties: {}, type: 'Feature' };
-};
-
-/**
- * Return a base GeoJSON FeatureCollection object
- * @returns A GeoJSON FeatureCollection object with an empty features array
- */
-
-export const getBaseGeoJsonFeatureCollection = (): GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties> => {
-	return { features: [], type: 'FeatureCollection' };
 };
