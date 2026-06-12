@@ -4,6 +4,7 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { vehicles } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { type CreateVehicleDto, PermissionCatalog, SimplifiedVehicleEvent, type UpdateVehicleDto, type Vehicle } from '@tmlmobilidade/types';
 
 /* * */;
@@ -23,7 +24,13 @@ export class VehiclesController {
 		// Check if the user has permission to create vehicles
 
 		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.create)) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create vehicles');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create vehicles');
+			Logger.issue('error', error, {
+				action: 'create',
+				feature: 'vehicles',
+				request,
+			});
+			throw error;
 		}
 
 		//
@@ -48,14 +55,26 @@ export class VehiclesController {
 		const vehicle = await vehicles.findById(id);
 
 		if (!vehicle) {
-			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
+			Logger.issue('error', error, {
+				action: 'delete',
+				feature: 'vehicles',
+				request,
+			});
+			throw error;
 		}
 
 		//
 		// Check if the user has permission to delete vehicles
 
 		if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.delete)) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete vehicles');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete vehicles');
+			Logger.issue('error', error, {
+				action: 'delete',
+				feature: 'vehicles',
+				request,
+			});
+			throw error;
 		}
 
 		//
@@ -98,7 +117,16 @@ export class VehiclesController {
 
 		const vehicleData = await vehicles.findById(request.params.id);
 
-		if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
+		if (!vehicleData) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
+			Logger.issue('error', error, {
+				action: 'getById',
+				feature: 'vehicles',
+				request,
+			});
+			throw error;
+		}
+
 		//
 		// Fetch the vehicle data
 
@@ -121,7 +149,16 @@ export class VehiclesController {
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Vehicle>) {
 		await vehicles.toggleLockById(request.params.id);
 		const foundVehicle = await vehicles.findById(request.params.id);
-		if (!foundVehicle) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
+		if (!foundVehicle) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
+			Logger.issue('error', error, {
+				action: 'lock',
+				feature: 'vehicles',
+				request,
+			});
+			throw error;
+		}
+
 		reply.send({ data: foundVehicle, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -138,13 +175,27 @@ export class VehiclesController {
 		if (Array.isArray(request.params.id)) {
 			const vehicleData = await vehicles.findMany({ _id: { $in: request.params.id } });
 
-			if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicles not found');
+			if (!vehicleData) {
+				const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicles not found');
+				Logger.issue('error', error, {
+					action: 'update',
+					feature: 'vehicles',
+					request,
+				});
+				throw error;
+			}
 
 			//
 			// Check if the user has permission to update vehicles
 
 			if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.update)) {
-				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update vehicles');
+				const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update vehicles');
+				Logger.issue('error', error, {
+					action: 'update',
+					feature: 'vehicles',
+					request,
+				});
+				throw error;
 			}
 
 			//
@@ -165,13 +216,27 @@ export class VehiclesController {
 		} else {
 			const vehicleData = await vehicles.findById(request.params.id);
 
-			if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
+			if (!vehicleData) {
+				const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
+				Logger.issue('error', error, {
+					action: 'update',
+					feature: 'vehicles',
+					request,
+				});
+				throw error;
+			}
 
 			//
 			// Check if the user has permission to update vehicles
 
 			if (!PermissionCatalog.hasPermission(request.permissions, PermissionCatalog.all.vehicles.scope, PermissionCatalog.all.vehicles.actions.update)) {
-				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update vehicles');
+				const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update vehicles');
+				Logger.issue('error', error, {
+					action: 'update',
+					feature: 'vehicles',
+					request,
+				});
+				throw error;
 			}
 
 			//
@@ -200,7 +265,15 @@ export class VehiclesController {
 	static async getLastEvent(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedVehicleEvent>) {
 		//
 		const [agencyId, vehicleId] = request.params.id.split('-');
-		if (!vehicleId || !agencyId) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid vehicle ID');
+		if (!vehicleId || !agencyId) {
+			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid vehicle ID');
+			Logger.issue('error', error, {
+				action: 'getLastEvent',
+				feature: 'vehicles',
+				request,
+			});
+			throw error;
+		}
 
 		//
 		// Fetch the last event for the vehicle
