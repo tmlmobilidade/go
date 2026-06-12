@@ -27,6 +27,8 @@ export function transformPcgiApexTransaction(pcgiTransactionEntity: PcgiTransact
 	//
 	// Setup a result object for the transaction
 
+	if (documentTypeKey === '3|3.0') return parsePcgiTransactionEntityIntoRawApexTransactionSaleV30(pcgiTransactionEntity, decodedTransaction);
+
 	if (documentTypeKey === '6|3.0') return parsePcgiTransactionEntityIntoRawApexTransactionRefundV30(pcgiTransactionEntity, decodedTransaction);
 
 	if (documentTypeKey === '11|3.0') return parsePcgiTransactionEntityIntoRawApexTransactionValidationV30(pcgiTransactionEntity, decodedTransaction);

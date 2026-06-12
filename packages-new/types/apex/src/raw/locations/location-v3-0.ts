@@ -39,7 +39,7 @@ export const RawApexTransactionLocationV30PayloadSchema = z.object({
 		transactionId: z.string(),
 	}),
 	validationServiceInfo: z.object({
-		blockID: z.string(),
+		blockID: z.string().optional(),
 		dutyID: z.string().optional(),
 		journeyID: z.string(),
 		lineLongID: z.string(),

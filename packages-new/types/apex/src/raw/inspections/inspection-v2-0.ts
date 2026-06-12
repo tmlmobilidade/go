@@ -17,10 +17,12 @@ export const RawApexTransactionInspectionV20PayloadSchema = z.object({
 	controlInfo: z.object({
 		calendarID: z.string(),
 		contractNumber: z.number(),
-		contractStatusData: z.array(z.object({
-			contractNumber: z.number(),
-			contractStatus: z.number(),
-		})),
+		contractStatusData: z.array(
+			z.object({
+				contractNumber: z.number(),
+				contractStatus: z.number(),
+			}),
+		),
 		controlStatus: z.number(),
 		controlType: z.number(),
 		environmentStatus: z.number(),
