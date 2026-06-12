@@ -45,11 +45,8 @@ export async function syncTransactionEntities(timeChunk: PerformInTimeChunksItem
 	Logger.divider(`APEX Tx [${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
 
 	//
-	// Implement a simplified version of the replication process, since there is no possibility
-	// of comparing documents by ID. Only check the count of documents in each database for the
-	// current timestamp chunk, and if they are different, sync all of them.
-
-	const countStepTimer = new Timer();
+	// Setup the queries for both the source and destination databases,
+	// to retrieve the distinct IDs for the current timestamp chunk.
 
 	const sourceQuery = {
 		createdAt: {
@@ -58,21 +55,31 @@ export async function syncTransactionEntities(timeChunk: PerformInTimeChunksItem
 		},
 	};
 
-	const sourceDbCount = await pcgiTransactionEntities.count(sourceQuery);
-
-	const destinationDbCount = await rawApexTransactions.count({
-		created_at: {
+	const destinationQuery = {
+		createdAt: {
 			$gte: chunkStartDate.unix_timestamp,
 			$lte: chunkEndDate.unix_timestamp,
 		},
-	});
+	};
 
-	if (sourceDbCount === destinationDbCount) {
-		Logger.success(`[APEX Tx] MATCH: Found the same number of documents in both databases: ${sourceDbCount} Source = ${destinationDbCount} Destination (${countStepTimer.get()})`);
+	//
+	// Get the distinct IDs for both the source and destination databases,
+	// and compare them to find the missing ones.
+
+	const distinctIdsTimer = new Timer();
+
+	const sourceDbDistinctIds = await pcgiTransactionEntities.distinct('transactionId', sourceQuery);
+
+	const destinationDbDistinctIds = await rawApexTransactions.distinct('_id', destinationQuery);
+
+	const missingDocumentIds = sourceDbDistinctIds.filter((id: string) => !destinationDbDistinctIds.includes(id));
+
+	if (missingDocumentIds.length === 0) {
+		Logger.success(`[APEX Tx] MATCH: All ${sourceDbDistinctIds.length} distinct IDs from source database matched with destination database. (${distinctIdsTimer.get()})`);
 		return;
 	}
 
-	Logger.info(`[APEX Tx] MISMATCH: Document count was different for both databases: ${sourceDbCount} Source != ${destinationDbCount} Destination (${countStepTimer.get()})`);
+	Logger.info(`[APEX Tx] MISMATCH: Found ${missingDocumentIds.length} missing documents from source on destination database. (${distinctIdsTimer.get()})`);
 
 	//
 	// Sync all documents in the current timestamp chunk. We query the Source database for all documents
@@ -83,16 +90,10 @@ export async function syncTransactionEntities(timeChunk: PerformInTimeChunksItem
 
 	const pcgidbTransactionEntitiesCollection = await pcgiTransactionEntities.getCollection();
 
-	const pcgidbTransactionEntitiesStream = pcgidbTransactionEntitiesCollection.find(sourceQuery).stream();
+	const pcgidbTransactionEntitiesStream = pcgidbTransactionEntitiesCollection.find({ transactionId: { $in: missingDocumentIds } }).stream();
 
 	for await (const document of pcgidbTransactionEntitiesStream) {
 		try {
-			// Skip if the current document or a newer version of the same document
-			// already exists in the destination database.
-			const alreadyExists = await rawApexTransactions.findOne({ _id: document.transactionId, created_at: { $gte: Dates.fromJSDate(document.createdAt).unix_timestamp } });
-			if (alreadyExists) continue;
-			// Skip if the document is not from the operator with ID 41
-			if (document.operatorLongId !== '41') continue;
 			// Transform the document into a RawApexTransaction
 			const parsedDocument = transformPcgiApexTransaction(document);
 			await writer.write(parsedDocument);
