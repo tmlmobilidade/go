@@ -1,7 +1,8 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { Logger } from '@tmlmobilidade/logger';
 import AdmZip from 'adm-zip';
 import Papa from 'papaparse';
 
@@ -129,7 +130,12 @@ export class GtfsController {
 			const data = await request.file();
 
 			if (!data) {
-				throw new Error('No file uploaded');
+				const error = new Error('No file uploaded');
+				Logger.issue('error', error, {
+					action: 'parse',
+					feature: 'gtfs',
+					request,
+				});
 			}
 
 			// Convert file buffer to Buffer
@@ -272,7 +278,11 @@ export class GtfsController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
-			console.log(error);
+			Logger.issue('error', error, {
+				action: 'parse',
+				feature: 'gtfs',
+				request,
+			});
 
 			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: null,

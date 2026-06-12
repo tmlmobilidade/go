@@ -1,8 +1,9 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { patterns, routes } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { CreateRouteDto, PatternSimplified, PermissionCatalog, type Route, type UpdateRouteDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -27,7 +28,14 @@ export class RoutesController {
 		// If no permission found, deny access
 
 		if (!userRoutePermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create routes');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create routes');
+			Logger.issue('error', error, {
+				action: 'create',
+				feature: 'routes',
+				request,
+				value: request.body,
+			});
+			throw error;
 		}
 
 		//
@@ -53,7 +61,14 @@ export class RoutesController {
 		const route = await routes.findById(id);
 
 		if (!route) {
-			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+			Logger.issue('error', error, {
+				action: 'delete',
+				feature: 'routes',
+				request,
+				value: request.params.id,
+			});
+			throw error;
 		}
 
 		//
@@ -65,7 +80,14 @@ export class RoutesController {
 		// If no permission found, deny access
 
 		if (!userRoutePermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete routes');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete routes');
+			Logger.issue('error', error, {
+				action: 'delete',
+				feature: 'routes',
+				request,
+				value: request.params.id,
+			});
+			throw error;
 		}
 
 		//
@@ -88,7 +110,16 @@ export class RoutesController {
 
 		const routeData = await routes.findById(request.params.id);
 
-		if (!routeData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+		if (!routeData) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+			Logger.issue('error', error, {
+				action: 'getById',
+				feature: 'routes',
+				request,
+				value: request.params.id,
+			});
+			throw error;
+		}
 
 		//
 		// Get the resource permissions for routes for the current user.
@@ -99,7 +130,14 @@ export class RoutesController {
 		// If no permission found, deny access
 
 		if (!userRoutePermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read routes');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read routes');
+			Logger.issue('error', error, {
+				action: 'getById',
+				feature: 'routes',
+				request,
+				value: request.params.id,
+			});
+			throw error;
 		}
 
 		//
@@ -135,7 +173,16 @@ export class RoutesController {
 
 		const routeData = await routes.findById(request.params.id);
 
-		if (!routeData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+		if (!routeData) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+			Logger.issue('error', error, {
+				action: 'lock',
+				feature: 'routes',
+				request,
+				value: request.params.id,
+			});
+			throw error;
+		}
 
 		//
 		// Get the resource permissions for routes for the current user.
@@ -146,7 +193,14 @@ export class RoutesController {
 		// If no permission found, deny access
 
 		if (!userRoutePermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock routes');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock routes');
+			Logger.issue('error', error, {
+				action: 'lock',
+				feature: 'routes',
+				request,
+				value: request.params.id,
+			});
+			throw error;
 		}
 
 		// If authorized, toggle the lock status of the route
@@ -172,7 +226,16 @@ export class RoutesController {
 
 		const routeData = await routes.findById(request.params.id);
 
-		if (!routeData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+		if (!routeData) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+			Logger.issue('error', error, {
+				action: 'update',
+				feature: 'routes',
+				request,
+				value: request.params.id,
+			});
+			throw error;
+		}
 
 		//
 		// Get the resource permissions for routes for the current user.
@@ -183,7 +246,14 @@ export class RoutesController {
 		// If no permission found, deny access
 
 		if (!userRoutePermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update routes');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update routes');
+			Logger.issue('error', error, {
+				action: 'update',
+				feature: 'routes',
+				request,
+				value: request.params.id,
+			});
+			throw error;
 		}
 
 		//

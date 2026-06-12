@@ -1,8 +1,9 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, lines, routes } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { CreateLineDto, type Line, PermissionCatalog, RouteSimplified, type UpdateLineDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -27,7 +28,13 @@ export class LinesController {
 		// If no permission found, deny access
 
 		if (!userLinePermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create lines');
+			const error = new Error('You are not authorized to create lines');
+			Logger.issue('error', error, {
+				action: 'create',
+				feature: 'lines',
+				request,
+			});
+			throw error;
 		}
 
 		//
@@ -42,7 +49,13 @@ export class LinesController {
 		});
 
 		if (!hasPermissionForAgency) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create lines for this agency');
+			const error = new Error('You are not authorized to create lines for this agency');
+			Logger.issue('error', error, {
+				action: 'create',
+				feature: 'lines',
+				request,
+			});
+			throw error;
 		}
 
 		//
@@ -68,7 +81,13 @@ export class LinesController {
 		const line = await lines.findById(id);
 
 		if (!line) {
-			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+			const error = new Error('Line not found');
+			Logger.issue('error', error, {
+				action: 'delete',
+				feature: 'lines',
+				request,
+			});
+			throw error;
 		}
 
 		//
@@ -80,7 +99,13 @@ export class LinesController {
 		// If no permission found, deny access
 
 		if (!userLinePermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete lines');
+			const error = new Error('You are not authorized to delete lines');
+			Logger.issue('error', error, {
+				action: 'delete',
+				feature: 'lines',
+				request,
+			});
+			throw error;
 		}
 
 		//
@@ -95,7 +120,13 @@ export class LinesController {
 		});
 
 		if (!hasPermissionForAgency) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this line');
+			const error = new Error('You are not authorized to delete this line');
+			Logger.issue('error', error, {
+				action: 'delete',
+				feature: 'lines',
+				request,
+			});
+			throw error;
 		}
 
 		//
@@ -122,7 +153,13 @@ export class LinesController {
 		// If no permission found, deny access
 
 		if (!userLinePermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read lines');
+			const error = new Error('You are not authorized to read lines');
+			Logger.issue('error', error, {
+				action: 'getAll',
+				feature: 'lines',
+				request,
+			});
+			throw error;
 		}
 
 		//
@@ -162,7 +199,15 @@ export class LinesController {
 
 		const lineData = await lines.findById(request.params.id);
 
-		if (!lineData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		if (!lineData) {
+			const error = new Error('Line not found');
+			Logger.issue('error', error, {
+				action: 'getById',
+				feature: 'lines',
+				request,
+			});
+			throw error;
+		}
 
 		//
 		// Get the resource permissions for lines for the current user.
@@ -173,7 +218,13 @@ export class LinesController {
 		// If no permission found, deny access
 
 		if (!userLinePermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read lines');
+			const error = new Error('You are not authorized to read lines');
+			Logger.issue('error', error, {
+				action: 'getById',
+				feature: 'lines',
+				request,
+			});
+			throw error;
 		}
 
 		//
@@ -188,7 +239,13 @@ export class LinesController {
 		});
 
 		if (!hasPermissionForAgency) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this line');
+			const error = new Error('You are not authorized to read this line');
+			Logger.issue('error', error, {
+				action: 'getById',
+				feature: 'lines',
+				request,
+			});
+			throw error;
 		}
 
 		//
@@ -224,7 +281,15 @@ export class LinesController {
 
 		const lineData = await lines.findById(request.params.id);
 
-		if (!lineData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		if (!lineData) {
+			const error = new Error('Line not found');
+			Logger.issue('error', error, {
+				action: 'lock',
+				feature: 'lines',
+				request,
+			});
+			throw error;
+		}
 
 		//
 		// Get the resource permissions for lines for the current user.
@@ -235,7 +300,13 @@ export class LinesController {
 		// If no permission found, deny access
 
 		if (!userLinePermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock lines');
+			const error = new Error('You are not authorized to lock/unlock lines');
+			Logger.issue('error', error, {
+				action: 'lock',
+				feature: 'lines',
+				request,
+			});
+			throw error;
 		}
 
 		//
@@ -250,13 +321,27 @@ export class LinesController {
 		});
 
 		if (!hasPermissionForAgency) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock line');
+			const error = new Error('You are not authorized to perform this action: toggle lock line');
+			Logger.issue('error', error, {
+				action: 'lock',
+				feature: 'lines',
+				request,
+			});
+			throw error;
 		}
 
 		// If authorized, toggle the lock status of the line
 		await lines.toggleLockById(request.params.id);
 		const foundLine = await lines.findById(request.params.id);
-		if (!foundLine) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		if (!foundLine) {
+			const error = new Error('Line not found');
+			Logger.issue('error', error, {
+				action: 'lock',
+				feature: 'lines',
+				request,
+			});
+			throw error;
+		}
 
 		return reply.send({ data: foundLine, error: null, statusCode: HTTP_STATUS.OK });
 
@@ -276,7 +361,17 @@ export class LinesController {
 
 		const lineData = await lines.findById(request.params.id);
 
-		if (!lineData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		if (!lineData) {
+			const error = new Error('Line not found');
+			Logger.issue('error', error, {
+				action: 'update',
+				feature: 'lines',
+				request,
+				statusCode: HTTP_STATUS.NOT_FOUND,
+				value: request.params.id,
+			});
+			throw error;
+		}
 
 		//
 		// Get the resource permissions for lines for the current user.
@@ -287,7 +382,15 @@ export class LinesController {
 		// If no permission found, deny access
 
 		if (!userLinePermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update lines');
+			const error = new Error('You are not authorized to update lines');
+			Logger.issue('error', error, {
+				action: 'update',
+				feature: 'lines',
+				request,
+				statusCode: HTTP_STATUS.FORBIDDEN,
+				value: request.params.id,
+			});
+			throw error;
 		}
 
 		//
@@ -302,7 +405,15 @@ export class LinesController {
 		});
 
 		if (!hasPermissionForAgency) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this line');
+			const error = new Error('You are not authorized to update this line');
+			Logger.issue('error', error, {
+				action: 'update',
+				feature: 'lines',
+				request,
+				statusCode: HTTP_STATUS.FORBIDDEN,
+				value: request.params.id,
+			});
+			throw error;
 		}
 
 		//
