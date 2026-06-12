@@ -423,6 +423,9 @@ export const API_ROUTES = Object.freeze({
 		TYPOLOGIES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/typologies/${id}/lock`,
 		TYPOLOGIES_LIST: `${getModuleConfig('offer', 'api_url')}/typologies`,
 
+		// VKM
+		VKM_CALCULATE: `${getModuleConfig('offer', 'api_url')}/vkm/calculate`,
+
 		// ZONES
 		ZONES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/zones/${id}`,
 		ZONES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/zones/${id}/lock`,

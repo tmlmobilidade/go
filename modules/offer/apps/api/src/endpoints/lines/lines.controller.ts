@@ -1,8 +1,8 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type Filter, lines, routes } from '@tmlmobilidade/interfaces';
+import { type Filter, lines, patterns, routes } from '@tmlmobilidade/interfaces';
 import { CreateLineDto, type Line, PermissionCatalog, RouteSimplified, type UpdateLineDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -59,7 +59,7 @@ export class LinesController {
 	}
 
 	/**
-	 * Deletes a line by ID
+	 * Deletes a line by ID and cascades to all its routes and patterns.
 	 * @param request Fastify request containing line ID in params
 	 * @param reply Fastify reply
 	 */
@@ -100,6 +100,8 @@ export class LinesController {
 
 		//
 
+		await patterns.deleteMany({ line_id: id });
+		await routes.deleteMany({ line_id: id });
 		await lines.deleteById(id);
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });

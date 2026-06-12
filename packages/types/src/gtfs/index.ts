@@ -2,6 +2,7 @@ export * from '@/gtfs/agency.js';
 export * from '@/gtfs/calendar-dates.js';
 export * from '@/gtfs/calendar.js';
 export * from '@/gtfs/common.js';
+export * from '@/gtfs/distance.js';
 export * from '@/gtfs/feed-info.js';
 export * from '@/gtfs/routes.js';
 export * from '@/gtfs/service-alert.js';
