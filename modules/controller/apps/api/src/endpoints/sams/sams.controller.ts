@@ -73,13 +73,10 @@ export class SamsController {
 		const numericIds = SamsController.parseNumericIds(request.query['ids']?.split(',') ?? []);
 		if (numericIds.length === 0) {
 			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ids parameter.');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getTimelineSummaryByIds',
-				email: request.me.email,
 				feature: 'sams',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.BAD_REQUEST,
 				value: request.query,
 			});
 			throw error;
@@ -101,13 +98,10 @@ export class SamsController {
 
 		if (numericIds.length === 0) {
 			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ids parameter.');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'postTimelineSummaryByIds',
-				email: request.me.email,
 				feature: 'sams',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.BAD_REQUEST,
 				value: request.body,
 			});
 			throw error;
@@ -126,28 +120,17 @@ export class SamsController {
 		const samsPermission = PermissionCatalog.get(request.permissions, PermissionCatalog.all.sams.scope, PermissionCatalog.all.sams.actions.read);
 
 		if (!samsPermission) {
-			Logger.error([], {
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'Insufficient permissions.');
+			Logger.issue('error', error, {
 				action: 'resolveTimelineSummaryRows',
-				email: request.me.email,
 				feature: 'sams',
-				message: 'Insufficient permissions.',
 				request,
-				status: HTTP_STATUS.FORBIDDEN,
 				value: ids,
 			});
 			return reply.status(HTTP_STATUS.FORBIDDEN).send({ data: null, error: 'Insufficient permissions.', statusCode: HTTP_STATUS.FORBIDDEN });
 		}
 
 		if (ids.length === 0) {
-			Logger.error([], {
-				action: 'resolveTimelineSummaryRows',
-				email: request.me.email,
-				feature: 'sams',
-				message: 'No ids provided.',
-				request,
-				status: HTTP_STATUS.BAD_REQUEST,
-				value: ids,
-			});
 			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
 		}
 
@@ -194,13 +177,10 @@ export class SamsController {
 
 		if (rows.length === 0) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'No apex versions found.');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getApexVersions',
-				email: request.me.email,
 				feature: 'sams',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.query,
 			});
 			throw error;
@@ -227,13 +207,10 @@ export class SamsController {
 
 		if (allSams.length === 0) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'No sams found.');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getBatchBase',
-				email: request.me.email,
 				feature: 'sams',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.query,
 			});
 			throw error;
@@ -260,13 +237,10 @@ export class SamsController {
 
 		if (allSams.length === 0) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'No sams found.');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getBatch',
-				email: request.me.email,
 				feature: 'sams',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.query,
 			});
 			throw error;
@@ -295,13 +269,10 @@ export class SamsController {
 
 		if (numericIds.length === 0 && matchAnd.length === 0) {
 			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ids or matchAnd parameter.');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getExportData',
-				email: request.me.email,
 				feature: 'sams',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.BAD_REQUEST,
 				value: request.query,
 			});
 			throw error;
@@ -316,13 +287,10 @@ export class SamsController {
 
 		if (rows.length === 0) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'No sams found.');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getExportData',
-				email: request.me.email,
 				feature: 'sams',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.query,
 			});
 			throw error;
@@ -344,13 +312,10 @@ export class SamsController {
 
 		if (!id || isNaN(Number(id))) {
 			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing id parameter.');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getById',
-				email: request.me.email,
 				feature: 'sams',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.BAD_REQUEST,
 				value: request.params,
 			});
 			throw error;
@@ -364,13 +329,10 @@ export class SamsController {
 
 		if (!sam) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'SAM not found.');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getById',
-				email: request.me.email,
 				feature: 'sams',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params,
 			});
 			throw error;
@@ -396,13 +358,10 @@ export class SamsController {
 
 		if (!samsPermission) {
 			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'Insufficient permissions.');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getSamByIds',
-				email: request.me.email,
 				feature: 'sams',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.FORBIDDEN,
 				value: request.query,
 			});
 			throw error;
@@ -420,13 +379,10 @@ export class SamsController {
 
 		if (numericIds.length === 0) {
 			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ids parameter.');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getSamByIds',
-				email: request.me.email,
 				feature: 'sams',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.BAD_REQUEST,
 				value: request.query,
 			});
 			throw error;

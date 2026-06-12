@@ -21,12 +21,10 @@ export class OrganizationsController {
 		const validatedOrganization = CreateOrganizationSchema.safeParse(request.body);
 		if (!validatedOrganization.success) {
 			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, validatedOrganization.error.message);
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'create',
 				feature: 'organizations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.BAD_REQUEST,
 				value: request.body,
 			});
 			throw error;
@@ -48,13 +46,10 @@ export class OrganizationsController {
 		const organization = await organizations.findById(request.params.id);
 		if (!organization) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'delete',
-				email: request.me.email,
 				feature: 'organizations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -64,13 +59,10 @@ export class OrganizationsController {
 			try {
 				await files.deleteById(organization.logo_dark);
 			} catch (error) {
-				Logger.error([], {
+				Logger.issue('error', error, {
 					action: 'delete',
-					email: request.me.email,
 					feature: 'organizations',
-					message: 'Error deleting dark logo',
 					request,
-					status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 					value: request.params.id,
 				});
 				throw error;
@@ -80,13 +72,10 @@ export class OrganizationsController {
 			try {
 				await files.deleteById(organization.logo_light);
 			} catch (error) {
-				Logger.error([], {
+				Logger.issue('error', error, {
 					action: 'delete',
-					email: request.me.email,
 					feature: 'organizations',
-					message: 'Error deleting light logo',
 					request,
-					status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 					value: request.params.id,
 				});
 				throw error;
@@ -107,13 +96,10 @@ export class OrganizationsController {
 		const organization = await organizations.findById(request.params.id);
 		if (!organization) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'deleteImage',
-				email: request.me.email,
 				feature: 'organizations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -122,13 +108,10 @@ export class OrganizationsController {
 		const logoField = request.params.theme === 'dark' ? organization.logo_dark : organization.logo_light;
 		if (!logoField) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Logo not found for theme: ${request.params.theme}`);
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'deleteImage',
-				email: request.me.email,
 				feature: 'organizations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 			});
 			throw error;
 		}
@@ -160,12 +143,10 @@ export class OrganizationsController {
 		const organizationData = await organizations.findById(request.params.id);
 		if (!organizationData) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getById',
 				feature: 'organizations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -183,13 +164,10 @@ export class OrganizationsController {
 		const organization = await organizations.findById(request.params.id);
 		if (!organization) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getLogo',
-				email: request.me.email,
 				feature: 'organizations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -211,13 +189,10 @@ export class OrganizationsController {
 		const foundOrganization = await organizations.findById(request.params.id);
 		if (!foundOrganization) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'lock',
-				email: request.me.email,
 				feature: 'organizations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -235,13 +210,10 @@ export class OrganizationsController {
 		const validatedOrganization = UpdateOrganizationSchema.safeParse(request.body);
 		if (!validatedOrganization.success) {
 			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, validatedOrganization.error.message);
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'update',
-				email: request.me.email,
 				feature: 'organizations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.BAD_REQUEST,
 				value: request.params.id,
 			});
 			throw error;
@@ -265,13 +237,10 @@ export class OrganizationsController {
 
 		if (!organization) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'uploadImage',
-				email: request.me.email,
 				feature: 'organizations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -302,13 +271,10 @@ export class OrganizationsController {
 					try {
 						await files.deleteById(organization.logo_dark);
 					} catch (error) {
-						Logger.error([], {
+						Logger.issue('error', error, {
 							action: 'uploadImage',
-							email: request.me.email,
 							feature: 'organizations',
-							message: 'Error deleting old dark logo',
 							request,
-							status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 							value: request.params.id,
 						});
 						throw error;
@@ -322,13 +288,10 @@ export class OrganizationsController {
 					try {
 						await files.deleteById(organization.logo_light);
 					} catch (error) {
-						Logger.error([], {
+						Logger.issue('error', error, {
 							action: 'uploadImage',
-							email: request.me.email,
 							feature: 'organizations',
-							message: 'Error deleting old light logo',
 							request,
-							status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 							value: request.params.id,
 						});
 						throw error;
@@ -341,13 +304,10 @@ export class OrganizationsController {
 
 		if (Object.keys(updateFields).length === 0) {
 			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'No valid files provided');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'uploadImage',
-				email: request.me.email,
 				feature: 'organizations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.BAD_REQUEST,
 				value: request.params.id,
 			});
 			throw error;

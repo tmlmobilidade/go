@@ -20,13 +20,10 @@ export class AgenciesController {
 		const allAgencies = await agencies.findMany({}, { projection: { validation_rules: 0 }, sort: { _id: 1 } });
 		if (!allAgencies) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error getting agencies from database');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getAll',
-				email: request.me.email,
 				feature: 'agencies',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 			});
 			throw error;
 		}
@@ -42,13 +39,10 @@ export class AgenciesController {
 		const agencyData = await agencies.findById(request.params.id);
 		if (!agencyData) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Error finding agency with ID ${request.params.id}`);
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getById',
-				email: request.me.email,
 				feature: 'agencies',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -66,13 +60,10 @@ export class AgenciesController {
 		const foundAgency = await agencies.findById(request.params.id);
 		if (!foundAgency) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Error finding agency with ID ${request.params.id}`);
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'lock',
-				email: request.me.email,
 				feature: 'agencies',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -90,13 +81,10 @@ export class AgenciesController {
 		const validatedAgency = UpdateAgencySchema.safeParse(request.body);
 		if (!validatedAgency.success) {
 			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, validatedAgency.error.message);
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'update',
-				email: request.me.email,
 				feature: 'agencies',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.BAD_REQUEST,
 				value: request.params.id,
 			});
 			throw error;

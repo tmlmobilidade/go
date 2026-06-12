@@ -27,13 +27,10 @@ export class UsersController {
 
 		if (!verificationToken) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to register user');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'create',
-				email: request.me.email,
 				feature: 'users',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: request.body,
 			});
 			throw error;
@@ -63,13 +60,10 @@ export class UsersController {
 		const result = await users.deleteById(request.params.id);
 		if (!result) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete user');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'delete',
-				email: request.me.email,
 				feature: 'users',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: request.params.id,
 			});
 			throw error;
@@ -87,13 +81,10 @@ export class UsersController {
 		const foundUsers = await users.findMany({}, { sort: { created_at: -1 } });
 		if (!foundUsers) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to get users');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getAll',
-				email: request.me.email,
 				feature: 'users',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 			});
 			throw error;
 		}
@@ -110,13 +101,10 @@ export class UsersController {
 		const foundUser = await users.findById(request.params.id);
 		if (!foundUser) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getById',
-				email: request.me.email,
 				feature: 'users',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -151,22 +139,17 @@ export class UsersController {
 			userData = await authProvider.getUserFromSessionToken(sessionToken);
 			if (!userData) {
 				const error = new Error('User not found');
-				Logger.error([], {
+				Logger.issue('error', error, {
 					action: 'getMe',
-					email: request.me.email,
 					feature: 'users',
-					message: error.message,
 					request,
-					status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				});
 				throw error;
 			}
 		} catch (error) {
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getMe',
-				email: request.me.email,
 				feature: 'users',
-				message: error.message,
 				request,
 			});
 			await authProvider.logout(sessionToken);
@@ -204,13 +187,10 @@ export class UsersController {
 		const userData = await users.findById(request.params.id);
 		if (!userData) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getSimplifiedById',
-				email: request.me.email,
 				feature: 'users',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -220,13 +200,10 @@ export class UsersController {
 		const organizationData = await organizations.findById(userData.organization_id);
 		if (!organizationData) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getSimplifiedById',
-				email: request.me.email,
 				feature: 'users',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -256,11 +233,9 @@ export class UsersController {
 		const foundUser = await users.findById(request.params.id);
 		if (!foundUser) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'lock',
-				email: request.me.email,
 				feature: 'users',
-				message: error.message,
 				request,
 				value: request.params.id,
 			});
@@ -282,11 +257,9 @@ export class UsersController {
 		const validatedUserData = UpdateUserSchema.safeParse(request.body);
 		if (!validatedUserData.success) {
 			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid user data', validatedUserData.error.errors);
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'update',
-				email: request.me.email,
 				feature: 'users',
-				message: error.message,
 				request,
 				value: request.params.id,
 			});
@@ -315,11 +288,9 @@ export class UsersController {
 		const updatedUser = await users.updateById(userData._id, { preferences: request.body.preferences });
 		if (!updatedUser) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to update user');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'updateMe',
-				email: request.me.email,
 				feature: 'users',
-				message: error.message,
 				request,
 				value: userData._id,
 			});

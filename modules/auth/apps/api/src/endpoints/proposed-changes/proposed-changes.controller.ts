@@ -19,13 +19,10 @@ export class ProposedChangesController {
 		const result = await proposedChanges.insertOne({ ...data, created_by: request.me._id, updated_by: request.me._id });
 		if (!result) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error creating proposed change');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'create',
-				email: request.me.email,
 				feature: 'proposedChanges',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: data,
 			});
 			throw error;
@@ -44,13 +41,10 @@ export class ProposedChangesController {
 		const result = await proposedChanges.deleteById(id);
 		if (!result) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error deleting proposed change');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'delete',
-				email: request.me.email,
 				feature: 'proposedChanges',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: id,
 			});
 			throw error;
@@ -70,13 +64,10 @@ export class ProposedChangesController {
 
 		if (!data) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error getting proposed changes');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getAll',
-				email: request.me.email,
 				feature: 'proposedChanges',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 			});
 			throw error;
 		}
@@ -94,13 +85,10 @@ export class ProposedChangesController {
 
 		if (!proposedChange) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Proposed Change not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getById',
-				email: request.me.email,
 				feature: 'proposedChanges',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: id,
 			});
 			throw error;
@@ -118,13 +106,10 @@ export class ProposedChangesController {
 		const data = await proposedChanges.updateById(id, request.body);
 		if (!data) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error updating proposed change');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'update',
-				email: request.me.email,
 				feature: 'proposedChanges',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: id,
 			});
 			throw error;

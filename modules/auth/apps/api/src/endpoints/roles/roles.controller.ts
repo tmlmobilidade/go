@@ -28,13 +28,10 @@ export class RolesController {
 
 		if (!role) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error creating role');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'create',
-				email: request.me.email,
 				feature: 'roles',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: request.body,
 			});
 			throw error;
@@ -52,13 +49,10 @@ export class RolesController {
 		const result = await roles.deleteById(request.params.id);
 		if (!result) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error deleting role');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'delete',
-				email: request.me.email,
 				feature: 'roles',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: request.params.id,
 			});
 			throw error;
@@ -77,13 +71,10 @@ export class RolesController {
 
 		if (!allRolesData) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error getting roles');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getAll',
-				email: request.me.email,
 				feature: 'roles',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 			});
 			throw error;
 		}
@@ -101,13 +92,10 @@ export class RolesController {
 
 		if (!role) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Role not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getById',
-				email: request.me.email,
 				feature: 'roles',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -126,13 +114,10 @@ export class RolesController {
 		const foundRole = await roles.findById(request.params.id);
 		if (!foundRole) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Role not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'lock',
-				email: request.me.email,
 				feature: 'roles',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -157,13 +142,10 @@ export class RolesController {
 
 		if (!role) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error updating role');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'update',
-				email: request.me.email,
 				feature: 'roles',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: request.params.id,
 			});
 			throw error;

@@ -29,13 +29,10 @@ export class AnnotationsController {
 
 		if (!userAnnotationPermissions) {
 			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create annotations');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'create',
-				email: request.me.email,
 				feature: 'annotations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.FORBIDDEN,
 				value: request.body,
 			});
 			throw error;
@@ -54,13 +51,10 @@ export class AnnotationsController {
 
 		if (!hasPermissionForAllAgencies) {
 			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create annotations for these agencies. You must have permission for all agencies involved.');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'create',
-				email: request.me.email,
 				feature: 'annotations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.FORBIDDEN,
 				value: request.body,
 			});
 			throw error;
@@ -90,13 +84,10 @@ export class AnnotationsController {
 
 		if (!annotation) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'delete',
-				email: request.me.email,
 				feature: 'annotations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 			});
 			throw error;
 		}
@@ -111,13 +102,10 @@ export class AnnotationsController {
 
 		if (!userAnnotationPermissions) {
 			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete annotations');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'delete',
-				email: request.me.email,
 				feature: 'annotations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.FORBIDDEN,
 			});
 			throw error;
 		}
@@ -135,13 +123,10 @@ export class AnnotationsController {
 
 		if (!hasPermissionForAllAgencies) {
 			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this annotation. You must have permission for all agencies involved.');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'delete',
-				email: request.me.email,
 				feature: 'annotations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.FORBIDDEN,
 			});
 			throw error;
 		}
@@ -171,13 +156,10 @@ export class AnnotationsController {
 
 		if (!userAnnotationPermissions) {
 			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read annotations');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getAll',
-				email: request.me.email,
 				feature: 'annotations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.FORBIDDEN,
 			});
 			throw error;
 		}
@@ -222,13 +204,10 @@ export class AnnotationsController {
 
 		if (!annotationData) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getById',
-				email: request.me.email,
 				feature: 'annotations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -244,13 +223,10 @@ export class AnnotationsController {
 
 		if (!userAnnotationPermissions) {
 			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read annotations');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getById',
-				email: request.me.email,
 				feature: 'annotations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.FORBIDDEN,
 			});
 			throw error;
 		}
@@ -268,13 +244,10 @@ export class AnnotationsController {
 
 		if (!hasPermissionForAnyAgency) {
 			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this annotation');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getById',
-				email: request.me.email,
 				feature: 'annotations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.FORBIDDEN,
 			});
 			throw error;
 		}
@@ -306,13 +279,10 @@ export class AnnotationsController {
 
 		if (!annotationData) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'lock',
-				email: request.me.email,
 				feature: 'annotations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -328,13 +298,10 @@ export class AnnotationsController {
 
 		if (!userAnnotationPermissions) {
 			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock annotations');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'lock',
-				email: request.me.email,
 				feature: 'annotations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.FORBIDDEN,
 			});
 			throw error;
 		}
@@ -352,13 +319,10 @@ export class AnnotationsController {
 
 		if (!hasPermissionForAllAgencies) {
 			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock annotation. You must have permission for all agencies involved.');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'lock',
-				email: request.me.email,
 				feature: 'annotations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.FORBIDDEN,
 			});
 			throw error;
 		}
@@ -368,13 +332,10 @@ export class AnnotationsController {
 		const foundAnnotation = await annotations.findById(request.params.id);
 		if (!foundAnnotation) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'lock',
-				email: request.me.email,
 				feature: 'annotations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -399,13 +360,10 @@ export class AnnotationsController {
 
 		if (!annotationData) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'update',
-				email: request.me.email,
 				feature: 'annotations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -421,13 +379,10 @@ export class AnnotationsController {
 
 		if (!userAnnotationPermissions) {
 			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update annotations');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'update',
-				email: request.me.email,
 				feature: 'annotations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.FORBIDDEN,
 			});
 			throw error;
 		}
@@ -445,13 +400,10 @@ export class AnnotationsController {
 
 		if (!hasPermissionForAllAgencies) {
 			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this annotation. You must have permission for all agencies involved.');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'update',
-				email: request.me.email,
 				feature: 'annotations',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.FORBIDDEN,
 			});
 			throw error;
 		}

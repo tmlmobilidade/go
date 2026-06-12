@@ -1,7 +1,6 @@
 /* * */
 
-import { ErrorIssue, type ErrorIssueContext } from './Issues/ErrorIssue.js';
-import { InfoIssue, type InfoIssueContext } from './Issues/InfoIssue.js';
+import { GlobalIssue, type GlobalIssueContext, type GlobalIssueLevel } from './Issues/GlobalIssue.js';
 import { LogsNextjs, LogsNextjsContext } from './logs/logs-nextjs.js';
 import { LogsNode, type LogsNodeContext } from './logs/logs-node.js';
 
@@ -27,14 +26,11 @@ interface LoggerColumn {
 
 type LoggerMessage = (LoggerColumn | string)[] | string;
 type LoggerErrorInputContext = Record<string, unknown> & {
-	error?: Error
 	message?: string
-	service?: string
 	silentConsole?: boolean
 };
 type LoggerInfoInputContext = Record<string, unknown> & {
 	message?: string
-	service?: string
 };
 
 /* * */
@@ -43,7 +39,7 @@ class LoggersClass {
 	//
 
 	/**
-	 * Logs an info message to the console and sends info details to Sentry if context is provided.
+	 * Logs an info message to the console.
 	 * @param context The context object containing the info message and context.
 	 */
 	logsNextjs(context: Omit<LogsNextjsContext, 'app' | 'message' | 'module' | 'severity'> & { app: string, message: string, module: string, severity: string }) {
@@ -70,10 +66,6 @@ class LoggersClass {
 		return process.env.SERVICE_NAME ?? process.env.npm_package_name ?? 'unknown-service';
 	}
 
-	private isErrorIssueContext(value: unknown): value is LoggerErrorInputContext {
-		return typeof value === 'object' && value !== null && !(value instanceof Error);
-	}
-
 	/**
 	 * Loggers a divider line in the console.
 	 * @param message Optional message to display.
@@ -87,7 +79,7 @@ class LoggersClass {
 	}
 
 	/**
-	 * Loggers an error message in the console.
+	 * Logs an error message in the console.
 	 * @param message Error message to display.
 	 * @param contextOrErrorOrSpacesAfter Optional error context, error object, or spacing.
 	 * @param spacesAfter Optional number of blank lines to add after the message.
@@ -99,8 +91,9 @@ class LoggersClass {
 		spacesAfterOrBefore?: number,
 		spacesBefore?: number,
 	) {
-		// Logs an error message to the console and sends error details to Sentry if context is provided.
-		const context = this.isErrorIssueContext(contextOrErrorOrSpacesAfter) ? contextOrErrorOrSpacesAfter : undefined;
+		const context = typeof contextOrErrorOrSpacesAfter === 'object' && contextOrErrorOrSpacesAfter !== null && !(contextOrErrorOrSpacesAfter instanceof Error)
+			? contextOrErrorOrSpacesAfter
+			: undefined;
 		const error = contextOrErrorOrSpacesAfter instanceof Error
 			? contextOrErrorOrSpacesAfter
 			: message instanceof Error
@@ -117,30 +110,8 @@ class LoggersClass {
 					: message
 			: context?.message ?? '';
 
-		// If there is context but no error object, create an error to capture the right stack
-		const errorFromCaller = !error && context
-			? (() => {
-				const contextMessage = typeof context.message === 'string' ? context.message : formattedMessage;
-				const callerError = new Error(contextMessage);
-				// Sets error stack trace to the callsite
-				if (typeof Error.captureStackTrace === 'function') Error.captureStackTrace(callerError, this.error);
-				return callerError;
-			})()
-			: undefined;
-
-		// If context exists, send the error to Sentry (LoggerError)
-		if (context) {
-			const contextMessage = typeof context.message === 'string' ? context.message : formattedMessage;
-			ErrorIssue({
-				...context,
-				error: error ?? context.error ?? errorFromCaller,
-				message: contextMessage,
-				service: context.service ?? this.getDefaultService(),
-			});
-		}
-
 		// Output error to the console unless explicitly silenced by the caller.
-		if (!context?.silentConsole) {
+		if (!(contextOrErrorOrSpacesAfter as LoggerErrorInputContext | undefined)?.silentConsole) {
 			console.error(`✘ ${formattedMessage}`, error ?? '');
 		}
 
@@ -149,7 +120,23 @@ class LoggersClass {
 	}
 
 	/**
-	 * Logs an informational message to the console, and to Sentry if context is given.
+	 * Sends a structured issue to Sentry with a selectable severity level.
+	 * @param level The issue level to send.
+	 * @param messageOrError The message or error to capture.
+	 * @param context Optional metadata for Sentry.
+	 */
+	issue(level: GlobalIssueLevel, messageOrError: Error | string, context?: Omit<GlobalIssueContext, 'error' | 'level' | 'message'> & { service?: string }) {
+		GlobalIssue({
+			...context,
+			error: messageOrError instanceof Error ? messageOrError : undefined,
+			level,
+			message: typeof messageOrError === 'string' ? messageOrError : messageOrError.message,
+			service: context?.service ?? this.getDefaultService(),
+		});
+	}
+
+	/**
+	 * Logs an informational message to the console.
 	 *
 	 * @param message The message to display.
 	 * @param contextOrSpacesAfter An optional context object (for Sentry) or number of blank lines after the message.
@@ -162,7 +149,6 @@ class LoggersClass {
 		spacesAfterOrBefore?: number,
 		spacesBefore?: number,
 	) {
-		// Logs an informational message to the console and sends information to Sentry if context is provided.
 		const context = typeof contextOrSpacesAfter === 'object' && contextOrSpacesAfter !== null ? contextOrSpacesAfter : undefined;
 		const spacesAfter = typeof contextOrSpacesAfter === 'number' ? contextOrSpacesAfter : spacesAfterOrBefore;
 		const normalizedSpacesBefore = typeof contextOrSpacesAfter === 'number' ? spacesAfterOrBefore : spacesBefore;
@@ -178,16 +164,6 @@ class LoggersClass {
 					? this.formatColumns(message)
 					: message
 			: context?.message ?? '';
-
-		// If context exists, send the information to Sentry (LoggerInfo)
-		if (context) {
-			const contextMessage = typeof context.message === 'string' ? context.message : formattedMessage;
-			InfoIssue({
-				...context,
-				message: contextMessage,
-				service: context.service ?? this.getDefaultService(),
-			});
-		}
 
 		// Output information to the console
 		console.log(`→ ${formattedMessage ?? ''}`);
@@ -290,12 +266,9 @@ class LoggersClass {
  */
 export const Logger = new LoggersClass();
 
+export { GlobalIssue };
+
 /**
  * Logger error context interface.
  */
-export type { ErrorIssueContext };
-
-/**
- * Logger info context interface.
- */
-export type { InfoIssueContext };
+export type { GlobalIssueContext, GlobalIssueLevel };

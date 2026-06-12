@@ -37,13 +37,11 @@ export class RideAcceptanceController {
 		const rideAcceptanceData = await rideAcceptances.findByRideId(request.params.id);
 
 		if (!rideAcceptanceData) {
-			Logger.error([], {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride acceptance not found.');
+			Logger.issue('error', error, {
 				action: 'comment',
-				email: request.me.email,
 				feature: 'ride-acceptance',
-				message: 'Ride acceptance not found.',
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 
@@ -76,13 +74,10 @@ export class RideAcceptanceController {
 
 		if (!rideAcceptanceData) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride acceptance not found.');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'get',
-				email: request.me.email,
 				feature: 'ride-acceptance',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;

@@ -1,6 +1,6 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
@@ -24,13 +24,11 @@ export class RidesController {
 		const rideId = request.params['id'];
 
 		if (!rideId) {
-			Logger.error([], {
+			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ride_id parameter.');
+			Logger.issue('error', error, {
 				action: 'getHashedShapeByRideId',
-				email: request.me.email,
 				feature: 'rides',
-				message: 'Missing ride_id parameter.',
 				request,
-				status: HTTP_STATUS.BAD_REQUEST,
 			});
 
 			return reply
@@ -48,13 +46,11 @@ export class RidesController {
 		const rideData = await rides.findById(rideId);
 
 		if (!rideData) {
-			Logger.error([], {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride not found.');
+			Logger.issue('error', error, {
 				action: 'getHashedShapeByRideId',
-				email: request.me.email,
 				feature: 'rides',
-				message: 'Ride not found.',
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: rideId,
 			});
 
@@ -74,13 +70,11 @@ export class RidesController {
 		const hashedShapeData = await hashedShapes.findById(rideData.hashed_shape_id);
 
 		if (!hashedShapeData) {
-			Logger.error([], {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'HashedShape not found.');
+			Logger.issue('error', error, {
 				action: 'getHashedShapeByRideId',
-				email: request.me.email,
 				feature: 'rides',
-				message: 'HashedShape not found.',
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 				value: rideData.hashed_shape_id,
 			});
 
@@ -118,13 +112,11 @@ export class RidesController {
 			const rideId = request.params['id'];
 
 			if (!rideId) {
-				Logger.error([], {
+				const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ride_id parameter.');
+				Logger.issue('error', error, {
 					action: 'getHashedTripByRideId',
-					email: request.me.email,
 					feature: 'rides',
-					message: 'Missing ride_id parameter.',
 					request,
-					status: HTTP_STATUS.BAD_REQUEST,
 					value: rideId,
 				});
 
@@ -143,13 +135,11 @@ export class RidesController {
 			const rideData = await rides.findById(rideId);
 
 			if (!rideData) {
-				Logger.error([], {
+				const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride not found.');
+				Logger.issue('error', error, {
 					action: 'getHashedTripByRideId',
-					email: request.me.email,
 					feature: 'rides',
-					message: 'Ride not found.',
 					request,
-					status: HTTP_STATUS.NOT_FOUND,
 					value: rideId,
 				});
 
@@ -169,13 +159,11 @@ export class RidesController {
 			const hashedTripData = await hashedTrips.findById(rideData.hashed_trip_id);
 
 			if (!hashedTripData) {
-				Logger.error([], {
+				const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'HashedTrip not found.');
+				Logger.issue('error', error, {
 					action: 'getHashedTripByRideId',
-					email: request.me.email,
 					feature: 'rides',
-					message: 'HashedTrip not found.',
 					request,
-					status: HTTP_STATUS.NOT_FOUND,
 					value: rideData.hashed_trip_id,
 				});
 
@@ -218,13 +206,11 @@ export class RidesController {
 			const rideId = request.params['id'];
 
 			if (!rideId) {
-				Logger.error([], {
+				const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ride_id parameter.');
+				Logger.issue('error', error, {
 					action: 'getSimplifiedApexLocationsByRideId',
-					email: request.me.email,
 					feature: 'rides',
-					message: 'Missing ride_id parameter.',
 					request,
-					status: HTTP_STATUS.BAD_REQUEST,
 					value: rideId,
 				});
 
@@ -243,13 +229,11 @@ export class RidesController {
 			const rideData = await rides.findById(rideId);
 
 			if (!rideData) {
-				Logger.error([], {
+				const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride not found.');
+				Logger.issue('error', error, {
 					action: 'getSimplifiedApexLocationsByRideId',
-					email: request.me.email,
 					feature: 'rides',
-					message: 'Ride not found.',
 					request,
-					status: HTTP_STATUS.NOT_FOUND,
 					value: rideId,
 				});
 
@@ -283,13 +267,10 @@ export class RidesController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getSimplifiedApexLocationsByRideId',
-				email: request.me.email,
 				feature: 'rides',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: request.body,
 			});
 
@@ -314,13 +295,11 @@ export class RidesController {
 			const rideId = request.params['id'];
 
 			if (!rideId) {
-				Logger.error([], {
+				const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ride_id parameter.');
+				Logger.issue('error', error, {
 					action: 'getSimplifiedApexOnBoardRefundsByRideId',
-					email: request.me.email,
 					feature: 'rides',
-					message: 'Missing ride_id parameter.',
 					request,
-					status: HTTP_STATUS.BAD_REQUEST,
 					value: rideId,
 				});
 
@@ -339,13 +318,11 @@ export class RidesController {
 			const rideData = await rides.findById(rideId);
 
 			if (!rideData) {
-				Logger.error([], {
+				const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride not found.');
+				Logger.issue('error', error, {
 					action: 'getSimplifiedApexOnBoardRefundsByRideId',
-					email: request.me.email,
 					feature: 'rides',
-					message: 'Ride not found.',
 					request,
-					status: HTTP_STATUS.NOT_FOUND,
 					value: rideId,
 				});
 
@@ -379,13 +356,10 @@ export class RidesController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getSimplifiedApexOnBoardRefundsByRideId',
-				email: request.me.email,
 				feature: 'rides',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: request.body,
 			});
 
@@ -410,13 +384,11 @@ export class RidesController {
 			const rideId = request.params['id'];
 
 			if (!rideId) {
-				Logger.error([], {
+				const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ride_id parameter.');
+				Logger.issue('error', error, {
 					action: 'getSimplifiedApexOnBoardSalesByRideId',
-					email: request.me.email,
 					feature: 'rides',
-					message: 'Missing ride_id parameter.',
 					request,
-					status: HTTP_STATUS.BAD_REQUEST,
 					value: rideId,
 				});
 
@@ -435,13 +407,11 @@ export class RidesController {
 			const rideData = await rides.findById(rideId);
 
 			if (!rideData) {
-				Logger.error([], {
+				const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride not found.');
+				Logger.issue('error', error, {
 					action: 'getSimplifiedApexOnBoardSalesByRideId',
-					email: request.me.email,
 					feature: 'rides',
-					message: 'Ride not found.',
 					request,
-					status: HTTP_STATUS.NOT_FOUND,
 					value: rideId,
 				});
 
@@ -475,13 +445,10 @@ export class RidesController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getSimplifiedApexOnBoardSalesByRideId',
-				email: request.me.email,
 				feature: 'rides',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: request.body,
 			});
 
@@ -506,13 +473,11 @@ export class RidesController {
 			const rideId = request.params['id'];
 
 			if (!rideId) {
-				Logger.error([], {
+				const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ride_id parameter.');
+				Logger.issue('error', error, {
 					action: 'getSimplifiedApexValidationsByRideId',
-					email: request.me.email,
 					feature: 'rides',
-					message: 'Missing ride_id parameter.',
 					request,
-					status: HTTP_STATUS.BAD_REQUEST,
 					value: rideId,
 				});
 
@@ -531,13 +496,11 @@ export class RidesController {
 			const rideData = await rides.findById(rideId);
 
 			if (!rideData) {
-				Logger.error([], {
+				const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride not found.');
+				Logger.issue('error', error, {
 					action: 'getSimplifiedApexValidationsByRideId',
-					email: request.me.email,
 					feature: 'rides',
-					message: 'Ride not found.',
 					request,
-					status: HTTP_STATUS.NOT_FOUND,
 					value: rideId,
 				});
 
@@ -571,13 +534,10 @@ export class RidesController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getSimplifiedApexValidationsByRideId',
-				email: request.me.email,
 				feature: 'rides',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: request.body,
 			});
 
@@ -602,13 +562,11 @@ export class RidesController {
 			const rideId = request.params['id'];
 
 			if (!rideId) {
-				Logger.error([], {
+				const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ride_id parameter.');
+				Logger.issue('error', error, {
 					action: 'getVehicleEventsByRideId',
-					email: request.me.email,
 					feature: 'rides',
-					message: 'Missing ride_id parameter.',
 					request,
-					status: HTTP_STATUS.BAD_REQUEST,
 					value: rideId,
 				});
 
@@ -627,13 +585,11 @@ export class RidesController {
 			const rideData = await rides.findById(rideId);
 
 			if (!rideData) {
-				Logger.error([], {
+				const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride not found.');
+				Logger.issue('error', error, {
 					action: 'getVehicleEventsByRideId',
-					email: request.me.email,
 					feature: 'rides',
-					message: 'Ride not found.',
 					request,
-					status: HTTP_STATUS.NOT_FOUND,
 					value: rideId,
 				});
 
@@ -667,13 +623,10 @@ export class RidesController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getVehicleEventsByRideId',
-				email: request.me.email,
 				feature: 'rides',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: request.body,
 			});
 
@@ -698,13 +651,11 @@ export class RidesController {
 			const rideId = request.params['id'];
 
 			if (!rideId) {
-				Logger.error([], {
+				const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ride_id parameter.');
+				Logger.issue('error', error, {
 					action: 'reprocessRideById',
-					email: request.me.email,
 					feature: 'rides',
-					message: 'Missing ride_id parameter.',
 					request,
-					status: HTTP_STATUS.BAD_REQUEST,
 					value: rideId,
 				});
 
@@ -723,13 +674,11 @@ export class RidesController {
 			const rideData = await rides.updateById(rideId, { system_status: 'waiting' });
 
 			if (!rideData) {
-				Logger.error([], {
+				const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride not found.');
+				Logger.issue('error', error, {
 					action: 'reprocessRideById',
-					email: request.me.email,
 					feature: 'rides',
-					message: 'Ride not found.',
 					request,
-					status: HTTP_STATUS.NOT_FOUND,
 					value: rideId,
 				});
 
@@ -751,13 +700,10 @@ export class RidesController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'reprocessRideById',
-				email: request.me.email,
 				feature: 'rides',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: request.body,
 			});
 

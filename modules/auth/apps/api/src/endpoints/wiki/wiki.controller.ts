@@ -23,13 +23,10 @@ export class WikiController {
 
 			if (!fs.existsSync(contentDirPath)) {
 				const error = new Error('Content directory not found');
-				Logger.error([], {
+				Logger.issue('error', error, {
 					action: 'getAll',
-					email: request.me.email,
 					feature: 'wiki',
-					message: error.message,
 					request,
-					status: HTTP_STATUS.NOT_FOUND,
 					value: contentDirPath,
 				});
 				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: error.message });
@@ -45,13 +42,10 @@ export class WikiController {
 
 			if (allMdFiles.length === 0) {
 				const error = new Error('No markdown files found');
-				Logger.error([], {
+				Logger.issue('error', error, {
 					action: 'getAll',
-					email: request.me.email,
 					feature: 'wiki',
-					message: error.message,
 					request,
-					status: HTTP_STATUS.NOT_FOUND,
 					value: contentDirPath,
 				});
 				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: error.message });
@@ -86,13 +80,10 @@ export class WikiController {
 
 			//
 		} catch (error) {
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getAll',
-				email: request.me.email,
 				feature: 'wiki',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 			});
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
@@ -111,13 +102,11 @@ export class WikiController {
 			const fileName = request.params.id;
 
 			if (!fileName?.endsWith('.md')) {
-				Logger.error([], {
+				const error = new Error('Invalid article ID');
+				Logger.issue('error', error, {
 					action: 'getById',
-					email: request.me.email,
 					feature: 'wiki',
-					message: 'Invalid article ID',
 					request,
-					status: HTTP_STATUS.BAD_REQUEST,
 					value: fileName,
 				});
 				reply.status(HTTP_STATUS.BAD_REQUEST).send({ message: 'Invalid article ID' });
@@ -131,13 +120,10 @@ export class WikiController {
 
 			if (!fs.existsSync(contentDirPath)) {
 				const error = new Error('Content directory not found');
-				Logger.error([], {
+				Logger.issue('error', error, {
 					action: 'getById',
-					email: request.me.email,
 					feature: 'wiki',
-					message: error.message,
 					request,
-					status: HTTP_STATUS.NOT_FOUND,
 					value: fileName,
 				});
 				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: error.message });
@@ -151,13 +137,10 @@ export class WikiController {
 
 			if (!fs.existsSync(filePath)) {
 				const error = new Error('Article not found');
-				Logger.error([], {
+				Logger.issue('error', error, {
 					action: 'getById',
-					email: request.me.email,
 					feature: 'wiki',
-					message: error.message,
 					request,
-					status: HTTP_STATUS.NOT_FOUND,
 					value: fileName,
 				});
 				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: error.message });
@@ -178,13 +161,10 @@ export class WikiController {
 
 			//
 		} catch (error) {
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'getById',
-				email: request.me.email,
 				feature: 'wiki',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: request.params.id,
 			});
 			reply

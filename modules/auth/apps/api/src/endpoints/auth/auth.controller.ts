@@ -23,12 +23,11 @@ export class AuthController {
 		// If the token is invalid or expired, throw an error
 		if (!tokenResult || tokenResult.expires_at < Dates.now('utc').unix_timestamp) {
 			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid or expired token');
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'changePassword',
 				feature: 'auth',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.BAD_REQUEST,
+				value: request.body.token,
 			});
 			throw error;
 		}
@@ -48,13 +47,10 @@ export class AuthController {
 		const result = LoginDtoSchema.safeParse(request.body);
 		if (!result.success) {
 			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, result.error.message);
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'login',
-				email: request.body?.email,
 				feature: 'auth',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.BAD_REQUEST,
 			});
 			throw error;
 		}
@@ -66,13 +62,10 @@ export class AuthController {
 			});
 		} catch (error) {
 			if (error instanceof HttpException) {
-				Logger.error([], {
+				Logger.issue('error', error, {
 					action: 'login',
-					email: result.data.email,
 					feature: 'auth',
-					message: error.message,
 					request,
-					status: HTTP_STATUS.UNAUTHORIZED,
 				});
 				throw error;
 			}
@@ -118,13 +111,10 @@ export class AuthController {
 		const foundUser = await users.findByEmail(request.body.email);
 		if (!foundUser) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `User not found with email ${request.body.email}`);
-			Logger.error([], {
+			Logger.issue('error', error, {
 				action: 'sendPasswordResetEmail',
-				email: request.body.email,
 				feature: 'auth',
-				message: error.message,
 				request,
-				status: HTTP_STATUS.NOT_FOUND,
 			});
 			throw error;
 		}
