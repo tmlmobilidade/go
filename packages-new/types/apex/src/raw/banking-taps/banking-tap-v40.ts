@@ -68,7 +68,7 @@ export type RawApexTransactionBankingTapV40Payload = z.infer<typeof RawApexTrans
 
 export const RawApexTransactionBankingTapV40Schema = RawApexTransactionBaseSchema.extend({
 	payload: RawApexTransactionBankingTapV40PayloadSchema,
-	version: z.literal('apex-banking-tap-4.0'),
+	version: z.literal('banking-tap-4.0'),
 });
 
 export type RawApexTransactionBankingTapV40 = z.infer<typeof RawApexTransactionBankingTapV40Schema>;
