@@ -280,6 +280,15 @@ export class AlertsController {
 	static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<File>) {
 		// Retrieve the alert from the database
 		const foundAlert = await alerts.findById(request.params.id);
+		if (!foundAlert) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+			Logger.issue('error', error, {
+				action: 'uploadImage',
+				feature: 'alerts',
+				request,
+			});
+			throw error;
+		}
 
 		// Extract the file data from the request
 		const fileData = await request.file();
