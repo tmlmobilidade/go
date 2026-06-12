@@ -32,7 +32,7 @@ async function main() {
 			onChunk: async (chunk) => {
 				await syncTransactionEntities(chunk);
 			},
-			splitBy: { hours: 1 },
+			splitBy: { minutes: 10 },
 			startDate: earliestDate.unix_timestamp,
 		});
 

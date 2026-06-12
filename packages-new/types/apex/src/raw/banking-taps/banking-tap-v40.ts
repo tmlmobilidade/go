@@ -46,7 +46,7 @@ export const RawApexTransactionBankingTapV40PayloadSchema = z.object({
 		productLongID: z.string(),
 	}),
 	transactionInfo: z.object({
-		apexTransactionType: z.number(),
+		apexTransactionType: z.literal(20),
 		apexTransactionVersion: z.string(),
 		transactionDate: z.string(),
 		transactionGroupId: z.string(),

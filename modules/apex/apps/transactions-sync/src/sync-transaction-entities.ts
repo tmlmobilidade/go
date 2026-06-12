@@ -55,24 +55,21 @@ export async function syncTransactionEntities(timeChunk: PerformInTimeChunksItem
 		},
 	};
 
-	const destinationQuery = {
-		createdAt: {
-			$gte: chunkStartDate.unix_timestamp,
-			$lte: chunkEndDate.unix_timestamp,
-		},
-	};
-
 	//
-	// Get the distinct IDs for both the source and destination databases,
-	// and compare them to find the missing ones.
+	// Get the distinct document IDs from the source database
+	// and check which ones are missing in the destination database,
+	// accross the entire database, so that we can sync only the missing ones.
+	// This is necessary because the source database has duplicates on different dates,
+	// so we need to check the entire destination database to find the missing ones.
 
 	const distinctIdsTimer = new Timer();
 
 	const sourceDbDistinctIds = await pcgiTransactionEntities.distinct('transactionId', sourceQuery);
-	const destinationDbDistinctIds = await rawApexTransactions.distinct('_id', destinationQuery);
 
-	const destinationDbDistinctIdsUnique = new Set(destinationDbDistinctIds);
-	const missingDocumentIds = sourceDbDistinctIds.filter(id => !destinationDbDistinctIdsUnique.has(id));
+	const matchingDocumentIds = await rawApexTransactions.findMany({ _id: { $in: sourceDbDistinctIds } }, { projection: { _id: 1 } });
+	const matchingDocumentIdsUnique = new Set(matchingDocumentIds.map(doc => doc._id));
+
+	const missingDocumentIds = sourceDbDistinctIds.filter(id => !matchingDocumentIdsUnique.has(id));
 
 	if (missingDocumentIds.length === 0) {
 		Logger.success(`[APEX Tx] MATCH: All ${sourceDbDistinctIds.length} distinct IDs from source database matched with destination database. (${distinctIdsTimer.get()})`);
