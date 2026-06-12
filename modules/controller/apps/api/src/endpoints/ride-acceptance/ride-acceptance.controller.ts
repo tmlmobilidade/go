@@ -4,6 +4,7 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { enrichUserRefs, rideAcceptances } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { type AlertCause, type NoteComment, type RideAcceptance, RideAcceptanceStatusSchema, type UpdateRideAcceptanceDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -36,6 +37,16 @@ export class RideAcceptanceController {
 		const rideAcceptanceData = await rideAcceptances.findByRideId(request.params.id);
 
 		if (!rideAcceptanceData) {
+			Logger.error([], {
+				action: 'comment',
+				email: request.me.email,
+				feature: 'ride-acceptance',
+				message: 'Ride acceptance not found.',
+				request,
+				status: HTTP_STATUS.NOT_FOUND,
+				value: request.params.id,
+			});
+
 			return reply.status(HTTP_STATUS.NOT_FOUND).send({
 				data: null,
 				error: 'Ride acceptance not found.',
@@ -64,7 +75,17 @@ export class RideAcceptanceController {
 		const rideAcceptanceData = await rideAcceptances.findByRideId(request.params.id);
 
 		if (!rideAcceptanceData) {
-			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Esta viagem não ainda não tem uma aprovação.');
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride acceptance not found.');
+			Logger.error([], {
+				action: 'get',
+				email: request.me.email,
+				feature: 'ride-acceptance',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.NOT_FOUND,
+				value: request.params.id,
+			});
+			throw error;
 		}
 
 		return reply.send({
