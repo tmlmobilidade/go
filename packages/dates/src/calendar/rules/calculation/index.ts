@@ -4,6 +4,7 @@ import type { Event, EventReplacementRule, HHMM, Holiday, ManualRule, Operationa
 import { calendarKey, calendarWeekday } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
 
+import { resolveEffectiveReplacement } from '../export-attribution/replacement.js';
 import { findReplacementForDate, getActivePeriodId } from '../utils/date.js';
 import { collectManualIncludes, collectReplacementManualIncludes } from './collectors.js';
 import { applyEventRestrictions, applyManualExcludes, applyReplacementManualExcludes } from './filters.js';
@@ -11,40 +12,29 @@ import { applyEventRestrictions, applyManualExcludes, applyReplacementManualExcl
 /* * */
 
 /**
- * Calculates which time points are active for each date in a range, based on scheduling rules.
+ * Operating schedule for one operational date: merged timepoints and applied rule IDs.
  *
- * This is the core scheduling algorithm that processes three types of rules:
- * 1. Manual rules (include/exclude) - Define base schedules for weekday/period combinations
- * 2. Event replacement rules - Override base schedules for specific dates
- * 3. Event restriction rules - Remove specific time points or time windows from schedules
+ * This is the core scheduling algorithm for “what runs” (preview, VKM, rules grid).
+ * It processes three rule kinds:
+ * 1. Manual rules (include/exclude) — base schedules for weekday/period combinations
+ * 2. Event replacement rules — override base schedules on specific dates
+ * 3. Event restriction rules — remove timepoints or windows from the result
  *
- * Algorithm flow for each date:
- * - Check for event replacement rule
- *   - If found: Use intersection-based matching with manual rules
- *   - Otherwise: Use context-based matching (weekday + period)
- * - Collect INCLUDE time points
- * - Apply EXCLUDE time points
- * - Apply event restrictions (by date)
- * - Return final time points and applied rule IDs
+ * Algorithm flow:
+ * - If a replacement applies: intersection-based manual matching + replacement excludes
+ * - Otherwise: weekday + period context matching + manual excludes
+ * - Always apply event restrictions by date
  *
- * @param rules - All scheduling rules to process (manual, replacement, restriction)
- * @param dateRange - Array of operational dates to calculate schedules for
- * @param periods - YearPeriod definitions (school term, summer, etc.) for context resolution
- * @returns Map from CalendarKey to RuleApplication with active time points and metadata
+ * For GTFS `service_id` token binding (`operating` / `base_off` rows), use
+ * `collectGtfsIncludeContributionsForDate` in `export-attribution/index.ts`.
+ * That layer delegates here on replacement days; the `operating` timepoint set
+ * should match this function’s result (see SCENARIOS P5).
  *
- * @example
- * ```ts
- * const rules = [...]; // Manual, replacement, and restriction rules
- * const dates = ['2026-02-01', '2026-02-02', ...];
- * const periods = [...]; // YearPeriod definitions
- *
- * const result = computeActiveTimePoints(rules, dates, periods);
- * const feb1 = result.get(calendarKey(Dates.fromOperationalDate('2026-02-01')));
- * // feb1 = {
- * //   timepoints: ['08:00', '09:00', '10:00'],
- * //   appliedRuleIds: ['rule1', 'rule2']
- * // }
- * ```
+ * @param date - Operational date to evaluate
+ * @param rules - All scheduling rules (manual, replacement, restriction)
+ * @param periods - YearPeriod definitions for context resolution
+ * @param holidays - Holiday calendar for weekday resolution
+ * @returns Active timepoints and IDs of rules that contributed
  */
 export function computeActiveRules(
 	date: OperationalDate,
@@ -81,11 +71,7 @@ export function computeActiveRules(
 	let appliedRuleIds: string[];
 
 	if (replacement) {
-		// When same_weekday is true, each event date functions as its own actual weekday
-		// within the replacement's target periods, rather than all dates acting as one fixed weekday.
-		const effectiveReplacement = replacement.same_weekday
-			? { ...replacement, weekdays: [calendarWeekday(key, holidays)] }
-			: replacement;
+		const effectiveReplacement = resolveEffectiveReplacement(date, replacement, holidays);
 
 		// Replacement mode: match manuals by intersection (Option A)
 		const base = collectReplacementManualIncludes(effectiveReplacement, monthFilteredManualRules);
