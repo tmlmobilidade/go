@@ -28,6 +28,7 @@ export class AuthController {
 				feature: 'auth',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.BAD_REQUEST,
 			});
 			throw error;
 		}
@@ -53,6 +54,7 @@ export class AuthController {
 				feature: 'auth',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.BAD_REQUEST,
 			});
 			throw error;
 		}
@@ -70,7 +72,9 @@ export class AuthController {
 					feature: 'auth',
 					message: error.message,
 					request,
+					status: HTTP_STATUS.UNAUTHORIZED,
 				});
+				throw error;
 			}
 			throw error;
 		}
@@ -120,6 +124,7 @@ export class AuthController {
 				feature: 'auth',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.NOT_FOUND,
 			});
 			throw error;
 		}

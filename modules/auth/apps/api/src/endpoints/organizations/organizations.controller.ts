@@ -26,6 +26,8 @@ export class OrganizationsController {
 				feature: 'organizations',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.BAD_REQUEST,
+				value: request.body,
 			});
 			throw error;
 		}
@@ -52,6 +54,7 @@ export class OrganizationsController {
 				feature: 'organizations',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -67,6 +70,7 @@ export class OrganizationsController {
 					feature: 'organizations',
 					message: 'Error deleting dark logo',
 					request,
+					status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 					value: request.params.id,
 				});
 				throw error;
@@ -82,6 +86,7 @@ export class OrganizationsController {
 					feature: 'organizations',
 					message: 'Error deleting light logo',
 					request,
+					status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 					value: request.params.id,
 				});
 				throw error;
@@ -100,10 +105,33 @@ export class OrganizationsController {
 	static async deleteImage(request: FastifyRequest<{ Params: { id: string, theme: 'dark' | 'light' } }>, reply: FastifyReply<void>) {
 		// Find the organization by ID
 		const organization = await organizations.findById(request.params.id);
-		if (!organization) return reply.status(HTTP_STATUS.NOT_FOUND).send({ message: 'Organization not found' });
+		if (!organization) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
+			Logger.error([], {
+				action: 'deleteImage',
+				email: request.me.email,
+				feature: 'organizations',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.NOT_FOUND,
+				value: request.params.id,
+			});
+			throw error;
+		}
 		// Determine which logo to delete based on theme
 		const logoField = request.params.theme === 'dark' ? organization.logo_dark : organization.logo_light;
-		if (!logoField) return reply.status(HTTP_STATUS.NOT_FOUND).send({ message: `Logo not found for theme: ${request.params.theme}` });
+		if (!logoField) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Logo not found for theme: ${request.params.theme}`);
+			Logger.error([], {
+				action: 'deleteImage',
+				email: request.me.email,
+				feature: 'organizations',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.NOT_FOUND,
+			});
+			throw error;
+		}
 		// Delete the logo file from storage
 		await files.deleteById(logoField);
 		// Update the organization to remove the logo reference
@@ -161,6 +189,7 @@ export class OrganizationsController {
 				feature: 'organizations',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -188,6 +217,7 @@ export class OrganizationsController {
 				feature: 'organizations',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -211,6 +241,7 @@ export class OrganizationsController {
 				feature: 'organizations',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.BAD_REQUEST,
 				value: request.params.id,
 			});
 			throw error;
@@ -240,6 +271,7 @@ export class OrganizationsController {
 				feature: 'organizations',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -276,6 +308,7 @@ export class OrganizationsController {
 							feature: 'organizations',
 							message: 'Error deleting old dark logo',
 							request,
+							status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 							value: request.params.id,
 						});
 						throw error;
@@ -295,6 +328,7 @@ export class OrganizationsController {
 							feature: 'organizations',
 							message: 'Error deleting old light logo',
 							request,
+							status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 							value: request.params.id,
 						});
 						throw error;
@@ -313,6 +347,7 @@ export class OrganizationsController {
 				feature: 'organizations',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.BAD_REQUEST,
 				value: request.params.id,
 			});
 			throw error;

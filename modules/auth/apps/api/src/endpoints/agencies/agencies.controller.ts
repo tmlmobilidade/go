@@ -26,6 +26,7 @@ export class AgenciesController {
 				feature: 'agencies',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 			});
 			throw error;
 		}
@@ -47,6 +48,7 @@ export class AgenciesController {
 				feature: 'agencies',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -70,6 +72,7 @@ export class AgenciesController {
 				feature: 'agencies',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -93,6 +96,7 @@ export class AgenciesController {
 				feature: 'agencies',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.BAD_REQUEST,
 				value: request.params.id,
 			});
 			throw error;

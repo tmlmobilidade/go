@@ -33,6 +33,8 @@ export class UsersController {
 				feature: 'users',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+				value: request.body,
 			});
 			throw error;
 		}
@@ -67,6 +69,7 @@ export class UsersController {
 				feature: 'users',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: request.params.id,
 			});
 			throw error;
@@ -90,6 +93,7 @@ export class UsersController {
 				feature: 'users',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 			});
 			throw error;
 		}
@@ -112,6 +116,7 @@ export class UsersController {
 				feature: 'users',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -152,6 +157,7 @@ export class UsersController {
 					feature: 'users',
 					message: error.message,
 					request,
+					status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				});
 				throw error;
 			}
@@ -204,6 +210,7 @@ export class UsersController {
 				feature: 'users',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;
@@ -219,6 +226,7 @@ export class UsersController {
 				feature: 'users',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.NOT_FOUND,
 				value: request.params.id,
 			});
 			throw error;

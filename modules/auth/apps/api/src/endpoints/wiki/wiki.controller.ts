@@ -29,6 +29,8 @@ export class WikiController {
 					feature: 'wiki',
 					message: error.message,
 					request,
+					status: HTTP_STATUS.NOT_FOUND,
+					value: contentDirPath,
 				});
 				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: error.message });
 				return;
@@ -49,6 +51,8 @@ export class WikiController {
 					feature: 'wiki',
 					message: error.message,
 					request,
+					status: HTTP_STATUS.NOT_FOUND,
+					value: contentDirPath,
 				});
 				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: error.message });
 				return;
@@ -88,6 +92,7 @@ export class WikiController {
 				feature: 'wiki',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 			});
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
@@ -106,6 +111,15 @@ export class WikiController {
 			const fileName = request.params.id;
 
 			if (!fileName?.endsWith('.md')) {
+				Logger.error([], {
+					action: 'getById',
+					email: request.me.email,
+					feature: 'wiki',
+					message: 'Invalid article ID',
+					request,
+					status: HTTP_STATUS.BAD_REQUEST,
+					value: fileName,
+				});
 				reply.status(HTTP_STATUS.BAD_REQUEST).send({ message: 'Invalid article ID' });
 				return;
 			}
@@ -123,6 +137,7 @@ export class WikiController {
 					feature: 'wiki',
 					message: error.message,
 					request,
+					status: HTTP_STATUS.NOT_FOUND,
 					value: fileName,
 				});
 				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: error.message });
@@ -142,6 +157,7 @@ export class WikiController {
 					feature: 'wiki',
 					message: error.message,
 					request,
+					status: HTTP_STATUS.NOT_FOUND,
 					value: fileName,
 				});
 				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: error.message });
@@ -168,6 +184,7 @@ export class WikiController {
 				feature: 'wiki',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: request.params.id,
 			});
 			reply

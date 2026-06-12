@@ -25,6 +25,8 @@ export class ProposedChangesController {
 				feature: 'proposedChanges',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+				value: data,
 			});
 			throw error;
 		}
@@ -48,6 +50,7 @@ export class ProposedChangesController {
 				feature: 'proposedChanges',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: id,
 			});
 			throw error;
@@ -73,6 +76,7 @@ export class ProposedChangesController {
 				feature: 'proposedChanges',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 			});
 			throw error;
 		}
@@ -96,6 +100,7 @@ export class ProposedChangesController {
 				feature: 'proposedChanges',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.NOT_FOUND,
 				value: id,
 			});
 			throw error;
@@ -119,6 +124,7 @@ export class ProposedChangesController {
 				feature: 'proposedChanges',
 				message: error.message,
 				request,
+				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
 				value: id,
 			});
 			throw error;
