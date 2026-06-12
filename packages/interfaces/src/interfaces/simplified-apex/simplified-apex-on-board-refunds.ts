@@ -1,7 +1,7 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { type SimplifiedApexOnBoardRefund, type UpdateSimplifiedApexOnBoardRefundDto } from '@tmlmobilidade/types';
+import { type SimplifiedApexOnBoardRefund, type UpdateSimplifiedApexOnBoardRefundDto } from '@tmlmobilidade/go-types-apex';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 
