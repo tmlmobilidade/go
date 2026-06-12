@@ -53,11 +53,26 @@ export class PlansController {
 	static async getGtfs(request: FastifyRequest, reply: FastifyReply<string>) {
 		// Retrieve file data from database
 		const foundFileData = await files.findById('gtfs-latest');
-		if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
+		if (!foundFileData) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
+			Logger.issue('error', error, {
+				action: 'getGtfs',
+				feature: 'plans',
+				request,
+			});
+			throw error;
+		}
+
 		// Stream the file in the given URL to the client
 		const storageServiceResponse = await fetch(foundFileData.url);
 		if (!storageServiceResponse.ok || !storageServiceResponse.body) {
 			Logger.error(`[hub/v1/plans:getGtfs()] Failed to fetch file from storage service. URL: ${foundFileData.url}, Status: ${storageServiceResponse.status}`);
+			Logger.issue('error', `[hub/v1/plans:getGtfs()] Failed to fetch file from storage service. URL: ${foundFileData.url}, Status: ${storageServiceResponse.status}`, {
+				action: 'getGtfs',
+				feature: 'plans',
+				request,
+			});
+
 			return reply
 				.code(HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send({
@@ -84,10 +99,26 @@ export class PlansController {
 	static async getGtfsCM(request: FastifyRequest, reply: FastifyReply<string>) {
 		// Retrieve file data from database
 		const foundFileData = await files.findById('gtfs-cm-latest');
-		if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
+		if (!foundFileData) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
+			Logger.issue('error', error, {
+				action: 'getGtfsCM',
+				feature: 'plans',
+				request,
+			});
+			throw error;
+		}
 		// Stream the file in the given URL to the client
 		const storageServiceResponse = await fetch(foundFileData.url);
-		if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
+		if (!storageServiceResponse.ok || !storageServiceResponse.body) {
+			Logger.issue('error', 'Could not fetch file.', {
+				action: 'getGtfsCM',
+				feature: 'plans',
+				request,
+				status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+			});
+			return reply.code(500).send('Could not fetch file.');
+		}
 		// Set headers and pipe the response body to the client
 		reply.header('Content-Disposition', `attachment; filename="gtfs-cm-latest.zip"`);
 		reply.header('Content-Type', 'application/zip');

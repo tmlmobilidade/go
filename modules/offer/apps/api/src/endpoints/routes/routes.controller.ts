@@ -206,7 +206,16 @@ export class RoutesController {
 		// If authorized, toggle the lock status of the route
 		await routes.toggleLockById(request.params.id);
 		const foundRoute = await routes.findById(request.params.id);
-		if (!foundRoute) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+		if (!foundRoute) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+			Logger.issue('error', error, {
+				action: 'lock',
+				feature: 'routes',
+				request,
+				value: request.params.id,
+			});
+			throw error;
+		}
 
 		return reply.send({ data: foundRoute, error: null, statusCode: HTTP_STATUS.OK });
 

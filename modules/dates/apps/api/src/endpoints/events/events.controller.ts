@@ -383,7 +383,16 @@ export class EventsController {
 
 		const eventData = await events.findById(request.params.id);
 
-		if (!eventData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
+		if (!eventData) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
+			Logger.issue('error', error, {
+				action: 'update',
+				feature: 'events',
+				request,
+				value: request.params.id,
+			});
+			throw error;
+		}
 
 		//
 		// Get the resource permissions for events for the current user.
@@ -399,6 +408,7 @@ export class EventsController {
 				action: 'update',
 				feature: 'events',
 				request,
+				value: request.params.id,
 			});
 			throw error;
 		}
@@ -420,6 +430,7 @@ export class EventsController {
 				action: 'update',
 				feature: 'events',
 				request,
+				value: request.params.id,
 			});
 			throw error;
 		}

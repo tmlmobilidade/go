@@ -331,7 +331,16 @@ export class YearPeriodsController {
 		// Get the YearPeriod from the database
 
 		const periodData = await yearPeriods.findById(request.params.id);
-		if (!periodData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
+		if (!periodData) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
+			Logger.issue('error', error, {
+				action: 'getById',
+				feature: 'year_periods',
+				request,
+				value: request.params.id,
+			});
+			throw error;
+		}
 
 		//
 		// Get the resource permissions for year periods for the current user.

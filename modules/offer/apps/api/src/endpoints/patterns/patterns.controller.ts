@@ -306,7 +306,14 @@ export class PatternsController {
 			const associatedStop = await resolveImportedStop(pathItem.stop_id);
 
 			if (!associatedStop) {
-				throw new HttpException(HTTP_STATUS.BAD_REQUEST, `The stop "${pathItem.stop_id}" does not exist`);
+				const error = new HttpException(HTTP_STATUS.BAD_REQUEST, `The stop "${pathItem.stop_id}" does not exist`);
+				Logger.issue('error', error, {
+					action: 'importFromGtfs',
+					feature: 'patterns',
+					request,
+					value: request.params.id,
+				});
+				throw error;
 			}
 
 			// Get original path stop to preserve user settings
