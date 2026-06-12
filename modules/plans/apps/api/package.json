@@ -18,10 +18,11 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/emails": "*",
+		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/files": "*",
-		"@tmlmobilidade/interfaces": "*"
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
