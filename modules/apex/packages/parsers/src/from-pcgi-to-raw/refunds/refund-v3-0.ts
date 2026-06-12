@@ -19,7 +19,6 @@ export function parsePcgiTransactionEntityIntoRawApexTransactionRefundV30(pcgiTr
 		is_ok: pcgiTransactionEntity.isOK,
 		payload: RawApexTransactionRefundV30PayloadSchema.parse(decodedTransaction),
 		received_at: Dates.fromJSDate(pcgiTransactionEntity.createdAt).unix_timestamp,
-		transaction_id: pcgiTransactionEntity.transactionId,
 		version: 'apex-refund-3.0',
 	};
 

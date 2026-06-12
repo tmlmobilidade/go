@@ -87,7 +87,13 @@ export async function syncTransactionEntities(timeChunk: PerformInTimeChunksItem
 
 	for await (const document of pcgidbTransactionEntitiesStream) {
 		try {
+			// Skip if the current document or a newer version of the same document
+			// already exists in the destination database.
+			const alreadyExists = await rawApexTransactions.findOne({ _id: document.transactionId, created_at: { $gte: Dates.fromJSDate(document.createdAt).unix_timestamp } });
+			if (alreadyExists) continue;
+			// Skip if the document is not from the operator with ID 41
 			if (document.operatorLongId !== '41') continue;
+			// Transform the document into a RawApexTransaction
 			const parsedDocument = transformPcgiApexTransaction(document);
 			await writer.write(parsedDocument);
 		} catch (error) {
