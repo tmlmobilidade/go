@@ -57,18 +57,18 @@ RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 
 RUN npm prune --omit-dev
 
-# RUN node /app/.docker/scripts/trim-node-modules.js /app/node_modules
-# RUN node /app/.docker/scripts/trim-workspaces.js /app/packages /app/modules
+RUN node /app/.docker/scripts/trim-node-modules.js /app/node_modules
+RUN node /app/.docker/scripts/trim-workspaces.js /app/packages /app/modules /app/packages-new
 
 # Turbo prune may omit modules/*/sql; merge from build context when present.
-# RUN --mount=type=bind,source=.,target=/ctx \
-#     for d in /ctx/modules/*/sql; do \
-#       if [ -d "$d" ]; then \
-#         m=$(basename "$(dirname "$d")"); \
-#         mkdir -p "/app/modules/$m"; \
-#         cp -a "$d" "/app/modules/$m/"; \
-#       fi \
-#     done
+RUN --mount=type=bind,source=.,target=/ctx \
+    for d in /ctx/modules/*/sql; do \
+      if [ -d "$d" ]; then \
+        m=$(basename "$(dirname "$d")"); \
+        mkdir -p "/app/modules/$m"; \
+        cp -a "$d" "/app/modules/$m/"; \
+      fi \
+    done
 
 
 # # #
