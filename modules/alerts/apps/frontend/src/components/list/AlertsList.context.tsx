@@ -2,9 +2,10 @@
 
 import { type AlertNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type Alert, AlertReferenceTypeSchema, AlertSchema, PermissionCatalog, PublishStatusSchema } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, parseAsInteger, useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useLocationsContext, useQueryState, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
@@ -12,6 +13,10 @@ import useSWR from 'swr';
 /* * */
 
 interface AlertsListContextState extends ListContextStateTemplate {
+	actions: {
+		setFilterDateEnd: (value: number) => void
+		setFilterDateStart: (value: number) => void
+	}
 	data: {
 		filtered: Alert[]
 		raw: Alert[]
@@ -19,6 +24,8 @@ interface AlertsListContextState extends ListContextStateTemplate {
 	filters: ListContextStateTemplate['filters'] & {
 		agency: UseFilterStateListReturnType
 		cause: UseFilterStateListReturnType
+		date_end: number
+		date_start: number
 		effect: UseFilterStateListReturnType
 		municipality: UseFilterStateListReturnType
 		publish_status: UseFilterStateListReturnType
@@ -62,6 +69,8 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 
 	//
 	// C. Setup filters
+	const [filterDateEnd, setFilterDateEnd] = useQueryState<number>('date_end', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').plus({ minutes: 5 }).unix_timestamp, [])));
+	const [filterDateStart, setFilterDateStart] = useQueryState<number>('date_start', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp, [])));
 
 	const filterSearch = useFilterStateString('search');
 	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
@@ -130,6 +139,10 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	// E. Define context value
 
 	const contextValue: AlertsListContextState = useMemo(() => ({
+		actions: {
+			setFilterDateEnd,
+			setFilterDateStart,
+		},
 		data: {
 			filtered: filterResultsData ?? [],
 			raw: allScheduledData,
@@ -137,6 +150,8 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		filters: {
 			agency: filterAgency,
 			cause: filterCause,
+			date_end: filterDateEnd,
+			date_start: filterDateStart,
 			effect: filterEffect,
 			municipality: filterMunicipality,
 			publish_status: filterPublishStatus,
@@ -150,6 +165,8 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		},
 	}), [
 		allScheduledData,
+		filterDateEnd,
+		filterDateStart,
 		filterResultsData,
 		allScheduledLoading,
 		allScheduledValidating,
@@ -161,6 +178,8 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		filterEffect,
 		filterMunicipality,
 		filterSearch,
+		setFilterDateEnd,
+		setFilterDateStart,
 	]);
 
 	//
