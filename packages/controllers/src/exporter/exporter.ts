@@ -3,6 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { fileExports, files } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { type CreateFileExportDto, type FileExport } from '@tmlmobilidade/types';
 
 /* * */
@@ -29,14 +30,43 @@ export class ExporterSharedController {
 	static async download(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
 		const { id } = request.params;
 		const fileExport = await fileExports.findById(id);
-		if (!fileExport) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File export not found');
+		if (!fileExport) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'File export not found');
+			Logger.issue('error', error, {
+				action: 'download',
+				feature: 'exporter',
+				request,
+				value: id,
+			});
+			throw error;
+		}
 
 		// Retrieve file data from database
 		const foundFileData = await files.findById(fileExport.file_id);
-		if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
+		if (!foundFileData) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
+			Logger.issue('error', error, {
+				action: 'download',
+				feature: 'exporter',
+				request,
+				value: id,
+			});
+			throw error;
+		}
+
 		// Stream the file in the given URL to the client
 		const storageServiceResponse = await fetch(foundFileData.url);
-		if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
+		if (!storageServiceResponse.ok || !storageServiceResponse.body) {
+			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Could not fetch file');
+			Logger.issue('error', error, {
+				action: 'download',
+				feature: 'exporter',
+				request,
+				value: id,
+			});
+			throw error;
+		}
+
 		// Set headers and pipe the response body to the client
 		reply.header('Content-Disposition', `attachment; filename="${foundFileData.name}"`);
 		reply.header('Content-Type', foundFileData.type);

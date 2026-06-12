@@ -4,6 +4,7 @@ import { type RideChangeListener, ridesChangeStream } from '@/operation/rides/wa
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { type ActionsOf, type GetRidesBatchQuery, GetRidesBatchQuerySchema, type Permission, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
 import { type WebSocket } from 'ws';
@@ -32,7 +33,14 @@ export class RidesSharedController {
 
 		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
 
-		if (!ridesPermission['resources']?.agency_ids?.length) return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
+		if (!ridesPermission['resources']?.agency_ids?.length) {
+			Logger.issue('info', 'No agency_ids found in permissions', {
+				action: 'getBatch',
+				feature: 'rides',
+				request,
+			});
+			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
+		}
 
 		const allowAllAgencies = ridesPermission['resources'].agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
@@ -111,7 +119,15 @@ export class RidesSharedController {
 
 		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
 
-		if (!ridesPermission['resources']?.agency_ids?.length) return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
+		if (!ridesPermission['resources']?.agency_ids?.length) {
+			Logger.issue('info', 'No agency_ids found in permissions', {
+				action: 'getRideById',
+				feature: 'rides',
+				request,
+				value: request.params['id'],
+			});
+			return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
+		}
 
 		const allowAllAgencies = ridesPermission['resources'].agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
@@ -149,7 +165,15 @@ export class RidesSharedController {
 
 		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
 
-		if (!ridesPermission['resources']?.agency_ids?.length) return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
+		if (!ridesPermission['resources']?.agency_ids?.length) {
+			Logger.issue('info', 'No agency_ids found in permissions', {
+				action: 'getRideByIds',
+				feature: 'rides',
+				request,
+				value: request.query['ids'],
+			});
+			return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
+		}
 
 		const allowAllAgencies = ridesPermission['resources'].agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 

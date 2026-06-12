@@ -3,6 +3,7 @@
 import { getOperationalLinesBatch } from '@/operation/lines/batch.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { Logger } from '@tmlmobilidade/logger';
 import { type ActionsOf, type GetOperationalLinesBatchQuery, GetOperationalLinesBatchQuerySchema, type OperationalLine, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
@@ -26,7 +27,14 @@ export class OperationalLinesSharedController {
 
 		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
 
-		if (!ridesPermission['resources']?.agency_ids?.length) return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
+		if (!ridesPermission['resources']?.agency_ids?.length) {
+			Logger.issue('info', 'No agency_ids found in permissions', {
+				action: 'getBatch',
+				feature: 'operationalLines',
+				request,
+			});
+			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
+		}
 
 		const allowAllAgencies = ridesPermission['resources'].agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
