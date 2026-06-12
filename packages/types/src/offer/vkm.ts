@@ -1,4 +1,4 @@
-import { OperationalDateSchema } from '@/_common/operational-date.js';
+import { OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
