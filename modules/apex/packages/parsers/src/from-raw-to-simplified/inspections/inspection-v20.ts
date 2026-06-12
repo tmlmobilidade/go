@@ -50,7 +50,7 @@ export function parseRawApexTransactionInspectionV20(doc: RawApexTransactionInsp
 			mac_ase_counter_value: doc.payload.mac.aseCounterValue,
 			mac_sam_serial_number: doc.payload.mac.samSerialNumber,
 			pattern_id: doc.payload.controlServiceInfo.patternLongID,
-			product_id: doc.payload.controlInfo.productLongID,
+			product_id: doc.payload.controlInfo.productLongID ?? '-',
 			received_at: doc.created_at,
 			trip_id: doc.payload.controlServiceInfo.journeyID,
 			vehicle_id: doc.payload.controlServiceInfo.vehicleID,

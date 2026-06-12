@@ -9,13 +9,13 @@ export const RawApexTransactionInspectionV20PayloadSchema = z.object({
 	cardInfo: z.object({
 		cardIssuer: z.number(),
 		cardNetworkID: z.string(),
-		cardNumber: z.number(),
+		cardNumber: z.number().nullable().default(null),
 		cardPhysicalType: z.number(),
 		cardSerialNumber: z.string(),
 		cardTypeID: z.string(),
 	}),
 	controlInfo: z.object({
-		calendarID: z.string(),
+		calendarID: z.string().nullable().default(null),
 		contractNumber: z.number(),
 		contractStatusData: z.array(
 			z.object({
@@ -26,14 +26,14 @@ export const RawApexTransactionInspectionV20PayloadSchema = z.object({
 		controlStatus: z.number(),
 		controlType: z.number(),
 		environmentStatus: z.number(),
-		productLongID: z.string(),
+		productLongID: z.string().nullable().default(null),
 		profilesUsedCount: z.number(),
-		profilesUsedData: z.array(z.any()),
-		spatialValidityLongID: z.string(),
-		tickLoadDate: z.string(),
-		tickLoadMachCode: z.number(),
-		tickLoadNumbDaily: z.number(),
-		validityPeriodID: z.string(),
+		profilesUsedData: z.array(z.any()).default([]),
+		spatialValidityLongID: z.string().nullable().default(null),
+		tickLoadDate: z.string().nullable().default(null),
+		tickLoadMachCode: z.number().nullable().default(null),
+		tickLoadNumbDaily: z.number().nullable().default(null),
+		validityPeriodID: z.string().nullable().default(null),
 	}),
 	controlServiceInfo: z.object({
 		blockID: z.string(),
@@ -45,7 +45,7 @@ export const RawApexTransactionInspectionV20PayloadSchema = z.object({
 		lineLongID: z.string(),
 		patternLongID: z.string(),
 		vehicleID: z.number(),
-		zoneLongID: z.string(),
+		zoneLongID: z.string().nullable().default(null),
 	}),
 	mac: z.object({
 		aseCounterValue: z.number(),
