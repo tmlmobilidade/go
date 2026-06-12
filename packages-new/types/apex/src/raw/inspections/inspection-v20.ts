@@ -7,8 +7,8 @@ import { z } from 'zod';
 
 export const RawApexTransactionInspectionV20PayloadSchema = z.object({
 	cardInfo: z.object({
-		cardIssuer: z.number(),
-		cardNetworkID: z.string(),
+		cardIssuer: z.number().nullable().default(null),
+		cardNetworkID: z.string().nullable().default(null),
 		cardNumber: z.number().nullable().default(null),
 		cardPhysicalType: z.number(),
 		cardSerialNumber: z.string(),
@@ -67,8 +67,8 @@ export const RawApexTransactionInspectionV20PayloadSchema = z.object({
 		operatorLongID: z.string(),
 	}),
 	signedData: z.object({
-		contractBinaryRead: z.string(),
-		environmentBinaryRead: z.string(),
+		contractBinaryRead: z.string().nullable().default(null),
+		environmentBinaryRead: z.string().nullable().default(null),
 		raw: z.string(),
 	}),
 	transactionInfo: z.object({
