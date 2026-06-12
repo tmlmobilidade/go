@@ -39,6 +39,7 @@ export function RidesListFilterDateRange() {
 			onEndDateChange={handleEndDateChange}
 			onStartDateChange={handleStartDateChange}
 			startDate={ridesListContext.filters.date_start as UnixTimestamp}
+			thirdOption={false}
 		/>
 	);
 

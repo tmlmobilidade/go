@@ -14,6 +14,7 @@ import useSWR from 'swr';
 
 interface AlertsListContextState extends ListContextStateTemplate {
 	actions: {
+		setFilterDateCreation: (value: number) => void
 		setFilterDateEnd: (value: number) => void
 		setFilterDateStart: (value: number) => void
 	}
@@ -24,6 +25,7 @@ interface AlertsListContextState extends ListContextStateTemplate {
 	filters: ListContextStateTemplate['filters'] & {
 		agency: UseFilterStateListReturnType
 		cause: UseFilterStateListReturnType
+		date_creation: number
 		date_end: number
 		date_start: number
 		effect: UseFilterStateListReturnType
@@ -71,6 +73,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	// C. Setup filters
 	const [filterDateEnd, setFilterDateEnd] = useQueryState<number>('date_end', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').plus({ minutes: 5 }).unix_timestamp, [])));
 	const [filterDateStart, setFilterDateStart] = useQueryState<number>('date_start', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp, [])));
+	const [filterCreationDate, setFilterDateCreation] = useQueryState<number>('date_creation', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').plus({ minutes: 5 }).unix_timestamp, [])));
 
 	const filterSearch = useFilterStateString('search');
 	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
@@ -140,6 +143,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 
 	const contextValue: AlertsListContextState = useMemo(() => ({
 		actions: {
+			setFilterDateCreation,
 			setFilterDateEnd,
 			setFilterDateStart,
 		},
@@ -150,6 +154,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		filters: {
 			agency: filterAgency,
 			cause: filterCause,
+			date_creation: filterCreationDate,
 			date_end: filterDateEnd,
 			date_start: filterDateStart,
 			effect: filterEffect,
@@ -167,6 +172,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		allScheduledData,
 		filterDateEnd,
 		filterDateStart,
+		filterCreationDate,
 		filterResultsData,
 		allScheduledLoading,
 		allScheduledValidating,
@@ -180,6 +186,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		filterSearch,
 		setFilterDateEnd,
 		setFilterDateStart,
+		setFilterDateCreation,
 	]);
 
 	//
