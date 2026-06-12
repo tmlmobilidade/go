@@ -69,10 +69,10 @@ export async function syncTransactionEntities(timeChunk: PerformInTimeChunksItem
 	const distinctIdsTimer = new Timer();
 
 	const sourceDbDistinctIds = await pcgiTransactionEntities.distinct('transactionId', sourceQuery);
-
 	const destinationDbDistinctIds = await rawApexTransactions.distinct('_id', destinationQuery);
 
-	const missingDocumentIds = sourceDbDistinctIds.filter((id: string) => !destinationDbDistinctIds.includes(id));
+	const destinationDbDistinctIdsUnique = new Set(destinationDbDistinctIds);
+	const missingDocumentIds = sourceDbDistinctIds.filter(id => !destinationDbDistinctIdsUnique.has(id));
 
 	if (missingDocumentIds.length === 0) {
 		Logger.success(`[APEX Tx] MATCH: All ${sourceDbDistinctIds.length} distinct IDs from source database matched with destination database. (${distinctIdsTimer.get()})`);

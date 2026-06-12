@@ -34,7 +34,7 @@ export const RawApexTransactionValidationV40PayloadSchema = z.object({
 		operatorLongID: z.string(),
 	}),
 	serviceInfo: z.object({
-		journeyID: z.string(),
+		journeyID: z.string().nullable().default(null),
 		lineLongID: z.string(),
 		outOfBoundsType: z.number(),
 		patternLongID: z.string(),
