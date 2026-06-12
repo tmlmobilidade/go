@@ -2,7 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { getEarliestDate } from '@tmlmobilidade/go-replicator-pckg-sync';
-import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
+import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
 
 /* * */
 
@@ -81,8 +81,7 @@ export function parseSimplifiedApexOnBoardRefund(pcgiDoc: any): null | Simplifie
 		};
 
 		//
-	}
-	catch (error) {
+	} catch (error) {
 		console.error(`Error parsing simplified APEX OnBoardRefund. Transaction ID: "${pcgiDoc.transaction.transactionId}"`, error.message);
 		return null;
 	}
