@@ -14,7 +14,6 @@ import useSWR from 'swr';
 interface StopsListContextState extends ListContextStateTemplate {
 	data: {
 		filtered: StopNormalized[]
-		municipalityResultData: { label: string, value: string }[]
 		raw: Stop[]
 	}
 	filters: ListContextStateTemplate['filters'] & {
@@ -56,7 +55,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	const filterConnections = useFilterStateList('connections', StopConnectionSchema.options, StopConnectionSchema.options.map(item => ({ label: item, value: item })));
 	const filterLifecycleStatus = useFilterStateList('lifecycle_status', LifecycleStatusSchema.options, LifecycleStatusSchema.options.map(item => ({ label: item, value: item })));
 	const filterAgencies = useFilterStateList('agencies', agenciesContext.data.raw.map(item => item._id), agenciesContext.data.as_options);
-	const filterMunicipality = useFilterStateList('municipalities', locationsContext.data.municipalities.map(item => item._id), locationsContext.data.municipalities.map(item => ({ label: item.name, value: item._id })).sort((a, b) => a.label.localeCompare(b.label, 'pt')));
+	const filterMunicipality = useFilterStateList('municipalities', locationsContext.data.municipality_ids, locationsContext.data.municipalities.map(item => ({ label: item.name, value: item._id })).sort((a, b) => a.label.localeCompare(b.label, 'pt')));
 	// B. Fetch data
 
 	const { data: allStopsData, error: allStopsError, isLoading: allStopsLoading } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST, { refreshInterval: 5000 });
@@ -91,6 +90,16 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		data: normalizedStopsData,
 		query: filterSearch.value,
 	});
+	useMemo(() => {
+		if (!allStopsData?.length || !filterMunicipality.options?.length)
+			return;
+
+		const municipalityIds = new Set(allStopsData.map(stop => stop.municipality_id));
+
+		const filteredOptions = filterMunicipality.options.filter(item => municipalityIds.has(item.value));
+
+		filterMunicipality.options = filteredOptions;
+	}, [allStopsData, filterMunicipality]);
 
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
@@ -129,7 +138,6 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	const contextValue: StopsListContextState = {
 		data: {
 			filtered: filterResultsData,
-			municipalityResultData: municipalityResultData,
 			raw: allStopsData ?? [],
 		},
 		filters: {
