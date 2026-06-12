@@ -4,7 +4,7 @@ import { buildOperationalDateRange } from '@/calendar/rules/utils/date.js';
 import { calendarWeekday } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
 
-import { computeActiveRules } from './calendar/rules/calculation/index.js';
+import { type ActiveRulesDateContext, buildActiveRulesDateContext, buildActiveRulesEventIndex, computeActiveRuleCountFromSplit, splitScheduleRules } from './calendar/rules/calculation/index.js';
 import { resolvePatternRules } from './calendar/rules/merging/index.js';
 
 export interface CalculateAgencyVkmArgs {
@@ -17,6 +17,7 @@ export interface CalculateAgencyVkmArgs {
 }
 
 interface CalculationContext {
+	activeRulesContextByDate: Map<OperationalDate, ActiveRulesDateContext>
 	endDate: Dates
 	metadataByDate: Map<OperationalDate, DayMetadata>
 	operationalDates: OperationalDate[]
@@ -173,7 +174,11 @@ function buildCalculationContext(
 	const { endDate, startDate } = resolveCalculationEndDate(request);
 	const operationalDates = buildOperationalDateRange(startDate.js_date, endDate.js_date);
 	const { metadataByDate, relevantPeriods } = buildDayMetadata(operationalDates, holidays, periods);
-	return { endDate, metadataByDate, operationalDates, relevantPeriods };
+	const activeRulesContextByDate = new Map<OperationalDate, ActiveRulesDateContext>();
+	for (const date of operationalDates) {
+		activeRulesContextByDate.set(date, buildActiveRulesDateContext(date, periods, holidays));
+	}
+	return { activeRulesContextByDate, endDate, metadataByDate, operationalDates, relevantPeriods };
 }
 
 function buildCalculationInputs(
@@ -202,8 +207,9 @@ export function getPatternExtensionMeters(pattern: Pattern, source: CalculateVkm
 }
 
 export function calculateAgencyVkm({ agency, events, holidays, patterns, periods, request }: CalculateAgencyVkmArgs): VkmCalculationResult {
-	const { endDate, metadataByDate, operationalDates, relevantPeriods } = buildCalculationContext(request, holidays, periods);
+	const { activeRulesContextByDate, endDate, metadataByDate, operationalDates, relevantPeriods } = buildCalculationContext(request, holidays, periods);
 	const accumulator = createAccumulator(relevantPeriods);
+	const eventById = buildActiveRulesEventIndex(events);
 
 	for (const pattern of patterns) {
 		const extensionMeters = getPatternExtensionMeters(pattern, request.extension_source);
@@ -211,10 +217,18 @@ export function calculateAgencyVkm({ agency, events, holidays, patterns, periods
 
 		const mergedRules = resolvePatternRules(pattern, events);
 		if (!mergedRules.length) continue;
+		const splitRules = splitScheduleRules(mergedRules);
 
 		for (const date of operationalDates) {
-			const activeRules = computeActiveRules(date, mergedRules, periods, holidays, { events });
-			const activeTripCount = activeRules.timepoints.length;
+			const dateContext = activeRulesContextByDate.get(date);
+			if (!dateContext) continue;
+
+			const activeTripCount = computeActiveRuleCountFromSplit(date, splitRules, periods, holidays, {
+				dateContext,
+				eventById,
+				events,
+			});
+
 			if (!activeTripCount) continue;
 
 			const dayMetadata = metadataByDate.get(date);
