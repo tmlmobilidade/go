@@ -19,7 +19,7 @@ export function parsePcgiTransactionEntityIntoRawApexTransactionSaleV30(pcgiTran
 		is_ok: pcgiTransactionEntity.isOK,
 		payload: RawApexTransactionSaleV30PayloadSchema.parse(decodedTransaction),
 		received_at: Dates.fromJSDate(pcgiTransactionEntity.createdAt).unix_timestamp,
-		version: 'apex-sale-3.0',
+		version: 'sale-3.0',
 	};
 
 	return RawApexTransactionSaleV30Schema.parse(result);

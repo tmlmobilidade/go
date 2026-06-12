@@ -19,7 +19,7 @@ export function parsePcgiTransactionEntityIntoRawApexTransactionLocationV30(pcgi
 		is_ok: pcgiTransactionEntity.isOK,
 		payload: RawApexTransactionLocationV30PayloadSchema.parse(decodedTransaction),
 		received_at: Dates.fromJSDate(pcgiTransactionEntity.createdAt).unix_timestamp,
-		version: 'apex-location-3.0',
+		version: 'location-3.0',
 	};
 
 	return RawApexTransactionLocationV30Schema.parse(result);

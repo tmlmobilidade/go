@@ -19,7 +19,7 @@ export function parsePcgiTransactionEntityIntoRawApexTransactionBankingTapV40(pc
 		is_ok: pcgiTransactionEntity.isOK,
 		payload: RawApexTransactionBankingTapV40PayloadSchema.parse(decodedTransaction),
 		received_at: Dates.fromJSDate(pcgiTransactionEntity.createdAt).unix_timestamp,
-		version: 'apex-banking-tap-4.0',
+		version: 'banking-tap-4.0',
 	};
 
 	return RawApexTransactionBankingTapV40Schema.parse(result);

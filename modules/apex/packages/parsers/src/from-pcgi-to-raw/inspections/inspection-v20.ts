@@ -19,7 +19,7 @@ export function parsePcgiTransactionEntityIntoRawApexTransactionInspectionV20(pc
 		is_ok: pcgiTransactionEntity.isOK,
 		payload: RawApexTransactionInspectionV20PayloadSchema.parse(decodedTransaction),
 		received_at: Dates.fromJSDate(pcgiTransactionEntity.createdAt).unix_timestamp,
-		version: 'apex-inspection-2.0',
+		version: 'inspection-2.0',
 	};
 
 	return RawApexTransactionInspectionV20Schema.parse(result);

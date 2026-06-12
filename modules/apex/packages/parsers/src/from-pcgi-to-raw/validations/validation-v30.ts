@@ -19,7 +19,7 @@ export function parsePcgiTransactionEntityIntoRawApexTransactionValidationV30(pc
 		is_ok: pcgiTransactionEntity.isOK,
 		payload: RawApexTransactionValidationV30PayloadSchema.parse(decodedTransaction),
 		received_at: Dates.fromJSDate(pcgiTransactionEntity.createdAt).unix_timestamp,
-		version: 'apex-validation-3.0',
+		version: 'validation-3.0',
 	};
 
 	return RawApexTransactionValidationV30Schema.parse(result);

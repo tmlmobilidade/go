@@ -19,7 +19,7 @@ export function parsePcgiTransactionEntityIntoRawApexTransactionInspectionDecisi
 		is_ok: pcgiTransactionEntity.isOK,
 		payload: RawApexTransactionInspectionDecisionV20PayloadSchema.parse(decodedTransaction),
 		received_at: Dates.fromJSDate(pcgiTransactionEntity.createdAt).unix_timestamp,
-		version: 'apex-inspection-decision-2.0',
+		version: 'inspection-decision-2.0',
 	};
 
 	return RawApexTransactionInspectionDecisionV20Schema.parse(result);
