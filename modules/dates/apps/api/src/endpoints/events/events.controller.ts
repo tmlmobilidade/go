@@ -3,6 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { events, type Filter, patterns } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { type CreateEventDto, type Event, PermissionCatalog, type UpdateEventDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -27,7 +28,16 @@ export class EventsController {
 		// If no permission found, deny access
 
 		if (!userEventPermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create events');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create events');
+			Logger.error([], {
+				action: 'create',
+				email: request.me.email,
+				feature: 'events',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+			});
+			throw error;
 		}
 
 		//
@@ -42,7 +52,16 @@ export class EventsController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create events for these agencies. You must have permission for all agencies involved.');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create events for these agencies. You must have permission for all agencies involved.');
+			Logger.error([], {
+				action: 'create',
+				email: request.me.email,
+				feature: 'events',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+			});
+			throw error;
 		}
 
 		//
@@ -68,7 +87,16 @@ export class EventsController {
 		const event = await events.findById(id);
 
 		if (!event) {
-			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
+			Logger.error([], {
+				action: 'delete',
+				email: request.me.email,
+				feature: 'events',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.NOT_FOUND,
+			});
+			throw error;
 		}
 
 		//
@@ -80,7 +108,16 @@ export class EventsController {
 		// If no permission found, deny access
 
 		if (!userEventPermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete events');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete events');
+			Logger.error([], {
+				action: 'delete',
+				email: request.me.email,
+				feature: 'events',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+			});
+			throw error;
 		}
 
 		//
@@ -95,7 +132,16 @@ export class EventsController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this event. You must have permission for all agencies involved.');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this event. You must have permission for all agencies involved.');
+			Logger.error([], {
+				action: 'delete',
+				email: request.me.email,
+				feature: 'events',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+			});
+			throw error;
 		}
 
 		//
@@ -122,7 +168,16 @@ export class EventsController {
 		// If no permission found, deny access
 
 		if (!userEventPermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read events');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read events');
+			Logger.error([], {
+				action: 'getAll',
+				email: request.me.email,
+				feature: 'events',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+			});
+			throw error;
 		}
 
 		//
@@ -163,7 +218,19 @@ export class EventsController {
 
 		const eventData = await events.findById(request.params.id);
 
-		if (!eventData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
+		if (!eventData) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
+			Logger.error([], {
+				action: 'getById',
+				email: request.me.email,
+				feature: 'events',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.NOT_FOUND,
+				value: request.params.id,
+			});
+			throw error;
+		}
 
 		//
 		// Get the resource permissions for events for the current user.
@@ -174,7 +241,16 @@ export class EventsController {
 		// If no permission found, deny access
 
 		if (!userEventPermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read events');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read events');
+			Logger.error([], {
+				action: 'getById',
+				email: request.me.email,
+				feature: 'events',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+			});
+			throw error;
 		}
 
 		//
@@ -189,7 +265,16 @@ export class EventsController {
 		});
 
 		if (!hasPermissionForAnyAgency) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this event');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this event');
+			Logger.error([], {
+				action: 'getById',
+				email: request.me.email,
+				feature: 'events',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+			});
+			throw error;
 		}
 
 		//
@@ -244,7 +329,19 @@ export class EventsController {
 
 		const eventData = await events.findById(request.params.id);
 
-		if (!eventData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
+		if (!eventData) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
+			Logger.error([], {
+				action: 'lock',
+				email: request.me.email,
+				feature: 'events',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.NOT_FOUND,
+				value: request.params.id,
+			});
+			throw error;
+		}
 
 		//
 		// Get the resource permissions for events for the current user.
@@ -255,7 +352,16 @@ export class EventsController {
 		// If no permission found, deny access
 
 		if (!userEventPermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock events');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock events');
+			Logger.error([], {
+				action: 'lock',
+				email: request.me.email,
+				feature: 'events',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+			});
+			throw error;
 		}
 
 		//
@@ -270,14 +376,34 @@ export class EventsController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock event. You must have permission for all agencies involved.');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock event. You must have permission for all agencies involved.');
+			Logger.error([], {
+				action: 'lock',
+				email: request.me.email,
+				feature: 'events',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+			});
+			throw error;
 		}
 
 		// If authorized, toggle the lock status of the event
 		await events.toggleLockById(request.params.id);
 		const foundEvent = await events.findById(request.params.id);
-		if (!foundEvent) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
-
+		if (!foundEvent) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
+			Logger.error([], {
+				action: 'lock',
+				email: request.me.email,
+				feature: 'events',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.NOT_FOUND,
+				value: request.params.id,
+			});
+			throw error;
+		}
 		return reply.send({ data: foundEvent, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
@@ -307,7 +433,16 @@ export class EventsController {
 		// If no permission found, deny access
 
 		if (!userEventPermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update events');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update events');
+			Logger.error([], {
+				action: 'update',
+				email: request.me.email,
+				feature: 'events',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+			});
+			throw error;
 		}
 
 		//
@@ -322,7 +457,16 @@ export class EventsController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this event. You must have permission for all agencies involved.');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this event. You must have permission for all agencies involved.');
+			Logger.error([], {
+				action: 'update',
+				email: request.me.email,
+				feature: 'events',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+			});
+			throw error;
 		}
 
 		//

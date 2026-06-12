@@ -3,6 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, holidays } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { type CreateHolidayDto, type Holiday, PermissionCatalog, type UpdateHolidayDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -27,7 +28,16 @@ export class HolidaysController {
 		// If no permission found, deny access
 
 		if (!userHolidayPermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create holidays');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create holidays');
+			Logger.error([], {
+				action: 'create',
+				email: request.me.email,
+				feature: 'holidays',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+			});
+			throw error;
 		}
 
 		//
@@ -42,7 +52,16 @@ export class HolidaysController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create holidays for these agencies. You must have permission for all agencies involved.');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create holidays for these agencies. You must have permission for all agencies involved.');
+			Logger.error([], {
+				action: 'create',
+				email: request.me.email,
+				feature: 'holidays',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+			});
+			throw error;
 		}
 
 		//
@@ -68,7 +87,17 @@ export class HolidaysController {
 		const holiday = await holidays.findById(id);
 
 		if (!holiday) {
-			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+			Logger.error([], {
+				action: 'delete',
+				email: request.me.email,
+				feature: 'holidays',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.NOT_FOUND,
+				value: request.params.id,
+			});
+			throw error;
 		}
 
 		//
@@ -80,7 +109,17 @@ export class HolidaysController {
 		// If no permission found, deny access
 
 		if (!userHolidayPermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete holidays');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete holidays');
+			Logger.error([], {
+				action: 'delete',
+				email: request.me.email,
+				feature: 'holidays',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+				value: request.params.id,
+			});
+			throw error;
 		}
 
 		//
@@ -95,7 +134,17 @@ export class HolidaysController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this holiday. You must have permission for all agencies involved.');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this holiday. You must have permission for all agencies involved.');
+			Logger.error([], {
+				action: 'delete',
+				email: request.me.email,
+				feature: 'holidays',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+				value: request.params.id,
+			});
+			throw error;
 		}
 
 		//
@@ -122,7 +171,16 @@ export class HolidaysController {
 		// If no permission found, deny access
 
 		if (!userHolidayPermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read holidays');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read holidays');
+			Logger.error([], {
+				action: 'getAll',
+				email: request.me.email,
+				feature: 'holidays',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+			});
+			throw error;
 		}
 
 		//
@@ -163,7 +221,19 @@ export class HolidaysController {
 
 		const holidayData = await holidays.findById(request.params.id);
 
-		if (!holidayData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+		if (!holidayData) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+			Logger.error([], {
+				action: 'getById',
+				email: request.me.email,
+				feature: 'holidays',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.NOT_FOUND,
+				value: request.params.id,
+			});
+			throw error;
+		}
 
 		//
 		// Get the resource permissions for holidays for the current user.
@@ -174,7 +244,16 @@ export class HolidaysController {
 		// If no permission found, deny access
 
 		if (!userHolidayPermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read holidays');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read holidays');
+			Logger.error([], {
+				action: 'getById',
+				email: request.me.email,
+				feature: 'holidays',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+			});
+			throw error;
 		}
 
 		//
@@ -189,7 +268,17 @@ export class HolidaysController {
 		});
 
 		if (!hasPermissionForAnyAgency) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this holiday');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this holiday');
+			Logger.error([], {
+				action: 'getById',
+				email: request.me.email,
+				feature: 'holidays',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+				value: request.params.id,
+			});
+			throw error;
 		}
 
 		//
@@ -217,7 +306,19 @@ export class HolidaysController {
 
 		const holidayData = await holidays.findById(request.params.id);
 
-		if (!holidayData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+		if (!holidayData) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+			Logger.error([], {
+				action: 'lock',
+				email: request.me.email,
+				feature: 'holidays',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.NOT_FOUND,
+				value: request.params.id,
+			});
+			throw error;
+		}
 
 		//
 		// Get the resource permissions for holidays for the current user.
@@ -228,7 +329,16 @@ export class HolidaysController {
 		// If no permission found, deny access
 
 		if (!userHolidayPermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock holidays');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock holidays');
+			Logger.error([], {
+				action: 'lock',
+				email: request.me.email,
+				feature: 'holidays',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+			});
+			throw error;
 		}
 
 		//
@@ -243,13 +353,35 @@ export class HolidaysController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock holiday. You must have permission for all agencies involved.');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock holiday. You must have permission for all agencies involved.');
+			Logger.error([], {
+				action: 'lock',
+				email: request.me.email,
+				feature: 'holidays',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+				value: request.params.id,
+			});
+			throw error;
 		}
 
 		// If authorized, toggle the lock status of the holiday
 		await holidays.toggleLockById(request.params.id);
 		const foundHoliday = await holidays.findById(request.params.id);
-		if (!foundHoliday) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+		if (!foundHoliday) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+			Logger.error([], {
+				action: 'lock',
+				email: request.me.email,
+				feature: 'holidays',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.NOT_FOUND,
+				value: request.params.id,
+			});
+			throw error;
+		}
 
 		return reply.send({ data: foundHoliday, error: null, statusCode: HTTP_STATUS.OK });
 
@@ -269,7 +401,19 @@ export class HolidaysController {
 
 		const holidayData = await holidays.findById(request.params.id);
 
-		if (!holidayData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+		if (!holidayData) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+			Logger.error([], {
+				action: 'update',
+				email: request.me.email,
+				feature: 'holidays',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.NOT_FOUND,
+				value: request.params.id,
+			});
+			throw error;
+		}
 
 		//
 		// Get the resource permissions for holidays for the current user.
@@ -280,7 +424,17 @@ export class HolidaysController {
 		// If no permission found, deny access
 
 		if (!userHolidayPermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update holidays');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update holidays');
+			Logger.error([], {
+				action: 'update',
+				email: request.me.email,
+				feature: 'holidays',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+				value: request.params.id,
+			});
+			throw error;
 		}
 
 		//
@@ -295,7 +449,17 @@ export class HolidaysController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this holiday. You must have permission for all agencies involved.');
+			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this holiday. You must have permission for all agencies involved.');
+			Logger.error([], {
+				action: 'update',
+				email: request.me.email,
+				feature: 'holidays',
+				message: error.message,
+				request,
+				status: HTTP_STATUS.FORBIDDEN,
+				value: request.params.id,
+			});
+			throw error;
 		}
 
 		//
