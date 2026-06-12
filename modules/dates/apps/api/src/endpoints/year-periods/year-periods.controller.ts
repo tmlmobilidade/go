@@ -293,6 +293,7 @@ export class YearPeriodsController {
 				feature: 'year_periods',
 				request,
 			});
+			throw error;
 		}
 
 		//
