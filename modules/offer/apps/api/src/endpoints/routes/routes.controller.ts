@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { patterns, routes } from '@tmlmobilidade/interfaces';
 import { CreateRouteDto, PatternSimplified, PermissionCatalog, type Route, type UpdateRouteDto } from '@tmlmobilidade/types';
@@ -44,7 +44,7 @@ export class RoutesController {
 	}
 
 	/**
-	 * Deletes a route by ID
+	 * Deletes a route by ID and all patterns attached to it.
 	 * @param request Fastify request containing route ID
 	 * @param reply Fastify reply
 	 */
@@ -71,6 +71,7 @@ export class RoutesController {
 		//
 
 		await routes.deleteById(id);
+		await patterns.deleteMany({ route_id: id });
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
