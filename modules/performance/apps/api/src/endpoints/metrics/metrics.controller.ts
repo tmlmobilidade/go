@@ -3,6 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { metrics } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { type Metric } from '@tmlmobilidade/types';
 
 /* * */
@@ -123,13 +124,7 @@ export class MetricsController {
 	 * @param {FastifyRequest} request - The request object containing the metric name in the params
 	 * @param {FastifyReply} reply - The reply object used to send the response
 	 */
-	static async getMetric(
-		request: FastifyRequest<{
-			Params: { id: Metric['metric'] }
-			Querystring: Record<string, unknown>
-		}>,
-		reply: FastifyReply<Metric[]>,
-	) {
+	static async getMetric(request: FastifyRequest<{ Params: { id: Metric['metric'] }, Querystring: Record<string, unknown> }>, reply: FastifyReply<Metric[]>) {
 		const { id } = request.params;
 		const filters = request.query || {};
 
@@ -141,7 +136,14 @@ export class MetricsController {
 			const metricDocs = (await metrics.findMany(query)) as Metric[];
 
 			if (!metricDocs || metricDocs.length === 0) {
-				throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Metric not found');
+				const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Metric not found');
+				Logger.issue('error', error, {
+					action: 'getMetric',
+					feature: 'metrics',
+					request,
+					value: id,
+				});
+				throw error;
 			}
 
 			// Apply date filtering
@@ -157,8 +159,15 @@ export class MetricsController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
-			console.error(error);
-			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to retrieve metric');
+			Logger.error('Error retrieving metric:', error);
+			const err = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to retrieve metric');
+			Logger.issue('error', err, {
+				action: 'getMetric',
+				feature: 'metrics',
+				request,
+				value: id,
+			});
+			throw err;
 		}
 	}
 }

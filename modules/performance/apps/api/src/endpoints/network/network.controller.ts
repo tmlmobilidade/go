@@ -3,6 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { metrics } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
@@ -28,8 +29,14 @@ export class NetworkController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
-			console.error(error);
-			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to retrieve lines');
+			Logger.error('Error retrieving lines:', error);
+			const err = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to retrieve lines');
+			Logger.issue('error', err, {
+				action: 'getUniqueLineIds',
+				feature: 'network',
+				request,
+			});
+			throw err;
 		}
 	}
 
@@ -52,8 +59,14 @@ export class NetworkController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
-			console.error(error);
-			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to retrieve patterns');
+			Logger.error('Error retrieving patterns:', error);
+			const err = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to retrieve patterns');
+			Logger.issue('error', err, {
+				action: 'getUniquePatternIds',
+				feature: 'network',
+				request,
+			});
+			throw err;
 		}
 	}
 
