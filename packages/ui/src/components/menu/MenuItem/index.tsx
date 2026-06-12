@@ -48,12 +48,12 @@ export function MenuItem({
 			target={target}
 		>
 			<Stack gap={0}>
-				<Text fw={700} size="sm">
+				<Text c={color} fw={700} size="sm">
 					{title}
 				</Text>
 
 				{description && (
-					<Text size="xs" variant="muted">
+					<Text c={color} size="xs">
 						{description}
 					</Text>
 				)}

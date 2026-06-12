@@ -2,6 +2,7 @@
 /* CONTAINER */
 
 .container {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -30,4 +31,13 @@
 
 .eventName:hover {
   text-decoration: underline;        
+}
+
+/* * */
+/* ACTIONS */
+
+.actions {
+  position: absolute;
+  top: var(--size-spacing-sm);
+  right: var(--size-spacing-sm);
 }
