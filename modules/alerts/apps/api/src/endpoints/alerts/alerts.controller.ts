@@ -234,6 +234,16 @@ export class AlertsController {
 	static async duplicate(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Alert>) {
 		// Retrieve the existing alert
 		const existingAlert = await alerts.findById(request.params.id);
+		if (!existingAlert) {
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+			Logger.issue('error', error, {
+				action: 'duplicate',
+				feature: 'alerts',
+				request,
+				value: request.params.id,
+			});
+			throw error;
+		}
 
 		// Update necessary properties to indicate a copy
 		const duplicatedAlertData = CreateAlertSchema.parse({
