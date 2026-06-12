@@ -3,7 +3,7 @@
 import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
 import { type ClickHouseSchema } from '@/types/index.js';
-import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */

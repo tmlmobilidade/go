@@ -15,14 +15,14 @@ import { type AnySimplifiedApex, type RawApexTransaction } from '@tmlmobilidade/
 /* * */
 
 export const fromRawToSimplifiedMap: Record<RawApexTransaction['version'], (apexTransaction: RawApexTransaction) => AnySimplifiedApex | null> = {
-	'apex-banking-tap-4.0': parseRawApexTransactionBankingTapV40,
-	'apex-inspection-2.0': parseRawApexTransactionInspectionV20,
-	'apex-inspection-decision-2.0': parseRawApexTransactionInspectionDecisionV20,
-	'apex-location-3.0': parseRawApexTransactionLocationV30,
-	'apex-refund-3.0': parseRawApexTransactionRefundV30,
-	'apex-sale-3.0': parseRawApexTransactionSaleV30,
-	'apex-validation-2.0': parseRawApexTransactionValidationV20,
-	'apex-validation-3.0': parseRawApexTransactionValidationV30,
-	'apex-validation-4.0': parseRawApexTransactionValidationV40,
-	'apex-validation-5.0': parseRawApexTransactionValidationV50,
+	'banking-tap-4.0': parseRawApexTransactionBankingTapV40,
+	'inspection-2.0': parseRawApexTransactionInspectionV20,
+	'inspection-decision-2.0': parseRawApexTransactionInspectionDecisionV20,
+	'location-3.0': parseRawApexTransactionLocationV30,
+	'refund-3.0': parseRawApexTransactionRefundV30,
+	'sale-3.0': parseRawApexTransactionSaleV30,
+	'validation-2.0': parseRawApexTransactionValidationV20,
+	'validation-3.0': parseRawApexTransactionValidationV30,
+	'validation-4.0': parseRawApexTransactionValidationV40,
+	'validation-5.0': parseRawApexTransactionValidationV50,
 };

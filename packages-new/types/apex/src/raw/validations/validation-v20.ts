@@ -88,7 +88,7 @@ export type RawApexTransactionValidationV20Payload = z.infer<typeof RawApexTrans
 
 export const RawApexTransactionValidationV20Schema = RawApexTransactionBaseSchema.extend({
 	payload: RawApexTransactionValidationV20PayloadSchema,
-	version: z.literal('apex-validation-2.0'),
+	version: z.literal('validation-2.0'),
 });
 
 export type RawApexTransactionValidationV20 = z.infer<typeof RawApexTransactionValidationV20Schema>;

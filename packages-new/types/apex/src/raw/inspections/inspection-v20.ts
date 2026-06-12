@@ -94,7 +94,7 @@ export type RawApexTransactionInspectionV20Payload = z.infer<typeof RawApexTrans
 
 export const RawApexTransactionInspectionV20Schema = RawApexTransactionBaseSchema.extend({
 	payload: RawApexTransactionInspectionV20PayloadSchema,
-	version: z.literal('apex-inspection-2.0'),
+	version: z.literal('inspection-2.0'),
 });
 
 export type RawApexTransactionInspectionV20 = z.infer<typeof RawApexTransactionInspectionV20Schema>;

@@ -76,7 +76,7 @@ export type RawApexTransactionSaleV30Payload = z.infer<typeof RawApexTransaction
 
 export const RawApexTransactionSaleV30Schema = RawApexTransactionBaseSchema.extend({
 	payload: RawApexTransactionSaleV30PayloadSchema,
-	version: z.literal('apex-sale-3.0'),
+	version: z.literal('sale-3.0'),
 });
 
 export type RawApexTransactionSaleV30 = z.infer<typeof RawApexTransactionSaleV30Schema>;

@@ -66,7 +66,7 @@ export type RawApexTransactionLocationV30Payload = z.infer<typeof RawApexTransac
 
 export const RawApexTransactionLocationV30Schema = RawApexTransactionBaseSchema.extend({
 	payload: RawApexTransactionLocationV30PayloadSchema,
-	version: z.literal('apex-location-3.0'),
+	version: z.literal('location-3.0'),
 });
 
 export type RawApexTransactionLocationV30 = z.infer<typeof RawApexTransactionLocationV30Schema>;

@@ -52,7 +52,7 @@ export type RawApexTransactionInspectionDecisionV20Payload = z.infer<typeof RawA
 
 export const RawApexTransactionInspectionDecisionV20Schema = RawApexTransactionBaseSchema.extend({
 	payload: RawApexTransactionInspectionDecisionV20PayloadSchema,
-	version: z.literal('apex-inspection-decision-2.0'),
+	version: z.literal('inspection-decision-2.0'),
 });
 
 export type RawApexTransactionInspectionDecisionV20 = z.infer<typeof RawApexTransactionInspectionDecisionV20Schema>;

@@ -77,7 +77,7 @@ export type RawApexTransactionRefundV30Payload = z.infer<typeof RawApexTransacti
 
 export const RawApexTransactionRefundV30Schema = RawApexTransactionBaseSchema.extend({
 	payload: RawApexTransactionRefundV30PayloadSchema,
-	version: z.literal('apex-refund-3.0'),
+	version: z.literal('refund-3.0'),
 });
 
 export type RawApexTransactionRefundV30 = z.infer<typeof RawApexTransactionRefundV30Schema>;
