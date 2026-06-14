@@ -20,6 +20,7 @@
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/go-apex-pckg-parsers": "*",
 		"@tmlmobilidade/go-apex-pckg-shared": "*",
+		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",

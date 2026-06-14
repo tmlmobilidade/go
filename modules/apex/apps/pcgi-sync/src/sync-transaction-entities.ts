@@ -1,8 +1,8 @@
 /* * */
 
-import { transformPcgiApexTransaction } from '@/transform-pcgi-apex-transaction.js';
 import { pcgiTransactionEntities, rawApexTransactions } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { parsePcgiTransactionEntityIntoRawApexTransaction } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -92,7 +92,7 @@ export async function syncTransactionEntities(timeChunk: PerformInTimeChunksItem
 	for await (const document of pcgidbTransactionEntitiesStream) {
 		try {
 			// Transform the document into a RawApexTransaction
-			const parsedDocument = transformPcgiApexTransaction(document);
+			const parsedDocument = parsePcgiTransactionEntityIntoRawApexTransaction(document);
 			await writer.write(parsedDocument);
 		} catch (error) {
 			Logger.error(`Error transforming APEX Transaction: ${document.transactionId} Reason: ${error.message}`);
