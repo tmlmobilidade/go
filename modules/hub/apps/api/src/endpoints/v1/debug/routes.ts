@@ -1,6 +1,6 @@
 /* * */
 
-import { getTime } from '@/endpoints/v1/debug/get-time.js';
+import { getTime } from '@/endpoints/v1/debug/controllers/get-time.js';
 import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */
