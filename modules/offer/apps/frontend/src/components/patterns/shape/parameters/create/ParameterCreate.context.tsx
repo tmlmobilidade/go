@@ -22,6 +22,7 @@ export type StopsParameterExtendedWithStats = StopsParameterExtended & {
 interface ParameterCreateContextState {
 	actions: {
 		applyDefaultSpeeds: () => void
+		applyFixedDwellTime: (dwellTimeSeconds: number) => void
 		applyFixedSpeed: (speedKmh: number) => void
 		applySpeedFactor: (factor: number) => void
 		deleteParameter?: () => void
@@ -166,6 +167,12 @@ export const ParameterCreateContextProvider = ({ children, defaultParameter, ini
 		form.setFieldValue('path', newPath);
 	}, [form]);
 
+	const handleApplyFixedDwellTime = useCallback((dwellTimeSeconds: number) => {
+		const currentPath = form.getValues().path;
+		const newPath = currentPath.map(p => ({ ...p, dwell_time: dwellTimeSeconds }));
+		form.setFieldValue('path', newPath);
+	}, [form]);
+
 	const handleApplySpeedFactor = useCallback((factor: number) => {
 		const currentPath = form.getValues().path;
 		const newPath = currentPath.map(p => ({
@@ -181,6 +188,7 @@ export const ParameterCreateContextProvider = ({ children, defaultParameter, ini
 	const contextValue: ParameterCreateContextState = useMemo(() => ({
 		actions: {
 			applyDefaultSpeeds: handleApplyDefaultSpeeds,
+			applyFixedDwellTime: handleApplyFixedDwellTime,
 			applyFixedSpeed: handleApplyFixedSpeed,
 			applySpeedFactor: handleApplySpeedFactor,
 			deleteParameter: onDelete ? handleDeleteParameter : undefined,
@@ -196,7 +204,7 @@ export const ParameterCreateContextProvider = ({ children, defaultParameter, ini
 		flags: {
 			isEditing: Boolean(initialValues),
 		},
-	}), [defaultParameter, form, handleApplyDefaultSpeeds, handleApplyFixedSpeed, handleApplySpeedFactor, handleDeleteParameter, handleSubmitParameter, initialValues, mergedPath, onDelete, parameterForUI, path]);
+	}), [defaultParameter, form, handleApplyDefaultSpeeds, handleApplyFixedDwellTime, handleApplyFixedSpeed, handleApplySpeedFactor, handleDeleteParameter, handleSubmitParameter, initialValues, mergedPath, onDelete, parameterForUI, path]);
 
 	//
 	// H. Render components
