@@ -4,8 +4,8 @@
 
 import { generateOfferOutput } from '@/main.js';
 import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
+import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
-import { validateOperationalDate } from '@tmlmobilidade/types';
 import { Command } from 'commander';
 import fs from 'fs';
 
@@ -38,8 +38,7 @@ await (async function init() {
 	try {
 		options.startDate = validateOperationalDate(options.startDate);
 		options.endDate = validateOperationalDate(options.endDate);
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.divider();
 		Logger.error(`--start-date and/or --end-date are not valid:`, error.message);
 		Logger.divider();
