@@ -30,7 +30,6 @@ const tableSchema: ClickHouseSchema<SimplifiedApexOnBoardRefund> = {
 	received_at: { type: 'Int64' },
 	stop_id: { type: 'String' },
 	trip_id: { type: 'String' },
-	updated_at: { type: 'Int64' },
 	validation_id: { type: 'Nullable(String)' },
 	vehicle_id: { type: 'String' },
 };

@@ -21,7 +21,6 @@ const tableSchema: ClickHouseSchema<SimplifiedApexLocation> = {
 	received_at: { type: 'Int64' },
 	stop_id: { type: 'String' },
 	trip_id: { type: 'String' },
-	updated_at: { type: 'Int64' },
 	vehicle_id: { type: 'String' },
 };
 

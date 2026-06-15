@@ -1,36 +1,36 @@
 /* * */
 
-import { DocumentSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const SimplifiedApexOnBoardSaleSchema = DocumentSchema
-	.omit({ created_by: true, is_locked: true, updated_by: true })
-	.extend({
-		agency_id: z.string(),
-		apex_version: z.string(),
-		block_id: z.string().nullable(),
-		card_physical_type: z.number(),
-		card_serial_number: z.string(),
-		device_id: z.string(),
-		duty_id: z.string().nullable(),
-		is_passenger: z.boolean(),
-		line_id: z.string().nullable(),
-		mac_ase_counter_value: z.number(),
-		mac_sam_serial_number: z.number(),
-		on_board_refund_id: z.string().nullable(),
-		pattern_id: z.string().nullable(),
-		payment_method: z.number(),
-		price: z.number(),
-		product_long_id: z.string(),
-		product_quantity: z.number(),
-		received_at: UnixTimestampSchema,
-		stop_id: z.string().nullable(),
-		trip_id: z.string().nullable(),
-		validation_id: z.string().nullable(),
-		vehicle_id: z.number().nullable(),
-	});
+export const SimplifiedApexOnBoardSaleSchema = z.object({
+	_id: z.string(),
+	agency_id: z.string(),
+	apex_version: z.string(),
+	block_id: z.string().nullable(),
+	card_physical_type: z.number(),
+	card_serial_number: z.string(),
+	created_at: UnixTimestampSchema,
+	device_id: z.string(),
+	duty_id: z.string().nullable(),
+	is_passenger: z.boolean(),
+	line_id: z.string().nullable(),
+	mac_ase_counter_value: z.number(),
+	mac_sam_serial_number: z.number(),
+	on_board_refund_id: z.string().nullable(),
+	pattern_id: z.string().nullable(),
+	payment_method: z.number(),
+	price: z.number(),
+	product_long_id: z.string(),
+	product_quantity: z.number(),
+	received_at: UnixTimestampSchema,
+	stop_id: z.string().nullable(),
+	trip_id: z.string().nullable(),
+	validation_id: z.string().nullable(),
+	vehicle_id: z.number().nullable(),
+});
 
 export const UpdateSimplifiedApexOnBoardSaleSchema = SimplifiedApexOnBoardSaleSchema.partial();
 

@@ -55,7 +55,6 @@ export function parseRawApexTransactionSaleV30(doc: RawApexTransactionSaleV30): 
 			received_at: doc.created_at,
 			stop_id: '',
 			trip_id: '',
-			updated_at: transactionDate,
 			validation_id: '',
 			vehicle_id: 0,
 		};

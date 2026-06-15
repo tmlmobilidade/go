@@ -1,25 +1,25 @@
 /* * */
 
-import { DocumentSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const SimplifiedApexLocationSchema = DocumentSchema
-	.omit({ created_by: true, is_locked: true, updated_by: true })
-	.extend({
-		agency_id: z.string(),
-		apex_version: z.string(),
-		device_id: z.string(),
-		line_id: z.string(),
-		mac_ase_counter_value: z.number(),
-		mac_sam_serial_number: z.number(),
-		pattern_id: z.string(),
-		received_at: UnixTimestampSchema,
-		stop_id: z.string(),
-		trip_id: z.string(),
-		vehicle_id: z.number(),
-	});
+export const SimplifiedApexLocationSchema = z.object({
+	_id: z.string(),
+	agency_id: z.string(),
+	apex_version: z.string(),
+	created_at: UnixTimestampSchema,
+	device_id: z.string(),
+	line_id: z.string(),
+	mac_ase_counter_value: z.number(),
+	mac_sam_serial_number: z.number(),
+	pattern_id: z.string(),
+	received_at: UnixTimestampSchema,
+	stop_id: z.string(),
+	trip_id: z.string(),
+	vehicle_id: z.number(),
+});
 
 export const UpdateSimplifiedApexLocationSchema = SimplifiedApexLocationSchema.partial();
 
