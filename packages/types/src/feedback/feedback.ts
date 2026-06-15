@@ -1,10 +1,10 @@
 /* * */
 
-import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { z } from 'zod';
 
 import { PublicFeedbackEntityTypeSchemaValues } from './entity-type.js';
 import { PublicFeedbackMoodSchemaValues } from './feedback-mood.js';
+import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
