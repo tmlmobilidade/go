@@ -2,8 +2,7 @@
 
 import { rawApexTransactions, simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { fromRawToSimplifiedParserMap } from '@tmlmobilidade/go-apex-pckg-parsers';
-import { invalidateRides } from '@tmlmobilidade/go-apex-pckg-shared';
+import { parseRawApexTransactionLocationV30 } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction, type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
@@ -100,13 +99,14 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		onCompleteCallbackFn: async () => {
-			await writer.flush(invalidateRides);
+			await writer.flush();
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			const parseResult = fromRawToSimplifiedParserMap[sourceDbDocument.version](sourceDbDocument);
-			if (!parseResult) return; // Skip if parsing failed
-			await writer.write(parseResult, { flushCallback: invalidateRides });
+			let parseResult: null | SimplifiedApexLocation = null;
+			if (sourceDbDocument.version === 'location-3.0') parseResult = parseRawApexTransactionLocationV30(sourceDbDocument);
+			if (!parseResult) return;
+			await writer.write(parseResult);
 		},
 
 	});
