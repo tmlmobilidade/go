@@ -74,7 +74,7 @@ export function StopDetailNamesModal() {
 	// B. Render components
 
 	return (
-		<Modal onClose={stopDetailContext.actions.closeNamesEditor} opened={stopDetailContext.flags.isNamesEditorOpen}>
+		<Modal onClose={stopDetailContext.actions.closeNamesEditor} opened={stopDetailContext.flags.isNamesEditorOpen} size="xl">
 			<Pane
 				header={[
 					<Toolbar key="stop-detail-names-toolbar">

@@ -9,3 +9,4 @@ export * from '@/stops/road-type.js';
 export * from '@/stops/stop-area.js';
 export * from '@/stops/stop-id.js';
 export * from '@/stops/stop.js';
+export * from '@/stops/tts.js';

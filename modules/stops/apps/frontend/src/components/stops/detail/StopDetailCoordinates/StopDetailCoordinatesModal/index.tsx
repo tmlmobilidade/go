@@ -115,8 +115,7 @@ export function StopDetailCoordinatesModal() {
 	// B. Render components
 
 	return (
-		<Modal onClose={stopDetailContext.actions.closeCoordinatesEditor} opened={stopDetailContext.flags.isCoordinatesEditorOpen}>
-
+		<Modal onClose={stopDetailContext.actions.closeCoordinatesEditor} opened={stopDetailContext.flags.isCoordinatesEditorOpen} size="xl">
 			<Pane
 				header={[
 					<Toolbar key="stop-detail-coordinates-toolbar">
