@@ -4,7 +4,6 @@ import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type Ride } from '@tmlmobilidade/types';
-import { log } from 'node:console';
 
 /* Types */
 

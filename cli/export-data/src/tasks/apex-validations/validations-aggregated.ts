@@ -2,8 +2,8 @@
 
 import { type TaskProps } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
+import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { type Filter, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
 

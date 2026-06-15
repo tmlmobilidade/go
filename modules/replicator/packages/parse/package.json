@@ -17,6 +17,7 @@
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-replicator-pckg-sync": "*",
+		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"h3-js": "4.4.0",
