@@ -1,6 +1,6 @@
 /* * */
 
-import { syncApexLocations } from '@/task.js';
+import { syncApexSales } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -27,7 +27,7 @@ async function main() {
 		// and sync each one sequentially.
 
 		await performInTimeChunks({
-			onChunk: syncApexLocations,
+			onChunk: syncApexSales,
 			splitBy: { hours: 2 },
 			startDate: earliestDate.unix_timestamp,
 		});

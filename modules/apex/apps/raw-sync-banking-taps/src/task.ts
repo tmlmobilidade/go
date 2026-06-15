@@ -1,9 +1,9 @@
 /* * */
 
-import { rawApexTransactions, simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
+import { rawApexTransactions, simplifiedApexBankingTapsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { parseRawApexTransactionLocationV30 } from '@tmlmobilidade/go-apex-pckg-parsers';
-import { type RawApexTransaction, type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
+import { parseRawApexTransactionBankingTapV40 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { type RawApexTransaction, SimplifiedApexBankingTap } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -11,12 +11,12 @@ import { type Filter } from 'mongodb';
 
 /* * */
 
-const writer = new BatchWriter<SimplifiedApexLocation>({
+const writer = new BatchWriter<SimplifiedApexBankingTap>({
 	batch_size: 50_000,
 	insertFn: async (data) => {
-		await simplifiedApexLocationsNew.insert('JSONEachRow', data);
+		await simplifiedApexBankingTapsNew.insert('JSONEachRow', data);
 	},
-	title: await simplifiedApexLocationsNew.getTableName(),
+	title: await simplifiedApexBankingTapsNew.getTableName(),
 });
 
 /**
@@ -73,14 +73,14 @@ export async function syncApexBankingTaps(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await simplifiedApexLocationsNew.delete(
+			await simplifiedApexBankingTapsNew.delete(
 				'_id IN ($1)',
 				{ 1: ids.map(id => `'${id}'`).join(', ') },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
-			return await simplifiedApexLocationsNew.distinct(
+			return await simplifiedApexBankingTapsNew.distinct(
 				'_id',
 				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
@@ -103,8 +103,8 @@ export async function syncApexBankingTaps(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			let parseResult: null | SimplifiedApexLocation = null;
-			if (sourceDbDocument.version === 'location-3.0') parseResult = parseRawApexTransactionLocationV30(sourceDbDocument);
+			let parseResult: null | SimplifiedApexBankingTap = null;
+			if (sourceDbDocument.version === 'banking-tap-4.0') parseResult = parseRawApexTransactionBankingTapV40(sourceDbDocument);
 			if (!parseResult) return;
 			await writer.write(parseResult);
 		},

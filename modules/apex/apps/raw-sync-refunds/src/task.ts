@@ -1,9 +1,9 @@
 /* * */
 
-import { rawApexTransactions, simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
+import { rawApexTransactions, simplifiedApexOnBoardRefundsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { parseRawApexTransactionLocationV30 } from '@tmlmobilidade/go-apex-pckg-parsers';
-import { type RawApexTransaction, type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
+import { parseRawApexTransactionRefundV30 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { type RawApexTransaction, type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -11,20 +11,20 @@ import { type Filter } from 'mongodb';
 
 /* * */
 
-const writer = new BatchWriter<SimplifiedApexLocation>({
+const writer = new BatchWriter<SimplifiedApexOnBoardRefund>({
 	batch_size: 50_000,
 	insertFn: async (data) => {
-		await simplifiedApexLocationsNew.insert('JSONEachRow', data);
+		await simplifiedApexOnBoardRefundsNew.insert('JSONEachRow', data);
 	},
-	title: await simplifiedApexLocationsNew.getTableName(),
+	title: await simplifiedApexOnBoardRefundsNew.getTableName(),
 });
 
 /**
- * Syncs APEX Locations from the PCGI database
+ * Syncs APEX Refunds from the PCGI database
  * to the ClickHouse database for a given time chunk.
  * @param timeChunk The time chunk to sync the data for.
  */
-export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
+export async function syncApexRefunds(timeChunk: PerformInTimeChunksItem) {
 	//
 
 	const chunkStartDate = Dates
@@ -47,7 +47,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 			$gte: chunkStartDate.unix_timestamp,
 			$lte: chunkEndDate.unix_timestamp,
 		},
-		version: { $in: ['location-3.0'] },
+		version: { $in: ['refund-3.0'] },
 	};
 
 	//
@@ -60,7 +60,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 	await replicate<RawApexTransaction>({
 
 		countDestinationDbFn: async () => {
-			return await simplifiedApexLocationsNew.count(
+			return await simplifiedApexOnBoardRefundsNew.count(
 				'*',
 				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
@@ -73,14 +73,14 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await simplifiedApexLocationsNew.delete(
+			await simplifiedApexOnBoardRefundsNew.delete(
 				'_id IN ($1)',
 				{ 1: ids.map(id => `'${id}'`).join(', ') },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
-			return await simplifiedApexLocationsNew.distinct(
+			return await simplifiedApexOnBoardRefundsNew.distinct(
 				'_id',
 				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
@@ -103,8 +103,8 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			let parseResult: null | SimplifiedApexLocation = null;
-			if (sourceDbDocument.version === 'location-3.0') parseResult = parseRawApexTransactionLocationV30(sourceDbDocument);
+			let parseResult: null | SimplifiedApexOnBoardRefund = null;
+			if (sourceDbDocument.version === 'refund-3.0') parseResult = parseRawApexTransactionRefundV30(sourceDbDocument);
 			if (!parseResult) return;
 			await writer.write(parseResult);
 		},

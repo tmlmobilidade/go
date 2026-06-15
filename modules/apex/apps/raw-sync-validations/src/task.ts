@@ -1,9 +1,9 @@
 /* * */
 
-import { rawApexTransactions, simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
+import { rawApexTransactions, simplifiedApexValidationsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { parseRawApexTransactionLocationV30 } from '@tmlmobilidade/go-apex-pckg-parsers';
-import { type RawApexTransaction, type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
+import { parseRawApexTransactionValidationV20, parseRawApexTransactionValidationV30, parseRawApexTransactionValidationV40, parseRawApexTransactionValidationV50 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { type RawApexTransaction, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -11,20 +11,20 @@ import { type Filter } from 'mongodb';
 
 /* * */
 
-const writer = new BatchWriter<SimplifiedApexLocation>({
+const writer = new BatchWriter<SimplifiedApexValidation>({
 	batch_size: 50_000,
 	insertFn: async (data) => {
-		await simplifiedApexLocationsNew.insert('JSONEachRow', data);
+		await simplifiedApexValidationsNew.insert('JSONEachRow', data);
 	},
-	title: await simplifiedApexLocationsNew.getTableName(),
+	title: await simplifiedApexValidationsNew.getTableName(),
 });
 
 /**
- * Syncs APEX Locations from the PCGI database
+ * Syncs APEX Validations from the PCGI database
  * to the ClickHouse database for a given time chunk.
  * @param timeChunk The time chunk to sync the data for.
  */
-export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
+export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 	//
 
 	const chunkStartDate = Dates
@@ -47,7 +47,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 			$gte: chunkStartDate.unix_timestamp,
 			$lte: chunkEndDate.unix_timestamp,
 		},
-		version: { $in: ['location-3.0'] },
+		version: { $in: ['validation-2.0', 'validation-3.0', 'validation-4.0', 'validation-5.0'] },
 	};
 
 	//
@@ -60,7 +60,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 	await replicate<RawApexTransaction>({
 
 		countDestinationDbFn: async () => {
-			return await simplifiedApexLocationsNew.count(
+			return await simplifiedApexValidationsNew.count(
 				'*',
 				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
@@ -73,14 +73,14 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await simplifiedApexLocationsNew.delete(
+			await simplifiedApexValidationsNew.delete(
 				'_id IN ($1)',
 				{ 1: ids.map(id => `'${id}'`).join(', ') },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
-			return await simplifiedApexLocationsNew.distinct(
+			return await simplifiedApexValidationsNew.distinct(
 				'_id',
 				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
@@ -103,8 +103,11 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			let parseResult: null | SimplifiedApexLocation = null;
-			if (sourceDbDocument.version === 'location-3.0') parseResult = parseRawApexTransactionLocationV30(sourceDbDocument);
+			let parseResult: null | SimplifiedApexValidation = null;
+			if (sourceDbDocument.version === 'validation-2.0') parseResult = parseRawApexTransactionValidationV20(sourceDbDocument);
+			if (sourceDbDocument.version === 'validation-3.0') parseResult = parseRawApexTransactionValidationV30(sourceDbDocument);
+			if (sourceDbDocument.version === 'validation-4.0') parseResult = parseRawApexTransactionValidationV40(sourceDbDocument);
+			if (sourceDbDocument.version === 'validation-5.0') parseResult = parseRawApexTransactionValidationV50(sourceDbDocument);
 			if (!parseResult) return;
 			await writer.write(parseResult);
 		},
