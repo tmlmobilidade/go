@@ -1,0 +1,28 @@
+/* * */
+/* SHOW PAST TRIPS TOGGLE */
+
+.arrivalsWrapper {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+/* * */
+/* SHOW PAST TRIPS TOGGLE */
+
+.toggleShowPastArrivals {
+	width: 100%;
+	padding: 5px;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--color-system-text-300);
+	text-align: center;
+	cursor: pointer;
+	border-radius: 5px;
+	transition: all 200ms ease;
+}
+
+.toggleShowPastArrivals:hover {
+	color: var(--color-system-text-100);
+	background-color: var(--color-system-background-200);
+}

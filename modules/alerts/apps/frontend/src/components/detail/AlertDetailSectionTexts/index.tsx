@@ -1,6 +1,7 @@
 'use client';
 
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
+import { normalizeAlertCoordinatesInput } from '@/lib/alert-coordinates';
 import { IconLink } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type I18nCode, PermissionCatalog } from '@tmlmobilidade/types';
@@ -198,9 +199,9 @@ export function AlertDetailSectionTexts() {
 						render={({ field }) => (
 							<CoordinatesInput
 								key="key"
-								defaultValue={field.value}
 								label={t('default:alerts.create.summary.coordinates.label')}
-								onChange={field.onChange}
+								onChange={nextValue => field.onChange(normalizeAlertCoordinatesInput(nextValue))}
+								value={field.value ?? undefined}
 							/>
 						)}
 					/>
@@ -223,14 +224,13 @@ export function AlertDetailSectionTexts() {
 						)}
 					/>
 
-					<ImageUpload
-						label="Imagem"
-						onChange={alertDetailContext.actions.setImageFile}
-						onDelete={alertDetailContext.actions.deleteImage}
-						value={alertDetailContext.data.image?.url}
-					/>
-
 				</Grid>
+				<ImageUpload
+					label="Imagem"
+					onChange={alertDetailContext.actions.setImageFile}
+					onDelete={alertDetailContext.actions.deleteImage}
+					value={alertDetailContext.data.image?.url}
+				/>
 			</Section>
 		</Collapsible>
 	);

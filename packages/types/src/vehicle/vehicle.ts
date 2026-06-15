@@ -1,7 +1,6 @@
 /* * */
 
-import { DocumentSchema } from '@/_common/document.js';
-import { OperationalDateSchema } from '@/_common/operational-date.js';
+import { DocumentSchema, OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { VehicleEmissionSchema } from './emission.js';

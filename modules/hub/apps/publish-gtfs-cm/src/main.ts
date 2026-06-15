@@ -19,8 +19,6 @@ import { ZipFile } from 'yazl';
 import { exportAgencyFile } from '@/exports/agency.js';
 import { exportCalendarDatesRows } from '@/exports/calendar-dates.js';
 import { exportDatesFile } from '@/exports/dates.js';
-import { exportFareAttributesFile } from '@/exports/fare-attributes.js';
-import { exportFareRulesFile } from '@/exports/fare-rules.js';
 import { exportFeedInfoFile } from '@/exports/feed-info.js';
 import { exportMunicipalitiesFile } from '@/exports/municipalities.js';
 import { exportPeriodsFile } from '@/exports/periods.js';
@@ -57,8 +55,6 @@ export async function main() {
 			agency: new CsvWriter('agency.txt', `/tmp/${exportVersion}/agency.txt`, { batch_size: 100000 }),
 			calendar_dates: new CsvWriter('calendar_dates.txt', `/tmp/${exportVersion}/calendar_dates.txt`, { batch_size: 100000 }),
 			dates: new CsvWriter('dates.txt', `/tmp/${exportVersion}/dates.txt`, { batch_size: 100000 }),
-			fare_attributes: new CsvWriter('fare_attributes.txt', `/tmp/${exportVersion}/fare_attributes.txt`, { batch_size: 100000 }),
-			fare_rules: new CsvWriter('fare_rules.txt', `/tmp/${exportVersion}/fare_rules.txt`, { batch_size: 100000 }),
 			feed_info: new CsvWriter('feed_info.txt', `/tmp/${exportVersion}/feed_info.txt`, { batch_size: 100000 }),
 			municipalities: new CsvWriter('municipalities.txt', `/tmp/${exportVersion}/municipalities.txt`, { batch_size: 100000 }),
 			periods: new CsvWriter('periods.txt', `/tmp/${exportVersion}/periods.txt`, { batch_size: 100000 }),
@@ -81,6 +77,8 @@ export async function main() {
 	//
 	// Retrieve all Plans from the database
 	// and iterate on each one.
+
+	const plansCollection = await plans.getCollection();
 
 	const allPlansData = await plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
 
@@ -109,7 +107,7 @@ export async function main() {
 	// Mark as plans as 'waiting' in the database.
 
 	for (const planData of allPlansData) {
-		await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'waiting', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
+		await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'waiting', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 	}
 
 	//
@@ -133,12 +131,12 @@ export async function main() {
 			const isValidPlan = validatePlan(planData);
 
 			if (!isValidPlan) {
-				await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'skipped', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
-				Logger.info(`Skipped plan ${planData._id} due to validation errors.`);
+				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'skipped', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+				Logger.info(`Skipped plan ${planData._id} as it was ineligible for processing.`);
 				continue;
 			}
 
-			await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'processing', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'processing', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 
 			//
 			// Get the operation file URL
@@ -235,7 +233,7 @@ export async function main() {
 			//
 			// Mark the plan as complete in the database.
 
-			await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'complete', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'complete', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 
 			Logger.success(`Processed plan ${planData._id} in ${planTimer.get()}.`);
 
@@ -250,7 +248,7 @@ export async function main() {
 
 			//
 		} catch (error) {
-			await plans.updateById(planData._id,	{ apps: { ...planData.apps, merger: { last_hash: null, status: 'error', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'error', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 			Logger.error(`Error processing plan ${planData._id}`, error);
 			Logger.divider();
 		}
@@ -263,8 +261,6 @@ export async function main() {
 	await exportDatesFile(exportConfig);
 	await exportPeriodsFile(exportConfig);
 	await exportMunicipalitiesFile(exportConfig);
-	await exportFareAttributesFile(Array.from(referencedAgencyIds), exportConfig);
-	await exportFareRulesFile(Object.keys(routesMarkedForFinalExport), exportConfig);
 	await exportRoutesFile(Object.values(routesMarkedForFinalExport), exportConfig);
 	await exportAgencyFile(Array.from(referencedAgencyIds), exportConfig);
 	await exportFeedInfoFile(currentOperationalDate, farthestDateFound, exportConfig);

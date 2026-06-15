@@ -210,24 +210,4 @@ export class VehiclesController {
 		// Send the last event for the vehicle back to the client
 		reply.send({ data: lastEvent, error: null, statusCode: HTTP_STATUS.OK });
 	}
-
-	/**
-	 * Retrieves the latest position per vehicle from recent simplified vehicle events.
-	 * @param request Fastify request
-	 * @param reply Fastify reply
-	 */
-	static async getPositions(request: FastifyRequest, reply: FastifyReply<SimplifiedVehicleEvent[]>) {
-		const positions = await simplifiedVehicleEventsNew.getPositions();
-		const positionsStripped = positions.map(position => ({
-			...position,
-			driver_id: undefined,
-		}));
-		reply
-			.header('Access-Control-Allow-Origin', '*')
-			.send({
-				data: positionsStripped,
-				error: null,
-				statusCode: HTTP_STATUS.OK,
-			});
-	}
 }

@@ -7,8 +7,10 @@ CREATE DATABASE IF NOT EXISTS {database};
 -- Historical window: rides whose samples feed transformation / aggregation.
 CREATE TABLE IF NOT EXISTS {database}.hist_rides (
     _id String,
+    agency_id String,
     hashed_shape_id String,
     hashed_trip_id String,
+    plan_id String,
     trip_id String,
     start_time_observed UInt64,
     start_time_scheduled UInt64,

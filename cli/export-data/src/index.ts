@@ -17,10 +17,11 @@ import { exportHashedShapesGeoJSON } from '@/tasks/hashed-shapes/hashed-shapes-g
 import { exportRidesRaw } from '@/tasks/rides/rides-raw.js';
 import { exportSamsRaw } from '@/tasks/sams/sams-raw.js';
 import { exportVehicleEventsRaw } from '@/tasks/vehicle-events/vehicle-events-raw.js';
-import { exportTypeLabels, exportTypesWithoutFilters } from '@/types.js';
+import { exportTypeLabels, exportTypesWithoutEntityFilters, exportTypesWithoutFilters } from '@/types.js';
 import { initExportContext } from '@/utils/init-context.js';
 import { intro, log, outro, tasks } from '@clack/prompts';
 import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
+import { exportValidationsPMunicipalities } from './tasks/municipalities-validations/validations_p_municipalities.js';
 
 import { exportExecutiveSummary } from './tasks/executive-summary-setup/index.js';
 
@@ -56,10 +57,12 @@ await (async function main() {
 	const exportTypes = await promptExportTypes();
 
 	//
-	// Check if all selected export types don't require filters
+	// Check if all selected export types don't require entity filters or dates
 
-	const selectedTypesWithoutFilters = exportTypes.filter(type => exportTypesWithoutFilters.includes(type));
-	const shouldSkipFilters = selectedTypesWithoutFilters.length === exportTypes.length && exportTypes.length > 0;
+	const shouldSkipEntityFilters = exportTypes.length > 0 && exportTypes.every(type =>
+		exportTypesWithoutEntityFilters.includes(type) || exportTypesWithoutFilters.includes(type),
+	);
+	const shouldSkipDates = exportTypes.length > 0 && exportTypes.every(type => exportTypesWithoutFilters.includes(type));
 
 	//
 	// For hashed_shapes export, prompt for hashedshape IDs
@@ -78,9 +81,9 @@ await (async function main() {
 	}
 
 	//
-	// Skip filters and dates if all selected export types don't require them
+	// Skip entity filters and/or dates when all selected export types don't require them
 
-	if (!shouldSkipFilters) {
+	if (!shouldSkipEntityFilters) {
 		const filterTypes = await promptFilterTypes();
 
 		//
@@ -91,7 +94,9 @@ await (async function main() {
 		if (filterTypes.includes('pattern-ids')) context.filters.pattern_ids = await promptFilterByPatternIds();
 		if (filterTypes.includes('stop-ids')) context.filters.stop_ids = await promptFilterByStopIds();
 		if (filterTypes.includes('vehicle-ids')) context.filters.vehicle_ids = await promptFilterByVehicleIds();
+	}
 
+	if (!shouldSkipDates) {
 		context.dates = await promptFilterByDates();
 	}
 
@@ -140,7 +145,11 @@ await (async function main() {
 			task: async message => await exportExecutiveSummary({ context, message }),
 			title: exportTypeLabels['executive-summary'],
 		},
-
+		{
+			enabled: exportTypes.includes('validations-p-municipalities'),
+			task: async message => await exportValidationsPMunicipalities({ context, message }),
+			title: exportTypeLabels['validations-p-municipalities'],
+		},
 	]);
 
 	//

@@ -24,14 +24,8 @@ export async function exportValidationsRaw({ context, message }: TaskProps): Pro
 	const filterQuery: Filter<SimplifiedApexValidation> = {};
 
 	filterQuery.created_at = {
-		$gte: Dates
-			.fromOperationalDate(context.dates.start, 'Europe/Lisbon')
-			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
-			.unix_timestamp,
-		$lt: Dates
-			.fromOperationalDate(context.dates.end, 'Europe/Lisbon')
-			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
-			.unix_timestamp,
+		$gte: Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').unix_timestamp,
+		$lt: Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').unix_timestamp,
 	};
 
 	if (context.filters.agency_ids.length) {

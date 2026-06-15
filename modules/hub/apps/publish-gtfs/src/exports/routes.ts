@@ -3,13 +3,15 @@
 
 import { type ExportGtfsContext } from '@/types/context.js';
 import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type GTFS_RouteType } from '@tmlmobilidade/types';
+import { getPublicLineId, getPublicRouteId } from '@tmlmobilidade/utils';
 
 /* * */
 
 export interface ExportedRoutesRow {
 	agency_id: string
-	line_id: number
+	line_id: string
 	line_short_name: string
 	line_long_name: string
 	route_id: string
@@ -31,15 +33,19 @@ export interface ExportedRoutesRow {
 export async function exportRoutesFile(routesList: GTFS_Route_Extended[], context: ExportGtfsContext) {
 	//
 
+	const timer = new Timer();
+
+	Logger.info('Exporting routes.txt file...');
+
 	const sortedRoutesList = routesList.sort((a, b) => a.route_id.localeCompare(b.route_id));
 
 	for (const routeData of sortedRoutesList) {
 		const parsedRouteRow: ExportedRoutesRow = {
 			agency_id: routeData.agency_id,
-			line_id: routeData.line_id,
+			line_id: getPublicLineId(routeData.agency_id, String(routeData.line_id)),
 			line_short_name: routeData.line_short_name,
 			line_long_name: routeData.line_long_name,
-			route_id: routeData.route_id,
+			route_id: getPublicRouteId(routeData.agency_id, routeData.route_id),
 			route_short_name: routeData.route_short_name,
 			route_long_name: routeData.route_long_name,
 			route_type: routeData.route_type,
@@ -54,5 +60,5 @@ export async function exportRoutesFile(routesList: GTFS_Route_Extended[], contex
 
 	await context.writers.routes.flush();
 
-	Logger.info('Exported routes.txt file.');
+	Logger.success(`Exported routes.txt file in ${timer.get()}.`);
 }

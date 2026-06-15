@@ -30,6 +30,9 @@ export async function promptExportTypes(): Promise<ExportType[]> {
 			'6. Sumário Executivo': [
 				{ label: exportTypeLabels['executive-summary'], value: 'executive-summary' },
 			],
+			'7. Validações por município': [
+				{ label: exportTypeLabels['validations-p-municipalities'], value: 'validations-p-municipalities' },
+			],
 		},
 		required: true,
 	});

@@ -3,8 +3,6 @@
 import { ExportedAgencyRow } from '@/exports/agency.js';
 import { ExportedCalendarDatesRow } from '@/exports/calendar-dates.js';
 import { ExportedDatesRow } from '@/exports/dates.js';
-import { ExportedFareAttributesRow } from '@/exports/fare-attributes.js';
-import { ExportedFareRulesRow } from '@/exports/fare-rules.js';
 import { ExportedFeedInfoRow } from '@/exports/feed-info.js';
 import { ExportedMunicipalitiesRow } from '@/exports/municipalities.js';
 import { ExportedPeriodsRow } from '@/exports/periods.js';
@@ -25,8 +23,6 @@ export interface MergedGtfsExportConfig {
 		agency: CsvWriter<ExportedAgencyRow>
 		calendar_dates: CsvWriter<ExportedCalendarDatesRow>
 		dates: CsvWriter<ExportedDatesRow>
-		fare_attributes: CsvWriter<ExportedFareAttributesRow>
-		fare_rules: CsvWriter<ExportedFareRulesRow>
 		feed_info: CsvWriter<ExportedFeedInfoRow>
 		municipalities: CsvWriter<ExportedMunicipalitiesRow>
 		periods: CsvWriter<ExportedPeriodsRow>

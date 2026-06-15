@@ -8,6 +8,7 @@
 	"type": "module",
 	"main": "./dist/index.js",
 	"scripts": {
+
 		"build": "turbo build",
 		"build:alerts": "ENVIRONMENT=dev dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-alerts-*",
 		"build:alerts:packages": "ENVIRONMENT=dev dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-alerts-pckg-*",
@@ -25,7 +26,7 @@
 		"build:locations": "ENVIRONMENT=dev dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-locations-*",
 		"build:modules": "turbo build --filter=./modules/**/*",
 		"build:offer": "ENVIRONMENT=dev dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-offer-*",
-		"build:packages": "turbo build --filter=./packages/**/* && turbo build --filter=./modules/**/packages/**/* && turbo build --filter=./cli/**/* && npm run generate-routes",
+		"build:packages": "turbo build --filter=./packages-new/**/* && turbo build --filter=./packages/**/* && turbo build --filter=./modules/**/packages/**/* && turbo build --filter=./cli/**/* && npm run generate-routes",
 		"build:performance": "ENVIRONMENT=dev dotenv-run -f ./modules/performance/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-performance-*",
 		"build:plans": "ENVIRONMENT=dev dotenv-run -f ./modules/plans/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-plans-*",
 		"build:replicator": "ENVIRONMENT=dev dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-replicator-*",
@@ -33,7 +34,7 @@
 		"build:stops:packages": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-stops-pckg-*",
 		"build:tracker": "ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-tracker-*",
 		"build:tracker:packages": "ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-tracker-pckg-*",
-		"build:types": "turbo build --filter=@tmlmobilidade/types",
+		"build:types": "turbo build --filter=@tmlmobilidade/go-types-* --filter=@tmlmobilidade/types",
 
 		"dev:alerts": "npm run build:alerts:packages && ENVIRONMENT=dev dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
 		"dev:alerts:prd": "npm run build:alerts:packages && ENVIRONMENT=dev dotenv-run -f ./modules/alerts/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
@@ -54,14 +55,20 @@
 		"dev:controller:ui": "ENVIRONMENT=dev dotenv-run -f ./modules/controller/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-api --filter=@tmlmobilidade/go-controller-frontend",
 		"dev:dates": "ENVIRONMENT=dev dotenv-run -f ./modules/dates/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-dates-*",
 		"dev:eta": "npm run build:eta:packages && ENVIRONMENT=dev dotenv-run -f ./modules/eta/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-eta-*",
-		"dev:eta:api": "npm run build:eta:packages && ENVIRONMENT=dev dotenv-run -f ./modules/eta/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-eta-api",
+		"dev:eta:prd": "npm run build:eta:packages && ENVIRONMENT=production dotenv-run -f ./modules/eta/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-eta-*",
 		"dev:exporter": "ENVIRONMENT=dev dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-*",
 		"dev:exporter-api": "ENVIRONMENT=dev dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-api",
 		"dev:exporter-merged": "ENVIRONMENT=dev dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-export-gtfs-merged",
 		"dev:fleet": "ENVIRONMENT=dev dotenv-run -f ./modules/fleet/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-fleet-*",
 		"dev:hub": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/development/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-*",
 		"dev:hub:api": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-api",
-		"dev:hub:publish-schedules": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-schedules",
+		"dev:hub:enable-app": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-enable-app",
+		"dev:hub:publish-alerts": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-alerts",
+		"dev:hub:publish-gtfs": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-gtfs",
+		"dev:hub:publish-network": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-network",
+		"dev:hub:publish-plans": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-plans",
+		"dev:hub:publish-realtime": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-realtime",
+		"dev:hub:ui": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-api --filter=@tmlmobilidade/go-hub-frontend-navegante-app",
 		"dev:locations": "ENVIRONMENT=dev dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-locations-*",
 		"dev:offer": "ENVIRONMENT=dev dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-offer-* --filter=!@tmlmobilidade/go-offer-gtfs-exporter --filter=!@tmlmobilidade/go-offer-gtfs-importer",
 		"dev:offer:gtfs-exporter": "ENVIRONMENT=dev dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-offer-gtfs-exporter",
@@ -91,9 +98,15 @@
 		"dev:tracker:cm-sync-log": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cm-sync-log",
 		"dev:tracker:cp-fetch": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cp-fetch",
 		"dev:tracker:cp-fetch:prd": "npm run build:tracker:packages && ENVIRONMENT=prd dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-cp-fetch",
+		"dev:tracker:crtm-aisa-fetch": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-crtm-aisa-fetch",
+		"dev:tracker:crtm-aisa-fetch:prd": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-crtm-aisa-fetch",
+		"dev:tracker:fertagus-fetch": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-fertagus-fetch",
+		"dev:tracker:fertagus-fetch:prd": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-fertagus-fetch",
 		"dev:tracker:mobi-fetch": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-mobi-fetch",
 		"dev:tracker:mobi-fetch:prd": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-mobi-fetch",
 		"dev:tracker:prd": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-*",
+		"dev:tracker:tcb-fetch": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-tcb-fetch",
+		"dev:tracker:tcb-fetch:prd": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-tcb-fetch",
 		"dev:tracker:ttsl-fetch": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-ttsl-fetch",
 		"dev:tracker:ttsl-fetch:prd": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-ttsl-fetch",
 
@@ -115,22 +128,24 @@
 		"lint:fix": "turbo lint:fix",
 		"pckg:dev:emails": "ENVIRONMENT=dev turbo run dev --filter=@tmlmobilidade/emails",
 		"prepare": "husky",
-		"rinse": "npx --yes @tmlmobilidade/repo-rinse"
+		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
+		"test:eta:ride": "npm run build:eta:packages && ENVIRONMENT=dev dotenv-run -f ./modules/eta/environments/staging/secrets/.env -- npm run start -w @tmlmobilidade/go-eta-ride-analyzer --"
 
 	},
 	"devDependencies": {
-		"@commitlint/cli": "21.0.1",
-		"@commitlint/config-conventional": "21.0.1",
+		"@commitlint/cli": "21.0.2",
+		"@commitlint/config-conventional": "21.0.2",
 		"@dotenv-run/cli": "1.3.6",
 		"@tmlmobilidade/eslint": "*",
 		"husky": "9.1.7",
-		"turbo": "2.9.14"
+		"turbo": "2.9.18"
 	},
-	"packageManager": "npm@11.15.0",
+	"packageManager": "npm@11.17.0",
 	"workspaces": [
 		"!**/.next",
 		"modules/**/*",
 		"packages/**/*",
+		"packages-new/**/*",
 		"cli/*"
 	],
 	"overrides": {

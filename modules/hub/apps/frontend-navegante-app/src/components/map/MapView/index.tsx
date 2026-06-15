@@ -1,10 +1,10 @@
 'use client';
 
-import { MAP_LOAD_ASSETS } from '@/components/map/mapLoadAssets';
-import { MapViewToolbar } from '@/components/map/MapViewToolbar';
-import { useMapOptionsContext } from '@/contexts/MapOptions.context';
-import { mapDefaultConfig } from '@/settings/map.settings';
-import Map, { FullscreenControl, GeolocateControl, MapRef, NavigationControl, ScaleControl, useMap } from '@vis.gl/react-maplibre';
+import { useMapContext } from '@/components/map/Map.context';
+import { mapDefaultConfig } from '@/components/map/Map.settings';
+import { loadMapAssets, MAP_ASSETS_ALERTS, MAP_ASSETS_MISC, MAP_ASSETS_SHAPES, MAP_ASSETS_STOPS, MAP_ASSETS_VEHICLES } from '@tmlmobilidade/ui';
+import Map, { MapRef, useMap } from '@vis.gl/react-maplibre';
+import { type MapLibreEvent } from 'maplibre-gl';
 import { useCallback, useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -16,13 +16,9 @@ export type MapStyle = 'map' | 'satellite';
 interface MapViewProps {
 	autoZoom?: boolean
 	children: React.ReactNode
-	fullscreen?: boolean
-	geolocate?: boolean
 	id?: string
 	interactiveLayerIds?: string[]
 	mapObject?: MapRef
-	mapStyle?: MapStyle
-	navigation?: boolean
 	onCenterMap?: () => void
 	onClick?: (arg0) => void
 	onDrag?: (arg0) => void
@@ -35,7 +31,6 @@ interface MapViewProps {
 	onMoveStart?: (arg0) => void
 	onZoom?: (arg0) => void
 	primarySourceId?: string
-	scale?: boolean
 	scrollZoom?: boolean
 	showCenterButton?: boolean
 	toolbarExtras?: React.ReactNode
@@ -43,7 +38,7 @@ interface MapViewProps {
 
 /* * */
 
-export function MapView({ autoZoom, children, fullscreen = true, geolocate = true, id, interactiveLayerIds = [], mapStyle, navigation = true, onCenterMap, onClick, onDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onMoveEnd, onMoveStart, onZoom, scale = false, scrollZoom = true, showCenterButton = false, toolbarExtras }: MapViewProps) {
+export function MapView({ children, id, interactiveLayerIds = [], onClick, onDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onMoveEnd, onMoveStart, onZoom, scrollZoom = true }: MapViewProps) {
 	//
 
 	//
@@ -51,7 +46,7 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 
 	const allMaps = useMap();
 
-	const mapOptionsContext = useMapOptionsContext();
+	const mapContext = useMapContext();
 
 	const [cursor, setCursor] = useState<string>('auto');
 
@@ -60,55 +55,45 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 
 	useEffect(() => {
 		if (!id || !allMaps?.[id]) return;
-		const mapObject = allMaps[id];
-		mapOptionsContext.actions.setMap(mapObject);
-		for (const mapLoadAsset of MAP_LOAD_ASSETS) {
-			mapObject.loadImage(mapLoadAsset.url).then((image) => {
-				if (!mapObject.hasImage(mapLoadAsset.name)) {
-					mapObject.addImage(mapLoadAsset.name, image.data, { sdf: mapLoadAsset.sdf });
-				}
-			});
-		}
-	}, [allMaps, id]);
-
-	const mapStyleValue = mapStyle ?? mapOptionsContext.data.style;
+		mapContext.actions.setMap(allMaps[id]);
+	}, [allMaps, id, mapContext.actions]);
 
 	//
 	// C. Handle actions
 
+	const handleOnLoad = (event: MapLibreEvent) => {
+		loadMapAssets(event.target, MAP_ASSETS_ALERTS);
+		loadMapAssets(event.target, MAP_ASSETS_MISC);
+		loadMapAssets(event.target, MAP_ASSETS_SHAPES);
+		loadMapAssets(event.target, MAP_ASSETS_STOPS);
+		loadMapAssets(event.target, MAP_ASSETS_VEHICLES);
+	};
+
 	const handleOnMouseEnter = useCallback((event) => {
 		setCursor('pointer');
 		if (onMouseEnter) onMouseEnter(event);
-	}, []);
+	}, [onMouseEnter]);
 
 	const handleOnMouseLeave = useCallback((event) => {
 		setCursor('auto');
 		if (onMouseLeave) onMouseLeave(event);
-	}, []);
+	}, [onMouseLeave]);
 
 	const handleOnMoveStart = useCallback((event) => {
 		setCursor('grab');
 		if (onMoveStart) onMoveStart(event);
-	}, []);
+	}, [onMoveStart]);
 
 	const handleOnMoveEnd = useCallback((event) => {
 		setCursor('auto');
 		if (onMoveEnd) onMoveEnd(event);
-	}, []);
+	}, [onMoveEnd]);
 
 	//
 	// D. Render components
 
 	return (
-		<div className={styles.container}>
-
-			<MapViewToolbar
-				autoZoom={autoZoom}
-				className={styles.toolbar}
-				onCenterMap={onCenterMap}
-				showCenterButton={showCenterButton}
-				toolbarExtras={toolbarExtras}
-			/>
+		<div className={styles.container} aria-hidden>
 
 			<Map
 				attributionControl={false}
@@ -117,11 +102,14 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 				initialViewState={mapDefaultConfig.initialViewState}
 				interactive={interactiveLayerIds ? true : false}
 				interactiveLayerIds={interactiveLayerIds}
-				mapStyle={mapDefaultConfig.styles[mapStyleValue as string]}
+				mapStyle={mapDefaultConfig.styles['map']}
+				maxPitch={0}
 				maxZoom={mapDefaultConfig.maxZoom}
+				minPitch={0}
 				minZoom={mapDefaultConfig.minZoom}
 				onClick={onClick}
 				onDrag={onDrag}
+				onLoad={handleOnLoad}
 				onMouseEnter={handleOnMouseEnter}
 				onMouseLeave={handleOnMouseLeave}
 				onMouseOut={onMouseOut}
@@ -133,11 +121,6 @@ export function MapView({ autoZoom, children, fullscreen = true, geolocate = tru
 				scrollZoom={scrollZoom}
 				style={{ height: '100%', width: '100%' }}
 			>
-
-				{navigation && <NavigationControl />}
-				{fullscreen && <FullscreenControl />}
-				{geolocate && <GeolocateControl />}
-				{scale && <ScaleControl />}
 
 				<div className={styles.childrenWrapper}>
 					{children}

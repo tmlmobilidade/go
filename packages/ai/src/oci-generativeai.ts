@@ -16,7 +16,7 @@ export interface OCIGenerativeAIRunOptions {
 export class OCIGenerativeAIProvider {
 	//
 
-	private readonly modelOCID = 'ocid1.generativeaimodel.oc1.eu-frankfurt-1.amaaaaaask7dceyaz25iqdyw27r4kve6tu7mnbpviyllkgswzwkwstriguvq';
+	private readonly modelOCID = 'ocid1.generativeaimodel.oc1.eu-frankfurt-1.amaaaaaask7dceyacn5rezarysrnds7bjsu6iy5nrxdvq6hyqcygode5o5xq';
 	private readonly ociClient: GenerativeAiInferenceClient;
 
 	constructor() {
@@ -78,9 +78,9 @@ export class OCIGenerativeAIProvider {
 						},
 					],
 					presencePenalty: 0,
-					temperature: options?.temperature ?? 1,
-					topK: 0,
-					topP: 1,
+					temperature: options?.temperature ?? 0,
+					topK: 1,
+					topP: 0.95,
 				},
 				compartmentId: process.env.OCI_AI_COMPARTMENT,
 				servingMode: {

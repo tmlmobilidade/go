@@ -1,0 +1,40 @@
+{
+	"name": "@tmlmobilidade/go-eta-ride-analyzer",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc && resolve-tspaths",
+		"start": "tsx src/index.ts",
+		"lint": "eslint src --fix && tsc --noEmit",
+		"lint:fix": "eslint src --fix"
+	},
+	"dependencies": {
+		"@clickhouse/client": "1.20.0",
+		"@tmlmobilidade/databases": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-eta-pckg-common": "*",
+		"@tmlmobilidade/go-eta-pckg-loader": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/writers": "*"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/eslint": "*",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
+		"@types/node": "25.9.3",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.22.4",
+		"typescript": "6.0.3"
+	}
+}

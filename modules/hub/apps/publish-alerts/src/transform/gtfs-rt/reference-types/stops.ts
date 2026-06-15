@@ -1,12 +1,13 @@
 /* * */
 
-import { rides } from '@tmlmobilidade/interfaces';
+import { rides, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
+import { getPublicRouteId } from '@tmlmobilidade/utils';
 
 /* * */
 
-export async function transformReferenceTypeStops(alertData: Alert): Promise<GtfsRtEntitySelector[] | undefined> {
+export async function transformReferenceTypeStopsIntoGtfsRt(alertData: Alert): Promise<GtfsRtEntitySelector[] | undefined> {
 	//
 
 	//
@@ -36,9 +37,19 @@ export async function transformReferenceTypeStops(alertData: Alert): Promise<Gtf
 	for (const reference of alertData.references) {
 		//
 
+		const foundStopData = await stops.findOne({
+			'flags.agency_ids': { $in: [alertData.agency_id] },
+			'flags.stop_id': reference.parent_id,
+		});
+
+		if (!foundStopData) {
+			Logger.error(`[Alert ID: ${alertData._id}] Stop ID ${reference.parent_id} not found for agency ID ${alertData.agency_id}.`);
+			continue;
+		}
+
 		const parsedEntitySelector: GtfsRtEntitySelector = {
 			agency_id: alertData.agency_id,
-			stop_id: reference.parent_id,
+			stop_id: String(foundStopData._id),
 		};
 
 		if (!reference.child_ids?.length) {
@@ -91,8 +102,8 @@ export async function transformReferenceTypeStops(alertData: Alert): Promise<Gtf
 			for (const routeId of uniqueRouteIds) {
 				result.push({
 					agency_id: alertData.agency_id,
-					route_id: routeId,
-					stop_id: reference.parent_id,
+					route_id: getPublicRouteId(alertData.agency_id, routeId),
+					stop_id: String(foundStopData._id),
 				});
 			}
 

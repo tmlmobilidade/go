@@ -31,7 +31,7 @@ const SQL_ROOT = resolveSqlRoot();
  * module. Pass it directly to `queryEtaFromFile()`.
  *
  * @example
- * await queryEtaFromFile(client, pipelinePath('loader/2-build_hist_node_travel_times.sql'));
+ * await queryEtaFromFile(client, 'eta', pipelinePath('loader/2-build_hist_node_travel_times.sql'));
  */
 export function pipelinePath(name: string): string {
 	return path.join(SQL_ROOT, name);

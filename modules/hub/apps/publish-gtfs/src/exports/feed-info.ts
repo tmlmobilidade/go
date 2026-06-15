@@ -3,6 +3,7 @@
 
 import { type ExportGtfsContext } from '@/types/context.js';
 import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
 import { type OperationalDate } from '@tmlmobilidade/types';
 
 /* * */
@@ -28,6 +29,10 @@ export interface ExportedFeedInfoRow {
 export async function exportFeedInfoFile(startDate: OperationalDate, endDate: OperationalDate, context: ExportGtfsContext) {
 	//
 
+	const timer = new Timer();
+
+	Logger.info('Exporting feed_info.txt file...');
+
 	const parsedFeedInfoRow: ExportedFeedInfoRow = {
 		feed_version: context.run_id,
 		feed_start_date: startDate,
@@ -44,5 +49,5 @@ export async function exportFeedInfoFile(startDate: OperationalDate, endDate: Op
 
 	await context.writers.feed_info.flush();
 
-	Logger.info('Exported feed_info.txt file.');
+	Logger.success(`Exported feed_info.txt file in ${timer.get()}.`);
 }
