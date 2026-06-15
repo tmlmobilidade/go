@@ -7,7 +7,6 @@ import { StopFlagSchema } from '@/stops/flag.js';
 import { StopJurisdictionSchema } from '@/stops/jurisdiction.js';
 import { StopRoadTypeSchema } from '@/stops/road-type.js';
 import { StopIdSchema } from '@/stops/stop-id.js';
-import { TtsSchema } from '@/stops/tts.js';
 import { AvailabilityStatusSchema, CommentSchema, ConditionStatusSchema, DocumentSchema, LifecycleStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -92,7 +91,6 @@ export const StopSchema = DocumentSchema.extend({
 
 	file_ids: z.array(z.string()).default([]),
 	image_ids: z.array(z.string()).default([]),
-	tts: z.array(TtsSchema).default([]),
 
 	//
 	// Notes & Comments
