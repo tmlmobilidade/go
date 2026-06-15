@@ -31,6 +31,7 @@ export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailView
 				data-is-past={data.is_past}
 				data-with-clock={withClock}
 			>
+				{/* <p>{data.trip_ids.join(', ')}</p> */}
 				<div className={styles.summary}>
 					<LineDisplay
 						agencyId={data.agency_id}

@@ -281,13 +281,13 @@ export function ridesPipelineSeenStatus({ filter }: { filter?: { seen_status?: S
 
 export function ridesPipelineTicketingStatus({ filter }: { filter?: { ticketing_status?: TicketingStatus[] } } = {}): AggregationPipeline<Ride> {
 	const pipeline: AggregationPipeline<Ride> = [];
-	if (filter?.ticketing_status?.length) return pipeline;
+	if (!filter?.ticketing_status?.length) return pipeline;
 
 	const includesHasTicketing = filter.ticketing_status.includes('has_ticketing');
 	const includesNoTicketing = filter.ticketing_status.includes('no_ticketing');
 
 	// If both are present, match all documents (no filter needed)
-	if (includesHasTicketing && !includesNoTicketing) return pipeline;
+	if (includesHasTicketing && includesNoTicketing) return pipeline;
 
 	if (includesHasTicketing) {
 		pipeline.push({ $match: { apex_validations_qty: { $gte: 1 } } });
@@ -468,6 +468,9 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 
 	// Stage 2: Filter by agency IDs (required)
 	pipeline.push({ $match: { agency_id: { $in: filter.agency_ids ?? [] } } });
+
+	// Stage 2.1: Sort by start_time_scheduled
+	pipeline.push({ $sort: { start_time_scheduled: 1 } });
 
 	// Stage 3: Filter by line IDs if provided
 	if (filter.line_ids?.length) pipeline.push({ $match: { line_id: { $in: filter.line_ids.map(id => Number(id)) } } });

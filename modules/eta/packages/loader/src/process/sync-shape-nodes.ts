@@ -31,11 +31,11 @@ export async function syncShapeNodes(clickhouseClient: Parameters<typeof queryEt
 		insertFn: async (data) => {
 			await clickhouseClient.insert({
 				format: 'JSONEachRow',
-				table: qualifiedTable('hist_shape_nodes'),
+				table: qualifiedTable(config.database, 'hist_shape_nodes'),
 				values: data,
 			});
 		},
-		title: qualifiedTable('hist_shape_nodes'),
+		title: qualifiedTable(config.database, 'hist_shape_nodes'),
 	});
 
 	//

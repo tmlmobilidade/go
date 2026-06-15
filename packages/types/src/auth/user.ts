@@ -1,8 +1,7 @@
 /* * */
 
-import { DocumentSchema } from '@/_common/document.js';
-import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { PermissionSchema } from '@/permissions/index.js';
+import { DocumentSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

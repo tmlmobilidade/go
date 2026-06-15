@@ -28,10 +28,11 @@
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
-		"build": "tsc && resolve-tspaths",
-		"lint": "eslint ./src/ && tsc --noEmit",
+		"build": "tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json",
+		"lint": "eslint ./src/ ./tests/ && tsc --noEmit",
 		"lint:fix": "eslint ./src/ --fix",
-		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
+		"test": "tsx --test tests/*.test.ts",
+		"watch": "tsc-watch -p tsconfig.build.json --onSuccess 'resolve-tspaths -p tsconfig.build.json'"
 	},
 	"dependencies": {
 		"@tmlmobilidade/types": "*",
@@ -40,9 +41,10 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.9.2",
+		"@types/node": "25.9.3",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",
+		"tsx": "4.22.3",
 		"typescript": "6.0.3"
 	}
 }

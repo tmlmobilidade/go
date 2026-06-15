@@ -1,6 +1,6 @@
 /* * */
 
-import { DocumentSchema } from '@/_common/document.js';
+import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { RouteSimplifiedSchema } from './route.js';

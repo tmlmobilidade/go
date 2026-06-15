@@ -23,26 +23,28 @@ const main = async () => {
 	let saveCount = 0;
 
 	//
-	// Fetch the CRTM AISA Vehicle Events data from the API and decode it
+	// Fetch the CRTM-AISA Vehicle Events data from the API and decode it
 
-	Logger.info(`[${ITERATION}] Fetching CRTM AISA data from API...`, 0, 1);
+	Logger.info(`[${ITERATION}] Fetching CRTM-AISA data from API...`, 0, 1);
 
 	const decodedMessage = await externalClients.crtmAisa.vehiclePositions();
 
-	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the CRTM AISA data.`);
+	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the CRTM-AISA data.`);
 
 	//
 	// Transform each message into a RawVehicleEvent
-
-	const candidateEvents: Array<{ _id: string, document: RawVehicleEventCrtmAisaV1 }> = [];
 
 	for (const entity of decodedMessage.entity ?? []) {
 		try {
 		//
 
-			if (!entity.vehicle?.trip) continue;
+			//
+			// Skip entities that do not have a vehicle field,
+			// as they are not relevant for our use case.
 
-			const timestampSeconds = entity.vehicle.timestamp ?? decodedMessage.header.timestamp;
+			if (!entity.vehicle) continue;
+
+			if (!entity.vehicle?.trip?.trip_id) continue;
 
 			//
 			// Hash the relevant fields of the vehicle event
@@ -51,14 +53,11 @@ const main = async () => {
 			// and avoid storing them multiple times in the database.
 
 			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventCrtmAisaV1> = {
-				agency_id: 'crtm-aisa',
-				created_at: Dates.fromSeconds(timestampSeconds).unix_timestamp,
+				agency_id: '1',
+				created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_timestamp,
 				entity_id: entity.id,
 				payload: {
-					header: {
-						...decodedMessage.header,
-						timestamp: timestampSeconds,
-					},
+					header: decodedMessage.header,
 					vehicle: entity.vehicle,
 				},
 				version: 'crtm-aisa-v1',
@@ -69,14 +68,21 @@ const main = async () => {
 				.update(JSON.stringify(hashableRawEvent))
 				.digest('hex');
 
-			candidateEvents.push({
+			//
+			// Write the new vehicle event document
+			// to the RawVehicleEvents collection
+
+			const alreadyExists = await rawVehicleEventsNew.findOne({ _id: hashableRawEventId });
+
+			if (alreadyExists) continue;
+
+			await rawVehicleEventsNew.insertOne({
+				...hashableRawEvent,
 				_id: hashableRawEventId,
-				document: {
-					...hashableRawEvent,
-					_id: hashableRawEventId,
-					received_at: Dates.now('Europe/Lisbon').unix_timestamp,
-				},
+				received_at: Dates.now('Europe/Lisbon').unix_timestamp,
 			});
+
+			saveCount++;
 
 		//
 		} catch (error) {
@@ -84,30 +90,7 @@ const main = async () => {
 		}
 	}
 
-	//
-	// Save the new vehicle events to the database
-
-	if (candidateEvents.length > 0) {
-		try {
-			const candidateIds = candidateEvents.map(event => event._id);
-			const existingDocs = await rawVehicleEventsNew.findMany(
-				{ _id: { $in: candidateIds } },
-				{ projection: { _id: 1 } },
-			);
-			const existingIds = new Set(existingDocs.map(doc => doc._id));
-
-			const newEvents = candidateEvents.filter(event => !existingIds.has(event._id));
-
-			if (newEvents.length > 0) {
-				await rawVehicleEventsNew.insertMany(newEvents.map(event => event.document));
-				saveCount = newEvents.length;
-			}
-		} catch (error) {
-			Logger.error(`[${ITERATION}] Error saving vehicle events to database:`, error);
-		}
-	}
-
-	Logger.info(`[${ITERATION}] Saved ${saveCount} new Vehicle Events from CRTM AISA data in ${timer.get()}.`);
+	Logger.info(`[${ITERATION}] Saved ${saveCount} new Vehicle Events from CRTM-AISA data in ${timer.get()}.`);
 
 	ITERATION++;
 
@@ -116,4 +99,4 @@ const main = async () => {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '1s', throwOnError: true });
+await runOnInterval(main, { intervalMs: '5s', throwOnError: false });

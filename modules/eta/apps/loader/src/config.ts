@@ -8,9 +8,15 @@ import { Dates } from '@tmlmobilidade/dates';
 
 const isDevelopment = process.env.ENVIRONMENT === 'development';
 
+function getEtaDatabase(): string {
+	return process.env.ENVIRONMENT === 'dev' ? 'eta_dev' : 'eta';
+}
+
 export const AppConfig = Object.freeze({
 	// Agency and line configurations
 	agencyIds: ['1', '8', '21', '41', '42', '43', '44'],
+
+	database: getEtaDatabase(),
 
 	development: {
 		isDevelopment,
