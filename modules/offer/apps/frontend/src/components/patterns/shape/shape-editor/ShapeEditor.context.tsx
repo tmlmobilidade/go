@@ -68,6 +68,7 @@ interface StopsEditorContextState {
 		revertPath: () => void
 		submit: () => void
 		undo: () => void
+		updateStop: (index: number, values: Partial<Pick<Path, 'allow_drop_off' | 'allow_pickup' | 'timepoint'>>) => void
 	}
 	data: {
 		anchors: ShapeAnchor[]
@@ -421,6 +422,15 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 		setHistoryMeta({ index: historyIndexRef.current, length: historyRef.current.length });
 	}, []);
 
+	const updateStop = useCallback((index: number, values: Partial<Pick<Path, 'allow_drop_off' | 'allow_pickup' | 'timepoint'>>) => {
+		const nextPath = path.map((pathItem, pathIndex) => {
+			if (pathIndex !== index) return pathItem;
+			return { ...pathItem, ...values };
+		});
+
+		pushToHistory(nextPath, localShape);
+	}, [localShape, path, pushToHistory]);
+
 	const revertPath = useCallback(() => {
 		pushToHistory(initialPath, initialShape);
 		setRouteData(null);
@@ -456,6 +466,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 			revertPath,
 			submit,
 			undo,
+			updateStop,
 		},
 		data: {
 			anchors,
@@ -472,7 +483,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 			migrationWarningVisible,
 			needsMigration,
 		},
-	}), [addShapeAnchor, addStop, appendStop, cancel, convertShapeToEditable, dismissMigrationWarning, initializePath, moveShapeAnchor, previewRoute, prependStop, recomputeRoute, redo, removeShapeAnchor, removeStop, reorderStops, revertPath, submit, undo, anchors, canRedo, canUndo, hasUnsavedChanges, migrationWarningVisible, needsMigration, path, routeData, localShape, isEditableShape, isLoadingRoute]);
+	}), [addShapeAnchor, addStop, appendStop, cancel, convertShapeToEditable, dismissMigrationWarning, initializePath, moveShapeAnchor, previewRoute, prependStop, recomputeRoute, redo, removeShapeAnchor, removeStop, reorderStops, revertPath, submit, undo, updateStop, anchors, canRedo, canUndo, hasUnsavedChanges, migrationWarningVisible, needsMigration, path, routeData, localShape, isEditableShape, isLoadingRoute]);
 
 	return (
 		<StopsEditorContext.Provider value={contextValue}>

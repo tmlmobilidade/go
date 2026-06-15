@@ -9,7 +9,6 @@ import { useMemo, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
 
-import { usePatternDetailContext } from '../../../detail/PatternDetail.context';
 import { useStopsEditorContext } from '../ShapeEditor.context';
 
 /* * */
@@ -20,7 +19,6 @@ export function ShapeEditorStopsItem({ pathItem, rowIndex }: { pathItem: Populat
 	//
 	// A. Setup variables
 
-	const patternDetailContext = usePatternDetailContext();
 	const locationsContext = useLocationsContext();
 	const stopsEditorContext = useStopsEditorContext();
 
@@ -29,7 +27,7 @@ export function ShapeEditorStopsItem({ pathItem, rowIndex }: { pathItem: Populat
 
 	const [isExpanded, setIsExpanded] = useState(false);
 
-	const stopItem = patternDetailContext.data.form.getValues().path?.[rowIndex];
+	const stopItem = stopsEditorContext.data.path[rowIndex];
 
 	const stopLocationInfo = useMemo(() => {
 		if (!pathItem.stop) return null;
@@ -64,13 +62,7 @@ export function ShapeEditorStopsItem({ pathItem, rowIndex }: { pathItem: Populat
 		const currentValue = stopItem ? stopItem[field] : undefined;
 		if (currentValue === undefined) return;
 
-		patternDetailContext.data.form.setFieldValue('path', patternDetailContext.data.form.getValues().path.map((item, index) => {
-			if (index !== rowIndex) return item;
-			return {
-				...item,
-				[field]: !currentValue,
-			};
-		}));
+		stopsEditorContext.actions.updateStop(rowIndex, { [field]: !currentValue });
 	};
 
 	const clearEnterTimeout = () => {

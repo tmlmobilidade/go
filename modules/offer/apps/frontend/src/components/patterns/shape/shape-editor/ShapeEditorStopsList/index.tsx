@@ -4,8 +4,10 @@
 
 import { ShapeEditorStopsItem } from '@/components/patterns/shape/shape-editor/ShapeEditorStopsItem';
 import { useStopsContext } from '@/contexts/Stops.context';
-import { PopulatedPath } from '@tmlmobilidade/types';
-import { DraggableList, Section, Text } from '@tmlmobilidade/ui';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { PopulatedPath, Stop } from '@tmlmobilidade/types';
+import { DraggableList, Section, Text, useToast } from '@tmlmobilidade/ui';
+import { fetchData } from '@tmlmobilidade/utils';
 import { useState } from 'react';
 
 import styles from './styles.module.css';
@@ -57,11 +59,17 @@ export function StopsList() {
 		setSelectedStopId(null);
 	};
 
-	const handleSelectStop = (stopId: null | string) => {
+	const handleSelectStop = async (stopId: null | string) => {
 		if (!stopId || addStopIndex === null) return;
-		const selectedStop = stopsContext.data.raw.find(stop => stop._id === Number(stopId));
-		if (!selectedStop) return;
-		void stopsEditorContext.actions.addStop(selectedStop, addStopIndex + 1);
+		setSelectedStopId(stopId);
+
+		const selectedStopResult = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId));
+		if (!selectedStopResult.isOk) {
+			useToast.error({ message: selectedStopResult.error, title: 'Erro ao carregar paragem' });
+			return;
+		}
+
+		void stopsEditorContext.actions.addStop(selectedStopResult.data, addStopIndex + 1);
 		handleCancelAddStop();
 	};
 
@@ -99,7 +107,7 @@ export function StopsList() {
 										nextPathItem={nextPathItem}
 										onAdd={handleStartAddStop}
 										onCancel={handleCancelAddStop}
-										onSelect={handleSelectStop}
+										onSelect={stopId => void handleSelectStop(stopId)}
 										pathItem={pathItem}
 										selectedStopId={selectedStopId}
 										stopOptions={stopOptions}

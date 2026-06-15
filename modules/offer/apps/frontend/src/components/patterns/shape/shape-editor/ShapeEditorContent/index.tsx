@@ -177,7 +177,6 @@ export function ShapeEditorContent() {
 				lineData={patternDetailContext.geojson.pattern_line}
 				onInitialize={(s1, s2) => void stopsEditorContext.actions.initializePath(s1, s2)}
 				stopOptions={stopOptions}
-				stopsRaw={stopsContext.data.raw}
 			/>
 		);
 	}

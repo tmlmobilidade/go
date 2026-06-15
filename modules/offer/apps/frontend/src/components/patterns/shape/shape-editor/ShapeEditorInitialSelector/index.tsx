@@ -2,8 +2,10 @@
 
 /* * */
 
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Stop } from '@tmlmobilidade/types';
-import { MapOverlayPatternShape, MapView, Section, Select, Text } from '@tmlmobilidade/ui';
+import { MapOverlayPatternShape, MapView, Section, Select, Text, useToast } from '@tmlmobilidade/ui';
+import { fetchData } from '@tmlmobilidade/utils';
 import { useState } from 'react';
 
 import styles from '../ShapeEditorContent/styles.module.css';
@@ -16,34 +18,49 @@ interface InitialStopSelectorProps {
 	lineData: unknown
 	onInitialize: (firstStop: Stop, secondStop: Stop) => void
 	stopOptions: { label: string, value: string }[]
-	stopsRaw: Stop[]
 }
 
 /* * */
 
-export function InitialStopSelector({ isLoading, lineColor, lineData, onInitialize, stopOptions, stopsRaw }: InitialStopSelectorProps) {
+export function InitialStopSelector({ isLoading, lineColor, lineData, onInitialize, stopOptions }: InitialStopSelectorProps) {
 	//
 
 	//
 	// A. Setup variables
 
 	const [firstStopId, setFirstStopId] = useState<null | string>(null);
+	const [firstStop, setFirstStop] = useState<null | Stop>(null);
 	const [secondStopId, setSecondStopId] = useState<null | string>(null);
 
 	//
 	// B. Handle actions
 
-	const handleFirst = (id: null | string) => {
+	const handleFirst = async (id: null | string) => {
 		setFirstStopId(id);
+		setFirstStop(null);
 		setSecondStopId(null);
+		if (!id) return;
+
+		const selectedStopResult = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(id));
+		if (!selectedStopResult.isOk) {
+			useToast.error({ message: selectedStopResult.error, title: 'Erro ao carregar paragem' });
+			return;
+		}
+
+		setFirstStop(selectedStopResult.data);
 	};
 
-	const handleSecond = (id: null | string) => {
+	const handleSecond = async (id: null | string) => {
 		setSecondStopId(id);
-		if (!id || !firstStopId) return;
-		const s1 = stopsRaw.find(s => s._id === Number(firstStopId));
-		const s2 = stopsRaw.find(s => s._id === Number(id));
-		if (s1 && s2) onInitialize(s1, s2);
+		if (!id || !firstStop) return;
+
+		const selectedStopResult = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(id));
+		if (!selectedStopResult.isOk) {
+			useToast.error({ message: selectedStopResult.error, title: 'Erro ao carregar paragem' });
+			return;
+		}
+
+		onInitialize(firstStop, selectedStopResult.data);
 	};
 
 	//
@@ -58,7 +75,7 @@ export function InitialStopSelector({ isLoading, lineColor, lineData, onInitiali
 					data={stopOptions}
 					disabled={isLoading}
 					label="Primeira paragem"
-					onChange={handleFirst}
+					onChange={id => void handleFirst(id)}
 					placeholder="Pesquisar paragem..."
 					value={firstStopId}
 					w="100%"
@@ -69,7 +86,7 @@ export function InitialStopSelector({ isLoading, lineColor, lineData, onInitiali
 						data={stopOptions.filter(o => o.value !== firstStopId)}
 						disabled={isLoading}
 						label="Segunda paragem"
-						onChange={handleSecond}
+						onChange={id => void handleSecond(id)}
 						placeholder="Pesquisar paragem..."
 						value={secondStopId}
 						w="100%"
