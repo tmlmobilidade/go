@@ -1,11 +1,11 @@
 /* * */
 
-import { getLegacyStopsMap } from '@/endpoints/v1/network/get-legacy-stops-map.js';
-import { getLines } from '@/endpoints/v1/network/get-lines.js';
-import { getPattern } from '@/endpoints/v1/network/get-pattern.js';
-import { getRoutes } from '@/endpoints/v1/network/get-routes.js';
-import { getShape } from '@/endpoints/v1/network/get-shape.js';
-import { getStops } from '@/endpoints/v1/network/get-stops.js';
+import { getLegacyStopsMap } from '@/endpoints/v1/network/controllers/get-legacy-stops-map.js';
+import { getLines } from '@/endpoints/v1/network/controllers/get-lines.js';
+import { getPattern } from '@/endpoints/v1/network/controllers/get-pattern.js';
+import { getRoutes } from '@/endpoints/v1/network/controllers/get-routes.js';
+import { getShape } from '@/endpoints/v1/network/controllers/get-shape.js';
+import { getStops } from '@/endpoints/v1/network/controllers/get-stops.js';
 import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */
