@@ -14,7 +14,7 @@ import { type HubAlert } from '@tmlmobilidade/types';
 export async function getJsonFeed(request: FastifyRequest, reply: FastifyReply<HubAlert[]>) {
 	//
 
-	const cachedData = await apiCache.get('hub:alerts:published:json');
+	const cachedData = await apiCache.get('hub:v1:alerts:published:json');
 
 	if (!cachedData) {
 		Logger.error('[hub/v1/alerts:getJsonFeed()] No JSON feed found in cache. Returning empty array.');

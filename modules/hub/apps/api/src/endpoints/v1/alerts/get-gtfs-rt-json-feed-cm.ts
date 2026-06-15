@@ -15,7 +15,7 @@ import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 export async function getGtfsRtJsonFeedCm(request: FastifyRequest, reply: FastifyReply<GtfsRtFeedMessage>) {
 	//
 
-	const cachedData = await apiCache.get('hub:alerts:published:gtfs:cm');
+	const cachedData = await apiCache.get('hub:v1:alerts:published:gtfs:cm');
 
 	if (!cachedData) {
 		Logger.error('[hub/v1/alerts:getGtfsRtJsonFeedCm()] No GTFS-RT feed found in cache. Returning empty message.');

@@ -14,7 +14,7 @@ import { type HubLine } from '@tmlmobilidade/types';
 export async function getLines(request: FastifyRequest, reply: FastifyReply<HubLine[]>) {
 	//
 
-	const cachedData = await apiCache.get('hub:network:lines');
+	const cachedData = await apiCache.get('hub:v1:network:lines');
 
 	if (!cachedData) {
 		Logger.error('[hub/v1/network:getLines()] No cached data found for lines');

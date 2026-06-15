@@ -11,7 +11,7 @@ import { Logger } from '@tmlmobilidade/logger';
  * @param reply The reply object.
  */
 export async function getVehicleMetadataJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
-	const raw = await apiCache.get('hub:realtime:vehicles:metadata:json');
+	const raw = await apiCache.get('hub:v1:realtime:vehicles:metadata:json');
 	if (!raw) {
 		Logger.error('[hub/v1/realtime:getVehicleMetadataJson()] No data in cache.');
 		return reply

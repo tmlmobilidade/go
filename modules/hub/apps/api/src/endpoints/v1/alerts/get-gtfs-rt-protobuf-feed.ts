@@ -14,7 +14,7 @@ import { Logger } from '@tmlmobilidade/logger';
 export async function getGtfsRtProtobufFeed(request: FastifyRequest, reply: FastifyReply<Buffer>) {
 	//
 
-	const cachedData = await apiCache.get('hub:alerts:published:gtfs');
+	const cachedData = await apiCache.get('hub:v1:alerts:published:gtfs');
 
 	if (!cachedData) {
 		Logger.error('[hub/v1/alerts:getGtfsRtProtobufFeed()] No GTFS-RT feed found in cache. Returning empty message.');

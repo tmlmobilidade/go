@@ -13,7 +13,7 @@ import { Logger } from '@tmlmobilidade/logger';
 export async function getRssFeed(request: FastifyRequest, reply: FastifyReply<string>) {
 	//
 
-	const cachedData = await apiCache.get('hub:alerts:published:rss');
+	const cachedData = await apiCache.get('hub:v1:alerts:published:rss');
 
 	if (!cachedData) {
 		Logger.error('[hub/v1/alerts:getRssFeed()] No RSS feed found in cache. Returning empty message.');

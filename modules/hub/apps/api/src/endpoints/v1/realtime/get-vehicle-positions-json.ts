@@ -13,7 +13,7 @@ import { Logger } from '@tmlmobilidade/logger';
 export async function getVehiclePositionsJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
 	//
 
-	const cachedData = await apiCache.get('hub:realtime:vehicles:positions:json');
+	const cachedData = await apiCache.get('hub:v1:realtime:vehicles:positions:json');
 
 	if (!cachedData) {
 		Logger.error('[hub/v1/realtime:getVehiclePositionsJson()] No cached data found for vehicles positions');

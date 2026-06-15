@@ -13,7 +13,7 @@ import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
  * @param reply The reply object.
  */
 export async function getTripUpdatesGtfsRtProtobuf(request: FastifyRequest, reply: FastifyReply<unknown>) {
-	const raw = await apiCache.get('hub:realtime:eta:gtfs');
+	const raw = await apiCache.get('hub:v1:realtime:eta:gtfs');
 	if (!raw) {
 		Logger.error('[hub/v1/realtime:getTripUpdatesGtfsRtProtobuf()] No data in cache.');
 		return reply

@@ -14,7 +14,7 @@ import { type HubLine } from '@tmlmobilidade/types';
 export async function getLegacyStopsMap(request: FastifyRequest, reply: FastifyReply<HubLine[]>) {
 	//
 
-	const cachedData = await apiCache.get('hub:network:legacy-stops-map');
+	const cachedData = await apiCache.get('hub:v1:network:legacy-stops-map');
 
 	if (!cachedData) {
 		Logger.error('[hub/v1/network:getLegacyStopsMap()] No cached data found for legacy stops map');

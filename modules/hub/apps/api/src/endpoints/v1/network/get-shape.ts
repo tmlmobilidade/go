@@ -14,7 +14,7 @@ import { type HubShape } from '@tmlmobilidade/types';
 export async function getShape(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HubShape>) {
 	//
 
-	const cachedData = await apiCache.get(`hub:network:shapes:${request.params.id}`);
+	const cachedData = await apiCache.get(`hub:v1:network:shapes:${request.params.id}`);
 
 	if (!cachedData) {
 		Logger.error(`[hub/v1/network:getShapes(${request.params.id})] No cached data found for shape ${request.params.id}`);

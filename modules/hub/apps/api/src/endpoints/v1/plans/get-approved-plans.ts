@@ -15,7 +15,7 @@ import { type Plan } from '@tmlmobilidade/types';
 export async function getApprovedPlans(request: FastifyRequest, reply: FastifyReply<Plan[]>) {
 	//
 
-	const cachedData = await apiCache.get('hub:plans:approved:json');
+	const cachedData = await apiCache.get('hub:v1:plans:approved:json');
 
 	if (!cachedData) {
 		Logger.error('[hub/v1/plans:getApprovedPlans()] No cached data found for approved plans');

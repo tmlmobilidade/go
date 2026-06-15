@@ -11,7 +11,7 @@ import { Logger } from '@tmlmobilidade/logger';
  * @param reply The reply object.
  */
 export async function getVehiclePositionsGtfsRtProtobuf(request: FastifyRequest, reply: FastifyReply<unknown>) {
-	const raw = await apiCache.get('hub:realtime:vehicles:positions:gtfs');
+	const raw = await apiCache.get('hub:v1:realtime:vehicles:positions:gtfs');
 	if (!raw) {
 		Logger.error('[hub/v1/realtime:getVehiclePositionsGtfsRtProtobuf()] No data in cache.');
 		return reply

@@ -14,7 +14,7 @@ import { type HubLine } from '@tmlmobilidade/types';
 export async function getPattern(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HubLine[]>) {
 	//
 
-	const cachedData = await apiCache.get(`hub:network:patterns:${request.params.id}`);
+	const cachedData = await apiCache.get(`hub:v1:network:patterns:${request.params.id}`);
 
 	if (!cachedData) {
 		Logger.error(`[hub/v1/network:getPatterns(${request.params.id})] No cached data found for pattern ${request.params.id}`);
