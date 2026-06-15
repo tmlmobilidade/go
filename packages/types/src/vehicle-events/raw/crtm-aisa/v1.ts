@@ -32,7 +32,7 @@ export const RawVehicleEventCrtmAisaV1PayloadSchema = z.object({
 		trip: z.object({
 			direction_id: z.number().nullish(),
 			route_id: z.string(),
-			schedule_relationship: z.enum(['SCHEDULED', 'NOT_SCHEDULED', 'CANCELED']).nullish(),
+			schedule_relationship: z.enum(['SCHEDULED', 'NOT_SCHEDULED', 'CANCELED', 'ADDED']).nullish(),
 			start_date: OperationalDateSchema.nullish(),
 			start_time: z.string().nullish(),
 			trip_id: z.string(),

@@ -32,7 +32,7 @@ export function RuleCreateFooter() {
 				<IconCalendar size={20} />
 				<Button
 					c="var(--color-system-text-100)"
-					label={`Esta regra afeta ${ruleCreateContext.data.ruleImpact.count} dias do calendário`}
+					label={`Esta regra afeta ${ruleCreateContext?.data?.ruleImpact?.count ?? 0} dias do calendário`}
 					onClick={handleShowAffectedDates}
 					style={{ textDecoration: 'underline' }}
 					variant="transparent"
