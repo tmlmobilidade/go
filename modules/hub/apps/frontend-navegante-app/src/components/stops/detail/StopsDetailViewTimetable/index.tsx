@@ -1,6 +1,7 @@
 'use client';
 
 import { NoDataLabel } from '@/components/common/display/NoDataLabel';
+import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailViewTimetableRow } from '@/components/stops/detail/StopsDetailViewTimetableRow';
 import { Dates } from '@tmlmobilidade/dates';
@@ -20,6 +21,7 @@ export function StopsDetailViewTimetable() {
 
 	const { t } = useTranslation();
 
+	const operationalDate = useOperationalDate();
 	const stopsDetailContext = useStopsDetailContext();
 
 	const [showPastArrivals, setShowPastArrivals] = useState(false);
@@ -30,6 +32,8 @@ export function StopsDetailViewTimetable() {
 	const timetableClockIdInsert = useMemo(() => {
 		// Skip if no timetable data
 		if (!stopsDetailContext.data.timetable?.length) return;
+		// Skip if not today
+		if (!operationalDate.isTodaySelected) return;
 		// Get now in Unix timestamp
 		const now = Dates.now('Europe/Lisbon').unix_timestamp;
 		// Check if the timetable starts after now or ends before now
@@ -38,7 +42,7 @@ export function StopsDetailViewTimetable() {
 		// Find the first item in the timetable that has a scheduled arrival time greater than now
 		const firstItemAfterNow = stopsDetailContext.data.timetable.find(item => item.arrival_effective_ms > now);
 		return firstItemAfterNow?._id;
-	}, [stopsDetailContext.data.timetable]);
+	}, [stopsDetailContext.data.timetable, operationalDate.isTodaySelected]);
 
 	const pastArrivals = useMemo(() => {
 		// Skip if no timetable data
@@ -77,9 +81,11 @@ export function StopsDetailViewTimetable() {
 	return (
 		<Section padding="none">
 
-			<p className={styles.toggleShowPastArrivals} onClick={toggleShowPastArrivals}>
-				{showPastArrivals ? t('default:stops.StopsDetailContentTimetableRealtime.show_past_trips_toggle.hide') : t('default:stops.StopsDetailContentTimetableRealtime.show_past_trips_toggle.show')}
-			</p>
+			{operationalDate.isTodaySelected &&	(
+				<p className={styles.toggleShowPastArrivals} onClick={toggleShowPastArrivals}>
+					{showPastArrivals ? t('default:stops.StopsDetailContentTimetableRealtime.show_past_trips_toggle.hide') : t('default:stops.StopsDetailContentTimetableRealtime.show_past_trips_toggle.show')}
+				</p>
+			)}
 
 			<div className={styles.arrivalsWrapper}>
 				{pastArrivals.map(item => (
