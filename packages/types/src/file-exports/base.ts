@@ -1,7 +1,6 @@
 /* * */
 
-import { DocumentSchema } from '@/_common/document.js';
-import { ProcessingStatusSchema } from '@/_common/status.js';
+import { DocumentSchema, ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

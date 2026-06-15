@@ -17,6 +17,7 @@ on:
       - prd
     paths:
       - 'packages/**'
+      - 'packages-new/**'
       - '.github/workflows/publish-packages.yml'
       - '.github/actions/**/*'
       - '.github/templates/**/*'
@@ -43,33 +44,40 @@ jobs:
             const fs = require('fs');
             const path = require('path');
 
-            const packagesDir = 'packages';
+            const rootDirs = ['packages', 'packages-new'];
             const packages = [];
 
-            // Get all directories in packages/
-            const entries = fs.readdirSync(packagesDir, { withFileTypes: true });
-
-            for (const entry of entries) {
-              if (!entry.isDirectory()) continue;
-
-              const packagePath = path.join(packagesDir, entry.name, 'package.json');
-
-              if (!fs.existsSync(packagePath)) continue;
-
-              try {
-                const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
-
-                // Check if package has publishConfig (indicating it should be published)
-                if (packageJson.publishConfig) {
-                  packages.push(entry.name);
+            function findPackageJsons(dir) {
+              const results = [];
+              const entries = fs.readdirSync(dir, { withFileTypes: true });
+              for (const entry of entries) {
+                const fullPath = path.join(dir, entry.name);
+                if (entry.isDirectory() && entry.name !== 'node_modules') {
+                  results.push(...findPackageJsons(fullPath));
+                } else if (entry.isFile() && entry.name === 'package.json') {
+                  results.push(fullPath);
                 }
-              } catch (error) {
-                console.warn(`Failed to parse package.json for ${entry.name}:`, error.message);
+              }
+              return results;
+            }
+
+            for (const rootDir of rootDirs) {
+              const packageJsonPaths = findPackageJsons(rootDir);
+              for (const pkgPath of packageJsonPaths) {
+                try {
+                  const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+                  if (pkg.publishConfig) {
+                    const relPath = path.relative('.', path.dirname(pkgPath));
+                    packages.push({ name: pkg.name, path: relPath });
+                  }
+                } catch (error) {
+                  console.warn(`Failed to parse ${pkgPath}:`, error.message);
+                }
               }
             }
 
             core.setOutput('packages', JSON.stringify(packages));
-            console.log('Packages to publish:', packages);
+            console.log('Packages to publish:', JSON.stringify(packages, null, 2));
 
             if (packages.length === 0) {
               console.log('No packages to publish');
@@ -123,12 +131,12 @@ jobs:
   # # # # # # # # # # # # # # # # # # # # #
 
   publish-package:
-    name: Publish ${{ matrix.package }}
+    name: Publish ${{ matrix.package.name }}
     needs: [discover-packages, generate-package-lock, version-number]
     if: needs.discover-packages.outputs.packages != '[]'
     runs-on: ubuntu-latest
     concurrency:
-      group: publish-${{ matrix.package }}-${{ github.ref }}
+      group: publish-${{ matrix.package.name }}-${{ github.ref }}
       cancel-in-progress: false
     permissions:
       contents: read
@@ -163,14 +171,14 @@ jobs:
       # # #
       - name: Build packages
         working-directory: .
-        run: turbo run build --filter=@tmlmobilidade/${{ matrix.package }}
+        run: turbo run build --filter=${{ matrix.package.name }}
       # # #
       - name: Bump package version
-        working-directory: packages/${{ matrix.package }}
+        working-directory: ${{ matrix.package.path }}
         run: npm version --no-git-tag-version ${{ needs.version-number.outputs.version_number }}
       # # #
       - name: Publish package
-        working-directory: packages/${{ matrix.package }}
+        working-directory: ${{ matrix.package.path }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         run: |

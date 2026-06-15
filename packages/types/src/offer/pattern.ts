@@ -1,11 +1,10 @@
 /* * */
 
-import { CommentSchema } from '@/_common/comment.js';
-import { DocumentSchema } from '@/_common/document.js';
 import { createGtfsMapper } from '@/gtfs-new/mapper.js';
 import { GtfsDirection } from '@/gtfs-new/trips.js';
 import { StopIdSchema } from '@/stops/stop-id.js';
 import { StopSchema } from '@/stops/stop.js';
+import { CommentSchema, DocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { StopsParametersListSchema } from './parameters.js';

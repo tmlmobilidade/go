@@ -1,8 +1,8 @@
 /* * */
 
-import { LifecycleStatusSchema } from '@/_common/status.js';
 import { StopFlagSchema } from '@/stops/flag.js';
 import { StopIdSchema } from '@/stops/stop-id.js';
+import { LifecycleStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

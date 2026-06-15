@@ -38,6 +38,7 @@ export function buildLoaderConfig(args: CliArgs): AppConfig {
 
 	return {
 		agencyIds: AGENCY_IDS,
+		database: 'eta_dev',
 		development: {
 			isDevelopment: true,
 			lineIds: args.lineIds,

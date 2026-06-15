@@ -3,7 +3,7 @@
 import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { PreparedTripUpdate, useTripUpdatesContext } from '@/components/trip-updates/TripUpdates.context';
+import { useTripUpdatesContext } from '@/components/trip-updates/TripUpdates.context';
 import { fetchPatterns } from '@/utils/fetch-patterns';
 import { Dates } from '@tmlmobilidade/dates';
 import { type HubLine, type HubPattern, type HubStop, type UnixTimestamp } from '@tmlmobilidade/types';
@@ -140,14 +140,9 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 					// Convert GTFS time string to Unix Timestamp
 					const scheduledArrivalMs = convertGTFSTimeStringAndOperationalDateToUnixTimestamp(stopTime.arrival_time, operationalDate.selectedOperationalDate);
 					// Fetch the trip update for this stop time
-					let tripUpdate: PreparedTripUpdate;
-					for (const tripId of tripData.trip_ids) {
-						if (tripUpdate) break;
-						// Set a unique key for this object based on
-						const key = `${tripId}-${stopTime.stop_id}-${stopTime.stop_sequence}`;
-						// Return the trip update for the stop
-						tripUpdate = tripUpdatesContext.data.map.get(key);
-					}
+					const tripUpdate = tripUpdatesContext.actions.getTripUpdateForStop(tripData.trip_ids, stopTime.stop_id, stopTime.stop_sequence);
+					// Extract the arrival time, delay and effective arrival time
+					// from the trip update, if any was found
 					const estimatedArrivalMs = tripUpdate?.arrival_time;
 					const arrivalDelayMs = tripUpdate?.delay * 1000;
 					const effectiveArrivalMs = estimatedArrivalMs || scheduledArrivalMs;
@@ -156,7 +151,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 					const isLastStop = stopTime.stop_sequence === patternData.path[patternData.path.length - 1].stop_sequence;
 					// Detect the temporal status of this stop time
 					const isPast = effectiveArrivalMs < Dates.now('Europe/Lisbon').unix_timestamp;
-					const isRealtime = !!estimatedArrivalMs;
+					const isRealtime = !!estimatedArrivalMs && operationalDate.isTodaySelected;
 					// Add this stop time to the timetable array
 					timetableDataForSelectedDate.push({
 						_id: uniqueIdValueForArrivalData,
@@ -185,7 +180,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 		}
 		// Return the timetable data, sorted by scheduled arrival time
 		return timetableDataForSelectedDate.sort((a, b) => a.arrival_effective_ms - b.arrival_effective_ms);
-	}, [validPatternsData, operationalDate.selectedOperationalDate, stopId, tripUpdatesContext.data.map]);
+	}, [validPatternsData, operationalDate.selectedOperationalDate, operationalDate.isTodaySelected, stopId, tripUpdatesContext.actions]);
 
 	//
 	// D. Handle actions

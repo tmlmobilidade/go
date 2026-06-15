@@ -26,6 +26,7 @@ interface PatternDetailContextState {
 		addComment: (comment: string) => void
 		addRule: (rule: ManualRule) => void
 		deleteRule: (ruleId: string) => void
+		duplicateRule: (rule: ManualRule) => void
 		editRule: (rule: ManualRule) => void
 		mutate: () => Promise<Pattern | undefined>
 		openRuleModal: (rule?: ManualRule) => void
@@ -211,6 +212,17 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		form.setFieldValue('rules', newRules);
 	}, [form]);
 
+	const handleDuplicateRule = useCallback((rule: ManualRule) => {
+		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
+		const manualRule = { ...rule } as ManualRule & { shortName?: string, tooltip?: string };
+		delete manualRule.shortName;
+		delete manualRule.tooltip;
+		const duplicatedRule = { ...manualRule, _id: generateRandomString({ length: 5 }) };
+		const newRules = [...currentRules, duplicatedRule];
+
+		form.setFieldValue('rules', newRules);
+	}, [form]);
+
 	const handleOpenRuleModal = useCallback((rule?: ManualRule) => {
 		const onSubmit = (validatedRule: ManualRule) => {
 			if (rule?._id) {
@@ -223,9 +235,10 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		};
 
 		const onDelete = rule?._id ? () => handleDeleteRule(rule._id) : undefined;
+		const onDuplicate = rule?._id ? (duplicatedRule: ManualRule) => handleDuplicateRule(duplicatedRule) : undefined;
 
-		openCreateRuleModal(lineData?.agency_id || '', onSubmit, rule, onDelete);
-	}, [handleAddRule, handleEditRule, handleDeleteRule, lineData?.agency_id]);
+		openCreateRuleModal(lineData?.agency_id || '', onSubmit, rule, onDelete, onDuplicate);
+	}, [handleAddRule, handleEditRule, handleDeleteRule, handleDuplicateRule, lineData?.agency_id]);
 
 	const handleOpenRulesCalendarPreviewModal = useCallback(() => {
 		openRulesCalendarPreviewModal(
@@ -372,6 +385,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 			addRule: handleAddRule,
 			delete: handleDelete,
 			deleteRule: handleDeleteRule,
+			duplicateRule: handleDuplicateRule,
 			editRule: handleEditRule,
 			lock: handleLock,
 			mutate: patternMutate,
@@ -405,7 +419,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 			pattern_line: patternLineFC,
 			pattern_stops: patternStopsFC,
 		},
-	}), [addComment, handleAddRule, handleDelete, handleDeleteRule, handleEditRule, handleLock, patternMutate, handleOpenRuleModal, handleOpenRulesCalendarPreviewModal, handleOpenStopsParameterModal, handleSave, lineData?.agency_id, form, patternId, lineId, rulesForUI, patternData, parametersForUI, typologyData, canDelete, canLock, canSave, patternError, isDeleting, patternLoading, isLocking, isReadOnly, isSaving, patternLineFC, patternStopsFC]);
+	}), [addComment, handleAddRule, handleDelete, handleDeleteRule, handleDuplicateRule, handleEditRule, handleLock, patternMutate, handleOpenRuleModal, handleOpenRulesCalendarPreviewModal, handleOpenStopsParameterModal, handleSave, lineData?.agency_id, form, patternId, lineId, rulesForUI, patternData, parametersForUI, typologyData, canDelete, canLock, canSave, patternError, isDeleting, patternLoading, isLocking, isReadOnly, isSaving, patternLineFC, patternStopsFC]);
 
 	//
 	// H. Render components

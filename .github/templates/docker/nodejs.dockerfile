@@ -58,7 +58,7 @@ RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 RUN npm prune --omit-dev
 
 RUN node /app/.docker/scripts/trim-node-modules.js /app/node_modules
-RUN node /app/.docker/scripts/trim-workspaces.js /app/packages /app/modules
+RUN node /app/.docker/scripts/trim-workspaces.js /app/packages /app/modules /app/packages-new
 
 # Turbo prune may omit modules/*/sql; merge from build context when present.
 RUN --mount=type=bind,source=.,target=/ctx \
@@ -92,6 +92,7 @@ ENV NODE_ENV=production
 COPY --from=builder /app/modules/${MODULE}/apps/${APP}/package.json ./package.json
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
+COPY --from=builder /app/packages-new ./packages-new
 COPY --from=builder /app/modules ./modules
 COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist ./dist
 
