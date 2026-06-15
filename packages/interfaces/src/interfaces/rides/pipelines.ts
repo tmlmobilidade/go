@@ -281,13 +281,13 @@ export function ridesPipelineSeenStatus({ filter }: { filter?: { seen_status?: S
 
 export function ridesPipelineTicketingStatus({ filter }: { filter?: { ticketing_status?: TicketingStatus[] } } = {}): AggregationPipeline<Ride> {
 	const pipeline: AggregationPipeline<Ride> = [];
-	if (filter?.ticketing_status?.length) return pipeline;
+	if (!filter?.ticketing_status?.length) return pipeline;
 
 	const includesHasTicketing = filter.ticketing_status.includes('has_ticketing');
 	const includesNoTicketing = filter.ticketing_status.includes('no_ticketing');
 
 	// If both are present, match all documents (no filter needed)
-	if (includesHasTicketing && !includesNoTicketing) return pipeline;
+	if (includesHasTicketing && includesNoTicketing) return pipeline;
 
 	if (includesHasTicketing) {
 		pipeline.push({ $match: { apex_validations_qty: { $gte: 1 } } });
