@@ -1,10 +1,10 @@
 /* * */
 
 import { parseRawApexTransactionBankingTapV40 } from '@/from-raw-to-simplified/banking-taps/banking-tap-v40.js';
-import { parseRawApexTransactionInspectionDecisionV20 } from '@/from-raw-to-simplified/inspections/inspection-decision-v20.js';
+import { parseRawApexTransactionInspectionDecisionV20 } from '@/from-raw-to-simplified/inspection-decisions/inspection-decision-v20.js';
 import { parseRawApexTransactionInspectionV20 } from '@/from-raw-to-simplified/inspections/inspection-v20.js';
 import { parseRawApexTransactionLocationV30 } from '@/from-raw-to-simplified/locations/location-v30.js';
-import { parseRawApexTransactionRefundV30 } from '@/from-raw-to-simplified/sales/refund-v30.js';
+import { parseRawApexTransactionRefundV30 } from '@/from-raw-to-simplified/refunds/refund-v30.js';
 import { parseRawApexTransactionSaleV30 } from '@/from-raw-to-simplified/sales/sale-v30.js';
 import { parseRawApexTransactionValidationV20 } from '@/from-raw-to-simplified/validations/validation-v20.js';
 import { parseRawApexTransactionValidationV30 } from '@/from-raw-to-simplified/validations/validation-v30.js';
@@ -14,7 +14,7 @@ import { type AnySimplifiedApex, type RawApexTransaction } from '@tmlmobilidade/
 
 /* * */
 
-export const fromRawToSimplifiedMap: Record<RawApexTransaction['version'], (apexTransaction: RawApexTransaction) => AnySimplifiedApex | null> = {
+export const fromRawToSimplifiedParserMap: Record<RawApexTransaction['version'], (apexTransaction: RawApexTransaction) => AnySimplifiedApex | null> = {
 	'banking-tap-4.0': parseRawApexTransactionBankingTapV40,
 	'inspection-2.0': parseRawApexTransactionInspectionV20,
 	'inspection-decision-2.0': parseRawApexTransactionInspectionDecisionV20,

@@ -1,9 +1,10 @@
 /* * */
 
-import { pcgiValidations, rawApexTransactions, simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
+import { rawApexTransactions, simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { fromRawToSimplifiedParserMap } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { invalidateRides } from '@tmlmobilidade/go-apex-pckg-shared';
-import { RawApexTransaction, type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
+import { type RawApexTransaction, type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -103,7 +104,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			const parseResult = parseRawApexTransactionLocationV30(sourceDbDocument);
+			const parseResult = fromRawToSimplifiedParserMap[sourceDbDocument.version](sourceDbDocument);
 			if (!parseResult) return; // Skip if parsing failed
 			await writer.write(parseResult, { flushCallback: invalidateRides });
 		},
