@@ -43,7 +43,7 @@ class SimplifiedApexOnBoardRefundsNewClass extends ClickHouseInterfaceTemplate<S
 
 	protected override readonly databaseName = 'operation';
 	protected override readonly schema = tableSchema;
-	protected override readonly tableName = 'simplified_apex_on_board_refunds';
+	protected override readonly tableName = 'simplified_apex_refunds';
 
 	/**
 	 * Returns the singleton instance of the subclass.

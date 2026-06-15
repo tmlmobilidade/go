@@ -44,7 +44,7 @@ class SimplifiedApexOnBoardSalesNewClass extends ClickHouseInterfaceTemplate<Sim
 
 	protected override readonly databaseName = 'operation';
 	protected override readonly schema = tableSchema;
-	protected override readonly tableName = 'simplified_apex_on_board_sales';
+	protected override readonly tableName = 'simplified_apex_sales';
 
 	/**
 	 * Returns the singleton instance of the subclass.
