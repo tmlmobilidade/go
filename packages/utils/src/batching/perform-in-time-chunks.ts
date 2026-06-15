@@ -30,15 +30,12 @@ export async function performInTimeChunks({ endDate, onChunk, splitBy, startDate
 	// More recent data is more important than older data, so we start syncing the most recent data first.
 	// It makes sense to divide chunks by day, but this should be adjusted according to the volume of data in each chunk.
 
-	let endDateValue: Dates;
-
-	if (!endDate) {
-		endDateValue = Dates
+	const endDateValue = endDate
+		? Dates
+			.fromUnixTimestamp(endDate)
+		: Dates
 			.now('Europe/Lisbon')
 			.minus({ seconds: 30 });
-	} else {
-		endDateValue = Dates.fromUnixTimestamp(endDate);
-	}
 
 	const startDateValue = Dates.fromUnixTimestamp(startDate);
 

@@ -41,9 +41,9 @@ class SimplifiedApexOnBoardRefundsNewClass extends ClickHouseInterfaceTemplate<S
 
 	private static _instance: null | Promise<SimplifiedApexOnBoardRefundsNewClass> = null;
 
-	protected override readonly databaseName = 'operation';
+	protected override readonly databaseName = 'simplified_apex';
 	protected override readonly schema = tableSchema;
-	protected override readonly tableName = 'simplified_apex_refunds';
+	protected override readonly tableName = 'refunds';
 
 	/**
 	 * Returns the singleton instance of the subclass.

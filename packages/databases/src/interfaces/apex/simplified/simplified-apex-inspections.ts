@@ -39,9 +39,9 @@ class SimplifiedApexInspectionsNewClass extends ClickHouseInterfaceTemplate<Simp
 
 	private static _instance: null | Promise<SimplifiedApexInspectionsNewClass> = null;
 
-	protected override readonly databaseName = 'operation';
+	protected override readonly databaseName = 'simplified_apex';
 	protected override readonly schema = tableSchema;
-	protected override readonly tableName = 'simplified_apex_inspections';
+	protected override readonly tableName = 'inspections';
 
 	/**
 	 * Returns the singleton instance of the subclass.

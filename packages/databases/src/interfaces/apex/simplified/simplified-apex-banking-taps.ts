@@ -39,9 +39,9 @@ class SimplifiedApexBankingTapsNewClass extends ClickHouseInterfaceTemplate<Simp
 
 	private static _instance: null | Promise<SimplifiedApexBankingTapsNewClass> = null;
 
-	protected override readonly databaseName = 'operation';
+	protected override readonly databaseName = 'simplified_apex';
 	protected override readonly schema = tableSchema;
-	protected override readonly tableName = 'simplified_apex_banking_taps';
+	protected override readonly tableName = 'banking_taps';
 
 	/**
 	 * Returns the singleton instance of the subclass.
