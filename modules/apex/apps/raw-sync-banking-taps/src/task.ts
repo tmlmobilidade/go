@@ -20,11 +20,11 @@ const writer = new BatchWriter<SimplifiedApexLocation>({
 });
 
 /**
- * Syncs APEX Locations from the PCGI database
+ * Syncs APEX Banking Taps from the PCGI database
  * to the ClickHouse database for a given time chunk.
  * @param timeChunk The time chunk to sync the data for.
  */
-export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
+export async function syncApexBankingTaps(timeChunk: PerformInTimeChunksItem) {
 	//
 
 	const chunkStartDate = Dates
@@ -47,7 +47,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 			$gte: chunkStartDate.unix_timestamp,
 			$lte: chunkEndDate.unix_timestamp,
 		},
-		version: { $in: ['location-3.0'] },
+		version: { $in: ['banking-tap-4.0'] },
 	};
 
 	//
@@ -60,7 +60,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 	await replicate<RawApexTransaction>({
 
 		countDestinationDbFn: async () => {
-			return await simplifiedApexLocationsNew.count(
+			return await simplifiedApexBankingTapsNew.count(
 				'*',
 				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
