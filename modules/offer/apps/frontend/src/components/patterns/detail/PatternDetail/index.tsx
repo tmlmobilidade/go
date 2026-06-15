@@ -5,9 +5,9 @@ import { PatternDetailHeader } from '@/components/patterns/detail/PatternDetailH
 import { PatternDetailSectionConfig } from '@/components/patterns/detail/PatternDetailSectionConfig';
 import { PatternDetailSectionRules } from '@/components/patterns/detail/PatternDetailSectionRules';
 import { PatternDetailSectionShape } from '@/components/patterns/detail/PatternDetailSectionShape';
+import { PatternDetailSectionTravelTimes } from '@/components/patterns/detail/PatternDetailSectionTravelTimes';
+import { PatternDetailSectionZones } from '@/components/patterns/detail/PatternDetailSectionZones';
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
-
-import { PatternDetailSectionTravelTimes } from '../PatternDetailSectionTravelTimes';
 
 /* * */
 
@@ -34,6 +34,7 @@ export function PatternDetail() {
 		<Pane header={[<PatternDetailHeader key="pattern-detail-header" />]}>
 			<PatternDetailSectionConfig />
 			<PatternDetailSectionShape />
+			<PatternDetailSectionZones />
 			<PatternDetailSectionTravelTimes />
 			<PatternDetailSectionRules />
 		</Pane>
