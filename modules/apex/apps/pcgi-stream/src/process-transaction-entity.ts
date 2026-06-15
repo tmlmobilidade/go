@@ -9,7 +9,7 @@ import { BatchWriter } from '@tmlmobilidade/utils';
 /* * */
 
 const writer = new BatchWriter<RawApexTransaction>({
-	batch_size: 10_000,
+	batch_size: 500,
 	insertFn: async (data) => {
 		const writeOps = data.map(doc => ({
 			updateOne: {
@@ -38,7 +38,7 @@ export async function processPcgiTransactionEntity(databaseOperation) {
 	// Only insert operations are expected to occur in this PCGIDB collection.
 
 	if (databaseOperation.operationType !== 'insert') {
-		Logger.error(`WARNING: streamPcgiTransactionEntities with operationType != "insert": [${databaseOperation.fullDocument.transaction.operatorLongID}] type="${databaseOperation.operationType}" transactionId="${databaseOperation.fullDocument.transaction.transactionId}"`);
+		return; // Logger.error(`WARNING: streamPcgiTransactionEntities with operationType != "insert": operationType="${databaseOperation.operationType}" [${databaseOperation.fullDocument.operatorLongId}] transactionId="${databaseOperation.fullDocument.transactionId}"`);
 	}
 
 	//
