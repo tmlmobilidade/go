@@ -4,7 +4,7 @@ import { generateStopId } from '@/utils/generate-stop-id.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, patterns, stops } from '@tmlmobilidade/interfaces';
-import { CreateStopSchema, PermissionCatalog, type Stop, type StopId, Tts, type UpdateStopDto } from '@tmlmobilidade/types';
+import { CreateStopSchema, PermissionCatalog, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
 
 /**
  * This is an example controller that is using the stops interface.
@@ -40,19 +40,6 @@ export class StopsController {
 		const result = await stops.insertOne({ ...data, _id: newStopId }, { unsafe: true });
 		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED });
 	}
-
-	// /**
-	//  * Creates a new Stop
-	//  * @param request Fastify request containing stop data in body
-	//  * @param reply Fastify reply
-	//  */
-	// static async generateTts(request: FastifyRequest<{ Params: { id: StopId } }> , reply: FastifyReply<Tts>) {
-	// 	//
-	// 	// Parse the request bod
-
-	// 	const result = await stops.insertOne({ ...data, _id: newStopId }, { unsafe: true });
-	// 	reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED });
-	// }
 
 	/**
 	 * Toggles the deleted status of a stop by ID.
@@ -172,23 +159,6 @@ export class StopsController {
 			statusCode: HTTP_STATUS.OK,
 		});
 	}
-
-	/**
-	 * Retrieves a single stop by ID.
-	 * @param request Fastify request containing stop ID in params.
-	 * @param reply Fastify reply.
-	 */
-	// static async getTtsById(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
-	// 	// Get the stop from the database
-	// 	const foundStop = await stops.findById(Number(request.params.id));
-	// 	if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
-
-	// 	reply.send({
-	// 		data: { ...foundStop, tts: '' },
-	// 		error: null,
-	// 		statusCode: HTTP_STATUS.OK,
-	// 	});
-	// }
 
 	/**
 	 * Toggles the lock status of a stop by ID.

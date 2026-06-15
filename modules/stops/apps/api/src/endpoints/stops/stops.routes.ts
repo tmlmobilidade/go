@@ -39,16 +39,6 @@ server.register(
 			StopsController.create,
 		);
 
-		// instance.get(
-		// 	'/:id/tts',
-		// 	StopsController.getTtsById,
-		// );
-
-		// instance.post(
-		// 	'/tts',
-		// 	StopsController.generateTts,
-		// );
-
 		instance.put(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.update]) },
