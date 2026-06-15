@@ -19,6 +19,7 @@ interface RuleCreateContextState {
 	actions: {
 		closeDrawer: () => void
 		deleteRule?: () => void
+		duplicateRule?: () => void
 		openDrawer: () => void
 		setEventExceptionEnabled: (enabled: boolean) => void
 		setPreviewYear: (year: number) => void
@@ -26,7 +27,7 @@ interface RuleCreateContextState {
 	}
 	data: {
 		form: UseFormReturnType<ManualRule>
-		ruleImpact: {
+		ruleImpact: null | {
 			count: number
 			dates: string[]
 		}
@@ -53,7 +54,7 @@ export const useRuleCreateContext = () => {
 
 /* * */
 
-export const RuleCreateContextProvider = ({ children, initialValues, onDelete, onSubmit }: PropsWithChildren<{ initialValues?: ManualRule, onDelete?: () => void, onSubmit: (rule: ManualRule) => void }>) => {
+export const RuleCreateContextProvider = ({ children, initialValues, onDelete, onDuplicate, onSubmit }: PropsWithChildren<{ initialValues?: ManualRule, onDelete?: () => void, onDuplicate?: (rule: ManualRule) => void, onSubmit: (rule: ManualRule) => void }>) => {
 	//
 
 	//
@@ -144,6 +145,22 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 		}
 	}, [onDelete]);
 
+	const handleDuplicateRule = useCallback(() => {
+		const validation = form.validate();
+		if (validation.hasErrors || !onDuplicate) {
+			return;
+		}
+
+		const ruleValues = {
+			...form.getValues(),
+			name: ruleSummary.long,
+			shortName: ruleSummary.short,
+		};
+
+		onDuplicate(ruleValues);
+		closeCreateRuleModal();
+	}, [form, onDuplicate, ruleSummary.long, ruleSummary.short]);
+
 	//
 	// E. Define context value
 
@@ -151,6 +168,7 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 		actions: {
 			closeDrawer: () => setIsDrawerOpen(false),
 			deleteRule: onDelete ? handleDeleteRule : undefined,
+			duplicateRule: onDuplicate ? handleDuplicateRule : undefined,
 			openDrawer: () => setIsDrawerOpen(true),
 			setEventExceptionEnabled: (enabled: boolean) => setIsEventExceptionEnabled(enabled),
 			setPreviewYear,
@@ -169,6 +187,7 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	}), [
 		form,
 		handleDeleteRule,
+		handleDuplicateRule,
 		handleSubmitRule,
 		initialValues,
 		ruleImpact,
@@ -176,6 +195,7 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 		isDrawerOpen,
 		isEventExceptionEnabled,
 		onDelete,
+		onDuplicate,
 	]);
 
 	//
