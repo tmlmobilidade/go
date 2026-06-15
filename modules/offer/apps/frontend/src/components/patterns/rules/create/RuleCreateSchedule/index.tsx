@@ -114,6 +114,7 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 			<Section flexDirection="row" gap="sm" padding="none">
 				<TextInput
 					error={inputError || error}
+					onDragOver={e => e.preventDefault()}
 					onDrop={handleDrop}
 					onKeyDown={handleKeyDown}
 					placeholder="Ex: 08:30 ou 0830 ou 830 + Enter"
