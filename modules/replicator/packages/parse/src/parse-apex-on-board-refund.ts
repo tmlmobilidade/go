@@ -75,7 +75,6 @@ export function parseSimplifiedApexOnBoardRefund(pcgiDoc: any): null | Simplifie
 			received_at: Dates.fromISO(pcgiDoc.createdAt).unix_timestamp,
 			stop_id: null,
 			trip_id: null,
-			updated_at: Dates.fromISO(pcgiDoc.createdAt).unix_timestamp,
 			validation_id: null,
 			vehicle_id: null,
 		};
