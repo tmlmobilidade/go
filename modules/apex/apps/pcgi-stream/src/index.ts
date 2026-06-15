@@ -1,6 +1,6 @@
 /* * */
 
-import { processPcgiTransactionEntity } from '@/process-transaction-entity.js';
+import { processPcgiTransactionEntity } from '@/task.js';
 import { pcgiTransactionEntities } from '@tmlmobilidade/databases';
 
 /* * */
