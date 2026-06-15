@@ -1,4 +1,5 @@
 export * from '@/raw/banking-taps/index.js';
+export * from '@/raw/inspection-decisions/index.js';
 export * from '@/raw/inspections/index.js';
 export * from '@/raw/locations/index.js';
 export * from '@/raw/raw-apex-transaction-base.js';

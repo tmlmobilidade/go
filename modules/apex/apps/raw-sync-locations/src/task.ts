@@ -1,12 +1,13 @@
 /* * */
 
-import { pcgiValidations, simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
+import { pcgiValidations, rawApexTransactions, simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { invalidateRides } from '@tmlmobilidade/go-apex-pckg-shared';
-import { type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
+import { RawApexTransaction, type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 import { BatchWriter } from '@tmlmobilidade/utils';
+import { type Filter } from 'mongodb';
 
 /* * */
 
@@ -41,11 +42,12 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 	// Prepare the PCGIDB query to retrieve documents
 	// for the current timestamp chunk.
 
-	const pcgidbQuery = {
-		'transaction.transactionDate': {
-			$gte: chunkStartDate.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
-			$lte: chunkEndDate.toFormat('yyyy-LL-dd\'T\'HH\':\'mm\':\'ss'),
+	const rawdbQuery: Filter<RawApexTransaction> = {
+		created_at: {
+			$gte: chunkStartDate.unix_timestamp,
+			$lte: chunkEndDate.unix_timestamp,
 		},
+		version: { $in: ['location-3.0'] },
 	};
 
 	//
@@ -53,9 +55,9 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 	// This function will handle the logic of counting, comparing, syncing and deleting documents
 	// between the source and destination databases based on the provided functions.
 
-	const pcgiValidationsCollection = await pcgiValidations.getCollection();
+	const rawApexTransactionsCollection = await rawApexTransactions.getCollection();
 
-	await replicate<unknown>({
+	await replicate<RawApexTransaction>({
 
 		countDestinationDbFn: async () => {
 			return await simplifiedApexLocationsNew.count(
@@ -66,7 +68,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		countSourceDbFn: async () => {
-			const result = await pcgiValidations.count(pcgidbQuery);
+			const result = await rawApexTransactions.count(rawdbQuery);
 			return result;
 		},
 
@@ -86,13 +88,13 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		distinctSourceDbFn: async () => {
-			const result = await pcgiValidations.distinct('transaction.transactionId', pcgidbQuery);
+			const result = await rawApexTransactions.distinct('_id', rawdbQuery);
 			return result.map(String);
 		},
 
 		missingDocumentsSourceDbAsyncIterator: (missingDocumentIds) => {
-			return pcgiValidationsCollection
-				.find({ 'transaction.transactionId': { $in: missingDocumentIds } })
+			return rawApexTransactionsCollection
+				.find({ _id: { $in: missingDocumentIds } })
 				.stream();
 		},
 
@@ -101,7 +103,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			const parseResult = false; // parseSimplifiedApexLocation(sourceDbDocument);
+			const parseResult = parseRawApexTransactionLocationV30(sourceDbDocument);
 			if (!parseResult) return; // Skip if parsing failed
 			await writer.write(parseResult, { flushCallback: invalidateRides });
 		},

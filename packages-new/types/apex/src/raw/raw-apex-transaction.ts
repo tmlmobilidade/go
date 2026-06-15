@@ -1,7 +1,7 @@
 /* * */
 
 import { RawApexTransactionBankingTapV40Schema } from '@/raw/banking-taps/banking-tap-v40.js';
-import { RawApexTransactionInspectionDecisionV20Schema } from '@/raw/inspections/inspection-decision-v20.js';
+import { RawApexTransactionInspectionDecisionV20Schema } from '@/raw/inspection-decisions/inspection-decision-v20.js';
 import { RawApexTransactionInspectionV20Schema } from '@/raw/inspections/inspection-v20.js';
 import { RawApexTransactionLocationV30Schema } from '@/raw/locations/location-v30.js';
 import { RawApexTransactionRefundV30Schema } from '@/raw/refunds/refund-v30.js';
