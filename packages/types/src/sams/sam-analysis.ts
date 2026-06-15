@@ -1,6 +1,6 @@
 /* * */
 
-import { SimplifiedApexTypeSchema } from '@/apex/simplified/simplified-apex-type.js';
+import { SimplifiedApexTypeSchema } from '@tmlmobilidade/go-types-apex';
 import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 

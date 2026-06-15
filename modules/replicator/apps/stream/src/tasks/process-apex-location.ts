@@ -2,10 +2,10 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { parseSimplifiedApexLocation } from '@tmlmobilidade/go-replicator-pckg-parse';
+import { type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
 import { rides, simplifiedApexLocations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@tmlmobilidade/writers';
 
 /* * */
