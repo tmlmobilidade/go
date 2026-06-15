@@ -1,6 +1,6 @@
 /* * */
 
-import { DebugController } from '@/endpoints/v1/debug/debug.controller.js';
+import { getTime } from '@/endpoints/v1/debug/get-time.js';
 import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */
@@ -15,9 +15,7 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/time', DebugController.getTime);
-
-		instance.get('/app-enabled', DebugController.getAppEnabled);
+		instance.get('/time', getTime);
 
 		next();
 	},

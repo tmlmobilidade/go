@@ -53,7 +53,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 	const fetchRawDataTimer = new Timer();
 
 	// For Stops
-	const allStopsParsedTxt = await apiCache.get('hub:network:stops');
+	const allStopsParsedTxt = await apiCache.get('hub:v1:network:stops');
 	const allStopsParsedJson: HubStop[] = JSON.parse(allStopsParsedTxt);
 	const allStopsParsedMap = new Map(allStopsParsedJson.map(item => [item._id, item]));
 
@@ -428,7 +428,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 
 		const finalizedPatternGroupsData: HubPattern[] = Array.from(parsedPatternsForThisPatternGroup.values()).map((item: HubPattern) => ({ ...item, trips: Object.values(item.trips) }));
 
-		await apiCache.set(`hub:network:patterns:${patternId}`, JSON.stringify(finalizedPatternGroupsData));
+		await apiCache.set(`hub:v1:network:patterns:${patternId}`, JSON.stringify(finalizedPatternGroupsData));
 		// await SERVERDB.set(SERVERDB_KEYS.NETWORK.PATTERNS.ID(patternId), JSON.stringify(finalizedPatternGroupsData));
 		updatedPatternKeys.add(`hub:network:patterns:${patternId}`);
 
@@ -456,14 +456,14 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 	// Save all routes to the database
 
 	const finalizedAllRoutesData: HubRoute[] = Array.from(allRoutesParsed.values()).sort((a, b) => a._id.localeCompare(b._id, undefined, { numeric: true }));
-	await apiCache.set('hub:network:routes', JSON.stringify(finalizedAllRoutesData));
+	await apiCache.set('hub:v1:network:routes', JSON.stringify(finalizedAllRoutesData));
 	Logger.info(`Updated ${finalizedAllRoutesData.length} Routes`);
 
 	//
 	// Save all lines to the database
 
 	const finalizedAllLinesData: HubLine[] = Array.from(allLinesParsed.values()).sort((a, b) => a._id.localeCompare(b._id, undefined, { numeric: true }));
-	await apiCache.set('hub:network:lines', JSON.stringify(finalizedAllLinesData));
+	await apiCache.set('hub:v1:network:lines', JSON.stringify(finalizedAllLinesData));
 	Logger.info(`Updated ${finalizedAllLinesData.length} Lines`);
 
 	//
