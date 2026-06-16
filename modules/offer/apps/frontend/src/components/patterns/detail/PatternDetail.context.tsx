@@ -2,7 +2,7 @@
 
 import { openCreateRuleModal } from '@/components/patterns/rules/create/RuleCreate.modal';
 import { openRulesCalendarPreviewModal } from '@/components/patterns/rules/list/RulesCalendarPreview.modal';
-import { openCreateParameterModal } from '@/components/patterns/stops/parameters/create/ParameterCreate.modal';
+import { openCreateParameterModal } from '@/components/patterns/shape/parameters/create/ParameterCreate.modal';
 import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { useTypologiesContext } from '@/contexts/Typologies.context';
@@ -11,7 +11,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, Dates, getMergedPath } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { EventReplacementRule, EventRestrictionRule, Line, ManualRule, Pattern, PermissionCatalog, ScheduleRule, StopsParameter, Typology, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
+import { EventReplacementRule, EventRestrictionRule, Line, ManualRule, Path, Pattern, PermissionCatalog, PopulatedPath, PopulatedPattern, ScheduleRule, Stop, StopsParameter, Typology, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { type Feature, type FeatureCollection, type LineString, type Point } from 'geojson';
@@ -28,6 +28,7 @@ interface PatternDetailContextState {
 		deleteRule: (ruleId: string) => void
 		duplicateRule: (rule: ManualRule) => void
 		editRule: (rule: ManualRule) => void
+		enrichPath: (path: Path[]) => Promise<PopulatedPath[]>
 		mutate: () => Promise<Pattern | undefined>
 		openRuleModal: (rule?: ManualRule) => void
 		openRulesCalendarPreviewModal: () => void
@@ -37,8 +38,9 @@ interface PatternDetailContextState {
 		agency_id: string
 		form: UseFormReturnType<UpdatePatternDto>
 		id: string
+		lineId: string
 		mergedRules: ScheduleRule[]
-		pattern: null | Pattern
+		pattern: null | PopulatedPattern
 		stopsParameterRules: StopsParameterExtended[]
 		typologyData?: Typology
 	}
@@ -77,56 +79,13 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	//
 	// B. Fetch data
 
-	const { data: patternData, error: patternError, isLoading: patternLoading, mutate: patternMutate } = useSWR<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId));
+	const { data: patternData, error: patternError, isLoading: patternLoading, mutate: patternMutate } = useSWR<PopulatedPattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId));
 	const { data: lineData, mutate: lineMutate } = useSWR<Line>(API_ROUTES.offer.LINES_DETAIL(lineId));
 	const typologiesContext = useTypologiesContext();
 	const typologyData = typologiesContext.data.raw.find(t => t._id === lineData?.typology);
 
 	//
-	// C. Transform data to GeoJSON
-
-	const patternLineFC: Feature<LineString, MapOverlayPatternShapeLineDataProps> | FeatureCollection<LineString, MapOverlayPatternShapeLineDataProps> | null = useMemo(() => {
-		if (!patternData?.shape?.geojson?.geometry?.coordinates) return null;
-
-		// The pattern shape is already a GeoJSON Feature, just add our custom properties
-		return {
-			geometry: {
-				coordinates: patternData.shape.geojson.geometry.coordinates,
-				type: 'LineString' as const,
-			},
-			properties: {
-				color: typologiesContext.data.raw.find(t => t._id === lineData?.typology)?.color,
-				id: patternData._id,
-			},
-			type: 'Feature' as const,
-		};
-	}, [patternData, typologiesContext.data.raw, lineData?.typology]);
-
-	const patternStopsFC: FeatureCollection<Point, MapOverlayPatternShapeStopsDataProps> | null = useMemo(() => {
-		const featureCollection = getBaseGeoJsonFeatureCollection<Point, MapOverlayPatternShapeStopsDataProps>();
-
-		if (!patternData?.path) return featureCollection;
-
-		featureCollection.features = patternData.path
-			.filter(pathItem => pathItem.stop)
-			.map((pathItem, index) => ({
-				geometry: {
-					coordinates: [pathItem.stop?.longitude, pathItem.stop?.latitude],
-					type: 'Point' as const,
-				},
-				properties: {
-					id: String(pathItem.stop?._id),
-					name: pathItem.stop?.name,
-					sequence: index + 1,
-				},
-				type: 'Feature' as const,
-			}));
-
-		return featureCollection;
-	}, [patternData]);
-
-	//
-	// D. Setup form
+	// C. Setup form
 
 	const manualRules = useMemo(
 		() => (patternData?.rules ?? []).filter((r): r is ManualRule => r.kind === 'manual'),
@@ -144,6 +103,58 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	);
 
 	const { form } = useTypicalForm<UpdatePatternDto>(UpdatePatternSchema, patternForForm as UpdatePatternDto);
+
+	//
+	// C. Editable pattern data
+
+	const editablePath = useMemo(
+		() => (form.values.path ?? patternData?.path ?? []) as PopulatedPath[],
+		[form.values.path, patternData?.path],
+	);
+	const editableShape = form.values.shape ?? patternData?.shape;
+
+	//
+	// D. Transform editable data to GeoJSON
+
+	const patternLineFC: Feature<LineString, MapOverlayPatternShapeLineDataProps> | FeatureCollection<LineString, MapOverlayPatternShapeLineDataProps> | null = useMemo(() => {
+		if (!editableShape?.geojson?.geometry?.coordinates) return null;
+
+		return {
+			geometry: {
+				coordinates: editableShape.geojson.geometry.coordinates,
+				type: 'LineString' as const,
+			},
+			properties: {
+				color: typologyData?.color,
+				id: patternData?._id ?? patternId,
+			},
+			type: 'Feature' as const,
+		};
+	}, [editableShape, typologyData?.color, patternData?._id, patternId]);
+
+	const patternStopsFC: FeatureCollection<Point, MapOverlayPatternShapeStopsDataProps> | null = useMemo(() => {
+		const featureCollection = getBaseGeoJsonFeatureCollection<Point, MapOverlayPatternShapeStopsDataProps>();
+
+		featureCollection.features = editablePath
+			.filter(pathItem => pathItem.stop)
+			.map((pathItem, index) => ({
+				geometry: {
+					coordinates: [
+						pathItem.stop.longitude,
+						pathItem.stop.latitude,
+					],
+					type: 'Point' as const,
+				},
+				properties: {
+					id: String(pathItem.stop._id),
+					name: pathItem.stop.name,
+					sequence: index + 1,
+				},
+				type: 'Feature' as const,
+			}));
+
+		return featureCollection;
+	}, [editablePath]);
 
 	// rules used for UI + preview
 	const rulesForUI = useMemo(
@@ -164,7 +175,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	const parametersForUI = useMemo(() => {
 		const allParameters = [...(form.values.parameters ?? [])] as StopsParameter[];
 		const periods = periodsContext.data.raw || [];
-		const basePath = patternData?.path ?? [];
+		const basePath = editablePath;
 
 		return allParameters.map((parameter) => {
 			const { long, short } = buildParameterSummary(parameter, { periods });
@@ -179,7 +190,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 				travelTimes: parameterTravelTimes,
 			};
 		});
-	}, [form.values.parameters, periodsContext.data.raw, patternData?.path]);
+	}, [form.values.parameters, periodsContext.data.raw, editablePath]);
 
 	//
 	// E. Handle Schedule RULES actions
@@ -194,7 +205,6 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 	const handleEditRule = useCallback((rule: ManualRule) => {
 		if (!rule._id) {
-			console.error('Cannot edit rule without _id');
 			return;
 		}
 		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
@@ -261,7 +271,6 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 	const handleEditStopParameter = useCallback((rule: StopsParameter) => {
 		if (!rule._id) {
-			console.error('Cannot edit rule without _id');
 			return;
 		}
 		const currentRules = (form.getValues().parameters ?? []) as StopsParameter[];
@@ -292,8 +301,12 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 		const onDelete = rule?._id ? () => handleDeleteStopParameter(rule._id) : undefined;
 
-		openCreateParameterModal(lineData?.agency_id || '', onSubmit, patternData.path, rule, onDelete);
-	}, [lineData?.agency_id, patternData, handleEditStopParameter, handleAddStopParameter, handleDeleteStopParameter]);
+		const defaultParameter = (form.getValues().parameters ?? []).find((p): p is StopsParameter => p.kind === 'default');
+		openCreateParameterModal(lineData?.agency_id || '', onSubmit, (form.getValues().path ?? patternData?.path) as PopulatedPath[], rule, onDelete, defaultParameter);
+	}, [lineData?.agency_id, patternData, handleEditStopParameter, handleAddStopParameter, handleDeleteStopParameter, form]);
+
+	//
+	// G. Handle comments actions
 
 	const addComment = useCallback(async (comment: string) => {
 		try {
@@ -318,11 +331,23 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 		}
 	}, [patternId, patternMutate]);
 
+	// Used to fetch stops when we revert a path change from the history
+	const enrichPath = useCallback(async (path: Path[]): Promise<PopulatedPath[]> => {
+		const stopIds = [...new Set(path.map(p => p.stop_id))];
+		const results = await Promise.all(
+			stopIds.map(id => fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(String(id)))),
+		);
+		const stopsMap = new Map(
+			results.flatMap(r => r.isOk && r.data ? [[r.data._id, r.data]] : []),
+		);
+		return path.map(p => ({ ...p, stop: stopsMap.get(p.stop_id) ?? null }));
+	}, []);
+
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId), 'PUT', form.getValues()),
-		onSuccess: (updatedItem) => {
+		onSuccess: () => {
 			form.resetDirty();
-			void patternMutate(updatedItem);
+			void patternMutate();
 			void lineMutate();
 		},
 	});
@@ -338,9 +363,9 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Pattern>(API_ROUTES.offer.PATTERNS_DETAIL_LOCK(patternId)),
-		onSuccess: (updatedItem) => {
+		onSuccess: () => {
 			form.resetDirty();
-			void patternMutate(updatedItem);
+			void patternMutate();
 			void lineMutate();
 		},
 	});
@@ -387,6 +412,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 			deleteRule: handleDeleteRule,
 			duplicateRule: handleDuplicateRule,
 			editRule: handleEditRule,
+			enrichPath,
 			lock: handleLock,
 			mutate: patternMutate,
 			openRuleModal: handleOpenRuleModal,
@@ -419,7 +445,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 			pattern_line: patternLineFC,
 			pattern_stops: patternStopsFC,
 		},
-	}), [addComment, handleAddRule, handleDelete, handleDeleteRule, handleDuplicateRule, handleEditRule, handleLock, patternMutate, handleOpenRuleModal, handleOpenRulesCalendarPreviewModal, handleOpenStopsParameterModal, handleSave, lineData?.agency_id, form, patternId, lineId, rulesForUI, patternData, parametersForUI, typologyData, canDelete, canLock, canSave, patternError, isDeleting, patternLoading, isLocking, isReadOnly, isSaving, patternLineFC, patternStopsFC]);
+	}), [addComment, handleAddRule, handleDelete, handleDeleteRule, handleEditRule, handleDuplicateRule, handleLock, patternMutate, handleOpenRuleModal, handleOpenRulesCalendarPreviewModal, handleOpenStopsParameterModal, handleSave, enrichPath, lineData?.agency_id, form, patternId, lineId, rulesForUI, patternData, parametersForUI, typologyData, canDelete, canLock, canSave, patternError, isDeleting, patternLoading, isLocking, isReadOnly, isSaving, patternLineFC, patternStopsFC]);
 
 	//
 	// H. Render components

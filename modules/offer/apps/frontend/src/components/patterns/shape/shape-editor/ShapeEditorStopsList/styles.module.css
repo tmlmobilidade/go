@@ -1,0 +1,61 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	overflow: auto;
+	width: 100%;
+}
+
+.line {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 32px;
+	width: 2px;
+	background-color: var(--color-system-border-200);
+}
+
+.connectionInfo {
+	display: flex;
+	align-items: center;
+	width: fit-content;
+	gap: var(--size-spacing-xs);
+	font-size: var(--font-size-lg);
+	width: 100%;
+}
+
+.info {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	color: var(--color-system-text-200);
+}
+
+.info[data-loading='true'] {
+	opacity: 0.45;
+}
+
+.justDropped {
+	animation: droppedFade 900ms ease;
+}
+
+.addStopSelect {
+	flex-grow: 1;
+}
+
+@keyframes droppedFade {
+	0% {
+		opacity: 0.35;
+		transform: scale(0.985);
+	}
+
+	60% {
+		opacity: 1;
+		transform: scale(1.01);
+	}
+
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
