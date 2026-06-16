@@ -77,22 +77,8 @@
 /* * */
 /* LOCALITIES */
 
-.localitiesListWrapper {
-  font-size: 12px;
+.localitiesList {
+  font-size: 14px;
   font-weight: 600;
   color: var(--color-system-text-300);
-}
-
-.localitiesListLabel {
-	font-size: 12px;
-	font-weight: var(--font-weight-semibold);
-	color: var(--color-system-text-300);
-}
-
-.localitySeparator {
-  color: var(--color-system-border-200);
-}
-
-.localityName {
-  color: var(--color-system-text-200);
 }
