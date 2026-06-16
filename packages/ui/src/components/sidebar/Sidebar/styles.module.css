@@ -13,7 +13,7 @@
 	);
 	--sidebar-row-height: var(--sidebar-item-size);
 	--sidebar-group-slot-height: 28px;
-	--sidebar-header-height: 60px;
+	--sidebar-header-height: 61px;
 	--sidebar-footer-action-height: 40px;
 	--sidebar-footer-height: calc(2 * var(--sidebar-scroll-padding) + var(--sidebar-footer-action-height));
 	--sidebar-label-transition-duration: 50ms;
