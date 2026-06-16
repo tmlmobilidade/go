@@ -6,6 +6,7 @@ import { StopsDetailViewTimetableClock } from '@/components/stops/detail/StopsDe
 import { StopsDetailViewTimetableRowArrival } from '@/components/stops/detail/StopsDetailViewTimetableRowArrival';
 import { useSelectedTrip } from '@/hooks/use-selected-trip';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -23,6 +24,8 @@ export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailView
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
 
 	const { selectedTripData, setSelectedTrip } = useSelectedTrip();
 
@@ -74,9 +77,11 @@ export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailView
 					<StopsDetailViewTimetableRowArrival data={data} />
 				</div>
 
-				{/* <div className={styles.details}>
-					<p>{data.trip_ids.join(', ')}</p>
-				</div> */}
+				{data.locality_ids?.length > 0 && (
+					<div className={styles.details}>
+						<p className={styles.localitiesList}>{t('default:stops.StopsDetailViewTimetableRow.localities', '', { localities: data.locality_ids.join(', ') })}</p>
+					</div>
+				)}
 
 			</div>
 
