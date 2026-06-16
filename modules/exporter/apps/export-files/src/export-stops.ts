@@ -1,6 +1,6 @@
 /* * */
 
-import { fileExports, stops } from '@tmlmobilidade/interfaces';
+import { fileExports, locations, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
@@ -45,6 +45,12 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 
 	const stopsCollection = await stops.getCollection();
 	const stopsCursor = stopsCollection.find({ _id: { $in: stopIds } }, { batchSize: 5000 });
+	const municipalityIds = await stopsCollection.distinct('municipality_id', { _id: { $in: stopIds } });
+	const municipalitiesList = await locations.findMunicipalities(
+		{ _id: { $in: municipalityIds } },
+		{ projection: { _id: 1, properties: 1 } },
+	);
+	const municipalitiesMap = new Map(municipalitiesList.map(municipality => [municipality._id, municipality.properties?.name]));
 
 	//
 	// Write the stops batch to the file
@@ -53,7 +59,11 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 
 	let count = 0;
 	for await (const stop of stopsCursor) {
-		await csvWriter.write(parseStops({ _id: stop._id, stop }));
+		await csvWriter.write(parseStops({
+			_id: stop._id,
+			municipality_name: municipalitiesMap.get(stop.municipality_id) ?? null,
+			stop,
+		}));
 		count++;
 	}
 
