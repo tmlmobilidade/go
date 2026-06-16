@@ -1,6 +1,6 @@
 'use client';
 
-import { FeedbackForm } from '@/components/feedback/FeedbackForm';
+import { FeedbackForm } from '@/components/feedback';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailAlerts } from '@/components/stops/detail/StopsDetailAlerts';
 import { StopsDetailViewHeader } from '@/components/stops/detail/StopsDetailViewHeader';

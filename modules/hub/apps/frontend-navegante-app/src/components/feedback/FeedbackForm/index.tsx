@@ -1,11 +1,12 @@
 'use client';
 
 import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-reason-options';
-import { FeedbackImprovementPrompt } from '@/components/feedback/FeedbackImprovementPrompt';
-import { FeedbackMoodSelector } from '@/components/feedback/FeedbackMoodSelector';
-import { FeedbackReasonOptionsSheet } from '@/components/feedback/FeedbackReasonOptionsSheet';
-import { FeedbackReasonsSheet } from '@/components/feedback/FeedbackReasonsSheet';
-import { FeedbackStartPrompt } from '@/components/feedback/FeedbackStartPrompt';
+import { FeedbackImprovementPrompt } from '@/components/feedback/form/FeedbackImprovementPrompt';
+import { FeedbackMoodSelector } from '@/components/feedback/form/FeedbackMoodSelector';
+import { FeedbackStartPrompt } from '@/components/feedback/form/FeedbackStartPrompt';
+import { FeedbackReasonOptionsSheet } from '@/components/feedback/sheets/FeedbackReasonOptionsSheet';
+import { FeedbackReasonsSheet } from '@/components/feedback/sheets/FeedbackReasonsSheet';
+import { useFeedbackCooldown } from '@/components/feedback/use-feedback-cooldown';
 import { Modal } from '@mantine/core';
 import { useState } from 'react';
 
@@ -14,12 +15,13 @@ import styles from './styles.module.css';
 /* * */
 
 interface FeedbackFormProps {
+	entityId?: string
 	entityType?: FeedbackEntityType
 }
 
 /* * */
 
-export function FeedbackForm({ entityType = 'line' }: FeedbackFormProps) {
+export function FeedbackForm({ entityId, entityType = 'line' }: FeedbackFormProps) {
 	//
 
 	//
@@ -35,6 +37,9 @@ export function FeedbackForm({ entityType = 'line' }: FeedbackFormProps) {
 	const reasonGroups = getFeedbackReasonGroups(entityType);
 	const reasonCategories = Object.keys(reasonGroups) as FeedbackReasonCategory[];
 	const isAnyReasonsSheetOpen = isHappyReasonsSheetOpen || isUnhappyReasonsSheetOpen || activeReasonOptionsSheet !== null;
+	const feedbackCooldown = useFeedbackCooldown(entityType === 'line' ? entityId : undefined);
+
+	// Call feedbackCooldown.startCooldown() after a successful line feedback submission.
 
 	//
 	// B. Handle actions
@@ -79,7 +84,9 @@ export function FeedbackForm({ entityType = 'line' }: FeedbackFormProps) {
 
 	return (
 		<>
-			<FeedbackStartPrompt onClick={() => setIsFeedbackModalOpen(true)} />
+			{!feedbackCooldown.isCoolingDown && (
+				<FeedbackStartPrompt onClick={() => setIsFeedbackModalOpen(true)} />
+			)}
 
 			<Modal
 				centered={true}
