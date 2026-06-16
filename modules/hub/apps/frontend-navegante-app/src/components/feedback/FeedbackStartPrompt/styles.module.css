@@ -1,0 +1,31 @@
+.container {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 64px;
+	padding: 0 18px;
+	font: inherit;
+	color: #000;
+	cursor: pointer;
+	background-color: var(--color-brand-navegante);
+	border: none;
+	border-radius: 8px;
+	box-shadow: 0 4px 20px rgb(0 0 0 / 18%);
+}
+
+.icon {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+}
+
+.label {
+	min-width: 0;
+	font-size: 20px;
+	font-weight: var(--font-weight-bold);
+	line-height: 1.1;
+	text-align: center;
+}

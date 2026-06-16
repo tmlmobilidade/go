@@ -1,0 +1,23 @@
+.submitLayer {
+	position: fixed;
+	right: 20px;
+	bottom: calc(20px + env(safe-area-inset-bottom));
+	left: 20px;
+	z-index: 150;
+	pointer-events: none;
+}
+
+.submitButton {
+	width: 100%;
+	min-height: 64px;
+	font: inherit;
+	font-size: 22px;
+	font-weight: var(--font-weight-semibold);
+	color: #000;
+	pointer-events: auto;
+	cursor: pointer;
+	background-color: var(--color-brand-navegante);
+	border: none;
+	border-radius: 999px;
+	box-shadow: 0 4px 20px rgb(0 0 0 / 25%);
+}
