@@ -1,7 +1,7 @@
 /* * */
 
 import { ApexValidationStatus, ApexValidationStatusSchema } from '@/simplified/apex-validation-status.js';
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { CalendarDateSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -10,6 +10,7 @@ export const SimplifiedApexValidationSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
+	calendar_date: CalendarDateSchema,
 	card_serial_number: z.string(),
 	category: z.enum(['prepaid', 'subscription', 'on_board_sale']).nullable(),
 	created_at: UnixTimestampSchema,
@@ -24,11 +25,11 @@ export const SimplifiedApexValidationSchema = z.object({
 	on_board_refund_id: z.string().nullable().default(null),
 	on_board_sale_id: z.string().nullable().default(null),
 	pattern_id: z.string(),
-	product_id: z.string(),
+	product_id: z.string().nullable().default(null),
 	received_at: UnixTimestampSchema,
 	stop_id: z.string(),
 	trip_id: z.string().nullable().default(null),
-	units_qty: z.number().nullable(),
+	units_qty: z.number().nullable().default(null),
 	validation_status: ApexValidationStatusSchema,
 	vehicle_id: z.number(),
 });
