@@ -103,10 +103,14 @@ export async function syncApexSales(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			let parseResult: null | SimplifiedApexOnBoardSale = null;
-			if (sourceDbDocument.version === 'sale-3.0') parseResult = parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale(sourceDbDocument);
-			if (!parseResult) return;
-			await writer.write(parseResult);
+			try {
+				let parseResult: null | SimplifiedApexOnBoardSale = null;
+				if (sourceDbDocument.version === 'sale-3.0') parseResult = parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale(sourceDbDocument);
+				if (!parseResult) return;
+				await writer.write(parseResult);
+			} catch (error) {
+				Logger.error(`Error transforming APEX Sale: ${sourceDbDocument._id} Reason: ${error.message}`);
+			}
 		},
 
 	});

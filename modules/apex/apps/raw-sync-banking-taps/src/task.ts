@@ -103,10 +103,14 @@ export async function syncApexBankingTaps(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			let parseResult: null | SimplifiedApexBankingTap = null;
-			if (sourceDbDocument.version === 'banking-tap-4.0') parseResult = parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap(sourceDbDocument);
-			if (!parseResult) return;
-			await writer.write(parseResult);
+			try {
+				let parseResult: null | SimplifiedApexBankingTap = null;
+				if (sourceDbDocument.version === 'banking-tap-4.0') parseResult = parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap(sourceDbDocument);
+				if (!parseResult) return;
+				await writer.write(parseResult);
+			} catch (error) {
+				Logger.error(`Error transforming APEX Banking Tap: ${sourceDbDocument._id} Reason: ${error.message}`);
+			}
 		},
 
 	});

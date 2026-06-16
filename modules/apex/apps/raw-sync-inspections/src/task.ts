@@ -103,10 +103,14 @@ export async function syncApexInspections(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			let parseResult: null | SimplifiedApexInspection = null;
-			if (sourceDbDocument.version === 'inspection-2.0') parseResult = parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection(sourceDbDocument);
-			if (!parseResult) return;
-			await writer.write(parseResult);
+			try {
+				let parseResult: null | SimplifiedApexInspection = null;
+				if (sourceDbDocument.version === 'inspection-2.0') parseResult = parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection(sourceDbDocument);
+				if (!parseResult) return;
+				await writer.write(parseResult);
+			} catch (error) {
+				Logger.error(`Error transforming APEX Inspection: ${sourceDbDocument._id} Reason: ${error.message}`);
+			}
 		},
 
 	});

@@ -103,10 +103,14 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			let parseResult: null | SimplifiedApexLocation = null;
-			if (sourceDbDocument.version === 'location-3.0') parseResult = parseRawApexTransactionLocationV30IntoSimplifiedApexLocation(sourceDbDocument);
-			if (!parseResult) return;
-			await writer.write(parseResult);
+			try {
+				let parseResult: null | SimplifiedApexLocation = null;
+				if (sourceDbDocument.version === 'location-3.0') parseResult = parseRawApexTransactionLocationV30IntoSimplifiedApexLocation(sourceDbDocument);
+				if (!parseResult) return;
+				await writer.write(parseResult);
+			} catch (error) {
+				Logger.error(`Error transforming APEX Location: ${sourceDbDocument._id} Reason: ${error.message}`);
+			}
 		},
 
 	});
