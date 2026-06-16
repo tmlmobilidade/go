@@ -20,7 +20,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexInspection> = {
 	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	device_id: { type: 'LowCardinality(String)' },
 	environment_status: { type: 'UInt8' },
-	inspection_id: { type: 'Nullable(String)' },
+	inspection_id: { type: 'Nullable(UUID)' },
 	is_ok: { type: 'Bool' },
 	is_ok_pcgi: { type: 'Bool' },
 	line_id: { type: 'Nullable(LowCardinality(String))' },

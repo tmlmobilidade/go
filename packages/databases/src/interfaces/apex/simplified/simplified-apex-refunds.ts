@@ -22,7 +22,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexOnBoardRefund> = {
 	line_id: { type: 'Nullable(LowCardinality(String))' },
 	mac_ase_counter_value: { type: 'UInt64' },
 	mac_sam_serial_number: { type: 'UInt64' },
-	on_board_sale_id: { type: 'Nullable(String)' },
+	on_board_sale_id: { type: 'Nullable(UUID)' },
 	pattern_id: { type: 'Nullable(LowCardinality(String))' },
 	payment_method: { type: 'UInt8' },
 	price: { type: 'Int32' },
@@ -32,7 +32,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexOnBoardRefund> = {
 	stop_id: { type: 'Nullable(LowCardinality(String))' },
 	trip_id: { type: 'Nullable(String)' },
 	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
-	validation_id: { type: 'Nullable(String)' },
+	validation_id: { type: 'Nullable(UUID)' },
 	vehicle_id: { type: 'Nullable(LowCardinality(String))' },
 };
 

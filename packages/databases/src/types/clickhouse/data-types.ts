@@ -20,4 +20,5 @@ export type ClickHouseDataType =
   | `Nullable(Int64)`
   | `Nullable(LowCardinality(String))`
   | `Nullable(String)`
-  | `Nullable(UInt64)`;
+  | `Nullable(UInt64)`
+  | `Nullable(UUID)`;
