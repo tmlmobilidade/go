@@ -1,8 +1,7 @@
 'use client';
 
-import { type HubRoute } from '@/types/api/network';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubLine } from '@tmlmobilidade/types';
+import { type HubLine, type HubRoute } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
