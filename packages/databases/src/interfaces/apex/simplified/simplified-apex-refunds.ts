@@ -2,13 +2,13 @@
 
 import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
-import { type ClickHouseSchema } from '@/types/index.js';
+import { type ClickHouseTableSchema } from '@/types/index.js';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-const tableSchema: ClickHouseSchema<SimplifiedApexOnBoardRefund> = {
+const tableSchema: ClickHouseTableSchema<SimplifiedApexOnBoardRefund> = {
 	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },

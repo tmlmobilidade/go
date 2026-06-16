@@ -2,13 +2,13 @@
 
 import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
-import { type ClickHouseSchema } from '@/types/index.js';
+import { type ClickHouseTableSchema } from '@/types/index.js';
 import { type SimplifiedApexInspection } from '@tmlmobilidade/go-types-apex';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-const tableSchema: ClickHouseSchema<SimplifiedApexInspection> = {
+const tableSchema: ClickHouseTableSchema<SimplifiedApexInspection> = {
 	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },

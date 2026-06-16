@@ -2,13 +2,13 @@
 
 import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
-import { type ClickHouseSchema } from '@/types/index.js';
+import { type ClickHouseTableEngine, type ClickHouseTableSchema } from '@/types/index.js';
 import { type SimplifiedApexBankingTap } from '@tmlmobilidade/go-types-apex';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-const tableSchema: ClickHouseSchema<SimplifiedApexBankingTap> = {
+const tableSchema: ClickHouseTableSchema<SimplifiedApexBankingTap> = {
 	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
@@ -40,6 +40,8 @@ class SimplifiedApexBankingTapsNewClass extends ClickHouseInterfaceTemplate<Simp
 	//
 
 	private static _instance: null | Promise<SimplifiedApexBankingTapsNewClass> = null;
+
+	public override readonly engine: ClickHouseTableEngine<SimplifiedApexBankingTap> = 'ReplacingMergeTree(created_at)';
 
 	protected override readonly databaseName = 'simplified_apex';
 	protected override readonly schema = tableSchema;
