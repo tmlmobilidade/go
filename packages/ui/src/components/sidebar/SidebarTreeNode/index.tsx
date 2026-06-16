@@ -75,7 +75,7 @@ export function SidebarTreeNode({ depth, node, pathname, userPermissions }: Side
 				<span className={styles.groupLabel}>{t(`shared:components.sidebar.SidebarGroups.${node._id}` as never)}</span>
 				<IconChevronDown className={styles.groupChevron} data-open={isOpen} size={14} />
 			</button>
-			<Collapse expanded={isOpen}>
+			<Collapse expanded={isOpen} transitionDuration={0}>
 				<div className={styles.groupChildren} data-sidebar-group-children>
 					{visibleChildren.map(child => (
 						<SidebarTreeNode
