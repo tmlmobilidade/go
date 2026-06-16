@@ -12,6 +12,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexInspection> = {
 	_id: { primaryKey: true, type: 'String' },
 	agency_id: { type: 'String' },
 	apex_version: { type: 'String' },
+	calendar_date: { type: 'String' },
 	card_serial_number: { type: 'String' },
 	control_destination_stop_id: { type: 'String' },
 	control_origin_stop_id: { type: 'String' },

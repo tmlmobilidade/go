@@ -13,6 +13,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexBankingTap> = {
 	agency_id: { type: 'String' },
 	apex_version: { type: 'String' },
 	banking_token: { type: 'String' },
+	calendar_date: { type: 'String' },
 	card_brand: { type: 'Int64' },
 	card_pan: { type: 'String' },
 	created_at: { type: 'Int64' },

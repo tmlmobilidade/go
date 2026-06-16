@@ -12,6 +12,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexInspectionDecision> = {
 	_id: { primaryKey: true, type: 'String' },
 	agency_id: { type: 'String' },
 	apex_version: { type: 'String' },
+	calendar_date: { type: 'String' },
 	created_at: { type: 'Int64' },
 	device_id: { type: 'String' },
 	final_control_status: { type: 'Int64' },

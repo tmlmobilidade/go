@@ -13,6 +13,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexOnBoardSale> = {
 	agency_id: { type: 'String' },
 	apex_version: { type: 'String' },
 	block_id: { type: 'String' },
+	calendar_date: { type: 'String' },
 	card_physical_type: { type: 'String' },
 	card_serial_number: { type: 'String' },
 	created_at: { type: 'Int64' },
